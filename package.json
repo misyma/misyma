@@ -1,0 +1,60 @@
+{
+  "name": "bookshelf",
+  "version": "1.0.0",
+  "author": "Michal Cieslar",
+  "type": "module",
+  "scripts": {
+    "start:dev": "nodemon --watch './**/*.ts' --exec 'node --experimental-specifier-resolution=node --loader ts-node/esm' src/index.ts",
+    "build:clean": "rimraf dist",
+    "build": "tsc --build tsconfig.build.json",
+    "build:dev": "tsc --build tsconfig.json",
+    "test:unit": "vitest .unit.test.ts --threads false",
+    "test:unit:watch": "npm run test:unit -- --watch",
+    "test:integration": "vitest .integration.test.ts --threads false",
+    "test:integration:watch": "npm run test:integration -- --watch",
+    "lint": "eslint . --ext .ts --cache --max-warnings 0",
+    "lint:fix": "npm run lint -- --fix"
+  },
+  "dependencies": {
+    "bunyan": "^1.8.15",
+    "dotenv": "^16.3.1",
+    "fastify": "^4.19.2",
+    "http-status-codes": "^2.2.0",
+    "inversify": "^6.0.1",
+    "tslib": "^2.6.0",
+    "uuid": "^9.0.0",
+    "zod": "^3.21.4"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^8.0.2",
+    "@types/bunyan": "^1.8.8",
+    "@types/node": "^20.4.1",
+    "@types/uuid": "^9.0.2",
+    "@types/ws": "^8.5.5",
+    "@typescript-eslint/eslint-plugin": "^5.61.0",
+    "@typescript-eslint/parser": "^5.61.0",
+    "dotenv": "^16.3.1",
+    "esbuild": "^0.18.11",
+    "eslint": "^8.44.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-import-resolver-typescript": "^3.5.5",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-prettier": "^5.0.0",
+    "nodemon": "^3.0.0",
+    "prettier": "^3.0.0",
+    "rimraf": "^5.0.1",
+    "ts-loader": "^9.4.4",
+    "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.1.6",
+    "vitest": "^0.33.0"
+  },
+  "volta": {
+    "node": "20.4.0",
+    "npm": "9.8.0"
+  },
+  "engines": {
+    "node": "=20.4.0",
+    "npm": "=9.8.0"
+  }
+}
