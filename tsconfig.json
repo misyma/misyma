@@ -33,5 +33,5 @@
     "incremental": true,
     "composite": true,
   },
-  "include": ["src"]
+  "include": ["apps"]
 }
