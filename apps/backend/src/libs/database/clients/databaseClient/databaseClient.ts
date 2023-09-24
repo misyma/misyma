@@ -1,3 +1,3 @@
 import { type Knex } from 'knex';
 
-export type QueryBuilder = Knex;
+export type DatabaseClient = Knex;
