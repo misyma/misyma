@@ -1,5 +1,15 @@
-import { type LoggerClient } from '../../clients/loggerClient/loggerClient.js';
+import { createLogger } from 'bunyan';
 
-export interface LoggerClientFactory {
-  create(): LoggerClient;
+import { type LoggerClient } from '../../clients/loggerClient/loggerClient.js';
+import { type LoggerConfig } from '../../types/loggerConfig.js';
+
+export class LoggerClientFactory {
+  public static create(config: LoggerConfig): LoggerClient {
+    const loggerClient = createLogger({
+      name: 'logger',
+      level: config.logLevel,
+    });
+
+    return loggerClient;
+  }
 }

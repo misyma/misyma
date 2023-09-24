@@ -1,14 +1,8 @@
 import { type LogPayload, type LoggerService } from './loggerService.js';
-import { Injectable, Inject } from '../../../dependencyInjection/decorators.js';
 import { type LoggerClient } from '../../clients/loggerClient/loggerClient.js';
-import { symbols } from '../../symbols.js';
 
-@Injectable()
 export class LoggerServiceImpl implements LoggerService {
-  public constructor(
-    @Inject(symbols.loggerClient)
-    private readonly loggerClient: LoggerClient,
-  ) {}
+  public constructor(private readonly loggerClient: LoggerClient) {}
 
   public fatal(payload: LogPayload): void {
     const { message, context = {} } = payload;
