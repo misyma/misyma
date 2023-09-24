@@ -1,6 +1,6 @@
 import { type Schema } from 'zod';
 
-import { ValidationError } from './errors/validationError.js';
+import { ValidationError } from '../errors/validationError.js';
 
 export class Validator {
   public static validate<T>(schema: Schema<T>, payload: T): T {

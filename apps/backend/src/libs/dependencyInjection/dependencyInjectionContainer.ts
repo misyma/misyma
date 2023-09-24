@@ -14,6 +14,10 @@ export class DependencyInjectionContainer {
     });
   }
 
+  public resolve<T>(constructor: interfaces.Newable<T>): T {
+    return this.instance.resolve(constructor);
+  }
+
   public bindToValue<T>(symbol: symbol, value: T): DependencyInjectionContainer {
     this.instance.bind(symbol).toConstantValue(value);
 
