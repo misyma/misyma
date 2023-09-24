@@ -1,0 +1,42 @@
+import { Container, type interfaces } from 'inversify';
+
+export interface FactoryLike<T> {
+  create(): T;
+}
+
+export class DependencyInjectionContainer {
+  private instance: Container;
+
+  public constructor() {
+    this.instance = new Container({
+      autoBindInjectable: false,
+      defaultScope: 'Singleton',
+    });
+  }
+
+  public bindToValue<T>(symbol: symbol, value: T): DependencyInjectionContainer {
+    this.instance.bind(symbol).toConstantValue(value);
+
+    return this;
+  }
+
+  public bindToConstructor<T>(symbol: symbol, constructor: interfaces.Newable<T>): DependencyInjectionContainer {
+    this.instance.bind(symbol).to(constructor);
+
+    return this;
+  }
+
+  public bindToDynamicValue<T>(symbol: symbol, dynamicValue: interfaces.DynamicValue<T>): DependencyInjectionContainer {
+    this.instance.bind(symbol).toDynamicValue(dynamicValue);
+
+    return this;
+  }
+
+  public getAsync<T>(symbol: symbol): Promise<T> {
+    return this.instance.getAsync(symbol);
+  }
+
+  public get<T>(symbol: symbol): T {
+    return this.instance.get(symbol);
+  }
+}
