@@ -14,5 +14,4 @@ services:
       - book-store-pgdata:/var/lib/postgresql/data
 
 volumes:
-  book-store-pgdata:
-
+  bookshelf-pgdata:
