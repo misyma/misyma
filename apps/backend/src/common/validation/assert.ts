@@ -1,4 +1,4 @@
-import { InputNotValidError } from './errors/base/domainError.js';
+import { InputNotValidError } from './errors/base/inputNotValidError.js';
 import { Validator } from './validator.js';
 
 export enum StringFormat {

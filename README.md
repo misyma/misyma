@@ -1,2 +1,3 @@
 # bookshelf
-A website to store information about the books you own.
+
+A website for storing and rating the books you own.
