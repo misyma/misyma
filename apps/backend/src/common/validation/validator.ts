@@ -40,7 +40,7 @@ export class Validator {
     return typeof value === 'string';
   }
 
-  public static isNonEmptyString(value: string): boolean {
+  public static isNonEmptyString(value: unknown): boolean {
     if (!Validator.isString(value)) {
       return false;
     }
