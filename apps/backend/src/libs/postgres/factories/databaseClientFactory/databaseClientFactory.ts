@@ -7,12 +7,12 @@ import { type DatabaseClientConfig } from '../../clients/databaseClient/database
 
 export class DatabaseClientFactory {
   public create(config: DatabaseClientConfig): DatabaseClient {
-    const { clientType, host, port, user, password, databaseName, minPoolConnections, maxPoolConnections } = config;
+    const { host, port, user, password, databaseName, minPoolConnections, maxPoolConnections } = config;
 
     const knexConstructor = typeof knex === 'function' ? knex : knex.default;
 
     return knexConstructor({
-      client: clientType,
+      client: 'pg',
       connection: {
         host,
         port,

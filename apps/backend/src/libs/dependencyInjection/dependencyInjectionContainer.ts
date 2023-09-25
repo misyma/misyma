@@ -14,10 +14,6 @@ export class DependencyInjectionContainer {
     });
   }
 
-  public resolve<T>(constructor: interfaces.Newable<T>): T {
-    return this.instance.resolve(constructor);
-  }
-
   public bindToValue<T>(symbol: symbol, value: T): DependencyInjectionContainer {
     this.instance.bind(symbol).toConstantValue(value);
 
@@ -30,14 +26,10 @@ export class DependencyInjectionContainer {
     return this;
   }
 
-  public bindToDynamicValue<T>(symbol: symbol, dynamicValue: interfaces.DynamicValue<T>): DependencyInjectionContainer {
+  public bind<T>(symbol: symbol, dynamicValue: interfaces.DynamicValue<T>): DependencyInjectionContainer {
     this.instance.bind(symbol).toDynamicValue(dynamicValue);
 
     return this;
-  }
-
-  public getAsync<T>(symbol: symbol): Promise<T> {
-    return this.instance.getAsync(symbol);
   }
 
   public get<T>(symbol: symbol): T {

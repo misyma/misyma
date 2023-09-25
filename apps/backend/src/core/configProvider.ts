@@ -4,20 +4,27 @@ import { EnvParser } from '../libs/envParser/envParser.js';
 import { LoggerLevel } from '../libs/logger/types/loggerLevel.js';
 
 export class ConfigProvider {
-  private static getStringEnvVariable(name: string): string {
-    const envVariable = name;
-
-    const value = EnvParser.parseString({ name: envVariable });
+  private static getStringEnvVariable(envVariableName: string): string {
+    const value = EnvParser.parseString({ name: envVariableName });
 
     Assert.isNotEmptyString(value);
 
     return value;
   }
 
-  private static getEnumEnvVariable<T extends Record<string, string>>(enumType: T, name: string): T[keyof T] {
-    const envVariable = name;
+  private static getIntegerEnvVariable(envVariableName: string): number {
+    const value = EnvParser.parseNumber({ name: envVariableName });
 
-    const value = EnvParser.parseString({ name: envVariable });
+    Assert.isNumberInteger(value);
+
+    return value;
+  }
+
+  private static getEnumEnvVariable<T extends Record<string, string>>(
+    enumType: T,
+    envVariableName: string,
+  ): T[keyof T] {
+    const value = EnvParser.parseString({ name: envVariableName });
 
     Assert.isEnum(enumType, value);
 
@@ -48,6 +55,10 @@ export class ConfigProvider {
     return this.getStringEnvVariable('POSTGRES_DATABASE_HOST');
   }
 
+  public static getPostgresDatabasePort(): number {
+    return 5432;
+  }
+
   public static getPostgresDatabaseName(): string {
     return this.getStringEnvVariable('POSTGRES_DATABASE_NAME');
   }
@@ -58,5 +69,17 @@ export class ConfigProvider {
 
   public static getPostgresDatabasePassword(): string {
     return this.getStringEnvVariable('POSTGRES_DATABASE_PASSWORD');
+  }
+
+  public static getJwtSecret(): string {
+    return this.getStringEnvVariable('JWT_SECRET');
+  }
+
+  public static getJwtExpiresIn(): string {
+    return this.getStringEnvVariable('JWT_EXPIRES_IN');
+  }
+
+  public static getHashSaltRounds(): number {
+    return this.getIntegerEnvVariable('HASH_SALT_ROUNDS');
   }
 }

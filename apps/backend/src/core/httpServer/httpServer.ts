@@ -14,9 +14,13 @@ import { HttpStatusCode } from '../../common/types/http/httpStatusCode.js';
 import { InputNotValidError } from '../../common/validation/errors/base/inputNotValidError.js';
 import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
-import { ConfigProvider } from '../configProvider.js';
 import { HttpRouter } from '../httpRouter/httpRouter.js';
 import { coreSymbols } from '../symbols.js';
+
+export interface StartPayload {
+  readonly host: string;
+  readonly port: number;
+}
 
 export class HttpServer {
   public readonly fastifyInstance: FastifyInstance;
@@ -38,7 +42,9 @@ export class HttpServer {
     return [];
   }
 
-  public async start(): Promise<void> {
+  public async start(payload: StartPayload): Promise<void> {
+    const { host, port } = payload;
+
     this.setupErrorHandler();
 
     await this.initSwagger();
@@ -59,21 +65,17 @@ export class HttpServer {
       controllers: this.getControllers(),
     });
 
-    const serverHost = ConfigProvider.getServerHost();
-
-    const serverPort = ConfigProvider.getServerPort();
-
     await this.fastifyInstance.listen({
-      port: serverPort,
-      host: serverHost,
+      port,
+      host,
     });
 
     this.loggerService.info({
       message: `HTTP Server started.`,
       context: {
         source: HttpServer.name,
-        port: serverPort,
-        host: serverHost,
+        port,
+        host,
       },
     });
   }

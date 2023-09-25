@@ -3,7 +3,7 @@ import { HttpServiceImpl } from '../../services/httpService/httpServiceImpl.js';
 import { HttpClientFactory } from '../httpClientFactory/httpClientFactory.js';
 
 export class HttpServiceFactory {
-  public create(): HttpService {
+  public static create(): HttpService {
     const httpClient = HttpClientFactory.create();
 
     return new HttpServiceImpl(httpClient);
