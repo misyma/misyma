@@ -11,6 +11,10 @@
     "lint:fix": "turbo run lint:fix"
   },
   "dependencies": {
+    "@fastify/cors": "^8.4.0",
+    "@fastify/helmet": "^11.1.1",
+    "@fastify/swagger": "^8.10.1",
+    "@fastify/swagger-ui": "^1.9.3",
     "tslib": "^2.6.2"
   },
   "devDependencies": {
