@@ -1,5 +1,5 @@
-import { type LogLevel } from './logLevel.js';
+import { type LoggerLevel } from './loggerLevel.js';
 
 export interface LoggerConfig {
-  readonly logLevel: LogLevel;
+  readonly loggerLevel: LoggerLevel;
 }

@@ -7,7 +7,7 @@ export class LoggerClientFactory {
   public static create(config: LoggerConfig): LoggerClient {
     const loggerClient = createLogger({
       name: 'logger',
-      level: config.logLevel,
+      level: config.loggerLevel,
     });
 
     return loggerClient;
