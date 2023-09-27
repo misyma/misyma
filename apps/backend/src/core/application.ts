@@ -3,6 +3,7 @@ import { type PostgresDatabaseClient } from './database/postgresDatabaseClient/p
 import { PostgresDatabaseClientFactory } from './database/postgresDatabaseClient/postgresDatabaseClientFactory.js';
 import { HttpServer } from './httpServer/httpServer.js';
 import { coreSymbols, symbols } from './symbols.js';
+import { AuthModule } from '../authModule/authModule.js';
 import { type DependencyInjectionContainer } from '../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { DependencyInjectionContainerFactory } from '../libs/dependencyInjection/dependencyInjectionContainerFactory.js';
 import { type DependencyInjectionModule } from '../libs/dependencyInjection/dependencyInjectionModule.js';
@@ -34,9 +35,11 @@ export class Application {
 
     const modules: DependencyInjectionModule[] = [
       new UserModule({
+        hashSaltRounds,
+      }),
+      new AuthModule({
         jwtSecret,
         jwtExpiresIn,
-        hashSaltRounds,
       }),
     ];
 

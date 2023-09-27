@@ -3,11 +3,11 @@ import {
   type LoginUserCommandHandlerPayload,
   type LoginUserCommandHandlerResult,
 } from './loginUserCommandHandler.js';
+import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { ResourceNotFoundError } from '../../../../common/validation/errors/common/resourceNotFoundError.js';
 import { type LoggerService } from '../../../../libs/logger/services/loggerService/loggerService.js';
 import { type UserRepository } from '../../repositories/userRepository/userRepository.js';
 import { type HashService } from '../../services/hashService/hashService.js';
-import { type TokenService } from '../../services/tokenService/tokenService.js';
 
 export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
   public constructor(

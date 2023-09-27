@@ -1,6 +1,8 @@
 import { beforeEach, afterEach, expect, it, describe } from 'vitest';
 
 import { type LoginUserCommandHandler } from './loginUserCommandHandler.js';
+import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
+import { authSymbols } from '../../../../authModule/symbols.js';
 import { ResourceNotFoundError } from '../../../../common/validation/errors/common/resourceNotFoundError.js';
 import { Application } from '../../../../core/application.js';
 import { type PostgresDatabaseClient } from '../../../../core/database/postgresDatabaseClient/postgresDatabaseClient.js';
@@ -9,7 +11,6 @@ import { symbols } from '../../../symbols.js';
 import { UserRawEntityTestFactory } from '../../../tests/factories/userRawEntityTestFactory/userRawEntityTestFactory.js';
 import { UserTestUtils } from '../../../tests/utils/userTestUtils/userTestUtils.js';
 import { type HashService } from '../../services/hashService/hashService.js';
-import { type TokenService } from '../../services/tokenService/tokenService.js';
 
 describe('LoginUserCommandHandler', () => {
   let loginUserCommandHandler: LoginUserCommandHandler;
@@ -29,7 +30,7 @@ describe('LoginUserCommandHandler', () => {
 
     loginUserCommandHandler = container.get<LoginUserCommandHandler>(symbols.loginUserCommandHandler);
 
-    tokenService = container.get<TokenService>(symbols.tokenService);
+    tokenService = container.get<TokenService>(authSymbols.tokenService);
 
     hashService = container.get<HashService>(symbols.hashService);
 

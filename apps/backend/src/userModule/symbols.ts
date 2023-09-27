@@ -3,7 +3,6 @@ export const symbols = {
   userMapper: Symbol('userMapper'),
   userRepository: Symbol('userRepository'),
   hashService: Symbol('hashService'),
-  tokenService: Symbol('tokenService'),
   registerUserCommandHandler: Symbol('registerUserCommandHandler'),
   loginUserCommandHandler: Symbol('loginUserCommandHandler'),
   deleteUserCommandHandler: Symbol('deleteUserCommandHandler'),
@@ -13,5 +12,4 @@ export const symbols = {
 
 export const userSymbols = {
   userHttpController: symbols.userHttpController,
-  tokenService: symbols.tokenService,
 };

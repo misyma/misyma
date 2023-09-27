@@ -10,13 +10,13 @@ import { FindUserQueryHandlerImpl } from './application/queryHandlers/findUserQu
 import { type UserRepository } from './application/repositories/userRepository/userRepository.js';
 import { type HashService } from './application/services/hashService/hashService.js';
 import { HashServiceImpl } from './application/services/hashService/hashServiceImpl.js';
-import { type TokenService } from './application/services/tokenService/tokenService.js';
-import { TokenServiceImpl } from './application/services/tokenService/tokenServiceImpl.js';
 import { type UserMapper } from './infrastructure/repositories/userRepository/userMapper/userMapper.js';
 import { UserMapperImpl } from './infrastructure/repositories/userRepository/userMapper/userMapperImpl.js';
 import { UserRepositoryImpl } from './infrastructure/repositories/userRepository/userRepositoryImpl.js';
 import { symbols } from './symbols.js';
 import { type UserModuleConfig } from './userModuleConfig.js';
+import { type TokenService } from '../authModule/application/services/tokenService/tokenService.js';
+import { authSymbols } from '../authModule/symbols.js';
 import { type PostgresDatabaseClient } from '../core/database/postgresDatabaseClient/postgresDatabaseClient.js';
 import { coreSymbols } from '../core/symbols.js';
 import { type DependencyInjectionContainer } from '../libs/dependencyInjection/dependencyInjectionContainer.js';
@@ -46,11 +46,6 @@ export class UserModule implements DependencyInjectionModule {
       () => new HashServiceImpl(container.get<UserModuleConfig>(symbols.userModuleConfig)),
     );
 
-    container.bind<TokenService>(
-      symbols.tokenService,
-      () => new TokenServiceImpl(container.get<UserModuleConfig>(symbols.userModuleConfig)),
-    );
-
     container.bind<RegisterUserCommandHandler>(
       symbols.registerUserCommandHandler,
       () =>
@@ -69,7 +64,7 @@ export class UserModule implements DependencyInjectionModule {
           container.get<UserRepository>(symbols.userRepository),
           container.get<LoggerService>(coreSymbols.loggerService),
           container.get<HashService>(symbols.hashService),
-          container.get<TokenService>(symbols.tokenService),
+          container.get<TokenService>(authSymbols.tokenService),
         ),
     );
 
