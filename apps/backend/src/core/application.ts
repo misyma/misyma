@@ -1,18 +1,22 @@
 import { ConfigProvider } from './configProvider.js';
+import { type PostgresDatabaseClient } from './database/postgresDatabaseClient/postgresDatabaseClient.js';
+import { PostgresDatabaseClientFactory } from './database/postgresDatabaseClient/postgresDatabaseClientFactory.js';
 import { HttpServer } from './httpServer/httpServer.js';
 import { coreSymbols, symbols } from './symbols.js';
 import { type DependencyInjectionContainer } from '../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { DependencyInjectionContainerFactory } from '../libs/dependencyInjection/dependencyInjectionContainerFactory.js';
+import { type DependencyInjectionModule } from '../libs/dependencyInjection/dependencyInjectionModule.js';
 import { HttpServiceFactory } from '../libs/httpService/factories/httpServiceFactory/httpServiceFactory.js';
 import { type HttpService } from '../libs/httpService/services/httpService/httpService.js';
 import { LoggerServiceFactory } from '../libs/logger/factories/loggerServiceFactory/loggerServiceFactory.js';
 import { type LoggerService } from '../libs/logger/services/loggerService/loggerService.js';
+import { type UuidService } from '../libs/uuid/services/uuidService/uuidService.js';
+import { UuidServiceImpl } from '../libs/uuid/services/uuidService/uuidServiceImpl.js';
+import { UserModule } from '../userModule/userModule.js';
 
 export class Application {
   public static createContainer(): DependencyInjectionContainer {
     const databaseHost = ConfigProvider.getPostgresDatabaseHost();
-
-    const databasePort = ConfigProvider.getPostgresDatabasePort();
 
     const databaseName = ConfigProvider.getPostgresDatabaseName();
 
@@ -28,25 +32,30 @@ export class Application {
 
     const loggerLevel = ConfigProvider.getLoggerLevel();
 
-    console.log({
-      databaseHost,
-      databasePort,
-      databaseName,
-      databaseUser,
-      databasePassword,
-      jwtSecret,
-      jwtExpiresIn,
-      hashSaltRounds,
-      loggerLevel,
-    });
+    const modules: DependencyInjectionModule[] = [
+      new UserModule({
+        jwtSecret,
+        jwtExpiresIn,
+        hashSaltRounds,
+      }),
+    ];
 
-    const container = DependencyInjectionContainerFactory.create({
-      modules: [],
-    });
+    const container = DependencyInjectionContainerFactory.create({ modules });
 
     container.bind<LoggerService>(symbols.loggerService, () => LoggerServiceFactory.create({ loggerLevel }));
 
     container.bind<HttpService>(symbols.httpService, () => HttpServiceFactory.create());
+
+    container.bind<UuidService>(symbols.uuidService, () => new UuidServiceImpl());
+
+    container.bind<PostgresDatabaseClient>(symbols.postgresDatabaseClient, () =>
+      PostgresDatabaseClientFactory.create({
+        databaseHost,
+        databaseName,
+        databaseUser,
+        databasePassword,
+      }),
+    );
 
     return container;
   }

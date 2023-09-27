@@ -1,9 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { z } from 'zod';
 
-export interface ResponseErrorBody {
-  readonly error: {
-    readonly name: string;
-    readonly message: string;
-    readonly context?: Record<string, any>;
-  };
-}
+export const responseErrorBodySchema = z.object({
+  error: z.object({
+    name: z.string(),
+    message: z.string(),
+    context: z.record(z.string(), z.any()).optional(),
+  }),
+});
+
+export type ResponseErrorBody = z.infer<typeof responseErrorBodySchema>;

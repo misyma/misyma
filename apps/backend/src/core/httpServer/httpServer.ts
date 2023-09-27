@@ -11,9 +11,11 @@ import { type Server } from 'http';
 
 import { type HttpController } from '../../common/types/http/httpController.js';
 import { HttpStatusCode } from '../../common/types/http/httpStatusCode.js';
-import { InputNotValidError } from '../../common/validation/errors/base/inputNotValidError.js';
+import { InputNotValidError } from '../../common/validation/errors/common/inputNotValidError.js';
 import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
+import { type UserHttpController } from '../../userModule/api/httpControllers/userHttpController/userHttpController.js';
+import { userSymbols } from '../../userModule/symbols.js';
 import { HttpRouter } from '../httpRouter/httpRouter.js';
 import { coreSymbols } from '../symbols.js';
 
@@ -39,7 +41,7 @@ export class HttpServer {
   }
 
   private getControllers(): HttpController[] {
-    return [];
+    return [this.container.get<UserHttpController>(userSymbols.userHttpController)];
   }
 
   public async start(payload: StartPayload): Promise<void> {

@@ -20,12 +20,6 @@ export class DependencyInjectionContainer {
     return this;
   }
 
-  public bindToConstructor<T>(symbol: symbol, constructor: interfaces.Newable<T>): DependencyInjectionContainer {
-    this.instance.bind(symbol).to(constructor);
-
-    return this;
-  }
-
   public bind<T>(symbol: symbol, dynamicValue: interfaces.DynamicValue<T>): DependencyInjectionContainer {
     this.instance.bind(symbol).toDynamicValue(dynamicValue);
 

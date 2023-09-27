@@ -13,11 +13,13 @@
     "lint:fix": "npm run lint -- --fix"
   },
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "bunyan": "^1.8.15",
     "dotenv": "^16.3.1",
     "fastify": "^4.23.2",
     "http-status-codes": "^2.3.0",
     "inversify": "^6.0.1",
+    "jsonwebtoken": "^9.0.2",
     "knex": "^2.5.1",
     "pg": "^8.11.3",
     "uuid": "^9.0.1",
@@ -26,7 +28,9 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^8.1.0",
+    "@types/bcrypt": "^5.0.0",
     "@types/bunyan": "^1.8.9",
+    "@types/jsonwebtoken": "^9.0.3",
     "@types/node": "^20.6.4",
     "@types/uuid": "^9.0.4",
     "@types/validator": "^13.11.1",

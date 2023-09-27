@@ -55,10 +55,6 @@ export class ConfigProvider {
     return this.getStringEnvVariable('POSTGRES_DATABASE_HOST');
   }
 
-  public static getPostgresDatabasePort(): number {
-    return 5432;
-  }
-
   public static getPostgresDatabaseName(): string {
     return this.getStringEnvVariable('POSTGRES_DATABASE_NAME');
   }
