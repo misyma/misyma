@@ -15,6 +15,7 @@
     "lint:fix": "npm run lint -- --fix"
   },
   "dependencies": {
+    "@fastify/type-provider-typebox": "^3.5.0",
     "@sinclair/typebox": "^0.31.17",
     "bcrypt": "^5.1.1",
     "bunyan": "^1.8.15",

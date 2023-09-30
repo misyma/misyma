@@ -5,6 +5,7 @@ import { fastifyCors } from '@fastify/cors';
 import { fastifyHelmet } from '@fastify/helmet';
 import { fastifySwagger } from '@fastify/swagger';
 import { fastifySwaggerUi } from '@fastify/swagger-ui';
+import { type TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import { fastify, type FastifyInstance } from 'fastify';
 import { type FastifySchemaValidationError } from 'fastify/types/schema.js';
 import { type Server } from 'http';
@@ -35,7 +36,7 @@ export class HttpServer {
 
     this.loggerService = this.container.get<LoggerService>(coreSymbols.loggerService);
 
-    this.fastifyInstance = fastify({ bodyLimit: 10 * 1024 * 1024 });
+    this.fastifyInstance = fastify({ bodyLimit: 10 * 1024 * 1024 }).withTypeProvider<TypeBoxTypeProvider>();
 
     this.httpRouter = new HttpRouter(this.fastifyInstance, container);
   }
