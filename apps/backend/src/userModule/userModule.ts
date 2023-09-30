@@ -15,6 +15,7 @@ import { UserMapperImpl } from './infrastructure/repositories/userRepository/use
 import { UserRepositoryImpl } from './infrastructure/repositories/userRepository/userRepositoryImpl.js';
 import { symbols } from './symbols.js';
 import { type UserModuleConfig } from './userModuleConfig.js';
+import { type AccessControlService } from '../authModule/application/services/accessControlService/accessControlService.js';
 import { type TokenService } from '../authModule/application/services/tokenService/tokenService.js';
 import { authSymbols } from '../authModule/symbols.js';
 import { type PostgresDatabaseClient } from '../core/database/postgresDatabaseClient/postgresDatabaseClient.js';
@@ -90,6 +91,7 @@ export class UserModule implements DependencyInjectionModule {
           container.get<LoginUserCommandHandler>(symbols.loginUserCommandHandler),
           container.get<DeleteUserCommandHandler>(symbols.deleteUserCommandHandler),
           container.get<FindUserQueryHandler>(symbols.findUserQueryHandler),
+          container.get<AccessControlService>(authSymbols.accessControlService),
         ),
     );
   }
