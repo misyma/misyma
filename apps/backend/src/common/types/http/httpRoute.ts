@@ -10,7 +10,7 @@ export interface HttpRouteSchema {
     queryParams?: Schema;
     pathParams?: Schema;
   };
-  readonly response: Record<number, Schema | null>;
+  readonly response: Record<number, { schema: Schema | null; description: string }>;
 }
 
 export interface HttpRouteDraft {

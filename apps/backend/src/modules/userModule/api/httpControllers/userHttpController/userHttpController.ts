@@ -68,8 +68,14 @@ export class UserHttpController implements HttpController {
             body: registerUserBodySchema,
           },
           response: {
-            [HttpStatusCode.created]: registerUserResponseCreatedBodySchema,
-            [HttpStatusCode.unprocessableEntity]: responseErrorBodySchema,
+            [HttpStatusCode.created]: {
+              schema: registerUserResponseCreatedBodySchema,
+              description: 'User registered.',
+            },
+            [HttpStatusCode.unprocessableEntity]: {
+              schema: responseErrorBodySchema,
+              description: 'Error exception.',
+            },
           },
         },
         tags: ['User'],
@@ -84,8 +90,14 @@ export class UserHttpController implements HttpController {
             body: loginUserBodySchema,
           },
           response: {
-            [HttpStatusCode.ok]: loginUserResponseOkBodySchema,
-            [HttpStatusCode.notFound]: responseErrorBodySchema,
+            [HttpStatusCode.ok]: {
+              schema: loginUserResponseOkBodySchema,
+              description: 'User logged in.',
+            },
+            [HttpStatusCode.notFound]: {
+              schema: responseErrorBodySchema,
+              description: 'Error exception.',
+            },
           },
         },
         tags: ['User'],
@@ -100,8 +112,14 @@ export class UserHttpController implements HttpController {
             pathParams: findUserPathParametersSchema,
           },
           response: {
-            [HttpStatusCode.ok]: findUserResponseOkBodySchema,
-            [HttpStatusCode.notFound]: responseErrorBodySchema,
+            [HttpStatusCode.ok]: {
+              schema: findUserResponseOkBodySchema,
+              description: 'User found.',
+            },
+            [HttpStatusCode.notFound]: {
+              schema: responseErrorBodySchema,
+              description: 'Error exception.',
+            },
           },
         },
         securityMode: SecurityMode.bearer,
@@ -117,8 +135,14 @@ export class UserHttpController implements HttpController {
             pathParams: deleteUserPathParametersSchema,
           },
           response: {
-            [HttpStatusCode.noContent]: deleteUserResponseNoContentBodySchema,
-            [HttpStatusCode.notFound]: responseErrorBodySchema,
+            [HttpStatusCode.noContent]: {
+              schema: deleteUserResponseNoContentBodySchema,
+              description: 'User deleted.',
+            },
+            [HttpStatusCode.notFound]: {
+              schema: responseErrorBodySchema,
+              description: 'Error exception.',
+            },
           },
         },
         securityMode: SecurityMode.bearer,
