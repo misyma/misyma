@@ -6,7 +6,7 @@
     "build": "turbo run build",
     "build:dev": "tsc --build tsconfig.json",
     "test:unit": "turbo run test:unit:run --concurrency 5",
-    "test:integration": "turbo run test:integration:run --concurrency 5",
+    "test:integration": "turbo run test:integration --concurrency 5",
     "lint": "turbo run lint --concurrency 5",
     "lint:fix": "turbo run lint:fix"
   },
@@ -21,6 +21,7 @@
     "@types/node": "^20.6.4",
     "@typescript-eslint/eslint-plugin": "^6.7.2",
     "@typescript-eslint/parser": "^6.7.2",
+    "dotenv-cli": "^7.3.0",
     "esbuild": "^0.19.3",
     "eslint": "^8.50.0",
     "eslint-config-prettier": "^9.0.0",
