@@ -22,6 +22,7 @@ import {
   type RegisterUserBody,
   type RegisterUserResponseCreatedBody,
 } from './schemas/registerUserSchema.js';
+import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
 import { type HttpController } from '../../../../common/types/http/httpController.js';
 import { HttpMethodName } from '../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../common/types/http/httpRequest.js';
@@ -46,13 +47,14 @@ import { type FindUserQueryHandler } from '../../../application/queryHandlers/fi
 import { type User } from '../../../domain/entities/user/user.js';
 
 export class UserHttpController implements HttpController {
-  public readonly basePath = 'users';
+  public readonly basePath = '/users';
 
   public constructor(
     private readonly registerUserCommandHandler: RegisterUserCommandHandler,
     private readonly loginUserCommandHandler: LoginUserCommandHandler,
     private readonly deleteUserCommandHandler: DeleteUserCommandHandler,
     private readonly findUserQueryHandler: FindUserQueryHandler,
+    private readonly accessControlService: AccessControlService,
   ) {}
 
   public getHttpRoutes(): HttpRoute[] {
@@ -191,8 +193,9 @@ export class UserHttpController implements HttpController {
   > {
     const { id } = request.pathParams;
 
-    // TODO: auth
-    const userId = '123';
+    const { userId } = await this.accessControlService.verifyBearerToken({
+      authorizationHeader: request.headers['authorization'],
+    });
 
     if (userId !== id) {
       return {
@@ -234,8 +237,9 @@ export class UserHttpController implements HttpController {
   > {
     const { id } = request.pathParams;
 
-    // TODO: auth
-    const userId = '123';
+    const { userId } = await this.accessControlService.verifyBearerToken({
+      authorizationHeader: request.headers['authorization'],
+    });
 
     if (userId !== id) {
       return {

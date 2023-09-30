@@ -81,6 +81,7 @@ export class HttpRouter {
             body: fastifyRequest.body,
             pathParams: fastifyRequest.params,
             queryParams: fastifyRequest.query,
+            headers: fastifyRequest.headers as Record<string, string>,
           });
 
           fastifyReply.status(statusCode);

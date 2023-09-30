@@ -43,7 +43,7 @@ export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
       });
     }
 
-    const accessToken = this.tokenService.createToken({ id: user.id });
+    const accessToken = this.tokenService.createToken({ userId: user.id });
 
     this.loggerService.info({
       message: 'User logged in.',

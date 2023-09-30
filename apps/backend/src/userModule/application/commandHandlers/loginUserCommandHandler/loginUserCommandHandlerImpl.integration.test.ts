@@ -67,7 +67,7 @@ describe('LoginUserCommandHandler', () => {
 
     const tokenPayload = tokenService.verifyToken(accessToken);
 
-    expect(tokenPayload['id']).toBe(id);
+    expect(tokenPayload['userId']).toBe(id);
   });
 
   it('throws an error if user with given email does not exist', async () => {
