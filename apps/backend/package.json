@@ -34,8 +34,8 @@
     "@types/bcrypt": "^5.0.0",
     "@types/bunyan": "^1.8.9",
     "@types/jsonwebtoken": "^9.0.3",
-    "@types/node": "^20.6.4",
+    "@types/node": "^20.8.0",
     "@types/uuid": "^9.0.4",
-    "@types/validator": "^13.11.1"
+    "@types/validator": "^13.11.2"
   }
 }
