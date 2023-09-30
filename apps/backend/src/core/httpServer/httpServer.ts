@@ -14,8 +14,8 @@ import { HttpStatusCode } from '../../common/types/http/httpStatusCode.js';
 import { InputNotValidError } from '../../common/validation/errors/common/inputNotValidError.js';
 import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
-import { type UserHttpController } from '../../userModule/api/httpControllers/userHttpController/userHttpController.js';
-import { userSymbols } from '../../userModule/symbols.js';
+import { type UserHttpController } from '../../modules/userModule/api/httpControllers/userHttpController/userHttpController.js';
+import { userSymbols } from '../../modules/userModule/symbols.js';
 import { HttpRouter } from '../httpRouter/httpRouter.js';
 import { coreSymbols } from '../symbols.js';
 

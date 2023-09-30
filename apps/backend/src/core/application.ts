@@ -3,7 +3,6 @@ import { type PostgresDatabaseClient } from './database/postgresDatabaseClient/p
 import { PostgresDatabaseClientFactory } from './database/postgresDatabaseClient/postgresDatabaseClientFactory.js';
 import { HttpServer } from './httpServer/httpServer.js';
 import { coreSymbols, symbols } from './symbols.js';
-import { AuthModule } from '../authModule/authModule.js';
 import { type DependencyInjectionContainer } from '../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { DependencyInjectionContainerFactory } from '../libs/dependencyInjection/dependencyInjectionContainerFactory.js';
 import { type DependencyInjectionModule } from '../libs/dependencyInjection/dependencyInjectionModule.js';
@@ -13,7 +12,8 @@ import { LoggerServiceFactory } from '../libs/logger/factories/loggerServiceFact
 import { type LoggerService } from '../libs/logger/services/loggerService/loggerService.js';
 import { type UuidService } from '../libs/uuid/services/uuidService/uuidService.js';
 import { UuidServiceImpl } from '../libs/uuid/services/uuidService/uuidServiceImpl.js';
-import { UserModule } from '../userModule/userModule.js';
+import { AuthModule } from '../modules/authModule/authModule.js';
+import { UserModule } from '../modules/userModule/userModule.js';
 
 export class Application {
   public static createContainer(): DependencyInjectionContainer {

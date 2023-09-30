@@ -1,4 +1,4 @@
-import { UserDatabaseManager } from '../../../userModule/infrastructure/databases/userDatabase/userDatabaseManager.js';
+import { UserDatabaseManager } from '../../../modules/userModule/infrastructure/databases/userDatabase/userDatabaseManager.js';
 
 try {
   const databaseManagers = [UserDatabaseManager];
