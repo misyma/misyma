@@ -1,7 +1,7 @@
 import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 
 import { type DeleteUserCommandHandler } from './deleteUserCommandHandler.js';
-import { ResourceNotFoundError } from '../../../../../common/validation/errors/common/resourceNotFoundError.js';
+import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
 import { Application } from '../../../../../core/application.js';
 import { type PostgresDatabaseClient } from '../../../../../core/database/postgresDatabaseClient/postgresDatabaseClient.js';
 import { coreSymbols } from '../../../../../core/symbols.js';

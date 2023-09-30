@@ -1,6 +1,6 @@
 import { type UserMapper } from './userMapper/userMapper.js';
-import { RepositoryError } from '../../../../../common/validation/errors/common/repositoryError.js';
-import { ResourceNotFoundError } from '../../../../../common/validation/errors/common/resourceNotFoundError.js';
+import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
+import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
 import { type PostgresDatabaseClient } from '../../../../../core/database/postgresDatabaseClient/postgresDatabaseClient.js';
 import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';
 import {

@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import { Type } from '@sinclair/typebox';
 
-export const userSchema = z.object({
-  id: z.string(),
-  email: z.string(),
+export const userSchema = Type.Object({
+  id: Type.String(),
+  email: Type.String(),
 });

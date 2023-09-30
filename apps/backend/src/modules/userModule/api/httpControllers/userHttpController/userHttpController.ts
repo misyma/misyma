@@ -22,6 +22,8 @@ import {
   type RegisterUserBody,
   type RegisterUserResponseCreatedBody,
 } from './schemas/registerUserSchema.js';
+import { ResourceAlreadyExistsError } from '../../../../../common/errors/common/resourceAlreadyExistsError.js';
+import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
@@ -37,8 +39,6 @@ import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
 import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.js';
 import { responseErrorBodySchema, type ResponseErrorBody } from '../../../../../common/types/http/responseErrorBody.js';
 import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
-import { ResourceAlreadyExistsError } from '../../../../../common/validation/errors/common/resourceAlreadyExistsError.js';
-import { ResourceNotFoundError } from '../../../../../common/validation/errors/common/resourceNotFoundError.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
 import { type DeleteUserCommandHandler } from '../../../application/commandHandlers/deleteUserCommandHandler/deleteUserCommandHandler.js';
 import { type LoginUserCommandHandler } from '../../../application/commandHandlers/loginUserCommandHandler/loginUserCommandHandler.js';

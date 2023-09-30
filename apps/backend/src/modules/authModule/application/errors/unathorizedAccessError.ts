@@ -1,5 +1,5 @@
+import { ApplicationError } from '../../../../common/errors/base/applicationError.js';
 import { type SecurityMode } from '../../../../common/types/http/securityMode.js';
-import { ApplicationError } from '../../../../common/validation/errors/base/applicationError.js';
 
 interface Context {
   readonly securityMode: SecurityMode;

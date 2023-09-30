@@ -1,14 +1,14 @@
-import { z } from 'zod';
+import { type Static, Type } from '@sinclair/typebox';
 
-export const loginUserBodySchema = z.object({
-  email: z.string(),
-  password: z.string(),
+export const loginUserBodySchema = Type.Object({
+  email: Type.String(),
+  password: Type.String(),
 });
 
-export type LoginUserBody = z.infer<typeof loginUserBodySchema>;
+export type LoginUserBody = Static<typeof loginUserBodySchema>;
 
-export const loginUserResponseOkBodySchema = z.object({
-  token: z.string(),
+export const loginUserResponseOkBodySchema = Type.Object({
+  token: Type.String(),
 });
 
-export type LoginUserResponseOkBody = z.infer<typeof loginUserResponseOkBodySchema>;
+export type LoginUserResponseOkBody = Static<typeof loginUserResponseOkBodySchema>;

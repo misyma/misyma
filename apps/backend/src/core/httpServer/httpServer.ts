@@ -9,9 +9,9 @@ import { fastify, type FastifyInstance } from 'fastify';
 import { type FastifySchemaValidationError } from 'fastify/types/schema.js';
 import { type Server } from 'http';
 
+import { InputNotValidError } from '../../common/errors/common/inputNotValidError.js';
 import { type HttpController } from '../../common/types/http/httpController.js';
 import { HttpStatusCode } from '../../common/types/http/httpStatusCode.js';
-import { InputNotValidError } from '../../common/validation/errors/common/inputNotValidError.js';
 import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
 import { type UserHttpController } from '../../modules/userModule/api/httpControllers/userHttpController/userHttpController.js';

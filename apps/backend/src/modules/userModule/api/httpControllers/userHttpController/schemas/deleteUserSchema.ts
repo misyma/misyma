@@ -1,11 +1,11 @@
-import { z } from 'zod';
+import { Type, type Static } from '@sinclair/typebox';
 
-export const deleteUserPathParametersSchema = z.object({
-  id: z.string(),
+export const deleteUserPathParametersSchema = Type.Object({
+  id: Type.String(),
 });
 
-export type DeleteUserPathParameters = z.infer<typeof deleteUserPathParametersSchema>;
+export type DeleteUserPathParameters = Static<typeof deleteUserPathParametersSchema>;
 
-export const deleteUserResponseNoContentBodySchema = z.null();
+export const deleteUserResponseNoContentBodySchema = Type.Null();
 
-export type DeleteUserResponseNoContentBody = z.infer<typeof deleteUserResponseNoContentBodySchema>;
+export type DeleteUserResponseNoContentBody = Static<typeof deleteUserResponseNoContentBodySchema>;

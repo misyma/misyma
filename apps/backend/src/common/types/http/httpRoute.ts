@@ -1,4 +1,4 @@
-import { type Schema } from 'zod';
+import { type TSchema } from '@sinclair/typebox';
 
 import { type HttpMethodName } from './httpMethodName.js';
 import { type HttpRouteHandler } from './httpRouteHandler.js';
@@ -6,11 +6,11 @@ import { type SecurityMode } from './securityMode.js';
 
 export interface HttpRouteSchema {
   readonly request: {
-    body?: Schema;
-    queryParams?: Schema;
-    pathParams?: Schema;
+    body?: TSchema;
+    queryParams?: TSchema;
+    pathParams?: TSchema;
   };
-  readonly response: Record<number, { schema: Schema | null; description: string }>;
+  readonly response: Record<number, { schema: TSchema | null; description: string }>;
 }
 
 export interface HttpRouteDraft {

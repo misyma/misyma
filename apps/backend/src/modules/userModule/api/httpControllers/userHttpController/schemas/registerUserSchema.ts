@@ -1,16 +1,16 @@
-import { z } from 'zod';
+import { type Static, Type } from '@sinclair/typebox';
 
 import { userSchema } from './userSchema.js';
 
-export const registerUserBodySchema = z.object({
-  email: z.string(),
-  password: z.string(),
+export const registerUserBodySchema = Type.Object({
+  email: Type.String(),
+  password: Type.String(),
 });
 
-export type RegisterUserBody = z.infer<typeof registerUserBodySchema>;
+export type RegisterUserBody = Static<typeof registerUserBodySchema>;
 
-export const registerUserResponseCreatedBodySchema = z.object({
+export const registerUserResponseCreatedBodySchema = Type.Object({
   user: userSchema,
 });
 
-export type RegisterUserResponseCreatedBody = z.infer<typeof registerUserResponseCreatedBodySchema>;
+export type RegisterUserResponseCreatedBody = Static<typeof registerUserResponseCreatedBodySchema>;

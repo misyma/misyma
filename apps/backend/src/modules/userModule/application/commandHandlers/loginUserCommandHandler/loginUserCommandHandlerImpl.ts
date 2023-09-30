@@ -3,7 +3,7 @@ import {
   type LoginUserCommandHandlerPayload,
   type LoginUserCommandHandlerResult,
 } from './loginUserCommandHandler.js';
-import { ResourceNotFoundError } from '../../../../../common/validation/errors/common/resourceNotFoundError.js';
+import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { type UserRepository } from '../../repositories/userRepository/userRepository.js';

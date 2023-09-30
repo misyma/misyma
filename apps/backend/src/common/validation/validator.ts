@@ -1,25 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import validator from 'validator';
-import { type Schema } from 'zod';
-
-import { ValidationError } from './errors/common/validationError.js';
 
 export class Validator {
-  public static validate<T>(schema: Schema<T>, payload: T): T {
-    const result = schema.safeParse(payload);
-
-    if (!result.success) {
-      throw new ValidationError({
-        message: result.error.message,
-        issues: result.error.issues,
-        target: payload,
-      });
-    }
-
-    return result.data;
-  }
-
   public static isInteger(value: unknown): value is number {
     if (!Validator.isNumber(value)) {
       return false;

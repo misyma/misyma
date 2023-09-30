@@ -1,7 +1,7 @@
 import { beforeEach, afterEach, expect, it, describe } from 'vitest';
 
 import { type RegisterUserCommandHandler } from './registerUserCommandHandler.js';
-import { ResourceAlreadyExistsError } from '../../../../../common/validation/errors/common/resourceAlreadyExistsError.js';
+import { ResourceAlreadyExistsError } from '../../../../../common/errors/common/resourceAlreadyExistsError.js';
 import { Application } from '../../../../../core/application.js';
 import { type PostgresDatabaseClient } from '../../../../../core/database/postgresDatabaseClient/postgresDatabaseClient.js';
 import { coreSymbols } from '../../../../../core/symbols.js';

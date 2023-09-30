@@ -15,6 +15,7 @@
     "lint:fix": "npm run lint -- --fix"
   },
   "dependencies": {
+    "@sinclair/typebox": "^0.31.17",
     "bcrypt": "^5.1.1",
     "bunyan": "^1.8.15",
     "dotenv": "^16.3.1",
@@ -26,8 +27,7 @@
     "node-fetch": "3.3.2",
     "pg": "^8.11.3",
     "uuid": "^9.0.1",
-    "validator": "^13.11.0",
-    "zod": "^3.22.2"
+    "validator": "^13.11.0"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.1.0",

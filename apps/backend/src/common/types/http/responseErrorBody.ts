@@ -1,11 +1,11 @@
-import { z } from 'zod';
+import { Type, type Static } from '@sinclair/typebox';
 
-export const responseErrorBodySchema = z.object({
-  error: z.object({
-    name: z.string(),
-    message: z.string(),
-    context: z.record(z.string(), z.any()).optional(),
+export const responseErrorBodySchema = Type.Object({
+  error: Type.Object({
+    name: Type.String(),
+    message: Type.String(),
+    context: Type.Optional(Type.Record(Type.String(), Type.Any())),
   }),
 });
 
-export type ResponseErrorBody = z.infer<typeof responseErrorBodySchema>;
+export type ResponseErrorBody = Static<typeof responseErrorBodySchema>;

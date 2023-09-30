@@ -1,15 +1,15 @@
-import { z } from 'zod';
+import { type Static, Type } from '@sinclair/typebox';
 
 import { userSchema } from './userSchema.js';
 
-export const findUserPathParametersSchema = z.object({
-  id: z.string(),
+export const findUserPathParametersSchema = Type.Object({
+  id: Type.String(),
 });
 
-export type FindUserPathParameters = z.infer<typeof findUserPathParametersSchema>;
+export type FindUserPathParameters = Static<typeof findUserPathParametersSchema>;
 
-export const findUserResponseOkBodySchema = z.object({
+export const findUserResponseOkBodySchema = Type.Object({
   user: userSchema,
 });
 
-export type FindUserResponseOkBody = z.infer<typeof findUserResponseOkBodySchema>;
+export type FindUserResponseOkBody = Static<typeof findUserResponseOkBodySchema>;
