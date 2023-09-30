@@ -12,7 +12,7 @@ import {
 } from '../../../application/repositories/userRepository/userRepository.js';
 import { type User } from '../../../domain/entities/user/user.js';
 import { type UserRawEntity } from '../../databases/userDatabase/tables/userTable/userRawEntity.js';
-import { UserTable } from '../../databases/userDatabase/tables/userTable.js';
+import { UserTable } from '../../databases/userDatabase/tables/userTable/userTable.js';
 
 export class UserRepositoryImpl implements UserRepository {
   private readonly databaseTable = new UserTable();

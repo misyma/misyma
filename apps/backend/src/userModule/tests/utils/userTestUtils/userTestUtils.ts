@@ -1,7 +1,7 @@
 import { type PostgresDatabaseClient } from '../../../../core/database/postgresDatabaseClient/postgresDatabaseClient.js';
 import { type QueryBuilder } from '../../../../libs/database/types/queryBuilder.js';
 import { type UserRawEntity } from '../../../infrastructure/databases/userDatabase/tables/userTable/userRawEntity.js';
-import { UserTable } from '../../../infrastructure/databases/userDatabase/tables/userTable.js';
+import { UserTable } from '../../../infrastructure/databases/userDatabase/tables/userTable/userTable.js';
 
 interface PersistPayload {
   user: UserRawEntity;

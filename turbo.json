@@ -17,19 +17,11 @@
       "dependsOn": [],
       "cache": false
     },
-    "test:unit:run": {
+    "test:unit": {
       "dependsOn": [],
       "cache": false
     },
     "test:integration": {
-      "dependsOn": [],
-      "cache": false
-    },
-    "test:migrations:run": {
-      "dependsOn": [],
-      "cache": false
-    },
-    "test:migrations:rollback": {
       "dependsOn": [],
       "cache": false
     }
