@@ -1,14 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import { TypeClone } from '@sinclair/typebox';
 import { type FastifyInstance, type FastifyReply, type FastifyRequest, type FastifySchema } from 'fastify';
 
+import { ApplicationError } from '../../common/errors/base/applicationError.js';
+import { BaseError } from '../../common/errors/base/baseError.js';
+import { DomainError } from '../../common/errors/base/domainError.js';
 import { type HttpController } from '../../common/types/http/httpController.js';
 import { HttpHeader } from '../../common/types/http/httpHeader.js';
 import { type HttpRouteSchema, type HttpRoute } from '../../common/types/http/httpRoute.js';
 import { HttpStatusCode } from '../../common/types/http/httpStatusCode.js';
-import { ApplicationError } from '../../common/errors/base/applicationError.js';
-import { BaseError } from '../../common/errors/base/baseError.js';
-import { DomainError } from '../../common/errors/base/domainError.js';
 import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
 import { coreSymbols } from '../symbols.js';
@@ -222,9 +223,11 @@ export class HttpRouter {
     }
 
     fastifySchema.response = Object.entries(routeSchema.response).reduce((agg, [statusCode, statusCodeSchema]) => {
+      const { schema, description } = statusCodeSchema;
+
       return {
         ...agg,
-        [statusCode]: statusCodeSchema,
+        [statusCode]: TypeClone.Type(schema, { description }),
       };
     }, {});
 

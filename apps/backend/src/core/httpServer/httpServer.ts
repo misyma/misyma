@@ -163,7 +163,10 @@ export class HttpServer {
 
     this.loggerService.info({
       message: 'OpenAPI documentation initialized',
-      context: { source: HttpServer.name },
+      context: {
+        source: HttpServer.name,
+        path: '/api/docs',
+      },
     });
   }
 }
