@@ -11,7 +11,7 @@ import {
   type DeleteUserPayload,
 } from '../../../application/repositories/userRepository/userRepository.js';
 import { type User } from '../../../domain/entities/user/user.js';
-import { type UserRawEntity } from '../../databases/userDatabase/tables/userRawEntity.js';
+import { type UserRawEntity } from '../../databases/userDatabase/tables/userTable/userRawEntity.js';
 import { UserTable } from '../../databases/userDatabase/tables/userTable.js';
 
 export class UserRepositoryImpl implements UserRepository {

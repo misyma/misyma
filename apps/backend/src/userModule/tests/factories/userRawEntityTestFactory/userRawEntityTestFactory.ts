@@ -1,5 +1,5 @@
 import { Generator } from '../../../../common/tests/generator.js';
-import { type UserRawEntity } from '../../../infrastructure/databases/userDatabase/tables/userRawEntity.js';
+import { type UserRawEntity } from '../../../infrastructure/databases/userDatabase/tables/userTable/userRawEntity.js';
 
 export class UserRawEntityTestFactory {
   public create(input: Partial<UserRawEntity> = {}): UserRawEntity {
