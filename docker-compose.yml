@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   database:
-    container_name: bookshelf_postgres
+    container_name: bookshelf-postgres
     image: postgres:15
     environment:
       POSTGRES_PASSWORD: local

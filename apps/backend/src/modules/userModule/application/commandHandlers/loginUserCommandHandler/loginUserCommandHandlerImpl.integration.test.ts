@@ -8,7 +8,7 @@ import { coreSymbols } from '../../../../../core/symbols.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { authSymbols } from '../../../../authModule/symbols.js';
 import { symbols } from '../../../symbols.js';
-import { UserRawEntityTestFactory } from '../../../tests/factories/userRawEntityTestFactory/userRawEntityTestFactory.js';
+import { UserTestFactory } from '../../../tests/factories/userTestFactory/userTestFactory.js';
 import { UserTestUtils } from '../../../tests/utils/userTestUtils/userTestUtils.js';
 import { type HashService } from '../../services/hashService/hashService.js';
 
@@ -23,7 +23,7 @@ describe('LoginUserCommandHandler', () => {
 
   let hashService: HashService;
 
-  const userEntityTestFactory = new UserRawEntityTestFactory();
+  const userTestFactory = new UserTestFactory();
 
   beforeEach(async () => {
     const container = Application.createContainer();
@@ -48,7 +48,7 @@ describe('LoginUserCommandHandler', () => {
   });
 
   it('returns access token', async () => {
-    const { id, email, password } = userEntityTestFactory.create();
+    const { id, email, password } = userTestFactory.create();
 
     const hashedPassword = await hashService.hash(password);
 
@@ -71,7 +71,7 @@ describe('LoginUserCommandHandler', () => {
   });
 
   it('throws an error if user with given email does not exist', async () => {
-    const { email, password } = userEntityTestFactory.create();
+    const { email, password } = userTestFactory.create();
 
     try {
       await loginUserCommandHandler.execute({
@@ -88,15 +88,7 @@ describe('LoginUserCommandHandler', () => {
   });
 
   it('throws an error if user password does not match stored password', async () => {
-    const { id, email, password } = userEntityTestFactory.create();
-
-    await userTestUtils.persist({
-      user: {
-        id,
-        email,
-        password,
-      },
-    });
+    const { email, password } = await userTestUtils.createAndPersist();
 
     try {
       await loginUserCommandHandler.execute({

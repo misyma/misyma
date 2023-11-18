@@ -6,7 +6,7 @@ import { Application } from '../../../../../core/application.js';
 import { type PostgresDatabaseClient } from '../../../../../core/database/postgresDatabaseClient/postgresDatabaseClient.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { symbols } from '../../../symbols.js';
-import { UserRawEntityTestFactory } from '../../../tests/factories/userRawEntityTestFactory/userRawEntityTestFactory.js';
+import { UserTestFactory } from '../../../tests/factories/userTestFactory/userTestFactory.js';
 import { UserTestUtils } from '../../../tests/utils/userTestUtils/userTestUtils.js';
 
 describe('FindUserQueryHandler', () => {
@@ -16,7 +16,7 @@ describe('FindUserQueryHandler', () => {
 
   let userTestUtils: UserTestUtils;
 
-  const userEntityTestFactory = new UserRawEntityTestFactory();
+  const userTestFactory = new UserTestFactory();
 
   beforeEach(async () => {
     const container = Application.createContainer();
@@ -37,9 +37,7 @@ describe('FindUserQueryHandler', () => {
   });
 
   it('finds user by id', async () => {
-    const user = userEntityTestFactory.create();
-
-    await userTestUtils.persist({ user });
+    const user = await userTestUtils.createAndPersist();
 
     const { user: foundUser } = await findUserQueryHandler.execute({ userId: user.id });
 
@@ -47,7 +45,7 @@ describe('FindUserQueryHandler', () => {
   });
 
   it('throws an error if user with given id does not exist', async () => {
-    const { id } = userEntityTestFactory.create();
+    const { id } = userTestFactory.create();
 
     try {
       await findUserQueryHandler.execute({ userId: id });

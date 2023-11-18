@@ -6,7 +6,7 @@ import { Application } from '../../../../../core/application.js';
 import { type PostgresDatabaseClient } from '../../../../../core/database/postgresDatabaseClient/postgresDatabaseClient.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { symbols } from '../../../symbols.js';
-import { UserRawEntityTestFactory } from '../../../tests/factories/userRawEntityTestFactory/userRawEntityTestFactory.js';
+import { UserTestFactory } from '../../../tests/factories/userTestFactory/userTestFactory.js';
 import { UserTestUtils } from '../../../tests/utils/userTestUtils/userTestUtils.js';
 
 describe('RegisterUserCommandHandler', () => {
@@ -16,7 +16,7 @@ describe('RegisterUserCommandHandler', () => {
 
   let userTestUtils: UserTestUtils;
 
-  const userEntityTestFactory = new UserRawEntityTestFactory();
+  const userTestFactory = new UserTestFactory();
 
   beforeEach(async () => {
     const container = Application.createContainer();
@@ -37,10 +37,10 @@ describe('RegisterUserCommandHandler', () => {
   });
 
   it('creates a user', async () => {
-    const { email, password } = userEntityTestFactory.create();
+    const { email, password } = userTestFactory.create();
 
     const { user } = await registerUserCommandHandler.execute({
-      email: email as string,
+      email,
       password,
     });
 
@@ -52,9 +52,7 @@ describe('RegisterUserCommandHandler', () => {
   });
 
   it('throws an error when user with the same email already exists', async () => {
-    const existingUser = userEntityTestFactory.create();
-
-    await userTestUtils.persist({ user: existingUser });
+    const existingUser = await userTestUtils.createAndPersist();
 
     try {
       await registerUserCommandHandler.execute({
