@@ -7,9 +7,9 @@ import { type RegisterUserCommandHandler } from './application/commandHandlers/r
 import { RegisterUserCommandHandlerImpl } from './application/commandHandlers/registerUserCommandHandler/registerUserCommandHandlerImpl.js';
 import { type FindUserQueryHandler } from './application/queryHandlers/findUserQueryHandler/findUserQueryHandler.js';
 import { FindUserQueryHandlerImpl } from './application/queryHandlers/findUserQueryHandler/findUserQueryHandlerImpl.js';
-import { type UserRepository } from './application/repositories/userRepository/userRepository.js';
 import { type HashService } from './application/services/hashService/hashService.js';
 import { HashServiceImpl } from './application/services/hashService/hashServiceImpl.js';
+import { type UserRepository } from './domain/repositories/userRepository/userRepository.js';
 import { type UserMapper } from './infrastructure/repositories/userRepository/userMapper/userMapper.js';
 import { UserMapperImpl } from './infrastructure/repositories/userRepository/userMapper/userMapperImpl.js';
 import { UserRepositoryImpl } from './infrastructure/repositories/userRepository/userRepositoryImpl.js';
@@ -39,6 +39,7 @@ export class UserModule implements DependencyInjectionModule {
         new UserRepositoryImpl(
           container.get<PostgresDatabaseClient>(coreSymbols.postgresDatabaseClient),
           container.get<UserMapper>(symbols.userMapper),
+          container.get<UuidService>(coreSymbols.uuidService),
         ),
     );
 
@@ -53,7 +54,6 @@ export class UserModule implements DependencyInjectionModule {
         new RegisterUserCommandHandlerImpl(
           container.get<UserRepository>(symbols.userRepository),
           container.get<HashService>(symbols.hashService),
-          container.get<UuidService>(coreSymbols.uuidService),
           container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );

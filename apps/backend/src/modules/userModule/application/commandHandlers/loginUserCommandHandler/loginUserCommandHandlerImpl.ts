@@ -6,7 +6,7 @@ import {
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
-import { type UserRepository } from '../../repositories/userRepository/userRepository.js';
+import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
 import { type HashService } from '../../services/hashService/hashService.js';
 
 export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {

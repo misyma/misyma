@@ -1,6 +1,6 @@
 import { type DeleteUserCommandHandler, type DeleteUserCommandHandlerPayload } from './deleteUserCommandHandler.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
-import { type UserRepository } from '../../repositories/userRepository/userRepository.js';
+import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
 
 export class DeleteUserCommandHandlerImpl implements DeleteUserCommandHandler {
   public constructor(

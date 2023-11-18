@@ -4,7 +4,7 @@ import {
   type FindUserQueryHandlerResult,
 } from './findUserQueryHandler.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
-import { type UserRepository } from '../../repositories/userRepository/userRepository.js';
+import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
 
 export class FindUserQueryHandlerImpl implements FindUserQueryHandler {
   public constructor(private readonly userRepository: UserRepository) {}

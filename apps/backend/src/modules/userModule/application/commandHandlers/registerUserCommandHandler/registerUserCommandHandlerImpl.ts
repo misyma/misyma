@@ -5,15 +5,13 @@ import {
 } from './registerUserCommandHandler.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/common/resourceAlreadyExistsError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
-import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
-import { type UserRepository } from '../../repositories/userRepository/userRepository.js';
+import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
 import { type HashService } from '../../services/hashService/hashService.js';
 
 export class RegisterUserCommandHandlerImpl implements RegisterUserCommandHandler {
   public constructor(
     private readonly userRepository: UserRepository,
     private readonly hashService: HashService,
-    private readonly uuidService: UuidService,
     private readonly loggerService: LoggerService,
   ) {}
 
@@ -37,7 +35,6 @@ export class RegisterUserCommandHandlerImpl implements RegisterUserCommandHandle
     const hashedPassword = await this.hashService.hash(password);
 
     const user = await this.userRepository.createUser({
-      id: this.uuidService.generateUuid(),
       email,
       password: hashedPassword,
     });

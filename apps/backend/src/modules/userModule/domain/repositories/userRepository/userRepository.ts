@@ -1,7 +1,6 @@
 import { type User } from '../../../domain/entities/user/user.js';
 
 export interface CreateUserPayload {
-  readonly id: string;
   readonly email: string;
   readonly password: string;
 }

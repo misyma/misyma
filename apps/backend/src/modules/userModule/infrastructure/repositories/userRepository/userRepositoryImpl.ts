@@ -3,14 +3,15 @@ import { RepositoryError } from '../../../../../common/errors/common/repositoryE
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
 import { type PostgresDatabaseClient } from '../../../../../core/database/postgresDatabaseClient/postgresDatabaseClient.js';
 import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';
+import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
+import { type User } from '../../../domain/entities/user/user.js';
 import {
   type UserRepository,
   type CreateUserPayload,
   type FindUserPayload,
   type UpdateUserPayload,
   type DeleteUserPayload,
-} from '../../../application/repositories/userRepository/userRepository.js';
-import { type User } from '../../../domain/entities/user/user.js';
+} from '../../../domain/repositories/userRepository/userRepository.js';
 import { type UserRawEntity } from '../../databases/userDatabase/tables/userTable/userRawEntity.js';
 import { UserTable } from '../../databases/userDatabase/tables/userTable/userTable.js';
 
@@ -20,6 +21,7 @@ export class UserRepositoryImpl implements UserRepository {
   public constructor(
     private readonly postgresDatabaseClient: PostgresDatabaseClient,
     private readonly userMapper: UserMapper,
+    private readonly uuidService: UuidService,
   ) {}
 
   private createQueryBuilder(): QueryBuilder<UserRawEntity> {
@@ -27,11 +29,13 @@ export class UserRepositoryImpl implements UserRepository {
   }
 
   public async createUser(payload: CreateUserPayload): Promise<User> {
-    const { id, email, password } = payload;
+    const { email, password } = payload;
 
     const queryBuilder = this.createQueryBuilder();
 
     let rawEntities: UserRawEntity[];
+
+    const id = this.uuidService.generateUuid();
 
     try {
       rawEntities = await queryBuilder.insert(
