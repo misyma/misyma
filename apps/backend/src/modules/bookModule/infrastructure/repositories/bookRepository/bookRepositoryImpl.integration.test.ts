@@ -56,9 +56,9 @@ describe('BookRepositoryImpl', () => {
 
       expect(book.authorId).toEqual(authorId);
 
-      expect(foundBook?.title).toEqual(title);
+      expect(foundBook.title).toEqual(title);
 
-      expect(foundBook?.authorId).toEqual(authorId);
+      expect(foundBook.authorId).toEqual(authorId);
     });
 
     it('throws an error when book with the same title and author already exists', async () => {

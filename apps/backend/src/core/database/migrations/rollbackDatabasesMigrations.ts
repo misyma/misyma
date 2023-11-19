@@ -1,8 +1,9 @@
+import { AuthorDatabaseManager } from '../../../modules/authorModule/infrastructure/databases/authorDatabase/authorDatabaseManager.js';
 import { BookDatabaseManager } from '../../../modules/bookModule/infrastructure/databases/bookDatabase/bookDatabaseManager.js';
 import { UserDatabaseManager } from '../../../modules/userModule/infrastructure/databases/userDatabase/userDatabaseManager.js';
 
 try {
-  const databaseManagers = [UserDatabaseManager, BookDatabaseManager];
+  const databaseManagers = [UserDatabaseManager, BookDatabaseManager, AuthorDatabaseManager];
 
   for (const databaseManager of databaseManagers) {
     await databaseManager.teardownDatabase();
