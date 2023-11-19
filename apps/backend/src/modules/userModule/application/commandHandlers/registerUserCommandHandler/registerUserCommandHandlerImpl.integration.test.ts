@@ -48,7 +48,7 @@ describe('RegisterUserCommandHandler', () => {
 
     expect(user.email).toEqual(email);
 
-    expect(foundUser).toBeDefined();
+    expect(foundUser.email).toEqual(email);
   });
 
   it('throws an error when user with the same email already exists', async () => {

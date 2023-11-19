@@ -27,7 +27,7 @@ export class RegisterUserCommandHandlerImpl implements RegisterUserCommandHandle
 
     if (existingUser) {
       throw new ResourceAlreadyExistsError({
-        name: 'user',
+        name: 'User',
         email,
       });
     }

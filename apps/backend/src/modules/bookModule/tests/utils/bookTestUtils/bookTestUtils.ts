@@ -1,0 +1,85 @@
+import { type PostgresDatabaseClient } from '../../../../../core/database/postgresDatabaseClient/postgresDatabaseClient.js';
+import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';
+import { type BookRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/bookTable/bookRawEntity.js';
+import { BookTable } from '../../../infrastructure/databases/bookDatabase/tables/bookTable/bookTable.js';
+import { BookTestFactory } from '../../factories/bookTestFactory/bookTestFactory.js';
+
+interface CreateAndPersistPayload {
+  input?: Partial<BookRawEntity>;
+}
+
+interface PersistPayload {
+  book: BookRawEntity;
+}
+
+interface FindByIdPayload {
+  id: string;
+}
+
+interface FindByTitleAndAuthorPayload {
+  title: string;
+  authorId: string;
+}
+
+export class BookTestUtils {
+  private readonly databaseTable = new BookTable();
+  private readonly bookTestFactory = new BookTestFactory();
+
+  public constructor(private readonly postgresDatabaseClient: PostgresDatabaseClient) {}
+
+  private createQueryBuilder(): QueryBuilder<BookRawEntity> {
+    return this.postgresDatabaseClient<BookRawEntity>(this.databaseTable.name);
+  }
+
+  public async createAndPersist(payload: CreateAndPersistPayload = {}): Promise<BookRawEntity> {
+    const { input } = payload;
+
+    const book = this.bookTestFactory.create(input);
+
+    const queryBuilder = this.createQueryBuilder();
+
+    const rawEntities = await queryBuilder.insert(book, '*');
+
+    return rawEntities[0] as BookRawEntity;
+  }
+
+  public async persist(payload: PersistPayload): Promise<void> {
+    const { book } = payload;
+
+    const queryBuilder = this.createQueryBuilder();
+
+    await queryBuilder.insert(book);
+  }
+
+  public async findById(payload: FindByIdPayload): Promise<BookRawEntity> {
+    const { id } = payload;
+
+    const queryBuilder = this.createQueryBuilder();
+
+    const bookRawEntity = await queryBuilder.select('*').where({ id }).first();
+
+    return bookRawEntity as BookRawEntity;
+  }
+
+  public async findByTitleAndAuthor(payload: FindByTitleAndAuthorPayload): Promise<BookRawEntity> {
+    const { title, authorId } = payload;
+
+    const queryBuilder = this.createQueryBuilder();
+
+    const bookRawEntity = await queryBuilder
+      .select('*')
+      .where({
+        title,
+        authorId,
+      })
+      .first();
+
+    return bookRawEntity as BookRawEntity;
+  }
+
+  public async truncate(): Promise<void> {
+    const queryBuilder = this.createQueryBuilder();
+
+    await queryBuilder.truncate();
+  }
+}

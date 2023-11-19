@@ -13,6 +13,7 @@ import { type LoggerService } from '../libs/logger/services/loggerService/logger
 import { type UuidService } from '../libs/uuid/services/uuidService/uuidService.js';
 import { UuidServiceImpl } from '../libs/uuid/services/uuidService/uuidServiceImpl.js';
 import { AuthModule } from '../modules/authModule/authModule.js';
+import { BookModule } from '../modules/bookModule/bookModule.js';
 import { UserModule } from '../modules/userModule/userModule.js';
 
 export class Application {
@@ -29,7 +30,7 @@ export class Application {
 
     const loggerLevel = configProvider.getLoggerLevel();
 
-    const modules: DependencyInjectionModule[] = [new UserModule(), new AuthModule()];
+    const modules: DependencyInjectionModule[] = [new UserModule(), new AuthModule(), new BookModule()];
 
     const container = DependencyInjectionContainerFactory.create({ modules });
 

@@ -50,24 +50,24 @@ export class UserTestUtils {
     await queryBuilder.insert(user);
   }
 
-  public async findByEmail(payload: FindByEmailPayload): Promise<UserRawEntity | undefined> {
+  public async findByEmail(payload: FindByEmailPayload): Promise<UserRawEntity> {
     const { email } = payload;
 
     const queryBuilder = this.createQueryBuilder();
 
     const userRawEntity = await queryBuilder.select('*').where({ email }).first();
 
-    return userRawEntity;
+    return userRawEntity as UserRawEntity;
   }
 
-  public async findById(payload: FindByIdPayload): Promise<UserRawEntity | undefined> {
+  public async findById(payload: FindByIdPayload): Promise<UserRawEntity> {
     const { id } = payload;
 
     const queryBuilder = this.createQueryBuilder();
 
     const userRawEntity = await queryBuilder.select('*').where({ id }).first();
 
-    return userRawEntity;
+    return userRawEntity as UserRawEntity;
   }
 
   public async truncate(): Promise<void> {

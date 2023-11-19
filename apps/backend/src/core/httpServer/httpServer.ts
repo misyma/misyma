@@ -15,6 +15,8 @@ import { type HttpController } from '../../common/types/http/httpController.js';
 import { HttpStatusCode } from '../../common/types/http/httpStatusCode.js';
 import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
+import { type BookHttpController } from '../../modules/bookModule/api/httpControllers/bookHttpController/bookHttpController.js';
+import { bookSymbols } from '../../modules/bookModule/symbols.js';
 import { type UserHttpController } from '../../modules/userModule/api/httpControllers/userHttpController/userHttpController.js';
 import { userSymbols } from '../../modules/userModule/symbols.js';
 import { HttpRouter } from '../httpRouter/httpRouter.js';
@@ -42,7 +44,10 @@ export class HttpServer {
   }
 
   private getControllers(): HttpController[] {
-    return [this.container.get<UserHttpController>(userSymbols.userHttpController)];
+    return [
+      this.container.get<UserHttpController>(userSymbols.userHttpController),
+      this.container.get<BookHttpController>(bookSymbols.bookHttpController),
+    ];
   }
 
   public async start(payload: StartPayload): Promise<void> {

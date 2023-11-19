@@ -48,7 +48,7 @@ export class UserRepositoryImpl implements UserRepository {
       );
     } catch (error) {
       throw new RepositoryError({
-        entity: 'user',
+        entity: 'User',
         operation: 'create',
       });
     }
@@ -85,7 +85,7 @@ export class UserRepositoryImpl implements UserRepository {
       rawEntity = await queryBuilder.select('*').where(whereCondition).first();
     } catch (error) {
       throw new RepositoryError({
-        entity: 'user',
+        entity: 'User',
         operation: 'find',
       });
     }
@@ -104,7 +104,7 @@ export class UserRepositoryImpl implements UserRepository {
 
     if (!existingUser) {
       throw new ResourceNotFoundError({
-        name: 'user',
+        name: 'User',
         id,
       });
     }
@@ -117,7 +117,7 @@ export class UserRepositoryImpl implements UserRepository {
       rawEntities = await queryBuilder.update({ password }, '*').where({ id });
     } catch (error) {
       throw new RepositoryError({
-        entity: 'user',
+        entity: 'User',
         operation: 'update',
       });
     }
@@ -134,7 +134,7 @@ export class UserRepositoryImpl implements UserRepository {
 
     if (!existingUser) {
       throw new ResourceNotFoundError({
-        name: 'user',
+        name: 'User',
         id,
       });
     }
@@ -145,7 +145,7 @@ export class UserRepositoryImpl implements UserRepository {
       await queryBuilder.delete().where({ id });
     } catch (error) {
       throw new RepositoryError({
-        entity: 'user',
+        entity: 'User',
         operation: 'delete',
       });
     }

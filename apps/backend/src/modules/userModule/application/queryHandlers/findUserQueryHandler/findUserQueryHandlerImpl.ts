@@ -16,7 +16,7 @@ export class FindUserQueryHandlerImpl implements FindUserQueryHandler {
 
     if (!user) {
       throw new ResourceNotFoundError({
-        name: 'user',
+        name: 'User',
         id: userId,
       });
     }

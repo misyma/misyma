@@ -29,7 +29,7 @@ export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
 
     if (!user) {
       throw new ResourceNotFoundError({
-        name: 'user',
+        name: 'User',
         email,
       });
     }
@@ -38,7 +38,7 @@ export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
 
     if (!passwordIsValid) {
       throw new ResourceNotFoundError({
-        name: 'user',
+        name: 'User',
         email,
       });
     }

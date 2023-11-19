@@ -42,7 +42,7 @@ describe('UserRepositoryImpl', () => {
       const { email, password } = userTestFactory.create();
 
       const user = await userRepository.createUser({
-        email: email as string,
+        email,
         password,
       });
 
@@ -50,7 +50,7 @@ describe('UserRepositoryImpl', () => {
 
       expect(user.email).toEqual(email);
 
-      expect(foundUser?.email).toEqual(email);
+      expect(foundUser.email).toEqual(email);
     });
 
     it('throws an error when user with the same email already exists', async () => {
@@ -99,18 +99,16 @@ describe('UserRepositoryImpl', () => {
 
   describe('Update', () => {
     it('updates user password', async () => {
-      const user = userTestFactory.create();
+      const user = await userTestUtils.createAndPersist();
 
       const { password } = userTestFactory.create();
-
-      await userTestUtils.persist({ user });
 
       const foundUser = await userRepository.updateUser({
         id: user.id,
         password,
       });
 
-      expect(foundUser).not.toBeNull();
+      expect(foundUser.password).toEqual(password);
     });
 
     it('throws an error if user with given id does not exist', async () => {
@@ -133,9 +131,7 @@ describe('UserRepositoryImpl', () => {
 
   describe('Delete', () => {
     it('deletes user', async () => {
-      const user = userTestFactory.create();
-
-      await userTestUtils.persist({ user });
+      const user = await userTestUtils.createAndPersist();
 
       await userRepository.deleteUser({ id: user.id });
 
