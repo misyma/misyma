@@ -14,7 +14,8 @@ import { type UserMapper } from './infrastructure/repositories/userRepository/us
 import { UserMapperImpl } from './infrastructure/repositories/userRepository/userMapper/userMapperImpl.js';
 import { UserRepositoryImpl } from './infrastructure/repositories/userRepository/userRepositoryImpl.js';
 import { symbols } from './symbols.js';
-import { type UserModuleConfig } from './userModuleConfig.js';
+import { type UserModuleConfigProvider } from './userModuleConfigProvider.js';
+import { type ConfigProvider } from '../../core/configProvider.js';
 import { type PostgresDatabaseClient } from '../../core/database/postgresDatabaseClient/postgresDatabaseClient.js';
 import { coreSymbols } from '../../core/symbols.js';
 import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
@@ -26,10 +27,10 @@ import { type TokenService } from '../authModule/application/services/tokenServi
 import { authSymbols } from '../authModule/symbols.js';
 
 export class UserModule implements DependencyInjectionModule {
-  public constructor(private readonly config: UserModuleConfig) {}
-
   public declareBindings(container: DependencyInjectionContainer): void {
-    container.bindToValue<UserModuleConfig>(symbols.userModuleConfig, this.config);
+    container.bind<UserModuleConfigProvider>(symbols.userModuleConfigProvider, () =>
+      container.get<ConfigProvider>(coreSymbols.configProvider),
+    );
 
     container.bind<UserMapper>(symbols.userMapper, () => new UserMapperImpl());
 
@@ -45,7 +46,7 @@ export class UserModule implements DependencyInjectionModule {
 
     container.bind<HashService>(
       symbols.hashService,
-      () => new HashServiceImpl(container.get<UserModuleConfig>(symbols.userModuleConfig)),
+      () => new HashServiceImpl(container.get<UserModuleConfigProvider>(symbols.userModuleConfigProvider)),
     );
 
     container.bind<RegisterUserCommandHandler>(

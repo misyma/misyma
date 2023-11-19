@@ -17,31 +17,19 @@ import { UserModule } from '../modules/userModule/userModule.js';
 
 export class Application {
   public static createContainer(): DependencyInjectionContainer {
-    const databaseHost = ConfigProvider.getPostgresDatabaseHost();
+    const configProvider = new ConfigProvider();
 
-    const databaseName = ConfigProvider.getPostgresDatabaseName();
+    const databaseHost = configProvider.getPostgresDatabaseHost();
 
-    const databaseUser = ConfigProvider.getPostgresDatabaseUser();
+    const databaseName = configProvider.getPostgresDatabaseName();
 
-    const databasePassword = ConfigProvider.getPostgresDatabasePassword();
+    const databaseUser = configProvider.getPostgresDatabaseUser();
 
-    const jwtSecret = ConfigProvider.getJwtSecret();
+    const databasePassword = configProvider.getPostgresDatabasePassword();
 
-    const jwtExpiresIn = ConfigProvider.getJwtExpiresIn();
+    const loggerLevel = configProvider.getLoggerLevel();
 
-    const hashSaltRounds = ConfigProvider.getHashSaltRounds();
-
-    const loggerLevel = ConfigProvider.getLoggerLevel();
-
-    const modules: DependencyInjectionModule[] = [
-      new UserModule({
-        hashSaltRounds,
-      }),
-      new AuthModule({
-        jwtSecret,
-        jwtExpiresIn,
-      }),
-    ];
+    const modules: DependencyInjectionModule[] = [new UserModule(), new AuthModule()];
 
     const container = DependencyInjectionContainerFactory.create({ modules });
 
@@ -50,6 +38,8 @@ export class Application {
     container.bind<HttpService>(symbols.httpService, () => HttpServiceFactory.create());
 
     container.bind<UuidService>(symbols.uuidService, () => new UuidServiceImpl());
+
+    container.bind<ConfigProvider>(symbols.configProvider, () => configProvider);
 
     container.bind<PostgresDatabaseClient>(symbols.postgresDatabaseClient, () =>
       PostgresDatabaseClientFactory.create({
@@ -66,9 +56,11 @@ export class Application {
   public static async start(): Promise<void> {
     const container = Application.createContainer();
 
-    const serverHost = ConfigProvider.getServerHost();
+    const configProvider = container.get<ConfigProvider>(coreSymbols.configProvider);
 
-    const serverPort = ConfigProvider.getServerPort();
+    const serverHost = configProvider.getServerHost();
+
+    const serverPort = configProvider.getServerPort();
 
     const server = new HttpServer(container);
 

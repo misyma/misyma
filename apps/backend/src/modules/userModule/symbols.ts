@@ -1,5 +1,5 @@
 export const symbols = {
-  userModuleConfig: Symbol('userModuleConfig'),
+  userModuleConfigProvider: Symbol('userModuleConfigProvider'),
   userMapper: Symbol('userMapper'),
   userRepository: Symbol('userRepository'),
   hashService: Symbol('hashService'),

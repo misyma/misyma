@@ -4,7 +4,7 @@ import { EnvParser } from '../libs/envParser/envParser.js';
 import { LoggerLevel } from '../libs/logger/types/loggerLevel.js';
 
 export class ConfigProvider {
-  private static getStringEnvVariable(envVariableName: string): string {
+  private getStringEnvVariable(envVariableName: string): string {
     const value = EnvParser.parseString({ name: envVariableName });
 
     Assert.isNotEmptyString(value);
@@ -12,7 +12,7 @@ export class ConfigProvider {
     return value;
   }
 
-  private static getIntegerEnvVariable(envVariableName: string): number {
+  private getIntegerEnvVariable(envVariableName: string): number {
     const value = EnvParser.parseNumber({ name: envVariableName });
 
     Assert.isNumberInteger(value);
@@ -20,10 +20,7 @@ export class ConfigProvider {
     return value;
   }
 
-  private static getEnumEnvVariable<T extends Record<string, string>>(
-    enumType: T,
-    envVariableName: string,
-  ): T[keyof T] {
+  private getEnumEnvVariable<T extends Record<string, string>>(enumType: T, envVariableName: string): T[keyof T] {
     const value = EnvParser.parseString({ name: envVariableName });
 
     Assert.isEnum(enumType, value);
@@ -31,15 +28,15 @@ export class ConfigProvider {
     return value as T[keyof T];
   }
 
-  public static getLoggerLevel(): LoggerLevel {
+  public getLoggerLevel(): LoggerLevel {
     return this.getEnumEnvVariable(LoggerLevel, 'LOGGER_LEVEL');
   }
 
-  public static getServerHost(): string {
+  public getServerHost(): string {
     return EnvParser.parseString({ name: 'SERVER_HOST' }) || '0.0.0.0';
   }
 
-  public static getServerPort(): number {
+  public getServerPort(): number {
     const envVariable = 'SERVER_PORT';
 
     const serverPort = EnvParser.parseNumber({ name: envVariable });
@@ -51,31 +48,31 @@ export class ConfigProvider {
     return serverPort;
   }
 
-  public static getPostgresDatabaseHost(): string {
+  public getPostgresDatabaseHost(): string {
     return this.getStringEnvVariable('POSTGRES_DATABASE_HOST');
   }
 
-  public static getPostgresDatabaseName(): string {
+  public getPostgresDatabaseName(): string {
     return this.getStringEnvVariable('POSTGRES_DATABASE_NAME');
   }
 
-  public static getPostgresDatabaseUser(): string {
+  public getPostgresDatabaseUser(): string {
     return this.getStringEnvVariable('POSTGRES_DATABASE_USER');
   }
 
-  public static getPostgresDatabasePassword(): string {
+  public getPostgresDatabasePassword(): string {
     return this.getStringEnvVariable('POSTGRES_DATABASE_PASSWORD');
   }
 
-  public static getJwtSecret(): string {
+  public getJwtSecret(): string {
     return this.getStringEnvVariable('JWT_SECRET');
   }
 
-  public static getJwtExpiresIn(): string {
+  public getJwtExpiresIn(): string {
     return this.getStringEnvVariable('JWT_EXPIRES_IN');
   }
 
-  public static getHashSaltRounds(): number {
+  public getHashSaltRounds(): number {
     return this.getIntegerEnvVariable('HASH_SALT_ROUNDS');
   }
 }
