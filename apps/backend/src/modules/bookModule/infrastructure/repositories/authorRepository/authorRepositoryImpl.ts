@@ -4,15 +4,15 @@ import { ResourceNotFoundError } from '../../../../../common/errors/common/resou
 import { type PostgresDatabaseClient } from '../../../../../core/database/postgresDatabaseClient/postgresDatabaseClient.js';
 import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
-import { type Author } from '../../../domain/entities/author/author.js';
+import { type Author } from '../../../../bookModule/domain/entities/author/author.js';
+import { type AuthorRawEntity } from '../../../../bookModule/infrastructure/databases/bookDatabase/tables/authorTable/authorRawEntity.js';
+import { AuthorTable } from '../../../../bookModule/infrastructure/databases/bookDatabase/tables/authorTable/authorTable.js';
 import {
   type AuthorRepository,
   type CreateAuthorPayload,
   type FindAuthorPayload,
   type DeleteAuthorPayload,
 } from '../../../domain/repositories/authorRepository/authorRepository.js';
-import { type AuthorRawEntity } from '../../databases/authorDatabase/tables/authorTable/authorRawEntity.js';
-import { AuthorTable } from '../../databases/authorDatabase/tables/authorTable/authorTable.js';
 
 export class AuthorRepositoryImpl implements AuthorRepository {
   private readonly databaseTable = new AuthorTable();

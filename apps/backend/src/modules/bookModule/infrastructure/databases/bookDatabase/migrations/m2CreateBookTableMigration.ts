@@ -1,8 +1,8 @@
 import { type DatabaseClient } from '../../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type Migration } from '../../../../../../libs/database/types/migration.js';
 
-export class M1CreateBookTableMigration implements Migration {
-  public readonly name = 'M1CreateBookTableMigration';
+export class M2CreateBookTableMigration implements Migration {
+  public readonly name = 'M2CreateBookTableMigration';
 
   public async up(databaseClient: DatabaseClient): Promise<void> {
     await databaseClient.schema.createTable('books', (table) => {
@@ -15,6 +15,8 @@ export class M1CreateBookTableMigration implements Migration {
       table.text('authorId').notNullable();
 
       table.primary(['id']);
+
+      table.foreign('authorId').references('id').inTable('authors').onDelete('CASCADE');
 
       table.unique(['title', 'authorId']);
     });

@@ -1,7 +1,7 @@
 import { type PostgresDatabaseClient } from '../../../../../core/database/postgresDatabaseClient/postgresDatabaseClient.js';
 import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';
-import { type AuthorRawEntity } from '../../../infrastructure/databases/authorDatabase/tables/authorTable/authorRawEntity.js';
-import { AuthorTable } from '../../../infrastructure/databases/authorDatabase/tables/authorTable/authorTable.js';
+import { type AuthorRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/authorTable/authorRawEntity.js';
+import { AuthorTable } from '../../../infrastructure/databases/bookDatabase/tables/authorTable/authorTable.js';
 import { AuthorTestFactory } from '../../factories/authorTestFactory/authorTestFactory.js';
 
 interface CreateAndPersistPayload {

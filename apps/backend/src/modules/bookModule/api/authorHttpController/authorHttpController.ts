@@ -16,11 +16,11 @@ import {
   type FindAuthorPathParameters,
   type FindAuthorResponseOkBody,
 } from './schemas/findAuthorSchema.js';
-import { ResourceAlreadyExistsError } from '../../../../../common/errors/common/resourceAlreadyExistsError.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
-import { type HttpController } from '../../../../../common/types/http/httpController.js';
-import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
-import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
+import { ResourceAlreadyExistsError } from '../../../../common/errors/common/resourceAlreadyExistsError.js';
+import { ResourceNotFoundError } from '../../../../common/errors/common/resourceNotFoundError.js';
+import { type HttpController } from '../../../../common/types/http/httpController.js';
+import { HttpMethodName } from '../../../../common/types/http/httpMethodName.js';
+import { type HttpRequest } from '../../../../common/types/http/httpRequest.js';
 import {
   type HttpCreatedResponse,
   type HttpUnprocessableEntityResponse,
@@ -28,16 +28,16 @@ import {
   type HttpNotFoundResponse,
   type HttpForbiddenResponse,
   type HttpNoContentResponse,
-} from '../../../../../common/types/http/httpResponse.js';
-import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
-import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.js';
-import { responseErrorBodySchema, type ResponseErrorBody } from '../../../../../common/types/http/responseErrorBody.js';
-import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
-import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
-import { type CreateAuthorCommandHandler } from '../../../application/commandHandlers/createAuthorCommandHandler/createAuthorCommandHandler.js';
-import { type DeleteAuthorCommandHandler } from '../../../application/commandHandlers/deleteAuthorCommandHandler/deleteAuthorCommandHandler.js';
-import { type FindAuthorQueryHandler } from '../../../application/queryHandlers/findAuthorQueryHandler/findAuthorQueryHandler.js';
-import { type Author } from '../../../domain/entities/author/author.js';
+} from '../../../../common/types/http/httpResponse.js';
+import { HttpRoute } from '../../../../common/types/http/httpRoute.js';
+import { HttpStatusCode } from '../../../../common/types/http/httpStatusCode.js';
+import { responseErrorBodySchema, type ResponseErrorBody } from '../../../../common/types/http/responseErrorBody.js';
+import { SecurityMode } from '../../../../common/types/http/securityMode.js';
+import { type AccessControlService } from '../../../authModule/application/services/accessControlService/accessControlService.js';
+import { type CreateAuthorCommandHandler } from '../../application/commandHandlers/createAuthorCommandHandler/createAuthorCommandHandler.js';
+import { type DeleteAuthorCommandHandler } from '../../application/commandHandlers/deleteAuthorCommandHandler/deleteAuthorCommandHandler.js';
+import { type FindAuthorQueryHandler } from '../../application/queryHandlers/findAuthorQueryHandler/findAuthorQueryHandler.js';
+import { type Author } from '../../domain/entities/author/author.js';
 
 export class AuthorHttpController implements HttpController {
   public readonly basePath = '/api/authors';
