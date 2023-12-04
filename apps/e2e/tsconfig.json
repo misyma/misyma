@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist"
+  },
+  "include": ["src"],
+  "references": [
+    {
+      "path": "../../common/types/tsconfig.json"
+    },
+    {
+      "path": "../../common/validation/tsconfig.json"
+    },
+    {
+      "path": "../../common/tests/tsconfig.json"
+    }
+  ]
+}
