@@ -5,42 +5,34 @@ Tests are implemented and run using [Playwright](https://playwright.dev/docs/int
 ## Local setup
 
 Install dependencies:
+
 ```sh
 npm install
 ```
 
-Copy configuration for given  environment to run test against:
+Copy configuration for given environment to run test against:
+
 ```sh
 cp apps/e2e/.env.dev-eu apps/e2e/.env
 ```
 
 Run tests:
+
 ```sh
 # without UI, same as on CI/CD
-npm run test:e2e -w @apps/e2e 
+npm run test:e2e -w @apps/e2e
 
 # with UI (after UI opens you need to trigger the tests)
 npm run test:e2e:ui -w @apps/e2e
 ```
 
 To show report:
+
 ```sh
 # expects report to be at default location: apps/e2e/playwright-report
 npm run test:e2e:report -w @apps/e2e
 
 # use report in different location (e.g. downloaded from GitLab CI/CD artifacts)
-npm run test:e2e:report -w @apps/e2e {path_to_report}
-```
-
-## Run on GitLab CI/CD
-
-To run E2E tests on GitLab [start a pipeline](https://gitlab.divante.pl/philoro/backend/-/pipelines/new) with variables:
-- `TEST_E2E_RUN=true`
-- `TEST_E2E_ENVIRONMENT` set to desired environment
-
-Every run will store `test-e2e-data` artifact.\
-To show the report, download it, extract it, then run:
-```sh
 npm run test:e2e:report -w @apps/e2e {path_to_report}
 ```
 

@@ -18,5 +18,8 @@
     "@playwright/test": "^1.40.1",
     "@types/mailparser": "^3.4.4",
     "mailparser": "^3.6.5"
+  },
+  "dependencies": {
+    "config": "^3.3.9"
   }
 }

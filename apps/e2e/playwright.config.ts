@@ -10,10 +10,6 @@ export default defineConfig({
   use: {
     baseURL: config.get('baseUrl'),
     trace: 'on-first-retry',
-    httpCredentials: {
-      username: 'philoro',
-      password: 'goldenhour',
-    },
     actionTimeout: 5000,
   },
   timeout: 5 * 60 * 1000,

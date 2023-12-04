@@ -27,7 +27,7 @@ interface Options {
 }
 
 const defaultConfig = {
-  bucket: process.env['EMAIL_REPOSITORY_BUCKET'] || 'philoro-test-emails',
+  bucket: process.env['EMAIL_REPOSITORY_BUCKET'] || 'misyma-test-emails',
   dumpDir: process.env['EMAIL_REPOSITORY_DUMP_DIR'] || 'test-emails',
 };
 
