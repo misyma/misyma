@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  backend-app:
+    container_name: misyma-backend
+    build:
+      context: .
+      dockerfile: ./apps/backend/Dockerfile
+      args:
+        APP_NAME: backend
+        DIR_NAME: backend
+    environment:
+      NODE_ENV: production
+      DATABASE_PATH: /app/apps/backend/data/misyma.db
+    command: ['npm', 'start', '--prefix', '/app/apps/backend']
+    volumes:
+      - ./apps/backend/data:/app/apps/backend/data
+    ports:
+      - '3000:3000'
+
+  frontend-app:
+    container_name: misyma-frontend
+    build:
+      context: .
+      dockerfile: ./apps/frontend/Dockerfile
+      args:
+        APP_NAME: frontend
+        DIR_NAME: frontend
+    environment:
+      NODE_ENV: production
+    command: ['npm', 'start', '--prefix', '/app/apps/frontend']
+    ports:
+      - '8043:8043'
