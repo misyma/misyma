@@ -1,0 +1,42 @@
+# syntax=docker/dockerfile:1
+FROM node:20.10.0-alpine AS base
+
+RUN apk update
+RUN apk add --no-cache libc6-compat bash
+
+WORKDIR /app
+
+FROM base AS builder
+ARG APP_NAME
+
+RUN npm i -g turbo
+
+COPY package*.json ./
+COPY turbo.json ./
+COPY apps/ ./apps
+COPY tsconfig.json ./
+
+RUN turbo prune --scope="@apps/$APP_NAME" --docker
+
+FROM base AS installer
+ARG APP_NAME
+
+COPY --from=builder /app/out/json/ .
+COPY --from=builder /app/out/package-lock.json ./package-lock.json
+COPY tsconfig.json ./
+
+RUN npm ci
+
+COPY --from=builder /app/out/full/ .
+
+RUN npm run build --filter="@apps/$APP_NAME"
+
+FROM pierrezemb/gostatic as static
+
+ARG DIR_NAME
+
+ENV DIR_NAME=$DIR_NAME
+
+COPY --from=installer /app/apps/${DIR_NAME}/dist /srv/http/
+
+ENTRYPOINT ["/goStatic", "-fallback=/index.html", "-enable-health"]
