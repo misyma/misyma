@@ -3,7 +3,7 @@ export const symbols = {
   loggerService: Symbol('loggerService'),
   httpService: Symbol('httpService'),
   uuidService: Symbol('uuidService'),
-  postgresDatabaseClient: Symbol('postgresDatabaseClient'),
+  sqliteDatabaseClient: Symbol('sqliteDatabaseClient'),
 };
 
 export const coreSymbols = {
@@ -11,5 +11,5 @@ export const coreSymbols = {
   loggerService: symbols.loggerService,
   httpService: symbols.httpService,
   uuidService: symbols.uuidService,
-  postgresDatabaseClient: symbols.postgresDatabaseClient,
+  sqliteDatabaseClient: symbols.sqliteDatabaseClient,
 };

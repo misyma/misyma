@@ -1,4 +1,4 @@
-import { type PostgresDatabaseClient } from '../../../../../core/database/postgresDatabaseClient/postgresDatabaseClient.js';
+import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';
 import { type UserRawEntity } from '../../../infrastructure/databases/userDatabase/tables/userTable/userRawEntity.js';
 import { UserTable } from '../../../infrastructure/databases/userDatabase/tables/userTable/userTable.js';
@@ -24,10 +24,10 @@ export class UserTestUtils {
   private readonly databaseTable = new UserTable();
   private readonly userTestFactory = new UserTestFactory();
 
-  public constructor(private readonly postgresDatabaseClient: PostgresDatabaseClient) {}
+  public constructor(private readonly sqliteDatabaseClient: SqliteDatabaseClient) {}
 
   private createQueryBuilder(): QueryBuilder<UserRawEntity> {
-    return this.postgresDatabaseClient<UserRawEntity>(this.databaseTable.name);
+    return this.sqliteDatabaseClient<UserRawEntity>(this.databaseTable.name);
   }
 
   public async createAndPersist(payload: CreateAndPersistPayload = {}): Promise<UserRawEntity> {

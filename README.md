@@ -14,7 +14,7 @@ fly deploy -c apps/frontend/fly.toml
 
 ```bash
 
-docker-compose -f docker-compose.build.yml up --build frontend-app
+docker-compose -f docker-compose.prod.yml up --build frontend-app
 
 ```
 
@@ -30,6 +30,6 @@ fly deploy -c apps/backend/fly.toml
 
 ```bash
 
-docker-compose -f docker-compose.build.yml up --build backend-app
+docker-compose -f docker-compose.prod.yml up --build backend-app
 
 ```

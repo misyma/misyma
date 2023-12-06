@@ -3,7 +3,7 @@ import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 import { type DeleteBookCommandHandler } from './deleteBookCommandHandler.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
 import { Application } from '../../../../../core/application.js';
-import { type PostgresDatabaseClient } from '../../../../../core/database/postgresDatabaseClient/postgresDatabaseClient.js';
+import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { symbols } from '../../../symbols.js';
 import { BookTestFactory } from '../../../tests/factories/bookTestFactory/bookTestFactory.js';
@@ -12,7 +12,7 @@ import { BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.
 describe('DeleteBookCommandHandler', () => {
   let deleteBookCommandHandler: DeleteBookCommandHandler;
 
-  let postgresDatabaseClient: PostgresDatabaseClient;
+  let sqliteDatabaseClient: SqliteDatabaseClient;
 
   let bookTestUtils: BookTestUtils;
 
@@ -23,9 +23,9 @@ describe('DeleteBookCommandHandler', () => {
 
     deleteBookCommandHandler = container.get<DeleteBookCommandHandler>(symbols.deleteBookCommandHandler);
 
-    postgresDatabaseClient = container.get<PostgresDatabaseClient>(coreSymbols.postgresDatabaseClient);
+    sqliteDatabaseClient = container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient);
 
-    bookTestUtils = new BookTestUtils(postgresDatabaseClient);
+    bookTestUtils = new BookTestUtils(sqliteDatabaseClient);
 
     await bookTestUtils.truncate();
   });
@@ -33,7 +33,7 @@ describe('DeleteBookCommandHandler', () => {
   afterEach(async () => {
     await bookTestUtils.truncate();
 
-    await postgresDatabaseClient.destroy();
+    await sqliteDatabaseClient.destroy();
   });
 
   it('deletes book', async () => {

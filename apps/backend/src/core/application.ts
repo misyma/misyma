@@ -1,6 +1,6 @@
 import { ConfigProvider } from './configProvider.js';
-import { type PostgresDatabaseClient } from './database/postgresDatabaseClient/postgresDatabaseClient.js';
-import { PostgresDatabaseClientFactory } from './database/postgresDatabaseClient/postgresDatabaseClientFactory.js';
+import { type SqliteDatabaseClient } from './database/sqliteDatabaseClient/sqliteDatabaseClient.js';
+import { SqliteDatabaseClientFactory } from './database/sqliteDatabaseClient/sqliteDatabaseClientFactory.js';
 import { HttpServer } from './httpServer/httpServer.js';
 import { coreSymbols, symbols } from './symbols.js';
 import { type DependencyInjectionContainer } from '../libs/dependencyInjection/dependencyInjectionContainer.js';
@@ -20,13 +20,7 @@ export class Application {
   public static createContainer(): DependencyInjectionContainer {
     const configProvider = new ConfigProvider();
 
-    const databaseHost = configProvider.getPostgresDatabaseHost();
-
-    const databaseName = configProvider.getPostgresDatabaseName();
-
-    const databaseUser = configProvider.getPostgresDatabaseUser();
-
-    const databasePassword = configProvider.getPostgresDatabasePassword();
+    const databasePath = configProvider.getSqliteDatabasePath();
 
     const loggerLevel = configProvider.getLoggerLevel();
 
@@ -42,13 +36,8 @@ export class Application {
 
     container.bind<ConfigProvider>(symbols.configProvider, () => configProvider);
 
-    container.bind<PostgresDatabaseClient>(symbols.postgresDatabaseClient, () =>
-      PostgresDatabaseClientFactory.create({
-        databaseHost,
-        databaseName,
-        databaseUser,
-        databasePassword,
-      }),
+    container.bind<SqliteDatabaseClient>(symbols.sqliteDatabaseClient, () =>
+      SqliteDatabaseClientFactory.create({ databasePath }),
     );
 
     return container;

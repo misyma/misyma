@@ -48,20 +48,8 @@ export class ConfigProvider {
     return serverPort;
   }
 
-  public getPostgresDatabaseHost(): string {
-    return this.getStringEnvVariable('POSTGRES_DATABASE_HOST');
-  }
-
-  public getPostgresDatabaseName(): string {
-    return this.getStringEnvVariable('POSTGRES_DATABASE_NAME');
-  }
-
-  public getPostgresDatabaseUser(): string {
-    return this.getStringEnvVariable('POSTGRES_DATABASE_USER');
-  }
-
-  public getPostgresDatabasePassword(): string {
-    return this.getStringEnvVariable('POSTGRES_DATABASE_PASSWORD');
+  public getSqliteDatabasePath(): string {
+    return this.getStringEnvVariable('SQLITE_DATABASE_PATH');
   }
 
   public getJwtSecret(): string {

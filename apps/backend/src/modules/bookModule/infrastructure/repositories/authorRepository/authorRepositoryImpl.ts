@@ -1,7 +1,7 @@
 import { type AuthorMapper } from './authorMapper/authorMapper.js';
 import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
-import { type PostgresDatabaseClient } from '../../../../../core/database/postgresDatabaseClient/postgresDatabaseClient.js';
+import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { type Author } from '../../../../bookModule/domain/entities/author/author.js';
@@ -18,13 +18,13 @@ export class AuthorRepositoryImpl implements AuthorRepository {
   private readonly databaseTable = new AuthorTable();
 
   public constructor(
-    private readonly postgresDatabaseClient: PostgresDatabaseClient,
+    private readonly sqliteDatabaseClient: SqliteDatabaseClient,
     private readonly authorMapper: AuthorMapper,
     private readonly uuidService: UuidService,
   ) {}
 
   private createQueryBuilder(): QueryBuilder<AuthorRawEntity> {
-    return this.postgresDatabaseClient<AuthorRawEntity>(this.databaseTable.name);
+    return this.sqliteDatabaseClient<AuthorRawEntity>(this.databaseTable.name);
   }
 
   public async createAuthor(payload: CreateAuthorPayload): Promise<Author> {

@@ -3,7 +3,7 @@ import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
 import { Application } from '../../../../../core/application.js';
-import { type PostgresDatabaseClient } from '../../../../../core/database/postgresDatabaseClient/postgresDatabaseClient.js';
+import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type AuthorRepository } from '../../../domain/repositories/authorRepository/authorRepository.js';
 import { symbols } from '../../../symbols.js';
@@ -13,7 +13,7 @@ import { AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTest
 describe('AuthorRepositoryImpl', () => {
   let authorRepository: AuthorRepository;
 
-  let postgresDatabaseClient: PostgresDatabaseClient;
+  let sqliteDatabaseClient: SqliteDatabaseClient;
 
   let authorTestUtils: AuthorTestUtils;
 
@@ -24,9 +24,9 @@ describe('AuthorRepositoryImpl', () => {
 
     authorRepository = container.get<AuthorRepository>(symbols.authorRepository);
 
-    postgresDatabaseClient = container.get<PostgresDatabaseClient>(coreSymbols.postgresDatabaseClient);
+    sqliteDatabaseClient = container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient);
 
-    authorTestUtils = new AuthorTestUtils(postgresDatabaseClient);
+    authorTestUtils = new AuthorTestUtils(sqliteDatabaseClient);
 
     await authorTestUtils.truncate();
   });
@@ -34,7 +34,7 @@ describe('AuthorRepositoryImpl', () => {
   afterEach(async () => {
     await authorTestUtils.truncate();
 
-    await postgresDatabaseClient.destroy();
+    await sqliteDatabaseClient.destroy();
   });
 
   describe('Create', () => {
