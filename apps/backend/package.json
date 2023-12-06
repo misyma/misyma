@@ -1,20 +1,24 @@
 {
-  "name": "@bookshelf/backend",
+  "name": "@apps/backend",
   "private": true,
   "type": "module",
   "scripts": {
-    "start:dev": "dotenv -e .env -- node --inspect --no-warnings=ExperimentalWarning --experimental-specifier-resolution=node --loader ts-node/esm/transpile-only src/index.ts",
+    "dev": "dotenv -e .env -- node --inspect --no-warnings=ExperimentalWarning --experimental-specifier-resolution=node --loader ts-node/esm/transpile-only src/index.ts",
     "build:clean": "rimraf dist",
     "build": "tsc --build tsconfig.build.json",
     "build:dev": "tsc --build tsconfig.json",
-    "test:unit": "dotenv -e .env.test -- vitest .unit.test.ts --threads false",
-    "test:integration": "dotenv -e .env.test -- vitest .integration.test.ts --threads false",
+    "test:unit": "dotenv -e .env.test -- vitest .unit.test.ts --pool=forks",
+    "test:integration": "dotenv -e .env.test -- vitest .integration.test.ts --pool=forks",
     "test:migrations:run": "dotenv -e .env.test -- node --no-warnings=ExperimentalWarning --experimental-specifier-resolution=node --loader ts-node/esm/transpile-only src/core/database/migrations/runDatabasesMigrations.ts",
     "test:migrations:rollback": "dotenv -e .env.test -- node --no-warnings=ExperimentalWarning --experimental-specifier-resolution=node --loader ts-node/esm/transpile-only src/core/database/migrations/rollbackDatabasesMigrations.ts",
     "lint": "eslint . --ext .ts --cache --max-warnings 0",
     "lint:fix": "npm run lint -- --fix"
   },
   "dependencies": {
+    "@fastify/cors": "^8.4.2",
+    "@fastify/helmet": "^11.1.1",
+    "@fastify/swagger": "^8.12.1",
+    "@fastify/swagger-ui": "^1.10.2",
     "@fastify/type-provider-typebox": "^3.5.0",
     "@sinclair/typebox": "^0.31.26",
     "bcrypt": "^5.1.1",
@@ -35,8 +39,8 @@
     "@faker-js/faker": "^8.3.1",
     "@types/bcrypt": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.5",
-    "@types/node": "^20.9.2",
+    "@types/node": "^20.10.3",
     "@types/uuid": "^9.0.7",
-    "@types/validator": "^13.11.6"
+    "@types/validator": "^13.11.7"
   }
 }
