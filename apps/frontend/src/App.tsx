@@ -7,6 +7,7 @@ function App() {
     <>
       <h1 className="text-3xl font-bold underline">Hello world!</h1>
       <p>Version: {applicationVersion}</p>
+      <button className="btn btn-primary">Button</button>
     </>
   );
 }
