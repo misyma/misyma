@@ -6,7 +6,7 @@ A website for storing and rating the books you own.
 
 ```bash
 
-fly deploy -c apps/frontend/fly.toml
+fly deploy -c apps/frontend/fly.toml --build-arg APPLICATION_VERSION=0.2.0
 
 ```
 
