@@ -7,6 +7,7 @@ RUN apk add --no-cache libc6-compat bash
 WORKDIR /app
 
 FROM base AS builder
+
 ARG APP_NAME
 
 RUN npm i -g turbo
@@ -19,7 +20,11 @@ COPY tsconfig.json ./
 RUN turbo prune --scope="@apps/$APP_NAME" --docker
 
 FROM base AS installer
+
 ARG APP_NAME
+ARG APPLICATION_VERSION
+
+ENV APPLICATION_VERSION=$APPLICATION_VERSION
 
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/package-lock.json ./package-lock.json
