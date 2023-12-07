@@ -47,7 +47,7 @@ export class UserTestUtils {
 
     const queryBuilder = this.createQueryBuilder();
 
-    await queryBuilder.insert(user);
+    await queryBuilder.insert(user, '*');
   }
 
   public async findByEmail(payload: FindByEmailPayload): Promise<UserRawEntity> {

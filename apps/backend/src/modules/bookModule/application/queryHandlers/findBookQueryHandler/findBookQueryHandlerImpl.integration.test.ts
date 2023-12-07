@@ -7,12 +7,15 @@ import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDa
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { symbols } from '../../../symbols.js';
 import { BookTestFactory } from '../../../tests/factories/bookTestFactory/bookTestFactory.js';
+import { AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
 
 describe('FindBookQueryHandler', () => {
   let findBookQueryHandler: FindBookQueryHandler;
 
   let sqliteDatabaseClient: SqliteDatabaseClient;
+
+  let authorTestUtils: AuthorTestUtils;
 
   let bookTestUtils: BookTestUtils;
 
@@ -25,19 +28,27 @@ describe('FindBookQueryHandler', () => {
 
     sqliteDatabaseClient = container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient);
 
+    authorTestUtils = new AuthorTestUtils(sqliteDatabaseClient);
+
     bookTestUtils = new BookTestUtils(sqliteDatabaseClient);
+
+    await authorTestUtils.truncate();
 
     await bookTestUtils.truncate();
   });
 
   afterEach(async () => {
+    await authorTestUtils.truncate();
+
     await bookTestUtils.truncate();
 
     await sqliteDatabaseClient.destroy();
   });
 
   it('finds book by id', async () => {
-    const book = await bookTestUtils.createAndPersist();
+    const author = await authorTestUtils.createAndPersist();
+
+    const book = await bookTestUtils.createAndPersist({ input: { authorId: author.id } });
 
     const { book: foundBook } = await findBookQueryHandler.execute({ bookId: book.id });
 

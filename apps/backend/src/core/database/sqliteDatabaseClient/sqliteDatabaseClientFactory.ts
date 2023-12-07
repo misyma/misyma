@@ -12,7 +12,7 @@ export class SqliteDatabaseClientFactory {
       filePath: databasePath,
       useNullAsDefault: true,
       minPoolConnections: 1,
-      maxPoolConnections: 10,
+      maxPoolConnections: 1,
     });
   }
 }

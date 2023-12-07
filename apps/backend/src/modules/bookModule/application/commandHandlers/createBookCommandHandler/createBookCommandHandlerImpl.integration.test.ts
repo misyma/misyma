@@ -7,12 +7,15 @@ import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDa
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { symbols } from '../../../symbols.js';
 import { BookTestFactory } from '../../../tests/factories/bookTestFactory/bookTestFactory.js';
+import { AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
 
 describe('CreateBookCommandHandler', () => {
   let createBookCommandHandler: CreateBookCommandHandler;
 
   let sqliteDatabaseClient: SqliteDatabaseClient;
+
+  let authorTestUtils: AuthorTestUtils;
 
   let bookTestUtils: BookTestUtils;
 
@@ -25,19 +28,27 @@ describe('CreateBookCommandHandler', () => {
 
     sqliteDatabaseClient = container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient);
 
+    authorTestUtils = new AuthorTestUtils(sqliteDatabaseClient);
+
     bookTestUtils = new BookTestUtils(sqliteDatabaseClient);
+
+    await authorTestUtils.truncate();
 
     await bookTestUtils.truncate();
   });
 
   afterEach(async () => {
+    await authorTestUtils.truncate();
+
     await bookTestUtils.truncate();
 
     await sqliteDatabaseClient.destroy();
   });
 
   it('creates a book', async () => {
-    const { title, releaseYear, authorId } = bookTestFactory.create();
+    const author = await authorTestUtils.createAndPersist();
+
+    const { title, releaseYear, authorId } = bookTestFactory.create({ authorId: author.id });
 
     const { book } = await createBookCommandHandler.execute({
       title,
@@ -60,7 +71,9 @@ describe('CreateBookCommandHandler', () => {
   });
 
   it('throws an error when book with the same title and author already exists', async () => {
-    const existingBook = await bookTestUtils.createAndPersist();
+    const author = await authorTestUtils.createAndPersist();
+
+    const existingBook = await bookTestUtils.createAndPersist({ input: { authorId: author.id } });
 
     try {
       await createBookCommandHandler.execute({

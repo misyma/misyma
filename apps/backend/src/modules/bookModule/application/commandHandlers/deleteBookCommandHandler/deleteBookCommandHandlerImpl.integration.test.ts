@@ -7,12 +7,15 @@ import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDa
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { symbols } from '../../../symbols.js';
 import { BookTestFactory } from '../../../tests/factories/bookTestFactory/bookTestFactory.js';
+import { AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
 
 describe('DeleteBookCommandHandler', () => {
   let deleteBookCommandHandler: DeleteBookCommandHandler;
 
   let sqliteDatabaseClient: SqliteDatabaseClient;
+
+  let authorTestUtils: AuthorTestUtils;
 
   let bookTestUtils: BookTestUtils;
 
@@ -25,7 +28,11 @@ describe('DeleteBookCommandHandler', () => {
 
     sqliteDatabaseClient = container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient);
 
+    authorTestUtils = new AuthorTestUtils(sqliteDatabaseClient);
+
     bookTestUtils = new BookTestUtils(sqliteDatabaseClient);
+
+    await authorTestUtils.truncate();
 
     await bookTestUtils.truncate();
   });
@@ -37,7 +44,9 @@ describe('DeleteBookCommandHandler', () => {
   });
 
   it('deletes book', async () => {
-    const book = await bookTestUtils.createAndPersist();
+    const author = await authorTestUtils.createAndPersist();
+
+    const book = await bookTestUtils.createAndPersist({ input: { authorId: author.id } });
 
     await deleteBookCommandHandler.execute({ bookId: book.id });
 
