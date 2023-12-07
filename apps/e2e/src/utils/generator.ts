@@ -1,11 +1,16 @@
 import { faker } from '@faker-js/faker';
-import { ScalarGenerator } from '../scalars/scalar.generator';
 
-export class UtilityGenerator {
-  public static pastDate(): Date {
-    const date = faker.date.past();
+export class Generator {
+  public static email(): string {
+    return `jakub.barczewski+${Generator.number(100000000, 1)}@cloudflight.io`;
+  }
 
-    return date;
+  public static number(max: number, min = 0, precision = 1): number {
+    return faker.number.float({
+      min,
+      max,
+      precision,
+    });
   }
 
   public static string(length: number): string {
@@ -18,6 +23,11 @@ export class UtilityGenerator {
       length,
     });
   }
+
+  public static uuid(): string {
+    return faker.string.uuid();
+  }
+
   public static arrayElement<T>(array: T[]): T {
     return faker.helpers.arrayElement(array);
   }
@@ -80,6 +90,10 @@ export class UtilityGenerator {
       days: days ?? 1,
       refDate: nextDay,
     });
+  }
+
+  public static pastDate(): Date {
+    return faker.date.past();
   }
 
   public static startOfDayDate(date: Date): Date {
@@ -170,10 +184,7 @@ export class UtilityGenerator {
   public static sku(): string {
     const productName = faker.commerce.product();
 
-    const productNumber = ScalarGenerator.integer({
-      min: 1,
-      max: 100000
-    });
+    const productNumber = Generator.number(100000, 1);
 
     return `${productName}-${productNumber}`;
   }
@@ -191,18 +202,10 @@ export class UtilityGenerator {
   }
 
   public static price(): number {
-    return ScalarGenerator.float({
-      max: 10000, 
-      min: 0, 
-      precision: 0.0001
-    });
+    return Generator.number(10000, 0, 0.0001);
   }
 
   public static percentage(): number {
-    return ScalarGenerator.float({
-      max: 100, 
-      min: -100, 
-      precision: 0.01
-    });
+    return Generator.number(100, -100, 0.01);
   }
 }
