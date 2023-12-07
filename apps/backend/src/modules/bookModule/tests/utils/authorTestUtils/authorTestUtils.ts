@@ -1,4 +1,4 @@
-import { type PostgresDatabaseClient } from '../../../../../core/database/postgresDatabaseClient/postgresDatabaseClient.js';
+import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';
 import { type AuthorRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/authorTable/authorRawEntity.js';
 import { AuthorTable } from '../../../infrastructure/databases/bookDatabase/tables/authorTable/authorTable.js';
@@ -25,10 +25,10 @@ export class AuthorTestUtils {
   private readonly databaseTable = new AuthorTable();
   private readonly authorTestFactory = new AuthorTestFactory();
 
-  public constructor(private readonly postgresDatabaseClient: PostgresDatabaseClient) {}
+  public constructor(private readonly sqliteDatabaseClient: SqliteDatabaseClient) {}
 
   private createQueryBuilder(): QueryBuilder<AuthorRawEntity> {
-    return this.postgresDatabaseClient<AuthorRawEntity>(this.databaseTable.name);
+    return this.sqliteDatabaseClient<AuthorRawEntity>(this.databaseTable.name);
   }
 
   public async createAndPersist(payload: CreateAndPersistPayload = {}): Promise<AuthorRawEntity> {

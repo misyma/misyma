@@ -1,7 +1,7 @@
 import { type UserMapper } from './userMapper/userMapper.js';
 import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
-import { type PostgresDatabaseClient } from '../../../../../core/database/postgresDatabaseClient/postgresDatabaseClient.js';
+import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { type User } from '../../../domain/entities/user/user.js';
@@ -19,13 +19,13 @@ export class UserRepositoryImpl implements UserRepository {
   private readonly databaseTable = new UserTable();
 
   public constructor(
-    private readonly postgresDatabaseClient: PostgresDatabaseClient,
+    private readonly sqliteDatabaseClient: SqliteDatabaseClient,
     private readonly userMapper: UserMapper,
     private readonly uuidService: UuidService,
   ) {}
 
   private createQueryBuilder(): QueryBuilder<UserRawEntity> {
-    return this.postgresDatabaseClient<UserRawEntity>(this.databaseTable.name);
+    return this.sqliteDatabaseClient<UserRawEntity>(this.databaseTable.name);
   }
 
   public async createUser(payload: CreateUserPayload): Promise<User> {

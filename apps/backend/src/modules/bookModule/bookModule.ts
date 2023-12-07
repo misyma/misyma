@@ -21,7 +21,7 @@ import { type BookMapper } from './infrastructure/repositories/bookRepository/bo
 import { BookMapperImpl } from './infrastructure/repositories/bookRepository/bookMapper/bookMapperImpl.js';
 import { BookRepositoryImpl } from './infrastructure/repositories/bookRepository/bookRepositoryImpl.js';
 import { symbols } from './symbols.js';
-import { type PostgresDatabaseClient } from '../../core/database/postgresDatabaseClient/postgresDatabaseClient.js';
+import { type SqliteDatabaseClient } from '../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../core/symbols.js';
 import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type DependencyInjectionModule } from '../../libs/dependencyInjection/dependencyInjectionModule.js';
@@ -38,7 +38,7 @@ export class BookModule implements DependencyInjectionModule {
       symbols.bookRepository,
       () =>
         new BookRepositoryImpl(
-          container.get<PostgresDatabaseClient>(coreSymbols.postgresDatabaseClient),
+          container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient),
           container.get<BookMapper>(symbols.bookMapper),
           container.get<UuidService>(coreSymbols.uuidService),
         ),
@@ -84,7 +84,7 @@ export class BookModule implements DependencyInjectionModule {
       symbols.authorRepository,
       () =>
         new AuthorRepositoryImpl(
-          container.get<PostgresDatabaseClient>(coreSymbols.postgresDatabaseClient),
+          container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient),
           container.get<AuthorMapper>(symbols.authorMapper),
           container.get<UuidService>(coreSymbols.uuidService),
         ),

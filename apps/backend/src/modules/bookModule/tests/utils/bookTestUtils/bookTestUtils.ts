@@ -1,4 +1,4 @@
-import { type PostgresDatabaseClient } from '../../../../../core/database/postgresDatabaseClient/postgresDatabaseClient.js';
+import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';
 import { type BookRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/bookTable/bookRawEntity.js';
 import { BookTable } from '../../../infrastructure/databases/bookDatabase/tables/bookTable/bookTable.js';
@@ -25,10 +25,10 @@ export class BookTestUtils {
   private readonly databaseTable = new BookTable();
   private readonly bookTestFactory = new BookTestFactory();
 
-  public constructor(private readonly postgresDatabaseClient: PostgresDatabaseClient) {}
+  public constructor(private readonly sqliteDatabaseClient: SqliteDatabaseClient) {}
 
   private createQueryBuilder(): QueryBuilder<BookRawEntity> {
-    return this.postgresDatabaseClient<BookRawEntity>(this.databaseTable.name);
+    return this.sqliteDatabaseClient<BookRawEntity>(this.databaseTable.name);
   }
 
   public async createAndPersist(payload: CreateAndPersistPayload = {}): Promise<BookRawEntity> {

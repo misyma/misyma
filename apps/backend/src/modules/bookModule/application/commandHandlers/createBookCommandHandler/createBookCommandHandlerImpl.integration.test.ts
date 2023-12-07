@@ -3,16 +3,19 @@ import { beforeEach, afterEach, expect, it, describe } from 'vitest';
 import { type CreateBookCommandHandler } from './createBookCommandHandler.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/common/resourceAlreadyExistsError.js';
 import { Application } from '../../../../../core/application.js';
-import { type PostgresDatabaseClient } from '../../../../../core/database/postgresDatabaseClient/postgresDatabaseClient.js';
+import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { symbols } from '../../../symbols.js';
 import { BookTestFactory } from '../../../tests/factories/bookTestFactory/bookTestFactory.js';
+import { AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
 
 describe('CreateBookCommandHandler', () => {
   let createBookCommandHandler: CreateBookCommandHandler;
 
-  let postgresDatabaseClient: PostgresDatabaseClient;
+  let sqliteDatabaseClient: SqliteDatabaseClient;
+
+  let authorTestUtils: AuthorTestUtils;
 
   let bookTestUtils: BookTestUtils;
 
@@ -23,21 +26,29 @@ describe('CreateBookCommandHandler', () => {
 
     createBookCommandHandler = container.get<CreateBookCommandHandler>(symbols.createBookCommandHandler);
 
-    postgresDatabaseClient = container.get<PostgresDatabaseClient>(coreSymbols.postgresDatabaseClient);
+    sqliteDatabaseClient = container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient);
 
-    bookTestUtils = new BookTestUtils(postgresDatabaseClient);
+    authorTestUtils = new AuthorTestUtils(sqliteDatabaseClient);
+
+    bookTestUtils = new BookTestUtils(sqliteDatabaseClient);
+
+    await authorTestUtils.truncate();
 
     await bookTestUtils.truncate();
   });
 
   afterEach(async () => {
+    await authorTestUtils.truncate();
+
     await bookTestUtils.truncate();
 
-    await postgresDatabaseClient.destroy();
+    await sqliteDatabaseClient.destroy();
   });
 
   it('creates a book', async () => {
-    const { title, releaseYear, authorId } = bookTestFactory.create();
+    const author = await authorTestUtils.createAndPersist();
+
+    const { title, releaseYear, authorId } = bookTestFactory.create({ authorId: author.id });
 
     const { book } = await createBookCommandHandler.execute({
       title,
@@ -60,7 +71,9 @@ describe('CreateBookCommandHandler', () => {
   });
 
   it('throws an error when book with the same title and author already exists', async () => {
-    const existingBook = await bookTestUtils.createAndPersist();
+    const author = await authorTestUtils.createAndPersist();
+
+    const existingBook = await bookTestUtils.createAndPersist({ input: { authorId: author.id } });
 
     try {
       await createBookCommandHandler.execute({

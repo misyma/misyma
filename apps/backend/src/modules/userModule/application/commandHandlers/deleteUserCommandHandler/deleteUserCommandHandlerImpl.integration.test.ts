@@ -3,7 +3,7 @@ import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 import { type DeleteUserCommandHandler } from './deleteUserCommandHandler.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
 import { Application } from '../../../../../core/application.js';
-import { type PostgresDatabaseClient } from '../../../../../core/database/postgresDatabaseClient/postgresDatabaseClient.js';
+import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { symbols } from '../../../symbols.js';
 import { UserTestFactory } from '../../../tests/factories/userTestFactory/userTestFactory.js';
@@ -12,7 +12,7 @@ import { UserTestUtils } from '../../../tests/utils/userTestUtils/userTestUtils.
 describe('DeleteUserCommandHandler', () => {
   let deleteUserCommandHandler: DeleteUserCommandHandler;
 
-  let postgresDatabaseClient: PostgresDatabaseClient;
+  let sqliteDatabaseClient: SqliteDatabaseClient;
 
   let userTestUtils: UserTestUtils;
 
@@ -23,9 +23,9 @@ describe('DeleteUserCommandHandler', () => {
 
     deleteUserCommandHandler = container.get<DeleteUserCommandHandler>(symbols.deleteUserCommandHandler);
 
-    postgresDatabaseClient = container.get<PostgresDatabaseClient>(coreSymbols.postgresDatabaseClient);
+    sqliteDatabaseClient = container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient);
 
-    userTestUtils = new UserTestUtils(postgresDatabaseClient);
+    userTestUtils = new UserTestUtils(sqliteDatabaseClient);
 
     await userTestUtils.truncate();
   });
@@ -33,7 +33,7 @@ describe('DeleteUserCommandHandler', () => {
   afterEach(async () => {
     await userTestUtils.truncate();
 
-    await postgresDatabaseClient.destroy();
+    await sqliteDatabaseClient.destroy();
   });
 
   it('deletes user', async () => {

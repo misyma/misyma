@@ -16,7 +16,7 @@ import { UserRepositoryImpl } from './infrastructure/repositories/userRepository
 import { symbols } from './symbols.js';
 import { type UserModuleConfigProvider } from './userModuleConfigProvider.js';
 import { type ConfigProvider } from '../../core/configProvider.js';
-import { type PostgresDatabaseClient } from '../../core/database/postgresDatabaseClient/postgresDatabaseClient.js';
+import { type SqliteDatabaseClient } from '../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../core/symbols.js';
 import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type DependencyInjectionModule } from '../../libs/dependencyInjection/dependencyInjectionModule.js';
@@ -38,7 +38,7 @@ export class UserModule implements DependencyInjectionModule {
       symbols.userRepository,
       () =>
         new UserRepositoryImpl(
-          container.get<PostgresDatabaseClient>(coreSymbols.postgresDatabaseClient),
+          container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient),
           container.get<UserMapper>(symbols.userMapper),
           container.get<UuidService>(coreSymbols.uuidService),
         ),

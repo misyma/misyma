@@ -3,19 +3,22 @@ import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
 import { Application } from '../../../../../core/application.js';
-import { type PostgresDatabaseClient } from '../../../../../core/database/postgresDatabaseClient/postgresDatabaseClient.js';
+import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type BookRepository } from '../../../domain/repositories/bookRepository/bookRepository.js';
 import { symbols } from '../../../symbols.js';
 import { BookTestFactory } from '../../../tests/factories/bookTestFactory/bookTestFactory.js';
+import { AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
 
 describe('BookRepositoryImpl', () => {
   let bookRepository: BookRepository;
 
-  let postgresDatabaseClient: PostgresDatabaseClient;
+  let sqliteDatabaseClient: SqliteDatabaseClient;
 
   let bookTestUtils: BookTestUtils;
+
+  let authorTestUtils: AuthorTestUtils;
 
   const bookTestFactory = new BookTestFactory();
 
@@ -24,22 +27,30 @@ describe('BookRepositoryImpl', () => {
 
     bookRepository = container.get<BookRepository>(symbols.bookRepository);
 
-    postgresDatabaseClient = container.get<PostgresDatabaseClient>(coreSymbols.postgresDatabaseClient);
+    sqliteDatabaseClient = container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient);
 
-    bookTestUtils = new BookTestUtils(postgresDatabaseClient);
+    bookTestUtils = new BookTestUtils(sqliteDatabaseClient);
+
+    authorTestUtils = new AuthorTestUtils(sqliteDatabaseClient);
+
+    await authorTestUtils.truncate();
 
     await bookTestUtils.truncate();
   });
 
   afterEach(async () => {
+    await authorTestUtils.truncate();
+
     await bookTestUtils.truncate();
 
-    await postgresDatabaseClient.destroy();
+    await sqliteDatabaseClient.destroy();
   });
 
   describe('Create', () => {
     it('creates a book', async () => {
-      const { releaseYear, title, authorId } = bookTestFactory.create();
+      const author = await authorTestUtils.createAndPersist();
+
+      const { releaseYear, title, authorId } = bookTestFactory.create({ authorId: author.id });
 
       const book = await bookRepository.createBook({
         releaseYear,
@@ -62,7 +73,9 @@ describe('BookRepositoryImpl', () => {
     });
 
     it('throws an error when book with the same title and author already exists', async () => {
-      const existingBook = await bookTestUtils.createAndPersist();
+      const author = await authorTestUtils.createAndPersist();
+
+      const existingBook = await bookTestUtils.createAndPersist({ input: { authorId: author.id } });
 
       try {
         await bookRepository.createBook({
@@ -82,7 +95,9 @@ describe('BookRepositoryImpl', () => {
 
   describe('Find', () => {
     it('finds book by id', async () => {
-      const book = await bookTestUtils.createAndPersist();
+      const author = await authorTestUtils.createAndPersist();
+
+      const book = await bookTestUtils.createAndPersist({ input: { authorId: author.id } });
 
       const foundBook = await bookRepository.findBook({ id: book.id });
 
@@ -100,7 +115,9 @@ describe('BookRepositoryImpl', () => {
 
   describe('Delete', () => {
     it('deletes book', async () => {
-      const book = await bookTestUtils.createAndPersist();
+      const author = await authorTestUtils.createAndPersist();
+
+      const book = await bookTestUtils.createAndPersist({ input: { authorId: author.id } });
 
       await bookRepository.deleteBook({ id: book.id });
 

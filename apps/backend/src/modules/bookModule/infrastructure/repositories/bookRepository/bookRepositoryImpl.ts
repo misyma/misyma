@@ -1,7 +1,7 @@
 import { type BookMapper } from './bookMapper/bookMapper.js';
 import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
-import { type PostgresDatabaseClient } from '../../../../../core/database/postgresDatabaseClient/postgresDatabaseClient.js';
+import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { type Book } from '../../../domain/entities/book/book.js';
@@ -18,13 +18,13 @@ export class BookRepositoryImpl implements BookRepository {
   private readonly databaseTable = new BookTable();
 
   public constructor(
-    private readonly postgresDatabaseClient: PostgresDatabaseClient,
+    private readonly sqliteDatabaseClient: SqliteDatabaseClient,
     private readonly bookMapper: BookMapper,
     private readonly uuidService: UuidService,
   ) {}
 
   private createQueryBuilder(): QueryBuilder<BookRawEntity> {
-    return this.postgresDatabaseClient<BookRawEntity>(this.databaseTable.name);
+    return this.sqliteDatabaseClient<BookRawEntity>(this.databaseTable.name);
   }
 
   public async createBook(payload: CreateBookPayload): Promise<Book> {

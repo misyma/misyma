@@ -5,11 +5,5 @@
   },
   "include": [
     "src"
-  ],
-  "exclude": [
-    "src/**/tests/**/*",
-    "src/**/*.test.ts"
-  ],
-  "references": [
   ]
 }
