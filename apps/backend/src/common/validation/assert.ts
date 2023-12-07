@@ -1,5 +1,5 @@
-import { InputNotValidError } from '../errors/common/inputNotValidError.js';
 import { Validator } from './validator.js';
+import { InputNotValidError } from '../errors/common/inputNotValidError.js';
 
 export enum StringFormat {
   uuid = 'uuid',
