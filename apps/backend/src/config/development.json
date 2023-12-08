@@ -1,7 +1,4 @@
 {
-  "server": {
-    "host": "127.0.0.1"
-  },
   "database": {
     "path": "data/test.db"
   },
