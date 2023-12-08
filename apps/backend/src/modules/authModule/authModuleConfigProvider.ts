@@ -1,4 +1,4 @@
 export interface AuthModuleConfigProvider {
   getJwtSecret(): string;
-  getJwtExpiresIn(): string;
+  getJwtExpiresIn(): number;
 }

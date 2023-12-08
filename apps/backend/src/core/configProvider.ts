@@ -4,58 +4,60 @@ import { Assert } from '../common/validation/assert.js';
 import { LoggerLevel } from '../libs/logger/types/loggerLevel.js';
 
 export class ConfigProvider {
-  public getLoggerLevel(): LoggerLevel {
-    const loggerLever = config.get('logger.level');
+  public getServerHost(): string {
+    return '0.0.0.0';
+  }
 
-    Assert.isEnum(LoggerLevel, loggerLever);
+  public getServerPort(): number {
+    return 8080;
+  }
+
+  public getLoggerLevel(): LoggerLevel {
+    const configFieldName = 'logger.level';
+
+    const loggerLever = config.get(configFieldName);
+
+    Assert.isEnum(LoggerLevel, loggerLever, configFieldName);
 
     return loggerLever;
   }
 
-  public getServerHost(): string {
-    const serverHost = config.get('server.host');
-
-    Assert.isNotEmptyString(serverHost);
-
-    return serverHost;
-  }
-
-  public getServerPort(): number {
-    const serverPort = Number(config.get('server.port'));
-
-    Assert.isNumberInteger(serverPort);
-
-    return serverPort;
-  }
-
   public getSqliteDatabasePath(): string {
-    const sqliteDatabasePath = config.get('database.path');
+    const configFieldName = 'database.path';
 
-    Assert.isNotEmptyString(sqliteDatabasePath);
+    const sqliteDatabasePath = config.get(configFieldName);
+
+    Assert.isNotEmptyString(sqliteDatabasePath, configFieldName);
 
     return sqliteDatabasePath;
   }
 
   public getJwtSecret(): string {
-    const jwtSecret = config.get('auth.jwt.secret');
+    const configFieldName = 'auth.jwt.secret';
 
-    Assert.isNotEmptyString(jwtSecret);
+    const jwtSecret = config.get(configFieldName);
+
+    Assert.isNotEmptyString(jwtSecret, configFieldName);
 
     return jwtSecret;
   }
 
-  public getJwtExpiresIn(): string {
-    const jwtExpiresIn = config.get('auth.jwt.expiresIn');
+  public getJwtExpiresIn(): number {
+    const configFieldName = 'auth.jwt.expiresIn';
 
-    Assert.isNotEmptyString(jwtExpiresIn);
+    const jwtExpiresIn = Number(config.get(configFieldName));
+
+    Assert.isNumberInteger(jwtExpiresIn, configFieldName);
 
     return jwtExpiresIn;
   }
 
   public getHashSaltRounds(): number {
-    const hashSaltRounds = Number(config.get('auth.hash.saltRounds'));
+    const configFieldName = 'auth.hash.saltRounds';
 
-    Assert.isNumberInteger(hashSaltRounds);
+    const hashSaltRounds = Number(config.get(configFieldName));
+
+    Assert.isNumberInteger(hashSaltRounds, configFieldName);
 
     return hashSaltRounds;
   }
