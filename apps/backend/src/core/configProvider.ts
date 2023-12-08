@@ -1,7 +1,7 @@
 import config from 'config';
 
-import { Assert } from '../common/validation/assert.js';
-import { LoggerLevel } from '../libs/logger/types/loggerLevel.js';
+import { OperationNotValidError } from '../common/errors/common/operationNotValidError.js';
+import { type LoggerLevel } from '../libs/logger/types/loggerLevel.js';
 
 export class ConfigProvider {
   public getServerHost(): string {
@@ -13,52 +13,36 @@ export class ConfigProvider {
   }
 
   public getLoggerLevel(): LoggerLevel {
-    const configFieldName = 'logger.level';
-
-    const loggerLever = config.get(configFieldName);
-
-    Assert.isEnum(LoggerLevel, loggerLever, configFieldName);
-
-    return loggerLever;
+    return this.getValue<LoggerLevel>('logger.level');
   }
 
   public getSqliteDatabasePath(): string {
-    const configFieldName = 'database.path';
-
-    const sqliteDatabasePath = config.get(configFieldName);
-
-    Assert.isNotEmptyString(sqliteDatabasePath, configFieldName);
-
-    return sqliteDatabasePath;
+    return this.getValue<string>('database.path');
   }
 
   public getJwtSecret(): string {
-    const configFieldName = 'auth.jwt.secret';
-
-    const jwtSecret = config.get(configFieldName);
-
-    Assert.isNotEmptyString(jwtSecret, configFieldName);
-
-    return jwtSecret;
+    return this.getValue<string>('auth.jwt.secret');
   }
 
   public getJwtExpiresIn(): number {
-    const configFieldName = 'auth.jwt.expiresIn';
-
-    const jwtExpiresIn = Number(config.get(configFieldName));
-
-    Assert.isNumberInteger(jwtExpiresIn, configFieldName);
-
-    return jwtExpiresIn;
+    return this.getValue<number>('auth.jwt.expiresIn');
   }
 
   public getHashSaltRounds(): number {
-    const configFieldName = 'auth.hash.saltRounds';
+    return this.getValue<number>('auth.hash.saltRounds');
+  }
 
-    const hashSaltRounds = Number(config.get(configFieldName));
+  private getValue<T>(key: string): T {
+    const value = config.get(key);
 
-    Assert.isNumberInteger(hashSaltRounds, configFieldName);
+    if (value === null) {
+      throw new OperationNotValidError({
+        reason: 'Invalid config value.',
+        value,
+        key,
+      });
+    }
 
-    return hashSaltRounds;
+    return value as T;
   }
 }
