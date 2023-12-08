@@ -1,66 +1,62 @@
+import config from 'config';
+
 import { Assert } from '../common/validation/assert.js';
-import { Validator } from '../common/validation/validator.js';
-import { EnvParser } from '../libs/envParser/envParser.js';
 import { LoggerLevel } from '../libs/logger/types/loggerLevel.js';
 
 export class ConfigProvider {
-  private getStringEnvVariable(envVariableName: string): string {
-    const value = EnvParser.parseString({ name: envVariableName });
-
-    Assert.isNotEmptyString(value);
-
-    return value;
-  }
-
-  private getIntegerEnvVariable(envVariableName: string): number {
-    const value = EnvParser.parseNumber({ name: envVariableName });
-
-    Assert.isNumberInteger(value);
-
-    return value;
-  }
-
-  private getEnumEnvVariable<T extends Record<string, string>>(enumType: T, envVariableName: string): T[keyof T] {
-    const value = EnvParser.parseString({ name: envVariableName });
-
-    Assert.isEnum(enumType, value);
-
-    return value as T[keyof T];
-  }
-
   public getLoggerLevel(): LoggerLevel {
-    return this.getEnumEnvVariable(LoggerLevel, 'LOGGER_LEVEL');
+    const loggerLever = config.get('logger.level');
+
+    Assert.isEnum(LoggerLevel, loggerLever);
+
+    return loggerLever;
   }
 
   public getServerHost(): string {
-    return EnvParser.parseString({ name: 'SERVER_HOST' }) || '0.0.0.0';
+    const serverHost = config.get('server.host');
+
+    Assert.isNotEmptyString(serverHost);
+
+    return serverHost;
   }
 
   public getServerPort(): number {
-    const envVariable = 'SERVER_PORT';
+    const serverPort = Number(config.get('server.port'));
 
-    const serverPort = EnvParser.parseNumber({ name: envVariable });
-
-    if (!Validator.isNumber(serverPort)) {
-      return 8080;
-    }
+    Assert.isNumberInteger(serverPort);
 
     return serverPort;
   }
 
   public getSqliteDatabasePath(): string {
-    return this.getStringEnvVariable('SQLITE_DATABASE_PATH');
+    const sqliteDatabasePath = config.get('database.path');
+
+    Assert.isNotEmptyString(sqliteDatabasePath);
+
+    return sqliteDatabasePath;
   }
 
   public getJwtSecret(): string {
-    return this.getStringEnvVariable('JWT_SECRET');
+    const jwtSecret = config.get('auth.jwt.secret');
+
+    Assert.isNotEmptyString(jwtSecret);
+
+    return jwtSecret;
   }
 
   public getJwtExpiresIn(): string {
-    return this.getStringEnvVariable('JWT_EXPIRES_IN');
+    const jwtExpiresIn = config.get('auth.jwt.expiresIn');
+
+    Assert.isNotEmptyString(jwtExpiresIn);
+
+    return jwtExpiresIn;
   }
 
   public getHashSaltRounds(): number {
-    return this.getIntegerEnvVariable('HASH_SALT_ROUNDS');
+    const hashSaltRounds = Number(config.get('auth.hash.saltRounds'));
+
+    Assert.isNumberInteger(hashSaltRounds);
+
+    return hashSaltRounds;
   }
 }

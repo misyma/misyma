@@ -1,0 +1,21 @@
+{
+  "server": {
+      "host": "SERVER_HOST",
+      "port": "SERVER_HOST"
+  },
+  "logger": {
+      "level": "LOGGER_LEVEL"
+  },
+  "database": {
+      "path": "SQLITE_DATABASE_PATH"
+  },
+  "auth": {
+    "hash": {
+      "saltRounds": "HASH_SALT_ROUNDS"
+    },
+    "jwt": {
+      "secret": "JWT_SECRET",
+      "expiresIn": "JWT_EXPIRES_IN"
+    }
+  }
+}
