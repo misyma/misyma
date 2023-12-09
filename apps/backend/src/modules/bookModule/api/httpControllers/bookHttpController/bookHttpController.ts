@@ -5,15 +5,15 @@ import {
   type CreateBookResponseCreatedBody,
 } from './schemas/createBookSchema.js';
 import {
-  deleteBookPathParametersSchema,
+  deleteBookPathParamsSchema,
   deleteBookResponseNoContentBodySchema,
-  type DeleteBookPathParameters,
+  type DeleteBookPathParams,
   type DeleteBookResponseNoContentBody,
 } from './schemas/deleteBookSchema.js';
 import {
-  findBookPathParametersSchema,
+  findBookPathParamsSchema,
   findBookResponseOkBodySchema,
-  type FindBookPathParameters,
+  type FindBookPathParams,
   type FindBookResponseOkBody,
 } from './schemas/findBookSchema.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/common/resourceAlreadyExistsError.js';
@@ -80,7 +80,7 @@ export class BookHttpController implements HttpController {
         handler: this.findBook.bind(this),
         schema: {
           request: {
-            pathParams: findBookPathParametersSchema,
+            pathParams: findBookPathParamsSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
@@ -103,7 +103,7 @@ export class BookHttpController implements HttpController {
         handler: this.deleteBook.bind(this),
         schema: {
           request: {
-            pathParams: deleteBookPathParametersSchema,
+            pathParams: deleteBookPathParamsSchema,
           },
           response: {
             [HttpStatusCode.noContent]: {
@@ -156,7 +156,7 @@ export class BookHttpController implements HttpController {
   }
 
   private async findBook(
-    request: HttpRequest<undefined, undefined, FindBookPathParameters>,
+    request: HttpRequest<undefined, undefined, FindBookPathParams>,
   ): Promise<
     | HttpOkResponse<FindBookResponseOkBody>
     | HttpNotFoundResponse<ResponseErrorBody>
@@ -188,7 +188,7 @@ export class BookHttpController implements HttpController {
   }
 
   private async deleteBook(
-    request: HttpRequest<undefined, undefined, DeleteBookPathParameters>,
+    request: HttpRequest<undefined, undefined, DeleteBookPathParams>,
   ): Promise<
     | HttpNoContentResponse<DeleteBookResponseNoContentBody>
     | HttpNotFoundResponse<ResponseErrorBody>

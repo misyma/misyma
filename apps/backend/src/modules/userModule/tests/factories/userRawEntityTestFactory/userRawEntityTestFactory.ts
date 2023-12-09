@@ -1,4 +1,5 @@
-import { Generator } from '../../../../../common/tests/generator.js';
+import { Generator } from '@common/tests';
+
 import { type UserRawEntity } from '../../../infrastructure/databases/userDatabase/tables/userTable/userRawEntity.js';
 
 export class UserRawEntityTestFactory {

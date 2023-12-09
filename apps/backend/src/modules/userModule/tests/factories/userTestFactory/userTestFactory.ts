@@ -1,4 +1,5 @@
-import { Generator } from '../../../../../common/tests/generator.js';
+import { Generator } from '@common/tests';
+
 import { type User } from '../../../domain/entities/user/user.js';
 
 export class UserTestFactory {

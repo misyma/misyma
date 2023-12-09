@@ -108,12 +108,4 @@ export class Generator {
       height,
     });
   }
-
-  public static sku(): string {
-    const productName = faker.commerce.product();
-
-    const productNumber = Generator.number(10000, 1);
-
-    return `${productName}-${productNumber}`;
-  }
 }

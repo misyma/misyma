@@ -1,10 +1,10 @@
 import { Type, type Static } from '@sinclair/typebox';
 
-export const deleteAuthorPathParametersSchema = Type.Object({
+export const deleteAuthorPathParamsSchema = Type.Object({
   id: Type.String(),
 });
 
-export type DeleteAuthorPathParameters = Static<typeof deleteAuthorPathParametersSchema>;
+export type DeleteAuthorPathParams = Static<typeof deleteAuthorPathParamsSchema>;
 
 export const deleteAuthorResponseNoContentBodySchema = Type.Null();
 
