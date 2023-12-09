@@ -1,26 +1,26 @@
 import {
-  deleteUserPathParametersSchema,
-  deleteUserResponseNoContentBodySchema,
-  type DeleteUserPathParameters,
-  type DeleteUserResponseNoContentBody,
+  deleteUserResponseBodyDTOSchema,
+  type DeleteUserResponseBodyDTO,
+  type DeleteUserPathParamsDTO,
+  deleteUserPathParamsDTOSchema,
 } from './schemas/deleteUserSchema.js';
 import {
-  findUserPathParametersSchema,
-  findUserResponseOkBodySchema,
-  type FindUserPathParameters,
-  type FindUserResponseOkBody,
+  findUserPathParamsDTOSchema,
+  findUserResponseBodyDTOSchema,
+  type FindUserPathParamsDTO,
+  type FindUserResponseBodyDTO,
 } from './schemas/findUserSchema.js';
 import {
-  loginUserBodySchema,
+  type LoginUserBodyDTO,
+  type LoginUserResponseBodyDTO,
+  loginUserBodyDTOSchema,
   loginUserResponseOkBodySchema,
-  type LoginUserBody,
-  type LoginUserResponseOkBody,
 } from './schemas/loginUserSchema.js';
 import {
-  registerUserBodySchema,
-  registerUserResponseCreatedBodySchema,
-  type RegisterUserBody,
-  type RegisterUserResponseCreatedBody,
+  registerUserBodyDTOSchema,
+  registerUserResponseBodyDTOSchema,
+  type RegisterUserResponseBodyDTO,
+  type RegisterUserBodyDTO,
 } from './schemas/registerUserSchema.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/common/resourceAlreadyExistsError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
@@ -65,11 +65,11 @@ export class UserHttpController implements HttpController {
         handler: this.registerUser.bind(this),
         schema: {
           request: {
-            body: registerUserBodySchema,
+            body: registerUserBodyDTOSchema,
           },
           response: {
             [HttpStatusCode.created]: {
-              schema: registerUserResponseCreatedBodySchema,
+              schema: registerUserResponseBodyDTOSchema,
               description: 'User registered.',
             },
             [HttpStatusCode.unprocessableEntity]: {
@@ -87,7 +87,7 @@ export class UserHttpController implements HttpController {
         handler: this.loginUser.bind(this),
         schema: {
           request: {
-            body: loginUserBodySchema,
+            body: loginUserBodyDTOSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
@@ -109,11 +109,11 @@ export class UserHttpController implements HttpController {
         handler: this.findUser.bind(this),
         schema: {
           request: {
-            pathParams: findUserPathParametersSchema,
+            pathParams: findUserPathParamsDTOSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
-              schema: findUserResponseOkBodySchema,
+              schema: findUserResponseBodyDTOSchema,
               description: 'User found.',
             },
             [HttpStatusCode.notFound]: {
@@ -132,11 +132,11 @@ export class UserHttpController implements HttpController {
         handler: this.deleteUser.bind(this),
         schema: {
           request: {
-            pathParams: deleteUserPathParametersSchema,
+            pathParams: deleteUserPathParamsDTOSchema,
           },
           response: {
             [HttpStatusCode.noContent]: {
-              schema: deleteUserResponseNoContentBodySchema,
+              schema: deleteUserResponseBodyDTOSchema,
               description: 'User deleted.',
             },
             [HttpStatusCode.notFound]: {
@@ -153,10 +153,8 @@ export class UserHttpController implements HttpController {
   }
 
   private async registerUser(
-    request: HttpRequest<RegisterUserBody>,
-  ): Promise<
-    HttpCreatedResponse<RegisterUserResponseCreatedBody> | HttpUnprocessableEntityResponse<ResponseErrorBody>
-  > {
+    request: HttpRequest<RegisterUserBodyDTO>,
+  ): Promise<HttpCreatedResponse<RegisterUserResponseBodyDTO> | HttpUnprocessableEntityResponse<ResponseErrorBody>> {
     try {
       const { email, password } = request.body;
 
@@ -182,8 +180,8 @@ export class UserHttpController implements HttpController {
   }
 
   private async loginUser(
-    request: HttpRequest<LoginUserBody>,
-  ): Promise<HttpOkResponse<LoginUserResponseOkBody> | HttpNotFoundResponse<ResponseErrorBody>> {
+    request: HttpRequest<LoginUserBodyDTO>,
+  ): Promise<HttpOkResponse<LoginUserResponseBodyDTO> | HttpNotFoundResponse<ResponseErrorBody>> {
     try {
       const { email, password } = request.body;
 
@@ -209,9 +207,9 @@ export class UserHttpController implements HttpController {
   }
 
   private async findUser(
-    request: HttpRequest<undefined, undefined, FindUserPathParameters>,
+    request: HttpRequest<undefined, undefined, FindUserPathParamsDTO>,
   ): Promise<
-    | HttpOkResponse<FindUserResponseOkBody>
+    | HttpOkResponse<FindUserResponseBodyDTO>
     | HttpNotFoundResponse<ResponseErrorBody>
     | HttpForbiddenResponse<ResponseErrorBody>
   > {
@@ -253,9 +251,9 @@ export class UserHttpController implements HttpController {
   }
 
   private async deleteUser(
-    request: HttpRequest<undefined, undefined, DeleteUserPathParameters>,
+    request: HttpRequest<undefined, undefined, DeleteUserPathParamsDTO>,
   ): Promise<
-    | HttpNoContentResponse<DeleteUserResponseNoContentBody>
+    | HttpNoContentResponse<DeleteUserResponseBodyDTO>
     | HttpNotFoundResponse<ResponseErrorBody>
     | HttpForbiddenResponse<ResponseErrorBody>
   > {

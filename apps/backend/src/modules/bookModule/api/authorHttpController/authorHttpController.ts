@@ -5,15 +5,15 @@ import {
   type CreateAuthorResponseCreatedBody,
 } from './schemas/createAuthorSchema.js';
 import {
-  deleteAuthorPathParametersSchema,
+  deleteAuthorPathParamsSchema,
   deleteAuthorResponseNoContentBodySchema,
-  type DeleteAuthorPathParameters,
+  type DeleteAuthorPathParams,
   type DeleteAuthorResponseNoContentBody,
 } from './schemas/deleteAuthorSchema.js';
 import {
-  findAuthorPathParametersSchema,
+  findAuthorPathParamsSchema,
   findAuthorResponseOkBodySchema,
-  type FindAuthorPathParameters,
+  type FindAuthorPathParams,
   type FindAuthorResponseOkBody,
 } from './schemas/findAuthorSchema.js';
 import { ResourceAlreadyExistsError } from '../../../../common/errors/common/resourceAlreadyExistsError.js';
@@ -80,7 +80,7 @@ export class AuthorHttpController implements HttpController {
         handler: this.findAuthor.bind(this),
         schema: {
           request: {
-            pathParams: findAuthorPathParametersSchema,
+            pathParams: findAuthorPathParamsSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
@@ -103,7 +103,7 @@ export class AuthorHttpController implements HttpController {
         handler: this.deleteAuthor.bind(this),
         schema: {
           request: {
-            pathParams: deleteAuthorPathParametersSchema,
+            pathParams: deleteAuthorPathParamsSchema,
           },
           response: {
             [HttpStatusCode.noContent]: {
@@ -157,7 +157,7 @@ export class AuthorHttpController implements HttpController {
   }
 
   private async findAuthor(
-    request: HttpRequest<undefined, undefined, FindAuthorPathParameters>,
+    request: HttpRequest<undefined, undefined, FindAuthorPathParams>,
   ): Promise<
     | HttpOkResponse<FindAuthorResponseOkBody>
     | HttpNotFoundResponse<ResponseErrorBody>
@@ -189,7 +189,7 @@ export class AuthorHttpController implements HttpController {
   }
 
   private async deleteAuthor(
-    request: HttpRequest<undefined, undefined, DeleteAuthorPathParameters>,
+    request: HttpRequest<undefined, undefined, DeleteAuthorPathParams>,
   ): Promise<
     | HttpNoContentResponse<DeleteAuthorResponseNoContentBody>
     | HttpNotFoundResponse<ResponseErrorBody>

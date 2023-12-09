@@ -2,11 +2,11 @@ import { type Static, Type } from '@sinclair/typebox';
 
 import { bookSchema } from './bookSchema.js';
 
-export const findBookPathParametersSchema = Type.Object({
+export const findBookPathParamsSchema = Type.Object({
   id: Type.String(),
 });
 
-export type FindBookPathParameters = Static<typeof findBookPathParametersSchema>;
+export type FindBookPathParams = Static<typeof findBookPathParamsSchema>;
 
 export const findBookResponseOkBodySchema = Type.Object({
   book: bookSchema,

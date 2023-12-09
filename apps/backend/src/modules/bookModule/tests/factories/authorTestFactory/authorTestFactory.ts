@@ -1,4 +1,5 @@
-import { Generator } from '../../../../../common/tests/generator.js';
+import { Generator } from '@common/tests';
+
 import { type Author } from '../../../../bookModule/domain/entities/author/author.js';
 
 export class AuthorTestFactory {
