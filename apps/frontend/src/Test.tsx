@@ -15,7 +15,7 @@ export const Test = () => {
     },
   });
 
-  if (isLoading || !data) return <p>Loading...</p>;
+  if (isLoading || !data) return <p>Loading!</p>;
 
   if (isError) return <p>Error: {error.message}</p>;
 
