@@ -41,9 +41,11 @@ ARG APPLICATION_VERSION
 ENV DIR_NAME=$DIR_NAME
 ENV APPLICATION_VERSION=$APPLICATION_VERSION
 ENV NODE_ENV=production
+ENV NODE_CONFIG_DIR=/app/apps/${DIR_NAME}/config
 
 COPY package*.json ./
 COPY --from=installer /app/apps/${DIR_NAME}/dist ./apps/${DIR_NAME}
+COPY --from=installer /app/apps/${DIR_NAME}/config ./apps/${DIR_NAME}/config
 COPY --from=installer /app/apps/${DIR_NAME}/package.json ./apps/${DIR_NAME}/package.json
 
 COPY --from=installer /app/common/ ./common/.temp
@@ -61,4 +63,4 @@ RUN npm ci
 
 USER node
 
-CMD [ "node apps/$DIR_NAME/src/index.js" ]
+CMD node apps/$DIR_NAME/src/index.js

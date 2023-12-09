@@ -22,7 +22,7 @@ import { userSymbols } from '../../modules/userModule/symbols.js';
 import { HttpRouter } from '../httpRouter/httpRouter.js';
 import { coreSymbols } from '../symbols.js';
 
-export interface StartPayload {
+interface StartPayload {
   readonly host: string;
   readonly port: number;
 }
