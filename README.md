@@ -8,11 +8,7 @@ A website for storing and rating the books you own.
 
 ![Deployment (FE)](https://github.com/misyma/misyma/actions/workflows/deployment-frontend.yml/badge.svg)
 
-```bash
-
-fly deploy -c apps/frontend/fly.toml --build-arg APPLICATION_VERSION=0.2.0
-
-```
+Deployment is done through a [Github action](https://github.com/misyma/misyma/actions/workflows/deployment-frontend.yml).
 
 ### Local deployment for testing
 
@@ -26,11 +22,7 @@ docker-compose -f docker-compose.prod.yml up --build frontend
 
 ![Deployment (BE)](https://github.com/misyma/misyma/actions/workflows/deployment-backend.yml/badge.svg)
 
-```bash
-
-fly deploy -c apps/backend/fly.toml --build-arg APPLICATION_VERSION=0.2.0
-
-```
+Deployment is done through a [Github action](https://github.com/misyma/misyma/actions/workflows/deployment-backend.yml).
 
 ### Local deployment for testing
 
