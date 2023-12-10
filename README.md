@@ -6,7 +6,7 @@ A website for storing and rating the books you own.
 
 ## Frontend
 
-Status: ![Deployment (FE)](https://github.com/misyma/misyma/actions/workflows/deployment-frontend.yml/badge.svg)
+![Deployment (FE)](https://github.com/misyma/misyma/actions/workflows/deployment-frontend.yml/badge.svg)
 
 ```bash
 
@@ -24,7 +24,7 @@ docker-compose -f docker-compose.prod.yml up --build frontend
 
 ## Backend
 
-Status: ![Deployment (BE)](https://github.com/misyma/misyma/actions/workflows/deployment-backend.yml/badge.svg)
+![Deployment (BE)](https://github.com/misyma/misyma/actions/workflows/deployment-backend.yml/badge.svg)
 
 ```bash
 
