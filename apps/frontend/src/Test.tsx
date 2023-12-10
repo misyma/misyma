@@ -1,17 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
 import ky from 'ky';
 
-interface TodoItem {
-  id: number;
-  title: string;
-  completed: boolean;
+interface HealthResponse {
+  status: string;
 }
 
 export const Test = () => {
-  const { isLoading, isError, error, data } = useQuery<TodoItem[]>({
-    queryKey: ['todos'],
+  const { isLoading, isError, error, data } = useQuery<HealthResponse>({
+    queryKey: ['health'],
     queryFn: () => {
-      return ky.get('/api/todos').json();
+      return ky.get('https://api.davout.io/health').json();
     },
   });
 
@@ -19,11 +17,5 @@ export const Test = () => {
 
   if (isError) return <p>Error: {error.message}</p>;
 
-  return (
-    <ul>
-      {data.map((todo: TodoItem) => (
-        <li key={todo.id}>{todo.title}</li>
-      ))}
-    </ul>
-  );
+  return <span>Health: {data.status}</span>;
 };
