@@ -1,4 +1,4 @@
-name: Frontend deployment
+name: Deployment (FE)
 
 on:
   workflow_dispatch:

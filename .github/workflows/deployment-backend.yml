@@ -1,4 +1,4 @@
-name: Backend deployment
+name: Deployment (BE)
 
 on:
   workflow_dispatch:
