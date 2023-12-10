@@ -12,5 +12,8 @@ export default mergeConfig(
       environment: 'jsdom',
       setupFiles: './tests/setup.js',
     },
+    define: {
+      APPLICATION_VERSION: JSON.stringify('1.0.0'),
+    },
   }),
 );

@@ -17,7 +17,7 @@
       "dependsOn": [],
       "cache": false
     },
-    "test:unit": {
+    "test:unit:run": {
       "dependsOn": [],
       "cache": false
     },
