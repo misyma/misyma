@@ -21,7 +21,7 @@
       "dependsOn": [],
       "cache": false
     },
-    "test:integration": {
+    "test:integration:run": {
       "dependsOn": [],
       "cache": false
     }

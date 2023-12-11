@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "test:unit": "vitest .unit.test.tsx",
     "test:unit:run": "npm run test:unit -- --run",
-    "test:integration": "vitest .integration.test.tsx --pool forks --poolOptions.forks.singleFork"
+    "test:integration": "vitest .integration.test.tsx --pool forks --poolOptions.forks.singleFork",
+    "test:integration:run": "npm run test:integration -- --run"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.13.4",
