@@ -1,14 +1,60 @@
 import { faker } from '@faker-js/faker';
 
+interface IntegerGenerationOptions {
+  max: Integer;
+  /**
+   * @default 0
+   */
+  min?: Integer;
+}
+
+interface FloatGenerationOptions {
+  max: number;
+  /**
+   * @default 0
+   */
+  min?: number;
+  /**
+   * Maximum amount of decimal points.
+   *
+   * @default 2
+   */
+  precision?: number;
+}
+
+interface GeolocationGenerationOptions {
+  max?: number | undefined;
+  min?: number | undefined;
+  precision?: number | undefined;
+}
+
+interface CoordinatesGenerationOptions {
+  latitudeOptions?: GeolocationGenerationOptions;
+  longitudeOptions?: GeolocationGenerationOptions;
+}
+
+type Integer = number;
+
 export class Generator {
   public static email(): string {
-    return `jakub.barczewski+${Generator.number(100000000, 1)}@cloudflight.io`;
+    return faker.internet.email();
   }
 
-  public static number(max: number, min = 0, precision = 1): number {
-    return faker.number.float({
-      min,
+  public static integer(options: IntegerGenerationOptions): Integer {
+    const { max, min = 0 } = options;
+
+    return faker.number.int({
       max,
+      min,
+    });
+  }
+
+  public static float(options: FloatGenerationOptions): number {
+    const { max, min = 0, precision = 2 } = options;
+
+    return faker.number.float({
+      max,
+      min,
       precision,
     });
   }
@@ -47,6 +93,10 @@ export class Generator {
         max: 20,
       },
     });
+  }
+
+  public static username(): string {
+    return faker.internet.userName();
   }
 
   public static url(): string {
@@ -184,7 +234,10 @@ export class Generator {
   public static sku(): string {
     const productName = faker.commerce.product();
 
-    const productNumber = Generator.number(100000, 1);
+    const productNumber = Generator.integer({
+      max: 10000,
+      min: 1,
+    });
 
     return `${productName}-${productNumber}`;
   }
@@ -202,10 +255,49 @@ export class Generator {
   }
 
   public static price(): number {
-    return Generator.number(10000, 0, 0.0001);
+    return Generator.float({
+      max: 10000,
+      min: 0,
+      precision: 0.0001,
+    });
   }
 
   public static percentage(): number {
-    return Generator.number(100, -100, 0.01);
+    return Generator.float({
+      max: 100,
+      min: -100,
+      precision: 0.01,
+    });
+  }
+
+  public static coordinates(options: CoordinatesGenerationOptions): [number, number] {
+    const { latitudeOptions = {}, longitudeOptions = {} } = options;
+
+    const longitude = this.longitude(longitudeOptions);
+
+    const latitude = this.latitude(latitudeOptions);
+
+    return [longitude, latitude];
+  }
+
+  public static longitude(options: GeolocationGenerationOptions): number {
+    const { max, min, precision } = options;
+
+    // TODO: Fix types
+    return faker.location.longitude({
+      max: max as number,
+      min: min as number,
+      precision: precision as number,
+    });
+  }
+
+  public static latitude(options: GeolocationGenerationOptions): number {
+    const { max, min, precision } = options;
+
+    return faker.location.latitude({
+      max: max as number,
+      min: min as number,
+      precision: precision as number,
+    });
   }
 }
