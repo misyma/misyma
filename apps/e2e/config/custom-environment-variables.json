@@ -1,0 +1,6 @@
+{
+  "credentials": {
+    "login": "PLAYWRIGHT_USER_LOGIN",
+    "password": "PLAYWRIGHT_USER_PASSWORD"
+  }
+}
