@@ -1,12 +1,10 @@
 import { UserDatabaseMigrationSource } from './userDatabaseMigrationSource.js';
-import { Application } from '../../../../../core/application.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
+import { type DependencyInjectionContainer } from '../../../../../libs/dependencyInjection/dependencyInjectionContainer.js';
 
 export class UserDatabaseManager {
-  public static async booststrapDatabase(): Promise<void> {
-    const container = Application.createContainer();
-
+  public static async bootstrapDatabase(container: DependencyInjectionContainer): Promise<void> {
     const databaseClient = container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient);
 
     const migrationSource = new UserDatabaseMigrationSource();
@@ -15,13 +13,9 @@ export class UserDatabaseManager {
       migrationSource,
       tableName: migrationSource.getMigrationTableName(),
     });
-
-    await databaseClient.destroy();
   }
 
-  public static async teardownDatabase(): Promise<void> {
-    const container = Application.createContainer();
-
+  public static async teardownDatabase(container: DependencyInjectionContainer): Promise<void> {
     const databaseClient = container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient);
 
     const migrationSource = new UserDatabaseMigrationSource();
@@ -30,7 +24,5 @@ export class UserDatabaseManager {
       migrationSource,
       tableName: migrationSource.getMigrationTableName(),
     });
-
-    await databaseClient.destroy();
   }
 }

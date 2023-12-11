@@ -19,24 +19,23 @@ import { type BookHttpController } from '../../modules/bookModule/api/httpContro
 import { bookSymbols } from '../../modules/bookModule/symbols.js';
 import { type UserHttpController } from '../../modules/userModule/api/httpControllers/userHttpController/userHttpController.js';
 import { userSymbols } from '../../modules/userModule/symbols.js';
+import { type ConfigProvider } from '../configProvider.js';
 import { HttpRouter } from '../httpRouter/httpRouter.js';
 import { coreSymbols } from '../symbols.js';
-
-interface StartPayload {
-  readonly host: string;
-  readonly port: number;
-}
 
 export class HttpServer {
   public readonly fastifyInstance: FastifyInstance;
   private readonly httpRouter: HttpRouter;
   private readonly container: DependencyInjectionContainer;
   private readonly loggerService: LoggerService;
+  private readonly configProvider: ConfigProvider;
 
   public constructor(container: DependencyInjectionContainer) {
     this.container = container;
 
     this.loggerService = this.container.get<LoggerService>(coreSymbols.loggerService);
+
+    this.configProvider = container.get<ConfigProvider>(coreSymbols.configProvider);
 
     this.fastifyInstance = fastify({ bodyLimit: 10 * 1024 * 1024 }).withTypeProvider<TypeBoxTypeProvider>();
 
@@ -50,8 +49,10 @@ export class HttpServer {
     ];
   }
 
-  public async start(payload: StartPayload): Promise<void> {
-    const { host, port } = payload;
+  public async start(): Promise<void> {
+    const host = this.configProvider.getServerHost();
+
+    const port = this.configProvider.getServerPort();
 
     this.setupErrorHandler();
 
