@@ -17,11 +17,11 @@
       "dependsOn": [],
       "cache": false
     },
-    "test:unit": {
+    "test:unit:run": {
       "dependsOn": [],
       "cache": false
     },
-    "test:integration": {
+    "test:integration:run": {
       "dependsOn": [],
       "cache": false
     }

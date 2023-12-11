@@ -1,0 +1,23 @@
+name: Deployment (BE)
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Application version'
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    name: Deployment
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: flyctl deploy -c apps/backend/fly.toml --build-arg APPLICATION_VERSION=$APPLICATION_VERSION --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+          APPLICATION_VERSION: ${{ inputs.version }}
+          APP_NAME: backend
+          DIR_NAME: backend
