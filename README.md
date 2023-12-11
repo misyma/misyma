@@ -2,7 +2,67 @@ A website for storing and rating the books you own.
 
 # Development
 
-TODO: fill
+## Build
+
+```bash
+
+npm run build
+
+```
+
+## Lint
+
+```bash
+
+npm run lint
+
+```
+
+## Frontend
+
+```bash
+
+npm run frontend:dev
+
+```
+
+## Backend
+
+```bash
+
+npm run backend:dev
+
+```
+
+# Tests
+
+![Tests](https://github.com/misyma/misyma/actions/workflows/test.yml/badge.svg)
+
+Tests are run through a [Github action](https://github.com/misyma/misyma/actions/workflows/test.yml) every day at 3am.
+
+## Unit
+
+```bash
+
+npm run test:unit
+
+```
+
+## Integration
+
+```bash
+
+npm run test:integration
+
+```
+
+## E2E
+
+```bash
+
+npm run test:e2e
+
+```
 
 # Deployment
 
