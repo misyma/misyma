@@ -12,7 +12,6 @@ services:
     environment:
       NODE_ENV: production
       DATABASE_PATH: /app/apps/backend/data/misyma.db
-    command: ['npm', 'start', '--prefix', '/app/apps/backend']
     volumes:
       - ./apps/backend/data:/app/apps/backend/data
     ports:
@@ -29,6 +28,5 @@ services:
         APPLICATION_VERSION: 0.1.0
     environment:
       NODE_ENV: production
-    command: ['npm', 'start', '--prefix', '/app/apps/frontend']
     ports:
-      - '8043:8043'
+      - '8080:8080'
