@@ -8,9 +8,10 @@
     "build:clean": "rimraf dist",
     "build": "tsc --build tsconfig.prod.json",
     "build:dev": "tsc --build tsconfig.dev.json",
-    "test:unit": "vitest .unit.test.ts",
+    "test:unit": "vitest .unit.test.ts --config vitest.unit.config.js",
     "test:unit:run": "npm run test:unit -- --run",
-    "test:integration": "NODE_ENV=development vitest .integration.test.ts --pool forks --poolOptions.forks.singleFork",
+    "test:integration": "NODE_ENV=development vitest --config vitest.integration.config.js .integration.test.ts",
+    "test:integration:run": "npm run test:integration -- --run",
     "lint": "eslint . --ext .ts --cache --max-warnings 0",
     "lint:fix": "npm run lint -- --fix"
   },

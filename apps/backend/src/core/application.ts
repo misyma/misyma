@@ -14,9 +14,23 @@ import { type UuidService } from '../libs/uuid/services/uuidService/uuidService.
 import { UuidServiceImpl } from '../libs/uuid/services/uuidService/uuidServiceImpl.js';
 import { AuthModule } from '../modules/authModule/authModule.js';
 import { BookModule } from '../modules/bookModule/bookModule.js';
+import { BookDatabaseManager } from '../modules/bookModule/infrastructure/databases/bookDatabase/bookDatabaseManager.js';
+import { UserDatabaseManager } from '../modules/userModule/infrastructure/databases/userDatabase/userDatabaseManager.js';
 import { UserModule } from '../modules/userModule/userModule.js';
 
 export class Application {
+  private static async setupDatabase(container: DependencyInjectionContainer): Promise<void> {
+    const databaseManagers = [UserDatabaseManager, BookDatabaseManager];
+
+    for await (const databaseManager of databaseManagers) {
+      await databaseManager.bootstrapDatabase(container);
+    }
+
+    const sqliteDatabaseClient = container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient);
+
+    await sqliteDatabaseClient.raw('PRAGMA journal_mode = WAL');
+  }
+
   public static createContainer(): DependencyInjectionContainer {
     const configProvider = new ConfigProvider();
 
@@ -46,20 +60,20 @@ export class Application {
   public static async start(): Promise<void> {
     const container = Application.createContainer();
 
-    const configProvider = container.get<ConfigProvider>(coreSymbols.configProvider);
+    const loggerService = container.get<LoggerService>(coreSymbols.loggerService);
 
-    const serverHost = configProvider.getServerHost();
+    await this.setupDatabase(container);
 
-    const serverPort = configProvider.getServerPort();
+    loggerService.info({
+      message: 'Migrations ran.',
+      context: {
+        source: Application.name,
+      },
+    });
 
     const server = new HttpServer(container);
 
-    await server.start({
-      host: serverHost,
-      port: serverPort,
-    });
-
-    const loggerService = container.get<LoggerService>(coreSymbols.loggerService);
+    await server.start();
 
     loggerService.log({
       message: `Application started.`,

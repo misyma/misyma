@@ -5,6 +5,9 @@
     ".": "./dist/src/index.js"
   },
   "types": "dist/src/index.d.ts",
+  "files": [
+    "/dist"
+  ],
   "private": true,
   "scripts": {
     "build:clean": "rimraf dist",
