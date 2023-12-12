@@ -5,7 +5,6 @@ import config from '../../vitest.config.js';
 
 export default mergeConfig(config, defineConfig({
   test: {
-    globals: true,
     globalSetup: [
       './tests/globalSetup.ts',
     ],
