@@ -17,7 +17,7 @@ jobs:
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - run: flyctl deploy -c apps/backend/fly.toml --build-arg APPLICATION_VERSION=$APPLICATION_VERSION --remote-only
         env:
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+          FLY_API_TOKEN: ${{ secrets.FLY_DEPLOY_BACKEND_TOKEN }}
           APPLICATION_VERSION: ${{ inputs.version }}
           APP_NAME: backend
           DIR_NAME: backend
