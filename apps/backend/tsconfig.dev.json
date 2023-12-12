@@ -1,7 +1,8 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "types": ["vitest/globals"]
   },
   "include": [
     "src"
@@ -13,5 +14,6 @@
     {
       "path": "../../common/tests/tsconfig.json"
     }
+
   ]
 }
