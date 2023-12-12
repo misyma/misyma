@@ -46,8 +46,8 @@ ENV NODE_ENV=production
 ENV NODE_CONFIG_DIR=/app/apps/${DIR_NAME}/config
 ENV CI=true
 
-COPY package*.json ./
 COPY tools/ ./tools
+COPY package*.json ./
 COPY --from=installer /app/apps/${DIR_NAME}/dist ./apps/${DIR_NAME}
 COPY --from=installer /app/apps/${DIR_NAME}/config ./apps/${DIR_NAME}/config
 COPY --from=installer /app/apps/${DIR_NAME}/package.json ./apps/${DIR_NAME}/package.json

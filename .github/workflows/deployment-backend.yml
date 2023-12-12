@@ -9,7 +9,7 @@ on:
         type: string
 
 jobs:
-  deploy:
+  deploy-backend:
     name: Deployment
     runs-on: ubuntu-latest
     steps:
