@@ -1,22 +1,31 @@
-app = "misyma-frontend"
+app = "misyma-backend"
 primary_region = "waw"
 
 [build]
   dockerfile = "./Dockerfile"
-  build-target = "static"
+  build-target = "runner"
   [build.args]
-    APP_NAME = "frontend"
-    DIR_NAME = "frontend"
+    APP_NAME = "backend"
+    DIR_NAME = "backend"
 
 [deploy]
   strategy = "rolling"
 
+[env]
+  DATABASE_PATH = "/data/misyma.db"
+  NODE_ENV = "production"
+
 [http_service]
-  internal_port = 8080
+  internal_port = 5000
   force_https = true
   auto_stop_machines = false
   auto_start_machines = false
   min_machines_running = 1
+  processes = ["app"]
+
+[mounts]
+  source = "misyma_data"
+  destination = "/data"
   processes = ["app"]
 
 [[vm]]
