@@ -8,5 +8,11 @@ export default mergeConfig(config, defineConfig({
     globalSetup: [
       './tests/globalSetup.ts',
     ],
+    pool: 'forks',
+    poolOptions: {
+      forks: {
+        singleFork: true,
+      }
+    }
   },
 }));
