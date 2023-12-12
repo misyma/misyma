@@ -9,7 +9,7 @@
     "test:integration": "turbo run test:integration:run --concurrency 5",
     "lint": "turbo run lint --concurrency 5",
     "lint:fix": "turbo run lint:fix",
-    "codebase:validate": "turbo run build lint test:unit:run --concurrency 5",
+    "codebase:validate": "turbo run build && turbo run lint test:unit:run --concurrency 5",
     "frontend:dev": "npm run dev -w @apps/frontend",
     "backend:dev": "npm run dev -w @apps/backend",
     "knip": "knip --config knip.json"

@@ -4,6 +4,9 @@
   "exports": {
     ".": "./dist/src/index.js"
   },
+  "files": [
+    "/dist"
+  ],
   "types": "dist/src/index.d.ts",
   "private": true,
   "scripts": {
