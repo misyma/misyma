@@ -9,7 +9,7 @@ export class ConfigProvider {
   }
 
   public getServerPort(): number {
-    return 8080;
+    return 5000;
   }
 
   public getLoggerLevel(): LoggerLevel {

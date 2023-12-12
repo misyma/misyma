@@ -11,11 +11,10 @@ services:
         DIR_NAME: backend
     environment:
       NODE_ENV: production
-      DATABASE_PATH: /app/apps/backend/data/misyma.db
     volumes:
       - ./apps/backend/data:/app/apps/backend/data
     ports:
-      - '3000:3000'
+      - '5000:5000'
 
   frontend:
     container_name: misyma-frontend
