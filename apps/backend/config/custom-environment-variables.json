@@ -1,9 +1,9 @@
 {
   "logger": {
-      "level": "LOGGER_LEVEL"
+    "level": "LOGGER_LEVEL"
   },
   "database": {
-      "path": "SQLITE_DATABASE_PATH"
+    "path": "DATABASE_PATH"
   },
   "auth": {
     "hash": {
