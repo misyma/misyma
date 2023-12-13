@@ -1,8 +1,10 @@
-import test from '@playwright/test';
+import { test } from '@playwright/test';
 import config from 'config';
-import { LoginPage } from '../pages/loginPage';
-import { mockUserLogin } from '../mocks/userApiMocks';
-import { Generator } from '../utils/generator';
+
+import { Generator } from '@common/tests';
+
+import { mockUserLogin } from '../mocks/userApiMocks.js';
+import { LoginPage } from '../pages/loginPage.js';
 
 test('shows an error - when email is invalid', async ({ page }) => {
   const appBaseUrl = config.get<string>('appUrl');

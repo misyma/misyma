@@ -5,6 +5,7 @@ import './App.css';
 
 import { Test } from './Test';
 import { store } from './stores/store';
+import Login from './pages/Login';
 
 function App() {
   const applicationVersion = APPLICATION_VERSION || '1.0.0';
@@ -15,10 +16,10 @@ function App() {
     <Provider store={store}>
       <h1 className="text-3xl font-bold underline">Hello world!</h1>
       <p>Version: {applicationVersion}</p>
-      <div className='grid py-3 px-5 gap-5'>
-
-      <button className="btn btn-primary">Button</button>
-      <p>{t('Welcome to React')}</p>
+      <div className="grid py-3 px-5 gap-5">
+        <Login></Login>
+        <button className="btn btn-primary">Button</button>
+        <p>{t('Welcome to React')}</p>
       </div>
       <Test />
     </Provider>

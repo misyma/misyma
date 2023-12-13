@@ -1,4 +1,4 @@
-import { Page, expect } from '@playwright/test';
+import { type Page, expect } from '@playwright/test';
 
 export class LoginPage {
   public constructor(private readonly page: Page) {}
@@ -37,11 +37,15 @@ export class LoginPage {
 
   public async checkNoErrors(): Promise<void> {
     const emailError = this.page.getByText('Invalid email address.');
+
     const passwordError = this.page.getByText('Password too short - 8 characters required.');
+
     const formError = this.page.getByText('Password or email invalid. Try again.');
 
     expect(await emailError.isVisible()).toBeFalsy();
+
     expect(await passwordError.isVisible()).toBeFalsy();
+
     expect(await formError.isVisible()).toBeFalsy();
   }
 }
