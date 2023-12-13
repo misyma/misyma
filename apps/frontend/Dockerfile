@@ -37,12 +37,15 @@ COPY --from=builder /app/out/full/ .
 
 RUN npm run build --filter="@apps/$APP_NAME"
 
-FROM pierrezemb/gostatic as static
+RUN npm run build --filter="@apps/$APP_NAME"
+
+FROM nginx as static
 
 ARG DIR_NAME
 
 ENV DIR_NAME=$DIR_NAME
 
-COPY --from=installer /app/apps/${DIR_NAME}/dist /srv/http/
+COPY --from=installer /app/apps/${DIR_NAME}/nginx/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=installer /app/apps/${DIR_NAME}/nginx/.htpasswd /etc/nginx/conf.d/.htpasswd
 
-ENTRYPOINT ["/goStatic", "-fallback=/index.html", "-enable-health"]
+COPY --from=installer /app/apps/${DIR_NAME}/dist /usr/share/nginx/html
