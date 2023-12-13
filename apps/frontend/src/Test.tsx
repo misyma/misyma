@@ -1,21 +1,14 @@
-import { useQuery } from '@tanstack/react-query';
-import ky from 'ky';
-
-interface HealthResponse {
-  status: string;
-}
+import { useStoreDispatch, useStoreSelector } from './stores/storeHooks';
+import { userStateActions } from './stores/userStore/userStateSlice';
 
 export const Test = () => {
-  const { isLoading, isError, error, data } = useQuery<HealthResponse>({
-    queryKey: ['health'],
-    queryFn: () => {
-      return ky.get('https://api.davout.io/health').json();
-    },
-  });
+  const dispatch = useStoreDispatch();
 
-  if (isLoading || !data) return <p>Loading!</p>;
+  const currentUser = useStoreSelector((state) => state.user.currentUser);
 
-  if (isError) return <p>Error: {error.message}</p>;
-
-  return <span>Health: {data.status}</span>;
+  return (
+    <span onClick={() => dispatch(userStateActions.setCurrentUser({ user: { id: 1, name: 'test' } }))}>
+      Current user id: {currentUser?.id}
+    </span>
+  );
 };
