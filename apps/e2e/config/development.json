@@ -3,5 +3,7 @@
     "login": "tester",
     "password": "tester123"
   },
-  "appUrl": "http://localhost:5173"
+  "application": {
+    "url": "http://localhost:5173"
+  }
 }

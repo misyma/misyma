@@ -2,5 +2,8 @@
   "credentials": {
     "login": null,
     "password": null
+  },
+  "application": {
+    "url": "http://localhost:5173"
   }
 }

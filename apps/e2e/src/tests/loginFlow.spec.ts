@@ -3,11 +3,11 @@ import config from 'config';
 
 import { Generator } from '@common/tests';
 
-import { mockUserLogin } from '../mocks/userApiMocks.js';
+import { UserApiMocksService } from '../mocks/userApiMocksService.js';
 import { LoginPage } from '../pages/loginPage.js';
 
 test('shows an error - when email is invalid', async ({ page }) => {
-  const appBaseUrl = config.get<string>('appUrl');
+  const appBaseUrl = config.get<string>('application.url');
 
   await page.goto(appBaseUrl);
 
@@ -19,7 +19,9 @@ test('shows an error - when email is invalid', async ({ page }) => {
 });
 
 test('login handled successfully', async ({ page }) => {
-  const appBaseUrl = config.get('appUrl');
+  const appBaseUrl = config.get('application.url');
+
+  const userApiMocksService = new UserApiMocksService();
 
   await page.goto(`${appBaseUrl}`);
 
@@ -30,7 +32,7 @@ test('login handled successfully', async ({ page }) => {
     password: Generator.password(10),
   };
 
-  await mockUserLogin({
+  await userApiMocksService.mockUserLogin({
     page,
     acceptEmail: userCredentials.email,
     acceptPassword: userCredentials.password,
