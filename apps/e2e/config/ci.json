@@ -5,5 +5,6 @@
   },
   "application": {
     "url": "http://localhost:5173"
-  }
+  },
+  "useMocks": true
 }

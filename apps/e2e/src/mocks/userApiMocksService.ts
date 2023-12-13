@@ -1,4 +1,5 @@
 import { type Page } from '@playwright/test';
+import config from 'config';
 
 interface MockUserLoginPayload {
   page: Page;
@@ -11,8 +12,14 @@ interface MockUserRegistrationPayload {
 }
 
 export class UserApiMocksService {
+  private useMocks = config.get<boolean>('useMocks');
+
   public async mockUserLogin(payload: MockUserLoginPayload): Promise<void> {
     const { acceptEmail, acceptPassword, page } = payload;
+
+    if (!this.useMocks) {
+      return;
+    }
 
     // TODO: Replace with real endpoint
     await page.route(new RegExp(/(api\/user\/login)$/), (route) => {
@@ -54,6 +61,10 @@ export class UserApiMocksService {
 
   public async mockUserRegistration(payload: MockUserRegistrationPayload): Promise<void> {
     const { page } = payload;
+
+    if (!this.useMocks) {
+      return;
+    }
 
     await page.route('/api/user/register', (route) => {
       route.fulfill({
