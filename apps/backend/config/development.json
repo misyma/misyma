@@ -1,4 +1,7 @@
 {
+  "logger": {
+    "prettifyLogs": true
+  },
   "database": {
     "path": "data/test.db"
   },
@@ -10,6 +13,5 @@
       "secret": "12321313423565365654546654121890008",
       "expiresIn": 86400
     }
-  },
-  "isLocalEnvironment": true
+  }
 }

@@ -1,6 +1,7 @@
 {
   "logger": {
-    "level": "LOGGER_LEVEL"
+    "level": "LOGGER_LEVEL",
+    "prettifyLogs": "LOGGER_PRETTIFY_LOGS"
   },
   "database": {
     "path": "DATABASE_PATH"
@@ -13,6 +14,5 @@
       "secret": "JWT_SECRET",
       "expiresIn": "JWT_EXPIRES_IN"
     }
-  },
-  "isLocalEnvironment": "IS_LOCAL_ENVIRONMENT"
+  }
 }

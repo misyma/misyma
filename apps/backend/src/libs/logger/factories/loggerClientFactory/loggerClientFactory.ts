@@ -7,19 +7,16 @@ import { type LoggerConfig } from '../../types/loggerConfig.js';
 
 export class LoggerClientFactory {
   public static create(config: LoggerConfig): LoggerClient {
-    let loggerClientConfig: LoggerOptions = {
+    const loggerClientConfig: LoggerOptions = {
       name: 'Logger',
       level: config.logLevel,
     };
 
-    if (config.prettyLogsEnabled) {
-      loggerClientConfig = {
-        ...loggerClientConfig,
-        transport: {
-          target: 'pino-pretty',
-          options: {
-            colorize: true,
-          },
+    if (config.prettifyLogs) {
+      loggerClientConfig.transport = {
+        target: 'pino-pretty',
+        options: {
+          colorize: true,
         },
       };
     }

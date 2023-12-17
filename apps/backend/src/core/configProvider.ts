@@ -16,6 +16,10 @@ export class ConfigProvider {
     return this.getValue<LogLevel>('logger.level');
   }
 
+  public getLoggerPrettifyLogs(): boolean {
+    return this.getValue<boolean>('logger.prettifyLogs');
+  }
+
   public getSqliteDatabasePath(): string {
     return this.getValue<string>('database.path');
   }
@@ -30,10 +34,6 @@ export class ConfigProvider {
 
   public getHashSaltRounds(): number {
     return this.getValue<number>('auth.hash.saltRounds');
-  }
-
-  public getIsLocalEnvironment(): boolean {
-    return this.getValue<boolean>('isLocalEnvironment');
   }
 
   private getValue<T>(key: string): T {

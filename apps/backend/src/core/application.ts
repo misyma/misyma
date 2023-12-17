@@ -39,7 +39,7 @@ export class Application {
 
     const logLevel = configProvider.getLogLevel();
 
-    const isLocalEnvironment = configProvider.getIsLocalEnvironment();
+    const prettifyLogs = configProvider.getLoggerPrettifyLogs();
 
     const modules: DependencyInjectionModule[] = [new UserModule(), new AuthModule(), new BookModule()];
 
@@ -48,7 +48,7 @@ export class Application {
     container.bind<LoggerService>(symbols.loggerService, () =>
       LoggerServiceFactory.create({
         logLevel,
-        prettyLogsEnabled: isLocalEnvironment,
+        prettifyLogs,
       }),
     );
 

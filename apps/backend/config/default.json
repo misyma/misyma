@@ -1,6 +1,7 @@
 {
   "logger": {
-    "level": "debug"
+    "level": "debug",
+    "prettifyLogs": false
   },
   "database": {
     "path": null
@@ -13,6 +14,5 @@
       "secret": null,
       "expiresIn": null
     }
-  },
-  "isLocalEnvironment": false
+  }
 }
