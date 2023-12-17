@@ -72,7 +72,7 @@ describe('LoginUserCommandHandler', () => {
     expect(tokenPayload['userId']).toBe(id);
   });
 
-  it('throws an error if user with given email does not exist', async () => {
+  it('throws an error if a User with given email does not exist', async () => {
     const { email, password } = userTestFactory.create();
 
     try {
@@ -89,7 +89,7 @@ describe('LoginUserCommandHandler', () => {
     expect.fail();
   });
 
-  it('throws an error if user password does not match stored password', async () => {
+  it(`throws an error if User's password does not match stored password`, async () => {
     const { email, password } = await userTestUtils.createAndPersist();
 
     try {

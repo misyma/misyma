@@ -19,7 +19,7 @@ export class RegisterUserCommandHandlerImpl implements RegisterUserCommandHandle
     const { email, password, firstName, lastName } = payload;
 
     this.loggerService.debug({
-      message: 'Registering user...',
+      message: 'Registering User...',
       context: {
         email,
         firstName,

@@ -36,7 +36,7 @@ describe('RegisterUserCommandHandler', () => {
     await sqliteDatabaseClient.destroy();
   });
 
-  it('creates a user', async () => {
+  it('creates a User', async () => {
     const { email, password, firstName, lastName } = userTestFactory.create();
 
     const { user } = await registerUserCommandHandler.execute({
@@ -53,7 +53,7 @@ describe('RegisterUserCommandHandler', () => {
     expect(foundUser.email).toEqual(email);
   });
 
-  it('throws an error when user with the same email already exists', async () => {
+  it('throws an error when a User with the same email already exists', async () => {
     const existingUser = await userTestUtils.createAndPersist();
 
     try {

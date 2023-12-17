@@ -21,7 +21,7 @@ export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
     const { email, password } = payload;
 
     this.loggerService.debug({
-      message: 'Logging user in...',
+      message: 'Logging User in...',
       context: { email },
     });
 

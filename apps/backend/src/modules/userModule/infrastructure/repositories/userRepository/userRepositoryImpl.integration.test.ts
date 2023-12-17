@@ -38,7 +38,7 @@ describe('UserRepositoryImpl', () => {
   });
 
   describe('Create', () => {
-    it('creates a user', async () => {
+    it('creates a User', async () => {
       const { email, password, firstName, lastName } = userTestFactory.create();
 
       const user = await userRepository.createUser({
@@ -55,7 +55,7 @@ describe('UserRepositoryImpl', () => {
       expect(foundUser.email).toEqual(email);
     });
 
-    it('throws an error when user with the same email already exists', async () => {
+    it('throws an error when a User with the same email already exists', async () => {
       const existingUser = await userTestUtils.createAndPersist();
 
       try {
@@ -76,7 +76,7 @@ describe('UserRepositoryImpl', () => {
   });
 
   describe('Find', () => {
-    it('finds user by id', async () => {
+    it('finds a User by id', async () => {
       const user = await userTestUtils.createAndPersist();
 
       const foundUser = await userRepository.findUser({ id: user.id });
@@ -84,7 +84,7 @@ describe('UserRepositoryImpl', () => {
       expect(foundUser).not.toBeNull();
     });
 
-    it('finds user by email', async () => {
+    it('finds a User by email', async () => {
       const user = await userTestUtils.createAndPersist();
 
       const foundUser = await userRepository.findUser({ email: user.email });
@@ -92,7 +92,7 @@ describe('UserRepositoryImpl', () => {
       expect(foundUser).not.toBeNull();
     });
 
-    it('returns null if user with given id does not exist', async () => {
+    it('returns null if a User with given id does not exist', async () => {
       const { id } = userTestFactory.create();
 
       const user = await userRepository.findUser({ id });
@@ -102,7 +102,7 @@ describe('UserRepositoryImpl', () => {
   });
 
   describe('Update', () => {
-    it(`updates user's password`, async () => {
+    it(`updates User's password`, async () => {
       const user = await userTestUtils.createAndPersist();
 
       const { password } = userTestFactory.create();
@@ -115,7 +115,7 @@ describe('UserRepositoryImpl', () => {
       expect(foundUser.password).toEqual(password);
     });
 
-    it(`updates user's first name`, async () => {
+    it(`updates User's first name`, async () => {
       const user = await userTestUtils.createAndPersist();
 
       const { firstName } = userTestFactory.create();
@@ -128,7 +128,7 @@ describe('UserRepositoryImpl', () => {
       expect(foundUser.firstName).toEqual(firstName);
     });
 
-    it(`updates user's last name`, async () => {
+    it(`updates User's last name`, async () => {
       const user = await userTestUtils.createAndPersist();
 
       const { lastName } = userTestFactory.create();
@@ -141,7 +141,7 @@ describe('UserRepositoryImpl', () => {
       expect(foundUser.lastName).toEqual(lastName);
     });
 
-    it('throws an error if user with given id does not exist', async () => {
+    it('throws an error if a User with given id does not exist', async () => {
       const { id, password } = userTestFactory.create();
 
       try {
@@ -160,7 +160,7 @@ describe('UserRepositoryImpl', () => {
   });
 
   describe('Delete', () => {
-    it('deletes user', async () => {
+    it('deletes a User', async () => {
       const user = await userTestUtils.createAndPersist();
 
       await userRepository.deleteUser({ id: user.id });
@@ -170,7 +170,7 @@ describe('UserRepositoryImpl', () => {
       expect(foundUser).toBeUndefined();
     });
 
-    it('throws an error if user with given id does not exist', async () => {
+    it('throws an error if a User with given id does not exist', async () => {
       const { id } = userTestFactory.create();
 
       try {

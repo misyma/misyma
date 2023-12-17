@@ -12,7 +12,7 @@ export class DeleteUserCommandHandlerImpl implements DeleteUserCommandHandler {
     const { userId } = payload;
 
     this.loggerService.debug({
-      message: 'Deleting user...',
+      message: 'Deleting User...',
       context: { userId },
     });
 

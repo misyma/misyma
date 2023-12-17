@@ -36,7 +36,7 @@ describe('DeleteUserCommandHandler', () => {
     await sqliteDatabaseClient.destroy();
   });
 
-  it('deletes user', async () => {
+  it('deletes a User', async () => {
     const user = await userTestUtils.createAndPersist();
 
     await deleteUserCommandHandler.execute({ userId: user.id });
@@ -46,7 +46,7 @@ describe('DeleteUserCommandHandler', () => {
     expect(foundUser).toBeUndefined();
   });
 
-  it('throws an error if user with given id does not exist', async () => {
+  it('throws an error if a User with given id does not exist', async () => {
     const { id } = userTestFactory.create();
 
     try {
