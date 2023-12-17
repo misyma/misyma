@@ -16,6 +16,8 @@ export type FindUserPathParamsDTO = TypeExtends<
 export const findUserResponseBodyDTOSchema = Type.Object({
   id: Type.String(),
   email: Type.String(),
+  firstName: Type.String(),
+  lastName: Type.String(),
 });
 
 export type FindUserResponseBodyDTO = TypeExtends<

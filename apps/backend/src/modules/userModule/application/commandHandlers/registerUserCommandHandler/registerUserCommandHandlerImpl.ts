@@ -16,11 +16,15 @@ export class RegisterUserCommandHandlerImpl implements RegisterUserCommandHandle
   ) {}
 
   public async execute(payload: RegisterUserCommandHandlerPayload): Promise<RegisterUserCommandHandlerResult> {
-    const { email, password } = payload;
+    const { email, password, firstName, lastName } = payload;
 
     this.loggerService.debug({
-      message: 'Registering user...',
-      context: { email },
+      message: 'Registering User...',
+      context: {
+        email,
+        firstName,
+        lastName,
+      },
     });
 
     const existingUser = await this.userRepository.findUser({ email });
@@ -37,6 +41,8 @@ export class RegisterUserCommandHandlerImpl implements RegisterUserCommandHandle
     const user = await this.userRepository.createUser({
       email,
       password: hashedPassword,
+      firstName,
+      lastName,
     });
 
     this.loggerService.info({

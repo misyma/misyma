@@ -12,7 +12,7 @@ describe('UserMapperImpl', () => {
     userMapperImpl = new UserMapperImpl();
   });
 
-  it('maps from user raw entity to domain user', async () => {
+  it('maps from UserRawEntity to User', async () => {
     const userEntity = userEntityTestFactory.create();
 
     const user = userMapperImpl.mapToDomain(userEntity);
@@ -21,6 +21,8 @@ describe('UserMapperImpl', () => {
       id: userEntity.id,
       email: userEntity.email,
       password: userEntity.password,
+      firstName: userEntity.firstName,
+      lastName: userEntity.lastName,
     });
   });
 });

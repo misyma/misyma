@@ -155,11 +155,13 @@ export class UserHttpController implements HttpController {
     request: HttpRequest<RegisterUserBodyDTO>,
   ): Promise<HttpCreatedResponse<RegisterUserResponseBodyDTO> | HttpUnprocessableEntityResponse<ResponseErrorBody>> {
     try {
-      const { email, password } = request.body;
+      const { email, password, firstName, lastName } = request.body;
 
       const { user } = await this.registerUserCommandHandler.execute({
         email,
         password,
+        firstName,
+        lastName,
       });
 
       return {
@@ -167,6 +169,8 @@ export class UserHttpController implements HttpController {
         body: {
           id: user.id,
           email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
         },
       };
     } catch (error) {
@@ -223,6 +227,7 @@ export class UserHttpController implements HttpController {
 
     if (userId !== id) {
       return {
+        // TODO: add forbidden message
         statusCode: HttpStatusCode.forbidden,
         body: {
           error: {
@@ -241,6 +246,8 @@ export class UserHttpController implements HttpController {
         body: {
           id: user.id,
           email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
         },
       };
     } catch (error) {
@@ -270,6 +277,7 @@ export class UserHttpController implements HttpController {
 
     if (userId !== id) {
       return {
+        // TODO: add forbidden message
         statusCode: HttpStatusCode.forbidden,
         body: {
           error: {

@@ -36,7 +36,7 @@ describe('FindUserQueryHandler', () => {
     await sqliteDatabaseClient.destroy();
   });
 
-  it('finds user by id', async () => {
+  it('finds a User by id', async () => {
     const user = await userTestUtils.createAndPersist();
 
     const { user: foundUser } = await findUserQueryHandler.execute({ userId: user.id });
@@ -44,7 +44,7 @@ describe('FindUserQueryHandler', () => {
     expect(foundUser).not.toBeNull();
   });
 
-  it('throws an error if user with given id does not exist', async () => {
+  it('throws an error if a User with given id does not exist', async () => {
     const { id } = userTestFactory.create();
 
     try {

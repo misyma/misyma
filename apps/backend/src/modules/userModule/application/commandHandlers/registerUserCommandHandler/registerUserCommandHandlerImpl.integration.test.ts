@@ -36,12 +36,14 @@ describe('RegisterUserCommandHandler', () => {
     await sqliteDatabaseClient.destroy();
   });
 
-  it('creates a user', async () => {
-    const { email, password } = userTestFactory.create();
+  it('creates a User', async () => {
+    const { email, password, firstName, lastName } = userTestFactory.create();
 
     const { user } = await registerUserCommandHandler.execute({
       email,
       password,
+      firstName,
+      lastName,
     });
 
     const foundUser = await userTestUtils.findByEmail({ email });
@@ -51,13 +53,15 @@ describe('RegisterUserCommandHandler', () => {
     expect(foundUser.email).toEqual(email);
   });
 
-  it('throws an error when user with the same email already exists', async () => {
+  it('throws an error when a User with the same email already exists', async () => {
     const existingUser = await userTestUtils.createAndPersist();
 
     try {
       await registerUserCommandHandler.execute({
         email: existingUser.email,
         password: existingUser.password,
+        firstName: existingUser.firstName,
+        lastName: existingUser.lastName,
       });
     } catch (error) {
       expect(error).toBeInstanceOf(ResourceAlreadyExistsError);
