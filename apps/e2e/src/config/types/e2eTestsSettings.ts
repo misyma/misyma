@@ -1,5 +1,3 @@
-import { type UserApiSettings } from './userApiSettings.js';
-
 export interface E2ETestsSettings {
   credentials: {
     email: string;
@@ -7,14 +5,6 @@ export interface E2ETestsSettings {
   };
   application: {
     url: string;
-    pages: {
-      login: string;
-      register: string;
-      logout: string;
-    };
-  };
-  api: {
-    user: UserApiSettings;
   };
   useMocks: boolean;
 }

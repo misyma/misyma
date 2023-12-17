@@ -1,6 +1,8 @@
 import { type Page, expect } from '@playwright/test';
 
+import { HttpStatusCode } from '../../../backend/src/common/types/http/httpStatusCode.js';
 import { E2ETestConfigProvider } from '../config/e2eTestConfigProvider.js';
+import { MockResponse } from '../mocks/mockResponse.js';
 import { type UserApiMocksService } from '../mocks/userApiMocksService.js';
 
 export interface MockLoginRequestPayload {
@@ -85,9 +87,11 @@ export class LoginPage {
     const { accessToken, refreshToken } = payload;
 
     await this.userApiMocksService.mockUserLogin({
-      accessToken,
-      refreshToken,
       page: this.loginPage,
+      response: new MockResponse(HttpStatusCode.created, {
+        accessToken,
+        refreshToken,
+      }),
     });
   }
 

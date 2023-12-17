@@ -1,80 +1,48 @@
 import { type Page } from '@playwright/test';
 
+import { type MockResponse } from './mockResponse.js';
 import { E2ETestConfigProvider } from '../config/e2eTestConfigProvider.js';
 
-interface MockUserLoginPayload {
+interface MockResponsePayload {
   page: Page;
-  accessToken: string;
-  refreshToken: string;
-}
-
-interface MockUserRegistrationPayload {
-  page: Page;
+  response: MockResponse;
 }
 
 export class UserApiMocksService {
   private mocksEnabled = E2ETestConfigProvider.areMocksEnabled();
 
-  private userApiSettings = E2ETestConfigProvider.getUserApiSettings();
-
-  public async mockUserLogin(payload: MockUserLoginPayload): Promise<void> {
-    const { page, accessToken, refreshToken } = payload;
+  public async mockUserLogin(payload: MockResponsePayload): Promise<void> {
+    const { page, response } = payload;
 
     if (!this.mocksEnabled) {
       return;
     }
 
-    await page.route(new RegExp(this.userApiSettings.login.url), (route) => {
-      const requestBody = route.request().postData();
-
-      if (!requestBody) {
-        // TODO: We can just pass our error messages here in the body
-        route.fulfill({
-          status: 401,
-          contentType: 'application/json',
-          body: 'Unauthorized.',
-        });
-
-        return;
-      }
-
-      const { email, password } = JSON.parse(requestBody);
-
-      if (
-        email !== E2ETestConfigProvider.getTestUserEmail() ||
-        password !== E2ETestConfigProvider.getTestUserPassword()
-      ) {
-        route.fulfill({
-          status: 401,
-          contentType: 'application/json',
-          body: 'Unauthorized.',
-        });
-
+    await page.route(new RegExp(/\/api\/user\/login$/), (route) => {
+      if (!this.mocksEnabled) {
         return;
       }
 
       route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          accessToken,
-          refreshToken,
-        }),
+        status: response.statusCode,
+        contentType: response.contentType,
+        body: response.getStringifiedBody(),
       });
     });
   }
 
-  public async mockUserRegistration(payload: MockUserRegistrationPayload): Promise<void> {
-    const { page } = payload;
+  public async mockUserRegistration(payload: MockResponsePayload): Promise<void> {
+    const { page, response } = payload;
 
     if (!this.mocksEnabled) {
       return;
     }
 
-    await page.route(new RegExp(this.userApiSettings.register.url), (route) => {
+    await page.route(new RegExp(/\/api\/user\/register$/), (route) => {
       route.fulfill({
-        status: 201,
-        contentType: 'application/json',
+        status: response.statusCode,
+        contentType: response.contentType,
+        body: response.getStringifiedBody(),
       });
     });
   }
