@@ -2,7 +2,6 @@ import { type Static, Type } from '@sinclair/typebox';
 
 import type * as contracts from '@common/contracts';
 
-import { userSchema } from './userSchema.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const registerUserBodyDTOSchema = Type.Object({
@@ -13,7 +12,8 @@ export const registerUserBodyDTOSchema = Type.Object({
 export type RegisterUserBodyDTO = TypeExtends<Static<typeof registerUserBodyDTOSchema>, contracts.LoginUserBody>;
 
 export const registerUserResponseBodyDTOSchema = Type.Object({
-  user: userSchema,
+  id: Type.String(),
+  email: Type.String(),
 });
 
 export type RegisterUserResponseBodyDTO = TypeExtends<

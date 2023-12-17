@@ -1,20 +1,20 @@
 import {
-  createBookBodySchema,
-  createBookResponseCreatedBodySchema,
-  type CreateBookBody,
-  type CreateBookResponseCreatedBody,
+  createBookBodyDTOSchema,
+  createBookResponseBodyDTOSchema,
+  type CreateBookBodyDTO,
+  type CreateBookResponseBodyDTO,
 } from './schemas/createBookSchema.js';
 import {
-  deleteBookPathParamsSchema,
-  deleteBookResponseNoContentBodySchema,
-  type DeleteBookPathParams,
-  type DeleteBookResponseNoContentBody,
+  deleteBookPathParamsDTOSchema,
+  deleteBookResponseBodyDTOSchema,
+  type DeleteBookPathParamsDTO,
+  type DeleteBookResponseBodyDTO,
 } from './schemas/deleteBookSchema.js';
 import {
-  findBookPathParamsSchema,
-  findBookResponseOkBodySchema,
-  type FindBookPathParams,
-  type FindBookResponseOkBody,
+  findBookResponseBodyDTOSchema,
+  type FindBookResponseBodyDTO,
+  type FindBookPathParamsDTO,
+  findBookPathParamsDTOSchema,
 } from './schemas/findBookSchema.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/common/resourceAlreadyExistsError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
@@ -37,7 +37,6 @@ import { type AccessControlService } from '../../../../authModule/application/se
 import { type CreateBookCommandHandler } from '../../../application/commandHandlers/createBookCommandHandler/createBookCommandHandler.js';
 import { type DeleteBookCommandHandler } from '../../../application/commandHandlers/deleteBookCommandHandler/deleteBookCommandHandler.js';
 import { type FindBookQueryHandler } from '../../../application/queryHandlers/findBookQueryHandler/findBookQueryHandler.js';
-import { type Book } from '../../../domain/entities/book/book.js';
 
 export class BookHttpController implements HttpController {
   public readonly basePath = '/api/books';
@@ -57,11 +56,11 @@ export class BookHttpController implements HttpController {
         handler: this.createBook.bind(this),
         schema: {
           request: {
-            body: createBookBodySchema,
+            body: createBookBodyDTOSchema,
           },
           response: {
             [HttpStatusCode.created]: {
-              schema: createBookResponseCreatedBodySchema,
+              schema: createBookResponseBodyDTOSchema,
               description: 'Book created.',
             },
             [HttpStatusCode.unprocessableEntity]: {
@@ -80,11 +79,11 @@ export class BookHttpController implements HttpController {
         handler: this.findBook.bind(this),
         schema: {
           request: {
-            pathParams: findBookPathParamsSchema,
+            pathParams: findBookPathParamsDTOSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
-              schema: findBookResponseOkBodySchema,
+              schema: findBookResponseBodyDTOSchema,
               description: 'Book found.',
             },
             [HttpStatusCode.notFound]: {
@@ -103,11 +102,11 @@ export class BookHttpController implements HttpController {
         handler: this.deleteBook.bind(this),
         schema: {
           request: {
-            pathParams: deleteBookPathParamsSchema,
+            pathParams: deleteBookPathParamsDTOSchema,
           },
           response: {
             [HttpStatusCode.noContent]: {
-              schema: deleteBookResponseNoContentBodySchema,
+              schema: deleteBookResponseBodyDTOSchema,
               description: 'Book deleted.',
             },
             [HttpStatusCode.notFound]: {
@@ -124,8 +123,8 @@ export class BookHttpController implements HttpController {
   }
 
   private async createBook(
-    request: HttpRequest<CreateBookBody>,
-  ): Promise<HttpCreatedResponse<CreateBookResponseCreatedBody> | HttpUnprocessableEntityResponse<ResponseErrorBody>> {
+    request: HttpRequest<CreateBookBodyDTO>,
+  ): Promise<HttpCreatedResponse<CreateBookResponseBodyDTO> | HttpUnprocessableEntityResponse<ResponseErrorBody>> {
     try {
       const { title, releaseYear, authorId } = request.body;
 
@@ -141,7 +140,7 @@ export class BookHttpController implements HttpController {
 
       return {
         statusCode: HttpStatusCode.created,
-        body: { book },
+        body: { ...book },
       };
     } catch (error) {
       if (error instanceof ResourceAlreadyExistsError) {
@@ -156,9 +155,9 @@ export class BookHttpController implements HttpController {
   }
 
   private async findBook(
-    request: HttpRequest<undefined, undefined, FindBookPathParams>,
+    request: HttpRequest<undefined, undefined, FindBookPathParamsDTO>,
   ): Promise<
-    | HttpOkResponse<FindBookResponseOkBody>
+    | HttpOkResponse<FindBookResponseBodyDTO>
     | HttpNotFoundResponse<ResponseErrorBody>
     | HttpForbiddenResponse<ResponseErrorBody>
   > {
@@ -173,7 +172,7 @@ export class BookHttpController implements HttpController {
 
       return {
         statusCode: HttpStatusCode.ok,
-        body: { book: book as Book },
+        body: { ...book },
       };
     } catch (error) {
       if (error instanceof ResourceNotFoundError) {
@@ -188,9 +187,9 @@ export class BookHttpController implements HttpController {
   }
 
   private async deleteBook(
-    request: HttpRequest<undefined, undefined, DeleteBookPathParams>,
+    request: HttpRequest<undefined, undefined, DeleteBookPathParamsDTO>,
   ): Promise<
-    | HttpNoContentResponse<DeleteBookResponseNoContentBody>
+    | HttpNoContentResponse<DeleteBookResponseBodyDTO>
     | HttpNotFoundResponse<ResponseErrorBody>
     | HttpForbiddenResponse<ResponseErrorBody>
   > {

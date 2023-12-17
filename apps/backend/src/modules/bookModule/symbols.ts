@@ -18,4 +18,5 @@ export const symbols = {
 
 export const bookSymbols = {
   bookHttpController: symbols.bookHttpController,
+  authorHttpController: symbols.authorHttpController,
 };

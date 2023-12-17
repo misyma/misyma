@@ -6,4 +6,14 @@ export * from './schemas/user/loginUser.js';
 
 export * from './schemas/user/deleteUser.js';
 
-export * from './schemas/user/user.js';
+export * from './schemas/author/findAuthor.js';
+
+export * from './schemas/author/createAuthor.js';
+
+export * from './schemas/author/deleteAuthor.js';
+
+export * from './schemas/book/findBook.js';
+
+export * from './schemas/book/createBook.js';
+
+export * from './schemas/book/deleteBook.js';

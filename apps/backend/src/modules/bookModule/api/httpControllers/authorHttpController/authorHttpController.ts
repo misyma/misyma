@@ -1,26 +1,26 @@
 import {
-  createAuthorBodySchema,
-  createAuthorResponseCreatedBodySchema,
-  type CreateAuthorBody,
-  type CreateAuthorResponseCreatedBody,
+  createAuthorBodyDTOSchema,
+  type CreateAuthorBodyDTO,
+  type CreateAuthorResponseBodyDTO,
+  createAuthorResponseBodyDTOSchema,
 } from './schemas/createAuthorSchema.js';
 import {
-  deleteAuthorPathParamsSchema,
-  deleteAuthorResponseNoContentBodySchema,
-  type DeleteAuthorPathParams,
-  type DeleteAuthorResponseNoContentBody,
+  deleteAuthorPathParamsDTOSchema,
+  deleteAuthorResponseBodyDTOSchema,
+  type DeleteAuthorPathParamsDTO,
+  type DeleteAuthorResponseBodyDTO,
 } from './schemas/deleteAuthorSchema.js';
 import {
-  findAuthorPathParamsSchema,
-  findAuthorResponseOkBodySchema,
-  type FindAuthorPathParams,
-  type FindAuthorResponseOkBody,
+  findAuthorPathParamsDTOSchema,
+  findAuthorResponseBodyDTOSchema,
+  type FindAuthorPathParamsDTO,
+  type FindAuthorResponseBodyDTO,
 } from './schemas/findAuthorSchema.js';
-import { ResourceAlreadyExistsError } from '../../../../common/errors/common/resourceAlreadyExistsError.js';
-import { ResourceNotFoundError } from '../../../../common/errors/common/resourceNotFoundError.js';
-import { type HttpController } from '../../../../common/types/http/httpController.js';
-import { HttpMethodName } from '../../../../common/types/http/httpMethodName.js';
-import { type HttpRequest } from '../../../../common/types/http/httpRequest.js';
+import { ResourceAlreadyExistsError } from '../../../../../common/errors/common/resourceAlreadyExistsError.js';
+import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
+import { type HttpController } from '../../../../../common/types/http/httpController.js';
+import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
+import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
 import {
   type HttpCreatedResponse,
   type HttpUnprocessableEntityResponse,
@@ -28,16 +28,15 @@ import {
   type HttpNotFoundResponse,
   type HttpForbiddenResponse,
   type HttpNoContentResponse,
-} from '../../../../common/types/http/httpResponse.js';
-import { HttpRoute } from '../../../../common/types/http/httpRoute.js';
-import { HttpStatusCode } from '../../../../common/types/http/httpStatusCode.js';
-import { responseErrorBodySchema, type ResponseErrorBody } from '../../../../common/types/http/responseErrorBody.js';
-import { SecurityMode } from '../../../../common/types/http/securityMode.js';
-import { type AccessControlService } from '../../../authModule/application/services/accessControlService/accessControlService.js';
-import { type CreateAuthorCommandHandler } from '../../application/commandHandlers/createAuthorCommandHandler/createAuthorCommandHandler.js';
-import { type DeleteAuthorCommandHandler } from '../../application/commandHandlers/deleteAuthorCommandHandler/deleteAuthorCommandHandler.js';
-import { type FindAuthorQueryHandler } from '../../application/queryHandlers/findAuthorQueryHandler/findAuthorQueryHandler.js';
-import { type Author } from '../../domain/entities/author/author.js';
+} from '../../../../../common/types/http/httpResponse.js';
+import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
+import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.js';
+import { responseErrorBodySchema, type ResponseErrorBody } from '../../../../../common/types/http/responseErrorBody.js';
+import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
+import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
+import { type CreateAuthorCommandHandler } from '../../../application/commandHandlers/createAuthorCommandHandler/createAuthorCommandHandler.js';
+import { type DeleteAuthorCommandHandler } from '../../../application/commandHandlers/deleteAuthorCommandHandler/deleteAuthorCommandHandler.js';
+import { type FindAuthorQueryHandler } from '../../../application/queryHandlers/findAuthorQueryHandler/findAuthorQueryHandler.js';
 
 export class AuthorHttpController implements HttpController {
   public readonly basePath = '/api/authors';
@@ -57,11 +56,11 @@ export class AuthorHttpController implements HttpController {
         handler: this.createAuthor.bind(this),
         schema: {
           request: {
-            body: createAuthorBodySchema,
+            body: createAuthorBodyDTOSchema,
           },
           response: {
             [HttpStatusCode.created]: {
-              schema: createAuthorResponseCreatedBodySchema,
+              schema: createAuthorResponseBodyDTOSchema,
               description: 'Author created.',
             },
             [HttpStatusCode.unprocessableEntity]: {
@@ -80,11 +79,11 @@ export class AuthorHttpController implements HttpController {
         handler: this.findAuthor.bind(this),
         schema: {
           request: {
-            pathParams: findAuthorPathParamsSchema,
+            pathParams: findAuthorPathParamsDTOSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
-              schema: findAuthorResponseOkBodySchema,
+              schema: findAuthorResponseBodyDTOSchema,
               description: 'Author found.',
             },
             [HttpStatusCode.notFound]: {
@@ -103,11 +102,11 @@ export class AuthorHttpController implements HttpController {
         handler: this.deleteAuthor.bind(this),
         schema: {
           request: {
-            pathParams: deleteAuthorPathParamsSchema,
+            pathParams: deleteAuthorPathParamsDTOSchema,
           },
           response: {
             [HttpStatusCode.noContent]: {
-              schema: deleteAuthorResponseNoContentBodySchema,
+              schema: deleteAuthorResponseBodyDTOSchema,
               description: 'Author deleted.',
             },
             [HttpStatusCode.notFound]: {
@@ -124,10 +123,8 @@ export class AuthorHttpController implements HttpController {
   }
 
   private async createAuthor(
-    request: HttpRequest<CreateAuthorBody>,
-  ): Promise<
-    HttpCreatedResponse<CreateAuthorResponseCreatedBody> | HttpUnprocessableEntityResponse<ResponseErrorBody>
-  > {
+    request: HttpRequest<CreateAuthorBodyDTO>,
+  ): Promise<HttpCreatedResponse<CreateAuthorResponseBodyDTO> | HttpUnprocessableEntityResponse<ResponseErrorBody>> {
     try {
       const { firstName, lastName } = request.body;
 
@@ -142,7 +139,7 @@ export class AuthorHttpController implements HttpController {
 
       return {
         statusCode: HttpStatusCode.created,
-        body: { author },
+        body: { ...author },
       };
     } catch (error) {
       if (error instanceof ResourceAlreadyExistsError) {
@@ -157,9 +154,9 @@ export class AuthorHttpController implements HttpController {
   }
 
   private async findAuthor(
-    request: HttpRequest<undefined, undefined, FindAuthorPathParams>,
+    request: HttpRequest<undefined, undefined, FindAuthorPathParamsDTO>,
   ): Promise<
-    | HttpOkResponse<FindAuthorResponseOkBody>
+    | HttpOkResponse<FindAuthorResponseBodyDTO>
     | HttpNotFoundResponse<ResponseErrorBody>
     | HttpForbiddenResponse<ResponseErrorBody>
   > {
@@ -174,7 +171,7 @@ export class AuthorHttpController implements HttpController {
 
       return {
         statusCode: HttpStatusCode.ok,
-        body: { author: author as Author },
+        body: { ...author },
       };
     } catch (error) {
       if (error instanceof ResourceNotFoundError) {
@@ -189,9 +186,9 @@ export class AuthorHttpController implements HttpController {
   }
 
   private async deleteAuthor(
-    request: HttpRequest<undefined, undefined, DeleteAuthorPathParams>,
+    request: HttpRequest<undefined, undefined, DeleteAuthorPathParamsDTO>,
   ): Promise<
-    | HttpNoContentResponse<DeleteAuthorResponseNoContentBody>
+    | HttpNoContentResponse<DeleteAuthorResponseBodyDTO>
     | HttpNotFoundResponse<ResponseErrorBody>
     | HttpForbiddenResponse<ResponseErrorBody>
   > {

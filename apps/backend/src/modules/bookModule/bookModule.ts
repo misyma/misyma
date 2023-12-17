@@ -1,4 +1,4 @@
-import { AuthorHttpController } from './api/authorHttpController/authorHttpController.js';
+import { AuthorHttpController } from './api/httpControllers/authorHttpController/authorHttpController.js';
 import { BookHttpController } from './api/httpControllers/bookHttpController/bookHttpController.js';
 import { type CreateAuthorCommandHandler } from './application/commandHandlers/createAuthorCommandHandler/createAuthorCommandHandler.js';
 import { CreateAuthorCommandHandlerImpl } from './application/commandHandlers/createAuthorCommandHandler/createAuthorCommandHandlerImpl.js';
