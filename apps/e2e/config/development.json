@@ -1,10 +1,28 @@
 {
   "credentials": {
-    "login": "tester",
+    "email": "tester@test.com",
     "password": "tester123"
   },
   "application": {
-    "url": "http://localhost:5173"
+    "url": "http://localhost:5173/",
+    "pages": {
+      "login": "http://localhost:5173/",
+      "register": "http://localhost:5173/register/",
+      "logout": "http://localhost:5173/logout/"
+    }
+  },
+  "api": {
+    "user": {
+      "login": {
+        "url": "/api/user/login$"
+      },
+      "register": {
+        "url": "/api/user/register$"
+      },
+      "logout": {
+        "url": "/api/user/logout$"
+      }
+    }
   },
   "useMocks": true
 }

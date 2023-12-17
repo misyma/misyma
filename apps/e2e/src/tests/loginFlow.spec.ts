@@ -1,46 +1,48 @@
 import { test } from '@playwright/test';
-import config from 'config';
 
-import { Generator } from '@common/tests';
-
+import { E2ETestConfigProvider } from '../config/e2eTestConfigProvider.js';
 import { UserApiMocksService } from '../mocks/userApiMocksService.js';
 import { LoginPage } from '../pages/loginPage.js';
 
+const userApiMocksService = new UserApiMocksService();
+
 test('shows an error - when email is invalid', async ({ page }) => {
-  const appBaseUrl = config.get<string>('application.url');
+  const loginPage = new LoginPage(userApiMocksService);
 
-  await page.goto(appBaseUrl);
-
-  const loginPage = new LoginPage(page);
+  await loginPage.visit(page);
 
   await loginPage.fillUserEmail('invalid');
 
   await loginPage.checkEmailError();
 });
 
+test('shows an error - when password is invalid', async ({ page }) => {
+  const loginPage = new LoginPage(userApiMocksService);
+
+  await loginPage.visit(page);
+
+  await loginPage.fillUserPassword('shortie');
+
+  await loginPage.checkPasswordError();
+});
+
 test('login handled successfully', async ({ page }) => {
-  const appBaseUrl = config.get('application.url');
+  const loginPage = new LoginPage(userApiMocksService);
 
-  const userApiMocksService = new UserApiMocksService();
+  await loginPage.visit(page);
 
-  await page.goto(`${appBaseUrl}`);
+  const email = E2ETestConfigProvider.getTestUserEmail();
 
-  const loginPage = new LoginPage(page);
+  const password = E2ETestConfigProvider.getTestUserPassword();
 
-  const userCredentials = {
-    email: Generator.email(),
-    password: Generator.password(10),
-  };
-
-  await userApiMocksService.mockUserLogin({
-    page,
-    acceptEmail: userCredentials.email,
-    acceptPassword: userCredentials.password,
+  await loginPage.mockLoginRequest({
+    accessToken: 'TestAccessToken',
+    refreshToken: 'TestRefreshToken',
   });
 
-  await loginPage.fillUserEmail(userCredentials.email);
+  await loginPage.fillUserEmail(email);
 
-  await loginPage.fillUserPassword(userCredentials.password);
+  await loginPage.fillUserPassword(password);
 
   await loginPage.pressLogin();
 

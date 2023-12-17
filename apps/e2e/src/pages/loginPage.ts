@@ -1,51 +1,101 @@
 import { type Page, expect } from '@playwright/test';
 
+import { E2ETestConfigProvider } from '../config/e2eTestConfigProvider.js';
+import { type UserApiMocksService } from '../mocks/userApiMocksService.js';
+
+export interface MockLoginRequestPayload {
+  accessToken: string;
+  refreshToken: string;
+}
+
 export class LoginPage {
-  public constructor(private readonly page: Page) {}
+  private loginPage!: Page;
+
+  public constructor(private readonly userApiMocksService: UserApiMocksService) {}
+
+  public async visit(page: Page): Promise<void> {
+    const appBaseUrl = E2ETestConfigProvider.getApplicationUrl();
+
+    this.loginPage = page;
+
+    await this.loginPage.goto(appBaseUrl);
+  }
 
   public async fillUserEmail(email: string): Promise<void> {
-    await this.page.getByPlaceholder('Email address').fill(email);
+    this.verifyPageIsVisited(this.loginPage);
+
+    await this.loginPage.getByPlaceholder('Email address').fill(email);
   }
 
   public async fillUserPassword(password: string): Promise<void> {
-    await this.page.getByPlaceholder('Password').fill(password);
+    this.verifyPageIsVisited(this.loginPage);
+
+    await this.loginPage.getByPlaceholder('Password').fill(password);
   }
 
   public async pressLogin(): Promise<void> {
-    await this.page.getByRole('button', { name: 'Login' }).click();
+    this.verifyPageIsVisited(this.loginPage);
+
+    await this.loginPage.getByRole('button', { name: 'Login' }).click();
   }
 
   public async checkFormError(): Promise<void> {
-    const formError = this.page.getByText('Password or email invalid. Try again.');
+    this.verifyPageIsVisited(this.loginPage);
+
+    const formError = this.loginPage.getByText('Password or email invalid. Try again.');
 
     expect(formError).toBeInViewport();
   }
 
   public async checkPasswordError(): Promise<void> {
-    const passwordError = this.page.getByText('Password too short - 8 characters required.');
+    this.verifyPageIsVisited(this.loginPage);
 
-    await passwordError.click();
+    const passwordError = this.loginPage.getByText('Password too short - 8 characters required.');
 
-    expect(passwordError).toBeInViewport();
+    expect(await passwordError.isVisible()).toBeTruthy();
   }
 
   public async checkEmailError(): Promise<void> {
-    const emailError = this.page.getByText('Invalid email address.');
+    this.verifyPageIsVisited(this.loginPage);
+
+    const emailError = this.loginPage.getByText('Invalid email address.');
 
     expect(await emailError.isVisible()).toBeTruthy();
   }
 
   public async checkNoErrors(): Promise<void> {
-    const emailError = this.page.getByText('Invalid email address.');
+    this.verifyPageIsVisited(this.loginPage);
 
-    const passwordError = this.page.getByText('Password too short - 8 characters required.');
+    const emailError = this.loginPage.getByText('Invalid email address.');
 
-    const formError = this.page.getByText('Password or email invalid. Try again.');
+    const passwordError = this.loginPage.getByText('Password too short - 8 characters required.');
+
+    const formError = this.loginPage.getByText('Password or email invalid. Try again.');
 
     expect(await emailError.isVisible()).toBeFalsy();
 
     expect(await passwordError.isVisible()).toBeFalsy();
 
     expect(await formError.isVisible()).toBeFalsy();
+  }
+
+  public async mockLoginRequest(payload: MockLoginRequestPayload): Promise<void> {
+    this.verifyPageIsVisited(this.loginPage);
+
+    const { accessToken, refreshToken } = payload;
+
+    await this.userApiMocksService.mockUserLogin({
+      accessToken,
+      refreshToken,
+      page: this.loginPage,
+    });
+  }
+
+  private verifyPageIsVisited(page: Page | undefined): page is Page {
+    if (this.loginPage?.url() !== E2ETestConfigProvider.getApplicationUrl()) {
+      throw new Error('Page is not visited.');
+    }
+
+    return true;
   }
 }
