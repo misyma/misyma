@@ -1,4 +1,7 @@
 {
+  "logger": {
+    "prettifyLogs": true
+  },
   "database": {
     "path": "data/test.db"
   },

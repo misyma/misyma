@@ -1,7 +1,7 @@
 import config from 'config';
 
 import { OperationNotValidError } from '../common/errors/common/operationNotValidError.js';
-import { type LoggerLevel } from '../libs/logger/types/loggerLevel.js';
+import { type LogLevel } from '../libs/logger/types/logLevel.js';
 
 export class ConfigProvider {
   public getServerHost(): string {
@@ -12,8 +12,12 @@ export class ConfigProvider {
     return 5000;
   }
 
-  public getLoggerLevel(): LoggerLevel {
-    return this.getValue<LoggerLevel>('logger.level');
+  public getLogLevel(): LogLevel {
+    return this.getValue<LogLevel>('logger.level');
+  }
+
+  public getLoggerPrettifyLogs(): boolean {
+    return this.getValue<boolean>('logger.prettifyLogs');
   }
 
   public getSqliteDatabasePath(): string {

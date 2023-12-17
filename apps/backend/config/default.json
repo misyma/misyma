@@ -1,9 +1,10 @@
 {
   "logger": {
-      "level": "debug"
+    "level": "debug",
+    "prettifyLogs": false
   },
   "database": {
-      "path": null
+    "path": null
   },
   "auth": {
     "hash": {
