@@ -1,6 +1,7 @@
 {
   "logger": {
-    "level": "LOGGER_LEVEL"
+    "level": "LOGGER_LEVEL",
+    "prettifyLogs": "LOGGER_PRETTIFY_LOGS"
   },
   "database": {
     "path": "DATABASE_PATH"
