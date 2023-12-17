@@ -4,6 +4,7 @@ export const symbols = {
   httpService: Symbol('httpService'),
   uuidService: Symbol('uuidService'),
   sqliteDatabaseClient: Symbol('sqliteDatabaseClient'),
+  applicationHttpController: Symbol('applicationHttpController'),
 };
 
 export const coreSymbols = {

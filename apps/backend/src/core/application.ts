@@ -1,3 +1,4 @@
+import { ApplicationHttpController } from './api/httpControllers/applicationHttpController/applicationHttpController.js';
 import { ConfigProvider } from './configProvider.js';
 import { type SqliteDatabaseClient } from './database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { SqliteDatabaseClientFactory } from './database/sqliteDatabaseClient/sqliteDatabaseClientFactory.js';
@@ -52,6 +53,11 @@ export class Application {
 
     container.bind<SqliteDatabaseClient>(symbols.sqliteDatabaseClient, () =>
       SqliteDatabaseClientFactory.create({ databasePath }),
+    );
+
+    container.bind<ApplicationHttpController>(
+      symbols.applicationHttpController,
+      () => new ApplicationHttpController(container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient)),
     );
 
     return container;

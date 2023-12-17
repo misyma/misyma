@@ -19,9 +19,10 @@ import { type BookHttpController } from '../../modules/bookModule/api/httpContro
 import { bookSymbols } from '../../modules/bookModule/symbols.js';
 import { type UserHttpController } from '../../modules/userModule/api/httpControllers/userHttpController/userHttpController.js';
 import { userSymbols } from '../../modules/userModule/symbols.js';
+import { type ApplicationHttpController } from '../api/httpControllers/applicationHttpController/applicationHttpController.js';
 import { type ConfigProvider } from '../configProvider.js';
 import { HttpRouter } from '../httpRouter/httpRouter.js';
-import { coreSymbols } from '../symbols.js';
+import { coreSymbols, symbols } from '../symbols.js';
 
 export class HttpServer {
   public readonly fastifyInstance: FastifyInstance;
@@ -46,6 +47,7 @@ export class HttpServer {
     return [
       this.container.get<UserHttpController>(userSymbols.userHttpController),
       this.container.get<BookHttpController>(bookSymbols.bookHttpController),
+      this.container.get<ApplicationHttpController>(symbols.applicationHttpController),
     ];
   }
 
