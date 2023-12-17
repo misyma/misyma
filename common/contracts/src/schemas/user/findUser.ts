@@ -5,4 +5,6 @@ export interface FindUserPathParams {
 export interface FindUserResponseBody {
   readonly id: string;
   readonly email: string;
+  readonly firstName: string;
+  readonly lastName: string;
 }

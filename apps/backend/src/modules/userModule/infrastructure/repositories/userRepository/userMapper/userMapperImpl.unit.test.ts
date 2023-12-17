@@ -21,6 +21,8 @@ describe('UserMapperImpl', () => {
       id: userEntity.id,
       email: userEntity.email,
       password: userEntity.password,
+      firstName: userEntity.firstName,
+      lastName: userEntity.lastName,
     });
   });
 });

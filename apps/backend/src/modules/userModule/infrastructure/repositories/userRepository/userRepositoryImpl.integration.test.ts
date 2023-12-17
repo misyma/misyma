@@ -39,11 +39,13 @@ describe('UserRepositoryImpl', () => {
 
   describe('Create', () => {
     it('creates a user', async () => {
-      const { email, password } = userTestFactory.create();
+      const { email, password, firstName, lastName } = userTestFactory.create();
 
       const user = await userRepository.createUser({
         email,
         password,
+        firstName,
+        lastName,
       });
 
       const foundUser = await userTestUtils.findByEmail({ email });
@@ -60,6 +62,8 @@ describe('UserRepositoryImpl', () => {
         await userRepository.createUser({
           email: existingUser.email,
           password: existingUser.password,
+          firstName: existingUser.firstName,
+          lastName: existingUser.lastName,
         });
       } catch (error) {
         expect(error).toBeInstanceOf(RepositoryError);
@@ -98,7 +102,7 @@ describe('UserRepositoryImpl', () => {
   });
 
   describe('Update', () => {
-    it('updates user password', async () => {
+    it(`updates user's password`, async () => {
       const user = await userTestUtils.createAndPersist();
 
       const { password } = userTestFactory.create();
@@ -109,6 +113,32 @@ describe('UserRepositoryImpl', () => {
       });
 
       expect(foundUser.password).toEqual(password);
+    });
+
+    it(`updates user's first name`, async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const { firstName } = userTestFactory.create();
+
+      const foundUser = await userRepository.updateUser({
+        id: user.id,
+        firstName,
+      });
+
+      expect(foundUser.firstName).toEqual(firstName);
+    });
+
+    it(`updates user's last name`, async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const { lastName } = userTestFactory.create();
+
+      const foundUser = await userRepository.updateUser({
+        id: user.id,
+        lastName,
+      });
+
+      expect(foundUser.lastName).toEqual(lastName);
     });
 
     it('throws an error if user with given id does not exist', async () => {

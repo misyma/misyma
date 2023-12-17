@@ -37,11 +37,13 @@ describe('RegisterUserCommandHandler', () => {
   });
 
   it('creates a user', async () => {
-    const { email, password } = userTestFactory.create();
+    const { email, password, firstName, lastName } = userTestFactory.create();
 
     const { user } = await registerUserCommandHandler.execute({
       email,
       password,
+      firstName,
+      lastName,
     });
 
     const foundUser = await userTestUtils.findByEmail({ email });
@@ -58,6 +60,8 @@ describe('RegisterUserCommandHandler', () => {
       await registerUserCommandHandler.execute({
         email: existingUser.email,
         password: existingUser.password,
+        firstName: existingUser.firstName,
+        lastName: existingUser.lastName,
       });
     } catch (error) {
       expect(error).toBeInstanceOf(ResourceAlreadyExistsError);

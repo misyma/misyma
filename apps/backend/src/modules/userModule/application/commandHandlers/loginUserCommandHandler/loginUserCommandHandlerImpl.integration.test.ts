@@ -48,7 +48,7 @@ describe('LoginUserCommandHandler', () => {
   });
 
   it('returns access token', async () => {
-    const { id, email, password } = userTestFactory.create();
+    const { id, email, password, firstName, lastName } = userTestFactory.create();
 
     const hashedPassword = await hashService.hash(password);
 
@@ -57,6 +57,8 @@ describe('LoginUserCommandHandler', () => {
         id,
         email,
         password: hashedPassword,
+        firstName,
+        lastName,
       },
     });
 

@@ -3,6 +3,8 @@ import { type User } from '../../../domain/entities/user/user.js';
 export interface CreateUserPayload {
   readonly email: string;
   readonly password: string;
+  readonly firstName: string;
+  readonly lastName: string;
 }
 
 export interface FindUserPayload {
@@ -12,7 +14,9 @@ export interface FindUserPayload {
 
 export interface UpdateUserPayload {
   readonly id: string;
-  readonly password: string;
+  readonly password?: string;
+  readonly firstName?: string;
+  readonly lastName?: string;
 }
 
 export interface DeleteUserPayload {

@@ -29,7 +29,7 @@ export class UserRepositoryImpl implements UserRepository {
   }
 
   public async createUser(payload: CreateUserPayload): Promise<User> {
-    const { email, password } = payload;
+    const { email, password, firstName, lastName } = payload;
 
     const queryBuilder = this.createQueryBuilder();
 
@@ -43,6 +43,8 @@ export class UserRepositoryImpl implements UserRepository {
           id,
           email,
           password,
+          firstName,
+          lastName,
         },
         '*',
       );
@@ -98,7 +100,7 @@ export class UserRepositoryImpl implements UserRepository {
   }
 
   public async updateUser(payload: UpdateUserPayload): Promise<User> {
-    const { id, password } = payload;
+    const { id, password, firstName, lastName } = payload;
 
     const existingUser = await this.findUser({ id });
 
@@ -113,8 +115,31 @@ export class UserRepositoryImpl implements UserRepository {
 
     let rawEntities: UserRawEntity[];
 
+    let updatePayload: Partial<UserRawEntity> = {};
+
+    if (password) {
+      updatePayload = {
+        ...updatePayload,
+        password,
+      };
+    }
+
+    if (firstName) {
+      updatePayload = {
+        ...updatePayload,
+        firstName,
+      };
+    }
+
+    if (lastName) {
+      updatePayload = {
+        ...updatePayload,
+        lastName,
+      };
+    }
+
     try {
-      rawEntities = await queryBuilder.update({ password }, '*').where({ id });
+      rawEntities = await queryBuilder.update(updatePayload, '*').where({ id });
     } catch (error) {
       throw new RepositoryError({
         entity: 'User',
