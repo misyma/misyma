@@ -1,9 +1,8 @@
-import { type User } from './user.js';
-
 export interface FindUserPathParams {
   readonly id: string;
 }
 
 export interface FindUserResponseBody {
-  readonly user: User;
+  readonly id: string;
+  readonly email: string;
 }

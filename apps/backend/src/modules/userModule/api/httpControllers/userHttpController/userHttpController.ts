@@ -14,7 +14,7 @@ import {
   type LoginUserBodyDTO,
   type LoginUserResponseBodyDTO,
   loginUserBodyDTOSchema,
-  loginUserResponseOkBodySchema,
+  loginUserResponseBodyDTOSchema,
 } from './schemas/loginUserSchema.js';
 import {
   registerUserBodyDTOSchema,
@@ -44,7 +44,6 @@ import { type DeleteUserCommandHandler } from '../../../application/commandHandl
 import { type LoginUserCommandHandler } from '../../../application/commandHandlers/loginUserCommandHandler/loginUserCommandHandler.js';
 import { type RegisterUserCommandHandler } from '../../../application/commandHandlers/registerUserCommandHandler/registerUserCommandHandler.js';
 import { type FindUserQueryHandler } from '../../../application/queryHandlers/findUserQueryHandler/findUserQueryHandler.js';
-import { type User } from '../../../domain/entities/user/user.js';
 
 export class UserHttpController implements HttpController {
   public readonly basePath = '/api/users';
@@ -91,7 +90,7 @@ export class UserHttpController implements HttpController {
           },
           response: {
             [HttpStatusCode.ok]: {
-              schema: loginUserResponseOkBodySchema,
+              schema: loginUserResponseBodyDTOSchema,
               description: 'User logged in.',
             },
             [HttpStatusCode.notFound]: {
@@ -165,7 +164,10 @@ export class UserHttpController implements HttpController {
 
       return {
         statusCode: HttpStatusCode.created,
-        body: { user },
+        body: {
+          id: user.id,
+          email: user.email,
+        },
       };
     } catch (error) {
       if (error instanceof ResourceAlreadyExistsError) {
@@ -236,7 +238,10 @@ export class UserHttpController implements HttpController {
 
       return {
         statusCode: HttpStatusCode.ok,
-        body: { user: user as User },
+        body: {
+          id: user.id,
+          email: user.email,
+        },
       };
     } catch (error) {
       if (error instanceof ResourceNotFoundError) {
