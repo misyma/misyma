@@ -9,12 +9,12 @@ export class TestApplication {
   public createContainer(): DependencyInjectionContainer {
     this.container = TestContainer.create();
 
-    this.overrideProviders();
+    this.overrideBindings();
 
     return this.container;
   }
 
-  public overrideProviders(): void {}
+  public overrideBindings(): void {}
 
   public async start(): Promise<void> {
     if (!this.container) {

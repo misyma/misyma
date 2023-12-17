@@ -4,7 +4,7 @@ import { defineConfig, configDefaults } from 'vitest/config';
 export default mergeConfig(
   defineConfig({
     test: {
-      globalSetup: ['src/tests/globalSetup.ts'],
+      globalSetup: ['/tests/globalSetup.ts'],
       testNamePattern: new RegExp(`^(?!.*#O).*$`, 'gi'),
       name: 'E2E',
       include: [...configDefaults.exclude, '**/*.e2e.test.ts'],

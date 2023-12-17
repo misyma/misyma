@@ -1,0 +1,17 @@
+{
+  "database": {
+    "path": "data/e2e-tests.db"
+  },
+  "logger": {
+    "prettifyLogs": false
+  },
+  "auth": {
+    "hash": {
+      "saltRounds": 10
+    },
+    "jwt": {
+      "secret": "12321313423565365654546654121890008",
+      "expiresIn": 86400
+    }
+  }
+}
