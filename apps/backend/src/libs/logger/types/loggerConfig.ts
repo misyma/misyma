@@ -1,5 +1,6 @@
-import { type LoggerLevel } from './loggerLevel.js';
+import { type LogLevel } from './logLevel.js';
 
 export interface LoggerConfig {
-  readonly loggerLevel: LoggerLevel;
+  readonly logLevel: LogLevel;
+  readonly prettyLogsEnabled: boolean;
 }

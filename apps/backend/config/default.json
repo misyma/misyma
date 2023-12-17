@@ -1,9 +1,9 @@
 {
   "logger": {
-      "level": "debug"
+    "level": "debug"
   },
   "database": {
-      "path": null
+    "path": null
   },
   "auth": {
     "hash": {
@@ -13,5 +13,6 @@
       "secret": null,
       "expiresIn": null
     }
-  }
+  },
+  "isLocalEnvironment": false
 }

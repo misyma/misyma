@@ -13,5 +13,6 @@
       "secret": "JWT_SECRET",
       "expiresIn": "JWT_EXPIRES_IN"
     }
-  }
+  },
+  "isLocalEnvironment": "IS_LOCAL_ENVIRONMENT"
 }

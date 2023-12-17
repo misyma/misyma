@@ -37,13 +37,20 @@ export class Application {
 
     const databasePath = configProvider.getSqliteDatabasePath();
 
-    const loggerLevel = configProvider.getLoggerLevel();
+    const logLevel = configProvider.getLogLevel();
+
+    const isLocalEnvironment = configProvider.getIsLocalEnvironment();
 
     const modules: DependencyInjectionModule[] = [new UserModule(), new AuthModule(), new BookModule()];
 
     const container = DependencyInjectionContainerFactory.create({ modules });
 
-    container.bind<LoggerService>(symbols.loggerService, () => LoggerServiceFactory.create({ loggerLevel }));
+    container.bind<LoggerService>(symbols.loggerService, () =>
+      LoggerServiceFactory.create({
+        logLevel,
+        prettyLogsEnabled: isLocalEnvironment,
+      }),
+    );
 
     container.bind<HttpService>(symbols.httpService, () => HttpServiceFactory.create());
 
