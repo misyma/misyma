@@ -21,6 +21,6 @@ jobs:
     - run: npm ci
     - run: npm run build
     - run: npx playwright install --with-deps
-    - run: npx playwright test
+    - run: NODE_ENV=ci npx playwright test
 
 
