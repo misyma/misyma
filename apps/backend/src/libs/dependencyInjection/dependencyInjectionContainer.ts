@@ -26,6 +26,12 @@ export class DependencyInjectionContainer {
     return this;
   }
 
+  public overrideBinding<T>(symbol: symbol, dynamicValue: interfaces.DynamicValue<T>): DependencyInjectionContainer {
+    this.instance.rebind(symbol).toDynamicValue(dynamicValue);
+
+    return this;
+  }
+
   public get<T>(symbol: symbol): T {
     return this.instance.get(symbol);
   }

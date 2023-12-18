@@ -21,7 +21,7 @@ export class ApplicationHttpController implements HttpController {
           response: {
             [HttpStatusCode.ok]: {
               schema: checkHealthResponseBodySchema,
-              description: 'Book created.',
+              description: 'Application is healthy.',
             },
           },
         },

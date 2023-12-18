@@ -38,6 +38,7 @@ export class HttpServiceImpl implements HttpService {
         },
       });
 
+      // TODO: Fix - throws an error when response body is empty
       const responseBody = await response.json();
 
       console.log({

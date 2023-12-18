@@ -61,17 +61,20 @@ describe('CreateAuthorCommandHandler', () => {
   it('throws an error when author with the same firstName and author already exists', async () => {
     const existingAuthor = await authorTestUtils.createAndPersist();
 
-    try {
-      await createAuthorCommandHandler.execute({
+    await expect(
+      async () =>
+        await createAuthorCommandHandler.execute({
+          firstName: existingAuthor.firstName,
+          lastName: existingAuthor.lastName,
+        }),
+    ).toThrowErrorInstance({
+      instance: ResourceAlreadyExistsError,
+      context: {
+        name: 'Author',
+        id: existingAuthor.id,
         firstName: existingAuthor.firstName,
         lastName: existingAuthor.lastName,
-      });
-    } catch (error) {
-      expect(error).toBeInstanceOf(ResourceAlreadyExistsError);
-
-      return;
-    }
-
-    expect.fail();
+      },
+    });
   });
 });
