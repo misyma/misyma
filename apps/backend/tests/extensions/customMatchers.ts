@@ -50,7 +50,7 @@ async function toThrowErrorOfInstance(
     if (!isInstanceOf) {
       return {
         pass: false,
-        message: () => message || 'Expected error to be instance of ResourceAlreadyExistsError.',
+        message: () => message || `Expected error to be instance of ${instance.toString()}.`,
         actual: error,
         expected: instance,
       };
