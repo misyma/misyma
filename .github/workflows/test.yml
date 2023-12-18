@@ -18,9 +18,17 @@ jobs:
       with:
         node-version: 20.10.0
         cache: 'npm'
-    - run: npm ci
-    - run: npm run build
-    - run: npx playwright install --with-deps
-    - run: NODE_ENV=ci npx playwright test
-
-
+    - name: Install dependencies
+      run: npm ci
+    - name: Build
+      run: npm run build
+    # - run: npx playwright install --with-deps # To be determined if needed
+    # Start frontend app instance and close it after tests
+    - name: Start frontend app
+      run: npm run start:ci
+      # Stop sending SIGTTOU for background output, run in the background, kill after tests
+    - run: |
+        stty -tostop npm run dev --workspace=@apps/frontend > /dev/null &
+        FRONTENT_DEV_SERVER_PID=$!
+        NODE_ENV=ci npm run test:e2e:run
+        kill $FRONTENT_DEV_SERVER_PID
