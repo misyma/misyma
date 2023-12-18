@@ -67,7 +67,7 @@ describe('CreateAuthorCommandHandler', () => {
           firstName: existingAuthor.firstName,
           lastName: existingAuthor.lastName,
         }),
-    ).toThrowErrorOfInstance({
+    ).toThrowErrorInstance({
       instance: ResourceAlreadyExistsError,
       context: {
         name: 'Author',

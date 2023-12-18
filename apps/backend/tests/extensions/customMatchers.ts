@@ -9,7 +9,7 @@ interface MatcherResult {
   expected?: unknown;
 }
 
-export interface ToThrowErrorOfInstancePayload {
+export interface ToThrowErrorInstancePayload {
   message?: string;
   // eslint-disable-next-line @typescript-eslint/ban-types
   instance: Function;
@@ -20,7 +20,7 @@ export interface ToThrowErrorOfInstancePayload {
 }
 
 interface CustomMatchers<T = unknown> {
-  toThrowErrorOfInstance(payload: ToThrowErrorOfInstancePayload): T;
+  toThrowErrorInstance(payload: ToThrowErrorInstancePayload): T;
 }
 
 interface ErrorWithContext {
@@ -35,10 +35,10 @@ declare module 'vitest' {
   interface AsymmetricMatchersContaining extends CustomMatchers {}
 }
 
-async function toThrowErrorOfInstance(
+async function toThrowErrorInstance(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   callback: () => any | Promise<any>,
-  expectedPayload: ToThrowErrorOfInstancePayload,
+  expectedPayload: ToThrowErrorInstancePayload,
 ): Promise<MatcherResult> {
   const { instance, context, message } = expectedPayload;
 
@@ -73,5 +73,5 @@ async function toThrowErrorOfInstance(
 }
 
 expect.extend({
-  toThrowErrorOfInstance,
+  toThrowErrorInstance,
 });
