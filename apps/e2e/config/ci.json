@@ -1,0 +1,15 @@
+{
+  "credentials": {
+    "login": null,
+    "password": null
+  },
+  "application": {
+    "url": "http://localhost:5173/",
+    "pages": {
+      "login": "http://localhost:5173/",
+      "register": "http://localhost:5173/register/",
+      "logout": "http://localhost:5173/logout/"
+    }
+  },
+  "useMocks": true
+}

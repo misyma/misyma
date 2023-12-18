@@ -1,4 +1,3 @@
-# syntax=docker/dockerfile:1
 FROM node:20.10.0-alpine AS base
 
 RUN apk update
@@ -35,6 +34,8 @@ COPY tsconfig.json ./
 RUN npm ci
 
 COPY --from=builder /app/out/full/ .
+
+RUN npm run build --filter="@apps/$APP_NAME"
 
 RUN npm run build --filter="@apps/$APP_NAME"
 

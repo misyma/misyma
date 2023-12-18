@@ -24,6 +24,10 @@
     "test:integration:run": {
       "dependsOn": [],
       "cache": false
+    },
+    "test:e2e:run": {
+      "dependsOn": [],
+      "cache": false
     }
   }
 }

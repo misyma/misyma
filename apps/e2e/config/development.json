@@ -1,0 +1,10 @@
+{
+  "credentials": {
+    "email": "tester@test.com",
+    "password": "tester123"
+  },
+  "application": {
+    "url": "http://localhost:5173/"
+  },
+  "useMocks": true
+}
