@@ -23,9 +23,6 @@ jobs:
     - name: Build
       run: npm run build
     # - run: npx playwright install --with-deps # To be determined if needed
-    # Start frontend app instance and close it after tests
-    - name: Start frontend app
-      run: npm run start:ci
       # Stop sending SIGTTOU for background output, run in the background, kill after tests
     - run: |
         stty -tostop npm run dev --workspace=@apps/frontend > /dev/null &
