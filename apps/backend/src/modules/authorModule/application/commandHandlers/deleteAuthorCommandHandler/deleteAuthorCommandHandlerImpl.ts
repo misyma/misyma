@@ -3,7 +3,7 @@ import {
   type DeleteAuthorCommandHandlerPayload,
 } from './deleteAuthorCommandHandler.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
-import { type AuthorRepository } from '../../../domain/repositories/authorRepository/authorRepository.js';
+import { type AuthorRepository } from '../../../../authorModule/domain/repositories/authorRepository/authorRepository.js';
 
 export class DeleteAuthorCommandHandlerImpl implements DeleteAuthorCommandHandler {
   public constructor(

@@ -4,7 +4,7 @@ import { type Book } from '../../../domain/entities/book/book.js';
 export interface CreateBookCommandHandlerPayload {
   readonly title: string;
   readonly releaseYear: number;
-  readonly authorId: string;
+  readonly authorsIds: string[];
 }
 
 export interface CreateBookCommandHandlerResult {

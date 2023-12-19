@@ -1,18 +1,20 @@
+import { type Author } from '../../../../authorModule/domain/entities/author/author.js';
+
 export interface BookDraft {
   readonly id: string;
   readonly title: string;
   readonly releaseYear: number;
-  readonly authorId: string;
+  readonly authors?: Author[];
 }
 
 export class Book {
   public readonly id: string;
   public readonly title: string;
   public readonly releaseYear: number;
-  public readonly authorId: string;
+  public readonly authors?: Author[];
 
   public constructor(draft: BookDraft) {
-    const { id, title, releaseYear, authorId } = draft;
+    const { id, title, releaseYear, authors } = draft;
 
     this.id = id;
 
@@ -20,6 +22,8 @@ export class Book {
 
     this.releaseYear = releaseYear;
 
-    this.authorId = authorId;
+    if (authors) {
+      this.authors = authors;
+    }
   }
 }

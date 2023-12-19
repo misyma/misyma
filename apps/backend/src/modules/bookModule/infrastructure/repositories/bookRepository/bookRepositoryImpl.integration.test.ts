@@ -1,14 +1,16 @@
 import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 
+import { Generator } from '@common/tests';
+
 import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
 import { Application } from '../../../../../core/application.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
+import { AuthorTestUtils } from '../../../../authorModule/tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookRepository } from '../../../domain/repositories/bookRepository/bookRepository.js';
 import { symbols } from '../../../symbols.js';
 import { BookTestFactory } from '../../../tests/factories/bookTestFactory/bookTestFactory.js';
-import { AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
 
 describe('BookRepositoryImpl', () => {
@@ -50,26 +52,22 @@ describe('BookRepositoryImpl', () => {
     it('creates a book', async () => {
       const author = await authorTestUtils.createAndPersist();
 
-      const { releaseYear, title, authorId } = bookTestFactory.create({ authorId: author.id });
+      const { releaseYear, title } = bookTestFactory.create({ authors: [author] });
 
       const book = await bookRepository.createBook({
         releaseYear,
         title,
-        authorId,
+        authorsIds: [author.id],
       });
 
       const foundBook = await bookTestUtils.findByTitleAndAuthor({
         title,
-        authorId,
+        authorId: author.id,
       });
 
       expect(book.title).toEqual(title);
 
-      expect(book.authorId).toEqual(authorId);
-
       expect(foundBook.title).toEqual(title);
-
-      expect(foundBook.authorId).toEqual(authorId);
     });
 
     it('throws an error when book with the same title and author already exists', async () => {
@@ -81,7 +79,7 @@ describe('BookRepositoryImpl', () => {
         await bookRepository.createBook({
           releaseYear: existingBook.releaseYear,
           title: existingBook.title,
-          authorId: existingBook.authorId,
+          authorsIds: [author.id],
         });
       } catch (error) {
         expect(error).toBeInstanceOf(RepositoryError);
@@ -117,11 +115,18 @@ describe('BookRepositoryImpl', () => {
     it('deletes book', async () => {
       const author = await authorTestUtils.createAndPersist();
 
-      const book = await bookTestUtils.createAndPersist({ input: { authorId: author.id } });
+      const bookId = Generator.uuid();
+
+      const book = await bookTestUtils.createAndPersist({
+        input: {
+          authorId: author.id,
+          id: bookId,
+        },
+      });
 
       await bookRepository.deleteBook({ id: book.id });
 
-      const foundBook = await bookTestUtils.findById({ id: book.id });
+      const foundBook = await bookTestUtils.findById({ id: bookId });
 
       expect(foundBook).toBeUndefined();
     });

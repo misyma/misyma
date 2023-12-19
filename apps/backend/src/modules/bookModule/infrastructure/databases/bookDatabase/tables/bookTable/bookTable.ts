@@ -7,6 +7,5 @@ export class BookTable implements DatabaseTable<BookRawEntity> {
     id: 'id',
     title: 'title',
     releaseYear: 'releaseYear',
-    authorId: 'authorId',
   } as const;
 }

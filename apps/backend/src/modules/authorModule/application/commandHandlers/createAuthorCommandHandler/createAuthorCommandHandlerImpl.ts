@@ -5,7 +5,7 @@ import {
 } from './createAuthorCommandHandler.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/common/resourceAlreadyExistsError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
-import { type AuthorRepository } from '../../../domain/repositories/authorRepository/authorRepository.js';
+import { type AuthorRepository } from '../../../../authorModule/domain/repositories/authorRepository/authorRepository.js';
 
 export class CreateAuthorCommandHandlerImpl implements CreateAuthorCommandHandler {
   public constructor(

@@ -14,20 +14,20 @@ export class CreateBookCommandHandlerImpl implements CreateBookCommandHandler {
   ) {}
 
   public async execute(payload: CreateBookCommandHandlerPayload): Promise<CreateBookCommandHandlerResult> {
-    const { title, releaseYear, authorId } = payload;
+    const { title, releaseYear, authorsIds } = payload;
 
     this.loggerService.debug({
       message: 'Creating book...',
       context: {
         title,
         releaseYear,
-        authorId,
+        authorsIds,
       },
     });
 
     const existingBook = await this.bookRepository.findBook({
       title,
-      authorId,
+      authorsIds,
     });
 
     if (existingBook) {
@@ -35,14 +35,14 @@ export class CreateBookCommandHandlerImpl implements CreateBookCommandHandler {
         name: 'Book',
         id: existingBook.id,
         title,
-        authorId,
+        authorsIds,
       });
     }
 
     const book = await this.bookRepository.createBook({
       title,
       releaseYear,
-      authorId,
+      authorsIds,
     });
 
     this.loggerService.info({
@@ -51,7 +51,7 @@ export class CreateBookCommandHandlerImpl implements CreateBookCommandHandler {
         bookId: book.id,
         title,
         releaseYear,
-        authorId,
+        authorsIds,
       },
     });
 

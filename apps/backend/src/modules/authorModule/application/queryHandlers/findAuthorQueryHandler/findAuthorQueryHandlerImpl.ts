@@ -4,7 +4,7 @@ import {
   type FindAuthorQueryHandlerResult,
 } from './findAuthorQueryHandler.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
-import { type AuthorRepository } from '../../../domain/repositories/authorRepository/authorRepository.js';
+import { type AuthorRepository } from '../../../../authorModule/domain/repositories/authorRepository/authorRepository.js';
 
 export class FindAuthorQueryHandlerImpl implements FindAuthorQueryHandler {
   public constructor(private readonly authorRepository: AuthorRepository) {}

@@ -1,6 +1,6 @@
 import { Generator } from '@common/tests';
 
-import { type Author } from '../../../../bookModule/domain/entities/author/author.js';
+import { type Author } from '../../../../authorModule/domain/entities/author/author.js';
 
 export class AuthorTestFactory {
   public create(input: Partial<Author> = {}): Author {

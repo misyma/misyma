@@ -21,7 +21,6 @@ describe('BookMapperImpl', () => {
       id: bookEntity.id,
       title: bookEntity.title,
       releaseYear: bookEntity.releaseYear,
-      authorId: bookEntity.authorId,
     });
   });
 });

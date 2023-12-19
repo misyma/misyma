@@ -1,7 +1,7 @@
 import { type DatabaseClient } from '../../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type Migration } from '../../../../../../libs/database/types/migration.js';
 
-export class M2CreateBookTableMigration implements Migration {
+export class M1CreateBookTableMigration implements Migration {
   public readonly name = 'M2CreateBookTableMigration';
 
   public async up(databaseClient: DatabaseClient): Promise<void> {
@@ -12,17 +12,25 @@ export class M2CreateBookTableMigration implements Migration {
 
       table.integer('releaseYear').notNullable();
 
-      table.text('authorId').notNullable();
-
       table.primary(['id']);
 
-      table.foreign('authorId').references('id').inTable('authors').onDelete('CASCADE');
+      table.unique(['title']);
+    });
 
-      table.unique(['title', 'authorId']);
+    await databaseClient.schema.createTable('booksAuthors', (table) => {
+      table.text('bookId').notNullable();
+
+      table.text('authorId').notNullable();
+
+      table.foreign('bookId').references('id').inTable('books').onDelete('CASCADE');
+
+      table.foreign('authorId').references('id').inTable('authors').onDelete('CASCADE');
     });
   }
 
   public async down(databaseClient: DatabaseClient): Promise<void> {
+    await databaseClient.schema.dropTable('booksAuthors');
+
     await databaseClient.schema.dropTable('books');
   }
 }

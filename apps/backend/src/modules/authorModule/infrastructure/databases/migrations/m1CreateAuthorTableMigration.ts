@@ -1,5 +1,5 @@
-import { type DatabaseClient } from '../../../../../../libs/database/clients/databaseClient/databaseClient.js';
-import { type Migration } from '../../../../../../libs/database/types/migration.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
+import { type Migration } from '../../../../../libs/database/types/migration.js';
 
 export class M1CreateAuthorTableMigration implements Migration {
   public readonly name = 'M1CreateAuthorTableMigration';

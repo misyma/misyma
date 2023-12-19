@@ -1,5 +1,5 @@
 import { type QueryHandler } from '../../../../../common/types/queryHandler.js';
-import { type Author } from '../../../domain/entities/author/author.js';
+import { type Author } from '../../../../authorModule/domain/entities/author/author.js';
 
 export interface FindAuthorQueryHandlerPayload {
   readonly authorId: string;

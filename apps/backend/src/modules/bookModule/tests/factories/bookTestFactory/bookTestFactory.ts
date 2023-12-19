@@ -8,7 +8,7 @@ export class BookTestFactory {
       id: Generator.uuid(),
       title: Generator.word(),
       releaseYear: Generator.number(1970, 2024),
-      authorId: Generator.uuid(),
+      authors: [],
       ...input,
     };
   }

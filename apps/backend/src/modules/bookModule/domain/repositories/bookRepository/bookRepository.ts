@@ -3,13 +3,13 @@ import { type Book } from '../../../domain/entities/book/book.js';
 export interface CreateBookPayload {
   readonly title: string;
   readonly releaseYear: number;
-  readonly authorId: string;
+  readonly authorsIds: string[];
 }
 
 export interface FindBookPayload {
   readonly id?: string;
   readonly title?: string;
-  readonly authorId?: string;
+  readonly authorsIds?: string[];
 }
 
 export interface DeleteBookPayload {

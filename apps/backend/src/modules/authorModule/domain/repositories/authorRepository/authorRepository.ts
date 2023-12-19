@@ -1,4 +1,4 @@
-import { type Author } from '../../../../bookModule/domain/entities/author/author.js';
+import { type Author } from '../../entities/author/author.js';
 
 export interface CreateAuthorPayload {
   readonly firstName: string;

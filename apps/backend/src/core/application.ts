@@ -16,6 +16,7 @@ import { type SendGridService } from '../libs/sendGrid/services/sendGridService/
 import { type UuidService } from '../libs/uuid/services/uuidService/uuidService.js';
 import { UuidServiceImpl } from '../libs/uuid/services/uuidService/uuidServiceImpl.js';
 import { AuthModule } from '../modules/authModule/authModule.js';
+import { AuthorDatabaseManager } from '../modules/authorModule/infrastructure/databases/authorDatabaseManager.js';
 import { BookModule } from '../modules/bookModule/bookModule.js';
 import { BookDatabaseManager } from '../modules/bookModule/infrastructure/databases/bookDatabase/bookDatabaseManager.js';
 import { UserDatabaseManager } from '../modules/userModule/infrastructure/databases/userDatabase/userDatabaseManager.js';
@@ -23,7 +24,7 @@ import { UserModule } from '../modules/userModule/userModule.js';
 
 export class Application {
   private static async setupDatabase(container: DependencyInjectionContainer): Promise<void> {
-    const databaseManagers = [UserDatabaseManager, BookDatabaseManager];
+    const databaseManagers = [UserDatabaseManager, AuthorDatabaseManager, BookDatabaseManager];
 
     for await (const databaseManager of databaseManagers) {
       await databaseManager.bootstrapDatabase(container);

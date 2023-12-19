@@ -4,13 +4,12 @@ import { type BookRawEntity } from '../../../databases/bookDatabase/tables/bookT
 
 export class BookMapperImpl implements BookMapper {
   public mapToDomain(entity: BookRawEntity): Book {
-    const { id, title, releaseYear, authorId } = entity;
+    const { id, title, releaseYear } = entity;
 
     return new Book({
       id,
       title,
       releaseYear,
-      authorId,
     });
   }
 }
