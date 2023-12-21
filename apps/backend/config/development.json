@@ -13,5 +13,9 @@
       "secret": "12321313423565365654546654121890008",
       "expiresIn": 86400
     }
+  },
+  "sendGrid": {
+    "apiKey": "1234567890",
+    "senderEmail": "michal.cieslar@misyma.com"
   }
 }

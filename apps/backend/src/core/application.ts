@@ -11,6 +11,8 @@ import { HttpServiceFactory } from '../libs/httpService/factories/httpServiceFac
 import { type HttpService } from '../libs/httpService/services/httpService/httpService.js';
 import { LoggerServiceFactory } from '../libs/logger/factories/loggerServiceFactory/loggerServiceFactory.js';
 import { type LoggerService } from '../libs/logger/services/loggerService/loggerService.js';
+import { SendGridServiceFactory } from '../libs/sendGrid/factories/sendGridServiceFactory/sendGridServiceFactory.js';
+import { type SendGridService } from '../libs/sendGrid/services/sendGridService/sendGridService.js';
 import { type UuidService } from '../libs/uuid/services/uuidService/uuidService.js';
 import { UuidServiceImpl } from '../libs/uuid/services/uuidService/uuidServiceImpl.js';
 import { AuthModule } from '../modules/authModule/authModule.js';
@@ -41,6 +43,10 @@ export class Application {
 
     const prettifyLogs = configProvider.getLoggerPrettifyLogs();
 
+    const sendGridApiKey = configProvider.getSendGridApiKey();
+
+    const sendGridSenderEmail = configProvider.getSendGridSenderEmail();
+
     const modules: DependencyInjectionModule[] = [new UserModule(), new AuthModule(), new BookModule()];
 
     const container = DependencyInjectionContainerFactory.create({ modules });
@@ -65,6 +71,13 @@ export class Application {
     container.bind<ApplicationHttpController>(
       symbols.applicationHttpController,
       () => new ApplicationHttpController(container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient)),
+    );
+
+    container.bind<SendGridService>(symbols.sendGridService, () =>
+      new SendGridServiceFactory(container.get<HttpService>(coreSymbols.httpService)).create({
+        apiKey: sendGridApiKey,
+        senderEmail: sendGridSenderEmail,
+      }),
     );
 
     return container;

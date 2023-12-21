@@ -36,6 +36,14 @@ export class ConfigProvider {
     return this.getValue<number>('auth.hash.saltRounds');
   }
 
+  public getSendGridApiKey(): string {
+    return this.getValue<string>('sendGrid.apiKey');
+  }
+
+  public getSendGridSenderEmail(): string {
+    return this.getValue<string>('sendGrid.senderEmail');
+  }
+
   private getValue<T>(key: string): T {
     const value = config.get(key);
 
