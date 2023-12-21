@@ -8,6 +8,7 @@ import { Application } from '../../../../../core/application.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { AuthorTestUtils } from '../../../../authorModule/tests/utils/authorTestUtils/authorTestUtils.js';
+import { Book } from '../../../domain/entities/book/book.js';
 import { type BookRepository } from '../../../domain/repositories/bookRepository/bookRepository.js';
 import { symbols } from '../../../symbols.js';
 import { BookTestFactory } from '../../../tests/factories/bookTestFactory/bookTestFactory.js';
@@ -57,7 +58,7 @@ describe('BookRepositoryImpl', () => {
       const book = await bookRepository.createBook({
         releaseYear,
         title,
-        authorsIds: [author.id],
+        authors: [author],
       });
 
       const foundBook = await bookTestUtils.findByTitleAndAuthor({
@@ -68,6 +69,8 @@ describe('BookRepositoryImpl', () => {
       expect(book.title).toEqual(title);
 
       expect(foundBook.title).toEqual(title);
+
+      expect(foundBook.releaseYear).toEqual(releaseYear);
     });
 
     it('throws an error when book with the same title and author already exists', async () => {
@@ -79,7 +82,7 @@ describe('BookRepositoryImpl', () => {
         await bookRepository.createBook({
           releaseYear: existingBook.releaseYear,
           title: existingBook.title,
-          authorsIds: [author.id],
+          authors: [author],
         });
       } catch (error) {
         expect(error).toBeInstanceOf(RepositoryError);
@@ -99,7 +102,9 @@ describe('BookRepositoryImpl', () => {
 
       const foundBook = await bookRepository.findBook({ id: book.id });
 
-      expect(foundBook).not.toBeNull();
+      expect(foundBook).toBeInstanceOf(Book);
+
+      expect(foundBook?.authors).toHaveLength(1);
     });
 
     it('returns null if book with given id does not exist', async () => {

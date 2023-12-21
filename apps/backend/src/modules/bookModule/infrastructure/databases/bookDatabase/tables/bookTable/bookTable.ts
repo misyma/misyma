@@ -8,4 +8,14 @@ export class BookTable implements DatabaseTable<BookRawEntity> {
     title: 'title',
     releaseYear: 'releaseYear',
   } as const;
+
+  public readonly authorJoinColumns = {
+    id: 'id',
+    firstName: 'firstName',
+    lastName: 'lastName',
+  };
+
+  public readonly authorJoinColumnsAliases = {
+    authorId: 'authorId',
+  };
 }

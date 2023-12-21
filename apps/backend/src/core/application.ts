@@ -16,6 +16,7 @@ import { type SendGridService } from '../libs/sendGrid/services/sendGridService/
 import { type UuidService } from '../libs/uuid/services/uuidService/uuidService.js';
 import { UuidServiceImpl } from '../libs/uuid/services/uuidService/uuidServiceImpl.js';
 import { AuthModule } from '../modules/authModule/authModule.js';
+import { AuthorModule } from '../modules/authorModule/authorModule.js';
 import { AuthorDatabaseManager } from '../modules/authorModule/infrastructure/databases/authorDatabaseManager.js';
 import { BookModule } from '../modules/bookModule/bookModule.js';
 import { BookDatabaseManager } from '../modules/bookModule/infrastructure/databases/bookDatabase/bookDatabaseManager.js';
@@ -48,7 +49,12 @@ export class Application {
 
     const sendGridSenderEmail = configProvider.getSendGridSenderEmail();
 
-    const modules: DependencyInjectionModule[] = [new UserModule(), new AuthModule(), new BookModule()];
+    const modules: DependencyInjectionModule[] = [
+      new UserModule(),
+      new AuthModule(),
+      new BookModule(),
+      new AuthorModule(),
+    ];
 
     const container = DependencyInjectionContainerFactory.create({ modules });
 

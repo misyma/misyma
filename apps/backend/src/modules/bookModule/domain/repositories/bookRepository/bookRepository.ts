@@ -1,15 +1,16 @@
+import { type Author } from '../../../../authorModule/domain/entities/author/author.js';
 import { type Book } from '../../../domain/entities/book/book.js';
 
 export interface CreateBookPayload {
   readonly title: string;
   readonly releaseYear: number;
-  readonly authorsIds: string[];
+  readonly authors: Author[];
 }
 
 export interface FindBookPayload {
   readonly id?: string;
   readonly title?: string;
-  readonly authorsIds?: string[];
+  readonly authorIds?: string[];
 }
 
 export interface DeleteBookPayload {

@@ -15,12 +15,13 @@ describe('BookMapperImpl', () => {
   it('maps from book raw entity to domain book', async () => {
     const bookEntity = bookEntityTestFactory.create();
 
-    const book = bookMapperImpl.mapToDomain(bookEntity);
+    const book = bookMapperImpl.mapRawToDomain(bookEntity);
 
     expect(book).toEqual({
       id: bookEntity.id,
       title: bookEntity.title,
       releaseYear: bookEntity.releaseYear,
+      authors: [],
     });
   });
 });

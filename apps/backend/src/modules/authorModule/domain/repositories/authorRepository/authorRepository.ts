@@ -11,6 +11,10 @@ export interface FindAuthorPayload {
   readonly lastName?: string;
 }
 
+export interface FindAuthorsByIdsPayload {
+  readonly authorIds: string[];
+}
+
 export interface DeleteAuthorPayload {
   readonly id: string;
 }
@@ -18,5 +22,6 @@ export interface DeleteAuthorPayload {
 export interface AuthorRepository {
   createAuthor(input: CreateAuthorPayload): Promise<Author>;
   findAuthor(input: FindAuthorPayload): Promise<Author | null>;
+  findAuthorsByIds(payload: FindAuthorsByIdsPayload): Promise<Author[]>;
   deleteAuthor(input: DeleteAuthorPayload): Promise<void>;
 }

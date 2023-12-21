@@ -1,8 +1,8 @@
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';
-import { AuthorTestFactory } from '../../../../bookModule/tests/factories/authorTestFactory/authorTestFactory.js';
-import { type AuthorRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/authorTable/authorRawEntity.js';
-import { AuthorTable } from '../../../infrastructure/databases/bookDatabase/tables/authorTable/authorTable.js';
+import { type AuthorRawEntity } from '../../../infrastructure/databases/tables/authorTable/authorRawEntity.js';
+import { AuthorTable } from '../../../infrastructure/databases/tables/authorTable/authorTable.js';
+import { AuthorTestFactory } from '../../factories/authorTestFactory/authorTestFactory.js';
 
 interface CreateAndPersistPayload {
   input?: Partial<AuthorRawEntity>;

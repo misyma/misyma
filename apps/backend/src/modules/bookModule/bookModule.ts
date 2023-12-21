@@ -18,6 +18,8 @@ import { type LoggerService } from '../../libs/logger/services/loggerService/log
 import { type UuidService } from '../../libs/uuid/services/uuidService/uuidService.js';
 import { type AccessControlService } from '../authModule/application/services/accessControlService/accessControlService.js';
 import { authSymbols } from '../authModule/symbols.js';
+import { type FindAuthorsByIdsQueryHandler } from '../authorModule/application/queryHandlers/findAuthorsByIdsQueryHandler/findAuthorsByIdsQueryHandler.js';
+import { authorSymbols } from '../authorModule/symbols.js';
 
 export class BookModule implements DependencyInjectionModule {
   public declareBindings(container: DependencyInjectionContainer): void {
@@ -38,6 +40,7 @@ export class BookModule implements DependencyInjectionModule {
       () =>
         new CreateBookCommandHandlerImpl(
           container.get<BookRepository>(symbols.bookRepository),
+          container.get<FindAuthorsByIdsQueryHandler>(authorSymbols.findAuthorsByIdsQueryHandler),
           container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );

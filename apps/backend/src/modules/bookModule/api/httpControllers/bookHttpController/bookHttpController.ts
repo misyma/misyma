@@ -135,7 +135,7 @@ export class BookHttpController implements HttpController {
       const { book } = await this.createBookCommandHandler.execute({
         title,
         releaseYear,
-        authorsIds: [authorId],
+        authorIds: [authorId],
       });
 
       return {

@@ -62,7 +62,7 @@ describe('CreateBookCommandHandler', () => {
     const { book } = await createBookCommandHandler.execute({
       title,
       releaseYear,
-      authorsIds: [author.id],
+      authorIds: [author.id],
     });
 
     const foundBook = await bookTestUtils.findByTitleAndAuthor({
@@ -88,7 +88,7 @@ describe('CreateBookCommandHandler', () => {
       await createBookCommandHandler.execute({
         title: existingBook.title,
         releaseYear: existingBook.releaseYear,
-        authorsIds: [author.id],
+        authorIds: [author.id],
       });
     } catch (error) {
       expect(error).toBeInstanceOf(ResourceAlreadyExistsError);

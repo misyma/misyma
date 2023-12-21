@@ -10,6 +10,7 @@ import {
   type CreateAuthorPayload,
   type FindAuthorPayload,
   type DeleteAuthorPayload,
+  type FindAuthorsByIdsPayload,
 } from '../../../domain/repositories/authorRepository/authorRepository.js';
 import { type AuthorRawEntity } from '../../databases/tables/authorTable/authorRawEntity.js';
 import { AuthorTable } from '../../databases/tables/authorTable/authorTable.js';
@@ -101,6 +102,25 @@ export class AuthorRepositoryImpl implements AuthorRepository {
     }
 
     return this.authorMapper.mapToDomain(rawEntity);
+  }
+
+  public async findAuthorsByIds(payload: FindAuthorsByIdsPayload): Promise<Author[]> {
+    const { authorIds } = payload;
+
+    const queryBuilder = this.createQueryBuilder();
+
+    let rawEntities: AuthorRawEntity[];
+
+    try {
+      rawEntities = await queryBuilder.select('*').whereIn('id', authorIds);
+    } catch (error) {
+      throw new RepositoryError({
+        entity: 'Author',
+        operation: 'find',
+      });
+    }
+
+    return rawEntities.map((rawEntity) => this.authorMapper.mapToDomain(rawEntity));
   }
 
   public async deleteAuthor(payload: DeleteAuthorPayload): Promise<void> {

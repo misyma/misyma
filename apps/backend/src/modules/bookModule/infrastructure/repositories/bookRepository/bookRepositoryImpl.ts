@@ -4,6 +4,7 @@ import { ResourceNotFoundError } from '../../../../../common/errors/common/resou
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
+import { AuthorTable } from '../../../../authorModule/infrastructure/databases/tables/authorTable/authorTable.js';
 import { type Book } from '../../../domain/entities/book/book.js';
 import {
   type BookRepository,
@@ -14,10 +15,12 @@ import {
 import { BooksAuthorsTable } from '../../databases/bookDatabase/tables/booksAuthorsTable/booksAuthorsTable.js';
 import { type BookRawEntity } from '../../databases/bookDatabase/tables/bookTable/bookRawEntity.js';
 import { BookTable } from '../../databases/bookDatabase/tables/bookTable/bookTable.js';
+import { type BookWithAuthorRawEntity } from '../../databases/bookDatabase/tables/bookTable/bookWithAuthorRawEntity.js';
 
 export class BookRepositoryImpl implements BookRepository {
   private readonly databaseTable = new BookTable();
   private readonly booksAuthorsTable = new BooksAuthorsTable();
+  private readonly authorTable = new AuthorTable();
 
   public constructor(
     private readonly sqliteDatabaseClient: SqliteDatabaseClient,
@@ -30,7 +33,7 @@ export class BookRepositoryImpl implements BookRepository {
   }
 
   public async createBook(payload: CreateBookPayload): Promise<Book> {
-    const { title, releaseYear, authorsIds } = payload;
+    const { title, releaseYear, authors } = payload;
 
     let rawEntities: BookRawEntity[] = [];
 
@@ -49,9 +52,9 @@ export class BookRepositoryImpl implements BookRepository {
 
         await transaction.batchInsert(
           this.booksAuthorsTable.name,
-          authorsIds.map((authorId) => ({
+          authors.map((author) => ({
             [this.booksAuthorsTable.columns.bookId]: id,
-            [this.booksAuthorsTable.columns.authorId]: authorId,
+            [this.booksAuthorsTable.columns.authorId]: author.id,
           })),
         );
       });
@@ -64,35 +67,30 @@ export class BookRepositoryImpl implements BookRepository {
 
     const rawEntity = rawEntities[0] as BookRawEntity;
 
-    return this.bookMapper.mapToDomain(rawEntity);
+    const createdBook = this.bookMapper.mapRawToDomain(rawEntity);
+
+    authors.forEach((author) => createdBook.addAuthor(author));
+
+    return createdBook;
   }
 
   public async findBook(payload: FindBookPayload): Promise<Book | null> {
-    const { id, authorsIds, title } = payload;
+    const { id, authorIds: authorsIds, title } = payload;
 
     const queryBuilder = this.createQueryBuilder();
 
-    let rawEntity: BookRawEntity | undefined;
-
-    let whereClause: Partial<BookRawEntity> = {};
-
-    if (id) {
-      whereClause = {
-        ...whereClause,
-        [this.databaseTable.columns.id]: id,
-      };
-    }
-
-    if (title) {
-      whereClause = {
-        ...whereClause,
-        [this.databaseTable.columns.title]: title,
-      };
-    }
+    let rawEntities: BookWithAuthorRawEntity[];
 
     try {
-      rawEntity = await queryBuilder
-        .select('*')
+      rawEntities = await queryBuilder
+        .select([
+          `${this.databaseTable.name}.${this.databaseTable.columns.id}`,
+          `${this.databaseTable.name}.${this.databaseTable.columns.title}`,
+          `${this.databaseTable.name}.${this.databaseTable.columns.releaseYear}`,
+          `${this.authorTable.name}.${this.authorTable.columns.id} as ${this.databaseTable.authorJoinColumnsAliases.authorId}`,
+          this.authorTable.columns.firstName,
+          this.authorTable.columns.lastName,
+        ])
         .join(this.booksAuthorsTable.name, (join) => {
           join.on(
             `${this.booksAuthorsTable.name}.${this.booksAuthorsTable.columns.bookId}`,
@@ -107,8 +105,22 @@ export class BookRepositoryImpl implements BookRepository {
             );
           }
         })
-        .where(whereClause)
-        .first();
+        .join(this.authorTable.name, (join) => {
+          join.on(
+            `${this.authorTable.name}.${this.authorTable.columns.id}`,
+            '=',
+            `${this.booksAuthorsTable.name}.${this.booksAuthorsTable.columns.authorId}`,
+          );
+        })
+        .where((builder) => {
+          if (id) {
+            builder.where(`${this.databaseTable.name}.${this.databaseTable.columns.id}`, id);
+          }
+
+          if (title) {
+            builder.where(`${this.databaseTable.name}.${this.databaseTable.columns.title}`, title);
+          }
+        });
     } catch (error) {
       throw new RepositoryError({
         entity: 'Book',
@@ -116,11 +128,11 @@ export class BookRepositoryImpl implements BookRepository {
       });
     }
 
-    if (!rawEntity) {
+    if (!rawEntities.length) {
       return null;
     }
 
-    return this.bookMapper.mapToDomain(rawEntity);
+    return this.bookMapper.mapRawWithAuthorToDomain(rawEntities)[0] as Book;
   }
 
   public async deleteBook(payload: DeleteBookPayload): Promise<void> {
@@ -142,8 +154,6 @@ export class BookRepositoryImpl implements BookRepository {
         [this.databaseTable.columns.id]: existingBook.id,
       });
     } catch (error) {
-      console.log(error);
-
       throw new RepositoryError({
         entity: 'Book',
         operation: 'delete',
