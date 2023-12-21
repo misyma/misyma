@@ -6,6 +6,10 @@
   "include": [
     "src"
   ],
+  "exclude": [
+    "src/**/tests/**/*",
+    "src/**/*.test.ts"
+  ],
   "references": [
     {
       "path": "../../common/contracts/tsconfig.json"
