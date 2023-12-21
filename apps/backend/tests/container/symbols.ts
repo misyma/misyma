@@ -1,6 +1,8 @@
 export const testSymbols = {
   applicationService: Symbol('applicationService'),
-  authorService: Symbol('authorService'),
 
   userTestUtils: Symbol('userTestUtils'),
+
+  authorTestUtils: Symbol('authorTestUtils'),
+  authorService: Symbol('authorService'),
 };
