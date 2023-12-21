@@ -1,6 +1,6 @@
 import { Generator } from '@common/tests';
 
-import { type AuthorRawEntity } from '../../../../bookModule/infrastructure/databases/bookDatabase/tables/authorTable/authorRawEntity.js';
+import { type AuthorRawEntity } from '../../../infrastructure/databases/tables/authorTable/authorRawEntity.js';
 
 export class AuthorRawEntityTestFactory {
   public create(input: Partial<AuthorRawEntity> = {}): AuthorRawEntity {
