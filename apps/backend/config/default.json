@@ -14,5 +14,9 @@
       "secret": null,
       "expiresIn": null
     }
+  },
+  "sendGrid": {
+    "apiKey": null,
+    "senderEmail": null
   }
 }

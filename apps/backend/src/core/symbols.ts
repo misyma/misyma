@@ -5,6 +5,7 @@ export const symbols = {
   uuidService: Symbol('uuidService'),
   sqliteDatabaseClient: Symbol('sqliteDatabaseClient'),
   applicationHttpController: Symbol('applicationHttpController'),
+  sendGridService: Symbol('sendGridService'),
 };
 
 export const coreSymbols = {
@@ -13,4 +14,5 @@ export const coreSymbols = {
   httpService: symbols.httpService,
   uuidService: symbols.uuidService,
   sqliteDatabaseClient: symbols.sqliteDatabaseClient,
+  sendGridService: symbols.sendGridService,
 };

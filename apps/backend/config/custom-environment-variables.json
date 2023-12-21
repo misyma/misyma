@@ -14,5 +14,9 @@
       "secret": "JWT_SECRET",
       "expiresIn": "JWT_EXPIRES_IN"
     }
+  },
+  "sendGrid": {
+    "apiKey": "SENDGRID_API_KEY",
+    "senderEmail": "SENDGRID_SENDER_EMAIL"
   }
 }
