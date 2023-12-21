@@ -46,7 +46,7 @@ describe('CreateBookCommandHandler', () => {
     await sqliteDatabaseClient.destroy();
   });
 
-  it('creates a book', async () => {
+  it('creates a Book', async () => {
     const author = await authorTestUtils.createAndPersist();
 
     const { title, releaseYear } = bookTestFactory.create({
@@ -75,7 +75,7 @@ describe('CreateBookCommandHandler', () => {
     expect(foundBook.title).toEqual(title);
   });
 
-  it('throws an error when book with the same title and authors already exists', async () => {
+  it('throws an error - when Book with the same title and Authors already exists', async () => {
     const author = await authorTestUtils.createAndPersist();
 
     const existingBook = await bookTestUtils.createAndPersist({

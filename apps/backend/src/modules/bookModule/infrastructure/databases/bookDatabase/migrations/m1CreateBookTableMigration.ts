@@ -2,7 +2,7 @@ import { type DatabaseClient } from '../../../../../../libs/database/clients/dat
 import { type Migration } from '../../../../../../libs/database/types/migration.js';
 
 export class M1CreateBookTableMigration implements Migration {
-  public readonly name = 'M2CreateBookTableMigration';
+  public readonly name = 'M1CreateBookTableMigration';
 
   public async up(databaseClient: DatabaseClient): Promise<void> {
     await databaseClient.schema.createTable('books', (table) => {
