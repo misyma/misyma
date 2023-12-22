@@ -7,12 +7,14 @@ import { type RegisterUserCommandHandler } from './application/commandHandlers/r
 import { RegisterUserCommandHandlerImpl } from './application/commandHandlers/registerUserCommandHandler/registerUserCommandHandlerImpl.js';
 import { type FindUserQueryHandler } from './application/queryHandlers/findUserQueryHandler/findUserQueryHandler.js';
 import { FindUserQueryHandlerImpl } from './application/queryHandlers/findUserQueryHandler/findUserQueryHandlerImpl.js';
+import { type EmailService } from './application/services/emailService/emailService.js';
 import { type HashService } from './application/services/hashService/hashService.js';
 import { HashServiceImpl } from './application/services/hashService/hashServiceImpl.js';
 import { type UserRepository } from './domain/repositories/userRepository/userRepository.js';
 import { type UserMapper } from './infrastructure/repositories/userRepository/userMapper/userMapper.js';
 import { UserMapperImpl } from './infrastructure/repositories/userRepository/userMapper/userMapperImpl.js';
 import { UserRepositoryImpl } from './infrastructure/repositories/userRepository/userRepositoryImpl.js';
+import { EmailServiceImpl } from './infrastructure/services/emailServiceImpl.js';
 import { symbols } from './symbols.js';
 import { type UserModuleConfigProvider } from './userModuleConfigProvider.js';
 import { type ConfigProvider } from '../../core/configProvider.js';
@@ -21,6 +23,7 @@ import { coreSymbols } from '../../core/symbols.js';
 import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type DependencyInjectionModule } from '../../libs/dependencyInjection/dependencyInjectionModule.js';
 import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
+import { type SendGridService } from '../../libs/sendGrid/services/sendGridService/sendGridService.js';
 import { type UuidService } from '../../libs/uuid/services/uuidService/uuidService.js';
 import { type AccessControlService } from '../authModule/application/services/accessControlService/accessControlService.js';
 import { type TokenService } from '../authModule/application/services/tokenService/tokenService.js';
@@ -49,6 +52,11 @@ export class UserModule implements DependencyInjectionModule {
       () => new HashServiceImpl(container.get<UserModuleConfigProvider>(symbols.userModuleConfigProvider)),
     );
 
+    container.bind<EmailService>(
+      symbols.emailService,
+      () => new EmailServiceImpl(container.get<SendGridService>(coreSymbols.sendGridService)),
+    );
+
     container.bind<RegisterUserCommandHandler>(
       symbols.registerUserCommandHandler,
       () =>
@@ -56,6 +64,7 @@ export class UserModule implements DependencyInjectionModule {
           container.get<UserRepository>(symbols.userRepository),
           container.get<HashService>(symbols.hashService),
           container.get<LoggerService>(coreSymbols.loggerService),
+          container.get<EmailService>(symbols.emailService),
         ),
     );
 

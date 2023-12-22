@@ -1,4 +1,6 @@
-import { beforeEach, afterEach, expect, it, describe } from 'vitest';
+import { beforeEach, afterEach, expect, it, describe, vi } from 'vitest';
+
+import { SpyFactory } from '@common/tests';
 
 import { type RegisterUserCommandHandler } from './registerUserCommandHandler.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/common/resourceAlreadyExistsError.js';
@@ -8,11 +10,16 @@ import { coreSymbols } from '../../../../../core/symbols.js';
 import { symbols } from '../../../symbols.js';
 import { UserTestFactory } from '../../../tests/factories/userTestFactory/userTestFactory.js';
 import { UserTestUtils } from '../../../tests/utils/userTestUtils/userTestUtils.js';
+import { type EmailService } from '../../services/emailService/emailService.js';
 
 describe('RegisterUserCommandHandler', () => {
+  const spyFactory = new SpyFactory(vi);
+
   let registerUserCommandHandler: RegisterUserCommandHandler;
 
   let sqliteDatabaseClient: SqliteDatabaseClient;
+
+  let emailService: EmailService;
 
   let userTestUtils: UserTestUtils;
 
@@ -24,6 +31,8 @@ describe('RegisterUserCommandHandler', () => {
     registerUserCommandHandler = container.get<RegisterUserCommandHandler>(symbols.registerUserCommandHandler);
 
     sqliteDatabaseClient = container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient);
+
+    emailService = container.get<EmailService>(symbols.emailService);
 
     userTestUtils = new UserTestUtils(sqliteDatabaseClient);
 
@@ -38,6 +47,8 @@ describe('RegisterUserCommandHandler', () => {
 
   it('creates a User', async () => {
     const { email, password, firstName, lastName } = userTestFactory.create();
+
+    spyFactory.create(emailService, 'sendEmail').mockImplementation(async () => {});
 
     const { user } = await registerUserCommandHandler.execute({
       email,

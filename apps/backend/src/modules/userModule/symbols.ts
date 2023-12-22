@@ -8,6 +8,7 @@ export const symbols = {
   deleteUserCommandHandler: Symbol('deleteUserCommandHandler'),
   findUserQueryHandler: Symbol('findUserQueryHandler'),
   userHttpController: Symbol('userHttpController'),
+  emailService: Symbol('emailService'),
 };
 
 export const userSymbols = {
