@@ -1,10 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
+import { type CreateAuthorBody } from '@common/contracts';
 import { Generator } from '@common/tests';
 
 import { type AuthorService } from './author/authorService.js';
 import { TestApplication } from './testApplication/testApplication.js';
-import { type CreateAuthorBody } from '../../dist/src/modules/bookModule/api/authorHttpController/schemas/createAuthorSchema.js';
 import { HttpStatusCode } from '../../src/common/types/http/httpStatusCode.js';
 import { type TokenService } from '../../src/modules/authModule/application/services/tokenService/tokenService.js';
 import { authSymbols } from '../../src/modules/authModule/symbols.js';

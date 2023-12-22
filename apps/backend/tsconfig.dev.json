@@ -3,9 +3,8 @@
   "compilerOptions": {
     "outDir": "./dist",
   },
-  "include": [
-    "src"
-  ],
+  "include": ["src/**/*.ts", "tests/**/*.ts"],
+  "exclude": ["dist"],
   "references": [
     {
       "path": "../../common/contracts/tsconfig.json"
@@ -13,6 +12,5 @@
     {
       "path": "../../common/tests/tsconfig.json"
     }
-
   ]
 }
