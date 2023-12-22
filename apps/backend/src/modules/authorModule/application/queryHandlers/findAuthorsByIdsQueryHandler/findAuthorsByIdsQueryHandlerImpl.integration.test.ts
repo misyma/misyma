@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 
 import { Generator } from '@common/tests';
 
-import { type FindAuthorsByIdsQueryHandler } from '../../../../../../dist/src/modules/authorModule/application/queryHandlers/findAuthorsByIdsQueryHandler/findAuthorsByIdsQueryHandler.js';
+import { type FindAuthorsByIdsQueryHandler } from './findAuthorsByIdsQueryHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
