@@ -8,7 +8,6 @@ export class BookRawEntityTestFactory {
       id: Generator.uuid(),
       title: Generator.word(),
       releaseYear: Generator.number(1970, 2024),
-      authorId: Generator.uuid(),
       ...input,
     };
   }

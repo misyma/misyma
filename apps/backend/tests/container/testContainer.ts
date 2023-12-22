@@ -5,6 +5,7 @@ import { type SqliteDatabaseClient } from '../../src/core/database/sqliteDatabas
 import { coreSymbols } from '../../src/core/symbols.js';
 import { type DependencyInjectionContainer } from '../../src/libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type HttpService } from '../../src/libs/httpService/services/httpService/httpService.js';
+import { AuthorTestUtils } from '../../src/modules/authorModule/tests/utils/authorTestUtils/authorTestUtils.js';
 import { UserTestUtils } from '../../src/modules/userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { ApplicationService } from '../e2e/application/applicationService.js';
 import { AuthorService } from '../e2e/author/authorService.js';
@@ -34,6 +35,11 @@ export class TestContainer {
     container.bind<UserTestUtils>(
       testSymbols.userTestUtils,
       () => new UserTestUtils(container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient)),
+    );
+
+    container.bind<AuthorTestUtils>(
+      testSymbols.authorTestUtils,
+      () => new AuthorTestUtils(container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient)),
     );
 
     return container;

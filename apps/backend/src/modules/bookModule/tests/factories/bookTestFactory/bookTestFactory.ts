@@ -1,15 +1,15 @@
 import { Generator } from '@common/tests';
 
-import { type Book } from '../../../domain/entities/book/book.js';
+import { Book } from '../../../domain/entities/book/book.js';
 
 export class BookTestFactory {
   public create(input: Partial<Book> = {}): Book {
-    return {
+    return new Book({
       id: Generator.uuid(),
       title: Generator.word(),
       releaseYear: Generator.number(1970, 2024),
-      authorId: Generator.uuid(),
+      authors: [],
       ...input,
-    };
+    });
   }
 }

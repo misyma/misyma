@@ -5,9 +5,10 @@ import { ResourceAlreadyExistsError } from '../../../../../common/errors/common/
 import { Application } from '../../../../../core/application.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
+import { Author } from '../../../../authorModule/domain/entities/author/author.js';
+import { AuthorTestUtils } from '../../../../authorModule/tests/utils/authorTestUtils/authorTestUtils.js';
 import { symbols } from '../../../symbols.js';
 import { BookTestFactory } from '../../../tests/factories/bookTestFactory/bookTestFactory.js';
-import { AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
 
 describe('CreateBookCommandHandler', () => {
@@ -45,41 +46,49 @@ describe('CreateBookCommandHandler', () => {
     await sqliteDatabaseClient.destroy();
   });
 
-  it('creates a book', async () => {
+  it('creates a Book', async () => {
     const author = await authorTestUtils.createAndPersist();
 
-    const { title, releaseYear, authorId } = bookTestFactory.create({ authorId: author.id });
+    const { title, releaseYear } = bookTestFactory.create({
+      authors: [
+        new Author({
+          firstName: author.firstName,
+          lastName: author.lastName,
+          id: author.id,
+        }),
+      ],
+    });
 
     const { book } = await createBookCommandHandler.execute({
       title,
       releaseYear,
-      authorId,
+      authorIds: [author.id],
     });
 
     const foundBook = await bookTestUtils.findByTitleAndAuthor({
       title,
-      authorId,
+      authorId: author.id,
     });
 
     expect(book.title).toEqual(title);
 
-    expect(book.authorId).toEqual(authorId);
-
     expect(foundBook.title).toEqual(title);
-
-    expect(foundBook.authorId).toEqual(authorId);
   });
 
-  it('throws an error when book with the same title and author already exists', async () => {
+  it('throws an error - when Book with the same title and Authors already exists', async () => {
     const author = await authorTestUtils.createAndPersist();
 
-    const existingBook = await bookTestUtils.createAndPersist({ input: { authorId: author.id } });
+    const existingBook = await bookTestUtils.createAndPersist({
+      input: {
+        authorId: author.id,
+      },
+    });
 
     try {
       await createBookCommandHandler.execute({
         title: existingBook.title,
         releaseYear: existingBook.releaseYear,
-        authorId: existingBook.authorId,
+        authorIds: [author.id],
       });
     } catch (error) {
       expect(error).toBeInstanceOf(ResourceAlreadyExistsError);

@@ -6,8 +6,8 @@ import { type HttpService } from '../../../src/libs/httpService/services/httpSer
 import {
   type CreateAuthorBodyDTO,
   type CreateAuthorResponseBodyDTO,
-} from '../../../src/modules/bookModule/api/httpControllers/authorHttpController/schemas/createAuthorSchema.js';
-import { type FindAuthorResponseBodyDTO } from '../../../src/modules/bookModule/api/httpControllers/authorHttpController/schemas/findAuthorSchema.js';
+} from '../../../src/modules/authorModule/api/httpControllers/authorHttpController/schemas/createAuthorSchema.js';
+import { type FindAuthorResponseBodyDTO } from '../../../src/modules/authorModule/api/httpControllers/authorHttpController/schemas/findAuthorSchema.js';
 
 interface CreateAuthorPayload {
   author: CreateAuthorBodyDTO;

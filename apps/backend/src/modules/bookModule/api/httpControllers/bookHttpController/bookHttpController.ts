@@ -126,7 +126,7 @@ export class BookHttpController implements HttpController {
     request: HttpRequest<CreateBookBodyDTO>,
   ): Promise<HttpCreatedResponse<CreateBookResponseBodyDTO> | HttpUnprocessableEntityResponse<ResponseErrorBody>> {
     try {
-      const { title, releaseYear, authorId } = request.body;
+      const { title, releaseYear, authorIds } = request.body;
 
       await this.accessControlService.verifyBearerToken({
         authorizationHeader: request.headers['authorization'],
@@ -135,7 +135,7 @@ export class BookHttpController implements HttpController {
       const { book } = await this.createBookCommandHandler.execute({
         title,
         releaseYear,
-        authorId,
+        authorIds,
       });
 
       return {

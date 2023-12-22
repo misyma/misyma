@@ -1,11 +1,15 @@
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';
+import { type Transaction } from '../../../../../libs/database/types/transaction.js';
+import { BooksAuthorsTable } from '../../../infrastructure/databases/bookDatabase/tables/booksAuthorsTable/booksAuthorsTable.js';
 import { type BookRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/bookTable/bookRawEntity.js';
 import { BookTable } from '../../../infrastructure/databases/bookDatabase/tables/bookTable/bookTable.js';
 import { BookTestFactory } from '../../factories/bookTestFactory/bookTestFactory.js';
 
 interface CreateAndPersistPayload {
-  input?: Partial<BookRawEntity>;
+  input?: Partial<BookRawEntity> & {
+    authorId: string;
+  };
 }
 
 interface PersistPayload {
@@ -23,6 +27,7 @@ interface FindByTitleAndAuthorPayload {
 
 export class BookTestUtils {
   private readonly databaseTable = new BookTable();
+  private readonly booksAuthorsTable = new BooksAuthorsTable();
   private readonly bookTestFactory = new BookTestFactory();
 
   public constructor(private readonly sqliteDatabaseClient: SqliteDatabaseClient) {}
@@ -36,9 +41,22 @@ export class BookTestUtils {
 
     const book = this.bookTestFactory.create(input);
 
-    const queryBuilder = this.createQueryBuilder();
+    let rawEntities: BookRawEntity[] = [];
 
-    const rawEntities = await queryBuilder.insert(book, '*');
+    await this.sqliteDatabaseClient.transaction(async (transaction: Transaction) => {
+      rawEntities = await transaction(this.databaseTable.name).insert({
+        [this.databaseTable.columns.id]: book.id,
+        [this.databaseTable.columns.title]: book.title,
+        [this.databaseTable.columns.releaseYear]: book.releaseYear,
+      });
+
+      if (input?.authorId) {
+        await transaction(this.booksAuthorsTable.name).insert({
+          [this.booksAuthorsTable.columns.bookId]: book.id,
+          [this.booksAuthorsTable.columns.authorId]: input?.authorId,
+        });
+      }
+    });
 
     return rawEntities[0] as BookRawEntity;
   }
@@ -68,9 +86,16 @@ export class BookTestUtils {
 
     const bookRawEntity = await queryBuilder
       .select('*')
+      .join(this.booksAuthorsTable.name, (join) => {
+        if (authorId) {
+          join.onIn(
+            `${this.booksAuthorsTable.name}.${this.booksAuthorsTable.columns.authorId}`,
+            this.sqliteDatabaseClient.raw('?', [authorId]),
+          );
+        }
+      })
       .where({
         title,
-        authorId,
       })
       .first();
 
