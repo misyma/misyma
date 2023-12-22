@@ -1,6 +1,6 @@
 import { type HttpService } from '../../../httpService/services/httpService/httpService.js';
 import { type SendGridService } from '../../services/sendGridService/sendGridService.js';
-import { SendGridServiceImpl } from '../../services/sendGridService/sendgridServiceImpl.js';
+import { SendGridServiceImpl } from '../../services/sendGridService/sendGridServiceImpl.js';
 import { type SendGridConfig } from '../../types/sendGridConfig.js';
 
 export class SendGridServiceFactory {

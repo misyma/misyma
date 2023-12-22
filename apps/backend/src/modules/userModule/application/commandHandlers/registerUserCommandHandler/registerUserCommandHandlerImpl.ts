@@ -4,8 +4,10 @@ import {
   type RegisterUserCommandHandlerResult,
 } from './registerUserCommandHandler.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/common/resourceAlreadyExistsError.js';
+import { EmailType } from '../../../../../common/types/emailType.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
+import { type EmailService } from '../../services/emailService/emailService.js';
 import { type HashService } from '../../services/hashService/hashService.js';
 
 export class RegisterUserCommandHandlerImpl implements RegisterUserCommandHandler {
@@ -13,6 +15,7 @@ export class RegisterUserCommandHandlerImpl implements RegisterUserCommandHandle
     private readonly userRepository: UserRepository,
     private readonly hashService: HashService,
     private readonly loggerService: LoggerService,
+    private readonly emailService: EmailService,
   ) {}
 
   public async execute(payload: RegisterUserCommandHandlerPayload): Promise<RegisterUserCommandHandlerResult> {
@@ -51,6 +54,25 @@ export class RegisterUserCommandHandlerImpl implements RegisterUserCommandHandle
         email,
         userId: user.id,
       },
+    });
+
+    this.loggerService.debug({
+      message: 'Sending confirmation email...',
+      context: { email },
+    });
+
+    await this.emailService.sendEmail({
+      user: {
+        firstName,
+        lastName,
+        email,
+      },
+      emailType: EmailType.confirmEmail,
+    });
+
+    this.loggerService.debug({
+      message: 'Confirmation email sent.',
+      context: { email },
     });
 
     return { user };
