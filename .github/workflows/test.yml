@@ -27,5 +27,5 @@ jobs:
     - run: |
         stty -tostop npm run dev --workspace=@apps/frontend > /dev/null &
         FRONTENT_DEV_SERVER_PID=$!
-        NODE_ENV=ci npm run test:e2e:run
+        NODE_ENV=ci npm run test:e2e
         kill $FRONTENT_DEV_SERVER_PID
