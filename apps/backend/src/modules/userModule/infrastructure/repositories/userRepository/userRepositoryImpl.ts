@@ -1,26 +1,46 @@
 import { type UserMapper } from './userMapper/userMapper.js';
+import { type UserTokensMapper } from './userTokensMapper/userTokensMapper.js';
 import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
+import { type UserDomainAction } from '../../../domain/entities/user/domainActions/userDomainAction.js';
+import { UserDomainActionType } from '../../../domain/entities/user/domainActions/userDomainActionType.js';
 import { type User } from '../../../domain/entities/user/user.js';
+import { type UserTokens } from '../../../domain/entities/userTokens/userTokens.js';
 import {
   type UserRepository,
   type CreateUserPayload,
   type FindUserPayload,
   type UpdateUserPayload,
   type DeleteUserPayload,
+  type FindUserTokensPayload,
 } from '../../../domain/repositories/userRepository/userRepository.js';
 import { type UserRawEntity } from '../../databases/userDatabase/tables/userTable/userRawEntity.js';
 import { UserTable } from '../../databases/userDatabase/tables/userTable/userTable.js';
+import { type UserTokensRawEntity } from '../../databases/userDatabase/tables/userTokensTable/userTokensRawEntity.js';
+import { UserTokensTable } from '../../databases/userDatabase/tables/userTokensTable/userTokensTable.js';
+
+// I am quite certain it was a builtin type, but couldn't find it...
+type Writeable<T> = {
+  -readonly [P in keyof T]: T[P];
+};
+
+export interface MappedUserUpdate {
+  userUpdatePayload: Partial<UserRawEntity>;
+  userTokensUpdatePayload?: Partial<UserTokensRawEntity> | undefined;
+}
 
 export class UserRepositoryImpl implements UserRepository {
   private readonly databaseTable = new UserTable();
 
+  private readonly userTokensTable = new UserTokensTable();
+
   public constructor(
     private readonly sqliteDatabaseClient: SqliteDatabaseClient,
     private readonly userMapper: UserMapper,
+    private readonly userTokensMapper: UserTokensMapper,
     private readonly uuidService: UuidService,
   ) {}
 
@@ -99,8 +119,32 @@ export class UserRepositoryImpl implements UserRepository {
     return this.userMapper.mapToDomain(rawEntity);
   }
 
+  public async findUserTokens(payload: FindUserTokensPayload): Promise<UserTokens | null> {
+    const { userId } = payload;
+
+    let rawEntity: UserTokensRawEntity | undefined;
+
+    try {
+      rawEntity = await this.sqliteDatabaseClient<UserTokensRawEntity>(this.userTokensTable.name)
+        .select('*')
+        .where({ userId })
+        .first();
+    } catch (error) {
+      throw new RepositoryError({
+        entity: 'UserTokens',
+        operation: 'find',
+      });
+    }
+
+    if (!rawEntity) {
+      return null;
+    }
+
+    return this.userTokensMapper.mapToDomain(rawEntity);
+  }
+
   public async updateUser(payload: UpdateUserPayload): Promise<User> {
-    const { id, password, firstName, lastName } = payload;
+    const { id, domainActions } = payload;
 
     const existingUser = await this.findUser({ id });
 
@@ -111,35 +155,18 @@ export class UserRepositoryImpl implements UserRepository {
       });
     }
 
-    const queryBuilder = this.createQueryBuilder();
+    let rawEntities: UserRawEntity[] = [];
 
-    let rawEntities: UserRawEntity[];
-
-    let updatePayload: Partial<UserRawEntity> = {};
-
-    if (password) {
-      updatePayload = {
-        ...updatePayload,
-        password,
-      };
-    }
-
-    if (firstName) {
-      updatePayload = {
-        ...updatePayload,
-        firstName,
-      };
-    }
-
-    if (lastName) {
-      updatePayload = {
-        ...updatePayload,
-        lastName,
-      };
-    }
+    const { userUpdatePayload, userTokensUpdatePayload } = this.mapDomainActionsToUpdatePayload(domainActions);
 
     try {
-      rawEntities = await queryBuilder.update(updatePayload, '*').where({ id });
+      await this.sqliteDatabaseClient.transaction(async (transaction) => {
+        rawEntities = await transaction.update(userUpdatePayload, '*').table(this.databaseTable.name).where({ id });
+
+        if (userTokensUpdatePayload) {
+          await transaction.update(userTokensUpdatePayload).table(this.userTokensTable.name).where({ userId: id });
+        }
+      });
     } catch (error) {
       throw new RepositoryError({
         entity: 'User',
@@ -150,6 +177,57 @@ export class UserRepositoryImpl implements UserRepository {
     const rawEntity = rawEntities[0] as UserRawEntity;
 
     return this.userMapper.mapToDomain(rawEntity);
+  }
+
+  private mapDomainActionsToUpdatePayload(domainActions: UserDomainAction[]): MappedUserUpdate {
+    let user: Partial<Writeable<UserRawEntity>> = {};
+
+    let userTokens: Partial<UserTokensRawEntity> | undefined = undefined;
+
+    domainActions.forEach((domainAction) => {
+      switch (domainAction.actionName) {
+        case UserDomainActionType.updatePassword:
+          user = {
+            ...user,
+            password: domainAction.payload.newPassword,
+          };
+
+          break;
+
+        case UserDomainActionType.resetPassword:
+          userTokens = {
+            resetPasswordToken: domainAction.payload.resetPasswordToken,
+          };
+
+          break;
+
+        case UserDomainActionType.updateEmail:
+          user.email = domainAction.payload.newEmail;
+
+          break;
+
+        case UserDomainActionType.updateFirstName:
+          user.firstName = domainAction.payload.firstName;
+
+          break;
+
+        case UserDomainActionType.updateLastName:
+          user.lastName = domainAction.payload.lastName;
+
+          break;
+
+        default:
+          throw new RepositoryError({
+            entity: 'User',
+            operation: 'update',
+          });
+      }
+    });
+
+    return {
+      userUpdatePayload: user,
+      userTokensUpdatePayload: userTokens,
+    };
   }
 
   public async deleteUser(payload: DeleteUserPayload): Promise<void> {

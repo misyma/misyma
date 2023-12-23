@@ -34,7 +34,7 @@ export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
       });
     }
 
-    const passwordIsValid = await this.hashService.compare(password, user.password);
+    const passwordIsValid = await this.hashService.compare(password, user.getPassword());
 
     if (!passwordIsValid) {
       throw new ResourceNotFoundError({
@@ -43,13 +43,13 @@ export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
       });
     }
 
-    const accessToken = this.tokenService.createToken({ userId: user.id });
+    const accessToken = this.tokenService.createToken({ userId: user.getId() });
 
     this.loggerService.info({
       message: 'User logged in.',
       context: {
         email,
-        userId: user.id,
+        userId: user.getId(),
         accessToken,
       },
     });

@@ -47,10 +47,10 @@ describe('DeleteUserCommandHandler', () => {
   });
 
   it('throws an error if a User with given id does not exist', async () => {
-    const { id } = userTestFactory.create();
+    const nonExistentUser = userTestFactory.create();
 
     try {
-      await deleteUserCommandHandler.execute({ userId: id });
+      await deleteUserCommandHandler.execute({ userId: nonExistentUser.getId() });
     } catch (error) {
       expect(error).toBeInstanceOf(ResourceNotFoundError);
 

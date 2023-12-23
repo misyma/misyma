@@ -39,7 +39,9 @@ describe('UserRepositoryImpl', () => {
 
   describe('Create', () => {
     it('creates a User', async () => {
-      const { email, password, firstName, lastName } = userTestFactory.create();
+      const createdUser = userTestFactory.create();
+
+      const { email, firstName, lastName, password } = createdUser.getState();
 
       const user = await userRepository.createUser({
         email,
@@ -50,7 +52,7 @@ describe('UserRepositoryImpl', () => {
 
       const foundUser = await userTestUtils.findByEmail({ email });
 
-      expect(user.email).toEqual(email);
+      expect(user.getEmail()).toEqual(email);
 
       expect(foundUser.email).toEqual(email);
     });
@@ -93,9 +95,9 @@ describe('UserRepositoryImpl', () => {
     });
 
     it('returns null if a User with given id does not exist', async () => {
-      const { id } = userTestFactory.create();
+      const createdUser = userTestFactory.create();
 
-      const user = await userRepository.findUser({ id });
+      const user = await userRepository.findUser({ id: createdUser.getId() });
 
       expect(user).toBeNull();
     });
@@ -105,49 +107,65 @@ describe('UserRepositoryImpl', () => {
     it(`updates User's password`, async () => {
       const user = await userTestUtils.createAndPersist();
 
-      const { password } = userTestFactory.create();
+      const createdUser = userTestFactory.create();
+
+      createdUser.addUpdatePasswordAction({
+        newPassword: createdUser.getPassword(),
+      });
 
       const foundUser = await userRepository.updateUser({
         id: user.id,
-        password,
+        domainActions: createdUser.getDomainActions(),
       });
 
-      expect(foundUser.password).toEqual(password);
+      expect(foundUser.getPassword()).toEqual(createdUser.getPassword());
     });
 
     it(`updates User's first name`, async () => {
       const user = await userTestUtils.createAndPersist();
 
-      const { firstName } = userTestFactory.create();
+      const createdUser = userTestFactory.create();
+
+      createdUser.addUpdateFirstNameAction({
+        newFirstName: createdUser.getFirstName(),
+      });
 
       const foundUser = await userRepository.updateUser({
         id: user.id,
-        firstName,
+        domainActions: createdUser.getDomainActions(),
       });
 
-      expect(foundUser.firstName).toEqual(firstName);
+      expect(foundUser.getFirstName()).toEqual(createdUser.getFirstName());
     });
 
     it(`updates User's last name`, async () => {
       const user = await userTestUtils.createAndPersist();
 
-      const { lastName } = userTestFactory.create();
+      const createdUser = userTestFactory.create();
+
+      createdUser.addUpdateLastNameAction({
+        newLastName: createdUser.getLastName(),
+      });
 
       const foundUser = await userRepository.updateUser({
         id: user.id,
-        lastName,
+        domainActions: createdUser.getDomainActions(),
       });
 
-      expect(foundUser.lastName).toEqual(lastName);
+      expect(foundUser.getLastName()).toEqual(createdUser.getLastName());
     });
 
     it('throws an error if a User with given id does not exist', async () => {
-      const { id, password } = userTestFactory.create();
+      const nonExistentUser = userTestFactory.create();
+
+      nonExistentUser.addUpdatePasswordAction({
+        newPassword: nonExistentUser.getPassword(),
+      });
 
       try {
         await userRepository.updateUser({
-          id,
-          password,
+          id: nonExistentUser.getId(),
+          domainActions: nonExistentUser.getDomainActions(),
         });
       } catch (error) {
         expect(error).toBeInstanceOf(ResourceNotFoundError);
@@ -171,10 +189,10 @@ describe('UserRepositoryImpl', () => {
     });
 
     it('throws an error if a User with given id does not exist', async () => {
-      const { id } = userTestFactory.create();
+      const nonExistentUser = userTestFactory.create();
 
       try {
-        await userRepository.deleteUser({ id });
+        await userRepository.deleteUser({ id: nonExistentUser.getId() });
       } catch (error) {
         expect(error).toBeInstanceOf(ResourceNotFoundError);
 

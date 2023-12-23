@@ -167,10 +167,10 @@ export class UserHttpController implements HttpController {
       return {
         statusCode: HttpStatusCode.created,
         body: {
-          id: user.id,
-          email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
+          id: user.getId(),
+          email: user.getEmail(),
+          firstName: user.getFirstName(),
+          lastName: user.getLastName(),
         },
       };
     } catch (error) {
@@ -244,10 +244,10 @@ export class UserHttpController implements HttpController {
       return {
         statusCode: HttpStatusCode.ok,
         body: {
-          id: user.id,
-          email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
+          id: user.getId(),
+          email: user.getEmail(),
+          firstName: user.getFirstName(),
+          lastName: user.getLastName(),
         },
       };
     } catch (error) {

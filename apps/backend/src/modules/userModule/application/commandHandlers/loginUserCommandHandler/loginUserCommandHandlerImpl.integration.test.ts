@@ -48,37 +48,37 @@ describe('LoginUserCommandHandler', () => {
   });
 
   it('returns access token', async () => {
-    const { id, email, password, firstName, lastName } = userTestFactory.create();
+    const createdUser = userTestFactory.create();
 
-    const hashedPassword = await hashService.hash(password);
+    const hashedPassword = await hashService.hash(createdUser.getPassword());
 
     await userTestUtils.persist({
       user: {
-        id,
-        email,
+        id: createdUser.getId(),
+        email: createdUser.getEmail(),
         password: hashedPassword,
-        firstName,
-        lastName,
+        firstName: createdUser.getFirstName(),
+        lastName: createdUser.getLastName(),
       },
     });
 
     const { accessToken } = await loginUserCommandHandler.execute({
-      email,
-      password,
+      email: createdUser.getEmail(),
+      password: createdUser.getPassword(),
     });
 
     const tokenPayload = tokenService.verifyToken(accessToken);
 
-    expect(tokenPayload['userId']).toBe(id);
+    expect(tokenPayload['userId']).toBe(createdUser.getId());
   });
 
   it('throws an error if a User with given email does not exist', async () => {
-    const { email, password } = userTestFactory.create();
+    const nonExistentUser = userTestFactory.create();
 
     try {
       await loginUserCommandHandler.execute({
-        email,
-        password,
+        email: nonExistentUser.getEmail(),
+        password: nonExistentUser.getPassword(),
       });
     } catch (error) {
       expect(error).toBeInstanceOf(ResourceNotFoundError);

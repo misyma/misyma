@@ -4,9 +4,9 @@ import {
   type RegisterUserCommandHandlerResult,
 } from './registerUserCommandHandler.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/common/resourceAlreadyExistsError.js';
-import { EmailType } from '../../../../../common/types/emailType.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
+import { ConfirmUserEmailEmail } from '../../../infrastructure/services/emails/confirmUserEmailEmail.js';
 import { type EmailService } from '../../services/emailService/emailService.js';
 import { type HashService } from '../../services/hashService/hashService.js';
 
@@ -52,7 +52,7 @@ export class RegisterUserCommandHandlerImpl implements RegisterUserCommandHandle
       message: 'User registered.',
       context: {
         email,
-        userId: user.id,
+        userId: user.getId(),
       },
     });
 
@@ -61,14 +61,15 @@ export class RegisterUserCommandHandlerImpl implements RegisterUserCommandHandle
       context: { email },
     });
 
-    await this.emailService.sendEmail({
-      user: {
-        firstName,
-        lastName,
-        email,
-      },
-      emailType: EmailType.confirmEmail,
-    });
+    await this.emailService.sendEmail(
+      new ConfirmUserEmailEmail({
+        user: {
+          firstName,
+          lastName,
+          email,
+        },
+      }),
+    );
 
     this.loggerService.debug({
       message: 'Confirmation email sent.',

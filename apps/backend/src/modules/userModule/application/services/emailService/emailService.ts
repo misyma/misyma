@@ -1,14 +1,8 @@
-import { type EmailType } from '../../../../../common/types/emailType.js';
+import { type ConfirmUserEmailEmail } from '../../../infrastructure/services/emails/confirmUserEmailEmail.js';
+import { type ResetPasswordEmail } from '../../../infrastructure/services/emails/resetPasswordEmail.js';
 
-export interface SendEmailPayload {
-  readonly user: {
-    readonly firstName: string;
-    readonly lastName: string;
-    readonly email: string;
-  };
-  readonly emailType: EmailType;
-}
+export type Email = ResetPasswordEmail | ConfirmUserEmailEmail;
 
 export interface EmailService {
-  sendEmail(payload: SendEmailPayload): Promise<void>;
+  sendEmail(emailEntity: Email): Promise<void>;
 }

@@ -1,3 +1,5 @@
+import { DummyFactory } from '@common/tests';
+
 import { testSymbols } from './symbols.js';
 import { Application } from '../../src/core/application.js';
 import { type ConfigProvider } from '../../src/core/configProvider.js';
@@ -6,6 +8,8 @@ import { coreSymbols } from '../../src/core/symbols.js';
 import { type DependencyInjectionContainer } from '../../src/libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type HttpService } from '../../src/libs/httpService/services/httpService/httpService.js';
 import { AuthorTestUtils } from '../../src/modules/authorModule/tests/utils/authorTestUtils/authorTestUtils.js';
+import { type EmailService } from '../../src/modules/userModule/application/services/emailService/emailService.js';
+import { symbols as userSymbols } from '../../src/modules/userModule/symbols.js';
 import { UserTestUtils } from '../../src/modules/userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { ApplicationService } from '../e2e/application/applicationService.js';
 import { AuthorService } from '../e2e/author/authorService.js';
@@ -41,6 +45,8 @@ export class TestContainer {
       testSymbols.authorTestUtils,
       () => new AuthorTestUtils(container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient)),
     );
+
+    container.overrideBinding<EmailService>(userSymbols.emailService, () => new DummyFactory().create());
 
     return container;
   }

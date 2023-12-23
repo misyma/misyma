@@ -3,6 +3,7 @@
 import jwt from 'jsonwebtoken';
 
 import { type TokenService } from './tokenService.js';
+import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
 import { type AuthModuleConfigProvider } from '../../../authModuleConfigProvider.js';
 
 export class TokenServiceImpl implements TokenService {
@@ -24,8 +25,17 @@ export class TokenServiceImpl implements TokenService {
   public verifyToken(token: string): Record<string, string> {
     const jwtSecret = this.configProvider.getJwtSecret();
 
-    const data = jwt.verify(token, jwtSecret, { algorithms: ['HS512'] });
+    try {
+      const data = jwt.verify(token, jwtSecret, { algorithms: ['HS512'] });
 
-    return data as Record<string, string>;
+      return data as Record<string, string>;
+    } catch (error) {
+      throw new OperationNotValidError({
+        reason: 'Token is not valid.',
+        value: {
+          token,
+        },
+      });
+    }
   }
 }

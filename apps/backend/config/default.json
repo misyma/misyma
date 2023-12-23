@@ -18,5 +18,9 @@
   "sendGrid": {
     "apiKey": null,
     "senderEmail": null
+  },
+  "mailer": {
+    "confirmEmailLink": null,
+    "resetPasswordLink": null
   }
 }
