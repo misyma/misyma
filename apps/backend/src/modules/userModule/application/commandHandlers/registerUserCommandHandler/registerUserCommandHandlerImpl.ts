@@ -52,7 +52,7 @@ export class RegisterUserCommandHandlerImpl implements RegisterUserCommandHandle
       message: 'User registered.',
       context: {
         email,
-        userId: user.id,
+        userId: user.getId(),
       },
     });
 

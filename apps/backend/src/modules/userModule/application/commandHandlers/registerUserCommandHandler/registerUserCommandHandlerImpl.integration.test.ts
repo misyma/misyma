@@ -46,22 +46,22 @@ describe('RegisterUserCommandHandler', () => {
   });
 
   it('creates a User', async () => {
-    const { email, password, firstName, lastName } = userTestFactory.create();
+    const createdUser = userTestFactory.create();
 
     spyFactory.create(emailService, 'sendEmail').mockImplementation(async () => {});
 
     const { user } = await registerUserCommandHandler.execute({
-      email,
-      password,
-      firstName,
-      lastName,
+      email: createdUser.getEmail(),
+      password: createdUser.getPassword(),
+      firstName: createdUser.getFirstName(),
+      lastName: createdUser.getLastName(),
     });
 
-    const foundUser = await userTestUtils.findByEmail({ email });
+    const foundUser = await userTestUtils.findByEmail({ email: createdUser.getEmail() });
 
-    expect(user.email).toEqual(email);
+    expect(user.getEmail()).toEqual(createdUser.getEmail());
 
-    expect(foundUser.email).toEqual(email);
+    expect(foundUser.email).toEqual(createdUser.getEmail());
   });
 
   it('throws an error when a User with the same email already exists', async () => {

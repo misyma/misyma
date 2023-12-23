@@ -1,7 +1,7 @@
-import { type UserActionType } from './userDomainActionType.js';
+import { type UserDomainActionType } from './userDomainActionType.js';
 
 export interface UpdateEmailDomainAction {
-  actionName: UserActionType.updateEmail;
+  actionName: UserDomainActionType.updateEmail;
   payload: {
     newEmail: string;
   };

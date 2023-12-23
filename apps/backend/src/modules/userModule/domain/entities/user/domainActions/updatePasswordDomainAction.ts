@@ -1,7 +1,7 @@
-import { type UserActionType } from './userDomainActionType.js';
+import { type UserDomainActionType } from './userDomainActionType.js';
 
 export interface UpdatePasswordDomainAction {
-  actionName: UserActionType.updatePassword;
+  actionName: UserDomainActionType.updatePassword;
   payload: {
     newPassword: string;
   };

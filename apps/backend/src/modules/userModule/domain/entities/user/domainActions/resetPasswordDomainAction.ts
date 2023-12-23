@@ -1,7 +1,7 @@
-import { type UserActionType } from './userDomainActionType.js';
+import { type UserDomainActionType } from './userDomainActionType.js';
 
 export interface ResetPasswordDomainAction {
-  actionName: UserActionType.resetPassword;
+  actionName: UserDomainActionType.resetPassword;
   payload: {
     resetPasswordToken: string;
   };

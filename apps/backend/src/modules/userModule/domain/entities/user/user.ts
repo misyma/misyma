@@ -1,5 +1,5 @@
 import { type UserDomainAction } from './domainActions/userDomainAction.js';
-import { UserActionType } from './domainActions/userDomainActionType.js';
+import { UserDomainActionType } from './domainActions/userDomainActionType.js';
 import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
 
 export interface UserDraft {
@@ -16,6 +16,14 @@ export interface UpdatePasswordPayload {
 
 export interface UpdateEmailPayload {
   readonly newEmail: string;
+}
+
+export interface UpdateFirstNamePayload {
+  readonly newFirstName: string;
+}
+
+export interface UpdateLastNamePayload {
+  readonly newLastName: string;
 }
 
 export interface ResetPasswordPayload {
@@ -64,15 +72,25 @@ export class User {
     return this.lastName;
   }
 
+  public getState(): UserDraft {
+    return {
+      id: this.id,
+      email: this.email,
+      password: this.password,
+      firstName: this.firstName,
+      lastName: this.lastName,
+    };
+  }
+
   public getDomainActions(): UserDomainAction[] {
     return this.domainActions;
   }
 
-  public updatePassword(payload: UpdatePasswordPayload): void {
+  public addUpdatePasswordAction(payload: UpdatePasswordPayload): void {
     const { newPassword } = payload;
 
     this.domainActions.push({
-      actionName: UserActionType.updatePassword,
+      actionName: UserDomainActionType.updatePassword,
       payload: {
         newPassword,
       },
@@ -81,7 +99,7 @@ export class User {
     this.password = newPassword;
   }
 
-  public updateEmail(payload: UpdateEmailPayload): void {
+  public addUpdateEmailAction(payload: UpdateEmailPayload): void {
     const { newEmail } = payload;
 
     if (this.email === newEmail) {
@@ -92,7 +110,7 @@ export class User {
     }
 
     this.domainActions.push({
-      actionName: UserActionType.updateEmail,
+      actionName: UserDomainActionType.updateEmail,
       payload: {
         newEmail,
       },
@@ -101,11 +119,33 @@ export class User {
     this.email = newEmail;
   }
 
-  public resetPassword(payload: ResetPasswordPayload): void {
+  public addUpdateFirstNameAction(payload: UpdateFirstNamePayload): void {
+    const { newFirstName } = payload;
+
+    this.domainActions.push({
+      actionName: UserDomainActionType.updateFirstName,
+      payload: {
+        firstName: newFirstName,
+      },
+    });
+  }
+
+  public addUpdateLastNameAction(payload: UpdateLastNamePayload): void {
+    const { newLastName } = payload;
+
+    this.domainActions.push({
+      actionName: UserDomainActionType.updateLastName,
+      payload: {
+        lastName: newLastName,
+      },
+    });
+  }
+
+  public addResetPasswordAction(payload: ResetPasswordPayload): void {
     const { resetPasswordToken } = payload;
 
     this.domainActions.push({
-      actionName: UserActionType.resetPassword,
+      actionName: UserDomainActionType.resetPassword,
       payload: {
         resetPasswordToken,
       },
