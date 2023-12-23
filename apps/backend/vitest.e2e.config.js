@@ -9,6 +9,13 @@ export default mergeConfig(
       name: 'E2E',
       include: [...configDefaults.exclude, '**/*.e2e.test.ts'],
       exclude: [...configDefaults.watchExclude, '**/*.unit.test.ts', '**/*.integration.test.ts', '**/*.js'],
+      pool: 'forks',
+      poolOptions: {
+        forks: {
+          minForks: 1,
+          maxForks: 1,
+        },
+      },
       singleThread: true,
       testTimeout: 50000,
       teardownTimeout: 30000,

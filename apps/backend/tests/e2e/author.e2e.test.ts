@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import { type CreateAuthorBody } from '@common/contracts';
 import { Generator } from '@common/tests';
@@ -20,7 +20,7 @@ describe('Author', () => {
 
   let tokenService: TokenService;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     application = new TestApplication();
 
     const container = application.createContainer();
@@ -34,7 +34,7 @@ describe('Author', () => {
     await application.start();
   });
 
-  afterEach(async () => {
+  afterAll(async () => {
     await application.stop();
   });
 
