@@ -33,6 +33,7 @@
     "inversify": "^6.0.2",
     "jsonwebtoken": "^9.0.2",
     "knex": "^3.0.1",
+    "mqemitter": "^5.0.0",
     "node-fetch": "3.3.2",
     "pino": "^8.16.2",
     "pino-pretty": "^10.2.3",
