@@ -4,4 +4,5 @@ export enum UserDomainActionType {
   resetPassword = 'resetPassword',
   updateFirstName = 'updateFirstName',
   updateLastName = 'updateLastName',
+  changePassword = 'changePassword',
 }

@@ -1,4 +1,5 @@
 import { type UserMapper } from './userMapper/userMapper.js';
+import { type UserTokensMapper } from './userTokensMapper/userTokensMapper.js';
 import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
@@ -7,12 +8,14 @@ import { type UuidService } from '../../../../../libs/uuid/services/uuidService/
 import { type UserDomainAction } from '../../../domain/entities/user/domainActions/userDomainAction.js';
 import { UserDomainActionType } from '../../../domain/entities/user/domainActions/userDomainActionType.js';
 import { type User } from '../../../domain/entities/user/user.js';
+import { type UserTokens } from '../../../domain/entities/userTokens/userTokens.js';
 import {
   type UserRepository,
   type CreateUserPayload,
   type FindUserPayload,
   type UpdateUserPayload,
   type DeleteUserPayload,
+  type FindUserTokensPayload,
 } from '../../../domain/repositories/userRepository/userRepository.js';
 import { type UserRawEntity } from '../../databases/userDatabase/tables/userTable/userRawEntity.js';
 import { UserTable } from '../../databases/userDatabase/tables/userTable/userTable.js';
@@ -37,6 +40,7 @@ export class UserRepositoryImpl implements UserRepository {
   public constructor(
     private readonly sqliteDatabaseClient: SqliteDatabaseClient,
     private readonly userMapper: UserMapper,
+    private readonly userTokensMapper: UserTokensMapper,
     private readonly uuidService: UuidService,
   ) {}
 
@@ -113,6 +117,30 @@ export class UserRepositoryImpl implements UserRepository {
     }
 
     return this.userMapper.mapToDomain(rawEntity);
+  }
+
+  public async findUserTokens(payload: FindUserTokensPayload): Promise<UserTokens | null> {
+    const { userId } = payload;
+
+    let rawEntity: UserTokensRawEntity | undefined;
+
+    try {
+      rawEntity = await this.sqliteDatabaseClient<UserTokensRawEntity>(this.userTokensTable.name)
+        .select('*')
+        .where({ userId })
+        .first();
+    } catch (error) {
+      throw new RepositoryError({
+        entity: 'UserTokens',
+        operation: 'find',
+      });
+    }
+
+    if (!rawEntity) {
+      return null;
+    }
+
+    return this.userTokensMapper.mapToDomain(rawEntity);
   }
 
   public async updateUser(payload: UpdateUserPayload): Promise<User> {

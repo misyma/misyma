@@ -1,13 +1,19 @@
 export const symbols = {
   userModuleConfigProvider: Symbol('userModuleConfigProvider'),
   userMapper: Symbol('userMapper'),
+  userTokensMapper: Symbol('userTokensMapper'),
   userRepository: Symbol('userRepository'),
-  hashService: Symbol('hashService'),
+
   registerUserCommandHandler: Symbol('registerUserCommandHandler'),
+  findUserQueryHandler: Symbol('findUserQueryHandler'),
+  resetUserPasswordCommandHandler: Symbol('resetUserPasswordCommandHandler'),
+  changeUserPasswordCommandHandler: Symbol('changeUserPasswordCommandHandler'),
   loginUserCommandHandler: Symbol('loginUserCommandHandler'),
   deleteUserCommandHandler: Symbol('deleteUserCommandHandler'),
-  findUserQueryHandler: Symbol('findUserQueryHandler'),
+
   userHttpController: Symbol('userHttpController'),
+
+  hashService: Symbol('hashService'),
   emailService: Symbol('emailService'),
 };
 

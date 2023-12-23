@@ -4,5 +4,5 @@ import { type ResetPasswordEmail } from '../../../infrastructure/services/emails
 export type Email = ResetPasswordEmail | ConfirmUserEmailEmail;
 
 export interface EmailService {
-  sendEmail(email: Email): Promise<void>;
+  sendEmail(emailEntity: Email): Promise<void>;
 }
