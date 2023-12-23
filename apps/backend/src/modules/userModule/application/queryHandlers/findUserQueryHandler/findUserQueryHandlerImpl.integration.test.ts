@@ -45,10 +45,10 @@ describe('FindUserQueryHandler', () => {
   });
 
   it('throws an error if a User with given id does not exist', async () => {
-    const { id } = userTestFactory.create();
+    const nonExistentUser = userTestFactory.create();
 
     try {
-      await findUserQueryHandler.execute({ userId: id });
+      await findUserQueryHandler.execute({ userId: nonExistentUser.getId() });
     } catch (error) {
       expect(error).toBeInstanceOf(ResourceNotFoundError);
 

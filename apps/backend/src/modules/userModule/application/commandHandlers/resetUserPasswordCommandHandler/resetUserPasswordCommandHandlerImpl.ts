@@ -1,7 +1,7 @@
 import { type ExecutePayload, type ResetUserPasswordCommandHandler } from './resetUserPasswordCommandHandler.js';
-import { EmailType } from '../../../../../common/types/emailType.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
+import { ResetPasswordEmail } from '../../../infrastructure/services/emails/resetPasswordEmail.js';
 import { type EmailService } from '../../services/emailService/emailService.js';
 
 export class ResetUserPasswordCommandHandlerImpl implements ResetUserPasswordCommandHandler {
@@ -35,13 +35,15 @@ export class ResetUserPasswordCommandHandlerImpl implements ResetUserPasswordCom
       domainActions: user.getDomainActions(),
     });
 
-    await this.emailService.sendEmail({
-      emailType: EmailType.resetPassword,
-      user: {
-        email,
-        firstName: user.getFirstName(),
-        lastName: user.getLastName(),
-      },
-    });
+    await this.emailService.sendEmail(
+      new ResetPasswordEmail({
+        resetPasswordToken,
+        user: {
+          firstName: user.getFirstName(),
+          lastName: user.getLastName(),
+          email: user.getEmail(),
+        },
+      }),
+    );
   }
 }

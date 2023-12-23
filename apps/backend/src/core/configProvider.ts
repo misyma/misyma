@@ -28,6 +28,14 @@ export class ConfigProvider {
     return this.getValue<string>('auth.jwt.secret');
   }
 
+  public getConfirmEmailLink(): string {
+    return this.getValue<string>('mailer.confirmEmailLink');
+  }
+
+  public getResetPasswordLink(): string {
+    return this.getValue<string>('mailer.resetPasswordLink');
+  }
+
   public getJwtExpiresIn(): number {
     return this.getValue<number>('auth.jwt.expiresIn');
   }

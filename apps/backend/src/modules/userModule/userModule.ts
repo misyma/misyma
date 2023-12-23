@@ -35,6 +35,8 @@ export class UserModule implements DependencyInjectionModule {
       container.get<ConfigProvider>(coreSymbols.configProvider),
     );
 
+    const configProvider = container.get<ConfigProvider>(coreSymbols.configProvider);
+
     container.bind<UserMapper>(symbols.userMapper, () => new UserMapperImpl());
 
     container.bind<UserRepository>(
@@ -54,7 +56,15 @@ export class UserModule implements DependencyInjectionModule {
 
     container.bind<EmailService>(
       symbols.emailService,
-      () => new EmailServiceImpl(container.get<SendGridService>(coreSymbols.sendGridService)),
+      () =>
+        new EmailServiceImpl(container.get<SendGridService>(coreSymbols.sendGridService), {
+          confirmEmail: {
+            link: configProvider.getConfirmEmailLink(),
+          },
+          resetPasswordEmail: {
+            link: configProvider.getResetPasswordLink(),
+          },
+        }),
     );
 
     container.bind<RegisterUserCommandHandler>(
