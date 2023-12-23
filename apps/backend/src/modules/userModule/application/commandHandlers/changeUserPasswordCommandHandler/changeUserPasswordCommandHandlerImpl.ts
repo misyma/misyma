@@ -14,8 +14,29 @@ export class ChangeUserPasswordCommandHandlerImpl implements ChangeUserPasswordC
   public async execute(payload: ExecutePayload): Promise<void> {
     const { resetPasswordToken, newPassword, repeatedNewPassword, userId } = payload;
 
-    // Quite sure this throws. To check.
     this.tokenService.verifyToken(resetPasswordToken);
+
+    const userTokens = await this.userRepository.findUserTokens({
+      userId,
+    });
+
+    if (!userTokens) {
+      throw new OperationNotValidError({
+        reason: 'User tokens not found.',
+        value: {
+          userId,
+        },
+      });
+    }
+
+    if (userTokens.getResetPasswordToken() !== resetPasswordToken) {
+      throw new OperationNotValidError({
+        reason: 'Reset password token is not valid.',
+        value: {
+          resetPasswordToken,
+        },
+      });
+    }
 
     if (newPassword !== repeatedNewPassword) {
       throw new OperationNotValidError({
@@ -26,8 +47,6 @@ export class ChangeUserPasswordCommandHandlerImpl implements ChangeUserPasswordC
         },
       });
     }
-
-    this.userRepository; // Check if user has given token.
 
     const user = await this.userRepository.findUser({
       id: userId,
