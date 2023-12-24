@@ -4,6 +4,7 @@ import { RepositoryError } from '../../../../../common/errors/common/repositoryE
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';
+import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { type UserDomainAction } from '../../../domain/entities/user/domainActions/userDomainAction.js';
 import { UserDomainActionType } from '../../../domain/entities/user/domainActions/userDomainActionType.js';
@@ -43,6 +44,7 @@ export class UserRepositoryImpl implements UserRepository {
     private readonly userMapper: UserMapper,
     private readonly userTokensMapper: UserTokensMapper,
     private readonly uuidService: UuidService,
+    private readonly loggerService: LoggerService,
   ) {}
 
   private createUserQueryBuilder(): QueryBuilder<UserRawEntity> {
@@ -74,6 +76,11 @@ export class UserRepositoryImpl implements UserRepository {
         '*',
       );
     } catch (error) {
+      this.loggerService.error({
+        message: 'Error while creating User.',
+        context: { error },
+      });
+
       throw new RepositoryError({
         entity: 'User',
         operation: 'create',
@@ -104,6 +111,11 @@ export class UserRepositoryImpl implements UserRepository {
         '*',
       );
     } catch (error) {
+      this.loggerService.error({
+        message: 'Error while creating UserTokens.',
+        context: { error },
+      });
+
       throw new RepositoryError({
         entity: 'UserTokens',
         operation: 'create',
@@ -141,6 +153,11 @@ export class UserRepositoryImpl implements UserRepository {
     try {
       rawEntity = await queryBuilder.select('*').where(whereCondition).first();
     } catch (error) {
+      this.loggerService.error({
+        message: 'Error while finding User.',
+        context: { error },
+      });
+
       throw new RepositoryError({
         entity: 'User',
         operation: 'find',
@@ -165,6 +182,11 @@ export class UserRepositoryImpl implements UserRepository {
         .where({ userId })
         .first();
     } catch (error) {
+      this.loggerService.error({
+        message: 'Error while finding UserTokens.',
+        context: { error },
+      });
+
       throw new RepositoryError({
         entity: 'UserTokens',
         operation: 'find',
@@ -208,7 +230,10 @@ export class UserRepositoryImpl implements UserRepository {
         }
       });
     } catch (error) {
-      console.log({ error });
+      this.loggerService.error({
+        message: 'Error while updating User.',
+        context: { error },
+      });
 
       throw new RepositoryError({
         entity: 'User',
@@ -281,6 +306,10 @@ export class UserRepositoryImpl implements UserRepository {
           break;
 
         default:
+          this.loggerService.error({
+            message: 'Error mapping domain actions.',
+          });
+
           throw new RepositoryError({
             entity: 'User',
             operation: 'update',
@@ -311,6 +340,11 @@ export class UserRepositoryImpl implements UserRepository {
     try {
       await queryBuilder.delete().where({ id });
     } catch (error) {
+      this.loggerService.error({
+        message: 'Error while deleting User.',
+        context: { error },
+      });
+
       throw new RepositoryError({
         entity: 'User',
         operation: 'delete',

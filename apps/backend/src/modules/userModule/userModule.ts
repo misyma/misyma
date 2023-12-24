@@ -55,6 +55,7 @@ export class UserModule implements DependencyInjectionModule {
           container.get<UserMapper>(symbols.userMapper),
           container.get<UserTokensMapper>(symbols.userTokensMapper),
           container.get<UuidService>(coreSymbols.uuidService),
+          container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );
 

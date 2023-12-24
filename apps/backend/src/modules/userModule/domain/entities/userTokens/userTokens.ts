@@ -2,8 +2,8 @@ export interface UserTokensDraft {
   readonly id: string;
   readonly userId: string;
   readonly refreshToken: string;
-  readonly resetPasswordToken?: string;
-  readonly emailVerificationToken?: string;
+  readonly resetPasswordToken: string | undefined;
+  readonly emailVerificationToken: string | undefined;
 }
 
 export class UserTokens {
