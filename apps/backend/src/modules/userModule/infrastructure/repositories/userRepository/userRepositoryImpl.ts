@@ -201,6 +201,13 @@ export class UserRepositoryImpl implements UserRepository {
 
           break;
 
+        case UserDomainActionType.updateEmailVerificationToken:
+          userTokens = {
+            emailVerificationToken: domainAction.payload.emailVerificationToken,
+          };
+
+          break;
+
         case UserDomainActionType.updateEmail:
           user.email = domainAction.payload.newEmail;
 

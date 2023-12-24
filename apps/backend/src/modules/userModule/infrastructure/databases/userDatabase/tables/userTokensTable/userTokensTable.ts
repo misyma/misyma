@@ -8,5 +8,6 @@ export class UserTokensTable implements DatabaseTable<UserTokensRawEntity> {
     userId: 'userId',
     refreshToken: 'string',
     resetPasswordToken: 'resetPasswordToken',
+    emailVerificationToken: 'emailVerificationToken',
   } as const;
 }

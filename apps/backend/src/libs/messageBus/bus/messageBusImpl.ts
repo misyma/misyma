@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { type ErrorHandler, type MessagePayload, type MessageBus, type ReceivePayload } from './messageBus.js';
 import { type LoggerService } from '../../logger/services/loggerService/loggerService.js';
 import { type MQemitterClient } from '../clients/mqemitterClient.js';
@@ -27,13 +28,15 @@ export class MessageBusImpl implements MessageBus {
     const { topic, handler } = payload;
 
     if (isAsyncHandler(handler)) {
-      this.nativeMq.on(topic, (message, callback) => {
+      // TODO: add types
+      this.nativeMq.on(topic, (message: any, callback: any) => {
         handler(message['data'])
           .then(() => callback())
           .catch((error) => this.errorHandler?.(error));
       });
     } else {
-      this.nativeMq.on(topic, (message, callback) => {
+      // TODO: add types
+      this.nativeMq.on(topic, (message: any, callback: any) => {
         this.loggerService.info({
           message: 'Received message',
           context: {

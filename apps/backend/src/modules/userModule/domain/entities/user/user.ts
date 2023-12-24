@@ -30,6 +30,10 @@ export interface ResetPasswordPayload {
   readonly resetPasswordToken: string;
 }
 
+export interface UpdateEmailVerificationTokenPayload {
+  readonly emailVerificationToken: string;
+}
+
 export class User {
   private id: string;
   private email: string;
@@ -141,6 +145,7 @@ export class User {
     });
   }
 
+  // TODO: rename to addUpdateResetPasswordTokenAction
   public addResetPasswordAction(payload: ResetPasswordPayload): void {
     const { resetPasswordToken } = payload;
 
@@ -148,6 +153,17 @@ export class User {
       actionName: UserDomainActionType.resetPassword,
       payload: {
         resetPasswordToken,
+      },
+    });
+  }
+
+  public addUpdateEmailVerificationTokenAction(payload: UpdateEmailVerificationTokenPayload): void {
+    const { emailVerificationToken } = payload;
+
+    this.domainActions.push({
+      actionName: UserDomainActionType.updateEmailVerificationToken,
+      payload: {
+        emailVerificationToken,
       },
     });
   }

@@ -2,17 +2,19 @@ export interface UserTokensDraft {
   readonly id: string;
   readonly userId: string;
   readonly refreshToken: string;
-  readonly resetPasswordToken: string;
+  readonly resetPasswordToken?: string;
+  readonly emailVerificationToken?: string;
 }
 
 export class UserTokens {
   private readonly id: string;
   private readonly userId: string;
   private readonly refreshToken: string;
-  private readonly resetPasswordToken: string | null;
+  private readonly resetPasswordToken?: string;
+  private readonly emailVerificationToken?: string;
 
   public constructor(draft: UserTokensDraft) {
-    const { id, refreshToken, resetPasswordToken, userId } = draft;
+    const { id, userId, refreshToken, resetPasswordToken, emailVerificationToken } = draft;
 
     this.id = id;
 
@@ -20,7 +22,13 @@ export class UserTokens {
 
     this.refreshToken = refreshToken;
 
-    this.resetPasswordToken = resetPasswordToken;
+    if (resetPasswordToken) {
+      this.resetPasswordToken = resetPasswordToken;
+    }
+
+    if (emailVerificationToken) {
+      this.emailVerificationToken = emailVerificationToken;
+    }
   }
 
   public getId(): string {
@@ -35,7 +43,11 @@ export class UserTokens {
     return this.refreshToken;
   }
 
-  public getResetPasswordToken(): string | null {
+  public getResetPasswordToken(): string | undefined {
     return this.resetPasswordToken;
+  }
+
+  public getEmailVerificationToken(): string | undefined {
+    return this.emailVerificationToken;
   }
 }

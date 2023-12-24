@@ -19,8 +19,7 @@
     "apiKey": null,
     "senderEmail": null
   },
-  "mailer": {
-    "confirmEmailLink": null,
-    "resetPasswordLink": null
+  "frontend": {
+    "url": "https://misyma.com"
   }
 }

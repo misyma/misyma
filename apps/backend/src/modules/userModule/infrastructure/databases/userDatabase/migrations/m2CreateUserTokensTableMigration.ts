@@ -11,6 +11,7 @@ export class M2CreateUserTokensTableMigration implements Migration {
     userId: 'userId',
     refreshToken: 'refreshToken',
     resetPasswordToken: 'resetPasswordToken',
+    emailVerificationToken: 'emailVerificationToken',
   } as const;
 
   public async up(databaseClient: DatabaseClient): Promise<void> {
@@ -22,6 +23,8 @@ export class M2CreateUserTokensTableMigration implements Migration {
       table.text(this.columns.refreshToken).notNullable();
 
       table.text(this.columns.resetPasswordToken).nullable();
+
+      table.text(this.columns.emailVerificationToken).nullable();
 
       table.primary([this.columns.id]);
 

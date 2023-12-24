@@ -1,12 +1,15 @@
-import { type ExecutePayload, type ResetUserPasswordCommandHandler } from './resetUserPasswordCommandHandler.js';
+import {
+  type SendVerificationEmailCommandHandler,
+  type ExecutePayload,
+} from './sendVerificationEmailCommandHandler.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
 import { type UserModuleConfigProvider } from '../../../userModuleConfigProvider.js';
 import { type EmailService } from '../../services/emailService/emailService.js';
-import { ResetPasswordEmail } from '../../types/emails/resetPasswordEmail.js';
+import { VerificationEmail } from '../../types/emails/verificationEmail.js';
 
-export class ResetUserPasswordCommandHandlerImpl implements ResetUserPasswordCommandHandler {
+export class SendVerificationEmailCommandHandlerImpl implements SendVerificationEmailCommandHandler {
   public constructor(
     private readonly emailService: EmailService,
     private readonly tokenService: TokenService,
@@ -16,35 +19,35 @@ export class ResetUserPasswordCommandHandlerImpl implements ResetUserPasswordCom
   ) {}
 
   public async execute(payload: ExecutePayload): Promise<void> {
-    const { email } = payload;
+    const { userId } = payload;
 
     const user = await this.userRepository.findUser({
-      email,
+      id: userId,
     });
 
     if (!user) {
       this.loggerService.debug({
         message: 'User not found.',
-        context: { email },
+        context: { userId },
       });
 
       return;
     }
 
     this.loggerService.debug({
-      message: 'Sending reset password email...',
+      message: 'Sending verification email...',
       context: {
-        userId: user.getId(),
+        userId,
         email: user.getEmail(),
       },
     });
 
-    const resetPasswordToken = this.tokenService.createToken({
+    const emailVerificationToken = this.tokenService.createToken({
       userId: user.getId(),
     });
 
-    user.addResetPasswordAction({
-      resetPasswordToken,
+    user.addUpdateEmailVerificationTokenAction({
+      emailVerificationToken,
     });
 
     await this.userRepository.updateUser({
@@ -54,23 +57,23 @@ export class ResetUserPasswordCommandHandlerImpl implements ResetUserPasswordCom
 
     const frontendUrl = this.configProvider.getFrontendUrl();
 
-    const resetPasswordLink = `${frontendUrl}/reset-password?token=${resetPasswordToken}`;
+    const emailVerificationLink = `${frontendUrl}/verify-email?token=${emailVerificationToken}`;
 
     await this.emailService.sendEmail(
-      new ResetPasswordEmail({
+      new VerificationEmail({
         recipient: user.getEmail(),
         templateData: {
           firstName: user.getFirstName(),
           lastName: user.getLastName(),
-          resetPasswordLink,
+          emailVerificationLink,
         },
       }),
     );
 
     this.loggerService.info({
-      message: 'Reset password email sent.',
+      message: 'Verification email sent.',
       context: {
-        userId: user.getId(),
+        userId,
         email: user.getEmail(),
       },
     });

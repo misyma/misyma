@@ -13,6 +13,7 @@ describe('UserTokensMapperImpl', () => {
       id: Generator.uuid(),
       refreshToken: Generator.string(20),
       resetPasswordToken: Generator.string(20),
+      emailVerificationToken: Generator.string(20),
       userId: Generator.uuid(),
     };
 
@@ -22,6 +23,7 @@ describe('UserTokensMapperImpl', () => {
       id: userTokensRawEntity.id,
       refreshToken: userTokensRawEntity.refreshToken,
       resetPasswordToken: userTokensRawEntity.resetPasswordToken,
+      verifyEmailToken: userTokensRawEntity.emailVerificationToken,
       userId: userTokensRawEntity.userId,
     });
   });

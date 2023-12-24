@@ -62,12 +62,13 @@ export class UserTestUtils {
   }
 
   public async createAndPersistUserTokens(payload: CreateAndPersistUserTokensPayload): Promise<UserTokensRawEntity> {
-    const { input } = payload;
+    const { input = {} } = payload;
 
     const userTokens = new UserTokens({
       id: Generator.uuid(),
       refreshToken: Generator.string(5),
       resetPasswordToken: Generator.string(5),
+      emailVerificationToken: Generator.string(5),
       userId: Generator.uuid(),
       ...input,
     });
@@ -79,6 +80,7 @@ export class UserTestUtils {
         id: userTokens.getId(),
         refreshToken: userTokens.getRefreshToken(),
         resetPasswordToken: userTokens.getResetPasswordToken() as string,
+        emailVerificationToken: userTokens.getEmailVerificationToken() as string,
         userId: userTokens.getUserId(),
       },
       '*',

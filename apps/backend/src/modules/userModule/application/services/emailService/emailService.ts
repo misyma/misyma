@@ -1,8 +1,5 @@
-import { type ConfirmUserEmailEmail } from '../../../infrastructure/services/emails/confirmUserEmailEmail.js';
-import { type ResetPasswordEmail } from '../../../infrastructure/services/emails/resetPasswordEmail.js';
-
-export type Email = ResetPasswordEmail | ConfirmUserEmailEmail;
+import { type Email } from './email/email.js';
 
 export interface EmailService {
-  sendEmail(emailEntity: Email): Promise<void>;
+  sendEmail(email: Email): Promise<void>;
 }
