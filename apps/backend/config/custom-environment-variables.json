@@ -18,5 +18,8 @@
   "sendGrid": {
     "apiKey": "SENDGRID_API_KEY",
     "senderEmail": "SENDGRID_SENDER_EMAIL"
+  },
+  "frontend": {
+    "url": "FRONTEND_URL"
   }
 }

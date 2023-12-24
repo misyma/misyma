@@ -1,13 +1,11 @@
-import { Generator } from '@common/tests';
-
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';
-import { UserTokens } from '../../../domain/entities/userTokens/userTokens.js';
 import { type UserRawEntity } from '../../../infrastructure/databases/userDatabase/tables/userTable/userRawEntity.js';
 import { UserTable } from '../../../infrastructure/databases/userDatabase/tables/userTable/userTable.js';
 import { type UserTokensRawEntity } from '../../../infrastructure/databases/userDatabase/tables/userTokensTable/userTokensRawEntity.js';
 import { UserTokensTable } from '../../../infrastructure/databases/userDatabase/tables/userTokensTable/userTokensTable.js';
 import { UserTestFactory } from '../../factories/userTestFactory/userTestFactory.js';
+import { UserTokensTestFactory } from '../../factories/userTokensTestFactory/userTokensTestFactory.js';
 
 interface CreateAndPersistPayload {
   input?: Partial<UserRawEntity>;
@@ -33,6 +31,7 @@ export class UserTestUtils {
   private readonly databaseTable = new UserTable();
   private readonly userTokensTable = new UserTokensTable();
   private readonly userTestFactory = new UserTestFactory();
+  private readonly userTokensTestFactory = new UserTokensTestFactory();
 
   public constructor(private readonly sqliteDatabaseClient: SqliteDatabaseClient) {}
 
@@ -62,27 +61,32 @@ export class UserTestUtils {
   }
 
   public async createAndPersistUserTokens(payload: CreateAndPersistUserTokensPayload): Promise<UserTokensRawEntity> {
-    const { input } = payload;
+    const { input = {} } = payload;
 
-    const userTokens = new UserTokens({
-      id: Generator.uuid(),
-      refreshToken: Generator.string(5),
-      resetPasswordToken: Generator.string(5),
-      userId: Generator.uuid(),
-      ...input,
-    });
+    const userTokens = this.userTokensTestFactory.create(input);
 
     const queryBuilder = this.sqliteDatabaseClient<UserTokensRawEntity>(this.userTokensTable.name);
 
     const rawEntities = await queryBuilder.insert(
       {
         id: userTokens.getId(),
+        userId: userTokens.getUserId(),
         refreshToken: userTokens.getRefreshToken(),
         resetPasswordToken: userTokens.getResetPasswordToken() as string,
-        userId: userTokens.getUserId(),
+        emailVerificationToken: userTokens.getEmailVerificationToken() as string,
       },
       '*',
     );
+
+    return rawEntities[0] as UserTokensRawEntity;
+  }
+
+  public async findUserTokensByUserId(payload: FindByIdPayload): Promise<UserTokensRawEntity> {
+    const { id } = payload;
+
+    const queryBuilder = this.sqliteDatabaseClient<UserTokensRawEntity>(this.userTokensTable.name);
+
+    const rawEntities = await queryBuilder.select('*').where({ userId: id });
 
     return rawEntities[0] as UserTokensRawEntity;
   }

@@ -18,8 +18,7 @@
     "apiKey": "1234567890",
     "senderEmail": "michal.cieslar@misyma.com"
   },
-  "mailer": {
-    "confirmEmailLink": "http://test-test.com",
-    "resetPasswordLink": "http://test-test.com"
+  "frontend": {
+    "url": "https://misyma.com"
   }
 }

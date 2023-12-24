@@ -4,6 +4,7 @@ import { RepositoryError } from '../../../../../common/errors/common/repositoryE
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';
+import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { type UserDomainAction } from '../../../domain/entities/user/domainActions/userDomainAction.js';
 import { UserDomainActionType } from '../../../domain/entities/user/domainActions/userDomainActionType.js';
@@ -16,6 +17,7 @@ import {
   type UpdateUserPayload,
   type DeleteUserPayload,
   type FindUserTokensPayload,
+  type CreateUserTokensPayload,
 } from '../../../domain/repositories/userRepository/userRepository.js';
 import { type UserRawEntity } from '../../databases/userDatabase/tables/userTable/userRawEntity.js';
 import { UserTable } from '../../databases/userDatabase/tables/userTable/userTable.js';
@@ -28,12 +30,12 @@ type Writeable<T> = {
 };
 
 export interface MappedUserUpdate {
-  userUpdatePayload: Partial<UserRawEntity>;
+  userUpdatePayload: Partial<UserRawEntity> | undefined;
   userTokensUpdatePayload?: Partial<UserTokensRawEntity> | undefined;
 }
 
 export class UserRepositoryImpl implements UserRepository {
-  private readonly databaseTable = new UserTable();
+  private readonly userDatabaseTable = new UserTable();
 
   private readonly userTokensTable = new UserTokensTable();
 
@@ -42,16 +44,21 @@ export class UserRepositoryImpl implements UserRepository {
     private readonly userMapper: UserMapper,
     private readonly userTokensMapper: UserTokensMapper,
     private readonly uuidService: UuidService,
+    private readonly loggerService: LoggerService,
   ) {}
 
-  private createQueryBuilder(): QueryBuilder<UserRawEntity> {
-    return this.sqliteDatabaseClient<UserRawEntity>(this.databaseTable.name);
+  private createUserQueryBuilder(): QueryBuilder<UserRawEntity> {
+    return this.sqliteDatabaseClient<UserRawEntity>(this.userDatabaseTable.name);
+  }
+
+  private createUserTokensQueryBuilder(): QueryBuilder<UserTokensRawEntity> {
+    return this.sqliteDatabaseClient<UserTokensRawEntity>(this.userTokensTable.name);
   }
 
   public async createUser(payload: CreateUserPayload): Promise<User> {
     const { email, password, firstName, lastName } = payload;
 
-    const queryBuilder = this.createQueryBuilder();
+    const queryBuilder = this.createUserQueryBuilder();
 
     let rawEntities: UserRawEntity[];
 
@@ -69,6 +76,11 @@ export class UserRepositoryImpl implements UserRepository {
         '*',
       );
     } catch (error) {
+      this.loggerService.error({
+        message: 'Error while creating User.',
+        context: { error },
+      });
+
       throw new RepositoryError({
         entity: 'User',
         operation: 'create',
@@ -80,10 +92,45 @@ export class UserRepositoryImpl implements UserRepository {
     return this.userMapper.mapToDomain(rawEntity);
   }
 
+  public async createUserTokens(input: CreateUserTokensPayload): Promise<UserTokens> {
+    const { userId, refreshToken } = input;
+
+    const queryBuilder = this.createUserTokensQueryBuilder();
+
+    let rawEntities: UserTokensRawEntity[];
+
+    const id = this.uuidService.generateUuid();
+
+    try {
+      rawEntities = await queryBuilder.insert(
+        {
+          id,
+          userId,
+          refreshToken,
+        },
+        '*',
+      );
+    } catch (error) {
+      this.loggerService.error({
+        message: 'Error while creating UserTokens.',
+        context: { error },
+      });
+
+      throw new RepositoryError({
+        entity: 'UserTokens',
+        operation: 'create',
+      });
+    }
+
+    const rawEntity = rawEntities[0] as UserTokensRawEntity;
+
+    return this.userTokensMapper.mapToDomain(rawEntity);
+  }
+
   public async findUser(payload: FindUserPayload): Promise<User | null> {
     const { id, email } = payload;
 
-    const queryBuilder = this.createQueryBuilder();
+    const queryBuilder = this.createUserQueryBuilder();
 
     let whereCondition: Partial<UserRawEntity> = {};
 
@@ -106,6 +153,11 @@ export class UserRepositoryImpl implements UserRepository {
     try {
       rawEntity = await queryBuilder.select('*').where(whereCondition).first();
     } catch (error) {
+      this.loggerService.error({
+        message: 'Error while finding User.',
+        context: { error },
+      });
+
       throw new RepositoryError({
         entity: 'User',
         operation: 'find',
@@ -130,6 +182,11 @@ export class UserRepositoryImpl implements UserRepository {
         .where({ userId })
         .first();
     } catch (error) {
+      this.loggerService.error({
+        message: 'Error while finding UserTokens.',
+        context: { error },
+      });
+
       throw new RepositoryError({
         entity: 'UserTokens',
         operation: 'find',
@@ -161,17 +218,31 @@ export class UserRepositoryImpl implements UserRepository {
 
     try {
       await this.sqliteDatabaseClient.transaction(async (transaction) => {
-        rawEntities = await transaction.update(userUpdatePayload, '*').table(this.databaseTable.name).where({ id });
+        if (userUpdatePayload) {
+          rawEntities = await transaction
+            .update(userUpdatePayload, '*')
+            .table(this.userDatabaseTable.name)
+            .where({ id });
+        }
 
         if (userTokensUpdatePayload) {
           await transaction.update(userTokensUpdatePayload).table(this.userTokensTable.name).where({ userId: id });
         }
       });
     } catch (error) {
+      this.loggerService.error({
+        message: 'Error while updating User.',
+        context: { error },
+      });
+
       throw new RepositoryError({
         entity: 'User',
         operation: 'update',
       });
+    }
+
+    if (!rawEntities.length) {
+      return existingUser;
     }
 
     const rawEntity = rawEntities[0] as UserRawEntity;
@@ -180,7 +251,7 @@ export class UserRepositoryImpl implements UserRepository {
   }
 
   private mapDomainActionsToUpdatePayload(domainActions: UserDomainAction[]): MappedUserUpdate {
-    let user: Partial<Writeable<UserRawEntity>> = {};
+    let user: Partial<Writeable<UserRawEntity>> | undefined = undefined;
 
     let userTokens: Partial<UserTokensRawEntity> | undefined = undefined;
 
@@ -188,7 +259,7 @@ export class UserRepositoryImpl implements UserRepository {
       switch (domainAction.actionName) {
         case UserDomainActionType.updatePassword:
           user = {
-            ...user,
+            ...(user || {}),
             password: domainAction.payload.newPassword,
           };
 
@@ -196,27 +267,49 @@ export class UserRepositoryImpl implements UserRepository {
 
         case UserDomainActionType.resetPassword:
           userTokens = {
+            ...(userTokens || {}),
             resetPasswordToken: domainAction.payload.resetPasswordToken,
           };
 
           break;
 
+        case UserDomainActionType.updateEmailVerificationToken:
+          userTokens = {
+            ...(userTokens || {}),
+            emailVerificationToken: domainAction.payload.emailVerificationToken,
+          };
+
+          break;
+
         case UserDomainActionType.updateEmail:
-          user.email = domainAction.payload.newEmail;
+          user = {
+            ...(user || {}),
+            email: domainAction.payload.newEmail,
+          };
 
           break;
 
         case UserDomainActionType.updateFirstName:
-          user.firstName = domainAction.payload.firstName;
+          user = {
+            ...(user || {}),
+            firstName: domainAction.payload.firstName,
+          };
 
           break;
 
         case UserDomainActionType.updateLastName:
-          user.lastName = domainAction.payload.lastName;
+          user = {
+            ...(user || {}),
+            lastName: domainAction.payload.lastName,
+          };
 
           break;
 
         default:
+          this.loggerService.error({
+            message: 'Error mapping domain actions.',
+          });
+
           throw new RepositoryError({
             entity: 'User',
             operation: 'update',
@@ -242,11 +335,16 @@ export class UserRepositoryImpl implements UserRepository {
       });
     }
 
-    const queryBuilder = this.createQueryBuilder();
+    const queryBuilder = this.createUserQueryBuilder();
 
     try {
       await queryBuilder.delete().where({ id });
     } catch (error) {
+      this.loggerService.error({
+        message: 'Error while deleting User.',
+        context: { error },
+      });
+
       throw new RepositoryError({
         entity: 'User',
         operation: 'delete',

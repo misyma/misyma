@@ -22,6 +22,7 @@ export class BookRepositoryImpl implements BookRepository {
   private readonly booksAuthorsTable = new BooksAuthorsTable();
   private readonly authorTable = new AuthorTable();
 
+  // TODO: add loggerService and log errors when throwing
   public constructor(
     private readonly sqliteDatabaseClient: SqliteDatabaseClient,
     private readonly bookMapper: BookMapper,

@@ -1,53 +1,25 @@
-import { type EmailType } from '../../../../../../common/types/emailType.js';
-import { type EmailTemplate } from '../types/emailTemplate.js';
-
-export interface EmailPayload {
-  readonly user: {
-    readonly firstName: string;
-    readonly lastName: string;
-    readonly email: string;
-  };
-}
-
-export abstract class Email<T extends EmailPayload> {
-  protected user: {
-    readonly firstName: string;
-    readonly lastName: string;
-    readonly email: string;
-  };
-
-  protected abstract template: string;
+// TODO: add possibility to have email without template
+export abstract class Email {
+  protected recipient: string;
 
   protected abstract subject: string;
 
-  protected abstract emailType: EmailType;
+  protected abstract bodyTemplate: string;
 
-  public constructor(payload: T) {
-    const { user } = payload;
-
-    this.user = user;
+  public constructor(recipient: string) {
+    this.recipient = recipient;
   }
 
-  public getUser(): T['user'] {
-    return this.user;
-  }
-
-  public getType(): EmailType {
-    return this.emailType;
-  }
-
-  public getTemplate(): string {
-    return this.template;
+  public getRecipient(): string {
+    return this.recipient;
   }
 
   public getSubject(): string {
     return this.subject;
   }
 
-  public abstract getRenderedEmailTemplate(...args: unknown[]): EmailTemplate;
-
-  protected renderTemplate(template: string, data: Record<string, string>): string {
-    let result = template;
+  protected renderBody(data: Record<string, string>): string {
+    let result = this.bodyTemplate;
 
     for (const [key, value] of Object.entries(data)) {
       result = result.replace(new RegExp(`{{${key}}}`, 'g'), value);
@@ -55,4 +27,6 @@ export abstract class Email<T extends EmailPayload> {
 
     return result;
   }
+
+  public abstract getBody(): string;
 }

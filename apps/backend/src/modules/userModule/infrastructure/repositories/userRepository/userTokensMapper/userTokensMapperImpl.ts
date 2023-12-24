@@ -4,13 +4,14 @@ import { type UserTokensRawEntity } from '../../../databases/userDatabase/tables
 
 export class UserTokensMapperImpl implements UserTokensMapper {
   public mapToDomain(rawEntity: UserTokensRawEntity): UserTokens {
-    const { id, userId, refreshToken, resetPasswordToken } = rawEntity;
+    const { id, userId, refreshToken, resetPasswordToken, emailVerificationToken } = rawEntity;
 
     return new UserTokens({
       id,
+      userId,
       refreshToken,
       resetPasswordToken,
-      userId,
+      emailVerificationToken,
     });
   }
 }

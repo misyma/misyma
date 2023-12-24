@@ -1,33 +1,15 @@
 import { type SendGridService } from '../../../../libs/sendGrid/services/sendGridService/sendGridService.js';
-import { type EmailService, type Email } from '../../application/services/emailService/emailService.js';
-
-export interface EmailServiceConfig {
-  readonly confirmEmail: {
-    link: string;
-  };
-  readonly resetPasswordEmail: {
-    link: string;
-  };
-}
+import { type Email } from '../../application/services/emailService/email/email.js';
+import { type EmailService } from '../../application/services/emailService/emailService.js';
 
 export class EmailServiceImpl implements EmailService {
-  public constructor(
-    private readonly sendGridService: SendGridService,
-    private readonly config: EmailServiceConfig,
-  ) {}
+  public constructor(private readonly sendGridService: SendGridService) {}
 
-  // TODO: add tests
-  public sendEmail(emailEntity: Email): Promise<void> {
-    const { email } = emailEntity.getUser();
-
-    const emailLink = this.config[emailEntity.getType()]?.link;
-
-    const { subject, template } = emailEntity.getRenderedEmailTemplate(emailLink);
-
+  public sendEmail(email: Email): Promise<void> {
     return this.sendGridService.sendEmail({
-      to: email,
-      subject,
-      body: template,
+      to: email.getRecipient(),
+      subject: email.getSubject(),
+      body: email.getBody(),
     });
   }
 }

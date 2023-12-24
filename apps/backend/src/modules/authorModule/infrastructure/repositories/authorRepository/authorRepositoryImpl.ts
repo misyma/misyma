@@ -18,6 +18,7 @@ import { AuthorTable } from '../../databases/tables/authorTable/authorTable.js';
 export class AuthorRepositoryImpl implements AuthorRepository {
   private readonly databaseTable = new AuthorTable();
 
+  // TODO: add loggerService and log errors when throwing
   public constructor(
     private readonly sqliteDatabaseClient: SqliteDatabaseClient,
     private readonly authorMapper: AuthorMapper,
