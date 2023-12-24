@@ -23,7 +23,7 @@ describe('UserTokensMapperImpl', () => {
       id: userTokensRawEntity.id,
       refreshToken: userTokensRawEntity.refreshToken,
       resetPasswordToken: userTokensRawEntity.resetPasswordToken,
-      verifyEmailToken: userTokensRawEntity.emailVerificationToken,
+      emailVerificationToken: userTokensRawEntity.emailVerificationToken,
       userId: userTokensRawEntity.userId,
     });
   });

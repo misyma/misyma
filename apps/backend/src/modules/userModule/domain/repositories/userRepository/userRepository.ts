@@ -9,6 +9,11 @@ export interface CreateUserPayload {
   readonly lastName: string;
 }
 
+export interface CreateUserTokensPayload {
+  readonly userId: string;
+  readonly refreshToken: string;
+}
+
 export interface FindUserPayload {
   readonly id?: string;
   readonly email?: string;
@@ -29,6 +34,7 @@ export interface DeleteUserPayload {
 
 export interface UserRepository {
   createUser(input: CreateUserPayload): Promise<User>;
+  createUserTokens(input: CreateUserTokensPayload): Promise<UserTokens>;
   findUser(input: FindUserPayload): Promise<User | null>;
   findUserTokens(input: FindUserTokensPayload): Promise<UserTokens | null>;
   updateUser(input: UpdateUserPayload): Promise<User>;

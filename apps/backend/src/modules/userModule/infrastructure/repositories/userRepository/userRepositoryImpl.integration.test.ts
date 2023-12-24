@@ -1,5 +1,7 @@
 import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 
+import { Generator } from '@common/tests';
+
 import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
 import { Application } from '../../../../../core/application.js';
@@ -154,6 +156,35 @@ describe('UserRepositoryImpl', () => {
 
       expect(foundUser.getLastName()).toEqual(createdUser.getLastName());
     });
+
+    it(`updates User's email verification token`, async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const createdUser = userTestFactory.create();
+
+      await userTestUtils.createAndPersistUserTokens({
+        input: {
+          userId: user.id,
+        },
+      });
+
+      const updatedEmailVerificationToken = Generator.alphanumericString(32);
+
+      createdUser.addUpdateEmailVerificationTokenAction({
+        emailVerificationToken: updatedEmailVerificationToken,
+      });
+
+      await userRepository.updateUser({
+        id: user.id,
+        domainActions: createdUser.getDomainActions(),
+      });
+
+      const updatedUserTokens = await userTestUtils.findUserTokensByUserId({ id: user.id });
+
+      expect(updatedUserTokens.emailVerificationToken).toEqual(updatedEmailVerificationToken);
+    });
+
+    // TODO: add tests for updating password reset token and refresh token
 
     it('throws an error if a User with given id does not exist', async () => {
       const nonExistentUser = userTestFactory.create();
