@@ -12,7 +12,7 @@ export class UserMapperImpl implements UserMapper {
       password,
       firstName,
       lastName,
-      isEmailVerified,
+      isEmailVerified: isEmailVerified ? true : false, // sqlite returns 0 or 1
     });
   }
 }

@@ -6,6 +6,8 @@ export * from './schemas/user/loginUser.js';
 
 export * from './schemas/user/deleteUser.js';
 
+export * from './schemas/user/verifyUser.js';
+
 export * from './schemas/author/findAuthor.js';
 
 export * from './schemas/author/createAuthor.js';

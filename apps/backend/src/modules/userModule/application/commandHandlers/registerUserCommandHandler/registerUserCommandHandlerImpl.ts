@@ -43,6 +43,7 @@ export class RegisterUserCommandHandlerImpl implements RegisterUserCommandHandle
       password: hashedPassword,
       firstName,
       lastName,
+      isEmailVerified: false,
     });
 
     this.loggerService.info({

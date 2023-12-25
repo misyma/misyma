@@ -198,10 +198,37 @@ describe('UserRepositoryImpl', () => {
         domainActions: createdUser.getDomainActions(),
       });
 
-      expect(foundUser.getIsEmailVerified()).toBe(true);
+      expect(foundUser.getIsEmailVerified()).toBeTruthy();
     });
 
-    // TODO: add tests for updating password reset token and refresh token
+    it(`updates User's reset password token`, async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const createdUser = userTestFactory.create();
+
+      await userTestUtils.createAndPersistUserTokens({
+        input: {
+          userId: user.id,
+        },
+      });
+
+      const updatedResetPasswordToken = Generator.alphanumericString(32);
+
+      createdUser.addResetPasswordAction({
+        resetPasswordToken: updatedResetPasswordToken,
+      });
+
+      await userRepository.updateUser({
+        id: user.id,
+        domainActions: createdUser.getDomainActions(),
+      });
+
+      const updatedUserTokens = await userTestUtils.findUserTokensByUserId({ id: user.id });
+
+      expect(updatedUserTokens.resetPasswordToken).toEqual(updatedResetPasswordToken);
+    });
+
+    // TODO: add tests for updating refresh token
 
     it('throws an error if a User with given id does not exist', async () => {
       const nonExistentUser = userTestFactory.create();

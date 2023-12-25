@@ -61,6 +61,8 @@ describe('RegisterUserCommandHandler', () => {
 
     expect(user.getEmail()).toEqual(createdUser.getEmail());
 
+    expect(user.getIsEmailVerified()).toEqual(false);
+
     expect(foundUser.email).toEqual(createdUser.getEmail());
   });
 
