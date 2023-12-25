@@ -8,6 +8,7 @@ export interface UserDraft {
   readonly password: string;
   readonly firstName: string;
   readonly lastName: string;
+  readonly isEmailVerified: boolean;
 }
 
 export interface UpdatePasswordPayload {
@@ -40,10 +41,12 @@ export class User {
   private password: string;
   private firstName: string;
   private lastName: string;
+  private isEmailVerified: boolean;
+
   private domainActions: UserDomainAction[] = [];
 
   public constructor(draft: UserDraft) {
-    const { id, email, password, firstName, lastName } = draft;
+    const { id, email, password, firstName, lastName, isEmailVerified } = draft;
 
     this.id = id;
 
@@ -54,6 +57,8 @@ export class User {
     this.firstName = firstName;
 
     this.lastName = lastName;
+
+    this.isEmailVerified = isEmailVerified;
   }
 
   public getId(): string {
@@ -76,6 +81,10 @@ export class User {
     return this.lastName;
   }
 
+  public getIsEmailVerified(): boolean {
+    return this.isEmailVerified;
+  }
+
   public getState(): UserDraft {
     return {
       id: this.id,
@@ -83,6 +92,7 @@ export class User {
       password: this.password,
       firstName: this.firstName,
       lastName: this.lastName,
+      isEmailVerified: this.isEmailVerified,
     };
   }
 
@@ -109,7 +119,8 @@ export class User {
     if (this.email === newEmail) {
       throw new OperationNotValidError({
         reason: 'The new email is the same as the old one.',
-        value: newEmail,
+        email: this.email,
+        newEmail,
       });
     }
 
@@ -165,6 +176,12 @@ export class User {
       payload: {
         emailVerificationToken,
       },
+    });
+  }
+
+  public addVerifyEmailAction(): void {
+    this.domainActions.push({
+      actionName: UserDomainActionType.verifyEmail,
     });
   }
 }

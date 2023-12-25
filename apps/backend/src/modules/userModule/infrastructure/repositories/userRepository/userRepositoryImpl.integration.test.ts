@@ -43,13 +43,14 @@ describe('UserRepositoryImpl', () => {
     it('creates a User', async () => {
       const createdUser = userTestFactory.create();
 
-      const { email, firstName, lastName, password } = createdUser.getState();
+      const { email, firstName, lastName, password, isEmailVerified } = createdUser.getState();
 
       const user = await userRepository.createUser({
         email,
         password,
         firstName,
         lastName,
+        isEmailVerified,
       });
 
       const foundUser = await userTestUtils.findByEmail({ email });
@@ -68,6 +69,7 @@ describe('UserRepositoryImpl', () => {
           password: existingUser.password,
           firstName: existingUser.firstName,
           lastName: existingUser.lastName,
+          isEmailVerified: existingUser.isEmailVerified,
         });
       } catch (error) {
         expect(error).toBeInstanceOf(RepositoryError);
@@ -182,6 +184,21 @@ describe('UserRepositoryImpl', () => {
       const updatedUserTokens = await userTestUtils.findUserTokensByUserId({ id: user.id });
 
       expect(updatedUserTokens.emailVerificationToken).toEqual(updatedEmailVerificationToken);
+    });
+
+    it(`updates User's email verification status`, async () => {
+      const user = await userTestUtils.createAndPersist({ input: { isEmailVerified: false } });
+
+      const createdUser = userTestFactory.create();
+
+      createdUser.addVerifyEmailAction();
+
+      const foundUser = await userRepository.updateUser({
+        id: user.id,
+        domainActions: createdUser.getDomainActions(),
+      });
+
+      expect(foundUser.getIsEmailVerified()).toBe(true);
     });
 
     // TODO: add tests for updating password reset token and refresh token

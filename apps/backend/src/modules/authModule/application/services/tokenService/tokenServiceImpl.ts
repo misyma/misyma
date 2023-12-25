@@ -32,9 +32,7 @@ export class TokenServiceImpl implements TokenService {
     } catch (error) {
       throw new OperationNotValidError({
         reason: 'Token is not valid.',
-        value: {
-          token,
-        },
+        token,
       });
     }
   }

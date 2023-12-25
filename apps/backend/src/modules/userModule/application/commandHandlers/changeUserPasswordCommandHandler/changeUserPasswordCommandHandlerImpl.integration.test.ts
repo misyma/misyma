@@ -44,9 +44,7 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
       instance: OperationNotValidError,
       context: {
         reason: 'Token is not valid.',
-        value: {
-          token: invalidResetPasswordToken,
-        },
+        token: invalidResetPasswordToken,
       },
     });
   });
@@ -66,9 +64,7 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
       instance: OperationNotValidError,
       context: {
         reason: 'User tokens not found.',
-        value: {
-          userId: 'userId',
-        },
+        userId: 'userId',
       },
     });
   });
@@ -111,9 +107,7 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
       instance: OperationNotValidError,
       context: {
         reason: 'Reset password token is not valid.',
-        value: {
-          resetPasswordToken: invalidResetPasswordToken,
-        },
+        resetPasswordToken: invalidResetPasswordToken,
       },
     });
   });

@@ -10,6 +10,7 @@ export class UserRawEntityTestFactory {
       password: Generator.password(12),
       firstName: Generator.firstName(),
       lastName: Generator.lastName(),
+      isEmailVerified: Generator.boolean(),
       ...input,
     };
   }

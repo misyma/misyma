@@ -23,28 +23,22 @@ export class ChangeUserPasswordCommandHandlerImpl implements ChangeUserPasswordC
     if (!userTokens) {
       throw new OperationNotValidError({
         reason: 'User tokens not found.',
-        value: {
-          userId,
-        },
+        userId,
       });
     }
 
     if (userTokens.getResetPasswordToken() !== resetPasswordToken) {
       throw new OperationNotValidError({
         reason: 'Reset password token is not valid.',
-        value: {
-          resetPasswordToken,
-        },
+        resetPasswordToken,
       });
     }
 
     if (newPassword !== repeatedNewPassword) {
       throw new OperationNotValidError({
         reason: 'Passwords do not match.',
-        value: {
-          newPassword,
-          repeatedNewPassword,
-        },
+        newPassword,
+        repeatedNewPassword,
       });
     }
 
@@ -55,9 +49,7 @@ export class ChangeUserPasswordCommandHandlerImpl implements ChangeUserPasswordC
     if (!user) {
       throw new OperationNotValidError({
         reason: 'User not found.',
-        value: {
-          userId,
-        },
+        userId,
       });
     }
 

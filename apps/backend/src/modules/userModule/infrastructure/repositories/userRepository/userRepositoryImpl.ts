@@ -56,7 +56,7 @@ export class UserRepositoryImpl implements UserRepository {
   }
 
   public async createUser(payload: CreateUserPayload): Promise<User> {
-    const { email, password, firstName, lastName } = payload;
+    const { email, password, firstName, lastName, isEmailVerified } = payload;
 
     const queryBuilder = this.createUserQueryBuilder();
 
@@ -72,6 +72,7 @@ export class UserRepositoryImpl implements UserRepository {
           password,
           firstName,
           lastName,
+          isEmailVerified,
         },
         '*',
       );
@@ -301,6 +302,14 @@ export class UserRepositoryImpl implements UserRepository {
           user = {
             ...(user || {}),
             lastName: domainAction.payload.lastName,
+          };
+
+          break;
+
+        case UserDomainActionType.verifyEmail:
+          user = {
+            ...(user || {}),
+            isEmailVerified: true,
           };
 
           break;

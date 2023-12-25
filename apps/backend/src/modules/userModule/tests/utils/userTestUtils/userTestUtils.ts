@@ -53,6 +53,7 @@ export class UserTestUtils {
         id: user.getId(),
         lastName: user.getLastName(),
         password: user.getPassword(),
+        isEmailVerified: user.getIsEmailVerified(),
       },
       '*',
     );
