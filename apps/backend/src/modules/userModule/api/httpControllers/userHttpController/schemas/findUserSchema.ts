@@ -18,6 +18,7 @@ export const findUserResponseBodyDTOSchema = Type.Object({
   email: Type.String(),
   firstName: Type.String(),
   lastName: Type.String(),
+  isEmailVerified: Type.Boolean(),
 });
 
 export type FindUserResponseBodyDTO = TypeExtends<

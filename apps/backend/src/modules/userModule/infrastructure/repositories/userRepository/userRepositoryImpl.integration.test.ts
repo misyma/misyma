@@ -43,13 +43,14 @@ describe('UserRepositoryImpl', () => {
     it('creates a User', async () => {
       const createdUser = userTestFactory.create();
 
-      const { email, firstName, lastName, password } = createdUser.getState();
+      const { email, firstName, lastName, password, isEmailVerified } = createdUser.getState();
 
       const user = await userRepository.createUser({
         email,
         password,
         firstName,
         lastName,
+        isEmailVerified,
       });
 
       const foundUser = await userTestUtils.findByEmail({ email });
@@ -68,6 +69,7 @@ describe('UserRepositoryImpl', () => {
           password: existingUser.password,
           firstName: existingUser.firstName,
           lastName: existingUser.lastName,
+          isEmailVerified: existingUser.isEmailVerified,
         });
       } catch (error) {
         expect(error).toBeInstanceOf(RepositoryError);
@@ -184,7 +186,49 @@ describe('UserRepositoryImpl', () => {
       expect(updatedUserTokens.emailVerificationToken).toEqual(updatedEmailVerificationToken);
     });
 
-    // TODO: add tests for updating password reset token and refresh token
+    it(`updates User's email verification status`, async () => {
+      const user = await userTestUtils.createAndPersist({ input: { isEmailVerified: false } });
+
+      const createdUser = userTestFactory.create(user);
+
+      createdUser.addVerifyEmailAction();
+
+      const foundUser = await userRepository.updateUser({
+        id: user.id,
+        domainActions: createdUser.getDomainActions(),
+      });
+
+      expect(foundUser.getIsEmailVerified()).toBeTruthy();
+    });
+
+    it(`updates User's reset password token`, async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const createdUser = userTestFactory.create();
+
+      await userTestUtils.createAndPersistUserTokens({
+        input: {
+          userId: user.id,
+        },
+      });
+
+      const updatedResetPasswordToken = Generator.alphanumericString(32);
+
+      createdUser.addResetPasswordAction({
+        resetPasswordToken: updatedResetPasswordToken,
+      });
+
+      await userRepository.updateUser({
+        id: user.id,
+        domainActions: createdUser.getDomainActions(),
+      });
+
+      const updatedUserTokens = await userTestUtils.findUserTokensByUserId({ id: user.id });
+
+      expect(updatedUserTokens.resetPasswordToken).toEqual(updatedResetPasswordToken);
+    });
+
+    // TODO: add tests for updating refresh token
 
     it('throws an error if a User with given id does not exist', async () => {
       const nonExistentUser = userTestFactory.create();

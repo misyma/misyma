@@ -22,6 +22,14 @@ import {
   type RegisterUserResponseBodyDTO,
   type RegisterUserBodyDTO,
 } from './schemas/registerUserSchema.js';
+import {
+  verifyUserPathParamsDTOSchema,
+  verifyUserBodyDTOSchema,
+  verifyUserResponseBodyDTOSchema,
+  type VerifyUserBodyDTO,
+  type VerifyUserPathParamsDTO,
+  type VerifyUserResponseBodyDTO,
+} from './schemas/verifyUserSchema.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/common/resourceAlreadyExistsError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
@@ -43,7 +51,17 @@ import { type AccessControlService } from '../../../../authModule/application/se
 import { type DeleteUserCommandHandler } from '../../../application/commandHandlers/deleteUserCommandHandler/deleteUserCommandHandler.js';
 import { type LoginUserCommandHandler } from '../../../application/commandHandlers/loginUserCommandHandler/loginUserCommandHandler.js';
 import { type RegisterUserCommandHandler } from '../../../application/commandHandlers/registerUserCommandHandler/registerUserCommandHandler.js';
+import { type VerifyUserEmailCommandHandler } from '../../../application/commandHandlers/verifyUserEmailCommandHandler/verifyUserEmailCommandHandler.js';
 import { type FindUserQueryHandler } from '../../../application/queryHandlers/findUserQueryHandler/findUserQueryHandler.js';
+import { type User } from '../../../domain/entities/user/user.js';
+
+export type UserDTO = {
+  readonly id: string;
+  readonly email: string;
+  readonly firstName: string;
+  readonly lastName: string;
+  readonly isEmailVerified: boolean;
+};
 
 export class UserHttpController implements HttpController {
   public readonly basePath = '/api/users';
@@ -54,6 +72,7 @@ export class UserHttpController implements HttpController {
     private readonly deleteUserCommandHandler: DeleteUserCommandHandler,
     private readonly findUserQueryHandler: FindUserQueryHandler,
     private readonly accessControlService: AccessControlService,
+    private readonly verifyUserEmailCommandHandler: VerifyUserEmailCommandHandler,
   ) {}
 
   public getHttpRoutes(): HttpRoute[] {
@@ -148,6 +167,30 @@ export class UserHttpController implements HttpController {
         tags: ['User'],
         description: 'Delete user.',
       }),
+      new HttpRoute({
+        method: HttpMethodName.post,
+        path: ':id/verify-email',
+        handler: this.verifyUserEmail.bind(this),
+        schema: {
+          request: {
+            pathParams: verifyUserPathParamsDTOSchema,
+            body: verifyUserBodyDTOSchema,
+          },
+          response: {
+            [HttpStatusCode.ok]: {
+              schema: verifyUserResponseBodyDTOSchema,
+              description: `User's email verified.`,
+            },
+            [HttpStatusCode.notFound]: {
+              schema: responseErrorBodySchema,
+              description: 'Error exception.',
+            },
+          },
+        },
+        securityMode: SecurityMode.bearer,
+        tags: ['User'],
+        description: 'Verify user email.',
+      }),
     ];
   }
 
@@ -166,12 +209,7 @@ export class UserHttpController implements HttpController {
 
       return {
         statusCode: HttpStatusCode.created,
-        body: {
-          id: user.getId(),
-          email: user.getEmail(),
-          firstName: user.getFirstName(),
-          lastName: user.getLastName(),
-        },
+        body: this.mapUserToUserDTO(user),
       };
     } catch (error) {
       if (error instanceof ResourceAlreadyExistsError) {
@@ -243,12 +281,7 @@ export class UserHttpController implements HttpController {
 
       return {
         statusCode: HttpStatusCode.ok,
-        body: {
-          id: user.getId(),
-          email: user.getEmail(),
-          firstName: user.getFirstName(),
-          lastName: user.getLastName(),
-        },
+        body: this.mapUserToUserDTO(user),
       };
     } catch (error) {
       if (error instanceof ResourceNotFoundError) {
@@ -304,6 +337,66 @@ export class UserHttpController implements HttpController {
     return {
       statusCode: HttpStatusCode.noContent,
       body: null,
+    };
+  }
+
+  private async verifyUserEmail(
+    request: HttpRequest<VerifyUserBodyDTO, undefined, VerifyUserPathParamsDTO>,
+  ): Promise<
+    | HttpOkResponse<VerifyUserResponseBodyDTO>
+    | HttpNotFoundResponse<ResponseErrorBody>
+    | HttpForbiddenResponse<ResponseErrorBody>
+  > {
+    const { id } = request.pathParams;
+
+    const { token } = request.body;
+
+    const { userId } = await this.accessControlService.verifyBearerToken({
+      authorizationHeader: request.headers['authorization'],
+    });
+
+    if (userId !== id) {
+      return {
+        // TODO: add forbidden message
+        statusCode: HttpStatusCode.forbidden,
+        body: {
+          error: {
+            name: '',
+            message: '',
+          },
+        },
+      };
+    }
+
+    try {
+      await this.verifyUserEmailCommandHandler.execute({
+        userId: id,
+        token,
+      });
+
+      return {
+        statusCode: HttpStatusCode.ok,
+        body: null,
+      };
+    } catch (error) {
+      if (error instanceof ResourceNotFoundError) {
+        return {
+          statusCode: HttpStatusCode.notFound,
+          body: { error },
+        };
+      }
+
+      throw error;
+    }
+  }
+
+  private mapUserToUserDTO(user: User): UserDTO {
+    return {
+      id: user.getId(),
+      email: user.getEmail(),
+      firstName: user.getFirstName(),
+      lastName: user.getLastName(),
+      isEmailVerified: user.getIsEmailVerified(),
     };
   }
 }

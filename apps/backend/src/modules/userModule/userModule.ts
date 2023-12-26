@@ -11,6 +11,8 @@ import { type ResetUserPasswordCommandHandler } from './application/commandHandl
 import { ResetUserPasswordCommandHandlerImpl } from './application/commandHandlers/resetUserPasswordCommandHandler/resetUserPasswordCommandHandlerImpl.js';
 import { type SendVerificationEmailCommandHandler } from './application/commandHandlers/sendVerificationEmailCommandHandler/sendVerificationEmailCommandHandler.js';
 import { SendVerificationEmailCommandHandlerImpl } from './application/commandHandlers/sendVerificationEmailCommandHandler/sendVerificationEmailCommandHandlerImpl.js';
+import { type VerifyUserEmailCommandHandler } from './application/commandHandlers/verifyUserEmailCommandHandler/verifyUserEmailCommandHandler.js';
+import { VerifyUserEmailCommandHandlerImpl } from './application/commandHandlers/verifyUserEmailCommandHandler/verifyUserEmailCommandHandlerImpl.js';
 import { type FindUserQueryHandler } from './application/queryHandlers/findUserQueryHandler/findUserQueryHandler.js';
 import { FindUserQueryHandlerImpl } from './application/queryHandlers/findUserQueryHandler/findUserQueryHandlerImpl.js';
 import { type EmailService } from './application/services/emailService/emailService.js';
@@ -138,6 +140,16 @@ export class UserModule implements DependencyInjectionModule {
       () => new FindUserQueryHandlerImpl(container.get<UserRepository>(symbols.userRepository)),
     );
 
+    container.bind<VerifyUserEmailCommandHandler>(
+      symbols.verifyUserEmailCommandHandler,
+      () =>
+        new VerifyUserEmailCommandHandlerImpl(
+          container.get<TokenService>(authSymbols.tokenService),
+          container.get<UserRepository>(symbols.userRepository),
+          container.get<LoggerService>(coreSymbols.loggerService),
+        ),
+    );
+
     container.bind<UserHttpController>(
       symbols.userHttpController,
       () =>
@@ -147,6 +159,7 @@ export class UserModule implements DependencyInjectionModule {
           container.get<DeleteUserCommandHandler>(symbols.deleteUserCommandHandler),
           container.get<FindUserQueryHandler>(symbols.findUserQueryHandler),
           container.get<AccessControlService>(authSymbols.accessControlService),
+          container.get<VerifyUserEmailCommandHandler>(symbols.verifyUserEmailCommandHandler),
         ),
     );
   }

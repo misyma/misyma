@@ -59,6 +59,7 @@ describe('LoginUserCommandHandler', () => {
         password: hashedPassword,
         firstName: createdUser.getFirstName(),
         lastName: createdUser.getLastName(),
+        isEmailVerified: createdUser.getIsEmailVerified(),
       },
     });
 

@@ -23,6 +23,7 @@ describe('UserMapperImpl', () => {
       password: userEntity.password,
       firstName: userEntity.firstName,
       lastName: userEntity.lastName,
+      isEmailVerified: userEntity.isEmailVerified,
       domainActions: [],
     });
   });

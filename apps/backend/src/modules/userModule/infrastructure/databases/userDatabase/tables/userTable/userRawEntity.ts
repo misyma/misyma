@@ -4,4 +4,5 @@ export interface UserRawEntity {
   readonly password: string;
   readonly firstName: string;
   readonly lastName: string;
+  readonly isEmailVerified: boolean;
 }
