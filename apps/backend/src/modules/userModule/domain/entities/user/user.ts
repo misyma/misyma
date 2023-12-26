@@ -180,6 +180,13 @@ export class User {
   }
 
   public addVerifyEmailAction(): void {
+    if (this.isEmailVerified) {
+      throw new OperationNotValidError({
+        reason: 'The email is already verified.',
+        email: this.email,
+      });
+    }
+
     this.domainActions.push({
       actionName: UserDomainActionType.verifyEmail,
     });

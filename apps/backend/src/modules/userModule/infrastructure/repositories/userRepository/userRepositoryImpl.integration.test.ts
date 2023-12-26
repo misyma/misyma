@@ -189,7 +189,7 @@ describe('UserRepositoryImpl', () => {
     it(`updates User's email verification status`, async () => {
       const user = await userTestUtils.createAndPersist({ input: { isEmailVerified: false } });
 
-      const createdUser = userTestFactory.create();
+      const createdUser = userTestFactory.create(user);
 
       createdUser.addVerifyEmailAction();
 
