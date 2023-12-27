@@ -10,8 +10,19 @@
       "saltRounds": 10
     },
     "jwt": {
-      "secret": "12321313423565365654546654121890008",
-      "expiresIn": 86400
+      "secret": "12321313423565365654546654121890008"
+    },
+    "accessToken": {
+      "expiresIn": 3600
+    },
+    "refreshToken": {
+      "expiresIn": 604800
+    },
+    "emailVerificationToken": {
+      "expiresIn":  86400
+    },
+    "resetPasswordToken": {
+      "expiresIn": 1800
     }
   },
   "sendGrid": {

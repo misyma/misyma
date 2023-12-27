@@ -39,8 +39,11 @@ export class ResetUserPasswordCommandHandlerImpl implements ResetUserPasswordCom
       },
     });
 
+    const expiresIn = this.configProvider.getResetPasswordTokenExpiresIn();
+
     const resetPasswordToken = this.tokenService.createToken({
-      userId: user.getId(),
+      data: { userId: user.getId() },
+      expiresIn,
     });
 
     user.addResetPasswordAction({

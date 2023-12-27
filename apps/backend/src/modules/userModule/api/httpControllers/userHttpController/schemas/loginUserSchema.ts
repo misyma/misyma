@@ -12,7 +12,8 @@ export const loginUserBodyDTOSchema = Type.Object({
 export type LoginUserBodyDTO = TypeExtends<Static<typeof loginUserBodyDTOSchema>, contracts.LoginUserBody>;
 
 export const loginUserResponseBodyDTOSchema = Type.Object({
-  token: Type.String(),
+  accessToken: Type.String(),
+  refreshToken: Type.String(),
 });
 
 export type LoginUserResponseBodyDTO = TypeExtends<

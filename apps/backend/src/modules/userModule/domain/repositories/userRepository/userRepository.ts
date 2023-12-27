@@ -24,6 +24,7 @@ export interface FindUserTokensPayload {
   readonly userId: string;
 }
 
+// TODO: change to have user as a property
 export interface UpdateUserPayload {
   readonly id: string;
   readonly domainActions: UserDomainAction[];

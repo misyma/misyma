@@ -47,7 +47,7 @@ describe('LoginUserCommandHandler', () => {
     await sqliteDatabaseClient.destroy();
   });
 
-  it('returns access token', async () => {
+  it('returns tokens', async () => {
     const createdUser = userTestFactory.create();
 
     const hashedPassword = await hashService.hash(createdUser.getPassword());
@@ -63,14 +63,24 @@ describe('LoginUserCommandHandler', () => {
       },
     });
 
-    const { accessToken } = await loginUserCommandHandler.execute({
+    const { accessToken, refreshToken } = await loginUserCommandHandler.execute({
       email: createdUser.getEmail(),
       password: createdUser.getPassword(),
     });
 
-    const tokenPayload = tokenService.verifyToken(accessToken);
+    const accessTokenPayload = tokenService.verifyToken({ token: accessToken });
 
-    expect(tokenPayload['userId']).toBe(createdUser.getId());
+    const refreshTokenPayload = tokenService.verifyToken({ token: refreshToken });
+
+    expect(accessTokenPayload['userId']).toBe(createdUser.getId());
+
+    expect(refreshTokenPayload['userId']).toBe(createdUser.getId());
+
+    const userTokens = await userTestUtils.findUserTokensByUserId({
+      id: createdUser.getId(),
+    });
+
+    expect(userTokens.refreshToken).toEqual(refreshToken);
   });
 
   it('throws an error if a User with given email does not exist', async () => {

@@ -229,14 +229,17 @@ export class UserHttpController implements HttpController {
     try {
       const { email, password } = request.body;
 
-      const { accessToken } = await this.loginUserCommandHandler.execute({
+      const { accessToken, refreshToken } = await this.loginUserCommandHandler.execute({
         email,
         password,
       });
 
       return {
         statusCode: HttpStatusCode.ok,
-        body: { token: accessToken },
+        body: {
+          accessToken,
+          refreshToken,
+        },
       };
     } catch (error) {
       if (error instanceof ResourceNotFoundError) {

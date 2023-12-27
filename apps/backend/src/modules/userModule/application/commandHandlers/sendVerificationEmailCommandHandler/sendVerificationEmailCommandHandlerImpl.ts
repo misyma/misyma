@@ -42,8 +42,11 @@ export class SendVerificationEmailCommandHandlerImpl implements SendVerification
       },
     });
 
+    const expiresIn = this.configProvider.getEmailVerificationTokenExpiresIn();
+
     const emailVerificationToken = this.tokenService.createToken({
-      userId: user.getId(),
+      data: { userId: user.getId() },
+      expiresIn,
     });
 
     user.addUpdateEmailVerificationTokenAction({

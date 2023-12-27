@@ -89,6 +89,7 @@ export class UserModule implements DependencyInjectionModule {
           container.get<LoggerService>(coreSymbols.loggerService),
           container.get<HashService>(symbols.hashService),
           container.get<TokenService>(authSymbols.tokenService),
+          container.get<UserModuleConfigProvider>(symbols.userModuleConfigProvider),
         ),
     );
 

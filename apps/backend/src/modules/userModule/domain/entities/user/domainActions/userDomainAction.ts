@@ -4,6 +4,7 @@ import { type UpdateEmailVerificationTokenDomainAction } from './updateEmailVeri
 import { type UpdateFirstNameDomainAction } from './updateFirstNameDomainAction.js';
 import { type UpdateLastNameDomainAction } from './updateLastNameDomainAction.js';
 import { type UpdatePasswordDomainAction } from './updatePasswordDomainAction.js';
+import { type UpdateRefreshTokenDomainAction } from './updateRefreshTokenDomainAction.js';
 import { type VerifyEmailDomainAction } from './verifyEmailDomainAction.js';
 
 export type UserDomainAction =
@@ -13,4 +14,5 @@ export type UserDomainAction =
   | UpdateLastNameDomainAction
   | ResetPasswordDomainAction
   | UpdateEmailVerificationTokenDomainAction
-  | VerifyEmailDomainAction;
+  | VerifyEmailDomainAction
+  | UpdateRefreshTokenDomainAction;

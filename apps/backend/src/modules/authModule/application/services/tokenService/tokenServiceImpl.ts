@@ -2,27 +2,29 @@
 
 import jwt from 'jsonwebtoken';
 
-import { type TokenService } from './tokenService.js';
+import { type CreateTokenPayload, type VerifyTokenPayload, type TokenService } from './tokenService.js';
 import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
 import { type AuthModuleConfigProvider } from '../../../authModuleConfigProvider.js';
 
 export class TokenServiceImpl implements TokenService {
   public constructor(private readonly configProvider: AuthModuleConfigProvider) {}
 
-  public createToken(data: Record<string, string>): string {
+  public createToken(payload: CreateTokenPayload): string {
+    const { data, expiresIn } = payload;
+
     const jwtSecret = this.configProvider.getJwtSecret();
 
-    const jwtExpiresIn = this.configProvider.getJwtExpiresIn();
-
     const token = jwt.sign(data, jwtSecret, {
-      expiresIn: jwtExpiresIn,
+      expiresIn,
       algorithm: 'HS512',
     });
 
     return token;
   }
 
-  public verifyToken(token: string): Record<string, string> {
+  public verifyToken(payload: VerifyTokenPayload): Record<string, string> {
+    const { token } = payload;
+
     const jwtSecret = this.configProvider.getJwtSecret();
 
     try {

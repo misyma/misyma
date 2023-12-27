@@ -11,7 +11,18 @@
       "saltRounds": null
     },
     "jwt": {
-      "secret": null,
+      "secret": null
+    },
+    "accessToken": {
+      "expiresIn": null
+    },
+    "refreshToken": {
+      "expiresIn": null
+    },
+    "emailVerificationToken": {
+      "expiresIn":  null
+    },
+    "resetPasswordToken": {
       "expiresIn": null
     }
   },

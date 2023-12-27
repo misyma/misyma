@@ -36,7 +36,7 @@ export class VerifyUserEmailCommandHandlerImpl implements VerifyUserEmailCommand
       },
     });
 
-    const tokenPayload = this.tokenService.verifyToken(token);
+    const tokenPayload = this.tokenService.verifyToken({ token });
 
     const tokenPayloadUserId = tokenPayload['userId'];
 

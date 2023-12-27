@@ -35,6 +35,10 @@ export interface UpdateEmailVerificationTokenPayload {
   readonly emailVerificationToken: string;
 }
 
+export interface UpdateRefreshTokenPayload {
+  readonly refreshToken: string;
+}
+
 export class User {
   private id: string;
   private email: string;
@@ -189,6 +193,17 @@ export class User {
 
     this.domainActions.push({
       actionName: UserDomainActionType.verifyEmail,
+    });
+  }
+
+  public addUpdateRefreshTokenAction(payload: UpdateRefreshTokenPayload): void {
+    const { refreshToken } = payload;
+
+    this.domainActions.push({
+      actionName: UserDomainActionType.updateRefreshToken,
+      payload: {
+        refreshToken,
+      },
     });
   }
 }
