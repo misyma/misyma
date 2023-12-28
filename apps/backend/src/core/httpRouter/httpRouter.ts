@@ -160,17 +160,32 @@ export class HttpRouter {
             return;
           }
 
-          this.loggerService.error({
-            message: 'Caught an unknown error in the HTTP router.',
-            context: {
-              source: HttpRouter.name,
-              error,
-              path: fastifyRequest.url,
-              method,
-              statusCode: fastifyReply.statusCode,
-              time: new Date().getTime() - requestDate.getTime(),
-            },
-          });
+          if (error instanceof Error) {
+            this.loggerService.error({
+              message: 'Caught an unknown error in the HTTP router.',
+              context: {
+                source: HttpRouter.name,
+                originalErrorMessage: error.message,
+                originalErrorStack: error.stack,
+                path: fastifyRequest.url,
+                method,
+                statusCode: fastifyReply.statusCode,
+                time: new Date().getTime() - requestDate.getTime(),
+              },
+            });
+          } else {
+            this.loggerService.error({
+              message: 'Caught an unknown error in the HTTP router.',
+              context: {
+                source: HttpRouter.name,
+                path: fastifyRequest.url,
+                method,
+                statusCode: fastifyReply.statusCode,
+                time: new Date().getTime() - requestDate.getTime(),
+                error,
+              },
+            });
+          }
 
           fastifyReply.status(HttpStatusCode.internalServerError).send({
             error: {
