@@ -49,7 +49,7 @@ export class ConfigProvider {
   }
 
   public getHashSaltRounds(): number {
-    return this.getValue<number>('auth.hash.saltRounds');
+    return Number(this.getValue<number>('auth.hash.saltRounds'));
   }
 
   public getSendGridApiKey(): string {
