@@ -59,26 +59,14 @@ export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
       expiresIn: refreshTokenExpiresIn,
     });
 
-    const userTokens = await this.userRepository.findUserTokens({
-      userId: user.getId(),
+    user.addUpdateRefreshTokenAction({
+      refreshToken,
     });
 
-    // TODO: add sql transaction
-    if (userTokens) {
-      user.addUpdateRefreshTokenAction({
-        refreshToken,
-      });
-
-      await this.userRepository.updateUser({
-        id: user.getId(),
-        domainActions: user.getDomainActions(),
-      });
-    } else {
-      await this.userRepository.createUserTokens({
-        userId: user.getId(),
-        refreshToken,
-      });
-    }
+    await this.userRepository.updateUser({
+      id: user.getId(),
+      domainActions: user.getDomainActions(),
+    });
 
     this.loggerService.info({
       message: 'User logged in.',
