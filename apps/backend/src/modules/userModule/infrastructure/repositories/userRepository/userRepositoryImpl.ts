@@ -227,7 +227,17 @@ export class UserRepositoryImpl implements UserRepository {
         }
 
         if (userTokensUpdatePayload) {
-          await transaction.update(userTokensUpdatePayload).table(this.userTokensTable.name).where({ userId: id });
+          await transaction
+            .insert({
+              ...userTokensUpdatePayload,
+              userId: id,
+              id: this.uuidService.generateUuid(),
+            })
+            .table(this.userTokensTable.name)
+            .onConflict(this.userTokensTable.columns.userId)
+            .merge({
+              ...userTokensUpdatePayload,
+            });
         }
       });
     } catch (error) {
@@ -310,6 +320,14 @@ export class UserRepositoryImpl implements UserRepository {
           user = {
             ...(user || {}),
             isEmailVerified: true,
+          };
+
+          break;
+
+        case UserDomainActionType.updateRefreshToken:
+          userTokens = {
+            ...(userTokens || {}),
+            refreshToken: domainAction.payload.refreshToken,
           };
 
           break;

@@ -1,5 +1,3 @@
-import { DummyFactory } from '@common/tests';
-
 import { testSymbols } from './symbols.js';
 import { Application } from '../../src/core/application.js';
 import { type ConfigProvider } from '../../src/core/configProvider.js';
@@ -46,7 +44,9 @@ export class TestContainer {
       () => new AuthorTestUtils(container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient)),
     );
 
-    container.overrideBinding<EmailService>(userSymbols.emailService, () => new DummyFactory().create());
+    container.overrideBinding<EmailService>(userSymbols.emailService, () => ({
+      sendEmail: async (): Promise<void> => {},
+    }));
 
     return container;
   }

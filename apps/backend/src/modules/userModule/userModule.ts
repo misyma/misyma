@@ -161,6 +161,8 @@ export class UserModule implements DependencyInjectionModule {
           container.get<FindUserQueryHandler>(symbols.findUserQueryHandler),
           container.get<AccessControlService>(authSymbols.accessControlService),
           container.get<VerifyUserEmailCommandHandler>(symbols.verifyUserEmailCommandHandler),
+          container.get<ResetUserPasswordCommandHandler>(symbols.resetUserPasswordCommandHandler),
+          container.get<ChangeUserPasswordCommandHandler>(symbols.changeUserPasswordCommandHandler),
         ),
     );
   }

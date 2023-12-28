@@ -1,4 +1,10 @@
 import {
+  type ChangeUserPasswordBodyDTO,
+  type ChangeUserPasswordOkResponseBodyDTO,
+  changeUserPasswordBodyDTOSchema,
+  changeUserPasswordOkResponseBodyDTOSchema,
+} from './schemas/changeUserPasswordSchema.js';
+import {
   deleteUserResponseBodyDTOSchema,
   type DeleteUserResponseBodyDTO,
   type DeleteUserPathParamsDTO,
@@ -22,6 +28,12 @@ import {
   type RegisterUserResponseBodyDTO,
   type RegisterUserBodyDTO,
 } from './schemas/registerUserSchema.js';
+import {
+  type ResetUserPasswordBodyDTO,
+  type ResetUserPasswordOkResponseBodyDTO,
+  resetUserPasswordBodyDTOSchema,
+  resetUserPasswordOkResponseBodyDTOSchema,
+} from './schemas/resetUserPasswordSchema.js';
 import {
   verifyUserPathParamsDTOSchema,
   verifyUserBodyDTOSchema,
@@ -48,9 +60,11 @@ import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.
 import { responseErrorBodySchema, type ResponseErrorBody } from '../../../../../common/types/http/responseErrorBody.js';
 import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
+import { type ChangeUserPasswordCommandHandler } from '../../../application/commandHandlers/changeUserPasswordCommandHandler/changeUserPasswordCommandHandler.js';
 import { type DeleteUserCommandHandler } from '../../../application/commandHandlers/deleteUserCommandHandler/deleteUserCommandHandler.js';
 import { type LoginUserCommandHandler } from '../../../application/commandHandlers/loginUserCommandHandler/loginUserCommandHandler.js';
 import { type RegisterUserCommandHandler } from '../../../application/commandHandlers/registerUserCommandHandler/registerUserCommandHandler.js';
+import { type ResetUserPasswordCommandHandler } from '../../../application/commandHandlers/resetUserPasswordCommandHandler/resetUserPasswordCommandHandler.js';
 import { type VerifyUserEmailCommandHandler } from '../../../application/commandHandlers/verifyUserEmailCommandHandler/verifyUserEmailCommandHandler.js';
 import { type FindUserQueryHandler } from '../../../application/queryHandlers/findUserQueryHandler/findUserQueryHandler.js';
 import { type User } from '../../../domain/entities/user/user.js';
@@ -73,6 +87,8 @@ export class UserHttpController implements HttpController {
     private readonly findUserQueryHandler: FindUserQueryHandler,
     private readonly accessControlService: AccessControlService,
     private readonly verifyUserEmailCommandHandler: VerifyUserEmailCommandHandler,
+    private readonly resetUserPasswordCommandHandler: ResetUserPasswordCommandHandler,
+    private readonly changeUserPasswordCommandHandler: ChangeUserPasswordCommandHandler,
   ) {}
 
   public getHttpRoutes(): HttpRoute[] {
@@ -120,6 +136,43 @@ export class UserHttpController implements HttpController {
         },
         tags: ['User'],
         description: 'Login user.',
+      }),
+      new HttpRoute({
+        method: HttpMethodName.post,
+        path: 'reset-password',
+        handler: this.resetUserPassword.bind(this),
+        description: 'Reset user password.',
+        schema: {
+          request: {
+            body: resetUserPasswordBodyDTOSchema,
+          },
+          response: {
+            [HttpStatusCode.ok]: {
+              schema: resetUserPasswordOkResponseBodyDTOSchema,
+              description: 'User password reset.',
+            },
+          },
+        },
+        tags: ['User'],
+        securityMode: SecurityMode.bearer,
+      }),
+      new HttpRoute({
+        method: HttpMethodName.post,
+        path: 'change-password',
+        description: 'Change user password.',
+        handler: this.changeUserPassword.bind(this),
+        schema: {
+          request: {
+            body: changeUserPasswordBodyDTOSchema,
+          },
+          response: {
+            [HttpStatusCode.ok]: {
+              schema: changeUserPasswordOkResponseBodyDTOSchema,
+              description: 'User password changed.',
+            },
+          },
+        },
+        tags: ['User'],
       }),
       new HttpRoute({
         method: HttpMethodName.get,
@@ -251,6 +304,43 @@ export class UserHttpController implements HttpController {
 
       throw error;
     }
+  }
+
+  private async resetUserPassword(
+    request: HttpRequest<ResetUserPasswordBodyDTO, null, null>,
+  ): Promise<HttpOkResponse<ResetUserPasswordOkResponseBodyDTO>> {
+    const { email } = request.body;
+
+    await this.resetUserPasswordCommandHandler.execute({
+      email,
+    });
+
+    return {
+      statusCode: HttpStatusCode.ok,
+      body: null,
+    };
+  }
+
+  private async changeUserPassword(
+    request: HttpRequest<ChangeUserPasswordBodyDTO, null, null>,
+  ): Promise<HttpOkResponse<ChangeUserPasswordOkResponseBodyDTO>> {
+    const { password, repeatedPassword, token } = request.body;
+
+    const { userId } = await this.accessControlService.verifyBearerToken({
+      authorizationHeader: `Bearer ${token}`,
+    });
+
+    await this.changeUserPasswordCommandHandler.execute({
+      newPassword: password,
+      repeatedNewPassword: repeatedPassword,
+      resetPasswordToken: token,
+      userId,
+    });
+
+    return {
+      statusCode: HttpStatusCode.ok,
+      body: null,
+    };
   }
 
   private async findUser(

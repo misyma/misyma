@@ -8,6 +8,10 @@ export * from './schemas/user/deleteUser.js';
 
 export * from './schemas/user/verifyUser.js';
 
+export * from './schemas/user/resetUserPassword.js';
+
+export * from './schemas/user/changeUserPassword.js';
+
 export * from './schemas/author/findAuthor.js';
 
 export * from './schemas/author/createAuthor.js';
