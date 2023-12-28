@@ -32,8 +32,20 @@ export class ConfigProvider {
     return this.getValue<string>('frontend.url');
   }
 
-  public getJwtExpiresIn(): number {
-    return this.getValue<number>('auth.jwt.expiresIn');
+  public getAccessTokenExpiresIn(): number {
+    return this.getValue<number>('auth.accessToken.expiresIn');
+  }
+
+  public getRefreshTokenExpiresIn(): number {
+    return this.getValue<number>('auth.refreshToken.expiresIn');
+  }
+
+  public getEmailVerificationTokenExpiresIn(): number {
+    return this.getValue<number>('auth.emailVerificationToken.expiresIn');
+  }
+
+  public getResetPasswordTokenExpiresIn(): number {
+    return this.getValue<number>('auth.resetPasswordToken.expiresIn');
   }
 
   public getHashSaltRounds(): number {

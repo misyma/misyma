@@ -7,4 +7,5 @@ export enum UserDomainActionType {
   changePassword = 'changePassword',
   updateEmailVerificationToken = 'updateEmailVerificationToken',
   verifyEmail = 'verifyEmail',
+  updateRefreshToken = 'updateRefreshToken',
 }

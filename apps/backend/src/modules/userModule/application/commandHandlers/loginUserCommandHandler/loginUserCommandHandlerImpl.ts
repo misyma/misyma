@@ -7,6 +7,7 @@ import { ResourceNotFoundError } from '../../../../../common/errors/common/resou
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
+import { type UserModuleConfigProvider } from '../../../userModuleConfigProvider.js';
 import { type HashService } from '../../services/hashService/hashService.js';
 
 export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
@@ -15,6 +16,7 @@ export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
     private readonly loggerService: LoggerService,
     private readonly hashService: HashService,
     private readonly tokenService: TokenService,
+    private readonly configProvider: UserModuleConfigProvider,
   ) {}
 
   public async execute(payload: LoginUserCommandHandlerPayload): Promise<LoginUserCommandHandlerResult> {
@@ -43,17 +45,54 @@ export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
       });
     }
 
-    const accessToken = this.tokenService.createToken({ userId: user.getId() });
+    const accessTokenExpiresIn = this.configProvider.getAccessTokenExpiresIn();
+
+    const accessToken = this.tokenService.createToken({
+      data: { userId: user.getId() },
+      expiresIn: accessTokenExpiresIn,
+    });
+
+    const refreshTokenExpiresIn = this.configProvider.getAccessTokenExpiresIn();
+
+    const refreshToken = this.tokenService.createToken({
+      data: { userId: user.getId() },
+      expiresIn: refreshTokenExpiresIn,
+    });
+
+    const userTokens = await this.userRepository.findUserTokens({
+      userId: user.getId(),
+    });
+
+    // TODO: add sql transaction
+    if (userTokens) {
+      user.addUpdateRefreshTokenAction({
+        refreshToken,
+      });
+
+      await this.userRepository.updateUser({
+        id: user.getId(),
+        domainActions: user.getDomainActions(),
+      });
+    } else {
+      await this.userRepository.createUserTokens({
+        userId: user.getId(),
+        refreshToken,
+      });
+    }
 
     this.loggerService.info({
       message: 'User logged in.',
       context: {
         email,
         userId: user.getId(),
-        accessToken,
+        accessTokenExpiresIn,
+        refreshTokenExpiresIn,
       },
     });
 
-    return { accessToken };
+    return {
+      accessToken,
+      refreshToken,
+    };
   }
 }

@@ -14,7 +14,7 @@ export class ChangeUserPasswordCommandHandlerImpl implements ChangeUserPasswordC
   public async execute(payload: ExecutePayload): Promise<void> {
     const { resetPasswordToken, newPassword, repeatedNewPassword, userId } = payload;
 
-    this.tokenService.verifyToken(resetPasswordToken);
+    this.tokenService.verifyToken({ token: resetPasswordToken });
 
     const userTokens = await this.userRepository.findUserTokens({
       userId,

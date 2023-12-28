@@ -1,5 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
+import { Generator } from '@common/tests';
+
 import { type ChangeUserPasswordCommandHandler } from './changeUserPasswordCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
@@ -50,7 +52,10 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
   });
 
   it('throws an error - when UserTokens were not found', async () => {
-    const resetPasswordToken = tokenService.createToken({});
+    const resetPasswordToken = tokenService.createToken({
+      data: {},
+      expiresIn: Generator.number(),
+    });
 
     await expect(
       async () =>
@@ -71,7 +76,8 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
 
   it('throws an error - when UserTokens were found but resetPasswordToken is different', async () => {
     const resetPasswordToken = tokenService.createToken({
-      valid: 'true',
+      data: { valid: 'true' },
+      expiresIn: Generator.number(),
     });
 
     const user = userTestFactory.create();
@@ -92,7 +98,8 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
     });
 
     const invalidResetPasswordToken = tokenService.createToken({
-      invalid: 'true',
+      data: { invalid: 'true' },
+      expiresIn: Generator.number(),
     });
 
     await expect(

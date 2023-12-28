@@ -31,7 +31,7 @@ export class AccessControlServiceImpl implements AccessControlService {
     }
 
     try {
-      const tokenPayload = this.tokenService.verifyToken(token as string);
+      const tokenPayload = this.tokenService.verifyToken({ token: token as string });
 
       if (!tokenPayload) {
         throw new UnauthorizedAccessError({

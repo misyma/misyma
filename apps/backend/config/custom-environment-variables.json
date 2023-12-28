@@ -8,11 +8,22 @@
   },
   "auth": {
     "hash": {
-      "saltRounds": "HASH_SALT_ROUNDS"
+      "saltRounds": "AUTH_HASH_SALT_ROUNDS"
     },
     "jwt": {
-      "secret": "JWT_SECRET",
-      "expiresIn": "JWT_EXPIRES_IN"
+      "secret": "AUTH_JWT_SECRET"
+    },
+    "accessToken": {
+      "expiresIn": "AUTH_ACCESS_TOKEN_EXPIRES_IN"
+    },
+    "refreshToken": {
+      "expiresIn": "AUTH_REFRESH_TOKEN_EXPIRES_IN"
+    },
+    "emailVerificationToken": {
+      "expiresIn": "AUTH_EMAIL_VERIFICATION_TOKEN_EXPIRES_IN"
+    },
+    "resetPasswordToken": {
+      "expiresIn": "AUTH_RESET_PASSWORD_TOKEN_EXPIRES_IN"
     }
   },
   "sendGrid": {

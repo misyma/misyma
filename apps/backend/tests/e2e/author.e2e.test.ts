@@ -20,6 +20,8 @@ describe('Author', () => {
 
   let tokenService: TokenService;
 
+  const expiresIn = 86400;
+
   beforeAll(async () => {
     application = new TestApplication();
 
@@ -43,7 +45,10 @@ describe('Author', () => {
       const user = await userTestUtils.createAndPersist();
 
       const token = tokenService.createToken({
-        userId: user.id,
+        data: {
+          userId: user.id,
+        },
+        expiresIn,
       });
 
       const author = await authorService.createAuthor({
@@ -77,7 +82,10 @@ describe('Author', () => {
       const user = await userTestUtils.createAndPersist();
 
       const token = tokenService.createToken({
-        userId: user.id,
+        data: {
+          userId: user.id,
+        },
+        expiresIn,
       });
 
       const response = await authorService.createAuthor({
@@ -103,7 +111,10 @@ describe('Author', () => {
       const user = await userTestUtils.createAndPersist();
 
       const token = tokenService.createToken({
-        userId: user.id,
+        data: {
+          userId: user.id,
+        },
+        expiresIn,
       });
 
       const createdAuthor = await authorService.createAuthor({
