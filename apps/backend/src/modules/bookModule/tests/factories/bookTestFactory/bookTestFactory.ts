@@ -1,9 +1,9 @@
 import { Generator } from '@common/tests';
 
-import { Book } from '../../../domain/entities/book/book.js';
+import { Book, type BookDraft } from '../../../domain/entities/book/book.js';
 
 export class BookTestFactory {
-  public create(input: Partial<Book> = {}): Book {
+  public create(input: Partial<BookDraft> = {}): Book {
     return new Book({
       id: Generator.uuid(),
       title: Generator.word(),

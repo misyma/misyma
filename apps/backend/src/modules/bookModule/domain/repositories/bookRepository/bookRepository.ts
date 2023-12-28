@@ -17,8 +17,13 @@ export interface DeleteBookPayload {
   readonly id: string;
 }
 
+export interface UpdateBookPayload {
+  readonly book: Book;
+}
+
 export interface BookRepository {
   createBook(input: CreateBookPayload): Promise<Book>;
+  updateBook(input: UpdateBookPayload): Promise<Book>;
   findBook(input: FindBookPayload): Promise<Book | null>;
   deleteBook(input: DeleteBookPayload): Promise<void>;
 }

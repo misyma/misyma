@@ -45,14 +45,14 @@ export class BookTestUtils {
 
     await this.sqliteDatabaseClient.transaction(async (transaction: Transaction) => {
       rawEntities = await transaction(this.databaseTable.name).insert({
-        [this.databaseTable.columns.id]: book.id,
-        [this.databaseTable.columns.title]: book.title,
-        [this.databaseTable.columns.releaseYear]: book.releaseYear,
+        [this.databaseTable.columns.id]: book.getId(),
+        [this.databaseTable.columns.title]: book.getTitle(),
+        [this.databaseTable.columns.releaseYear]: book.getReleaseYear(),
       });
 
       if (input?.authorId) {
         await transaction(this.booksAuthorsTable.name).insert({
-          [this.booksAuthorsTable.columns.bookId]: book.id,
+          [this.booksAuthorsTable.columns.bookId]: book.getId(),
           [this.booksAuthorsTable.columns.authorId]: input?.authorId,
         });
       }

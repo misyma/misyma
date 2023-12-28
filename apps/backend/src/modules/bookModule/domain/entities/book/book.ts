@@ -1,3 +1,5 @@
+import { type BookDomainAction } from './domainActions/bookDomainActions.js';
+import { BookDomainActionType } from './domainActions/bookDomainActionType.js';
 import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
 import { type Author } from '../../../../authorModule/domain/entities/author/author.js';
 
@@ -9,10 +11,12 @@ export interface BookDraft {
 }
 
 export class Book {
-  public readonly id: string;
-  public readonly title: string;
-  public readonly releaseYear: number;
-  public readonly authors: Author[] = [];
+  private readonly id: string;
+  private readonly title: string;
+  private readonly releaseYear: number;
+  private readonly authors: Author[] = [];
+
+  private domainActions: BookDomainAction[] = [];
 
   public constructor(draft: BookDraft) {
     const { id, title, releaseYear, authors } = draft;
@@ -37,6 +41,22 @@ export class Book {
     };
   }
 
+  public getDomainActions(): BookDomainAction[] {
+    return [...this.domainActions];
+  }
+
+  public getId(): string {
+    return this.id;
+  }
+
+  public getTitle(): string {
+    return this.title;
+  }
+
+  public getReleaseYear(): number {
+    return this.releaseYear;
+  }
+
   // Idea: We could add domainEvents, including the deletion and addition of authors.
   // This way we could delete/add them within the booksRepository ^^
   public addAuthor(author: Author): void {
@@ -51,7 +71,36 @@ export class Book {
       });
     }
 
+    this.domainActions.push({
+      type: BookDomainActionType.addAuthor,
+      payload: {
+        authorId,
+      },
+    });
+
     this.authors.push(author);
+  }
+
+  public deleteAuthor(author: Author): void {
+    const authorId = author.id;
+
+    const authorExists = this.authors.findIndex((author) => author.id === authorId);
+
+    if (!authorExists) {
+      throw new OperationNotValidError({
+        reason: 'Author is not assigned to this book.',
+        value: authorId,
+      });
+    }
+
+    this.domainActions.push({
+      type: BookDomainActionType.deleteAuthor,
+      payload: {
+        authorId,
+      },
+    });
+
+    this.authors.splice(authorExists, 1);
   }
 
   public getAuthors(): Author[] {

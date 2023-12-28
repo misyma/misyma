@@ -65,7 +65,7 @@ describe('DeleteBookCommandHandler', () => {
   });
 
   it('throws an error if book with given id does not exist', async () => {
-    const { id } = bookTestFactory.create();
+    const id = bookTestFactory.create().getId();
 
     try {
       await deleteBookCommandHandler.execute({ bookId: id });

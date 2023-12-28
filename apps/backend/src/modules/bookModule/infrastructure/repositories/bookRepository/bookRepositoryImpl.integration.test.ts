@@ -53,24 +53,24 @@ describe('BookRepositoryImpl', () => {
     it('creates a book', async () => {
       const author = await authorTestUtils.createAndPersist();
 
-      const { releaseYear, title } = bookTestFactory.create({ authors: [author] });
+      const createdBook = bookTestFactory.create({ authors: [author] });
 
       const book = await bookRepository.createBook({
-        releaseYear,
-        title,
+        releaseYear: createdBook.getReleaseYear(),
+        title: createdBook.getTitle(),
         authors: [author],
       });
 
       const foundBook = await bookTestUtils.findByTitleAndAuthor({
-        title,
+        title: createdBook.getTitle(),
         authorId: author.id,
       });
 
-      expect(book.title).toEqual(title);
+      expect(book.getTitle()).toEqual(createdBook.getTitle());
 
-      expect(foundBook.title).toEqual(title);
+      expect(foundBook.title).toEqual(createdBook.getTitle());
 
-      expect(foundBook.releaseYear).toEqual(releaseYear);
+      expect(foundBook.releaseYear).toEqual(createdBook.getReleaseYear());
     });
 
     it('throws an error when book with the same title and author already exists', async () => {
@@ -104,11 +104,11 @@ describe('BookRepositoryImpl', () => {
 
       expect(foundBook).toBeInstanceOf(Book);
 
-      expect(foundBook?.authors).toHaveLength(1);
+      expect(foundBook?.getAuthors()).toHaveLength(1);
     });
 
     it('returns null if book with given id does not exist', async () => {
-      const { id } = bookTestFactory.create();
+      const id = bookTestFactory.create().getId();
 
       const book = await bookRepository.findBook({ id });
 
@@ -137,7 +137,7 @@ describe('BookRepositoryImpl', () => {
     });
 
     it('throws an error if book with given id does not exist', async () => {
-      const { id } = bookTestFactory.create();
+      const id = bookTestFactory.create().getId();
 
       try {
         await bookRepository.deleteBook({ id });

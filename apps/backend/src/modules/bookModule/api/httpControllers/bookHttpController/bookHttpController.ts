@@ -140,7 +140,12 @@ export class BookHttpController implements HttpController {
 
       return {
         statusCode: HttpStatusCode.created,
-        body: { ...book },
+        body: {
+          authors: book.getAuthors(),
+          id: book.getId(),
+          releaseYear: book.getReleaseYear(),
+          title: book.getTitle(),
+        },
       };
     } catch (error) {
       if (error instanceof ResourceAlreadyExistsError) {
@@ -172,7 +177,12 @@ export class BookHttpController implements HttpController {
 
       return {
         statusCode: HttpStatusCode.ok,
-        body: { ...book },
+        body: {
+          authors: book.getAuthors(),
+          id: book.getId(),
+          releaseYear: book.getReleaseYear(),
+          title: book.getTitle(),
+        },
       };
     } catch (error) {
       if (error instanceof ResourceNotFoundError) {
