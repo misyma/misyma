@@ -20,7 +20,7 @@ export class M2CreateUserTokensTableMigration implements Migration {
 
       table.text(this.columns.userId).notNullable();
 
-      table.text(this.columns.refreshToken).notNullable();
+      table.text(this.columns.refreshToken).nullable();
 
       table.text(this.columns.resetPasswordToken).nullable();
 
@@ -29,6 +29,8 @@ export class M2CreateUserTokensTableMigration implements Migration {
       table.primary([this.columns.id]);
 
       table.foreign(this.columns.userId).references('id').inTable('users').onDelete('CASCADE');
+
+      table.unique([this.columns.userId]);
     });
   }
 
