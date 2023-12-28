@@ -17,7 +17,6 @@ import {
   type UpdateUserPayload,
   type DeleteUserPayload,
   type FindUserTokensPayload,
-  type CreateUserTokensPayload,
 } from '../../../domain/repositories/userRepository/userRepository.js';
 import { type UserRawEntity } from '../../databases/userDatabase/tables/userTable/userRawEntity.js';
 import { UserTable } from '../../databases/userDatabase/tables/userTable/userTable.js';
@@ -49,10 +48,6 @@ export class UserRepositoryImpl implements UserRepository {
 
   private createUserQueryBuilder(): QueryBuilder<UserRawEntity> {
     return this.sqliteDatabaseClient<UserRawEntity>(this.userDatabaseTable.name);
-  }
-
-  private createUserTokensQueryBuilder(): QueryBuilder<UserTokensRawEntity> {
-    return this.sqliteDatabaseClient<UserTokensRawEntity>(this.userTokensTable.name);
   }
 
   public async createUser(payload: CreateUserPayload): Promise<User> {
@@ -91,41 +86,6 @@ export class UserRepositoryImpl implements UserRepository {
     const rawEntity = rawEntities[0] as UserRawEntity;
 
     return this.userMapper.mapToDomain(rawEntity);
-  }
-
-  public async createUserTokens(input: CreateUserTokensPayload): Promise<UserTokens> {
-    const { userId, refreshToken } = input;
-
-    const queryBuilder = this.createUserTokensQueryBuilder();
-
-    let rawEntities: UserTokensRawEntity[];
-
-    const id = this.uuidService.generateUuid();
-
-    try {
-      rawEntities = await queryBuilder.insert(
-        {
-          id,
-          userId,
-          refreshToken,
-        },
-        '*',
-      );
-    } catch (error) {
-      this.loggerService.error({
-        message: 'Error while creating UserTokens.',
-        context: { error },
-      });
-
-      throw new RepositoryError({
-        entity: 'UserTokens',
-        operation: 'create',
-      });
-    }
-
-    const rawEntity = rawEntities[0] as UserTokensRawEntity;
-
-    return this.userTokensMapper.mapToDomain(rawEntity);
   }
 
   public async findUser(payload: FindUserPayload): Promise<User | null> {
