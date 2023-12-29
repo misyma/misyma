@@ -52,7 +52,7 @@ describe('DeleteBookCommandHandler', () => {
 
     const book = await bookTestUtils.createAndPersist({
       input: {
-        authorId: author.id,
+        authorIds: [author.id],
         id: bookId,
       },
     });

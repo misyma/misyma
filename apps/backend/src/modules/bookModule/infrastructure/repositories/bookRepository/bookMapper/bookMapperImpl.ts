@@ -1,6 +1,6 @@
 import { type BookMapper } from './bookMapper.js';
 import { Author } from '../../../../../authorModule/domain/entities/author/author.js';
-import { Book } from '../../../../domain/entities/book/book.js';
+import { Book, type BookDraft } from '../../../../domain/entities/book/book.js';
 import { type BookRawEntity } from '../../../databases/bookDatabase/tables/bookTable/bookRawEntity.js';
 import { type BookWithAuthorRawEntity } from '../../../databases/bookDatabase/tables/bookTable/bookWithAuthorRawEntity.js';
 
@@ -16,21 +16,23 @@ export class BookMapperImpl implements BookMapper {
   }
 
   public mapRawWithAuthorToDomain(entities: BookWithAuthorRawEntity[]): Book[] {
-    const booksMap = new Map<string, Book>();
+    const bookDraftsMap = new Map<string, BookDraft>();
 
     entities.forEach((entity) => {
       const { authorId, firstName, id, lastName, releaseYear, title } = entity;
 
-      const bookExists = booksMap.has(id);
+      const bookExists = bookDraftsMap.has(id);
 
       if (bookExists) {
-        const book = booksMap.get(id) as Book;
+        const bookDraft = bookDraftsMap.get(id) as BookDraft;
 
-        book.addAuthor({
-          id: authorId,
-          firstName,
-          lastName,
-        });
+        bookDraft.authors?.push(
+          new Author({
+            firstName,
+            id: authorId,
+            lastName,
+          }),
+        );
       } else {
         const author = new Author({
           firstName,
@@ -38,17 +40,17 @@ export class BookMapperImpl implements BookMapper {
           lastName,
         });
 
-        const book = new Book({
+        const book = {
           id,
           title,
           releaseYear,
           authors: [author],
-        });
+        };
 
-        booksMap.set(id, book);
+        bookDraftsMap.set(id, book);
       }
     });
 
-    return [...booksMap.values()];
+    return [...bookDraftsMap.values()].map((bookDraft) => new Book(bookDraft));
   }
 }

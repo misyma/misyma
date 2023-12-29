@@ -22,6 +22,7 @@ describe('BookMapperImpl', () => {
       title: bookEntity.title,
       releaseYear: bookEntity.releaseYear,
       authors: [],
+      domainActions: [],
     });
   });
 });

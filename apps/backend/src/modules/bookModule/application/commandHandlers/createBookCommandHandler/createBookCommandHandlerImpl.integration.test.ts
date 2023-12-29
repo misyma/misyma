@@ -80,7 +80,7 @@ describe('CreateBookCommandHandler', () => {
 
     const existingBook = await bookTestUtils.createAndPersist({
       input: {
-        authorId: author.id,
+        authorIds: [author.id],
       },
     });
 

@@ -48,7 +48,7 @@ describe('FindBookQueryHandler', () => {
   it('finds book by id', async () => {
     const author = await authorTestUtils.createAndPersist();
 
-    const book = await bookTestUtils.createAndPersist({ input: { authorId: author.id } });
+    const book = await bookTestUtils.createAndPersist({ input: { authorIds: [author.id] } });
 
     const { book: foundBook } = await findBookQueryHandler.execute({ bookId: book.id });
 

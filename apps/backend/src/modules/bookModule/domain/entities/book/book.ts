@@ -10,10 +10,18 @@ export interface BookDraft {
   readonly authors?: Author[];
 }
 
+export interface AddChangeReleaseYearDomainActionPayload {
+  readonly releaseYear: number;
+}
+
+export interface AddChangeTitleDomainActionPayload {
+  readonly title: string;
+}
+
 export class Book {
   private readonly id: string;
-  private readonly title: string;
-  private readonly releaseYear: number;
+  private title: string;
+  private releaseYear: number;
   private readonly authors: Author[] = [];
 
   private domainActions: BookDomainAction[] = [];
@@ -57,9 +65,7 @@ export class Book {
     return this.releaseYear;
   }
 
-  // Idea: We could add domainEvents, including the deletion and addition of authors.
-  // This way we could delete/add them within the booksRepository ^^
-  public addAuthor(author: Author): void {
+  public addAddAuthorDomainAction(author: Author): void {
     const authorId = author.id;
 
     const authorExists = this.authors.some((author) => author.id === authorId);
@@ -81,12 +87,12 @@ export class Book {
     this.authors.push(author);
   }
 
-  public deleteAuthor(author: Author): void {
+  public addDeleteAuthorDomainAction(author: Author): void {
     const authorId = author.id;
 
     const authorExists = this.authors.findIndex((author) => author.id === authorId);
 
-    if (!authorExists) {
+    if (authorExists < 0) {
       throw new OperationNotValidError({
         reason: 'Author is not assigned to this book.',
         value: authorId,
@@ -101,6 +107,46 @@ export class Book {
     });
 
     this.authors.splice(authorExists, 1);
+  }
+
+  public addChangeTitleDomainAction(payload: AddChangeTitleDomainActionPayload): void {
+    const { title } = payload;
+
+    if (this.title === title) {
+      throw new OperationNotValidError({
+        reason: 'Cannot update Title, because it is the same as the current one.',
+        value: title,
+      });
+    }
+
+    this.domainActions.push({
+      type: BookDomainActionType.changeTitle,
+      payload: {
+        title,
+      },
+    });
+
+    this.title = title;
+  }
+
+  public addChangeReleaseYearDomainAction(payload: AddChangeReleaseYearDomainActionPayload): void {
+    const { releaseYear } = payload;
+
+    if (this.releaseYear === releaseYear) {
+      throw new OperationNotValidError({
+        reason: 'Cannot update Release Year, because it is the same as the current one.',
+        value: releaseYear,
+      });
+    }
+
+    this.domainActions.push({
+      type: BookDomainActionType.changeReleaseYear,
+      payload: {
+        releaseYear,
+      },
+    });
+
+    this.releaseYear = releaseYear;
   }
 
   public getAuthors(): Author[] {

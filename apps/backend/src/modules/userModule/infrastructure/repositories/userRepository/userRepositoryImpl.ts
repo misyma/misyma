@@ -2,6 +2,7 @@ import { type UserMapper } from './userMapper/userMapper.js';
 import { type UserTokensMapper } from './userTokensMapper/userTokensMapper.js';
 import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
+import { type Writeable } from '../../../../../common/types/util/writeable.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
@@ -23,11 +24,6 @@ import { type UserRawEntity } from '../../databases/userDatabase/tables/userTabl
 import { UserTable } from '../../databases/userDatabase/tables/userTable/userTable.js';
 import { type UserTokensRawEntity } from '../../databases/userDatabase/tables/userTokensTable/userTokensRawEntity.js';
 import { UserTokensTable } from '../../databases/userDatabase/tables/userTokensTable/userTokensTable.js';
-
-// I am quite certain it was a builtin type, but couldn't find it...
-type Writeable<T> = {
-  -readonly [P in keyof T]: T[P];
-};
 
 export interface MappedUserUpdate {
   userUpdatePayload: Partial<UserRawEntity> | undefined;

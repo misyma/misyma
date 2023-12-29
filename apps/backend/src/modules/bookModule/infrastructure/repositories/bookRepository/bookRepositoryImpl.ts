@@ -1,6 +1,7 @@
 import { type BookMapper } from './bookMapper/bookMapper.js';
 import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
+import { type Writeable } from '../../../../../common/types/util/writeable.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
@@ -20,7 +21,7 @@ import { BookTable } from '../../databases/bookDatabase/tables/bookTable/bookTab
 import { type BookWithAuthorRawEntity } from '../../databases/bookDatabase/tables/bookTable/bookWithAuthorRawEntity.js';
 
 interface UpdateBookActionsPayload {
-  bookFields: Partial<BookRawEntity>;
+  bookFields: Partial<Writeable<BookRawEntity>>;
   bookAuthors: {
     add: string[];
     remove: string[];
@@ -80,12 +81,11 @@ export class BookRepositoryImpl implements BookRepository {
 
     const createdBook = this.bookMapper.mapRawToDomain(rawEntity);
 
-    authors.forEach((author) => createdBook.addAuthor(author));
+    authors.forEach((author) => createdBook.addAddAuthorDomainAction(author));
 
     return createdBook;
   }
 
-  // TODO: Tests
   public async updateBook(payload: UpdateBookPayload): Promise<Book> {
     const { book } = payload;
 
@@ -93,7 +93,7 @@ export class BookRepositoryImpl implements BookRepository {
 
     try {
       await this.sqliteDatabaseClient.transaction(async (transaction) => {
-        if (updatePayload.bookFields) {
+        if (Object.values(updatePayload.bookFields).length > 0) {
           await transaction(this.databaseTable.name)
             .update(updatePayload.bookFields)
             .where({
@@ -101,7 +101,7 @@ export class BookRepositoryImpl implements BookRepository {
             });
         }
 
-        if (updatePayload.bookAuthors.add.length) {
+        if (updatePayload.bookAuthors.add.length > 0) {
           await transaction.batchInsert(
             this.booksAuthorsTable.name,
             updatePayload.bookAuthors.add.map((authorId) => ({
@@ -111,13 +111,13 @@ export class BookRepositoryImpl implements BookRepository {
           );
         }
 
-        if (updatePayload.bookAuthors.remove.length) {
+        if (updatePayload.bookAuthors.remove.length > 0) {
           await transaction(this.booksAuthorsTable.name)
             .delete()
-            .where({
+            .whereIn(this.booksAuthorsTable.columns.authorId, updatePayload.bookAuthors.remove)
+            .andWhere({
               [this.booksAuthorsTable.columns.bookId]: book.getId(),
-            })
-            .whereIn(this.booksAuthorsTable.columns.authorId, updatePayload.bookAuthors.remove);
+            });
         }
       });
     } catch (error) {
@@ -211,6 +211,16 @@ export class BookRepositoryImpl implements BookRepository {
 
         case BookDomainActionType.deleteAuthor:
           payload.bookAuthors.remove.push(domainAction.payload.authorId);
+
+          break;
+
+        case BookDomainActionType.changeReleaseYear:
+          payload.bookFields.releaseYear = domainAction.payload.releaseYear;
+
+          break;
+
+        case BookDomainActionType.changeTitle:
+          payload.bookFields.title = domainAction.payload.title;
 
           break;
       }
