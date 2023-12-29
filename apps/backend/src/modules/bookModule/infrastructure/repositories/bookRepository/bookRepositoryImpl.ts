@@ -147,7 +147,7 @@ export class BookRepositoryImpl implements BookRepository {
           this.authorTable.columns.firstName,
           this.authorTable.columns.lastName,
         ])
-        .join(this.booksAuthorsTable.name, (join) => {
+        .leftJoin(this.booksAuthorsTable.name, (join) => {
           join.on(
             `${this.booksAuthorsTable.name}.${this.booksAuthorsTable.columns.bookId}`,
             '=',
@@ -161,7 +161,7 @@ export class BookRepositoryImpl implements BookRepository {
             );
           }
         })
-        .join(this.authorTable.name, (join) => {
+        .leftJoin(this.authorTable.name, (join) => {
           join.on(
             `${this.authorTable.name}.${this.authorTable.columns.id}`,
             '=',

@@ -26,25 +26,33 @@ export class BookMapperImpl implements BookMapper {
       if (bookExists) {
         const bookDraft = bookDraftsMap.get(id) as BookDraft;
 
-        bookDraft.authors?.push(
-          new Author({
-            firstName,
-            id: authorId,
-            lastName,
-          }),
-        );
+        if (authorId) {
+          bookDraft.authors?.push(
+            new Author({
+              firstName: firstName as string,
+              id: authorId,
+              lastName: lastName as string,
+            }),
+          );
+        }
       } else {
-        const author = new Author({
-          firstName,
-          id: authorId,
-          lastName,
-        });
+        const authors: Author[] = [];
+
+        if (authorId) {
+          authors.push(
+            new Author({
+              firstName: firstName as string,
+              id: authorId,
+              lastName: lastName as string,
+            }),
+          );
+        }
 
         const book = {
           id,
           title,
           releaseYear,
-          authors: [author],
+          authors,
         };
 
         bookDraftsMap.set(id, book);

@@ -108,6 +108,23 @@ describe('BookRepositoryImpl', () => {
       expect(foundBook?.getAuthors()).toHaveLength(1);
     });
 
+    it('finds a Book without Authors', async () => {
+      const bookId = Generator.uuid();
+
+      const book = await bookTestUtils.createAndPersist({
+        input: {
+          id: bookId,
+          authorIds: [],
+        },
+      });
+
+      const foundBook = await bookRepository.findBook({ id: book.id });
+
+      expect(foundBook).toBeInstanceOf(Book);
+
+      expect(foundBook?.getAuthors()).toHaveLength(0);
+    });
+
     it('returns null if book with given id does not exist', async () => {
       const id = bookTestFactory.create().getId();
 
