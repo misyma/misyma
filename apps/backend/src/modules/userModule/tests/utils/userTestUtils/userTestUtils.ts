@@ -72,7 +72,7 @@ export class UserTestUtils {
       {
         id: userTokens.getId(),
         userId: userTokens.getUserId(),
-        refreshToken: userTokens.getRefreshToken(),
+        refreshToken: userTokens.getRefreshToken() as string,
         resetPasswordToken: userTokens.getResetPasswordToken() as string,
         emailVerificationToken: userTokens.getEmailVerificationToken() as string,
       },

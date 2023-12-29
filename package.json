@@ -4,6 +4,7 @@
   "scripts": {
     "prepare": "node ./tools/scripts/setupHusky.js",
     "build": "turbo run build",
+    "build:dev": "turbo run build:dev",
     "build:clean": "turbo run build:clean",
     "test:unit": "turbo run test:unit:run --concurrency 5",
     "test:integration": "turbo run test:integration:run --concurrency 5",
