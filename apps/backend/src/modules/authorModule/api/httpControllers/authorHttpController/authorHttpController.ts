@@ -139,7 +139,11 @@ export class AuthorHttpController implements HttpController {
 
       return {
         statusCode: HttpStatusCode.created,
-        body: { ...author },
+        body: {
+          firstName: author.getFirstName(),
+          id: author.getId(),
+          lastName: author.getLastName(),
+        },
       };
     } catch (error) {
       if (error instanceof ResourceAlreadyExistsError) {
@@ -171,7 +175,11 @@ export class AuthorHttpController implements HttpController {
 
       return {
         statusCode: HttpStatusCode.ok,
-        body: { ...author },
+        body: {
+          firstName: author.getFirstName(),
+          id: author.getId(),
+          lastName: author.getLastName(),
+        },
       };
     } catch (error) {
       if (error instanceof ResourceNotFoundError) {

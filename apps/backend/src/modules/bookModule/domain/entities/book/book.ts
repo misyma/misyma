@@ -66,9 +66,9 @@ export class Book {
   }
 
   public addAddAuthorDomainAction(author: Author): void {
-    const authorId = author.id;
+    const authorId = author.getId();
 
-    const authorExists = this.authors.some((author) => author.id === authorId);
+    const authorExists = this.authors.some((author) => author.getId() === authorId);
 
     if (authorExists) {
       throw new OperationNotValidError({
@@ -88,9 +88,9 @@ export class Book {
   }
 
   public addDeleteAuthorDomainAction(author: Author): void {
-    const authorId = author.id;
+    const authorId = author.getId();
 
-    const authorExists = this.authors.findIndex((author) => author.id === authorId);
+    const authorExists = this.authors.findIndex((author) => author.getId() === authorId);
 
     if (authorExists < 0) {
       throw new OperationNotValidError({

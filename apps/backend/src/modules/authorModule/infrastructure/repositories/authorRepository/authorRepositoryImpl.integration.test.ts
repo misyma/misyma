@@ -41,7 +41,7 @@ describe('AuthorRepositoryImpl', () => {
 
   describe('Create', () => {
     it('creates a author', async () => {
-      const { firstName, lastName } = authorTestFactory.create();
+      const { firstName, lastName } = authorTestFactory.createRaw();
 
       const author = await authorRepository.createAuthor({
         firstName,
@@ -53,9 +53,9 @@ describe('AuthorRepositoryImpl', () => {
         lastName,
       });
 
-      expect(author.firstName).toEqual(firstName);
+      expect(author.getFirstName()).toEqual(firstName);
 
-      expect(author.lastName).toEqual(lastName);
+      expect(author.getLastName()).toEqual(lastName);
 
       expect(foundAuthor.firstName).toEqual(firstName);
 
@@ -90,7 +90,7 @@ describe('AuthorRepositoryImpl', () => {
     });
 
     it('returns null if author with given id does not exist', async () => {
-      const { id } = authorTestFactory.create();
+      const { id } = authorTestFactory.createRaw();
 
       const author = await authorRepository.findAuthor({ id });
 
@@ -110,7 +110,7 @@ describe('AuthorRepositoryImpl', () => {
     });
 
     it('throws an error if author with given id does not exist', async () => {
-      const { id } = authorTestFactory.create();
+      const { id } = authorTestFactory.createRaw();
 
       try {
         await authorRepository.deleteAuthor({ id });
@@ -145,11 +145,11 @@ describe('AuthorRepositoryImpl', () => {
       expect(foundAuthors).toHaveLength(3);
 
       foundAuthors.forEach((foundAuthor) => {
-        expect(foundAuthor.id).oneOf([author1.id, author2.id, author3.id]);
+        expect(foundAuthor.getId()).oneOf([author1.id, author2.id, author3.id]);
 
-        expect(foundAuthor.firstName).oneOf([author1.firstName, author2.firstName, author3.firstName]);
+        expect(foundAuthor.getFirstName()).oneOf([author1.firstName, author2.firstName, author3.firstName]);
 
-        expect(foundAuthor.lastName).oneOf([author1.lastName, author2.lastName, author3.lastName]);
+        expect(foundAuthor.getLastName()).oneOf([author1.lastName, author2.lastName, author3.lastName]);
       });
     });
   });

@@ -7,7 +7,7 @@ import { ResourceNotFoundError } from '../../../../../common/errors/common/resou
 import { Application } from '../../../../../core/application.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
-import { type Author } from '../../../../authorModule/domain/entities/author/author.js';
+import { Author } from '../../../../authorModule/domain/entities/author/author.js';
 import { AuthorTestUtils } from '../../../../authorModule/tests/utils/authorTestUtils/authorTestUtils.js';
 import { Book } from '../../../domain/entities/book/book.js';
 import { type BookRepository } from '../../../domain/repositories/bookRepository/bookRepository.js';
@@ -54,12 +54,12 @@ describe('BookRepositoryImpl', () => {
     it('creates a book', async () => {
       const author = await authorTestUtils.createAndPersist();
 
-      const createdBook = bookTestFactory.create({ authors: [author] });
+      const createdBook = bookTestFactory.create({ authors: [new Author(author)] });
 
       const book = await bookRepository.createBook({
         releaseYear: createdBook.getReleaseYear(),
         title: createdBook.getTitle(),
-        authors: [author],
+        authors: [new Author(author)],
       });
 
       const foundBook = await bookTestUtils.findByTitleAndAuthor({
@@ -83,7 +83,7 @@ describe('BookRepositoryImpl', () => {
         await bookRepository.createBook({
           releaseYear: existingBook.releaseYear,
           title: existingBook.title,
-          authors: [author],
+          authors: [new Author(author)],
         });
       } catch (error) {
         expect(error).toBeInstanceOf(RepositoryError);
@@ -138,9 +138,9 @@ describe('BookRepositoryImpl', () => {
         id: bookId,
       });
 
-      createdBook?.addDeleteAuthorDomainAction(author1);
+      createdBook?.addDeleteAuthorDomainAction(new Author(author1));
 
-      createdBook?.addDeleteAuthorDomainAction(author2);
+      createdBook?.addDeleteAuthorDomainAction(new Author(author2));
 
       const updatedBook = await bookRepository.updateBook({
         book: createdBook as Book,
@@ -150,7 +150,7 @@ describe('BookRepositoryImpl', () => {
 
       const remainingAuthor = updatedBook.getAuthors()[0] as Author;
 
-      expect(remainingAuthor.id).toEqual(author3.id);
+      expect(remainingAuthor.getId()).toEqual(author3.id);
 
       const updatedBookAuthors = await bookTestUtils.findRawBookAuthorsById({
         id: createdBook?.getId() as string,
@@ -180,9 +180,9 @@ describe('BookRepositoryImpl', () => {
         id: book.id,
       });
 
-      createdBook?.addAddAuthorDomainAction(author4);
+      createdBook?.addAddAuthorDomainAction(new Author(author4));
 
-      createdBook?.addAddAuthorDomainAction(author5);
+      createdBook?.addAddAuthorDomainAction(new Author(author5));
 
       const updatedBook = await bookRepository.updateBook({
         book: createdBook as Book,
@@ -192,11 +192,11 @@ describe('BookRepositoryImpl', () => {
 
       const remainingAuthor = updatedBook.getAuthors()[4] as Author;
 
-      expect(remainingAuthor.id).toEqual(author5.id);
+      expect(remainingAuthor.getId()).toEqual(author5.id);
 
       const remainingAuthor2 = updatedBook.getAuthors()[3] as Author;
 
-      expect(remainingAuthor2.id).toEqual(author4.id);
+      expect(remainingAuthor2.getId()).toEqual(author4.id);
 
       const updatedBookAuthors = await bookTestUtils.findRawBookAuthorsById({
         id: createdBook?.getId() as string,
@@ -304,9 +304,9 @@ describe('BookRepositoryImpl', () => {
         releaseYear: newReleaseYear,
       });
 
-      createdBook?.addAddAuthorDomainAction(author3);
+      createdBook?.addAddAuthorDomainAction(new Author(author3));
 
-      createdBook?.addDeleteAuthorDomainAction(author2);
+      createdBook?.addDeleteAuthorDomainAction(new Author(author2));
 
       const updatedBook = await bookRepository.updateBook({
         book: createdBook as Book,
@@ -320,9 +320,9 @@ describe('BookRepositoryImpl', () => {
 
       const updatedBookAuthors = updatedBook.getAuthors();
 
-      expect(updatedBookAuthors[0]?.id).toEqual(author1.id);
+      expect(updatedBookAuthors[0]?.getId()).toEqual(author1.id);
 
-      expect(updatedBookAuthors[1]?.id).toEqual(author3.id);
+      expect(updatedBookAuthors[1]?.getId()).toEqual(author3.id);
 
       const persistedUpdatedBook = await bookTestUtils.findById({
         id: bookId,

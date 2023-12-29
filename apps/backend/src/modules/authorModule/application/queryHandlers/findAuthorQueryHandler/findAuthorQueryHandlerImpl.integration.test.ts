@@ -45,7 +45,7 @@ describe('FindAuthorQueryHandler', () => {
   });
 
   it('throws an error if author with given id does not exist', async () => {
-    const { id } = authorTestFactory.create();
+    const { id } = authorTestFactory.createRaw();
 
     try {
       await findAuthorQueryHandler.execute({ authorId: id });

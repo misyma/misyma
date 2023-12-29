@@ -66,7 +66,7 @@ export class BookRepositoryImpl implements BookRepository {
           this.booksAuthorsTable.name,
           authors.map((author) => ({
             [this.booksAuthorsTable.columns.bookId]: id,
-            [this.booksAuthorsTable.columns.authorId]: author.id,
+            [this.booksAuthorsTable.columns.authorId]: author.getId(),
           })),
         );
       });
