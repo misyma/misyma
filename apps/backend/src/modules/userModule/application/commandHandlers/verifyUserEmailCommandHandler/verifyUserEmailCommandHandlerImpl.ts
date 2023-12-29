@@ -2,6 +2,7 @@ import { type VerifyUserEmailCommandHandler, type ExecutePayload } from './verif
 import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
+import { type BlacklistTokenRepository } from '../../../domain/repositories/blacklistTokenRepository/blacklistTokenRepository.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
 
 // TODO: add tests
@@ -10,10 +11,22 @@ export class VerifyUserEmailCommandHandlerImpl implements VerifyUserEmailCommand
     private readonly tokenService: TokenService,
     private readonly userRepository: UserRepository,
     private readonly loggerService: LoggerService,
+    private readonly blacklistTokenRepository: BlacklistTokenRepository,
   ) {}
 
   public async execute(payload: ExecutePayload): Promise<void> {
     const { userId, token } = payload;
+
+    const isTokenBlacklisted = await this.blacklistTokenRepository.findBlacklistToken({
+      token,
+    });
+
+    if (isTokenBlacklisted) {
+      throw new OperationNotValidError({
+        reason: 'Email verification token is blacklisted.',
+        token,
+      });
+    }
 
     const user = await this.userRepository.findUser({
       id: userId,
@@ -81,6 +94,15 @@ export class VerifyUserEmailCommandHandlerImpl implements VerifyUserEmailCommand
         userId: user.getId(),
         email: user.getEmail(),
       },
+    });
+
+    const { expiresAt } = this.tokenService.decodeToken({
+      token: emailVerificationToken,
+    });
+
+    await this.blacklistTokenRepository.createBlacklistToken({
+      token: emailVerificationToken,
+      expiresAt: new Date(expiresAt),
     });
   }
 }

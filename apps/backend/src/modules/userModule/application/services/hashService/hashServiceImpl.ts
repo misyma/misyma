@@ -1,18 +1,22 @@
 import { compare, genSalt, hash } from 'bcrypt';
 
-import { type HashService } from './hashService.js';
+import { type ComparePayload, type HashPayload, type HashService } from './hashService.js';
 import { type UserModuleConfigProvider } from '../../../userModuleConfigProvider.js';
 
 export class HashServiceImpl implements HashService {
   public constructor(private readonly configProvider: UserModuleConfigProvider) {}
 
-  public async hash(plainData: string): Promise<string> {
+  public async hash(payload: HashPayload): Promise<string> {
+    const { plainData } = payload;
+
     const salt = await this.generateSalt();
 
     return hash(plainData, salt);
   }
 
-  public async compare(plainData: string, hashedData: string): Promise<boolean> {
+  public async compare(payload: ComparePayload): Promise<boolean> {
+    const { plainData, hashedData } = payload;
+
     return compare(plainData, hashedData);
   }
 

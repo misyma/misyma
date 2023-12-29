@@ -23,6 +23,14 @@ import {
   loginUserResponseBodyDTOSchema,
 } from './schemas/loginUserSchema.js';
 import {
+  logoutUserPathParamsDTOSchema,
+  type LogoutUserBodyDTO,
+  type LogoutUserPathParamsDTO,
+  type LogoutUserResponseBodyDTO,
+  logoutUserBodyDTOSchema,
+  logoutUserResponseBodyDTOSchema,
+} from './schemas/logoutUserSchema.js';
+import {
   registerUserBodyDTOSchema,
   registerUserResponseBodyDTOSchema,
   type RegisterUserResponseBodyDTO,
@@ -63,6 +71,7 @@ import { type AccessControlService } from '../../../../authModule/application/se
 import { type ChangeUserPasswordCommandHandler } from '../../../application/commandHandlers/changeUserPasswordCommandHandler/changeUserPasswordCommandHandler.js';
 import { type DeleteUserCommandHandler } from '../../../application/commandHandlers/deleteUserCommandHandler/deleteUserCommandHandler.js';
 import { type LoginUserCommandHandler } from '../../../application/commandHandlers/loginUserCommandHandler/loginUserCommandHandler.js';
+import { type LogoutUserCommandHandler } from '../../../application/commandHandlers/logoutUserCommandHandler/logoutUserCommandHandler.js';
 import { type RegisterUserCommandHandler } from '../../../application/commandHandlers/registerUserCommandHandler/registerUserCommandHandler.js';
 import { type ResetUserPasswordCommandHandler } from '../../../application/commandHandlers/resetUserPasswordCommandHandler/resetUserPasswordCommandHandler.js';
 import { type VerifyUserEmailCommandHandler } from '../../../application/commandHandlers/verifyUserEmailCommandHandler/verifyUserEmailCommandHandler.js';
@@ -89,6 +98,7 @@ export class UserHttpController implements HttpController {
     private readonly verifyUserEmailCommandHandler: VerifyUserEmailCommandHandler,
     private readonly resetUserPasswordCommandHandler: ResetUserPasswordCommandHandler,
     private readonly changeUserPasswordCommandHandler: ChangeUserPasswordCommandHandler,
+    private readonly logoutUserCommandHandler: LogoutUserCommandHandler,
   ) {}
 
   public getHttpRoutes(): HttpRoute[] {
@@ -243,6 +253,31 @@ export class UserHttpController implements HttpController {
         securityMode: SecurityMode.bearer,
         tags: ['User'],
         description: 'Verify user email.',
+      }),
+      // TODO: test it
+      new HttpRoute({
+        method: HttpMethodName.post,
+        path: ':id/logout',
+        handler: this.logoutUser.bind(this),
+        schema: {
+          request: {
+            pathParams: logoutUserPathParamsDTOSchema,
+            body: logoutUserBodyDTOSchema,
+          },
+          response: {
+            [HttpStatusCode.ok]: {
+              schema: logoutUserResponseBodyDTOSchema,
+              description: `User logged out.`,
+            },
+            [HttpStatusCode.notFound]: {
+              schema: responseErrorBodySchema,
+              description: 'Error exception.',
+            },
+          },
+        },
+        securityMode: SecurityMode.bearer,
+        tags: ['User'],
+        description: 'Logout user.',
       }),
     ];
   }
@@ -465,6 +500,56 @@ export class UserHttpController implements HttpController {
       await this.verifyUserEmailCommandHandler.execute({
         userId: id,
         token,
+      });
+
+      return {
+        statusCode: HttpStatusCode.ok,
+        body: null,
+      };
+    } catch (error) {
+      if (error instanceof ResourceNotFoundError) {
+        return {
+          statusCode: HttpStatusCode.notFound,
+          body: { error },
+        };
+      }
+
+      throw error;
+    }
+  }
+
+  private async logoutUser(
+    request: HttpRequest<LogoutUserBodyDTO, undefined, LogoutUserPathParamsDTO>,
+  ): Promise<
+    | HttpOkResponse<LogoutUserResponseBodyDTO>
+    | HttpNotFoundResponse<ResponseErrorBody>
+    | HttpForbiddenResponse<ResponseErrorBody>
+  > {
+    const { id } = request.pathParams;
+
+    const { refreshToken } = request.body;
+
+    const { userId } = await this.accessControlService.verifyBearerToken({
+      authorizationHeader: request.headers['authorization'],
+    });
+
+    if (userId !== id) {
+      return {
+        // TODO: add forbidden message
+        statusCode: HttpStatusCode.forbidden,
+        body: {
+          error: {
+            name: '',
+            message: '',
+          },
+        },
+      };
+    }
+
+    try {
+      await this.logoutUserCommandHandler.execute({
+        userId: id,
+        refreshToken,
       });
 
       return {

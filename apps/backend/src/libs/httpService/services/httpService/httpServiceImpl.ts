@@ -44,7 +44,6 @@ export class HttpServiceImpl implements HttpService {
       console.log({
         message: 'Http request sent.',
         context: {
-          responseBody,
           statusCode: response.status,
         },
       });

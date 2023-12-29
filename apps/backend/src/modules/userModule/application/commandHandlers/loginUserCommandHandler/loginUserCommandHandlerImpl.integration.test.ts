@@ -50,7 +50,7 @@ describe('LoginUserCommandHandler', () => {
   it('returns tokens', async () => {
     const createdUser = userTestFactory.create();
 
-    const hashedPassword = await hashService.hash(createdUser.getPassword());
+    const hashedPassword = await hashService.hash({ plainData: createdUser.getPassword() });
 
     await userTestUtils.persist({
       user: {

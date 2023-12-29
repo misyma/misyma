@@ -1,33 +1,43 @@
-import { type ChangeUserPasswordCommandHandler, type ExecutePayload } from './changeUserPasswordCommandHandler.js';
+import { type LogoutUserCommandHandler, type ExecutePayload } from './logoutUserCommandHandler.js';
 import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
+import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { type BlacklistTokenRepository } from '../../../domain/repositories/blacklistTokenRepository/blacklistTokenRepository.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
-import { type HashService } from '../../services/hashService/hashService.js';
 
-export class ChangeUserPasswordCommandHandlerImpl implements ChangeUserPasswordCommandHandler {
+export class LogoutUserCommandHandlerImpl implements LogoutUserCommandHandler {
   public constructor(
     private readonly userRepository: UserRepository,
-    private readonly hashService: HashService,
     private readonly tokenService: TokenService,
     private readonly blacklistTokenRepository: BlacklistTokenRepository,
+    private readonly loggerService: LoggerService,
   ) {}
 
   public async execute(payload: ExecutePayload): Promise<void> {
-    const { resetPasswordToken, newPassword, repeatedNewPassword, userId } = payload;
+    const { userId, refreshToken } = payload;
+
+    this.loggerService.debug({
+      message: 'Logging user out...',
+      context: { userId },
+    });
+
+    this.tokenService.verifyToken({ token: refreshToken });
 
     const isTokenBlacklisted = await this.blacklistTokenRepository.findBlacklistToken({
-      token: resetPasswordToken,
+      token: refreshToken,
     });
 
     if (isTokenBlacklisted) {
-      throw new OperationNotValidError({
-        reason: 'Reset password token is blacklisted.',
-        resetPasswordToken,
+      this.loggerService.debug({
+        message: 'Refresh token is already on blacklist.',
+        context: {
+          userId,
+          refreshToken,
+        },
       });
-    }
 
-    this.tokenService.verifyToken({ token: resetPasswordToken });
+      return;
+    }
 
     const user = await this.userRepository.findUser({
       id: userId,
@@ -51,39 +61,26 @@ export class ChangeUserPasswordCommandHandlerImpl implements ChangeUserPasswordC
       });
     }
 
-    if (userTokens.getResetPasswordToken() !== resetPasswordToken) {
+    if (userTokens.getRefreshToken() !== refreshToken) {
       throw new OperationNotValidError({
-        reason: 'Reset password token is not valid.',
-        resetPasswordToken,
+        reason: 'Refresh token is not valid.',
+        userId,
+        refreshToken,
       });
     }
-
-    if (newPassword !== repeatedNewPassword) {
-      throw new OperationNotValidError({
-        reason: 'Passwords do not match.',
-        newPassword,
-        repeatedNewPassword,
-      });
-    }
-
-    const hashedPassword = await this.hashService.hash({ plainData: newPassword });
-
-    user.addUpdatePasswordAction({
-      newPassword: hashedPassword,
-    });
-
-    await this.userRepository.updateUser({
-      id: user.getId(),
-      domainActions: user.getDomainActions(),
-    });
 
     const { expiresAt } = this.tokenService.decodeToken({
-      token: resetPasswordToken,
+      token: refreshToken,
     });
 
     await this.blacklistTokenRepository.createBlacklistToken({
-      token: resetPasswordToken,
+      token: refreshToken,
       expiresAt: new Date(expiresAt),
+    });
+
+    this.loggerService.debug({
+      message: 'User logged out.',
+      context: { userId },
     });
   }
 }

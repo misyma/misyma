@@ -36,7 +36,10 @@ export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
       });
     }
 
-    const passwordIsValid = await this.hashService.compare(password, user.getPassword());
+    const passwordIsValid = await this.hashService.compare({
+      plainData: password,
+      hashedData: user.getPassword(),
+    });
 
     if (!passwordIsValid) {
       throw new ResourceNotFoundError({
