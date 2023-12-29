@@ -22,10 +22,4 @@ jobs:
       run: npm ci
     - name: Build
       run: npm run build
-    # - run: npx playwright install --with-deps # To be determined if needed
-      # Stop sending SIGTTOU for background output, run in the background, kill after tests
-    - run: |
-        stty -tostop npm run dev --workspace=@apps/frontend > /dev/null &
-        FRONTENT_DEV_SERVER_PID=$!
-        NODE_ENV=ci npm run test:e2e
-        kill $FRONTENT_DEV_SERVER_PID
+    - run: NODE_ENV=ci npm run test:e2e
