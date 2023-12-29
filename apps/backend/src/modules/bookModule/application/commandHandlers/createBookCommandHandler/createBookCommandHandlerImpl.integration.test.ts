@@ -49,7 +49,7 @@ describe('CreateBookCommandHandler', () => {
   it('creates a Book', async () => {
     const author = await authorTestUtils.createAndPersist();
 
-    const { title, releaseYear } = bookTestFactory.create({
+    const createdBook = bookTestFactory.create({
       authors: [
         new Author({
           firstName: author.firstName,
@@ -60,19 +60,19 @@ describe('CreateBookCommandHandler', () => {
     });
 
     const { book } = await createBookCommandHandler.execute({
-      title,
-      releaseYear,
+      title: createdBook.getTitle(),
+      releaseYear: createdBook.getReleaseYear(),
       authorIds: [author.id],
     });
 
     const foundBook = await bookTestUtils.findByTitleAndAuthor({
-      title,
+      title: createdBook.getTitle(),
       authorId: author.id,
     });
 
-    expect(book.title).toEqual(title);
+    expect(book.getTitle()).toEqual(createdBook.getTitle());
 
-    expect(foundBook.title).toEqual(title);
+    expect(foundBook.title).toEqual(createdBook.getTitle());
   });
 
   it('throws an error - when Book with the same title and Authors already exists', async () => {
@@ -80,7 +80,7 @@ describe('CreateBookCommandHandler', () => {
 
     const existingBook = await bookTestUtils.createAndPersist({
       input: {
-        authorId: author.id,
+        authorIds: [author.id],
       },
     });
 

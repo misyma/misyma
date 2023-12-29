@@ -47,7 +47,7 @@ describe('DeleteAuthorCommandHandler', () => {
   });
 
   it('throws an error if author with given id does not exist', async () => {
-    const { id } = authorTestFactory.create();
+    const { id } = authorTestFactory.createRaw();
 
     try {
       await deleteAuthorCommandHandler.execute({ authorId: id });

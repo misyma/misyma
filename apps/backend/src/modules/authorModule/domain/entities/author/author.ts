@@ -5,9 +5,9 @@ export interface AuthorDraft {
 }
 
 export class Author {
-  public readonly id: string;
-  public readonly firstName: string;
-  public readonly lastName: string;
+  private readonly id: string;
+  private readonly firstName: string;
+  private readonly lastName: string;
 
   public constructor(draft: AuthorDraft) {
     const { id, firstName, lastName } = draft;
@@ -17,5 +17,17 @@ export class Author {
     this.firstName = firstName;
 
     this.lastName = lastName;
+  }
+
+  public getId(): string {
+    return this.id;
+  }
+
+  public getFirstName(): string {
+    return this.firstName;
+  }
+
+  public getLastName(): string {
+    return this.lastName;
   }
 }

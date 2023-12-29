@@ -73,11 +73,11 @@ describe('FindAuthorsByIdsQueryHandlerImpl', () => {
     authors.forEach((author) => {
       expect(author).toBeInstanceOf(Author);
 
-      expect(author.id).oneOf([author1.id, author2.id]);
+      expect(author.getId()).oneOf([author1.id, author2.id]);
 
-      expect(author.firstName).oneOf([author1.firstName, author2.firstName]);
+      expect(author.getFirstName()).oneOf([author1.firstName, author2.firstName]);
 
-      expect(author.lastName).oneOf([author1.lastName, author2.lastName]);
+      expect(author.getLastName()).oneOf([author1.lastName, author2.lastName]);
     });
   });
 });

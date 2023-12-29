@@ -1,21 +1,32 @@
 import { type BookMapper } from './bookMapper/bookMapper.js';
 import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
+import { type Writeable } from '../../../../../common/types/util/writeable.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { AuthorTable } from '../../../../authorModule/infrastructure/databases/tables/authorTable/authorTable.js';
 import { type Book } from '../../../domain/entities/book/book.js';
+import { BookDomainActionType } from '../../../domain/entities/book/domainActions/bookDomainActionType.js';
 import {
   type BookRepository,
   type CreateBookPayload,
   type FindBookPayload,
   type DeleteBookPayload,
+  type UpdateBookPayload,
 } from '../../../domain/repositories/bookRepository/bookRepository.js';
 import { BooksAuthorsTable } from '../../databases/bookDatabase/tables/booksAuthorsTable/booksAuthorsTable.js';
 import { type BookRawEntity } from '../../databases/bookDatabase/tables/bookTable/bookRawEntity.js';
 import { BookTable } from '../../databases/bookDatabase/tables/bookTable/bookTable.js';
 import { type BookWithAuthorRawEntity } from '../../databases/bookDatabase/tables/bookTable/bookWithAuthorRawEntity.js';
+
+interface UpdateBookActionsPayload {
+  bookFields: Partial<Writeable<BookRawEntity>>;
+  bookAuthors: {
+    add: string[];
+    remove: string[];
+  };
+}
 
 export class BookRepositoryImpl implements BookRepository {
   private readonly databaseTable = new BookTable();
@@ -55,7 +66,7 @@ export class BookRepositoryImpl implements BookRepository {
           this.booksAuthorsTable.name,
           authors.map((author) => ({
             [this.booksAuthorsTable.columns.bookId]: id,
-            [this.booksAuthorsTable.columns.authorId]: author.id,
+            [this.booksAuthorsTable.columns.authorId]: author.getId(),
           })),
         );
       });
@@ -70,9 +81,53 @@ export class BookRepositoryImpl implements BookRepository {
 
     const createdBook = this.bookMapper.mapRawToDomain(rawEntity);
 
-    authors.forEach((author) => createdBook.addAuthor(author));
+    authors.forEach((author) => createdBook.addAddAuthorDomainAction(author));
 
     return createdBook;
+  }
+
+  public async updateBook(payload: UpdateBookPayload): Promise<Book> {
+    const { book } = payload;
+
+    const updatePayload = this.mapDomainActionsToUpdatePayload(book);
+
+    try {
+      await this.sqliteDatabaseClient.transaction(async (transaction) => {
+        if (Object.values(updatePayload.bookFields).length > 0) {
+          await transaction(this.databaseTable.name)
+            .update(updatePayload.bookFields)
+            .where({
+              [this.databaseTable.columns.id]: book.getId(),
+            });
+        }
+
+        if (updatePayload.bookAuthors.add.length > 0) {
+          await transaction.batchInsert(
+            this.booksAuthorsTable.name,
+            updatePayload.bookAuthors.add.map((authorId) => ({
+              [this.booksAuthorsTable.columns.bookId]: book.getId(),
+              [this.booksAuthorsTable.columns.authorId]: authorId,
+            })),
+          );
+        }
+
+        if (updatePayload.bookAuthors.remove.length > 0) {
+          await transaction(this.booksAuthorsTable.name)
+            .delete()
+            .whereIn(this.booksAuthorsTable.columns.authorId, updatePayload.bookAuthors.remove)
+            .andWhere({
+              [this.booksAuthorsTable.columns.bookId]: book.getId(),
+            });
+        }
+      });
+    } catch (error) {
+      throw new RepositoryError({
+        entity: 'Book',
+        operation: 'update',
+      });
+    }
+
+    return book;
   }
 
   public async findBook(payload: FindBookPayload): Promise<Book | null> {
@@ -92,7 +147,7 @@ export class BookRepositoryImpl implements BookRepository {
           this.authorTable.columns.firstName,
           this.authorTable.columns.lastName,
         ])
-        .join(this.booksAuthorsTable.name, (join) => {
+        .leftJoin(this.booksAuthorsTable.name, (join) => {
           join.on(
             `${this.booksAuthorsTable.name}.${this.booksAuthorsTable.columns.bookId}`,
             '=',
@@ -106,7 +161,7 @@ export class BookRepositoryImpl implements BookRepository {
             );
           }
         })
-        .join(this.authorTable.name, (join) => {
+        .leftJoin(this.authorTable.name, (join) => {
           join.on(
             `${this.authorTable.name}.${this.authorTable.columns.id}`,
             '=',
@@ -136,6 +191,44 @@ export class BookRepositoryImpl implements BookRepository {
     return this.bookMapper.mapRawWithAuthorToDomain(rawEntities)[0] as Book;
   }
 
+  private mapDomainActionsToUpdatePayload(book: Book): UpdateBookActionsPayload {
+    const domainActions = book.getDomainActions();
+
+    const payload: UpdateBookActionsPayload = {
+      bookAuthors: {
+        add: [],
+        remove: [],
+      },
+      bookFields: {},
+    };
+
+    domainActions.forEach((domainAction) => {
+      switch (domainAction.type) {
+        case BookDomainActionType.addAuthor:
+          payload.bookAuthors.add.push(domainAction.payload.authorId);
+
+          break;
+
+        case BookDomainActionType.deleteAuthor:
+          payload.bookAuthors.remove.push(domainAction.payload.authorId);
+
+          break;
+
+        case BookDomainActionType.changeReleaseYear:
+          payload.bookFields.releaseYear = domainAction.payload.releaseYear;
+
+          break;
+
+        case BookDomainActionType.changeTitle:
+          payload.bookFields.title = domainAction.payload.title;
+
+          break;
+      }
+    });
+
+    return payload;
+  }
+
   public async deleteBook(payload: DeleteBookPayload): Promise<void> {
     const { id } = payload;
 
@@ -152,7 +245,7 @@ export class BookRepositoryImpl implements BookRepository {
 
     try {
       await queryBuilder.delete().where({
-        [this.databaseTable.columns.id]: existingBook.id,
+        [this.databaseTable.columns.id]: existingBook.getId(),
       });
     } catch (error) {
       throw new RepositoryError({

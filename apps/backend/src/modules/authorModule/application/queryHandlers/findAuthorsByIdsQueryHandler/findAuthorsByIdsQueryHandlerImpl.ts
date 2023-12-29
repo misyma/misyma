@@ -15,7 +15,7 @@ export class FindAuthorsByIdsQueryHandlerImpl implements FindAuthorsByIdsQueryHa
     const authors = await this.authorRepository.findAuthorsByIds({ authorIds });
 
     if (authorIds.length !== authors.length) {
-      const missingIds = authorIds.filter((authorId) => !authors.some((author) => author.id === authorId));
+      const missingIds = authorIds.filter((authorId) => !authors.some((author) => author.getId() === authorId));
 
       throw new ResourceNotFoundError({
         name: 'Author',

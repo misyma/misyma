@@ -1,6 +1,7 @@
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';
 import { type Transaction } from '../../../../../libs/database/types/transaction.js';
+import { type BooksAuthorsRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/booksAuthorsTable/booksAuthorsRawEntity.js';
 import { BooksAuthorsTable } from '../../../infrastructure/databases/bookDatabase/tables/booksAuthorsTable/booksAuthorsTable.js';
 import { type BookRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/bookTable/bookRawEntity.js';
 import { BookTable } from '../../../infrastructure/databases/bookDatabase/tables/bookTable/bookTable.js';
@@ -8,7 +9,7 @@ import { BookTestFactory } from '../../factories/bookTestFactory/bookTestFactory
 
 interface CreateAndPersistPayload {
   input?: Partial<BookRawEntity> & {
-    authorId: string;
+    authorIds: string[];
   };
 }
 
@@ -17,6 +18,10 @@ interface PersistPayload {
 }
 
 interface FindByIdPayload {
+  id: string;
+}
+
+interface FindRawBookAuthorsByIdPayload {
   id: string;
 }
 
@@ -45,20 +50,35 @@ export class BookTestUtils {
 
     await this.sqliteDatabaseClient.transaction(async (transaction: Transaction) => {
       rawEntities = await transaction(this.databaseTable.name).insert({
-        [this.databaseTable.columns.id]: book.id,
-        [this.databaseTable.columns.title]: book.title,
-        [this.databaseTable.columns.releaseYear]: book.releaseYear,
+        [this.databaseTable.columns.id]: book.getId(),
+        [this.databaseTable.columns.title]: book.getTitle(),
+        [this.databaseTable.columns.releaseYear]: book.getReleaseYear(),
       });
 
-      if (input?.authorId) {
-        await transaction(this.booksAuthorsTable.name).insert({
-          [this.booksAuthorsTable.columns.bookId]: book.id,
-          [this.booksAuthorsTable.columns.authorId]: input?.authorId,
-        });
+      if (input?.authorIds) {
+        await transaction.batchInsert(
+          this.booksAuthorsTable.name,
+          input.authorIds.map((authorId) => ({
+            [this.booksAuthorsTable.columns.bookId]: book.getId(),
+            [this.booksAuthorsTable.columns.authorId]: authorId,
+          })),
+        );
       }
     });
 
     return rawEntities[0] as BookRawEntity;
+  }
+
+  public async findRawBookAuthorsById(payload: FindRawBookAuthorsByIdPayload): Promise<BooksAuthorsRawEntity[]> {
+    const { id } = payload;
+
+    const rawEntities = await this.sqliteDatabaseClient(this.booksAuthorsTable.name)
+      .select('*')
+      .where({
+        [this.booksAuthorsTable.columns.bookId]: id,
+      });
+
+    return rawEntities;
   }
 
   public async persist(payload: PersistPayload): Promise<void> {

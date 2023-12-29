@@ -34,7 +34,7 @@ export class AuthorTestUtils {
   public async createAndPersist(payload: CreateAndPersistPayload = {}): Promise<AuthorRawEntity> {
     const { input } = payload;
 
-    const author = this.authorTestFactory.create(input);
+    const author = this.authorTestFactory.createRaw(input);
 
     const queryBuilder = this.createQueryBuilder();
 

@@ -32,7 +32,7 @@ export class CreateAuthorCommandHandlerImpl implements CreateAuthorCommandHandle
     if (existingAuthor) {
       throw new ResourceAlreadyExistsError({
         name: 'Author',
-        id: existingAuthor.id,
+        id: existingAuthor.getId(),
         firstName,
         lastName,
       });
@@ -46,7 +46,7 @@ export class CreateAuthorCommandHandlerImpl implements CreateAuthorCommandHandle
     this.loggerService.info({
       message: 'Author created.',
       context: {
-        authorId: author.id,
+        authorId: author.getId(),
         firstName,
         lastName,
       },

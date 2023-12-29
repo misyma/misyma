@@ -140,7 +140,16 @@ export class BookHttpController implements HttpController {
 
       return {
         statusCode: HttpStatusCode.created,
-        body: { ...book },
+        body: {
+          authors: book.getAuthors().map((author) => ({
+            firstName: author.getFirstName(),
+            id: author.getId(),
+            lastName: author.getLastName(),
+          })),
+          id: book.getId(),
+          releaseYear: book.getReleaseYear(),
+          title: book.getTitle(),
+        },
       };
     } catch (error) {
       if (error instanceof ResourceAlreadyExistsError) {
@@ -172,7 +181,16 @@ export class BookHttpController implements HttpController {
 
       return {
         statusCode: HttpStatusCode.ok,
-        body: { ...book },
+        body: {
+          authors: book.getAuthors().map((author) => ({
+            firstName: author.getFirstName(),
+            id: author.getId(),
+            lastName: author.getLastName(),
+          })),
+          id: book.getId(),
+          releaseYear: book.getReleaseYear(),
+          title: book.getTitle(),
+        },
       };
     } catch (error) {
       if (error instanceof ResourceNotFoundError) {

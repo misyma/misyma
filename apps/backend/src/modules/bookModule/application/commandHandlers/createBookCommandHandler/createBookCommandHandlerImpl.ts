@@ -35,7 +35,7 @@ export class CreateBookCommandHandlerImpl implements CreateBookCommandHandler {
     if (existingBook) {
       throw new ResourceAlreadyExistsError({
         name: 'Book',
-        id: existingBook.id,
+        id: existingBook.getId(),
         title,
         authorIds,
       });
@@ -54,7 +54,7 @@ export class CreateBookCommandHandlerImpl implements CreateBookCommandHandler {
     this.loggerService.info({
       message: 'Book created.',
       context: {
-        bookId: book.id,
+        bookId: book.getId(),
         title,
         releaseYear,
         authorIds,

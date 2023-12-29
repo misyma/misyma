@@ -37,7 +37,7 @@ describe('CreateAuthorCommandHandler', () => {
   });
 
   it('creates a author', async () => {
-    const { firstName, lastName } = authorTestFactory.create();
+    const { firstName, lastName } = authorTestFactory.createRaw();
 
     const { author } = await createAuthorCommandHandler.execute({
       firstName,
@@ -49,9 +49,9 @@ describe('CreateAuthorCommandHandler', () => {
       lastName,
     });
 
-    expect(author.firstName).toEqual(firstName);
+    expect(author.getFirstName()).toEqual(firstName);
 
-    expect(author.lastName).toEqual(lastName);
+    expect(author.getLastName()).toEqual(lastName);
 
     expect(foundAuthor.firstName).toEqual(firstName);
 

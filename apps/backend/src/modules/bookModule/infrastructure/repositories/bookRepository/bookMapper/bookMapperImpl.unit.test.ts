@@ -22,6 +22,30 @@ describe('BookMapperImpl', () => {
       title: bookEntity.title,
       releaseYear: bookEntity.releaseYear,
       authors: [],
+      domainActions: [],
     });
+  });
+
+  it('maps from bookRawEntity with Author to Book', () => {
+    const book = bookEntityTestFactory.create();
+
+    const xd = bookMapperImpl.mapRawWithAuthorToDomain([
+      {
+        ...book,
+        authorId: null,
+        firstName: null,
+        lastName: null,
+      },
+    ]);
+
+    expect(xd).toEqual([
+      {
+        id: book.id,
+        title: book.title,
+        releaseYear: book.releaseYear,
+        authors: [],
+        domainActions: [],
+      },
+    ]);
   });
 });
