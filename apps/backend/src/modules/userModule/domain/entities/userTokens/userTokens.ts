@@ -9,7 +9,7 @@ export interface UserTokensDraft {
 export class UserTokens {
   private readonly id: string;
   private readonly userId: string;
-  private readonly refreshToken: string;
+  private readonly refreshToken?: string;
   private readonly resetPasswordToken?: string;
   private readonly emailVerificationToken?: string;
 
@@ -39,7 +39,7 @@ export class UserTokens {
     return this.userId;
   }
 
-  public getRefreshToken(): string {
+  public getRefreshToken(): string | undefined {
     return this.refreshToken;
   }
 

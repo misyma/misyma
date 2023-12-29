@@ -18,7 +18,11 @@ import { FindUserQueryHandlerImpl } from './application/queryHandlers/findUserQu
 import { type EmailService } from './application/services/emailService/emailService.js';
 import { type HashService } from './application/services/hashService/hashService.js';
 import { HashServiceImpl } from './application/services/hashService/hashServiceImpl.js';
+import { type BlacklistTokenRepository } from './domain/repositories/blacklistTokenRepository/blacklistTokenRepository.js';
 import { type UserRepository } from './domain/repositories/userRepository/userRepository.js';
+import { BlacklistTokenRepositoryImpl } from './infrastructure/repositories/blacklistTokenRepository/blacklistTokenRepositoryImpl.js';
+import { type BlacklistTokenMapper } from './infrastructure/repositories/blacklistTokenRepository/userMapper/blacklistTokenMapper.js';
+import { BlacklistTokenMapperImpl } from './infrastructure/repositories/blacklistTokenRepository/userMapper/blacklistTokenMapperImpl.js';
 import { type UserMapper } from './infrastructure/repositories/userRepository/userMapper/userMapper.js';
 import { UserMapperImpl } from './infrastructure/repositories/userRepository/userMapper/userMapperImpl.js';
 import { UserRepositoryImpl } from './infrastructure/repositories/userRepository/userRepositoryImpl.js';
@@ -56,6 +60,19 @@ export class UserModule implements DependencyInjectionModule {
           container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient),
           container.get<UserMapper>(symbols.userMapper),
           container.get<UserTokensMapper>(symbols.userTokensMapper),
+          container.get<UuidService>(coreSymbols.uuidService),
+          container.get<LoggerService>(coreSymbols.loggerService),
+        ),
+    );
+
+    container.bind<BlacklistTokenMapper>(symbols.blacklistTokenMapper, () => new BlacklistTokenMapperImpl());
+
+    container.bind<BlacklistTokenRepository>(
+      symbols.blacklistTokenRepository,
+      () =>
+        new BlacklistTokenRepositoryImpl(
+          container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient),
+          container.get<BlacklistTokenMapper>(symbols.blacklistTokenMapper),
           container.get<UuidService>(coreSymbols.uuidService),
           container.get<LoggerService>(coreSymbols.loggerService),
         ),
@@ -161,6 +178,8 @@ export class UserModule implements DependencyInjectionModule {
           container.get<FindUserQueryHandler>(symbols.findUserQueryHandler),
           container.get<AccessControlService>(authSymbols.accessControlService),
           container.get<VerifyUserEmailCommandHandler>(symbols.verifyUserEmailCommandHandler),
+          container.get<ResetUserPasswordCommandHandler>(symbols.resetUserPasswordCommandHandler),
+          container.get<ChangeUserPasswordCommandHandler>(symbols.changeUserPasswordCommandHandler),
         ),
     );
   }
