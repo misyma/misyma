@@ -66,7 +66,9 @@ export class Application {
     );
 
     // TODO: add core module and define those symbols there
-    container.bind<HttpService>(symbols.httpService, () => HttpServiceFactory.create());
+    container.bind<HttpService>(symbols.httpService, () =>
+      new HttpServiceFactory(container.get<LoggerService>(symbols.loggerService)).create(),
+    );
 
     container.bind<UuidService>(symbols.uuidService, () => new UuidServiceImpl());
 
