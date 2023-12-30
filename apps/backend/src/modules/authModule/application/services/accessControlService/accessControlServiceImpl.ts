@@ -4,6 +4,7 @@ import {
   type VerifyBearerTokenResult,
 } from './accessControlService.js';
 import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
+import { ForbiddenAccessError } from '../../errors/forbiddenAccessError.js';
 import { UnauthorizedAccessError } from '../../errors/unathorizedAccessError.js';
 import { type TokenService } from '../tokenService/tokenService.js';
 
@@ -12,7 +13,7 @@ export class AccessControlServiceImpl implements AccessControlService {
   public constructor(private readonly tokenService: TokenService) {}
 
   public async verifyBearerToken(payload: VerifyBearerTokenPayload): Promise<VerifyBearerTokenResult> {
-    const { authorizationHeader } = payload;
+    const { authorizationHeader, expectedUserId } = payload;
 
     if (!authorizationHeader) {
       throw new UnauthorizedAccessError({
@@ -30,22 +31,25 @@ export class AccessControlServiceImpl implements AccessControlService {
       });
     }
 
+    let tokenPayload;
+
     try {
-      const tokenPayload = this.tokenService.verifyToken({ token: token as string });
-
-      if (!tokenPayload) {
-        throw new UnauthorizedAccessError({
-          securityMode: SecurityMode.bearer,
-          reason: 'Invalid access token.',
-        });
-      }
-
-      return tokenPayload as unknown as VerifyBearerTokenResult;
+      tokenPayload = this.tokenService.verifyToken({ token: token as string });
     } catch (error) {
       throw new UnauthorizedAccessError({
         securityMode: SecurityMode.bearer,
         reason: 'Invalid access token.',
       });
     }
+
+    const accessTokenPayload = tokenPayload as unknown as VerifyBearerTokenResult;
+
+    if (expectedUserId && accessTokenPayload.userId !== expectedUserId) {
+      throw new ForbiddenAccessError({
+        reason: 'User id does not match User id from token.',
+      });
+    }
+
+    return accessTokenPayload;
   }
 }

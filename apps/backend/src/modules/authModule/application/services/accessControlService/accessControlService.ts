@@ -1,5 +1,6 @@
 export interface VerifyBearerTokenPayload {
   readonly authorizationHeader: string | undefined;
+  readonly expectedUserId?: string;
 }
 
 export interface VerifyBearerTokenResult {

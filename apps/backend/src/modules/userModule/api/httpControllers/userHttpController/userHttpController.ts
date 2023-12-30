@@ -362,7 +362,7 @@ export class UserHttpController implements HttpController {
     const { password, repeatedPassword, token } = request.body;
 
     const { userId } = await this.accessControlService.verifyBearerToken({
-      authorizationHeader: `Bearer ${token}`,
+      authorizationHeader: request.headers['authorization'],
     });
 
     await this.changeUserPasswordCommandHandler.execute({
@@ -387,22 +387,10 @@ export class UserHttpController implements HttpController {
   > {
     const { id } = request.pathParams;
 
-    const { userId } = await this.accessControlService.verifyBearerToken({
+    await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
+      expectedUserId: id,
     });
-
-    if (userId !== id) {
-      return {
-        // TODO: add forbidden message
-        statusCode: HttpStatusCode.forbidden,
-        body: {
-          error: {
-            name: '',
-            message: '',
-          },
-        },
-      };
-    }
 
     try {
       const { user } = await this.findUserQueryHandler.execute({ userId: id });
@@ -432,22 +420,10 @@ export class UserHttpController implements HttpController {
   > {
     const { id } = request.pathParams;
 
-    const { userId } = await this.accessControlService.verifyBearerToken({
+    await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
+      expectedUserId: id,
     });
-
-    if (userId !== id) {
-      return {
-        // TODO: add forbidden message
-        statusCode: HttpStatusCode.forbidden,
-        body: {
-          error: {
-            name: '',
-            message: '',
-          },
-        },
-      };
-    }
 
     try {
       await this.deleteUserCommandHandler.execute({ userId: id });
@@ -479,22 +455,10 @@ export class UserHttpController implements HttpController {
 
     const { token } = request.body;
 
-    const { userId } = await this.accessControlService.verifyBearerToken({
+    await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
+      expectedUserId: id,
     });
-
-    if (userId !== id) {
-      return {
-        // TODO: add forbidden message
-        statusCode: HttpStatusCode.forbidden,
-        body: {
-          error: {
-            name: '',
-            message: '',
-          },
-        },
-      };
-    }
 
     try {
       await this.verifyUserEmailCommandHandler.execute({
@@ -529,22 +493,10 @@ export class UserHttpController implements HttpController {
 
     const { refreshToken } = request.body;
 
-    const { userId } = await this.accessControlService.verifyBearerToken({
+    await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
+      expectedUserId: id,
     });
-
-    if (userId !== id) {
-      return {
-        // TODO: add forbidden message
-        statusCode: HttpStatusCode.forbidden,
-        body: {
-          error: {
-            name: '',
-            message: '',
-          },
-        },
-      };
-    }
 
     try {
       await this.logoutUserCommandHandler.execute({
