@@ -9,8 +9,9 @@ import { OperationNotValidError } from '../../../../../common/errors/common/oper
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { authSymbols } from '../../../../authModule/symbols.js';
 import { symbols } from '../../../symbols.js';
-import { UserTestFactory } from '../../../tests/factories/userTestFactory/userTestFactory.js';
+import { type BlacklistTokenTestUtils } from '../../../tests/utils/blacklistTokenTestUtils/blacklistTokenTestUtils.js';
 import { type UserTestUtils } from '../../../tests/utils/userTestUtils/userTestUtils.js';
+import { type HashService } from '../../services/hashService/hashService.js';
 
 describe('ChangeUserPasswordCommandHandlerImpl', () => {
   let commandHandler: ChangeUserPasswordCommandHandler;
@@ -19,7 +20,9 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
 
   let userTestUtils: UserTestUtils;
 
-  const userTestFactory = new UserTestFactory();
+  let blacklistTokenTestUtils: BlacklistTokenTestUtils;
+
+  let hashService: HashService;
 
   beforeEach(() => {
     const container = TestContainer.create();
@@ -28,17 +31,165 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
 
     tokenService = container.get<TokenService>(authSymbols.tokenService);
 
+    hashService = container.get<HashService>(symbols.hashService);
+
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
+
+    blacklistTokenTestUtils = container.get<BlacklistTokenTestUtils>(testSymbols.blacklistTokenTestUtils);
   });
 
-  it('throws an error - when resetPasswordToken is invalid', async () => {
-    const invalidResetPasswordToken = 'invalidResetPasswordToken';
+  it('changes user password', async () => {
+    const resetPasswordToken = tokenService.createToken({
+      data: {},
+      expiresIn: Generator.number(10000, 100000),
+    });
+
+    const user = await userTestUtils.createAndPersist();
+
+    await userTestUtils.createAndPersistUserTokens({
+      input: {
+        userId: user.id,
+        resetPasswordToken,
+      },
+    });
+
+    const newPassword = Generator.password(16);
+
+    await commandHandler.execute({
+      newPassword,
+      repeatedNewPassword: newPassword,
+      resetPasswordToken,
+      userId: user.id,
+    });
+
+    const updatedUser = await userTestUtils.findById({
+      id: user.id,
+    });
+
+    const isUpdatedPasswordValid = await hashService.compare({
+      plainData: newPassword,
+      hashedData: updatedUser?.password,
+    });
+
+    expect(isUpdatedPasswordValid).toBe(true);
+
+    const blacklistToken = await blacklistTokenTestUtils.findByToken({
+      token: resetPasswordToken,
+    });
+
+    expect(blacklistToken.token).toEqual(resetPasswordToken);
+  });
+
+  it('throws an error - when a User with given id not found', async () => {
+    const resetPasswordToken = tokenService.createToken({
+      data: {},
+      expiresIn: Generator.number(10000, 100000),
+    });
+
+    const newPassword = Generator.password(16);
+
+    const userId = Generator.uuid();
+
+    await expect(
+      async () =>
+        await commandHandler.execute({
+          newPassword,
+          repeatedNewPassword: newPassword,
+          resetPasswordToken,
+          userId,
+        }),
+    ).toThrowErrorInstance({
+      instance: OperationNotValidError,
+      context: {
+        reason: 'User not found.',
+        userId,
+      },
+    });
+  });
+
+  it('throws an error - when resetPasswordToken is blacklisted', async () => {
+    const resetPasswordToken = tokenService.createToken({
+      data: {},
+      expiresIn: Generator.number(10000, 100000),
+    });
+
+    const user = await userTestUtils.createAndPersist();
+
+    await userTestUtils.createAndPersistUserTokens({
+      input: {
+        userId: user.id,
+        resetPasswordToken,
+      },
+    });
+
+    await blacklistTokenTestUtils.createAndPersist({
+      input: {
+        token: resetPasswordToken,
+      },
+    });
+
+    const newPassword = Generator.password(16);
+
+    await expect(
+      async () =>
+        await commandHandler.execute({
+          newPassword,
+          repeatedNewPassword: newPassword,
+          resetPasswordToken,
+          userId: user.id,
+        }),
+    ).toThrowErrorInstance({
+      instance: OperationNotValidError,
+      context: {
+        reason: 'Reset password token is blacklisted.',
+        resetPasswordToken,
+      },
+    });
+  });
+
+  it('throws an error - when passwords do not match', async () => {
+    const resetPasswordToken = tokenService.createToken({
+      data: {},
+      expiresIn: Generator.number(10000, 100000),
+    });
+
+    const user = await userTestUtils.createAndPersist();
+
+    await userTestUtils.createAndPersistUserTokens({
+      input: {
+        userId: user.id,
+        resetPasswordToken,
+      },
+    });
 
     await expect(
       async () =>
         await commandHandler.execute({
           newPassword: 'newPassword',
-          repeatedNewPassword: 'newPassword',
+          repeatedNewPassword: 'repeatedNewPassword',
+          resetPasswordToken,
+          userId: user.id,
+        }),
+    ).toThrowErrorInstance({
+      instance: OperationNotValidError,
+      context: {
+        reason: 'Passwords do not match.',
+        newPassword: 'newPassword',
+        repeatedNewPassword: 'repeatedNewPassword',
+      },
+    });
+  });
+
+  it('throws an error - when resetPasswordToken is invalid', async () => {
+    const invalidResetPasswordToken = 'invalidResetPasswordToken';
+
+    const newPassword = Generator.password(16);
+
+    await expect(
+      async () =>
+        await commandHandler.execute({
+          newPassword,
+          repeatedNewPassword: newPassword,
           resetPasswordToken: invalidResetPasswordToken,
           userId: 'userId',
         }),
@@ -54,22 +205,26 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
   it('throws an error - when UserTokens were not found', async () => {
     const resetPasswordToken = tokenService.createToken({
       data: {},
-      expiresIn: Generator.number(),
+      expiresIn: Generator.number(10000, 100000),
     });
+
+    const user = await userTestUtils.createAndPersist();
+
+    const newPassword = Generator.password(16);
 
     await expect(
       async () =>
         await commandHandler.execute({
-          newPassword: 'newPassword',
-          repeatedNewPassword: 'newPassword',
+          newPassword,
+          repeatedNewPassword: newPassword,
           resetPasswordToken,
-          userId: 'userId',
+          userId: user.id,
         }),
     ).toThrowErrorInstance({
       instance: OperationNotValidError,
       context: {
         reason: 'User tokens not found.',
-        userId: 'userId',
+        userId: user.id,
       },
     });
   });
@@ -77,22 +232,14 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
   it('throws an error - when UserTokens were found but resetPasswordToken is different', async () => {
     const resetPasswordToken = tokenService.createToken({
       data: { valid: 'true' },
-      expiresIn: Generator.number(),
+      expiresIn: Generator.number(10000, 100000),
     });
 
-    const user = userTestFactory.create();
-
-    await userTestUtils.createAndPersist({
-      input: {
-        id: user.getId(),
-        email: user.getEmail(),
-        password: user.getPassword(),
-      },
-    });
+    const user = await userTestUtils.createAndPersist();
 
     await userTestUtils.createAndPersistUserTokens({
       input: {
-        userId: user.getId(),
+        userId: user.id,
         resetPasswordToken,
       },
     });
@@ -102,13 +249,15 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
       expiresIn: Generator.number(),
     });
 
+    const newPassword = Generator.password(16);
+
     await expect(
       async () =>
         await commandHandler.execute({
-          newPassword: 'newPassword',
-          repeatedNewPassword: 'newPassword',
+          newPassword,
+          repeatedNewPassword: newPassword,
           resetPasswordToken: invalidResetPasswordToken,
-          userId: user.getId(),
+          userId: user.id,
         }),
     ).toThrowErrorInstance({
       instance: OperationNotValidError,

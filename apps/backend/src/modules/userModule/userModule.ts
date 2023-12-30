@@ -5,6 +5,8 @@ import { type DeleteUserCommandHandler } from './application/commandHandlers/del
 import { DeleteUserCommandHandlerImpl } from './application/commandHandlers/deleteUserCommandHandler/deleteUserCommandHandlerImpl.js';
 import { type LoginUserCommandHandler } from './application/commandHandlers/loginUserCommandHandler/loginUserCommandHandler.js';
 import { LoginUserCommandHandlerImpl } from './application/commandHandlers/loginUserCommandHandler/loginUserCommandHandlerImpl.js';
+import { type LogoutUserCommandHandler } from './application/commandHandlers/logoutUserCommandHandler/logoutUserCommandHandler.js';
+import { LogoutUserCommandHandlerImpl } from './application/commandHandlers/logoutUserCommandHandler/logoutUserCommandHandlerImpl.js';
 import { type RegisterUserCommandHandler } from './application/commandHandlers/registerUserCommandHandler/registerUserCommandHandler.js';
 import { RegisterUserCommandHandlerImpl } from './application/commandHandlers/registerUserCommandHandler/registerUserCommandHandlerImpl.js';
 import { type ResetUserPasswordCommandHandler } from './application/commandHandlers/resetUserPasswordCommandHandler/resetUserPasswordCommandHandler.js';
@@ -110,6 +112,17 @@ export class UserModule implements DependencyInjectionModule {
         ),
     );
 
+    container.bind<LogoutUserCommandHandler>(
+      symbols.logoutUserCommandHandler,
+      () =>
+        new LogoutUserCommandHandlerImpl(
+          container.get<UserRepository>(symbols.userRepository),
+          container.get<TokenService>(authSymbols.tokenService),
+          container.get<BlacklistTokenRepository>(symbols.blacklistTokenRepository),
+          container.get<LoggerService>(coreSymbols.loggerService),
+        ),
+    );
+
     container.bind<ResetUserPasswordCommandHandler>(
       symbols.resetUserPasswordCommandHandler,
       () =>
@@ -141,6 +154,7 @@ export class UserModule implements DependencyInjectionModule {
           container.get<UserRepository>(symbols.userRepository),
           container.get<HashService>(symbols.hashService),
           container.get<TokenService>(authSymbols.tokenService),
+          container.get<BlacklistTokenRepository>(symbols.blacklistTokenRepository),
         ),
     );
 
@@ -165,6 +179,7 @@ export class UserModule implements DependencyInjectionModule {
           container.get<TokenService>(authSymbols.tokenService),
           container.get<UserRepository>(symbols.userRepository),
           container.get<LoggerService>(coreSymbols.loggerService),
+          container.get<BlacklistTokenRepository>(symbols.blacklistTokenRepository),
         ),
     );
 
@@ -180,6 +195,7 @@ export class UserModule implements DependencyInjectionModule {
           container.get<VerifyUserEmailCommandHandler>(symbols.verifyUserEmailCommandHandler),
           container.get<ResetUserPasswordCommandHandler>(symbols.resetUserPasswordCommandHandler),
           container.get<ChangeUserPasswordCommandHandler>(symbols.changeUserPasswordCommandHandler),
+          container.get<LogoutUserCommandHandler>(symbols.logoutUserCommandHandler),
         ),
     );
   }

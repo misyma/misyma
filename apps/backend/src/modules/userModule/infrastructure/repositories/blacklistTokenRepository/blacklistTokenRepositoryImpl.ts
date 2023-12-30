@@ -46,10 +46,14 @@ export class BlacklistTokenRepositoryImpl implements BlacklistTokenRepository {
         '*',
       );
     } catch (error) {
-      this.loggerService.error({
-        message: 'Error while creating BlacklistToken.',
-        context: { error },
-      });
+      if (error instanceof Error) {
+        this.loggerService.error({
+          message: 'Error while creating BlacklistToken.',
+          context: {
+            errorMessage: error.message,
+          },
+        });
+      }
 
       throw new RepositoryError({
         entity: 'BlacklistToken',
@@ -72,10 +76,14 @@ export class BlacklistTokenRepositoryImpl implements BlacklistTokenRepository {
     try {
       rawEntity = await queryBuilder.select('*').where({ token }).first();
     } catch (error) {
-      this.loggerService.error({
-        message: 'Error while finding BlacklistToken.',
-        context: { error },
-      });
+      if (error instanceof Error) {
+        this.loggerService.error({
+          message: 'Error while finding BlacklistToken.',
+          context: {
+            errorMessage: error.message,
+          },
+        });
+      }
 
       throw new RepositoryError({
         entity: 'BlacklistToken',

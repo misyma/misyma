@@ -2,7 +2,13 @@
 
 import jwt from 'jsonwebtoken';
 
-import { type CreateTokenPayload, type VerifyTokenPayload, type TokenService } from './tokenService.js';
+import {
+  type CreateTokenPayload,
+  type VerifyTokenPayload,
+  type TokenService,
+  type DecodeTokenPayload,
+  type DecodeTokenResult,
+} from './tokenService.js';
 import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
 import { type AuthModuleConfigProvider } from '../../../authModuleConfigProvider.js';
 
@@ -37,5 +43,38 @@ export class TokenServiceImpl implements TokenService {
         token,
       });
     }
+  }
+
+  public decodeToken(payload: DecodeTokenPayload): DecodeTokenResult {
+    const { token } = payload;
+
+    const decodedToken = jwt.decode(token, { complete: true });
+
+    if (!decodedToken) {
+      throw new OperationNotValidError({
+        reason: 'Token is not valid.',
+        token,
+      });
+    }
+
+    const tokenPayload = decodedToken.payload as jwt.JwtPayload;
+
+    if (!tokenPayload) {
+      throw new OperationNotValidError({
+        reason: 'Token payload is not valid.',
+        token,
+      });
+    }
+
+    const expiresAt = tokenPayload.exp;
+
+    if (!expiresAt) {
+      throw new OperationNotValidError({
+        reason: 'Token expiration date is not set.',
+        token,
+      });
+    }
+
+    return { expiresAt };
   }
 }
