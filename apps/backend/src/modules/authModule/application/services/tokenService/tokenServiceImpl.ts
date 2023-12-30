@@ -48,16 +48,7 @@ export class TokenServiceImpl implements TokenService {
   public decodeToken(payload: DecodeTokenPayload): DecodeTokenResult {
     const { token } = payload;
 
-    let decodedToken: jwt.Jwt | null = null;
-
-    try {
-      decodedToken = jwt.decode(token, { complete: true });
-    } catch (error) {
-      throw new OperationNotValidError({
-        reason: 'Token is not valid.',
-        token,
-      });
-    }
+    const decodedToken = jwt.decode(token, { complete: true });
 
     if (!decodedToken) {
       throw new OperationNotValidError({
