@@ -12,6 +12,8 @@ import { type HttpRouteSchema, type HttpRoute } from '../../common/types/http/ht
 import { HttpStatusCode } from '../../common/types/http/httpStatusCode.js';
 import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
+import { ForbiddenAccessError } from '../../modules/authModule/application/errors/forbiddenAccessError.js';
+import { UnauthorizedAccessError } from '../../modules/authModule/application/errors/unathorizedAccessError.js';
 import { coreSymbols } from '../symbols.js';
 
 export interface RegisterControllersPayload {
@@ -136,6 +138,22 @@ export class HttpRouter {
                 time: new Date().getTime() - requestDate.getTime(),
               },
             });
+
+            if (error instanceof UnauthorizedAccessError) {
+              fastifyReply.status(HttpStatusCode.unauthorized).send({
+                error: formattedError,
+              });
+
+              return;
+            }
+
+            if (error instanceof ForbiddenAccessError) {
+              fastifyReply.status(HttpStatusCode.forbidden).send({
+                error: formattedError,
+              });
+
+              return;
+            }
 
             if (error instanceof ApplicationError) {
               fastifyReply.status(HttpStatusCode.badRequest).send({
