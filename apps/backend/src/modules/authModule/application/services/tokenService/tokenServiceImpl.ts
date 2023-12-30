@@ -48,40 +48,42 @@ export class TokenServiceImpl implements TokenService {
   public decodeToken(payload: DecodeTokenPayload): DecodeTokenResult {
     const { token } = payload;
 
+    let decodedToken: jwt.Jwt | null = null;
+
     try {
-      const decodedToken = jwt.decode(token, { complete: true }) as jwt.Jwt;
-
-      if (!decodedToken) {
-        throw new OperationNotValidError({
-          reason: 'Token is not valid.',
-          token,
-        });
-      }
-
-      const payload = decodedToken.payload as jwt.JwtPayload;
-
-      if (!payload) {
-        throw new OperationNotValidError({
-          reason: 'Token payload is not valid.',
-          token,
-        });
-      }
-
-      const expiresAt = payload.exp;
-
-      if (!expiresAt) {
-        throw new OperationNotValidError({
-          reason: 'Token expiration date is not set.',
-          token,
-        });
-      }
-
-      return { expiresAt };
+      decodedToken = jwt.decode(token, { complete: true });
     } catch (error) {
       throw new OperationNotValidError({
         reason: 'Token is not valid.',
         token,
       });
     }
+
+    if (!decodedToken) {
+      throw new OperationNotValidError({
+        reason: 'Token is not valid.',
+        token,
+      });
+    }
+
+    const tokenPayload = decodedToken.payload as jwt.JwtPayload;
+
+    if (!tokenPayload) {
+      throw new OperationNotValidError({
+        reason: 'Token payload is not valid.',
+        token,
+      });
+    }
+
+    const expiresAt = tokenPayload.exp;
+
+    if (!expiresAt) {
+      throw new OperationNotValidError({
+        reason: 'Token expiration date is not set.',
+        token,
+      });
+    }
+
+    return { expiresAt };
   }
 }
