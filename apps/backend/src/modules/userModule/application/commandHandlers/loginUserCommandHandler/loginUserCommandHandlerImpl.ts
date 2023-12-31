@@ -3,6 +3,7 @@ import {
   type LoginUserCommandHandlerPayload,
   type LoginUserCommandHandlerResult,
 } from './loginUserCommandHandler.js';
+import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
@@ -32,6 +33,13 @@ export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
     if (!user) {
       throw new ResourceNotFoundError({
         name: 'User',
+        email,
+      });
+    }
+
+    if (!user.getIsEmailVerified()) {
+      throw new OperationNotValidError({
+        reason: 'User email is not verified.',
         email,
       });
     }
