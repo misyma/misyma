@@ -20,7 +20,7 @@ export interface ToThrowErrorInstancePayload {
 }
 
 interface CustomMatchers<T = unknown> {
-  toThrowErrorInstance(payload: ToThrowErrorInstancePayload): T;
+  toThrowErrorInstance(payload: ToThrowErrorInstancePayload): Promise<T>;
 }
 
 interface ErrorWithContext {

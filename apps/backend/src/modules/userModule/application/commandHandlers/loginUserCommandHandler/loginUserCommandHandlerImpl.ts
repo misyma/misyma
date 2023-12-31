@@ -55,7 +55,7 @@ export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
       expiresIn: accessTokenExpiresIn,
     });
 
-    const refreshTokenExpiresIn = this.configProvider.getAccessTokenExpiresIn();
+    const refreshTokenExpiresIn = this.configProvider.getRefreshTokenExpiresIn();
 
     const refreshToken = this.tokenService.createToken({
       data: { userId: user.getId() },
@@ -84,6 +84,7 @@ export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
     return {
       accessToken,
       refreshToken,
+      accessTokenExpiresIn,
     };
   }
 }

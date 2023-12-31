@@ -31,6 +31,12 @@ import {
   logoutUserResponseBodyDTOSchema,
 } from './schemas/logoutUserSchema.js';
 import {
+  refreshUserTokensBodyDTOSchema,
+  refreshUserTokensResponseBodyDTOSchema,
+  type RefreshUserTokensBodyDTO,
+  type RefreshUserTokensResponseBodyDTO,
+} from './schemas/refreshUserTokensSchema.js';
+import {
   registerUserBodyDTOSchema,
   registerUserResponseBodyDTOSchema,
   type RegisterUserResponseBodyDTO,
@@ -72,6 +78,7 @@ import { type ChangeUserPasswordCommandHandler } from '../../../application/comm
 import { type DeleteUserCommandHandler } from '../../../application/commandHandlers/deleteUserCommandHandler/deleteUserCommandHandler.js';
 import { type LoginUserCommandHandler } from '../../../application/commandHandlers/loginUserCommandHandler/loginUserCommandHandler.js';
 import { type LogoutUserCommandHandler } from '../../../application/commandHandlers/logoutUserCommandHandler/logoutUserCommandHandler.js';
+import { type RefreshUserTokensCommandHandler } from '../../../application/commandHandlers/refreshUserTokensCommandHandler/refreshUserTokensCommandHandler.js';
 import { type RegisterUserCommandHandler } from '../../../application/commandHandlers/registerUserCommandHandler/registerUserCommandHandler.js';
 import { type ResetUserPasswordCommandHandler } from '../../../application/commandHandlers/resetUserPasswordCommandHandler/resetUserPasswordCommandHandler.js';
 import { type VerifyUserEmailCommandHandler } from '../../../application/commandHandlers/verifyUserEmailCommandHandler/verifyUserEmailCommandHandler.js';
@@ -99,6 +106,7 @@ export class UserHttpController implements HttpController {
     private readonly resetUserPasswordCommandHandler: ResetUserPasswordCommandHandler,
     private readonly changeUserPasswordCommandHandler: ChangeUserPasswordCommandHandler,
     private readonly logoutUserCommandHandler: LogoutUserCommandHandler,
+    private readonly refreshUserTokensCommandHandler: RefreshUserTokensCommandHandler,
   ) {}
 
   public getHttpRoutes(): HttpRoute[] {
@@ -254,7 +262,6 @@ export class UserHttpController implements HttpController {
         tags: ['User'],
         description: 'Verify user email.',
       }),
-      // TODO: test it
       new HttpRoute({
         method: HttpMethodName.post,
         path: ':id/logout',
@@ -278,6 +285,28 @@ export class UserHttpController implements HttpController {
         securityMode: SecurityMode.bearer,
         tags: ['User'],
         description: 'Logout user.',
+      }),
+      new HttpRoute({
+        method: HttpMethodName.post,
+        path: 'token',
+        handler: this.refreshUserTokens.bind(this),
+        schema: {
+          request: {
+            body: refreshUserTokensBodyDTOSchema,
+          },
+          response: {
+            [HttpStatusCode.ok]: {
+              schema: refreshUserTokensResponseBodyDTOSchema,
+              description: 'User tokens refreshed.',
+            },
+            [HttpStatusCode.notFound]: {
+              schema: responseErrorBodySchema,
+              description: 'Error exception.',
+            },
+          },
+        },
+        tags: ['User'],
+        description: 'Refresh user tokens.',
       }),
     ];
   }
@@ -317,7 +346,7 @@ export class UserHttpController implements HttpController {
     try {
       const { email, password } = request.body;
 
-      const { accessToken, refreshToken } = await this.loginUserCommandHandler.execute({
+      const { accessToken, refreshToken, accessTokenExpiresIn } = await this.loginUserCommandHandler.execute({
         email,
         password,
       });
@@ -327,6 +356,7 @@ export class UserHttpController implements HttpController {
         body: {
           accessToken,
           refreshToken,
+          expiresIn: accessTokenExpiresIn,
         },
       };
     } catch (error) {
@@ -507,6 +537,36 @@ export class UserHttpController implements HttpController {
       return {
         statusCode: HttpStatusCode.ok,
         body: null,
+      };
+    } catch (error) {
+      if (error instanceof ResourceNotFoundError) {
+        return {
+          statusCode: HttpStatusCode.notFound,
+          body: { error },
+        };
+      }
+
+      throw error;
+    }
+  }
+
+  private async refreshUserTokens(
+    request: HttpRequest<RefreshUserTokensBodyDTO>,
+  ): Promise<HttpOkResponse<RefreshUserTokensResponseBodyDTO> | HttpNotFoundResponse<ResponseErrorBody>> {
+    try {
+      const { refreshToken: inputRefreshToken } = request.body;
+
+      const { accessToken, refreshToken, accessTokenExpiresIn } = await this.refreshUserTokensCommandHandler.execute({
+        refreshToken: inputRefreshToken,
+      });
+
+      return {
+        statusCode: HttpStatusCode.ok,
+        body: {
+          accessToken,
+          refreshToken,
+          expiresIn: accessTokenExpiresIn,
+        },
       };
     } catch (error) {
       if (error instanceof ResourceNotFoundError) {

@@ -1,5 +1,6 @@
 import { type UserMapper } from './userMapper/userMapper.js';
 import { type UserTokensMapper } from './userTokensMapper/userTokensMapper.js';
+import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
 import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
 import { type Writeable } from '../../../../../common/types/util/writeable.js';
@@ -90,6 +91,12 @@ export class UserRepositoryImpl implements UserRepository {
     const queryBuilder = this.createUserQueryBuilder();
 
     let whereCondition: Partial<UserRawEntity> = {};
+
+    if (!id && !email) {
+      throw new OperationNotValidError({
+        reason: 'Either id or email must be provided.',
+      });
+    }
 
     if (id) {
       whereCondition = {

@@ -7,6 +7,8 @@ import { type LoginUserCommandHandler } from './application/commandHandlers/logi
 import { LoginUserCommandHandlerImpl } from './application/commandHandlers/loginUserCommandHandler/loginUserCommandHandlerImpl.js';
 import { type LogoutUserCommandHandler } from './application/commandHandlers/logoutUserCommandHandler/logoutUserCommandHandler.js';
 import { LogoutUserCommandHandlerImpl } from './application/commandHandlers/logoutUserCommandHandler/logoutUserCommandHandlerImpl.js';
+import { type RefreshUserTokensCommandHandler } from './application/commandHandlers/refreshUserTokensCommandHandler/refreshUserTokensCommandHandler.js';
+import { RefreshUserTokensCommandHandlerImpl } from './application/commandHandlers/refreshUserTokensCommandHandler/refreshUserTokensCommandHandlerImpl.js';
 import { type RegisterUserCommandHandler } from './application/commandHandlers/registerUserCommandHandler/registerUserCommandHandler.js';
 import { RegisterUserCommandHandlerImpl } from './application/commandHandlers/registerUserCommandHandler/registerUserCommandHandlerImpl.js';
 import { type ResetUserPasswordCommandHandler } from './application/commandHandlers/resetUserPasswordCommandHandler/resetUserPasswordCommandHandler.js';
@@ -123,6 +125,18 @@ export class UserModule implements DependencyInjectionModule {
         ),
     );
 
+    container.bind<RefreshUserTokensCommandHandler>(
+      symbols.refreshUserTokensCommandHandler,
+      () =>
+        new RefreshUserTokensCommandHandlerImpl(
+          container.get<LoggerService>(coreSymbols.loggerService),
+          container.get<TokenService>(authSymbols.tokenService),
+          container.get<UserModuleConfigProvider>(symbols.userModuleConfigProvider),
+          container.get<UserRepository>(symbols.userRepository),
+          container.get<BlacklistTokenRepository>(symbols.blacklistTokenRepository),
+        ),
+    );
+
     container.bind<ResetUserPasswordCommandHandler>(
       symbols.resetUserPasswordCommandHandler,
       () =>
@@ -196,6 +210,7 @@ export class UserModule implements DependencyInjectionModule {
           container.get<ResetUserPasswordCommandHandler>(symbols.resetUserPasswordCommandHandler),
           container.get<ChangeUserPasswordCommandHandler>(symbols.changeUserPasswordCommandHandler),
           container.get<LogoutUserCommandHandler>(symbols.logoutUserCommandHandler),
+          container.get<RefreshUserTokensCommandHandler>(symbols.refreshUserTokensCommandHandler),
         ),
     );
   }

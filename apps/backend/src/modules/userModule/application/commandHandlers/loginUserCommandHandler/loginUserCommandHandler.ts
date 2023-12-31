@@ -8,6 +8,7 @@ export interface LoginUserCommandHandlerPayload {
 export interface LoginUserCommandHandlerResult {
   readonly accessToken: string;
   readonly refreshToken: string;
+  readonly accessTokenExpiresIn: number;
 }
 
 export type LoginUserCommandHandler = CommandHandler<LoginUserCommandHandlerPayload, LoginUserCommandHandlerResult>;

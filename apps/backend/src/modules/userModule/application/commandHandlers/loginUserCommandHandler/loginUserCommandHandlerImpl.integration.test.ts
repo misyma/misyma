@@ -1,15 +1,17 @@
 import { beforeEach, afterEach, expect, it, describe } from 'vitest';
 
 import { type LoginUserCommandHandler } from './loginUserCommandHandler.js';
+import { testSymbols } from '../../../../../../tests/container/symbols.js';
+import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
-import { Application } from '../../../../../core/application.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { authSymbols } from '../../../../authModule/symbols.js';
 import { symbols } from '../../../symbols.js';
 import { UserTestFactory } from '../../../tests/factories/userTestFactory/userTestFactory.js';
-import { UserTestUtils } from '../../../tests/utils/userTestUtils/userTestUtils.js';
+import { type UserTestUtils } from '../../../tests/utils/userTestUtils/userTestUtils.js';
+import { type UserModuleConfigProvider } from '../../../userModuleConfigProvider.js';
 import { type HashService } from '../../services/hashService/hashService.js';
 
 describe('LoginUserCommandHandler', () => {
@@ -23,20 +25,24 @@ describe('LoginUserCommandHandler', () => {
 
   let hashService: HashService;
 
+  let configProvider: UserModuleConfigProvider;
+
   const userTestFactory = new UserTestFactory();
 
   beforeEach(async () => {
-    const container = Application.createContainer();
+    const container = TestContainer.create();
 
     loginUserCommandHandler = container.get<LoginUserCommandHandler>(symbols.loginUserCommandHandler);
 
     tokenService = container.get<TokenService>(authSymbols.tokenService);
 
+    configProvider = container.get<UserModuleConfigProvider>(symbols.userModuleConfigProvider);
+
     hashService = container.get<HashService>(symbols.hashService);
 
     sqliteDatabaseClient = container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient);
 
-    userTestUtils = new UserTestUtils(sqliteDatabaseClient);
+    userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
 
     await userTestUtils.truncate();
   });
@@ -63,7 +69,7 @@ describe('LoginUserCommandHandler', () => {
       },
     });
 
-    const { accessToken, refreshToken } = await loginUserCommandHandler.execute({
+    const { accessToken, refreshToken, accessTokenExpiresIn } = await loginUserCommandHandler.execute({
       email: createdUser.getEmail(),
       password: createdUser.getPassword(),
     });
@@ -81,6 +87,8 @@ describe('LoginUserCommandHandler', () => {
     });
 
     expect(userTokens.refreshToken).toEqual(refreshToken);
+
+    expect(accessTokenExpiresIn).toBe(configProvider.getAccessTokenExpiresIn());
   });
 
   it('throws an error if a User with given email does not exist', async () => {
