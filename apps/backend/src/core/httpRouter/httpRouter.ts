@@ -6,6 +6,8 @@ import { type FastifyInstance, type FastifyReply, type FastifyRequest, type Fast
 import { ApplicationError } from '../../common/errors/base/applicationError.js';
 import { BaseError } from '../../common/errors/base/baseError.js';
 import { DomainError } from '../../common/errors/base/domainError.js';
+import { ResourceAlreadyExistsError } from '../../common/errors/common/resourceAlreadyExistsError.js';
+import { ResourceNotFoundError } from '../../common/errors/common/resourceNotFoundError.js';
 import { type HttpController } from '../../common/types/http/httpController.js';
 import { HttpHeader } from '../../common/types/http/httpHeader.js';
 import { type HttpRouteSchema, type HttpRoute } from '../../common/types/http/httpRoute.js';
@@ -138,6 +140,22 @@ export class HttpRouter {
                 time: new Date().getTime() - requestDate.getTime(),
               },
             });
+
+            if (error instanceof ResourceNotFoundError) {
+              fastifyReply.status(HttpStatusCode.notFound).send({
+                error: formattedError,
+              });
+
+              return;
+            }
+
+            if (error instanceof ResourceAlreadyExistsError) {
+              fastifyReply.status(HttpStatusCode.unprocessableEntity).send({
+                error: formattedError,
+              });
+
+              return;
+            }
 
             if (error instanceof UnauthorizedAccessError) {
               fastifyReply.status(HttpStatusCode.unauthorized).send({

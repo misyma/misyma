@@ -56,22 +56,16 @@ import {
   type VerifyUserPathParamsDTO,
   type VerifyUserResponseBodyDTO,
 } from './schemas/verifyUserSchema.js';
-import { ResourceAlreadyExistsError } from '../../../../../common/errors/common/resourceAlreadyExistsError.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
 import {
   type HttpCreatedResponse,
-  type HttpUnprocessableEntityResponse,
   type HttpOkResponse,
-  type HttpNotFoundResponse,
-  type HttpForbiddenResponse,
   type HttpNoContentResponse,
 } from '../../../../../common/types/http/httpResponse.js';
 import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
 import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.js';
-import { responseErrorBodySchema, type ResponseErrorBody } from '../../../../../common/types/http/responseErrorBody.js';
 import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
 import { type ChangeUserPasswordCommandHandler } from '../../../application/commandHandlers/changeUserPasswordCommandHandler/changeUserPasswordCommandHandler.js';
@@ -124,10 +118,6 @@ export class UserHttpController implements HttpController {
               schema: registerUserResponseBodyDTOSchema,
               description: 'User registered.',
             },
-            [HttpStatusCode.unprocessableEntity]: {
-              schema: responseErrorBodySchema,
-              description: 'Error exception.',
-            },
           },
         },
         tags: ['User'],
@@ -145,10 +135,6 @@ export class UserHttpController implements HttpController {
             [HttpStatusCode.ok]: {
               schema: loginUserResponseBodyDTOSchema,
               description: 'User logged in.',
-            },
-            [HttpStatusCode.notFound]: {
-              schema: responseErrorBodySchema,
-              description: 'Error exception.',
             },
           },
         },
@@ -205,10 +191,6 @@ export class UserHttpController implements HttpController {
               schema: findUserResponseBodyDTOSchema,
               description: 'User found.',
             },
-            [HttpStatusCode.notFound]: {
-              schema: responseErrorBodySchema,
-              description: 'Error exception.',
-            },
           },
         },
         securityMode: SecurityMode.bearer,
@@ -227,10 +209,6 @@ export class UserHttpController implements HttpController {
             [HttpStatusCode.noContent]: {
               schema: deleteUserResponseBodyDTOSchema,
               description: 'User deleted.',
-            },
-            [HttpStatusCode.notFound]: {
-              schema: responseErrorBodySchema,
-              description: 'Error exception.',
             },
           },
         },
@@ -252,10 +230,6 @@ export class UserHttpController implements HttpController {
               schema: verifyUserResponseBodyDTOSchema,
               description: `User's email verified.`,
             },
-            [HttpStatusCode.notFound]: {
-              schema: responseErrorBodySchema,
-              description: 'Error exception.',
-            },
           },
         },
         securityMode: SecurityMode.bearer,
@@ -276,10 +250,6 @@ export class UserHttpController implements HttpController {
               schema: logoutUserResponseBodyDTOSchema,
               description: `User logged out.`,
             },
-            [HttpStatusCode.notFound]: {
-              schema: responseErrorBodySchema,
-              description: 'Error exception.',
-            },
           },
         },
         securityMode: SecurityMode.bearer,
@@ -299,10 +269,6 @@ export class UserHttpController implements HttpController {
               schema: refreshUserTokensResponseBodyDTOSchema,
               description: 'User tokens refreshed.',
             },
-            [HttpStatusCode.notFound]: {
-              schema: responseErrorBodySchema,
-              description: 'Error exception.',
-            },
           },
         },
         tags: ['User'],
@@ -313,62 +279,38 @@ export class UserHttpController implements HttpController {
 
   private async registerUser(
     request: HttpRequest<RegisterUserBodyDTO>,
-  ): Promise<HttpCreatedResponse<RegisterUserResponseBodyDTO> | HttpUnprocessableEntityResponse<ResponseErrorBody>> {
-    try {
-      const { email, password, firstName, lastName } = request.body;
+  ): Promise<HttpCreatedResponse<RegisterUserResponseBodyDTO>> {
+    const { email, password, firstName, lastName } = request.body;
 
-      const { user } = await this.registerUserCommandHandler.execute({
-        email,
-        password,
-        firstName,
-        lastName,
-      });
+    const { user } = await this.registerUserCommandHandler.execute({
+      email,
+      password,
+      firstName,
+      lastName,
+    });
 
-      return {
-        statusCode: HttpStatusCode.created,
-        body: this.mapUserToUserDTO(user),
-      };
-    } catch (error) {
-      if (error instanceof ResourceAlreadyExistsError) {
-        return {
-          statusCode: HttpStatusCode.unprocessableEntity,
-          body: { error },
-        };
-      }
-
-      throw error;
-    }
+    return {
+      statusCode: HttpStatusCode.created,
+      body: this.mapUserToUserDTO(user),
+    };
   }
 
-  private async loginUser(
-    request: HttpRequest<LoginUserBodyDTO>,
-  ): Promise<HttpOkResponse<LoginUserResponseBodyDTO> | HttpNotFoundResponse<ResponseErrorBody>> {
-    try {
-      const { email, password } = request.body;
+  private async loginUser(request: HttpRequest<LoginUserBodyDTO>): Promise<HttpOkResponse<LoginUserResponseBodyDTO>> {
+    const { email, password } = request.body;
 
-      const { accessToken, refreshToken, accessTokenExpiresIn } = await this.loginUserCommandHandler.execute({
-        email,
-        password,
-      });
+    const { accessToken, refreshToken, accessTokenExpiresIn } = await this.loginUserCommandHandler.execute({
+      email,
+      password,
+    });
 
-      return {
-        statusCode: HttpStatusCode.ok,
-        body: {
-          accessToken,
-          refreshToken,
-          expiresIn: accessTokenExpiresIn,
-        },
-      };
-    } catch (error) {
-      if (error instanceof ResourceNotFoundError) {
-        return {
-          statusCode: HttpStatusCode.notFound,
-          body: { error },
-        };
-      }
-
-      throw error;
-    }
+    return {
+      statusCode: HttpStatusCode.ok,
+      body: {
+        accessToken,
+        refreshToken,
+        expiresIn: accessTokenExpiresIn,
+      },
+    };
   }
 
   private async resetUserPassword(
@@ -410,11 +352,7 @@ export class UserHttpController implements HttpController {
 
   private async findUser(
     request: HttpRequest<undefined, undefined, FindUserPathParamsDTO>,
-  ): Promise<
-    | HttpOkResponse<FindUserResponseBodyDTO>
-    | HttpNotFoundResponse<ResponseErrorBody>
-    | HttpForbiddenResponse<ResponseErrorBody>
-  > {
+  ): Promise<HttpOkResponse<FindUserResponseBodyDTO>> {
     const { id } = request.pathParams;
 
     await this.accessControlService.verifyBearerToken({
@@ -422,32 +360,17 @@ export class UserHttpController implements HttpController {
       expectedUserId: id,
     });
 
-    try {
-      const { user } = await this.findUserQueryHandler.execute({ userId: id });
+    const { user } = await this.findUserQueryHandler.execute({ userId: id });
 
-      return {
-        statusCode: HttpStatusCode.ok,
-        body: this.mapUserToUserDTO(user),
-      };
-    } catch (error) {
-      if (error instanceof ResourceNotFoundError) {
-        return {
-          statusCode: HttpStatusCode.notFound,
-          body: { error },
-        };
-      }
-
-      throw error;
-    }
+    return {
+      statusCode: HttpStatusCode.ok,
+      body: this.mapUserToUserDTO(user),
+    };
   }
 
   private async deleteUser(
     request: HttpRequest<undefined, undefined, DeleteUserPathParamsDTO>,
-  ): Promise<
-    | HttpNoContentResponse<DeleteUserResponseBodyDTO>
-    | HttpNotFoundResponse<ResponseErrorBody>
-    | HttpForbiddenResponse<ResponseErrorBody>
-  > {
+  ): Promise<HttpNoContentResponse<DeleteUserResponseBodyDTO>> {
     const { id } = request.pathParams;
 
     await this.accessControlService.verifyBearerToken({
@@ -455,18 +378,7 @@ export class UserHttpController implements HttpController {
       expectedUserId: id,
     });
 
-    try {
-      await this.deleteUserCommandHandler.execute({ userId: id });
-    } catch (error) {
-      if (error instanceof ResourceNotFoundError) {
-        return {
-          statusCode: HttpStatusCode.notFound,
-          body: { error },
-        };
-      }
-
-      throw error;
-    }
+    await this.deleteUserCommandHandler.execute({ userId: id });
 
     return {
       statusCode: HttpStatusCode.noContent,
@@ -476,11 +388,7 @@ export class UserHttpController implements HttpController {
 
   private async verifyUserEmail(
     request: HttpRequest<VerifyUserBodyDTO, undefined, VerifyUserPathParamsDTO>,
-  ): Promise<
-    | HttpOkResponse<VerifyUserResponseBodyDTO>
-    | HttpNotFoundResponse<ResponseErrorBody>
-    | HttpForbiddenResponse<ResponseErrorBody>
-  > {
+  ): Promise<HttpOkResponse<VerifyUserResponseBodyDTO>> {
     const { id } = request.pathParams;
 
     const { token } = request.body;
@@ -490,35 +398,20 @@ export class UserHttpController implements HttpController {
       expectedUserId: id,
     });
 
-    try {
-      await this.verifyUserEmailCommandHandler.execute({
-        userId: id,
-        token,
-      });
+    await this.verifyUserEmailCommandHandler.execute({
+      userId: id,
+      token,
+    });
 
-      return {
-        statusCode: HttpStatusCode.ok,
-        body: null,
-      };
-    } catch (error) {
-      if (error instanceof ResourceNotFoundError) {
-        return {
-          statusCode: HttpStatusCode.notFound,
-          body: { error },
-        };
-      }
-
-      throw error;
-    }
+    return {
+      statusCode: HttpStatusCode.ok,
+      body: null,
+    };
   }
 
   private async logoutUser(
     request: HttpRequest<LogoutUserBodyDTO, undefined, LogoutUserPathParamsDTO>,
-  ): Promise<
-    | HttpOkResponse<LogoutUserResponseBodyDTO>
-    | HttpNotFoundResponse<ResponseErrorBody>
-    | HttpForbiddenResponse<ResponseErrorBody>
-  > {
+  ): Promise<HttpOkResponse<LogoutUserResponseBodyDTO>> {
     const { id } = request.pathParams;
 
     const { refreshToken } = request.body;
@@ -528,56 +421,34 @@ export class UserHttpController implements HttpController {
       expectedUserId: id,
     });
 
-    try {
-      await this.logoutUserCommandHandler.execute({
-        userId: id,
-        refreshToken,
-      });
+    await this.logoutUserCommandHandler.execute({
+      userId: id,
+      refreshToken,
+    });
 
-      return {
-        statusCode: HttpStatusCode.ok,
-        body: null,
-      };
-    } catch (error) {
-      if (error instanceof ResourceNotFoundError) {
-        return {
-          statusCode: HttpStatusCode.notFound,
-          body: { error },
-        };
-      }
-
-      throw error;
-    }
+    return {
+      statusCode: HttpStatusCode.ok,
+      body: null,
+    };
   }
 
   private async refreshUserTokens(
     request: HttpRequest<RefreshUserTokensBodyDTO>,
-  ): Promise<HttpOkResponse<RefreshUserTokensResponseBodyDTO> | HttpNotFoundResponse<ResponseErrorBody>> {
-    try {
-      const { refreshToken: inputRefreshToken } = request.body;
+  ): Promise<HttpOkResponse<RefreshUserTokensResponseBodyDTO>> {
+    const { refreshToken: inputRefreshToken } = request.body;
 
-      const { accessToken, refreshToken, accessTokenExpiresIn } = await this.refreshUserTokensCommandHandler.execute({
-        refreshToken: inputRefreshToken,
-      });
+    const { accessToken, refreshToken, accessTokenExpiresIn } = await this.refreshUserTokensCommandHandler.execute({
+      refreshToken: inputRefreshToken,
+    });
 
-      return {
-        statusCode: HttpStatusCode.ok,
-        body: {
-          accessToken,
-          refreshToken,
-          expiresIn: accessTokenExpiresIn,
-        },
-      };
-    } catch (error) {
-      if (error instanceof ResourceNotFoundError) {
-        return {
-          statusCode: HttpStatusCode.notFound,
-          body: { error },
-        };
-      }
-
-      throw error;
-    }
+    return {
+      statusCode: HttpStatusCode.ok,
+      body: {
+        accessToken,
+        refreshToken,
+        expiresIn: accessTokenExpiresIn,
+      },
+    };
   }
 
   private mapUserToUserDTO(user: User): UserDTO {
