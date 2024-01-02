@@ -6,4 +6,5 @@ export interface LoginUserBody {
 export interface LoginUserResponseBody {
   readonly accessToken: string;
   readonly refreshToken: string;
+  readonly expiresIn: number;
 }

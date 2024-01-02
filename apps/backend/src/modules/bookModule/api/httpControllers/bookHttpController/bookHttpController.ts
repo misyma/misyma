@@ -16,22 +16,16 @@ import {
   type FindBookPathParamsDTO,
   findBookPathParamsDTOSchema,
 } from './schemas/findBookSchema.js';
-import { ResourceAlreadyExistsError } from '../../../../../common/errors/common/resourceAlreadyExistsError.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
 import {
   type HttpCreatedResponse,
-  type HttpUnprocessableEntityResponse,
   type HttpOkResponse,
-  type HttpNotFoundResponse,
-  type HttpForbiddenResponse,
   type HttpNoContentResponse,
 } from '../../../../../common/types/http/httpResponse.js';
 import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
 import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.js';
-import { responseErrorBodySchema, type ResponseErrorBody } from '../../../../../common/types/http/responseErrorBody.js';
 import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
 import { type CreateBookCommandHandler } from '../../../application/commandHandlers/createBookCommandHandler/createBookCommandHandler.js';
@@ -63,10 +57,6 @@ export class BookHttpController implements HttpController {
               schema: createBookResponseBodyDTOSchema,
               description: 'Book created.',
             },
-            [HttpStatusCode.unprocessableEntity]: {
-              schema: responseErrorBodySchema,
-              description: 'Error exception.',
-            },
           },
         },
         securityMode: SecurityMode.bearer,
@@ -85,10 +75,6 @@ export class BookHttpController implements HttpController {
             [HttpStatusCode.ok]: {
               schema: findBookResponseBodyDTOSchema,
               description: 'Book found.',
-            },
-            [HttpStatusCode.notFound]: {
-              schema: responseErrorBodySchema,
-              description: 'Error exception.',
             },
           },
         },
@@ -109,10 +95,6 @@ export class BookHttpController implements HttpController {
               schema: deleteBookResponseBodyDTOSchema,
               description: 'Book deleted.',
             },
-            [HttpStatusCode.notFound]: {
-              schema: responseErrorBodySchema,
-              description: 'Error exception.',
-            },
           },
         },
         securityMode: SecurityMode.bearer,
@@ -124,111 +106,70 @@ export class BookHttpController implements HttpController {
 
   private async createBook(
     request: HttpRequest<CreateBookBodyDTO>,
-  ): Promise<HttpCreatedResponse<CreateBookResponseBodyDTO> | HttpUnprocessableEntityResponse<ResponseErrorBody>> {
-    try {
-      const { title, releaseYear, authorIds } = request.body;
+  ): Promise<HttpCreatedResponse<CreateBookResponseBodyDTO>> {
+    const { title, releaseYear, authorIds } = request.body;
 
-      await this.accessControlService.verifyBearerToken({
-        authorizationHeader: request.headers['authorization'],
-      });
+    await this.accessControlService.verifyBearerToken({
+      authorizationHeader: request.headers['authorization'],
+    });
 
-      const { book } = await this.createBookCommandHandler.execute({
-        title,
-        releaseYear,
-        authorIds,
-      });
+    const { book } = await this.createBookCommandHandler.execute({
+      title,
+      releaseYear,
+      authorIds,
+    });
 
-      return {
-        statusCode: HttpStatusCode.created,
-        body: {
-          authors: book.getAuthors().map((author) => ({
-            firstName: author.getFirstName(),
-            id: author.getId(),
-            lastName: author.getLastName(),
-          })),
-          id: book.getId(),
-          releaseYear: book.getReleaseYear(),
-          title: book.getTitle(),
-        },
-      };
-    } catch (error) {
-      if (error instanceof ResourceAlreadyExistsError) {
-        return {
-          statusCode: HttpStatusCode.unprocessableEntity,
-          body: { error },
-        };
-      }
-
-      throw error;
-    }
+    return {
+      statusCode: HttpStatusCode.created,
+      body: {
+        authors: book.getAuthors().map((author) => ({
+          firstName: author.getFirstName(),
+          id: author.getId(),
+          lastName: author.getLastName(),
+        })),
+        id: book.getId(),
+        releaseYear: book.getReleaseYear(),
+        title: book.getTitle(),
+      },
+    };
   }
 
   private async findBook(
     request: HttpRequest<undefined, undefined, FindBookPathParamsDTO>,
-  ): Promise<
-    | HttpOkResponse<FindBookResponseBodyDTO>
-    | HttpNotFoundResponse<ResponseErrorBody>
-    | HttpForbiddenResponse<ResponseErrorBody>
-  > {
+  ): Promise<HttpOkResponse<FindBookResponseBodyDTO>> {
     const { id } = request.pathParams;
 
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
-    try {
-      const { book } = await this.findBookQueryHandler.execute({ bookId: id });
+    const { book } = await this.findBookQueryHandler.execute({ bookId: id });
 
-      return {
-        statusCode: HttpStatusCode.ok,
-        body: {
-          authors: book.getAuthors().map((author) => ({
-            firstName: author.getFirstName(),
-            id: author.getId(),
-            lastName: author.getLastName(),
-          })),
-          id: book.getId(),
-          releaseYear: book.getReleaseYear(),
-          title: book.getTitle(),
-        },
-      };
-    } catch (error) {
-      if (error instanceof ResourceNotFoundError) {
-        return {
-          statusCode: HttpStatusCode.notFound,
-          body: { error },
-        };
-      }
-
-      throw error;
-    }
+    return {
+      statusCode: HttpStatusCode.ok,
+      body: {
+        authors: book.getAuthors().map((author) => ({
+          firstName: author.getFirstName(),
+          id: author.getId(),
+          lastName: author.getLastName(),
+        })),
+        id: book.getId(),
+        releaseYear: book.getReleaseYear(),
+        title: book.getTitle(),
+      },
+    };
   }
 
   private async deleteBook(
     request: HttpRequest<undefined, undefined, DeleteBookPathParamsDTO>,
-  ): Promise<
-    | HttpNoContentResponse<DeleteBookResponseBodyDTO>
-    | HttpNotFoundResponse<ResponseErrorBody>
-    | HttpForbiddenResponse<ResponseErrorBody>
-  > {
+  ): Promise<HttpNoContentResponse<DeleteBookResponseBodyDTO>> {
     const { id } = request.pathParams;
 
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
-    try {
-      await this.deleteBookCommandHandler.execute({ bookId: id });
-    } catch (error) {
-      if (error instanceof ResourceNotFoundError) {
-        return {
-          statusCode: HttpStatusCode.notFound,
-          body: { error },
-        };
-      }
-
-      throw error;
-    }
+    await this.deleteBookCommandHandler.execute({ bookId: id });
 
     return {
       statusCode: HttpStatusCode.noContent,

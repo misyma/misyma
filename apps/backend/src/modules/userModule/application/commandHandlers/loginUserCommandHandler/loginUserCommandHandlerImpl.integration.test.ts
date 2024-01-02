@@ -1,15 +1,18 @@
 import { beforeEach, afterEach, expect, it, describe } from 'vitest';
 
 import { type LoginUserCommandHandler } from './loginUserCommandHandler.js';
+import { testSymbols } from '../../../../../../tests/container/symbols.js';
+import { TestContainer } from '../../../../../../tests/container/testContainer.js';
+import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
-import { Application } from '../../../../../core/application.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { authSymbols } from '../../../../authModule/symbols.js';
 import { symbols } from '../../../symbols.js';
 import { UserTestFactory } from '../../../tests/factories/userTestFactory/userTestFactory.js';
-import { UserTestUtils } from '../../../tests/utils/userTestUtils/userTestUtils.js';
+import { type UserTestUtils } from '../../../tests/utils/userTestUtils/userTestUtils.js';
+import { type UserModuleConfigProvider } from '../../../userModuleConfigProvider.js';
 import { type HashService } from '../../services/hashService/hashService.js';
 
 describe('LoginUserCommandHandler', () => {
@@ -23,20 +26,24 @@ describe('LoginUserCommandHandler', () => {
 
   let hashService: HashService;
 
+  let configProvider: UserModuleConfigProvider;
+
   const userTestFactory = new UserTestFactory();
 
   beforeEach(async () => {
-    const container = Application.createContainer();
+    const container = TestContainer.create();
 
     loginUserCommandHandler = container.get<LoginUserCommandHandler>(symbols.loginUserCommandHandler);
 
     tokenService = container.get<TokenService>(authSymbols.tokenService);
 
+    configProvider = container.get<UserModuleConfigProvider>(symbols.userModuleConfigProvider);
+
     hashService = container.get<HashService>(symbols.hashService);
 
     sqliteDatabaseClient = container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient);
 
-    userTestUtils = new UserTestUtils(sqliteDatabaseClient);
+    userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
 
     await userTestUtils.truncate();
   });
@@ -48,7 +55,7 @@ describe('LoginUserCommandHandler', () => {
   });
 
   it('returns tokens', async () => {
-    const createdUser = userTestFactory.create();
+    const createdUser = userTestFactory.create({ isEmailVerified: true });
 
     const hashedPassword = await hashService.hash({ plainData: createdUser.getPassword() });
 
@@ -63,7 +70,7 @@ describe('LoginUserCommandHandler', () => {
       },
     });
 
-    const { accessToken, refreshToken } = await loginUserCommandHandler.execute({
+    const { accessToken, refreshToken, accessTokenExpiresIn } = await loginUserCommandHandler.execute({
       email: createdUser.getEmail(),
       password: createdUser.getPassword(),
     });
@@ -81,39 +88,74 @@ describe('LoginUserCommandHandler', () => {
     });
 
     expect(userTokens.refreshToken).toEqual(refreshToken);
+
+    expect(accessTokenExpiresIn).toBe(configProvider.getAccessTokenExpiresIn());
+  });
+
+  it('throws an error if User email is not verified', async () => {
+    const createdUser = userTestFactory.create();
+
+    const hashedPassword = await hashService.hash({ plainData: createdUser.getPassword() });
+
+    await userTestUtils.persist({
+      user: {
+        id: createdUser.getId(),
+        email: createdUser.getEmail(),
+        password: hashedPassword,
+        firstName: createdUser.getFirstName(),
+        lastName: createdUser.getLastName(),
+        isEmailVerified: false,
+      },
+    });
+
+    await expect(
+      async () =>
+        await loginUserCommandHandler.execute({
+          email: createdUser.getEmail(),
+          password: createdUser.getPassword(),
+        }),
+    ).toThrowErrorInstance({
+      instance: OperationNotValidError,
+      context: {
+        reason: 'User email is not verified.',
+        email: createdUser.getEmail(),
+      },
+    });
   });
 
   it('throws an error if a User with given email does not exist', async () => {
     const nonExistentUser = userTestFactory.create();
 
-    try {
-      await loginUserCommandHandler.execute({
+    await expect(
+      async () =>
+        await loginUserCommandHandler.execute({
+          email: nonExistentUser.getEmail(),
+          password: nonExistentUser.getPassword(),
+        }),
+    ).toThrowErrorInstance({
+      instance: ResourceNotFoundError,
+      context: {
+        name: 'User',
         email: nonExistentUser.getEmail(),
-        password: nonExistentUser.getPassword(),
-      });
-    } catch (error) {
-      expect(error).toBeInstanceOf(ResourceNotFoundError);
-
-      return;
-    }
-
-    expect.fail();
+      },
+    });
   });
 
   it(`throws an error if User's password does not match stored password`, async () => {
-    const { email, password } = await userTestUtils.createAndPersist();
+    const { email, password } = await userTestUtils.createAndPersist({ input: { isEmailVerified: true } });
 
-    try {
-      await loginUserCommandHandler.execute({
+    await expect(
+      async () =>
+        await loginUserCommandHandler.execute({
+          email,
+          password,
+        }),
+    ).toThrowErrorInstance({
+      instance: ResourceNotFoundError,
+      context: {
+        name: 'User',
         email,
-        password,
-      });
-    } catch (error) {
-      expect(error).toBeInstanceOf(ResourceNotFoundError);
-
-      return;
-    }
-
-    expect.fail();
+      },
+    });
   });
 });

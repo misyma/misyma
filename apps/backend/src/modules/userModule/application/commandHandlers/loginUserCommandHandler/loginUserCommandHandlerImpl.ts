@@ -3,6 +3,7 @@ import {
   type LoginUserCommandHandlerPayload,
   type LoginUserCommandHandlerResult,
 } from './loginUserCommandHandler.js';
+import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
@@ -36,6 +37,13 @@ export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
       });
     }
 
+    if (!user.getIsEmailVerified()) {
+      throw new OperationNotValidError({
+        reason: 'User email is not verified.',
+        email,
+      });
+    }
+
     const passwordIsValid = await this.hashService.compare({
       plainData: password,
       hashedData: user.getPassword(),
@@ -55,7 +63,7 @@ export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
       expiresIn: accessTokenExpiresIn,
     });
 
-    const refreshTokenExpiresIn = this.configProvider.getAccessTokenExpiresIn();
+    const refreshTokenExpiresIn = this.configProvider.getRefreshTokenExpiresIn();
 
     const refreshToken = this.tokenService.createToken({
       data: { userId: user.getId() },
@@ -84,6 +92,7 @@ export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
     return {
       accessToken,
       refreshToken,
+      accessTokenExpiresIn,
     };
   }
 }
