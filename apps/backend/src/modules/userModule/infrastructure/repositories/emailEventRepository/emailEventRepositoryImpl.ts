@@ -5,6 +5,7 @@ import { type QueryBuilder } from '../../../../../libs/database/types/queryBuild
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { type EmailEvent } from '../../../domain/entities/emailEvent/emailEvent.js';
 import { type EmailEventDraft } from '../../../domain/entities/emailEvent/emailEventDraft.ts/emailEventDraft.js';
+import { EmailEventStatus } from '../../../domain/entities/emailEvent/types/emailEventStatus.js';
 import {
   type UpdateStatusPayload,
   type EmailEventRepository,
@@ -90,7 +91,7 @@ export class EmailEventRepositoryImpl implements EmailEventRepository {
         createdAt: new Date(),
         id: this.uuidService.generateUuid(),
         payload: JSON.stringify(entity.getPayload()) as unknown as EmailPayload,
-        status: 'unprocessed',
+        status: EmailEventStatus.pending,
       });
     } catch (error) {
       throw new RepositoryError({
@@ -104,7 +105,7 @@ export class EmailEventRepositoryImpl implements EmailEventRepository {
     try {
       const queryBuilder = this.createQueryBuilder();
 
-      await queryBuilder.where(this.databaseTable.columns.status, '=', 'processed').delete();
+      await queryBuilder.where(this.databaseTable.columns.status, '=', EmailEventStatus.processed).delete();
     } catch (error) {
       throw new RepositoryError({
         entity: 'EmailEvent',

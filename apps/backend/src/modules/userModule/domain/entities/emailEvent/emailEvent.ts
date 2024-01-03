@@ -1,8 +1,10 @@
 import { type BaseEmailPayload } from './types/baseEmailPayload.js';
+import { type EmailEventStatus } from './types/emailEventStatus.js';
+import { type EmailEventType } from './types/emailEventType.js';
 
 export interface EmailEventState {
   id: string;
-  status: string;
+  status: EmailEventStatus;
   payload: BaseEmailPayload;
   createdAt: Date;
 }
@@ -10,7 +12,7 @@ export interface EmailEventState {
 export class EmailEvent {
   private id: string;
 
-  private status: string;
+  private status: EmailEventStatus;
 
   private payload: BaseEmailPayload;
 
@@ -32,12 +34,20 @@ export class EmailEvent {
     return this.id;
   }
 
-  public getStatus(): string {
+  public getStatus(): EmailEventStatus {
     return this.status;
   }
 
-  public getPayload(): unknown {
+  public getPayload(): BaseEmailPayload {
     return this.payload;
+  }
+
+  public getEmailEventType(): EmailEventType {
+    return this.payload['emailEventType'];
+  }
+
+  public getEmail(): string {
+    return this.payload.email;
   }
 
   public getCreatedAt(): Date {
