@@ -1,9 +1,14 @@
-export interface EmailEventRawEntity {
-  id: string;
+export interface EmailPayload {
   email: string;
+  emailName: string;
   firstName: string;
   lastName: string;
-  eventName: string;
+  [key: string]: unknown;
+}
+
+export interface EmailEventRawEntity {
+  id: string;
+  payload: EmailPayload;
   status: string;
   createdAt: Date;
 }

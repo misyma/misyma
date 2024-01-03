@@ -1,24 +1,35 @@
+import { type EmailEventMapper } from './mappers/emailEventMapper/emailEventMapper.js';
 import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';
+import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
+import { type EmailEvent } from '../../../domain/entities/emailEvent/emailEvent.js';
+import { type EmailEventDraft } from '../../../domain/entities/emailEvent/emailEventDraft.ts/emailEventDraft.js';
 import {
   type UpdateStatusPayload,
   type EmailEventRepository,
   type FindAllCreatedAfterPayload,
 } from '../../../domain/repositories/emailEventRepository/emailEventRepository.js';
-import { type EmailEventRawEntity } from '../../databases/userEventsDatabase/tables/emailEventTable/emailEventRawEntity.js';
+import {
+  type EmailPayload,
+  type EmailEventRawEntity,
+} from '../../databases/userEventsDatabase/tables/emailEventTable/emailEventRawEntity.js';
 import { EmailEventTable } from '../../databases/userEventsDatabase/tables/emailEventTable/emailEventTable.js';
 
 export class EmailEventRepositoryImpl implements EmailEventRepository {
   private readonly databaseTable = new EmailEventTable();
 
-  public constructor(private readonly sqliteDatabaseClient: SqliteDatabaseClient) {}
+  public constructor(
+    private readonly sqliteDatabaseClient: SqliteDatabaseClient,
+    private readonly uuidService: UuidService,
+    private readonly emailEventMapper: EmailEventMapper,
+  ) {}
 
   private createQueryBuilder(): QueryBuilder<EmailEventRawEntity> {
     return this.sqliteDatabaseClient<EmailEventRawEntity>(this.databaseTable.name);
   }
 
-  public async findAllCreatedAfter(payload: FindAllCreatedAfterPayload): Promise<unknown[]> {
+  public async findAllCreatedAfter(payload: FindAllCreatedAfterPayload): Promise<EmailEvent[]> {
     const { after } = payload;
 
     const queryBuilder = this.createQueryBuilder();
@@ -34,10 +45,10 @@ export class EmailEventRepositoryImpl implements EmailEventRepository {
       });
     }
 
-    return rawEntities;
+    return rawEntities.map((rawEntity) => this.emailEventMapper.map(rawEntity));
   }
 
-  public async findAllUnprocessed(): Promise<unknown[]> {
+  public async findAllUnprocessed(): Promise<EmailEvent[]> {
     const queryBuilder = this.createQueryBuilder();
 
     let rawEntities: EmailEventRawEntity[];
@@ -51,7 +62,7 @@ export class EmailEventRepositoryImpl implements EmailEventRepository {
       });
     }
 
-    return rawEntities;
+    return rawEntities.map((rawEntity) => this.emailEventMapper.map(rawEntity));
   }
 
   public async updateStatus(payload: UpdateStatusPayload): Promise<void> {
@@ -67,6 +78,24 @@ export class EmailEventRepositoryImpl implements EmailEventRepository {
       throw new RepositoryError({
         entity: 'EmailEvent',
         operation: 'update',
+      });
+    }
+  }
+
+  public async create(entity: EmailEventDraft): Promise<void> {
+    const queryBuilder = this.createQueryBuilder();
+
+    try {
+      await queryBuilder.insert({
+        createdAt: new Date(),
+        id: this.uuidService.generateUuid(),
+        payload: JSON.stringify(entity.getPayload()) as unknown as EmailPayload,
+        status: 'unprocessed',
+      });
+    } catch (error) {
+      throw new RepositoryError({
+        entity: 'EmailEvent',
+        operation: 'create',
       });
     }
   }

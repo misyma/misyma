@@ -8,10 +8,7 @@ export class M1CreateEmailEventTableMigration implements Migration {
 
   private readonly tableColumns = {
     id: 'id',
-    email: 'email',
-    firstName: 'firstName',
-    lastName: 'lastName',
-    eventName: 'eventName',
+    payload: 'payload',
     status: 'status',
     createdAt: 'createdAt',
   };
@@ -20,13 +17,7 @@ export class M1CreateEmailEventTableMigration implements Migration {
     await databaseClient.schema.createTable(this.tableName, (table) => {
       table.text(this.tableColumns.id).primary();
 
-      table.text(this.tableColumns.email).notNullable();
-
-      table.text(this.tableColumns.firstName).notNullable();
-
-      table.text(this.tableColumns.lastName).notNullable();
-
-      table.text(this.tableColumns.eventName).notNullable();
+      table.text(this.tableColumns.payload).notNullable();
 
       table.text(this.tableColumns.status).notNullable();
 
