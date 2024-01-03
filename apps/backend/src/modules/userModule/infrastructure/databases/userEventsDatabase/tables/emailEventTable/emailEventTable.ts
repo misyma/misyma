@@ -7,7 +7,7 @@ export class EmailEventTable {
     firstName: 'firstName',
     lastName: 'lastName',
     eventName: 'eventName',
-    processed: 'processed',
+    status: 'status',
     createdAt: 'createdAt',
   } as const;
 }

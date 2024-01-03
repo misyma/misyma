@@ -4,6 +4,6 @@ export interface EmailEventRawEntity {
   firstName: string;
   lastName: string;
   eventName: string;
-  processed: boolean;
+  status: string;
   createdAt: Date;
 }

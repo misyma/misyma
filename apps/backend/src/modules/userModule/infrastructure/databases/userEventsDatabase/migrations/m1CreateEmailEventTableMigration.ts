@@ -12,7 +12,7 @@ export class M1CreateEmailEventTableMigration implements Migration {
     firstName: 'firstName',
     lastName: 'lastName',
     eventName: 'eventName',
-    processed: 'processed',
+    status: 'status',
     createdAt: 'createdAt',
   };
 
@@ -28,7 +28,7 @@ export class M1CreateEmailEventTableMigration implements Migration {
 
       table.text(this.tableColumns.eventName).notNullable();
 
-      table.boolean(this.tableColumns.processed).notNullable().defaultTo(false);
+      table.text(this.tableColumns.status).notNullable();
 
       table.dateTime(this.tableColumns.createdAt).notNullable();
     });
