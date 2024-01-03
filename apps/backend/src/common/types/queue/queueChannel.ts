@@ -1,5 +1,5 @@
 export interface QueueMessagePayload {
-  data: unknown;
+  data: Record<string, unknown>;
   eventName: string;
 }
 

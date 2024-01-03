@@ -13,7 +13,7 @@ export class EmailEventDraft {
     this.payload = payload;
   }
 
-  public getPayload(): unknown {
+  public getPayload(): BaseEmailPayload {
     return this.payload;
   }
 }

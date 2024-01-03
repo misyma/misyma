@@ -3,9 +3,9 @@ import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDa
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DependencyInjectionContainer } from '../../../../../libs/dependencyInjection/dependencyInjectionContainer.js';
 
-export class EventsDatabaseManager {
+export class UserEventsDatabaseManager {
   public static async bootstrapDatabase(container: DependencyInjectionContainer): Promise<void> {
-    const databaseClient = container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient);
+    const databaseClient = container.get<SqliteDatabaseClient>(coreSymbols.entityEventsDatabaseClient);
 
     const migrationSource = new EventsDatabaseMigrationSource();
 

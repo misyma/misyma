@@ -21,25 +21,36 @@ import { AuthorDatabaseManager } from '../modules/authorModule/infrastructure/da
 import { BookModule } from '../modules/bookModule/bookModule.js';
 import { BookDatabaseManager } from '../modules/bookModule/infrastructure/databases/bookDatabase/bookDatabaseManager.js';
 import { UserDatabaseManager } from '../modules/userModule/infrastructure/databases/userDatabase/userDatabaseManager.js';
+import { UserEventsDatabaseManager } from '../modules/userModule/infrastructure/databases/userEventsDatabase/userEventsDatabaseManager.js';
 import { UserModule } from '../modules/userModule/userModule.js';
 
 export class Application {
   private static async setupDatabase(container: DependencyInjectionContainer): Promise<void> {
-    const databaseManagers = [UserDatabaseManager, AuthorDatabaseManager, BookDatabaseManager];
+    const coreDatabaseManagers = [UserDatabaseManager, AuthorDatabaseManager, BookDatabaseManager];
 
-    for await (const databaseManager of databaseManagers) {
+    const eventsDatabaseManagers = [UserEventsDatabaseManager];
+
+    for await (const databaseManager of coreDatabaseManagers) {
+      await databaseManager.bootstrapDatabase(container);
+    }
+
+    for await (const databaseManager of eventsDatabaseManagers) {
       await databaseManager.bootstrapDatabase(container);
     }
 
     const sqliteDatabaseClient = container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient);
 
+    const entityEventsDatabaseClient = container.get<SqliteDatabaseClient>(coreSymbols.entityEventsDatabaseClient);
+
     await sqliteDatabaseClient.raw('PRAGMA journal_mode = WAL');
+
+    await entityEventsDatabaseClient.raw('PRAGMA journal_mode = WAL');
   }
 
   public static createContainer(): DependencyInjectionContainer {
     const configProvider = new ConfigProvider();
 
-    const databasePath = configProvider.getSqliteDatabasePath();
+    const mainDatabasePath = configProvider.getSqliteDatabasePath();
 
     const logLevel = configProvider.getLogLevel();
 
@@ -75,7 +86,7 @@ export class Application {
     container.bind<ConfigProvider>(symbols.configProvider, () => configProvider);
 
     container.bind<SqliteDatabaseClient>(symbols.sqliteDatabaseClient, () =>
-      SqliteDatabaseClientFactory.create({ databasePath }),
+      SqliteDatabaseClientFactory.create({ databasePath: mainDatabasePath }),
     );
 
     container.bind<ApplicationHttpController>(

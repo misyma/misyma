@@ -5,6 +5,8 @@ import { type QueueController } from '../../common/types/queue/queueController.j
 import { type QueueHandlerPayload, type QueueHandler } from '../../common/types/queue/queueHandler.js';
 import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
+import { type EmailQueueController } from '../../modules/userModule/api/queueControllers/emailQueueController/emailQueueController.js';
+import { userSymbols } from '../../modules/userModule/symbols.js';
 import { coreSymbols } from '../symbols.js';
 
 interface RegisterQueueControllerPayload {
@@ -23,7 +25,7 @@ export class QueueRouter {
   private readonly loggerService: LoggerService;
 
   public constructor(private readonly container: DependencyInjectionContainer) {
-    const controllers: QueueController[] = [];
+    const controllers: QueueController[] = [container.get<EmailQueueController>(userSymbols.emailQueueController)];
 
     this.loggerService = this.container.get<LoggerService>(coreSymbols.loggerService);
 
@@ -43,7 +45,7 @@ export class QueueRouter {
       const queuePaths = controller.getQueuePaths();
 
       queuePaths.forEach((handler) => {
-        this.paths.set(handler.queuePath, handler.handler);
+        this.paths.set(handler.getPath(), handler.getHandler());
       });
     });
   }
@@ -88,6 +90,8 @@ export class QueueRouter {
   }
 
   private async processChannels(): Promise<void> {
+    console.log('Heartbeat :)');
+
     for (const channel of this.channels) {
       const messages = await channel.getMessages();
 

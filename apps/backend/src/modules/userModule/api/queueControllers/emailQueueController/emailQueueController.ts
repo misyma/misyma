@@ -48,7 +48,7 @@ export class EmailQueueController implements QueueController {
           const { emailEvents } = await this.findEmailEventsQueryHandler.execute();
 
           return emailEvents.map((emailEvent) => ({
-            data: emailEvent,
+            data: emailEvent as unknown as Record<string, unknown>,
             eventName: this.eventName,
           }));
         },
