@@ -1,4 +1,4 @@
-import { setTimeout } from 'timers/promises';
+import { setInterval } from 'timers/promises';
 
 import { type QueueChannel } from '../../common/types/queue/queueChannel.js';
 import { type QueueController } from '../../common/types/queue/queueController.js';
@@ -104,14 +104,15 @@ export class QueueRouter {
         await this.handleQueueMessage(message);
       }
     }
-
-    await setTimeout(5000, async () => await this.processChannels());
   }
 
   public async start(): Promise<void> {
-    // Info: this does not seem to work, will fix :)
-    await setTimeout(5000, async () => {
+    const interval = setInterval(5000, async () => {
       await this.processChannels();
     });
+
+    for await (const handler of interval) {
+      await handler();
+    }
   }
 }
