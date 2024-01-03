@@ -3,6 +3,7 @@ import { ConfigProvider } from './configProvider.js';
 import { type SqliteDatabaseClient } from './database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { SqliteDatabaseClientFactory } from './database/sqliteDatabaseClient/sqliteDatabaseClientFactory.js';
 import { HttpServer } from './httpServer/httpServer.js';
+import { QueueRouter } from './queueRouter/queueRouter.js';
 import { coreSymbols, symbols } from './symbols.js';
 import { type DependencyInjectionContainer } from '../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { DependencyInjectionContainerFactory } from '../libs/dependencyInjection/dependencyInjectionContainerFactory.js';
@@ -52,6 +53,8 @@ export class Application {
 
     const mainDatabasePath = configProvider.getSqliteDatabasePath();
 
+    const queuesDatabasePath = configProvider.getQueuesDatabasePath();
+
     const logLevel = configProvider.getLogLevel();
 
     const prettifyLogs = configProvider.getLoggerPrettifyLogs();
@@ -89,6 +92,12 @@ export class Application {
       SqliteDatabaseClientFactory.create({ databasePath: mainDatabasePath }),
     );
 
+    container.bind<SqliteDatabaseClient>(symbols.entityEventsDatabaseClient, () =>
+      SqliteDatabaseClientFactory.create({
+        databasePath: queuesDatabasePath,
+      }),
+    );
+
     container.bind<ApplicationHttpController>(
       symbols.applicationHttpController,
       () => new ApplicationHttpController(container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient)),
@@ -120,7 +129,11 @@ export class Application {
 
     const server = new HttpServer(container);
 
+    const queueRouter = new QueueRouter(container);
+
     await server.start();
+
+    await queueRouter.start();
 
     loggerService.log({
       message: `Application started.`,

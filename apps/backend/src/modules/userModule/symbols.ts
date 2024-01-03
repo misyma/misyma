@@ -19,6 +19,9 @@ export const symbols = {
 
   userHttpController: Symbol('userHttpController'),
 
+  emailEventRepository: Symbol('emailEventRepository'),
+  emailEventMapper: Symbol('emailEventMapper'),
+
   findEmailEventsQueryHandler: Symbol('findEmailEventsQueryHandler'),
   changeEmailEventStatusCommandHandler: Symbol('changeEmailEventStatusCommandHandler'),
 

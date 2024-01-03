@@ -1,4 +1,7 @@
 import { UserHttpController } from './api/httpControllers/userHttpController/userHttpController.js';
+import { EmailQueueController } from './api/queueControllers/emailQueueController/emailQueueController.js';
+import { type ChangeEmailEventStatusCommandHandler } from './application/commandHandlers/changeEmailEventStatusCommandHandler/changeEmailEventStatusCommandHandler.js';
+import { ChangeEmailEventStatusCommandHandlerImpl } from './application/commandHandlers/changeEmailEventStatusCommandHandler/changeEmailEventStatusCommandHandlerImpl.js';
 import { type ChangeUserPasswordCommandHandler } from './application/commandHandlers/changeUserPasswordCommandHandler/changeUserPasswordCommandHandler.js';
 import { ChangeUserPasswordCommandHandlerImpl } from './application/commandHandlers/changeUserPasswordCommandHandler/changeUserPasswordCommandHandlerImpl.js';
 import { type DeleteUserCommandHandler } from './application/commandHandlers/deleteUserCommandHandler/deleteUserCommandHandler.js';
@@ -17,6 +20,8 @@ import { type SendVerificationEmailCommandHandler } from './application/commandH
 import { SendVerificationEmailCommandHandlerImpl } from './application/commandHandlers/sendVerificationEmailCommandHandler/sendVerificationEmailCommandHandlerImpl.js';
 import { type VerifyUserEmailCommandHandler } from './application/commandHandlers/verifyUserEmailCommandHandler/verifyUserEmailCommandHandler.js';
 import { VerifyUserEmailCommandHandlerImpl } from './application/commandHandlers/verifyUserEmailCommandHandler/verifyUserEmailCommandHandlerImpl.js';
+import { type FindEmailEventsQueryHandler } from './application/queryHandlers/findEmailEventsQueryHandler/findEmailEventsQueryHandler.js';
+import { FindEmailEventsQueryHandlerImpl } from './application/queryHandlers/findEmailEventsQueryHandler/findEmailEventsQueryHandlerImpl.js';
 import { type FindUserQueryHandler } from './application/queryHandlers/findUserQueryHandler/findUserQueryHandler.js';
 import { FindUserQueryHandlerImpl } from './application/queryHandlers/findUserQueryHandler/findUserQueryHandlerImpl.js';
 import { type EmailService } from './application/services/emailService/emailService.js';
@@ -25,10 +30,13 @@ import { HashServiceImpl } from './application/services/hashService/hashServiceI
 import { type PasswordValidationService } from './application/services/passwordValidationService/passwordValidationService.js';
 import { PasswordValidationServiceImpl } from './application/services/passwordValidationService/passwordValidationServiceImpl.js';
 import { type BlacklistTokenRepository } from './domain/repositories/blacklistTokenRepository/blacklistTokenRepository.js';
+import { type EmailEventRepository } from './domain/repositories/emailEventRepository/emailEventRepository.js';
 import { type UserRepository } from './domain/repositories/userRepository/userRepository.js';
 import { BlacklistTokenRepositoryImpl } from './infrastructure/repositories/blacklistTokenRepository/blacklistTokenRepositoryImpl.js';
 import { type BlacklistTokenMapper } from './infrastructure/repositories/blacklistTokenRepository/userMapper/blacklistTokenMapper.js';
 import { BlacklistTokenMapperImpl } from './infrastructure/repositories/blacklistTokenRepository/userMapper/blacklistTokenMapperImpl.js';
+import { EmailEventRepositoryImpl } from './infrastructure/repositories/emailEventRepository/emailEventRepositoryImpl.js';
+import { EmailEventMapper } from './infrastructure/repositories/emailEventRepository/mappers/emailEventMapper/emailEventMapper.js';
 import { type UserMapper } from './infrastructure/repositories/userRepository/userMapper/userMapper.js';
 import { UserMapperImpl } from './infrastructure/repositories/userRepository/userMapper/userMapperImpl.js';
 import { UserRepositoryImpl } from './infrastructure/repositories/userRepository/userRepositoryImpl.js';
@@ -219,6 +227,39 @@ export class UserModule implements DependencyInjectionModule {
           container.get<ChangeUserPasswordCommandHandler>(symbols.changeUserPasswordCommandHandler),
           container.get<LogoutUserCommandHandler>(symbols.logoutUserCommandHandler),
           container.get<RefreshUserTokensCommandHandler>(symbols.refreshUserTokensCommandHandler),
+        ),
+    );
+
+    container.bind<EmailEventMapper>(symbols.emailEventMapper, () => new EmailEventMapper());
+
+    container.bind<EmailEventRepository>(
+      symbols.emailEventRepository,
+      () =>
+        new EmailEventRepositoryImpl(
+          container.get<SqliteDatabaseClient>(coreSymbols.entityEventsDatabaseClient),
+          container.get<UuidService>(coreSymbols.uuidService),
+          container.get<EmailEventMapper>(symbols.emailEventMapper),
+        ),
+    );
+
+    container.bind<ChangeEmailEventStatusCommandHandler>(
+      symbols.changeEmailEventStatusCommandHandler,
+      () =>
+        new ChangeEmailEventStatusCommandHandlerImpl(container.get<EmailEventRepository>(symbols.emailEventRepository)),
+    );
+
+    container.bind<FindEmailEventsQueryHandler>(
+      symbols.findEmailEventsQueryHandler,
+      () => new FindEmailEventsQueryHandlerImpl(container.get<EmailEventRepository>(symbols.emailEventRepository)),
+    );
+
+    container.bind<EmailQueueController>(
+      symbols.emailQueueController,
+      () =>
+        new EmailQueueController(
+          container.get<FindEmailEventsQueryHandler>(symbols.findEmailEventsQueryHandler),
+          container.get<ChangeEmailEventStatusCommandHandler>(symbols.changeEmailEventStatusCommandHandler),
+          container.get<EmailService>(symbols.emailService),
         ),
     );
   }

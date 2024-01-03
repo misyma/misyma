@@ -6,6 +6,11 @@
   "database": {
     "path": null
   },
+  "queues": {
+    "database": {
+      "path": null
+    }
+  },
   "auth": {
     "hash": {
       "saltRounds": null

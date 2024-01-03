@@ -45,6 +45,13 @@ export class QueueRouter {
       const queuePaths = controller.getQueuePaths();
 
       queuePaths.forEach((handler) => {
+        this.loggerService.info({
+          message: 'Registered a queue path.',
+          context: {
+            path: handler.getPath(),
+          },
+        });
+
         this.paths.set(handler.getPath(), handler.getHandler());
       });
     });
@@ -90,8 +97,6 @@ export class QueueRouter {
   }
 
   private async processChannels(): Promise<void> {
-    console.log('Heartbeat :)');
-
     for (const channel of this.channels) {
       const messages = await channel.getMessages();
 
@@ -104,6 +109,9 @@ export class QueueRouter {
   }
 
   public async start(): Promise<void> {
-    await setTimeout(5000, async () => await this.processChannels());
+    // Info: this does not seem to work, will fix :)
+    await setTimeout(5000, async () => {
+      await this.processChannels();
+    });
   }
 }
