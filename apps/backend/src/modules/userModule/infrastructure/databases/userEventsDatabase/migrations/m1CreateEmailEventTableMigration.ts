@@ -4,11 +4,12 @@ import { type Migration } from '../../../../../../libs/database/types/migration.
 export class M1CreateEmailEventTableMigration implements Migration {
   public readonly name = 'M1CreateEmailEventTableMigration';
 
-  private readonly tableName = 'emailEvent';
+  private readonly tableName = 'emailEvents';
 
   private readonly tableColumns = {
     id: 'id',
     payload: 'payload',
+    eventName: 'eventName',
     status: 'status',
     createdAt: 'createdAt',
   };
@@ -20,6 +21,8 @@ export class M1CreateEmailEventTableMigration implements Migration {
       table.text(this.tableColumns.payload).notNullable();
 
       table.text(this.tableColumns.status).notNullable();
+
+      table.text(this.tableColumns.eventName).notNullable();
 
       table.dateTime(this.tableColumns.createdAt).notNullable();
     });

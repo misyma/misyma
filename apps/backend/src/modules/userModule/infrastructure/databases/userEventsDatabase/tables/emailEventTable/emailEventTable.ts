@@ -1,11 +1,9 @@
 export class EmailEventTable {
-  public readonly name = 'emailEvent';
+  public readonly name = 'emailEvents';
 
   public readonly columns = {
     id: 'id',
-    email: 'email',
-    firstName: 'firstName',
-    lastName: 'lastName',
+    payload: 'payload',
     eventName: 'eventName',
     status: 'status',
     createdAt: 'createdAt',
