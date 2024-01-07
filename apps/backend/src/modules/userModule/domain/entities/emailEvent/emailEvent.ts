@@ -5,6 +5,7 @@ import { type EmailEventType } from './types/emailEventType.js';
 export interface EmailEventState {
   id: string;
   status: EmailEventStatus;
+  eventName: EmailEventType;
   payload: BaseEmailPayload;
   createdAt: Date;
 }
@@ -18,8 +19,10 @@ export class EmailEvent {
 
   private createdAt: Date;
 
+  private eventName: EmailEventType;
+
   public constructor(draft: EmailEventState) {
-    const { id, status, payload, createdAt } = draft;
+    const { id, status, payload, createdAt, eventName } = draft;
 
     this.id = id;
 
@@ -28,6 +31,8 @@ export class EmailEvent {
     this.payload = payload;
 
     this.createdAt = createdAt;
+
+    this.eventName = eventName;
   }
 
   public getId(): string {
@@ -42,12 +47,12 @@ export class EmailEvent {
     return this.payload;
   }
 
-  public getEmailEventType(): EmailEventType {
-    return this.payload['emailEventType'];
+  public getEmailEventName(): EmailEventType {
+    return this.eventName;
   }
 
-  public getEmail(): string {
-    return this.payload.email;
+  public getRecipientEmail(): string {
+    return this.payload.recipientEmail;
   }
 
   public getCreatedAt(): Date {

@@ -12,7 +12,7 @@ export interface UpdateStatusPayload {
 
 export interface EmailEventRepository {
   findAllCreatedAfter(payload: FindAllCreatedAfterPayload): Promise<EmailEvent[]>;
-  findAllUnprocessed(): Promise<EmailEvent[]>;
+  findAllPending(): Promise<EmailEvent[]>;
   updateStatus(payload: UpdateStatusPayload): Promise<void>;
   deleteProcessed(): Promise<void>;
   create(entity: EmailEventDraft): Promise<void>;

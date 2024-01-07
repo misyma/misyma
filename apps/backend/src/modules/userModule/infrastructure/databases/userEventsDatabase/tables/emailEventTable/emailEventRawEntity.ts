@@ -1,6 +1,5 @@
 export interface EmailPayload {
   email: string;
-  emailEventType: string;
   firstName: string;
   lastName: string;
   [key: string]: unknown;
@@ -9,6 +8,7 @@ export interface EmailPayload {
 export interface EmailEventRawEntity {
   id: string;
   payload: EmailPayload;
+  eventName: string;
   status: string;
   createdAt: Date;
 }

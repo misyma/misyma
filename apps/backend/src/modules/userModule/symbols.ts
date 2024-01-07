@@ -22,6 +22,8 @@ export const symbols = {
   emailEventRepository: Symbol('emailEventRepository'),
   emailEventMapper: Symbol('emailEventMapper'),
 
+  emailMessageBus: Symbol('emailMessageBus'),
+
   findEmailEventsQueryHandler: Symbol('findEmailEventsQueryHandler'),
   changeEmailEventStatusCommandHandler: Symbol('changeEmailEventStatusCommandHandler'),
 

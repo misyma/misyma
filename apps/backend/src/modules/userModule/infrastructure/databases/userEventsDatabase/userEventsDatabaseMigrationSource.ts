@@ -16,6 +16,6 @@ export class EventsDatabaseMigrationSource implements MigrationSource {
   }
 
   public getMigrationTableName(): string {
-    return 'userDatabaseMigrations';
+    return 'emailEventsMigrations';
   }
 }

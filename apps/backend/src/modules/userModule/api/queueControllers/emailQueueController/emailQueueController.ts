@@ -1,7 +1,10 @@
+import { ExponentialBackoff, type IDisposable, handleAll, retry } from 'cockatiel';
+
 import { type QueueMessagePayload, type QueueChannel } from '../../../../../common/types/queue/queueChannel.js';
 import { type QueueController } from '../../../../../common/types/queue/queueController.js';
 import { type QueueHandler } from '../../../../../common/types/queue/queueHandler.js';
 import { QueuePath } from '../../../../../common/types/queue/queuePath.js';
+import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type ChangeEmailEventStatusCommandHandler } from '../../../application/commandHandlers/changeEmailEventStatusCommandHandler/changeEmailEventStatusCommandHandler.js';
 import { type FindEmailEventsQueryHandler } from '../../../application/queryHandlers/findEmailEventsQueryHandler/findEmailEventsQueryHandler.js';
 import { type EmailService } from '../../../application/services/emailService/emailService.js';
@@ -27,9 +30,19 @@ export class EmailQueueController implements QueueController {
     private readonly findEmailEventsQueryHandler: FindEmailEventsQueryHandler,
     private readonly changeEmailEventStatusCommandHandler: ChangeEmailEventStatusCommandHandler,
     private readonly emailService: EmailService,
+    private readonly loggerService: LoggerService,
   ) {}
 
   private eventName = 'email';
+
+  // TODO: create a lib from this :)
+  private retryPolicy = retry(handleAll, {
+    backoff: new ExponentialBackoff({
+      exponent: 2,
+      initialDelay: 1000,
+    }),
+    maxAttempts: 3,
+  });
 
   public getQueuePaths(): QueuePath[] {
     return [
@@ -59,10 +72,12 @@ export class EmailQueueController implements QueueController {
   private async processEmailEvent(payload: ProcessEmailEventPayload): Promise<void> {
     const { data: emailEvent } = payload;
 
-    switch (emailEvent.getEmailEventType()) {
+    let retryListener: IDisposable;
+
+    switch (emailEvent.getEmailEventName()) {
       case EmailEventType.verifyEmail:
         const verificationEmail = new VerificationEmail({
-          recipient: emailEvent.getEmail(),
+          recipient: emailEvent.getRecipientEmail(),
           templateData: emailEvent.getPayload() as unknown as VerificationEmailTemplateData,
         });
 
@@ -71,17 +86,32 @@ export class EmailQueueController implements QueueController {
           status: EmailEventStatus.processing,
         });
 
+        retryListener = this.retryPolicy.onFailure((reason) => {
+          this.loggerService.error({
+            message: 'Failed to send verification email.',
+            context: {
+              emailEventId: emailEvent.getId(),
+              reason,
+            },
+          });
+        });
+
         try {
-          // TODO: Exponential backoff. Maybe in the router itself
-          await this.emailService.sendEmail(verificationEmail);
+          await this.retryPolicy.execute(async () => {
+            await this.emailService.sendEmail(verificationEmail);
+          });
         } catch (error) {
           await this.changeEmailEventStatusCommandHandler.execute({
             id: emailEvent.getId(),
             status: EmailEventStatus.failed,
           });
 
+          retryListener.dispose();
+
           throw error;
         }
+
+        retryListener.dispose();
 
         await this.changeEmailEventStatusCommandHandler.execute({
           id: emailEvent.getId(),
@@ -92,8 +122,18 @@ export class EmailQueueController implements QueueController {
 
       case EmailEventType.resetPassword:
         const resetPasswordEmail = new ResetPasswordEmail({
-          recipient: emailEvent.getEmail(),
+          recipient: emailEvent.getRecipientEmail(),
           templateData: emailEvent.getPayload() as unknown as ResetPasswordEmailTemplateData,
+        });
+
+        retryListener = this.retryPolicy.onFailure((reason) => {
+          this.loggerService.error({
+            message: 'Failed to send verification email.',
+            context: {
+              emailEventId: emailEvent.getId(),
+              reason,
+            },
+          });
         });
 
         await this.changeEmailEventStatusCommandHandler.execute({
@@ -102,15 +142,21 @@ export class EmailQueueController implements QueueController {
         });
 
         try {
-          await this.emailService.sendEmail(resetPasswordEmail);
+          await this.retryPolicy.execute(async () => {
+            await this.emailService.sendEmail(resetPasswordEmail);
+          });
         } catch (error) {
           await this.changeEmailEventStatusCommandHandler.execute({
             id: emailEvent.getId(),
             status: EmailEventStatus.failed,
           });
 
+          retryListener.dispose();
+
           throw error;
         }
+
+        retryListener.dispose();
 
         await this.changeEmailEventStatusCommandHandler.execute({
           id: emailEvent.getId(),

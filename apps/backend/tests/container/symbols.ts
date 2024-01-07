@@ -6,4 +6,6 @@ export const testSymbols = {
 
   authorTestUtils: Symbol('authorTestUtils'),
   authorService: Symbol('authorService'),
+
+  emailEventTestUtils: Symbol('emailEventTestUtils'),
 };

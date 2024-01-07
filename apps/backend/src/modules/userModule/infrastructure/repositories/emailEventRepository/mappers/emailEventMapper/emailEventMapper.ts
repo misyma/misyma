@@ -5,16 +5,18 @@ import { type EmailEventRawEntity } from '../../../../databases/userEventsDataba
 
 export class EmailEventMapper {
   public map(rawEntity: EmailEventRawEntity): EmailEvent {
-    const { createdAt, id, payload, status } = rawEntity;
+    const { createdAt, id, payload, status, eventName } = rawEntity;
 
     return new EmailEvent({
-      createdAt,
+      createdAt: new Date(createdAt),
       id,
       payload: {
-        ...payload,
-        emailEventType: payload.emailEventType as EmailEventType,
+        recipientEmail: payload.email,
+        firstName: payload.firstName,
+        lastName: payload.lastName,
       },
       status: status as EmailEventStatus,
+      eventName: eventName as EmailEventType,
     });
   }
 }

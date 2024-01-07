@@ -5,7 +5,7 @@ export class FindEmailEventsQueryHandlerImpl implements FindEmailEventsQueryHand
   public constructor(private readonly emailEventRepository: EmailEventRepository) {}
 
   public async execute(): Promise<FindEmailEventsResult> {
-    const emailEvents = await this.emailEventRepository.findAllUnprocessed();
+    const emailEvents = await this.emailEventRepository.findAllPending();
 
     return {
       emailEvents,

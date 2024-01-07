@@ -49,13 +49,15 @@ export class EmailEventRepositoryImpl implements EmailEventRepository {
     return rawEntities.map((rawEntity) => this.emailEventMapper.map(rawEntity));
   }
 
-  public async findAllUnprocessed(): Promise<EmailEvent[]> {
+  public async findAllPending(): Promise<EmailEvent[]> {
     const queryBuilder = this.createQueryBuilder();
 
     let rawEntities: EmailEventRawEntity[];
 
     try {
-      rawEntities = await queryBuilder.where(this.databaseTable.columns.status, '=', 'unprocessed').select('*');
+      rawEntities = await queryBuilder
+        .where(this.databaseTable.columns.status, '=', EmailEventStatus.pending)
+        .select('*');
     } catch (error) {
       throw new RepositoryError({
         entity: 'EmailEvent',

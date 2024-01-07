@@ -20,6 +20,7 @@ import { type SendVerificationEmailCommandHandler } from './application/commandH
 import { SendVerificationEmailCommandHandlerImpl } from './application/commandHandlers/sendVerificationEmailCommandHandler/sendVerificationEmailCommandHandlerImpl.js';
 import { type VerifyUserEmailCommandHandler } from './application/commandHandlers/verifyUserEmailCommandHandler/verifyUserEmailCommandHandler.js';
 import { VerifyUserEmailCommandHandlerImpl } from './application/commandHandlers/verifyUserEmailCommandHandler/verifyUserEmailCommandHandlerImpl.js';
+import { type EmailMessageBus } from './application/messageBuses/emailMessageBus/emailMessageBus.js';
 import { type FindEmailEventsQueryHandler } from './application/queryHandlers/findEmailEventsQueryHandler/findEmailEventsQueryHandler.js';
 import { FindEmailEventsQueryHandlerImpl } from './application/queryHandlers/findEmailEventsQueryHandler/findEmailEventsQueryHandlerImpl.js';
 import { type FindUserQueryHandler } from './application/queryHandlers/findUserQueryHandler/findUserQueryHandler.js';
@@ -32,6 +33,7 @@ import { PasswordValidationServiceImpl } from './application/services/passwordVa
 import { type BlacklistTokenRepository } from './domain/repositories/blacklistTokenRepository/blacklistTokenRepository.js';
 import { type EmailEventRepository } from './domain/repositories/emailEventRepository/emailEventRepository.js';
 import { type UserRepository } from './domain/repositories/userRepository/userRepository.js';
+import { EmailMessageBusImpl } from './infrastructure/messageBuses/emailMessageBus/emailMessageBusImpl.js';
 import { BlacklistTokenRepositoryImpl } from './infrastructure/repositories/blacklistTokenRepository/blacklistTokenRepositoryImpl.js';
 import { type BlacklistTokenMapper } from './infrastructure/repositories/blacklistTokenRepository/userMapper/blacklistTokenMapper.js';
 import { BlacklistTokenMapperImpl } from './infrastructure/repositories/blacklistTokenRepository/userMapper/blacklistTokenMapperImpl.js';
@@ -110,12 +112,15 @@ export class UserModule implements DependencyInjectionModule {
     container.bind<RegisterUserCommandHandler>(
       symbols.registerUserCommandHandler,
       () =>
-        new RegisterUserCommandHandlerImpl(
-          container.get<UserRepository>(symbols.userRepository),
-          container.get<HashService>(symbols.hashService),
-          container.get<LoggerService>(coreSymbols.loggerService),
-          container.get<PasswordValidationService>(symbols.passwordValidationService),
-        ),
+        new RegisterUserCommandHandlerImpl({
+          userRepository: container.get<UserRepository>(symbols.userRepository),
+          hashService: container.get<HashService>(symbols.hashService),
+          loggerService: container.get<LoggerService>(coreSymbols.loggerService),
+          configProvider: container.get<UserModuleConfigProvider>(symbols.userModuleConfigProvider),
+          tokenService: container.get<TokenService>(authSymbols.tokenService),
+          emailMessageBus: container.get<EmailMessageBus>(symbols.emailMessageBus),
+          passwordValidationService: container.get<PasswordValidationService>(symbols.passwordValidationService),
+        }),
     );
 
     container.bind<LoginUserCommandHandler>(
@@ -169,11 +174,11 @@ export class UserModule implements DependencyInjectionModule {
       symbols.sendVerificationEmailCommandHandler,
       () =>
         new SendVerificationEmailCommandHandlerImpl(
-          container.get<EmailService>(symbols.emailService),
           container.get<TokenService>(authSymbols.tokenService),
           container.get<UserRepository>(symbols.userRepository),
           container.get<LoggerService>(coreSymbols.loggerService),
           container.get<UserModuleConfigProvider>(symbols.userModuleConfigProvider),
+          container.get<EmailMessageBus>(symbols.emailMessageBus),
         ),
     );
 
@@ -242,6 +247,11 @@ export class UserModule implements DependencyInjectionModule {
         ),
     );
 
+    container.bind<EmailMessageBus>(
+      symbols.emailMessageBus,
+      () => new EmailMessageBusImpl(container.get<EmailEventRepository>(symbols.emailEventRepository)),
+    );
+
     container.bind<ChangeEmailEventStatusCommandHandler>(
       symbols.changeEmailEventStatusCommandHandler,
       () =>
@@ -260,6 +270,7 @@ export class UserModule implements DependencyInjectionModule {
           container.get<FindEmailEventsQueryHandler>(symbols.findEmailEventsQueryHandler),
           container.get<ChangeEmailEventStatusCommandHandler>(symbols.changeEmailEventStatusCommandHandler),
           container.get<EmailService>(symbols.emailService),
+          container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );
   }
