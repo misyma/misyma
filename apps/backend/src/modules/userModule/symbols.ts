@@ -21,6 +21,7 @@ export const symbols = {
 
   hashService: Symbol('hashService'),
   emailService: Symbol('emailService'),
+  passwordValidationService: Symbol('passwordValidationService'),
 };
 
 export const userSymbols = {

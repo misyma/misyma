@@ -15,7 +15,7 @@ describe('BlacklistTokenMapperImpl', () => {
   it('maps from BlacklistTokenRawEntity to BlacklistToken', async () => {
     const blacklistTokenEntity: BlacklistTokenRawEntity = {
       id: Generator.uuid(),
-      token: Generator.alphanumericString(32),
+      token: Generator.alphaString(32),
       expiresAt: Generator.futureDate(),
     };
 

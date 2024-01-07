@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 
 export class Generator {
   public static email(): string {
-    return faker.internet.email({ allowSpecialCharacters: true });
+    return faker.internet.email();
   }
 
   public static number(min = 0, max = 100, precision = 1): number {
@@ -17,9 +17,22 @@ export class Generator {
     return faker.string.sample(length);
   }
 
-  public static alphanumericString(length: number): string {
+  public static alphanumericString(length: number, casing: 'lower' | 'upper' = 'lower'): string {
+    return faker.string.alphanumeric({
+      casing,
+      length,
+    });
+  }
+
+  public static alphaString(length: number, casing: 'lower' | 'upper' = 'lower'): string {
     return faker.string.alpha({
-      casing: 'lower',
+      casing,
+      length,
+    });
+  }
+
+  public static numericString(length: number): string {
+    return faker.string.numeric({
       length,
     });
   }
@@ -52,7 +65,7 @@ export class Generator {
     return faker.datatype.boolean();
   }
 
-  public static password(length: number): string {
+  public static password(length = 14): string {
     return faker.internet.password({
       length,
     });

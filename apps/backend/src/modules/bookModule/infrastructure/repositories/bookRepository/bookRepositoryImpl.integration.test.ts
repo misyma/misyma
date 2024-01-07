@@ -231,7 +231,7 @@ describe('BookRepositoryImpl', () => {
         },
       });
 
-      const newTitle = Generator.alphanumericString(20);
+      const newTitle = Generator.alphaString(20);
 
       const createdBook = await bookRepository.findBook({
         id: book.id,
@@ -309,7 +309,7 @@ describe('BookRepositoryImpl', () => {
         id: bookId,
       });
 
-      const newTitle = Generator.alphanumericString(20);
+      const newTitle = Generator.alphaString(20);
 
       const newReleaseYear = Generator.number(1000, 3000);
 

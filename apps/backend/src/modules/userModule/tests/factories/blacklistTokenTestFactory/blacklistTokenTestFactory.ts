@@ -6,7 +6,7 @@ export class BlacklistTokenTestFactory {
   public create(input: Partial<BlacklistTokenDraft> = {}): BlacklistToken {
     return new BlacklistToken({
       id: Generator.uuid(),
-      token: Generator.alphanumericString(32),
+      token: Generator.alphaString(32),
       expiresAt: Generator.futureDate(),
       ...input,
     });

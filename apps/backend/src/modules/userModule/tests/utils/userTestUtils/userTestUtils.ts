@@ -101,7 +101,9 @@ export class UserTestUtils {
   }
 
   public async findByEmail(payload: FindByEmailPayload): Promise<UserRawEntity> {
-    const { email } = payload;
+    const { email: emailInput } = payload;
+
+    const email = emailInput.toLowerCase();
 
     const queryBuilder = this.createQueryBuilder();
 
