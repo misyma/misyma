@@ -133,8 +133,8 @@ describe('SqliteCacheImpl', () => {
     it('removes all cached Values', async () => {
       const randomValues = Array.from({ length: Generator.number(10, 100) }).map(() => ({
         key: Generator.uuid(),
-        firstName: Generator.alphanumericString(20),
-        lastName: Generator.alphanumericString(20),
+        firstName: Generator.alphaString(20),
+        lastName: Generator.alphaString(20),
       }));
 
       for (const randomValue of randomValues) {

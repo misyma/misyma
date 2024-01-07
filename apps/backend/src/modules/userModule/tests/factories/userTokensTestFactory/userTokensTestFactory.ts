@@ -7,9 +7,9 @@ export class UserTokensTestFactory {
     return new UserTokens({
       id: Generator.uuid(),
       userId: Generator.uuid(),
-      refreshToken: Generator.alphanumericString(32),
-      resetPasswordToken: Generator.alphanumericString(32),
-      emailVerificationToken: Generator.alphanumericString(32),
+      refreshToken: Generator.alphaString(32),
+      resetPasswordToken: Generator.alphaString(32),
+      emailVerificationToken: Generator.alphaString(32),
       ...input,
     });
   }

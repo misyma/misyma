@@ -170,7 +170,7 @@ describe('UserRepositoryImpl', () => {
         },
       });
 
-      const updatedEmailVerificationToken = Generator.alphanumericString(32);
+      const updatedEmailVerificationToken = Generator.alphaString(32);
 
       createdUser.addUpdateEmailVerificationTokenAction({
         emailVerificationToken: updatedEmailVerificationToken,
@@ -212,7 +212,7 @@ describe('UserRepositoryImpl', () => {
         },
       });
 
-      const updatedResetPasswordToken = Generator.alphanumericString(32);
+      const updatedResetPasswordToken = Generator.alphaString(32);
 
       createdUser.addResetPasswordAction({
         resetPasswordToken: updatedResetPasswordToken,

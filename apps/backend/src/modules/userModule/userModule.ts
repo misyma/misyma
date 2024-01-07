@@ -22,6 +22,8 @@ import { FindUserQueryHandlerImpl } from './application/queryHandlers/findUserQu
 import { type EmailService } from './application/services/emailService/emailService.js';
 import { type HashService } from './application/services/hashService/hashService.js';
 import { HashServiceImpl } from './application/services/hashService/hashServiceImpl.js';
+import { type PasswordValidationService } from './application/services/passwordValidationService/passwordValidationService.js';
+import { PasswordValidationServiceImpl } from './application/services/passwordValidationService/passwordValidationServiceImpl.js';
 import { type BlacklistTokenRepository } from './domain/repositories/blacklistTokenRepository/blacklistTokenRepository.js';
 import { type UserRepository } from './domain/repositories/userRepository/userRepository.js';
 import { BlacklistTokenRepositoryImpl } from './infrastructure/repositories/blacklistTokenRepository/blacklistTokenRepositoryImpl.js';
@@ -92,6 +94,11 @@ export class UserModule implements DependencyInjectionModule {
       () => new EmailServiceImpl(container.get<SendGridService>(coreSymbols.sendGridService)),
     );
 
+    container.bind<PasswordValidationService>(
+      symbols.passwordValidationService,
+      () => new PasswordValidationServiceImpl(),
+    );
+
     container.bind<RegisterUserCommandHandler>(
       symbols.registerUserCommandHandler,
       () =>
@@ -99,6 +106,7 @@ export class UserModule implements DependencyInjectionModule {
           container.get<UserRepository>(symbols.userRepository),
           container.get<HashService>(symbols.hashService),
           container.get<LoggerService>(coreSymbols.loggerService),
+          container.get<PasswordValidationService>(symbols.passwordValidationService),
         ),
     );
 

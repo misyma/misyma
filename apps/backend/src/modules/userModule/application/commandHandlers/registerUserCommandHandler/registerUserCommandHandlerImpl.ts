@@ -7,16 +7,20 @@ import { ResourceAlreadyExistsError } from '../../../../../common/errors/common/
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
 import { type HashService } from '../../services/hashService/hashService.js';
+import { type PasswordValidationService } from '../../services/passwordValidationService/passwordValidationService.js';
 
 export class RegisterUserCommandHandlerImpl implements RegisterUserCommandHandler {
   public constructor(
     private readonly userRepository: UserRepository,
     private readonly hashService: HashService,
     private readonly loggerService: LoggerService,
+    private readonly passwordValidationService: PasswordValidationService,
   ) {}
 
   public async execute(payload: RegisterUserCommandHandlerPayload): Promise<RegisterUserCommandHandlerResult> {
-    const { email, password, firstName, lastName } = payload;
+    const { email: emailInput, password, firstName, lastName } = payload;
+
+    const email = emailInput.toLowerCase();
 
     this.loggerService.debug({
       message: 'Registering User...',
@@ -35,6 +39,8 @@ export class RegisterUserCommandHandlerImpl implements RegisterUserCommandHandle
         email,
       });
     }
+
+    this.passwordValidationService.validate({ password });
 
     const hashedPassword = await this.hashService.hash({ plainData: password });
 

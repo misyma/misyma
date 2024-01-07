@@ -3,6 +3,7 @@ import { beforeEach, afterEach, expect, it, describe, vi } from 'vitest';
 import { SpyFactory } from '@common/tests';
 
 import { type RegisterUserCommandHandler } from './registerUserCommandHandler.js';
+import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/common/resourceAlreadyExistsError.js';
 import { Application } from '../../../../../core/application.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
@@ -46,42 +47,57 @@ describe('RegisterUserCommandHandler', () => {
   });
 
   it('creates a User', async () => {
-    const createdUser = userTestFactory.create();
+    const user = userTestFactory.create();
 
     spyFactory.create(emailService, 'sendEmail').mockImplementation(async () => {});
 
-    const { user } = await registerUserCommandHandler.execute({
-      email: createdUser.getEmail(),
-      password: createdUser.getPassword(),
-      firstName: createdUser.getFirstName(),
-      lastName: createdUser.getLastName(),
+    const { user: createdUser } = await registerUserCommandHandler.execute({
+      email: user.getEmail(),
+      password: user.getPassword(),
+      firstName: user.getFirstName(),
+      lastName: user.getLastName(),
     });
 
-    const foundUser = await userTestUtils.findByEmail({ email: createdUser.getEmail() });
+    const foundUser = await userTestUtils.findByEmail({ email: user.getEmail() });
 
-    expect(user.getEmail()).toEqual(createdUser.getEmail());
+    expect(createdUser.getEmail()).toEqual(user.getEmail());
 
-    expect(user.getIsEmailVerified()).toEqual(false);
+    expect(createdUser.getIsEmailVerified()).toEqual(false);
 
-    expect(foundUser.email).toEqual(createdUser.getEmail());
+    expect(foundUser.email).toEqual(user.getEmail());
   });
 
   it('throws an error when a User with the same email already exists', async () => {
     const existingUser = await userTestUtils.createAndPersist();
 
-    try {
+    expect(async () => {
       await registerUserCommandHandler.execute({
         email: existingUser.email,
         password: existingUser.password,
         firstName: existingUser.firstName,
         lastName: existingUser.lastName,
       });
-    } catch (error) {
-      expect(error).toBeInstanceOf(ResourceAlreadyExistsError);
+    }).toThrowErrorInstance({
+      instance: ResourceAlreadyExistsError,
+      context: {
+        name: 'User',
+        email: existingUser.email,
+      },
+    });
+  });
 
-      return;
-    }
+  it('throws an error when password does not meet requirements', async () => {
+    const user = userTestFactory.create();
 
-    expect.fail();
+    expect(async () => {
+      await registerUserCommandHandler.execute({
+        email: user.getEmail(),
+        password: '123',
+        firstName: user.getFirstName(),
+        lastName: user.getLastName(),
+      });
+    }).toThrowErrorInstance({
+      instance: OperationNotValidError,
+    });
   });
 });

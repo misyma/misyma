@@ -16,7 +16,7 @@ describe('UserMapperImpl', () => {
     const userEntity: UserRawEntity = {
       id: Generator.uuid(),
       email: Generator.email(),
-      password: Generator.password(12),
+      password: Generator.password(),
       firstName: Generator.firstName(),
       lastName: Generator.lastName(),
       isEmailVerified: Generator.boolean(),

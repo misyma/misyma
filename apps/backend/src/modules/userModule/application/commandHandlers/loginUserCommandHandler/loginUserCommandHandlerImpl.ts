@@ -21,7 +21,9 @@ export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
   ) {}
 
   public async execute(payload: LoginUserCommandHandlerPayload): Promise<LoginUserCommandHandlerResult> {
-    const { email, password } = payload;
+    const { email: emailInput, password } = payload;
+
+    const email = emailInput.toLowerCase();
 
     this.loggerService.debug({
       message: 'Logging User in...',

@@ -53,7 +53,7 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
       },
     });
 
-    const newPassword = Generator.password(16);
+    const newPassword = Generator.password();
 
     await commandHandler.execute({
       newPassword,
@@ -86,7 +86,7 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
       expiresIn: Generator.number(10000, 100000),
     });
 
-    const newPassword = Generator.password(16);
+    const newPassword = Generator.password();
 
     const userId = Generator.uuid();
 
@@ -128,7 +128,7 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
       },
     });
 
-    const newPassword = Generator.password(16);
+    const newPassword = Generator.password();
 
     await expect(
       async () =>
@@ -183,7 +183,7 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
   it('throws an error - when resetPasswordToken is invalid', async () => {
     const invalidResetPasswordToken = 'invalidResetPasswordToken';
 
-    const newPassword = Generator.password(16);
+    const newPassword = Generator.password();
 
     await expect(
       async () =>
@@ -210,7 +210,7 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
 
     const user = await userTestUtils.createAndPersist();
 
-    const newPassword = Generator.password(16);
+    const newPassword = Generator.password();
 
     await expect(
       async () =>
@@ -249,7 +249,7 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
       expiresIn: Generator.number(),
     });
 
-    const newPassword = Generator.password(16);
+    const newPassword = Generator.password();
 
     await expect(
       async () =>
