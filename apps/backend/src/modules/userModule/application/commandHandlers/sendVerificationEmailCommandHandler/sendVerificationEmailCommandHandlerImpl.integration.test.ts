@@ -5,20 +5,21 @@ import { SpyFactory } from '@common/tests';
 import { type SendVerificationEmailCommandHandler } from './sendVerificationEmailCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
+import { EmailEventStatus } from '../../../domain/entities/emailEvent/types/emailEventStatus.js';
+import { EmailEventType } from '../../../domain/entities/emailEvent/types/emailEventType.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
 import { symbols } from '../../../symbols.js';
+import { type EmailEventTestUtils } from '../../../tests/utils/emailEventTestUtils/emailEventTestUtils.js';
 import { type UserTestUtils } from '../../../tests/utils/userTestUtils/userTestUtils.js';
-import { type EmailService } from '../../services/emailService/emailService.js';
-import { VerificationEmail } from '../../types/emails/verificationEmail.js';
 
 describe('SendVerificationEmailCommandHandlerImpl', () => {
   let commandHandler: SendVerificationEmailCommandHandler;
 
-  let emailService: EmailService;
-
   let userRepository: UserRepository;
 
   let userTestUtils: UserTestUtils;
+
+  let emailEventTestUtils: EmailEventTestUtils;
 
   const spyFactory = new SpyFactory(vi);
 
@@ -29,9 +30,9 @@ describe('SendVerificationEmailCommandHandlerImpl', () => {
 
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
 
-    userRepository = container.get<UserRepository>(symbols.userRepository);
+    emailEventTestUtils = container.get<EmailEventTestUtils>(testSymbols.emailEventTestUtils);
 
-    emailService = container.get<EmailService>(symbols.emailService);
+    userRepository = container.get<UserRepository>(symbols.userRepository);
   });
 
   it('returns and does nothing - when User was not found', async () => {
@@ -46,25 +47,33 @@ describe('SendVerificationEmailCommandHandlerImpl', () => {
     expect(updateUserSpy).not.toHaveBeenCalled();
   });
 
-  it('sends VerificationEmail', async () => {
-    const user = await userTestUtils.createAndPersist();
+  it('creates an EmailEvent', async () => {
+    await emailEventTestUtils.truncate();
 
-    const sendEmailSpy = spyFactory.create(emailService, 'sendEmail');
+    const user = await userTestUtils.createAndPersist();
 
     await commandHandler.execute({
       userId: user.id,
     });
 
-    expect(sendEmailSpy).toHaveBeenCalledWith(
-      new VerificationEmail({
-        recipient: user.email,
-        templateData: {
-          emailVerificationLink: expect.any(String),
-          firstName: user.firstName,
-          lastName: user.lastName,
-        },
-      }),
-    );
+    const createdEmailEvent = await emailEventTestUtils.findAll();
+
+    expect(createdEmailEvent).toHaveLength(1);
+
+    expect(createdEmailEvent[0]).toMatchObject({
+      eventName: EmailEventType.verifyEmail,
+      id: expect.any(String),
+      status: EmailEventStatus.pending,
+    });
+
+    const emailEventPayload = createdEmailEvent[0]?.payload;
+
+    expect(JSON.parse(emailEventPayload as unknown as string)).toEqual({
+      emailVerificationLink: expect.any(String),
+      firstName: user.firstName,
+      lastName: user.lastName,
+      recipientEmail: user.email,
+    });
   });
 
   it('persists EmailVerificationToken', async () => {

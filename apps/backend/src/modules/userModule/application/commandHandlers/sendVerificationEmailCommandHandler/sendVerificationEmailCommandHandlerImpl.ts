@@ -67,11 +67,11 @@ export class SendVerificationEmailCommandHandlerImpl implements SendVerification
       new EmailEventDraft({
         payload: {
           recipientEmail: user.getEmail(),
-          emailEventType: EmailEventType.verifyEmail,
           firstName: user.getFirstName(),
           lastName: user.getLastName(),
           emailVerificationLink,
         },
+        eventName: EmailEventType.verifyEmail,
       }),
     );
 

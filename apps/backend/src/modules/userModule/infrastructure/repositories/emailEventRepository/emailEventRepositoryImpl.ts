@@ -94,6 +94,7 @@ export class EmailEventRepositoryImpl implements EmailEventRepository {
         id: this.uuidService.generateUuid(),
         payload: JSON.stringify(entity.getPayload()) as unknown as EmailPayload,
         status: EmailEventStatus.pending,
+        eventName: entity.getEmailEventName(),
       });
     } catch (error) {
       throw new RepositoryError({

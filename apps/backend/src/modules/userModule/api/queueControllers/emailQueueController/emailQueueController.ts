@@ -47,7 +47,6 @@ export class EmailQueueController implements QueueController {
   public getQueuePaths(): QueuePath[] {
     return [
       QueuePath.create({
-        // TODO: Improve types
         handler: this.processEmailEvent.bind(this) as unknown as QueueHandler,
         queuePath: this.eventName,
       }),
