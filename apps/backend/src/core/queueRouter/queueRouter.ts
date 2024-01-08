@@ -1,5 +1,6 @@
 import { setInterval } from 'timers/promises';
 
+import { BaseError } from '../../common/errors/base/baseError.js';
 import { type QueueChannel } from '../../common/types/queue/queueChannel.js';
 import { type QueueController } from '../../common/types/queue/queueController.js';
 import { type QueueHandlerPayload, type QueueHandler } from '../../common/types/queue/queueHandler.js';
@@ -75,6 +76,14 @@ export class QueueRouter {
     const handler = this.paths.get(eventName);
 
     if (!handler) {
+      this.loggerService.warn({
+        message: 'A queue message was received for an unregistered path.',
+        context: {
+          eventName,
+          data,
+        },
+      });
+
       return;
     }
 
@@ -84,13 +93,26 @@ export class QueueRouter {
         eventName,
       });
     } catch (error) {
-      this.loggerService.error({
-        message: 'An error occurred while handling a queue message.',
-        context: {
-          eventName,
-          data,
-        },
-      });
+      if (error instanceof BaseError) {
+        this.loggerService.error({
+          message: 'An error occurred while handling a queue message.',
+          context: {
+            eventName,
+            data,
+            errorMessage: error.message,
+            errorName: error.name,
+          },
+        });
+      } else {
+        this.loggerService.error({
+          message: 'An error occurred while handling a queue message.',
+          context: {
+            eventName,
+            data,
+            errorMessage: (error as Error)?.message,
+          },
+        });
+      }
 
       return;
     }

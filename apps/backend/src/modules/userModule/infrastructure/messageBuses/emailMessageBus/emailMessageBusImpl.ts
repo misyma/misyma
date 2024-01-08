@@ -5,7 +5,7 @@ import { type EmailEventRepository } from '../../../domain/repositories/emailEve
 export class EmailMessageBusImpl implements EmailMessageBus {
   public constructor(private readonly emailEventRepository: EmailEventRepository) {}
 
-  public async registerEvent(emailEvent: EmailEventDraft): Promise<void> {
+  public async sendEvent(emailEvent: EmailEventDraft): Promise<void> {
     await this.emailEventRepository.create(emailEvent);
   }
 }

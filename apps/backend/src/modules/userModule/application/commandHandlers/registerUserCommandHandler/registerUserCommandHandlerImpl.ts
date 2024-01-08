@@ -124,14 +124,14 @@ export class RegisterUserCommandHandlerImpl implements RegisterUserCommandHandle
       },
     });
 
-    await this.emailMessageBus.registerEvent(
+    await this.emailMessageBus.sendEvent(
       new EmailEventDraft({
         eventName: EmailEventType.verifyEmail,
         payload: {
           firstName,
           lastName,
           recipientEmail: email,
-          emailVerificationToken: user,
+          emailVerificationToken,
         },
       }),
     );

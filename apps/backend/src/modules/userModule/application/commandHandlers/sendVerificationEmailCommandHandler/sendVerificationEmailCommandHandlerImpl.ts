@@ -63,7 +63,7 @@ export class SendVerificationEmailCommandHandlerImpl implements SendVerification
 
     const emailVerificationLink = `${frontendUrl}/verify-email?token=${emailVerificationToken}`;
 
-    await this.emailMessageBus.registerEvent(
+    await this.emailMessageBus.sendEvent(
       new EmailEventDraft({
         payload: {
           recipientEmail: user.getEmail(),
