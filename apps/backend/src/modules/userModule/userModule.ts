@@ -190,6 +190,7 @@ export class UserModule implements DependencyInjectionModule {
           container.get<HashService>(symbols.hashService),
           container.get<TokenService>(authSymbols.tokenService),
           container.get<BlacklistTokenRepository>(symbols.blacklistTokenRepository),
+          container.get<PasswordValidationService>(symbols.passwordValidationService),
         ),
     );
 

@@ -65,10 +65,18 @@ export class Generator {
     return faker.datatype.boolean();
   }
 
-  public static password(length = 14): string {
-    return faker.internet.password({
-      length,
+  public static password(): string {
+    let password = faker.internet.password({
+      length: 13,
     });
+
+    password += Generator.alphaString(1, 'upper');
+
+    password += Generator.alphaString(1, 'lower');
+
+    password += Generator.numericString(1);
+
+    return password;
   }
 
   public static sentences(count = 3): string {

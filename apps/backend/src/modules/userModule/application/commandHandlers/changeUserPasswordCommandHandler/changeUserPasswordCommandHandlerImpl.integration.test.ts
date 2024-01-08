@@ -107,6 +107,36 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
     });
   });
 
+  it('throws an error - when password does not meet the requirements', async () => {
+    const resetPasswordToken = tokenService.createToken({
+      data: {},
+      expiresIn: Generator.number(10000, 100000),
+    });
+
+    const user = await userTestUtils.createAndPersist();
+
+    await userTestUtils.createAndPersistUserTokens({
+      input: {
+        userId: user.id,
+        resetPasswordToken,
+      },
+    });
+
+    const newPassword = Generator.alphaString(5);
+
+    await expect(
+      async () =>
+        await commandHandler.execute({
+          newPassword,
+          repeatedNewPassword: newPassword,
+          resetPasswordToken,
+          userId: user.id,
+        }),
+    ).toThrowErrorInstance({
+      instance: OperationNotValidError,
+    });
+  });
+
   it('throws an error - when resetPasswordToken is blacklisted', async () => {
     const resetPasswordToken = tokenService.createToken({
       data: {},
@@ -162,11 +192,15 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
       },
     });
 
+    const newPassword = Generator.password();
+
+    const repeatedNewPassword = `repeated${Generator.password()}`;
+
     await expect(
       async () =>
         await commandHandler.execute({
-          newPassword: 'newPassword',
-          repeatedNewPassword: 'repeatedNewPassword',
+          newPassword,
+          repeatedNewPassword,
           resetPasswordToken,
           userId: user.id,
         }),
@@ -174,8 +208,6 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
       instance: OperationNotValidError,
       context: {
         reason: 'Passwords do not match.',
-        newPassword: 'newPassword',
-        repeatedNewPassword: 'repeatedNewPassword',
       },
     });
   });
