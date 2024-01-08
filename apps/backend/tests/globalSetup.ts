@@ -2,14 +2,21 @@ import { Application } from '../src/core/application.js';
 import { AuthorDatabaseManager } from '../src/modules/authorModule/infrastructure/databases/authorDatabaseManager.js';
 import { BookDatabaseManager } from '../src/modules/bookModule/infrastructure/databases/bookDatabase/bookDatabaseManager.js';
 import { UserDatabaseManager } from '../src/modules/userModule/infrastructure/databases/userDatabase/userDatabaseManager.js';
+import { UserEventsDatabaseManager } from '../src/modules/userModule/infrastructure/databases/userEventsDatabase/userEventsDatabaseManager.js';
 
 export async function setup(): Promise<void> {
   try {
     const container = Application.createContainer();
 
+    const eventsDatabaseManagers = [UserEventsDatabaseManager];
+
     const databaseManagers = [UserDatabaseManager, AuthorDatabaseManager, BookDatabaseManager];
 
     for (const databaseManager of databaseManagers) {
+      await databaseManager.bootstrapDatabase(container);
+    }
+
+    for await (const databaseManager of eventsDatabaseManagers) {
       await databaseManager.bootstrapDatabase(container);
     }
 

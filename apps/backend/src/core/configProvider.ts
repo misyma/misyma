@@ -28,6 +28,10 @@ export class ConfigProvider {
     return this.getValue<string>('auth.jwt.secret');
   }
 
+  public getQueuesDatabasePath(): string {
+    return this.getValue<string>('queues.database.path');
+  }
+
   public getFrontendUrl(): string {
     return this.getValue<string>('frontend.url');
   }

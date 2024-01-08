@@ -2,6 +2,11 @@
   "database": {
     "path": "data/e2e-tests.db"
   },
+  "queues": {
+    "database": {
+      "path": "data/queue-tests.db"
+    }
+  },
   "logger": {
     "prettifyLogs": false
   },

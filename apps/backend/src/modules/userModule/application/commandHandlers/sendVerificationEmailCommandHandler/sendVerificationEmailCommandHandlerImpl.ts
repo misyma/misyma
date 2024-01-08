@@ -4,18 +4,19 @@ import {
 } from './sendVerificationEmailCommandHandler.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
+import { EmailEventDraft } from '../../../domain/entities/emailEvent/emailEventDraft.ts/emailEventDraft.js';
+import { EmailEventType } from '../../../domain/entities/emailEvent/types/emailEventType.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
 import { type UserModuleConfigProvider } from '../../../userModuleConfigProvider.js';
-import { type EmailService } from '../../services/emailService/emailService.js';
-import { VerificationEmail } from '../../types/emails/verificationEmail.js';
+import { type EmailMessageBus } from '../../messageBuses/emailMessageBus/emailMessageBus.js';
 
 export class SendVerificationEmailCommandHandlerImpl implements SendVerificationEmailCommandHandler {
   public constructor(
-    private readonly emailService: EmailService,
     private readonly tokenService: TokenService,
     private readonly userRepository: UserRepository,
     private readonly loggerService: LoggerService,
     private readonly configProvider: UserModuleConfigProvider,
+    private readonly emailMessageBus: EmailMessageBus,
   ) {}
 
   public async execute(payload: ExecutePayload): Promise<void> {
@@ -62,14 +63,15 @@ export class SendVerificationEmailCommandHandlerImpl implements SendVerification
 
     const emailVerificationLink = `${frontendUrl}/verify-email?token=${emailVerificationToken}`;
 
-    await this.emailService.sendEmail(
-      new VerificationEmail({
-        recipient: user.getEmail(),
-        templateData: {
+    await this.emailMessageBus.sendEvent(
+      new EmailEventDraft({
+        payload: {
+          recipientEmail: user.getEmail(),
           firstName: user.getFirstName(),
           lastName: user.getLastName(),
           emailVerificationLink,
         },
+        eventName: EmailEventType.verifyEmail,
       }),
     );
 
