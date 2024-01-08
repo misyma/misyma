@@ -4,6 +4,7 @@ import { type TokenService } from '../../../../authModule/application/services/t
 import { type BlacklistTokenRepository } from '../../../domain/repositories/blacklistTokenRepository/blacklistTokenRepository.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
 import { type HashService } from '../../services/hashService/hashService.js';
+import { type PasswordValidationService } from '../../services/passwordValidationService/passwordValidationService.js';
 
 export class ChangeUserPasswordCommandHandlerImpl implements ChangeUserPasswordCommandHandler {
   public constructor(
@@ -11,6 +12,7 @@ export class ChangeUserPasswordCommandHandlerImpl implements ChangeUserPasswordC
     private readonly hashService: HashService,
     private readonly tokenService: TokenService,
     private readonly blacklistTokenRepository: BlacklistTokenRepository,
+    private readonly passwordValidationService: PasswordValidationService,
   ) {}
 
   public async execute(payload: ExecutePayload): Promise<void> {
@@ -61,10 +63,10 @@ export class ChangeUserPasswordCommandHandlerImpl implements ChangeUserPasswordC
     if (newPassword !== repeatedNewPassword) {
       throw new OperationNotValidError({
         reason: 'Passwords do not match.',
-        newPassword,
-        repeatedNewPassword,
       });
     }
+
+    this.passwordValidationService.validate({ password: newPassword });
 
     const hashedPassword = await this.hashService.hash({ plainData: newPassword });
 
