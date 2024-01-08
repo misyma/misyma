@@ -19,6 +19,16 @@ export const symbols = {
 
   userHttpController: Symbol('userHttpController'),
 
+  emailEventRepository: Symbol('emailEventRepository'),
+  emailEventMapper: Symbol('emailEventMapper'),
+
+  emailMessageBus: Symbol('emailMessageBus'),
+
+  findEmailEventsQueryHandler: Symbol('findEmailEventsQueryHandler'),
+  changeEmailEventStatusCommandHandler: Symbol('changeEmailEventStatusCommandHandler'),
+
+  emailQueueController: Symbol('emailQueueController'),
+
   hashService: Symbol('hashService'),
   emailService: Symbol('emailService'),
   passwordValidationService: Symbol('passwordValidationService'),
@@ -26,4 +36,5 @@ export const symbols = {
 
 export const userSymbols = {
   userHttpController: symbols.userHttpController,
+  emailQueueController: symbols.emailQueueController,
 };

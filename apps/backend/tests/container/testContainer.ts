@@ -9,6 +9,7 @@ import { AuthorTestUtils } from '../../src/modules/authorModule/tests/utils/auth
 import { type EmailService } from '../../src/modules/userModule/application/services/emailService/emailService.js';
 import { symbols as userSymbols } from '../../src/modules/userModule/symbols.js';
 import { BlacklistTokenTestUtils } from '../../src/modules/userModule/tests/utils/blacklistTokenTestUtils/blacklistTokenTestUtils.js';
+import { EmailEventTestUtils } from '../../src/modules/userModule/tests/utils/emailEventTestUtils/emailEventTestUtils.js';
 import { UserTestUtils } from '../../src/modules/userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { ApplicationService } from '../e2e/application/applicationService.js';
 import { AuthorService } from '../e2e/author/authorService.js';
@@ -48,6 +49,11 @@ export class TestContainer {
     container.bind<AuthorTestUtils>(
       testSymbols.authorTestUtils,
       () => new AuthorTestUtils(container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient)),
+    );
+
+    container.bind<EmailEventTestUtils>(
+      testSymbols.emailEventTestUtils,
+      () => new EmailEventTestUtils(container.get<SqliteDatabaseClient>(coreSymbols.entityEventsDatabaseClient)),
     );
 
     container.overrideBinding<EmailService>(userSymbols.emailService, () => ({
