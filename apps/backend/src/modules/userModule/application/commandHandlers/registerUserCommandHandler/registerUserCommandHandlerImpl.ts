@@ -8,11 +8,16 @@ import { type LoggerService } from '../../../../../libs/logger/services/loggerSe
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { EmailEventDraft } from '../../../domain/entities/emailEvent/emailEventDraft.ts/emailEventDraft.js';
 import { EmailEventType } from '../../../domain/entities/emailEvent/types/emailEventType.js';
+import { type User } from '../../../domain/entities/user/user.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
 import { type UserModuleConfigProvider } from '../../../userModuleConfigProvider.js';
 import { type EmailMessageBus } from '../../messageBuses/emailMessageBus/emailMessageBus.js';
 import { type HashService } from '../../services/hashService/hashService.js';
 import { type PasswordValidationService } from '../../services/passwordValidationService/passwordValidationService.js';
+
+export interface SendVerificationEmailPayload {
+  readonly user: User;
+}
 
 interface Dependencies {
   userRepository: UserRepository;
@@ -124,18 +129,52 @@ export class RegisterUserCommandHandlerImpl implements RegisterUserCommandHandle
       },
     });
 
+    await this.sendVerificationEmail({ user });
+
+    return { user };
+  }
+
+  private async sendVerificationEmail(payload: SendVerificationEmailPayload): Promise<void> {
+    const { user } = payload;
+
+    this.loggerService.debug({
+      message: 'Sending verification email...',
+      context: {
+        userId: user.getId(),
+        email: user.getEmail(),
+      },
+    });
+
+    const expiresIn = this.configProvider.getEmailVerificationTokenExpiresIn();
+
+    const emailVerificationToken = this.tokenService.createToken({
+      data: { userId: user.getId() },
+      expiresIn,
+    });
+
+    user.addUpdateEmailVerificationTokenAction({
+      emailVerificationToken,
+    });
+
+    await this.userRepository.updateUser({
+      id: user.getId(),
+      domainActions: user.getDomainActions(),
+    });
+
+    const frontendUrl = this.configProvider.getFrontendUrl();
+
+    const emailVerificationLink = `${frontendUrl}/verify-email?token=${emailVerificationToken}`;
+
     await this.emailMessageBus.sendEvent(
       new EmailEventDraft({
         eventName: EmailEventType.verifyEmail,
         payload: {
-          firstName,
-          lastName,
-          recipientEmail: email,
-          emailVerificationToken,
+          firstName: user.getFirstName(),
+          lastName: user.getLastName(),
+          recipientEmail: user.getEmail(),
+          emailVerificationLink,
         },
       }),
     );
-
-    return { user };
   }
 }

@@ -24,15 +24,15 @@ export class SendGridServiceImpl implements SendGridService {
               email: email.to,
             },
           ],
-          subject: email.subject,
         },
       ],
       from: {
         email: senderEmail,
       },
+      subject: email.subject,
       content: [
         {
-          type: HttpMediaType.textXml,
+          type: HttpMediaType.textPlain,
           value: email.body,
         },
       ],
@@ -40,6 +40,7 @@ export class SendGridServiceImpl implements SendGridService {
 
     const requestHeaders = {
       [HttpHeader.authorization]: `Bearer ${apiKey}`,
+      [HttpHeader.contentType]: HttpMediaType.applicationJson,
     };
 
     await this.httpService.sendRequest({

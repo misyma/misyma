@@ -17,5 +17,5 @@ export interface HttpResponse<ReponseBody = unknown> {
 }
 
 export interface HttpService {
-  sendRequest(payload: SendRequestPayload): Promise<HttpResponse>;
+  sendRequest<ResponseBody>(payload: SendRequestPayload): Promise<HttpResponse<ResponseBody>>;
 }
