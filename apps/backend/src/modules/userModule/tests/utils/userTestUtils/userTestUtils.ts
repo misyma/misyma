@@ -1,9 +1,9 @@
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';
+import { type UserTokensRawEntity } from '../../../infrastructure/databases/userDatabase/tables/refreshTokenTable/refreshTokenRawEntity.js';
+import { UserTokensTable } from '../../../infrastructure/databases/userDatabase/tables/refreshTokenTable/refreshTokenTable.js';
 import { type UserRawEntity } from '../../../infrastructure/databases/userDatabase/tables/userTable/userRawEntity.js';
 import { UserTable } from '../../../infrastructure/databases/userDatabase/tables/userTable/userTable.js';
-import { type UserTokensRawEntity } from '../../../infrastructure/databases/userDatabase/tables/userTokensTable/userTokensRawEntity.js';
-import { UserTokensTable } from '../../../infrastructure/databases/userDatabase/tables/userTokensTable/userTokensTable.js';
 import { UserTestFactory } from '../../factories/userTestFactory/userTestFactory.js';
 import { UserTokensTestFactory } from '../../factories/userTokensTestFactory/userTokensTestFactory.js';
 

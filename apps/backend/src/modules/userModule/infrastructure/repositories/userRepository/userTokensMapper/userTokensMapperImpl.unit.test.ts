@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { Generator } from '@common/tests';
 
 import { UserTokensMapperImpl } from './userTokensMapperImpl.js';
-import { type UserTokensRawEntity } from '../../../databases/userDatabase/tables/userTokensTable/userTokensRawEntity.js';
+import { type UserTokensRawEntity } from '../../../databases/userDatabase/tables/refreshTokenTable/refreshTokenRawEntity.js';
 
 describe('UserTokensMapperImpl', () => {
   const userTokensMapper = new UserTokensMapperImpl();

@@ -20,10 +20,10 @@ import {
   type DeleteUserPayload,
   type FindUserTokensPayload,
 } from '../../../domain/repositories/userRepository/userRepository.js';
+import { type UserTokensRawEntity } from '../../databases/userDatabase/tables/refreshTokenTable/refreshTokenRawEntity.js';
+import { UserTokensTable } from '../../databases/userDatabase/tables/refreshTokenTable/refreshTokenTable.js';
 import { type UserRawEntity } from '../../databases/userDatabase/tables/userTable/userRawEntity.js';
 import { UserTable } from '../../databases/userDatabase/tables/userTable/userTable.js';
-import { type UserTokensRawEntity } from '../../databases/userDatabase/tables/userTokensTable/userTokensRawEntity.js';
-import { UserTokensTable } from '../../databases/userDatabase/tables/userTokensTable/userTokensTable.js';
 
 export interface MappedUserUpdate {
   userUpdatePayload: Partial<UserRawEntity> | undefined;
