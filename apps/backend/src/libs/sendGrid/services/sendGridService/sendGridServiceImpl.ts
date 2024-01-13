@@ -14,12 +14,6 @@ export class SendGridServiceImpl implements SendGridService {
   public async sendEmail(payload: SendEmailPayload): Promise<void> {
     const { toEmail, subject, body } = payload;
 
-    console.log({
-      toEmail,
-      subject,
-      body,
-    });
-
     const { apiKey, senderEmail } = this.config;
 
     const url = 'https://api.sendgrid.com/v3/mail/send';

@@ -8,8 +8,6 @@ export class EmailEventMapper {
   public map(rawEntity: EmailEventRawEntity): EmailEvent {
     const { createdAt, id, payload, status, eventName } = rawEntity;
 
-    console.log({ payload });
-
     return new EmailEvent({
       createdAt: new Date(createdAt),
       id,
