@@ -1,6 +1,8 @@
 import { M1CreateUserTableMigration } from './migrations/m1CreateUserTableMigration.js';
 import { M2CreateBlacklistTokenTableMigration } from './migrations/m2CreateBlacklistTokenTableMigration.js';
-import { M2CreateUserTokensTableMigration } from './migrations/m2CreateUserTokensTableMigration.js';
+import { M3CreateRefreshTokenTableMigration } from './migrations/m3CreateRefreshTokenTableMigration.js';
+import { M4CreateResetPasswordTokenTableMigration } from './migrations/m4CreateResetPasswordTokenTableMigration.js';
+import { M5CreateVerificationTokenTableMigration } from './migrations/m5CreateEmailVerificationTokenTableMigration.js';
 import { type Migration } from '../../../../../libs/database/types/migration.js';
 import { type MigrationSource } from '../../../../../libs/database/types/migrationSource.js';
 
@@ -8,8 +10,10 @@ export class UserDatabaseMigrationSource implements MigrationSource {
   public async getMigrations(): Promise<Migration[]> {
     return [
       new M1CreateUserTableMigration(),
-      new M2CreateUserTokensTableMigration(),
       new M2CreateBlacklistTokenTableMigration(),
+      new M3CreateRefreshTokenTableMigration(),
+      new M4CreateResetPasswordTokenTableMigration(),
+      new M5CreateVerificationTokenTableMigration(),
     ];
   }
 

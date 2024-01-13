@@ -20,14 +20,17 @@ import {
   type DeleteUserPayload,
   type FindUserTokensPayload,
 } from '../../../domain/repositories/userRepository/userRepository.js';
-import { type UserTokensRawEntity } from '../../databases/userDatabase/tables/refreshTokenTable/refreshTokenRawEntity.js';
-import { UserTokensTable } from '../../databases/userDatabase/tables/refreshTokenTable/refreshTokenTable.js';
+import { type EmailVerificationTokenRawEntity } from '../../databases/userDatabase/tables/emailVerificationTokenTable/emailVerificationTokenRawEntity.js';
+import { type RefreshTokenRawEntity } from '../../databases/userDatabase/tables/refreshTokenTable/refreshTokenRawEntity.js';
+import { type ResetPasswordTokenRawEntity } from '../../databases/userDatabase/tables/resetPasswordTokenTable/resetPasswordTokenRawEntity.js';
 import { type UserRawEntity } from '../../databases/userDatabase/tables/userTable/userRawEntity.js';
 import { UserTable } from '../../databases/userDatabase/tables/userTable/userTable.js';
 
 export interface MappedUserUpdate {
   userUpdatePayload: Partial<UserRawEntity> | undefined;
-  userTokensUpdatePayload?: Partial<UserTokensRawEntity> | undefined;
+  refreshTokenUpdatePayload?: Partial<RefreshTokenRawEntity> | undefined;
+  resetPasswordTokenUpdatePayload?: Partial<ResetPasswordTokenRawEntity> | undefined;
+  emailVerificationTokenUpdatePayload?: Partial<EmailVerificationTokenRawEntity> | undefined;
 }
 
 export class UserRepositoryImpl implements UserRepository {
