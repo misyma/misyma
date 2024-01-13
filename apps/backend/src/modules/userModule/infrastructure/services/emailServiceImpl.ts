@@ -7,7 +7,7 @@ export class EmailServiceImpl implements EmailService {
 
   public sendEmail(email: Email): Promise<void> {
     return this.sendGridService.sendEmail({
-      to: email.getRecipient(),
+      toEmail: email.getRecipient(),
       subject: email.getSubject(),
       body: email.getBody(),
     });

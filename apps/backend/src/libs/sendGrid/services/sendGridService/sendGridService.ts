@@ -1,5 +1,5 @@
 export interface SendEmailPayload {
-  readonly to: string;
+  readonly toEmail: string;
   readonly subject: string;
   readonly body: string;
 }

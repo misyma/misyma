@@ -127,7 +127,7 @@ export class EmailQueueController implements QueueController {
 
         retryListener = this.retryPolicy.onFailure((reason) => {
           this.loggerService.error({
-            message: 'Failed to send verification email.',
+            message: 'Failed to send reset password email.',
             context: {
               emailEventId: emailEvent.getId(),
               reason,

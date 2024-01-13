@@ -11,7 +11,7 @@ export class HttpServiceImpl implements HttpService {
     private readonly loggerService: LoggerService,
   ) {}
 
-  public async sendRequest(payload: SendRequestPayload): Promise<HttpResponse> {
+  public async sendRequest<ResponseBody>(payload: SendRequestPayload): Promise<HttpResponse<ResponseBody>> {
     const { method, url: initialUrl, headers, queryParams, body: requestBody } = payload;
 
     const body = JSON.stringify(requestBody);
@@ -27,7 +27,6 @@ export class HttpServiceImpl implements HttpService {
       context: {
         url,
         method,
-        body,
         headers,
       },
     });
@@ -42,18 +41,22 @@ export class HttpServiceImpl implements HttpService {
         },
       });
 
-      // TODO: Fix - throws an error when response body is empty
-      const responseBody = await response.json();
+      const responseBodyText = await response.text();
+
+      const responseBody = !responseBodyText.length ? {} : JSON.parse(responseBodyText);
 
       this.loggerService.debug({
         message: 'Http request sent.',
         context: {
-          statusCode: response.status,
+          response: {
+            statusCode: response.status,
+            body: response.status >= 200 && response.status < 300 ? 'hidden' : responseBody,
+          },
         },
       });
 
       return {
-        body: responseBody,
+        body: responseBody as ResponseBody,
         statusCode: response.status,
       };
     } catch (error) {
