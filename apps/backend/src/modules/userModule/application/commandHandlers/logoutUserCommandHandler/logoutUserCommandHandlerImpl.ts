@@ -61,7 +61,7 @@ export class LogoutUserCommandHandlerImpl implements LogoutUserCommandHandler {
       });
     }
 
-    if (userTokens.getRefreshToken() !== refreshToken) {
+    if (!userTokens.refreshTokens.includes(refreshToken)) {
       throw new OperationNotValidError({
         reason: 'Refresh token is not valid.',
         userId,

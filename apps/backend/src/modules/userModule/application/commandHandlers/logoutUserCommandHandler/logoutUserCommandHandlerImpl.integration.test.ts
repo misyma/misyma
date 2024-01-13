@@ -58,7 +58,7 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
     await userTestUtils.createAndPersistRefreshToken({
       input: {
         userId: user.id,
-        refreshToken,
+        token: refreshToken,
       },
     });
 
@@ -131,7 +131,7 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
     await userTestUtils.createAndPersistRefreshToken({
       input: {
         userId: user.id,
-        refreshToken,
+        token: refreshToken,
       },
     });
 

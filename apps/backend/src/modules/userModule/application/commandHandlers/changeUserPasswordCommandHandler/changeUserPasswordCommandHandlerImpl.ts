@@ -53,7 +53,7 @@ export class ChangeUserPasswordCommandHandlerImpl implements ChangeUserPasswordC
       });
     }
 
-    if (userTokens.getResetPasswordToken() !== resetPasswordToken) {
+    if (resetPasswordToken !== userTokens.resetPasswordToken) {
       throw new OperationNotValidError({
         reason: 'Reset password token is not valid.',
         resetPasswordToken,

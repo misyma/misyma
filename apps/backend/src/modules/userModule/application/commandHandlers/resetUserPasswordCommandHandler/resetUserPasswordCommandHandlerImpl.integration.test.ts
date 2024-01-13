@@ -5,6 +5,8 @@ import { Generator, SpyFactory } from '@common/tests';
 import { type ResetUserPasswordCommandHandler } from './resetUserPasswordCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
+import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
+import { authSymbols } from '../../../../authModule/symbols.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
 import { symbols } from '../../../symbols.js';
 import { UserTestFactory } from '../../../tests/factories/userTestFactory/userTestFactory.js';
@@ -14,6 +16,8 @@ import { ResetPasswordEmail } from '../../types/emails/resetPasswordEmail.js';
 
 describe('ResetUserPasswordCommandHandler', () => {
   let commandHandler: ResetUserPasswordCommandHandler;
+
+  let tokenService: TokenService;
 
   let userRepository: UserRepository;
 
@@ -29,6 +33,8 @@ describe('ResetUserPasswordCommandHandler', () => {
     const container = TestContainer.create();
 
     commandHandler = container.get<ResetUserPasswordCommandHandler>(symbols.resetUserPasswordCommandHandler);
+
+    tokenService = container.get<TokenService>(authSymbols.tokenService);
 
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
 
@@ -104,9 +110,13 @@ describe('ResetUserPasswordCommandHandler', () => {
     });
 
     const userTokens = await userTestUtils.findTokensByUserId({
-      id: createdUser.id,
+      userId: createdUser.id,
     });
 
     expect(userTokens.resetPasswordToken).toBeDefined();
+
+    const resetPasswordTokenPayload = tokenService.verifyToken({ token: userTokens.resetPasswordToken! });
+
+    expect(resetPasswordTokenPayload['userId']).toBe(createdUser.id);
   });
 });

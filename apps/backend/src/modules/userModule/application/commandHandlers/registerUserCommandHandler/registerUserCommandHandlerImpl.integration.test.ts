@@ -8,6 +8,8 @@ import { ResourceAlreadyExistsError } from '../../../../../common/errors/common/
 import { Application } from '../../../../../core/application.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
+import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
+import { authSymbols } from '../../../../authModule/symbols.js';
 import { symbols } from '../../../symbols.js';
 import { UserTestFactory } from '../../../tests/factories/userTestFactory/userTestFactory.js';
 import { UserTestUtils } from '../../../tests/utils/userTestUtils/userTestUtils.js';
@@ -22,6 +24,8 @@ describe('RegisterUserCommandHandler', () => {
 
   let emailService: EmailService;
 
+  let tokenService: TokenService;
+
   let userTestUtils: UserTestUtils;
 
   const userTestFactory = new UserTestFactory();
@@ -30,6 +34,8 @@ describe('RegisterUserCommandHandler', () => {
     const container = Application.createContainer();
 
     registerUserCommandHandler = container.get<RegisterUserCommandHandler>(symbols.registerUserCommandHandler);
+
+    tokenService = container.get<TokenService>(authSymbols.tokenService);
 
     sqliteDatabaseClient = container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient);
 
@@ -65,6 +71,14 @@ describe('RegisterUserCommandHandler', () => {
     expect(createdUser.getIsEmailVerified()).toEqual(false);
 
     expect(foundUser.email).toEqual(user.getEmail());
+
+    const userTokens = await userTestUtils.findTokensByUserId({ userId: createdUser.getId() });
+
+    expect(userTokens.emailVerificationToken).toBeDefined();
+
+    const emailVerificationTokenPayload = tokenService.verifyToken({ token: userTokens.emailVerificationToken! });
+
+    expect(emailVerificationTokenPayload['userId']).toBe(createdUser.getId());
   });
 
   it('throws an error when a User with the same email already exists', async () => {

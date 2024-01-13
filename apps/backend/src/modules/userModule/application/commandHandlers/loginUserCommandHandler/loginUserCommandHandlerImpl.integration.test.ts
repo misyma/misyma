@@ -84,10 +84,10 @@ describe('LoginUserCommandHandler', () => {
     expect(refreshTokenPayload['userId']).toBe(createdUser.getId());
 
     const userTokens = await userTestUtils.findTokensByUserId({
-      id: createdUser.getId(),
+      userId: createdUser.getId(),
     });
 
-    expect(userTokens.refreshToken).toEqual(refreshToken);
+    expect(userTokens.refreshTokens.includes(refreshToken)).toBe(true);
 
     expect(accessTokenExpiresIn).toBe(configProvider.getAccessTokenExpiresIn());
   });

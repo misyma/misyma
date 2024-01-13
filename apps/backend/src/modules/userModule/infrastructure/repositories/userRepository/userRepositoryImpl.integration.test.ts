@@ -199,7 +199,7 @@ describe('UserRepositoryImpl', () => {
 
       const createdUser = userTestFactory.create();
 
-      const { token, expiresAt } = await userTestUtils.createAndPersistEmailVerificationToken({
+      await userTestUtils.createAndPersistEmailVerificationToken({
         input: {
           userId: user.id,
         },
@@ -207,8 +207,10 @@ describe('UserRepositoryImpl', () => {
 
       const updatedEmailVerificationToken = Generator.alphaString(32);
 
+      const expiresAt = Generator.futureDate();
+
       createdUser.addUpdateEmailVerificationTokenAction({
-        token,
+        token: updatedEmailVerificationToken,
         expiresAt,
       });
 
@@ -227,7 +229,7 @@ describe('UserRepositoryImpl', () => {
 
       const createdUser = userTestFactory.create();
 
-      const { token, expiresAt } = await userTestUtils.createAndPersistResetPasswordToken({
+      await userTestUtils.createAndPersistResetPasswordToken({
         input: {
           userId: user.id,
         },
@@ -235,8 +237,10 @@ describe('UserRepositoryImpl', () => {
 
       const updatedResetPasswordToken = Generator.alphaString(32);
 
+      const expiresAt = Generator.futureDate();
+
       createdUser.addUpdateResetPasswordTokenAction({
-        token,
+        token: updatedResetPasswordToken,
         expiresAt,
       });
 

@@ -34,7 +34,7 @@ interface TokenValue {
 
 export interface MappedUserUpdate {
   readonly userUpdatePayload: Partial<UserRawEntity> | undefined;
-  readonly refreshTokenCreatePayload?: TokenValue | undefined;
+  readonly refreshTokenCreatePayloads: TokenValue[];
   readonly resetPasswordTokenUpdatePayload?: TokenValue | undefined;
   readonly emailVerificationTokenUpdatePayload?: TokenValue | undefined;
 }
@@ -152,7 +152,7 @@ export class UserRepositoryImpl implements UserRepository {
     return this.userMapper.mapToDomain(rawEntity);
   }
 
-  public async findUserTokens(payload: FindUserTokensPayload): Promise<UserTokens> {
+  public async findUserTokens(payload: FindUserTokensPayload): Promise<UserTokens | null> {
     const { userId } = payload;
 
     const [refreshTokens, resetPasswordToken, emailVerificationToken] = await Promise.all([
@@ -160,6 +160,10 @@ export class UserRepositoryImpl implements UserRepository {
       this.findResetPasswordToken({ userId }),
       this.findEmailVerificationToken({ userId }),
     ]);
+
+    if (!refreshTokens.length && !resetPasswordToken && !emailVerificationToken) {
+      return null;
+    }
 
     return {
       refreshTokens: refreshTokens.map((refreshToken) => refreshToken.token),
@@ -264,7 +268,7 @@ export class UserRepositoryImpl implements UserRepository {
 
     const {
       userUpdatePayload,
-      refreshTokenCreatePayload,
+      refreshTokenCreatePayloads,
       emailVerificationTokenUpdatePayload,
       resetPasswordTokenUpdatePayload,
     } = this.mapDomainActionsToUpdatePayload(domainActions);
@@ -277,12 +281,14 @@ export class UserRepositoryImpl implements UserRepository {
             .where({ id });
         }
 
-        if (refreshTokenCreatePayload) {
-          await transaction<RefreshTokenRawEntity>(this.refreshTokenTable.name).insert({
-            id: this.uuidService.generateUuid(),
-            userId: id,
-            ...refreshTokenCreatePayload,
-          });
+        if (refreshTokenCreatePayloads.length) {
+          await transaction<RefreshTokenRawEntity>(this.refreshTokenTable.name).insert(
+            refreshTokenCreatePayloads.map((refreshTokenCreatePayload) => ({
+              id: this.uuidService.generateUuid(),
+              userId: id,
+              ...refreshTokenCreatePayload,
+            })),
+          );
         }
 
         if (resetPasswordTokenUpdatePayload) {
@@ -335,7 +341,7 @@ export class UserRepositoryImpl implements UserRepository {
   private mapDomainActionsToUpdatePayload(domainActions: UserDomainAction[]): MappedUserUpdate {
     let user: Partial<Writeable<UserRawEntity>> | undefined = undefined;
 
-    let refreshTokenCreatePayload: TokenValue | undefined = undefined;
+    const refreshTokenCreatePayloads: TokenValue[] = [];
 
     let resetPasswordTokenUpdatePayload: TokenValue | undefined = undefined;
 
@@ -344,10 +350,10 @@ export class UserRepositoryImpl implements UserRepository {
     domainActions.forEach((domainAction) => {
       switch (domainAction.actionName) {
         case UserDomainActionType.createRefreshToken:
-          refreshTokenCreatePayload = {
+          refreshTokenCreatePayloads.push({
             token: domainAction.payload.token,
             expiresAt: domainAction.payload.expiresAt,
-          };
+          });
 
           break;
 
@@ -421,7 +427,7 @@ export class UserRepositoryImpl implements UserRepository {
 
     return {
       userUpdatePayload: user,
-      refreshTokenCreatePayload,
+      refreshTokenCreatePayloads,
       resetPasswordTokenUpdatePayload,
       emailVerificationTokenUpdatePayload,
     };
