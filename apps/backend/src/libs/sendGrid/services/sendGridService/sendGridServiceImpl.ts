@@ -11,7 +11,15 @@ export class SendGridServiceImpl implements SendGridService {
     private readonly config: SendGridConfig,
   ) {}
 
-  public async sendEmail(email: SendEmailPayload): Promise<void> {
+  public async sendEmail(payload: SendEmailPayload): Promise<void> {
+    const { toEmail, subject, body } = payload;
+
+    console.log({
+      toEmail,
+      subject,
+      body,
+    });
+
     const { apiKey, senderEmail } = this.config;
 
     const url = 'https://api.sendgrid.com/v3/mail/send';
@@ -21,7 +29,7 @@ export class SendGridServiceImpl implements SendGridService {
         {
           to: [
             {
-              email: email.to,
+              email: toEmail,
             },
           ],
         },
@@ -29,11 +37,11 @@ export class SendGridServiceImpl implements SendGridService {
       from: {
         email: senderEmail,
       },
-      subject: email.subject,
+      subject,
       content: [
         {
           type: HttpMediaType.textPlain,
-          value: email.body,
+          value: body,
         },
       ],
     };

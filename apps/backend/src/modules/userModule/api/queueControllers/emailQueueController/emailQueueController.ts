@@ -71,6 +71,8 @@ export class EmailQueueController implements QueueController {
   private async processEmailEvent(payload: ProcessEmailEventPayload): Promise<void> {
     const { data: emailEvent } = payload;
 
+    console.log({ emailEvent });
+
     let retryListener: IDisposable;
 
     switch (emailEvent.getEmailEventName()) {

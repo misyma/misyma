@@ -11,10 +11,7 @@ import {
   type EmailEventRepository,
   type FindAllCreatedAfterPayload,
 } from '../../../domain/repositories/emailEventRepository/emailEventRepository.js';
-import {
-  type EmailPayload,
-  type EmailEventRawEntity,
-} from '../../databases/userEventsDatabase/tables/emailEventTable/emailEventRawEntity.js';
+import { type EmailEventRawEntity } from '../../databases/userEventsDatabase/tables/emailEventTable/emailEventRawEntity.js';
 import { EmailEventTable } from '../../databases/userEventsDatabase/tables/emailEventTable/emailEventTable.js';
 
 export class EmailEventRepositoryImpl implements EmailEventRepository {
@@ -92,7 +89,7 @@ export class EmailEventRepositoryImpl implements EmailEventRepository {
       await queryBuilder.insert({
         createdAt: new Date(),
         id: this.uuidService.generateUuid(),
-        payload: JSON.stringify(entity.getPayload()) as unknown as EmailPayload,
+        payload: JSON.stringify(entity.getPayload()),
         status: EmailEventStatus.pending,
         eventName: entity.getEmailEventName(),
       });
