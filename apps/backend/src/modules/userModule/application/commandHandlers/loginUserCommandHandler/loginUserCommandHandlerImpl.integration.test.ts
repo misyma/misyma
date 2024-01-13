@@ -83,7 +83,7 @@ describe('LoginUserCommandHandler', () => {
 
     expect(refreshTokenPayload['userId']).toBe(createdUser.getId());
 
-    const userTokens = await userTestUtils.findUserTokensByUserId({
+    const userTokens = await userTestUtils.findTokensByUserId({
       id: createdUser.getId(),
     });
 

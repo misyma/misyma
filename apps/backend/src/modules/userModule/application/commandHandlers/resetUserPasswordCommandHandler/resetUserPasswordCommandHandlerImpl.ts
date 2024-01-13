@@ -46,7 +46,7 @@ export class ResetUserPasswordCommandHandlerImpl implements ResetUserPasswordCom
       expiresIn,
     });
 
-    user.addResetPasswordAction({
+    user.addUpdateResetPasswordTokenAction({
       resetPasswordToken,
     });
 

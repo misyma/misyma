@@ -1,11 +1,9 @@
 import { type UserMapper } from './userMapper/userMapper.js';
-import { type UserTokensMapper } from './userTokensMapper/userTokensMapper.js';
 import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
 import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
 import { type Writeable } from '../../../../../common/types/util/writeable.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
-import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { type UserDomainAction } from '../../../domain/entities/user/domainActions/userDomainAction.js';
@@ -21,46 +19,61 @@ import {
   type FindUserTokensPayload,
 } from '../../../domain/repositories/userRepository/userRepository.js';
 import { type EmailVerificationTokenRawEntity } from '../../databases/userDatabase/tables/emailVerificationTokenTable/emailVerificationTokenRawEntity.js';
+import { EmailVerificationTokenTable } from '../../databases/userDatabase/tables/emailVerificationTokenTable/emailVerificationTokenTable.js';
 import { type RefreshTokenRawEntity } from '../../databases/userDatabase/tables/refreshTokenTable/refreshTokenRawEntity.js';
+import { RefreshTokenTable } from '../../databases/userDatabase/tables/refreshTokenTable/refreshTokenTable.js';
 import { type ResetPasswordTokenRawEntity } from '../../databases/userDatabase/tables/resetPasswordTokenTable/resetPasswordTokenRawEntity.js';
+import { ResetPasswordTokenTable } from '../../databases/userDatabase/tables/resetPasswordTokenTable/resetPasswordTokenTable.js';
 import { type UserRawEntity } from '../../databases/userDatabase/tables/userTable/userRawEntity.js';
 import { UserTable } from '../../databases/userDatabase/tables/userTable/userTable.js';
 
+interface TokenValue {
+  readonly token: string;
+  readonly expiresAt: Date;
+}
+
 export interface MappedUserUpdate {
-  userUpdatePayload: Partial<UserRawEntity> | undefined;
-  refreshTokenUpdatePayload?: Partial<RefreshTokenRawEntity> | undefined;
-  resetPasswordTokenUpdatePayload?: Partial<ResetPasswordTokenRawEntity> | undefined;
-  emailVerificationTokenUpdatePayload?: Partial<EmailVerificationTokenRawEntity> | undefined;
+  readonly userUpdatePayload: Partial<UserRawEntity> | undefined;
+  readonly refreshTokenCreatePayload?: TokenValue | undefined;
+  readonly resetPasswordTokenUpdatePayload?: TokenValue | undefined;
+  readonly emailVerificationTokenUpdatePayload?: TokenValue | undefined;
+}
+
+export interface FindRefreshTokensPayload {
+  readonly userId: string;
+}
+
+export interface FindResetPasswordTokenPayload {
+  readonly userId: string;
+}
+
+export interface FindEmailVerificationTokenPayload {
+  readonly userId: string;
 }
 
 export class UserRepositoryImpl implements UserRepository {
   private readonly userDatabaseTable = new UserTable();
 
-  private readonly userTokensTable = new UserTokensTable();
+  private readonly refreshTokenTable = new RefreshTokenTable();
+  private readonly resetPasswordTokenTable = new ResetPasswordTokenTable();
+  private readonly emailVerificationTokenTable = new EmailVerificationTokenTable();
 
   public constructor(
     private readonly sqliteDatabaseClient: SqliteDatabaseClient,
     private readonly userMapper: UserMapper,
-    private readonly userTokensMapper: UserTokensMapper,
     private readonly uuidService: UuidService,
     private readonly loggerService: LoggerService,
   ) {}
 
-  private createUserQueryBuilder(): QueryBuilder<UserRawEntity> {
-    return this.sqliteDatabaseClient<UserRawEntity>(this.userDatabaseTable.name);
-  }
-
   public async createUser(payload: CreateUserPayload): Promise<User> {
     const { email, password, firstName, lastName, isEmailVerified } = payload;
-
-    const queryBuilder = this.createUserQueryBuilder();
 
     let rawEntities: UserRawEntity[];
 
     const id = this.uuidService.generateUuid();
 
     try {
-      rawEntities = await queryBuilder.insert(
+      rawEntities = await this.sqliteDatabaseClient<UserRawEntity>(this.userDatabaseTable.name).insert(
         {
           id,
           email,
@@ -91,8 +104,6 @@ export class UserRepositoryImpl implements UserRepository {
   public async findUser(payload: FindUserPayload): Promise<User | null> {
     const { id, email } = payload;
 
-    const queryBuilder = this.createUserQueryBuilder();
-
     let whereCondition: Partial<UserRawEntity> = {};
 
     if (!id && !email) {
@@ -118,7 +129,10 @@ export class UserRepositoryImpl implements UserRepository {
     let rawEntity: UserRawEntity | undefined;
 
     try {
-      rawEntity = await queryBuilder.select('*').where(whereCondition).first();
+      rawEntity = await this.sqliteDatabaseClient<UserRawEntity>(this.userDatabaseTable.name)
+        .select('*')
+        .where(whereCondition)
+        .first();
     } catch (error) {
       this.loggerService.error({
         message: 'Error while finding User.',
@@ -138,33 +152,100 @@ export class UserRepositoryImpl implements UserRepository {
     return this.userMapper.mapToDomain(rawEntity);
   }
 
-  public async findUserTokens(payload: FindUserTokensPayload): Promise<UserTokens | null> {
+  public async findUserTokens(payload: FindUserTokensPayload): Promise<UserTokens> {
     const { userId } = payload;
 
-    let rawEntity: UserTokensRawEntity | undefined;
+    const [refreshTokens, resetPasswordToken, emailVerificationToken] = await Promise.all([
+      this.findRefreshTokens({ userId }),
+      this.findResetPasswordToken({ userId }),
+      this.findEmailVerificationToken({ userId }),
+    ]);
+
+    return {
+      refreshTokens: refreshTokens.map((refreshToken) => refreshToken.token),
+      resetPasswordToken: resetPasswordToken?.token,
+      emailVerificationToken: emailVerificationToken?.token,
+    };
+  }
+
+  private async findRefreshTokens(payload: FindRefreshTokensPayload): Promise<RefreshTokenRawEntity[]> {
+    const { userId } = payload;
+
+    let rawEntities: RefreshTokenRawEntity[];
 
     try {
-      rawEntity = await this.sqliteDatabaseClient<UserTokensRawEntity>(this.userTokensTable.name)
+      rawEntities = await this.sqliteDatabaseClient<RefreshTokenRawEntity>(this.refreshTokenTable.name)
+        .select('*')
+        .where({ userId });
+    } catch (error) {
+      this.loggerService.error({
+        message: 'Error while finding RefreshToken.',
+        context: { error },
+      });
+
+      throw new RepositoryError({
+        entity: 'RefreshToken',
+        operation: 'find',
+      });
+    }
+
+    return rawEntities;
+  }
+
+  private async findResetPasswordToken(
+    payload: FindResetPasswordTokenPayload,
+  ): Promise<ResetPasswordTokenRawEntity | undefined> {
+    const { userId } = payload;
+
+    let rawEntity: ResetPasswordTokenRawEntity | undefined;
+
+    try {
+      rawEntity = await this.sqliteDatabaseClient<ResetPasswordTokenRawEntity>(this.resetPasswordTokenTable.name)
         .select('*')
         .where({ userId })
         .first();
     } catch (error) {
       this.loggerService.error({
-        message: 'Error while finding UserTokens.',
+        message: 'Error while finding ResetPasswordToken.',
         context: { error },
       });
 
       throw new RepositoryError({
-        entity: 'UserTokens',
+        entity: 'ResetPasswordToken',
         operation: 'find',
       });
     }
 
-    if (!rawEntity) {
-      return null;
+    return rawEntity;
+  }
+
+  private async findEmailVerificationToken(
+    payload: FindEmailVerificationTokenPayload,
+  ): Promise<EmailVerificationTokenRawEntity | undefined> {
+    const { userId } = payload;
+
+    let rawEntity: EmailVerificationTokenRawEntity | undefined;
+
+    try {
+      rawEntity = await this.sqliteDatabaseClient<EmailVerificationTokenRawEntity>(
+        this.emailVerificationTokenTable.name,
+      )
+        .select('*')
+        .where({ userId })
+        .first();
+    } catch (error) {
+      this.loggerService.error({
+        message: 'Error while finding EmailVerificationToken.',
+        context: { error },
+      });
+
+      throw new RepositoryError({
+        entity: 'EmailVerificationToken',
+        operation: 'find',
+      });
     }
 
-    return this.userTokensMapper.mapToDomain(rawEntity);
+    return rawEntity;
   }
 
   public async updateUser(payload: UpdateUserPayload): Promise<User> {
@@ -181,28 +262,52 @@ export class UserRepositoryImpl implements UserRepository {
 
     let rawEntities: UserRawEntity[] = [];
 
-    const { userUpdatePayload, userTokensUpdatePayload } = this.mapDomainActionsToUpdatePayload(domainActions);
+    const {
+      userUpdatePayload,
+      refreshTokenCreatePayload,
+      emailVerificationTokenUpdatePayload,
+      resetPasswordTokenUpdatePayload,
+    } = this.mapDomainActionsToUpdatePayload(domainActions);
 
     try {
       await this.sqliteDatabaseClient.transaction(async (transaction) => {
         if (userUpdatePayload) {
-          rawEntities = await transaction
+          rawEntities = await transaction<UserRawEntity>(this.userDatabaseTable.name)
             .update(userUpdatePayload, '*')
-            .table(this.userDatabaseTable.name)
             .where({ id });
         }
 
-        if (userTokensUpdatePayload) {
-          await transaction
+        if (refreshTokenCreatePayload) {
+          await transaction<RefreshTokenRawEntity>(this.refreshTokenTable.name).insert({
+            id: this.uuidService.generateUuid(),
+            userId: id,
+            ...refreshTokenCreatePayload,
+          });
+        }
+
+        if (resetPasswordTokenUpdatePayload) {
+          await transaction<ResetPasswordTokenRawEntity>(this.resetPasswordTokenTable.name)
             .insert({
-              ...userTokensUpdatePayload,
-              userId: id,
               id: this.uuidService.generateUuid(),
+              userId: id,
+              ...resetPasswordTokenUpdatePayload,
             })
-            .table(this.userTokensTable.name)
-            .onConflict(this.userTokensTable.columns.userId)
+            .onConflict(this.resetPasswordTokenTable.columns.userId)
             .merge({
-              ...userTokensUpdatePayload,
+              ...resetPasswordTokenUpdatePayload,
+            });
+        }
+
+        if (emailVerificationTokenUpdatePayload) {
+          await transaction<EmailVerificationTokenRawEntity>(this.emailVerificationTokenTable.name)
+            .insert({
+              id: this.uuidService.generateUuid(),
+              userId: id,
+              ...emailVerificationTokenUpdatePayload,
+            })
+            .onConflict(this.emailVerificationTokenTable.columns.userId)
+            .merge({
+              ...emailVerificationTokenUpdatePayload,
             });
         }
       });
@@ -230,30 +335,34 @@ export class UserRepositoryImpl implements UserRepository {
   private mapDomainActionsToUpdatePayload(domainActions: UserDomainAction[]): MappedUserUpdate {
     let user: Partial<Writeable<UserRawEntity>> | undefined = undefined;
 
-    let userTokens: Partial<UserTokensRawEntity> | undefined = undefined;
+    let refreshTokenCreatePayload: TokenValue | undefined = undefined;
+
+    let resetPasswordTokenUpdatePayload: TokenValue | undefined = undefined;
+
+    let emailVerificationTokenUpdatePayload: TokenValue | undefined = undefined;
 
     domainActions.forEach((domainAction) => {
       switch (domainAction.actionName) {
-        case UserDomainActionType.updatePassword:
-          user = {
-            ...(user || {}),
-            password: domainAction.payload.newPassword,
+        case UserDomainActionType.createRefreshToken:
+          refreshTokenCreatePayload = {
+            token: domainAction.payload.token,
+            expiresAt: domainAction.payload.expiresAt,
           };
 
           break;
 
-        case UserDomainActionType.resetPassword:
-          userTokens = {
-            ...(userTokens || {}),
-            resetPasswordToken: domainAction.payload.resetPasswordToken,
+        case UserDomainActionType.updateResetPasswordToken:
+          resetPasswordTokenUpdatePayload = {
+            token: domainAction.payload.token,
+            expiresAt: domainAction.payload.expiresAt,
           };
 
           break;
 
         case UserDomainActionType.updateEmailVerificationToken:
-          userTokens = {
-            ...(userTokens || {}),
-            emailVerificationToken: domainAction.payload.emailVerificationToken,
+          emailVerificationTokenUpdatePayload = {
+            token: domainAction.payload.token,
+            expiresAt: domainAction.payload.expiresAt,
           };
 
           break;
@@ -262,6 +371,14 @@ export class UserRepositoryImpl implements UserRepository {
           user = {
             ...(user || {}),
             email: domainAction.payload.newEmail,
+          };
+
+          break;
+
+        case UserDomainActionType.updatePassword:
+          user = {
+            ...(user || {}),
+            password: domainAction.payload.newPassword,
           };
 
           break;
@@ -290,14 +407,6 @@ export class UserRepositoryImpl implements UserRepository {
 
           break;
 
-        case UserDomainActionType.updateRefreshToken:
-          userTokens = {
-            ...(userTokens || {}),
-            refreshToken: domainAction.payload.refreshToken,
-          };
-
-          break;
-
         default:
           this.loggerService.error({
             message: 'Error mapping domain actions.',
@@ -312,7 +421,9 @@ export class UserRepositoryImpl implements UserRepository {
 
     return {
       userUpdatePayload: user,
-      userTokensUpdatePayload: userTokens,
+      refreshTokenCreatePayload,
+      resetPasswordTokenUpdatePayload,
+      emailVerificationTokenUpdatePayload,
     };
   }
 
@@ -328,10 +439,8 @@ export class UserRepositoryImpl implements UserRepository {
       });
     }
 
-    const queryBuilder = this.createUserQueryBuilder();
-
     try {
-      await queryBuilder.delete().where({ id });
+      await this.sqliteDatabaseClient<UserRawEntity>(this.userDatabaseTable.name).delete().where({ id });
     } catch (error) {
       this.loggerService.error({
         message: 'Error while deleting User.',

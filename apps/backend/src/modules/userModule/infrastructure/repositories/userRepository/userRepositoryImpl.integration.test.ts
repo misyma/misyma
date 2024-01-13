@@ -159,12 +159,47 @@ describe('UserRepositoryImpl', () => {
       expect(foundUser.getLastName()).toEqual(createdUser.getLastName());
     });
 
+    it(`creates User's refresh tokens`, async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const createdUser = userTestFactory.create();
+
+      const refreshToken1 = Generator.alphaString(32);
+
+      const expiresAt1 = Generator.futureDate();
+
+      const refreshToken2 = Generator.alphaString(32);
+
+      const expiresAt2 = Generator.futureDate();
+
+      createdUser.addCreateRefreshTokenAction({
+        token: refreshToken1,
+        expiresAt: expiresAt1,
+      });
+
+      createdUser.addCreateRefreshTokenAction({
+        token: refreshToken2,
+        expiresAt: expiresAt2,
+      });
+
+      await userRepository.updateUser({
+        id: user.id,
+        domainActions: createdUser.getDomainActions(),
+      });
+
+      const updatedUserTokens = await userTestUtils.findTokensByUserId({ userId: user.id });
+
+      expect(updatedUserTokens.refreshTokens.includes(refreshToken1)).toBe(true);
+
+      expect(updatedUserTokens.refreshTokens.includes(refreshToken2)).toBe(true);
+    });
+
     it(`updates User's email verification token`, async () => {
       const user = await userTestUtils.createAndPersist();
 
       const createdUser = userTestFactory.create();
 
-      await userTestUtils.createAndPersistUserTokens({
+      const { token, expiresAt } = await userTestUtils.createAndPersistEmailVerificationToken({
         input: {
           userId: user.id,
         },
@@ -173,7 +208,8 @@ describe('UserRepositoryImpl', () => {
       const updatedEmailVerificationToken = Generator.alphaString(32);
 
       createdUser.addUpdateEmailVerificationTokenAction({
-        emailVerificationToken: updatedEmailVerificationToken,
+        token,
+        expiresAt,
       });
 
       await userRepository.updateUser({
@@ -181,9 +217,37 @@ describe('UserRepositoryImpl', () => {
         domainActions: createdUser.getDomainActions(),
       });
 
-      const updatedUserTokens = await userTestUtils.findUserTokensByUserId({ id: user.id });
+      const updatedUserTokens = await userTestUtils.findTokensByUserId({ userId: user.id });
 
       expect(updatedUserTokens.emailVerificationToken).toEqual(updatedEmailVerificationToken);
+    });
+
+    it(`updates User's reset password token`, async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const createdUser = userTestFactory.create();
+
+      const { token, expiresAt } = await userTestUtils.createAndPersistResetPasswordToken({
+        input: {
+          userId: user.id,
+        },
+      });
+
+      const updatedResetPasswordToken = Generator.alphaString(32);
+
+      createdUser.addUpdateResetPasswordTokenAction({
+        token,
+        expiresAt,
+      });
+
+      await userRepository.updateUser({
+        id: user.id,
+        domainActions: createdUser.getDomainActions(),
+      });
+
+      const updatedUserTokens = await userTestUtils.findTokensByUserId({ userId: user.id });
+
+      expect(updatedUserTokens.resetPasswordToken).toEqual(updatedResetPasswordToken);
     });
 
     it(`updates User's email verification status`, async () => {
@@ -200,35 +264,6 @@ describe('UserRepositoryImpl', () => {
 
       expect(foundUser.getIsEmailVerified()).toBeTruthy();
     });
-
-    it(`updates User's reset password token`, async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const createdUser = userTestFactory.create();
-
-      await userTestUtils.createAndPersistUserTokens({
-        input: {
-          userId: user.id,
-        },
-      });
-
-      const updatedResetPasswordToken = Generator.alphaString(32);
-
-      createdUser.addResetPasswordAction({
-        resetPasswordToken: updatedResetPasswordToken,
-      });
-
-      await userRepository.updateUser({
-        id: user.id,
-        domainActions: createdUser.getDomainActions(),
-      });
-
-      const updatedUserTokens = await userTestUtils.findUserTokensByUserId({ id: user.id });
-
-      expect(updatedUserTokens.resetPasswordToken).toEqual(updatedResetPasswordToken);
-    });
-
-    // TODO: add tests for updating refresh token
 
     it('throws an error if a User with given id does not exist', async () => {
       const nonExistentUser = userTestFactory.create();

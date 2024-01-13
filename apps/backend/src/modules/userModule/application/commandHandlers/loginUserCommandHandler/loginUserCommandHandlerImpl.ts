@@ -72,7 +72,7 @@ export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
       expiresIn: refreshTokenExpiresIn,
     });
 
-    user.addUpdateRefreshTokenAction({
+    user.addCreateRefreshTokenAction({
       refreshToken,
     });
 

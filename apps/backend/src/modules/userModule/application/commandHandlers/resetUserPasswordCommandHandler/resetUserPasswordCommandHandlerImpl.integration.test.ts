@@ -103,7 +103,7 @@ describe('ResetUserPasswordCommandHandler', () => {
       email: user.getEmail(),
     });
 
-    const userTokens = await userTestUtils.findUserTokensByUserId({
+    const userTokens = await userTestUtils.findTokensByUserId({
       id: createdUser.id,
     });
 
