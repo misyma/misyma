@@ -68,8 +68,7 @@ export class RefreshUserTokensCommandHandlerImpl implements RefreshUserTokensCom
       });
     }
 
-    // TODO: handle multiple refresh tokens
-    if (refreshToken !== userTokens.getRefreshToken()) {
+    if (!userTokens.refreshTokens.includes(refreshToken)) {
       throw new OperationNotValidError({
         reason: 'Refresh token does not match the one from User tokens.',
       });

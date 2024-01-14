@@ -1,7 +1,7 @@
 import { type UserDomainActionType } from './userDomainActionType.js';
 
-export interface UpdateEmailVerificationTokenDomainAction {
-  actionName: UserDomainActionType.updateEmailVerificationToken;
+export interface CreateRefreshTokenDomainAction {
+  actionName: UserDomainActionType.createRefreshToken;
   payload: {
     token: string;
     expiresAt: Date;

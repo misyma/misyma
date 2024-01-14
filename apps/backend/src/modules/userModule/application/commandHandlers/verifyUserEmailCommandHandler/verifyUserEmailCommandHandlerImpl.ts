@@ -72,9 +72,7 @@ export class VerifyUserEmailCommandHandlerImpl implements VerifyUserEmailCommand
       });
     }
 
-    const emailVerificationToken = userTokens.getEmailVerificationToken();
-
-    if (emailVerificationToken !== token) {
+    if (token !== userTokens.emailVerificationToken) {
       throw new OperationNotValidError({
         reason: 'Email verification token is not valid.',
         token,
@@ -97,11 +95,11 @@ export class VerifyUserEmailCommandHandlerImpl implements VerifyUserEmailCommand
     });
 
     const { expiresAt } = this.tokenService.decodeToken({
-      token: emailVerificationToken,
+      token,
     });
 
     await this.blacklistTokenRepository.createBlacklistToken({
-      token: emailVerificationToken,
+      token,
       expiresAt: new Date(expiresAt),
     });
   }

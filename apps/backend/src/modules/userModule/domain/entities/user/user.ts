@@ -28,15 +28,18 @@ export interface UpdateLastNamePayload {
 }
 
 export interface ResetPasswordPayload {
-  readonly resetPasswordToken: string;
+  readonly token: string;
+  readonly expiresAt: Date;
 }
 
 export interface UpdateEmailVerificationTokenPayload {
-  readonly emailVerificationToken: string;
+  readonly token: string;
+  readonly expiresAt: Date;
 }
 
-export interface UpdateRefreshTokenPayload {
-  readonly refreshToken: string;
+export interface CreateRefreshTokenPayload {
+  readonly token: string;
+  readonly expiresAt: Date;
 }
 
 export class User {
@@ -160,25 +163,38 @@ export class User {
     });
   }
 
-  // TODO: rename to addUpdateResetPasswordTokenAction
-  public addResetPasswordAction(payload: ResetPasswordPayload): void {
-    const { resetPasswordToken } = payload;
+  public addUpdateResetPasswordTokenAction(payload: ResetPasswordPayload): void {
+    const { token, expiresAt } = payload;
 
     this.domainActions.push({
-      actionName: UserDomainActionType.resetPassword,
+      actionName: UserDomainActionType.updateResetPasswordToken,
       payload: {
-        resetPasswordToken,
+        token,
+        expiresAt,
       },
     });
   }
 
   public addUpdateEmailVerificationTokenAction(payload: UpdateEmailVerificationTokenPayload): void {
-    const { emailVerificationToken } = payload;
+    const { token, expiresAt } = payload;
 
     this.domainActions.push({
       actionName: UserDomainActionType.updateEmailVerificationToken,
       payload: {
-        emailVerificationToken,
+        token,
+        expiresAt,
+      },
+    });
+  }
+
+  public addCreateRefreshTokenAction(payload: CreateRefreshTokenPayload): void {
+    const { token, expiresAt } = payload;
+
+    this.domainActions.push({
+      actionName: UserDomainActionType.createRefreshToken,
+      payload: {
+        token,
+        expiresAt,
       },
     });
   }
@@ -193,17 +209,6 @@ export class User {
 
     this.domainActions.push({
       actionName: UserDomainActionType.verifyEmail,
-    });
-  }
-
-  public addUpdateRefreshTokenAction(payload: UpdateRefreshTokenPayload): void {
-    const { refreshToken } = payload;
-
-    this.domainActions.push({
-      actionName: UserDomainActionType.updateRefreshToken,
-      payload: {
-        refreshToken,
-      },
     });
   }
 }

@@ -46,8 +46,11 @@ export class ResetUserPasswordCommandHandlerImpl implements ResetUserPasswordCom
       expiresIn,
     });
 
-    user.addResetPasswordAction({
-      resetPasswordToken,
+    const expiresAt = new Date(Date.now() + expiresIn * 1000);
+
+    user.addUpdateResetPasswordTokenAction({
+      token: resetPasswordToken,
+      expiresAt,
     });
 
     await this.userRepository.updateUser({
@@ -59,6 +62,7 @@ export class ResetUserPasswordCommandHandlerImpl implements ResetUserPasswordCom
 
     const resetPasswordLink = `${frontendUrl}/reset-password?token=${resetPasswordToken}`;
 
+    // TODO: publish event to event bus
     await this.emailService.sendEmail(
       new ResetPasswordEmail({
         recipient: user.getEmail(),
