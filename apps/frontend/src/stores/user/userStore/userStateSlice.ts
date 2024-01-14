@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { User, UserState } from './userState';
+import { User, UserState } from './userState.js';
 
 const initialState: UserState = {
   currentUser: null,
@@ -15,6 +15,9 @@ export const userStateSlice = createSlice({
   reducers: {
     setCurrentUser: (state, action: PayloadAction<SetCurrentUserActionPayload>) => {
       state.currentUser = action.payload.user;
+    },
+    disposeCurrentUser: (state) => {
+      state.currentUser = null;
     },
   },
 });

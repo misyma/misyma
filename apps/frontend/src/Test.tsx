@@ -1,5 +1,5 @@
 import { useStoreDispatch, useStoreSelector } from './stores/storeHooks';
-import { userStateActions } from './stores/userStore/userStateSlice';
+import { userStateActions } from './stores/user/userStore/userStateSlice';
 
 export const Test = () => {
   const dispatch = useStoreDispatch();
