@@ -424,11 +424,6 @@ export class UserHttpController implements HttpController {
 
     const { token } = request.body;
 
-    await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
-      expectedUserId: id,
-    });
-
     await this.verifyUserEmailCommandHandler.execute({
       userId: id,
       token,
