@@ -155,11 +155,11 @@ export class UserModule implements DependencyInjectionModule {
       symbols.resetUserPasswordCommandHandler,
       () =>
         new ResetUserPasswordCommandHandlerImpl(
-          container.get<EmailService>(symbols.emailService),
           container.get<TokenService>(authSymbols.tokenService),
           container.get<UserRepository>(symbols.userRepository),
           container.get<LoggerService>(coreSymbols.loggerService),
           container.get<UserModuleConfigProvider>(symbols.userModuleConfigProvider),
+          container.get<EmailMessageBus>(symbols.emailMessageBus),
         ),
     );
 

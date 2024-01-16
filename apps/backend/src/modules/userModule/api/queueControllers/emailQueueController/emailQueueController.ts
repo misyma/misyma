@@ -98,6 +98,14 @@ export class EmailQueueController implements QueueController {
         try {
           await this.retryPolicy.execute(async () => {
             await this.emailService.sendEmail(verificationEmail);
+
+            this.loggerService.info({
+              message: 'Sent verification email.',
+              context: {
+                emailEventId: emailEvent.getId(),
+                recipient: emailEvent.getRecipientEmail(),
+              },
+            });
           });
         } catch (error) {
           await this.changeEmailEventStatusCommandHandler.execute({
@@ -143,6 +151,14 @@ export class EmailQueueController implements QueueController {
         try {
           await this.retryPolicy.execute(async () => {
             await this.emailService.sendEmail(resetPasswordEmail);
+
+            this.loggerService.info({
+              message: 'Sent reset password email.',
+              context: {
+                emailEventId: emailEvent.getId(),
+                recipient: emailEvent.getRecipientEmail(),
+              },
+            });
           });
         } catch (error) {
           await this.changeEmailEventStatusCommandHandler.execute({
