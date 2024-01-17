@@ -1,5 +1,7 @@
 export * from './schemas/user/findUser.js';
 
+export * from './schemas/user/findMyUser.js';
+
 export * from './schemas/user/registerUser.js';
 
 export * from './schemas/user/loginUser.js';

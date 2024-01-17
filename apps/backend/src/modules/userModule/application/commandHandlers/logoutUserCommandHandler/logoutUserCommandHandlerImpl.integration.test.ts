@@ -55,10 +55,10 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
 
     const user = await userTestUtils.createAndPersist();
 
-    await userTestUtils.createAndPersistUserTokens({
+    await userTestUtils.createAndPersistRefreshToken({
       input: {
         userId: user.id,
-        refreshToken,
+        token: refreshToken,
       },
     });
 
@@ -128,10 +128,10 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
 
     const user = await userTestUtils.createAndPersist();
 
-    await userTestUtils.createAndPersistUserTokens({
+    await userTestUtils.createAndPersistRefreshToken({
       input: {
         userId: user.id,
-        refreshToken,
+        token: refreshToken,
       },
     });
 

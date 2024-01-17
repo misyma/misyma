@@ -67,10 +67,10 @@ describe('RefreshUserTokensCommandHandler', () => {
       expiresIn: Generator.number(10000, 100000),
     });
 
-    await userTestUtils.createAndPersistUserTokens({
+    await userTestUtils.createAndPersistRefreshToken({
       input: {
         userId: user.id,
-        refreshToken,
+        token: refreshToken,
       },
     });
 
@@ -139,10 +139,10 @@ describe('RefreshUserTokensCommandHandler', () => {
       expiresIn: Generator.number(10000, 100000),
     });
 
-    await userTestUtils.createAndPersistUserTokens({
+    await userTestUtils.createAndPersistRefreshToken({
       input: {
         userId: user.id,
-        refreshToken: tokenService.createToken({
+        token: tokenService.createToken({
           data: { userId: user.id },
           expiresIn: Generator.number(10000, 100000),
         }),
@@ -169,10 +169,10 @@ describe('RefreshUserTokensCommandHandler', () => {
       expiresIn: Generator.number(10000, 100000),
     });
 
-    await userTestUtils.createAndPersistUserTokens({
+    await userTestUtils.createAndPersistRefreshToken({
       input: {
         userId: user.id,
-        refreshToken,
+        token: refreshToken,
       },
     });
 
@@ -196,10 +196,10 @@ describe('RefreshUserTokensCommandHandler', () => {
       expiresIn: Generator.number(10000, 100000),
     });
 
-    await userTestUtils.createAndPersistUserTokens({
+    await userTestUtils.createAndPersistRefreshToken({
       input: {
         userId: user.id,
-        refreshToken,
+        token: refreshToken,
       },
     });
 

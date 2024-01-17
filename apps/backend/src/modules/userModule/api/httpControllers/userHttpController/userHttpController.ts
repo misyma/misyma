@@ -10,6 +10,7 @@ import {
   type DeleteUserPathParamsDTO,
   deleteUserPathParamsDTOSchema,
 } from './schemas/deleteUserSchema.js';
+import { findMyUserResponseBodyDTOSchema } from './schemas/findMyUserSchema.js';
 import {
   findUserPathParamsDTOSchema,
   findUserResponseBodyDTOSchema,
@@ -198,6 +199,23 @@ export class UserHttpController implements HttpController {
         description: 'Find user by id.',
       }),
       new HttpRoute({
+        method: HttpMethodName.get,
+        path: 'me',
+        handler: this.findMyUser.bind(this),
+        schema: {
+          request: {},
+          response: {
+            [HttpStatusCode.ok]: {
+              schema: findMyUserResponseBodyDTOSchema,
+              description: 'User found.',
+            },
+          },
+        },
+        securityMode: SecurityMode.bearer,
+        tags: ['User'],
+        description: 'Find user by token.',
+      }),
+      new HttpRoute({
         method: HttpMethodName.delete,
         path: ':id',
         handler: this.deleteUser.bind(this),
@@ -368,6 +386,19 @@ export class UserHttpController implements HttpController {
     };
   }
 
+  private async findMyUser(request: HttpRequest): Promise<HttpOkResponse<FindUserResponseBodyDTO>> {
+    const { userId } = await this.accessControlService.verifyBearerToken({
+      authorizationHeader: request.headers['authorization'],
+    });
+
+    const { user } = await this.findUserQueryHandler.execute({ userId });
+
+    return {
+      statusCode: HttpStatusCode.ok,
+      body: this.mapUserToUserDTO(user),
+    };
+  }
+
   private async deleteUser(
     request: HttpRequest<undefined, undefined, DeleteUserPathParamsDTO>,
   ): Promise<HttpNoContentResponse<DeleteUserResponseBodyDTO>> {
@@ -392,11 +423,6 @@ export class UserHttpController implements HttpController {
     const { id } = request.pathParams;
 
     const { token } = request.body;
-
-    await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
-      expectedUserId: id,
-    });
 
     await this.verifyUserEmailCommandHandler.execute({
       userId: id,

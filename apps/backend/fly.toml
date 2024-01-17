@@ -13,6 +13,7 @@ primary_region = "waw"
 
 [env]
   DATABASE_PATH = "/data/misyma.db"
+  QUEUE_DATABASE_PATH = "/data/queue.db"
   NODE_ENV = "production"
 
 [http_service]

@@ -1,17 +1,16 @@
 import { type DatabaseClient } from '../../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type Migration } from '../../../../../../libs/database/types/migration.js';
 
-export class M2CreateUserTokensTableMigration implements Migration {
-  public name = 'M2CreateUserTokensTableMigration';
+export class M4CreateResetPasswordTokenTableMigration implements Migration {
+  public name = 'M4CreateResetPasswordTokenTableMigration';
 
-  private readonly tableName = 'userTokens';
+  private readonly tableName = 'resetPasswordTokens';
 
   private readonly columns = {
     id: 'id',
     userId: 'userId',
-    refreshToken: 'refreshToken',
-    resetPasswordToken: 'resetPasswordToken',
-    emailVerificationToken: 'emailVerificationToken',
+    token: 'token',
+    expiresAt: 'expiresAt',
   } as const;
 
   public async up(databaseClient: DatabaseClient): Promise<void> {
@@ -20,17 +19,15 @@ export class M2CreateUserTokensTableMigration implements Migration {
 
       table.text(this.columns.userId).notNullable();
 
-      table.text(this.columns.refreshToken).nullable();
+      table.text(this.columns.token).notNullable();
 
-      table.text(this.columns.resetPasswordToken).nullable();
-
-      table.text(this.columns.emailVerificationToken).nullable();
+      table.timestamp(this.columns.expiresAt).notNullable();
 
       table.primary([this.columns.id]);
 
-      table.foreign(this.columns.userId).references('id').inTable('users').onDelete('CASCADE');
-
       table.unique([this.columns.userId]);
+
+      table.foreign(this.columns.userId).references('id').inTable('users').onDelete('CASCADE');
     });
   }
 

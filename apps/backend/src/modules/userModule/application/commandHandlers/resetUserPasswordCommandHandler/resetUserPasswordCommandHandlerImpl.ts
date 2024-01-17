@@ -1,18 +1,19 @@
 import { type ExecutePayload, type ResetUserPasswordCommandHandler } from './resetUserPasswordCommandHandler.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
+import { EmailEventDraft } from '../../../domain/entities/emailEvent/emailEventDraft.ts/emailEventDraft.js';
+import { EmailEventType } from '../../../domain/entities/emailEvent/types/emailEventType.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
 import { type UserModuleConfigProvider } from '../../../userModuleConfigProvider.js';
-import { type EmailService } from '../../services/emailService/emailService.js';
-import { ResetPasswordEmail } from '../../types/emails/resetPasswordEmail.js';
+import { type EmailMessageBus } from '../../messageBuses/emailMessageBus/emailMessageBus.js';
 
 export class ResetUserPasswordCommandHandlerImpl implements ResetUserPasswordCommandHandler {
   public constructor(
-    private readonly emailService: EmailService,
     private readonly tokenService: TokenService,
     private readonly userRepository: UserRepository,
     private readonly loggerService: LoggerService,
     private readonly configProvider: UserModuleConfigProvider,
+    private readonly emailMessageBus: EmailMessageBus,
   ) {}
 
   public async execute(payload: ExecutePayload): Promise<void> {
@@ -46,8 +47,11 @@ export class ResetUserPasswordCommandHandlerImpl implements ResetUserPasswordCom
       expiresIn,
     });
 
-    user.addResetPasswordAction({
-      resetPasswordToken,
+    const expiresAt = new Date(Date.now() + expiresIn * 1000);
+
+    user.addUpdateResetPasswordTokenAction({
+      token: resetPasswordToken,
+      expiresAt,
     });
 
     await this.userRepository.updateUser({
@@ -59,23 +63,16 @@ export class ResetUserPasswordCommandHandlerImpl implements ResetUserPasswordCom
 
     const resetPasswordLink = `${frontendUrl}/reset-password?token=${resetPasswordToken}`;
 
-    await this.emailService.sendEmail(
-      new ResetPasswordEmail({
-        recipient: user.getEmail(),
-        templateData: {
+    await this.emailMessageBus.sendEvent(
+      new EmailEventDraft({
+        eventName: EmailEventType.resetPassword,
+        payload: {
           firstName: user.getFirstName(),
           lastName: user.getLastName(),
+          recipientEmail: user.getEmail(),
           resetPasswordLink,
         },
       }),
     );
-
-    this.loggerService.info({
-      message: 'Reset password email sent.',
-      context: {
-        userId: user.getId(),
-        email: user.getEmail(),
-      },
-    });
   }
 }

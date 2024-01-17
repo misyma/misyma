@@ -40,8 +40,6 @@ import { EmailEventMapper } from './infrastructure/repositories/emailEventReposi
 import { type UserMapper } from './infrastructure/repositories/userRepository/userMapper/userMapper.js';
 import { UserMapperImpl } from './infrastructure/repositories/userRepository/userMapper/userMapperImpl.js';
 import { UserRepositoryImpl } from './infrastructure/repositories/userRepository/userRepositoryImpl.js';
-import { type UserTokensMapper } from './infrastructure/repositories/userRepository/userTokensMapper/userTokensMapper.js';
-import { UserTokensMapperImpl } from './infrastructure/repositories/userRepository/userTokensMapper/userTokensMapperImpl.js';
 import { EmailServiceImpl } from './infrastructure/services/emailServiceImpl.js';
 import { symbols } from './symbols.js';
 import { type UserModuleConfigProvider } from './userModuleConfigProvider.js';
@@ -65,15 +63,12 @@ export class UserModule implements DependencyInjectionModule {
 
     container.bind<UserMapper>(symbols.userMapper, () => new UserMapperImpl());
 
-    container.bind<UserTokensMapper>(symbols.userTokensMapper, () => new UserTokensMapperImpl());
-
     container.bind<UserRepository>(
       symbols.userRepository,
       () =>
         new UserRepositoryImpl(
           container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient),
           container.get<UserMapper>(symbols.userMapper),
-          container.get<UserTokensMapper>(symbols.userTokensMapper),
           container.get<UuidService>(coreSymbols.uuidService),
           container.get<LoggerService>(coreSymbols.loggerService),
         ),
@@ -110,15 +105,15 @@ export class UserModule implements DependencyInjectionModule {
     container.bind<RegisterUserCommandHandler>(
       symbols.registerUserCommandHandler,
       () =>
-        new RegisterUserCommandHandlerImpl({
-          userRepository: container.get<UserRepository>(symbols.userRepository),
-          hashService: container.get<HashService>(symbols.hashService),
-          loggerService: container.get<LoggerService>(coreSymbols.loggerService),
-          configProvider: container.get<UserModuleConfigProvider>(symbols.userModuleConfigProvider),
-          tokenService: container.get<TokenService>(authSymbols.tokenService),
-          emailMessageBus: container.get<EmailMessageBus>(symbols.emailMessageBus),
-          passwordValidationService: container.get<PasswordValidationService>(symbols.passwordValidationService),
-        }),
+        new RegisterUserCommandHandlerImpl(
+          container.get<UserRepository>(symbols.userRepository),
+          container.get<HashService>(symbols.hashService),
+          container.get<UserModuleConfigProvider>(symbols.userModuleConfigProvider),
+          container.get<LoggerService>(coreSymbols.loggerService),
+          container.get<TokenService>(authSymbols.tokenService),
+          container.get<EmailMessageBus>(symbols.emailMessageBus),
+          container.get<PasswordValidationService>(symbols.passwordValidationService),
+        ),
     );
 
     container.bind<LoginUserCommandHandler>(
@@ -160,11 +155,11 @@ export class UserModule implements DependencyInjectionModule {
       symbols.resetUserPasswordCommandHandler,
       () =>
         new ResetUserPasswordCommandHandlerImpl(
-          container.get<EmailService>(symbols.emailService),
           container.get<TokenService>(authSymbols.tokenService),
           container.get<UserRepository>(symbols.userRepository),
           container.get<LoggerService>(coreSymbols.loggerService),
           container.get<UserModuleConfigProvider>(symbols.userModuleConfigProvider),
+          container.get<EmailMessageBus>(symbols.emailMessageBus),
         ),
     );
 
