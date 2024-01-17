@@ -7,21 +7,22 @@ import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { authSymbols } from '../../../../authModule/symbols.js';
+import { EmailEventDraft } from '../../../domain/entities/emailEvent/emailEventDraft.ts/emailEventDraft.js';
+import { EmailEventType } from '../../../domain/entities/emailEvent/types/emailEventType.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
 import { symbols } from '../../../symbols.js';
 import { UserTestFactory } from '../../../tests/factories/userTestFactory/userTestFactory.js';
 import { type UserTestUtils } from '../../../tests/utils/userTestUtils/userTestUtils.js';
-import { type EmailService } from '../../services/emailService/emailService.js';
-import { ResetPasswordEmail } from '../../types/emails/resetPasswordEmail.js';
+import { type EmailMessageBus } from '../../messageBuses/emailMessageBus/emailMessageBus.js';
 
 describe('ResetUserPasswordCommandHandler', () => {
   let commandHandler: ResetUserPasswordCommandHandler;
 
   let tokenService: TokenService;
 
-  let userRepository: UserRepository;
+  let emailMessageBus: EmailMessageBus;
 
-  let emailService: EmailService;
+  let userRepository: UserRepository;
 
   let userTestUtils: UserTestUtils;
 
@@ -40,7 +41,7 @@ describe('ResetUserPasswordCommandHandler', () => {
 
     userRepository = container.get<UserRepository>(symbols.userRepository);
 
-    emailService = container.get<EmailService>(symbols.emailService);
+    emailMessageBus = container.get<EmailMessageBus>(symbols.emailMessageBus);
   });
 
   afterEach(async () => {
@@ -73,19 +74,20 @@ describe('ResetUserPasswordCommandHandler', () => {
       },
     });
 
-    const sendEmailSpy = spyFactory.create(emailService, 'sendEmail');
+    const sendEmailSpy = spyFactory.create(emailMessageBus, 'sendEvent');
 
     await commandHandler.execute({
       email: user.getEmail(),
     });
 
     expect(sendEmailSpy).toHaveBeenCalledWith(
-      new ResetPasswordEmail({
-        recipient: user.getEmail(),
-        templateData: {
+      new EmailEventDraft({
+        eventName: EmailEventType.resetPassword,
+        payload: {
+          recipientEmail: user.getEmail(),
+          resetPasswordLink: expect.any(String),
           firstName: user.getFirstName(),
           lastName: user.getLastName(),
-          resetPasswordLink: expect.any(String),
         },
       }),
     );
