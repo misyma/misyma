@@ -416,6 +416,9 @@ export class UserRepositoryImpl implements UserRepository {
         default:
           this.loggerService.error({
             message: 'Error mapping domain actions.',
+            context: {
+              domainAction,
+            },
           });
 
           throw new RepositoryError({

@@ -1,7 +1,7 @@
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';
-import { type BookshelfRawEntity } from '../../../infrastructure/databases/bookshelfsDatabase/tables/bookshelfTable/bookshelfRawEntity.js';
-import { BookshelfTable } from '../../../infrastructure/databases/bookshelfsDatabase/tables/bookshelfTable/bookshelfTable.js';
+import { type BookshelfRawEntity } from '../../../infrastructure/databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfRawEntity.js';
+import { BookshelfTable } from '../../../infrastructure/databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfTable.js';
 import { BookshelfTestFactory } from '../../factories/bookshelfTestFactory/bookshelfTestFactory.js';
 
 interface CreateAndPersistPayload {

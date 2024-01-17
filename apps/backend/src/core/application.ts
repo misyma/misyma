@@ -22,7 +22,7 @@ import { AuthorDatabaseManager } from '../modules/authorModule/infrastructure/da
 import { BookModule } from '../modules/bookModule/bookModule.js';
 import { BookDatabaseManager } from '../modules/bookModule/infrastructure/databases/bookDatabase/bookDatabaseManager.js';
 import { BookshelfModule } from '../modules/bookshelfModule/bookshelfModule.js';
-import { BookshelfDatabaseManager } from '../modules/bookshelfModule/infrastructure/databases/bookshelfsDatabase/bookshelfDatabaseManager.js';
+import { BookshelfDatabaseManager } from '../modules/bookshelfModule/infrastructure/databases/bookshelvesDatabase/bookshelfDatabaseManager.js';
 import { UserDatabaseManager } from '../modules/userModule/infrastructure/databases/userDatabase/userDatabaseManager.js';
 import { UserEventsDatabaseManager } from '../modules/userModule/infrastructure/databases/userEventsDatabase/userEventsDatabaseManager.js';
 import { UserModule } from '../modules/userModule/userModule.js';

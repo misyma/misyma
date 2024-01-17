@@ -5,7 +5,7 @@ import {
   BookshelfDraft,
   type BookshelfDraftState,
 } from '../../../domain/repositories/entities/bookshelf/bookshelfDraft/bookshelfDraft.js';
-import { type BookshelfRawEntity } from '../../../infrastructure/databases/bookshelfsDatabase/tables/bookshelfTable/bookshelfRawEntity.js';
+import { type BookshelfRawEntity } from '../../../infrastructure/databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfRawEntity.js';
 
 export class BookshelfTestFactory {
   private constructor() {}

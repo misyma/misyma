@@ -1,4 +1,5 @@
 import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
+import { type Writeable } from '../../../../../common/types/util/writeable.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';
 import { type Transaction } from '../../../../../libs/database/types/transaction.js';
@@ -12,9 +13,11 @@ import {
   type SavePayload,
 } from '../../../domain/repositories/bookshelfRepository.js';
 import { type Bookshelf } from '../../../domain/repositories/entities/bookshelf/bookshelf.js';
+import { type BookshelfDomainAction } from '../../../domain/repositories/entities/bookshelf/bookshelfDomainActions/bookshelfDomainAction.js';
+import { BookshelfDomainActionType } from '../../../domain/repositories/entities/bookshelf/bookshelfDomainActions/bookshelfDomainActionType.js';
 import { BookshelfDraft } from '../../../domain/repositories/entities/bookshelf/bookshelfDraft/bookshelfDraft.js';
-import { type BookshelfRawEntity } from '../../databases/bookshelfsDatabase/tables/bookshelfTable/bookshelfRawEntity.js';
-import { BookshelfTable } from '../../databases/bookshelfsDatabase/tables/bookshelfTable/bookshelfTable.js';
+import { type BookshelfRawEntity } from '../../databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfRawEntity.js';
+import { BookshelfTable } from '../../databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfTable.js';
 import { type BookshelfMapper } from '../mappers/bookshelfMapper/bookshelfMapper.js';
 
 export class BookshelfRepositoryImpl implements BookshelfRepository {
@@ -124,16 +127,20 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
   }
 
   private async update(entity: Bookshelf): Promise<Bookshelf> {
+    const domainActions = entity.getDomainActions();
+
+    if (domainActions.length === 0) {
+      return entity;
+    }
+
+    const bookshelfRawEntity = this.mapDomainActionsToUpdatePayload(domainActions);
+
     let rawEntity: BookshelfRawEntity;
 
     try {
       const result = await this.createQueryBuilder()
-        .update({
-          [this.table.columns.name]: entity.getName(),
-          [this.table.columns.addressId]: entity.getAddressId(),
-        })
         .where(this.table.columns.id, entity.getId())
-        .returning('*');
+        .update(bookshelfRawEntity, '*');
 
       rawEntity = result[0] as BookshelfRawEntity;
     } catch (error) {
@@ -161,6 +168,45 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
     }
 
     return await this.update(entity);
+  }
+
+  private mapDomainActionsToUpdatePayload(domainActions: BookshelfDomainAction[]): Partial<BookshelfRawEntity> {
+    let bookshelfRawEntity: Partial<Writeable<BookshelfRawEntity>> = {};
+
+    domainActions.forEach((domainAction) => {
+      switch (domainAction.actionName) {
+        case BookshelfDomainActionType.updateName:
+          bookshelfRawEntity = {
+            ...bookshelfRawEntity,
+            [this.table.columns.name]: domainAction.payload.name,
+          };
+
+          break;
+
+        case BookshelfDomainActionType.updateAddressId:
+          bookshelfRawEntity = {
+            ...bookshelfRawEntity,
+            [this.table.columns.addressId]: domainAction.payload.addressId,
+          };
+
+          break;
+
+        default:
+          this.loggerService.error({
+            message: 'Error mapping domain actions.',
+            context: {
+              domainAction,
+            },
+          });
+
+          throw new RepositoryError({
+            entity: 'User',
+            operation: 'update',
+          });
+      }
+    });
+
+    return bookshelfRawEntity;
   }
 
   public async delete(payload: DeletePayload): Promise<void> {

@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { Generator } from '@common/tests';
 
@@ -28,6 +28,12 @@ describe('BookshelfRepositoryImpl', () => {
     bookshelfTestUtils = container.get<BookshelfTestUtils>(testSymbols.bookshelfTestUtils);
 
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
+  });
+
+  afterEach(async () => {
+    await bookshelfTestUtils.truncate();
+
+    await userTestUtils.truncate();
   });
 
   describe('findById', () => {
@@ -127,6 +133,32 @@ describe('BookshelfRepositoryImpl', () => {
       expect(result.getName()).toEqual(bookshelfDraft.getName());
 
       expect(result.getAddressId()).toBeNull();
+    });
+
+    it('updates a Bookshelf - given a Bookshelf', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const bookshelf = bookshelfTestFactory.create({
+        userId: user.id,
+      });
+
+      await bookshelfTestUtils.createAndPersist({
+        input: {
+          ...bookshelf.getState(),
+        },
+      });
+
+      const newName = Generator.alphaString(20);
+
+      bookshelf.addUpdateNameDomainAction({
+        name: newName,
+      });
+
+      const result = await repository.save({
+        entity: bookshelf,
+      });
+
+      expect(result).toBeInstanceOf(Bookshelf);
     });
   });
 

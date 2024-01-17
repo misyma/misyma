@@ -1,8 +1,8 @@
 import { type DatabaseClient } from '../../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type Migration } from '../../../../../../libs/database/types/migration.js';
 
-export class M4CreateAddressesTableMigration implements Migration {
-  public readonly name = 'M4CreateAddressesTableMigration';
+export class M6CreateAddressesTableMigration implements Migration {
+  public readonly name = 'M6CreateAddressesTableMigration';
 
   private readonly tableName = 'addresses';
 

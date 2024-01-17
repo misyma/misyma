@@ -4,7 +4,7 @@ import { type Migration } from '../../../../../../libs/database/types/migration.
 export class M1CreateBookshelfTableMigration implements Migration {
   public readonly name = 'M1CreateBookshelfTableMigration';
 
-  private readonly bookshelfsTableName = 'bookshelfs';
+  private readonly bookshelvesTableName = 'bookshelves';
 
   private readonly columns = {
     id: 'id',
@@ -14,7 +14,7 @@ export class M1CreateBookshelfTableMigration implements Migration {
   } as const;
 
   public async up(databaseClient: DatabaseClient): Promise<void> {
-    await databaseClient.schema.createTable(this.bookshelfsTableName, (table) => {
+    await databaseClient.schema.createTable(this.bookshelvesTableName, (table) => {
       table.text(this.columns.id).primary();
 
       table.text(this.columns.name).notNullable();
@@ -30,6 +30,6 @@ export class M1CreateBookshelfTableMigration implements Migration {
   }
 
   public async down(databaseClient: DatabaseClient): Promise<void> {
-    await databaseClient.schema.dropTable(this.bookshelfsTableName);
+    await databaseClient.schema.dropTable(this.bookshelvesTableName);
   }
 }
