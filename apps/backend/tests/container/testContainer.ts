@@ -6,6 +6,7 @@ import { coreSymbols } from '../../src/core/symbols.js';
 import { type DependencyInjectionContainer } from '../../src/libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type HttpService } from '../../src/libs/httpService/services/httpService/httpService.js';
 import { AuthorTestUtils } from '../../src/modules/authorModule/tests/utils/authorTestUtils/authorTestUtils.js';
+import { BookshelfTestUtils } from '../../src/modules/bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 import { type EmailService } from '../../src/modules/userModule/application/services/emailService/emailService.js';
 import { symbols as userSymbols } from '../../src/modules/userModule/symbols.js';
 import { BlacklistTokenTestUtils } from '../../src/modules/userModule/tests/utils/blacklistTokenTestUtils/blacklistTokenTestUtils.js';
@@ -54,6 +55,11 @@ export class TestContainer {
     container.bind<EmailEventTestUtils>(
       testSymbols.emailEventTestUtils,
       () => new EmailEventTestUtils(container.get<SqliteDatabaseClient>(coreSymbols.entityEventsDatabaseClient)),
+    );
+
+    container.bind<BookshelfTestUtils>(
+      testSymbols.bookshelfTestUtils,
+      () => new BookshelfTestUtils(container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient)),
     );
 
     container.overrideBinding<EmailService>(userSymbols.emailService, () => ({

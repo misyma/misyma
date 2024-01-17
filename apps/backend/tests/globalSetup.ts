@@ -1,6 +1,7 @@
 import { Application } from '../src/core/application.js';
 import { AuthorDatabaseManager } from '../src/modules/authorModule/infrastructure/databases/authorDatabaseManager.js';
 import { BookDatabaseManager } from '../src/modules/bookModule/infrastructure/databases/bookDatabase/bookDatabaseManager.js';
+import { BookshelfDatabaseManager } from '../src/modules/bookshelfModule/infrastructure/databases/bookshelfsDatabase/bookshelfDatabaseManager.js';
 import { UserDatabaseManager } from '../src/modules/userModule/infrastructure/databases/userDatabase/userDatabaseManager.js';
 import { UserEventsDatabaseManager } from '../src/modules/userModule/infrastructure/databases/userEventsDatabase/userEventsDatabaseManager.js';
 
@@ -10,7 +11,12 @@ export async function setup(): Promise<void> {
 
     const eventsDatabaseManagers = [UserEventsDatabaseManager];
 
-    const databaseManagers = [UserDatabaseManager, AuthorDatabaseManager, BookDatabaseManager];
+    const databaseManagers = [
+      UserDatabaseManager,
+      AuthorDatabaseManager,
+      BookDatabaseManager,
+      BookshelfDatabaseManager,
+    ];
 
     for (const databaseManager of databaseManagers) {
       await databaseManager.bootstrapDatabase(container);

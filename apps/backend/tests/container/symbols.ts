@@ -1,6 +1,8 @@
 export const testSymbols = {
   applicationService: Symbol('applicationService'),
 
+  bookshelfTestUtils: Symbol('bookshelfTestUtils'),
+
   userTestUtils: Symbol('userTestUtils'),
   blacklistTokenTestUtils: Symbol('blacklistTokenTestUtils'),
 
