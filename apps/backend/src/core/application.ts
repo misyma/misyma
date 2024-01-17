@@ -21,13 +21,19 @@ import { AuthorModule } from '../modules/authorModule/authorModule.js';
 import { AuthorDatabaseManager } from '../modules/authorModule/infrastructure/databases/authorDatabaseManager.js';
 import { BookModule } from '../modules/bookModule/bookModule.js';
 import { BookDatabaseManager } from '../modules/bookModule/infrastructure/databases/bookDatabase/bookDatabaseManager.js';
+import { BookshelfDatabaseManager } from '../modules/bookshelfModule/infrastructure/databases/bookshelfsDatabase/bookshelfDatabaseManager.js';
 import { UserDatabaseManager } from '../modules/userModule/infrastructure/databases/userDatabase/userDatabaseManager.js';
 import { UserEventsDatabaseManager } from '../modules/userModule/infrastructure/databases/userEventsDatabase/userEventsDatabaseManager.js';
 import { UserModule } from '../modules/userModule/userModule.js';
 
 export class Application {
   private static async setupDatabase(container: DependencyInjectionContainer): Promise<void> {
-    const coreDatabaseManagers = [UserDatabaseManager, AuthorDatabaseManager, BookDatabaseManager];
+    const coreDatabaseManagers = [
+      UserDatabaseManager,
+      AuthorDatabaseManager,
+      BookDatabaseManager,
+      BookshelfDatabaseManager,
+    ];
 
     const eventsDatabaseManagers = [UserEventsDatabaseManager];
 
