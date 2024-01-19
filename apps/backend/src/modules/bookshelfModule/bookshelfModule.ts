@@ -1,5 +1,7 @@
 import { type CreateBookshelfCommandHandler } from './application/commandHandlers/createBookshelfCommandHandler/createBookshelfCommandHandler.js';
 import { CreateBookshelfCommandHandlerImpl } from './application/commandHandlers/createBookshelfCommandHandler/createBookshelfCommandHandlerImpl.js';
+import { type UpdateBookshelfNameCommandHandler } from './application/commandHandlers/updateBookshelfNameCommandHandler/updateBookshelfNameCommandHandler.js';
+import { UpdateBookshelfNameCommandHandlerImpl } from './application/commandHandlers/updateBookshelfNameCommandHandler/updateBookshelfNameCommandHandlerImpl.js';
 import { type FindBookshelfByIdQueryHandler } from './application/queryHandlers/findBookshelfByIdQueryHandler/findBookshelfByIdQueryHandler.js';
 import { FindBookshelfByIdQueryHandlerImpl } from './application/queryHandlers/findBookshelfByIdQueryHandler/findBookshelfByIdQueryHandlerImpl.js';
 import { type FindBookshelvesByUserIdQueryHandler } from './application/queryHandlers/findBookshelvesByUserIdQueryHandler/findBookshelvesByUserIdQueryHandler.js';
@@ -75,6 +77,11 @@ export class BookshelfModule implements DependencyInjectionModule {
           container.get<BookshelfRepository>(symbols.bookshelfRepository),
           container.get<BookshelfUserRepository>(symbols.bookshelfUserRepository),
         ),
+    );
+
+    container.bind<UpdateBookshelfNameCommandHandler>(
+      symbols.updateBookshelfNameCommandHandler,
+      () => new UpdateBookshelfNameCommandHandlerImpl(container.get<BookshelfRepository>(symbols.bookshelfRepository)),
     );
   }
 }
