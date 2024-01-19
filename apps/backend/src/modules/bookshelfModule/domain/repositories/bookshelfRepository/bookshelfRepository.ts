@@ -1,5 +1,5 @@
-import { type Bookshelf } from './entities/bookshelf/bookshelf.js';
-import { type BookshelfDraft } from './entities/bookshelf/bookshelfDraft/bookshelfDraft.js';
+import { type Bookshelf } from '../../entities/bookshelf/bookshelf.js';
+import { type BookshelfDraft } from '../../entities/bookshelf/bookshelfDraft/bookshelfDraft.js';
 
 export interface FindByIdPayload {
   id: string;
