@@ -6,6 +6,8 @@ export const symbols = {
 
   findBookshelfByIdQueryHandler: Symbol('findBookshelfByIdQueryHandler'),
   findBookshelvesByUserIdQueryHandler: Symbol('findBookshelvesByUserIdQueryHandler'),
+
+  createBookshelfCommandHandler: Symbol('createBookshelfCommandHandler'),
 };
 
 export const bookSymbols = {};

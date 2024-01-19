@@ -10,6 +10,7 @@ import { type BookshelfDomainAction } from '../../../domain/entities/bookshelf/b
 import { BookshelfDomainActionType } from '../../../domain/entities/bookshelf/bookshelfDomainActions/bookshelfDomainActionType.js';
 import { BookshelfDraft } from '../../../domain/entities/bookshelf/bookshelfDraft/bookshelfDraft.js';
 import {
+  type FindByIdAndUserIdPayload,
   type BookshelfRepository,
   type DeletePayload,
   type FindByIdPayload,
@@ -45,6 +46,39 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
 
     try {
       const result = await this.createQueryBuilder().where(this.table.columns.id, id).first();
+
+      rawEntity = result;
+    } catch (error) {
+      this.loggerService.error({
+        message: 'Error while finding bookshelf by id.',
+        context: {
+          error,
+        },
+      });
+
+      throw new RepositoryError({
+        entity: 'Bookshelf',
+        operation: 'find',
+      });
+    }
+
+    if (!rawEntity) {
+      return null;
+    }
+
+    return this.bookshelfMapper.mapToDomain(rawEntity);
+  }
+
+  public async findByIdAndUserId(payload: FindByIdAndUserIdPayload): Promise<Bookshelf | null> {
+    const { id, userId } = payload;
+
+    let rawEntity: BookshelfRawEntity | undefined;
+
+    try {
+      const result = await this.createQueryBuilder()
+        .where(this.table.columns.id, id)
+        .andWhere(this.table.columns.userId, userId)
+        .first();
 
       rawEntity = result;
     } catch (error) {

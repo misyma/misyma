@@ -41,6 +41,7 @@ describe('FindBookshelfByIdQueryHandler', () => {
       async () =>
         await queryHandler.execute({
           id: nonExistentBookshelfId,
+          userId: Generator.uuid(),
         }),
     ).toThrowErrorInstance({
       instance: ResourceNotFoundError,
@@ -61,6 +62,7 @@ describe('FindBookshelfByIdQueryHandler', () => {
 
     const { bookshelf } = await queryHandler.execute({
       id: createdBookshelf.id,
+      userId: user.id,
     });
 
     expect(bookshelf).toBeInstanceOf(Bookshelf);

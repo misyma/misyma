@@ -3,6 +3,7 @@ import { type Bookshelf } from '../../../domain/entities/bookshelf/bookshelf.js'
 
 export interface FindBookshelfByIdPayload {
   id: string;
+  userId: string;
 }
 
 export interface FindBookshelfByIdResult {

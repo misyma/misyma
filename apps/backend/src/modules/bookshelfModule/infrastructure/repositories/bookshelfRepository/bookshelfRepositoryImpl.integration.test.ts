@@ -66,6 +66,57 @@ describe('BookshelfRepositoryImpl', () => {
     });
   });
 
+  describe('findByIdAndUserId', () => {
+    it('returns null - when Bookshelf does not exist', async () => {
+      const nonExistentBookshelfId = Generator.uuid();
+
+      const result = await repository.findByIdAndUserId({
+        id: nonExistentBookshelfId,
+        userId: Generator.uuid(),
+      });
+
+      expect(result).toBeNull();
+    });
+
+    it('returns null - when Bookshelf exists but does not belong to User', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const bookshelf = await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+        },
+      });
+
+      const nonExistentUserId = Generator.uuid();
+
+      const result = await repository.findByIdAndUserId({
+        id: bookshelf.id,
+        userId: nonExistentUserId,
+      });
+
+      expect(result).toBeNull();
+    });
+
+    it('returns a Bookshelf', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const bookshelf = await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+        },
+      });
+
+      const result = await repository.findByIdAndUserId({
+        id: bookshelf.id,
+        userId: user.id,
+      });
+
+      expect(result).toBeInstanceOf(Bookshelf);
+
+      expect(result?.getState()).toEqual(bookshelf);
+    });
+  });
+
   describe('findByUserId', () => {
     it('returns an empty array - when Bookshelves were not found', async () => {
       const nonExistentUserId = Generator.uuid();

@@ -11,6 +11,10 @@ export class BookshelfDraft {
     this.state = state;
   }
 
+  public getState(): BookshelfDraftState {
+    return this.state;
+  }
+
   public getUserId(): string {
     return this.state.userId;
   }
