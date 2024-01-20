@@ -20,7 +20,17 @@ describe('BookMapperImpl', () => {
     expect(book).toEqual({
       id: bookEntity.id,
       title: bookEntity.title,
+      isbn: bookEntity.isbn,
+      publisher: bookEntity.publisher,
       releaseYear: bookEntity.releaseYear,
+      language: bookEntity.language,
+      translator: bookEntity.translator,
+      format: bookEntity.format,
+      pages: bookEntity.pages,
+      frontCoverImageUrl: bookEntity.frontCoverImageUrl,
+      backCoverImageUrl: bookEntity.backCoverImageUrl,
+      status: bookEntity.status,
+      bookshelfId: bookEntity.bookshelfId,
       authors: [],
       domainActions: [],
     });
@@ -29,20 +39,42 @@ describe('BookMapperImpl', () => {
   it('maps from bookRawEntity with Author to Book', () => {
     const book = bookEntityTestFactory.create();
 
-    const xd = bookMapperImpl.mapRawWithAuthorToDomain([
+    const books = bookMapperImpl.mapRawWithAuthorToDomain([
       {
-        ...book,
+        id: book.id,
+        title: book.title,
+        isbn: book.isbn as string,
+        publisher: book.publisher as string,
+        releaseYear: book.releaseYear as number,
+        language: book.language,
+        translator: book.translator as string,
+        format: book.format,
+        pages: book.pages as number,
+        frontCoverImageUrl: book.frontCoverImageUrl as string,
+        backCoverImageUrl: book.backCoverImageUrl as string,
+        status: book.status,
+        bookshelfId: book.bookshelfId,
         authorId: null,
         firstName: null,
         lastName: null,
       },
     ]);
 
-    expect(xd).toEqual([
+    expect(books).toEqual([
       {
         id: book.id,
         title: book.title,
+        isbn: book.isbn,
+        publisher: book.publisher,
         releaseYear: book.releaseYear,
+        language: book.language,
+        translator: book.translator,
+        format: book.format,
+        pages: book.pages,
+        frontCoverImageUrl: book.frontCoverImageUrl,
+        backCoverImageUrl: book.backCoverImageUrl,
+        status: book.status,
+        bookshelfId: book.bookshelfId,
         authors: [],
         domainActions: [],
       },

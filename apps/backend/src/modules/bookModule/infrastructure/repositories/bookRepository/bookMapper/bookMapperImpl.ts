@@ -1,3 +1,5 @@
+import { type BookFormat, type BookStatus } from '@common/contracts';
+
 import { type BookMapper } from './bookMapper.js';
 import { Author } from '../../../../../authorModule/domain/entities/author/author.js';
 import { Book, type BookDraft } from '../../../../domain/entities/book/book.js';
@@ -6,12 +8,36 @@ import { type BookWithAuthorRawEntity } from '../../../databases/bookDatabase/ta
 
 export class BookMapperImpl implements BookMapper {
   public mapRawToDomain(entity: BookRawEntity): Book {
-    const { id, title, releaseYear } = entity;
+    const {
+      id,
+      title,
+      isbn,
+      publisher,
+      releaseYear,
+      language,
+      translator,
+      format,
+      pages,
+      frontCoverImageUrl,
+      backCoverImageUrl,
+      status,
+      bookshelfId,
+    } = entity;
 
     return new Book({
       id,
       title,
+      isbn,
       releaseYear,
+      publisher,
+      language,
+      translator,
+      format: format as BookFormat,
+      pages,
+      frontCoverImageUrl,
+      backCoverImageUrl,
+      status: status as BookStatus,
+      bookshelfId,
     });
   }
 
@@ -19,12 +45,29 @@ export class BookMapperImpl implements BookMapper {
     const bookDraftsMap = new Map<string, BookDraft>();
 
     entities.forEach((entity) => {
-      const { authorId, firstName, id, lastName, releaseYear, title } = entity;
+      const {
+        id: bookId,
+        title,
+        isbn,
+        publisher,
+        releaseYear,
+        language,
+        translator,
+        format,
+        pages,
+        frontCoverImageUrl,
+        backCoverImageUrl,
+        status,
+        bookshelfId,
+        authorId,
+        firstName,
+        lastName,
+      } = entity;
 
-      const bookExists = bookDraftsMap.has(id);
+      const bookExists = bookDraftsMap.has(bookId);
 
       if (bookExists) {
-        const bookDraft = bookDraftsMap.get(id) as BookDraft;
+        const bookDraft = bookDraftsMap.get(bookId) as BookDraft;
 
         if (authorId) {
           bookDraft.authors?.push(
@@ -48,14 +91,24 @@ export class BookMapperImpl implements BookMapper {
           );
         }
 
-        const book = {
-          id,
+        const bookDraft: BookDraft = {
+          id: bookId,
           title,
-          releaseYear,
+          isbn: isbn ?? undefined,
+          publisher: publisher ?? undefined,
+          releaseYear: releaseYear ?? undefined,
+          language,
+          translator: translator ?? undefined,
+          format: format as BookFormat,
+          pages: pages ?? undefined,
+          frontCoverImageUrl: frontCoverImageUrl ?? undefined,
+          backCoverImageUrl: backCoverImageUrl ?? undefined,
+          status: status as BookStatus,
+          bookshelfId,
           authors,
         };
 
-        bookDraftsMap.set(id, book);
+        bookDraftsMap.set(bookId, bookDraft);
       }
     });
 

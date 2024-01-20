@@ -1,7 +1,17 @@
 export interface BookWithAuthorRawEntity {
   readonly id: string;
   readonly title: string;
-  readonly releaseYear: number;
+  readonly isbn: string | null;
+  readonly publisher: string | null;
+  readonly releaseYear: number | null;
+  readonly language: string;
+  readonly translator: string | null;
+  readonly format: string;
+  readonly pages: number | null;
+  readonly frontCoverImageUrl: string | null;
+  readonly backCoverImageUrl: string | null;
+  readonly status: string;
+  readonly bookshelfId: string;
   readonly authorId: string | null;
   readonly firstName: string | null;
   readonly lastName: string | null;

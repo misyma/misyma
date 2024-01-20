@@ -1,8 +1,9 @@
-import { type Book } from './book.js';
 import { type BookFormat } from './bookFormat.js';
 import { type BookStatus } from './bookStatus.js';
+import { type Author } from '../author/author.js';
 
-export interface CreateBookBody {
+export interface Book {
+  readonly id: string;
   readonly title: string;
   readonly isbn?: string;
   readonly publisher?: string;
@@ -15,7 +16,5 @@ export interface CreateBookBody {
   readonly backCoverImageUrl?: string;
   readonly status: BookStatus;
   readonly bookshelfId: string;
-  readonly authorIds: string[];
+  readonly authors: Author[];
 }
-
-export interface CreateBookResponseBody extends Book {}

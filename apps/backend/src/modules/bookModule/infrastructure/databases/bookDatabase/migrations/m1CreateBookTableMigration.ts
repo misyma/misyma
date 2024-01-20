@@ -10,11 +10,31 @@ export class M1CreateBookTableMigration implements Migration {
 
       table.text('title').notNullable();
 
-      table.integer('releaseYear').notNullable();
+      table.text('isbn');
+
+      table.text('publisher');
+
+      table.integer('releaseYear');
+
+      table.text('language').notNullable();
+
+      table.text('translator');
+
+      table.text('format').notNullable();
+
+      table.integer('pages');
+
+      table.text('frontCoverImageUrl');
+
+      table.text('backCoverImageUrl');
+
+      table.text('status').notNullable();
+
+      table.text('bookshelfId').notNullable();
 
       table.primary(['id']);
 
-      table.unique(['title']);
+      table.foreign('bookshelfId').references('id').inTable('bookshelves').onDelete('CASCADE');
     });
 
     await databaseClient.schema.createTable('booksAuthors', (table) => {

@@ -6,7 +6,17 @@ export class BookTable implements DatabaseTable<BookRawEntity> {
   public readonly columns = {
     id: 'id',
     title: 'title',
+    isbn: 'isbn',
+    publisher: 'publisher',
     releaseYear: 'releaseYear',
+    language: 'language',
+    translator: 'translator',
+    format: 'format',
+    pages: 'pages',
+    frontCoverImageUrl: 'frontCoverImageUrl',
+    backCoverImageUrl: 'backCoverImageUrl',
+    status: 'status',
+    bookshelfId: 'bookshelfId',
   } as const;
 
   public readonly authorJoinColumns = {

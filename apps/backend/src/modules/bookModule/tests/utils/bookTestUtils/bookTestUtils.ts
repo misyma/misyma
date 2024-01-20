@@ -5,7 +5,7 @@ import { type BooksAuthorsRawEntity } from '../../../infrastructure/databases/bo
 import { BooksAuthorsTable } from '../../../infrastructure/databases/bookDatabase/tables/booksAuthorsTable/booksAuthorsTable.js';
 import { type BookRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/bookTable/bookRawEntity.js';
 import { BookTable } from '../../../infrastructure/databases/bookDatabase/tables/bookTable/bookTable.js';
-import { BookTestFactory } from '../../factories/bookTestFactory/bookTestFactory.js';
+import { BookRawEntityTestFactory } from '../../factories/bookRawEntityTestFactory/bookRawEntityTestFactory.js';
 
 interface CreateAndPersistPayload {
   input?: Partial<BookRawEntity> & {
@@ -33,7 +33,7 @@ interface FindByTitleAndAuthorPayload {
 export class BookTestUtils {
   private readonly databaseTable = new BookTable();
   private readonly booksAuthorsTable = new BooksAuthorsTable();
-  private readonly bookTestFactory = new BookTestFactory();
+  private readonly bookTestFactory = new BookRawEntityTestFactory();
 
   public constructor(private readonly sqliteDatabaseClient: SqliteDatabaseClient) {}
 
@@ -49,17 +49,13 @@ export class BookTestUtils {
     let rawEntities: BookRawEntity[] = [];
 
     await this.sqliteDatabaseClient.transaction(async (transaction: Transaction) => {
-      rawEntities = await transaction(this.databaseTable.name).insert({
-        [this.databaseTable.columns.id]: book.getId(),
-        [this.databaseTable.columns.title]: book.getTitle(),
-        [this.databaseTable.columns.releaseYear]: book.getReleaseYear(),
-      });
+      rawEntities = await transaction(this.databaseTable.name).insert(book);
 
       if (input?.authorIds) {
         await transaction.batchInsert(
           this.booksAuthorsTable.name,
           input.authorIds.map((authorId) => ({
-            [this.booksAuthorsTable.columns.bookId]: book.getId(),
+            [this.booksAuthorsTable.columns.bookId]: book.id,
             [this.booksAuthorsTable.columns.authorId]: authorId,
           })),
         );

@@ -4,4 +4,6 @@ export const symbols = {
   bookshelfMapper: Symbol('bookshelfMapper'),
 };
 
-export const bookSymbols = {};
+export const bookshelfSymbols = {
+  bookshelfRepository: Symbol('bookshelfRepository'),
+};

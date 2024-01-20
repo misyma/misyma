@@ -1,12 +1,7 @@
-import { type Author } from '../author/author.js';
+import { type Book } from './book.js';
 
 export interface FindBookPathParams {
   readonly id: string;
 }
 
-export interface FindBookResponseBody {
-  readonly id: string;
-  readonly title: string;
-  readonly releaseYear: number;
-  readonly authors: Author[];
-}
+export interface FindBookResponseBody extends Book {}

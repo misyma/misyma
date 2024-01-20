@@ -6,6 +6,7 @@ import { coreSymbols } from '../../src/core/symbols.js';
 import { type DependencyInjectionContainer } from '../../src/libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type HttpService } from '../../src/libs/httpService/services/httpService/httpService.js';
 import { AuthorTestUtils } from '../../src/modules/authorModule/tests/utils/authorTestUtils/authorTestUtils.js';
+import { BookTestUtils } from '../../src/modules/bookModule/tests/utils/bookTestUtils/bookTestUtils.js';
 import { BookshelfTestUtils } from '../../src/modules/bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 import { type EmailService } from '../../src/modules/userModule/application/services/emailService/emailService.js';
 import { symbols as userSymbols } from '../../src/modules/userModule/symbols.js';
@@ -26,6 +27,11 @@ export class TestContainer {
           container.get<HttpService>(coreSymbols.httpService),
           container.get<ConfigProvider>(coreSymbols.configProvider),
         ),
+    );
+
+    container.bind<BookTestUtils>(
+      testSymbols.bookTestUtils,
+      () => new BookTestUtils(container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient)),
     );
 
     container.bind<AuthorService>(
