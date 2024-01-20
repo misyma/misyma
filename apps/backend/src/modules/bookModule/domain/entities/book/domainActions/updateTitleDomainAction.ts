@@ -1,7 +1,7 @@
 import { type BookDomainActionType } from './bookDomainActionType.js';
 
-export interface ChangeTitleDomainAction {
-  readonly type: BookDomainActionType.changeTitle;
+export interface UpdateTitleDomainAction {
+  readonly type: BookDomainActionType.updateTitle;
   readonly payload: {
     readonly title: string;
   };

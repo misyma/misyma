@@ -1,3 +1,4 @@
+import { type BookDTO } from './schemas/bookDTO.js';
 import {
   createBookBodyDTOSchema,
   createBookResponseBodyDTOSchema,
@@ -31,6 +32,7 @@ import { type AccessControlService } from '../../../../authModule/application/se
 import { type CreateBookCommandHandler } from '../../../application/commandHandlers/createBookCommandHandler/createBookCommandHandler.js';
 import { type DeleteBookCommandHandler } from '../../../application/commandHandlers/deleteBookCommandHandler/deleteBookCommandHandler.js';
 import { type FindBookQueryHandler } from '../../../application/queryHandlers/findBookQueryHandler/findBookQueryHandler.js';
+import { type Book } from '../../../domain/entities/book/book.js';
 
 export class BookHttpController implements HttpController {
   public readonly basePath = '/api/books';
@@ -107,30 +109,20 @@ export class BookHttpController implements HttpController {
   private async createBook(
     request: HttpRequest<CreateBookBodyDTO>,
   ): Promise<HttpCreatedResponse<CreateBookResponseBodyDTO>> {
-    const { title, releaseYear, authorIds } = request.body;
+    const { authorIds, ...bookData } = request.body;
 
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
     const { book } = await this.createBookCommandHandler.execute({
-      title,
-      releaseYear,
+      ...bookData,
       authorIds,
     });
 
     return {
       statusCode: HttpStatusCode.created,
-      body: {
-        authors: book.getAuthors().map((author) => ({
-          firstName: author.getFirstName(),
-          id: author.getId(),
-          lastName: author.getLastName(),
-        })),
-        id: book.getId(),
-        releaseYear: book.getReleaseYear(),
-        title: book.getTitle(),
-      },
+      body: this.mapBookToBookDTO(book),
     };
   }
 
@@ -147,16 +139,7 @@ export class BookHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.ok,
-      body: {
-        authors: book.getAuthors().map((author) => ({
-          firstName: author.getFirstName(),
-          id: author.getId(),
-          lastName: author.getLastName(),
-        })),
-        id: book.getId(),
-        releaseYear: book.getReleaseYear(),
-        title: book.getTitle(),
-      },
+      body: this.mapBookToBookDTO(book),
     };
   }
 
@@ -175,5 +158,65 @@ export class BookHttpController implements HttpController {
       statusCode: HttpStatusCode.noContent,
       body: null,
     };
+  }
+
+  private mapBookToBookDTO(book: Book): BookDTO {
+    const bookDto: BookDTO = {
+      id: book.getId(),
+      title: book.getTitle(),
+      language: book.getLanguage(),
+      format: book.getFormat(),
+      status: book.getStatus(),
+      bookshelfId: book.getBookshelfId(),
+      authors: book.getAuthors().map((author) => ({
+        firstName: author.getFirstName(),
+        id: author.getId(),
+        lastName: author.getLastName(),
+      })),
+    };
+
+    const isbn = book.getIsbn();
+
+    if (isbn) {
+      bookDto.isbn = isbn;
+    }
+
+    const publisher = book.getPublisher();
+
+    if (publisher) {
+      bookDto.publisher = publisher;
+    }
+
+    const releaseYear = book.getReleaseYear();
+
+    if (releaseYear) {
+      bookDto.releaseYear = releaseYear;
+    }
+
+    const translator = book.getTranslator();
+
+    if (translator) {
+      bookDto.translator = translator;
+    }
+
+    const pages = book.getPages();
+
+    if (pages) {
+      bookDto.pages = pages;
+    }
+
+    const frontCoverImageUrl = book.getFrontCoverImageUrl();
+
+    if (frontCoverImageUrl) {
+      bookDto.frontCoverImageUrl = frontCoverImageUrl;
+    }
+
+    const backCoverImageUrl = book.getBackCoverImageUrl();
+
+    if (backCoverImageUrl) {
+      bookDto.backCoverImageUrl = backCoverImageUrl;
+    }
+
+    return bookDto;
   }
 }

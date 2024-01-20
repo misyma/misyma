@@ -1,15 +1,15 @@
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
-import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';
 import { type Transaction } from '../../../../../libs/database/types/transaction.js';
 import { type BooksAuthorsRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/booksAuthorsTable/booksAuthorsRawEntity.js';
 import { BooksAuthorsTable } from '../../../infrastructure/databases/bookDatabase/tables/booksAuthorsTable/booksAuthorsTable.js';
 import { type BookRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/bookTable/bookRawEntity.js';
 import { BookTable } from '../../../infrastructure/databases/bookDatabase/tables/bookTable/bookTable.js';
-import { BookTestFactory } from '../../factories/bookTestFactory/bookTestFactory.js';
+import { BookRawEntityTestFactory } from '../../factories/bookRawEntityTestFactory/bookRawEntityTestFactory.js';
 
 interface CreateAndPersistPayload {
-  input?: Partial<BookRawEntity> & {
-    authorIds: string[];
+  input?: {
+    book?: Partial<BookRawEntity>;
+    authorIds?: string[];
   };
 }
 
@@ -31,35 +31,27 @@ interface FindByTitleAndAuthorPayload {
 }
 
 export class BookTestUtils {
-  private readonly databaseTable = new BookTable();
+  private readonly bookTable = new BookTable();
   private readonly booksAuthorsTable = new BooksAuthorsTable();
-  private readonly bookTestFactory = new BookTestFactory();
+  private readonly bookTestFactory = new BookRawEntityTestFactory();
 
   public constructor(private readonly sqliteDatabaseClient: SqliteDatabaseClient) {}
-
-  private createQueryBuilder(): QueryBuilder<BookRawEntity> {
-    return this.sqliteDatabaseClient<BookRawEntity>(this.databaseTable.name);
-  }
 
   public async createAndPersist(payload: CreateAndPersistPayload = {}): Promise<BookRawEntity> {
     const { input } = payload;
 
-    const book = this.bookTestFactory.create(input);
+    const book = this.bookTestFactory.create(input?.book);
 
     let rawEntities: BookRawEntity[] = [];
 
     await this.sqliteDatabaseClient.transaction(async (transaction: Transaction) => {
-      rawEntities = await transaction(this.databaseTable.name).insert({
-        [this.databaseTable.columns.id]: book.getId(),
-        [this.databaseTable.columns.title]: book.getTitle(),
-        [this.databaseTable.columns.releaseYear]: book.getReleaseYear(),
-      });
+      rawEntities = await transaction<BookRawEntity>(this.bookTable.name).insert(book, '*');
 
       if (input?.authorIds) {
         await transaction.batchInsert(
           this.booksAuthorsTable.name,
           input.authorIds.map((authorId) => ({
-            [this.booksAuthorsTable.columns.bookId]: book.getId(),
+            [this.booksAuthorsTable.columns.bookId]: book.id,
             [this.booksAuthorsTable.columns.authorId]: authorId,
           })),
         );
@@ -84,17 +76,16 @@ export class BookTestUtils {
   public async persist(payload: PersistPayload): Promise<void> {
     const { book } = payload;
 
-    const queryBuilder = this.createQueryBuilder();
-
-    await queryBuilder.insert(book);
+    await this.sqliteDatabaseClient<BookRawEntity>(this.bookTable.name).insert(book);
   }
 
   public async findById(payload: FindByIdPayload): Promise<BookRawEntity> {
     const { id } = payload;
 
-    const queryBuilder = this.createQueryBuilder();
-
-    const bookRawEntity = await queryBuilder.select('*').where({ id }).first();
+    const bookRawEntity = await this.sqliteDatabaseClient<BookRawEntity>(this.bookTable.name)
+      .select('*')
+      .where({ id })
+      .first();
 
     return bookRawEntity as BookRawEntity;
   }
@@ -102,9 +93,7 @@ export class BookTestUtils {
   public async findByTitleAndAuthor(payload: FindByTitleAndAuthorPayload): Promise<BookRawEntity> {
     const { title, authorId } = payload;
 
-    const queryBuilder = this.createQueryBuilder();
-
-    const bookRawEntity = await queryBuilder
+    const bookRawEntity = await this.sqliteDatabaseClient<BookRawEntity>(this.bookTable.name)
       .select('*')
       .join(this.booksAuthorsTable.name, (join) => {
         if (authorId) {
@@ -123,8 +112,6 @@ export class BookTestUtils {
   }
 
   public async truncate(): Promise<void> {
-    const queryBuilder = this.createQueryBuilder();
-
-    await queryBuilder.truncate();
+    await this.sqliteDatabaseClient<BookRawEntity>(this.bookTable.name).truncate();
   }
 }

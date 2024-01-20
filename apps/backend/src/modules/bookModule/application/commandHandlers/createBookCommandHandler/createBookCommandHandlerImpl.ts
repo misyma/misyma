@@ -3,51 +3,49 @@ import {
   type CreateBookCommandHandlerPayload,
   type CreateBookCommandHandlerResult,
 } from './createBookCommandHandler.js';
-import { ResourceAlreadyExistsError } from '../../../../../common/errors/common/resourceAlreadyExistsError.js';
+import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type FindAuthorsByIdsQueryHandler } from '../../../../authorModule/application/queryHandlers/findAuthorsByIdsQueryHandler/findAuthorsByIdsQueryHandler.js';
+import { type BookshelfRepository } from '../../../../bookshelfModule/domain/repositories/bookshelfRepository.js';
 import { type BookRepository } from '../../../domain/repositories/bookRepository/bookRepository.js';
 
 export class CreateBookCommandHandlerImpl implements CreateBookCommandHandler {
   public constructor(
     private readonly bookRepository: BookRepository,
     private readonly findAuthorsByIdsQueryHandler: FindAuthorsByIdsQueryHandler,
+    // TODO: replace with query handler
+    private readonly bookshelfRepository: BookshelfRepository,
     private readonly loggerService: LoggerService,
   ) {}
 
   public async execute(payload: CreateBookCommandHandlerPayload): Promise<CreateBookCommandHandlerResult> {
-    const { title, releaseYear, authorIds } = payload;
+    const { bookshelfId, authorIds, ...bookData } = payload;
 
     this.loggerService.debug({
-      message: 'Creating book...',
+      message: 'Creating a Book...',
       context: {
-        title,
-        releaseYear,
+        bookshelfId,
         authorIds,
+        ...bookData,
       },
     });
-
-    const existingBook = await this.bookRepository.findBook({
-      title,
-      authorIds,
-    });
-
-    if (existingBook) {
-      throw new ResourceAlreadyExistsError({
-        name: 'Book',
-        id: existingBook.getId(),
-        title,
-        authorIds,
-      });
-    }
 
     const { authors } = await this.findAuthorsByIdsQueryHandler.execute({
       authorIds,
     });
 
+    const bookshelf = await this.bookshelfRepository.findById({ id: bookshelfId });
+
+    if (!bookshelf) {
+      throw new ResourceNotFoundError({
+        name: 'Bookshelf',
+        id: bookshelfId,
+      });
+    }
+
     const book = await this.bookRepository.createBook({
-      title,
-      releaseYear,
+      ...bookData,
+      bookshelfId,
       authors,
     });
 
@@ -55,8 +53,7 @@ export class CreateBookCommandHandlerImpl implements CreateBookCommandHandler {
       message: 'Book created.',
       context: {
         bookId: book.getId(),
-        title,
-        releaseYear,
+        bookshelfId,
         authorIds,
       },
     });

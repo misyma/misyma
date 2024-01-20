@@ -53,6 +53,10 @@ export class Generator {
     return faker.person.lastName();
   }
 
+  public static fullName(): string {
+    return `${Generator.firstName()} ${Generator.lastName()}`;
+  }
+
   public static word(): string {
     return faker.lorem.word();
   }
@@ -128,5 +132,21 @@ export class Generator {
       width,
       height,
     });
+  }
+
+  public static isbn(): string {
+    return faker.commerce.isbn({ variant: 13 });
+  }
+
+  public static language(): string {
+    return faker.helpers.arrayElement(['english', 'polish', 'german', 'french']);
+  }
+
+  public static bookFormat(): string {
+    return faker.helpers.arrayElement(['paperback', 'hardcover', 'ebook']);
+  }
+
+  public static bookReadingStatus(): string {
+    return faker.helpers.arrayElement(['toRead', 'readingInProgress', 'finishedReading']);
   }
 }

@@ -1,7 +1,7 @@
 import { type BookDomainActionType } from './bookDomainActionType.js';
 
-export interface ChangeReleaseYearDomainAction {
-  readonly type: BookDomainActionType.changeReleaseYear;
+export interface UpdateReleaseYearDomainAction {
+  readonly type: BookDomainActionType.updateReleaseYear;
   readonly payload: {
     readonly releaseYear: number;
   };

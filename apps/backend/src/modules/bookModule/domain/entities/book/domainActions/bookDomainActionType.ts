@@ -1,6 +1,16 @@
 export enum BookDomainActionType {
   deleteAuthor = 'deleteAuthor',
   addAuthor = 'addAuthor',
-  changeTitle = 'changeTitle',
-  changeReleaseYear = 'changeReleaseYear',
+  updateTitle = 'updateTitle',
+  updateIsbn = 'updateIsbn',
+  updatePublisher = 'updatePublisher',
+  updateReleaseYear = 'updateReleaseYear',
+  updateLanguage = 'updateLanguage',
+  updateTranslator = 'updateTranslator',
+  updateFormat = 'updateFormat',
+  updatePages = 'updatePages',
+  updateFrontCoverImageUrl = 'updateFrontCoverImageUrl',
+  updateBackCoverImageUrl = 'updateBackCoverImageUrl',
+  updateStatus = 'updateStatus',
+  updateBookshelf = 'updateBookshelf',
 }
