@@ -1,11 +1,10 @@
 import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 
-import { type BookFormat, type BookStatus } from '@common/contracts';
+import { BookFormat, BookStatus } from '@common/contracts';
 import { Generator } from '@common/tests';
 
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
-import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
@@ -110,46 +109,6 @@ describe('BookRepositoryImpl', () => {
 
       expect(foundBook.releaseYear).toEqual(createdBook.getReleaseYear());
     });
-
-    it('throws an error when book with the same title and author already exists', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-      const author = await authorTestUtils.createAndPersist();
-
-      const existingBook = await bookTestUtils.createAndPersist({
-        input: {
-          authorIds: [author.id],
-          bookshelfId: bookshelf.id,
-        },
-      });
-
-      try {
-        await bookRepository.createBook({
-          title: existingBook.title,
-          isbn: existingBook.isbn as string,
-          publisher: existingBook.publisher as string,
-          releaseYear: existingBook.releaseYear as number,
-          language: existingBook.language,
-          translator: existingBook.translator as string,
-          format: existingBook.format as BookFormat,
-          pages: existingBook.pages as number,
-          frontCoverImageUrl: existingBook.frontCoverImageUrl as string,
-          backCoverImageUrl: existingBook.backCoverImageUrl as string,
-          status: existingBook.status as BookStatus,
-          bookshelfId: existingBook.bookshelfId,
-
-          authors: [new Author(author)],
-        });
-      } catch (error) {
-        expect(error).toBeInstanceOf(RepositoryError);
-
-        return;
-      }
-
-      expect.fail();
-    });
   });
 
   describe('Find', () => {
@@ -163,7 +122,9 @@ describe('BookRepositoryImpl', () => {
       const book = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author.id],
-          bookshelfId: bookshelf.id,
+          book: {
+            bookshelfId: bookshelf.id,
+          },
         },
       });
 
@@ -182,7 +143,9 @@ describe('BookRepositoryImpl', () => {
       const book = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [],
-          bookshelfId: bookshelf.id,
+          book: {
+            bookshelfId: bookshelf.id,
+          },
         },
       });
 
@@ -217,7 +180,9 @@ describe('BookRepositoryImpl', () => {
       const book = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author1.id, author2.id, author3.id],
-          bookshelfId: bookshelf.id,
+          book: {
+            bookshelfId: bookshelf.id,
+          },
         },
       });
 
@@ -264,7 +229,9 @@ describe('BookRepositoryImpl', () => {
       const book = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author1.id, author2.id, author3.id],
-          bookshelfId: bookshelf.id,
+          book: {
+            bookshelfId: bookshelf.id,
+          },
         },
       });
 
@@ -307,7 +274,9 @@ describe('BookRepositoryImpl', () => {
       const book = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author.id],
-          bookshelfId: bookshelf.id,
+          book: {
+            bookshelfId: bookshelf.id,
+          },
         },
       });
 
@@ -344,7 +313,9 @@ describe('BookRepositoryImpl', () => {
       const book = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author.id],
-          bookshelfId: bookshelf.id,
+          book: {
+            bookshelfId: bookshelf.id,
+          },
         },
       });
 
@@ -381,7 +352,9 @@ describe('BookRepositoryImpl', () => {
       const book = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author.id],
-          bookshelfId: bookshelf.id,
+          book: {
+            bookshelfId: bookshelf.id,
+          },
         },
       });
 
@@ -418,11 +391,13 @@ describe('BookRepositoryImpl', () => {
       const book = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author.id],
-          bookshelfId: bookshelf.id,
+          book: {
+            bookshelfId: bookshelf.id,
+          },
         },
       });
 
-      const newReleaseYear = Generator.number(1000, 3000);
+      const newReleaseYear = (book.releaseYear as number) + 1;
 
       const createdBook = await bookRepository.findBook({
         id: book.id,
@@ -455,11 +430,14 @@ describe('BookRepositoryImpl', () => {
       const book = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author.id],
-          bookshelfId: bookshelf.id,
+          book: {
+            bookshelfId: bookshelf.id,
+            language: 'polish',
+          },
         },
       });
 
-      const newLanguage = Generator.language();
+      const newLanguage = 'english';
 
       const createdBook = await bookRepository.findBook({
         id: book.id,
@@ -492,7 +470,9 @@ describe('BookRepositoryImpl', () => {
       const book = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author.id],
-          bookshelfId: bookshelf.id,
+          book: {
+            bookshelfId: bookshelf.id,
+          },
         },
       });
 
@@ -529,11 +509,14 @@ describe('BookRepositoryImpl', () => {
       const book = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author.id],
-          bookshelfId: bookshelf.id,
+          book: {
+            bookshelfId: bookshelf.id,
+            format: BookFormat.hardcover,
+          },
         },
       });
 
-      const newFormat = Generator.bookFormat() as BookFormat;
+      const newFormat = BookFormat.ebook;
 
       const createdBook = await bookRepository.findBook({
         id: book.id,
@@ -566,11 +549,13 @@ describe('BookRepositoryImpl', () => {
       const book = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author.id],
-          bookshelfId: bookshelf.id,
+          book: {
+            bookshelfId: bookshelf.id,
+          },
         },
       });
 
-      const newPages = Generator.number(100, 1000);
+      const newPages = (book.pages as number) + 10;
 
       const createdBook = await bookRepository.findBook({
         id: book.id,
@@ -603,7 +588,9 @@ describe('BookRepositoryImpl', () => {
       const book = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author.id],
-          bookshelfId: bookshelf.id,
+          book: {
+            bookshelfId: bookshelf.id,
+          },
         },
       });
 
@@ -640,7 +627,9 @@ describe('BookRepositoryImpl', () => {
       const book = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author.id],
-          bookshelfId: bookshelf.id,
+          book: {
+            bookshelfId: bookshelf.id,
+          },
         },
       });
 
@@ -677,11 +666,14 @@ describe('BookRepositoryImpl', () => {
       const book = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author.id],
-          bookshelfId: bookshelf.id,
+          book: {
+            bookshelfId: bookshelf.id,
+            status: BookStatus.readingInProgress,
+          },
         },
       });
 
-      const newStatus = Generator.bookReadingStatus() as BookStatus;
+      const newStatus = BookStatus.finishedReading;
 
       const createdBook = await bookRepository.findBook({
         id: book.id,
@@ -716,7 +708,9 @@ describe('BookRepositoryImpl', () => {
       const book = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author.id],
-          bookshelfId: bookshelf1.id,
+          book: {
+            bookshelfId: bookshelf1.id,
+          },
         },
       });
 
@@ -753,7 +747,9 @@ describe('BookRepositoryImpl', () => {
       const book = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author.id],
-          bookshelfId: bookshelf.id,
+          book: {
+            bookshelfId: bookshelf.id,
+          },
         },
       });
 

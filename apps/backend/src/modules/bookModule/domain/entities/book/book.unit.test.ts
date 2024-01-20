@@ -417,7 +417,7 @@ describe('Book', () => {
         {
           type: 'updateFrontCoverImageUrl',
           payload: {
-            coverImageUrl: updatedFrontCoverImageUrl,
+            frontCoverImageUrl: updatedFrontCoverImageUrl,
           },
         },
       ]);

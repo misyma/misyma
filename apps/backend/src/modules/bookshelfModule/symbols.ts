@@ -5,5 +5,5 @@ export const symbols = {
 };
 
 export const bookshelfSymbols = {
-  bookshelfRepository: Symbol('bookshelfRepository'),
+  bookshelfRepository: symbols.bookshelfRepository,
 };
