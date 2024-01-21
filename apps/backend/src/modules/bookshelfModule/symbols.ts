@@ -10,4 +10,6 @@ export const symbols = {
   updateBookshelfNameCommandHandler: Symbol('updateBookshelfNameCommandHandler'),
 };
 
-export const bookSymbols = {};
+export const bookshelfSymbols = {
+  bookshelfRepository: symbols.bookshelfRepository,
+};

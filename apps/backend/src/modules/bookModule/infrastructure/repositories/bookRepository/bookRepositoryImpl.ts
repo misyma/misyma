@@ -3,7 +3,6 @@ import { RepositoryError } from '../../../../../common/errors/common/repositoryE
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
 import { type Writeable } from '../../../../../common/types/util/writeable.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
-import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { AuthorTable } from '../../../../authorModule/infrastructure/databases/tables/authorTable/authorTable.js';
 import { type Book } from '../../../domain/entities/book/book.js';
@@ -40,12 +39,22 @@ export class BookRepositoryImpl implements BookRepository {
     private readonly uuidService: UuidService,
   ) {}
 
-  private createQueryBuilder(): QueryBuilder<BookRawEntity> {
-    return this.sqliteDatabaseClient<BookRawEntity>(this.databaseTable.name);
-  }
-
   public async createBook(payload: CreateBookPayload): Promise<Book> {
-    const { title, releaseYear, authors } = payload;
+    const {
+      title,
+      isbn,
+      publisher,
+      releaseYear,
+      language,
+      translator,
+      format,
+      pages,
+      frontCoverImageUrl,
+      backCoverImageUrl,
+      status,
+      bookshelfId,
+      authors,
+    } = payload;
 
     let rawEntities: BookRawEntity[] = [];
 
@@ -53,11 +62,21 @@ export class BookRepositoryImpl implements BookRepository {
 
     try {
       await this.sqliteDatabaseClient.transaction(async (transaction) => {
-        rawEntities = await transaction(this.databaseTable.name).insert(
+        rawEntities = await transaction<BookRawEntity>(this.databaseTable.name).insert(
           {
             id,
             title,
+            isbn,
+            publisher,
             releaseYear,
+            language,
+            translator,
+            format,
+            pages,
+            frontCoverImageUrl,
+            backCoverImageUrl,
+            status,
+            bookshelfId,
           },
           '*',
         );
@@ -133,16 +152,24 @@ export class BookRepositoryImpl implements BookRepository {
   public async findBook(payload: FindBookPayload): Promise<Book | null> {
     const { id, authorIds: authorsIds, title } = payload;
 
-    const queryBuilder = this.createQueryBuilder();
-
     let rawEntities: BookWithAuthorRawEntity[];
 
     try {
-      rawEntities = await queryBuilder
+      rawEntities = await this.sqliteDatabaseClient<BookRawEntity>(this.databaseTable.name)
         .select([
           `${this.databaseTable.name}.${this.databaseTable.columns.id}`,
           `${this.databaseTable.name}.${this.databaseTable.columns.title}`,
+          `${this.databaseTable.name}.${this.databaseTable.columns.isbn}`,
+          `${this.databaseTable.name}.${this.databaseTable.columns.publisher}`,
           `${this.databaseTable.name}.${this.databaseTable.columns.releaseYear}`,
+          `${this.databaseTable.name}.${this.databaseTable.columns.language}`,
+          `${this.databaseTable.name}.${this.databaseTable.columns.translator}`,
+          `${this.databaseTable.name}.${this.databaseTable.columns.format}`,
+          `${this.databaseTable.name}.${this.databaseTable.columns.pages}`,
+          `${this.databaseTable.name}.${this.databaseTable.columns.frontCoverImageUrl}`,
+          `${this.databaseTable.name}.${this.databaseTable.columns.backCoverImageUrl}`,
+          `${this.databaseTable.name}.${this.databaseTable.columns.status}`,
+          `${this.databaseTable.name}.${this.databaseTable.columns.bookshelfId}`,
           `${this.authorTable.name}.${this.authorTable.columns.id} as ${this.databaseTable.authorJoinColumnsAliases.authorId}`,
           this.authorTable.columns.firstName,
           this.authorTable.columns.lastName,
@@ -214,13 +241,63 @@ export class BookRepositoryImpl implements BookRepository {
 
           break;
 
-        case BookDomainActionType.changeReleaseYear:
+        case BookDomainActionType.updateTitle:
+          payload.bookFields.title = domainAction.payload.title;
+
+          break;
+
+        case BookDomainActionType.updateIsbn:
+          payload.bookFields.isbn = domainAction.payload.isbn;
+
+          break;
+
+        case BookDomainActionType.updatePublisher:
+          payload.bookFields.publisher = domainAction.payload.publisher;
+
+          break;
+
+        case BookDomainActionType.updateReleaseYear:
           payload.bookFields.releaseYear = domainAction.payload.releaseYear;
 
           break;
 
-        case BookDomainActionType.changeTitle:
-          payload.bookFields.title = domainAction.payload.title;
+        case BookDomainActionType.updateLanguage:
+          payload.bookFields.language = domainAction.payload.language;
+
+          break;
+
+        case BookDomainActionType.updateTranslator:
+          payload.bookFields.translator = domainAction.payload.translator;
+
+          break;
+
+        case BookDomainActionType.updateFormat:
+          payload.bookFields.format = domainAction.payload.format;
+
+          break;
+
+        case BookDomainActionType.updatePages:
+          payload.bookFields.pages = domainAction.payload.pages;
+
+          break;
+
+        case BookDomainActionType.updateFrontCoverImageUrl:
+          payload.bookFields.frontCoverImageUrl = domainAction.payload.frontCoverImageUrl;
+
+          break;
+
+        case BookDomainActionType.updateBackCoverImageUrl:
+          payload.bookFields.backCoverImageUrl = domainAction.payload.backCoverImageUrl;
+
+          break;
+
+        case BookDomainActionType.updateStatus:
+          payload.bookFields.status = domainAction.payload.status;
+
+          break;
+
+        case BookDomainActionType.updateBookshelf:
+          payload.bookFields.bookshelfId = domainAction.payload.bookshelfId;
 
           break;
       }
@@ -241,12 +318,12 @@ export class BookRepositoryImpl implements BookRepository {
       });
     }
 
-    const queryBuilder = this.createQueryBuilder();
-
     try {
-      await queryBuilder.delete().where({
-        [this.databaseTable.columns.id]: existingBook.getId(),
-      });
+      await this.sqliteDatabaseClient<BookRawEntity>(this.databaseTable.name)
+        .delete()
+        .where({
+          [this.databaseTable.columns.id]: existingBook.getId(),
+        });
     } catch (error) {
       throw new RepositoryError({
         entity: 'Book',
