@@ -6,7 +6,7 @@ import {
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type FindAuthorsByIdsQueryHandler } from '../../../../authorModule/application/queryHandlers/findAuthorsByIdsQueryHandler/findAuthorsByIdsQueryHandler.js';
-import { type BookshelfRepository } from '../../../../bookshelfModule/domain/repositories/bookshelfRepository.js';
+import { type BookshelfRepository } from '../../../../bookshelfModule/domain/repositories/bookshelfRepository/bookshelfRepository.js';
 import { type BookRepository } from '../../../domain/repositories/bookRepository/bookRepository.js';
 
 export class CreateBookCommandHandlerImpl implements CreateBookCommandHandler {

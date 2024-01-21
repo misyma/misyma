@@ -5,8 +5,8 @@ import { Generator } from '@common/tests';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
-import { type BookshelfRepository } from '../../../domain/repositories/bookshelfRepository.js';
-import { Bookshelf } from '../../../domain/repositories/entities/bookshelf/bookshelf.js';
+import { Bookshelf } from '../../../domain/entities/bookshelf/bookshelf.js';
+import { type BookshelfRepository } from '../../../domain/repositories/bookshelfRepository/bookshelfRepository.js';
 import { symbols } from '../../../symbols.js';
 import { BookshelfTestFactory } from '../../../tests/factories/bookshelfTestFactory/bookshelfTestFactory.js';
 import { type BookshelfTestUtils } from '../../../tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
@@ -58,6 +58,57 @@ describe('BookshelfRepositoryImpl', () => {
 
       const result = await repository.findById({
         id: bookshelf.id,
+      });
+
+      expect(result).toBeInstanceOf(Bookshelf);
+
+      expect(result?.getState()).toEqual(bookshelf);
+    });
+  });
+
+  describe('findByIdAndUserId', () => {
+    it('returns null - when Bookshelf does not exist', async () => {
+      const nonExistentBookshelfId = Generator.uuid();
+
+      const result = await repository.findByIdAndUserId({
+        id: nonExistentBookshelfId,
+        userId: Generator.uuid(),
+      });
+
+      expect(result).toBeNull();
+    });
+
+    it('returns null - when Bookshelf exists but does not belong to User', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const bookshelf = await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+        },
+      });
+
+      const nonExistentUserId = Generator.uuid();
+
+      const result = await repository.findByIdAndUserId({
+        id: bookshelf.id,
+        userId: nonExistentUserId,
+      });
+
+      expect(result).toBeNull();
+    });
+
+    it('returns a Bookshelf', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const bookshelf = await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+        },
+      });
+
+      const result = await repository.findByIdAndUserId({
+        id: bookshelf.id,
+        userId: user.id,
       });
 
       expect(result).toBeInstanceOf(Bookshelf);

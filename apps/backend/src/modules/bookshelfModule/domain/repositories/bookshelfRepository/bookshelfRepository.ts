@@ -1,8 +1,13 @@
-import { type Bookshelf } from './entities/bookshelf/bookshelf.js';
-import { type BookshelfDraft } from './entities/bookshelf/bookshelfDraft/bookshelfDraft.js';
+import { type Bookshelf } from '../../entities/bookshelf/bookshelf.js';
+import { type BookshelfDraft } from '../../entities/bookshelf/bookshelfDraft/bookshelfDraft.js';
 
 export interface FindByIdPayload {
   id: string;
+}
+
+export interface FindByIdAndUserIdPayload {
+  id: string;
+  userId: string;
 }
 
 export interface FindByUserIdPayload {
@@ -19,6 +24,7 @@ export interface DeletePayload {
 
 export interface BookshelfRepository {
   findById(payload: FindByIdPayload): Promise<Bookshelf | null>;
+  findByIdAndUserId(payload: FindByIdAndUserIdPayload): Promise<Bookshelf | null>;
   findByUserId(payload: FindByUserIdPayload): Promise<Bookshelf[]>;
   save(payload: SavePayload): Promise<Bookshelf>;
   delete(payload: DeletePayload): Promise<void>;

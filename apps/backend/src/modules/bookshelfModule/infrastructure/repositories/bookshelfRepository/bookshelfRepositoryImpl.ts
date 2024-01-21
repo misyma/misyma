@@ -5,17 +5,18 @@ import { type QueryBuilder } from '../../../../../libs/database/types/queryBuild
 import { type Transaction } from '../../../../../libs/database/types/transaction.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
+import { type Bookshelf } from '../../../domain/entities/bookshelf/bookshelf.js';
+import { type BookshelfDomainAction } from '../../../domain/entities/bookshelf/bookshelfDomainActions/bookshelfDomainAction.js';
+import { BookshelfDomainActionType } from '../../../domain/entities/bookshelf/bookshelfDomainActions/bookshelfDomainActionType.js';
+import { BookshelfDraft } from '../../../domain/entities/bookshelf/bookshelfDraft/bookshelfDraft.js';
 import {
+  type FindByIdAndUserIdPayload,
   type BookshelfRepository,
   type DeletePayload,
   type FindByIdPayload,
   type FindByUserIdPayload,
   type SavePayload,
-} from '../../../domain/repositories/bookshelfRepository.js';
-import { type Bookshelf } from '../../../domain/repositories/entities/bookshelf/bookshelf.js';
-import { type BookshelfDomainAction } from '../../../domain/repositories/entities/bookshelf/bookshelfDomainActions/bookshelfDomainAction.js';
-import { BookshelfDomainActionType } from '../../../domain/repositories/entities/bookshelf/bookshelfDomainActions/bookshelfDomainActionType.js';
-import { BookshelfDraft } from '../../../domain/repositories/entities/bookshelf/bookshelfDraft/bookshelfDraft.js';
+} from '../../../domain/repositories/bookshelfRepository/bookshelfRepository.js';
 import { type BookshelfRawEntity } from '../../databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfRawEntity.js';
 import { BookshelfTable } from '../../databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfTable.js';
 import { type BookshelfMapper } from '../mappers/bookshelfMapper/bookshelfMapper.js';
@@ -45,6 +46,39 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
 
     try {
       const result = await this.createQueryBuilder().where(this.table.columns.id, id).first();
+
+      rawEntity = result;
+    } catch (error) {
+      this.loggerService.error({
+        message: 'Error while finding bookshelf by id.',
+        context: {
+          error,
+        },
+      });
+
+      throw new RepositoryError({
+        entity: 'Bookshelf',
+        operation: 'find',
+      });
+    }
+
+    if (!rawEntity) {
+      return null;
+    }
+
+    return this.bookshelfMapper.mapToDomain(rawEntity);
+  }
+
+  public async findByIdAndUserId(payload: FindByIdAndUserIdPayload): Promise<Bookshelf | null> {
+    const { id, userId } = payload;
+
+    let rawEntity: BookshelfRawEntity | undefined;
+
+    try {
+      const result = await this.createQueryBuilder()
+        .where(this.table.columns.id, id)
+        .andWhere(this.table.columns.userId, userId)
+        .first();
 
       rawEntity = result;
     } catch (error) {

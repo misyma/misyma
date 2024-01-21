@@ -20,7 +20,7 @@ import { type AccessControlService } from '../authModule/application/services/ac
 import { authSymbols } from '../authModule/symbols.js';
 import { type FindAuthorsByIdsQueryHandler } from '../authorModule/application/queryHandlers/findAuthorsByIdsQueryHandler/findAuthorsByIdsQueryHandler.js';
 import { authorSymbols } from '../authorModule/symbols.js';
-import { type BookshelfRepository } from '../bookshelfModule/domain/repositories/bookshelfRepository.js';
+import { type BookshelfRepository } from '../bookshelfModule/domain/repositories/bookshelfRepository/bookshelfRepository.js';
 import { bookshelfSymbols } from '../bookshelfModule/symbols.js';
 
 export class BookModule implements DependencyInjectionModule {

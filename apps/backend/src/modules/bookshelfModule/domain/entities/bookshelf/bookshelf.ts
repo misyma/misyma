@@ -1,6 +1,6 @@
 import { type BookshelfDomainAction } from './bookshelfDomainActions/bookshelfDomainAction.js';
 import { BookshelfDomainActionType } from './bookshelfDomainActions/bookshelfDomainActionType.js';
-import { OperationNotValidError } from '../../../../../../common/errors/common/operationNotValidError.js';
+import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
 
 export interface BookshelfState {
   readonly id: string;

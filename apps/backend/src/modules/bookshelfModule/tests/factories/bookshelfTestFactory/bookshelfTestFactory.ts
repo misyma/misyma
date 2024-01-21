@@ -1,10 +1,10 @@
 import { Generator } from '@common/tests';
 
-import { Bookshelf, type BookshelfState } from '../../../domain/repositories/entities/bookshelf/bookshelf.js';
+import { Bookshelf, type BookshelfState } from '../../../domain/entities/bookshelf/bookshelf.js';
 import {
   BookshelfDraft,
   type BookshelfDraftState,
-} from '../../../domain/repositories/entities/bookshelf/bookshelfDraft/bookshelfDraft.js';
+} from '../../../domain/entities/bookshelf/bookshelfDraft/bookshelfDraft.js';
 import { type BookshelfRawEntity } from '../../../infrastructure/databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfRawEntity.js';
 
 export class BookshelfTestFactory {

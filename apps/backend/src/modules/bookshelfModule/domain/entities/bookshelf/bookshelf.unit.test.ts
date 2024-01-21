@@ -3,8 +3,8 @@ import { describe, expect, it } from 'vitest';
 import { Generator } from '@common/tests';
 
 import { BookshelfDomainActionType } from './bookshelfDomainActions/bookshelfDomainActionType.js';
-import { OperationNotValidError } from '../../../../../../common/errors/common/operationNotValidError.js';
-import { BookshelfTestFactory } from '../../../../tests/factories/bookshelfTestFactory/bookshelfTestFactory.js';
+import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
+import { BookshelfTestFactory } from '../../../tests/factories/bookshelfTestFactory/bookshelfTestFactory.js';
 
 describe('Bookshelf', () => {
   const bookshelfTestFactory = BookshelfTestFactory.createFactory();
