@@ -7,9 +7,7 @@ import { FindBookshelfByIdQueryHandlerImpl } from './application/queryHandlers/f
 import { type FindBookshelvesByUserIdQueryHandler } from './application/queryHandlers/findBookshelvesByUserIdQueryHandler/findBookshelvesByUserIdQueryHandler.js';
 import { FindBookshelvesByUserIdQueryHandlerImpl } from './application/queryHandlers/findBookshelvesByUserIdQueryHandler/findBookshelvesByUserIdQueryHandlerImpl.js';
 import { type BookshelfRepository } from './domain/repositories/bookshelfRepository/bookshelfRepository.js';
-import { type BookshelfUserRepository } from './domain/repositories/bookshelfUserRepository/bookshelfUserRepository.js';
 import { BookshelfRepositoryImpl } from './infrastructure/repositories/bookshelfRepository/bookshelfRepositoryImpl.js';
-import { BookshelfUserRepositoryImpl } from './infrastructure/repositories/bookshelfUserRepository/bookshelfUserRepositoryImpl.js';
 import { type BookshelfMapper } from './infrastructure/repositories/mappers/bookshelfMapper/bookshelfMapper.js';
 import { BookshelfMapperImpl } from './infrastructure/repositories/mappers/bookshelfMapper/bookshelfMapperImpl.js';
 import { symbols } from './symbols.js';
@@ -19,6 +17,8 @@ import { type DependencyInjectionContainer } from '../../libs/dependencyInjectio
 import { type DependencyInjectionModule } from '../../libs/dependencyInjection/dependencyInjectionModule.js';
 import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
 import { type UuidService } from '../../libs/uuid/services/uuidService/uuidService.js';
+import { type UserRepository } from '../userModule/domain/repositories/userRepository/userRepository.js';
+import { userSymbols } from '../userModule/symbols.js';
 
 export class BookshelfModule implements DependencyInjectionModule {
   public declareBindings(container: DependencyInjectionContainer): void {
@@ -42,15 +42,6 @@ export class BookshelfModule implements DependencyInjectionModule {
           container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );
-
-    container.bind<BookshelfUserRepository>(
-      symbols.bookshelfUserRepository,
-      () =>
-        new BookshelfUserRepositoryImpl(
-          container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient),
-          container.get<LoggerService>(coreSymbols.loggerService),
-        ),
-    );
   }
 
   private bindQueryHandlers(container: DependencyInjectionContainer): void {
@@ -64,7 +55,7 @@ export class BookshelfModule implements DependencyInjectionModule {
       () =>
         new FindBookshelvesByUserIdQueryHandlerImpl(
           container.get<BookshelfRepository>(symbols.bookshelfRepository),
-          container.get<BookshelfUserRepository>(symbols.bookshelfUserRepository),
+          container.get<UserRepository>(userSymbols.userRepository),
         ),
     );
   }
@@ -75,7 +66,7 @@ export class BookshelfModule implements DependencyInjectionModule {
       () =>
         new CreateBookshelfCommandHandlerImpl(
           container.get<BookshelfRepository>(symbols.bookshelfRepository),
-          container.get<BookshelfUserRepository>(symbols.bookshelfUserRepository),
+          container.get<UserRepository>(userSymbols.userRepository),
         ),
     );
 

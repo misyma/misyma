@@ -4,19 +4,19 @@ import {
   type FindBookshelvesByUserIdResult,
 } from './findBookshelvesByUserIdQueryHandler.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
+import { type UserRepository } from '../../../../userModule/domain/repositories/userRepository/userRepository.js';
 import { type BookshelfRepository } from '../../../domain/repositories/bookshelfRepository/bookshelfRepository.js';
-import { type BookshelfUserRepository } from '../../../domain/repositories/bookshelfUserRepository/bookshelfUserRepository.js';
 
 export class FindBookshelvesByUserIdQueryHandlerImpl implements FindBookshelvesByUserIdQueryHandler {
   public constructor(
     private readonly bookshelfRepository: BookshelfRepository,
-    private readonly bookshelfUserRepository: BookshelfUserRepository,
+    private readonly userRepository: UserRepository,
   ) {}
 
   public async execute(payload: FindBookshelvesByUserIdPayload): Promise<FindBookshelvesByUserIdResult> {
     const { userId } = payload;
 
-    const userExists = await this.bookshelfUserRepository.exists({
+    const userExists = await this.userRepository.findUser({
       id: userId,
     });
 
