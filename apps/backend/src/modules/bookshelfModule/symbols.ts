@@ -8,8 +8,11 @@ export const symbols = {
 
   createBookshelfCommandHandler: Symbol('createBookshelfCommandHandler'),
   updateBookshelfNameCommandHandler: Symbol('updateBookshelfNameCommandHandler'),
+
+  bookshelfHttpController: Symbol('bookshelfHttpController'),
 };
 
 export const bookshelfSymbols = {
   bookshelfRepository: symbols.bookshelfRepository,
+  bookshelfHttpController: symbols.bookshelfHttpController,
 };

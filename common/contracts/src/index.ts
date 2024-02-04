@@ -1,3 +1,13 @@
+export * from './schemas/bookshelf/bookshelf.js';
+
+export * from './schemas/bookshelf/createBookshelf.js';
+
+export * from './schemas/bookshelf/findBookshelfById.js';
+
+export * from './schemas/bookshelf/findUserBookshelves.js';
+
+export * from './schemas/bookshelf/updateBookshelfName.js';
+
 export * from './schemas/user/findUser.js';
 
 export * from './schemas/user/findMyUser.js';
