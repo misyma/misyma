@@ -5,7 +5,7 @@ export interface UpdateBookshelfNameBody {
 }
 
 export interface UpdateBookshelfNamePathParams {
-  readonly id: string;
+  readonly bookshelfId: string;
 }
 
 export interface UpdateBookshelfNameResponseBody {
