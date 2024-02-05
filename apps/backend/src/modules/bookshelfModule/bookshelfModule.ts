@@ -1,3 +1,4 @@
+import { BookshelfHttpController } from './api/httpControllers/bookshelfHttpController/bookshelfHttpController.js';
 import { type CreateBookshelfCommandHandler } from './application/commandHandlers/createBookshelfCommandHandler/createBookshelfCommandHandler.js';
 import { CreateBookshelfCommandHandlerImpl } from './application/commandHandlers/createBookshelfCommandHandler/createBookshelfCommandHandlerImpl.js';
 import { type UpdateBookshelfNameCommandHandler } from './application/commandHandlers/updateBookshelfNameCommandHandler/updateBookshelfNameCommandHandler.js';
@@ -17,6 +18,8 @@ import { type DependencyInjectionContainer } from '../../libs/dependencyInjectio
 import { type DependencyInjectionModule } from '../../libs/dependencyInjection/dependencyInjectionModule.js';
 import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
 import { type UuidService } from '../../libs/uuid/services/uuidService/uuidService.js';
+import { type AccessControlService } from '../authModule/application/services/accessControlService/accessControlService.js';
+import { authSymbols } from '../authModule/symbols.js';
 import { type UserRepository } from '../userModule/domain/repositories/userRepository/userRepository.js';
 import { userSymbols } from '../userModule/symbols.js';
 
@@ -29,6 +32,18 @@ export class BookshelfModule implements DependencyInjectionModule {
     this.bindQueryHandlers(container);
 
     this.bindCommandHandlers(container);
+
+    container.bind<BookshelfHttpController>(
+      symbols.bookshelfHttpController,
+      () =>
+        new BookshelfHttpController(
+          container.get<FindBookshelvesByUserIdQueryHandler>(symbols.findBookshelvesByUserIdQueryHandler),
+          container.get<FindBookshelfByIdQueryHandler>(symbols.findBookshelfByIdQueryHandler),
+          container.get<CreateBookshelfCommandHandler>(symbols.createBookshelfCommandHandler),
+          container.get<UpdateBookshelfNameCommandHandler>(symbols.updateBookshelfNameCommandHandler),
+          container.get<AccessControlService>(authSymbols.accessControlService),
+        ),
+    );
   }
 
   private bindRepositories(container: DependencyInjectionContainer): void {
