@@ -1,6 +1,8 @@
 import { BookReadingHttpController } from './api/httpControllers/bookReadingHttpController/bookReadingHttpController.js';
 import { type CreateBookReadingCommandHandler } from './application/commandHandlers/createBookReadingCommandHandler/createBookReadingCommandHandler.js';
 import { CreateBookReadingCommandHandlerImpl } from './application/commandHandlers/createBookReadingCommandHandler/createBookReadingCommandHandlerImpl.js';
+import { type DeleteBookReadingCommandHandler } from './application/commandHandlers/deleteBookReadingCommandHandler/deleteBookReadingCommandHandler.js';
+import { DeleteBookReadingCommandHandlerImpl } from './application/commandHandlers/deleteBookReadingCommandHandler/deleteBookReadingCommandHandlerImpl.js';
 import { type UpdateBookReadingCommandHandler } from './application/commandHandlers/updateBookReadingCommandHandler/updateBookReadingCommandHandler.js';
 import { UpdateBookReadingCommandHandlerImpl } from './application/commandHandlers/updateBookReadingCommandHandler/updateBookReadingCommandHandlerImpl.js';
 import { type FindBookReadingByIdQueryHandler } from './application/queryHandlers/findBookReadingByIdQueryHandler/findBookReadingByIdQueryHandler.js';
@@ -20,8 +22,8 @@ import { type LoggerService } from '../../libs/logger/services/loggerService/log
 import { type UuidService } from '../../libs/uuid/services/uuidService/uuidService.js';
 import { type AccessControlService } from '../authModule/application/services/accessControlService/accessControlService.js';
 import { authSymbols } from '../authModule/symbols.js';
-import { type UserRepository } from '../userModule/domain/repositories/userRepository/userRepository.js';
-import { userSymbols } from '../userModule/symbols.js';
+import { type BookRepository } from '../bookModule/domain/repositories/bookRepository/bookRepository.js';
+import { bookSymbols } from '../bookModule/symbols.js';
 
 export class BookReadingModule implements DependencyInjectionModule {
   public declareBindings(container: DependencyInjectionContainer): void {
@@ -37,10 +39,11 @@ export class BookReadingModule implements DependencyInjectionModule {
       symbols.bookReadingHttpController,
       () =>
         new BookReadingHttpController(
-          container.get<FindBookReadingsByBookIdQueryHandler>(symbols.findBookReadingsByUserIdQueryHandler),
+          container.get<FindBookReadingsByBookIdQueryHandler>(symbols.findBookReadingsByBookIdQueryHandler),
           container.get<FindBookReadingByIdQueryHandler>(symbols.findBookReadingByIdQueryHandler),
           container.get<CreateBookReadingCommandHandler>(symbols.createBookReadingCommandHandler),
           container.get<UpdateBookReadingCommandHandler>(symbols.updateBookReadingNameCommandHandler),
+          container.get<DeleteBookReadingCommandHandler>(symbols.deleteBookReadingNameCommandHandler),
           container.get<AccessControlService>(authSymbols.accessControlService),
         ),
     );
@@ -67,11 +70,11 @@ export class BookReadingModule implements DependencyInjectionModule {
     );
 
     container.bind<FindBookReadingsByBookIdQueryHandler>(
-      symbols.findBookReadingsByUserIdQueryHandler,
+      symbols.findBookReadingsByBookIdQueryHandler,
       () =>
         new FindBookReadingsByBookIdQueryHandlerImpl(
           container.get<BookReadingRepository>(symbols.bookReadingRepository),
-          container.get<UserRepository>(userSymbols.userRepository),
+          container.get<BookRepository>(bookSymbols.bookRepository),
         ),
     );
   }
@@ -82,7 +85,7 @@ export class BookReadingModule implements DependencyInjectionModule {
       () =>
         new CreateBookReadingCommandHandlerImpl(
           container.get<BookReadingRepository>(symbols.bookReadingRepository),
-          container.get<UserRepository>(userSymbols.userRepository),
+          container.get<BookRepository>(bookSymbols.bookRepository),
         ),
     );
 
@@ -90,6 +93,12 @@ export class BookReadingModule implements DependencyInjectionModule {
       symbols.updateBookReadingNameCommandHandler,
       () =>
         new UpdateBookReadingCommandHandlerImpl(container.get<BookReadingRepository>(symbols.bookReadingRepository)),
+    );
+
+    container.bind<DeleteBookReadingCommandHandler>(
+      symbols.deleteBookReadingNameCommandHandler,
+      () =>
+        new DeleteBookReadingCommandHandlerImpl(container.get<BookReadingRepository>(symbols.bookReadingRepository)),
     );
   }
 }

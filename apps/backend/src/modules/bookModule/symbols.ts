@@ -10,4 +10,5 @@ export const symbols = {
 
 export const bookSymbols = {
   bookHttpController: symbols.bookHttpController,
+  bookRepository: symbols.bookRepository,
 };

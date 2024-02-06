@@ -45,28 +45,28 @@ export class BookReading {
 
   public addUpadateCommentDomainAction(payload: AddUpdateCommentDomainActionPayload): void {
     this.actions.push({
-      actionName: BookReadingDomainActionType.addUpdateComment,
+      actionName: BookReadingDomainActionType.updateComment,
       payload,
     });
   }
 
   public addUpdateRatingDomainAction(payload: AddUpdateRatingDomainActionPayload): void {
     this.actions.push({
-      actionName: BookReadingDomainActionType.addUpdateRating,
+      actionName: BookReadingDomainActionType.updateRating,
       payload,
     });
   }
 
   public addUpdateStartedDateDomainAction(payload: AddUpdateStartedDateDomainActionPayload): void {
     this.actions.push({
-      actionName: BookReadingDomainActionType.addUpdateStartedDate,
+      actionName: BookReadingDomainActionType.updateStartedDate,
       payload,
     });
   }
 
   public addUpdateEndedDateDomainAction(payload: AddUpdateEndedDateDomainActionPayload): void {
     this.actions.push({
-      actionName: BookReadingDomainActionType.addUpdateEndedDate,
+      actionName: BookReadingDomainActionType.updateEndedDate,
       payload,
     });
   }

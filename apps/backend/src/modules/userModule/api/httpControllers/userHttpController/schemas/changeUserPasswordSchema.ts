@@ -17,6 +17,6 @@ export type ChangeUserPasswordBodyDTO = TypeExtends<
   contracts.ChangeUserPasswordBody
 >;
 
-export const changeUserPasswordOkResponseBodyDTOSchema = Type.Null();
+export const changeUserPasswordResponseBodyDTOSchema = Type.Null();
 
-export type ChangeUserPasswordOkResponseBodyDTO = Static<typeof changeUserPasswordOkResponseBodyDTOSchema>;
+export type ChangeUserPasswordResponseBodyDTO = Static<typeof changeUserPasswordResponseBodyDTOSchema>;

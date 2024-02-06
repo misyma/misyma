@@ -5,10 +5,20 @@ import type * as contracts from '@common/contracts';
 import { bookReadingDTOSchema } from './dtos/bookReadingDto.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
+export const createBookReadingPathParamsDTOSchema = Type.Object({
+  bookId: Type.String({ format: 'uuid' }),
+});
+
+export type CreateBookReadingPathParamsDTO = TypeExtends<
+  Static<typeof createBookReadingPathParamsDTOSchema>,
+  contracts.CreateBookReadingPathParams
+>;
+
 export const createBookReadingBodyDTOSchema = Type.Object({
-  name: Type.String(),
-  userId: Type.String(),
-  addressId: Type.Optional(Type.String()),
+  comment: Type.String(),
+  rating: Type.Number(),
+  startedAt: Type.Date(),
+  endedAt: Type.Optional(Type.Date()),
 });
 
 export type CreateBookReadingBodyDTO = TypeExtends<

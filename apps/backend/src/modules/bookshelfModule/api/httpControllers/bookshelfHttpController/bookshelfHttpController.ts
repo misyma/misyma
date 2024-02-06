@@ -8,23 +8,23 @@ import {
 } from './schemas/createBookshelfSchema.js';
 import { type BookshelfDTO } from './schemas/dtos/bookshelfDto.js';
 import {
-  type FindBookshelfByIdOkResponseBodyDTO,
+  type FindBookshelfByIdResponseBodyDTO,
   type FindBookshelfByIdPathParamsDTO,
-  findBookshelfByIdOkResponseBodyDTOSchema,
+  findBookshelfByIdResponseBodyDTOSchema,
   findBookshelfByIdPathParamsDTOSchema,
 } from './schemas/findBookshelfByIdSchema.js';
 import {
-  type FindBookshelvesByUserIdOkResponseBodyDTO,
-  findBookshelvesByUserIdOkResponseBodyDTOSchema,
+  type FindBookshelvesByUserIdResponseBodyDTO,
+  findBookshelvesByUserIdResponseBodyDTOSchema,
   findBookshelvesByUserIdPathParamsDTOSchema,
 } from './schemas/findBookshelvesByUserIdSchema.js';
 import {
   type UpdateBookshelfNamePathParamsDTO,
   type UpdateBookshelfNameBodyDTO,
-  type UpdateBookshelfNameOkResponseBodyDTO,
+  type UpdateBookshelfNameResponseBodyDTO,
   updateBookshelfNameBodyDTOSchema,
   updateBookshelfNamePathParamsDTOSchema,
-  updateBookshelfNameOkResponseBodyDTOSchema,
+  updateBookshelfNameResponseBodyDTOSchema,
 } from './schemas/updateBookshelfNameSchema.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
@@ -69,7 +69,7 @@ export class BookshelfHttpController implements HttpController {
           },
           response: {
             [HttpStatusCode.ok]: {
-              schema: findBookshelvesByUserIdOkResponseBodyDTOSchema,
+              schema: findBookshelvesByUserIdResponseBodyDTOSchema,
               description: 'Found user bookshelves.',
             },
           },
@@ -87,7 +87,7 @@ export class BookshelfHttpController implements HttpController {
           },
           response: {
             [HttpStatusCode.ok]: {
-              schema: findBookshelfByIdOkResponseBodyDTOSchema,
+              schema: findBookshelfByIdResponseBodyDTOSchema,
               description: 'Found bookshelf.',
             },
           },
@@ -126,7 +126,7 @@ export class BookshelfHttpController implements HttpController {
           response: {
             [HttpStatusCode.ok]: {
               description: 'Bookshelf name updated.',
-              schema: updateBookshelfNameOkResponseBodyDTOSchema,
+              schema: updateBookshelfNameResponseBodyDTOSchema,
             },
           },
         },
@@ -137,7 +137,7 @@ export class BookshelfHttpController implements HttpController {
 
   private async getUserBookshelves(
     request: HttpRequest<null, null, FindBookshelvesByUserIdParams>,
-  ): Promise<HttpOkResponse<FindBookshelvesByUserIdOkResponseBodyDTO>> {
+  ): Promise<HttpOkResponse<FindBookshelvesByUserIdResponseBodyDTO>> {
     const { userId: tokenUserId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
@@ -164,7 +164,7 @@ export class BookshelfHttpController implements HttpController {
 
   private async getBookshelf(
     request: HttpRequest<null, null, FindBookshelfByIdPathParamsDTO>,
-  ): Promise<HttpOkResponse<FindBookshelfByIdOkResponseBodyDTO>> {
+  ): Promise<HttpOkResponse<FindBookshelfByIdResponseBodyDTO>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
@@ -215,7 +215,7 @@ export class BookshelfHttpController implements HttpController {
 
   private async updateBookshelfName(
     request: HttpRequest<UpdateBookshelfNameBodyDTO, null, UpdateBookshelfNamePathParamsDTO>,
-  ): Promise<HttpOkResponse<UpdateBookshelfNameOkResponseBodyDTO>> {
+  ): Promise<HttpOkResponse<UpdateBookshelfNameResponseBodyDTO>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
