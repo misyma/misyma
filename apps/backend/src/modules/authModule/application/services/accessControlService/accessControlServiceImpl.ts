@@ -3,7 +3,6 @@ import {
   type AccessControlService,
   type VerifyBearerTokenResult,
 } from './accessControlService.js';
-import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
 import { ForbiddenAccessError } from '../../errors/forbiddenAccessError.js';
 import { UnauthorizedAccessError } from '../../errors/unathorizedAccessError.js';
 import { type TokenService } from '../tokenService/tokenService.js';
@@ -17,7 +16,6 @@ export class AccessControlServiceImpl implements AccessControlService {
 
     if (!authorizationHeader) {
       throw new UnauthorizedAccessError({
-        securityMode: SecurityMode.bearer,
         reason: 'Authorization header not provided.',
       });
     }
@@ -26,7 +24,6 @@ export class AccessControlServiceImpl implements AccessControlService {
 
     if (authorizationType !== 'Bearer') {
       throw new UnauthorizedAccessError({
-        securityMode: SecurityMode.bearer,
         reason: 'Bearer authorization type not provided.',
       });
     }
@@ -37,7 +34,6 @@ export class AccessControlServiceImpl implements AccessControlService {
       tokenPayload = this.tokenService.verifyToken({ token: token as string });
     } catch (error) {
       throw new UnauthorizedAccessError({
-        securityMode: SecurityMode.bearer,
         reason: 'Invalid access token.',
       });
     }

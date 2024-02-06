@@ -4,9 +4,9 @@ import { type LoginUserCommandHandler } from './loginUserCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
+import { UnauthorizedAccessError } from '../../../../authModule/application/errors/unathorizedAccessError.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { authSymbols } from '../../../../authModule/symbols.js';
 import { symbols } from '../../../symbols.js';
@@ -133,9 +133,9 @@ describe('LoginUserCommandHandler', () => {
           password: nonExistentUser.getPassword(),
         }),
     ).toThrowErrorInstance({
-      instance: ResourceNotFoundError,
+      instance: UnauthorizedAccessError,
       context: {
-        name: 'User',
+        reason: 'User not found.',
         email: nonExistentUser.getEmail(),
       },
     });
@@ -151,9 +151,9 @@ describe('LoginUserCommandHandler', () => {
           password,
         }),
     ).toThrowErrorInstance({
-      instance: ResourceNotFoundError,
+      instance: UnauthorizedAccessError,
       context: {
-        name: 'User',
+        reason: 'User not found.',
         email,
       },
     });

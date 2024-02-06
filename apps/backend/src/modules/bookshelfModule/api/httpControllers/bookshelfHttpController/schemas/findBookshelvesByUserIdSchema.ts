@@ -16,11 +16,11 @@ export type FindBookshelvesByUserIdPathParamsDTO = TypeExtends<
   contracts.FindBookshelvesByUserIdParams
 >;
 
-export const findBookshelvesByUserIdOkResponseBodyDTOSchema = Type.Object({
+export const findBookshelvesByUserIdResponseBodyDTOSchema = Type.Object({
   bookshelves: Type.Array(bookshelfDTOSchema),
 });
 
-export type FindBookshelvesByUserIdOkResponseBodyDTO = TypeExtends<
-  Static<typeof findBookshelvesByUserIdOkResponseBodyDTOSchema>,
+export type FindBookshelvesByUserIdResponseBodyDTO = TypeExtends<
+  Static<typeof findBookshelvesByUserIdResponseBodyDTOSchema>,
   contracts.FindBookshelvesByUserIdResponseBody
 >;

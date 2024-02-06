@@ -1,6 +1,7 @@
 import { Application } from '../src/core/application.js';
 import { AuthorDatabaseManager } from '../src/modules/authorModule/infrastructure/databases/authorDatabaseManager.js';
 import { BookDatabaseManager } from '../src/modules/bookModule/infrastructure/databases/bookDatabase/bookDatabaseManager.js';
+import { BookReadingDatabaseManager } from '../src/modules/bookReadingsModule/infrastructure/databases/bookReadingsDatabase/bookReadingDatabaseManager.js';
 import { BookshelfDatabaseManager } from '../src/modules/bookshelfModule/infrastructure/databases/bookshelvesDatabase/bookshelfDatabaseManager.js';
 import { UserDatabaseManager } from '../src/modules/userModule/infrastructure/databases/userDatabase/userDatabaseManager.js';
 import { UserEventsDatabaseManager } from '../src/modules/userModule/infrastructure/databases/userEventsDatabase/userEventsDatabaseManager.js';
@@ -16,6 +17,7 @@ export async function setup(): Promise<void> {
       AuthorDatabaseManager,
       BookDatabaseManager,
       BookshelfDatabaseManager,
+      BookReadingDatabaseManager,
     ];
 
     for (const databaseManager of databaseManagers) {

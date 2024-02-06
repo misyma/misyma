@@ -27,11 +27,11 @@ export type UpdateBookshelfNameBodyDTO = TypeExtends<
   contracts.UpdateBookshelfNameBody
 >;
 
-export const updateBookshelfNameOkResponseBodyDTOSchema = Type.Object({
+export const updateBookshelfNameResponseBodyDTOSchema = Type.Object({
   bookshelf: bookshelfDTOSchema,
 });
 
-export type UpdateBookshelfNameOkResponseBodyDTO = TypeExtends<
-  Static<typeof updateBookshelfNameOkResponseBodyDTOSchema>,
+export type UpdateBookshelfNameResponseBodyDTO = TypeExtends<
+  Static<typeof updateBookshelfNameResponseBodyDTOSchema>,
   contracts.UpdateBookshelfNameResponseBody
 >;

@@ -1,4 +1,4 @@
-import { type BlacklistTokenMapper } from './userMapper/blacklistTokenMapper.js';
+import { type BlacklistTokenMapper } from './blacklistTokenMapper/blacklistTokenMapper.js';
 import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';

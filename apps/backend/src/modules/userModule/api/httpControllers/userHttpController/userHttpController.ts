@@ -1,8 +1,8 @@
 import {
   type ChangeUserPasswordBodyDTO,
-  type ChangeUserPasswordOkResponseBodyDTO,
+  type ChangeUserPasswordResponseBodyDTO,
   changeUserPasswordBodyDTOSchema,
-  changeUserPasswordOkResponseBodyDTOSchema,
+  changeUserPasswordResponseBodyDTOSchema,
 } from './schemas/changeUserPasswordSchema.js';
 import {
   deleteUserResponseBodyDTOSchema,
@@ -45,9 +45,9 @@ import {
 } from './schemas/registerUserSchema.js';
 import {
   type ResetUserPasswordBodyDTO,
-  type ResetUserPasswordOkResponseBodyDTO,
+  type ResetUserPasswordResponseBodyDTO,
   resetUserPasswordBodyDTOSchema,
-  resetUserPasswordOkResponseBodyDTOSchema,
+  resetUserPasswordResponseBodyDTOSchema,
 } from './schemas/resetUserPasswordSchema.js';
 import {
   verifyUserPathParamsDTOSchema,
@@ -153,7 +153,7 @@ export class UserHttpController implements HttpController {
           },
           response: {
             [HttpStatusCode.ok]: {
-              schema: resetUserPasswordOkResponseBodyDTOSchema,
+              schema: resetUserPasswordResponseBodyDTOSchema,
               description: 'User password reset.',
             },
           },
@@ -172,7 +172,7 @@ export class UserHttpController implements HttpController {
           },
           response: {
             [HttpStatusCode.ok]: {
-              schema: changeUserPasswordOkResponseBodyDTOSchema,
+              schema: changeUserPasswordResponseBodyDTOSchema,
               description: 'User password changed.',
             },
           },
@@ -333,7 +333,7 @@ export class UserHttpController implements HttpController {
 
   private async resetUserPassword(
     request: HttpRequest<ResetUserPasswordBodyDTO, null, null>,
-  ): Promise<HttpOkResponse<ResetUserPasswordOkResponseBodyDTO>> {
+  ): Promise<HttpOkResponse<ResetUserPasswordResponseBodyDTO>> {
     const { email } = request.body;
 
     await this.resetUserPasswordCommandHandler.execute({
@@ -348,7 +348,7 @@ export class UserHttpController implements HttpController {
 
   private async changeUserPassword(
     request: HttpRequest<ChangeUserPasswordBodyDTO, null, null>,
-  ): Promise<HttpOkResponse<ChangeUserPasswordOkResponseBodyDTO>> {
+  ): Promise<HttpOkResponse<ChangeUserPasswordResponseBodyDTO>> {
     const { password, repeatedPassword, token } = request.body;
 
     const { userId } = await this.accessControlService.verifyBearerToken({

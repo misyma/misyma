@@ -1,15 +1,12 @@
 export const testSymbols = {
   applicationService: Symbol('applicationService'),
-
-  bookTestUtils: Symbol('bookTestUtils'),
-
-  bookshelfTestUtils: Symbol('bookshelfTestUtils'),
-
-  userTestUtils: Symbol('userTestUtils'),
-  blacklistTokenTestUtils: Symbol('blacklistTokenTestUtils'),
-
-  authorTestUtils: Symbol('authorTestUtils'),
   authorService: Symbol('authorService'),
 
+  bookTestUtils: Symbol('bookTestUtils'),
+  bookshelfTestUtils: Symbol('bookshelfTestUtils'),
+  bookReadingTestUtils: Symbol('bookReadingTestUtils'),
+  userTestUtils: Symbol('userTestUtils'),
+  blacklistTokenTestUtils: Symbol('blacklistTokenTestUtils'),
+  authorTestUtils: Symbol('authorTestUtils'),
   emailEventTestUtils: Symbol('emailEventTestUtils'),
 };

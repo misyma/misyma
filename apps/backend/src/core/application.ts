@@ -21,6 +21,8 @@ import { AuthorModule } from '../modules/authorModule/authorModule.js';
 import { AuthorDatabaseManager } from '../modules/authorModule/infrastructure/databases/authorDatabaseManager.js';
 import { BookModule } from '../modules/bookModule/bookModule.js';
 import { BookDatabaseManager } from '../modules/bookModule/infrastructure/databases/bookDatabase/bookDatabaseManager.js';
+import { BookReadingModule } from '../modules/bookReadingsModule/bookReadingModule.js';
+import { BookReadingDatabaseManager } from '../modules/bookReadingsModule/infrastructure/databases/bookReadingsDatabase/bookReadingDatabaseManager.js';
 import { BookshelfModule } from '../modules/bookshelfModule/bookshelfModule.js';
 import { BookshelfDatabaseManager } from '../modules/bookshelfModule/infrastructure/databases/bookshelvesDatabase/bookshelfDatabaseManager.js';
 import { UserDatabaseManager } from '../modules/userModule/infrastructure/databases/userDatabase/userDatabaseManager.js';
@@ -34,6 +36,7 @@ export class Application {
       AuthorDatabaseManager,
       BookDatabaseManager,
       BookshelfDatabaseManager,
+      BookReadingDatabaseManager,
     ];
 
     const eventsDatabaseManagers = [UserEventsDatabaseManager];
@@ -76,6 +79,7 @@ export class Application {
       new BookModule(),
       new AuthorModule(),
       new BookshelfModule(),
+      new BookReadingModule(),
     ];
 
     const container = DependencyInjectionContainerFactory.create({ modules });
