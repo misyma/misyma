@@ -43,3 +43,15 @@ export * from './schemas/book/deleteBook.js';
 export * from './schemas/book/bookFormat.js';
 
 export * from './schemas/book/bookStatus.js';
+
+export * from './schemas/bookReading/bookReading.js';
+
+export * from './schemas/bookReading/createBookReading.js';
+
+export * from './schemas/bookReading/deleteBookReading.js';
+
+export * from './schemas/bookReading/findBookReadingById.js';
+
+export * from './schemas/bookReading/findBookReadings.js';
+
+export * from './schemas/bookReading/updateBookReading.js';
