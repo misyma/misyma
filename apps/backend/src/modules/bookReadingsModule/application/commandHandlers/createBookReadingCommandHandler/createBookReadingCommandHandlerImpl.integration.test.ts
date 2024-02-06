@@ -96,11 +96,9 @@ describe('CreateBookReadingCommandHandlerImpl', () => {
       bookId: book.id,
     });
 
-    const result = await commandHandler.execute({
+    const { bookReading } = await commandHandler.execute({
       ...bookReadingDraft.getState(),
     });
-
-    const bookReading = result.bookReading;
 
     expect(bookReading).toBeInstanceOf(BookReading);
 

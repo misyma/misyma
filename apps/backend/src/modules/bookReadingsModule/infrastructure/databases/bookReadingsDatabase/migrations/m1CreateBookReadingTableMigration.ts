@@ -25,9 +25,9 @@ export class M1CreateBookReadingTableMigration implements Migration {
 
       table.text(this.columns.comment).notNullable();
 
-      table.date(this.columns.startedAt).notNullable();
+      table.timestamp(this.columns.startedAt).notNullable();
 
-      table.date(this.columns.endedAt).nullable();
+      table.timestamp(this.columns.endedAt).nullable();
 
       table.foreign(this.columns.bookId).references('id').inTable('books').onDelete('CASCADE');
     });

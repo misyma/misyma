@@ -26,7 +26,7 @@ describe('DeleteBookReadingCommandHandlerImpl', () => {
   beforeEach(async () => {
     const container = TestContainer.create();
 
-    commandHandler = container.get<DeleteBookReadingCommandHandler>(symbols.updateBookReadingNameCommandHandler);
+    commandHandler = container.get<DeleteBookReadingCommandHandler>(symbols.deleteBookReadingNameCommandHandler);
 
     bookReadingTestUtils = container.get<BookReadingTestUtils>(testSymbols.bookReadingTestUtils);
 

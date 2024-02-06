@@ -1,5 +1,4 @@
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
-import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';
 import { type BookReadingRawEntity } from '../../../infrastructure/databases/bookReadingsDatabase/tables/bookReadingTable/bookReadingRawEntity.js';
 import { BookReadingTable } from '../../../infrastructure/databases/bookReadingsDatabase/tables/bookReadingTable/bookReadingTable.js';
 import { BookReadingTestFactory } from '../../factories/bookReadingTestFactory/bookReadingTestFactory.js';
@@ -24,9 +23,7 @@ export class BookReadingTestUtils {
 
     const bookReading = this.bookReadingTestFactory.create(input);
 
-    const queryBuilder = this.createQueryBuilder();
-
-    const rawEntities = await queryBuilder.insert(
+    const rawEntities = await this.sqliteDatabaseClient<BookReadingRawEntity>(this.table.name).insert(
       {
         id: bookReading.getId(),
         bookId: bookReading.getBookId(),
@@ -38,28 +35,40 @@ export class BookReadingTestUtils {
       '*',
     );
 
-    return rawEntities[0] as BookReadingRawEntity;
+    const rawEntity = rawEntities[0] as BookReadingRawEntity;
+
+    return {
+      id: rawEntity.id,
+      bookId: rawEntity.bookId,
+      rating: rawEntity.rating,
+      comment: rawEntity.comment,
+      startedAt: new Date(rawEntity.startedAt),
+      endedAt: rawEntity.endedAt ? new Date(rawEntity.endedAt) : undefined,
+    };
   }
 
   public async findById(payload: FindByIdPayload): Promise<BookReadingRawEntity | null> {
     const { id } = payload;
 
-    const result = await this.createQueryBuilder().where(this.table.columns.id, id).first();
+    const result = await this.sqliteDatabaseClient<BookReadingRawEntity>(this.table.name)
+      .where(this.table.columns.id, id)
+      .first();
 
     if (!result) {
       return null;
     }
 
-    return result;
-  }
-
-  private createQueryBuilder(): QueryBuilder<BookReadingRawEntity> {
-    return this.sqliteDatabaseClient(this.table.name);
+    return {
+      id: result.id,
+      bookId: result.bookId,
+      rating: result.rating,
+      comment: result.comment,
+      startedAt: new Date(result.startedAt),
+      endedAt: result.endedAt ? new Date(result.endedAt) : undefined,
+    };
   }
 
   public async truncate(): Promise<void> {
-    const queryBuilder = this.createQueryBuilder();
-
-    await queryBuilder.truncate();
+    await this.sqliteDatabaseClient(this.table.name).truncate();
   }
 }
