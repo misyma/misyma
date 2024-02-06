@@ -4,8 +4,8 @@ import {
   type LoginUserCommandHandlerResult,
 } from './loginUserCommandHandler.js';
 import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
+import { UnauthorizedAccessError } from '../../../../authModule/application/errors/unathorizedAccessError.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
 import { type UserModuleConfigProvider } from '../../../userModuleConfigProvider.js';
@@ -33,15 +33,8 @@ export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
     const user = await this.userRepository.findUser({ email });
 
     if (!user) {
-      throw new ResourceNotFoundError({
-        name: 'User',
-        email,
-      });
-    }
-
-    if (!user.getIsEmailVerified()) {
-      throw new OperationNotValidError({
-        reason: 'User email is not verified.',
+      throw new UnauthorizedAccessError({
+        reason: 'User not found.',
         email,
       });
     }
@@ -52,8 +45,15 @@ export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
     });
 
     if (!passwordIsValid) {
-      throw new ResourceNotFoundError({
-        name: 'User',
+      throw new UnauthorizedAccessError({
+        reason: 'User not found.',
+        email,
+      });
+    }
+
+    if (!user.getIsEmailVerified()) {
+      throw new OperationNotValidError({
+        reason: 'User email is not verified.',
         email,
       });
     }

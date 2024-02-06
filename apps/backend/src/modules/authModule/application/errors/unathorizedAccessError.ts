@@ -1,9 +1,8 @@
 import { ApplicationError } from '../../../../common/errors/base/applicationError.js';
-import { type SecurityMode } from '../../../../common/types/http/securityMode.js';
 
 interface Context {
-  readonly securityMode: SecurityMode;
-  readonly reason: string;
+  readonly reason?: string;
+  readonly [key: string]: unknown;
 }
 
 export class UnauthorizedAccessError extends ApplicationError<Context> {
