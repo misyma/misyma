@@ -24,7 +24,6 @@ FROM base AS installer
 ARG APP_NAME
 ENV CI=true
 
-COPY tools/ ./tools
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/package-lock.json ./package-lock.json
 COPY tsconfig.json ./
@@ -46,7 +45,6 @@ ENV NODE_ENV=production
 ENV NODE_CONFIG_DIR=/app/apps/${DIR_NAME}/config
 ENV CI=true
 
-COPY tools/ ./tools
 COPY package*.json ./
 COPY --from=installer /app/apps/${DIR_NAME}/dist ./apps/${DIR_NAME}
 COPY --from=installer /app/apps/${DIR_NAME}/config ./apps/${DIR_NAME}/config
