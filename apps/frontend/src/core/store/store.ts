@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import { preferencesStateSlice } from './preferencesStore/preferencesStateSlice';
-import { userStateSlice } from './userStore/userStateSlice';
+import { preferencesStateSlice } from './states/preferencesState/preferencesStateSlice';
+import { userStateSlice } from './states/userState/userStateSlice';
 
 export const store = configureStore({
   reducer: {
