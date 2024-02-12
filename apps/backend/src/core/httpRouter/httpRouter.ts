@@ -10,6 +10,7 @@ import { ResourceAlreadyExistsError } from '../../common/errors/common/resourceA
 import { ResourceNotFoundError } from '../../common/errors/common/resourceNotFoundError.js';
 import { type HttpController } from '../../common/types/http/httpController.js';
 import { HttpHeader } from '../../common/types/http/httpHeader.js';
+import { HttpMediaType } from '../../common/types/http/httpMediaType.js';
 import { type HttpRouteSchema, type HttpRoute } from '../../common/types/http/httpRoute.js';
 import { HttpStatusCode } from '../../common/types/http/httpStatusCode.js';
 import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
@@ -66,8 +67,6 @@ export class HttpRouter {
       const path = this.normalizePath({ path: `/${this.rootPath}/${basePath}/${controllerPath}` });
 
       const handler = async (fastifyRequest: FastifyRequest, fastifyReply: FastifyReply): Promise<void> => {
-        const requestDate = new Date();
-
         try {
           this.loggerService.info({
             message: 'Received an HTTP request.',
@@ -92,7 +91,7 @@ export class HttpRouter {
           fastifyReply.status(statusCode);
 
           if (responseBody) {
-            fastifyReply.header(HttpHeader.contentType, 'application/json');
+            fastifyReply.header(HttpHeader.contentType, HttpMediaType.applicationJson);
 
             fastifyReply.send(responseBody);
           } else {
@@ -107,7 +106,6 @@ export class HttpRouter {
               method,
               statusCode,
               body: responseBody,
-              time: new Date().getTime() - requestDate.getTime(),
             },
           });
 
@@ -115,9 +113,9 @@ export class HttpRouter {
         } catch (error) {
           if (error instanceof BaseError) {
             const formattedError: Record<string, unknown> = {
-              name: error.name,
-              message: error.message,
-              context: error.context,
+              errorName: error.name,
+              errorMessage: error.message,
+              errorContext: error.context,
             };
 
             this.loggerService.error({
@@ -137,13 +135,12 @@ export class HttpRouter {
                 path: fastifyRequest.url,
                 method,
                 statusCode: fastifyReply.statusCode,
-                time: new Date().getTime() - requestDate.getTime(),
               },
             });
 
             if (error instanceof ResourceNotFoundError) {
               fastifyReply.status(HttpStatusCode.notFound).send({
-                error: formattedError,
+                ...formattedError,
               });
 
               return;
@@ -151,7 +148,7 @@ export class HttpRouter {
 
             if (error instanceof ResourceAlreadyExistsError) {
               fastifyReply.status(HttpStatusCode.unprocessableEntity).send({
-                error: formattedError,
+                ...formattedError,
               });
 
               return;
@@ -159,7 +156,7 @@ export class HttpRouter {
 
             if (error instanceof UnauthorizedAccessError) {
               fastifyReply.status(HttpStatusCode.unauthorized).send({
-                error: formattedError,
+                ...formattedError,
               });
 
               return;
@@ -167,7 +164,7 @@ export class HttpRouter {
 
             if (error instanceof ForbiddenAccessError) {
               fastifyReply.status(HttpStatusCode.forbidden).send({
-                error: formattedError,
+                ...formattedError,
               });
 
               return;
@@ -175,7 +172,7 @@ export class HttpRouter {
 
             if (error instanceof ApplicationError) {
               fastifyReply.status(HttpStatusCode.badRequest).send({
-                error: formattedError,
+                ...formattedError,
               });
 
               return;
@@ -183,14 +180,14 @@ export class HttpRouter {
 
             if (error instanceof DomainError) {
               fastifyReply.status(HttpStatusCode.badRequest).send({
-                error: formattedError,
+                ...formattedError,
               });
 
               return;
             }
 
             fastifyReply.status(HttpStatusCode.internalServerError).send({
-              error: formattedError,
+              ...formattedError,
             });
 
             return;
@@ -206,7 +203,6 @@ export class HttpRouter {
                 path: fastifyRequest.url,
                 method,
                 statusCode: fastifyReply.statusCode,
-                time: new Date().getTime() - requestDate.getTime(),
               },
             });
           } else {
@@ -217,17 +213,14 @@ export class HttpRouter {
                 path: fastifyRequest.url,
                 method,
                 statusCode: fastifyReply.statusCode,
-                time: new Date().getTime() - requestDate.getTime(),
                 error,
               },
             });
           }
 
           fastifyReply.status(HttpStatusCode.internalServerError).send({
-            error: {
-              name: 'InternalServerError',
-              message: 'Internal server error',
-            },
+            errorName: 'InternalServerError',
+            errorMessage: 'Internal server error',
           });
 
           return;
