@@ -50,11 +50,9 @@ import {
   resetUserPasswordResponseBodyDTOSchema,
 } from './schemas/resetUserPasswordSchema.js';
 import {
-  verifyUserPathParamsDTOSchema,
   verifyUserBodyDTOSchema,
   verifyUserResponseBodyDTOSchema,
   type VerifyUserBodyDTO,
-  type VerifyUserPathParamsDTO,
   type VerifyUserResponseBodyDTO,
 } from './schemas/verifyUserSchema.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
@@ -236,11 +234,10 @@ export class UserHttpController implements HttpController {
       }),
       new HttpRoute({
         method: HttpMethodName.post,
-        path: ':id/verify-email',
+        path: 'verify-email',
         handler: this.verifyUserEmail.bind(this),
         schema: {
           request: {
-            pathParams: verifyUserPathParamsDTOSchema,
             body: verifyUserBodyDTOSchema,
           },
           response: {
@@ -418,16 +415,11 @@ export class UserHttpController implements HttpController {
   }
 
   private async verifyUserEmail(
-    request: HttpRequest<VerifyUserBodyDTO, undefined, VerifyUserPathParamsDTO>,
+    request: HttpRequest<VerifyUserBodyDTO, undefined, undefined>,
   ): Promise<HttpOkResponse<VerifyUserResponseBodyDTO>> {
-    const { id } = request.pathParams;
-
     const { token } = request.body;
 
-    await this.verifyUserEmailCommandHandler.execute({
-      userId: id,
-      token,
-    });
+    await this.verifyUserEmailCommandHandler.execute({ emailVerificationToken: token });
 
     return {
       statusCode: HttpStatusCode.ok,

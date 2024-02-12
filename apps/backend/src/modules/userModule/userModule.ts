@@ -32,9 +32,9 @@ import { type BlacklistTokenRepository } from './domain/repositories/blacklistTo
 import { type EmailEventRepository } from './domain/repositories/emailEventRepository/emailEventRepository.js';
 import { type UserRepository } from './domain/repositories/userRepository/userRepository.js';
 import { EmailMessageBusImpl } from './infrastructure/messageBuses/emailMessageBus/emailMessageBusImpl.js';
-import { BlacklistTokenRepositoryImpl } from './infrastructure/repositories/blacklistTokenRepository/blacklistTokenRepositoryImpl.js';
 import { type BlacklistTokenMapper } from './infrastructure/repositories/blacklistTokenRepository/blacklistTokenMapper/blacklistTokenMapper.js';
 import { BlacklistTokenMapperImpl } from './infrastructure/repositories/blacklistTokenRepository/blacklistTokenMapper/blacklistTokenMapperImpl.js';
+import { BlacklistTokenRepositoryImpl } from './infrastructure/repositories/blacklistTokenRepository/blacklistTokenRepositoryImpl.js';
 import { EmailEventRepositoryImpl } from './infrastructure/repositories/emailEventRepository/emailEventRepositoryImpl.js';
 import { EmailEventMapper } from './infrastructure/repositories/emailEventRepository/mappers/emailEventMapper/emailEventMapper.js';
 import { type UserMapper } from './infrastructure/repositories/userRepository/userMapper/userMapper.js';
@@ -170,7 +170,6 @@ export class UserModule implements DependencyInjectionModule {
           container.get<UserRepository>(symbols.userRepository),
           container.get<HashService>(symbols.hashService),
           container.get<TokenService>(authSymbols.tokenService),
-          container.get<BlacklistTokenRepository>(symbols.blacklistTokenRepository),
           container.get<PasswordValidationService>(symbols.passwordValidationService),
         ),
     );
@@ -196,7 +195,6 @@ export class UserModule implements DependencyInjectionModule {
           container.get<TokenService>(authSymbols.tokenService),
           container.get<UserRepository>(symbols.userRepository),
           container.get<LoggerService>(coreSymbols.loggerService),
-          container.get<BlacklistTokenRepository>(symbols.blacklistTokenRepository),
         ),
     );
 

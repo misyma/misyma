@@ -81,7 +81,12 @@ export class UserTestUtils {
       '*',
     );
 
-    return rawEntities[0] as UserRawEntity;
+    const rawEntity = rawEntities[0] as UserRawEntity;
+
+    return {
+      ...rawEntity,
+      isEmailVerified: Boolean(rawEntity.isEmailVerified),
+    };
   }
 
   public async createAndPersistRefreshToken(
@@ -182,7 +187,7 @@ export class UserTestUtils {
     await queryBuilder.insert(user, '*');
   }
 
-  public async findByEmail(payload: FindByEmailPayload): Promise<UserRawEntity> {
+  public async findByEmail(payload: FindByEmailPayload): Promise<UserRawEntity | undefined> {
     const { email: emailInput } = payload;
 
     const email = emailInput.toLowerCase();
@@ -191,17 +196,31 @@ export class UserTestUtils {
 
     const userRawEntity = await queryBuilder.select('*').where({ email }).first();
 
-    return userRawEntity as UserRawEntity;
+    if (!userRawEntity) {
+      return undefined;
+    }
+
+    return {
+      ...userRawEntity,
+      isEmailVerified: Boolean(userRawEntity.isEmailVerified),
+    };
   }
 
-  public async findById(payload: FindByIdPayload): Promise<UserRawEntity> {
+  public async findById(payload: FindByIdPayload): Promise<UserRawEntity | undefined> {
     const { id } = payload;
 
     const queryBuilder = this.createQueryBuilder();
 
     const userRawEntity = await queryBuilder.select('*').where({ id }).first();
 
-    return userRawEntity as UserRawEntity;
+    if (!userRawEntity) {
+      return undefined;
+    }
+
+    return {
+      ...userRawEntity,
+      isEmailVerified: Boolean(userRawEntity.isEmailVerified),
+    };
   }
 
   public async truncate(): Promise<void> {

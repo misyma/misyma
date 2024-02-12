@@ -9,7 +9,6 @@ import { OperationNotValidError } from '../../../../../common/errors/common/oper
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { authSymbols } from '../../../../authModule/symbols.js';
 import { symbols } from '../../../symbols.js';
-import { type BlacklistTokenTestUtils } from '../../../tests/utils/blacklistTokenTestUtils/blacklistTokenTestUtils.js';
 import { type UserTestUtils } from '../../../tests/utils/userTestUtils/userTestUtils.js';
 import { type HashService } from '../../services/hashService/hashService.js';
 
@@ -19,8 +18,6 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
   let tokenService: TokenService;
 
   let userTestUtils: UserTestUtils;
-
-  let blacklistTokenTestUtils: BlacklistTokenTestUtils;
 
   let hashService: HashService;
 
@@ -34,8 +31,6 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
     hashService = container.get<HashService>(symbols.hashService);
 
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
-
-    blacklistTokenTestUtils = container.get<BlacklistTokenTestUtils>(testSymbols.blacklistTokenTestUtils);
   });
 
   it('changes user password', async () => {
@@ -68,16 +63,10 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
 
     const isUpdatedPasswordValid = await hashService.compare({
       plainData: newPassword,
-      hashedData: updatedUser?.password,
+      hashedData: updatedUser?.password as string,
     });
 
     expect(isUpdatedPasswordValid).toBe(true);
-
-    const blacklistToken = await blacklistTokenTestUtils.findByToken({
-      token: resetPasswordToken,
-    });
-
-    expect(blacklistToken.token).toEqual(resetPasswordToken);
   });
 
   it('throws an error - when a User with given id not found', async () => {
@@ -134,46 +123,6 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
         }),
     ).toThrowErrorInstance({
       instance: OperationNotValidError,
-    });
-  });
-
-  it('throws an error - when resetPasswordToken is blacklisted', async () => {
-    const resetPasswordToken = tokenService.createToken({
-      data: {},
-      expiresIn: Generator.number(10000, 100000),
-    });
-
-    const user = await userTestUtils.createAndPersist();
-
-    await userTestUtils.createAndPersistResetPasswordToken({
-      input: {
-        userId: user.id,
-        token: resetPasswordToken,
-      },
-    });
-
-    await blacklistTokenTestUtils.createAndPersist({
-      input: {
-        token: resetPasswordToken,
-      },
-    });
-
-    const newPassword = Generator.password();
-
-    await expect(
-      async () =>
-        await commandHandler.execute({
-          newPassword,
-          repeatedNewPassword: newPassword,
-          resetPasswordToken,
-          userId: user.id,
-        }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
-        reason: 'Reset password token is blacklisted.',
-        resetPasswordToken,
-      },
     });
   });
 

@@ -1,7 +1,6 @@
 import { type ChangeUserPasswordCommandHandler, type ExecutePayload } from './changeUserPasswordCommandHandler.js';
 import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
-import { type BlacklistTokenRepository } from '../../../domain/repositories/blacklistTokenRepository/blacklistTokenRepository.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
 import { type HashService } from '../../services/hashService/hashService.js';
 import { type PasswordValidationService } from '../../services/passwordValidationService/passwordValidationService.js';
@@ -11,23 +10,11 @@ export class ChangeUserPasswordCommandHandlerImpl implements ChangeUserPasswordC
     private readonly userRepository: UserRepository,
     private readonly hashService: HashService,
     private readonly tokenService: TokenService,
-    private readonly blacklistTokenRepository: BlacklistTokenRepository,
     private readonly passwordValidationService: PasswordValidationService,
   ) {}
 
   public async execute(payload: ExecutePayload): Promise<void> {
     const { resetPasswordToken, newPassword, repeatedNewPassword, userId } = payload;
-
-    const isTokenBlacklisted = await this.blacklistTokenRepository.findBlacklistToken({
-      token: resetPasswordToken,
-    });
-
-    if (isTokenBlacklisted) {
-      throw new OperationNotValidError({
-        reason: 'Reset password token is blacklisted.',
-        resetPasswordToken,
-      });
-    }
 
     this.tokenService.verifyToken({ token: resetPasswordToken });
 
@@ -77,15 +64,6 @@ export class ChangeUserPasswordCommandHandlerImpl implements ChangeUserPasswordC
     await this.userRepository.updateUser({
       id: user.getId(),
       domainActions: user.getDomainActions(),
-    });
-
-    const { expiresAt } = this.tokenService.decodeToken({
-      token: resetPasswordToken,
-    });
-
-    await this.blacklistTokenRepository.createBlacklistToken({
-      token: resetPasswordToken,
-      expiresAt: new Date(expiresAt),
     });
   }
 }

@@ -70,7 +70,7 @@ describe('RegisterUserCommandHandler', () => {
 
     expect(createdUser.getIsEmailVerified()).toEqual(false);
 
-    expect(foundUser.email).toEqual(user.getEmail());
+    expect(foundUser?.email).toEqual(user.getEmail());
 
     const userTokens = await userTestUtils.findTokensByUserId({ userId: createdUser.getId() });
 
