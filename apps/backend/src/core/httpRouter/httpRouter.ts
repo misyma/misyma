@@ -113,9 +113,9 @@ export class HttpRouter {
         } catch (error) {
           if (error instanceof BaseError) {
             const formattedError: Record<string, unknown> = {
-              errorName: error.name,
-              errorMessage: error.message,
-              errorContext: error.context,
+              name: error.name,
+              message: error.message,
+              context: error.context,
             };
 
             this.loggerService.error({
@@ -219,8 +219,8 @@ export class HttpRouter {
           }
 
           fastifyReply.status(HttpStatusCode.internalServerError).send({
-            errorName: 'InternalServerError',
-            errorMessage: 'Internal server error',
+            name: 'InternalServerError',
+            message: 'Internal server error',
           });
 
           return;
