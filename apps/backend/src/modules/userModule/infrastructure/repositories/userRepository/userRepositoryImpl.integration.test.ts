@@ -57,7 +57,7 @@ describe('UserRepositoryImpl', () => {
 
       expect(user.getEmail()).toEqual(email);
 
-      expect(foundUser.email).toEqual(email);
+      expect(foundUser?.email).toEqual(email);
     });
 
     it('throws an error when a User with the same email already exists', async () => {
