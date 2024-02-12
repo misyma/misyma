@@ -26,7 +26,6 @@ ARG APPLICATION_VERSION
 ENV APPLICATION_VERSION=$APPLICATION_VERSION
 ENV CI=true
 
-COPY tools/ ./tools
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/package-lock.json ./package-lock.json
 COPY tsconfig.json ./
@@ -34,8 +33,6 @@ COPY tsconfig.json ./
 RUN npm ci
 
 COPY --from=builder /app/out/full/ .
-
-RUN npm run build --filter="@apps/$APP_NAME"
 
 RUN npm run build --filter="@apps/$APP_NAME"
 
