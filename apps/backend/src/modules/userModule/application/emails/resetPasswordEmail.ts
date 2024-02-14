@@ -2,7 +2,7 @@ import { readFileSync } from 'fs';
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { Email } from '../../services/emailService/email/email.js';
+import { Email } from '../services/emailService/email/email.js';
 
 export interface ResetPasswordEmailTemplateData {
   readonly name: string;
@@ -15,7 +15,7 @@ export interface ResetPasswordEmailDraft {
 }
 
 export class ResetPasswordEmail extends Email {
-  protected subject = 'Reset your password';
+  protected subject = 'Reset hasła';
 
   private bodyTemplateData: ResetPasswordEmailTemplateData;
 

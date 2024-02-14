@@ -7,7 +7,6 @@ RUN apk add --no-cache libc6-compat bash
 WORKDIR /app
 
 FROM base AS builder
-ARG APP_NAME
 
 RUN npm i -g turbo
 
@@ -17,11 +16,10 @@ COPY apps/ ./apps
 COPY common/ ./common
 COPY tsconfig.json ./
 
-RUN turbo prune --scope="@apps/$APP_NAME" --docker
+RUN turbo prune --scope="@apps/backend" --docker
 
 FROM base AS installer
 
-ARG APP_NAME
 ENV CI=true
 
 COPY --from=builder /app/out/json/ .
@@ -32,23 +30,22 @@ RUN npm ci
 
 COPY --from=builder /app/out/full/ .
 
-RUN npm run build --filter="@apps/$APP_NAME"
+RUN npm run build --filter="@apps/backend"
 
 FROM base AS runner
 
-ARG DIR_NAME
 ARG APPLICATION_VERSION
 
-ENV DIR_NAME=$DIR_NAME
 ENV APPLICATION_VERSION=$APPLICATION_VERSION
 ENV NODE_ENV=production
-ENV NODE_CONFIG_DIR=/app/apps/${DIR_NAME}/config
+ENV NODE_CONFIG_DIR=/app/apps/backend/config
 ENV CI=true
 
 COPY package*.json ./
-COPY --from=installer /app/apps/${DIR_NAME}/dist ./apps/${DIR_NAME}
-COPY --from=installer /app/apps/${DIR_NAME}/config ./apps/${DIR_NAME}/config
-COPY --from=installer /app/apps/${DIR_NAME}/package.json ./apps/${DIR_NAME}/package.json
+COPY --from=installer /app/apps/backend/dist ./apps/backend
+COPY --from=installer /app/apps/backend/config ./apps/backend/config
+COPY --from=installer /app/apps/backend/package.json ./apps/backend/package.json
+COPY --from=installer /app/apps/backend/src/modules/userModule/application/emails/templates ./apps/backend/src/modules/userModule/application/emails
 
 COPY --from=installer /app/common/ ./common/.temp
 
@@ -65,4 +62,4 @@ RUN npm ci
 
 USER node
 
-CMD node apps/$DIR_NAME/src/index.js
+CMD node apps/backend/src/index.js
