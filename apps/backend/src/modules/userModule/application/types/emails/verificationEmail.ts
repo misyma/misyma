@@ -1,4 +1,6 @@
 import { readFileSync } from 'fs';
+import path, { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { Email } from '../../services/emailService/email/email.js';
 
@@ -18,7 +20,9 @@ export class VerificationEmail extends Email {
   private bodyTemplateData: VerificationEmailTemplateData;
 
   public constructor(draft: VerificationEmailDraft) {
-    const bodyTemplate = readFileSync('./templates/verificationEmail.html', 'utf-8');
+    const currentDirectory = dirname(fileURLToPath(import.meta.url));
+
+    const bodyTemplate = readFileSync(path.join(currentDirectory, './templates/verificationEmail.html'), 'utf-8');
 
     super(draft.recipient, bodyTemplate);
 

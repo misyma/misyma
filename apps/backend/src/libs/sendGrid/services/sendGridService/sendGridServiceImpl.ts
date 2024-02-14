@@ -34,7 +34,7 @@ export class SendGridServiceImpl implements SendGridService {
       subject,
       content: [
         {
-          type: HttpMediaType.textPlain,
+          type: HttpMediaType.textHtml,
           value: body,
         },
       ],
