@@ -1,4 +1,3 @@
-// TODO: add possibility to have email without template
 export abstract class Email {
   protected recipient: string;
 

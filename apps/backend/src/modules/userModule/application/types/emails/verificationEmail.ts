@@ -15,7 +15,7 @@ export class VerificationEmail extends Email {
   protected subject = 'Confirm your email';
 
   protected bodyTemplate =
-    'Hello {{firstName}} {{lastName}}! Please confirm your email by clicking on the link below: {{emailVerificationLink}}';
+    'Hello {{name}}! Please confirm your email by clicking on the link below: {{emailVerificationLink}}';
 
   private bodyTemplateData: VerificationEmailTemplateData;
 

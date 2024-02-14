@@ -15,7 +15,7 @@ export class ResetPasswordEmail extends Email {
   protected subject = 'Reset your password';
 
   protected bodyTemplate =
-    'Hello {{firstName}} {{lastName}}! Please reset your password by clicking on the link below: {{resetPasswordLink}}';
+    'Hello {{name}}! Please reset your password by clicking on the link below: {{resetPasswordLink}}';
 
   private bodyTemplateData: ResetPasswordEmailTemplateData;
 
