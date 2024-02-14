@@ -4,8 +4,7 @@ import { type User } from '../../../domain/entities/user/user.js';
 export interface RegisterUserCommandHandlerPayload {
   readonly email: string;
   readonly password: string;
-  readonly firstName: string;
-  readonly lastName: string;
+  readonly name: string;
 }
 
 export interface RegisterUserCommandHandlerResult {

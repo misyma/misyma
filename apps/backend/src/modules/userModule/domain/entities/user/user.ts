@@ -6,8 +6,7 @@ export interface UserDraft {
   readonly id: string;
   readonly email: string;
   readonly password: string;
-  readonly firstName: string;
-  readonly lastName: string;
+  readonly name: string;
   readonly isEmailVerified: boolean;
 }
 
@@ -19,12 +18,8 @@ export interface UpdateEmailPayload {
   readonly newEmail: string;
 }
 
-export interface UpdateFirstNamePayload {
-  readonly newFirstName: string;
-}
-
-export interface UpdateLastNamePayload {
-  readonly newLastName: string;
+export interface UpdateNamePayload {
+  readonly newName: string;
 }
 
 export interface ResetPasswordPayload {
@@ -46,14 +41,13 @@ export class User {
   private id: string;
   private email: string;
   private password: string;
-  private firstName: string;
-  private lastName: string;
+  private name: string;
   private isEmailVerified: boolean;
 
   private domainActions: UserDomainAction[] = [];
 
   public constructor(draft: UserDraft) {
-    const { id, email, password, firstName, lastName, isEmailVerified } = draft;
+    const { id, email, password, name, isEmailVerified } = draft;
 
     this.id = id;
 
@@ -61,9 +55,7 @@ export class User {
 
     this.email = email;
 
-    this.firstName = firstName;
-
-    this.lastName = lastName;
+    this.name = name;
 
     this.isEmailVerified = isEmailVerified;
   }
@@ -80,12 +72,8 @@ export class User {
     return this.password;
   }
 
-  public getFirstName(): string {
-    return this.firstName;
-  }
-
-  public getLastName(): string {
-    return this.lastName;
+  public getName(): string {
+    return this.name;
   }
 
   public getIsEmailVerified(): boolean {
@@ -97,8 +85,7 @@ export class User {
       id: this.id,
       email: this.email,
       password: this.password,
-      firstName: this.firstName,
-      lastName: this.lastName,
+      name: this.name,
       isEmailVerified: this.isEmailVerified,
     };
   }
@@ -141,24 +128,13 @@ export class User {
     this.email = newEmail;
   }
 
-  public addUpdateFirstNameAction(payload: UpdateFirstNamePayload): void {
-    const { newFirstName } = payload;
+  public addUpdateNameAction(payload: UpdateNamePayload): void {
+    const { newName } = payload;
 
     this.domainActions.push({
-      actionName: UserDomainActionType.updateFirstName,
+      actionName: UserDomainActionType.updateName,
       payload: {
-        firstName: newFirstName,
-      },
-    });
-  }
-
-  public addUpdateLastNameAction(payload: UpdateLastNamePayload): void {
-    const { newLastName } = payload;
-
-    this.domainActions.push({
-      actionName: UserDomainActionType.updateLastName,
-      payload: {
-        lastName: newLastName,
+        name: newName,
       },
     });
   }

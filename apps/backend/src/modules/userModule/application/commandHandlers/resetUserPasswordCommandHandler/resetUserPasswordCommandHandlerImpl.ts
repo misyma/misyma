@@ -67,8 +67,7 @@ export class ResetUserPasswordCommandHandlerImpl implements ResetUserPasswordCom
       new EmailEventDraft({
         eventName: EmailEventType.resetPassword,
         payload: {
-          firstName: user.getFirstName(),
-          lastName: user.getLastName(),
+          name: user.getName(),
           recipientEmail: user.getEmail(),
           resetPasswordLink,
         },

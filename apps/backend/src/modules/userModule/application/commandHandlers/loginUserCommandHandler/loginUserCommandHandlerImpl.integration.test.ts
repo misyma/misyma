@@ -64,8 +64,7 @@ describe('LoginUserCommandHandler', () => {
         id: createdUser.getId(),
         email: createdUser.getEmail(),
         password: hashedPassword,
-        firstName: createdUser.getFirstName(),
-        lastName: createdUser.getLastName(),
+        name: createdUser.getName(),
         isEmailVerified: createdUser.getIsEmailVerified(),
       },
     });
@@ -102,8 +101,7 @@ describe('LoginUserCommandHandler', () => {
         id: createdUser.getId(),
         email: createdUser.getEmail(),
         password: hashedPassword,
-        firstName: createdUser.getFirstName(),
-        lastName: createdUser.getLastName(),
+        name: createdUser.getName(),
         isEmailVerified: false,
       },
     });

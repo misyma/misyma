@@ -4,4 +4,5 @@ export enum HttpMediaType {
   textXml = 'text/xml',
   textCsv = 'text/csv',
   textPlain = 'text/plain',
+  textHtml = 'text/html',
 }

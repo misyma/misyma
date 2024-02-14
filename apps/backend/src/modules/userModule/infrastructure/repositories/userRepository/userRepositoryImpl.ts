@@ -66,7 +66,7 @@ export class UserRepositoryImpl implements UserRepository {
   ) {}
 
   public async createUser(payload: CreateUserPayload): Promise<User> {
-    const { email, password, firstName, lastName, isEmailVerified } = payload;
+    const { email, password, name, isEmailVerified } = payload;
 
     let rawEntities: UserRawEntity[];
 
@@ -78,8 +78,7 @@ export class UserRepositoryImpl implements UserRepository {
           id,
           email,
           password,
-          firstName,
-          lastName,
+          name,
           isEmailVerified,
         },
         '*',
@@ -389,18 +388,10 @@ export class UserRepositoryImpl implements UserRepository {
 
           break;
 
-        case UserDomainActionType.updateFirstName:
+        case UserDomainActionType.updateName:
           user = {
             ...(user || {}),
-            firstName: domainAction.payload.firstName,
-          };
-
-          break;
-
-        case UserDomainActionType.updateLastName:
-          user = {
-            ...(user || {}),
-            lastName: domainAction.payload.lastName,
+            name: domainAction.payload.name,
           };
 
           break;

@@ -26,7 +26,7 @@ export class RegisterUserCommandHandlerImpl implements RegisterUserCommandHandle
   ) {}
 
   public async execute(payload: RegisterUserCommandHandlerPayload): Promise<RegisterUserCommandHandlerResult> {
-    const { email: emailInput, password, firstName, lastName } = payload;
+    const { email: emailInput, password, name } = payload;
 
     const email = emailInput.toLowerCase();
 
@@ -34,8 +34,7 @@ export class RegisterUserCommandHandlerImpl implements RegisterUserCommandHandle
       message: 'Registering User...',
       context: {
         email,
-        firstName,
-        lastName,
+        name,
       },
     });
 
@@ -55,8 +54,7 @@ export class RegisterUserCommandHandlerImpl implements RegisterUserCommandHandle
     const user = await this.userRepository.createUser({
       email,
       password: hashedPassword,
-      firstName,
-      lastName,
+      name,
       isEmailVerified: false,
     });
 
@@ -105,8 +103,7 @@ export class RegisterUserCommandHandlerImpl implements RegisterUserCommandHandle
       new EmailEventDraft({
         eventName: EmailEventType.verifyEmail,
         payload: {
-          firstName: user.getFirstName(),
-          lastName: user.getLastName(),
+          name: user.getName(),
           recipientEmail: user.getEmail(),
           emailVerificationLink,
         },

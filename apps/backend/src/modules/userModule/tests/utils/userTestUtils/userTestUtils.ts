@@ -71,10 +71,9 @@ export class UserTestUtils {
 
     const rawEntities = await queryBuilder.insert(
       {
-        email: user.getEmail(),
-        firstName: user.getFirstName(),
         id: user.getId(),
-        lastName: user.getLastName(),
+        email: user.getEmail(),
+        name: user.getName(),
         password: user.getPassword(),
         isEmailVerified: user.getIsEmailVerified(),
       },

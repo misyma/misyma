@@ -7,8 +7,7 @@ export class UserTable implements DatabaseTable<UserRawEntity> {
     id: 'id',
     email: 'email',
     password: 'password',
-    firstName: 'firstName',
-    lastName: 'lastName',
+    name: 'name',
     isEmailVerified: 'isEmailVerified',
   } as const;
 }

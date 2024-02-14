@@ -12,9 +12,7 @@ export class M1CreateUserTableMigration implements Migration {
 
       table.text('password').notNullable();
 
-      table.text('firstName').notNullable();
-
-      table.text('lastName').notNullable();
+      table.text('name').notNullable();
 
       table.boolean('isEmailVerified').notNullable();
 

@@ -66,10 +66,9 @@ describe('ResetUserPasswordCommandHandler', () => {
     await userTestUtils.createAndPersist({
       input: {
         email: user.getEmail(),
-        firstName: user.getFirstName(),
+        name: user.getName(),
         id: user.getId(),
         isEmailVerified: true,
-        lastName: user.getLastName(),
         password: user.getPassword(),
       },
     });
@@ -86,8 +85,7 @@ describe('ResetUserPasswordCommandHandler', () => {
         payload: {
           recipientEmail: user.getEmail(),
           resetPasswordLink: expect.any(String),
-          firstName: user.getFirstName(),
-          lastName: user.getLastName(),
+          name: user.getName(),
         },
       }),
     );
@@ -99,10 +97,9 @@ describe('ResetUserPasswordCommandHandler', () => {
     const createdUser = await userTestUtils.createAndPersist({
       input: {
         email: user.getEmail(),
-        firstName: user.getFirstName(),
         id: user.getId(),
         isEmailVerified: true,
-        lastName: user.getLastName(),
+        name: user.getName(),
         password: user.getPassword(),
       },
     });
