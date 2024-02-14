@@ -2,7 +2,7 @@ import { readFileSync } from 'fs';
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { Email } from '../../services/emailService/email/email.js';
+import { Email } from '../services/emailService/email/email.js';
 
 export interface VerificationEmailTemplateData {
   readonly name: string;
@@ -15,7 +15,7 @@ export interface VerificationEmailDraft {
 }
 
 export class VerificationEmail extends Email {
-  protected subject = 'Confirm your email';
+  protected subject = 'Potwierdź swój email';
 
   private bodyTemplateData: VerificationEmailTemplateData;
 

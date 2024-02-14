@@ -6,16 +6,16 @@ import { type QueueHandler } from '../../../../../common/types/queue/queueHandle
 import { QueuePath } from '../../../../../common/types/queue/queuePath.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type ChangeEmailEventStatusCommandHandler } from '../../../application/commandHandlers/changeEmailEventStatusCommandHandler/changeEmailEventStatusCommandHandler.js';
-import { type FindEmailEventsQueryHandler } from '../../../application/queryHandlers/findEmailEventsQueryHandler/findEmailEventsQueryHandler.js';
-import { type EmailService } from '../../../application/services/emailService/emailService.js';
 import {
   ResetPasswordEmail,
   type ResetPasswordEmailTemplateData,
-} from '../../../application/types/emails/resetPasswordEmail.js';
+} from '../../../application/emails/resetPasswordEmail.js';
 import {
   VerificationEmail,
   type VerificationEmailTemplateData,
-} from '../../../application/types/emails/verificationEmail.js';
+} from '../../../application/emails/verificationEmail.js';
+import { type FindEmailEventsQueryHandler } from '../../../application/queryHandlers/findEmailEventsQueryHandler/findEmailEventsQueryHandler.js';
+import { type EmailService } from '../../../application/services/emailService/emailService.js';
 import { type EmailEvent } from '../../../domain/entities/emailEvent/emailEvent.js';
 import { EmailEventStatus } from '../../../domain/entities/emailEvent/types/emailEventStatus.js';
 import { EmailEventType } from '../../../domain/entities/emailEvent/types/emailEventType.js';
