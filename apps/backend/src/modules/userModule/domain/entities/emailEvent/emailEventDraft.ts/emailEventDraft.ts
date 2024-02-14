@@ -2,7 +2,6 @@ import { type BaseEmailPayload } from '../types/baseEmailPayload.js';
 import { type EmailEventType } from '../types/emailEventType.js';
 
 export interface EmailEventDraftState {
-  // TODO: add support for providing own payload type
   payload: BaseEmailPayload;
   eventName: EmailEventType;
 }

@@ -20,8 +20,7 @@ export class EmailEventTestFactory {
       payload: {
         recipientEmail: Generator.email(),
         emailEventType: Generator.arrayElement<EmailEventType>(Object.keys(EmailEventType) as EmailEventType[]),
-        firstName: Generator.firstName(),
-        lastName: Generator.lastName(),
+        name: Generator.fullName(),
         ...overrides.payload,
       },
       eventName: Generator.arrayElement<EmailEventType>(Object.keys(EmailEventType) as EmailEventType[]),
@@ -38,8 +37,7 @@ export class EmailEventTestFactory {
       payload: {
         recipientEmail: Generator.email(),
         emailEventType: Generator.arrayElement<EmailEventType>(Object.keys(EmailEventType) as EmailEventType[]),
-        firstName: Generator.firstName(),
-        lastName: Generator.lastName(),
+        name: Generator.fullName(),
         ...overrides.payload,
       },
     });

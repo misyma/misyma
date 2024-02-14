@@ -60,8 +60,7 @@ describe('RegisterUserCommandHandler', () => {
     const { user: createdUser } = await registerUserCommandHandler.execute({
       email: user.getEmail(),
       password: user.getPassword(),
-      firstName: user.getName(),
-      lastName: user.getLastName(),
+      name: user.getName(),
     });
 
     const foundUser = await userTestUtils.findByEmail({ email: user.getEmail() });
@@ -88,8 +87,7 @@ describe('RegisterUserCommandHandler', () => {
       await registerUserCommandHandler.execute({
         email: existingUser.email,
         password: existingUser.password,
-        firstName: existingUser.firstName,
-        lastName: existingUser.lastName,
+        name: existingUser.name,
       });
     }).toThrowErrorInstance({
       instance: ResourceAlreadyExistsError,
@@ -107,8 +105,7 @@ describe('RegisterUserCommandHandler', () => {
       await registerUserCommandHandler.execute({
         email: user.getEmail(),
         password: '123',
-        firstName: user.getName(),
-        lastName: user.getLastName(),
+        name: user.getName(),
       });
     }).toThrowErrorInstance({
       instance: OperationNotValidError,

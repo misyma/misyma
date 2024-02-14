@@ -1,13 +1,10 @@
 export abstract class Email {
-  protected recipient: string;
-
   protected abstract subject: string;
 
-  protected abstract bodyTemplate: string;
-
-  public constructor(recipient: string) {
-    this.recipient = recipient;
-  }
+  public constructor(
+    private readonly recipient: string,
+    private readonly bodyTemplate: string,
+  ) {}
 
   public getRecipient(): string {
     return this.recipient;

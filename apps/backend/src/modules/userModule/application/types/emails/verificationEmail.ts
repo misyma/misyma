@@ -1,8 +1,9 @@
+import { readFileSync } from 'fs';
+
 import { Email } from '../../services/emailService/email/email.js';
 
 export interface VerificationEmailTemplateData {
-  readonly firstName: string;
-  readonly lastName: string;
+  readonly name: string;
   readonly emailVerificationLink: string;
 }
 
@@ -14,13 +15,12 @@ export interface VerificationEmailDraft {
 export class VerificationEmail extends Email {
   protected subject = 'Confirm your email';
 
-  protected bodyTemplate =
-    'Hello {{name}}! Please confirm your email by clicking on the link below: {{emailVerificationLink}}';
-
   private bodyTemplateData: VerificationEmailTemplateData;
 
   public constructor(draft: VerificationEmailDraft) {
-    super(draft.recipient);
+    const bodyTemplate = readFileSync('./templates/verificationEmail.html', 'utf-8');
+
+    super(draft.recipient, bodyTemplate);
 
     this.bodyTemplateData = draft.templateData;
   }
