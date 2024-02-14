@@ -43,13 +43,12 @@ describe('UserRepositoryImpl', () => {
     it('creates a User', async () => {
       const createdUser = userTestFactory.create();
 
-      const { email, firstName, lastName, password, isEmailVerified } = createdUser.getState();
+      const { email, name, password, isEmailVerified } = createdUser.getState();
 
       const user = await userRepository.createUser({
         email,
         password,
-        firstName,
-        lastName,
+        name,
         isEmailVerified,
       });
 
@@ -67,8 +66,7 @@ describe('UserRepositoryImpl', () => {
         await userRepository.createUser({
           email: existingUser.email,
           password: existingUser.password,
-          firstName: existingUser.firstName,
-          lastName: existingUser.lastName,
+          name: existingUser.name,
           isEmailVerified: existingUser.isEmailVerified,
         });
       } catch (error) {
@@ -125,13 +123,13 @@ describe('UserRepositoryImpl', () => {
       expect(foundUser.getPassword()).toEqual(createdUser.getPassword());
     });
 
-    it(`updates User's first name`, async () => {
+    it(`updates User's name`, async () => {
       const user = await userTestUtils.createAndPersist();
 
       const createdUser = userTestFactory.create();
 
-      createdUser.addUpdateFirstNameAction({
-        newFirstName: createdUser.getFirstName(),
+      createdUser.addUpdateNameAction({
+        newName: createdUser.getName(),
       });
 
       const foundUser = await userRepository.updateUser({
@@ -139,24 +137,7 @@ describe('UserRepositoryImpl', () => {
         domainActions: createdUser.getDomainActions(),
       });
 
-      expect(foundUser.getFirstName()).toEqual(createdUser.getFirstName());
-    });
-
-    it(`updates User's last name`, async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const createdUser = userTestFactory.create();
-
-      createdUser.addUpdateLastNameAction({
-        newLastName: createdUser.getLastName(),
-      });
-
-      const foundUser = await userRepository.updateUser({
-        id: user.id,
-        domainActions: createdUser.getDomainActions(),
-      });
-
-      expect(foundUser.getLastName()).toEqual(createdUser.getLastName());
+      expect(foundUser.getName()).toEqual(createdUser.getName());
     });
 
     it(`creates User's refresh tokens`, async () => {

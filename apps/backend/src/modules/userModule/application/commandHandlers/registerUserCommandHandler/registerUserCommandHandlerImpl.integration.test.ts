@@ -60,7 +60,7 @@ describe('RegisterUserCommandHandler', () => {
     const { user: createdUser } = await registerUserCommandHandler.execute({
       email: user.getEmail(),
       password: user.getPassword(),
-      firstName: user.getFirstName(),
+      firstName: user.getName(),
       lastName: user.getLastName(),
     });
 
@@ -107,7 +107,7 @@ describe('RegisterUserCommandHandler', () => {
       await registerUserCommandHandler.execute({
         email: user.getEmail(),
         password: '123',
-        firstName: user.getFirstName(),
+        firstName: user.getName(),
         lastName: user.getLastName(),
       });
     }).toThrowErrorInstance({

@@ -1,16 +1,11 @@
-import { type Static, Type } from '@sinclair/typebox';
+import { type Static } from '@sinclair/typebox';
 
 import type * as contracts from '@common/contracts';
 
+import { userDTOSchema } from './userDTO.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
-export const findMyUserResponseBodyDTOSchema = Type.Object({
-  id: Type.String(),
-  email: Type.String(),
-  firstName: Type.String(),
-  lastName: Type.String(),
-  isEmailVerified: Type.Boolean(),
-});
+export const findMyUserResponseBodyDTOSchema = userDTOSchema;
 
 export type FindMyUserResponseBodyDTO = TypeExtends<
   Static<typeof findMyUserResponseBodyDTOSchema>,

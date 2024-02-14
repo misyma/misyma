@@ -49,6 +49,7 @@ import {
   resetUserPasswordBodyDTOSchema,
   resetUserPasswordResponseBodyDTOSchema,
 } from './schemas/resetUserPasswordSchema.js';
+import { type UserDTO } from './schemas/userDTO.js';
 import {
   verifyUserBodyDTOSchema,
   verifyUserResponseBodyDTOSchema,
@@ -77,14 +78,6 @@ import { type ResetUserPasswordCommandHandler } from '../../../application/comma
 import { type VerifyUserEmailCommandHandler } from '../../../application/commandHandlers/verifyUserEmailCommandHandler/verifyUserEmailCommandHandler.js';
 import { type FindUserQueryHandler } from '../../../application/queryHandlers/findUserQueryHandler/findUserQueryHandler.js';
 import { type User } from '../../../domain/entities/user/user.js';
-
-export type UserDTO = {
-  readonly id: string;
-  readonly email: string;
-  readonly firstName: string;
-  readonly lastName: string;
-  readonly isEmailVerified: boolean;
-};
 
 export class UserHttpController implements HttpController {
   public readonly basePath = '/api/users';
@@ -295,13 +288,12 @@ export class UserHttpController implements HttpController {
   private async registerUser(
     request: HttpRequest<RegisterUserBodyDTO>,
   ): Promise<HttpCreatedResponse<RegisterUserResponseBodyDTO>> {
-    const { email, password, firstName, lastName } = request.body;
+    const { email, password, name } = request.body;
 
     const { user } = await this.registerUserCommandHandler.execute({
       email,
       password,
-      firstName,
-      lastName,
+      name,
     });
 
     return {
@@ -473,8 +465,7 @@ export class UserHttpController implements HttpController {
     return {
       id: user.getId(),
       email: user.getEmail(),
-      firstName: user.getFirstName(),
-      lastName: user.getLastName(),
+      name: user.getName(),
       isEmailVerified: user.getIsEmailVerified(),
     };
   }

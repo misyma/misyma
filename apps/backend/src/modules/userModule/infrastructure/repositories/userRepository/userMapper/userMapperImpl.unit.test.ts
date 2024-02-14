@@ -17,8 +17,7 @@ describe('UserMapperImpl', () => {
       id: Generator.uuid(),
       email: Generator.email(),
       password: Generator.password(),
-      firstName: Generator.firstName(),
-      lastName: Generator.lastName(),
+      name: Generator.fullName(),
       isEmailVerified: Generator.boolean(),
     };
 
@@ -28,8 +27,7 @@ describe('UserMapperImpl', () => {
       id: userEntity.id,
       email: userEntity.email,
       password: userEntity.password,
-      firstName: userEntity.firstName,
-      lastName: userEntity.lastName,
+      name: userEntity.name,
       isEmailVerified: userEntity.isEmailVerified,
       domainActions: [],
     });

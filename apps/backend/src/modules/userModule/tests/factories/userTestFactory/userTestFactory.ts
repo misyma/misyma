@@ -8,8 +8,7 @@ export class UserTestFactory {
       id: Generator.uuid(),
       email: Generator.email().toLowerCase(),
       password: Generator.password(),
-      firstName: Generator.firstName(),
-      lastName: Generator.lastName(),
+      name: Generator.fullName(),
       isEmailVerified: Generator.boolean(),
       ...input,
     });

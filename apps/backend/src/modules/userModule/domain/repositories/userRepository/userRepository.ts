@@ -5,8 +5,7 @@ import { type UserTokens } from '../../entities/userTokens/userTokens.js';
 export interface CreateUserPayload {
   readonly email: string;
   readonly password: string;
-  readonly firstName: string;
-  readonly lastName: string;
+  readonly name: string;
   readonly isEmailVerified: boolean;
 }
 
