@@ -18,9 +18,11 @@ export const symbols = {
   findGenreByNameQueryHandler: Symbol('findGenreByNameQueryHandler'),
 
   bookHttpController: Symbol('bookHttpController'),
+  genreHttpController: Symbol('genreHttpController'),
 };
 
 export const bookSymbols = {
   bookHttpController: symbols.bookHttpController,
   bookRepository: symbols.bookRepository,
+  genreHttpController: symbols.genreHttpController,
 };

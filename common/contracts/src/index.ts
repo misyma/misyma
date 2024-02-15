@@ -55,3 +55,13 @@ export * from './schemas/bookReading/findBookReadingById.js';
 export * from './schemas/bookReading/findBookReadings.js';
 
 export * from './schemas/bookReading/updateBookReading.js';
+
+export * from './schemas/genre/genre.js';
+
+export * from './schemas/genre/findGenreByName.js';
+
+export * from './schemas/genre/findGenres.js';
+
+export * from './schemas/genre/createGenre.js';
+
+export * from './schemas/genre/updateGenreName.js';

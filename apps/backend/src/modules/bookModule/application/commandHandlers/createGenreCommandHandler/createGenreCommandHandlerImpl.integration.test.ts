@@ -31,7 +31,7 @@ describe('CreateGenreCommandHandlerImpl', () => {
   it('throws an error - when Genre already exists', async () => {
     const genre = await genreTestUtils.createAndPersist();
 
-    await expect(async () => await commandHandler.createGenre({ name: genre.name })).toThrowErrorInstance({
+    await expect(async () => await commandHandler.execute({ name: genre.name })).toThrowErrorInstance({
       instance: OperationNotValidError,
       context: {
         reason: 'Genre already exists.',
@@ -43,7 +43,7 @@ describe('CreateGenreCommandHandlerImpl', () => {
   it('creates Genre', async () => {
     const genreName = Generator.words(2);
 
-    const { genre } = await commandHandler.createGenre({ name: genreName });
+    const { genre } = await commandHandler.execute({ name: genreName });
 
     expect(genre.getState()).toEqual({
       id: expect.any(String),

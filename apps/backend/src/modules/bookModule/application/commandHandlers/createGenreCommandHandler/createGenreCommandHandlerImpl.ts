@@ -9,7 +9,7 @@ import { type GenreRepository } from '../../../domain/repositories/genreReposito
 export class CreateGenreCommandHandlerImpl implements CreateGenreCommandHandler {
   public constructor(private readonly genreRepository: GenreRepository) {}
 
-  public async createGenre(payload: CreateGenrePayload): Promise<CreateGenreResult> {
+  public async execute(payload: CreateGenrePayload): Promise<CreateGenreResult> {
     const { name } = payload;
 
     const genreExists = await this.genreRepository.findByName({

@@ -1,3 +1,4 @@
+import { type CommandHandler } from '../../../../../common/types/commandHandler.js';
 import { type Genre } from '../../../domain/entities/genre/genre.js';
 
 export interface CreateGenrePayload {
@@ -8,6 +9,4 @@ export interface CreateGenreResult {
   genre: Genre;
 }
 
-export interface CreateGenreCommandHandler {
-  createGenre(payload: CreateGenrePayload): Promise<CreateGenreResult>;
-}
+export type CreateGenreCommandHandler = CommandHandler<CreateGenrePayload, CreateGenreResult>;
