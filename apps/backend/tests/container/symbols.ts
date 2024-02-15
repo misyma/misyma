@@ -2,6 +2,7 @@ export const testSymbols = {
   applicationService: Symbol('applicationService'),
   authorService: Symbol('authorService'),
 
+  genreTestUtils: Symbol('genreTestUtils'),
   bookTestUtils: Symbol('bookTestUtils'),
   bookshelfTestUtils: Symbol('bookshelfTestUtils'),
   bookReadingTestUtils: Symbol('bookReadingTestUtils'),

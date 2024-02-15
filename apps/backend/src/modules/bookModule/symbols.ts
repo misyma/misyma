@@ -1,10 +1,16 @@
 export const symbols = {
   bookMapper: Symbol('bookMapper'),
   bookRepository: Symbol('bookRepository'),
+
   createBookCommandHandler: Symbol('createBookCommandHandler'),
   loginBookCommandHandler: Symbol('loginBookCommandHandler'),
   deleteBookCommandHandler: Symbol('deleteBookCommandHandler'),
+
   findBookQueryHandler: Symbol('findBookQueryHandler'),
+
+  genreRepository: Symbol('genreRepository'),
+  genreMapper: Symbol('genreMapper'),
+
   bookHttpController: Symbol('bookHttpController'),
 };
 

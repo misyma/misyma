@@ -6,9 +6,13 @@ import { DeleteBookCommandHandlerImpl } from './application/commandHandlers/dele
 import { type FindBookQueryHandler } from './application/queryHandlers/findBookQueryHandler/findBookQueryHandler.js';
 import { FindBookQueryHandlerImpl } from './application/queryHandlers/findBookQueryHandler/findBookQueryHandlerImpl.js';
 import { type BookRepository } from './domain/repositories/bookRepository/bookRepository.js';
+import { type GenreRepository } from './domain/repositories/genreRepository/genreRepository.js';
 import { type BookMapper } from './infrastructure/repositories/bookRepository/bookMapper/bookMapper.js';
 import { BookMapperImpl } from './infrastructure/repositories/bookRepository/bookMapper/bookMapperImpl.js';
 import { BookRepositoryImpl } from './infrastructure/repositories/bookRepository/bookRepositoryImpl.js';
+import { type GenreMapper } from './infrastructure/repositories/genreRepository/genreMapper/genreMapper.js';
+import { GenreMapperImpl } from './infrastructure/repositories/genreRepository/genreMapper/genreMapperImpl.js';
+import { GenreRepositoryImpl } from './infrastructure/repositories/genreRepository/genreRepositoryImpl.js';
 import { symbols } from './symbols.js';
 import { type SqliteDatabaseClient } from '../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../core/symbols.js';
@@ -27,6 +31,18 @@ export class BookModule implements DependencyInjectionModule {
   public declareBindings(container: DependencyInjectionContainer): void {
     container.bind<BookMapper>(symbols.bookMapper, () => new BookMapperImpl());
 
+    container.bind<GenreMapper>(symbols.genreMapper, () => new GenreMapperImpl());
+
+    this.bindRepositories(container);
+
+    this.bindCommandHandlers(container);
+
+    this.bindQueryHandlers(container);
+
+    this.bindHttpControllers(container);
+  }
+
+  private bindRepositories(container: DependencyInjectionContainer): void {
     container.bind<BookRepository>(
       symbols.bookRepository,
       () =>
@@ -37,6 +53,19 @@ export class BookModule implements DependencyInjectionModule {
         ),
     );
 
+    container.bind<GenreRepository>(
+      symbols.genreRepository,
+      () =>
+        new GenreRepositoryImpl(
+          container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient),
+          container.get<GenreMapper>(symbols.genreMapper),
+          container.get<UuidService>(coreSymbols.uuidService),
+          container.get<LoggerService>(coreSymbols.loggerService),
+        ),
+    );
+  }
+
+  private bindCommandHandlers(container: DependencyInjectionContainer): void {
     container.bind<CreateBookCommandHandler>(
       symbols.createBookCommandHandler,
       () =>
@@ -56,12 +85,16 @@ export class BookModule implements DependencyInjectionModule {
           container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );
+  }
 
+  private bindQueryHandlers(container: DependencyInjectionContainer): void {
     container.bind<FindBookQueryHandler>(
       symbols.findBookQueryHandler,
       () => new FindBookQueryHandlerImpl(container.get<BookRepository>(symbols.bookRepository)),
     );
+  }
 
+  private bindHttpControllers(container: DependencyInjectionContainer): void {
     container.bind<BookHttpController>(
       symbols.bookHttpController,
       () =>
