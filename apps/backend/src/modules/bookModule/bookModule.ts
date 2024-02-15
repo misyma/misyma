@@ -1,10 +1,18 @@
 import { BookHttpController } from './api/httpControllers/bookHttpController/bookHttpController.js';
 import { type CreateBookCommandHandler } from './application/commandHandlers/createBookCommandHandler/createBookCommandHandler.js';
 import { CreateBookCommandHandlerImpl } from './application/commandHandlers/createBookCommandHandler/createBookCommandHandlerImpl.js';
+import { type CreateGenreCommandHandler } from './application/commandHandlers/createGenreCommandHandler/createGenreCommandHandler.js';
+import { CreateGenreCommandHandlerImpl } from './application/commandHandlers/createGenreCommandHandler/createGenreCommandHandlerImpl.js';
 import { type DeleteBookCommandHandler } from './application/commandHandlers/deleteBookCommandHandler/deleteBookCommandHandler.js';
 import { DeleteBookCommandHandlerImpl } from './application/commandHandlers/deleteBookCommandHandler/deleteBookCommandHandlerImpl.js';
+import { type UpdateGenreNameCommandHandler } from './application/commandHandlers/updateGenreNameCommandHandler/updateGenreNameCommandHandler.js';
+import { UpdateGenreNameCommandHandlerImpl } from './application/commandHandlers/updateGenreNameCommandHandler/updateGenreNameCommandHandlerImpl.js';
 import { type FindBookQueryHandler } from './application/queryHandlers/findBookQueryHandler/findBookQueryHandler.js';
 import { FindBookQueryHandlerImpl } from './application/queryHandlers/findBookQueryHandler/findBookQueryHandlerImpl.js';
+import { type FindGenreByNameQueryHandler } from './application/queryHandlers/findGenreByNameQueryHandler/findGenreByNameQueryHandler.js';
+import { FindGenreByNameQueryHandlerImpl } from './application/queryHandlers/findGenreByNameQueryHandler/findGenreByNameQueryHandlerImpl.js';
+import { type FindGenresQueryHandler } from './application/queryHandlers/findGenresQueryHandler/findGenresQueryHandler.js';
+import { FindGenresQueryHandlerImpl } from './application/queryHandlers/findGenresQueryHandler/findGenresQueryHandlerImpl.js';
 import { type BookRepository } from './domain/repositories/bookRepository/bookRepository.js';
 import { type GenreRepository } from './domain/repositories/genreRepository/genreRepository.js';
 import { type BookMapper } from './infrastructure/repositories/bookRepository/bookMapper/bookMapper.js';
@@ -85,12 +93,32 @@ export class BookModule implements DependencyInjectionModule {
           container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );
+
+    container.bind<CreateGenreCommandHandler>(
+      symbols.createGenreCommandHandler,
+      () => new CreateGenreCommandHandlerImpl(container.get<GenreRepository>(symbols.genreRepository)),
+    );
+
+    container.bind<UpdateGenreNameCommandHandler>(
+      symbols.updateGenreNameCommandHandler,
+      () => new UpdateGenreNameCommandHandlerImpl(container.get<GenreRepository>(symbols.genreRepository)),
+    );
   }
 
   private bindQueryHandlers(container: DependencyInjectionContainer): void {
     container.bind<FindBookQueryHandler>(
       symbols.findBookQueryHandler,
       () => new FindBookQueryHandlerImpl(container.get<BookRepository>(symbols.bookRepository)),
+    );
+
+    container.bind<FindGenreByNameQueryHandler>(
+      symbols.findGenreByNameQueryHandler,
+      () => new FindGenreByNameQueryHandlerImpl(container.get<GenreRepository>(symbols.genreRepository)),
+    );
+
+    container.bind<FindGenresQueryHandler>(
+      symbols.findGenresQueryHandler,
+      () => new FindGenresQueryHandlerImpl(container.get<GenreRepository>(symbols.genreRepository)),
     );
   }
 

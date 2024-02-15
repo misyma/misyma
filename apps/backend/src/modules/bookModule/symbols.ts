@@ -11,6 +11,12 @@ export const symbols = {
   genreRepository: Symbol('genreRepository'),
   genreMapper: Symbol('genreMapper'),
 
+  createGenreCommandHandler: Symbol('createGenreCommandHandler'),
+  updateGenreNameCommandHandler: Symbol('updateGenreNameCommandHandler'),
+
+  findGenresQueryHandler: Symbol('findGenresQueryHandler'),
+  findGenreByNameQueryHandler: Symbol('findGenreByNameQueryHandler'),
+
   bookHttpController: Symbol('bookHttpController'),
 };
 

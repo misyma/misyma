@@ -41,6 +41,8 @@ describe('GenreRepositoryImpl', () => {
 
   afterEach(async () => {
     await genreTestUtils.truncate();
+
+    await genreTestUtils.destroyDatabaseConnection();
   });
 
   describe('findAll', () => {
@@ -89,11 +91,35 @@ describe('GenreRepositoryImpl', () => {
     });
   });
 
+  describe('findByName', () => {
+    it('returns null - when Genre was not found', async () => {
+      const res = await genreRepository.findByName({
+        name: 'non-existing-name',
+      });
+
+      expect(res).toBeNull();
+    });
+
+    it('returns Genre', async () => {
+      const genre = await genreTestUtils.createAndPersist();
+
+      const result = await genreRepository.findByName({
+        name: genre.name,
+      });
+
+      expect(result).toBeInstanceOf(Genre);
+
+      expect(result?.getState()).toEqual(genre);
+    });
+  });
+
   describe('create', () => {
     it('creates Genre', async () => {
       const name = Generator.word();
 
-      const res = await genreRepository.create(name);
+      const res = await genreRepository.create({
+        name,
+      });
 
       expect(res).toBeInstanceOf(Genre);
 
@@ -109,9 +135,16 @@ describe('GenreRepositoryImpl', () => {
     it('throws an error - when Genre with the same name already exists', async () => {
       const name = Generator.word();
 
-      await genreRepository.create(name);
+      await genreRepository.create({
+        name,
+      });
 
-      await expect(async () => await genreRepository.create(name)).toThrowErrorInstance({
+      await expect(
+        async () =>
+          await genreRepository.create({
+            name,
+          }),
+      ).toThrowErrorInstance({
         instance: RepositoryError,
         context: {
           entity: 'Genre',

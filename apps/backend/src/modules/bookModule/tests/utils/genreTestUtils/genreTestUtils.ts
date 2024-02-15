@@ -56,6 +56,10 @@ export class GenreTestUtils {
     await this.sqliteDatabaseClient(this.genreTable.name).truncate();
   }
 
+  public async destroyDatabaseConnection(): Promise<void> {
+    await this.sqliteDatabaseClient.destroy();
+  }
+
   private async getNonClashingName(): Promise<string> {
     const name = Generator.word();
 

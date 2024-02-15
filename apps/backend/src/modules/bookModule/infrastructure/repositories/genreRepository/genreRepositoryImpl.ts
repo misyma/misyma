@@ -7,8 +7,10 @@ import { type LoggerService } from '../../../../../libs/logger/services/loggerSe
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { type Genre } from '../../../domain/entities/genre/genre.js';
 import {
+  type FindByNamePayload,
   type FindByIdPayload,
   type GenreRepository,
+  type CreatePayload,
 } from '../../../domain/repositories/genreRepository/genreRepository.js';
 import { type GenreRawEntity } from '../../databases/bookDatabase/tables/genreTable/genreRawEntity.js';
 import { GenreTable } from '../../databases/bookDatabase/tables/genreTable/genreTable.js';
@@ -86,7 +88,35 @@ export class GenreRepositoryImpl implements GenreRepository {
     return this.genreMapper.toDomain(rawEntity);
   }
 
-  public async create(name: string): Promise<Genre> {
+  public async findByName(payload: FindByNamePayload): Promise<Genre | null> {
+    const { name } = payload;
+
+    let rawEntity: GenreRawEntity | undefined;
+
+    try {
+      rawEntity = await this.getQueryBuilder().select('*').where(this.genreTable.columns.name, name).first();
+    } catch (error) {
+      this.logError({
+        operation: 'findById',
+        error,
+      });
+
+      throw new RepositoryError({
+        entity: 'Genre',
+        operation: 'find',
+      });
+    }
+
+    if (!rawEntity) {
+      return null;
+    }
+
+    return this.genreMapper.toDomain(rawEntity);
+  }
+
+  public async create(payload: CreatePayload): Promise<Genre> {
+    const { name } = payload;
+
     let rawEntities: GenreRawEntity[];
 
     try {
