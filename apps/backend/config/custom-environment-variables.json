@@ -1,4 +1,8 @@
 {
+  "admin": {
+    "username": "ADMIN_USERNAME",
+    "password": "ADMIN_PASSWORD"
+  },
   "logger": {
     "level": "LOGGER_LEVEL",
     "prettifyLogs": "LOGGER_PRETTIFY_LOGS"

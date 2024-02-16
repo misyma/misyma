@@ -18,6 +18,8 @@ import { type LoggerService } from '../../libs/logger/services/loggerService/log
 import { type AuthorHttpController } from '../../modules/authorModule/api/httpControllers/authorHttpController/authorHttpController.js';
 import { authorSymbols } from '../../modules/authorModule/symbols.js';
 import { type BookHttpController } from '../../modules/bookModule/api/httpControllers/bookHttpController/bookHttpController.js';
+import { type GenreAdminHttpController } from '../../modules/bookModule/api/httpControllers/genreAdminHttpController/genreAdminHttpController.js';
+import { type GenreHttpController } from '../../modules/bookModule/api/httpControllers/genreHttpController/genreHttpController.js';
 import { bookSymbols } from '../../modules/bookModule/symbols.js';
 import { type BookshelfHttpController } from '../../modules/bookshelfModule/api/httpControllers/bookshelfHttpController/bookshelfHttpController.js';
 import { bookshelfSymbols } from '../../modules/bookshelfModule/symbols.js';
@@ -54,6 +56,8 @@ export class HttpServer {
       this.container.get<AuthorHttpController>(authorSymbols.authorHttpController),
       this.container.get<ApplicationHttpController>(symbols.applicationHttpController),
       this.container.get<BookshelfHttpController>(bookshelfSymbols.bookshelfHttpController),
+      this.container.get<GenreHttpController>(bookSymbols.genreHttpController),
+      this.container.get<GenreAdminHttpController>(bookSymbols.genreAdminHttpController),
     ];
   }
 
@@ -155,11 +159,16 @@ export class HttpServer {
               type: 'http',
               scheme: 'bearer',
             },
+            basicAuth: {
+              type: 'http',
+              scheme: 'basic',
+            },
           },
         },
         security: [
           {
             bearerAuth: [],
+            basicAuth: [],
           },
         ],
       },

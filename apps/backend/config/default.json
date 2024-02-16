@@ -1,4 +1,8 @@
 {
+  "admin": {
+    "username": null,
+    "password": null
+  },
   "logger": {
     "level": "debug",
     "prettifyLogs": false
