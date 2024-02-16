@@ -6,7 +6,7 @@ import { genreDTO } from './dtos/genreDTO.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const findGenresOkResponseDTOSchema = Type.Object({
-  genres: Type.Array(genreDTO),
+  data: Type.Array(genreDTO),
 });
 
 export type FindGenresOkResponseDTO = TypeExtends<

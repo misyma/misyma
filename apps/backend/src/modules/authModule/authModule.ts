@@ -22,7 +22,11 @@ export class AuthModule implements DependencyInjectionModule {
 
     container.bind<AccessControlService>(
       symbols.accessControlService,
-      () => new AccessControlServiceImpl(container.get<TokenService>(symbols.tokenService)),
+      () =>
+        new AccessControlServiceImpl(
+          container.get<TokenService>(symbols.tokenService),
+          container.get<ConfigProvider>(coreSymbols.configProvider),
+        ),
     );
   }
 }

@@ -8,6 +8,4 @@ export interface UpdateGenreNameBody {
   name: string;
 }
 
-export interface UpdateGenreNameResponse {
-  genre: Genre;
-}
+export type UpdateGenreNameResponse = Genre;

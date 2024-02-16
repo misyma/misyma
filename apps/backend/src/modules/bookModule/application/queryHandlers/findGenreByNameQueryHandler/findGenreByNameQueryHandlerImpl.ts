@@ -12,8 +12,10 @@ export class FindGenreByNameQueryHandlerImpl implements FindGenreByNameQueryHand
   public async execute(payload: FindGenreByNamePayload): Promise<FindGenreByNameResult> {
     const { name } = payload;
 
+    const normalizedName = name.toLowerCase();
+
     const genre = await this.genreRepository.findByName({
-      name,
+      name: normalizedName,
     });
 
     if (!genre) {

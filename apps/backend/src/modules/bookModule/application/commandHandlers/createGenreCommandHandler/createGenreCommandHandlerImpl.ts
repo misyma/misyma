@@ -12,8 +12,10 @@ export class CreateGenreCommandHandlerImpl implements CreateGenreCommandHandler 
   public async execute(payload: CreateGenrePayload): Promise<CreateGenreResult> {
     const { name } = payload;
 
+    const normalizedName = name.toLowerCase();
+
     const genreExists = await this.genreRepository.findByName({
-      name,
+      name: normalizedName,
     });
 
     if (genreExists) {
@@ -24,7 +26,7 @@ export class CreateGenreCommandHandlerImpl implements CreateGenreCommandHandler 
     }
 
     const genre = await this.genreRepository.create({
-      name,
+      name: normalizedName,
     });
 
     return {

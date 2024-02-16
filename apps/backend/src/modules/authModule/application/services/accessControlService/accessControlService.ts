@@ -3,10 +3,15 @@ export interface VerifyBearerTokenPayload {
   readonly expectedUserId?: string;
 }
 
+export interface VerifyBasicAuthPayload {
+  readonly authorizationHeader: string | undefined;
+}
+
 export interface VerifyBearerTokenResult {
   readonly userId: string;
 }
 
 export interface AccessControlService {
   verifyBearerToken(payload: VerifyBearerTokenPayload): Promise<VerifyBearerTokenResult>;
+  verifyBasicAuth(payload: VerifyBasicAuthPayload): void;
 }

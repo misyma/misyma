@@ -25,8 +25,10 @@ export class UpdateGenreNameCommandHandlerImpl implements UpdateGenreNameCommand
       });
     }
 
+    const normalizedName = name.toLowerCase();
+
     const nameTaken = await this.genreRepository.findByName({
-      name,
+      name: normalizedName,
     });
 
     if (nameTaken) {
@@ -39,7 +41,7 @@ export class UpdateGenreNameCommandHandlerImpl implements UpdateGenreNameCommand
     const genre = await this.genreRepository.update(
       new Genre({
         id,
-        name,
+        name: normalizedName,
       }),
     );
 

@@ -1,4 +1,8 @@
 {
+  "admin": {
+    "username": "admin",
+    "password": "admin"
+  },
   "logger": {
     "prettifyLogs": true
   },

@@ -1,4 +1,5 @@
 import { BookHttpController } from './api/httpControllers/bookHttpController/bookHttpController.js';
+import { GenreAdminHttpController } from './api/httpControllers/genreAdminHttpController/genreAdminHttpController.js';
 import { GenreHttpController } from './api/httpControllers/genreHttpController/genreHttpController.js';
 import { type CreateBookCommandHandler } from './application/commandHandlers/createBookCommandHandler/createBookCommandHandler.js';
 import { CreateBookCommandHandlerImpl } from './application/commandHandlers/createBookCommandHandler/createBookCommandHandlerImpl.js';
@@ -6,6 +7,8 @@ import { type CreateGenreCommandHandler } from './application/commandHandlers/cr
 import { CreateGenreCommandHandlerImpl } from './application/commandHandlers/createGenreCommandHandler/createGenreCommandHandlerImpl.js';
 import { type DeleteBookCommandHandler } from './application/commandHandlers/deleteBookCommandHandler/deleteBookCommandHandler.js';
 import { DeleteBookCommandHandlerImpl } from './application/commandHandlers/deleteBookCommandHandler/deleteBookCommandHandlerImpl.js';
+import { type DeleteGenreCommandHandler } from './application/commandHandlers/deleteGenreCommandHandler/deleteGenreCommandHandler.js';
+import { DeleteGenreCommandHandlerImpl } from './application/commandHandlers/deleteGenreCommandHandler/deleteGenreCommandHandlerImpl.js';
 import { type UpdateGenreNameCommandHandler } from './application/commandHandlers/updateGenreNameCommandHandler/updateGenreNameCommandHandler.js';
 import { UpdateGenreNameCommandHandlerImpl } from './application/commandHandlers/updateGenreNameCommandHandler/updateGenreNameCommandHandlerImpl.js';
 import { type FindBookQueryHandler } from './application/queryHandlers/findBookQueryHandler/findBookQueryHandler.js';
@@ -100,6 +103,11 @@ export class BookModule implements DependencyInjectionModule {
       () => new CreateGenreCommandHandlerImpl(container.get<GenreRepository>(symbols.genreRepository)),
     );
 
+    container.bind<DeleteGenreCommandHandler>(
+      symbols.deleteGenreCommandHandler,
+      () => new DeleteGenreCommandHandlerImpl(container.get<GenreRepository>(symbols.genreRepository)),
+    );
+
     container.bind<UpdateGenreNameCommandHandler>(
       symbols.updateGenreNameCommandHandler,
       () => new UpdateGenreNameCommandHandlerImpl(container.get<GenreRepository>(symbols.genreRepository)),
@@ -141,8 +149,17 @@ export class BookModule implements DependencyInjectionModule {
         new GenreHttpController(
           container.get<FindGenresQueryHandler>(symbols.findGenresQueryHandler),
           container.get<FindGenreByNameQueryHandler>(symbols.findGenreByNameQueryHandler),
+          container.get<AccessControlService>(authSymbols.accessControlService),
+        ),
+    );
+
+    container.bind<GenreAdminHttpController>(
+      symbols.genreAdminHttpController,
+      () =>
+        new GenreAdminHttpController(
           container.get<CreateGenreCommandHandler>(symbols.createGenreCommandHandler),
           container.get<UpdateGenreNameCommandHandler>(symbols.updateGenreNameCommandHandler),
+          container.get<DeleteGenreCommandHandler>(symbols.deleteGenreCommandHandler),
           container.get<AccessControlService>(authSymbols.accessControlService),
         ),
     );

@@ -64,6 +64,14 @@ export class ConfigProvider {
     return this.getValue<string>('sendGrid.senderEmail');
   }
 
+  public getAdminUsername(): string {
+    return this.getValue<string>('admin.username');
+  }
+
+  public getAdminPassword(): string {
+    return this.getValue<string>('admin.password');
+  }
+
   private getValue<T>(key: string): T {
     const value = config.get(key);
 

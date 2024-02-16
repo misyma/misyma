@@ -64,4 +64,6 @@ export * from './schemas/genre/findGenres.js';
 
 export * from './schemas/genre/createGenre.js';
 
+export * from './schemas/genre/deleteGenre.js';
+
 export * from './schemas/genre/updateGenreName.js';

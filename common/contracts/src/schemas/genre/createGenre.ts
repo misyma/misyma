@@ -4,6 +4,4 @@ export interface CreateGenreBody {
   name: string;
 }
 
-export interface CreateGenreResponse {
-  genre: Genre;
-}
+export type CreateGenreResponse = Genre;

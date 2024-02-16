@@ -16,9 +16,7 @@ export type FindGenreByNameQueryParamsDTO = TypeExtends<
   Static<typeof findGenreByNameQueryParamsDTOSchema>
 >;
 
-export const findGenreByNameOkResponseBodyDTOSchema = Type.Object({
-  genre: genreDTO,
-});
+export const findGenreByNameOkResponseBodyDTOSchema = genreDTO;
 
 export type FindGenreByNameOkResponseBodyDTO = TypeExtends<
   contracts.FindGenreByNameResponse,

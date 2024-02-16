@@ -6,6 +6,7 @@ import { type FastifyInstance, type FastifyReply, type FastifyRequest, type Fast
 import { ApplicationError } from '../../common/errors/base/applicationError.js';
 import { BaseError } from '../../common/errors/base/baseError.js';
 import { DomainError } from '../../common/errors/base/domainError.js';
+import { OperationNotValidError } from '../../common/errors/common/operationNotValidError.js';
 import { ResourceAlreadyExistsError } from '../../common/errors/common/resourceAlreadyExistsError.js';
 import { ResourceNotFoundError } from '../../common/errors/common/resourceNotFoundError.js';
 import { type HttpController } from '../../common/types/http/httpController.js';
@@ -140,6 +141,14 @@ export class HttpRouter {
 
             if (error instanceof ResourceNotFoundError) {
               fastifyReply.status(HttpStatusCode.notFound).send({
+                ...formattedError,
+              });
+
+              return;
+            }
+
+            if (error instanceof OperationNotValidError) {
+              fastifyReply.status(HttpStatusCode.badRequest).send({
                 ...formattedError,
               });
 
