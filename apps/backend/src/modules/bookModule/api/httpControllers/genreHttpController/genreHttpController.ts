@@ -1,5 +1,11 @@
 import { type GenreDTO } from './schemas/dtos/genreDTO.js';
 import {
+  type FindGenreByIdOkResponseDTO,
+  type FindGenreByIdPathParamsDTO,
+  findGenreByIdOkResponseDTOSchema,
+  findGenreByIdPathParamsDTOSchema,
+} from './schemas/findGenreByIdSchema.js';
+import {
   type FindGenreByNameOkResponseBodyDTO,
   type FindGenreByNameQueryParamsDTO,
   findGenreByNameOkResponseBodyDTOSchema,
@@ -14,17 +20,18 @@ import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
 import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.js';
 import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
+import { type FindGenreByIdQueryHandler } from '../../../application/queryHandlers/findGenreByIdQueryHandler/findGenreByIdQueryHandler.js';
 import { type FindGenreByNameQueryHandler } from '../../../application/queryHandlers/findGenreByNameQueryHandler/findGenreByNameQueryHandler.js';
 import { type FindGenresQueryHandler } from '../../../application/queryHandlers/findGenresQueryHandler/findGenresQueryHandler.js';
 import { type Genre } from '../../../domain/entities/genre/genre.js';
 
-// Idea: Create/Update/Delete(?) methods could be moved to an AdminHttpController
 export class GenreHttpController implements HttpController {
   public basePath = '/api/genres';
 
   public constructor(
     private readonly findGenresQueryHandler: FindGenresQueryHandler,
     private readonly findGenreByNameQueryHandler: FindGenreByNameQueryHandler,
+    private readonly findGenreByIdQueryHandler: FindGenreByIdQueryHandler,
     private readonly accessControlService: AccessControlService,
   ) {}
 
@@ -65,6 +72,25 @@ export class GenreHttpController implements HttpController {
         securityMode: SecurityMode.bearer,
         tags: ['Genre'],
       }),
+      new HttpRoute({
+        description: 'Find genre by id.',
+        handler: this.findGenreById.bind(this),
+        method: HttpMethodName.get,
+        schema: {
+          request: {
+            pathParams: findGenreByIdPathParamsDTOSchema,
+          },
+          response: {
+            [HttpStatusCode.ok]: {
+              description: 'Genre found.',
+              schema: findGenreByIdOkResponseDTOSchema,
+            },
+          },
+        },
+        tags: ['Genre'],
+        path: ':id',
+        securityMode: SecurityMode.bearer,
+      }),
     ];
   }
 
@@ -93,6 +119,23 @@ export class GenreHttpController implements HttpController {
     const { name } = request.queryParams;
 
     const { genre } = await this.findGenreByNameQueryHandler.execute({ name });
+
+    return {
+      body: this.mapGenreToDTO(genre),
+      statusCode: HttpStatusCode.ok,
+    };
+  }
+
+  private async findGenreById(
+    request: HttpRequest<null, null, FindGenreByIdPathParamsDTO>,
+  ): Promise<HttpOkResponse<FindGenreByIdOkResponseDTO>> {
+    await this.accessControlService.verifyBearerToken({
+      authorizationHeader: request.headers['authorization'],
+    });
+
+    const { id } = request.pathParams;
+
+    const { genre } = await this.findGenreByIdQueryHandler.execute({ id });
 
     return {
       body: this.mapGenreToDTO(genre),
