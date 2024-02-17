@@ -20,6 +20,7 @@ export const AuthenticatedPage: FC = () => {
 
   return (
     <>
+      Witaj {currentUser.name}! Twój email to: {currentUser.email}.
       <Outlet />
     </>
   );

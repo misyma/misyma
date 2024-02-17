@@ -37,14 +37,11 @@ export const RegisterPage: FC = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
-
     const registerUserResponse = await fetch('https://api.misyma.com/api/users/register', {
       body: JSON.stringify({
         email: values.email,
         password: values.password,
-        firstName: 'To remove',
-        lastName: 'To remove',
+        name: 'Maciej',
       }),
       method: 'POST',
       headers: {
@@ -58,86 +55,83 @@ export const RegisterPage: FC = () => {
   };
 
   return (
-    <>
-      <div className="flex items-center justify-center h-screen">
-        <div className="flex gap-16 w-[1000px]">
-          <div className="flex-1 p-4">
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-8"
+    <div className="flex items-center justify-center h-screen">
+      <div className="flex gap-16 w-[1000px] h-[450px]">
+        <div className="flex-1 p-8">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-8"
+            >
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Email"
+                        className="w-80"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Haslo</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Haslo"
+                        type="password"
+                        className="w-80"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="repeatedPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Powtorz haslo</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Haslo"
+                        type="password"
+                        className="w-80"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button
+                type="submit"
+                className="w-80 border-black border border-black hover:bg-white bg-white text-primary"
               >
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Email"
-                          className="w-80"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Haslo</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Haslo"
-                          type="password"
-                          className="w-80"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="repeatedPassword"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Powtorz haslo</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Haslo"
-                          type="password"
-                          className="w-80"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button
-                  type="submit"
-                  className="w-80 border-black border border-black hover:bg-white bg-white text-primary"
-                >
-                  Zarejestruj sie
-                </Button>
-              </form>
-            </Form>
-          </div>
-          <div className="flex-1 flex justify-center">
-            <img
-              src="https://source.unsplash.com/1600x900/?nature,water"
-              alt="Nature"
-              className="w-70 h-96 object-cover"
-            />
-          </div>
+                Zarejestruj sie
+              </Button>
+            </form>
+          </Form>
+        </div>
+        <div className="flex-1 flex justify-center">
+          <img
+            src="/logo.jpg"
+            alt="Misyma's logo"
+          />
         </div>
       </div>
-    </>
+    </div>
   );
 };

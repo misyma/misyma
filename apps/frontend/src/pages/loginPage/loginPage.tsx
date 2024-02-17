@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useStoreDispatch } from '../../core/store/hooks/useStoreDispatch';
 import { userStateActions } from '../../core/store/states/userState/userStateSlice';
+import { Link } from 'react-router-dom';
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -50,7 +51,7 @@ export const LoginPage: FC = () => {
 
     const getUserResponseBody = await getUserResponse.json();
 
-    const { id, email } = getUserResponseBody;
+    const { id, email, name } = getUserResponseBody;
 
     storeDispatch(
       userStateActions.setCurrentUser({
@@ -59,74 +60,81 @@ export const LoginPage: FC = () => {
         user: {
           id,
           email,
+          name,
         },
       }),
     );
   };
 
   return (
-    <>
-      <div className="flex items-center justify-center h-screen">
-        <div className="flex gap-16 w-[1000px]">
-          <div className="flex-1 p-8">
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-8"
+    <div className="flex items-center justify-center h-screen">
+      <div className="flex gap-16 w-[1000px] h-[450px]">
+        <div className="flex-1 p-8">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-8"
+            >
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Email"
+                        className="w-80"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Haslo</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Haslo"
+                        type="password"
+                        className="w-80"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button
+                type="submit"
+                className="w-80 border-black border border-black hover:bg-white bg-white text-primary"
               >
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Email"
-                          className="w-80"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Haslo</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Haslo"
-                          type="password"
-                          className="w-80"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button
-                  type="submit"
-                  className="w-80 border-black border border-black hover:bg-white bg-white text-primary"
+                Zaloguj się
+              </Button>
+              <p>
+                Nie masz konta?{' '}
+                <Link
+                  to="/register"
+                  className="text-primary"
                 >
-                  Zaloguj sie
-                </Button>
-              </form>
-            </Form>
-          </div>
-          <div className="flex-1 flex justify-center">
-            <img
-              src="https://source.unsplash.com/1600x900/?nature,water"
-              alt="Nature"
-              className="w-70 h-96 object-cover"
-            />
-          </div>
+                  Zarejestruj się
+                </Link>
+              </p>
+            </form>
+          </Form>
+        </div>
+        <div className="flex-1 flex justify-center">
+          <img
+            src="/logo.jpg"
+            alt="Misyma's logo"
+          />
         </div>
       </div>
-    </>
+    </div>
   );
 };

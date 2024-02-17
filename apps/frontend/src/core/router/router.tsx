@@ -7,6 +7,7 @@ import { NotFoundPage } from '../../pages/notFoundPage/notFoundPage';
 import { UnauthenticatedPage } from '../../pages/unauthenticatedPage/unauthenticatedPage';
 import { LandingPage } from '../../pages/landingPage/landingPage';
 import { RegisterPage } from '../../pages/registerPage/registerPage';
+import { VerifyEmailPage } from '../../pages/verifyEmailPage/verifyEmailPage';
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -27,11 +28,16 @@ export const router = createBrowserRouter(
           path="register"
           element={<RegisterPage />}
         />
+        <Route
+          path="/"
+          element={<LandingPage />}
+        />
+        <Route
+          path="/verify-email"
+          element={<VerifyEmailPage />}
+        />
       </Route>
-      <Route
-        path="/"
-        element={<LandingPage />}
-      />
+
       <Route
         path="*"
         element={<NotFoundPage />}
