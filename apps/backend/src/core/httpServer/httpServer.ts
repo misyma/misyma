@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/naming-convention */
 
 import { fastifyCors } from '@fastify/cors';
 import { fastifyHelmet } from '@fastify/helmet';
@@ -119,12 +118,13 @@ export class HttpServer {
       const formattedError = {
         name: error.name,
         message: error.message,
+        ...(error as any)?.context,
       };
 
       if (error instanceof InputNotValidError) {
-        reply.status(HttpStatusCode.badRequest).send({ error: formattedError });
+        reply.status(HttpStatusCode.badRequest).send({ ...formattedError });
       } else {
-        reply.status(HttpStatusCode.internalServerError).send({ error: formattedError });
+        reply.status(HttpStatusCode.internalServerError).send({ ...formattedError });
       }
 
       this.loggerService.error({
@@ -132,9 +132,7 @@ export class HttpServer {
         context: {
           source: HttpServer.name,
           error: {
-            name: error.name,
-            message: error.message,
-            context: (error as any)?.context,
+            ...formattedError,
             stack: error.stack,
             cause: error.cause,
           },
@@ -185,7 +183,7 @@ export class HttpServer {
     });
 
     this.loggerService.info({
-      message: 'OpenAPI documentation initialized',
+      message: 'OpenAPI documentation initialized.',
       context: {
         source: HttpServer.name,
         path: '/api/docs',
