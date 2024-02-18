@@ -20,6 +20,7 @@ export class BookTestFactory {
       bookshelfId: Generator.uuid(),
       releaseYear: Generator.number(1970, 2024),
       authors: [],
+      genres: [],
       ...input,
     });
   }

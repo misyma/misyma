@@ -4,6 +4,7 @@ import { type BookDomainAction } from './domainActions/bookDomainActions.js';
 import { BookDomainActionType } from './domainActions/bookDomainActionType.js';
 import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
 import { type Author } from '../../../../authorModule/domain/entities/author/author.js';
+import { type Genre } from '../genre/genre.js';
 
 export interface BookDraft {
   readonly id: string;
@@ -20,6 +21,7 @@ export interface BookDraft {
   readonly status: BookStatus;
   readonly bookshelfId: string;
   readonly authors?: Author[];
+  readonly genres?: Genre[];
 }
 
 export interface AddUpdateTitleDomainActionPayload {
@@ -70,6 +72,10 @@ export interface AddUpdateBookshelfDomainActionPayload {
   readonly bookshelfId: string;
 }
 
+export interface AddUpdateBookGenresDomainActionPayload {
+  readonly genres: Genre[];
+}
+
 export class Book {
   private readonly id: string;
   private title: string;
@@ -84,6 +90,7 @@ export class Book {
   private backCoverImageUrl?: string;
   private status: BookStatus;
   private bookshelfId: string;
+  private genres: Genre[] = [];
   private readonly authors: Author[] = [];
 
   private domainActions: BookDomainAction[] = [];
@@ -104,6 +111,7 @@ export class Book {
       status,
       bookshelfId,
       authors,
+      genres,
     } = draft;
 
     this.id = id;
@@ -148,6 +156,10 @@ export class Book {
 
     if (authors) {
       this.authors = authors;
+    }
+
+    if (genres) {
+      this.genres = genres;
     }
   }
 
@@ -228,6 +240,10 @@ export class Book {
 
   public getAuthors(): Author[] {
     return [...this.authors];
+  }
+
+  public getGenres(): Genre[] {
+    return [...this.genres];
   }
 
   public addAddAuthorDomainAction(author: Author): void {
@@ -512,5 +528,29 @@ export class Book {
     });
 
     this.bookshelfId = bookshelfId;
+  }
+
+  public addUpdateBookGenresAction(payload: AddUpdateBookGenresDomainActionPayload): void {
+    const { genres } = payload;
+
+    const genresAreTheSame = genres.every((genre) =>
+      this.genres.some((currentGenre) => currentGenre.getId() === genre.getId()),
+    );
+
+    if (genresAreTheSame) {
+      throw new OperationNotValidError({
+        reason: 'Cannot update Book Genres, because they are the same as the current ones.',
+        value: genres,
+      });
+    }
+
+    this.domainActions.push({
+      type: BookDomainActionType.updateBookGenres,
+      payload: {
+        genres,
+      },
+    });
+
+    this.genres = genres;
   }
 }

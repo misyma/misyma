@@ -9,7 +9,7 @@ export class Generator {
     return faker.number.float({
       min,
       max,
-      precision,
+      multipleOf: precision,
     });
   }
 

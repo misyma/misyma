@@ -14,10 +14,12 @@ import {
   type DeleteBookPayload,
   type UpdateBookPayload,
 } from '../../../domain/repositories/bookRepository/bookRepository.js';
+import { BookGenresTable } from '../../databases/bookDatabase/tables/bookGenresTable/bookGenresTable.js';
 import { BooksAuthorsTable } from '../../databases/bookDatabase/tables/booksAuthorsTable/booksAuthorsTable.js';
 import { type BookRawEntity } from '../../databases/bookDatabase/tables/bookTable/bookRawEntity.js';
 import { BookTable } from '../../databases/bookDatabase/tables/bookTable/bookTable.js';
-import { type BookWithAuthorRawEntity } from '../../databases/bookDatabase/tables/bookTable/bookWithAuthorRawEntity.js';
+import { type BookWithJoinsRawEntity } from '../../databases/bookDatabase/tables/bookTable/bookWithJoinsRawEntity.js';
+import { GenreTable } from '../../databases/bookDatabase/tables/genreTable/genreTable.js';
 
 interface UpdateBookActionsPayload {
   bookFields: Partial<Writeable<BookRawEntity>>;
@@ -25,12 +27,15 @@ interface UpdateBookActionsPayload {
     add: string[];
     remove: string[];
   };
+  genres: string[];
 }
 
 export class BookRepositoryImpl implements BookRepository {
   private readonly databaseTable = new BookTable();
   private readonly booksAuthorsTable = new BooksAuthorsTable();
   private readonly authorTable = new AuthorTable();
+  private readonly bookGenresTable = new BookGenresTable();
+  private readonly genresTable = new GenreTable();
 
   // TODO: add loggerService and log errors when throwing
   public constructor(
@@ -138,6 +143,18 @@ export class BookRepositoryImpl implements BookRepository {
               [this.booksAuthorsTable.columns.bookId]: book.getId(),
             });
         }
+
+        if (updatePayload.genres.length > 0) {
+          await transaction(this.bookGenresTable.name)
+            .insert(
+              updatePayload.genres.map((genreId) => ({
+                [this.bookGenresTable.columns.bookId]: book.getId(),
+                [this.bookGenresTable.columns.genreId]: genreId,
+              })),
+            )
+            .onConflict([this.bookGenresTable.columns.bookId, this.bookGenresTable.columns.genreId])
+            .merge();
+        }
       });
     } catch (error) {
       throw new RepositoryError({
@@ -152,7 +169,7 @@ export class BookRepositoryImpl implements BookRepository {
   public async findBook(payload: FindBookPayload): Promise<Book | null> {
     const { id, authorIds: authorsIds, title } = payload;
 
-    let rawEntities: BookWithAuthorRawEntity[];
+    let rawEntities: BookWithJoinsRawEntity[];
 
     try {
       rawEntities = await this.sqliteDatabaseClient<BookRawEntity>(this.databaseTable.name)
@@ -171,6 +188,8 @@ export class BookRepositoryImpl implements BookRepository {
           `${this.databaseTable.name}.${this.databaseTable.columns.status}`,
           `${this.databaseTable.name}.${this.databaseTable.columns.bookshelfId}`,
           `${this.authorTable.name}.${this.authorTable.columns.id} as ${this.databaseTable.authorJoinColumnsAliases.authorId}`,
+          `${this.genresTable.name}.${this.genresTable.columns.name} as ${this.databaseTable.genreJoinColumnsAliases.genreName}`,
+          `${this.genresTable.name}.${this.genresTable.columns.id} as ${this.databaseTable.genreJoinColumnsAliases.genreId}`,
           this.authorTable.columns.firstName,
           this.authorTable.columns.lastName,
         ])
@@ -195,6 +214,20 @@ export class BookRepositoryImpl implements BookRepository {
             `${this.booksAuthorsTable.name}.${this.booksAuthorsTable.columns.authorId}`,
           );
         })
+        .leftJoin(this.bookGenresTable.name, (join) => {
+          join.on(
+            `${this.bookGenresTable.name}.${this.bookGenresTable.columns.bookId}`,
+            '=',
+            `${this.databaseTable.name}.${this.databaseTable.columns.id}`,
+          );
+        })
+        .leftJoin(this.genresTable.name, (join) => {
+          join.on(
+            `${this.genresTable.name}.${this.genresTable.columns.id}`,
+            `=`,
+            `${this.bookGenresTable.name}.${this.bookGenresTable.columns.genreId}`,
+          );
+        })
         .where((builder) => {
           if (id) {
             builder.where(`${this.databaseTable.name}.${this.databaseTable.columns.id}`, id);
@@ -215,7 +248,7 @@ export class BookRepositoryImpl implements BookRepository {
       return null;
     }
 
-    return this.bookMapper.mapRawWithAuthorToDomain(rawEntities)[0] as Book;
+    return this.bookMapper.mapRawWithJoinsToDomain(rawEntities)[0] as Book;
   }
 
   private mapDomainActionsToUpdatePayload(book: Book): UpdateBookActionsPayload {
@@ -227,6 +260,7 @@ export class BookRepositoryImpl implements BookRepository {
         remove: [],
       },
       bookFields: {},
+      genres: [],
     };
 
     domainActions.forEach((domainAction) => {
@@ -298,6 +332,11 @@ export class BookRepositoryImpl implements BookRepository {
 
         case BookDomainActionType.updateBookshelf:
           payload.bookFields.bookshelfId = domainAction.payload.bookshelfId;
+
+          break;
+
+        case BookDomainActionType.updateBookGenres:
+          payload.genres = domainAction.payload.genres.map((genre) => genre.getId());
 
           break;
       }

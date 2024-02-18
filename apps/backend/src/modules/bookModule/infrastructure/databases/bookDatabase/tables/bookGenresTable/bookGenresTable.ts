@@ -5,7 +5,6 @@ export class BookGenresTable implements DatabaseTable<BookGenresRawEntity> {
   public readonly name = 'bookGenres';
 
   public readonly columns = {
-    id: 'id',
     bookId: 'bookId',
     genreId: 'genreId',
   } as const;

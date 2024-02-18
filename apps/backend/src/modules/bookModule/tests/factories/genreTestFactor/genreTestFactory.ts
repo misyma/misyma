@@ -10,7 +10,7 @@ export class GenreTestFactory {
     return new GenreTestFactory();
   }
 
-  public createRaw(overrides: Partial<GenreRawEntity>): GenreRawEntity {
+  public createRaw(overrides: Partial<GenreRawEntity> = {}): GenreRawEntity {
     return {
       id: Generator.uuid(),
       name: Generator.word(),
@@ -18,7 +18,7 @@ export class GenreTestFactory {
     };
   }
 
-  public createEntity(overrides: Partial<GenreState>): Genre {
+  public createEntity(overrides: Partial<GenreState> = {}): Genre {
     return new Genre({
       id: Generator.uuid(),
       name: Generator.word(),

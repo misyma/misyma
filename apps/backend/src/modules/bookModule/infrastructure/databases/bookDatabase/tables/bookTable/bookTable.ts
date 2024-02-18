@@ -28,4 +28,14 @@ export class BookTable implements DatabaseTable<BookRawEntity> {
   public readonly authorJoinColumnsAliases = {
     authorId: 'authorId',
   };
+
+  public readonly genreJoinColumns = {
+    id: 'id',
+    name: 'name',
+  };
+
+  public readonly genreJoinColumnsAliases = {
+    genreId: 'genreId',
+    genreName: 'genreName',
+  };
 }

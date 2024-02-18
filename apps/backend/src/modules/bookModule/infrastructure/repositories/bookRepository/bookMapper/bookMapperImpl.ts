@@ -3,8 +3,9 @@ import { type BookFormat, type BookStatus } from '@common/contracts';
 import { type BookMapper } from './bookMapper.js';
 import { Author } from '../../../../../authorModule/domain/entities/author/author.js';
 import { Book, type BookDraft } from '../../../../domain/entities/book/book.js';
+import { Genre } from '../../../../domain/entities/genre/genre.js';
 import { type BookRawEntity } from '../../../databases/bookDatabase/tables/bookTable/bookRawEntity.js';
-import { type BookWithAuthorRawEntity } from '../../../databases/bookDatabase/tables/bookTable/bookWithAuthorRawEntity.js';
+import { type BookWithJoinsRawEntity } from '../../../databases/bookDatabase/tables/bookTable/bookWithJoinsRawEntity.js';
 
 export class BookMapperImpl implements BookMapper {
   public mapRawToDomain(entity: BookRawEntity): Book {
@@ -41,7 +42,7 @@ export class BookMapperImpl implements BookMapper {
     });
   }
 
-  public mapRawWithAuthorToDomain(entities: BookWithAuthorRawEntity[]): Book[] {
+  public mapRawWithJoinsToDomain(entities: BookWithJoinsRawEntity[]): Book[] {
     const bookDraftsMap = new Map<string, BookDraft>();
 
     entities.forEach((entity) => {
@@ -62,6 +63,8 @@ export class BookMapperImpl implements BookMapper {
         authorId,
         firstName,
         lastName,
+        genreId,
+        genreName,
       } = entity;
 
       const bookExists = bookDraftsMap.has(bookId);
@@ -78,8 +81,19 @@ export class BookMapperImpl implements BookMapper {
             }),
           );
         }
+
+        if (genreId && genreName) {
+          bookDraft.genres?.push(
+            new Genre({
+              id: genreId,
+              name: genreName,
+            }),
+          );
+        }
       } else {
         const authors: Author[] = [];
+
+        const genres: Genre[] = [];
 
         if (authorId) {
           authors.push(
@@ -87,6 +101,15 @@ export class BookMapperImpl implements BookMapper {
               firstName: firstName as string,
               id: authorId,
               lastName: lastName as string,
+            }),
+          );
+        }
+
+        if (genreId && genreName) {
+          genres.push(
+            new Genre({
+              id: genreId,
+              name: genreName,
             }),
           );
         }
@@ -106,6 +129,7 @@ export class BookMapperImpl implements BookMapper {
           status: status as BookStatus,
           bookshelfId,
           authors,
+          genres,
         };
 
         bookDraftsMap.set(bookId, bookDraft);

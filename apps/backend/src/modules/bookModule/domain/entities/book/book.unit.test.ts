@@ -6,9 +6,12 @@ import { Generator } from '@common/tests';
 import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
 import { Author } from '../../../../authorModule/domain/entities/author/author.js';
 import { BookTestFactory } from '../../../tests/factories/bookTestFactory/bookTestFactory.js';
+import { GenreTestFactory } from '../../../tests/factories/genreTestFactor/genreTestFactory.js';
 
 describe('Book', () => {
   const bookTestFactory = new BookTestFactory();
+
+  const genreTestFactory = GenreTestFactory.createFactory();
 
   describe('addAddAuthorDomainAction', () => {
     it('throws an error - when Author is already assigned', async () => {
@@ -526,6 +529,48 @@ describe('Book', () => {
           type: 'updateBookshelf',
           payload: {
             bookshelfId: updatedBookshelfId,
+          },
+        },
+      ]);
+    });
+  });
+
+  describe('addUpdateBookGenresAction', () => {
+    it('throws an error - given identical genres', async () => {
+      const genre = genreTestFactory.createEntity();
+
+      const book = bookTestFactory.create({
+        genres: [genre],
+      });
+
+      await expect(() =>
+        book.addUpdateBookGenresAction({
+          genres: [genre],
+        }),
+      ).toThrowErrorInstance({
+        instance: OperationNotValidError,
+        context: {
+          value: book.getGenres(),
+        },
+      });
+    });
+
+    it('adds a UpdateBookGenresAction', () => {
+      const genre = genreTestFactory.createEntity();
+
+      const book = bookTestFactory.create();
+
+      const updatedGenres = [genre];
+
+      book.addUpdateBookGenresAction({
+        genres: updatedGenres,
+      });
+
+      expect(book.getDomainActions()).toEqual([
+        {
+          type: 'updateBookGenres',
+          payload: {
+            genres: updatedGenres,
           },
         },
       ]);

@@ -13,10 +13,12 @@ import { type AuthorTestUtils } from '../../../../authorModule/tests/utils/autho
 import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { Book } from '../../../domain/entities/book/book.js';
+import { Genre } from '../../../domain/entities/genre/genre.js';
 import { type BookRepository } from '../../../domain/repositories/bookRepository/bookRepository.js';
 import { symbols } from '../../../symbols.js';
 import { BookTestFactory } from '../../../tests/factories/bookTestFactory/bookTestFactory.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
+import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 
 describe('BookRepositoryImpl', () => {
   let bookRepository: BookRepository;
@@ -30,6 +32,8 @@ describe('BookRepositoryImpl', () => {
   let userTestUtils: UserTestUtils;
 
   let bookshelfTestUtils: BookshelfTestUtils;
+
+  let genreTestUtils: GenreTestUtils;
 
   const bookTestFactory = new BookTestFactory();
 
@@ -48,6 +52,8 @@ describe('BookRepositoryImpl', () => {
 
     bookshelfTestUtils = container.get<BookshelfTestUtils>(testSymbols.bookshelfTestUtils);
 
+    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+
     await authorTestUtils.truncate();
 
     await bookTestUtils.truncate();
@@ -55,6 +61,8 @@ describe('BookRepositoryImpl', () => {
     await bookshelfTestUtils.truncate();
 
     await userTestUtils.truncate();
+
+    await genreTestUtils.truncate();
   });
 
   afterEach(async () => {
@@ -65,6 +73,8 @@ describe('BookRepositoryImpl', () => {
     await bookshelfTestUtils.truncate();
 
     await userTestUtils.truncate();
+
+    await genreTestUtils.truncate();
 
     await sqliteDatabaseClient.destroy();
   });
@@ -733,6 +743,70 @@ describe('BookRepositoryImpl', () => {
       });
 
       expect(persistedUpdatedBook.bookshelfId).toEqual(bookshelf2.id);
+    });
+
+    it('updates Book Genres', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const bookshelf = await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+        },
+      });
+
+      const author1 = await authorTestUtils.createAndPersist();
+
+      const author2 = await authorTestUtils.createAndPersist();
+
+      const genre1 = await genreTestUtils.createAndPersist();
+
+      const genre2 = await genreTestUtils.createAndPersist();
+
+      const genre3 = await genreTestUtils.createAndPersist();
+
+      const genre4 = await genreTestUtils.createAndPersist();
+
+      const book = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author1.id, author2.id],
+          book: {
+            bookshelfId: bookshelf.id,
+          },
+          genreIds: [genre1.id],
+        },
+      });
+
+      const initialGenres = await bookTestUtils.findRawBookGenres({
+        bookId: book.id,
+      });
+
+      expect(initialGenres).toHaveLength(1);
+
+      const createdBook = await bookRepository.findBook({
+        id: book.id,
+      });
+
+      createdBook?.addUpdateBookGenresAction({
+        genres: [new Genre(genre1), new Genre(genre2), new Genre(genre3), new Genre(genre4)],
+      });
+
+      const updatedBook = await bookRepository.updateBook({
+        book: createdBook as Book,
+      });
+
+      expect(updatedBook.getGenres()).toHaveLength(4);
+
+      const updatedBookGenres = await bookTestUtils.findRawBookGenres({
+        bookId: updatedBook.getId(),
+      });
+
+      expect(updatedBookGenres).toHaveLength(4);
+
+      updatedBookGenres.forEach((updatedBookGenre) => {
+        expect(updatedBookGenre.genreId).oneOf([genre1.id, genre2.id, genre3.id, genre4.id]);
+
+        expect(updatedBookGenre.bookId).toEqual(updatedBook.getId());
+      });
     });
   });
 
