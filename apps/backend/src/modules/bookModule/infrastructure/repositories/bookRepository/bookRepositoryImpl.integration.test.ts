@@ -745,7 +745,7 @@ describe('BookRepositoryImpl', () => {
       expect(persistedUpdatedBook.bookshelfId).toEqual(bookshelf2.id);
     });
 
-    it('updates Book Genres', async () => {
+    it('adds Book Genres', async () => {
       const user = await userTestUtils.createAndPersist();
 
       const bookshelf = await bookshelfTestUtils.createAndPersist({
@@ -804,6 +804,70 @@ describe('BookRepositoryImpl', () => {
 
       updatedBookGenres.forEach((updatedBookGenre) => {
         expect(updatedBookGenre.genreId).oneOf([genre1.id, genre2.id, genre3.id, genre4.id]);
+
+        expect(updatedBookGenre.bookId).toEqual(updatedBook.getId());
+      });
+    });
+
+    it('removes Book Genres', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const bookshelf = await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+        },
+      });
+
+      const author1 = await authorTestUtils.createAndPersist();
+
+      const author2 = await authorTestUtils.createAndPersist();
+
+      const genre1 = await genreTestUtils.createAndPersist();
+
+      const genre2 = await genreTestUtils.createAndPersist();
+
+      const genre3 = await genreTestUtils.createAndPersist();
+
+      const genre4 = await genreTestUtils.createAndPersist();
+
+      const book = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author1.id, author2.id],
+          book: {
+            bookshelfId: bookshelf.id,
+          },
+          genreIds: [genre1.id, genre2.id, genre3.id, genre4.id],
+        },
+      });
+
+      const initialGenres = await bookTestUtils.findRawBookGenres({
+        bookId: book.id,
+      });
+
+      expect(initialGenres).toHaveLength(4);
+
+      const createdBook = await bookRepository.findBook({
+        id: book.id,
+      });
+
+      createdBook?.addUpdateBookGenresAction({
+        genres: [new Genre(genre1), new Genre(genre2)],
+      });
+
+      const updatedBook = await bookRepository.updateBook({
+        book: createdBook as Book,
+      });
+
+      expect(updatedBook.getGenres()).toHaveLength(2);
+
+      const updatedBookGenres = await bookTestUtils.findRawBookGenres({
+        bookId: updatedBook.getId(),
+      });
+
+      expect(updatedBookGenres).toHaveLength(2);
+
+      updatedBookGenres.forEach((updatedBookGenre) => {
+        expect(updatedBookGenre.genreId).oneOf([genre1.id, genre2.id]);
 
         expect(updatedBookGenre.bookId).toEqual(updatedBook.getId());
       });

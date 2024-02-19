@@ -533,21 +533,19 @@ export class Book {
   public addUpdateBookGenresAction(payload: AddUpdateBookGenresDomainActionPayload): void {
     const { genres } = payload;
 
-    const genresAreTheSame = genres.every((genre) =>
-      this.genres.some((currentGenre) => currentGenre.getId() === genre.getId()),
+    const addedGenres = genres.filter(
+      (genre) => !this.genres.some((currentGenre) => currentGenre.getId() === genre.getId()),
     );
 
-    if (genresAreTheSame) {
-      throw new OperationNotValidError({
-        reason: 'Cannot update Book Genres, because they are the same as the current ones.',
-        value: genres,
-      });
-    }
+    const removedGenres = this.genres.filter(
+      (genre) => !genres.some((currentGenre) => currentGenre.getId() === genre.getId()),
+    );
 
     this.domainActions.push({
       type: BookDomainActionType.updateBookGenres,
       payload: {
-        genres,
+        addedGenres,
+        removedGenres,
       },
     });
 

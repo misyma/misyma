@@ -536,31 +536,18 @@ describe('Book', () => {
   });
 
   describe('addUpdateBookGenresAction', () => {
-    it('throws an error - given identical genres', async () => {
-      const genre = genreTestFactory.createEntity();
+    it('adds a UpdateBookGenresAction', () => {
+      const genre1 = genreTestFactory.createEntity();
+
+      const genre2 = genreTestFactory.createEntity();
+
+      const genre3 = genreTestFactory.createEntity();
 
       const book = bookTestFactory.create({
-        genres: [genre],
+        genres: [genre2],
       });
 
-      await expect(() =>
-        book.addUpdateBookGenresAction({
-          genres: [genre],
-        }),
-      ).toThrowErrorInstance({
-        instance: OperationNotValidError,
-        context: {
-          value: book.getGenres(),
-        },
-      });
-    });
-
-    it('adds a UpdateBookGenresAction', () => {
-      const genre = genreTestFactory.createEntity();
-
-      const book = bookTestFactory.create();
-
-      const updatedGenres = [genre];
+      const updatedGenres = [genre1, genre3];
 
       book.addUpdateBookGenresAction({
         genres: updatedGenres,
@@ -570,7 +557,8 @@ describe('Book', () => {
         {
           type: 'updateBookGenres',
           payload: {
-            genres: updatedGenres,
+            addedGenres: updatedGenres,
+            removedGenres: [genre2],
           },
         },
       ]);

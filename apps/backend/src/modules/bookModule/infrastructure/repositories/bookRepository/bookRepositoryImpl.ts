@@ -27,7 +27,8 @@ interface UpdateBookActionsPayload {
     add: string[];
     remove: string[];
   };
-  genres: string[];
+  addedGenres: string[];
+  removedGenres: string[];
 }
 
 export class BookRepositoryImpl implements BookRepository {
@@ -144,16 +145,25 @@ export class BookRepositoryImpl implements BookRepository {
             });
         }
 
-        if (updatePayload.genres.length > 0) {
+        if (updatePayload.addedGenres.length > 0) {
           await transaction(this.bookGenresTable.name)
             .insert(
-              updatePayload.genres.map((genreId) => ({
+              updatePayload.addedGenres.map((genreId) => ({
                 [this.bookGenresTable.columns.bookId]: book.getId(),
                 [this.bookGenresTable.columns.genreId]: genreId,
               })),
             )
             .onConflict([this.bookGenresTable.columns.bookId, this.bookGenresTable.columns.genreId])
             .merge();
+        }
+
+        if (updatePayload.removedGenres.length > 0) {
+          await transaction(this.bookGenresTable.name)
+            .delete()
+            .whereIn(this.bookGenresTable.columns.genreId, updatePayload.removedGenres)
+            .andWhere({
+              [this.bookGenresTable.columns.bookId]: book.getId(),
+            });
         }
       });
     } catch (error) {
@@ -260,7 +270,8 @@ export class BookRepositoryImpl implements BookRepository {
         remove: [],
       },
       bookFields: {},
-      genres: [],
+      addedGenres: [],
+      removedGenres: [],
     };
 
     domainActions.forEach((domainAction) => {
@@ -336,7 +347,9 @@ export class BookRepositoryImpl implements BookRepository {
           break;
 
         case BookDomainActionType.updateBookGenres:
-          payload.genres = domainAction.payload.genres.map((genre) => genre.getId());
+          payload.addedGenres = domainAction.payload.addedGenres.map((genre) => genre.getId());
+
+          payload.removedGenres = domainAction.payload.removedGenres.map((genre) => genre.getId());
 
           break;
       }
