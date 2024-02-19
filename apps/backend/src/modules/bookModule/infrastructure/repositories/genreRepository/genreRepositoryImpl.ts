@@ -11,6 +11,7 @@ import {
   type FindByIdPayload,
   type GenreRepository,
   type CreatePayload,
+  type FindManyByIds,
 } from '../../../domain/repositories/genreRepository/genreRepository.js';
 import { type GenreRawEntity } from '../../databases/bookDatabase/tables/genreTable/genreRawEntity.js';
 import { GenreTable } from '../../databases/bookDatabase/tables/genreTable/genreTable.js';
@@ -86,6 +87,28 @@ export class GenreRepositoryImpl implements GenreRepository {
     }
 
     return this.genreMapper.toDomain(rawEntity);
+  }
+
+  public async findManyByIds(payload: FindManyByIds): Promise<Genre[]> {
+    const { ids } = payload;
+
+    let rawEntities: GenreRawEntity[];
+
+    try {
+      rawEntities = await this.getQueryBuilder().select('*').whereIn(this.genreTable.columns.id, ids);
+    } catch (error) {
+      this.logError({
+        error,
+        operation: 'findManyByIds',
+      });
+
+      throw new RepositoryError({
+        entity: 'Genre',
+        operation: 'find',
+      });
+    }
+
+    return rawEntities.map((rawEntity) => this.genreMapper.toDomain(rawEntity));
   }
 
   public async findByName(payload: FindByNamePayload): Promise<Genre | null> {

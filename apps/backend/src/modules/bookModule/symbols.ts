@@ -5,6 +5,7 @@ export const symbols = {
   createBookCommandHandler: Symbol('createBookCommandHandler'),
   loginBookCommandHandler: Symbol('loginBookCommandHandler'),
   deleteBookCommandHandler: Symbol('deleteBookCommandHandler'),
+  updateBookGenresCommandHandler: Symbol('updateBookGenresCommandHandler'),
 
   findBookQueryHandler: Symbol('findBookQueryHandler'),
 

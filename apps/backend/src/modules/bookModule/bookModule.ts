@@ -9,6 +9,8 @@ import { type DeleteBookCommandHandler } from './application/commandHandlers/del
 import { DeleteBookCommandHandlerImpl } from './application/commandHandlers/deleteBookCommandHandler/deleteBookCommandHandlerImpl.js';
 import { type DeleteGenreCommandHandler } from './application/commandHandlers/deleteGenreCommandHandler/deleteGenreCommandHandler.js';
 import { DeleteGenreCommandHandlerImpl } from './application/commandHandlers/deleteGenreCommandHandler/deleteGenreCommandHandlerImpl.js';
+import { type UpdateBookGenresCommandHandler } from './application/commandHandlers/updateBookGenresCommandHandler/updateBookGenresCommandHandler.js';
+import { UpdateBookGenresCommandHandlerImpl } from './application/commandHandlers/updateBookGenresCommandHandler/updateBookGenresCommandHandlerImpl.js';
 import { type UpdateGenreNameCommandHandler } from './application/commandHandlers/updateGenreNameCommandHandler/updateGenreNameCommandHandler.js';
 import { UpdateGenreNameCommandHandlerImpl } from './application/commandHandlers/updateGenreNameCommandHandler/updateGenreNameCommandHandlerImpl.js';
 import { type FindBookQueryHandler } from './application/queryHandlers/findBookQueryHandler/findBookQueryHandler.js';
@@ -88,6 +90,15 @@ export class BookModule implements DependencyInjectionModule {
           container.get<FindAuthorsByIdsQueryHandler>(authorSymbols.findAuthorsByIdsQueryHandler),
           container.get<BookshelfRepository>(bookshelfSymbols.bookshelfRepository),
           container.get<LoggerService>(coreSymbols.loggerService),
+        ),
+    );
+
+    container.bind<UpdateBookGenresCommandHandler>(
+      symbols.updateBookGenresCommandHandler,
+      () =>
+        new UpdateBookGenresCommandHandlerImpl(
+          container.get<BookRepository>(symbols.bookRepository),
+          container.get<GenreRepository>(symbols.genreRepository),
         ),
     );
 
