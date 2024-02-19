@@ -8,8 +8,6 @@ export class M3CreateBookGenresTableMigration implements Migration {
 
   public async up(databaseClient: DatabaseClient): Promise<void> {
     await databaseClient.schema.createTable(this.tableName, (table) => {
-      table.text('id').primary();
-
       table.text('bookId').notNullable();
 
       table.text('genreId').notNullable();
@@ -17,6 +15,8 @@ export class M3CreateBookGenresTableMigration implements Migration {
       table.foreign('bookId').references('id').inTable('books').onDelete('CASCADE');
 
       table.foreign('genreId').references('id').inTable('genres').onDelete('CASCADE');
+
+      table.unique(['bookId', 'genreId']);
     });
   }
 

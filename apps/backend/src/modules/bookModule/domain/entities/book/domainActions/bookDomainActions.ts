@@ -1,6 +1,7 @@
 import { type AddAuthorDomainAction } from './addAuthorDomainAction.js';
 import { type DeleteAuthorDomainAction } from './deleteAuthorDomainAction.js';
 import { type UpdateBackCoverImageUrlDomainAction } from './updateBackCoverImageUrlDomainAction.js';
+import { type UpdateBookGenresAction } from './updateBookGenresAction.js';
 import { type UpdateBookshelfDomainAction } from './updateBookshelfDomainAction.js';
 import { type UpdateFormatDomainAction } from './updateFormatDomainAction.js';
 import { type UpdateFrontCoverImageUrlDomainAction } from './updateFrontCoverImageUrlDomainAction.js';
@@ -27,4 +28,5 @@ export type BookDomainAction =
   | UpdateFrontCoverImageUrlDomainAction
   | UpdateBackCoverImageUrlDomainAction
   | UpdateStatusDomainAction
-  | UpdateBookshelfDomainAction;
+  | UpdateBookshelfDomainAction
+  | UpdateBookGenresAction;

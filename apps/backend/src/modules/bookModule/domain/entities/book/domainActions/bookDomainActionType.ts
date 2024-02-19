@@ -13,4 +13,5 @@ export enum BookDomainActionType {
   updateBackCoverImageUrl = 'updateBackCoverImageUrl',
   updateStatus = 'updateStatus',
   updateBookshelf = 'updateBookshelf',
+  updateBookGenres = 'updateBookGenres',
 }

@@ -38,6 +38,8 @@ export * from './schemas/book/findBook.js';
 
 export * from './schemas/book/createBook.js';
 
+export * from './schemas/book/updateBookGenres.js';
+
 export * from './schemas/book/deleteBook.js';
 
 export * from './schemas/book/bookFormat.js';

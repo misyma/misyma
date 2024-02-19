@@ -6,9 +6,12 @@ import { Generator } from '@common/tests';
 import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
 import { Author } from '../../../../authorModule/domain/entities/author/author.js';
 import { BookTestFactory } from '../../../tests/factories/bookTestFactory/bookTestFactory.js';
+import { GenreTestFactory } from '../../../tests/factories/genreTestFactor/genreTestFactory.js';
 
 describe('Book', () => {
   const bookTestFactory = new BookTestFactory();
+
+  const genreTestFactory = GenreTestFactory.createFactory();
 
   describe('addAddAuthorDomainAction', () => {
     it('throws an error - when Author is already assigned', async () => {
@@ -526,6 +529,36 @@ describe('Book', () => {
           type: 'updateBookshelf',
           payload: {
             bookshelfId: updatedBookshelfId,
+          },
+        },
+      ]);
+    });
+  });
+
+  describe('addUpdateBookGenresAction', () => {
+    it('adds a UpdateBookGenresAction', () => {
+      const genre1 = genreTestFactory.createEntity();
+
+      const genre2 = genreTestFactory.createEntity();
+
+      const genre3 = genreTestFactory.createEntity();
+
+      const book = bookTestFactory.create({
+        genres: [genre2],
+      });
+
+      const updatedGenres = [genre1, genre3];
+
+      book.addUpdateBookGenresAction({
+        genres: updatedGenres,
+      });
+
+      expect(book.getDomainActions()).toEqual([
+        {
+          type: 'updateBookGenres',
+          payload: {
+            addedGenres: updatedGenres,
+            removedGenres: [genre2],
           },
         },
       ]);

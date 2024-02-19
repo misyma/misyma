@@ -1,4 +1,4 @@
-export interface BookWithAuthorRawEntity {
+export interface BookWithJoinsRawEntity {
   readonly id: string;
   readonly title: string;
   readonly isbn: string | null;
@@ -15,4 +15,6 @@ export interface BookWithAuthorRawEntity {
   readonly authorId: string | null;
   readonly firstName: string | null;
   readonly lastName: string | null;
+  readonly genreName: string | null;
+  readonly genreId: string | null;
 }

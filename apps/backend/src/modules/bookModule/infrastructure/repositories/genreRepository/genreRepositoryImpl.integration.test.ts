@@ -91,6 +91,34 @@ describe('GenreRepositoryImpl', () => {
     });
   });
 
+  describe('findManyByIds', () => {
+    it('returns an empty array - given no Genres found', async () => {
+      const nonExistentIds = Array.from({ length: 5 }, () => Generator.uuid());
+
+      const res = await genreRepository.findManyByIds({
+        ids: nonExistentIds,
+      });
+
+      expect(res.length).toBe(0);
+    });
+
+    it('returns Genres', async () => {
+      const genre1 = await genreTestUtils.createAndPersist();
+
+      const genre2 = await genreTestUtils.createAndPersist();
+
+      const genre3 = await genreTestUtils.createAndPersist();
+
+      const genre4 = await genreTestUtils.createAndPersist();
+
+      const res = await genreRepository.findManyByIds({
+        ids: [genre1.id, genre2.id, genre3.id, genre4.id],
+      });
+
+      expect(res.length).toBe(4);
+    });
+  });
+
   describe('findByName', () => {
     it('returns null - when Genre was not found', async () => {
       const res = await genreRepository.findByName({

@@ -33,13 +33,14 @@ describe('BookMapperImpl', () => {
       bookshelfId: bookEntity.bookshelfId,
       authors: [],
       domainActions: [],
+      genres: [],
     });
   });
 
   it('maps from bookRawEntity with Author to Book', () => {
     const book = bookEntityTestFactory.create();
 
-    const books = bookMapperImpl.mapRawWithAuthorToDomain([
+    const books = bookMapperImpl.mapRawWithJoinsToDomain([
       {
         id: book.id,
         title: book.title,
@@ -57,6 +58,8 @@ describe('BookMapperImpl', () => {
         authorId: null,
         firstName: null,
         lastName: null,
+        genreId: null,
+        genreName: null,
       },
     ]);
 
@@ -77,6 +80,7 @@ describe('BookMapperImpl', () => {
         bookshelfId: book.bookshelfId,
         authors: [],
         domainActions: [],
+        genres: [],
       },
     ]);
   });

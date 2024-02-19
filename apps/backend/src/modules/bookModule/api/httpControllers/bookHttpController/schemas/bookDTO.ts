@@ -3,6 +3,7 @@ import { type Static, Type } from '@sinclair/typebox';
 import * as contracts from '@common/contracts';
 
 import { authorDTOSchema } from './authorDTO.js';
+import { genreDTOSchema } from './genreDTO.js';
 
 export const bookDTOSchema = Type.Object({
   id: Type.String(),
@@ -21,6 +22,7 @@ export const bookDTOSchema = Type.Object({
     format: 'uuid',
     description: 'Bookshelf id.',
   }),
+  genres: Type.Array(genreDTOSchema),
   authors: Type.Array(authorDTOSchema),
 });
 
