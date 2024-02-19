@@ -39,7 +39,7 @@ export class UpdateBookGenresCommandHandlerImpl implements UpdateBookGenresComma
     }
 
     book.addUpdateBookGenresAction({
-      genres: [...book.getGenres(), ...genres],
+      genres,
     });
 
     await this.bookRepository.updateBook({

@@ -155,6 +155,7 @@ export class BookModule implements DependencyInjectionModule {
       () =>
         new BookHttpController(
           container.get<CreateBookCommandHandler>(symbols.createBookCommandHandler),
+          container.get<UpdateBookGenresCommandHandler>(symbols.updateBookGenresCommandHandler),
           container.get<DeleteBookCommandHandler>(symbols.deleteBookCommandHandler),
           container.get<FindBookQueryHandler>(symbols.findBookQueryHandler),
           container.get<AccessControlService>(authSymbols.accessControlService),
