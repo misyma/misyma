@@ -301,6 +301,10 @@ export class UserRepositoryImpl implements UserRepository {
             .merge({
               ...resetPasswordTokenUpdatePayload,
             });
+        } else if (resetPasswordTokenUpdatePayload === null) {
+          await transaction<ResetPasswordTokenRawEntity>(this.resetPasswordTokenTable.name)
+            .delete()
+            .where({ userId: id });
         }
 
         if (emailVerificationTokenUpdatePayload) {
@@ -342,7 +346,7 @@ export class UserRepositoryImpl implements UserRepository {
 
     const refreshTokenCreatePayloads: TokenValue[] = [];
 
-    let resetPasswordTokenUpdatePayload: TokenValue | undefined = undefined;
+    let resetPasswordTokenUpdatePayload: TokenValue | undefined | null = undefined;
 
     let emailVerificationTokenUpdatePayload: TokenValue | undefined = undefined;
 
