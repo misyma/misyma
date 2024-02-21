@@ -408,11 +408,6 @@ export class UserRepositoryImpl implements UserRepository {
 
           break;
 
-        case UserDomainActionType.deleteResetPasswordToken:
-          resetPasswordTokenUpdatePayload = null;
-
-          break;
-
         default:
           this.loggerService.error({
             message: 'Error mapping domain actions.',
