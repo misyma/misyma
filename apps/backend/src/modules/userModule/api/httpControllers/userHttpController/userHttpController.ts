@@ -340,15 +340,10 @@ export class UserHttpController implements HttpController {
   ): Promise<HttpOkResponse<ChangeUserPasswordResponseBodyDTO>> {
     const { password, repeatedPassword, token } = request.body;
 
-    const { userId } = await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
-    });
-
     await this.changeUserPasswordCommandHandler.execute({
       newPassword: password,
       repeatedNewPassword: repeatedPassword,
       resetPasswordToken: token,
-      userId,
     });
 
     return {

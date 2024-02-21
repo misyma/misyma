@@ -151,6 +151,13 @@ export class User {
     });
   }
 
+  public addDeleteResetPasswordTokenAction(): void {
+    this.domainActions.push({
+      actionName: UserDomainActionType.deleteResetPasswordToken,
+      payload: null,
+    });
+  }
+
   public addUpdateEmailVerificationTokenAction(payload: UpdateEmailVerificationTokenPayload): void {
     const { token, expiresAt } = payload;
 

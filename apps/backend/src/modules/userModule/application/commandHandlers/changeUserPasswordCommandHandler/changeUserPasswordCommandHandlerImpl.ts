@@ -14,9 +14,15 @@ export class ChangeUserPasswordCommandHandlerImpl implements ChangeUserPasswordC
   ) {}
 
   public async execute(payload: ExecutePayload): Promise<void> {
-    const { resetPasswordToken, newPassword, repeatedNewPassword, userId } = payload;
+    const { resetPasswordToken, newPassword, repeatedNewPassword } = payload;
 
-    this.tokenService.verifyToken({ token: resetPasswordToken });
+    const { userId } = this.tokenService.verifyToken({ token: resetPasswordToken });
+
+    if (!userId) {
+      throw new OperationNotValidError({
+        reason: 'Invalid reset password token',
+      });
+    }
 
     const user = await this.userRepository.findUser({
       id: userId,
@@ -60,6 +66,8 @@ export class ChangeUserPasswordCommandHandlerImpl implements ChangeUserPasswordC
     user.addUpdatePasswordAction({
       newPassword: hashedPassword,
     });
+
+    user.addDeleteResetPasswordTokenAction();
 
     await this.userRepository.updateUser({
       id: user.getId(),
