@@ -168,6 +168,7 @@ export class UserModule implements DependencyInjectionModule {
       () =>
         new ChangeUserPasswordCommandHandlerImpl(
           container.get<UserRepository>(symbols.userRepository),
+          container.get<BlacklistTokenRepository>(symbols.blacklistTokenRepository),
           container.get<HashService>(symbols.hashService),
           container.get<TokenService>(authSymbols.tokenService),
           container.get<PasswordValidationService>(symbols.passwordValidationService),

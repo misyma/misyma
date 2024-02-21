@@ -54,7 +54,6 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
 
     await commandHandler.execute({
       newPassword,
-      repeatedNewPassword: newPassword,
       resetPasswordToken,
     });
 
@@ -86,7 +85,6 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
       async () =>
         await commandHandler.execute({
           newPassword,
-          repeatedNewPassword: newPassword,
           resetPasswordToken,
         }),
     ).toThrowErrorInstance({
@@ -121,47 +119,10 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
       async () =>
         await commandHandler.execute({
           newPassword,
-          repeatedNewPassword: newPassword,
           resetPasswordToken,
         }),
     ).toThrowErrorInstance({
       instance: OperationNotValidError,
-    });
-  });
-
-  it('throws an error - when passwords do not match', async () => {
-    const user = await userTestUtils.createAndPersist();
-
-    const resetPasswordToken = tokenService.createToken({
-      data: {
-        userId: user.id,
-      },
-      expiresIn: Generator.number(10000, 100000),
-    });
-
-    await userTestUtils.createAndPersistResetPasswordToken({
-      input: {
-        userId: user.id,
-        token: resetPasswordToken,
-      },
-    });
-
-    const newPassword = Generator.password();
-
-    const repeatedNewPassword = `repeated${Generator.password()}`;
-
-    await expect(
-      async () =>
-        await commandHandler.execute({
-          newPassword,
-          repeatedNewPassword,
-          resetPasswordToken,
-        }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
-        reason: 'Passwords do not match.',
-      },
     });
   });
 
@@ -174,7 +135,6 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
       async () =>
         await commandHandler.execute({
           newPassword,
-          repeatedNewPassword: newPassword,
           resetPasswordToken: invalidResetPasswordToken,
         }),
     ).toThrowErrorInstance({
@@ -202,7 +162,6 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
       async () =>
         await commandHandler.execute({
           newPassword,
-          repeatedNewPassword: newPassword,
           resetPasswordToken,
         }),
     ).toThrowErrorInstance({
@@ -245,7 +204,6 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
       async () =>
         await commandHandler.execute({
           newPassword,
-          repeatedNewPassword: newPassword,
           resetPasswordToken: invalidResetPasswordToken,
         }),
     ).toThrowErrorInstance({

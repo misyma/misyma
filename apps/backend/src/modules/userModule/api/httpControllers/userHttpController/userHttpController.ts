@@ -338,11 +338,10 @@ export class UserHttpController implements HttpController {
   private async changeUserPassword(
     request: HttpRequest<ChangeUserPasswordBodyDTO, null, null>,
   ): Promise<HttpOkResponse<ChangeUserPasswordResponseBodyDTO>> {
-    const { password, repeatedPassword, token } = request.body;
+    const { password, token } = request.body;
 
     await this.changeUserPasswordCommandHandler.execute({
       newPassword: password,
-      repeatedNewPassword: repeatedPassword,
       resetPasswordToken: token,
     });
 

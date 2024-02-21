@@ -2,7 +2,6 @@ import { type CommandHandler } from '../../../../../common/types/commandHandler.
 
 export interface ExecutePayload {
   readonly newPassword: string;
-  readonly repeatedNewPassword: string;
   readonly resetPasswordToken: string;
 }
 

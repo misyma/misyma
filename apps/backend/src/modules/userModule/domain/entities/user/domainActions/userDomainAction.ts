@@ -1,5 +1,4 @@
 import { type CreateRefreshTokenDomainAction } from './createRefreshTokenDomainAction.js';
-import { type DeleteResetPasswordTokenDomainAction } from './deleteResetPasswordTokenDomainAction.js';
 import { type UpdateEmailDomainAction } from './updateEmailDomainAction.js';
 import { type UpdateEmailVerificationTokenDomainAction } from './updateEmailVerificationTokenDomainAction.js';
 import { type UpdateNameDomainAction } from './updateNameDomainAction.js';
@@ -12,7 +11,6 @@ export type UserDomainAction =
   | UpdatePasswordDomainAction
   | UpdateNameDomainAction
   | UpdateResetPasswordTokenDomainAction
-  | DeleteResetPasswordTokenDomainAction
   | UpdateEmailVerificationTokenDomainAction
   | VerifyEmailDomainAction
   | CreateRefreshTokenDomainAction;
