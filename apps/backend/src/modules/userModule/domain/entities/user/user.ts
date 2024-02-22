@@ -139,42 +139,6 @@ export class User {
     });
   }
 
-  public addUpdateResetPasswordTokenAction(payload: ResetPasswordPayload): void {
-    const { token, expiresAt } = payload;
-
-    this.domainActions.push({
-      actionName: UserDomainActionType.updateResetPasswordToken,
-      payload: {
-        token,
-        expiresAt,
-      },
-    });
-  }
-
-  public addUpdateEmailVerificationTokenAction(payload: UpdateEmailVerificationTokenPayload): void {
-    const { token, expiresAt } = payload;
-
-    this.domainActions.push({
-      actionName: UserDomainActionType.updateEmailVerificationToken,
-      payload: {
-        token,
-        expiresAt,
-      },
-    });
-  }
-
-  public addCreateRefreshTokenAction(payload: CreateRefreshTokenPayload): void {
-    const { token, expiresAt } = payload;
-
-    this.domainActions.push({
-      actionName: UserDomainActionType.createRefreshToken,
-      payload: {
-        token,
-        expiresAt,
-      },
-    });
-  }
-
   public addVerifyEmailAction(): void {
     if (this.isEmailVerified) {
       throw new OperationNotValidError({

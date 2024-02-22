@@ -4,6 +4,7 @@ import { M3CreateRefreshTokenTableMigration } from './migrations/m3CreateRefresh
 import { M4CreateResetPasswordTokenTableMigration } from './migrations/m4CreateResetPasswordTokenTableMigration.js';
 import { M5CreateVerificationTokenTableMigration } from './migrations/m5CreateEmailVerificationTokenTableMigration.js';
 import { M6CreateAddressesTableMigration } from './migrations/m6CreateAddressesTableMigration.js';
+import { M7DropTokenTablesMigration } from './migrations/m7DropTokenTables.js';
 import { type Migration } from '../../../../../libs/database/types/migration.js';
 import { type MigrationSource } from '../../../../../libs/database/types/migrationSource.js';
 
@@ -16,6 +17,7 @@ export class UserDatabaseMigrationSource implements MigrationSource {
       new M4CreateResetPasswordTokenTableMigration(),
       new M5CreateVerificationTokenTableMigration(),
       new M6CreateAddressesTableMigration(),
+      new M7DropTokenTablesMigration(),
     ];
   }
 

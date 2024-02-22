@@ -1,7 +1,5 @@
 import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 
-import { Generator } from '@common/tests';
-
 import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
 import { Application } from '../../../../../core/application.js';
@@ -138,101 +136,6 @@ describe('UserRepositoryImpl', () => {
       });
 
       expect(foundUser.getName()).toEqual(createdUser.getName());
-    });
-
-    it(`creates User's refresh tokens`, async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const createdUser = userTestFactory.create();
-
-      const refreshToken1 = Generator.alphaString(32);
-
-      const expiresAt1 = Generator.futureDate();
-
-      const refreshToken2 = Generator.alphaString(32);
-
-      const expiresAt2 = Generator.futureDate();
-
-      createdUser.addCreateRefreshTokenAction({
-        token: refreshToken1,
-        expiresAt: expiresAt1,
-      });
-
-      createdUser.addCreateRefreshTokenAction({
-        token: refreshToken2,
-        expiresAt: expiresAt2,
-      });
-
-      await userRepository.updateUser({
-        id: user.id,
-        domainActions: createdUser.getDomainActions(),
-      });
-
-      const updatedUserTokens = await userTestUtils.findTokensByUserId({ userId: user.id });
-
-      expect(updatedUserTokens.refreshTokens.includes(refreshToken1)).toBe(true);
-
-      expect(updatedUserTokens.refreshTokens.includes(refreshToken2)).toBe(true);
-    });
-
-    it(`updates User's email verification token`, async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const createdUser = userTestFactory.create();
-
-      await userTestUtils.createAndPersistEmailVerificationToken({
-        input: {
-          userId: user.id,
-        },
-      });
-
-      const updatedEmailVerificationToken = Generator.alphaString(32);
-
-      const expiresAt = Generator.futureDate();
-
-      createdUser.addUpdateEmailVerificationTokenAction({
-        token: updatedEmailVerificationToken,
-        expiresAt,
-      });
-
-      await userRepository.updateUser({
-        id: user.id,
-        domainActions: createdUser.getDomainActions(),
-      });
-
-      const updatedUserTokens = await userTestUtils.findTokensByUserId({ userId: user.id });
-
-      expect(updatedUserTokens.emailVerificationToken).toEqual(updatedEmailVerificationToken);
-    });
-
-    it(`updates User's reset password token`, async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const createdUser = userTestFactory.create();
-
-      await userTestUtils.createAndPersistResetPasswordToken({
-        input: {
-          userId: user.id,
-        },
-      });
-
-      const updatedResetPasswordToken = Generator.alphaString(32);
-
-      const expiresAt = Generator.futureDate();
-
-      createdUser.addUpdateResetPasswordTokenAction({
-        token: updatedResetPasswordToken,
-        expiresAt,
-      });
-
-      await userRepository.updateUser({
-        id: user.id,
-        domainActions: createdUser.getDomainActions(),
-      });
-
-      const updatedUserTokens = await userTestUtils.findTokensByUserId({ userId: user.id });
-
-      expect(updatedUserTokens.resetPasswordToken).toEqual(updatedResetPasswordToken);
     });
 
     it(`updates User's email verification status`, async () => {

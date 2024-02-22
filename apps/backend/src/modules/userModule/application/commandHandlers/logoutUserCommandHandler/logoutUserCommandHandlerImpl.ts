@@ -4,6 +4,7 @@ import { type LoggerService } from '../../../../../libs/logger/services/loggerSe
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { type BlacklistTokenRepository } from '../../../domain/repositories/blacklistTokenRepository/blacklistTokenRepository.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
+import { TokenPurpose } from '../../../domain/types/tokenPurpose.js';
 
 export class LogoutUserCommandHandlerImpl implements LogoutUserCommandHandler {
   public constructor(
@@ -14,6 +15,7 @@ export class LogoutUserCommandHandlerImpl implements LogoutUserCommandHandler {
   ) {}
 
   public async execute(payload: ExecutePayload): Promise<void> {
+    // TODO: Add accessToken invalidation
     const { userId, refreshToken } = payload;
 
     this.loggerService.debug({
@@ -21,7 +23,7 @@ export class LogoutUserCommandHandlerImpl implements LogoutUserCommandHandler {
       context: { userId },
     });
 
-    this.tokenService.verifyToken({ token: refreshToken });
+    const tokenPayload = this.tokenService.verifyToken({ token: refreshToken });
 
     const isTokenBlacklisted = await this.blacklistTokenRepository.findBlacklistToken({
       token: refreshToken,
@@ -39,6 +41,12 @@ export class LogoutUserCommandHandlerImpl implements LogoutUserCommandHandler {
       return;
     }
 
+    if (tokenPayload['purpose'] !== TokenPurpose.refreshToken) {
+      throw new OperationNotValidError({
+        reason: 'Invalid refresh token.',
+      });
+    }
+
     const user = await this.userRepository.findUser({
       id: userId,
     });
@@ -47,25 +55,6 @@ export class LogoutUserCommandHandlerImpl implements LogoutUserCommandHandler {
       throw new OperationNotValidError({
         reason: 'User not found.',
         userId,
-      });
-    }
-
-    const userTokens = await this.userRepository.findUserTokens({
-      userId,
-    });
-
-    if (!userTokens) {
-      throw new OperationNotValidError({
-        reason: 'User tokens not found.',
-        userId,
-      });
-    }
-
-    if (!userTokens.refreshTokens.includes(refreshToken)) {
-      throw new OperationNotValidError({
-        reason: 'Refresh token is not valid.',
-        userId,
-        refreshToken,
       });
     }
 

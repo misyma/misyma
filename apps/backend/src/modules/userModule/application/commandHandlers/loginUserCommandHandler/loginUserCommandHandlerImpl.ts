@@ -8,6 +8,7 @@ import { type LoggerService } from '../../../../../libs/logger/services/loggerSe
 import { UnauthorizedAccessError } from '../../../../authModule/application/errors/unathorizedAccessError.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
+import { TokenPurpose } from '../../../domain/types/tokenPurpose.js';
 import { type UserModuleConfigProvider } from '../../../userModuleConfigProvider.js';
 import { type HashService } from '../../services/hashService/hashService.js';
 
@@ -68,15 +69,11 @@ export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
     const refreshTokenExpiresIn = this.configProvider.getRefreshTokenExpiresIn();
 
     const refreshToken = this.tokenService.createToken({
-      data: { userId: user.getId() },
+      data: {
+        userId: user.getId(),
+        purpose: TokenPurpose.refreshToken,
+      },
       expiresIn: refreshTokenExpiresIn,
-    });
-
-    const expiresAt = new Date(Date.now() + refreshTokenExpiresIn * 1000);
-
-    user.addCreateRefreshTokenAction({
-      token: refreshToken,
-      expiresAt,
     });
 
     await this.userRepository.updateUser({
