@@ -3,7 +3,7 @@ import { OperationNotValidError } from '../../../../../common/errors/common/oper
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { type BlacklistTokenRepository } from '../../../domain/repositories/blacklistTokenRepository/blacklistTokenRepository.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
-import { TokenPurpose } from '../../../domain/types/tokenPurpose.js';
+import { TokenType } from '../../../domain/types/tokenType.js';
 import { type HashService } from '../../services/hashService/hashService.js';
 import { type PasswordValidationService } from '../../services/passwordValidationService/passwordValidationService.js';
 
@@ -19,7 +19,7 @@ export class ChangeUserPasswordCommandHandlerImpl implements ChangeUserPasswordC
   public async execute(payload: ExecutePayload): Promise<void> {
     const { resetPasswordToken, newPassword } = payload;
 
-    const { userId, purpose } = this.tokenService.verifyToken({ token: resetPasswordToken });
+    const { userId, type } = this.tokenService.verifyToken({ token: resetPasswordToken });
 
     if (!userId) {
       throw new OperationNotValidError({
@@ -27,7 +27,7 @@ export class ChangeUserPasswordCommandHandlerImpl implements ChangeUserPasswordC
       });
     }
 
-    if (purpose !== TokenPurpose.passwordReset) {
+    if (type !== TokenType.passwordReset) {
       throw new OperationNotValidError({
         reason: 'Invalid reset password token.',
       });

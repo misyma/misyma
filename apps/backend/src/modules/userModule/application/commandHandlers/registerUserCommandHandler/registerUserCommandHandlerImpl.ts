@@ -9,7 +9,7 @@ import { type TokenService } from '../../../../authModule/application/services/t
 import { EmailEventDraft } from '../../../domain/entities/emailEvent/emailEventDraft.ts/emailEventDraft.js';
 import { EmailEventType } from '../../../domain/entities/emailEvent/types/emailEventType.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
-import { TokenPurpose } from '../../../domain/types/tokenPurpose.js';
+import { TokenType } from '../../../domain/types/tokenType.js';
 import { type UserModuleConfigProvider } from '../../../userModuleConfigProvider.js';
 import { type EmailMessageBus } from '../../messageBuses/emailMessageBus/emailMessageBus.js';
 import { type HashService } from '../../services/hashService/hashService.js';
@@ -80,7 +80,7 @@ export class RegisterUserCommandHandlerImpl implements RegisterUserCommandHandle
     const emailVerificationToken = this.tokenService.createToken({
       data: {
         userId: user.getId(),
-        purpose: TokenPurpose.emailVerification,
+        type: TokenType.emailVerification,
       },
       expiresIn,
     });

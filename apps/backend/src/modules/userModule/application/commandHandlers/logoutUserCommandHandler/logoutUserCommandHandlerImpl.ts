@@ -4,7 +4,7 @@ import { type LoggerService } from '../../../../../libs/logger/services/loggerSe
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { type BlacklistTokenRepository } from '../../../domain/repositories/blacklistTokenRepository/blacklistTokenRepository.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
-import { TokenPurpose } from '../../../domain/types/tokenPurpose.js';
+import { TokenType } from '../../../domain/types/tokenType.js';
 
 export class LogoutUserCommandHandlerImpl implements LogoutUserCommandHandler {
   public constructor(
@@ -41,7 +41,7 @@ export class LogoutUserCommandHandlerImpl implements LogoutUserCommandHandler {
       return;
     }
 
-    if (tokenPayload['purpose'] !== TokenPurpose.refreshToken) {
+    if (tokenPayload['type'] !== TokenType.refreshToken) {
       throw new OperationNotValidError({
         reason: 'Invalid refresh token.',
       });

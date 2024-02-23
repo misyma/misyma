@@ -1,4 +1,4 @@
-export enum TokenPurpose {
+export enum TokenType {
   emailVerification = 'emailVerification',
   passwordReset = 'passwordReset',
   refreshToken = 'refreshToken',

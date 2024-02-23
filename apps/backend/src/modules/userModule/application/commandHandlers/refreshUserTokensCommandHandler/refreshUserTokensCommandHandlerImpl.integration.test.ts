@@ -11,7 +11,7 @@ import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDa
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { authSymbols } from '../../../../authModule/symbols.js';
-import { TokenPurpose } from '../../../domain/types/tokenPurpose.js';
+import { TokenType } from '../../../domain/types/tokenType.js';
 import { symbols } from '../../../symbols.js';
 import { type BlacklistTokenTestUtils } from '../../../tests/utils/blacklistTokenTestUtils/blacklistTokenTestUtils.js';
 import { type UserTestUtils } from '../../../tests/utils/userTestUtils/userTestUtils.js';
@@ -66,7 +66,7 @@ describe('RefreshUserTokensCommandHandler', () => {
     const refreshToken = tokenService.createToken({
       data: {
         userId: user.id,
-        purpose: TokenPurpose.refreshToken,
+        type: TokenType.refreshToken,
       },
       expiresIn: Generator.number(10000, 100000),
     });
@@ -92,7 +92,7 @@ describe('RefreshUserTokensCommandHandler', () => {
     const refreshToken = tokenService.createToken({
       data: {
         userId,
-        purpose: TokenPurpose.refreshToken,
+        type: TokenType.refreshToken,
       },
       expiresIn: Generator.number(10000, 100000),
     });
@@ -116,7 +116,7 @@ describe('RefreshUserTokensCommandHandler', () => {
     const refreshToken = tokenService.createToken({
       data: {
         userId: user.id,
-        purpose: TokenPurpose.passwordReset,
+        type: TokenType.passwordReset,
       },
       expiresIn: Generator.number(10000, 100000),
     });
@@ -136,7 +136,7 @@ describe('RefreshUserTokensCommandHandler', () => {
   it('throws an error if refresh token does not contain userId', async () => {
     const refreshToken = tokenService.createToken({
       data: {
-        purpose: TokenPurpose.refreshToken,
+        type: TokenType.refreshToken,
       },
       expiresIn: Generator.number(10000, 100000),
     });

@@ -8,7 +8,7 @@ import { TestContainer } from '../../../../../../tests/container/testContainer.j
 import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { authSymbols } from '../../../../authModule/symbols.js';
-import { TokenPurpose } from '../../../domain/types/tokenPurpose.js';
+import { TokenType } from '../../../domain/types/tokenType.js';
 import { symbols } from '../../../symbols.js';
 import { type UserTestUtils } from '../../../tests/utils/userTestUtils/userTestUtils.js';
 import { type HashService } from '../../services/hashService/hashService.js';
@@ -40,7 +40,7 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
     const resetPasswordToken = tokenService.createToken({
       data: {
         userId: user.id,
-        purpose: TokenPurpose.passwordReset,
+        type: TokenType.passwordReset,
       },
       expiresIn: Generator.number(10000, 100000),
     });
@@ -72,7 +72,7 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
     const resetPasswordToken = tokenService.createToken({
       data: {
         userId,
-        purpose: TokenPurpose.passwordReset,
+        type: TokenType.passwordReset,
       },
       expiresIn: Generator.number(10000, 100000),
     });
@@ -98,7 +98,7 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
     const resetPasswordToken = tokenService.createToken({
       data: {
         userId: user.id,
-        purpose: TokenPurpose.passwordReset,
+        type: TokenType.passwordReset,
       },
       expiresIn: Generator.number(10000, 100000),
     });
@@ -142,7 +142,7 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
     const resetPasswordToken = tokenService.createToken({
       data: {
         userId: user.id,
-        purpose: TokenPurpose.refreshToken,
+        type: TokenType.refreshToken,
       },
       expiresIn: Generator.number(10000, 100000),
     });

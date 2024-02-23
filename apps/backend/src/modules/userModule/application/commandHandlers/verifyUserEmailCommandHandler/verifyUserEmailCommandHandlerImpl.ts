@@ -3,7 +3,7 @@ import { OperationNotValidError } from '../../../../../common/errors/common/oper
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
-import { TokenPurpose } from '../../../domain/types/tokenPurpose.js';
+import { TokenType } from '../../../domain/types/tokenType.js';
 
 export class VerifyUserEmailCommandHandlerImpl implements VerifyUserEmailCommandHandler {
   public constructor(
@@ -25,7 +25,7 @@ export class VerifyUserEmailCommandHandlerImpl implements VerifyUserEmailCommand
       });
     }
 
-    if (tokenPayload['purpose'] !== TokenPurpose.emailVerification) {
+    if (tokenPayload['type'] !== TokenType.emailVerification) {
       throw new OperationNotValidError({
         reason: 'Invalid email verification token.',
       });

@@ -8,7 +8,7 @@ import { type LoggerService } from '../../../../../libs/logger/services/loggerSe
 import { UnauthorizedAccessError } from '../../../../authModule/application/errors/unathorizedAccessError.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
-import { TokenPurpose } from '../../../domain/types/tokenPurpose.js';
+import { TokenType } from '../../../domain/types/tokenType.js';
 import { type UserModuleConfigProvider } from '../../../userModuleConfigProvider.js';
 import { type HashService } from '../../services/hashService/hashService.js';
 
@@ -71,7 +71,7 @@ export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
     const refreshToken = this.tokenService.createToken({
       data: {
         userId: user.getId(),
-        purpose: TokenPurpose.refreshToken,
+        type: TokenType.refreshToken,
       },
       expiresIn: refreshTokenExpiresIn,
     });
