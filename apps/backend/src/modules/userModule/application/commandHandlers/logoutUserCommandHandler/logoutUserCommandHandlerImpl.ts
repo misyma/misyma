@@ -15,21 +15,26 @@ export class LogoutUserCommandHandlerImpl implements LogoutUserCommandHandler {
   ) {}
 
   public async execute(payload: ExecutePayload): Promise<void> {
-    // TODO: Add accessToken invalidation
-    const { userId, refreshToken } = payload;
+    const { userId, accessToken, refreshToken } = payload;
 
     this.loggerService.debug({
       message: 'Logging user out...',
       context: { userId },
     });
 
-    const tokenPayload = this.tokenService.verifyToken({ token: refreshToken });
+    const refreshTokenPayload = this.tokenService.verifyToken({ token: refreshToken });
 
-    const isTokenBlacklisted = await this.blacklistTokenRepository.findBlacklistToken({
+    const accessTokenPayload = this.tokenService.verifyToken({ token: accessToken });
+
+    const isRefreshTokenBlacklisted = await this.blacklistTokenRepository.findBlacklistToken({
       token: refreshToken,
     });
 
-    if (isTokenBlacklisted) {
+    const isAccessTokenBlacklisted = await this.blacklistTokenRepository.findBlacklistToken({
+      token: accessToken,
+    });
+
+    if (isRefreshTokenBlacklisted) {
       this.loggerService.debug({
         message: 'Refresh token is already on blacklist.',
         context: {
@@ -37,13 +42,29 @@ export class LogoutUserCommandHandlerImpl implements LogoutUserCommandHandler {
           refreshToken,
         },
       });
+    }
+
+    if (isAccessTokenBlacklisted && isRefreshTokenBlacklisted) {
+      this.loggerService.debug({
+        message: 'Access & refresh tokens are already on blacklist.',
+        context: {
+          userId,
+          accessToken,
+        },
+      });
 
       return;
     }
 
-    if (tokenPayload['type'] !== TokenType.refreshToken) {
+    if (refreshTokenPayload['type'] !== TokenType.refreshToken) {
       throw new OperationNotValidError({
         reason: 'Invalid refresh token.',
+      });
+    }
+
+    if (accessTokenPayload['type'] !== TokenType.accessToken) {
+      throw new OperationNotValidError({
+        reason: 'Invalid access token.',
       });
     }
 
@@ -62,9 +83,18 @@ export class LogoutUserCommandHandlerImpl implements LogoutUserCommandHandler {
       token: refreshToken,
     });
 
+    const { expiresAt: accessTokenExpiresAt } = this.tokenService.decodeToken({
+      token: accessToken,
+    });
+
     await this.blacklistTokenRepository.createBlacklistToken({
       token: refreshToken,
       expiresAt: new Date(expiresAt),
+    });
+
+    await this.blacklistTokenRepository.createBlacklistToken({
+      token: accessToken,
+      expiresAt: new Date(accessTokenExpiresAt),
     });
 
     this.loggerService.debug({

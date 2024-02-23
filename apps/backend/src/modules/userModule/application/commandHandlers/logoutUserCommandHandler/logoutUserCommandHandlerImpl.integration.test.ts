@@ -56,11 +56,19 @@ describe('LogoutUserCommandHandlerImpl', () => {
       expiresIn: Generator.number(10000, 100000),
     });
 
+    const accessToken = tokenService.createToken({
+      data: {
+        type: TokenType.accessToken,
+      },
+      expiresIn: Generator.number(10000, 100000),
+    });
+
     const user = await userTestUtils.createAndPersist();
 
     await commandHandler.execute({
       userId: user.id,
       refreshToken,
+      accessToken,
     });
 
     const blacklistToken = await blacklistTokenTestUtils.findByToken({
@@ -78,6 +86,13 @@ describe('LogoutUserCommandHandlerImpl', () => {
       expiresIn: Generator.number(10000, 100000),
     });
 
+    const accessToken = tokenService.createToken({
+      data: {
+        type: TokenType.accessToken,
+      },
+      expiresIn: Generator.number(10000, 100000),
+    });
+
     const userId = Generator.uuid();
 
     await expect(
@@ -85,6 +100,7 @@ describe('LogoutUserCommandHandlerImpl', () => {
         await commandHandler.execute({
           userId,
           refreshToken,
+          accessToken,
         }),
     ).toThrowErrorInstance({
       instance: OperationNotValidError,
@@ -107,11 +123,19 @@ describe('LogoutUserCommandHandlerImpl', () => {
       expiresIn: Generator.number(),
     });
 
+    const accessToken = tokenService.createToken({
+      data: {
+        type: TokenType.accessToken,
+      },
+      expiresIn: Generator.number(10000, 100000),
+    });
+
     await expect(
       async () =>
         await commandHandler.execute({
           userId: user.id,
           refreshToken: invalidRefreshToken,
+          accessToken,
         }),
     ).toThrowErrorInstance({
       instance: OperationNotValidError,
