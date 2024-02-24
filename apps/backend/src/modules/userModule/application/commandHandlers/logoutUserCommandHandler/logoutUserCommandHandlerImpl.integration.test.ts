@@ -71,11 +71,17 @@ describe('LogoutUserCommandHandlerImpl', () => {
       accessToken,
     });
 
-    const blacklistToken = await blacklistTokenTestUtils.findByToken({
+    const blacklistRefreshToken = await blacklistTokenTestUtils.findByToken({
       token: refreshToken,
     });
 
-    expect(blacklistToken.token).toEqual(refreshToken);
+    expect(blacklistRefreshToken.token).toEqual(refreshToken);
+
+    const blacklistAccessToken = await blacklistTokenTestUtils.findByToken({
+      token: accessToken,
+    });
+
+    expect(blacklistAccessToken.token).toEqual(accessToken);
   });
 
   it('throws an error - when a User with given id not found', async () => {
@@ -111,7 +117,7 @@ describe('LogoutUserCommandHandlerImpl', () => {
     });
   });
 
-  it('throws an error - when token is of different purpose', async () => {
+  it('throws an error - when RefreshToken is of different purpose', async () => {
     const user = await userTestUtils.createAndPersist();
 
     const invalidRefreshToken = tokenService.createToken({
@@ -141,6 +147,40 @@ describe('LogoutUserCommandHandlerImpl', () => {
       instance: OperationNotValidError,
       context: {
         reason: 'Invalid refresh token.',
+      },
+    });
+  });
+
+  it('throws an error - when AccessToken is of different purpose', async () => {
+    const user = await userTestUtils.createAndPersist();
+
+    const refreshToken = tokenService.createToken({
+      data: {
+        type: TokenType.refreshToken,
+      },
+      expiresIn: Generator.number(10000, 100000),
+    });
+
+    const invalidAccessToken = tokenService.createToken({
+      data: {
+        invalid: 'true',
+        userId: user.id,
+        type: TokenType.emailVerification,
+      },
+      expiresIn: Generator.number(),
+    });
+
+    await expect(
+      async () =>
+        await commandHandler.execute({
+          userId: user.id,
+          refreshToken,
+          accessToken: invalidAccessToken,
+        }),
+    ).toThrowErrorInstance({
+      instance: OperationNotValidError,
+      context: {
+        reason: 'Invalid access token.',
       },
     });
   });

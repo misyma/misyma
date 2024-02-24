@@ -87,15 +87,19 @@ export class LogoutUserCommandHandlerImpl implements LogoutUserCommandHandler {
       token: accessToken,
     });
 
-    await this.blacklistTokenRepository.createBlacklistToken({
-      token: refreshToken,
-      expiresAt: new Date(expiresAt),
-    });
+    if (!isRefreshTokenBlacklisted) {
+      await this.blacklistTokenRepository.createBlacklistToken({
+        token: refreshToken,
+        expiresAt: new Date(expiresAt),
+      });
+    }
 
-    await this.blacklistTokenRepository.createBlacklistToken({
-      token: accessToken,
-      expiresAt: new Date(accessTokenExpiresAt),
-    });
+    if (!isAccessTokenBlacklisted) {
+      await this.blacklistTokenRepository.createBlacklistToken({
+        token: accessToken,
+        expiresAt: new Date(accessTokenExpiresAt),
+      });
+    }
 
     this.loggerService.debug({
       message: 'User logged out.',
