@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import { LoginUserFormValues, loginUserFormSchema } from './schema/loginUserFormSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLoginUserMutation } from '../../../api/user/mutations/loginUserMutation/loginUserMutation';
-import { LoginUserResponseBody } from '@common/contracts';
+import { type LoginUserResponseBody } from '@common/contracts';
 import { UserApiError } from '../../../api/user/errors/userApiError';
 
 interface LoginUserFormProps {

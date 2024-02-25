@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useStoreDispatch } from '../../core/store/hooks/useStoreDispatch';
 import { userStateActions } from '../../core/store/states/userState/userStateSlice';
 import { LoginUserForm } from '../../components/forms/loginUserForm/loginUserForm';
-import { LoginUserResponseBody } from '@common/contracts';
+import { type LoginUserResponseBody } from '@common/contracts';
 
 export const LoginPage: FC = () => {
   const storeDispatch = useStoreDispatch();

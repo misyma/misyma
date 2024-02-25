@@ -1,6 +1,6 @@
 import { UseMutationOptions, useMutation } from '@tanstack/react-query';
 import { UserApiError } from '../../errors/userApiError';
-import { LoginUserResponseBody } from '@common/contracts';
+import { type LoginUserResponseBody } from '@common/contracts';
 import { HttpService } from '../../../../core/services/httpService/httpService';
 import { ApiError } from '../../../../common/errors/apiError';
 
