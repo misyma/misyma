@@ -51,7 +51,7 @@ export const Providers = ({ children }: ProviderProps) => {
       queries: {
         staleTime: 1000 * 30,
         retry: (failureCount, error) => {
-          if (error instanceof ApiError && (error.context.statusCode === 401 || error.context.statusCode === 400)) {
+          if (error instanceof ApiError && error.context.statusCode === 401) {
             return false;
           }
 
