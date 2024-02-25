@@ -23,13 +23,13 @@ describe('UserMapperImpl', () => {
 
     const user = userMapperImpl.mapToDomain(userEntity);
 
-    expect(user).toEqual({
-      id: userEntity.id,
+    expect(user.getId()).toEqual(userEntity.id);
+
+    expect(user.getState()).toEqual({
       email: userEntity.email,
       password: userEntity.password,
       name: userEntity.name,
       isEmailVerified: userEntity.isEmailVerified,
-      domainActions: [],
     });
   });
 });

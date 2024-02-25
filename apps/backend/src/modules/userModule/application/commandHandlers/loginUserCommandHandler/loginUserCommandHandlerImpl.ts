@@ -76,11 +76,6 @@ export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
       expiresIn: refreshTokenExpiresIn,
     });
 
-    await this.userRepository.updateUser({
-      id: user.getId(),
-      domainActions: user.getDomainActions(),
-    });
-
     this.loggerService.info({
       message: 'User logged in.',
       context: {

@@ -1,11 +1,7 @@
-import { type User } from '../../../domain/entities/user/user.js';
-import { type UserDomainAction } from '../../entities/user/domainActions/userDomainAction.js';
+import { type UserState, type User } from '../../../domain/entities/user/user.js';
 
-export interface CreateUserPayload {
-  readonly email: string;
-  readonly password: string;
-  readonly name: string;
-  readonly isEmailVerified: boolean;
+export interface SaveUserPayload {
+  readonly entity: UserState | User;
 }
 
 export interface FindUserPayload {
@@ -13,23 +9,12 @@ export interface FindUserPayload {
   readonly email?: string;
 }
 
-export interface FindUserTokensPayload {
-  readonly userId: string;
-}
-
-// TODO: change to have user as a property
-export interface UpdateUserPayload {
-  readonly id: string;
-  readonly domainActions: UserDomainAction[];
-}
-
 export interface DeleteUserPayload {
   readonly id: string;
 }
 
 export interface UserRepository {
-  createUser(input: CreateUserPayload): Promise<User>;
+  saveUser(input: SaveUserPayload): Promise<User>;
   findUser(input: FindUserPayload): Promise<User | null>;
-  updateUser(input: UpdateUserPayload): Promise<User>;
   deleteUser(input: DeleteUserPayload): Promise<void>;
 }

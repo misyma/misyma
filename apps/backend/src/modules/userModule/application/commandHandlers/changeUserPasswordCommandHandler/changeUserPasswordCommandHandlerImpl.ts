@@ -59,14 +59,9 @@ export class ChangeUserPasswordCommandHandlerImpl implements ChangeUserPasswordC
 
     const hashedPassword = await this.hashService.hash({ plainData: newPassword });
 
-    user.addUpdatePasswordAction({
-      newPassword: hashedPassword,
-    });
+    user.setPassword({ password: hashedPassword });
 
-    await this.userRepository.updateUser({
-      id: user.getId(),
-      domainActions: user.getDomainActions(),
-    });
+    await this.userRepository.saveUser({ entity: user });
 
     const { expiresAt } = this.tokenService.decodeToken({
       token: resetPasswordToken,

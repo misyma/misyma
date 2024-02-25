@@ -1,5 +1,7 @@
 import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 
+import { Generator } from '@common/tests';
+
 import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
 import { Application } from '../../../../../core/application.js';
@@ -37,17 +39,19 @@ describe('UserRepositoryImpl', () => {
     await sqliteDatabaseClient.destroy();
   });
 
-  describe('Create', () => {
+  describe('Save', () => {
     it('creates a User', async () => {
       const createdUser = userTestFactory.create();
 
       const { email, name, password, isEmailVerified } = createdUser.getState();
 
-      const user = await userRepository.createUser({
-        email,
-        password,
-        name,
-        isEmailVerified,
+      const user = await userRepository.saveUser({
+        entity: {
+          email,
+          password,
+          name,
+          isEmailVerified,
+        },
       });
 
       const foundUser = await userTestUtils.findByEmail({ email });
@@ -61,14 +65,75 @@ describe('UserRepositoryImpl', () => {
       const existingUser = await userTestUtils.createAndPersist();
 
       try {
-        await userRepository.createUser({
-          email: existingUser.email,
-          password: existingUser.password,
-          name: existingUser.name,
-          isEmailVerified: existingUser.isEmailVerified,
+        await userRepository.saveUser({
+          entity: {
+            email: existingUser.email,
+            password: existingUser.password,
+            name: existingUser.name,
+            isEmailVerified: existingUser.isEmailVerified,
+          },
         });
       } catch (error) {
         expect(error).toBeInstanceOf(RepositoryError);
+
+        return;
+      }
+
+      expect.fail();
+    });
+
+    it(`updates User's data`, async () => {
+      const userRawEntity = await userTestUtils.createAndPersist();
+
+      const user = userTestFactory.create(userRawEntity);
+
+      const password = Generator.password();
+
+      const name = Generator.fullName();
+
+      const email = Generator.email();
+
+      const isEmailVerified = Generator.boolean();
+
+      user.setPassword({ password });
+
+      user.setName({ name });
+
+      user.setEmail({ email });
+
+      user.setIsEmailVerified({ isEmailVerified });
+
+      const updatedUser = await userRepository.saveUser({
+        entity: user,
+      });
+
+      const foundUser = await userTestUtils.findById({ id: user.getId() });
+
+      expect(updatedUser.getState()).toEqual({
+        email,
+        password,
+        name,
+        isEmailVerified,
+      });
+
+      expect(foundUser).toEqual({
+        id: user.getId(),
+        email,
+        password,
+        name,
+        isEmailVerified,
+      });
+    });
+
+    it('throws an error if a User with given id does not exist', async () => {
+      const user = userTestFactory.create();
+
+      try {
+        await userRepository.saveUser({
+          entity: user,
+        });
+      } catch (error) {
+        expect(error).toBeInstanceOf(ResourceNotFoundError);
 
         return;
       }
@@ -100,78 +165,6 @@ describe('UserRepositoryImpl', () => {
       const user = await userRepository.findUser({ id: createdUser.getId() });
 
       expect(user).toBeNull();
-    });
-  });
-
-  describe('Update', () => {
-    it(`updates User's password`, async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const createdUser = userTestFactory.create();
-
-      createdUser.addUpdatePasswordAction({
-        newPassword: createdUser.getPassword(),
-      });
-
-      const foundUser = await userRepository.updateUser({
-        id: user.id,
-        domainActions: createdUser.getDomainActions(),
-      });
-
-      expect(foundUser.getPassword()).toEqual(createdUser.getPassword());
-    });
-
-    it(`updates User's name`, async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const createdUser = userTestFactory.create();
-
-      createdUser.addUpdateNameAction({
-        newName: createdUser.getName(),
-      });
-
-      const foundUser = await userRepository.updateUser({
-        id: user.id,
-        domainActions: createdUser.getDomainActions(),
-      });
-
-      expect(foundUser.getName()).toEqual(createdUser.getName());
-    });
-
-    it(`updates User's email verification status`, async () => {
-      const user = await userTestUtils.createAndPersist({ input: { isEmailVerified: false } });
-
-      const createdUser = userTestFactory.create(user);
-
-      createdUser.addVerifyEmailAction();
-
-      const foundUser = await userRepository.updateUser({
-        id: user.id,
-        domainActions: createdUser.getDomainActions(),
-      });
-
-      expect(foundUser.getIsEmailVerified()).toBeTruthy();
-    });
-
-    it('throws an error if a User with given id does not exist', async () => {
-      const nonExistentUser = userTestFactory.create();
-
-      nonExistentUser.addUpdatePasswordAction({
-        newPassword: nonExistentUser.getPassword(),
-      });
-
-      try {
-        await userRepository.updateUser({
-          id: nonExistentUser.getId(),
-          domainActions: nonExistentUser.getDomainActions(),
-        });
-      } catch (error) {
-        expect(error).toBeInstanceOf(ResourceNotFoundError);
-
-        return;
-      }
-
-      expect.fail();
     });
   });
 

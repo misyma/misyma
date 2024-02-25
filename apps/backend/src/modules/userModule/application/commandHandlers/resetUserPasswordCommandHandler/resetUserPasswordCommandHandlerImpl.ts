@@ -51,11 +51,6 @@ export class ResetUserPasswordCommandHandlerImpl implements ResetUserPasswordCom
       expiresIn,
     });
 
-    await this.userRepository.updateUser({
-      id: user.getId(),
-      domainActions: user.getDomainActions(),
-    });
-
     const frontendUrl = this.configProvider.getFrontendUrl();
 
     const resetPasswordLink = `${frontendUrl}/reset-password?token=${resetPasswordToken}`;
