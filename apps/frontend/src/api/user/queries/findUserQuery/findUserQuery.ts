@@ -3,6 +3,8 @@ import { userStateSelectors } from '../../../../core/store/states/userState/user
 import { UserApiError } from '../../errors/userApiError';
 import { useSelector } from 'react-redux';
 import { FindUserResponseBody } from '../../../../../../../common/contracts/dist/src/schemas/user/findUser';
+import { HttpService } from '../../../../core/services/httpService/httpService';
+import { ApiError } from '../../../../common/errors/apiError';
 
 interface FindUserPayload {
   accessToken: string;
@@ -15,34 +17,26 @@ export const useFindUserQuery = () => {
   const findUser = async (values: FindUserPayload) => {
     const { accessToken } = values;
 
-    const getUserResponse = await fetch('http://localhost:5000/api/users/me', {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    if (getUserResponse.status !== 200) {
-      const message = mapStatusCodeToErrorMessage(getUserResponse.status);
-
-      const responseBody = await getUserResponse.json();
-
-      throw new UserApiError({
-        message,
-        apiResponseError: responseBody,
-        statusCode: getUserResponse.status,
+    try {
+      const response = await HttpService.get<FindUserResponseBody>({
+        url: '/users/me',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
       });
+
+      return response as FindUserResponseBody;
+    } catch (error) {
+      if (error instanceof ApiError) {
+        throw new UserApiError({
+          message: mapStatusCodeToErrorMessage(error.context.statusCode),
+          apiResponseError: error.context.apiResponseError,
+          statusCode: error.context.statusCode,
+        });
+      }
+
+      throw error;
     }
-
-    const getUserResponseBody = await getUserResponse.json() as FindUserResponseBody;
-
-    const { id, email, name, isEmailVerified } = getUserResponseBody;
-
-    return {
-      id,
-      email,
-      name,
-      isEmailVerified
-    };
   };
 
   return useQuery<FindUserResponseBody>({

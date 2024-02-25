@@ -1,5 +1,7 @@
 import { UseMutationOptions, useMutation } from '@tanstack/react-query';
 import { UserApiError } from '../../errors/userApiError';
+import { HttpService } from '../../../../core/services/httpService/httpService';
+import { ApiError } from '../../../../common/errors/apiError';
 
 export const useVerifyUserEmailMutation = (
   options: UseMutationOptions<
@@ -13,27 +15,29 @@ export const useVerifyUserEmailMutation = (
   const verifyUserEmail = async (values: { token: string }) => {
     const { token } = values;
 
-    const verifyEmailResponse = await fetch('http://localhost:5000/api/users/verify-email', {
-      body: JSON.stringify({
-        token,
-      }),
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    try {
+      await HttpService.post({
+        url: '/users/verify-email',
+        body: {
+          token,
+        },
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
 
-    if (verifyEmailResponse.status !== 200) {
-      const responseBody = await verifyEmailResponse.json();
+      return true;
+    } catch (error) {
+      if (error instanceof ApiError) {
+        throw new UserApiError({
+          message: error.context.message,
+          apiResponseError: error.context.apiResponseError,
+          statusCode: error.context.statusCode,
+        });
+      }
 
-      throw new UserApiError({
-        message: responseBody.message,
-        apiResponseError: responseBody,
-        statusCode: verifyEmailResponse.status,
-      });
+      throw error;
     }
-
-    return true;
   };
 
   return useMutation({

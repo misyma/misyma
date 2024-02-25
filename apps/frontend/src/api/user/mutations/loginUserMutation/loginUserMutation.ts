@@ -1,43 +1,35 @@
 import { UseMutationOptions, useMutation } from '@tanstack/react-query';
 import { UserApiError } from '../../errors/userApiError';
 import { LoginUserResponseBody } from '@common/contracts';
+import { HttpService } from '../../../../core/services/httpService/httpService';
+import { ApiError } from '../../../../common/errors/apiError';
 
 export const useLoginUserMutation = (
   options: UseMutationOptions<LoginUserResponseBody, UserApiError, { email: string; password: string }>,
 ) => {
   const loginUser = async (values: { email: string; password: string }) => {
-    const loginUserResponse = await fetch('http://localhost:5000/api/users/login', {
-      body: JSON.stringify({
-        email: values.email,
-        password: values.password,
-      }),
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
 
-    if (loginUserResponse.status !== 200) {
-      const message = mapStatusCodeToErrorMessage(loginUserResponse.status);
-
-      const responseBody = await loginUserResponse.json();
-
-      throw new UserApiError({
-        message,
-        apiResponseError: responseBody,
-        statusCode: loginUserResponse.status,
+    try {
+      const loginUserResponse = await HttpService.post<LoginUserResponseBody>({
+        url: '/users/login',
+        body: {
+          email: values.email,
+          password: values.password,
+        }
       });
+
+      return loginUserResponse as LoginUserResponseBody;
+    } catch (error) {
+      if (error instanceof ApiError) {
+        throw new UserApiError({
+          message: mapStatusCodeToErrorMessage(error.context.statusCode),
+          apiResponseError: error.context.apiResponseError,
+          statusCode: error.context.statusCode,
+        });
+      }
+
+      throw error;
     }
-
-    const loginUserResponseBody = (await loginUserResponse.json()) as LoginUserResponseBody;
-
-    const { refreshToken, accessToken, expiresIn } = loginUserResponseBody;
-
-    return {
-      refreshToken,
-      accessToken,
-      expiresIn,
-    };
   };
 
   return useMutation({

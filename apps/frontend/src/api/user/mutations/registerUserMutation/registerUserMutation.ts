@@ -1,35 +1,37 @@
 import { UseMutationOptions, useMutation } from '@tanstack/react-query';
 import { UserApiError } from '../../errors/userApiError';
+import { HttpService } from '../../../../core/services/httpService/httpService';
+import { ApiError } from '../../../../common/errors/apiError';
 
 export const useRegisterUserMutation = (
   options: UseMutationOptions<boolean, UserApiError, { email: string; password: string; name: string }>,
 ) => {
   const registerUser = async (values: { email: string; password: string; name: string }) => {
-    const registerUserResponse = await fetch('https://api.misyma.com/api/users/register', {
-      body: JSON.stringify({
-        email: values.email,
-        password: values.password,
-        name: 'Maciej', // TODO: Remove hardcoded name
-      }),
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (registerUserResponse.status !== 201) {
-      const message = mapStatusCodeToErrorMessage(registerUserResponse.status);
-
-      const responseBody = await registerUserResponse.json();
-
-      throw new UserApiError({
-        message,
-        apiResponseError: responseBody,
-        statusCode: registerUserResponse.status,
+    try {
+      await HttpService.post({
+        url: '/users/register',
+        body: {
+          email: values.email,
+          password: values.password,
+          name: values.name || 'Maciej', // TODO: Remove hardcoded name
+        },
+        headers: {
+          'Content-Type': 'application/json',
+        }
       });
-    }
 
-    return registerUserResponse.status === 201;
+      return true;
+    } catch (error) {
+      if (error instanceof ApiError) {
+        throw new UserApiError({
+          message: mapStatusCodeToErrorMessage(error.context.statusCode),
+          apiResponseError: error.context.apiResponseError,
+          statusCode: error.context.statusCode,
+        });
+      }
+
+      throw error;
+    }
   };
 
   return useMutation({
@@ -43,10 +45,6 @@ const mapStatusCodeToErrorMessage = (statusCode: number) => {
   switch (statusCode) {
     case 400:
       return 'Email or password are invalid.';
-    case 401:
-      return 'Unauthorized';
-    case 403:
-      return 'Forbidden';
     case 404:
       return 'Not found';
     case 409:
