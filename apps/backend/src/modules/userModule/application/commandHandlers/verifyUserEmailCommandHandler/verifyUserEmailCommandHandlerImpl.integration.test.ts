@@ -8,6 +8,7 @@ import { TestContainer } from '../../../../../../tests/container/testContainer.j
 import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { authSymbols } from '../../../../authModule/symbols.js';
+import { TokenType } from '../../../domain/types/tokenType.js';
 import { symbols } from '../../../symbols.js';
 import { type UserTestUtils } from '../../../tests/utils/userTestUtils/userTestUtils.js';
 
@@ -32,15 +33,11 @@ describe('VerifyUserEmailCommandHandlerImpl', () => {
     const user = await userTestUtils.createAndPersist({ input: { isEmailVerified: false } });
 
     const emailVerificationToken = tokenService.createToken({
-      data: { userId: user.id },
-      expiresIn: Generator.number(10000, 100000),
-    });
-
-    await userTestUtils.createAndPersistEmailVerificationToken({
-      input: {
+      data: {
         userId: user.id,
-        token: emailVerificationToken,
+        type: TokenType.emailVerification,
       },
+      expiresIn: Generator.number(10000, 100000),
     });
 
     await commandHandler.execute({ emailVerificationToken });
@@ -56,7 +53,10 @@ describe('VerifyUserEmailCommandHandlerImpl', () => {
     const userId = Generator.uuid();
 
     const emailVerificationToken = tokenService.createToken({
-      data: { userId },
+      data: {
+        userId,
+        type: TokenType.emailVerification,
+      },
       expiresIn: Generator.number(10000, 100000),
     });
 
@@ -83,40 +83,14 @@ describe('VerifyUserEmailCommandHandlerImpl', () => {
     });
   });
 
-  it('throws an error - when UserTokens were not found', async () => {
+  it('throws an error - when token is not an emailVerification token', async () => {
     const user = await userTestUtils.createAndPersist({ input: { isEmailVerified: false } });
-
-    const emailVerificationToken = tokenService.createToken({
-      data: { userId: user.id },
-      expiresIn: Generator.number(10000, 100000),
-    });
-
-    await expect(async () => await commandHandler.execute({ emailVerificationToken })).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
-        reason: 'User tokens not found.',
-        userId: user.id,
-      },
-    });
-  });
-
-  it('throws an error - when UserTokens were found but emailVerificationToken is different', async () => {
-    const user = await userTestUtils.createAndPersist({ input: { isEmailVerified: false } });
-
-    const emailVerificationToken = tokenService.createToken({
-      data: { userId: user.id },
-      expiresIn: Generator.number(10000, 100000),
-    });
-
-    await userTestUtils.createAndPersistEmailVerificationToken({
-      input: {
-        userId: user.id,
-        token: emailVerificationToken,
-      },
-    });
 
     const invalidEmailVerificationToken = tokenService.createToken({
-      data: { userId: user.id },
+      data: {
+        userId: user.id,
+        type: TokenType.refreshToken,
+      },
       expiresIn: Generator.number(),
     });
 
@@ -125,8 +99,7 @@ describe('VerifyUserEmailCommandHandlerImpl', () => {
     ).toThrowErrorInstance({
       instance: OperationNotValidError,
       context: {
-        reason: 'Email verification token is not valid.',
-        token: invalidEmailVerificationToken,
+        reason: 'Invalid email verification token.',
       },
     });
   });
@@ -137,13 +110,6 @@ describe('VerifyUserEmailCommandHandlerImpl', () => {
     const emailVerificationToken = tokenService.createToken({
       data: { userId: user.id },
       expiresIn: 0,
-    });
-
-    await userTestUtils.createAndPersistEmailVerificationToken({
-      input: {
-        userId: user.id,
-        token: emailVerificationToken,
-      },
     });
 
     await expect(
@@ -164,15 +130,11 @@ describe('VerifyUserEmailCommandHandlerImpl', () => {
     const user = await userTestUtils.createAndPersist({ input: { isEmailVerified: true } });
 
     const emailVerificationToken = tokenService.createToken({
-      data: { userId: user.id },
-      expiresIn: Generator.number(10000, 100000),
-    });
-
-    await userTestUtils.createAndPersistEmailVerificationToken({
-      input: {
+      data: {
         userId: user.id,
-        token: emailVerificationToken,
+        type: TokenType.emailVerification,
       },
+      expiresIn: Generator.number(10000, 100000),
     });
 
     await expect(

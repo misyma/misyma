@@ -418,7 +418,7 @@ export class UserHttpController implements HttpController {
   ): Promise<HttpOkResponse<LogoutUserResponseBodyDTO>> {
     const { id } = request.pathParams;
 
-    const { refreshToken } = request.body;
+    const { refreshToken, accessToken } = request.body;
 
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
@@ -428,6 +428,7 @@ export class UserHttpController implements HttpController {
     await this.logoutUserCommandHandler.execute({
       userId: id,
       refreshToken,
+      accessToken,
     });
 
     return {

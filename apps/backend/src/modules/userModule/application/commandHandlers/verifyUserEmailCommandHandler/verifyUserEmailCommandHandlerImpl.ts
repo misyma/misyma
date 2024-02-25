@@ -3,6 +3,7 @@ import { OperationNotValidError } from '../../../../../common/errors/common/oper
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
+import { TokenType } from '../../../domain/types/tokenType.js';
 
 export class VerifyUserEmailCommandHandlerImpl implements VerifyUserEmailCommandHandler {
   public constructor(
@@ -21,6 +22,12 @@ export class VerifyUserEmailCommandHandlerImpl implements VerifyUserEmailCommand
     if (!userId) {
       throw new OperationNotValidError({
         reason: 'User ID not found in token payload.',
+      });
+    }
+
+    if (tokenPayload['type'] !== TokenType.emailVerification) {
+      throw new OperationNotValidError({
+        reason: 'Invalid email verification token.',
       });
     }
 
@@ -47,24 +54,6 @@ export class VerifyUserEmailCommandHandlerImpl implements VerifyUserEmailCommand
         email: user.getEmail(),
       },
     });
-
-    const userTokens = await this.userRepository.findUserTokens({
-      userId: user.getId(),
-    });
-
-    if (!userTokens) {
-      throw new OperationNotValidError({
-        reason: 'User tokens not found.',
-        userId: user.getId(),
-      });
-    }
-
-    if (emailVerificationToken !== userTokens.emailVerificationToken) {
-      throw new OperationNotValidError({
-        reason: 'Email verification token is not valid.',
-        token: emailVerificationToken,
-      });
-    }
 
     user.addVerifyEmailAction();
 

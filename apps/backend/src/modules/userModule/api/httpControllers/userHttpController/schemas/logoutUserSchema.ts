@@ -15,6 +15,7 @@ export type LogoutUserPathParamsDTO = TypeExtends<
 
 export const logoutUserBodyDTOSchema = Type.Object({
   refreshToken: Type.String(),
+  accessToken: Type.String(),
 });
 
 export type LogoutUserBodyDTO = TypeExtends<Static<typeof logoutUserBodyDTOSchema>, contracts.LogoutUserBody>;
