@@ -17,6 +17,7 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: npm run build:dev -- --filter=@common/contracts
+      - run: npm ci
       - run: npm run build:dev
       - run: npm run test:unit
       - run: npm run test:integration
