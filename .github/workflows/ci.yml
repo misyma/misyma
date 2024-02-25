@@ -17,6 +17,5 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: npm run build:dev
-      - run: npm i
       - run: npm run test:unit
       - run: npm run test:integration
