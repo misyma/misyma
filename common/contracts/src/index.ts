@@ -26,6 +26,8 @@ export * from './schemas/user/refreshUserTokens.js';
 
 export * from './schemas/user/resetUserPassword.js';
 
+export * from './schemas/user/sendVerificationEmail.js';
+
 export * from './schemas/user/changeUserPassword.js';
 
 export * from './schemas/author/findAuthor.js';

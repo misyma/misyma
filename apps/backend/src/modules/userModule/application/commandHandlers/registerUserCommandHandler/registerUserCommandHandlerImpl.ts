@@ -5,25 +5,18 @@ import {
 } from './registerUserCommandHandler.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/common/resourceAlreadyExistsError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
-import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
-import { EmailEventDraft } from '../../../domain/entities/emailEvent/emailEventDraft.ts/emailEventDraft.js';
-import { EmailEventType } from '../../../domain/entities/emailEvent/types/emailEventType.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
-import { TokenType } from '../../../domain/types/tokenType.js';
-import { type UserModuleConfigProvider } from '../../../userModuleConfigProvider.js';
-import { type EmailMessageBus } from '../../messageBuses/emailMessageBus/emailMessageBus.js';
 import { type HashService } from '../../services/hashService/hashService.js';
 import { type PasswordValidationService } from '../../services/passwordValidationService/passwordValidationService.js';
+import { type SendVerificationEmailCommandHandler } from '../sendVerificationEmailCommandHandler/sendVerificationEmailCommandHandler.js';
 
 export class RegisterUserCommandHandlerImpl implements RegisterUserCommandHandler {
   public constructor(
     private readonly userRepository: UserRepository,
     private readonly hashService: HashService,
-    private readonly configProvider: UserModuleConfigProvider,
     private readonly loggerService: LoggerService,
-    private readonly tokenService: TokenService,
-    private readonly emailMessageBus: EmailMessageBus,
     private readonly passwordValidationService: PasswordValidationService,
+    private readonly sendVerificationEmailCommandHandler: SendVerificationEmailCommandHandler,
   ) {}
 
   public async execute(payload: RegisterUserCommandHandlerPayload): Promise<RegisterUserCommandHandlerResult> {
@@ -67,38 +60,9 @@ export class RegisterUserCommandHandlerImpl implements RegisterUserCommandHandle
       },
     });
 
-    this.loggerService.debug({
-      message: 'Sending verification email...',
-      context: {
-        userId: user.getId(),
-        email: user.getEmail(),
-      },
+    await this.sendVerificationEmailCommandHandler.execute({
+      email,
     });
-
-    const expiresIn = this.configProvider.getEmailVerificationTokenExpiresIn();
-
-    const emailVerificationToken = this.tokenService.createToken({
-      data: {
-        userId: user.getId(),
-        type: TokenType.emailVerification,
-      },
-      expiresIn,
-    });
-
-    const frontendUrl = this.configProvider.getFrontendUrl();
-
-    const emailVerificationLink = `${frontendUrl}/verify-email?token=${emailVerificationToken}`;
-
-    await this.emailMessageBus.sendEvent(
-      new EmailEventDraft({
-        eventName: EmailEventType.verifyEmail,
-        payload: {
-          name: user.getName(),
-          recipientEmail: user.getEmail(),
-          emailVerificationLink,
-        },
-      }),
-    );
 
     return { user };
   }

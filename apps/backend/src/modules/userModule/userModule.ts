@@ -16,6 +16,8 @@ import { type RegisterUserCommandHandler } from './application/commandHandlers/r
 import { RegisterUserCommandHandlerImpl } from './application/commandHandlers/registerUserCommandHandler/registerUserCommandHandlerImpl.js';
 import { type ResetUserPasswordCommandHandler } from './application/commandHandlers/resetUserPasswordCommandHandler/resetUserPasswordCommandHandler.js';
 import { ResetUserPasswordCommandHandlerImpl } from './application/commandHandlers/resetUserPasswordCommandHandler/resetUserPasswordCommandHandlerImpl.js';
+import { type SendVerificationEmailCommandHandler } from './application/commandHandlers/sendVerificationEmailCommandHandler/sendVerificationEmailCommandHandler.js';
+import { SendVerificationEmailCommandHandlerImpl } from './application/commandHandlers/sendVerificationEmailCommandHandler/sendVerificationEmailCommandHandlerImpl.js';
 import { type VerifyUserEmailCommandHandler } from './application/commandHandlers/verifyUserEmailCommandHandler/verifyUserEmailCommandHandler.js';
 import { VerifyUserEmailCommandHandlerImpl } from './application/commandHandlers/verifyUserEmailCommandHandler/verifyUserEmailCommandHandlerImpl.js';
 import { type EmailMessageBus } from './application/messageBuses/emailMessageBus/emailMessageBus.js';
@@ -108,11 +110,9 @@ export class UserModule implements DependencyInjectionModule {
         new RegisterUserCommandHandlerImpl(
           container.get<UserRepository>(symbols.userRepository),
           container.get<HashService>(symbols.hashService),
-          container.get<UserModuleConfigProvider>(symbols.userModuleConfigProvider),
           container.get<LoggerService>(coreSymbols.loggerService),
-          container.get<TokenService>(authSymbols.tokenService),
-          container.get<EmailMessageBus>(symbols.emailMessageBus),
           container.get<PasswordValidationService>(symbols.passwordValidationService),
+          container.get<SendVerificationEmailCommandHandler>(symbols.sendVerificationEmailCommandHandler),
         ),
     );
 
@@ -189,6 +189,18 @@ export class UserModule implements DependencyInjectionModule {
       () => new FindUserQueryHandlerImpl(container.get<UserRepository>(symbols.userRepository)),
     );
 
+    container.bind<SendVerificationEmailCommandHandler>(
+      symbols.sendVerificationEmailCommandHandler,
+      () =>
+        new SendVerificationEmailCommandHandlerImpl(
+          container.get<TokenService>(authSymbols.tokenService),
+          container.get<UserRepository>(symbols.userRepository),
+          container.get<LoggerService>(coreSymbols.loggerService),
+          container.get<UserModuleConfigProvider>(symbols.userModuleConfigProvider),
+          container.get<EmailMessageBus>(symbols.emailMessageBus),
+        ),
+    );
+
     container.bind<VerifyUserEmailCommandHandler>(
       symbols.verifyUserEmailCommandHandler,
       () =>
@@ -213,6 +225,7 @@ export class UserModule implements DependencyInjectionModule {
           container.get<ChangeUserPasswordCommandHandler>(symbols.changeUserPasswordCommandHandler),
           container.get<LogoutUserCommandHandler>(symbols.logoutUserCommandHandler),
           container.get<RefreshUserTokensCommandHandler>(symbols.refreshUserTokensCommandHandler),
+          container.get<SendVerificationEmailCommandHandler>(symbols.sendVerificationEmailCommandHandler),
         ),
     );
 
