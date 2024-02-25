@@ -49,6 +49,12 @@ import {
   resetUserPasswordBodyDTOSchema,
   resetUserPasswordResponseBodyDTOSchema,
 } from './schemas/resetUserPasswordSchema.js';
+import {
+  type SendVerificationEmailBodyDTO,
+  type SendVerificationEmailResponseBodyDTO,
+  sendVerificationEmailBodyDTOSchema,
+  sendVerificationEmailResponseBodyDTOSchema,
+} from './schemas/sendVerificationEmailSchema.js';
 import { type UserDTO } from './schemas/userDTO.js';
 import {
   verifyUserBodyDTOSchema,
@@ -75,6 +81,7 @@ import { type LogoutUserCommandHandler } from '../../../application/commandHandl
 import { type RefreshUserTokensCommandHandler } from '../../../application/commandHandlers/refreshUserTokensCommandHandler/refreshUserTokensCommandHandler.js';
 import { type RegisterUserCommandHandler } from '../../../application/commandHandlers/registerUserCommandHandler/registerUserCommandHandler.js';
 import { type ResetUserPasswordCommandHandler } from '../../../application/commandHandlers/resetUserPasswordCommandHandler/resetUserPasswordCommandHandler.js';
+import { type SendVerificationEmailCommandHandler } from '../../../application/commandHandlers/sendVerificationEmailCommandHandler/sendVerificationEmailCommandHandler.js';
 import { type VerifyUserEmailCommandHandler } from '../../../application/commandHandlers/verifyUserEmailCommandHandler/verifyUserEmailCommandHandler.js';
 import { type FindUserQueryHandler } from '../../../application/queryHandlers/findUserQueryHandler/findUserQueryHandler.js';
 import { type User } from '../../../domain/entities/user/user.js';
@@ -93,6 +100,7 @@ export class UserHttpController implements HttpController {
     private readonly changeUserPasswordCommandHandler: ChangeUserPasswordCommandHandler,
     private readonly logoutUserCommandHandler: LogoutUserCommandHandler,
     private readonly refreshUserTokensCommandHandler: RefreshUserTokensCommandHandler,
+    private readonly sendVerificationEmailCommandHandler: SendVerificationEmailCommandHandler,
   ) {}
 
   public getHttpRoutes(): HttpRoute[] {
@@ -150,7 +158,6 @@ export class UserHttpController implements HttpController {
           },
         },
         tags: ['User'],
-        securityMode: SecurityMode.bearer,
       }),
       new HttpRoute({
         method: HttpMethodName.post,
@@ -227,6 +234,24 @@ export class UserHttpController implements HttpController {
       }),
       new HttpRoute({
         method: HttpMethodName.post,
+        path: 'send-verification-email',
+        handler: this.sendVerificationEmail.bind(this),
+        schema: {
+          request: {
+            body: sendVerificationEmailBodyDTOSchema,
+          },
+          response: {
+            [HttpStatusCode.ok]: {
+              schema: sendVerificationEmailResponseBodyDTOSchema,
+              description: 'Verification email sent.',
+            },
+          },
+        },
+        tags: ['User'],
+        description: 'Send verification email.',
+      }),
+      new HttpRoute({
+        method: HttpMethodName.post,
         path: 'verify-email',
         handler: this.verifyUserEmail.bind(this),
         schema: {
@@ -240,7 +265,6 @@ export class UserHttpController implements HttpController {
             },
           },
         },
-        securityMode: SecurityMode.bearer,
         tags: ['User'],
         description: 'Verify user email.',
       }),
@@ -406,6 +430,19 @@ export class UserHttpController implements HttpController {
     const { token } = request.body;
 
     await this.verifyUserEmailCommandHandler.execute({ emailVerificationToken: token });
+
+    return {
+      statusCode: HttpStatusCode.ok,
+      body: null,
+    };
+  }
+
+  private async sendVerificationEmail(
+    request: HttpRequest<SendVerificationEmailBodyDTO, undefined, undefined>,
+  ): Promise<HttpOkResponse<SendVerificationEmailResponseBodyDTO>> {
+    const { email } = request.body;
+
+    await this.sendVerificationEmailCommandHandler.execute({ email });
 
     return {
       statusCode: HttpStatusCode.ok,
