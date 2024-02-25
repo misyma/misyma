@@ -4,7 +4,6 @@ import { UserApiError } from '../../errors/userApiError';
 import { useSelector } from 'react-redux';
 import { type FindUserResponseBody } from '@common/contracts';
 import { HttpService } from '../../../../core/services/httpService/httpService';
-import { ApiError } from '../../../../common/errors/apiError';
 
 interface FindUserPayload {
   accessToken: string;
@@ -17,26 +16,22 @@ export const useFindUserQuery = () => {
   const findUser = async (values: FindUserPayload) => {
     const { accessToken } = values;
 
-    try {
-      const response = await HttpService.get<FindUserResponseBody>({
-        url: '/users/me',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
+    const findUserResponse = await HttpService.get<FindUserResponseBody>({
+      url: '/users/me',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    if (findUserResponse.success === false) {
+      throw new UserApiError({
+        message: mapStatusCodeToErrorMessage(findUserResponse.statusCode),
+        apiResponseError: findUserResponse.body.context,
+        statusCode: findUserResponse.statusCode,
       });
-
-      return response as FindUserResponseBody;
-    } catch (error) {
-      if (error instanceof ApiError) {
-        throw new UserApiError({
-          message: mapStatusCodeToErrorMessage(error.context.statusCode),
-          apiResponseError: error.context.apiResponseError,
-          statusCode: error.context.statusCode,
-        });
-      }
-
-      throw error;
     }
+
+    return findUserResponse.body;
   };
 
   return useQuery<FindUserResponseBody>({

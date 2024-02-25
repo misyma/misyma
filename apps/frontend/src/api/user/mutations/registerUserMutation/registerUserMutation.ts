@@ -1,45 +1,39 @@
 import { UseMutationOptions, useMutation } from '@tanstack/react-query';
 import { UserApiError } from '../../errors/userApiError';
 import { HttpService } from '../../../../core/services/httpService/httpService';
-import { ApiError } from '../../../../common/errors/apiError';
 
 export const useRegisterUserMutation = (
   options: UseMutationOptions<boolean, UserApiError, { email: string; password: string; name: string }>,
 ) => {
   const registerUser = async (values: { email: string; password: string; name: string }) => {
-    try {
-      await HttpService.post({
-        url: '/users/register',
-        body: {
-          email: values.email,
-          password: values.password,
-          name: values.name || 'Maciej', // TODO: Remove hardcoded name
-        },
-        headers: {
-          'Content-Type': 'application/json',
-        }
+    const registerUserResponse = await HttpService.post({
+      url: '/users/register',
+      body: {
+        email: values.email,
+        password: values.password,
+        name: values.name || 'Maciej', // TODO: Remove hardcoded name
+      },
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (registerUserResponse.success === false) {
+      throw new UserApiError({
+        message: mapStatusCodeToErrorMessage(registerUserResponse.statusCode),
+        apiResponseError: registerUserResponse.body.context,
+        statusCode: registerUserResponse.statusCode,
       });
-
-      return true;
-    } catch (error) {
-      if (error instanceof ApiError) {
-        throw new UserApiError({
-          message: mapStatusCodeToErrorMessage(error.context.statusCode),
-          apiResponseError: error.context.apiResponseError,
-          statusCode: error.context.statusCode,
-        });
-      }
-
-      throw error;
     }
+
+    return true;
   };
 
   return useMutation({
     mutationFn: registerUser,
-    ...options
-  })
+    ...options,
+  });
 };
-
 
 const mapStatusCodeToErrorMessage = (statusCode: number) => {
   switch (statusCode) {
@@ -54,4 +48,4 @@ const mapStatusCodeToErrorMessage = (statusCode: number) => {
     default:
       return 'Unknown error';
   }
-}
+};

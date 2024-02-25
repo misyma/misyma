@@ -1,4 +1,4 @@
-import { ApiError } from '../../../common/errors/apiError';
+import { BaseApiError } from "./types/baseApiError";
 
 type RequestPayload = {
   headers?: Record<string, string>;
@@ -14,6 +14,20 @@ type RequestPayload = {
 
 type GetRequestPayload = Omit<RequestPayload, 'body'>;
 
+type HttpResponse<T> = BaseHttpResponse<T> | ErrorHttpResponse;
+
+interface ErrorHttpResponse {
+  body: BaseApiError;
+  success: false;
+  statusCode: number;
+}
+
+interface BaseHttpResponse<T> {
+  body: T;
+  success: true;
+  statusCode: number;
+}
+
 /**
  * I can see a world where we have one instance of it and inject it into the components
  * and queryClient, but I`m unsure how to achieve that. \\
@@ -23,7 +37,7 @@ type GetRequestPayload = Omit<RequestPayload, 'body'>;
 export class HttpService {
   private static readonly baseUrl = import.meta.env.VITE_API_BASE_URL;
 
-  public static async get<T = unknown>(payload: GetRequestPayload): Promise<T | Response> {
+  public static async get<T = unknown>(payload: GetRequestPayload): Promise<HttpResponse<T>> {
     const { url, headers, queryParams, accept = 'application/json' } = payload;
 
     let requestUrl = `${this.baseUrl}${url}`;
@@ -43,25 +57,33 @@ export class HttpService {
     });
 
     if (!response.ok) {
-      throw new ApiError('API request failed', {
-        apiResponseError: await response.json(),
-        message: response.statusText,
+      return {
+        body: await response.json(),
+        success: false,
         statusCode: response.status,
-      });
-    }
-
-    if (accept === 'application/json') {
-      return response.json();
+      };
     }
 
     if (accept === 'text/plain') {
-      return response.text() as T;
+      const body = (await response.text()) as T;
+
+      return {
+        body,
+        success: true,
+        statusCode: response.status,
+      };
     }
 
-    return response;
+    const body = await response.json();
+
+    return {
+      body,
+      success: true,
+      statusCode: response.status,
+    };
   }
 
-  public static async post<T = unknown>(payload: RequestPayload): Promise<T | Response> {
+  public static async post<T = unknown>(payload: RequestPayload): Promise<HttpResponse<T>> {
     const { url, headers, body, accept = 'application/json' } = payload;
 
     const response = await fetch(`${this.baseUrl}${url}`, {
@@ -75,11 +97,11 @@ export class HttpService {
     });
 
     if (!response.ok) {
-      throw new ApiError('API request failed', {
-        apiResponseError: await response.json(),
-        message: response.statusText,
+      return {
+        body: await response.json(),
+        success: false,
         statusCode: response.status,
-      });
+      };
     }
 
     if (accept === 'application/json') {
@@ -87,9 +109,21 @@ export class HttpService {
     }
 
     if (accept === 'text/plain') {
-      return response.text() as T;
+      const body = (await response.text()) as T;
+
+      return {
+        body,
+        success: true,
+        statusCode: response.status,
+      };
     }
 
-    return response;
+    const responseBody = await response.json();
+
+    return {
+      body: responseBody,
+      success: true,
+      statusCode: response.status,
+    };
   }
 }

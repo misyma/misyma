@@ -23,7 +23,7 @@ export const Providers = ({ children }: ProviderProps) => {
       return;
     }
 
-    const refreshUserTokensResponse = await fetch('http://localhost:5000/api/users/token', {
+    const refreshUserTokensResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/users/token`, {
       body: JSON.stringify({
         refreshToken,
       }),
