@@ -29,6 +29,7 @@ export const useVerifyUserEmailMutation = (
       throw new UserApiError({
         message: responseBody.message,
         apiResponseError: responseBody,
+        statusCode: verifyEmailResponse.status,
       });
     }
 

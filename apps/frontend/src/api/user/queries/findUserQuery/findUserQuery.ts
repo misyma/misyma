@@ -29,6 +29,7 @@ export const useFindUserQuery = () => {
       throw new UserApiError({
         message,
         apiResponseError: responseBody,
+        statusCode: getUserResponse.status,
       });
     }
 

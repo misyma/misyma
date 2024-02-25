@@ -1,7 +1,7 @@
 import React from "react";
-import { useStoreSelector } from "../store/hooks/useStoreSelector";
+import { useStoreSelector } from "../../store/hooks/useStoreSelector.js";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { userStateSelectors } from "../store/states/userState/userStateSlice";
+import { userStateSelectors } from "../../store/states/userState/userStateSlice.js";
 
 
 export function RequireAuth(): React.ReactNode {

@@ -22,6 +22,7 @@ export const RefreshUserTokensMutation = (
       throw new UserApiError({
         message: 'Failed to refresh user tokens.',
         apiResponseError: responseBody,
+        statusCode: refreshUserTokensResponse.status,
       });
     }
 

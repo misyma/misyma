@@ -8,7 +8,7 @@ import { UnauthenticatedPage } from '../../pages/unauthenticatedPage/unauthentic
 import { LandingPage } from '../../pages/landingPage/landingPage';
 import { RegisterPage } from '../../pages/registerPage/registerPage';
 import { VerifyEmailPage } from '../../pages/verifyEmailPage/verifyEmailPage';
-import { RequireAuth } from '../components/requireAuth';
+import { RequireAuth } from '../components/requireAuth/requireAuth';
 
 export const router = createBrowserRouter(
   createRoutesFromElements(

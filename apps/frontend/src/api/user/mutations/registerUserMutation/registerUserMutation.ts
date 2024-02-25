@@ -24,7 +24,8 @@ export const useRegisterUserMutation = (
 
       throw new UserApiError({
         message,
-        apiResponseError: responseBody
+        apiResponseError: responseBody,
+        statusCode: registerUserResponse.status,
       });
     }
 

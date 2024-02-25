@@ -28,6 +28,11 @@ export const userStateSlice = createSlice({
       state.accessToken = action.payload.accessToken;
       state.refreshToken = action.payload.refreshToken;
     },
+    removeUserState: (state) => {
+      state.accessToken = null;
+      state.refreshToken = null;
+      state.currentUser = null;
+    }
   },
   selectors: {
     selectCurrentUserTokens: (state) => ({

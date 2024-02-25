@@ -1,5 +1,6 @@
 interface ApiErrorContext {
   apiResponseError: Record<string, unknown>;
+  statusCode: number;
   message: string;
 }
 

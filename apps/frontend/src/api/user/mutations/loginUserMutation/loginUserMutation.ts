@@ -1,14 +1,10 @@
 import { UseMutationOptions, useMutation } from '@tanstack/react-query';
 import { UserApiError } from '../../errors/userApiError';
 import { LoginUserResponseBody } from '@common/contracts';
-import { useStoreDispatch } from '../../../../core/store/hooks/useStoreDispatch';
-import { userStateActions } from '../../../../core/store/states/userState/userStateSlice';
 
 export const useLoginUserMutation = (
   options: UseMutationOptions<LoginUserResponseBody, UserApiError, { email: string; password: string }>,
 ) => {
-  const storeDispatch = useStoreDispatch();
-
   const loginUser = async (values: { email: string; password: string }) => {
     const loginUserResponse = await fetch('http://localhost:5000/api/users/login', {
       body: JSON.stringify({
@@ -29,19 +25,13 @@ export const useLoginUserMutation = (
       throw new UserApiError({
         message,
         apiResponseError: responseBody,
+        statusCode: loginUserResponse.status,
       });
     }
 
     const loginUserResponseBody = (await loginUserResponse.json()) as LoginUserResponseBody;
 
     const { refreshToken, accessToken, expiresIn } = loginUserResponseBody;
-
-    storeDispatch(
-      userStateActions.setCurrentUserTokens({
-        accessToken,
-        refreshToken,
-      }),
-    );
 
     return {
       refreshToken,
