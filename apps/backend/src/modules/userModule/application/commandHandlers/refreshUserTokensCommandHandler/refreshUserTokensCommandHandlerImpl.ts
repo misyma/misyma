@@ -9,6 +9,7 @@ import { type LoggerService } from '../../../../../libs/logger/services/loggerSe
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { type BlacklistTokenRepository } from '../../../domain/repositories/blacklistTokenRepository/blacklistTokenRepository.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
+import { TokenType } from '../../../domain/types/tokenType.js';
 import { type UserModuleConfigProvider } from '../../../userModuleConfigProvider.js';
 
 export class RefreshUserTokensCommandHandlerImpl implements RefreshUserTokensCommandHandler {
@@ -42,6 +43,12 @@ export class RefreshUserTokensCommandHandlerImpl implements RefreshUserTokensCom
 
     const tokenPayload = this.tokenService.verifyToken({ token: refreshToken });
 
+    if (tokenPayload['type'] !== TokenType.refreshToken) {
+      throw new OperationNotValidError({
+        reason: 'Invalid refresh token.',
+      });
+    }
+
     const userId = tokenPayload['userId'];
 
     if (!userId) {
@@ -59,25 +66,13 @@ export class RefreshUserTokensCommandHandlerImpl implements RefreshUserTokensCom
       });
     }
 
-    const userTokens = await this.userRepository.findUserTokens({ userId });
-
-    if (!userTokens) {
-      throw new ResourceNotFoundError({
-        name: 'UserTokens',
-        userId,
-      });
-    }
-
-    if (!userTokens.refreshTokens.includes(refreshToken)) {
-      throw new OperationNotValidError({
-        reason: 'Refresh token does not match the one from User tokens.',
-      });
-    }
-
     const accessTokenExpiresIn = this.configProvider.getAccessTokenExpiresIn();
 
     const accessToken = this.tokenService.createToken({
-      data: { userId },
+      data: {
+        userId,
+        type: TokenType.accessToken,
+      },
       expiresIn: accessTokenExpiresIn,
     });
 

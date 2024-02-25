@@ -4,6 +4,7 @@ import { type TokenService } from '../../../../authModule/application/services/t
 import { EmailEventDraft } from '../../../domain/entities/emailEvent/emailEventDraft.ts/emailEventDraft.js';
 import { EmailEventType } from '../../../domain/entities/emailEvent/types/emailEventType.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
+import { TokenType } from '../../../domain/types/tokenType.js';
 import { type UserModuleConfigProvider } from '../../../userModuleConfigProvider.js';
 import { type EmailMessageBus } from '../../messageBuses/emailMessageBus/emailMessageBus.js';
 
@@ -43,15 +44,11 @@ export class ResetUserPasswordCommandHandlerImpl implements ResetUserPasswordCom
     const expiresIn = this.configProvider.getResetPasswordTokenExpiresIn();
 
     const resetPasswordToken = this.tokenService.createToken({
-      data: { userId: user.getId() },
+      data: {
+        userId: user.getId(),
+        type: TokenType.passwordReset,
+      },
       expiresIn,
-    });
-
-    const expiresAt = new Date(Date.now() + expiresIn * 1000);
-
-    user.addUpdateResetPasswordTokenAction({
-      token: resetPasswordToken,
-      expiresAt,
     });
 
     await this.userRepository.updateUser({

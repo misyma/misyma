@@ -3,6 +3,7 @@ import { OperationNotValidError } from '../../../../../common/errors/common/oper
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { type BlacklistTokenRepository } from '../../../domain/repositories/blacklistTokenRepository/blacklistTokenRepository.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
+import { TokenType } from '../../../domain/types/tokenType.js';
 import { type HashService } from '../../services/hashService/hashService.js';
 import { type PasswordValidationService } from '../../services/passwordValidationService/passwordValidationService.js';
 
@@ -18,11 +19,17 @@ export class ChangeUserPasswordCommandHandlerImpl implements ChangeUserPasswordC
   public async execute(payload: ExecutePayload): Promise<void> {
     const { resetPasswordToken, newPassword } = payload;
 
-    const { userId } = this.tokenService.verifyToken({ token: resetPasswordToken });
+    const { userId, type } = this.tokenService.verifyToken({ token: resetPasswordToken });
 
     if (!userId) {
       throw new OperationNotValidError({
         reason: 'Invalid reset password token',
+      });
+    }
+
+    if (type !== TokenType.passwordReset) {
+      throw new OperationNotValidError({
+        reason: 'Invalid reset password token.',
       });
     }
 
@@ -44,24 +51,6 @@ export class ChangeUserPasswordCommandHandlerImpl implements ChangeUserPasswordC
     if (isBlacklisted) {
       throw new OperationNotValidError({
         reason: 'Reset password token is blacklisted.',
-        resetPasswordToken,
-      });
-    }
-
-    const userTokens = await this.userRepository.findUserTokens({
-      userId,
-    });
-
-    if (!userTokens) {
-      throw new OperationNotValidError({
-        reason: 'User tokens not found.',
-        userId,
-      });
-    }
-
-    if (resetPasswordToken !== userTokens.resetPasswordToken) {
-      throw new OperationNotValidError({
-        reason: 'Reset password token is not valid.',
         resetPasswordToken,
       });
     }

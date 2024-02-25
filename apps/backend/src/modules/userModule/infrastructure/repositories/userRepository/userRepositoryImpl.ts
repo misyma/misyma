@@ -9,34 +9,18 @@ import { type UuidService } from '../../../../../libs/uuid/services/uuidService/
 import { type UserDomainAction } from '../../../domain/entities/user/domainActions/userDomainAction.js';
 import { UserDomainActionType } from '../../../domain/entities/user/domainActions/userDomainActionType.js';
 import { type User } from '../../../domain/entities/user/user.js';
-import { type UserTokens } from '../../../domain/entities/userTokens/userTokens.js';
 import {
   type UserRepository,
   type CreateUserPayload,
   type FindUserPayload,
   type UpdateUserPayload,
   type DeleteUserPayload,
-  type FindUserTokensPayload,
 } from '../../../domain/repositories/userRepository/userRepository.js';
-import { type EmailVerificationTokenRawEntity } from '../../databases/userDatabase/tables/emailVerificationTokenTable/emailVerificationTokenRawEntity.js';
-import { EmailVerificationTokenTable } from '../../databases/userDatabase/tables/emailVerificationTokenTable/emailVerificationTokenTable.js';
-import { type RefreshTokenRawEntity } from '../../databases/userDatabase/tables/refreshTokenTable/refreshTokenRawEntity.js';
-import { RefreshTokenTable } from '../../databases/userDatabase/tables/refreshTokenTable/refreshTokenTable.js';
-import { type ResetPasswordTokenRawEntity } from '../../databases/userDatabase/tables/resetPasswordTokenTable/resetPasswordTokenRawEntity.js';
-import { ResetPasswordTokenTable } from '../../databases/userDatabase/tables/resetPasswordTokenTable/resetPasswordTokenTable.js';
 import { type UserRawEntity } from '../../databases/userDatabase/tables/userTable/userRawEntity.js';
 import { UserTable } from '../../databases/userDatabase/tables/userTable/userTable.js';
 
-interface TokenValue {
-  readonly token: string;
-  readonly expiresAt: Date;
-}
-
 export interface MappedUserUpdate {
   readonly userUpdatePayload: Partial<UserRawEntity> | undefined;
-  readonly refreshTokenCreatePayloads: TokenValue[];
-  readonly resetPasswordTokenUpdatePayload?: TokenValue | undefined;
-  readonly emailVerificationTokenUpdatePayload?: TokenValue | undefined;
 }
 
 export interface FindRefreshTokensPayload {
@@ -53,10 +37,6 @@ export interface FindEmailVerificationTokenPayload {
 
 export class UserRepositoryImpl implements UserRepository {
   private readonly userDatabaseTable = new UserTable();
-
-  private readonly refreshTokenTable = new RefreshTokenTable();
-  private readonly resetPasswordTokenTable = new ResetPasswordTokenTable();
-  private readonly emailVerificationTokenTable = new EmailVerificationTokenTable();
 
   public constructor(
     private readonly sqliteDatabaseClient: SqliteDatabaseClient,
@@ -151,106 +131,6 @@ export class UserRepositoryImpl implements UserRepository {
     return this.userMapper.mapToDomain(rawEntity);
   }
 
-  public async findUserTokens(payload: FindUserTokensPayload): Promise<UserTokens | null> {
-    const { userId } = payload;
-
-    const [refreshTokens, resetPasswordToken, emailVerificationToken] = await Promise.all([
-      this.findRefreshTokens({ userId }),
-      this.findResetPasswordToken({ userId }),
-      this.findEmailVerificationToken({ userId }),
-    ]);
-
-    if (!refreshTokens.length && !resetPasswordToken && !emailVerificationToken) {
-      return null;
-    }
-
-    return {
-      refreshTokens: refreshTokens.map((refreshToken) => refreshToken.token),
-      resetPasswordToken: resetPasswordToken?.token,
-      emailVerificationToken: emailVerificationToken?.token,
-    };
-  }
-
-  private async findRefreshTokens(payload: FindRefreshTokensPayload): Promise<RefreshTokenRawEntity[]> {
-    const { userId } = payload;
-
-    let rawEntities: RefreshTokenRawEntity[];
-
-    try {
-      rawEntities = await this.sqliteDatabaseClient<RefreshTokenRawEntity>(this.refreshTokenTable.name)
-        .select('*')
-        .where({ userId });
-    } catch (error) {
-      this.loggerService.error({
-        message: 'Error while finding RefreshToken.',
-        context: { error },
-      });
-
-      throw new RepositoryError({
-        entity: 'RefreshToken',
-        operation: 'find',
-      });
-    }
-
-    return rawEntities;
-  }
-
-  private async findResetPasswordToken(
-    payload: FindResetPasswordTokenPayload,
-  ): Promise<ResetPasswordTokenRawEntity | undefined> {
-    const { userId } = payload;
-
-    let rawEntity: ResetPasswordTokenRawEntity | undefined;
-
-    try {
-      rawEntity = await this.sqliteDatabaseClient<ResetPasswordTokenRawEntity>(this.resetPasswordTokenTable.name)
-        .select('*')
-        .where({ userId })
-        .first();
-    } catch (error) {
-      this.loggerService.error({
-        message: 'Error while finding ResetPasswordToken.',
-        context: { error },
-      });
-
-      throw new RepositoryError({
-        entity: 'ResetPasswordToken',
-        operation: 'find',
-      });
-    }
-
-    return rawEntity;
-  }
-
-  private async findEmailVerificationToken(
-    payload: FindEmailVerificationTokenPayload,
-  ): Promise<EmailVerificationTokenRawEntity | undefined> {
-    const { userId } = payload;
-
-    let rawEntity: EmailVerificationTokenRawEntity | undefined;
-
-    try {
-      rawEntity = await this.sqliteDatabaseClient<EmailVerificationTokenRawEntity>(
-        this.emailVerificationTokenTable.name,
-      )
-        .select('*')
-        .where({ userId })
-        .first();
-    } catch (error) {
-      this.loggerService.error({
-        message: 'Error while finding EmailVerificationToken.',
-        context: { error },
-      });
-
-      throw new RepositoryError({
-        entity: 'EmailVerificationToken',
-        operation: 'find',
-      });
-    }
-
-    return rawEntity;
-  }
-
   public async updateUser(payload: UpdateUserPayload): Promise<User> {
     const { id, domainActions } = payload;
 
@@ -265,12 +145,7 @@ export class UserRepositoryImpl implements UserRepository {
 
     let rawEntities: UserRawEntity[] = [];
 
-    const {
-      userUpdatePayload,
-      refreshTokenCreatePayloads,
-      emailVerificationTokenUpdatePayload,
-      resetPasswordTokenUpdatePayload,
-    } = this.mapDomainActionsToUpdatePayload(domainActions);
+    const { userUpdatePayload } = this.mapDomainActionsToUpdatePayload(domainActions);
 
     try {
       await this.sqliteDatabaseClient.transaction(async (transaction) => {
@@ -278,46 +153,6 @@ export class UserRepositoryImpl implements UserRepository {
           rawEntities = await transaction<UserRawEntity>(this.userDatabaseTable.name)
             .update(userUpdatePayload, '*')
             .where({ id });
-        }
-
-        if (refreshTokenCreatePayloads.length) {
-          await transaction<RefreshTokenRawEntity>(this.refreshTokenTable.name).insert(
-            refreshTokenCreatePayloads.map((refreshTokenCreatePayload) => ({
-              id: this.uuidService.generateUuid(),
-              userId: id,
-              ...refreshTokenCreatePayload,
-            })),
-          );
-        }
-
-        if (resetPasswordTokenUpdatePayload) {
-          await transaction<ResetPasswordTokenRawEntity>(this.resetPasswordTokenTable.name)
-            .insert({
-              id: this.uuidService.generateUuid(),
-              userId: id,
-              ...resetPasswordTokenUpdatePayload,
-            })
-            .onConflict(this.resetPasswordTokenTable.columns.userId)
-            .merge({
-              ...resetPasswordTokenUpdatePayload,
-            });
-        } else if (resetPasswordTokenUpdatePayload === null) {
-          await transaction<ResetPasswordTokenRawEntity>(this.resetPasswordTokenTable.name)
-            .delete()
-            .where({ userId: id });
-        }
-
-        if (emailVerificationTokenUpdatePayload) {
-          await transaction<EmailVerificationTokenRawEntity>(this.emailVerificationTokenTable.name)
-            .insert({
-              id: this.uuidService.generateUuid(),
-              userId: id,
-              ...emailVerificationTokenUpdatePayload,
-            })
-            .onConflict(this.emailVerificationTokenTable.columns.userId)
-            .merge({
-              ...emailVerificationTokenUpdatePayload,
-            });
         }
       });
     } catch (error) {
@@ -344,38 +179,8 @@ export class UserRepositoryImpl implements UserRepository {
   private mapDomainActionsToUpdatePayload(domainActions: UserDomainAction[]): MappedUserUpdate {
     let user: Partial<Writeable<UserRawEntity>> | undefined = undefined;
 
-    const refreshTokenCreatePayloads: TokenValue[] = [];
-
-    let resetPasswordTokenUpdatePayload: TokenValue | undefined | null = undefined;
-
-    let emailVerificationTokenUpdatePayload: TokenValue | undefined = undefined;
-
     domainActions.forEach((domainAction) => {
       switch (domainAction.actionName) {
-        case UserDomainActionType.createRefreshToken:
-          refreshTokenCreatePayloads.push({
-            token: domainAction.payload.token,
-            expiresAt: domainAction.payload.expiresAt,
-          });
-
-          break;
-
-        case UserDomainActionType.updateResetPasswordToken:
-          resetPasswordTokenUpdatePayload = {
-            token: domainAction.payload.token,
-            expiresAt: domainAction.payload.expiresAt,
-          };
-
-          break;
-
-        case UserDomainActionType.updateEmailVerificationToken:
-          emailVerificationTokenUpdatePayload = {
-            token: domainAction.payload.token,
-            expiresAt: domainAction.payload.expiresAt,
-          };
-
-          break;
-
         case UserDomainActionType.updateEmail:
           user = {
             ...(user || {}),
@@ -425,9 +230,6 @@ export class UserRepositoryImpl implements UserRepository {
 
     return {
       userUpdatePayload: user,
-      refreshTokenCreatePayloads,
-      resetPasswordTokenUpdatePayload,
-      emailVerificationTokenUpdatePayload,
     };
   }
 
