@@ -6,6 +6,7 @@ import { userStateActions, userStateSelectors } from '../../store/states/userSta
 import { UserApiError } from '../../../api/user/errors/userApiError';
 import { type RefreshUserTokensResponseBody } from '@common/contracts';
 import { useStoreDispatch } from '../../store/hooks/useStoreDispatch';
+import { HttpService } from '../../services/httpService/httpService';
 
 interface ProviderProps {
   children: React.ReactNode;
@@ -23,27 +24,25 @@ export const Providers = ({ children }: ProviderProps) => {
       return;
     }
 
-    const refreshUserTokensResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/users/token`, {
-      body: JSON.stringify({
+    const refreshUserTokensResponse = await HttpService.post<RefreshUserTokensResponseBody>({
+      url: '/users/token',
+      body: {
         refreshToken,
-      }),
-      method: 'POST',
+      },
       headers: {
         'Content-Type': 'application/json',
       },
     });
 
-    if (refreshUserTokensResponse.status !== 200) {
-      const responseBody = await refreshUserTokensResponse.json();
-
+    if (refreshUserTokensResponse.success === false) {
       throw new UserApiError({
         message: 'Failed to refresh user tokens.',
-        apiResponseError: responseBody,
-        statusCode: refreshUserTokensResponse.status,
+        apiResponseError: refreshUserTokensResponse.body.context,
+        statusCode: refreshUserTokensResponse.statusCode,
       });
     }
 
-    return refreshUserTokensResponse.json();
+    return refreshUserTokensResponse.body;
   };
 
   const queryClient = new QueryClient({
