@@ -1,7 +1,3 @@
-import { type UserDomainAction } from './domainActions/userDomainAction.js';
-import { UserDomainActionType } from './domainActions/userDomainActionType.js';
-import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
-
 export interface UserDraft {
   readonly id: string;
   readonly email: string;
@@ -10,54 +6,44 @@ export interface UserDraft {
   readonly isEmailVerified: boolean;
 }
 
-export interface UpdatePasswordPayload {
-  readonly newPassword: string;
+export interface UserState {
+  email: string;
+  password: string;
+  name: string;
+  isEmailVerified: boolean;
 }
 
-export interface UpdateEmailPayload {
-  readonly newEmail: string;
+export interface SetPasswordPayload {
+  readonly password: string;
 }
 
-export interface UpdateNamePayload {
-  readonly newName: string;
+export interface SetEmailPayload {
+  readonly email: string;
 }
 
-export interface ResetPasswordPayload {
-  readonly token: string;
-  readonly expiresAt: Date;
+export interface SetIsEmailVerifiedPayload {
+  readonly isEmailVerified: boolean;
 }
 
-export interface UpdateEmailVerificationTokenPayload {
-  readonly token: string;
-  readonly expiresAt: Date;
-}
-
-export interface CreateRefreshTokenPayload {
-  readonly token: string;
-  readonly expiresAt: Date;
+export interface SetNamePayload {
+  readonly name: string;
 }
 
 export class User {
   private id: string;
-  private email: string;
-  private password: string;
-  private name: string;
-  private isEmailVerified: boolean;
-
-  private domainActions: UserDomainAction[] = [];
+  private state: UserState;
 
   public constructor(draft: UserDraft) {
     const { id, email, password, name, isEmailVerified } = draft;
 
     this.id = id;
 
-    this.password = password;
-
-    this.email = email;
-
-    this.name = name;
-
-    this.isEmailVerified = isEmailVerified;
+    this.state = {
+      email,
+      password,
+      name,
+      isEmailVerified,
+    };
   }
 
   public getId(): string {
@@ -65,90 +51,46 @@ export class User {
   }
 
   public getEmail(): string {
-    return this.email;
+    return this.state.email;
   }
 
   public getPassword(): string {
-    return this.password;
+    return this.state.password;
   }
 
   public getName(): string {
-    return this.name;
+    return this.state.name;
   }
 
   public getIsEmailVerified(): boolean {
-    return this.isEmailVerified;
+    return this.state.isEmailVerified;
   }
 
-  public getState(): UserDraft {
-    return {
-      id: this.id,
-      email: this.email,
-      password: this.password,
-      name: this.name,
-      isEmailVerified: this.isEmailVerified,
-    };
+  public getState(): UserState {
+    return this.state;
   }
 
-  public getDomainActions(): UserDomainAction[] {
-    return this.domainActions;
+  public setPassword(payload: SetPasswordPayload): void {
+    const { password } = payload;
+
+    this.state.password = password;
   }
 
-  public addUpdatePasswordAction(payload: UpdatePasswordPayload): void {
-    const { newPassword } = payload;
+  public setEmail(payload: SetEmailPayload): void {
+    const { email } = payload;
 
-    this.domainActions.push({
-      actionName: UserDomainActionType.updatePassword,
-      payload: {
-        newPassword,
-      },
-    });
-
-    this.password = newPassword;
+    this.state.email = email;
   }
 
-  public addUpdateEmailAction(payload: UpdateEmailPayload): void {
-    const { newEmail } = payload;
+  public setIsEmailVerified(payload: SetIsEmailVerifiedPayload): void {
+    const { isEmailVerified } = payload;
 
-    if (this.email === newEmail) {
-      throw new OperationNotValidError({
-        reason: 'The new email is the same as the old one.',
-        email: this.email,
-        newEmail,
-      });
-    }
-
-    this.domainActions.push({
-      actionName: UserDomainActionType.updateEmail,
-      payload: {
-        newEmail,
-      },
-    });
-
-    this.email = newEmail;
+    this.state.isEmailVerified = isEmailVerified;
   }
 
-  public addUpdateNameAction(payload: UpdateNamePayload): void {
-    const { newName } = payload;
+  public setName(payload: SetNamePayload): void {
+    const { name } = payload;
 
-    this.domainActions.push({
-      actionName: UserDomainActionType.updateName,
-      payload: {
-        name: newName,
-      },
-    });
-  }
-
-  public addVerifyEmailAction(): void {
-    if (this.isEmailVerified) {
-      throw new OperationNotValidError({
-        reason: 'The email is already verified.',
-        email: this.email,
-      });
-    }
-
-    this.domainActions.push({
-      actionName: UserDomainActionType.verifyEmail,
-    });
+    this.state.name = name;
   }
 }

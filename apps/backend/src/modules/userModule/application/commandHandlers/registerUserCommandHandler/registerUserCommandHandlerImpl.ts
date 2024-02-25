@@ -45,11 +45,13 @@ export class RegisterUserCommandHandlerImpl implements RegisterUserCommandHandle
 
     const hashedPassword = await this.hashService.hash({ plainData: password });
 
-    const user = await this.userRepository.createUser({
-      email,
-      password: hashedPassword,
-      name,
-      isEmailVerified: false,
+    const user = await this.userRepository.saveUser({
+      entity: {
+        email,
+        password: hashedPassword,
+        name,
+        isEmailVerified: false,
+      },
     });
 
     this.loggerService.info({

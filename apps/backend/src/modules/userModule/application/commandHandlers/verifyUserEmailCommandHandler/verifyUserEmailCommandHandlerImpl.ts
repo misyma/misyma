@@ -36,14 +36,16 @@ export class VerifyUserEmailCommandHandlerImpl implements VerifyUserEmailCommand
     });
 
     if (!user) {
-      this.loggerService.debug({
-        message: 'User not found.',
-        context: { userId },
-      });
-
       throw new OperationNotValidError({
         reason: 'User not found.',
         userId,
+      });
+    }
+
+    if (user.getIsEmailVerified()) {
+      throw new OperationNotValidError({
+        reason: 'User email already verified.',
+        email: user.getEmail(),
       });
     }
 
@@ -55,12 +57,9 @@ export class VerifyUserEmailCommandHandlerImpl implements VerifyUserEmailCommand
       },
     });
 
-    user.addVerifyEmailAction();
+    user.setIsEmailVerified({ isEmailVerified: true });
 
-    await this.userRepository.updateUser({
-      id: user.getId(),
-      domainActions: user.getDomainActions(),
-    });
+    await this.userRepository.saveUser({ entity: user });
 
     this.loggerService.info({
       message: 'User email verified.',

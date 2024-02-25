@@ -145,7 +145,7 @@ describe('VerifyUserEmailCommandHandlerImpl', () => {
     ).toThrowErrorInstance({
       instance: OperationNotValidError,
       context: {
-        reason: 'The email is already verified.',
+        reason: 'User email already verified.',
         email: user.email,
       },
     });
