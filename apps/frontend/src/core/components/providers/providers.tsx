@@ -4,7 +4,7 @@ import { ApiError } from '../../../common/errors/apiError';
 import { useStoreSelector } from '../../store/hooks/useStoreSelector';
 import { userStateActions, userStateSelectors } from '../../store/states/userState/userStateSlice';
 import { UserApiError } from '../../../api/user/errors/userApiError';
-import { RefreshUserTokensResponseBody } from '../../../../../../common/contracts/dist/src/schemas/user/refreshUserTokens';
+import { RefreshUserTokensResponseBody } from '@common/contracts';
 import { useStoreDispatch } from '../../store/hooks/useStoreDispatch';
 
 interface ProviderProps {
