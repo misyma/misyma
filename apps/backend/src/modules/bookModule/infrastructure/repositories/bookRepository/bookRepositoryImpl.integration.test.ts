@@ -200,9 +200,9 @@ describe('BookRepositoryImpl', () => {
         id: book.id,
       });
 
-      createdBook?.addDeleteAuthorDomainAction(new Author(author1));
+      createdBook?.deleteAuthor(new Author(author1));
 
-      createdBook?.addDeleteAuthorDomainAction(new Author(author2));
+      createdBook?.deleteAuthor(new Author(author2));
 
       const updatedBook = await bookRepository.updateBook({
         book: createdBook as Book,
@@ -249,9 +249,9 @@ describe('BookRepositoryImpl', () => {
         id: book.id,
       });
 
-      createdBook?.addAddAuthorDomainAction(new Author(author4));
+      createdBook?.addAuthor(new Author(author4));
 
-      createdBook?.addAddAuthorDomainAction(new Author(author5));
+      createdBook?.addAuthor(new Author(author5));
 
       const updatedBook = await bookRepository.updateBook({
         book: createdBook as Book,
@@ -786,7 +786,7 @@ describe('BookRepositoryImpl', () => {
         id: book.id,
       });
 
-      createdBook?.addUpdateBookGenresAction({
+      createdBook?.setGenres({
         genres: [new Genre(genre1), new Genre(genre2), new Genre(genre3), new Genre(genre4)],
       });
 
@@ -850,7 +850,7 @@ describe('BookRepositoryImpl', () => {
         id: book.id,
       });
 
-      createdBook?.addUpdateBookGenresAction({
+      createdBook?.setGenres({
         genres: [new Genre(genre1), new Genre(genre2)],
       });
 

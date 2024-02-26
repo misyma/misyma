@@ -38,7 +38,7 @@ export class UpdateBookGenresCommandHandlerImpl implements UpdateBookGenresComma
       });
     }
 
-    book.addUpdateBookGenresAction({
+    book.setGenres({
       genres,
     });
 

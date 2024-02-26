@@ -1,18 +1,15 @@
 import { type BookMapper } from './bookMapper/bookMapper.js';
 import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
-import { type Writeable } from '../../../../../common/types/util/writeable.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { AuthorTable } from '../../../../authorModule/infrastructure/databases/tables/authorTable/authorTable.js';
-import { type Book } from '../../../domain/entities/book/book.js';
-import { BookDomainActionType } from '../../../domain/entities/book/domainActions/bookDomainActionType.js';
+import { type BookState, Book } from '../../../domain/entities/book/book.js';
 import {
   type BookRepository,
-  type CreateBookPayload,
   type FindBookPayload,
   type DeleteBookPayload,
-  type UpdateBookPayload,
+  type SaveBookPayload,
 } from '../../../domain/repositories/bookRepository/bookRepository.js';
 import { BookGenresTable } from '../../databases/bookDatabase/tables/bookGenresTable/bookGenresTable.js';
 import { BooksAuthorsTable } from '../../databases/bookDatabase/tables/booksAuthorsTable/booksAuthorsTable.js';
@@ -21,15 +18,9 @@ import { BookTable } from '../../databases/bookDatabase/tables/bookTable/bookTab
 import { type BookWithJoinsRawEntity } from '../../databases/bookDatabase/tables/bookTable/bookWithJoinsRawEntity.js';
 import { GenreTable } from '../../databases/bookDatabase/tables/genreTable/genreTable.js';
 
-interface UpdateBookActionsPayload {
-  bookFields: Partial<Writeable<BookRawEntity>>;
-  bookAuthors: {
-    add: string[];
-    remove: string[];
-  };
-  addedGenres: string[];
-  removedGenres: string[];
-}
+type CreateBookPayload = { book: BookState };
+
+type UpdateBookPayload = { book: Book };
 
 export class BookRepositoryImpl implements BookRepository {
   private readonly databaseTable = new BookTable();
@@ -38,28 +29,39 @@ export class BookRepositoryImpl implements BookRepository {
   private readonly bookGenresTable = new BookGenresTable();
   private readonly genresTable = new GenreTable();
 
-  // TODO: add loggerService and log errors when throwing
   public constructor(
     private readonly sqliteDatabaseClient: SqliteDatabaseClient,
     private readonly bookMapper: BookMapper,
     private readonly uuidService: UuidService,
   ) {}
 
-  public async createBook(payload: CreateBookPayload): Promise<Book> {
+  public async saveBook(payload: SaveBookPayload): Promise<Book> {
+    const { book } = payload;
+
+    if (book instanceof Book) {
+      return this.updateBook({ book });
+    }
+
+    return this.createBook({ book });
+  }
+
+  private async createBook(payload: CreateBookPayload): Promise<Book> {
     const {
-      title,
-      isbn,
-      publisher,
-      releaseYear,
-      language,
-      translator,
-      format,
-      pages,
-      frontCoverImageUrl,
-      backCoverImageUrl,
-      status,
-      bookshelfId,
-      authors,
+      book: {
+        title,
+        isbn,
+        publisher,
+        releaseYear,
+        language,
+        translator,
+        format,
+        pages,
+        frontCoverImageUrl,
+        backCoverImageUrl,
+        status,
+        bookshelfId,
+        authors,
+      },
     } = payload;
 
     let rawEntities: BookRawEntity[] = [];
@@ -106,61 +108,90 @@ export class BookRepositoryImpl implements BookRepository {
 
     const createdBook = this.bookMapper.mapRawToDomain(rawEntity);
 
-    authors.forEach((author) => createdBook.addAddAuthorDomainAction(author));
+    authors.forEach((author) => createdBook.addAuthor(author));
 
     return createdBook;
   }
 
-  public async updateBook(payload: UpdateBookPayload): Promise<Book> {
+  private async updateBook(payload: UpdateBookPayload): Promise<Book> {
     const { book } = payload;
 
-    const updatePayload = this.mapDomainActionsToUpdatePayload(book);
+    const existingBook = await this.findBook({ id: book.getId() });
+
+    if (!existingBook) {
+      throw new ResourceNotFoundError({
+        name: 'Book',
+        id: book.getId(),
+      });
+    }
 
     try {
       await this.sqliteDatabaseClient.transaction(async (transaction) => {
-        if (Object.values(updatePayload.bookFields).length > 0) {
-          await transaction(this.databaseTable.name)
-            .update(updatePayload.bookFields)
-            .where({
-              [this.databaseTable.columns.id]: book.getId(),
-            });
-        }
+        const { authors: updatedAuthors, genres: updatedGenres, ...bookFields } = book.getState();
 
-        if (updatePayload.bookAuthors.add.length > 0) {
+        await transaction(this.databaseTable.name).update(bookFields, '*').where({ id: book.getId() });
+
+        const existingAuthors = existingBook.getAuthors();
+
+        const existingGenres = existingBook.getGenres();
+
+        const addedGenres = updatedGenres.filter(
+          (genre) => !existingGenres.some((currentGenre) => currentGenre.getId() === genre.getId()),
+        );
+
+        const removedGenres = existingGenres.filter(
+          (genre) => !updatedGenres.some((currentGenre) => currentGenre.getId() === genre.getId()),
+        );
+
+        const addedAuthors = updatedAuthors.filter(
+          (author) => !existingAuthors.some((currentAuthor) => currentAuthor.getId() === author.getId()),
+        );
+
+        const removedAuthors = existingAuthors.filter(
+          (author) => !updatedAuthors.some((currentAuthor) => currentAuthor.getId() === author.getId()),
+        );
+
+        if (addedAuthors.length > 0) {
           await transaction.batchInsert(
             this.booksAuthorsTable.name,
-            updatePayload.bookAuthors.add.map((authorId) => ({
+            addedAuthors.map((author) => ({
               [this.booksAuthorsTable.columns.bookId]: book.getId(),
-              [this.booksAuthorsTable.columns.authorId]: authorId,
+              [this.booksAuthorsTable.columns.authorId]: author.getId(),
             })),
           );
         }
 
-        if (updatePayload.bookAuthors.remove.length > 0) {
+        if (removedAuthors.length > 0) {
           await transaction(this.booksAuthorsTable.name)
             .delete()
-            .whereIn(this.booksAuthorsTable.columns.authorId, updatePayload.bookAuthors.remove)
+            .whereIn(
+              this.booksAuthorsTable.columns.authorId,
+              removedAuthors.map((author) => author.getId()),
+            )
             .andWhere({
               [this.booksAuthorsTable.columns.bookId]: book.getId(),
             });
         }
 
-        if (updatePayload.addedGenres.length > 0) {
+        if (addedGenres.length > 0) {
           await transaction(this.bookGenresTable.name)
             .insert(
-              updatePayload.addedGenres.map((genreId) => ({
+              addedGenres.map((genre) => ({
                 [this.bookGenresTable.columns.bookId]: book.getId(),
-                [this.bookGenresTable.columns.genreId]: genreId,
+                [this.bookGenresTable.columns.genreId]: genre.getId(),
               })),
             )
             .onConflict([this.bookGenresTable.columns.bookId, this.bookGenresTable.columns.genreId])
             .merge();
         }
 
-        if (updatePayload.removedGenres.length > 0) {
+        if (removedGenres.length > 0) {
           await transaction(this.bookGenresTable.name)
             .delete()
-            .whereIn(this.bookGenresTable.columns.genreId, updatePayload.removedGenres)
+            .whereIn(
+              this.bookGenresTable.columns.genreId,
+              removedGenres.map((genre) => genre.getId()),
+            )
             .andWhere({
               [this.bookGenresTable.columns.bookId]: book.getId(),
             });
@@ -259,103 +290,6 @@ export class BookRepositoryImpl implements BookRepository {
     }
 
     return this.bookMapper.mapRawWithJoinsToDomain(rawEntities)[0] as Book;
-  }
-
-  private mapDomainActionsToUpdatePayload(book: Book): UpdateBookActionsPayload {
-    const domainActions = book.getDomainActions();
-
-    const payload: UpdateBookActionsPayload = {
-      bookAuthors: {
-        add: [],
-        remove: [],
-      },
-      bookFields: {},
-      addedGenres: [],
-      removedGenres: [],
-    };
-
-    domainActions.forEach((domainAction) => {
-      switch (domainAction.type) {
-        case BookDomainActionType.addAuthor:
-          payload.bookAuthors.add.push(domainAction.payload.authorId);
-
-          break;
-
-        case BookDomainActionType.deleteAuthor:
-          payload.bookAuthors.remove.push(domainAction.payload.authorId);
-
-          break;
-
-        case BookDomainActionType.updateTitle:
-          payload.bookFields.title = domainAction.payload.title;
-
-          break;
-
-        case BookDomainActionType.updateIsbn:
-          payload.bookFields.isbn = domainAction.payload.isbn;
-
-          break;
-
-        case BookDomainActionType.updatePublisher:
-          payload.bookFields.publisher = domainAction.payload.publisher;
-
-          break;
-
-        case BookDomainActionType.updateReleaseYear:
-          payload.bookFields.releaseYear = domainAction.payload.releaseYear;
-
-          break;
-
-        case BookDomainActionType.updateLanguage:
-          payload.bookFields.language = domainAction.payload.language;
-
-          break;
-
-        case BookDomainActionType.updateTranslator:
-          payload.bookFields.translator = domainAction.payload.translator;
-
-          break;
-
-        case BookDomainActionType.updateFormat:
-          payload.bookFields.format = domainAction.payload.format;
-
-          break;
-
-        case BookDomainActionType.updatePages:
-          payload.bookFields.pages = domainAction.payload.pages;
-
-          break;
-
-        case BookDomainActionType.updateFrontCoverImageUrl:
-          payload.bookFields.frontCoverImageUrl = domainAction.payload.frontCoverImageUrl;
-
-          break;
-
-        case BookDomainActionType.updateBackCoverImageUrl:
-          payload.bookFields.backCoverImageUrl = domainAction.payload.backCoverImageUrl;
-
-          break;
-
-        case BookDomainActionType.updateStatus:
-          payload.bookFields.status = domainAction.payload.status;
-
-          break;
-
-        case BookDomainActionType.updateBookshelf:
-          payload.bookFields.bookshelfId = domainAction.payload.bookshelfId;
-
-          break;
-
-        case BookDomainActionType.updateBookGenres:
-          payload.addedGenres = domainAction.payload.addedGenres.map((genre) => genre.getId());
-
-          payload.removedGenres = domainAction.payload.removedGenres.map((genre) => genre.getId());
-
-          break;
-      }
-    });
-
-    return payload;
   }
 
   public async deleteBook(payload: DeleteBookPayload): Promise<void> {
