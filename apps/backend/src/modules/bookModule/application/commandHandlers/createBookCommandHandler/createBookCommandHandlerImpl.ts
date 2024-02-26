@@ -13,7 +13,6 @@ export class CreateBookCommandHandlerImpl implements CreateBookCommandHandler {
   public constructor(
     private readonly bookRepository: BookRepository,
     private readonly findAuthorsByIdsQueryHandler: FindAuthorsByIdsQueryHandler,
-    // TODO: replace with query handler
     private readonly bookshelfRepository: BookshelfRepository,
     private readonly loggerService: LoggerService,
   ) {}
@@ -43,10 +42,13 @@ export class CreateBookCommandHandlerImpl implements CreateBookCommandHandler {
       });
     }
 
-    const book = await this.bookRepository.createBook({
-      ...bookData,
-      bookshelfId,
-      authors,
+    const book = await this.bookRepository.saveBook({
+      book: {
+        ...bookData,
+        bookshelfId,
+        authors,
+        genres: [],
+      },
     });
 
     this.loggerService.info({

@@ -45,15 +45,14 @@ describe('CreateGenreCommandHandlerImpl', () => {
 
     const { genre } = await commandHandler.execute({ name: genreName });
 
-    expect(genre.getState()).toEqual({
-      id: expect.any(String),
-      name: genreName,
-    });
+    expect(genre.getName()).toEqual(genreName);
 
     const persistedGenre = await genreTestUtils.findByName(genreName);
 
     expect(persistedGenre).not.toBeNull();
 
-    expect(persistedGenre).toEqual(genre.getState());
+    expect(persistedGenre?.id).toEqual(genre.getId());
+
+    expect(persistedGenre?.name).toEqual(genre.getName());
   });
 });

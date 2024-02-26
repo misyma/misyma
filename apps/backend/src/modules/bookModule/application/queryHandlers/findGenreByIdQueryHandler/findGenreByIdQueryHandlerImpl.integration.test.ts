@@ -51,6 +51,6 @@ describe('FindGenreByIdQueryHandlerImpl', () => {
       id: genre.id,
     });
 
-    expect(result.genre.getState()).toEqual(genre);
+    expect(result.genre.getId()).toEqual(genre.id);
   });
 });

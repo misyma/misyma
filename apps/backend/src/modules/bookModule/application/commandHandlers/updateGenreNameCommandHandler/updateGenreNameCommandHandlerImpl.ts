@@ -5,7 +5,6 @@ import {
 } from './updateGenreNameCommandHandler.js';
 import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
-import { Genre } from '../../../domain/entities/genre/genre.js';
 import { type GenreRepository } from '../../../domain/repositories/genreRepository/genreRepository.js';
 
 export class UpdateGenreNameCommandHandlerImpl implements UpdateGenreNameCommandHandler {
@@ -14,11 +13,11 @@ export class UpdateGenreNameCommandHandlerImpl implements UpdateGenreNameCommand
   public async execute(payload: UpdateGenreNamePayload): Promise<UpdateGenreNameResult> {
     const { id, name } = payload;
 
-    const genreExists = await this.genreRepository.findById({
+    const existingGenre = await this.genreRepository.findGenre({
       id,
     });
 
-    if (!genreExists) {
+    if (!existingGenre) {
       throw new ResourceNotFoundError({
         name: 'Genre',
         id,
@@ -27,7 +26,7 @@ export class UpdateGenreNameCommandHandlerImpl implements UpdateGenreNameCommand
 
     const normalizedName = name.toLowerCase();
 
-    const nameTaken = await this.genreRepository.findByName({
+    const nameTaken = await this.genreRepository.findGenre({
       name: normalizedName,
     });
 
@@ -38,12 +37,13 @@ export class UpdateGenreNameCommandHandlerImpl implements UpdateGenreNameCommand
       });
     }
 
-    const genre = await this.genreRepository.update(
-      new Genre({
-        id,
-        name: normalizedName,
-      }),
-    );
+    existingGenre.setName({
+      name: normalizedName,
+    });
+
+    const genre = await this.genreRepository.saveGenre({
+      genre: existingGenre,
+    });
 
     return {
       genre,

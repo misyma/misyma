@@ -27,7 +27,7 @@ export class UpdateBookGenresCommandHandlerImpl implements UpdateBookGenresComma
       });
     }
 
-    const genres = await this.genreRepository.findManyByIds({
+    const genres = await this.genreRepository.findGenresByIds({
       ids: genreIds,
     });
 
@@ -42,7 +42,7 @@ export class UpdateBookGenresCommandHandlerImpl implements UpdateBookGenresComma
       genres,
     });
 
-    await this.bookRepository.updateBook({
+    await this.bookRepository.saveBook({
       book,
     });
 

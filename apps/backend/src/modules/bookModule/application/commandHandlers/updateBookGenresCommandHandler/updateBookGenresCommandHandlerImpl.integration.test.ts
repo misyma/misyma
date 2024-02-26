@@ -139,7 +139,7 @@ describe('UpdateBookGenresCommandHandlerImpl', () => {
     });
 
     result.book.getGenres().forEach((genre) => {
-      expect(genre.getState().id).oneOf([genre1.id, genre2.id, genre3.id]);
+      expect(genre.getId()).oneOf([genre1.id, genre2.id, genre3.id]);
     });
   });
 });

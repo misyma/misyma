@@ -14,7 +14,7 @@ export class CreateGenreCommandHandlerImpl implements CreateGenreCommandHandler 
 
     const normalizedName = name.toLowerCase();
 
-    const genreExists = await this.genreRepository.findByName({
+    const genreExists = await this.genreRepository.findGenre({
       name: normalizedName,
     });
 
@@ -25,8 +25,10 @@ export class CreateGenreCommandHandlerImpl implements CreateGenreCommandHandler 
       });
     }
 
-    const genre = await this.genreRepository.create({
-      name: normalizedName,
+    const genre = await this.genreRepository.saveGenre({
+      genre: {
+        name: normalizedName,
+      },
     });
 
     return {
