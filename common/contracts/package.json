@@ -2,7 +2,10 @@
   "name": "@common/contracts",
   "type": "module",
   "exports": {
-    ".": "./dist/src/index.js"
+    ".": {
+      "import": "./dist/src/index.js",
+      "types": "./dist/src/index.d.ts"
+    }
   },
   "types": "dist/src/index.d.ts",
   "files": [
