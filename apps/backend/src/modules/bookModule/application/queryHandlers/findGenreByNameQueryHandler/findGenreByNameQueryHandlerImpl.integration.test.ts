@@ -46,10 +46,10 @@ describe('FindGenreByNameQueryHandlerImpl', () => {
   it('returns Genre - when Genre exists', async () => {
     const genre = await genreTestUtils.createAndPersist();
 
-    const res = await queryHandler.execute({
+    const result = await queryHandler.execute({
       name: genre.name,
     });
 
-    expect(res.genre.getState()).toEqual(genre);
+    expect(result.genre.getId()).toEqual(genre.id);
   });
 });

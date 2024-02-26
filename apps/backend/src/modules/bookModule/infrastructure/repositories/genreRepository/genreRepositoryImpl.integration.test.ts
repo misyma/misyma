@@ -1,18 +1,14 @@
-import { type MockInstance, afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { Generator, SpyFactory } from '@common/tests';
+import { Generator } from '@common/tests';
 
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
-import { coreSymbols } from '../../../../../core/symbols.js';
-import {
-  type LogPayload,
-  type LoggerService,
-} from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { Genre } from '../../../domain/entities/genre/genre.js';
 import { type GenreRepository } from '../../../domain/repositories/genreRepository/genreRepository.js';
 import { symbols } from '../../../symbols.js';
+import { GenreTestFactory } from '../../../tests/factories/genreTestFactor/genreTestFactory.js';
 import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 import { type GenreRawEntity } from '../../databases/bookDatabase/tables/genreTable/genreRawEntity.js';
 
@@ -21,11 +17,7 @@ describe('GenreRepositoryImpl', () => {
 
   let genreTestUtils: GenreTestUtils;
 
-  let loggerService: LoggerService;
-
-  const spyFactory = new SpyFactory(vi);
-
-  let logErrorSpy: MockInstance<[payload: LogPayload], void>;
+  const genreTestFactory = new GenreTestFactory();
 
   beforeEach(() => {
     const container = TestContainer.create();
@@ -33,10 +25,6 @@ describe('GenreRepositoryImpl', () => {
     genreRepository = container.get<GenreRepository>(symbols.genreRepository);
 
     genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
-
-    loggerService = container.get<LoggerService>(coreSymbols.loggerService);
-
-    logErrorSpy = spyFactory.create(loggerService, 'error');
   });
 
   afterEach(async () => {
@@ -47,7 +35,7 @@ describe('GenreRepositoryImpl', () => {
 
   describe('findAll', () => {
     it('returns an empty array - given no Genres exist', async () => {
-      const res = await genreRepository.findAll();
+      const res = await genreRepository.findAllGenres();
 
       expect(res.length).toBe(0);
 
@@ -63,7 +51,7 @@ describe('GenreRepositoryImpl', () => {
         createdGenres.push(createdGenre);
       }
 
-      const res = await genreRepository.findAll();
+      const res = await genreRepository.findAllGenres();
 
       expect(res.length).toBe(createdGenres.length);
 
@@ -73,7 +61,7 @@ describe('GenreRepositoryImpl', () => {
 
   describe('findById', () => {
     it('returns null - when Genre was not found', async () => {
-      const res = await genreRepository.findById({ id: 'non-existing-id' });
+      const res = await genreRepository.findGenre({ id: 'non-existing-id' });
 
       expect(res).toBeNull();
     });
@@ -81,13 +69,11 @@ describe('GenreRepositoryImpl', () => {
     it('returns Genre', async () => {
       const createdGenre = await genreTestUtils.createAndPersist();
 
-      const res = await genreRepository.findById({ id: createdGenre.id });
+      const genre = await genreRepository.findGenre({ id: createdGenre.id });
 
-      expect(res).not.toBeNull();
+      expect(genre).toBeInstanceOf(Genre);
 
-      expect(res).toBeInstanceOf(Genre);
-
-      expect(res?.getState()).toEqual(createdGenre);
+      expect(genre?.getId()).toEqual(createdGenre.id);
     });
   });
 
@@ -95,11 +81,11 @@ describe('GenreRepositoryImpl', () => {
     it('returns an empty array - given no Genres found', async () => {
       const nonExistentIds = Array.from({ length: 5 }, () => Generator.uuid());
 
-      const res = await genreRepository.findManyByIds({
+      const genres = await genreRepository.findGenresByIds({
         ids: nonExistentIds,
       });
 
-      expect(res.length).toBe(0);
+      expect(genres.length).toBe(0);
     });
 
     it('returns Genres', async () => {
@@ -111,66 +97,70 @@ describe('GenreRepositoryImpl', () => {
 
       const genre4 = await genreTestUtils.createAndPersist();
 
-      const res = await genreRepository.findManyByIds({
+      const genres = await genreRepository.findGenresByIds({
         ids: [genre1.id, genre2.id, genre3.id, genre4.id],
       });
 
-      expect(res.length).toBe(4);
+      expect(genres.length).toBe(4);
     });
   });
 
   describe('findByName', () => {
     it('returns null - when Genre was not found', async () => {
-      const res = await genreRepository.findByName({
+      const genre = await genreRepository.findGenre({
         name: 'non-existing-name',
       });
 
-      expect(res).toBeNull();
+      expect(genre).toBeNull();
     });
 
     it('returns Genre', async () => {
       const genre = await genreTestUtils.createAndPersist();
 
-      const result = await genreRepository.findByName({
+      const result = await genreRepository.findGenre({
         name: genre.name,
       });
 
       expect(result).toBeInstanceOf(Genre);
 
-      expect(result?.getState()).toEqual(genre);
+      expect(result?.getName()).toEqual(genre.name);
     });
   });
 
-  describe('create', () => {
+  describe('Save', () => {
     it('creates Genre', async () => {
       const name = Generator.word();
 
-      const res = await genreRepository.create({
-        name,
+      const genre = await genreRepository.saveGenre({
+        genre: {
+          name,
+        },
       });
 
-      expect(res).toBeInstanceOf(Genre);
+      expect(genre).toBeInstanceOf(Genre);
 
-      expect(res.getState().name).toBe(name);
+      expect(genre.getName()).toBe(name);
 
-      const createdGenre = await genreTestUtils.findById(res.getState().id);
+      const createdGenre = await genreTestUtils.findById(genre.getId());
 
-      expect(createdGenre).not.toBeNull();
-
-      expect(createdGenre).toEqual(res.getState());
+      expect(createdGenre?.name).toBe(name);
     });
 
-    it('throws an error - when Genre with the same name already exists', async () => {
+    it('throws an error while creating - when Genre with the same name already exists', async () => {
       const name = Generator.word();
 
-      await genreRepository.create({
-        name,
+      await genreRepository.saveGenre({
+        genre: {
+          name,
+        },
       });
 
       await expect(
         async () =>
-          await genreRepository.create({
-            name,
+          await genreRepository.saveGenre({
+            genre: {
+              name,
+            },
           }),
       ).toThrowErrorInstance({
         instance: RepositoryError,
@@ -179,73 +169,50 @@ describe('GenreRepositoryImpl', () => {
           operation: 'create',
         },
       });
-
-      expect(logErrorSpy).toHaveBeenCalledOnce();
-
-      expect(logErrorSpy).toHaveBeenCalledWith({
-        message: expect.any(String),
-        context: {
-          operation: 'create',
-          repository: 'GenreRepositoryImpl',
-          stack: expect.anything(),
-        },
-      });
     });
-  });
 
-  describe('update', () => {
     it('updates Genre', async () => {
-      const createdGenre = await genreTestUtils.createAndPersist();
+      const genreRawEntity = await genreTestUtils.createAndPersist();
 
       const newName = Generator.words(2);
 
-      const res = await genreRepository.update(
-        new Genre({
-          id: createdGenre.id,
-          name: newName,
-        }),
-      );
+      const genre = genreTestFactory.createEntity(genreRawEntity);
 
-      expect(res).toBeInstanceOf(Genre);
+      genre.setName({ name: newName });
 
-      expect(res.getName()).toBe(newName);
+      const upatedGenre = await genreRepository.saveGenre({
+        genre,
+      });
 
-      const persistedGenre = await genreTestUtils.findById(createdGenre.id);
+      expect(upatedGenre).toBeInstanceOf(Genre);
+
+      expect(upatedGenre.getName()).toBe(newName);
+
+      const persistedGenre = await genreTestUtils.findById(genreRawEntity.id);
 
       expect(persistedGenre).not.toBeNull();
 
       expect(persistedGenre?.name).toBe(newName);
     });
 
-    it('throws an error - when Genre with the same name already exists', async () => {
+    it('throws an error while updating - when Genre with the same name already exists', async () => {
       const createdGenre1 = await genreTestUtils.createAndPersist();
 
       const createdGenre2 = await genreTestUtils.createAndPersist();
 
       await expect(
         async () =>
-          await genreRepository.update(
-            new Genre({
+          await genreRepository.saveGenre({
+            genre: new Genre({
               id: createdGenre1.id,
               name: createdGenre2.name,
             }),
-          ),
+          }),
       ).toThrowErrorInstance({
         instance: RepositoryError,
         context: {
           entity: 'Genre',
           operation: 'update',
-        },
-      });
-
-      expect(logErrorSpy).toHaveBeenCalledOnce();
-
-      expect(logErrorSpy).toHaveBeenCalledWith({
-        message: expect.any(String),
-        context: {
-          operation: 'update',
-          repository: 'GenreRepositoryImpl',
-          stack: expect.anything(),
         },
       });
     });
@@ -255,7 +222,7 @@ describe('GenreRepositoryImpl', () => {
     it('deletes Genre', async () => {
       const createdGenre = await genreTestUtils.createAndPersist();
 
-      await genreRepository.delete(new Genre(createdGenre));
+      await genreRepository.deleteGenre({ id: createdGenre.id });
 
       const deletedGenre = await genreTestUtils.findById(createdGenre.id);
 

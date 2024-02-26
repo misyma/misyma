@@ -14,7 +14,7 @@ export class FindGenreByNameQueryHandlerImpl implements FindGenreByNameQueryHand
 
     const normalizedName = name.toLowerCase();
 
-    const genre = await this.genreRepository.findByName({
+    const genre = await this.genreRepository.findGenre({
       name: normalizedName,
     });
 

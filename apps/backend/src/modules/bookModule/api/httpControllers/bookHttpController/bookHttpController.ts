@@ -224,7 +224,10 @@ export class BookHttpController implements HttpController {
         id: author.getId(),
         lastName: author.getLastName(),
       })),
-      genres: book.getGenres().map((genre) => genre.getState()),
+      genres: book.getGenres().map((genre) => ({
+        id: genre.getId(),
+        name: genre.getName(),
+      })),
     };
 
     const isbn = book.getIsbn();

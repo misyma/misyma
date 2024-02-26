@@ -5,7 +5,7 @@ export class FindGenresQueryHandlerImpl implements FindGenresQueryHandler {
   public constructor(private readonly genreRepository: GenreRepository) {}
 
   public async execute(): Promise<FindGenresResult> {
-    const genres = await this.genreRepository.findAll();
+    const genres = await this.genreRepository.findAllGenres();
 
     return {
       genres,

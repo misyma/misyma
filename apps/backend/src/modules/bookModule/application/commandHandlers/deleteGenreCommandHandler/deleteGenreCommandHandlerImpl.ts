@@ -8,7 +8,7 @@ export class DeleteGenreCommandHandlerImpl implements DeleteGenreCommandHandler 
   public async execute(payload: DeleteGenrePayload): Promise<void> {
     const { id } = payload;
 
-    const genre = await this.genreRepository.findById({
+    const genre = await this.genreRepository.findGenre({
       id,
     });
 
@@ -19,6 +19,6 @@ export class DeleteGenreCommandHandlerImpl implements DeleteGenreCommandHandler 
       });
     }
 
-    await this.genreRepository.delete(genre);
+    await this.genreRepository.deleteGenre({ id: genre.getId() });
   }
 }

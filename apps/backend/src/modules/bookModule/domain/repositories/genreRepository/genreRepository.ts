@@ -1,27 +1,26 @@
-import { type Genre } from '../../entities/genre/genre.js';
+import { type GenreState, type Genre } from '../../entities/genre/genre.js';
 
-export interface FindByIdPayload {
-  readonly id: string;
+export interface FindGenrePayload {
+  readonly id?: string;
+  readonly name?: string;
 }
 
-export interface CreatePayload {
-  readonly name: string;
+export interface SaveGenrePayload {
+  readonly genre: GenreState | Genre;
 }
 
-export interface FindByNamePayload {
-  readonly name: string;
-}
-
-export interface FindManyByIds {
+export interface FindGenresByIds {
   readonly ids: string[];
 }
 
+export interface DeleteGenrePayload {
+  readonly id: string;
+}
+
 export interface GenreRepository {
-  findAll(): Promise<Genre[]>;
-  findById(payload: FindByIdPayload): Promise<Genre | null>;
-  findManyByIds(payload: FindManyByIds): Promise<Genre[]>;
-  findByName(payload: FindByNamePayload): Promise<Genre | null>;
-  create(payload: CreatePayload): Promise<Genre>;
-  update(payload: Genre): Promise<Genre>;
-  delete(payload: Genre): Promise<void>;
+  findGenre(payload: FindGenrePayload): Promise<Genre | null>;
+  findGenresByIds(payload: FindGenresByIds): Promise<Genre[]>;
+  findAllGenres(): Promise<Genre[]>;
+  saveGenre(payload: SaveGenrePayload): Promise<Genre>;
+  deleteGenre(payload: DeleteGenrePayload): Promise<void>;
 }

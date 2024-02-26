@@ -76,7 +76,6 @@ export class BookModule implements DependencyInjectionModule {
           container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient),
           container.get<GenreMapper>(symbols.genreMapper),
           container.get<UuidService>(coreSymbols.uuidService),
-          container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );
   }
