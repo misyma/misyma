@@ -1,6 +1,6 @@
 import { FC, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+import { ControllerRenderProps, useForm } from 'react-hook-form';
 import { LoginUserFormValues, loginUserFormSchema } from './schema/loginUserFormSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { type LoginUserResponseBody } from '@common/contracts';
@@ -9,6 +9,7 @@ import { UserApiError } from '../../../../api/user/errors/userApiError';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../components/ui/form';
 import { Input } from '../../../../components/ui/input';
 import { Button } from '../../../../components/ui/button';
+import { cn } from '../../../../lib/utils';
 
 interface LoginUserFormProps {
   onSuccess: (loginUserResponseBody: LoginUserResponseBody) => void;
@@ -24,6 +25,8 @@ export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccess, onError }: Lo
       email: '',
       password: '',
     },
+    mode: 'onChange',
+    reValidateMode: 'onChange',
   });
 
   const [responseErrorMessage, setResponseErrorMessage] = useState<null | string>(null);
@@ -47,6 +50,22 @@ export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccess, onError }: Lo
     );
   };
 
+  const setInputFieldErrorState = (
+    field:
+      | ControllerRenderProps<{
+          email: string;
+        }>
+      | ControllerRenderProps<{
+          password: string;
+        }>,
+  ) => {
+    if (form.formState.errors[field.name]) {
+      return 'border-red-500';
+    }
+
+    return '';
+  };
+
   return (
     <>
       <Form {...form}>
@@ -63,7 +82,7 @@ export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccess, onError }: Lo
                 <FormControl>
                   <Input
                     placeholder="Email"
-                    className="w-80"
+                    className={cn('w-60 sm:w-80 focus:border-input', setInputFieldErrorState(field))}
                     {...field}
                   />
                 </FormControl>
@@ -81,7 +100,7 @@ export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccess, onError }: Lo
                   <Input
                     placeholder="Haslo"
                     type="password"
-                    className="w-80"
+                    className={cn('w-60 sm:w-80 focus:border-input', setInputFieldErrorState(field))}
                     {...field}
                   />
                 </FormControl>
@@ -91,15 +110,15 @@ export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccess, onError }: Lo
           />
           <Button
             type="submit"
-            className="w-80 border-black border hover:bg-white bg-white text-primary"
+            className="w-60 sm:w-80 border-primary border-[1.25px] hover:bg-white bg-white text-primary font-semibold"
           >
             Zaloguj się
           </Button>
-          <p>
+          <p className="font-light">
             Nie masz konta?{' '}
             <Link
               to="/register"
-              className="text-primary"
+              className="text-primary font-semibold"
             >
               Zarejestruj się
             </Link>

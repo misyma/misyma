@@ -109,7 +109,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ onSuccess, onError
           />
           <Button
             type="submit"
-            className="w-80 border-black border hover:bg-white bg-white text-primary"
+            className="w-80 border-primary border hover:bg-white bg-white text-primary"
           >
             Zarejestruj sie
           </Button>
