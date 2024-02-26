@@ -21,7 +21,7 @@ export const LoginPage: FC = () => {
     );
 
     navigate({
-      to: '/',
+      to: '/me',
     });
   };
 
