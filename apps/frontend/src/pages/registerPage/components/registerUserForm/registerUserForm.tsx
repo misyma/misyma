@@ -1,12 +1,12 @@
 import { FC, useState } from 'react';
-import { UserApiError } from '../../../api/user/errors/userApiError';
 import { useForm } from 'react-hook-form';
 import { RegisterUserFormSchemaValues, registerUserFormSchema } from './schema/registerUserFormSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRegisterUserMutation } from '../../../api/user/mutations/registerUserMutation/registerUserMutation';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../ui/form';
-import { Input } from '../../ui/input';
-import { Button } from '../../ui/button';
+import { UserApiError } from '../../../../api/user/errors/userApiError';
+import { useRegisterUserMutation } from '../../../../api/user/mutations/registerUserMutation/registerUserMutation';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../components/ui/form';
+import { Input } from '../../../../components/ui/input';
+import { Button } from '../../../../components/ui/button';
 
 interface RegisterUserFormProps {
   onSuccessfulRegister: (result: boolean) => void;

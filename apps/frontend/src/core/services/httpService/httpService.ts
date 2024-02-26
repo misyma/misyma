@@ -8,7 +8,6 @@ type RequestPayload = {
    * Defaults to 'application/json'. Determines how the response will be parsed. \\
    * Currently only supports 'application/json' and 'text/plain'.
    */
-  accept?: 'application/json' | 'text/plain';
   body?: Record<string, unknown>;
 };
 
@@ -38,7 +37,7 @@ export class HttpService {
   private static readonly baseUrl = import.meta.env.VITE_API_BASE_URL;
 
   public static async get<T = unknown>(payload: GetRequestPayload): Promise<HttpResponse<T>> {
-    const { url, headers, queryParams, accept = 'application/json' } = payload;
+    const { url, headers, queryParams } = payload;
 
     let requestUrl = `${this.baseUrl}${url}`;
 
@@ -51,7 +50,7 @@ export class HttpService {
     const response = await fetch(`${requestUrl}`, {
       headers: {
         ...headers,
-        Accept: accept,
+        Accept: 'application/json',
       },
       method: 'GET',
     });
@@ -60,16 +59,6 @@ export class HttpService {
       return {
         body: await response.json(),
         success: false,
-        statusCode: response.status,
-      };
-    }
-
-    if (accept === 'text/plain') {
-      const body = (await response.text()) as T;
-
-      return {
-        body,
-        success: true,
         statusCode: response.status,
       };
     }
@@ -84,12 +73,12 @@ export class HttpService {
   }
 
   public static async post<T = unknown>(payload: RequestPayload): Promise<HttpResponse<T>> {
-    const { url, headers, body, accept = 'application/json' } = payload;
+    const { url, headers, body } = payload;
 
     const response = await fetch(`${this.baseUrl}${url}`, {
       headers: {
         ...headers,
-        Accept: accept,
+        Accept: 'application/json',
         'Content-Type': 'application/json',
       },
       method: 'POST',
@@ -100,20 +89,6 @@ export class HttpService {
       return {
         body: await response.json(),
         success: false,
-        statusCode: response.status,
-      };
-    }
-
-    if (accept === 'application/json') {
-      return response.json();
-    }
-
-    if (accept === 'text/plain') {
-      const body = (await response.text()) as T;
-
-      return {
-        body,
-        success: true,
         statusCode: response.status,
       };
     }

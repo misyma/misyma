@@ -4,7 +4,7 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { userStateSelectors } from "../../store/states/userState/userStateSlice.js";
 
 
-export function RequireAuth(): React.ReactNode {
+export function RequireAuthComponent(): React.ReactNode {
     const currentUserTokens = useStoreSelector(
         userStateSelectors.selectCurrentUserTokens
     );

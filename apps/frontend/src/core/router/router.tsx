@@ -8,7 +8,7 @@ import { UnauthenticatedPage } from '../../pages/unauthenticatedPage/unauthentic
 import { LandingPage } from '../../pages/landingPage/landingPage';
 import { RegisterPage } from '../../pages/registerPage/registerPage';
 import { VerifyEmailPage } from '../../pages/verifyEmailPage/verifyEmailPage';
-import { RequireAuth } from '../components/requireAuth/requireAuth';
+import { RequireAuthComponent } from '../components/requireAuth/requireAuthComponent';
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -16,7 +16,7 @@ export const router = createBrowserRouter(
       path="/"
       element={<RootPage />}
     >
-      <Route element={<RequireAuth />}>
+      <Route element={<RequireAuthComponent />}>
         <Route
           path="/app"
           element={<AuthenticatedPage />}

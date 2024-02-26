@@ -3,14 +3,14 @@ import { Provider } from 'react-redux';
 import { Outlet } from 'react-router-dom';
 
 import { store } from '../../core/store/store';
-import { Providers } from '../../core/components/providers/providers';
+import { QueryClientProvider } from '../../core/components/providers/queryClientProvider';
 
 export const RootPage: FC = () => {
   return (
     <Provider store={store}>
-      <Providers>
+      <QueryClientProvider>
         <Outlet />
-      </Providers>
+      </QueryClientProvider>
     </Provider>
   );
 };

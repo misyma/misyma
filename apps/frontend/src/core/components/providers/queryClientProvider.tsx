@@ -1,4 +1,4 @@
-import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryCache, QueryClient, QueryClientProvider as NativeQueryClientProvider } from '@tanstack/react-query';
 import React, { useState } from 'react';
 import { ApiError } from '../../../common/errors/apiError';
 import { useStoreSelector } from '../../store/hooks/useStoreSelector';
@@ -12,7 +12,7 @@ interface ProviderProps {
   children: React.ReactNode;
 }
 
-export const Providers = ({ children }: ProviderProps) => {
+export const QueryClientProvider = ({ children }: ProviderProps) => {
   const { refreshToken } = useStoreSelector(userStateSelectors.selectCurrentUserTokens);
 
   const storeDispatch = useStoreDispatch();
@@ -79,5 +79,5 @@ export const Providers = ({ children }: ProviderProps) => {
     }),
   });
 
-  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
+  return <NativeQueryClientProvider client={queryClient}>{children}</NativeQueryClientProvider>;
 };

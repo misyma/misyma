@@ -2,8 +2,8 @@ import { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStoreDispatch } from '../../core/store/hooks/useStoreDispatch';
 import { userStateActions } from '../../core/store/states/userState/userStateSlice';
-import { LoginUserForm } from '../../components/forms/loginUserForm/loginUserForm';
 import { type LoginUserResponseBody } from '@common/contracts';
+import { LoginUserForm } from './components/loginUserForm/loginUserForm';
 
 export const LoginPage: FC = () => {
   const storeDispatch = useStoreDispatch();
