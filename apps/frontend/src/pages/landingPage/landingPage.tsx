@@ -1,7 +1,6 @@
 import { FC } from 'react';
-
+import { Link } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
 
 export const LandingPage: FC = () => {
   return (

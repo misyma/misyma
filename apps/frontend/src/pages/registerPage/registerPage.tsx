@@ -1,6 +1,6 @@
 import { FC } from 'react';
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from '@tanstack/react-router';
 import { RegisterUserForm } from './components/registerUserForm/registerUserForm';
 
 export const RegisterPage: FC = () => {
@@ -8,7 +8,9 @@ export const RegisterPage: FC = () => {
 
   const onSuccessfulRegister = (result: boolean) => {
     if (result) {
-      navigate('/login');
+      navigate({
+        to: '/login',
+      });
     }
   };
 

@@ -1,5 +1,5 @@
 import { FC, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '@tanstack/react-router';
 import { ControllerRenderProps, useForm } from 'react-hook-form';
 import { LoginUserFormValues, loginUserFormSchema } from './schema/loginUserFormSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
