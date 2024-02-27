@@ -1,59 +1,37 @@
 import { type GenreMapper } from './genreMapper/genreMapper.js';
 import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
-import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';
-import { type Transaction } from '../../../../../libs/database/types/transaction.js';
-import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
-import { type Genre } from '../../../domain/entities/genre/genre.js';
+import { Genre, type GenreState } from '../../../domain/entities/genre/genre.js';
 import {
-  type FindByNamePayload,
-  type FindByIdPayload,
+  type FindGenrePayload,
   type GenreRepository,
-  type CreatePayload,
-  type FindManyByIds,
+  type FindGenresByIds,
+  type SaveGenrePayload,
+  type DeleteGenrePayload,
 } from '../../../domain/repositories/genreRepository/genreRepository.js';
 import { type GenreRawEntity } from '../../databases/bookDatabase/tables/genreTable/genreRawEntity.js';
 import { GenreTable } from '../../databases/bookDatabase/tables/genreTable/genreTable.js';
 
-interface GetQueryBuilderPayload {
-  transaction?: Transaction;
-}
+type CreateGenrePayload = { genre: GenreState };
 
-interface LogErrorPayload {
-  operation: string;
-  error: unknown;
-}
+type UpdateGenrePayload = { genre: Genre };
 
 export class GenreRepositoryImpl implements GenreRepository {
   public constructor(
     private readonly sqliteDatabaseClient: SqliteDatabaseClient,
     private readonly genreMapper: GenreMapper,
     private readonly uuidService: UuidService,
-    private readonly loggerService: LoggerService,
   ) {}
 
   private readonly genreTable = new GenreTable();
 
-  private getQueryBuilder(payload?: GetQueryBuilderPayload): QueryBuilder<GenreRawEntity> {
-    if (payload?.transaction) {
-      return this.sqliteDatabaseClient(this.genreTable.name).transacting(payload.transaction);
-    }
-
-    return this.sqliteDatabaseClient<GenreRawEntity>(this.genreTable.name);
-  }
-
-  public async findAll(): Promise<Genre[]> {
+  public async findAllGenres(): Promise<Genre[]> {
     let rawEntities: GenreRawEntity[];
 
     try {
-      rawEntities = await this.getQueryBuilder().select('*');
+      rawEntities = await this.sqliteDatabaseClient<GenreRawEntity>(this.genreTable.name).select('*');
     } catch (error) {
-      this.logError({
-        operation: 'findAll',
-        error,
-      });
-
       throw new RepositoryError({
         entity: 'Genre',
         operation: 'find',
@@ -63,19 +41,33 @@ export class GenreRepositoryImpl implements GenreRepository {
     return rawEntities.map((rawEntity) => this.genreMapper.toDomain(rawEntity));
   }
 
-  public async findById(payload: FindByIdPayload): Promise<Genre | null> {
-    const { id } = payload;
+  public async findGenre(payload: FindGenrePayload): Promise<Genre | null> {
+    const { id, name } = payload;
 
     let rawEntity: GenreRawEntity | undefined;
 
-    try {
-      rawEntity = await this.getQueryBuilder().select('*').where(this.genreTable.columns.id, id).first();
-    } catch (error) {
-      this.logError({
-        operation: 'findById',
-        error,
-      });
+    let whereCondition: Partial<GenreRawEntity> = {};
 
+    if (id) {
+      whereCondition = {
+        ...whereCondition,
+        id,
+      };
+    }
+
+    if (name) {
+      whereCondition = {
+        ...whereCondition,
+        name,
+      };
+    }
+
+    try {
+      rawEntity = await this.sqliteDatabaseClient<GenreRawEntity>(this.genreTable.name)
+        .select('*')
+        .where(whereCondition)
+        .first();
+    } catch (error) {
       throw new RepositoryError({
         entity: 'Genre',
         operation: 'find',
@@ -89,19 +81,16 @@ export class GenreRepositoryImpl implements GenreRepository {
     return this.genreMapper.toDomain(rawEntity);
   }
 
-  public async findManyByIds(payload: FindManyByIds): Promise<Genre[]> {
+  public async findGenresByIds(payload: FindGenresByIds): Promise<Genre[]> {
     const { ids } = payload;
 
     let rawEntities: GenreRawEntity[];
 
     try {
-      rawEntities = await this.getQueryBuilder().select('*').whereIn(this.genreTable.columns.id, ids);
+      rawEntities = await this.sqliteDatabaseClient<GenreRawEntity>(this.genreTable.name)
+        .select('*')
+        .whereIn(this.genreTable.columns.id, ids);
     } catch (error) {
-      this.logError({
-        error,
-        operation: 'findManyByIds',
-      });
-
       throw new RepositoryError({
         entity: 'Genre',
         operation: 'find',
@@ -111,50 +100,31 @@ export class GenreRepositoryImpl implements GenreRepository {
     return rawEntities.map((rawEntity) => this.genreMapper.toDomain(rawEntity));
   }
 
-  public async findByName(payload: FindByNamePayload): Promise<Genre | null> {
-    const { name } = payload;
+  public async saveGenre(payload: SaveGenrePayload): Promise<Genre> {
+    const { genre } = payload;
 
-    let rawEntity: GenreRawEntity | undefined;
-
-    try {
-      rawEntity = await this.getQueryBuilder().select('*').where(this.genreTable.columns.name, name).first();
-    } catch (error) {
-      this.logError({
-        operation: 'findById',
-        error,
-      });
-
-      throw new RepositoryError({
-        entity: 'Genre',
-        operation: 'find',
-      });
+    if (genre instanceof Genre) {
+      return this.update({ genre });
     }
 
-    if (!rawEntity) {
-      return null;
-    }
-
-    return this.genreMapper.toDomain(rawEntity);
+    return this.create({ genre });
   }
 
-  public async create(payload: CreatePayload): Promise<Genre> {
-    const { name } = payload;
+  private async create(payload: CreateGenrePayload): Promise<Genre> {
+    const {
+      genre: { name },
+    } = payload;
 
     let rawEntities: GenreRawEntity[];
 
     try {
-      rawEntities = await this.getQueryBuilder()
+      rawEntities = await this.sqliteDatabaseClient<GenreRawEntity>(this.genreTable.name)
         .insert({
           id: this.uuidService.generateUuid(),
           name,
         })
         .returning('*');
     } catch (error) {
-      this.logError({
-        error,
-        operation: 'create',
-      });
-
       throw new RepositoryError({
         entity: 'Genre',
         operation: 'create',
@@ -164,11 +134,6 @@ export class GenreRepositoryImpl implements GenreRepository {
     const rawEntity = rawEntities[0];
 
     if (!rawEntity) {
-      this.logError({
-        error: 'Created entity not returned correctly.',
-        operation: 'create',
-      });
-
       throw new RepositoryError({
         entity: 'Genre',
         operation: 'create',
@@ -178,22 +143,17 @@ export class GenreRepositoryImpl implements GenreRepository {
     return this.genreMapper.toDomain(rawEntity);
   }
 
-  public async update(payload: Genre): Promise<Genre> {
+  private async update(payload: UpdateGenrePayload): Promise<Genre> {
+    const { genre } = payload;
+
     let rawEntities: GenreRawEntity[];
 
     try {
-      rawEntities = await this.getQueryBuilder()
-        .update({
-          name: payload.getName(),
-        })
-        .where(this.genreTable.columns.id, payload.getId())
+      rawEntities = await this.sqliteDatabaseClient<GenreRawEntity>(this.genreTable.name)
+        .update(genre.getState())
+        .where(this.genreTable.columns.id, genre.getId())
         .returning('*');
     } catch (error) {
-      this.logError({
-        error,
-        operation: 'update',
-      });
-
       throw new RepositoryError({
         entity: 'Genre',
         operation: 'update',
@@ -203,11 +163,6 @@ export class GenreRepositoryImpl implements GenreRepository {
     const rawEntity = rawEntities[0];
 
     if (!rawEntity) {
-      this.logError({
-        error: 'Updated entity not returned correctly.',
-        operation: 'update',
-      });
-
       throw new RepositoryError({
         entity: 'Genre',
         operation: 'update',
@@ -217,42 +172,17 @@ export class GenreRepositoryImpl implements GenreRepository {
     return this.genreMapper.toDomain(rawEntity);
   }
 
-  public async delete(payload: Genre): Promise<void> {
-    try {
-      await this.getQueryBuilder().delete().where(this.genreTable.columns.id, payload.getId());
-    } catch (error) {
-      this.logError({
-        error,
-        operation: 'delete',
-      });
+  public async deleteGenre(payload: DeleteGenrePayload): Promise<void> {
+    const { id } = payload;
 
+    try {
+      await this.sqliteDatabaseClient<GenreRawEntity>(this.genreTable.name)
+        .delete()
+        .where(this.genreTable.columns.id, id);
+    } catch (error) {
       throw new RepositoryError({
         entity: 'Genre',
         operation: 'delete',
-      });
-    }
-  }
-
-  private logError(payload: LogErrorPayload): void {
-    const { error, operation } = payload;
-
-    if (error instanceof Error) {
-      this.loggerService.error({
-        message: error.message,
-        context: {
-          operation,
-          repository: 'GenreRepositoryImpl',
-          stack: error.stack,
-        },
-      });
-    } else {
-      this.loggerService.error({
-        message: 'An error occurred.',
-        context: {
-          operation,
-          repository: 'GenreRepositoryImpl',
-          error,
-        },
       });
     }
   }

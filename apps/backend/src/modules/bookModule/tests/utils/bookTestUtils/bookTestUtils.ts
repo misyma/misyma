@@ -24,8 +24,8 @@ interface FindByIdPayload {
   id: string;
 }
 
-interface FindRawBookAuthorsByIdPayload {
-  id: string;
+interface FindBookAuthorsPayload {
+  bookId: string;
 }
 
 interface FindByTitleAndAuthorPayload {
@@ -79,13 +79,13 @@ export class BookTestUtils {
     return rawEntities[0] as BookRawEntity;
   }
 
-  public async findRawBookAuthorsById(payload: FindRawBookAuthorsByIdPayload): Promise<BooksAuthorsRawEntity[]> {
-    const { id } = payload;
+  public async findBookAuthors(payload: FindBookAuthorsPayload): Promise<BooksAuthorsRawEntity[]> {
+    const { bookId } = payload;
 
     const rawEntities = await this.sqliteDatabaseClient(this.booksAuthorsTable.name)
       .select('*')
       .where({
-        [this.booksAuthorsTable.columns.bookId]: id,
+        [this.booksAuthorsTable.columns.bookId]: bookId,
       });
 
     return rawEntities;

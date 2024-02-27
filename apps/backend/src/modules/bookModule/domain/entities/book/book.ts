@@ -1,7 +1,5 @@
 import { type BookFormat, type BookStatus } from '@common/contracts';
 
-import { type BookDomainAction } from './domainActions/bookDomainActions.js';
-import { BookDomainActionType } from './domainActions/bookDomainActionType.js';
 import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
 import { type Author } from '../../../../authorModule/domain/entities/author/author.js';
 import { type Genre } from '../genre/genre.js';
@@ -20,80 +18,86 @@ export interface BookDraft {
   readonly backCoverImageUrl?: string | undefined;
   readonly status: BookStatus;
   readonly bookshelfId: string;
-  readonly authors?: Author[];
-  readonly genres?: Genre[];
+  readonly authors: Author[];
+  readonly genres: Genre[];
 }
 
-export interface AddUpdateTitleDomainActionPayload {
+export interface BookState {
+  title: string;
+  isbn?: string | undefined;
+  publisher?: string | undefined;
+  releaseYear?: number | undefined;
+  language: string;
+  translator?: string | undefined;
+  format: BookFormat;
+  pages?: number | undefined;
+  frontCoverImageUrl?: string | undefined;
+  backCoverImageUrl?: string | undefined;
+  status: BookStatus;
+  bookshelfId: string;
+  authors: Author[];
+  genres: Genre[];
+}
+
+export interface SetTitlePayload {
   readonly title: string;
 }
 
-export interface AddUpdateIsbnDomainActionPayload {
+export interface SetIsbnPayload {
   readonly isbn: string;
 }
 
-export interface AddUpdatePublisherDomainActionPayload {
+export interface SetPublisherPayload {
   readonly publisher: string;
 }
 
-export interface AddUpdateReleaseYearDomainActionPayload {
+export interface SetReleaseYearPayload {
   readonly releaseYear: number;
 }
 
-export interface AddUpdateLanguageDomainActionPayload {
+export interface SetLanguagePayload {
   readonly language: string;
 }
 
-export interface AddUpdateTranslatorDomainActionPayload {
+export interface SetTranslatorPayload {
   readonly translator: string;
 }
 
-export interface AddUpdateFormatDomainActionPayload {
+export interface SetFormatPayload {
   readonly format: BookFormat;
 }
 
-export interface AddUpdatePagesDomainActionPayload {
+export interface SetPagesPayload {
   readonly pages: number;
 }
 
-export interface AddUpdateFrontCoverImageUrlDomainActionPayload {
+export interface SetFrontCoverImageUrlPayload {
   readonly frontCoverImageUrl: string;
 }
 
-export interface AddUpdateBackCoverImageUrlDomainActionPayload {
+export interface SetBackCoverImageUrlPayload {
   readonly backCoverImageUrl: string;
 }
 
-export interface AddUpdateStatusDomainActionPayload {
+export interface SetStatusPayload {
   readonly status: BookStatus;
 }
 
-export interface AddUpdateBookshelfDomainActionPayload {
+export interface SetBookshelfPayload {
   readonly bookshelfId: string;
 }
 
-export interface AddUpdateBookGenresDomainActionPayload {
+export interface SetAuthorsPayload {
+  readonly authors: Author[];
+}
+
+export interface SetGenresPayload {
   readonly genres: Genre[];
 }
 
 export class Book {
   private readonly id: string;
-  private title: string;
-  private isbn?: string;
-  private publisher?: string;
-  private releaseYear?: number;
-  private language: string;
-  private translator?: string;
-  private format: BookFormat;
-  private pages?: number;
-  private frontCoverImageUrl?: string;
-  private backCoverImageUrl?: string;
-  private status: BookStatus;
-  private bookshelfId: string;
-  private genres: Genre[] = [];
-  private readonly authors: Author[] = [];
-
-  private domainActions: BookDomainAction[] = [];
+  private readonly state: BookState;
 
   public constructor(draft: BookDraft) {
     const {
@@ -116,74 +120,47 @@ export class Book {
 
     this.id = id;
 
-    this.title = title;
+    this.state = {
+      title,
+      language,
+      format,
+      status,
+      bookshelfId,
+      authors,
+      genres,
+    };
 
     if (isbn) {
-      this.isbn = isbn;
+      this.state.isbn = isbn;
     }
 
     if (publisher) {
-      this.publisher = publisher;
+      this.state.publisher = publisher;
     }
 
     if (releaseYear !== undefined) {
-      this.releaseYear = releaseYear;
+      this.state.releaseYear = releaseYear;
     }
-
-    this.language = language;
 
     if (translator) {
-      this.translator = translator;
+      this.state.translator = translator;
     }
 
-    this.format = format;
-
     if (pages) {
-      this.pages = pages;
+      this.state.pages = pages;
     }
 
     if (frontCoverImageUrl) {
-      this.frontCoverImageUrl = frontCoverImageUrl;
+      this.state.frontCoverImageUrl = frontCoverImageUrl;
     }
 
     if (backCoverImageUrl) {
-      this.backCoverImageUrl = backCoverImageUrl;
-    }
-
-    this.status = status;
-
-    this.bookshelfId = bookshelfId;
-
-    if (authors) {
-      this.authors = authors;
-    }
-
-    if (genres) {
-      this.genres = genres;
+      this.state.backCoverImageUrl = backCoverImageUrl;
     }
   }
 
-  public getState(): BookDraft {
-    return {
-      id: this.id,
-      title: this.title,
-      isbn: this.isbn,
-      publisher: this.publisher,
-      releaseYear: this.releaseYear,
-      language: this.language,
-      translator: this.translator,
-      format: this.format,
-      pages: this.pages,
-      frontCoverImageUrl: this.frontCoverImageUrl,
-      backCoverImageUrl: this.backCoverImageUrl,
-      status: this.status,
-      bookshelfId: this.bookshelfId,
-      authors: [...this.authors],
-    };
-  }
-
-  public getDomainActions(): BookDomainAction[] {
-    return [...this.domainActions];
+  public getState(): BookState {
+    return this.state;
   }
 
   public getId(): string {
@@ -191,65 +168,137 @@ export class Book {
   }
 
   public getTitle(): string {
-    return this.title;
+    return this.state.title;
   }
 
   public getIsbn(): string | undefined {
-    return this.isbn;
+    return this.state.isbn;
   }
 
   public getPublisher(): string | undefined {
-    return this.publisher;
+    return this.state.publisher;
   }
 
   public getReleaseYear(): number | undefined {
-    return this.releaseYear;
+    return this.state.releaseYear;
   }
 
   public getLanguage(): string {
-    return this.language;
+    return this.state.language;
   }
 
   public getTranslator(): string | undefined {
-    return this.translator;
+    return this.state.translator;
   }
 
   public getFormat(): BookFormat {
-    return this.format;
+    return this.state.format;
   }
 
   public getPages(): number | undefined {
-    return this.pages;
+    return this.state.pages;
   }
 
   public getFrontCoverImageUrl(): string | undefined {
-    return this.frontCoverImageUrl;
+    return this.state.frontCoverImageUrl;
   }
 
   public getBackCoverImageUrl(): string | undefined {
-    return this.backCoverImageUrl;
+    return this.state.backCoverImageUrl;
   }
 
   public getStatus(): BookStatus {
-    return this.status;
+    return this.state.status;
   }
 
   public getBookshelfId(): string {
-    return this.bookshelfId;
+    return this.state.bookshelfId;
   }
 
   public getAuthors(): Author[] {
-    return [...this.authors];
+    return this.state.authors ? [...this.state.authors] : [];
   }
 
   public getGenres(): Genre[] {
-    return [...this.genres];
+    return this.state.genres ? [...this.state.genres] : [];
   }
 
-  public addAddAuthorDomainAction(author: Author): void {
+  public setTitle(payload: SetTitlePayload): void {
+    const { title } = payload;
+
+    this.state.title = title;
+  }
+
+  public setIsbn(payload: SetIsbnPayload): void {
+    const { isbn } = payload;
+
+    this.state.isbn = isbn;
+  }
+
+  public setPublisher(payload: SetPublisherPayload): void {
+    const { publisher } = payload;
+
+    this.state.publisher = publisher;
+  }
+
+  public setReleaseYear(payload: SetReleaseYearPayload): void {
+    const { releaseYear } = payload;
+
+    this.state.releaseYear = releaseYear;
+  }
+
+  public setLanguage(payload: SetLanguagePayload): void {
+    const { language } = payload;
+
+    this.state.language = language;
+  }
+
+  public setTranslator(payload: SetTranslatorPayload): void {
+    const { translator } = payload;
+
+    this.state.translator = translator;
+  }
+
+  public setFormat(payload: SetFormatPayload): void {
+    const { format } = payload;
+
+    this.state.format = format;
+  }
+
+  public setPages(payload: SetPagesPayload): void {
+    const { pages } = payload;
+
+    this.state.pages = pages;
+  }
+
+  public setFrontCoverImageUrl(payload: SetFrontCoverImageUrlPayload): void {
+    const { frontCoverImageUrl } = payload;
+
+    this.state.frontCoverImageUrl = frontCoverImageUrl;
+  }
+
+  public setBackCoverImageUrl(payload: SetBackCoverImageUrlPayload): void {
+    const { backCoverImageUrl } = payload;
+
+    this.state.backCoverImageUrl = backCoverImageUrl;
+  }
+
+  public setStatus(payload: SetStatusPayload): void {
+    const { status } = payload;
+
+    this.state.status = status;
+  }
+
+  public setBookshelf(payload: SetBookshelfPayload): void {
+    const { bookshelfId } = payload;
+
+    this.state.bookshelfId = bookshelfId;
+  }
+
+  public addAuthor(author: Author): void {
     const authorId = author.getId();
 
-    const authorExists = this.authors.some((author) => author.getId() === authorId);
+    const authorExists = this.state.authors.some((author) => author.getId() === authorId);
 
     if (authorExists) {
       throw new OperationNotValidError({
@@ -258,297 +307,27 @@ export class Book {
       });
     }
 
-    this.domainActions.push({
-      type: BookDomainActionType.addAuthor,
-      payload: {
-        authorId,
-      },
-    });
-
-    this.authors.push(author);
+    this.state.authors = [...this.state.authors, author];
   }
 
-  public addDeleteAuthorDomainAction(author: Author): void {
+  public deleteAuthor(author: Author): void {
     const authorId = author.getId();
 
-    const authorExists = this.authors.findIndex((author) => author.getId() === authorId);
+    const authorIndex = this.state.authors.findIndex((author) => author.getId() === authorId);
 
-    if (authorExists < 0) {
+    if (authorIndex < 0) {
       throw new OperationNotValidError({
         reason: 'Author is not assigned to this book.',
         value: authorId,
       });
     }
 
-    this.domainActions.push({
-      type: BookDomainActionType.deleteAuthor,
-      payload: {
-        authorId,
-      },
-    });
-
-    this.authors.splice(authorExists, 1);
+    this.state.authors.splice(authorIndex, 1);
   }
 
-  public addUpdateTitleDomainAction(payload: AddUpdateTitleDomainActionPayload): void {
-    const { title } = payload;
-
-    if (this.title === title) {
-      throw new OperationNotValidError({
-        reason: 'Cannot update Title, because it is the same as the current one.',
-        value: title,
-      });
-    }
-
-    this.domainActions.push({
-      type: BookDomainActionType.updateTitle,
-      payload: {
-        title,
-      },
-    });
-
-    this.title = title;
-  }
-
-  public addUpdateIsbnDomainAction(payload: AddUpdateIsbnDomainActionPayload): void {
-    const { isbn } = payload;
-
-    if (this.isbn === isbn) {
-      throw new OperationNotValidError({
-        reason: 'Cannot update ISBN, because it is the same as the current one.',
-        value: isbn,
-      });
-    }
-
-    this.domainActions.push({
-      type: BookDomainActionType.updateIsbn,
-      payload: {
-        isbn,
-      },
-    });
-
-    this.isbn = isbn;
-  }
-
-  public addUpdatePublisherDomainAction(payload: AddUpdatePublisherDomainActionPayload): void {
-    const { publisher } = payload;
-
-    if (this.publisher === publisher) {
-      throw new OperationNotValidError({
-        reason: 'Cannot update Publisher, because it is the same as the current one.',
-        value: publisher,
-      });
-    }
-
-    this.domainActions.push({
-      type: BookDomainActionType.updatePublisher,
-      payload: {
-        publisher,
-      },
-    });
-
-    this.publisher = publisher;
-  }
-
-  public addUpdateReleaseYearDomainAction(payload: AddUpdateReleaseYearDomainActionPayload): void {
-    const { releaseYear } = payload;
-
-    if (this.releaseYear === releaseYear) {
-      throw new OperationNotValidError({
-        reason: 'Cannot update Release Year, because it is the same as the current one.',
-        value: releaseYear,
-      });
-    }
-
-    this.domainActions.push({
-      type: BookDomainActionType.updateReleaseYear,
-      payload: {
-        releaseYear,
-      },
-    });
-
-    this.releaseYear = releaseYear;
-  }
-
-  public addUpdateLanguageDomainAction(payload: AddUpdateLanguageDomainActionPayload): void {
-    const { language } = payload;
-
-    if (this.language === language) {
-      throw new OperationNotValidError({
-        reason: 'Cannot update Language, because it is the same as the current one.',
-        value: language,
-      });
-    }
-
-    this.domainActions.push({
-      type: BookDomainActionType.updateLanguage,
-      payload: {
-        language,
-      },
-    });
-
-    this.language = language;
-  }
-
-  public addUpdateTranslatorDomainAction(payload: AddUpdateTranslatorDomainActionPayload): void {
-    const { translator } = payload;
-
-    if (this.translator === translator) {
-      throw new OperationNotValidError({
-        reason: 'Cannot update Translator, because it is the same as the current one.',
-        value: translator,
-      });
-    }
-
-    this.domainActions.push({
-      type: BookDomainActionType.updateTranslator,
-      payload: {
-        translator,
-      },
-    });
-
-    this.translator = translator;
-  }
-
-  public addUpdateFormatDomainAction(payload: AddUpdateFormatDomainActionPayload): void {
-    const { format } = payload;
-
-    if (this.format === format) {
-      throw new OperationNotValidError({
-        reason: 'Cannot update Format, because it is the same as the current one.',
-        value: format,
-      });
-    }
-
-    this.domainActions.push({
-      type: BookDomainActionType.updateFormat,
-      payload: {
-        format,
-      },
-    });
-
-    this.format = format;
-  }
-
-  public addUpdatePagesDomainAction(payload: AddUpdatePagesDomainActionPayload): void {
-    const { pages } = payload;
-
-    if (this.pages === pages) {
-      throw new OperationNotValidError({
-        reason: 'Cannot update Pages, because they are the same as the current ones.',
-        value: pages,
-      });
-    }
-
-    this.domainActions.push({
-      type: BookDomainActionType.updatePages,
-      payload: {
-        pages,
-      },
-    });
-
-    this.pages = pages;
-  }
-
-  public addUpdateFrontCoverImageUrlDomainAction(payload: AddUpdateFrontCoverImageUrlDomainActionPayload): void {
-    const { frontCoverImageUrl } = payload;
-
-    if (this.frontCoverImageUrl === frontCoverImageUrl) {
-      throw new OperationNotValidError({
-        reason: 'Cannot update Front Cover Image URL, because it is the same as the current one.',
-        value: frontCoverImageUrl,
-      });
-    }
-
-    this.domainActions.push({
-      type: BookDomainActionType.updateFrontCoverImageUrl,
-      payload: {
-        frontCoverImageUrl,
-      },
-    });
-
-    this.frontCoverImageUrl = frontCoverImageUrl;
-  }
-
-  public addUpdateBackCoverImageUrlDomainAction(payload: AddUpdateBackCoverImageUrlDomainActionPayload): void {
-    const { backCoverImageUrl } = payload;
-
-    if (this.backCoverImageUrl === backCoverImageUrl) {
-      throw new OperationNotValidError({
-        reason: 'Cannot update Back Cover Image URL, because it is the same as the current one.',
-        value: backCoverImageUrl,
-      });
-    }
-
-    this.domainActions.push({
-      type: BookDomainActionType.updateBackCoverImageUrl,
-      payload: {
-        backCoverImageUrl,
-      },
-    });
-
-    this.backCoverImageUrl = backCoverImageUrl;
-  }
-
-  public addUpdateStatusDomainAction(payload: AddUpdateStatusDomainActionPayload): void {
-    const { status } = payload;
-
-    if (this.status === status) {
-      throw new OperationNotValidError({
-        reason: 'Cannot update Status, because it is the same as the current one.',
-        value: status,
-      });
-    }
-
-    this.domainActions.push({
-      type: BookDomainActionType.updateStatus,
-      payload: {
-        status,
-      },
-    });
-
-    this.status = status;
-  }
-
-  public addUpdateBookshelfDomainAction(payload: AddUpdateBookshelfDomainActionPayload): void {
-    const { bookshelfId } = payload;
-
-    if (this.bookshelfId === bookshelfId) {
-      throw new OperationNotValidError({
-        reason: 'Cannot update Bookshelf, because it is the same as the current one.',
-        value: bookshelfId,
-      });
-    }
-
-    this.domainActions.push({
-      type: BookDomainActionType.updateBookshelf,
-      payload: {
-        bookshelfId,
-      },
-    });
-
-    this.bookshelfId = bookshelfId;
-  }
-
-  public addUpdateBookGenresAction(payload: AddUpdateBookGenresDomainActionPayload): void {
+  public setGenres(payload: SetGenresPayload): void {
     const { genres } = payload;
 
-    const addedGenres = genres.filter(
-      (genre) => !this.genres.some((currentGenre) => currentGenre.getId() === genre.getId()),
-    );
-
-    const removedGenres = this.genres.filter(
-      (genre) => !genres.some((currentGenre) => currentGenre.getId() === genre.getId()),
-    );
-
-    this.domainActions.push({
-      type: BookDomainActionType.updateBookGenres,
-      payload: {
-        addedGenres,
-        removedGenres,
-      },
-    });
-
-    this.genres = genres;
+    this.state.genres = genres;
   }
 }

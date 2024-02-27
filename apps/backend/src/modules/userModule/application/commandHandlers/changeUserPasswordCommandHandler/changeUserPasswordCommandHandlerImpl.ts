@@ -1,22 +1,37 @@
 import { type ChangeUserPasswordCommandHandler, type ExecutePayload } from './changeUserPasswordCommandHandler.js';
 import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
+import { type BlacklistTokenRepository } from '../../../domain/repositories/blacklistTokenRepository/blacklistTokenRepository.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
+import { TokenType } from '../../../domain/types/tokenType.js';
 import { type HashService } from '../../services/hashService/hashService.js';
 import { type PasswordValidationService } from '../../services/passwordValidationService/passwordValidationService.js';
 
 export class ChangeUserPasswordCommandHandlerImpl implements ChangeUserPasswordCommandHandler {
   public constructor(
     private readonly userRepository: UserRepository,
+    private readonly blacklistTokenRepository: BlacklistTokenRepository,
     private readonly hashService: HashService,
     private readonly tokenService: TokenService,
     private readonly passwordValidationService: PasswordValidationService,
   ) {}
 
   public async execute(payload: ExecutePayload): Promise<void> {
-    const { resetPasswordToken, newPassword, repeatedNewPassword, userId } = payload;
+    const { resetPasswordToken, newPassword } = payload;
 
-    this.tokenService.verifyToken({ token: resetPasswordToken });
+    const { userId, type } = this.tokenService.verifyToken({ token: resetPasswordToken });
+
+    if (!userId) {
+      throw new OperationNotValidError({
+        reason: 'Invalid reset password token',
+      });
+    }
+
+    if (type !== TokenType.passwordReset) {
+      throw new OperationNotValidError({
+        reason: 'Invalid reset password token.',
+      });
+    }
 
     const user = await this.userRepository.findUser({
       id: userId,
@@ -29,27 +44,14 @@ export class ChangeUserPasswordCommandHandlerImpl implements ChangeUserPasswordC
       });
     }
 
-    const userTokens = await this.userRepository.findUserTokens({
-      userId,
+    const isBlacklisted = await this.blacklistTokenRepository.findBlacklistToken({
+      token: resetPasswordToken,
     });
 
-    if (!userTokens) {
+    if (isBlacklisted) {
       throw new OperationNotValidError({
-        reason: 'User tokens not found.',
-        userId,
-      });
-    }
-
-    if (resetPasswordToken !== userTokens.resetPasswordToken) {
-      throw new OperationNotValidError({
-        reason: 'Reset password token is not valid.',
+        reason: 'Reset password token is blacklisted.',
         resetPasswordToken,
-      });
-    }
-
-    if (newPassword !== repeatedNewPassword) {
-      throw new OperationNotValidError({
-        reason: 'Passwords do not match.',
       });
     }
 
@@ -57,13 +59,17 @@ export class ChangeUserPasswordCommandHandlerImpl implements ChangeUserPasswordC
 
     const hashedPassword = await this.hashService.hash({ plainData: newPassword });
 
-    user.addUpdatePasswordAction({
-      newPassword: hashedPassword,
+    user.setPassword({ password: hashedPassword });
+
+    await this.userRepository.saveUser({ entity: user });
+
+    const { expiresAt } = this.tokenService.decodeToken({
+      token: resetPasswordToken,
     });
 
-    await this.userRepository.updateUser({
-      id: user.getId(),
-      domainActions: user.getDomainActions(),
+    await this.blacklistTokenRepository.createBlacklistToken({
+      expiresAt: new Date(expiresAt),
+      token: resetPasswordToken,
     });
   }
 }

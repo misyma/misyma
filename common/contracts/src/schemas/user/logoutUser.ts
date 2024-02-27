@@ -4,4 +4,5 @@ export interface LogoutUserPathParams {
 
 export interface LogoutUserBody {
   readonly refreshToken: string;
+  readonly accessToken: string;
 }

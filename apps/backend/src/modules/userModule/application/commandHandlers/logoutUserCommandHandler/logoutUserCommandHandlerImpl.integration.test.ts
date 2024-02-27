@@ -10,11 +10,12 @@ import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDa
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { authSymbols } from '../../../../authModule/symbols.js';
+import { TokenType } from '../../../domain/types/tokenType.js';
 import { symbols } from '../../../symbols.js';
 import { type BlacklistTokenTestUtils } from '../../../tests/utils/blacklistTokenTestUtils/blacklistTokenTestUtils.js';
 import { type UserTestUtils } from '../../../tests/utils/userTestUtils/userTestUtils.js';
 
-describe('ChangeUserPasswordCommandHandlerImpl', () => {
+describe('LogoutUserCommandHandlerImpl', () => {
   let commandHandler: LogoutUserCommandHandler;
 
   let sqliteDatabaseClient: SqliteDatabaseClient;
@@ -49,34 +50,52 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
 
   it('logs user out', async () => {
     const refreshToken = tokenService.createToken({
-      data: {},
+      data: {
+        type: TokenType.refreshToken,
+      },
+      expiresIn: Generator.number(10000, 100000),
+    });
+
+    const accessToken = tokenService.createToken({
+      data: {
+        type: TokenType.accessToken,
+      },
       expiresIn: Generator.number(10000, 100000),
     });
 
     const user = await userTestUtils.createAndPersist();
 
-    await userTestUtils.createAndPersistRefreshToken({
-      input: {
-        userId: user.id,
-        token: refreshToken,
-      },
-    });
-
     await commandHandler.execute({
       userId: user.id,
       refreshToken,
+      accessToken,
     });
 
-    const blacklistToken = await blacklistTokenTestUtils.findByToken({
+    const blacklistRefreshToken = await blacklistTokenTestUtils.findByToken({
       token: refreshToken,
     });
 
-    expect(blacklistToken.token).toEqual(refreshToken);
+    expect(blacklistRefreshToken.token).toEqual(refreshToken);
+
+    const blacklistAccessToken = await blacklistTokenTestUtils.findByToken({
+      token: accessToken,
+    });
+
+    expect(blacklistAccessToken.token).toEqual(accessToken);
   });
 
   it('throws an error - when a User with given id not found', async () => {
     const refreshToken = tokenService.createToken({
-      data: {},
+      data: {
+        type: TokenType.refreshToken,
+      },
+      expiresIn: Generator.number(10000, 100000),
+    });
+
+    const accessToken = tokenService.createToken({
+      data: {
+        type: TokenType.accessToken,
+      },
       expiresIn: Generator.number(10000, 100000),
     });
 
@@ -87,6 +106,7 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
         await commandHandler.execute({
           userId,
           refreshToken,
+          accessToken,
         }),
     ).toThrowErrorInstance({
       instance: OperationNotValidError,
@@ -97,47 +117,23 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
     });
   });
 
-  it('throws an error - when UserTokens not found', async () => {
-    const refreshToken = tokenService.createToken({
-      data: { valid: 'true' },
-      expiresIn: Generator.number(10000, 100000),
-    });
-
+  it('throws an error - when RefreshToken is of different purpose', async () => {
     const user = await userTestUtils.createAndPersist();
-
-    await expect(
-      async () =>
-        await commandHandler.execute({
-          userId: user.id,
-          refreshToken,
-        }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
-        reason: 'User tokens not found.',
-        userId: user.id,
-      },
-    });
-  });
-
-  it('throws an error - when UserTokens were found but refreshToken is different', async () => {
-    const refreshToken = tokenService.createToken({
-      data: { valid: 'true' },
-      expiresIn: Generator.number(10000, 100000),
-    });
-
-    const user = await userTestUtils.createAndPersist();
-
-    await userTestUtils.createAndPersistRefreshToken({
-      input: {
-        userId: user.id,
-        token: refreshToken,
-      },
-    });
 
     const invalidRefreshToken = tokenService.createToken({
-      data: { invalid: 'true' },
+      data: {
+        invalid: 'true',
+        userId: user.id,
+        type: TokenType.emailVerification,
+      },
       expiresIn: Generator.number(),
+    });
+
+    const accessToken = tokenService.createToken({
+      data: {
+        type: TokenType.accessToken,
+      },
+      expiresIn: Generator.number(10000, 100000),
     });
 
     await expect(
@@ -145,13 +141,46 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
         await commandHandler.execute({
           userId: user.id,
           refreshToken: invalidRefreshToken,
+          accessToken,
         }),
     ).toThrowErrorInstance({
       instance: OperationNotValidError,
       context: {
-        reason: 'Refresh token is not valid.',
+        reason: 'Invalid refresh token.',
+      },
+    });
+  });
+
+  it('throws an error - when AccessToken is of different purpose', async () => {
+    const user = await userTestUtils.createAndPersist();
+
+    const refreshToken = tokenService.createToken({
+      data: {
+        type: TokenType.refreshToken,
+      },
+      expiresIn: Generator.number(10000, 100000),
+    });
+
+    const invalidAccessToken = tokenService.createToken({
+      data: {
+        invalid: 'true',
         userId: user.id,
-        refreshToken: invalidRefreshToken,
+        type: TokenType.emailVerification,
+      },
+      expiresIn: Generator.number(),
+    });
+
+    await expect(
+      async () =>
+        await commandHandler.execute({
+          userId: user.id,
+          refreshToken,
+          accessToken: invalidAccessToken,
+        }),
+    ).toThrowErrorInstance({
+      instance: OperationNotValidError,
+      context: {
+        reason: 'Invalid access token.',
       },
     });
   });

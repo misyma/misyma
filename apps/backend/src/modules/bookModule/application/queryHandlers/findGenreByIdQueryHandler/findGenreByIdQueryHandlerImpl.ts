@@ -12,7 +12,7 @@ export class FindGenreByIdQueryHandlerImpl implements FindGenreByIdQueryHandler 
   public async execute(payload: FindGenreByIdPayload): Promise<FindGenreByIdResult> {
     const { id } = payload;
 
-    const genre = await this.genreRepository.findById({
+    const genre = await this.genreRepository.findGenre({
       id,
     });
 

@@ -39,6 +39,8 @@ export class BookMapperImpl implements BookMapper {
       backCoverImageUrl,
       status: status as BookStatus,
       bookshelfId,
+      authors: [],
+      genres: [],
     });
   }
 

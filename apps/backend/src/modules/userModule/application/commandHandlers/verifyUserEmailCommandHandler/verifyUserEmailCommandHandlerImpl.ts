@@ -3,6 +3,7 @@ import { OperationNotValidError } from '../../../../../common/errors/common/oper
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
+import { TokenType } from '../../../domain/types/tokenType.js';
 
 export class VerifyUserEmailCommandHandlerImpl implements VerifyUserEmailCommandHandler {
   public constructor(
@@ -24,19 +25,27 @@ export class VerifyUserEmailCommandHandlerImpl implements VerifyUserEmailCommand
       });
     }
 
+    if (tokenPayload['type'] !== TokenType.emailVerification) {
+      throw new OperationNotValidError({
+        reason: 'Invalid email verification token.',
+      });
+    }
+
     const user = await this.userRepository.findUser({
       id: userId,
     });
 
     if (!user) {
-      this.loggerService.debug({
-        message: 'User not found.',
-        context: { userId },
-      });
-
       throw new OperationNotValidError({
         reason: 'User not found.',
         userId,
+      });
+    }
+
+    if (user.getIsEmailVerified()) {
+      throw new OperationNotValidError({
+        reason: 'User email already verified.',
+        email: user.getEmail(),
       });
     }
 
@@ -48,30 +57,9 @@ export class VerifyUserEmailCommandHandlerImpl implements VerifyUserEmailCommand
       },
     });
 
-    const userTokens = await this.userRepository.findUserTokens({
-      userId: user.getId(),
-    });
+    user.setIsEmailVerified({ isEmailVerified: true });
 
-    if (!userTokens) {
-      throw new OperationNotValidError({
-        reason: 'User tokens not found.',
-        userId: user.getId(),
-      });
-    }
-
-    if (emailVerificationToken !== userTokens.emailVerificationToken) {
-      throw new OperationNotValidError({
-        reason: 'Email verification token is not valid.',
-        token: emailVerificationToken,
-      });
-    }
-
-    user.addVerifyEmailAction();
-
-    await this.userRepository.updateUser({
-      id: user.getId(),
-      domainActions: user.getDomainActions(),
-    });
+    await this.userRepository.saveUser({ entity: user });
 
     this.loggerService.info({
       message: 'User email verified.',

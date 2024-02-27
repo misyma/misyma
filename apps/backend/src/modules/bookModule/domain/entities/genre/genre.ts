@@ -1,13 +1,32 @@
+export interface GenreDraft {
+  readonly id: string;
+  readonly name: string;
+}
+
 export interface GenreState {
-  id: string;
   name: string;
 }
 
+export interface SetNamePayload {
+  readonly name: string;
+}
+
 export class Genre {
-  public constructor(private readonly state: GenreState) {}
+  private readonly id: string;
+  private readonly state: GenreState;
+
+  public constructor(draft: GenreDraft) {
+    const { id, name } = draft;
+
+    this.id = id;
+
+    this.state = {
+      name,
+    };
+  }
 
   public getId(): string {
-    return this.state.id;
+    return this.id;
   }
 
   public getName(): string {
@@ -16,5 +35,11 @@ export class Genre {
 
   public getState(): GenreState {
     return this.state;
+  }
+
+  public setName(payload: SetNamePayload): void {
+    const { name } = payload;
+
+    this.state.name = name;
   }
 }

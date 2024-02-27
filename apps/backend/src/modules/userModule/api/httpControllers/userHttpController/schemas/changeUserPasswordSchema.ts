@@ -6,7 +6,6 @@ import { type TypeExtends } from '../../../../../../common/types/schemaExtends.j
 
 export const changeUserPasswordBodyDTOSchema = Type.Object({
   password: Type.String(),
-  repeatedPassword: Type.String(),
   token: Type.String({
     description: 'PasswordResetToken',
   }),

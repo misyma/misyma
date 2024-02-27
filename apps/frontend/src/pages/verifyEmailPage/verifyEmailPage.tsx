@@ -1,44 +1,35 @@
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useVerifyUserEmailMutation } from '../../api/user/mutations/verifyUserEmailMutation/verifyUserEmailMutation';
 
 export const VerifyEmailPage: FC = () => {
   const navigate = useNavigate();
 
+  const verifyUserEmailMutation = useVerifyUserEmailMutation({});
+
   const location = useLocation();
 
-  const searchParams = new URLSearchParams(location.search);
+  const searchParams = useMemo(() => {
+    const searchParams = new URLSearchParams(location.search);
+
+    return searchParams;
+  }, [location]);
 
   useEffect(() => {
-    const verifyEmail = async (token: string | null) => {
-      if (!token) {
-        console.error('No token found');
-
-        navigate('/login');
-
-        return;
-      }
-
-      const verifyEmailResponse = await fetch('https://api.misyma.com/api/users/verify-email', {
-        body: JSON.stringify({
-          token,
-        }),
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+    verifyUserEmailMutation.mutate(
+      {
+        token: searchParams.get('token') || '',
+      },
+      {
+        onSuccess: () => {
+          navigate('/login');
         },
-      });
-
-      if (verifyEmailResponse.status === 200) {
-        navigate('/login');
-      } else {
-        console.error('Failed to verify email');
-
-        navigate('/register');
-      }
-    };
-
-    verifyEmail(searchParams.get('token') || '');
+        onError: () => {
+          navigate('/register');
+        },
+      },
+    );
   }, [searchParams, navigate]);
 
   return (

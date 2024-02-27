@@ -8,6 +8,7 @@ import { UnauthenticatedPage } from '../../pages/unauthenticatedPage/unauthentic
 import { LandingPage } from '../../pages/landingPage/landingPage';
 import { RegisterPage } from '../../pages/registerPage/registerPage';
 import { VerifyEmailPage } from '../../pages/verifyEmailPage/verifyEmailPage';
+import { RequireAuthComponent } from '../components/requireAuth/requireAuthComponent';
 import { SetNewPasswordPage } from '../../pages/setNewPasswordPage/setNewPasswordPage';
 import { SendResetPasswordEmailPage } from '../../pages/sendResetPasswordEmailPage/sendResetPasswordEmailPage';
 import { SendResetPasswordEmailSuccessPage } from '../../pages/sendResetPasswordEmailSuccessPage/sendResetPasswordEmailSuccessPage';
@@ -18,10 +19,12 @@ export const router = createBrowserRouter(
       path="/"
       element={<RootPage />}
     >
-      <Route
-        path="/app"
-        element={<AuthenticatedPage />}
-      ></Route>
+      <Route element={<RequireAuthComponent />}>
+        <Route
+          path="/app"
+          element={<AuthenticatedPage />}
+        ></Route>
+      </Route>
       <Route element={<UnauthenticatedPage />}>
         <Route
           path="/"

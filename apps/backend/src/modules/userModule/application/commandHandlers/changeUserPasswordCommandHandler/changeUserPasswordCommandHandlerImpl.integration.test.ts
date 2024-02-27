@@ -8,6 +8,7 @@ import { TestContainer } from '../../../../../../tests/container/testContainer.j
 import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { authSymbols } from '../../../../authModule/symbols.js';
+import { TokenType } from '../../../domain/types/tokenType.js';
 import { symbols } from '../../../symbols.js';
 import { type UserTestUtils } from '../../../tests/utils/userTestUtils/userTestUtils.js';
 import { type HashService } from '../../services/hashService/hashService.js';
@@ -34,27 +35,21 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
   });
 
   it('changes user password', async () => {
-    const resetPasswordToken = tokenService.createToken({
-      data: {},
-      expiresIn: Generator.number(10000, 100000),
-    });
-
     const user = await userTestUtils.createAndPersist();
 
-    await userTestUtils.createAndPersistResetPasswordToken({
-      input: {
+    const resetPasswordToken = tokenService.createToken({
+      data: {
         userId: user.id,
-        token: resetPasswordToken,
+        type: TokenType.passwordReset,
       },
+      expiresIn: Generator.number(10000, 100000),
     });
 
     const newPassword = Generator.password();
 
     await commandHandler.execute({
       newPassword,
-      repeatedNewPassword: newPassword,
       resetPasswordToken,
-      userId: user.id,
     });
 
     const updatedUser = await userTestUtils.findById({
@@ -70,22 +65,23 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
   });
 
   it('throws an error - when a User with given id not found', async () => {
-    const resetPasswordToken = tokenService.createToken({
-      data: {},
-      expiresIn: Generator.number(10000, 100000),
-    });
-
     const newPassword = Generator.password();
 
     const userId = Generator.uuid();
+
+    const resetPasswordToken = tokenService.createToken({
+      data: {
+        userId,
+        type: TokenType.passwordReset,
+      },
+      expiresIn: Generator.number(10000, 100000),
+    });
 
     await expect(
       async () =>
         await commandHandler.execute({
           newPassword,
-          repeatedNewPassword: newPassword,
           resetPasswordToken,
-          userId,
         }),
     ).toThrowErrorInstance({
       instance: OperationNotValidError,
@@ -97,18 +93,14 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
   });
 
   it('throws an error - when password does not meet the requirements', async () => {
-    const resetPasswordToken = tokenService.createToken({
-      data: {},
-      expiresIn: Generator.number(10000, 100000),
-    });
-
     const user = await userTestUtils.createAndPersist();
 
-    await userTestUtils.createAndPersistResetPasswordToken({
-      input: {
+    const resetPasswordToken = tokenService.createToken({
+      data: {
         userId: user.id,
-        token: resetPasswordToken,
+        type: TokenType.passwordReset,
       },
+      expiresIn: Generator.number(10000, 100000),
     });
 
     const newPassword = Generator.alphaString(5);
@@ -117,47 +109,10 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
       async () =>
         await commandHandler.execute({
           newPassword,
-          repeatedNewPassword: newPassword,
           resetPasswordToken,
-          userId: user.id,
         }),
     ).toThrowErrorInstance({
       instance: OperationNotValidError,
-    });
-  });
-
-  it('throws an error - when passwords do not match', async () => {
-    const resetPasswordToken = tokenService.createToken({
-      data: {},
-      expiresIn: Generator.number(10000, 100000),
-    });
-
-    const user = await userTestUtils.createAndPersist();
-
-    await userTestUtils.createAndPersistResetPasswordToken({
-      input: {
-        userId: user.id,
-        token: resetPasswordToken,
-      },
-    });
-
-    const newPassword = Generator.password();
-
-    const repeatedNewPassword = `repeated${Generator.password()}`;
-
-    await expect(
-      async () =>
-        await commandHandler.execute({
-          newPassword,
-          repeatedNewPassword,
-          resetPasswordToken,
-          userId: user.id,
-        }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
-        reason: 'Passwords do not match.',
-      },
     });
   });
 
@@ -170,9 +125,7 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
       async () =>
         await commandHandler.execute({
           newPassword,
-          repeatedNewPassword: newPassword,
           resetPasswordToken: invalidResetPasswordToken,
-          userId: 'userId',
         }),
     ).toThrowErrorInstance({
       instance: OperationNotValidError,
@@ -183,13 +136,16 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
     });
   });
 
-  it('throws an error - when UserTokens were not found', async () => {
+  it('throws an error - when token is has a different purpose', async () => {
+    const user = await userTestUtils.createAndPersist();
+
     const resetPasswordToken = tokenService.createToken({
-      data: {},
+      data: {
+        userId: user.id,
+        type: TokenType.refreshToken,
+      },
       expiresIn: Generator.number(10000, 100000),
     });
-
-    const user = await userTestUtils.createAndPersist();
 
     const newPassword = Generator.password();
 
@@ -197,54 +153,12 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
       async () =>
         await commandHandler.execute({
           newPassword,
-          repeatedNewPassword: newPassword,
           resetPasswordToken,
-          userId: user.id,
         }),
     ).toThrowErrorInstance({
       instance: OperationNotValidError,
       context: {
-        reason: 'User tokens not found.',
-        userId: user.id,
-      },
-    });
-  });
-
-  it('throws an error - when UserTokens were found but resetPasswordToken is different', async () => {
-    const resetPasswordToken = tokenService.createToken({
-      data: { valid: 'true' },
-      expiresIn: Generator.number(10000, 100000),
-    });
-
-    const user = await userTestUtils.createAndPersist();
-
-    await userTestUtils.createAndPersistResetPasswordToken({
-      input: {
-        userId: user.id,
-        token: resetPasswordToken,
-      },
-    });
-
-    const invalidResetPasswordToken = tokenService.createToken({
-      data: { invalid: 'true' },
-      expiresIn: Generator.number(),
-    });
-
-    const newPassword = Generator.password();
-
-    await expect(
-      async () =>
-        await commandHandler.execute({
-          newPassword,
-          repeatedNewPassword: newPassword,
-          resetPasswordToken: invalidResetPasswordToken,
-          userId: user.id,
-        }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
-        reason: 'Reset password token is not valid.',
-        resetPasswordToken: invalidResetPasswordToken,
+        reason: 'Invalid reset password token.',
       },
     });
   });
