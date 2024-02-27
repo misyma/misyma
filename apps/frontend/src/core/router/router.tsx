@@ -9,6 +9,9 @@ import { LandingPage } from '../../pages/landingPage/landingPage';
 import { RegisterPage } from '../../pages/registerPage/registerPage';
 import { VerifyEmailPage } from '../../pages/verifyEmailPage/verifyEmailPage';
 import { RequireAuthComponent } from '../components/requireAuth/requireAuthComponent';
+import { SetNewPasswordPage } from '../../pages/setNewPasswordPage/setNewPasswordPage';
+import { SendResetPasswordEmailPage } from '../../pages/sendResetPasswordEmailPage/sendResetPasswordEmailPage';
+import { SendResetPasswordEmailSuccessPage } from '../../pages/sendResetPasswordEmailSuccessPage/sendResetPasswordEmailSuccessPage';
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -22,7 +25,17 @@ export const router = createBrowserRouter(
           element={<AuthenticatedPage />}
         ></Route>
       </Route>
+      <Route element={<RequireAuthComponent />}>
+        <Route
+          path="/app"
+          element={<AuthenticatedPage />}
+        ></Route>
+      </Route>
       <Route element={<UnauthenticatedPage />}>
+        <Route
+          path="/"
+          element={<LandingPage />}
+        />
         <Route
           path="login"
           element={<LoginPage />}
@@ -32,12 +45,20 @@ export const router = createBrowserRouter(
           element={<RegisterPage />}
         />
         <Route
-          path="/"
-          element={<LandingPage />}
-        />
-        <Route
           path="/verify-email"
           element={<VerifyEmailPage />}
+        />
+        <Route
+          path="/new-password"
+          element={<SetNewPasswordPage />}
+        />
+        <Route
+          path="/reset-password"
+          element={<SendResetPasswordEmailPage />}
+        />
+        <Route
+          path="/reset-password-success"
+          element={<SendResetPasswordEmailSuccessPage />}
         />
       </Route>
 

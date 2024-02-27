@@ -9,14 +9,11 @@ import { Input } from '../../../../components/ui/input';
 import { Button } from '../../../../components/ui/button';
 
 interface RegisterUserFormProps {
-  onSuccessfulRegister: (result: boolean) => void;
+  onSuccess: (result: boolean) => void;
   onError?: (error: UserApiError) => void;
 }
 
-export const RegisterUserForm: FC<RegisterUserFormProps> = ({
-  onSuccessfulRegister,
-  onError,
-}: RegisterUserFormProps) => {
+export const RegisterUserForm: FC<RegisterUserFormProps> = ({ onSuccess, onError }: RegisterUserFormProps) => {
   const form = useForm<RegisterUserFormSchemaValues>({
     resolver: zodResolver(registerUserFormSchema),
     defaultValues: {
@@ -38,7 +35,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({
         name: 'Maciej',
       },
       {
-        onSuccess: (result) => onSuccessfulRegister(result),
+        onSuccess: (result) => onSuccess(result),
         onError: (error) => {
           setResponseErrorMessage(error.context?.message);
 

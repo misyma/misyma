@@ -14,25 +14,28 @@ export const VerifyEmailPage: FC = () => {
     const searchParams = new URLSearchParams(location.search);
 
     return searchParams;
-  }, [location])
+  }, [location]);
 
   useEffect(() => {
-    verifyUserEmailMutation.mutate({
-      token: searchParams.get('token') || ''
-    }, {
-      onSuccess: () => {
-        navigate('/login');
+    verifyUserEmailMutation.mutate(
+      {
+        token: searchParams.get('token') || '',
       },
-      onError: () => {
-        navigate('/register');
-      }
-    })
-  }, [searchParams, navigate, verifyUserEmailMutation]);
+      {
+        onSuccess: () => {
+          navigate('/login');
+        },
+        onError: () => {
+          navigate('/register');
+        },
+      },
+    );
+  }, [searchParams, navigate]);
 
   return (
     <div className="flex items-center justify-center h-screen">
       <div className="flex gap-16 w-[1000px] h-[450px]">
-        <div className="flex-1 p-8">Weryfikowanie konta...</div>
+        <div className="flex-1 py-8">Weryfikowanie konta...</div>
         <div className="flex-1 flex justify-center">
           <img
             src="/logo.jpg"

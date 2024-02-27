@@ -1,4 +1,4 @@
-import { BaseApiError } from "./types/baseApiError";
+import { BaseApiError } from './types/baseApiError';
 
 type RequestPayload = {
   headers?: Record<string, string>;
@@ -55,18 +55,26 @@ export class HttpService {
       method: 'GET',
     });
 
+    const responseBodyText = await response.text();
+
+    let responseBody = {};
+
+    try {
+      responseBody = JSON.parse(responseBodyText);
+    } catch (error) {
+      responseBody = {};
+    }
+
     if (!response.ok) {
       return {
-        body: await response.json(),
+        body: responseBody as BaseApiError,
         success: false,
         statusCode: response.status,
       };
     }
 
-    const body = await response.json();
-
     return {
-      body,
+      body: responseBody as T,
       success: true,
       statusCode: response.status,
     };
@@ -85,18 +93,26 @@ export class HttpService {
       body: JSON.stringify(body),
     });
 
+    const responseBodyText = await response.text();
+
+    let responseBody = {};
+
+    try {
+      responseBody = JSON.parse(responseBodyText);
+    } catch (error) {
+      responseBody = {};
+    }
+
     if (!response.ok) {
       return {
-        body: await response.json(),
+        body: responseBody as BaseApiError,
         success: false,
         statusCode: response.status,
       };
     }
 
-    const responseBody = await response.json();
-
     return {
-      body: responseBody,
+      body: responseBody as T,
       success: true,
       statusCode: response.status,
     };
