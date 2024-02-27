@@ -25,6 +25,12 @@ export const router = createBrowserRouter(
           element={<AuthenticatedPage />}
         ></Route>
       </Route>
+      <Route element={<RequireAuthComponent />}>
+        <Route
+          path="/app"
+          element={<AuthenticatedPage />}
+        ></Route>
+      </Route>
       <Route element={<UnauthenticatedPage />}>
         <Route
           path="/"
