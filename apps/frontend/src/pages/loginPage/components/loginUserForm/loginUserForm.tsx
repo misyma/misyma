@@ -11,11 +11,11 @@ import { Input } from '../../../../components/ui/input';
 import { Button } from '../../../../components/ui/button';
 
 interface LoginUserFormProps {
-    onSuccessfulLogin: (loginUserResponseBody: LoginUserResponseBody) => void;
-    onError?: (error: UserApiError) => void;
+  onSuccessfulLogin: (loginUserResponseBody: LoginUserResponseBody) => void;
+  onError?: (error: UserApiError) => void;
 }
 
-export const LoginUserForm: FC<LoginUserFormProps> = ( { onSuccessfulLogin, onError }: LoginUserFormProps) => {
+export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccessfulLogin, onError }: LoginUserFormProps) => {
   const loginUserMutation = useLoginUserMutation({});
 
   const form = useForm<LoginUserFormValues>({
@@ -39,7 +39,7 @@ export const LoginUserForm: FC<LoginUserFormProps> = ( { onSuccessfulLogin, onEr
         onError: (error) => {
           setResponseErrorMessage(error.context.message);
 
-          if(onError) {
+          if (onError) {
             onError(error);
           }
         },
@@ -102,6 +102,15 @@ export const LoginUserForm: FC<LoginUserFormProps> = ( { onSuccessfulLogin, onEr
               className="text-primary"
             >
               Zarejestruj się
+            </Link>
+          </p>
+          <p>
+            Zapomniałeś hasła?{' '}
+            <Link
+              to="/reset-password"
+              className="text-primary"
+            >
+              Kliknij tutaj
             </Link>
           </p>
         </form>

@@ -2,12 +2,9 @@ import { FC, useEffect, useMemo } from 'react';
 
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useVerifyUserEmailMutation } from '../../api/user/mutations/verifyUserEmailMutation/verifyUserEmailMutation';
-import { useVerifyUserEmailMutation } from '../../api/user/mutations/verifyUserEmailMutation/verifyUserEmailMutation';
 
 export const VerifyEmailPage: FC = () => {
   const navigate = useNavigate();
-
-  const verifyUserEmailMutation = useVerifyUserEmailMutation({});
 
   const verifyUserEmailMutation = useVerifyUserEmailMutation({});
 

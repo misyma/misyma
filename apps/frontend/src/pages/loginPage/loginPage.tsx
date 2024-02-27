@@ -1,11 +1,8 @@
+import { type LoginUserResponseBody } from '@common/contracts';
 import { FC } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useStoreDispatch } from '../../core/store/hooks/useStoreDispatch';
 import { userStateActions } from '../../core/store/states/userState/userStateSlice';
-import { type LoginUserResponseBody } from '@common/contracts';
-import { LoginUserForm } from './components/loginUserForm/loginUserForm';
-import { type LoginUserResponseBody } from '@common/contracts';
 import { LoginUserForm } from './components/loginUserForm/loginUserForm';
 
 export const LoginPage: FC = () => {
@@ -14,12 +11,9 @@ export const LoginPage: FC = () => {
   const navigate = useNavigate();
 
   const onSuccessfulLogin = (loginUserResponseBody: LoginUserResponseBody) => {
-  const onSuccessfulLogin = (loginUserResponseBody: LoginUserResponseBody) => {
     const { refreshToken, accessToken } = loginUserResponseBody;
 
     storeDispatch(
-      userStateActions.setCurrentUserTokens({
-        accessToken,
       userStateActions.setCurrentUserTokens({
         accessToken,
         refreshToken,

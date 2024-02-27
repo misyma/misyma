@@ -2,18 +2,15 @@ import { FC } from 'react';
 
 import { useNavigate } from 'react-router-dom';
 import { RegisterUserForm } from './components/registerUserForm/registerUserForm';
-import { RegisterUserForm } from './components/registerUserForm/registerUserForm';
 
 export const RegisterPage: FC = () => {
   const navigate = useNavigate();
 
   const onSuccessfulRegister = (result: boolean) => {
     if (result) {
-  const onSuccessfulRegister = (result: boolean) => {
-    if (result) {
       navigate('/login');
     }
-  }
+  };
 
   return (
     <div className="flex items-center justify-center h-screen">
