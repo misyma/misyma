@@ -9,7 +9,6 @@ import { ResourceNotFoundError } from '../../../../../common/errors/common/resou
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { Bookshelf } from '../../../domain/entities/bookshelf/bookshelf.js';
 import { symbols } from '../../../symbols.js';
-import { BookshelfTestFactory } from '../../../tests/factories/bookshelfTestFactory/bookshelfTestFactory.js';
 import { type BookshelfTestUtils } from '../../../tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 
 describe('CreateBookshelfCommandHandlerImpl', () => {
@@ -18,8 +17,6 @@ describe('CreateBookshelfCommandHandlerImpl', () => {
   let userTestUtils: UserTestUtils;
 
   let bookshelfTestUtils: BookshelfTestUtils;
-
-  const bookshelfTestFactory = BookshelfTestFactory.createFactory();
 
   beforeEach(() => {
     const container = TestContainer.create();
@@ -34,12 +31,12 @@ describe('CreateBookshelfCommandHandlerImpl', () => {
   it('throws an error - when User does not exist', async () => {
     const nonExistentUserId = Generator.uuid();
 
-    const bookshelfDraft = bookshelfTestFactory.createDraft();
+    const name = Generator.word();
 
     expect(
       async () =>
         await commandHandler.execute({
-          ...bookshelfDraft.getState(),
+          name,
           userId: nonExistentUserId,
         }),
     ).toThrowErrorInstance({
@@ -53,21 +50,17 @@ describe('CreateBookshelfCommandHandlerImpl', () => {
   it('returns a Bookshelf', async () => {
     const user = await userTestUtils.createAndPersist();
 
-    const bookshelfDraft = bookshelfTestFactory.createDraft({
+    const name = Generator.word();
+
+    const { bookshelf } = await commandHandler.execute({
+      name,
       userId: user.id,
     });
-
-    const result = await commandHandler.execute({
-      ...bookshelfDraft.getState(),
-    });
-
-    const bookshelf = result.bookshelf;
 
     expect(bookshelf).toBeInstanceOf(Bookshelf);
 
     expect(bookshelf.getState()).toEqual({
-      id: bookshelf.getId(),
-      name: bookshelfDraft.getName(),
+      name,
       userId: user.id,
       addressId: null,
     });
@@ -78,7 +71,7 @@ describe('CreateBookshelfCommandHandlerImpl', () => {
 
     expect(persistedRawBookshelf).toMatchObject({
       id: bookshelf.getId(),
-      name: bookshelfDraft.getName(),
+      name,
       userId: user.id,
       addressId: null,
     });

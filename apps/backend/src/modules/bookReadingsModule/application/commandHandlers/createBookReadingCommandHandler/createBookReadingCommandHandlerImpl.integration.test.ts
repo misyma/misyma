@@ -62,12 +62,12 @@ describe('CreateBookReadingCommandHandlerImpl', () => {
   it('throws an error - when Book does not exist', async () => {
     const nonExistentBookId = Generator.uuid();
 
-    const bookReadingDraft = bookReadingTestFactory.createDraft();
+    const bookReading = bookReadingTestFactory.create();
 
     expect(
       async () =>
         await commandHandler.execute({
-          ...bookReadingDraft.getState(),
+          ...bookReading.getState(),
           bookId: nonExistentBookId,
         }),
     ).toThrowErrorInstance({
@@ -92,7 +92,7 @@ describe('CreateBookReadingCommandHandlerImpl', () => {
       },
     });
 
-    const bookReadingDraft = bookReadingTestFactory.createDraft({
+    const bookReadingDraft = bookReadingTestFactory.create({
       bookId: book.id,
     });
 
@@ -103,7 +103,6 @@ describe('CreateBookReadingCommandHandlerImpl', () => {
     expect(bookReading).toBeInstanceOf(BookReading);
 
     expect(bookReading.getState()).toEqual({
-      id: bookReading.getId(),
       bookId: book.id,
       comment: bookReadingDraft.getComment(),
       rating: bookReadingDraft.getRating(),

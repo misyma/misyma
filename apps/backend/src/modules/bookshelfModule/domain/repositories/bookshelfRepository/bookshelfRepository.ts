@@ -1,31 +1,25 @@
-import { type Bookshelf } from '../../entities/bookshelf/bookshelf.js';
-import { type BookshelfDraft } from '../../entities/bookshelf/bookshelfDraft/bookshelfDraft.js';
+import { type BookshelfState, type Bookshelf } from '../../entities/bookshelf/bookshelf.js';
 
-export interface FindByIdPayload {
-  id: string;
+export interface FindBookshelfPayload {
+  readonly id?: string;
+  readonly userId?: string;
 }
 
-export interface FindByIdAndUserIdPayload {
-  id: string;
-  userId: string;
+export interface FindBookshelvesPayload {
+  readonly userId: string;
 }
 
-export interface FindByUserIdPayload {
-  userId: string;
+export interface SaveBookshelfPayload {
+  readonly bookshelf: Bookshelf | BookshelfState;
 }
 
-export interface SavePayload {
-  entity: Bookshelf | BookshelfDraft;
-}
-
-export interface DeletePayload {
-  entity: Bookshelf;
+export interface DeleteBookshelfPayload {
+  readonly id: string;
 }
 
 export interface BookshelfRepository {
-  findById(payload: FindByIdPayload): Promise<Bookshelf | null>;
-  findByIdAndUserId(payload: FindByIdAndUserIdPayload): Promise<Bookshelf | null>;
-  findByUserId(payload: FindByUserIdPayload): Promise<Bookshelf[]>;
-  save(payload: SavePayload): Promise<Bookshelf>;
-  delete(payload: DeletePayload): Promise<void>;
+  findBookshelf(payload: FindBookshelfPayload): Promise<Bookshelf | null>;
+  findBookshelves(payload: FindBookshelvesPayload): Promise<Bookshelf[]>;
+  saveBookshelf(payload: SaveBookshelfPayload): Promise<Bookshelf>;
+  deleteBookshelf(payload: DeleteBookshelfPayload): Promise<void>;
 }

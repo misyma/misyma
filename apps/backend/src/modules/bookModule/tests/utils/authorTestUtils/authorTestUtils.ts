@@ -1,24 +1,23 @@
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
-import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';
 import { type AuthorRawEntity } from '../../../../authorModule/infrastructure/databases/tables/authorTable/authorRawEntity.js';
 import { AuthorTable } from '../../../../authorModule/infrastructure/databases/tables/authorTable/authorTable.js';
 import { AuthorTestFactory } from '../../../../authorModule/tests/factories/authorTestFactory/authorTestFactory.js';
 
 interface CreateAndPersistPayload {
-  input?: Partial<AuthorRawEntity>;
+  readonly input?: Partial<AuthorRawEntity>;
 }
 
 interface PersistPayload {
-  author: AuthorRawEntity;
+  readonly author: AuthorRawEntity;
 }
 
 interface FindByIdPayload {
-  id: string;
+  readonly id: string;
 }
 
 interface FindByNamePayload {
-  firstName: string;
-  lastName: string;
+  readonly firstName: string;
+  readonly lastName: string;
 }
 
 export class AuthorTestUtils {
@@ -27,18 +26,12 @@ export class AuthorTestUtils {
 
   public constructor(private readonly sqliteDatabaseClient: SqliteDatabaseClient) {}
 
-  private createQueryBuilder(): QueryBuilder<AuthorRawEntity> {
-    return this.sqliteDatabaseClient<AuthorRawEntity>(this.databaseTable.name);
-  }
-
   public async createAndPersist(payload: CreateAndPersistPayload = {}): Promise<AuthorRawEntity> {
     const { input } = payload;
 
     const author = this.authorTestFactory.createRaw(input);
 
-    const queryBuilder = this.createQueryBuilder();
-
-    const rawEntities = await queryBuilder.insert(author, '*');
+    const rawEntities = await this.sqliteDatabaseClient<AuthorRawEntity>(this.databaseTable.name).insert(author, '*');
 
     return rawEntities[0] as AuthorRawEntity;
   }
@@ -46,17 +39,16 @@ export class AuthorTestUtils {
   public async persist(payload: PersistPayload): Promise<void> {
     const { author } = payload;
 
-    const queryBuilder = this.createQueryBuilder();
-
-    await queryBuilder.insert(author);
+    await this.sqliteDatabaseClient<AuthorRawEntity>(this.databaseTable.name).insert(author);
   }
 
   public async findById(payload: FindByIdPayload): Promise<AuthorRawEntity> {
     const { id } = payload;
 
-    const queryBuilder = this.createQueryBuilder();
-
-    const authorRawEntity = await queryBuilder.select('*').where({ id }).first();
+    const authorRawEntity = await this.sqliteDatabaseClient<AuthorRawEntity>(this.databaseTable.name)
+      .select('*')
+      .where({ id })
+      .first();
 
     return authorRawEntity as AuthorRawEntity;
   }
@@ -64,9 +56,7 @@ export class AuthorTestUtils {
   public async findByName(payload: FindByNamePayload): Promise<AuthorRawEntity> {
     const { firstName, lastName } = payload;
 
-    const queryBuilder = this.createQueryBuilder();
-
-    const authorRawEntity = await queryBuilder
+    const authorRawEntity = await this.sqliteDatabaseClient<AuthorRawEntity>(this.databaseTable.name)
       .select('*')
       .where({
         firstName,
@@ -78,8 +68,6 @@ export class AuthorTestUtils {
   }
 
   public async truncate(): Promise<void> {
-    const queryBuilder = this.createQueryBuilder();
-
-    await queryBuilder.truncate();
+    await this.sqliteDatabaseClient<AuthorRawEntity>(this.databaseTable.name).truncate();
   }
 }

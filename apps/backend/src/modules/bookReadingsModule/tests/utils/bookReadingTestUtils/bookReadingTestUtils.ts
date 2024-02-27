@@ -4,11 +4,11 @@ import { BookReadingTable } from '../../../infrastructure/databases/bookReadings
 import { BookReadingTestFactory } from '../../factories/bookReadingTestFactory/bookReadingTestFactory.js';
 
 interface CreateAndPersistPayload {
-  input?: Partial<BookReadingRawEntity>;
+  readonly input?: Partial<BookReadingRawEntity>;
 }
 
 interface FindByIdPayload {
-  id: string;
+  readonly id: string;
 }
 
 export class BookReadingTestUtils {
@@ -50,9 +50,7 @@ export class BookReadingTestUtils {
   public async findById(payload: FindByIdPayload): Promise<BookReadingRawEntity | null> {
     const { id } = payload;
 
-    const result = await this.sqliteDatabaseClient<BookReadingRawEntity>(this.table.name)
-      .where(this.table.columns.id, id)
-      .first();
+    const result = await this.sqliteDatabaseClient<BookReadingRawEntity>(this.table.name).where({ id }).first();
 
     if (!result) {
       return null;

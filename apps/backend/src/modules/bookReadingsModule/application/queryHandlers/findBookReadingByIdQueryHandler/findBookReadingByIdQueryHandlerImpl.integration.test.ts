@@ -97,6 +97,14 @@ describe('FindBookReadingByIdQueryHandler', () => {
 
     expect(bookReading).toBeInstanceOf(BookReading);
 
-    expect(bookReading?.getState()).toEqual(createdBookReading);
+    expect(bookReading?.getId()).toEqual(createdBookReading.id);
+
+    expect(bookReading?.getState()).toEqual({
+      bookId: book.id,
+      rating: createdBookReading.rating,
+      comment: createdBookReading.comment,
+      startedAt: createdBookReading.startedAt,
+      endedAt: createdBookReading.endedAt,
+    });
   });
 });

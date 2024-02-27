@@ -15,9 +15,9 @@ import {
 import { type UserRawEntity } from '../../databases/userDatabase/tables/userTable/userRawEntity.js';
 import { UserTable } from '../../databases/userDatabase/tables/userTable/userTable.js';
 
-type CreateUserPayload = { entity: UserState };
+type CreateUserPayload = { user: UserState };
 
-type UpdateUserPayload = { entity: User };
+type UpdateUserPayload = { user: User };
 
 export class UserRepositoryImpl implements UserRepository {
   private readonly userDatabaseTable = new UserTable();
@@ -30,18 +30,18 @@ export class UserRepositoryImpl implements UserRepository {
   ) {}
 
   public async saveUser(payload: SaveUserPayload): Promise<User> {
-    const { entity } = payload;
+    const { user } = payload;
 
-    if (entity instanceof User) {
-      return this.updateUser({ entity });
+    if (user instanceof User) {
+      return this.updateUser({ user });
     }
 
-    return this.createUser({ entity });
+    return this.createUser({ user });
   }
 
   private async createUser(payload: CreateUserPayload): Promise<User> {
     const {
-      entity: { email, password, name, isEmailVerified },
+      user: { email, password, name, isEmailVerified },
     } = payload;
 
     let rawEntities: UserRawEntity[];
@@ -77,14 +77,14 @@ export class UserRepositoryImpl implements UserRepository {
   }
 
   private async updateUser(payload: UpdateUserPayload): Promise<User> {
-    const { entity } = payload;
+    const { user } = payload;
 
-    const existingUser = await this.findUser({ id: entity.getId() });
+    const existingUser = await this.findUser({ id: user.getId() });
 
     if (!existingUser) {
       throw new ResourceNotFoundError({
         name: 'User',
-        id: entity.getId(),
+        id: user.getId(),
       });
     }
 
@@ -92,8 +92,8 @@ export class UserRepositoryImpl implements UserRepository {
 
     try {
       rawEntities = await this.sqliteDatabaseClient<UserRawEntity>(this.userDatabaseTable.name)
-        .update(entity.getState(), '*')
-        .where({ id: entity.getId() });
+        .update(user.getState(), '*')
+        .where({ id: user.getId() });
     } catch (error) {
       this.loggerService.error({
         message: 'Error while updating User.',

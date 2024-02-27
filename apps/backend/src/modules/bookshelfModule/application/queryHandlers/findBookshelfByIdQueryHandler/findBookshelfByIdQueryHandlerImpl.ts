@@ -12,7 +12,7 @@ export class FindBookshelfByIdQueryHandlerImpl implements FindBookshelfByIdQuery
   public async execute(payload: FindBookshelfByIdPayload): Promise<FindBookshelfByIdResult> {
     const { id } = payload;
 
-    const bookshelf = await this.bookshelfRepository.findById({
+    const bookshelf = await this.bookshelfRepository.findBookshelf({
       id,
     });
 

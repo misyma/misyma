@@ -12,7 +12,7 @@ export class UpdateBookshelfNameCommandHandlerImpl implements UpdateBookshelfNam
   public async execute(payload: UpdateBookshelfNamePayload): Promise<UpdateBookshelfNameResult> {
     const { id, name, userId } = payload;
 
-    const bookshelf = await this.bookshelfRepository.findByIdAndUserId({
+    const bookshelf = await this.bookshelfRepository.findBookshelf({
       id,
       userId,
     });
@@ -23,13 +23,9 @@ export class UpdateBookshelfNameCommandHandlerImpl implements UpdateBookshelfNam
       });
     }
 
-    bookshelf.addUpdateNameDomainAction({
-      name,
-    });
+    bookshelf.setName({ name });
 
-    const updatedBookshelf = await this.bookshelfRepository.save({
-      entity: bookshelf,
-    });
+    const updatedBookshelf = await this.bookshelfRepository.saveBookshelf({ bookshelf });
 
     return {
       bookshelf: updatedBookshelf,

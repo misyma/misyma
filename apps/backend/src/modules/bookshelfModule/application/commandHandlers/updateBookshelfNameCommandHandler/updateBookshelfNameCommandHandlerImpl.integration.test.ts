@@ -66,7 +66,6 @@ describe('UpdateBookshelfNameCommandHandlerImpl', () => {
     expect(updatedBookshelf).toBeInstanceOf(Bookshelf);
 
     expect(updatedBookshelf.getState()).toMatchObject({
-      id: bookshelf.id,
       name: newBookshelfName,
       userId: user.id,
     });

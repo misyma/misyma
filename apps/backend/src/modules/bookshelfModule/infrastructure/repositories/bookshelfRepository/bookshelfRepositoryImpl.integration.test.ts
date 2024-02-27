@@ -40,7 +40,7 @@ describe('BookshelfRepositoryImpl', () => {
     it('returns null - when Bookshelf was not found', async () => {
       const nonExistentBookshelfId = Generator.uuid();
 
-      const result = await repository.findById({
+      const result = await repository.findBookshelf({
         id: nonExistentBookshelfId,
       });
 
@@ -56,13 +56,17 @@ describe('BookshelfRepositoryImpl', () => {
         },
       });
 
-      const result = await repository.findById({
+      const result = await repository.findBookshelf({
         id: bookshelf.id,
       });
 
       expect(result).toBeInstanceOf(Bookshelf);
 
-      expect(result?.getState()).toEqual(bookshelf);
+      expect(result?.getState()).toEqual({
+        name: bookshelf.name,
+        userId: bookshelf.userId,
+        addressId: bookshelf.addressId,
+      });
     });
   });
 
@@ -70,7 +74,7 @@ describe('BookshelfRepositoryImpl', () => {
     it('returns null - when Bookshelf does not exist', async () => {
       const nonExistentBookshelfId = Generator.uuid();
 
-      const result = await repository.findByIdAndUserId({
+      const result = await repository.findBookshelf({
         id: nonExistentBookshelfId,
         userId: Generator.uuid(),
       });
@@ -89,7 +93,7 @@ describe('BookshelfRepositoryImpl', () => {
 
       const nonExistentUserId = Generator.uuid();
 
-      const result = await repository.findByIdAndUserId({
+      const result = await repository.findBookshelf({
         id: bookshelf.id,
         userId: nonExistentUserId,
       });
@@ -106,14 +110,18 @@ describe('BookshelfRepositoryImpl', () => {
         },
       });
 
-      const result = await repository.findByIdAndUserId({
+      const result = await repository.findBookshelf({
         id: bookshelf.id,
         userId: user.id,
       });
 
       expect(result).toBeInstanceOf(Bookshelf);
 
-      expect(result?.getState()).toEqual(bookshelf);
+      expect(result?.getState()).toEqual({
+        name: bookshelf.name,
+        userId: bookshelf.userId,
+        addressId: bookshelf.addressId,
+      });
     });
   });
 
@@ -121,7 +129,7 @@ describe('BookshelfRepositoryImpl', () => {
     it('returns an empty array - when Bookshelves were not found', async () => {
       const nonExistentUserId = Generator.uuid();
 
-      const result = await repository.findByUserId({
+      const result = await repository.findBookshelves({
         userId: nonExistentUserId,
       });
 
@@ -143,7 +151,7 @@ describe('BookshelfRepositoryImpl', () => {
         },
       });
 
-      const result = await repository.findByUserId({
+      const result = await repository.findBookshelves({
         userId: user.id,
       });
 
@@ -167,12 +175,12 @@ describe('BookshelfRepositoryImpl', () => {
     it('creates a new Bookshelf - given BookshelfDraft', async () => {
       const user = await userTestUtils.createAndPersist();
 
-      const bookshelfDraft = bookshelfTestFactory.createDraft({
+      const bookshelfDraft = bookshelfTestFactory.create({
         userId: user.id,
       });
 
-      const result = await repository.save({
-        entity: bookshelfDraft,
+      const result = await repository.saveBookshelf({
+        bookshelf: bookshelfDraft.getState(),
       });
 
       expect(result).toBeInstanceOf(Bookshelf);
@@ -189,24 +197,22 @@ describe('BookshelfRepositoryImpl', () => {
     it('updates a Bookshelf - given a Bookshelf', async () => {
       const user = await userTestUtils.createAndPersist();
 
-      const bookshelf = bookshelfTestFactory.create({
-        userId: user.id,
-      });
-
-      await bookshelfTestUtils.createAndPersist({
+      const bookshelfRawEntity = await bookshelfTestUtils.createAndPersist({
         input: {
-          ...bookshelf.getState(),
+          userId: user.id,
         },
       });
 
+      const bookshelf = bookshelfTestFactory.create(bookshelfRawEntity);
+
       const newName = Generator.alphaString(20);
 
-      bookshelf.addUpdateNameDomainAction({
+      bookshelf.setName({
         name: newName,
       });
 
-      const result = await repository.save({
-        entity: bookshelf,
+      const result = await repository.saveBookshelf({
+        bookshelf,
       });
 
       expect(result).toBeInstanceOf(Bookshelf);
@@ -223,18 +229,11 @@ describe('BookshelfRepositoryImpl', () => {
         },
       });
 
-      const bookshelfEntity = new Bookshelf({
+      await repository.deleteBookshelf({
         id: bookshelf.id,
-        name: bookshelf.name,
-        userId: bookshelf.userId,
-        addressId: bookshelf.addressId,
       });
 
-      await repository.delete({
-        entity: bookshelfEntity,
-      });
-
-      const result = await repository.findById({
+      const result = await repository.findBookshelf({
         id: bookshelf.id,
       });
 

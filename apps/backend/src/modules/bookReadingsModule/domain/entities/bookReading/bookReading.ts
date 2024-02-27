@@ -1,7 +1,6 @@
-import { type BookReadingDomainAction } from './bookReadingDomainActions/bookReadingDomainAction.js';
-import { BookReadingDomainActionType } from './bookReadingDomainActions/bookReadingDomainActionType.js';
+import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
 
-export interface BookReadingState {
+export interface BookReadingDraft {
   readonly id: string;
   readonly bookId: string;
   readonly rating: number;
@@ -10,69 +9,84 @@ export interface BookReadingState {
   readonly endedAt?: Date | undefined;
 }
 
-export interface AddUpdateCommentDomainActionPayload {
-  comment: string;
-}
-
-export interface AddUpdateRatingDomainActionPayload {
+export interface BookReadingState {
+  bookId: string;
   rating: number;
-}
-
-export interface AddUpdateStartedDateDomainActionPayload {
+  comment: string;
   startedAt: Date;
+  endedAt?: Date | undefined;
 }
 
-export interface AddUpdateEndedDateDomainActionPayload {
-  endedAt: Date;
+export interface SetCommentPayload {
+  readonly comment: string;
+}
+
+export interface SetRatingPayload {
+  readonly rating: number;
+}
+
+export interface SetStartedDatePayload {
+  readonly startedAt: Date;
+}
+
+export interface SetEndedDatePayload {
+  readonly endedAt: Date;
 }
 
 export class BookReading {
+  private readonly id: string;
   private readonly state: BookReadingState;
 
-  private readonly actions: BookReadingDomainAction[] = [];
+  public constructor(draft: BookReadingDraft) {
+    this.id = draft.id;
 
-  public constructor(state: BookReadingState) {
-    this.state = state;
+    this.state = {
+      bookId: draft.bookId,
+      rating: draft.rating,
+      comment: draft.comment,
+      startedAt: draft.startedAt,
+      endedAt: draft.endedAt,
+    };
   }
 
-  public getState(): BookReadingState {
-    return { ...this.state };
+  public setComment(payload: SetCommentPayload): void {
+    const { comment } = payload;
+
+    this.state.comment = comment;
   }
 
-  public getDomainActions(): BookReadingDomainAction[] {
-    return [...this.actions];
+  public setRating(payload: SetRatingPayload): void {
+    const { rating } = payload;
+
+    this.state.rating = rating;
   }
 
-  public addUpadateCommentDomainAction(payload: AddUpdateCommentDomainActionPayload): void {
-    this.actions.push({
-      actionName: BookReadingDomainActionType.updateComment,
-      payload,
-    });
+  public setStartedDate(payload: SetStartedDatePayload): void {
+    const { startedAt } = payload;
+
+    if (this.state.endedAt && startedAt > this.state.endedAt) {
+      throw new OperationNotValidError({
+        reason: 'Started date cannot be after ended date.',
+      });
+    }
+
+    this.state.startedAt = startedAt;
   }
 
-  public addUpdateRatingDomainAction(payload: AddUpdateRatingDomainActionPayload): void {
-    this.actions.push({
-      actionName: BookReadingDomainActionType.updateRating,
-      payload,
-    });
-  }
+  public setEndedDate(payload: SetEndedDatePayload): void {
+    const { endedAt } = payload;
 
-  public addUpdateStartedDateDomainAction(payload: AddUpdateStartedDateDomainActionPayload): void {
-    this.actions.push({
-      actionName: BookReadingDomainActionType.updateStartedDate,
-      payload,
-    });
-  }
+    if (endedAt < this.state.startedAt) {
+      throw new OperationNotValidError({
+        reason: 'Ended date cannot be before started date.',
+      });
+    }
 
-  public addUpdateEndedDateDomainAction(payload: AddUpdateEndedDateDomainActionPayload): void {
-    this.actions.push({
-      actionName: BookReadingDomainActionType.updateEndedDate,
-      payload,
-    });
+    this.state.endedAt = endedAt;
   }
 
   public getId(): string {
-    return this.state.id;
+    return this.id;
   }
 
   public getBookId(): string {
@@ -93,5 +107,9 @@ export class BookReading {
 
   public getEndedAt(): Date | undefined {
     return this.state.endedAt;
+  }
+
+  public getState(): BookReadingState {
+    return this.state;
   }
 }

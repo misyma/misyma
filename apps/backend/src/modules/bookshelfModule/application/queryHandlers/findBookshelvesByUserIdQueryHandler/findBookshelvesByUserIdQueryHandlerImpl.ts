@@ -26,7 +26,7 @@ export class FindBookshelvesByUserIdQueryHandlerImpl implements FindBookshelvesB
       });
     }
 
-    const bookshelves = await this.bookshelfRepository.findByUserId({
+    const bookshelves = await this.bookshelfRepository.findBookshelves({
       userId,
     });
 

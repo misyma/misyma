@@ -1,15 +1,14 @@
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
-import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';
 import { type BookshelfRawEntity } from '../../../infrastructure/databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfRawEntity.js';
 import { BookshelfTable } from '../../../infrastructure/databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfTable.js';
 import { BookshelfTestFactory } from '../../factories/bookshelfTestFactory/bookshelfTestFactory.js';
 
 interface CreateAndPersistPayload {
-  input?: Partial<BookshelfRawEntity>;
+  readonly input?: Partial<BookshelfRawEntity>;
 }
 
 interface FindByIdPayload {
-  id: string;
+  readonly id: string;
 }
 
 export class BookshelfTestUtils {
@@ -24,9 +23,7 @@ export class BookshelfTestUtils {
 
     const bookshelf = this.bookshelfTestFactory.create(input);
 
-    const queryBuilder = this.createQueryBuilder();
-
-    const rawEntities = await queryBuilder.insert(
+    const rawEntities = await this.sqliteDatabaseClient<BookshelfRawEntity>(this.table.name).insert(
       {
         id: bookshelf.getId(),
         name: bookshelf.getName(),
@@ -42,7 +39,7 @@ export class BookshelfTestUtils {
   public async findById(payload: FindByIdPayload): Promise<BookshelfRawEntity | null> {
     const { id } = payload;
 
-    const result = await this.createQueryBuilder().where(this.table.columns.id, id).first();
+    const result = await this.sqliteDatabaseClient<BookshelfRawEntity>(this.table.name).where({ id }).first();
 
     if (!result) {
       return null;
@@ -51,13 +48,7 @@ export class BookshelfTestUtils {
     return result;
   }
 
-  private createQueryBuilder(): QueryBuilder<BookshelfRawEntity> {
-    return this.sqliteDatabaseClient(this.table.name);
-  }
-
   public async truncate(): Promise<void> {
-    const queryBuilder = this.createQueryBuilder();
-
-    await queryBuilder.truncate();
+    await this.sqliteDatabaseClient<BookshelfRawEntity>(this.table.name).truncate();
   }
 }

@@ -7,7 +7,7 @@ import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
-import { Bookshelf, type BookshelfState } from '../../../domain/entities/bookshelf/bookshelf.js';
+import { Bookshelf } from '../../../domain/entities/bookshelf/bookshelf.js';
 import { symbols } from '../../../symbols.js';
 import { type BookshelfTestUtils } from '../../../tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 
@@ -67,9 +67,8 @@ describe('FindBookshelfByIdQueryHandler', () => {
 
     expect(bookshelf).toBeInstanceOf(Bookshelf);
 
-    expect(bookshelf.getState()).toMatchObject(<Partial<BookshelfState>>{
+    expect(bookshelf.getState()).toEqual({
       addressId: bookshelf.getAddressId(),
-      id: bookshelf.getId(),
       name: bookshelf.getName(),
       userId: bookshelf.getUserId(),
     });
