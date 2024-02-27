@@ -75,7 +75,7 @@ export const SendResetPasswordEmailForm: FC<SendResetPasswordEmailFormProps> = (
         />
         <Button
           type="submit"
-          className="w-80 border-black border border-black hover:bg-white bg-white text-primary"
+          className="w-80 border border-primary hover:bg-white bg-white text-primary"
         >
           Zresetuj hasło
         </Button>
