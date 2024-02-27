@@ -4,13 +4,11 @@ import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FC } from 'react';
 import { useForm } from 'react-hook-form';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
-
-import { useNavigate } from 'react-router-dom';
 
 const formSchema = z
   .object({
-    email: z.string().email(),
     password: z.string().min(8).max(50),
     repeatedPassword: z.string().min(8).max(50),
   })
@@ -24,35 +22,49 @@ const formSchema = z
     }
   });
 
-export const RegisterPage: FC = () => {
+export const SetNewPasswordPage: FC = () => {
   const navigate = useNavigate();
+
+  const location = useLocation();
+
+  const searchParams = new URLSearchParams(location.search);
+
+  const token = searchParams.get('token') || '';
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: '',
-      password: '',
       repeatedPassword: '',
+      password: '',
     },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    const registerUserResponse = await fetch('https://api.misyma.com/api/users/register', {
+    const setNewPasswordResponse = await fetch('https://api.misyma.com/api/users/change-password', {
       body: JSON.stringify({
-        email: values.email,
+        repeatedPassword: values.repeatedPassword,
         password: values.password,
-        name: 'Maciej',
+        token,
       }),
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
       },
     });
 
-    if (registerUserResponse.status === 201) {
+    console.log(setNewPasswordResponse);
+
+    if (setNewPasswordResponse.status === 200) {
       navigate('/login');
+    } else {
+      console.error('Error setting new password');
     }
   };
+
+  if (!token) {
+    return <Navigate to="/" />;
+  }
 
   return (
     <div className="flex items-center justify-center h-screen">
@@ -65,27 +77,10 @@ export const RegisterPage: FC = () => {
             >
               <FormField
                 control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Email"
-                        className="w-80"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Hasło</FormLabel>
+                    <FormLabel>Nowe hasło</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Hasło"
@@ -103,7 +98,7 @@ export const RegisterPage: FC = () => {
                 name="repeatedPassword"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Powtorz hasło</FormLabel>
+                    <FormLabel>Powtórz hasło</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Hasło"
@@ -120,7 +115,7 @@ export const RegisterPage: FC = () => {
                 type="submit"
                 className="w-80 border-black border border-black hover:bg-white bg-white text-primary"
               >
-                Zarejestruj sie
+                Ustaw nowe hasło
               </Button>
             </form>
           </Form>

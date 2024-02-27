@@ -26,8 +26,6 @@ export const LoginPage: FC = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
-
     const loginUserResponse = await fetch('https://api.misyma.com/api/users/login', {
       body: JSON.stringify({
         email: values.email,
@@ -69,7 +67,7 @@ export const LoginPage: FC = () => {
   return (
     <div className="flex items-center justify-center h-screen">
       <div className="flex gap-16 w-[1000px] h-[450px]">
-        <div className="flex-1 p-8">
+        <div className="flex-1 py-8">
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
@@ -97,10 +95,10 @@ export const LoginPage: FC = () => {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Haslo</FormLabel>
+                    <FormLabel>Hasło</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Haslo"
+                        placeholder="Hasło"
                         type="password"
                         className="w-80"
                         {...field}
