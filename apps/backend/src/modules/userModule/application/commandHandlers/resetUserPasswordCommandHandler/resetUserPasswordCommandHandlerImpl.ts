@@ -33,14 +33,6 @@ export class ResetUserPasswordCommandHandlerImpl implements ResetUserPasswordCom
       return;
     }
 
-    this.loggerService.debug({
-      message: 'Sending reset password email...',
-      context: {
-        userId: user.getId(),
-        email: user.getEmail(),
-      },
-    });
-
     const expiresIn = this.configProvider.getResetPasswordTokenExpiresIn();
 
     const resetPasswordToken = this.tokenService.createToken({
@@ -53,7 +45,7 @@ export class ResetUserPasswordCommandHandlerImpl implements ResetUserPasswordCom
 
     const frontendUrl = this.configProvider.getFrontendUrl();
 
-    const resetPasswordLink = `${frontendUrl}/reset-password?token=${resetPasswordToken}`;
+    const resetPasswordLink = `${frontendUrl}/new-password?token=${resetPasswordToken}`;
 
     await this.emailMessageBus.sendEvent(
       new EmailEventDraft({
