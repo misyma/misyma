@@ -6,7 +6,6 @@ export const SendResetPasswordEmailPage: FC = () => {
   const navigate = useNavigate();
 
   const onSuccess = async () => {
-    console.log('y');
     navigate('/reset-password-success');
   };
 

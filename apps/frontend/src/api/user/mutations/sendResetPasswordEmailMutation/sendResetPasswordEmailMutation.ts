@@ -16,8 +16,6 @@ export const useSendResetPasswordEmailMutation = (
       },
     });
 
-    console.log('sendResetPasswordEmailResponse', sendResetPasswordEmailResponse);
-
     if (sendResetPasswordEmailResponse.success === false) {
       throw new UserApiError({
         message: mapStatusCodeToErrorMessage(sendResetPasswordEmailResponse.statusCode),
