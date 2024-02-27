@@ -11,11 +11,11 @@ import { Input } from '../../../../components/ui/input';
 import { Button } from '../../../../components/ui/button';
 
 interface LoginUserFormProps {
-  onSuccessfulLogin: (loginUserResponseBody: LoginUserResponseBody) => void;
+  onSuccess: (loginUserResponseBody: LoginUserResponseBody) => void;
   onError?: (error: UserApiError) => void;
 }
 
-export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccessfulLogin, onError }: LoginUserFormProps) => {
+export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccess, onError }: LoginUserFormProps) => {
   const loginUserMutation = useLoginUserMutation({});
 
   const form = useForm<LoginUserFormValues>({
@@ -35,7 +35,7 @@ export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccessfulLogin, onErr
         password: values.password,
       },
       {
-        onSuccess: (loginUserResponseBody) => onSuccessfulLogin(loginUserResponseBody),
+        onSuccess: (loginUserResponseBody) => onSuccess(loginUserResponseBody),
         onError: (error) => {
           setResponseErrorMessage(error.context.message);
 
