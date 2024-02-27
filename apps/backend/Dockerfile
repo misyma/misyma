@@ -1,5 +1,4 @@
-# syntax=docker/dockerfile:1
-FROM node:20.10.0-alpine AS base
+FROM node:20.11.1-alpine AS base
 
 RUN apk update
 RUN apk add --no-cache libc6-compat bash

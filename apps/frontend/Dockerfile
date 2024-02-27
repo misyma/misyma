@@ -1,4 +1,4 @@
-FROM node:20.10.0-alpine AS base
+FROM node:20.11.1-alpine AS base
 
 RUN apk update
 RUN apk add --no-cache libc6-compat bash
@@ -14,6 +14,7 @@ RUN npm i -g turbo
 COPY package*.json ./
 COPY turbo.json ./
 COPY apps/ ./apps
+COPY common/ ./common
 COPY tsconfig.json ./
 
 RUN turbo prune --scope="@apps/$APP_NAME" --docker

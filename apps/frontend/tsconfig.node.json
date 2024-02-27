@@ -6,10 +6,5 @@
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true
   },
-  "include": ["vite.config.ts"],
-  "references": [
-    {
-      "path": "../../common/contracts/tsconfig.json"
-    }
-  ]
+  "include": ["vite.config.ts"]
 }

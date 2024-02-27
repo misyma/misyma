@@ -27,9 +27,6 @@
   "references": [
     {
       "path": "./tsconfig.node.json"
-    },
-    {
-      "path": "../../common/contracts/tsconfig.json"
     }
   ]
 }
