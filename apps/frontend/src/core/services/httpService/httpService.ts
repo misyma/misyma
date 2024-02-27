@@ -34,7 +34,7 @@ interface BaseHttpResponse<T> {
  */
 
 export class HttpService {
-  private static readonly baseUrl = import.meta.env.VITE_API_BASE_URL;
+  private static readonly baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://api.misyma.com/api';
 
   public static async get<T = unknown>(payload: GetRequestPayload): Promise<HttpResponse<T>> {
     const { url, headers, queryParams } = payload;
