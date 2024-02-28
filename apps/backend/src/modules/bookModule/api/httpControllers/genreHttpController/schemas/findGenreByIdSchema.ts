@@ -16,9 +16,9 @@ export type FindGenreByIdPathParamsDTO = TypeExtends<
   Static<typeof findGenreByIdPathParamsDTOSchema>
 >;
 
-export const findGenreByIdOkResponseDTOSchema = genreDTO;
+export const findGenreByIdResponseBodyDTOSchema = genreDTO;
 
-export type FindGenreByIdOkResponseDTO = TypeExtends<
-  contracts.FindGenreByIdResponse,
-  Static<typeof findGenreByIdOkResponseDTOSchema>
+export type FindGenreByIdResponseBodyDTO = TypeExtends<
+  contracts.FindGenreByIdResponseBody,
+  Static<typeof findGenreByIdResponseBodyDTOSchema>
 >;

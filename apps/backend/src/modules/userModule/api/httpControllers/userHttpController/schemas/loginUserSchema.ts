@@ -9,7 +9,7 @@ export const loginUserBodyDTOSchema = Type.Object({
   password: Type.String(),
 });
 
-export type LoginUserBodyDTO = TypeExtends<Static<typeof loginUserBodyDTOSchema>, contracts.LoginUserBody>;
+export type LoginUserBodyDTO = TypeExtends<Static<typeof loginUserBodyDTOSchema>, contracts.LoginUserRequestBody>;
 
 export const loginUserResponseBodyDTOSchema = Type.Object({
   accessToken: Type.String(),

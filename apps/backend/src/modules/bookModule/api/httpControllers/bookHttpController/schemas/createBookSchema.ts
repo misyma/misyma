@@ -29,7 +29,7 @@ export const createBookBodyDTOSchema = Type.Object({
   ),
 });
 
-export type CreateBookBodyDTO = TypeExtends<Static<typeof createBookBodyDTOSchema>, contracts.CreateBookBody>;
+export type CreateBookBodyDTO = TypeExtends<Static<typeof createBookBodyDTOSchema>, contracts.CreateBookRequestBody>;
 
 export const createBookResponseBodyDTOSchema = bookDTOSchema;
 

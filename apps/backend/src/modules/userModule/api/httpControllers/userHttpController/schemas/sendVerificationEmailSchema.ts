@@ -12,7 +12,7 @@ export const sendVerificationEmailBodyDTOSchema = Type.Object({
 
 export type SendVerificationEmailBodyDTO = TypeExtends<
   Static<typeof sendVerificationEmailBodyDTOSchema>,
-  contracts.SendVerificationEmailBody
+  contracts.SendVerificationEmailRequestBody
 >;
 
 export const sendVerificationEmailResponseBodyDTOSchema = Type.Null();

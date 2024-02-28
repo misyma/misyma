@@ -18,7 +18,7 @@ export const logoutUserBodyDTOSchema = Type.Object({
   accessToken: Type.String(),
 });
 
-export type LogoutUserBodyDTO = TypeExtends<Static<typeof logoutUserBodyDTOSchema>, contracts.LogoutUserBody>;
+export type LogoutUserBodyDTO = TypeExtends<Static<typeof logoutUserBodyDTOSchema>, contracts.LogoutUserRequestBody>;
 
 export const logoutUserResponseBodyDTOSchema = Type.Null();
 

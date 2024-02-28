@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
-import { type CreateAuthorBody } from '@common/contracts';
+import { type CreateAuthorRequestBody } from '@common/contracts';
 import { Generator } from '@common/tests';
 
 import { type AuthorService } from './author/authorService.js';
@@ -74,7 +74,7 @@ describe('Author', () => {
 
   describe('POST /api/authors/create', () => {
     it('creates an Author', async () => {
-      const author: CreateAuthorBody = {
+      const author: CreateAuthorRequestBody = {
         firstName: Generator.firstName(),
         lastName: Generator.lastName(),
       };
@@ -103,7 +103,7 @@ describe('Author', () => {
 
   describe('DELETE /api/authors/:id', () => {
     it('deletes an Author', async () => {
-      const author: CreateAuthorBody = {
+      const author: CreateAuthorRequestBody = {
         firstName: Generator.firstName(),
         lastName: Generator.lastName(),
       };

@@ -1,4 +1,4 @@
-export interface RefreshUserTokensBody {
+export interface RefreshUserTokensRequestBody {
   readonly refreshToken: string;
 }
 

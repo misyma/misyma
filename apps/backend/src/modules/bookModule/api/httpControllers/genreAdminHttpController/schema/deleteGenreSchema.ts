@@ -15,9 +15,6 @@ export type DeleteGenrePathParamsDTO = TypeExtends<
   Static<typeof deleteGenrePathParamsDTOSchema>
 >;
 
-export const deleteGenreNoContentResponseDTOSchema = Type.Void();
+export const deleteGenreResponseBodyDTOSchema = Type.Null();
 
-export type DeleteGenreNoContentResponseDTO = TypeExtends<
-  contracts.DeleteGenreResponse,
-  Static<typeof deleteGenreNoContentResponseDTOSchema>
->;
+export type DeleteGenreResponseBodyDTO = Static<typeof deleteGenreResponseBodyDTOSchema>;

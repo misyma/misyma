@@ -24,7 +24,7 @@ export const updateBookReadingBodyDTOSchema = Type.Object({
 
 export type UpdateBookReadingBodyDTO = TypeExtends<
   Static<typeof updateBookReadingBodyDTOSchema>,
-  contracts.UpdateBookReadingBody
+  contracts.UpdateBookReadingRequestBody
 >;
 
 export const updateBookReadingResponseBodyDTOSchema = Type.Object({

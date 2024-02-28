@@ -1,21 +1,21 @@
 import {
   type CreateGenreBodyDTO,
-  type CreateGenreCreatedResponseDTO,
+  type CreateGenreResponseBodyDTO,
   createGenreBodyDTOSchema,
-  createGenreCreatedResponseDTOSchema,
+  createGenreResponseBodyDTOSchema,
 } from './schema/createGenreSchema.js';
 import {
-  type DeleteGenreNoContentResponseDTO,
   type DeleteGenrePathParamsDTO,
-  deleteGenreNoContentResponseDTOSchema,
+  deleteGenreResponseBodyDTOSchema,
   deleteGenrePathParamsDTOSchema,
+  type DeleteGenreResponseBodyDTO,
 } from './schema/deleteGenreSchema.js';
 import {
   type UpdateGenreNameBodyDTO,
-  type UpdateGenreNameOkResponseBodyDTO,
+  type UpdateGenreNameResponseBodyDTO,
   type UpdateGenreNamePathParamsDTO,
   updateGenreNameBodyDTOSchema,
-  updateGenreNameOkResponseBodyDTOSchema,
+  updateGenreNameResponseBodyDTOSchema,
   updateGenreNamePathParamsDTOSchema,
 } from './schema/updateGenreNameSchema.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
@@ -59,7 +59,7 @@ export class GenreAdminHttpController implements HttpController {
           response: {
             [HttpStatusCode.created]: {
               description: 'Genre created.',
-              schema: createGenreCreatedResponseDTOSchema,
+              schema: createGenreResponseBodyDTOSchema,
             },
           },
         },
@@ -79,7 +79,7 @@ export class GenreAdminHttpController implements HttpController {
           response: {
             [HttpStatusCode.ok]: {
               description: 'Genre name updated.',
-              schema: updateGenreNameOkResponseBodyDTOSchema,
+              schema: updateGenreNameResponseBodyDTOSchema,
             },
           },
         },
@@ -98,7 +98,7 @@ export class GenreAdminHttpController implements HttpController {
           response: {
             [HttpStatusCode.noContent]: {
               description: 'Genre deleted.',
-              schema: deleteGenreNoContentResponseDTOSchema,
+              schema: deleteGenreResponseBodyDTOSchema,
             },
           },
         },
@@ -110,7 +110,7 @@ export class GenreAdminHttpController implements HttpController {
 
   private async createGenre(
     request: HttpRequest<CreateGenreBodyDTO>,
-  ): Promise<HttpCreatedResponse<CreateGenreCreatedResponseDTO>> {
+  ): Promise<HttpCreatedResponse<CreateGenreResponseBodyDTO>> {
     this.accessControlService.verifyBasicAuth({
       authorizationHeader: request.headers['authorization'],
     });
@@ -127,7 +127,7 @@ export class GenreAdminHttpController implements HttpController {
 
   private async updateGenreName(
     request: HttpRequest<UpdateGenreNameBodyDTO, null, UpdateGenreNamePathParamsDTO>,
-  ): Promise<HttpOkResponse<UpdateGenreNameOkResponseBodyDTO>> {
+  ): Promise<HttpOkResponse<UpdateGenreNameResponseBodyDTO>> {
     this.accessControlService.verifyBasicAuth({
       authorizationHeader: request.headers['authorization'],
     });
@@ -149,7 +149,7 @@ export class GenreAdminHttpController implements HttpController {
 
   private async deleteGenre(
     request: HttpRequest<null, null, DeleteGenrePathParamsDTO>,
-  ): Promise<HttpNoContentResponse<DeleteGenreNoContentResponseDTO>> {
+  ): Promise<HttpNoContentResponse<DeleteGenreResponseBodyDTO>> {
     this.accessControlService.verifyBasicAuth({
       authorizationHeader: request.headers['authorization'],
     });
@@ -160,7 +160,7 @@ export class GenreAdminHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.noContent,
-      body: undefined,
+      body: null,
     };
   }
 

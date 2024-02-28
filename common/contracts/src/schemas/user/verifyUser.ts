@@ -1,3 +1,3 @@
-export interface VerifyUserBody {
+export interface VerifyUserRequestBody {
   readonly token: string;
 }

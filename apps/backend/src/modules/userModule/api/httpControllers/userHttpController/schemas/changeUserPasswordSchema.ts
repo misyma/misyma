@@ -13,7 +13,7 @@ export const changeUserPasswordBodyDTOSchema = Type.Object({
 
 export type ChangeUserPasswordBodyDTO = TypeExtends<
   Static<typeof changeUserPasswordBodyDTOSchema>,
-  contracts.ChangeUserPasswordBody
+  contracts.ChangeUserPasswordRequestBody
 >;
 
 export const changeUserPasswordResponseBodyDTOSchema = Type.Null();

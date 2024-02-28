@@ -1,3 +1,3 @@
-export interface ResetUserPasswordBody {
+export interface ResetUserPasswordRequestBody {
   readonly email: string;
 }

@@ -1,5 +1,4 @@
-// TODO: RequestBody
-export interface LoginUserBody {
+export interface LoginUserRequestBody {
   readonly email: string;
   readonly password: string;
 }

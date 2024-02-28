@@ -1,7 +1,7 @@
 import { type Genre } from './genre.js';
 
-export interface CreateGenreBody {
-  name: string;
+export interface CreateGenreRequestBody {
+  readonly name: string;
 }
 
-export type CreateGenreResponse = Genre;
+export type CreateGenreResponseBody = Genre;

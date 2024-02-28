@@ -1,17 +1,17 @@
 import { type GenreDTO } from './schemas/dtos/genreDTO.js';
 import {
-  type FindGenreByIdOkResponseDTO,
+  type FindGenreByIdResponseBodyDTO,
   type FindGenreByIdPathParamsDTO,
-  findGenreByIdOkResponseDTOSchema,
+  findGenreByIdResponseBodyDTOSchema,
   findGenreByIdPathParamsDTOSchema,
 } from './schemas/findGenreByIdSchema.js';
 import {
-  type FindGenreByNameOkResponseBodyDTO,
+  type FindGenreByNameResponseBodyDTO,
   type FindGenreByNameQueryParamsDTO,
-  findGenreByNameOkResponseBodyDTOSchema,
+  findGenreByNameResponseBodyDTOSchema,
   findGenreByNameQueryParamsDTOSchema,
 } from './schemas/findGenreByNameSchema.js';
-import { type FindGenresOkResponseDTO, findGenresOkResponseDTOSchema } from './schemas/findGenresSchema.js';
+import { type FindGenresResponseBodyDTO, findGenresResponseBodyDTOSchema } from './schemas/findGenresSchema.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
@@ -46,7 +46,7 @@ export class GenreHttpController implements HttpController {
           response: {
             [HttpStatusCode.ok]: {
               description: 'Genres found.',
-              schema: findGenresOkResponseDTOSchema,
+              schema: findGenresResponseBodyDTOSchema,
             },
           },
         },
@@ -64,7 +64,7 @@ export class GenreHttpController implements HttpController {
           response: {
             [HttpStatusCode.ok]: {
               description: 'Genre found.',
-              schema: findGenreByNameOkResponseBodyDTOSchema,
+              schema: findGenreByNameResponseBodyDTOSchema,
             },
           },
         },
@@ -83,7 +83,7 @@ export class GenreHttpController implements HttpController {
           response: {
             [HttpStatusCode.ok]: {
               description: 'Genre found.',
-              schema: findGenreByIdOkResponseDTOSchema,
+              schema: findGenreByIdResponseBodyDTOSchema,
             },
           },
         },
@@ -94,7 +94,7 @@ export class GenreHttpController implements HttpController {
     ];
   }
 
-  private async findGenres(request: HttpRequest): Promise<HttpOkResponse<FindGenresOkResponseDTO>> {
+  private async findGenres(request: HttpRequest): Promise<HttpOkResponse<FindGenresResponseBodyDTO>> {
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
@@ -111,7 +111,7 @@ export class GenreHttpController implements HttpController {
 
   private async findGenreByName(
     request: HttpRequest<null, FindGenreByNameQueryParamsDTO>,
-  ): Promise<HttpOkResponse<FindGenreByNameOkResponseBodyDTO>> {
+  ): Promise<HttpOkResponse<FindGenreByNameResponseBodyDTO>> {
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
@@ -128,7 +128,7 @@ export class GenreHttpController implements HttpController {
 
   private async findGenreById(
     request: HttpRequest<null, null, FindGenreByIdPathParamsDTO>,
-  ): Promise<HttpOkResponse<FindGenreByIdOkResponseDTO>> {
+  ): Promise<HttpOkResponse<FindGenreByIdResponseBodyDTO>> {
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });

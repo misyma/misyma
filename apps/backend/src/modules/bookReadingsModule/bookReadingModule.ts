@@ -18,6 +18,7 @@ import { type SqliteDatabaseClient } from '../../core/database/sqliteDatabaseCli
 import { coreSymbols } from '../../core/symbols.js';
 import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type DependencyInjectionModule } from '../../libs/dependencyInjection/dependencyInjectionModule.js';
+import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
 import { type UuidService } from '../../libs/uuid/services/uuidService/uuidService.js';
 import { type AccessControlService } from '../authModule/application/services/accessControlService/accessControlService.js';
 import { authSymbols } from '../authModule/symbols.js';
@@ -84,19 +85,26 @@ export class BookReadingModule implements DependencyInjectionModule {
         new CreateBookReadingCommandHandlerImpl(
           container.get<BookReadingRepository>(symbols.bookReadingRepository),
           container.get<BookRepository>(bookSymbols.bookRepository),
+          container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );
 
     container.bind<UpdateBookReadingCommandHandler>(
       symbols.updateBookReadingNameCommandHandler,
       () =>
-        new UpdateBookReadingCommandHandlerImpl(container.get<BookReadingRepository>(symbols.bookReadingRepository)),
+        new UpdateBookReadingCommandHandlerImpl(
+          container.get<BookReadingRepository>(symbols.bookReadingRepository),
+          container.get<LoggerService>(coreSymbols.loggerService),
+        ),
     );
 
     container.bind<DeleteBookReadingCommandHandler>(
       symbols.deleteBookReadingNameCommandHandler,
       () =>
-        new DeleteBookReadingCommandHandlerImpl(container.get<BookReadingRepository>(symbols.bookReadingRepository)),
+        new DeleteBookReadingCommandHandlerImpl(
+          container.get<BookReadingRepository>(symbols.bookReadingRepository),
+          container.get<LoggerService>(coreSymbols.loggerService),
+        ),
     );
   }
 }
