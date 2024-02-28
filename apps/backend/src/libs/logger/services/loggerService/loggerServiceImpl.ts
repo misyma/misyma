@@ -5,38 +5,38 @@ export class LoggerServiceImpl implements LoggerService {
   public constructor(private readonly loggerClient: LoggerClient) {}
 
   public fatal(payload: LogPayload): void {
-    const { message, context = {} } = payload;
+    const { message, ...context } = payload;
 
-    this.loggerClient.fatal({ context }, message);
+    this.loggerClient.fatal({ ...context }, message);
   }
 
   public error(payload: LogPayload): void {
-    const { message, context = {} } = payload;
+    const { message, ...context } = payload;
 
-    this.loggerClient.error({ context }, message);
+    this.loggerClient.error({ ...context }, message);
   }
 
   public warn(payload: LogPayload): void {
-    const { message, context = {} } = payload;
+    const { message, ...context } = payload;
 
-    this.loggerClient.warn({ context }, message);
+    this.loggerClient.warn({ ...context }, message);
   }
 
   public info(payload: LogPayload): void {
-    const { message, context = {} } = payload;
+    const { message, ...context } = payload;
 
-    this.loggerClient.info({ context }, message);
+    this.loggerClient.info({ ...context }, message);
   }
 
   public debug(payload: LogPayload): void {
-    const { message, context = {} } = payload;
+    const { message, ...context } = payload;
 
-    this.loggerClient.debug({ context }, message);
+    this.loggerClient.debug({ ...context }, message);
   }
 
   public log(payload: LogPayload): void {
-    const { message, context = {} } = payload;
+    const { message, ...context } = payload;
 
-    this.loggerClient.info({ context }, message);
+    this.loggerClient.info({ ...context }, message);
   }
 }

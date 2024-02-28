@@ -28,7 +28,7 @@ export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
 
     this.loggerService.debug({
       message: 'Logging User in...',
-      context: { email },
+      email,
     });
 
     const user = await this.userRepository.findUser({ email });
@@ -76,14 +76,12 @@ export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
       expiresIn: refreshTokenExpiresIn,
     });
 
-    this.loggerService.info({
+    this.loggerService.debug({
       message: 'User logged in.',
-      context: {
-        email,
-        userId: user.getId(),
-        accessTokenExpiresIn,
-        refreshTokenExpiresIn,
-      },
+      email,
+      userId: user.getId(),
+      accessTokenExpiresIn,
+      refreshTokenExpiresIn,
     });
 
     return {

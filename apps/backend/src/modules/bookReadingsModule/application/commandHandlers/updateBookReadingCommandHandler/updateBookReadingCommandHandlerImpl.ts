@@ -4,13 +4,26 @@ import {
   type UpdateBookReadingResult,
 } from './updateBookReadingCommandHandler.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
+import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type BookReadingRepository } from '../../../domain/repositories/bookReadingRepository/bookReadingRepository.js';
 
 export class UpdateBookReadingCommandHandlerImpl implements UpdateBookReadingCommandHandler {
-  public constructor(private readonly bookReadingRepository: BookReadingRepository) {}
+  public constructor(
+    private readonly bookReadingRepository: BookReadingRepository,
+    private readonly loggerService: LoggerService,
+  ) {}
 
   public async execute(payload: UpdateBookReadingPayload): Promise<UpdateBookReadingResult> {
     const { id, comment, rating, startedAt, endedAt } = payload;
+
+    this.loggerService.debug({
+      message: 'Updating BookReading...',
+      id,
+      comment,
+      rating,
+      startedAt,
+      endedAt,
+    });
 
     const bookReading = await this.bookReadingRepository.findBookReading({ id });
 
@@ -47,6 +60,15 @@ export class UpdateBookReadingCommandHandlerImpl implements UpdateBookReadingCom
 
     const updatedBookReading = await this.bookReadingRepository.saveBookReading({
       bookReading,
+    });
+
+    this.loggerService.debug({
+      message: 'BookReading updated.',
+      id,
+      comment,
+      rating,
+      startedAt,
+      endedAt,
     });
 
     return {

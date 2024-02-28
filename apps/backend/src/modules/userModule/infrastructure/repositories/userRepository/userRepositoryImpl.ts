@@ -3,7 +3,6 @@ import { OperationNotValidError } from '../../../../../common/errors/common/oper
 import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
-import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { User, type UserState } from '../../../domain/entities/user/user.js';
 import {
@@ -26,7 +25,6 @@ export class UserRepositoryImpl implements UserRepository {
     private readonly sqliteDatabaseClient: SqliteDatabaseClient,
     private readonly userMapper: UserMapper,
     private readonly uuidService: UuidService,
-    private readonly loggerService: LoggerService,
   ) {}
 
   public async saveUser(payload: SaveUserPayload): Promise<User> {
@@ -60,11 +58,6 @@ export class UserRepositoryImpl implements UserRepository {
         '*',
       );
     } catch (error) {
-      this.loggerService.error({
-        message: 'Error while creating User.',
-        context: { error },
-      });
-
       throw new RepositoryError({
         entity: 'User',
         operation: 'create',
@@ -95,11 +88,6 @@ export class UserRepositoryImpl implements UserRepository {
         .update(user.getState(), '*')
         .where({ id: user.getId() });
     } catch (error) {
-      this.loggerService.error({
-        message: 'Error while updating User.',
-        context: { error },
-      });
-
       throw new RepositoryError({
         entity: 'User',
         operation: 'update',
@@ -148,11 +136,6 @@ export class UserRepositoryImpl implements UserRepository {
         .where(whereCondition)
         .first();
     } catch (error) {
-      this.loggerService.error({
-        message: 'Error while finding User.',
-        context: { error },
-      });
-
       throw new RepositoryError({
         entity: 'User',
         operation: 'find',
@@ -181,11 +164,6 @@ export class UserRepositoryImpl implements UserRepository {
     try {
       await this.sqliteDatabaseClient<UserRawEntity>(this.userDatabaseTable.name).delete().where({ id });
     } catch (error) {
-      this.loggerService.error({
-        message: 'Error while deleting User.',
-        context: { error },
-      });
-
       throw new RepositoryError({
         entity: 'User',
         operation: 'delete',

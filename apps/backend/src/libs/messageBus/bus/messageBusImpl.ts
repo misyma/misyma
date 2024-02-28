@@ -28,21 +28,17 @@ export class MessageBusImpl implements MessageBus {
     const { topic, handler } = payload;
 
     if (isAsyncHandler(handler)) {
-      // TODO: add types
       this.nativeMq.on(topic, (message: any, callback: any) => {
         handler(message['data'])
           .then(() => callback())
           .catch((error) => this.errorHandler?.(error));
       });
     } else {
-      // TODO: add types
       this.nativeMq.on(topic, (message: any, callback: any) => {
-        this.loggerService.info({
+        this.loggerService.debug({
           message: 'Received message',
-          context: {
-            topic,
-            message: message['data'],
-          },
+          topic,
+          data: message['data'],
         });
 
         try {
@@ -50,10 +46,8 @@ export class MessageBusImpl implements MessageBus {
         } catch (error) {
           this.loggerService.error({
             message: 'Caught an error while handling a message',
-            context: {
-              topic,
-              error,
-            },
+            topic,
+            error,
           });
 
           if (error instanceof Error) {

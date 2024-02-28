@@ -13,14 +13,14 @@ export class DeleteUserCommandHandlerImpl implements DeleteUserCommandHandler {
 
     this.loggerService.debug({
       message: 'Deleting User...',
-      context: { userId },
+      userId,
     });
 
     await this.userRepository.deleteUser({ id: userId });
 
-    this.loggerService.info({
+    this.loggerService.debug({
       message: 'User deleted.',
-      context: { userId },
+      userId,
     });
   }
 }

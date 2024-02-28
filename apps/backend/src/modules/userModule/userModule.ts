@@ -14,8 +14,8 @@ import { type RefreshUserTokensCommandHandler } from './application/commandHandl
 import { RefreshUserTokensCommandHandlerImpl } from './application/commandHandlers/refreshUserTokensCommandHandler/refreshUserTokensCommandHandlerImpl.js';
 import { type RegisterUserCommandHandler } from './application/commandHandlers/registerUserCommandHandler/registerUserCommandHandler.js';
 import { RegisterUserCommandHandlerImpl } from './application/commandHandlers/registerUserCommandHandler/registerUserCommandHandlerImpl.js';
-import { type ResetUserPasswordCommandHandler } from './application/commandHandlers/resetUserPasswordCommandHandler/resetUserPasswordCommandHandler.js';
-import { ResetUserPasswordCommandHandlerImpl } from './application/commandHandlers/resetUserPasswordCommandHandler/resetUserPasswordCommandHandlerImpl.js';
+import { type SendResetPasswordEmailCommandHandler } from './application/commandHandlers/sendResetPasswordEmailCommandHandler/sendResetPasswordEmailCommandHandler.js';
+import { SendResetPasswordEmailCommandHandlerImpl } from './application/commandHandlers/sendResetPasswordEmailCommandHandler/sendResetPasswordEmailCommandHandlerImpl.js';
 import { type SendVerificationEmailCommandHandler } from './application/commandHandlers/sendVerificationEmailCommandHandler/sendVerificationEmailCommandHandler.js';
 import { SendVerificationEmailCommandHandlerImpl } from './application/commandHandlers/sendVerificationEmailCommandHandler/sendVerificationEmailCommandHandlerImpl.js';
 import { type VerifyUserEmailCommandHandler } from './application/commandHandlers/verifyUserEmailCommandHandler/verifyUserEmailCommandHandler.js';
@@ -72,7 +72,6 @@ export class UserModule implements DependencyInjectionModule {
           container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient),
           container.get<UserMapper>(symbols.userMapper),
           container.get<UuidService>(coreSymbols.uuidService),
-          container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );
 
@@ -85,7 +84,6 @@ export class UserModule implements DependencyInjectionModule {
           container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient),
           container.get<BlacklistTokenMapper>(symbols.blacklistTokenMapper),
           container.get<UuidService>(coreSymbols.uuidService),
-          container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );
 
@@ -151,10 +149,10 @@ export class UserModule implements DependencyInjectionModule {
         ),
     );
 
-    container.bind<ResetUserPasswordCommandHandler>(
-      symbols.resetUserPasswordCommandHandler,
+    container.bind<SendResetPasswordEmailCommandHandler>(
+      symbols.sendResetPasswordEmailCommandHandler,
       () =>
-        new ResetUserPasswordCommandHandlerImpl(
+        new SendResetPasswordEmailCommandHandlerImpl(
           container.get<TokenService>(authSymbols.tokenService),
           container.get<UserRepository>(symbols.userRepository),
           container.get<LoggerService>(coreSymbols.loggerService),
@@ -172,6 +170,7 @@ export class UserModule implements DependencyInjectionModule {
           container.get<HashService>(symbols.hashService),
           container.get<TokenService>(authSymbols.tokenService),
           container.get<PasswordValidationService>(symbols.passwordValidationService),
+          container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );
 
@@ -221,7 +220,7 @@ export class UserModule implements DependencyInjectionModule {
           container.get<FindUserQueryHandler>(symbols.findUserQueryHandler),
           container.get<AccessControlService>(authSymbols.accessControlService),
           container.get<VerifyUserEmailCommandHandler>(symbols.verifyUserEmailCommandHandler),
-          container.get<ResetUserPasswordCommandHandler>(symbols.resetUserPasswordCommandHandler),
+          container.get<SendResetPasswordEmailCommandHandler>(symbols.sendResetPasswordEmailCommandHandler),
           container.get<ChangeUserPasswordCommandHandler>(symbols.changeUserPasswordCommandHandler),
           container.get<LogoutUserCommandHandler>(symbols.logoutUserCommandHandler),
           container.get<RefreshUserTokensCommandHandler>(symbols.refreshUserTokensCommandHandler),

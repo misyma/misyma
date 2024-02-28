@@ -26,10 +26,8 @@ export class RegisterUserCommandHandlerImpl implements RegisterUserCommandHandle
 
     this.loggerService.debug({
       message: 'Registering User...',
-      context: {
-        email,
-        name,
-      },
+      email,
+      name,
     });
 
     const existingUser = await this.userRepository.findUser({ email });
@@ -54,12 +52,10 @@ export class RegisterUserCommandHandlerImpl implements RegisterUserCommandHandle
       },
     });
 
-    this.loggerService.info({
+    this.loggerService.debug({
       message: 'User registered.',
-      context: {
-        email,
-        userId: user.getId(),
-      },
+      email,
+      userId: user.getId(),
     });
 
     await this.sendVerificationEmailCommandHandler.execute({

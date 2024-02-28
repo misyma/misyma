@@ -16,14 +16,14 @@ export class DeleteAuthorCommandHandlerImpl implements DeleteAuthorCommandHandle
 
     this.loggerService.debug({
       message: 'Deleting author...',
-      context: { authorId },
+      authorId,
     });
 
     await this.authorRepository.deleteAuthor({ id: authorId });
 
-    this.loggerService.info({
+    this.loggerService.debug({
       message: 'Author deleted.',
-      context: { authorId },
+      authorId,
     });
   }
 }

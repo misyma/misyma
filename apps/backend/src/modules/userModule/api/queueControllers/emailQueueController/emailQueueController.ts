@@ -35,7 +35,6 @@ export class EmailQueueController implements QueueController {
 
   private eventName = 'email';
 
-  // TODO: create a lib from this :)
   private retryPolicy = retry(handleAll, {
     backoff: new ExponentialBackoff({
       exponent: 2,
@@ -88,10 +87,8 @@ export class EmailQueueController implements QueueController {
         retryListener = this.retryPolicy.onFailure((reason) => {
           this.loggerService.error({
             message: 'Failed to send verification email.',
-            context: {
-              emailEventId: emailEvent.getId(),
-              reason,
-            },
+            emailEventId: emailEvent.getId(),
+            reason,
           });
         });
 
@@ -99,12 +96,10 @@ export class EmailQueueController implements QueueController {
           await this.retryPolicy.execute(async () => {
             await this.emailService.sendEmail(verificationEmail);
 
-            this.loggerService.info({
+            this.loggerService.debug({
               message: 'Sent verification email.',
-              context: {
-                emailEventId: emailEvent.getId(),
-                recipient: emailEvent.getRecipientEmail(),
-              },
+              emailEventId: emailEvent.getId(),
+              recipient: emailEvent.getRecipientEmail(),
             });
           });
         } catch (error) {
@@ -136,10 +131,8 @@ export class EmailQueueController implements QueueController {
         retryListener = this.retryPolicy.onFailure((reason) => {
           this.loggerService.error({
             message: 'Failed to send reset password email.',
-            context: {
-              emailEventId: emailEvent.getId(),
-              reason,
-            },
+            emailEventId: emailEvent.getId(),
+            reason,
           });
         });
 
@@ -152,12 +145,10 @@ export class EmailQueueController implements QueueController {
           await this.retryPolicy.execute(async () => {
             await this.emailService.sendEmail(resetPasswordEmail);
 
-            this.loggerService.info({
+            this.loggerService.debug({
               message: 'Sent reset password email.',
-              context: {
-                emailEventId: emailEvent.getId(),
-                recipient: emailEvent.getRecipientEmail(),
-              },
+              emailEventId: emailEvent.getId(),
+              recipient: emailEvent.getRecipientEmail(),
             });
           });
         } catch (error) {

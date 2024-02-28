@@ -91,7 +91,6 @@ export class Application {
       }),
     );
 
-    // TODO: add core module and define those symbols there
     container.bind<HttpService>(symbols.httpService, () =>
       new HttpServiceFactory(container.get<LoggerService>(symbols.loggerService)).create(),
     );
@@ -132,12 +131,7 @@ export class Application {
 
     await this.setupDatabase(container);
 
-    loggerService.info({
-      message: 'Migrations ran.',
-      context: {
-        source: Application.name,
-      },
-    });
+    loggerService.info({ message: 'Migrations ran.' });
 
     const server = new HttpServer(container);
 
@@ -147,11 +141,6 @@ export class Application {
 
     await queueRouter.start();
 
-    loggerService.log({
-      message: `Application started.`,
-      context: {
-        source: Application.name,
-      },
-    });
+    loggerService.log({ message: 'Application started.' });
   }
 }

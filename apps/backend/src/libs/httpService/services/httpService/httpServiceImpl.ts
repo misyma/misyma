@@ -24,11 +24,9 @@ export class HttpServiceImpl implements HttpService {
 
     this.loggerService.debug({
       message: 'Sending http request...',
-      context: {
-        url,
-        method,
-        headers,
-      },
+      url,
+      method,
+      headers,
     });
 
     try {
@@ -47,11 +45,9 @@ export class HttpServiceImpl implements HttpService {
 
       this.loggerService.debug({
         message: 'Http request sent.',
-        context: {
-          response: {
-            statusCode: response.status,
-            body: response.status >= 200 && response.status < 300 ? 'hidden' : responseBody,
-          },
+        response: {
+          statusCode: response.status,
+          body: response.status >= 200 && response.status < 300 ? 'hidden' : responseBody,
         },
       });
 
@@ -70,11 +66,9 @@ export class HttpServiceImpl implements HttpService {
 
       this.loggerService.error({
         message: 'Http request error.',
-        context: {
-          error: {
-            name,
-            message,
-          },
+        error: {
+          name,
+          message,
         },
       });
 

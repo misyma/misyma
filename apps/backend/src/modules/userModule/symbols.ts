@@ -7,13 +7,13 @@ export const symbols = {
 
   registerUserCommandHandler: Symbol('registerUserCommandHandler'),
   findUserQueryHandler: Symbol('findUserQueryHandler'),
-  resetUserPasswordCommandHandler: Symbol('resetUserPasswordCommandHandler'),
-  changeUserPasswordCommandHandler: Symbol('changeUserPasswordCommandHandler'),
   loginUserCommandHandler: Symbol('loginUserCommandHandler'),
   refreshUserTokensCommandHandler: Symbol('refreshUserTokensCommandHandler'),
   logoutUserCommandHandler: Symbol('logoutUserCommandHandler'),
   deleteUserCommandHandler: Symbol('deleteUserCommandHandler'),
+  sendResetPasswordEmailCommandHandler: Symbol('sendResetPasswordEmailCommandHandler'),
   sendVerificationEmailCommandHandler: Symbol('sendVerificationEmailCommandHandler'),
+  changeUserPasswordCommandHandler: Symbol('changeUserPasswordCommandHandler'),
   verifyUserEmailCommandHandler: Symbol('verifyUserEmailCommandHandler'),
 
   userHttpController: Symbol('userHttpController'),
