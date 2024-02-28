@@ -34,13 +34,13 @@ export class UpdateBookReadingCommandHandlerImpl implements UpdateBookReadingCom
     }
 
     if (startedAt !== undefined) {
-      bookReading.setStartedDate({
+      bookReading.setStartedAtDate({
         startedAt,
       });
     }
 
     if (endedAt !== undefined) {
-      bookReading.setEndedDate({
+      bookReading.setEndedAtDate({
         endedAt,
       });
     }

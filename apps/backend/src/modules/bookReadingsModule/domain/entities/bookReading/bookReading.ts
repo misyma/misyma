@@ -25,11 +25,11 @@ export interface SetRatingPayload {
   readonly rating: number;
 }
 
-export interface SetStartedDatePayload {
+export interface SetStartedAtDatePayload {
   readonly startedAt: Date;
 }
 
-export interface SetEndedDatePayload {
+export interface SetEndedAtDatePayload {
   readonly endedAt: Date;
 }
 
@@ -61,24 +61,24 @@ export class BookReading {
     this.state.rating = rating;
   }
 
-  public setStartedDate(payload: SetStartedDatePayload): void {
+  public setStartedAtDate(payload: SetStartedAtDatePayload): void {
     const { startedAt } = payload;
 
     if (this.state.endedAt && startedAt > this.state.endedAt) {
       throw new OperationNotValidError({
-        reason: 'Started date cannot be after ended date.',
+        reason: 'StartedAt date cannot be after ended date.',
       });
     }
 
     this.state.startedAt = startedAt;
   }
 
-  public setEndedDate(payload: SetEndedDatePayload): void {
+  public setEndedAtDate(payload: SetEndedAtDatePayload): void {
     const { endedAt } = payload;
 
     if (endedAt < this.state.startedAt) {
       throw new OperationNotValidError({
-        reason: 'Ended date cannot be before started date.',
+        reason: 'EndedAt date cannot be before started date.',
       });
     }
 

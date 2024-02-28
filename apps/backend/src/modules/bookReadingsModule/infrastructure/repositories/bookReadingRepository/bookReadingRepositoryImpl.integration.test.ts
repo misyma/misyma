@@ -221,11 +221,11 @@ describe('BookReadingRepositoryImpl', () => {
           rating: newRating,
         });
 
-        bookReading.setStartedDate({
+        bookReading.setStartedAtDate({
           startedAt: newStartedAt,
         });
 
-        bookReading.setEndedDate({
+        bookReading.setEndedAtDate({
           endedAt: newEndedAt,
         });
 
