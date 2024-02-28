@@ -5,7 +5,7 @@ import { type GenreRawEntity } from '../../../infrastructure/databases/bookDatab
 import { GenreTable } from '../../../infrastructure/databases/bookDatabase/tables/genreTable/genreTable.js';
 
 interface CreateAndPersistPayload {
-  input?: {
+  readonly input?: {
     genre?: Partial<GenreRawEntity>;
   };
 }
@@ -33,27 +33,25 @@ export class GenreTestUtils {
       };
     }
 
-    await this.sqliteDatabaseClient(this.genreTable.name).insert(genre);
+    await this.sqliteDatabaseClient<GenreRawEntity>(this.genreTable.name).insert(genre);
 
     return genre;
   }
 
   public async findByName(name: string): Promise<GenreRawEntity | null> {
-    const genre = await this.sqliteDatabaseClient(this.genreTable.name)
-      .where(this.genreTable.columns.name, name)
-      .first();
+    const genre = await this.sqliteDatabaseClient<GenreRawEntity>(this.genreTable.name).where({ name }).first();
 
     return genre || null;
   }
 
   public async findById(id: string): Promise<GenreRawEntity | null> {
-    const genre = await this.sqliteDatabaseClient(this.genreTable.name).where(this.genreTable.columns.id, id).first();
+    const genre = await this.sqliteDatabaseClient<GenreRawEntity>(this.genreTable.name).where({ id }).first();
 
     return genre || null;
   }
 
   public async truncate(): Promise<void> {
-    await this.sqliteDatabaseClient(this.genreTable.name).truncate();
+    await this.sqliteDatabaseClient<GenreRawEntity>(this.genreTable.name).truncate();
   }
 
   public async destroyDatabaseConnection(): Promise<void> {

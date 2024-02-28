@@ -124,7 +124,6 @@ describe('FindBookReadingsByBookIdQueryHandlerImpl', () => {
     expect(result.bookReadings.length).toEqual(2);
 
     expect(result.bookReadings[0]?.getState()).toEqual({
-      id: bookReading1.id,
       bookId: bookReading1.bookId,
       rating: bookReading1.rating,
       comment: bookReading1.comment,
@@ -133,7 +132,6 @@ describe('FindBookReadingsByBookIdQueryHandlerImpl', () => {
     });
 
     expect(result.bookReadings[1]?.getState()).toEqual({
-      id: bookReading2.id,
       bookId: bookReading2.bookId,
       rating: bookReading2.rating,
       comment: bookReading2.comment,

@@ -2,7 +2,6 @@ import { type AuthorMapper } from './authorMapper/authorMapper.js';
 import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
-import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { type Author } from '../../../domain/entities/author/author.js';
 import {
@@ -18,28 +17,21 @@ import { AuthorTable } from '../../databases/tables/authorTable/authorTable.js';
 export class AuthorRepositoryImpl implements AuthorRepository {
   private readonly databaseTable = new AuthorTable();
 
-  // TODO: add loggerService and log errors when throwing
   public constructor(
     private readonly sqliteDatabaseClient: SqliteDatabaseClient,
     private readonly authorMapper: AuthorMapper,
     private readonly uuidService: UuidService,
   ) {}
 
-  private createQueryBuilder(): QueryBuilder<AuthorRawEntity> {
-    return this.sqliteDatabaseClient<AuthorRawEntity>(this.databaseTable.name);
-  }
-
   public async createAuthor(payload: CreateAuthorPayload): Promise<Author> {
     const { firstName, lastName } = payload;
-
-    const queryBuilder = this.createQueryBuilder();
 
     let rawEntities: AuthorRawEntity[];
 
     const id = this.uuidService.generateUuid();
 
     try {
-      rawEntities = await queryBuilder.insert(
+      rawEntities = await this.sqliteDatabaseClient<AuthorRawEntity>(this.databaseTable.name).insert(
         {
           id,
           firstName,
@@ -61,8 +53,6 @@ export class AuthorRepositoryImpl implements AuthorRepository {
 
   public async findAuthor(payload: FindAuthorPayload): Promise<Author | null> {
     const { id, firstName, lastName } = payload;
-
-    const queryBuilder = this.createQueryBuilder();
 
     let whereCondition: Partial<AuthorRawEntity> = {};
 
@@ -90,7 +80,10 @@ export class AuthorRepositoryImpl implements AuthorRepository {
     let rawEntity: AuthorRawEntity | undefined;
 
     try {
-      rawEntity = await queryBuilder.select('*').where(whereCondition).first();
+      rawEntity = await this.sqliteDatabaseClient<AuthorRawEntity>(this.databaseTable.name)
+        .select('*')
+        .where(whereCondition)
+        .first();
     } catch (error) {
       throw new RepositoryError({
         entity: 'Author',
@@ -108,12 +101,12 @@ export class AuthorRepositoryImpl implements AuthorRepository {
   public async findAuthorsByIds(payload: FindAuthorsByIdsPayload): Promise<Author[]> {
     const { authorIds } = payload;
 
-    const queryBuilder = this.createQueryBuilder();
-
     let rawEntities: AuthorRawEntity[];
 
     try {
-      rawEntities = await queryBuilder.select('*').whereIn('id', authorIds);
+      rawEntities = await this.sqliteDatabaseClient<AuthorRawEntity>(this.databaseTable.name)
+        .select('*')
+        .whereIn('id', authorIds);
     } catch (error) {
       throw new RepositoryError({
         entity: 'Author',
@@ -136,10 +129,8 @@ export class AuthorRepositoryImpl implements AuthorRepository {
       });
     }
 
-    const queryBuilder = this.createQueryBuilder();
-
     try {
-      await queryBuilder.delete().where({ id });
+      await this.sqliteDatabaseClient<AuthorRawEntity>(this.databaseTable.name).delete().where({ id });
     } catch (error) {
       throw new RepositoryError({
         entity: 'Author',

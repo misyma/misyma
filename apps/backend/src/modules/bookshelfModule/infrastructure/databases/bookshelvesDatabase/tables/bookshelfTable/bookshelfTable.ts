@@ -1,12 +1,5 @@
-import { type BookshelfRawEntity } from './bookshelfRawEntity.js';
 import { type DatabaseTable } from '../../../../../../../common/types/databaseTable.js';
 
-export class BookshelfTable implements DatabaseTable<BookshelfRawEntity> {
+export class BookshelfTable implements DatabaseTable {
   public readonly name = 'bookshelves';
-  public readonly columns = {
-    id: 'id',
-    name: 'name',
-    addressId: 'addressId',
-    userId: 'userId',
-  } as const;
 }

@@ -1,25 +1,24 @@
-import { type BookReading } from '../../entities/bookReading/bookReading.js';
-import { type BookReadingDraft } from '../../entities/bookReading/bookReadingDraft/bookReadingDraft.js';
+import { type BookReadingState, type BookReading } from '../../entities/bookReading/bookReading.js';
 
-export interface FindByIdPayload {
-  id: string;
+export interface FindBookReadingPayload {
+  readonly id: string;
 }
 
-export interface FindByBookIdPayload {
-  bookId: string;
+export interface FindBookReadingsPayload {
+  readonly bookId: string;
 }
 
 export interface SavePayload {
-  entity: BookReading | BookReadingDraft;
+  readonly bookReading: BookReading | BookReadingState;
 }
 
 export interface DeletePayload {
-  entity: BookReading;
+  readonly id: string;
 }
 
 export interface BookReadingRepository {
-  findById(payload: FindByIdPayload): Promise<BookReading | null>;
-  findByBookId(payload: FindByBookIdPayload): Promise<BookReading[]>;
-  save(payload: SavePayload): Promise<BookReading>;
-  delete(payload: DeletePayload): Promise<void>;
+  findBookReading(payload: FindBookReadingPayload): Promise<BookReading | null>;
+  findBookReadings(payload: FindBookReadingsPayload): Promise<BookReading[]>;
+  saveBookReading(payload: SavePayload): Promise<BookReading>;
+  deleteBookReading(payload: DeletePayload): Promise<void>;
 }

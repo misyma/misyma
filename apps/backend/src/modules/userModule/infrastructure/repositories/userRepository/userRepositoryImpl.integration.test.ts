@@ -46,7 +46,7 @@ describe('UserRepositoryImpl', () => {
       const { email, name, password, isEmailVerified } = createdUser.getState();
 
       const user = await userRepository.saveUser({
-        entity: {
+        user: {
           email,
           password,
           name,
@@ -66,7 +66,7 @@ describe('UserRepositoryImpl', () => {
 
       try {
         await userRepository.saveUser({
-          entity: {
+          user: {
             email: existingUser.email,
             password: existingUser.password,
             name: existingUser.name,
@@ -104,7 +104,7 @@ describe('UserRepositoryImpl', () => {
       user.setIsEmailVerified({ isEmailVerified });
 
       const updatedUser = await userRepository.saveUser({
-        entity: user,
+        user,
       });
 
       const foundUser = await userTestUtils.findById({ id: user.getId() });
@@ -130,7 +130,7 @@ describe('UserRepositoryImpl', () => {
 
       try {
         await userRepository.saveUser({
-          entity: user,
+          user,
         });
       } catch (error) {
         expect(error).toBeInstanceOf(ResourceNotFoundError);

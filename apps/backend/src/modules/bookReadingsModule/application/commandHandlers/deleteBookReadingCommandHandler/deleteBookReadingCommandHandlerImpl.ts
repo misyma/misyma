@@ -11,7 +11,7 @@ export class DeleteBookReadingCommandHandlerImpl implements DeleteBookReadingCom
   public async execute(payload: DeleteBookReadingPayload): Promise<void> {
     const { id } = payload;
 
-    const bookReading = await this.bookReadingRepository.findById({ id });
+    const bookReading = await this.bookReadingRepository.findBookReading({ id });
 
     if (!bookReading) {
       throw new ResourceNotFoundError({
@@ -20,6 +20,6 @@ export class DeleteBookReadingCommandHandlerImpl implements DeleteBookReadingCom
       });
     }
 
-    await this.bookReadingRepository.delete({ entity: bookReading });
+    await this.bookReadingRepository.deleteBookReading({ id });
   }
 }

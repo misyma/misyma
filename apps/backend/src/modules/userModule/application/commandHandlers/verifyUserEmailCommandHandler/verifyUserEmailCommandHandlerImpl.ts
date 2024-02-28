@@ -59,7 +59,7 @@ export class VerifyUserEmailCommandHandlerImpl implements VerifyUserEmailCommand
 
     user.setIsEmailVerified({ isEmailVerified: true });
 
-    await this.userRepository.saveUser({ entity: user });
+    await this.userRepository.saveUser({ user });
 
     this.loggerService.info({
       message: 'User email verified.',

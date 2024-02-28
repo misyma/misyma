@@ -98,7 +98,7 @@ describe('UpdateBookReadingCommandHandlerImpl', () => {
 
     const newStartedAt = Generator.pastDate();
 
-    const newEndedAt = Generator.pastDate();
+    const newEndedAt = Generator.futureDate();
 
     const { bookReading: updatedBookReading } = await commandHandler.execute({
       id: bookReading.id,
@@ -111,7 +111,6 @@ describe('UpdateBookReadingCommandHandlerImpl', () => {
     expect(updatedBookReading).toBeInstanceOf(BookReading);
 
     expect(updatedBookReading.getState()).toMatchObject({
-      id: bookReading.id,
       bookId: book.id,
       comment: newComment,
       rating: newRating,

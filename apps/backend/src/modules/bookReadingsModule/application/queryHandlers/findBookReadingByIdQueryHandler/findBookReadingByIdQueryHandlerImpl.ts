@@ -12,7 +12,7 @@ export class FindBookReadingByIdQueryHandlerImpl implements FindBookReadingByIdQ
   public async execute(payload: FindBookReadingByIdPayload): Promise<FindBookReadingByIdResult> {
     const { id } = payload;
 
-    const bookReading = await this.bookReadingRepository.findById({ id });
+    const bookReading = await this.bookReadingRepository.findBookReading({ id });
 
     if (!bookReading) {
       throw new ResourceNotFoundError({

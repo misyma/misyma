@@ -1,7 +1,6 @@
 import { type EmailEventMapper } from './mappers/emailEventMapper/emailEventMapper.js';
 import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
-import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { type EmailEvent } from '../../../domain/entities/emailEvent/emailEvent.js';
 import { type EmailEventDraft } from '../../../domain/entities/emailEvent/emailEventDraft.ts/emailEventDraft.js';
@@ -23,19 +22,15 @@ export class EmailEventRepositoryImpl implements EmailEventRepository {
     private readonly emailEventMapper: EmailEventMapper,
   ) {}
 
-  private createQueryBuilder(): QueryBuilder<EmailEventRawEntity> {
-    return this.sqliteDatabaseClient<EmailEventRawEntity>(this.databaseTable.name);
-  }
-
   public async findAllCreatedAfter(payload: FindAllCreatedAfterPayload): Promise<EmailEvent[]> {
     const { after } = payload;
-
-    const queryBuilder = this.createQueryBuilder();
 
     let rawEntities: EmailEventRawEntity[];
 
     try {
-      rawEntities = await queryBuilder.where(this.databaseTable.columns.createdAt, '>=', after).select('*');
+      rawEntities = await this.sqliteDatabaseClient<EmailEventRawEntity>(this.databaseTable.name)
+        .where('createdAt', '>=', after)
+        .select('*');
     } catch (error) {
       throw new RepositoryError({
         entity: 'EmailEvent',
@@ -47,13 +42,11 @@ export class EmailEventRepositoryImpl implements EmailEventRepository {
   }
 
   public async findAllPending(): Promise<EmailEvent[]> {
-    const queryBuilder = this.createQueryBuilder();
-
     let rawEntities: EmailEventRawEntity[];
 
     try {
-      rawEntities = await queryBuilder
-        .where(this.databaseTable.columns.status, '=', EmailEventStatus.pending)
+      rawEntities = await this.sqliteDatabaseClient<EmailEventRawEntity>(this.databaseTable.name)
+        .where({ status: EmailEventStatus.pending })
         .select('*');
     } catch (error) {
       throw new RepositoryError({
@@ -68,11 +61,9 @@ export class EmailEventRepositoryImpl implements EmailEventRepository {
   public async updateStatus(payload: UpdateStatusPayload): Promise<void> {
     const { id, status } = payload;
 
-    const queryBuilder = this.createQueryBuilder();
-
     try {
-      await queryBuilder.where(this.databaseTable.columns.id, '=', id).update({
-        [this.databaseTable.columns.status]: status,
+      await this.sqliteDatabaseClient<EmailEventRawEntity>(this.databaseTable.name).where({ id }).update({
+        status,
       });
     } catch (error) {
       throw new RepositoryError({
@@ -83,10 +74,8 @@ export class EmailEventRepositoryImpl implements EmailEventRepository {
   }
 
   public async create(entity: EmailEventDraft): Promise<void> {
-    const queryBuilder = this.createQueryBuilder();
-
     try {
-      await queryBuilder.insert({
+      await this.sqliteDatabaseClient<EmailEventRawEntity>(this.databaseTable.name).insert({
         createdAt: new Date(),
         id: this.uuidService.generateUuid(),
         payload: JSON.stringify(entity.getPayload()),
@@ -103,9 +92,9 @@ export class EmailEventRepositoryImpl implements EmailEventRepository {
 
   public async deleteProcessed(): Promise<void> {
     try {
-      const queryBuilder = this.createQueryBuilder();
-
-      await queryBuilder.where(this.databaseTable.columns.status, '=', EmailEventStatus.processed).delete();
+      await this.sqliteDatabaseClient<EmailEventRawEntity>(this.databaseTable.name)
+        .where({ status: EmailEventStatus.processed })
+        .delete();
     } catch (error) {
       throw new RepositoryError({
         entity: 'EmailEvent',

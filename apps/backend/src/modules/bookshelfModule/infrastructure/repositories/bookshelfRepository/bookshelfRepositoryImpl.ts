@@ -1,94 +1,57 @@
 import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
-import { type Writeable } from '../../../../../common/types/util/writeable.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
-import { type QueryBuilder } from '../../../../../libs/database/types/queryBuilder.js';
-import { type Transaction } from '../../../../../libs/database/types/transaction.js';
-import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
-import { type Bookshelf } from '../../../domain/entities/bookshelf/bookshelf.js';
-import { type BookshelfDomainAction } from '../../../domain/entities/bookshelf/bookshelfDomainActions/bookshelfDomainAction.js';
-import { BookshelfDomainActionType } from '../../../domain/entities/bookshelf/bookshelfDomainActions/bookshelfDomainActionType.js';
-import { BookshelfDraft } from '../../../domain/entities/bookshelf/bookshelfDraft/bookshelfDraft.js';
+import { Bookshelf, type BookshelfState } from '../../../domain/entities/bookshelf/bookshelf.js';
 import {
-  type FindByIdAndUserIdPayload,
   type BookshelfRepository,
-  type DeletePayload,
-  type FindByIdPayload,
-  type FindByUserIdPayload,
-  type SavePayload,
+  type DeleteBookshelfPayload,
+  type FindBookshelfPayload,
+  type FindBookshelvesPayload,
+  type SaveBookshelfPayload,
 } from '../../../domain/repositories/bookshelfRepository/bookshelfRepository.js';
 import { type BookshelfRawEntity } from '../../databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfRawEntity.js';
 import { BookshelfTable } from '../../databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfTable.js';
 import { type BookshelfMapper } from '../mappers/bookshelfMapper/bookshelfMapper.js';
+
+type CreateBookshelfPayload = { bookshelf: BookshelfState };
+
+type UpdateBookshelfPayload = { bookshelf: Bookshelf };
 
 export class BookshelfRepositoryImpl implements BookshelfRepository {
   public constructor(
     private readonly sqliteDatabaseClient: SqliteDatabaseClient,
     private readonly bookshelfMapper: BookshelfMapper,
     private readonly uuidService: UuidService,
-    private readonly loggerService: LoggerService,
   ) {}
 
   private readonly table = new BookshelfTable();
 
-  private createQueryBuilder(transaction?: Transaction): QueryBuilder<BookshelfRawEntity> {
-    if (transaction) {
-      return this.sqliteDatabaseClient(this.table.name).transacting(transaction);
-    }
-
-    return this.sqliteDatabaseClient(this.table.name);
-  }
-
-  public async findById(payload: FindByIdPayload): Promise<Bookshelf | null> {
-    const { id } = payload;
-
-    let rawEntity: BookshelfRawEntity | undefined;
-
-    try {
-      const result = await this.createQueryBuilder().where(this.table.columns.id, id).first();
-
-      rawEntity = result;
-    } catch (error) {
-      this.loggerService.error({
-        message: 'Error while finding bookshelf by id.',
-        context: {
-          error,
-        },
-      });
-
-      throw new RepositoryError({
-        entity: 'Bookshelf',
-        operation: 'find',
-      });
-    }
-
-    if (!rawEntity) {
-      return null;
-    }
-
-    return this.bookshelfMapper.mapToDomain(rawEntity);
-  }
-
-  public async findByIdAndUserId(payload: FindByIdAndUserIdPayload): Promise<Bookshelf | null> {
+  public async findBookshelf(payload: FindBookshelfPayload): Promise<Bookshelf | null> {
     const { id, userId } = payload;
 
     let rawEntity: BookshelfRawEntity | undefined;
 
+    let whereCondition: Partial<BookshelfRawEntity> = {};
+
+    if (id) {
+      whereCondition = {
+        ...whereCondition,
+        id,
+      };
+    }
+
+    if (userId) {
+      whereCondition = {
+        ...whereCondition,
+        userId,
+      };
+    }
+
     try {
-      const result = await this.createQueryBuilder()
-        .where(this.table.columns.id, id)
-        .andWhere(this.table.columns.userId, userId)
-        .first();
+      const result = await this.sqliteDatabaseClient<BookshelfRawEntity>(this.table.name).where(whereCondition).first();
 
       rawEntity = result;
     } catch (error) {
-      this.loggerService.error({
-        message: 'Error while finding bookshelf by id.',
-        context: {
-          error,
-        },
-      });
-
       throw new RepositoryError({
         entity: 'Bookshelf',
         operation: 'find',
@@ -102,23 +65,16 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
     return this.bookshelfMapper.mapToDomain(rawEntity);
   }
 
-  public async findByUserId(payload: FindByUserIdPayload): Promise<Bookshelf[]> {
+  public async findBookshelves(payload: FindBookshelvesPayload): Promise<Bookshelf[]> {
     const { userId } = payload;
 
     let rawEntities: BookshelfRawEntity[];
 
     try {
-      const result = await this.createQueryBuilder().where(this.table.columns.userId, userId);
+      const result = await this.sqliteDatabaseClient<BookshelfRawEntity>(this.table.name).where({ userId });
 
       rawEntities = result;
     } catch (error) {
-      this.loggerService.error({
-        message: 'Error while finding bookshelf by user id.',
-        context: {
-          error,
-        },
-      });
-
       throw new RepositoryError({
         entity: 'Bookshelf',
         operation: 'find',
@@ -128,29 +84,34 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
     return rawEntities.map((rawEntity) => this.bookshelfMapper.mapToDomain(rawEntity));
   }
 
-  private async create(entity: BookshelfDraft): Promise<Bookshelf> {
+  public async saveBookshelf(payload: SaveBookshelfPayload): Promise<Bookshelf> {
+    const { bookshelf } = payload;
+
+    if (bookshelf instanceof Bookshelf) {
+      return this.update({ bookshelf });
+    }
+
+    return this.create({ bookshelf });
+  }
+
+  private async create(payload: CreateBookshelfPayload): Promise<Bookshelf> {
+    const { bookshelf } = payload;
+
     let rawEntity: BookshelfRawEntity;
 
     try {
-      const result = await this.createQueryBuilder().insert(
+      const result = await this.sqliteDatabaseClient<BookshelfRawEntity>(this.table.name).insert(
         {
-          [this.table.columns.id]: this.uuidService.generateUuid(),
-          [this.table.columns.name]: entity.getName(),
-          [this.table.columns.userId]: entity.getUserId(),
-          [this.table.columns.addressId]: entity.getAddressId(),
+          id: this.uuidService.generateUuid(),
+          name: bookshelf.name,
+          userId: bookshelf.userId,
+          addressId: bookshelf.addressId,
         },
         '*',
       );
 
       rawEntity = result[0] as BookshelfRawEntity;
     } catch (error) {
-      this.loggerService.error({
-        message: 'Error while creating bookshelf.',
-        context: {
-          error,
-        },
-      });
-
       throw new RepositoryError({
         entity: 'Bookshelf',
         operation: 'create',
@@ -160,31 +121,18 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
     return this.bookshelfMapper.mapToDomain(rawEntity);
   }
 
-  private async update(entity: Bookshelf): Promise<Bookshelf> {
-    const domainActions = entity.getDomainActions();
-
-    if (domainActions.length === 0) {
-      return entity;
-    }
-
-    const bookshelfRawEntity = this.mapDomainActionsToUpdatePayload(domainActions);
+  private async update(payload: UpdateBookshelfPayload): Promise<Bookshelf> {
+    const { bookshelf } = payload;
 
     let rawEntity: BookshelfRawEntity;
 
     try {
-      const result = await this.createQueryBuilder()
-        .where(this.table.columns.id, entity.getId())
-        .update(bookshelfRawEntity, '*');
+      const result = await this.sqliteDatabaseClient<BookshelfRawEntity>(this.table.name)
+        .where({ id: bookshelf.getId() })
+        .update(bookshelf.getState(), '*');
 
       rawEntity = result[0] as BookshelfRawEntity;
     } catch (error) {
-      this.loggerService.error({
-        message: 'Error while updating bookshelf.',
-        context: {
-          error,
-        },
-      });
-
       throw new RepositoryError({
         entity: 'Bookshelf',
         operation: 'update',
@@ -194,68 +142,12 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
     return this.bookshelfMapper.mapToDomain(rawEntity);
   }
 
-  public async save(payload: SavePayload): Promise<Bookshelf> {
-    const { entity } = payload;
-
-    if (entity instanceof BookshelfDraft) {
-      return await this.create(entity);
-    }
-
-    return await this.update(entity);
-  }
-
-  private mapDomainActionsToUpdatePayload(domainActions: BookshelfDomainAction[]): Partial<BookshelfRawEntity> {
-    let bookshelfRawEntity: Partial<Writeable<BookshelfRawEntity>> = {};
-
-    domainActions.forEach((domainAction) => {
-      switch (domainAction.actionName) {
-        case BookshelfDomainActionType.updateName:
-          bookshelfRawEntity = {
-            ...bookshelfRawEntity,
-            [this.table.columns.name]: domainAction.payload.name,
-          };
-
-          break;
-
-        case BookshelfDomainActionType.updateAddressId:
-          bookshelfRawEntity = {
-            ...bookshelfRawEntity,
-            [this.table.columns.addressId]: domainAction.payload.addressId,
-          };
-
-          break;
-
-        default:
-          this.loggerService.error({
-            message: 'Error mapping domain actions.',
-            context: {
-              domainAction,
-            },
-          });
-
-          throw new RepositoryError({
-            entity: 'User',
-            operation: 'update',
-          });
-      }
-    });
-
-    return bookshelfRawEntity;
-  }
-
-  public async delete(payload: DeletePayload): Promise<void> {
-    const { entity } = payload;
+  public async deleteBookshelf(payload: DeleteBookshelfPayload): Promise<void> {
+    const { id } = payload;
 
     try {
-      await this.createQueryBuilder().where(this.table.columns.id, entity.getId()).delete();
+      await this.sqliteDatabaseClient<BookshelfRawEntity>(this.table.name).where({ id }).delete();
     } catch (error) {
-      this.loggerService.error({
-        message: 'Error while deleting bookshelf.',
-        context: {
-          error,
-        },
-      });
-
       throw new RepositoryError({
         entity: 'Bookshelf',
         operation: 'delete',

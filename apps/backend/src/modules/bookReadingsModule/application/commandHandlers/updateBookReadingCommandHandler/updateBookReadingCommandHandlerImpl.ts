@@ -12,7 +12,7 @@ export class UpdateBookReadingCommandHandlerImpl implements UpdateBookReadingCom
   public async execute(payload: UpdateBookReadingPayload): Promise<UpdateBookReadingResult> {
     const { id, comment, rating, startedAt, endedAt } = payload;
 
-    const bookReading = await this.bookReadingRepository.findById({ id });
+    const bookReading = await this.bookReadingRepository.findBookReading({ id });
 
     if (!bookReading) {
       throw new ResourceNotFoundError({
@@ -22,31 +22,31 @@ export class UpdateBookReadingCommandHandlerImpl implements UpdateBookReadingCom
     }
 
     if (comment !== undefined) {
-      bookReading.addUpadateCommentDomainAction({
+      bookReading.setComment({
         comment,
       });
     }
 
     if (rating !== undefined) {
-      bookReading.addUpdateRatingDomainAction({
+      bookReading.setRating({
         rating,
       });
     }
 
     if (startedAt !== undefined) {
-      bookReading.addUpdateStartedDateDomainAction({
+      bookReading.setStartedAtDate({
         startedAt,
       });
     }
 
     if (endedAt !== undefined) {
-      bookReading.addUpdateEndedDateDomainAction({
+      bookReading.setEndedAtDate({
         endedAt,
       });
     }
 
-    const updatedBookReading = await this.bookReadingRepository.save({
-      entity: bookReading,
+    const updatedBookReading = await this.bookReadingRepository.saveBookReading({
+      bookReading,
     });
 
     return {

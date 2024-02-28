@@ -4,6 +4,11 @@ export interface AuthorDraft {
   readonly lastName: string;
 }
 
+export interface AuthorState {
+  readonly firstName: string;
+  readonly lastName: string;
+}
+
 export class Author {
   private readonly id: string;
   private readonly firstName: string;

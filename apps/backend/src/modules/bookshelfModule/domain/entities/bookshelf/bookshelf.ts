@@ -1,81 +1,56 @@
-import { type BookshelfDomainAction } from './bookshelfDomainActions/bookshelfDomainAction.js';
-import { BookshelfDomainActionType } from './bookshelfDomainActions/bookshelfDomainActionType.js';
-import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
-
-export interface BookshelfState {
+export interface BookshelfDraft {
   readonly id: string;
-  readonly name: string;
   readonly userId: string;
+  readonly name: string;
   readonly addressId?: string | undefined;
 }
 
-export interface AddUpdateNameDomainActionPayload {
+export interface BookshelfState {
   name: string;
+  userId: string;
+  addressId?: string | undefined;
 }
 
-export interface AddUpdateAddressIdDomainActionPayload {
-  addressId: string | undefined;
+export interface SetNamePayload {
+  readonly name: string;
+}
+
+export interface SetAddressIdPayload {
+  readonly addressId: string | undefined;
 }
 
 export class Bookshelf {
+  private readonly id: string;
   private readonly state: BookshelfState;
 
-  private readonly actions: BookshelfDomainAction[] = [];
+  public constructor(draft: BookshelfDraft) {
+    this.id = draft.id;
 
-  public constructor(state: BookshelfState) {
-    this.state = state;
+    this.state = {
+      name: draft.name,
+      userId: draft.userId,
+      addressId: draft.addressId,
+    };
   }
 
   public getState(): BookshelfState {
-    return { ...this.state };
+    return this.state;
   }
 
-  public getDomainActions(): BookshelfDomainAction[] {
-    return [...this.actions];
-  }
-
-  public addUpdateNameDomainAction(payload: AddUpdateNameDomainActionPayload): Bookshelf {
+  public setName(payload: SetNamePayload): void {
     const { name } = payload;
 
-    if (this.getName() === name) {
-      throw new OperationNotValidError({
-        reason: 'Bookshelf name is already the same.',
-        name,
-      });
-    }
-
-    this.actions.push({
-      actionName: BookshelfDomainActionType.updateName,
-      payload: {
-        name,
-      },
-    });
-
-    return this;
+    this.state.name = name;
   }
 
-  public addUpdateAddressIdDomainAction(payload: AddUpdateAddressIdDomainActionPayload): Bookshelf {
+  public setAddressId(payload: SetAddressIdPayload): void {
     const { addressId } = payload;
 
-    if (this.getAddressId() === addressId) {
-      throw new OperationNotValidError({
-        reason: 'Bookshelf addressId is already the same.',
-        addressId,
-      });
-    }
-
-    this.actions.push({
-      actionName: BookshelfDomainActionType.updateAddressId,
-      payload: {
-        addressId,
-      },
-    });
-
-    return this;
+    this.state.addressId = addressId;
   }
 
   public getId(): string {
-    return this.state.id;
+    return this.id;
   }
 
   public getName(): string {
