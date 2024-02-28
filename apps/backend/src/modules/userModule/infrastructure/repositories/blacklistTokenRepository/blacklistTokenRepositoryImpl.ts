@@ -1,7 +1,6 @@
 import { type BlacklistTokenMapper } from './blacklistTokenMapper/blacklistTokenMapper.js';
 import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
-import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { type BlacklistToken } from '../../../domain/entities/blacklistToken/blacklistToken.js';
 import {
@@ -19,7 +18,6 @@ export class BlacklistTokenRepositoryImpl implements BlacklistTokenRepository {
     private readonly sqliteDatabaseClient: SqliteDatabaseClient,
     private readonly blacklistTokenMapper: BlacklistTokenMapper,
     private readonly uuidService: UuidService,
-    private readonly loggerService: LoggerService,
   ) {}
 
   public async createBlacklistToken(payload: CreateBlacklistTokenPayload): Promise<BlacklistToken> {
@@ -39,15 +37,6 @@ export class BlacklistTokenRepositoryImpl implements BlacklistTokenRepository {
         '*',
       );
     } catch (error) {
-      if (error instanceof Error) {
-        this.loggerService.error({
-          message: 'Error while creating BlacklistToken.',
-          context: {
-            errorMessage: error.message,
-          },
-        });
-      }
-
       throw new RepositoryError({
         entity: 'BlacklistToken',
         operation: 'create',
@@ -70,15 +59,6 @@ export class BlacklistTokenRepositoryImpl implements BlacklistTokenRepository {
         .where({ token })
         .first();
     } catch (error) {
-      if (error instanceof Error) {
-        this.loggerService.error({
-          message: 'Error while finding BlacklistToken.',
-          context: {
-            errorMessage: error.message,
-          },
-        });
-      }
-
       throw new RepositoryError({
         entity: 'BlacklistToken',
         operation: 'find',

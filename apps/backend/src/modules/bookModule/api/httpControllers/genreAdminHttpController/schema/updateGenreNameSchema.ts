@@ -23,13 +23,13 @@ export const updateGenreNameBodyDTOSchema = Type.Object({
 });
 
 export type UpdateGenreNameBodyDTO = TypeExtends<
-  contracts.UpdateGenreNameBody,
+  contracts.UpdateGenreNameRequestBody,
   Static<typeof updateGenreNameBodyDTOSchema>
 >;
 
-export const updateGenreNameOkResponseBodyDTOSchema = genreDTO;
+export const updateGenreNameResponseBodyDTOSchema = genreDTO;
 
-export type UpdateGenreNameOkResponseBodyDTO = TypeExtends<
-  contracts.UpdateGenreNameResponse,
-  Static<typeof updateGenreNameOkResponseBodyDTOSchema>
+export type UpdateGenreNameResponseBodyDTO = TypeExtends<
+  contracts.UpdateGenreNameResponseBody,
+  Static<typeof updateGenreNameResponseBodyDTOSchema>
 >;

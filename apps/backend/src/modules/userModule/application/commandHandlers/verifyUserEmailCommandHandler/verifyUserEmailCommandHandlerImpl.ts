@@ -42,6 +42,12 @@ export class VerifyUserEmailCommandHandlerImpl implements VerifyUserEmailCommand
       });
     }
 
+    this.loggerService.debug({
+      message: 'Verifying user email...',
+      userId: user.getId(),
+      email: user.getEmail(),
+    });
+
     if (user.getIsEmailVerified()) {
       throw new OperationNotValidError({
         reason: 'User email already verified.',
@@ -49,24 +55,14 @@ export class VerifyUserEmailCommandHandlerImpl implements VerifyUserEmailCommand
       });
     }
 
-    this.loggerService.debug({
-      message: 'Verifying user email...',
-      context: {
-        userId: user.getId(),
-        email: user.getEmail(),
-      },
-    });
-
     user.setIsEmailVerified({ isEmailVerified: true });
 
     await this.userRepository.saveUser({ user });
 
-    this.loggerService.info({
+    this.loggerService.debug({
       message: 'User email verified.',
-      context: {
-        userId: user.getId(),
-        email: user.getEmail(),
-      },
+      userId: user.getId(),
+      email: user.getEmail(),
     });
   }
 }

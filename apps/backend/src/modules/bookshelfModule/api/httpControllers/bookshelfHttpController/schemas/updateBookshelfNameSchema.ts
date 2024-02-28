@@ -24,7 +24,7 @@ export const updateBookshelfNameBodyDTOSchema = Type.Object({
 
 export type UpdateBookshelfNameBodyDTO = TypeExtends<
   Static<typeof updateBookshelfNameBodyDTOSchema>,
-  contracts.UpdateBookshelfNameBody
+  contracts.UpdateBookshelfNameRequestBody
 >;
 
 export const updateBookshelfNameResponseBodyDTOSchema = Type.Object({

@@ -1,6 +1,6 @@
 import { type User } from './user.js';
 
-export interface RegisterUserBody {
+export interface RegisterUserRequestBody {
   readonly email: string;
   readonly password: string;
   readonly firstName: string;

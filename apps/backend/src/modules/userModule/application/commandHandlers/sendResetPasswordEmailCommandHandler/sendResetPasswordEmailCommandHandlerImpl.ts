@@ -1,4 +1,7 @@
-import { type ExecutePayload, type ResetUserPasswordCommandHandler } from './resetUserPasswordCommandHandler.js';
+import {
+  type ExecutePayload,
+  type SendResetPasswordEmailCommandHandler,
+} from './sendResetPasswordEmailCommandHandler.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { EmailEventDraft } from '../../../domain/entities/emailEvent/emailEventDraft.ts/emailEventDraft.js';
@@ -8,7 +11,7 @@ import { TokenType } from '../../../domain/types/tokenType.js';
 import { type UserModuleConfigProvider } from '../../../userModuleConfigProvider.js';
 import { type EmailMessageBus } from '../../messageBuses/emailMessageBus/emailMessageBus.js';
 
-export class ResetUserPasswordCommandHandlerImpl implements ResetUserPasswordCommandHandler {
+export class SendResetPasswordEmailCommandHandlerImpl implements SendResetPasswordEmailCommandHandler {
   public constructor(
     private readonly tokenService: TokenService,
     private readonly userRepository: UserRepository,
@@ -27,11 +30,17 @@ export class ResetUserPasswordCommandHandlerImpl implements ResetUserPasswordCom
     if (!user) {
       this.loggerService.debug({
         message: 'User not found.',
-        context: { email },
+        email,
       });
 
       return;
     }
+
+    this.loggerService.debug({
+      message: 'Sending reset password email...',
+      userId: user.getId(),
+      email: user.getEmail(),
+    });
 
     const expiresIn = this.configProvider.getResetPasswordTokenExpiresIn();
 

@@ -1,4 +1,4 @@
-export interface CreateAuthorBody {
+export interface CreateAuthorRequestBody {
   readonly firstName: string;
   readonly lastName: string;
 }

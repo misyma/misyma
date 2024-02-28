@@ -1,6 +1,6 @@
 import { type BookReading } from './bookReading.js';
 
-export interface UpdateBookReadingBody {
+export interface UpdateBookReadingRequestBody {
   readonly comment?: string;
   readonly rating?: number;
   readonly startedAt?: Date;

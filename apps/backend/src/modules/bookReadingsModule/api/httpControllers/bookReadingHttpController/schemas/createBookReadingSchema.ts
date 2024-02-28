@@ -23,7 +23,7 @@ export const createBookReadingBodyDTOSchema = Type.Object({
 
 export type CreateBookReadingBodyDTO = TypeExtends<
   Static<typeof createBookReadingBodyDTOSchema>,
-  contracts.CreateBookReadingBody
+  contracts.CreateBookReadingRequestBody
 >;
 
 export const createBookReadingResponseBodyDTOSchema = Type.Object({

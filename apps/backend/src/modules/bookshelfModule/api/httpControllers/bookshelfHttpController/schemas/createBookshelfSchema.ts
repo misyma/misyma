@@ -13,7 +13,7 @@ export const createBookshelfBodyDTOSchema = Type.Object({
 
 export type CreateBookshelfBodyDTO = TypeExtends<
   Static<typeof createBookshelfBodyDTOSchema>,
-  contracts.CreateBookshelfBody
+  contracts.CreateBookshelfRequestBody
 >;
 
 export const createBookshelfResponseBodyDTOSchema = Type.Object({

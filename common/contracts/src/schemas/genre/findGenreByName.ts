@@ -4,4 +4,4 @@ export interface FindGenreByNameQueryParams {
   readonly name: string;
 }
 
-export type FindGenreByNameResponse = Genre;
+export type FindGenreByNameResponseBody = Genre;

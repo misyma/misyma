@@ -4,6 +4,7 @@ import {
   type UpdateBookGenresResult,
 } from './updateBookGenresCommandHandler.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
+import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type BookRepository } from '../../../domain/repositories/bookRepository/bookRepository.js';
 import { type GenreRepository } from '../../../domain/repositories/genreRepository/genreRepository.js';
 
@@ -11,14 +12,19 @@ export class UpdateBookGenresCommandHandlerImpl implements UpdateBookGenresComma
   public constructor(
     private readonly bookRepository: BookRepository,
     private readonly genreRepository: GenreRepository,
+    private readonly loggerService: LoggerService,
   ) {}
 
   public async execute(payload: UpdateBookGenresPayload): Promise<UpdateBookGenresResult> {
     const { bookId, genreIds } = payload;
 
-    const book = await this.bookRepository.findBook({
-      id: bookId,
+    this.loggerService.debug({
+      message: 'Updating Book genres...',
+      bookId,
+      genreIds,
     });
+
+    const book = await this.bookRepository.findBook({ id: bookId });
 
     if (!book) {
       throw new ResourceNotFoundError({
@@ -38,16 +44,16 @@ export class UpdateBookGenresCommandHandlerImpl implements UpdateBookGenresComma
       });
     }
 
-    book.setGenres({
-      genres,
+    book.setGenres({ genres });
+
+    await this.bookRepository.saveBook({ book });
+
+    this.loggerService.debug({
+      message: 'Book genres updated.',
+      bookId,
+      genreIds,
     });
 
-    await this.bookRepository.saveBook({
-      book,
-    });
-
-    return {
-      book,
-    };
+    return { book };
   }
 }

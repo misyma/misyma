@@ -5,17 +5,27 @@ import {
 } from './updateGenreNameCommandHandler.js';
 import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
+import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type GenreRepository } from '../../../domain/repositories/genreRepository/genreRepository.js';
 
 export class UpdateGenreNameCommandHandlerImpl implements UpdateGenreNameCommandHandler {
-  public constructor(private readonly genreRepository: GenreRepository) {}
+  public constructor(
+    private readonly genreRepository: GenreRepository,
+    private readonly loggerService: LoggerService,
+  ) {}
 
   public async execute(payload: UpdateGenreNamePayload): Promise<UpdateGenreNameResult> {
     const { id, name } = payload;
 
-    const existingGenre = await this.genreRepository.findGenre({
+    const normalizedName = name.toLowerCase();
+
+    this.loggerService.debug({
+      message: 'Updating Genre name...',
       id,
+      name: normalizedName,
     });
+
+    const existingGenre = await this.genreRepository.findGenre({ id });
 
     if (!existingGenre) {
       throw new ResourceNotFoundError({
@@ -23,8 +33,6 @@ export class UpdateGenreNameCommandHandlerImpl implements UpdateGenreNameCommand
         id,
       });
     }
-
-    const normalizedName = name.toLowerCase();
 
     const nameTaken = await this.genreRepository.findGenre({
       name: normalizedName,
@@ -37,12 +45,16 @@ export class UpdateGenreNameCommandHandlerImpl implements UpdateGenreNameCommand
       });
     }
 
-    existingGenre.setName({
-      name: normalizedName,
-    });
+    existingGenre.setName({ name: normalizedName });
 
     const genre = await this.genreRepository.saveGenre({
       genre: existingGenre,
+    });
+
+    this.loggerService.debug({
+      message: 'Genre name updated.',
+      id,
+      name,
     });
 
     return {

@@ -98,6 +98,7 @@ export class BookModule implements DependencyInjectionModule {
         new UpdateBookGenresCommandHandlerImpl(
           container.get<BookRepository>(symbols.bookRepository),
           container.get<GenreRepository>(symbols.genreRepository),
+          container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );
 
@@ -112,17 +113,29 @@ export class BookModule implements DependencyInjectionModule {
 
     container.bind<CreateGenreCommandHandler>(
       symbols.createGenreCommandHandler,
-      () => new CreateGenreCommandHandlerImpl(container.get<GenreRepository>(symbols.genreRepository)),
+      () =>
+        new CreateGenreCommandHandlerImpl(
+          container.get<GenreRepository>(symbols.genreRepository),
+          container.get<LoggerService>(coreSymbols.loggerService),
+        ),
     );
 
     container.bind<DeleteGenreCommandHandler>(
       symbols.deleteGenreCommandHandler,
-      () => new DeleteGenreCommandHandlerImpl(container.get<GenreRepository>(symbols.genreRepository)),
+      () =>
+        new DeleteGenreCommandHandlerImpl(
+          container.get<GenreRepository>(symbols.genreRepository),
+          container.get<LoggerService>(coreSymbols.loggerService),
+        ),
     );
 
     container.bind<UpdateGenreNameCommandHandler>(
       symbols.updateGenreNameCommandHandler,
-      () => new UpdateGenreNameCommandHandlerImpl(container.get<GenreRepository>(symbols.genreRepository)),
+      () =>
+        new UpdateGenreNameCommandHandlerImpl(
+          container.get<GenreRepository>(symbols.genreRepository),
+          container.get<LoggerService>(coreSymbols.loggerService),
+        ),
     );
   }
 

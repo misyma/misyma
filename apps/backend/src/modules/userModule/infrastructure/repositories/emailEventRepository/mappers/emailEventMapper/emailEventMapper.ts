@@ -3,7 +3,6 @@ import { type EmailEventStatus } from '../../../../../domain/entities/emailEvent
 import { type EmailEventType } from '../../../../../domain/entities/emailEvent/types/emailEventType.js';
 import { type EmailEventRawEntity } from '../../../../databases/userEventsDatabase/tables/emailEventTable/emailEventRawEntity.js';
 
-// TODO: add tests
 export class EmailEventMapper {
   public map(rawEntity: EmailEventRawEntity): EmailEvent {
     const { createdAt, id, payload, status, eventName } = rawEntity;

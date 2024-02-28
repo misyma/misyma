@@ -5,11 +5,11 @@ import type * as contracts from '@common/contracts';
 import { genreDTO } from './dtos/genreDTO.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
-export const findGenresOkResponseDTOSchema = Type.Object({
+export const findGenresResponseBodyDTOSchema = Type.Object({
   data: Type.Array(genreDTO),
 });
 
-export type FindGenresOkResponseDTO = TypeExtends<
-  Static<typeof findGenresOkResponseDTOSchema>,
-  contracts.FindGenresResponse
+export type FindGenresResponseBodyDTO = TypeExtends<
+  Static<typeof findGenresResponseBodyDTOSchema>,
+  contracts.FindGenresResponseBody
 >;

@@ -80,7 +80,7 @@ import { type LoginUserCommandHandler } from '../../../application/commandHandle
 import { type LogoutUserCommandHandler } from '../../../application/commandHandlers/logoutUserCommandHandler/logoutUserCommandHandler.js';
 import { type RefreshUserTokensCommandHandler } from '../../../application/commandHandlers/refreshUserTokensCommandHandler/refreshUserTokensCommandHandler.js';
 import { type RegisterUserCommandHandler } from '../../../application/commandHandlers/registerUserCommandHandler/registerUserCommandHandler.js';
-import { type ResetUserPasswordCommandHandler } from '../../../application/commandHandlers/resetUserPasswordCommandHandler/resetUserPasswordCommandHandler.js';
+import { type SendResetPasswordEmailCommandHandler } from '../../../application/commandHandlers/sendResetPasswordEmailCommandHandler/sendResetPasswordEmailCommandHandler.js';
 import { type SendVerificationEmailCommandHandler } from '../../../application/commandHandlers/sendVerificationEmailCommandHandler/sendVerificationEmailCommandHandler.js';
 import { type VerifyUserEmailCommandHandler } from '../../../application/commandHandlers/verifyUserEmailCommandHandler/verifyUserEmailCommandHandler.js';
 import { type FindUserQueryHandler } from '../../../application/queryHandlers/findUserQueryHandler/findUserQueryHandler.js';
@@ -96,7 +96,7 @@ export class UserHttpController implements HttpController {
     private readonly findUserQueryHandler: FindUserQueryHandler,
     private readonly accessControlService: AccessControlService,
     private readonly verifyUserEmailCommandHandler: VerifyUserEmailCommandHandler,
-    private readonly resetUserPasswordCommandHandler: ResetUserPasswordCommandHandler,
+    private readonly resetUserPasswordCommandHandler: SendResetPasswordEmailCommandHandler,
     private readonly changeUserPasswordCommandHandler: ChangeUserPasswordCommandHandler,
     private readonly logoutUserCommandHandler: LogoutUserCommandHandler,
     private readonly refreshUserTokensCommandHandler: RefreshUserTokensCommandHandler,

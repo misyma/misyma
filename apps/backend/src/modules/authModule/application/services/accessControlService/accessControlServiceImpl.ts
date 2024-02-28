@@ -9,7 +9,6 @@ import { ForbiddenAccessError } from '../../errors/forbiddenAccessError.js';
 import { UnauthorizedAccessError } from '../../errors/unathorizedAccessError.js';
 import { type TokenService } from '../tokenService/tokenService.js';
 
-// TODO: add integration tests
 export class AccessControlServiceImpl implements AccessControlService {
   public constructor(
     private readonly tokenService: TokenService,

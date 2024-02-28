@@ -1,3 +1,3 @@
-export interface SendVerificationEmailBody {
+export interface SendVerificationEmailRequestBody {
   readonly email: string;
 }
