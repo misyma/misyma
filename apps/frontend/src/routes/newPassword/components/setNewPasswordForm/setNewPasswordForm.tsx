@@ -97,7 +97,7 @@ export const SetNewPasswordForm: FC<SetNewPasswordFormProps> = ({
         />
         <Button
           type="submit"
-          className="w-80 border-black border border-black hover:bg-white bg-white text-primary"
+          className="w-80 border-black border hover:bg-white bg-white text-primary"
         >
           Ustaw nowe hasło
         </Button>

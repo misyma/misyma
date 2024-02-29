@@ -1,36 +1,36 @@
-import { FC, useEffect, useMemo } from 'react';
-
-import { useLocation, useNavigate } from 'react-router-dom';
+/* eslint-disable react-refresh/only-export-components */
+import { Link, createRoute, useNavigate } from '@tanstack/react-router';
 import { useVerifyUserEmailMutation } from '../../api/user/mutations/verifyUserEmailMutation/verifyUserEmailMutation';
+import { FC, useEffect } from 'react';
+import { rootRoute } from '../root';
+import { z } from 'zod';
 
 export const VerifyEmailPage: FC = () => {
   const navigate = useNavigate();
 
   const verifyUserEmailMutation = useVerifyUserEmailMutation({});
 
-  const location = useLocation();
-
-  const searchParams = useMemo(() => {
-    const searchParams = new URLSearchParams(location.search);
-
-    return searchParams;
-  }, [location]);
+  const { token } = verifyEmailRoute.useSearch();
 
   useEffect(() => {
     verifyUserEmailMutation.mutate(
       {
-        token: searchParams.get('token') || '',
+        token,
       },
       {
         onSuccess: () => {
-          navigate('/login');
+          navigate({
+            to: '/login',
+          });
         },
         onError: () => {
-          navigate('/register');
+          navigate({
+            to: '/register',
+          });
         },
       },
     );
-  }, [searchParams, navigate]);
+  }, []);
 
   return (
     <div className="flex items-center justify-center h-screen">
@@ -46,3 +46,17 @@ export const VerifyEmailPage: FC = () => {
     </div>
   );
 };
+
+const searchSchema = z.object({
+  token: z.string().min(1).catch(''),
+});
+
+export const verifyEmailRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/verify-email',
+  component: VerifyEmailPage,
+  validateSearch: searchSchema,
+  onError: () => {
+    return <Link to={'/login'} />;
+  },
+});
