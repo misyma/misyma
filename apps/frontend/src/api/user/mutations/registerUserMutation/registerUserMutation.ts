@@ -43,6 +43,8 @@ const mapStatusCodeToErrorMessage = (statusCode: number) => {
       return 'Not found';
     case 409:
       return 'User with this email address already exists.';
+    case 422:
+      return 'User with this email address already exists.';
     case 500:
       return 'Internal server error';
     default:
