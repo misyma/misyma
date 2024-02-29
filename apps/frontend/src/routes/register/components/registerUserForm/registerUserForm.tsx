@@ -17,6 +17,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ onSuccess, onError
   const form = useForm<RegisterUserFormSchemaValues>({
     resolver: zodResolver(registerUserFormSchema),
     defaultValues: {
+      firstName: '',
       email: '',
       password: '',
       repeatedPassword: '',
@@ -32,7 +33,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ onSuccess, onError
       {
         email: values.email,
         password: values.password,
-        name: 'Maciej',
+        name: values.firstName,
       },
       {
         onSuccess: (result) => onSuccess(result),
@@ -54,6 +55,22 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ onSuccess, onError
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-8"
         >
+          <FormField
+            control={form.control}
+            name="firstName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Imię</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Imię"
+                    className="w-80"
+                    {...field}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="email"

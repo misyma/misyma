@@ -11,7 +11,7 @@ export const useRegisterUserMutation = (
       body: {
         email: values.email,
         password: values.password,
-        name: values.name || 'Maciej', // TODO: Remove hardcoded name
+        name: values.name,
       },
       headers: {
         'Content-Type': 'application/json',

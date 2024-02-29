@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 export const registerUserFormSchema = z
   .object({
+    firstName: z.string().min(2),
     email: z.string().email(),
     password: z.string().min(8).max(50),
     repeatedPassword: z.string().min(8).max(50),
