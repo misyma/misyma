@@ -28,7 +28,7 @@ export class RefreshUserTokensCommandHandlerImpl implements RefreshUserTokensCom
 
     this.loggerService.debug({
       message: 'Refreshing User tokens...',
-      context: { refreshToken },
+      refreshToken,
     });
 
     const isBlacklisted = await this.blacklistTokenRepository.findBlacklistToken({
@@ -76,11 +76,9 @@ export class RefreshUserTokensCommandHandlerImpl implements RefreshUserTokensCom
       expiresIn: accessTokenExpiresIn,
     });
 
-    this.loggerService.info({
+    this.loggerService.debug({
       message: 'User tokens refreshed.',
-      context: {
-        userId,
-      },
+      userId,
     });
 
     return {

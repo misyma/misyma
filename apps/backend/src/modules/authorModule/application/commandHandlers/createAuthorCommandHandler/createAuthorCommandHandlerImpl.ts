@@ -18,10 +18,8 @@ export class CreateAuthorCommandHandlerImpl implements CreateAuthorCommandHandle
 
     this.loggerService.debug({
       message: 'Creating author...',
-      context: {
-        firstName,
-        lastName,
-      },
+      firstName,
+      lastName,
     });
 
     const existingAuthor = await this.authorRepository.findAuthor({
@@ -43,13 +41,11 @@ export class CreateAuthorCommandHandlerImpl implements CreateAuthorCommandHandle
       lastName,
     });
 
-    this.loggerService.info({
+    this.loggerService.debug({
       message: 'Author created.',
-      context: {
-        authorId: author.getId(),
-        firstName,
-        lastName,
-      },
+      authorId: author.getId(),
+      firstName,
+      lastName,
     });
 
     return { author };

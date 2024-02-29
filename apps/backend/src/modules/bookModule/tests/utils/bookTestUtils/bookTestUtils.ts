@@ -9,7 +9,7 @@ import { BookTable } from '../../../infrastructure/databases/bookDatabase/tables
 import { BookRawEntityTestFactory } from '../../factories/bookRawEntityTestFactory/bookRawEntityTestFactory.js';
 
 interface CreateAndPersistPayload {
-  input?: {
+  readonly input?: {
     book?: Partial<BookRawEntity>;
     authorIds?: string[];
     genreIds?: string[];
@@ -17,24 +17,24 @@ interface CreateAndPersistPayload {
 }
 
 interface PersistPayload {
-  book: BookRawEntity;
+  readonly book: BookRawEntity;
 }
 
 interface FindByIdPayload {
-  id: string;
+  readonly id: string;
 }
 
 interface FindBookAuthorsPayload {
-  bookId: string;
+  readonly bookId: string;
 }
 
 interface FindByTitleAndAuthorPayload {
-  title: string;
-  authorId: string;
+  readonly title: string;
+  readonly authorId: string;
 }
 
 interface FindBookGenresPayload {
-  bookId: string;
+  readonly bookId: string;
 }
 
 export class BookTestUtils {
@@ -56,21 +56,21 @@ export class BookTestUtils {
       rawEntities = await transaction<BookRawEntity>(this.bookTable.name).insert(book, '*');
 
       if (input?.authorIds) {
-        await transaction.batchInsert(
+        await transaction.batchInsert<BooksAuthorsRawEntity>(
           this.booksAuthorsTable.name,
           input.authorIds.map((authorId) => ({
-            [this.booksAuthorsTable.columns.bookId]: book.id,
-            [this.booksAuthorsTable.columns.authorId]: authorId,
+            bookId: book.id,
+            authorId,
           })),
         );
       }
 
       if (input?.genreIds) {
-        await transaction.batchInsert(
+        await transaction.batchInsert<BookGenresRawEntity>(
           this.bookGenresTable.name,
           input.genreIds.map((genreId) => ({
-            [this.bookGenresTable.columns.genreId]: genreId,
-            [this.bookGenresTable.columns.bookId]: book.id,
+            genreId,
+            bookId: book.id,
           })),
         );
       }
@@ -82,11 +82,9 @@ export class BookTestUtils {
   public async findBookAuthors(payload: FindBookAuthorsPayload): Promise<BooksAuthorsRawEntity[]> {
     const { bookId } = payload;
 
-    const rawEntities = await this.sqliteDatabaseClient(this.booksAuthorsTable.name)
-      .select('*')
-      .where({
-        [this.booksAuthorsTable.columns.bookId]: bookId,
-      });
+    const rawEntities = await this.sqliteDatabaseClient(this.booksAuthorsTable.name).select('*').where({
+      bookId,
+    });
 
     return rawEntities;
   }
@@ -115,10 +113,7 @@ export class BookTestUtils {
       .select('*')
       .join(this.booksAuthorsTable.name, (join) => {
         if (authorId) {
-          join.onIn(
-            `${this.booksAuthorsTable.name}.${this.booksAuthorsTable.columns.authorId}`,
-            this.sqliteDatabaseClient.raw('?', [authorId]),
-          );
+          join.onIn(`${this.booksAuthorsTable.name}.authorId`, this.sqliteDatabaseClient.raw('?', [authorId]));
         }
       })
       .where({
@@ -134,9 +129,7 @@ export class BookTestUtils {
 
     const rawEntities = await this.sqliteDatabaseClient<BookGenresRawEntity>(this.bookGenresTable.name)
       .select('*')
-      .where({
-        [this.bookGenresTable.columns.bookId]: bookId,
-      });
+      .where({ bookId });
 
     return rawEntities;
   }

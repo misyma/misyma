@@ -1,5 +1,6 @@
 import { type ChangeUserPasswordCommandHandler, type ExecutePayload } from './changeUserPasswordCommandHandler.js';
 import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
+import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { type BlacklistTokenRepository } from '../../../domain/repositories/blacklistTokenRepository/blacklistTokenRepository.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
@@ -14,12 +15,18 @@ export class ChangeUserPasswordCommandHandlerImpl implements ChangeUserPasswordC
     private readonly hashService: HashService,
     private readonly tokenService: TokenService,
     private readonly passwordValidationService: PasswordValidationService,
+    private readonly loggerService: LoggerService,
   ) {}
 
   public async execute(payload: ExecutePayload): Promise<void> {
     const { resetPasswordToken, newPassword } = payload;
 
     const { userId, type } = this.tokenService.verifyToken({ token: resetPasswordToken });
+
+    this.loggerService.debug({
+      message: 'Changing User password...',
+      userId,
+    });
 
     if (!userId) {
       throw new OperationNotValidError({
@@ -61,7 +68,7 @@ export class ChangeUserPasswordCommandHandlerImpl implements ChangeUserPasswordC
 
     user.setPassword({ password: hashedPassword });
 
-    await this.userRepository.saveUser({ entity: user });
+    await this.userRepository.saveUser({ user });
 
     const { expiresAt } = this.tokenService.decodeToken({
       token: resetPasswordToken,
@@ -70,6 +77,11 @@ export class ChangeUserPasswordCommandHandlerImpl implements ChangeUserPasswordC
     await this.blacklistTokenRepository.createBlacklistToken({
       expiresAt: new Date(expiresAt),
       token: resetPasswordToken,
+    });
+
+    this.loggerService.debug({
+      message: 'User password changed.',
+      userId,
     });
   }
 }

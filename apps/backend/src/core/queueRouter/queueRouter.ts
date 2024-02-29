@@ -46,11 +46,9 @@ export class QueueRouter {
       const queuePaths = controller.getQueuePaths();
 
       queuePaths.forEach((handler) => {
-        this.loggerService.info({
+        this.loggerService.debug({
           message: 'Registered a queue path.',
-          context: {
-            path: handler.getPath(),
-          },
+          path: handler.getPath(),
         });
 
         this.paths.set(handler.getPath(), handler.getHandler());
@@ -78,10 +76,8 @@ export class QueueRouter {
     if (!handler) {
       this.loggerService.warn({
         message: 'A queue message was received for an unregistered path.',
-        context: {
-          eventName,
-          data,
-        },
+        eventName,
+        data,
       });
 
       return;
@@ -96,21 +92,17 @@ export class QueueRouter {
       if (error instanceof BaseError) {
         this.loggerService.error({
           message: 'An error occurred while handling a queue message.',
-          context: {
-            eventName,
-            data,
-            errorMessage: error.message,
-            errorName: error.name,
-          },
+          eventName,
+          data,
+          errorMessage: error.message,
+          errorName: error.name,
         });
       } else {
         this.loggerService.error({
           message: 'An error occurred while handling a queue message.',
-          context: {
-            eventName,
-            data,
-            errorMessage: (error as Error)?.message,
-          },
+          eventName,
+          data,
+          errorMessage: (error as Error)?.message,
         });
       }
 

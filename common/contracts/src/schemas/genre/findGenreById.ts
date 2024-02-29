@@ -1,7 +1,7 @@
 import { type Genre } from './genre.js';
 
 export interface FindGenreByIdPathParams {
-  id: string;
+  readonly id: string;
 }
 
-export type FindGenreByIdResponse = Genre;
+export type FindGenreByIdResponseBody = Genre;

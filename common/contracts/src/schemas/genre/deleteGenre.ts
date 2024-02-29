@@ -1,5 +1,3 @@
 export interface DeleteGenrePathParams {
-  id: string;
+  readonly id: string;
 }
-
-export type DeleteGenreResponse = void;

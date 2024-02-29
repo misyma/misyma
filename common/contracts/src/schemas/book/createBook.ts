@@ -2,7 +2,7 @@ import { type Book } from './book.js';
 import { type BookFormat } from './bookFormat.js';
 import { type BookStatus } from './bookStatus.js';
 
-export interface CreateBookBody {
+export interface CreateBookRequestBody {
   readonly title: string;
   readonly isbn?: string;
   readonly publisher?: string;

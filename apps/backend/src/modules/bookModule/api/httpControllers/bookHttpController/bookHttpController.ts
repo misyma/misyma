@@ -19,10 +19,10 @@ import {
 } from './schemas/findBookSchema.js';
 import {
   type UpdateBookGenresBodyDTO,
-  type UpdateBookGenresOkResponseDTOSchema,
+  type UpdateBookGenresResponseDTOSchema,
   type UpdateBookGenresPathParamsDTO,
   updateBookGenresBodyDTOSchema,
-  updateBookGenresOkResponseDTOSchema,
+  updateBookGenresResponseDTOSchema,
   updateBookGenresPathParamsDTOSchema,
 } from './schemas/updateBookGenresSchema.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
@@ -126,7 +126,7 @@ export class BookHttpController implements HttpController {
           response: {
             [HttpStatusCode.ok]: {
               description: 'Book genres updated.',
-              schema: updateBookGenresOkResponseDTOSchema,
+              schema: updateBookGenresResponseDTOSchema,
             },
           },
         },
@@ -137,7 +137,7 @@ export class BookHttpController implements HttpController {
 
   private async updateBookGenres(
     request: HttpRequest<UpdateBookGenresBodyDTO, undefined, UpdateBookGenresPathParamsDTO>,
-  ): Promise<HttpOkResponse<UpdateBookGenresOkResponseDTOSchema>> {
+  ): Promise<HttpOkResponse<UpdateBookGenresResponseDTOSchema>> {
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });

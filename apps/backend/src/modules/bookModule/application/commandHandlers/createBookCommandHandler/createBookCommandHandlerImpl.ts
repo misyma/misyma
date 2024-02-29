@@ -21,19 +21,17 @@ export class CreateBookCommandHandlerImpl implements CreateBookCommandHandler {
     const { bookshelfId, authorIds, ...bookData } = payload;
 
     this.loggerService.debug({
-      message: 'Creating a Book...',
-      context: {
-        bookshelfId,
-        authorIds,
-        ...bookData,
-      },
+      message: 'Creating Book...',
+      bookshelfId,
+      authorIds,
+      ...bookData,
     });
 
     const { authors } = await this.findAuthorsByIdsQueryHandler.execute({
       authorIds,
     });
 
-    const bookshelf = await this.bookshelfRepository.findById({ id: bookshelfId });
+    const bookshelf = await this.bookshelfRepository.findBookshelf({ id: bookshelfId });
 
     if (!bookshelf) {
       throw new ResourceNotFoundError({
@@ -51,13 +49,11 @@ export class CreateBookCommandHandlerImpl implements CreateBookCommandHandler {
       },
     });
 
-    this.loggerService.info({
+    this.loggerService.debug({
       message: 'Book created.',
-      context: {
-        bookId: book.getId(),
-        bookshelfId,
-        authorIds,
-      },
+      bookId: book.getId(),
+      bookshelfId,
+      authorIds,
     });
 
     return { book };

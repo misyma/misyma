@@ -4,15 +4,26 @@ import {
   type UpdateBookshelfNameResult,
 } from './updateBookshelfNameCommandHandler.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
+import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type BookshelfRepository } from '../../../domain/repositories/bookshelfRepository/bookshelfRepository.js';
 
 export class UpdateBookshelfNameCommandHandlerImpl implements UpdateBookshelfNameCommandHandler {
-  public constructor(private readonly bookshelfRepository: BookshelfRepository) {}
+  public constructor(
+    private readonly bookshelfRepository: BookshelfRepository,
+    private readonly loggerService: LoggerService,
+  ) {}
 
   public async execute(payload: UpdateBookshelfNamePayload): Promise<UpdateBookshelfNameResult> {
     const { id, name, userId } = payload;
 
-    const bookshelf = await this.bookshelfRepository.findByIdAndUserId({
+    this.loggerService.debug({
+      message: 'Updating Bookshelf name...',
+      id,
+      name,
+      userId,
+    });
+
+    const bookshelf = await this.bookshelfRepository.findBookshelf({
       id,
       userId,
     });
@@ -23,12 +34,15 @@ export class UpdateBookshelfNameCommandHandlerImpl implements UpdateBookshelfNam
       });
     }
 
-    bookshelf.addUpdateNameDomainAction({
-      name,
-    });
+    bookshelf.setName({ name });
 
-    const updatedBookshelf = await this.bookshelfRepository.save({
-      entity: bookshelf,
+    const updatedBookshelf = await this.bookshelfRepository.saveBookshelf({ bookshelf });
+
+    this.loggerService.debug({
+      message: 'Bookshelf name updated...',
+      id,
+      name,
+      userId,
     });
 
     return {

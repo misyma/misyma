@@ -11,7 +11,7 @@ export const registerUserBodyDTOSchema = Type.Object({
   name: Type.String(),
 });
 
-export type RegisterUserBodyDTO = TypeExtends<Static<typeof registerUserBodyDTOSchema>, contracts.LoginUserBody>;
+export type RegisterUserBodyDTO = TypeExtends<Static<typeof registerUserBodyDTOSchema>, contracts.LoginUserRequestBody>;
 
 export const registerUserResponseBodyDTOSchema = userDTOSchema;
 

@@ -11,11 +11,11 @@ export const createGenreBodyDTOSchema = Type.Object({
   }),
 });
 
-export type CreateGenreBodyDTO = TypeExtends<contracts.CreateGenreBody, Static<typeof createGenreBodyDTOSchema>>;
+export type CreateGenreBodyDTO = TypeExtends<contracts.CreateGenreRequestBody, Static<typeof createGenreBodyDTOSchema>>;
 
-export const createGenreCreatedResponseDTOSchema = genreDTO;
+export const createGenreResponseBodyDTOSchema = genreDTO;
 
-export type CreateGenreCreatedResponseDTO = TypeExtends<
-  contracts.CreateGenreResponse,
-  Static<typeof createGenreCreatedResponseDTOSchema>
+export type CreateGenreResponseBodyDTO = TypeExtends<
+  contracts.CreateGenreResponseBody,
+  Static<typeof createGenreResponseBodyDTOSchema>
 >;

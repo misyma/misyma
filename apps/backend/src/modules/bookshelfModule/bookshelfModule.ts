@@ -54,7 +54,6 @@ export class BookshelfModule implements DependencyInjectionModule {
           container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient),
           container.get<BookshelfMapper>(symbols.bookshelfMapper),
           container.get<UuidService>(coreSymbols.uuidService),
-          container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );
   }
@@ -82,12 +81,17 @@ export class BookshelfModule implements DependencyInjectionModule {
         new CreateBookshelfCommandHandlerImpl(
           container.get<BookshelfRepository>(symbols.bookshelfRepository),
           container.get<UserRepository>(userSymbols.userRepository),
+          container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );
 
     container.bind<UpdateBookshelfNameCommandHandler>(
       symbols.updateBookshelfNameCommandHandler,
-      () => new UpdateBookshelfNameCommandHandlerImpl(container.get<BookshelfRepository>(symbols.bookshelfRepository)),
+      () =>
+        new UpdateBookshelfNameCommandHandlerImpl(
+          container.get<BookshelfRepository>(symbols.bookshelfRepository),
+          container.get<LoggerService>(coreSymbols.loggerService),
+        ),
     );
   }
 }

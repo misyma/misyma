@@ -92,11 +92,8 @@ export class HttpServer {
 
     this.loggerService.info({
       message: `HTTP Server started.`,
-      context: {
-        source: HttpServer.name,
-        port,
-        host,
-      },
+      port,
+      host,
     });
   }
 
@@ -129,17 +126,14 @@ export class HttpServer {
 
       this.loggerService.error({
         message: 'Caught an error in the HTTP server.',
-        context: {
-          source: HttpServer.name,
-          error: {
-            ...formattedError,
-            stack: error.stack,
-            cause: error.cause,
-          },
-          path: request.url,
-          method: request.method,
-          statusCode: reply.statusCode,
+        error: {
+          ...formattedError,
+          stack: error.stack,
+          cause: error.cause,
         },
+        path: request.url,
+        method: request.method,
+        statusCode: reply.statusCode,
       });
     });
   }
@@ -182,12 +176,9 @@ export class HttpServer {
       staticCSP: true,
     });
 
-    this.loggerService.info({
+    this.loggerService.debug({
       message: 'OpenAPI documentation initialized.',
-      context: {
-        source: HttpServer.name,
-        path: '/api/docs',
-      },
+      path: '/api/docs',
     });
   }
 }

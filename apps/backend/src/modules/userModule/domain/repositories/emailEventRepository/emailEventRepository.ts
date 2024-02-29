@@ -2,12 +2,12 @@ import { type EmailEvent } from '../../entities/emailEvent/emailEvent.js';
 import { type EmailEventDraft } from '../../entities/emailEvent/emailEventDraft.ts/emailEventDraft.js';
 
 export interface FindAllCreatedAfterPayload {
-  after: Date;
+  readonly after: Date;
 }
 
 export interface UpdateStatusPayload {
-  id: string;
-  status: string;
+  readonly id: string;
+  readonly status: string;
 }
 
 export interface EmailEventRepository {

@@ -69,17 +69,14 @@ export class HttpRouter {
 
       const handler = async (fastifyRequest: FastifyRequest, fastifyReply: FastifyReply): Promise<void> => {
         try {
-          this.loggerService.info({
+          this.loggerService.debug({
             message: 'Received an HTTP request.',
-            context: {
-              source: HttpRouter.name,
-              path: fastifyRequest.url,
-              method,
-              pathParams: fastifyRequest.params,
-              queryParams: fastifyRequest.query,
-              body: fastifyRequest.body,
-              headers: fastifyRequest.headers,
-            },
+            path: fastifyRequest.url,
+            method,
+            pathParams: fastifyRequest.params,
+            queryParams: fastifyRequest.query,
+            body: fastifyRequest.body,
+            headers: fastifyRequest.headers,
           });
 
           const { statusCode, body: responseBody } = await httpRoute.handler({
@@ -101,13 +98,10 @@ export class HttpRouter {
 
           this.loggerService.info({
             message: 'Sent an HTTP response.',
-            context: {
-              source: HttpRouter.name,
-              path: fastifyRequest.url,
-              method,
-              statusCode,
-              body: responseBody,
-            },
+            path: fastifyRequest.url,
+            method,
+            statusCode,
+            body: responseBody,
           });
 
           return;
@@ -121,22 +115,19 @@ export class HttpRouter {
 
             this.loggerService.error({
               message: 'Caught an error in the HTTP router.',
-              context: {
-                source: HttpRouter.name,
-                error:
-                  error instanceof Error
-                    ? {
-                        name: error.name,
-                        message: error.message,
-                        context: error.context,
-                        stack: error.stack,
-                        cause: error.cause,
-                      }
-                    : undefined,
-                path: fastifyRequest.url,
-                method,
-                statusCode: fastifyReply.statusCode,
-              },
+              error:
+                error instanceof Error
+                  ? {
+                      name: error.name,
+                      message: error.message,
+                      context: error.context,
+                      stack: error.stack,
+                      cause: error.cause,
+                    }
+                  : undefined,
+              path: fastifyRequest.url,
+              method,
+              statusCode: fastifyReply.statusCode,
             });
 
             if (error instanceof ResourceNotFoundError) {
@@ -205,25 +196,19 @@ export class HttpRouter {
           if (error instanceof Error) {
             this.loggerService.error({
               message: 'Caught an unknown error in the HTTP router.',
-              context: {
-                source: HttpRouter.name,
-                originalErrorMessage: error.message,
-                originalErrorStack: error.stack,
-                path: fastifyRequest.url,
-                method,
-                statusCode: fastifyReply.statusCode,
-              },
+              originalErrorMessage: error.message,
+              originalErrorStack: error.stack,
+              path: fastifyRequest.url,
+              method,
+              statusCode: fastifyReply.statusCode,
             });
           } else {
             this.loggerService.error({
               message: 'Caught an unknown error in the HTTP router.',
-              context: {
-                source: HttpRouter.name,
-                path: fastifyRequest.url,
-                method,
-                statusCode: fastifyReply.statusCode,
-                error,
-              },
+              path: fastifyRequest.url,
+              method,
+              statusCode: fastifyReply.statusCode,
+              error,
             });
           }
 
@@ -247,13 +232,10 @@ export class HttpRouter {
         },
       });
 
-      this.loggerService.info({
+      this.loggerService.debug({
         message: 'Registered an HTTP route.',
-        context: {
-          source: HttpRouter.name,
-          method,
-          path,
-        },
+        method,
+        path,
       });
     });
   }

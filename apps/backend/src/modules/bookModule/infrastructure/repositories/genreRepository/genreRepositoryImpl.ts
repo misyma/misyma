@@ -89,7 +89,7 @@ export class GenreRepositoryImpl implements GenreRepository {
     try {
       rawEntities = await this.sqliteDatabaseClient<GenreRawEntity>(this.genreTable.name)
         .select('*')
-        .whereIn(this.genreTable.columns.id, ids);
+        .whereIn('id', ids);
     } catch (error) {
       throw new RepositoryError({
         entity: 'Genre',
@@ -151,7 +151,7 @@ export class GenreRepositoryImpl implements GenreRepository {
     try {
       rawEntities = await this.sqliteDatabaseClient<GenreRawEntity>(this.genreTable.name)
         .update(genre.getState())
-        .where(this.genreTable.columns.id, genre.getId())
+        .where({ id: genre.getId() })
         .returning('*');
     } catch (error) {
       throw new RepositoryError({
@@ -176,9 +176,7 @@ export class GenreRepositoryImpl implements GenreRepository {
     const { id } = payload;
 
     try {
-      await this.sqliteDatabaseClient<GenreRawEntity>(this.genreTable.name)
-        .delete()
-        .where(this.genreTable.columns.id, id);
+      await this.sqliteDatabaseClient<GenreRawEntity>(this.genreTable.name).delete().where({ id });
     } catch (error) {
       throw new RepositoryError({
         entity: 'Genre',

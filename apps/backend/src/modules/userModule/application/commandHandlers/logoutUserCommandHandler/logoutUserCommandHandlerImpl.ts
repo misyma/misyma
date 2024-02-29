@@ -19,7 +19,7 @@ export class LogoutUserCommandHandlerImpl implements LogoutUserCommandHandler {
 
     this.loggerService.debug({
       message: 'Logging user out...',
-      context: { userId },
+      userId,
     });
 
     const refreshTokenPayload = this.tokenService.verifyToken({ token: refreshToken });
@@ -37,20 +37,16 @@ export class LogoutUserCommandHandlerImpl implements LogoutUserCommandHandler {
     if (isRefreshTokenBlacklisted) {
       this.loggerService.debug({
         message: 'Refresh token is already on blacklist.',
-        context: {
-          userId,
-          refreshToken,
-        },
+        userId,
+        refreshToken,
       });
     }
 
     if (isAccessTokenBlacklisted && isRefreshTokenBlacklisted) {
       this.loggerService.debug({
         message: 'Access & refresh tokens are already on blacklist.',
-        context: {
-          userId,
-          accessToken,
-        },
+        userId,
+        accessToken,
       });
 
       return;
@@ -103,7 +99,7 @@ export class LogoutUserCommandHandlerImpl implements LogoutUserCommandHandler {
 
     this.loggerService.debug({
       message: 'User logged out.',
-      context: { userId },
+      userId,
     });
   }
 }

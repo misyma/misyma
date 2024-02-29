@@ -13,14 +13,14 @@ export class DeleteBookCommandHandlerImpl implements DeleteBookCommandHandler {
 
     this.loggerService.debug({
       message: 'Deleting book...',
-      context: { bookId },
+      bookId,
     });
 
     await this.bookRepository.deleteBook({ id: bookId });
 
-    this.loggerService.info({
+    this.loggerService.debug({
       message: 'Book deleted.',
-      context: { bookId },
+      bookId,
     });
   }
 }

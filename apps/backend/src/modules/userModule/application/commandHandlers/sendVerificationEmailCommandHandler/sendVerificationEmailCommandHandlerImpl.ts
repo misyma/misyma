@@ -44,10 +44,8 @@ export class SendVerificationEmailCommandHandlerImpl implements SendVerification
 
     this.loggerService.debug({
       message: 'Sending verification email...',
-      context: {
-        userId: user.getId(),
-        email: user.getEmail(),
-      },
+      userId: user.getId(),
+      email: user.getEmail(),
     });
 
     const expiresIn = this.configProvider.getEmailVerificationTokenExpiresIn();

@@ -1,9 +1,6 @@
-import { type LogContext } from '../../types/logContext.js';
-
-// TODO: Refactor context
 export interface LogPayload {
   readonly message: string;
-  readonly context?: LogContext;
+  readonly [key: string]: unknown;
 }
 
 export interface LoggerService {

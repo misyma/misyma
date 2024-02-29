@@ -27,7 +27,7 @@ export class FindBookReadingsByBookIdQueryHandlerImpl implements FindBookReading
       });
     }
 
-    const bookReadings = await this.bookReadingRepository.findByBookId({
+    const bookReadings = await this.bookReadingRepository.findBookReadings({
       bookId,
     });
 

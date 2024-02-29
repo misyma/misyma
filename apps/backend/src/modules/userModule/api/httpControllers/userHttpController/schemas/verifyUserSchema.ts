@@ -8,7 +8,7 @@ export const verifyUserBodyDTOSchema = Type.Object({
   token: Type.String(),
 });
 
-export type VerifyUserBodyDTO = TypeExtends<Static<typeof verifyUserBodyDTOSchema>, contracts.VerifyUserBody>;
+export type VerifyUserBodyDTO = TypeExtends<Static<typeof verifyUserBodyDTOSchema>, contracts.VerifyUserRequestBody>;
 
 export const verifyUserResponseBodyDTOSchema = Type.Null();
 

@@ -26,12 +26,12 @@ export const updateBookGenresBodyDTOSchema = Type.Object({
 
 export type UpdateBookGenresBodyDTO = TypeExtends<
   Static<typeof updateBookGenresBodyDTOSchema>,
-  contracts.UpdateBookGenresPayload
+  contracts.UpdateBookGenresRequestBody
 >;
 
-export const updateBookGenresOkResponseDTOSchema = bookDTOSchema;
+export const updateBookGenresResponseDTOSchema = bookDTOSchema;
 
-export type UpdateBookGenresOkResponseDTOSchema = TypeExtends<
-  Static<typeof updateBookGenresOkResponseDTOSchema>,
-  contracts.UpdateBookGenresResult
+export type UpdateBookGenresResponseDTOSchema = TypeExtends<
+  Static<typeof updateBookGenresResponseDTOSchema>,
+  contracts.UpdateBookGenresResponseBody
 >;

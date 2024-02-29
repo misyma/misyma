@@ -1,5 +1,5 @@
 import { type Genre } from './genre.js';
 
-export interface FindGenresResponse {
-  data: Genre[];
+export interface FindGenresResponseBody {
+  readonly data: Genre[];
 }

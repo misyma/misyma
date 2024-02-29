@@ -11,7 +11,9 @@ import {
   type DeleteBookPayload,
   type SaveBookPayload,
 } from '../../../domain/repositories/bookRepository/bookRepository.js';
+import { type BookGenresRawEntity } from '../../databases/bookDatabase/tables/bookGenresTable/bookGenresRawEntity.js';
 import { BookGenresTable } from '../../databases/bookDatabase/tables/bookGenresTable/bookGenresTable.js';
+import { type BooksAuthorsRawEntity } from '../../databases/bookDatabase/tables/booksAuthorsTable/booksAuthorsRawEntity.js';
 import { BooksAuthorsTable } from '../../databases/bookDatabase/tables/booksAuthorsTable/booksAuthorsTable.js';
 import { type BookRawEntity } from '../../databases/bookDatabase/tables/bookTable/bookRawEntity.js';
 import { BookTable } from '../../databases/bookDatabase/tables/bookTable/bookTable.js';
@@ -92,8 +94,8 @@ export class BookRepositoryImpl implements BookRepository {
         await transaction.batchInsert(
           this.booksAuthorsTable.name,
           authors.map((author) => ({
-            [this.booksAuthorsTable.columns.bookId]: id,
-            [this.booksAuthorsTable.columns.authorId]: author.getId(),
+            bookId: id,
+            authorId: author.getId(),
           })),
         );
       });
@@ -152,48 +154,48 @@ export class BookRepositoryImpl implements BookRepository {
         );
 
         if (addedAuthors.length > 0) {
-          await transaction.batchInsert(
+          await transaction.batchInsert<BooksAuthorsRawEntity>(
             this.booksAuthorsTable.name,
             addedAuthors.map((author) => ({
-              [this.booksAuthorsTable.columns.bookId]: book.getId(),
-              [this.booksAuthorsTable.columns.authorId]: author.getId(),
+              bookId: book.getId(),
+              authorId: author.getId(),
             })),
           );
         }
 
         if (removedAuthors.length > 0) {
-          await transaction(this.booksAuthorsTable.name)
+          await transaction<BooksAuthorsRawEntity>(this.booksAuthorsTable.name)
             .delete()
             .whereIn(
-              this.booksAuthorsTable.columns.authorId,
+              'authorId',
               removedAuthors.map((author) => author.getId()),
             )
             .andWhere({
-              [this.booksAuthorsTable.columns.bookId]: book.getId(),
+              bookId: book.getId(),
             });
         }
 
         if (addedGenres.length > 0) {
-          await transaction(this.bookGenresTable.name)
+          await transaction<BookGenresRawEntity>(this.bookGenresTable.name)
             .insert(
               addedGenres.map((genre) => ({
-                [this.bookGenresTable.columns.bookId]: book.getId(),
-                [this.bookGenresTable.columns.genreId]: genre.getId(),
+                bookId: book.getId(),
+                genreId: genre.getId(),
               })),
             )
-            .onConflict([this.bookGenresTable.columns.bookId, this.bookGenresTable.columns.genreId])
+            .onConflict(['bookId', 'genreId'])
             .merge();
         }
 
         if (removedGenres.length > 0) {
-          await transaction(this.bookGenresTable.name)
+          await transaction<BookGenresRawEntity>(this.bookGenresTable.name)
             .delete()
             .whereIn(
-              this.bookGenresTable.columns.genreId,
+              'genreId',
               removedGenres.map((genre) => genre.getId()),
             )
             .andWhere({
-              [this.bookGenresTable.columns.bookId]: book.getId(),
+              bookId: book.getId(),
             });
         }
       });
@@ -215,67 +217,51 @@ export class BookRepositoryImpl implements BookRepository {
     try {
       rawEntities = await this.sqliteDatabaseClient<BookRawEntity>(this.databaseTable.name)
         .select([
-          `${this.databaseTable.name}.${this.databaseTable.columns.id}`,
-          `${this.databaseTable.name}.${this.databaseTable.columns.title}`,
-          `${this.databaseTable.name}.${this.databaseTable.columns.isbn}`,
-          `${this.databaseTable.name}.${this.databaseTable.columns.publisher}`,
-          `${this.databaseTable.name}.${this.databaseTable.columns.releaseYear}`,
-          `${this.databaseTable.name}.${this.databaseTable.columns.language}`,
-          `${this.databaseTable.name}.${this.databaseTable.columns.translator}`,
-          `${this.databaseTable.name}.${this.databaseTable.columns.format}`,
-          `${this.databaseTable.name}.${this.databaseTable.columns.pages}`,
-          `${this.databaseTable.name}.${this.databaseTable.columns.frontCoverImageUrl}`,
-          `${this.databaseTable.name}.${this.databaseTable.columns.backCoverImageUrl}`,
-          `${this.databaseTable.name}.${this.databaseTable.columns.status}`,
-          `${this.databaseTable.name}.${this.databaseTable.columns.bookshelfId}`,
-          `${this.authorTable.name}.${this.authorTable.columns.id} as ${this.databaseTable.authorJoinColumnsAliases.authorId}`,
-          `${this.genresTable.name}.${this.genresTable.columns.name} as ${this.databaseTable.genreJoinColumnsAliases.genreName}`,
-          `${this.genresTable.name}.${this.genresTable.columns.id} as ${this.databaseTable.genreJoinColumnsAliases.genreId}`,
-          this.authorTable.columns.firstName,
-          this.authorTable.columns.lastName,
+          `${this.databaseTable.name}.id`,
+          `${this.databaseTable.name}.title`,
+          `${this.databaseTable.name}.isbn`,
+          `${this.databaseTable.name}.publisher`,
+          `${this.databaseTable.name}.releaseYear`,
+          `${this.databaseTable.name}.language`,
+          `${this.databaseTable.name}.translator`,
+          `${this.databaseTable.name}.format`,
+          `${this.databaseTable.name}.pages`,
+          `${this.databaseTable.name}.frontCoverImageUrl`,
+          `${this.databaseTable.name}.backCoverImageUrl`,
+          `${this.databaseTable.name}.status`,
+          `${this.databaseTable.name}.bookshelfId`,
+          `${this.authorTable.name}.id as authorId`,
+          `${this.genresTable.name}.name as genreName`,
+          `${this.genresTable.name}.id as genreId`,
+          'firstName',
+          'lastName',
         ])
         .leftJoin(this.booksAuthorsTable.name, (join) => {
-          join.on(
-            `${this.booksAuthorsTable.name}.${this.booksAuthorsTable.columns.bookId}`,
-            '=',
-            `${this.databaseTable.name}.${this.databaseTable.columns.id}`,
-          );
+          join.on(`${this.booksAuthorsTable.name}.bookId`, '=', `${this.databaseTable.name}.id`);
 
           if (authorsIds) {
             join.andOnIn(
-              `${this.booksAuthorsTable.name}.${this.booksAuthorsTable.columns.authorId}`,
+              `${this.booksAuthorsTable.name}.authorId`,
               this.sqliteDatabaseClient.raw('?', [authorsIds.join(',')]),
             );
           }
         })
         .leftJoin(this.authorTable.name, (join) => {
-          join.on(
-            `${this.authorTable.name}.${this.authorTable.columns.id}`,
-            '=',
-            `${this.booksAuthorsTable.name}.${this.booksAuthorsTable.columns.authorId}`,
-          );
+          join.on(`${this.authorTable.name}.id`, '=', `${this.booksAuthorsTable.name}.authorId`);
         })
         .leftJoin(this.bookGenresTable.name, (join) => {
-          join.on(
-            `${this.bookGenresTable.name}.${this.bookGenresTable.columns.bookId}`,
-            '=',
-            `${this.databaseTable.name}.${this.databaseTable.columns.id}`,
-          );
+          join.on(`${this.bookGenresTable.name}.bookId`, '=', `${this.databaseTable.name}.id`);
         })
         .leftJoin(this.genresTable.name, (join) => {
-          join.on(
-            `${this.genresTable.name}.${this.genresTable.columns.id}`,
-            `=`,
-            `${this.bookGenresTable.name}.${this.bookGenresTable.columns.genreId}`,
-          );
+          join.on(`${this.genresTable.name}.id`, `=`, `${this.bookGenresTable.name}.genreId`);
         })
         .where((builder) => {
           if (id) {
-            builder.where(`${this.databaseTable.name}.${this.databaseTable.columns.id}`, id);
+            builder.where(`${this.databaseTable.name}.id`, id);
           }
 
           if (title) {
-            builder.where(`${this.databaseTable.name}.${this.databaseTable.columns.title}`, title);
+            builder.where(`${this.databaseTable.name}.title`, title);
           }
         });
     } catch (error) {
@@ -305,11 +291,9 @@ export class BookRepositoryImpl implements BookRepository {
     }
 
     try {
-      await this.sqliteDatabaseClient<BookRawEntity>(this.databaseTable.name)
-        .delete()
-        .where({
-          [this.databaseTable.columns.id]: existingBook.getId(),
-        });
+      await this.sqliteDatabaseClient<BookRawEntity>(this.databaseTable.name).delete().where({
+        id: existingBook.getId(),
+      });
     } catch (error) {
       throw new RepositoryError({
         entity: 'Book',

@@ -1,6 +1,6 @@
 import { type Bookshelf } from './bookshelf.js';
 
-export interface CreateBookshelfBody {
+export interface CreateBookshelfRequestBody {
   readonly name: string;
   readonly addressId?: string;
 }

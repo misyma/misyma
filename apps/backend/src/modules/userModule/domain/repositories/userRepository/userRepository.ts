@@ -1,7 +1,7 @@
 import { type UserState, type User } from '../../../domain/entities/user/user.js';
 
 export interface SaveUserPayload {
-  readonly entity: UserState | User;
+  readonly user: UserState | User;
 }
 
 export interface FindUserPayload {

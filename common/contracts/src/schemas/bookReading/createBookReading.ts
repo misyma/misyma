@@ -4,11 +4,11 @@ export interface CreateBookReadingPathParams {
   readonly bookId: string;
 }
 
-export interface CreateBookReadingBody {
-  rating: number;
-  comment: string;
-  startedAt: Date;
-  endedAt?: Date;
+export interface CreateBookReadingRequestBody {
+  readonly rating: number;
+  readonly comment: string;
+  readonly startedAt: Date;
+  readonly endedAt?: Date;
 }
 
 export interface CreateBookReadingResponseBody {

@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { SpyFactory } from '@common/tests';
 
-import { type ResetUserPasswordCommandHandler } from './resetUserPasswordCommandHandler.js';
+import { type SendResetPasswordEmailCommandHandler } from './sendResetPasswordEmailCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { EmailEventDraft } from '../../../domain/entities/emailEvent/emailEventDraft.ts/emailEventDraft.js';
@@ -12,8 +12,8 @@ import { UserTestFactory } from '../../../tests/factories/userTestFactory/userTe
 import { type UserTestUtils } from '../../../tests/utils/userTestUtils/userTestUtils.js';
 import { type EmailMessageBus } from '../../messageBuses/emailMessageBus/emailMessageBus.js';
 
-describe('ResetUserPasswordCommandHandler', () => {
-  let commandHandler: ResetUserPasswordCommandHandler;
+describe('SendResetPasswordEmailCommandHandler', () => {
+  let commandHandler: SendResetPasswordEmailCommandHandler;
 
   let emailMessageBus: EmailMessageBus;
 
@@ -26,7 +26,7 @@ describe('ResetUserPasswordCommandHandler', () => {
   beforeEach(() => {
     const container = TestContainer.create();
 
-    commandHandler = container.get<ResetUserPasswordCommandHandler>(symbols.resetUserPasswordCommandHandler);
+    commandHandler = container.get<SendResetPasswordEmailCommandHandler>(symbols.sendResetPasswordEmailCommandHandler);
 
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
 

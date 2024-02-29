@@ -10,7 +10,7 @@ export const refreshUserTokensBodyDTOSchema = Type.Object({
 
 export type RefreshUserTokensBodyDTO = TypeExtends<
   Static<typeof refreshUserTokensBodyDTOSchema>,
-  contracts.RefreshUserTokensBody
+  contracts.RefreshUserTokensRequestBody
 >;
 
 export const refreshUserTokensResponseBodyDTOSchema = Type.Object({

@@ -79,14 +79,12 @@ describe('FindBookshelvesByUserIdQueryHandlerImpl', () => {
     expect(result.bookshelves.length).toEqual(2);
 
     expect(result.bookshelves[0]?.getState()).toEqual({
-      id: bookshelf1.id,
       name: bookshelf1.name,
       addressId: bookshelf1.addressId,
       userId: bookshelf1.userId,
     });
 
     expect(result.bookshelves[1]?.getState()).toEqual({
-      id: bookshelf2.id,
       name: bookshelf2.name,
       addressId: bookshelf2.addressId,
       userId: bookshelf2.userId,

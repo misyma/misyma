@@ -1,10 +1,6 @@
 import { Generator } from '@common/tests';
 
 import { BookReading, type BookReadingState } from '../../../domain/entities/bookReading/bookReading.js';
-import {
-  BookReadingDraft,
-  type BookReadingDraftState,
-} from '../../../domain/entities/bookReading/bookReadingDraft/bookReadingDraft.js';
 import { type BookReadingRawEntity } from '../../../infrastructure/databases/bookReadingsDatabase/tables/bookReadingTable/bookReadingRawEntity.js';
 
 export class BookReadingTestFactory {
@@ -21,18 +17,7 @@ export class BookReadingTestFactory {
       rating: Generator.number(1, 10),
       comment: Generator.words(),
       startedAt: Generator.pastDate(),
-      endedAt: Generator.pastDate(),
-      ...input,
-    });
-  }
-
-  public createDraft(input: Partial<BookReadingDraftState> = {}): BookReadingDraft {
-    return new BookReadingDraft({
-      bookId: Generator.uuid(),
-      rating: Generator.number(1, 10),
-      comment: Generator.words(),
-      startedAt: Generator.pastDate(),
-      endedAt: Generator.pastDate(),
+      endedAt: Generator.futureDate(),
       ...input,
     });
   }
@@ -44,7 +29,7 @@ export class BookReadingTestFactory {
       rating: Generator.number(1, 10),
       comment: Generator.words(),
       startedAt: Generator.pastDate(),
-      endedAt: Generator.pastDate(),
+      endedAt: Generator.futureDate(),
       ...input,
     };
   }

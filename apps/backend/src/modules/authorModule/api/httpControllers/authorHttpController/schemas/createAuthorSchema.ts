@@ -9,7 +9,10 @@ export const createAuthorBodyDTOSchema = Type.Object({
   lastName: Type.String(),
 });
 
-export type CreateAuthorBodyDTO = TypeExtends<Static<typeof createAuthorBodyDTOSchema>, contracts.CreateAuthorBody>;
+export type CreateAuthorBodyDTO = TypeExtends<
+  Static<typeof createAuthorBodyDTOSchema>,
+  contracts.CreateAuthorRequestBody
+>;
 
 export const createAuthorResponseBodyDTOSchema = Type.Object({
   id: Type.String(),

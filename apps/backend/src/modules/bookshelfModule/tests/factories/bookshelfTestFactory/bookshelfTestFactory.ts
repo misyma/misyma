@@ -1,10 +1,6 @@
 import { Generator } from '@common/tests';
 
 import { Bookshelf, type BookshelfState } from '../../../domain/entities/bookshelf/bookshelf.js';
-import {
-  BookshelfDraft,
-  type BookshelfDraftState,
-} from '../../../domain/entities/bookshelf/bookshelfDraft/bookshelfDraft.js';
 import { type BookshelfRawEntity } from '../../../infrastructure/databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfRawEntity.js';
 
 export class BookshelfTestFactory {
@@ -17,15 +13,6 @@ export class BookshelfTestFactory {
   public create(input: Partial<BookshelfState> = {}): Bookshelf {
     return new Bookshelf({
       id: Generator.uuid(),
-      name: Generator.alphaString(20, 'lower'),
-      userId: Generator.uuid(),
-      addressId: undefined,
-      ...input,
-    });
-  }
-
-  public createDraft(input: Partial<BookshelfDraftState> = {}): BookshelfDraft {
-    return new BookshelfDraft({
       name: Generator.alphaString(20, 'lower'),
       userId: Generator.uuid(),
       addressId: undefined,

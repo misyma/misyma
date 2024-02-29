@@ -57,7 +57,6 @@ export class BookReadingModule implements DependencyInjectionModule {
           container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient),
           container.get<BookReadingMapper>(symbols.bookReadingMapper),
           container.get<UuidService>(coreSymbols.uuidService),
-          container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );
   }
@@ -86,19 +85,26 @@ export class BookReadingModule implements DependencyInjectionModule {
         new CreateBookReadingCommandHandlerImpl(
           container.get<BookReadingRepository>(symbols.bookReadingRepository),
           container.get<BookRepository>(bookSymbols.bookRepository),
+          container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );
 
     container.bind<UpdateBookReadingCommandHandler>(
       symbols.updateBookReadingNameCommandHandler,
       () =>
-        new UpdateBookReadingCommandHandlerImpl(container.get<BookReadingRepository>(symbols.bookReadingRepository)),
+        new UpdateBookReadingCommandHandlerImpl(
+          container.get<BookReadingRepository>(symbols.bookReadingRepository),
+          container.get<LoggerService>(coreSymbols.loggerService),
+        ),
     );
 
     container.bind<DeleteBookReadingCommandHandler>(
       symbols.deleteBookReadingNameCommandHandler,
       () =>
-        new DeleteBookReadingCommandHandlerImpl(container.get<BookReadingRepository>(symbols.bookReadingRepository)),
+        new DeleteBookReadingCommandHandlerImpl(
+          container.get<BookReadingRepository>(symbols.bookReadingRepository),
+          container.get<LoggerService>(coreSymbols.loggerService),
+        ),
     );
   }
 }

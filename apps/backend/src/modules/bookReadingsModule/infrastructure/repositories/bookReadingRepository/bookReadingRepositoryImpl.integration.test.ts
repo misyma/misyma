@@ -63,7 +63,7 @@ describe('BookReadingRepositoryImpl', () => {
       it('returns null - when BookReading was not found', async () => {
         const nonExistentBookReadingId = Generator.uuid();
 
-        const result = await repository.findById({
+        const result = await repository.findBookReading({
           id: nonExistentBookReadingId,
         });
 
@@ -89,7 +89,7 @@ describe('BookReadingRepositoryImpl', () => {
           },
         });
 
-        const result = await repository.findById({
+        const result = await repository.findBookReading({
           id: bookReading.id,
         });
 
@@ -103,7 +103,7 @@ describe('BookReadingRepositoryImpl', () => {
       it('returns an empty array - when BookReadings were not found', async () => {
         const bookId = Generator.uuid();
 
-        const result = await repository.findByBookId({
+        const result = await repository.findBookReadings({
           bookId,
         });
 
@@ -135,7 +135,7 @@ describe('BookReadingRepositoryImpl', () => {
           },
         });
 
-        const result = await repository.findByBookId({
+        const result = await repository.findBookReadings({
           bookId: book.id,
         });
 
@@ -165,23 +165,21 @@ describe('BookReadingRepositoryImpl', () => {
           },
         });
 
-        const bookReadingDraft = bookReadingTestFactory.createDraft({
+        const bookReading = bookReadingTestFactory.create({
           bookId: book.id,
         });
 
-        const result = await repository.save({
-          entity: bookReadingDraft,
+        const result = await repository.saveBookReading({
+          bookReading: bookReading.getState(),
         });
 
         expect(result).toBeInstanceOf(BookReading);
 
-        expect(result.getId()).toBeDefined();
-
         expect(result.getBookId()).toEqual(book.id);
 
-        expect(result.getComment()).toEqual(bookReadingDraft.getComment());
+        expect(result.getComment()).toEqual(bookReading.getComment());
 
-        expect(result.getRating()).toEqual(bookReadingDraft.getRating());
+        expect(result.getRating()).toEqual(bookReading.getRating());
       });
 
       it('updates a BookReading - given a BookReading', async () => {
@@ -215,29 +213,29 @@ describe('BookReadingRepositoryImpl', () => {
 
         const newEndedAt = Generator.pastDate();
 
-        bookReading.addUpadateCommentDomainAction({
+        bookReading.setComment({
           comment: newComment,
         });
 
-        bookReading.addUpdateRatingDomainAction({
+        bookReading.setRating({
           rating: newRating,
         });
 
-        bookReading.addUpdateStartedDateDomainAction({
+        bookReading.setStartedAtDate({
           startedAt: newStartedAt,
         });
 
-        bookReading.addUpdateEndedDateDomainAction({
+        bookReading.setEndedAtDate({
           endedAt: newEndedAt,
         });
 
-        const result = await repository.save({
-          entity: bookReading,
+        const result = await repository.saveBookReading({
+          bookReading,
         });
 
         expect(result).toBeInstanceOf(BookReading);
 
-        const updatedBookReading = await repository.findById({
+        const updatedBookReading = await repository.findBookReading({
           id: bookReading.getId(),
         });
 
@@ -265,27 +263,27 @@ describe('BookReadingRepositoryImpl', () => {
           },
         });
 
-        const bookReading = await bookReadingTestUtils.createAndPersist({
+        const bookReadingRawEntity = await bookReadingTestUtils.createAndPersist({
           input: {
             bookId: book.id,
           },
         });
 
-        const bookReadingEntity = new BookReading({
-          id: bookReading.id,
+        const bookReading = new BookReading({
+          id: bookReadingRawEntity.id,
           bookId: book.id,
-          comment: bookReading.comment,
-          rating: bookReading.rating,
-          startedAt: bookReading.startedAt,
-          endedAt: bookReading.endedAt,
+          comment: bookReadingRawEntity.comment,
+          rating: bookReadingRawEntity.rating,
+          startedAt: bookReadingRawEntity.startedAt,
+          endedAt: bookReadingRawEntity.endedAt,
         });
 
-        await repository.delete({
-          entity: bookReadingEntity,
+        await repository.deleteBookReading({
+          id: bookReading.getId(),
         });
 
-        const result = await repository.findById({
-          id: bookReading.id,
+        const result = await repository.findBookReading({
+          id: bookReading.getId(),
         });
 
         expect(result).toBeNull();

@@ -1,11 +1,11 @@
 import { type Book } from './book.js';
 
 export interface UpdateBookGenresPathParams {
-  bookId: string;
+  readonly bookId: string;
 }
 
-export interface UpdateBookGenresPayload {
-  genreIds: string[];
+export interface UpdateBookGenresRequestBody {
+  readonly genreIds: string[];
 }
 
-export type UpdateBookGenresResult = Book;
+export type UpdateBookGenresResponseBody = Book;
