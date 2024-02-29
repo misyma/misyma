@@ -6,6 +6,8 @@ import { useStoreDispatch } from '../../core/store/hooks/useStoreDispatch';
 import { LoginUserResponseBody } from '@common/contracts';
 import { userStateActions } from '../../core/store/states/userState/userStateSlice';
 import { FC } from 'react';
+import { DefaultLayout } from '../../layouts/defaultLayout';
+import { Logo } from '../../components/logo/logo';
 
 export const LoginPage: FC = () => {
   const storeDispatch = useStoreDispatch();
@@ -28,20 +30,14 @@ export const LoginPage: FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen">
+    <DefaultLayout>
       <div className="flex flex-col-reverse sm:flex-row items-center justify-center px-4 h-[600px]">
         <div className="flex-1 p-8">
           <LoginUserForm onSuccess={onSuccessfulLogin} />
         </div>
-        <div className="flex-1 max-h-[300px] max-w-[300px] sm:max-h-[600px] sm:max-w-[600px] flex justify-center">
-          <img
-            src="/book_square.jpg"
-            alt="Misyma's logo"
-            className="object-fit aspect-square"
-          />
-        </div>
+        <Logo />
       </div>
-    </div>
+    </DefaultLayout>
   );
 };
 

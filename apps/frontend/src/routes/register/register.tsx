@@ -3,6 +3,8 @@ import { createRoute, useNavigate } from '@tanstack/react-router';
 import { rootRoute } from '../root';
 import { FC } from 'react';
 import { RegisterUserForm } from './components/registerUserForm/registerUserForm';
+import { DefaultLayout } from '../../layouts/defaultLayout';
+import { Logo } from '../../components/logo/logo';
 
 export const RegisterPage: FC = () => {
   const navigate = useNavigate();
@@ -16,19 +18,12 @@ export const RegisterPage: FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen">
-      <div className="flex flex-col-reverse sm:flex-row items-center justify-center px-4 h-[600px]">
-        <div className="flex-1 p-8">
-          <RegisterUserForm onSuccess={onSuccessfulRegister} />
-        </div>
-        <div className="flex-1 max-h-[300px] max-w-[300px] sm:max-h-[600px] sm:max-w-[600px] flex justify-center">
-          <img
-            src="/book_square.jpg"
-            alt="Misyma's logo"
-          />
-        </div>
+    <DefaultLayout innerContainerClassName="flex-col-reverse sm:flex-row">
+      <div className="flex-1 p-8">
+        <RegisterUserForm onSuccess={onSuccessfulRegister} />
       </div>
-    </div>
+      <Logo />
+    </DefaultLayout>
   );
 };
 
