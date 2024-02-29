@@ -44,4 +44,7 @@ export const newPasswordRoute = createRoute({
   path: '/new-password',
   component: SetNewPasswordPage,
   validateSearch: productSearchSchema,
+  onError: () => {
+    return <Navigate to={'/login'} />;
+  }
 });

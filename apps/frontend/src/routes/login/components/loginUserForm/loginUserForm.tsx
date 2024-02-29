@@ -110,7 +110,7 @@ export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccess, onError }: Lo
           />
           <Button
             type="submit"
-            className="w-60 sm:w-80 border-primary border-[1.25px] hover:bg-white bg-white text-primary font-semibold"
+            className="w-60 sm:w-80 border-primary border-[1.25px] bg-white text-primary font-semibold hover:bg-periwinkle-50 hover:opacity-90"
           >
             Zaloguj się
           </Button>

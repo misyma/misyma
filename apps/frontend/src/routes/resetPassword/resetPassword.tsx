@@ -14,7 +14,7 @@ export const SendResetPasswordEmailPage: FC = () => {
   };
 
   return (
-    <DefaultLayout>
+    <DefaultLayout innerContainerClassName="flex-col-reverse sm:flex-row">
       {!success ? (
         <>
           <div className="flex-1 py-8">
