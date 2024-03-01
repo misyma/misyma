@@ -3,8 +3,8 @@ import { type BookReading } from './bookReading.js';
 export interface UpdateBookReadingRequestBody {
   readonly comment?: string;
   readonly rating?: number;
-  readonly startedAt?: Date;
-  readonly endedAt?: Date;
+  readonly startedAt?: string;
+  readonly endedAt?: string;
 }
 
 export interface UpdateBookReadingPathParams {

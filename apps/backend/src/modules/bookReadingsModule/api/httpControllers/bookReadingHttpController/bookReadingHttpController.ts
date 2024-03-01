@@ -234,8 +234,8 @@ export class BookReadingHttpController implements HttpController {
       bookId,
       comment,
       rating,
-      startedAt,
-      endedAt,
+      startedAt: new Date(startedAt),
+      endedAt: endedAt ? new Date(endedAt) : undefined,
     });
 
     return {
@@ -263,8 +263,8 @@ export class BookReadingHttpController implements HttpController {
       id,
       comment,
       rating,
-      startedAt,
-      endedAt,
+      startedAt: startedAt ? new Date(startedAt) : undefined,
+      endedAt: endedAt ? new Date(endedAt) : undefined,
     });
 
     return {
@@ -302,13 +302,13 @@ export class BookReadingHttpController implements HttpController {
       bookId: bookReading.getBookId(),
       comment: bookReading.getComment(),
       rating: bookReading.getRating(),
-      startedAt: bookReading.getStartedAt(),
+      startedAt: bookReading.getStartedAt().toISOString(),
     };
 
     const endedAt = bookReading.getEndedAt();
 
     if (endedAt) {
-      dto.endedAt = endedAt;
+      dto.endedAt = endedAt.toISOString();
     }
 
     return dto;
