@@ -7,8 +7,6 @@ WORKDIR /app
 
 FROM base AS builder
 
-ARG APP_NAME
-
 RUN npm i -g turbo
 
 COPY package*.json ./
@@ -17,11 +15,10 @@ COPY apps/ ./apps
 COPY common/ ./common
 COPY tsconfig.json ./
 
-RUN turbo prune --scope="@apps/$APP_NAME" --docker
+RUN turbo prune --scope="@apps/frontend" --docker
 
 FROM base AS installer
 
-ARG APP_NAME
 ARG APPLICATION_VERSION
 
 ENV APPLICATION_VERSION=$APPLICATION_VERSION
@@ -35,15 +32,11 @@ RUN npm ci
 
 COPY --from=builder /app/out/full/ .
 
-RUN npm run build --filter="@apps/$APP_NAME"
+RUN npm run build --filter="@apps/frontend"
 
 FROM nginx as static
 
-ARG DIR_NAME
+COPY --from=installer /app/apps/frontend/nginx/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=installer /app/apps/frontend/nginx/.htpasswd /etc/nginx/conf.d/.htpasswd
 
-ENV DIR_NAME=$DIR_NAME
-
-COPY --from=installer /app/apps/${DIR_NAME}/nginx/nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=installer /app/apps/${DIR_NAME}/nginx/.htpasswd /etc/nginx/conf.d/.htpasswd
-
-COPY --from=installer /app/apps/${DIR_NAME}/dist /usr/share/nginx/html
+COPY --from=installer /app/apps/frontend/dist /usr/share/nginx/html

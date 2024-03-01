@@ -4,9 +4,6 @@ primary_region = "waw"
 [build]
   dockerfile = "./Dockerfile"
   build-target = "static"
-  [build.args]
-    APP_NAME = "frontend"
-    DIR_NAME = "frontend"
 
 [deploy]
   strategy = "rolling"
