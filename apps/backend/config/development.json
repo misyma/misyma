@@ -4,11 +4,11 @@
     "password": "admin"
   },
   "database": {
-    "path": "data/test.db"
+    "path": "data/dev.db"
   },
   "queues": {
     "database": {
-      "path": "data/queue.db"
+      "path": "data/dev-queue.db"
     }
   },
   "auth": {

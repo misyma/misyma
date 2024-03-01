@@ -1,10 +1,10 @@
 {
   "database": {
-    "path": "data/e2e-tests.db"
+    "path": "data/test.db"
   },
   "queues": {
     "database": {
-      "path": "data/queue-tests.db"
+      "path": "data/test-queue.db"
     }
   },
   "auth": {

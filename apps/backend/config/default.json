@@ -22,16 +22,16 @@
       "secret": null
     },
     "accessToken": {
-      "expiresIn": null
+      "expiresIn": 3600
     },
     "refreshToken": {
-      "expiresIn": null
+      "expiresIn": 604800
     },
     "emailVerificationToken": {
-      "expiresIn":  null
+      "expiresIn":  86400
     },
     "resetPasswordToken": {
-      "expiresIn": null
+      "expiresIn": 1800
     }
   },
   "sendGrid": {
