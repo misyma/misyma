@@ -17,8 +17,8 @@ export type CreateBookReadingPathParamsDTO = TypeExtends<
 export const createBookReadingBodyDTOSchema = Type.Object({
   comment: Type.String(),
   rating: Type.Number(),
-  startedAt: Type.Date(),
-  endedAt: Type.Optional(Type.Date()),
+  startedAt: Type.String(),
+  endedAt: Type.Optional(Type.String()),
 });
 
 export type CreateBookReadingBodyDTO = TypeExtends<

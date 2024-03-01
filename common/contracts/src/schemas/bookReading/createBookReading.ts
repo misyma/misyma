@@ -7,8 +7,8 @@ export interface CreateBookReadingPathParams {
 export interface CreateBookReadingRequestBody {
   readonly rating: number;
   readonly comment: string;
-  readonly startedAt: Date;
-  readonly endedAt?: Date;
+  readonly startedAt: string;
+  readonly endedAt?: string;
 }
 
 export interface CreateBookReadingResponseBody {

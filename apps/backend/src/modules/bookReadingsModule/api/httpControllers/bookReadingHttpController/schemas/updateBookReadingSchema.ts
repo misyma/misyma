@@ -18,8 +18,8 @@ export type UpdateBookReadingPathParamsDTO = TypeExtends<
 export const updateBookReadingBodyDTOSchema = Type.Object({
   comment: Type.Optional(Type.String()),
   rating: Type.Optional(Type.Number()),
-  startedAt: Type.Optional(Type.Date()),
-  endedAt: Type.Optional(Type.Date()),
+  startedAt: Type.Optional(Type.String()),
+  endedAt: Type.Optional(Type.String()),
 });
 
 export type UpdateBookReadingBodyDTO = TypeExtends<
