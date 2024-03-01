@@ -1,8 +1,9 @@
+import { type Logger } from 'pino';
+
 import { type LogPayload, type LoggerService } from './loggerService.js';
-import { type LoggerClient } from '../../clients/loggerClient/loggerClient.js';
 
 export class LoggerServiceImpl implements LoggerService {
-  public constructor(private readonly loggerClient: LoggerClient) {}
+  public constructor(private readonly loggerClient: Logger) {}
 
   public fatal(payload: LogPayload): void {
     const { message, ...context } = payload;
