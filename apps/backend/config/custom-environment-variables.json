@@ -4,8 +4,7 @@
     "password": "ADMIN_PASSWORD"
   },
   "logger": {
-    "level": "LOGGER_LEVEL",
-    "prettifyLogs": "LOGGER_PRETTIFY_LOGS"
+    "level": "LOGGER_LEVEL"
   },
   "database": {
     "path": "DATABASE_PATH"

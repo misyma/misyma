@@ -5,7 +5,9 @@ import type * as contracts from '@common/contracts';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const loginUserBodyDTOSchema = Type.Object({
-  email: Type.String(),
+  email: Type.String({
+    format: 'email',
+  }),
   password: Type.String(),
 });
 
