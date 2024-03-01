@@ -6,7 +6,9 @@ import { userDTOSchema } from './userDTO.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const registerUserBodyDTOSchema = Type.Object({
-  email: Type.String(),
+  email: Type.String({
+    format: 'email',
+  }),
   password: Type.String(),
   name: Type.String(),
 });
