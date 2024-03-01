@@ -11,7 +11,7 @@ export const LandingPage: FC = () => {
     <DefaultLayout>
       <div className="flex-1 items-center justify-start text-center py-24">
         <div className="flex flex-col items-baseline">
-          <h1 className="text-4xl sm:text-7xl font-semibold text-start">MISYMA</h1>
+          <p className="text-4xl sm:text-7xl font-semibold text-start">MISYMA</p>
           <p className="text-xl text-start mt-3 font-medium">Twoja prywatna biblioteka</p>
           <Link to="/login">
             <Button className="w-40 sm:w-80 mt-16">Odkryj jej możliwości</Button>

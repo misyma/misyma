@@ -64,7 +64,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ onSuccess, onError
                 <FormControl>
                   <Input
                     placeholder="Imię"
-                    className="w-80"
+                    className="w-80 bg-[#D1D5DB]/20"
                     {...field}
                   />
                 </FormControl>
@@ -80,7 +80,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ onSuccess, onError
                 <FormControl>
                   <Input
                     placeholder="Email"
-                    className="w-80"
+                    className="w-80 bg-[#D1D5DB]/20"
                     {...field}
                   />
                 </FormControl>
@@ -98,7 +98,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ onSuccess, onError
                   <Input
                     placeholder="Haslo"
                     type="password"
-                    className="w-80"
+                    className="w-80 bg-[#D1D5DB]/20"
                     {...field}
                   />
                 </FormControl>
@@ -111,12 +111,12 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ onSuccess, onError
             name="repeatedPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Powtorz haslo</FormLabel>
+                <FormLabel>Powtorz hasło</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Haslo"
+                    placeholder="Hasło"
                     type="password"
-                    className="w-80"
+                    className="w-80 bg-[#D1D5DB]/20"
                     {...field}
                   />
                 </FormControl>
@@ -128,7 +128,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ onSuccess, onError
             type="submit"
             className="w-80 border-primary border hover:bg-white bg-white text-primary"
           >
-            Zarejestruj sie
+            Zarejestruj się
           </Button>
           {responseErrorMessage && <FormMessage>{responseErrorMessage}</FormMessage>}
         </form>

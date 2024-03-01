@@ -35,11 +35,14 @@ export const useLoginUserMutation = (
 const mapStatusCodeToErrorMessage = (statusCode: number) => {
   switch (statusCode) {
     case 400:
-      return 'Email or password are invalid.';
+      return 'Email lub hasło niepoprawne.'
+      // return 'Email or password are invalid.';
     case 401:
-      return 'Email or password are invalid.';
+      return 'Email lub hasło niepoprawne.'
+      // return 'Email or password are invalid.';
     case 500:
-      return 'Internal server error';
+      return 'Wewnętrzny błąd serwera.'
+      // return 'Internal server error';
     default:
       return 'Unknown error';
   }
