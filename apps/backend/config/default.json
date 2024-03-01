@@ -4,8 +4,7 @@
     "password": null
   },
   "logger": {
-    "level": "debug",
-    "prettifyLogs": false
+    "level": "debug"
   },
   "database": {
     "path": null

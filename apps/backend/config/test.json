@@ -7,9 +7,6 @@
       "path": "data/queue-tests.db"
     }
   },
-  "logger": {
-    "prettifyLogs": false
-  },
   "auth": {
     "hash": {
       "saltRounds": 10

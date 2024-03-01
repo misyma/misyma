@@ -39,7 +39,6 @@
     "mqemitter": "^5.0.0",
     "node-fetch": "3.3.2",
     "pino": "^8.16.2",
-    "pino-pretty": "^10.2.3",
     "uuid": "^9.0.1",
     "validator": "^13.11.0"
   },
@@ -51,5 +50,11 @@
     "@types/node": "^20.10.3",
     "@types/uuid": "^9.0.7",
     "@types/validator": "^13.11.7"
-  }
+  },
+  "volta": {
+    "node": "20.11.1"
+  },
+  "engines": {
+    "node": "20.11.1"
+  },
 }
