@@ -31,8 +31,8 @@ export const LoginPage: FC = () => {
 
   return (
     <DefaultLayout>
-      <div className="flex flex-col-reverse sm:flex-row items-center justify-center px-4 h-[600px]">
-        <div className="flex-1 p-8">
+      <div className="flex flex-col-reverse sm:flex-row items-center justify-center px-4 h-[700px]">
+        <div className="flex-1">
           <LoginUserForm onSuccess={onSuccessfulLogin} />
         </div>
         <Logo />

@@ -19,7 +19,7 @@ export const RegisterPage: FC = () => {
 
   return (
     <DefaultLayout innerContainerClassName="flex-col-reverse sm:flex-row">
-      <div className="flex-1 p-8">
+      <div className="flex-1">
         <RegisterUserForm onSuccess={onSuccessfulRegister} />
       </div>
       <Logo />

@@ -22,11 +22,9 @@ export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccess, onError }: Lo
   const form = useForm<LoginUserFormValues>({
     resolver: zodResolver(loginUserFormSchema),
     defaultValues: {
-      email: '',
-      password: '',
+      email: undefined,
+      password: undefined,
     },
-    mode: 'onChange',
-    reValidateMode: 'onChange',
   });
 
   const [responseErrorMessage, setResponseErrorMessage] = useState<null | string>(null);
@@ -82,7 +80,7 @@ export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccess, onError }: Lo
                 <FormControl>
                   <Input
                     placeholder="Email"
-                    className={cn('w-60 sm:w-80 focus:border-input', setInputFieldErrorState(field))}
+                    className={cn('w-60 sm:w-80 focus:border-input bg-[#D1D5DB]/20', setInputFieldErrorState(field))}
                     {...field}
                   />
                 </FormControl>
@@ -100,7 +98,7 @@ export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccess, onError }: Lo
                   <Input
                     placeholder="Haslo"
                     type="password"
-                    className={cn('w-60 sm:w-80 focus:border-input', setInputFieldErrorState(field))}
+                    className={cn('w-60 sm:w-80 focus:border-input bg-[#D1D5DB]/20', setInputFieldErrorState(field))}
                     {...field}
                   />
                 </FormControl>
@@ -110,9 +108,10 @@ export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccess, onError }: Lo
           />
           <Button
             type="submit"
-            className="w-60 sm:w-80 border-primary border-[1.25px] bg-white text-primary font-semibold hover:bg-periwinkle-50 hover:opacity-90"
+            disabled={!form.formState.isValid}
+            className="w-60 sm:w-80 border-primary border-[1.25px]"
           >
-            Zaloguj się
+            Wejdź do biblioteki
           </Button>
           <p className="font-light">
             Nie masz konta?{' '}

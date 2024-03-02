@@ -38,13 +38,16 @@ export const useRegisterUserMutation = (
 const mapStatusCodeToErrorMessage = (statusCode: number) => {
   switch (statusCode) {
     case 400:
-      return 'Email or password are invalid.';
+      // return 'Email or password are invalid.';
+      return 'Email lub hasło niepoprawne.'
     case 404:
       return 'Not found';
     case 409:
-      return 'User with this email address already exists.';
+      return 'Użytkownik z tym adresem email już istnieje.';
+      // return 'User with this email address already exists.';
     case 422:
-      return 'User with this email address already exists.';
+      return 'Użytkownik z tym adresem email już istnieje.';
+      // return 'User with this email address already exists.';
     case 500:
       return 'Internal server error';
     default:

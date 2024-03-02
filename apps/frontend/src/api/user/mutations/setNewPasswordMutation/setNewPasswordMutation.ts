@@ -36,7 +36,8 @@ export const useSetNewPasswordMutation = (
 const mapStatusCodeToErrorMessage = (statusCode: number) => {
   switch (statusCode) {
     case 400:
-      return 'Failed to set the new password.';
+      // return 'Failed to set the new password.';
+      return 'Nie udało się ustawić nowego hasła. Spróbuj ponownie.'
     case 500:
       return 'Internal server error';
     default:

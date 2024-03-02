@@ -36,7 +36,8 @@ export const useSendResetPasswordEmailMutation = (
 const mapStatusCodeToErrorMessage = (statusCode: number) => {
   switch (statusCode) {
     case 400:
-      return 'Failed to send the email.';
+      // return 'Failed to send the email.';
+      return 'Nie udało się wysłać wiadomości. Spróbuj ponownie.'
     case 500:
       return 'Internal server error';
     default:
