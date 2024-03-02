@@ -33,19 +33,19 @@ export class ConfigProvider {
   }
 
   public getAccessTokenExpiresIn(): number {
-    return this.getValue<number>('auth.accessToken.expiresIn');
+    return Number(this.getValue<number>('auth.accessToken.expiresIn'));
   }
 
   public getRefreshTokenExpiresIn(): number {
-    return this.getValue<number>('auth.refreshToken.expiresIn');
+    return Number(this.getValue<number>('auth.refreshToken.expiresIn'));
   }
 
   public getEmailVerificationTokenExpiresIn(): number {
-    return this.getValue<number>('auth.emailVerificationToken.expiresIn');
+    return Number(this.getValue<number>('auth.emailVerificationToken.expiresIn'));
   }
 
   public getResetPasswordTokenExpiresIn(): number {
-    return this.getValue<number>('auth.resetPasswordToken.expiresIn');
+    return Number(this.getValue<number>('auth.resetPasswordToken.expiresIn'));
   }
 
   public getHashSaltRounds(): number {
