@@ -5,7 +5,10 @@ import type * as contracts from '@common/contracts';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const changeUserPasswordBodyDTOSchema = Type.Object({
-  password: Type.String(),
+  password: Type.String({
+    minLength: 8,
+    maxLength: 64,
+  }),
   token: Type.String({
     description: 'PasswordResetToken',
   }),

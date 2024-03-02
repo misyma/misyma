@@ -8,7 +8,10 @@ export const loginUserBodyDTOSchema = Type.Object({
   email: Type.String({
     format: 'email',
   }),
-  password: Type.String(),
+  password: Type.String({
+    minLength: 8,
+    maxLength: 64,
+  }),
 });
 
 export type LoginUserBodyDTO = TypeExtends<Static<typeof loginUserBodyDTOSchema>, contracts.LoginUserRequestBody>;

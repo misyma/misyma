@@ -11,6 +11,12 @@ export class PasswordValidationServiceImpl implements PasswordValidationService 
       });
     }
 
+    if (password.length > 64) {
+      throw new OperationNotValidError({
+        reason: 'Password must be at most 64 characters long.',
+      });
+    }
+
     if (!/[a-z]/.test(password)) {
       throw new OperationNotValidError({
         reason: 'Password must contain at least one lowercase letter.',

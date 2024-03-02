@@ -9,7 +9,10 @@ export const registerUserBodyDTOSchema = Type.Object({
   email: Type.String({
     format: 'email',
   }),
-  password: Type.String(),
+  password: Type.String({
+    minLength: 8,
+    maxLength: 64,
+  }),
   name: Type.String(),
 });
 
