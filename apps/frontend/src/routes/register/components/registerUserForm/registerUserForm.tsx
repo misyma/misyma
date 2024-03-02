@@ -64,7 +64,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ onSuccess, onError
                 <FormControl>
                   <Input
                     placeholder="Imię"
-                    className="w-80 bg-[#D1D5DB]/20"
+                    className="w-60 sm:w-80 bg-[#D1D5DB]/20"
                     {...field}
                   />
                 </FormControl>
@@ -80,7 +80,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ onSuccess, onError
                 <FormControl>
                   <Input
                     placeholder="Email"
-                    className="w-80 bg-[#D1D5DB]/20"
+                    className="w-60 sm:w-80 bg-[#D1D5DB]/20"
                     {...field}
                   />
                 </FormControl>
@@ -93,12 +93,12 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ onSuccess, onError
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Haslo</FormLabel>
+                <FormLabel>Hasło</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Haslo"
+                    placeholder="Hasło"
                     type="password"
-                    className="w-80 bg-[#D1D5DB]/20"
+                    className="w-60 sm:w-80 bg-[#D1D5DB]/20"
                     {...field}
                   />
                 </FormControl>
@@ -116,7 +116,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ onSuccess, onError
                   <Input
                     placeholder="Hasło"
                     type="password"
-                    className="w-80 bg-[#D1D5DB]/20"
+                    className="w-60 sm:w-80 bg-[#D1D5DB]/20"
                     {...field}
                   />
                 </FormControl>
@@ -126,7 +126,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ onSuccess, onError
           />
           <Button
             type="submit"
-            className="w-80 border-primary border"
+            className="w-60 sm:w-80 border-primary border"
             disabled={!form.formState.isValid}
           >
             Zarejestruj się

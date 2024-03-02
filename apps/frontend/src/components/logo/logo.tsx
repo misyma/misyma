@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 export const Logo: FC = () => {
   return (
-    <div className="flex-1 max-h-[700px] max-w-[700px] flex justify-center">
+    <div className="flex-1 max-h-[900px] max-w-[900px] flex justify-center">
       <img
         src="/book_square.jpg"
         alt="Misyma's logo"

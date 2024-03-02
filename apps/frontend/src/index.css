@@ -30,7 +30,7 @@
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 228, 58%, 51%;
+    --ring: 245, 58%, 51%;
  
     --radius: 0.5rem;
   }
@@ -76,7 +76,7 @@
 }
 
 .font-semibig-clamped {
-  font-size: clamp(2.5rem, 5vw, 6rem);
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
   line-height: clamp(2.5rem, 5vw, 5rem);
 }
 
