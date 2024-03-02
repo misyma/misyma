@@ -5,7 +5,7 @@ import type * as contracts from '@common/contracts';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const verifyUserBodyDTOSchema = Type.Object({
-  token: Type.String(),
+  token: Type.String({ minLength: 1 }),
 });
 
 export type VerifyUserBodyDTO = TypeExtends<Static<typeof verifyUserBodyDTOSchema>, contracts.VerifyUserRequestBody>;

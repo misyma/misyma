@@ -2,11 +2,6 @@ name: Deployment (BE)
 
 on:
   workflow_dispatch:
-    inputs:
-      version:
-        description: 'Application version'
-        required: true
-        type: string
 
 jobs:
   deploy-backend:
@@ -18,4 +13,3 @@ jobs:
       - run: flyctl deploy -c apps/backend/fly.toml --build-arg APPLICATION_VERSION=$APPLICATION_VERSION --remote-only
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_DEPLOY_BACKEND_TOKEN }}
-          APPLICATION_VERSION: ${{ inputs.version }}

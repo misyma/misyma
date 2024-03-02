@@ -18,7 +18,8 @@ export type UpdateGenreNamePathParamsDTO = TypeExtends<
 
 export const updateGenreNameBodyDTOSchema = Type.Object({
   name: Type.String({
-    minLength: 2,
+    minLength: 1,
+    maxLength: 64,
   }),
 });
 
