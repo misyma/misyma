@@ -6,8 +6,6 @@ services:
     build:
       context: .
       dockerfile: ./apps/backend/Dockerfile
-    environment:
-      NODE_ENV: production
     volumes:
       - ./apps/backend/data:/app/apps/backend/data
     ports:
@@ -18,7 +16,5 @@ services:
     build:
       context: .
       dockerfile: ./apps/frontend/Dockerfile
-    environment:
-      NODE_ENV: production
     ports:
       - '8080:8080'
