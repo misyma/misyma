@@ -86,20 +86,6 @@ export class HttpServer {
 
     this.addRequestPreprocessing();
 
-    this.fastifyInstance.addHook('preHandler', (request, reply, next) => {
-      const body = request.body as Record<string, unknown>;
-
-      console.log({ body });
-
-      const emptyField = 'xx';
-
-      if (emptyField) {
-        reply.status(HttpStatusCode.badRequest).send({ error: `Field "${emptyField}" cannot be empty.` });
-      }
-
-      next();
-    });
-
     this.httpRouter.registerControllers({
       controllers: this.getControllers(),
     });
@@ -110,7 +96,7 @@ export class HttpServer {
     });
 
     this.loggerService.info({
-      message: `HTTP Server started.`,
+      message: 'HTTP Server started.',
       port,
       host,
     });
