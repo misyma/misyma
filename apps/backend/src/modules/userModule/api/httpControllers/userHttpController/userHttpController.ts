@@ -42,6 +42,7 @@ import {
   registerUserResponseBodyDTOSchema,
   type RegisterUserResponseBodyDTO,
   type RegisterUserBodyDTO,
+  registerUserBodyPreValidationHook,
 } from './schemas/registerUserSchema.js';
 import {
   type ResetUserPasswordBodyDTO,
@@ -120,6 +121,7 @@ export class UserHttpController implements HttpController {
             },
           },
         },
+        preValidation: registerUserBodyPreValidationHook,
         tags: ['User'],
         description: 'Register user.',
       }),
