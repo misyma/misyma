@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { TypeClone } from '@sinclair/typebox';
@@ -63,7 +64,7 @@ export class HttpRouter {
     const { routes, basePath } = payload;
 
     routes.map((httpRoute) => {
-      const { method, path: controllerPath, tags, description } = httpRoute;
+      const { method, path: controllerPath, tags, description, preValidation: preValidationHook } = httpRoute;
 
       const path = this.normalizePath({ path: `/${this.rootPath}/${basePath}/${controllerPath}` });
 
@@ -230,6 +231,15 @@ export class HttpRouter {
           tags,
           ...this.mapToFastifySchema(httpRoute.schema),
         },
+        ...(preValidationHook
+          ? {
+              preValidation: (request, _reply, next): void => {
+                preValidationHook(request);
+
+                next();
+              },
+            }
+          : undefined),
       });
     });
   }

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { type TSchema } from '@sinclair/typebox';
 
 import { type HttpMethodName } from './httpMethodName.js';
@@ -21,6 +23,7 @@ export interface HttpRouteDraft {
   readonly securityMode?: SecurityMode;
   readonly tags: string[];
   readonly description: string;
+  readonly preValidation?: (request: any) => void;
 }
 
 export class HttpRoute {
@@ -31,9 +34,10 @@ export class HttpRoute {
   public readonly securityMode?: SecurityMode;
   public readonly tags: string[];
   public readonly description: string;
+  public readonly preValidation?: (request: any) => void;
 
   public constructor(draft: HttpRouteDraft) {
-    const { method, path, handler, schema, securityMode, tags, description } = draft;
+    const { method, path, handler, schema, securityMode, tags, description, preValidation } = draft;
 
     this.method = method;
 
@@ -49,6 +53,10 @@ export class HttpRoute {
 
     if (securityMode) {
       this.securityMode = securityMode;
+    }
+
+    if (preValidation) {
+      this.preValidation = preValidation;
     }
   }
 }
