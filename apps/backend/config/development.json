@@ -3,15 +3,12 @@
     "username": "admin",
     "password": "admin"
   },
-  "logger": {
-    "prettifyLogs": true
-  },
   "database": {
-    "path": "data/test.db"
+    "path": "data/dev.db"
   },
   "queues": {
     "database": {
-      "path": "data/queue.db"
+      "path": "data/dev-queue.db"
     }
   },
   "auth": {
@@ -20,18 +17,6 @@
     },
     "jwt": {
       "secret": "12321313423565365654546654121890008"
-    },
-    "accessToken": {
-      "expiresIn": 3600
-    },
-    "refreshToken": {
-      "expiresIn": 604800
-    },
-    "emailVerificationToken": {
-      "expiresIn":  86400
-    },
-    "resetPasswordToken": {
-      "expiresIn": 1800
     }
   },
   "sendGrid": {

@@ -67,8 +67,6 @@ export class Application {
 
     const logLevel = configProvider.getLogLevel();
 
-    const prettifyLogs = configProvider.getLoggerPrettifyLogs();
-
     const sendGridApiKey = configProvider.getSendGridApiKey();
 
     const sendGridSenderEmail = configProvider.getSendGridSenderEmail();
@@ -87,7 +85,6 @@ export class Application {
     container.bind<LoggerService>(symbols.loggerService, () =>
       LoggerServiceFactory.create({
         logLevel,
-        prettifyLogs,
       }),
     );
 

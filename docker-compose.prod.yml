@@ -6,9 +6,6 @@ services:
     build:
       context: .
       dockerfile: ./apps/backend/Dockerfile
-      args:
-        APP_NAME: backend
-        DIR_NAME: backend
     environment:
       NODE_ENV: production
     volumes:
@@ -21,10 +18,6 @@ services:
     build:
       context: .
       dockerfile: ./apps/frontend/Dockerfile
-      args:
-        APP_NAME: frontend
-        DIR_NAME: frontend
-        APPLICATION_VERSION: 0.1.0
     environment:
       NODE_ENV: production
     ports:
