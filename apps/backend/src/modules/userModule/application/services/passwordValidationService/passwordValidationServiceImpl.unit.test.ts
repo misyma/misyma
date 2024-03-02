@@ -25,6 +25,15 @@ describe('PasswordValidationServiceImpl', () => {
     });
   });
 
+  it('should throw an error if the password is more than 64 characters long', async () => {
+    const password = '123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890';
+
+    expect(() => passwordValidationService.validate({ password })).toThrowErrorInstance({
+      instance: OperationNotValidError,
+      message: 'Password must be at most 64 characters long.',
+    });
+  });
+
   it('should throw an error if the password does not contain a number', async () => {
     const password = 'abcdefgh';
 

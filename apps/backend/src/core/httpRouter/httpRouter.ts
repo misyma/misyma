@@ -231,12 +231,6 @@ export class HttpRouter {
           ...this.mapToFastifySchema(httpRoute.schema),
         },
       });
-
-      this.loggerService.debug({
-        message: 'Registered an HTTP route.',
-        method,
-        path,
-      });
     });
   }
 

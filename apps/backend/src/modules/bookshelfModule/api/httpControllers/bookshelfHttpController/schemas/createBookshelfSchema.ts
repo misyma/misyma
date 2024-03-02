@@ -6,9 +6,12 @@ import { bookshelfDTOSchema } from './dtos/bookshelfDto.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const createBookshelfBodyDTOSchema = Type.Object({
-  name: Type.String(),
-  userId: Type.String(),
-  addressId: Type.Optional(Type.String()),
+  name: Type.String({
+    minLength: 1,
+    maxLength: 64,
+  }),
+  userId: Type.String({ format: 'uuid' }),
+  addressId: Type.Optional(Type.String({ format: 'uuid' })),
 });
 
 export type CreateBookshelfBodyDTO = TypeExtends<

@@ -5,7 +5,7 @@ import type * as contracts from '@common/contracts';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const refreshUserTokensBodyDTOSchema = Type.Object({
-  refreshToken: Type.String(),
+  refreshToken: Type.String({ minLength: 1 }),
 });
 
 export type RefreshUserTokensBodyDTO = TypeExtends<

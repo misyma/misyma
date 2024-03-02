@@ -5,7 +5,7 @@ import type * as contracts from '@common/contracts';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const logoutUserPathParamsDTOSchema = Type.Object({
-  id: Type.String(),
+  id: Type.String({ format: 'uuid' }),
 });
 
 export type LogoutUserPathParamsDTO = TypeExtends<

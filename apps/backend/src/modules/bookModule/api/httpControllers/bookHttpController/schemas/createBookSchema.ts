@@ -6,25 +6,46 @@ import { bookDTOSchema } from './bookDTO.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const createBookBodyDTOSchema = Type.Object({
-  title: Type.String(),
-  isbn: Type.Optional(Type.String()),
-  publisher: Type.Optional(Type.String()),
+  title: Type.String({
+    minLength: 1,
+    maxLength: 64,
+  }),
+  isbn: Type.Optional(
+    Type.String({
+      minLength: 1,
+      maxLength: 64,
+    }),
+  ),
+  publisher: Type.Optional(
+    Type.String({
+      minLength: 1,
+      maxLength: 64,
+    }),
+  ),
   releaseYear: Type.Optional(Type.Integer()),
-  language: Type.String(),
-  translator: Type.Optional(Type.String()),
+  language: Type.String(
+    Type.String({
+      minLength: 1,
+      maxLength: 64,
+    }),
+  ),
+  translator: Type.Optional(
+    Type.String({
+      minLength: 1,
+      maxLength: 64,
+    }),
+  ),
   format: Type.Enum(contracts.BookFormat),
   pages: Type.Optional(Type.Integer()),
-  frontCoverImageUrl: Type.Optional(Type.String()),
-  backCoverImageUrl: Type.Optional(Type.String()),
+  frontCoverImageUrl: Type.Optional(Type.String({ format: 'uri' })),
+  backCoverImageUrl: Type.Optional(Type.String({ format: 'uri' })),
   status: Type.Enum(contracts.BookStatus),
   bookshelfId: Type.String({
     format: 'uuid',
-    description: 'Bookshelf id.',
   }),
   authorIds: Type.Array(
     Type.String({
       format: 'uuid',
-      description: 'Author id.',
     }),
   ),
 });

@@ -7,7 +7,8 @@ import { genreDTO } from '../../genreHttpController/schemas/dtos/genreDTO.js';
 
 export const createGenreBodyDTOSchema = Type.Object({
   name: Type.String({
-    minLength: 2,
+    minLength: 1,
+    maxLength: 64,
   }),
 });
 

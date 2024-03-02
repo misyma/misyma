@@ -7,7 +7,8 @@ import { type TypeExtends } from '../../../../../../common/types/schemaExtends.j
 
 export const findGenreByNameQueryParamsDTOSchema = Type.Object({
   name: Type.String({
-    minLength: 2,
+    minLength: 1,
+    maxLength: 64,
   }),
 });
 

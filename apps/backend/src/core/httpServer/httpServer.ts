@@ -84,6 +84,22 @@ export class HttpServer {
       return (data) => JSON.stringify(data);
     });
 
+    this.addRequestPreprocessing();
+
+    this.fastifyInstance.addHook('preHandler', (request, reply, next) => {
+      const body = request.body as Record<string, unknown>;
+
+      console.log({ body });
+
+      const emptyField = 'xx';
+
+      if (emptyField) {
+        reply.status(HttpStatusCode.badRequest).send({ error: `Field "${emptyField}" cannot be empty.` });
+      }
+
+      next();
+    });
+
     this.httpRouter.registerControllers({
       controllers: this.getControllers(),
     });
@@ -183,5 +199,26 @@ export class HttpServer {
       message: 'OpenAPI documentation initialized.',
       path: '/api/docs',
     });
+  }
+
+  private addRequestPreprocessing(): void {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    this.fastifyInstance.addHook('preValidation', (request, _reply, next) => {
+      const body = request.body as Record<string, unknown>;
+
+      this.trimStringProperties(body);
+
+      next();
+    });
+  }
+
+  private trimStringProperties(obj: Record<string, any>): void {
+    for (const key in obj) {
+      if (typeof obj[key] === 'string') {
+        obj[key] = obj[key].trim();
+      } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+        this.trimStringProperties(obj[key]);
+      }
+    }
   }
 }

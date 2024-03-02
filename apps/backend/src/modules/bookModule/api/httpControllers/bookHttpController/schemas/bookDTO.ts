@@ -18,10 +18,7 @@ export const bookDTOSchema = Type.Object({
   frontCoverImageUrl: Type.Optional(Type.String()),
   backCoverImageUrl: Type.Optional(Type.String()),
   status: Type.Enum(contracts.BookStatus),
-  bookshelfId: Type.String({
-    format: 'uuid',
-    description: 'Bookshelf id.',
-  }),
+  bookshelfId: Type.String({ format: 'uuid' }),
   genres: Type.Array(genreDTOSchema),
   authors: Type.Array(authorDTOSchema),
 });

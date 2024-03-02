@@ -46,11 +46,6 @@ export class QueueRouter {
       const queuePaths = controller.getQueuePaths();
 
       queuePaths.forEach((handler) => {
-        this.loggerService.debug({
-          message: 'Registered a queue path.',
-          path: handler.getPath(),
-        });
-
         this.paths.set(handler.getPath(), handler.getHandler());
       });
     });

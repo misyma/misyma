@@ -19,6 +19,7 @@ export type UpdateBookshelfNamePathParamsDTO = TypeExtends<
 export const updateBookshelfNameBodyDTOSchema = Type.Object({
   name: Type.String({
     minLength: 1,
+    maxLength: 64,
   }),
 });
 

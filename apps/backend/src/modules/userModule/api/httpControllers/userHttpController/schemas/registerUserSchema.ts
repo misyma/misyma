@@ -9,8 +9,14 @@ export const registerUserBodyDTOSchema = Type.Object({
   email: Type.String({
     format: 'email',
   }),
-  password: Type.String(),
-  name: Type.String(),
+  password: Type.String({
+    minLength: 8,
+    maxLength: 64,
+  }),
+  name: Type.String({
+    minLength: 1,
+    maxLength: 64,
+  }),
 });
 
 export type RegisterUserBodyDTO = TypeExtends<Static<typeof registerUserBodyDTOSchema>, contracts.LoginUserRequestBody>;
