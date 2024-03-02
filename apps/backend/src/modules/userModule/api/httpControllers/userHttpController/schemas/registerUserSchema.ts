@@ -39,7 +39,7 @@ export const registerUserBodyPreValidationHook = (request: FastifyRequest<{ Body
 
   if (specialCharacterRegex.test(name)) {
     throw new InputNotValidError({
-      reason: 'body/name must NOT have special characters',
+      reason: 'body/name must NOT contain special characters',
       value: name,
     });
   }
