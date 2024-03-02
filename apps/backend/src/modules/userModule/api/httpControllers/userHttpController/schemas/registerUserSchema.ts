@@ -13,7 +13,10 @@ export const registerUserBodyDTOSchema = Type.Object({
     minLength: 8,
     maxLength: 64,
   }),
-  name: Type.String(),
+  name: Type.String({
+    minLength: 1,
+    maxLength: 64,
+  }),
 });
 
 export type RegisterUserBodyDTO = TypeExtends<Static<typeof registerUserBodyDTOSchema>, contracts.LoginUserRequestBody>;
