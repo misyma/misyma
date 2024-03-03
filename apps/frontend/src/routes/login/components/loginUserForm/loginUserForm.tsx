@@ -22,9 +22,10 @@ export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccess, onError }: Lo
   const form = useForm<LoginUserFormValues>({
     resolver: zodResolver(loginUserFormSchema),
     defaultValues: {
-      email: undefined,
-      password: undefined,
+      email: '',
+      password: '',
     },
+    reValidateMode: 'onChange',
   });
 
   const [responseErrorMessage, setResponseErrorMessage] = useState<null | string>(null);

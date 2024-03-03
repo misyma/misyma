@@ -15,17 +15,15 @@ export const RegisterPage: FC = () => {
     }
   };
 
-
-
   return (
-    <DefaultLayout innerContainerClassName="flex-col-reverse sm:flex-row">
-      <div className="flex-1">
+    <DefaultLayout innerContainerClassName="flex-col-reverse sm:flex-row sm:p-0 py-16">
+      <div className="flex-1 flex flex-col items-start sm:items-end px-4 max-w-[25rem]">
         {!isSuccess ? (
           <RegisterUserForm onSuccess={onSuccessfulRegister} />
         ) : (
           <div className="flex flex-col gap-4">
             <h1 className="font-semibold text-xl sm:text-2xl">Wysłaliśmy wiadomość email.</h1>
-            <h1 className="font-semibold text-xl sm:text-2xl">
+            <h1 className="font-semibold text-xl sm:text-2xl max-w-[30rem]">
               Znajdziesz w niej link, który pozwoli Ci aktywować konto
             </h1>
             <div>
@@ -50,8 +48,16 @@ export const RegisterPage: FC = () => {
             </div>
           </div>
         )}
+        <div className='py-16 flex flex-1 w-60 sm:w-80'>
+          <span className='align-baseline'>
+            Masz już konto?{' '}
+            <Link to='/login' className='text-primary font-semibold'>
+              Wróć do logowania.
+            </Link>
+          </span>
+        </div>
       </div>
-      <Logo />
+      <Logo className="max-h-[700px] max-w-[700px]" />
     </DefaultLayout>
   );
 };

@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createRoute } from '@tanstack/react-router';
+import { Link, createRoute } from '@tanstack/react-router';
 import { rootRoute } from '../root';
 import { FC, useState } from 'react';
 import { SendResetPasswordEmailForm } from './components/sendResetPasswordEmailForm/sendResetPasswordEmailForm';
@@ -19,6 +19,9 @@ export const SendResetPasswordEmailPage: FC = () => {
         <>
           <div className="flex-1 py-8">
             <SendResetPasswordEmailForm onSuccess={onSuccess} />
+            <p className='py-12'>
+              Pomyłka? <Link className='text-primary font-semibold' to={'/login'}>Przejdź do logowania.</Link>
+            </p>
           </div>
           <Logo />
         </>

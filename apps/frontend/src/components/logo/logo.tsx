@@ -1,8 +1,13 @@
 import { FC } from 'react';
+import { cn } from '../../lib/utils';
 
-export const Logo: FC = () => {
+interface LogoProps {
+  className?: string;
+}
+
+export const Logo: FC<LogoProps> = ({ className }: LogoProps) => {
   return (
-    <div className="flex-1 max-h-[900px] max-w-[900px] flex justify-center">
+    <div className={cn('flex-1 max-h-[900px] max-w-[900px] flex justify-center', className)}>
       <img
         src="/book_square.jpg"
         alt="Misyma's logo"
