@@ -22,8 +22,6 @@ export const registerUserFormSchema = z
       .string({
         required_error: 'Wymagane.',
       })
-      .min(8, 'Hasło musi mieć minimum 8 znaków.')
-      .max(64, 'Hasło może mieć maksymalnie 64 znaki.'),
   })
   .superRefine(({ repeatedPassword, password }, context) => {
     if (repeatedPassword !== password) {

@@ -9,7 +9,7 @@ export const setNewPasswordFormSchema = z
     repeatedPassword: z.string({
       required_error: 'Wymagane.',
       invalid_type_error: 'Niewłaściwy typ.',
-    }).min(8, 'Hasło jest za krótkie.').max(64, 'Hasło jest za długie.'),
+    }),
   })
   .superRefine(({ repeatedPassword, password }, context) => {
     if (repeatedPassword !== password) {

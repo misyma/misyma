@@ -26,6 +26,7 @@ export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccess, onError }: Lo
       password: '',
     },
     reValidateMode: 'onChange',
+    mode: 'onTouched'
   });
 
   const [responseErrorMessage, setResponseErrorMessage] = useState<null | string>(null);

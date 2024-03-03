@@ -26,6 +26,7 @@ export const SetNewPasswordForm: FC<SetNewPasswordFormProps> = ({
       repeatedPassword: '',
       password: '',
     },
+    mode: 'onTouched'
   });
 
   const [responseErrorMessage, setResponseErrorMessage] = useState<string | null>(null);

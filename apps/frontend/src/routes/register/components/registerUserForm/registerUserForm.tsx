@@ -22,6 +22,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ onSuccess, onError
       password: '',
       repeatedPassword: '',
     },
+    mode: 'onTouched'
   });
 
   const [responseErrorMessage, setResponseErrorMessage] = useState<string | null>(null);
@@ -72,6 +73,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ onSuccess, onError
                     {...field}
                   />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
