@@ -22,9 +22,10 @@ export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccess, onError }: Lo
   const form = useForm<LoginUserFormValues>({
     resolver: zodResolver(loginUserFormSchema),
     defaultValues: {
-      email: undefined,
-      password: undefined,
+      email: '',
+      password: '',
     },
+    reValidateMode: 'onChange',
   });
 
   const [responseErrorMessage, setResponseErrorMessage] = useState<null | string>(null);
@@ -93,10 +94,10 @@ export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccess, onError }: Lo
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Haslo</FormLabel>
+                <FormLabel>Hasło</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Haslo"
+                    placeholder="Hasło"
                     type="password"
                     className={cn('w-60 sm:w-80 focus:border-input bg-[#D1D5DB]/20', setInputFieldErrorState(field))}
                     {...field}
@@ -106,33 +107,34 @@ export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccess, onError }: Lo
               </FormItem>
             )}
           />
-          <Button
-            type="submit"
-            disabled={!form.formState.isValid}
-            className="w-60 sm:w-80 border-primary border-[1.25px]"
-          >
-            Wejdź do biblioteki
-          </Button>
+          <div>
+            <Button
+              type="submit"
+              disabled={!form.formState.isValid}
+              className="w-60 sm:w-80 border-primary border-[1.25px]"
+            >
+              Wejdź do biblioteki
+            </Button>
+            <div className="text-xs text-center w-60 sm:w-80 pt-[4px]">
+              <Link
+                to="/reset-password"
+                className="text-primary"
+              >
+                Nie pamiętasz hasła?{' '}
+              </Link>
+            </div>
+          </div>
+          {responseErrorMessage && <FormMessage>{responseErrorMessage}</FormMessage>}
           <p className="font-light">
             Nie masz konta?{' '}
             <Link
               to="/register"
               className="text-primary font-semibold"
             >
-              Zarejestruj się
-            </Link>
-          </p>
-          <p>
-            Zapomniałeś hasła?{' '}
-            <Link
-              to="/reset-password"
-              className="text-primary"
-            >
-              Kliknij tutaj
+              Zarejestruj się :)
             </Link>
           </p>
         </form>
-        {responseErrorMessage && <FormMessage>{responseErrorMessage}</FormMessage>}
       </Form>
     </>
   );

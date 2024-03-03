@@ -9,7 +9,7 @@ import { Input } from '../../../../components/ui/input';
 import { Button } from '../../../../components/ui/button';
 
 interface RegisterUserFormProps {
-  onSuccess: (result: boolean) => void;
+  onSuccess: (result: { email: string; success: boolean }) => void;
   onError?: (error: UserApiError) => void;
 }
 
@@ -36,7 +36,11 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ onSuccess, onError
         name: values.firstName,
       },
       {
-        onSuccess: (result) => onSuccess(result),
+        onSuccess: (result) =>
+          onSuccess({
+            email: values.email,
+            success: result,
+          }),
         onError: (error) => {
           setResponseErrorMessage(error.context?.message);
 
@@ -64,7 +68,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ onSuccess, onError
                 <FormControl>
                   <Input
                     placeholder="Imię"
-                    className="w-80 bg-[#D1D5DB]/20"
+                    className="w-60 sm:w-80 bg-[#D1D5DB]/20"
                     {...field}
                   />
                 </FormControl>
@@ -80,7 +84,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ onSuccess, onError
                 <FormControl>
                   <Input
                     placeholder="Email"
-                    className="w-80 bg-[#D1D5DB]/20"
+                    className="w-60 sm:w-80 bg-[#D1D5DB]/20"
                     {...field}
                   />
                 </FormControl>
@@ -93,12 +97,12 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ onSuccess, onError
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Haslo</FormLabel>
+                <FormLabel>Hasło</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Haslo"
+                    placeholder="Hasło"
                     type="password"
-                    className="w-80 bg-[#D1D5DB]/20"
+                    className="w-60 sm:w-80 bg-[#D1D5DB]/20"
                     {...field}
                   />
                 </FormControl>
@@ -116,7 +120,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ onSuccess, onError
                   <Input
                     placeholder="Hasło"
                     type="password"
-                    className="w-80 bg-[#D1D5DB]/20"
+                    className="w-60 sm:w-80 bg-[#D1D5DB]/20"
                     {...field}
                   />
                 </FormControl>
@@ -126,7 +130,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ onSuccess, onError
           />
           <Button
             type="submit"
-            className="w-80 border-primary border"
+            className="w-60 sm:w-80 border-primary border"
             disabled={!form.formState.isValid}
           >
             Zarejestruj się

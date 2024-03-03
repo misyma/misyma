@@ -12,14 +12,14 @@ export const LandingPage: FC = () => {
     <div className="flex items-center justify-center h-screen">
       <div className="flex items-center justify-center h-screen">
         <div className={'flex flex-col-reverse sm:flex-row items-center justify-center px-4 h-[800px]'}>
-          <div className="flex-1 items-center justify-start text-center py-8 sm:py-24">
+          <div className="flex-1 items-center justify-start text-center py-8 sm:py-24  max-w-[25rem]">
             <div className="flex flex-col items-baseline">
               <div>
-                <p className="sm:ml-[-3px] font-big-clamped font-semibold text-start">MISYMA</p>
+                <p className="sm:ml-[-3px] font-semibig-clamped font-semibold text-start">MISYMA</p>
               </div>
               <p className="font-medium-clamped text-start mt-3">Twoja prywatna biblioteka</p>
               <Button
-                className="w-60 sm:w-96 mt-8 sm:mt-16 text-sm sm:text-xl"
+                className="w-60 sm:w-96 py-6 px-6 mt-8 sm:mt-16 text-sm sm:text-xl"
                 onClick={() => navigate({
                   to: '/login',
                 })}

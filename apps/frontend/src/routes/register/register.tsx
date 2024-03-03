@@ -1,29 +1,72 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createRoute, useNavigate } from '@tanstack/react-router';
+import { Link, createRoute } from '@tanstack/react-router';
 import { rootRoute } from '../root';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { RegisterUserForm } from './components/registerUserForm/registerUserForm';
-import { DefaultLayout } from '../../layouts/defaultLayout';
-import { Logo } from '../../components/logo/logo';
+import { DefaultFormLayout } from '../../layouts/defaultFormLayout';
+import { useSendVerificationEmailMutation } from '../../api/user/mutations/sendVerificationEmailMutation/sendVerificationEmailMutation';
 
 export const RegisterPage: FC = () => {
-  const navigate = useNavigate();
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
-  const onSuccessfulRegister = (result: boolean) => {
-    if (result) {
-      navigate({
-        to: '/login',
-      });
+  const [userEmail, setUserEmail] = useState<string>('');
+
+  const onSuccessfulRegister = (result: { email: string; success: boolean }) => {
+    if (result.success) {
+      setIsSuccess(true);
+
+      setUserEmail(result.email);
     }
   };
 
+  const { mutate } = useSendVerificationEmailMutation({});
+
   return (
-    <DefaultLayout innerContainerClassName="flex-col-reverse sm:flex-row">
-      <div className="flex-1">
+    <DefaultFormLayout>
+      {!isSuccess ? (
         <RegisterUserForm onSuccess={onSuccessfulRegister} />
+      ) : (
+        <div className="flex flex-col gap-4">
+          <h1 className="font-semibold text-lg sm:text-xl">
+            Wysłaliśmy <span className="text-primary">wiadomość email.</span>
+          </h1>
+          <h1 className="font-semibold text-lg sm:text-xl max-w-[30rem]">
+            Znajdziesz w niej link, który pozwoli Ci aktywować konto
+          </h1>
+          <div>
+            <p>
+              Email się nie pojawił?{' '}
+              <a
+                className="text-primary font-semibold cursor-pointer"
+                onClick={() => mutate({ email: userEmail })}
+              >
+                Wyślij ponownie
+              </a>
+            </p>
+            <p>
+              lub{' '}
+              <Link
+                className="text-primary font-semibold"
+                to={'/login'}
+              >
+                przejdź do logowania.
+              </Link>
+            </p>
+          </div>
+        </div>
+      )}
+      <div className="py-16 max-w-[30rem]">
+        <span className="align-baseline">
+          Masz już konto?{' '}
+          <Link
+            to="/login"
+            className="text-primary font-semibold"
+          >
+            Wróć do logowania.
+          </Link>
+        </span>
       </div>
-      <Logo />
-    </DefaultLayout>
+    </DefaultFormLayout>
   );
 };
 

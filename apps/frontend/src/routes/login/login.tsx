@@ -6,8 +6,7 @@ import { useStoreDispatch } from '../../core/store/hooks/useStoreDispatch';
 import { LoginUserResponseBody } from '@common/contracts';
 import { userStateActions } from '../../core/store/states/userState/userStateSlice';
 import { FC } from 'react';
-import { DefaultLayout } from '../../layouts/defaultLayout';
-import { Logo } from '../../components/logo/logo';
+import { DefaultFormLayout } from '../../layouts/defaultFormLayout';
 
 export const LoginPage: FC = () => {
   const storeDispatch = useStoreDispatch();
@@ -30,14 +29,9 @@ export const LoginPage: FC = () => {
   };
 
   return (
-    <DefaultLayout>
-      <div className="flex flex-col-reverse sm:flex-row items-center justify-center px-4 h-[700px]">
-        <div className="flex-1">
-          <LoginUserForm onSuccess={onSuccessfulLogin} />
-        </div>
-        <Logo />
-      </div>
-    </DefaultLayout>
+    <DefaultFormLayout>
+      <LoginUserForm onSuccess={onSuccessfulLogin} />
+    </DefaultFormLayout>
   );
 };
 

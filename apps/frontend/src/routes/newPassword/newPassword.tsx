@@ -4,8 +4,7 @@ import { rootRoute } from '../root';
 import { FC } from 'react';
 import { SetNewPasswordForm } from './components/setNewPasswordForm/setNewPasswordForm';
 import { z } from 'zod';
-import { DefaultLayout } from '../../layouts/defaultLayout';
-import { Logo } from '../../components/logo/logo';
+import { DefaultFormLayout } from '../../layouts/defaultFormLayout';
 
 export const SetNewPasswordPage: FC = () => {
   const navigate = useNavigate();
@@ -23,15 +22,12 @@ export const SetNewPasswordPage: FC = () => {
   }
 
   return (
-    <DefaultLayout>
-      <div className="flex-1 py-8">
-        <SetNewPasswordForm
-          onSuccess={onSuccess}
-          token={token}
-        />
-      </div>
-      <Logo />
-    </DefaultLayout>
+    <DefaultFormLayout>
+      <SetNewPasswordForm
+        onSuccess={onSuccess}
+        token={token}
+      />
+    </DefaultFormLayout>
   );
 };
 
@@ -46,5 +42,5 @@ export const newPasswordRoute = createRoute({
   validateSearch: productSearchSchema,
   onError: () => {
     return <Navigate to={'/login'} />;
-  }
+  },
 });
