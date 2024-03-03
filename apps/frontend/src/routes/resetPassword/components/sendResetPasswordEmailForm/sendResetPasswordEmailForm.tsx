@@ -26,6 +26,7 @@ export const SendResetPasswordEmailForm: FC<SendResetPasswordEmailFormProps> = (
     defaultValues: {
       email: '',
     },
+    mode: 'onTouched',
   });
 
   const [responseErrorMessage, setResponseErrorMessage] = useState<string | null>(null);
