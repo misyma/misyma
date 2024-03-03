@@ -115,7 +115,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ onSuccess, onError
             name="repeatedPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Powtorz hasło</FormLabel>
+                <FormLabel>Powtórz hasło</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Hasło"
