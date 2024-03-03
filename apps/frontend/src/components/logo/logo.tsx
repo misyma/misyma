@@ -7,7 +7,7 @@ interface LogoProps {
 
 export const Logo: FC<LogoProps> = ({ className }: LogoProps) => {
   return (
-    <div className={cn('flex-1 max-h-[900px] max-w-[900px] flex justify-center', className)}>
+    <div className={cn('flex-1 max-h-[700px] max-w-[700px] flex justify-center', className)}>
       <img
         src="/book_square.jpg"
         alt="Misyma's logo"
