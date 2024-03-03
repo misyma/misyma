@@ -66,7 +66,7 @@ export const SendResetPasswordEmailForm: FC<SendResetPasswordEmailFormProps> = (
               <FormControl>
                 <Input
                   placeholder="Email"
-                  className="w-80 bg-[#D1D5DB]/20"
+                  className="w-60 sm:w-96 bg-[#D1D5DB]/20"
                   {...field}
                 />
               </FormControl>
@@ -76,7 +76,7 @@ export const SendResetPasswordEmailForm: FC<SendResetPasswordEmailFormProps> = (
         />
         <Button
           type="submit"
-          className="w-80 border border-primary"
+          className="w-60 sm:w-96 border border-primary"
           disabled={!form.formState.isValid}
         >
           Zresetuj hasło
