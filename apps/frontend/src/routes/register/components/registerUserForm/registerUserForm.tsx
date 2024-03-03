@@ -9,7 +9,7 @@ import { Input } from '../../../../components/ui/input';
 import { Button } from '../../../../components/ui/button';
 
 interface RegisterUserFormProps {
-  onSuccess: (result: boolean) => void;
+  onSuccess: (result: { email: string; success: boolean }) => void;
   onError?: (error: UserApiError) => void;
 }
 
@@ -36,7 +36,11 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ onSuccess, onError
         name: values.firstName,
       },
       {
-        onSuccess: (result) => onSuccess(result),
+        onSuccess: (result) =>
+          onSuccess({
+            email: values.email,
+            success: result,
+          }),
         onError: (error) => {
           setResponseErrorMessage(error.context?.message);
 

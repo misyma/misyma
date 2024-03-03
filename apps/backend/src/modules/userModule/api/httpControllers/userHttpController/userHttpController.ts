@@ -444,7 +444,9 @@ export class UserHttpController implements HttpController {
   ): Promise<HttpOkResponse<SendVerificationEmailResponseBodyDTO>> {
     const { email } = request.body;
 
-    await this.sendVerificationEmailCommandHandler.execute({ email });
+    await this.sendVerificationEmailCommandHandler.execute({
+      email: email.toLowerCase(),
+    });
 
     return {
       statusCode: HttpStatusCode.ok,

@@ -9,7 +9,7 @@ interface DefaultFormLayoutProps {
 export const DefaultFormLayout: FC<DefaultFormLayoutProps> = ({ children }: DefaultFormLayoutProps) => {
   return (
     <DefaultLayout innerContainerClassName='flex-col-reverse sm:flex-row sm:p-0 py-16'>
-      <div className="flex-1 flex flex-col items-start sm:items-end px-8 max-w-[25rem]">{children}</div>
+      <div className="flex-1 flex flex-col items-start sm:items-baseline px-8 max-w-[25rem]">{children}</div>
       <Logo />
     </DefaultLayout>
   );

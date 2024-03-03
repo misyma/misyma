@@ -4,15 +4,22 @@ import { rootRoute } from '../root';
 import { FC, useState } from 'react';
 import { RegisterUserForm } from './components/registerUserForm/registerUserForm';
 import { DefaultFormLayout } from '../../layouts/defaultFormLayout';
+import { useSendVerificationEmailMutation } from '../../api/user/mutations/sendVerificationEmailMutation/sendVerificationEmailMutation';
 
 export const RegisterPage: FC = () => {
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
-  const onSuccessfulRegister = (result: boolean) => {
-    if (result) {
+  const [userEmail, setUserEmail] = useState<string>('');
+
+  const onSuccessfulRegister = (result: { email: string; success: boolean }) => {
+    if (result.success) {
       setIsSuccess(true);
+
+      setUserEmail(result.email);
     }
   };
+
+  const { mutate } = useSendVerificationEmailMutation({});
 
   return (
     <DefaultFormLayout>
@@ -20,16 +27,18 @@ export const RegisterPage: FC = () => {
         <RegisterUserForm onSuccess={onSuccessfulRegister} />
       ) : (
         <div className="flex flex-col gap-4">
-          <h1 className="font-semibold text-xl sm:text-2xl">Wysłaliśmy wiadomość email.</h1>
-          <h1 className="font-semibold text-xl sm:text-2xl max-w-[30rem]">
+          <h1 className="font-semibold text-lg sm:text-xl">
+            Wysłaliśmy <span className="text-primary">wiadomość email.</span>
+          </h1>
+          <h1 className="font-semibold text-lg sm:text-xl max-w-[30rem]">
             Znajdziesz w niej link, który pozwoli Ci aktywować konto
           </h1>
           <div>
             <p>
               Email się nie pojawił?{' '}
               <a
-                className="text-primary font-semibold"
-                href="xd" // TODO: Send email again mutation :)
+                className="text-primary font-semibold cursor-pointer"
+                onClick={() => mutate({ email: userEmail })}
               >
                 Wyślij ponownie
               </a>
@@ -46,7 +55,7 @@ export const RegisterPage: FC = () => {
           </div>
         </div>
       )}
-      <div className="py-16 flex flex-1 w-60 sm:w-80">
+      <div className="py-16 max-w-[30rem]">
         <span className="align-baseline">
           Masz już konto?{' '}
           <Link
