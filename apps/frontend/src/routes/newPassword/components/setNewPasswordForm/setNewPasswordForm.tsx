@@ -68,7 +68,7 @@ export const SetNewPasswordForm: FC<SetNewPasswordFormProps> = ({
                 <Input
                   placeholder="Hasło"
                   type="password"
-                  className="w-60 sm:w-80"
+                  className="w-60 sm:w-96"
                   autoComplete="new-password"
                   {...field}
                 />
@@ -87,7 +87,7 @@ export const SetNewPasswordForm: FC<SetNewPasswordFormProps> = ({
                 <Input
                   placeholder="Hasło"
                   type="password"
-                  className="w-60 sm:w-80"
+                  className="w-60 sm:w-96"
                   autoComplete="new-password"
                   {...field}
                 />
@@ -99,7 +99,7 @@ export const SetNewPasswordForm: FC<SetNewPasswordFormProps> = ({
         <Button
           type="submit"
           disabled={!form.formState.isValid}
-          className="w-60 sm:w-80 border border-primary"
+          className="w-60 sm:w-96 border border-primary"
         >
           Ustaw nowe hasło
         </Button>
