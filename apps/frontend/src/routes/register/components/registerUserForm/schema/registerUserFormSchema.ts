@@ -2,16 +2,34 @@ import { z } from 'zod';
 
 export const registerUserFormSchema = z
   .object({
-    firstName: z.string().min(2),
-    email: z.string().email(),
-    password: z.string().min(8).max(50),
-    repeatedPassword: z.string().min(8).max(50),
+    firstName: z.string({
+      required_error: 'Wymagane.'
+    }).min(2, 'Imię musi mieć minimum 2 znaki.'),
+    email: z
+      .string({
+        required_error: 'Wymagane.',
+      })
+      .email({
+        message: 'Niewłaściwy adres email.',
+      }),
+    password: z
+      .string({
+        required_error: 'Wymagane.',
+      })
+      .min(8, 'Hasło musi mieć minimum 8 znaków.')
+      .max(64, 'Hasło może mieć maksymalnie 64 znaki.'),
+    repeatedPassword: z
+      .string({
+        required_error: 'Wymagane.',
+      })
+      .min(8, 'Hasło musi mieć minimum 8 znaków.')
+      .max(64, 'Hasło może mieć maksymalnie 64 znaki.'),
   })
   .superRefine(({ repeatedPassword, password }, context) => {
     if (repeatedPassword !== password) {
       context.addIssue({
         code: 'custom',
-        message: 'The passwords do not match.',
+        message: 'Hasła nie są identyczne.',
         path: ['repeatedPassword'],
       });
     }
