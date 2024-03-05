@@ -82,7 +82,7 @@ export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccess, onError }: Lo
                 <FormControl>
                   <Input
                     placeholder="Email"
-                    className={cn('w-60 sm:w-80 focus:border-input bg-[#D1D5DB]/20', setInputFieldErrorState(field))}
+                    className={cn('w-60 sm:w-96 focus:border-input bg-[#D1D5DB]/20', setInputFieldErrorState(field))}
                     {...field}
                   />
                 </FormControl>
@@ -100,7 +100,7 @@ export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccess, onError }: Lo
                   <Input
                     placeholder="Hasło"
                     type="password"
-                    className={cn('w-60 sm:w-80 focus:border-input bg-[#D1D5DB]/20', setInputFieldErrorState(field))}
+                    className={cn('w-60 sm:w-96 focus:border-input bg-[#D1D5DB]/20', setInputFieldErrorState(field))}
                     {...field}
                   />
                 </FormControl>
@@ -112,11 +112,11 @@ export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccess, onError }: Lo
             <Button
               type="submit"
               disabled={!form.formState.isValid}
-              className="w-60 sm:w-80 border-primary border-[1.25px]"
+              className="w-60 sm:w-96 border-primary border-[1.25px]"
             >
               Wejdź do biblioteki
             </Button>
-            <div className="text-xs text-center w-60 sm:w-80 pt-[4px]">
+            <div className="text-xs text-center w-60 sm:w-96 pt-[4px]">
               <Link
                 to="/reset-password"
                 className="text-primary"
