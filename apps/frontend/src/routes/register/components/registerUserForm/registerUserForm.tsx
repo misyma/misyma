@@ -7,6 +7,7 @@ import { useRegisterUserMutation } from '../../../../api/user/mutations/register
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../components/ui/form';
 import { Input } from '../../../../components/ui/input';
 import { Button } from '../../../../components/ui/button';
+import { PasswordEyeIcon } from '../../../../components/icons/passwordEyeIcon/passwordEyeIcon';
 
 interface RegisterUserFormProps {
   onSuccess: (result: { email: string; success: boolean }) => void;
@@ -22,12 +23,16 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ onSuccess, onError
       password: '',
       repeatedPassword: '',
     },
-    mode: 'onTouched'
+    mode: 'onTouched',
   });
 
   const [responseErrorMessage, setResponseErrorMessage] = useState<string | null>(null);
 
   const registerUserMutation = useRegisterUserMutation({});
+
+  const [passwordType, setPasswordType] = useState<'text' | 'password'>('password');
+
+  const [repeatedPasswordType, setRepeatedPasswordType] = useState<'text' | 'password'>('password');
 
   const onSubmit = async (values: RegisterUserFormSchemaValues) => {
     registerUserMutation.mutate(
@@ -103,8 +108,15 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ onSuccess, onError
                 <FormControl>
                   <Input
                     placeholder="Hasło"
-                    type="password"
-                    className="w-60 sm:w-96 bg-[#D1D5DB]/20"
+                    type={passwordType}
+                    className="w-60 sm:w-80 bg-[#D1D5DB]/20"
+                    includeQuill={false}
+                    otherIcon={
+                      <PasswordEyeIcon
+                        onClick={() => setPasswordType(passwordType === 'password' ? 'text' : 'password')}
+                        passwordType={passwordType}
+                      />
+                    }
                     {...field}
                   />
                 </FormControl>
@@ -121,8 +133,17 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ onSuccess, onError
                 <FormControl>
                   <Input
                     placeholder="Hasło"
-                    type="password"
-                    className="w-60 sm:w-96 bg-[#D1D5DB]/20"
+                    type={repeatedPasswordType}
+                    includeQuill={false}
+                    otherIcon={
+                      <PasswordEyeIcon
+                        onClick={() =>
+                          setRepeatedPasswordType(repeatedPasswordType === 'password' ? 'text' : 'password')
+                        }
+                        passwordType={repeatedPasswordType}
+                      />
+                    }
+                    className="w-60 sm:w-80 bg-[#D1D5DB]/20"
                     {...field}
                   />
                 </FormControl>

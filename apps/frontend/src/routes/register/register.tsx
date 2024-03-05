@@ -55,17 +55,19 @@ export const RegisterPage: FC = () => {
           </div>
         </div>
       )}
-      <div className="py-16 max-w-[30rem]">
-        <span className="align-baseline">
-          Masz już konto?{' '}
-          <Link
-            to="/login"
-            className="text-primary font-semibold"
-          >
-            Wróć do logowania.
-          </Link>
-        </span>
-      </div>
+      {!isSuccess && (
+        <div className="py-16 max-w-[30rem]">
+          <span className="align-baseline">
+            Masz już konto?{' '}
+            <Link
+              to="/login"
+              className="text-primary font-semibold"
+            >
+              Wróć do logowania.
+            </Link>
+          </span>
+        </div>
+      )}
     </DefaultFormLayout>
   );
 };

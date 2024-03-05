@@ -13,18 +13,20 @@ import {
 } from './schema/sendResetPasswordEmailFormSchema';
 
 interface SendResetPasswordEmailFormProps {
-  onSuccess: () => void;
+  onSuccess: (email: string) => void;
   onError?: (error: UserApiError) => void;
+  email?: string;
 }
 
 export const SendResetPasswordEmailForm: FC<SendResetPasswordEmailFormProps> = ({
   onSuccess,
   onError,
+  email = ''
 }: SendResetPasswordEmailFormProps) => {
   const form = useForm<SendResetPasswordEmailFormSchemaValues>({
     resolver: zodResolver(sendResetPasswordEmailFormSchema),
     defaultValues: {
-      email: '',
+      email,
     },
     mode: 'onTouched',
   });
@@ -39,7 +41,7 @@ export const SendResetPasswordEmailForm: FC<SendResetPasswordEmailFormProps> = (
         email: values.email,
       },
       {
-        onSuccess: () => onSuccess(),
+        onSuccess: () => onSuccess(form.getValues().email),
         onError: (error) => {
           setResponseErrorMessage(error.context?.message);
 
