@@ -109,7 +109,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ onSuccess, onError
                   <Input
                     placeholder="Hasło"
                     type={passwordType}
-                    className="w-60 sm:w-80 bg-[#D1D5DB]/20"
+                    className="w-60 sm:w-96 bg-[#D1D5DB]/20"
                     includeQuill={false}
                     otherIcon={
                       <PasswordEyeIcon
@@ -143,7 +143,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ onSuccess, onError
                         passwordType={repeatedPasswordType}
                       />
                     }
-                    className="w-60 sm:w-80 bg-[#D1D5DB]/20"
+                    className="w-60 sm:w-96 bg-[#D1D5DB]/20"
                     {...field}
                   />
                 </FormControl>
