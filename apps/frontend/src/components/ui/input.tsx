@@ -22,12 +22,12 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           {...props}
         />
         {includeQuill && (
-          <div className="w-60 sm:w-80 absolute h-12 pointer-events-none flex items-center justify-end px-2">
+          <div className="w-60 sm:w-96 absolute h-12 pointer-events-none flex items-center justify-end px-2">
             <ImQuill className="text-primary opacity-65 text-3xl" />
           </div>
         )}
         {props.otherIcon && (
-          <div className="w-60 sm:w-80 absolute h-12 pointer-events-none flex items-center justify-end px-2">
+          <div className="w-60 sm:w-96 absolute h-12 pointer-events-none flex items-center justify-end px-2">
             {props.otherIcon}
           </div>
         )}
