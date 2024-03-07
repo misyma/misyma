@@ -21,6 +21,6 @@
   },
   "sendGrid": {
     "apiKey": "1234567890",
-    "senderEmail": "michal.andrzej.cieslar@gmail.com"
+    "senderEmail": "team@misyma.com"
   }
 }
