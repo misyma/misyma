@@ -36,7 +36,7 @@
   },
   "sendGrid": {
     "apiKey": null,
-    "senderEmail": null
+    "senderEmail": "team@misyma.com"
   },
   "frontend": {
     "url": "https://misyma.com"
