@@ -5,11 +5,14 @@ import { FC, useState } from 'react';
 import { RegisterUserForm } from './components/registerUserForm/registerUserForm';
 import { DefaultFormLayout } from '../../layouts/defaultFormLayout';
 import { useSendVerificationEmailMutation } from '../../api/user/mutations/sendVerificationEmailMutation/sendVerificationEmailMutation';
+import { useToast } from '@/components/ui/use-toast';
 
 export const RegisterPage: FC = () => {
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
   const [userEmail, setUserEmail] = useState<string>('');
+
+  const { toast } = useToast();
 
   const onSuccessfulRegister = (result: { email: string; success: boolean }) => {
     if (result.success) {
@@ -26,7 +29,7 @@ export const RegisterPage: FC = () => {
       {!isSuccess ? (
         <RegisterUserForm onSuccess={onSuccessfulRegister} />
       ) : (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 w-60 sm:w-96">
           <h1 className="font-semibold text-lg sm:text-xl">
             Wysłaliśmy <span className="text-primary">wiadomość email.</span>
           </h1>
@@ -38,7 +41,26 @@ export const RegisterPage: FC = () => {
               Email się nie pojawił?{' '}
               <a
                 className="text-primary font-semibold cursor-pointer"
-                onClick={() => mutate({ email: userEmail })}
+                onClick={() => {
+                  mutate(
+                    { email: userEmail },
+                    {
+                      onSuccess: () => {
+                        toast({
+                          title: 'Wiadomość email została wysłana ponownie.',
+                          duration: 3000,
+                        });
+                      },
+                      onError: () => {
+                        toast({
+                          description: 'Nie udało się wysłać wiadomości email. Spróbuj ponownie.',
+                          duration: 3000,
+                          variant: 'destructive',
+                        });
+                      },
+                    },
+                  );
+                }}
               >
                 Wyślij ponownie
               </a>
