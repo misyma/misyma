@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { cn } from '../lib/utils';
 import { Link } from '@tanstack/react-router';
+import { Toaster } from '../components/ui/toaster';
 
 export interface Props {
   children: React.ReactNode;
@@ -16,6 +17,7 @@ export const DefaultLayout: FC<Props> = ({ children, innerContainerClassName }) 
       <div className="flex items-center justify-center h-screen">
         <div className={cn('flex items-center justify-center px-4 h-[800px]', innerContainerClassName)}>{children}</div>
       </div>
+      <Toaster />
     </div>
   );
 };
