@@ -24,9 +24,7 @@ export class M1CreateBookTableMigration implements Migration {
 
       table.integer('pages');
 
-      table.text('frontCoverImageUrl');
-
-      table.text('backCoverImageUrl');
+      table.text('imageUrl');
 
       table.text('status').notNullable();
 

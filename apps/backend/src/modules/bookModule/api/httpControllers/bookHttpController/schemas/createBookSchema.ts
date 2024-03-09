@@ -37,8 +37,7 @@ export const createBookBodyDTOSchema = Type.Object({
   ),
   format: Type.Enum(contracts.BookFormat),
   pages: Type.Optional(Type.Integer()),
-  frontCoverImageUrl: Type.Optional(Type.String({ format: 'uri' })),
-  backCoverImageUrl: Type.Optional(Type.String({ format: 'uri' })),
+  imageUrl: Type.Optional(Type.String({ format: 'uri' })),
   status: Type.Enum(contracts.BookStatus),
   bookshelfId: Type.String({
     format: 'uuid',
