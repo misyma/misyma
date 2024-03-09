@@ -8,7 +8,7 @@ import { RepositoryError } from '../../../../../common/errors/common/repositoryE
 import { Genre } from '../../../domain/entities/genre/genre.js';
 import { type GenreRepository } from '../../../domain/repositories/genreRepository/genreRepository.js';
 import { symbols } from '../../../symbols.js';
-import { GenreTestFactory } from '../../../tests/factories/genreTestFactor/genreTestFactory.js';
+import { GenreTestFactory } from '../../../tests/factories/genreTestFactory/genreTestFactory.js';
 import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 import { type GenreRawEntity } from '../../databases/bookDatabase/tables/genreTable/genreRawEntity.js';
 
@@ -176,7 +176,7 @@ describe('GenreRepositoryImpl', () => {
 
       const newName = Generator.words(2);
 
-      const genre = genreTestFactory.createEntity(genreRawEntity);
+      const genre = genreTestFactory.create(genreRawEntity);
 
       genre.setName({ name: newName });
 

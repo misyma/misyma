@@ -6,7 +6,7 @@ export * from './schemas/bookshelf/findBookshelfById.js';
 
 export * from './schemas/bookshelf/findUserBookshelves.js';
 
-export * from './schemas/bookshelf/updateBookshelfName.js';
+export * from './schemas/bookshelf/updateBookshelf.js';
 
 export * from './schemas/user/findUser.js';
 

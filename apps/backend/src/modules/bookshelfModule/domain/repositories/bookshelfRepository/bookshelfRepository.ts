@@ -1,8 +1,14 @@
 import { type BookshelfState, type Bookshelf } from '../../entities/bookshelf/bookshelf.js';
 
 export interface FindBookshelfPayload {
-  readonly id?: string;
-  readonly userId?: string;
+  readonly where:
+    | {
+        readonly id: string;
+      }
+    | {
+        readonly userId: string;
+        readonly name: string;
+      };
 }
 
 export interface FindBookshelvesPayload {

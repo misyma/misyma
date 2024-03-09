@@ -5,6 +5,7 @@ export const bookshelfDTOSchema = Type.Object({
   name: Type.String(),
   userId: Type.String(),
   addressId: Type.Optional(Type.String()),
+  imageUrl: Type.Optional(Type.String()),
 });
 
 export type BookshelfDTO = Static<typeof bookshelfDTOSchema>;

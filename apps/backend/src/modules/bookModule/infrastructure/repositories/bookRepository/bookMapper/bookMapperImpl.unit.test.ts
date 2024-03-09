@@ -1,36 +1,36 @@
 import { beforeEach, expect, describe, it } from 'vitest';
 
 import { BookMapperImpl } from './bookMapperImpl.js';
-import { BookRawEntityTestFactory } from '../../../../tests/factories/bookRawEntityTestFactory/bookRawEntityTestFactory.js';
+import { BookTestFactory } from '../../../../tests/factories/bookTestFactory/bookTestFactory.js';
 
 describe('BookMapperImpl', () => {
   let bookMapperImpl: BookMapperImpl;
 
-  const bookEntityTestFactory = new BookRawEntityTestFactory();
+  const bookTestFactory = new BookTestFactory();
 
   beforeEach(async () => {
     bookMapperImpl = new BookMapperImpl();
   });
 
   it('maps from book raw entity to domain book', async () => {
-    const bookEntity = bookEntityTestFactory.create();
+    const bookRawEntity = bookTestFactory.createRaw();
 
-    const book = bookMapperImpl.mapRawToDomain(bookEntity);
+    const book = bookMapperImpl.mapRawToDomain(bookRawEntity);
 
     expect(book).toEqual({
-      id: bookEntity.id,
+      id: bookRawEntity.id,
       state: {
-        title: bookEntity.title,
-        isbn: bookEntity.isbn,
-        publisher: bookEntity.publisher,
-        releaseYear: bookEntity.releaseYear,
-        language: bookEntity.language,
-        translator: bookEntity.translator,
-        format: bookEntity.format,
-        pages: bookEntity.pages,
-        imageUrl: bookEntity.imageUrl,
-        status: bookEntity.status,
-        bookshelfId: bookEntity.bookshelfId,
+        title: bookRawEntity.title,
+        isbn: bookRawEntity.isbn,
+        publisher: bookRawEntity.publisher,
+        releaseYear: bookRawEntity.releaseYear,
+        language: bookRawEntity.language,
+        translator: bookRawEntity.translator,
+        format: bookRawEntity.format,
+        pages: bookRawEntity.pages,
+        imageUrl: bookRawEntity.imageUrl,
+        status: bookRawEntity.status,
+        bookshelfId: bookRawEntity.bookshelfId,
         authors: [],
         genres: [],
       },
@@ -38,7 +38,7 @@ describe('BookMapperImpl', () => {
   });
 
   it('maps from bookRawEntity with Author to Book', () => {
-    const book = bookEntityTestFactory.create();
+    const book = bookTestFactory.createRaw();
 
     const books = bookMapperImpl.mapRawWithJoinsToDomain([
       {

@@ -3,16 +3,22 @@ export interface BookshelfDraft {
   readonly userId: string;
   readonly name: string;
   readonly addressId?: string | undefined;
+  readonly imageUrl?: string | undefined;
 }
 
 export interface BookshelfState {
   name: string;
   userId: string;
   addressId?: string | undefined;
+  imageUrl?: string | undefined;
 }
 
 export interface SetNamePayload {
   readonly name: string;
+}
+
+export interface SetImageUrlPayload {
+  readonly imageUrl: string;
 }
 
 export interface SetAddressIdPayload {
@@ -30,6 +36,7 @@ export class Bookshelf {
       name: draft.name,
       userId: draft.userId,
       addressId: draft.addressId,
+      imageUrl: draft.imageUrl,
     };
   }
 
@@ -49,6 +56,12 @@ export class Bookshelf {
     this.state.addressId = addressId;
   }
 
+  public setImageUrl(payload: SetImageUrlPayload): void {
+    const { imageUrl } = payload;
+
+    this.state.imageUrl = imageUrl;
+  }
+
   public getId(): string {
     return this.id;
   }
@@ -63,5 +76,9 @@ export class Bookshelf {
 
   public getAddressId(): string | undefined {
     return this.state.addressId;
+  }
+
+  public getImageUrl(): string | undefined {
+    return this.state.imageUrl;
   }
 }

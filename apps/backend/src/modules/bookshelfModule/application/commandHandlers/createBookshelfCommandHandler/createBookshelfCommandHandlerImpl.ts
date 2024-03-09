@@ -3,6 +3,7 @@ import {
   type CreateBookshelfPayload,
   type CreateBookshelfResult,
 } from './createBookshelfCommandHandler.js';
+import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type UserRepository } from '../../../../userModule/domain/repositories/userRepository/userRepository.js';
@@ -16,13 +17,14 @@ export class CreateBookshelfCommandHandlerImpl implements CreateBookshelfCommand
   ) {}
 
   public async execute(payload: CreateBookshelfPayload): Promise<CreateBookshelfResult> {
-    const { name, userId, addressId } = payload;
+    const { name, userId, addressId, imageUrl } = payload;
 
     this.loggerService.debug({
       message: 'Creating Bookshelf...',
       name,
       userId,
       addressId,
+      imageUrl,
     });
 
     const existingUser = await this.userRepository.findUser({
@@ -32,6 +34,22 @@ export class CreateBookshelfCommandHandlerImpl implements CreateBookshelfCommand
     if (!existingUser) {
       throw new ResourceNotFoundError({
         name: 'User',
+        id: userId,
+      });
+    }
+
+    const existingBookshelf = await this.bookshelfRepository.findBookshelf({
+      where: {
+        userId,
+        name,
+      },
+    });
+
+    if (existingBookshelf) {
+      throw new OperationNotValidError({
+        reason: 'Bookshelf with this name already exists.',
+        name,
+        userId,
       });
     }
 
@@ -40,6 +58,7 @@ export class CreateBookshelfCommandHandlerImpl implements CreateBookshelfCommand
         name,
         userId,
         addressId,
+        imageUrl,
       },
     });
 
@@ -49,10 +68,9 @@ export class CreateBookshelfCommandHandlerImpl implements CreateBookshelfCommand
       name,
       userId,
       addressId,
+      imageUrl,
     });
 
-    return {
-      bookshelf,
-    };
+    return { bookshelf };
   }
 }

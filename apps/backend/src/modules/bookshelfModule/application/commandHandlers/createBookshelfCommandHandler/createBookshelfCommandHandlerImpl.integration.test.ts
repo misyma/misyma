@@ -5,9 +5,9 @@ import { Generator } from '@common/tests';
 import { type CreateBookshelfCommandHandler } from './createBookshelfCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
+import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
-import { Bookshelf } from '../../../domain/entities/bookshelf/bookshelf.js';
 import { symbols } from '../../../symbols.js';
 import { type BookshelfTestUtils } from '../../../tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 
@@ -47,22 +47,45 @@ describe('CreateBookshelfCommandHandlerImpl', () => {
     });
   });
 
+  it('throws an error - when Bookshelf with this name already exists', async () => {
+    const user = await userTestUtils.createAndPersist();
+
+    const name = Generator.word();
+
+    await bookshelfTestUtils.createAndPersist({
+      input: {
+        name,
+        userId: user.id,
+      },
+    });
+
+    expect(
+      async () =>
+        await commandHandler.execute({
+          name,
+          userId: user.id,
+        }),
+    ).toThrowErrorInstance({ instance: OperationNotValidError });
+  });
+
   it('returns a Bookshelf', async () => {
     const user = await userTestUtils.createAndPersist();
 
     const name = Generator.word();
 
+    const imageUrl = Generator.imageUrl();
+
     const { bookshelf } = await commandHandler.execute({
       name,
       userId: user.id,
+      imageUrl,
     });
-
-    expect(bookshelf).toBeInstanceOf(Bookshelf);
 
     expect(bookshelf.getState()).toEqual({
       name,
       userId: user.id,
       addressId: null,
+      imageUrl,
     });
 
     const persistedRawBookshelf = await bookshelfTestUtils.findById({
@@ -74,6 +97,7 @@ describe('CreateBookshelfCommandHandlerImpl', () => {
       name,
       userId: user.id,
       addressId: null,
+      imageUrl,
     });
   });
 });

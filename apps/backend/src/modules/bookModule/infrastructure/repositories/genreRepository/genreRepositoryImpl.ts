@@ -38,7 +38,7 @@ export class GenreRepositoryImpl implements GenreRepository {
       });
     }
 
-    return rawEntities.map((rawEntity) => this.genreMapper.toDomain(rawEntity));
+    return rawEntities.map((rawEntity) => this.genreMapper.mapToDomain(rawEntity));
   }
 
   public async findGenre(payload: FindGenrePayload): Promise<Genre | null> {
@@ -78,7 +78,7 @@ export class GenreRepositoryImpl implements GenreRepository {
       return null;
     }
 
-    return this.genreMapper.toDomain(rawEntity);
+    return this.genreMapper.mapToDomain(rawEntity);
   }
 
   public async findGenresByIds(payload: FindGenresByIds): Promise<Genre[]> {
@@ -97,7 +97,7 @@ export class GenreRepositoryImpl implements GenreRepository {
       });
     }
 
-    return rawEntities.map((rawEntity) => this.genreMapper.toDomain(rawEntity));
+    return rawEntities.map((rawEntity) => this.genreMapper.mapToDomain(rawEntity));
   }
 
   public async saveGenre(payload: SaveGenrePayload): Promise<Genre> {
@@ -140,7 +140,7 @@ export class GenreRepositoryImpl implements GenreRepository {
       });
     }
 
-    return this.genreMapper.toDomain(rawEntity);
+    return this.genreMapper.mapToDomain(rawEntity);
   }
 
   private async update(payload: UpdateGenrePayload): Promise<Genre> {
@@ -169,7 +169,7 @@ export class GenreRepositoryImpl implements GenreRepository {
       });
     }
 
-    return this.genreMapper.toDomain(rawEntity);
+    return this.genreMapper.mapToDomain(rawEntity);
   }
 
   public async deleteGenre(payload: DeleteGenrePayload): Promise<void> {

@@ -1,26 +1,26 @@
 import { beforeEach, expect, describe, it } from 'vitest';
 
 import { AuthorMapperImpl } from './authorMapperImpl.js';
-import { AuthorRawEntityTestFactory } from '../../../../tests/factories/authorRawEntityTestFactory/authorRawEntityTestFactory.js';
+import { AuthorTestFactory } from '../../../../tests/factories/authorTestFactory/authorTestFactory.js';
 
 describe('AuthorMapperImpl', () => {
   let authorMapperImpl: AuthorMapperImpl;
 
-  const authorEntityTestFactory = new AuthorRawEntityTestFactory();
+  const authorTestFactory = new AuthorTestFactory();
 
   beforeEach(async () => {
     authorMapperImpl = new AuthorMapperImpl();
   });
 
   it('maps from author raw entity to domain author', async () => {
-    const authorEntity = authorEntityTestFactory.create();
+    const authorRawEntity = authorTestFactory.createRaw();
 
-    const author = authorMapperImpl.mapToDomain(authorEntity);
+    const author = authorMapperImpl.mapToDomain(authorRawEntity);
 
     expect(author).toEqual({
-      id: authorEntity.id,
-      firstName: authorEntity.firstName,
-      lastName: authorEntity.lastName,
+      id: authorRawEntity.id,
+      firstName: authorRawEntity.firstName,
+      lastName: authorRawEntity.lastName,
     });
   });
 });

@@ -9,12 +9,6 @@ import { EmailEventStatus } from '../../../domain/entities/emailEvent/types/emai
 import { EmailEventType } from '../../../domain/entities/emailEvent/types/emailEventType.js';
 
 export class EmailEventTestFactory {
-  private constructor() {}
-
-  public static createFactory(): EmailEventTestFactory {
-    return new EmailEventTestFactory();
-  }
-
   public createDraft(overrides: Partial<EmailEventDraftState> = {}): EmailEventDraft {
     return new EmailEventDraft({
       payload: {

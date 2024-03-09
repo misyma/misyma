@@ -12,6 +12,7 @@ export const createBookshelfBodyDTOSchema = Type.Object({
   }),
   userId: Type.String({ format: 'uuid' }),
   addressId: Type.Optional(Type.String({ format: 'uuid' })),
+  imageUrl: Type.String({ format: 'uri' }),
 });
 
 export type CreateBookshelfBodyDTO = TypeExtends<

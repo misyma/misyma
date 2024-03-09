@@ -1,8 +1,8 @@
 import { BookshelfHttpController } from './api/httpControllers/bookshelfHttpController/bookshelfHttpController.js';
 import { type CreateBookshelfCommandHandler } from './application/commandHandlers/createBookshelfCommandHandler/createBookshelfCommandHandler.js';
 import { CreateBookshelfCommandHandlerImpl } from './application/commandHandlers/createBookshelfCommandHandler/createBookshelfCommandHandlerImpl.js';
-import { type UpdateBookshelfNameCommandHandler } from './application/commandHandlers/updateBookshelfNameCommandHandler/updateBookshelfNameCommandHandler.js';
-import { UpdateBookshelfNameCommandHandlerImpl } from './application/commandHandlers/updateBookshelfNameCommandHandler/updateBookshelfNameCommandHandlerImpl.js';
+import { type UpdateBookshelfCommandHandler } from './application/commandHandlers/updateBookshelfCommandHandler/updateBookshelfCommandHandler.js';
+import { UpdateBookshelfCommandHandlerImpl } from './application/commandHandlers/updateBookshelfCommandHandler/updateBookshelfCommandHandlerImpl.js';
 import { type FindBookshelfByIdQueryHandler } from './application/queryHandlers/findBookshelfByIdQueryHandler/findBookshelfByIdQueryHandler.js';
 import { FindBookshelfByIdQueryHandlerImpl } from './application/queryHandlers/findBookshelfByIdQueryHandler/findBookshelfByIdQueryHandlerImpl.js';
 import { type FindBookshelvesByUserIdQueryHandler } from './application/queryHandlers/findBookshelvesByUserIdQueryHandler/findBookshelvesByUserIdQueryHandler.js';
@@ -40,7 +40,7 @@ export class BookshelfModule implements DependencyInjectionModule {
           container.get<FindBookshelvesByUserIdQueryHandler>(symbols.findBookshelvesByUserIdQueryHandler),
           container.get<FindBookshelfByIdQueryHandler>(symbols.findBookshelfByIdQueryHandler),
           container.get<CreateBookshelfCommandHandler>(symbols.createBookshelfCommandHandler),
-          container.get<UpdateBookshelfNameCommandHandler>(symbols.updateBookshelfNameCommandHandler),
+          container.get<UpdateBookshelfCommandHandler>(symbols.updateBookshelfCommandHandler),
           container.get<AccessControlService>(authSymbols.accessControlService),
         ),
     );
@@ -85,10 +85,10 @@ export class BookshelfModule implements DependencyInjectionModule {
         ),
     );
 
-    container.bind<UpdateBookshelfNameCommandHandler>(
-      symbols.updateBookshelfNameCommandHandler,
+    container.bind<UpdateBookshelfCommandHandler>(
+      symbols.updateBookshelfCommandHandler,
       () =>
-        new UpdateBookshelfNameCommandHandlerImpl(
+        new UpdateBookshelfCommandHandlerImpl(
           container.get<BookshelfRepository>(symbols.bookshelfRepository),
           container.get<LoggerService>(coreSymbols.loggerService),
         ),

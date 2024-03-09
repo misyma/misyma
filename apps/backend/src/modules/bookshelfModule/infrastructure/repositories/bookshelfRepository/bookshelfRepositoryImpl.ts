@@ -27,23 +27,22 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
   private readonly table = new BookshelfTable();
 
   public async findBookshelf(payload: FindBookshelfPayload): Promise<Bookshelf | null> {
-    const { id, userId } = payload;
-
     let rawEntity: BookshelfRawEntity | undefined;
 
     let whereCondition: Partial<BookshelfRawEntity> = {};
 
-    if (id) {
-      whereCondition = {
-        ...whereCondition,
-        id,
-      };
-    }
+    const { where } = payload;
 
-    if (userId) {
+    if ('id' in where) {
       whereCondition = {
         ...whereCondition,
-        userId,
+        id: where.id,
+      };
+    } else {
+      whereCondition = {
+        ...whereCondition,
+        userId: where.userId,
+        name: where.name,
       };
     }
 
@@ -106,6 +105,7 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
           name: bookshelf.name,
           userId: bookshelf.userId,
           addressId: bookshelf.addressId,
+          imageUrl: bookshelf.imageUrl,
         },
         '*',
       );

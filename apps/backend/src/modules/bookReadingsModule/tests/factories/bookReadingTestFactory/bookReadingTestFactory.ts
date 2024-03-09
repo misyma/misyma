@@ -4,12 +4,6 @@ import { BookReading, type BookReadingState } from '../../../domain/entities/boo
 import { type BookReadingRawEntity } from '../../../infrastructure/databases/bookReadingsDatabase/tables/bookReadingTable/bookReadingRawEntity.js';
 
 export class BookReadingTestFactory {
-  private constructor() {}
-
-  public static createFactory(): BookReadingTestFactory {
-    return new BookReadingTestFactory();
-  }
-
   public create(input: Partial<BookReadingState> = {}): BookReading {
     return new BookReading({
       id: Generator.uuid(),

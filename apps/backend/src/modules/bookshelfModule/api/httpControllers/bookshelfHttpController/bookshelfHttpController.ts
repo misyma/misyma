@@ -19,13 +19,13 @@ import {
   findBookshelvesByUserIdPathParamsDTOSchema,
 } from './schemas/findBookshelvesByUserIdSchema.js';
 import {
-  type UpdateBookshelfNamePathParamsDTO,
-  type UpdateBookshelfNameBodyDTO,
-  type UpdateBookshelfNameResponseBodyDTO,
-  updateBookshelfNameBodyDTOSchema,
-  updateBookshelfNamePathParamsDTOSchema,
-  updateBookshelfNameResponseBodyDTOSchema,
-} from './schemas/updateBookshelfNameSchema.js';
+  type UpdateBookshelfPathParamsDTO,
+  type UpdateBookshelfBodyDTO,
+  type UpdateBookshelfResponseBodyDTO,
+  updateBookshelfBodyDTOSchema,
+  updateBookshelfPathParamsDTOSchema,
+  updateBookshelfResponseBodyDTOSchema,
+} from './schemas/updateBookshelfSchema.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
@@ -36,7 +36,7 @@ import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
 import { ForbiddenAccessError } from '../../../../authModule/application/errors/forbiddenAccessError.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
 import { type CreateBookshelfCommandHandler } from '../../../application/commandHandlers/createBookshelfCommandHandler/createBookshelfCommandHandler.js';
-import { type UpdateBookshelfNameCommandHandler } from '../../../application/commandHandlers/updateBookshelfNameCommandHandler/updateBookshelfNameCommandHandler.js';
+import { type UpdateBookshelfCommandHandler } from '../../../application/commandHandlers/updateBookshelfCommandHandler/updateBookshelfCommandHandler.js';
 import { type FindBookshelfByIdQueryHandler } from '../../../application/queryHandlers/findBookshelfByIdQueryHandler/findBookshelfByIdQueryHandler.js';
 import { type FindBookshelvesByUserIdQueryHandler } from '../../../application/queryHandlers/findBookshelvesByUserIdQueryHandler/findBookshelvesByUserIdQueryHandler.js';
 import { type Bookshelf } from '../../../domain/entities/bookshelf/bookshelf.js';
@@ -52,7 +52,7 @@ export class BookshelfHttpController implements HttpController {
     private readonly findBookshelvesByUserIdQueryHandler: FindBookshelvesByUserIdQueryHandler,
     private readonly findBookshelfByIdQueryHandler: FindBookshelfByIdQueryHandler,
     private readonly createBookshelfCommandHandler: CreateBookshelfCommandHandler,
-    private readonly updateBookshelfNameCommandHandler: UpdateBookshelfNameCommandHandler,
+    private readonly updateBookshelfCommandHandler: UpdateBookshelfCommandHandler,
     private readonly accessControlService: AccessControlService,
   ) {}
 
@@ -120,13 +120,13 @@ export class BookshelfHttpController implements HttpController {
         description: 'Update bookshelf name.',
         schema: {
           request: {
-            body: updateBookshelfNameBodyDTOSchema,
-            pathParams: updateBookshelfNamePathParamsDTOSchema,
+            body: updateBookshelfBodyDTOSchema,
+            pathParams: updateBookshelfPathParamsDTOSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
               description: 'Bookshelf name updated.',
-              schema: updateBookshelfNameResponseBodyDTOSchema,
+              schema: updateBookshelfResponseBodyDTOSchema,
             },
           },
         },
@@ -214,8 +214,8 @@ export class BookshelfHttpController implements HttpController {
   }
 
   private async updateBookshelfName(
-    request: HttpRequest<UpdateBookshelfNameBodyDTO, null, UpdateBookshelfNamePathParamsDTO>,
-  ): Promise<HttpOkResponse<UpdateBookshelfNameResponseBodyDTO>> {
+    request: HttpRequest<UpdateBookshelfBodyDTO, null, UpdateBookshelfPathParamsDTO>,
+  ): Promise<HttpOkResponse<UpdateBookshelfResponseBodyDTO>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
@@ -224,7 +224,7 @@ export class BookshelfHttpController implements HttpController {
 
     const { name } = request.body;
 
-    const { bookshelf } = await this.updateBookshelfNameCommandHandler.execute({
+    const { bookshelf } = await this.updateBookshelfCommandHandler.execute({
       id: bookshelfId,
       name,
       userId,

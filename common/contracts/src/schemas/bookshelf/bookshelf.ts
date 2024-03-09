@@ -3,4 +3,5 @@ export interface Bookshelf {
   readonly name: string;
   readonly userId: string;
   readonly addressId?: string | undefined;
+  readonly imageUrl?: string | undefined;
 }
