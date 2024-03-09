@@ -14,8 +14,7 @@ export interface BookDraft {
   readonly translator?: string | undefined;
   readonly format: BookFormat;
   readonly pages?: number | undefined;
-  readonly frontCoverImageUrl?: string | undefined;
-  readonly backCoverImageUrl?: string | undefined;
+  readonly imageUrl?: string | undefined;
   readonly status: BookStatus;
   readonly bookshelfId: string;
   readonly authors: Author[];
@@ -31,8 +30,7 @@ export interface BookState {
   translator?: string | undefined;
   format: BookFormat;
   pages?: number | undefined;
-  frontCoverImageUrl?: string | undefined;
-  backCoverImageUrl?: string | undefined;
+  imageUrl?: string | undefined;
   status: BookStatus;
   bookshelfId: string;
   authors: Author[];
@@ -71,12 +69,8 @@ export interface SetPagesPayload {
   readonly pages: number;
 }
 
-export interface SetFrontCoverImageUrlPayload {
-  readonly frontCoverImageUrl: string;
-}
-
-export interface SetBackCoverImageUrlPayload {
-  readonly backCoverImageUrl: string;
+export interface SetImageUrlPayload {
+  readonly imageUrl: string;
 }
 
 export interface SetStatusPayload {
@@ -110,8 +104,7 @@ export class Book {
       translator,
       format,
       pages,
-      frontCoverImageUrl,
-      backCoverImageUrl,
+      imageUrl,
       status,
       bookshelfId,
       authors,
@@ -150,12 +143,8 @@ export class Book {
       this.state.pages = pages;
     }
 
-    if (frontCoverImageUrl) {
-      this.state.frontCoverImageUrl = frontCoverImageUrl;
-    }
-
-    if (backCoverImageUrl) {
-      this.state.backCoverImageUrl = backCoverImageUrl;
+    if (imageUrl) {
+      this.state.imageUrl = imageUrl;
     }
   }
 
@@ -199,12 +188,8 @@ export class Book {
     return this.state.pages;
   }
 
-  public getFrontCoverImageUrl(): string | undefined {
-    return this.state.frontCoverImageUrl;
-  }
-
-  public getBackCoverImageUrl(): string | undefined {
-    return this.state.backCoverImageUrl;
+  public getImageUrl(): string | undefined {
+    return this.state.imageUrl;
   }
 
   public getStatus(): BookStatus {
@@ -271,16 +256,10 @@ export class Book {
     this.state.pages = pages;
   }
 
-  public setFrontCoverImageUrl(payload: SetFrontCoverImageUrlPayload): void {
-    const { frontCoverImageUrl } = payload;
+  public setImageUrl(payload: SetImageUrlPayload): void {
+    const { imageUrl } = payload;
 
-    this.state.frontCoverImageUrl = frontCoverImageUrl;
-  }
-
-  public setBackCoverImageUrl(payload: SetBackCoverImageUrlPayload): void {
-    const { backCoverImageUrl } = payload;
-
-    this.state.backCoverImageUrl = backCoverImageUrl;
+    this.state.imageUrl = imageUrl;
   }
 
   public setStatus(payload: SetStatusPayload): void {

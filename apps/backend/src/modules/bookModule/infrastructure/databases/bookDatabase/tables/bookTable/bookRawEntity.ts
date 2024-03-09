@@ -10,8 +10,7 @@ export interface BookRawEntity {
   readonly translator?: string | undefined;
   readonly format: BookFormat;
   readonly pages?: number | undefined;
-  readonly frontCoverImageUrl?: string | undefined;
-  readonly backCoverImageUrl?: string | undefined;
+  readonly imageUrl?: string | undefined;
   readonly status: BookStatus;
   readonly bookshelfId: string;
 }

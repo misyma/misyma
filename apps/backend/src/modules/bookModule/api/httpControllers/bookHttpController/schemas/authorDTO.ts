@@ -1,9 +1,7 @@
 import { type Static, Type } from '@sinclair/typebox';
 
 export const authorDTOSchema = Type.Object({
-  id: Type.String({
-    format: 'uuid',
-  }),
+  id: Type.String(),
   firstName: Type.String(),
   lastName: Type.String(),
 });

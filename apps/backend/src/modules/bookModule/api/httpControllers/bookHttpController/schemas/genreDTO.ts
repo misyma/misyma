@@ -1,8 +1,6 @@
 import { Type } from '@sinclair/typebox';
 
 export const genreDTOSchema = Type.Object({
-  id: Type.String({
-    format: 'uuid',
-  }),
+  id: Type.String(),
   name: Type.String(),
 });

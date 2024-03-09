@@ -260,16 +260,10 @@ export class BookHttpController implements HttpController {
       bookDto.pages = pages;
     }
 
-    const frontCoverImageUrl = book.getFrontCoverImageUrl();
+    const imageUrl = book.getImageUrl();
 
-    if (frontCoverImageUrl) {
-      bookDto.frontCoverImageUrl = frontCoverImageUrl;
-    }
-
-    const backCoverImageUrl = book.getBackCoverImageUrl();
-
-    if (backCoverImageUrl) {
-      bookDto.backCoverImageUrl = backCoverImageUrl;
+    if (imageUrl) {
+      bookDto.imageUrl = imageUrl;
     }
 
     return bookDto;

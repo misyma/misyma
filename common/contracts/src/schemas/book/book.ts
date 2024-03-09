@@ -13,8 +13,7 @@ export interface Book {
   readonly translator?: string;
   readonly format: BookFormat;
   readonly pages?: number;
-  readonly frontCoverImageUrl?: string;
-  readonly backCoverImageUrl?: string;
+  readonly imageUrl?: string;
   readonly status: BookStatus;
   readonly bookshelfId: string;
   readonly authors: Author[];

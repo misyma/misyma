@@ -102,8 +102,7 @@ describe('BookRepositoryImpl', () => {
           translator: createdBook.getTranslator() as string,
           format: createdBook.getFormat(),
           pages: createdBook.getPages() as number,
-          frontCoverImageUrl: createdBook.getFrontCoverImageUrl() as string,
-          backCoverImageUrl: createdBook.getBackCoverImageUrl() as string,
+          imageUrl: createdBook.getImageUrl() as string,
           status: createdBook.getStatus(),
           bookshelfId: createdBook.getBookshelfId(),
           authors: [new Author(author)],
@@ -265,9 +264,7 @@ describe('BookRepositoryImpl', () => {
 
       const newPages = (bookRawEntity.pages as number) + 10;
 
-      const newFrontCoverImageUrl = Generator.imageUrl();
-
-      const newBackCoverImageUrl = Generator.imageUrl();
+      const newImageUrl = Generator.imageUrl();
 
       const newStatus = BookStatus.finishedReading;
 
@@ -289,9 +286,7 @@ describe('BookRepositoryImpl', () => {
 
       book.setPages({ pages: newPages });
 
-      book.setFrontCoverImageUrl({ frontCoverImageUrl: newFrontCoverImageUrl });
-
-      book.setBackCoverImageUrl({ backCoverImageUrl: newBackCoverImageUrl });
+      book.setImageUrl({ imageUrl: newImageUrl });
 
       book.setStatus({ status: newStatus });
 
@@ -314,8 +309,7 @@ describe('BookRepositoryImpl', () => {
         translator: newTranslator,
         format: newFormat,
         pages: newPages,
-        frontCoverImageUrl: newFrontCoverImageUrl,
-        backCoverImageUrl: newBackCoverImageUrl,
+        imageUrl: newImageUrl,
         status: newStatus,
         bookshelfId: newBookshelfId,
         authors: [],
@@ -332,8 +326,7 @@ describe('BookRepositoryImpl', () => {
         translator: newTranslator,
         format: newFormat,
         pages: newPages,
-        frontCoverImageUrl: newFrontCoverImageUrl,
-        backCoverImageUrl: newBackCoverImageUrl,
+        imageUrl: newImageUrl,
         status: newStatus,
         bookshelfId: newBookshelfId,
       });

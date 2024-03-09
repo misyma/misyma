@@ -8,8 +8,7 @@ export interface BookWithJoinsRawEntity {
   readonly translator: string | null;
   readonly format: string;
   readonly pages: number | null;
-  readonly frontCoverImageUrl: string | null;
-  readonly backCoverImageUrl: string | null;
+  readonly imageUrl: string | null;
   readonly status: string;
   readonly bookshelfId: string;
   readonly authorId: string | null;
