@@ -10,6 +10,7 @@ import {
   type FindBookPayload,
   type DeleteBookPayload,
   type SaveBookPayload,
+  type FindBooksPayload,
 } from '../../../domain/repositories/bookRepository/bookRepository.js';
 import { type BookGenresRawEntity } from '../../databases/bookDatabase/tables/bookGenresTable/bookGenresRawEntity.js';
 import { BookGenresTable } from '../../databases/bookDatabase/tables/bookGenresTable/bookGenresTable.js';
@@ -208,7 +209,7 @@ export class BookRepositoryImpl implements BookRepository {
   }
 
   public async findBook(payload: FindBookPayload): Promise<Book | null> {
-    const { id, authorIds: authorsIds, title } = payload;
+    const { id, authorIds, title, bookshelfId } = payload;
 
     let rawEntities: BookWithJoinsRawEntity[];
 
@@ -236,10 +237,10 @@ export class BookRepositoryImpl implements BookRepository {
         .leftJoin(this.booksAuthorsTable.name, (join) => {
           join.on(`${this.booksAuthorsTable.name}.bookId`, '=', `${this.databaseTable.name}.id`);
 
-          if (authorsIds) {
+          if (authorIds) {
             join.andOnIn(
               `${this.booksAuthorsTable.name}.authorId`,
-              this.sqliteDatabaseClient.raw('?', [authorsIds.join(',')]),
+              this.sqliteDatabaseClient.raw('?', [authorIds.join(',')]),
             );
           }
         })
@@ -260,6 +261,10 @@ export class BookRepositoryImpl implements BookRepository {
           if (title) {
             builder.where(`${this.databaseTable.name}.title`, title);
           }
+
+          if (bookshelfId) {
+            builder.where(`"${this.databaseTable.name}.bookshelfId"`, bookshelfId);
+          }
         });
     } catch (error) {
       throw new RepositoryError({
@@ -273,6 +278,65 @@ export class BookRepositoryImpl implements BookRepository {
     }
 
     return this.bookMapper.mapRawWithJoinsToDomain(rawEntities)[0] as Book;
+  }
+
+  public async findBooks(payload: FindBooksPayload): Promise<Book[]> {
+    const { bookshelfId, ids } = payload;
+
+    let rawEntities: BookWithJoinsRawEntity[];
+
+    try {
+      const query = this.sqliteDatabaseClient<BookRawEntity>(this.databaseTable.name)
+        .select([
+          `${this.databaseTable.name}.id`,
+          `${this.databaseTable.name}.title`,
+          `${this.databaseTable.name}.isbn`,
+          `${this.databaseTable.name}.publisher`,
+          `${this.databaseTable.name}.releaseYear`,
+          `${this.databaseTable.name}.language`,
+          `${this.databaseTable.name}.translator`,
+          `${this.databaseTable.name}.format`,
+          `${this.databaseTable.name}.pages`,
+          `${this.databaseTable.name}.frontCoverImageUrl`,
+          `${this.databaseTable.name}.backCoverImageUrl`,
+          `${this.databaseTable.name}.status`,
+          `${this.databaseTable.name}.bookshelfId`,
+          `${this.authorTable.name}.id as authorId`,
+          `${this.genresTable.name}.name as genreName`,
+          `${this.genresTable.name}.id as genreId`,
+          'firstName',
+          'lastName',
+        ])
+        .leftJoin(this.booksAuthorsTable.name, (join) => {
+          join.on(`${this.booksAuthorsTable.name}.bookId`, '=', `${this.databaseTable.name}.id`);
+        })
+        .leftJoin(this.authorTable.name, (join) => {
+          join.on(`${this.authorTable.name}.id`, '=', `${this.booksAuthorsTable.name}.authorId`);
+        })
+        .leftJoin(this.bookGenresTable.name, (join) => {
+          join.on(`${this.bookGenresTable.name}.bookId`, '=', `${this.databaseTable.name}.id`);
+        })
+        .leftJoin(this.genresTable.name, (join) => {
+          join.on(`${this.genresTable.name}.id`, `=`, `${this.bookGenresTable.name}.genreId`);
+        });
+
+      if (ids.length > 0) {
+        query.whereIn(`${this.databaseTable.name}.id`, ids);
+      }
+
+      if (bookshelfId) {
+        query.where(`${this.databaseTable.name}.bookshelfId`, bookshelfId);
+      }
+
+      rawEntities = await query;
+    } catch (error) {
+      throw new RepositoryError({
+        entity: 'Book',
+        operation: 'find',
+      });
+    }
+
+    return this.bookMapper.mapRawWithJoinsToDomain(rawEntities) as Book[];
   }
 
   public async deleteBook(payload: DeleteBookPayload): Promise<void> {

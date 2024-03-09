@@ -12,6 +12,11 @@ import {
   type DeleteBookResponseBodyDTO,
 } from './schemas/deleteBookSchema.js';
 import {
+  type FindBooksByBookshelfIdPathParamsDTO,
+  type FindBooksByBookshelfIdResponseBodyDTO,
+  findBooksByBookshelfIdResponseBodyDTOSchema,
+} from './schemas/findBooksByBookshelfIdSchema.js';
+import {
   findBookResponseBodyDTOSchema,
   type FindBookResponseBodyDTO,
   type FindBookPathParamsDTO,
@@ -41,6 +46,7 @@ import { type CreateBookCommandHandler } from '../../../application/commandHandl
 import { type DeleteBookCommandHandler } from '../../../application/commandHandlers/deleteBookCommandHandler/deleteBookCommandHandler.js';
 import { type UpdateBookGenresCommandHandler } from '../../../application/commandHandlers/updateBookGenresCommandHandler/updateBookGenresCommandHandler.js';
 import { type FindBookQueryHandler } from '../../../application/queryHandlers/findBookQueryHandler/findBookQueryHandler.js';
+import { type FindBooksQueryHandler } from '../../../application/queryHandlers/findBooksQueryHandler/findBooksQueryHandler.js';
 import { type Book } from '../../../domain/entities/book/book.js';
 
 export class BookHttpController implements HttpController {
@@ -51,6 +57,7 @@ export class BookHttpController implements HttpController {
     private readonly updateBookGenresCommandHandler: UpdateBookGenresCommandHandler,
     private readonly deleteBookCommandHandler: DeleteBookCommandHandler,
     private readonly findBookQueryHandler: FindBookQueryHandler,
+    private readonly findBooksQueryHandler: FindBooksQueryHandler,
     private readonly accessControlService: AccessControlService,
   ) {}
 
@@ -93,6 +100,25 @@ export class BookHttpController implements HttpController {
         securityMode: SecurityMode.bearer,
         tags: ['Book'],
         description: 'Find book by id.',
+      }),
+      new HttpRoute({
+        method: HttpMethodName.get,
+        path: '/bookshelf/:bookshelfId',
+        handler: this.findBooksByBookshelfId.bind(this),
+        description: 'Find books by bookshelf id.',
+        schema: {
+          request: {
+            pathParams: findBookPathParamsDTOSchema,
+          },
+          response: {
+            [HttpStatusCode.ok]: {
+              schema: findBooksByBookshelfIdResponseBodyDTOSchema,
+              description: 'Books found.',
+            },
+          },
+        },
+        tags: ['Book'],
+        securityMode: SecurityMode.bearer,
       }),
       new HttpRoute({
         method: HttpMethodName.delete,
@@ -191,6 +217,29 @@ export class BookHttpController implements HttpController {
     return {
       statusCode: HttpStatusCode.ok,
       body: this.mapBookToBookDTO(book),
+    };
+  }
+
+  private async findBooksByBookshelfId(
+    request: HttpRequest<undefined, undefined, FindBooksByBookshelfIdPathParamsDTO>,
+  ): Promise<HttpOkResponse<FindBooksByBookshelfIdResponseBodyDTO>> {
+    const { userId } = await this.accessControlService.verifyBearerToken({
+      authorizationHeader: request.headers['authorization'],
+    });
+
+    const { bookshelfId } = request.pathParams;
+
+    const { books } = await this.findBooksQueryHandler.execute({
+      ids: [],
+      bookshelfId,
+      userId,
+    });
+
+    return {
+      body: {
+        data: books.map((book) => this.mapBookToBookDTO(book)),
+      },
+      statusCode: HttpStatusCode.ok,
     };
   }
 

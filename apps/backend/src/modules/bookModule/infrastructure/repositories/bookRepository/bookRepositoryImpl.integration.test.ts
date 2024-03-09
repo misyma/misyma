@@ -79,7 +79,7 @@ describe('BookRepositoryImpl', () => {
     await sqliteDatabaseClient.destroy();
   });
 
-  describe('Save', () => {
+  describe('saveBook', () => {
     it('creates a book', async () => {
       const user = await userTestUtils.createAndPersist();
 
@@ -469,7 +469,7 @@ describe('BookRepositoryImpl', () => {
     });
   });
 
-  describe('Find', () => {
+  describe('findBook', () => {
     it('finds book by id', async () => {
       const user = await userTestUtils.createAndPersist();
 
@@ -523,7 +523,124 @@ describe('BookRepositoryImpl', () => {
     });
   });
 
-  describe('Delete', () => {
+  describe('findBooks', () => {
+    it('returns Books from a given Bookshelf', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const bookshelf1 = await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+        },
+      });
+
+      const bookshelf2 = await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+        },
+      });
+
+      const author1 = await authorTestUtils.createAndPersist();
+
+      const author2 = await authorTestUtils.createAndPersist();
+
+      const book1 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author1.id],
+          book: {
+            title: 'test1',
+            bookshelfId: bookshelf1.id,
+          },
+        },
+      });
+
+      const book2 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author2.id],
+          book: {
+            title: 'test2',
+            bookshelfId: bookshelf1.id,
+          },
+        },
+      });
+
+      await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author1.id],
+          book: {
+            title: 'test3',
+            bookshelfId: bookshelf2.id,
+          },
+        },
+      });
+
+      const books = await bookRepository.findBooks({
+        ids: [],
+        bookshelfId: bookshelf1.id,
+      });
+
+      expect(books.length).toEqual(2);
+
+      books.forEach((book) => {
+        expect(book.getId()).oneOf([book1.id, book2.id]);
+      });
+    });
+
+    it('returns an empty array - given no Books', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const bookshelf = await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+        },
+      });
+
+      const books = await bookRepository.findBooks({
+        ids: [],
+        bookshelfId: bookshelf.id,
+      });
+
+      expect(books).toHaveLength(0);
+    });
+
+    it('returns an empty array - given no Books with ids', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const bookshelf = await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+        },
+      });
+
+      const nonExistentBookId1 = Generator.uuid();
+
+      const nonExistentBookId2 = Generator.uuid();
+
+      await bookTestUtils.createAndPersist({
+        input: {
+          book: {
+            bookshelfId: bookshelf.id,
+          },
+        },
+      });
+
+      await bookTestUtils.createAndPersist({
+        input: {
+          book: {
+            bookshelfId: bookshelf.id,
+          },
+        },
+      });
+
+      const books = await bookRepository.findBooks({
+        ids: [nonExistentBookId1, nonExistentBookId2],
+        bookshelfId: bookshelf.id,
+      });
+
+      expect(books.length).toEqual(0);
+    });
+  });
+
+  describe('delete', () => {
     it('deletes book', async () => {
       const user = await userTestUtils.createAndPersist();
 
