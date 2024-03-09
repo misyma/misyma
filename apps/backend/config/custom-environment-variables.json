@@ -3,36 +3,12 @@
     "username": "ADMIN_USERNAME",
     "password": "ADMIN_PASSWORD"
   },
-  "logger": {
-    "level": "LOGGER_LEVEL"
-  },
-  "database": {
-    "path": "DATABASE_PATH"
-  },
-  "queues": {
-    "database": {
-      "path": "QUEUE_DATABASE_PATH"
-    }
-  },
-  "auth": {
-    "hash": {
-      "saltRounds": "AUTH_HASH_SALT_ROUNDS"
-    },
-    "jwt": {
-      "secret": "AUTH_JWT_SECRET"
-    },
-    "accessToken": {
-      "expiresIn": "AUTH_ACCESS_TOKEN_EXPIRES_IN"
-    },
-    "refreshToken": {
-      "expiresIn": "AUTH_REFRESH_TOKEN_EXPIRES_IN"
-    },
-    "emailVerificationToken": {
-      "expiresIn": "AUTH_EMAIL_VERIFICATION_TOKEN_EXPIRES_IN"
-    },
-    "resetPasswordToken": {
-      "expiresIn": "AUTH_RESET_PASSWORD_TOKEN_EXPIRES_IN"
-    }
+  "logLevel": "LOG_LEVEL",
+  "databasePath": "DATABASE_PATH",
+  "queueDatabasePath": "QUEUE_DATABASE_PATH",
+  "hashSaltRounds": "HASH_SALT_ROUNDS",
+  "token": {
+    "secret": "TOKEN_SECRET"
   },
   "sendGrid": {
     "apiKey": "SENDGRID_API_KEY",

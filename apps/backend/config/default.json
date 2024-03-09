@@ -3,34 +3,22 @@
     "username": null,
     "password": null
   },
-  "logger": {
-    "level": "debug"
-  },
-  "database": {
-    "path": null
-  },
-  "queues": {
-    "database": {
-      "path": null
-    }
-  },
-  "auth": {
-    "hash": {
-      "saltRounds": null
-    },
-    "jwt": {
-      "secret": null
-    },
-    "accessToken": {
+  "logLevel": "debug",
+  "databasePath": null,
+  "queueDatabasePath": null,
+  "hashSaltRounds": null,
+  "token": {
+    "secret": null,
+    "access": {
       "expiresIn": 86400
     },
-    "refreshToken": {
+    "refresh": {
       "expiresIn": 604800
     },
-    "emailVerificationToken": {
-      "expiresIn":  86400
+    "emailVerification": {
+      "expiresIn": 86400
     },
-    "resetPasswordToken": {
+    "resetPassword": {
       "expiresIn": 3600
     }
   },
@@ -38,7 +26,5 @@
     "apiKey": null,
     "senderEmail": "misyma@misyma.com"
   },
-  "frontend": {
-    "url": "https://misyma.com"
-  }
+  "frontendUrl": "https://misyma.com"
 }
