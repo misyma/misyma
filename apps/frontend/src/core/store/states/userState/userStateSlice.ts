@@ -39,6 +39,7 @@ export const userStateSlice = createSlice({
       accessToken: state.accessToken,
       refreshToken: state.refreshToken,
     }),
+    selectCurrentUserId: (state) => state.currentUser?.id
   }
 });
 

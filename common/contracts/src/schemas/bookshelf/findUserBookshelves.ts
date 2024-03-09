@@ -5,5 +5,5 @@ export interface FindBookshelvesByUserIdParams {
 }
 
 export interface FindBookshelvesByUserIdResponseBody {
-  readonly bookshelves: Bookshelf[];
+  readonly data: Bookshelf[];
 }

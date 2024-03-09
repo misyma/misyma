@@ -4,7 +4,7 @@ import { rootRoute } from '../root';
 import { FC } from 'react';
 import { SetNewPasswordForm } from './components/setNewPasswordForm/setNewPasswordForm';
 import { z } from 'zod';
-import { DefaultFormLayout } from '../../layouts/defaultFormLayout';
+import { DefaultFormLayout } from '../../layouts/default/defaultFormLayout';
 
 export const SetNewPasswordPage: FC = () => {
   const navigate = useNavigate();

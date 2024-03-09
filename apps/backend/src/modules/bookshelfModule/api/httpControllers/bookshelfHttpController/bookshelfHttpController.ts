@@ -157,7 +157,7 @@ export class BookshelfHttpController implements HttpController {
     return {
       statusCode: HttpStatusCode.ok,
       body: {
-        bookshelves: bookshelves.map((bookshelf) => this.mapBookshelfToBookshelfDTO({ bookshelf })),
+        data: bookshelves.map((bookshelf) => this.mapBookshelfToBookshelfDTO({ bookshelf })),
       },
     };
   }
