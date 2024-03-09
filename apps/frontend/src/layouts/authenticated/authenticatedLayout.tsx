@@ -10,7 +10,7 @@ export const AuthenticatedLayout: FC<Props> = ({ children }) => {
   return (
     <>
       <Navbar />
-      <div className='pt-32'>
+      <div className='pt-40'>
         {children}
       </div>
       <Toaster />

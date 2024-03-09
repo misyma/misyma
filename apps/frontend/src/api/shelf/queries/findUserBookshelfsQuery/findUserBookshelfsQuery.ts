@@ -4,13 +4,11 @@ import { FindBookshelvesByUserIdParams, FindBookshelvesByUserIdResponseBody } fr
 import { HttpService } from '../../../../core/services/httpService/httpService';
 import { useQuery } from '@tanstack/react-query';
 
-export const useFindUserBookshelfsQuery = () => {
+export const useFindUserBookshelfsQuery = (userId: string | undefined) => {
   const { accessToken } = useSelector(userStateSelectors.selectCurrentUserTokens) as {
     accessToken: string;
     refreshToken: string;
   };
-
-  const userId = useSelector(userStateSelectors.selectCurrentUserId)
 
   const findUserBookshelfs = async (values: FindBookshelvesByUserIdParams) => {
     const { userId } = values;
@@ -30,7 +28,7 @@ export const useFindUserBookshelfsQuery = () => {
   };
 
   return useQuery<FindBookshelvesByUserIdResponseBody>({
-    queryKey: ['findUserBookshelfs'],
+    queryKey: ['findUserBookshelfs', userId],
     queryFn: () => findUserBookshelfs({ userId: userId as string }), // todo: improve
     enabled: !!accessToken || !!userId,
   })

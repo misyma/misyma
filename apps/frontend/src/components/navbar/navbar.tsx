@@ -30,10 +30,10 @@ export const Navbar: FC = () => {
         </li>
         <li>
           <Link
-            to={'/test1'}
+            to={'/shelves'}
             className="[&.active]:font-bold"
           >
-            Test1
+            Moje półki
           </Link>
         </li>
         <li>
