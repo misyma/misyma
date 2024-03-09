@@ -16,7 +16,7 @@ export class BookshelfTestUtils {
 
   private readonly table = new BookshelfTable();
 
-  private readonly bookshelfTestFactory = BookshelfTestFactory.createFactory();
+  private readonly bookshelfTestFactory = new BookshelfTestFactory();
 
   public async createAndPersist(payload: CreateAndPersistPayload = { input: {} }): Promise<BookshelfRawEntity> {
     const { input } = payload;
@@ -29,6 +29,7 @@ export class BookshelfTestUtils {
         name: bookshelf.getName(),
         userId: bookshelf.getUserId(),
         addressId: bookshelf.getAddressId(),
+        imageUrl: bookshelf.getImageUrl(),
       },
       '*',
     );

@@ -11,6 +11,7 @@ export class M1CreateBookshelfTableMigration implements Migration {
     name: 'name',
     userId: 'userId',
     addressId: 'addressId',
+    imageUrl: 'imageUrl',
   } as const;
 
   public async up(databaseClient: DatabaseClient): Promise<void> {
@@ -23,9 +24,13 @@ export class M1CreateBookshelfTableMigration implements Migration {
 
       table.text(this.columns.addressId).nullable();
 
+      table.text(this.columns.imageUrl).nullable();
+
       table.foreign(this.columns.userId).references('id').inTable('users').onDelete('CASCADE');
 
       table.foreign(this.columns.addressId).references('id').inTable('addresses').onDelete('SET NULL');
+
+      table.unique([this.columns.userId, this.columns.name]);
     });
   }
 

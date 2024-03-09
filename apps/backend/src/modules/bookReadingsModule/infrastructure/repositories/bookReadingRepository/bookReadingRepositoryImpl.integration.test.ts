@@ -24,7 +24,7 @@ describe('BookReadingRepositoryImpl', () => {
 
   let userTestUtils: UserTestUtils;
 
-  const bookReadingTestFactory = BookReadingTestFactory.createFactory();
+  const bookReadingTestFactory = new BookReadingTestFactory();
 
   beforeEach(() => {
     const container = TestContainer.create();

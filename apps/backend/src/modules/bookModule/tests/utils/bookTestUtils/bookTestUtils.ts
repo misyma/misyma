@@ -6,7 +6,7 @@ import { type BooksAuthorsRawEntity } from '../../../infrastructure/databases/bo
 import { BooksAuthorsTable } from '../../../infrastructure/databases/bookDatabase/tables/booksAuthorsTable/booksAuthorsTable.js';
 import { type BookRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/bookTable/bookRawEntity.js';
 import { BookTable } from '../../../infrastructure/databases/bookDatabase/tables/bookTable/bookTable.js';
-import { BookRawEntityTestFactory } from '../../factories/bookRawEntityTestFactory/bookRawEntityTestFactory.js';
+import { BookTestFactory } from '../../factories/bookTestFactory/bookTestFactory.js';
 
 interface CreateAndPersistPayload {
   readonly input?: {
@@ -41,14 +41,14 @@ export class BookTestUtils {
   private readonly bookTable = new BookTable();
   private readonly booksAuthorsTable = new BooksAuthorsTable();
   private readonly bookGenresTable = new BookGenresTable();
-  private readonly bookTestFactory = new BookRawEntityTestFactory();
+  private readonly bookTestFactory = new BookTestFactory();
 
   public constructor(private readonly sqliteDatabaseClient: SqliteDatabaseClient) {}
 
   public async createAndPersist(payload: CreateAndPersistPayload = {}): Promise<BookRawEntity> {
     const { input } = payload;
 
-    const book = this.bookTestFactory.create(input?.book);
+    const book = this.bookTestFactory.createRaw(input?.book);
 
     let rawEntities: BookRawEntity[] = [];
 

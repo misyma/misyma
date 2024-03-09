@@ -12,7 +12,7 @@ export class GenreTestFactory {
     };
   }
 
-  public createEntity(overrides: Partial<GenreState> = {}): Genre {
+  public create(overrides: Partial<GenreState> = {}): Genre {
     return new Genre({
       id: Generator.uuid(),
       name: Generator.word(),

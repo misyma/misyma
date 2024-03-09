@@ -16,7 +16,7 @@ export class BookReadingTestUtils {
 
   private readonly table = new BookReadingTable();
 
-  private readonly bookReadingTestFactory = BookReadingTestFactory.createFactory();
+  private readonly bookReadingTestFactory = new BookReadingTestFactory();
 
   public async createAndPersist(payload: CreateAndPersistPayload = { input: {} }): Promise<BookReadingRawEntity> {
     const { input } = payload;

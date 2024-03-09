@@ -31,7 +31,7 @@ export class CreateBookCommandHandlerImpl implements CreateBookCommandHandler {
       authorIds,
     });
 
-    const bookshelf = await this.bookshelfRepository.findBookshelf({ id: bookshelfId });
+    const bookshelf = await this.bookshelfRepository.findBookshelf({ where: { id: bookshelfId } });
 
     if (!bookshelf) {
       throw new ResourceNotFoundError({

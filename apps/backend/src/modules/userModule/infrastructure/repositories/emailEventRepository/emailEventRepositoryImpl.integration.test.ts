@@ -16,7 +16,7 @@ describe('EmailEventRepositoryImpl', () => {
 
   let emailEventTestUtils: EmailEventTestUtils;
 
-  const emailEventTestFactory = EmailEventTestFactory.createFactory();
+  const emailEventTestFactory = new EmailEventTestFactory();
 
   beforeEach(() => {
     const container = TestContainer.create();

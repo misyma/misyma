@@ -16,22 +16,18 @@ export class FindBookshelvesByUserIdQueryHandlerImpl implements FindBookshelvesB
   public async execute(payload: FindBookshelvesByUserIdPayload): Promise<FindBookshelvesByUserIdResult> {
     const { userId } = payload;
 
-    const userExists = await this.userRepository.findUser({
+    const existingUser = await this.userRepository.findUser({
       id: userId,
     });
 
-    if (!userExists) {
+    if (!existingUser) {
       throw new ResourceNotFoundError({
         name: 'User',
       });
     }
 
-    const bookshelves = await this.bookshelfRepository.findBookshelves({
-      userId,
-    });
+    const bookshelves = await this.bookshelfRepository.findBookshelves({ userId });
 
-    return {
-      bookshelves,
-    };
+    return { bookshelves };
   }
 }

@@ -25,7 +25,7 @@ describe('CreateBookReadingCommandHandlerImpl', () => {
 
   let userTestUtils: UserTestUtils;
 
-  const bookReadingTestFactory = BookReadingTestFactory.createFactory();
+  const bookReadingTestFactory = new BookReadingTestFactory();
 
   beforeEach(async () => {
     const container = TestContainer.create();
