@@ -65,6 +65,7 @@ export const SendResetPasswordEmailPage: FC = () => {
                         toast({
                           description: 'Wiadomość email została wysłana ponownie.',
                           duration: 3000,
+                          variant: 'success'
                         });
                       },
                       onError: () => {

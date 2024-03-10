@@ -49,6 +49,7 @@ export const RegisterPage: FC = () => {
                         toast({
                           title: 'Wiadomość email została wysłana ponownie.',
                           duration: 3000,
+                          variant: 'success'
                         });
                       },
                       onError: () => {

@@ -28,6 +28,7 @@ module.exports = {
           900: '#2e3f81',
           950: '#1b254b',
         },
+        success: '#538c50',
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
