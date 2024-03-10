@@ -62,7 +62,14 @@ export class HttpRouter {
     const { routes, basePath } = payload;
 
     routes.map((httpRoute) => {
-      const { method, path: controllerPath, tags, description, preValidation: preValidationHook } = httpRoute;
+      const {
+        method,
+        path: controllerPath,
+        tags,
+        description,
+        preValidation: preValidationHook,
+        securityMode,
+      } = httpRoute;
 
       const path = this.normalizePath({ path: `/${this.rootPath}/${basePath}/${controllerPath}` });
 
@@ -176,24 +183,13 @@ export class HttpRouter {
             return;
           }
 
-          if (error instanceof Error) {
-            this.loggerService.error({
-              message: 'Caught an unknown error in the HTTP router.',
-              originalErrorMessage: error.message,
-              originalErrorStack: error.stack,
-              path: fastifyRequest.url,
-              method,
-              statusCode: fastifyReply.statusCode,
-            });
-          } else {
-            this.loggerService.error({
-              message: 'Caught an unknown error in the HTTP router.',
-              path: fastifyRequest.url,
-              method,
-              statusCode: fastifyReply.statusCode,
-              error,
-            });
-          }
+          this.loggerService.error({
+            message: 'Caught an unknown error in the HTTP router.',
+            path: fastifyRequest.url,
+            method,
+            statusCode: fastifyReply.statusCode,
+            error,
+          });
 
           fastifyReply.status(HttpStatusCode.internalServerError).send({
             name: 'InternalServerError',
@@ -212,6 +208,7 @@ export class HttpRouter {
           description,
           tags,
           ...this.mapToFastifySchema(httpRoute.schema),
+          ...(securityMode ? { security: [{ [securityMode]: [] }] } : {}),
         },
         ...(preValidationHook
           ? {

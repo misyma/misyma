@@ -12,6 +12,7 @@ import { type Server } from 'http';
 import { InputNotValidError } from '../../common/errors/inputNotValidError.js';
 import { type HttpController } from '../../common/types/http/httpController.js';
 import { HttpStatusCode } from '../../common/types/http/httpStatusCode.js';
+import { SecurityMode } from '../../common/types/http/securityMode.js';
 import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
 import { type AuthorHttpController } from '../../modules/authorModule/api/httpControllers/authorHttpController/authorHttpController.js';
@@ -150,22 +151,16 @@ export class HttpServer {
         },
         components: {
           securitySchemes: {
-            bearerAuth: {
+            [SecurityMode.bearerToken]: {
               type: 'http',
               scheme: 'bearer',
             },
-            basicAuth: {
+            [SecurityMode.basicAuth]: {
               type: 'http',
               scheme: 'basic',
             },
           },
         },
-        security: [
-          {
-            bearerAuth: [],
-            basicAuth: [],
-          },
-        ],
       },
     });
 

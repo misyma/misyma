@@ -86,7 +86,7 @@ export class BookReadingHttpController implements HttpController {
           },
         },
         tags: ['BookReading'],
-        securityMode: SecurityMode.bearer,
+        securityMode: SecurityMode.bearerToken,
       }),
       new HttpRoute({
         method: HttpMethodName.get,
