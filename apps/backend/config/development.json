@@ -5,7 +5,6 @@
   },
   "databasePath": "data/dev.db",
   "queueDatabasePath": "data/dev-queue.db",
-  "hashSaltRounds": 10,
   "token": {
     "secret": "12321313423565365654546654121890008"
   },
