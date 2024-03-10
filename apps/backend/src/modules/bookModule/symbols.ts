@@ -8,6 +8,7 @@ export const symbols = {
   updateBookGenresCommandHandler: Symbol('updateBookGenresCommandHandler'),
 
   findBookQueryHandler: Symbol('findBookQueryHandler'),
+  findBooksQueryHandler: Symbol('findBooksQueryHandler'),
 
   genreRepository: Symbol('genreRepository'),
   genreMapper: Symbol('genreMapper'),

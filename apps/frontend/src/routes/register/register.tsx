@@ -3,7 +3,7 @@ import { Link, createRoute } from '@tanstack/react-router';
 import { rootRoute } from '../root';
 import { FC, useState } from 'react';
 import { RegisterUserForm } from './components/registerUserForm/registerUserForm';
-import { DefaultFormLayout } from '../../layouts/defaultFormLayout';
+import { DefaultFormLayout } from '../../layouts/default/defaultFormLayout';
 import { useSendVerificationEmailMutation } from '../../api/user/mutations/sendVerificationEmailMutation/sendVerificationEmailMutation';
 import { useToast } from '@/components/ui/use-toast';
 
