@@ -1,6 +1,6 @@
 import { type BookMapper } from './bookMapper/bookMapper.js';
-import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
+import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
+import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { AuthorTable } from '../../../../authorModule/infrastructure/databases/tables/authorTable/authorTable.js';
@@ -102,6 +102,7 @@ export class BookRepositoryImpl implements BookRepository {
       throw new RepositoryError({
         entity: 'Book',
         operation: 'create',
+        error,
       });
     }
 

@@ -1,6 +1,6 @@
 import { type BookFormat, type BookStatus } from '@common/contracts';
 
-import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
+import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type Author } from '../../../../authorModule/domain/entities/author/author.js';
 import { type Genre } from '../genre/genre.js';
 

@@ -1,5 +1,5 @@
 import { type EmailEventMapper } from './mappers/emailEventMapper/emailEventMapper.js';
-import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
+import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { type EmailEvent } from '../../../domain/entities/emailEvent/emailEvent.js';

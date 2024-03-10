@@ -3,7 +3,7 @@ import {
   type CreateGenrePayload,
   type CreateGenreResult,
 } from './createGenreCommandHandler.js';
-import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
+import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type GenreRepository } from '../../../domain/repositories/genreRepository/genreRepository.js';
 

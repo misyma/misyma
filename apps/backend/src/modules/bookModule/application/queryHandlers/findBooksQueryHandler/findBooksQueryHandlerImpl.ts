@@ -1,5 +1,5 @@
 import { type FindBooksPayload, type FindBooksQueryHandler, type FindBooksResult } from './findBooksQueryHandler.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
+import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type BookshelfRepository } from '../../../../bookshelfModule/domain/repositories/bookshelfRepository/bookshelfRepository.js';
 import { type BookRepository } from '../../../domain/repositories/bookRepository/bookRepository.js';
 

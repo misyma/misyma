@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import { PasswordValidationServiceImpl } from './passwordValidationServiceImpl.js';
-import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
+import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 
 describe('PasswordValidationServiceImpl', () => {
   let passwordValidationService: PasswordValidationServiceImpl;

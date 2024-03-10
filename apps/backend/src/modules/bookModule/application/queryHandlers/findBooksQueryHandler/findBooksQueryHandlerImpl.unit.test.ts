@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { DummyFactory, Generator, SpyFactory } from '@common/tests';
 
 import { FindBooksQueryHandlerImpl } from './findBooksQueryHandlerImpl.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
+import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type BookshelfRepository } from '../../../../bookshelfModule/domain/repositories/bookshelfRepository/bookshelfRepository.js';
 import { BookshelfTestFactory } from '../../../../bookshelfModule/tests/factories/bookshelfTestFactory/bookshelfTestFactory.js';
 import { type BookRepository } from '../../../domain/repositories/bookRepository/bookRepository.js';
@@ -11,7 +11,7 @@ import { type BookRepository } from '../../../domain/repositories/bookRepository
 describe('FindBooksQueryHandlerImpl', () => {
   const spyFactory = new SpyFactory(vi);
 
-  const bookshelfTestFactory = BookshelfTestFactory.createFactory();
+  const bookshelfTestFactory = new BookshelfTestFactory();
 
   let bookRepositoryMock: BookRepository;
 

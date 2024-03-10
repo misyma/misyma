@@ -1,4 +1,4 @@
-import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
+import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { BookReading, type BookReadingState } from '../../../domain/entities/bookReading/bookReading.js';

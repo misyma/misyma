@@ -3,7 +3,7 @@ import {
   type CreateAuthorCommandHandlerPayload,
   type CreateAuthorCommandHandlerResult,
 } from './createAuthorCommandHandler.js';
-import { ResourceAlreadyExistsError } from '../../../../../common/errors/common/resourceAlreadyExistsError.js';
+import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type AuthorRepository } from '../../../../authorModule/domain/repositories/authorRepository/authorRepository.js';
 

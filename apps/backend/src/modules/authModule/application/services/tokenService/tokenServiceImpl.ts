@@ -9,7 +9,7 @@ import {
   type DecodeTokenPayload,
   type DecodeTokenResult,
 } from './tokenService.js';
-import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
+import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type Config } from '../../../../../core/config.js';
 
 export class TokenServiceImpl implements TokenService {

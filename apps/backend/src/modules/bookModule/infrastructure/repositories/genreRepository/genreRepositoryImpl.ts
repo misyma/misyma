@@ -1,5 +1,5 @@
 import { type GenreMapper } from './genreMapper/genreMapper.js';
-import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
+import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { Genre, type GenreState } from '../../../domain/entities/genre/genre.js';

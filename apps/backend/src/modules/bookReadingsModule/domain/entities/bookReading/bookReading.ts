@@ -1,4 +1,4 @@
-import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
+import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 
 export interface BookReadingDraft {
   readonly id: string;

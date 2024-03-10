@@ -5,11 +5,11 @@ import { TypeClone } from '@sinclair/typebox';
 import { type FastifyInstance, type FastifyReply, type FastifyRequest, type FastifySchema } from 'fastify';
 
 import { ApplicationError } from '../../common/errors/base/applicationError.js';
-import { BaseError } from '../../common/errors/base/baseError.js';
 import { DomainError } from '../../common/errors/base/domainError.js';
-import { OperationNotValidError } from '../../common/errors/common/operationNotValidError.js';
-import { ResourceAlreadyExistsError } from '../../common/errors/common/resourceAlreadyExistsError.js';
-import { ResourceNotFoundError } from '../../common/errors/common/resourceNotFoundError.js';
+import { BaseError } from '../../common/errors/baseError.js';
+import { OperationNotValidError } from '../../common/errors/operationNotValidError.js';
+import { ResourceAlreadyExistsError } from '../../common/errors/resourceAlreadyExistsError.js';
+import { ResourceNotFoundError } from '../../common/errors/resourceNotFoundError.js';
 import { type HttpController } from '../../common/types/http/httpController.js';
 import { HttpHeader } from '../../common/types/http/httpHeader.js';
 import { HttpMediaType } from '../../common/types/http/httpMediaType.js';

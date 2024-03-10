@@ -3,7 +3,7 @@ import {
   type FindUserQueryHandlerPayload,
   type FindUserQueryHandlerResult,
 } from './findUserQueryHandler.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
+import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
 
 export class FindUserQueryHandlerImpl implements FindUserQueryHandler {

@@ -1,5 +1,5 @@
 import { type BlacklistTokenMapper } from './blacklistTokenMapper/blacklistTokenMapper.js';
-import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
+import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { type BlacklistToken } from '../../../domain/entities/blacklistToken/blacklistToken.js';
