@@ -35,6 +35,7 @@ export class EmailEventRepositoryImpl implements EmailEventRepository {
       throw new RepositoryError({
         entity: 'EmailEvent',
         operation: 'find',
+        error,
       });
     }
 
@@ -52,6 +53,7 @@ export class EmailEventRepositoryImpl implements EmailEventRepository {
       throw new RepositoryError({
         entity: 'EmailEvent',
         operation: 'find',
+        error,
       });
     }
 
@@ -69,6 +71,7 @@ export class EmailEventRepositoryImpl implements EmailEventRepository {
       throw new RepositoryError({
         entity: 'EmailEvent',
         operation: 'update',
+        error,
       });
     }
   }
@@ -86,6 +89,7 @@ export class EmailEventRepositoryImpl implements EmailEventRepository {
       throw new RepositoryError({
         entity: 'EmailEvent',
         operation: 'create',
+        error,
       });
     }
   }
@@ -99,6 +103,7 @@ export class EmailEventRepositoryImpl implements EmailEventRepository {
       throw new RepositoryError({
         entity: 'EmailEvent',
         operation: 'delete',
+        error,
       });
     }
   }
