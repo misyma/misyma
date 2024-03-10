@@ -1,6 +1,6 @@
 import { type BookMapper } from './bookMapper/bookMapper.js';
-import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
+import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
+import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { AuthorTable } from '../../../../authorModule/infrastructure/databases/tables/authorTable/authorTable.js';
@@ -102,6 +102,7 @@ export class BookRepositoryImpl implements BookRepository {
       throw new RepositoryError({
         entity: 'Book',
         operation: 'create',
+        error,
       });
     }
 
@@ -202,6 +203,7 @@ export class BookRepositoryImpl implements BookRepository {
       throw new RepositoryError({
         entity: 'Book',
         operation: 'update',
+        error,
       });
     }
 
@@ -270,6 +272,7 @@ export class BookRepositoryImpl implements BookRepository {
       throw new RepositoryError({
         entity: 'Book',
         operation: 'find',
+        error,
       });
     }
 
@@ -297,8 +300,7 @@ export class BookRepositoryImpl implements BookRepository {
           `${this.databaseTable.name}.translator`,
           `${this.databaseTable.name}.format`,
           `${this.databaseTable.name}.pages`,
-          `${this.databaseTable.name}.frontCoverImageUrl`,
-          `${this.databaseTable.name}.backCoverImageUrl`,
+          `${this.databaseTable.name}.imageUrl`,
           `${this.databaseTable.name}.status`,
           `${this.databaseTable.name}.bookshelfId`,
           `${this.authorTable.name}.id as authorId`,
@@ -333,6 +335,7 @@ export class BookRepositoryImpl implements BookRepository {
       throw new RepositoryError({
         entity: 'Book',
         operation: 'find',
+        error,
       });
     }
 
@@ -359,6 +362,7 @@ export class BookRepositoryImpl implements BookRepository {
       throw new RepositoryError({
         entity: 'Book',
         operation: 'delete',
+        error,
       });
     }
   }

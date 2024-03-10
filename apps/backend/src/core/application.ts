@@ -1,5 +1,5 @@
 import { ApplicationHttpController } from './api/httpControllers/applicationHttpController/applicationHttpController.js';
-import { ConfigProvider } from './configProvider.js';
+import { type Config, ConfigFactory } from './config.js';
 import { type SqliteDatabaseClient } from './database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { SqliteDatabaseClientFactory } from './database/sqliteDatabaseClient/sqliteDatabaseClientFactory.js';
 import { HttpServer } from './httpServer/httpServer.js';
@@ -59,18 +59,6 @@ export class Application {
   }
 
   public static createContainer(): DependencyInjectionContainer {
-    const configProvider = new ConfigProvider();
-
-    const mainDatabasePath = configProvider.getSqliteDatabasePath();
-
-    const queuesDatabasePath = configProvider.getQueuesDatabasePath();
-
-    const logLevel = configProvider.getLogLevel();
-
-    const sendGridApiKey = configProvider.getSendGridApiKey();
-
-    const sendGridSenderEmail = configProvider.getSendGridSenderEmail();
-
     const modules: DependencyInjectionModule[] = [
       new UserModule(),
       new AuthModule(),
@@ -82,10 +70,10 @@ export class Application {
 
     const container = DependencyInjectionContainerFactory.create({ modules });
 
+    const config = ConfigFactory.create();
+
     container.bind<LoggerService>(symbols.loggerService, () =>
-      LoggerServiceFactory.create({
-        logLevel,
-      }),
+      LoggerServiceFactory.create({ logLevel: config.logLevel }),
     );
 
     container.bind<HttpService>(symbols.httpService, () =>
@@ -94,15 +82,15 @@ export class Application {
 
     container.bind<UuidService>(symbols.uuidService, () => new UuidServiceImpl());
 
-    container.bind<ConfigProvider>(symbols.configProvider, () => configProvider);
+    container.bind<Config>(symbols.config, () => config);
 
     container.bind<SqliteDatabaseClient>(symbols.sqliteDatabaseClient, () =>
-      SqliteDatabaseClientFactory.create({ databasePath: mainDatabasePath }),
+      SqliteDatabaseClientFactory.create({ databasePath: config.databasePath }),
     );
 
     container.bind<SqliteDatabaseClient>(symbols.entityEventsDatabaseClient, () =>
       SqliteDatabaseClientFactory.create({
-        databasePath: queuesDatabasePath,
+        databasePath: config.queueDatabasePath,
       }),
     );
 
@@ -113,8 +101,8 @@ export class Application {
 
     container.bind<SendGridService>(symbols.sendGridService, () =>
       new SendGridServiceFactory(container.get<HttpService>(coreSymbols.httpService)).create({
-        apiKey: sendGridApiKey,
-        senderEmail: sendGridSenderEmail,
+        apiKey: config.sendGrid.apiKey,
+        senderEmail: config.sendGrid.senderEmail,
       }),
     );
 

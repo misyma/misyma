@@ -3,7 +3,7 @@ import {
   type FindBookshelvesByUserIdQueryHandler,
   type FindBookshelvesByUserIdResult,
 } from './findBookshelvesByUserIdQueryHandler.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
+import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type UserRepository } from '../../../../userModule/domain/repositories/userRepository/userRepository.js';
 import { type BookshelfRepository } from '../../../domain/repositories/bookshelfRepository/bookshelfRepository.js';
 

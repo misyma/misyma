@@ -3,7 +3,7 @@ import {
   type FindGenreByIdQueryHandler,
   type FindGenreByIdResult,
 } from './findGenreByIdQueryHandler.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
+import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type GenreRepository } from '../../../domain/repositories/genreRepository/genreRepository.js';
 
 export class FindGenreByIdQueryHandlerImpl implements FindGenreByIdQueryHandler {

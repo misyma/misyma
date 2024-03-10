@@ -5,7 +5,7 @@ import { Generator } from '@common/tests';
 import { type FindBookReadingByIdQueryHandler } from './findBookReadingByIdQueryHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
+import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type BookTestUtils } from '../../../../bookModule/tests/utils/bookTestUtils/bookTestUtils.js';
 import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';

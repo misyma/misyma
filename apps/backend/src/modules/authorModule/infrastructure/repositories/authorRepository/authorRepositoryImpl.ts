@@ -1,6 +1,6 @@
 import { type AuthorMapper } from './authorMapper/authorMapper.js';
-import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
+import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
+import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { type Author } from '../../../domain/entities/author/author.js';

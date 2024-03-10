@@ -3,7 +3,7 @@ import {
   type ExecuteResult,
   type FindAuthorsByIdsQueryHandler,
 } from './findAuthorsByIdsQueryHandler.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
+import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type AuthorRepository } from '../../../domain/repositories/authorRepository/authorRepository.js';
 
 export class FindAuthorsByIdsQueryHandlerImpl implements FindAuthorsByIdsQueryHandler {

@@ -2,14 +2,14 @@ import {
   type ExecutePayload,
   type SendVerificationEmailCommandHandler,
 } from './sendVerificationEmailCommandHandler.js';
-import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
+import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
+import { type Config } from '../../../../../core/config.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { EmailEventDraft } from '../../../domain/entities/emailEvent/emailEventDraft.ts/emailEventDraft.js';
 import { EmailEventType } from '../../../domain/entities/emailEvent/types/emailEventType.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
 import { TokenType } from '../../../domain/types/tokenType.js';
-import { type UserModuleConfigProvider } from '../../../userModuleConfigProvider.js';
 import { type EmailMessageBus } from '../../messageBuses/emailMessageBus/emailMessageBus.js';
 
 export class SendVerificationEmailCommandHandlerImpl implements SendVerificationEmailCommandHandler {
@@ -17,7 +17,7 @@ export class SendVerificationEmailCommandHandlerImpl implements SendVerification
     private readonly tokenService: TokenService,
     private readonly userRepository: UserRepository,
     private readonly loggerService: LoggerService,
-    private readonly configProvider: UserModuleConfigProvider,
+    private readonly config: Config,
     private readonly emailMessageBus: EmailMessageBus,
   ) {}
 
@@ -48,19 +48,15 @@ export class SendVerificationEmailCommandHandlerImpl implements SendVerification
       email: user.getEmail(),
     });
 
-    const expiresIn = this.configProvider.getEmailVerificationTokenExpiresIn();
-
     const emailVerificationToken = this.tokenService.createToken({
       data: {
         userId: user.getId(),
         type: TokenType.emailVerification,
       },
-      expiresIn,
+      expiresIn: this.config.token.emailVerification.expiresIn,
     });
 
-    const frontendUrl = this.configProvider.getFrontendUrl();
-
-    const emailVerificationLink = `${frontendUrl}/verify-email?token=${emailVerificationToken}`;
+    const emailVerificationLink = `${this.config.frontendUrl}/verify-email?token=${emailVerificationToken}`;
 
     await this.emailMessageBus.sendEvent(
       new EmailEventDraft({

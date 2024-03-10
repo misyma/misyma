@@ -3,20 +3,20 @@ import {
   type RefreshUserTokensCommandHandlerPayload,
   type RefreshUserTokensCommandHandlerResult,
 } from './refreshUserTokensCommandHandler.js';
-import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
+import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
+import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
+import { type Config } from '../../../../../core/config.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { type BlacklistTokenRepository } from '../../../domain/repositories/blacklistTokenRepository/blacklistTokenRepository.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
 import { TokenType } from '../../../domain/types/tokenType.js';
-import { type UserModuleConfigProvider } from '../../../userModuleConfigProvider.js';
 
 export class RefreshUserTokensCommandHandlerImpl implements RefreshUserTokensCommandHandler {
   public constructor(
     private readonly loggerService: LoggerService,
     private readonly tokenService: TokenService,
-    private readonly configProvider: UserModuleConfigProvider,
+    private readonly config: Config,
     private readonly userRepository: UserRepository,
     private readonly blacklistTokenRepository: BlacklistTokenRepository,
   ) {}
@@ -66,7 +66,7 @@ export class RefreshUserTokensCommandHandlerImpl implements RefreshUserTokensCom
       });
     }
 
-    const accessTokenExpiresIn = this.configProvider.getAccessTokenExpiresIn();
+    const accessTokenExpiresIn = this.config.token.access.expiresIn;
 
     const accessToken = this.tokenService.createToken({
       data: {

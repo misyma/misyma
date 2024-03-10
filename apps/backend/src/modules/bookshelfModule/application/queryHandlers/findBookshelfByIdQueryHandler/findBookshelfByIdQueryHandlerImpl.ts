@@ -3,7 +3,7 @@ import {
   type FindBookshelfByIdQueryHandler,
   type FindBookshelfByIdResult,
 } from './findBookshelfByIdQueryHandler.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
+import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type BookshelfRepository } from '../../../domain/repositories/bookshelfRepository/bookshelfRepository.js';
 
 export class FindBookshelfByIdQueryHandlerImpl implements FindBookshelfByIdQueryHandler {

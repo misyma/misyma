@@ -1,15 +1,15 @@
 import { compare, genSalt, hash } from 'bcrypt';
 
 import { type ComparePayload, type HashPayload, type HashService } from './hashService.js';
-import { type UserModuleConfigProvider } from '../../../userModuleConfigProvider.js';
+import { type Config } from '../../../../../core/config.js';
 
 export class HashServiceImpl implements HashService {
-  public constructor(private readonly configProvider: UserModuleConfigProvider) {}
+  public constructor(private readonly config: Config) {}
 
   public async hash(payload: HashPayload): Promise<string> {
     const { plainData } = payload;
 
-    const salt = await this.generateSalt();
+    const salt = await genSalt(this.config.hashSaltRounds);
 
     return hash(plainData, salt);
   }
@@ -18,11 +18,5 @@ export class HashServiceImpl implements HashService {
     const { plainData, hashedData } = payload;
 
     return compare(plainData, hashedData);
-  }
-
-  private async generateSalt(): Promise<string> {
-    const hashSaltRounds = this.configProvider.getHashSaltRounds();
-
-    return genSalt(hashSaltRounds);
   }
 }

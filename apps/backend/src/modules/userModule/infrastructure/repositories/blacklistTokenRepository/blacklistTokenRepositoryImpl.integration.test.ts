@@ -1,6 +1,6 @@
 import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 
-import { RepositoryError } from '../../../../../common/errors/common/repositoryError.js';
+import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { Application } from '../../../../../core/application.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../../../../core/symbols.js';

@@ -1,4 +1,4 @@
-import { BaseError } from '../base/baseError.js';
+import { BaseError } from './baseError.js';
 
 interface Context {
   readonly reason: string;

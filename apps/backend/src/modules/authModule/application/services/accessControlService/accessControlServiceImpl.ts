@@ -4,7 +4,7 @@ import {
   type VerifyBearerTokenResult,
   type VerifyBasicAuthPayload,
 } from './accessControlService.js';
-import { type ConfigProvider } from '../../../../../core/configProvider.js';
+import { type Config } from '../../../../../core/config.js';
 import { ForbiddenAccessError } from '../../errors/forbiddenAccessError.js';
 import { UnauthorizedAccessError } from '../../errors/unathorizedAccessError.js';
 import { type TokenService } from '../tokenService/tokenService.js';
@@ -12,7 +12,7 @@ import { type TokenService } from '../tokenService/tokenService.js';
 export class AccessControlServiceImpl implements AccessControlService {
   public constructor(
     private readonly tokenService: TokenService,
-    private readonly configProvider: ConfigProvider,
+    private readonly config: Config,
   ) {}
 
   public async verifyBearerToken(payload: VerifyBearerTokenPayload): Promise<VerifyBearerTokenResult> {
@@ -80,9 +80,9 @@ export class AccessControlServiceImpl implements AccessControlService {
       });
     }
 
-    const adminUsername = this.configProvider.getAdminUsername();
+    const adminUsername = this.config.admin.username;
 
-    const adminPassword = this.configProvider.getAdminPassword();
+    const adminPassword = this.config.admin.password;
 
     if (username !== adminUsername || password !== adminPassword) {
       throw new ForbiddenAccessError({

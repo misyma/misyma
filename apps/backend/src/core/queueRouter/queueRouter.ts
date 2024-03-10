@@ -1,6 +1,6 @@
 import { setInterval } from 'timers/promises';
 
-import { BaseError } from '../../common/errors/base/baseError.js';
+import { BaseError } from '../../common/errors/baseError.js';
 import { type QueueChannel } from '../../common/types/queue/queueChannel.js';
 import { type QueueController } from '../../common/types/queue/queueController.js';
 import { type QueueHandlerPayload, type QueueHandler } from '../../common/types/queue/queueHandler.js';

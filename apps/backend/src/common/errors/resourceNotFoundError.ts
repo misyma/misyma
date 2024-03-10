@@ -1,8 +1,8 @@
-import { BaseError } from '../base/baseError.js';
+import { BaseError } from './baseError.js';
 
 interface Context {
   readonly name: string;
-  [key: string]: unknown;
+  readonly [key: string]: unknown;
 }
 
 export class ResourceNotFoundError extends BaseError<Context> {

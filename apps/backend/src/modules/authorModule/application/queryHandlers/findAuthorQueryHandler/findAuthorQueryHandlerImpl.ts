@@ -3,7 +3,7 @@ import {
   type FindAuthorQueryHandlerPayload,
   type FindAuthorQueryHandlerResult,
 } from './findAuthorQueryHandler.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
+import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type AuthorRepository } from '../../../../authorModule/domain/repositories/authorRepository/authorRepository.js';
 
 export class FindAuthorQueryHandlerImpl implements FindAuthorQueryHandler {

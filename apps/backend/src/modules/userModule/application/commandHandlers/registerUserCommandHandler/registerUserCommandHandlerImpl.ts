@@ -3,7 +3,7 @@ import {
   type RegisterUserCommandHandlerPayload,
   type RegisterUserCommandHandlerResult,
 } from './registerUserCommandHandler.js';
-import { ResourceAlreadyExistsError } from '../../../../../common/errors/common/resourceAlreadyExistsError.js';
+import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
 import { type HashService } from '../../services/hashService/hashService.js';

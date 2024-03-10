@@ -5,7 +5,7 @@ import { Generator } from '@common/tests';
 import { type ChangeUserPasswordCommandHandler } from './changeUserPasswordCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
-import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
+import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { authSymbols } from '../../../../authModule/symbols.js';
 import { TokenType } from '../../../domain/types/tokenType.js';

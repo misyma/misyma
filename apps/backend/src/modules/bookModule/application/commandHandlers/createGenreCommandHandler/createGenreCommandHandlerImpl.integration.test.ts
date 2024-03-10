@@ -5,7 +5,7 @@ import { Generator } from '@common/tests';
 import { type CreateGenreCommandHandler } from './createGenreCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
-import { OperationNotValidError } from '../../../../../common/errors/common/operationNotValidError.js';
+import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { symbols } from '../../../symbols.js';
 import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 

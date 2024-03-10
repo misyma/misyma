@@ -1,37 +1,15 @@
 {
-  "database": {
-    "path": "data/test.db"
+  "admin": {
+    "username": "admin",
+    "password": "admin"
   },
-  "queues": {
-    "database": {
-      "path": "data/test-queue.db"
-    }
-  },
-  "auth": {
-    "hash": {
-      "saltRounds": 10
-    },
-    "jwt": {
-      "secret": "12321313423565365654546654121890008"
-    },
-    "accessToken": {
-      "expiresIn": 3600
-    },
-    "refreshToken": {
-      "expiresIn": 604800
-    },
-    "emailVerificationToken": {
-      "expiresIn":  86400
-    },
-    "resetPasswordToken": {
-      "expiresIn": 1800
-    }
+  "databasePath": "data/test.db",
+  "queueDatabasePath": "data/test-queue.db",
+  "hashSaltRounds": 10,
+  "token": {
+    "secret": "12321313423565365654546654121890008"
   },
   "sendGrid": {
-    "apiKey": "1234567890",
-    "senderEmail": "misyma@misyma.com"
-  },
-  "frontend": {
-    "url": "https://misyma.com"
+    "apiKey": "1234567890"
   }
 }

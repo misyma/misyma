@@ -3,7 +3,7 @@ import {
   type FindBookReadingByIdQueryHandler,
   type FindBookReadingByIdResult,
 } from './findBookReadingByIdQueryHandler.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
+import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type BookReadingRepository } from '../../../domain/repositories/bookReadingRepository/bookReadingRepository.js';
 
 export class FindBookReadingByIdQueryHandlerImpl implements FindBookReadingByIdQueryHandler {

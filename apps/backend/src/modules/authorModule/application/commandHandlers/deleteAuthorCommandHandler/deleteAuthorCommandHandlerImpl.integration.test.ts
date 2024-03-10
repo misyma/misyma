@@ -1,7 +1,7 @@
 import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 
 import { type DeleteAuthorCommandHandler } from './deleteAuthorCommandHandler.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/common/resourceNotFoundError.js';
+import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { Application } from '../../../../../core/application.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../../../../core/symbols.js';

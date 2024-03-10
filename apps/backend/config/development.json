@@ -3,24 +3,13 @@
     "username": "admin",
     "password": "admin"
   },
-  "database": {
-    "path": "data/dev.db"
-  },
-  "queues": {
-    "database": {
-      "path": "data/dev-queue.db"
-    }
-  },
-  "auth": {
-    "hash": {
-      "saltRounds": 10
-    },
-    "jwt": {
-      "secret": "12321313423565365654546654121890008"
-    }
+  "databasePath": "data/dev.db",
+  "queueDatabasePath": "data/dev-queue.db",
+  "hashSaltRounds": 10,
+  "token": {
+    "secret": "12321313423565365654546654121890008"
   },
   "sendGrid": {
-    "apiKey": "1234567890",
-    "senderEmail": "misyma@misyma.com"
+    "apiKey": "1234567890"
   }
 }
