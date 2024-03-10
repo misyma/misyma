@@ -21,7 +21,12 @@ export const updateBookshelfBodyDTOSchema = Type.Object({
       maxLength: 64,
     }),
   ),
-  imageUrl: Type.Optional(Type.String({ minLength: 1 })),
+  imageUrl: Type.Optional(
+    Type.String({
+      minLength: 1,
+      maxLength: 64,
+    }),
+  ),
 });
 
 export type UpdateBookshelfBodyDTO = TypeExtends<

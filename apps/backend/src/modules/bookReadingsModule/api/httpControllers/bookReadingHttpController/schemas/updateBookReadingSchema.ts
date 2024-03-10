@@ -22,7 +22,12 @@ export const updateBookReadingBodyDTOSchema = Type.Object({
       maxLength: 256,
     }),
   ),
-  rating: Type.Optional(Type.Number()),
+  rating: Type.Optional(
+    Type.Number({
+      minimum: 1,
+      maximum: 10,
+    }),
+  ),
   startedAt: Type.Optional(Type.String({ format: 'date-time' })),
   endedAt: Type.Optional(Type.String({ format: 'date-time' })),
 });

@@ -22,11 +22,11 @@ export class SendVerificationEmailCommandHandlerImpl implements SendVerification
   ) {}
 
   public async execute(payload: ExecutePayload): Promise<void> {
-    const { email } = payload;
+    const { email: emailInput } = payload;
 
-    const user = await this.userRepository.findUser({
-      email,
-    });
+    const email = emailInput.toLowerCase();
+
+    const user = await this.userRepository.findUser({ email });
 
     if (!user) {
       throw new OperationNotValidError({

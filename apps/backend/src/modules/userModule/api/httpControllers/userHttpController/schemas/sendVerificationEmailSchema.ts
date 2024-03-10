@@ -7,6 +7,7 @@ import { type TypeExtends } from '../../../../../../common/types/schemaExtends.j
 export const sendVerificationEmailBodyDTOSchema = Type.Object({
   email: Type.String({
     format: 'email',
+    maxLength: 64,
   }),
 });
 

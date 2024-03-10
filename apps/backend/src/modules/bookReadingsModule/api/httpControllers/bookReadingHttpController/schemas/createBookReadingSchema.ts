@@ -21,7 +21,10 @@ export const createBookReadingBodyDTOSchema = Type.Object({
       maxLength: 256,
     }),
   ),
-  rating: Type.Number(),
+  rating: Type.Number({
+    minimum: 1,
+    maximum: 10,
+  }),
   startedAt: Type.String({ format: 'date-time' }),
   endedAt: Type.Optional(Type.String({ format: 'date-time' })),
 });

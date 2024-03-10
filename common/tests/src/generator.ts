@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 
 export class Generator {
   public static email(): string {
-    return faker.internet.email();
+    return faker.internet.email().toLowerCase();
   }
 
   public static number(min = 0, max = 100, precision = 1): number {
