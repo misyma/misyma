@@ -6,7 +6,7 @@ import { useStoreDispatch } from '../../core/store/hooks/useStoreDispatch';
 import { LoginUserResponseBody } from '@common/contracts';
 import { userStateActions } from '../../core/store/states/userState/userStateSlice';
 import { FC } from 'react';
-import { DefaultFormLayout } from '../../layouts/defaultFormLayout';
+import { DefaultFormLayout } from '../../layouts/default/defaultFormLayout';
 
 export const LoginPage: FC = () => {
   const storeDispatch = useStoreDispatch();

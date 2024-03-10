@@ -4,7 +4,7 @@ import { useVerifyUserEmailMutation } from '../../api/user/mutations/verifyUserE
 import { FC, useEffect } from 'react';
 import { rootRoute } from '../root';
 import { z } from 'zod';
-import { DefaultLayout } from '../../layouts/defaultLayout';
+import { DefaultLayout } from '../../layouts/default/defaultLayout';
 import { Logo } from '../../components/logo/logo';
 
 export const VerifyEmailPage: FC = () => {

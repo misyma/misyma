@@ -2,6 +2,7 @@
   "name": "misyma",
   "private": true,
   "scripts": {
+    "start:dev": "turbo run start:dev --filter=@apps\/*",
     "build": "turbo run build",
     "build:dev": "turbo run build:dev",
     "build:clean": "turbo run build:clean",

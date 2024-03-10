@@ -15,7 +15,7 @@ export type FindBookshelvesByUserIdPathParamsDTO = TypeExtends<
 >;
 
 export const findBookshelvesByUserIdResponseBodyDTOSchema = Type.Object({
-  bookshelves: Type.Array(bookshelfDTOSchema),
+  data: Type.Array(bookshelfDTOSchema),
 });
 
 export type FindBookshelvesByUserIdResponseBodyDTO = TypeExtends<

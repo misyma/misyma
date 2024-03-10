@@ -3,7 +3,7 @@ import { Link, createRoute } from '@tanstack/react-router';
 import { rootRoute } from '../root';
 import { FC, useState } from 'react';
 import { SendResetPasswordEmailForm } from './components/sendResetPasswordEmailForm/sendResetPasswordEmailForm';
-import { DefaultFormLayout } from '../../layouts/defaultFormLayout';
+import { DefaultFormLayout } from '../../layouts/default/defaultFormLayout';
 import { useSendResetPasswordEmailMutation } from '../../api/user/mutations/sendResetPasswordEmailMutation/sendResetPasswordEmailMutation';
 import { useToast } from '../../components/ui/use-toast';
 

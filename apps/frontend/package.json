@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "start:dev": "npm run dev",
     "build": "tsc --noEmit && vite build",
     "build:dev": "tsc --noEmit && vite build",
     "lint": "eslint . --ext ts,tsx --cache --report-unused-disable-directives --max-warnings 0",
@@ -17,6 +18,7 @@
   "dependencies": {
     "@common/contracts": "*",
     "@hookform/resolvers": "^3.3.4",
+    "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-toast": "^1.1.5",

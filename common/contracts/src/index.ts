@@ -38,6 +38,8 @@ export * from './schemas/author/deleteAuthor.js';
 
 export * from './schemas/book/findBook.js';
 
+export * from './schemas/book/findBooksByBookshelfId.js';
+
 export * from './schemas/book/createBook.js';
 
 export * from './schemas/book/updateBookGenres.js';

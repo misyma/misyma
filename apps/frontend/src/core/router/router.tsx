@@ -6,6 +6,8 @@ import { meRoute } from '../../routes/me/me';
 import { resetPasswordRoute } from '../../routes/resetPassword/resetPassword';
 import { newPasswordRoute } from '../../routes/newPassword/newPassword';
 import { verifyEmailRoute } from '../../routes/verifyEmail/verifyEmail';
+import { bookRoute } from '../../routes/myBooks/book';
+import { shelvesRoute } from '../../routes/shelves/shelves';
 
 export const routeTree = rootRoute.addChildren([
   landingRoute,
@@ -14,5 +16,7 @@ export const routeTree = rootRoute.addChildren([
   meRoute,
   resetPasswordRoute,
   newPasswordRoute,
-  verifyEmailRoute
+  verifyEmailRoute,
+  bookRoute,
+  shelvesRoute
 ]);

@@ -15,6 +15,8 @@ import { type UpdateGenreNameCommandHandler } from './application/commandHandler
 import { UpdateGenreNameCommandHandlerImpl } from './application/commandHandlers/updateGenreNameCommandHandler/updateGenreNameCommandHandlerImpl.js';
 import { type FindBookQueryHandler } from './application/queryHandlers/findBookQueryHandler/findBookQueryHandler.js';
 import { FindBookQueryHandlerImpl } from './application/queryHandlers/findBookQueryHandler/findBookQueryHandlerImpl.js';
+import { type FindBooksQueryHandler } from './application/queryHandlers/findBooksQueryHandler/findBooksQueryHandler.js';
+import { FindBooksQueryHandlerImpl } from './application/queryHandlers/findBooksQueryHandler/findBooksQueryHandlerImpl.js';
 import { type FindGenreByIdQueryHandler } from './application/queryHandlers/findGenreByIdQueryHandler/findGenreByIdQueryHandler.js';
 import { FindGenreByIdQueryHandlerImpl } from './application/queryHandlers/findGenreByIdQueryHandler/findGenreByIdQueryHandlerImpl.js';
 import { type FindGenreByNameQueryHandler } from './application/queryHandlers/findGenreByNameQueryHandler/findGenreByNameQueryHandler.js';
@@ -159,6 +161,15 @@ export class BookModule implements DependencyInjectionModule {
       symbols.findGenreByIdQueryHandler,
       () => new FindGenreByIdQueryHandlerImpl(container.get<GenreRepository>(symbols.genreRepository)),
     );
+
+    container.bind<FindBooksQueryHandler>(
+      symbols.findBooksQueryHandler,
+      () =>
+        new FindBooksQueryHandlerImpl(
+          container.get<BookRepository>(symbols.bookRepository),
+          container.get<BookshelfRepository>(bookshelfSymbols.bookshelfRepository),
+        ),
+    );
   }
 
   private bindHttpControllers(container: DependencyInjectionContainer): void {
@@ -170,6 +181,7 @@ export class BookModule implements DependencyInjectionModule {
           container.get<UpdateBookGenresCommandHandler>(symbols.updateBookGenresCommandHandler),
           container.get<DeleteBookCommandHandler>(symbols.deleteBookCommandHandler),
           container.get<FindBookQueryHandler>(symbols.findBookQueryHandler),
+          container.get<FindBooksQueryHandler>(symbols.findBooksQueryHandler),
           container.get<AccessControlService>(authSymbols.accessControlService),
         ),
     );

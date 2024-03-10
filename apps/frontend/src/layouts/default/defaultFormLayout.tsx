@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { DefaultLayout } from './defaultLayout';
-import { Logo } from '../components/logo/logo';
+import { Logo } from '../../components/logo/logo';
 
 interface DefaultFormLayoutProps {
   children: React.ReactNode;
