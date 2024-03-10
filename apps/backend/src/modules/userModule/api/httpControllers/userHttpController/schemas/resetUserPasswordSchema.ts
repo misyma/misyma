@@ -7,7 +7,7 @@ import { type TypeExtends } from '../../../../../../common/types/schemaExtends.j
 export const resetUserPasswordBodyDTOSchema = Type.Object({
   email: Type.String({
     format: 'email',
-    maxLength: 64,
+    maxLength: 254,
   }),
 });
 
