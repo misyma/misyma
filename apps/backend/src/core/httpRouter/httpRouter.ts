@@ -106,7 +106,6 @@ export class HttpRouter {
             path: fastifyRequest.url,
             method,
             statusCode,
-            body: responseBody,
           });
 
           return;
