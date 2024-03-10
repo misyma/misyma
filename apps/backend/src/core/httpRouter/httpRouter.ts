@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { TypeClone } from '@sinclair/typebox';
 import { type FastifyInstance, type FastifyReply, type FastifyRequest, type FastifySchema } from 'fastify';
 
 import { BaseError } from '../../common/errors/baseError.js';
@@ -245,7 +244,10 @@ export class HttpRouter {
 
       return {
         ...agg,
-        [statusCode]: TypeClone.Type(schema, { description }),
+        [statusCode]: {
+          ...schema,
+          description,
+        },
       };
     }, {});
 

@@ -116,7 +116,7 @@ export class Application {
 
     await this.setupDatabase(container);
 
-    loggerService.info({ message: 'Migrations ran.' });
+    loggerService.info({ message: 'Migrations executed.' });
 
     const server = new HttpServer(container);
 
@@ -125,7 +125,5 @@ export class Application {
     await server.start();
 
     await queueRouter.start();
-
-    loggerService.log({ message: 'Application started.' });
   }
 }
