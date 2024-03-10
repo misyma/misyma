@@ -4,8 +4,6 @@
 import { TypeClone } from '@sinclair/typebox';
 import { type FastifyInstance, type FastifyReply, type FastifyRequest, type FastifySchema } from 'fastify';
 
-import { ApplicationError } from '../../common/errors/base/applicationError.js';
-import { DomainError } from '../../common/errors/base/domainError.js';
 import { BaseError } from '../../common/errors/baseError.js';
 import { OperationNotValidError } from '../../common/errors/operationNotValidError.js';
 import { ResourceAlreadyExistsError } from '../../common/errors/resourceAlreadyExistsError.js';
@@ -165,22 +163,6 @@ export class HttpRouter {
 
             if (error instanceof ForbiddenAccessError) {
               fastifyReply.status(HttpStatusCode.forbidden).send({
-                ...formattedError,
-              });
-
-              return;
-            }
-
-            if (error instanceof ApplicationError) {
-              fastifyReply.status(HttpStatusCode.badRequest).send({
-                ...formattedError,
-              });
-
-              return;
-            }
-
-            if (error instanceof DomainError) {
-              fastifyReply.status(HttpStatusCode.badRequest).send({
                 ...formattedError,
               });
 
