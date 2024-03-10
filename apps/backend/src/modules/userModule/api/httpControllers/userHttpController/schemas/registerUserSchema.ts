@@ -12,6 +12,7 @@ import { type TypeExtends } from '../../../../../../common/types/schemaExtends.j
 export const registerUserBodyDTOSchema = Type.Object({
   email: Type.String({
     format: 'email',
+    maxLength: 254,
   }),
   password: Type.String({
     minLength: 8,

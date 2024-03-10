@@ -6,9 +6,7 @@ import { type TypeExtends } from '../../../../../../common/types/schemaExtends.j
 import { genreDTO } from '../../genreHttpController/schemas/dtos/genreDTO.js';
 
 export const updateGenreNamePathParamsDTOSchema = Type.Object({
-  id: Type.String({
-    format: 'uuid',
-  }),
+  id: Type.String({ format: 'uuid' }),
 });
 
 export type UpdateGenreNamePathParamsDTO = TypeExtends<

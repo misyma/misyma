@@ -6,9 +6,7 @@ import { bookDTOSchema } from './bookDTO.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const updateBookGenresPathParamsDTOSchema = Type.Object({
-  bookId: Type.String({
-    format: 'uuid',
-  }),
+  bookId: Type.String({ format: 'uuid' }),
 });
 
 export type UpdateBookGenresPathParamsDTO = TypeExtends<
@@ -17,11 +15,7 @@ export type UpdateBookGenresPathParamsDTO = TypeExtends<
 >;
 
 export const updateBookGenresBodyDTOSchema = Type.Object({
-  genreIds: Type.Array(
-    Type.String({
-      format: 'uuid',
-    }),
-  ),
+  genreIds: Type.Array(Type.String({ format: 'uuid' })),
 });
 
 export type UpdateBookGenresBodyDTO = TypeExtends<

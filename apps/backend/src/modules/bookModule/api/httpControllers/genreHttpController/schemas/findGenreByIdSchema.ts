@@ -6,9 +6,7 @@ import { genreDTO } from './dtos/genreDTO.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const findGenreByIdPathParamsDTOSchema = Type.Object({
-  id: Type.String({
-    format: 'uuid',
-  }),
+  id: Type.String({ format: 'uuid' }),
 });
 
 export type FindGenreByIdPathParamsDTO = TypeExtends<

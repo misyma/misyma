@@ -6,7 +6,7 @@ export class UserTestFactory {
   public create(input: Partial<UserDraft> = {}): User {
     return new User({
       id: Generator.uuid(),
-      email: Generator.email().toLowerCase(),
+      email: Generator.email(),
       password: Generator.password(),
       name: Generator.fullName(),
       isEmailVerified: Generator.boolean(),
