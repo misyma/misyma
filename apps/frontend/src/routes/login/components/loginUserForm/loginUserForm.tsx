@@ -10,6 +10,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '../../../../components/ui/input';
 import { Button } from '../../../../components/ui/button';
 import { cn } from '../../../../lib/utils';
+import { PasswordEyeIcon } from '../../../../components/icons/passwordEyeIcon/passwordEyeIcon';
 
 interface LoginUserFormProps {
   onSuccess: (loginUserResponseBody: LoginUserResponseBody) => void;
@@ -19,6 +20,8 @@ interface LoginUserFormProps {
 export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccess, onError }: LoginUserFormProps) => {
   const loginUserMutation = useLoginUserMutation({});
 
+  const [passwordInputType, setPasswordInputType] = useState<'text' | 'password'>('password');
+
   const form = useForm<LoginUserFormValues>({
     resolver: zodResolver(loginUserFormSchema),
     defaultValues: {
@@ -26,7 +29,7 @@ export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccess, onError }: Lo
       password: '',
     },
     reValidateMode: 'onChange',
-    mode: 'onTouched'
+    mode: 'onTouched',
   });
 
   const [responseErrorMessage, setResponseErrorMessage] = useState<null | string>(null);
@@ -77,11 +80,12 @@ export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccess, onError }: Lo
             control={form.control}
             name="email"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="h-[5.5rem]">
                 <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Email"
+                    maxLength={320}
                     className={cn('w-60 sm:w-96 focus:border-input bg-[#D1D5DB]/20', setInputFieldErrorState(field))}
                     {...field}
                   />
@@ -94,12 +98,21 @@ export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccess, onError }: Lo
             control={form.control}
             name="password"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="h-[5.5rem]">
                 <FormLabel>Hasło</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Hasło"
-                    type="password"
+                    type={passwordInputType}
+                    maxLength={64}
+                    includeQuill={false}
+                    otherIcon={
+                      <PasswordEyeIcon
+                        onClick={() => setPasswordInputType(passwordInputType === 'password' ? 'text' : 'password')}
+                        passwordType={passwordInputType}
+                      />
+                    }
+                    {...field}
                     className={cn('w-60 sm:w-96 focus:border-input bg-[#D1D5DB]/20', setInputFieldErrorState(field))}
                     {...field}
                   />

@@ -4,14 +4,18 @@ import { ImQuill } from 'react-icons/im';
 import { cn } from '@/lib/utils';
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  containerClassName?: string;
   includeQuill?: boolean;
   otherIcon?: React.ReactNode;
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, includeQuill = true, ...props }, ref) => {
+  ({ className, containerClassName, type, includeQuill = true, ...props }, ref) => {
     return (
-      <div className="flex flex-row">
+      <div className={cn(
+        'flex flex-row',
+        containerClassName
+      )}>
         <input
           type={type}
           className={cn(
@@ -23,7 +27,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         />
         {includeQuill && (
           <div className="w-60 sm:w-96 absolute h-12 pointer-events-none flex items-center justify-end px-2">
-            <ImQuill className="text-primary opacity-65 text-3xl" />
+            <ImQuill className="bg-[#D1D5DB]/20 text-primary opacity-65 text-3xl" />
           </div>
         )}
         {props.otherIcon && (

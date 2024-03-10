@@ -21,7 +21,7 @@ interface SendResetPasswordEmailFormProps {
 export const SendResetPasswordEmailForm: FC<SendResetPasswordEmailFormProps> = ({
   onSuccess,
   onError,
-  email = ''
+  email = '',
 }: SendResetPasswordEmailFormProps) => {
   const form = useForm<SendResetPasswordEmailFormSchemaValues>({
     resolver: zodResolver(sendResetPasswordEmailFormSchema),
@@ -63,7 +63,7 @@ export const SendResetPasswordEmailForm: FC<SendResetPasswordEmailFormProps> = (
           control={form.control}
           name="email"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="h-[5.5rem]">
               <FormLabel>Email</FormLabel>
               <FormControl>
                 <Input

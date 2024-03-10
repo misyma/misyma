@@ -83,6 +83,7 @@ export const BookPage: FC = () => {
           toast({
             title: 'Ocena dodana!',
             description: `Ocena została dodana do książki - ${book?.title}.`,
+            variant: 'success'
           });
         },
       },
