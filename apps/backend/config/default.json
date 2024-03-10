@@ -10,7 +10,7 @@
   "logLevel": "debug",
   "databasePath": null,
   "queueDatabasePath": null,
-  "hashSaltRounds": null,
+  "hashSaltRounds": 10,
   "token": {
     "secret": null,
     "access": {

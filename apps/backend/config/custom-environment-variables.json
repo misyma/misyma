@@ -6,7 +6,6 @@
   "logLevel": "LOG_LEVEL",
   "databasePath": "DATABASE_PATH",
   "queueDatabasePath": "QUEUE_DATABASE_PATH",
-  "hashSaltRounds": "HASH_SALT_ROUNDS",
   "token": {
     "secret": "TOKEN_SECRET"
   },
