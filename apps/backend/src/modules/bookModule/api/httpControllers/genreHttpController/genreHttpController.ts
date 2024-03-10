@@ -50,7 +50,7 @@ export class GenreHttpController implements HttpController {
             },
           },
         },
-        securityMode: SecurityMode.bearer,
+        securityMode: SecurityMode.bearerToken,
         tags: ['Genre'],
       }),
       new HttpRoute({
@@ -69,7 +69,7 @@ export class GenreHttpController implements HttpController {
           },
         },
         path: '/name',
-        securityMode: SecurityMode.bearer,
+        securityMode: SecurityMode.bearerToken,
         tags: ['Genre'],
       }),
       new HttpRoute({
@@ -89,7 +89,7 @@ export class GenreHttpController implements HttpController {
         },
         tags: ['Genre'],
         path: ':id',
-        securityMode: SecurityMode.bearer,
+        securityMode: SecurityMode.bearerToken,
       }),
     ];
   }

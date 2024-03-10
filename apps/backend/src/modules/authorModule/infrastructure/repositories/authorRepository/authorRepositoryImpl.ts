@@ -43,6 +43,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
       throw new RepositoryError({
         entity: 'Author',
         operation: 'create',
+        error,
       });
     }
 
@@ -88,6 +89,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
       throw new RepositoryError({
         entity: 'Author',
         operation: 'find',
+        error,
       });
     }
 
@@ -111,6 +113,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
       throw new RepositoryError({
         entity: 'Author',
         operation: 'find',
+        error,
       });
     }
 
@@ -135,6 +138,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
       throw new RepositoryError({
         entity: 'Author',
         operation: 'delete',
+        error,
       });
     }
   }

@@ -1,4 +1,4 @@
 export enum SecurityMode {
-  bearer = 'bearer',
-  basic = 'basic',
+  bearerToken = 'bearerToken',
+  basicAuth = 'basicAuth',
 }

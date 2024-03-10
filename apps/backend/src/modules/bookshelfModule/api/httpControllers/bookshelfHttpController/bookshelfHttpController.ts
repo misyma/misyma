@@ -75,7 +75,7 @@ export class BookshelfHttpController implements HttpController {
           },
         },
         tags: ['Bookshelf'],
-        securityMode: SecurityMode.bearer,
+        securityMode: SecurityMode.bearerToken,
       }),
       new HttpRoute({
         method: HttpMethodName.get,

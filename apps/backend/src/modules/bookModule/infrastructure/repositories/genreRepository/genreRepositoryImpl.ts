@@ -35,6 +35,7 @@ export class GenreRepositoryImpl implements GenreRepository {
       throw new RepositoryError({
         entity: 'Genre',
         operation: 'find',
+        error,
       });
     }
 
@@ -71,6 +72,7 @@ export class GenreRepositoryImpl implements GenreRepository {
       throw new RepositoryError({
         entity: 'Genre',
         operation: 'find',
+        error,
       });
     }
 
@@ -94,6 +96,7 @@ export class GenreRepositoryImpl implements GenreRepository {
       throw new RepositoryError({
         entity: 'Genre',
         operation: 'find',
+        error,
       });
     }
 
@@ -128,17 +131,11 @@ export class GenreRepositoryImpl implements GenreRepository {
       throw new RepositoryError({
         entity: 'Genre',
         operation: 'create',
+        error,
       });
     }
 
-    const rawEntity = rawEntities[0];
-
-    if (!rawEntity) {
-      throw new RepositoryError({
-        entity: 'Genre',
-        operation: 'create',
-      });
-    }
+    const rawEntity = rawEntities[0] as GenreRawEntity;
 
     return this.genreMapper.mapToDomain(rawEntity);
   }
@@ -157,17 +154,11 @@ export class GenreRepositoryImpl implements GenreRepository {
       throw new RepositoryError({
         entity: 'Genre',
         operation: 'update',
+        error,
       });
     }
 
-    const rawEntity = rawEntities[0];
-
-    if (!rawEntity) {
-      throw new RepositoryError({
-        entity: 'Genre',
-        operation: 'update',
-      });
-    }
+    const rawEntity = rawEntities[0] as GenreRawEntity;
 
     return this.genreMapper.mapToDomain(rawEntity);
   }
@@ -181,6 +172,7 @@ export class GenreRepositoryImpl implements GenreRepository {
       throw new RepositoryError({
         entity: 'Genre',
         operation: 'delete',
+        error,
       });
     }
   }
