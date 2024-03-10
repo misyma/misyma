@@ -15,6 +15,7 @@ import {
   type FindBooksByBookshelfIdPathParamsDTO,
   type FindBooksByBookshelfIdResponseBodyDTO,
   findBooksByBookshelfIdResponseBodyDTOSchema,
+  findBooksByBookshelfIdPathParamsDTOSchema,
 } from './schemas/findBooksByBookshelfIdSchema.js';
 import {
   findBookResponseBodyDTOSchema,
@@ -108,7 +109,7 @@ export class BookHttpController implements HttpController {
         description: 'Find books by bookshelf id.',
         schema: {
           request: {
-            pathParams: findBookPathParamsDTOSchema,
+            pathParams: findBooksByBookshelfIdPathParamsDTOSchema,
           },
           response: {
             [HttpStatusCode.ok]: {

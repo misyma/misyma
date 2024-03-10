@@ -16,7 +16,7 @@ const router = createRouter({
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <Provider store={store}>
+    <Provider store={store}> // TODO: Custom provider that loads data from cookies / indexDb
       <QueryClientProvider>
         <RouterProvider router={router} />
       </QueryClientProvider>

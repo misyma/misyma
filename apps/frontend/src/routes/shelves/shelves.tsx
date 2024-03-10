@@ -16,18 +16,48 @@ export const ShelvesPage: FC = () => {
   // TODO: Fetch address by addressId once EP is available
   // TODO: Fetch a list of books on a shelf
 
+  // const { accessToken } = useSelector(userStateSelectors.selectCurrentUserTokens) as {
+  //   accessToken: string;
+  //   refreshToken: string;
+  // };
+
+  // const queriesResponses = useQueries({
+  //   queries:
+  //     bookshelves?.data.map((bookshelf) => ({
+  //       queryKey: ['findBooksByBookshelfId', bookshelf.id],
+  //       queryFn: () =>
+  //         findBooksByBookshelfId({
+  //           accessToken,
+  //           bookshelfId: bookshelf.id,
+  //         }),
+  //     })) ?? [],
+  // });
+
   return (
     <AuthenticatedLayout>
       <div className="flex w-100% px-8 py-4">
         <div className="flex flex-col w-[100%] items-center justify-center">
           <h1 className="text-2xl sm:text-4xl font-bold capitalize">Moja biblioteka</h1>
-          <div className='grid grid-cols-2 w-[100%] min-h-32'>
-              {bookshelves?.data.map((bookshelf) => (
-                <div key={`${bookshelf.id}`} className='p-4'>
+          <div className="py-8 grid gap-4 grid-cols-2 w-[100%] min-h-32">
+            {bookshelves?.data.map((bookshelf) => (
+              <div
+                key={`${bookshelf.id}`}
+                className="flex rounded-sm border border-primary border-spacing-2 p-4 gap-x-2"
+              >
+                <img
+                  src={bookshelf?.imageUrl}
+                  className="aspect-square max-w-56 object-cover"
+                />
+                <div className="flex flex-col gap-y-4">
                   <h2 key={`${bookshelf.id}-${bookshelf.name}`}>{bookshelf.name}</h2>
-                  <p key={`${bookshelf.id}-${bookshelf.addressId}`}>{bookshelf.addressId}</p>
+                  <p key={`${bookshelf.id}-${bookshelf.addressId}`}>
+                    {bookshelf.addressId}
+                    {'  '}
+                    {!bookshelf.addressId && 'Brak adresu'}
+                  </p>
                 </div>
-              ))}
+              </div>
+            ))}
           </div>
         </div>
       </div>

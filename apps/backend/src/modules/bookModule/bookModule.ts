@@ -164,7 +164,11 @@ export class BookModule implements DependencyInjectionModule {
 
     container.bind<FindBooksQueryHandler>(
       symbols.findBooksQueryHandler,
-      () => new FindBooksQueryHandlerImpl(container.get<BookRepository>(symbols.bookRepository)),
+      () =>
+        new FindBooksQueryHandlerImpl(
+          container.get<BookRepository>(symbols.bookRepository),
+          container.get<BookshelfRepository>(bookshelfSymbols.bookshelfRepository),
+        ),
     );
   }
 

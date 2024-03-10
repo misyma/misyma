@@ -30,7 +30,9 @@ export class FindBooksQueryHandlerImpl implements FindBooksQueryHandler {
   private async validateBookshelf({ bookshelfId, userId }: Omit<FindBooksPayload, 'ids'>): Promise<void> {
     if (bookshelfId) {
       const bookshelf = await this.bookshelfRepository.findBookshelf({
-        id: bookshelfId,
+        where: {
+          id: bookshelfId,
+        },
       });
 
       if (!bookshelf) {
