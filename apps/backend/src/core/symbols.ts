@@ -1,5 +1,5 @@
 export const symbols = {
-  configProvider: Symbol('configProvider'),
+  config: Symbol('config'),
   loggerService: Symbol('loggerService'),
   httpService: Symbol('httpService'),
   uuidService: Symbol('uuidService'),
@@ -11,7 +11,7 @@ export const symbols = {
 };
 
 export const coreSymbols = {
-  configProvider: symbols.configProvider,
+  config: symbols.config,
   loggerService: symbols.loggerService,
   httpService: symbols.httpService,
   uuidService: symbols.uuidService,

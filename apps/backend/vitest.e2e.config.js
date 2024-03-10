@@ -7,7 +7,7 @@ export default mergeConfig(
       globalSetup: ['/tests/globalSetup.ts'],
       testNamePattern: new RegExp(`^(?!.*#O).*$`, 'gi'),
       name: 'E2E',
-      include: [...configDefaults.exclude, '**/*.e2e.test.ts'],
+      include: [...configDefaults.exclude],
       exclude: [...configDefaults.watchExclude, '**/*.unit.test.ts', '**/*.integration.test.ts', '**/*.js'],
       pool: 'forks',
       poolOptions: {

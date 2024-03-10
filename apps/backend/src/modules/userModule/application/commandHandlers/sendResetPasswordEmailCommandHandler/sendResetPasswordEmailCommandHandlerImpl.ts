@@ -2,13 +2,13 @@ import {
   type ExecutePayload,
   type SendResetPasswordEmailCommandHandler,
 } from './sendResetPasswordEmailCommandHandler.js';
+import { type Config } from '../../../../../core/config.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { EmailEventDraft } from '../../../domain/entities/emailEvent/emailEventDraft.ts/emailEventDraft.js';
 import { EmailEventType } from '../../../domain/entities/emailEvent/types/emailEventType.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
 import { TokenType } from '../../../domain/types/tokenType.js';
-import { type UserModuleConfigProvider } from '../../../userModuleConfigProvider.js';
 import { type EmailMessageBus } from '../../messageBuses/emailMessageBus/emailMessageBus.js';
 
 export class SendResetPasswordEmailCommandHandlerImpl implements SendResetPasswordEmailCommandHandler {
@@ -16,7 +16,7 @@ export class SendResetPasswordEmailCommandHandlerImpl implements SendResetPasswo
     private readonly tokenService: TokenService,
     private readonly userRepository: UserRepository,
     private readonly loggerService: LoggerService,
-    private readonly configProvider: UserModuleConfigProvider,
+    private readonly config: Config,
     private readonly emailMessageBus: EmailMessageBus,
   ) {}
 
@@ -42,19 +42,15 @@ export class SendResetPasswordEmailCommandHandlerImpl implements SendResetPasswo
       email: user.getEmail(),
     });
 
-    const expiresIn = this.configProvider.getResetPasswordTokenExpiresIn();
-
     const resetPasswordToken = this.tokenService.createToken({
       data: {
         userId: user.getId(),
         type: TokenType.passwordReset,
       },
-      expiresIn,
+      expiresIn: this.config.token.resetPassword.expiresIn,
     });
 
-    const frontendUrl = this.configProvider.getFrontendUrl();
-
-    const resetPasswordLink = `${frontendUrl}/new-password?token=${resetPasswordToken}`;
+    const resetPasswordLink = `${this.config.frontendUrl}/new-password?token=${resetPasswordToken}`;
 
     await this.emailMessageBus.sendEvent(
       new EmailEventDraft({

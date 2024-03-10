@@ -44,8 +44,7 @@ import { UserMapperImpl } from './infrastructure/repositories/userRepository/use
 import { UserRepositoryImpl } from './infrastructure/repositories/userRepository/userRepositoryImpl.js';
 import { EmailServiceImpl } from './infrastructure/services/emailServiceImpl.js';
 import { symbols } from './symbols.js';
-import { type UserModuleConfigProvider } from './userModuleConfigProvider.js';
-import { type ConfigProvider } from '../../core/configProvider.js';
+import { type Config } from '../../core/config.js';
 import { type SqliteDatabaseClient } from '../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../core/symbols.js';
 import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
@@ -59,10 +58,6 @@ import { authSymbols } from '../authModule/symbols.js';
 
 export class UserModule implements DependencyInjectionModule {
   public declareBindings(container: DependencyInjectionContainer): void {
-    container.bind<UserModuleConfigProvider>(symbols.userModuleConfigProvider, () =>
-      container.get<ConfigProvider>(coreSymbols.configProvider),
-    );
-
     container.bind<UserMapper>(symbols.userMapper, () => new UserMapperImpl());
 
     container.bind<UserRepository>(
@@ -89,7 +84,7 @@ export class UserModule implements DependencyInjectionModule {
 
     container.bind<HashService>(
       symbols.hashService,
-      () => new HashServiceImpl(container.get<UserModuleConfigProvider>(symbols.userModuleConfigProvider)),
+      () => new HashServiceImpl(container.get<Config>(coreSymbols.config)),
     );
 
     container.bind<EmailService>(
@@ -122,7 +117,7 @@ export class UserModule implements DependencyInjectionModule {
           container.get<LoggerService>(coreSymbols.loggerService),
           container.get<HashService>(symbols.hashService),
           container.get<TokenService>(authSymbols.tokenService),
-          container.get<UserModuleConfigProvider>(symbols.userModuleConfigProvider),
+          container.get<Config>(coreSymbols.config),
         ),
     );
 
@@ -143,7 +138,7 @@ export class UserModule implements DependencyInjectionModule {
         new RefreshUserTokensCommandHandlerImpl(
           container.get<LoggerService>(coreSymbols.loggerService),
           container.get<TokenService>(authSymbols.tokenService),
-          container.get<UserModuleConfigProvider>(symbols.userModuleConfigProvider),
+          container.get<Config>(coreSymbols.config),
           container.get<UserRepository>(symbols.userRepository),
           container.get<BlacklistTokenRepository>(symbols.blacklistTokenRepository),
         ),
@@ -156,7 +151,7 @@ export class UserModule implements DependencyInjectionModule {
           container.get<TokenService>(authSymbols.tokenService),
           container.get<UserRepository>(symbols.userRepository),
           container.get<LoggerService>(coreSymbols.loggerService),
-          container.get<UserModuleConfigProvider>(symbols.userModuleConfigProvider),
+          container.get<Config>(coreSymbols.config),
           container.get<EmailMessageBus>(symbols.emailMessageBus),
         ),
     );
@@ -195,7 +190,7 @@ export class UserModule implements DependencyInjectionModule {
           container.get<TokenService>(authSymbols.tokenService),
           container.get<UserRepository>(symbols.userRepository),
           container.get<LoggerService>(coreSymbols.loggerService),
-          container.get<UserModuleConfigProvider>(symbols.userModuleConfigProvider),
+          container.get<Config>(coreSymbols.config),
           container.get<EmailMessageBus>(symbols.emailMessageBus),
         ),
     );

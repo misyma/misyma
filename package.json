@@ -7,7 +7,6 @@
     "build:clean": "turbo run build:clean",
     "test:unit": "turbo run test:unit:run --concurrency 5",
     "test:integration": "turbo run test:integration:run --concurrency 5",
-    "test:e2e": "turbo run test:e2e:run --concurrency 1",
     "lint": "turbo run lint --concurrency 5",
     "lint:fix": "turbo run lint:fix",
     "frontend:dev": "npm run dev -w @apps/frontend",

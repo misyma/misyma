@@ -37,16 +37,12 @@ export const createBookBodyDTOSchema = Type.Object({
   ),
   format: Type.Enum(contracts.BookFormat),
   pages: Type.Optional(Type.Integer()),
-  imageUrl: Type.Optional(Type.String({ format: 'uri' })),
+  imageUrl: Type.Optional(Type.String({ minLength: 1 })),
   status: Type.Enum(contracts.BookStatus),
   bookshelfId: Type.String({
     format: 'uuid',
   }),
-  authorIds: Type.Array(
-    Type.String({
-      format: 'uuid',
-    }),
-  ),
+  authorIds: Type.Array(Type.String({ format: 'uuid' })),
 });
 
 export type CreateBookBodyDTO = TypeExtends<Static<typeof createBookBodyDTOSchema>, contracts.CreateBookRequestBody>;
