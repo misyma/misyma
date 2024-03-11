@@ -130,7 +130,7 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
     ).toThrowErrorInstance({
       instance: OperationNotValidError,
       context: {
-        reason: 'Token is not valid.',
+        reason: 'Invalid reset password token.',
         token: invalidResetPasswordToken,
       },
     });

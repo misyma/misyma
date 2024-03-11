@@ -77,7 +77,7 @@ describe('VerifyUserEmailCommandHandlerImpl', () => {
     ).toThrowErrorInstance({
       instance: OperationNotValidError,
       context: {
-        reason: 'Token is not valid.',
+        reason: 'Invalid email verification token.',
         token: invalidEmailVerificationToken,
       },
     });
@@ -99,7 +99,7 @@ describe('VerifyUserEmailCommandHandlerImpl', () => {
     ).toThrowErrorInstance({
       instance: OperationNotValidError,
       context: {
-        reason: 'Invalid email verification token.',
+        reason: 'Token type is not email verification token.',
       },
     });
   });
@@ -120,7 +120,7 @@ describe('VerifyUserEmailCommandHandlerImpl', () => {
     ).toThrowErrorInstance({
       instance: OperationNotValidError,
       context: {
-        reason: 'Token is not valid.',
+        reason: 'Invalid email verification token.',
         token: emailVerificationToken,
       },
     });

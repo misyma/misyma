@@ -107,32 +107,21 @@ export class HttpRouter {
             method,
             statusCode,
           });
-
-          return;
         } catch (error) {
+          this.loggerService.error({
+            message: 'Caught an error in the HTTP router.',
+            error,
+            path: fastifyRequest.url,
+            method,
+            statusCode: fastifyReply.statusCode,
+          });
+
           if (error instanceof BaseError) {
             const formattedError: Record<string, unknown> = {
               name: error.name,
               message: error.message,
               context: error.context,
             };
-
-            this.loggerService.error({
-              message: 'Caught an error in the HTTP router.',
-              error:
-                error instanceof Error
-                  ? {
-                      name: error.name,
-                      message: error.message,
-                      context: error.context,
-                      stack: error.stack,
-                      cause: error.cause,
-                    }
-                  : undefined,
-              path: fastifyRequest.url,
-              method,
-              statusCode: fastifyReply.statusCode,
-            });
 
             if (error instanceof ResourceNotFoundError) {
               fastifyReply.status(HttpStatusCode.notFound).send({
@@ -143,7 +132,7 @@ export class HttpRouter {
             }
 
             if (error instanceof OperationNotValidError) {
-              fastifyReply.status(HttpStatusCode.badRequest).send({
+              fastifyReply.status(HttpStatusCode.unprocessableEntity).send({
                 ...formattedError,
               });
 
@@ -181,20 +170,10 @@ export class HttpRouter {
             return;
           }
 
-          this.loggerService.error({
-            message: 'Caught an unknown error in the HTTP router.',
-            path: fastifyRequest.url,
-            method,
-            statusCode: fastifyReply.statusCode,
-            error,
-          });
-
           fastifyReply.status(HttpStatusCode.internalServerError).send({
             name: 'InternalServerError',
             message: 'Internal server error',
           });
-
-          return;
         }
       };
 

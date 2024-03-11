@@ -3,9 +3,9 @@ import {
   type LoginUserCommandHandlerPayload,
   type LoginUserCommandHandlerResult,
 } from './loginUserCommandHandler.js';
-import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type Config } from '../../../../../core/config.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
+import { ForbiddenAccessError } from '../../../../authModule/application/errors/forbiddenAccessError.js';
 import { UnauthorizedAccessError } from '../../../../authModule/application/errors/unathorizedAccessError.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
@@ -35,7 +35,7 @@ export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
 
     if (!user) {
       throw new UnauthorizedAccessError({
-        reason: 'User not found.',
+        reason: 'Invalid email or password.',
         email,
       });
     }
@@ -47,13 +47,13 @@ export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
 
     if (!passwordIsValid) {
       throw new UnauthorizedAccessError({
-        reason: 'User not found.',
+        reason: 'Invalid email or password.',
         email,
       });
     }
 
     if (!user.getIsEmailVerified()) {
-      throw new OperationNotValidError({
+      throw new ForbiddenAccessError({
         reason: 'User email is not verified.',
         email,
       });
