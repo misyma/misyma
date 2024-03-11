@@ -52,6 +52,7 @@ import { type Book } from '../../../domain/entities/book/book.js';
 
 export class BookHttpController implements HttpController {
   public readonly basePath = '/api/books';
+  public readonly tags = ['Book'];
 
   public constructor(
     private readonly createBookCommandHandler: CreateBookCommandHandler,
@@ -80,7 +81,6 @@ export class BookHttpController implements HttpController {
           },
         },
         securityMode: SecurityMode.bearerToken,
-        tags: ['Book'],
         description: 'Create book.',
       }),
       new HttpRoute({
@@ -99,7 +99,6 @@ export class BookHttpController implements HttpController {
           },
         },
         securityMode: SecurityMode.bearerToken,
-        tags: ['Book'],
         description: 'Find book by id.',
       }),
       new HttpRoute({
@@ -118,7 +117,6 @@ export class BookHttpController implements HttpController {
             },
           },
         },
-        tags: ['Book'],
         securityMode: SecurityMode.bearerToken,
       }),
       new HttpRoute({
@@ -137,7 +135,6 @@ export class BookHttpController implements HttpController {
           },
         },
         securityMode: SecurityMode.bearerToken,
-        tags: ['Book'],
         description: 'Delete book.',
       }),
       new HttpRoute({
@@ -157,7 +154,6 @@ export class BookHttpController implements HttpController {
             },
           },
         },
-        tags: ['Book'],
       }),
     ];
   }

@@ -21,7 +21,6 @@ export interface HttpRouteDraft {
   readonly handler: HttpRouteHandler;
   readonly schema: HttpRouteSchema;
   readonly securityMode?: SecurityMode;
-  readonly tags: string[];
   readonly description: string;
   readonly preValidation?: (request: any) => void;
 }
@@ -32,12 +31,11 @@ export class HttpRoute {
   public readonly handler: HttpRouteHandler;
   public readonly schema: HttpRouteSchema;
   public readonly securityMode?: SecurityMode;
-  public readonly tags: string[];
   public readonly description: string;
   public readonly preValidation?: (request: any) => void;
 
   public constructor(draft: HttpRouteDraft) {
-    const { method, path, handler, schema, securityMode, tags, description, preValidation } = draft;
+    const { method, path, handler, schema, securityMode, description, preValidation } = draft;
 
     this.method = method;
 
@@ -46,8 +44,6 @@ export class HttpRoute {
     this.handler = handler;
 
     this.schema = schema;
-
-    this.tags = tags;
 
     this.description = description;
 

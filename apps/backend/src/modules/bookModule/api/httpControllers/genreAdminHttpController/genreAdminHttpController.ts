@@ -38,6 +38,7 @@ import { type GenreDTO } from '../genreHttpController/schemas/dtos/genreDTO.js';
 
 export class GenreAdminHttpController implements HttpController {
   public basePath = '/api/admin/genres';
+  public tags = ['Genre'];
 
   public constructor(
     private readonly createGenreCommandHandler: CreateGenreCommandHandler,
@@ -64,7 +65,6 @@ export class GenreAdminHttpController implements HttpController {
           },
         },
         securityMode: SecurityMode.basicAuth,
-        tags: ['Genre'],
         path: 'create',
       }),
       new HttpRoute({
@@ -84,7 +84,6 @@ export class GenreAdminHttpController implements HttpController {
           },
         },
         securityMode: SecurityMode.basicAuth,
-        tags: ['Genre'],
         path: ':id/name',
       }),
       new HttpRoute({
@@ -102,7 +101,6 @@ export class GenreAdminHttpController implements HttpController {
             },
           },
         },
-        tags: ['Genre'],
         path: ':id',
       }),
     ];

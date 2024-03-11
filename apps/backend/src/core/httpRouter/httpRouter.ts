@@ -19,16 +19,17 @@ import { UnauthorizedAccessError } from '../../modules/authModule/application/er
 import { coreSymbols } from '../symbols.js';
 
 export interface RegisterControllersPayload {
-  controllers: HttpController[];
+  readonly controllers: HttpController[];
 }
 
 export interface RegisterRoutesPayload {
-  routes: HttpRoute[];
-  basePath: string;
+  readonly routes: HttpRoute[];
+  readonly basePath: string;
+  readonly tags: string[];
 }
 
 export interface NormalizePathPayload {
-  path: string;
+  readonly path: string;
 }
 
 export class HttpRouter {
@@ -46,29 +47,23 @@ export class HttpRouter {
     const { controllers } = payload;
 
     controllers.forEach((controller) => {
-      const { basePath } = controller;
+      const { basePath, tags } = controller;
 
       const routes = controller.getHttpRoutes();
 
-      this.registerRoutes({
+      this.registerControllerRoutes({
         routes,
         basePath,
+        tags,
       });
     });
   }
 
-  private registerRoutes(payload: RegisterRoutesPayload): void {
-    const { routes, basePath } = payload;
+  private registerControllerRoutes(payload: RegisterRoutesPayload): void {
+    const { routes, basePath, tags } = payload;
 
     routes.map((httpRoute) => {
-      const {
-        method,
-        path: controllerPath,
-        tags,
-        description,
-        preValidation: preValidationHook,
-        securityMode,
-      } = httpRoute;
+      const { method, path: controllerPath, description, preValidation: preValidationHook, securityMode } = httpRoute;
 
       const path = this.normalizePath({ path: `/${this.rootPath}/${basePath}/${controllerPath}` });
 

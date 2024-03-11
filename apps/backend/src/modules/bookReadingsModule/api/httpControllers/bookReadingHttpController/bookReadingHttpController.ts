@@ -58,6 +58,7 @@ interface MapBookReadingToBookReadingDTOPayload {
 
 export class BookReadingHttpController implements HttpController {
   public readonly basePath = '/api/books/:bookId/book-readings';
+  public readonly tags = ['BookReading'];
 
   public constructor(
     private readonly findBookReadingsByBookIdQueryHandler: FindBookReadingsByBookIdQueryHandler,
@@ -85,7 +86,6 @@ export class BookReadingHttpController implements HttpController {
             },
           },
         },
-        tags: ['BookReading'],
         securityMode: SecurityMode.bearerToken,
       }),
       new HttpRoute({
@@ -104,7 +104,6 @@ export class BookReadingHttpController implements HttpController {
           },
         },
         description: 'Get a BookReading by id.',
-        tags: ['BookReading'],
       }),
       new HttpRoute({
         method: HttpMethodName.post,
@@ -122,7 +121,6 @@ export class BookReadingHttpController implements HttpController {
             },
           },
         },
-        tags: ['BookReading'],
       }),
       new HttpRoute({
         method: HttpMethodName.patch,
@@ -141,7 +139,6 @@ export class BookReadingHttpController implements HttpController {
             },
           },
         },
-        tags: ['BookReading'],
       }),
       new HttpRoute({
         method: HttpMethodName.delete,
@@ -159,7 +156,6 @@ export class BookReadingHttpController implements HttpController {
             },
           },
         },
-        tags: ['BookReading'],
       }),
     ];
   }

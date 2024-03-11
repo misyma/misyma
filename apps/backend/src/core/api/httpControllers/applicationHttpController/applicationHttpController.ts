@@ -8,6 +8,7 @@ import { type SqliteDatabaseClient } from '../../../database/sqliteDatabaseClien
 
 export class ApplicationHttpController implements HttpController {
   public readonly basePath = '/health';
+  public readonly tags = ['Health'];
 
   public constructor(private readonly sqliteDatabaseClient: SqliteDatabaseClient) {}
 
@@ -25,7 +26,6 @@ export class ApplicationHttpController implements HttpController {
             },
           },
         },
-        tags: ['Health'],
         description: 'Check application health.',
       }),
     ];
