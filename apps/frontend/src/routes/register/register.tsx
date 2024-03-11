@@ -6,6 +6,7 @@ import { RegisterUserForm } from './components/registerUserForm/registerUserForm
 import { DefaultFormLayout } from '../../layouts/default/defaultFormLayout';
 import { useSendVerificationEmailMutation } from '../../api/user/mutations/sendVerificationEmailMutation/sendVerificationEmailMutation';
 import { useToast } from '@/components/ui/use-toast';
+import { RequireNonAuthComponent } from '../../core/components/requireNonAuth/requireNonAuthComponent';
 
 export const RegisterPage: FC = () => {
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
@@ -49,7 +50,7 @@ export const RegisterPage: FC = () => {
                         toast({
                           title: 'Wiadomość email została wysłana ponownie.',
                           duration: 3000,
-                          variant: 'success'
+                          variant: 'success',
                         });
                       },
                       onError: () => {
@@ -98,5 +99,11 @@ export const RegisterPage: FC = () => {
 export const registerRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/register',
-  component: RegisterPage,
+  component: () => {
+    return (
+      <RequireNonAuthComponent>
+        <RegisterPage />
+      </RequireNonAuthComponent>
+    );
+  },
 });

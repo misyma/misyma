@@ -7,6 +7,10 @@ import { LoginUserResponseBody } from '@common/contracts';
 import { userStateActions } from '../../core/store/states/userState/userStateSlice';
 import { FC } from 'react';
 import { DefaultFormLayout } from '../../layouts/default/defaultFormLayout';
+import Cookie from 'js-cookie';
+import { RequireNonAuthComponent } from '../../core/components/requireNonAuth/requireNonAuthComponent';
+
+const userTokensCookieName = 'misyma-user-tokens-cookie';
 
 export const LoginPage: FC = () => {
   const storeDispatch = useStoreDispatch();
@@ -14,7 +18,7 @@ export const LoginPage: FC = () => {
   const navigate = useNavigate();
 
   const onSuccessfulLogin = (loginUserResponseBody: LoginUserResponseBody) => {
-    const { refreshToken, accessToken } = loginUserResponseBody;
+    const { refreshToken, accessToken, expiresIn } = loginUserResponseBody;
 
     storeDispatch(
       userStateActions.setCurrentUserTokens({
@@ -22,6 +26,12 @@ export const LoginPage: FC = () => {
         refreshToken,
       }),
     );
+
+    Cookie.set(userTokensCookieName, JSON.stringify({ accessToken, refreshToken }), {
+      secure: true,
+      sameSite: 'strict',
+      expires: new Date(Date.now() + expiresIn * 1000),
+    });
 
     navigate({
       to: '/me',
@@ -38,5 +48,11 @@ export const LoginPage: FC = () => {
 export const loginRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/login',
-  component: LoginPage,
+  component: () => {
+    return (
+      <RequireNonAuthComponent>
+        <LoginPage />
+      </RequireNonAuthComponent>
+    );
+  },
 });

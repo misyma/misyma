@@ -4,10 +4,9 @@ import { createRouter, RouterProvider } from '@tanstack/react-router';
 import './i18n.ts';
 import './index.css';
 import { routeTree } from './core/router/router.tsx';
-import { QueryClientProvider } from './core/components/providers/queryClientProvider.tsx';
-import { Provider } from 'react-redux';
-import { store } from './core/store/store.ts';
+import { QueryClientProvider } from './core/components/providers/queryClientProvider/queryClientProvider.tsx';
 import { notFoundRoute } from './routes/notFound/notFound.tsx';
+import { StoreProvider } from './core/components/providers/storeProvider/storeProvider.tsx';
 
 const router = createRouter({
   routeTree,
@@ -17,10 +16,10 @@ const router = createRouter({
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <Provider store={store}> 
+    <StoreProvider>
       <QueryClientProvider>
         <RouterProvider router={router} />
       </QueryClientProvider>
-    </Provider>
+    </StoreProvider>
   </React.StrictMode>,
 );

@@ -10,7 +10,7 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, containerClassName, type, includeQuill = true, ...props }, ref) => {
+  ({ className, containerClassName, type, includeQuill = true, otherIcon, ...props }, ref) => {
     return (
       <div className={cn(
         'flex flex-row',
@@ -30,9 +30,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             <ImQuill className="bg-[#D1D5DB]/20 text-primary opacity-65 text-3xl" />
           </div>
         )}
-        {props.otherIcon && (
+        {otherIcon && (
           <div className="w-60 sm:w-96 absolute h-12 pointer-events-none flex items-center justify-end px-2">
-            {props.otherIcon}
+            {otherIcon}
           </div>
         )}
       </div>

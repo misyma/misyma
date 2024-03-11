@@ -6,6 +6,7 @@ import { rootRoute } from '../root';
 import { z } from 'zod';
 import { DefaultLayout } from '../../layouts/default/defaultLayout';
 import { Logo } from '../../components/logo/logo';
+import { RequireNonAuthComponent } from '../../core/components/requireNonAuth/requireNonAuthComponent';
 
 export const VerifyEmailPage: FC = () => {
   const navigate = useNavigate();
@@ -50,7 +51,13 @@ const searchSchema = z.object({
 export const verifyEmailRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/verify-email',
-  component: VerifyEmailPage,
+  component: () => {
+    return (
+      <RequireNonAuthComponent>
+        <VerifyEmailPage />
+      </RequireNonAuthComponent>
+    );
+  },
   validateSearch: searchSchema,
   onError: () => {
     return <Link to={'/login'} />;
