@@ -1,16 +1,21 @@
 import { QueryCache, QueryClient, QueryClientProvider as NativeQueryClientProvider } from '@tanstack/react-query';
 import React, { useState } from 'react';
-import { ApiError } from '../../../common/errors/apiError';
-import { useStoreSelector } from '../../store/hooks/useStoreSelector';
-import { userStateActions, userStateSelectors } from '../../store/states/userState/userStateSlice';
-import { UserApiError } from '../../../api/user/errors/userApiError';
+import { ApiError } from '../../../../common/errors/apiError';
+import { useStoreSelector } from '../../../store/hooks/useStoreSelector';
+import { userStateActions, userStateSelectors } from '../../../store/states/userState/userStateSlice';
+import { UserApiError } from '../../../../api/user/errors/userApiError';
 import { type RefreshUserTokensResponseBody } from '@common/contracts';
-import { useStoreDispatch } from '../../store/hooks/useStoreDispatch';
-import { HttpService } from '../../services/httpService/httpService';
+import { useStoreDispatch } from '../../../store/hooks/useStoreDispatch';
+import { HttpService } from '../../../services/httpService/httpService';
+import Cookie from 'js-cookie';
 
 interface ProviderProps {
   children: React.ReactNode;
 }
+
+const userTokensCookieName = 'misyma-user-tokens-cookie';
+
+const userDataCookieName = 'misyma-user-data-cookie';
 
 export const QueryClientProvider = ({ children }: ProviderProps) => {
   const { refreshToken } = useStoreSelector(userStateSelectors.selectCurrentUserTokens);
@@ -68,9 +73,25 @@ export const QueryClientProvider = ({ children }: ProviderProps) => {
 
             if (res) {
               storeDispatch(userStateActions.setCurrentUserTokens(res));
+
+              Cookie.set(
+                userTokensCookieName,
+                JSON.stringify({
+                  accessToken: res.accessToken,
+                  refreshToken: res.refreshToken,
+                }),
+                {
+                  secure: true,
+                  sameSite: 'strict',
+                },
+              );
             }
           } catch (error) {
             storeDispatch(userStateActions.removeUserState());
+
+            Cookie.remove(userTokensCookieName);
+
+            Cookie.remove(userDataCookieName);
           } finally {
             setRefreshingToken(false);
           }

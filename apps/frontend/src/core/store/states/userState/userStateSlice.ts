@@ -28,6 +28,9 @@ export const userStateSlice = createSlice({
       state.accessToken = action.payload.accessToken;
       state.refreshToken = action.payload.refreshToken;
     },
+    setCurrentUserAccessToken: (state, action: PayloadAction<string>) => {
+      state.accessToken = action.payload;
+    },
     removeUserState: (state) => {
       state.accessToken = null;
       state.refreshToken = null;

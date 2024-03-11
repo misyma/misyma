@@ -6,6 +6,7 @@ import { SendResetPasswordEmailForm } from './components/sendResetPasswordEmailF
 import { DefaultFormLayout } from '../../layouts/default/defaultFormLayout';
 import { useSendResetPasswordEmailMutation } from '../../api/user/mutations/sendResetPasswordEmailMutation/sendResetPasswordEmailMutation';
 import { useToast } from '../../components/ui/use-toast';
+import { RequireNonAuthComponent } from '../../core/components/requireNonAuth/requireNonAuthComponent';
 
 export const SendResetPasswordEmailPage: FC = () => {
   const [success, setSuccess] = useState(false);
@@ -65,7 +66,7 @@ export const SendResetPasswordEmailPage: FC = () => {
                         toast({
                           description: 'Wiadomość email została wysłana ponownie.',
                           duration: 3000,
-                          variant: 'success'
+                          variant: 'success',
                         });
                       },
                       onError: () => {
@@ -99,5 +100,11 @@ export const SendResetPasswordEmailPage: FC = () => {
 export const resetPasswordRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/reset-password',
-  component: SendResetPasswordEmailPage,
+  component: () => {
+    return (
+      <RequireNonAuthComponent>
+        <SendResetPasswordEmailPage />
+      </RequireNonAuthComponent>
+    );
+  },
 });

@@ -5,6 +5,7 @@ import { FC } from 'react';
 import { SetNewPasswordForm } from './components/setNewPasswordForm/setNewPasswordForm';
 import { z } from 'zod';
 import { DefaultFormLayout } from '../../layouts/default/defaultFormLayout';
+import { RequireNonAuthComponent } from '../../core/components/requireNonAuth/requireNonAuthComponent';
 
 export const SetNewPasswordPage: FC = () => {
   const navigate = useNavigate();
@@ -38,7 +39,13 @@ const productSearchSchema = z.object({
 export const newPasswordRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/new-password',
-  component: SetNewPasswordPage,
+  component: () =>{ 
+    return (
+      <RequireNonAuthComponent>
+        <SetNewPasswordPage />
+      </RequireNonAuthComponent>
+    );
+  },
   validateSearch: productSearchSchema,
   onError: () => {
     return <Navigate to={'/login'} />;

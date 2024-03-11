@@ -18,5 +18,5 @@ export const routeTree = rootRoute.addChildren([
   newPasswordRoute,
   verifyEmailRoute,
   bookRoute,
-  shelvesRoute
+  shelvesRoute,
 ]);
