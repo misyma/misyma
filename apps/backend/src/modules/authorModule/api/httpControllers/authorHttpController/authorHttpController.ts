@@ -34,6 +34,7 @@ import { type FindAuthorQueryHandler } from '../../../application/queryHandlers/
 
 export class AuthorHttpController implements HttpController {
   public readonly basePath = '/api/authors';
+  public readonly tags = ['Author'];
 
   public constructor(
     private readonly createAuthorCommandHandler: CreateAuthorCommandHandler,
@@ -60,7 +61,6 @@ export class AuthorHttpController implements HttpController {
           },
         },
         securityMode: SecurityMode.bearerToken,
-        tags: ['Author'],
         description: 'Create author.',
       }),
       new HttpRoute({
@@ -79,7 +79,6 @@ export class AuthorHttpController implements HttpController {
           },
         },
         securityMode: SecurityMode.bearerToken,
-        tags: ['Author'],
         description: 'Find author by id.',
       }),
       new HttpRoute({
@@ -98,7 +97,6 @@ export class AuthorHttpController implements HttpController {
           },
         },
         securityMode: SecurityMode.bearerToken,
-        tags: ['Author'],
         description: 'Delete author.',
       }),
     ];

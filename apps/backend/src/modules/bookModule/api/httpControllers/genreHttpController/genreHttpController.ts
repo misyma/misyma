@@ -27,6 +27,7 @@ import { type Genre } from '../../../domain/entities/genre/genre.js';
 
 export class GenreHttpController implements HttpController {
   public basePath = '/api/genres';
+  public tags = ['Genre'];
 
   public constructor(
     private readonly findGenresQueryHandler: FindGenresQueryHandler,
@@ -51,7 +52,6 @@ export class GenreHttpController implements HttpController {
           },
         },
         securityMode: SecurityMode.bearerToken,
-        tags: ['Genre'],
       }),
       new HttpRoute({
         description: 'Find genre by name.',
@@ -70,7 +70,6 @@ export class GenreHttpController implements HttpController {
         },
         path: '/name',
         securityMode: SecurityMode.bearerToken,
-        tags: ['Genre'],
       }),
       new HttpRoute({
         description: 'Find genre by id.',
@@ -87,7 +86,6 @@ export class GenreHttpController implements HttpController {
             },
           },
         },
-        tags: ['Genre'],
         path: ':id',
         securityMode: SecurityMode.bearerToken,
       }),

@@ -89,6 +89,7 @@ import { type User } from '../../../domain/entities/user/user.js';
 
 export class UserHttpController implements HttpController {
   public readonly basePath = '/api/users';
+  public readonly tags = ['User'];
 
   public constructor(
     private readonly registerUserCommandHandler: RegisterUserCommandHandler,
@@ -122,7 +123,6 @@ export class UserHttpController implements HttpController {
           },
         },
         preValidation: registerUserBodyPreValidationHook,
-        tags: ['User'],
         description: 'Register user.',
       }),
       new HttpRoute({
@@ -140,7 +140,6 @@ export class UserHttpController implements HttpController {
             },
           },
         },
-        tags: ['User'],
         description: 'Login user.',
       }),
       new HttpRoute({
@@ -159,7 +158,6 @@ export class UserHttpController implements HttpController {
             },
           },
         },
-        tags: ['User'],
       }),
       new HttpRoute({
         method: HttpMethodName.post,
@@ -177,7 +175,6 @@ export class UserHttpController implements HttpController {
             },
           },
         },
-        tags: ['User'],
       }),
       new HttpRoute({
         method: HttpMethodName.get,
@@ -195,7 +192,6 @@ export class UserHttpController implements HttpController {
           },
         },
         securityMode: SecurityMode.bearerToken,
-        tags: ['User'],
         description: 'Find user by id.',
       }),
       new HttpRoute({
@@ -212,7 +208,6 @@ export class UserHttpController implements HttpController {
           },
         },
         securityMode: SecurityMode.bearerToken,
-        tags: ['User'],
         description: 'Find user by token.',
       }),
       new HttpRoute({
@@ -231,7 +226,6 @@ export class UserHttpController implements HttpController {
           },
         },
         securityMode: SecurityMode.bearerToken,
-        tags: ['User'],
         description: 'Delete user.',
       }),
       new HttpRoute({
@@ -249,7 +243,6 @@ export class UserHttpController implements HttpController {
             },
           },
         },
-        tags: ['User'],
         description: 'Send verification email.',
       }),
       new HttpRoute({
@@ -267,7 +260,6 @@ export class UserHttpController implements HttpController {
             },
           },
         },
-        tags: ['User'],
         description: 'Verify user email.',
       }),
       new HttpRoute({
@@ -287,7 +279,6 @@ export class UserHttpController implements HttpController {
           },
         },
         securityMode: SecurityMode.bearerToken,
-        tags: ['User'],
         description: 'Logout user.',
       }),
       new HttpRoute({
@@ -305,7 +296,6 @@ export class UserHttpController implements HttpController {
             },
           },
         },
-        tags: ['User'],
         description: 'Refresh user tokens.',
       }),
     ];

@@ -42,11 +42,12 @@ import { type FindBookshelvesByUserIdQueryHandler } from '../../../application/q
 import { type Bookshelf } from '../../../domain/entities/bookshelf/bookshelf.js';
 
 interface MapBookshelfToBookshelfDTOPayload {
-  bookshelf: Bookshelf;
+  readonly bookshelf: Bookshelf;
 }
 
 export class BookshelfHttpController implements HttpController {
   public readonly basePath = '/api/bookshelves';
+  public readonly tags = ['Bookshelf'];
 
   public constructor(
     private readonly findBookshelvesByUserIdQueryHandler: FindBookshelvesByUserIdQueryHandler,
@@ -74,7 +75,6 @@ export class BookshelfHttpController implements HttpController {
             },
           },
         },
-        tags: ['Bookshelf'],
         securityMode: SecurityMode.bearerToken,
       }),
       new HttpRoute({
@@ -93,7 +93,6 @@ export class BookshelfHttpController implements HttpController {
           },
         },
         description: 'Get a bookshelf by id.',
-        tags: ['Bookshelf'],
       }),
       new HttpRoute({
         method: HttpMethodName.post,
@@ -111,7 +110,6 @@ export class BookshelfHttpController implements HttpController {
             },
           },
         },
-        tags: ['Bookshelf'],
       }),
       new HttpRoute({
         method: HttpMethodName.patch,
@@ -130,7 +128,6 @@ export class BookshelfHttpController implements HttpController {
             },
           },
         },
-        tags: ['Bookshelf'],
       }),
     ];
   }
