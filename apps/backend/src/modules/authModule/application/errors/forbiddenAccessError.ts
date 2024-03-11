@@ -2,6 +2,7 @@ import { BaseError } from '../../../../common/errors/baseError.js';
 
 interface Context {
   readonly reason: string;
+  readonly [key: string]: unknown;
 }
 
 export class ForbiddenAccessError extends BaseError<Context> {

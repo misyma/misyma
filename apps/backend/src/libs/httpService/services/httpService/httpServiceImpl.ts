@@ -56,25 +56,10 @@ export class HttpServiceImpl implements HttpService {
         statusCode: response.status,
       };
     } catch (error) {
-      const { name, message } =
-        error instanceof Error
-          ? error
-          : {
-              name: '',
-              message: JSON.stringify(error),
-            };
-
-      this.loggerService.error({
-        message: 'Http request error.',
-        error: {
-          name,
-          message,
-        },
-      });
-
       throw new HttpServiceError({
-        name,
-        message,
+        method,
+        url,
+        error,
       });
     }
   }

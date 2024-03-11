@@ -1,8 +1,9 @@
 import { BaseError } from '../../../common/errors/baseError.js';
 
 interface Context {
-  readonly name?: string;
-  readonly message: string;
+  readonly url: string;
+  readonly method: string;
+  readonly [key: string]: unknown;
 }
 
 export class HttpServiceError extends BaseError<Context> {

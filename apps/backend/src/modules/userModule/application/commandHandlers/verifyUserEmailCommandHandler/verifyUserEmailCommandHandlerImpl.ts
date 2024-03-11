@@ -15,7 +15,16 @@ export class VerifyUserEmailCommandHandlerImpl implements VerifyUserEmailCommand
   public async execute(payload: ExecutePayload): Promise<void> {
     const { emailVerificationToken } = payload;
 
-    const tokenPayload = this.tokenService.verifyToken({ token: emailVerificationToken });
+    let tokenPayload: Record<string, string>;
+
+    try {
+      tokenPayload = this.tokenService.verifyToken({ token: emailVerificationToken });
+    } catch (error) {
+      throw new OperationNotValidError({
+        reason: 'Invalid email verification token.',
+        token: emailVerificationToken,
+      });
+    }
 
     const userId = tokenPayload['userId'];
 
@@ -27,7 +36,7 @@ export class VerifyUserEmailCommandHandlerImpl implements VerifyUserEmailCommand
 
     if (tokenPayload['type'] !== TokenType.emailVerification) {
       throw new OperationNotValidError({
-        reason: 'Invalid email verification token.',
+        reason: 'Token type is not email verification token.',
       });
     }
 

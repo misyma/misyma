@@ -4,7 +4,6 @@ import {
   type RefreshUserTokensCommandHandlerResult,
 } from './refreshUserTokensCommandHandler.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type Config } from '../../../../../core/config.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
@@ -41,11 +40,20 @@ export class RefreshUserTokensCommandHandlerImpl implements RefreshUserTokensCom
       });
     }
 
-    const tokenPayload = this.tokenService.verifyToken({ token: refreshToken });
+    let tokenPayload: Record<string, string>;
+
+    try {
+      tokenPayload = this.tokenService.verifyToken({ token: refreshToken });
+    } catch (error) {
+      throw new OperationNotValidError({
+        reason: 'Invalid refresh token.',
+        token: refreshToken,
+      });
+    }
 
     if (tokenPayload['type'] !== TokenType.refreshToken) {
       throw new OperationNotValidError({
-        reason: 'Invalid refresh token.',
+        reason: 'Token type is not refresh token.',
       });
     }
 
@@ -60,8 +68,8 @@ export class RefreshUserTokensCommandHandlerImpl implements RefreshUserTokensCom
     const user = await this.userRepository.findUser({ id: userId });
 
     if (!user) {
-      throw new ResourceNotFoundError({
-        name: 'User',
+      throw new OperationNotValidError({
+        reason: 'User not found.',
         userId,
       });
     }

@@ -6,7 +6,6 @@ import { type RefreshUserTokensCommandHandler } from './refreshUserTokensCommand
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type Config } from '../../../../../core/config.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
@@ -102,9 +101,9 @@ describe('RefreshUserTokensCommandHandler', () => {
         refreshToken,
       }),
     ).toThrowErrorInstance({
-      instance: ResourceNotFoundError,
+      instance: OperationNotValidError,
       context: {
-        name: 'User',
+        reason: 'User not found.',
         userId,
       },
     });
@@ -128,7 +127,7 @@ describe('RefreshUserTokensCommandHandler', () => {
     ).toThrowErrorInstance({
       instance: OperationNotValidError,
       context: {
-        reason: 'Invalid refresh token.',
+        reason: 'Token type is not refresh token.',
       },
     });
   });

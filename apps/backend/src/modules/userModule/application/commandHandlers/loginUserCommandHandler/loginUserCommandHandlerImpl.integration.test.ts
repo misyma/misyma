@@ -3,10 +3,10 @@ import { beforeEach, afterEach, expect, it, describe } from 'vitest';
 import { type LoginUserCommandHandler } from './loginUserCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
-import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type Config } from '../../../../../core/config.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
+import { ForbiddenAccessError } from '../../../../authModule/application/errors/forbiddenAccessError.js';
 import { UnauthorizedAccessError } from '../../../../authModule/application/errors/unathorizedAccessError.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { authSymbols } from '../../../../authModule/symbols.js';
@@ -107,7 +107,7 @@ describe('LoginUserCommandHandler', () => {
           password: createdUser.getPassword(),
         }),
     ).toThrowErrorInstance({
-      instance: OperationNotValidError,
+      instance: ForbiddenAccessError,
       context: {
         reason: 'User email is not verified.',
         email: createdUser.getEmail(),
@@ -127,7 +127,7 @@ describe('LoginUserCommandHandler', () => {
     ).toThrowErrorInstance({
       instance: UnauthorizedAccessError,
       context: {
-        reason: 'User not found.',
+        reason: 'Invalid email or password.',
         email: nonExistentUser.getEmail(),
       },
     });
@@ -145,7 +145,7 @@ describe('LoginUserCommandHandler', () => {
     ).toThrowErrorInstance({
       instance: UnauthorizedAccessError,
       context: {
-        reason: 'User not found.',
+        reason: 'Invalid email or password.',
         email,
       },
     });

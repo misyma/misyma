@@ -9,8 +9,8 @@ import {
   type DecodeTokenPayload,
   type DecodeTokenResult,
 } from './tokenService.js';
-import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type Config } from '../../../../../core/config.js';
+import { UnauthorizedAccessError } from '../../errors/unathorizedAccessError.js';
 
 export class TokenServiceImpl implements TokenService {
   public constructor(private readonly config: Config) {}
@@ -29,16 +29,9 @@ export class TokenServiceImpl implements TokenService {
   public verifyToken(payload: VerifyTokenPayload): Record<string, string> {
     const { token } = payload;
 
-    try {
-      const data = jwt.verify(token, this.config.token.secret, { algorithms: ['HS512'] });
+    const data = jwt.verify(token, this.config.token.secret, { algorithms: ['HS512'] });
 
-      return data as Record<string, string>;
-    } catch (error) {
-      throw new OperationNotValidError({
-        reason: 'Token is not valid.',
-        token,
-      });
-    }
+    return data as Record<string, string>;
   }
 
   public decodeToken(payload: DecodeTokenPayload): DecodeTokenResult {
@@ -47,7 +40,7 @@ export class TokenServiceImpl implements TokenService {
     const decodedToken = jwt.decode(token, { complete: true });
 
     if (!decodedToken) {
-      throw new OperationNotValidError({
+      throw new UnauthorizedAccessError({
         reason: 'Token is not valid.',
         token,
       });
@@ -56,7 +49,7 @@ export class TokenServiceImpl implements TokenService {
     const tokenPayload = decodedToken.payload as jwt.JwtPayload;
 
     if (!tokenPayload) {
-      throw new OperationNotValidError({
+      throw new UnauthorizedAccessError({
         reason: 'Token payload is not valid.',
         token,
       });
@@ -65,7 +58,7 @@ export class TokenServiceImpl implements TokenService {
     const expiresAt = tokenPayload.exp;
 
     if (!expiresAt) {
-      throw new OperationNotValidError({
+      throw new UnauthorizedAccessError({
         reason: 'Token expiration date is not set.',
         token,
       });

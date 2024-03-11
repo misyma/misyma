@@ -22,9 +22,27 @@ export class LogoutUserCommandHandlerImpl implements LogoutUserCommandHandler {
       userId,
     });
 
-    const refreshTokenPayload = this.tokenService.verifyToken({ token: refreshToken });
+    let refreshTokenPayload: Record<string, string>;
 
-    const accessTokenPayload = this.tokenService.verifyToken({ token: accessToken });
+    try {
+      refreshTokenPayload = this.tokenService.verifyToken({ token: refreshToken });
+    } catch (error) {
+      throw new OperationNotValidError({
+        reason: 'Invalid refresh token.',
+        token: refreshToken,
+      });
+    }
+
+    let accessTokenPayload: Record<string, string>;
+
+    try {
+      accessTokenPayload = this.tokenService.verifyToken({ token: accessToken });
+    } catch (error) {
+      throw new OperationNotValidError({
+        reason: 'Invalid access token.',
+        token: accessToken,
+      });
+    }
 
     const isRefreshTokenBlacklisted = await this.blacklistTokenRepository.findBlacklistToken({
       token: refreshToken,
