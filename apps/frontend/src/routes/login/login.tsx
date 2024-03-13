@@ -7,10 +7,8 @@ import { LoginUserResponseBody } from '@common/contracts';
 import { userStateActions } from '../../core/store/states/userState/userStateSlice';
 import { FC } from 'react';
 import { DefaultFormLayout } from '../../layouts/default/defaultFormLayout';
-import Cookie from 'js-cookie';
 import { RequireNonAuthComponent } from '../../core/components/requireNonAuth/requireNonAuthComponent';
-
-const userTokensCookieName = 'misyma-user-tokens-cookie';
+import { CookieService } from '../../core/services/cookieService/cookieService';
 
 export const LoginPage: FC = () => {
   const storeDispatch = useStoreDispatch();
@@ -27,11 +25,11 @@ export const LoginPage: FC = () => {
       }),
     );
 
-    Cookie.set(userTokensCookieName, JSON.stringify({ accessToken, refreshToken }), {
-      secure: true,
-      sameSite: 'strict',
-      expires: new Date(Date.now() + expiresIn * 1000),
-    });
+    CookieService.setUserTokensCookie({
+      accessToken,
+      refreshToken,
+      expiresIn
+    })
 
     navigate({
       to: '/me',
