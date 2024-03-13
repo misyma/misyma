@@ -1,21 +1,18 @@
 /* eslint-disable react-refresh/only-export-components */
-import { Link, createRoute } from '@tanstack/react-router';
+import { Link, createRoute, useNavigate } from '@tanstack/react-router';
 import { rootRoute } from '../root';
 import { FC, useState } from 'react';
 import { SendResetPasswordEmailForm } from './components/sendResetPasswordEmailForm/sendResetPasswordEmailForm';
 import { DefaultFormLayout } from '../../layouts/default/defaultFormLayout';
-import { useSendResetPasswordEmailMutation } from '../../api/user/mutations/sendResetPasswordEmailMutation/sendResetPasswordEmailMutation';
-import { useToast } from '../../components/ui/use-toast';
 import { RequireNonAuthComponent } from '../../core/components/requireNonAuth/requireNonAuthComponent';
+import { Button } from '../../components/ui/button';
 
 export const SendResetPasswordEmailPage: FC = () => {
+  const navigate = useNavigate();
+
   const [success, setSuccess] = useState(false);
 
   const [userEmail, setUserEmail] = useState<string>('');
-
-  const { mutate: sendResetPasswordEmailMutation } = useSendResetPasswordEmailMutation({});
-
-  const { toast } = useToast();
 
   const onSuccess = async (email: string) => {
     setSuccess(true);
@@ -52,43 +49,21 @@ export const SendResetPasswordEmailPage: FC = () => {
             <p className="text-xl mt-3 font-medium py-2">
               Znajdziesz w niej link, który pozwoli Ci ustawić nowe hasło.
             </p>
-            <p className="py-8">
-              Email się nie pojawił?{' '}
-              <a
-                className="text-primary font-semibold cursor-pointer"
-                onClick={() => {
-                  setUserEmail(userEmail);
-
-                  sendResetPasswordEmailMutation(
-                    { email: userEmail },
-                    {
-                      onSuccess: () => {
-                        toast({
-                          description: 'Wiadomość email została wysłana ponownie.',
-                          duration: 3000,
-                          variant: 'success',
-                        });
-                      },
-                      onError: () => {
-                        toast({
-                          description: 'Nie udało się wysłać wiadomości email. Spróbuj ponownie.',
-                          duration: 3000,
-                          variant: 'destructive',
-                        });
-                      },
-                    },
-                  );
-                }}
+            <p className="py-8 w-[100%]">
+              <Button
+                className="w-[100%]"
+                onClick={() =>
+                  navigate({
+                    to: '/login',
+                  })
+                }
               >
-                Wyślij ponownie
-              </a>{' '}
-              lub{' '}
+                Przejdź do logowania
+              </Button>
               <Link
                 to="/login"
                 className="text-primary font-semibold"
-              >
-                przejdź do logowania
-              </Link>
+              ></Link>
             </p>
           </div>
         </>
