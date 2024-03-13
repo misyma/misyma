@@ -1,0 +1,111 @@
+import { type BookStatus } from '@common/contracts';
+
+import { type BookState } from '../book/book.js';
+
+export interface UserBookDraft {
+  readonly id: string;
+  readonly imageUrl?: string | undefined;
+  readonly status: BookStatus;
+  readonly bookshelfId: string;
+  readonly bookId: string;
+  readonly book?: BookState;
+}
+
+export interface UserBookState {
+  imageUrl?: string;
+  status: BookStatus;
+  bookshelfId: string;
+  readonly bookId: string;
+  readonly book?: BookState;
+}
+
+export interface SetImageUrlPayload {
+  readonly imageUrl: string;
+}
+
+export interface SetStatusPayload {
+  readonly status: BookStatus;
+}
+
+export interface SetBookshelfIdPayload {
+  readonly bookshelfId: string;
+}
+
+export class UserBook {
+  private readonly id: string;
+  private readonly state: UserBookState;
+
+  public constructor(draft: UserBookDraft) {
+    const { id, imageUrl, status, bookshelfId, bookId, book } = draft;
+
+    this.id = id;
+
+    let state: UserBookState = {
+      status,
+      bookshelfId,
+      bookId,
+    };
+
+    if (imageUrl) {
+      state = {
+        ...state,
+        imageUrl,
+      };
+    }
+
+    if (book) {
+      state = {
+        ...state,
+        book,
+      };
+    }
+
+    this.state = state;
+  }
+
+  public getState(): UserBookState {
+    return this.state;
+  }
+
+  public getId(): string {
+    return this.id;
+  }
+
+  public getBook(): BookState | undefined {
+    return this.state.book;
+  }
+
+  public getImageUrl(): string | undefined {
+    return this.state.imageUrl;
+  }
+
+  public getStatus(): BookStatus {
+    return this.state.status;
+  }
+
+  public getBookshelfId(): string {
+    return this.state.bookshelfId;
+  }
+
+  public getBookId(): string {
+    return this.state.bookId;
+  }
+
+  public setImageUrl(payload: SetImageUrlPayload): void {
+    const { imageUrl } = payload;
+
+    this.state.imageUrl = imageUrl;
+  }
+
+  public setStatus(payload: SetStatusPayload): void {
+    const { status } = payload;
+
+    this.state.status = status;
+  }
+
+  public setBookshelfId(payload: SetBookshelfIdPayload): void {
+    const { bookshelfId } = payload;
+
+    this.state.bookshelfId = bookshelfId;
+  }
+}

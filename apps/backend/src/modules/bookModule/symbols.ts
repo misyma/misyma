@@ -21,6 +21,9 @@ export const symbols = {
   findGenreByNameQueryHandler: Symbol('findGenreByNameQueryHandler'),
   findGenreByIdQueryHandler: Symbol('findGenreByIdQueryHandler'),
 
+  userBookMapper: Symbol('userBookMapper'),
+  userBookRepository: Symbol('userBookRepository'),
+
   bookHttpController: Symbol('bookHttpController'),
   genreHttpController: Symbol('genreHttpController'),
   genreAdminHttpController: Symbol('genreAdminHttpController'),

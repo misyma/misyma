@@ -25,12 +25,16 @@ import { type FindGenresQueryHandler } from './application/queryHandlers/findGen
 import { FindGenresQueryHandlerImpl } from './application/queryHandlers/findGenresQueryHandler/findGenresQueryHandlerImpl.js';
 import { type BookRepository } from './domain/repositories/bookRepository/bookRepository.js';
 import { type GenreRepository } from './domain/repositories/genreRepository/genreRepository.js';
+import { type UserBookRepository } from './domain/repositories/userBookRepository/userBookRepository.js';
 import { type BookMapper } from './infrastructure/repositories/bookRepository/bookMapper/bookMapper.js';
 import { BookMapperImpl } from './infrastructure/repositories/bookRepository/bookMapper/bookMapperImpl.js';
 import { BookRepositoryImpl } from './infrastructure/repositories/bookRepository/bookRepositoryImpl.js';
 import { type GenreMapper } from './infrastructure/repositories/genreRepository/genreMapper/genreMapper.js';
 import { GenreMapperImpl } from './infrastructure/repositories/genreRepository/genreMapper/genreMapperImpl.js';
 import { GenreRepositoryImpl } from './infrastructure/repositories/genreRepository/genreRepositoryImpl.js';
+import { type UserBookMapper } from './infrastructure/repositories/userBookRepository/userBookMapper/userBookMapper.js';
+import { UserBookMapperImpl } from './infrastructure/repositories/userBookRepository/userBookMapper/userBookMapperImpl.js';
+import { UserBookRepositoryImpl } from './infrastructure/repositories/userBookRepository/userBookRepositoryImpl.js';
 import { symbols } from './symbols.js';
 import { type SqliteDatabaseClient } from '../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../core/symbols.js';
@@ -47,9 +51,7 @@ import { bookshelfSymbols } from '../bookshelfModule/symbols.js';
 
 export class BookModule implements DependencyInjectionModule {
   public declareBindings(container: DependencyInjectionContainer): void {
-    container.bind<BookMapper>(symbols.bookMapper, () => new BookMapperImpl());
-
-    container.bind<GenreMapper>(symbols.genreMapper, () => new GenreMapperImpl());
+    this.bindMappers(container);
 
     this.bindRepositories(container);
 
@@ -58,6 +60,14 @@ export class BookModule implements DependencyInjectionModule {
     this.bindQueryHandlers(container);
 
     this.bindHttpControllers(container);
+  }
+
+  private bindMappers(container: DependencyInjectionContainer): void {
+    container.bind<BookMapper>(symbols.bookMapper, () => new BookMapperImpl());
+
+    container.bind<UserBookMapper>(symbols.userBookMapper, () => new UserBookMapperImpl());
+
+    container.bind<GenreMapper>(symbols.genreMapper, () => new GenreMapperImpl());
   }
 
   private bindRepositories(container: DependencyInjectionContainer): void {
@@ -77,6 +87,16 @@ export class BookModule implements DependencyInjectionModule {
         new GenreRepositoryImpl(
           container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient),
           container.get<GenreMapper>(symbols.genreMapper),
+          container.get<UuidService>(coreSymbols.uuidService),
+        ),
+    );
+
+    container.bind<UserBookRepository>(
+      symbols.userBookRepository,
+      () =>
+        new UserBookRepositoryImpl(
+          container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient),
+          container.get<UserBookMapper>(symbols.userBookMapper),
           container.get<UuidService>(coreSymbols.uuidService),
         ),
     );

@@ -1,6 +1,6 @@
 import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 
-import { BookFormat, BookStatus } from '@common/contracts';
+import { BookFormat } from '@common/contracts';
 import { Generator } from '@common/tests';
 
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
@@ -10,8 +10,6 @@ import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDa
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { Author } from '../../../../authorModule/domain/entities/author/author.js';
 import { type AuthorTestUtils } from '../../../../authorModule/tests/utils/authorTestUtils/authorTestUtils.js';
-import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
-import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { Book } from '../../../domain/entities/book/book.js';
 import { Genre } from '../../../domain/entities/genre/genre.js';
 import { type BookRepository } from '../../../domain/repositories/bookRepository/bookRepository.js';
@@ -29,10 +27,6 @@ describe('BookRepositoryImpl', () => {
 
   let authorTestUtils: AuthorTestUtils;
 
-  let userTestUtils: UserTestUtils;
-
-  let bookshelfTestUtils: BookshelfTestUtils;
-
   let genreTestUtils: GenreTestUtils;
 
   const bookTestFactory = new BookTestFactory();
@@ -48,19 +42,11 @@ describe('BookRepositoryImpl', () => {
 
     authorTestUtils = container.get<AuthorTestUtils>(testSymbols.authorTestUtils);
 
-    userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
-
-    bookshelfTestUtils = container.get<BookshelfTestUtils>(testSymbols.bookshelfTestUtils);
-
     genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
 
     await authorTestUtils.truncate();
 
     await bookTestUtils.truncate();
-
-    await bookshelfTestUtils.truncate();
-
-    await userTestUtils.truncate();
 
     await genreTestUtils.truncate();
   });
@@ -70,10 +56,6 @@ describe('BookRepositoryImpl', () => {
 
     await bookTestUtils.truncate();
 
-    await bookshelfTestUtils.truncate();
-
-    await userTestUtils.truncate();
-
     await genreTestUtils.truncate();
 
     await sqliteDatabaseClient.destroy();
@@ -81,15 +63,10 @@ describe('BookRepositoryImpl', () => {
 
   describe('saveBook', () => {
     it('creates a book', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
       const author = await authorTestUtils.createAndPersist();
 
       const createdBook = bookTestFactory.create({
         authors: [new Author(author)],
-        bookshelfId: bookshelf.id,
       });
 
       const book = await bookRepository.saveBook({
@@ -102,9 +79,6 @@ describe('BookRepositoryImpl', () => {
           translator: createdBook.getTranslator() as string,
           format: createdBook.getFormat(),
           pages: createdBook.getPages() as number,
-          imageUrl: createdBook.getImageUrl() as string,
-          status: createdBook.getStatus(),
-          bookshelfId: createdBook.getBookshelfId(),
           authors: [new Author(author)],
           genres: [],
         },
@@ -123,10 +97,6 @@ describe('BookRepositoryImpl', () => {
     });
 
     it('removes book Authors', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
       const author1 = await authorTestUtils.createAndPersist();
 
       const author2 = await authorTestUtils.createAndPersist();
@@ -136,9 +106,6 @@ describe('BookRepositoryImpl', () => {
       const bookRawEntity = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author1.id, author2.id, author3.id],
-          book: {
-            bookshelfId: bookshelf.id,
-          },
         },
       });
 
@@ -175,10 +142,6 @@ describe('BookRepositoryImpl', () => {
     });
 
     it('adds book Authors', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
       const author1 = await authorTestUtils.createAndPersist();
 
       const author2 = await authorTestUtils.createAndPersist();
@@ -192,9 +155,6 @@ describe('BookRepositoryImpl', () => {
       const bookRawEntity = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author1.id, author2.id, author3.id],
-          book: {
-            bookshelfId: bookshelf.id,
-          },
         },
       });
 
@@ -229,20 +189,11 @@ describe('BookRepositoryImpl', () => {
     });
 
     it('updates Book data', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf1 = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-      const bookshelf2 = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
       const author = await authorTestUtils.createAndPersist();
 
       const bookRawEntity = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author.id],
-          book: {
-            bookshelfId: bookshelf1.id,
-          },
         },
       });
 
@@ -264,12 +215,6 @@ describe('BookRepositoryImpl', () => {
 
       const newPages = (bookRawEntity.pages as number) + 10;
 
-      const newImageUrl = Generator.imageUrl();
-
-      const newStatus = BookStatus.finishedReading;
-
-      const newBookshelfId = bookshelf2.id;
-
       book.setTitle({ title: newTitle });
 
       book.setIsbn({ isbn: newIsbn });
@@ -285,12 +230,6 @@ describe('BookRepositoryImpl', () => {
       book.setFormat({ format: newFormat });
 
       book.setPages({ pages: newPages });
-
-      book.setImageUrl({ imageUrl: newImageUrl });
-
-      book.setStatus({ status: newStatus });
-
-      book.setBookshelf({ bookshelfId: newBookshelfId });
 
       const updatedBook = await bookRepository.saveBook({
         book,
@@ -309,9 +248,6 @@ describe('BookRepositoryImpl', () => {
         translator: newTranslator,
         format: newFormat,
         pages: newPages,
-        imageUrl: newImageUrl,
-        status: newStatus,
-        bookshelfId: newBookshelfId,
         authors: [],
         genres: [],
       });
@@ -326,21 +262,10 @@ describe('BookRepositoryImpl', () => {
         translator: newTranslator,
         format: newFormat,
         pages: newPages,
-        imageUrl: newImageUrl,
-        status: newStatus,
-        bookshelfId: newBookshelfId,
       });
     });
 
     it('adds Book Genres', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({
-        input: {
-          userId: user.id,
-        },
-      });
-
       const author1 = await authorTestUtils.createAndPersist();
 
       const author2 = await authorTestUtils.createAndPersist();
@@ -356,9 +281,6 @@ describe('BookRepositoryImpl', () => {
       const bookRawEntity = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author1.id, author2.id],
-          book: {
-            bookshelfId: bookshelf.id,
-          },
           genreIds: [genre1.id],
         },
       });
@@ -401,14 +323,6 @@ describe('BookRepositoryImpl', () => {
     });
 
     it('removes Book Genres', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({
-        input: {
-          userId: user.id,
-        },
-      });
-
       const author1 = await authorTestUtils.createAndPersist();
 
       const author2 = await authorTestUtils.createAndPersist();
@@ -424,9 +338,6 @@ describe('BookRepositoryImpl', () => {
       const bookRawEntity = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author1.id, author2.id],
-          book: {
-            bookshelfId: bookshelf.id,
-          },
           genreIds: [genre1.id, genre2.id, genre3.id, genre4.id],
         },
       });
@@ -471,18 +382,11 @@ describe('BookRepositoryImpl', () => {
 
   describe('findBook', () => {
     it('finds book by id', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
       const author = await authorTestUtils.createAndPersist();
 
       const book = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author.id],
-          book: {
-            bookshelfId: bookshelf.id,
-          },
         },
       });
 
@@ -494,16 +398,9 @@ describe('BookRepositoryImpl', () => {
     });
 
     it('finds a Book without Authors', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
       const book = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [],
-          book: {
-            bookshelfId: bookshelf.id,
-          },
         },
       });
 
@@ -523,137 +420,13 @@ describe('BookRepositoryImpl', () => {
     });
   });
 
-  describe('findBooks', () => {
-    it('returns Books from a given Bookshelf', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf1 = await bookshelfTestUtils.createAndPersist({
-        input: {
-          userId: user.id,
-        },
-      });
-
-      const bookshelf2 = await bookshelfTestUtils.createAndPersist({
-        input: {
-          userId: user.id,
-        },
-      });
-
-      const author1 = await authorTestUtils.createAndPersist();
-
-      const author2 = await authorTestUtils.createAndPersist();
-
-      const book1 = await bookTestUtils.createAndPersist({
-        input: {
-          authorIds: [author1.id],
-          book: {
-            title: 'test1',
-            bookshelfId: bookshelf1.id,
-          },
-        },
-      });
-
-      const book2 = await bookTestUtils.createAndPersist({
-        input: {
-          authorIds: [author2.id],
-          book: {
-            title: 'test2',
-            bookshelfId: bookshelf1.id,
-          },
-        },
-      });
-
-      await bookTestUtils.createAndPersist({
-        input: {
-          authorIds: [author1.id],
-          book: {
-            title: 'test3',
-            bookshelfId: bookshelf2.id,
-          },
-        },
-      });
-
-      const books = await bookRepository.findBooks({
-        ids: [],
-        bookshelfId: bookshelf1.id,
-      });
-
-      expect(books.length).toEqual(2);
-
-      books.forEach((book) => {
-        expect(book.getId()).oneOf([book1.id, book2.id]);
-      });
-    });
-
-    it('returns an empty array - given no Books', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({
-        input: {
-          userId: user.id,
-        },
-      });
-
-      const books = await bookRepository.findBooks({
-        ids: [],
-        bookshelfId: bookshelf.id,
-      });
-
-      expect(books).toHaveLength(0);
-    });
-
-    it('returns an empty array - given no Books with ids', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({
-        input: {
-          userId: user.id,
-        },
-      });
-
-      const nonExistentBookId1 = Generator.uuid();
-
-      const nonExistentBookId2 = Generator.uuid();
-
-      await bookTestUtils.createAndPersist({
-        input: {
-          book: {
-            bookshelfId: bookshelf.id,
-          },
-        },
-      });
-
-      await bookTestUtils.createAndPersist({
-        input: {
-          book: {
-            bookshelfId: bookshelf.id,
-          },
-        },
-      });
-
-      const books = await bookRepository.findBooks({
-        ids: [nonExistentBookId1, nonExistentBookId2],
-        bookshelfId: bookshelf.id,
-      });
-
-      expect(books.length).toEqual(0);
-    });
-  });
-
   describe('delete', () => {
     it('deletes book', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
       const author = await authorTestUtils.createAndPersist();
 
       const book = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author.id],
-          book: {
-            bookshelfId: bookshelf.id,
-          },
         },
       });
 
