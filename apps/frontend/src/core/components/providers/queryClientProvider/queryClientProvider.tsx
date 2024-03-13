@@ -7,15 +7,11 @@ import { UserApiError } from '../../../../api/user/errors/userApiError';
 import { type RefreshUserTokensResponseBody } from '@common/contracts';
 import { useStoreDispatch } from '../../../store/hooks/useStoreDispatch';
 import { HttpService } from '../../../services/httpService/httpService';
-import Cookie from 'js-cookie';
+import { CookieService } from '../../../services/cookieService/cookieService';
 
 interface ProviderProps {
   children: React.ReactNode;
 }
-
-const userTokensCookieName = 'misyma-user-tokens-cookie';
-
-const userDataCookieName = 'misyma-user-data-cookie';
 
 export const QueryClientProvider = ({ children }: ProviderProps) => {
   const { refreshToken } = useStoreSelector(userStateSelectors.selectCurrentUserTokens);
@@ -74,24 +70,18 @@ export const QueryClientProvider = ({ children }: ProviderProps) => {
             if (res) {
               storeDispatch(userStateActions.setCurrentUserTokens(res));
 
-              Cookie.set(
-                userTokensCookieName,
-                JSON.stringify({
-                  accessToken: res.accessToken,
-                  refreshToken: res.refreshToken,
-                }),
-                {
-                  secure: true,
-                  sameSite: 'strict',
-                },
-              );
+              CookieService.setUserTokensCookie({
+                accessToken: res.accessToken,
+                refreshToken: res.refreshToken,
+                expiresIn: res.expiresIn,
+              });
             }
           } catch (error) {
             storeDispatch(userStateActions.removeUserState());
 
-            Cookie.remove(userTokensCookieName);
+            CookieService.removeUserTokensCookie();
 
-            Cookie.remove(userDataCookieName);
+            CookieService.removeUserDataCookie();
           } finally {
             setRefreshingToken(false);
           }

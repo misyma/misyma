@@ -4,6 +4,7 @@ import { rootRoute } from '../root';
 import { FC } from 'react';
 import { Button } from '../../components/ui/button';
 import { Logo } from '../../components/logo/logo';
+import { RequireNonAuthComponent } from '../../core/components/requireNonAuth/requireNonAuthComponent';
 
 export const LandingPage: FC = () => {
   const navigate = useNavigate();
@@ -20,10 +21,12 @@ export const LandingPage: FC = () => {
               <p className="text-xl sm:text-2xl text-start mt-3">Twoja prywatna biblioteka</p>
               <Button
                 className="w-60 sm:w-96 py-6 px-6 mt-8 sm:mt-16 text-sm sm:text-xl"
-                onClick={() => navigate({
-                  to: '/login',
-                })}
-              >  
+                onClick={() =>
+                  navigate({
+                    to: '/login',
+                  })
+                }
+              >
                 Odkryj jej możliwości
               </Button>
             </div>
@@ -38,5 +41,11 @@ export const LandingPage: FC = () => {
 export const landingRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
-  component: LandingPage,
+  component: () => {
+    return (
+      <RequireNonAuthComponent>
+        <LandingPage />
+      </RequireNonAuthComponent>
+    );
+  },
 });

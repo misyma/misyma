@@ -62,7 +62,10 @@ export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
     const accessTokenExpiresIn = this.config.token.access.expiresIn;
 
     const accessToken = this.tokenService.createToken({
-      data: { userId: user.getId() },
+      data: {
+        userId: user.getId(),
+        type: TokenType.accessToken,
+      },
       expiresIn: accessTokenExpiresIn,
     });
 
