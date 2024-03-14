@@ -86,8 +86,8 @@ export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccess, onError }: Lo
                 <FormControl>
                   <Input
                     placeholder="Email"
-                    maxLength={320}
-                    className={cn('w-60 sm:w-96 focus:border-input bg-[#D1D5DB]/20', setInputFieldErrorState(field))}
+                    maxLength={254}
+                    containerClassName={cn('focus:border-input', setInputFieldErrorState(field))}
                     {...field}
                   />
                 </FormControl>
@@ -114,7 +114,7 @@ export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccess, onError }: Lo
                       />
                     }
                     {...field}
-                    className={cn('w-60 sm:w-96 focus:border-input bg-[#D1D5DB]/20', setInputFieldErrorState(field))}
+                    containerClassName={cn('focus:border-input', setInputFieldErrorState(field))}
                     {...field}
                   />
                 </FormControl>
