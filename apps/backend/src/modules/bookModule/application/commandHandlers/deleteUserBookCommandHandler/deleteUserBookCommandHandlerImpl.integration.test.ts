@@ -1,11 +1,8 @@
 import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 
-import { Generator } from '@common/tests';
-
-import { type DeleteBookCommandHandler } from './deleteBookCommandHandler.js';
+import { type DeleteUserBookCommandHandler } from './deleteUserBookCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type AuthorTestUtils } from '../../../../authorModule/tests/utils/authorTestUtils/authorTestUtils.js';
@@ -13,9 +10,10 @@ import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { symbols } from '../../../symbols.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
+import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
 
-describe('DeleteBookCommandHandler', () => {
-  let deleteBookCommandHandler: DeleteBookCommandHandler;
+describe('DeleteUserBookCommandHandler', () => {
+  let deleteUserBookCommandHandler: DeleteUserBookCommandHandler;
 
   let sqliteDatabaseClient: SqliteDatabaseClient;
 
@@ -27,10 +25,12 @@ describe('DeleteBookCommandHandler', () => {
 
   let bookshelfTestUtils: BookshelfTestUtils;
 
+  let userBookTestUtils: UserBookTestUtils;
+
   beforeEach(async () => {
     const container = TestContainer.create();
 
-    deleteBookCommandHandler = container.get<DeleteBookCommandHandler>(symbols.deleteBookCommandHandler);
+    deleteUserBookCommandHandler = container.get<DeleteUserBookCommandHandler>(symbols.deleteUserBookCommandHandler);
 
     sqliteDatabaseClient = container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient);
 
@@ -49,6 +49,8 @@ describe('DeleteBookCommandHandler', () => {
     await bookshelfTestUtils.truncate();
 
     await userTestUtils.truncate();
+
+    await userBookTestUtils.truncate();
   });
 
   afterEach(async () => {
@@ -60,10 +62,12 @@ describe('DeleteBookCommandHandler', () => {
 
     await userTestUtils.truncate();
 
+    await userBookTestUtils.truncate();
+
     await sqliteDatabaseClient.destroy();
   });
 
-  it('deletes book', async () => {
+  it('deletes UserBook', async () => {
     const user = await userTestUtils.createAndPersist();
 
     const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
@@ -73,27 +77,20 @@ describe('DeleteBookCommandHandler', () => {
     const book = await bookTestUtils.createAndPersist({
       input: {
         authorIds: [author.id],
-        book: {
-          bookshelfId: bookshelf.id,
-        },
       },
     });
 
-    await deleteBookCommandHandler.execute({ bookId: book.id });
-
-    const foundBook = await bookTestUtils.findById({ id: book.id });
-
-    expect(foundBook).toBeUndefined();
-  });
-
-  it('throws an error if book with given id does not exist', async () => {
-    const id = Generator.uuid();
-
-    await expect(async () => deleteBookCommandHandler.execute({ bookId: id })).toThrowErrorInstance({
-      instance: ResourceNotFoundError,
-      context: {
-        name: 'Book',
+    const userBook = await userBookTestUtils.createAndPersist({
+      input: {
+        bookId: book.id,
+        bookshelfId: bookshelf.id,
       },
     });
+
+    await deleteUserBookCommandHandler.execute({ userBookId: userBook.id });
+
+    const foundUserBook = await userBookTestUtils.findById({ id: userBook.id });
+
+    expect(foundUserBook).toBeUndefined();
   });
 });

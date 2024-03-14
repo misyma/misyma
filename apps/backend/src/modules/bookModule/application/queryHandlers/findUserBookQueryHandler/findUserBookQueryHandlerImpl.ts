@@ -2,7 +2,7 @@ import {
   type FindBookQueryHandler,
   type FindBookQueryHandlerPayload,
   type FindBookQueryHandlerResult,
-} from './findBookQueryHandler.js';
+} from './findUserBookQueryHandler.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type BookRepository } from '../../../domain/repositories/bookRepository/bookRepository.js';
 

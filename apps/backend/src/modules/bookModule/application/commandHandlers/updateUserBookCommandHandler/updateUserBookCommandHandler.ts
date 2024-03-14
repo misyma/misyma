@@ -1,0 +1,17 @@
+import { type ReadingStatus } from '@common/contracts';
+
+import { type CommandHandler } from '../../../../../common/types/commandHandler.js';
+import { type UserBook } from '../../../domain/entities/userBook/userBook.js';
+
+export interface UpdateUserBookPayload {
+  readonly userBookId: string;
+  readonly imageUrl?: string;
+  readonly bookshelfId?: string;
+  readonly status?: ReadingStatus;
+}
+
+export interface UpdateUserBookResult {
+  readonly userBook: UserBook;
+}
+
+export type UpdateUserBookCommandHandler = CommandHandler<UpdateUserBookPayload, UpdateUserBookResult>;

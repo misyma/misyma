@@ -5,6 +5,8 @@ import { type CreateBookCommandHandler } from './application/commandHandlers/cre
 import { CreateBookCommandHandlerImpl } from './application/commandHandlers/createBookCommandHandler/createBookCommandHandlerImpl.js';
 import { type CreateGenreCommandHandler } from './application/commandHandlers/createGenreCommandHandler/createGenreCommandHandler.js';
 import { CreateGenreCommandHandlerImpl } from './application/commandHandlers/createGenreCommandHandler/createGenreCommandHandlerImpl.js';
+import { type CreateUserBookCommandHandler } from './application/commandHandlers/createUserBookCommandHandler/createUserBookCommandHandler.js';
+import { CreateUserBookCommandHandlerImpl } from './application/commandHandlers/createUserBookCommandHandler/createUserBookCommandHandlerImpl.js';
 import { type DeleteBookCommandHandler } from './application/commandHandlers/deleteBookCommandHandler/deleteBookCommandHandler.js';
 import { DeleteBookCommandHandlerImpl } from './application/commandHandlers/deleteBookCommandHandler/deleteBookCommandHandlerImpl.js';
 import { type DeleteGenreCommandHandler } from './application/commandHandlers/deleteGenreCommandHandler/deleteGenreCommandHandler.js';
@@ -109,7 +111,6 @@ export class BookModule implements DependencyInjectionModule {
         new CreateBookCommandHandlerImpl(
           container.get<BookRepository>(symbols.bookRepository),
           container.get<FindAuthorsByIdsQueryHandler>(authorSymbols.findAuthorsByIdsQueryHandler),
-          container.get<BookshelfRepository>(bookshelfSymbols.bookshelfRepository),
           container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );
@@ -159,12 +160,46 @@ export class BookModule implements DependencyInjectionModule {
           container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );
+
+    container.bind<CreateUserBookCommandHandler>(
+      symbols.createUserBookCommandHandler,
+      () =>
+        new CreateUserBookCommandHandlerImpl(
+          container.get<BookRepository>(symbols.bookRepository),
+          container.get<FindAuthorsByIdsQueryHandler>(authorSymbols.findAuthorsByIdsQueryHandler),
+          container.get<LoggerService>(coreSymbols.loggerService),
+        ),
+    );
+
+    container.bind<UpdateUserBookCommandHandler>(
+      symbols.updateUserBookCommandHandler,
+      () =>
+        new UpdateUserBookCommandHandlerImpl(
+          container.get<BookRepository>(symbols.bookRepository),
+          container.get<GenreRepository>(symbols.genreRepository),
+          container.get<LoggerService>(coreSymbols.loggerService),
+        ),
+    );
+
+    container.bind<DeleteUserBookCommandHandler>(
+      symbols.deleteUserBookCommandHandler,
+      () =>
+        new DeleteUserBookCommandHandlerImpl(
+          container.get<BookRepository>(symbols.bookRepository),
+          container.get<LoggerService>(coreSymbols.loggerService),
+        ),
+    );
   }
 
   private bindQueryHandlers(container: DependencyInjectionContainer): void {
     container.bind<FindBookQueryHandler>(
       symbols.findBookQueryHandler,
       () => new FindBookQueryHandlerImpl(container.get<BookRepository>(symbols.bookRepository)),
+    );
+
+    container.bind<FindBooksQueryHandler>(
+      symbols.findBooksQueryHandler,
+      () => new FindBooksQueryHandlerImpl(container.get<BookRepository>(symbols.bookRepository)),
     );
 
     container.bind<FindGenreByNameQueryHandler>(
@@ -182,13 +217,14 @@ export class BookModule implements DependencyInjectionModule {
       () => new FindGenreByIdQueryHandlerImpl(container.get<GenreRepository>(symbols.genreRepository)),
     );
 
-    container.bind<FindBooksQueryHandler>(
-      symbols.findBooksQueryHandler,
-      () =>
-        new FindBooksQueryHandlerImpl(
-          container.get<BookRepository>(symbols.bookRepository),
-          container.get<BookshelfRepository>(bookshelfSymbols.bookshelfRepository),
-        ),
+    container.bind<FindUserBookQueryHandler>(
+      symbols.findUserBookQueryHandler,
+      () => new FindUserBookQueryHandlerImpl(container.get<BookRepository>(symbols.bookRepository)),
+    );
+
+    container.bind<FindUserBooksQueryHandler>(
+      symbols.findUserBooksQueryHandler,
+      () => new FindUserBooksQueryHandlerImpl(container.get<BookRepository>(symbols.bookRepository)),
     );
   }
 

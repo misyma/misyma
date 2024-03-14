@@ -12,11 +12,11 @@ export interface UserBookDraft {
 }
 
 export interface UserBookState {
-  imageUrl?: string;
+  imageUrl?: string | undefined;
   status: ReadingStatus;
   bookshelfId: string;
   readonly bookId: string;
-  readonly book?: BookState;
+  readonly book?: BookState | undefined;
 }
 
 export interface SetImageUrlPayload {
