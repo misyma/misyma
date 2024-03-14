@@ -1,19 +1,16 @@
-import { beforeEach, afterEach, expect, describe, it } from 'vitest';
+import { beforeEach, afterEach, expect, it, describe } from 'vitest';
 
-import { Generator } from '@common/tests';
-
-import { type DeleteBookCommandHandler } from './deleteBookCommandHandler.js';
+import { type FindBooksQueryHandler } from './findBooksQueryHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type AuthorTestUtils } from '../../../../authorModule/tests/utils/authorTestUtils/authorTestUtils.js';
 import { symbols } from '../../../symbols.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
 
-describe('DeleteBookCommandHandler', () => {
-  let deleteBookCommandHandler: DeleteBookCommandHandler;
+describe('FindBooksQueryHandler', () => {
+  let findBooksQueryHandler: FindBooksQueryHandler;
 
   let sqliteDatabaseClient: SqliteDatabaseClient;
 
@@ -24,7 +21,7 @@ describe('DeleteBookCommandHandler', () => {
   beforeEach(async () => {
     const container = TestContainer.create();
 
-    deleteBookCommandHandler = container.get<DeleteBookCommandHandler>(symbols.deleteBookCommandHandler);
+    findBooksQueryHandler = container.get<FindBooksQueryHandler>(symbols.findBooksQueryHandler);
 
     sqliteDatabaseClient = container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient);
 
@@ -45,7 +42,7 @@ describe('DeleteBookCommandHandler', () => {
     await sqliteDatabaseClient.destroy();
   });
 
-  it('deletes book', async () => {
+  it('finds books', async () => {
     const author = await authorTestUtils.createAndPersist();
 
     const book = await bookTestUtils.createAndPersist({
@@ -54,21 +51,10 @@ describe('DeleteBookCommandHandler', () => {
       },
     });
 
-    await deleteBookCommandHandler.execute({ bookId: book.id });
+    const { books } = await findBooksQueryHandler.execute();
 
-    const foundBook = await bookTestUtils.findById({ id: book.id });
+    expect(books.length).toEqual(1);
 
-    expect(foundBook).toBeUndefined();
-  });
-
-  it('throws an error if book with given id does not exist', async () => {
-    const id = Generator.uuid();
-
-    await expect(async () => deleteBookCommandHandler.execute({ bookId: id })).toThrowErrorInstance({
-      instance: ResourceNotFoundError,
-      context: {
-        name: 'Book',
-      },
-    });
+    expect(books[0]?.getId()).toEqual(book.id);
   });
 });

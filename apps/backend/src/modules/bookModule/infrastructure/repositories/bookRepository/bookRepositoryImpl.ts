@@ -10,7 +10,6 @@ import {
   type FindBookPayload,
   type DeleteBookPayload,
   type SaveBookPayload,
-  type FindBooksPayload,
 } from '../../../domain/repositories/bookRepository/bookRepository.js';
 import { type BookGenresRawEntity } from '../../databases/bookDatabase/tables/bookGenresTable/bookGenresRawEntity.js';
 import { BookGenresTable } from '../../databases/bookDatabase/tables/bookGenresTable/bookGenresTable.js';
@@ -264,9 +263,7 @@ export class BookRepositoryImpl implements BookRepository {
     return this.bookMapper.mapRawWithJoinsToDomain(rawEntities)[0] as Book;
   }
 
-  public async findBooks(payload: FindBooksPayload): Promise<Book[]> {
-    const { bookshelfId, ids } = payload;
-
+  public async findBooks(): Promise<Book[]> {
     let rawEntities: BookWithJoinsRawEntity[];
 
     try {
@@ -299,14 +296,6 @@ export class BookRepositoryImpl implements BookRepository {
         .leftJoin(this.genresTable.name, (join) => {
           join.on(`${this.genresTable.name}.id`, `=`, `${this.bookGenresTable.name}.genreId`);
         });
-
-      if (ids.length > 0) {
-        query.whereIn(`${this.bookTable.name}.id`, ids);
-      }
-
-      if (bookshelfId) {
-        query.where(`${this.bookTable.name}.bookshelfId`, bookshelfId);
-      }
 
       rawEntities = await query;
     } catch (error) {

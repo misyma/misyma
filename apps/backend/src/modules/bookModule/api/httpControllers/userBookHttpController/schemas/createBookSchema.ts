@@ -37,6 +37,16 @@ export const createBookBodyDTOSchema = Type.Object({
   ),
   format: Type.Enum(contracts.BookFormat),
   pages: Type.Optional(Type.Integer({ minimum: 1 })),
+  imageUrl: Type.Optional(
+    Type.String({
+      minLength: 1,
+      maxLength: 64,
+    }),
+  ),
+  status: Type.Enum(contracts.ReadingStatus),
+  bookshelfId: Type.String({
+    format: 'uuid',
+  }),
   authorIds: Type.Array(Type.String({ format: 'uuid' })),
 });
 

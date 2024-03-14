@@ -1,6 +1,6 @@
 import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 
-import { BookFormat, BookStatus } from '@common/contracts';
+import { type ReadingStatus } from '@common/contracts';
 import { Generator } from '@common/tests';
 
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
@@ -11,7 +11,6 @@ import { coreSymbols } from '../../../../../core/symbols.js';
 import { type AuthorTestUtils } from '../../../../authorModule/tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
-import { Book } from '../../../domain/entities/book/book.js';
 import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
 import { symbols } from '../../../symbols.js';
 import { UserBookTestFactory } from '../../../tests/factories/userBookTestFactory/userBookTestFactory.js';
@@ -160,10 +159,6 @@ describe('UserBookRepositoryImpl', () => {
         bookshelfId: bookshelf1.id,
       });
 
-      const newImageUrl = Generator.imageUrl();
-
-      const newStatus = BookStatus.finishedReading;
-
       const newBookshelfId = bookshelf2.id;
 
       userBook.setBookshelfId({ bookshelfId: newBookshelfId });
@@ -222,7 +217,7 @@ describe('UserBookRepositoryImpl', () => {
         bookshelfId: bookshelf.id,
       });
 
-      const newStatus = Generator.bookReadingStatus() as BookStatus;
+      const newStatus = Generator.bookReadingStatus() as ReadingStatus;
 
       userBook.setStatus({ status: newStatus });
 
@@ -297,7 +292,7 @@ describe('UserBookRepositoryImpl', () => {
         bookshelfId: bookshelf.id,
       });
 
-      const foundUserBook = await userBookRepository.findUserBook({ id: userBook.id });
+      const foundUserBook = await userBookRepository.findUserBook({ id: userBook.getId() });
 
       expect(foundUserBook?.getId()).toEqual(userBook.getId());
 

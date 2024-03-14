@@ -15,6 +15,9 @@ export const bookDTOSchema = Type.Object({
   translator: Type.Optional(Type.String()),
   format: Type.Enum(contracts.BookFormat),
   pages: Type.Optional(Type.Integer()),
+  imageUrl: Type.Optional(Type.String()),
+  status: Type.Enum(contracts.ReadingStatus),
+  bookshelfId: Type.String(),
   genres: Type.Array(genreDTOSchema),
   authors: Type.Array(authorDTOSchema),
 });

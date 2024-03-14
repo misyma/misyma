@@ -2,12 +2,12 @@ import { type CommandHandler } from '../../../../../common/types/commandHandler.
 import { type Book } from '../../../domain/entities/book/book.js';
 
 export interface UpdateBookGenresPayload {
-  readonly genreIds: string[];
-  readonly bookId: string;
+  genreIds: string[];
+  bookId: string;
 }
 
 export interface UpdateBookGenresResult {
-  readonly book: Book;
+  book: Book;
 }
 
 export type UpdateBookGenresCommandHandler = CommandHandler<UpdateBookGenresPayload, UpdateBookGenresResult>;

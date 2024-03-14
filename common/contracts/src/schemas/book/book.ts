@@ -1,5 +1,4 @@
 import { type BookFormat } from './bookFormat.js';
-import { type BookStatus } from './bookStatus.js';
 import { type Author } from '../author/author.js';
 import { type Genre } from '../genre/genre.js';
 
@@ -13,9 +12,6 @@ export interface Book {
   readonly translator?: string;
   readonly format: BookFormat;
   readonly pages?: number;
-  readonly imageUrl?: string;
-  readonly status: BookStatus;
-  readonly bookshelfId: string;
   readonly authors: Author[];
   readonly genres: Genre[];
 }

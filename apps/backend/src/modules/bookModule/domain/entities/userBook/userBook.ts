@@ -1,11 +1,11 @@
-import { type BookStatus } from '@common/contracts';
+import { type ReadingStatus } from '@common/contracts';
 
 import { type BookState } from '../book/book.js';
 
 export interface UserBookDraft {
   readonly id: string;
   readonly imageUrl?: string | undefined;
-  readonly status: BookStatus;
+  readonly status: ReadingStatus;
   readonly bookshelfId: string;
   readonly bookId: string;
   readonly book?: BookState;
@@ -13,7 +13,7 @@ export interface UserBookDraft {
 
 export interface UserBookState {
   imageUrl?: string;
-  status: BookStatus;
+  status: ReadingStatus;
   bookshelfId: string;
   readonly bookId: string;
   readonly book?: BookState;
@@ -24,7 +24,7 @@ export interface SetImageUrlPayload {
 }
 
 export interface SetStatusPayload {
-  readonly status: BookStatus;
+  readonly status: ReadingStatus;
 }
 
 export interface SetBookshelfIdPayload {
@@ -79,7 +79,7 @@ export class UserBook {
     return this.state.imageUrl;
   }
 
-  public getStatus(): BookStatus {
+  public getStatus(): ReadingStatus {
     return this.state.status;
   }
 

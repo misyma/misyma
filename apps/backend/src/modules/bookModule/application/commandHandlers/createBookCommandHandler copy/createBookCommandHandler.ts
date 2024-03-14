@@ -1,4 +1,4 @@
-import { type BookFormat } from '@common/contracts';
+import { type BookFormat, type ReadingStatus } from '@common/contracts';
 
 import { type CommandHandler } from '../../../../../common/types/commandHandler.js';
 import { type Book } from '../../../domain/entities/book/book.js';
@@ -12,6 +12,9 @@ export interface CreateBookCommandHandlerPayload {
   readonly translator?: string;
   readonly format: BookFormat;
   readonly pages?: number;
+  readonly imageUrl?: string;
+  readonly status: ReadingStatus;
+  readonly bookshelfId: string;
   readonly authorIds: string[];
 }
 

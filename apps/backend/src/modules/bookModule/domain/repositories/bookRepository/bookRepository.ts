@@ -11,11 +11,6 @@ export interface FindBookPayload {
   readonly authorIds?: string[];
 }
 
-export interface FindBooksPayload {
-  readonly ids: string[];
-  readonly bookshelfId?: string | undefined;
-}
-
 export interface DeleteBookPayload {
   readonly id: string;
 }
@@ -23,6 +18,7 @@ export interface DeleteBookPayload {
 export interface BookRepository {
   saveBook(input: SaveBookPayload): Promise<Book>;
   findBook(input: FindBookPayload): Promise<Book | null>;
-  findBooks(input: FindBooksPayload): Promise<Book[]>;
+  // add pagination etc
+  findBooks(): Promise<Book[]>;
   deleteBook(input: DeleteBookPayload): Promise<void>;
 }
