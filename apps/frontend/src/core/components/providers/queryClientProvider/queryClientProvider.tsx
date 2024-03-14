@@ -1,5 +1,5 @@
 import { QueryCache, QueryClient, QueryClientProvider as NativeQueryClientProvider } from '@tanstack/react-query';
-import React, { useState } from 'react';
+import React, {  useState } from 'react';
 import { ApiError } from '../../../../common/errors/apiError';
 import { useStoreSelector } from '../../../store/hooks/useStoreSelector';
 import { userStateActions, userStateSelectors } from '../../../store/states/userState/userStateSlice';
@@ -14,7 +14,8 @@ interface ProviderProps {
 }
 
 export const QueryClientProvider = ({ children }: ProviderProps) => {
-  const { refreshToken } = useStoreSelector(userStateSelectors.selectCurrentUserTokens);
+
+  const refreshToken = useStoreSelector(userStateSelectors.selectRefreshToken);
 
   const storeDispatch = useStoreDispatch();
 
@@ -51,7 +52,7 @@ export const QueryClientProvider = ({ children }: ProviderProps) => {
       queries: {
         staleTime: 1000 * 30,
         retry: (failureCount, error) => {
-          if (error instanceof ApiError && error.context.statusCode === 401) {
+          if (error instanceof ApiError && (error.context.statusCode === 401 || error.context.statusCode === 400)) {
             return false;
           }
 

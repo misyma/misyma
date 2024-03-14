@@ -9,11 +9,13 @@ import { useFindUserQuery } from '../../api/user/queries/findUserQuery/findUserQ
 import { AuthenticatedLayout } from '../../layouts/authenticated/authenticatedLayout';
 
 export const AuthenticatedPage: FC = () => {
-  const userTokens = useSelector(userStateSelectors.selectCurrentUserTokens);
+  const accessToken = useSelector(userStateSelectors.selectAccessToken);
+
+  const refreshToken = useSelector(userStateSelectors.selectRefreshToken);
 
   const { data, isFetching, isFetched } = useFindUserQuery();
 
-  if (!userTokens.accessToken || !userTokens.refreshToken) {
+  if (!accessToken || !refreshToken) {
     return null;
   }
 
