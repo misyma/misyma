@@ -68,7 +68,6 @@ export const SendResetPasswordEmailForm: FC<SendResetPasswordEmailFormProps> = (
               <FormControl>
                 <Input
                   placeholder="Email"
-                  className="w-60 sm:w-96 bg-[#D1D5DB]/20"
                   {...field}
                 />
               </FormControl>
