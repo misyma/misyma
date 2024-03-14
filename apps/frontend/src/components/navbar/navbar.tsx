@@ -13,7 +13,9 @@ export const Navbar: FC = () => {
 
   const { mutate: logoutUserMutation } = useLogoutUserMutation({});
 
-  const { accessToken, refreshToken } = useStoreSelector(userStateSelectors.selectCurrentUserTokens);
+  const accessToken = useStoreSelector(userStateSelectors.selectAccessToken);
+
+  const refreshToken = useStoreSelector(userStateSelectors.selectRefreshToken);
 
   const res = useFindUserQuery();
 

@@ -11,7 +11,9 @@ interface FindUserPayload {
 }
 
 export const useFindUserQuery = () => {
-  const userTokens = useSelector(userStateSelectors.selectCurrentUserTokens) as FindUserPayload;
+  const accessToken = useSelector(userStateSelectors.selectAccessToken);
+
+  const refreshToken = useSelector(userStateSelectors.selectRefreshToken);
 
   const findUser = async (values: FindUserPayload) => {
     const { accessToken } = values;
@@ -36,8 +38,12 @@ export const useFindUserQuery = () => {
 
   return useQuery<FindUserResponseBody>({
     queryKey: ['findUser'],
-    queryFn: () => findUser(userTokens),
-    enabled: !!userTokens.accessToken,
+    queryFn: () =>
+      findUser({
+        accessToken: accessToken as string,
+        refreshToken: refreshToken as string,
+      }),
+    enabled: !!accessToken,
   });
 };
 

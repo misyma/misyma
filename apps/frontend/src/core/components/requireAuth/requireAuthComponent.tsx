@@ -8,7 +8,9 @@ interface RequireAuthComponentProps {
 }
 
 export function RequireAuthComponent({ children }: RequireAuthComponentProps): React.ReactNode {
-  const currentUserTokens = useStoreSelector(userStateSelectors.selectCurrentUserTokens);
+  const accessToken = useStoreSelector(userStateSelectors.selectAccessToken);
 
-  return currentUserTokens.accessToken && currentUserTokens.refreshToken ? <>{children}</> : <Navigate to="/login" />;
+  const refreshToken = useStoreSelector(userStateSelectors.selectRefreshToken);
+
+  return accessToken && refreshToken ? <>{children}</> : <Navigate to="/login" />;
 }

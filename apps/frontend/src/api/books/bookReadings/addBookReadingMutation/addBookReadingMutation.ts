@@ -10,7 +10,7 @@ type AddBookReadingMutationPayload = CreateBookReadingRequestBody & CreateBookRe
 export const useAddBookReadingMutation = (
   options?: UseMutationOptions<BookReading, BookApiError, AddBookReadingMutationPayload, unknown>,
 ) => {
-  const { accessToken } = useSelector(userStateSelectors.selectCurrentUserTokens) as { accessToken: string; refreshToken: string };
+  const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const addBookReading = async (payload: AddBookReadingMutationPayload) => {
     const response = await HttpService.post<CreateBookReadingResponseBody>({

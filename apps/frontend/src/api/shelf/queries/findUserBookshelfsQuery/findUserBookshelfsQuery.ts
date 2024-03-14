@@ -5,10 +5,7 @@ import { HttpService } from '../../../../core/services/httpService/httpService';
 import { useQuery } from '@tanstack/react-query';
 
 export const useFindUserBookshelfsQuery = (userId: string | undefined) => {
-  const { accessToken } = useSelector(userStateSelectors.selectCurrentUserTokens) as {
-    accessToken: string;
-    refreshToken: string;
-  };
+  const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const findUserBookshelfs = async (values: FindBookshelvesByUserIdParams) => {
     const { userId } = values;
@@ -31,5 +28,5 @@ export const useFindUserBookshelfsQuery = (userId: string | undefined) => {
     queryKey: ['findUserBookshelfs', userId],
     queryFn: () => findUserBookshelfs({ userId: userId as string }), // todo: improve
     enabled: !!accessToken || !!userId,
-  })
+  });
 };
