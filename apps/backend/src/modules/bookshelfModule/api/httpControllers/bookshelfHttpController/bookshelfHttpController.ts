@@ -96,7 +96,6 @@ export class BookshelfHttpController implements HttpController {
       }),
       new HttpRoute({
         method: HttpMethodName.post,
-        path: 'create',
         handler: this.createBookshelf.bind(this),
         description: 'Create a bookshelf.',
         schema: {

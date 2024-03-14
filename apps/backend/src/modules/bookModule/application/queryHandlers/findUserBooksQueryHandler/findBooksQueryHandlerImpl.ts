@@ -9,7 +9,7 @@ export class FindBooksQueryHandlerImpl implements FindBooksQueryHandler {
     private readonly bookshelfRepository: BookshelfRepository,
   ) {}
 
-  public async execute(payload: FindBooksPayload): Promise<FindBooksResult> {
+  public async execute(): Promise<FindBooksResult> {
     const { bookshelfId, userId, ids } = payload;
 
     await this.validateBookshelf({

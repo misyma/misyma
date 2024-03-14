@@ -65,7 +65,6 @@ export class GenreAdminHttpController implements HttpController {
           },
         },
         securityMode: SecurityMode.basicAuth,
-        path: 'create',
       }),
       new HttpRoute({
         description: 'Update Genre name.',

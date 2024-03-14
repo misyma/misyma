@@ -7,7 +7,6 @@ export interface UserBook {
   readonly id: string;
   readonly bookId: string;
   readonly book: {
-    readonly id: string;
     readonly title: string;
     readonly isbn?: string;
     readonly publisher?: string;

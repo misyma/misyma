@@ -62,7 +62,6 @@ export class BookHttpController implements HttpController {
     return [
       new HttpRoute({
         method: HttpMethodName.post,
-        path: 'create',
         handler: this.createBook.bind(this),
         schema: {
           request: {

@@ -47,7 +47,6 @@ export class AuthorHttpController implements HttpController {
     return [
       new HttpRoute({
         method: HttpMethodName.post,
-        path: 'create',
         handler: this.createAuthor.bind(this),
         schema: {
           request: {

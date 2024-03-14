@@ -1,36 +1,36 @@
-import { type BookDTO } from './schemas/bookDTO.js';
+import { type BookFormat } from '@common/contracts';
+
 import {
-  createBookBodyDTOSchema,
-  createBookResponseBodyDTOSchema,
-  type CreateBookBodyDTO,
-  type CreateBookResponseBodyDTO,
-} from './schemas/createBookSchema.js';
+  createUserBookBodyDTOSchema,
+  createUserBookResponseBodyDTOSchema,
+  type CreateUserBookBodyDTO,
+  type CreateUserBookResponseBodyDTO,
+} from './schemas/createUserBookSchema.js';
 import {
-  deleteBookPathParamsDTOSchema,
-  deleteBookResponseBodyDTOSchema,
-  type DeleteBookPathParamsDTO,
-  type DeleteBookResponseBodyDTO,
-} from './schemas/deleteBookSchema.js';
+  deleteUserBookPathParamsDTOSchema,
+  deleteUserBookResponseBodyDTOSchema,
+  type DeleteUserBookPathParamsDTO,
+} from './schemas/deleteUserBookSchema.js';
 import {
-  type FindBooksByBookshelfIdPathParamsDTO,
-  type FindBooksByBookshelfIdResponseBodyDTO,
-  findBooksByBookshelfIdResponseBodyDTOSchema,
-  findBooksByBookshelfIdPathParamsDTOSchema,
-} from './schemas/findBooksByBookshelfIdSchema.js';
+  findUserBooksByBookshelfIdPathParamsDTOSchema,
+  findUserBooksByBookshelfIdResponseBodyDTOSchema,
+  type FindUserBooksByBookshelfIdPathParamsDTO,
+  type FindUserBooksByBookshelfIdResponseBodyDTO,
+} from './schemas/findUserBooksByBookshelfIdSchema.js';
 import {
-  findBookResponseBodyDTOSchema,
-  type FindBookResponseBodyDTO,
-  type FindBookPathParamsDTO,
-  findBookPathParamsDTOSchema,
-} from './schemas/findBookSchema.js';
+  findUserBookPathParamsDTOSchema,
+  findUserBookResponseBodyDTOSchema,
+  type FindUserBookPathParamsDTO,
+  type FindUserBookResponseBodyDTO,
+} from './schemas/findUserBookSchema.js';
 import {
-  type UpdateBookGenresBodyDTO,
-  type UpdateBookGenresResponseDTOSchema,
-  type UpdateBookGenresPathParamsDTO,
-  updateBookGenresBodyDTOSchema,
-  updateBookGenresResponseDTOSchema,
-  updateBookGenresPathParamsDTOSchema,
-} from './schemas/updateBookGenresSchema.js';
+  updateUserBookPathParamsDTOSchema,
+  updateUserBookBodyDTOSchema,
+  updateUserBookResponseDTOSchema,
+  type UpdateUserBookBodyDTO,
+  type UpdateUserBookPathParamsDTO,
+} from './schemas/updateUserBookSchema.js';
+import { type UserBookDTO } from './schemas/userBookDTO.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
@@ -43,23 +43,21 @@ import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
 import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.js';
 import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
-import { type CreateBookCommandHandler } from '../../../application/commandHandlers/createBookCommandHandler/createBookCommandHandler.js';
-import { type DeleteBookCommandHandler } from '../../../application/commandHandlers/deleteBookCommandHandler/deleteBookCommandHandler.js';
-import { type UpdateBookGenresCommandHandler } from '../../../application/commandHandlers/updateBookGenresCommandHandler/updateBookGenresCommandHandler.js';
-import { type FindBookQueryHandler } from '../../../application/queryHandlers/findBookQueryHandler/findBookQueryHandler.js';
-import { type FindBooksQueryHandler } from '../../../application/queryHandlers/findBooksQueryHandler/findBooksQueryHandler.js';
-import { type Book } from '../../../domain/entities/book/book.js';
+import { type BookState } from '../../../domain/entities/book/book.js';
+import { type UserBook } from '../../../domain/entities/userBook/userBook.js';
+import { type DeleteBookResponseBodyDTO } from '../bookHttpController/schemas/deleteBookSchema.js';
+import { type UpdateBookGenresResponseDTOSchema } from '../bookHttpController/schemas/updateBookGenresSchema.js';
 
-export class BookHttpController implements HttpController {
-  public readonly basePath = '/api/books';
-  public readonly tags = ['Book'];
+export class UserBookHttpController implements HttpController {
+  public readonly basePath = '/api/user-books';
+  public readonly tags = ['UserBook'];
 
   public constructor(
-    private readonly createBookCommandHandler: CreateBookCommandHandler,
-    private readonly updateBookGenresCommandHandler: UpdateBookGenresCommandHandler,
-    private readonly deleteBookCommandHandler: DeleteBookCommandHandler,
-    private readonly findBookQueryHandler: FindBookQueryHandler,
-    private readonly findBooksQueryHandler: FindBooksQueryHandler,
+    private readonly createUserBookCommandHandler: CreatUserBookCommandHandler,
+    private readonly updateUserBookCommandHandler: UpdateUserBookCommandHandler,
+    private readonly deleteUserBookCommandHandler: DeleteBUserookCommandHandler,
+    private readonly findUserBookQueryHandler: FindUserBookQueryHandler,
+    private readonly findUserBooksQueryHandler: FindUserBooksQueryHandler,
     private readonly accessControlService: AccessControlService,
   ) {}
 
@@ -67,53 +65,53 @@ export class BookHttpController implements HttpController {
     return [
       new HttpRoute({
         method: HttpMethodName.post,
-        path: 'create',
-        handler: this.createBook.bind(this),
+        handler: this.createUserBook.bind(this),
         schema: {
           request: {
-            body: createBookBodyDTOSchema,
+            body: createUserBookBodyDTOSchema,
           },
           response: {
             [HttpStatusCode.created]: {
-              schema: createBookResponseBodyDTOSchema,
-              description: 'Book created.',
+              schema: createUserBookResponseBodyDTOSchema,
+              description: `User's userBookcreated.`,
             },
           },
         },
         securityMode: SecurityMode.bearerToken,
-        description: 'Create book.',
+        description: `Create user's book.`,
       }),
       new HttpRoute({
         method: HttpMethodName.get,
         path: ':id',
-        handler: this.findBook.bind(this),
+        handler: this.findUserBook.bind(this),
         schema: {
           request: {
-            pathParams: findBookPathParamsDTOSchema,
+            pathParams: findUserBookPathParamsDTOSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
-              schema: findBookResponseBodyDTOSchema,
-              description: 'Book found.',
+              schema: findUserBookResponseBodyDTOSchema,
+              description: `User's userBookfound.`,
             },
           },
         },
         securityMode: SecurityMode.bearerToken,
-        description: 'Find book by id.',
+        description: `Find user's userBookby id.`,
       }),
+      //TODO: refactor to search params
       new HttpRoute({
         method: HttpMethodName.get,
         path: '/bookshelf/:bookshelfId',
-        handler: this.findBooksByBookshelfId.bind(this),
-        description: 'Find books by bookshelf id.',
+        handler: this.findUserBooksByBookshelfId.bind(this),
+        description: `Find user's books by bookshelf id.`,
         schema: {
           request: {
-            pathParams: findBooksByBookshelfIdPathParamsDTOSchema,
+            pathParams: findUserBooksByBookshelfIdPathParamsDTOSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
-              schema: findBooksByBookshelfIdResponseBodyDTOSchema,
-              description: 'Books found.',
+              schema: findUserBooksByBookshelfIdResponseBodyDTOSchema,
+              description: `User's books found.`,
             },
           },
         },
@@ -122,35 +120,35 @@ export class BookHttpController implements HttpController {
       new HttpRoute({
         method: HttpMethodName.delete,
         path: ':id',
-        handler: this.deleteBook.bind(this),
+        handler: this.deleteUserBook.bind(this),
         schema: {
           request: {
-            pathParams: deleteBookPathParamsDTOSchema,
+            pathParams: deleteUserBookPathParamsDTOSchema,
           },
           response: {
             [HttpStatusCode.noContent]: {
-              schema: deleteBookResponseBodyDTOSchema,
-              description: 'Book deleted.',
+              schema: deleteUserBookResponseBodyDTOSchema,
+              description: `User's userBookdeleted.`,
             },
           },
         },
         securityMode: SecurityMode.bearerToken,
-        description: 'Delete book.',
+        description: `Delete user's book.`,
       }),
       new HttpRoute({
         method: HttpMethodName.patch,
-        path: ':bookId/genres',
-        description: 'Update Book Genres.',
-        handler: this.updateBookGenres.bind(this),
+        path: ':id',
+        description: `Update user's book.`,
+        handler: this.updateUserBookGenres.bind(this),
         schema: {
           request: {
-            pathParams: updateBookGenresPathParamsDTOSchema,
-            body: updateBookGenresBodyDTOSchema,
+            pathParams: updateUserBookPathParamsDTOSchema,
+            body: updateUserBookBodyDTOSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
-              description: 'Book genres updated.',
-              schema: updateBookGenresResponseDTOSchema,
+              description: `User's userBookupdated.`,
+              schema: updateUserBookResponseDTOSchema,
             },
           },
         },
@@ -158,75 +156,79 @@ export class BookHttpController implements HttpController {
     ];
   }
 
-  private async updateBookGenres(
-    request: HttpRequest<UpdateBookGenresBodyDTO, undefined, UpdateBookGenresPathParamsDTO>,
+  private async updateUserBookGenres(
+    request: HttpRequest<UpdateUserBookBodyDTO, undefined, UpdateUserBookPathParamsDTO>,
   ): Promise<HttpOkResponse<UpdateBookGenresResponseDTOSchema>> {
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
-    const { bookId } = request.pathParams;
+    const { id } = request.pathParams;
 
-    const { genreIds } = request.body;
+    const { status, bookshelfId, imageUrl } = request.body;
 
-    const { book } = await this.updateBookGenresCommandHandler.execute({
-      bookId,
-      genreIds,
+    const { userBook } = await this.updateUserBookCommandHandler.execute({
+      id,
+      status,
+      bookshelfId,
+      imageUrl,
     });
 
     return {
       statusCode: HttpStatusCode.ok,
-      body: this.mapBookToBookDTO(book),
+      body: this.mapUserBookToUserBookDTO(userBook),
     };
   }
 
-  private async createBook(
-    request: HttpRequest<CreateBookBodyDTO>,
-  ): Promise<HttpCreatedResponse<CreateBookResponseBodyDTO>> {
-    const { authorIds, ...bookData } = request.body;
+  private async createUserBook(
+    request: HttpRequest<CreateUserBookBodyDTO>,
+  ): Promise<HttpCreatedResponse<CreateUserBookResponseBodyDTO>> {
+    const { bookId, bookshelfId, status, imageUrl } = request.body;
 
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
-    const { book } = await this.createBookCommandHandler.execute({
-      ...bookData,
-      authorIds,
+    const { userBook } = await this.createUserBookCommandHandler.execute({
+      bookId,
+      bookshelfId,
+      status,
+      imageUrl,
     });
 
     return {
       statusCode: HttpStatusCode.created,
-      body: this.mapBookToBookDTO(book),
+      body: this.mapUserBookToUserBookDTO(userBook),
     };
   }
 
-  private async findBook(
-    request: HttpRequest<undefined, undefined, FindBookPathParamsDTO>,
-  ): Promise<HttpOkResponse<FindBookResponseBodyDTO>> {
+  private async findUserBook(
+    request: HttpRequest<undefined, undefined, FindUserBookPathParamsDTO>,
+  ): Promise<HttpOkResponse<FindUserBookResponseBodyDTO>> {
     const { id } = request.pathParams;
 
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
-    const { book } = await this.findBookQueryHandler.execute({ bookId: id });
+    const { userBook } = await this.findUserBookQueryHandler.execute({ bookId: id });
 
     return {
       statusCode: HttpStatusCode.ok,
-      body: this.mapBookToBookDTO(book),
+      body: this.mapUserBookToUserBookDTO(userBook),
     };
   }
 
-  private async findBooksByBookshelfId(
-    request: HttpRequest<undefined, undefined, FindBooksByBookshelfIdPathParamsDTO>,
-  ): Promise<HttpOkResponse<FindBooksByBookshelfIdResponseBodyDTO>> {
+  private async findUserBooksByBookshelfId(
+    request: HttpRequest<undefined, undefined, FindUserBooksByBookshelfIdPathParamsDTO>,
+  ): Promise<HttpOkResponse<FindUserBooksByBookshelfIdResponseBodyDTO>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
     const { bookshelfId } = request.pathParams;
 
-    const { books } = await this.findBooksQueryHandler.execute({
+    const { userBooks } = await this.findUserBooksQueryHandler.execute({
       ids: [],
       bookshelfId,
       userId,
@@ -234,14 +236,14 @@ export class BookHttpController implements HttpController {
 
     return {
       body: {
-        data: books.map((book) => this.mapBookToBookDTO(book)),
+        data: userBooks.map((userBook) => this.mapUserBookToUserBookDTO(userBook)),
       },
       statusCode: HttpStatusCode.ok,
     };
   }
 
-  private async deleteBook(
-    request: HttpRequest<undefined, undefined, DeleteBookPathParamsDTO>,
+  private async deleteUserBook(
+    request: HttpRequest<undefined, undefined, DeleteUserBookPathParamsDTO>,
   ): Promise<HttpNoContentResponse<DeleteBookResponseBodyDTO>> {
     const { id } = request.pathParams;
 
@@ -249,7 +251,7 @@ export class BookHttpController implements HttpController {
       authorizationHeader: request.headers['authorization'],
     });
 
-    await this.deleteBookCommandHandler.execute({ bookId: id });
+    await this.deleteUserBookCommandHandler.execute({ bookId: id });
 
     return {
       statusCode: HttpStatusCode.noContent,
@@ -257,61 +259,58 @@ export class BookHttpController implements HttpController {
     };
   }
 
-  private mapBookToBookDTO(book: Book): BookDTO {
-    const bookDto: BookDTO = {
-      id: book.getId(),
-      title: book.getTitle(),
-      language: book.getLanguage(),
-      format: book.getFormat(),
-      status: book.getStatus(),
-      bookshelfId: book.getBookshelfId(),
-      authors: book.getAuthors().map((author) => ({
-        firstName: author.getFirstName(),
-        id: author.getId(),
-        lastName: author.getLastName(),
-      })),
-      genres: book.getGenres().map((genre) => ({
-        id: genre.getId(),
-        name: genre.getName(),
-      })),
+  private mapUserBookToUserBookDTO(userBook: UserBook): UserBookDTO {
+    const userBookDto: UserBookDTO = {
+      id: userBook.getId(),
+      status: userBook.getStatus(),
+      bookshelfId: userBook.getBookshelfId(),
+      bookId: userBook.getBookId(),
+      book: {
+        title: userBook.getBook()?.title as string,
+        language: userBook.getBook()?.language as string,
+        format: userBook.getBook()?.format as BookFormat,
+        authors:
+          userBook.getBook()?.authors.map((author) => ({
+            id: author.getId(),
+            firstName: author.getFirstName(),
+            lastName: author.getLastName(),
+          })) || [],
+        genres:
+          userBook.getBook()?.genres.map((genre) => ({
+            id: genre.getId(),
+            name: genre.getName(),
+          })) || [],
+      },
     };
 
-    const isbn = book.getIsbn();
+    const { isbn, pages, publisher, releaseYear, translator } = userBook.getBook() as BookState;
 
     if (isbn) {
-      bookDto.isbn = isbn;
+      userBookDto.book.isbn = isbn;
     }
-
-    const publisher = book.getPublisher();
 
     if (publisher) {
-      bookDto.publisher = publisher;
+      userBookDto.book.publisher = publisher;
     }
-
-    const releaseYear = book.getReleaseYear();
 
     if (releaseYear) {
-      bookDto.releaseYear = releaseYear;
+      userBookDto.book.releaseYear = releaseYear;
     }
-
-    const translator = book.getTranslator();
 
     if (translator) {
-      bookDto.translator = translator;
+      userBookDto.book.translator = translator;
     }
-
-    const pages = book.getPages();
 
     if (pages) {
-      bookDto.pages = pages;
+      userBookDto.book.pages = pages;
     }
 
-    const imageUrl = book.getImageUrl();
+    const imageUrl = userBook.getImageUrl();
 
     if (imageUrl) {
-      bookDto.imageUrl = imageUrl;
+      userBookDto.imageUrl = imageUrl;
     }
 
-    return bookDto;
+    return userBookDto;
   }
 }
