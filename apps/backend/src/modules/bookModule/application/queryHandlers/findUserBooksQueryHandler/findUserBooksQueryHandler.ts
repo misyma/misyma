@@ -1,14 +1,14 @@
 import { type QueryHandler } from '../../../../../common/types/queryHandler.js';
-import { type Book } from '../../../domain/entities/book/book.js';
+import { type UserBook } from '../../../domain/entities/userBook/userBook.js';
 
-export interface FindBooksPayload {
-  ids: string[];
-  userId?: string | undefined;
-  bookshelfId?: string | undefined;
+export interface FindUserBooksPayload {
+  readonly ids: string[];
+  readonly userId?: string | undefined;
+  readonly bookshelfId?: string | undefined;
 }
 
-export interface FindBooksResult {
-  books: Book[];
+export interface FindUserBooksResult {
+  readonly userBooks: UserBook[];
 }
 
-export type FindBooksQueryHandler = QueryHandler<void, FindBooksResult>;
+export type FindUserBooksQueryHandler = QueryHandler<FindUserBooksPayload, FindUserBooksResult>;

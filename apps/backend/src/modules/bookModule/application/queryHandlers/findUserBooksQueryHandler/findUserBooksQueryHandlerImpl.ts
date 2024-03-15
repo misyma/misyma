@@ -1,15 +1,19 @@
-import { type FindBooksPayload, type FindBooksQueryHandler, type FindBooksResult } from './findBooksQueryHandler.js';
+import {
+  type FindUserBooksPayload,
+  type FindUserBooksQueryHandler,
+  type FindUserBooksResult,
+} from './findUserBooksQueryHandler.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type BookshelfRepository } from '../../../../bookshelfModule/domain/repositories/bookshelfRepository/bookshelfRepository.js';
-import { type BookRepository } from '../../../domain/repositories/bookRepository/bookRepository.js';
+import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
 
-export class FindBooksQueryHandlerImpl implements FindBooksQueryHandler {
+export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler {
   public constructor(
-    private readonly bookRepository: BookRepository,
+    private readonly userBookRepository: UserBookRepository,
     private readonly bookshelfRepository: BookshelfRepository,
   ) {}
 
-  public async execute(): Promise<FindBooksResult> {
+  public async execute(payload: FindUserBooksPayload): Promise<FindUserBooksResult> {
     const { bookshelfId, userId, ids } = payload;
 
     await this.validateBookshelf({
@@ -17,17 +21,15 @@ export class FindBooksQueryHandlerImpl implements FindBooksQueryHandler {
       userId,
     });
 
-    const books = await this.bookRepository.findBooks({
+    const userBooks = await this.userBookRepository.findUserBooks({
       bookshelfId,
       ids: ids ?? [],
     });
 
-    return {
-      books,
-    };
+    return { userBooks };
   }
 
-  private async validateBookshelf({ bookshelfId, userId }: Omit<FindBooksPayload, 'ids'>): Promise<void> {
+  private async validateBookshelf({ bookshelfId, userId }: Omit<FindUserBooksPayload, 'ids'>): Promise<void> {
     if (bookshelfId) {
       const bookshelf = await this.bookshelfRepository.findBookshelf({
         where: {

@@ -1,26 +1,26 @@
 import {
-  type FindBookQueryHandler,
-  type FindBookQueryHandlerPayload,
-  type FindBookQueryHandlerResult,
+  type FindUserBookQueryHandler,
+  type FindUserBookQueryHandlerPayload,
+  type FindUserBookQueryHandlerResult,
 } from './findUserBookQueryHandler.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
-import { type BookRepository } from '../../../domain/repositories/bookRepository/bookRepository.js';
+import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
 
-export class FindBookQueryHandlerImpl implements FindBookQueryHandler {
-  public constructor(private readonly bookRepository: BookRepository) {}
+export class FindUserBookQueryHandlerImpl implements FindUserBookQueryHandler {
+  public constructor(private readonly userBookRepository: UserBookRepository) {}
 
-  public async execute(payload: FindBookQueryHandlerPayload): Promise<FindBookQueryHandlerResult> {
-    const { bookId } = payload;
+  public async execute(payload: FindUserBookQueryHandlerPayload): Promise<FindUserBookQueryHandlerResult> {
+    const { userBookId } = payload;
 
-    const book = await this.bookRepository.findBook({ id: bookId });
+    const userBook = await this.userBookRepository.findUserBook({ id: userBookId });
 
-    if (!book) {
+    if (!userBook) {
       throw new ResourceNotFoundError({
-        name: 'Book',
-        id: bookId,
+        name: 'UserBook',
+        id: userBookId,
       });
     }
 
-    return { book };
+    return { userBook };
   }
 }

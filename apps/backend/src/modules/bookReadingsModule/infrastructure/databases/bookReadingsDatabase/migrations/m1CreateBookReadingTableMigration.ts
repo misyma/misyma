@@ -8,7 +8,7 @@ export class M1CreateBookReadingTableMigration implements Migration {
 
   private readonly columns = {
     id: 'id',
-    bookId: 'bookId',
+    userBookId: 'userBookId',
     rating: 'rating',
     comment: 'comment',
     startedAt: 'startedAt',
@@ -19,7 +19,7 @@ export class M1CreateBookReadingTableMigration implements Migration {
     await databaseClient.schema.createTable(this.bookReadingsTableName, (table) => {
       table.text(this.columns.id).primary();
 
-      table.text(this.columns.bookId).notNullable();
+      table.text(this.columns.userBookId).notNullable();
 
       table.integer(this.columns.rating).notNullable();
 
@@ -29,7 +29,7 @@ export class M1CreateBookReadingTableMigration implements Migration {
 
       table.timestamp(this.columns.endedAt).nullable();
 
-      table.foreign(this.columns.bookId).references('id').inTable('books').onDelete('CASCADE');
+      table.foreign(this.columns.userBookId).references('id').inTable('userBooks').onDelete('CASCADE');
     });
   }
 

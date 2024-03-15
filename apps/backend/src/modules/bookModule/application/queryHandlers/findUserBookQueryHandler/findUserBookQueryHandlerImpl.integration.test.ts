@@ -2,7 +2,7 @@ import { beforeEach, afterEach, expect, it, describe } from 'vitest';
 
 import { Generator } from '@common/tests';
 
-import { type FindBookQueryHandler } from './findUserBookQueryHandler.js';
+import { type FindUserBookQueryHandler } from './findUserBookQueryHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
@@ -13,9 +13,10 @@ import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { symbols } from '../../../symbols.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
+import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
 
-describe('FindBookQueryHandler', () => {
-  let findBookQueryHandler: FindBookQueryHandler;
+describe('FindUserBookQueryHandler', () => {
+  let findUserBookQueryHandler: FindUserBookQueryHandler;
 
   let sqliteDatabaseClient: SqliteDatabaseClient;
 
@@ -27,10 +28,12 @@ describe('FindBookQueryHandler', () => {
 
   let bookshelfTestUtils: BookshelfTestUtils;
 
+  let userBookTestUtils: UserBookTestUtils;
+
   beforeEach(async () => {
     const container = TestContainer.create();
 
-    findBookQueryHandler = container.get<FindBookQueryHandler>(symbols.findBookQueryHandler);
+    findUserBookQueryHandler = container.get<FindUserBookQueryHandler>(symbols.findUserBookQueryHandler);
 
     sqliteDatabaseClient = container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient);
 
@@ -42,6 +45,8 @@ describe('FindBookQueryHandler', () => {
 
     bookshelfTestUtils = container.get<BookshelfTestUtils>(testSymbols.bookshelfTestUtils);
 
+    userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
+
     await authorTestUtils.truncate();
 
     await bookTestUtils.truncate();
@@ -49,6 +54,8 @@ describe('FindBookQueryHandler', () => {
     await bookshelfTestUtils.truncate();
 
     await userTestUtils.truncate();
+
+    await userBookTestUtils.truncate();
   });
 
   afterEach(async () => {
@@ -60,10 +67,12 @@ describe('FindBookQueryHandler', () => {
 
     await userTestUtils.truncate();
 
+    await userBookTestUtils.truncate();
+
     await sqliteDatabaseClient.destroy();
   });
 
-  it('finds book by id', async () => {
+  it('finds UserBook by id', async () => {
     const user = await userTestUtils.createAndPersist();
 
     const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
@@ -73,22 +82,26 @@ describe('FindBookQueryHandler', () => {
     const book = await bookTestUtils.createAndPersist({
       input: {
         authorIds: [author.id],
-        book: {
-          bookshelfId: bookshelf.id,
-        },
       },
     });
 
-    const { book: foundBook } = await findBookQueryHandler.execute({ bookId: book.id });
+    const userBook = await userBookTestUtils.createAndPersist({
+      input: {
+        bookId: book.id,
+        bookshelfId: bookshelf.id,
+      },
+    });
 
-    expect(foundBook).not.toBeNull();
+    const { userBook: foundUserBook } = await findUserBookQueryHandler.execute({ userBookId: userBook.id });
+
+    expect(foundUserBook).not.toBeNull();
   });
 
-  it('throws an error if book with given id does not exist', async () => {
+  it('throws an error if UserBook with given id does not exist', async () => {
     const id = Generator.uuid();
 
     try {
-      await findBookQueryHandler.execute({ bookId: id });
+      await findUserBookQueryHandler.execute({ userBookId: id });
     } catch (error) {
       expect(error).toBeInstanceOf(ResourceNotFoundError);
 
