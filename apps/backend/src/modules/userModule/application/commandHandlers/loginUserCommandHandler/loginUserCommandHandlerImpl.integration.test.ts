@@ -127,7 +127,7 @@ describe('LoginUserCommandHandler', () => {
     ).toThrowErrorInstance({
       instance: UnauthorizedAccessError,
       context: {
-        reason: 'Invalid email or password.',
+        reason: 'Invalid credentials.',
         email: nonExistentUser.getEmail(),
       },
     });
@@ -145,7 +145,7 @@ describe('LoginUserCommandHandler', () => {
     ).toThrowErrorInstance({
       instance: UnauthorizedAccessError,
       context: {
-        reason: 'Invalid email or password.',
+        reason: 'Invalid credentials.',
         email,
       },
     });
