@@ -2,7 +2,7 @@ import { type Static, Type } from '@sinclair/typebox';
 
 export const bookReadingDTOSchema = Type.Object({
   id: Type.String(),
-  bookId: Type.String(),
+  userBookId: Type.String(),
   comment: Type.String(),
   rating: Type.Number(),
   startedAt: Type.String(),

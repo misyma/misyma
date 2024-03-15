@@ -20,8 +20,6 @@ export class FindBookReadingByIdQueryHandlerImpl implements FindBookReadingByIdQ
       });
     }
 
-    return {
-      bookReading,
-    };
+    return { bookReading };
   }
 }

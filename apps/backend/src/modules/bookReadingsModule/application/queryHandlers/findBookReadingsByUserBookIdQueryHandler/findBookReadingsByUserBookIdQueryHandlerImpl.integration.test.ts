@@ -2,18 +2,19 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { Generator } from '@common/tests';
 
-import { type FindBookReadingsByBookIdQueryHandler } from './findBookReadingsByBookIdQueryHandler.js';
+import { type FindBookReadingsByUserBookIdQueryHandler } from './findBookReadingsByUserBookIdQueryHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type BookTestUtils } from '../../../../bookModule/tests/utils/bookTestUtils/bookTestUtils.js';
+import { type UserBookTestUtils } from '../../../../bookModule/tests/utils/userBookTestUtils/userBookTestUtils.js';
 import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { symbols } from '../../../symbols.js';
 import { type BookReadingTestUtils } from '../../../tests/utils/bookReadingTestUtils/bookReadingTestUtils.js';
 
-describe('FindBookReadingsByBookIdQueryHandlerImpl', () => {
-  let queryHandler: FindBookReadingsByBookIdQueryHandler;
+describe('FindBookReadingsByUserBookIdQueryHandlerImpl', () => {
+  let queryHandler: FindBookReadingsByUserBookIdQueryHandler;
 
   let bookReadingTestUtils: BookReadingTestUtils;
 
@@ -23,10 +24,14 @@ describe('FindBookReadingsByBookIdQueryHandlerImpl', () => {
 
   let userTestUtils: UserTestUtils;
 
+  let userBookTestUtils: UserBookTestUtils;
+
   beforeEach(async () => {
     const container = TestContainer.create();
 
-    queryHandler = container.get<FindBookReadingsByBookIdQueryHandler>(symbols.findBookReadingsByBookIdQueryHandler);
+    queryHandler = container.get<FindBookReadingsByUserBookIdQueryHandler>(
+      symbols.findBookReadingsByUserBookIdQueryHandler,
+    );
 
     bookReadingTestUtils = container.get<BookReadingTestUtils>(testSymbols.bookReadingTestUtils);
 
@@ -36,6 +41,8 @@ describe('FindBookReadingsByBookIdQueryHandlerImpl', () => {
 
     bookshelfTestUtils = container.get<BookshelfTestUtils>(testSymbols.bookshelfTestUtils);
 
+    userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
+
     await bookTestUtils.truncate();
 
     await bookshelfTestUtils.truncate();
@@ -43,6 +50,8 @@ describe('FindBookReadingsByBookIdQueryHandlerImpl', () => {
     await userTestUtils.truncate();
 
     await bookReadingTestUtils.truncate();
+
+    await userBookTestUtils.truncate();
   });
 
   afterEach(async () => {
@@ -53,40 +62,43 @@ describe('FindBookReadingsByBookIdQueryHandlerImpl', () => {
     await userTestUtils.truncate();
 
     await bookReadingTestUtils.truncate();
+
+    await userBookTestUtils.truncate();
   });
 
-  it('throws an error - when Book was not found', async () => {
-    const nonExistentBookId = Generator.uuid();
+  it('throws an error - when UserBook was not found', async () => {
+    const nonExistentUserBookId = Generator.uuid();
 
     expect(
       async () =>
         await queryHandler.execute({
-          bookId: nonExistentBookId,
+          userBookId: nonExistentUserBookId,
         }),
     ).toThrowErrorInstance({
       instance: ResourceNotFoundError,
       context: {
         name: 'Book',
-        id: nonExistentBookId,
+        id: nonExistentUserBookId,
       },
     });
   });
 
-  it('returns an empty array - when Book has no BookReadings', async () => {
+  it('returns an empty array - when UserBook has no BookReadings', async () => {
     const user = await userTestUtils.createAndPersist();
 
     const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
 
-    const book = await bookTestUtils.createAndPersist({
+    const book = await bookTestUtils.createAndPersist();
+
+    const userBook = await userBookTestUtils.createAndPersist({
       input: {
-        book: {
-          bookshelfId: bookshelf.id,
-        },
+        bookId: book.id,
+        bookshelfId: bookshelf.id,
       },
     });
 
     const result = await queryHandler.execute({
-      bookId: book.id,
+      userBookId: userBook.id,
     });
 
     expect(result.bookReadings.length).toEqual(0);
@@ -97,34 +109,35 @@ describe('FindBookReadingsByBookIdQueryHandlerImpl', () => {
 
     const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
 
-    const book = await bookTestUtils.createAndPersist({
+    const book = await bookTestUtils.createAndPersist();
+
+    const userBook = await userBookTestUtils.createAndPersist({
       input: {
-        book: {
-          bookshelfId: bookshelf.id,
-        },
+        bookId: book.id,
+        bookshelfId: bookshelf.id,
       },
     });
 
     const bookReading1 = await bookReadingTestUtils.createAndPersist({
       input: {
-        bookId: book.id,
+        userBookId: userBook.id,
       },
     });
 
     const bookReading2 = await bookReadingTestUtils.createAndPersist({
       input: {
-        bookId: book.id,
+        userBookId: userBook.id,
       },
     });
 
     const result = await queryHandler.execute({
-      bookId: book.id,
+      userBookId: userBook.id,
     });
 
     expect(result.bookReadings.length).toEqual(2);
 
     expect(result.bookReadings[0]?.getState()).toEqual({
-      bookId: bookReading1.bookId,
+      userBookId: bookReading1.userBookId,
       rating: bookReading1.rating,
       comment: bookReading1.comment,
       startedAt: bookReading1.startedAt,
@@ -132,7 +145,7 @@ describe('FindBookReadingsByBookIdQueryHandlerImpl', () => {
     });
 
     expect(result.bookReadings[1]?.getState()).toEqual({
-      bookId: bookReading2.bookId,
+      userBookId: bookReading2.userBookId,
       rating: bookReading2.rating,
       comment: bookReading2.comment,
       startedAt: bookReading2.startedAt,

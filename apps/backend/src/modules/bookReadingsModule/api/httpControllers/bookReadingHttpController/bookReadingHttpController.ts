@@ -49,7 +49,7 @@ import { type CreateBookReadingCommandHandler } from '../../../application/comma
 import { type DeleteBookReadingCommandHandler } from '../../../application/commandHandlers/deleteBookReadingCommandHandler/deleteBookReadingCommandHandler.js';
 import { type UpdateBookReadingCommandHandler } from '../../../application/commandHandlers/updateBookReadingCommandHandler/updateBookReadingCommandHandler.js';
 import { type FindBookReadingByIdQueryHandler } from '../../../application/queryHandlers/findBookReadingByIdQueryHandler/findBookReadingByIdQueryHandler.js';
-import { type FindBookReadingsByBookIdQueryHandler } from '../../../application/queryHandlers/findBookReadingsByBookIdQueryHandler/findBookReadingsByBookIdQueryHandler.js';
+import { type FindBookReadingsByUserBookIdQueryHandler } from '../../../application/queryHandlers/findBookReadingsByUserBookIdQueryHandler/findBookReadingsByUserBookIdQueryHandler.js';
 import { type BookReading } from '../../../domain/entities/bookReading/bookReading.js';
 
 interface MapBookReadingToBookReadingDTOPayload {
@@ -57,11 +57,11 @@ interface MapBookReadingToBookReadingDTOPayload {
 }
 
 export class BookReadingHttpController implements HttpController {
-  public readonly basePath = '/api/books/:bookId/book-readings';
+  public readonly basePath = '/api/users/:userId/books/:userBookId/readings';
   public readonly tags = ['BookReading'];
 
   public constructor(
-    private readonly findBookReadingsByBookIdQueryHandler: FindBookReadingsByBookIdQueryHandler,
+    private readonly findBookReadingsByBookIdQueryHandler: FindBookReadingsByUserBookIdQueryHandler,
     private readonly findBookReadingByIdQueryHandler: FindBookReadingByIdQueryHandler,
     private readonly createBookReadingCommandHandler: CreateBookReadingCommandHandler,
     private readonly updateBookReadingCommandHandler: UpdateBookReadingCommandHandler,
@@ -167,7 +167,7 @@ export class BookReadingHttpController implements HttpController {
       authorizationHeader: request.headers['authorization'],
     });
 
-    const { bookId } = request.pathParams;
+    const { userBookId } = request.pathParams;
 
     // TODO: authorization, consider adding userId to book for easy access to book owner
 
@@ -177,7 +177,7 @@ export class BookReadingHttpController implements HttpController {
     //   });
     // }
 
-    const { bookReadings } = await this.findBookReadingsByBookIdQueryHandler.execute({ bookId });
+    const { bookReadings } = await this.findBookReadingsByBookIdQueryHandler.execute({ userBookId });
 
     return {
       statusCode: HttpStatusCode.ok,
@@ -214,7 +214,7 @@ export class BookReadingHttpController implements HttpController {
       authorizationHeader: request.headers['authorization'],
     });
 
-    const { bookId } = request.pathParams;
+    const { userBookId } = request.pathParams;
 
     const { comment, rating, startedAt, endedAt } = request.body;
 
@@ -227,7 +227,7 @@ export class BookReadingHttpController implements HttpController {
     // }
 
     const { bookReading } = await this.createBookReadingCommandHandler.execute({
-      bookId,
+      userBookId,
       comment,
       rating,
       startedAt: new Date(startedAt),
@@ -295,7 +295,7 @@ export class BookReadingHttpController implements HttpController {
 
     const dto: BookReadingDTO = {
       id: bookReading.getId(),
-      bookId: bookReading.getUserBookId(),
+      userBookId: bookReading.getUserBookId(),
       comment: bookReading.getComment(),
       rating: bookReading.getRating(),
       startedAt: bookReading.getStartedAt().toISOString(),

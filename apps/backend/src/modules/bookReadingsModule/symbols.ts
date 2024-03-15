@@ -3,7 +3,7 @@ export const symbols = {
   bookReadingMapper: Symbol('bookReadingMapper'),
 
   findBookReadingByIdQueryHandler: Symbol('findBookReadingByIdQueryHandler'),
-  findBookReadingsByBookIdQueryHandler: Symbol('findBookReadingsByBookIdQueryHandler'),
+  findBookReadingsByUserBookIdQueryHandler: Symbol('findBookReadingsByUserBookIdQueryHandler'),
 
   createBookReadingCommandHandler: Symbol('createBookReadingCommandHandler'),
   updateBookReadingNameCommandHandler: Symbol('updateBookReadingNameCommandHandler'),

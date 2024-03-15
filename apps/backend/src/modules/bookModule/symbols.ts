@@ -33,6 +33,7 @@ export const bookSymbols = {
   bookHttpController: symbols.bookHttpController,
   userBookHttpController: symbols.userBookHttpController,
   bookRepository: symbols.bookRepository,
+  userBookRepository: symbols.userBookRepository,
   genreHttpController: symbols.genreHttpController,
   genreAdminHttpController: symbols.genreAdminHttpController,
 };

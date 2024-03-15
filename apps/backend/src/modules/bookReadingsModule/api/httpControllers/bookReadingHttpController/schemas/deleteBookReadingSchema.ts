@@ -6,7 +6,7 @@ import { type TypeExtends } from '../../../../../../common/types/schemaExtends.j
 
 export const deleteBookReadingPathParamsDTOSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
-  bookId: Type.String({ format: 'uuid' }),
+  userBookId: Type.String({ format: 'uuid' }),
 });
 
 export type DeleteBookReadingPathParamsDTO = TypeExtends<
