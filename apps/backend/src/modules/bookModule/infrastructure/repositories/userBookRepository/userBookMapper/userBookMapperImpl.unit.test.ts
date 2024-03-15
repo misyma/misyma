@@ -18,7 +18,7 @@ describe('UserBookMapperImpl', () => {
   it('maps from UserBookRawEntity with Book to UserBook', () => {
     const book = bookTestFactory.createRaw();
 
-    const userBook = userBookTestFactory.createRaw();
+    const userBook = userBookTestFactory.createRaw({ bookId: book.id });
 
     const userBooks = userBookMapperImpl.mapRawWithJoinsToDomain([
       {
@@ -45,12 +45,12 @@ describe('UserBookMapperImpl', () => {
 
     expect(userBooks).toEqual([
       {
-        id: book.id,
+        id: userBook.id,
         state: {
           imageUrl: userBook.imageUrl,
           status: userBook.status,
           bookshelfId: userBook.bookshelfId,
-          bookId: userBook.bookshelfId,
+          bookId: userBook.bookId,
           book: {
             title: book.title,
             isbn: book.isbn,

@@ -20,6 +20,7 @@ import { authorSymbols } from '../../modules/authorModule/symbols.js';
 import { type BookHttpController } from '../../modules/bookModule/api/httpControllers/bookHttpController/bookHttpController.js';
 import { type GenreAdminHttpController } from '../../modules/bookModule/api/httpControllers/genreAdminHttpController/genreAdminHttpController.js';
 import { type GenreHttpController } from '../../modules/bookModule/api/httpControllers/genreHttpController/genreHttpController.js';
+import { type UserBookHttpController } from '../../modules/bookModule/api/httpControllers/userBookHttpController/userBookHttpController.js';
 import { bookSymbols } from '../../modules/bookModule/symbols.js';
 import { type BookReadingHttpController } from '../../modules/bookReadingsModule/api/httpControllers/bookReadingHttpController/bookReadingHttpController.js';
 import { bookReadingSymbols } from '../../modules/bookReadingsModule/symbols.js';
@@ -55,6 +56,7 @@ export class HttpServer {
     return [
       this.container.get<UserHttpController>(userSymbols.userHttpController),
       this.container.get<BookHttpController>(bookSymbols.bookHttpController),
+      this.container.get<UserBookHttpController>(bookSymbols.userBookHttpController),
       this.container.get<AuthorHttpController>(authorSymbols.authorHttpController),
       this.container.get<ApplicationHttpController>(symbols.applicationHttpController),
       this.container.get<BookshelfHttpController>(bookshelfSymbols.bookshelfHttpController),
