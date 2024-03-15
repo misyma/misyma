@@ -10,7 +10,7 @@ export class UserBookMapperImpl implements UserBookMapper {
 
     entities.forEach((entity) => {
       const {
-        userBookId,
+        id,
         imageUrl,
         status,
         bookshelfId,
@@ -30,10 +30,10 @@ export class UserBookMapperImpl implements UserBookMapper {
         genreName,
       } = entity;
 
-      const userBookExists = userBookDraftsMapping.has(userBookId);
+      const userBookExists = userBookDraftsMapping.has(id);
 
       if (userBookExists) {
-        const userBookDraft = userBookDraftsMapping.get(userBookId) as UserBookDraft;
+        const userBookDraft = userBookDraftsMapping.get(id) as UserBookDraft;
 
         if (authorId) {
           userBookDraft.book?.authors?.push(
@@ -78,7 +78,7 @@ export class UserBookMapperImpl implements UserBookMapper {
         }
 
         const userBookDraft: UserBookDraft = {
-          id: userBookId,
+          id,
           book: {
             title,
             isbn: isbn ?? undefined,

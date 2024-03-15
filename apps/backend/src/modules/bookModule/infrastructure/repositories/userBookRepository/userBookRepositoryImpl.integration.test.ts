@@ -136,7 +136,13 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      expect(foundUserBook).toEqual(userBookRawEntity);
+      expect(foundUserBook).toEqual({
+        id: userBook.getBookId(),
+        bookId: userBookRawEntity.bookId,
+        bookshelfId: userBookRawEntity.bookshelfId,
+        status: userBookRawEntity.status,
+        imageUrl: userBookRawEntity.imageUrl,
+      });
     });
 
     it('updates UserBook bookshelf', async () => {

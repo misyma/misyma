@@ -124,7 +124,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           `${this.bookTable.name}.translator as translator`,
           `${this.bookTable.name}.format as format`,
           `${this.bookTable.name}.pages as pages`,
-          `${this.userBookTable.name}.id as userBookId`,
+          `${this.userBookTable.name}.id`,
           `${this.userBookTable.name}.imageUrl`,
           `${this.userBookTable.name}.status`,
           `${this.userBookTable.name}.bookshelfId`,
@@ -158,7 +158,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         })
         .where((builder) => {
           if (id) {
-            builder.where(`${this.userBookTable.name}.userBookId`, id);
+            builder.where(`${this.userBookTable.name}.id`, id);
           }
 
           if (title) {
@@ -176,6 +176,8 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         error,
       });
     }
+
+    console.log({ rawEntities });
 
     if (!rawEntities.length) {
       return null;
@@ -228,7 +230,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         });
 
       if (ids.length > 0) {
-        query.whereIn(`${this.userBookTable.name}.userBookId`, ids);
+        query.whereIn(`${this.userBookTable.name}.id`, ids);
       }
 
       if (bookshelfId) {

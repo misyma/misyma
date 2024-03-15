@@ -42,6 +42,8 @@ describe('DeleteUserBookCommandHandler', () => {
 
     bookshelfTestUtils = container.get<BookshelfTestUtils>(testSymbols.bookshelfTestUtils);
 
+    userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
+
     await authorTestUtils.truncate();
 
     await bookTestUtils.truncate();

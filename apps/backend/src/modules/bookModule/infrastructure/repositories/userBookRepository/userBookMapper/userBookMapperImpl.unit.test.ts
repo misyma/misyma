@@ -22,7 +22,7 @@ describe('UserBookMapperImpl', () => {
 
     const userBooks = userBookMapperImpl.mapRawWithJoinsToDomain([
       {
-        userBookId: userBook.id,
+        id: userBook.id,
         bookId: book.id,
         title: book.title,
         isbn: book.isbn as string,

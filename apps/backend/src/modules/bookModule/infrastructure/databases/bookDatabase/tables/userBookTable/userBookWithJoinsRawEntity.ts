@@ -1,7 +1,7 @@
 import { type BookFormat, type ReadingStatus } from '@common/contracts';
 
 export interface UserBookWithJoinsRawEntity {
-  readonly userBookId: string;
+  readonly id: string;
   readonly bookId: string;
   readonly title: string;
   readonly isbn: string | null;
