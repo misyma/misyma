@@ -108,7 +108,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
   }
 
   public async findUserBook(payload: FindUserBookPayload): Promise<UserBook | null> {
-    const { id, authorIds, title, bookshelfId } = payload;
+    const { id, title, bookshelfId, authorIds } = payload;
 
     let rawEntities: UserBookWithJoinsRawEntity[];
 
@@ -129,8 +129,8 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           `${this.userBookTable.name}.status`,
           `${this.userBookTable.name}.bookshelfId`,
           `${this.authorTable.name}.id as authorId`,
-          'firstName',
-          'lastName',
+          `${this.authorTable.name}.firstName as firstName`,
+          `${this.authorTable.name}.lastName as lastName`,
           `${this.genresTable.name}.id as genreId`,
           `${this.genresTable.name}.name as genreName`,
         ])
@@ -177,8 +177,6 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       });
     }
 
-    console.log({ rawEntities });
-
     if (!rawEntities.length) {
       return null;
     }
@@ -203,13 +201,13 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           `${this.bookTable.name}.translator as translator`,
           `${this.bookTable.name}.format as format`,
           `${this.bookTable.name}.pages as pages`,
-          `${this.userBookTable.name}.id as userBookId`,
+          `${this.userBookTable.name}.id`,
           `${this.userBookTable.name}.imageUrl`,
           `${this.userBookTable.name}.status`,
           `${this.userBookTable.name}.bookshelfId`,
           `${this.authorTable.name}.id as authorId`,
-          'firstName',
-          'lastName',
+          `${this.authorTable.name}.firstName as firstName`,
+          `${this.authorTable.name}.lastName as lastName`,
           `${this.genresTable.name}.id as genreId`,
           `${this.genresTable.name}.name as genreName`,
         ])

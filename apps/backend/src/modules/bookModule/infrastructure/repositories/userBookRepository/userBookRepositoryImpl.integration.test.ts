@@ -114,7 +114,7 @@ describe('UserBookRepositoryImpl', () => {
       });
 
       const foundUserBook = await userBookTestUtils.findById({
-        id: userBook.getBookId(),
+        id: userBook.getId(),
       });
 
       expect(userBook.getState()).toEqual({
@@ -123,6 +123,7 @@ describe('UserBookRepositoryImpl', () => {
         status: userBookRawEntity.status,
         imageUrl: userBookRawEntity.imageUrl,
         book: {
+          id: book.id,
           title: book.title,
           isbn: book.isbn,
           publisher: book.publisher,
@@ -137,7 +138,7 @@ describe('UserBookRepositoryImpl', () => {
       });
 
       expect(foundUserBook).toEqual({
-        id: userBook.getBookId(),
+        id: userBook.getId(),
         bookId: userBookRawEntity.bookId,
         bookshelfId: userBookRawEntity.bookshelfId,
         status: userBookRawEntity.status,
@@ -160,10 +161,14 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const userBook = userBookTestFactory.create({
-        bookId: book.id,
-        bookshelfId: bookshelf1.id,
+      const userBookRawEntity = await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book.id,
+          bookshelfId: bookshelf1.id,
+        },
       });
+
+      const userBook = userBookTestFactory.create(userBookRawEntity);
 
       const newBookshelfId = bookshelf2.id;
 
@@ -183,6 +188,7 @@ describe('UserBookRepositoryImpl', () => {
         status: userBook.getStatus(),
         imageUrl: userBook.getImageUrl(),
         book: {
+          id: book.id,
           title: book.title,
           isbn: book.isbn,
           publisher: book.publisher,
@@ -218,10 +224,14 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const userBook = userBookTestFactory.create({
-        bookId: book.id,
-        bookshelfId: bookshelf.id,
+      const userBookRawEntity = await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book.id,
+          bookshelfId: bookshelf.id,
+        },
       });
+
+      const userBook = userBookTestFactory.create(userBookRawEntity);
 
       const newStatus = Generator.bookReadingStatus() as ReadingStatus;
 
@@ -253,10 +263,14 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const userBook = userBookTestFactory.create({
-        bookId: book.id,
-        bookshelfId: bookshelf.id,
+      const userBookRawEntity = await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book.id,
+          bookshelfId: bookshelf.id,
+        },
       });
+
+      const userBook = userBookTestFactory.create(userBookRawEntity);
 
       const newImageUrl = Generator.imageUrl();
 
@@ -293,10 +307,14 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const userBook = userBookTestFactory.create({
-        bookId: book.id,
-        bookshelfId: bookshelf.id,
+      const userBookRawEntity = await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book.id,
+          bookshelfId: bookshelf.id,
+        },
       });
+
+      const userBook = userBookTestFactory.create(userBookRawEntity);
 
       const foundUserBook = await userBookRepository.findUserBook({ id: userBook.getId() });
 
@@ -304,10 +322,11 @@ describe('UserBookRepositoryImpl', () => {
 
       expect(foundUserBook?.getState()).toEqual({
         bookId: userBook.getBookId(),
-        bookshelfId: userBook.getBookId(),
+        bookshelfId: userBook.getBookshelfId(),
         status: userBook.getStatus(),
         imageUrl: userBook.getImageUrl(),
         book: {
+          id: book.id,
           title: book.title,
           isbn: book.isbn,
           publisher: book.publisher,
@@ -317,7 +336,14 @@ describe('UserBookRepositoryImpl', () => {
           format: book.format,
           pages: book.pages,
           authors: [author],
-          genres: [genre],
+          genres: [
+            {
+              id: genre.id,
+              state: {
+                name: genre.name,
+              },
+            },
+          ],
         },
       });
     });

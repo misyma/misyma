@@ -52,6 +52,7 @@ describe('UserBookMapperImpl', () => {
           bookshelfId: userBook.bookshelfId,
           bookId: userBook.bookId,
           book: {
+            id: book.id,
             title: book.title,
             isbn: book.isbn,
             publisher: book.publisher,

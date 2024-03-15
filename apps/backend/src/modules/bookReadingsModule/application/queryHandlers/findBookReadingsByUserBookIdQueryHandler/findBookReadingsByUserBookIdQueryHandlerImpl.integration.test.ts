@@ -77,7 +77,7 @@ describe('FindBookReadingsByUserBookIdQueryHandlerImpl', () => {
     ).toThrowErrorInstance({
       instance: ResourceNotFoundError,
       context: {
-        name: 'Book',
+        name: 'UserBook',
         id: nonExistentUserBookId,
       },
     });

@@ -1,7 +1,7 @@
 import { type BookReading } from './bookReading.js';
 
 export interface CreateBookReadingPathParams {
-  readonly bookId: string;
+  readonly userBookId: string;
 }
 
 export interface CreateBookReadingRequestBody {

@@ -38,8 +38,8 @@ export class UserBookMapperImpl implements UserBookMapper {
         if (authorId) {
           userBookDraft.book?.authors?.push(
             new Author({
-              firstName: firstName as string,
               id: authorId,
+              firstName: firstName as string,
               lastName: lastName as string,
             }),
           );
@@ -61,8 +61,8 @@ export class UserBookMapperImpl implements UserBookMapper {
         if (authorId) {
           authors.push(
             new Author({
-              firstName: firstName as string,
               id: authorId,
+              firstName: firstName as string,
               lastName: lastName as string,
             }),
           );
@@ -80,6 +80,7 @@ export class UserBookMapperImpl implements UserBookMapper {
         const userBookDraft: UserBookDraft = {
           id,
           book: {
+            id: bookId,
             title,
             isbn: isbn ?? undefined,
             publisher: publisher ?? undefined,
