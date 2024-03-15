@@ -7,7 +7,7 @@ export class BookReadingTestFactory {
   public create(input: Partial<BookReadingState> = {}): BookReading {
     return new BookReading({
       id: Generator.uuid(),
-      bookId: Generator.uuid(),
+      userBookId: Generator.uuid(),
       rating: Generator.number(1, 10),
       comment: Generator.words(),
       startedAt: Generator.pastDate(),
@@ -19,7 +19,7 @@ export class BookReadingTestFactory {
   public createRaw(input: Partial<BookReadingRawEntity> = {}): BookReadingRawEntity {
     return {
       id: Generator.uuid(),
-      bookId: Generator.uuid(),
+      userBookId: Generator.uuid(),
       rating: Generator.number(1, 10),
       comment: Generator.words(),
       startedAt: Generator.pastDate(),

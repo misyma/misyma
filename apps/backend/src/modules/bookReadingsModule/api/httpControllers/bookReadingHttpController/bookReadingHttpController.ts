@@ -295,7 +295,7 @@ export class BookReadingHttpController implements HttpController {
 
     const dto: BookReadingDTO = {
       id: bookReading.getId(),
-      bookId: bookReading.getBookId(),
+      bookId: bookReading.getUserBookId(),
       comment: bookReading.getComment(),
       rating: bookReading.getRating(),
       startedAt: bookReading.getStartedAt().toISOString(),

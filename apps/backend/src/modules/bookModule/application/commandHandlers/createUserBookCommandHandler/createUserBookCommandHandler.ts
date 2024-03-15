@@ -4,10 +4,10 @@ import { type CommandHandler } from '../../../../../common/types/commandHandler.
 import { type UserBook } from '../../../domain/entities/userBook/userBook.js';
 
 export interface CreateUserBookCommandHandlerPayload {
-  readonly imageUrl?: string;
-  readonly status: ReadingStatus;
-  readonly bookshelfId: string;
   readonly bookId: string;
+  readonly bookshelfId: string;
+  readonly status: ReadingStatus;
+  readonly imageUrl?: string | undefined;
 }
 
 export interface CreateUserBookCommandHandlerResult {

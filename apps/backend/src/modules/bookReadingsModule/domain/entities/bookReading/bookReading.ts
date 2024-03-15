@@ -2,7 +2,7 @@ import { OperationNotValidError } from '../../../../../common/errors/operationNo
 
 export interface BookReadingDraft {
   readonly id: string;
-  readonly bookId: string;
+  readonly userBookId: string;
   readonly rating: number;
   readonly comment: string;
   readonly startedAt: Date;
@@ -10,7 +10,7 @@ export interface BookReadingDraft {
 }
 
 export interface BookReadingState {
-  bookId: string;
+  userBookId: string;
   rating: number;
   comment: string;
   startedAt: Date;
@@ -41,7 +41,7 @@ export class BookReading {
     this.id = draft.id;
 
     this.state = {
-      bookId: draft.bookId,
+      userBookId: draft.userBookId,
       rating: draft.rating,
       comment: draft.comment,
       startedAt: draft.startedAt,
@@ -89,8 +89,8 @@ export class BookReading {
     return this.id;
   }
 
-  public getBookId(): string {
-    return this.state.bookId;
+  public getUserBookId(): string {
+    return this.state.userBookId;
   }
 
   public getRating(): number {

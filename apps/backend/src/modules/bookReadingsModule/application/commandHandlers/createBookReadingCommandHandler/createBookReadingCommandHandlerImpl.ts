@@ -5,42 +5,42 @@ import {
 } from './createBookReadingCommandHandler.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
-import { type BookRepository } from '../../../../bookModule/domain/repositories/bookRepository/bookRepository.js';
+import { type UserBookRepository } from '../../../../bookModule/domain/repositories/userBookRepository/userBookRepository.js';
 import { type BookReadingRepository } from '../../../domain/repositories/bookReadingRepository/bookReadingRepository.js';
 
 export class CreateBookReadingCommandHandlerImpl implements CreateBookReadingCommandHandler {
   public constructor(
     private readonly bookReadingRepository: BookReadingRepository,
-    private readonly bookRepository: BookRepository,
+    private readonly userBookRepository: UserBookRepository,
     private readonly loggerService: LoggerService,
   ) {}
 
   public async execute(payload: CreateBookReadingPayload): Promise<CreateBookReadingResult> {
-    const { bookId, comment, rating, startedAt, endedAt } = payload;
+    const { userBookId, comment, rating, startedAt, endedAt } = payload;
 
     this.loggerService.debug({
       message: 'Creating BookReading...',
-      bookId,
+      userBookId,
       comment,
       rating,
       startedAt,
       endedAt,
     });
 
-    const existingBook = await this.bookRepository.findBook({
-      id: bookId,
+    const existingUserBook = await this.userBookRepository.findUserBook({
+      id: userBookId,
     });
 
-    if (!existingBook) {
+    if (!existingUserBook) {
       throw new ResourceNotFoundError({
         name: 'Book',
-        id: bookId,
+        id: userBookId,
       });
     }
 
     const bookReading = await this.bookReadingRepository.saveBookReading({
       bookReading: {
-        bookId,
+        userBookId,
         comment,
         rating,
         startedAt,
@@ -51,7 +51,7 @@ export class CreateBookReadingCommandHandlerImpl implements CreateBookReadingCom
     this.loggerService.debug({
       message: 'BookReading created.',
       id: bookReading.getId(),
-      bookId,
+      userBookId,
       comment,
       rating,
       startedAt,

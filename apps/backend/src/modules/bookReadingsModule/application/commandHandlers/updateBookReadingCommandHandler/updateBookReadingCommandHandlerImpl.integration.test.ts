@@ -7,6 +7,7 @@ import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type BookTestUtils } from '../../../../bookModule/tests/utils/bookTestUtils/bookTestUtils.js';
+import { type UserBookTestUtils } from '../../../../bookModule/tests/utils/userBookTestUtils/userBookTestUtils.js';
 import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { BookReading } from '../../../domain/entities/bookReading/bookReading.js';
@@ -24,6 +25,8 @@ describe('UpdateBookReadingCommandHandlerImpl', () => {
 
   let userTestUtils: UserTestUtils;
 
+  let userBookTestUtils: UserBookTestUtils;
+
   beforeEach(async () => {
     const container = TestContainer.create();
 
@@ -37,6 +40,8 @@ describe('UpdateBookReadingCommandHandlerImpl', () => {
 
     bookshelfTestUtils = container.get<BookshelfTestUtils>(testSymbols.bookshelfTestUtils);
 
+    userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
+
     await bookTestUtils.truncate();
 
     await bookshelfTestUtils.truncate();
@@ -44,6 +49,8 @@ describe('UpdateBookReadingCommandHandlerImpl', () => {
     await userTestUtils.truncate();
 
     await bookReadingTestUtils.truncate();
+
+    await userBookTestUtils.truncate();
   });
 
   afterEach(async () => {
@@ -54,6 +61,8 @@ describe('UpdateBookReadingCommandHandlerImpl', () => {
     await userTestUtils.truncate();
 
     await bookReadingTestUtils.truncate();
+
+    await userBookTestUtils.truncate();
   });
 
   it('throws an error - when BookReading was not found', async () => {
@@ -78,17 +87,18 @@ describe('UpdateBookReadingCommandHandlerImpl', () => {
 
     const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
 
-    const book = await bookTestUtils.createAndPersist({
+    const book = await bookTestUtils.createAndPersist();
+
+    const userBook = await userBookTestUtils.createAndPersist({
       input: {
-        book: {
-          bookshelfId: bookshelf.id,
-        },
+        bookshelfId: bookshelf.id,
+        bookId: book.id,
       },
     });
 
     const bookReading = await bookReadingTestUtils.createAndPersist({
       input: {
-        bookId: book.id,
+        userBookId: userBook.id,
       },
     });
 
@@ -111,7 +121,7 @@ describe('UpdateBookReadingCommandHandlerImpl', () => {
     expect(updatedBookReading).toBeInstanceOf(BookReading);
 
     expect(updatedBookReading.getState()).toMatchObject({
-      bookId: book.id,
+      userBookId: userBook.id,
       comment: newComment,
       rating: newRating,
       startedAt: newStartedAt,

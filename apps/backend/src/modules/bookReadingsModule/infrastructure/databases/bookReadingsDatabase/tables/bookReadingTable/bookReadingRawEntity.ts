@@ -1,6 +1,6 @@
 export interface BookReadingRawEntity {
   readonly id: string;
-  readonly bookId: string;
+  readonly userBookId: string;
   readonly rating: number;
   readonly comment: string;
   readonly startedAt: Date;

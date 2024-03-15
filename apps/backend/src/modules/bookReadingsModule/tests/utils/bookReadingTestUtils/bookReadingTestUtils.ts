@@ -26,7 +26,7 @@ export class BookReadingTestUtils {
     const rawEntities = await this.sqliteDatabaseClient<BookReadingRawEntity>(this.table.name).insert(
       {
         id: bookReading.getId(),
-        bookId: bookReading.getBookId(),
+        userBookId: bookReading.getUserBookId(),
         rating: bookReading.getRating(),
         comment: bookReading.getComment(),
         startedAt: bookReading.getStartedAt(),
@@ -39,7 +39,7 @@ export class BookReadingTestUtils {
 
     return {
       id: rawEntity.id,
-      bookId: rawEntity.bookId,
+      userBookId: rawEntity.userBookId,
       rating: rawEntity.rating,
       comment: rawEntity.comment,
       startedAt: new Date(rawEntity.startedAt),
@@ -58,7 +58,7 @@ export class BookReadingTestUtils {
 
     return {
       id: result.id,
-      bookId: result.bookId,
+      userBookId: result.userBookId,
       rating: result.rating,
       comment: result.comment,
       startedAt: new Date(result.startedAt),
