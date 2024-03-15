@@ -1,5 +1,5 @@
 import { QueryCache, QueryClient, QueryClientProvider as NativeQueryClientProvider } from '@tanstack/react-query';
-import React, { useState } from 'react';
+import React, {  useState } from 'react';
 import { ApiError } from '../../../../common/errors/apiError';
 import { useStoreSelector } from '../../../store/hooks/useStoreSelector';
 import { userStateActions, userStateSelectors } from '../../../store/states/userState/userStateSlice';
@@ -7,18 +7,15 @@ import { UserApiError } from '../../../../api/user/errors/userApiError';
 import { type RefreshUserTokensResponseBody } from '@common/contracts';
 import { useStoreDispatch } from '../../../store/hooks/useStoreDispatch';
 import { HttpService } from '../../../services/httpService/httpService';
-import Cookie from 'js-cookie';
+import { CookieService } from '../../../services/cookieService/cookieService';
 
 interface ProviderProps {
   children: React.ReactNode;
 }
 
-const userTokensCookieName = 'misyma-user-tokens-cookie';
-
-const userDataCookieName = 'misyma-user-data-cookie';
-
 export const QueryClientProvider = ({ children }: ProviderProps) => {
-  const { refreshToken } = useStoreSelector(userStateSelectors.selectCurrentUserTokens);
+
+  const refreshToken = useStoreSelector(userStateSelectors.selectRefreshToken);
 
   const storeDispatch = useStoreDispatch();
 
@@ -55,7 +52,7 @@ export const QueryClientProvider = ({ children }: ProviderProps) => {
       queries: {
         staleTime: 1000 * 30,
         retry: (failureCount, error) => {
-          if (error instanceof ApiError && error.context.statusCode === 401) {
+          if (error instanceof ApiError && (error.context.statusCode === 401 || error.context.statusCode === 400)) {
             return false;
           }
 
@@ -74,24 +71,18 @@ export const QueryClientProvider = ({ children }: ProviderProps) => {
             if (res) {
               storeDispatch(userStateActions.setCurrentUserTokens(res));
 
-              Cookie.set(
-                userTokensCookieName,
-                JSON.stringify({
-                  accessToken: res.accessToken,
-                  refreshToken: res.refreshToken,
-                }),
-                {
-                  secure: true,
-                  sameSite: 'strict',
-                },
-              );
+              CookieService.setUserTokensCookie({
+                accessToken: res.accessToken,
+                refreshToken: res.refreshToken,
+                expiresIn: res.expiresIn,
+              });
             }
           } catch (error) {
             storeDispatch(userStateActions.removeUserState());
 
-            Cookie.remove(userTokensCookieName);
+            CookieService.removeUserTokensCookie();
 
-            Cookie.remove(userDataCookieName);
+            CookieService.removeUserDataCookie();
           } finally {
             setRefreshingToken(false);
           }

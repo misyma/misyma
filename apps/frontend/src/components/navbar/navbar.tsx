@@ -1,9 +1,60 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import { FC } from 'react';
 import { FaUser } from 'react-icons/fa';
+import { useLogoutUserMutation } from '../../api/user/mutations/logoutUserMutation/logoutUserMutation';
+import { useStoreSelector } from '../../core/store/hooks/useStoreSelector';
+import { userStateActions, userStateSelectors } from '../../core/store/states/userState/userStateSlice';
+import { CookieService } from '../../core/services/cookieService/cookieService';
+import { useFindUserQuery } from '../../api/user/queries/findUserQuery/findUserQuery';
+import { useStoreDispatch } from '../../core/store/hooks/useStoreDispatch';
 
 export const Navbar: FC = () => {
   const navigate = useNavigate();
+
+  const { mutate: logoutUserMutation } = useLogoutUserMutation({});
+
+  const accessToken = useStoreSelector(userStateSelectors.selectAccessToken);
+
+  const refreshToken = useStoreSelector(userStateSelectors.selectRefreshToken);
+
+  const res = useFindUserQuery();
+
+  const dispatch = useStoreDispatch();
+
+  const handleLogout = () => {
+    if (!accessToken || !refreshToken || !res.data?.id) {
+      return;
+    }
+
+    logoutUserMutation(
+      {
+        accessToken,
+        id: res.data?.id,
+        refreshToken,
+      },
+      {
+        onSuccess: () => {
+          CookieService.removeUserDataCookie();
+
+          CookieService.removeUserTokensCookie();
+
+          dispatch(userStateActions.removeUserState());
+
+          navigate({
+            to: '/login',
+          });
+        },
+        onError: () => {
+          // TODO: Think through error handling
+          CookieService.removeUserDataCookie();
+
+          CookieService.removeUserTokensCookie();
+
+          dispatch(userStateActions.removeUserState());
+        },
+      },
+    );
+  };
 
   return (
     <div className="bg-white p-8 top-0 fixed flex flex-1 justify-end w-full items-center">
@@ -19,45 +70,41 @@ export const Navbar: FC = () => {
         <span className="burger-span"></span>
         <span className="burger-span"></span>
       </div>
-      <ul className="hidden sm:flex sm:flex-1 sm:gap-8 sm:justify-end w-full items-center">
-        <li>
-          <Link
-            to={'/'}
-            className="[&.active]:font-bold"
-          >
-            Home
-          </Link>
-        </li>
-        <li>
+      <ul className="hidden sm:flex sm:flex-1 sm:gap-16 sm:justify-end w-full items-center">
+        <li className="text-primary sm:min-w-[7rem] text-center">
           <Link
             to={'/shelves'}
-            className="[&.active]:font-bold"
+            className="[&.active]:font-bold text-nowrap"
           >
             Moje półki
           </Link>
         </li>
-        <li>
+        <li className="text-primary sm:min-w-[7rem] text-center">
           <Link
-            to={'/test2'}
+            to={'/quotes'}
             className="[&.active]:font-bold"
           >
-            Test2
+            Cytaty
           </Link>
         </li>
-        <li>
+        <li className="text-primary sm:min-w-[7rem] text-center">
           <Link
-            to={'/test3'}
+            to={'/collections'}
             className="[&.active]:font-bold"
           >
-            Test3
+            Kolekcje
+          </Link>
+        </li>
+        <li className="text-primary sm:min-w-[7rem] text-center">
+          <Link
+            to={'/statistics'}
+            className="[&.active]:font-bold"
+          >
+            Statystyki
           </Link>
         </li>
         <FaUser
-          onClick={() => {
-            navigate({
-              to: '/login',
-            });
-          }}
+          onClick={handleLogout}
           className="cursor-pointer text-2xl sm:text-4xl"
         />
       </ul>

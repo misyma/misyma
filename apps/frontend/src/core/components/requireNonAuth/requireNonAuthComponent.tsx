@@ -7,9 +7,11 @@ interface Props {
 }
 
 export function RequireNonAuthComponent({ children }: Props): React.ReactNode {
-  const currentUserTokens = useStoreSelector(userStateSelectors.selectCurrentUserTokens);
+  const accessToken = useStoreSelector(userStateSelectors.selectAccessToken);
 
-  return !currentUserTokens.accessToken && !currentUserTokens.refreshToken ? (
+  const refreshToken = useStoreSelector(userStateSelectors.selectRefreshToken);
+
+  return !accessToken && !refreshToken ? (
     <>{children}</>
   ) : (
     <Navigate to="/test1" />

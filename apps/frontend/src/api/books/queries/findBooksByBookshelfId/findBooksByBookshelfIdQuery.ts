@@ -5,10 +5,7 @@ import { HttpService } from '../../../../core/services/httpService/httpService';
 import { useQuery } from '@tanstack/react-query';
 
 export const useFindBooksByBookshelfIdQuery = (bookshelfId: string) => {
-  const { accessToken } = useSelector(userStateSelectors.selectCurrentUserTokens) as {
-    accessToken: string;
-    refreshToken: string;
-  };
+  const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const findBooksByBookshelfId = async (values: FindBooksByBookshelfIdPathParams) => {
     const { bookshelfId } = values;
