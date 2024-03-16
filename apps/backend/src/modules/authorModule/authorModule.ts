@@ -12,8 +12,8 @@ import { type AuthorMapper } from './infrastructure/repositories/authorRepositor
 import { AuthorMapperImpl } from './infrastructure/repositories/authorRepository/authorMapper/authorMapperImpl.js';
 import { AuthorRepositoryImpl } from './infrastructure/repositories/authorRepository/authorRepositoryImpl.js';
 import { symbols } from './symbols.js';
-import { type SqliteDatabaseClient } from '../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../core/symbols.js';
+import { type DatabaseClient } from '../../libs/database/clients/databaseClient/databaseClient.js';
 import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type DependencyInjectionModule } from '../../libs/dependencyInjection/dependencyInjectionModule.js';
 import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
@@ -29,7 +29,7 @@ export class AuthorModule implements DependencyInjectionModule {
       symbols.authorRepository,
       () =>
         new AuthorRepositoryImpl(
-          container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient),
+          container.get<DatabaseClient>(coreSymbols.databaseClient),
           container.get<AuthorMapper>(symbols.authorMapper),
           container.get<UuidService>(coreSymbols.uuidService),
         ),

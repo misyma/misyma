@@ -5,8 +5,8 @@ import { Generator } from '@common/tests';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { Application } from '../../../../../core/application.js';
-import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type AuthorRepository } from '../../../domain/repositories/authorRepository/authorRepository.js';
 import { symbols } from '../../../symbols.js';
 import { AuthorTestFactory } from '../../../tests/factories/authorTestFactory/authorTestFactory.js';
@@ -15,7 +15,7 @@ import { AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTest
 describe('AuthorRepositoryImpl', () => {
   let authorRepository: AuthorRepository;
 
-  let sqliteDatabaseClient: SqliteDatabaseClient;
+  let databaseClient: DatabaseClient;
 
   let authorTestUtils: AuthorTestUtils;
 
@@ -26,9 +26,9 @@ describe('AuthorRepositoryImpl', () => {
 
     authorRepository = container.get<AuthorRepository>(symbols.authorRepository);
 
-    sqliteDatabaseClient = container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient);
+    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
 
-    authorTestUtils = new AuthorTestUtils(sqliteDatabaseClient);
+    authorTestUtils = new AuthorTestUtils(databaseClient);
 
     await authorTestUtils.truncate();
   });
@@ -36,7 +36,7 @@ describe('AuthorRepositoryImpl', () => {
   afterEach(async () => {
     await authorTestUtils.truncate();
 
-    await sqliteDatabaseClient.destroy();
+    await databaseClient.destroy();
   });
 
   describe('Create', () => {

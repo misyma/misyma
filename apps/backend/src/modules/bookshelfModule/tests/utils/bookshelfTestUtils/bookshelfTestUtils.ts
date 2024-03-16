@@ -1,4 +1,4 @@
-import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type BookshelfRawEntity } from '../../../infrastructure/databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfRawEntity.js';
 import { BookshelfTable } from '../../../infrastructure/databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfTable.js';
 import { BookshelfTestFactory } from '../../factories/bookshelfTestFactory/bookshelfTestFactory.js';
@@ -12,7 +12,7 @@ interface FindByIdPayload {
 }
 
 export class BookshelfTestUtils {
-  public constructor(private readonly sqliteDatabaseClient: SqliteDatabaseClient) {}
+  public constructor(private readonly databaseClient: DatabaseClient) {}
 
   private readonly table = new BookshelfTable();
 
@@ -23,7 +23,7 @@ export class BookshelfTestUtils {
 
     const bookshelf = this.bookshelfTestFactory.create(input);
 
-    const rawEntities = await this.sqliteDatabaseClient<BookshelfRawEntity>(this.table.name).insert(
+    const rawEntities = await this.databaseClient<BookshelfRawEntity>(this.table.name).insert(
       {
         id: bookshelf.getId(),
         name: bookshelf.getName(),
@@ -40,7 +40,7 @@ export class BookshelfTestUtils {
   public async findById(payload: FindByIdPayload): Promise<BookshelfRawEntity | null> {
     const { id } = payload;
 
-    const result = await this.sqliteDatabaseClient<BookshelfRawEntity>(this.table.name).where({ id }).first();
+    const result = await this.databaseClient<BookshelfRawEntity>(this.table.name).where({ id }).first();
 
     if (!result) {
       return null;
@@ -50,6 +50,6 @@ export class BookshelfTestUtils {
   }
 
   public async truncate(): Promise<void> {
-    await this.sqliteDatabaseClient<BookshelfRawEntity>(this.table.name).truncate();
+    await this.databaseClient<BookshelfRawEntity>(this.table.name).truncate();
   }
 }

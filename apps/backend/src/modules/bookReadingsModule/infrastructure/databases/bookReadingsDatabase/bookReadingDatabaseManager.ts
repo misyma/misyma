@@ -1,11 +1,11 @@
 import { BookReadingDatabaseMigrationSource } from './bookReadingDatabaseMigrationSource.js';
-import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type DependencyInjectionContainer } from '../../../../../libs/dependencyInjection/dependencyInjectionContainer.js';
 
 export class BookReadingDatabaseManager {
   public static async bootstrapDatabase(container: DependencyInjectionContainer): Promise<void> {
-    const databaseClient = container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient);
+    const databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
 
     const migrationSource = new BookReadingDatabaseMigrationSource();
 
@@ -16,7 +16,7 @@ export class BookReadingDatabaseManager {
   }
 
   public static async teardownDatabase(container: DependencyInjectionContainer): Promise<void> {
-    const databaseClient = container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient);
+    const databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
 
     const migrationSource = new BookReadingDatabaseMigrationSource();
 

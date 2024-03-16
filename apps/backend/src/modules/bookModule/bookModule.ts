@@ -32,8 +32,8 @@ import { type GenreMapper } from './infrastructure/repositories/genreRepository/
 import { GenreMapperImpl } from './infrastructure/repositories/genreRepository/genreMapper/genreMapperImpl.js';
 import { GenreRepositoryImpl } from './infrastructure/repositories/genreRepository/genreRepositoryImpl.js';
 import { symbols } from './symbols.js';
-import { type SqliteDatabaseClient } from '../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../core/symbols.js';
+import { type DatabaseClient } from '../../libs/database/clients/databaseClient/databaseClient.js';
 import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type DependencyInjectionModule } from '../../libs/dependencyInjection/dependencyInjectionModule.js';
 import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
@@ -65,7 +65,7 @@ export class BookModule implements DependencyInjectionModule {
       symbols.bookRepository,
       () =>
         new BookRepositoryImpl(
-          container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient),
+          container.get<DatabaseClient>(coreSymbols.databaseClient),
           container.get<BookMapper>(symbols.bookMapper),
           container.get<UuidService>(coreSymbols.uuidService),
         ),
@@ -75,7 +75,7 @@ export class BookModule implements DependencyInjectionModule {
       symbols.genreRepository,
       () =>
         new GenreRepositoryImpl(
-          container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient),
+          container.get<DatabaseClient>(coreSymbols.databaseClient),
           container.get<GenreMapper>(symbols.genreMapper),
           container.get<UuidService>(coreSymbols.uuidService),
         ),

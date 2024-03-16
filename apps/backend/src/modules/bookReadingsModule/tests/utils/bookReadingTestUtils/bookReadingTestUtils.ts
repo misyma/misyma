@@ -1,4 +1,4 @@
-import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type BookReadingRawEntity } from '../../../infrastructure/databases/bookReadingsDatabase/tables/bookReadingTable/bookReadingRawEntity.js';
 import { BookReadingTable } from '../../../infrastructure/databases/bookReadingsDatabase/tables/bookReadingTable/bookReadingTable.js';
 import { BookReadingTestFactory } from '../../factories/bookReadingTestFactory/bookReadingTestFactory.js';
@@ -12,7 +12,7 @@ interface FindByIdPayload {
 }
 
 export class BookReadingTestUtils {
-  public constructor(private readonly sqliteDatabaseClient: SqliteDatabaseClient) {}
+  public constructor(private readonly databaseClient: DatabaseClient) {}
 
   private readonly table = new BookReadingTable();
 
@@ -23,7 +23,7 @@ export class BookReadingTestUtils {
 
     const bookReading = this.bookReadingTestFactory.create(input);
 
-    const rawEntities = await this.sqliteDatabaseClient<BookReadingRawEntity>(this.table.name).insert(
+    const rawEntities = await this.databaseClient<BookReadingRawEntity>(this.table.name).insert(
       {
         id: bookReading.getId(),
         bookId: bookReading.getBookId(),
@@ -50,7 +50,7 @@ export class BookReadingTestUtils {
   public async findById(payload: FindByIdPayload): Promise<BookReadingRawEntity | null> {
     const { id } = payload;
 
-    const result = await this.sqliteDatabaseClient<BookReadingRawEntity>(this.table.name).where({ id }).first();
+    const result = await this.databaseClient<BookReadingRawEntity>(this.table.name).where({ id }).first();
 
     if (!result) {
       return null;
@@ -67,6 +67,6 @@ export class BookReadingTestUtils {
   }
 
   public async truncate(): Promise<void> {
-    await this.sqliteDatabaseClient(this.table.name).truncate();
+    await this.databaseClient(this.table.name).truncate();
   }
 }

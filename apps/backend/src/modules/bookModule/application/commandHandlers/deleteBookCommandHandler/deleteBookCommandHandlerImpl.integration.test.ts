@@ -6,8 +6,8 @@ import { type DeleteBookCommandHandler } from './deleteBookCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
-import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type AuthorTestUtils } from '../../../../authorModule/tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
@@ -17,7 +17,7 @@ import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestU
 describe('DeleteBookCommandHandler', () => {
   let deleteBookCommandHandler: DeleteBookCommandHandler;
 
-  let sqliteDatabaseClient: SqliteDatabaseClient;
+  let databaseClient: DatabaseClient;
 
   let authorTestUtils: AuthorTestUtils;
 
@@ -32,7 +32,7 @@ describe('DeleteBookCommandHandler', () => {
 
     deleteBookCommandHandler = container.get<DeleteBookCommandHandler>(symbols.deleteBookCommandHandler);
 
-    sqliteDatabaseClient = container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient);
+    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
 
     authorTestUtils = container.get<AuthorTestUtils>(testSymbols.authorTestUtils);
 
@@ -60,7 +60,7 @@ describe('DeleteBookCommandHandler', () => {
 
     await userTestUtils.truncate();
 
-    await sqliteDatabaseClient.destroy();
+    await databaseClient.destroy();
   });
 
   it('deletes book', async () => {

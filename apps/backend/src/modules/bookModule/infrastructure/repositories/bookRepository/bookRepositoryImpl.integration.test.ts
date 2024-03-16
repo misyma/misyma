@@ -6,8 +6,8 @@ import { Generator } from '@common/tests';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
-import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { Author } from '../../../../authorModule/domain/entities/author/author.js';
 import { type AuthorTestUtils } from '../../../../authorModule/tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
@@ -23,7 +23,7 @@ import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTe
 describe('BookRepositoryImpl', () => {
   let bookRepository: BookRepository;
 
-  let sqliteDatabaseClient: SqliteDatabaseClient;
+  let databaseClient: DatabaseClient;
 
   let bookTestUtils: BookTestUtils;
 
@@ -42,7 +42,7 @@ describe('BookRepositoryImpl', () => {
 
     bookRepository = container.get<BookRepository>(symbols.bookRepository);
 
-    sqliteDatabaseClient = container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient);
+    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
 
     bookTestUtils = container.get<BookTestUtils>(testSymbols.bookTestUtils);
 
@@ -76,7 +76,7 @@ describe('BookRepositoryImpl', () => {
 
     await genreTestUtils.truncate();
 
-    await sqliteDatabaseClient.destroy();
+    await databaseClient.destroy();
   });
 
   describe('saveBook', () => {

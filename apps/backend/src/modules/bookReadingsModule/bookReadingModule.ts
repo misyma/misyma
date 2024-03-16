@@ -14,8 +14,8 @@ import { BookReadingRepositoryImpl } from './infrastructure/repositories/bookRea
 import { type BookReadingMapper } from './infrastructure/repositories/mappers/bookReadingMapper/bookReadingMapper.js';
 import { BookReadingMapperImpl } from './infrastructure/repositories/mappers/bookReadingMapper/bookReadingMapperImpl.js';
 import { symbols } from './symbols.js';
-import { type SqliteDatabaseClient } from '../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../core/symbols.js';
+import { type DatabaseClient } from '../../libs/database/clients/databaseClient/databaseClient.js';
 import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type DependencyInjectionModule } from '../../libs/dependencyInjection/dependencyInjectionModule.js';
 import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
@@ -54,7 +54,7 @@ export class BookReadingModule implements DependencyInjectionModule {
       symbols.bookReadingRepository,
       () =>
         new BookReadingRepositoryImpl(
-          container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient),
+          container.get<DatabaseClient>(coreSymbols.databaseClient),
           container.get<BookReadingMapper>(symbols.bookReadingMapper),
           container.get<UuidService>(coreSymbols.uuidService),
         ),
