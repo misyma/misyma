@@ -10,7 +10,6 @@
   "types": "dist/src/index.d.ts",
   "private": true,
   "scripts": {
-    "build:clean": "rimraf dist",
     "build": "tsc --build tsconfig.json",
     "build:dev": "tsc --build tsconfig.json"
   },

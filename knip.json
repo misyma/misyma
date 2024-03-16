@@ -15,5 +15,5 @@
     }
   },
   "ignore": ["**/.eslintrc"],
-  "ignoreDependencies": ["tslib", "husky", "lint-staged", "esbuild", "better-sqlite3", "eslint*", "vite"]
+  "ignoreDependencies": ["tslib", "esbuild", "better-sqlite3", "eslint*", "vite"]
 }

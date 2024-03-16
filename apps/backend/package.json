@@ -5,7 +5,6 @@
   "scripts": {
     "start": "node src/index.js",
     "start:dev": "node --inspect --no-warnings=ExperimentalWarning --experimental-specifier-resolution=node --loader ts-node/esm/transpile-only src/index.ts",
-    "build:clean": "rimraf dist",
     "build": "tsc --build tsconfig.prod.json",
     "build:dev": "tsc --build tsconfig.dev.json",
     "test:unit": "vitest .unit.test.ts --config vitest.unit.config.js",
@@ -43,7 +42,7 @@
     "@types/bcrypt": "^5.0.2",
     "@types/config": "^3.3.3",
     "@types/jsonwebtoken": "^9.0.6",
-    "@types/node": "^20.11.25",
+    "@types/node": "^20.11.28",
     "@types/uuid": "^9.0.8"
   },
   "volta": {
