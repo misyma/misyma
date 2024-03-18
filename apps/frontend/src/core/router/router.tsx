@@ -8,6 +8,7 @@ import { newPasswordRoute } from '../../routes/newPassword/newPassword';
 import { verifyEmailRoute } from '../../routes/verifyEmail/verifyEmail';
 import { bookRoute } from '../../routes/myBooks/book';
 import { shelvesRoute } from '../../routes/shelves/shelves';
+import { bookshelfRoute } from '../../routes/bookshelf/bookshelf';
 
 export const routeTree = rootRoute.addChildren([
   landingRoute,
@@ -19,4 +20,5 @@ export const routeTree = rootRoute.addChildren([
   verifyEmailRoute,
   bookRoute,
   shelvesRoute,
+  bookshelfRoute
 ]);

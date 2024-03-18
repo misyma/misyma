@@ -1,0 +1,47 @@
+/* eslint-disable react-refresh/only-export-components */
+import { Navigate, createRoute } from '@tanstack/react-router';
+import { FC } from 'react';
+import { rootRoute } from '../root';
+import { RequireAuthComponent } from '../../core/components/requireAuth/requireAuthComponent';
+import { z } from 'zod';
+import { useFindBooksByBookshelfIdQuery } from '../../api/books/queries/findBooksByBookshelfId/findBooksByBookshelfIdQuery';
+import { AuthenticatedLayout } from '../../layouts/authenticated/authenticatedLayout';
+import { Button } from '../../components/ui/button';
+import { CreateBookForm } from './components/createBookForm';
+
+const bookshelfSearchSchema = z.object({
+  id: z.string().uuid().catch(''),
+});
+
+export const Bookshelf: FC = () => {
+  const { id } = bookshelfRoute.useParams();
+
+  const { data } = useFindBooksByBookshelfIdQuery(id);
+
+  return (
+    <AuthenticatedLayout>
+        <div className='p-8 flex justify-center'>
+        <Button>Dodaj książkę</Button>
+        <div>{data?.data.map((b) => b.title).join(',')}</div>;
+          <CreateBookForm></CreateBookForm>
+        </div>
+    </AuthenticatedLayout>
+  );
+};
+
+export const bookshelfRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/bookshelf/$id',
+  component: () => {
+    return (
+      <RequireAuthComponent>
+        <Bookshelf />
+      </RequireAuthComponent>
+    );
+  },
+  parseParams: bookshelfSearchSchema.parse,
+  validateSearch: bookshelfSearchSchema,
+  onError: () => {
+    return <Navigate to={'/shelves'} />;
+  },
+});
