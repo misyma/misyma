@@ -66,6 +66,10 @@
   }
 }
 
+.nice-radio {
+  background: unset;
+}
+
 .font-logo-bold {
   font-weight: 550;
 }

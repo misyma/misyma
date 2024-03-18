@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { Link, createRoute } from '@tanstack/react-router';
+import { Link, createRoute, useNavigate } from '@tanstack/react-router';
 import { rootRoute } from '../root';
 import { FC, useState } from 'react';
 import { RegisterUserForm } from './components/registerUserForm/registerUserForm';
@@ -7,11 +7,14 @@ import { DefaultFormLayout } from '../../layouts/default/defaultFormLayout';
 import { useSendVerificationEmailMutation } from '../../api/user/mutations/sendVerificationEmailMutation/sendVerificationEmailMutation';
 import { useToast } from '@/components/ui/use-toast';
 import { RequireNonAuthComponent } from '../../core/components/requireNonAuth/requireNonAuthComponent';
+import { Button } from '../../components/ui/button';
 
 export const RegisterPage: FC = () => {
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
   const [userEmail, setUserEmail] = useState<string>('');
+
+  const navigate = useNavigate();
 
   const { toast } = useToast();
 
@@ -37,9 +40,19 @@ export const RegisterPage: FC = () => {
           <h1 className="font-semibold text-lg sm:text-xl max-w-[30rem]">
             Znajdziesz w niej link, który pozwoli Ci aktywować konto
           </h1>
-          <div>
-            <p>
-              Email się nie pojawił?{' '}
+          <div className='pt-5'>
+            <Button
+              className='w-full'
+              onClick={() => {
+                navigate({
+                  to: '/login',
+                });
+              }}
+            >
+              Przejdź do logowania
+            </Button>
+            <p className='py-4'>
+              lub {' '}
               <a
                 className="text-primary font-semibold cursor-pointer"
                 onClick={() => {
@@ -64,17 +77,8 @@ export const RegisterPage: FC = () => {
                   );
                 }}
               >
-                Wyślij ponownie
+                wyślij email ponownie
               </a>
-            </p>
-            <p>
-              lub{' '}
-              <Link
-                className="text-primary font-semibold"
-                to={'/login'}
-              >
-                przejdź do logowania.
-              </Link>
             </p>
           </div>
         </div>
