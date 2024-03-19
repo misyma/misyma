@@ -58,7 +58,7 @@ export const Navbar: FC = () => {
 
   return (
     <div className="bg-white p-8 top-0 fixed flex flex-1 justify-end w-full items-center">
-      <div className="w-[100%] font-semibig-clamped font-logo-bold">
+      <div className="w-[100%] text-3xl sm:text-5xl font-logo-bold">
         <Link to="/">MISYMA</Link>
       </div>
       <input
