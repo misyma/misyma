@@ -1,5 +1,5 @@
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
-import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { BookReading, type BookReadingState } from '../../../domain/entities/bookReading/bookReading.js';
 import {
@@ -19,7 +19,7 @@ type UpdateBookReadingPayload = { bookReading: BookReading };
 
 export class BookReadingRepositoryImpl implements BookReadingRepository {
   public constructor(
-    private readonly sqliteDatabaseClient: SqliteDatabaseClient,
+    private readonly databaseClient: DatabaseClient,
     private readonly bookReadingMapper: BookReadingMapper,
     private readonly uuidService: UuidService,
   ) {}
@@ -32,7 +32,7 @@ export class BookReadingRepositoryImpl implements BookReadingRepository {
     let rawEntity: BookReadingRawEntity | undefined;
 
     try {
-      rawEntity = await this.sqliteDatabaseClient<BookReadingRawEntity>(this.table.name).where({ id }).first();
+      rawEntity = await this.databaseClient<BookReadingRawEntity>(this.table.name).where({ id }).first();
     } catch (error) {
       throw new RepositoryError({
         entity: 'BookReading',
@@ -54,7 +54,7 @@ export class BookReadingRepositoryImpl implements BookReadingRepository {
     let rawEntities: BookReadingRawEntity[];
 
     try {
-      rawEntities = await this.sqliteDatabaseClient<BookReadingRawEntity>(this.table.name).where({ userBookId });
+      rawEntities = await this.databaseClient<BookReadingRawEntity>(this.table.name).where({ userBookId });
     } catch (error) {
       throw new RepositoryError({
         entity: 'BookReading',
@@ -72,7 +72,7 @@ export class BookReadingRepositoryImpl implements BookReadingRepository {
     let rawEntity: BookReadingRawEntity;
 
     try {
-      const result = await this.sqliteDatabaseClient<BookReadingRawEntity>(this.table.name).insert(
+      const result = await this.databaseClient<BookReadingRawEntity>(this.table.name).insert(
         {
           id: this.uuidService.generateUuid(),
           userBookId: bookReading.userBookId,
@@ -102,7 +102,7 @@ export class BookReadingRepositoryImpl implements BookReadingRepository {
     let rawEntity: BookReadingRawEntity;
 
     try {
-      const result = await this.sqliteDatabaseClient<BookReadingRawEntity>(this.table.name)
+      const result = await this.databaseClient<BookReadingRawEntity>(this.table.name)
         .where({ id: bookReading.getId() })
         .update(bookReading.getState(), '*');
 
@@ -132,7 +132,7 @@ export class BookReadingRepositoryImpl implements BookReadingRepository {
     const { id } = payload;
 
     try {
-      await this.sqliteDatabaseClient<BookReadingRawEntity>(this.table.name).where({ id }).delete();
+      await this.databaseClient<BookReadingRawEntity>(this.table.name).where({ id }).delete();
     } catch (error) {
       throw new RepositoryError({
         entity: 'BookReading',

@@ -1,7 +1,7 @@
 import { testSymbols } from './symbols.js';
 import { Application } from '../../src/core/application.js';
-import { type SqliteDatabaseClient } from '../../src/core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../src/core/symbols.js';
+import { type DatabaseClient } from '../../src/libs/database/clients/databaseClient/databaseClient.js';
 import { type DependencyInjectionContainer } from '../../src/libs/dependencyInjection/dependencyInjectionContainer.js';
 import { AuthorTestUtils } from '../../src/modules/authorModule/tests/utils/authorTestUtils/authorTestUtils.js';
 import { BookTestUtils } from '../../src/modules/bookModule/tests/utils/bookTestUtils/bookTestUtils.js';
@@ -21,7 +21,7 @@ export class TestContainer {
 
     container.bind<BookTestUtils>(
       testSymbols.bookTestUtils,
-      () => new BookTestUtils(container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient)),
+      () => new BookTestUtils(container.get<DatabaseClient>(coreSymbols.databaseClient)),
     );
 
     container.bind<UserBookTestUtils>(
@@ -31,37 +31,37 @@ export class TestContainer {
 
     container.bind<GenreTestUtils>(
       testSymbols.genreTestUtils,
-      () => new GenreTestUtils(container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient)),
+      () => new GenreTestUtils(container.get<DatabaseClient>(coreSymbols.databaseClient)),
     );
 
     container.bind<UserTestUtils>(
       testSymbols.userTestUtils,
-      () => new UserTestUtils(container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient)),
+      () => new UserTestUtils(container.get<DatabaseClient>(coreSymbols.databaseClient)),
     );
 
     container.bind<BlacklistTokenTestUtils>(
       testSymbols.blacklistTokenTestUtils,
-      () => new BlacklistTokenTestUtils(container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient)),
+      () => new BlacklistTokenTestUtils(container.get<DatabaseClient>(coreSymbols.databaseClient)),
     );
 
     container.bind<AuthorTestUtils>(
       testSymbols.authorTestUtils,
-      () => new AuthorTestUtils(container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient)),
+      () => new AuthorTestUtils(container.get<DatabaseClient>(coreSymbols.databaseClient)),
     );
 
     container.bind<EmailEventTestUtils>(
       testSymbols.emailEventTestUtils,
-      () => new EmailEventTestUtils(container.get<SqliteDatabaseClient>(coreSymbols.entityEventsDatabaseClient)),
+      () => new EmailEventTestUtils(container.get<DatabaseClient>(coreSymbols.entityEventsDatabaseClient)),
     );
 
     container.bind<BookshelfTestUtils>(
       testSymbols.bookshelfTestUtils,
-      () => new BookshelfTestUtils(container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient)),
+      () => new BookshelfTestUtils(container.get<DatabaseClient>(coreSymbols.databaseClient)),
     );
 
     container.bind<BookReadingTestUtils>(
       testSymbols.bookReadingTestUtils,
-      () => new BookReadingTestUtils(container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient)),
+      () => new BookReadingTestUtils(container.get<DatabaseClient>(coreSymbols.databaseClient)),
     );
 
     container.overrideBinding<EmailService>(userSymbols.emailService, () => ({

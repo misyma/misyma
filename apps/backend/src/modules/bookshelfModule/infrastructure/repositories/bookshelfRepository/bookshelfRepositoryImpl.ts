@@ -1,5 +1,5 @@
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
-import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { Bookshelf, type BookshelfState } from '../../../domain/entities/bookshelf/bookshelf.js';
 import {
@@ -19,7 +19,7 @@ type UpdateBookshelfPayload = { bookshelf: Bookshelf };
 
 export class BookshelfRepositoryImpl implements BookshelfRepository {
   public constructor(
-    private readonly sqliteDatabaseClient: SqliteDatabaseClient,
+    private readonly databaseClient: DatabaseClient,
     private readonly bookshelfMapper: BookshelfMapper,
     private readonly uuidService: UuidService,
   ) {}
@@ -47,7 +47,7 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
     }
 
     try {
-      const result = await this.sqliteDatabaseClient<BookshelfRawEntity>(this.table.name).where(whereCondition).first();
+      const result = await this.databaseClient<BookshelfRawEntity>(this.table.name).where(whereCondition).first();
 
       rawEntity = result;
     } catch (error) {
@@ -71,7 +71,7 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
     let rawEntities: BookshelfRawEntity[];
 
     try {
-      const result = await this.sqliteDatabaseClient<BookshelfRawEntity>(this.table.name).where({ userId });
+      const result = await this.databaseClient<BookshelfRawEntity>(this.table.name).where({ userId });
 
       rawEntities = result;
     } catch (error) {
@@ -101,7 +101,7 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
     let rawEntity: BookshelfRawEntity;
 
     try {
-      const result = await this.sqliteDatabaseClient<BookshelfRawEntity>(this.table.name).insert(
+      const result = await this.databaseClient<BookshelfRawEntity>(this.table.name).insert(
         {
           id: this.uuidService.generateUuid(),
           name: bookshelf.name,
@@ -130,7 +130,7 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
     let rawEntity: BookshelfRawEntity;
 
     try {
-      const result = await this.sqliteDatabaseClient<BookshelfRawEntity>(this.table.name)
+      const result = await this.databaseClient<BookshelfRawEntity>(this.table.name)
         .where({ id: bookshelf.getId() })
         .update(bookshelf.getState(), '*');
 
@@ -150,7 +150,7 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
     const { id } = payload;
 
     try {
-      await this.sqliteDatabaseClient<BookshelfRawEntity>(this.table.name).where({ id }).delete();
+      await this.databaseClient<BookshelfRawEntity>(this.table.name).where({ id }).delete();
     } catch (error) {
       throw new RepositoryError({
         entity: 'Bookshelf',

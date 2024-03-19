@@ -1,6 +1,6 @@
 import { type GenreMapper } from './genreMapper/genreMapper.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
-import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { Genre, type GenreState } from '../../../domain/entities/genre/genre.js';
 import {
@@ -19,7 +19,7 @@ type UpdateGenrePayload = { genre: Genre };
 
 export class GenreRepositoryImpl implements GenreRepository {
   public constructor(
-    private readonly sqliteDatabaseClient: SqliteDatabaseClient,
+    private readonly databaseClient: DatabaseClient,
     private readonly genreMapper: GenreMapper,
     private readonly uuidService: UuidService,
   ) {}
@@ -30,7 +30,7 @@ export class GenreRepositoryImpl implements GenreRepository {
     let rawEntities: GenreRawEntity[];
 
     try {
-      rawEntities = await this.sqliteDatabaseClient<GenreRawEntity>(this.genreTable.name).select('*');
+      rawEntities = await this.databaseClient<GenreRawEntity>(this.genreTable.name).select('*');
     } catch (error) {
       throw new RepositoryError({
         entity: 'Genre',
@@ -64,7 +64,7 @@ export class GenreRepositoryImpl implements GenreRepository {
     }
 
     try {
-      rawEntity = await this.sqliteDatabaseClient<GenreRawEntity>(this.genreTable.name)
+      rawEntity = await this.databaseClient<GenreRawEntity>(this.genreTable.name)
         .select('*')
         .where(whereCondition)
         .first();
@@ -89,9 +89,7 @@ export class GenreRepositoryImpl implements GenreRepository {
     let rawEntities: GenreRawEntity[];
 
     try {
-      rawEntities = await this.sqliteDatabaseClient<GenreRawEntity>(this.genreTable.name)
-        .select('*')
-        .whereIn('id', ids);
+      rawEntities = await this.databaseClient<GenreRawEntity>(this.genreTable.name).select('*').whereIn('id', ids);
     } catch (error) {
       throw new RepositoryError({
         entity: 'Genre',
@@ -121,7 +119,7 @@ export class GenreRepositoryImpl implements GenreRepository {
     let rawEntities: GenreRawEntity[];
 
     try {
-      rawEntities = await this.sqliteDatabaseClient<GenreRawEntity>(this.genreTable.name)
+      rawEntities = await this.databaseClient<GenreRawEntity>(this.genreTable.name)
         .insert({
           id: this.uuidService.generateUuid(),
           name,
@@ -146,7 +144,7 @@ export class GenreRepositoryImpl implements GenreRepository {
     let rawEntities: GenreRawEntity[];
 
     try {
-      rawEntities = await this.sqliteDatabaseClient<GenreRawEntity>(this.genreTable.name)
+      rawEntities = await this.databaseClient<GenreRawEntity>(this.genreTable.name)
         .update(genre.getState())
         .where({ id: genre.getId() })
         .returning('*');
@@ -167,7 +165,7 @@ export class GenreRepositoryImpl implements GenreRepository {
     const { id } = payload;
 
     try {
-      await this.sqliteDatabaseClient<GenreRawEntity>(this.genreTable.name).delete().where({ id });
+      await this.databaseClient<GenreRawEntity>(this.genreTable.name).delete().where({ id });
     } catch (error) {
       throw new RepositoryError({
         entity: 'Genre',

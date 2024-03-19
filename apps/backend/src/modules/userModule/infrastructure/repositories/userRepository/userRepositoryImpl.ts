@@ -2,7 +2,7 @@ import { type UserMapper } from './userMapper/userMapper.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
-import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { User, type UserState } from '../../../domain/entities/user/user.js';
 import {
@@ -22,7 +22,7 @@ export class UserRepositoryImpl implements UserRepository {
   private readonly userDatabaseTable = new UserTable();
 
   public constructor(
-    private readonly sqliteDatabaseClient: SqliteDatabaseClient,
+    private readonly databaseClient: DatabaseClient,
     private readonly userMapper: UserMapper,
     private readonly uuidService: UuidService,
   ) {}
@@ -47,7 +47,7 @@ export class UserRepositoryImpl implements UserRepository {
     const id = this.uuidService.generateUuid();
 
     try {
-      rawEntities = await this.sqliteDatabaseClient<UserRawEntity>(this.userDatabaseTable.name).insert(
+      rawEntities = await this.databaseClient<UserRawEntity>(this.userDatabaseTable.name).insert(
         {
           id,
           email,
@@ -85,7 +85,7 @@ export class UserRepositoryImpl implements UserRepository {
     let rawEntities: UserRawEntity[] = [];
 
     try {
-      rawEntities = await this.sqliteDatabaseClient<UserRawEntity>(this.userDatabaseTable.name)
+      rawEntities = await this.databaseClient<UserRawEntity>(this.userDatabaseTable.name)
         .update(user.getState(), '*')
         .where({ id: user.getId() });
     } catch (error) {
@@ -133,7 +133,7 @@ export class UserRepositoryImpl implements UserRepository {
     let rawEntity: UserRawEntity | undefined;
 
     try {
-      rawEntity = await this.sqliteDatabaseClient<UserRawEntity>(this.userDatabaseTable.name)
+      rawEntity = await this.databaseClient<UserRawEntity>(this.userDatabaseTable.name)
         .select('*')
         .where(whereCondition)
         .first();
@@ -165,7 +165,7 @@ export class UserRepositoryImpl implements UserRepository {
     }
 
     try {
-      await this.sqliteDatabaseClient<UserRawEntity>(this.userDatabaseTable.name).delete().where({ id });
+      await this.databaseClient<UserRawEntity>(this.userDatabaseTable.name).delete().where({ id });
     } catch (error) {
       throw new RepositoryError({
         entity: 'User',

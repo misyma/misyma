@@ -12,8 +12,8 @@ import { BookshelfRepositoryImpl } from './infrastructure/repositories/bookshelf
 import { type BookshelfMapper } from './infrastructure/repositories/mappers/bookshelfMapper/bookshelfMapper.js';
 import { BookshelfMapperImpl } from './infrastructure/repositories/mappers/bookshelfMapper/bookshelfMapperImpl.js';
 import { symbols } from './symbols.js';
-import { type SqliteDatabaseClient } from '../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../core/symbols.js';
+import { type DatabaseClient } from '../../libs/database/clients/databaseClient/databaseClient.js';
 import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type DependencyInjectionModule } from '../../libs/dependencyInjection/dependencyInjectionModule.js';
 import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
@@ -51,7 +51,7 @@ export class BookshelfModule implements DependencyInjectionModule {
       symbols.bookshelfRepository,
       () =>
         new BookshelfRepositoryImpl(
-          container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient),
+          container.get<DatabaseClient>(coreSymbols.databaseClient),
           container.get<BookshelfMapper>(symbols.bookshelfMapper),
           container.get<UuidService>(coreSymbols.uuidService),
         ),

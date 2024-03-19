@@ -3,8 +3,8 @@ import { beforeEach, afterEach, expect, it, describe } from 'vitest';
 import { type CreateAuthorCommandHandler } from './createAuthorCommandHandler.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
 import { Application } from '../../../../../core/application.js';
-import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { symbols } from '../../../symbols.js';
 import { AuthorTestFactory } from '../../../tests/factories/authorTestFactory/authorTestFactory.js';
 import { AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
@@ -12,7 +12,7 @@ import { AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTest
 describe('CreateAuthorCommandHandler', () => {
   let createAuthorCommandHandler: CreateAuthorCommandHandler;
 
-  let sqliteDatabaseClient: SqliteDatabaseClient;
+  let databaseClient: DatabaseClient;
 
   let authorTestUtils: AuthorTestUtils;
 
@@ -23,9 +23,9 @@ describe('CreateAuthorCommandHandler', () => {
 
     createAuthorCommandHandler = container.get<CreateAuthorCommandHandler>(symbols.createAuthorCommandHandler);
 
-    sqliteDatabaseClient = container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient);
+    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
 
-    authorTestUtils = new AuthorTestUtils(sqliteDatabaseClient);
+    authorTestUtils = new AuthorTestUtils(databaseClient);
 
     await authorTestUtils.truncate();
   });
@@ -33,7 +33,7 @@ describe('CreateAuthorCommandHandler', () => {
   afterEach(async () => {
     await authorTestUtils.truncate();
 
-    await sqliteDatabaseClient.destroy();
+    await databaseClient.destroy();
   });
 
   it('creates a author', async () => {

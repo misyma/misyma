@@ -1,4 +1,4 @@
-import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UserRawEntity } from '../../../infrastructure/databases/userDatabase/tables/userTable/userRawEntity.js';
 import { UserTable } from '../../../infrastructure/databases/userDatabase/tables/userTable/userTable.js';
 import { UserTestFactory } from '../../factories/userTestFactory/userTestFactory.js';
@@ -23,14 +23,14 @@ export class UserTestUtils {
   private readonly databaseTable = new UserTable();
   private readonly userTestFactory = new UserTestFactory();
 
-  public constructor(private readonly sqliteDatabaseClient: SqliteDatabaseClient) {}
+  public constructor(private readonly databaseClient: DatabaseClient) {}
 
   public async createAndPersist(payload: CreateAndPersistPayload = {}): Promise<UserRawEntity> {
     const { input } = payload;
 
     const user = this.userTestFactory.create(input);
 
-    const rawEntities = await this.sqliteDatabaseClient<UserRawEntity>(this.databaseTable.name).insert(
+    const rawEntities = await this.databaseClient<UserRawEntity>(this.databaseTable.name).insert(
       {
         id: user.getId(),
         email: user.getEmail(),
@@ -52,7 +52,7 @@ export class UserTestUtils {
   public async persist(payload: PersistPayload): Promise<void> {
     const { user } = payload;
 
-    await this.sqliteDatabaseClient<UserRawEntity>(this.databaseTable.name).insert(user, '*');
+    await this.databaseClient<UserRawEntity>(this.databaseTable.name).insert(user, '*');
   }
 
   public async findByEmail(payload: FindByEmailPayload): Promise<UserRawEntity | undefined> {
@@ -60,7 +60,7 @@ export class UserTestUtils {
 
     const email = emailInput.toLowerCase();
 
-    const userRawEntity = await this.sqliteDatabaseClient<UserRawEntity>(this.databaseTable.name)
+    const userRawEntity = await this.databaseClient<UserRawEntity>(this.databaseTable.name)
       .select('*')
       .where({ email })
       .first();
@@ -78,7 +78,7 @@ export class UserTestUtils {
   public async findById(payload: FindByIdPayload): Promise<UserRawEntity | undefined> {
     const { id } = payload;
 
-    const userRawEntity = await this.sqliteDatabaseClient<UserRawEntity>(this.databaseTable.name)
+    const userRawEntity = await this.databaseClient<UserRawEntity>(this.databaseTable.name)
       .select('*')
       .where({ id })
       .first();
@@ -94,6 +94,6 @@ export class UserTestUtils {
   }
 
   public async truncate(): Promise<void> {
-    await this.sqliteDatabaseClient<UserRawEntity>(this.databaseTable.name).truncate();
+    await this.databaseClient<UserRawEntity>(this.databaseTable.name).truncate();
   }
 }

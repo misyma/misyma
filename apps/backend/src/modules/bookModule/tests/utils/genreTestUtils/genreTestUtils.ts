@@ -1,6 +1,6 @@
 import { Generator } from '@common/tests';
 
-import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type GenreRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/genreTable/genreRawEntity.js';
 import { GenreTable } from '../../../infrastructure/databases/bookDatabase/tables/genreTable/genreTable.js';
 
@@ -13,7 +13,7 @@ interface CreateAndPersistPayload {
 export class GenreTestUtils {
   private readonly genreTable = new GenreTable();
 
-  public constructor(private readonly sqliteDatabaseClient: SqliteDatabaseClient) {}
+  public constructor(private readonly databaseClient: DatabaseClient) {}
 
   public async createAndPersist(payload: CreateAndPersistPayload = {}): Promise<GenreRawEntity> {
     const { input } = payload;
@@ -33,29 +33,29 @@ export class GenreTestUtils {
       };
     }
 
-    await this.sqliteDatabaseClient<GenreRawEntity>(this.genreTable.name).insert(genre);
+    await this.databaseClient<GenreRawEntity>(this.genreTable.name).insert(genre);
 
     return genre;
   }
 
   public async findByName(name: string): Promise<GenreRawEntity | null> {
-    const genre = await this.sqliteDatabaseClient<GenreRawEntity>(this.genreTable.name).where({ name }).first();
+    const genre = await this.databaseClient<GenreRawEntity>(this.genreTable.name).where({ name }).first();
 
     return genre || null;
   }
 
   public async findById(id: string): Promise<GenreRawEntity | null> {
-    const genre = await this.sqliteDatabaseClient<GenreRawEntity>(this.genreTable.name).where({ id }).first();
+    const genre = await this.databaseClient<GenreRawEntity>(this.genreTable.name).where({ id }).first();
 
     return genre || null;
   }
 
   public async truncate(): Promise<void> {
-    await this.sqliteDatabaseClient<GenreRawEntity>(this.genreTable.name).truncate();
+    await this.databaseClient<GenreRawEntity>(this.genreTable.name).truncate();
   }
 
   public async destroyDatabaseConnection(): Promise<void> {
-    await this.sqliteDatabaseClient.destroy();
+    await this.databaseClient.destroy();
   }
 
   private async getNonClashingName(): Promise<string> {

@@ -6,8 +6,8 @@ import { type CreateBookCommandHandler } from './createBookCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
-import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { Author } from '../../../../authorModule/domain/entities/author/author.js';
 import { type AuthorTestUtils } from '../../../../authorModule/tests/utils/authorTestUtils/authorTestUtils.js';
 import { symbols } from '../../../symbols.js';
@@ -17,7 +17,7 @@ import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestU
 describe('CreateBookCommandHandler', () => {
   let createBookCommandHandler: CreateBookCommandHandler;
 
-  let sqliteDatabaseClient: SqliteDatabaseClient;
+  let databaseClient: DatabaseClient;
 
   let authorTestUtils: AuthorTestUtils;
 
@@ -30,7 +30,7 @@ describe('CreateBookCommandHandler', () => {
 
     createBookCommandHandler = container.get<CreateBookCommandHandler>(symbols.createBookCommandHandler);
 
-    sqliteDatabaseClient = container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient);
+    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
 
     authorTestUtils = container.get<AuthorTestUtils>(testSymbols.authorTestUtils);
 
@@ -46,7 +46,7 @@ describe('CreateBookCommandHandler', () => {
 
     await bookTestUtils.truncate();
 
-    await sqliteDatabaseClient.destroy();
+    await databaseClient.destroy();
   });
 
   it('creates a Book', async () => {

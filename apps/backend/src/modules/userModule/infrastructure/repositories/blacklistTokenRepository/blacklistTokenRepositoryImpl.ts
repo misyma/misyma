@@ -1,6 +1,6 @@
 import { type BlacklistTokenMapper } from './blacklistTokenMapper/blacklistTokenMapper.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
-import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { type BlacklistToken } from '../../../domain/entities/blacklistToken/blacklistToken.js';
 import {
@@ -15,7 +15,7 @@ export class BlacklistTokenRepositoryImpl implements BlacklistTokenRepository {
   private readonly blacklistTokenDatabaseTable = new BlacklistTokenTable();
 
   public constructor(
-    private readonly sqliteDatabaseClient: SqliteDatabaseClient,
+    private readonly databaseClient: DatabaseClient,
     private readonly blacklistTokenMapper: BlacklistTokenMapper,
     private readonly uuidService: UuidService,
   ) {}
@@ -26,9 +26,7 @@ export class BlacklistTokenRepositoryImpl implements BlacklistTokenRepository {
     let rawEntities: BlacklistTokenRawEntity[];
 
     try {
-      rawEntities = await this.sqliteDatabaseClient<BlacklistTokenRawEntity>(
-        this.blacklistTokenDatabaseTable.name,
-      ).insert(
+      rawEntities = await this.databaseClient<BlacklistTokenRawEntity>(this.blacklistTokenDatabaseTable.name).insert(
         {
           id: this.uuidService.generateUuid(),
           token,
@@ -55,7 +53,7 @@ export class BlacklistTokenRepositoryImpl implements BlacklistTokenRepository {
     let rawEntity: BlacklistTokenRawEntity | undefined;
 
     try {
-      rawEntity = await this.sqliteDatabaseClient<BlacklistTokenRawEntity>(this.blacklistTokenDatabaseTable.name)
+      rawEntity = await this.databaseClient<BlacklistTokenRawEntity>(this.blacklistTokenDatabaseTable.name)
         .select('*')
         .where({ token })
         .first();

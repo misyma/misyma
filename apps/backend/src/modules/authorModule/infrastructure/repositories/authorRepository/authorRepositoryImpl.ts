@@ -1,7 +1,7 @@
 import { type AuthorMapper } from './authorMapper/authorMapper.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
-import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { type Author } from '../../../domain/entities/author/author.js';
 import {
@@ -18,7 +18,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
   private readonly databaseTable = new AuthorTable();
 
   public constructor(
-    private readonly sqliteDatabaseClient: SqliteDatabaseClient,
+    private readonly databaseClient: DatabaseClient,
     private readonly authorMapper: AuthorMapper,
     private readonly uuidService: UuidService,
   ) {}
@@ -31,7 +31,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
     const id = this.uuidService.generateUuid();
 
     try {
-      rawEntities = await this.sqliteDatabaseClient<AuthorRawEntity>(this.databaseTable.name).insert(
+      rawEntities = await this.databaseClient<AuthorRawEntity>(this.databaseTable.name).insert(
         {
           id,
           firstName,
@@ -81,7 +81,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
     let rawEntity: AuthorRawEntity | undefined;
 
     try {
-      rawEntity = await this.sqliteDatabaseClient<AuthorRawEntity>(this.databaseTable.name)
+      rawEntity = await this.databaseClient<AuthorRawEntity>(this.databaseTable.name)
         .select('*')
         .where(whereCondition)
         .first();
@@ -106,7 +106,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
     let rawEntities: AuthorRawEntity[];
 
     try {
-      rawEntities = await this.sqliteDatabaseClient<AuthorRawEntity>(this.databaseTable.name)
+      rawEntities = await this.databaseClient<AuthorRawEntity>(this.databaseTable.name)
         .select('*')
         .whereIn('id', authorIds);
     } catch (error) {
@@ -133,7 +133,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
     }
 
     try {
-      await this.sqliteDatabaseClient<AuthorRawEntity>(this.databaseTable.name).delete().where({ id });
+      await this.databaseClient<AuthorRawEntity>(this.databaseTable.name).delete().where({ id });
     } catch (error) {
       throw new RepositoryError({
         entity: 'Author',
