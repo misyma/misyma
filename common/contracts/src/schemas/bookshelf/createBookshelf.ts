@@ -6,6 +6,4 @@ export interface CreateBookshelfRequestBody {
   readonly imageUrl?: string;
 }
 
-export interface CreateBookshelfResponseBody {
-  readonly bookshelf: Bookshelf;
-}
+export interface CreateBookshelfResponseBody extends Bookshelf {}

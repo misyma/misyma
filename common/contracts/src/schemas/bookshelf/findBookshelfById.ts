@@ -4,6 +4,4 @@ export interface FindBookshelfByIdParams {
   readonly id: string;
 }
 
-export interface FindBookshelfByIdResponseBody {
-  readonly bookshelf: Bookshelf;
-}
+export interface FindBookshelfByIdResponseBody extends Bookshelf {}

@@ -2,7 +2,7 @@ import { type Static, Type } from '@sinclair/typebox';
 
 import type * as contracts from '@common/contracts';
 
-import { bookshelfDTOSchema } from './dtos/bookshelfDto.js';
+import { bookshelfDTOSchema } from './bookshelfDto.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const createBookshelfBodyDTOSchema = Type.Object({
@@ -14,7 +14,7 @@ export const createBookshelfBodyDTOSchema = Type.Object({
   addressId: Type.Optional(Type.String({ format: 'uuid' })),
   imageUrl: Type.String({
     minLength: 1,
-    maxLength: 64,
+    maxLength: 128,
   }),
 });
 
@@ -23,9 +23,7 @@ export type CreateBookshelfBodyDTO = TypeExtends<
   contracts.CreateBookshelfRequestBody
 >;
 
-export const createBookshelfResponseBodyDTOSchema = Type.Object({
-  bookshelf: bookshelfDTOSchema,
-});
+export const createBookshelfResponseBodyDTOSchema = bookshelfDTOSchema;
 
 export type CreateBookshelfResponseBodyDTO = TypeExtends<
   Static<typeof createBookshelfResponseBodyDTOSchema>,

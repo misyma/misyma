@@ -12,6 +12,4 @@ export interface UpdateBookReadingPathParams {
   readonly userBookId: string;
 }
 
-export interface UpdateBookReadingResponseBody {
-  readonly bookReading: BookReading;
-}
+export interface UpdateBookReadingResponseBody extends BookReading {}

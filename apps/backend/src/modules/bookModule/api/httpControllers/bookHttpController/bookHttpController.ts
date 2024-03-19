@@ -1,4 +1,4 @@
-import { type BookDTO } from './schemas/bookDTO.js';
+import { type BookDTO } from './schemas/bookDto.js';
 import {
   createBookBodyDTOSchema,
   createBookResponseBodyDTOSchema,

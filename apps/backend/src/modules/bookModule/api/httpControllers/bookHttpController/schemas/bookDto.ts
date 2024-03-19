@@ -2,10 +2,7 @@ import { type Static, Type } from '@sinclair/typebox';
 
 import * as contracts from '@common/contracts';
 
-import { bookDTOSchema } from './bookDto.js';
-import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
-
-export const createBookBodyDTOSchema = Type.Object({
+export const bookDTOSchema = Type.Object({
   title: Type.String({
     minLength: 1,
     maxLength: 64,
@@ -42,14 +39,22 @@ export const createBookBodyDTOSchema = Type.Object({
       maximum: 10000,
     }),
   ),
-  authorIds: Type.Array(Type.String({ format: 'uuid' })),
+  genres: Type.Array(
+    Type.Object({
+      id: Type.String({ format: 'uuid' }),
+      name: Type.String({
+        minLength: 1,
+        maxLength: 64,
+      }),
+    }),
+  ),
+  authors: Type.Array(
+    Type.Object({
+      id: Type.String(),
+      firstName: Type.String(),
+      lastName: Type.String(),
+    }),
+  ),
 });
 
-export type CreateBookBodyDTO = TypeExtends<Static<typeof createBookBodyDTOSchema>, contracts.CreateBookRequestBody>;
-
-export const createBookResponseBodyDTOSchema = bookDTOSchema;
-
-export type CreateBookResponseBodyDTO = TypeExtends<
-  Static<typeof createBookResponseBodyDTOSchema>,
-  contracts.CreateBookResponseBody
->;
+export type BookDTO = Static<typeof bookDTOSchema>;

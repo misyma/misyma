@@ -1,3 +1,4 @@
+import { type BookReadingDTO } from './schemas/bookReadingDto.js';
 import {
   type CreateBookReadingBodyDTO,
   type CreateBookReadingResponseBodyDTO,
@@ -12,7 +13,6 @@ import {
   deleteBookReadingPathParamsDTOSchema,
   deleteBookReadingResponseBodyDTOSchema,
 } from './schemas/deleteBookReadingSchema.js';
-import { type BookReadingDTO } from './schemas/dtos/bookReadingDto.js';
 import {
   type FindBookReadingByIdResponseBodyDTO,
   type FindBookReadingByIdPathParamsDTO,
@@ -182,7 +182,7 @@ export class BookReadingHttpController implements HttpController {
     return {
       statusCode: HttpStatusCode.ok,
       body: {
-        bookReadings: bookReadings.map((bookReading) => this.mapBookReadingToBookReadingDTO({ bookReading })),
+        data: bookReadings.map((bookReading) => this.mapBookReadingToBookReadingDTO({ bookReading })),
       },
     };
   }
@@ -201,9 +201,7 @@ export class BookReadingHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.ok,
-      body: {
-        bookReading: this.mapBookReadingToBookReadingDTO({ bookReading }),
-      },
+      body: this.mapBookReadingToBookReadingDTO({ bookReading }),
     };
   }
 
@@ -236,9 +234,7 @@ export class BookReadingHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.created,
-      body: {
-        bookReading: this.mapBookReadingToBookReadingDTO({ bookReading }),
-      },
+      body: this.mapBookReadingToBookReadingDTO({ bookReading }),
     };
   }
 
@@ -265,9 +261,7 @@ export class BookReadingHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.ok,
-      body: {
-        bookReading: this.mapBookReadingToBookReadingDTO({ bookReading }),
-      },
+      body: this.mapBookReadingToBookReadingDTO({ bookReading }),
     };
   }
 

@@ -20,7 +20,7 @@ export const updateUserBookBodyDTOSchema = Type.Object({
   imageUrl: Type.Optional(
     Type.String({
       minLength: 1,
-      maxLength: 64,
+      maxLength: 128,
     }),
   ),
 });

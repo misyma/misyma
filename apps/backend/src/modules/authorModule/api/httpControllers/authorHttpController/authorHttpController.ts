@@ -1,3 +1,4 @@
+import { type AuthorDTO } from './schemas/authorDto.js';
 import {
   createAuthorBodyDTOSchema,
   type CreateAuthorBodyDTO,
@@ -31,6 +32,7 @@ import { type AccessControlService } from '../../../../authModule/application/se
 import { type CreateAuthorCommandHandler } from '../../../application/commandHandlers/createAuthorCommandHandler/createAuthorCommandHandler.js';
 import { type DeleteAuthorCommandHandler } from '../../../application/commandHandlers/deleteAuthorCommandHandler/deleteAuthorCommandHandler.js';
 import { type FindAuthorQueryHandler } from '../../../application/queryHandlers/findAuthorQueryHandler/findAuthorQueryHandler.js';
+import { type Author } from '../../../domain/entities/author/author.js';
 
 export class AuthorHttpController implements HttpController {
   public readonly basePath = '/api/authors';
@@ -117,11 +119,7 @@ export class AuthorHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.created,
-      body: {
-        firstName: author.getFirstName(),
-        id: author.getId(),
-        lastName: author.getLastName(),
-      },
+      body: this.mapAuthorToDTO(author),
     };
   }
 
@@ -138,11 +136,7 @@ export class AuthorHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.ok,
-      body: {
-        firstName: author.getFirstName(),
-        id: author.getId(),
-        lastName: author.getLastName(),
-      },
+      body: this.mapAuthorToDTO(author),
     };
   }
 
@@ -160,6 +154,14 @@ export class AuthorHttpController implements HttpController {
     return {
       statusCode: HttpStatusCode.noContent,
       body: null,
+    };
+  }
+
+  private mapAuthorToDTO(author: Author): AuthorDTO {
+    return {
+      id: author.getId(),
+      firstName: author.getFirstName(),
+      lastName: author.getLastName(),
     };
   }
 }

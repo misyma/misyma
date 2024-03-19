@@ -1,12 +1,12 @@
 import { type FindBookshelvesByUserIdParams } from '@common/contracts';
 
+import { type BookshelfDTO } from './schemas/bookshelfDto.js';
 import {
   type CreateBookshelfBodyDTO,
   type CreateBookshelfResponseBodyDTO,
   createBookshelfBodyDTOSchema,
   createBookshelfResponseBodyDTOSchema,
 } from './schemas/createBookshelfSchema.js';
-import { type BookshelfDTO } from './schemas/dtos/bookshelfDto.js';
 import {
   type FindBookshelfByIdResponseBodyDTO,
   type FindBookshelfByIdPathParamsDTO,
@@ -174,9 +174,7 @@ export class BookshelfHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.ok,
-      body: {
-        bookshelf: this.mapBookshelfToBookshelfDTO({ bookshelf }),
-      },
+      body: this.mapBookshelfToBookshelfDTO({ bookshelf }),
     };
   }
 
@@ -204,9 +202,7 @@ export class BookshelfHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.created,
-      body: {
-        bookshelf: this.mapBookshelfToBookshelfDTO({ bookshelf }),
-      },
+      body: this.mapBookshelfToBookshelfDTO({ bookshelf }),
     };
   }
 
@@ -229,21 +225,31 @@ export class BookshelfHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.ok,
-      body: {
-        bookshelf: this.mapBookshelfToBookshelfDTO({ bookshelf }),
-      },
+      body: this.mapBookshelfToBookshelfDTO({ bookshelf }),
     };
   }
 
   private mapBookshelfToBookshelfDTO(payload: MapBookshelfToBookshelfDTOPayload): BookshelfDTO {
     const { bookshelf } = payload;
 
-    return {
+    const bookshelfDTO: BookshelfDTO = {
       id: bookshelf.getId(),
       name: bookshelf.getName(),
       userId: bookshelf.getUserId(),
-      addressId: bookshelf.getAddressId() as string,
-      imageUrl: bookshelf.getImageUrl() as string,
     };
+
+    const addressId = bookshelf.getAddressId();
+
+    if (addressId) {
+      bookshelfDTO.addressId = addressId;
+    }
+
+    const imageUrl = bookshelf.getImageUrl();
+
+    if (imageUrl) {
+      bookshelfDTO.imageUrl = imageUrl;
+    }
+
+    return bookshelfDTO;
   }
 }

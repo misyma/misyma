@@ -2,7 +2,7 @@ import { type Static, Type } from '@sinclair/typebox';
 
 import type * as contracts from '@common/contracts';
 
-import { bookReadingDTOSchema } from './dtos/bookReadingDto.js';
+import { bookReadingDTOSchema } from './bookReadingDto.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const createBookReadingPathParamsDTOSchema = Type.Object({
@@ -34,9 +34,7 @@ export type CreateBookReadingBodyDTO = TypeExtends<
   contracts.CreateBookReadingRequestBody
 >;
 
-export const createBookReadingResponseBodyDTOSchema = Type.Object({
-  bookReading: bookReadingDTOSchema,
-});
+export const createBookReadingResponseBodyDTOSchema = bookReadingDTOSchema;
 
 export type CreateBookReadingResponseBodyDTO = TypeExtends<
   Static<typeof createBookReadingResponseBodyDTOSchema>,

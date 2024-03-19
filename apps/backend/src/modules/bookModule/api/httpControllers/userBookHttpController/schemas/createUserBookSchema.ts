@@ -9,7 +9,7 @@ export const createUserBookBodyDTOSchema = Type.Object({
   imageUrl: Type.Optional(
     Type.String({
       minLength: 1,
-      maxLength: 64,
+      maxLength: 128,
     }),
   ),
   status: Type.Enum(contracts.ReadingStatus),

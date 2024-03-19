@@ -5,6 +5,4 @@ export interface FindBookReadingByIdPathParams {
   readonly userBookId: string;
 }
 
-export interface FindBookReadingByIdResponseBody {
-  readonly bookReading: BookReading;
-}
+export interface FindBookReadingByIdResponseBody extends BookReading {}

@@ -2,6 +2,7 @@ import { type Static, Type } from '@sinclair/typebox';
 
 import type * as contracts from '@common/contracts';
 
+import { authorDTOSchema } from './authorDto.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const findAuthorPathParamsDTOSchema = Type.Object({
@@ -13,11 +14,7 @@ export type FindAuthorPathParamsDTO = TypeExtends<
   contracts.FindAuthorPathParams
 >;
 
-export const findAuthorResponseBodyDTOSchema = Type.Object({
-  id: Type.String(),
-  firstName: Type.String(),
-  lastName: Type.String(),
-});
+export const findAuthorResponseBodyDTOSchema = authorDTOSchema;
 
 export type FindAuthorResponseBodyDTO = TypeExtends<
   Static<typeof findAuthorResponseBodyDTOSchema>,

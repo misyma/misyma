@@ -11,6 +11,4 @@ export interface CreateBookReadingRequestBody {
   readonly endedAt?: string;
 }
 
-export interface CreateBookReadingResponseBody {
-  readonly bookReading: BookReading;
-}
+export interface CreateBookReadingResponseBody extends BookReading {}

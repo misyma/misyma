@@ -3,7 +3,7 @@ import { type Static, Type } from '@sinclair/typebox';
 import type * as contracts from '@common/contracts';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
-import { genreDTO } from '../../genreHttpController/schemas/dtos/genreDTO.js';
+import { genreDTOSchema } from '../../genreHttpController/schemas/genreDto.js';
 
 export const createGenreBodyDTOSchema = Type.Object({
   name: Type.String({
@@ -14,7 +14,7 @@ export const createGenreBodyDTOSchema = Type.Object({
 
 export type CreateGenreBodyDTO = TypeExtends<contracts.CreateGenreRequestBody, Static<typeof createGenreBodyDTOSchema>>;
 
-export const createGenreResponseBodyDTOSchema = genreDTO;
+export const createGenreResponseBodyDTOSchema = genreDTOSchema;
 
 export type CreateGenreResponseBodyDTO = TypeExtends<
   contracts.CreateGenreResponseBody,

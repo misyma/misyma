@@ -1,4 +1,3 @@
-import { type GenreDTO } from './schemas/dtos/genreDTO.js';
 import {
   type FindGenreByIdResponseBodyDTO,
   type FindGenreByIdPathParamsDTO,
@@ -12,6 +11,7 @@ import {
   findGenreByNameQueryParamsDTOSchema,
 } from './schemas/findGenreByNameSchema.js';
 import { type FindGenresResponseBodyDTO, findGenresResponseBodyDTOSchema } from './schemas/findGenresSchema.js';
+import { type GenreDTO } from './schemas/genreDto.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';

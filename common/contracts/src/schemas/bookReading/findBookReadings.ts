@@ -5,5 +5,5 @@ export interface FindBookReadingsPathParams {
 }
 
 export interface FindBookReadingsResponseBody {
-  readonly bookReadings: BookReading[];
+  readonly data: BookReading[];
 }

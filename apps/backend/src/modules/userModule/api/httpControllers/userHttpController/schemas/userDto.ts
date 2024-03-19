@@ -1,9 +1,15 @@
 import { type Static, Type } from '@sinclair/typebox';
 
 export const userDTOSchema = Type.Object({
-  id: Type.String(),
-  email: Type.String(),
-  name: Type.String(),
+  id: Type.String({ format: 'uuid' }),
+  email: Type.String({
+    format: 'email',
+    maxLength: 254,
+  }),
+  name: Type.String({
+    minLength: 1,
+    maxLength: 64,
+  }),
   isEmailVerified: Type.Boolean(),
 });
 

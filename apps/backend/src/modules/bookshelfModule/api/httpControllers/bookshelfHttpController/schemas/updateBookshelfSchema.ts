@@ -2,7 +2,7 @@ import { type Static, Type } from '@sinclair/typebox';
 
 import type * as contracts from '@common/contracts';
 
-import { bookshelfDTOSchema } from './dtos/bookshelfDto.js';
+import { bookshelfDTOSchema } from './bookshelfDto.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const updateBookshelfPathParamsDTOSchema = Type.Object({
@@ -24,7 +24,7 @@ export const updateBookshelfBodyDTOSchema = Type.Object({
   imageUrl: Type.Optional(
     Type.String({
       minLength: 1,
-      maxLength: 64,
+      maxLength: 128,
     }),
   ),
 });
@@ -34,9 +34,7 @@ export type UpdateBookshelfBodyDTO = TypeExtends<
   contracts.UpdateBookshelfRequestBody
 >;
 
-export const updateBookshelfResponseBodyDTOSchema = Type.Object({
-  bookshelf: bookshelfDTOSchema,
-});
+export const updateBookshelfResponseBodyDTOSchema = bookshelfDTOSchema;
 
 export type UpdateBookshelfResponseBodyDTO = TypeExtends<
   Static<typeof updateBookshelfResponseBodyDTOSchema>,
