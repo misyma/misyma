@@ -2,7 +2,7 @@ import { type Static, Type } from '@sinclair/typebox';
 
 import * as contracts from '@common/contracts';
 
-import { bookDTOSchema } from './bookDTO.js';
+import { bookDTOSchema } from './bookDto.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const createBookBodyDTOSchema = Type.Object({
@@ -22,7 +22,12 @@ export const createBookBodyDTOSchema = Type.Object({
       maxLength: 64,
     }),
   ),
-  releaseYear: Type.Optional(Type.Integer()),
+  releaseYear: Type.Optional(
+    Type.Integer({
+      minimum: 1500,
+      maximum: 2500,
+    }),
+  ),
   language: Type.String(
     Type.String({
       minLength: 1,
@@ -36,17 +41,12 @@ export const createBookBodyDTOSchema = Type.Object({
     }),
   ),
   format: Type.Enum(contracts.BookFormat),
-  pages: Type.Optional(Type.Integer({ minimum: 1 })),
-  imageUrl: Type.Optional(
-    Type.String({
-      minLength: 1,
-      maxLength: 64,
+  pages: Type.Optional(
+    Type.Integer({
+      minimum: 1,
+      maximum: 10000,
     }),
   ),
-  status: Type.Enum(contracts.BookStatus),
-  bookshelfId: Type.String({
-    format: 'uuid',
-  }),
   authorIds: Type.Array(Type.String({ format: 'uuid' })),
 });
 

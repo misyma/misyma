@@ -1,4 +1,4 @@
-import { type BookDTO } from './schemas/bookDTO.js';
+import { type BookDTO } from './schemas/bookDto.js';
 import {
   createBookBodyDTOSchema,
   createBookResponseBodyDTOSchema,
@@ -12,17 +12,12 @@ import {
   type DeleteBookResponseBodyDTO,
 } from './schemas/deleteBookSchema.js';
 import {
-  type FindBooksByBookshelfIdPathParamsDTO,
-  type FindBooksByBookshelfIdResponseBodyDTO,
-  findBooksByBookshelfIdResponseBodyDTOSchema,
-  findBooksByBookshelfIdPathParamsDTOSchema,
-} from './schemas/findBooksByBookshelfIdSchema.js';
-import {
   findBookResponseBodyDTOSchema,
   type FindBookResponseBodyDTO,
   type FindBookPathParamsDTO,
   findBookPathParamsDTOSchema,
 } from './schemas/findBookSchema.js';
+import { type FindBooksResponseBodyDTO, findBooksResponseBodyDTOSchema } from './schemas/findBooksSchema.js';
 import {
   type UpdateBookGenresBodyDTO,
   type UpdateBookGenresResponseDTOSchema,
@@ -67,7 +62,6 @@ export class BookHttpController implements HttpController {
     return [
       new HttpRoute({
         method: HttpMethodName.post,
-        path: 'create',
         handler: this.createBook.bind(this),
         schema: {
           request: {
@@ -103,16 +97,13 @@ export class BookHttpController implements HttpController {
       }),
       new HttpRoute({
         method: HttpMethodName.get,
-        path: '/bookshelf/:bookshelfId',
-        handler: this.findBooksByBookshelfId.bind(this),
-        description: 'Find books by bookshelf id.',
+        handler: this.findBooks.bind(this),
+        description: 'Find books.',
         schema: {
-          request: {
-            pathParams: findBooksByBookshelfIdPathParamsDTOSchema,
-          },
+          request: {},
           response: {
             [HttpStatusCode.ok]: {
-              schema: findBooksByBookshelfIdResponseBodyDTOSchema,
+              schema: findBooksResponseBodyDTOSchema,
               description: 'Books found.',
             },
           },
@@ -217,20 +208,14 @@ export class BookHttpController implements HttpController {
     };
   }
 
-  private async findBooksByBookshelfId(
-    request: HttpRequest<undefined, undefined, FindBooksByBookshelfIdPathParamsDTO>,
-  ): Promise<HttpOkResponse<FindBooksByBookshelfIdResponseBodyDTO>> {
-    const { userId } = await this.accessControlService.verifyBearerToken({
+  private async findBooks(
+    request: HttpRequest<undefined, undefined, undefined>,
+  ): Promise<HttpOkResponse<FindBooksResponseBodyDTO>> {
+    await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
-    const { bookshelfId } = request.pathParams;
-
-    const { books } = await this.findBooksQueryHandler.execute({
-      ids: [],
-      bookshelfId,
-      userId,
-    });
+    const { books } = await this.findBooksQueryHandler.execute();
 
     return {
       body: {
@@ -263,8 +248,6 @@ export class BookHttpController implements HttpController {
       title: book.getTitle(),
       language: book.getLanguage(),
       format: book.getFormat(),
-      status: book.getStatus(),
-      bookshelfId: book.getBookshelfId(),
       authors: book.getAuthors().map((author) => ({
         firstName: author.getFirstName(),
         id: author.getId(),
@@ -304,12 +287,6 @@ export class BookHttpController implements HttpController {
 
     if (pages) {
       bookDto.pages = pages;
-    }
-
-    const imageUrl = book.getImageUrl();
-
-    if (imageUrl) {
-      bookDto.imageUrl = imageUrl;
     }
 
     return bookDto;

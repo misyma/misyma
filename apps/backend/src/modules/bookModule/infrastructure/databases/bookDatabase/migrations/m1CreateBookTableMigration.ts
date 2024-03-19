@@ -24,15 +24,7 @@ export class M1CreateBookTableMigration implements Migration {
 
       table.integer('pages');
 
-      table.text('imageUrl');
-
-      table.text('status').notNullable();
-
-      table.text('bookshelfId').notNullable();
-
       table.primary(['id']);
-
-      table.foreign('bookshelfId').references('id').inTable('bookshelves').onDelete('CASCADE');
     });
 
     await databaseClient.schema.createTable('booksAuthors', (table) => {

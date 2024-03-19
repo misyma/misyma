@@ -56,7 +56,7 @@ import {
   sendVerificationEmailBodyDTOSchema,
   sendVerificationEmailResponseBodyDTOSchema,
 } from './schemas/sendVerificationEmailSchema.js';
-import { type UserDTO } from './schemas/userDTO.js';
+import { type UserDTO } from './schemas/userDto.js';
 import {
   verifyUserBodyDTOSchema,
   verifyUserResponseBodyDTOSchema,

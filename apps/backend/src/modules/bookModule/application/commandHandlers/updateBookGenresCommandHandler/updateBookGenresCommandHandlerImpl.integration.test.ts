@@ -6,8 +6,6 @@ import { type UpdateBookGenresCommandHandler } from './updateBookGenresCommandHa
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
-import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
-import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { symbols } from '../../../symbols.js';
 import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
@@ -20,10 +18,6 @@ describe('UpdateBookGenresCommandHandlerImpl', () => {
 
   let bookTestUtils: BookTestUtils;
 
-  let bookshelfTestUtils: BookshelfTestUtils;
-
-  let userTestUtils: UserTestUtils;
-
   let authorTestUtils: AuthorTestUtils;
 
   beforeEach(() => {
@@ -35,11 +29,7 @@ describe('UpdateBookGenresCommandHandlerImpl', () => {
 
     bookTestUtils = container.get<BookTestUtils>(testSymbols.bookTestUtils);
 
-    bookshelfTestUtils = container.get<BookshelfTestUtils>(testSymbols.bookshelfTestUtils);
-
     authorTestUtils = container.get<AuthorTestUtils>(testSymbols.authorTestUtils);
-
-    userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
   });
 
   afterEach(async () => {
@@ -69,22 +59,11 @@ describe('UpdateBookGenresCommandHandlerImpl', () => {
   });
 
   it('throws an error - when one of the Genres does not exist', async () => {
-    const user = await userTestUtils.createAndPersist();
-
     const author = await authorTestUtils.createAndPersist();
-
-    const bookshelf = await bookshelfTestUtils.createAndPersist({
-      input: {
-        userId: user.id,
-      },
-    });
 
     const book = await bookTestUtils.createAndPersist({
       input: {
         authorIds: [author.id],
-        book: {
-          bookshelfId: bookshelf.id,
-        },
       },
     });
 
@@ -108,22 +87,11 @@ describe('UpdateBookGenresCommandHandlerImpl', () => {
   });
 
   it('updates Book Genres', async () => {
-    const user = await userTestUtils.createAndPersist();
-
     const author = await authorTestUtils.createAndPersist();
-
-    const bookshelf = await bookshelfTestUtils.createAndPersist({
-      input: {
-        userId: user.id,
-      },
-    });
 
     const book = await bookTestUtils.createAndPersist({
       input: {
         authorIds: [author.id],
-        book: {
-          bookshelfId: bookshelf.id,
-        },
       },
     });
 

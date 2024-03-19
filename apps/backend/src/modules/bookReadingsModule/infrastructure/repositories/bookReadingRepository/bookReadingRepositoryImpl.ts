@@ -49,12 +49,12 @@ export class BookReadingRepositoryImpl implements BookReadingRepository {
   }
 
   public async findBookReadings(payload: FindBookReadingsPayload): Promise<BookReading[]> {
-    const { bookId } = payload;
+    const { userBookId } = payload;
 
     let rawEntities: BookReadingRawEntity[];
 
     try {
-      rawEntities = await this.databaseClient<BookReadingRawEntity>(this.table.name).where({ bookId });
+      rawEntities = await this.databaseClient<BookReadingRawEntity>(this.table.name).where({ userBookId });
     } catch (error) {
       throw new RepositoryError({
         entity: 'BookReading',
@@ -75,7 +75,7 @@ export class BookReadingRepositoryImpl implements BookReadingRepository {
       const result = await this.databaseClient<BookReadingRawEntity>(this.table.name).insert(
         {
           id: this.uuidService.generateUuid(),
-          bookId: bookReading.bookId,
+          userBookId: bookReading.userBookId,
           rating: bookReading.rating,
           comment: bookReading.comment,
           startedAt: bookReading.startedAt,

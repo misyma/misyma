@@ -10,8 +10,6 @@ import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { Author } from '../../../../authorModule/domain/entities/author/author.js';
 import { type AuthorTestUtils } from '../../../../authorModule/tests/utils/authorTestUtils/authorTestUtils.js';
-import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
-import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { symbols } from '../../../symbols.js';
 import { BookTestFactory } from '../../../tests/factories/bookTestFactory/bookTestFactory.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
@@ -24,10 +22,6 @@ describe('CreateBookCommandHandler', () => {
   let authorTestUtils: AuthorTestUtils;
 
   let bookTestUtils: BookTestUtils;
-
-  let userTestUtils: UserTestUtils;
-
-  let bookshelfTestUtils: BookshelfTestUtils;
 
   const bookTestFactory = new BookTestFactory();
 
@@ -42,17 +36,9 @@ describe('CreateBookCommandHandler', () => {
 
     bookTestUtils = container.get<BookTestUtils>(testSymbols.bookTestUtils);
 
-    userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
-
-    bookshelfTestUtils = container.get<BookshelfTestUtils>(testSymbols.bookshelfTestUtils);
-
     await authorTestUtils.truncate();
 
     await bookTestUtils.truncate();
-
-    await bookshelfTestUtils.truncate();
-
-    await userTestUtils.truncate();
   });
 
   afterEach(async () => {
@@ -60,18 +46,10 @@ describe('CreateBookCommandHandler', () => {
 
     await bookTestUtils.truncate();
 
-    await bookshelfTestUtils.truncate();
-
-    await userTestUtils.truncate();
-
     await databaseClient.destroy();
   });
 
   it('creates a Book', async () => {
-    const user = await userTestUtils.createAndPersist();
-
-    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
     const author = await authorTestUtils.createAndPersist();
 
     const createdBook = bookTestFactory.create({
@@ -82,7 +60,6 @@ describe('CreateBookCommandHandler', () => {
           id: author.id,
         }),
       ],
-      bookshelfId: bookshelf.id,
     });
 
     const { book } = await createBookCommandHandler.execute({
@@ -94,9 +71,6 @@ describe('CreateBookCommandHandler', () => {
       translator: createdBook.getTranslator() as string,
       format: createdBook.getFormat(),
       pages: createdBook.getPages() as number,
-      imageUrl: createdBook.getImageUrl() as string,
-      status: createdBook.getStatus(),
-      bookshelfId: createdBook.getBookshelfId(),
       authorIds: [author.id],
     });
 
@@ -111,41 +85,7 @@ describe('CreateBookCommandHandler', () => {
   });
 
   it('throws an error - when provided Authors do not exist', async () => {
-    const user = await userTestUtils.createAndPersist();
-
-    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
     const authorId = Generator.uuid();
-
-    const createdBook = bookTestFactory.create({
-      bookshelfId: bookshelf.id,
-    });
-
-    await expect(async () =>
-      createBookCommandHandler.execute({
-        title: createdBook.getTitle(),
-        isbn: createdBook.getIsbn() as string,
-        publisher: createdBook.getPublisher() as string,
-        releaseYear: createdBook.getReleaseYear() as number,
-        language: createdBook.getLanguage(),
-        translator: createdBook.getTranslator() as string,
-        format: createdBook.getFormat(),
-        pages: createdBook.getPages() as number,
-        imageUrl: createdBook.getImageUrl() as string,
-        status: createdBook.getStatus(),
-        bookshelfId: createdBook.getBookshelfId(),
-        authorIds: [authorId],
-      }),
-    ).toThrowErrorInstance({
-      instance: ResourceNotFoundError,
-      context: {
-        name: 'Author',
-      },
-    });
-  });
-
-  it('throws an error - when provided Bookshelf does not exist', async () => {
-    const author = await authorTestUtils.createAndPersist();
 
     const createdBook = bookTestFactory.create();
 
@@ -159,15 +99,12 @@ describe('CreateBookCommandHandler', () => {
         translator: createdBook.getTranslator() as string,
         format: createdBook.getFormat(),
         pages: createdBook.getPages() as number,
-        imageUrl: createdBook.getImageUrl() as string,
-        status: createdBook.getStatus(),
-        bookshelfId: createdBook.getBookshelfId(),
-        authorIds: [author.id],
+        authorIds: [authorId],
       }),
     ).toThrowErrorInstance({
       instance: ResourceNotFoundError,
       context: {
-        name: 'Bookshelf',
+        name: 'Author',
       },
     });
   });

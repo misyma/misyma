@@ -7,8 +7,8 @@ import { type UpdateBookReadingCommandHandler } from './application/commandHandl
 import { UpdateBookReadingCommandHandlerImpl } from './application/commandHandlers/updateBookReadingCommandHandler/updateBookReadingCommandHandlerImpl.js';
 import { type FindBookReadingByIdQueryHandler } from './application/queryHandlers/findBookReadingByIdQueryHandler/findBookReadingByIdQueryHandler.js';
 import { FindBookReadingByIdQueryHandlerImpl } from './application/queryHandlers/findBookReadingByIdQueryHandler/findBookReadingByIdQueryHandlerImpl.js';
-import { type FindBookReadingsByBookIdQueryHandler } from './application/queryHandlers/findBookReadingsByBookIdQueryHandler/findBookReadingsByBookIdQueryHandler.js';
-import { FindBookReadingsByBookIdQueryHandlerImpl } from './application/queryHandlers/findBookReadingsByBookIdQueryHandler/findBookReadingsByBookIdQueryHandlerImpl.js';
+import { type FindBookReadingsByUserBookIdQueryHandler } from './application/queryHandlers/findBookReadingsByUserBookIdQueryHandler/findBookReadingsByUserBookIdQueryHandler.js';
+import { FindBookReadingsByBookIdQueryHandlerImpl } from './application/queryHandlers/findBookReadingsByUserBookIdQueryHandler/findBookReadingsByUserBookIdQueryHandlerImpl.js';
 import { type BookReadingRepository } from './domain/repositories/bookReadingRepository/bookReadingRepository.js';
 import { BookReadingRepositoryImpl } from './infrastructure/repositories/bookReadingRepository/bookReadingRepositoryImpl.js';
 import { type BookReadingMapper } from './infrastructure/repositories/mappers/bookReadingMapper/bookReadingMapper.js';
@@ -22,7 +22,7 @@ import { type LoggerService } from '../../libs/logger/services/loggerService/log
 import { type UuidService } from '../../libs/uuid/services/uuidService/uuidService.js';
 import { type AccessControlService } from '../authModule/application/services/accessControlService/accessControlService.js';
 import { authSymbols } from '../authModule/symbols.js';
-import { type BookRepository } from '../bookModule/domain/repositories/bookRepository/bookRepository.js';
+import { type UserBookRepository } from '../bookModule/domain/repositories/userBookRepository/userBookRepository.js';
 import { bookSymbols } from '../bookModule/symbols.js';
 
 export class BookReadingModule implements DependencyInjectionModule {
@@ -39,7 +39,7 @@ export class BookReadingModule implements DependencyInjectionModule {
       symbols.bookReadingHttpController,
       () =>
         new BookReadingHttpController(
-          container.get<FindBookReadingsByBookIdQueryHandler>(symbols.findBookReadingsByBookIdQueryHandler),
+          container.get<FindBookReadingsByUserBookIdQueryHandler>(symbols.findBookReadingsByUserBookIdQueryHandler),
           container.get<FindBookReadingByIdQueryHandler>(symbols.findBookReadingByIdQueryHandler),
           container.get<CreateBookReadingCommandHandler>(symbols.createBookReadingCommandHandler),
           container.get<UpdateBookReadingCommandHandler>(symbols.updateBookReadingNameCommandHandler),
@@ -68,12 +68,12 @@ export class BookReadingModule implements DependencyInjectionModule {
         new FindBookReadingByIdQueryHandlerImpl(container.get<BookReadingRepository>(symbols.bookReadingRepository)),
     );
 
-    container.bind<FindBookReadingsByBookIdQueryHandler>(
-      symbols.findBookReadingsByBookIdQueryHandler,
+    container.bind<FindBookReadingsByUserBookIdQueryHandler>(
+      symbols.findBookReadingsByUserBookIdQueryHandler,
       () =>
         new FindBookReadingsByBookIdQueryHandlerImpl(
           container.get<BookReadingRepository>(symbols.bookReadingRepository),
-          container.get<BookRepository>(bookSymbols.bookRepository),
+          container.get<UserBookRepository>(bookSymbols.userBookRepository),
         ),
     );
   }
@@ -84,7 +84,7 @@ export class BookReadingModule implements DependencyInjectionModule {
       () =>
         new CreateBookReadingCommandHandlerImpl(
           container.get<BookReadingRepository>(symbols.bookReadingRepository),
-          container.get<BookRepository>(bookSymbols.bookRepository),
+          container.get<UserBookRepository>(bookSymbols.userBookRepository),
           container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );

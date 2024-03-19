@@ -9,6 +9,4 @@ export interface UpdateBookshelfPathParams {
   readonly bookshelfId: string;
 }
 
-export interface UpdateBookshelfResponseBody {
-  readonly bookshelf: Bookshelf;
-}
+export interface UpdateBookshelfResponseBody extends Bookshelf {}

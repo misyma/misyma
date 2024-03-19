@@ -35,7 +35,7 @@ export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
 
     if (!user) {
       throw new UnauthorizedAccessError({
-        reason: 'Invalid email or password.',
+        reason: 'Invalid credentials.',
         email,
       });
     }
@@ -47,7 +47,7 @@ export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
 
     if (!passwordIsValid) {
       throw new UnauthorizedAccessError({
-        reason: 'Invalid email or password.',
+        reason: 'Invalid credentials.',
         email,
       });
     }

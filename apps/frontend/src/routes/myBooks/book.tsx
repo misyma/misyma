@@ -11,9 +11,13 @@ import { AddReadingSchemaValues } from './components/addReadingModal/schema/addR
 import { useAddBookReadingMutation } from '../../api/books/bookReadings/addBookReadingMutation/addBookReadingMutation';
 import { useToast } from '../../components/ui/use-toast';
 import { z } from 'zod';
+import { userStateSelectors } from '../../core/store/states/userState/userStateSlice';
+import { useStoreSelector } from '../../core/store/hooks/useStoreSelector';
 
 export const BookPage: FC = () => {
   const { bookId } = bookRoute.useParams();
+
+  const userId = useStoreSelector(userStateSelectors.selectCurrentUserId);
 
   const book = {
     id: '1',
@@ -24,21 +28,21 @@ export const BookPage: FC = () => {
     readings: [
       {
         id: '',
-        bookId: '',
+        userBookId: '',
         startedAt: new Date().toISOString(),
         rating: 9,
         comment: 'Mein Gott',
       },
       {
         id: '',
-        bookId: '',
+        userBookId: '',
         startedAt: new Date().toISOString(),
         comment: 'In Himmeln',
         rating: 7,
       },
       {
         id: '',
-        bookId: '',
+        userBookId: '',
         startedAt: new Date().toISOString(),
         comment: 'Schoenste Hundin',
         rating: 6,
@@ -61,7 +65,8 @@ export const BookPage: FC = () => {
 
     createBookReading(
       {
-        bookId,
+        userBookId: bookId,
+        userId: userId as string,
         comment: values.comment,
         rating: values.rating,
         startedAt: values.startedAt,

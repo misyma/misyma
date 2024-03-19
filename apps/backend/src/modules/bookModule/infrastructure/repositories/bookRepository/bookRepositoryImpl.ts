@@ -10,7 +10,6 @@ import {
   type FindBookPayload,
   type DeleteBookPayload,
   type SaveBookPayload,
-  type FindBooksPayload,
 } from '../../../domain/repositories/bookRepository/bookRepository.js';
 import { type BookGenresRawEntity } from '../../databases/bookDatabase/tables/bookGenresTable/bookGenresRawEntity.js';
 import { BookGenresTable } from '../../databases/bookDatabase/tables/bookGenresTable/bookGenresTable.js';
@@ -26,7 +25,7 @@ type CreateBookPayload = { book: BookState };
 type UpdateBookPayload = { book: Book };
 
 export class BookRepositoryImpl implements BookRepository {
-  private readonly databaseTable = new BookTable();
+  private readonly bookTable = new BookTable();
   private readonly booksAuthorsTable = new BooksAuthorsTable();
   private readonly authorTable = new AuthorTable();
   private readonly bookGenresTable = new BookGenresTable();
@@ -50,20 +49,7 @@ export class BookRepositoryImpl implements BookRepository {
 
   private async createBook(payload: CreateBookPayload): Promise<Book> {
     const {
-      book: {
-        title,
-        isbn,
-        publisher,
-        releaseYear,
-        language,
-        translator,
-        format,
-        pages,
-        imageUrl,
-        status,
-        bookshelfId,
-        authors,
-      },
+      book: { title, isbn, publisher, releaseYear, language, translator, format, pages, authors },
     } = payload;
 
     let rawEntities: BookRawEntity[] = [];
@@ -72,7 +58,7 @@ export class BookRepositoryImpl implements BookRepository {
 
     try {
       await this.databaseClient.transaction(async (transaction) => {
-        rawEntities = await transaction<BookRawEntity>(this.databaseTable.name).insert(
+        rawEntities = await transaction<BookRawEntity>(this.bookTable.name).insert(
           {
             id,
             title,
@@ -83,9 +69,6 @@ export class BookRepositoryImpl implements BookRepository {
             translator,
             format,
             pages,
-            imageUrl,
-            status,
-            bookshelfId,
           },
           '*',
         );
@@ -131,7 +114,7 @@ export class BookRepositoryImpl implements BookRepository {
       await this.databaseClient.transaction(async (transaction) => {
         const { authors: updatedAuthors, genres: updatedGenres, ...bookFields } = book.getState();
 
-        await transaction(this.databaseTable.name).update(bookFields, '*').where({ id: book.getId() });
+        await transaction(this.bookTable.name).update(bookFields, '*').where({ id: book.getId() });
 
         const existingAuthors = existingBook.getAuthors();
 
@@ -216,20 +199,17 @@ export class BookRepositoryImpl implements BookRepository {
     let rawEntities: BookWithJoinsRawEntity[];
 
     try {
-      rawEntities = await this.databaseClient<BookRawEntity>(this.databaseTable.name)
+      rawEntities = await this.databaseClient<BookRawEntity>(this.bookTable.name)
         .select([
-          `${this.databaseTable.name}.id`,
-          `${this.databaseTable.name}.title`,
-          `${this.databaseTable.name}.isbn`,
-          `${this.databaseTable.name}.publisher`,
-          `${this.databaseTable.name}.releaseYear`,
-          `${this.databaseTable.name}.language`,
-          `${this.databaseTable.name}.translator`,
-          `${this.databaseTable.name}.format`,
-          `${this.databaseTable.name}.pages`,
-          `${this.databaseTable.name}.imageUrl`,
-          `${this.databaseTable.name}.status`,
-          `${this.databaseTable.name}.bookshelfId`,
+          `${this.bookTable.name}.id`,
+          `${this.bookTable.name}.title`,
+          `${this.bookTable.name}.isbn`,
+          `${this.bookTable.name}.publisher`,
+          `${this.bookTable.name}.releaseYear`,
+          `${this.bookTable.name}.language`,
+          `${this.bookTable.name}.translator`,
+          `${this.bookTable.name}.format`,
+          `${this.bookTable.name}.pages`,
           `${this.authorTable.name}.id as authorId`,
           `${this.genresTable.name}.name as genreName`,
           `${this.genresTable.name}.id as genreId`,
@@ -237,7 +217,7 @@ export class BookRepositoryImpl implements BookRepository {
           'lastName',
         ])
         .leftJoin(this.booksAuthorsTable.name, (join) => {
-          join.on(`${this.booksAuthorsTable.name}.bookId`, '=', `${this.databaseTable.name}.id`);
+          join.on(`${this.booksAuthorsTable.name}.bookId`, '=', `${this.bookTable.name}.id`);
 
           if (authorIds) {
             join.andOnIn(
@@ -250,22 +230,22 @@ export class BookRepositoryImpl implements BookRepository {
           join.on(`${this.authorTable.name}.id`, '=', `${this.booksAuthorsTable.name}.authorId`);
         })
         .leftJoin(this.bookGenresTable.name, (join) => {
-          join.on(`${this.bookGenresTable.name}.bookId`, '=', `${this.databaseTable.name}.id`);
+          join.on(`${this.bookGenresTable.name}.bookId`, '=', `${this.bookTable.name}.id`);
         })
         .leftJoin(this.genresTable.name, (join) => {
           join.on(`${this.genresTable.name}.id`, `=`, `${this.bookGenresTable.name}.genreId`);
         })
         .where((builder) => {
           if (id) {
-            builder.where(`${this.databaseTable.name}.id`, id);
+            builder.where(`${this.bookTable.name}.id`, id);
           }
 
           if (title) {
-            builder.where(`${this.databaseTable.name}.title`, title);
+            builder.where(`${this.bookTable.name}.title`, title);
           }
 
           if (bookshelfId) {
-            builder.where(`"${this.databaseTable.name}.bookshelfId"`, bookshelfId);
+            builder.where(`"${this.bookTable.name}.bookshelfId"`, bookshelfId);
           }
         });
     } catch (error) {
@@ -283,26 +263,21 @@ export class BookRepositoryImpl implements BookRepository {
     return this.bookMapper.mapRawWithJoinsToDomain(rawEntities)[0] as Book;
   }
 
-  public async findBooks(payload: FindBooksPayload): Promise<Book[]> {
-    const { bookshelfId, ids } = payload;
-
+  public async findBooks(): Promise<Book[]> {
     let rawEntities: BookWithJoinsRawEntity[];
 
     try {
-      const query = this.databaseClient<BookRawEntity>(this.databaseTable.name)
+      const query = this.databaseClient<BookRawEntity>(this.bookTable.name)
         .select([
-          `${this.databaseTable.name}.id`,
-          `${this.databaseTable.name}.title`,
-          `${this.databaseTable.name}.isbn`,
-          `${this.databaseTable.name}.publisher`,
-          `${this.databaseTable.name}.releaseYear`,
-          `${this.databaseTable.name}.language`,
-          `${this.databaseTable.name}.translator`,
-          `${this.databaseTable.name}.format`,
-          `${this.databaseTable.name}.pages`,
-          `${this.databaseTable.name}.imageUrl`,
-          `${this.databaseTable.name}.status`,
-          `${this.databaseTable.name}.bookshelfId`,
+          `${this.bookTable.name}.id`,
+          `${this.bookTable.name}.title`,
+          `${this.bookTable.name}.isbn`,
+          `${this.bookTable.name}.publisher`,
+          `${this.bookTable.name}.releaseYear`,
+          `${this.bookTable.name}.language`,
+          `${this.bookTable.name}.translator`,
+          `${this.bookTable.name}.format`,
+          `${this.bookTable.name}.pages`,
           `${this.authorTable.name}.id as authorId`,
           `${this.genresTable.name}.name as genreName`,
           `${this.genresTable.name}.id as genreId`,
@@ -310,25 +285,17 @@ export class BookRepositoryImpl implements BookRepository {
           'lastName',
         ])
         .leftJoin(this.booksAuthorsTable.name, (join) => {
-          join.on(`${this.booksAuthorsTable.name}.bookId`, '=', `${this.databaseTable.name}.id`);
+          join.on(`${this.booksAuthorsTable.name}.bookId`, '=', `${this.bookTable.name}.id`);
         })
         .leftJoin(this.authorTable.name, (join) => {
           join.on(`${this.authorTable.name}.id`, '=', `${this.booksAuthorsTable.name}.authorId`);
         })
         .leftJoin(this.bookGenresTable.name, (join) => {
-          join.on(`${this.bookGenresTable.name}.bookId`, '=', `${this.databaseTable.name}.id`);
+          join.on(`${this.bookGenresTable.name}.bookId`, '=', `${this.bookTable.name}.id`);
         })
         .leftJoin(this.genresTable.name, (join) => {
           join.on(`${this.genresTable.name}.id`, `=`, `${this.bookGenresTable.name}.genreId`);
         });
-
-      if (ids.length > 0) {
-        query.whereIn(`${this.databaseTable.name}.id`, ids);
-      }
-
-      if (bookshelfId) {
-        query.where(`${this.databaseTable.name}.bookshelfId`, bookshelfId);
-      }
 
       rawEntities = await query;
     } catch (error) {
@@ -355,7 +322,7 @@ export class BookRepositoryImpl implements BookRepository {
     }
 
     try {
-      await this.databaseClient<BookRawEntity>(this.databaseTable.name).delete().where({
+      await this.databaseClient<BookRawEntity>(this.bookTable.name).delete().where({
         id: existingBook.getId(),
       });
     } catch (error) {

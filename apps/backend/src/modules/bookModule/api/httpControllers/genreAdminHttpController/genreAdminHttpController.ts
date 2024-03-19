@@ -34,7 +34,7 @@ import { type CreateGenreCommandHandler } from '../../../application/commandHand
 import { type DeleteGenreCommandHandler } from '../../../application/commandHandlers/deleteGenreCommandHandler/deleteGenreCommandHandler.js';
 import { type UpdateGenreNameCommandHandler } from '../../../application/commandHandlers/updateGenreNameCommandHandler/updateGenreNameCommandHandler.js';
 import { type Genre } from '../../../domain/entities/genre/genre.js';
-import { type GenreDTO } from '../genreHttpController/schemas/dtos/genreDTO.js';
+import { type GenreDTO } from '../genreHttpController/schemas/genreDto.js';
 
 export class GenreAdminHttpController implements HttpController {
   public basePath = '/api/admin/genres';
@@ -65,7 +65,6 @@ export class GenreAdminHttpController implements HttpController {
           },
         },
         securityMode: SecurityMode.basicAuth,
-        path: 'create',
       }),
       new HttpRoute({
         description: 'Update Genre name.',

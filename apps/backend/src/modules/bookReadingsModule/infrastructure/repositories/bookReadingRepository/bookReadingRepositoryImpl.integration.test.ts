@@ -5,6 +5,7 @@ import { Generator } from '@common/tests';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { type BookTestUtils } from '../../../../bookModule/tests/utils/bookTestUtils/bookTestUtils.js';
+import { type UserBookTestUtils } from '../../../../bookModule/tests/utils/userBookTestUtils/userBookTestUtils.js';
 import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { BookReading } from '../../../domain/entities/bookReading/bookReading.js';
@@ -24,6 +25,8 @@ describe('BookReadingRepositoryImpl', () => {
 
   let userTestUtils: UserTestUtils;
 
+  let userBookTestUtils: UserBookTestUtils;
+
   const bookReadingTestFactory = new BookReadingTestFactory();
 
   beforeEach(() => {
@@ -39,12 +42,16 @@ describe('BookReadingRepositoryImpl', () => {
 
     bookshelfTestUtils = container.get<BookshelfTestUtils>(testSymbols.bookshelfTestUtils);
 
+    userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
+
     afterEach(async () => {
       await bookTestUtils.truncate();
 
       await bookshelfTestUtils.truncate();
 
       await userTestUtils.truncate();
+
+      await userBookTestUtils.truncate();
 
       await bookReadingTestUtils.truncate();
     });
@@ -55,6 +62,8 @@ describe('BookReadingRepositoryImpl', () => {
       await bookshelfTestUtils.truncate();
 
       await userTestUtils.truncate();
+
+      await userBookTestUtils.truncate();
 
       await bookReadingTestUtils.truncate();
     });
@@ -75,17 +84,18 @@ describe('BookReadingRepositoryImpl', () => {
 
         const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
 
-        const book = await bookTestUtils.createAndPersist({
+        const book = await bookTestUtils.createAndPersist();
+
+        const userBook = await userBookTestUtils.createAndPersist({
           input: {
-            book: {
-              bookshelfId: bookshelf.id,
-            },
+            bookshelfId: bookshelf.id,
+            bookId: book.id,
           },
         });
 
         const bookReading = await bookReadingTestUtils.createAndPersist({
           input: {
-            bookId: book.id,
+            userBookId: userBook.id,
           },
         });
 
@@ -99,12 +109,12 @@ describe('BookReadingRepositoryImpl', () => {
       });
     });
 
-    describe('findByBookId', () => {
+    describe('findByUserBookId', () => {
       it('returns an empty array - when BookReadings were not found', async () => {
-        const bookId = Generator.uuid();
+        const userBookId = Generator.uuid();
 
         const result = await repository.findBookReadings({
-          bookId,
+          userBookId,
         });
 
         expect(result).toHaveLength(0);
@@ -115,28 +125,29 @@ describe('BookReadingRepositoryImpl', () => {
 
         const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
 
-        const book = await bookTestUtils.createAndPersist({
+        const book = await bookTestUtils.createAndPersist();
+
+        const userBook = await userBookTestUtils.createAndPersist({
           input: {
-            book: {
-              bookshelfId: bookshelf.id,
-            },
+            bookshelfId: bookshelf.id,
+            bookId: book.id,
           },
         });
 
         const bookReading1 = await bookReadingTestUtils.createAndPersist({
           input: {
-            bookId: book.id,
+            userBookId: userBook.id,
           },
         });
 
         const bookReading2 = await bookReadingTestUtils.createAndPersist({
           input: {
-            bookId: book.id,
+            userBookId: userBook.id,
           },
         });
 
         const result = await repository.findBookReadings({
-          bookId: book.id,
+          userBookId: userBook.id,
         });
 
         expect(result).toHaveLength(2);
@@ -146,7 +157,7 @@ describe('BookReadingRepositoryImpl', () => {
 
           expect(bookReading.getId()).oneOf([bookReading1.id, bookReading2.id]);
 
-          expect(bookReading.getBookId()).toEqual(user.id);
+          expect(bookReading.getUserBookId()).toEqual(user.id);
         });
       });
     });
@@ -157,16 +168,17 @@ describe('BookReadingRepositoryImpl', () => {
 
         const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
 
-        const book = await bookTestUtils.createAndPersist({
+        const book = await bookTestUtils.createAndPersist();
+
+        const userBook = await userBookTestUtils.createAndPersist({
           input: {
-            book: {
-              bookshelfId: bookshelf.id,
-            },
+            bookshelfId: bookshelf.id,
+            bookId: book.id,
           },
         });
 
         const bookReading = bookReadingTestFactory.create({
-          bookId: book.id,
+          userBookId: userBook.id,
         });
 
         const result = await repository.saveBookReading({
@@ -175,7 +187,7 @@ describe('BookReadingRepositoryImpl', () => {
 
         expect(result).toBeInstanceOf(BookReading);
 
-        expect(result.getBookId()).toEqual(book.id);
+        expect(result.getUserBookId()).toEqual(book.id);
 
         expect(result.getComment()).toEqual(bookReading.getComment());
 
@@ -187,16 +199,17 @@ describe('BookReadingRepositoryImpl', () => {
 
         const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
 
-        const book = await bookTestUtils.createAndPersist({
+        const book = await bookTestUtils.createAndPersist();
+
+        const userBook = await userBookTestUtils.createAndPersist({
           input: {
-            book: {
-              bookshelfId: bookshelf.id,
-            },
+            bookshelfId: bookshelf.id,
+            bookId: book.id,
           },
         });
 
         const bookReading = bookReadingTestFactory.create({
-          bookId: book.id,
+          userBookId: userBook.id,
         });
 
         await bookReadingTestUtils.createAndPersist({
@@ -255,23 +268,24 @@ describe('BookReadingRepositoryImpl', () => {
 
         const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
 
-        const book = await bookTestUtils.createAndPersist({
+        const book = await bookTestUtils.createAndPersist();
+
+        const userBook = await userBookTestUtils.createAndPersist({
           input: {
-            book: {
-              bookshelfId: bookshelf.id,
-            },
+            bookshelfId: bookshelf.id,
+            bookId: book.id,
           },
         });
 
         const bookReadingRawEntity = await bookReadingTestUtils.createAndPersist({
           input: {
-            bookId: book.id,
+            userBookId: userBook.id,
           },
         });
 
         const bookReading = new BookReading({
           id: bookReadingRawEntity.id,
-          bookId: book.id,
+          userBookId: userBook.id,
           comment: bookReadingRawEntity.comment,
           rating: bookReadingRawEntity.rating,
           startedAt: bookReadingRawEntity.startedAt,

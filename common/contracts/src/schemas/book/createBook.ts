@@ -1,6 +1,5 @@
 import { type Book } from './book.js';
 import { type BookFormat } from './bookFormat.js';
-import { type BookStatus } from './bookStatus.js';
 
 export interface CreateBookRequestBody {
   readonly title: string;
@@ -11,9 +10,6 @@ export interface CreateBookRequestBody {
   readonly translator?: string;
   readonly format: BookFormat;
   readonly pages?: number;
-  readonly imageUrl?: string;
-  readonly status: BookStatus;
-  readonly bookshelfId: string;
   readonly authorIds: string[];
 }
 

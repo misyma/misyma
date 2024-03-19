@@ -2,7 +2,7 @@ import { type Static, Type } from '@sinclair/typebox';
 
 import type * as contracts from '@common/contracts';
 
-import { genreDTO } from './dtos/genreDTO.js';
+import { genreDTOSchema } from './genreDto.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const findGenreByNameQueryParamsDTOSchema = Type.Object({
@@ -17,7 +17,7 @@ export type FindGenreByNameQueryParamsDTO = TypeExtends<
   Static<typeof findGenreByNameQueryParamsDTOSchema>
 >;
 
-export const findGenreByNameResponseBodyDTOSchema = genreDTO;
+export const findGenreByNameResponseBodyDTOSchema = genreDTOSchema;
 
 export type FindGenreByNameResponseBodyDTO = TypeExtends<
   contracts.FindGenreByNameResponseBody,

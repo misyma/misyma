@@ -1,4 +1,4 @@
-import { type BookFormat, type BookStatus } from '@common/contracts';
+import { type BookFormat } from '@common/contracts';
 
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type Author } from '../../../../authorModule/domain/entities/author/author.js';
@@ -14,9 +14,6 @@ export interface BookDraft {
   readonly translator?: string | undefined;
   readonly format: BookFormat;
   readonly pages?: number | undefined;
-  readonly imageUrl?: string | undefined;
-  readonly status: BookStatus;
-  readonly bookshelfId: string;
   readonly authors: Author[];
   readonly genres: Genre[];
 }
@@ -30,9 +27,6 @@ export interface BookState {
   translator?: string | undefined;
   format: BookFormat;
   pages?: number | undefined;
-  imageUrl?: string | undefined;
-  status: BookStatus;
-  bookshelfId: string;
   authors: Author[];
   genres: Genre[];
 }
@@ -69,18 +63,6 @@ export interface SetPagesPayload {
   readonly pages: number;
 }
 
-export interface SetImageUrlPayload {
-  readonly imageUrl: string;
-}
-
-export interface SetStatusPayload {
-  readonly status: BookStatus;
-}
-
-export interface SetBookshelfPayload {
-  readonly bookshelfId: string;
-}
-
 export interface SetAuthorsPayload {
   readonly authors: Author[];
 }
@@ -94,22 +76,7 @@ export class Book {
   private readonly state: BookState;
 
   public constructor(draft: BookDraft) {
-    const {
-      id,
-      title,
-      isbn,
-      publisher,
-      releaseYear,
-      language,
-      translator,
-      format,
-      pages,
-      imageUrl,
-      status,
-      bookshelfId,
-      authors,
-      genres,
-    } = draft;
+    const { id, title, isbn, publisher, releaseYear, language, translator, format, pages, authors, genres } = draft;
 
     this.id = id;
 
@@ -117,8 +84,6 @@ export class Book {
       title,
       language,
       format,
-      status,
-      bookshelfId,
       authors,
       genres,
     };
@@ -141,10 +106,6 @@ export class Book {
 
     if (pages) {
       this.state.pages = pages;
-    }
-
-    if (imageUrl) {
-      this.state.imageUrl = imageUrl;
     }
   }
 
@@ -186,18 +147,6 @@ export class Book {
 
   public getPages(): number | undefined {
     return this.state.pages;
-  }
-
-  public getImageUrl(): string | undefined {
-    return this.state.imageUrl;
-  }
-
-  public getStatus(): BookStatus {
-    return this.state.status;
-  }
-
-  public getBookshelfId(): string {
-    return this.state.bookshelfId;
   }
 
   public getAuthors(): Author[] {
@@ -254,24 +203,6 @@ export class Book {
     const { pages } = payload;
 
     this.state.pages = pages;
-  }
-
-  public setImageUrl(payload: SetImageUrlPayload): void {
-    const { imageUrl } = payload;
-
-    this.state.imageUrl = imageUrl;
-  }
-
-  public setStatus(payload: SetStatusPayload): void {
-    const { status } = payload;
-
-    this.state.status = status;
-  }
-
-  public setBookshelf(payload: SetBookshelfPayload): void {
-    const { bookshelfId } = payload;
-
-    this.state.bookshelfId = bookshelfId;
   }
 
   public addAuthor(author: Author): void {

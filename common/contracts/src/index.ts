@@ -38,7 +38,7 @@ export * from './schemas/author/deleteAuthor.js';
 
 export * from './schemas/book/findBook.js';
 
-export * from './schemas/book/findBooksByBookshelfId.js';
+export * from './schemas/book/findBooks.js';
 
 export * from './schemas/book/createBook.js';
 
@@ -48,7 +48,19 @@ export * from './schemas/book/deleteBook.js';
 
 export * from './schemas/book/bookFormat.js';
 
-export * from './schemas/book/bookStatus.js';
+export * from './schemas/userBook/readingStatus.js';
+
+export * from './schemas/userBook/userBook.js';
+
+export * from './schemas/userBook/findUserBook.js';
+
+export * from './schemas/userBook/findUserBooksByBookshelfId.js';
+
+export * from './schemas/userBook/createUserBook.js';
+
+export * from './schemas/userBook/deleteUserBook.js';
+
+export * from './schemas/userBook/updateUserBook.js';
 
 export * from './schemas/bookReading/bookReading.js';
 

@@ -3,7 +3,7 @@ import { type Static, Type } from '@sinclair/typebox';
 import type * as contracts from '@common/contracts';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
-import { genreDTO } from '../../genreHttpController/schemas/dtos/genreDTO.js';
+import { genreDTOSchema } from '../../genreHttpController/schemas/genreDto.js';
 
 export const updateGenreNamePathParamsDTOSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
@@ -26,7 +26,7 @@ export type UpdateGenreNameBodyDTO = TypeExtends<
   Static<typeof updateGenreNameBodyDTOSchema>
 >;
 
-export const updateGenreNameResponseBodyDTOSchema = genreDTO;
+export const updateGenreNameResponseBodyDTOSchema = genreDTOSchema;
 
 export type UpdateGenreNameResponseBodyDTO = TypeExtends<
   contracts.UpdateGenreNameResponseBody,

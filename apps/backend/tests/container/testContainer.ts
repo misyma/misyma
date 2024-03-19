@@ -6,6 +6,7 @@ import { type DependencyInjectionContainer } from '../../src/libs/dependencyInje
 import { AuthorTestUtils } from '../../src/modules/authorModule/tests/utils/authorTestUtils/authorTestUtils.js';
 import { BookTestUtils } from '../../src/modules/bookModule/tests/utils/bookTestUtils/bookTestUtils.js';
 import { GenreTestUtils } from '../../src/modules/bookModule/tests/utils/genreTestUtils/genreTestUtils.js';
+import { UserBookTestUtils } from '../../src/modules/bookModule/tests/utils/userBookTestUtils/userBookTestUtils.js';
 import { BookReadingTestUtils } from '../../src/modules/bookReadingsModule/tests/utils/bookReadingTestUtils/bookReadingTestUtils.js';
 import { BookshelfTestUtils } from '../../src/modules/bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 import { type EmailService } from '../../src/modules/userModule/application/services/emailService/emailService.js';
@@ -21,6 +22,11 @@ export class TestContainer {
     container.bind<BookTestUtils>(
       testSymbols.bookTestUtils,
       () => new BookTestUtils(container.get<DatabaseClient>(coreSymbols.databaseClient)),
+    );
+
+    container.bind<UserBookTestUtils>(
+      testSymbols.userBookTestUtils,
+      () => new UserBookTestUtils(container.get<DatabaseClient>(coreSymbols.databaseClient)),
     );
 
     container.bind<GenreTestUtils>(

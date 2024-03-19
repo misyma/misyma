@@ -1,7 +1,7 @@
 import { type CommandHandler } from '../../../../../common/types/commandHandler.js';
 
 export interface DeleteBookReadingPayload {
-  id: string;
+  readonly id: string;
 }
 
 export type DeleteBookReadingCommandHandler = CommandHandler<DeleteBookReadingPayload, void>;

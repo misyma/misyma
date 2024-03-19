@@ -1,9 +1,9 @@
 import { type BookReading } from './bookReading.js';
 
 export interface FindBookReadingsPathParams {
-  readonly bookId: string;
+  readonly userBookId: string;
 }
 
 export interface FindBookReadingsResponseBody {
-  readonly bookReadings: BookReading[];
+  readonly data: BookReading[];
 }

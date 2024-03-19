@@ -5,7 +5,7 @@ import { type FastifyRequest } from 'fastify';
 
 import type * as contracts from '@common/contracts';
 
-import { userDTOSchema } from './userDTO.js';
+import { userDTOSchema } from './userDto.js';
 import { InputNotValidError } from '../../../../../../common/errors/inputNotValidError.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 

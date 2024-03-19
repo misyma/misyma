@@ -1,5 +1,3 @@
-import { type BookFormat, type BookStatus } from '@common/contracts';
-
 import { type BookMapper } from './bookMapper.js';
 import { Author } from '../../../../../authorModule/domain/entities/author/author.js';
 import { Book, type BookDraft } from '../../../../domain/entities/book/book.js';
@@ -9,20 +7,7 @@ import { type BookWithJoinsRawEntity } from '../../../databases/bookDatabase/tab
 
 export class BookMapperImpl implements BookMapper {
   public mapRawToDomain(entity: BookRawEntity): Book {
-    const {
-      id,
-      title,
-      isbn,
-      publisher,
-      releaseYear,
-      language,
-      translator,
-      format,
-      pages,
-      imageUrl,
-      status,
-      bookshelfId,
-    } = entity;
+    const { id, title, isbn, publisher, releaseYear, language, translator, format, pages } = entity;
 
     return new Book({
       id,
@@ -32,11 +17,8 @@ export class BookMapperImpl implements BookMapper {
       publisher,
       language,
       translator,
-      format: format as BookFormat,
+      format,
       pages,
-      imageUrl,
-      status: status as BookStatus,
-      bookshelfId,
       authors: [],
       genres: [],
     });
@@ -56,9 +38,6 @@ export class BookMapperImpl implements BookMapper {
         translator,
         format,
         pages,
-        imageUrl,
-        status,
-        bookshelfId,
         authorId,
         firstName,
         lastName,
@@ -121,11 +100,8 @@ export class BookMapperImpl implements BookMapper {
           releaseYear: releaseYear ?? undefined,
           language,
           translator: translator ?? undefined,
-          format: format as BookFormat,
+          format,
           pages: pages ?? undefined,
-          imageUrl: imageUrl ?? undefined,
-          status: status as BookStatus,
-          bookshelfId,
           authors,
           genres,
         };

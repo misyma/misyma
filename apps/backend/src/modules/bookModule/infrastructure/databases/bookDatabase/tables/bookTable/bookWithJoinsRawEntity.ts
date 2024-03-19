@@ -1,3 +1,5 @@
+import { type BookFormat } from '@common/contracts';
+
 export interface BookWithJoinsRawEntity {
   readonly id: string;
   readonly title: string;
@@ -6,11 +8,8 @@ export interface BookWithJoinsRawEntity {
   readonly releaseYear: number | null;
   readonly language: string;
   readonly translator: string | null;
-  readonly format: string;
+  readonly format: BookFormat;
   readonly pages: number | null;
-  readonly imageUrl: string | null;
-  readonly status: string;
-  readonly bookshelfId: string;
   readonly authorId: string | null;
   readonly firstName: string | null;
   readonly lastName: string | null;

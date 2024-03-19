@@ -7,6 +7,7 @@ import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type BookTestUtils } from '../../../../bookModule/tests/utils/bookTestUtils/bookTestUtils.js';
+import { type UserBookTestUtils } from '../../../../bookModule/tests/utils/userBookTestUtils/userBookTestUtils.js';
 import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { BookReading } from '../../../domain/entities/bookReading/bookReading.js';
@@ -25,6 +26,8 @@ describe('CreateBookReadingCommandHandlerImpl', () => {
 
   let userTestUtils: UserTestUtils;
 
+  let userBookTestUtils: UserBookTestUtils;
+
   const bookReadingTestFactory = new BookReadingTestFactory();
 
   beforeEach(async () => {
@@ -40,6 +43,8 @@ describe('CreateBookReadingCommandHandlerImpl', () => {
 
     bookshelfTestUtils = container.get<BookshelfTestUtils>(testSymbols.bookshelfTestUtils);
 
+    userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
+
     await bookTestUtils.truncate();
 
     await bookshelfTestUtils.truncate();
@@ -47,6 +52,8 @@ describe('CreateBookReadingCommandHandlerImpl', () => {
     await userTestUtils.truncate();
 
     await bookReadingTestUtils.truncate();
+
+    await userBookTestUtils.truncate();
   });
 
   afterEach(async () => {
@@ -57,10 +64,12 @@ describe('CreateBookReadingCommandHandlerImpl', () => {
     await userTestUtils.truncate();
 
     await bookReadingTestUtils.truncate();
+
+    await userBookTestUtils.truncate();
   });
 
-  it('throws an error - when Book does not exist', async () => {
-    const nonExistentBookId = Generator.uuid();
+  it('throws an error - when UserBook does not exist', async () => {
+    const nonExistentUserBookId = Generator.uuid();
 
     const bookReading = bookReadingTestFactory.create();
 
@@ -68,13 +77,13 @@ describe('CreateBookReadingCommandHandlerImpl', () => {
       async () =>
         await commandHandler.execute({
           ...bookReading.getState(),
-          bookId: nonExistentBookId,
+          userBookId: nonExistentUserBookId,
         }),
     ).toThrowErrorInstance({
       instance: ResourceNotFoundError,
       context: {
         name: 'Book',
-        id: nonExistentBookId,
+        id: nonExistentUserBookId,
       },
     });
   });
@@ -84,16 +93,17 @@ describe('CreateBookReadingCommandHandlerImpl', () => {
 
     const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
 
-    const book = await bookTestUtils.createAndPersist({
+    const book = await bookTestUtils.createAndPersist();
+
+    const userBook = await userBookTestUtils.createAndPersist({
       input: {
-        book: {
-          bookshelfId: bookshelf.id,
-        },
+        bookshelfId: bookshelf.id,
+        bookId: book.id,
       },
     });
 
     const bookReadingDraft = bookReadingTestFactory.create({
-      bookId: book.id,
+      userBookId: userBook.id,
     });
 
     const { bookReading } = await commandHandler.execute({
@@ -103,7 +113,7 @@ describe('CreateBookReadingCommandHandlerImpl', () => {
     expect(bookReading).toBeInstanceOf(BookReading);
 
     expect(bookReading.getState()).toEqual({
-      bookId: book.id,
+      userBookId: userBook.id,
       comment: bookReadingDraft.getComment(),
       rating: bookReadingDraft.getRating(),
       startedAt: bookReadingDraft.getStartedAt(),
@@ -116,7 +126,7 @@ describe('CreateBookReadingCommandHandlerImpl', () => {
 
     expect(persistedRawBookReading).toMatchObject({
       id: bookReading.getId(),
-      bookId: book.id,
+      userBookId: userBook.id,
       comment: bookReadingDraft.getComment(),
       rating: bookReadingDraft.getRating(),
       startedAt: bookReadingDraft.getStartedAt(),
