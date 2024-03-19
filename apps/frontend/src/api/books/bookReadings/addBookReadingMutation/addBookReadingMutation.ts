@@ -39,7 +39,7 @@ export const useAddBookReadingMutation = (
       });
     }
 
-    return response.body.bookReading;
+    return response.body;
   };
 
   return useMutation({
