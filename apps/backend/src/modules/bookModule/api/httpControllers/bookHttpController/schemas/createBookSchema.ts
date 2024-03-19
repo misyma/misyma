@@ -22,7 +22,12 @@ export const createBookBodyDTOSchema = Type.Object({
       maxLength: 64,
     }),
   ),
-  releaseYear: Type.Optional(Type.Integer()),
+  releaseYear: Type.Optional(
+    Type.Integer({
+      minimum: 1500,
+      maximum: 2500,
+    }),
+  ),
   language: Type.String(
     Type.String({
       minLength: 1,

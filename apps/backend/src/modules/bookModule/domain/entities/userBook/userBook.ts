@@ -47,10 +47,7 @@ export class UserBook {
     };
 
     if (imageUrl) {
-      state = {
-        ...state,
-        imageUrl,
-      };
+      state.imageUrl = imageUrl;
     }
 
     if (book) {

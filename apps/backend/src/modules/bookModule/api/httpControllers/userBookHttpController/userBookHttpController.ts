@@ -79,7 +79,7 @@ export class UserBookHttpController implements HttpController {
           response: {
             [HttpStatusCode.created]: {
               schema: createUserBookResponseBodyDTOSchema,
-              description: `User's userBookcreated.`,
+              description: `User's book created.`,
             },
           },
         },
@@ -97,12 +97,12 @@ export class UserBookHttpController implements HttpController {
           response: {
             [HttpStatusCode.ok]: {
               schema: findUserBookResponseBodyDTOSchema,
-              description: `User's userBookfound.`,
+              description: `User's book found.`,
             },
           },
         },
         securityMode: SecurityMode.bearerToken,
-        description: `Find user's userBookby id.`,
+        description: `Find user's book by id.`,
       }),
       //TODO: refactor to search params
       new HttpRoute({
@@ -134,7 +134,7 @@ export class UserBookHttpController implements HttpController {
           response: {
             [HttpStatusCode.noContent]: {
               schema: deleteUserBookResponseBodyDTOSchema,
-              description: `User's userBookdeleted.`,
+              description: `User's book deleted.`,
             },
           },
         },
@@ -153,7 +153,7 @@ export class UserBookHttpController implements HttpController {
           },
           response: {
             [HttpStatusCode.ok]: {
-              description: `User's userBookupdated.`,
+              description: `User's book updated.`,
               schema: updateUserBookResponseDTOSchema,
             },
           },
