@@ -50,9 +50,15 @@ export const bookDTOSchema = Type.Object({
   ),
   authors: Type.Array(
     Type.Object({
-      id: Type.String(),
-      firstName: Type.String(),
-      lastName: Type.String(),
+      id: Type.String({ format: 'uuid' }),
+      firstName: Type.String({
+        minLength: 1,
+        maxLength: 64,
+      }),
+      lastName: Type.String({
+        minLength: 1,
+        maxLength: 64,
+      }),
     }),
   ),
 });

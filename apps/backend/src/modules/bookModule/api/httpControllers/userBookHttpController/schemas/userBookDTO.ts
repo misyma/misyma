@@ -2,26 +2,76 @@ import { type Static, Type } from '@sinclair/typebox';
 
 import * as contracts from '@common/contracts';
 
-import { authorDTOSchema } from '../../bookHttpController/schemas/authorDTO.js';
-import { genreDTOSchema } from '../../bookHttpController/schemas/genreDTO.js';
-
 export const userBookDTOSchema = Type.Object({
-  id: Type.String(),
-  imageUrl: Type.Optional(Type.String()),
+  id: Type.String({ format: 'uuid' }),
+  imageUrl: Type.Optional(
+    Type.String({
+      minLength: 1,
+      maxLength: 128,
+    }),
+  ),
   status: Type.Enum(contracts.ReadingStatus),
-  bookshelfId: Type.String(),
-  bookId: Type.String(),
+  bookshelfId: Type.String({ format: 'uuid' }),
+  bookId: Type.String({ format: 'uuid' }),
   book: Type.Object({
-    title: Type.String(),
-    isbn: Type.Optional(Type.String()),
-    publisher: Type.Optional(Type.String()),
+    title: Type.String({
+      minLength: 1,
+      maxLength: 64,
+    }),
+    isbn: Type.Optional(
+      Type.String({
+        minLength: 1,
+        maxLength: 64,
+      }),
+    ),
+    publisher: Type.Optional(
+      Type.String({
+        minLength: 1,
+        maxLength: 64,
+      }),
+    ),
     releaseYear: Type.Optional(Type.Integer()),
-    language: Type.String(),
-    translator: Type.Optional(Type.String()),
+    language: Type.String(
+      Type.String({
+        minLength: 1,
+        maxLength: 64,
+      }),
+    ),
+    translator: Type.Optional(
+      Type.String({
+        minLength: 1,
+        maxLength: 64,
+      }),
+    ),
     format: Type.Enum(contracts.BookFormat),
-    pages: Type.Optional(Type.Integer()),
-    genres: Type.Array(genreDTOSchema),
-    authors: Type.Array(authorDTOSchema),
+    pages: Type.Optional(
+      Type.Integer({
+        minimum: 1,
+        maximum: 10000,
+      }),
+    ),
+    genres: Type.Array(
+      Type.Object({
+        id: Type.String({ format: 'uuid' }),
+        name: Type.String({
+          minLength: 1,
+          maxLength: 64,
+        }),
+      }),
+    ),
+    authors: Type.Array(
+      Type.Object({
+        id: Type.String({ format: 'uuid' }),
+        firstName: Type.String({
+          minLength: 1,
+          maxLength: 64,
+        }),
+        lastName: Type.String({
+          minLength: 1,
+          maxLength: 64,
+        }),
+      }),
+    ),
   }),
 });
 
