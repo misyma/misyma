@@ -3,8 +3,8 @@ import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 import { type DeleteUserBookCommandHandler } from './deleteUserBookCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
-import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type AuthorTestUtils } from '../../../../authorModule/tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
@@ -15,7 +15,7 @@ import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/u
 describe('DeleteUserBookCommandHandler', () => {
   let deleteUserBookCommandHandler: DeleteUserBookCommandHandler;
 
-  let sqliteDatabaseClient: SqliteDatabaseClient;
+  let databaseClient: DatabaseClient;
 
   let authorTestUtils: AuthorTestUtils;
 
@@ -32,7 +32,7 @@ describe('DeleteUserBookCommandHandler', () => {
 
     deleteUserBookCommandHandler = container.get<DeleteUserBookCommandHandler>(symbols.deleteUserBookCommandHandler);
 
-    sqliteDatabaseClient = container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient);
+    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
 
     authorTestUtils = container.get<AuthorTestUtils>(testSymbols.authorTestUtils);
 
@@ -66,7 +66,7 @@ describe('DeleteUserBookCommandHandler', () => {
 
     await userBookTestUtils.truncate();
 
-    await sqliteDatabaseClient.destroy();
+    await databaseClient.destroy();
   });
 
   it('deletes UserBook', async () => {

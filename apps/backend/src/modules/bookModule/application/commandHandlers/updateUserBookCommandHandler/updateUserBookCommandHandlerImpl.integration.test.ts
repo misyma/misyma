@@ -7,8 +7,8 @@ import { type UpdateUserBookCommandHandler } from './updateUserBookCommandHandle
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
-import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { symbols } from '../../../symbols.js';
@@ -29,14 +29,14 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
 
   let userBookTestUtils: UserBookTestUtils;
 
-  let sqliteDatabaseClient: SqliteDatabaseClient;
+  let databaseClient: DatabaseClient;
 
   beforeEach(async () => {
     const container = TestContainer.create();
 
     commandHandler = container.get<UpdateUserBookCommandHandler>(symbols.updateUserBookCommandHandler);
 
-    sqliteDatabaseClient = container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient);
+    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
 
     bookTestUtils = container.get<BookTestUtils>(testSymbols.bookTestUtils);
 
@@ -70,7 +70,7 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
 
     await userBookTestUtils.truncate();
 
-    await sqliteDatabaseClient.destroy();
+    await databaseClient.destroy();
   });
 
   it('throws an error - when UserBook does not exist', async () => {

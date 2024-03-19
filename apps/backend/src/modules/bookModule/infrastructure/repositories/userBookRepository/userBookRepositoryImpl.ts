@@ -1,7 +1,7 @@
 import { type UserBookMapper } from './userBookMapper/userBookMapper.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
-import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { AuthorTable } from '../../../../authorModule/infrastructure/databases/tables/authorTable/authorTable.js';
 import { UserBook, type UserBookState } from '../../../domain/entities/userBook/userBook.js';
@@ -33,7 +33,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
   private readonly genresTable = new GenreTable();
 
   public constructor(
-    private readonly sqliteDatabaseClient: SqliteDatabaseClient,
+    private readonly databaseClient: DatabaseClient,
     private readonly userBookMapper: UserBookMapper,
     private readonly uuidService: UuidService,
   ) {}
@@ -56,7 +56,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
     const id = this.uuidService.generateUuid();
 
     try {
-      await this.sqliteDatabaseClient<UserBookRawEntity>(this.userBookTable.name).insert({
+      await this.databaseClient<UserBookRawEntity>(this.userBookTable.name).insert({
         id,
         imageUrl,
         status,
@@ -92,7 +92,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
     }
 
     try {
-      await this.sqliteDatabaseClient<UserBookRawEntity>(this.userBookTable.name)
+      await this.databaseClient<UserBookRawEntity>(this.userBookTable.name)
         .update(updateData)
         .where({ id: userBook.getId() })
         .returning('*');
@@ -113,7 +113,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
     let rawEntities: UserBookWithJoinsRawEntity[];
 
     try {
-      rawEntities = await this.sqliteDatabaseClient<UserBookRawEntity>(this.userBookTable.name)
+      rawEntities = await this.databaseClient<UserBookRawEntity>(this.userBookTable.name)
         .select([
           `${this.bookTable.name}.id as bookId`,
           `${this.bookTable.name}.title as title`,
@@ -140,7 +140,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           if (authorIds) {
             join.andOnIn(
               `${this.booksAuthorsTable.name}.authorId`,
-              this.sqliteDatabaseClient.raw('?', [authorIds.join(',')]),
+              this.databaseClient.raw('?', [authorIds.join(',')]),
             );
           }
         })
@@ -190,7 +190,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
     let rawEntities: UserBookWithJoinsRawEntity[];
 
     try {
-      const query = this.sqliteDatabaseClient<UserBookRawEntity>(this.userBookTable.name)
+      const query = this.databaseClient<UserBookRawEntity>(this.userBookTable.name)
         .select([
           `${this.bookTable.name}.id as bookId`,
           `${this.bookTable.name}.title as title`,
@@ -260,7 +260,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
     }
 
     try {
-      await this.sqliteDatabaseClient<UserBookRawEntity>(this.userBookTable.name).delete().where({
+      await this.databaseClient<UserBookRawEntity>(this.userBookTable.name).delete().where({
         id: existingUserBook.getId(),
       });
     } catch (error) {

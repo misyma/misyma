@@ -26,7 +26,7 @@ export class TestContainer {
 
     container.bind<UserBookTestUtils>(
       testSymbols.userBookTestUtils,
-      () => new UserBookTestUtils(container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient)),
+      () => new UserBookTestUtils(container.get<DatabaseClient>(coreSymbols.databaseClient)),
     );
 
     container.bind<GenreTestUtils>(

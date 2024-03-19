@@ -106,7 +106,7 @@ export class BookModule implements DependencyInjectionModule {
       symbols.userBookRepository,
       () =>
         new UserBookRepositoryImpl(
-          container.get<SqliteDatabaseClient>(coreSymbols.sqliteDatabaseClient),
+          container.get<DatabaseClient>(coreSymbols.databaseClient),
           container.get<UserBookMapper>(symbols.userBookMapper),
           container.get<UuidService>(coreSymbols.uuidService),
         ),

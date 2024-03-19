@@ -1,4 +1,4 @@
-import { type SqliteDatabaseClient } from '../../../../../core/database/sqliteDatabaseClient/sqliteDatabaseClient.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UserBookRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/userBookTable/userBookRawEntity.js';
 import { UserBookTable } from '../../../infrastructure/databases/bookDatabase/tables/userBookTable/userBookTable.js';
 import { UserBookTestFactory } from '../../factories/userBookTestFactory/userBookTestFactory.js';
@@ -15,7 +15,7 @@ export class UserBookTestUtils {
   private readonly userBookTable = new UserBookTable();
   private readonly userBookTestFactory = new UserBookTestFactory();
 
-  public constructor(private readonly sqliteDatabaseClient: SqliteDatabaseClient) {}
+  public constructor(private readonly databaseClient: DatabaseClient) {}
 
   public async createAndPersist(payload: CreateAndPersistPayload = {}): Promise<UserBookRawEntity> {
     const { input } = payload;
@@ -24,7 +24,7 @@ export class UserBookTestUtils {
 
     let rawEntities: UserBookRawEntity[] = [];
 
-    rawEntities = await this.sqliteDatabaseClient<UserBookRawEntity>(this.userBookTable.name).insert(book, '*');
+    rawEntities = await this.databaseClient<UserBookRawEntity>(this.userBookTable.name).insert(book, '*');
 
     return rawEntities[0] as UserBookRawEntity;
   }
@@ -32,7 +32,7 @@ export class UserBookTestUtils {
   public async findById(payload: FindByIdPayload): Promise<UserBookRawEntity> {
     const { id } = payload;
 
-    const bookRawEntity = await this.sqliteDatabaseClient<UserBookRawEntity>(this.userBookTable.name)
+    const bookRawEntity = await this.databaseClient<UserBookRawEntity>(this.userBookTable.name)
       .select('*')
       .where({ id })
       .first();
@@ -41,6 +41,6 @@ export class UserBookTestUtils {
   }
 
   public async truncate(): Promise<void> {
-    await this.sqliteDatabaseClient<UserBookRawEntity>(this.userBookTable.name).truncate();
+    await this.databaseClient<UserBookRawEntity>(this.userBookTable.name).truncate();
   }
 }

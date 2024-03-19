@@ -3,6 +3,7 @@ import { type Static, Type } from '@sinclair/typebox';
 import * as contracts from '@common/contracts';
 
 export const bookDTOSchema = Type.Object({
+  id: Type.String({ format: 'uuid' }),
   title: Type.String({
     minLength: 1,
     maxLength: 64,
