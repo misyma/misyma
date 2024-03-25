@@ -43,7 +43,7 @@ describe('UserRepositoryImpl', () => {
     it('creates a User', async () => {
       const createdUser = userTestFactory.create();
 
-      const { email, name, password, isEmailVerified } = createdUser.getState();
+      const { email, name, password, isEmailVerified, role } = createdUser.getState();
 
       const user = await userRepository.saveUser({
         user: {
@@ -51,6 +51,7 @@ describe('UserRepositoryImpl', () => {
           password,
           name,
           isEmailVerified,
+          role,
         },
       });
 
@@ -71,6 +72,7 @@ describe('UserRepositoryImpl', () => {
             password: existingUser.password,
             name: existingUser.name,
             isEmailVerified: existingUser.isEmailVerified,
+            role: existingUser.role,
           },
         });
       } catch (error) {
@@ -114,6 +116,7 @@ describe('UserRepositoryImpl', () => {
         password,
         name,
         isEmailVerified,
+        role: userRawEntity.role,
       });
 
       expect(foundUser).toEqual({
@@ -122,6 +125,7 @@ describe('UserRepositoryImpl', () => {
         password,
         name,
         isEmailVerified,
+        role: userRawEntity.role,
       });
     });
 

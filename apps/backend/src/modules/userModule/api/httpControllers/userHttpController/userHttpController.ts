@@ -493,6 +493,7 @@ export class UserHttpController implements HttpController {
       email: user.getEmail(),
       name: user.getName(),
       isEmailVerified: user.getIsEmailVerified(),
+      role: user.getRole(),
     };
   }
 }

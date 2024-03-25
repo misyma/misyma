@@ -112,9 +112,9 @@ export class BookshelfHttpController implements HttpController {
       }),
       new HttpRoute({
         method: HttpMethodName.patch,
-        path: '/update-name/:bookshelfId',
-        handler: this.updateBookshelfName.bind(this),
-        description: 'Update bookshelf name.',
+        path: '/:bookshelfId',
+        handler: this.updateBookshelf.bind(this),
+        description: 'Update bookshelf.',
         schema: {
           request: {
             body: updateBookshelfBodyDTOSchema,
@@ -122,7 +122,7 @@ export class BookshelfHttpController implements HttpController {
           },
           response: {
             [HttpStatusCode.ok]: {
-              description: 'Bookshelf name updated.',
+              description: 'Bookshelf updated.',
               schema: updateBookshelfResponseBodyDTOSchema,
             },
           },
@@ -206,7 +206,7 @@ export class BookshelfHttpController implements HttpController {
     };
   }
 
-  private async updateBookshelfName(
+  private async updateBookshelf(
     request: HttpRequest<UpdateBookshelfBodyDTO, null, UpdateBookshelfPathParamsDTO>,
   ): Promise<HttpOkResponse<UpdateBookshelfResponseBodyDTO>> {
     const { userId } = await this.accessControlService.verifyBearerToken({

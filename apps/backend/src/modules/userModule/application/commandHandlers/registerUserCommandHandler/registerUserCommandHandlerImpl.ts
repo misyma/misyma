@@ -1,3 +1,5 @@
+import { UserRole } from '@common/contracts';
+
 import {
   type RegisterUserCommandHandler,
   type RegisterUserCommandHandlerPayload,
@@ -49,6 +51,7 @@ export class RegisterUserCommandHandlerImpl implements RegisterUserCommandHandle
         password: hashedPassword,
         name,
         isEmailVerified: false,
+        role: UserRole.user,
       },
     });
 

@@ -37,6 +37,7 @@ export class UserTestUtils {
         name: user.getName(),
         password: user.getPassword(),
         isEmailVerified: user.getIsEmailVerified(),
+        role: user.getRole(),
       },
       '*',
     );

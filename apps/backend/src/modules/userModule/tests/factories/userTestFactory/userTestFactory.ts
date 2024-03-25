@@ -1,3 +1,4 @@
+import { type UserRole } from '@common/contracts';
 import { Generator } from '@common/tests';
 
 import { User, type UserDraft } from '../../../domain/entities/user/user.js';
@@ -10,6 +11,7 @@ export class UserTestFactory {
       password: Generator.password(),
       name: Generator.fullName(),
       isEmailVerified: Generator.boolean(),
+      role: Generator.userRole() as UserRole,
       ...input,
     });
   }

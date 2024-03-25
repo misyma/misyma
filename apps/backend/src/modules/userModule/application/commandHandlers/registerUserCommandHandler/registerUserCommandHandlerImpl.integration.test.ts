@@ -1,5 +1,6 @@
 import { beforeEach, afterEach, expect, it, describe, vi } from 'vitest';
 
+import { UserRole } from '@common/contracts';
 import { SpyFactory } from '@common/tests';
 
 import { type RegisterUserCommandHandler } from './registerUserCommandHandler.js';
@@ -64,6 +65,8 @@ describe('RegisterUserCommandHandler', () => {
     expect(createdUser.getIsEmailVerified()).toEqual(false);
 
     expect(foundUser?.email).toEqual(user.getEmail());
+
+    expect(foundUser?.role).toEqual(UserRole.user);
   });
 
   it('throws an error when a User with the same email already exists', async () => {
