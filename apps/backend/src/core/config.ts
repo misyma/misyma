@@ -13,7 +13,7 @@ const configSchema = Type.Object({
     }),
   }),
   admin: Type.Object({
-    username: Type.String({ minLength: 1 }),
+    email: Type.String({ format: 'email' }),
     password: Type.String({ minLength: 1 }),
   }),
   logLevel: Type.Enum(LogLevel),

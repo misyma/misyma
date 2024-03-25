@@ -1,3 +1,5 @@
+import { UserRole } from '@common/contracts';
+
 import { ApplicationHttpController } from './api/httpControllers/applicationHttpController/applicationHttpController.js';
 import { type Config, ConfigFactory } from './config.js';
 import { HttpServer } from './httpServer/httpServer.js';
@@ -26,8 +28,12 @@ import { BookReadingModule } from '../modules/bookReadingsModule/bookReadingModu
 import { BookReadingDatabaseManager } from '../modules/bookReadingsModule/infrastructure/databases/bookReadingsDatabase/bookReadingDatabaseManager.js';
 import { BookshelfModule } from '../modules/bookshelfModule/bookshelfModule.js';
 import { BookshelfDatabaseManager } from '../modules/bookshelfModule/infrastructure/databases/bookshelvesDatabase/bookshelfDatabaseManager.js';
+import { type HashService } from '../modules/userModule/application/services/hashService/hashService.js';
+import { type UserRawEntity } from '../modules/userModule/infrastructure/databases/userDatabase/tables/userTable/userRawEntity.js';
+import { UserTable } from '../modules/userModule/infrastructure/databases/userDatabase/tables/userTable/userTable.js';
 import { UserDatabaseManager } from '../modules/userModule/infrastructure/databases/userDatabase/userDatabaseManager.js';
 import { UserEventsDatabaseManager } from '../modules/userModule/infrastructure/databases/userEventsDatabase/userEventsDatabaseManager.js';
+import { userSymbols } from '../modules/userModule/symbols.js';
 import { UserModule } from '../modules/userModule/userModule.js';
 
 export class Application {
@@ -57,6 +63,45 @@ export class Application {
     await databaseClient.raw('PRAGMA journal_mode = WAL');
 
     await entityEventsDatabaseClient.raw('PRAGMA journal_mode = WAL');
+  }
+
+  private static async createAdminUser(container: DependencyInjectionContainer): Promise<void> {
+    const databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
+
+    const uuidService = container.get<UuidService>(coreSymbols.uuidService);
+
+    const loggerService = container.get<LoggerService>(coreSymbols.loggerService);
+
+    const hashService = container.get<HashService>(userSymbols.hashService);
+
+    const { email, password } = container.get<Config>(coreSymbols.config).admin;
+
+    const userTable = new UserTable();
+
+    const userExists = await databaseClient<UserRawEntity>(userTable.name).where({ email }).first();
+
+    if (userExists) {
+      loggerService.debug({
+        message: 'Admin user already exists.',
+        email,
+      });
+
+      return;
+    }
+
+    const hashedPassword = await hashService.hash({ plainData: password });
+
+    await databaseClient<UserRawEntity>(userTable.name).insert({
+      id: uuidService.generateUuid(),
+      email,
+      password: hashedPassword,
+      role: UserRole.admin,
+    });
+
+    loggerService.debug({
+      message: 'Admin user created.',
+      email,
+    });
   }
 
   public static createContainer(): DependencyInjectionContainer {
@@ -126,6 +171,8 @@ export class Application {
     const loggerService = container.get<LoggerService>(coreSymbols.loggerService);
 
     await this.setupDatabase(container);
+
+    await this.createAdminUser(container);
 
     loggerService.info({ message: 'Migrations executed.' });
 

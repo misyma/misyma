@@ -1,6 +1,6 @@
 {
   "admin": {
-    "username": "admin",
+    "email": "admin",
     "password": "admin"
   },
   "databasePath": "data/dev.db",

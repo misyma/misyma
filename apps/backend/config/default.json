@@ -4,7 +4,7 @@
     "port": 5000
   },
   "admin": {
-    "username": null,
+    "email": null,
     "password": null
   },
   "logLevel": "debug",
