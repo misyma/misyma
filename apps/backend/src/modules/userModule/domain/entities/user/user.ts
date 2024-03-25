@@ -1,9 +1,12 @@
+import { type UserRole } from '@common/contracts';
+
 export interface UserDraft {
   readonly id: string;
   readonly email: string;
   readonly password: string;
   readonly name: string;
   readonly isEmailVerified: boolean;
+  readonly role: UserRole;
 }
 
 export interface UserState {
@@ -11,6 +14,7 @@ export interface UserState {
   password: string;
   name: string;
   isEmailVerified: boolean;
+  readonly role: UserRole;
 }
 
 export interface SetPasswordPayload {
@@ -34,7 +38,7 @@ export class User {
   private state: UserState;
 
   public constructor(draft: UserDraft) {
-    const { id, email, password, name, isEmailVerified } = draft;
+    const { id, email, password, name, isEmailVerified, role } = draft;
 
     this.id = id;
 
@@ -43,6 +47,7 @@ export class User {
       password,
       name,
       isEmailVerified,
+      role,
     };
   }
 
@@ -60,6 +65,10 @@ export class User {
 
   public getName(): string {
     return this.state.name;
+  }
+
+  public getRole(): UserRole {
+    return this.state.role;
   }
 
   public getIsEmailVerified(): boolean {

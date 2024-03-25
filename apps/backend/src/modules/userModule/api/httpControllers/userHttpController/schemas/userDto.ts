@@ -1,5 +1,7 @@
 import { type Static, Type } from '@sinclair/typebox';
 
+import { UserRole } from '@common/contracts';
+
 export const userDTOSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
   email: Type.String({
@@ -11,6 +13,7 @@ export const userDTOSchema = Type.Object({
     maxLength: 64,
   }),
   isEmailVerified: Type.Boolean(),
+  role: Type.Enum(UserRole),
 });
 
 export type UserDTO = Static<typeof userDTOSchema>;

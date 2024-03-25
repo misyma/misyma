@@ -39,7 +39,7 @@ export class UserRepositoryImpl implements UserRepository {
 
   private async createUser(payload: CreateUserPayload): Promise<User> {
     const {
-      user: { email, password, name, isEmailVerified },
+      user: { email, password, name, isEmailVerified, role },
     } = payload;
 
     let rawEntities: UserRawEntity[];
@@ -54,6 +54,7 @@ export class UserRepositoryImpl implements UserRepository {
           password,
           name,
           isEmailVerified,
+          role,
         },
         '*',
       );

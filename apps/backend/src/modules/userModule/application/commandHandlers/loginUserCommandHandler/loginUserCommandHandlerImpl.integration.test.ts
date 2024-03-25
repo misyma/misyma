@@ -66,6 +66,7 @@ describe('LoginUserCommandHandler', () => {
         password: hashedPassword,
         name: createdUser.getName(),
         isEmailVerified: createdUser.getIsEmailVerified(),
+        role: createdUser.getRole(),
       },
     });
 
@@ -79,6 +80,8 @@ describe('LoginUserCommandHandler', () => {
     const refreshTokenPayload = tokenService.verifyToken({ token: refreshToken });
 
     expect(accessTokenPayload['userId']).toBe(createdUser.getId());
+
+    expect(accessTokenPayload['role']).toBe(createdUser.getRole());
 
     expect(refreshTokenPayload['userId']).toBe(createdUser.getId());
 
@@ -97,6 +100,7 @@ describe('LoginUserCommandHandler', () => {
         password: hashedPassword,
         name: createdUser.getName(),
         isEmailVerified: false,
+        role: createdUser.getRole(),
       },
     });
 

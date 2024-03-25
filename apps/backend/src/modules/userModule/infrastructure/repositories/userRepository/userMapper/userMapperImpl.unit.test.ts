@@ -1,5 +1,6 @@
 import { beforeEach, expect, describe, it } from 'vitest';
 
+import { type UserRole } from '@common/contracts';
 import { Generator } from '@common/tests';
 
 import { UserMapperImpl } from './userMapperImpl.js';
@@ -19,6 +20,7 @@ describe('UserMapperImpl', () => {
       password: Generator.password(),
       name: Generator.fullName(),
       isEmailVerified: Generator.boolean(),
+      role: Generator.userRole() as UserRole,
     };
 
     const user = userMapperImpl.mapToDomain(userEntity);
@@ -30,6 +32,7 @@ describe('UserMapperImpl', () => {
       password: userEntity.password,
       name: userEntity.name,
       isEmailVerified: userEntity.isEmailVerified,
+      role: userEntity.role,
     });
   });
 });

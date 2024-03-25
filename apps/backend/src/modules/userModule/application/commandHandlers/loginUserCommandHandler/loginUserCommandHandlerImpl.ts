@@ -65,6 +65,7 @@ export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
       data: {
         userId: user.getId(),
         type: TokenType.accessToken,
+        role: user.getRole(),
       },
       expiresIn: accessTokenExpiresIn,
     });

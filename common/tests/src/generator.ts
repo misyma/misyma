@@ -149,4 +149,8 @@ export class Generator {
   public static bookReadingStatus(): string {
     return faker.helpers.arrayElement(['toRead', 'readingInProgress', 'finishedReading']);
   }
+
+  public static userRole(): string {
+    return faker.helpers.arrayElement(['admin', 'user']);
+  }
 }

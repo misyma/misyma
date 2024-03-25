@@ -1,3 +1,5 @@
+import { UserRole } from '@common/contracts';
+
 import {
   type CreateGenreBodyDTO,
   type CreateGenreResponseBodyDTO,
@@ -64,7 +66,7 @@ export class GenreAdminHttpController implements HttpController {
             },
           },
         },
-        securityMode: SecurityMode.basicAuth,
+        securityMode: SecurityMode.bearerToken,
       }),
       new HttpRoute({
         description: 'Update Genre name.',
@@ -82,7 +84,7 @@ export class GenreAdminHttpController implements HttpController {
             },
           },
         },
-        securityMode: SecurityMode.basicAuth,
+        securityMode: SecurityMode.bearerToken,
         path: ':id/name',
       }),
       new HttpRoute({
@@ -108,8 +110,9 @@ export class GenreAdminHttpController implements HttpController {
   private async createGenre(
     request: HttpRequest<CreateGenreBodyDTO>,
   ): Promise<HttpCreatedResponse<CreateGenreResponseBodyDTO>> {
-    this.accessControlService.verifyBasicAuth({
+    this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
+      expectedRole: UserRole.admin,
     });
 
     const { name } = request.body;
@@ -125,8 +128,9 @@ export class GenreAdminHttpController implements HttpController {
   private async updateGenreName(
     request: HttpRequest<UpdateGenreNameBodyDTO, null, UpdateGenreNamePathParamsDTO>,
   ): Promise<HttpOkResponse<UpdateGenreNameResponseBodyDTO>> {
-    this.accessControlService.verifyBasicAuth({
+    this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
+      expectedRole: UserRole.admin,
     });
 
     const { id } = request.pathParams;
@@ -147,8 +151,9 @@ export class GenreAdminHttpController implements HttpController {
   private async deleteGenre(
     request: HttpRequest<null, null, DeleteGenrePathParamsDTO>,
   ): Promise<HttpNoContentResponse<DeleteGenreResponseBodyDTO>> {
-    this.accessControlService.verifyBasicAuth({
+    this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
+      expectedRole: UserRole.admin,
     });
 
     const { id } = request.pathParams;

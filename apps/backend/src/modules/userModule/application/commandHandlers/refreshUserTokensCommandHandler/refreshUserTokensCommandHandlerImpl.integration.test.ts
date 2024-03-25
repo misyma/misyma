@@ -80,6 +80,8 @@ describe('RefreshUserTokensCommandHandler', () => {
 
     expect(accessTokenPayload['userId']).toBe(user.id);
 
+    expect(accessTokenPayload['role']).toBe(user.role);
+
     expect(refreshTokenPayload['userId']).toBe(user.id);
 
     expect(result.accessTokenExpiresIn).toBe(config.token.access.expiresIn);

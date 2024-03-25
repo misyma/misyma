@@ -80,6 +80,7 @@ export class RefreshUserTokensCommandHandlerImpl implements RefreshUserTokensCom
       data: {
         userId,
         type: TokenType.accessToken,
+        role: user.getRole(),
       },
       expiresIn: accessTokenExpiresIn,
     });

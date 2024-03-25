@@ -16,6 +16,8 @@ export class M1CreateUserTableMigration implements Migration {
 
       table.boolean('isEmailVerified').notNullable();
 
+      table.text('role').notNullable();
+
       table.primary(['id']);
 
       table.unique(['email']);

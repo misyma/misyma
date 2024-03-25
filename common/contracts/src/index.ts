@@ -8,6 +8,8 @@ export * from './schemas/bookshelf/findUserBookshelves.js';
 
 export * from './schemas/bookshelf/updateBookshelf.js';
 
+export * from './schemas/user/userRole.js';
+
 export * from './schemas/user/findUser.js';
 
 export * from './schemas/user/findMyUser.js';

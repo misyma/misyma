@@ -105,7 +105,7 @@ export class HttpRouter {
         } catch (error) {
           this.loggerService.error({
             message: 'Caught an error in the HTTP router.',
-            error,
+            err: error,
             path: fastifyRequest.url,
             method,
             statusCode: fastifyReply.statusCode,

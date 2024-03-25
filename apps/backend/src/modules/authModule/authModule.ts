@@ -17,11 +17,7 @@ export class AuthModule implements DependencyInjectionModule {
 
     container.bind<AccessControlService>(
       symbols.accessControlService,
-      () =>
-        new AccessControlServiceImpl(
-          container.get<TokenService>(symbols.tokenService),
-          container.get<Config>(coreSymbols.config),
-        ),
+      () => new AccessControlServiceImpl(container.get<TokenService>(symbols.tokenService)),
     );
   }
 }
