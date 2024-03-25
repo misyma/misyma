@@ -81,6 +81,8 @@ describe('LoginUserCommandHandler', () => {
 
     expect(accessTokenPayload['userId']).toBe(createdUser.getId());
 
+    expect(accessTokenPayload['role']).toBe(createdUser.getRole());
+
     expect(refreshTokenPayload['userId']).toBe(createdUser.getId());
 
     expect(accessTokenExpiresIn).toBe(config.token.access.expiresIn);

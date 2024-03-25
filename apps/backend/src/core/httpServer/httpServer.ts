@@ -132,11 +132,7 @@ export class HttpServer {
 
       this.loggerService.error({
         message: 'Caught an error in the HTTP server.',
-        error: {
-          ...formattedError,
-          stack: error.stack,
-          cause: error.cause,
-        },
+        err: error,
         path: request.url,
         method: request.method,
         statusCode: reply.statusCode,
@@ -156,10 +152,6 @@ export class HttpServer {
             [SecurityMode.bearerToken]: {
               type: 'http',
               scheme: 'bearer',
-            },
-            [SecurityMode.basicAuth]: {
-              type: 'http',
-              scheme: 'basic',
             },
           },
         },
