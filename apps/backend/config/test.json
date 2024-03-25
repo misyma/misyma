@@ -1,7 +1,7 @@
 {
   "admin": {
     "email": "admin@misyma.com",
-    "password": "admin"
+    "password": "AdminPassword123"
   },
   "databasePath": "data/test.db",
   "queueDatabasePath": "data/test-queue.db",

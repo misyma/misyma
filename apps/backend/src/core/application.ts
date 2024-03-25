@@ -93,8 +93,10 @@ export class Application {
 
     await databaseClient<UserRawEntity>(userTable.name).insert({
       id: uuidService.generateUuid(),
+      name: 'Admin',
       email,
       password: hashedPassword,
+      isEmailVerified: true,
       role: UserRole.admin,
     });
 
