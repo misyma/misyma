@@ -8,6 +8,7 @@ import { useFindUserBookshelfsQuery } from '../../api/shelf/queries/findUserBook
 import { useFindUserQuery } from '../../api/user/queries/findUserQuery/findUserQuery';
 import { Button } from '../../components/ui/button';
 import { CreateBookshelfForm } from './components/createBookshelfForm/createBookshelfForm';
+import { ScrollArea } from '../../components/ui/scroll-area';
 
 export const ShelvesPage: FC = () => {
   const { data: user } = useFindUserQuery();
@@ -21,7 +22,7 @@ export const ShelvesPage: FC = () => {
 
   return (
     <AuthenticatedLayout>
-      <div className="flex w-100% px-8 py-4">
+      <div className="flex w-100%px-8 py-4">
         {createBookshelfFormVisible ? (
           <>
             <div className="sm:py-16 flex flex-col-reverse sm:flex-1 sm:flex-row w-[100%] gap-8 sm:gap-32 items-center sm:items-start justify-center">
@@ -52,45 +53,43 @@ export const ShelvesPage: FC = () => {
               >
                 Dodaj nową półkę
               </Button>
-              <div className="py-8 grid gap-4 grid-cols-1 sm:grid-cols-2 w-[80%] min-h-32">
-                {bookshelves?.data.map((bookshelf) => (
-                  <div>
-                    <div className='flex items-center'>
-                      <div className='bg-primary h-10 w-10 rounded-full'></div>
-                      <div className='bg-primary h-1 w-full flex items-start justify-end'>
-                        <Button> Edytuj </Button>
+              <ScrollArea className='w-[80%] h-[700px]'>
+                <div className="py-8 grid gap-x-32 gap-y-16 grid-cols-1 sm:grid-cols-2 w-full min-h-32">
+                  {bookshelves?.data.map((bookshelf) => (
+                    <div>
+                      <div className="flex items-center">
+                        <div className="bg-primary h-10 w-10 rounded-full"></div>
+                        <div className="bg-primary h-1 w-full flex items-start justify-end">
+                          <Button> Edytuj </Button>
+                        </div>
                       </div>
-                    </div>
-                    <div
-                      key={`${bookshelf.id}`}
-                      className="flex ml-10 mt-[-1.25rem] rounded-sm border border-primary border-spacing-2 p-4 gap-x-2"
-                      onClick={() =>
-                        navigate({
-                          to: `/bookshelf/${bookshelf.id}`,
-                        })
-                      }
-                    >
-                      <img
-                        src={bookshelf?.imageUrl}
-                        className="aspect-square max-w-56 object-cover"
-                      />
                       <div
-                        className="flex flex-col gap-y-4"
-                        onClick={() => {
-                          navigate({});
-                        }}
+                        key={`${bookshelf.id}`}
+                        className="flex ml-10 mt-[-1.25rem] rounded-sm border border-spacing-2 p-4 gap-x-2 h-60 border-transparent bg-primaryBackground"
+                        onClick={() =>
+                          navigate({
+                            to: `/bookshelf/${bookshelf.id}`,
+                          })
+                        }
                       >
-                        <h2 key={`${bookshelf.id}-${bookshelf.name}`}>{bookshelf.name}</h2>
-                        {/* <p key={`${bookshelf.id}-${bookshelf.addressId}`}>
+                        <div
+                          className="flex items-center"
+                          onClick={() => {
+                            navigate({});
+                          }}
+                        >
+                          <h2 className='ml-12 text-2xl' key={`${bookshelf.id}-${bookshelf.name}`}>{bookshelf.name}</h2>
+                          {/* <p key={`${bookshelf.id}-${bookshelf.addressId}`}>
                           {bookshelf.addressId}
                           {'  '}
                           {!bookshelf.addressId && 'Brak adresu'}
                         </p> */}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              </ScrollArea>
             </div>
           </>
         )}
