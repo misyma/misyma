@@ -8,6 +8,7 @@ import { useFindBooksByBookshelfIdQuery } from '../../api/books/queries/findBook
 import { AuthenticatedLayout } from '../../layouts/authenticated/authenticatedLayout';
 import { Button } from '../../components/ui/button';
 import { CreateBookForm } from './components/createBookForm';
+import { useFindUserQuery } from '../../api/user/queries/findUserQuery/findUserQuery';
 
 const bookshelfSearchSchema = z.object({
   id: z.string().uuid().catch(''),
@@ -16,13 +17,18 @@ const bookshelfSearchSchema = z.object({
 export const Bookshelf: FC = () => {
   const { id } = bookshelfRoute.useParams();
 
-  const { data } = useFindBooksByBookshelfIdQuery(id);
+  const { data: user } = useFindUserQuery();
+
+  const { data } = useFindBooksByBookshelfIdQuery({
+    bookshelfId: id,
+    userId: user?.id as string,
+  });
 
   return (
     <AuthenticatedLayout>
         <div className='p-8 flex justify-center'>
         <Button>Dodaj książkę</Button>
-        <div>{data?.data.map((b) => b.title).join(',')}</div>;
+        <div>{data?.data.map((b) => b.book.title).join(',')}</div>;
           <CreateBookForm></CreateBookForm>
         </div>
     </AuthenticatedLayout>
