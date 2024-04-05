@@ -15,7 +15,7 @@ export const ShelvesPage: FC = () => {
   const navigate = useNavigate();
 
   // TODO: You have no bookshelves. Create one. - View
-  // TODO: Fetch address by addressId once EP is available
+  // TODO: Fetch address by address once EP is available
   // TODO: Fetch a list of books on a shelf
 
   // const { accessToken } = useSelector(userStateSelectors.selectCurrentUserTokens) as {
@@ -62,10 +62,10 @@ export const ShelvesPage: FC = () => {
                   }}
                 >
                   <h2 key={`${bookshelf.id}-${bookshelf.name}`}>{bookshelf.name}</h2>
-                  <p key={`${bookshelf.id}-${bookshelf.addressId}`}>
-                    {bookshelf.addressId}
+                  <p key={`${bookshelf.id}-${bookshelf.address}`}>
+                    {bookshelf.address}
                     {'  '}
-                    {!bookshelf.addressId && 'Brak adresu'}
+                    {!bookshelf.address && 'Brak adresu'}
                   </p>
                 </div>
               </div>

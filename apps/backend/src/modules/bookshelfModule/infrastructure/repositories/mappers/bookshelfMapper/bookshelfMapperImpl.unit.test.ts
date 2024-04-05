@@ -22,7 +22,7 @@ describe('BookshelfMapperImpl', () => {
       state: {
         name: bookshelfRawEntity.name,
         userId: bookshelfRawEntity.userId,
-        addressId: bookshelfRawEntity.addressId,
+        address: bookshelfRawEntity.address,
         imageUrl: bookshelfRawEntity.imageUrl,
       },
     });

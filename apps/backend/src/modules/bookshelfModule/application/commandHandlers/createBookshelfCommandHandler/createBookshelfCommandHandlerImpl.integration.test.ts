@@ -84,7 +84,7 @@ describe('CreateBookshelfCommandHandlerImpl', () => {
     expect(bookshelf.getState()).toEqual({
       name,
       userId: user.id,
-      addressId: null,
+      address: null,
       imageUrl,
     });
 
@@ -96,7 +96,7 @@ describe('CreateBookshelfCommandHandlerImpl', () => {
       id: bookshelf.getId(),
       name,
       userId: user.id,
-      addressId: null,
+      address: null,
       imageUrl,
     });
   });

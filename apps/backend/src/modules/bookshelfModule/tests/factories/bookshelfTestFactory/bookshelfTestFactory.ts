@@ -9,7 +9,7 @@ export class BookshelfTestFactory {
       id: Generator.uuid(),
       name: Generator.alphaString(20, 'lower'),
       userId: Generator.uuid(),
-      addressId: undefined,
+      address: Generator.streetAddress(),
       imageUrl: Generator.imageUrl(),
       ...input,
     });
@@ -20,7 +20,7 @@ export class BookshelfTestFactory {
       id: Generator.uuid(),
       name: Generator.alphaString(20, 'lower'),
       userId: Generator.uuid(),
-      addressId: undefined,
+      address: Generator.streetAddress(),
       imageUrl: Generator.imageUrl(),
       ...input,
     };

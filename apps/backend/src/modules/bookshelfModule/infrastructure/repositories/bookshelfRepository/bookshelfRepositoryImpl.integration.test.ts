@@ -67,7 +67,7 @@ describe('BookshelfRepositoryImpl', () => {
       expect(result?.getState()).toEqual({
         name: bookshelf.name,
         userId: bookshelf.userId,
-        addressId: bookshelf.addressId,
+        address: bookshelf.address,
         imageUrl: bookshelf.imageUrl,
       });
     });
@@ -91,7 +91,7 @@ describe('BookshelfRepositoryImpl', () => {
       expect(result?.getState()).toEqual({
         name: bookshelf.name,
         userId: bookshelf.userId,
-        addressId: bookshelf.addressId,
+        address: bookshelf.address,
         imageUrl: bookshelf.imageUrl,
       });
     });
@@ -113,13 +113,12 @@ describe('BookshelfRepositoryImpl', () => {
 
       expect(result.getId()).toBeDefined();
 
-      expect(result.getUserId()).toEqual(user.id);
-
-      expect(result.getName()).toEqual(bookshelfDraft.getName());
-
-      expect(result.getImageUrl()).toEqual(bookshelfDraft.getImageUrl());
-
-      expect(result.getAddressId()).toBeNull();
+      expect(result.getState()).toEqual({
+        name: bookshelfDraft.getName(),
+        userId: bookshelfDraft.getUserId(),
+        address: bookshelfDraft.getAddress(),
+        imageUrl: bookshelfDraft.getImageUrl(),
+      });
     });
 
     it('updates a Bookshelf - given a Bookshelf', async () => {
@@ -137,9 +136,13 @@ describe('BookshelfRepositoryImpl', () => {
 
       const newImageUrl = Generator.imageUrl();
 
+      const newAddress = Generator.streetAddress();
+
       bookshelf.setName({ name: newName });
 
       bookshelf.setImageUrl({ imageUrl: newImageUrl });
+
+      bookshelf.setAddress({ address: newAddress });
 
       const result = await repository.saveBookshelf({
         bookshelf,
@@ -153,9 +156,15 @@ describe('BookshelfRepositoryImpl', () => {
 
       expect(result.getImageUrl()).toEqual(newImageUrl);
 
+      expect(result.getAddress()).toEqual(newAddress);
+
       expect(foundBookshelf?.name).toEqual(newName);
 
       expect(foundBookshelf?.imageUrl).toEqual(newImageUrl);
+
+      expect(foundBookshelf?.imageUrl).toEqual(newImageUrl);
+
+      expect(foundBookshelf?.address).toEqual(newAddress);
     });
   });
 

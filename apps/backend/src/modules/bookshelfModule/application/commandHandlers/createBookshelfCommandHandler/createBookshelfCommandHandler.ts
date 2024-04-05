@@ -4,7 +4,7 @@ import { type Bookshelf } from '../../../domain/entities/bookshelf/bookshelf.js'
 export interface CreateBookshelfPayload {
   readonly userId: string;
   readonly name: string;
-  readonly addressId?: string | undefined;
+  readonly address?: string | undefined;
   readonly imageUrl?: string | undefined;
 }
 

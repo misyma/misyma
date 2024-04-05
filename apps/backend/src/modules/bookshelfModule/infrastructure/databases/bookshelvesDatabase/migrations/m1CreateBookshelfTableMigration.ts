@@ -10,7 +10,7 @@ export class M1CreateBookshelfTableMigration implements Migration {
     id: 'id',
     name: 'name',
     userId: 'userId',
-    addressId: 'addressId',
+    address: 'address',
     imageUrl: 'imageUrl',
   } as const;
 
@@ -22,13 +22,11 @@ export class M1CreateBookshelfTableMigration implements Migration {
 
       table.text(this.columns.userId).notNullable();
 
-      table.text(this.columns.addressId).nullable();
+      table.text(this.columns.address).nullable();
 
       table.text(this.columns.imageUrl).nullable();
 
       table.foreign(this.columns.userId).references('id').inTable('users').onDelete('CASCADE');
-
-      table.foreign(this.columns.addressId).references('id').inTable('addresses').onDelete('SET NULL');
 
       table.unique([this.columns.userId, this.columns.name]);
     });

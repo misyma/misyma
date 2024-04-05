@@ -106,7 +106,7 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
           id: this.uuidService.generateUuid(),
           name: bookshelf.name,
           userId: bookshelf.userId,
-          addressId: bookshelf.addressId,
+          address: bookshelf.address,
           imageUrl: bookshelf.imageUrl,
         },
         '*',
