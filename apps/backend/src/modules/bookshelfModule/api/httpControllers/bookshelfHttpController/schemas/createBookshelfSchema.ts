@@ -11,7 +11,12 @@ export const createBookshelfBodyDTOSchema = Type.Object({
     maxLength: 64,
   }),
   userId: Type.String({ format: 'uuid' }),
-  addressId: Type.Optional(Type.String({ format: 'uuid' })),
+  address: Type.Optional(
+    Type.String({
+      minLength: 1,
+      maxLength: 128,
+    }),
+  ),
   imageUrl: Type.Optional(
     Type.String({
       minLength: 1,

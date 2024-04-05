@@ -6,6 +6,7 @@ export interface UpdateBookshelfPayload {
   readonly userId: string;
   readonly name?: string | undefined;
   readonly imageUrl?: string | undefined;
+  readonly address?: string | undefined;
 }
 
 export interface UpdateBookshelfResult {

@@ -15,7 +15,7 @@ export class UpdateBookshelfCommandHandlerImpl implements UpdateBookshelfCommand
   ) {}
 
   public async execute(payload: UpdateBookshelfPayload): Promise<UpdateBookshelfResult> {
-    const { id, name, imageUrl, userId } = payload;
+    const { id, name, imageUrl, userId, address } = payload;
 
     this.loggerService.debug({
       message: 'Updating Bookshelf...',
@@ -23,6 +23,7 @@ export class UpdateBookshelfCommandHandlerImpl implements UpdateBookshelfCommand
       name,
       userId,
       imageUrl,
+      address,
     });
 
     const existingBookshelf = await this.bookshelfRepository.findBookshelf({ where: { id } });
@@ -67,6 +68,10 @@ export class UpdateBookshelfCommandHandlerImpl implements UpdateBookshelfCommand
       existingBookshelf.setImageUrl({ imageUrl });
     }
 
+    if (address) {
+      existingBookshelf.setAddress({ address });
+    }
+
     const updatedBookshelf = await this.bookshelfRepository.saveBookshelf({ bookshelf: existingBookshelf });
 
     this.loggerService.debug({
@@ -75,6 +80,7 @@ export class UpdateBookshelfCommandHandlerImpl implements UpdateBookshelfCommand
       name,
       userId,
       imageUrl,
+      address,
     });
 
     return {

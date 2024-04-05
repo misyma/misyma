@@ -1,4 +1,4 @@
-import { BookFormat, BookStatus } from '@common/contracts';
+import { BookFormat, ReadingStatus } from '@common/contracts';
 import { z } from 'zod';
 
 export const createBookSchema = z.object({
@@ -6,7 +6,7 @@ export const createBookSchema = z.object({
   bookshelfId: z.string().uuid(),
   format: z.nativeEnum(BookFormat),
   language: z.string().min(1),
-  status: z.nativeEnum(BookStatus),
+  status: z.nativeEnum(ReadingStatus),
   title: z.string().min(1),
   imageUrl: z.optional(z.string().url()),
   isbn: z.optional(z.string()),

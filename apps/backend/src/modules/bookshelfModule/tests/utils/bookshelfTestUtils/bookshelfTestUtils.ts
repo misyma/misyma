@@ -28,7 +28,7 @@ export class BookshelfTestUtils {
         id: bookshelf.getId(),
         name: bookshelf.getName(),
         userId: bookshelf.getUserId(),
-        addressId: bookshelf.getAddressId(),
+        address: bookshelf.getAddress(),
         imageUrl: bookshelf.getImageUrl(),
       },
       '*',

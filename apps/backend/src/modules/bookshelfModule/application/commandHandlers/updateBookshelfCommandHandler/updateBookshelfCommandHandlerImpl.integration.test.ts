@@ -115,17 +115,21 @@ describe('UpdateBookshelfCommandHandlerImpl', () => {
 
     const newImageUrl = Generator.imageUrl();
 
+    const newAddress = Generator.streetAddress();
+
     const { bookshelf: updatedBookshelf } = await commandHandler.execute({
       id: bookshelf.id,
       userId: user.id,
       name: newName,
       imageUrl: newImageUrl,
+      address: newAddress,
     });
 
     expect(updatedBookshelf.getState()).toMatchObject({
       name: newName,
       imageUrl: newImageUrl,
       userId: user.id,
+      address: newAddress,
     });
 
     const persistedUpdatedBookshelf = await bookshelfTestUtils.findById({
@@ -137,10 +141,7 @@ describe('UpdateBookshelfCommandHandlerImpl', () => {
       name: newName,
       imageUrl: newImageUrl,
       userId: user.id,
+      address: newAddress,
     });
-
-    expect(persistedUpdatedBookshelf?.id).toEqual(bookshelf.id);
-
-    expect(persistedUpdatedBookshelf?.name).toEqual(newName);
   });
 });
