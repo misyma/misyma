@@ -21,7 +21,6 @@ export const CreateBookForm: FC = () => {
       releaseYear: undefined,
       title: '',
       translator: '',
-      status: undefined,
     },
     reValidateMode: 'onChange',
     mode: 'onTouched',

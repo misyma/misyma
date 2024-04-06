@@ -113,7 +113,6 @@ export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccess, onError }: Lo
                         passwordType={passwordInputType}
                       />
                     }
-                    {...field}
                     containerClassName={cn('focus:border-input', setInputFieldErrorState(field))}
                     {...field}
                   />

@@ -1,5 +1,5 @@
 import { HttpService } from '../../../../core/services/httpService/httpService';
-import { FindUserBooksByBookshelfIdPathParams, FindUserBookResponseBody } from '@common/contracts'
+import { FindUserBooksByBookshelfIdPathParams, FindUserBooksByBookshelfIdResponseBody } from '@common/contracts'
 
 type Payload = FindUserBooksByBookshelfIdPathParams & {
   accessToken: string;
@@ -9,7 +9,7 @@ type Payload = FindUserBooksByBookshelfIdPathParams & {
 export const findBooksByBookshelfId = async (values: Payload) => {
   const { bookshelfId, userId, accessToken } = values;
 
-  const response = await HttpService.get<FindUserBookResponseBody>({
+  const response = await HttpService.get<FindUserBooksByBookshelfIdResponseBody>({
     url: `/users/${userId}/books/bookshelf/${bookshelfId}`,
     headers: {
       Authorization: `Bearer ${accessToken}`,
