@@ -11,21 +11,26 @@ export const createBookshelfSchema = z.object({
     .max(255, {
       message: 'Nazwa jest zbyt długa.',
     }),
-  addressId: z
+  address: z
     .string({
       required_error: 'Niepoprawny adres.',
     })
-    .uuid({
-      message: 'Adres jest niepoprawny.',
+    .min(1, {
+      message: 'Adres jest zbyt krótki.',
+    })
+    .max(128, {
+      message: 'Adres jest zbyt długi.',
     })
     .optional(),
   imageUrl: z
     .string({
       required_error: 'Niepoprawny adres URL.',
+      invalid_type_error: 'Niepoprawny adres URL.',
     })
     .url({
       message: 'Niepoprawny adres URL.',
     })
+    .or(z.literal(''))
     .optional(),
 });
 

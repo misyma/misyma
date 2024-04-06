@@ -24,7 +24,7 @@ export const CreateBookshelfForm: FC<Props> = ({ onGoBack }: Props) => {
     resolver: zodResolver(createBookshelfSchema),
     defaultValues: {
       name: '',
-      addressId: undefined,
+      address: undefined,
       imageUrl: undefined,
     },
   });
@@ -73,7 +73,7 @@ export const CreateBookshelfForm: FC<Props> = ({ onGoBack }: Props) => {
         />
         <FormField
           control={form.control}
-          name="addressId"
+          name="address"
           render={({ field }) => (
             <FormItem className="h-[5.5rem]">
               <FormLabel>Adres</FormLabel>
@@ -91,7 +91,7 @@ export const CreateBookshelfForm: FC<Props> = ({ onGoBack }: Props) => {
         />
         <FormField
           control={form.control}
-          name="addressId"
+          name="imageUrl"
           render={({ field }) => (
             <FormItem className="h-[5.5rem]">
               <FormLabel>Obrazek</FormLabel>
@@ -109,7 +109,11 @@ export const CreateBookshelfForm: FC<Props> = ({ onGoBack }: Props) => {
         />
         <div className="flex gap-4 sm:gap-8 w-full">
           <Button
-            onClick={() => onGoBack(false)}
+            onClick={() => {
+              onGoBack(false);
+
+              form.reset();
+            }}
             className="border-primary border-[1.25px] w-[50%]"
           >
             Wróć

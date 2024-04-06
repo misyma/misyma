@@ -15,7 +15,6 @@ export const ShelvesPage: FC = () => {
 
   const [createBookshelfFormVisible, setCreateBookshelfFormVisible] = useState<boolean>(false);
 
-  // todo: invalidation :)
   const { data: bookshelves, refetch: refetchBookshelves } = useFindUserBookshelfsQuery(user?.id);
 
   const navigate = useNavigate();
