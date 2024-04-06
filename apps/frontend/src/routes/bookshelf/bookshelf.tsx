@@ -7,8 +7,9 @@ import { z } from 'zod';
 import { useFindBooksByBookshelfIdQuery } from '../../api/books/queries/findBooksByBookshelfId/findBooksByBookshelfIdQuery';
 import { AuthenticatedLayout } from '../../layouts/authenticated/authenticatedLayout';
 import { Button } from '../../components/ui/button';
-import { CreateBookForm } from './components/createBookForm';
+import { CreateBookForm } from './components/createBookForm/createBookForm';
 import { useFindUserQuery } from '../../api/user/queries/findUserQuery/findUserQuery';
+import { BookCreationProvider } from './components/createBookForm/context/bookCreationContext/bookCreationContext';
 
 const bookshelfSearchSchema = z.object({
   id: z.string().uuid().catch(''),
@@ -25,13 +26,14 @@ export const Bookshelf: FC = () => {
   });
 
   return (
-    <AuthenticatedLayout>
-        <div className='p-8 flex justify-center'>
-        <Button>Dodaj książkę</Button>
-        <div>{data?.data.map((b) => b.book.title).join(',')}</div>;
-          <CreateBookForm></CreateBookForm>
+    <BookCreationProvider>
+      <AuthenticatedLayout>
+        <div className="p-8 flex justify-center">
+          <Button>Dodaj książkę</Button>
+          <div>{data?.data.map((b) => b.book.title).join(',')}</div>;<CreateBookForm></CreateBookForm>
         </div>
-    </AuthenticatedLayout>
+      </AuthenticatedLayout>
+    </BookCreationProvider>
   );
 };
 

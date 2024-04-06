@@ -1,10 +1,11 @@
 import { FC } from 'react';
 import { useForm } from 'react-hook-form';
-import { AuthenticatedLayout } from '../../../layouts/authenticated/authenticatedLayout';
-import { Form, FormControl, FormField, FormItem, FormLabel } from '../../../components/ui/form';
+import { AuthenticatedLayout } from '../../../../layouts/authenticated/authenticatedLayout';
+import { Form, FormControl, FormField, FormItem, FormLabel } from '../../../../components/ui/form';
 import { CreateBookSchemaValues, createBookSchema } from './schemas/createBookSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Input } from '../../../components/ui/input';
+import { Input } from '../../../../components/ui/input';
+import { ChoosePathStep } from './steps/firstStep/firstStep';
 
 export const CreateBookForm: FC = () => {
   const form = useForm<CreateBookSchemaValues>({
@@ -30,8 +31,9 @@ export const CreateBookForm: FC = () => {
 
   return (
     <AuthenticatedLayout>
+      <ChoosePathStep></ChoosePathStep>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form className='hidden' onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
             name="isbn"
             render={({ field }) => (
