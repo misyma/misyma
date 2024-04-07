@@ -1,14 +1,16 @@
 import { z } from 'zod';
-import { Form, FormControl, FormField, FormItem, FormLabel } from '../../../../../../components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../../../components/ui/form';
 import { Input } from '../../../../../../components/ui/input';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   BookCreationActionType,
   BookCreationNonIsbnState,
+  NonIsbnCreationPathStep,
   useBookCreation,
   useBookCreationDispatch,
 } from '../../context/bookCreationContext/bookCreationContext';
+import { Button } from '../../../../../../components/ui/button';
 
 const stepOneYoISchema = z.object({
   yearOfIssue: z
@@ -48,6 +50,11 @@ export const ManualPathForm = (): JSX.Element => {
       type: BookCreationActionType.setYearOfIssue,
       yearOfIssue: values.yearOfIssue,
     });
+
+    dispatch({
+      type: BookCreationActionType.setStep,
+      step: NonIsbnCreationPathStep.inputFirstDetails,
+    });
   };
 
   return (
@@ -67,16 +74,29 @@ export const ManualPathForm = (): JSX.Element => {
                   onInput={(e) => {
                     dispatch({
                       type: BookCreationActionType.setYearOfIssue,
-                      yearOfIssue: e.currentTarget.valueAsNumber,
+                      yearOfIssue: Number(e.currentTarget.value),
                     });
                   }}
                   {...field}
                 />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
       </form>
+      <div>
+        <Button>Wróć</Button>
+      </div>
+      <Button
+        type="submit"
+        disabled={!form.formState.isValid}
+        onClick={() => {
+          onSubmit(form.getValues());
+        }}
+      >
+        Przejdź dalej
+      </Button>
     </Form>
   );
 };

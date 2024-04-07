@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form';
 import {
   BookCreationActionType,
   BookCreationNonIsbnState,
+  NonIsbnCreationPathStep,
   useBookCreation,
   useBookCreationDispatch,
 } from '../../../context/bookCreationContext/bookCreationContext';
@@ -67,7 +68,12 @@ export const ManualStepTwoForm = (): JSX.Element => {
     },
   });
 
-  const onSubmit = () => {};
+  const onSubmit = () => {
+    dispatch({
+      type: BookCreationActionType.setStep,
+      step: NonIsbnCreationPathStep.inputThirdDetail,
+    });
+  };
 
   return (
     <Form {...form}>
@@ -168,6 +174,16 @@ export const ManualStepTwoForm = (): JSX.Element => {
             </FormItem>
           )}
         />
+        <Button
+          onClick={() => {
+            dispatch({
+              type: BookCreationActionType.setStep,
+              step: NonIsbnCreationPathStep.inputFirstDetails,
+            });
+          }}
+        >
+          Wróć
+        </Button>
         <Button type="submit">Przejdź dalej</Button>
       </form>
     </Form>

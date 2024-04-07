@@ -2,13 +2,22 @@ import { z } from 'zod';
 import {
   BookCreationActionType,
   BookCreationNonIsbnState,
+  NonIsbnCreationPathStep,
   useBookCreation,
   useBookCreationDispatch,
 } from '../../../context/bookCreationContext/bookCreationContext';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../../../../components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../../../../../../../components/ui/form';
 import { Input } from '../../../../../../../components/ui/input';
+import { Button } from '../../../../../../../components/ui/button';
 
 const stepOneSchema = z.object({
   title: z.string().min(1).max(64),
@@ -32,7 +41,22 @@ export const ManualStepOneForm = (): JSX.Element => {
     },
   });
 
-  const onSubmit = () => {};
+  const onSubmit = (values: Partial<z.infer<typeof stepOneSchema>>) => {
+    const vals = values as z.infer<typeof stepOneSchema>;
+
+    dispatch({
+      type: BookCreationActionType.nonIsbnStepOneDetails,
+      author: vals.author,
+      genre: vals.genre,
+      publisher: vals.publisher,
+      title: vals.title,
+    });
+
+    dispatch({
+      type: BookCreationActionType.setStep,
+      step: NonIsbnCreationPathStep.inputSecondDetails,
+    });
+  };
 
   return (
     <Form {...form}>
@@ -133,6 +157,19 @@ export const ManualStepOneForm = (): JSX.Element => {
             </FormItem>
           )}
         />
+        <div>
+          <Button
+            onClick={() => {
+              dispatch({
+                type: BookCreationActionType.setStep,
+                step: 0,
+              });
+            }}
+          >
+            Wróć
+          </Button>
+          <Button type="submit">Przejdź dalej</Button>
+        </div>
       </form>
     </Form>
   );

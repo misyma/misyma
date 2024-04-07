@@ -15,8 +15,6 @@ export const ChoosePathStep: FC = () => {
 
   const dispatch = useBookCreationDispatch();
 
-  const onIsbnSubmit = () => {};
-
   return (
     <div className="flex flex-col gap-8">
       <p className="text-3xl font-semibold">Czy książka, którą chcesz dodać, posiada number ISBN?</p>
@@ -55,7 +53,7 @@ export const ChoosePathStep: FC = () => {
       <div>
         {hasChosenISBN ? (
           <>
-            <IsbnPathForm onSubmit={() => onIsbnSubmit()} />
+            <IsbnPathForm />
           </>
         ) : (
           <>
@@ -63,7 +61,6 @@ export const ChoosePathStep: FC = () => {
           </>
         )}
       </div>
-      <Button>Przejdź dalej</Button>
     </div>
   );
 };

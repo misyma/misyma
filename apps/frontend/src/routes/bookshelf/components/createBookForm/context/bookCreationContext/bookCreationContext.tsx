@@ -8,6 +8,12 @@ const BookDispatchContext = createContext<Dispatch<BookCreationAction>>(
   null as unknown as Dispatch<BookCreationAction>,
 );
 
+export enum NonIsbnCreationPathStep {
+  inputFirstDetails = 1,
+  inputSecondDetails = 2,
+  inputThirdDetail = 3,
+}
+
 export enum BookCreationActionType {
   chooseIsbnPath = 0,
   chooseNonIsbnPath = 1,
@@ -26,7 +32,13 @@ export enum BookCreationActionType {
   setPagesCount = 14,
   setStatus = 15,
   setImage = 16,
+  setStep = 17,
 }
+
+type SetStep = {
+  type: BookCreationActionType.setStep;
+  step: 0 | NonIsbnCreationPathStep;
+};
 
 type ChooseIsbnPathAction = {
   type: BookCreationActionType.chooseIsbnPath;
@@ -135,15 +147,18 @@ export type BookCreationAction =
   | SetForm
   | SetPagesCount
   | SetStatus
-  | SetImage;
+  | SetImage
+  | SetStep;
 
 export interface BookCreationIsbnState<T extends boolean = true> {
   isbnPath: T;
+  step: 0 | 1;
   isbn?: string;
 }
 
 export interface BookCreationNonIsbnState<T extends boolean = false> {
   isbnPath: T;
+  step: 0 | NonIsbnCreationPathStep;
   yearOfIssue?: number;
   stepOneDetails?: {
     title: string;
@@ -333,6 +348,7 @@ function bookCreationReducer<T extends boolean = true>(
     case BookCreationActionType.setIsbn:
       return {
         ...state,
+        step: 0,
         isbnPath: true as T,
         isbn: action.isbn,
       };
@@ -343,10 +359,17 @@ function bookCreationReducer<T extends boolean = true>(
         isbnPath: false as T,
         yearOfIssue: action.yearOfIssue,
       };
+
+    case BookCreationActionType.setStep:
+      return {
+        ...state,
+        step: action.step,
+      };
   }
 }
 
 const initialState: BookCreationState<true> = {
   isbn: undefined,
+  step: 0,
   isbnPath: true,
 };

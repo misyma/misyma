@@ -9,10 +9,7 @@ import {
   useBookCreation,
   useBookCreationDispatch,
 } from '../../context/bookCreationContext/bookCreationContext';
-
-interface Props {
-  onSubmit: () => void;
-}
+import { Button } from '../../../../../../components/ui/button';
 
 const stepOneIsbnSchema = z.object({
   isbn: z
@@ -27,7 +24,7 @@ const stepOneIsbnSchema = z.object({
     }),
 });
 
-export const IsbnPathForm = ({ onSubmit }: Props): JSX.Element => {
+export const IsbnPathForm = (): JSX.Element => {
   const bookCreation = useBookCreation<true>() as BookCreationIsbnState;
 
   const isbnForm = useForm({
@@ -49,7 +46,10 @@ export const IsbnPathForm = ({ onSubmit }: Props): JSX.Element => {
       isbn: values.isbn,
     });
 
-    onSubmit();
+    dispatch({
+      type: BookCreationActionType.setStep,
+      step: 1,
+    });
   };
 
   return (
@@ -80,6 +80,10 @@ export const IsbnPathForm = ({ onSubmit }: Props): JSX.Element => {
             </FormItem>
           )}
         />
+        <div>
+          <Button>Wróć</Button>
+          <Button type="submit">Przejdź dalej</Button>
+        </div>
       </form>
     </Form>
   );

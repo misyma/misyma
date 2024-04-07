@@ -1,196 +1,70 @@
-import { FC } from 'react';
-import { useForm } from 'react-hook-form';
+import { FC, useCallback } from 'react';
 import { AuthenticatedLayout } from '../../../../layouts/authenticated/authenticatedLayout';
-import { Form, FormControl, FormField, FormItem, FormLabel } from '../../../../components/ui/form';
-import { CreateBookSchemaValues, createBookSchema } from './schemas/createBookSchema';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Input } from '../../../../components/ui/input';
 import { ChoosePathStep } from './steps/pathChoice/pathChoice';
+import { Breadcrumbs } from '../breadcrumbs/breadcrumbs';
+import {
+  BookCreationNonIsbnState,
+  NonIsbnCreationPathStep,
+  useBookCreation,
+} from './context/bookCreationContext/bookCreationContext';
+import { ManualStepOneForm } from './steps/nonIsbnPath/stepOne/manualStepOneForm';
+import { ManualStepTwoForm } from './steps/nonIsbnPath/stepTwo/manualStepTwoForm';
+import { ManualStepThreeForm } from './steps/nonIsbnPath/stepThree/manualStepThreeForm';
+import { IsbnPathForm } from './steps/pathChoice/isbnPathForm';
 
 export const CreateBookForm: FC = () => {
-  const form = useForm<CreateBookSchemaValues>({
-    resolver: zodResolver(createBookSchema),
-    defaultValues: {
-      authorIds: [],
-      bookshelfId: '',
-      format: undefined,
-      imageUrl: undefined,
-      isbn: undefined,
-      language: undefined,
-      pages: undefined,
-      publisher: undefined,
-      releaseYear: undefined,
-      title: '',
-      translator: '',
+  const steps = {
+    1: IsbnPathForm,
+    0: {
+      [NonIsbnCreationPathStep.inputFirstDetails]: ManualStepOneForm,
+      [NonIsbnCreationPathStep.inputSecondDetails]: ManualStepTwoForm,
+      [NonIsbnCreationPathStep.inputThirdDetail]: ManualStepThreeForm,
     },
-    reValidateMode: 'onChange',
-    mode: 'onTouched',
-  });
+  };
 
-  const onSubmit = () => {};
+  const bookCreation = useBookCreation<false>() as BookCreationNonIsbnState;
+
+  const renderStep = useCallback(() => {
+    if (bookCreation.isbnPath && bookCreation.step === 1) {
+      // const Component = steps[1]
+
+      return <div>HELLO FROM THE OTHER SIDE</div>;
+    } else if (!bookCreation.isbnPath && bookCreation.step > 0) {
+      const Component = steps[0][bookCreation.step as NonIsbnCreationPathStep];
+      return <Component />;
+    } else {
+      return null;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bookCreation.step, bookCreation.isbnPath]);
+
+  const setNthSelected = (n: number): string => {
+    return bookCreation.step === n ? 'font-semibold' : '';
+  };
 
   return (
     <AuthenticatedLayout>
-      <ChoosePathStep></ChoosePathStep>
-      <Form {...form}>
-        <form className='hidden' onSubmit={form.handleSubmit(onSubmit)}>
-          <FormField
-            name="isbn"
-            render={({ field }) => (
-              <FormItem className="">
-                <FormLabel>ISBN</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Isbn"
-                    type="range"
-                    min={0}
-                    max={1}
-                    defaultValue={1}
-                    includeQuill={false}
-                    className="nice-radio"
-                    {...field}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
+      <div className="flex flex-col">
+        {!bookCreation.isbnPath && bookCreation.step > 0 ? (
+          <Breadcrumbs
+            crumbs={{
+              [NonIsbnCreationPathStep.inputFirstDetails]: (
+                <p className={setNthSelected(NonIsbnCreationPathStep.inputFirstDetails)}>Krok 1</p>
+              ),
+              [NonIsbnCreationPathStep.inputSecondDetails]: (
+                <p className={setNthSelected(NonIsbnCreationPathStep.inputSecondDetails)}>Krok 2</p>
+              ),
+              [NonIsbnCreationPathStep.inputThirdDetail]: (
+                <p className={setNthSelected(NonIsbnCreationPathStep.inputThirdDetail)}>Krok 3</p>
+              ),
+            }}
           />
-          <FormField
-            name="title"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Tytuł</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="title"
-                    type="text"
-                    min={1}
-                    max={64}
-                    {...field}
-                  ></Input>
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            name="publisher"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Wydawnictwo</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="publisher"
-                    type="text"
-                    min={1}
-                    max={64}
-                    {...field}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            name="releaseYear"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Data wydania</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="releaseYear"
-                    type="number"
-                    min={100}
-                    max={2999}
-                    defaultValue={0}
-                    {...field}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            name="language"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Język</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="language"
-                    type="text"
-                    // Replace with a picker
-                    {...field}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            name="format"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Format</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="format"
-                    type="text"
-                    // Replace with a dropdown picker :)
-                    {...field}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            name="pages"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Liczba stron</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="pages"
-                    type="number"
-                    {...field}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            name="imageUrl"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Źródło obrazka</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Url of the image"
-                    type="text"
-                    min={1}
-                    max={64}
-                    {...field}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            name="status"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Status</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Book status"
-                    type="text"
-                    // Replace with a picker
-                    {...field}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          {/* 
-              TODO: Authors picker :)
-            */}
-        </form>
-      </Form>
+        ) : (
+          <></>
+        )}
+        {bookCreation.step === 0 ? <ChoosePathStep></ChoosePathStep> : <></>}
+        {renderStep()}
+      </div>
     </AuthenticatedLayout>
   );
 };
