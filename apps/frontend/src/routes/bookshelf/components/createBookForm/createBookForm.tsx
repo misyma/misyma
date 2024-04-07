@@ -5,7 +5,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from '../../../../c
 import { CreateBookSchemaValues, createBookSchema } from './schemas/createBookSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '../../../../components/ui/input';
-import { ChoosePathStep } from './steps/firstStep/firstStep';
+import { ChoosePathStep } from './steps/pathChoice/pathChoice';
 
 export const CreateBookForm: FC = () => {
   const form = useForm<CreateBookSchemaValues>({

@@ -4,7 +4,9 @@ import { ReadingStatus } from '@common/contracts';
 
 const BookCreationContext = createContext<BookCreationState<true>>(null as unknown as BookCreationState<true>);
 
-const BookDispatchContext = createContext<Dispatch<BookCreationAction>>(null as unknown as Dispatch<BookCreationAction>);
+const BookDispatchContext = createContext<Dispatch<BookCreationAction>>(
+  null as unknown as Dispatch<BookCreationAction>,
+);
 
 export enum BookCreationActionType {
   chooseIsbnPath = 0,
@@ -14,6 +16,16 @@ export enum BookCreationActionType {
   nonIsbnStepOneDetails = 4,
   nonIsbnStepTwoDetails = 5,
   nonIsbnStepThreeDetails = 6,
+  setTitle = 7,
+  setAuthor = 8,
+  setPublisher = 9,
+  setGenre = 10,
+  setLanguage = 11,
+  setTranslator = 12,
+  setForm = 13,
+  setPagesCount = 14,
+  setStatus = 15,
+  setImage = 16,
 }
 
 type ChooseIsbnPathAction = {
@@ -42,6 +54,26 @@ type SetNonIsbnStepOneDetails = {
   genre: string;
 };
 
+type SetTitle = {
+  type: BookCreationActionType.setTitle;
+  title: string;
+};
+
+type SetAuthor = {
+  type: BookCreationActionType.setAuthor;
+  author: string;
+};
+
+type SetPublisher = {
+  type: BookCreationActionType.setPublisher;
+  publisher: string;
+};
+
+type SetGenre = {
+  type: BookCreationActionType.setGenre;
+  genre: string;
+};
+
 type SetNonIsbnStepTwoDetails = {
   type: BookCreationActionType.nonIsbnStepTwoDetails;
   language: string;
@@ -50,9 +82,39 @@ type SetNonIsbnStepTwoDetails = {
   pagesCount: number;
 };
 
+type SetLanguage = {
+  type: BookCreationActionType.setLanguage;
+  language: string;
+};
+
+type SetTranslator = {
+  type: BookCreationActionType.setTranslator;
+  translator: string;
+};
+
+type SetForm = {
+  type: BookCreationActionType.setForm;
+  form: string;
+};
+
+type SetPagesCount = {
+  type: BookCreationActionType.setPagesCount;
+  pagesCount: number;
+};
+
 type SetNonIsbnStepThreeDetails = {
   type: BookCreationActionType.nonIsbnStepThreeDetails;
   status: ReadingStatus;
+  image: string;
+};
+
+type SetStatus = {
+  type: BookCreationActionType.setStatus;
+  status: ReadingStatus;
+};
+
+type SetImage = {
+  type: BookCreationActionType.setImage;
   image: string;
 };
 
@@ -63,7 +125,17 @@ export type BookCreationAction =
   | SetYearOfIssueAction
   | SetNonIsbnStepOneDetails
   | SetNonIsbnStepTwoDetails
-  | SetNonIsbnStepThreeDetails;
+  | SetNonIsbnStepThreeDetails
+  | SetTitle
+  | SetAuthor
+  | SetPublisher
+  | SetGenre
+  | SetLanguage
+  | SetTranslator
+  | SetForm
+  | SetPagesCount
+  | SetStatus
+  | SetImage;
 
 export interface BookCreationIsbnState<T extends boolean = true> {
   isbnPath: T;
@@ -111,7 +183,10 @@ export function useBookCreationDispatch() {
   return useContext(BookDispatchContext);
 }
 
-function bookCreationReducer<T extends boolean = true>(state: BookCreationState<T>, action: BookCreationAction): BookCreationState<T> {
+function bookCreationReducer<T extends boolean = true>(
+  state: BookCreationState<T>,
+  action: BookCreationAction,
+): BookCreationState<T> {
   switch (action.type) {
     case BookCreationActionType.chooseIsbnPath:
       return {
@@ -137,6 +212,42 @@ function bookCreationReducer<T extends boolean = true>(state: BookCreationState<
         } as Omit<SetNonIsbnStepOneDetails, 'type'>,
       };
 
+    case BookCreationActionType.setAuthor:
+      return {
+        ...state,
+        stepOneDetails: {
+          ...(state as BookCreationNonIsbnState).stepOneDetails,
+          author: action.author,
+        } as BookCreationNonIsbnState['stepOneDetails'],
+      };
+
+    case BookCreationActionType.setGenre:
+      return {
+        ...state,
+        stepOneDetails: {
+          ...(state as BookCreationNonIsbnState).stepOneDetails,
+          genre: action.genre,
+        } as BookCreationNonIsbnState['stepOneDetails'],
+      };
+
+    case BookCreationActionType.setPublisher:
+      return {
+        ...state,
+        stepOneDetails: {
+          ...(state as BookCreationNonIsbnState).stepOneDetails,
+          publisher: action.publisher,
+        } as BookCreationNonIsbnState['stepOneDetails'],
+      };
+
+    case BookCreationActionType.setTitle:
+      return {
+        ...state,
+        stepOneDetails: {
+          ...(state as BookCreationNonIsbnState).stepOneDetails,
+          title: action.title,
+        } as BookCreationNonIsbnState['stepOneDetails'],
+      };
+
     case BookCreationActionType.nonIsbnStepTwoDetails:
       return {
         ...state,
@@ -149,12 +260,72 @@ function bookCreationReducer<T extends boolean = true>(state: BookCreationState<
         } as Omit<SetNonIsbnStepTwoDetails, 'type'>,
       };
 
+    case BookCreationActionType.setForm:
+      return {
+        ...state,
+        isbnPath: false as T,
+        stepTwoDetails: {
+          ...(state as BookCreationNonIsbnState).stepTwoDetails,
+          form: action.form,
+        } as BookCreationNonIsbnState['stepTwoDetails'],
+      };
+
+    case BookCreationActionType.setLanguage:
+      return {
+        ...state,
+        isbnPath: false as T,
+        stepTwoDetails: {
+          ...(state as BookCreationNonIsbnState).stepTwoDetails,
+          language: action.language,
+        } as BookCreationNonIsbnState['stepTwoDetails'],
+      };
+
+    case BookCreationActionType.setPagesCount:
+      return {
+        ...state,
+        isbnPath: false as T,
+        stepTwoDetails: {
+          ...(state as BookCreationNonIsbnState).stepTwoDetails,
+          pagesCount: action.pagesCount,
+        } as BookCreationNonIsbnState['stepTwoDetails'],
+      };
+
+    case BookCreationActionType.setTranslator:
+      return {
+        ...state,
+        isbnPath: false as T,
+        stepTwoDetails: {
+          ...(state as BookCreationNonIsbnState).stepTwoDetails,
+          translator: action.translator,
+        } as BookCreationNonIsbnState['stepTwoDetails'],
+      };
+
     case BookCreationActionType.nonIsbnStepThreeDetails:
       return {
         ...state,
         isbnPath: false as T,
         stepThreeDetails: {
           image: action.image,
+          status: action.status,
+        } as Omit<SetNonIsbnStepThreeDetails, 'type'>,
+      };
+
+    case BookCreationActionType.setImage:
+      return {
+        ...state,
+        isbnPath: false as T,
+        stepThreeDetails: {
+          ...(state as BookCreationNonIsbnState).stepThreeDetails,
+          image: action.image,
+        } as Omit<SetNonIsbnStepThreeDetails, 'type'>,
+      };
+
+    case BookCreationActionType.setStatus:
+      return {
+        ...state,
+        isbnPath: false as T,
+        stepThreeDetails: {
+          ...(state as BookCreationNonIsbnState).stepThreeDetails,
           status: action.status,
         } as Omit<SetNonIsbnStepThreeDetails, 'type'>,
       };
