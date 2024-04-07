@@ -14,12 +14,12 @@ import { type DeleteGenreCommandHandler } from './application/commandHandlers/de
 import { DeleteGenreCommandHandlerImpl } from './application/commandHandlers/deleteGenreCommandHandler/deleteGenreCommandHandlerImpl.js';
 import { type DeleteUserBookCommandHandler } from './application/commandHandlers/deleteUserBookCommandHandler/deleteUserBookCommandHandler.js';
 import { DeleteUserBookCommandHandlerImpl } from './application/commandHandlers/deleteUserBookCommandHandler/deleteUserBookCommandHandlerImpl.js';
-import { type UpdateBookGenresCommandHandler } from './application/commandHandlers/updateBookGenresCommandHandler/updateBookGenresCommandHandler.js';
-import { UpdateBookGenresCommandHandlerImpl } from './application/commandHandlers/updateBookGenresCommandHandler/updateBookGenresCommandHandlerImpl.js';
 import { type UpdateGenreNameCommandHandler } from './application/commandHandlers/updateGenreNameCommandHandler/updateGenreNameCommandHandler.js';
 import { UpdateGenreNameCommandHandlerImpl } from './application/commandHandlers/updateGenreNameCommandHandler/updateGenreNameCommandHandlerImpl.js';
 import { type UpdateUserBookCommandHandler } from './application/commandHandlers/updateUserBookCommandHandler/updateUserBookCommandHandler.js';
 import { UpdateUserBookCommandHandlerImpl } from './application/commandHandlers/updateUserBookCommandHandler/updateUserBookCommandHandlerImpl.js';
+import { type UpdateUserBookGenresCommandHandler } from './application/commandHandlers/updateUserBookGenresCommandHandler/updateUserBookGenresCommandHandler.js';
+import { UpdateBookGenresCommandHandlerImpl } from './application/commandHandlers/updateUserBookGenresCommandHandler/updateUserBookGenresCommandHandlerImpl.js';
 import { type FindBookQueryHandler } from './application/queryHandlers/findBookQueryHandler/findBookQueryHandler.js';
 import { FindBookQueryHandlerImpl } from './application/queryHandlers/findBookQueryHandler/findBookQueryHandlerImpl.js';
 import { type FindBooksQueryHandler } from './application/queryHandlers/findBooksQueryHandler/findBooksQueryHandler.js';
@@ -124,11 +124,11 @@ export class BookModule implements DependencyInjectionModule {
         ),
     );
 
-    container.bind<UpdateBookGenresCommandHandler>(
+    container.bind<UpdateUserBookGenresCommandHandler>(
       symbols.updateBookGenresCommandHandler,
       () =>
         new UpdateBookGenresCommandHandlerImpl(
-          container.get<BookRepository>(symbols.bookRepository),
+          container.get<UserBookRepository>(symbols.userBookRepository),
           container.get<GenreRepository>(symbols.genreRepository),
           container.get<LoggerService>(coreSymbols.loggerService),
         ),
@@ -178,6 +178,7 @@ export class BookModule implements DependencyInjectionModule {
           container.get<BookshelfRepository>(bookshelfSymbols.bookshelfRepository),
           container.get<UserBookRepository>(symbols.userBookRepository),
           container.get<LoggerService>(coreSymbols.loggerService),
+          container.get<GenreRepository>(symbols.genreRepository),
         ),
     );
 
@@ -248,7 +249,6 @@ export class BookModule implements DependencyInjectionModule {
       () =>
         new BookHttpController(
           container.get<CreateBookCommandHandler>(symbols.createBookCommandHandler),
-          container.get<UpdateBookGenresCommandHandler>(symbols.updateBookGenresCommandHandler),
           container.get<DeleteBookCommandHandler>(symbols.deleteBookCommandHandler),
           container.get<FindBookQueryHandler>(symbols.findBookQueryHandler),
           container.get<FindBooksQueryHandler>(symbols.findBooksQueryHandler),
@@ -287,6 +287,7 @@ export class BookModule implements DependencyInjectionModule {
           container.get<DeleteUserBookCommandHandler>(symbols.deleteUserBookCommandHandler),
           container.get<FindUserBookQueryHandler>(symbols.findUserBookQueryHandler),
           container.get<FindUserBooksQueryHandler>(symbols.findUserBooksQueryHandler),
+          container.get<UpdateUserBookGenresCommandHandler>(symbols.updateBookGenresCommandHandler),
           container.get<AccessControlService>(authSymbols.accessControlService),
         ),
     );

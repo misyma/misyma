@@ -12,6 +12,7 @@ export class UserBookTestFactory {
       status: Generator.bookReadingStatus() as ReadingStatus,
       bookshelfId: Generator.uuid(),
       bookId: Generator.uuid(),
+      genres: [],
       ...input,
     });
   }

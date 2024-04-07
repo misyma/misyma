@@ -11,6 +11,7 @@ import { type DatabaseClient } from '../../../../../libs/database/clients/databa
 import { type AuthorTestUtils } from '../../../../authorModule/tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
+import { Genre } from '../../../domain/entities/genre/genre.js';
 import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
 import { symbols } from '../../../symbols.js';
 import { UserBookTestFactory } from '../../../tests/factories/userBookTestFactory/userBookTestFactory.js';
@@ -93,6 +94,8 @@ describe('UserBookRepositoryImpl', () => {
 
       const author = await authorTestUtils.createAndPersist();
 
+      const genreRawEntity = await genreTestUtils.createAndPersist();
+
       const book = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author.id],
@@ -104,12 +107,15 @@ describe('UserBookRepositoryImpl', () => {
         bookshelfId: bookshelf.id,
       });
 
+      const genre = new Genre(genreRawEntity);
+
       const userBook = await userBookRepository.saveUserBook({
         userBook: {
           bookId: userBookRawEntity.bookId,
           bookshelfId: userBookRawEntity.bookshelfId,
           status: userBookRawEntity.status,
           imageUrl: userBookRawEntity.imageUrl as string,
+          genres: [genre],
         },
       });
 
@@ -122,6 +128,7 @@ describe('UserBookRepositoryImpl', () => {
         bookshelfId: userBookRawEntity.bookshelfId,
         status: userBookRawEntity.status,
         imageUrl: userBookRawEntity.imageUrl,
+        genres: [genre],
         book: {
           id: book.id,
           title: book.title,
@@ -133,7 +140,6 @@ describe('UserBookRepositoryImpl', () => {
           format: book.format,
           pages: book.pages,
           authors: [author],
-          genres: [],
         },
       });
 
@@ -187,6 +193,7 @@ describe('UserBookRepositoryImpl', () => {
         bookshelfId: newBookshelfId,
         status: userBook.getStatus(),
         imageUrl: userBook.getImageUrl(),
+        genres: [],
         book: {
           id: book.id,
           title: book.title,
@@ -198,7 +205,6 @@ describe('UserBookRepositoryImpl', () => {
           format: book.format,
           pages: book.pages,
           authors: [author],
-          genres: [],
         },
       });
 
@@ -288,6 +294,51 @@ describe('UserBookRepositoryImpl', () => {
 
       expect(foundUserBook.imageUrl).toEqual(newImageUrl);
     });
+
+    it('sets UserBook Genres', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+
+      const author = await authorTestUtils.createAndPersist();
+
+      const book = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+        },
+      });
+
+      const genre1 = await genreTestUtils.createAndPersist();
+
+      const genre2 = await genreTestUtils.createAndPersist();
+
+      const userBookRawEntity = await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book.id,
+          bookshelfId: bookshelf.id,
+        },
+      });
+
+      const userBook = userBookTestFactory.create(userBookRawEntity);
+
+      userBook.setGenres({ genres: [new Genre(genre1), new Genre(genre2)] });
+
+      const updatedUserBook = await userBookRepository.saveUserBook({
+        userBook,
+      });
+
+      const userBookGenres = await userBookTestUtils.findUserBookGenres({
+        userBookId: userBook.getId(),
+      });
+
+      expect(userBookGenres).toHaveLength(2);
+
+      userBookGenres.forEach((updatedBookGenre) => {
+        expect(updatedBookGenre.genreId).oneOf([genre1.id, genre2.id]);
+
+        expect(updatedBookGenre.userBookId).toEqual(updatedUserBook.getId());
+      });
+    });
   });
 
   describe('findUserBook', () => {
@@ -303,7 +354,6 @@ describe('UserBookRepositoryImpl', () => {
       const book = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author.id],
-          genreIds: [genre.id],
         },
       });
 
@@ -312,6 +362,7 @@ describe('UserBookRepositoryImpl', () => {
           bookId: book.id,
           bookshelfId: bookshelf.id,
         },
+        genreIds: [genre.id],
       });
 
       const userBook = userBookTestFactory.create(userBookRawEntity);
@@ -325,6 +376,14 @@ describe('UserBookRepositoryImpl', () => {
         bookshelfId: userBook.getBookshelfId(),
         status: userBook.getStatus(),
         imageUrl: userBook.getImageUrl(),
+        genres: [
+          {
+            id: genre.id,
+            state: {
+              name: genre.name,
+            },
+          },
+        ],
         book: {
           id: book.id,
           title: book.title,
@@ -336,14 +395,6 @@ describe('UserBookRepositoryImpl', () => {
           format: book.format,
           pages: book.pages,
           authors: [author],
-          genres: [
-            {
-              id: genre.id,
-              state: {
-                name: genre.name,
-              },
-            },
-          ],
         },
       });
     });

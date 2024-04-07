@@ -1,7 +1,5 @@
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type Transaction } from '../../../../../libs/database/types/transaction.js';
-import { type BookGenresRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/bookGenresTable/bookGenresRawEntity.js';
-import { BookGenresTable } from '../../../infrastructure/databases/bookDatabase/tables/bookGenresTable/bookGenresTable.js';
 import { type BooksAuthorsRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/booksAuthorsTable/booksAuthorsRawEntity.js';
 import { BooksAuthorsTable } from '../../../infrastructure/databases/bookDatabase/tables/booksAuthorsTable/booksAuthorsTable.js';
 import { type BookRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/bookTable/bookRawEntity.js';
@@ -12,7 +10,6 @@ interface CreateAndPersistPayload {
   readonly input?: {
     book?: Partial<BookRawEntity>;
     authorIds?: string[];
-    genreIds?: string[];
   };
 }
 
@@ -33,14 +30,9 @@ interface FindByTitleAndAuthorPayload {
   readonly authorId: string;
 }
 
-interface FindBookGenresPayload {
-  readonly bookId: string;
-}
-
 export class BookTestUtils {
   private readonly bookTable = new BookTable();
   private readonly booksAuthorsTable = new BooksAuthorsTable();
-  private readonly bookGenresTable = new BookGenresTable();
   private readonly bookTestFactory = new BookTestFactory();
 
   public constructor(private readonly databaseClient: DatabaseClient) {}
@@ -61,16 +53,6 @@ export class BookTestUtils {
           input.authorIds.map((authorId) => ({
             bookId: book.id,
             authorId,
-          })),
-        );
-      }
-
-      if (input?.genreIds) {
-        await transaction.batchInsert<BookGenresRawEntity>(
-          this.bookGenresTable.name,
-          input.genreIds.map((genreId) => ({
-            genreId,
-            bookId: book.id,
           })),
         );
       }
@@ -122,16 +104,6 @@ export class BookTestUtils {
       .first();
 
     return bookRawEntity as BookRawEntity;
-  }
-
-  public async findRawBookGenres(payload: FindBookGenresPayload): Promise<BookGenresRawEntity[]> {
-    const { bookId } = payload;
-
-    const rawEntities = await this.databaseClient<BookGenresRawEntity>(this.bookGenresTable.name)
-      .select('*')
-      .where({ bookId });
-
-    return rawEntities;
   }
 
   public async truncate(): Promise<void> {

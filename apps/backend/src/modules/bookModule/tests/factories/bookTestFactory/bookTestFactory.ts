@@ -17,7 +17,6 @@ export class BookTestFactory {
       pages: Generator.number(100, 1000),
       releaseYear: Generator.number(1970, 2024),
       authors: [],
-      genres: [],
       ...input,
     });
   }

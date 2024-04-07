@@ -11,7 +11,6 @@ import { type DatabaseClient } from '../../../../../libs/database/clients/databa
 import { Author } from '../../../../authorModule/domain/entities/author/author.js';
 import { type AuthorTestUtils } from '../../../../authorModule/tests/utils/authorTestUtils/authorTestUtils.js';
 import { Book } from '../../../domain/entities/book/book.js';
-import { Genre } from '../../../domain/entities/genre/genre.js';
 import { type BookRepository } from '../../../domain/repositories/bookRepository/bookRepository.js';
 import { symbols } from '../../../symbols.js';
 import { BookTestFactory } from '../../../tests/factories/bookTestFactory/bookTestFactory.js';
@@ -80,7 +79,6 @@ describe('BookRepositoryImpl', () => {
           format: createdBook.getFormat(),
           pages: createdBook.getPages() as number,
           authors: [new Author(author)],
-          genres: [],
         },
       });
 
@@ -249,7 +247,6 @@ describe('BookRepositoryImpl', () => {
         format: newFormat,
         pages: newPages,
         authors: [],
-        genres: [],
       });
 
       expect(foundBook).toEqual({
@@ -262,120 +259,6 @@ describe('BookRepositoryImpl', () => {
         translator: newTranslator,
         format: newFormat,
         pages: newPages,
-      });
-    });
-
-    it('adds Book Genres', async () => {
-      const author1 = await authorTestUtils.createAndPersist();
-
-      const author2 = await authorTestUtils.createAndPersist();
-
-      const genre1 = await genreTestUtils.createAndPersist();
-
-      const genre2 = await genreTestUtils.createAndPersist();
-
-      const genre3 = await genreTestUtils.createAndPersist();
-
-      const genre4 = await genreTestUtils.createAndPersist();
-
-      const bookRawEntity = await bookTestUtils.createAndPersist({
-        input: {
-          authorIds: [author1.id, author2.id],
-          genreIds: [genre1.id],
-        },
-      });
-
-      const initialGenres = await bookTestUtils.findRawBookGenres({
-        bookId: bookRawEntity.id,
-      });
-
-      expect(initialGenres).toHaveLength(1);
-
-      const book = bookTestFactory.create(bookRawEntity);
-
-      book.setGenres({
-        genres: [new Genre(genre1), new Genre(genre2), new Genre(genre3), new Genre(genre4)],
-      });
-
-      const updatedBook = await bookRepository.saveBook({
-        book,
-      });
-
-      const foundBook = await bookRepository.findBook({
-        id: book.getId(),
-      });
-
-      expect(updatedBook.getGenres()).toHaveLength(4);
-
-      expect(foundBook?.getGenres()).toHaveLength(4);
-
-      const updatedBookGenres = await bookTestUtils.findRawBookGenres({
-        bookId: book.getId(),
-      });
-
-      expect(updatedBookGenres).toHaveLength(4);
-
-      updatedBookGenres.forEach((updatedBookGenre) => {
-        expect(updatedBookGenre.genreId).oneOf([genre1.id, genre2.id, genre3.id, genre4.id]);
-
-        expect(updatedBookGenre.bookId).toEqual(updatedBook.getId());
-      });
-    });
-
-    it('removes Book Genres', async () => {
-      const author1 = await authorTestUtils.createAndPersist();
-
-      const author2 = await authorTestUtils.createAndPersist();
-
-      const genre1 = await genreTestUtils.createAndPersist();
-
-      const genre2 = await genreTestUtils.createAndPersist();
-
-      const genre3 = await genreTestUtils.createAndPersist();
-
-      const genre4 = await genreTestUtils.createAndPersist();
-
-      const bookRawEntity = await bookTestUtils.createAndPersist({
-        input: {
-          authorIds: [author1.id, author2.id],
-          genreIds: [genre1.id, genre2.id, genre3.id, genre4.id],
-        },
-      });
-
-      const book = bookTestFactory.create(bookRawEntity);
-
-      const initialGenres = await bookTestUtils.findRawBookGenres({
-        bookId: bookRawEntity.id,
-      });
-
-      expect(initialGenres).toHaveLength(4);
-
-      book.setGenres({
-        genres: [new Genre(genre1), new Genre(genre2)],
-      });
-
-      const updatedBook = await bookRepository.saveBook({
-        book,
-      });
-
-      const foundBook = await bookRepository.findBook({
-        id: book.getId(),
-      });
-
-      expect(updatedBook.getGenres()).toHaveLength(2);
-
-      expect(foundBook?.getGenres()).toHaveLength(2);
-
-      const updatedBookGenres = await bookTestUtils.findRawBookGenres({
-        bookId: updatedBook.getId(),
-      });
-
-      expect(updatedBookGenres).toHaveLength(2);
-
-      updatedBookGenres.forEach((updatedBookGenre) => {
-        expect(updatedBookGenre.genreId).oneOf([genre1.id, genre2.id]);
-
-        expect(updatedBookGenre.bookId).toEqual(updatedBook.getId());
       });
     });
   });

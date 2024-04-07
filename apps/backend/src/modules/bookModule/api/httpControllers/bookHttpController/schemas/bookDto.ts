@@ -45,15 +45,6 @@ export const bookDTOSchema = Type.Object({
       maximum: 10000,
     }),
   ),
-  genres: Type.Array(
-    Type.Object({
-      id: Type.String({ format: 'uuid' }),
-      name: Type.String({
-        minLength: 1,
-        maxLength: 64,
-      }),
-    }),
-  ),
   authors: Type.Array(
     Type.Object({
       id: Type.String({ format: 'uuid' }),

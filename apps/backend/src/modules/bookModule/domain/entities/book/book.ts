@@ -2,7 +2,6 @@ import { type BookFormat } from '@common/contracts';
 
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type Author } from '../../../../authorModule/domain/entities/author/author.js';
-import { type Genre } from '../genre/genre.js';
 
 export interface BookDraft {
   readonly id: string;
@@ -15,7 +14,6 @@ export interface BookDraft {
   readonly format: BookFormat;
   readonly pages?: number | undefined;
   readonly authors: Author[];
-  readonly genres: Genre[];
 }
 
 export interface BookState {
@@ -28,7 +26,6 @@ export interface BookState {
   format: BookFormat;
   pages?: number | undefined;
   authors: Author[];
-  genres: Genre[];
 }
 
 export interface SetTitlePayload {
@@ -67,16 +64,12 @@ export interface SetAuthorsPayload {
   readonly authors: Author[];
 }
 
-export interface SetGenresPayload {
-  readonly genres: Genre[];
-}
-
 export class Book {
   private readonly id: string;
   private readonly state: BookState;
 
   public constructor(draft: BookDraft) {
-    const { id, title, isbn, publisher, releaseYear, language, translator, format, pages, authors, genres } = draft;
+    const { id, title, isbn, publisher, releaseYear, language, translator, format, pages, authors } = draft;
 
     this.id = id;
 
@@ -85,7 +78,6 @@ export class Book {
       language,
       format,
       authors,
-      genres,
     };
 
     if (isbn) {
@@ -150,11 +142,7 @@ export class Book {
   }
 
   public getAuthors(): Author[] {
-    return this.state.authors ? [...this.state.authors] : [];
-  }
-
-  public getGenres(): Genre[] {
-    return this.state.genres ? [...this.state.genres] : [];
+    return this.state.authors;
   }
 
   public setTitle(payload: SetTitlePayload): void {
@@ -233,11 +221,5 @@ export class Book {
     }
 
     this.state.authors.splice(authorIndex, 1);
-  }
-
-  public setGenres(payload: SetGenresPayload): void {
-    const { genres } = payload;
-
-    this.state.genres = genres;
   }
 }

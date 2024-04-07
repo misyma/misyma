@@ -11,14 +11,11 @@ import {
   type DeleteBookPayload,
   type SaveBookPayload,
 } from '../../../domain/repositories/bookRepository/bookRepository.js';
-import { type BookGenresRawEntity } from '../../databases/bookDatabase/tables/bookGenresTable/bookGenresRawEntity.js';
-import { BookGenresTable } from '../../databases/bookDatabase/tables/bookGenresTable/bookGenresTable.js';
 import { type BooksAuthorsRawEntity } from '../../databases/bookDatabase/tables/booksAuthorsTable/booksAuthorsRawEntity.js';
 import { BooksAuthorsTable } from '../../databases/bookDatabase/tables/booksAuthorsTable/booksAuthorsTable.js';
 import { type BookRawEntity } from '../../databases/bookDatabase/tables/bookTable/bookRawEntity.js';
 import { BookTable } from '../../databases/bookDatabase/tables/bookTable/bookTable.js';
 import { type BookWithJoinsRawEntity } from '../../databases/bookDatabase/tables/bookTable/bookWithJoinsRawEntity.js';
-import { GenreTable } from '../../databases/bookDatabase/tables/genreTable/genreTable.js';
 
 type CreateBookPayload = { book: BookState };
 
@@ -28,8 +25,6 @@ export class BookRepositoryImpl implements BookRepository {
   private readonly bookTable = new BookTable();
   private readonly booksAuthorsTable = new BooksAuthorsTable();
   private readonly authorTable = new AuthorTable();
-  private readonly bookGenresTable = new BookGenresTable();
-  private readonly genresTable = new GenreTable();
 
   public constructor(
     private readonly databaseClient: DatabaseClient,
@@ -112,21 +107,11 @@ export class BookRepositoryImpl implements BookRepository {
 
     try {
       await this.databaseClient.transaction(async (transaction) => {
-        const { authors: updatedAuthors, genres: updatedGenres, ...bookFields } = book.getState();
+        const { authors: updatedAuthors, ...bookFields } = book.getState();
 
         await transaction(this.bookTable.name).update(bookFields, '*').where({ id: book.getId() });
 
         const existingAuthors = existingBook.getAuthors();
-
-        const existingGenres = existingBook.getGenres();
-
-        const addedGenres = updatedGenres.filter(
-          (genre) => !existingGenres.some((currentGenre) => currentGenre.getId() === genre.getId()),
-        );
-
-        const removedGenres = existingGenres.filter(
-          (genre) => !updatedGenres.some((currentGenre) => currentGenre.getId() === genre.getId()),
-        );
 
         const addedAuthors = updatedAuthors.filter(
           (author) => !existingAuthors.some((currentAuthor) => currentAuthor.getId() === author.getId()),
@@ -152,30 +137,6 @@ export class BookRepositoryImpl implements BookRepository {
             .whereIn(
               'authorId',
               removedAuthors.map((author) => author.getId()),
-            )
-            .andWhere({
-              bookId: book.getId(),
-            });
-        }
-
-        if (addedGenres.length > 0) {
-          await transaction<BookGenresRawEntity>(this.bookGenresTable.name)
-            .insert(
-              addedGenres.map((genre) => ({
-                bookId: book.getId(),
-                genreId: genre.getId(),
-              })),
-            )
-            .onConflict(['bookId', 'genreId'])
-            .merge();
-        }
-
-        if (removedGenres.length > 0) {
-          await transaction<BookGenresRawEntity>(this.bookGenresTable.name)
-            .delete()
-            .whereIn(
-              'genreId',
-              removedGenres.map((genre) => genre.getId()),
             )
             .andWhere({
               bookId: book.getId(),
@@ -211,8 +172,6 @@ export class BookRepositoryImpl implements BookRepository {
           `${this.bookTable.name}.format`,
           `${this.bookTable.name}.pages`,
           `${this.authorTable.name}.id as authorId`,
-          `${this.genresTable.name}.name as genreName`,
-          `${this.genresTable.name}.id as genreId`,
           'firstName',
           'lastName',
         ])
@@ -228,12 +187,6 @@ export class BookRepositoryImpl implements BookRepository {
         })
         .leftJoin(this.authorTable.name, (join) => {
           join.on(`${this.authorTable.name}.id`, '=', `${this.booksAuthorsTable.name}.authorId`);
-        })
-        .leftJoin(this.bookGenresTable.name, (join) => {
-          join.on(`${this.bookGenresTable.name}.bookId`, '=', `${this.bookTable.name}.id`);
-        })
-        .leftJoin(this.genresTable.name, (join) => {
-          join.on(`${this.genresTable.name}.id`, `=`, `${this.bookGenresTable.name}.genreId`);
         })
         .where((builder) => {
           if (id) {
@@ -279,8 +232,6 @@ export class BookRepositoryImpl implements BookRepository {
           `${this.bookTable.name}.format`,
           `${this.bookTable.name}.pages`,
           `${this.authorTable.name}.id as authorId`,
-          `${this.genresTable.name}.name as genreName`,
-          `${this.genresTable.name}.id as genreId`,
           'firstName',
           'lastName',
         ])
@@ -289,12 +240,6 @@ export class BookRepositoryImpl implements BookRepository {
         })
         .leftJoin(this.authorTable.name, (join) => {
           join.on(`${this.authorTable.name}.id`, '=', `${this.booksAuthorsTable.name}.authorId`);
-        })
-        .leftJoin(this.bookGenresTable.name, (join) => {
-          join.on(`${this.bookGenresTable.name}.bookId`, '=', `${this.bookTable.name}.id`);
-        })
-        .leftJoin(this.genresTable.name, (join) => {
-          join.on(`${this.genresTable.name}.id`, `=`, `${this.bookGenresTable.name}.genreId`);
         });
 
       rawEntities = await query;

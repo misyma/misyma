@@ -6,7 +6,9 @@ import {
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type BookshelfRepository } from '../../../../bookshelfModule/domain/repositories/bookshelfRepository/bookshelfRepository.js';
+import { type Genre } from '../../../domain/entities/genre/genre.js';
 import { type BookRepository } from '../../../domain/repositories/bookRepository/bookRepository.js';
+import { type GenreRepository } from '../../../domain/repositories/genreRepository/genreRepository.js';
 import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
 
 export class CreateUserBookCommandHandlerImpl implements CreateUserBookCommandHandler {
@@ -15,10 +17,11 @@ export class CreateUserBookCommandHandlerImpl implements CreateUserBookCommandHa
     private readonly bookshelfRepository: BookshelfRepository,
     private readonly userBookRepository: UserBookRepository,
     private readonly loggerService: LoggerService,
+    private readonly genreRepository: GenreRepository,
   ) {}
 
   public async execute(payload: CreateUserBookCommandHandlerPayload): Promise<CreateUserBookCommandHandlerResult> {
-    const { bookshelfId, bookId, status, imageUrl } = payload;
+    const { bookshelfId, bookId, status, imageUrl, genreIds } = payload;
 
     this.loggerService.debug({
       message: 'Creating UserBook...',
@@ -26,7 +29,10 @@ export class CreateUserBookCommandHandlerImpl implements CreateUserBookCommandHa
       bookId,
       status,
       imageUrl,
+      genreIds,
     });
+
+    // TODO: add validation for genres ids
 
     const bookshelf = await this.bookshelfRepository.findBookshelf({ where: { id: bookshelfId } });
 
@@ -46,12 +52,21 @@ export class CreateUserBookCommandHandlerImpl implements CreateUserBookCommandHa
       });
     }
 
+    let genres: Genre[] = [];
+
+    if (genreIds) {
+      genres = await this.genreRepository.findGenresByIds({
+        ids: genreIds,
+      });
+    }
+
     const userBook = await this.userBookRepository.saveUserBook({
       userBook: {
         bookId,
         bookshelfId,
         status,
         imageUrl,
+        genres,
       },
     });
 

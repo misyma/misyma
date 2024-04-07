@@ -29,7 +29,6 @@ describe('BookMapperImpl', () => {
         format: bookRawEntity.format,
         pages: bookRawEntity.pages,
         authors: [],
-        genres: [],
       },
     });
   });
@@ -51,8 +50,6 @@ describe('BookMapperImpl', () => {
         authorId: null,
         firstName: null,
         lastName: null,
-        genreId: null,
-        genreName: null,
       },
     ]);
 
@@ -69,7 +66,6 @@ describe('BookMapperImpl', () => {
           format: book.format,
           pages: book.pages,
           authors: [],
-          genres: [],
         },
       },
     ]);

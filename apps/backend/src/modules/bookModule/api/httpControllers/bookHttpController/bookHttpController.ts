@@ -18,14 +18,6 @@ import {
   findBookPathParamsDTOSchema,
 } from './schemas/findBookSchema.js';
 import { type FindBooksResponseBodyDTO, findBooksResponseBodyDTOSchema } from './schemas/findBooksSchema.js';
-import {
-  type UpdateBookGenresBodyDTO,
-  type UpdateBookGenresResponseDTOSchema,
-  type UpdateBookGenresPathParamsDTO,
-  updateBookGenresBodyDTOSchema,
-  updateBookGenresResponseDTOSchema,
-  updateBookGenresPathParamsDTOSchema,
-} from './schemas/updateBookGenresSchema.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
@@ -40,7 +32,6 @@ import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
 import { type CreateBookCommandHandler } from '../../../application/commandHandlers/createBookCommandHandler/createBookCommandHandler.js';
 import { type DeleteBookCommandHandler } from '../../../application/commandHandlers/deleteBookCommandHandler/deleteBookCommandHandler.js';
-import { type UpdateBookGenresCommandHandler } from '../../../application/commandHandlers/updateBookGenresCommandHandler/updateBookGenresCommandHandler.js';
 import { type FindBookQueryHandler } from '../../../application/queryHandlers/findBookQueryHandler/findBookQueryHandler.js';
 import { type FindBooksQueryHandler } from '../../../application/queryHandlers/findBooksQueryHandler/findBooksQueryHandler.js';
 import { type Book } from '../../../domain/entities/book/book.js';
@@ -51,7 +42,6 @@ export class BookHttpController implements HttpController {
 
   public constructor(
     private readonly createBookCommandHandler: CreateBookCommandHandler,
-    private readonly updateBookGenresCommandHandler: UpdateBookGenresCommandHandler,
     private readonly deleteBookCommandHandler: DeleteBookCommandHandler,
     private readonly findBookQueryHandler: FindBookQueryHandler,
     private readonly findBooksQueryHandler: FindBooksQueryHandler,
@@ -128,47 +118,7 @@ export class BookHttpController implements HttpController {
         securityMode: SecurityMode.bearerToken,
         description: 'Delete book.',
       }),
-      new HttpRoute({
-        method: HttpMethodName.patch,
-        path: ':bookId/genres',
-        description: 'Update Book Genres.',
-        handler: this.updateBookGenres.bind(this),
-        schema: {
-          request: {
-            pathParams: updateBookGenresPathParamsDTOSchema,
-            body: updateBookGenresBodyDTOSchema,
-          },
-          response: {
-            [HttpStatusCode.ok]: {
-              description: 'Book genres updated.',
-              schema: updateBookGenresResponseDTOSchema,
-            },
-          },
-        },
-      }),
     ];
-  }
-
-  private async updateBookGenres(
-    request: HttpRequest<UpdateBookGenresBodyDTO, undefined, UpdateBookGenresPathParamsDTO>,
-  ): Promise<HttpOkResponse<UpdateBookGenresResponseDTOSchema>> {
-    await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
-    });
-
-    const { bookId } = request.pathParams;
-
-    const { genreIds } = request.body;
-
-    const { book } = await this.updateBookGenresCommandHandler.execute({
-      bookId,
-      genreIds,
-    });
-
-    return {
-      statusCode: HttpStatusCode.ok,
-      body: this.mapBookToBookDTO(book),
-    };
   }
 
   private async createBook(
@@ -252,10 +202,6 @@ export class BookHttpController implements HttpController {
         firstName: author.getFirstName(),
         id: author.getId(),
         lastName: author.getLastName(),
-      })),
-      genres: book.getGenres().map((genre) => ({
-        id: genre.getId(),
-        name: genre.getName(),
       })),
     };
 

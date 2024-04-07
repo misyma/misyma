@@ -15,6 +15,7 @@ export const createUserBookBodyDTOSchema = Type.Object({
   status: Type.Enum(contracts.ReadingStatus),
   bookshelfId: Type.String({ format: 'uuid' }),
   bookId: Type.String({ format: 'uuid' }),
+  genreIds: Type.Optional(Type.Array(Type.String({ format: 'uuid' }))),
 });
 
 export type CreateUserBookBodyDTO = TypeExtends<

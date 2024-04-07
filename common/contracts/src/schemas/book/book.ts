@@ -1,6 +1,5 @@
 import { type BookFormat } from './bookFormat.js';
 import { type Author } from '../author/author.js';
-import { type Genre } from '../genre/genre.js';
 
 export interface Book {
   readonly id: string;
@@ -13,5 +12,4 @@ export interface Book {
   readonly format: BookFormat;
   readonly pages?: number;
   readonly authors: Author[];
-  readonly genres: Genre[];
 }
