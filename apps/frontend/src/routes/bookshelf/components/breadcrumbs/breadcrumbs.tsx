@@ -4,7 +4,7 @@ export interface BreadcrumbsProps {
 
 export const Breadcrumbs = ({ crumbs }: BreadcrumbsProps): JSX.Element => {
   return (
-    <div className="flex flex-row gap-4 w-full justify-center items-center align-middle">
+    <div className="flex flex-row gap-4 w-full justify-center items-center align-middle py-4">
       {Object.entries(crumbs).map(([key, value]) => (
         <div key={`${key}-breadcrumb`}>{value}</div>
       ))}

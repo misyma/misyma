@@ -18,10 +18,10 @@ export const ChoosePathStep: FC = () => {
   return (
     <div className="flex flex-col gap-8 max-w-lg">
       <p className="sm:text-3xl text-xl font-semibold">Czy książka, którą chcesz dodać, posiada number ISBN?</p>
-      <div className="flex flex-1 gap-4">
+      <div className="flex flex-1 gap-4 w-[50%] justify-between">
         <Button
           className={
-            hasChosenISBN ? 'bg-primary' : 'bg-transparent text-primary border-primary border-solid border-[1px]'
+            hasChosenISBN ? 'bg-primary w-full' : 'bg-transparent text-primary border-primary border-solid border-[1px] w-full'
           }
           onClick={() => {
             setHasChosenISBN(true);
@@ -36,8 +36,8 @@ export const ChoosePathStep: FC = () => {
         <Button
           className={
             hasChosenISBN
-              ? 'bg-transparent text-primary border-primary border-[1px] border-solid'
-              : 'bg-primary border-primary'
+              ? 'bg-transparent text-primary border-primary border-[1px] border-solid w-full'
+              : 'bg-primary border-primary w-full'
           }
           onClick={() => {
             setHasChosenISBN(false);
