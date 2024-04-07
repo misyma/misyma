@@ -152,7 +152,7 @@ describe('UserBookRepositoryImpl', () => {
       });
     });
 
-    it.only('updates UserBook bookshelf', async () => {
+    it('updates UserBook bookshelf', async () => {
       const user = await userTestUtils.createAndPersist();
 
       const bookshelf1 = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
