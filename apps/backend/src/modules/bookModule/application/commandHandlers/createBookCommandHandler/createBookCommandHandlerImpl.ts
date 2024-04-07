@@ -33,7 +33,6 @@ export class CreateBookCommandHandlerImpl implements CreateBookCommandHandler {
       book: {
         ...bookData,
         authors,
-        genres: [],
       },
     });
 

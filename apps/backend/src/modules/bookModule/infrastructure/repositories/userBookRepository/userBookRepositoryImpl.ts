@@ -12,10 +12,11 @@ import {
   type SaveUserBookPayload,
   type UserBookRepository,
 } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
-import { BookGenresTable } from '../../databases/bookDatabase/tables/bookGenresTable/bookGenresTable.js';
 import { BooksAuthorsTable } from '../../databases/bookDatabase/tables/booksAuthorsTable/booksAuthorsTable.js';
 import { BookTable } from '../../databases/bookDatabase/tables/bookTable/bookTable.js';
 import { GenreTable } from '../../databases/bookDatabase/tables/genreTable/genreTable.js';
+import { type UserBookGenresRawEntity } from '../../databases/bookDatabase/tables/userBookGenresTable/userBookGenresRawEntity.js';
+import { UserBookGenresTable } from '../../databases/bookDatabase/tables/userBookGenresTable/userBookGenresTable.js';
 import { type UserBookRawEntity } from '../../databases/bookDatabase/tables/userBookTable/userBookRawEntity.js';
 import { UserBookTable } from '../../databases/bookDatabase/tables/userBookTable/userBookTable.js';
 import { type UserBookWithJoinsRawEntity } from '../../databases/bookDatabase/tables/userBookTable/userBookWithJoinsRawEntity.js';
@@ -29,7 +30,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
   private readonly bookTable = new BookTable();
   private readonly booksAuthorsTable = new BooksAuthorsTable();
   private readonly authorTable = new AuthorTable();
-  private readonly bookGenresTable = new BookGenresTable();
+  private readonly userBookGenresTable = new UserBookGenresTable();
   private readonly genresTable = new GenreTable();
 
   public constructor(
@@ -50,18 +51,31 @@ export class UserBookRepositoryImpl implements UserBookRepository {
 
   private async createUserBook(payload: CreateUserBookPayload): Promise<UserBook> {
     const {
-      userBook: { imageUrl, status, bookshelfId, bookId },
+      userBook: { imageUrl, status, bookshelfId, bookId, genres },
     } = payload;
 
     const id = this.uuidService.generateUuid();
 
     try {
-      await this.databaseClient<UserBookRawEntity>(this.userBookTable.name).insert({
-        id,
-        imageUrl,
-        status,
-        bookshelfId,
-        bookId,
+      await this.databaseClient.transaction(async (transaction) => {
+        await transaction<UserBookRawEntity>(this.userBookTable.name).insert(
+          {
+            id,
+            imageUrl,
+            status,
+            bookshelfId,
+            bookId,
+          },
+          '*',
+        );
+
+        await transaction.batchInsert<UserBookGenresRawEntity>(
+          this.userBookGenresTable.name,
+          genres.map((genre) => ({
+            userBookId: id,
+            genreId: genre.getId(),
+          })),
+        );
       });
     } catch (error) {
       throw new RepositoryError({
@@ -76,6 +90,15 @@ export class UserBookRepositoryImpl implements UserBookRepository {
 
   private async updateUserBook(payload: UpdateUserBookPayload): Promise<UserBook> {
     const { userBook } = payload;
+
+    const existingUserBook = await this.findUserBook({ id: userBook.getId() });
+
+    if (!existingUserBook) {
+      throw new ResourceNotFoundError({
+        name: 'UserBook',
+        id: userBook.getId(),
+      });
+    }
 
     const { bookshelfId, status, imageUrl } = userBook.getState();
 
@@ -92,10 +115,45 @@ export class UserBookRepositoryImpl implements UserBookRepository {
     }
 
     try {
-      await this.databaseClient<UserBookRawEntity>(this.userBookTable.name)
-        .update(updateData)
-        .where({ id: userBook.getId() })
-        .returning('*');
+      await this.databaseClient.transaction(async (transaction) => {
+        const { genres: updatedGenres } = userBook.getState();
+
+        await transaction(this.userBookTable.name).update(updateData).where({ id: userBook.getId() });
+
+        const existingGenres = existingUserBook.getGenres();
+
+        const addedGenres = updatedGenres.filter(
+          (genre) => !existingGenres.some((currentGenre) => currentGenre.getId() === genre.getId()),
+        );
+
+        const removedGenres = existingGenres.filter(
+          (genre) => !updatedGenres.some((currentGenre) => currentGenre.getId() === genre.getId()),
+        );
+
+        if (addedGenres.length > 0) {
+          await transaction<UserBookGenresRawEntity>(this.userBookGenresTable.name)
+            .insert(
+              addedGenres.map((genre) => ({
+                userBookId: userBook.getId(),
+                genreId: genre.getId(),
+              })),
+            )
+            .onConflict(['userBookId', 'genreId'])
+            .merge();
+        }
+
+        if (removedGenres.length > 0) {
+          await transaction<UserBookGenresRawEntity>(this.userBookGenresTable.name)
+            .delete()
+            .whereIn(
+              'genreId',
+              removedGenres.map((genre) => genre.getId()),
+            )
+            .andWhere({
+              userBookId: userBook.getId(),
+            });
+        }
+      });
     } catch (error) {
       throw new RepositoryError({
         entity: 'UserBook',
@@ -147,11 +205,11 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         .leftJoin(this.authorTable.name, (join) => {
           join.on(`${this.authorTable.name}.id`, '=', `${this.booksAuthorsTable.name}.authorId`);
         })
-        .leftJoin(this.bookGenresTable.name, (join) => {
-          join.on(`${this.bookGenresTable.name}.bookId`, '=', `${this.userBookTable.name}.bookId`);
+        .leftJoin(this.userBookGenresTable.name, (join) => {
+          join.on(`${this.userBookGenresTable.name}.userBookId`, '=', `${this.userBookTable.name}.id`);
         })
         .leftJoin(this.genresTable.name, (join) => {
-          join.on(`${this.genresTable.name}.id`, `=`, `${this.bookGenresTable.name}.genreId`);
+          join.on(`${this.genresTable.name}.id`, `=`, `${this.userBookGenresTable.name}.genreId`);
         })
         .leftJoin(this.bookTable.name, (join) => {
           join.on(`${this.bookTable.name}.id`, `=`, `${this.userBookTable.name}.bookId`);
@@ -217,11 +275,11 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         .leftJoin(this.authorTable.name, (join) => {
           join.on(`${this.authorTable.name}.id`, '=', `${this.booksAuthorsTable.name}.authorId`);
         })
-        .leftJoin(this.bookGenresTable.name, (join) => {
-          join.on(`${this.bookGenresTable.name}.bookId`, '=', `${this.userBookTable.name}.bookId`);
+        .leftJoin(this.userBookGenresTable.name, (join) => {
+          join.on(`${this.userBookGenresTable.name}.userBookId`, '=', `${this.userBookTable.name}.id`);
         })
         .leftJoin(this.genresTable.name, (join) => {
-          join.on(`${this.genresTable.name}.id`, `=`, `${this.bookGenresTable.name}.genreId`);
+          join.on(`${this.genresTable.name}.id`, `=`, `${this.userBookGenresTable.name}.genreId`);
         })
         .leftJoin(this.bookTable.name, (join) => {
           join.on(`${this.bookTable.name}.id`, `=`, `${this.userBookTable.name}.bookId`);

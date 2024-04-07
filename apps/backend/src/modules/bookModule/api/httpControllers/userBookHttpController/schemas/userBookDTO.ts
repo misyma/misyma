@@ -12,6 +12,15 @@ export const userBookDTOSchema = Type.Object({
   ),
   status: Type.Enum(contracts.ReadingStatus),
   bookshelfId: Type.String({ format: 'uuid' }),
+  genres: Type.Array(
+    Type.Object({
+      id: Type.String({ format: 'uuid' }),
+      name: Type.String({
+        minLength: 1,
+        maxLength: 64,
+      }),
+    }),
+  ),
   bookId: Type.String({ format: 'uuid' }),
   book: Type.Object({
     title: Type.String({
@@ -53,15 +62,6 @@ export const userBookDTOSchema = Type.Object({
       Type.Integer({
         minimum: 1,
         maximum: 10000,
-      }),
-    ),
-    genres: Type.Array(
-      Type.Object({
-        id: Type.String({ format: 'uuid' }),
-        name: Type.String({
-          minLength: 1,
-          maxLength: 64,
-        }),
       }),
     ),
     authors: Type.Array(

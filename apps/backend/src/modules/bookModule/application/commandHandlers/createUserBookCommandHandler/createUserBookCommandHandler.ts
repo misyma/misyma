@@ -8,6 +8,7 @@ export interface CreateUserBookCommandHandlerPayload {
   readonly bookshelfId: string;
   readonly status: ReadingStatus;
   readonly imageUrl?: string | undefined;
+  readonly genreIds?: string[];
 }
 
 export interface CreateUserBookCommandHandlerResult {

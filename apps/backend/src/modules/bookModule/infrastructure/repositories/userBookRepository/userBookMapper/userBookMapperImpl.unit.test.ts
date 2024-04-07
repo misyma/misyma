@@ -62,8 +62,8 @@ describe('UserBookMapperImpl', () => {
             format: book.format,
             pages: book.pages,
             authors: [],
-            genres: [],
           },
+          genres: [],
         },
       },
     ]);

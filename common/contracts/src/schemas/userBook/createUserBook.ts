@@ -6,6 +6,7 @@ export interface CreateUserBookRequestBody {
   readonly bookshelfId: string;
   readonly status: ReadingStatus;
   readonly imageUrl?: string;
+  readonly genreIds?: string[];
 }
 
 export interface CreateUserBookResponseBody extends UserBook {}

@@ -1,7 +1,6 @@
 import { type BookMapper } from './bookMapper.js';
 import { Author } from '../../../../../authorModule/domain/entities/author/author.js';
 import { Book, type BookDraft } from '../../../../domain/entities/book/book.js';
-import { Genre } from '../../../../domain/entities/genre/genre.js';
 import { type BookRawEntity } from '../../../databases/bookDatabase/tables/bookTable/bookRawEntity.js';
 import { type BookWithJoinsRawEntity } from '../../../databases/bookDatabase/tables/bookTable/bookWithJoinsRawEntity.js';
 
@@ -20,7 +19,6 @@ export class BookMapperImpl implements BookMapper {
       format,
       pages,
       authors: [],
-      genres: [],
     });
   }
 
@@ -41,8 +39,6 @@ export class BookMapperImpl implements BookMapper {
         authorId,
         firstName,
         lastName,
-        genreId,
-        genreName,
       } = entity;
 
       const bookExists = bookDraftsMap.has(bookId);
@@ -59,19 +55,8 @@ export class BookMapperImpl implements BookMapper {
             }),
           );
         }
-
-        if (genreId && genreName) {
-          bookDraft.genres?.push(
-            new Genre({
-              id: genreId,
-              name: genreName,
-            }),
-          );
-        }
       } else {
         const authors: Author[] = [];
-
-        const genres: Genre[] = [];
 
         if (authorId) {
           authors.push(
@@ -79,15 +64,6 @@ export class BookMapperImpl implements BookMapper {
               firstName: firstName as string,
               id: authorId,
               lastName: lastName as string,
-            }),
-          );
-        }
-
-        if (genreId && genreName) {
-          genres.push(
-            new Genre({
-              id: genreId,
-              name: genreName,
             }),
           );
         }
@@ -103,7 +79,6 @@ export class BookMapperImpl implements BookMapper {
           format,
           pages: pages ?? undefined,
           authors,
-          genres,
         };
 
         bookDraftsMap.set(bookId, bookDraft);

@@ -16,9 +16,9 @@ export interface UserBook {
     readonly format: BookFormat;
     readonly pages?: number;
     readonly authors: Author[];
-    readonly genres: Genre[];
   };
   readonly imageUrl?: string;
   readonly status: ReadingStatus;
   readonly bookshelfId: string;
+  readonly genres: Genre[];
 }

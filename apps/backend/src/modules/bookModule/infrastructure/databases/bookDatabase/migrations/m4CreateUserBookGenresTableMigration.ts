@@ -1,22 +1,22 @@
 import { type DatabaseClient } from '../../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type Migration } from '../../../../../../libs/database/types/migration.js';
 
-export class M3CreateBookGenresTableMigration implements Migration {
-  public readonly name = 'M3CreateBookGenresTableMigration';
+export class M4CreateUserBookGenresTableMigration implements Migration {
+  public readonly name = 'M4CreateUserBookGenresTableMigration';
 
-  private readonly tableName = 'bookGenres';
+  private readonly tableName = 'userBookGenres';
 
   public async up(databaseClient: DatabaseClient): Promise<void> {
     await databaseClient.schema.createTable(this.tableName, (table) => {
-      table.text('bookId').notNullable();
+      table.text('userBookId').notNullable();
 
       table.text('genreId').notNullable();
 
-      table.foreign('bookId').references('id').inTable('books').onDelete('CASCADE');
+      table.foreign('userBookId').references('id').inTable('userBooks').onDelete('CASCADE');
 
       table.foreign('genreId').references('id').inTable('genres').onDelete('CASCADE');
 
-      table.unique(['bookId', 'genreId']);
+      table.unique(['userBookId', 'genreId']);
     });
   }
 

@@ -24,6 +24,14 @@ import {
   type FindUserBookResponseBodyDTO,
 } from './schemas/findUserBookSchema.js';
 import {
+  updateUserBookGenresBodyDTOSchema,
+  updateUserBookGenresPathParamsDTOSchema,
+  updateUserBookGenresResponseDTOSchema,
+  type UpdateUserBookGenresBodyDTO,
+  type UpdateUserBookGenresPathParamsDTO,
+  type UpdateUserBookGenresResponseDTOSchema,
+} from './schemas/updateUserBookGenresSchema.js';
+import {
   updateUserBookPathParamsDTOSchema,
   updateUserBookBodyDTOSchema,
   updateUserBookResponseDTOSchema,
@@ -47,6 +55,7 @@ import { type AccessControlService } from '../../../../authModule/application/se
 import { type CreateUserBookCommandHandler } from '../../../application/commandHandlers/createUserBookCommandHandler/createUserBookCommandHandler.js';
 import { type DeleteUserBookCommandHandler } from '../../../application/commandHandlers/deleteUserBookCommandHandler/deleteUserBookCommandHandler.js';
 import { type UpdateUserBookCommandHandler } from '../../../application/commandHandlers/updateUserBookCommandHandler/updateUserBookCommandHandler.js';
+import { type UpdateUserBookGenresCommandHandler } from '../../../application/commandHandlers/updateUserBookGenresCommandHandler/updateUserBookGenresCommandHandler.js';
 import { type FindUserBookQueryHandler } from '../../../application/queryHandlers/findUserBookQueryHandler/findUserBookQueryHandler.js';
 import { type FindUserBooksQueryHandler } from '../../../application/queryHandlers/findUserBooksQueryHandler/findUserBooksQueryHandler.js';
 import { type BookState } from '../../../domain/entities/book/book.js';
@@ -63,6 +72,7 @@ export class UserBookHttpController implements HttpController {
     private readonly deleteUserBookCommandHandler: DeleteUserBookCommandHandler,
     private readonly findUserBookQueryHandler: FindUserBookQueryHandler,
     private readonly findUserBooksQueryHandler: FindUserBooksQueryHandler,
+    private readonly updateUserBookGenresCommandHandler: UpdateUserBookGenresCommandHandler,
     private readonly accessControlService: AccessControlService,
   ) {}
 
@@ -155,6 +165,24 @@ export class UserBookHttpController implements HttpController {
             [HttpStatusCode.ok]: {
               description: `User's book updated.`,
               schema: updateUserBookResponseDTOSchema,
+            },
+          },
+        },
+      }),
+      new HttpRoute({
+        method: HttpMethodName.patch,
+        path: ':userBookId/genres',
+        description: `Update user's book genres.`,
+        handler: this.updateUserBookGenres.bind(this),
+        schema: {
+          request: {
+            pathParams: updateUserBookGenresPathParamsDTOSchema,
+            body: updateUserBookGenresBodyDTOSchema,
+          },
+          response: {
+            [HttpStatusCode.ok]: {
+              description: `User's book genres updated.`,
+              schema: updateUserBookGenresResponseDTOSchema,
             },
           },
         },
@@ -265,6 +293,28 @@ export class UserBookHttpController implements HttpController {
     };
   }
 
+  private async updateUserBookGenres(
+    request: HttpRequest<UpdateUserBookGenresBodyDTO, undefined, UpdateUserBookGenresPathParamsDTO>,
+  ): Promise<HttpOkResponse<UpdateUserBookGenresResponseDTOSchema>> {
+    await this.accessControlService.verifyBearerToken({
+      authorizationHeader: request.headers['authorization'],
+    });
+
+    const { userBookId } = request.pathParams;
+
+    const { genreIds } = request.body;
+
+    const { userBook } = await this.updateUserBookGenresCommandHandler.execute({
+      userBookId,
+      genreIds,
+    });
+
+    return {
+      statusCode: HttpStatusCode.ok,
+      body: this.mapUserBookToUserBookDTO(userBook),
+    };
+  }
+
   private mapUserBookToUserBookDTO(userBook: UserBook): UserBookDTO {
     const userBookDto: UserBookDTO = {
       id: userBook.getId(),
@@ -281,12 +331,12 @@ export class UserBookHttpController implements HttpController {
             firstName: author.getFirstName(),
             lastName: author.getLastName(),
           })) || [],
-        genres:
-          userBook.getBook()?.genres.map((genre) => ({
-            id: genre.getId(),
-            name: genre.getName(),
-          })) || [],
       },
+      genres:
+        userBook.getGenres().map((genre) => ({
+          id: genre.getId(),
+          name: genre.getName(),
+        })) || [],
     };
 
     const { isbn, pages, publisher, releaseYear, translator } = userBook.getBook() as BookState;

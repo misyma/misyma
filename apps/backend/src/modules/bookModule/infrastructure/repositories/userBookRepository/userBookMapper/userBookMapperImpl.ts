@@ -46,7 +46,7 @@ export class UserBookMapperImpl implements UserBookMapper {
         }
 
         if (genreId && genreName) {
-          userBookDraft.book?.genres?.push(
+          userBookDraft.genres?.push(
             new Genre({
               id: genreId,
               name: genreName,
@@ -90,12 +90,12 @@ export class UserBookMapperImpl implements UserBookMapper {
             format,
             pages: pages ?? undefined,
             authors,
-            genres,
           },
           bookId,
           imageUrl: imageUrl ?? undefined,
           status,
           bookshelfId,
+          genres,
         };
 
         userBookDraftsMapping.set(bookId, userBookDraft);

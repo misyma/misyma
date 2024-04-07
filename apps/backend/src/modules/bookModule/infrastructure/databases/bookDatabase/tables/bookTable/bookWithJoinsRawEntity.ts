@@ -13,6 +13,4 @@ export interface BookWithJoinsRawEntity {
   readonly authorId: string | null;
   readonly firstName: string | null;
   readonly lastName: string | null;
-  readonly genreName: string | null;
-  readonly genreId: string | null;
 }
