@@ -54,7 +54,10 @@ export const IsbnPathForm = (): JSX.Element => {
 
   return (
     <Form {...isbnForm}>
-      <form onSubmit={isbnForm.handleSubmit(onFormSubmit)}>
+      <form
+        onSubmit={isbnForm.handleSubmit(onFormSubmit)}
+        className="space-y-8"
+      >
         <FormField
           control={isbnForm.control}
           name="isbn"
@@ -66,7 +69,7 @@ export const IsbnPathForm = (): JSX.Element => {
                   placeholder="ISBN"
                   type="text"
                   maxLength={64}
-                  includeQuill={false}
+                  includeQuill={true}
                   onInput={(e) => {
                     dispatch({
                       type: BookCreationActionType.setIsbn,
@@ -80,10 +83,13 @@ export const IsbnPathForm = (): JSX.Element => {
             </FormItem>
           )}
         />
-        <div>
-          <Button>Wróć</Button>
-          <Button type="submit">Przejdź dalej</Button>
-        </div>
+        <Button
+          type="submit"
+          disabled={!isbnForm.formState.isValid}
+          className='border border-primary'
+        >
+          Przejdź dalej
+        </Button>
       </form>
     </Form>
   );

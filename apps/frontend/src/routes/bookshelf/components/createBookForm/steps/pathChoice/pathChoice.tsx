@@ -16,8 +16,8 @@ export const ChoosePathStep: FC = () => {
   const dispatch = useBookCreationDispatch();
 
   return (
-    <div className="flex flex-col gap-8">
-      <p className="text-3xl font-semibold">Czy książka, którą chcesz dodać, posiada number ISBN?</p>
+    <div className="flex flex-col gap-8 max-w-lg">
+      <p className="sm:text-3xl text-xl font-semibold">Czy książka, którą chcesz dodać, posiada number ISBN?</p>
       <div className="flex flex-1 gap-4">
         <Button
           className={

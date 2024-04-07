@@ -42,7 +42,10 @@ export const ManualStepThreeForm = (): JSX.Element => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-8"
+      >
         <FormField
           control={form.control}
           name="status"
@@ -91,16 +94,26 @@ export const ManualStepThreeForm = (): JSX.Element => {
             </FormItem>
           )}
         />
-        <Button
-          onClick={() => {
-            dispatch({
-              type: BookCreationActionType.setStep,
-              step: NonIsbnCreationPathStep.inputSecondDetails,
-            });
-          }}
-        >
-          Wróć
-        </Button>
+        <div className="flex w-full gap-4">
+          <Button
+            className="border border-primary w-full"
+            onClick={() => {
+              dispatch({
+                type: BookCreationActionType.setStep,
+                step: NonIsbnCreationPathStep.inputSecondDetails,
+              });
+            }}
+          >
+            Wróć
+          </Button>
+          <Button
+            className="border border-primary w-full"
+            disabled={!form.formState.isValid}
+            type="submit"
+          >
+            Dodaj książkę
+          </Button>
+        </div>
       </form>
     </Form>
   );

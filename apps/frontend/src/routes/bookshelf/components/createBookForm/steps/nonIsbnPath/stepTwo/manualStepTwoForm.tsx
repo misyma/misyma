@@ -77,7 +77,10 @@ export const ManualStepTwoForm = (): JSX.Element => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-8"
+      >
         <FormField
           control={form.control}
           name="language"
@@ -174,17 +177,26 @@ export const ManualStepTwoForm = (): JSX.Element => {
             </FormItem>
           )}
         />
-        <Button
-          onClick={() => {
-            dispatch({
-              type: BookCreationActionType.setStep,
-              step: NonIsbnCreationPathStep.inputFirstDetails,
-            });
-          }}
-        >
-          Wróć
-        </Button>
-        <Button type="submit">Przejdź dalej</Button>
+        <div className="flex justify-between w-full gap-4">
+          <Button
+            className="border border-primary w-full"
+            onClick={() => {
+              dispatch({
+                type: BookCreationActionType.setStep,
+                step: NonIsbnCreationPathStep.inputFirstDetails,
+              });
+            }}
+          >
+            Wróć
+          </Button>
+          <Button
+            className="border border-primary w-full"
+            disabled={!form.formState.isValid}
+            type="submit"
+          >
+            Kontynuuj
+          </Button>
+        </div>
       </form>
     </Form>
   );

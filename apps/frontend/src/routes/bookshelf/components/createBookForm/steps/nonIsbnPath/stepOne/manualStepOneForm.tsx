@@ -60,7 +60,10 @@ export const ManualStepOneForm = (): JSX.Element => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-8"
+      >
         <FormField
           control={form.control}
           name="author"
@@ -157,18 +160,25 @@ export const ManualStepOneForm = (): JSX.Element => {
             </FormItem>
           )}
         />
-        <div>
+        <div className="flex flex-row w-full justify-between gap-4">
           <Button
+            className="border border-primary w-full"
             onClick={() => {
-              dispatch({
+              dispatch({ 
                 type: BookCreationActionType.setStep,
                 step: 0,
               });
             }}
           >
             Wróć
+          </Button> 
+          <Button
+            className="border border-primary w-full"
+            disabled={!form.formState.isValid}
+            type="submit"
+          >
+            Kontynuuj
           </Button>
-          <Button type="submit">Przejdź dalej</Button>
         </div>
       </form>
     </Form>

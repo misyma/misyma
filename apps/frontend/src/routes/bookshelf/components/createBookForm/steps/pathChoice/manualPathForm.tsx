@@ -59,7 +59,10 @@ export const ManualPathForm = (): JSX.Element => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-8"
+      >
         <FormField
           control={form.control}
           name="yearOfIssue"
@@ -69,8 +72,9 @@ export const ManualPathForm = (): JSX.Element => {
               <FormControl>
                 <Input
                   placeholder="Data wydania"
-                  type="text"
-                  includeQuill={false}
+                  type="number"
+                  includeQuill={true}
+                  min={1500}
                   onInput={(e) => {
                     dispatch({
                       type: BookCreationActionType.setYearOfIssue,
@@ -84,19 +88,17 @@ export const ManualPathForm = (): JSX.Element => {
             </FormItem>
           )}
         />
+        <Button
+          type="submit"
+          disabled={!form.formState.isValid}
+          className='border border-primary'
+          onClick={() => {
+            onSubmit(form.getValues());
+          }}
+        >
+          Przejdź dalej
+        </Button>
       </form>
-      <div>
-        <Button>Wróć</Button>
-      </div>
-      <Button
-        type="submit"
-        disabled={!form.formState.isValid}
-        onClick={() => {
-          onSubmit(form.getValues());
-        }}
-      >
-        Przejdź dalej
-      </Button>
     </Form>
   );
 };

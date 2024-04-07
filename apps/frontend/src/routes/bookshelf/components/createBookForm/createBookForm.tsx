@@ -62,8 +62,19 @@ export const CreateBookForm: FC = () => {
         ) : (
           <></>
         )}
-        {bookCreation.step === 0 ? <ChoosePathStep></ChoosePathStep> : <></>}
-        {renderStep()}
+        <div className='flex flex-col-reverse sm:flex-row'>
+          <div>
+            {bookCreation.step === 0 ? <ChoosePathStep></ChoosePathStep> : <></>}
+            {renderStep()}
+          </div>
+          <div className="flex-1 max-h-[250px] max-w-[250px] sm:max-h-[500px] sm:max-w-[500px] flex justify-center">
+            <img
+              src="/books.png"
+              alt="Bookshelf image"
+              className="object-fit aspect-square"
+            />
+          </div>
+        </div>
       </div>
     </AuthenticatedLayout>
   );
