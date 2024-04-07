@@ -86,6 +86,17 @@
   line-height: clamp(2.5rem, 5vw, 5rem);
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type=number] {
+    -moz-appearance:textfield; /* Firefox */
+}
+
 .font-medium-clamped {
   font-size: clamp(1rem, 1.5vw, 2.5rem);
   line-height: clamp(2rem, 3vw, 3rem);
