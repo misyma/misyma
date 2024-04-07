@@ -12,7 +12,11 @@ import { ManualStepThreeForm } from './steps/nonIsbnPath/stepThree/manualStepThr
 import { IsbnPathForm } from './steps/pathChoice/isbnPathForm';
 import { cn } from '../../../../lib/utils';
 
-export const CreateBookForm: FC = () => {
+interface CreateBookProps {
+  bookshelfId: string;
+}
+
+export const CreateBookForm: FC<CreateBookProps> = ({ bookshelfId }) => {
   const steps = {
     1: IsbnPathForm,
     0: {
@@ -31,7 +35,7 @@ export const CreateBookForm: FC = () => {
       return <div>HELLO FROM THE OTHER SIDE</div>;
     } else if (!bookCreation.isbnPath && bookCreation.step > 0) {
       const Component = steps[0][bookCreation.step as NonIsbnCreationPathStep];
-      return <Component />;
+      return <Component bookshelfId={bookshelfId} />;
     } else {
       return null;
     }

@@ -63,7 +63,7 @@ export const ManualStepTwoForm = (): JSX.Element => {
     values: {
       language: bookCreation.stepTwoDetails?.language,
       translator: bookCreation.stepTwoDetails?.translator,
-      form: bookCreation.stepTwoDetails?.form,
+      form: bookCreation.stepTwoDetails?.format,
       pagesCount: bookCreation.stepTwoDetails?.pagesCount,
     },
   });
@@ -119,7 +119,7 @@ export const ManualStepTwoForm = (): JSX.Element => {
                   onInput={(e) => {
                     dispatch({
                       type: BookCreationActionType.setForm,
-                      form: e.currentTarget.value,
+                      format: e.currentTarget.value,
                     });
                   }}
                   {...field}

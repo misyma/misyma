@@ -18,6 +18,6 @@ export const useFindBooksByBookshelfIdQuery = ({ bookshelfId, userId }: Payload)
       accessToken: accessToken as string,
       userId
     }),
-    enabled: !!accessToken || !!bookshelfId,
+    enabled: !!accessToken && !!bookshelfId,
   });
 };

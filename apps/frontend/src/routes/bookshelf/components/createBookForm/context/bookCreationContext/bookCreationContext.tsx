@@ -90,7 +90,7 @@ type SetNonIsbnStepTwoDetails = {
   type: BookCreationActionType.nonIsbnStepTwoDetails;
   language: string;
   translator: string;
-  form: string;
+  format: string;
   pagesCount: number;
 };
 
@@ -104,9 +104,9 @@ type SetTranslator = {
   translator: string;
 };
 
-type SetForm = {
+type SetFormat = {
   type: BookCreationActionType.setForm;
-  form: string;
+  format: string;
 };
 
 type SetPagesCount = {
@@ -144,7 +144,7 @@ export type BookCreationAction =
   | SetGenre
   | SetLanguage
   | SetTranslator
-  | SetForm
+  | SetFormat
   | SetPagesCount
   | SetStatus
   | SetImage
@@ -169,7 +169,7 @@ export interface BookCreationNonIsbnState<T extends boolean = false> {
   stepTwoDetails?: {
     language: string;
     translator: string;
-    form: string;
+    format: string;
     pagesCount: number;
   };
   stepThreeDetails?: {
@@ -268,7 +268,7 @@ function bookCreationReducer<T extends boolean = true>(
         ...state,
         isbnPath: false as T,
         stepTwoDetails: {
-          form: action.form,
+          format: action.format,
           language: action.language,
           pagesCount: action.pagesCount,
           translator: action.translator,
@@ -281,7 +281,7 @@ function bookCreationReducer<T extends boolean = true>(
         isbnPath: false as T,
         stepTwoDetails: {
           ...(state as BookCreationNonIsbnState).stepTwoDetails,
-          form: action.form,
+          format: action.format,
         } as BookCreationNonIsbnState['stepTwoDetails'],
       };
 
