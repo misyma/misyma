@@ -199,9 +199,9 @@ export class BookHttpController implements HttpController {
       language: book.getLanguage(),
       format: book.getFormat(),
       authors: book.getAuthors().map((author) => ({
-        firstName: author.getFirstName(),
         id: author.getId(),
-        lastName: author.getLastName(),
+        name: author.getName(),
+        isApproved: author.getIsApproved(),
       })),
     };
 

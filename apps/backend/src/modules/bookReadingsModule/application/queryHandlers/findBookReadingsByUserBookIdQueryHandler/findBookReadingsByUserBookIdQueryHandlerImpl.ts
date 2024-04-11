@@ -22,7 +22,7 @@ export class FindBookReadingsByBookIdQueryHandlerImpl implements FindBookReading
 
     if (!bookExists) {
       throw new ResourceNotFoundError({
-        name: 'UserBook',
+        resource: 'UserBook',
         id: userBookId,
       });
     }

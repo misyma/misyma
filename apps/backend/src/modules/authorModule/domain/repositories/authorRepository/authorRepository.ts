@@ -1,14 +1,13 @@
 import { type Author } from '../../entities/author/author.js';
 
 export interface CreateAuthorPayload {
-  readonly firstName: string;
-  readonly lastName: string;
+  readonly name: string;
+  readonly isApproved: boolean;
 }
 
 export interface FindAuthorPayload {
   readonly id?: string;
-  readonly firstName?: string;
-  readonly lastName?: string;
+  readonly name?: string;
 }
 
 export interface FindAuthorsByIdsPayload {

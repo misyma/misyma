@@ -4,12 +4,12 @@ import { type AuthorRawEntity } from '../../../databases/tables/authorTable/auth
 
 export class AuthorMapperImpl implements AuthorMapper {
   public mapToDomain(entity: AuthorRawEntity): Author {
-    const { id, firstName, lastName } = entity;
+    const { id, name, isApproved } = entity;
 
     return new Author({
       id,
-      firstName,
-      lastName,
+      name,
+      isApproved: Boolean(isApproved), // sqlite returns 0 or 1
     });
   }
 }

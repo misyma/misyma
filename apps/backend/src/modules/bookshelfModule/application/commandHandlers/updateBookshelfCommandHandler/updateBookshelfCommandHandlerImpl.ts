@@ -30,7 +30,7 @@ export class UpdateBookshelfCommandHandlerImpl implements UpdateBookshelfCommand
 
     if (!existingBookshelf) {
       throw new ResourceNotFoundError({
-        name: 'Bookshelf',
+        resource: 'Bookshelf',
         id,
         userId,
       });

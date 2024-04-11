@@ -37,7 +37,7 @@ describe('FindGenreByNameQueryHandlerImpl', () => {
     ).toThrowErrorInstance({
       instance: ResourceNotFoundError,
       context: {
-        name: 'Genre',
+        resource: 'Genre',
         genreName: invalidName,
       },
     });

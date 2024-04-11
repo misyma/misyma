@@ -328,8 +328,8 @@ export class UserBookHttpController implements HttpController {
         authors:
           userBook.getBook()?.authors.map((author) => ({
             id: author.getId(),
-            firstName: author.getFirstName(),
-            lastName: author.getLastName(),
+            name: author.getName(),
+            isApproved: author.getIsApproved(),
           })) || [],
       },
       genres:

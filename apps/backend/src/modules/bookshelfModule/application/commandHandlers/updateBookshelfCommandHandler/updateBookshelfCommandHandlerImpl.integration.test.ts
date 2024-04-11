@@ -41,7 +41,7 @@ describe('UpdateBookshelfCommandHandlerImpl', () => {
     ).toThrowErrorInstance({
       instance: ResourceNotFoundError,
       context: {
-        name: 'Bookshelf',
+        resource: 'Bookshelf',
       },
     });
   });

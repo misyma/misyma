@@ -48,7 +48,7 @@ describe('FindBookshelvesByUserIdQueryHandlerImpl', () => {
     ).toThrowErrorInstance({
       instance: ResourceNotFoundError,
       context: {
-        name: 'User',
+        resource: 'User',
       },
     });
   });

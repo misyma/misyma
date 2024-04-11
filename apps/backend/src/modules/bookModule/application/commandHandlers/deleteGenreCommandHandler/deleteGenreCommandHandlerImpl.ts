@@ -23,7 +23,7 @@ export class DeleteGenreCommandHandlerImpl implements DeleteGenreCommandHandler 
 
     if (!genre) {
       throw new ResourceNotFoundError({
-        name: 'Genre',
+        resource: 'Genre',
         id,
       });
     }

@@ -24,7 +24,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
   ) {}
 
   public async createAuthor(payload: CreateAuthorPayload): Promise<Author> {
-    const { firstName, lastName } = payload;
+    const { name, isApproved } = payload;
 
     let rawEntities: AuthorRawEntity[];
 
@@ -34,8 +34,8 @@ export class AuthorRepositoryImpl implements AuthorRepository {
       rawEntities = await this.databaseClient<AuthorRawEntity>(this.databaseTable.name).insert(
         {
           id,
-          firstName,
-          lastName,
+          name,
+          isApproved,
         },
         '*',
       );
@@ -53,7 +53,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
   }
 
   public async findAuthor(payload: FindAuthorPayload): Promise<Author | null> {
-    const { id, firstName, lastName } = payload;
+    const { id, name } = payload;
 
     let whereCondition: Partial<AuthorRawEntity> = {};
 
@@ -64,17 +64,10 @@ export class AuthorRepositoryImpl implements AuthorRepository {
       };
     }
 
-    if (firstName) {
+    if (name) {
       whereCondition = {
         ...whereCondition,
-        firstName,
-      };
-    }
-
-    if (lastName) {
-      whereCondition = {
-        ...whereCondition,
-        lastName,
+        name,
       };
     }
 
@@ -127,7 +120,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
 
     if (!existingAuthor) {
       throw new ResourceNotFoundError({
-        name: 'Author',
+        resource: 'Author',
         id,
       });
     }

@@ -28,7 +28,7 @@ export class UpdateBookGenresCommandHandlerImpl implements UpdateUserBookGenresC
 
     if (!userBook) {
       throw new ResourceNotFoundError({
-        name: 'UserBook',
+        resource: 'UserBook',
         id: userBookId,
       });
     }
@@ -39,7 +39,7 @@ export class UpdateBookGenresCommandHandlerImpl implements UpdateUserBookGenresC
 
     if (genres.length !== genreIds.length) {
       throw new ResourceNotFoundError({
-        name: 'Genre',
+        resource: 'Genre',
         id: genreIds,
       });
     }

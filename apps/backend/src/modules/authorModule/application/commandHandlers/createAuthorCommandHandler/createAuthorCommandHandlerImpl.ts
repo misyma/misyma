@@ -14,38 +14,36 @@ export class CreateAuthorCommandHandlerImpl implements CreateAuthorCommandHandle
   ) {}
 
   public async execute(payload: CreateAuthorCommandHandlerPayload): Promise<CreateAuthorCommandHandlerResult> {
-    const { firstName, lastName } = payload;
+    const { name, isApproved } = payload;
 
     this.loggerService.debug({
       message: 'Creating author...',
-      firstName,
-      lastName,
+      name,
+      isApproved,
     });
 
     const existingAuthor = await this.authorRepository.findAuthor({
-      firstName,
-      lastName,
+      name,
     });
 
     if (existingAuthor) {
       throw new ResourceAlreadyExistsError({
-        name: 'Author',
+        resource: 'Author',
         id: existingAuthor.getId(),
-        firstName,
-        lastName,
+        name,
       });
     }
 
     const author = await this.authorRepository.createAuthor({
-      firstName,
-      lastName,
+      name,
+      isApproved,
     });
 
     this.loggerService.debug({
       message: 'Author created.',
       authorId: author.getId(),
-      firstName,
-      lastName,
+      name,
+      isApproved,
     });
 
     return { author };

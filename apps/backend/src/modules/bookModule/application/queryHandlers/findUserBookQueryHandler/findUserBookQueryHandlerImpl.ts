@@ -16,7 +16,7 @@ export class FindUserBookQueryHandlerImpl implements FindUserBookQueryHandler {
 
     if (!userBook) {
       throw new ResourceNotFoundError({
-        name: 'UserBook',
+        resource: 'UserBook',
         id: userBookId,
       });
     }

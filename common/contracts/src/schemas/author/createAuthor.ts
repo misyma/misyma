@@ -1,8 +1,7 @@
 import { type Author } from './author.js';
 
 export interface CreateAuthorRequestBody {
-  readonly firstName: string;
-  readonly lastName: string;
+  readonly name: string;
 }
 
 export interface CreateAuthorResponseBody extends Author {}

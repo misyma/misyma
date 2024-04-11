@@ -16,7 +16,7 @@ export class FindAuthorQueryHandlerImpl implements FindAuthorQueryHandler {
 
     if (!author) {
       throw new ResourceNotFoundError({
-        name: 'Author',
+        resource: 'Author',
         id: authorId,
       });
     }

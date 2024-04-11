@@ -16,7 +16,7 @@ export class FindBookReadingByIdQueryHandlerImpl implements FindBookReadingByIdQ
 
     if (!bookReading) {
       throw new ResourceNotFoundError({
-        name: 'BookReading',
+        resource: 'BookReading',
       });
     }
 

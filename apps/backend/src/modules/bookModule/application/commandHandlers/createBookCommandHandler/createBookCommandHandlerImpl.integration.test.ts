@@ -55,9 +55,9 @@ describe('CreateBookCommandHandler', () => {
     const createdBook = bookTestFactory.create({
       authors: [
         new Author({
-          firstName: author.firstName,
-          lastName: author.lastName,
           id: author.id,
+          name: author.name,
+          isApproved: author.isApproved,
         }),
       ],
     });
@@ -104,7 +104,7 @@ describe('CreateBookCommandHandler', () => {
     ).toThrowErrorInstance({
       instance: ResourceNotFoundError,
       context: {
-        name: 'Author',
+        resource: 'Author',
       },
     });
   });

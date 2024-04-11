@@ -34,7 +34,7 @@ describe('FindAuthorsByIdsQueryHandlerImpl', () => {
     ).toThrowErrorInstance({
       instance: ResourceNotFoundError,
       context: {
-        name: 'Author',
+        resource: 'Author',
         missingIds: nonExistentAuthorIds,
       },
     });
@@ -53,7 +53,7 @@ describe('FindAuthorsByIdsQueryHandlerImpl', () => {
     ).toThrowErrorInstance({
       instance: ResourceNotFoundError,
       context: {
-        name: 'Author',
+        resource: 'Author',
         missingIds: [nonExistentAuthorId],
       },
     });
@@ -75,9 +75,7 @@ describe('FindAuthorsByIdsQueryHandlerImpl', () => {
 
       expect(author.getId()).oneOf([author1.id, author2.id]);
 
-      expect(author.getFirstName()).oneOf([author1.firstName, author2.firstName]);
-
-      expect(author.getLastName()).oneOf([author1.lastName, author2.lastName]);
+      expect(author.getName()).oneOf([author1.name, author2.name]);
     });
   });
 });

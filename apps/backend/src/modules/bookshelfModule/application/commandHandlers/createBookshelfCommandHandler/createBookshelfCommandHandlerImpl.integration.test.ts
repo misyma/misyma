@@ -42,7 +42,7 @@ describe('CreateBookshelfCommandHandlerImpl', () => {
     ).toThrowErrorInstance({
       instance: ResourceNotFoundError,
       context: {
-        name: 'User',
+        resource: 'User',
       },
     });
   });

@@ -17,10 +17,11 @@ describe('AuthorMapperImpl', () => {
 
     const author = authorMapperImpl.mapToDomain(authorRawEntity);
 
-    expect(author).toEqual({
-      id: authorRawEntity.id,
-      firstName: authorRawEntity.firstName,
-      lastName: authorRawEntity.lastName,
+    expect(author.getId()).toEqual(authorRawEntity.id);
+
+    expect(author.getState()).toEqual({
+      name: authorRawEntity.name,
+      isApproved: authorRawEntity.isApproved,
     });
   });
 });

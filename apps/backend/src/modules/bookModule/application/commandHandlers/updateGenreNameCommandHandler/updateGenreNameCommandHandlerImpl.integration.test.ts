@@ -41,7 +41,7 @@ describe('UpdateGenreNameCommandHandler', () => {
     ).toThrowErrorInstance({
       instance: ResourceNotFoundError,
       context: {
-        name: 'Genre',
+        resource: 'Genre',
         id: invalidUuid,
       },
     });

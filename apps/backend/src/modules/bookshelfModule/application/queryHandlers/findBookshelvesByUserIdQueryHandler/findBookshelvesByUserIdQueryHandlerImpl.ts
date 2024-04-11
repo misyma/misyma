@@ -22,7 +22,7 @@ export class FindBookshelvesByUserIdQueryHandlerImpl implements FindBookshelvesB
 
     if (!existingUser) {
       throw new ResourceNotFoundError({
-        name: 'User',
+        resource: 'User',
       });
     }
 

@@ -39,7 +39,7 @@ export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler 
 
       if (!bookshelf) {
         throw new ResourceNotFoundError({
-          name: 'Bookshelf',
+          resource: 'Bookshelf',
           id: bookshelfId,
         });
       }
@@ -47,7 +47,7 @@ export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler 
       if (userId) {
         if (bookshelf.getUserId() !== userId) {
           throw new ResourceNotFoundError({
-            name: 'Bookshelf',
+            resource: 'Bookshelf',
             id: bookshelfId,
           });
         }

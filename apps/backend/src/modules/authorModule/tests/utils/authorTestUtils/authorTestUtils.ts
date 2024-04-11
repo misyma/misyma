@@ -7,17 +7,12 @@ interface CreateAndPersistPayload {
   readonly input?: Partial<AuthorRawEntity>;
 }
 
-interface PersistPayload {
-  readonly author: AuthorRawEntity;
-}
-
 interface FindByIdPayload {
   readonly id: string;
 }
 
 interface FindByNamePayload {
-  readonly firstName: string;
-  readonly lastName: string;
+  readonly name: string;
 }
 
 export class AuthorTestUtils {
@@ -33,38 +28,48 @@ export class AuthorTestUtils {
 
     const rawEntities = await this.databaseClient<AuthorRawEntity>(this.databaseTable.name).insert(author, '*');
 
-    return rawEntities[0] as AuthorRawEntity;
+    const rawEntity = rawEntities[0] as AuthorRawEntity;
+
+    return {
+      ...rawEntity,
+      isApproved: Boolean(rawEntity.isApproved),
+    };
   }
 
-  public async persist(payload: PersistPayload): Promise<void> {
-    const { author } = payload;
-
-    await this.databaseClient<AuthorRawEntity>(this.databaseTable.name).insert(author);
-  }
-
-  public async findById(payload: FindByIdPayload): Promise<AuthorRawEntity> {
+  public async findById(payload: FindByIdPayload): Promise<AuthorRawEntity | undefined> {
     const { id } = payload;
 
-    const authorRawEntity = await this.databaseClient<AuthorRawEntity>(this.databaseTable.name)
+    const rawEntity = await this.databaseClient<AuthorRawEntity>(this.databaseTable.name)
       .select('*')
       .where({ id })
       .first();
 
-    return authorRawEntity as AuthorRawEntity;
+    if (!rawEntity) {
+      return undefined;
+    }
+
+    return {
+      ...rawEntity,
+      isApproved: Boolean(rawEntity.isApproved),
+    };
   }
 
-  public async findByName(payload: FindByNamePayload): Promise<AuthorRawEntity> {
-    const { firstName, lastName } = payload;
+  public async findByName(payload: FindByNamePayload): Promise<AuthorRawEntity | undefined> {
+    const { name } = payload;
 
-    const authorRawEntity = await this.databaseClient<AuthorRawEntity>(this.databaseTable.name)
+    const rawEntity = await this.databaseClient<AuthorRawEntity>(this.databaseTable.name)
       .select('*')
-      .where({
-        firstName,
-        lastName,
-      })
+      .where({ name })
       .first();
 
-    return authorRawEntity as AuthorRawEntity;
+    if (!rawEntity) {
+      return undefined;
+    }
+
+    return {
+      ...rawEntity,
+      isApproved: Boolean(rawEntity.isApproved),
+    };
   }
 
   public async truncate(): Promise<void> {

@@ -20,7 +20,7 @@ export class FindGenreByNameQueryHandlerImpl implements FindGenreByNameQueryHand
 
     if (!genre) {
       throw new ResourceNotFoundError({
-        name: 'Genre',
+        resource: 'Genre',
         genreName: name,
       });
     }

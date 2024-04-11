@@ -29,7 +29,7 @@ export class UpdateBookReadingCommandHandlerImpl implements UpdateBookReadingCom
 
     if (!bookReading) {
       throw new ResourceNotFoundError({
-        name: 'BookReading',
+        resource: 'BookReading',
         id,
       });
     }

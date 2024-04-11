@@ -139,7 +139,15 @@ describe('UserBookRepositoryImpl', () => {
           translator: book.translator,
           format: book.format,
           pages: book.pages,
-          authors: [author],
+          authors: [
+            {
+              id: author.id,
+              state: {
+                name: author.name,
+                isApproved: author.isApproved,
+              },
+            },
+          ],
         },
       });
 
@@ -204,7 +212,15 @@ describe('UserBookRepositoryImpl', () => {
           translator: book.translator,
           format: book.format,
           pages: book.pages,
-          authors: [author],
+          authors: [
+            {
+              id: author.id,
+              state: {
+                name: author.name,
+                isApproved: author.isApproved,
+              },
+            },
+          ],
         },
       });
 
@@ -394,7 +410,15 @@ describe('UserBookRepositoryImpl', () => {
           translator: book.translator,
           format: book.format,
           pages: book.pages,
-          authors: [author],
+          authors: [
+            {
+              id: author.id,
+              state: {
+                name: author.name,
+                isApproved: author.isApproved,
+              },
+            },
+          ],
         },
       });
     });
@@ -508,7 +532,7 @@ describe('UserBookRepositoryImpl', () => {
       await expect(async () => await userBookRepository.deleteUserBook({ id })).toThrowErrorInstance({
         instance: ResourceNotFoundError,
         context: {
-          name: 'UserBook',
+          resource: 'UserBook',
           id,
         },
       });

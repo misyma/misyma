@@ -326,7 +326,7 @@ describe('BookRepositoryImpl', () => {
       await expect(async () => await bookRepository.deleteBook({ id })).toThrowErrorInstance({
         instance: ResourceNotFoundError,
         context: {
-          name: 'Book',
+          resource: 'Book',
           id,
         },
       });

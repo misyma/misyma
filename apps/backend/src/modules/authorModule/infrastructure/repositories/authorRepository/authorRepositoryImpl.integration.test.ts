@@ -41,25 +41,24 @@ describe('AuthorRepositoryImpl', () => {
 
   describe('Create', () => {
     it('creates a author', async () => {
-      const { firstName, lastName } = authorTestFactory.createRaw();
+      const { name, isApproved } = authorTestFactory.createRaw();
 
       const author = await authorRepository.createAuthor({
-        firstName,
-        lastName,
+        name,
+        isApproved,
       });
 
       const foundAuthor = await authorTestUtils.findByName({
-        firstName,
-        lastName,
+        name,
       });
 
-      expect(author.getFirstName()).toEqual(firstName);
+      expect(author.getName()).toEqual(name);
 
-      expect(author.getLastName()).toEqual(lastName);
+      expect(author.getIsApproved()).toEqual(isApproved);
 
-      expect(foundAuthor.firstName).toEqual(firstName);
+      expect(foundAuthor?.name).toEqual(name);
 
-      expect(foundAuthor.lastName).toEqual(lastName);
+      expect(foundAuthor?.isApproved).toEqual(isApproved);
     });
 
     it('throws an error when author with the same firstName and author already exists', async () => {
@@ -67,8 +66,8 @@ describe('AuthorRepositoryImpl', () => {
 
       try {
         await authorRepository.createAuthor({
-          lastName: existingAuthor.lastName,
-          firstName: existingAuthor.firstName,
+          name: existingAuthor.name,
+          isApproved: existingAuthor.isApproved,
         });
       } catch (error) {
         expect(error).toBeInstanceOf(RepositoryError);
@@ -147,9 +146,7 @@ describe('AuthorRepositoryImpl', () => {
       foundAuthors.forEach((foundAuthor) => {
         expect(foundAuthor.getId()).oneOf([author1.id, author2.id, author3.id]);
 
-        expect(foundAuthor.getFirstName()).oneOf([author1.firstName, author2.firstName, author3.firstName]);
-
-        expect(foundAuthor.getLastName()).oneOf([author1.lastName, author2.lastName, author3.lastName]);
+        expect(foundAuthor.getName()).oneOf([author1.name, author2.name, author3.name]);
       });
     });
   });

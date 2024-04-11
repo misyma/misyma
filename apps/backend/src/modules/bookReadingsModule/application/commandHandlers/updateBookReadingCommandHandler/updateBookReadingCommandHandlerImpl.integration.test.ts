@@ -76,7 +76,7 @@ describe('UpdateBookReadingCommandHandlerImpl', () => {
     ).toThrowErrorInstance({
       instance: ResourceNotFoundError,
       context: {
-        name: 'BookReading',
+        resource: 'BookReading',
         id: nonExistentBookReadingId,
       },
     });
