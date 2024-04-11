@@ -64,6 +64,7 @@ export const userBookDTOSchema = Type.Object({
         maximum: 10000,
       }),
     ),
+    isApproved: Type.Boolean(),
     authors: Type.Array(
       Type.Object({
         id: Type.String({ format: 'uuid' }),

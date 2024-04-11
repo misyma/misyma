@@ -78,6 +78,7 @@ describe('BookRepositoryImpl', () => {
           translator: createdBook.getTranslator() as string,
           format: createdBook.getFormat(),
           pages: createdBook.getPages() as number,
+          isApproved: createdBook.getIsApproved(),
           authors: [new Author(author)],
         },
       });
@@ -89,9 +90,9 @@ describe('BookRepositoryImpl', () => {
 
       expect(book.getTitle()).toEqual(createdBook.getTitle());
 
-      expect(foundBook.title).toEqual(createdBook.getTitle());
+      expect(foundBook?.title).toEqual(createdBook.getTitle());
 
-      expect(foundBook.releaseYear).toEqual(createdBook.getReleaseYear());
+      expect(foundBook?.releaseYear).toEqual(createdBook.getReleaseYear());
     });
 
     it('removes book Authors', async () => {
@@ -213,6 +214,8 @@ describe('BookRepositoryImpl', () => {
 
       const newPages = (bookRawEntity.pages as number) + 10;
 
+      const newIsApproved = !bookRawEntity.isApproved;
+
       book.setTitle({ title: newTitle });
 
       book.setIsbn({ isbn: newIsbn });
@@ -228,6 +231,8 @@ describe('BookRepositoryImpl', () => {
       book.setFormat({ format: newFormat });
 
       book.setPages({ pages: newPages });
+
+      book.setIsApproved({ isApproved: newIsApproved });
 
       const updatedBook = await bookRepository.saveBook({
         book,
@@ -246,6 +251,7 @@ describe('BookRepositoryImpl', () => {
         translator: newTranslator,
         format: newFormat,
         pages: newPages,
+        isApproved: newIsApproved,
         authors: [],
       });
 
@@ -259,6 +265,7 @@ describe('BookRepositoryImpl', () => {
         translator: newTranslator,
         format: newFormat,
         pages: newPages,
+        isApproved: newIsApproved,
       });
     });
   });

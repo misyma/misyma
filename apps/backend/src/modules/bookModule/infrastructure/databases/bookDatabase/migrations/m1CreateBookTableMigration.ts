@@ -24,6 +24,8 @@ export class M1CreateBookTableMigration implements Migration {
 
       table.integer('pages');
 
+      table.boolean('isApproved').notNullable();
+
       table.primary(['id']);
     });
 

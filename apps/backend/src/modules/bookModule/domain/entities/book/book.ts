@@ -14,6 +14,7 @@ export interface BookDraft {
   readonly format: BookFormat;
   readonly pages?: number | undefined;
   readonly authors: Author[];
+  readonly isApproved: boolean;
 }
 
 export interface BookState {
@@ -26,6 +27,7 @@ export interface BookState {
   format: BookFormat;
   pages?: number | undefined;
   authors: Author[];
+  isApproved: boolean;
 }
 
 export interface SetTitlePayload {
@@ -64,12 +66,16 @@ export interface SetAuthorsPayload {
   readonly authors: Author[];
 }
 
+export interface SetIsApprovedPayload {
+  readonly isApproved: boolean;
+}
+
 export class Book {
   private readonly id: string;
   private readonly state: BookState;
 
   public constructor(draft: BookDraft) {
-    const { id, title, isbn, publisher, releaseYear, language, translator, format, pages, authors } = draft;
+    const { id, title, isbn, publisher, releaseYear, language, translator, format, pages, authors, isApproved } = draft;
 
     this.id = id;
 
@@ -78,6 +84,7 @@ export class Book {
       language,
       format,
       authors,
+      isApproved,
     };
 
     if (isbn) {
@@ -145,6 +152,10 @@ export class Book {
     return this.state.authors;
   }
 
+  public getIsApproved(): boolean {
+    return this.state.isApproved;
+  }
+
   public setTitle(payload: SetTitlePayload): void {
     const { title } = payload;
 
@@ -191,6 +202,12 @@ export class Book {
     const { pages } = payload;
 
     this.state.pages = pages;
+  }
+
+  public setIsApproved(payload: SetIsApprovedPayload): void {
+    const { isApproved } = payload;
+
+    this.state.isApproved = isApproved;
   }
 
   public addAuthor(author: Author): void {

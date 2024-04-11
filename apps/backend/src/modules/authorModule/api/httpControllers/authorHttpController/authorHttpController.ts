@@ -1,3 +1,5 @@
+import { UserRole } from '@common/contracts';
+
 import { type AuthorDTO } from './schemas/authorDto.js';
 import {
   createAuthorBodyDTOSchema,
@@ -110,6 +112,7 @@ export class AuthorHttpController implements HttpController {
 
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
+      expectedRole: UserRole.admin,
     });
 
     const { author } = await this.createAuthorCommandHandler.execute({
@@ -147,6 +150,7 @@ export class AuthorHttpController implements HttpController {
 
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
+      expectedRole: UserRole.admin,
     });
 
     await this.deleteAuthorCommandHandler.execute({ authorId: id });

@@ -11,5 +11,6 @@ export interface Book {
   readonly translator?: string;
   readonly format: BookFormat;
   readonly pages?: number;
+  readonly isApproved: boolean;
   readonly authors: Author[];
 }

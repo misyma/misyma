@@ -139,6 +139,7 @@ describe('UserBookRepositoryImpl', () => {
           translator: book.translator,
           format: book.format,
           pages: book.pages,
+          isApproved: Boolean(book.isApproved),
           authors: [
             {
               id: author.id,
@@ -212,6 +213,7 @@ describe('UserBookRepositoryImpl', () => {
           translator: book.translator,
           format: book.format,
           pages: book.pages,
+          isApproved: Boolean(book.isApproved),
           authors: [
             {
               id: author.id,
@@ -410,6 +412,7 @@ describe('UserBookRepositoryImpl', () => {
           translator: book.translator,
           format: book.format,
           pages: book.pages,
+          isApproved: Boolean(book.isApproved),
           authors: [
             {
               id: author.id,

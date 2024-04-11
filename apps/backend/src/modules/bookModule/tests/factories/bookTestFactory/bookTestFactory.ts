@@ -16,6 +16,7 @@ export class BookTestFactory {
       format: Generator.bookFormat() as BookFormat,
       pages: Generator.number(100, 1000),
       releaseYear: Generator.number(1970, 2024),
+      isApproved: Generator.boolean(),
       authors: [],
       ...input,
     });
@@ -32,6 +33,7 @@ export class BookTestFactory {
       format: Generator.bookFormat() as BookFormat,
       pages: Generator.number(100, 1000),
       releaseYear: Generator.number(1970, 2024),
+      isApproved: Generator.boolean(),
       ...input,
     };
   }

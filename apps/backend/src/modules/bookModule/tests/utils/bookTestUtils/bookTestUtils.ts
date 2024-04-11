@@ -13,10 +13,6 @@ interface CreateAndPersistPayload {
   };
 }
 
-interface PersistPayload {
-  readonly book: BookRawEntity;
-}
-
 interface FindByIdPayload {
   readonly id: string;
 }
@@ -71,13 +67,7 @@ export class BookTestUtils {
     return rawEntities;
   }
 
-  public async persist(payload: PersistPayload): Promise<void> {
-    const { book } = payload;
-
-    await this.databaseClient<BookRawEntity>(this.bookTable.name).insert(book);
-  }
-
-  public async findById(payload: FindByIdPayload): Promise<BookRawEntity> {
+  public async findById(payload: FindByIdPayload): Promise<BookRawEntity | undefined> {
     const { id } = payload;
 
     const bookRawEntity = await this.databaseClient<BookRawEntity>(this.bookTable.name)
@@ -85,10 +75,17 @@ export class BookTestUtils {
       .where({ id })
       .first();
 
-    return bookRawEntity as BookRawEntity;
+    if (!bookRawEntity) {
+      return undefined;
+    }
+
+    return {
+      ...bookRawEntity,
+      isApproved: Boolean(bookRawEntity.isApproved),
+    };
   }
 
-  public async findByTitleAndAuthor(payload: FindByTitleAndAuthorPayload): Promise<BookRawEntity> {
+  public async findByTitleAndAuthor(payload: FindByTitleAndAuthorPayload): Promise<BookRawEntity | undefined> {
     const { title, authorId } = payload;
 
     const bookRawEntity = await this.databaseClient<BookRawEntity>(this.bookTable.name)
@@ -103,7 +100,14 @@ export class BookTestUtils {
       })
       .first();
 
-    return bookRawEntity as BookRawEntity;
+    if (!bookRawEntity) {
+      return undefined;
+    }
+
+    return {
+      ...bookRawEntity,
+      isApproved: Boolean(bookRawEntity.isApproved),
+    };
   }
 
   public async truncate(): Promise<void> {
