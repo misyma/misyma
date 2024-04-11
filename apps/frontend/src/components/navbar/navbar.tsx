@@ -1,13 +1,12 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import { FC } from 'react';
-import { FaUser } from 'react-icons/fa';
 import { useLogoutUserMutation } from '../../api/user/mutations/logoutUserMutation/logoutUserMutation';
 import { useStoreSelector } from '../../core/store/hooks/useStoreSelector';
 import { userStateActions, userStateSelectors } from '../../core/store/states/userState/userStateSlice';
 import { CookieService } from '../../core/services/cookieService/cookieService';
 import { useFindUserQuery } from '../../api/user/queries/findUserQuery/findUserQuery';
 import { useStoreDispatch } from '../../core/store/hooks/useStoreDispatch';
-
+import { IoIosLogOut } from "react-icons/io";
 export const Navbar: FC = () => {
   const navigate = useNavigate();
 
@@ -57,55 +56,55 @@ export const Navbar: FC = () => {
   };
 
   return (
-    <div className="bg-white p-8 top-0 fixed flex flex-1 justify-end w-full items-center">
-      <div className="w-[100%] text-3xl sm:text-5xl font-logo-bold">
+    <div className="bg-white p-8 top-0 fixed flex justify-end w-full items-center">
+      <div className="w-[100%] text-3xl md:text-5xl lg:text-5xl font-logo-bold">
         <Link to="/">MISYMA</Link>
       </div>
       <input
         type="checkbox"
-        className="sm:hidden burger-input"
+        className="md:hidden burger-input"
       ></input>
-      <div className="sm:hidden">
+      <div className="md:hidden">
         <span className="burger-span"></span>
         <span className="burger-span"></span>
         <span className="burger-span"></span>
       </div>
-      <ul className="hidden sm:flex sm:flex-1 sm:gap-16 sm:justify-end w-full items-center">
-        <li className="text-primary sm:min-w-[7rem] text-center">
+      <ul className="hidden sm:flex sm:flex-1 md:gap-4 lg:gap-12 sm:justify-end w-full items-center align-middle">
+        <li className="text-primary text-xl text-center font-semibold">
           <Link
             to={'/shelves'}
-            className="[&.active]:font-bold text-nowrap"
+            className="[&.active]:font-extrabold text-nowrap"
           >
             Moje półki
           </Link>
         </li>
-        <li className="text-primary sm:min-w-[7rem] text-center">
+        <li className="text-primary text-xl text-center font-semibold">
           <Link
             to={'/quotes'}
-            className="[&.active]:font-bold"
+            className="[&.active]:font-extrabold"
           >
             Cytaty
           </Link>
         </li>
-        <li className="text-primary sm:min-w-[7rem] text-center">
+        <li className="text-primary text-xl text-center font-semibold">
           <Link
             to={'/collections'}
-            className="[&.active]:font-bold"
+            className="[&.active]:font-extrabold"
           >
             Kolekcje
           </Link>
         </li>
-        <li className="text-primary sm:min-w-[7rem] text-center">
+        <li className="text-primary text-xl text-center font-semibold">
           <Link
             to={'/statistics'}
-            className="[&.active]:font-bold"
+            className="[&.active]:font-extrabold"
           >
             Statystyki
           </Link>
         </li>
-        <FaUser
+        <IoIosLogOut
           onClick={handleLogout}
-          className="cursor-pointer text-2xl sm:text-4xl"
+          className="cursor-pointer text-xl sm:text-4xl text-primary"
         />
       </ul>
     </div>
