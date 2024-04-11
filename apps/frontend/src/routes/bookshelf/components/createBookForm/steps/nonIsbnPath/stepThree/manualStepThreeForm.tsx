@@ -31,6 +31,7 @@ import {
   SelectValue,
 } from '../../../../../../../components/ui/select';
 import { ReadingStatus } from '../../../../../../../common/constants/readingStatus';
+import { useToast } from '../../../../../../../components/ui/use-toast';
 
 const stepThreeFormSchema = z.object({
   status: z.nativeEnum(ContractReadingStatus),
@@ -47,6 +48,8 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
   const dispatch = useBookCreationDispatch();
 
   const { data: user } = useFindUserQuery();
+
+  const { toast } = useToast();
 
   const form = useForm({
     resolver: zodResolver(stepThreeFormSchema),
@@ -85,6 +88,12 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
       bookshelfId,
       status: bookCreation.stepThreeDetails?.status as ContractReadingStatus,
       userId: user?.id as string,
+    });
+
+    toast({
+      title: 'Książka została położona na półce 😄',
+      description: `Książka ${bookCreation.stepOneDetails?.title} została położona na półce 😄`,
+      variant: 'success',
     });
 
     await navigate({
