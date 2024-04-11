@@ -65,6 +65,12 @@ export const userBookDTOSchema = Type.Object({
       }),
     ),
     isApproved: Type.Boolean(),
+    imageUrl: Type.Optional(
+      Type.String({
+        minLength: 1,
+        maxLength: 128,
+      }),
+    ),
     authors: Type.Array(
       Type.Object({
         id: Type.String({ format: 'uuid' }),

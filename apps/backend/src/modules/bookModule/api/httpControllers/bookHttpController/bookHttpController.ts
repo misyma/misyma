@@ -199,12 +199,15 @@ export class BookHttpController implements HttpController {
   }
 
   private mapBookToBookDTO(book: Book): BookDTO {
+    const { title, language, format, isApproved, imageUrl, isbn, publisher, releaseYear, translator, pages } =
+      book.getState();
+
     const bookDto: BookDTO = {
       id: book.getId(),
-      title: book.getTitle(),
-      language: book.getLanguage(),
-      format: book.getFormat(),
-      isApproved: book.getIsApproved(),
+      title,
+      language,
+      format,
+      isApproved,
       authors: book.getAuthors().map((author) => ({
         id: author.getId(),
         name: author.getName(),
@@ -212,34 +215,28 @@ export class BookHttpController implements HttpController {
       })),
     };
 
-    const isbn = book.getIsbn();
-
     if (isbn) {
       bookDto.isbn = isbn;
     }
-
-    const publisher = book.getPublisher();
 
     if (publisher) {
       bookDto.publisher = publisher;
     }
 
-    const releaseYear = book.getReleaseYear();
-
     if (releaseYear) {
       bookDto.releaseYear = releaseYear;
     }
-
-    const translator = book.getTranslator();
 
     if (translator) {
       bookDto.translator = translator;
     }
 
-    const pages = book.getPages();
-
     if (pages) {
       bookDto.pages = pages;
+    }
+
+    if (imageUrl) {
+      bookDto.imageUrl = imageUrl;
     }
 
     return bookDto;

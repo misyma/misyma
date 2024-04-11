@@ -39,7 +39,7 @@ import {
   type UpdateUserBookPathParamsDTO,
   type UpdateUserBookResponseDTOSchema,
 } from './schemas/updateUserBookSchema.js';
-import { type UserBookDTO } from './schemas/userBookDTO.js';
+import { type UserBookDTO } from './schemas/userBookDto.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
@@ -58,7 +58,6 @@ import { type UpdateUserBookCommandHandler } from '../../../application/commandH
 import { type UpdateUserBookGenresCommandHandler } from '../../../application/commandHandlers/updateUserBookGenresCommandHandler/updateUserBookGenresCommandHandler.js';
 import { type FindUserBookQueryHandler } from '../../../application/queryHandlers/findUserBookQueryHandler/findUserBookQueryHandler.js';
 import { type FindUserBooksQueryHandler } from '../../../application/queryHandlers/findUserBooksQueryHandler/findUserBooksQueryHandler.js';
-import { type BookState } from '../../../domain/entities/book/book.js';
 import { type UserBook } from '../../../domain/entities/userBook/userBook.js';
 import { type DeleteBookResponseBodyDTO } from '../bookHttpController/schemas/deleteBookSchema.js';
 
@@ -316,56 +315,58 @@ export class UserBookHttpController implements HttpController {
   }
 
   private mapUserBookToUserBookDTO(userBook: UserBook): UserBookDTO {
+    const { status, bookshelfId, imageUrl, bookId, genres, book } = userBook.getState();
+
     const userBookDto: UserBookDTO = {
       id: userBook.getId(),
-      status: userBook.getStatus(),
-      bookshelfId: userBook.getBookshelfId(),
-      bookId: userBook.getBookId(),
+      status,
+      bookshelfId,
+      bookId,
       book: {
-        title: userBook.getBook()?.title as string,
-        language: userBook.getBook()?.language as string,
-        isApproved: userBook.getBook()?.isApproved as boolean,
-        format: userBook.getBook()?.format as BookFormat,
+        title: book?.title as string,
+        language: book?.language as string,
+        isApproved: book?.isApproved as boolean,
+        format: book?.format as BookFormat,
         authors:
-          userBook.getBook()?.authors.map((author) => ({
+          book?.authors.map((author) => ({
             id: author.getId(),
             name: author.getName(),
             isApproved: author.getIsApproved(),
           })) || [],
       },
       genres:
-        userBook.getGenres().map((genre) => ({
+        genres.map((genre) => ({
           id: genre.getId(),
           name: genre.getName(),
         })) || [],
     };
 
-    const { isbn, pages, publisher, releaseYear, translator } = userBook.getBook() as BookState;
-
-    if (isbn) {
-      userBookDto.book.isbn = isbn;
-    }
-
-    if (publisher) {
-      userBookDto.book.publisher = publisher;
-    }
-
-    if (releaseYear) {
-      userBookDto.book.releaseYear = releaseYear;
-    }
-
-    if (translator) {
-      userBookDto.book.translator = translator;
-    }
-
-    if (pages) {
-      userBookDto.book.pages = pages;
-    }
-
-    const imageUrl = userBook.getImageUrl();
-
     if (imageUrl) {
       userBookDto.imageUrl = imageUrl;
+    }
+
+    if (book?.isbn) {
+      userBookDto.book.isbn = book.isbn;
+    }
+
+    if (book?.publisher) {
+      userBookDto.book.publisher = book.publisher;
+    }
+
+    if (book?.releaseYear) {
+      userBookDto.book.releaseYear = book.releaseYear;
+    }
+
+    if (book?.translator) {
+      userBookDto.book.translator = book.translator;
+    }
+
+    if (book?.pages) {
+      userBookDto.book.pages = book.pages;
+    }
+
+    if (book?.imageUrl) {
+      userBookDto.book.imageUrl = book.imageUrl;
     }
 
     return userBookDto;

@@ -72,6 +72,7 @@ describe('CreateBookCommandHandler', () => {
       format: createdBook.getFormat(),
       pages: createdBook.getPages() as number,
       isApproved: createdBook.getIsApproved(),
+      imageUrl: createdBook.getImageUrl() as string,
       authorIds: [author.id],
     });
 
@@ -101,6 +102,7 @@ describe('CreateBookCommandHandler', () => {
         format: createdBook.getFormat(),
         pages: createdBook.getPages() as number,
         isApproved: createdBook.getIsApproved(),
+        imageUrl: createdBook.getImageUrl() as string,
         authorIds: [authorId],
       }),
     ).toThrowErrorInstance({

@@ -44,7 +44,7 @@ export class BookRepositoryImpl implements BookRepository {
 
   private async createBook(payload: CreateBookPayload): Promise<Book> {
     const {
-      book: { title, isbn, publisher, releaseYear, language, translator, format, pages, isApproved, authors },
+      book: { title, isbn, publisher, releaseYear, language, translator, format, pages, isApproved, imageUrl, authors },
     } = payload;
 
     let rawEntities: BookRawEntity[] = [];
@@ -65,6 +65,7 @@ export class BookRepositoryImpl implements BookRepository {
             format,
             pages,
             isApproved,
+            imageUrl,
           },
           '*',
         );
@@ -173,6 +174,7 @@ export class BookRepositoryImpl implements BookRepository {
           `${this.bookTable.name}.format`,
           `${this.bookTable.name}.pages`,
           `${this.bookTable.name}.isApproved`,
+          `${this.bookTable.name}.imageUrl`,
           `${this.authorTable.name}.id as authorId`,
           `${this.authorTable.name}.name as authorName`,
           `${this.authorTable.name}.isApproved as isAuthorApproved`,
@@ -234,6 +236,7 @@ export class BookRepositoryImpl implements BookRepository {
           `${this.bookTable.name}.format`,
           `${this.bookTable.name}.pages`,
           `${this.bookTable.name}.isApproved`,
+          `${this.bookTable.name}.imageUrl`,
           `${this.authorTable.name}.id as authorId`,
           `${this.authorTable.name}.name as authorName`,
           `${this.authorTable.name}.isApproved as isAuthorApproved`,

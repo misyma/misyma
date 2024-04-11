@@ -47,6 +47,12 @@ export const createBookBodyDTOSchema = Type.Object({
       maximum: 10000,
     }),
   ),
+  imageUrl: Type.Optional(
+    Type.String({
+      minLength: 1,
+      maxLength: 128,
+    }),
+  ),
   authorIds: Type.Array(Type.String({ format: 'uuid' })),
 });
 

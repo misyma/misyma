@@ -14,6 +14,7 @@ export interface CreateBookCommandHandlerPayload {
   readonly pages?: number;
   readonly authorIds: string[];
   readonly isApproved: boolean;
+  readonly imageUrl?: string;
 }
 
 export interface CreateBookCommandHandlerResult {

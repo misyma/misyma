@@ -71,14 +71,15 @@ describe('BookRepositoryImpl', () => {
       const book = await bookRepository.saveBook({
         book: {
           title: createdBook.getTitle(),
-          isbn: createdBook.getIsbn() as string,
-          publisher: createdBook.getPublisher() as string,
-          releaseYear: createdBook.getReleaseYear() as number,
+          isbn: createdBook.getIsbn(),
+          publisher: createdBook.getPublisher(),
+          releaseYear: createdBook.getReleaseYear(),
           language: createdBook.getLanguage(),
-          translator: createdBook.getTranslator() as string,
+          translator: createdBook.getTranslator(),
           format: createdBook.getFormat(),
-          pages: createdBook.getPages() as number,
+          pages: createdBook.getPages(),
           isApproved: createdBook.getIsApproved(),
+          imageUrl: createdBook.getImageUrl(),
           authors: [new Author(author)],
         },
       });
@@ -88,11 +89,41 @@ describe('BookRepositoryImpl', () => {
         authorId: author.id,
       });
 
-      expect(book.getTitle()).toEqual(createdBook.getTitle());
+      expect(book.getState()).toEqual({
+        title: createdBook.getTitle(),
+        isbn: createdBook.getIsbn(),
+        publisher: createdBook.getPublisher(),
+        releaseYear: createdBook.getReleaseYear(),
+        language: createdBook.getLanguage(),
+        translator: createdBook.getTranslator(),
+        format: createdBook.getFormat(),
+        pages: createdBook.getPages(),
+        isApproved: createdBook.getIsApproved(),
+        imageUrl: createdBook.getImageUrl(),
+        authors: [
+          {
+            id: author.id,
+            state: {
+              name: author.name,
+              isApproved: author.isApproved,
+            },
+          },
+        ],
+      });
 
-      expect(foundBook?.title).toEqual(createdBook.getTitle());
-
-      expect(foundBook?.releaseYear).toEqual(createdBook.getReleaseYear());
+      expect(foundBook).toEqual({
+        id: book.getId(),
+        title: createdBook.getTitle(),
+        isbn: createdBook.getIsbn(),
+        publisher: createdBook.getPublisher(),
+        releaseYear: createdBook.getReleaseYear(),
+        language: createdBook.getLanguage(),
+        translator: createdBook.getTranslator(),
+        format: createdBook.getFormat(),
+        pages: createdBook.getPages(),
+        isApproved: createdBook.getIsApproved(),
+        imageUrl: createdBook.getImageUrl(),
+      });
     });
 
     it('removes book Authors', async () => {
@@ -216,6 +247,8 @@ describe('BookRepositoryImpl', () => {
 
       const newIsApproved = !bookRawEntity.isApproved;
 
+      const newImageUrl = Generator.imageUrl();
+
       book.setTitle({ title: newTitle });
 
       book.setIsbn({ isbn: newIsbn });
@@ -233,6 +266,8 @@ describe('BookRepositoryImpl', () => {
       book.setPages({ pages: newPages });
 
       book.setIsApproved({ isApproved: newIsApproved });
+
+      book.setImageUrl({ imageUrl: newImageUrl });
 
       const updatedBook = await bookRepository.saveBook({
         book,
@@ -252,6 +287,7 @@ describe('BookRepositoryImpl', () => {
         format: newFormat,
         pages: newPages,
         isApproved: newIsApproved,
+        imageUrl: newImageUrl,
         authors: [],
       });
 
@@ -266,6 +302,7 @@ describe('BookRepositoryImpl', () => {
         format: newFormat,
         pages: newPages,
         isApproved: newIsApproved,
+        imageUrl: newImageUrl,
       });
     });
   });

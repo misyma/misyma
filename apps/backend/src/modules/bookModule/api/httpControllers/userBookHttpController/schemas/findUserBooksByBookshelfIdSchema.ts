@@ -2,7 +2,7 @@ import { type Static, Type } from '@sinclair/typebox';
 
 import type * as contracts from '@common/contracts';
 
-import { userBookDTOSchema } from './userBookDTO.js';
+import { userBookDTOSchema } from './userBookDto.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const findUserBooksByBookshelfIdPathParamsDTOSchema = Type.Object({

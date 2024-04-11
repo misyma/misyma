@@ -10,6 +10,7 @@ export interface CreateBookRequestBody {
   readonly translator?: string;
   readonly format: BookFormat;
   readonly pages?: number;
+  readonly imageUrl?: string;
   readonly authorIds: string[];
 }
 

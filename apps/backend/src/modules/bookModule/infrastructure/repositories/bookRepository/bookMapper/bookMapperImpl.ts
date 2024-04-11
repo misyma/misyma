@@ -6,7 +6,8 @@ import { type BookWithJoinsRawEntity } from '../../../databases/bookDatabase/tab
 
 export class BookMapperImpl implements BookMapper {
   public mapRawToDomain(entity: BookRawEntity): Book {
-    const { id, title, isbn, publisher, releaseYear, language, translator, format, pages, isApproved } = entity;
+    const { id, title, isbn, publisher, releaseYear, language, translator, format, pages, isApproved, imageUrl } =
+      entity;
 
     return new Book({
       id,
@@ -20,6 +21,7 @@ export class BookMapperImpl implements BookMapper {
       pages,
       authors: [],
       isApproved: Boolean(isApproved), // sqlite returns 0 or 1
+      imageUrl,
     });
   }
 
@@ -41,6 +43,7 @@ export class BookMapperImpl implements BookMapper {
         authorId,
         authorName,
         isAuthorApproved,
+        imageUrl,
       } = entity;
 
       const bookExists = bookDraftsMap.has(bookId);
@@ -82,6 +85,7 @@ export class BookMapperImpl implements BookMapper {
           pages: pages ?? undefined,
           isApproved: Boolean(isApproved),
           authors,
+          imageUrl: imageUrl ?? undefined,
         };
 
         bookDraftsMap.set(bookId, bookDraft);

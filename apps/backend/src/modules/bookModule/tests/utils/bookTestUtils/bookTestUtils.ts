@@ -89,15 +89,25 @@ export class BookTestUtils {
     const { title, authorId } = payload;
 
     const bookRawEntity = await this.databaseClient<BookRawEntity>(this.bookTable.name)
-      .select('*')
+      .select([
+        `${this.bookTable.name}.id`,
+        `${this.bookTable.name}.title`,
+        `${this.bookTable.name}.isbn`,
+        `${this.bookTable.name}.publisher`,
+        `${this.bookTable.name}.releaseYear`,
+        `${this.bookTable.name}.language`,
+        `${this.bookTable.name}.translator`,
+        `${this.bookTable.name}.format`,
+        `${this.bookTable.name}.pages`,
+        `${this.bookTable.name}.isApproved`,
+        `${this.bookTable.name}.imageUrl`,
+      ])
       .join(this.booksAuthorsTable.name, (join) => {
         if (authorId) {
           join.onIn(`${this.booksAuthorsTable.name}.authorId`, this.databaseClient.raw('?', [authorId]));
         }
       })
-      .where({
-        title,
-      })
+      .where({ title })
       .first();
 
     if (!bookRawEntity) {

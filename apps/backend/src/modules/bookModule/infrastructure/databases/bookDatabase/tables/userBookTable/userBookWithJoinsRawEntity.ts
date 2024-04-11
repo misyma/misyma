@@ -12,6 +12,7 @@ export interface UserBookWithJoinsRawEntity {
   readonly format: BookFormat;
   readonly pages: number | null;
   readonly isApproved: boolean;
+  readonly bookImageUrl: string | null;
   readonly imageUrl: string | null;
   readonly status: ReadingStatus;
   readonly bookshelfId: string;
