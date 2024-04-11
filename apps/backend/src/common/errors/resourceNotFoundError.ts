@@ -1,7 +1,7 @@
 import { BaseError } from './baseError.js';
 
 interface Context {
-  readonly name: string;
+  readonly resource: string;
   readonly [key: string]: unknown;
 }
 

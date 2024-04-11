@@ -2,8 +2,8 @@ import { type CommandHandler } from '../../../../../common/types/commandHandler.
 import { type Author } from '../../../domain/entities/author/author.js';
 
 export interface CreateAuthorCommandHandlerPayload {
-  readonly firstName: string;
-  readonly lastName: string;
+  readonly name: string;
+  readonly isApproved: boolean;
 }
 
 export interface CreateAuthorCommandHandlerResult {

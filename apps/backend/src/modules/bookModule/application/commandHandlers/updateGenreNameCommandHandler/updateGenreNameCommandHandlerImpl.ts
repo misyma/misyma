@@ -29,7 +29,7 @@ export class UpdateGenreNameCommandHandlerImpl implements UpdateGenreNameCommand
 
     if (!existingGenre) {
       throw new ResourceNotFoundError({
-        name: 'Genre',
+        resource: 'Genre',
         id,
       });
     }

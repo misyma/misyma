@@ -76,7 +76,7 @@ describe('FindBookReadingByIdQueryHandler', () => {
     ).toThrowErrorInstance({
       instance: ResourceNotFoundError,
       context: {
-        name: 'BookReading',
+        resource: 'BookReading',
       },
     });
   });

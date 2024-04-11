@@ -81,7 +81,7 @@ describe('RegisterUserCommandHandler', () => {
     }).toThrowErrorInstance({
       instance: ResourceAlreadyExistsError,
       context: {
-        name: 'User',
+        resource: 'User',
         email: existingUser.email,
       },
     });

@@ -18,7 +18,7 @@ export class FindAuthorsByIdsQueryHandlerImpl implements FindAuthorsByIdsQueryHa
       const missingIds = authorIds.filter((authorId) => !authors.some((author) => author.getId() === authorId));
 
       throw new ResourceNotFoundError({
-        name: 'Author',
+        resource: 'Author',
         missingIds,
       });
     }

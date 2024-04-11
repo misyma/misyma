@@ -100,7 +100,7 @@ export class BookRepositoryImpl implements BookRepository {
 
     if (!existingBook) {
       throw new ResourceNotFoundError({
-        name: 'Book',
+        resource: 'Book',
         id: book.getId(),
       });
     }
@@ -172,8 +172,8 @@ export class BookRepositoryImpl implements BookRepository {
           `${this.bookTable.name}.format`,
           `${this.bookTable.name}.pages`,
           `${this.authorTable.name}.id as authorId`,
-          'firstName',
-          'lastName',
+          `${this.authorTable.name}.name as authorName`,
+          `${this.authorTable.name}.isApproved as isAuthorApproved`,
         ])
         .leftJoin(this.booksAuthorsTable.name, (join) => {
           join.on(`${this.booksAuthorsTable.name}.bookId`, '=', `${this.bookTable.name}.id`);
@@ -232,8 +232,8 @@ export class BookRepositoryImpl implements BookRepository {
           `${this.bookTable.name}.format`,
           `${this.bookTable.name}.pages`,
           `${this.authorTable.name}.id as authorId`,
-          'firstName',
-          'lastName',
+          `${this.authorTable.name}.name as authorName`,
+          `${this.authorTable.name}.isApproved as isAuthorApproved`,
         ])
         .leftJoin(this.booksAuthorsTable.name, (join) => {
           join.on(`${this.booksAuthorsTable.name}.bookId`, '=', `${this.bookTable.name}.id`);
@@ -261,7 +261,7 @@ export class BookRepositoryImpl implements BookRepository {
 
     if (!existingBook) {
       throw new ResourceNotFoundError({
-        name: 'Book',
+        resource: 'Book',
         id,
       });
     }

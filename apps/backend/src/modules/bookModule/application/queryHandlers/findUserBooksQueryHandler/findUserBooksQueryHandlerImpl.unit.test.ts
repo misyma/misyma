@@ -44,7 +44,7 @@ describe('FindUserBooksQueryHandlerImpl', () => {
     ).toThrowErrorInstance({
       instance: ResourceNotFoundError,
       context: {
-        name: 'Bookshelf',
+        resource: 'Bookshelf',
         id: nonExistentBookshelfId,
       },
     });
@@ -67,7 +67,7 @@ describe('FindUserBooksQueryHandlerImpl', () => {
     ).toThrowErrorInstance({
       instance: ResourceNotFoundError,
       context: {
-        name: 'Bookshelf',
+        resource: 'Bookshelf',
         id: bookshelf.getId(),
       },
     });

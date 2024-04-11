@@ -2,14 +2,11 @@ import { type Static, Type } from '@sinclair/typebox';
 
 export const authorDTOSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
-  firstName: Type.String({
+  name: Type.String({
     minLength: 1,
-    maxLength: 64,
+    maxLength: 128,
   }),
-  lastName: Type.String({
-    minLength: 1,
-    maxLength: 64,
-  }),
+  isApproved: Type.Boolean(),
 });
 
 export type AuthorDTO = Static<typeof authorDTOSchema>;

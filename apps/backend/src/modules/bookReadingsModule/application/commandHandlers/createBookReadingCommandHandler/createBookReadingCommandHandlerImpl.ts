@@ -33,7 +33,7 @@ export class CreateBookReadingCommandHandlerImpl implements CreateBookReadingCom
 
     if (!existingUserBook) {
       throw new ResourceNotFoundError({
-        name: 'Book',
+        resource: 'Book',
         id: userBookId,
       });
     }

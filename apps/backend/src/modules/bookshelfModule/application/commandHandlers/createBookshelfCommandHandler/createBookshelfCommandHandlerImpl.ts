@@ -33,7 +33,7 @@ export class CreateBookshelfCommandHandlerImpl implements CreateBookshelfCommand
 
     if (!existingUser) {
       throw new ResourceNotFoundError({
-        name: 'User',
+        resource: 'User',
         id: userId,
       });
     }

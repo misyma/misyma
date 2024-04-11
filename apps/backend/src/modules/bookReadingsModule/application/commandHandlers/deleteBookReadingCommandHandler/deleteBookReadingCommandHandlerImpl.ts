@@ -24,7 +24,7 @@ export class DeleteBookReadingCommandHandlerImpl implements DeleteBookReadingCom
 
     if (!bookReading) {
       throw new ResourceNotFoundError({
-        name: 'BookReading',
+        resource: 'BookReading',
         id,
       });
     }

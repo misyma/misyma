@@ -8,13 +8,13 @@ export class M1CreateAuthorTableMigration implements Migration {
     await databaseClient.schema.createTable('authors', (table) => {
       table.text('id');
 
-      table.text('firstName').notNullable();
+      table.text('name').notNullable();
 
-      table.text('lastName').notNullable();
+      table.boolean('isApproved').notNullable();
 
       table.primary(['id']);
 
-      table.unique(['firstName', 'lastName']);
+      table.unique(['name']);
     });
   }
 

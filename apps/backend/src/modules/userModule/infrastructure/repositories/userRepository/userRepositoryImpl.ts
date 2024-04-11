@@ -78,7 +78,7 @@ export class UserRepositoryImpl implements UserRepository {
 
     if (!existingUser) {
       throw new ResourceNotFoundError({
-        name: 'User',
+        resource: 'User',
         id: user.getId(),
       });
     }
@@ -160,7 +160,7 @@ export class UserRepositoryImpl implements UserRepository {
 
     if (!existingUser) {
       throw new ResourceNotFoundError({
-        name: 'User',
+        resource: 'User',
         id,
       });
     }

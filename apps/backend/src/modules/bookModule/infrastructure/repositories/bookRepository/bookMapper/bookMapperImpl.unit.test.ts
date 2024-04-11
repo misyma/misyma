@@ -48,8 +48,8 @@ describe('BookMapperImpl', () => {
         format: book.format,
         pages: book.pages as number,
         authorId: null,
-        firstName: null,
-        lastName: null,
+        authorName: null,
+        isAuthorApproved: null,
       },
     ]);
 

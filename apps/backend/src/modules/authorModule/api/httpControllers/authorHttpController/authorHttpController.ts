@@ -106,15 +106,15 @@ export class AuthorHttpController implements HttpController {
   private async createAuthor(
     request: HttpRequest<CreateAuthorBodyDTO>,
   ): Promise<HttpCreatedResponse<CreateAuthorResponseBodyDTO>> {
-    const { firstName, lastName } = request.body;
+    const { name } = request.body;
 
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
     const { author } = await this.createAuthorCommandHandler.execute({
-      firstName,
-      lastName,
+      name,
+      isApproved: true,
     });
 
     return {
@@ -160,8 +160,8 @@ export class AuthorHttpController implements HttpController {
   private mapAuthorToDTO(author: Author): AuthorDTO {
     return {
       id: author.getId(),
-      firstName: author.getFirstName(),
-      lastName: author.getLastName(),
+      name: author.getName(),
+      isApproved: author.getIsApproved(),
     };
   }
 }

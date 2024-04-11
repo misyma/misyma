@@ -67,7 +67,7 @@ describe('DeleteBookCommandHandler', () => {
     await expect(async () => deleteBookCommandHandler.execute({ bookId: id })).toThrowErrorInstance({
       instance: ResourceNotFoundError,
       context: {
-        name: 'Book',
+        resource: 'Book',
       },
     });
   });

@@ -16,7 +16,7 @@ export class FindBookshelfByIdQueryHandlerImpl implements FindBookshelfByIdQuery
 
     if (!bookshelf) {
       throw new ResourceNotFoundError({
-        name: 'Bookshelf',
+        resource: 'Bookshelf',
         id,
       });
     }

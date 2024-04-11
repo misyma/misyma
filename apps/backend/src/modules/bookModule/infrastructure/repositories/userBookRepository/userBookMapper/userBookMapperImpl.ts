@@ -24,8 +24,8 @@ export class UserBookMapperImpl implements UserBookMapper {
         format,
         pages,
         authorId,
-        firstName,
-        lastName,
+        authorName,
+        isAuthorApproved,
         genreId,
         genreName,
       } = entity;
@@ -39,8 +39,8 @@ export class UserBookMapperImpl implements UserBookMapper {
           userBookDraft.book?.authors?.push(
             new Author({
               id: authorId,
-              firstName: firstName as string,
-              lastName: lastName as string,
+              name: authorName as string,
+              isApproved: Boolean(isAuthorApproved),
             }),
           );
         }
@@ -62,8 +62,8 @@ export class UserBookMapperImpl implements UserBookMapper {
           authors.push(
             new Author({
               id: authorId,
-              firstName: firstName as string,
-              lastName: lastName as string,
+              name: authorName as string,
+              isApproved: Boolean(isAuthorApproved),
             }),
           );
         }

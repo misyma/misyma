@@ -18,7 +18,7 @@ export class FindGenreByIdQueryHandlerImpl implements FindGenreByIdQueryHandler 
 
     if (!genre) {
       throw new ResourceNotFoundError({
-        name: 'Genre',
+        resource: 'Genre',
         id,
       });
     }

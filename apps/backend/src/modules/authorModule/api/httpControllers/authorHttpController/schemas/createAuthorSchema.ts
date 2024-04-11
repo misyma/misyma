@@ -6,13 +6,9 @@ import { authorDTOSchema } from './authorDto.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const createAuthorBodyDTOSchema = Type.Object({
-  firstName: Type.String({
+  name: Type.String({
     minLength: 1,
-    maxLength: 64,
-  }),
-  lastName: Type.String({
-    minLength: 1,
-    maxLength: 64,
+    maxLength: 128,
   }),
 });
 

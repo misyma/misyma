@@ -95,7 +95,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
 
     if (!existingUserBook) {
       throw new ResourceNotFoundError({
-        name: 'UserBook',
+        resource: 'UserBook',
         id: userBook.getId(),
       });
     }
@@ -187,8 +187,8 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           `${this.userBookTable.name}.status`,
           `${this.userBookTable.name}.bookshelfId`,
           `${this.authorTable.name}.id as authorId`,
-          `${this.authorTable.name}.firstName as firstName`,
-          `${this.authorTable.name}.lastName as lastName`,
+          `${this.authorTable.name}.name as authorName`,
+          `${this.authorTable.name}.isApproved as isAuthorApproved`,
           `${this.genresTable.name}.id as genreId`,
           `${this.genresTable.name}.name as genreName`,
         ])
@@ -264,8 +264,8 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           `${this.userBookTable.name}.status`,
           `${this.userBookTable.name}.bookshelfId`,
           `${this.authorTable.name}.id as authorId`,
-          `${this.authorTable.name}.firstName as firstName`,
-          `${this.authorTable.name}.lastName as lastName`,
+          `${this.authorTable.name}.name as authorName`,
+          `${this.authorTable.name}.isApproved as isAuthorApproved`,
           `${this.genresTable.name}.id as genreId`,
           `${this.genresTable.name}.name as genreName`,
         ])
@@ -312,7 +312,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
 
     if (!existingUserBook) {
       throw new ResourceNotFoundError({
-        name: 'UserBook',
+        resource: 'UserBook',
         id,
       });
     }

@@ -37,8 +37,8 @@ export class BookMapperImpl implements BookMapper {
         format,
         pages,
         authorId,
-        firstName,
-        lastName,
+        authorName,
+        isAuthorApproved,
       } = entity;
 
       const bookExists = bookDraftsMap.has(bookId);
@@ -49,9 +49,9 @@ export class BookMapperImpl implements BookMapper {
         if (authorId) {
           bookDraft.authors?.push(
             new Author({
-              firstName: firstName as string,
               id: authorId,
-              lastName: lastName as string,
+              name: authorName as string,
+              isApproved: Boolean(isAuthorApproved),
             }),
           );
         }
@@ -61,9 +61,9 @@ export class BookMapperImpl implements BookMapper {
         if (authorId) {
           authors.push(
             new Author({
-              firstName: firstName as string,
               id: authorId,
-              lastName: lastName as string,
+              name: authorName as string,
+              isApproved: Boolean(isAuthorApproved),
             }),
           );
         }

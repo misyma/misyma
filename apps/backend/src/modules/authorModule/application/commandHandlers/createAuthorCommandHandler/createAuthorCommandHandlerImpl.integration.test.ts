@@ -37,25 +37,24 @@ describe('CreateAuthorCommandHandler', () => {
   });
 
   it('creates a author', async () => {
-    const { firstName, lastName } = authorTestFactory.createRaw();
+    const { name, isApproved } = authorTestFactory.createRaw();
 
     const { author } = await createAuthorCommandHandler.execute({
-      firstName,
-      lastName,
+      name,
+      isApproved,
     });
 
     const foundAuthor = await authorTestUtils.findByName({
-      firstName,
-      lastName,
+      name,
     });
 
-    expect(author.getFirstName()).toEqual(firstName);
+    expect(author.getName()).toEqual(name);
 
-    expect(author.getLastName()).toEqual(lastName);
+    expect(author.getIsApproved()).toEqual(isApproved);
 
-    expect(foundAuthor.firstName).toEqual(firstName);
+    expect(foundAuthor?.name).toEqual(name);
 
-    expect(foundAuthor.lastName).toEqual(lastName);
+    expect(foundAuthor?.isApproved).toEqual(isApproved);
   });
 
   it('throws an error when author with the same firstName and author already exists', async () => {
@@ -64,16 +63,15 @@ describe('CreateAuthorCommandHandler', () => {
     await expect(
       async () =>
         await createAuthorCommandHandler.execute({
-          firstName: existingAuthor.firstName,
-          lastName: existingAuthor.lastName,
+          name: existingAuthor.name,
+          isApproved: existingAuthor.isApproved,
         }),
     ).toThrowErrorInstance({
       instance: ResourceAlreadyExistsError,
       context: {
-        name: 'Author',
+        resource: 'Author',
         id: existingAuthor.id,
-        firstName: existingAuthor.firstName,
-        lastName: existingAuthor.lastName,
+        name: existingAuthor.name,
       },
     });
   });

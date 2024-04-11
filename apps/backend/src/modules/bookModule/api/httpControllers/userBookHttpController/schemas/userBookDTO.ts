@@ -67,14 +67,11 @@ export const userBookDTOSchema = Type.Object({
     authors: Type.Array(
       Type.Object({
         id: Type.String({ format: 'uuid' }),
-        firstName: Type.String({
+        name: Type.String({
           minLength: 1,
-          maxLength: 64,
+          maxLength: 128,
         }),
-        lastName: Type.String({
-          minLength: 1,
-          maxLength: 64,
-        }),
+        isApproved: Type.Boolean(),
       }),
     ),
   }),
