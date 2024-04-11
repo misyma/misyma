@@ -11,4 +11,5 @@ export interface BookRawEntity {
   readonly format: BookFormat;
   readonly pages?: number | undefined;
   readonly isApproved: boolean;
+  readonly imageUrl?: string | undefined;
 }

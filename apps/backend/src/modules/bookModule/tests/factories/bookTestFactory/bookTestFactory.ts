@@ -17,6 +17,7 @@ export class BookTestFactory {
       pages: Generator.number(100, 1000),
       releaseYear: Generator.number(1970, 2024),
       isApproved: Generator.boolean(),
+      imageUrl: Generator.imageUrl(),
       authors: [],
       ...input,
     });
@@ -34,6 +35,7 @@ export class BookTestFactory {
       pages: Generator.number(100, 1000),
       releaseYear: Generator.number(1970, 2024),
       isApproved: Generator.boolean(),
+      imageUrl: Generator.imageUrl(),
       ...input,
     };
   }

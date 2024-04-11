@@ -15,6 +15,7 @@ export interface BookDraft {
   readonly pages?: number | undefined;
   readonly authors: Author[];
   readonly isApproved: boolean;
+  readonly imageUrl?: string | undefined;
 }
 
 export interface BookState {
@@ -26,8 +27,9 @@ export interface BookState {
   translator?: string | undefined;
   format: BookFormat;
   pages?: number | undefined;
-  authors: Author[];
   isApproved: boolean;
+  imageUrl?: string | undefined;
+  authors: Author[];
 }
 
 export interface SetTitlePayload {
@@ -70,12 +72,29 @@ export interface SetIsApprovedPayload {
   readonly isApproved: boolean;
 }
 
+export interface SetImageUrlPayload {
+  readonly imageUrl: string;
+}
+
 export class Book {
   private readonly id: string;
   private readonly state: BookState;
 
   public constructor(draft: BookDraft) {
-    const { id, title, isbn, publisher, releaseYear, language, translator, format, pages, authors, isApproved } = draft;
+    const {
+      id,
+      title,
+      isbn,
+      publisher,
+      releaseYear,
+      language,
+      translator,
+      format,
+      pages,
+      authors,
+      isApproved,
+      imageUrl,
+    } = draft;
 
     this.id = id;
 
@@ -105,6 +124,10 @@ export class Book {
 
     if (pages) {
       this.state.pages = pages;
+    }
+
+    if (imageUrl) {
+      this.state.imageUrl = imageUrl;
     }
   }
 
@@ -154,6 +177,10 @@ export class Book {
 
   public getIsApproved(): boolean {
     return this.state.isApproved;
+  }
+
+  public getImageUrl(): string | undefined {
+    return this.state.imageUrl;
   }
 
   public setTitle(payload: SetTitlePayload): void {
@@ -208,6 +235,12 @@ export class Book {
     const { isApproved } = payload;
 
     this.state.isApproved = isApproved;
+  }
+
+  public setImageUrl(payload: SetImageUrlPayload): void {
+    const { imageUrl } = payload;
+
+    this.state.imageUrl = imageUrl;
   }
 
   public addAuthor(author: Author): void {

@@ -26,6 +26,8 @@ export class M1CreateBookTableMigration implements Migration {
 
       table.boolean('isApproved').notNullable();
 
+      table.text('imageUrl');
+
       table.primary(['id']);
     });
 

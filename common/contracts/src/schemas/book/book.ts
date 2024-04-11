@@ -12,5 +12,6 @@ export interface Book {
   readonly format: BookFormat;
   readonly pages?: number;
   readonly isApproved: boolean;
+  readonly imageUrl?: string;
   readonly authors: Author[];
 }
