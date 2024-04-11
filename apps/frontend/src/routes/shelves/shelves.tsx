@@ -52,8 +52,8 @@ export const ShelvesPage: FC = () => {
               >
                 Dodaj nową półkę
               </Button>
-              <ScrollArea className='w-[80%] h-[700px]'>
-                <div className="py-8 grid gap-x-32 gap-y-16 grid-cols-1 sm:grid-cols-2 w-full min-h-32">
+              <ScrollArea className='w-[60%] h-[700px] pt-8'>
+                <div className="py-8 grid gap-x-16 gap-y-8 grid-cols-1 sm:grid-cols-2 w-full min-h-32">
                   {bookshelves?.data.map((bookshelf) => (
                     <div>
                       <div className="flex items-center">

@@ -7,11 +7,14 @@ import { z } from 'zod';
 import { DefaultLayout } from '../../layouts/default/defaultLayout';
 import { Logo } from '../../components/logo/logo';
 import { RequireNonAuthComponent } from '../../core/components/requireNonAuth/requireNonAuthComponent';
+import { useToast } from '../../components/ui/use-toast';
 
 export const VerifyEmailPage: FC = () => {
   const navigate = useNavigate();
 
   const verifyUserEmailMutation = useVerifyUserEmailMutation({});
+
+  const { toast } = useToast();
 
   const { token } = verifyEmailRoute.useSearch();
 
@@ -22,11 +25,23 @@ export const VerifyEmailPage: FC = () => {
       },
       {
         onSuccess: () => {
+          toast({
+            title: 'Email został potwierdzony.',
+            description: 'Twój adres email został potwierdzony. Możesz już wejść do swojej własnej biblioteki',
+            variant: 'success',
+          });
+
           navigate({
             to: '/login',
           });
         },
         onError: () => {
+          toast({
+            title: 'Wystąpił błąd.',
+            description: 'Wystąpił błąd i Twój adres email nie został potwierdzony. Spróbuj ponownie.',
+            variant: 'destructive',
+          });
+
           navigate({
             to: '/register',
           });

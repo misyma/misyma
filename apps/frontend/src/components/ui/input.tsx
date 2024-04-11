@@ -23,6 +23,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
          border
          border-input
          ring-offset-background
+         h-12
          w-60 sm:w-96`,
         containerClassName
       )}>

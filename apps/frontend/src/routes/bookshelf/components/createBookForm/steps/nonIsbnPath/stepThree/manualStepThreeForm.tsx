@@ -6,7 +6,7 @@ import {
   useBookCreation,
   useBookCreationDispatch,
 } from '../../../context/bookCreationContext/bookCreationContext';
-import { ReadingStatus } from '@common/contracts';
+import { ReadingStatus as ContractReadingStatus } from '@common/contracts';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -23,9 +23,18 @@ import { useCreateBookMutation } from '../../../../../../../api/books/mutations/
 import { useCreateUserBookMutation } from '../../../../../../../api/books/mutations/createUserBookMutation/createUserBookMutation';
 import { useFindUserQuery } from '../../../../../../../api/user/queries/findUserQuery/findUserQuery';
 import { useNavigate } from '@tanstack/react-router';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../../../../../../../components/ui/select';
+import { ReadingStatus } from '../../../../../../../common/constants/readingStatus';
+import { useToast } from '../../../../../../../components/ui/use-toast';
 
 const stepThreeFormSchema = z.object({
-  status: z.nativeEnum(ReadingStatus),
+  status: z.nativeEnum(ContractReadingStatus),
   image: z.string().min(1),
 });
 
@@ -39,6 +48,8 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
   const dispatch = useBookCreationDispatch();
 
   const { data: user } = useFindUserQuery();
+
+  const { toast } = useToast();
 
   const form = useForm({
     resolver: zodResolver(stepThreeFormSchema),
@@ -75,13 +86,19 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
     await createUserBookMutation({
       bookId: bookCreationResponse.id,
       bookshelfId,
-      status: bookCreation.stepThreeDetails?.status as ReadingStatus,
+      status: bookCreation.stepThreeDetails?.status as ContractReadingStatus,
       userId: user?.id as string,
     });
 
+    toast({
+      title: 'Książka została położona na półce 😄',
+      description: `Książka ${bookCreation.stepOneDetails?.title} została położona na półce 😄`,
+      variant: 'success',
+    });
+
     await navigate({
-      to: `/bookshelf/${bookshelfId}`
-    })
+      to: `/bookshelf/${bookshelfId}`,
+    });
   };
 
   return (
@@ -96,20 +113,31 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Status</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Status"
-                  type="text"
-                  includeQuill={false}
-                  onInput={(e) => {
-                    dispatch({
-                      type: BookCreationActionType.setStatus,
-                      status: e.currentTarget.value as ReadingStatus,
-                    });
-                  }}
-                  {...field}
-                />
-              </FormControl>
+              <Select
+                onValueChange={(val) => {
+                  dispatch({
+                    type: BookCreationActionType.setStatus,
+                    status: val as ContractReadingStatus,
+                  });
+
+                  field.onChange(val);
+                }}
+                defaultValue={field.value}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue
+                      placeholder="Status"
+                      className="bg-red-500"
+                    />
+                    <SelectContent>
+                      {Object.entries(ReadingStatus).map(([key, status]) => (
+                        <SelectItem value={key}>{status}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </SelectTrigger>
+                </FormControl>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
