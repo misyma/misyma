@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { Dispatch, ReactNode, createContext, useContext, useReducer } from 'react';
-import { ReadingStatus } from '@common/contracts';
+import { BookFormat, ReadingStatus } from '@common/contracts';
+import { Languages } from '../../../../../../common/constants/languages';
 
 const BookCreationContext = createContext<BookCreationState<true>>(null as unknown as BookCreationState<true>);
 
@@ -28,7 +29,7 @@ export enum BookCreationActionType {
   setGenre = 10,
   setLanguage = 11,
   setTranslator = 12,
-  setForm = 13,
+  setFormat = 13,
   setPagesCount = 14,
   setStatus = 15,
   setImage = 16,
@@ -88,7 +89,7 @@ type SetGenre = {
 
 type SetNonIsbnStepTwoDetails = {
   type: BookCreationActionType.nonIsbnStepTwoDetails;
-  language: string;
+  language: Languages;
   translator: string;
   format: string;
   pagesCount: number;
@@ -96,7 +97,7 @@ type SetNonIsbnStepTwoDetails = {
 
 type SetLanguage = {
   type: BookCreationActionType.setLanguage;
-  language: string;
+  language: Languages;
 };
 
 type SetTranslator = {
@@ -105,8 +106,8 @@ type SetTranslator = {
 };
 
 type SetFormat = {
-  type: BookCreationActionType.setForm;
-  format: string;
+  type: BookCreationActionType.setFormat;
+  format: BookFormat;
 };
 
 type SetPagesCount = {
@@ -275,7 +276,7 @@ function bookCreationReducer<T extends boolean = true>(
         } as Omit<SetNonIsbnStepTwoDetails, 'type'>,
       };
 
-    case BookCreationActionType.setForm:
+    case BookCreationActionType.setFormat:
       return {
         ...state,
         isbnPath: false as T,
