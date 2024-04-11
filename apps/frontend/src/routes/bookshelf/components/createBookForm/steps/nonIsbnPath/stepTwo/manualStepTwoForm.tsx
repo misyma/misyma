@@ -18,15 +18,19 @@ import {
 } from '../../../../../../../components/ui/form';
 import { Input } from '../../../../../../../components/ui/input';
 import { Button } from '../../../../../../../components/ui/button';
+import { Languages } from '../../../../../../../common/constants/languages';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../../../../../../../components/ui/select';
+import { BookFormat as ContractBookFormat } from '@common/contracts';
+import { BookFormat } from '../../../../../../../common/constants/bookFormat';
 
-// todo: error messages
 const stepTwoSchema = z.object({
-  language: z // todo: enum
-    .string({
-      required_error: 'Język jest wymagany.',
-    })
-    .min(1)
-    .max(64),
+  language: z.enum(Object.keys(Languages) as unknown as [string, ...string[]]),
   translator: z
     .string({
       required_error: 'Tłumacz jest wymagany.',
@@ -37,10 +41,11 @@ const stepTwoSchema = z.object({
     .max(64, {
       message: 'Tłumacz może mieć maksymalnei 64 znaki.',
     }),
-  form: z.string().min(1).max(64), // todo: enum
+  form: z.nativeEnum(ContractBookFormat),
   pagesCount: z
     .number({
       required_error: 'Ilość stron jest wymagana.',
+      coerce: true,
     })
     .int({
       message: 'Ilość stron musi być wartością całkowitą.',
@@ -60,11 +65,11 @@ export const ManualStepTwoForm = (): JSX.Element => {
 
   const form = useForm({
     resolver: zodResolver(stepTwoSchema),
-    values: {
-      language: bookCreation.stepTwoDetails?.language,
-      translator: bookCreation.stepTwoDetails?.translator,
-      form: bookCreation.stepTwoDetails?.format,
-      pagesCount: bookCreation.stepTwoDetails?.pagesCount,
+    defaultValues: {
+      language: bookCreation.stepTwoDetails?.language ?? '',
+      translator: bookCreation.stepTwoDetails?.translator ?? '',
+      form: bookCreation.stepTwoDetails?.format ?? '',
+      pagesCount: bookCreation.stepTwoDetails?.pagesCount ?? '',
     },
   });
 
@@ -87,20 +92,31 @@ export const ManualStepTwoForm = (): JSX.Element => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Język</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Język"
-                  type="text"
-                  includeQuill={false}
-                  onInput={(e) => {
-                    dispatch({
-                      type: BookCreationActionType.setLanguage,
-                      language: e.currentTarget.value,
-                    });
-                  }}
-                  {...field}
-                />
-              </FormControl>
+              <Select
+                onValueChange={(val) => {
+                  dispatch({
+                    type: BookCreationActionType.setLanguage,
+                    language: val as Languages,
+                  });
+
+                  field.onChange(val);
+                }}
+                defaultValue={field.value}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue
+                      placeholder="Język"
+                      className="bg-red-500"
+                    />
+                    <SelectContent>
+                      {Object.entries(Languages).map(([key, language]) => (
+                        <SelectItem value={key}>{language}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </SelectTrigger>
+                </FormControl>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
@@ -111,20 +127,31 @@ export const ManualStepTwoForm = (): JSX.Element => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Format</FormLabel>
-              <FormControl>
-                <Input //change to dropdown :)
-                  placeholder="text"
-                  type="Format"
-                  includeQuill={false}
-                  onInput={(e) => {
-                    dispatch({
-                      type: BookCreationActionType.setForm,
-                      format: e.currentTarget.value,
-                    });
-                  }}
-                  {...field}
-                />
-              </FormControl>
+              <Select
+                onValueChange={(val) => {
+                  dispatch({
+                    type: BookCreationActionType.setFormat,
+                    format: val as ContractBookFormat
+                  })
+
+                  field.onChange(val);
+                }}
+                defaultValue={field.value}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue
+                      placeholder="Format"
+                      className="bg-red-500"
+                    />
+                    <SelectContent>
+                      {Object.entries(BookFormat).map(([key, language]) => (
+                        <SelectItem value={key}>{language}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </SelectTrigger>
+                </FormControl>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
@@ -140,13 +167,16 @@ export const ManualStepTwoForm = (): JSX.Element => {
                   placeholder="Tłumacz"
                   type="text"
                   includeQuill={false}
-                  onInput={(e) => {
+
+                  {...field}
+                  onChange={(val) => {
                     dispatch({
                       type: BookCreationActionType.setTranslator,
-                      translator: e.currentTarget.value,
+                      translator: val.currentTarget.value,
                     });
+
+                    field.onChange(val);
                   }}
-                  {...field}
                 />
               </FormControl>
               <FormMessage />

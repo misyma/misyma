@@ -2,9 +2,11 @@ import { FC, useCallback } from 'react';
 import { ChoosePathStep } from './steps/pathChoice/pathChoice';
 import { Breadcrumbs } from '../breadcrumbs/breadcrumbs';
 import {
+  BookCreationActionType,
   BookCreationNonIsbnState,
   NonIsbnCreationPathStep,
   useBookCreation,
+  useBookCreationDispatch,
 } from './context/bookCreationContext/bookCreationContext';
 import { ManualStepOneForm } from './steps/nonIsbnPath/stepOne/manualStepOneForm';
 import { ManualStepTwoForm } from './steps/nonIsbnPath/stepTwo/manualStepTwoForm';
@@ -28,6 +30,8 @@ export const CreateBookForm: FC<CreateBookProps> = ({ bookshelfId }) => {
 
   const bookCreation = useBookCreation<false>() as BookCreationNonIsbnState;
 
+  const dispatch = useBookCreationDispatch();
+
   const renderStep = useCallback(() => {
     if (bookCreation.isbnPath && bookCreation.step === 1) {
       // const Component = steps[1]
@@ -43,7 +47,54 @@ export const CreateBookForm: FC<CreateBookProps> = ({ bookshelfId }) => {
   }, [bookCreation.step, bookCreation.isbnPath]);
 
   const setNthSelected = (n: number): string => {
-    return bookCreation.step === n ? 'font-semibold bg-primary text-white border-primary' : '';
+    return bookCreation.step === n ? ' font-semibold bg-primary text-white border-primary' : '';
+  };
+  const canNavigateToSecond = useCallback(() => {
+    return (
+      bookCreation.stepOneDetails?.author &&
+      bookCreation.stepOneDetails?.genre &&
+      bookCreation.stepOneDetails?.publisher &&
+      bookCreation.stepOneDetails?.title
+    );
+  }, [bookCreation.stepOneDetails]);
+
+  const canNavigateToThird = useCallback(() => {
+    return (
+      bookCreation.stepTwoDetails?.format &&
+      bookCreation.stepTwoDetails?.language &&
+      bookCreation.stepTwoDetails?.pagesCount &&
+      bookCreation.stepTwoDetails?.translator
+    )
+  }, [bookCreation.stepTwoDetails]);
+
+  const navigateToStep = (step: number) => {
+    switch (step) {
+      case NonIsbnCreationPathStep.inputFirstDetails:
+        dispatch({
+          type: BookCreationActionType.setStep,
+          step: NonIsbnCreationPathStep.inputFirstDetails,
+        });
+
+        break;
+
+      case NonIsbnCreationPathStep.inputSecondDetails:
+        if (canNavigateToSecond()) {
+          dispatch({
+            type: BookCreationActionType.setStep,
+            step: NonIsbnCreationPathStep.inputSecondDetails,
+          });
+        }
+
+        break;
+
+      case NonIsbnCreationPathStep.inputThirdDetail:
+        if (canNavigateToThird()) {
+          dispatch({
+            type: BookCreationActionType.setStep,
+            step: NonIsbnCreationPathStep.inputThirdDetail,
+          });
+        }
+    }
   };
 
   return (
@@ -56,9 +107,12 @@ export const CreateBookForm: FC<CreateBookProps> = ({ bookshelfId }) => {
                 [NonIsbnCreationPathStep.inputFirstDetails]: (
                   <div
                     className={cn(
-                      'rounded-full border border-solid border-black h-10 w-10 flex items-center justify-center text-2xl ' +
+                      'rounded-full border border-solid border-black h-10 w-10 flex items-center justify-center text-2xl cursor-pointer' +
                         setNthSelected(NonIsbnCreationPathStep.inputFirstDetails),
                     )}
+                    onClick={() => {
+                      navigateToStep(1);
+                    }}
                   >
                     1
                   </div>
@@ -68,7 +122,11 @@ export const CreateBookForm: FC<CreateBookProps> = ({ bookshelfId }) => {
                     className={cn(
                       'rounded-full border border-solid border-black h-10 w-10 flex items-center justify-center text-2xl ' +
                         setNthSelected(NonIsbnCreationPathStep.inputSecondDetails),
+                      canNavigateToSecond() ? 'cursor-pointer' : '',
                     )}
+                    onClick={() => {
+                      navigateToStep(2);
+                    }}
                   >
                     2
                   </div>
@@ -78,7 +136,11 @@ export const CreateBookForm: FC<CreateBookProps> = ({ bookshelfId }) => {
                     className={cn(
                       'rounded-full border border-solid border-black h-10 w-10 flex items-center justify-center text-2xl ' +
                         setNthSelected(NonIsbnCreationPathStep.inputThirdDetail),
+                      canNavigateToThird() ? 'cursor-pointer' : '',
                     )}
+                    onClick={() => {
+                      navigateToStep(3);
+                    }}
                   >
                     3
                   </div>
