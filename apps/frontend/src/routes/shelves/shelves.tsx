@@ -21,7 +21,7 @@ export const ShelvesPage: FC = () => {
 
   return (
     <AuthenticatedLayout>
-      <div className="flex w-100%px-8 py-4">
+      <div className="flex w-100% px-8 py-1 sm:py-4">
         {createBookshelfFormVisible ? (
           <>
             <div className="sm:py-16 flex flex-col-reverse sm:flex-1 sm:flex-row w-[100%] gap-8 sm:gap-32 items-center sm:items-start justify-center">
@@ -52,7 +52,7 @@ export const ShelvesPage: FC = () => {
               >
                 Dodaj nową półkę
               </Button>
-              <ScrollArea className='w-[60%] h-[700px] pt-8'>
+              <ScrollArea className='w-[90%] md:w-[60%] h-[700px] pt-8'>
                 <div className="py-8 grid gap-x-16 gap-y-8 grid-cols-1 sm:grid-cols-2 w-full min-h-32">
                   {bookshelves?.data.map((bookshelf) => (
                     <div>
@@ -77,7 +77,7 @@ export const ShelvesPage: FC = () => {
                             navigate({});
                           }}
                         >
-                          <h2 className='ml-12 text-2xl' key={`${bookshelf.id}-${bookshelf.name}`}>{bookshelf.name}</h2>
+                          <h2 className='pl-0 md:pl-4 lg:pl-12 text-2xl' key={`${bookshelf.id}-${bookshelf.name}`}>{bookshelf.name}</h2>
                           {/* <p key={`${bookshelf.id}-${bookshelf.addressId}`}>
                           {bookshelf.addressId}
                           {'  '}
