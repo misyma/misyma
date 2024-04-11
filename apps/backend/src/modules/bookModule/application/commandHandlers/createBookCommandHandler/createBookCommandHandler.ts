@@ -13,6 +13,7 @@ export interface CreateBookCommandHandlerPayload {
   readonly format: BookFormat;
   readonly pages?: number;
   readonly authorIds: string[];
+  readonly isApproved: boolean;
 }
 
 export interface CreateBookCommandHandlerResult {

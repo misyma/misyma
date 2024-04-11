@@ -71,6 +71,7 @@ describe('CreateBookCommandHandler', () => {
       translator: createdBook.getTranslator() as string,
       format: createdBook.getFormat(),
       pages: createdBook.getPages() as number,
+      isApproved: createdBook.getIsApproved(),
       authorIds: [author.id],
     });
 
@@ -81,7 +82,7 @@ describe('CreateBookCommandHandler', () => {
 
     expect(book.getTitle()).toEqual(createdBook.getTitle());
 
-    expect(foundBook.title).toEqual(createdBook.getTitle());
+    expect(foundBook?.title).toEqual(createdBook.getTitle());
   });
 
   it('throws an error - when provided Authors do not exist', async () => {
@@ -99,6 +100,7 @@ describe('CreateBookCommandHandler', () => {
         translator: createdBook.getTranslator() as string,
         format: createdBook.getFormat(),
         pages: createdBook.getPages() as number,
+        isApproved: createdBook.getIsApproved(),
         authorIds: [authorId],
       }),
     ).toThrowErrorInstance({

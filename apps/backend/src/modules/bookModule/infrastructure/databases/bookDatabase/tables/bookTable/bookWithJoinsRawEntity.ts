@@ -10,6 +10,7 @@ export interface BookWithJoinsRawEntity {
   readonly translator: string | null;
   readonly format: BookFormat;
   readonly pages: number | null;
+  readonly isApproved: boolean;
   readonly authorId: string | null;
   readonly authorName: string | null;
   readonly isAuthorApproved: boolean | null;

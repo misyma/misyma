@@ -15,6 +15,7 @@ export interface UserBook {
     readonly translator?: string;
     readonly format: BookFormat;
     readonly pages?: number;
+    readonly isApproved: boolean;
     readonly authors: Author[];
   };
   readonly imageUrl?: string;

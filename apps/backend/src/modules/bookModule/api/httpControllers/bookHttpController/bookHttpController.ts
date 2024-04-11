@@ -1,3 +1,5 @@
+import { UserRole } from '@common/contracts';
+
 import { type BookDTO } from './schemas/bookDto.js';
 import {
   createBookBodyDTOSchema,
@@ -36,6 +38,7 @@ import { type FindBookQueryHandler } from '../../../application/queryHandlers/fi
 import { type FindBooksQueryHandler } from '../../../application/queryHandlers/findBooksQueryHandler/findBooksQueryHandler.js';
 import { type Book } from '../../../domain/entities/book/book.js';
 
+// TODO: add admin book http controller
 export class BookHttpController implements HttpController {
   public readonly basePath = '/api/books';
   public readonly tags = ['Book'];
@@ -128,11 +131,13 @@ export class BookHttpController implements HttpController {
 
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
+      expectedRole: UserRole.admin,
     });
 
     const { book } = await this.createBookCommandHandler.execute({
       ...bookData,
       authorIds,
+      isApproved: true,
     });
 
     return {
@@ -182,6 +187,7 @@ export class BookHttpController implements HttpController {
 
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
+      expectedRole: UserRole.admin,
     });
 
     await this.deleteBookCommandHandler.execute({ bookId: id });
@@ -198,6 +204,7 @@ export class BookHttpController implements HttpController {
       title: book.getTitle(),
       language: book.getLanguage(),
       format: book.getFormat(),
+      isApproved: book.getIsApproved(),
       authors: book.getAuthors().map((author) => ({
         id: author.getId(),
         name: author.getName(),

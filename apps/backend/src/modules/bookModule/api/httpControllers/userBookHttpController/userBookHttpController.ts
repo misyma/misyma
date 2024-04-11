@@ -324,6 +324,7 @@ export class UserBookHttpController implements HttpController {
       book: {
         title: userBook.getBook()?.title as string,
         language: userBook.getBook()?.language as string,
+        isApproved: userBook.getBook()?.isApproved as boolean,
         format: userBook.getBook()?.format as BookFormat,
         authors:
           userBook.getBook()?.authors.map((author) => ({

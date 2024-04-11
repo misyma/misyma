@@ -28,6 +28,7 @@ describe('BookMapperImpl', () => {
         translator: bookRawEntity.translator,
         format: bookRawEntity.format,
         pages: bookRawEntity.pages,
+        isApproved: bookRawEntity.isApproved,
         authors: [],
       },
     });
@@ -47,6 +48,7 @@ describe('BookMapperImpl', () => {
         translator: book.translator as string,
         format: book.format,
         pages: book.pages as number,
+        isApproved: book.isApproved,
         authorId: null,
         authorName: null,
         isAuthorApproved: null,
@@ -65,6 +67,7 @@ describe('BookMapperImpl', () => {
           translator: book.translator,
           format: book.format,
           pages: book.pages,
+          isApproved: book.isApproved,
           authors: [],
         },
       },
