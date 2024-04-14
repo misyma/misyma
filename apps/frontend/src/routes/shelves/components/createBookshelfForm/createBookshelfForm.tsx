@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { CreateBookshelfFormValues, createBookshelfSchema } from './schema/createBookshelfSchema';
 import { useCreateBookshelfMutation } from '../../../../api/shelf/mutations/createBookshelfMutation/createBookshelfMutation';
@@ -8,6 +8,7 @@ import { Input } from '../../../../components/ui/input';
 import { Button } from '../../../../components/ui/button';
 import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery';
 import { useToast } from '../../../../components/ui/use-toast';
+import { ShelfApiError } from '../../../../api/shelf/errors/shelfApiError';
 
 interface Props {
   onGoBack: (created: boolean) => void;
@@ -15,6 +16,8 @@ interface Props {
 
 export const CreateBookshelfForm: FC<Props> = ({ onGoBack }: Props) => {
   const createBookshelfMutation = useCreateBookshelfMutation({});
+
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
 
   const { data } = useFindUserQuery();
 
@@ -44,7 +47,13 @@ export const CreateBookshelfForm: FC<Props> = ({ onGoBack }: Props) => {
 
       onGoBack(true);
     } catch (error) {
-      console.error(error);
+      if (error instanceof ShelfApiError) {
+        setSubmissionError(error.message);
+
+        return;
+      }
+
+      setSubmissionError('Coś poszło nie tak. Spróbuj ponownie.')
     }
   };
 
@@ -126,6 +135,7 @@ export const CreateBookshelfForm: FC<Props> = ({ onGoBack }: Props) => {
             Zapisz
           </Button>
         </div>
+        {submissionError}
       </form>
     </Form>
   );

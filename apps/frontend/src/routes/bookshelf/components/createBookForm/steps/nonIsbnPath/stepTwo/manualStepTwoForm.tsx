@@ -63,6 +63,7 @@ export const ManualStepTwoForm = (): JSX.Element => {
 
   const dispatch = useBookCreationDispatch();
 
+
   const form = useForm({
     resolver: zodResolver(stepTwoSchema),
     defaultValues: {
@@ -106,8 +107,9 @@ export const ManualStepTwoForm = (): JSX.Element => {
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue
-                      placeholder="Język"
-                      className="bg-red-500"
+                      placeholder={
+                        <span className='text-muted-foreground'>Język</span>
+                      }
                     />
                     <SelectContent>
                       {Object.entries(Languages).map(([key, language]) => (
@@ -141,8 +143,9 @@ export const ManualStepTwoForm = (): JSX.Element => {
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue
-                      placeholder="Format"
-                      className="bg-red-500"
+                      placeholder={
+                        <span className='text-muted-foreground'>Format</span>
+                      }
                     />
                     <SelectContent>
                       {Object.entries(BookFormat).map(([key, language]) => (
@@ -167,7 +170,6 @@ export const ManualStepTwoForm = (): JSX.Element => {
                   placeholder="Tłumacz"
                   type="text"
                   includeQuill={false}
-
                   {...field}
                   onChange={(val) => {
                     dispatch({
