@@ -63,6 +63,7 @@ export const ManualStepTwoForm = (): JSX.Element => {
 
   const dispatch = useBookCreationDispatch();
 
+
   const form = useForm({
     resolver: zodResolver(stepTwoSchema),
     defaultValues: {

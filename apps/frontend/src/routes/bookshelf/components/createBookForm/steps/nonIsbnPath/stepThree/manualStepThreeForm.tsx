@@ -32,6 +32,8 @@ import {
 } from '../../../../../../../components/ui/select';
 import { ReadingStatus } from '../../../../../../../common/constants/readingStatus';
 import { useToast } from '../../../../../../../components/ui/use-toast';
+import { useState } from 'react';
+import { BookApiError } from '../../../../../../../api/books/errors/bookApiError';
 
 const stepThreeFormSchema = z.object({
   status: z.nativeEnum(ContractReadingStatus),
@@ -44,6 +46,8 @@ interface Props {
 
 export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
   const bookCreation = useBookCreation<false>() as BookCreationNonIsbnState;
+
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
 
   const dispatch = useBookCreationDispatch();
 
@@ -68,37 +72,59 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
   const onSubmit = async (values: Partial<z.infer<typeof stepThreeFormSchema>>) => {
     values as z.infer<typeof stepThreeFormSchema>;
 
-    const bookCreationResponse = await createBookMutation({
-      authorIds: [], // temp.
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      format: bookCreation.stepTwoDetails?.format as unknown as any,
-      language: bookCreation.stepTwoDetails?.language as string,
-      title: bookCreation.stepOneDetails?.title as string,
-      publisher: bookCreation.stepOneDetails?.publisher,
-      translator: bookCreation.stepTwoDetails?.translator,
-      pages: bookCreation.stepTwoDetails?.pagesCount,
-      releaseYear: bookCreation.yearOfIssue,
-      ...(bookCreation.stepOneDetails as Required<BookCreationNonIsbnState['stepOneDetails']>),
-      ...(bookCreation.stepTwoDetails as Required<BookCreationNonIsbnState['stepTwoDetails']>),
-      ...(bookCreation.stepThreeDetails as Required<BookCreationNonIsbnState['stepThreeDetails']>),
-    });
+    try {
+      const bookCreationResponse = await createBookMutation({
+        authorIds: [], // temp.
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        format: bookCreation.stepTwoDetails?.format as unknown as any,
+        language: bookCreation.stepTwoDetails?.language as string,
+        title: bookCreation.stepOneDetails?.title as string,
+        publisher: bookCreation.stepOneDetails?.publisher,
+        translator: bookCreation.stepTwoDetails?.translator,
+        pages: bookCreation.stepTwoDetails?.pagesCount,
+        releaseYear: bookCreation.yearOfIssue,
+        ...(bookCreation.stepOneDetails as Required<BookCreationNonIsbnState['stepOneDetails']>),
+        ...(bookCreation.stepTwoDetails as Required<BookCreationNonIsbnState['stepTwoDetails']>),
+        ...(bookCreation.stepThreeDetails as Required<BookCreationNonIsbnState['stepThreeDetails']>),
+      });
 
-    await createUserBookMutation({
-      bookId: bookCreationResponse.id,
-      bookshelfId,
-      status: bookCreation.stepThreeDetails?.status as ContractReadingStatus,
-      userId: user?.id as string,
-    });
+      await createUserBookMutation({
+        bookId: bookCreationResponse.id,
+        bookshelfId,
+        status: bookCreation.stepThreeDetails?.status as ContractReadingStatus,
+        userId: user?.id as string,
+      });
 
-    toast({
-      title: 'Książka została położona na półce 😄',
-      description: `Książka ${bookCreation.stepOneDetails?.title} została położona na półce 😄`,
-      variant: 'success',
-    });
+      toast({
+        title: 'Książka została położona na półce 😄',
+        description: `Książka ${bookCreation.stepOneDetails?.title} została położona na półce 😄`,
+        variant: 'success',
+      });
 
-    await navigate({
-      to: `/bookshelf/${bookshelfId}`,
-    });
+      await navigate({
+        to: `/bookshelf/${bookshelfId}`,
+      });
+    } catch (error) {
+      if (error instanceof BookApiError) {
+        setSubmissionError(error.message);
+
+        toast({
+          title: 'Coś poszło nie tak...',
+          description: 'Nie udało się utworzyć książki. Spróbuj ponownie.',
+          variant: 'destructive'
+        });
+
+        return;
+      }
+
+      setSubmissionError('Coś poszło nie tak. Spróbuj ponownie.');
+
+      toast({
+        title: 'Coś poszło nie tak...',
+        description: 'Nie udało się utworzyć książki. Spróbuj ponownie.',
+        variant: 'destructive'
+      });
+    }
   };
 
   return (
@@ -186,6 +212,7 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
             Dodaj książkę
           </Button>
         </div>
+        {submissionError}
       </form>
     </Form>
   );
