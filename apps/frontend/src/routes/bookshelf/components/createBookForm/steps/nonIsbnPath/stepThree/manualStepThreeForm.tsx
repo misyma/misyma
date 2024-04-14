@@ -106,12 +106,12 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
       });
     } catch (error) {
       if (error instanceof BookApiError) {
-        setSubmissionError(error.message);
+        setSubmissionError(error.context.message);
 
         toast({
           title: 'Coś poszło nie tak...',
           description: 'Nie udało się utworzyć książki. Spróbuj ponownie.',
-          variant: 'destructive'
+          variant: 'destructive',
         });
 
         return;
@@ -122,7 +122,7 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
       toast({
         title: 'Coś poszło nie tak...',
         description: 'Nie udało się utworzyć książki. Spróbuj ponownie.',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     }
   };
@@ -212,7 +212,7 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
             Dodaj książkę
           </Button>
         </div>
-        {submissionError}
+        {submissionError ? <p className='text-red-500'>{submissionError}</p> : <></>}
       </form>
     </Form>
   );

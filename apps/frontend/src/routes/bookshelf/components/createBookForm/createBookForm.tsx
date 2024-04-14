@@ -98,9 +98,8 @@ export const CreateBookForm: FC<CreateBookProps> = ({ bookshelfId }) => {
   };
 
   return (
-    <div className="flex flex-col pt-24">
-      <div className="flex flex-col-reverse sm:flex-row gap-60">
-        <div>
+      <div className="flex flex-col-reverse sm:px-10 pt-8 sm:pt-24 sm:flex-row gap-10 sm:gap-20 md:gap-30 lg:gap-60 max-w-[15rem] sm:max-w-[unset]">
+        <div className='sm:min-h-[40rem]'>
           {!bookCreation.isbnPath && bookCreation.step > 0 ? (
             <Breadcrumbs
               crumbs={{
@@ -153,7 +152,7 @@ export const CreateBookForm: FC<CreateBookProps> = ({ bookshelfId }) => {
           {bookCreation.step === 0 ? <ChoosePathStep></ChoosePathStep> : <></>}
           {renderStep()}
         </div>
-        <div className="flex-1 max-w-[250px] sm:max-w-[500px] flex justify-center">
+        <div className="flex max-w-[250px] w-full sm:max-w-[500px] sm:min-h-[550px] justify-center items-center">
           <img
             src="/books.png"
             alt="Books image"
@@ -161,6 +160,5 @@ export const CreateBookForm: FC<CreateBookProps> = ({ bookshelfId }) => {
           />
         </div>
       </div>
-    </div>
   );
 };

@@ -10,18 +10,15 @@ import {
   useBookCreationDispatch,
 } from '../../context/bookCreationContext/bookCreationContext';
 import { Button } from '../../../../../../components/ui/button';
+import { IoMdCheckmarkCircle } from 'react-icons/io';
+import { MdOutlineCancel } from 'react-icons/md';
 
 const stepOneIsbnSchema = z.object({
   isbn: z
     .string({
       required_error: 'Numer ISBN jest wymagany.',
     })
-    .min(1, {
-      message: 'Numer ISBN musi mieć minimum 1 znak.',
-    })
-    .max(64, {
-      message: 'Numer ISBN musi posiadać maximum 64 znaki',
-    }),
+    .regex(/^(?=(?:[^0-9]*[0-9]){10}(?:(?:[^0-9]*[0-9]){3})?$)[\d-]+$/, 'Niewłaściwy format.'),
 });
 
 export const IsbnPathForm = (): JSX.Element => {
@@ -30,7 +27,7 @@ export const IsbnPathForm = (): JSX.Element => {
   const isbnForm = useForm({
     resolver: zodResolver(stepOneIsbnSchema),
     values: {
-      isbn: bookCreation.isbn,
+      isbn: bookCreation.isbn ?? '',
     },
   });
 
@@ -69,7 +66,14 @@ export const IsbnPathForm = (): JSX.Element => {
                   placeholder="ISBN"
                   type="text"
                   maxLength={64}
-                  includeQuill={true}
+                  includeQuill={false}
+                  otherIcon={
+                    isbnForm.formState.isValid ? (
+                      <IoMdCheckmarkCircle className="text-green-500 text-2xl" />
+                    ) : (
+                      <MdOutlineCancel className="text-red-500 text-2xl" />
+                    )
+                  }
                   onInput={(e) => {
                     dispatch({
                       type: BookCreationActionType.setIsbn,
@@ -86,7 +90,7 @@ export const IsbnPathForm = (): JSX.Element => {
         <Button
           type="submit"
           disabled={!isbnForm.formState.isValid}
-          className='border border-primary w-60 sm:w-96'
+          className="border border-primary w-60 sm:w-96"
         >
           Przejdź dalej
         </Button>

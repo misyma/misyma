@@ -22,7 +22,7 @@ export const useCreateBookMutation = (
     if (!response.success) {
       throw new BookApiError({
         apiResponseError: response.body.context,
-        message: response.body.message,
+        message: mapErrorCodeToErrorMessage(response.statusCode),
         statusCode: response.statusCode,
       });
     }
@@ -34,4 +34,20 @@ export const useCreateBookMutation = (
     mutationFn: createBook,
     ...options,
   });
+};
+
+const mapErrorCodeToErrorMessage = (statusCode: number): string => {
+  switch (statusCode) {
+    case 400:
+      return `Podano błędne dane.`;
+
+    case 403:
+      return `Brak pozwolenia na stworzenie książki.`;
+
+    case 500:
+      return `Wewnętrzny błąd serwera.`;
+
+    default:
+      return 'Nieznany błąd.';
+  }
 };
