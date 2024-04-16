@@ -2,7 +2,7 @@ import { type Static, Type } from '@sinclair/typebox';
 
 import * as contracts from '@common/contracts';
 
-import { authorDTOSchema } from '../../../../../authorModule/api/httpControllers/authorHttpController/schemas/authorDto.js';
+import { authorDTOSchema } from '../../../../../authorModule/api/httpControllers/common/authorDto.js';
 import { genreDTOSchema } from '../../common/genreDto.js';
 
 export const userBookDTOSchema = Type.Object({

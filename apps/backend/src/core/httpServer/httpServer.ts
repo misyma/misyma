@@ -15,6 +15,7 @@ import { HttpStatusCode } from '../../common/types/http/httpStatusCode.js';
 import { SecurityMode } from '../../common/types/http/securityMode.js';
 import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
+import { type AuthorAdminHttpController } from '../../modules/authorModule/api/httpControllers/authorAdminHttpController/authorAdminHttpController.js';
 import { type AuthorHttpController } from '../../modules/authorModule/api/httpControllers/authorHttpController/authorHttpController.js';
 import { authorSymbols } from '../../modules/authorModule/symbols.js';
 import { type BookAdminHttpController } from '../../modules/bookModule/api/httpControllers/bookAdminHttpController/bookAdminHttpController.js';
@@ -55,15 +56,16 @@ export class HttpServer {
 
   private getControllers(): HttpController[] {
     return [
+      this.container.get<ApplicationHttpController>(symbols.applicationHttpController),
       this.container.get<UserHttpController>(userSymbols.userHttpController),
+      this.container.get<AuthorHttpController>(authorSymbols.authorHttpController),
+      this.container.get<AuthorAdminHttpController>(authorSymbols.authorAdminHttpController),
       this.container.get<BookHttpController>(bookSymbols.bookHttpController),
       this.container.get<BookAdminHttpController>(bookSymbols.bookAdminHttpController),
       this.container.get<UserBookHttpController>(bookSymbols.userBookHttpController),
-      this.container.get<AuthorHttpController>(authorSymbols.authorHttpController),
-      this.container.get<ApplicationHttpController>(symbols.applicationHttpController),
-      this.container.get<BookshelfHttpController>(bookshelfSymbols.bookshelfHttpController),
       this.container.get<GenreHttpController>(bookSymbols.genreHttpController),
       this.container.get<GenreAdminHttpController>(bookSymbols.genreAdminHttpController),
+      this.container.get<BookshelfHttpController>(bookshelfSymbols.bookshelfHttpController),
       this.container.get<BookReadingHttpController>(bookReadingSymbols.bookReadingHttpController),
     ];
   }

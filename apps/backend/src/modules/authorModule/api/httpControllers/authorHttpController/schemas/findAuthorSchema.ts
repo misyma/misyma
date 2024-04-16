@@ -2,8 +2,8 @@ import { type Static, Type } from '@sinclair/typebox';
 
 import type * as contracts from '@common/contracts';
 
-import { authorDTOSchema } from './authorDto.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
+import { authorDTOSchema } from '../../common/authorDto.js';
 
 export const findAuthorPathParamsDTOSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),

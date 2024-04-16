@@ -1,3 +1,5 @@
+import { UserRole } from '@common/contracts';
+
 import {
   createAuthorBodyDTOSchema,
   type CreateAuthorBodyDTO,
@@ -5,31 +7,31 @@ import {
   createAuthorResponseBodyDTOSchema,
 } from './schemas/createAuthorSchema.js';
 import {
-  findAuthorPathParamsDTOSchema,
-  findAuthorResponseBodyDTOSchema,
-  type FindAuthorPathParamsDTO,
-  type FindAuthorResponseBodyDTO,
-} from './schemas/findAuthorSchema.js';
+  deleteAuthorPathParamsDTOSchema,
+  deleteAuthorResponseBodyDTOSchema,
+  type DeleteAuthorPathParamsDTO,
+  type DeleteAuthorResponseBodyDTO,
+} from './schemas/deleteAuthorSchema.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
-import { type HttpCreatedResponse, type HttpOkResponse } from '../../../../../common/types/http/httpResponse.js';
+import { type HttpCreatedResponse, type HttpNoContentResponse } from '../../../../../common/types/http/httpResponse.js';
 import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
 import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.js';
 import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
 import { type CreateAuthorCommandHandler } from '../../../application/commandHandlers/createAuthorCommandHandler/createAuthorCommandHandler.js';
-import { type FindAuthorQueryHandler } from '../../../application/queryHandlers/findAuthorQueryHandler/findAuthorQueryHandler.js';
+import { type DeleteAuthorCommandHandler } from '../../../application/commandHandlers/deleteAuthorCommandHandler/deleteAuthorCommandHandler.js';
 import { type Author } from '../../../domain/entities/author/author.js';
 import { type AuthorDTO } from '../common/authorDto.js';
 
-export class AuthorHttpController implements HttpController {
-  public readonly basePath = '/api/authors';
-  public readonly tags = ['Author'];
+export class AuthorAdminHttpController implements HttpController {
+  public readonly basePath = '/api/admin/authors';
+  public readonly tags = ['Author', 'Admin'];
 
   public constructor(
     private readonly createAuthorCommandHandler: CreateAuthorCommandHandler,
-    private readonly findAuthorQueryHandler: FindAuthorQueryHandler,
+    private readonly deleteAuthorCommandHandler: DeleteAuthorCommandHandler,
     private readonly accessControlService: AccessControlService,
   ) {}
 
@@ -53,22 +55,22 @@ export class AuthorHttpController implements HttpController {
         description: 'Create author',
       }),
       new HttpRoute({
-        method: HttpMethodName.get,
+        method: HttpMethodName.delete,
         path: ':id',
-        handler: this.findAuthor.bind(this),
+        handler: this.deleteAuthor.bind(this),
         schema: {
           request: {
-            pathParams: findAuthorPathParamsDTOSchema,
+            pathParams: deleteAuthorPathParamsDTOSchema,
           },
           response: {
-            [HttpStatusCode.ok]: {
-              schema: findAuthorResponseBodyDTOSchema,
-              description: 'Author found',
+            [HttpStatusCode.noContent]: {
+              schema: deleteAuthorResponseBodyDTOSchema,
+              description: 'Author deleted',
             },
           },
         },
         securityMode: SecurityMode.bearerToken,
-        description: 'Find author by id',
+        description: 'Delete author',
       }),
     ];
   }
@@ -80,11 +82,12 @@ export class AuthorHttpController implements HttpController {
 
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
+      expectedRole: UserRole.admin,
     });
 
     const { author } = await this.createAuthorCommandHandler.execute({
       name,
-      isApproved: false,
+      isApproved: true,
     });
 
     return {
@@ -93,20 +96,21 @@ export class AuthorHttpController implements HttpController {
     };
   }
 
-  private async findAuthor(
-    request: HttpRequest<undefined, undefined, FindAuthorPathParamsDTO>,
-  ): Promise<HttpOkResponse<FindAuthorResponseBodyDTO>> {
+  private async deleteAuthor(
+    request: HttpRequest<undefined, undefined, DeleteAuthorPathParamsDTO>,
+  ): Promise<HttpNoContentResponse<DeleteAuthorResponseBodyDTO>> {
     const { id } = request.pathParams;
 
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
+      expectedRole: UserRole.admin,
     });
 
-    const { author } = await this.findAuthorQueryHandler.execute({ authorId: id });
+    await this.deleteAuthorCommandHandler.execute({ authorId: id });
 
     return {
-      statusCode: HttpStatusCode.ok,
-      body: this.mapAuthorToDTO(author),
+      statusCode: HttpStatusCode.noContent,
+      body: null,
     };
   }
 
