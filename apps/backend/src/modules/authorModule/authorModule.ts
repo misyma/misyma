@@ -1,3 +1,4 @@
+import { AuthorAdminHttpController } from './api/httpControllers/authorAdminHttpController/authorAdminHttpController.js';
 import { AuthorHttpController } from './api/httpControllers/authorHttpController/authorHttpController.js';
 import { type CreateAuthorCommandHandler } from './application/commandHandlers/createAuthorCommandHandler/createAuthorCommandHandler.js';
 import { CreateAuthorCommandHandlerImpl } from './application/commandHandlers/createAuthorCommandHandler/createAuthorCommandHandlerImpl.js';
@@ -68,8 +69,17 @@ export class AuthorModule implements DependencyInjectionModule {
       () =>
         new AuthorHttpController(
           container.get<CreateAuthorCommandHandler>(symbols.createAuthorCommandHandler),
-          container.get<DeleteAuthorCommandHandler>(symbols.deleteAuthorCommandHandler),
           container.get<FindAuthorQueryHandler>(symbols.findAuthorQueryHandler),
+          container.get<AccessControlService>(authSymbols.accessControlService),
+        ),
+    );
+
+    container.bind<AuthorAdminHttpController>(
+      symbols.authorAdminHttpController,
+      () =>
+        new AuthorAdminHttpController(
+          container.get<CreateAuthorCommandHandler>(symbols.createAuthorCommandHandler),
+          container.get<DeleteAuthorCommandHandler>(symbols.deleteAuthorCommandHandler),
           container.get<AccessControlService>(authSymbols.accessControlService),
         ),
     );

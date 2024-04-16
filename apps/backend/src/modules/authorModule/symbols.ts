@@ -10,9 +10,11 @@ export const symbols = {
   findAuthorsByIdsQueryHandler: Symbol('findAuthorsByIdsQueryHandler'),
 
   authorHttpController: Symbol('authorHttpController'),
+  authorAdminHttpController: Symbol('authorAdminHttpController'),
 };
 
 export const authorSymbols = {
   authorHttpController: symbols.authorHttpController,
+  authorAdminHttpController: symbols.authorAdminHttpController,
   findAuthorsByIdsQueryHandler: symbols.findAuthorsByIdsQueryHandler,
 };
