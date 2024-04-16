@@ -11,7 +11,6 @@ import {
   findGenreByNameQueryParamsDTOSchema,
 } from './schemas/findGenreByNameSchema.js';
 import { type FindGenresResponseBodyDTO, findGenresResponseBodyDTOSchema } from './schemas/findGenresSchema.js';
-import { type GenreDTO } from './schemas/genreDto.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
@@ -24,6 +23,7 @@ import { type FindGenreByIdQueryHandler } from '../../../application/queryHandle
 import { type FindGenreByNameQueryHandler } from '../../../application/queryHandlers/findGenreByNameQueryHandler/findGenreByNameQueryHandler.js';
 import { type FindGenresQueryHandler } from '../../../application/queryHandlers/findGenresQueryHandler/findGenresQueryHandler.js';
 import { type Genre } from '../../../domain/entities/genre/genre.js';
+import { type GenreDTO } from '../common/genreDto.js';
 
 export class GenreHttpController implements HttpController {
   public basePath = '/api/genres';
@@ -39,14 +39,14 @@ export class GenreHttpController implements HttpController {
   public getHttpRoutes(): HttpRoute[] {
     return [
       new HttpRoute({
-        description: 'Find genres.',
+        description: 'Find genres',
         handler: this.findGenres.bind(this),
         method: HttpMethodName.get,
         schema: {
           request: {},
           response: {
             [HttpStatusCode.ok]: {
-              description: 'Genres found.',
+              description: 'Genres found',
               schema: findGenresResponseBodyDTOSchema,
             },
           },
@@ -54,7 +54,7 @@ export class GenreHttpController implements HttpController {
         securityMode: SecurityMode.bearerToken,
       }),
       new HttpRoute({
-        description: 'Find genre by name.',
+        description: 'Find genre by name',
         handler: this.findGenreByName.bind(this),
         method: HttpMethodName.get,
         schema: {
@@ -63,7 +63,7 @@ export class GenreHttpController implements HttpController {
           },
           response: {
             [HttpStatusCode.ok]: {
-              description: 'Genre found.',
+              description: 'Genre found',
               schema: findGenreByNameResponseBodyDTOSchema,
             },
           },
@@ -72,7 +72,7 @@ export class GenreHttpController implements HttpController {
         securityMode: SecurityMode.bearerToken,
       }),
       new HttpRoute({
-        description: 'Find genre by id.',
+        description: 'Find genre by id',
         handler: this.findGenreById.bind(this),
         method: HttpMethodName.get,
         schema: {
@@ -81,7 +81,7 @@ export class GenreHttpController implements HttpController {
           },
           response: {
             [HttpStatusCode.ok]: {
-              description: 'Genre found.',
+              description: 'Genre found',
               schema: findGenreByIdResponseBodyDTOSchema,
             },
           },

@@ -218,7 +218,7 @@ export class BookRepositoryImpl implements BookRepository {
   }
 
   public async findBooks(payload: FindBooksPayload): Promise<Book[]> {
-    const { isbn } = payload;
+    const { isbn, isApproved } = payload;
 
     let rawEntities: BookWithJoinsRawEntity[];
 
@@ -249,6 +249,10 @@ export class BookRepositoryImpl implements BookRepository {
         .where((builder) => {
           if (isbn) {
             builder.where({ isbn });
+          }
+
+          if (isApproved !== undefined) {
+            builder.where(`${this.bookTable.name}.isApproved`, isApproved);
           }
         });
 

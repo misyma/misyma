@@ -74,7 +74,7 @@ export class BookReadingHttpController implements HttpController {
       new HttpRoute({
         method: HttpMethodName.get,
         handler: this.getBookReadings.bind(this),
-        description: 'Get BookReadings.',
+        description: 'Get BookReadings',
         schema: {
           request: {
             pathParams: findBookReadingsPathParamsDTOSchema,
@@ -82,7 +82,7 @@ export class BookReadingHttpController implements HttpController {
           response: {
             [HttpStatusCode.ok]: {
               schema: findBookReadingsResponseBodyDTOSchema,
-              description: 'Found BookReadings.',
+              description: 'Found BookReadings',
             },
           },
         },
@@ -99,16 +99,16 @@ export class BookReadingHttpController implements HttpController {
           response: {
             [HttpStatusCode.ok]: {
               schema: findBookReadingByIdResponseBodyDTOSchema,
-              description: 'Found BookReading.',
+              description: 'Found BookReading',
             },
           },
         },
-        description: 'Get a BookReading by id.',
+        description: 'Get a BookReading by id',
       }),
       new HttpRoute({
         method: HttpMethodName.post,
         handler: this.createBookReading.bind(this),
-        description: 'Create a BookReading.',
+        description: 'Create a BookReading',
         schema: {
           request: {
             pathParams: createBookReadingPathParamsDTOSchema,
@@ -116,7 +116,7 @@ export class BookReadingHttpController implements HttpController {
           },
           response: {
             [HttpStatusCode.created]: {
-              description: 'BookReading created.',
+              description: 'BookReading created',
               schema: createBookReadingResponseBodyDTOSchema,
             },
           },
@@ -126,7 +126,7 @@ export class BookReadingHttpController implements HttpController {
         method: HttpMethodName.patch,
         path: ':id',
         handler: this.updateBookReading.bind(this),
-        description: 'Update BookReading.',
+        description: 'Update BookReading',
         schema: {
           request: {
             body: updateBookReadingBodyDTOSchema,
@@ -134,7 +134,7 @@ export class BookReadingHttpController implements HttpController {
           },
           response: {
             [HttpStatusCode.ok]: {
-              description: 'BookReading updated.',
+              description: 'BookReading updated',
               schema: updateBookReadingResponseBodyDTOSchema,
             },
           },
@@ -144,14 +144,14 @@ export class BookReadingHttpController implements HttpController {
         method: HttpMethodName.delete,
         path: ':id',
         handler: this.deleteBookReading.bind(this),
-        description: 'Delete BookReading.',
+        description: 'Delete BookReading',
         schema: {
           request: {
             pathParams: deleteBookReadingPathParamsDTOSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
-              description: 'BookReading deleted.',
+              description: 'BookReading deleted',
               schema: deleteBookReadingResponseBodyDTOSchema,
             },
           },
@@ -173,7 +173,7 @@ export class BookReadingHttpController implements HttpController {
 
     // if (userId !== tokenUserId) {
     //   throw new ForbiddenAccessError({
-    //     reason: 'User can only access their own bookReadings.',
+    //     reason: 'User can only access their own bookReadings',
     //   });
     // }
 
@@ -220,7 +220,7 @@ export class BookReadingHttpController implements HttpController {
 
     // if (userId !== tokenUserId) {
     //   throw new ForbiddenAccessError({
-    //     reason: 'User can only create bookReadings for themselves.',
+    //     reason: 'User can only create bookReadings for themselves',
     //   });
     // }
 

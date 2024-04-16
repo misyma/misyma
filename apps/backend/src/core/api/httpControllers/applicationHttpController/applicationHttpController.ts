@@ -22,11 +22,11 @@ export class ApplicationHttpController implements HttpController {
           response: {
             [HttpStatusCode.ok]: {
               schema: checkHealthResponseBodySchema,
-              description: 'Application is healthy.',
+              description: 'Application is healthy',
             },
           },
         },
-        description: 'Check application health.',
+        description: 'Check application health',
       }),
     ];
   }

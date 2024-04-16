@@ -63,7 +63,7 @@ export class BookshelfHttpController implements HttpController {
         method: HttpMethodName.get,
         path: '/user/:userId',
         handler: this.getUserBookshelves.bind(this),
-        description: 'Get user bookshelves.',
+        description: 'Get user bookshelves',
         schema: {
           request: {
             pathParams: findBookshelvesByUserIdPathParamsDTOSchema,
@@ -71,7 +71,7 @@ export class BookshelfHttpController implements HttpController {
           response: {
             [HttpStatusCode.ok]: {
               schema: findBookshelvesByUserIdResponseBodyDTOSchema,
-              description: 'Found user bookshelves.',
+              description: 'Found user bookshelves',
             },
           },
         },
@@ -88,23 +88,23 @@ export class BookshelfHttpController implements HttpController {
           response: {
             [HttpStatusCode.ok]: {
               schema: findBookshelfByIdResponseBodyDTOSchema,
-              description: 'Found bookshelf.',
+              description: 'Found bookshelf',
             },
           },
         },
-        description: 'Get a bookshelf by id.',
+        description: 'Get a bookshelf by id',
       }),
       new HttpRoute({
         method: HttpMethodName.post,
         handler: this.createBookshelf.bind(this),
-        description: 'Create a bookshelf.',
+        description: 'Create a bookshelf',
         schema: {
           request: {
             body: createBookshelfBodyDTOSchema,
           },
           response: {
             [HttpStatusCode.created]: {
-              description: 'Bookshelf created.',
+              description: 'Bookshelf created',
               schema: createBookshelfResponseBodyDTOSchema,
             },
           },
@@ -114,7 +114,7 @@ export class BookshelfHttpController implements HttpController {
         method: HttpMethodName.patch,
         path: '/:bookshelfId',
         handler: this.updateBookshelf.bind(this),
-        description: 'Update bookshelf.',
+        description: 'Update bookshelf',
         schema: {
           request: {
             body: updateBookshelfBodyDTOSchema,
@@ -122,7 +122,7 @@ export class BookshelfHttpController implements HttpController {
           },
           response: {
             [HttpStatusCode.ok]: {
-              description: 'Bookshelf updated.',
+              description: 'Bookshelf updated',
               schema: updateBookshelfResponseBodyDTOSchema,
             },
           },
@@ -142,7 +142,7 @@ export class BookshelfHttpController implements HttpController {
 
     if (userId !== tokenUserId) {
       throw new ForbiddenAccessError({
-        reason: 'User can only access their own bookshelves.',
+        reason: 'User can only access their own bookshelves',
       });
     }
 
@@ -189,7 +189,7 @@ export class BookshelfHttpController implements HttpController {
 
     if (userId !== tokenUserId) {
       throw new ForbiddenAccessError({
-        reason: 'User can only create bookshelves for themselves.',
+        reason: 'User can only create bookshelves for themselves',
       });
     }
 

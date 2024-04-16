@@ -48,6 +48,9 @@ describe('FindBooksQueryHandler', () => {
     const book = await bookTestUtils.createAndPersist({
       input: {
         authorIds: [author.id],
+        book: {
+          isApproved: true,
+        },
       },
     });
 
@@ -58,12 +61,15 @@ describe('FindBooksQueryHandler', () => {
     expect(books[0]?.getId()).toEqual(book.id);
   });
 
-  it('finds book by isbn', async () => {
+  it('finds books by isbn', async () => {
     const author = await authorTestUtils.createAndPersist();
 
     const book = await bookTestUtils.createAndPersist({
       input: {
         authorIds: [author.id],
+        book: {
+          isApproved: true,
+        },
       },
     });
 
@@ -72,5 +78,22 @@ describe('FindBooksQueryHandler', () => {
     expect(books.length).toEqual(1);
 
     expect(books[0]?.getIsbn()).toEqual(book.isbn);
+  });
+
+  it('finds no books if they are not approved', async () => {
+    const author = await authorTestUtils.createAndPersist();
+
+    const book = await bookTestUtils.createAndPersist({
+      input: {
+        authorIds: [author.id],
+        book: {
+          isApproved: false,
+        },
+      },
+    });
+
+    const { books } = await findBooksQueryHandler.execute({ isbn: book.isbn as string });
+
+    expect(books.length).toEqual(0);
   });
 });

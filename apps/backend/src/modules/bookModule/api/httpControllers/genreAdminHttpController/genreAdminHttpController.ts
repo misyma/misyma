@@ -36,11 +36,11 @@ import { type CreateGenreCommandHandler } from '../../../application/commandHand
 import { type DeleteGenreCommandHandler } from '../../../application/commandHandlers/deleteGenreCommandHandler/deleteGenreCommandHandler.js';
 import { type UpdateGenreNameCommandHandler } from '../../../application/commandHandlers/updateGenreNameCommandHandler/updateGenreNameCommandHandler.js';
 import { type Genre } from '../../../domain/entities/genre/genre.js';
-import { type GenreDTO } from '../genreHttpController/schemas/genreDto.js';
+import { type GenreDTO } from '../common/genreDto.js';
 
 export class GenreAdminHttpController implements HttpController {
   public basePath = '/api/admin/genres';
-  public tags = ['Genre'];
+  public tags = ['Genre', 'Admin'];
 
   public constructor(
     private readonly createGenreCommandHandler: CreateGenreCommandHandler,
@@ -52,7 +52,7 @@ export class GenreAdminHttpController implements HttpController {
   public getHttpRoutes(): HttpRoute[] {
     return [
       new HttpRoute({
-        description: 'Create genre.',
+        description: 'Create genre',
         handler: this.createGenre.bind(this),
         method: HttpMethodName.post,
         schema: {
@@ -61,7 +61,7 @@ export class GenreAdminHttpController implements HttpController {
           },
           response: {
             [HttpStatusCode.created]: {
-              description: 'Genre created.',
+              description: 'Genre created',
               schema: createGenreResponseBodyDTOSchema,
             },
           },
@@ -69,7 +69,7 @@ export class GenreAdminHttpController implements HttpController {
         securityMode: SecurityMode.bearerToken,
       }),
       new HttpRoute({
-        description: 'Update Genre name.',
+        description: 'Update Genre name',
         handler: this.updateGenreName.bind(this),
         method: HttpMethodName.patch,
         schema: {
@@ -79,7 +79,7 @@ export class GenreAdminHttpController implements HttpController {
           },
           response: {
             [HttpStatusCode.ok]: {
-              description: 'Genre name updated.',
+              description: 'Genre name updated',
               schema: updateGenreNameResponseBodyDTOSchema,
             },
           },
@@ -88,7 +88,7 @@ export class GenreAdminHttpController implements HttpController {
         path: ':id/name',
       }),
       new HttpRoute({
-        description: 'Delete genre.',
+        description: 'Delete genre',
         handler: this.deleteGenre.bind(this),
         method: HttpMethodName.delete,
         schema: {
@@ -97,7 +97,7 @@ export class GenreAdminHttpController implements HttpController {
           },
           response: {
             [HttpStatusCode.noContent]: {
-              description: 'Genre deleted.',
+              description: 'Genre deleted',
               schema: deleteGenreResponseBodyDTOSchema,
             },
           },

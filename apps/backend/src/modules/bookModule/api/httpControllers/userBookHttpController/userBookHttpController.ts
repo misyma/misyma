@@ -7,6 +7,7 @@ import {
   type CreateUserBookResponseBodyDTO,
 } from './schemas/createUserBookSchema.js';
 import {
+  type DeleteUserBookResponseBodyDTO,
   deleteUserBookPathParamsDTOSchema,
   deleteUserBookResponseBodyDTOSchema,
   type DeleteUserBookPathParamsDTO,
@@ -59,7 +60,6 @@ import { type UpdateUserBookGenresCommandHandler } from '../../../application/co
 import { type FindUserBookQueryHandler } from '../../../application/queryHandlers/findUserBookQueryHandler/findUserBookQueryHandler.js';
 import { type FindUserBooksQueryHandler } from '../../../application/queryHandlers/findUserBooksQueryHandler/findUserBooksQueryHandler.js';
 import { type UserBook } from '../../../domain/entities/userBook/userBook.js';
-import { type DeleteBookResponseBodyDTO } from '../bookHttpController/schemas/deleteBookSchema.js';
 
 export class UserBookHttpController implements HttpController {
   public readonly basePath = '/api/users/:userId/books';
@@ -88,12 +88,12 @@ export class UserBookHttpController implements HttpController {
           response: {
             [HttpStatusCode.created]: {
               schema: createUserBookResponseBodyDTOSchema,
-              description: `User's book created.`,
+              description: `User's book created`,
             },
           },
         },
         securityMode: SecurityMode.bearerToken,
-        description: `Create user's book.`,
+        description: `Create user's book`,
       }),
       new HttpRoute({
         method: HttpMethodName.get,
@@ -106,19 +106,19 @@ export class UserBookHttpController implements HttpController {
           response: {
             [HttpStatusCode.ok]: {
               schema: findUserBookResponseBodyDTOSchema,
-              description: `User's book found.`,
+              description: `User's book found`,
             },
           },
         },
         securityMode: SecurityMode.bearerToken,
-        description: `Find user's book by id.`,
+        description: `Find user's book by id`,
       }),
       //TODO: refactor to search params
       new HttpRoute({
         method: HttpMethodName.get,
         path: '/bookshelf/:bookshelfId',
         handler: this.findUserBooksByBookshelfId.bind(this),
-        description: `Find user's books by bookshelf id.`,
+        description: `Find user's books by bookshelf id`,
         schema: {
           request: {
             pathParams: findUserBooksByBookshelfIdPathParamsDTOSchema,
@@ -126,7 +126,7 @@ export class UserBookHttpController implements HttpController {
           response: {
             [HttpStatusCode.ok]: {
               schema: findUserBooksByBookshelfIdResponseBodyDTOSchema,
-              description: `User's books found.`,
+              description: `User's books found`,
             },
           },
         },
@@ -143,17 +143,17 @@ export class UserBookHttpController implements HttpController {
           response: {
             [HttpStatusCode.noContent]: {
               schema: deleteUserBookResponseBodyDTOSchema,
-              description: `User's book deleted.`,
+              description: `User's book deleted`,
             },
           },
         },
         securityMode: SecurityMode.bearerToken,
-        description: `Delete user's book.`,
+        description: `Delete user's book`,
       }),
       new HttpRoute({
         method: HttpMethodName.patch,
         path: ':id',
-        description: `Update user's book.`,
+        description: `Update user's book`,
         handler: this.updateUserBook.bind(this),
         schema: {
           request: {
@@ -162,7 +162,7 @@ export class UserBookHttpController implements HttpController {
           },
           response: {
             [HttpStatusCode.ok]: {
-              description: `User's book updated.`,
+              description: `User's book updated`,
               schema: updateUserBookResponseDTOSchema,
             },
           },
@@ -171,7 +171,7 @@ export class UserBookHttpController implements HttpController {
       new HttpRoute({
         method: HttpMethodName.patch,
         path: ':userBookId/genres',
-        description: `Update user's book genres.`,
+        description: `Update user's book genres`,
         handler: this.updateUserBookGenres.bind(this),
         schema: {
           request: {
@@ -180,7 +180,7 @@ export class UserBookHttpController implements HttpController {
           },
           response: {
             [HttpStatusCode.ok]: {
-              description: `User's book genres updated.`,
+              description: `User's book genres updated`,
               schema: updateUserBookGenresResponseDTOSchema,
             },
           },
@@ -277,7 +277,7 @@ export class UserBookHttpController implements HttpController {
 
   private async deleteUserBook(
     request: HttpRequest<undefined, undefined, DeleteUserBookPathParamsDTO>,
-  ): Promise<HttpNoContentResponse<DeleteBookResponseBodyDTO>> {
+  ): Promise<HttpNoContentResponse<DeleteUserBookResponseBodyDTO>> {
     const { id } = request.pathParams;
 
     await this.accessControlService.verifyBearerToken({

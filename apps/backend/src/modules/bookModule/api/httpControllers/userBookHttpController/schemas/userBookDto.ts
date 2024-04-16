@@ -2,6 +2,9 @@ import { type Static, Type } from '@sinclair/typebox';
 
 import * as contracts from '@common/contracts';
 
+import { authorDTOSchema } from '../../../../../authorModule/api/httpControllers/authorHttpController/schemas/authorDto.js';
+import { genreDTOSchema } from '../../common/genreDto.js';
+
 export const userBookDTOSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
   imageUrl: Type.Optional(
@@ -12,15 +15,7 @@ export const userBookDTOSchema = Type.Object({
   ),
   status: Type.Enum(contracts.ReadingStatus),
   bookshelfId: Type.String({ format: 'uuid' }),
-  genres: Type.Array(
-    Type.Object({
-      id: Type.String({ format: 'uuid' }),
-      name: Type.String({
-        minLength: 1,
-        maxLength: 64,
-      }),
-    }),
-  ),
+  genres: Type.Array(genreDTOSchema),
   bookId: Type.String({ format: 'uuid' }),
   book: Type.Object({
     title: Type.String({
@@ -71,16 +66,7 @@ export const userBookDTOSchema = Type.Object({
         maxLength: 128,
       }),
     ),
-    authors: Type.Array(
-      Type.Object({
-        id: Type.String({ format: 'uuid' }),
-        name: Type.String({
-          minLength: 1,
-          maxLength: 128,
-        }),
-        isApproved: Type.Boolean(),
-      }),
-    ),
+    authors: Type.Array(authorDTOSchema),
   }),
 });
 
