@@ -10,6 +10,7 @@ import {
   type FindBookPayload,
   type DeleteBookPayload,
   type SaveBookPayload,
+  type FindBooksPayload,
 } from '../../../domain/repositories/bookRepository/bookRepository.js';
 import { type BooksAuthorsRawEntity } from '../../databases/bookDatabase/tables/booksAuthorsTable/booksAuthorsRawEntity.js';
 import { BooksAuthorsTable } from '../../databases/bookDatabase/tables/booksAuthorsTable/booksAuthorsTable.js';
@@ -157,7 +158,7 @@ export class BookRepositoryImpl implements BookRepository {
   }
 
   public async findBook(payload: FindBookPayload): Promise<Book | null> {
-    const { id, authorIds, title, bookshelfId } = payload;
+    const { id, authorIds, title } = payload;
 
     let rawEntities: BookWithJoinsRawEntity[];
 
@@ -198,11 +199,7 @@ export class BookRepositoryImpl implements BookRepository {
           }
 
           if (title) {
-            builder.where(`${this.bookTable.name}.title`, title);
-          }
-
-          if (bookshelfId) {
-            builder.where(`"${this.bookTable.name}.bookshelfId"`, bookshelfId);
+            builder.where({ title });
           }
         });
     } catch (error) {
@@ -220,7 +217,9 @@ export class BookRepositoryImpl implements BookRepository {
     return this.bookMapper.mapRawWithJoinsToDomain(rawEntities)[0] as Book;
   }
 
-  public async findBooks(): Promise<Book[]> {
+  public async findBooks(payload: FindBooksPayload): Promise<Book[]> {
+    const { isbn } = payload;
+
     let rawEntities: BookWithJoinsRawEntity[];
 
     try {
@@ -246,6 +245,11 @@ export class BookRepositoryImpl implements BookRepository {
         })
         .leftJoin(this.authorTable.name, (join) => {
           join.on(`${this.authorTable.name}.id`, '=', `${this.booksAuthorsTable.name}.authorId`);
+        })
+        .where((builder) => {
+          if (isbn) {
+            builder.where({ isbn });
+          }
         });
 
       rawEntities = await query;

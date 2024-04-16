@@ -6,9 +6,12 @@ export interface SaveBookPayload {
 
 export interface FindBookPayload {
   readonly id?: string;
-  readonly bookshelfId?: string;
   readonly title?: string;
   readonly authorIds?: string[];
+}
+
+export interface FindBooksPayload {
+  readonly isbn?: string;
 }
 
 export interface DeleteBookPayload {
@@ -16,9 +19,9 @@ export interface DeleteBookPayload {
 }
 
 export interface BookRepository {
-  saveBook(input: SaveBookPayload): Promise<Book>;
-  findBook(input: FindBookPayload): Promise<Book | null>;
+  saveBook(payload: SaveBookPayload): Promise<Book>;
+  findBook(payload: FindBookPayload): Promise<Book | null>;
   // add pagination etc
-  findBooks(): Promise<Book[]>;
-  deleteBook(input: DeleteBookPayload): Promise<void>;
+  findBooks(payload: FindBooksPayload): Promise<Book[]>;
+  deleteBook(payload: DeleteBookPayload): Promise<void>;
 }

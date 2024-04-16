@@ -1,11 +1,29 @@
-import { type FindBooksQueryHandler, type FindBooksResult } from './findBooksQueryHandler.js';
-import { type BookRepository } from '../../../domain/repositories/bookRepository/bookRepository.js';
+import {
+  type FindBooksQueryHandlerPayload,
+  type FindBooksQueryHandler,
+  type FindBooksQueryHandlerResult,
+} from './findBooksQueryHandler.js';
+import {
+  type FindBooksPayload,
+  type BookRepository,
+} from '../../../domain/repositories/bookRepository/bookRepository.js';
 
 export class FindBooksQueryHandlerImpl implements FindBooksQueryHandler {
   public constructor(private readonly bookRepository: BookRepository) {}
 
-  public async execute(): Promise<FindBooksResult> {
-    const books = await this.bookRepository.findBooks();
+  public async execute(payload: FindBooksQueryHandlerPayload): Promise<FindBooksQueryHandlerResult> {
+    const { isbn } = payload;
+
+    let findBooksPayload: FindBooksPayload = {};
+
+    if (isbn) {
+      findBooksPayload = {
+        ...findBooksPayload,
+        isbn,
+      };
+    }
+
+    const books = await this.bookRepository.findBooks(findBooksPayload);
 
     return { books };
   }

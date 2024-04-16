@@ -5,6 +5,20 @@ import type * as contracts from '@common/contracts';
 import { bookDTOSchema } from './bookDto.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
+export const findBooksQueryParamsDTOSchema = Type.Object({
+  isbn: Type.Optional(
+    Type.String({
+      minLength: 1,
+      maxLength: 64,
+    }),
+  ),
+});
+
+export type FindBooksQueryParamsDTO = TypeExtends<
+  Static<typeof findBooksQueryParamsDTOSchema>,
+  contracts.FindBooksQueryParams
+>;
+
 export const findBooksResponseBodyDTOSchema = Type.Object({
   data: Type.Array(bookDTOSchema),
 });

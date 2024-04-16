@@ -51,10 +51,26 @@ describe('FindBooksQueryHandler', () => {
       },
     });
 
-    const { books } = await findBooksQueryHandler.execute();
+    const { books } = await findBooksQueryHandler.execute({});
 
     expect(books.length).toEqual(1);
 
     expect(books[0]?.getId()).toEqual(book.id);
+  });
+
+  it('finds book by isbn', async () => {
+    const author = await authorTestUtils.createAndPersist();
+
+    const book = await bookTestUtils.createAndPersist({
+      input: {
+        authorIds: [author.id],
+      },
+    });
+
+    const { books } = await findBooksQueryHandler.execute({ isbn: book.isbn as string });
+
+    expect(books.length).toEqual(1);
+
+    expect(books[0]?.getIsbn()).toEqual(book.isbn);
   });
 });

@@ -19,7 +19,12 @@ import {
   type FindBookPathParamsDTO,
   findBookPathParamsDTOSchema,
 } from './schemas/findBookSchema.js';
-import { type FindBooksResponseBodyDTO, findBooksResponseBodyDTOSchema } from './schemas/findBooksSchema.js';
+import {
+  type FindBooksResponseBodyDTO,
+  findBooksResponseBodyDTOSchema,
+  findBooksQueryParamsDTOSchema,
+  type FindBooksQueryParamsDTO,
+} from './schemas/findBooksSchema.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
@@ -93,7 +98,9 @@ export class BookHttpController implements HttpController {
         handler: this.findBooks.bind(this),
         description: 'Find books.',
         schema: {
-          request: {},
+          request: {
+            queryParams: findBooksQueryParamsDTOSchema,
+          },
           response: {
             [HttpStatusCode.ok]: {
               schema: findBooksResponseBodyDTOSchema,
@@ -164,13 +171,15 @@ export class BookHttpController implements HttpController {
   }
 
   private async findBooks(
-    request: HttpRequest<undefined, undefined, undefined>,
+    request: HttpRequest<undefined, FindBooksQueryParamsDTO, undefined>,
   ): Promise<HttpOkResponse<FindBooksResponseBodyDTO>> {
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
-    const { books } = await this.findBooksQueryHandler.execute();
+    const { isbn } = request.queryParams;
+
+    const { books } = await this.findBooksQueryHandler.execute({ isbn });
 
     return {
       body: {
