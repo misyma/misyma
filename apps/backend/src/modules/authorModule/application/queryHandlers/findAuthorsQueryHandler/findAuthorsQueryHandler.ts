@@ -2,11 +2,11 @@ import { type QueryHandler } from '../../../../../common/types/queryHandler.js';
 import { type Author } from '../../../domain/entities/author/author.js';
 
 export interface ExecutePayload {
-  readonly authorIds: string[];
+  readonly name?: string | undefined;
 }
 
 export interface ExecuteResult {
   readonly authors: Author[];
 }
 
-export type FindAuthorsByIdsQueryHandler = QueryHandler<ExecutePayload, ExecuteResult>;
+export type FindAuthorsQueryHandler = QueryHandler<ExecutePayload, ExecuteResult>;

@@ -10,6 +10,12 @@ import {
   type FindAuthorPathParamsDTO,
   type FindAuthorResponseBodyDTO,
 } from './schemas/findAuthorSchema.js';
+import {
+  type FindAuthorsQueryParamsDTO,
+  type FindAuthorsResponseBodyDTO,
+  findAuthorsQueryParamsDTOSchema,
+  findAuthorsResponseBodyDTOSchema,
+} from './schemas/findAuthorsSchema.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
@@ -20,6 +26,7 @@ import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
 import { type CreateAuthorCommandHandler } from '../../../application/commandHandlers/createAuthorCommandHandler/createAuthorCommandHandler.js';
 import { type FindAuthorQueryHandler } from '../../../application/queryHandlers/findAuthorQueryHandler/findAuthorQueryHandler.js';
+import { type FindAuthorsQueryHandler } from '../../../application/queryHandlers/findAuthorsQueryHandler/findAuthorsQueryHandler.js';
 import { type Author } from '../../../domain/entities/author/author.js';
 import { type AuthorDTO } from '../common/authorDto.js';
 
@@ -30,6 +37,7 @@ export class AuthorHttpController implements HttpController {
   public constructor(
     private readonly createAuthorCommandHandler: CreateAuthorCommandHandler,
     private readonly findAuthorQueryHandler: FindAuthorQueryHandler,
+    private readonly findAuthorsQueryHandler: FindAuthorsQueryHandler,
     private readonly accessControlService: AccessControlService,
   ) {}
 
@@ -70,6 +78,23 @@ export class AuthorHttpController implements HttpController {
         securityMode: SecurityMode.bearerToken,
         description: 'Find author by id',
       }),
+      new HttpRoute({
+        method: HttpMethodName.get,
+        handler: this.findAuthors.bind(this),
+        schema: {
+          request: {
+            queryParams: findAuthorsQueryParamsDTOSchema,
+          },
+          response: {
+            [HttpStatusCode.ok]: {
+              schema: findAuthorsResponseBodyDTOSchema,
+              description: 'Authors found',
+            },
+          },
+        },
+        securityMode: SecurityMode.bearerToken,
+        description: 'Find authors',
+      }),
     ];
   }
 
@@ -107,6 +132,25 @@ export class AuthorHttpController implements HttpController {
     return {
       statusCode: HttpStatusCode.ok,
       body: this.mapAuthorToDTO(author),
+    };
+  }
+
+  private async findAuthors(
+    request: HttpRequest<undefined, FindAuthorsQueryParamsDTO, undefined>,
+  ): Promise<HttpOkResponse<FindAuthorsResponseBodyDTO>> {
+    const { name } = request.queryParams;
+
+    await this.accessControlService.verifyBearerToken({
+      authorizationHeader: request.headers['authorization'],
+    });
+
+    const { authors } = await this.findAuthorsQueryHandler.execute({ name });
+
+    return {
+      statusCode: HttpStatusCode.ok,
+      body: {
+        data: authors.map(this.mapAuthorToDTO),
+      },
     };
   }
 

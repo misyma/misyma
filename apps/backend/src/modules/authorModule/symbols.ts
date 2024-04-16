@@ -8,6 +8,7 @@ export const symbols = {
 
   findAuthorQueryHandler: Symbol('findAuthorQueryHandler'),
   findAuthorsByIdsQueryHandler: Symbol('findAuthorsByIdsQueryHandler'),
+  findAuthorsQueryHandler: Symbol('findAuthorsQueryHandler'),
 
   authorHttpController: Symbol('authorHttpController'),
   authorAdminHttpController: Symbol('authorAdminHttpController'),

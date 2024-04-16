@@ -8,6 +8,8 @@ import { type FindAuthorQueryHandler } from './application/queryHandlers/findAut
 import { FindAuthorQueryHandlerImpl } from './application/queryHandlers/findAuthorQueryHandler/findAuthorQueryHandlerImpl.js';
 import { type FindAuthorsByIdsQueryHandler } from './application/queryHandlers/findAuthorsByIdsQueryHandler/findAuthorsByIdsQueryHandler.js';
 import { FindAuthorsByIdsQueryHandlerImpl } from './application/queryHandlers/findAuthorsByIdsQueryHandler/findAuthorsByIdsQueryHandlerImpl.js';
+import { type FindAuthorsQueryHandler } from './application/queryHandlers/findAuthorsQueryHandler/findAuthorsQueryHandler.js';
+import { FindAuthorsQueryHandlerImpl } from './application/queryHandlers/findAuthorsQueryHandler/findAuthorsQueryHandlerImpl.js';
 import { type AuthorRepository } from './domain/repositories/authorRepository/authorRepository.js';
 import { type AuthorMapper } from './infrastructure/repositories/authorRepository/authorMapper/authorMapper.js';
 import { AuthorMapperImpl } from './infrastructure/repositories/authorRepository/authorMapper/authorMapperImpl.js';
@@ -64,12 +66,18 @@ export class AuthorModule implements DependencyInjectionModule {
       () => new FindAuthorsByIdsQueryHandlerImpl(container.get<AuthorRepository>(symbols.authorRepository)),
     );
 
+    container.bind<FindAuthorsQueryHandler>(
+      symbols.findAuthorsQueryHandler,
+      () => new FindAuthorsQueryHandlerImpl(container.get<AuthorRepository>(symbols.authorRepository)),
+    );
+
     container.bind<AuthorHttpController>(
       symbols.authorHttpController,
       () =>
         new AuthorHttpController(
           container.get<CreateAuthorCommandHandler>(symbols.createAuthorCommandHandler),
           container.get<FindAuthorQueryHandler>(symbols.findAuthorQueryHandler),
+          container.get<FindAuthorsQueryHandler>(symbols.findAuthorsQueryHandler),
           container.get<AccessControlService>(authSymbols.accessControlService),
         ),
     );

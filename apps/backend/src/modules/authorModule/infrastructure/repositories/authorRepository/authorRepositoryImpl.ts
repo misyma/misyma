@@ -9,11 +9,10 @@ import {
   type CreateAuthorPayload,
   type FindAuthorPayload,
   type DeleteAuthorPayload,
-  type FindAuthorsByIdsPayload,
+  type FindAuthorsPayload,
 } from '../../../domain/repositories/authorRepository/authorRepository.js';
 import { type AuthorRawEntity } from '../../databases/tables/authorTable/authorRawEntity.js';
 import { AuthorTable } from '../../databases/tables/authorTable/authorTable.js';
-
 export class AuthorRepositoryImpl implements AuthorRepository {
   private readonly databaseTable = new AuthorTable();
 
@@ -93,15 +92,27 @@ export class AuthorRepositoryImpl implements AuthorRepository {
     return this.authorMapper.mapToDomain(rawEntity);
   }
 
-  public async findAuthorsByIds(payload: FindAuthorsByIdsPayload): Promise<Author[]> {
-    const { authorIds } = payload;
+  public async findAuthors(payload: FindAuthorsPayload): Promise<Author[]> {
+    const { ids, partialName, isApproved } = payload;
 
     let rawEntities: AuthorRawEntity[];
 
     try {
-      rawEntities = await this.databaseClient<AuthorRawEntity>(this.databaseTable.name)
-        .select('*')
-        .whereIn('id', authorIds);
+      const query = this.databaseClient<AuthorRawEntity>(this.databaseTable.name).select('*');
+
+      if (ids) {
+        query.whereIn('id', ids);
+      }
+
+      if (partialName) {
+        query.where('name', 'like', `${partialName}%`);
+      }
+
+      if (isApproved !== undefined) {
+        query.where({ isApproved });
+      }
+
+      rawEntities = await query;
     } catch (error) {
       throw new RepositoryError({
         entity: 'Author',

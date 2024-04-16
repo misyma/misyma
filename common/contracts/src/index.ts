@@ -34,6 +34,8 @@ export * from './schemas/user/changeUserPassword.js';
 
 export * from './schemas/author/findAuthor.js';
 
+export * from './schemas/author/findAuthors.js';
+
 export * from './schemas/author/createAuthor.js';
 
 export * from './schemas/author/deleteAuthor.js';
