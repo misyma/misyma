@@ -118,12 +118,12 @@ export class UserHttpController implements HttpController {
           response: {
             [HttpStatusCode.created]: {
               schema: registerUserResponseBodyDTOSchema,
-              description: 'User registered.',
+              description: 'User registered',
             },
           },
         },
         preValidation: registerUserBodyPreValidationHook,
-        description: 'Register user.',
+        description: 'Register user',
       }),
       new HttpRoute({
         method: HttpMethodName.post,
@@ -136,17 +136,17 @@ export class UserHttpController implements HttpController {
           response: {
             [HttpStatusCode.ok]: {
               schema: loginUserResponseBodyDTOSchema,
-              description: 'User logged in.',
+              description: 'User logged in',
             },
           },
         },
-        description: 'Login user.',
+        description: 'Login user',
       }),
       new HttpRoute({
         method: HttpMethodName.post,
         path: 'reset-password',
         handler: this.resetUserPassword.bind(this),
-        description: 'Reset user password.',
+        description: 'Reset user password',
         schema: {
           request: {
             body: resetUserPasswordBodyDTOSchema,
@@ -154,7 +154,7 @@ export class UserHttpController implements HttpController {
           response: {
             [HttpStatusCode.ok]: {
               schema: resetUserPasswordResponseBodyDTOSchema,
-              description: 'User password reset.',
+              description: 'User password reset',
             },
           },
         },
@@ -162,7 +162,7 @@ export class UserHttpController implements HttpController {
       new HttpRoute({
         method: HttpMethodName.post,
         path: 'change-password',
-        description: 'Change user password.',
+        description: 'Change user password',
         handler: this.changeUserPassword.bind(this),
         schema: {
           request: {
@@ -171,7 +171,7 @@ export class UserHttpController implements HttpController {
           response: {
             [HttpStatusCode.ok]: {
               schema: changeUserPasswordResponseBodyDTOSchema,
-              description: 'User password changed.',
+              description: 'User password changed',
             },
           },
         },
@@ -187,12 +187,12 @@ export class UserHttpController implements HttpController {
           response: {
             [HttpStatusCode.ok]: {
               schema: findUserResponseBodyDTOSchema,
-              description: 'User found.',
+              description: 'User found',
             },
           },
         },
         securityMode: SecurityMode.bearerToken,
-        description: 'Find user by id.',
+        description: 'Find user by id',
       }),
       new HttpRoute({
         method: HttpMethodName.get,
@@ -203,12 +203,12 @@ export class UserHttpController implements HttpController {
           response: {
             [HttpStatusCode.ok]: {
               schema: findMyUserResponseBodyDTOSchema,
-              description: 'User found.',
+              description: 'User found',
             },
           },
         },
         securityMode: SecurityMode.bearerToken,
-        description: 'Find user by token.',
+        description: 'Find user by token',
       }),
       new HttpRoute({
         method: HttpMethodName.delete,
@@ -221,12 +221,12 @@ export class UserHttpController implements HttpController {
           response: {
             [HttpStatusCode.noContent]: {
               schema: deleteUserResponseBodyDTOSchema,
-              description: 'User deleted.',
+              description: 'User deleted',
             },
           },
         },
         securityMode: SecurityMode.bearerToken,
-        description: 'Delete user.',
+        description: 'Delete user',
       }),
       new HttpRoute({
         method: HttpMethodName.post,
@@ -239,11 +239,11 @@ export class UserHttpController implements HttpController {
           response: {
             [HttpStatusCode.ok]: {
               schema: sendVerificationEmailResponseBodyDTOSchema,
-              description: 'Verification email sent.',
+              description: 'Verification email sent',
             },
           },
         },
-        description: 'Send verification email.',
+        description: 'Send verification email',
       }),
       new HttpRoute({
         method: HttpMethodName.post,
@@ -260,7 +260,7 @@ export class UserHttpController implements HttpController {
             },
           },
         },
-        description: 'Verify user email.',
+        description: 'Verify user email',
       }),
       new HttpRoute({
         method: HttpMethodName.post,
@@ -279,7 +279,7 @@ export class UserHttpController implements HttpController {
           },
         },
         securityMode: SecurityMode.bearerToken,
-        description: 'Logout user.',
+        description: 'Logout user',
       }),
       new HttpRoute({
         method: HttpMethodName.post,
@@ -292,11 +292,11 @@ export class UserHttpController implements HttpController {
           response: {
             [HttpStatusCode.ok]: {
               schema: refreshUserTokensResponseBodyDTOSchema,
-              description: 'User tokens refreshed.',
+              description: 'User tokens refreshed',
             },
           },
         },
-        description: 'Refresh user tokens.',
+        description: 'Refresh user tokens',
       }),
     ];
   }

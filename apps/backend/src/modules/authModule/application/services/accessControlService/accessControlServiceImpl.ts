@@ -45,13 +45,13 @@ export class AccessControlServiceImpl implements AccessControlService {
 
     if (expectedRole && tokenPayload.role !== expectedRole) {
       throw new ForbiddenAccessError({
-        reason: 'User role does not match User role from token.',
+        reason: 'The user role is not sufficient to perform this operation.',
       });
     }
 
     if (expectedUserId && tokenPayload.userId !== expectedUserId) {
       throw new ForbiddenAccessError({
-        reason: 'User id does not match User id from token.',
+        reason: 'User id does not match expected user id.',
       });
     }
 

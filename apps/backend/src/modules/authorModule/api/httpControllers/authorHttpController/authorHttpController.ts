@@ -59,12 +59,12 @@ export class AuthorHttpController implements HttpController {
           response: {
             [HttpStatusCode.created]: {
               schema: createAuthorResponseBodyDTOSchema,
-              description: 'Author created.',
+              description: 'Author created',
             },
           },
         },
         securityMode: SecurityMode.bearerToken,
-        description: 'Create author.',
+        description: 'Create author',
       }),
       new HttpRoute({
         method: HttpMethodName.get,
@@ -77,12 +77,12 @@ export class AuthorHttpController implements HttpController {
           response: {
             [HttpStatusCode.ok]: {
               schema: findAuthorResponseBodyDTOSchema,
-              description: 'Author found.',
+              description: 'Author found',
             },
           },
         },
         securityMode: SecurityMode.bearerToken,
-        description: 'Find author by id.',
+        description: 'Find author by id',
       }),
       new HttpRoute({
         method: HttpMethodName.delete,
@@ -95,12 +95,12 @@ export class AuthorHttpController implements HttpController {
           response: {
             [HttpStatusCode.noContent]: {
               schema: deleteAuthorResponseBodyDTOSchema,
-              description: 'Author deleted.',
+              description: 'Author deleted',
             },
           },
         },
         securityMode: SecurityMode.bearerToken,
-        description: 'Delete author.',
+        description: 'Delete author',
       }),
     ];
   }

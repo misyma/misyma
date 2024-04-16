@@ -17,6 +17,7 @@ import { type DependencyInjectionContainer } from '../../libs/dependencyInjectio
 import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
 import { type AuthorHttpController } from '../../modules/authorModule/api/httpControllers/authorHttpController/authorHttpController.js';
 import { authorSymbols } from '../../modules/authorModule/symbols.js';
+import { type BookAdminHttpController } from '../../modules/bookModule/api/httpControllers/bookAdminHttpController/bookAdminHttpController.js';
 import { type BookHttpController } from '../../modules/bookModule/api/httpControllers/bookHttpController/bookHttpController.js';
 import { type GenreAdminHttpController } from '../../modules/bookModule/api/httpControllers/genreAdminHttpController/genreAdminHttpController.js';
 import { type GenreHttpController } from '../../modules/bookModule/api/httpControllers/genreHttpController/genreHttpController.js';
@@ -56,6 +57,7 @@ export class HttpServer {
     return [
       this.container.get<UserHttpController>(userSymbols.userHttpController),
       this.container.get<BookHttpController>(bookSymbols.bookHttpController),
+      this.container.get<BookAdminHttpController>(bookSymbols.bookAdminHttpController),
       this.container.get<UserBookHttpController>(bookSymbols.userBookHttpController),
       this.container.get<AuthorHttpController>(authorSymbols.authorHttpController),
       this.container.get<ApplicationHttpController>(symbols.applicationHttpController),

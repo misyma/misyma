@@ -372,6 +372,30 @@ describe('BookRepositoryImpl', () => {
       });
     });
 
+    it('finds approved books', async () => {
+      const author = await authorTestUtils.createAndPersist();
+
+      const book1 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+          book: { isApproved: true },
+        },
+      });
+
+      await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+          book: { isApproved: false },
+        },
+      });
+
+      const foundBooks = await bookRepository.findBooks({ isApproved: true });
+
+      expect(foundBooks.length).toEqual(1);
+
+      expect(foundBooks[0]?.getId()).toEqual(book1.id);
+    });
+
     it('finds book by isbn', async () => {
       const author = await authorTestUtils.createAndPersist();
 

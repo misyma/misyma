@@ -7,6 +7,7 @@ export const symbols = {
   findBookQueryHandler: Symbol('findBookQueryHandler'),
   findBooksQueryHandler: Symbol('findBooksQueryHandler'),
   bookHttpController: Symbol('bookHttpController'),
+  bookAdminHttpController: Symbol('bookAdminHttpController'),
 
   genreRepository: Symbol('genreRepository'),
   genreMapper: Symbol('genreMapper'),
@@ -31,6 +32,7 @@ export const symbols = {
 
 export const bookSymbols = {
   bookHttpController: symbols.bookHttpController,
+  bookAdminHttpController: symbols.bookAdminHttpController,
   userBookHttpController: symbols.userBookHttpController,
   bookRepository: symbols.bookRepository,
   userBookRepository: symbols.userBookRepository,

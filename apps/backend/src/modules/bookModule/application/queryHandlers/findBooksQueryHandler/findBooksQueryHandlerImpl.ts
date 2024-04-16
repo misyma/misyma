@@ -14,7 +14,9 @@ export class FindBooksQueryHandlerImpl implements FindBooksQueryHandler {
   public async execute(payload: FindBooksQueryHandlerPayload): Promise<FindBooksQueryHandlerResult> {
     const { isbn } = payload;
 
-    let findBooksPayload: FindBooksPayload = {};
+    let findBooksPayload: FindBooksPayload = {
+      isApproved: true,
+    };
 
     if (isbn) {
       findBooksPayload = {

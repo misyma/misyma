@@ -2,6 +2,8 @@ import { type Static, Type } from '@sinclair/typebox';
 
 import * as contracts from '@common/contracts';
 
+import { authorDTOSchema } from '../../../../authorModule/api/httpControllers/authorHttpController/schemas/authorDto.js';
+
 export const bookDTOSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
   title: Type.String({
@@ -52,16 +54,7 @@ export const bookDTOSchema = Type.Object({
       maxLength: 128,
     }),
   ),
-  authors: Type.Array(
-    Type.Object({
-      id: Type.String({ format: 'uuid' }),
-      name: Type.String({
-        minLength: 1,
-        maxLength: 128,
-      }),
-      isApproved: Type.Boolean(),
-    }),
-  ),
+  authors: Type.Array(authorDTOSchema),
 });
 
 export type BookDTO = Static<typeof bookDTOSchema>;

@@ -1,3 +1,4 @@
+import { BookAdminHttpController } from './api/httpControllers/bookAdminHttpController/bookAdminHttpController.js';
 import { BookHttpController } from './api/httpControllers/bookHttpController/bookHttpController.js';
 import { GenreAdminHttpController } from './api/httpControllers/genreAdminHttpController/genreAdminHttpController.js';
 import { GenreHttpController } from './api/httpControllers/genreHttpController/genreHttpController.js';
@@ -249,9 +250,18 @@ export class BookModule implements DependencyInjectionModule {
       () =>
         new BookHttpController(
           container.get<CreateBookCommandHandler>(symbols.createBookCommandHandler),
-          container.get<DeleteBookCommandHandler>(symbols.deleteBookCommandHandler),
           container.get<FindBookQueryHandler>(symbols.findBookQueryHandler),
           container.get<FindBooksQueryHandler>(symbols.findBooksQueryHandler),
+          container.get<AccessControlService>(authSymbols.accessControlService),
+        ),
+    );
+
+    container.bind<BookAdminHttpController>(
+      symbols.bookAdminHttpController,
+      () =>
+        new BookAdminHttpController(
+          container.get<CreateBookCommandHandler>(symbols.createBookCommandHandler),
+          container.get<DeleteBookCommandHandler>(symbols.deleteBookCommandHandler),
           container.get<AccessControlService>(authSymbols.accessControlService),
         ),
     );
