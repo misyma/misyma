@@ -122,11 +122,11 @@ describe('AuthorRepositoryImpl', () => {
     });
   });
 
-  describe('findAuthorsByIds', () => {
+  describe('findAuthors', () => {
     it('returns an empty array - when no Authors were found', async () => {
       const nonExistentAuthorIds = Array.from({ length: Generator.number(1, 20) }).map(() => Generator.uuid());
 
-      const authors = await authorRepository.findAuthorsByIds({ authorIds: nonExistentAuthorIds });
+      const authors = await authorRepository.findAuthors({ ids: nonExistentAuthorIds });
 
       expect(authors).toEqual([]);
     });
@@ -138,7 +138,9 @@ describe('AuthorRepositoryImpl', () => {
 
       const author3 = await authorTestUtils.createAndPersist();
 
-      const foundAuthors = await authorRepository.findAuthorsByIds({ authorIds: [author1.id, author2.id, author3.id] });
+      const foundAuthors = await authorRepository.findAuthors({
+        ids: [author1.id, author2.id, author3.id],
+      });
 
       expect(foundAuthors).toHaveLength(3);
 
@@ -146,6 +148,68 @@ describe('AuthorRepositoryImpl', () => {
         expect(foundAuthor.getId()).oneOf([author1.id, author2.id, author3.id]);
 
         expect(foundAuthor.getName()).oneOf([author1.name, author2.name, author3.name]);
+      });
+    });
+
+    it('returns no authors when given partial name does not match any author name', async () => {
+      await authorTestUtils.createAndPersist({
+        input: {
+          name: 'Tolkien',
+        },
+      });
+
+      await authorTestUtils.createAndPersist({
+        input: {
+          name: 'Tolstoy',
+        },
+      });
+
+      await authorTestUtils.createAndPersist({
+        input: {
+          name: 'Rowling',
+        },
+      });
+
+      const partialName = 'Mar';
+
+      const foundAuthors = await authorRepository.findAuthors({
+        partialName,
+      });
+
+      expect(foundAuthors).toHaveLength(0);
+    });
+
+    it('returns authors when given partial name matches author name', async () => {
+      const author1 = await authorTestUtils.createAndPersist({
+        input: {
+          name: 'Tolkien',
+        },
+      });
+
+      const author2 = await authorTestUtils.createAndPersist({
+        input: {
+          name: 'Tolstoy',
+        },
+      });
+
+      await authorTestUtils.createAndPersist({
+        input: {
+          name: 'Rowling',
+        },
+      });
+
+      const partialName = 'Tol';
+
+      const foundAuthors = await authorRepository.findAuthors({
+        partialName,
+      });
+
+      expect(foundAuthors).toHaveLength(2);
+
+      foundAuthors.forEach((foundAuthor) => {
+        expect(foundAuthor.getId()).oneOf([author1.id, author2.id]);
+
+        expect(foundAuthor.getName()).oneOf([author1.name, author2.name]);
       });
     });
   });

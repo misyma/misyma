@@ -39,8 +39,8 @@ import { type Genre } from '../../../domain/entities/genre/genre.js';
 import { type GenreDTO } from '../common/genreDto.js';
 
 export class GenreAdminHttpController implements HttpController {
-  public basePath = '/api/admin/genres';
-  public tags = ['Genre', 'Admin'];
+  public readonly basePath = '/api/admin/genres';
+  public readonly tags = ['Genre'];
 
   public constructor(
     private readonly createGenreCommandHandler: CreateGenreCommandHandler,

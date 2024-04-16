@@ -27,7 +27,7 @@ import { type AuthorDTO } from '../common/authorDto.js';
 
 export class AuthorAdminHttpController implements HttpController {
   public readonly basePath = '/api/admin/authors';
-  public readonly tags = ['Author', 'Admin'];
+  public readonly tags = ['Author'];
 
   public constructor(
     private readonly createAuthorCommandHandler: CreateAuthorCommandHandler,

@@ -12,7 +12,7 @@ export class FindAuthorsByIdsQueryHandlerImpl implements FindAuthorsByIdsQueryHa
   public async execute(payload: ExecutePayload): Promise<ExecuteResult> {
     const { authorIds } = payload;
 
-    const authors = await this.authorRepository.findAuthorsByIds({ authorIds });
+    const authors = await this.authorRepository.findAuthors({ ids: authorIds });
 
     if (authorIds.length !== authors.length) {
       const missingIds = authorIds.filter((authorId) => !authors.some((author) => author.getId() === authorId));

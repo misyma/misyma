@@ -27,7 +27,7 @@ import { type BookDTO } from '../common/bookDto.js';
 
 export class BookAdminHttpController implements HttpController {
   public readonly basePath = '/api/admin/books';
-  public readonly tags = ['Book', 'Admin'];
+  public readonly tags = ['Book'];
 
   public constructor(
     private readonly createBookCommandHandler: CreateBookCommandHandler,

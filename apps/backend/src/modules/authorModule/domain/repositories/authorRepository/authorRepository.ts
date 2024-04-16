@@ -10,8 +10,10 @@ export interface FindAuthorPayload {
   readonly name?: string;
 }
 
-export interface FindAuthorsByIdsPayload {
-  readonly authorIds: string[];
+export interface FindAuthorsPayload {
+  readonly ids?: string[];
+  readonly partialName?: string;
+  readonly isApproved?: boolean;
 }
 
 export interface DeleteAuthorPayload {
@@ -21,6 +23,6 @@ export interface DeleteAuthorPayload {
 export interface AuthorRepository {
   createAuthor(input: CreateAuthorPayload): Promise<Author>;
   findAuthor(input: FindAuthorPayload): Promise<Author | null>;
-  findAuthorsByIds(payload: FindAuthorsByIdsPayload): Promise<Author[]>;
+  findAuthors(payload: FindAuthorsPayload): Promise<Author[]>;
   deleteAuthor(input: DeleteAuthorPayload): Promise<void>;
 }
