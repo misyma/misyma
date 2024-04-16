@@ -76,8 +76,9 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
       const bookCreationResponse = await createBookMutation({
         authorIds: [], // temp.
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        format: bookCreation.stepTwoDetails?.format as unknown as any,
-        language: bookCreation.stepTwoDetails?.language as string,
+        format: bookCreation.stepTwoDetails?.format as any,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        language: bookCreation.stepTwoDetails?.language as any,
         title: bookCreation.stepOneDetails?.title as string,
         publisher: bookCreation.stepOneDetails?.publisher,
         translator: bookCreation.stepTwoDetails?.translator,
