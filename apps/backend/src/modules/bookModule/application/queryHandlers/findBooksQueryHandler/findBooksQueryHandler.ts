@@ -1,8 +1,12 @@
 import { type QueryHandler } from '../../../../../common/types/queryHandler.js';
 import { type Book } from '../../../domain/entities/book/book.js';
 
-export interface FindBooksResult {
-  books: Book[];
+export interface FindBooksQueryHandlerPayload {
+  readonly isbn?: string | undefined;
 }
 
-export type FindBooksQueryHandler = QueryHandler<void, FindBooksResult>;
+export interface FindBooksQueryHandlerResult {
+  readonly books: Book[];
+}
+
+export type FindBooksQueryHandler = QueryHandler<FindBooksQueryHandlerPayload, FindBooksQueryHandlerResult>;

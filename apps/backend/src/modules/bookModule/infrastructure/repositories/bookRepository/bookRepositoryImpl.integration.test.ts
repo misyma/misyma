@@ -347,6 +347,48 @@ describe('BookRepositoryImpl', () => {
     });
   });
 
+  describe('findBooks', () => {
+    it('finds books', async () => {
+      const author = await authorTestUtils.createAndPersist();
+
+      const book1 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+        },
+      });
+
+      const book2 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+        },
+      });
+
+      const foundBooks = await bookRepository.findBooks({});
+
+      expect(foundBooks.length).toEqual(2);
+
+      [book1.id, book2.id].every((bookId) => {
+        expect(foundBooks.some((book) => book.getId() === bookId)).toBeTruthy();
+      });
+    });
+
+    it('finds book by isbn', async () => {
+      const author = await authorTestUtils.createAndPersist();
+
+      const book = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+        },
+      });
+
+      const foundBooks = await bookRepository.findBooks({ isbn: book.isbn as string });
+
+      expect(foundBooks.length).toEqual(1);
+
+      expect(foundBooks[0]?.getIsbn()).toEqual(book.isbn);
+    });
+  });
+
   describe('delete', () => {
     it('deletes book', async () => {
       const author = await authorTestUtils.createAndPersist();
