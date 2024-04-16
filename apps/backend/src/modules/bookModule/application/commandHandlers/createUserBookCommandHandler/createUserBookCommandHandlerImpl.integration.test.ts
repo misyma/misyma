@@ -1,11 +1,9 @@
 import { beforeEach, afterEach, expect, it, describe } from 'vitest';
 
-import { type ReadingStatus } from '@common/contracts';
-import { Generator } from '@common/tests';
-
 import { type CreateUserBookCommandHandler } from './createUserBookCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
+import { Generator } from '../../../../../../tests/generator.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
@@ -86,7 +84,7 @@ describe('CreateUserBookCommandHandler', () => {
       },
     });
 
-    const status = Generator.bookReadingStatus() as ReadingStatus;
+    const status = Generator.readingStatus();
 
     const imageUrl = Generator.imageUrl();
 
@@ -119,7 +117,7 @@ describe('CreateUserBookCommandHandler', () => {
       },
     });
 
-    const status = Generator.bookReadingStatus() as ReadingStatus;
+    const status = Generator.readingStatus();
 
     const imageUrl = Generator.imageUrl();
 
@@ -146,7 +144,7 @@ describe('CreateUserBookCommandHandler', () => {
 
     const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
 
-    const status = Generator.bookReadingStatus() as ReadingStatus;
+    const status = Generator.readingStatus();
 
     const imageUrl = Generator.imageUrl();
 

@@ -1,10 +1,9 @@
 import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 
-import { Generator } from '@common/tests';
-
 import { type DeleteBookCommandHandler } from './deleteBookCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
+import { Generator } from '../../../../../../tests/generator.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';

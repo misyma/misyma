@@ -1,9 +1,9 @@
 import { beforeEach, afterEach, expect, it, describe, vi } from 'vitest';
 
 import { UserRole } from '@common/contracts';
-import { SpyFactory } from '@common/tests';
 
 import { type RegisterUserCommandHandler } from './registerUserCommandHandler.js';
+import { SpyFactory } from '../../../../../../tests/spyFactory.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
 import { Application } from '../../../../../core/application.js';

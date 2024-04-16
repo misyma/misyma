@@ -1,4 +1,4 @@
-import { type BookFormat } from '@common/contracts';
+import { type Language, type BookFormat } from '@common/contracts';
 
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type Author } from '../../../../authorModule/domain/entities/author/author.js';
@@ -9,7 +9,7 @@ export interface BookDraft {
   readonly isbn?: string | undefined;
   readonly publisher?: string | undefined;
   readonly releaseYear?: number | undefined;
-  readonly language: string;
+  readonly language: Language;
   readonly translator?: string | undefined;
   readonly format: BookFormat;
   readonly pages?: number | undefined;
@@ -23,7 +23,7 @@ export interface BookState {
   isbn?: string | undefined;
   publisher?: string | undefined;
   releaseYear?: number | undefined;
-  language: string;
+  language: Language;
   translator?: string | undefined;
   format: BookFormat;
   pages?: number | undefined;
@@ -49,7 +49,7 @@ export interface SetReleaseYearPayload {
 }
 
 export interface SetLanguagePayload {
-  readonly language: string;
+  readonly language: Language;
 }
 
 export interface SetTranslatorPayload {
@@ -155,7 +155,7 @@ export class Book {
     return this.state.releaseYear;
   }
 
-  public getLanguage(): string {
+  public getLanguage(): Language {
     return this.state.language;
   }
 

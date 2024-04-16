@@ -1,6 +1,4 @@
-import { type BookFormat } from '@common/contracts';
-import { Generator } from '@common/tests';
-
+import { Generator } from '../../../../../../tests/generator.js';
 import { Book, type BookDraft } from '../../../domain/entities/book/book.js';
 import { type BookRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/bookTable/bookRawEntity.js';
 
@@ -13,7 +11,7 @@ export class BookTestFactory {
       publisher: Generator.word(),
       language: Generator.language(),
       translator: Generator.fullName(),
-      format: Generator.bookFormat() as BookFormat,
+      format: Generator.bookFormat(),
       pages: Generator.number(100, 1000),
       releaseYear: Generator.number(1970, 2024),
       isApproved: Generator.boolean(),
@@ -31,7 +29,7 @@ export class BookTestFactory {
       publisher: Generator.word(),
       language: Generator.language(),
       translator: Generator.fullName(),
-      format: Generator.bookFormat() as BookFormat,
+      format: Generator.bookFormat(),
       pages: Generator.number(100, 1000),
       releaseYear: Generator.number(1970, 2024),
       isApproved: Generator.boolean(),

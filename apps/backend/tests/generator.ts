@@ -1,5 +1,7 @@
 import { faker } from '@faker-js/faker';
 
+import { BookFormat, Language, ReadingStatus, UserRole } from '@common/contracts';
+
 export class Generator {
   public static email(): string {
     return faker.internet.email().toLowerCase();
@@ -15,13 +17,6 @@ export class Generator {
 
   public static string(length: number): string {
     return faker.string.sample(length);
-  }
-
-  public static alphanumericString(length: number, casing: 'lower' | 'upper' = 'lower'): string {
-    return faker.string.alphanumeric({
-      casing,
-      length,
-    });
   }
 
   public static alphaString(length: number, casing: 'lower' | 'upper' = 'lower'): string {
@@ -45,24 +40,12 @@ export class Generator {
     return faker.helpers.arrayElement(array);
   }
 
-  public static firstName(): string {
-    return faker.person.firstName();
-  }
-
-  public static lastName(): string {
-    return faker.person.lastName();
-  }
-
   public static fullName(): string {
-    return `${Generator.firstName()} ${Generator.lastName()}`;
+    return `${faker.person.firstName()} ${faker.person.lastName()}`;
   }
 
   public static word(): string {
     return faker.lorem.word();
-  }
-
-  public static url(): string {
-    return faker.internet.url();
   }
 
   public static boolean(): boolean {
@@ -87,10 +70,6 @@ export class Generator {
     return faker.lorem.sentences(count);
   }
 
-  public static sentence(): string {
-    return faker.lorem.sentence();
-  }
-
   public static words(count = 3): string {
     return faker.lorem.words(count);
   }
@@ -103,28 +82,8 @@ export class Generator {
     return faker.date.past();
   }
 
-  public static country(): string {
-    return faker.location.country();
-  }
-
-  public static city(): string {
-    return faker.location.city();
-  }
-
-  public static street(): string {
-    return faker.location.street();
-  }
-
   public static streetAddress(): string {
     return faker.location.streetAddress();
-  }
-
-  public static buildingNumber(): string {
-    return faker.location.buildingNumber();
-  }
-
-  public static zipCode(): string {
-    return faker.location.zipCode();
   }
 
   public static imageUrl(width = 640, height = 480): string {
@@ -138,19 +97,19 @@ export class Generator {
     return faker.commerce.isbn({ variant: 13 });
   }
 
-  public static language(): string {
-    return faker.helpers.arrayElement(['english', 'polish', 'german', 'french']);
+  public static language(): Language {
+    return faker.helpers.arrayElement([Language.en, Language.pl, Language.de, Language.fr]);
   }
 
-  public static bookFormat(): string {
-    return faker.helpers.arrayElement(['paperback', 'hardcover', 'ebook']);
+  public static bookFormat(): BookFormat {
+    return faker.helpers.arrayElement([BookFormat.paperback, BookFormat.hardcover, BookFormat.ebook]);
   }
 
-  public static bookReadingStatus(): string {
-    return faker.helpers.arrayElement(['toRead', 'readingInProgress', 'finishedReading']);
+  public static readingStatus(): ReadingStatus {
+    return faker.helpers.arrayElement([ReadingStatus.toRead, ReadingStatus.inProgress, ReadingStatus.finished]);
   }
 
-  public static userRole(): string {
-    return faker.helpers.arrayElement(['admin', 'user']);
+  public static userRole(): UserRole {
+    return faker.helpers.arrayElement([UserRole.admin, UserRole.user]);
   }
 }

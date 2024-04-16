@@ -1,4 +1,4 @@
-import { type BookFormat } from '@common/contracts';
+import { type Language, type BookFormat } from '@common/contracts';
 
 export interface BookRawEntity {
   readonly id: string;
@@ -6,7 +6,7 @@ export interface BookRawEntity {
   readonly isbn?: string | undefined;
   readonly publisher?: string | undefined;
   readonly releaseYear?: number | undefined;
-  readonly language: string;
+  readonly language: Language;
   readonly translator?: string | undefined;
   readonly format: BookFormat;
   readonly pages?: number | undefined;

@@ -9,9 +9,6 @@
   "references": [
     {
       "path": "../../common/contracts/tsconfig.json"
-    },
-    {
-      "path": "../../common/tests/tsconfig.json"
     }
   ]
 }

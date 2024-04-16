@@ -1,5 +1,4 @@
-import { Generator } from '@common/tests';
-
+import { Generator } from '../../../../../../tests/generator.js';
 import { Genre, type GenreState } from '../../../domain/entities/genre/genre.js';
 import { type GenreRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/genreTable/genreRawEntity.js';
 

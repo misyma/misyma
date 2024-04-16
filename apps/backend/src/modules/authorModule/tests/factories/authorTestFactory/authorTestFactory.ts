@@ -1,5 +1,4 @@
-import { Generator } from '@common/tests';
-
+import { Generator } from '../../../../../../tests/generator.js';
 import { type AuthorDraft, Author } from '../../../../authorModule/domain/entities/author/author.js';
 import { type AuthorRawEntity } from '../../../infrastructure/databases/tables/authorTable/authorRawEntity.js';
 

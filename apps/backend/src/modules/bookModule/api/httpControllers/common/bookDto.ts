@@ -28,12 +28,7 @@ export const bookDTOSchema = Type.Object({
       maximum: 2500,
     }),
   ),
-  language: Type.String(
-    Type.String({
-      minLength: 1,
-      maxLength: 64,
-    }),
-  ),
+  language: Type.Enum(contracts.Language),
   translator: Type.Optional(
     Type.String({
       minLength: 1,

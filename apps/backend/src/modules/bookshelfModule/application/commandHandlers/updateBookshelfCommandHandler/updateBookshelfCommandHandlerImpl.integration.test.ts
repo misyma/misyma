@@ -1,10 +1,9 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import { Generator } from '@common/tests';
-
 import { type UpdateBookshelfCommandHandler } from './updateBookshelfCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
+import { Generator } from '../../../../../../tests/generator.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';

@@ -1,6 +1,4 @@
-import { type ReadingStatus } from '@common/contracts';
-import { Generator } from '@common/tests';
-
+import { Generator } from '../../../../../../tests/generator.js';
 import { UserBook, type UserBookDraft } from '../../../domain/entities/userBook/userBook.js';
 import { type UserBookRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/userBookTable/userBookRawEntity.js';
 
@@ -9,7 +7,7 @@ export class UserBookTestFactory {
     return new UserBook({
       id: Generator.uuid(),
       imageUrl: Generator.imageUrl(),
-      status: Generator.bookReadingStatus() as ReadingStatus,
+      status: Generator.readingStatus(),
       bookshelfId: Generator.uuid(),
       bookId: Generator.uuid(),
       genres: [],
@@ -21,7 +19,7 @@ export class UserBookTestFactory {
     return {
       id: Generator.uuid(),
       imageUrl: Generator.imageUrl(),
-      status: Generator.bookReadingStatus() as ReadingStatus,
+      status: Generator.readingStatus(),
       bookshelfId: Generator.uuid(),
       bookId: Generator.uuid(),
       ...input,

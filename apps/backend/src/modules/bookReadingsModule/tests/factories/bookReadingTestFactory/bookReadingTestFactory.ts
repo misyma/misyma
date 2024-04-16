@@ -1,5 +1,4 @@
-import { Generator } from '@common/tests';
-
+import { Generator } from '../../../../../../tests/generator.js';
 import { BookReading, type BookReadingState } from '../../../domain/entities/bookReading/bookReading.js';
 import { type BookReadingRawEntity } from '../../../infrastructure/databases/bookReadingsDatabase/tables/bookReadingTable/bookReadingRawEntity.js';
 
