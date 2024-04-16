@@ -1,10 +1,9 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import { Generator } from '@common/tests';
-
 import { type FindAuthorsByIdsQueryHandler } from './findAuthorsByIdsQueryHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
+import { Generator } from '../../../../../../tests/generator.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { Author } from '../../../domain/entities/author/author.js';
 import { symbols } from '../../../symbols.js';

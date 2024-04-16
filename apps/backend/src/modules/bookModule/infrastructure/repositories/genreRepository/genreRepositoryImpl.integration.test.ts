@@ -1,9 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { Generator } from '@common/tests';
-
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
+import { Generator } from '../../../../../../tests/generator.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { Genre } from '../../../domain/entities/genre/genre.js';
 import { type GenreRepository } from '../../../domain/repositories/genreRepository/genreRepository.js';

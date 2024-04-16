@@ -1,27 +1,19 @@
 import { beforeEach, expect, describe, it } from 'vitest';
 
-import { type UserRole } from '@common/contracts';
-import { Generator } from '@common/tests';
-
 import { UserMapperImpl } from './userMapperImpl.js';
-import { type UserRawEntity } from '../../../databases/userDatabase/tables/userTable/userRawEntity.js';
+import { UserTestFactory } from '../../../../tests/factories/userTestFactory/userTestFactory.js';
 
 describe('UserMapperImpl', () => {
   let userMapperImpl: UserMapperImpl;
+
+  const userTestFactory = new UserTestFactory();
 
   beforeEach(async () => {
     userMapperImpl = new UserMapperImpl();
   });
 
   it('maps from UserRawEntity to User', async () => {
-    const userEntity: UserRawEntity = {
-      id: Generator.uuid(),
-      email: Generator.email(),
-      password: Generator.password(),
-      name: Generator.fullName(),
-      isEmailVerified: Generator.boolean(),
-      role: Generator.userRole() as UserRole,
-    };
+    const userEntity = userTestFactory.createRaw();
 
     const user = userMapperImpl.mapToDomain(userEntity);
 

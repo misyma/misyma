@@ -50,6 +50,8 @@ export * from './schemas/book/deleteBook.js';
 
 export * from './schemas/book/bookFormat.js';
 
+export * from './schemas/book/language.js';
+
 export * from './schemas/userBook/readingStatus.js';
 
 export * from './schemas/userBook/userBook.js';

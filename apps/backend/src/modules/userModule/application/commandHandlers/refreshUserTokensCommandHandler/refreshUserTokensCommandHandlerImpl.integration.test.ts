@@ -1,10 +1,9 @@
 import { beforeEach, expect, it, describe, afterEach } from 'vitest';
 
-import { Generator } from '@common/tests';
-
 import { type RefreshUserTokensCommandHandler } from './refreshUserTokensCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
+import { Generator } from '../../../../../../tests/generator.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type Config } from '../../../../../core/config.js';
 import { coreSymbols } from '../../../../../core/symbols.js';

@@ -3,12 +3,10 @@ import { type Static, Type } from '@sinclair/typebox';
 export const bookReadingDTOSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
   userBookId: Type.String({ format: 'uuid' }),
-  comment: Type.String(
-    Type.String({
-      minLength: 1,
-      maxLength: 256,
-    }),
-  ),
+  comment: Type.String({
+    minLength: 1,
+    maxLength: 256,
+  }),
   rating: Type.Number({
     minimum: 1,
     maximum: 10,

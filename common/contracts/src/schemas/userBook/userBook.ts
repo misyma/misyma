@@ -1,6 +1,7 @@
 import { type ReadingStatus } from './readingStatus.js';
 import { type Author } from '../author/author.js';
 import { type BookFormat } from '../book/bookFormat.js';
+import { type Language } from '../book/language.js';
 import { type Genre } from '../genre/genre.js';
 
 export interface UserBook {
@@ -11,7 +12,7 @@ export interface UserBook {
     readonly isbn?: string;
     readonly publisher?: string;
     readonly releaseYear?: number;
-    readonly language: string;
+    readonly language: Language;
     readonly translator?: string;
     readonly format: BookFormat;
     readonly pages?: number;

@@ -1,11 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { type ReadingStatus } from '@common/contracts';
-import { Generator } from '@common/tests';
-
 import { type UpdateUserBookCommandHandler } from './updateUserBookCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
+import { Generator } from '../../../../../../tests/generator.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
@@ -146,9 +144,9 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
       },
     });
 
-    const updatedImageUrl = Generator.url();
+    const updatedImageUrl = Generator.imageUrl();
 
-    const updatedStatus = Generator.bookReadingStatus() as ReadingStatus;
+    const updatedStatus = Generator.readingStatus();
 
     const { userBook: updatedUserBook } = await commandHandler.execute({
       userBookId: userBook.id,

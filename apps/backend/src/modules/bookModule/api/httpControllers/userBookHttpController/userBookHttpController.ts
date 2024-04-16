@@ -1,4 +1,4 @@
-import { type BookFormat } from '@common/contracts';
+import { type Language, type BookFormat } from '@common/contracts';
 
 import {
   createUserBookBodyDTOSchema,
@@ -324,7 +324,7 @@ export class UserBookHttpController implements HttpController {
       bookId,
       book: {
         title: book?.title as string,
-        language: book?.language as string,
+        language: book?.language as Language,
         isApproved: book?.isApproved as boolean,
         format: book?.format as BookFormat,
         authors:

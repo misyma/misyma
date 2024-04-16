@@ -1,8 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { DummyFactory, Generator, SpyFactory } from '@common/tests';
-
 import { FindUserBooksQueryHandlerImpl } from './findUserBooksQueryHandlerImpl.js';
+import { DummyFactory } from '../../../../../../tests/dummyFactory.js';
+import { Generator } from '../../../../../../tests/generator.js';
+import { SpyFactory } from '../../../../../../tests/spyFactory.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type BookshelfRepository } from '../../../../bookshelfModule/domain/repositories/bookshelfRepository/bookshelfRepository.js';
 import { BookshelfTestFactory } from '../../../../bookshelfModule/tests/factories/bookshelfTestFactory/bookshelfTestFactory.js';

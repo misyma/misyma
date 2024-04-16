@@ -1,10 +1,10 @@
 import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 
 import { BookFormat } from '@common/contracts';
-import { Generator } from '@common/tests';
 
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
+import { Generator } from '../../../../../../tests/generator.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
@@ -237,7 +237,7 @@ describe('BookRepositoryImpl', () => {
 
       const newReleaseYear = (bookRawEntity.releaseYear as number) + 1;
 
-      const newLanguage = 'english';
+      const newLanguage = Generator.language();
 
       const newTranslator = Generator.fullName();
 

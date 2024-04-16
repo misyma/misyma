@@ -1,7 +1,6 @@
 import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 
-import { Generator } from '@common/tests';
-
+import { Generator } from '../../../../../../tests/generator.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { Application } from '../../../../../core/application.js';
