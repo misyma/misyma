@@ -17,6 +17,7 @@ import { LoggerServiceFactory } from '../libs/logger/factories/loggerServiceFact
 import { type LoggerService } from '../libs/logger/services/loggerService/loggerService.js';
 import { type S3Client } from '../libs/s3/clients/s3Client/s3Client.js';
 import { S3ClientFactory, type S3Config } from '../libs/s3/factories/s3ClientFactory/s3ClientFactory.js';
+import { S3Service } from '../libs/s3/services/s3Service/s3Service.js';
 import { SendGridServiceFactory } from '../libs/sendGrid/factories/sendGridServiceFactory/sendGridServiceFactory.js';
 import { type SendGridService } from '../libs/sendGrid/services/sendGridService/sendGridService.js';
 import { type UuidService } from '../libs/uuid/services/uuidService/uuidService.js';
@@ -174,6 +175,8 @@ export class Application {
     };
 
     container.bind<S3Client>(symbols.s3Client, () => S3ClientFactory.create(s3Config));
+
+    container.bind<S3Service>(symbols.s3Service, () => new S3Service(container.get<S3Client>(coreSymbols.s3Client)));
 
     return container;
   }
