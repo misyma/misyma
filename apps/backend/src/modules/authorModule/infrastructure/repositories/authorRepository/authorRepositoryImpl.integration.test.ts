@@ -179,7 +179,41 @@ describe('AuthorRepositoryImpl', () => {
       expect(foundAuthors).toHaveLength(0);
     });
 
-    it('returns authors when given partial name matches author name', async () => {
+    it('returns authors when given partial name with lowercase first letter that matches author name', async () => {
+      const author1 = await authorTestUtils.createAndPersist({
+        input: {
+          name: 'Tolkien',
+        },
+      });
+
+      const author2 = await authorTestUtils.createAndPersist({
+        input: {
+          name: 'Tolstoy',
+        },
+      });
+
+      await authorTestUtils.createAndPersist({
+        input: {
+          name: 'Rowling',
+        },
+      });
+
+      const partialName = 'tol';
+
+      const foundAuthors = await authorRepository.findAuthors({
+        partialName,
+      });
+
+      expect(foundAuthors).toHaveLength(2);
+
+      foundAuthors.forEach((foundAuthor) => {
+        expect(foundAuthor.getId()).oneOf([author1.id, author2.id]);
+
+        expect(foundAuthor.getName()).oneOf([author1.name, author2.name]);
+      });
+    });
+
+    it('returns authors when given partial name with uppercase first letter that matches author name', async () => {
       const author1 = await authorTestUtils.createAndPersist({
         input: {
           name: 'Tolkien',
@@ -199,6 +233,40 @@ describe('AuthorRepositoryImpl', () => {
       });
 
       const partialName = 'Tol';
+
+      const foundAuthors = await authorRepository.findAuthors({
+        partialName,
+      });
+
+      expect(foundAuthors).toHaveLength(2);
+
+      foundAuthors.forEach((foundAuthor) => {
+        expect(foundAuthor.getId()).oneOf([author1.id, author2.id]);
+
+        expect(foundAuthor.getName()).oneOf([author1.name, author2.name]);
+      });
+    });
+
+    it('returns authors when given partial uppercase name that matches author name', async () => {
+      const author1 = await authorTestUtils.createAndPersist({
+        input: {
+          name: 'Tolkien',
+        },
+      });
+
+      const author2 = await authorTestUtils.createAndPersist({
+        input: {
+          name: 'Tolstoy',
+        },
+      });
+
+      await authorTestUtils.createAndPersist({
+        input: {
+          name: 'Rowling',
+        },
+      });
+
+      const partialName = 'TOL';
 
       const foundAuthors = await authorRepository.findAuthors({
         partialName,

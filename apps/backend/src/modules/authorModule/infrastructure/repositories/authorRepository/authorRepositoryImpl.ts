@@ -105,7 +105,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
       }
 
       if (partialName) {
-        query.where('name', 'like', `${partialName}%`);
+        query.whereRaw('LOWER(name) LIKE LOWER(?)', `${partialName.toLowerCase()}%`);
       }
 
       if (isApproved !== undefined) {
