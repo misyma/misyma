@@ -2,8 +2,8 @@ import { UserRole } from '@common/contracts';
 
 import { ApplicationHttpController } from './api/httpControllers/applicationHttpController/applicationHttpController.js';
 import { type Config, ConfigFactory } from './config.js';
-import { HttpServer } from './httpServer/httpServer.js';
-import { QueueRouter } from './queueRouter/queueRouter.js';
+import { HttpServer } from './httpServer.js';
+import { QueueRouter } from './queueRouter.js';
 import { coreSymbols, symbols } from './symbols.js';
 import { type DatabaseClient } from '../libs/database/clients/databaseClient/databaseClient.js';
 import { DatabaseClientFactory } from '../libs/database/factories/databaseClientFactory/databaseClientFactory.js';
@@ -15,6 +15,8 @@ import { HttpServiceFactory } from '../libs/httpService/factories/httpServiceFac
 import { type HttpService } from '../libs/httpService/services/httpService/httpService.js';
 import { LoggerServiceFactory } from '../libs/logger/factories/loggerServiceFactory/loggerServiceFactory.js';
 import { type LoggerService } from '../libs/logger/services/loggerService/loggerService.js';
+import { type S3Client } from '../libs/s3/clients/s3Client/s3Client.js';
+import { S3ClientFactory, type S3Config } from '../libs/s3/factories/s3ClientFactory/s3ClientFactory.js';
 import { SendGridServiceFactory } from '../libs/sendGrid/factories/sendGridServiceFactory/sendGridServiceFactory.js';
 import { type SendGridService } from '../libs/sendGrid/services/sendGridService/sendGridService.js';
 import { type UuidService } from '../libs/uuid/services/uuidService/uuidService.js';
@@ -163,6 +165,15 @@ export class Application {
         senderEmail: config.sendGrid.senderEmail,
       }),
     );
+
+    const s3Config: S3Config = {
+      accessKeyId: config.aws.accessKeyId,
+      secretAccessKey: config.aws.secretAccessKey,
+      region: config.aws.region,
+      endpoint: config.aws.endpoint ?? undefined,
+    };
+
+    container.bind<S3Client>(symbols.s3Client, () => S3ClientFactory.create(s3Config));
 
     return container;
   }
