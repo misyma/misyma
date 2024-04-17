@@ -143,9 +143,12 @@ export class BookHttpController implements HttpController {
       authorizationHeader: request.headers['authorization'],
     });
 
-    const { isbn } = request.queryParams;
+    const { isbn, title } = request.queryParams;
 
-    const { books } = await this.findBooksQueryHandler.execute({ isbn });
+    const { books } = await this.findBooksQueryHandler.execute({
+      isbn,
+      title,
+    });
 
     return {
       body: {

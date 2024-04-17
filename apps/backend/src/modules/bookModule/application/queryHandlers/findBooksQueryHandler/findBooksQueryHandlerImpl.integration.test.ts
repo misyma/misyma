@@ -80,6 +80,26 @@ describe('FindBooksQueryHandler', () => {
     expect(books[0]?.getIsbn()).toEqual(book.isbn);
   });
 
+  it('finds books by title', async () => {
+    const author = await authorTestUtils.createAndPersist();
+
+    const book = await bookTestUtils.createAndPersist({
+      input: {
+        authorIds: [author.id],
+        book: {
+          isApproved: true,
+          title: 'Game of Thrones',
+        },
+      },
+    });
+
+    const { books } = await findBooksQueryHandler.execute({ title: 'game' });
+
+    expect(books).toHaveLength(1);
+
+    expect(books[0]?.getTitle()).toEqual(book.title);
+  });
+
   it('finds no books if they are not approved', async () => {
     const author = await authorTestUtils.createAndPersist();
 

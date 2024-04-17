@@ -29,6 +29,10 @@ export class M1CreateBookTableMigration implements Migration {
       table.text('imageUrl');
 
       table.primary(['id']);
+
+      table.index(['title']);
+
+      table.index(['isbn']);
     });
 
     await databaseClient.schema.createTable('booksAuthors', (table) => {
