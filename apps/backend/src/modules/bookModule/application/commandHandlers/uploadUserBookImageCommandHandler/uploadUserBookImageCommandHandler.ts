@@ -1,6 +1,7 @@
 import { type Readable } from 'node:stream';
 
 import { type CommandHandler } from '../../../../../common/types/commandHandler.js';
+import { type UserBook } from '../../../domain/entities/userBook/userBook.js';
 
 export interface UploadUserBookImageCommandHandlerPayload {
   readonly userBookId: string;
@@ -8,4 +9,11 @@ export interface UploadUserBookImageCommandHandlerPayload {
   readonly contentType: string;
 }
 
-export type UploadUserBookImageCommandHandler = CommandHandler<UploadUserBookImageCommandHandlerPayload, void>;
+export interface UploadUserBookImageCommandHandlerResult {
+  readonly userBook: UserBook;
+}
+
+export type UploadUserBookImageCommandHandler = CommandHandler<
+  UploadUserBookImageCommandHandlerPayload,
+  UploadUserBookImageCommandHandlerResult
+>;

@@ -1,4 +1,5 @@
 import {
+  type UploadUserBookImageCommandHandlerResult,
   type UploadUserBookImageCommandHandler,
   type UploadUserBookImageCommandHandlerPayload,
 } from './uploadUserBookImageCommandHandler.js';
@@ -16,7 +17,9 @@ export class UploadUserBookImageCommandHandlerImpl implements UploadUserBookImag
     private readonly config: Config,
   ) {}
 
-  public async execute(payload: UploadUserBookImageCommandHandlerPayload): Promise<void> {
+  public async execute(
+    payload: UploadUserBookImageCommandHandlerPayload,
+  ): Promise<UploadUserBookImageCommandHandlerResult> {
     const { userBookId, contentType, data } = payload;
 
     const existingUserBook = await this.userBookRepository.findUserBook({ id: userBookId });
@@ -37,7 +40,7 @@ export class UploadUserBookImageCommandHandlerImpl implements UploadUserBookImag
       contentType,
     });
 
-    await this.s3Service.uploadBlob({
+    const { location } = await this.s3Service.uploadBlob({
       bucketName,
       blobName: userBookId,
       data,
@@ -50,5 +53,16 @@ export class UploadUserBookImageCommandHandlerImpl implements UploadUserBookImag
       userBookId,
       contentType,
     });
+
+    existingUserBook.setImageUrl({ imageUrl: location });
+
+    await this.userBookRepository.saveUserBook({ userBook: existingUserBook });
+
+    this.loggerService.debug({
+      message: 'UserBook saved.',
+      userBookId,
+    });
+
+    return { userBook: existingUserBook };
   }
 }

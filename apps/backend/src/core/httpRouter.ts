@@ -11,6 +11,7 @@ import { ResourceNotFoundError } from '../common/errors/resourceNotFoundError.js
 import { type HttpController } from '../common/types/http/httpController.js';
 import { HttpHeader } from '../common/types/http/httpHeader.js';
 import { HttpMediaType } from '../common/types/http/httpMediaType.js';
+import { type AttachedFile } from '../common/types/http/httpRequest.js';
 import { type HttpRouteSchema, type HttpRoute } from '../common/types/http/httpRoute.js';
 import { HttpStatusCode } from '../common/types/http/httpStatusCode.js';
 import { type DependencyInjectionContainer } from '../libs/dependencyInjection/dependencyInjectionContainer.js';
@@ -79,11 +80,26 @@ export class HttpRouter {
             headers: fastifyRequest.headers,
           });
 
+          let attachedFile: AttachedFile | undefined;
+
+          if (fastifyRequest.isMultipart()) {
+            const file = await fastifyRequest.file();
+
+            if (file) {
+              attachedFile = {
+                name: file.filename,
+                type: file.mimetype,
+                data: file.file,
+              };
+            }
+          }
+
           const { statusCode, body: responseBody } = await httpRoute.handler({
             body: fastifyRequest.body,
             pathParams: fastifyRequest.params,
             queryParams: fastifyRequest.query,
             headers: fastifyRequest.headers as Record<string, string>,
+            file: attachedFile,
           });
 
           fastifyReply.status(statusCode);

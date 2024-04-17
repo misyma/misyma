@@ -313,6 +313,7 @@ export class BookModule implements DependencyInjectionModule {
           container.get<FindUserBookQueryHandler>(symbols.findUserBookQueryHandler),
           container.get<FindUserBooksQueryHandler>(symbols.findUserBooksQueryHandler),
           container.get<UpdateUserBookGenresCommandHandler>(symbols.updateBookGenresCommandHandler),
+          container.get<UploadUserBookImageCommandHandler>(symbols.uploadUserBookImageCommandHandler),
           container.get<AccessControlService>(authSymbols.accessControlService),
         ),
     );
