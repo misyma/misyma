@@ -125,7 +125,7 @@ describe('LogoutUserCommandHandlerImpl', () => {
         userId: user.id,
         type: TokenType.emailVerification,
       },
-      expiresIn: Generator.number(),
+      expiresIn: Generator.number(10000, 100000),
     });
 
     const accessToken = tokenService.createToken({
@@ -166,7 +166,7 @@ describe('LogoutUserCommandHandlerImpl', () => {
         userId: user.id,
         type: TokenType.emailVerification,
       },
-      expiresIn: Generator.number(),
+      expiresIn: Generator.number(10000, 100000),
     });
 
     await expect(

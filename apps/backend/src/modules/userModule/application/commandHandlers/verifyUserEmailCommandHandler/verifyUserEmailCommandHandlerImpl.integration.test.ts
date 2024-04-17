@@ -90,7 +90,7 @@ describe('VerifyUserEmailCommandHandlerImpl', () => {
         userId: user.id,
         type: TokenType.refreshToken,
       },
-      expiresIn: Generator.number(),
+      expiresIn: Generator.number(10000, 100000),
     });
 
     await expect(
