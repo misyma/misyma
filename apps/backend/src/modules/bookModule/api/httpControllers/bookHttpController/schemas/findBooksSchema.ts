@@ -2,11 +2,17 @@ import { type Static, Type } from '@sinclair/typebox';
 
 import type * as contracts from '@common/contracts';
 
-import { bookDTOSchema } from '../../common/bookDto.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
+import { bookDTOSchema } from '../../common/bookDto.js';
 
 export const findBooksQueryParamsDTOSchema = Type.Object({
   isbn: Type.Optional(
+    Type.String({
+      minLength: 1,
+      maxLength: 64,
+    }),
+  ),
+  title: Type.Optional(
     Type.String({
       minLength: 1,
       maxLength: 64,

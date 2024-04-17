@@ -12,7 +12,7 @@ export interface FindAuthorPayload {
 
 export interface FindAuthorsPayload {
   readonly ids?: string[];
-  readonly partialName?: string;
+  readonly name?: string;
   readonly isApproved?: boolean;
 }
 

@@ -13,6 +13,7 @@ export interface FindBookPayload {
 export interface FindBooksPayload {
   readonly isbn?: string;
   readonly isApproved?: boolean;
+  readonly title?: string;
 }
 
 export interface DeleteBookPayload {

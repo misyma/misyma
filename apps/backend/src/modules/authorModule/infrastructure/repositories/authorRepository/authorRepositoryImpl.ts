@@ -93,7 +93,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
   }
 
   public async findAuthors(payload: FindAuthorsPayload): Promise<Author[]> {
-    const { ids, partialName, isApproved } = payload;
+    const { ids, name, isApproved } = payload;
 
     let rawEntities: AuthorRawEntity[];
 
@@ -104,8 +104,8 @@ export class AuthorRepositoryImpl implements AuthorRepository {
         query.whereIn('id', ids);
       }
 
-      if (partialName) {
-        query.where('name', 'like', `${partialName}%`);
+      if (name) {
+        query.whereRaw('LOWER(name) LIKE LOWER(?)', `%${name}%`);
       }
 
       if (isApproved !== undefined) {

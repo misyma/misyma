@@ -173,13 +173,13 @@ describe('AuthorRepositoryImpl', () => {
       const partialName = 'Mar';
 
       const foundAuthors = await authorRepository.findAuthors({
-        partialName,
+        name: partialName,
       });
 
       expect(foundAuthors).toHaveLength(0);
     });
 
-    it('returns authors when given partial name matches author name', async () => {
+    it('returns authors when given partial name that matches author name', async () => {
       const author1 = await authorTestUtils.createAndPersist({
         input: {
           name: 'Tolkien',
@@ -198,18 +198,30 @@ describe('AuthorRepositoryImpl', () => {
         },
       });
 
-      const partialName = 'Tol';
-
-      const foundAuthors = await authorRepository.findAuthors({
-        partialName,
+      const foundAuthors1 = await authorRepository.findAuthors({
+        name: 'tol',
       });
 
-      expect(foundAuthors).toHaveLength(2);
+      const foundAuthors2 = await authorRepository.findAuthors({
+        name: 'Tol',
+      });
 
-      foundAuthors.forEach((foundAuthor) => {
-        expect(foundAuthor.getId()).oneOf([author1.id, author2.id]);
+      const foundAuthors3 = await authorRepository.findAuthors({
+        name: 'TOL',
+      });
 
-        expect(foundAuthor.getName()).oneOf([author1.name, author2.name]);
+      expect(foundAuthors1).toHaveLength(2);
+
+      expect(foundAuthors2).toHaveLength(2);
+
+      expect(foundAuthors3).toHaveLength(2);
+
+      [foundAuthors1, foundAuthors2, foundAuthors3].forEach((foundAuthors) => {
+        foundAuthors.forEach((foundAuthor) => {
+          expect(foundAuthor.getId()).oneOf([author1.id, author2.id]);
+
+          expect(foundAuthor.getName()).oneOf([author1.name, author2.name]);
+        });
       });
     });
   });

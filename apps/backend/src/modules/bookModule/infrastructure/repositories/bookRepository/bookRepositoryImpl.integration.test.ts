@@ -411,6 +411,104 @@ describe('BookRepositoryImpl', () => {
 
       expect(foundBooks[0]?.getIsbn()).toEqual(book.isbn);
     });
+
+    it('finds no books when given partial title does not match any book title', async () => {
+      const author = await authorTestUtils.createAndPersist();
+
+      await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+          book: {
+            title: 'The Lord of the Rings',
+          },
+        },
+      });
+
+      await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+          book: {
+            title: "Harry Potter and the Philosopher's Stone",
+          },
+        },
+      });
+
+      await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+          book: {
+            title: 'War and Peace',
+          },
+        },
+      });
+
+      const partialTitle = 'game';
+
+      const foundBooks = await bookRepository.findBooks({
+        title: partialTitle,
+      });
+
+      expect(foundBooks).toHaveLength(0);
+    });
+
+    it('finds books when given partial title that matches book title', async () => {
+      const author = await authorTestUtils.createAndPersist();
+
+      await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+          book: {
+            title: 'The Lord of the Rings',
+          },
+        },
+      });
+
+      const book1 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+          book: {
+            title: "Harry Potter and the Philosopher's Stone",
+          },
+        },
+      });
+
+      const book2 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+          book: {
+            title: 'Harry Potter and the Chamber of Secrets',
+          },
+        },
+      });
+
+      const foundBooks1 = await bookRepository.findBooks({
+        title: 'Harry',
+      });
+
+      const foundBooks2 = await bookRepository.findBooks({
+        title: 'harry',
+      });
+
+      const foundBooks3 = await bookRepository.findBooks({
+        title: 'HAR',
+      });
+
+      const foundBooks4 = await bookRepository.findBooks({
+        title: 'potter',
+      });
+
+      [foundBooks1, foundBooks2, foundBooks3, foundBooks4].forEach((foundBooks) => {
+        expect(foundBooks).toHaveLength(2);
+      });
+
+      [foundBooks1, foundBooks2, foundBooks3, foundBooks4].forEach((foundBooks) => {
+        foundBooks.forEach((foundBook) => {
+          expect(foundBook.getId()).oneOf([book1.id, book2.id]);
+
+          expect(foundBook.getTitle()).oneOf([book1.title, book2.title]);
+        });
+      });
+    });
   });
 
   describe('delete', () => {

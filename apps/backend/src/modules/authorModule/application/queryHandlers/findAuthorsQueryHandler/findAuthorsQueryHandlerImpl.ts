@@ -15,7 +15,7 @@ export class FindAuthorsQueryHandlerImpl implements FindAuthorsQueryHandler {
     if (name) {
       findAuthorsPayload = {
         ...findAuthorsPayload,
-        partialName: name,
+        name,
         isApproved: true,
       };
     }
