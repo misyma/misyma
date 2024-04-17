@@ -11,12 +11,12 @@ import { type Server } from 'http';
 
 import { type ApplicationHttpController } from './api/httpControllers/applicationHttpController/applicationHttpController.js';
 import { type Config } from './config.js';
+import { HttpRouter } from './httpRouter.js';
 import { coreSymbols, symbols } from './symbols.js';
 import { InputNotValidError } from '../common/errors/inputNotValidError.js';
 import { type HttpController } from '../common/types/http/httpController.js';
 import { HttpStatusCode } from '../common/types/http/httpStatusCode.js';
 import { SecurityMode } from '../common/types/http/securityMode.js';
-import { HttpRouter } from '../httpRouter/httpRouter.js';
 import { type DependencyInjectionContainer } from '../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type LoggerService } from '../libs/logger/services/loggerService/loggerService.js';
 import { type AuthorAdminHttpController } from '../modules/authorModule/api/httpControllers/authorAdminHttpController/authorAdminHttpController.js';
