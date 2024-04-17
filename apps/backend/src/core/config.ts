@@ -2,6 +2,7 @@ import { type Static, Type } from '@sinclair/typebox';
 import { Value } from '@sinclair/typebox/value';
 import config from 'config';
 
+import { AwsRegion } from '../common/types/awsRegion.js';
 import { LogLevel } from '../libs/logger/types/logLevel.js';
 
 const configSchema = Type.Object({
@@ -43,6 +44,13 @@ const configSchema = Type.Object({
     senderEmail: Type.String({ minLength: 1 }),
   }),
   frontendUrl: Type.String({ minLength: 1 }),
+  aws: Type.Object({
+    accessKeyId: Type.String({ minLength: 1 }),
+    secretAccessKey: Type.String({ minLength: 1 }),
+    region: Type.Enum(AwsRegion),
+    bucketName: Type.String({ minLength: 1 }),
+    endpoint: Type.Union([Type.String({ minLength: 1 }), Type.Null()]),
+  }),
 });
 
 export type Config = Static<typeof configSchema>;

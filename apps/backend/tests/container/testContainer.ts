@@ -1,8 +1,11 @@
+import { type S3Client } from '@aws-sdk/client-s3';
+
 import { testSymbols } from './symbols.js';
 import { Application } from '../../src/core/application.js';
 import { coreSymbols } from '../../src/core/symbols.js';
 import { type DatabaseClient } from '../../src/libs/database/clients/databaseClient/databaseClient.js';
 import { type DependencyInjectionContainer } from '../../src/libs/dependencyInjection/dependencyInjectionContainer.js';
+import { S3TestUtils } from '../../src/libs/s3/tests/utils/s3TestUtils.js';
 import { AuthorTestUtils } from '../../src/modules/authorModule/tests/utils/authorTestUtils/authorTestUtils.js';
 import { BookTestUtils } from '../../src/modules/bookModule/tests/utils/bookTestUtils/bookTestUtils.js';
 import { GenreTestUtils } from '../../src/modules/bookModule/tests/utils/genreTestUtils/genreTestUtils.js';
@@ -67,6 +70,11 @@ export class TestContainer {
     container.overrideBinding<EmailService>(userSymbols.emailService, () => ({
       sendEmail: async (): Promise<void> => {},
     }));
+
+    container.bind<S3TestUtils>(
+      testSymbols.s3TestUtils,
+      () => new S3TestUtils(container.get<S3Client>(coreSymbols.s3Client)),
+    );
 
     return container;
   }

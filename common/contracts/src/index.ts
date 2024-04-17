@@ -48,6 +48,8 @@ export * from './schemas/book/createBook.js';
 
 export * from './schemas/userBook/updateUserBookGenres.js';
 
+export * from './schemas/userBook/uploageUserBookImage.js';
+
 export * from './schemas/book/deleteBook.js';
 
 export * from './schemas/book/bookFormat.js';

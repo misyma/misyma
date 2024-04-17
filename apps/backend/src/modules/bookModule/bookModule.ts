@@ -21,6 +21,8 @@ import { type UpdateUserBookCommandHandler } from './application/commandHandlers
 import { UpdateUserBookCommandHandlerImpl } from './application/commandHandlers/updateUserBookCommandHandler/updateUserBookCommandHandlerImpl.js';
 import { type UpdateUserBookGenresCommandHandler } from './application/commandHandlers/updateUserBookGenresCommandHandler/updateUserBookGenresCommandHandler.js';
 import { UpdateBookGenresCommandHandlerImpl } from './application/commandHandlers/updateUserBookGenresCommandHandler/updateUserBookGenresCommandHandlerImpl.js';
+import { type UploadUserBookImageCommandHandler } from './application/commandHandlers/uploadUserBookImageCommandHandler/uploadUserBookImageCommandHandler.js';
+import { UploadUserBookImageCommandHandlerImpl } from './application/commandHandlers/uploadUserBookImageCommandHandler/uploadUserBookImageCommandHandlerImpl.js';
 import { type FindBookQueryHandler } from './application/queryHandlers/findBookQueryHandler/findBookQueryHandler.js';
 import { FindBookQueryHandlerImpl } from './application/queryHandlers/findBookQueryHandler/findBookQueryHandlerImpl.js';
 import { type FindBooksQueryHandler } from './application/queryHandlers/findBooksQueryHandler/findBooksQueryHandler.js';
@@ -48,11 +50,13 @@ import { type UserBookMapper } from './infrastructure/repositories/userBookRepos
 import { UserBookMapperImpl } from './infrastructure/repositories/userBookRepository/userBookMapper/userBookMapperImpl.js';
 import { UserBookRepositoryImpl } from './infrastructure/repositories/userBookRepository/userBookRepositoryImpl.js';
 import { symbols } from './symbols.js';
+import { type Config } from '../../core/config.js';
 import { coreSymbols } from '../../core/symbols.js';
 import { type DatabaseClient } from '../../libs/database/clients/databaseClient/databaseClient.js';
 import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type DependencyInjectionModule } from '../../libs/dependencyInjection/dependencyInjectionModule.js';
 import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
+import { type S3Service } from '../../libs/s3/services/s3Service/s3Service.js';
 import { type UuidService } from '../../libs/uuid/services/uuidService/uuidService.js';
 import { type AccessControlService } from '../authModule/application/services/accessControlService/accessControlService.js';
 import { authSymbols } from '../authModule/symbols.js';
@@ -201,6 +205,17 @@ export class BookModule implements DependencyInjectionModule {
           container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );
+
+    container.bind<UploadUserBookImageCommandHandler>(
+      symbols.uploadUserBookImageCommandHandler,
+      () =>
+        new UploadUserBookImageCommandHandlerImpl(
+          container.get<UserBookRepository>(symbols.userBookRepository),
+          container.get<S3Service>(coreSymbols.s3Service),
+          container.get<LoggerService>(coreSymbols.loggerService),
+          container.get<Config>(coreSymbols.config),
+        ),
+    );
   }
 
   private bindQueryHandlers(container: DependencyInjectionContainer): void {
@@ -298,6 +313,7 @@ export class BookModule implements DependencyInjectionModule {
           container.get<FindUserBookQueryHandler>(symbols.findUserBookQueryHandler),
           container.get<FindUserBooksQueryHandler>(symbols.findUserBooksQueryHandler),
           container.get<UpdateUserBookGenresCommandHandler>(symbols.updateBookGenresCommandHandler),
+          container.get<UploadUserBookImageCommandHandler>(symbols.uploadUserBookImageCommandHandler),
           container.get<AccessControlService>(authSymbols.accessControlService),
         ),
     );

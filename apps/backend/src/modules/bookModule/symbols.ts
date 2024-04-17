@@ -25,6 +25,7 @@ export const symbols = {
   createUserBookCommandHandler: Symbol('createUserBookCommandHandler'),
   deleteUserBookCommandHandler: Symbol('deleteUserBookCommandHandler'),
   updateUserBookCommandHandler: Symbol('updateUserBookCommandHandler'),
+  uploadUserBookImageCommandHandler: Symbol('uploadUserBookImageCommandHandler'),
   findUserBookQueryHandler: Symbol('findUserBookQueryHandler'),
   findUserBooksQueryHandler: Symbol('findUserBooksQueryHandler'),
   userBookHttpController: Symbol('userBookHttpController'),

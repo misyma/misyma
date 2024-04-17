@@ -30,5 +30,12 @@
     "apiKey": null,
     "senderEmail": "misyma@misyma.com"
   },
-  "frontendUrl": "https://misyma.com"
+  "frontendUrl": "https://misyma.com",
+  "aws": {
+    "accessKeyId": null,
+    "secretAccessKey": null,
+    "region": "eu-central-1",
+    "endpoint": null,
+    "bucketName": "misyma-images"
+  }
 }

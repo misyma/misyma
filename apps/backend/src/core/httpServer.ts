@@ -2,6 +2,7 @@
 
 import { fastifyCors } from '@fastify/cors';
 import { fastifyHelmet } from '@fastify/helmet';
+import { fastifyMultipart } from '@fastify/multipart';
 import { fastifySwagger } from '@fastify/swagger';
 import { fastifySwaggerUi } from '@fastify/swagger-ui';
 import { type TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
@@ -9,31 +10,31 @@ import { fastify, type FastifyInstance } from 'fastify';
 import { type FastifySchemaValidationError } from 'fastify/types/schema.js';
 import { type Server } from 'http';
 
-import { InputNotValidError } from '../../common/errors/inputNotValidError.js';
-import { type HttpController } from '../../common/types/http/httpController.js';
-import { HttpStatusCode } from '../../common/types/http/httpStatusCode.js';
-import { SecurityMode } from '../../common/types/http/securityMode.js';
-import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
-import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
-import { type AuthorAdminHttpController } from '../../modules/authorModule/api/httpControllers/authorAdminHttpController/authorAdminHttpController.js';
-import { type AuthorHttpController } from '../../modules/authorModule/api/httpControllers/authorHttpController/authorHttpController.js';
-import { authorSymbols } from '../../modules/authorModule/symbols.js';
-import { type BookAdminHttpController } from '../../modules/bookModule/api/httpControllers/bookAdminHttpController/bookAdminHttpController.js';
-import { type BookHttpController } from '../../modules/bookModule/api/httpControllers/bookHttpController/bookHttpController.js';
-import { type GenreAdminHttpController } from '../../modules/bookModule/api/httpControllers/genreAdminHttpController/genreAdminHttpController.js';
-import { type GenreHttpController } from '../../modules/bookModule/api/httpControllers/genreHttpController/genreHttpController.js';
-import { type UserBookHttpController } from '../../modules/bookModule/api/httpControllers/userBookHttpController/userBookHttpController.js';
-import { bookSymbols } from '../../modules/bookModule/symbols.js';
-import { type BookReadingHttpController } from '../../modules/bookReadingsModule/api/httpControllers/bookReadingHttpController/bookReadingHttpController.js';
-import { bookReadingSymbols } from '../../modules/bookReadingsModule/symbols.js';
-import { type BookshelfHttpController } from '../../modules/bookshelfModule/api/httpControllers/bookshelfHttpController/bookshelfHttpController.js';
-import { bookshelfSymbols } from '../../modules/bookshelfModule/symbols.js';
-import { type UserHttpController } from '../../modules/userModule/api/httpControllers/userHttpController/userHttpController.js';
-import { userSymbols } from '../../modules/userModule/symbols.js';
-import { type ApplicationHttpController } from '../api/httpControllers/applicationHttpController/applicationHttpController.js';
-import { type Config } from '../config.js';
-import { HttpRouter } from '../httpRouter/httpRouter.js';
-import { coreSymbols, symbols } from '../symbols.js';
+import { type ApplicationHttpController } from './api/httpControllers/applicationHttpController/applicationHttpController.js';
+import { type Config } from './config.js';
+import { HttpRouter } from './httpRouter.js';
+import { coreSymbols, symbols } from './symbols.js';
+import { InputNotValidError } from '../common/errors/inputNotValidError.js';
+import { type HttpController } from '../common/types/http/httpController.js';
+import { HttpStatusCode } from '../common/types/http/httpStatusCode.js';
+import { SecurityMode } from '../common/types/http/securityMode.js';
+import { type DependencyInjectionContainer } from '../libs/dependencyInjection/dependencyInjectionContainer.js';
+import { type LoggerService } from '../libs/logger/services/loggerService/loggerService.js';
+import { type AuthorAdminHttpController } from '../modules/authorModule/api/httpControllers/authorAdminHttpController/authorAdminHttpController.js';
+import { type AuthorHttpController } from '../modules/authorModule/api/httpControllers/authorHttpController/authorHttpController.js';
+import { authorSymbols } from '../modules/authorModule/symbols.js';
+import { type BookAdminHttpController } from '../modules/bookModule/api/httpControllers/bookAdminHttpController/bookAdminHttpController.js';
+import { type BookHttpController } from '../modules/bookModule/api/httpControllers/bookHttpController/bookHttpController.js';
+import { type GenreAdminHttpController } from '../modules/bookModule/api/httpControllers/genreAdminHttpController/genreAdminHttpController.js';
+import { type GenreHttpController } from '../modules/bookModule/api/httpControllers/genreHttpController/genreHttpController.js';
+import { type UserBookHttpController } from '../modules/bookModule/api/httpControllers/userBookHttpController/userBookHttpController.js';
+import { bookSymbols } from '../modules/bookModule/symbols.js';
+import { type BookReadingHttpController } from '../modules/bookReadingsModule/api/httpControllers/bookReadingHttpController/bookReadingHttpController.js';
+import { bookReadingSymbols } from '../modules/bookReadingsModule/symbols.js';
+import { type BookshelfHttpController } from '../modules/bookshelfModule/api/httpControllers/bookshelfHttpController/bookshelfHttpController.js';
+import { bookshelfSymbols } from '../modules/bookshelfModule/symbols.js';
+import { type UserHttpController } from '../modules/userModule/api/httpControllers/userHttpController/userHttpController.js';
+import { userSymbols } from '../modules/userModule/symbols.js';
 
 export class HttpServer {
   public readonly fastifyInstance: FastifyInstance;
@@ -76,6 +77,8 @@ export class HttpServer {
     this.setupErrorHandler();
 
     await this.initSwagger();
+
+    await this.fastifyInstance.register(fastifyMultipart);
 
     await this.fastifyInstance.register(fastifyHelmet);
 

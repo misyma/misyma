@@ -40,7 +40,14 @@ import {
   type UpdateUserBookPathParamsDTO,
   type UpdateUserBookResponseDTOSchema,
 } from './schemas/updateUserBookSchema.js';
+import {
+  type UploadUserBookImageResponseDTOSchema,
+  type UploadUserBookImagePathParamsDTO,
+  uploadUserBookImageResponseDTOSchema,
+  uploadUserBookImagePathParamsDTOSchema,
+} from './schemas/uploadUserBookImageSchema.js';
 import { type UserBookDTO } from './schemas/userBookDto.js';
+import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
@@ -57,6 +64,7 @@ import { type CreateUserBookCommandHandler } from '../../../application/commandH
 import { type DeleteUserBookCommandHandler } from '../../../application/commandHandlers/deleteUserBookCommandHandler/deleteUserBookCommandHandler.js';
 import { type UpdateUserBookCommandHandler } from '../../../application/commandHandlers/updateUserBookCommandHandler/updateUserBookCommandHandler.js';
 import { type UpdateUserBookGenresCommandHandler } from '../../../application/commandHandlers/updateUserBookGenresCommandHandler/updateUserBookGenresCommandHandler.js';
+import { type UploadUserBookImageCommandHandler } from '../../../application/commandHandlers/uploadUserBookImageCommandHandler/uploadUserBookImageCommandHandler.js';
 import { type FindUserBookQueryHandler } from '../../../application/queryHandlers/findUserBookQueryHandler/findUserBookQueryHandler.js';
 import { type FindUserBooksQueryHandler } from '../../../application/queryHandlers/findUserBooksQueryHandler/findUserBooksQueryHandler.js';
 import { type UserBook } from '../../../domain/entities/userBook/userBook.js';
@@ -72,6 +80,7 @@ export class UserBookHttpController implements HttpController {
     private readonly findUserBookQueryHandler: FindUserBookQueryHandler,
     private readonly findUserBooksQueryHandler: FindUserBooksQueryHandler,
     private readonly updateUserBookGenresCommandHandler: UpdateUserBookGenresCommandHandler,
+    private readonly uploadUserBookImageCommandHandler: UploadUserBookImageCommandHandler,
     private readonly accessControlService: AccessControlService,
   ) {}
 
@@ -170,6 +179,23 @@ export class UserBookHttpController implements HttpController {
       }),
       new HttpRoute({
         method: HttpMethodName.patch,
+        path: ':id/images',
+        description: `Upload user book's image`,
+        handler: this.uploadUserBookImage.bind(this),
+        schema: {
+          request: {
+            pathParams: uploadUserBookImagePathParamsDTOSchema,
+          },
+          response: {
+            [HttpStatusCode.ok]: {
+              description: `User book's image uploaded`,
+              schema: uploadUserBookImageResponseDTOSchema,
+            },
+          },
+        },
+      }),
+      new HttpRoute({
+        method: HttpMethodName.patch,
         path: ':userBookId/genres',
         description: `Update user's book genres`,
         handler: this.updateUserBookGenres.bind(this),
@@ -205,6 +231,33 @@ export class UserBookHttpController implements HttpController {
       status,
       bookshelfId,
       imageUrl,
+    });
+
+    return {
+      statusCode: HttpStatusCode.ok,
+      body: this.mapUserBookToUserBookDTO(userBook),
+    };
+  }
+
+  private async uploadUserBookImage(
+    request: HttpRequest<undefined, undefined, UploadUserBookImagePathParamsDTO>,
+  ): Promise<HttpOkResponse<UploadUserBookImageResponseDTOSchema>> {
+    await this.accessControlService.verifyBearerToken({
+      authorizationHeader: request.headers['authorization'],
+    });
+
+    const { id } = request.pathParams;
+
+    if (!request.file) {
+      throw new OperationNotValidError({
+        reason: 'No file attached',
+      });
+    }
+
+    const { userBook } = await this.uploadUserBookImageCommandHandler.execute({
+      userBookId: id,
+      data: request.file.data,
+      contentType: request.file.type,
     });
 
     return {

@@ -8,4 +8,5 @@ export const testSymbols = {
   blacklistTokenTestUtils: Symbol('blacklistTokenTestUtils'),
   authorTestUtils: Symbol('authorTestUtils'),
   emailEventTestUtils: Symbol('emailEventTestUtils'),
+  s3TestUtils: Symbol('s3TestService'),
 };

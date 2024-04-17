@@ -5,9 +5,10 @@ export const symbols = {
   uuidService: Symbol('uuidService'),
   databaseClient: Symbol('databaseClient'),
   applicationHttpController: Symbol('applicationHttpController'),
-  sendGridService: Symbol('sendGridService'),
-
   entityEventsDatabaseClient: Symbol('entityEventsDatabaseClient'),
+  sendGridService: Symbol('sendGridService'),
+  s3Client: Symbol('s3Client'),
+  s3Service: Symbol('s3Service'),
 };
 
 export const coreSymbols = {
@@ -18,4 +19,6 @@ export const coreSymbols = {
   databaseClient: symbols.databaseClient,
   entityEventsDatabaseClient: symbols.entityEventsDatabaseClient,
   sendGridService: symbols.sendGridService,
+  s3Client: symbols.s3Client,
+  s3Service: symbols.s3Service,
 };
