@@ -54,6 +54,8 @@ export const Navbar: FC = () => {
       },
     );
   };
+  
+  const linkClasses = '[&.active]:font-extrabold [&.active]:underline underline-offset-8 decoration-[3px] text-nowrap';
 
   return (
     <div className="bg-white p-8 top-0 fixed flex justify-end w-full items-center">
@@ -73,7 +75,7 @@ export const Navbar: FC = () => {
         <li className="text-primary text-xl text-center font-semibold">
           <Link
             to={'/shelves'}
-            className="[&.active]:font-extrabold text-nowrap"
+            className={linkClasses}
           >
             Moje półki
           </Link>
@@ -81,7 +83,7 @@ export const Navbar: FC = () => {
         <li className="text-primary text-xl text-center font-semibold">
           <Link
             to={'/quotes'}
-            className="[&.active]:font-extrabold"
+            className={linkClasses}
           >
             Cytaty
           </Link>
@@ -89,7 +91,7 @@ export const Navbar: FC = () => {
         <li className="text-primary text-xl text-center font-semibold">
           <Link
             to={'/collections'}
-            className="[&.active]:font-extrabold"
+            className={linkClasses}
           >
             Kolekcje
           </Link>
@@ -97,7 +99,7 @@ export const Navbar: FC = () => {
         <li className="text-primary text-xl text-center font-semibold">
           <Link
             to={'/statistics'}
-            className="[&.active]:font-extrabold"
+            className={linkClasses}
           >
             Statystyki
           </Link>

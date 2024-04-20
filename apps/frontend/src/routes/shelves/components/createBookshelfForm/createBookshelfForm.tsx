@@ -2,13 +2,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { CreateBookshelfFormValues, createBookshelfSchema } from './schema/createBookshelfSchema';
-import { useCreateBookshelfMutation } from '../../../../api/shelf/mutations/createBookshelfMutation/createBookshelfMutation';
+import { useCreateBookshelfMutation } from '../../../../api/bookshelf/mutations/createBookshelfMutation/createBookshelfMutation';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../components/ui/form';
 import { Input } from '../../../../components/ui/input';
 import { Button } from '../../../../components/ui/button';
 import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery';
 import { useToast } from '../../../../components/ui/use-toast';
-import { ShelfApiError } from '../../../../api/shelf/errors/shelfApiError';
+import { ShelfApiError } from '../../../../api/bookshelf/errors/shelfApiError';
 
 interface Props {
   onGoBack: (created: boolean) => void;

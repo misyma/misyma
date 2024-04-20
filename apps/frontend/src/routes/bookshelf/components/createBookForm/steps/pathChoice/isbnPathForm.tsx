@@ -29,6 +29,7 @@ export const IsbnPathForm = (): JSX.Element => {
     values: {
       isbn: bookCreation.isbn ?? '',
     },
+    reValidateMode: 'onChange'
   });
 
   const dispatch = useBookCreationDispatch();
@@ -49,6 +50,13 @@ export const IsbnPathForm = (): JSX.Element => {
     });
   };
 
+  isbnForm.watch((watcher) => {
+    dispatch({
+      type: BookCreationActionType.setIsbn,
+      isbn: watcher?.isbn ?? '',
+    });
+  })
+
   return (
     <Form {...isbnForm}>
       <form
@@ -66,20 +74,14 @@ export const IsbnPathForm = (): JSX.Element => {
                   placeholder="ISBN"
                   type="text"
                   maxLength={64}
-                  includeQuill={false}
+                  includeQuill={false} 
                   otherIcon={
                     isbnForm.formState.isValid ? (
                       <IoMdCheckmarkCircle className="text-green-500 text-2xl" />
                     ) : (
-                      <MdOutlineCancel className="text-red-500 text-2xl" />
+                      isbnForm.formState.dirtyFields.isbn ? <MdOutlineCancel className="text-red-500 text-2xl" /> : <></>
                     )
                   }
-                  onInput={(e) => {
-                    dispatch({
-                      type: BookCreationActionType.setIsbn,
-                      isbn: e.currentTarget.value,
-                    });
-                  }}
                   {...field}
                 />
               </FormControl>
