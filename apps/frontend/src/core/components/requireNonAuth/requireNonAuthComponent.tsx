@@ -14,6 +14,6 @@ export function RequireNonAuthComponent({ children }: Props): React.ReactNode {
   return !accessToken && !refreshToken ? (
     <>{children}</>
   ) : (
-    <Navigate to="/test1" />
+    <Navigate to="/shelves" />
   );
 }

@@ -27,6 +27,6 @@ export const useFindUserBookshelfsQuery = (userId: string | undefined) => {
   return useQuery<FindBookshelvesByUserIdResponseBody>({
     queryKey: ['findUserBookshelfs', userId],
     queryFn: () => findUserBookshelfs({ userId: userId as string }), // todo: improve
-    enabled: !!accessToken || !!userId,
+    enabled: !!accessToken && !!userId,
   });
 };
