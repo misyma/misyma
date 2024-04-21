@@ -12,7 +12,6 @@ const router = createRouter({
   routeTree,
   notFoundRoute,
 });
-// TODO: Custom provider that loads data from cookies / indexDb
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

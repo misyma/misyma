@@ -15,9 +15,9 @@ interface ProviderProps {
 
 export const QueryClientProvider = ({ children }: ProviderProps) => {
 
-  const refreshToken = useStoreSelector(userStateSelectors.selectRefreshToken);
-
   const storeDispatch = useStoreDispatch();
+
+  const refreshToken = useStoreSelector(userStateSelectors.selectRefreshToken);
 
   const [refreshingToken, setRefreshingToken] = useState<boolean>(false);
 
