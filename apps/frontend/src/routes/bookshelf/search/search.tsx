@@ -4,8 +4,9 @@ import { rootRoute } from '../../root';
 import { RequireAuthComponent } from '../../../core/components/requireAuth/requireAuthComponent';
 import { z } from 'zod';
 import { ChoosePathStep } from './pathChoice/pathChoice';
-import { IsbnPathForm } from './pathChoice/isbnPathForm';
+import { IsbnPathForm } from './byIbsn/isbnPathForm';
 import { AuthenticatedLayout } from '../../../layouts/authenticated/authenticatedLayout';
+import { ByTitleForm } from './byTitle/byTitle';
 
 export const Search = () => {
   const searchParams = searchRoute.useSearch();
@@ -19,12 +20,21 @@ export const Search = () => {
       return <IsbnPathForm />;
     }
 
-    return <></>; //title :)
+    return <ByTitleForm />; //title :)
   };
 
   return (
     <AuthenticatedLayout>
-      <div className="flex justify-center items-center">{render()}</div>
+      <div className="flex justify-center items-center">
+        {render()}
+        <div className="flex max-w-[250px] w-full sm:max-w-[500px] sm:min-h-[550px] justify-center items-center">
+          <img
+            src="/books.png"
+            alt="Books image"
+            className="object-contain"
+          />
+        </div>
+      </div>
     </AuthenticatedLayout>
   );
 };

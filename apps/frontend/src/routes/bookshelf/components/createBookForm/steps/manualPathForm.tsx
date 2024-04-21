@@ -1,6 +1,4 @@
 import { z } from 'zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../../../components/ui/form';
-import { Input } from '../../../../../../components/ui/input';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -9,8 +7,10 @@ import {
   NonIsbnCreationPathStep,
   useBookCreation,
   useBookCreationDispatch,
-} from '../../context/bookCreationContext/bookCreationContext';
-import { Button } from '../../../../../../components/ui/button';
+} from '../context/bookCreationContext/bookCreationContext';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../../components/ui/form';
+import { Input } from '../../../../../components/ui/input';
+import { Button } from '../../../../../components/ui/button';
 
 const stepOneYoISchema = z.object({
   yearOfIssue: z
@@ -91,7 +91,7 @@ export const ManualPathForm = (): JSX.Element => {
         <Button
           type="submit"
           disabled={!form.formState.isValid}
-          className='border border-primary w-60 sm:w-96'
+          className="border border-primary w-60 sm:w-96"
           onClick={() => {
             onSubmit(form.getValues());
           }}

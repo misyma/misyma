@@ -1,60 +1,53 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { IoMdCheckmarkCircle } from 'react-icons/io';
-import { MdOutlineCancel } from 'react-icons/md';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../components/ui/form';
 import { Input } from '../../../../components/ui/input';
 import { Button } from '../../../../components/ui/button';
 
 const stepOneIsbnSchema = z.object({
-  isbn: z
+  title: z
     .string({
-      required_error: 'Numer ISBN jest wymagany.',
+      required_error: 'Tytuł jest wymagany.',
     })
-    .regex(/^(?=(?:[^0-9]*[0-9]){10}(?:(?:[^0-9]*[0-9]){3})?$)[\d-]+$/, 'Niewłaściwy format.'),
+    .min(3, {
+      message: 'Tytuł jest zbyt krótki.',
+    }),
 });
 
-export const IsbnPathForm = (): JSX.Element => {
-  const isbnForm = useForm({
+export const ByTitleForm = (): JSX.Element => {
+  const byTitleForm = useForm({
     resolver: zodResolver(stepOneIsbnSchema),
     values: {
-      isbn: '',
+      title: '',
     },
-    reValidateMode: 'onChange'
+    reValidateMode: 'onChange',
   });
 
   const onFormSubmit = (values: Partial<z.infer<typeof stepOneIsbnSchema>>) => {
-    if (!values.isbn) {
+    if (!values.title) {
       return;
     }
   };
 
   return (
-    <Form {...isbnForm}>
+    <Form {...byTitleForm}>
       <form
-        onSubmit={isbnForm.handleSubmit(onFormSubmit)}
+        onSubmit={byTitleForm.handleSubmit(onFormSubmit)}
         className="space-y-8"
       >
         <FormField
-          control={isbnForm.control}
-          name="isbn"
+          control={byTitleForm.control}
+          name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>ISBN</FormLabel>
+              <FormLabel>Tytuł</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="ISBN"
+                  placeholder="Tytuł"
                   type="text"
                   maxLength={64}
-                  includeQuill={false} 
-                  otherIcon={
-                    isbnForm.formState.isValid ? (
-                      <IoMdCheckmarkCircle className="text-green-500 text-2xl" />
-                    ) : (
-                      isbnForm.formState.dirtyFields.isbn ? <MdOutlineCancel className="text-red-500 text-2xl" /> : <></>
-                    )
-                  }
+                  includeQuill={false}
                   {...field}
                 />
               </FormControl>
@@ -64,10 +57,10 @@ export const IsbnPathForm = (): JSX.Element => {
         />
         <Button
           type="submit"
-          disabled={!isbnForm.formState.isValid}
+          disabled={!byTitleForm.formState.isValid}
           className="border border-primary w-60 sm:w-96"
         >
-          Przejdź dalej
+          Pobierz dane
         </Button>
       </form>
     </Form>
