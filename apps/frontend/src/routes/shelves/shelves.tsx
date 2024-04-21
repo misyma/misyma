@@ -122,6 +122,18 @@ export const ShelvesPage: FC = () => {
       ...editMap,
       [index]: false,
     });
+
+    if (!bookshelves) {
+      return;
+    }
+
+    const element = bookshelves[index];
+
+    if (element.id === '') {
+      const updatedBookshelves = bookshelves.slice(1);
+
+      setBookshelves([...updatedBookshelves]);
+    }
   };
 
   const onCreateNew = async (index: number): Promise<void> => {
@@ -336,7 +348,7 @@ export const ShelvesPage: FC = () => {
           </ScrollArea>
           {bookshelves && bookshelves.length > perPage ? (
             <>
-            {/* TODO: !REFACTOR! */}
+              {/* TODO: !REFACTOR! */}
               <Pagination>
                 <PaginationContent>
                   <PaginationItem>
@@ -361,7 +373,7 @@ export const ShelvesPage: FC = () => {
                           return;
                         }
 
-                        if (currentPage === pagesCount && pagesCount === 2){
+                        if (currentPage === pagesCount && pagesCount === 2) {
                           setCurrentPage(currentPage - 1);
                         }
 
@@ -384,7 +396,10 @@ export const ShelvesPage: FC = () => {
                   </PaginationItem>
                   <PaginationItem>
                     <PaginationLink
-                      isActive={currentPage !== 1 && currentPage !== pagesCount || (pagesCount === 2 && currentPage === pagesCount)}
+                      isActive={
+                        (currentPage !== 1 && currentPage !== pagesCount) ||
+                        (pagesCount === 2 && currentPage === pagesCount)
+                      }
                       onClick={() => {
                         if (currentPage === 1) {
                           return setCurrentPage(currentPage + 1);
