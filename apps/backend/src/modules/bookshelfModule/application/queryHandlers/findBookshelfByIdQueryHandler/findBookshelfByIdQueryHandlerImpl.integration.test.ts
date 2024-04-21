@@ -67,9 +67,7 @@ describe('FindBookshelfByIdQueryHandler', () => {
     expect(bookshelf).toBeInstanceOf(Bookshelf);
 
     expect(bookshelf.getState()).toEqual({
-      address: bookshelf.getAddress(),
       name: bookshelf.getName(),
-      imageUrl: bookshelf.getImageUrl(),
       userId: bookshelf.getUserId(),
     });
   });

@@ -72,19 +72,14 @@ describe('CreateBookshelfCommandHandlerImpl', () => {
 
     const name = Generator.word();
 
-    const imageUrl = Generator.imageUrl();
-
     const { bookshelf } = await commandHandler.execute({
       name,
       userId: user.id,
-      imageUrl,
     });
 
     expect(bookshelf.getState()).toEqual({
       name,
       userId: user.id,
-      address: null,
-      imageUrl,
     });
 
     const persistedRawBookshelf = await bookshelfTestUtils.findById({
@@ -95,8 +90,6 @@ describe('CreateBookshelfCommandHandlerImpl', () => {
       id: bookshelf.getId(),
       name,
       userId: user.id,
-      address: null,
-      imageUrl,
     });
   });
 });

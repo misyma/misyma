@@ -4,9 +4,7 @@ import { type Bookshelf } from '../../../domain/entities/bookshelf/bookshelf.js'
 export interface UpdateBookshelfPayload {
   readonly id: string;
   readonly userId: string;
-  readonly name?: string | undefined;
-  readonly imageUrl?: string | undefined;
-  readonly address?: string | undefined;
+  readonly name: string;
 }
 
 export interface UpdateBookshelfResult {

@@ -80,42 +80,6 @@ export const CreateBookshelfForm: FC<Props> = ({ onGoBack }: Props) => {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="address"
-          render={({ field }) => (
-            <FormItem className="h-[5.5rem]">
-              <FormLabel>Adres</FormLabel>
-              <FormControl>
-                {/* Change to combo dropdown :) */}
-                <Input
-                  placeholder="Adres"
-                  maxLength={254}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="imageUrl"
-          render={({ field }) => (
-            <FormItem className="h-[5.5rem]">
-              <FormLabel>Obrazek</FormLabel>
-              <FormControl>
-                {/* Change to combo dropdown :) */}
-                <Input
-                  placeholder="Obrazek"
-                  maxLength={254}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <div className="flex gap-4 sm:gap-8 w-full">
           <Button
             onClick={() => {

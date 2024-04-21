@@ -15,15 +15,13 @@ export class UpdateBookshelfCommandHandlerImpl implements UpdateBookshelfCommand
   ) {}
 
   public async execute(payload: UpdateBookshelfPayload): Promise<UpdateBookshelfResult> {
-    const { id, name, imageUrl, userId, address } = payload;
+    const { id, name, userId } = payload;
 
     this.loggerService.debug({
       message: 'Updating Bookshelf...',
       id,
       name,
       userId,
-      imageUrl,
-      address,
     });
 
     const existingBookshelf = await this.bookshelfRepository.findBookshelf({ where: { id } });
@@ -45,32 +43,22 @@ export class UpdateBookshelfCommandHandlerImpl implements UpdateBookshelfCommand
       });
     }
 
-    if (name) {
-      const bookshelfWithSameName = await this.bookshelfRepository.findBookshelf({
-        where: {
-          userId,
-          name,
-        },
+    const bookshelfWithSameName = await this.bookshelfRepository.findBookshelf({
+      where: {
+        userId,
+        name,
+      },
+    });
+
+    if (bookshelfWithSameName && bookshelfWithSameName.getId() !== id) {
+      throw new OperationNotValidError({
+        reason: 'Bookshelf with this name already exists.',
+        name,
+        userId,
       });
-
-      if (bookshelfWithSameName && bookshelfWithSameName.getId() !== id) {
-        throw new OperationNotValidError({
-          reason: 'Bookshelf with this name already exists.',
-          name,
-          userId,
-        });
-      }
-
-      existingBookshelf.setName({ name });
     }
 
-    if (imageUrl) {
-      existingBookshelf.setImageUrl({ imageUrl });
-    }
-
-    if (address) {
-      existingBookshelf.setAddress({ address });
-    }
+    existingBookshelf.setName({ name });
 
     const updatedBookshelf = await this.bookshelfRepository.saveBookshelf({ bookshelf: existingBookshelf });
 
@@ -79,8 +67,6 @@ export class UpdateBookshelfCommandHandlerImpl implements UpdateBookshelfCommand
       id,
       name,
       userId,
-      imageUrl,
-      address,
     });
 
     return {

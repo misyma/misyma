@@ -66,8 +66,6 @@ describe('BookshelfRepositoryImpl', () => {
       expect(result?.getState()).toEqual({
         name: bookshelf.name,
         userId: bookshelf.userId,
-        address: bookshelf.address,
-        imageUrl: bookshelf.imageUrl,
       });
     });
 
@@ -90,8 +88,6 @@ describe('BookshelfRepositoryImpl', () => {
       expect(result?.getState()).toEqual({
         name: bookshelf.name,
         userId: bookshelf.userId,
-        address: bookshelf.address,
-        imageUrl: bookshelf.imageUrl,
       });
     });
   });
@@ -115,8 +111,6 @@ describe('BookshelfRepositoryImpl', () => {
       expect(result.getState()).toEqual({
         name: bookshelfDraft.getName(),
         userId: bookshelfDraft.getUserId(),
-        address: bookshelfDraft.getAddress(),
-        imageUrl: bookshelfDraft.getImageUrl(),
       });
     });
 
@@ -133,15 +127,7 @@ describe('BookshelfRepositoryImpl', () => {
 
       const newName = Generator.alphaString(20);
 
-      const newImageUrl = Generator.imageUrl();
-
-      const newAddress = Generator.streetAddress();
-
       bookshelf.setName({ name: newName });
-
-      bookshelf.setImageUrl({ imageUrl: newImageUrl });
-
-      bookshelf.setAddress({ address: newAddress });
 
       const result = await repository.saveBookshelf({
         bookshelf,
@@ -153,17 +139,7 @@ describe('BookshelfRepositoryImpl', () => {
 
       expect(result.getName()).toEqual(newName);
 
-      expect(result.getImageUrl()).toEqual(newImageUrl);
-
-      expect(result.getAddress()).toEqual(newAddress);
-
       expect(foundBookshelf?.name).toEqual(newName);
-
-      expect(foundBookshelf?.imageUrl).toEqual(newImageUrl);
-
-      expect(foundBookshelf?.imageUrl).toEqual(newImageUrl);
-
-      expect(foundBookshelf?.address).toEqual(newAddress);
     });
   });
 
