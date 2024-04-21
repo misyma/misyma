@@ -185,7 +185,7 @@ export class BookshelfHttpController implements HttpController {
       authorizationHeader: request.headers['authorization'],
     });
 
-    const { name, userId, address, imageUrl } = request.body;
+    const { name, userId } = request.body;
 
     if (userId !== tokenUserId) {
       throw new ForbiddenAccessError({
@@ -196,8 +196,6 @@ export class BookshelfHttpController implements HttpController {
     const { bookshelf } = await this.createBookshelfCommandHandler.execute({
       name,
       userId,
-      address,
-      imageUrl,
     });
 
     return {
@@ -215,13 +213,11 @@ export class BookshelfHttpController implements HttpController {
 
     const { bookshelfId } = request.pathParams;
 
-    const { name, address, imageUrl } = request.body;
+    const { name } = request.body;
 
     const { bookshelf } = await this.updateBookshelfCommandHandler.execute({
       id: bookshelfId,
       name,
-      address,
-      imageUrl,
       userId,
     });
 
@@ -234,24 +230,10 @@ export class BookshelfHttpController implements HttpController {
   private mapBookshelfToBookshelfDTO(payload: MapBookshelfToBookshelfDTOPayload): BookshelfDTO {
     const { bookshelf } = payload;
 
-    const bookshelfDTO: BookshelfDTO = {
+    return {
       id: bookshelf.getId(),
       name: bookshelf.getName(),
       userId: bookshelf.getUserId(),
     };
-
-    const address = bookshelf.getAddress();
-
-    if (address) {
-      bookshelfDTO.address = address;
-    }
-
-    const imageUrl = bookshelf.getImageUrl();
-
-    if (imageUrl) {
-      bookshelfDTO.imageUrl = imageUrl;
-    }
-
-    return bookshelfDTO;
   }
 }

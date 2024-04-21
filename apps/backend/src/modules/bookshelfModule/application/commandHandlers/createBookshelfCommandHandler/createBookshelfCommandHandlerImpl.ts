@@ -17,14 +17,12 @@ export class CreateBookshelfCommandHandlerImpl implements CreateBookshelfCommand
   ) {}
 
   public async execute(payload: CreateBookshelfPayload): Promise<CreateBookshelfResult> {
-    const { name, userId, address, imageUrl } = payload;
+    const { name, userId } = payload;
 
     this.loggerService.debug({
       message: 'Creating Bookshelf...',
       name,
       userId,
-      address,
-      imageUrl,
     });
 
     const existingUser = await this.userRepository.findUser({
@@ -57,8 +55,6 @@ export class CreateBookshelfCommandHandlerImpl implements CreateBookshelfCommand
       bookshelf: {
         name,
         userId,
-        address,
-        imageUrl,
       },
     });
 
@@ -67,8 +63,6 @@ export class CreateBookshelfCommandHandlerImpl implements CreateBookshelfCommand
       id: bookshelf.getId(),
       name,
       userId,
-      address,
-      imageUrl,
     });
 
     return { bookshelf };

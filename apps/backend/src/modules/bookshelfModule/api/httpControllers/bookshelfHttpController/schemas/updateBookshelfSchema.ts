@@ -15,24 +15,10 @@ export type UpdateBookshelfPathParamsDTO = TypeExtends<
 >;
 
 export const updateBookshelfBodyDTOSchema = Type.Object({
-  name: Type.Optional(
-    Type.String({
-      minLength: 1,
-      maxLength: 64,
-    }),
-  ),
-  imageUrl: Type.Optional(
-    Type.String({
-      minLength: 1,
-      maxLength: 128,
-    }),
-  ),
-  address: Type.Optional(
-    Type.String({
-      minLength: 1,
-      maxLength: 128,
-    }),
-  ),
+  name: Type.String({
+    minLength: 1,
+    maxLength: 64,
+  }),
 });
 
 export type UpdateBookshelfBodyDTO = TypeExtends<
