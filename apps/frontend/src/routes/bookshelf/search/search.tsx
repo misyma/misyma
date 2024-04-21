@@ -3,10 +3,10 @@ import { createRoute } from '@tanstack/react-router';
 import { rootRoute } from '../../root';
 import { RequireAuthComponent } from '../../../core/components/requireAuth/requireAuthComponent';
 import { z } from 'zod';
-import { ChoosePathStep } from './pathChoice/pathChoice';
-import { IsbnPathForm } from './byIbsn/isbnPathForm';
+import { ChoosePathStep } from './components/pathChoice/pathChoice';
+import { IsbnPathForm } from './components/byIbsn/isbnPathForm';
 import { AuthenticatedLayout } from '../../../layouts/authenticated/authenticatedLayout';
-import { ByTitleForm } from './byTitle/byTitle';
+import { ByTitleForm } from './components/byTitle/byTitle';
 
 export const Search = () => {
   const searchParams = searchRoute.useSearch();

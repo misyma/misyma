@@ -3,9 +3,10 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { IoMdCheckmarkCircle } from 'react-icons/io';
 import { MdOutlineCancel } from 'react-icons/md';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../components/ui/form';
-import { Input } from '../../../../components/ui/input';
-import { Button } from '../../../../components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../../components/ui/form';
+import { Input } from '../../../../../components/ui/input';
+import { Button } from '../../../../../components/ui/button';
+import { useNavigate } from '@tanstack/react-router';
 
 const stepOneIsbnSchema = z.object({
   isbn: z
@@ -24,11 +25,20 @@ export const IsbnPathForm = (): JSX.Element => {
     reValidateMode: 'onChange',
   });
 
+  const navigate = useNavigate();
+
   const onFormSubmit = (values: Partial<z.infer<typeof stepOneIsbnSchema>>) => {
     if (!values.isbn) {
       return;
     }
-   };
+
+    navigate({
+      to: '/search/result',
+      search: {
+        isbn: values.isbn,
+      },
+    });
+  };
 
   return (
     <Form {...isbnForm}>

@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 import { findBooks } from './findBooks';
+import { FindBooksResponseBody } from '@common/contracts';
 
 type Payload = {
   isbn?: string;
@@ -13,7 +14,7 @@ export const useFindBooksQuery = ({ isbn, title, ...rest }: Payload) => {
 
   return useQuery({
     queryKey: ['findBooksQuery', isbn, title],
-    queryFn: () =>
+    queryFn: (): Promise<FindBooksResponseBody> =>
       findBooks({
         accessToken: accessToken as string,
         isbn,

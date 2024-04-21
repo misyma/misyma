@@ -8,12 +8,23 @@ type Payload = FindBooksQueryParams & {
 export const findBooks = async (values: Payload) => {
   const { accessToken, isbn, title } = values;
 
+  let queryParams: Record<string, string> = {};
+
+  if (title) {
+    queryParams = {
+      title,
+    };
+  }
+
+  if (isbn) {
+    queryParams = {
+      isbn,
+    };
+  }
+
   const response = await HttpService.get<FindBooksResponseBody>({
     url: `/books`,
-    queryParams: {
-      isbn: isbn as string, //todo
-      title: title as string, //todo
-    },
+    queryParams,
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
