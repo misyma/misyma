@@ -1,17 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../../../components/ui/form';
-import { Input } from '../../../../../../components/ui/input';
-import {
-  BookCreationActionType,
-  BookCreationIsbnState,
-  useBookCreation,
-  useBookCreationDispatch,
-} from '../../context/bookCreationContext/bookCreationContext';
-import { Button } from '../../../../../../components/ui/button';
 import { IoMdCheckmarkCircle } from 'react-icons/io';
 import { MdOutlineCancel } from 'react-icons/md';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../components/ui/form';
+import { Input } from '../../../../components/ui/input';
+import { Button } from '../../../../components/ui/button';
 
 const stepOneIsbnSchema = z.object({
   isbn: z
@@ -22,40 +16,19 @@ const stepOneIsbnSchema = z.object({
 });
 
 export const IsbnPathForm = (): JSX.Element => {
-  const bookCreation = useBookCreation<true>() as BookCreationIsbnState;
-
   const isbnForm = useForm({
     resolver: zodResolver(stepOneIsbnSchema),
     values: {
-      isbn: bookCreation.isbn ?? '',
+      isbn: '',
     },
     reValidateMode: 'onChange'
   });
-
-  const dispatch = useBookCreationDispatch();
 
   const onFormSubmit = (values: Partial<z.infer<typeof stepOneIsbnSchema>>) => {
     if (!values.isbn) {
       return;
     }
-
-    dispatch({
-      type: BookCreationActionType.setIsbn,
-      isbn: values.isbn,
-    });
-
-    dispatch({
-      type: BookCreationActionType.setStep,
-      step: 1,
-    });
   };
-
-  isbnForm.watch((watcher) => {
-    dispatch({
-      type: BookCreationActionType.setIsbn,
-      isbn: watcher?.isbn ?? '',
-    });
-  })
 
   return (
     <Form {...isbnForm}>

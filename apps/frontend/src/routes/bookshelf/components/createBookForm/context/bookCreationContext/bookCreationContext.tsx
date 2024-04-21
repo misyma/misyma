@@ -16,8 +16,6 @@ export enum NonIsbnCreationPathStep {
 }
 
 export enum BookCreationActionType {
-  chooseIsbnPath = 0,
-  chooseNonIsbnPath = 1,
   setIsbn = 2,
   setYearOfIssue = 3,
   nonIsbnStepOneDetails = 4,
@@ -39,14 +37,6 @@ export enum BookCreationActionType {
 type SetStep = {
   type: BookCreationActionType.setStep;
   step: 0 | NonIsbnCreationPathStep;
-};
-
-type ChooseIsbnPathAction = {
-  type: BookCreationActionType.chooseIsbnPath;
-};
-
-type ChooseNonIsbnPath = {
-  type: BookCreationActionType.chooseNonIsbnPath;
 };
 
 type SetIsbnAction = {
@@ -132,8 +122,6 @@ type SetImage = {
 };
 
 export type BookCreationAction =
-  | ChooseIsbnPathAction
-  | ChooseNonIsbnPath
   | SetIsbnAction
   | SetYearOfIssueAction
   | SetNonIsbnStepOneDetails
@@ -204,18 +192,6 @@ function bookCreationReducer<T extends boolean = true>(
   action: BookCreationAction,
 ): BookCreationState<T> {
   switch (action.type) {
-    case BookCreationActionType.chooseIsbnPath:
-      return {
-        ...state,
-        isbnPath: true as T,
-      };
-
-    case BookCreationActionType.chooseNonIsbnPath:
-      return {
-        ...state,
-        isbnPath: false as T,
-      };
-
     case BookCreationActionType.nonIsbnStepOneDetails:
       return {
         ...state,

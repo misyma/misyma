@@ -5,7 +5,7 @@ import {
   NonIsbnCreationPathStep,
   useBookCreation,
   useBookCreationDispatch,
-} from '../../../context/bookCreationContext/bookCreationContext';
+} from '../../context/bookCreationContext/bookCreationContext';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -15,19 +15,19 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../../../../../../../components/ui/form';
-import { Input } from '../../../../../../../components/ui/input';
-import { Button } from '../../../../../../../components/ui/button';
-import { Languages } from '../../../../../../../common/constants/languages';
+} from '../../../../../../components/ui/form';
+import { Input } from '../../../../../../components/ui/input';
+import { Button } from '../../../../../../components/ui/button';
+import { Languages } from '../../../../../../common/constants/languages';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../../../../../../../components/ui/select';
+} from '../../../../../../components/ui/select';
 import { BookFormat as ContractBookFormat } from '@common/contracts';
-import { BookFormat } from '../../../../../../../common/constants/bookFormat';
+import { BookFormat } from '../../../../../../common/constants/bookFormat';
 
 const stepTwoSchema = z.object({
   language: z.enum(Object.keys(Languages) as unknown as [string, ...string[]]),

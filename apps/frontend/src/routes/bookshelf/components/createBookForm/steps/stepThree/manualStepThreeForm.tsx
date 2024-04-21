@@ -5,7 +5,7 @@ import {
   NonIsbnCreationPathStep,
   useBookCreation,
   useBookCreationDispatch,
-} from '../../../context/bookCreationContext/bookCreationContext';
+} from '../../context/bookCreationContext/bookCreationContext';
 import { ReadingStatus as ContractReadingStatus } from '@common/contracts';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -16,12 +16,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../../../../../../../components/ui/form';
-import { Input } from '../../../../../../../components/ui/input';
-import { Button } from '../../../../../../../components/ui/button';
-import { useCreateBookMutation } from '../../../../../../../api/books/mutations/createBookMutation/createBookMutation';
-import { useCreateUserBookMutation } from '../../../../../../../api/books/mutations/createUserBookMutation/createUserBookMutation';
-import { useFindUserQuery } from '../../../../../../../api/user/queries/findUserQuery/findUserQuery';
+} from '../../../../../../components/ui/form';
+import { Input } from '../../../../../../components/ui/input';
+import { Button } from '../../../../../../components/ui/button';
+import { useCreateBookMutation } from '../../../../../../api/books/mutations/createBookMutation/createBookMutation';
+import { useCreateUserBookMutation } from '../../../../../../api/books/mutations/createUserBookMutation/createUserBookMutation';
+import { useFindUserQuery } from '../../../../../../api/user/queries/findUserQuery/findUserQuery';
 import { useNavigate } from '@tanstack/react-router';
 import {
   Select,
@@ -29,11 +29,11 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../../../../../../../components/ui/select';
-import { ReadingStatus } from '../../../../../../../common/constants/readingStatus';
-import { useToast } from '../../../../../../../components/ui/use-toast';
+} from '../../../../../../components/ui/select';
+import { ReadingStatus } from '../../../../../../common/constants/readingStatus';
+import { useToast } from '../../../../../../components/ui/use-toast';
 import { useState } from 'react';
-import { BookApiError } from '../../../../../../../api/books/errors/bookApiError';
+import { BookApiError } from '../../../../../../api/books/errors/bookApiError';
 
 const stepThreeFormSchema = z.object({
   status: z.nativeEnum(ContractReadingStatus),

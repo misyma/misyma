@@ -16,23 +16,23 @@ export const CreateBook: FC = () => {
   const { id } = createBookRoute.useParams();
 
   return (
-    <BookCreationProvider>
-      <AuthenticatedLayout>
-        <div className="flex items-center justify-center align-middle">
-          <CreateBookForm bookshelfId={id}></CreateBookForm>
-        </div>
-      </AuthenticatedLayout>
-    </BookCreationProvider>
+    <AuthenticatedLayout>
+      <div className="flex items-center justify-center align-middle">
+        <CreateBookForm bookshelfId={id}></CreateBookForm>
+      </div>
+    </AuthenticatedLayout>
   );
 };
 
 export const createBookRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/create-book/$id',
+  path: '/manually-create-book/$id',
   component: () => {
     return (
       <RequireAuthComponent>
-        <CreateBook />
+        <BookCreationProvider>
+          <CreateBook />
+        </BookCreationProvider>
       </RequireAuthComponent>
     );
   },

@@ -28,20 +28,25 @@ export const Bookshelf: FC = () => {
   return (
     <AuthenticatedLayout>
       <div className="p-8 flex flex-col justify-center">
-        <div className='flex justify-center'>
+        <div className="flex justify-center">
           <Button
             onClick={() => {
               navigate({
-                to: `/create-book/${id}`,
+                to: `/search`,
+                search: {
+                  type: 'isbn',
+                  next: 0,
+                  bookshelfId: id,
+                },
               });
             }}
           >
             Dodaj książkę
           </Button>
         </div>
-        <div className='flex flex-col justify-center gap-8 pt-4 bg-slate-'>
+        <div className="flex flex-col justify-center gap-8 pt-4 bg-slate-">
           {data?.data.map((userBook) => (
-            <div className='flex flex-col justify-center align-middle items-center border-primary border gap-4'>
+            <div className="flex flex-col justify-center align-middle items-center border-primary border gap-4">
               <p>Tytuł: {userBook.book.title}</p>
               <h1>Format: {userBook.book.format}</h1>
               <h2>Język: {userBook.book.language}</h2>
