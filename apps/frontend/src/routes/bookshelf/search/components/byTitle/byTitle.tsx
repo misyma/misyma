@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../../components/ui/form';
 import { Input } from '../../../../../components/ui/input';
 import { Button } from '../../../../../components/ui/button';
+import { useNavigate } from '@tanstack/react-router';
 
 const stepOneIsbnSchema = z.object({
   title: z
@@ -15,7 +16,11 @@ const stepOneIsbnSchema = z.object({
     }),
 });
 
-export const ByTitleForm = (): JSX.Element => {
+interface Props {
+  bookshelfId: string;
+}
+
+export const ByTitleForm = ({ bookshelfId }: Props): JSX.Element => {
   const byTitleForm = useForm({
     resolver: zodResolver(stepOneIsbnSchema),
     values: {
@@ -24,10 +29,20 @@ export const ByTitleForm = (): JSX.Element => {
     reValidateMode: 'onChange',
   });
 
+  const navigate = useNavigate();
+
   const onFormSubmit = (values: Partial<z.infer<typeof stepOneIsbnSchema>>) => {
     if (!values.title) {
       return;
     }
+
+    navigate({
+      to: '/search/result',
+      search: {
+        title: values.title,
+        bookshelfId,
+      },
+    });
   };
 
   return (

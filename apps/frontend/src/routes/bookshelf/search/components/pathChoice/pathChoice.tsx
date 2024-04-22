@@ -6,9 +6,10 @@ import { Label } from '../../../../../components/ui/label';
 
 interface Props {
   initialValue: 'isbn' | 'title';
+  bookshelfId: string;
 }
 
-export const ChoosePathStep: FC<Props> = ({ initialValue = 'isbn' }: Props) => {
+export const ChoosePathStep: FC<Props> = ({ initialValue = 'isbn', bookshelfId }: Props) => {
   const [chosenSearch, setChosenSearch] = useState<'isbn' | 'title'>(initialValue);
 
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ export const ChoosePathStep: FC<Props> = ({ initialValue = 'isbn' }: Props) => {
       search: {
         type: chosenSearch,
         next: 1,
+        bookshelfId,
       },
     });
   };

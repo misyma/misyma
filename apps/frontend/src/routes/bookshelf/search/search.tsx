@@ -13,14 +13,14 @@ export const Search = () => {
 
   const render = () => {
     if (searchParams.next === 0) {
-      return <ChoosePathStep initialValue={searchParams.type} />;
+      return <ChoosePathStep bookshelfId={searchParams.bookshelfId} initialValue={searchParams.type} />;
     }
 
     if (searchParams.type === 'isbn') {
-      return <IsbnPathForm />;
+      return <IsbnPathForm bookshelfId={searchParams.bookshelfId} />;
     }
 
-    return <ByTitleForm />; //title :)
+    return <ByTitleForm bookshelfId={searchParams.bookshelfId} />;
   };
 
   return (
@@ -42,7 +42,7 @@ export const Search = () => {
 const searchSchema = z.object({
   type: z.enum(['isbn', 'title']).catch('isbn'),
   next: z.number().int().min(0).max(1).catch(0),
-  bookshelfId: z.string().uuid().catch(''), // todo
+  bookshelfId: z.string().uuid().catch(''),
 });
 
 export const searchRoute = createRoute({

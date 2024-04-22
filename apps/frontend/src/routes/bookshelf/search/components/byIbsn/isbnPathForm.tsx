@@ -16,7 +16,11 @@ const stepOneIsbnSchema = z.object({
     .regex(/^(?=(?:[^0-9]*[0-9]){10}(?:(?:[^0-9]*[0-9]){3})?$)[\d-]+$/, 'Niewłaściwy format.'),
 });
 
-export const IsbnPathForm = (): JSX.Element => {
+interface Props {
+  bookshelfId: string;
+}
+
+export const IsbnPathForm = ({ bookshelfId }: Props): JSX.Element => {
   const isbnForm = useForm({
     resolver: zodResolver(stepOneIsbnSchema),
     values: {
@@ -36,6 +40,7 @@ export const IsbnPathForm = (): JSX.Element => {
       to: '/search/result',
       search: {
         isbn: values.isbn,
+        bookshelfId,
       },
     });
   };

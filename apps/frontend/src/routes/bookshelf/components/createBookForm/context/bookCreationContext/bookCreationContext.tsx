@@ -36,7 +36,7 @@ export enum BookCreationActionType {
 
 type SetStep = {
   type: BookCreationActionType.setStep;
-  step: 0 | NonIsbnCreationPathStep;
+  step: NonIsbnCreationPathStep;
 };
 
 type SetIsbnAction = {
@@ -139,15 +139,9 @@ export type BookCreationAction =
   | SetImage
   | SetStep;
 
-export interface BookCreationIsbnState<T extends boolean = true> {
-  isbnPath: T;
-  step: 0 | 1;
-  isbn?: string;
-}
-
 export interface BookCreationNonIsbnState<T extends boolean = false> {
   isbnPath: T;
-  step: 0 | NonIsbnCreationPathStep;
+  step: NonIsbnCreationPathStep;
   yearOfIssue?: number;
   stepOneDetails?: {
     title: string;
@@ -167,7 +161,7 @@ export interface BookCreationNonIsbnState<T extends boolean = false> {
   };
 }
 
-type BookCreationState<T extends boolean> = BookCreationIsbnState<T> | BookCreationNonIsbnState<T>;
+type BookCreationState<T extends boolean> = BookCreationNonIsbnState<T>;
 
 export function BookCreationProvider({ children }: { children: ReactNode }): JSX.Element {
   const [bookCreation, dispatch] = useReducer(bookCreationReducer, initialState);
@@ -325,9 +319,7 @@ function bookCreationReducer<T extends boolean = true>(
     case BookCreationActionType.setIsbn:
       return {
         ...state,
-        step: 0,
         isbnPath: true as T,
-        isbn: action.isbn,
       };
 
     case BookCreationActionType.setYearOfIssue:
@@ -345,8 +337,7 @@ function bookCreationReducer<T extends boolean = true>(
   }
 }
 
-const initialState: BookCreationState<true> = {
-  isbn: undefined,
-  step: 0,
-  isbnPath: true,
+const initialState: BookCreationState<false> = {
+  step: NonIsbnCreationPathStep.inputFirstDetails,
+  isbnPath: false,
 };
