@@ -3,7 +3,7 @@ import { createRoute, useNavigate } from '@tanstack/react-router';
 import { rootRoute } from '../../../../root';
 import { RequireAuthComponent } from '../../../../../core/components/requireAuth/requireAuthComponent';
 import { z } from 'zod';
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { useFindBooksQuery } from '../../../../../api/books/queries/findBooks/findBooksQuery';
 import { AuthenticatedLayout } from '../../../../../layouts/authenticated/authenticatedLayout';
 import { Button } from '../../../../../components/ui/button';
@@ -12,6 +12,13 @@ import { useFindUserQuery } from '../../../../../api/user/queries/findUserQuery/
 import { ReadingStatus } from '@common/contracts';
 import { BookApiError } from '../../../../../api/books/errors/bookApiError';
 import { useToast } from '../../../../../components/ui/use-toast';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from '../../../../../components/ui/pagination';
 
 export const SearchResultPage: FC = () => {
   const searchParams = searchResultRoute.useSearch();
@@ -97,6 +104,12 @@ export const SearchResultPage: FC = () => {
     }
   };
 
+  const booksCount = useMemo(() => {
+    return foundBooks?.data.length ?? 0;
+  }, [foundBooks]);
+
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
   const render = () => {
     if (foundBooks?.data.length === 0) {
       return (
@@ -135,18 +148,63 @@ export const SearchResultPage: FC = () => {
     }
 
     return (
-      <div className="flex flex-col-reverse sm:flex-row justify-center items-center gap-8 sm:gap-16 px-4">
-        <div className="flex flex-col gap-12 items-start relative">
-          <div>
-            <p className="text-xl sm:text-3xl">{foundBooks?.data[0].title}</p>
-            <p>{foundBooks?.data[0]?.authors[0]?.name ?? ''}</p>
+      <div className="items-center justify-center flex-col-reverse sm:flex-row gap-4 sm:gap-16 px-16
+      grid grid-rows-2 grid-cols-1 sm:grid-cols-2 sm:grid-rows-1
+      ">
+        <div className="flex flex-col gap-12 w-full">
+          {booksCount > 1 ? (
+            <div className="w-full flex items-center justify-center text-primary font-semibold text-lg sm:text-2xl">
+              {currentPage} z {booksCount}
+            </div>
+          ) : (
+            <></>
+          )}
+          <div className="flex w-full">
+            <Pagination className='w-full text-xl sm:text-3xl justify-normal'>
+              <PaginationContent className='w-full'>
+                <PaginationItem>
+                  {booksCount > 1 ? (
+                    <PaginationPrevious
+                      className={currentPage === 1 ? 'pointer-events-none hover:text-none hover:bg-[unset]' : ''}
+                      hasPrevious={currentPage !== 1}
+                      onClick={() => {
+                        if (currentPage > 1) {
+                          setCurrentPage(currentPage - 1);
+                        }
+                      }}
+                    ></PaginationPrevious>
+                  ) : (
+                    <></>
+                  )}
+                </PaginationItem>
+                <span className='text-ellipsis w-full line-clamp-2'>{foundBooks?.data[currentPage - 1].title}</span>
+                <PaginationItem>
+                  {booksCount > 1 ? (
+                    <PaginationNext
+                      className={
+                        currentPage === booksCount ? 'pointer-events-none hover:text-none hover:bg-[unset]' : ''
+                      }
+                      hasNext={currentPage !== booksCount}
+                      onClick={() => {
+                        if (currentPage < booksCount) {
+                          setCurrentPage(currentPage + 1);
+                        }
+                      }}
+                    ></PaginationNext>
+                  ) : (
+                    <></>
+                  )}
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+            <p>{foundBooks?.data[currentPage - 1]?.authors[0]?.name ?? ''}</p>
           </div>
-          <div className="border border-gray-400 sm:min-w-[28rem] min-w-[16rem] absolute translate-y-14 sm:translate-y-16 translate-x-[-1rem] sm:translate-x-[-2rem] px-4"></div>
-          <div className="flex flex-col gap-2">
-            <p>Wydawnictwo: {foundBooks?.data[0].publisher}</p>
-            <p>Tłumacz: {foundBooks?.data[0].translator}</p>
-            <p>Format: {foundBooks?.data[0].format}</p>
-            <p>Liczba stron: {foundBooks?.data[0].pages}</p>
+          <div className="border border-gray-400 w-full translate-x-[-1rem] sm:translate-x-[-2rem] px-4"></div>
+          <div className="flex flex-col gap-2 w-full">
+            <p>Wydawnictwo: {foundBooks?.data[currentPage - 1].publisher}</p>
+            <p>Tłumacz: {foundBooks?.data[currentPage - 1].translator}</p>
+            <p>Format: {foundBooks?.data[currentPage - 1].format}</p>
+            <p>Liczba stron: {foundBooks?.data[currentPage - 1].pages}</p>
           </div>
           <div className="flex flex-col gap-4">
             <Button
@@ -163,24 +221,26 @@ export const SearchResultPage: FC = () => {
               >
                 wprowadź inne dane
               </span>
-              <h1 className="text-3xl font-bold">POCZEBUJEMY INPUTU POD STATUS</h1>
             </p>
+            {/* <span className="text-3xl font-bold">POCZEBUJEMY INPUTU POD STATUS</span> */}
           </div>
         </div>
-        <div className="flex max-w-[250px] w-full sm:max-w-[500px] sm:min-h-[550px] justify-center items-center">
+        <div className="flex max-w-[500px] sm:min-h-[550px] items-center">
           <img
             src="/books.png"
             alt="Books image"
-            className="object-contain"
+            className="object-contain w-full h-full"
           />
         </div>
       </div>
     );
   };
-
+ 
   return (
     <AuthenticatedLayout>
-      <div className="flex justify-center items-center">{render()}</div>
+      <div className='flex items-center justify-center'>
+        {render()}
+      </div>
     </AuthenticatedLayout>
   );
 };

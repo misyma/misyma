@@ -10,7 +10,7 @@ export const AuthenticatedLayout: FC<Props> = ({ children }) => {
   return (
     <>
       <Navbar />
-      <div className='pt-24 sm:pt-32'>
+      <div className='pt-24 sm:pt-32 max-w-screen-2xl mx-auto'>
         {children}
       </div>
       <Toaster />
