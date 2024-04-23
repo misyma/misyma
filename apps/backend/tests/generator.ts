@@ -98,7 +98,7 @@ export class Generator {
   }
 
   public static language(): Language {
-    return faker.helpers.arrayElement([Language.en, Language.pl, Language.de, Language.fr]);
+    return faker.helpers.arrayElement([Language.English, Language.Polish, Language.German, Language.French]);
   }
 
   public static bookFormat(): BookFormat {
