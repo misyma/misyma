@@ -1,0 +1,27 @@
+import { useSelector } from 'react-redux';
+import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
+import { useQuery, UseQueryOptions } from '@tanstack/react-query';
+import { findBooks } from './findBooks';
+import { FindBooksResponseBody } from '@common/contracts';
+import { ApiError } from '../../../../common/errors/apiError';
+
+type Payload = {
+  isbn?: string;
+  title?: string;
+} & Partial<Omit<UseQueryOptions<FindBooksResponseBody, ApiError>, 'queryFn'>>;
+
+export const useFindBooksQuery = ({ isbn, title, ...rest }: Payload) => {
+  const accessToken = useSelector(userStateSelectors.selectAccessToken);
+
+  return useQuery({
+    queryKey: ['findBooksQuery', isbn, title],
+    queryFn: () =>
+      findBooks({
+        accessToken: accessToken as string,
+        isbn,
+        title,
+      }),
+    enabled: !!accessToken,
+    ...rest,
+  });
+};

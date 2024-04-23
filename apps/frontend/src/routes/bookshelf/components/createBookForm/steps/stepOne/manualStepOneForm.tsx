@@ -5,7 +5,7 @@ import {
   NonIsbnCreationPathStep,
   useBookCreation,
   useBookCreationDispatch,
-} from '../../../context/bookCreationContext/bookCreationContext';
+} from '../../context/bookCreationContext/bookCreationContext';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -15,9 +15,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../../../../../../../components/ui/form';
-import { Input } from '../../../../../../../components/ui/input';
-import { Button } from '../../../../../../../components/ui/button';
+} from '../../../../../../components/ui/form';
+import { Input } from '../../../../../../components/ui/input';
+import { Button } from '../../../../../../components/ui/button';
 
 const stepOneSchema = z.object({
   title: z.string().min(1).max(64),
@@ -161,17 +161,6 @@ export const ManualStepOneForm = (): JSX.Element => {
           )}
         />
         <div className="flex flex-row w-full justify-between gap-4">
-          <Button
-            className="border border-primary w-full"
-            onClick={() => {
-              dispatch({ 
-                type: BookCreationActionType.setStep,
-                step: 0,
-              });
-            }}
-          >
-            Wróć
-          </Button> 
           <Button
             className="border border-primary w-full"
             disabled={!form.formState.isValid}

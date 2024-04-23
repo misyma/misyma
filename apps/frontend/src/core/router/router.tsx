@@ -10,6 +10,8 @@ import { bookRoute } from '../../routes/myBooks/book';
 import { shelvesRoute } from '../../routes/shelves/shelves';
 import { bookshelfRoute } from '../../routes/bookshelf/bookshelf';
 import { createBookRoute } from '../../routes/bookshelf/createBook/createBook';
+import { searchRoute } from '../../routes/bookshelf/search/search';
+import { searchResultRoute } from '../../routes/bookshelf/search/routes/result/searchResult';
 
 export const routeTree = rootRoute.addChildren([
   landingRoute,
@@ -23,4 +25,6 @@ export const routeTree = rootRoute.addChildren([
   bookRoute,
   shelvesRoute,
   bookshelfRoute,
+  searchRoute,
+  searchResultRoute
 ]);

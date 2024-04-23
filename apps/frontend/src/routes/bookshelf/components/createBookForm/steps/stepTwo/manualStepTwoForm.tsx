@@ -5,32 +5,20 @@ import {
   NonIsbnCreationPathStep,
   useBookCreation,
   useBookCreationDispatch,
-} from '../../../context/bookCreationContext/bookCreationContext';
+} from '../../context/bookCreationContext/bookCreationContext';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '../../../../../../../components/ui/form';
-import { Input } from '../../../../../../../components/ui/input';
-import { Button } from '../../../../../../../components/ui/button';
-import { Languages } from '../../../../../../../common/constants/languages';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../../../../../../../components/ui/select';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../../../components/ui/form';
+import { Input } from '../../../../../../components/ui/input';
+import { Button } from '../../../../../../components/ui/button';
+import { Languages } from '../../../../../../common/constants/languages';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../../../../components/ui/select';
 import { BookFormat as ContractBookFormat } from '@common/contracts';
-import { BookFormat } from '../../../../../../../common/constants/bookFormat';
+import { BookFormat } from '../../../../../../common/constants/bookFormat';
+import { Language } from '@common/contracts';
 
 const stepTwoSchema = z.object({
-  language: z.enum(Object.keys(Languages) as unknown as [string, ...string[]]),
+  language: z.enum(Object.values(Language) as unknown as [string, ...string[]]),
   translator: z
     .string({
       required_error: 'Tłumacz jest wymagany.',
@@ -39,7 +27,7 @@ const stepTwoSchema = z.object({
       message: 'Tłumacz jest zbyt krótki.',
     })
     .max(64, {
-      message: 'Tłumacz może mieć maksymalnei 64 znaki.',
+      message: 'Tłumacz może mieć maksymalnie 64 znaki.',
     }),
   form: z.nativeEnum(ContractBookFormat),
   pagesCount: z
@@ -62,7 +50,6 @@ export const ManualStepTwoForm = (): JSX.Element => {
   const bookCreation = useBookCreation<false>() as BookCreationNonIsbnState;
 
   const dispatch = useBookCreationDispatch();
-
 
   const form = useForm({
     resolver: zodResolver(stepTwoSchema),
@@ -106,14 +93,13 @@ export const ManualStepTwoForm = (): JSX.Element => {
               >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue
-                      placeholder={
-                        <span className='text-muted-foreground'>Język</span>
-                      }
-                    />
+                    <SelectValue placeholder={<span className="text-muted-foreground">Język</span>} />
                     <SelectContent>
                       {Object.entries(Languages).map(([key, language]) => (
-                        <SelectItem value={key}>{language}</SelectItem>
+                        // todo: potentially fix :)
+                        // eslint-disable-next-line
+                        // @ts-ignore
+                        <SelectItem value={Language[key]}>{language}</SelectItem>
                       ))}
                     </SelectContent>
                   </SelectTrigger>
@@ -133,8 +119,8 @@ export const ManualStepTwoForm = (): JSX.Element => {
                 onValueChange={(val) => {
                   dispatch({
                     type: BookCreationActionType.setFormat,
-                    format: val as ContractBookFormat
-                  })
+                    format: val as ContractBookFormat,
+                  });
 
                   field.onChange(val);
                 }}
@@ -142,11 +128,7 @@ export const ManualStepTwoForm = (): JSX.Element => {
               >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue
-                      placeholder={
-                        <span className='text-muted-foreground'>Format</span>
-                      }
-                    />
+                    <SelectValue placeholder={<span className="text-muted-foreground">Format</span>} />
                     <SelectContent>
                       {Object.entries(BookFormat).map(([key, language]) => (
                         <SelectItem value={key}>{language}</SelectItem>
