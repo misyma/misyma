@@ -8,6 +8,7 @@ import { useFindBooksByBookshelfIdQuery } from '../../api/books/queries/findBook
 import { AuthenticatedLayout } from '../../layouts/authenticated/authenticatedLayout';
 import { Button } from '../../components/ui/button';
 import { useFindUserQuery } from '../../api/user/queries/findUserQuery/findUserQuery';
+import { useFindBookshelfByIdQuery } from '../../api/bookshelf/queries/findBookshelfByIdQuery/findBookshelfByIdQuery';
 
 const bookshelfSearchSchema = z.object({
   id: z.string().uuid().catch(''),
@@ -18,17 +19,27 @@ export const Bookshelf: FC = () => {
 
   const { data: user } = useFindUserQuery();
 
-  const { data } = useFindBooksByBookshelfIdQuery({
+  const { data: bookshelfBooksResponse } = useFindBooksByBookshelfIdQuery({
     bookshelfId: id,
     userId: user?.id as string,
   });
+
+  const { data: bookshelfResponse } = useFindBookshelfByIdQuery(id);
 
   const navigate = useNavigate();
 
   return (
     <AuthenticatedLayout>
       <div className="p-8 flex flex-col justify-center">
-        <div className="flex justify-center">
+        <div className="flex justify-around w-full">
+          <div>
+            <p className='text-xl sm:text-3xl'>
+              {bookshelfResponse?.name ?? ' '}
+            </p>
+            <p>
+              {'X'} książek
+            </p>
+          </div>
           <Button
             onClick={() => {
               navigate({
@@ -45,7 +56,7 @@ export const Bookshelf: FC = () => {
           </Button>
         </div>
         <div className="flex flex-col justify-center gap-8 pt-4 bg-slate-">
-          {data?.data.map((userBook) => (
+          {bookshelfBooksResponse?.data.map((userBook) => (
             <div className="flex flex-col justify-center align-middle items-center border-primary border gap-4">
               <p>Tytuł: {userBook.book.title}</p>
               <h1>Format: {userBook.book.format}</h1>
