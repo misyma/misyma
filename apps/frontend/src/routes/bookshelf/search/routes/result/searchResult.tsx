@@ -12,13 +12,7 @@ import { useFindUserQuery } from '../../../../../api/user/queries/findUserQuery/
 import { ReadingStatus } from '@common/contracts';
 import { BookApiError } from '../../../../../api/books/errors/bookApiError';
 import { useToast } from '../../../../../components/ui/use-toast';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationNext,
-  PaginationPrevious,
-} from '../../../../../components/ui/pagination';
+import { Paginator } from '../../../../../components/paginator/paginator';
 
 export const SearchResultPage: FC = () => {
   const searchParams = searchResultRoute.useSearch();
@@ -148,59 +142,31 @@ export const SearchResultPage: FC = () => {
     }
 
     return (
-      <div className="items-center justify-center flex-col-reverse sm:flex-row gap-4 sm:gap-16 px-16
-      grid grid-rows-2 grid-cols-1 sm:grid-cols-2 sm:grid-rows-1
-      ">
-        <div className="flex flex-col gap-12 w-full">
+      <div className="relative  justify-center items-center flex-col-reverse md:flex-row w-full flex h-full gap-8">
+        <div className="w-full flex flex-col gap-8 px-8 sm:pr-0 sm:pl-8">
           {booksCount > 1 ? (
-            <div className="w-full flex items-center justify-center text-primary font-semibold text-lg sm:text-2xl">
-              {currentPage} z {booksCount}
+            <div className="full flex justify-center">
+              <span className="font-bold text-2xl text-primary">
+                {currentPage} z {booksCount}
+              </span>
             </div>
           ) : (
             <></>
           )}
           <div className="flex w-full">
-            <Pagination className='w-full text-xl sm:text-3xl justify-normal'>
-              <PaginationContent className='w-full'>
-                <PaginationItem>
-                  {booksCount > 1 ? (
-                    <PaginationPrevious
-                      className={currentPage === 1 ? 'pointer-events-none hover:text-none hover:bg-[unset]' : ''}
-                      hasPrevious={currentPage !== 1}
-                      onClick={() => {
-                        if (currentPage > 1) {
-                          setCurrentPage(currentPage - 1);
-                        }
-                      }}
-                    ></PaginationPrevious>
-                  ) : (
-                    <></>
-                  )}
-                </PaginationItem>
-                <span className='text-ellipsis w-full line-clamp-2'>{foundBooks?.data[currentPage - 1].title}</span>
-                <PaginationItem>
-                  {booksCount > 1 ? (
-                    <PaginationNext
-                      className={
-                        currentPage === booksCount ? 'pointer-events-none hover:text-none hover:bg-[unset]' : ''
-                      }
-                      hasNext={currentPage !== booksCount}
-                      onClick={() => {
-                        if (currentPage < booksCount) {
-                          setCurrentPage(currentPage + 1);
-                        }
-                      }}
-                    ></PaginationNext>
-                  ) : (
-                    <></>
-                  )}
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
+            <Paginator
+              rootClassName="w-full flex items-center h-16 text-xl sm:text-3xl justify-normal"
+              onPageChange={(page) => setCurrentPage(page)}
+              pagesCount={booksCount}
+              pageNumberSlot={
+                <span className='text-center text-ellipsis w-full line-clamp-2'>{foundBooks?.data[currentPage - 1].title}</span>
+              }
+              contentClassName='w-full'
+            />
             <p>{foundBooks?.data[currentPage - 1]?.authors[0]?.name ?? ''}</p>
           </div>
-          <div className="border border-gray-400 w-full translate-x-[-1rem] sm:translate-x-[-2rem] px-4"></div>
-          <div className="flex flex-col gap-2 w-full">
+          <div className="border border-gray-400 w-full lg:translate-x-[-2rem] px-4"></div>
+          <div className="flex flex-col gap-4 w-full">
             <p>Wydawnictwo: {foundBooks?.data[currentPage - 1].publisher}</p>
             <p>Tłumacz: {foundBooks?.data[currentPage - 1].translator}</p>
             <p>Format: {foundBooks?.data[currentPage - 1].format}</p>
@@ -225,7 +191,7 @@ export const SearchResultPage: FC = () => {
             {/* <span className="text-3xl font-bold">POCZEBUJEMY INPUTU POD STATUS</span> */}
           </div>
         </div>
-        <div className="flex max-w-[500px] sm:min-h-[550px] items-center">
+        <div className="relative w-full flex justify-center items-center h-[250px] md:h-[300px]">
           <img
             src="/books.png"
             alt="Books image"
@@ -235,10 +201,10 @@ export const SearchResultPage: FC = () => {
       </div>
     );
   };
- 
+
   return (
     <AuthenticatedLayout>
-      <div className='flex items-center justify-center'>
+      <div className="justify-center max-w-screen-xl mx-auto items-center w-full flex h-full min-h-[700px]">
         {render()}
       </div>
     </AuthenticatedLayout>
