@@ -18,6 +18,8 @@ export const findBooksQueryParamsDTOSchema = Type.Object({
       maxLength: 64,
     }),
   ),
+  page: Type.Optional(Type.Integer({ minimum: 1 })),
+  pageSize: Type.Optional(Type.Integer({ minimum: 1 })),
 });
 
 export type FindBooksQueryParamsDTO = TypeExtends<
@@ -27,6 +29,11 @@ export type FindBooksQueryParamsDTO = TypeExtends<
 
 export const findBooksResponseBodyDTOSchema = Type.Object({
   data: Type.Array(bookDTOSchema),
+  metadata: Type.Object({
+    page: Type.Integer({ minimum: 1 }),
+    pageSize: Type.Integer({ minimum: 1 }),
+    total: Type.Integer({ minimum: 0 }),
+  }),
 });
 
 export type FindBooksResponseBodyDTO = TypeExtends<

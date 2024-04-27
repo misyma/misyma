@@ -4,15 +4,34 @@ import {
   type FindAuthorsByIdsQueryHandler,
 } from './findAuthorsByIdsQueryHandler.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
-import { type AuthorRepository } from '../../../domain/repositories/authorRepository/authorRepository.js';
+import {
+  type FindAuthorsPayload,
+  type AuthorRepository,
+} from '../../../domain/repositories/authorRepository/authorRepository.js';
 
 export class FindAuthorsByIdsQueryHandlerImpl implements FindAuthorsByIdsQueryHandler {
   public constructor(private readonly authorRepository: AuthorRepository) {}
 
   public async execute(payload: ExecutePayload): Promise<ExecuteResult> {
-    const { authorIds } = payload;
+    const { authorIds, isApproved, page, pageSize } = payload;
 
-    const authors = await this.authorRepository.findAuthors({ ids: authorIds });
+    let findAuthorsPayload: FindAuthorsPayload = {
+      ids: authorIds,
+      page,
+      pageSize,
+    };
+
+    if (isApproved !== undefined) {
+      findAuthorsPayload = {
+        ...findAuthorsPayload,
+        isApproved,
+      };
+    }
+
+    const [authors, total] = await Promise.all([
+      this.authorRepository.findAuthors(findAuthorsPayload),
+      this.authorRepository.countAuthors(findAuthorsPayload),
+    ]);
 
     if (authorIds.length !== authors.length) {
       const missingIds = authorIds.filter((authorId) => !authors.some((author) => author.getId() === authorId));
@@ -23,6 +42,9 @@ export class FindAuthorsByIdsQueryHandlerImpl implements FindAuthorsByIdsQueryHa
       });
     }
 
-    return { authors };
+    return {
+      authors,
+      total,
+    };
   }
 }

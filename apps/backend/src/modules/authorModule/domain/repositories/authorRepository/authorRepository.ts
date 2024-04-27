@@ -14,6 +14,8 @@ export interface FindAuthorsPayload {
   readonly ids?: string[];
   readonly name?: string;
   readonly isApproved?: boolean;
+  readonly page: number;
+  readonly pageSize: number;
 }
 
 export interface DeleteAuthorPayload {
@@ -24,5 +26,6 @@ export interface AuthorRepository {
   createAuthor(input: CreateAuthorPayload): Promise<Author>;
   findAuthor(input: FindAuthorPayload): Promise<Author | null>;
   findAuthors(payload: FindAuthorsPayload): Promise<Author[]>;
+  countAuthors(payload: FindAuthorsPayload): Promise<number>;
   deleteAuthor(input: DeleteAuthorPayload): Promise<void>;
 }

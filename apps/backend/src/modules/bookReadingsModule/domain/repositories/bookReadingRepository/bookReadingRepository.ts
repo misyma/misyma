@@ -6,6 +6,8 @@ export interface FindBookReadingPayload {
 
 export interface FindBookReadingsPayload {
   readonly userBookId: string;
+  readonly page: number;
+  readonly pageSize: number;
 }
 
 export interface SavePayload {
@@ -19,6 +21,7 @@ export interface DeletePayload {
 export interface BookReadingRepository {
   findBookReading(payload: FindBookReadingPayload): Promise<BookReading | null>;
   findBookReadings(payload: FindBookReadingsPayload): Promise<BookReading[]>;
+  countBookReadings(payload: FindBookReadingsPayload): Promise<number>;
   saveBookReading(payload: SavePayload): Promise<BookReading>;
   deleteBookReading(payload: DeletePayload): Promise<void>;
 }

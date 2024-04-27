@@ -24,6 +24,7 @@ import {
   findBookReadingsResponseBodyDTOSchema,
   findBookReadingsPathParamsDTOSchema,
   type FindBookReadingsPathParamsDTO,
+  type FindBookReadingsQueryParamsDTO,
 } from './schemas/findBookReadingsSchema.js';
 import {
   updateBookReadingBodyDTOSchema,
@@ -161,13 +162,15 @@ export class BookReadingHttpController implements HttpController {
   }
 
   private async getBookReadings(
-    request: HttpRequest<null, null, FindBookReadingsPathParamsDTO>,
+    request: HttpRequest<null, FindBookReadingsQueryParamsDTO, FindBookReadingsPathParamsDTO>,
   ): Promise<HttpOkResponse<FindBookReadingsResponseBodyDTO>> {
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
     const { userBookId } = request.pathParams;
+
+    const { page = 1, pageSize = 10 } = request.queryParams;
 
     // TODO: authorization, consider adding userId to book for easy access to book owner
 
@@ -177,12 +180,21 @@ export class BookReadingHttpController implements HttpController {
     //   });
     // }
 
-    const { bookReadings } = await this.findBookReadingsByBookIdQueryHandler.execute({ userBookId });
+    const { bookReadings, total } = await this.findBookReadingsByBookIdQueryHandler.execute({
+      userBookId,
+      page,
+      pageSize,
+    });
 
     return {
       statusCode: HttpStatusCode.ok,
       body: {
         data: bookReadings.map((bookReading) => this.mapBookReadingToBookReadingDTO({ bookReading })),
+        metadata: {
+          page,
+          pageSize,
+          total,
+        },
       },
     };
   }

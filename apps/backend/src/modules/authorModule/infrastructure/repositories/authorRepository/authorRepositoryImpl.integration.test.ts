@@ -126,7 +126,11 @@ describe('AuthorRepositoryImpl', () => {
     it('returns an empty array - when no Authors were found', async () => {
       const nonExistentAuthorIds = Array.from({ length: Generator.number(1, 20) }).map(() => Generator.uuid());
 
-      const authors = await authorRepository.findAuthors({ ids: nonExistentAuthorIds });
+      const authors = await authorRepository.findAuthors({
+        ids: nonExistentAuthorIds,
+        page: 1,
+        pageSize: 10,
+      });
 
       expect(authors).toEqual([]);
     });
@@ -140,6 +144,8 @@ describe('AuthorRepositoryImpl', () => {
 
       const foundAuthors = await authorRepository.findAuthors({
         ids: [author1.id, author2.id, author3.id],
+        page: 1,
+        pageSize: 10,
       });
 
       expect(foundAuthors).toHaveLength(3);
@@ -174,6 +180,8 @@ describe('AuthorRepositoryImpl', () => {
 
       const foundAuthors = await authorRepository.findAuthors({
         name: partialName,
+        page: 1,
+        pageSize: 10,
       });
 
       expect(foundAuthors).toHaveLength(0);
@@ -200,14 +208,20 @@ describe('AuthorRepositoryImpl', () => {
 
       const foundAuthors1 = await authorRepository.findAuthors({
         name: 'tol',
+        page: 1,
+        pageSize: 10,
       });
 
       const foundAuthors2 = await authorRepository.findAuthors({
         name: 'Tol',
+        page: 1,
+        pageSize: 10,
       });
 
       const foundAuthors3 = await authorRepository.findAuthors({
         name: 'TOL',
+        page: 1,
+        pageSize: 10,
       });
 
       expect(foundAuthors1).toHaveLength(2);

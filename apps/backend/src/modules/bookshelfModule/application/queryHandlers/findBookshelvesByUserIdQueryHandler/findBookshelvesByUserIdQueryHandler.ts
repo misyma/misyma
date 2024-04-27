@@ -2,11 +2,14 @@ import { type QueryHandler } from '../../../../../common/types/queryHandler.js';
 import { type Bookshelf } from '../../../domain/entities/bookshelf/bookshelf.js';
 
 export interface FindBookshelvesByUserIdPayload {
-  userId: string;
+  readonly userId: string;
+  readonly page: number;
+  readonly pageSize: number;
 }
 
 export interface FindBookshelvesByUserIdResult {
-  bookshelves: Bookshelf[];
+  readonly bookshelves: Bookshelf[];
+  readonly total: number;
 }
 
 export type FindBookshelvesByUserIdQueryHandler = QueryHandler<

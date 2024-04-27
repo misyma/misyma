@@ -245,7 +245,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
   }
 
   public async findUserBooks(payload: FindUserBooksPayload): Promise<UserBook[]> {
-    const { bookshelfId, ids } = payload;
+    const { bookshelfId, ids, page, pageSize } = payload;
 
     let rawEntities: UserBookWithJoinsRawEntity[];
 
@@ -297,7 +297,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         query.where(`${this.userBookTable.name}.bookshelfId`, bookshelfId);
       }
 
-      rawEntities = await query;
+      rawEntities = await query.limit(pageSize).offset(pageSize * (page - 1));
     } catch (error) {
       throw new RepositoryError({
         entity: 'Book',
@@ -329,6 +329,45 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       throw new RepositoryError({
         entity: 'UserBook',
         operation: 'delete',
+        error,
+      });
+    }
+  }
+
+  public async countUserBooks(payload: FindUserBooksPayload): Promise<number> {
+    const { bookshelfId, ids } = payload;
+
+    try {
+      const query = this.databaseClient<UserBookRawEntity>(this.userBookTable.name);
+
+      if (ids.length > 0) {
+        query.whereIn(`${this.userBookTable.name}.id`, ids);
+      }
+
+      if (bookshelfId) {
+        query.where(`${this.userBookTable.name}.bookshelfId`, bookshelfId);
+      }
+
+      const countResult = await query.count().first();
+
+      const count = countResult?.['count(*)'];
+
+      if (count === undefined) {
+        throw new ResourceNotFoundError({
+          resource: 'UserBook',
+          operation: 'count',
+        });
+      }
+
+      if (typeof count === 'string') {
+        return parseInt(count, 10);
+      }
+
+      return count;
+    } catch (error) {
+      throw new RepositoryError({
+        entity: 'Book',
+        operation: 'count',
         error,
       });
     }

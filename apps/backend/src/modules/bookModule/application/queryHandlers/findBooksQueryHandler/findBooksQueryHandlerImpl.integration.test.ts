@@ -54,11 +54,16 @@ describe('FindBooksQueryHandler', () => {
       },
     });
 
-    const { books } = await findBooksQueryHandler.execute({});
+    const { books, total } = await findBooksQueryHandler.execute({
+      page: 1,
+      pageSize: 10,
+    });
 
     expect(books.length).toEqual(1);
 
     expect(books[0]?.getId()).toEqual(book.id);
+
+    expect(total).toEqual(1);
   });
 
   it('finds books by isbn', async () => {
@@ -73,11 +78,17 @@ describe('FindBooksQueryHandler', () => {
       },
     });
 
-    const { books } = await findBooksQueryHandler.execute({ isbn: book.isbn as string });
+    const { books, total } = await findBooksQueryHandler.execute({
+      isbn: book.isbn as string,
+      page: 1,
+      pageSize: 10,
+    });
 
     expect(books.length).toEqual(1);
 
     expect(books[0]?.getIsbn()).toEqual(book.isbn);
+
+    expect(total).toEqual(1);
   });
 
   it('finds books by title', async () => {
@@ -93,11 +104,17 @@ describe('FindBooksQueryHandler', () => {
       },
     });
 
-    const { books } = await findBooksQueryHandler.execute({ title: 'game' });
+    const { books, total } = await findBooksQueryHandler.execute({
+      title: 'game',
+      page: 1,
+      pageSize: 10,
+    });
 
     expect(books).toHaveLength(1);
 
     expect(books[0]?.getTitle()).toEqual(book.title);
+
+    expect(total).toEqual(1);
   });
 
   it('finds no books if they are not approved', async () => {
@@ -112,8 +129,14 @@ describe('FindBooksQueryHandler', () => {
       },
     });
 
-    const { books } = await findBooksQueryHandler.execute({ isbn: book.isbn as string });
+    const { books, total } = await findBooksQueryHandler.execute({
+      isbn: book.isbn as string,
+      page: 1,
+      pageSize: 10,
+    });
 
     expect(books.length).toEqual(0);
+
+    expect(total).toEqual(0);
   });
 });

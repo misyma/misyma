@@ -492,6 +492,8 @@ describe('UserBookRepositoryImpl', () => {
       const userBooks = await userBookRepository.findUserBooks({
         ids: [],
         bookshelfId: bookshelf2.id,
+        page: 1,
+        pageSize: 10,
       });
 
       expect(userBooks.length).toEqual(2);

@@ -93,7 +93,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
   }
 
   public async findAuthors(payload: FindAuthorsPayload): Promise<Author[]> {
-    const { ids, name, isApproved } = payload;
+    const { ids, name, isApproved, page, pageSize } = payload;
 
     let rawEntities: AuthorRawEntity[];
 
@@ -112,7 +112,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
         query.where({ isApproved });
       }
 
-      rawEntities = await query;
+      rawEntities = await query.limit(pageSize).offset((page - 1) * pageSize);
     } catch (error) {
       throw new RepositoryError({
         entity: 'Author',
@@ -142,6 +142,49 @@ export class AuthorRepositoryImpl implements AuthorRepository {
       throw new RepositoryError({
         entity: 'Author',
         operation: 'delete',
+        error,
+      });
+    }
+  }
+
+  public async countAuthors(payload: FindAuthorsPayload): Promise<number> {
+    const { ids, name, isApproved } = payload;
+
+    try {
+      const query = this.databaseClient<AuthorRawEntity>(this.databaseTable.name);
+
+      if (ids) {
+        query.whereIn('id', ids);
+      }
+
+      if (name) {
+        query.whereRaw('LOWER(name) LIKE LOWER(?)', `%${name}%`);
+      }
+
+      if (isApproved !== undefined) {
+        query.where({ isApproved });
+      }
+
+      const countResult = await query.count().first();
+
+      const count = countResult?.['count(*)'];
+
+      if (count === undefined) {
+        throw new ResourceNotFoundError({
+          resource: 'Author',
+          operation: 'count',
+        });
+      }
+
+      if (typeof count === 'string') {
+        return parseInt(count, 10);
+      }
+
+      return count;
+    } catch (error) {
+      throw new RepositoryError({
+        entity: 'Author',
+        operation: 'count',
         error,
       });
     }

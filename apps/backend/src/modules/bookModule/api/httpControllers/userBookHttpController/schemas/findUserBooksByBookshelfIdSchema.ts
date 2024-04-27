@@ -14,8 +14,23 @@ export type FindUserBooksByBookshelfIdPathParamsDTO = TypeExtends<
   Static<typeof findUserBooksByBookshelfIdPathParamsDTOSchema>
 >;
 
+export const findUserBooksByBookshelfIdQueryParamsDTOSchema = Type.Object({
+  page: Type.Optional(Type.Integer({ minimum: 1 })),
+  pageSize: Type.Optional(Type.Integer({ minimum: 1 })),
+});
+
+export type FindUserBooksByBookshelfIdQueryParamsDTO = TypeExtends<
+  contracts.FindUserBooksByBookshelfIdQueryParams,
+  Static<typeof findUserBooksByBookshelfIdQueryParamsDTOSchema>
+>;
+
 export const findUserBooksByBookshelfIdResponseBodyDTOSchema = Type.Object({
   data: Type.Array(userBookDTOSchema),
+  metadata: Type.Object({
+    page: Type.Integer({ minimum: 1 }),
+    pageSize: Type.Integer({ minimum: 1 }),
+    total: Type.Integer({ minimum: 0 }),
+  }),
 });
 
 export type FindUserBooksByBookshelfIdResponseBodyDTO = TypeExtends<

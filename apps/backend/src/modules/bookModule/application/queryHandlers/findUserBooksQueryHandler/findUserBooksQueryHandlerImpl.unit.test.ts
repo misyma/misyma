@@ -41,6 +41,8 @@ describe('FindUserBooksQueryHandlerImpl', () => {
         await findUserBooksQueryHandlerImpl.execute({
           ids: [],
           bookshelfId: nonExistentBookshelfId,
+          page: 1,
+          pageSize: 10,
         }),
     ).toThrowErrorInstance({
       instance: ResourceNotFoundError,
@@ -64,6 +66,8 @@ describe('FindUserBooksQueryHandlerImpl', () => {
           ids: [],
           bookshelfId: bookshelf.getId(),
           userId: nonMatchingUserId,
+          page: 1,
+          pageSize: 10,
         }),
     ).toThrowErrorInstance({
       instance: ResourceNotFoundError,
@@ -83,11 +87,17 @@ describe('FindUserBooksQueryHandlerImpl', () => {
 
     spyFactory.create(userBookRepositoryMock, 'findUserBooks').mockResolvedValueOnce([userBook]);
 
-    const { userBooks } = await findUserBooksQueryHandlerImpl.execute({
+    spyFactory.create(userBookRepositoryMock, 'countUserBooks').mockResolvedValueOnce(1);
+
+    const { userBooks, total } = await findUserBooksQueryHandlerImpl.execute({
       ids: [],
       bookshelfId: bookshelf.getId(),
+      page: 1,
+      pageSize: 10,
     });
 
     expect(userBooks).toEqual([userBook]);
+
+    expect(total).toEqual(1);
   });
 });

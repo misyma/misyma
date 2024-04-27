@@ -1,12 +1,13 @@
 import { type GenreMapper } from './genreMapper/genreMapper.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
+import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { Genre, type GenreState } from '../../../domain/entities/genre/genre.js';
 import {
   type FindGenrePayload,
   type GenreRepository,
-  type FindGenresByIds,
+  type FindGenres,
   type SaveGenrePayload,
   type DeleteGenrePayload,
 } from '../../../domain/repositories/genreRepository/genreRepository.js';
@@ -25,22 +26,6 @@ export class GenreRepositoryImpl implements GenreRepository {
   ) {}
 
   private readonly genreTable = new GenreTable();
-
-  public async findAllGenres(): Promise<Genre[]> {
-    let rawEntities: GenreRawEntity[];
-
-    try {
-      rawEntities = await this.databaseClient<GenreRawEntity>(this.genreTable.name).select('*');
-    } catch (error) {
-      throw new RepositoryError({
-        entity: 'Genre',
-        operation: 'find',
-        error,
-      });
-    }
-
-    return rawEntities.map((rawEntity) => this.genreMapper.mapToDomain(rawEntity));
-  }
 
   public async findGenre(payload: FindGenrePayload): Promise<Genre | null> {
     const { id, name } = payload;
@@ -83,13 +68,22 @@ export class GenreRepositoryImpl implements GenreRepository {
     return this.genreMapper.mapToDomain(rawEntity);
   }
 
-  public async findGenresByIds(payload: FindGenresByIds): Promise<Genre[]> {
-    const { ids } = payload;
+  public async findGenres(payload: FindGenres): Promise<Genre[]> {
+    const { ids, page, pageSize } = payload;
 
     let rawEntities: GenreRawEntity[];
 
+    const query = this.databaseClient<GenreRawEntity>(this.genreTable.name)
+      .select('*')
+      .limit(pageSize)
+      .offset(pageSize * (page - 1));
+
+    if (ids) {
+      query.whereIn('id', ids);
+    }
+
     try {
-      rawEntities = await this.databaseClient<GenreRawEntity>(this.genreTable.name).select('*').whereIn('id', ids);
+      rawEntities = await query;
     } catch (error) {
       throw new RepositoryError({
         entity: 'Genre',
@@ -170,6 +164,41 @@ export class GenreRepositoryImpl implements GenreRepository {
       throw new RepositoryError({
         entity: 'Genre',
         operation: 'delete',
+        error,
+      });
+    }
+  }
+
+  public async countGenres(payload: FindGenres): Promise<number> {
+    const { ids } = payload;
+
+    try {
+      const query = this.databaseClient<GenreRawEntity>(this.genreTable.name);
+
+      if (ids) {
+        query.whereIn('id', ids);
+      }
+
+      const countResult = await query.count().first();
+
+      const count = countResult?.['count(*)'];
+
+      if (count === undefined) {
+        throw new ResourceNotFoundError({
+          resource: 'Genre',
+          operation: 'count',
+        });
+      }
+
+      if (typeof count === 'string') {
+        return parseInt(count, 10);
+      }
+
+      return count;
+    } catch (error) {
+      throw new RepositoryError({
+        entity: 'Book',
+        operation: 'count',
         error,
       });
     }

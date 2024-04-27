@@ -26,12 +26,16 @@ describe('FindAuthorsQueryHandlerImpl', () => {
       },
     });
 
-    const { authors } = await queryHandler.execute({
+    const { authors, total } = await queryHandler.execute({
       name: author1.name.substring(0, 3),
+      page: 1,
+      pageSize: 10,
     });
 
     expect(authors).toHaveLength(1);
 
     expect(authors[0]?.getId()).toEqual(author1.id);
+
+    expect(total).toEqual(1);
   });
 });

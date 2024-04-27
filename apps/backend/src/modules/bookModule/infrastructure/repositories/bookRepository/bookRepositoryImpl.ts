@@ -218,7 +218,7 @@ export class BookRepositoryImpl implements BookRepository {
   }
 
   public async findBooks(payload: FindBooksPayload): Promise<Book[]> {
-    const { isbn, isApproved, title } = payload;
+    const { isbn, isApproved, title, page, pageSize } = payload;
 
     let rawEntities: BookWithJoinsRawEntity[];
 
@@ -260,7 +260,7 @@ export class BookRepositoryImpl implements BookRepository {
           }
         });
 
-      rawEntities = await query;
+      rawEntities = await query.limit(pageSize).offset(pageSize * (page - 1));
     } catch (error) {
       throw new RepositoryError({
         entity: 'Book',
@@ -292,6 +292,49 @@ export class BookRepositoryImpl implements BookRepository {
       throw new RepositoryError({
         entity: 'Book',
         operation: 'delete',
+        error,
+      });
+    }
+  }
+
+  public async countBooks(payload: FindBooksPayload): Promise<number> {
+    const { isbn, isApproved, title } = payload;
+
+    try {
+      const query = this.databaseClient<BookRawEntity>(this.bookTable.name);
+
+      if (isbn) {
+        query.where({ isbn });
+      }
+
+      if (title) {
+        query.whereRaw('LOWER(title) LIKE LOWER(?)', `%${title}%`);
+      }
+
+      if (isApproved !== undefined) {
+        query.where({ isApproved });
+      }
+
+      const countResult = await query.count().first();
+
+      const count = countResult?.['count(*)'];
+
+      if (count === undefined) {
+        throw new ResourceNotFoundError({
+          resource: 'Book',
+          operation: 'count',
+        });
+      }
+
+      if (typeof count === 'string') {
+        return parseInt(count, 10);
+      }
+
+      return count;
+    } catch (error) {
+      throw new RepositoryError({
+        entity: 'Book',
+        operation: 'count',
         error,
       });
     }

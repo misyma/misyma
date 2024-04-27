@@ -3,6 +3,7 @@ import {
   type CreateBookCommandHandlerPayload,
   type CreateBookCommandHandlerResult,
 } from './createBookCommandHandler.js';
+import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type FindAuthorsByIdsQueryHandler } from '../../../../authorModule/application/queryHandlers/findAuthorsByIdsQueryHandler/findAuthorsByIdsQueryHandler.js';
 import { type BookRepository } from '../../../domain/repositories/bookRepository/bookRepository.js';
@@ -23,10 +24,17 @@ export class CreateBookCommandHandlerImpl implements CreateBookCommandHandler {
       ...bookData,
     });
 
-    // TODO: add validation for books without authors
+    if (authorIds.length === 0) {
+      throw new OperationNotValidError({
+        reason: 'Book must have at least one author.',
+      });
+    }
 
     const { authors } = await this.findAuthorsByIdsQueryHandler.execute({
       authorIds,
+      isApproved: true,
+      page: 1,
+      pageSize: authorIds.length,
     });
 
     const book = await this.bookRepository.saveBook({
@@ -39,7 +47,6 @@ export class CreateBookCommandHandlerImpl implements CreateBookCommandHandler {
     this.loggerService.debug({
       message: 'Book created.',
       bookId: book.getId(),
-      authorIds,
     });
 
     return { book };
