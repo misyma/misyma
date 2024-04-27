@@ -14,8 +14,23 @@ export type FindBookReadingsPathParamsDTO = TypeExtends<
   contracts.FindBookReadingsPathParams
 >;
 
+export const findBookReadingsQueryParamsDTOSchema = Type.Object({
+  page: Type.Optional(Type.Integer({ minimum: 1 })),
+  pageSize: Type.Optional(Type.Integer({ minimum: 1 })),
+});
+
+export type FindBookReadingsQueryParamsDTO = TypeExtends<
+  Static<typeof findBookReadingsQueryParamsDTOSchema>,
+  contracts.FindBookReadingsQueryParams
+>;
+
 export const findBookReadingsResponseBodyDTOSchema = Type.Object({
   data: Type.Array(bookReadingDTOSchema),
+  metadata: Type.Object({
+    page: Type.Integer({ minimum: 1 }),
+    pageSize: Type.Integer({ minimum: 1 }),
+    total: Type.Integer({ minimum: 0 }),
+  }),
 });
 
 export type FindBookReadingsResponseBodyDTO = TypeExtends<

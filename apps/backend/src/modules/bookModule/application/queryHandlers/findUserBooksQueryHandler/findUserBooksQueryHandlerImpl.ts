@@ -14,22 +14,38 @@ export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler 
   ) {}
 
   public async execute(payload: FindUserBooksPayload): Promise<FindUserBooksResult> {
-    const { bookshelfId, userId, ids } = payload;
+    const { bookshelfId, userId, ids, page, pageSize } = payload;
 
     await this.validateBookshelf({
       bookshelfId,
       userId,
     });
 
-    const userBooks = await this.userBookRepository.findUserBooks({
+    const findUserBooksPayload = {
       bookshelfId,
       ids: ids ?? [],
-    });
+      page,
+      pageSize,
+    };
 
-    return { userBooks };
+    const [userBooks, total] = await Promise.all([
+      await this.userBookRepository.findUserBooks(findUserBooksPayload),
+      await this.userBookRepository.countUserBooks(findUserBooksPayload),
+    ]);
+
+    return {
+      userBooks,
+      total,
+    };
   }
 
-  private async validateBookshelf({ bookshelfId, userId }: Omit<FindUserBooksPayload, 'ids'>): Promise<void> {
+  private async validateBookshelf({
+    bookshelfId,
+    userId,
+  }: {
+    readonly bookshelfId: string | undefined;
+    readonly userId: string | undefined;
+  }): Promise<void> {
     if (bookshelfId) {
       const bookshelf = await this.bookshelfRepository.findBookshelf({
         where: {

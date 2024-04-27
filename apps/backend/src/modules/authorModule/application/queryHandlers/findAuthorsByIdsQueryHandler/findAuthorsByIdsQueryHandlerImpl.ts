@@ -10,9 +10,18 @@ export class FindAuthorsByIdsQueryHandlerImpl implements FindAuthorsByIdsQueryHa
   public constructor(private readonly authorRepository: AuthorRepository) {}
 
   public async execute(payload: ExecutePayload): Promise<ExecuteResult> {
-    const { authorIds } = payload;
+    const { authorIds, page, pageSize } = payload;
 
-    const authors = await this.authorRepository.findAuthors({ ids: authorIds });
+    const findAuthorsPayload = {
+      ids: authorIds,
+      page,
+      pageSize,
+    };
+
+    const [authors, total] = await Promise.all([
+      this.authorRepository.findAuthors(findAuthorsPayload),
+      this.authorRepository.countAuthors(findAuthorsPayload),
+    ]);
 
     if (authorIds.length !== authors.length) {
       const missingIds = authorIds.filter((authorId) => !authors.some((author) => author.getId() === authorId));
@@ -23,6 +32,9 @@ export class FindAuthorsByIdsQueryHandlerImpl implements FindAuthorsByIdsQueryHa
       });
     }
 
-    return { authors };
+    return {
+      authors,
+      total,
+    };
   }
 }

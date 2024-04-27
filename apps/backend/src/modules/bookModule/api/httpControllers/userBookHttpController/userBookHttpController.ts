@@ -13,6 +13,7 @@ import {
   type DeleteUserBookPathParamsDTO,
 } from './schemas/deleteUserBookSchema.js';
 import {
+  type FindUserBooksByBookshelfIdQueryParamsDTO,
   findUserBooksByBookshelfIdPathParamsDTOSchema,
   findUserBooksByBookshelfIdResponseBodyDTOSchema,
   type FindUserBooksByBookshelfIdPathParamsDTO,
@@ -306,7 +307,7 @@ export class UserBookHttpController implements HttpController {
   }
 
   private async findUserBooksByBookshelfId(
-    request: HttpRequest<undefined, undefined, FindUserBooksByBookshelfIdPathParamsDTO>,
+    request: HttpRequest<undefined, FindUserBooksByBookshelfIdQueryParamsDTO, FindUserBooksByBookshelfIdPathParamsDTO>,
   ): Promise<HttpOkResponse<FindUserBooksByBookshelfIdResponseBodyDTO>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
@@ -314,15 +315,24 @@ export class UserBookHttpController implements HttpController {
 
     const { bookshelfId } = request.pathParams;
 
-    const { userBooks } = await this.findUserBooksQueryHandler.execute({
+    const { page = 1, pageSize = 10 } = request.queryParams;
+
+    const { userBooks, total } = await this.findUserBooksQueryHandler.execute({
       ids: [],
       bookshelfId,
       userId,
+      page,
+      pageSize,
     });
 
     return {
       body: {
         data: userBooks.map((userBook) => this.mapUserBookToUserBookDTO(userBook)),
+        metadata: {
+          page,
+          pageSize,
+          total,
+        },
       },
       statusCode: HttpStatusCode.ok,
     };

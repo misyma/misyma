@@ -43,6 +43,8 @@ describe('FindBookshelvesByUserIdQueryHandlerImpl', () => {
       async () =>
         await queryHandler.execute({
           userId: nonExistentUserId,
+          page: 1,
+          pageSize: 10,
         }),
     ).toThrowErrorInstance({
       instance: ResourceNotFoundError,
@@ -55,11 +57,15 @@ describe('FindBookshelvesByUserIdQueryHandlerImpl', () => {
   it('returns an empty array - when User has no Bookshelves', async () => {
     const user = await userTestUtils.createAndPersist();
 
-    const result = await queryHandler.execute({
+    const { bookshelves, total } = await queryHandler.execute({
       userId: user.id,
+      page: 1,
+      pageSize: 10,
     });
 
-    expect(result.bookshelves.length).toEqual(0);
+    expect(bookshelves.length).toEqual(0);
+
+    expect(total).toEqual(0);
   });
 
   it('returns User Bookshelves', async () => {
@@ -77,20 +83,24 @@ describe('FindBookshelvesByUserIdQueryHandlerImpl', () => {
       },
     });
 
-    const result = await queryHandler.execute({
+    const { bookshelves, total } = await queryHandler.execute({
       userId: user.id,
+      page: 1,
+      pageSize: 10,
     });
 
-    expect(result.bookshelves.length).toEqual(2);
+    expect(bookshelves.length).toEqual(2);
 
-    expect(result.bookshelves.find((bookshelf) => bookshelf.getId() === bookshelf1.id)?.getState()).toEqual({
+    expect(bookshelves.find((bookshelf) => bookshelf.getId() === bookshelf1.id)?.getState()).toEqual({
       name: bookshelf1.name,
       userId: bookshelf1.userId,
     });
 
-    expect(result.bookshelves.find((bookshelf) => bookshelf.getId() === bookshelf2.id)?.getState()).toEqual({
+    expect(bookshelves.find((bookshelf) => bookshelf.getId() === bookshelf2.id)?.getState()).toEqual({
       name: bookshelf2.name,
       userId: bookshelf2.userId,
     });
+
+    expect(total).toEqual(2);
   });
 });

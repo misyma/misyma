@@ -5,10 +5,13 @@ export interface FindUserBooksPayload {
   readonly ids: string[];
   readonly userId?: string | undefined;
   readonly bookshelfId?: string | undefined;
+  readonly page: number;
+  readonly pageSize: number;
 }
 
 export interface FindUserBooksResult {
   readonly userBooks: UserBook[];
+  readonly total: number;
 }
 
 export type FindUserBooksQueryHandler = QueryHandler<FindUserBooksPayload, FindUserBooksResult>;

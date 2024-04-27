@@ -32,32 +32,6 @@ describe('GenreRepositoryImpl', () => {
     await genreTestUtils.destroyDatabaseConnection();
   });
 
-  describe('findAll', () => {
-    it('returns an empty array - given no Genres exist', async () => {
-      const res = await genreRepository.findAllGenres();
-
-      expect(res.length).toBe(0);
-
-      expect(res).toBeInstanceOf(Array);
-    });
-
-    it('returns all Genres', async () => {
-      const createdGenres: GenreRawEntity[] = [];
-
-      for (let i = 0; i < 50; i++) {
-        const createdGenre = await genreTestUtils.createAndPersist();
-
-        createdGenres.push(createdGenre);
-      }
-
-      const res = await genreRepository.findAllGenres();
-
-      expect(res.length).toBe(createdGenres.length);
-
-      expect(res).toBeInstanceOf(Array);
-    });
-  });
-
   describe('findById', () => {
     it('returns null - when Genre was not found', async () => {
       const res = await genreRepository.findGenre({ id: 'non-existing-id' });
@@ -76,18 +50,20 @@ describe('GenreRepositoryImpl', () => {
     });
   });
 
-  describe('findManyByIds', () => {
+  describe('findGenres', () => {
     it('returns an empty array - given no Genres found', async () => {
       const nonExistentIds = Array.from({ length: 5 }, () => Generator.uuid());
 
-      const genres = await genreRepository.findGenresByIds({
+      const genres = await genreRepository.findGenres({
         ids: nonExistentIds,
+        page: 1,
+        pageSize: 10,
       });
 
       expect(genres.length).toBe(0);
     });
 
-    it('returns Genres', async () => {
+    it('returns Genres by ids', async () => {
       const genre1 = await genreTestUtils.createAndPersist();
 
       const genre2 = await genreTestUtils.createAndPersist();
@@ -96,11 +72,32 @@ describe('GenreRepositoryImpl', () => {
 
       const genre4 = await genreTestUtils.createAndPersist();
 
-      const genres = await genreRepository.findGenresByIds({
+      const genres = await genreRepository.findGenres({
         ids: [genre1.id, genre2.id, genre3.id, genre4.id],
+        page: 1,
+        pageSize: 10,
       });
 
       expect(genres.length).toBe(4);
+    });
+
+    it('returns all Genres', async () => {
+      const createdGenres: GenreRawEntity[] = [];
+
+      for (let i = 0; i < 8; i++) {
+        const createdGenre = await genreTestUtils.createAndPersist();
+
+        createdGenres.push(createdGenre);
+      }
+
+      const genres = await genreRepository.findGenres({
+        page: 1,
+        pageSize: 10,
+      });
+
+      expect(genres.length).toBe(createdGenres.length);
+
+      expect(genres).toBeInstanceOf(Array);
     });
   });
 

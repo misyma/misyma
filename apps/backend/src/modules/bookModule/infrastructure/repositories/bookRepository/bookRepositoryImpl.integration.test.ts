@@ -363,7 +363,10 @@ describe('BookRepositoryImpl', () => {
         },
       });
 
-      const foundBooks = await bookRepository.findBooks({});
+      const foundBooks = await bookRepository.findBooks({
+        page: 1,
+        pageSize: 10,
+      });
 
       expect(foundBooks.length).toEqual(2);
 
@@ -389,7 +392,11 @@ describe('BookRepositoryImpl', () => {
         },
       });
 
-      const foundBooks = await bookRepository.findBooks({ isApproved: true });
+      const foundBooks = await bookRepository.findBooks({
+        isApproved: true,
+        page: 1,
+        pageSize: 10,
+      });
 
       expect(foundBooks.length).toEqual(1);
 
@@ -405,7 +412,11 @@ describe('BookRepositoryImpl', () => {
         },
       });
 
-      const foundBooks = await bookRepository.findBooks({ isbn: book.isbn as string });
+      const foundBooks = await bookRepository.findBooks({
+        isbn: book.isbn as string,
+        page: 1,
+        pageSize: 10,
+      });
 
       expect(foundBooks.length).toEqual(1);
 
@@ -446,6 +457,8 @@ describe('BookRepositoryImpl', () => {
 
       const foundBooks = await bookRepository.findBooks({
         title: partialTitle,
+        page: 1,
+        pageSize: 10,
       });
 
       expect(foundBooks).toHaveLength(0);
@@ -483,18 +496,26 @@ describe('BookRepositoryImpl', () => {
 
       const foundBooks1 = await bookRepository.findBooks({
         title: 'Harry',
+        page: 1,
+        pageSize: 10,
       });
 
       const foundBooks2 = await bookRepository.findBooks({
         title: 'harry',
+        page: 1,
+        pageSize: 10,
       });
 
       const foundBooks3 = await bookRepository.findBooks({
         title: 'HAR',
+        page: 1,
+        pageSize: 10,
       });
 
       const foundBooks4 = await bookRepository.findBooks({
         title: 'potter',
+        page: 1,
+        pageSize: 10,
       });
 
       [foundBooks1, foundBooks2, foundBooks3, foundBooks4].forEach((foundBooks) => {

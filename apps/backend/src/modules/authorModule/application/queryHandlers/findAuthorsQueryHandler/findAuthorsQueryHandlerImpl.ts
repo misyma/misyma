@@ -8,9 +8,12 @@ export class FindAuthorsQueryHandlerImpl implements FindAuthorsQueryHandler {
   public constructor(private readonly authorRepository: AuthorRepository) {}
 
   public async execute(payload: ExecutePayload): Promise<ExecuteResult> {
-    const { name } = payload;
+    const { name, page, pageSize } = payload;
 
-    let findAuthorsPayload: FindAuthorsPayload = {};
+    let findAuthorsPayload: FindAuthorsPayload = {
+      page,
+      pageSize,
+    };
 
     if (name) {
       findAuthorsPayload = {
@@ -20,8 +23,14 @@ export class FindAuthorsQueryHandlerImpl implements FindAuthorsQueryHandler {
       };
     }
 
-    const authors = await this.authorRepository.findAuthors(findAuthorsPayload);
+    const [authors, total] = await Promise.all([
+      this.authorRepository.findAuthors(findAuthorsPayload),
+      this.authorRepository.countAuthors(findAuthorsPayload),
+    ]);
 
-    return { authors };
+    return {
+      authors,
+      total,
+    };
   }
 }

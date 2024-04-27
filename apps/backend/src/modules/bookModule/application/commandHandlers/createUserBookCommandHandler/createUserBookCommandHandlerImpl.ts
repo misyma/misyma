@@ -55,7 +55,7 @@ export class CreateUserBookCommandHandlerImpl implements CreateUserBookCommandHa
     let genres: Genre[] = [];
 
     if (genreIds) {
-      genres = await this.genreRepository.findGenresByIds({
+      genres = await this.genreRepository.findGenres({
         ids: genreIds,
       });
     }

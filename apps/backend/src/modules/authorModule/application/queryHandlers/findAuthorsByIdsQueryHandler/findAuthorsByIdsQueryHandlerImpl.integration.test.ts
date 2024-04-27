@@ -29,6 +29,8 @@ describe('FindAuthorsByIdsQueryHandlerImpl', () => {
       async () =>
         await queryHandler.execute({
           authorIds: nonExistentAuthorIds,
+          page: 1,
+          pageSize: 10,
         }),
     ).toThrowErrorInstance({
       instance: ResourceNotFoundError,
@@ -48,6 +50,8 @@ describe('FindAuthorsByIdsQueryHandlerImpl', () => {
       async () =>
         await queryHandler.execute({
           authorIds: [author.id, nonExistentAuthorId],
+          page: 1,
+          pageSize: 10,
         }),
     ).toThrowErrorInstance({
       instance: ResourceNotFoundError,
@@ -63,8 +67,10 @@ describe('FindAuthorsByIdsQueryHandlerImpl', () => {
 
     const author2 = await authorTestUtils.createAndPersist();
 
-    const { authors } = await queryHandler.execute({
+    const { authors, total } = await queryHandler.execute({
       authorIds: [author1.id, author2.id],
+      page: 1,
+      pageSize: 10,
     });
 
     expect(authors).toHaveLength(2);
@@ -76,5 +82,7 @@ describe('FindAuthorsByIdsQueryHandlerImpl', () => {
 
       expect(author.getName()).oneOf([author1.name, author2.name]);
     });
+
+    expect(total).toEqual(2);
   });
 });

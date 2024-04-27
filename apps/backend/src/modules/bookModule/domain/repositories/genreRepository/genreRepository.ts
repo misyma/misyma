@@ -9,8 +9,10 @@ export interface SaveGenrePayload {
   readonly genre: GenreState | Genre;
 }
 
-export interface FindGenresByIds {
-  readonly ids: string[];
+export interface FindGenres {
+  readonly ids?: string[];
+  readonly page: number;
+  readonly pageSize: number;
 }
 
 export interface DeleteGenrePayload {
@@ -19,8 +21,8 @@ export interface DeleteGenrePayload {
 
 export interface GenreRepository {
   findGenre(payload: FindGenrePayload): Promise<Genre | null>;
-  findGenresByIds(payload: FindGenresByIds): Promise<Genre[]>;
-  findAllGenres(): Promise<Genre[]>;
+  findGenres(payload: FindGenres): Promise<Genre[]>;
+  countGenres(payload: FindGenres): Promise<number>;
   saveGenre(payload: SaveGenrePayload): Promise<Genre>;
   deleteGenre(payload: DeleteGenrePayload): Promise<void>;
 }

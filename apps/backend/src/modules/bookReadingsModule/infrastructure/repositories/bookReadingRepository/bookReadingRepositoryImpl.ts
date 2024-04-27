@@ -1,4 +1,5 @@
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
+import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { BookReading, type BookReadingState } from '../../../domain/entities/bookReading/bookReading.js';
@@ -49,12 +50,15 @@ export class BookReadingRepositoryImpl implements BookReadingRepository {
   }
 
   public async findBookReadings(payload: FindBookReadingsPayload): Promise<BookReading[]> {
-    const { userBookId } = payload;
+    const { userBookId, page, pageSize } = payload;
 
     let rawEntities: BookReadingRawEntity[];
 
     try {
-      rawEntities = await this.databaseClient<BookReadingRawEntity>(this.table.name).where({ userBookId });
+      rawEntities = await this.databaseClient<BookReadingRawEntity>(this.table.name)
+        .where({ userBookId })
+        .limit(pageSize)
+        .offset(pageSize * (page - 1));
     } catch (error) {
       throw new RepositoryError({
         entity: 'BookReading',
@@ -137,6 +141,38 @@ export class BookReadingRepositoryImpl implements BookReadingRepository {
       throw new RepositoryError({
         entity: 'BookReading',
         operation: 'delete',
+        error,
+      });
+    }
+  }
+
+  public async countBookReadings(payload: FindBookReadingsPayload): Promise<number> {
+    const { userBookId } = payload;
+
+    try {
+      const countResult = await this.databaseClient<BookReadingRawEntity>(this.table.name)
+        .where({ userBookId })
+        .count()
+        .first();
+
+      const count = countResult?.['count'];
+
+      if (!count) {
+        throw new ResourceNotFoundError({
+          resource: 'BookReadings',
+          operation: 'count',
+        });
+      }
+
+      if (typeof count === 'string') {
+        return parseInt(count, 10);
+      }
+
+      return count;
+    } catch (error) {
+      throw new RepositoryError({
+        entity: 'Book',
+        operation: 'count',
         error,
       });
     }

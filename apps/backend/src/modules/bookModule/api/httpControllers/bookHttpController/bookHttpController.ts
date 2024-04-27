@@ -143,16 +143,23 @@ export class BookHttpController implements HttpController {
       authorizationHeader: request.headers['authorization'],
     });
 
-    const { isbn, title } = request.queryParams;
+    const { isbn, title, page = 1, pageSize = 10 } = request.queryParams;
 
-    const { books } = await this.findBooksQueryHandler.execute({
+    const { books, total } = await this.findBooksQueryHandler.execute({
       isbn,
       title,
+      page,
+      pageSize,
     });
 
     return {
       body: {
         data: books.map((book) => this.mapBookToBookDTO(book)),
+        metadata: {
+          page,
+          pageSize,
+          total,
+        },
       },
       statusCode: HttpStatusCode.ok,
     };

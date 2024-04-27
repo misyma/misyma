@@ -14,7 +14,7 @@ export class FindBookshelvesByUserIdQueryHandlerImpl implements FindBookshelvesB
   ) {}
 
   public async execute(payload: FindBookshelvesByUserIdPayload): Promise<FindBookshelvesByUserIdResult> {
-    const { userId } = payload;
+    const { userId, page, pageSize } = payload;
 
     const existingUser = await this.userRepository.findUser({
       id: userId,
@@ -26,8 +26,20 @@ export class FindBookshelvesByUserIdQueryHandlerImpl implements FindBookshelvesB
       });
     }
 
-    const bookshelves = await this.bookshelfRepository.findBookshelves({ userId });
+    const findBookshelvesPayload = {
+      userId,
+      page,
+      pageSize,
+    };
 
-    return { bookshelves };
+    const [bookshelves, total] = await Promise.all([
+      this.bookshelfRepository.findBookshelves(findBookshelvesPayload),
+      this.bookshelfRepository.countBookshelves(findBookshelvesPayload),
+    ]);
+
+    return {
+      bookshelves,
+      total,
+    };
   }
 }

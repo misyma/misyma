@@ -17,6 +17,7 @@ import {
   type FindBookshelvesByUserIdResponseBodyDTO,
   findBookshelvesByUserIdResponseBodyDTOSchema,
   findBookshelvesByUserIdPathParamsDTOSchema,
+  type FindBookshelvesByUserIdQueryParamsDTO,
 } from './schemas/findBookshelvesByUserIdSchema.js';
 import {
   type UpdateBookshelfPathParamsDTO,
@@ -132,7 +133,7 @@ export class BookshelfHttpController implements HttpController {
   }
 
   private async getUserBookshelves(
-    request: HttpRequest<null, null, FindBookshelvesByUserIdParams>,
+    request: HttpRequest<null, FindBookshelvesByUserIdQueryParamsDTO, FindBookshelvesByUserIdParams>,
   ): Promise<HttpOkResponse<FindBookshelvesByUserIdResponseBodyDTO>> {
     const { userId: tokenUserId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
@@ -140,20 +141,29 @@ export class BookshelfHttpController implements HttpController {
 
     const { userId } = request.pathParams;
 
+    const { page = 1, pageSize = 10 } = request.queryParams;
+
     if (userId !== tokenUserId) {
       throw new ForbiddenAccessError({
         reason: 'User can only access their own bookshelves',
       });
     }
 
-    const { bookshelves } = await this.findBookshelvesByUserIdQueryHandler.execute({
+    const { bookshelves, total } = await this.findBookshelvesByUserIdQueryHandler.execute({
       userId,
+      page,
+      pageSize,
     });
 
     return {
       statusCode: HttpStatusCode.ok,
       body: {
         data: bookshelves.map((bookshelf) => this.mapBookshelfToBookshelfDTO({ bookshelf })),
+        metadata: {
+          page,
+          pageSize,
+          total,
+        },
       },
     };
   }

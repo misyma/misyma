@@ -14,6 +14,8 @@ export interface FindUserBookPayload {
 export interface FindUserBooksPayload {
   readonly ids: string[];
   readonly bookshelfId?: string | undefined;
+  readonly page: number;
+  readonly pageSize: number;
 }
 
 export interface DeleteUserBookPayload {
@@ -21,8 +23,9 @@ export interface DeleteUserBookPayload {
 }
 
 export interface UserBookRepository {
-  saveUserBook(input: SaveUserBookPayload): Promise<UserBook>;
-  findUserBook(input: FindUserBookPayload): Promise<UserBook | null>;
-  findUserBooks(input: FindUserBooksPayload): Promise<UserBook[]>;
-  deleteUserBook(input: DeleteUserBookPayload): Promise<void>;
+  saveUserBook(payload: SaveUserBookPayload): Promise<UserBook>;
+  findUserBook(payload: FindUserBookPayload): Promise<UserBook | null>;
+  findUserBooks(payload: FindUserBooksPayload): Promise<UserBook[]>;
+  countUserBooks(payload: FindUserBooksPayload): Promise<number>;
+  deleteUserBook(inpayloadppayloadut: DeleteUserBookPayload): Promise<void>;
 }

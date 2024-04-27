@@ -14,7 +14,7 @@ export class FindBookReadingsByBookIdQueryHandlerImpl implements FindBookReading
   ) {}
 
   public async execute(payload: FindBookReadingsByUserBookIdPayload): Promise<FindBookReadingsByUserBookIdResult> {
-    const { userBookId } = payload;
+    const { userBookId, page, pageSize } = payload;
 
     const bookExists = await this.userBookRepository.findUserBook({
       id: userBookId,
@@ -27,8 +27,20 @@ export class FindBookReadingsByBookIdQueryHandlerImpl implements FindBookReading
       });
     }
 
-    const bookReadings = await this.bookReadingRepository.findBookReadings({ userBookId });
+    const findBookReadingsPayload = {
+      userBookId,
+      page,
+      pageSize,
+    };
 
-    return { bookReadings };
+    const [bookReadings, total] = await Promise.all([
+      this.bookReadingRepository.findBookReadings(findBookReadingsPayload),
+      this.bookReadingRepository.countBookReadings(findBookReadingsPayload),
+    ]);
+
+    return {
+      bookReadings,
+      total,
+    };
   }
 }

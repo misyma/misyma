@@ -12,10 +12,12 @@ export class FindBooksQueryHandlerImpl implements FindBooksQueryHandler {
   public constructor(private readonly bookRepository: BookRepository) {}
 
   public async execute(payload: FindBooksQueryHandlerPayload): Promise<FindBooksQueryHandlerResult> {
-    const { isbn, title } = payload;
+    const { isbn, title, page, pageSize } = payload;
 
     let findBooksPayload: FindBooksPayload = {
       isApproved: true,
+      page,
+      pageSize,
     };
 
     if (isbn) {
@@ -32,8 +34,14 @@ export class FindBooksQueryHandlerImpl implements FindBooksQueryHandler {
       };
     }
 
-    const books = await this.bookRepository.findBooks(findBooksPayload);
+    const [books, total] = await Promise.all([
+      this.bookRepository.findBooks(findBooksPayload),
+      this.bookRepository.countBooks(findBooksPayload),
+    ]);
 
-    return { books };
+    return {
+      books,
+      total,
+    };
   }
 }

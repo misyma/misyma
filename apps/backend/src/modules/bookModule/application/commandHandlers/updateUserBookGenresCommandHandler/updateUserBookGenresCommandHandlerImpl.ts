@@ -33,7 +33,7 @@ export class UpdateBookGenresCommandHandlerImpl implements UpdateUserBookGenresC
       });
     }
 
-    const genres = await this.genreRepository.findGenresByIds({
+    const genres = await this.genreRepository.findGenres({
       ids: genreIds,
     });
 

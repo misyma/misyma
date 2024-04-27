@@ -13,6 +13,8 @@ export interface FindBookshelfPayload {
 
 export interface FindBookshelvesPayload {
   readonly userId: string;
+  readonly page: number;
+  readonly pageSize: number;
 }
 
 export interface SaveBookshelfPayload {
@@ -26,6 +28,7 @@ export interface DeleteBookshelfPayload {
 export interface BookshelfRepository {
   findBookshelf(payload: FindBookshelfPayload): Promise<Bookshelf | null>;
   findBookshelves(payload: FindBookshelvesPayload): Promise<Bookshelf[]>;
+  countBookshelves(payload: FindBookshelvesPayload): Promise<number>;
   saveBookshelf(payload: SaveBookshelfPayload): Promise<Bookshelf>;
   deleteBookshelf(payload: DeleteBookshelfPayload): Promise<void>;
 }

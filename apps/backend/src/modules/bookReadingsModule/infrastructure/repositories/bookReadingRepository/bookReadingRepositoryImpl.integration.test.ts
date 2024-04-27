@@ -114,6 +114,8 @@ describe('BookReadingRepositoryImpl', () => {
 
         const result = await repository.findBookReadings({
           userBookId,
+          page: 1,
+          pageSize: 10,
         });
 
         expect(result).toHaveLength(0);
@@ -147,6 +149,8 @@ describe('BookReadingRepositoryImpl', () => {
 
         const result = await repository.findBookReadings({
           userBookId: userBook.id,
+          page: 1,
+          pageSize: 10,
         });
 
         expect(result).toHaveLength(2);

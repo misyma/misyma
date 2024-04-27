@@ -72,6 +72,8 @@ describe('FindBookReadingsByUserBookIdQueryHandlerImpl', () => {
       async () =>
         await queryHandler.execute({
           userBookId: nonExistentUserBookId,
+          page: 1,
+          pageSize: 10,
         }),
     ).toThrowErrorInstance({
       instance: ResourceNotFoundError,
@@ -96,11 +98,15 @@ describe('FindBookReadingsByUserBookIdQueryHandlerImpl', () => {
       },
     });
 
-    const result = await queryHandler.execute({
+    const { bookReadings, total } = await queryHandler.execute({
       userBookId: userBook.id,
+      page: 1,
+      pageSize: 10,
     });
 
-    expect(result.bookReadings.length).toEqual(0);
+    expect(bookReadings.length).toEqual(0);
+
+    expect(total).toEqual(0);
   });
 
   it('returns Book BookReadings', async () => {
@@ -129,13 +135,15 @@ describe('FindBookReadingsByUserBookIdQueryHandlerImpl', () => {
       },
     });
 
-    const result = await queryHandler.execute({
+    const { bookReadings, total } = await queryHandler.execute({
       userBookId: userBook.id,
+      page: 1,
+      pageSize: 10,
     });
 
-    expect(result.bookReadings.length).toEqual(2);
+    expect(bookReadings.length).toEqual(2);
 
-    expect(result.bookReadings[0]?.getState()).toEqual({
+    expect(bookReadings[0]?.getState()).toEqual({
       userBookId: bookReading1.userBookId,
       rating: bookReading1.rating,
       comment: bookReading1.comment,
@@ -143,12 +151,14 @@ describe('FindBookReadingsByUserBookIdQueryHandlerImpl', () => {
       endedAt: bookReading1.endedAt,
     });
 
-    expect(result.bookReadings[1]?.getState()).toEqual({
+    expect(bookReadings[1]?.getState()).toEqual({
       userBookId: bookReading2.userBookId,
       rating: bookReading2.rating,
       comment: bookReading2.comment,
       startedAt: bookReading2.startedAt,
       endedAt: bookReading2.endedAt,
     });
+
+    expect(total).toEqual(2);
   });
 });

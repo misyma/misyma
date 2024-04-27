@@ -14,6 +14,8 @@ export interface FindBooksPayload {
   readonly isbn?: string;
   readonly isApproved?: boolean;
   readonly title?: string;
+  readonly page: number;
+  readonly pageSize: number;
 }
 
 export interface DeleteBookPayload {
@@ -23,7 +25,7 @@ export interface DeleteBookPayload {
 export interface BookRepository {
   saveBook(payload: SaveBookPayload): Promise<Book>;
   findBook(payload: FindBookPayload): Promise<Book | null>;
-  // add pagination etc
   findBooks(payload: FindBooksPayload): Promise<Book[]>;
+  countBooks(payload: FindBooksPayload): Promise<number>;
   deleteBook(payload: DeleteBookPayload): Promise<void>;
 }

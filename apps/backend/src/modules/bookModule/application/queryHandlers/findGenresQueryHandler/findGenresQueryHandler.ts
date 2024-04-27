@@ -1,8 +1,14 @@
 import { type QueryHandler } from '../../../../../common/types/queryHandler.js';
 import { type Genre } from '../../../domain/entities/genre/genre.js';
 
-export interface FindGenresResult {
-  genres: Genre[];
+export interface FindGenresPayload {
+  readonly page: number;
+  readonly pageSize: number;
 }
 
-export type FindGenresQueryHandler = QueryHandler<void, FindGenresResult>;
+export interface FindGenresResult {
+  readonly genres: Genre[];
+  readonly total: number;
+}
+
+export type FindGenresQueryHandler = QueryHandler<FindGenresPayload, FindGenresResult>;
