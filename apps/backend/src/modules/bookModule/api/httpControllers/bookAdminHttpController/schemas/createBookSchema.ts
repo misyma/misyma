@@ -12,8 +12,7 @@ export const createBookBodyDTOSchema = Type.Object({
   }),
   isbn: Type.Optional(
     Type.String({
-      minLength: 1,
-      maxLength: 64,
+      pattern: '^(97(8|9))?\\d{9}(\\d|X)$',
     }),
   ),
   publisher: Type.Optional(
