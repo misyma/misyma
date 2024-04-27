@@ -3,6 +3,7 @@ import {
   type UpdateUserBookGenresPayload,
   type UpdateUserBookGenresResult,
 } from './updateUserBookGenresCommandHandler.js';
+import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type GenreRepository } from '../../../domain/repositories/genreRepository/genreRepository.js';
@@ -35,12 +36,14 @@ export class UpdateBookGenresCommandHandlerImpl implements UpdateUserBookGenresC
 
     const genres = await this.genreRepository.findGenres({
       ids: genreIds,
+      page: 1,
+      pageSize: genreIds.length,
     });
 
     if (genres.length !== genreIds.length) {
-      throw new ResourceNotFoundError({
-        resource: 'Genre',
-        id: genreIds,
+      throw new OperationNotValidError({
+        reason: 'Some genres do not exist.',
+        ids: genreIds,
       });
     }
 

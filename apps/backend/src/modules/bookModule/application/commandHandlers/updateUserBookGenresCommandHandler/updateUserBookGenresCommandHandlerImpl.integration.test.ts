@@ -4,6 +4,7 @@ import { type UpdateUserBookGenresCommandHandler } from './updateUserBookGenresC
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
+import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type AuthorTestUtils } from '../../../../authorModule/tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
@@ -117,10 +118,10 @@ describe('UpdateUserBookGenresCommandHandlerImpl', () => {
           genreIds: [genre1.id, invalidGenreId],
         }),
     ).toThrowErrorInstance({
-      instance: ResourceNotFoundError,
+      instance: OperationNotValidError,
       context: {
-        resource: 'Genre',
-        id: [genre1.id, invalidGenreId],
+        reason: 'Some genres do not exist.',
+        ids: [genre1.id, invalidGenreId],
       },
     });
   });

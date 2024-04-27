@@ -350,9 +350,9 @@ export class UserBookRepositoryImpl implements UserBookRepository {
 
       const countResult = await query.count().first();
 
-      const count = countResult?.['count'];
+      const count = countResult?.['count(*)'];
 
-      if (!count) {
+      if (count === undefined) {
         throw new ResourceNotFoundError({
           resource: 'UserBook',
           operation: 'count',

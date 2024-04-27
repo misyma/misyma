@@ -169,9 +169,9 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
         .count()
         .first();
 
-      const count = countResult?.['count'];
+      const count = countResult?.['count(*)'];
 
-      if (!count) {
+      if (count === undefined) {
         throw new ResourceNotFoundError({
           resource: 'Bookshelf',
           operation: 'count',

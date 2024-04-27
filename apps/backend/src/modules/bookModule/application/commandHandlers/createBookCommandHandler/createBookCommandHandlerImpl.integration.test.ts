@@ -4,6 +4,7 @@ import { type CreateBookCommandHandler } from './createBookCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
+import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
@@ -49,7 +50,7 @@ describe('CreateBookCommandHandler', () => {
   });
 
   it('creates a Book', async () => {
-    const author = await authorTestUtils.createAndPersist();
+    const author = await authorTestUtils.createAndPersist({ input: { isApproved: true } });
 
     const createdBook = bookTestFactory.create({
       authors: [
@@ -108,6 +109,58 @@ describe('CreateBookCommandHandler', () => {
       instance: ResourceNotFoundError,
       context: {
         resource: 'Author',
+      },
+    });
+  });
+
+  it('throws an error - when provided Authors are not approved', async () => {
+    const author = await authorTestUtils.createAndPersist({ input: { isApproved: false } });
+
+    const createdBook = bookTestFactory.create();
+
+    await expect(async () =>
+      createBookCommandHandler.execute({
+        title: createdBook.getTitle(),
+        isbn: createdBook.getIsbn() as string,
+        publisher: createdBook.getPublisher() as string,
+        releaseYear: createdBook.getReleaseYear() as number,
+        language: createdBook.getLanguage(),
+        translator: createdBook.getTranslator() as string,
+        format: createdBook.getFormat(),
+        pages: createdBook.getPages() as number,
+        isApproved: createdBook.getIsApproved(),
+        imageUrl: createdBook.getImageUrl() as string,
+        authorIds: [author.id],
+      }),
+    ).toThrowErrorInstance({
+      instance: ResourceNotFoundError,
+      context: {
+        resource: 'Author',
+      },
+    });
+  });
+
+  it('throws an error - when Authors are not provided', async () => {
+    const createdBook = bookTestFactory.create();
+
+    await expect(async () =>
+      createBookCommandHandler.execute({
+        title: createdBook.getTitle(),
+        isbn: createdBook.getIsbn() as string,
+        publisher: createdBook.getPublisher() as string,
+        releaseYear: createdBook.getReleaseYear() as number,
+        language: createdBook.getLanguage(),
+        translator: createdBook.getTranslator() as string,
+        format: createdBook.getFormat(),
+        pages: createdBook.getPages() as number,
+        isApproved: createdBook.getIsApproved(),
+        imageUrl: createdBook.getImageUrl() as string,
+        authorIds: [],
+      }),
+    ).toThrowErrorInstance({
+      instance: OperationNotValidError,
+      context: {
+        reason: 'Book must have at least one author.',
       },
     });
   });

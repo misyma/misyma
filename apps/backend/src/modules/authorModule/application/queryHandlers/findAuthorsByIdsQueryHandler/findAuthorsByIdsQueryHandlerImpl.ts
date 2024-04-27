@@ -4,19 +4,29 @@ import {
   type FindAuthorsByIdsQueryHandler,
 } from './findAuthorsByIdsQueryHandler.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
-import { type AuthorRepository } from '../../../domain/repositories/authorRepository/authorRepository.js';
+import {
+  type FindAuthorsPayload,
+  type AuthorRepository,
+} from '../../../domain/repositories/authorRepository/authorRepository.js';
 
 export class FindAuthorsByIdsQueryHandlerImpl implements FindAuthorsByIdsQueryHandler {
   public constructor(private readonly authorRepository: AuthorRepository) {}
 
   public async execute(payload: ExecutePayload): Promise<ExecuteResult> {
-    const { authorIds, page, pageSize } = payload;
+    const { authorIds, isApproved, page, pageSize } = payload;
 
-    const findAuthorsPayload = {
+    let findAuthorsPayload: FindAuthorsPayload = {
       ids: authorIds,
       page,
       pageSize,
     };
+
+    if (isApproved !== undefined) {
+      findAuthorsPayload = {
+        ...findAuthorsPayload,
+        isApproved,
+      };
+    }
 
     const [authors, total] = await Promise.all([
       this.authorRepository.findAuthors(findAuthorsPayload),

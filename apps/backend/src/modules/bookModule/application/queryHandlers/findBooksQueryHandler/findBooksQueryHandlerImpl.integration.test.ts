@@ -137,6 +137,6 @@ describe('FindBooksQueryHandler', () => {
 
     expect(books.length).toEqual(0);
 
-    expect(total).toEqual(1);
+    expect(total).toEqual(0);
   });
 });

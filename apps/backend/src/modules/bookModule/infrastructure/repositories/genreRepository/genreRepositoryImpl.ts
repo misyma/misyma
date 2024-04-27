@@ -181,9 +181,9 @@ export class GenreRepositoryImpl implements GenreRepository {
 
       const countResult = await query.count().first();
 
-      const count = countResult?.['count'];
+      const count = countResult?.['count(*)'];
 
-      if (!count) {
+      if (count === undefined) {
         throw new ResourceNotFoundError({
           resource: 'Genre',
           operation: 'count',

@@ -32,8 +32,6 @@ export class CreateUserBookCommandHandlerImpl implements CreateUserBookCommandHa
       genreIds,
     });
 
-    // TODO: add validation for genres ids
-
     const bookshelf = await this.bookshelfRepository.findBookshelf({ where: { id: bookshelfId } });
 
     if (!bookshelf) {
@@ -57,7 +55,16 @@ export class CreateUserBookCommandHandlerImpl implements CreateUserBookCommandHa
     if (genreIds) {
       genres = await this.genreRepository.findGenres({
         ids: genreIds,
+        page: 1,
+        pageSize: genreIds.length,
       });
+
+      if (genres.length !== genreIds.length) {
+        throw new OperationNotValidError({
+          reason: 'Some genres do not exist.',
+          ids: genreIds,
+        });
+      }
     }
 
     const userBook = await this.userBookRepository.saveUserBook({

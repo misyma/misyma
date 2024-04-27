@@ -155,9 +155,9 @@ export class BookReadingRepositoryImpl implements BookReadingRepository {
         .count()
         .first();
 
-      const count = countResult?.['count'];
+      const count = countResult?.['count(*)'];
 
-      if (!count) {
+      if (count === undefined) {
         throw new ResourceNotFoundError({
           resource: 'BookReadings',
           operation: 'count',

@@ -3,6 +3,7 @@ import { type Author } from '../../../domain/entities/author/author.js';
 
 export interface ExecutePayload {
   readonly authorIds: string[];
+  readonly isApproved?: boolean;
   readonly page: number;
   readonly pageSize: number;
 }
