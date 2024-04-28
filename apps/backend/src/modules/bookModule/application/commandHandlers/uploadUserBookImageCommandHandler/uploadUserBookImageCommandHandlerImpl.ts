@@ -40,7 +40,7 @@ export class UploadUserBookImageCommandHandlerImpl implements UploadUserBookImag
       contentType,
     });
 
-    const { location } = await this.s3Service.uploadBlob({
+    await this.s3Service.uploadBlob({
       bucketName,
       blobName: userBookId,
       data,
@@ -54,7 +54,9 @@ export class UploadUserBookImageCommandHandlerImpl implements UploadUserBookImag
       contentType,
     });
 
-    existingUserBook.setImageUrl({ imageUrl: location });
+    const imageUrl = `${this.config.aws.cloudfrontUrl}/${userBookId}`;
+
+    existingUserBook.setImageUrl({ imageUrl });
 
     await this.userBookRepository.saveUserBook({ userBook: existingUserBook });
 
