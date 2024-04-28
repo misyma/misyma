@@ -36,6 +36,7 @@
     "secretAccessKey": null,
     "region": "eu-central-1",
     "endpoint": null,
-    "bucketName": "misyma-images"
+    "bucketName": "misyma-images",
+    "cloudfrontUrl": "https://d35v5fqwflm78g.cloudfront.net"
   }
 }

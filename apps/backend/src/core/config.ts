@@ -48,8 +48,9 @@ const configSchema = Type.Object({
     accessKeyId: Type.String({ minLength: 1 }),
     secretAccessKey: Type.String({ minLength: 1 }),
     region: Type.Enum(AwsRegion),
-    bucketName: Type.String({ minLength: 1 }),
     endpoint: Type.Union([Type.String({ minLength: 1 }), Type.Null()]),
+    bucketName: Type.String({ minLength: 1 }),
+    cloudfrontUrl: Type.String({ minLength: 1 }),
   }),
 });
 

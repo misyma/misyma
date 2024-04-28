@@ -7,6 +7,7 @@ import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
+import { type Config } from '../../../../../core/config.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type DependencyInjectionContainer } from '../../../../../libs/dependencyInjection/dependencyInjectionContainer.js';
@@ -37,6 +38,8 @@ describe('UploadUserBookImageCommandHandlerImpl', () => {
 
   let databaseClient: DatabaseClient;
 
+  let config: Config;
+
   const resourcesDirectory = path.resolve(__dirname, '../../../../../../../../resources');
 
   const sampleFileName = 'book1.jpg';
@@ -65,6 +68,8 @@ describe('UploadUserBookImageCommandHandlerImpl', () => {
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
 
     userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
+
+    config = container.get<Config>(coreSymbols.config);
 
     await authorTestUtils.truncate();
 
@@ -141,11 +146,17 @@ describe('UploadUserBookImageCommandHandlerImpl', () => {
 
     expect(existsBefore).toBe(false);
 
-    await commandHandler.execute({
+    const { userBook: updatedUserBook } = await commandHandler.execute({
       userBookId: userBook.id,
       data: createReadStream(filePath),
       contentType: 'image/jpg',
     });
+
+    expect(updatedUserBook.getImageUrl()).toEqual(`${config.aws.cloudfrontUrl}/${userBook.id}`);
+
+    const foundUserBook = await userBookTestUtils.findById({ id: userBook.id });
+
+    expect(foundUserBook.imageUrl).toEqual(`${config.aws.cloudfrontUrl}/${userBook.id}`);
 
     const existsAfter = await s3TestUtils.objectExists(bucketName, userBook.id);
 
