@@ -18,10 +18,13 @@ export const updateUserBookBodyDTOSchema = Type.Object({
   status: Type.Optional(Type.Enum(contracts.ReadingStatus)),
   bookshelfId: Type.Optional(Type.String({ format: 'uuid' })),
   imageUrl: Type.Optional(
-    Type.String({
-      minLength: 1,
-      maxLength: 128,
-    }),
+    Type.Union([
+      Type.String({
+        minLength: 1,
+        maxLength: 128,
+      }),
+      Type.Null(),
+    ]),
   ),
 });
 

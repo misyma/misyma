@@ -6,7 +6,7 @@ export interface UpdateUserBookPathParams {
 }
 
 export interface UpdateUserBookRequestBody {
-  readonly imageUlr?: string;
+  readonly imageUlr?: string | null;
   readonly status?: ReadingStatus;
   readonly bookshelfId?: string;
 }

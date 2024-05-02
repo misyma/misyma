@@ -5,6 +5,7 @@ import type * as contracts from '@common/contracts';
 import { userBookDTOSchema } from './userBookDto.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
+// TODO: move to update user book
 export const updateUserBookGenresPathParamsDTOSchema = Type.Object({
   userBookId: Type.String({ format: 'uuid' }),
 });

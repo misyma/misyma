@@ -48,7 +48,7 @@ export class UpdateUserBookCommandHandlerImpl implements UpdateUserBookCommandHa
       userBook.setBookshelfId({ bookshelfId });
     }
 
-    if (imageUrl) {
+    if (imageUrl !== undefined) {
       userBook.setImageUrl({ imageUrl });
     }
 

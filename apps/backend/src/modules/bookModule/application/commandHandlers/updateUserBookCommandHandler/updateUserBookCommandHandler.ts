@@ -5,7 +5,7 @@ import { type UserBook } from '../../../domain/entities/userBook/userBook.js';
 
 export interface UpdateUserBookPayload {
   readonly userBookId: string;
-  readonly imageUrl?: string | undefined;
+  readonly imageUrl?: string | undefined | null;
   readonly bookshelfId?: string | undefined;
   readonly status?: ReadingStatus | undefined;
 }
