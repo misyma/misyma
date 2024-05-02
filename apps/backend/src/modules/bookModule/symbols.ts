@@ -4,7 +4,6 @@ export const symbols = {
   createBookCommandHandler: Symbol('createBookCommandHandler'),
   deleteBookCommandHandler: Symbol('deleteBookCommandHandler'),
   updateBookCommandHandler: Symbol('updateBookCommandHandler'),
-  updateBookGenresCommandHandler: Symbol('updateBookGenresCommandHandler'),
   findBookQueryHandler: Symbol('findBookQueryHandler'),
   findBooksQueryHandler: Symbol('findBooksQueryHandler'),
   bookHttpController: Symbol('bookHttpController'),
@@ -27,9 +26,20 @@ export const symbols = {
   deleteUserBookCommandHandler: Symbol('deleteUserBookCommandHandler'),
   updateUserBookCommandHandler: Symbol('updateUserBookCommandHandler'),
   uploadUserBookImageCommandHandler: Symbol('uploadUserBookImageCommandHandler'),
+  updateUserBookGenresCommandHandler: Symbol('updateUserBookGenresCommandHandler'),
   findUserBookQueryHandler: Symbol('findUserBookQueryHandler'),
   findUserBooksQueryHandler: Symbol('findUserBooksQueryHandler'),
   userBookHttpController: Symbol('userBookHttpController'),
+
+  authorMapper: Symbol('authorMapper'),
+  authorRepository: Symbol('authorRepository'),
+  createAuthorCommandHandler: Symbol('createAuthorCommandHandler'),
+  loginAuthorCommandHandler: Symbol('loginAuthorCommandHandler'),
+  deleteAuthorCommandHandler: Symbol('deleteAuthorCommandHandler'),
+  findAuthorQueryHandler: Symbol('findAuthorQueryHandler'),
+  findAuthorsQueryHandler: Symbol('findAuthorsQueryHandler'),
+  authorHttpController: Symbol('authorHttpController'),
+  authorAdminHttpController: Symbol('authorAdminHttpController'),
 };
 
 export const bookSymbols = {
@@ -40,4 +50,6 @@ export const bookSymbols = {
   userBookRepository: symbols.userBookRepository,
   genreHttpController: symbols.genreHttpController,
   genreAdminHttpController: symbols.genreAdminHttpController,
+  authorHttpController: symbols.authorHttpController,
+  authorAdminHttpController: symbols.authorAdminHttpController,
 };

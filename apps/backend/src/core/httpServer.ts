@@ -20,9 +20,8 @@ import { HttpStatusCode } from '../common/types/http/httpStatusCode.js';
 import { SecurityMode } from '../common/types/http/securityMode.js';
 import { type DependencyInjectionContainer } from '../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type LoggerService } from '../libs/logger/services/loggerService/loggerService.js';
-import { type AuthorAdminHttpController } from '../modules/authorModule/api/httpControllers/authorAdminHttpController/authorAdminHttpController.js';
-import { type AuthorHttpController } from '../modules/authorModule/api/httpControllers/authorHttpController/authorHttpController.js';
-import { authorSymbols } from '../modules/authorModule/symbols.js';
+import { type AuthorAdminHttpController } from '../modules/bookModule/api/httpControllers/authorAdminHttpController/authorAdminHttpController.js';
+import { type AuthorHttpController } from '../modules/bookModule/api/httpControllers/authorHttpController/authorHttpController.js';
 import { type BookAdminHttpController } from '../modules/bookModule/api/httpControllers/bookAdminHttpController/bookAdminHttpController.js';
 import { type BookHttpController } from '../modules/bookModule/api/httpControllers/bookHttpController/bookHttpController.js';
 import { type GenreAdminHttpController } from '../modules/bookModule/api/httpControllers/genreAdminHttpController/genreAdminHttpController.js';
@@ -59,8 +58,8 @@ export class HttpServer {
     return [
       this.container.get<ApplicationHttpController>(symbols.applicationHttpController),
       this.container.get<UserHttpController>(userSymbols.userHttpController),
-      this.container.get<AuthorHttpController>(authorSymbols.authorHttpController),
-      this.container.get<AuthorAdminHttpController>(authorSymbols.authorAdminHttpController),
+      this.container.get<AuthorHttpController>(bookSymbols.authorHttpController),
+      this.container.get<AuthorAdminHttpController>(bookSymbols.authorAdminHttpController),
       this.container.get<BookHttpController>(bookSymbols.bookHttpController),
       this.container.get<BookAdminHttpController>(bookSymbols.bookAdminHttpController),
       this.container.get<UserBookHttpController>(bookSymbols.userBookHttpController),

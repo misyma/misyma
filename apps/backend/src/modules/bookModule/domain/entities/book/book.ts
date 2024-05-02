@@ -1,7 +1,7 @@
 import { type Language, type BookFormat } from '@common/contracts';
 
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
-import { type Author } from '../../../../authorModule/domain/entities/author/author.js';
+import { type Author } from '../author/author.js';
 
 export interface BookDraft {
   readonly id: string;

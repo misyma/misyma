@@ -1,0 +1,25 @@
+import { type Static, Type } from '@sinclair/typebox';
+
+import type * as contracts from '@common/contracts';
+
+import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
+import { authorDTOSchema } from '../../../../../bookModule/api/httpControllers/common/authorDto.js';
+
+export const createAuthorBodyDTOSchema = Type.Object({
+  name: Type.String({
+    minLength: 1,
+    maxLength: 128,
+  }),
+});
+
+export type CreateAuthorBodyDTO = TypeExtends<
+  Static<typeof createAuthorBodyDTOSchema>,
+  contracts.CreateAuthorRequestBody
+>;
+
+export const createAuthorResponseBodyDTOSchema = authorDTOSchema;
+
+export type CreateAuthorResponseBodyDTO = TypeExtends<
+  Static<typeof createAuthorResponseBodyDTOSchema>,
+  contracts.CreateAuthorResponseBody
+>;

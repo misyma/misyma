@@ -23,8 +23,6 @@ import { type SendGridService } from '../libs/sendGrid/services/sendGridService/
 import { type UuidService } from '../libs/uuid/services/uuidService/uuidService.js';
 import { UuidServiceImpl } from '../libs/uuid/services/uuidService/uuidServiceImpl.js';
 import { AuthModule } from '../modules/authModule/authModule.js';
-import { AuthorModule } from '../modules/authorModule/authorModule.js';
-import { AuthorDatabaseManager } from '../modules/authorModule/infrastructure/databases/authorDatabaseManager.js';
 import { BookModule } from '../modules/bookModule/bookModule.js';
 import { BookDatabaseManager } from '../modules/bookModule/infrastructure/databases/bookDatabase/bookDatabaseManager.js';
 import { BookReadingModule } from '../modules/bookReadingsModule/bookReadingModule.js';
@@ -43,7 +41,6 @@ export class Application {
   private static async setupDatabase(container: DependencyInjectionContainer): Promise<void> {
     const coreDatabaseManagers = [
       UserDatabaseManager,
-      AuthorDatabaseManager,
       BookDatabaseManager,
       BookshelfDatabaseManager,
       BookReadingDatabaseManager,
@@ -114,7 +111,6 @@ export class Application {
       new UserModule(),
       new AuthModule(),
       new BookModule(),
-      new AuthorModule(),
       new BookshelfModule(),
       new BookReadingModule(),
     ];

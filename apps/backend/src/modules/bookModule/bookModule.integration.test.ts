@@ -1,5 +1,7 @@
 import { beforeEach, expect, describe, it } from 'vitest';
 
+import { AuthorAdminHttpController } from './api/httpControllers/authorAdminHttpController/authorAdminHttpController.js';
+import { AuthorHttpController } from './api/httpControllers/authorHttpController/authorHttpController.js';
 import { BookAdminHttpController } from './api/httpControllers/bookAdminHttpController/bookAdminHttpController.js';
 import { BookHttpController } from './api/httpControllers/bookHttpController/bookHttpController.js';
 import { GenreAdminHttpController } from './api/httpControllers/genreAdminHttpController/genreAdminHttpController.js';
@@ -31,6 +33,12 @@ describe('BookModule', () => {
 
     expect(container.get<UserBookHttpController>(bookSymbols.userBookHttpController)).toBeInstanceOf(
       UserBookHttpController,
+    );
+
+    expect(container.get<AuthorHttpController>(bookSymbols.authorHttpController)).toBeInstanceOf(AuthorHttpController);
+
+    expect(container.get<AuthorAdminHttpController>(bookSymbols.authorAdminHttpController)).toBeInstanceOf(
+      AuthorAdminHttpController,
     );
   });
 });

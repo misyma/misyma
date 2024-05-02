@@ -1,5 +1,4 @@
 import { Application } from '../src/core/application.js';
-import { AuthorDatabaseManager } from '../src/modules/authorModule/infrastructure/databases/authorDatabaseManager.js';
 import { BookDatabaseManager } from '../src/modules/bookModule/infrastructure/databases/bookDatabase/bookDatabaseManager.js';
 import { BookReadingDatabaseManager } from '../src/modules/bookReadingsModule/infrastructure/databases/bookReadingsDatabase/bookReadingDatabaseManager.js';
 import { BookshelfDatabaseManager } from '../src/modules/bookshelfModule/infrastructure/databases/bookshelvesDatabase/bookshelfDatabaseManager.js';
@@ -14,7 +13,6 @@ export async function setup(): Promise<void> {
 
     const databaseManagers = [
       UserDatabaseManager,
-      AuthorDatabaseManager,
       BookDatabaseManager,
       BookshelfDatabaseManager,
       BookReadingDatabaseManager,
