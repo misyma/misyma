@@ -12,16 +12,29 @@ import {
   type DeleteBookPathParamsDTO,
   type DeleteBookResponseBodyDTO,
 } from './schemas/deleteBookSchema.js';
+import {
+  updateBookPathParamsDTOSchema,
+  updateBookBodyDTOSchema,
+  type UpdateBookBodyDTO,
+  type UpdateBookPathParamsDTO,
+  updateBookResponseBodyDTOSchema,
+  type UpdateBookResponseBodyDTO,
+} from './schemas/updateBookSchema.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
-import { type HttpCreatedResponse, type HttpNoContentResponse } from '../../../../../common/types/http/httpResponse.js';
+import {
+  type HttpOkResponse,
+  type HttpCreatedResponse,
+  type HttpNoContentResponse,
+} from '../../../../../common/types/http/httpResponse.js';
 import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
 import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.js';
 import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
 import { type CreateBookCommandHandler } from '../../../application/commandHandlers/createBookCommandHandler/createBookCommandHandler.js';
 import { type DeleteBookCommandHandler } from '../../../application/commandHandlers/deleteBookCommandHandler/deleteBookCommandHandler.js';
+import { type UpdateBookCommandHandler } from '../../../application/commandHandlers/updateBookCommandHandler/updateBookCommandHandler.js';
 import { type Book } from '../../../domain/entities/book/book.js';
 import { type BookDTO } from '../common/bookDto.js';
 
@@ -32,6 +45,7 @@ export class BookAdminHttpController implements HttpController {
   public constructor(
     private readonly createBookCommandHandler: CreateBookCommandHandler,
     private readonly deleteBookCommandHandler: DeleteBookCommandHandler,
+    private readonly updateBookCommandHandler: UpdateBookCommandHandler,
     private readonly accessControlService: AccessControlService,
   ) {}
 
@@ -71,6 +85,24 @@ export class BookAdminHttpController implements HttpController {
         },
         securityMode: SecurityMode.bearerToken,
         description: 'Delete book',
+      }),
+      new HttpRoute({
+        method: HttpMethodName.patch,
+        path: ':id',
+        description: 'Update a book',
+        handler: this.updateBook.bind(this),
+        schema: {
+          request: {
+            pathParams: updateBookPathParamsDTOSchema,
+            body: updateBookBodyDTOSchema,
+          },
+          response: {
+            [HttpStatusCode.ok]: {
+              description: 'Book updated',
+              schema: updateBookResponseBodyDTOSchema,
+            },
+          },
+        },
       }),
     ];
   }
@@ -112,6 +144,36 @@ export class BookAdminHttpController implements HttpController {
     return {
       statusCode: HttpStatusCode.noContent,
       body: null,
+    };
+  }
+
+  private async updateBook(
+    request: HttpRequest<UpdateBookBodyDTO, undefined, UpdateBookPathParamsDTO>,
+  ): Promise<HttpOkResponse<UpdateBookResponseBodyDTO>> {
+    await this.accessControlService.verifyBearerToken({
+      authorizationHeader: request.headers['authorization'],
+    });
+
+    const { id } = request.pathParams;
+
+    const { authorIds, format, imageUrl, language, pages, publisher, releaseYear, title, translator } = request.body;
+
+    const { book } = await this.updateBookCommandHandler.execute({
+      bookId: id,
+      authorIds,
+      format,
+      imageUrl,
+      language,
+      pages,
+      publisher,
+      releaseYear,
+      title,
+      translator,
+    });
+
+    return {
+      statusCode: HttpStatusCode.ok,
+      body: this.mapBookToBookDTO(book),
     };
   }
 

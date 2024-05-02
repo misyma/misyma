@@ -28,23 +28,23 @@ import {
 import {
   updateUserBookGenresBodyDTOSchema,
   updateUserBookGenresPathParamsDTOSchema,
-  updateUserBookGenresResponseDTOSchema,
+  updateUserBookGenresResponseBodyDTOSchema,
   type UpdateUserBookGenresBodyDTO,
   type UpdateUserBookGenresPathParamsDTO,
-  type UpdateUserBookGenresResponseDTOSchema,
+  type UpdateUserBookGenresResponseBodyDTOSchema,
 } from './schemas/updateUserBookGenresSchema.js';
 import {
   updateUserBookPathParamsDTOSchema,
   updateUserBookBodyDTOSchema,
-  updateUserBookResponseDTOSchema,
+  updateUserBookResponseBodyDTOSchema,
   type UpdateUserBookBodyDTO,
   type UpdateUserBookPathParamsDTO,
-  type UpdateUserBookResponseDTOSchema,
+  type UpdateUserBookResponseBodyDTO,
 } from './schemas/updateUserBookSchema.js';
 import {
-  type UploadUserBookImageResponseDTOSchema,
+  type UploadUserBookImageResponseBodyDTOSchema,
   type UploadUserBookImagePathParamsDTO,
-  uploadUserBookImageResponseDTOSchema,
+  uploadUserBookImageResponseBodyDTOSchema,
   uploadUserBookImagePathParamsDTOSchema,
 } from './schemas/uploadUserBookImageSchema.js';
 import { type UserBookDTO } from './schemas/userBookDto.js';
@@ -173,7 +173,7 @@ export class UserBookHttpController implements HttpController {
           response: {
             [HttpStatusCode.ok]: {
               description: `User's book updated`,
-              schema: updateUserBookResponseDTOSchema,
+              schema: updateUserBookResponseBodyDTOSchema,
             },
           },
         },
@@ -190,7 +190,7 @@ export class UserBookHttpController implements HttpController {
           response: {
             [HttpStatusCode.ok]: {
               description: `User book's image uploaded`,
-              schema: uploadUserBookImageResponseDTOSchema,
+              schema: uploadUserBookImageResponseBodyDTOSchema,
             },
           },
         },
@@ -208,7 +208,7 @@ export class UserBookHttpController implements HttpController {
           response: {
             [HttpStatusCode.ok]: {
               description: `User's book genres updated`,
-              schema: updateUserBookGenresResponseDTOSchema,
+              schema: updateUserBookGenresResponseBodyDTOSchema,
             },
           },
         },
@@ -218,7 +218,7 @@ export class UserBookHttpController implements HttpController {
 
   private async updateUserBook(
     request: HttpRequest<UpdateUserBookBodyDTO, undefined, UpdateUserBookPathParamsDTO>,
-  ): Promise<HttpOkResponse<UpdateUserBookResponseDTOSchema>> {
+  ): Promise<HttpOkResponse<UpdateUserBookResponseBodyDTO>> {
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
@@ -242,7 +242,7 @@ export class UserBookHttpController implements HttpController {
 
   private async uploadUserBookImage(
     request: HttpRequest<undefined, undefined, UploadUserBookImagePathParamsDTO>,
-  ): Promise<HttpOkResponse<UploadUserBookImageResponseDTOSchema>> {
+  ): Promise<HttpOkResponse<UploadUserBookImageResponseBodyDTOSchema>> {
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
@@ -357,7 +357,7 @@ export class UserBookHttpController implements HttpController {
 
   private async updateUserBookGenres(
     request: HttpRequest<UpdateUserBookGenresBodyDTO, undefined, UpdateUserBookGenresPathParamsDTO>,
-  ): Promise<HttpOkResponse<UpdateUserBookGenresResponseDTOSchema>> {
+  ): Promise<HttpOkResponse<UpdateUserBookGenresResponseBodyDTOSchema>> {
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });

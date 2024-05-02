@@ -30,9 +30,9 @@ export type UpdateUserBookBodyDTO = TypeExtends<
   contracts.UpdateUserBookRequestBody
 >;
 
-export const updateUserBookResponseDTOSchema = userBookDTOSchema;
+export const updateUserBookResponseBodyDTOSchema = userBookDTOSchema;
 
-export type UpdateUserBookResponseDTOSchema = TypeExtends<
-  Static<typeof updateUserBookResponseDTOSchema>,
+export type UpdateUserBookResponseBodyDTO = TypeExtends<
+  Static<typeof updateUserBookResponseBodyDTOSchema>,
   contracts.UpdateUserBookResponseBody
 >;
