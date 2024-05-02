@@ -3,7 +3,6 @@ import { RepositoryError } from '../../../../../common/errors/repositoryError.js
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
-import { AuthorTable } from '../../../../authorModule/infrastructure/databases/tables/authorTable/authorTable.js';
 import { type BookState, Book } from '../../../domain/entities/book/book.js';
 import {
   type BookRepository,
@@ -12,6 +11,7 @@ import {
   type SaveBookPayload,
   type FindBooksPayload,
 } from '../../../domain/repositories/bookRepository/bookRepository.js';
+import { AuthorTable } from '../../databases/bookDatabase/tables/authorTable/authorTable.js';
 import { type BooksAuthorsRawEntity } from '../../databases/bookDatabase/tables/booksAuthorsTable/booksAuthorsRawEntity.js';
 import { BooksAuthorsTable } from '../../databases/bookDatabase/tables/booksAuthorsTable/booksAuthorsTable.js';
 import { type BookRawEntity } from '../../databases/bookDatabase/tables/bookTable/bookRawEntity.js';

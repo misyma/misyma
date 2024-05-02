@@ -1,5 +1,5 @@
 import { type UserBookMapper } from './userBookMapper.js';
-import { Author } from '../../../../../authorModule/domain/entities/author/author.js';
+import { Author } from '../../../../domain/entities/author/author.js';
 import { Genre } from '../../../../domain/entities/genre/genre.js';
 import { UserBook, type UserBookDraft } from '../../../../domain/entities/userBook/userBook.js';
 import { type UserBookWithJoinsRawEntity } from '../../../databases/bookDatabase/tables/userBookTable/userBookWithJoinsRawEntity.js';

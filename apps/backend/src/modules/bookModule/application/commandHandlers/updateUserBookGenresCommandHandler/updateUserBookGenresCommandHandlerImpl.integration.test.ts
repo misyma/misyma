@@ -6,10 +6,10 @@ import { TestContainer } from '../../../../../../tests/container/testContainer.j
 import { Generator } from '../../../../../../tests/generator.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
-import { type AuthorTestUtils } from '../../../../authorModule/tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { symbols } from '../../../symbols.js';
+import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
 import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
@@ -32,7 +32,7 @@ describe('UpdateUserBookGenresCommandHandlerImpl', () => {
   beforeEach(async () => {
     const container = TestContainer.create();
 
-    commandHandler = container.get<UpdateUserBookGenresCommandHandler>(symbols.updateBookGenresCommandHandler);
+    commandHandler = container.get<UpdateUserBookGenresCommandHandler>(symbols.updateUserBookGenresCommandHandler);
 
     genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
 

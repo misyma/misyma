@@ -3,7 +3,6 @@ import { RepositoryError } from '../../../../../common/errors/repositoryError.js
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
-import { AuthorTable } from '../../../../authorModule/infrastructure/databases/tables/authorTable/authorTable.js';
 import { UserBook, type UserBookState } from '../../../domain/entities/userBook/userBook.js';
 import {
   type DeleteUserBookPayload,
@@ -12,6 +11,7 @@ import {
   type SaveUserBookPayload,
   type UserBookRepository,
 } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
+import { AuthorTable } from '../../databases/bookDatabase/tables/authorTable/authorTable.js';
 import { BooksAuthorsTable } from '../../databases/bookDatabase/tables/booksAuthorsTable/booksAuthorsTable.js';
 import { BookTable } from '../../databases/bookDatabase/tables/bookTable/bookTable.js';
 import { GenreTable } from '../../databases/bookDatabase/tables/genreTable/genreTable.js';
