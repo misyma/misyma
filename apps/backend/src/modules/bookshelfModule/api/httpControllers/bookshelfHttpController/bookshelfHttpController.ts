@@ -34,7 +34,6 @@ import { type HttpCreatedResponse, type HttpOkResponse } from '../../../../../co
 import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
 import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.js';
 import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
-import { ForbiddenAccessError } from '../../../../authModule/application/errors/forbiddenAccessError.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
 import { type CreateBookshelfCommandHandler } from '../../../application/commandHandlers/createBookshelfCommandHandler/createBookshelfCommandHandler.js';
 import { type UpdateBookshelfCommandHandler } from '../../../application/commandHandlers/updateBookshelfCommandHandler/updateBookshelfCommandHandler.js';
@@ -135,19 +134,14 @@ export class BookshelfHttpController implements HttpController {
   private async getUserBookshelves(
     request: HttpRequest<null, FindBookshelvesByUserIdQueryParamsDTO, FindBookshelvesByUserIdParams>,
   ): Promise<HttpOkResponse<FindBookshelvesByUserIdResponseBodyDTO>> {
-    const { userId: tokenUserId } = await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
-    });
-
     const { userId } = request.pathParams;
 
-    const { page = 1, pageSize = 10 } = request.queryParams;
+    await this.accessControlService.verifyBearerToken({
+      authorizationHeader: request.headers['authorization'],
+      expectedUserId: userId,
+    });
 
-    if (userId !== tokenUserId) {
-      throw new ForbiddenAccessError({
-        reason: 'User can only access their own bookshelves',
-      });
-    }
+    const { page = 1, pageSize = 10 } = request.queryParams;
 
     const { bookshelves, total } = await this.findBookshelvesByUserIdQueryHandler.execute({
       userId,
@@ -191,17 +185,12 @@ export class BookshelfHttpController implements HttpController {
   private async createBookshelf(
     request: HttpRequest<CreateBookshelfBodyDTO>,
   ): Promise<HttpCreatedResponse<CreateBookshelfResponseBodyDTO>> {
-    const { userId: tokenUserId } = await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
-    });
-
     const { name, userId } = request.body;
 
-    if (userId !== tokenUserId) {
-      throw new ForbiddenAccessError({
-        reason: 'User can only create bookshelves for themselves',
-      });
-    }
+    await this.accessControlService.verifyBearerToken({
+      authorizationHeader: request.headers['authorization'],
+      expectedUserId: userId,
+    });
 
     const { bookshelf } = await this.createBookshelfCommandHandler.execute({
       name,
