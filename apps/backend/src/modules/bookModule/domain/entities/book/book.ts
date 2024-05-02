@@ -243,6 +243,10 @@ export class Book {
     this.state.imageUrl = imageUrl;
   }
 
+  public setAuthors(authors: Author[]): void {
+    this.state.authors = authors;
+  }
+
   public addAuthor(author: Author): void {
     const authorId = author.getId();
 

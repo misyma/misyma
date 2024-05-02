@@ -14,9 +14,9 @@ export type UploadUserBookImagePathParamsDTO = TypeExtends<
   contracts.UploadUserBookImagePathParams
 >;
 
-export const uploadUserBookImageResponseDTOSchema = userBookDTOSchema;
+export const uploadUserBookImageResponseBodyDTOSchema = userBookDTOSchema;
 
-export type UploadUserBookImageResponseDTOSchema = TypeExtends<
-  Static<typeof uploadUserBookImageResponseDTOSchema>,
+export type UploadUserBookImageResponseBodyDTOSchema = TypeExtends<
+  Static<typeof uploadUserBookImageResponseBodyDTOSchema>,
   contracts.UploadUserBookImageResponseBody
 >;

@@ -3,6 +3,7 @@ export const symbols = {
   bookRepository: Symbol('bookRepository'),
   createBookCommandHandler: Symbol('createBookCommandHandler'),
   deleteBookCommandHandler: Symbol('deleteBookCommandHandler'),
+  updateBookCommandHandler: Symbol('updateBookCommandHandler'),
   updateBookGenresCommandHandler: Symbol('updateBookGenresCommandHandler'),
   findBookQueryHandler: Symbol('findBookQueryHandler'),
   findBooksQueryHandler: Symbol('findBooksQueryHandler'),

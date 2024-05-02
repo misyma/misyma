@@ -18,10 +18,13 @@ export const updateUserBookBodyDTOSchema = Type.Object({
   status: Type.Optional(Type.Enum(contracts.ReadingStatus)),
   bookshelfId: Type.Optional(Type.String({ format: 'uuid' })),
   imageUrl: Type.Optional(
-    Type.String({
-      minLength: 1,
-      maxLength: 128,
-    }),
+    Type.Union([
+      Type.String({
+        minLength: 1,
+        maxLength: 128,
+      }),
+      Type.Null(),
+    ]),
   ),
 });
 
@@ -30,9 +33,9 @@ export type UpdateUserBookBodyDTO = TypeExtends<
   contracts.UpdateUserBookRequestBody
 >;
 
-export const updateUserBookResponseDTOSchema = userBookDTOSchema;
+export const updateUserBookResponseBodyDTOSchema = userBookDTOSchema;
 
-export type UpdateUserBookResponseDTOSchema = TypeExtends<
-  Static<typeof updateUserBookResponseDTOSchema>,
+export type UpdateUserBookResponseBodyDTO = TypeExtends<
+  Static<typeof updateUserBookResponseBodyDTOSchema>,
   contracts.UpdateUserBookResponseBody
 >;

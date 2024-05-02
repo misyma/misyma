@@ -313,6 +313,45 @@ describe('UserBookRepositoryImpl', () => {
       expect(foundUserBook.imageUrl).toEqual(newImageUrl);
     });
 
+    it('deletes UserBook image', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+
+      const author = await authorTestUtils.createAndPersist();
+
+      const book = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+        },
+      });
+
+      const userBookRawEntity = await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book.id,
+          bookshelfId: bookshelf.id,
+        },
+      });
+
+      const userBook = userBookTestFactory.create(userBookRawEntity);
+
+      const newImageUrl = null;
+
+      userBook.setImageUrl({ imageUrl: newImageUrl });
+
+      const updatedUserBook = await userBookRepository.saveUserBook({
+        userBook,
+      });
+
+      const foundUserBook = await userBookTestUtils.findById({
+        id: userBook.getId(),
+      });
+
+      expect(updatedUserBook.getImageUrl()).toBeUndefined();
+
+      expect(foundUserBook.imageUrl).toBeNull();
+    });
+
     it('sets UserBook Genres', async () => {
       const user = await userTestUtils.createAndPersist();
 

@@ -5,7 +5,7 @@ import { type Genre } from '../genre/genre.js';
 
 export interface UserBookDraft {
   readonly id: string;
-  readonly imageUrl?: string | undefined;
+  readonly imageUrl?: string | undefined | null;
   readonly status: ReadingStatus;
   readonly bookshelfId: string;
   readonly bookId: string;
@@ -14,7 +14,7 @@ export interface UserBookDraft {
 }
 
 export interface UserBookState {
-  imageUrl?: string | undefined;
+  imageUrl?: string | undefined | null;
   status: ReadingStatus;
   bookshelfId: string;
   readonly bookId: string;
@@ -23,7 +23,7 @@ export interface UserBookState {
 }
 
 export interface SetImageUrlPayload {
-  readonly imageUrl: string;
+  readonly imageUrl: string | null;
 }
 
 export interface SetStatusPayload {
@@ -80,7 +80,7 @@ export class UserBook {
     return this.state.book;
   }
 
-  public getImageUrl(): string | undefined {
+  public getImageUrl(): string | undefined | null {
     return this.state.imageUrl;
   }
 

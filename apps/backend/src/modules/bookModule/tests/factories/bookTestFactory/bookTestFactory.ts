@@ -4,6 +4,7 @@ import { type BookRawEntity } from '../../../infrastructure/databases/bookDataba
 
 export class BookTestFactory {
   public create(input: Partial<BookDraft> = {}): Book {
+    // TODO: move custom generators like release year to generator class
     return new Book({
       id: Generator.uuid(),
       title: Generator.word(),

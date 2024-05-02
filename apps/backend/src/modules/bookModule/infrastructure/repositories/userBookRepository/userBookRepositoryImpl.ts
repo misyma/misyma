@@ -61,7 +61,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         await transaction<UserBookRawEntity>(this.userBookTable.name).insert(
           {
             id,
-            imageUrl,
+            imageUrl: imageUrl ?? undefined,
             status,
             bookshelfId,
             bookId,
@@ -102,23 +102,17 @@ export class UserBookRepositoryImpl implements UserBookRepository {
 
     const { bookshelfId, status, imageUrl } = userBook.getState();
 
-    let updateData: Partial<UserBookRawEntity> = {
-      bookshelfId,
-      status,
-    };
-
-    if (imageUrl) {
-      updateData = {
-        ...updateData,
-        imageUrl,
-      };
-    }
-
     try {
       await this.databaseClient.transaction(async (transaction) => {
         const { genres: updatedGenres } = userBook.getState();
 
-        await transaction(this.userBookTable.name).update(updateData).where({ id: userBook.getId() });
+        await transaction<UserBookRawEntity>(this.userBookTable.name)
+          .update({
+            bookshelfId,
+            status,
+            imageUrl,
+          })
+          .where({ id: userBook.getId() });
 
         const existingGenres = existingUserBook.getGenres();
 
