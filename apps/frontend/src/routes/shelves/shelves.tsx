@@ -131,7 +131,6 @@ export const ShelvesPage: FC = () => {
     try {
       await createBookshelfMutation.mutateAsync({
         name: bookshelfName,
-        userId: user?.id as string,
       });
 
       await refetchBookshelves();

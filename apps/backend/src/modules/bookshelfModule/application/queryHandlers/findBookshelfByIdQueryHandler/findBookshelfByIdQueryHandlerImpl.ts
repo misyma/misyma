@@ -3,6 +3,7 @@ import {
   type FindBookshelfByIdQueryHandler,
   type FindBookshelfByIdResult,
 } from './findBookshelfByIdQueryHandler.js';
+import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type BookshelfRepository } from '../../../domain/repositories/bookshelfRepository/bookshelfRepository.js';
 
@@ -10,14 +11,22 @@ export class FindBookshelfByIdQueryHandlerImpl implements FindBookshelfByIdQuery
   public constructor(private readonly bookshelfRepository: BookshelfRepository) {}
 
   public async execute(payload: FindBookshelfByIdPayload): Promise<FindBookshelfByIdResult> {
-    const { id } = payload;
+    const { bookshelfId, userId } = payload;
 
-    const bookshelf = await this.bookshelfRepository.findBookshelf({ where: { id } });
+    const bookshelf = await this.bookshelfRepository.findBookshelf({ where: { id: bookshelfId } });
 
     if (!bookshelf) {
       throw new ResourceNotFoundError({
         resource: 'Bookshelf',
-        id,
+        bookshelfId,
+      });
+    }
+
+    if (userId !== bookshelf.getUserId()) {
+      throw new OperationNotValidError({
+        reason: 'User does not have permission to view this bookshelf.',
+        bookshelfId,
+        userId,
       });
     }
 

@@ -35,5 +35,5 @@ export const useCreateBookshelfMutation = (
   return useMutation({
     mutationFn: createBookshelf,
     ...options,
-  })
+  });
 };

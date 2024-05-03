@@ -1,6 +1,8 @@
 import { BookshelfHttpController } from './api/httpControllers/bookshelfHttpController/bookshelfHttpController.js';
 import { type CreateBookshelfCommandHandler } from './application/commandHandlers/createBookshelfCommandHandler/createBookshelfCommandHandler.js';
 import { CreateBookshelfCommandHandlerImpl } from './application/commandHandlers/createBookshelfCommandHandler/createBookshelfCommandHandlerImpl.js';
+import { type DeleteBookshelfCommandHandler } from './application/commandHandlers/deleteBookshelfCommandHandler/deleteBookshelfCommandHandler.js';
+import { DeleteBookshelfCommandHandlerImpl } from './application/commandHandlers/deleteBookshelfCommandHandler/deleteBookshelfCommandHandlerImpl.js';
 import { type UpdateBookshelfCommandHandler } from './application/commandHandlers/updateBookshelfCommandHandler/updateBookshelfCommandHandler.js';
 import { UpdateBookshelfCommandHandlerImpl } from './application/commandHandlers/updateBookshelfCommandHandler/updateBookshelfCommandHandlerImpl.js';
 import { type FindBookshelfByIdQueryHandler } from './application/queryHandlers/findBookshelfByIdQueryHandler/findBookshelfByIdQueryHandler.js';
@@ -41,6 +43,7 @@ export class BookshelfModule implements DependencyInjectionModule {
           container.get<FindBookshelfByIdQueryHandler>(symbols.findBookshelfByIdQueryHandler),
           container.get<CreateBookshelfCommandHandler>(symbols.createBookshelfCommandHandler),
           container.get<UpdateBookshelfCommandHandler>(symbols.updateBookshelfCommandHandler),
+          container.get<DeleteBookshelfCommandHandler>(symbols.deleteBookshelfCommandHandler),
           container.get<AccessControlService>(authSymbols.accessControlService),
         ),
     );
@@ -89,6 +92,15 @@ export class BookshelfModule implements DependencyInjectionModule {
       symbols.updateBookshelfCommandHandler,
       () =>
         new UpdateBookshelfCommandHandlerImpl(
+          container.get<BookshelfRepository>(symbols.bookshelfRepository),
+          container.get<LoggerService>(coreSymbols.loggerService),
+        ),
+    );
+
+    container.bind<DeleteBookshelfCommandHandler>(
+      symbols.deleteBookshelfCommandHandler,
+      () =>
+        new DeleteBookshelfCommandHandlerImpl(
           container.get<BookshelfRepository>(symbols.bookshelfRepository),
           container.get<LoggerService>(coreSymbols.loggerService),
         ),

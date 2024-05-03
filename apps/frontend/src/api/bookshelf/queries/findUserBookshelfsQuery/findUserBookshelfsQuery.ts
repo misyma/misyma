@@ -1,17 +1,15 @@
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
-import { FindBookshelvesByUserIdParams, FindBookshelvesByUserIdResponseBody } from '@common/contracts';
+import { FindBookshelvesByUserIdResponseBody } from '@common/contracts';
 import { HttpService } from '../../../../core/services/httpService/httpService';
 import { useQuery } from '@tanstack/react-query';
 
 export const useFindUserBookshelfsQuery = (userId: string | undefined) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
-  const findUserBookshelfs = async (values: FindBookshelvesByUserIdParams) => {
-    const { userId } = values;
-
+  const findUserBookshelfs = async () => {
     const response = await HttpService.get<FindBookshelvesByUserIdResponseBody>({
-      url: `/bookshelves/user/${userId}`,
+      url: '/bookshelves',
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -25,8 +23,8 @@ export const useFindUserBookshelfsQuery = (userId: string | undefined) => {
   };
 
   return useQuery<FindBookshelvesByUserIdResponseBody>({
-    queryKey: ['findUserBookshelfs', userId],
-    queryFn: () => findUserBookshelfs({ userId: userId as string }), // todo: improve
+    queryKey: ['findUserBookshelfs'],
+    queryFn: () => findUserBookshelfs(),
     enabled: !!accessToken && !!userId,
   });
 };

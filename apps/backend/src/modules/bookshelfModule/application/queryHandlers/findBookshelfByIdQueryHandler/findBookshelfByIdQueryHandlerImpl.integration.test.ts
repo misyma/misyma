@@ -39,7 +39,7 @@ describe('FindBookshelfByIdQueryHandler', () => {
     expect(
       async () =>
         await queryHandler.execute({
-          id: nonExistentBookshelfId,
+          bookshelfId: nonExistentBookshelfId,
           userId: Generator.uuid(),
         }),
     ).toThrowErrorInstance({
@@ -60,7 +60,7 @@ describe('FindBookshelfByIdQueryHandler', () => {
     });
 
     const { bookshelf } = await queryHandler.execute({
-      id: createdBookshelf.id,
+      bookshelfId: createdBookshelf.id,
       userId: user.id,
     });
 

@@ -2,7 +2,7 @@ import { type CommandHandler } from '../../../../../common/types/commandHandler.
 import { type Bookshelf } from '../../../domain/entities/bookshelf/bookshelf.js';
 
 export interface UpdateBookshelfPayload {
-  readonly id: string;
+  readonly bookshelfId: string;
   readonly userId: string;
   readonly name: string;
 }
