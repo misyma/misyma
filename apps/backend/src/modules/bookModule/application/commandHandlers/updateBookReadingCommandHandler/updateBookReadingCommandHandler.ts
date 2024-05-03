@@ -2,15 +2,15 @@ import { type CommandHandler } from '../../../../../common/types/commandHandler.
 import { type BookReading } from '../../../domain/entities/bookReading/bookReading.js';
 
 export interface UpdateBookReadingPayload {
-  id: string;
-  comment?: string | undefined;
-  rating?: number | undefined;
-  startedAt?: Date | undefined;
-  endedAt?: Date | undefined;
+  readonly id: string;
+  readonly comment?: string | undefined;
+  readonly rating?: number | undefined;
+  readonly startedAt?: Date | undefined;
+  readonly endedAt?: Date | undefined;
 }
 
 export interface UpdateBookReadingResult {
-  bookReading: BookReading;
+  readonly bookReading: BookReading;
 }
 
 export type UpdateBookReadingCommandHandler = CommandHandler<UpdateBookReadingPayload, UpdateBookReadingResult>;

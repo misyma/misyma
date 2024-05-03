@@ -25,8 +25,6 @@ import { UuidServiceImpl } from '../libs/uuid/services/uuidService/uuidServiceIm
 import { AuthModule } from '../modules/authModule/authModule.js';
 import { BookModule } from '../modules/bookModule/bookModule.js';
 import { BookDatabaseManager } from '../modules/bookModule/infrastructure/databases/bookDatabase/bookDatabaseManager.js';
-import { BookReadingModule } from '../modules/bookReadingsModule/bookReadingModule.js';
-import { BookReadingDatabaseManager } from '../modules/bookReadingsModule/infrastructure/databases/bookReadingsDatabase/bookReadingDatabaseManager.js';
 import { BookshelfModule } from '../modules/bookshelfModule/bookshelfModule.js';
 import { BookshelfDatabaseManager } from '../modules/bookshelfModule/infrastructure/databases/bookshelvesDatabase/bookshelfDatabaseManager.js';
 import { type HashService } from '../modules/userModule/application/services/hashService/hashService.js';
@@ -39,12 +37,7 @@ import { UserModule } from '../modules/userModule/userModule.js';
 
 export class Application {
   private static async setupDatabase(container: DependencyInjectionContainer): Promise<void> {
-    const coreDatabaseManagers = [
-      UserDatabaseManager,
-      BookDatabaseManager,
-      BookshelfDatabaseManager,
-      BookReadingDatabaseManager,
-    ];
+    const coreDatabaseManagers = [UserDatabaseManager, BookDatabaseManager, BookshelfDatabaseManager];
 
     const eventsDatabaseManagers = [UserEventsDatabaseManager];
 
@@ -112,7 +105,6 @@ export class Application {
       new AuthModule(),
       new BookModule(),
       new BookshelfModule(),
-      new BookReadingModule(),
     ];
 
     const container = DependencyInjectionContainerFactory.create({ modules });

@@ -4,8 +4,8 @@ import {
   type FindBookReadingsByUserBookIdResult,
 } from './findBookReadingsByUserBookIdQueryHandler.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
-import { type UserBookRepository } from '../../../../bookModule/domain/repositories/userBookRepository/userBookRepository.js';
 import { type BookReadingRepository } from '../../../domain/repositories/bookReadingRepository/bookReadingRepository.js';
+import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
 
 export class FindBookReadingsByBookIdQueryHandlerImpl implements FindBookReadingsByUserBookIdQueryHandler {
   public constructor(

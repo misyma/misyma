@@ -1,4 +1,7 @@
-import { type BookReadingState, type BookReading } from '../../entities/bookReading/bookReading.js';
+import {
+  type BookReadingState,
+  type BookReading,
+} from '../../../../bookModule/domain/entities/bookReading/bookReading.js';
 
 export interface FindBookReadingPayload {
   readonly id: string;

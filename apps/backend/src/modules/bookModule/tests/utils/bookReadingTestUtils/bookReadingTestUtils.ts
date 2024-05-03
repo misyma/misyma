@@ -1,6 +1,6 @@
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
-import { type BookReadingRawEntity } from '../../../infrastructure/databases/bookReadingsDatabase/tables/bookReadingTable/bookReadingRawEntity.js';
-import { BookReadingTable } from '../../../infrastructure/databases/bookReadingsDatabase/tables/bookReadingTable/bookReadingTable.js';
+import { type BookReadingRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/bookReadingTable/bookReadingRawEntity.js';
+import { BookReadingTable } from '../../../infrastructure/databases/bookDatabase/tables/bookReadingTable/bookReadingTable.js';
 import { BookReadingTestFactory } from '../../factories/bookReadingTestFactory/bookReadingTestFactory.js';
 
 interface CreateAndPersistPayload {

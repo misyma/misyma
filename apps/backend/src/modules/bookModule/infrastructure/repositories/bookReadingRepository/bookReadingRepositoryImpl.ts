@@ -1,3 +1,4 @@
+import { type BookReadingMapper } from './bookReadingMapper/bookReadingMapper.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
@@ -10,9 +11,8 @@ import {
   type FindBookReadingsPayload,
   type SavePayload,
 } from '../../../domain/repositories/bookReadingRepository/bookReadingRepository.js';
-import { type BookReadingRawEntity } from '../../databases/bookReadingsDatabase/tables/bookReadingTable/bookReadingRawEntity.js';
-import { BookReadingTable } from '../../databases/bookReadingsDatabase/tables/bookReadingTable/bookReadingTable.js';
-import { type BookReadingMapper } from '../mappers/bookReadingMapper/bookReadingMapper.js';
+import { type BookReadingRawEntity } from '../../databases/bookDatabase/tables/bookReadingTable/bookReadingRawEntity.js';
+import { BookReadingTable } from '../../databases/bookDatabase/tables/bookReadingTable/bookReadingTable.js';
 
 type CreateBookReadingPayload = { bookReading: BookReadingState };
 
