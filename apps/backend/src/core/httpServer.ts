@@ -172,11 +172,6 @@ export class HttpServer {
       },
       staticCSP: true,
     });
-
-    this.loggerService.debug({
-      message: 'OpenAPI documentation initialized.',
-      path: '/api/docs',
-    });
   }
 
   private addRequestPreprocessing(): void {
