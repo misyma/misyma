@@ -72,12 +72,7 @@ export class HttpRouter {
         try {
           this.loggerService.debug({
             message: 'Received an HTTP request.',
-            path: fastifyRequest.url,
-            method,
-            pathParams: fastifyRequest.params,
-            queryParams: fastifyRequest.query,
-            body: fastifyRequest.body,
-            headers: fastifyRequest.headers,
+            endpoint: `${method} ${fastifyRequest.url}`,
           });
 
           let attachedFile: AttachedFile | undefined;
@@ -114,8 +109,7 @@ export class HttpRouter {
 
           this.loggerService.info({
             message: 'Sent an HTTP response.',
-            path: fastifyRequest.url,
-            method,
+            endpoint: `${method} ${fastifyRequest.url}`,
             statusCode,
           });
         } catch (error) {

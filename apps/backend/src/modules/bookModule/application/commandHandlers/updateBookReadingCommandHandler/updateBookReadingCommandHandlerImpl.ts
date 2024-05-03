@@ -46,16 +46,23 @@ export class UpdateBookReadingCommandHandlerImpl implements UpdateBookReadingCom
       });
     }
 
-    if (startedAt !== undefined) {
-      bookReading.setStartedAtDate({
+    if (startedAt !== undefined && endedAt !== undefined) {
+      bookReading.setReadingDates({
         startedAt,
-      });
-    }
-
-    if (endedAt !== undefined) {
-      bookReading.setEndedAtDate({
         endedAt,
       });
+    } else {
+      if (startedAt !== undefined) {
+        bookReading.setStartedAtDate({
+          startedAt,
+        });
+      }
+
+      if (endedAt !== undefined) {
+        bookReading.setEndedAtDate({
+          endedAt,
+        });
+      }
     }
 
     const updatedBookReading = await this.bookReadingRepository.saveBookReading({

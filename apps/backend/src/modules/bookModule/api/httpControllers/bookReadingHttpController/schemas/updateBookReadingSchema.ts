@@ -23,7 +23,7 @@ export const updateBookReadingBodyDTOSchema = Type.Object({
     }),
   ),
   rating: Type.Optional(
-    Type.Number({
+    Type.Integer({
       minimum: 1,
       maximum: 10,
     }),

@@ -19,7 +19,7 @@ export const createBookReadingBodyDTOSchema = Type.Object({
     minLength: 1,
     maxLength: 256,
   }),
-  rating: Type.Number({
+  rating: Type.Integer({
     minimum: 1,
     maximum: 10,
   }),
