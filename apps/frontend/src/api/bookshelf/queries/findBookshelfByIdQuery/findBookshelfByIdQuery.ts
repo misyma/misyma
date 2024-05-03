@@ -8,10 +8,10 @@ export const useFindBookshelfByIdQuery = (bookshelfId: string) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const findBookshelfById = async (values: FindBookshelfByIdParams) => {
-    const { id } = values;
+    const { bookshelfId } = values;
 
     const response = await HttpService.get<FindBookshelfByIdResponseBody>({
-      url: `/bookshelves/${id}`,
+      url: `/bookshelves/${bookshelfId}`,
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -26,7 +26,7 @@ export const useFindBookshelfByIdQuery = (bookshelfId: string) => {
 
   return useQuery<FindBookshelfByIdResponseBody>({
     queryKey: ['findBookshelfById', bookshelfId],
-    queryFn: () => findBookshelfById({ id: bookshelfId }),
+    queryFn: () => findBookshelfById({ bookshelfId }),
     enabled: !!accessToken && !!bookshelfId,
   });
 };

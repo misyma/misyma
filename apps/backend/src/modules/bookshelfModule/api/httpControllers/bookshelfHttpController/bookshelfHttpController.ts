@@ -1,5 +1,3 @@
-import { type FindBookshelvesByUserIdParams } from '@common/contracts';
-
 import { type BookshelfDTO } from './schemas/bookshelfDto.js';
 import {
   type CreateBookshelfBodyDTO,
@@ -7,6 +5,12 @@ import {
   createBookshelfBodyDTOSchema,
   createBookshelfResponseBodyDTOSchema,
 } from './schemas/createBookshelfSchema.js';
+import {
+  type DeleteBookshelfPathParamsDTO,
+  type DeleteBookshelfResponseBodyDTO,
+  deleteBookshelfPathParamsDTOSchema,
+  deleteBookshelfResponseBodyDTOSchema,
+} from './schemas/deleteBookshelfSchema.js';
 import {
   type FindBookshelfByIdResponseBodyDTO,
   type FindBookshelfByIdPathParamsDTO,
@@ -16,7 +20,6 @@ import {
 import {
   type FindBookshelvesByUserIdResponseBodyDTO,
   findBookshelvesByUserIdResponseBodyDTOSchema,
-  findBookshelvesByUserIdPathParamsDTOSchema,
   type FindBookshelvesByUserIdQueryParamsDTO,
 } from './schemas/findBookshelvesByUserIdSchema.js';
 import {
@@ -30,12 +33,17 @@ import {
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
-import { type HttpCreatedResponse, type HttpOkResponse } from '../../../../../common/types/http/httpResponse.js';
+import {
+  type HttpNoContentResponse,
+  type HttpCreatedResponse,
+  type HttpOkResponse,
+} from '../../../../../common/types/http/httpResponse.js';
 import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
 import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.js';
 import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
 import { type CreateBookshelfCommandHandler } from '../../../application/commandHandlers/createBookshelfCommandHandler/createBookshelfCommandHandler.js';
+import { type DeleteBookshelfCommandHandler } from '../../../application/commandHandlers/deleteBookshelfCommandHandler/deleteBookshelfCommandHandler.js';
 import { type UpdateBookshelfCommandHandler } from '../../../application/commandHandlers/updateBookshelfCommandHandler/updateBookshelfCommandHandler.js';
 import { type FindBookshelfByIdQueryHandler } from '../../../application/queryHandlers/findBookshelfByIdQueryHandler/findBookshelfByIdQueryHandler.js';
 import { type FindBookshelvesByUserIdQueryHandler } from '../../../application/queryHandlers/findBookshelvesByUserIdQueryHandler/findBookshelvesByUserIdQueryHandler.js';
@@ -54,6 +62,7 @@ export class BookshelfHttpController implements HttpController {
     private readonly findBookshelfByIdQueryHandler: FindBookshelfByIdQueryHandler,
     private readonly createBookshelfCommandHandler: CreateBookshelfCommandHandler,
     private readonly updateBookshelfCommandHandler: UpdateBookshelfCommandHandler,
+    private readonly deleteBookshelfCommandHandler: DeleteBookshelfCommandHandler,
     private readonly accessControlService: AccessControlService,
   ) {}
 
@@ -61,13 +70,10 @@ export class BookshelfHttpController implements HttpController {
     return [
       new HttpRoute({
         method: HttpMethodName.get,
-        path: '/user/:userId',
         handler: this.getUserBookshelves.bind(this),
         description: 'Get user bookshelves',
         schema: {
-          request: {
-            pathParams: findBookshelvesByUserIdPathParamsDTOSchema,
-          },
+          request: {},
           response: {
             [HttpStatusCode.ok]: {
               schema: findBookshelvesByUserIdResponseBodyDTOSchema,
@@ -79,7 +85,7 @@ export class BookshelfHttpController implements HttpController {
       }),
       new HttpRoute({
         method: HttpMethodName.get,
-        path: ':id',
+        path: ':bookshelfId',
         handler: this.getBookshelf.bind(this),
         schema: {
           request: {
@@ -128,17 +134,31 @@ export class BookshelfHttpController implements HttpController {
           },
         },
       }),
+      new HttpRoute({
+        method: HttpMethodName.delete,
+        path: '/:bookshelfId',
+        handler: this.deleteBookshelf.bind(this),
+        description: 'Delete bookshelf',
+        schema: {
+          request: {
+            pathParams: deleteBookshelfPathParamsDTOSchema,
+          },
+          response: {
+            [HttpStatusCode.noContent]: {
+              description: 'Bookshelf deleted',
+              schema: deleteBookshelfResponseBodyDTOSchema,
+            },
+          },
+        },
+      }),
     ];
   }
 
   private async getUserBookshelves(
-    request: HttpRequest<null, FindBookshelvesByUserIdQueryParamsDTO, FindBookshelvesByUserIdParams>,
+    request: HttpRequest<undefined, FindBookshelvesByUserIdQueryParamsDTO, undefined>,
   ): Promise<HttpOkResponse<FindBookshelvesByUserIdResponseBodyDTO>> {
-    const { userId } = request.pathParams;
-
-    await this.accessControlService.verifyBearerToken({
+    const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
-      expectedUserId: userId,
     });
 
     const { page = 1, pageSize = 10 } = request.queryParams;
@@ -163,16 +183,16 @@ export class BookshelfHttpController implements HttpController {
   }
 
   private async getBookshelf(
-    request: HttpRequest<null, null, FindBookshelfByIdPathParamsDTO>,
+    request: HttpRequest<undefined, undefined, FindBookshelfByIdPathParamsDTO>,
   ): Promise<HttpOkResponse<FindBookshelfByIdResponseBodyDTO>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
-    const { id } = request.pathParams;
+    const { bookshelfId } = request.pathParams;
 
     const { bookshelf } = await this.findBookshelfByIdQueryHandler.execute({
-      id,
+      bookshelfId,
       userId,
     });
 
@@ -185,11 +205,10 @@ export class BookshelfHttpController implements HttpController {
   private async createBookshelf(
     request: HttpRequest<CreateBookshelfBodyDTO>,
   ): Promise<HttpCreatedResponse<CreateBookshelfResponseBodyDTO>> {
-    const { name, userId } = request.body;
+    const { name } = request.body;
 
-    await this.accessControlService.verifyBearerToken({
+    const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
-      expectedUserId: userId,
     });
 
     const { bookshelf } = await this.createBookshelfCommandHandler.execute({
@@ -204,7 +223,7 @@ export class BookshelfHttpController implements HttpController {
   }
 
   private async updateBookshelf(
-    request: HttpRequest<UpdateBookshelfBodyDTO, null, UpdateBookshelfPathParamsDTO>,
+    request: HttpRequest<UpdateBookshelfBodyDTO, undefined, UpdateBookshelfPathParamsDTO>,
   ): Promise<HttpOkResponse<UpdateBookshelfResponseBodyDTO>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
@@ -215,7 +234,7 @@ export class BookshelfHttpController implements HttpController {
     const { name } = request.body;
 
     const { bookshelf } = await this.updateBookshelfCommandHandler.execute({
-      id: bookshelfId,
+      bookshelfId,
       name,
       userId,
     });
@@ -223,6 +242,26 @@ export class BookshelfHttpController implements HttpController {
     return {
       statusCode: HttpStatusCode.ok,
       body: this.mapBookshelfToBookshelfDTO({ bookshelf }),
+    };
+  }
+
+  private async deleteBookshelf(
+    request: HttpRequest<undefined, undefined, DeleteBookshelfPathParamsDTO>,
+  ): Promise<HttpNoContentResponse<DeleteBookshelfResponseBodyDTO>> {
+    const { userId } = await this.accessControlService.verifyBearerToken({
+      authorizationHeader: request.headers['authorization'],
+    });
+
+    const { bookshelfId } = request.pathParams;
+
+    await this.deleteBookshelfCommandHandler.execute({
+      bookshelfId,
+      userId,
+    });
+
+    return {
+      statusCode: HttpStatusCode.noContent,
+      body: null,
     };
   }
 

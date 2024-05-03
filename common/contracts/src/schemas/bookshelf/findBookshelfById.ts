@@ -1,7 +1,7 @@
 import { type Bookshelf } from './bookshelf.js';
 
 export interface FindBookshelfByIdParams {
-  readonly id: string;
+  readonly bookshelfId: string;
 }
 
 export interface FindBookshelfByIdResponseBody extends Bookshelf {}

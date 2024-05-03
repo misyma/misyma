@@ -1,14 +1,11 @@
 export const symbols = {
-  bookshelfRepository: Symbol('bookshelfRepository'),
-
   bookshelfMapper: Symbol('bookshelfMapper'),
-
+  bookshelfRepository: Symbol('bookshelfRepository'),
   findBookshelfByIdQueryHandler: Symbol('findBookshelfByIdQueryHandler'),
   findBookshelvesByUserIdQueryHandler: Symbol('findBookshelvesByUserIdQueryHandler'),
-
   createBookshelfCommandHandler: Symbol('createBookshelfCommandHandler'),
   updateBookshelfCommandHandler: Symbol('updateBookshelfCommandHandler'),
-
+  deleteBookshelfCommandHandler: Symbol('deleteBookshelfCommandHandler'),
   bookshelfHttpController: Symbol('bookshelfHttpController'),
 };
 

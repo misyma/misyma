@@ -15,21 +15,21 @@ export class UpdateBookshelfCommandHandlerImpl implements UpdateBookshelfCommand
   ) {}
 
   public async execute(payload: UpdateBookshelfPayload): Promise<UpdateBookshelfResult> {
-    const { id, name, userId } = payload;
+    const { bookshelfId, name, userId } = payload;
 
     this.loggerService.debug({
       message: 'Updating Bookshelf...',
-      id,
+      bookshelfId,
       name,
       userId,
     });
 
-    const existingBookshelf = await this.bookshelfRepository.findBookshelf({ where: { id } });
+    const existingBookshelf = await this.bookshelfRepository.findBookshelf({ where: { id: bookshelfId } });
 
     if (!existingBookshelf) {
       throw new ResourceNotFoundError({
         resource: 'Bookshelf',
-        id,
+        bookshelfId,
         userId,
       });
     }
@@ -37,7 +37,7 @@ export class UpdateBookshelfCommandHandlerImpl implements UpdateBookshelfCommand
     if (userId !== existingBookshelf.getUserId()) {
       throw new OperationNotValidError({
         reason: 'User does not have permission to update this bookshelf.',
-        id,
+        bookshelfId,
         name,
         userId,
       });
@@ -50,7 +50,7 @@ export class UpdateBookshelfCommandHandlerImpl implements UpdateBookshelfCommand
       },
     });
 
-    if (bookshelfWithSameName && bookshelfWithSameName.getId() !== id) {
+    if (bookshelfWithSameName && bookshelfWithSameName.getId() !== bookshelfId) {
       throw new OperationNotValidError({
         reason: 'Bookshelf with this name already exists.',
         name,
@@ -64,7 +64,7 @@ export class UpdateBookshelfCommandHandlerImpl implements UpdateBookshelfCommand
 
     this.loggerService.debug({
       message: 'Bookshelf updated.',
-      id,
+      bookshelfId,
       name,
       userId,
     });

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import { type UpdateBookshelfCommandHandler } from './updateBookshelfCommandHandler.js';
+import { type DeleteBookshelfCommandHandler } from './deleteBookshelfCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
@@ -10,8 +10,8 @@ import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestU
 import { symbols } from '../../../symbols.js';
 import { type BookshelfTestUtils } from '../../../tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 
-describe('UpdateBookshelfCommandHandlerImpl', () => {
-  let commandHandler: UpdateBookshelfCommandHandler;
+describe('DeleteBookshelfCommandHandlerImpl', () => {
+  let commandHandler: DeleteBookshelfCommandHandler;
 
   let userTestUtils: UserTestUtils;
 
@@ -20,7 +20,7 @@ describe('UpdateBookshelfCommandHandlerImpl', () => {
   beforeEach(() => {
     const container = TestContainer.create();
 
-    commandHandler = container.get<UpdateBookshelfCommandHandler>(symbols.updateBookshelfCommandHandler);
+    commandHandler = container.get<DeleteBookshelfCommandHandler>(symbols.deleteBookshelfCommandHandler);
 
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
 
@@ -34,7 +34,6 @@ describe('UpdateBookshelfCommandHandlerImpl', () => {
       async () =>
         await commandHandler.execute({
           bookshelfId: nonExistentBookshelfId,
-          name: Generator.alphaString(20),
           userId: Generator.uuid(),
         }),
     ).toThrowErrorInstance({
@@ -45,7 +44,7 @@ describe('UpdateBookshelfCommandHandlerImpl', () => {
     });
   });
 
-  it('throws an error - when User does not have permission to update this Bookshelf', async () => {
+  it('throws an error - when User does not have permission to delete this Bookshelf', async () => {
     const user = await userTestUtils.createAndPersist();
 
     const anotherUser = await userTestUtils.createAndPersist();
@@ -60,18 +59,17 @@ describe('UpdateBookshelfCommandHandlerImpl', () => {
       async () =>
         await commandHandler.execute({
           bookshelfId: bookshelf.id,
-          name: Generator.alphaString(20),
           userId: user.id,
         }),
     ).toThrowErrorInstance({
       instance: OperationNotValidError,
       context: {
-        reason: 'User does not have permission to update this bookshelf.',
+        reason: 'User does not have permission to delete this bookshelf.',
       },
     });
   });
 
-  it('throws an error - when Bookshelf with this name already exists', async () => {
+  it('deletes a Bookshelf', async () => {
     const user = await userTestUtils.createAndPersist();
 
     const bookshelf = await bookshelfTestUtils.createAndPersist({
@@ -80,57 +78,15 @@ describe('UpdateBookshelfCommandHandlerImpl', () => {
       },
     });
 
-    const anotherBookshelf = await bookshelfTestUtils.createAndPersist({
-      input: {
-        userId: user.id,
-      },
-    });
-
-    expect(
-      async () =>
-        await commandHandler.execute({
-          bookshelfId: bookshelf.id,
-          name: anotherBookshelf.name,
-          userId: user.id,
-        }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
-        reason: 'Bookshelf with this name already exists.',
-      },
-    });
-  });
-
-  it('updates a Bookshelf', async () => {
-    const user = await userTestUtils.createAndPersist();
-
-    const bookshelf = await bookshelfTestUtils.createAndPersist({
-      input: {
-        userId: user.id,
-      },
-    });
-
-    const newName = Generator.alphaString(30);
-
-    const { bookshelf: updatedBookshelf } = await commandHandler.execute({
+    await commandHandler.execute({
       bookshelfId: bookshelf.id,
       userId: user.id,
-      name: newName,
     });
 
-    expect(updatedBookshelf.getState()).toMatchObject({
-      name: newName,
-      userId: user.id,
-    });
-
-    const persistedUpdatedBookshelf = await bookshelfTestUtils.findById({
+    const foundBookshelf = await bookshelfTestUtils.findById({
       id: bookshelf.id,
     });
 
-    expect(persistedUpdatedBookshelf).toMatchObject({
-      id: bookshelf.id,
-      name: newName,
-      userId: user.id,
-    });
+    expect(foundBookshelf).toBeNull();
   });
 });
