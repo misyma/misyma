@@ -1,8 +1,8 @@
 import { type DatabaseClient } from '../../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type Migration } from '../../../../../../libs/database/types/migration.js';
 
-export class M1CreateBookReadingTableMigration implements Migration {
-  public readonly name = 'M1CreateBookReadingTableMigration';
+export class M6CreateBookReadingTableMigration implements Migration {
+  public readonly name = 'M6CreateBookReadingTableMigration';
 
   private readonly bookReadingsTableName = 'bookReadings';
 

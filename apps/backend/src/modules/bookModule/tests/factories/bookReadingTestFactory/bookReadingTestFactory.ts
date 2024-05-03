@@ -1,6 +1,6 @@
 import { Generator } from '../../../../../../tests/generator.js';
-import { BookReading, type BookReadingState } from '../../../domain/entities/bookReading/bookReading.js';
-import { type BookReadingRawEntity } from '../../../infrastructure/databases/bookReadingsDatabase/tables/bookReadingTable/bookReadingRawEntity.js';
+import { BookReading, type BookReadingState } from '../../../../bookModule/domain/entities/bookReading/bookReading.js';
+import { type BookReadingRawEntity } from '../../../../bookModule/infrastructure/databases/bookDatabase/tables/bookReadingTable/bookReadingRawEntity.js';
 
 export class BookReadingTestFactory {
   public create(input: Partial<BookReadingState> = {}): BookReading {

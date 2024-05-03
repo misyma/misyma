@@ -4,6 +4,7 @@ import { AuthorAdminHttpController } from './api/httpControllers/authorAdminHttp
 import { AuthorHttpController } from './api/httpControllers/authorHttpController/authorHttpController.js';
 import { BookAdminHttpController } from './api/httpControllers/bookAdminHttpController/bookAdminHttpController.js';
 import { BookHttpController } from './api/httpControllers/bookHttpController/bookHttpController.js';
+import { BookReadingHttpController } from './api/httpControllers/bookReadingHttpController/bookReadingHttpController.js';
 import { GenreAdminHttpController } from './api/httpControllers/genreAdminHttpController/genreAdminHttpController.js';
 import { GenreHttpController } from './api/httpControllers/genreHttpController/genreHttpController.js';
 import { UserBookHttpController } from './api/httpControllers/userBookHttpController/userBookHttpController.js';
@@ -39,6 +40,10 @@ describe('BookModule', () => {
 
     expect(container.get<AuthorAdminHttpController>(bookSymbols.authorAdminHttpController)).toBeInstanceOf(
       AuthorAdminHttpController,
+    );
+
+    expect(container.get<BookReadingHttpController>(bookSymbols.bookReadingHttpController)).toBeInstanceOf(
+      BookReadingHttpController,
     );
   });
 });
