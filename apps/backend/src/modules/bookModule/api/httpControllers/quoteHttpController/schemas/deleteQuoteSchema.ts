@@ -1,0 +1,19 @@
+import { type Static, Type } from '@sinclair/typebox';
+
+import type * as contracts from '@common/contracts';
+
+import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
+
+export const deleteQuotePathParamsDtoSchema = Type.Object({
+  id: Type.String({ format: 'uuid' }),
+  userBookId: Type.String({ format: 'uuid' }),
+});
+
+export type DeleteQuotePathParamsDto = TypeExtends<
+  Static<typeof deleteQuotePathParamsDtoSchema>,
+  contracts.DeleteQuotePathParams
+>;
+
+export const deleteQuoteResponseBodyDtoSchema = Type.Null();
+
+export type DeleteQuoteResponseBodyDto = Static<typeof deleteQuoteResponseBodyDtoSchema>;

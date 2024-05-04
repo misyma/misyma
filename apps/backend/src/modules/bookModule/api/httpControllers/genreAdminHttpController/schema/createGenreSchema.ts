@@ -3,20 +3,20 @@ import { type Static, Type } from '@sinclair/typebox';
 import type * as contracts from '@common/contracts';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
-import { genreDTOSchema } from '../../common/genreDto.js';
+import { genreDtoSchema } from '../../common/genreDto.js';
 
-export const createGenreBodyDTOSchema = Type.Object({
+export const createGenreBodyDtoSchema = Type.Object({
   name: Type.String({
     minLength: 1,
     maxLength: 64,
   }),
 });
 
-export type CreateGenreBodyDTO = TypeExtends<contracts.CreateGenreRequestBody, Static<typeof createGenreBodyDTOSchema>>;
+export type CreateGenreBodyDto = TypeExtends<contracts.CreateGenreRequestBody, Static<typeof createGenreBodyDtoSchema>>;
 
-export const createGenreResponseBodyDTOSchema = genreDTOSchema;
+export const createGenreResponseBodyDtoSchema = genreDtoSchema;
 
-export type CreateGenreResponseBodyDTO = TypeExtends<
+export type CreateGenreResponseBodyDto = TypeExtends<
   contracts.CreateGenreResponseBody,
-  Static<typeof createGenreResponseBodyDTOSchema>
+  Static<typeof createGenreResponseBodyDtoSchema>
 >;

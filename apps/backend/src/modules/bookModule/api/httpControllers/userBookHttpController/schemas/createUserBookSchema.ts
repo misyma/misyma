@@ -2,10 +2,10 @@ import { type Static, Type } from '@sinclair/typebox';
 
 import * as contracts from '@common/contracts';
 
-import { userBookDTOSchema } from './userBookDto.js';
+import { userBookDtoSchema } from './userBookDto.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
-export const createUserBookBodyDTOSchema = Type.Object({
+export const createUserBookBodyDtoSchema = Type.Object({
   imageUrl: Type.Optional(
     Type.String({
       minLength: 1,
@@ -18,14 +18,14 @@ export const createUserBookBodyDTOSchema = Type.Object({
   genreIds: Type.Optional(Type.Array(Type.String({ format: 'uuid' }))),
 });
 
-export type CreateUserBookBodyDTO = TypeExtends<
-  Static<typeof createUserBookBodyDTOSchema>,
+export type CreateUserBookBodyDto = TypeExtends<
+  Static<typeof createUserBookBodyDtoSchema>,
   contracts.CreateUserBookRequestBody
 >;
 
-export const createUserBookResponseBodyDTOSchema = userBookDTOSchema;
+export const createUserBookResponseBodyDtoSchema = userBookDtoSchema;
 
-export type CreateUserBookResponseBodyDTO = TypeExtends<
-  Static<typeof createUserBookResponseBodyDTOSchema>,
+export type CreateUserBookResponseBodyDto = TypeExtends<
+  Static<typeof createUserBookResponseBodyDtoSchema>,
   contracts.CreateUserBookResponseBody
 >;

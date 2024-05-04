@@ -1,67 +1,67 @@
 import {
-  type ChangeUserPasswordBodyDTO,
-  type ChangeUserPasswordResponseBodyDTO,
-  changeUserPasswordBodyDTOSchema,
-  changeUserPasswordResponseBodyDTOSchema,
+  type ChangeUserPasswordBodyDto,
+  type ChangeUserPasswordResponseBodyDto,
+  changeUserPasswordBodyDtoSchema,
+  changeUserPasswordResponseBodyDtoSchema,
 } from './schemas/changeUserPasswordSchema.js';
 import {
-  deleteUserResponseBodyDTOSchema,
-  type DeleteUserResponseBodyDTO,
-  type DeleteUserPathParamsDTO,
-  deleteUserPathParamsDTOSchema,
+  deleteUserResponseBodyDtoSchema,
+  type DeleteUserResponseBodyDto,
+  type DeleteUserPathParamsDto,
+  deleteUserPathParamsDtoSchema,
 } from './schemas/deleteUserSchema.js';
-import { findMyUserResponseBodyDTOSchema } from './schemas/findMyUserSchema.js';
+import { findMyUserResponseBodyDtoSchema } from './schemas/findMyUserSchema.js';
 import {
-  findUserPathParamsDTOSchema,
-  findUserResponseBodyDTOSchema,
-  type FindUserPathParamsDTO,
-  type FindUserResponseBodyDTO,
+  findUserPathParamsDtoSchema,
+  findUserResponseBodyDtoSchema,
+  type FindUserPathParamsDto,
+  type FindUserResponseBodyDto,
 } from './schemas/findUserSchema.js';
 import {
-  type LoginUserBodyDTO,
-  type LoginUserResponseBodyDTO,
-  loginUserBodyDTOSchema,
-  loginUserResponseBodyDTOSchema,
+  type LoginUserBodyDto,
+  type LoginUserResponseBodyDto,
+  loginUserBodyDtoSchema,
+  loginUserResponseBodyDtoSchema,
 } from './schemas/loginUserSchema.js';
 import {
-  logoutUserPathParamsDTOSchema,
-  type LogoutUserBodyDTO,
-  type LogoutUserPathParamsDTO,
-  type LogoutUserResponseBodyDTO,
-  logoutUserBodyDTOSchema,
-  logoutUserResponseBodyDTOSchema,
+  logoutUserPathParamsDtoSchema,
+  type LogoutUserBodyDto,
+  type LogoutUserPathParamsDto,
+  type LogoutUserResponseBodyDto,
+  logoutUserBodyDtoSchema,
+  logoutUserResponseBodyDtoSchema,
 } from './schemas/logoutUserSchema.js';
 import {
-  refreshUserTokensBodyDTOSchema,
-  refreshUserTokensResponseBodyDTOSchema,
-  type RefreshUserTokensBodyDTO,
-  type RefreshUserTokensResponseBodyDTO,
+  refreshUserTokensBodyDtoSchema,
+  refreshUserTokensResponseBodyDtoSchema,
+  type RefreshUserTokensBodyDto,
+  type RefreshUserTokensResponseBodyDto,
 } from './schemas/refreshUserTokensSchema.js';
 import {
-  registerUserBodyDTOSchema,
-  registerUserResponseBodyDTOSchema,
-  type RegisterUserResponseBodyDTO,
-  type RegisterUserBodyDTO,
+  registerUserBodyDtoSchema,
+  registerUserResponseBodyDtoSchema,
+  type RegisterUserResponseBodyDto,
+  type RegisterUserBodyDto,
   registerUserBodyPreValidationHook,
 } from './schemas/registerUserSchema.js';
 import {
-  type ResetUserPasswordBodyDTO,
-  type ResetUserPasswordResponseBodyDTO,
-  resetUserPasswordBodyDTOSchema,
-  resetUserPasswordResponseBodyDTOSchema,
+  type ResetUserPasswordBodyDto,
+  type ResetUserPasswordResponseBodyDto,
+  resetUserPasswordBodyDtoSchema,
+  resetUserPasswordResponseBodyDtoSchema,
 } from './schemas/resetUserPasswordSchema.js';
 import {
-  type SendVerificationEmailBodyDTO,
-  type SendVerificationEmailResponseBodyDTO,
-  sendVerificationEmailBodyDTOSchema,
-  sendVerificationEmailResponseBodyDTOSchema,
+  type SendVerificationEmailBodyDto,
+  type SendVerificationEmailResponseBodyDto,
+  sendVerificationEmailBodyDtoSchema,
+  sendVerificationEmailResponseBodyDtoSchema,
 } from './schemas/sendVerificationEmailSchema.js';
-import { type UserDTO } from './schemas/userDto.js';
+import { type UserDto } from './schemas/userDto.js';
 import {
-  verifyUserBodyDTOSchema,
-  verifyUserResponseBodyDTOSchema,
-  type VerifyUserBodyDTO,
-  type VerifyUserResponseBodyDTO,
+  verifyUserBodyDtoSchema,
+  verifyUserResponseBodyDtoSchema,
+  type VerifyUserBodyDto,
+  type VerifyUserResponseBodyDto,
 } from './schemas/verifyUserSchema.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
@@ -113,11 +113,11 @@ export class UserHttpController implements HttpController {
         handler: this.registerUser.bind(this),
         schema: {
           request: {
-            body: registerUserBodyDTOSchema,
+            body: registerUserBodyDtoSchema,
           },
           response: {
             [HttpStatusCode.created]: {
-              schema: registerUserResponseBodyDTOSchema,
+              schema: registerUserResponseBodyDtoSchema,
               description: 'User registered',
             },
           },
@@ -131,11 +131,11 @@ export class UserHttpController implements HttpController {
         handler: this.loginUser.bind(this),
         schema: {
           request: {
-            body: loginUserBodyDTOSchema,
+            body: loginUserBodyDtoSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
-              schema: loginUserResponseBodyDTOSchema,
+              schema: loginUserResponseBodyDtoSchema,
               description: 'User logged in',
             },
           },
@@ -149,11 +149,11 @@ export class UserHttpController implements HttpController {
         description: 'Reset user password',
         schema: {
           request: {
-            body: resetUserPasswordBodyDTOSchema,
+            body: resetUserPasswordBodyDtoSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
-              schema: resetUserPasswordResponseBodyDTOSchema,
+              schema: resetUserPasswordResponseBodyDtoSchema,
               description: 'User password reset',
             },
           },
@@ -166,11 +166,11 @@ export class UserHttpController implements HttpController {
         handler: this.changeUserPassword.bind(this),
         schema: {
           request: {
-            body: changeUserPasswordBodyDTOSchema,
+            body: changeUserPasswordBodyDtoSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
-              schema: changeUserPasswordResponseBodyDTOSchema,
+              schema: changeUserPasswordResponseBodyDtoSchema,
               description: 'User password changed',
             },
           },
@@ -182,11 +182,11 @@ export class UserHttpController implements HttpController {
         handler: this.findUser.bind(this),
         schema: {
           request: {
-            pathParams: findUserPathParamsDTOSchema,
+            pathParams: findUserPathParamsDtoSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
-              schema: findUserResponseBodyDTOSchema,
+              schema: findUserResponseBodyDtoSchema,
               description: 'User found',
             },
           },
@@ -202,7 +202,7 @@ export class UserHttpController implements HttpController {
           request: {},
           response: {
             [HttpStatusCode.ok]: {
-              schema: findMyUserResponseBodyDTOSchema,
+              schema: findMyUserResponseBodyDtoSchema,
               description: 'User found',
             },
           },
@@ -216,11 +216,11 @@ export class UserHttpController implements HttpController {
         handler: this.deleteUser.bind(this),
         schema: {
           request: {
-            pathParams: deleteUserPathParamsDTOSchema,
+            pathParams: deleteUserPathParamsDtoSchema,
           },
           response: {
             [HttpStatusCode.noContent]: {
-              schema: deleteUserResponseBodyDTOSchema,
+              schema: deleteUserResponseBodyDtoSchema,
               description: 'User deleted',
             },
           },
@@ -234,11 +234,11 @@ export class UserHttpController implements HttpController {
         handler: this.sendVerificationEmail.bind(this),
         schema: {
           request: {
-            body: sendVerificationEmailBodyDTOSchema,
+            body: sendVerificationEmailBodyDtoSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
-              schema: sendVerificationEmailResponseBodyDTOSchema,
+              schema: sendVerificationEmailResponseBodyDtoSchema,
               description: 'Verification email sent',
             },
           },
@@ -251,11 +251,11 @@ export class UserHttpController implements HttpController {
         handler: this.verifyUserEmail.bind(this),
         schema: {
           request: {
-            body: verifyUserBodyDTOSchema,
+            body: verifyUserBodyDtoSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
-              schema: verifyUserResponseBodyDTOSchema,
+              schema: verifyUserResponseBodyDtoSchema,
               description: `User's email verified.`,
             },
           },
@@ -268,12 +268,12 @@ export class UserHttpController implements HttpController {
         handler: this.logoutUser.bind(this),
         schema: {
           request: {
-            pathParams: logoutUserPathParamsDTOSchema,
-            body: logoutUserBodyDTOSchema,
+            pathParams: logoutUserPathParamsDtoSchema,
+            body: logoutUserBodyDtoSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
-              schema: logoutUserResponseBodyDTOSchema,
+              schema: logoutUserResponseBodyDtoSchema,
               description: `User logged out.`,
             },
           },
@@ -287,11 +287,11 @@ export class UserHttpController implements HttpController {
         handler: this.refreshUserTokens.bind(this),
         schema: {
           request: {
-            body: refreshUserTokensBodyDTOSchema,
+            body: refreshUserTokensBodyDtoSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
-              schema: refreshUserTokensResponseBodyDTOSchema,
+              schema: refreshUserTokensResponseBodyDtoSchema,
               description: 'User tokens refreshed',
             },
           },
@@ -302,8 +302,8 @@ export class UserHttpController implements HttpController {
   }
 
   private async registerUser(
-    request: HttpRequest<RegisterUserBodyDTO>,
-  ): Promise<HttpCreatedResponse<RegisterUserResponseBodyDTO>> {
+    request: HttpRequest<RegisterUserBodyDto>,
+  ): Promise<HttpCreatedResponse<RegisterUserResponseBodyDto>> {
     const { email, password, name } = request.body;
 
     const { user } = await this.registerUserCommandHandler.execute({
@@ -314,11 +314,11 @@ export class UserHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.created,
-      body: this.mapUserToUserDTO(user),
+      body: this.mapUserToUserDto(user),
     };
   }
 
-  private async loginUser(request: HttpRequest<LoginUserBodyDTO>): Promise<HttpOkResponse<LoginUserResponseBodyDTO>> {
+  private async loginUser(request: HttpRequest<LoginUserBodyDto>): Promise<HttpOkResponse<LoginUserResponseBodyDto>> {
     const { email, password } = request.body;
 
     const { accessToken, refreshToken, accessTokenExpiresIn } = await this.loginUserCommandHandler.execute({
@@ -337,8 +337,8 @@ export class UserHttpController implements HttpController {
   }
 
   private async resetUserPassword(
-    request: HttpRequest<ResetUserPasswordBodyDTO, null, null>,
-  ): Promise<HttpOkResponse<ResetUserPasswordResponseBodyDTO>> {
+    request: HttpRequest<ResetUserPasswordBodyDto, null, null>,
+  ): Promise<HttpOkResponse<ResetUserPasswordResponseBodyDto>> {
     const { email } = request.body;
 
     await this.resetUserPasswordCommandHandler.execute({
@@ -352,8 +352,8 @@ export class UserHttpController implements HttpController {
   }
 
   private async changeUserPassword(
-    request: HttpRequest<ChangeUserPasswordBodyDTO, null, null>,
-  ): Promise<HttpOkResponse<ChangeUserPasswordResponseBodyDTO>> {
+    request: HttpRequest<ChangeUserPasswordBodyDto, null, null>,
+  ): Promise<HttpOkResponse<ChangeUserPasswordResponseBodyDto>> {
     const { password, token } = request.body;
 
     await this.changeUserPasswordCommandHandler.execute({
@@ -368,8 +368,8 @@ export class UserHttpController implements HttpController {
   }
 
   private async findUser(
-    request: HttpRequest<undefined, undefined, FindUserPathParamsDTO>,
-  ): Promise<HttpOkResponse<FindUserResponseBodyDTO>> {
+    request: HttpRequest<undefined, undefined, FindUserPathParamsDto>,
+  ): Promise<HttpOkResponse<FindUserResponseBodyDto>> {
     const { id } = request.pathParams;
 
     await this.accessControlService.verifyBearerToken({
@@ -381,11 +381,11 @@ export class UserHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.ok,
-      body: this.mapUserToUserDTO(user),
+      body: this.mapUserToUserDto(user),
     };
   }
 
-  private async findMyUser(request: HttpRequest): Promise<HttpOkResponse<FindUserResponseBodyDTO>> {
+  private async findMyUser(request: HttpRequest): Promise<HttpOkResponse<FindUserResponseBodyDto>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
@@ -394,13 +394,13 @@ export class UserHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.ok,
-      body: this.mapUserToUserDTO(user),
+      body: this.mapUserToUserDto(user),
     };
   }
 
   private async deleteUser(
-    request: HttpRequest<undefined, undefined, DeleteUserPathParamsDTO>,
-  ): Promise<HttpNoContentResponse<DeleteUserResponseBodyDTO>> {
+    request: HttpRequest<undefined, undefined, DeleteUserPathParamsDto>,
+  ): Promise<HttpNoContentResponse<DeleteUserResponseBodyDto>> {
     const { id } = request.pathParams;
 
     await this.accessControlService.verifyBearerToken({
@@ -417,8 +417,8 @@ export class UserHttpController implements HttpController {
   }
 
   private async verifyUserEmail(
-    request: HttpRequest<VerifyUserBodyDTO, undefined, undefined>,
-  ): Promise<HttpOkResponse<VerifyUserResponseBodyDTO>> {
+    request: HttpRequest<VerifyUserBodyDto, undefined, undefined>,
+  ): Promise<HttpOkResponse<VerifyUserResponseBodyDto>> {
     const { token } = request.body;
 
     await this.verifyUserEmailCommandHandler.execute({ emailVerificationToken: token });
@@ -430,8 +430,8 @@ export class UserHttpController implements HttpController {
   }
 
   private async sendVerificationEmail(
-    request: HttpRequest<SendVerificationEmailBodyDTO, undefined, undefined>,
-  ): Promise<HttpOkResponse<SendVerificationEmailResponseBodyDTO>> {
+    request: HttpRequest<SendVerificationEmailBodyDto, undefined, undefined>,
+  ): Promise<HttpOkResponse<SendVerificationEmailResponseBodyDto>> {
     const { email } = request.body;
 
     await this.sendVerificationEmailCommandHandler.execute({
@@ -445,8 +445,8 @@ export class UserHttpController implements HttpController {
   }
 
   private async logoutUser(
-    request: HttpRequest<LogoutUserBodyDTO, undefined, LogoutUserPathParamsDTO>,
-  ): Promise<HttpOkResponse<LogoutUserResponseBodyDTO>> {
+    request: HttpRequest<LogoutUserBodyDto, undefined, LogoutUserPathParamsDto>,
+  ): Promise<HttpOkResponse<LogoutUserResponseBodyDto>> {
     const { id } = request.pathParams;
 
     const { refreshToken, accessToken } = request.body;
@@ -469,8 +469,8 @@ export class UserHttpController implements HttpController {
   }
 
   private async refreshUserTokens(
-    request: HttpRequest<RefreshUserTokensBodyDTO>,
-  ): Promise<HttpOkResponse<RefreshUserTokensResponseBodyDTO>> {
+    request: HttpRequest<RefreshUserTokensBodyDto>,
+  ): Promise<HttpOkResponse<RefreshUserTokensResponseBodyDto>> {
     const { refreshToken: inputRefreshToken } = request.body;
 
     const { accessToken, refreshToken, accessTokenExpiresIn } = await this.refreshUserTokensCommandHandler.execute({
@@ -487,7 +487,7 @@ export class UserHttpController implements HttpController {
     };
   }
 
-  private mapUserToUserDTO(user: User): UserDTO {
+  private mapUserToUserDto(user: User): UserDto {
     return {
       id: user.getId(),
       email: user.getEmail(),

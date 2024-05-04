@@ -2,33 +2,33 @@ import { type Static, Type } from '@sinclair/typebox';
 
 import type * as contracts from '@common/contracts';
 
-import { bookshelfDTOSchema } from './bookshelfDto.js';
+import { bookshelfDtoSchema } from './bookshelfDto.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
-export const updateBookshelfPathParamsDTOSchema = Type.Object({
+export const updateBookshelfPathParamsDtoSchema = Type.Object({
   bookshelfId: Type.String({ format: 'uuid' }),
 });
 
-export type UpdateBookshelfPathParamsDTO = TypeExtends<
-  Static<typeof updateBookshelfPathParamsDTOSchema>,
+export type UpdateBookshelfPathParamsDto = TypeExtends<
+  Static<typeof updateBookshelfPathParamsDtoSchema>,
   contracts.UpdateBookshelfPathParams
 >;
 
-export const updateBookshelfBodyDTOSchema = Type.Object({
+export const updateBookshelfBodyDtoSchema = Type.Object({
   name: Type.String({
     minLength: 1,
     maxLength: 64,
   }),
 });
 
-export type UpdateBookshelfBodyDTO = TypeExtends<
-  Static<typeof updateBookshelfBodyDTOSchema>,
+export type UpdateBookshelfBodyDto = TypeExtends<
+  Static<typeof updateBookshelfBodyDtoSchema>,
   contracts.UpdateBookshelfRequestBody
 >;
 
-export const updateBookshelfResponseBodyDTOSchema = bookshelfDTOSchema;
+export const updateBookshelfResponseBodyDtoSchema = bookshelfDtoSchema;
 
-export type UpdateBookshelfResponseBodyDTO = TypeExtends<
-  Static<typeof updateBookshelfResponseBodyDTOSchema>,
+export type UpdateBookshelfResponseBodyDto = TypeExtends<
+  Static<typeof updateBookshelfResponseBodyDtoSchema>,
   contracts.UpdateBookshelfResponseBody
 >;

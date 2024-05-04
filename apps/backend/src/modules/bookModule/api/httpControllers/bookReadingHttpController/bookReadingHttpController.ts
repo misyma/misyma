@@ -1,38 +1,38 @@
-import { type BookReadingDTO } from './schemas/bookReadingDto.js';
+import { type BookReadingDto } from './schemas/bookReadingDto.js';
 import {
-  type CreateBookReadingBodyDTO,
-  type CreateBookReadingResponseBodyDTO,
-  createBookReadingBodyDTOSchema,
-  createBookReadingResponseBodyDTOSchema,
-  createBookReadingPathParamsDTOSchema,
-  type CreateBookReadingPathParamsDTO,
+  type CreateBookReadingBodyDto,
+  type CreateBookReadingResponseBodyDto,
+  createBookReadingBodyDtoSchema,
+  createBookReadingResponseBodyDtoSchema,
+  createBookReadingPathParamsDtoSchema,
+  type CreateBookReadingPathParamsDto,
 } from './schemas/createBookReadingSchema.js';
 import {
-  type DeleteBookReadingResponseBodyDTO,
-  type DeleteBookReadingPathParamsDTO,
-  deleteBookReadingPathParamsDTOSchema,
-  deleteBookReadingResponseBodyDTOSchema,
+  type DeleteBookReadingResponseBodyDto,
+  type DeleteBookReadingPathParamsDto,
+  deleteBookReadingPathParamsDtoSchema,
+  deleteBookReadingResponseBodyDtoSchema,
 } from './schemas/deleteBookReadingSchema.js';
 import {
-  type FindBookReadingByIdResponseBodyDTO,
-  type FindBookReadingByIdPathParamsDTO,
-  findBookReadingByIdResponseBodyDTOSchema,
-  findBookReadingByIdPathParamsDTOSchema,
+  type FindBookReadingByIdResponseBodyDto,
+  type FindBookReadingByIdPathParamsDto,
+  findBookReadingByIdResponseBodyDtoSchema,
+  findBookReadingByIdPathParamsDtoSchema,
 } from './schemas/findBookReadingByIdSchema.js';
 import {
-  type FindBookReadingsResponseBodyDTO,
-  findBookReadingsResponseBodyDTOSchema,
-  findBookReadingsPathParamsDTOSchema,
-  type FindBookReadingsPathParamsDTO,
-  type FindBookReadingsQueryParamsDTO,
+  type FindBookReadingsResponseBodyDto,
+  findBookReadingsResponseBodyDtoSchema,
+  findBookReadingsPathParamsDtoSchema,
+  type FindBookReadingsPathParamsDto,
+  type FindBookReadingsQueryParamsDto,
 } from './schemas/findBookReadingsSchema.js';
 import {
-  updateBookReadingBodyDTOSchema,
-  updateBookReadingPathParamsDTOSchema,
-  type UpdateBookReadingBodyDTO,
-  type UpdateBookReadingPathParamsDTO,
-  type UpdateBookReadingResponseBodyDTO,
-  updateBookReadingResponseBodyDTOSchema,
+  updateBookReadingBodyDtoSchema,
+  updateBookReadingPathParamsDtoSchema,
+  type UpdateBookReadingBodyDto,
+  type UpdateBookReadingPathParamsDto,
+  type UpdateBookReadingResponseBodyDto,
+  updateBookReadingResponseBodyDtoSchema,
 } from './schemas/updateBookReadingSchema.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
@@ -53,7 +53,7 @@ import { type FindBookReadingByIdQueryHandler } from '../../../application/query
 import { type FindBookReadingsByUserBookIdQueryHandler } from '../../../application/queryHandlers/findBookReadingsByUserBookIdQueryHandler/findBookReadingsByUserBookIdQueryHandler.js';
 import { type BookReading } from '../../../domain/entities/bookReading/bookReading.js';
 
-interface MapBookReadingToBookReadingDTOPayload {
+interface MapBookReadingToBookReadingDtoPayload {
   bookReading: BookReading;
 }
 
@@ -78,11 +78,11 @@ export class BookReadingHttpController implements HttpController {
         description: 'Get BookReadings',
         schema: {
           request: {
-            pathParams: findBookReadingsPathParamsDTOSchema,
+            pathParams: findBookReadingsPathParamsDtoSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
-              schema: findBookReadingsResponseBodyDTOSchema,
+              schema: findBookReadingsResponseBodyDtoSchema,
               description: 'Found BookReadings',
             },
           },
@@ -95,11 +95,11 @@ export class BookReadingHttpController implements HttpController {
         handler: this.getBookReading.bind(this),
         schema: {
           request: {
-            pathParams: findBookReadingByIdPathParamsDTOSchema,
+            pathParams: findBookReadingByIdPathParamsDtoSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
-              schema: findBookReadingByIdResponseBodyDTOSchema,
+              schema: findBookReadingByIdResponseBodyDtoSchema,
               description: 'Found BookReading',
             },
           },
@@ -112,13 +112,13 @@ export class BookReadingHttpController implements HttpController {
         description: 'Create a BookReading',
         schema: {
           request: {
-            pathParams: createBookReadingPathParamsDTOSchema,
-            body: createBookReadingBodyDTOSchema,
+            pathParams: createBookReadingPathParamsDtoSchema,
+            body: createBookReadingBodyDtoSchema,
           },
           response: {
             [HttpStatusCode.created]: {
               description: 'BookReading created',
-              schema: createBookReadingResponseBodyDTOSchema,
+              schema: createBookReadingResponseBodyDtoSchema,
             },
           },
         },
@@ -130,13 +130,13 @@ export class BookReadingHttpController implements HttpController {
         description: 'Update BookReading',
         schema: {
           request: {
-            body: updateBookReadingBodyDTOSchema,
-            pathParams: updateBookReadingPathParamsDTOSchema,
+            body: updateBookReadingBodyDtoSchema,
+            pathParams: updateBookReadingPathParamsDtoSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
               description: 'BookReading updated',
-              schema: updateBookReadingResponseBodyDTOSchema,
+              schema: updateBookReadingResponseBodyDtoSchema,
             },
           },
         },
@@ -148,12 +148,12 @@ export class BookReadingHttpController implements HttpController {
         description: 'Delete BookReading',
         schema: {
           request: {
-            pathParams: deleteBookReadingPathParamsDTOSchema,
+            pathParams: deleteBookReadingPathParamsDtoSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
               description: 'BookReading deleted',
-              schema: deleteBookReadingResponseBodyDTOSchema,
+              schema: deleteBookReadingResponseBodyDtoSchema,
             },
           },
         },
@@ -162,8 +162,8 @@ export class BookReadingHttpController implements HttpController {
   }
 
   private async getBookReadings(
-    request: HttpRequest<null, FindBookReadingsQueryParamsDTO, FindBookReadingsPathParamsDTO>,
-  ): Promise<HttpOkResponse<FindBookReadingsResponseBodyDTO>> {
+    request: HttpRequest<null, FindBookReadingsQueryParamsDto, FindBookReadingsPathParamsDto>,
+  ): Promise<HttpOkResponse<FindBookReadingsResponseBodyDto>> {
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
@@ -189,7 +189,7 @@ export class BookReadingHttpController implements HttpController {
     return {
       statusCode: HttpStatusCode.ok,
       body: {
-        data: bookReadings.map((bookReading) => this.mapBookReadingToBookReadingDTO({ bookReading })),
+        data: bookReadings.map((bookReading) => this.mapBookReadingToBookReadingDto({ bookReading })),
         metadata: {
           page,
           pageSize,
@@ -200,8 +200,8 @@ export class BookReadingHttpController implements HttpController {
   }
 
   private async getBookReading(
-    request: HttpRequest<null, null, FindBookReadingByIdPathParamsDTO>,
-  ): Promise<HttpOkResponse<FindBookReadingByIdResponseBodyDTO>> {
+    request: HttpRequest<null, null, FindBookReadingByIdPathParamsDto>,
+  ): Promise<HttpOkResponse<FindBookReadingByIdResponseBodyDto>> {
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
@@ -213,13 +213,13 @@ export class BookReadingHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.ok,
-      body: this.mapBookReadingToBookReadingDTO({ bookReading }),
+      body: this.mapBookReadingToBookReadingDto({ bookReading }),
     };
   }
 
   private async createBookReading(
-    request: HttpRequest<CreateBookReadingBodyDTO, null, CreateBookReadingPathParamsDTO>,
-  ): Promise<HttpCreatedResponse<CreateBookReadingResponseBodyDTO>> {
+    request: HttpRequest<CreateBookReadingBodyDto, null, CreateBookReadingPathParamsDto>,
+  ): Promise<HttpCreatedResponse<CreateBookReadingResponseBodyDto>> {
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
@@ -246,13 +246,13 @@ export class BookReadingHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.created,
-      body: this.mapBookReadingToBookReadingDTO({ bookReading }),
+      body: this.mapBookReadingToBookReadingDto({ bookReading }),
     };
   }
 
   private async updateBookReading(
-    request: HttpRequest<UpdateBookReadingBodyDTO, null, UpdateBookReadingPathParamsDTO>,
-  ): Promise<HttpOkResponse<UpdateBookReadingResponseBodyDTO>> {
+    request: HttpRequest<UpdateBookReadingBodyDto, null, UpdateBookReadingPathParamsDto>,
+  ): Promise<HttpOkResponse<UpdateBookReadingResponseBodyDto>> {
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
@@ -273,13 +273,13 @@ export class BookReadingHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.ok,
-      body: this.mapBookReadingToBookReadingDTO({ bookReading }),
+      body: this.mapBookReadingToBookReadingDto({ bookReading }),
     };
   }
 
   private async deleteBookReading(
-    request: HttpRequest<null, null, DeleteBookReadingPathParamsDTO>,
-  ): Promise<HttpNoContentResponse<DeleteBookReadingResponseBodyDTO>> {
+    request: HttpRequest<null, null, DeleteBookReadingPathParamsDto>,
+  ): Promise<HttpNoContentResponse<DeleteBookReadingResponseBodyDto>> {
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
@@ -296,10 +296,10 @@ export class BookReadingHttpController implements HttpController {
     };
   }
 
-  private mapBookReadingToBookReadingDTO(payload: MapBookReadingToBookReadingDTOPayload): BookReadingDTO {
+  private mapBookReadingToBookReadingDto(payload: MapBookReadingToBookReadingDtoPayload): BookReadingDto {
     const { bookReading } = payload;
 
-    const dto: BookReadingDTO = {
+    const dto: BookReadingDto = {
       id: bookReading.getId(),
       userBookId: bookReading.getUserBookId(),
       comment: bookReading.getComment(),

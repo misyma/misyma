@@ -2,9 +2,9 @@ import { type Static, Type } from '@sinclair/typebox';
 
 import * as contracts from '@common/contracts';
 
-import { authorDTOSchema } from './authorDto.js';
+import { authorDtoSchema } from './authorDto.js';
 
-export const bookDTOSchema = Type.Object({
+export const bookDtoSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
   title: Type.String({
     minLength: 1,
@@ -48,7 +48,7 @@ export const bookDTOSchema = Type.Object({
       maxLength: 128,
     }),
   ),
-  authors: Type.Array(authorDTOSchema),
+  authors: Type.Array(authorDtoSchema),
 });
 
-export type BookDTO = Static<typeof bookDTOSchema>;
+export type BookDto = Static<typeof bookDtoSchema>;

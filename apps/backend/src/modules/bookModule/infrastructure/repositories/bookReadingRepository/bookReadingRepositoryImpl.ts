@@ -171,7 +171,7 @@ export class BookReadingRepositoryImpl implements BookReadingRepository {
       return count;
     } catch (error) {
       throw new RepositoryError({
-        entity: 'Book',
+        entity: 'BookReading',
         operation: 'count',
         error,
       });

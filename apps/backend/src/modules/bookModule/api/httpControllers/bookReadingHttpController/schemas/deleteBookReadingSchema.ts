@@ -4,16 +4,16 @@ import type * as contracts from '@common/contracts';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
-export const deleteBookReadingPathParamsDTOSchema = Type.Object({
+export const deleteBookReadingPathParamsDtoSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
   userBookId: Type.String({ format: 'uuid' }),
 });
 
-export type DeleteBookReadingPathParamsDTO = TypeExtends<
-  Static<typeof deleteBookReadingPathParamsDTOSchema>,
+export type DeleteBookReadingPathParamsDto = TypeExtends<
+  Static<typeof deleteBookReadingPathParamsDtoSchema>,
   contracts.DeleteBookReadingPathParams
 >;
 
-export const deleteBookReadingResponseBodyDTOSchema = Type.Null();
+export const deleteBookReadingResponseBodyDtoSchema = Type.Null();
 
-export type DeleteBookReadingResponseBodyDTO = Static<typeof deleteBookReadingResponseBodyDTOSchema>;
+export type DeleteBookReadingResponseBodyDto = Static<typeof deleteBookReadingResponseBodyDtoSchema>;

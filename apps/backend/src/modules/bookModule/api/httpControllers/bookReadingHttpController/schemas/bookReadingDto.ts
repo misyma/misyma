@@ -1,6 +1,6 @@
 import { type Static, Type } from '@sinclair/typebox';
 
-export const bookReadingDTOSchema = Type.Object({
+export const bookReadingDtoSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
   userBookId: Type.String({ format: 'uuid' }),
   comment: Type.String({
@@ -15,4 +15,4 @@ export const bookReadingDTOSchema = Type.Object({
   endedAt: Type.Optional(Type.String({ format: 'date-time' })),
 });
 
-export type BookReadingDTO = Static<typeof bookReadingDTOSchema>;
+export type BookReadingDto = Static<typeof bookReadingDtoSchema>;

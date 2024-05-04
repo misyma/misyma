@@ -6,30 +6,21 @@ export class M6CreateBookReadingTableMigration implements Migration {
 
   private readonly bookReadingsTableName = 'bookReadings';
 
-  private readonly columns = {
-    id: 'id',
-    userBookId: 'userBookId',
-    rating: 'rating',
-    comment: 'comment',
-    startedAt: 'startedAt',
-    endedAt: 'endedAt',
-  } as const;
-
   public async up(databaseClient: DatabaseClient): Promise<void> {
     await databaseClient.schema.createTable(this.bookReadingsTableName, (table) => {
-      table.text(this.columns.id).primary();
+      table.text('id').primary();
 
-      table.text(this.columns.userBookId).notNullable();
+      table.text('userBookId').notNullable();
 
-      table.integer(this.columns.rating).notNullable();
+      table.integer('rating').notNullable();
 
-      table.text(this.columns.comment).notNullable();
+      table.text('comment').notNullable();
 
-      table.timestamp(this.columns.startedAt).notNullable();
+      table.timestamp('startedAt').notNullable();
 
-      table.timestamp(this.columns.endedAt).nullable();
+      table.timestamp('endedAt').nullable();
 
-      table.foreign(this.columns.userBookId).references('id').inTable('userBooks').onDelete('CASCADE');
+      table.foreign('userBookId').references('id').inTable('userBooks').onDelete('CASCADE');
     });
   }
 

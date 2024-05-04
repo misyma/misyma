@@ -2,10 +2,10 @@ import { type Static, Type } from '@sinclair/typebox';
 
 import * as contracts from '@common/contracts';
 
-import { authorDTOSchema } from '../../common/authorDto.js';
-import { genreDTOSchema } from '../../common/genreDto.js';
+import { authorDtoSchema } from '../../common/authorDto.js';
+import { genreDtoSchema } from '../../common/genreDto.js';
 
-export const userBookDTOSchema = Type.Object({
+export const userBookDtoSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
   imageUrl: Type.Optional(
     Type.String({
@@ -15,7 +15,7 @@ export const userBookDTOSchema = Type.Object({
   ),
   status: Type.Enum(contracts.ReadingStatus),
   bookshelfId: Type.String({ format: 'uuid' }),
-  genres: Type.Array(genreDTOSchema),
+  genres: Type.Array(genreDtoSchema),
   bookId: Type.String({ format: 'uuid' }),
   book: Type.Object({
     title: Type.String({
@@ -60,8 +60,8 @@ export const userBookDTOSchema = Type.Object({
         maxLength: 128,
       }),
     ),
-    authors: Type.Array(authorDTOSchema),
+    authors: Type.Array(authorDtoSchema),
   }),
 });
 
-export type UserBookDTO = Static<typeof userBookDTOSchema>;
+export type UserBookDto = Static<typeof userBookDtoSchema>;

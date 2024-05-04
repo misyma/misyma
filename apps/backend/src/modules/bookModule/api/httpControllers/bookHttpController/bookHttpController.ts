@@ -1,20 +1,20 @@
 import {
-  type CreateBookBodyDTO,
-  type CreateBookResponseBodyDTO,
-  createBookBodyDTOSchema,
-  createBookResponseBodyDTOSchema,
+  type CreateBookBodyDto,
+  type CreateBookResponseBodyDto,
+  createBookBodyDtoSchema,
+  createBookResponseBodyDtoSchema,
 } from './schemas/createBookSchema.js';
 import {
-  findBookResponseBodyDTOSchema,
-  type FindBookResponseBodyDTO,
-  type FindBookPathParamsDTO,
-  findBookPathParamsDTOSchema,
+  findBookResponseBodyDtoSchema,
+  type FindBookResponseBodyDto,
+  type FindBookPathParamsDto,
+  findBookPathParamsDtoSchema,
 } from './schemas/findBookSchema.js';
 import {
-  type FindBooksResponseBodyDTO,
-  findBooksResponseBodyDTOSchema,
-  findBooksQueryParamsDTOSchema,
-  type FindBooksQueryParamsDTO,
+  type FindBooksResponseBodyDto,
+  findBooksResponseBodyDtoSchema,
+  findBooksQueryParamsDtoSchema,
+  type FindBooksQueryParamsDto,
 } from './schemas/findBooksSchema.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
@@ -28,7 +28,7 @@ import { type CreateBookCommandHandler } from '../../../application/commandHandl
 import { type FindBookQueryHandler } from '../../../application/queryHandlers/findBookQueryHandler/findBookQueryHandler.js';
 import { type FindBooksQueryHandler } from '../../../application/queryHandlers/findBooksQueryHandler/findBooksQueryHandler.js';
 import { type Book } from '../../../domain/entities/book/book.js';
-import { type BookDTO } from '../common/bookDto.js';
+import { type BookDto } from '../common/bookDto.js';
 
 export class BookHttpController implements HttpController {
   public readonly basePath = '/api/books';
@@ -48,11 +48,11 @@ export class BookHttpController implements HttpController {
         handler: this.createBook.bind(this),
         schema: {
           request: {
-            body: createBookBodyDTOSchema,
+            body: createBookBodyDtoSchema,
           },
           response: {
             [HttpStatusCode.created]: {
-              schema: createBookResponseBodyDTOSchema,
+              schema: createBookResponseBodyDtoSchema,
               description: 'Draft book created',
             },
           },
@@ -66,11 +66,11 @@ export class BookHttpController implements HttpController {
         handler: this.findBook.bind(this),
         schema: {
           request: {
-            pathParams: findBookPathParamsDTOSchema,
+            pathParams: findBookPathParamsDtoSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
-              schema: findBookResponseBodyDTOSchema,
+              schema: findBookResponseBodyDtoSchema,
               description: 'Book found',
             },
           },
@@ -84,11 +84,11 @@ export class BookHttpController implements HttpController {
         description: 'Find books',
         schema: {
           request: {
-            queryParams: findBooksQueryParamsDTOSchema,
+            queryParams: findBooksQueryParamsDtoSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
-              schema: findBooksResponseBodyDTOSchema,
+              schema: findBooksResponseBodyDtoSchema,
               description: 'Books found',
             },
           },
@@ -99,8 +99,8 @@ export class BookHttpController implements HttpController {
   }
 
   private async createBook(
-    request: HttpRequest<CreateBookBodyDTO>,
-  ): Promise<HttpCreatedResponse<CreateBookResponseBodyDTO>> {
+    request: HttpRequest<CreateBookBodyDto>,
+  ): Promise<HttpCreatedResponse<CreateBookResponseBodyDto>> {
     const { authorIds, ...bookData } = request.body;
 
     await this.accessControlService.verifyBearerToken({
@@ -115,13 +115,13 @@ export class BookHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.created,
-      body: this.mapBookToBookDTO(book),
+      body: this.mapBookToBookDto(book),
     };
   }
 
   private async findBook(
-    request: HttpRequest<undefined, undefined, FindBookPathParamsDTO>,
-  ): Promise<HttpOkResponse<FindBookResponseBodyDTO>> {
+    request: HttpRequest<undefined, undefined, FindBookPathParamsDto>,
+  ): Promise<HttpOkResponse<FindBookResponseBodyDto>> {
     const { id } = request.pathParams;
 
     await this.accessControlService.verifyBearerToken({
@@ -132,13 +132,13 @@ export class BookHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.ok,
-      body: this.mapBookToBookDTO(book),
+      body: this.mapBookToBookDto(book),
     };
   }
 
   private async findBooks(
-    request: HttpRequest<undefined, FindBooksQueryParamsDTO, undefined>,
-  ): Promise<HttpOkResponse<FindBooksResponseBodyDTO>> {
+    request: HttpRequest<undefined, FindBooksQueryParamsDto, undefined>,
+  ): Promise<HttpOkResponse<FindBooksResponseBodyDto>> {
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
@@ -154,7 +154,7 @@ export class BookHttpController implements HttpController {
 
     return {
       body: {
-        data: books.map((book) => this.mapBookToBookDTO(book)),
+        data: books.map((book) => this.mapBookToBookDto(book)),
         metadata: {
           page,
           pageSize,
@@ -165,11 +165,11 @@ export class BookHttpController implements HttpController {
     };
   }
 
-  private mapBookToBookDTO(book: Book): BookDTO {
+  private mapBookToBookDto(book: Book): BookDto {
     const { title, language, format, isApproved, imageUrl, isbn, publisher, releaseYear, translator, pages } =
       book.getState();
 
-    const bookDto: BookDTO = {
+    const bookDto: BookDto = {
       id: book.getId(),
       title,
       language,

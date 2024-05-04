@@ -1,6 +1,6 @@
 import { type Static, Type } from '@sinclair/typebox';
 
-export const genreDTOSchema = Type.Object({
+export const genreDtoSchema = Type.Object({
   id: Type.String({
     format: 'uuid',
   }),
@@ -10,4 +10,4 @@ export const genreDTOSchema = Type.Object({
   }),
 });
 
-export type GenreDTO = Static<typeof genreDTOSchema>;
+export type GenreDto = Static<typeof genreDtoSchema>;

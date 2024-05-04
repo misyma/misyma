@@ -2,31 +2,31 @@ import { type Static, Type } from '@sinclair/typebox';
 
 import type * as contracts from '@common/contracts';
 
-import { userBookDTOSchema } from './userBookDto.js';
+import { userBookDtoSchema } from './userBookDto.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 // TODO: move to update user book
-export const updateUserBookGenresPathParamsDTOSchema = Type.Object({
+export const updateUserBookGenresPathParamsDtoSchema = Type.Object({
   userBookId: Type.String({ format: 'uuid' }),
 });
 
-export type UpdateUserBookGenresPathParamsDTO = TypeExtends<
-  Static<typeof updateUserBookGenresPathParamsDTOSchema>,
+export type UpdateUserBookGenresPathParamsDto = TypeExtends<
+  Static<typeof updateUserBookGenresPathParamsDtoSchema>,
   contracts.UpdateUserBookGenresPathParams
 >;
 
-export const updateUserBookGenresBodyDTOSchema = Type.Object({
+export const updateUserBookGenresBodyDtoSchema = Type.Object({
   genreIds: Type.Array(Type.String({ format: 'uuid' })),
 });
 
-export type UpdateUserBookGenresBodyDTO = TypeExtends<
-  Static<typeof updateUserBookGenresBodyDTOSchema>,
+export type UpdateUserBookGenresBodyDto = TypeExtends<
+  Static<typeof updateUserBookGenresBodyDtoSchema>,
   contracts.UpdateUserBookGenresRequestBody
 >;
 
-export const updateUserBookGenresResponseBodyDTOSchema = userBookDTOSchema;
+export const updateUserBookGenresResponseBodyDtoSchema = userBookDtoSchema;
 
-export type UpdateUserBookGenresResponseBodyDTOSchema = TypeExtends<
-  Static<typeof updateUserBookGenresResponseBodyDTOSchema>,
+export type UpdateUserBookGenresResponseBodyDtoSchema = TypeExtends<
+  Static<typeof updateUserBookGenresResponseBodyDtoSchema>,
   contracts.UpdateUserBookGenresResponseBody
 >;

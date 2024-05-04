@@ -3,23 +3,23 @@ import { type Static, Type } from '@sinclair/typebox';
 import type * as contracts from '@common/contracts';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
-import { genreDTOSchema } from '../../common/genreDto.js';
+import { genreDtoSchema } from '../../common/genreDto.js';
 
-export const findGenreByNameQueryParamsDTOSchema = Type.Object({
+export const findGenreByNameQueryParamsDtoSchema = Type.Object({
   name: Type.String({
     minLength: 1,
     maxLength: 64,
   }),
 });
 
-export type FindGenreByNameQueryParamsDTO = TypeExtends<
+export type FindGenreByNameQueryParamsDto = TypeExtends<
   contracts.FindGenreByNameQueryParams,
-  Static<typeof findGenreByNameQueryParamsDTOSchema>
+  Static<typeof findGenreByNameQueryParamsDtoSchema>
 >;
 
-export const findGenreByNameResponseBodyDTOSchema = genreDTOSchema;
+export const findGenreByNameResponseBodyDtoSchema = genreDtoSchema;
 
-export type FindGenreByNameResponseBodyDTO = TypeExtends<
+export type FindGenreByNameResponseBodyDto = TypeExtends<
   contracts.FindGenreByNameResponseBody,
-  Static<typeof findGenreByNameResponseBodyDTOSchema>
+  Static<typeof findGenreByNameResponseBodyDtoSchema>
 >;

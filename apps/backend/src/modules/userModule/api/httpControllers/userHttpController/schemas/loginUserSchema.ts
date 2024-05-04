@@ -4,7 +4,7 @@ import type * as contracts from '@common/contracts';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
-export const loginUserBodyDTOSchema = Type.Object({
+export const loginUserBodyDtoSchema = Type.Object({
   email: Type.String({
     format: 'email',
     maxLength: 254,
@@ -15,15 +15,15 @@ export const loginUserBodyDTOSchema = Type.Object({
   }),
 });
 
-export type LoginUserBodyDTO = TypeExtends<Static<typeof loginUserBodyDTOSchema>, contracts.LoginUserRequestBody>;
+export type LoginUserBodyDto = TypeExtends<Static<typeof loginUserBodyDtoSchema>, contracts.LoginUserRequestBody>;
 
-export const loginUserResponseBodyDTOSchema = Type.Object({
+export const loginUserResponseBodyDtoSchema = Type.Object({
   accessToken: Type.String(),
   refreshToken: Type.String(),
   expiresIn: Type.Number(),
 });
 
-export type LoginUserResponseBodyDTO = TypeExtends<
-  Static<typeof loginUserResponseBodyDTOSchema>,
+export type LoginUserResponseBodyDto = TypeExtends<
+  Static<typeof loginUserResponseBodyDtoSchema>,
   contracts.LoginUserResponseBody
 >;

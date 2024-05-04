@@ -5,11 +5,11 @@ import { type FastifyRequest } from 'fastify';
 
 import type * as contracts from '@common/contracts';
 
-import { userDTOSchema } from './userDto.js';
+import { userDtoSchema } from './userDto.js';
 import { InputNotValidError } from '../../../../../../common/errors/inputNotValidError.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
-export const registerUserBodyDTOSchema = Type.Object({
+export const registerUserBodyDtoSchema = Type.Object({
   email: Type.String({
     format: 'email',
     maxLength: 254,
@@ -24,16 +24,16 @@ export const registerUserBodyDTOSchema = Type.Object({
   }),
 });
 
-export type RegisterUserBodyDTO = TypeExtends<Static<typeof registerUserBodyDTOSchema>, contracts.LoginUserRequestBody>;
+export type RegisterUserBodyDto = TypeExtends<Static<typeof registerUserBodyDtoSchema>, contracts.LoginUserRequestBody>;
 
-export const registerUserResponseBodyDTOSchema = userDTOSchema;
+export const registerUserResponseBodyDtoSchema = userDtoSchema;
 
-export type RegisterUserResponseBodyDTO = TypeExtends<
-  Static<typeof registerUserResponseBodyDTOSchema>,
+export type RegisterUserResponseBodyDto = TypeExtends<
+  Static<typeof registerUserResponseBodyDtoSchema>,
   contracts.RegisterUserResponseBody
 >;
 
-export const registerUserBodyPreValidationHook = (request: FastifyRequest<{ Body: RegisterUserBodyDTO }>): void => {
+export const registerUserBodyPreValidationHook = (request: FastifyRequest<{ Body: RegisterUserBodyDto }>): void => {
   const { name } = request.body;
 
   const specialCharacterRegex = /[!@#$%^&*(),.?":{}|<>]/g;

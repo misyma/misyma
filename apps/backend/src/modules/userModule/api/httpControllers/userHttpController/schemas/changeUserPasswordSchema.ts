@@ -4,7 +4,7 @@ import type * as contracts from '@common/contracts';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
-export const changeUserPasswordBodyDTOSchema = Type.Object({
+export const changeUserPasswordBodyDtoSchema = Type.Object({
   password: Type.String({
     minLength: 8,
     maxLength: 64,
@@ -12,11 +12,11 @@ export const changeUserPasswordBodyDTOSchema = Type.Object({
   token: Type.String({ minLength: 1 }),
 });
 
-export type ChangeUserPasswordBodyDTO = TypeExtends<
-  Static<typeof changeUserPasswordBodyDTOSchema>,
+export type ChangeUserPasswordBodyDto = TypeExtends<
+  Static<typeof changeUserPasswordBodyDtoSchema>,
   contracts.ChangeUserPasswordRequestBody
 >;
 
-export const changeUserPasswordResponseBodyDTOSchema = Type.Null();
+export const changeUserPasswordResponseBodyDtoSchema = Type.Null();
 
-export type ChangeUserPasswordResponseBodyDTO = Static<typeof changeUserPasswordResponseBodyDTOSchema>;
+export type ChangeUserPasswordResponseBodyDto = Static<typeof changeUserPasswordResponseBodyDtoSchema>;

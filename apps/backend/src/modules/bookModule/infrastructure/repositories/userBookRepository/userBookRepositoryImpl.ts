@@ -360,7 +360,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       return count;
     } catch (error) {
       throw new RepositoryError({
-        entity: 'Book',
+        entity: 'UserBook',
         operation: 'count',
         error,
       });

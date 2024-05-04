@@ -3,20 +3,20 @@ import { type Static, Type } from '@sinclair/typebox';
 import type * as contracts from '@common/contracts';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
-import { bookDTOSchema } from '../../common/bookDto.js';
+import { bookDtoSchema } from '../../common/bookDto.js';
 
-export const findBookPathParamsDTOSchema = Type.Object({
+export const findBookPathParamsDtoSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
 });
 
-export type FindBookPathParamsDTO = TypeExtends<
-  Static<typeof findBookPathParamsDTOSchema>,
+export type FindBookPathParamsDto = TypeExtends<
+  Static<typeof findBookPathParamsDtoSchema>,
   contracts.FindBookPathParams
 >;
 
-export const findBookResponseBodyDTOSchema = bookDTOSchema;
+export const findBookResponseBodyDtoSchema = bookDtoSchema;
 
-export type FindBookResponseBodyDTO = TypeExtends<
-  Static<typeof findBookResponseBodyDTOSchema>,
+export type FindBookResponseBodyDto = TypeExtends<
+  Static<typeof findBookResponseBodyDtoSchema>,
   contracts.FindBookResponseBody
 >;

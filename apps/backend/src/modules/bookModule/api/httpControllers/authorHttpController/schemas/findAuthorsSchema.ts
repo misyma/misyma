@@ -3,9 +3,9 @@ import { type Static, Type } from '@sinclair/typebox';
 import type * as contracts from '@common/contracts';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
-import { authorDTOSchema } from '../../../../../bookModule/api/httpControllers/common/authorDto.js';
+import { authorDtoSchema } from '../../../../../bookModule/api/httpControllers/common/authorDto.js';
 
-export const findAuthorsQueryParamsDTOSchema = Type.Object({
+export const findAuthorsQueryParamsDtoSchema = Type.Object({
   name: Type.Optional(
     Type.String({
       minLength: 1,
@@ -16,13 +16,13 @@ export const findAuthorsQueryParamsDTOSchema = Type.Object({
   pageSize: Type.Optional(Type.Integer({ minimum: 1 })),
 });
 
-export type FindAuthorsQueryParamsDTO = TypeExtends<
-  Static<typeof findAuthorsQueryParamsDTOSchema>,
+export type FindAuthorsQueryParamsDto = TypeExtends<
+  Static<typeof findAuthorsQueryParamsDtoSchema>,
   contracts.FindAuthorsQueryParams
 >;
 
-export const findAuthorsResponseBodyDTOSchema = Type.Object({
-  data: Type.Array(authorDTOSchema),
+export const findAuthorsResponseBodyDtoSchema = Type.Object({
+  data: Type.Array(authorDtoSchema),
   metadata: Type.Object({
     page: Type.Integer({ minimum: 1 }),
     pageSize: Type.Integer({ minimum: 1 }),
@@ -30,7 +30,7 @@ export const findAuthorsResponseBodyDTOSchema = Type.Object({
   }),
 });
 
-export type FindAuthorsResponseBodyDTO = TypeExtends<
-  Static<typeof findAuthorsResponseBodyDTOSchema>,
+export type FindAuthorsResponseBodyDto = TypeExtends<
+  Static<typeof findAuthorsResponseBodyDtoSchema>,
   contracts.FindAuthorsResponseBody
 >;
