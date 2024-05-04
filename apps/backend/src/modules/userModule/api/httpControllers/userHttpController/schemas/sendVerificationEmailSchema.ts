@@ -4,18 +4,18 @@ import type * as contracts from '@common/contracts';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
-export const sendVerificationEmailBodyDTOSchema = Type.Object({
+export const sendVerificationEmailBodyDtoSchema = Type.Object({
   email: Type.String({
     format: 'email',
     maxLength: 254,
   }),
 });
 
-export type SendVerificationEmailBodyDTO = TypeExtends<
-  Static<typeof sendVerificationEmailBodyDTOSchema>,
+export type SendVerificationEmailBodyDto = TypeExtends<
+  Static<typeof sendVerificationEmailBodyDtoSchema>,
   contracts.SendVerificationEmailRequestBody
 >;
 
-export const sendVerificationEmailResponseBodyDTOSchema = Type.Null();
+export const sendVerificationEmailResponseBodyDtoSchema = Type.Null();
 
-export type SendVerificationEmailResponseBodyDTO = Static<typeof sendVerificationEmailResponseBodyDTOSchema>;
+export type SendVerificationEmailResponseBodyDto = Static<typeof sendVerificationEmailResponseBodyDtoSchema>;

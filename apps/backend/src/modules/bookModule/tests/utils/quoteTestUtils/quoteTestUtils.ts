@@ -41,7 +41,7 @@ export class QuoteTestUtils {
       userBookId: rawEntity.userBookId,
       content: rawEntity.content,
       createdAt: new Date(rawEntity.createdAt),
-      isFavorite: rawEntity.isFavorite,
+      isFavorite: Boolean(rawEntity.isFavorite),
     };
   }
 
@@ -59,7 +59,7 @@ export class QuoteTestUtils {
       userBookId: rawEntity.userBookId,
       content: rawEntity.content,
       createdAt: new Date(rawEntity.createdAt),
-      isFavorite: rawEntity.isFavorite,
+      isFavorite: Boolean(rawEntity.isFavorite),
     };
   }
 

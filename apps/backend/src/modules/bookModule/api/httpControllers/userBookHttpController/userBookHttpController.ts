@@ -1,53 +1,53 @@
 import { type Language, type BookFormat } from '@common/contracts';
 
 import {
-  createUserBookBodyDTOSchema,
-  createUserBookResponseBodyDTOSchema,
-  type CreateUserBookBodyDTO,
-  type CreateUserBookResponseBodyDTO,
+  createUserBookBodyDtoSchema,
+  createUserBookResponseBodyDtoSchema,
+  type CreateUserBookBodyDto,
+  type CreateUserBookResponseBodyDto,
 } from './schemas/createUserBookSchema.js';
 import {
-  type DeleteUserBookResponseBodyDTO,
-  deleteUserBookPathParamsDTOSchema,
-  deleteUserBookResponseBodyDTOSchema,
-  type DeleteUserBookPathParamsDTO,
+  type DeleteUserBookResponseBodyDto,
+  deleteUserBookPathParamsDtoSchema,
+  deleteUserBookResponseBodyDtoSchema,
+  type DeleteUserBookPathParamsDto,
 } from './schemas/deleteUserBookSchema.js';
 import {
-  type FindUserBooksByBookshelfIdQueryParamsDTO,
-  findUserBooksByBookshelfIdPathParamsDTOSchema,
-  findUserBooksByBookshelfIdResponseBodyDTOSchema,
-  type FindUserBooksByBookshelfIdPathParamsDTO,
-  type FindUserBooksByBookshelfIdResponseBodyDTO,
+  type FindUserBooksByBookshelfIdQueryParamsDto,
+  findUserBooksByBookshelfIdPathParamsDtoSchema,
+  findUserBooksByBookshelfIdResponseBodyDtoSchema,
+  type FindUserBooksByBookshelfIdPathParamsDto,
+  type FindUserBooksByBookshelfIdResponseBodyDto,
 } from './schemas/findUserBooksByBookshelfIdSchema.js';
 import {
-  findUserBookPathParamsDTOSchema,
-  findUserBookResponseBodyDTOSchema,
-  type FindUserBookPathParamsDTO,
-  type FindUserBookResponseBodyDTO,
+  findUserBookPathParamsDtoSchema,
+  findUserBookResponseBodyDtoSchema,
+  type FindUserBookPathParamsDto,
+  type FindUserBookResponseBodyDto,
 } from './schemas/findUserBookSchema.js';
 import {
-  updateUserBookGenresBodyDTOSchema,
-  updateUserBookGenresPathParamsDTOSchema,
-  updateUserBookGenresResponseBodyDTOSchema,
-  type UpdateUserBookGenresBodyDTO,
-  type UpdateUserBookGenresPathParamsDTO,
-  type UpdateUserBookGenresResponseBodyDTOSchema,
+  updateUserBookGenresBodyDtoSchema,
+  updateUserBookGenresPathParamsDtoSchema,
+  updateUserBookGenresResponseBodyDtoSchema,
+  type UpdateUserBookGenresBodyDto,
+  type UpdateUserBookGenresPathParamsDto,
+  type UpdateUserBookGenresResponseBodyDtoSchema,
 } from './schemas/updateUserBookGenresSchema.js';
 import {
-  updateUserBookPathParamsDTOSchema,
-  updateUserBookBodyDTOSchema,
-  updateUserBookResponseBodyDTOSchema,
-  type UpdateUserBookBodyDTO,
-  type UpdateUserBookPathParamsDTO,
-  type UpdateUserBookResponseBodyDTO,
+  updateUserBookPathParamsDtoSchema,
+  updateUserBookBodyDtoSchema,
+  updateUserBookResponseBodyDtoSchema,
+  type UpdateUserBookBodyDto,
+  type UpdateUserBookPathParamsDto,
+  type UpdateUserBookResponseBodyDto,
 } from './schemas/updateUserBookSchema.js';
 import {
-  type UploadUserBookImageResponseBodyDTOSchema,
-  type UploadUserBookImagePathParamsDTO,
-  uploadUserBookImageResponseBodyDTOSchema,
-  uploadUserBookImagePathParamsDTOSchema,
+  type UploadUserBookImageResponseBodyDtoSchema,
+  type UploadUserBookImagePathParamsDto,
+  uploadUserBookImageResponseBodyDtoSchema,
+  uploadUserBookImagePathParamsDtoSchema,
 } from './schemas/uploadUserBookImageSchema.js';
-import { type UserBookDTO } from './schemas/userBookDto.js';
+import { type UserBookDto } from './schemas/userBookDto.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
@@ -93,11 +93,11 @@ export class UserBookHttpController implements HttpController {
         handler: this.createUserBook.bind(this),
         schema: {
           request: {
-            body: createUserBookBodyDTOSchema,
+            body: createUserBookBodyDtoSchema,
           },
           response: {
             [HttpStatusCode.created]: {
-              schema: createUserBookResponseBodyDTOSchema,
+              schema: createUserBookResponseBodyDtoSchema,
               description: `User's book created`,
             },
           },
@@ -111,11 +111,11 @@ export class UserBookHttpController implements HttpController {
         handler: this.findUserBook.bind(this),
         schema: {
           request: {
-            pathParams: findUserBookPathParamsDTOSchema,
+            pathParams: findUserBookPathParamsDtoSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
-              schema: findUserBookResponseBodyDTOSchema,
+              schema: findUserBookResponseBodyDtoSchema,
               description: `User's book found`,
             },
           },
@@ -131,11 +131,11 @@ export class UserBookHttpController implements HttpController {
         description: `Find user's books by bookshelf id`,
         schema: {
           request: {
-            pathParams: findUserBooksByBookshelfIdPathParamsDTOSchema,
+            pathParams: findUserBooksByBookshelfIdPathParamsDtoSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
-              schema: findUserBooksByBookshelfIdResponseBodyDTOSchema,
+              schema: findUserBooksByBookshelfIdResponseBodyDtoSchema,
               description: `User's books found`,
             },
           },
@@ -148,11 +148,11 @@ export class UserBookHttpController implements HttpController {
         handler: this.deleteUserBook.bind(this),
         schema: {
           request: {
-            pathParams: deleteUserBookPathParamsDTOSchema,
+            pathParams: deleteUserBookPathParamsDtoSchema,
           },
           response: {
             [HttpStatusCode.noContent]: {
-              schema: deleteUserBookResponseBodyDTOSchema,
+              schema: deleteUserBookResponseBodyDtoSchema,
               description: `User's book deleted`,
             },
           },
@@ -167,13 +167,13 @@ export class UserBookHttpController implements HttpController {
         handler: this.updateUserBook.bind(this),
         schema: {
           request: {
-            pathParams: updateUserBookPathParamsDTOSchema,
-            body: updateUserBookBodyDTOSchema,
+            pathParams: updateUserBookPathParamsDtoSchema,
+            body: updateUserBookBodyDtoSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
               description: `User's book updated`,
-              schema: updateUserBookResponseBodyDTOSchema,
+              schema: updateUserBookResponseBodyDtoSchema,
             },
           },
         },
@@ -185,12 +185,12 @@ export class UserBookHttpController implements HttpController {
         handler: this.uploadUserBookImage.bind(this),
         schema: {
           request: {
-            pathParams: uploadUserBookImagePathParamsDTOSchema,
+            pathParams: uploadUserBookImagePathParamsDtoSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
               description: `User book's image uploaded`,
-              schema: uploadUserBookImageResponseBodyDTOSchema,
+              schema: uploadUserBookImageResponseBodyDtoSchema,
             },
           },
         },
@@ -202,13 +202,13 @@ export class UserBookHttpController implements HttpController {
         handler: this.updateUserBookGenres.bind(this),
         schema: {
           request: {
-            pathParams: updateUserBookGenresPathParamsDTOSchema,
-            body: updateUserBookGenresBodyDTOSchema,
+            pathParams: updateUserBookGenresPathParamsDtoSchema,
+            body: updateUserBookGenresBodyDtoSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
               description: `User's book genres updated`,
-              schema: updateUserBookGenresResponseBodyDTOSchema,
+              schema: updateUserBookGenresResponseBodyDtoSchema,
             },
           },
         },
@@ -217,8 +217,8 @@ export class UserBookHttpController implements HttpController {
   }
 
   private async updateUserBook(
-    request: HttpRequest<UpdateUserBookBodyDTO, undefined, UpdateUserBookPathParamsDTO>,
-  ): Promise<HttpOkResponse<UpdateUserBookResponseBodyDTO>> {
+    request: HttpRequest<UpdateUserBookBodyDto, undefined, UpdateUserBookPathParamsDto>,
+  ): Promise<HttpOkResponse<UpdateUserBookResponseBodyDto>> {
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
@@ -236,13 +236,13 @@ export class UserBookHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.ok,
-      body: this.mapUserBookToUserBookDTO(userBook),
+      body: this.mapUserBookToUserBookDto(userBook),
     };
   }
 
   private async uploadUserBookImage(
-    request: HttpRequest<undefined, undefined, UploadUserBookImagePathParamsDTO>,
-  ): Promise<HttpOkResponse<UploadUserBookImageResponseBodyDTOSchema>> {
+    request: HttpRequest<undefined, undefined, UploadUserBookImagePathParamsDto>,
+  ): Promise<HttpOkResponse<UploadUserBookImageResponseBodyDtoSchema>> {
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
@@ -263,13 +263,13 @@ export class UserBookHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.ok,
-      body: this.mapUserBookToUserBookDTO(userBook),
+      body: this.mapUserBookToUserBookDto(userBook),
     };
   }
 
   private async createUserBook(
-    request: HttpRequest<CreateUserBookBodyDTO>,
-  ): Promise<HttpCreatedResponse<CreateUserBookResponseBodyDTO>> {
+    request: HttpRequest<CreateUserBookBodyDto>,
+  ): Promise<HttpCreatedResponse<CreateUserBookResponseBodyDto>> {
     const { bookId, bookshelfId, status, imageUrl } = request.body;
 
     await this.accessControlService.verifyBearerToken({
@@ -285,13 +285,13 @@ export class UserBookHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.created,
-      body: this.mapUserBookToUserBookDTO(userBook),
+      body: this.mapUserBookToUserBookDto(userBook),
     };
   }
 
   private async findUserBook(
-    request: HttpRequest<undefined, undefined, FindUserBookPathParamsDTO>,
-  ): Promise<HttpOkResponse<FindUserBookResponseBodyDTO>> {
+    request: HttpRequest<undefined, undefined, FindUserBookPathParamsDto>,
+  ): Promise<HttpOkResponse<FindUserBookResponseBodyDto>> {
     const { id } = request.pathParams;
 
     await this.accessControlService.verifyBearerToken({
@@ -302,13 +302,13 @@ export class UserBookHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.ok,
-      body: this.mapUserBookToUserBookDTO(userBook),
+      body: this.mapUserBookToUserBookDto(userBook),
     };
   }
 
   private async findUserBooksByBookshelfId(
-    request: HttpRequest<undefined, FindUserBooksByBookshelfIdQueryParamsDTO, FindUserBooksByBookshelfIdPathParamsDTO>,
-  ): Promise<HttpOkResponse<FindUserBooksByBookshelfIdResponseBodyDTO>> {
+    request: HttpRequest<undefined, FindUserBooksByBookshelfIdQueryParamsDto, FindUserBooksByBookshelfIdPathParamsDto>,
+  ): Promise<HttpOkResponse<FindUserBooksByBookshelfIdResponseBodyDto>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
@@ -327,7 +327,7 @@ export class UserBookHttpController implements HttpController {
 
     return {
       body: {
-        data: userBooks.map((userBook) => this.mapUserBookToUserBookDTO(userBook)),
+        data: userBooks.map((userBook) => this.mapUserBookToUserBookDto(userBook)),
         metadata: {
           page,
           pageSize,
@@ -339,8 +339,8 @@ export class UserBookHttpController implements HttpController {
   }
 
   private async deleteUserBook(
-    request: HttpRequest<undefined, undefined, DeleteUserBookPathParamsDTO>,
-  ): Promise<HttpNoContentResponse<DeleteUserBookResponseBodyDTO>> {
+    request: HttpRequest<undefined, undefined, DeleteUserBookPathParamsDto>,
+  ): Promise<HttpNoContentResponse<DeleteUserBookResponseBodyDto>> {
     const { id } = request.pathParams;
 
     await this.accessControlService.verifyBearerToken({
@@ -356,8 +356,8 @@ export class UserBookHttpController implements HttpController {
   }
 
   private async updateUserBookGenres(
-    request: HttpRequest<UpdateUserBookGenresBodyDTO, undefined, UpdateUserBookGenresPathParamsDTO>,
-  ): Promise<HttpOkResponse<UpdateUserBookGenresResponseBodyDTOSchema>> {
+    request: HttpRequest<UpdateUserBookGenresBodyDto, undefined, UpdateUserBookGenresPathParamsDto>,
+  ): Promise<HttpOkResponse<UpdateUserBookGenresResponseBodyDtoSchema>> {
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
@@ -373,14 +373,14 @@ export class UserBookHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.ok,
-      body: this.mapUserBookToUserBookDTO(userBook),
+      body: this.mapUserBookToUserBookDto(userBook),
     };
   }
 
-  private mapUserBookToUserBookDTO(userBook: UserBook): UserBookDTO {
+  private mapUserBookToUserBookDto(userBook: UserBook): UserBookDto {
     const { status, bookshelfId, imageUrl, bookId, genres, book } = userBook.getState();
 
-    const userBookDto: UserBookDTO = {
+    const userBookDto: UserBookDto = {
       id: userBook.getId(),
       status,
       bookshelfId,

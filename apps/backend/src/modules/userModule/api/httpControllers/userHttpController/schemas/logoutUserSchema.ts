@@ -4,22 +4,22 @@ import type * as contracts from '@common/contracts';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
-export const logoutUserPathParamsDTOSchema = Type.Object({
+export const logoutUserPathParamsDtoSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
 });
 
-export type LogoutUserPathParamsDTO = TypeExtends<
-  Static<typeof logoutUserPathParamsDTOSchema>,
+export type LogoutUserPathParamsDto = TypeExtends<
+  Static<typeof logoutUserPathParamsDtoSchema>,
   contracts.LogoutUserPathParams
 >;
 
-export const logoutUserBodyDTOSchema = Type.Object({
+export const logoutUserBodyDtoSchema = Type.Object({
   refreshToken: Type.String(),
   accessToken: Type.String(),
 });
 
-export type LogoutUserBodyDTO = TypeExtends<Static<typeof logoutUserBodyDTOSchema>, contracts.LogoutUserRequestBody>;
+export type LogoutUserBodyDto = TypeExtends<Static<typeof logoutUserBodyDtoSchema>, contracts.LogoutUserRequestBody>;
 
-export const logoutUserResponseBodyDTOSchema = Type.Null();
+export const logoutUserResponseBodyDtoSchema = Type.Null();
 
-export type LogoutUserResponseBodyDTO = Static<typeof logoutUserResponseBodyDTOSchema>;
+export type LogoutUserResponseBodyDto = Static<typeof logoutUserResponseBodyDtoSchema>;

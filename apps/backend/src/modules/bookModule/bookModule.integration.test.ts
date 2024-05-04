@@ -7,6 +7,7 @@ import { BookHttpController } from './api/httpControllers/bookHttpController/boo
 import { BookReadingHttpController } from './api/httpControllers/bookReadingHttpController/bookReadingHttpController.js';
 import { GenreAdminHttpController } from './api/httpControllers/genreAdminHttpController/genreAdminHttpController.js';
 import { GenreHttpController } from './api/httpControllers/genreHttpController/genreHttpController.js';
+import { QuoteHttpController } from './api/httpControllers/quoteHttpController/quoteHttpController.js';
 import { UserBookHttpController } from './api/httpControllers/userBookHttpController/userBookHttpController.js';
 import { bookSymbols } from './symbols.js';
 import { Application } from '../../core/application.js';
@@ -45,5 +46,7 @@ describe('BookModule', () => {
     expect(container.get<BookReadingHttpController>(bookSymbols.bookReadingHttpController)).toBeInstanceOf(
       BookReadingHttpController,
     );
+
+    expect(container.get<QuoteHttpController>(bookSymbols.quoteHttpController)).toBeInstanceOf(QuoteHttpController);
   });
 });

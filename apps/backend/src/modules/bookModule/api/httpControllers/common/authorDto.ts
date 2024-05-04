@@ -1,6 +1,6 @@
 import { type Static, Type } from '@sinclair/typebox';
 
-export const authorDTOSchema = Type.Object({
+export const authorDtoSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
   name: Type.String({
     minLength: 1,
@@ -9,4 +9,4 @@ export const authorDTOSchema = Type.Object({
   isApproved: Type.Boolean(),
 });
 
-export type AuthorDTO = Static<typeof authorDTOSchema>;
+export type AuthorDto = Static<typeof authorDtoSchema>;

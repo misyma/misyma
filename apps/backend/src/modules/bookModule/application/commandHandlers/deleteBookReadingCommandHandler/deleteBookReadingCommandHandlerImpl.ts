@@ -32,7 +32,7 @@ export class DeleteBookReadingCommandHandlerImpl implements DeleteBookReadingCom
     await this.bookReadingRepository.deleteBookReading({ id });
 
     this.loggerService.debug({
-      message: 'BookReading deleted...',
+      message: 'BookReading deleted.',
       id,
     });
   }

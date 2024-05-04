@@ -7,7 +7,7 @@ import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotF
 import { type BookReadingRepository } from '../../../domain/repositories/bookReadingRepository/bookReadingRepository.js';
 import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
 
-export class FindBookReadingsByBookIdQueryHandlerImpl implements FindBookReadingsByUserBookIdQueryHandler {
+export class FindBookReadingsByUserBookIdQueryHandlerImpl implements FindBookReadingsByUserBookIdQueryHandler {
   public constructor(
     private readonly bookReadingRepository: BookReadingRepository,
     private readonly userBookRepository: UserBookRepository,

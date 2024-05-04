@@ -1,24 +1,24 @@
 import { UserRole } from '@common/contracts';
 
 import {
-  type CreateGenreBodyDTO,
-  type CreateGenreResponseBodyDTO,
-  createGenreBodyDTOSchema,
-  createGenreResponseBodyDTOSchema,
+  type CreateGenreBodyDto,
+  type CreateGenreResponseBodyDto,
+  createGenreBodyDtoSchema,
+  createGenreResponseBodyDtoSchema,
 } from './schema/createGenreSchema.js';
 import {
-  type DeleteGenrePathParamsDTO,
-  deleteGenreResponseBodyDTOSchema,
-  deleteGenrePathParamsDTOSchema,
-  type DeleteGenreResponseBodyDTO,
+  type DeleteGenrePathParamsDto,
+  deleteGenreResponseBodyDtoSchema,
+  deleteGenrePathParamsDtoSchema,
+  type DeleteGenreResponseBodyDto,
 } from './schema/deleteGenreSchema.js';
 import {
-  type UpdateGenreNameBodyDTO,
-  type UpdateGenreNameResponseBodyDTO,
-  type UpdateGenreNamePathParamsDTO,
-  updateGenreNameBodyDTOSchema,
-  updateGenreNameResponseBodyDTOSchema,
-  updateGenreNamePathParamsDTOSchema,
+  type UpdateGenreNameBodyDto,
+  type UpdateGenreNameResponseBodyDto,
+  type UpdateGenreNamePathParamsDto,
+  updateGenreNameBodyDtoSchema,
+  updateGenreNameResponseBodyDtoSchema,
+  updateGenreNamePathParamsDtoSchema,
 } from './schema/updateGenreNameSchema.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
@@ -36,7 +36,7 @@ import { type CreateGenreCommandHandler } from '../../../application/commandHand
 import { type DeleteGenreCommandHandler } from '../../../application/commandHandlers/deleteGenreCommandHandler/deleteGenreCommandHandler.js';
 import { type UpdateGenreNameCommandHandler } from '../../../application/commandHandlers/updateGenreNameCommandHandler/updateGenreNameCommandHandler.js';
 import { type Genre } from '../../../domain/entities/genre/genre.js';
-import { type GenreDTO } from '../common/genreDto.js';
+import { type GenreDto } from '../common/genreDto.js';
 
 export class GenreAdminHttpController implements HttpController {
   public readonly basePath = '/api/admin/genres';
@@ -57,12 +57,12 @@ export class GenreAdminHttpController implements HttpController {
         method: HttpMethodName.post,
         schema: {
           request: {
-            body: createGenreBodyDTOSchema,
+            body: createGenreBodyDtoSchema,
           },
           response: {
             [HttpStatusCode.created]: {
               description: 'Genre created',
-              schema: createGenreResponseBodyDTOSchema,
+              schema: createGenreResponseBodyDtoSchema,
             },
           },
         },
@@ -74,13 +74,13 @@ export class GenreAdminHttpController implements HttpController {
         method: HttpMethodName.patch,
         schema: {
           request: {
-            pathParams: updateGenreNamePathParamsDTOSchema,
-            body: updateGenreNameBodyDTOSchema,
+            pathParams: updateGenreNamePathParamsDtoSchema,
+            body: updateGenreNameBodyDtoSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
               description: 'Genre name updated',
-              schema: updateGenreNameResponseBodyDTOSchema,
+              schema: updateGenreNameResponseBodyDtoSchema,
             },
           },
         },
@@ -93,12 +93,12 @@ export class GenreAdminHttpController implements HttpController {
         method: HttpMethodName.delete,
         schema: {
           request: {
-            pathParams: deleteGenrePathParamsDTOSchema,
+            pathParams: deleteGenrePathParamsDtoSchema,
           },
           response: {
             [HttpStatusCode.noContent]: {
               description: 'Genre deleted',
-              schema: deleteGenreResponseBodyDTOSchema,
+              schema: deleteGenreResponseBodyDtoSchema,
             },
           },
         },
@@ -108,8 +108,8 @@ export class GenreAdminHttpController implements HttpController {
   }
 
   private async createGenre(
-    request: HttpRequest<CreateGenreBodyDTO>,
-  ): Promise<HttpCreatedResponse<CreateGenreResponseBodyDTO>> {
+    request: HttpRequest<CreateGenreBodyDto>,
+  ): Promise<HttpCreatedResponse<CreateGenreResponseBodyDto>> {
     this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
       expectedRole: UserRole.admin,
@@ -120,14 +120,14 @@ export class GenreAdminHttpController implements HttpController {
     const { genre } = await this.createGenreCommandHandler.execute({ name });
 
     return {
-      body: this.mapGenreToDTO(genre),
+      body: this.mapGenreToDto(genre),
       statusCode: HttpStatusCode.created,
     };
   }
 
   private async updateGenreName(
-    request: HttpRequest<UpdateGenreNameBodyDTO, null, UpdateGenreNamePathParamsDTO>,
-  ): Promise<HttpOkResponse<UpdateGenreNameResponseBodyDTO>> {
+    request: HttpRequest<UpdateGenreNameBodyDto, null, UpdateGenreNamePathParamsDto>,
+  ): Promise<HttpOkResponse<UpdateGenreNameResponseBodyDto>> {
     this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
       expectedRole: UserRole.admin,
@@ -143,14 +143,14 @@ export class GenreAdminHttpController implements HttpController {
     });
 
     return {
-      body: this.mapGenreToDTO(genre),
+      body: this.mapGenreToDto(genre),
       statusCode: HttpStatusCode.ok,
     };
   }
 
   private async deleteGenre(
-    request: HttpRequest<null, null, DeleteGenrePathParamsDTO>,
-  ): Promise<HttpNoContentResponse<DeleteGenreResponseBodyDTO>> {
+    request: HttpRequest<null, null, DeleteGenrePathParamsDto>,
+  ): Promise<HttpNoContentResponse<DeleteGenreResponseBodyDto>> {
     this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
       expectedRole: UserRole.admin,
@@ -166,7 +166,7 @@ export class GenreAdminHttpController implements HttpController {
     };
   }
 
-  private mapGenreToDTO(genre: Genre): GenreDTO {
+  private mapGenreToDto(genre: Genre): GenreDto {
     return {
       id: genre.getId(),
       name: genre.getName(),

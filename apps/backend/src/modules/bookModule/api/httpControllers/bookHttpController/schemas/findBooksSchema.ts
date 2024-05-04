@@ -3,9 +3,9 @@ import { type Static, Type } from '@sinclair/typebox';
 import type * as contracts from '@common/contracts';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
-import { bookDTOSchema } from '../../common/bookDto.js';
+import { bookDtoSchema } from '../../common/bookDto.js';
 
-export const findBooksQueryParamsDTOSchema = Type.Object({
+export const findBooksQueryParamsDtoSchema = Type.Object({
   isbn: Type.Optional(
     Type.String({
       pattern: '^(97(8|9))?\\d{9}(\\d|X)$',
@@ -21,13 +21,13 @@ export const findBooksQueryParamsDTOSchema = Type.Object({
   pageSize: Type.Optional(Type.Integer({ minimum: 1 })),
 });
 
-export type FindBooksQueryParamsDTO = TypeExtends<
-  Static<typeof findBooksQueryParamsDTOSchema>,
+export type FindBooksQueryParamsDto = TypeExtends<
+  Static<typeof findBooksQueryParamsDtoSchema>,
   contracts.FindBooksQueryParams
 >;
 
-export const findBooksResponseBodyDTOSchema = Type.Object({
-  data: Type.Array(bookDTOSchema),
+export const findBooksResponseBodyDtoSchema = Type.Object({
+  data: Type.Array(bookDtoSchema),
   metadata: Type.Object({
     page: Type.Integer({ minimum: 1 }),
     pageSize: Type.Integer({ minimum: 1 }),
@@ -35,7 +35,7 @@ export const findBooksResponseBodyDTOSchema = Type.Object({
   }),
 });
 
-export type FindBooksResponseBodyDTO = TypeExtends<
+export type FindBooksResponseBodyDto = TypeExtends<
   contracts.FindBooksResponseBody,
-  Static<typeof findBooksResponseBodyDTOSchema>
+  Static<typeof findBooksResponseBodyDtoSchema>
 >;

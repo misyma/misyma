@@ -1,20 +1,20 @@
 import {
-  createAuthorBodyDTOSchema,
-  type CreateAuthorBodyDTO,
-  type CreateAuthorResponseBodyDTO,
-  createAuthorResponseBodyDTOSchema,
+  createAuthorBodyDtoSchema,
+  type CreateAuthorBodyDto,
+  type CreateAuthorResponseBodyDto,
+  createAuthorResponseBodyDtoSchema,
 } from './schemas/createAuthorSchema.js';
 import {
-  findAuthorPathParamsDTOSchema,
-  findAuthorResponseBodyDTOSchema,
-  type FindAuthorPathParamsDTO,
-  type FindAuthorResponseBodyDTO,
+  findAuthorPathParamsDtoSchema,
+  findAuthorResponseBodyDtoSchema,
+  type FindAuthorPathParamsDto,
+  type FindAuthorResponseBodyDto,
 } from './schemas/findAuthorSchema.js';
 import {
-  type FindAuthorsQueryParamsDTO,
-  type FindAuthorsResponseBodyDTO,
-  findAuthorsQueryParamsDTOSchema,
-  findAuthorsResponseBodyDTOSchema,
+  type FindAuthorsQueryParamsDto,
+  type FindAuthorsResponseBodyDto,
+  findAuthorsQueryParamsDtoSchema,
+  findAuthorsResponseBodyDtoSchema,
 } from './schemas/findAuthorsSchema.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
@@ -24,7 +24,7 @@ import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
 import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.js';
 import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
-import { type AuthorDTO } from '../../../../bookModule/api/httpControllers/common/authorDto.js';
+import { type AuthorDto } from '../../../../bookModule/api/httpControllers/common/authorDto.js';
 import { type CreateAuthorCommandHandler } from '../../../application/commandHandlers/createAuthorCommandHandler/createAuthorCommandHandler.js';
 import { type FindAuthorQueryHandler } from '../../../application/queryHandlers/findAuthorQueryHandler/findAuthorQueryHandler.js';
 import { type FindAuthorsQueryHandler } from '../../../application/queryHandlers/findAuthorsQueryHandler/findAuthorsQueryHandler.js';
@@ -48,11 +48,11 @@ export class AuthorHttpController implements HttpController {
         handler: this.createAuthor.bind(this),
         schema: {
           request: {
-            body: createAuthorBodyDTOSchema,
+            body: createAuthorBodyDtoSchema,
           },
           response: {
             [HttpStatusCode.created]: {
-              schema: createAuthorResponseBodyDTOSchema,
+              schema: createAuthorResponseBodyDtoSchema,
               description: 'Author created',
             },
           },
@@ -66,11 +66,11 @@ export class AuthorHttpController implements HttpController {
         handler: this.findAuthor.bind(this),
         schema: {
           request: {
-            pathParams: findAuthorPathParamsDTOSchema,
+            pathParams: findAuthorPathParamsDtoSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
-              schema: findAuthorResponseBodyDTOSchema,
+              schema: findAuthorResponseBodyDtoSchema,
               description: 'Author found',
             },
           },
@@ -83,11 +83,11 @@ export class AuthorHttpController implements HttpController {
         handler: this.findAuthors.bind(this),
         schema: {
           request: {
-            queryParams: findAuthorsQueryParamsDTOSchema,
+            queryParams: findAuthorsQueryParamsDtoSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
-              schema: findAuthorsResponseBodyDTOSchema,
+              schema: findAuthorsResponseBodyDtoSchema,
               description: 'Authors found',
             },
           },
@@ -99,8 +99,8 @@ export class AuthorHttpController implements HttpController {
   }
 
   private async createAuthor(
-    request: HttpRequest<CreateAuthorBodyDTO>,
-  ): Promise<HttpCreatedResponse<CreateAuthorResponseBodyDTO>> {
+    request: HttpRequest<CreateAuthorBodyDto>,
+  ): Promise<HttpCreatedResponse<CreateAuthorResponseBodyDto>> {
     const { name } = request.body;
 
     await this.accessControlService.verifyBearerToken({
@@ -114,13 +114,13 @@ export class AuthorHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.created,
-      body: this.mapAuthorToDTO(author),
+      body: this.mapAuthorToDto(author),
     };
   }
 
   private async findAuthor(
-    request: HttpRequest<undefined, undefined, FindAuthorPathParamsDTO>,
-  ): Promise<HttpOkResponse<FindAuthorResponseBodyDTO>> {
+    request: HttpRequest<undefined, undefined, FindAuthorPathParamsDto>,
+  ): Promise<HttpOkResponse<FindAuthorResponseBodyDto>> {
     const { id } = request.pathParams;
 
     await this.accessControlService.verifyBearerToken({
@@ -131,13 +131,13 @@ export class AuthorHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.ok,
-      body: this.mapAuthorToDTO(author),
+      body: this.mapAuthorToDto(author),
     };
   }
 
   private async findAuthors(
-    request: HttpRequest<undefined, FindAuthorsQueryParamsDTO, undefined>,
-  ): Promise<HttpOkResponse<FindAuthorsResponseBodyDTO>> {
+    request: HttpRequest<undefined, FindAuthorsQueryParamsDto, undefined>,
+  ): Promise<HttpOkResponse<FindAuthorsResponseBodyDto>> {
     const { name, page = 1, pageSize = 10 } = request.queryParams;
 
     await this.accessControlService.verifyBearerToken({
@@ -153,7 +153,7 @@ export class AuthorHttpController implements HttpController {
     return {
       statusCode: HttpStatusCode.ok,
       body: {
-        data: authors.map(this.mapAuthorToDTO),
+        data: authors.map(this.mapAuthorToDto),
         metadata: {
           page,
           pageSize,
@@ -163,7 +163,7 @@ export class AuthorHttpController implements HttpController {
     };
   }
 
-  private mapAuthorToDTO(author: Author): AuthorDTO {
+  private mapAuthorToDto(author: Author): AuthorDto {
     return {
       id: author.getId(),
       name: author.getName(),

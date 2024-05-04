@@ -4,22 +4,22 @@ import type * as contracts from '@common/contracts';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
-export const refreshUserTokensBodyDTOSchema = Type.Object({
+export const refreshUserTokensBodyDtoSchema = Type.Object({
   refreshToken: Type.String({ minLength: 1 }),
 });
 
-export type RefreshUserTokensBodyDTO = TypeExtends<
-  Static<typeof refreshUserTokensBodyDTOSchema>,
+export type RefreshUserTokensBodyDto = TypeExtends<
+  Static<typeof refreshUserTokensBodyDtoSchema>,
   contracts.RefreshUserTokensRequestBody
 >;
 
-export const refreshUserTokensResponseBodyDTOSchema = Type.Object({
+export const refreshUserTokensResponseBodyDtoSchema = Type.Object({
   accessToken: Type.String(),
   refreshToken: Type.String(),
   expiresIn: Type.Number(),
 });
 
-export type RefreshUserTokensResponseBodyDTO = TypeExtends<
-  Static<typeof refreshUserTokensResponseBodyDTOSchema>,
+export type RefreshUserTokensResponseBodyDto = TypeExtends<
+  Static<typeof refreshUserTokensResponseBodyDtoSchema>,
   contracts.RefreshUserTokensResponseBody
 >;

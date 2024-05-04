@@ -1,24 +1,24 @@
 import { UserRole } from '@common/contracts';
 
 import {
-  createBookBodyDTOSchema,
-  createBookResponseBodyDTOSchema,
-  type CreateBookBodyDTO,
-  type CreateBookResponseBodyDTO,
+  createBookBodyDtoSchema,
+  createBookResponseBodyDtoSchema,
+  type CreateBookBodyDto,
+  type CreateBookResponseBodyDto,
 } from './schemas/createBookSchema.js';
 import {
-  deleteBookPathParamsDTOSchema,
-  deleteBookResponseBodyDTOSchema,
-  type DeleteBookPathParamsDTO,
-  type DeleteBookResponseBodyDTO,
+  deleteBookPathParamsDtoSchema,
+  deleteBookResponseBodyDtoSchema,
+  type DeleteBookPathParamsDto,
+  type DeleteBookResponseBodyDto,
 } from './schemas/deleteBookSchema.js';
 import {
-  updateBookPathParamsDTOSchema,
-  updateBookBodyDTOSchema,
-  type UpdateBookBodyDTO,
-  type UpdateBookPathParamsDTO,
-  updateBookResponseBodyDTOSchema,
-  type UpdateBookResponseBodyDTO,
+  updateBookPathParamsDtoSchema,
+  updateBookBodyDtoSchema,
+  type UpdateBookBodyDto,
+  type UpdateBookPathParamsDto,
+  updateBookResponseBodyDtoSchema,
+  type UpdateBookResponseBodyDto,
 } from './schemas/updateBookSchema.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
@@ -36,7 +36,7 @@ import { type CreateBookCommandHandler } from '../../../application/commandHandl
 import { type DeleteBookCommandHandler } from '../../../application/commandHandlers/deleteBookCommandHandler/deleteBookCommandHandler.js';
 import { type UpdateBookCommandHandler } from '../../../application/commandHandlers/updateBookCommandHandler/updateBookCommandHandler.js';
 import { type Book } from '../../../domain/entities/book/book.js';
-import { type BookDTO } from '../common/bookDto.js';
+import { type BookDto } from '../common/bookDto.js';
 
 export class BookAdminHttpController implements HttpController {
   public readonly basePath = '/api/admin/books';
@@ -56,11 +56,11 @@ export class BookAdminHttpController implements HttpController {
         handler: this.createBook.bind(this),
         schema: {
           request: {
-            body: createBookBodyDTOSchema,
+            body: createBookBodyDtoSchema,
           },
           response: {
             [HttpStatusCode.created]: {
-              schema: createBookResponseBodyDTOSchema,
+              schema: createBookResponseBodyDtoSchema,
               description: 'Book created',
             },
           },
@@ -74,11 +74,11 @@ export class BookAdminHttpController implements HttpController {
         handler: this.deleteBook.bind(this),
         schema: {
           request: {
-            pathParams: deleteBookPathParamsDTOSchema,
+            pathParams: deleteBookPathParamsDtoSchema,
           },
           response: {
             [HttpStatusCode.noContent]: {
-              schema: deleteBookResponseBodyDTOSchema,
+              schema: deleteBookResponseBodyDtoSchema,
               description: 'Book deleted',
             },
           },
@@ -93,13 +93,13 @@ export class BookAdminHttpController implements HttpController {
         handler: this.updateBook.bind(this),
         schema: {
           request: {
-            pathParams: updateBookPathParamsDTOSchema,
-            body: updateBookBodyDTOSchema,
+            pathParams: updateBookPathParamsDtoSchema,
+            body: updateBookBodyDtoSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
               description: 'Book updated',
-              schema: updateBookResponseBodyDTOSchema,
+              schema: updateBookResponseBodyDtoSchema,
             },
           },
         },
@@ -108,8 +108,8 @@ export class BookAdminHttpController implements HttpController {
   }
 
   private async createBook(
-    request: HttpRequest<CreateBookBodyDTO>,
-  ): Promise<HttpCreatedResponse<CreateBookResponseBodyDTO>> {
+    request: HttpRequest<CreateBookBodyDto>,
+  ): Promise<HttpCreatedResponse<CreateBookResponseBodyDto>> {
     const { authorIds, ...bookData } = request.body;
 
     await this.accessControlService.verifyBearerToken({
@@ -125,13 +125,13 @@ export class BookAdminHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.created,
-      body: this.mapBookToBookDTO(book),
+      body: this.mapBookToBookDto(book),
     };
   }
 
   private async deleteBook(
-    request: HttpRequest<undefined, undefined, DeleteBookPathParamsDTO>,
-  ): Promise<HttpNoContentResponse<DeleteBookResponseBodyDTO>> {
+    request: HttpRequest<undefined, undefined, DeleteBookPathParamsDto>,
+  ): Promise<HttpNoContentResponse<DeleteBookResponseBodyDto>> {
     const { id } = request.pathParams;
 
     await this.accessControlService.verifyBearerToken({
@@ -148,8 +148,8 @@ export class BookAdminHttpController implements HttpController {
   }
 
   private async updateBook(
-    request: HttpRequest<UpdateBookBodyDTO, undefined, UpdateBookPathParamsDTO>,
-  ): Promise<HttpOkResponse<UpdateBookResponseBodyDTO>> {
+    request: HttpRequest<UpdateBookBodyDto, undefined, UpdateBookPathParamsDto>,
+  ): Promise<HttpOkResponse<UpdateBookResponseBodyDto>> {
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
@@ -173,15 +173,15 @@ export class BookAdminHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.ok,
-      body: this.mapBookToBookDTO(book),
+      body: this.mapBookToBookDto(book),
     };
   }
 
-  private mapBookToBookDTO(book: Book): BookDTO {
+  private mapBookToBookDto(book: Book): BookDto {
     const { title, language, format, isApproved, imageUrl, isbn, publisher, releaseYear, translator, pages } =
       book.getState();
 
-    const bookDto: BookDTO = {
+    const bookDto: BookDto = {
       id: book.getId(),
       title,
       language,

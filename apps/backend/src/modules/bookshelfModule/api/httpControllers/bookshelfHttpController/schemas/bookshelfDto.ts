@@ -1,6 +1,6 @@
 import { type Static, Type } from '@sinclair/typebox';
 
-export const bookshelfDTOSchema = Type.Object({
+export const bookshelfDtoSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
   name: Type.String({
     minLength: 1,
@@ -9,4 +9,4 @@ export const bookshelfDTOSchema = Type.Object({
   userId: Type.String({ format: 'uuid' }),
 });
 
-export type BookshelfDTO = Static<typeof bookshelfDTOSchema>;
+export type BookshelfDto = Static<typeof bookshelfDtoSchema>;

@@ -1,16 +1,16 @@
 import { UserRole } from '@common/contracts';
 
 import {
-  createAuthorBodyDTOSchema,
-  type CreateAuthorBodyDTO,
-  type CreateAuthorResponseBodyDTO,
-  createAuthorResponseBodyDTOSchema,
+  createAuthorBodyDtoSchema,
+  type CreateAuthorBodyDto,
+  type CreateAuthorResponseBodyDto,
+  createAuthorResponseBodyDtoSchema,
 } from './schemas/createAuthorSchema.js';
 import {
-  deleteAuthorPathParamsDTOSchema,
-  deleteAuthorResponseBodyDTOSchema,
-  type DeleteAuthorPathParamsDTO,
-  type DeleteAuthorResponseBodyDTO,
+  deleteAuthorPathParamsDtoSchema,
+  deleteAuthorResponseBodyDtoSchema,
+  type DeleteAuthorPathParamsDto,
+  type DeleteAuthorResponseBodyDto,
 } from './schemas/deleteAuthorSchema.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
@@ -20,7 +20,7 @@ import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
 import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.js';
 import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
-import { type AuthorDTO } from '../../../../bookModule/api/httpControllers/common/authorDto.js';
+import { type AuthorDto } from '../../../../bookModule/api/httpControllers/common/authorDto.js';
 import { type CreateAuthorCommandHandler } from '../../../application/commandHandlers/createAuthorCommandHandler/createAuthorCommandHandler.js';
 import { type DeleteAuthorCommandHandler } from '../../../application/commandHandlers/deleteAuthorCommandHandler/deleteAuthorCommandHandler.js';
 import { type Author } from '../../../domain/entities/author/author.js';
@@ -42,11 +42,11 @@ export class AuthorAdminHttpController implements HttpController {
         handler: this.createAuthor.bind(this),
         schema: {
           request: {
-            body: createAuthorBodyDTOSchema,
+            body: createAuthorBodyDtoSchema,
           },
           response: {
             [HttpStatusCode.created]: {
-              schema: createAuthorResponseBodyDTOSchema,
+              schema: createAuthorResponseBodyDtoSchema,
               description: 'Author created',
             },
           },
@@ -60,11 +60,11 @@ export class AuthorAdminHttpController implements HttpController {
         handler: this.deleteAuthor.bind(this),
         schema: {
           request: {
-            pathParams: deleteAuthorPathParamsDTOSchema,
+            pathParams: deleteAuthorPathParamsDtoSchema,
           },
           response: {
             [HttpStatusCode.noContent]: {
-              schema: deleteAuthorResponseBodyDTOSchema,
+              schema: deleteAuthorResponseBodyDtoSchema,
               description: 'Author deleted',
             },
           },
@@ -76,8 +76,8 @@ export class AuthorAdminHttpController implements HttpController {
   }
 
   private async createAuthor(
-    request: HttpRequest<CreateAuthorBodyDTO>,
-  ): Promise<HttpCreatedResponse<CreateAuthorResponseBodyDTO>> {
+    request: HttpRequest<CreateAuthorBodyDto>,
+  ): Promise<HttpCreatedResponse<CreateAuthorResponseBodyDto>> {
     const { name } = request.body;
 
     await this.accessControlService.verifyBearerToken({
@@ -92,13 +92,13 @@ export class AuthorAdminHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.created,
-      body: this.mapAuthorToDTO(author),
+      body: this.mapAuthorToDto(author),
     };
   }
 
   private async deleteAuthor(
-    request: HttpRequest<undefined, undefined, DeleteAuthorPathParamsDTO>,
-  ): Promise<HttpNoContentResponse<DeleteAuthorResponseBodyDTO>> {
+    request: HttpRequest<undefined, undefined, DeleteAuthorPathParamsDto>,
+  ): Promise<HttpNoContentResponse<DeleteAuthorResponseBodyDto>> {
     const { id } = request.pathParams;
 
     await this.accessControlService.verifyBearerToken({
@@ -114,7 +114,7 @@ export class AuthorAdminHttpController implements HttpController {
     };
   }
 
-  private mapAuthorToDTO(author: Author): AuthorDTO {
+  private mapAuthorToDto(author: Author): AuthorDto {
     return {
       id: author.getId(),
       name: author.getName(),

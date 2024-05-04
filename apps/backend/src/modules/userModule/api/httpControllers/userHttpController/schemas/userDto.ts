@@ -2,7 +2,7 @@ import { type Static, Type } from '@sinclair/typebox';
 
 import { UserRole } from '@common/contracts';
 
-export const userDTOSchema = Type.Object({
+export const userDtoSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
   email: Type.String({
     format: 'email',
@@ -16,4 +16,4 @@ export const userDTOSchema = Type.Object({
   role: Type.Enum(UserRole),
 });
 
-export type UserDTO = Static<typeof userDTOSchema>;
+export type UserDto = Static<typeof userDtoSchema>;

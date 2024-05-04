@@ -99,3 +99,15 @@ export * from './schemas/genre/createGenre.js';
 export * from './schemas/genre/deleteGenre.js';
 
 export * from './schemas/genre/updateGenreName.js';
+
+export * from './schemas/quote/quote.js';
+
+export * from './schemas/quote/createQuote.js';
+
+export * from './schemas/quote/deleteQuote.js';
+
+export * from './schemas/quote/findQuoteById.js';
+
+export * from './schemas/quote/findQuotes.js';
+
+export * from './schemas/quote/updateQuote.js';

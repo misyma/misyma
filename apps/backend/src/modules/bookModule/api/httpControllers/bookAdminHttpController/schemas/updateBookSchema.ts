@@ -3,18 +3,18 @@ import { type Static, Type } from '@sinclair/typebox';
 import * as contracts from '@common/contracts';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
-import { bookDTOSchema } from '../../common/bookDto.js';
+import { bookDtoSchema } from '../../common/bookDto.js';
 
-export const updateBookPathParamsDTOSchema = Type.Object({
+export const updateBookPathParamsDtoSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
 });
 
-export type UpdateBookPathParamsDTO = TypeExtends<
-  Static<typeof updateBookPathParamsDTOSchema>,
+export type UpdateBookPathParamsDto = TypeExtends<
+  Static<typeof updateBookPathParamsDtoSchema>,
   contracts.UpdateBookPathParams
 >;
 
-export const updateBookBodyDTOSchema = Type.Object({
+export const updateBookBodyDtoSchema = Type.Object({
   title: Type.Optional(
     Type.String({
       minLength: 1,
@@ -56,11 +56,11 @@ export const updateBookBodyDTOSchema = Type.Object({
   authorIds: Type.Optional(Type.Array(Type.String({ format: 'uuid' }))),
 });
 
-export type UpdateBookBodyDTO = TypeExtends<Static<typeof updateBookBodyDTOSchema>, contracts.UpdateBookRequestBody>;
+export type UpdateBookBodyDto = TypeExtends<Static<typeof updateBookBodyDtoSchema>, contracts.UpdateBookRequestBody>;
 
-export const updateBookResponseBodyDTOSchema = bookDTOSchema;
+export const updateBookResponseBodyDtoSchema = bookDtoSchema;
 
-export type UpdateBookResponseBodyDTO = TypeExtends<
-  Static<typeof updateBookResponseBodyDTOSchema>,
+export type UpdateBookResponseBodyDto = TypeExtends<
+  Static<typeof updateBookResponseBodyDtoSchema>,
   contracts.UpdateBookResponseBody
 >;

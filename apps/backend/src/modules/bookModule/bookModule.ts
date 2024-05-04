@@ -5,6 +5,7 @@ import { BookHttpController } from './api/httpControllers/bookHttpController/boo
 import { BookReadingHttpController } from './api/httpControllers/bookReadingHttpController/bookReadingHttpController.js';
 import { GenreAdminHttpController } from './api/httpControllers/genreAdminHttpController/genreAdminHttpController.js';
 import { GenreHttpController } from './api/httpControllers/genreHttpController/genreHttpController.js';
+import { QuoteHttpController } from './api/httpControllers/quoteHttpController/quoteHttpController.js';
 import { UserBookHttpController } from './api/httpControllers/userBookHttpController/userBookHttpController.js';
 import { type CreateAuthorCommandHandler } from './application/commandHandlers/createAuthorCommandHandler/createAuthorCommandHandler.js';
 import { CreateAuthorCommandHandlerImpl } from './application/commandHandlers/createAuthorCommandHandler/createAuthorCommandHandlerImpl.js';
@@ -14,6 +15,8 @@ import { type CreateBookReadingCommandHandler } from './application/commandHandl
 import { CreateBookReadingCommandHandlerImpl } from './application/commandHandlers/createBookReadingCommandHandler/createBookReadingCommandHandlerImpl.js';
 import { type CreateGenreCommandHandler } from './application/commandHandlers/createGenreCommandHandler/createGenreCommandHandler.js';
 import { CreateGenreCommandHandlerImpl } from './application/commandHandlers/createGenreCommandHandler/createGenreCommandHandlerImpl.js';
+import { type CreateQuoteCommandHandler } from './application/commandHandlers/createQuoteCommandHandler/createQuoteCommandHandler.js';
+import { CreateQuoteCommandHandlerImpl } from './application/commandHandlers/createQuoteCommandHandler/createQuoteCommandHandlerImpl.js';
 import { type CreateUserBookCommandHandler } from './application/commandHandlers/createUserBookCommandHandler/createUserBookCommandHandler.js';
 import { CreateUserBookCommandHandlerImpl } from './application/commandHandlers/createUserBookCommandHandler/createUserBookCommandHandlerImpl.js';
 import { type DeleteAuthorCommandHandler } from './application/commandHandlers/deleteAuthorCommandHandler/deleteAuthorCommandHandler.js';
@@ -24,6 +27,8 @@ import { type DeleteBookReadingCommandHandler } from './application/commandHandl
 import { DeleteBookReadingCommandHandlerImpl } from './application/commandHandlers/deleteBookReadingCommandHandler/deleteBookReadingCommandHandlerImpl.js';
 import { type DeleteGenreCommandHandler } from './application/commandHandlers/deleteGenreCommandHandler/deleteGenreCommandHandler.js';
 import { DeleteGenreCommandHandlerImpl } from './application/commandHandlers/deleteGenreCommandHandler/deleteGenreCommandHandlerImpl.js';
+import { type DeleteQuoteCommandHandler } from './application/commandHandlers/deleteQuoteCommandHandler/deleteQuoteCommandHandler.js';
+import { DeleteQuoteCommandHandlerImpl } from './application/commandHandlers/deleteQuoteCommandHandler/deleteQuoteCommandHandlerImpl.js';
 import { type DeleteUserBookCommandHandler } from './application/commandHandlers/deleteUserBookCommandHandler/deleteUserBookCommandHandler.js';
 import { DeleteUserBookCommandHandlerImpl } from './application/commandHandlers/deleteUserBookCommandHandler/deleteUserBookCommandHandlerImpl.js';
 import { type UpdateBookCommandHandler } from './application/commandHandlers/updateBookCommandHandler/updateBookCommandHandler.js';
@@ -32,6 +37,8 @@ import { type UpdateBookReadingCommandHandler } from './application/commandHandl
 import { UpdateBookReadingCommandHandlerImpl } from './application/commandHandlers/updateBookReadingCommandHandler/updateBookReadingCommandHandlerImpl.js';
 import { type UpdateGenreNameCommandHandler } from './application/commandHandlers/updateGenreNameCommandHandler/updateGenreNameCommandHandler.js';
 import { UpdateGenreNameCommandHandlerImpl } from './application/commandHandlers/updateGenreNameCommandHandler/updateGenreNameCommandHandlerImpl.js';
+import { type UpdateQuoteCommandHandler } from './application/commandHandlers/updateQuoteCommandHandler/updateQuoteCommandHandler.js';
+import { UpdateQuoteCommandHandlerImpl } from './application/commandHandlers/updateQuoteCommandHandler/updateQuoteCommandHandlerImpl.js';
 import { type UpdateUserBookCommandHandler } from './application/commandHandlers/updateUserBookCommandHandler/updateUserBookCommandHandler.js';
 import { UpdateUserBookCommandHandlerImpl } from './application/commandHandlers/updateUserBookCommandHandler/updateUserBookCommandHandlerImpl.js';
 import { type UpdateUserBookGenresCommandHandler } from './application/commandHandlers/updateUserBookGenresCommandHandler/updateUserBookGenresCommandHandler.js';
@@ -47,7 +54,7 @@ import { FindBookQueryHandlerImpl } from './application/queryHandlers/findBookQu
 import { type FindBookReadingByIdQueryHandler } from './application/queryHandlers/findBookReadingByIdQueryHandler/findBookReadingByIdQueryHandler.js';
 import { FindBookReadingByIdQueryHandlerImpl } from './application/queryHandlers/findBookReadingByIdQueryHandler/findBookReadingByIdQueryHandlerImpl.js';
 import { type FindBookReadingsByUserBookIdQueryHandler } from './application/queryHandlers/findBookReadingsByUserBookIdQueryHandler/findBookReadingsByUserBookIdQueryHandler.js';
-import { FindBookReadingsByBookIdQueryHandlerImpl } from './application/queryHandlers/findBookReadingsByUserBookIdQueryHandler/findBookReadingsByUserBookIdQueryHandlerImpl.js';
+import { FindBookReadingsByUserBookIdQueryHandlerImpl } from './application/queryHandlers/findBookReadingsByUserBookIdQueryHandler/findBookReadingsByUserBookIdQueryHandlerImpl.js';
 import { type FindBooksQueryHandler } from './application/queryHandlers/findBooksQueryHandler/findBooksQueryHandler.js';
 import { FindBooksQueryHandlerImpl } from './application/queryHandlers/findBooksQueryHandler/findBooksQueryHandlerImpl.js';
 import { type FindGenreByIdQueryHandler } from './application/queryHandlers/findGenreByIdQueryHandler/findGenreByIdQueryHandler.js';
@@ -56,6 +63,10 @@ import { type FindGenreByNameQueryHandler } from './application/queryHandlers/fi
 import { FindGenreByNameQueryHandlerImpl } from './application/queryHandlers/findGenreByNameQueryHandler/findGenreByNameQueryHandlerImpl.js';
 import { type FindGenresQueryHandler } from './application/queryHandlers/findGenresQueryHandler/findGenresQueryHandler.js';
 import { FindGenresQueryHandlerImpl } from './application/queryHandlers/findGenresQueryHandler/findGenresQueryHandlerImpl.js';
+import { type FindQuoteByIdQueryHandler } from './application/queryHandlers/findQuoteByIdQueryHandler/findQuoteByIdQueryHandler.js';
+import { FindQuoteByIdQueryHandlerImpl } from './application/queryHandlers/findQuoteByIdQueryHandler/findQuoteByIdQueryHandlerImpl.js';
+import { type FindQuotesByUserBookIdQueryHandler } from './application/queryHandlers/findQuotesByUserBookIdQueryHandler/findQuotesByUserBookIdQueryHandler.js';
+import { FindQuotesByUserBookIdQueryHandlerImpl } from './application/queryHandlers/findQuotesByUserBookIdQueryHandler/findQuotesByUserBookIdQueryHandlerImpl.js';
 import { type FindUserBookQueryHandler } from './application/queryHandlers/findUserBookQueryHandler/findUserBookQueryHandler.js';
 import { FindUserBookQueryHandlerImpl } from './application/queryHandlers/findUserBookQueryHandler/findUserBookQueryHandlerImpl.js';
 import { type FindUserBooksQueryHandler } from './application/queryHandlers/findUserBooksQueryHandler/findUserBooksQueryHandler.js';
@@ -177,7 +188,7 @@ export class BookModule implements DependencyInjectionModule {
     );
 
     container.bind<QuoteRepository>(
-      symbols.bookReadingRepository,
+      symbols.quoteRepository,
       () =>
         new QuoteRepositoryImpl(
           container.get<DatabaseClient>(coreSymbols.databaseClient),
@@ -341,6 +352,34 @@ export class BookModule implements DependencyInjectionModule {
           container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );
+
+    container.bind<CreateQuoteCommandHandler>(
+      symbols.createQuoteCommandHandler,
+      () =>
+        new CreateQuoteCommandHandlerImpl(
+          container.get<QuoteRepository>(symbols.quoteRepository),
+          container.get<UserBookRepository>(bookSymbols.userBookRepository),
+          container.get<LoggerService>(coreSymbols.loggerService),
+        ),
+    );
+
+    container.bind<UpdateQuoteCommandHandler>(
+      symbols.updateQuoteCommandHandler,
+      () =>
+        new UpdateQuoteCommandHandlerImpl(
+          container.get<QuoteRepository>(symbols.quoteRepository),
+          container.get<LoggerService>(coreSymbols.loggerService),
+        ),
+    );
+
+    container.bind<DeleteQuoteCommandHandler>(
+      symbols.deleteQuoteCommandHandler,
+      () =>
+        new DeleteQuoteCommandHandlerImpl(
+          container.get<QuoteRepository>(symbols.quoteRepository),
+          container.get<LoggerService>(coreSymbols.loggerService),
+        ),
+    );
   }
 
   private bindQueryHandlers(container: DependencyInjectionContainer): void {
@@ -402,8 +441,22 @@ export class BookModule implements DependencyInjectionModule {
     container.bind<FindBookReadingsByUserBookIdQueryHandler>(
       symbols.findBookReadingsByUserBookIdQueryHandler,
       () =>
-        new FindBookReadingsByBookIdQueryHandlerImpl(
+        new FindBookReadingsByUserBookIdQueryHandlerImpl(
           container.get<BookReadingRepository>(symbols.bookReadingRepository),
+          container.get<UserBookRepository>(bookSymbols.userBookRepository),
+        ),
+    );
+
+    container.bind<FindQuoteByIdQueryHandler>(
+      symbols.findQuoteByIdQueryHandler,
+      () => new FindQuoteByIdQueryHandlerImpl(container.get<QuoteRepository>(symbols.quoteRepository)),
+    );
+
+    container.bind<FindQuotesByUserBookIdQueryHandler>(
+      symbols.findQuotesByUserBookIdQueryHandler,
+      () =>
+        new FindQuotesByUserBookIdQueryHandlerImpl(
+          container.get<QuoteRepository>(symbols.quoteRepository),
           container.get<UserBookRepository>(bookSymbols.userBookRepository),
         ),
     );
@@ -499,6 +552,19 @@ export class BookModule implements DependencyInjectionModule {
           container.get<CreateBookReadingCommandHandler>(symbols.createBookReadingCommandHandler),
           container.get<UpdateBookReadingCommandHandler>(symbols.updateBookReadingCommandHandler),
           container.get<DeleteBookReadingCommandHandler>(symbols.deleteBookReadingCommandHandler),
+          container.get<AccessControlService>(authSymbols.accessControlService),
+        ),
+    );
+
+    container.bind<QuoteHttpController>(
+      symbols.quoteHttpController,
+      () =>
+        new QuoteHttpController(
+          container.get<FindQuotesByUserBookIdQueryHandler>(symbols.findQuotesByUserBookIdQueryHandler),
+          container.get<FindQuoteByIdQueryHandler>(symbols.findQuoteByIdQueryHandler),
+          container.get<CreateQuoteCommandHandler>(symbols.createQuoteCommandHandler),
+          container.get<UpdateQuoteCommandHandler>(symbols.updateQuoteCommandHandler),
+          container.get<DeleteQuoteCommandHandler>(symbols.deleteQuoteCommandHandler),
           container.get<AccessControlService>(authSymbols.accessControlService),
         ),
     );
