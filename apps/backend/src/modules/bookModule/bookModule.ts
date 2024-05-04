@@ -64,6 +64,7 @@ import { type AuthorRepository } from './domain/repositories/authorRepository/au
 import { type BookReadingRepository } from './domain/repositories/bookReadingRepository/bookReadingRepository.js';
 import { type BookRepository } from './domain/repositories/bookRepository/bookRepository.js';
 import { type GenreRepository } from './domain/repositories/genreRepository/genreRepository.js';
+import { type QuoteRepository } from './domain/repositories/quoteRepository/quoteRepository.js';
 import { type UserBookRepository } from './domain/repositories/userBookRepository/userBookRepository.js';
 import { type AuthorMapper } from './infrastructure/repositories/authorRepository/authorMapper/authorMapper.js';
 import { AuthorMapperImpl } from './infrastructure/repositories/authorRepository/authorMapper/authorMapperImpl.js';
@@ -77,6 +78,9 @@ import { BookRepositoryImpl } from './infrastructure/repositories/bookRepository
 import { type GenreMapper } from './infrastructure/repositories/genreRepository/genreMapper/genreMapper.js';
 import { GenreMapperImpl } from './infrastructure/repositories/genreRepository/genreMapper/genreMapperImpl.js';
 import { GenreRepositoryImpl } from './infrastructure/repositories/genreRepository/genreRepositoryImpl.js';
+import { type QuoteMapper } from './infrastructure/repositories/quoteRepository/quoteMapper/quoteMapper.js';
+import { QuoteMapperImpl } from './infrastructure/repositories/quoteRepository/quoteMapper/quoteMapperImpl.js';
+import { QuoteRepositoryImpl } from './infrastructure/repositories/quoteRepository/quoteRepositoryImpl.js';
 import { type UserBookMapper } from './infrastructure/repositories/userBookRepository/userBookMapper/userBookMapper.js';
 import { UserBookMapperImpl } from './infrastructure/repositories/userBookRepository/userBookMapper/userBookMapperImpl.js';
 import { UserBookRepositoryImpl } from './infrastructure/repositories/userBookRepository/userBookRepositoryImpl.js';
@@ -117,6 +121,8 @@ export class BookModule implements DependencyInjectionModule {
     container.bind<AuthorMapper>(symbols.authorMapper, () => new AuthorMapperImpl());
 
     container.bind<BookReadingMapper>(symbols.bookReadingMapper, () => new BookReadingMapperImpl());
+
+    container.bind<QuoteMapper>(symbols.quoteMapper, () => new QuoteMapperImpl());
   }
 
   private bindRepositories(container: DependencyInjectionContainer): void {
@@ -166,6 +172,16 @@ export class BookModule implements DependencyInjectionModule {
         new BookReadingRepositoryImpl(
           container.get<DatabaseClient>(coreSymbols.databaseClient),
           container.get<BookReadingMapper>(symbols.bookReadingMapper),
+          container.get<UuidService>(coreSymbols.uuidService),
+        ),
+    );
+
+    container.bind<QuoteRepository>(
+      symbols.bookReadingRepository,
+      () =>
+        new QuoteRepositoryImpl(
+          container.get<DatabaseClient>(coreSymbols.databaseClient),
+          container.get<QuoteMapper>(symbols.quoteMapper),
           container.get<UuidService>(coreSymbols.uuidService),
         ),
     );
@@ -309,7 +325,7 @@ export class BookModule implements DependencyInjectionModule {
     );
 
     container.bind<UpdateBookReadingCommandHandler>(
-      symbols.updateBookReadingNameCommandHandler,
+      symbols.updateBookReadingCommandHandler,
       () =>
         new UpdateBookReadingCommandHandlerImpl(
           container.get<BookReadingRepository>(symbols.bookReadingRepository),
@@ -318,7 +334,7 @@ export class BookModule implements DependencyInjectionModule {
     );
 
     container.bind<DeleteBookReadingCommandHandler>(
-      symbols.deleteBookReadingNameCommandHandler,
+      symbols.deleteBookReadingCommandHandler,
       () =>
         new DeleteBookReadingCommandHandlerImpl(
           container.get<BookReadingRepository>(symbols.bookReadingRepository),
@@ -481,8 +497,8 @@ export class BookModule implements DependencyInjectionModule {
           container.get<FindBookReadingsByUserBookIdQueryHandler>(symbols.findBookReadingsByUserBookIdQueryHandler),
           container.get<FindBookReadingByIdQueryHandler>(symbols.findBookReadingByIdQueryHandler),
           container.get<CreateBookReadingCommandHandler>(symbols.createBookReadingCommandHandler),
-          container.get<UpdateBookReadingCommandHandler>(symbols.updateBookReadingNameCommandHandler),
-          container.get<DeleteBookReadingCommandHandler>(symbols.deleteBookReadingNameCommandHandler),
+          container.get<UpdateBookReadingCommandHandler>(symbols.updateBookReadingCommandHandler),
+          container.get<DeleteBookReadingCommandHandler>(symbols.deleteBookReadingCommandHandler),
           container.get<AccessControlService>(authSymbols.accessControlService),
         ),
     );

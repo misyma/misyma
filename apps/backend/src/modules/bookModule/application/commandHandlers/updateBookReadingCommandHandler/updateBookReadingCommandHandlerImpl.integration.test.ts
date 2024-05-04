@@ -29,7 +29,7 @@ describe('UpdateBookReadingCommandHandlerImpl', () => {
   beforeEach(async () => {
     const container = TestContainer.create();
 
-    commandHandler = container.get<UpdateBookReadingCommandHandler>(symbols.updateBookReadingNameCommandHandler);
+    commandHandler = container.get<UpdateBookReadingCommandHandler>(symbols.updateBookReadingCommandHandler);
 
     bookReadingTestUtils = container.get<BookReadingTestUtils>(testSymbols.bookReadingTestUtils);
 

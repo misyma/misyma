@@ -46,9 +46,18 @@ export const symbols = {
   findBookReadingByIdQueryHandler: Symbol('findBookReadingByIdQueryHandler'),
   findBookReadingsByUserBookIdQueryHandler: Symbol('findBookReadingsByUserBookIdQueryHandler'),
   createBookReadingCommandHandler: Symbol('createBookReadingCommandHandler'),
-  updateBookReadingNameCommandHandler: Symbol('updateBookReadingNameCommandHandler'),
-  deleteBookReadingNameCommandHandler: Symbol('deleteBookReadingNameCommandHandler'),
+  updateBookReadingCommandHandler: Symbol('updateBookReadingCommandHandler'),
+  deleteBookReadingCommandHandler: Symbol('deleteBookReadingCommandHandler'),
   bookReadingHttpController: Symbol('bookReadingHttpController'),
+
+  quoteMapper: Symbol('quoteMapper'),
+  quoteRepository: Symbol('quoteRepository'),
+  findQuoteByIdQueryHandler: Symbol('findQuoteByIdQueryHandler'),
+  findQuotesByUserBookIdQueryHandler: Symbol('findQuotesByUserBookIdQueryHandler'),
+  createQuoteCommandHandler: Symbol('createQuoteCommandHandler'),
+  updateQuoteCommandHandler: Symbol('updateQuoteCommandHandler'),
+  deleteQuoteCommandHandler: Symbol('deleteQuoteCommandHandler'),
+  quoteHttpController: Symbol('quoteHttpController'),
 };
 
 export const bookSymbols = {
@@ -62,4 +71,5 @@ export const bookSymbols = {
   authorHttpController: symbols.authorHttpController,
   authorAdminHttpController: symbols.authorAdminHttpController,
   bookReadingHttpController: symbols.bookReadingHttpController,
+  quoteHttpController: symbols.quoteHttpController,
 };

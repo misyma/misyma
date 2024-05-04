@@ -185,7 +185,7 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
       return count;
     } catch (error) {
       throw new RepositoryError({
-        entity: 'Book',
+        entity: 'Bookshelf',
         operation: 'count',
         error,
       });

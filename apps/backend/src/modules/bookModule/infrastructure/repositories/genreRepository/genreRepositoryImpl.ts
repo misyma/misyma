@@ -197,7 +197,7 @@ export class GenreRepositoryImpl implements GenreRepository {
       return count;
     } catch (error) {
       throw new RepositoryError({
-        entity: 'Book',
+        entity: 'Genre',
         operation: 'count',
         error,
       });

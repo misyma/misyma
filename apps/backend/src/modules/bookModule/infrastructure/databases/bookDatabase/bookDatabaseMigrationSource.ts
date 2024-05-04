@@ -4,6 +4,7 @@ import { M3CreateGenresTableMigration } from './migrations/m3CreateGenresMigrati
 import { M4CreateUserBookTableMigration } from './migrations/m4CreateUserBookTableMigration.js';
 import { M5CreateUserBookGenresTableMigration } from './migrations/m5CreateUserBookGenresTableMigration.js';
 import { M6CreateBookReadingTableMigration } from './migrations/m6CreateBookReadingTableMigration.js';
+import { M7CreateQuoteTableMigration } from './migrations/m7CreateQuoteTableMigration.js';
 import { type Migration } from '../../../../../libs/database/types/migration.js';
 import { type MigrationSource } from '../../../../../libs/database/types/migrationSource.js';
 
@@ -16,6 +17,7 @@ export class BookDatabaseMigrationSource implements MigrationSource {
       new M4CreateUserBookTableMigration(),
       new M5CreateUserBookGenresTableMigration(),
       new M6CreateBookReadingTableMigration(),
+      new M7CreateQuoteTableMigration(),
     ];
   }
 
