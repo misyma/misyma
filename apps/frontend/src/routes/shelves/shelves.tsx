@@ -18,6 +18,7 @@ import { z } from 'zod';
 import { useCreateBookshelfMutation } from '../../api/bookshelf/mutations/createBookshelfMutation/createBookshelfMutation';
 import { Bookmark } from '../../components/bookmark/bookmark';
 import { Paginator } from '../../components/paginator/paginator';
+import { BookshelfType } from '@common/contracts';
 
 const bookshelfNameSchema = z
   .string()
@@ -210,6 +211,7 @@ export const ShelvesPage: FC = () => {
       id: '',
       name: '',
       userId: user?.id as string,
+      type: BookshelfType.standard,
     });
 
     setBookshelves([...(bookshelves ? bookshelves : [])]);
