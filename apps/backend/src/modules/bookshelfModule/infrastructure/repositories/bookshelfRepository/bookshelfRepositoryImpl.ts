@@ -1,3 +1,4 @@
+import { type BookshelfMapper } from './bookshelfMapper/bookshelfMapper.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
@@ -12,7 +13,6 @@ import {
 } from '../../../domain/repositories/bookshelfRepository/bookshelfRepository.js';
 import { type BookshelfRawEntity } from '../../databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfRawEntity.js';
 import { BookshelfTable } from '../../databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfTable.js';
-import { type BookshelfMapper } from '../mappers/bookshelfMapper/bookshelfMapper.js';
 
 type CreateBookshelfPayload = { bookshelf: BookshelfState };
 
@@ -67,13 +67,22 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
   }
 
   public async findBookshelves(payload: FindBookshelvesPayload): Promise<Bookshelf[]> {
-    const { userId, page, pageSize } = payload;
+    const { userId, page, pageSize, type } = payload;
 
     let rawEntities: BookshelfRawEntity[];
 
+    let whereClause: Partial<BookshelfRawEntity> = { userId };
+
+    if (type) {
+      whereClause = {
+        ...whereClause,
+        type,
+      };
+    }
+
     try {
       rawEntities = await this.databaseClient<BookshelfRawEntity>(this.table.name)
-        .where({ userId })
+        .where(whereClause)
         .limit(pageSize)
         .offset(pageSize * (page - 1));
     } catch (error) {
@@ -108,6 +117,7 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
           id: this.uuidService.generateUuid(),
           name: bookshelf.name,
           userId: bookshelf.userId,
+          type: bookshelf.type,
         },
         '*',
       );

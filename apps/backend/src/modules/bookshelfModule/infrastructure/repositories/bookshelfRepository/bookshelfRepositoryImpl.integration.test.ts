@@ -1,5 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
+import { BookshelfType } from '@common/contracts';
+
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
@@ -66,6 +68,7 @@ describe('BookshelfRepositoryImpl', () => {
       expect(result?.getState()).toEqual({
         name: bookshelf.name,
         userId: bookshelf.userId,
+        type: bookshelf.type,
       });
     });
 
@@ -88,6 +91,97 @@ describe('BookshelfRepositoryImpl', () => {
       expect(result?.getState()).toEqual({
         name: bookshelf.name,
         userId: bookshelf.userId,
+        type: bookshelf.type,
+      });
+    });
+  });
+
+  describe('findMany', () => {
+    it('returns empty array - when no Bookshelves were found', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const result = await repository.findBookshelves({
+        userId: user.id,
+        page: 1,
+        pageSize: 10,
+      });
+
+      expect(result).toEqual([]);
+    });
+
+    it(`finds all user's bookshelves`, async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const bookshelf1 = await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+        },
+      });
+
+      const bookshelf2 = await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+        },
+      });
+
+      const result = await repository.findBookshelves({
+        userId: user.id,
+        page: 1,
+        pageSize: 10,
+      });
+
+      expect(result).toHaveLength(2);
+
+      expect(result[0]?.getState()).toEqual({
+        name: bookshelf1.name,
+        userId: bookshelf1.userId,
+        type: bookshelf1.type,
+      });
+
+      expect(result[1]?.getState()).toEqual({
+        name: bookshelf2.name,
+        userId: bookshelf2.userId,
+        type: bookshelf2.type,
+      });
+    });
+
+    it(`finds all user's bookshelves by type`, async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const bookshelf1 = await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+          type: BookshelfType.borrowing,
+        },
+      });
+
+      await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+          type: BookshelfType.standard,
+        },
+      });
+
+      await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+          type: BookshelfType.archive,
+        },
+      });
+
+      const result = await repository.findBookshelves({
+        userId: user.id,
+        type: BookshelfType.borrowing,
+        page: 1,
+        pageSize: 10,
+      });
+
+      expect(result).toHaveLength(1);
+
+      expect(result[0]?.getState()).toEqual({
+        name: bookshelf1.name,
+        userId: bookshelf1.userId,
+        type: bookshelf1.type,
       });
     });
   });
@@ -111,6 +205,7 @@ describe('BookshelfRepositoryImpl', () => {
       expect(result.getState()).toEqual({
         name: bookshelfDraft.getName(),
         userId: bookshelfDraft.getUserId(),
+        type: bookshelfDraft.getType(),
       });
     });
 

@@ -17,7 +17,7 @@ export class CreateBookshelfCommandHandlerImpl implements CreateBookshelfCommand
   ) {}
 
   public async execute(payload: CreateBookshelfPayload): Promise<CreateBookshelfResult> {
-    const { name, userId } = payload;
+    const { name, userId, type } = payload;
 
     this.loggerService.debug({
       message: 'Creating Bookshelf...',
@@ -35,6 +35,8 @@ export class CreateBookshelfCommandHandlerImpl implements CreateBookshelfCommand
         id: userId,
       });
     }
+
+    // TODO: check if bookshelf with this type already exists if borrowing or archive type
 
     const existingBookshelf = await this.bookshelfRepository.findBookshelf({
       where: {
@@ -55,6 +57,7 @@ export class CreateBookshelfCommandHandlerImpl implements CreateBookshelfCommand
       bookshelf: {
         name,
         userId,
+        type,
       },
     });
 

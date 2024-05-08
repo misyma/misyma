@@ -28,6 +28,7 @@ export class BookshelfTestUtils {
         id: bookshelf.getId(),
         name: bookshelf.getName(),
         userId: bookshelf.getUserId(),
+        type: bookshelf.getType(),
       },
       '*',
     );

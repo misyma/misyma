@@ -10,9 +10,9 @@ import { FindBookshelfByIdQueryHandlerImpl } from './application/queryHandlers/f
 import { type FindBookshelvesByUserIdQueryHandler } from './application/queryHandlers/findBookshelvesByUserIdQueryHandler/findBookshelvesByUserIdQueryHandler.js';
 import { FindBookshelvesByUserIdQueryHandlerImpl } from './application/queryHandlers/findBookshelvesByUserIdQueryHandler/findBookshelvesByUserIdQueryHandlerImpl.js';
 import { type BookshelfRepository } from './domain/repositories/bookshelfRepository/bookshelfRepository.js';
+import { type BookshelfMapper } from './infrastructure/repositories/bookshelfRepository/bookshelfMapper/bookshelfMapper.js';
+import { BookshelfMapperImpl } from './infrastructure/repositories/bookshelfRepository/bookshelfMapper/bookshelfMapperImpl.js';
 import { BookshelfRepositoryImpl } from './infrastructure/repositories/bookshelfRepository/bookshelfRepositoryImpl.js';
-import { type BookshelfMapper } from './infrastructure/repositories/mappers/bookshelfMapper/bookshelfMapper.js';
-import { BookshelfMapperImpl } from './infrastructure/repositories/mappers/bookshelfMapper/bookshelfMapperImpl.js';
 import { symbols } from './symbols.js';
 import { coreSymbols } from '../../core/symbols.js';
 import { type DatabaseClient } from '../../libs/database/clients/databaseClient/databaseClient.js';

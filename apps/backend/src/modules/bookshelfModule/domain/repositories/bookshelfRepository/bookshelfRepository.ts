@@ -1,3 +1,5 @@
+import { type BookshelfType } from '@common/contracts';
+
 import { type BookshelfState, type Bookshelf } from '../../entities/bookshelf/bookshelf.js';
 
 export interface FindBookshelfPayload {
@@ -13,6 +15,7 @@ export interface FindBookshelfPayload {
 
 export interface FindBookshelvesPayload {
   readonly userId: string;
+  readonly type?: BookshelfType;
   readonly page: number;
   readonly pageSize: number;
 }

@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 
-import { BookFormat, Language, ReadingStatus, UserRole } from '@common/contracts';
+import { BookFormat, BookshelfType, Language, ReadingStatus, UserRole } from '@common/contracts';
 
 export class Generator {
   public static email(): string {
@@ -111,5 +111,9 @@ export class Generator {
 
   public static userRole(): UserRole {
     return faker.helpers.arrayElement([UserRole.admin, UserRole.user]);
+  }
+
+  public static bookshelfType(): BookshelfType {
+    return faker.helpers.arrayElement([BookshelfType.standard, BookshelfType.archive, BookshelfType.borrowing]);
   }
 }

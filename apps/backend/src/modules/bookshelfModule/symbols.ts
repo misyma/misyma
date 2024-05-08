@@ -11,5 +11,6 @@ export const symbols = {
 
 export const bookshelfSymbols = {
   bookshelfRepository: symbols.bookshelfRepository,
+  createBookshelfCommandHandler: symbols.createBookshelfCommandHandler,
   bookshelfHttpController: symbols.bookshelfHttpController,
 };
