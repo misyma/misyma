@@ -1,17 +1,19 @@
 import { beforeEach, afterEach, expect, it, describe, vi } from 'vitest';
 
-import { UserRole } from '@common/contracts';
+import { BookshelfType, UserRole } from '@common/contracts';
 
 import { type RegisterUserCommandHandler } from './registerUserCommandHandler.js';
+import { testSymbols } from '../../../../../../tests/container/symbols.js';
+import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { SpyFactory } from '../../../../../../tests/spyFactory.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
-import { Application } from '../../../../../core/application.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
+import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 import { symbols } from '../../../symbols.js';
 import { UserTestFactory } from '../../../tests/factories/userTestFactory/userTestFactory.js';
-import { UserTestUtils } from '../../../tests/utils/userTestUtils/userTestUtils.js';
+import { type UserTestUtils } from '../../../tests/utils/userTestUtils/userTestUtils.js';
 import { type EmailService } from '../../services/emailService/emailService.js';
 
 describe('RegisterUserCommandHandler', () => {
@@ -25,10 +27,12 @@ describe('RegisterUserCommandHandler', () => {
 
   let userTestUtils: UserTestUtils;
 
+  let bookshelfTestUtils: BookshelfTestUtils;
+
   const userTestFactory = new UserTestFactory();
 
   beforeEach(async () => {
-    const container = Application.createContainer();
+    const container = TestContainer.create();
 
     registerUserCommandHandler = container.get<RegisterUserCommandHandler>(symbols.registerUserCommandHandler);
 
@@ -36,18 +40,24 @@ describe('RegisterUserCommandHandler', () => {
 
     emailService = container.get<EmailService>(symbols.emailService);
 
-    userTestUtils = new UserTestUtils(databaseClient);
+    userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
+
+    bookshelfTestUtils = container.get<BookshelfTestUtils>(testSymbols.bookshelfTestUtils);
 
     await userTestUtils.truncate();
+
+    await bookshelfTestUtils.truncate();
   });
 
   afterEach(async () => {
     await userTestUtils.truncate();
 
+    await bookshelfTestUtils.truncate();
+
     await databaseClient.destroy();
   });
 
-  it('creates a User', async () => {
+  it('creates a User and creates bookshelves', async () => {
     const user = userTestFactory.create();
 
     spyFactory.create(emailService, 'sendEmail').mockImplementation(async () => {});
@@ -67,6 +77,22 @@ describe('RegisterUserCommandHandler', () => {
     expect(foundUser?.email).toEqual(user.getEmail());
 
     expect(foundUser?.role).toEqual(UserRole.user);
+
+    const bookshelves = await bookshelfTestUtils.findByUserId({ userId: createdUser.getId() });
+
+    expect(bookshelves).toHaveLength(2);
+
+    bookshelves.some((bookshelf) => {
+      expect(bookshelf.userId).toEqual(createdUser.getId());
+
+      return bookshelf.type === BookshelfType.borrowing && bookshelf.name === 'Borrowing';
+    });
+
+    bookshelves.some((bookshelf) => {
+      expect(bookshelf.userId).toEqual(createdUser.getId());
+
+      return bookshelf.type === BookshelfType.archive && bookshelf.name === 'Archive';
+    });
   });
 
   it('throws an error when a User with the same email already exists', async () => {
