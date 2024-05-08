@@ -6,23 +6,19 @@ export class M1CreateBookshelfTableMigration implements Migration {
 
   private readonly bookshelvesTableName = 'bookshelves';
 
-  private readonly columns = {
-    id: 'id',
-    name: 'name',
-    userId: 'userId',
-  } as const;
-
   public async up(databaseClient: DatabaseClient): Promise<void> {
     await databaseClient.schema.createTable(this.bookshelvesTableName, (table) => {
-      table.text(this.columns.id).primary();
+      table.text('id').primary();
 
-      table.text(this.columns.name).notNullable();
+      table.text('name').notNullable();
 
-      table.text(this.columns.userId).notNullable();
+      table.text('userId').notNullable();
 
-      table.foreign(this.columns.userId).references('id').inTable('users').onDelete('CASCADE');
+      table.text('type').notNullable();
 
-      table.unique([this.columns.userId, this.columns.name]);
+      table.foreign('userId').references('id').inTable('users').onDelete('CASCADE');
+
+      table.unique(['userId', 'name']);
     });
   }
 

@@ -10,6 +10,8 @@ export * from './schemas/bookshelf/updateBookshelf.js';
 
 export * from './schemas/bookshelf/deleteBookshelf.js';
 
+export * from './schemas/bookshelf/bookshelfType.js';
+
 export * from './schemas/user/userRole.js';
 
 export * from './schemas/user/findUser.js';

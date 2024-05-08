@@ -1,5 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
+import { BookshelfType } from '@common/contracts';
+
 import { type CreateBookshelfCommandHandler } from './createBookshelfCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
@@ -37,6 +39,7 @@ describe('CreateBookshelfCommandHandlerImpl', () => {
         await commandHandler.execute({
           name,
           userId: nonExistentUserId,
+          type: BookshelfType.standard,
         }),
     ).toThrowErrorInstance({
       instance: ResourceNotFoundError,
@@ -63,6 +66,7 @@ describe('CreateBookshelfCommandHandlerImpl', () => {
         await commandHandler.execute({
           name,
           userId: user.id,
+          type: BookshelfType.standard,
         }),
     ).toThrowErrorInstance({ instance: OperationNotValidError });
   });
@@ -75,11 +79,13 @@ describe('CreateBookshelfCommandHandlerImpl', () => {
     const { bookshelf } = await commandHandler.execute({
       name,
       userId: user.id,
+      type: BookshelfType.standard,
     });
 
     expect(bookshelf.getState()).toEqual({
       name,
       userId: user.id,
+      type: bookshelf.getType(),
     });
 
     const persistedRawBookshelf = await bookshelfTestUtils.findById({
@@ -90,6 +96,7 @@ describe('CreateBookshelfCommandHandlerImpl', () => {
       id: bookshelf.getId(),
       name,
       userId: user.id,
+      type: bookshelf.getType(),
     });
   });
 });

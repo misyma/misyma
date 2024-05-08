@@ -1,4 +1,4 @@
-import { UserRole } from '@common/contracts';
+import { BookshelfType, UserRole } from '@common/contracts';
 
 import {
   type RegisterUserCommandHandler,
@@ -7,6 +7,7 @@ import {
 } from './registerUserCommandHandler.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
+import { type CreateBookshelfCommandHandler } from '../../../../bookshelfModule/application/commandHandlers/createBookshelfCommandHandler/createBookshelfCommandHandler.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
 import { type HashService } from '../../services/hashService/hashService.js';
 import { type PasswordValidationService } from '../../services/passwordValidationService/passwordValidationService.js';
@@ -19,6 +20,7 @@ export class RegisterUserCommandHandlerImpl implements RegisterUserCommandHandle
     private readonly loggerService: LoggerService,
     private readonly passwordValidationService: PasswordValidationService,
     private readonly sendVerificationEmailCommandHandler: SendVerificationEmailCommandHandler,
+    private readonly createBookshelfCommandHandler: CreateBookshelfCommandHandler,
   ) {}
 
   public async execute(payload: RegisterUserCommandHandlerPayload): Promise<RegisterUserCommandHandlerResult> {
@@ -63,6 +65,25 @@ export class RegisterUserCommandHandlerImpl implements RegisterUserCommandHandle
 
     await this.sendVerificationEmailCommandHandler.execute({
       email,
+    });
+
+    const { bookshelf: borrowingBookshelf } = await this.createBookshelfCommandHandler.execute({
+      userId: user.getId(),
+      name: 'Wypożyczalnia',
+      type: BookshelfType.borrowing,
+    });
+
+    const { bookshelf: archiveBookshelf } = await this.createBookshelfCommandHandler.execute({
+      userId: user.getId(),
+      name: 'Archiwum',
+      type: BookshelfType.archive,
+    });
+
+    this.loggerService.debug({
+      message: `Created user's bookshelves.`,
+      userId: user.getId(),
+      borrowingBookshelfId: borrowingBookshelf.getId(),
+      archiveBookshelfId: archiveBookshelf.getId(),
     });
 
     return { user };

@@ -1,12 +1,16 @@
+import { type BookshelfType } from '@common/contracts';
+
 export interface BookshelfDraft {
   readonly id: string;
   readonly userId: string;
   readonly name: string;
+  readonly type: BookshelfType;
 }
 
 export interface BookshelfState {
   name: string;
-  userId: string;
+  readonly userId: string;
+  readonly type: BookshelfType;
 }
 
 export interface SetNamePayload {
@@ -23,6 +27,7 @@ export class Bookshelf {
     this.state = {
       name: draft.name,
       userId: draft.userId,
+      type: draft.type,
     };
   }
 
@@ -46,5 +51,9 @@ export class Bookshelf {
 
   public getUserId(): string {
     return this.state.userId;
+  }
+
+  public getType(): BookshelfType {
+    return this.state.type;
   }
 }

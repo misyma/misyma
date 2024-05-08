@@ -11,6 +11,10 @@ interface FindByIdPayload {
   readonly id: string;
 }
 
+interface FindByUserIdPayload {
+  readonly userId: string;
+}
+
 export class BookshelfTestUtils {
   public constructor(private readonly databaseClient: DatabaseClient) {}
 
@@ -28,6 +32,7 @@ export class BookshelfTestUtils {
         id: bookshelf.getId(),
         name: bookshelf.getName(),
         userId: bookshelf.getUserId(),
+        type: bookshelf.getType(),
       },
       '*',
     );
@@ -43,6 +48,14 @@ export class BookshelfTestUtils {
     if (!result) {
       return null;
     }
+
+    return result;
+  }
+
+  public async findByUserId(payload: FindByUserIdPayload): Promise<BookshelfRawEntity[]> {
+    const { userId } = payload;
+
+    const result = await this.databaseClient<BookshelfRawEntity>(this.table.name).where({ userId });
 
     return result;
   }

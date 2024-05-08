@@ -55,6 +55,8 @@ import { type UuidService } from '../../libs/uuid/services/uuidService/uuidServi
 import { type AccessControlService } from '../authModule/application/services/accessControlService/accessControlService.js';
 import { type TokenService } from '../authModule/application/services/tokenService/tokenService.js';
 import { authSymbols } from '../authModule/symbols.js';
+import { type CreateBookshelfCommandHandler } from '../bookshelfModule/application/commandHandlers/createBookshelfCommandHandler/createBookshelfCommandHandler.js';
+import { bookshelfSymbols } from '../bookshelfModule/symbols.js';
 
 export class UserModule implements DependencyInjectionModule {
   public declareBindings(container: DependencyInjectionContainer): void {
@@ -106,6 +108,7 @@ export class UserModule implements DependencyInjectionModule {
           container.get<LoggerService>(coreSymbols.loggerService),
           container.get<PasswordValidationService>(symbols.passwordValidationService),
           container.get<SendVerificationEmailCommandHandler>(symbols.sendVerificationEmailCommandHandler),
+          container.get<CreateBookshelfCommandHandler>(bookshelfSymbols.createBookshelfCommandHandler),
         ),
     );
 

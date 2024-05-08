@@ -1,3 +1,5 @@
+import { BookshelfType } from '@common/contracts';
+
 import { Generator } from '../../../../../../tests/generator.js';
 import { Bookshelf, type BookshelfState } from '../../../domain/entities/bookshelf/bookshelf.js';
 import { type BookshelfRawEntity } from '../../../infrastructure/databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfRawEntity.js';
@@ -8,6 +10,7 @@ export class BookshelfTestFactory {
       id: Generator.uuid(),
       name: Generator.alphaString(20, 'lower'),
       userId: Generator.uuid(),
+      type: BookshelfType.standard,
       ...input,
     });
   }
@@ -17,6 +20,7 @@ export class BookshelfTestFactory {
       id: Generator.uuid(),
       name: Generator.alphaString(20, 'lower'),
       userId: Generator.uuid(),
+      type: BookshelfType.standard,
       ...input,
     };
   }
