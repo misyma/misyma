@@ -124,24 +124,28 @@ describe('BookshelfRepositoryImpl', () => {
         },
       });
 
-      const result = await repository.findBookshelves({
+      const bookshelves = await repository.findBookshelves({
         userId: user.id,
         page: 1,
         pageSize: 10,
       });
 
-      expect(result).toHaveLength(2);
+      expect(bookshelves).toHaveLength(2);
 
-      expect(result[0]?.getState()).toEqual({
-        name: bookshelf1.name,
-        userId: bookshelf1.userId,
-        type: bookshelf1.type,
+      bookshelves.some((bookshelf) => {
+        expect(bookshelf.getState()).toEqual({
+          name: bookshelf1.name,
+          userId: bookshelf1.userId,
+          type: bookshelf1.type,
+        });
       });
 
-      expect(result[1]?.getState()).toEqual({
-        name: bookshelf2.name,
-        userId: bookshelf2.userId,
-        type: bookshelf2.type,
+      bookshelves.some((bookshelf) => {
+        expect(bookshelf.getState()).toEqual({
+          name: bookshelf2.name,
+          userId: bookshelf2.userId,
+          type: bookshelf2.type,
+        });
       });
     });
 
