@@ -121,6 +121,7 @@ describe('UpdateBookshelfCommandHandlerImpl', () => {
     expect(updatedBookshelf.getState()).toMatchObject({
       name: newName,
       userId: user.id,
+      type: bookshelf.type,
     });
 
     const persistedUpdatedBookshelf = await bookshelfTestUtils.findById({
@@ -131,6 +132,7 @@ describe('UpdateBookshelfCommandHandlerImpl', () => {
       id: bookshelf.id,
       name: newName,
       userId: user.id,
+      type: bookshelf.type,
     });
   });
 });

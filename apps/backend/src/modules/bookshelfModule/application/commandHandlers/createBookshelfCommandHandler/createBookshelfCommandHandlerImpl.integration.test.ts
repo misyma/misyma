@@ -85,6 +85,7 @@ describe('CreateBookshelfCommandHandlerImpl', () => {
     expect(bookshelf.getState()).toEqual({
       name,
       userId: user.id,
+      type: bookshelf.getType(),
     });
 
     const persistedRawBookshelf = await bookshelfTestUtils.findById({
@@ -95,6 +96,7 @@ describe('CreateBookshelfCommandHandlerImpl', () => {
       id: bookshelf.getId(),
       name,
       userId: user.id,
+      type: bookshelf.getType(),
     });
   });
 });

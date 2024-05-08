@@ -69,6 +69,7 @@ describe('FindBookshelfByIdQueryHandler', () => {
     expect(bookshelf.getState()).toEqual({
       name: bookshelf.getName(),
       userId: bookshelf.getUserId(),
+      type: bookshelf.getType(),
     });
   });
 });
