@@ -69,13 +69,13 @@ export class RegisterUserCommandHandlerImpl implements RegisterUserCommandHandle
 
     const { bookshelf: borrowingBookshelf } = await this.createBookshelfCommandHandler.execute({
       userId: user.getId(),
-      name: 'Borrowing',
+      name: 'Wypożyczalnia',
       type: BookshelfType.borrowing,
     });
 
     const { bookshelf: archiveBookshelf } = await this.createBookshelfCommandHandler.execute({
       userId: user.getId(),
-      name: 'Archive',
+      name: 'Archiwum',
       type: BookshelfType.archive,
     });
 

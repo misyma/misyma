@@ -82,11 +82,13 @@ describe('RegisterUserCommandHandler', () => {
 
     expect(bookshelves).toHaveLength(2);
 
-    [BookshelfType.archive, BookshelfType.borrowing].forEach((type) => {
-      const bookshelf = bookshelves.find((bookshelf) => bookshelf.type === type);
+    const archiveBookshelf = bookshelves.find((bookshelf) => bookshelf.type === BookshelfType.archive);
 
-      expect(bookshelf).toBeDefined();
-    });
+    expect(archiveBookshelf?.name).toEqual('Archiwum');
+
+    const borrowingBookshelf = bookshelves.find((bookshelf) => bookshelf.type === BookshelfType.borrowing);
+
+    expect(borrowingBookshelf?.name).toEqual('Wypożyczalnia');
   });
 
   it('throws an error when a User with the same email already exists', async () => {
