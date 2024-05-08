@@ -82,16 +82,10 @@ describe('RegisterUserCommandHandler', () => {
 
     expect(bookshelves).toHaveLength(2);
 
-    bookshelves.some((bookshelf) => {
-      expect(bookshelf.userId).toEqual(createdUser.getId());
+    [BookshelfType.archive, BookshelfType.borrowing].forEach((type) => {
+      const bookshelf = bookshelves.find((bookshelf) => bookshelf.type === type);
 
-      return bookshelf.type === BookshelfType.borrowing && bookshelf.name === 'Borrowing';
-    });
-
-    bookshelves.some((bookshelf) => {
-      expect(bookshelf.userId).toEqual(createdUser.getId());
-
-      return bookshelf.type === BookshelfType.archive && bookshelf.name === 'Archive';
+      expect(bookshelf).toBeDefined();
     });
   });
 

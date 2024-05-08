@@ -21,7 +21,7 @@ describe('BookshelfRepositoryImpl', () => {
 
   const bookshelfTestFactory = new BookshelfTestFactory();
 
-  beforeEach(() => {
+  beforeEach(async () => {
     const container = TestContainer.create();
 
     repository = container.get<BookshelfRepository>(symbols.bookshelfRepository);
@@ -29,6 +29,10 @@ describe('BookshelfRepositoryImpl', () => {
     bookshelfTestUtils = container.get<BookshelfTestUtils>(testSymbols.bookshelfTestUtils);
 
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
+
+    await bookshelfTestUtils.truncate();
+
+    await userTestUtils.truncate();
   });
 
   afterEach(async () => {
@@ -132,19 +136,13 @@ describe('BookshelfRepositoryImpl', () => {
 
       expect(bookshelves).toHaveLength(2);
 
-      bookshelves.some((bookshelf) => {
-        expect(bookshelf.getState()).toEqual({
-          name: bookshelf1.name,
-          userId: bookshelf1.userId,
-          type: bookshelf1.type,
-        });
-      });
+      [bookshelf1, bookshelf2].forEach((bookshelf) => {
+        const foundBookshelf = bookshelves.find((b) => b.getId() === bookshelf.id);
 
-      bookshelves.some((bookshelf) => {
-        expect(bookshelf.getState()).toEqual({
-          name: bookshelf2.name,
-          userId: bookshelf2.userId,
-          type: bookshelf2.type,
+        expect(foundBookshelf?.getState()).toEqual({
+          name: bookshelf.name,
+          userId: bookshelf.userId,
+          type: bookshelf.type,
         });
       });
     });
