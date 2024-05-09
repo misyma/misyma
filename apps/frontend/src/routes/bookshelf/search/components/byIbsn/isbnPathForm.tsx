@@ -7,13 +7,10 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '../../../../../components/ui/input';
 import { Button } from '../../../../../components/ui/button';
 import { useNavigate } from '@tanstack/react-router';
+import { isbnSchema } from '../../../../../common/schemas/isbnSchema';
 
 const stepOneIsbnSchema = z.object({
-  isbn: z
-    .string({
-      required_error: 'Numer ISBN jest wymagany.',
-    })
-    .regex(/^(?=(?:[^0-9]*[0-9]){10}(?:(?:[^0-9]*[0-9]){3})?$)[\d-]+$/, 'Niewłaściwy format.'),
+  isbn: isbnSchema,
 });
 
 interface Props {
@@ -46,47 +43,53 @@ export const IsbnPathForm = ({ bookshelfId }: Props): JSX.Element => {
   };
 
   return (
-    <Form {...isbnForm}>
-      <form
-        onSubmit={isbnForm.handleSubmit(onFormSubmit)}
-        className="space-y-8"
-      >
-        <FormField
-          control={isbnForm.control}
-          name="isbn"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>ISBN</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="ISBN"
-                  type="text"
-                  maxLength={64}
-                  includeQuill={false}
-                  otherIcon={
-                    isbnForm.formState.isValid ? (
-                      <IoMdCheckmarkCircle className="text-green-500 text-2xl" />
-                    ) : isbnForm.formState.dirtyFields.isbn ? (
-                      <MdOutlineCancel className="text-red-500 text-2xl" />
-                    ) : (
-                      <></>
-                    )
-                  }
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button
-          type="submit"
-          disabled={!isbnForm.formState.isValid}
-          className="border border-primary w-60 sm:w-96"
+    <div>
+
+    <div className='font-semibold text-xl sm:text-2xl'>
+      Wyszukaj książkę po ISBN
+    </div>
+      <Form {...isbnForm}>
+        <form
+          onSubmit={isbnForm.handleSubmit(onFormSubmit)}
+          className="space-y-8"
         >
-          Pobierz dane
-        </Button>
-      </form>
-    </Form>
+          <FormField
+            control={isbnForm.control}
+            name="isbn"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>ISBN</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="ISBN"
+                    type="text"
+                    maxLength={64}
+                    includeQuill={false}
+                    otherIcon={
+                      isbnForm.formState.isValid ? (
+                        <IoMdCheckmarkCircle className="text-green-500 text-2xl" />
+                      ) : isbnForm.formState.dirtyFields.isbn ? (
+                        <MdOutlineCancel className="text-red-500 text-2xl" />
+                      ) : (
+                        <></>
+                      )
+                    }
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button
+            type="submit"
+            disabled={!isbnForm.formState.isValid}
+            className="border border-primary w-60 sm:w-96"
+          >
+            Pobierz dane
+          </Button>
+        </form>
+      </Form>
+    </div>
   );
 };

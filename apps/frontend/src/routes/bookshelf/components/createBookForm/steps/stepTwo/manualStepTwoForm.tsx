@@ -112,6 +112,32 @@ export const ManualStepTwoForm = (): JSX.Element => {
         />
         <FormField
           control={form.control}
+          name="translator"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Tłumacz</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Tłumacz"
+                  type="text"
+                  includeQuill={false}
+                  {...field}
+                  onChange={(val) => {
+                    dispatch({
+                      type: BookCreationActionType.setTranslator,
+                      translator: val.currentTarget.value,
+                    });
+
+                    field.onChange(val);
+                  }}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
           name="form"
           render={({ field }) => (
             <FormItem>
@@ -138,32 +164,6 @@ export const ManualStepTwoForm = (): JSX.Element => {
                   </SelectTrigger>
                 </FormControl>
               </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="translator"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Tłumacz</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Tłumacz"
-                  type="text"
-                  includeQuill={false}
-                  {...field}
-                  onChange={(val) => {
-                    dispatch({
-                      type: BookCreationActionType.setTranslator,
-                      translator: val.currentTarget.value,
-                    });
-
-                    field.onChange(val);
-                  }}
-                />
-              </FormControl>
               <FormMessage />
             </FormItem>
           )}

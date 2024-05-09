@@ -37,7 +37,7 @@ export const Bookshelf: FC = () => {
               {bookshelfResponse?.name ?? ' '}
             </p>
             <p>
-              {'X'} książek
+              {bookshelfBooksResponse?.data.length} książek
             </p>
           </div>
           <Button
