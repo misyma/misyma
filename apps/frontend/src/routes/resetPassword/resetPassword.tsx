@@ -44,7 +44,7 @@ export const SendResetPasswordEmailPage: FC = () => {
         <>
           <div className="py-16 w-60 sm:w-96">
             <p className="text-xl mt-3 font-medium py-2">
-              Wysłaliśmy <span className="text-primary font-semibold">wiadomość email.</span>
+              Jeśli istnieje konto przypisane do tego adresu, otrzymasz <span className="text-primary font-semibold">wiadomość email.</span>
             </p>
             <p className="text-xl mt-3 font-medium py-2">
               Znajdziesz w niej link, który pozwoli Ci ustawić nowe hasło.
@@ -60,7 +60,7 @@ export const SendResetPasswordEmailPage: FC = () => {
               >
                 Przejdź do logowania
               </Button>
-              <Link
+              <Link 
                 to="/login"
                 className="text-primary font-semibold"
               ></Link>

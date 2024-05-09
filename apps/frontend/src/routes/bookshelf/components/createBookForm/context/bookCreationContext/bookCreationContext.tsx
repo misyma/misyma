@@ -32,6 +32,7 @@ export enum BookCreationActionType {
   setStatus = 15,
   setImage = 16,
   setStep = 17,
+  setBookshelfId = 18,
 }
 
 type SetStep = {
@@ -51,10 +52,11 @@ type SetYearOfIssueAction = {
 
 type SetNonIsbnStepOneDetails = {
   type: BookCreationActionType.nonIsbnStepOneDetails;
+  isbn: string;
   title: string;
   author: string;
   publisher: string;
-  genre: string;
+  yearOfIssue: number;
 };
 
 type SetTitle = {
@@ -109,6 +111,8 @@ type SetNonIsbnStepThreeDetails = {
   type: BookCreationActionType.nonIsbnStepThreeDetails;
   status: ReadingStatus;
   image: string;
+  bookshelfId: string;
+  genre: string;
 };
 
 type SetStatus = {
@@ -119,6 +123,11 @@ type SetStatus = {
 type SetImage = {
   type: BookCreationActionType.setImage;
   image: string;
+};
+
+type SetBookshelfId = {
+  type: BookCreationActionType.setBookshelfId;
+  bookshelfId: string;
 };
 
 export type BookCreationAction =
@@ -137,17 +146,19 @@ export type BookCreationAction =
   | SetPagesCount
   | SetStatus
   | SetImage
-  | SetStep;
+  | SetStep
+  | SetBookshelfId;
 
 export interface BookCreationNonIsbnState<T extends boolean = false> {
   isbnPath: T;
   step: NonIsbnCreationPathStep;
   yearOfIssue?: number;
   stepOneDetails?: {
+    isbn: string;
     title: string;
     author: string;
     publisher: string;
-    genre: string;
+    yearOfIssue: number;
   };
   stepTwoDetails?: {
     language: string;
@@ -158,6 +169,8 @@ export interface BookCreationNonIsbnState<T extends boolean = false> {
   stepThreeDetails?: {
     status: ReadingStatus;
     image: string;
+    bookshelfId: string;
+    genre: string;
   };
 }
 
@@ -191,10 +204,11 @@ function bookCreationReducer<T extends boolean = true>(
         ...state,
         isbnPath: false as T,
         stepOneDetails: {
+          isbn: action.isbn,
           author: action.author,
-          genre: action.genre,
           publisher: action.publisher,
           title: action.title,
+          yearOfIssue: action.yearOfIssue,
         } as Omit<SetNonIsbnStepOneDetails, 'type'>,
       };
 
@@ -210,10 +224,10 @@ function bookCreationReducer<T extends boolean = true>(
     case BookCreationActionType.setGenre:
       return {
         ...state,
-        stepOneDetails: {
+        stepThreeDetails: {
           ...(state as BookCreationNonIsbnState).stepOneDetails,
           genre: action.genre,
-        } as BookCreationNonIsbnState['stepOneDetails'],
+        } as BookCreationNonIsbnState['stepThreeDetails'],
       };
 
     case BookCreationActionType.setPublisher:
@@ -293,6 +307,8 @@ function bookCreationReducer<T extends boolean = true>(
         stepThreeDetails: {
           image: action.image,
           status: action.status,
+          bookshelfId: action.bookshelfId,
+          genre: action.genre,
         } as Omit<SetNonIsbnStepThreeDetails, 'type'>,
       };
 
@@ -319,7 +335,10 @@ function bookCreationReducer<T extends boolean = true>(
     case BookCreationActionType.setIsbn:
       return {
         ...state,
-        isbnPath: true as T,
+        stepOneDetails: {
+          ...(state as BookCreationNonIsbnState).stepOneDetails,
+          isbn: action.isbn,
+        } as Omit<SetNonIsbnStepOneDetails, 'type'>,
       };
 
     case BookCreationActionType.setYearOfIssue:
@@ -333,6 +352,16 @@ function bookCreationReducer<T extends boolean = true>(
       return {
         ...state,
         step: action.step,
+      };
+
+    case BookCreationActionType.setBookshelfId:
+      return {
+        ...state,
+        isbnPath: false as T,
+        stepThreeDetails: {
+          ...(state as BookCreationNonIsbnState).stepThreeDetails,
+          bookshelfId: action.bookshelfId,
+        } as Omit<SetNonIsbnStepThreeDetails, 'type'>,
       };
   }
 }

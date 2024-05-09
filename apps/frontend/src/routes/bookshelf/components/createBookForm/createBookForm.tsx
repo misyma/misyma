@@ -1,5 +1,5 @@
 import { FC, useCallback } from 'react';
-import { Breadcrumbs } from '../breadcrumbs/breadcrumbs';
+import { Breadcrumbs, NumericBreadcrumb } from '../../../../components/ui/breadcrumbs';
 import {
   BookCreationActionType,
   BookCreationNonIsbnState,
@@ -43,7 +43,8 @@ export const CreateBookForm: FC<CreateBookProps> = ({ bookshelfId }) => {
   const canNavigateToSecond = useCallback(() => {
     return (
       bookCreation.stepOneDetails?.author &&
-      bookCreation.stepOneDetails?.genre &&
+      bookCreation.stepOneDetails?.isbn &&
+      bookCreation.stepOneDetails?.yearOfIssue &&
       bookCreation.stepOneDetails?.publisher &&
       bookCreation.stepOneDetails?.title
     );
@@ -95,23 +96,21 @@ export const CreateBookForm: FC<CreateBookProps> = ({ bookshelfId }) => {
           <Breadcrumbs
             crumbs={{
               [NonIsbnCreationPathStep.inputFirstDetails]: (
-                <div
-                  className={cn(
-                    'rounded-full border border-solid border-black h-10 w-10 flex items-center justify-center text-2xl cursor-pointer' +
-                      setNthSelected(NonIsbnCreationPathStep.inputFirstDetails),
-                  )}
+                <NumericBreadcrumb
+                  index={1}
+                  className={setNthSelected(NonIsbnCreationPathStep.inputFirstDetails)}
                   onClick={() => {
                     navigateToStep(1);
                   }}
                 >
                   1
-                </div>
+                </NumericBreadcrumb>
               ),
               [NonIsbnCreationPathStep.inputSecondDetails]: (
-                <div
+                <NumericBreadcrumb
+                  index={2}
                   className={cn(
-                    'rounded-full border border-solid border-black h-10 w-10 flex items-center justify-center text-2xl ' +
-                      setNthSelected(NonIsbnCreationPathStep.inputSecondDetails),
+                    setNthSelected(NonIsbnCreationPathStep.inputSecondDetails),
                     canNavigateToSecond() ? 'cursor-pointer' : '',
                   )}
                   onClick={() => {
@@ -119,13 +118,13 @@ export const CreateBookForm: FC<CreateBookProps> = ({ bookshelfId }) => {
                   }}
                 >
                   2
-                </div>
+                </NumericBreadcrumb>
               ),
               [NonIsbnCreationPathStep.inputThirdDetail]: (
-                <div
+                <NumericBreadcrumb
+                  index={3}
                   className={cn(
-                    'rounded-full border border-solid border-black h-10 w-10 flex items-center justify-center text-2xl ' +
-                      setNthSelected(NonIsbnCreationPathStep.inputThirdDetail),
+                    setNthSelected(NonIsbnCreationPathStep.inputThirdDetail),
                     canNavigateToThird() ? 'cursor-pointer' : '',
                   )}
                   onClick={() => {
@@ -133,7 +132,7 @@ export const CreateBookForm: FC<CreateBookProps> = ({ bookshelfId }) => {
                   }}
                 >
                   3
-                </div>
+                </NumericBreadcrumb>
               ),
             }}
           />
