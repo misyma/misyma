@@ -225,11 +225,12 @@ export class UserBookHttpController implements HttpController {
 
     const { id } = request.pathParams;
 
-    const { status, bookshelfId, imageUrl } = request.body;
+    const { status, bookshelfId, imageUrl, isFavorite } = request.body;
 
     const { userBook } = await this.updateUserBookCommandHandler.execute({
       userBookId: id,
       status,
+      isFavorite,
       bookshelfId,
       imageUrl,
     });
@@ -270,7 +271,7 @@ export class UserBookHttpController implements HttpController {
   private async createUserBook(
     request: HttpRequest<CreateUserBookBodyDto>,
   ): Promise<HttpCreatedResponse<CreateUserBookResponseBodyDto>> {
-    const { bookId, bookshelfId, status, imageUrl } = request.body;
+    const { bookId, bookshelfId, status, imageUrl, isFavorite } = request.body;
 
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
@@ -281,6 +282,7 @@ export class UserBookHttpController implements HttpController {
       bookshelfId,
       status,
       imageUrl,
+      isFavorite,
     });
 
     return {
@@ -378,11 +380,12 @@ export class UserBookHttpController implements HttpController {
   }
 
   private mapUserBookToUserBookDto(userBook: UserBook): UserBookDto {
-    const { status, bookshelfId, imageUrl, bookId, genres, book } = userBook.getState();
+    const { status, isFavorite, bookshelfId, imageUrl, bookId, genres, book } = userBook.getState();
 
     const userBookDto: UserBookDto = {
       id: userBook.getId(),
       status,
+      isFavorite,
       bookshelfId,
       bookId,
       book: {

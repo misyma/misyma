@@ -148,11 +148,14 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
 
     const updatedStatus = Generator.readingStatus();
 
+    const updatedIsFavorite = Generator.boolean();
+
     const { userBook: updatedUserBook } = await commandHandler.execute({
       userBookId: userBook.id,
       bookshelfId: bookshelf2.id,
       imageUrl: updatedImageUrl,
       status: updatedStatus,
+      isFavorite: updatedIsFavorite,
     });
 
     expect(updatedUserBook.getId()).toBe(userBook.id);
@@ -162,5 +165,7 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
     expect(updatedUserBook.getImageUrl()).toBe(updatedImageUrl);
 
     expect(updatedUserBook.getStatus()).toBe(updatedStatus);
+
+    expect(updatedUserBook.getIsFavorite()).toBe(updatedIsFavorite);
   });
 });

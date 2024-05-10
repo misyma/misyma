@@ -8,6 +8,7 @@ export interface UpdateUserBookPayload {
   readonly imageUrl?: string | undefined | null;
   readonly bookshelfId?: string | undefined;
   readonly status?: ReadingStatus | undefined;
+  readonly isFavorite?: boolean | undefined;
 }
 
 export interface UpdateUserBookResult {

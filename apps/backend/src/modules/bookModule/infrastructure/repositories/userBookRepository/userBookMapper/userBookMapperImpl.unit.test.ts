@@ -15,7 +15,7 @@ describe('UserBookMapperImpl', () => {
     userBookMapperImpl = new UserBookMapperImpl();
   });
 
-  it('maps from UserBookRawEntity with Book to UserBook', () => {
+  it('maps from UserBookRawEntity to UserBook', () => {
     const book = bookTestFactory.createRaw();
 
     const userBook = userBookTestFactory.createRaw({ bookId: book.id });
@@ -36,6 +36,7 @@ describe('UserBookMapperImpl', () => {
         bookImageUrl: book.imageUrl as string,
         imageUrl: userBook.imageUrl as string,
         status: userBook.status,
+        isFavorite: userBook.isFavorite,
         bookshelfId: userBook.bookshelfId,
         authorId: null,
         authorName: null,
@@ -51,6 +52,7 @@ describe('UserBookMapperImpl', () => {
         state: {
           imageUrl: userBook.imageUrl,
           status: userBook.status,
+          isFavorite: userBook.isFavorite,
           bookshelfId: userBook.bookshelfId,
           bookId: userBook.bookId,
           book: {

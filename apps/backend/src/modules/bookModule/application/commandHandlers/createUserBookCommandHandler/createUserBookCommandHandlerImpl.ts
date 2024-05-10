@@ -21,7 +21,7 @@ export class CreateUserBookCommandHandlerImpl implements CreateUserBookCommandHa
   ) {}
 
   public async execute(payload: CreateUserBookCommandHandlerPayload): Promise<CreateUserBookCommandHandlerResult> {
-    const { bookshelfId, bookId, status, imageUrl, genreIds } = payload;
+    const { bookshelfId, bookId, status, imageUrl, genreIds, isFavorite } = payload;
 
     this.loggerService.debug({
       message: 'Creating UserBook...',
@@ -30,6 +30,7 @@ export class CreateUserBookCommandHandlerImpl implements CreateUserBookCommandHa
       status,
       imageUrl,
       genreIds,
+      isFavorite,
     });
 
     const bookshelf = await this.bookshelfRepository.findBookshelf({ where: { id: bookshelfId } });
@@ -72,6 +73,7 @@ export class CreateUserBookCommandHandlerImpl implements CreateUserBookCommandHa
         bookId,
         bookshelfId,
         status,
+        isFavorite,
         imageUrl,
         genres,
       },

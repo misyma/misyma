@@ -88,9 +88,12 @@ describe('CreateUserBookCommandHandler', () => {
 
     const imageUrl = Generator.imageUrl();
 
+    const isFavorite = Generator.boolean();
+
     const { userBook } = await createUserBookCommandHandler.execute({
       imageUrl,
       status,
+      isFavorite,
       bookshelfId: bookshelf.id,
       bookId: book.id,
     });
@@ -99,13 +102,15 @@ describe('CreateUserBookCommandHandler', () => {
       id: userBook.getId(),
     });
 
-    expect(foundUserBook.bookId).toEqual(book.id);
+    expect(foundUserBook?.bookId).toEqual(book.id);
 
-    expect(foundUserBook.bookshelfId).toEqual(bookshelf.id);
+    expect(foundUserBook?.bookshelfId).toEqual(bookshelf.id);
 
-    expect(foundUserBook.status).toEqual(status);
+    expect(foundUserBook?.status).toEqual(status);
 
-    expect(foundUserBook.imageUrl).toEqual(imageUrl);
+    expect(foundUserBook?.imageUrl).toEqual(imageUrl);
+
+    expect(foundUserBook?.isFavorite).toEqual(isFavorite);
   });
 
   it('throws an error - when provided Bookshelf does not exist', async () => {
@@ -123,10 +128,13 @@ describe('CreateUserBookCommandHandler', () => {
 
     const bookshelfId = Generator.uuid();
 
+    const isFavorite = Generator.boolean();
+
     await expect(async () =>
       createUserBookCommandHandler.execute({
         imageUrl,
         status,
+        isFavorite,
         bookshelfId,
         bookId: book.id,
       }),
@@ -150,10 +158,13 @@ describe('CreateUserBookCommandHandler', () => {
 
     const bookId = Generator.uuid();
 
+    const isFavorite = Generator.boolean();
+
     await expect(async () =>
       createUserBookCommandHandler.execute({
         imageUrl,
         status,
+        isFavorite,
         bookshelfId: bookshelf.id,
         bookId,
       }),

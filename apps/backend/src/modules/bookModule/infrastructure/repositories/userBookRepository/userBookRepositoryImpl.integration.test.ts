@@ -112,6 +112,7 @@ describe('UserBookRepositoryImpl', () => {
           bookId: userBookRawEntity.bookId,
           bookshelfId: userBookRawEntity.bookshelfId,
           status: userBookRawEntity.status,
+          isFavorite: userBookRawEntity.isFavorite,
           imageUrl: userBookRawEntity.imageUrl as string,
           genres: [genre],
         },
@@ -126,6 +127,7 @@ describe('UserBookRepositoryImpl', () => {
         bookshelfId: userBookRawEntity.bookshelfId,
         status: userBookRawEntity.status,
         imageUrl: userBookRawEntity.imageUrl,
+        isFavorite: userBookRawEntity.isFavorite,
         genres: [genre],
         book: {
           id: book.id,
@@ -156,6 +158,7 @@ describe('UserBookRepositoryImpl', () => {
         bookId: userBookRawEntity.bookId,
         bookshelfId: userBookRawEntity.bookshelfId,
         status: userBookRawEntity.status,
+        isFavorite: userBookRawEntity.isFavorite,
         imageUrl: userBookRawEntity.imageUrl,
       });
     });
@@ -200,6 +203,7 @@ describe('UserBookRepositoryImpl', () => {
         bookId: userBook.getBookId(),
         bookshelfId: newBookshelfId,
         status: userBook.getStatus(),
+        isFavorite: userBook.getIsFavorite(),
         imageUrl: userBook.getImageUrl(),
         genres: [],
         book: {
@@ -231,6 +235,7 @@ describe('UserBookRepositoryImpl', () => {
         bookId: userBook.getBookId(),
         bookshelfId: newBookshelfId,
         status: userBook.getStatus(),
+        isFavorite: userBook.getIsFavorite(),
         imageUrl: userBook.getImageUrl(),
       });
     });
@@ -271,7 +276,7 @@ describe('UserBookRepositoryImpl', () => {
 
       expect(updatedUserBook.getStatus()).toEqual(newStatus);
 
-      expect(foundUserBook.status).toEqual(newStatus);
+      expect(foundUserBook?.status).toEqual(newStatus);
     });
 
     it('updates UserBook image', async () => {
@@ -310,7 +315,7 @@ describe('UserBookRepositoryImpl', () => {
 
       expect(updatedUserBook.getImageUrl()).toEqual(newImageUrl);
 
-      expect(foundUserBook.imageUrl).toEqual(newImageUrl);
+      expect(foundUserBook?.imageUrl).toEqual(newImageUrl);
     });
 
     it('deletes UserBook image', async () => {
@@ -349,7 +354,46 @@ describe('UserBookRepositoryImpl', () => {
 
       expect(updatedUserBook.getImageUrl()).toBeUndefined();
 
-      expect(foundUserBook.imageUrl).toBeNull();
+      expect(foundUserBook?.imageUrl).toBeNull();
+    });
+
+    it('updates UserBook favorite status', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+
+      const author = await authorTestUtils.createAndPersist();
+
+      const book = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+        },
+      });
+
+      const userBookRawEntity = await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book.id,
+          bookshelfId: bookshelf.id,
+        },
+      });
+
+      const userBook = userBookTestFactory.create(userBookRawEntity);
+
+      const newIsFavorite = Generator.boolean();
+
+      userBook.setIsFavorite({ isFavorite: newIsFavorite });
+
+      const updatedUserBook = await userBookRepository.saveUserBook({
+        userBook,
+      });
+
+      const foundUserBook = await userBookTestUtils.findById({
+        id: userBook.getId(),
+      });
+
+      expect(updatedUserBook.getIsFavorite()).toEqual(newIsFavorite);
+
+      expect(foundUserBook?.isFavorite).toEqual(newIsFavorite);
     });
 
     it('sets UserBook Genres', async () => {
@@ -432,6 +476,7 @@ describe('UserBookRepositoryImpl', () => {
         bookId: userBook.getBookId(),
         bookshelfId: userBook.getBookshelfId(),
         status: userBook.getStatus(),
+        isFavorite: userBook.getIsFavorite(),
         imageUrl: userBook.getImageUrl(),
         genres: [
           {

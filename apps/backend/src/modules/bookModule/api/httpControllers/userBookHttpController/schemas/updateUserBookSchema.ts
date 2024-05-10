@@ -16,6 +16,7 @@ export type UpdateUserBookPathParamsDto = TypeExtends<
 
 export const updateUserBookBodyDtoSchema = Type.Object({
   status: Type.Optional(Type.Enum(contracts.ReadingStatus)),
+  isFavorite: Type.Optional(Type.Boolean()),
   bookshelfId: Type.Optional(Type.String({ format: 'uuid' })),
   imageUrl: Type.Optional(
     Type.Union([

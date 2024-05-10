@@ -68,6 +68,7 @@ export const SearchResultPage: FC = () => {
         bookshelfId: searchParams.bookshelfId,
         status: ReadingStatus.toRead,
         userId: user?.id as string,
+        isFavorite: false,
       });
 
       toast({

@@ -12,6 +12,8 @@ export class M4CreateUserBookTableMigration implements Migration {
 
       table.text('status').notNullable();
 
+      table.boolean('isFavorite').notNullable();
+
       table.text('bookId').notNullable();
 
       table.text('bookshelfId').notNullable();

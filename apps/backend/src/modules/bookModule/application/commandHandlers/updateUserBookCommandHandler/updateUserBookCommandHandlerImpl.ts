@@ -16,7 +16,7 @@ export class UpdateUserBookCommandHandlerImpl implements UpdateUserBookCommandHa
   ) {}
 
   public async execute(payload: UpdateUserBookPayload): Promise<UpdateUserBookResult> {
-    const { userBookId, bookshelfId, imageUrl, status } = payload;
+    const { userBookId, bookshelfId, imageUrl, status, isFavorite } = payload;
 
     this.loggerService.debug({
       message: 'Updating UserBook...',
@@ -24,6 +24,7 @@ export class UpdateUserBookCommandHandlerImpl implements UpdateUserBookCommandHa
       bookshelfId,
       imageUrl,
       status,
+      isFavorite,
     });
 
     const userBook = await this.userBookRepository.findUserBook({ id: userBookId });
@@ -54,6 +55,10 @@ export class UpdateUserBookCommandHandlerImpl implements UpdateUserBookCommandHa
 
     if (status) {
       userBook.setStatus({ status });
+    }
+
+    if (isFavorite !== undefined) {
+      userBook.setIsFavorite({ isFavorite });
     }
 
     await this.userBookRepository.saveUserBook({ userBook });

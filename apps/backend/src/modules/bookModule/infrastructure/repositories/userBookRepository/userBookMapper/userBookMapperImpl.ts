@@ -13,6 +13,7 @@ export class UserBookMapperImpl implements UserBookMapper {
         id,
         imageUrl,
         status,
+        isFavorite,
         bookshelfId,
         bookId,
         title,
@@ -98,6 +99,7 @@ export class UserBookMapperImpl implements UserBookMapper {
           bookId,
           imageUrl: imageUrl ?? undefined,
           status,
+          isFavorite: Boolean(isFavorite),
           bookshelfId,
           genres,
         };

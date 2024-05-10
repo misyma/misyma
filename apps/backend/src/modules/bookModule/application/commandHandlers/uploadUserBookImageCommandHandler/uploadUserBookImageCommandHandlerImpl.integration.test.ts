@@ -156,7 +156,7 @@ describe('UploadUserBookImageCommandHandlerImpl', () => {
 
     const foundUserBook = await userBookTestUtils.findById({ id: userBook.id });
 
-    expect(foundUserBook.imageUrl).toEqual(`${config.aws.cloudfrontUrl}/${userBook.id}`);
+    expect(foundUserBook?.imageUrl).toEqual(`${config.aws.cloudfrontUrl}/${userBook.id}`);
 
     const existsAfter = await s3TestUtils.objectExists(bucketName, userBook.id);
 

@@ -51,7 +51,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
 
   private async createUserBook(payload: CreateUserBookPayload): Promise<UserBook> {
     const {
-      userBook: { imageUrl, status, bookshelfId, bookId, genres },
+      userBook: { imageUrl, status, isFavorite, bookshelfId, bookId, genres },
     } = payload;
 
     const id = this.uuidService.generateUuid();
@@ -63,6 +63,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
             id,
             imageUrl: imageUrl ?? undefined,
             status,
+            isFavorite,
             bookshelfId,
             bookId,
           },
@@ -100,7 +101,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       });
     }
 
-    const { bookshelfId, status, imageUrl } = userBook.getState();
+    const { bookshelfId, status, imageUrl, isFavorite } = userBook.getState();
 
     try {
       await this.databaseClient.transaction(async (transaction) => {
@@ -110,6 +111,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           .update({
             bookshelfId,
             status,
+            isFavorite,
             imageUrl,
           })
           .where({ id: userBook.getId() });
@@ -181,6 +183,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           `${this.userBookTable.name}.id`,
           `${this.userBookTable.name}.imageUrl`,
           `${this.userBookTable.name}.status`,
+          `${this.userBookTable.name}.isFavorite`,
           `${this.userBookTable.name}.bookshelfId`,
           `${this.authorTable.name}.id as authorId`,
           `${this.authorTable.name}.name as authorName`,
@@ -260,6 +263,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           `${this.userBookTable.name}.id`,
           `${this.userBookTable.name}.imageUrl`,
           `${this.userBookTable.name}.status`,
+          `${this.userBookTable.name}.isFavorite`,
           `${this.userBookTable.name}.bookshelfId`,
           `${this.authorTable.name}.id as authorId`,
           `${this.authorTable.name}.name as authorName`,

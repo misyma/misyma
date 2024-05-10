@@ -15,6 +15,7 @@ export interface UserBookWithJoinsRawEntity {
   readonly bookImageUrl: string | null;
   readonly imageUrl: string | null;
   readonly status: ReadingStatus;
+  readonly isFavorite: boolean;
   readonly bookshelfId: string;
   readonly authorId: string | null;
   readonly authorName: string | null;

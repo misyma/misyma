@@ -93,6 +93,7 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
         bookshelfId,
         status: bookCreation.stepThreeDetails?.status as ContractReadingStatus,
         userId: user?.id as string,
+        isFavorite: false,
       });
 
       toast({

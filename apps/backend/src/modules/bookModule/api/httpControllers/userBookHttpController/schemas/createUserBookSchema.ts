@@ -13,6 +13,7 @@ export const createUserBookBodyDtoSchema = Type.Object({
     }),
   ),
   status: Type.Enum(contracts.ReadingStatus),
+  isFavorite: Type.Boolean(),
   bookshelfId: Type.String({ format: 'uuid' }),
   bookId: Type.String({ format: 'uuid' }),
   genreIds: Type.Optional(Type.Array(Type.String({ format: 'uuid' }))),
