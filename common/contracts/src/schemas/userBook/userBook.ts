@@ -22,6 +22,7 @@ export interface UserBook {
   };
   readonly imageUrl?: string;
   readonly status: ReadingStatus;
+  readonly isFavorite: boolean;
   readonly bookshelfId: string;
   readonly genres: Genre[];
 }

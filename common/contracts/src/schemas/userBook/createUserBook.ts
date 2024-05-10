@@ -5,6 +5,7 @@ export interface CreateUserBookRequestBody {
   readonly bookId: string;
   readonly bookshelfId: string;
   readonly status: ReadingStatus;
+  readonly isFavorite: boolean;
   readonly imageUrl?: string;
   readonly genreIds?: string[];
 }

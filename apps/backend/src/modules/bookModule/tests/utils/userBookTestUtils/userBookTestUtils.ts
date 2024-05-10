@@ -47,18 +47,30 @@ export class UserBookTestUtils {
       }
     });
 
-    return rawEntities[0] as UserBookRawEntity;
+    const userBookRawEntity = rawEntities[0] as UserBookRawEntity;
+
+    return {
+      ...userBookRawEntity,
+      isFavorite: Boolean(userBookRawEntity.isFavorite),
+    };
   }
 
-  public async findById(payload: FindByIdPayload): Promise<UserBookRawEntity> {
+  public async findById(payload: FindByIdPayload): Promise<UserBookRawEntity | undefined> {
     const { id } = payload;
 
-    const bookRawEntity = await this.databaseClient<UserBookRawEntity>(this.userBookTable.name)
+    const userBookRawEntity = await this.databaseClient<UserBookRawEntity>(this.userBookTable.name)
       .select('*')
       .where({ id })
       .first();
 
-    return bookRawEntity as UserBookRawEntity;
+    if (!userBookRawEntity) {
+      return undefined;
+    }
+
+    return {
+      ...userBookRawEntity,
+      isFavorite: Boolean(userBookRawEntity.isFavorite),
+    };
   }
 
   public async findUserBookGenres(payload: FindUserBookGenresPayload): Promise<UserBookGenresRawEntity[]> {

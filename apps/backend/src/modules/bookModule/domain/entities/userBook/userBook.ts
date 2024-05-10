@@ -7,6 +7,7 @@ export interface UserBookDraft {
   readonly id: string;
   readonly imageUrl?: string | undefined | null;
   readonly status: ReadingStatus;
+  readonly isFavorite: boolean;
   readonly bookshelfId: string;
   readonly bookId: string;
   readonly book?: BookDraft | undefined;
@@ -16,6 +17,7 @@ export interface UserBookDraft {
 export interface UserBookState {
   imageUrl?: string | undefined | null;
   status: ReadingStatus;
+  isFavorite: boolean;
   bookshelfId: string;
   readonly bookId: string;
   readonly book?: BookDraft | undefined;
@@ -28,6 +30,10 @@ export interface SetImageUrlPayload {
 
 export interface SetStatusPayload {
   readonly status: ReadingStatus;
+}
+
+export interface SetIsFavoritePayload {
+  readonly isFavorite: boolean;
 }
 
 export interface SetBookshelfIdPayload {
@@ -43,12 +49,13 @@ export class UserBook {
   private readonly state: UserBookState;
 
   public constructor(draft: UserBookDraft) {
-    const { id, imageUrl, status, bookshelfId, bookId, book, genres } = draft;
+    const { id, imageUrl, status, isFavorite, bookshelfId, bookId, book, genres } = draft;
 
     this.id = id;
 
     let state: UserBookState = {
       status,
+      isFavorite,
       bookshelfId,
       bookId,
       genres,
@@ -88,6 +95,10 @@ export class UserBook {
     return this.state.status;
   }
 
+  public getIsFavorite(): boolean {
+    return this.state.isFavorite;
+  }
+
   public getBookshelfId(): string {
     return this.state.bookshelfId;
   }
@@ -110,6 +121,12 @@ export class UserBook {
     const { status } = payload;
 
     this.state.status = status;
+  }
+
+  public setIsFavorite(payload: SetIsFavoritePayload): void {
+    const { isFavorite } = payload;
+
+    this.state.isFavorite = isFavorite;
   }
 
   public setBookshelfId(payload: SetBookshelfIdPayload): void {
