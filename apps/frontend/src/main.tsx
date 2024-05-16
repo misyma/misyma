@@ -7,6 +7,7 @@ import { routeTree } from './core/router/router.tsx';
 import { QueryClientProvider } from './core/components/providers/queryClientProvider/queryClientProvider.tsx';
 import { notFoundRoute } from './routes/notFound/notFound.tsx';
 import { StoreProvider } from './core/components/providers/storeProvider/storeProvider.tsx';
+import { SearchCreateBookProvider } from './routes/bookshelf/search/context/searchCreateBookContext.tsx';
 
 const router = createRouter({
   routeTree,
@@ -17,7 +18,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <StoreProvider>
       <QueryClientProvider>
-        <RouterProvider router={router} />
+        <SearchCreateBookProvider>
+          <RouterProvider router={router} />
+        </SearchCreateBookProvider>
       </QueryClientProvider>
     </StoreProvider>
   </React.StrictMode>,

@@ -7,23 +7,17 @@ import { FC, useEffect, useMemo, useState } from 'react';
 import { useFindBooksQuery } from '../../../../../api/books/queries/findBooks/findBooksQuery';
 import { AuthenticatedLayout } from '../../../../../layouts/authenticated/authenticatedLayout';
 import { Button } from '../../../../../components/ui/button';
-import { useCreateUserBookMutation } from '../../../../../api/books/mutations/createUserBookMutation/createUserBookMutation';
-import { useFindUserQuery } from '../../../../../api/user/queries/findUserQuery/findUserQuery';
-import { ReadingStatus } from '@common/contracts';
-import { BookApiError } from '../../../../../api/books/errors/bookApiError';
-import { useToast } from '../../../../../components/ui/use-toast';
 import { Paginator } from '../../../../../components/paginator/paginator';
+import { Breadcrumbs, NumericBreadcrumb } from '../../../../../components/ui/breadcrumbs';
+import { useSearchBookContextDispatch } from '../../context/searchCreateBookContext';
+import { Book } from '../../../../../../../../common/contracts/dist/src/schemas/book/book';
 
 export const SearchResultPage: FC = () => {
   const searchParams = searchResultRoute.useSearch();
 
   const navigate = useNavigate();
 
-  const { data: user } = useFindUserQuery();
-
-  const { toast } = useToast();
-
-  const { mutateAsync: createUserBookMutation } = useCreateUserBookMutation({});
+  const searchCreationDispatch = useSearchBookContextDispatch();
 
   useEffect(() => {
     if (searchParams.isbn === '' && searchParams.title === '') {
@@ -62,41 +56,25 @@ export const SearchResultPage: FC = () => {
   };
 
   const onAddBook = async (): Promise<void> => {
-    try {
-      await createUserBookMutation({
-        bookId: foundBooks?.data[0].id as string,
-        bookshelfId: searchParams.bookshelfId,
-        status: ReadingStatus.toRead,
-        userId: user?.id as string,
-        isFavorite: false,
-      });
+    const book = foundBooks?.data[currentPage - 1] as Book;
 
-      toast({
-        title: 'Książka została położona na półce 😄',
-        description: `Książka ${foundBooks?.data[0]?.title} została położona na półce 😄`,
-        variant: 'success',
-      });
+    console.log(book);
+    
+    searchCreationDispatch({
+      bookId: book.id,
+    });
 
-      navigate({
-        to: `/bookshelf/${searchParams.bookshelfId}`,
-      });
-    } catch (error) {
-      if (error instanceof BookApiError) {
-        toast({
-          title: 'Coś poszło nie tak...',
-          description: 'Nie udało się utworzyć książki. Spróbuj ponownie.',
-          variant: 'destructive',
-        });
+    searchCreationDispatch({
+      title: book.title,
+    })
 
-        return;
-      }
+    searchCreationDispatch({
+      step: 3,
+    })
 
-      toast({
-        title: 'Coś poszło nie tak...',
-        description: 'Nie udało się utworzyć książki. Spróbuj ponownie.',
-        variant: 'destructive',
-      });
-    }
+    navigate({
+      to: `/search/create/${searchParams.bookshelfId}`,
+    });
   };
 
   const booksCount = useMemo(() => {
@@ -144,9 +122,24 @@ export const SearchResultPage: FC = () => {
 
     return (
       <div className="relative  justify-center items-center flex-col-reverse md:flex-row w-full flex h-full gap-8">
-        <div className="w-full flex flex-col gap-8 px-8 sm:pr-0 sm:pl-8">
+        <div className="w-full flex flex-col gap-6 px-8 sm:pr-0 sm:pl-8 sm:ml-4">
           {booksCount > 1 ? (
-            <div className="full flex justify-center">
+            <div className="full flex flex-col justify-center items-center">
+              <Breadcrumbs
+                className="pb-4"
+                crumbs={{
+                  [1]: <NumericBreadcrumb index={1}>1</NumericBreadcrumb>,
+                  [2]: (
+                    <NumericBreadcrumb
+                      className={'font-semibold bg-primary text-white border-primary'}
+                      index={2}
+                    >
+                      2
+                    </NumericBreadcrumb>
+                  ),
+                  [3]: <NumericBreadcrumb index={3}>3</NumericBreadcrumb>,
+                }}
+              />
               <span className="font-bold text-2xl text-primary">
                 {currentPage} z {booksCount}
               </span>
@@ -154,20 +147,25 @@ export const SearchResultPage: FC = () => {
           ) : (
             <></>
           )}
-          <div className="flex w-full">
+          <div className="flex flex-col w-full">
             <Paginator
               rootClassName="w-full flex items-center h-16 text-xl sm:text-3xl justify-normal"
               onPageChange={(page) => setCurrentPage(page)}
               pagesCount={booksCount}
               pageNumberSlot={
-                <span className='text-center text-ellipsis w-full line-clamp-2'>{foundBooks?.data[currentPage - 1].title}</span>
+                <span className="text-center text-ellipsis w-full line-clamp-2">
+                  {foundBooks?.data[currentPage - 1].title}
+                </span>
               }
-              contentClassName='w-full'
+              contentClassName="w-full"
             />
-            <p>{foundBooks?.data[currentPage - 1]?.authors[0]?.name ?? ''}</p>
+            <p className="pl-12">{foundBooks?.data[currentPage - 1]?.authors[0]?.name ?? ''}</p>
           </div>
           <div className="border border-gray-400 w-full lg:translate-x-[-2rem] px-4"></div>
           <div className="flex flex-col gap-4 w-full">
+            <p>ISBN: {foundBooks?.data[currentPage - 1].isbn}</p>
+            <p>Rok wydania: {foundBooks?.data[currentPage - 1].releaseYear}</p>
+            <p>Język: {foundBooks?.data[currentPage - 1].language}</p>
             <p>Wydawnictwo: {foundBooks?.data[currentPage - 1].publisher}</p>
             <p>Tłumacz: {foundBooks?.data[currentPage - 1].translator}</p>
             <p>Format: {foundBooks?.data[currentPage - 1].format}</p>
@@ -178,7 +176,7 @@ export const SearchResultPage: FC = () => {
               onClick={onAddBook}
               className="w-60 sm:w-96"
             >
-              Dodaj książkę
+              Kontynuuj
             </Button>
             <p>
               lub{' '}
@@ -189,7 +187,6 @@ export const SearchResultPage: FC = () => {
                 wprowadź inne dane
               </span>
             </p>
-            {/* <span className="text-3xl font-bold">POCZEBUJEMY INPUTU POD STATUS</span> */}
           </div>
         </div>
         <div className="relative w-full flex justify-center items-center h-[250px] md:h-[300px]">

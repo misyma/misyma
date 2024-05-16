@@ -152,7 +152,7 @@ export type BookCreationAction =
 export interface BookCreationNonIsbnState<T extends boolean = false> {
   isbnPath: T;
   step: NonIsbnCreationPathStep;
-  yearOfIssue?: number;
+  yearOfIssue?: number; 
   stepOneDetails?: {
     isbn: string;
     title: string;

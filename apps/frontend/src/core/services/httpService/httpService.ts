@@ -152,12 +152,12 @@ export class HttpService {
 
       const response = await fetch(`${this.baseUrl}${url}`, {
         headers: {
-          ...headers,
           Accept: 'application/json',
           'Content-Type': 'application/json',
+          ...headers,
         },
         method: 'PATCH',
-        body: JSON.stringify(body),
+        body: body instanceof Buffer ? body :  JSON.stringify(body),
       });
 
       const responseBodyText = await response.text();

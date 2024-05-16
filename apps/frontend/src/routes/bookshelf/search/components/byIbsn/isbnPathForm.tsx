@@ -8,6 +8,7 @@ import { Input } from '../../../../../components/ui/input';
 import { Button } from '../../../../../components/ui/button';
 import { useNavigate } from '@tanstack/react-router';
 import { isbnSchema } from '../../../../../common/schemas/isbnSchema';
+import { Breadcrumbs, NumericBreadcrumb } from '../../../../../components/ui/breadcrumbs';
 
 const stepOneIsbnSchema = z.object({
   isbn: isbnSchema,
@@ -44,14 +45,40 @@ export const IsbnPathForm = ({ bookshelfId }: Props): JSX.Element => {
 
   return (
     <div>
-
-    <div className='font-semibold text-xl sm:text-2xl'>
-      Wyszukaj książkę po ISBN
-    </div>
+      <div className="font-semibold text-xl sm:text-2xl">
+        <Breadcrumbs
+        className='pb-16'
+          crumbs={{
+            [1]: (
+              <NumericBreadcrumb
+                className={'font-semibold bg-primary text-white border-primary'}
+                index={1}
+              >
+                1
+              </NumericBreadcrumb>
+            ),
+            [2]: (
+              <NumericBreadcrumb
+                index={2}
+              >
+                2
+              </NumericBreadcrumb>
+            ),
+            [3]: (
+              <NumericBreadcrumb
+                index={3}
+              >
+                3
+              </NumericBreadcrumb>
+            ),
+          }}
+        />
+        Wyszukaj książkę po ISBN
+      </div>
       <Form {...isbnForm}>
         <form
           onSubmit={isbnForm.handleSubmit(onFormSubmit)}
-          className="space-y-8"
+          className="space-y-8 pt-8"
         >
           <FormField
             control={isbnForm.control}
