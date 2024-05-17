@@ -609,7 +609,7 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      await userBookRepository.deleteUserBook({ id: userBook.id });
+      await userBookRepository.deleteUserBooks({ ids: [userBook.id] });
 
       const foundBookBook = await bookTestUtils.findById({ id: userBook.id });
 
@@ -617,13 +617,13 @@ describe('UserBookRepositoryImpl', () => {
     });
 
     it('throws an error if UserBook with given id does not exist', async () => {
-      const id = Generator.uuid();
+      const ids = [Generator.uuid()];
 
-      await expect(async () => await userBookRepository.deleteUserBook({ id })).toThrowErrorInstance({
+      await expect(async () => await userBookRepository.deleteUserBooks({ ids })).toThrowErrorInstance({
         instance: ResourceNotFoundError,
         context: {
           resource: 'UserBook',
-          id,
+          ids,
         },
       });
     });

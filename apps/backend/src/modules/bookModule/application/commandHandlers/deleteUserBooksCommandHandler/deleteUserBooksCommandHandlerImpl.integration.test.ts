@@ -1,6 +1,6 @@
 import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 
-import { type DeleteUserBookCommandHandler } from './deleteUserBookCommandHandler.js';
+import { type DeleteUserBooksCommandHandler } from './deleteUserBooksCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
@@ -13,7 +13,7 @@ import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestU
 import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
 
 describe('DeleteUserBookCommandHandler', () => {
-  let deleteUserBookCommandHandler: DeleteUserBookCommandHandler;
+  let deleteUserBookCommandHandler: DeleteUserBooksCommandHandler;
 
   let databaseClient: DatabaseClient;
 
@@ -30,7 +30,7 @@ describe('DeleteUserBookCommandHandler', () => {
   beforeEach(async () => {
     const container = TestContainer.create();
 
-    deleteUserBookCommandHandler = container.get<DeleteUserBookCommandHandler>(symbols.deleteUserBookCommandHandler);
+    deleteUserBookCommandHandler = container.get<DeleteUserBooksCommandHandler>(symbols.deleteUserBookCommandHandler);
 
     databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
 
@@ -89,7 +89,7 @@ describe('DeleteUserBookCommandHandler', () => {
       },
     });
 
-    await deleteUserBookCommandHandler.execute({ userBookId: userBook.id });
+    await deleteUserBookCommandHandler.execute({ userBookIds: [userBook.id] });
 
     const foundUserBook = await userBookTestUtils.findById({ id: userBook.id });
 

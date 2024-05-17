@@ -18,8 +18,8 @@ export interface FindUserBooksPayload {
   readonly pageSize: number;
 }
 
-export interface DeleteUserBookPayload {
-  readonly id: string;
+export interface DeleteUserBooksPayload {
+  readonly ids: string[];
 }
 
 export interface UserBookRepository {
@@ -27,5 +27,5 @@ export interface UserBookRepository {
   findUserBook(payload: FindUserBookPayload): Promise<UserBook | null>;
   findUserBooks(payload: FindUserBooksPayload): Promise<UserBook[]>;
   countUserBooks(payload: FindUserBooksPayload): Promise<number>;
-  deleteUserBook(inpayloadppayloadut: DeleteUserBookPayload): Promise<void>;
+  deleteUserBooks(payload: DeleteUserBooksPayload): Promise<void>;
 }

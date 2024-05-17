@@ -5,7 +5,7 @@ import { type DatabaseClient } from '../../../../../libs/database/clients/databa
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { UserBook, type UserBookState } from '../../../domain/entities/userBook/userBook.js';
 import {
-  type DeleteUserBookPayload,
+  type DeleteUserBooksPayload,
   type FindUserBookPayload,
   type FindUserBooksPayload,
   type SaveUserBookPayload,
@@ -307,22 +307,23 @@ export class UserBookRepositoryImpl implements UserBookRepository {
     return this.userBookMapper.mapRawWithJoinsToDomain(rawEntities) as UserBook[];
   }
 
-  public async deleteUserBook(payload: DeleteUserBookPayload): Promise<void> {
-    const { id } = payload;
+  public async deleteUserBooks(payload: DeleteUserBooksPayload): Promise<void> {
+    const { ids } = payload;
 
-    const existingUserBook = await this.findUserBook({ id });
+    const existingRawEntities = await this.databaseClient<UserBookRawEntity>(this.userBookTable.name).whereIn(
+      'id',
+      ids,
+    );
 
-    if (!existingUserBook) {
+    if (existingRawEntities.length !== ids.length) {
       throw new ResourceNotFoundError({
         resource: 'UserBook',
-        id,
+        ids,
       });
     }
 
     try {
-      await this.databaseClient<UserBookRawEntity>(this.userBookTable.name).delete().where({
-        id: existingUserBook.getId(),
-      });
+      await this.databaseClient<UserBookRawEntity>(this.userBookTable.name).delete().whereIn('id', ids);
     } catch (error) {
       throw new RepositoryError({
         entity: 'UserBook',

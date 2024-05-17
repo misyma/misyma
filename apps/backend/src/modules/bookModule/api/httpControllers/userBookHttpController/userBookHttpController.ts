@@ -7,11 +7,11 @@ import {
   type CreateUserBookResponseBodyDto,
 } from './schemas/createUserBookSchema.js';
 import {
-  type DeleteUserBookResponseBodyDto,
-  deleteUserBookPathParamsDtoSchema,
-  deleteUserBookResponseBodyDtoSchema,
-  type DeleteUserBookPathParamsDto,
-} from './schemas/deleteUserBookSchema.js';
+  type DeleteUserBooksResponseBodyDto,
+  deleteUserBooksQueryParamsDtoSchema,
+  deleteUserBooksResponseBodyDtoSchema,
+  type DeleteUserBooksQueryParamsDto,
+} from './schemas/deleteUserBooksSchema.js';
 import {
   type FindUserBooksByBookshelfIdQueryParamsDto,
   findUserBooksByBookshelfIdPathParamsDtoSchema,
@@ -62,7 +62,7 @@ import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.
 import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
 import { type CreateUserBookCommandHandler } from '../../../application/commandHandlers/createUserBookCommandHandler/createUserBookCommandHandler.js';
-import { type DeleteUserBookCommandHandler } from '../../../application/commandHandlers/deleteUserBookCommandHandler/deleteUserBookCommandHandler.js';
+import { type DeleteUserBooksCommandHandler } from '../../../application/commandHandlers/deleteUserBooksCommandHandler/deleteUserBooksCommandHandler.js';
 import { type UpdateUserBookCommandHandler } from '../../../application/commandHandlers/updateUserBookCommandHandler/updateUserBookCommandHandler.js';
 import { type UpdateUserBookGenresCommandHandler } from '../../../application/commandHandlers/updateUserBookGenresCommandHandler/updateUserBookGenresCommandHandler.js';
 import { type UploadUserBookImageCommandHandler } from '../../../application/commandHandlers/uploadUserBookImageCommandHandler/uploadUserBookImageCommandHandler.js';
@@ -77,7 +77,7 @@ export class UserBookHttpController implements HttpController {
   public constructor(
     private readonly createUserBookCommandHandler: CreateUserBookCommandHandler,
     private readonly updateUserBookCommandHandler: UpdateUserBookCommandHandler,
-    private readonly deleteUserBookCommandHandler: DeleteUserBookCommandHandler,
+    private readonly deleteUserBookCommandHandler: DeleteUserBooksCommandHandler,
     private readonly findUserBookQueryHandler: FindUserBookQueryHandler,
     private readonly findUserBooksQueryHandler: FindUserBooksQueryHandler,
     private readonly updateUserBookGenresCommandHandler: UpdateUserBookGenresCommandHandler,
@@ -144,21 +144,20 @@ export class UserBookHttpController implements HttpController {
       }),
       new HttpRoute({
         method: HttpMethodName.delete,
-        path: ':id',
-        handler: this.deleteUserBook.bind(this),
+        handler: this.deleteUserBooks.bind(this),
         schema: {
           request: {
-            pathParams: deleteUserBookPathParamsDtoSchema,
+            queryParams: deleteUserBooksQueryParamsDtoSchema,
           },
           response: {
             [HttpStatusCode.noContent]: {
-              schema: deleteUserBookResponseBodyDtoSchema,
-              description: `User's book deleted`,
+              schema: deleteUserBooksResponseBodyDtoSchema,
+              description: `User's books deleted`,
             },
           },
         },
         securityMode: SecurityMode.bearerToken,
-        description: `Delete user's book`,
+        description: `Delete user's books`,
       }),
       new HttpRoute({
         method: HttpMethodName.patch,
@@ -215,6 +214,8 @@ export class UserBookHttpController implements HttpController {
       }),
     ];
   }
+
+  // add authorization based on userId and userBook bookshelf
 
   private async updateUserBook(
     request: HttpRequest<UpdateUserBookBodyDto, undefined, UpdateUserBookPathParamsDto>,
@@ -340,16 +341,16 @@ export class UserBookHttpController implements HttpController {
     };
   }
 
-  private async deleteUserBook(
-    request: HttpRequest<undefined, undefined, DeleteUserBookPathParamsDto>,
-  ): Promise<HttpNoContentResponse<DeleteUserBookResponseBodyDto>> {
-    const { id } = request.pathParams;
+  private async deleteUserBooks(
+    request: HttpRequest<undefined, DeleteUserBooksQueryParamsDto, undefined>,
+  ): Promise<HttpNoContentResponse<DeleteUserBooksResponseBodyDto>> {
+    const { ids } = request.queryParams;
 
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
-    await this.deleteUserBookCommandHandler.execute({ userBookId: id });
+    await this.deleteUserBookCommandHandler.execute({ userBookIds: ids });
 
     return {
       statusCode: HttpStatusCode.noContent,
