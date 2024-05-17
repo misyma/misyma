@@ -29,8 +29,8 @@ import { type DeleteGenreCommandHandler } from './application/commandHandlers/de
 import { DeleteGenreCommandHandlerImpl } from './application/commandHandlers/deleteGenreCommandHandler/deleteGenreCommandHandlerImpl.js';
 import { type DeleteQuoteCommandHandler } from './application/commandHandlers/deleteQuoteCommandHandler/deleteQuoteCommandHandler.js';
 import { DeleteQuoteCommandHandlerImpl } from './application/commandHandlers/deleteQuoteCommandHandler/deleteQuoteCommandHandlerImpl.js';
-import { type DeleteUserBookCommandHandler } from './application/commandHandlers/deleteUserBookCommandHandler/deleteUserBookCommandHandler.js';
-import { DeleteUserBookCommandHandlerImpl } from './application/commandHandlers/deleteUserBookCommandHandler/deleteUserBookCommandHandlerImpl.js';
+import { type DeleteUserBooksCommandHandler } from './application/commandHandlers/deleteUserBooksCommandHandler/deleteUserBooksCommandHandler.js';
+import { DeleteUserBooksCommandHandlerImpl } from './application/commandHandlers/deleteUserBooksCommandHandler/deleteUserBooksCommandHandlerImpl.js';
 import { type UpdateBookCommandHandler } from './application/commandHandlers/updateBookCommandHandler/updateBookCommandHandler.js';
 import { UpdateBookCommandHandlerImpl } from './application/commandHandlers/updateBookCommandHandler/updateBookCommandHandlerImpl.js';
 import { type UpdateBookReadingCommandHandler } from './application/commandHandlers/updateBookReadingCommandHandler/updateBookReadingCommandHandler.js';
@@ -287,10 +287,10 @@ export class BookModule implements DependencyInjectionModule {
         ),
     );
 
-    container.bind<DeleteUserBookCommandHandler>(
+    container.bind<DeleteUserBooksCommandHandler>(
       symbols.deleteUserBookCommandHandler,
       () =>
-        new DeleteUserBookCommandHandlerImpl(
+        new DeleteUserBooksCommandHandlerImpl(
           container.get<UserBookRepository>(symbols.userBookRepository),
           container.get<LoggerService>(coreSymbols.loggerService),
         ),
@@ -513,7 +513,7 @@ export class BookModule implements DependencyInjectionModule {
         new UserBookHttpController(
           container.get<CreateUserBookCommandHandler>(symbols.createUserBookCommandHandler),
           container.get<UpdateUserBookCommandHandler>(symbols.updateUserBookCommandHandler),
-          container.get<DeleteUserBookCommandHandler>(symbols.deleteUserBookCommandHandler),
+          container.get<DeleteUserBooksCommandHandler>(symbols.deleteUserBookCommandHandler),
           container.get<FindUserBookQueryHandler>(symbols.findUserBookQueryHandler),
           container.get<FindUserBooksQueryHandler>(symbols.findUserBooksQueryHandler),
           container.get<UpdateUserBookGenresCommandHandler>(symbols.updateUserBookGenresCommandHandler),

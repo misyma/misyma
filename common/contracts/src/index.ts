@@ -72,7 +72,7 @@ export * from './schemas/userBook/findUserBooksByBookshelfId.js';
 
 export * from './schemas/userBook/createUserBook.js';
 
-export * from './schemas/userBook/deleteUserBook.js';
+export * from './schemas/userBook/deleteUserBooks.js';
 
 export * from './schemas/userBook/updateUserBook.js';
 
