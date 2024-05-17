@@ -67,6 +67,6 @@
     "vite-plugin-checker": "0.6.4"
   },
   "volta": {
-    "node": "20.11.1"
+    "node": "20.12.2"
   }
 }
