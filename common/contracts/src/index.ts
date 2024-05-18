@@ -76,6 +76,8 @@ export * from './schemas/userBook/deleteUserBook.js';
 
 export * from './schemas/userBook/updateUserBook.js';
 
+export * from './schemas/userBook/updateUserBooks.js';
+
 export * from './schemas/bookReading/bookReading.js';
 
 export * from './schemas/bookReading/createBookReading.js';

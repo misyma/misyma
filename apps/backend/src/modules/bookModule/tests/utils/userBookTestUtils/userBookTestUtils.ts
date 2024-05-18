@@ -19,6 +19,10 @@ interface FindByIdPayload {
   readonly id: string;
 }
 
+interface FindByIdsPayload {
+  readonly ids: string[];
+}
+
 export class UserBookTestUtils {
   private readonly userBookTable = new UserBookTable();
   private readonly userBookGenresTable = new UserBookGenresTable();
@@ -71,6 +75,19 @@ export class UserBookTestUtils {
       ...userBookRawEntity,
       isFavorite: Boolean(userBookRawEntity.isFavorite),
     };
+  }
+
+  public async findByIds(payload: FindByIdsPayload): Promise<UserBookRawEntity[]> {
+    const { ids } = payload;
+
+    const rawEntities = await this.databaseClient<UserBookRawEntity>(this.userBookTable.name)
+      .select('*')
+      .whereIn('id', ids);
+
+    return rawEntities.map((rawEntity) => ({
+      ...rawEntity,
+      isFavorite: Boolean(rawEntity.isFavorite),
+    }));
   }
 
   public async findUserBookGenres(payload: FindUserBookGenresPayload): Promise<UserBookGenresRawEntity[]> {

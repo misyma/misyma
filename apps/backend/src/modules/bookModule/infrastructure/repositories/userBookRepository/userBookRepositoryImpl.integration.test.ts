@@ -9,6 +9,7 @@ import { type DatabaseClient } from '../../../../../libs/database/clients/databa
 import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { Genre } from '../../../domain/entities/genre/genre.js';
+import { UserBook } from '../../../domain/entities/userBook/userBook.js';
 import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
 import { symbols } from '../../../symbols.js';
 import { UserBookTestFactory } from '../../../tests/factories/userBookTestFactory/userBookTestFactory.js';
@@ -438,6 +439,64 @@ describe('UserBookRepositoryImpl', () => {
         expect(updatedBookGenre.genreId).oneOf([genre1.id, genre2.id]);
 
         expect(updatedBookGenre.userBookId).toEqual(updatedUserBook.getId());
+      });
+    });
+  });
+
+  describe('saveUserBooks', () => {
+    it('updates UserBooks bookshelves', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const bookshelf1 = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+
+      const bookshelf2 = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+
+      const author = await authorTestUtils.createAndPersist();
+
+      const book = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+        },
+      });
+
+      const userBookRawEntity1 = await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book.id,
+          bookshelfId: bookshelf1.id,
+        },
+      });
+
+      const userBookRawEntity2 = await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book.id,
+          bookshelfId: bookshelf1.id,
+        },
+      });
+
+      const userBook1 = new UserBook({
+        ...userBookRawEntity1,
+        genres: [],
+      });
+
+      const userBook2 = new UserBook({
+        ...userBookRawEntity2,
+        genres: [],
+      });
+
+      userBook1.setBookshelfId({ bookshelfId: bookshelf2.id });
+
+      userBook2.setBookshelfId({ bookshelfId: bookshelf2.id });
+
+      await userBookRepository.saveUserBooks({
+        userBooks: [userBook1, userBook2],
+      });
+
+      const foundUserBooks = await userBookTestUtils.findByIds({ ids: [userBook1.getId(), userBook2.getId()] });
+
+      expect(foundUserBooks.length).toEqual(2);
+
+      foundUserBooks.forEach((foundUserBook) => {
+        expect(foundUserBook.bookshelfId).toEqual(bookshelf2.id);
       });
     });
   });

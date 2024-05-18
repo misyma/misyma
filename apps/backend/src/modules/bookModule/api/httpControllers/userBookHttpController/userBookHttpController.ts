@@ -39,6 +39,12 @@ import {
   type UpdateUserBookResponseBodyDto,
 } from './schemas/updateUserBookSchema.js';
 import {
+  type UpdateUserBooksBodyDto,
+  type UpdateUserBooksResponseBodyDto,
+  updateUserBooksBodyDtoSchema,
+  updateUserBooksResponseBodyDtoSchema,
+} from './schemas/updateUserBooksSchema.js';
+import {
   type UploadUserBookImageResponseBodyDtoSchema,
   type UploadUserBookImagePathParamsDto,
   uploadUserBookImageResponseBodyDtoSchema,
@@ -61,6 +67,7 @@ import { type AccessControlService } from '../../../../authModule/application/se
 import { type CreateUserBookCommandHandler } from '../../../application/commandHandlers/createUserBookCommandHandler/createUserBookCommandHandler.js';
 import { type DeleteUserBooksCommandHandler } from '../../../application/commandHandlers/deleteUserBooksCommandHandler/deleteUserBooksCommandHandler.js';
 import { type UpdateUserBookCommandHandler } from '../../../application/commandHandlers/updateUserBookCommandHandler/updateUserBookCommandHandler.js';
+import { type UpdateUserBooksCommandHandler } from '../../../application/commandHandlers/updateUserBooksCommandHandler/updateUserBooksCommandHandler.js';
 import { type UploadUserBookImageCommandHandler } from '../../../application/commandHandlers/uploadUserBookImageCommandHandler/uploadUserBookImageCommandHandler.js';
 import { type FindUserBookQueryHandler } from '../../../application/queryHandlers/findUserBookQueryHandler/findUserBookQueryHandler.js';
 import { type FindUserBooksQueryHandler } from '../../../application/queryHandlers/findUserBooksQueryHandler/findUserBooksQueryHandler.js';
@@ -73,6 +80,7 @@ export class UserBookHttpController implements HttpController {
   public constructor(
     private readonly createUserBookCommandHandler: CreateUserBookCommandHandler,
     private readonly updateUserBookCommandHandler: UpdateUserBookCommandHandler,
+    private readonly updateUserBooksCommandHandler: UpdateUserBooksCommandHandler,
     private readonly deleteUserBookCommandHandler: DeleteUserBooksCommandHandler,
     private readonly findUserBookQueryHandler: FindUserBookQueryHandler,
     private readonly findUserBooksQueryHandler: FindUserBooksQueryHandler,
@@ -192,6 +200,22 @@ export class UserBookHttpController implements HttpController {
       }),
       new HttpRoute({
         method: HttpMethodName.patch,
+        description: `Update user's books`,
+        handler: this.updateUserBooks.bind(this),
+        schema: {
+          request: {
+            body: updateUserBooksBodyDtoSchema,
+          },
+          response: {
+            [HttpStatusCode.ok]: {
+              description: `User's books updated`,
+              schema: updateUserBooksResponseBodyDtoSchema,
+            },
+          },
+        },
+      }),
+      new HttpRoute({
+        method: HttpMethodName.patch,
         path: ':id/images',
         description: `Upload user book's image`,
         handler: this.uploadUserBookImage.bind(this),
@@ -235,6 +259,23 @@ export class UserBookHttpController implements HttpController {
     return {
       statusCode: HttpStatusCode.ok,
       body: this.mapUserBookToUserBookDto(userBook),
+    };
+  }
+
+  private async updateUserBooks(
+    request: HttpRequest<UpdateUserBooksBodyDto, undefined, undefined>,
+  ): Promise<HttpOkResponse<UpdateUserBooksResponseBodyDto>> {
+    await this.accessControlService.verifyBearerToken({
+      authorizationHeader: request.headers['authorization'],
+    });
+
+    const { data } = request.body;
+
+    await this.updateUserBooksCommandHandler.execute({ data });
+
+    return {
+      statusCode: HttpStatusCode.ok,
+      body: null,
     };
   }
 

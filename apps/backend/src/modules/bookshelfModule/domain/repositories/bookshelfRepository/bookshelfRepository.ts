@@ -14,10 +14,15 @@ export interface FindBookshelfPayload {
 }
 
 export interface FindBookshelvesPayload {
-  readonly userId: string;
+  readonly ids?: string[];
+  readonly userId?: string;
   readonly type?: BookshelfType;
   readonly page: number;
   readonly pageSize: number;
+}
+
+export interface CountBookshelvesPayload {
+  readonly userId: string;
 }
 
 export interface SaveBookshelfPayload {
@@ -31,7 +36,7 @@ export interface DeleteBookshelfPayload {
 export interface BookshelfRepository {
   findBookshelf(payload: FindBookshelfPayload): Promise<Bookshelf | null>;
   findBookshelves(payload: FindBookshelvesPayload): Promise<Bookshelf[]>;
-  countBookshelves(payload: FindBookshelvesPayload): Promise<number>;
+  countBookshelves(payload: CountBookshelvesPayload): Promise<number>;
   saveBookshelf(payload: SaveBookshelfPayload): Promise<Bookshelf>;
   deleteBookshelf(payload: DeleteBookshelfPayload): Promise<void>;
 }
