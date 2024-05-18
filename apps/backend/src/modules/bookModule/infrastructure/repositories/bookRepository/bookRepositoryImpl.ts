@@ -158,7 +158,7 @@ export class BookRepositoryImpl implements BookRepository {
   }
 
   public async findBook(payload: FindBookPayload): Promise<Book | null> {
-    const { id, authorIds, title } = payload;
+    const { id } = payload;
 
     let rawEntities: BookWithJoinsRawEntity[];
 
@@ -182,13 +182,6 @@ export class BookRepositoryImpl implements BookRepository {
         ])
         .leftJoin(this.booksAuthorsTable.name, (join) => {
           join.on(`${this.booksAuthorsTable.name}.bookId`, '=', `${this.bookTable.name}.id`);
-
-          if (authorIds) {
-            join.andOnIn(
-              `${this.booksAuthorsTable.name}.authorId`,
-              this.databaseClient.raw('?', [authorIds.join(',')]),
-            );
-          }
         })
         .leftJoin(this.authorTable.name, (join) => {
           join.on(`${this.authorTable.name}.id`, '=', `${this.booksAuthorsTable.name}.authorId`);
@@ -196,10 +189,6 @@ export class BookRepositoryImpl implements BookRepository {
         .where((builder) => {
           if (id) {
             builder.where(`${this.bookTable.name}.id`, id);
-          }
-
-          if (title) {
-            builder.where({ title });
           }
         });
     } catch (error) {

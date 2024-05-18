@@ -17,12 +17,33 @@ export class CreateBookCommandHandlerImpl implements CreateBookCommandHandler {
   ) {}
 
   public async execute(payload: CreateBookCommandHandlerPayload): Promise<CreateBookCommandHandlerResult> {
-    const { authorIds, ...bookData } = payload;
+    const {
+      authorIds,
+      format,
+      isApproved,
+      language,
+      title,
+      imageUrl,
+      isbn,
+      pages,
+      publisher,
+      releaseYear,
+      translator,
+    } = payload;
 
     this.loggerService.debug({
       message: 'Creating Book...',
       authorIds,
-      ...bookData,
+      format,
+      isApproved,
+      language,
+      title,
+      imageUrl,
+      isbn,
+      pages,
+      publisher,
+      releaseYear,
+      translator,
     });
 
     if (authorIds.length === 0) {
@@ -47,9 +68,34 @@ export class CreateBookCommandHandlerImpl implements CreateBookCommandHandler {
       });
     }
 
+    if (isbn) {
+      const existingBook = await this.bookRepository.findBooks({
+        isbn,
+        page: 1,
+        pageSize: 1,
+      });
+
+      if (existingBook.length) {
+        throw new OperationNotValidError({
+          reason: 'Book with this ISBN already exists.',
+          isbn,
+          existingBookId: existingBook[0]?.getId(),
+        });
+      }
+    }
+
     const book = await this.bookRepository.saveBook({
       book: {
-        ...bookData,
+        format,
+        isApproved,
+        language,
+        title,
+        imageUrl,
+        isbn,
+        pages,
+        publisher,
+        releaseYear,
+        translator,
         authors,
       },
     });

@@ -164,4 +164,35 @@ describe('CreateBookCommandHandler', () => {
       },
     });
   });
+
+  it('throws an error - when provided ISBN is already taken', async () => {
+    const author = await authorTestUtils.createAndPersist({ input: { isApproved: true } });
+
+    const isbn = Generator.isbn();
+
+    const existingBook = await bookTestUtils.createAndPersist({ input: { book: { isbn } } });
+
+    await expect(async () =>
+      createBookCommandHandler.execute({
+        title: existingBook.title,
+        isbn,
+        publisher: existingBook.publisher,
+        releaseYear: existingBook.releaseYear,
+        language: existingBook.language,
+        translator: existingBook.translator,
+        format: existingBook.format,
+        pages: existingBook.pages,
+        isApproved: existingBook.isApproved,
+        imageUrl: existingBook.imageUrl,
+        authorIds: [author.id],
+      }),
+    ).toThrowErrorInstance({
+      instance: OperationNotValidError,
+      context: {
+        reason: 'Book with this ISBN already exists.',
+        isbn,
+        existingBookId: existingBook.id,
+      },
+    });
+  });
 });
