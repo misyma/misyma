@@ -328,6 +328,8 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       });
     }
 
+    console.log({ rawEntities });
+
     return this.userBookMapper.mapRawWithJoinsToDomain(rawEntities) as UserBook[];
   }
 

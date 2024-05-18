@@ -33,6 +33,11 @@ export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler 
       await this.userBookRepository.countUserBooks(findUserBooksPayload),
     ]);
 
+    console.log({
+      count: userBooks.length,
+      total,
+    });
+
     return {
       userBooks,
       total,

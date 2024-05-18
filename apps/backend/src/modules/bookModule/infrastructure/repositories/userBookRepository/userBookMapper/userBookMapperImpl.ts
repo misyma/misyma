@@ -104,7 +104,7 @@ export class UserBookMapperImpl implements UserBookMapper {
           genres,
         };
 
-        userBookDraftsMapping.set(bookId, userBookDraft);
+        userBookDraftsMapping.set(id, userBookDraft);
       }
     });
 
