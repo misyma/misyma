@@ -5,16 +5,16 @@ import { type Book } from '../../../domain/entities/book/book.js';
 
 export interface CreateBookCommandHandlerPayload {
   readonly title: string;
-  readonly isbn?: string;
-  readonly publisher?: string;
-  readonly releaseYear?: number;
+  readonly isbn?: string | undefined;
+  readonly publisher?: string | undefined;
+  readonly releaseYear?: number | undefined;
   readonly language: Language;
-  readonly translator?: string;
+  readonly translator?: string | undefined;
   readonly format: BookFormat;
-  readonly pages?: number;
+  readonly pages?: number | undefined;
   readonly authorIds: string[];
   readonly isApproved: boolean;
-  readonly imageUrl?: string;
+  readonly imageUrl?: string | undefined;
 }
 
 export interface CreateBookCommandHandlerResult {
