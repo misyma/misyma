@@ -453,7 +453,13 @@ describe('UserBookRepositoryImpl', () => {
 
       const author = await authorTestUtils.createAndPersist();
 
-      const book = await bookTestUtils.createAndPersist({
+      const book1 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+        },
+      });
+
+      const book2 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author.id],
         },
@@ -461,14 +467,14 @@ describe('UserBookRepositoryImpl', () => {
 
       const userBookRawEntity1 = await userBookTestUtils.createAndPersist({
         input: {
-          bookId: book.id,
+          bookId: book1.id,
           bookshelfId: bookshelf1.id,
         },
       });
 
       const userBookRawEntity2 = await userBookTestUtils.createAndPersist({
         input: {
-          bookId: book.id,
+          bookId: book2.id,
           bookshelfId: bookshelf1.id,
         },
       });
