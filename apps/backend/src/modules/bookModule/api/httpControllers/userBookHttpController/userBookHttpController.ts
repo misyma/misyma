@@ -18,26 +18,18 @@ import {
   type DeleteUserBooksQueryParamsDto,
 } from './schemas/deleteUserBooksSchema.js';
 import {
-  type FindUserBooksByBookshelfIdQueryParamsDto,
-  findUserBooksByBookshelfIdPathParamsDtoSchema,
-  findUserBooksByBookshelfIdResponseBodyDtoSchema,
-  type FindUserBooksByBookshelfIdPathParamsDto,
-  type FindUserBooksByBookshelfIdResponseBodyDto,
-} from './schemas/findUserBooksByBookshelfIdSchema.js';
-import {
   findUserBookPathParamsDtoSchema,
   findUserBookResponseBodyDtoSchema,
   type FindUserBookPathParamsDto,
   type FindUserBookResponseBodyDto,
 } from './schemas/findUserBookSchema.js';
 import {
-  updateUserBookGenresBodyDtoSchema,
-  updateUserBookGenresPathParamsDtoSchema,
-  updateUserBookGenresResponseBodyDtoSchema,
-  type UpdateUserBookGenresBodyDto,
-  type UpdateUserBookGenresPathParamsDto,
-  type UpdateUserBookGenresResponseBodyDtoSchema,
-} from './schemas/updateUserBookGenresSchema.js';
+  type FindUserBooksQueryParamsDto,
+  findUserBooksPathParamsDtoSchema,
+  findUserBooksResponseBodyDtoSchema,
+  type FindUserBooksPathParamsDto,
+  type FindUserBooksResponseBodyDto,
+} from './schemas/findUserBooksSchema.js';
 import {
   updateUserBookPathParamsDtoSchema,
   updateUserBookBodyDtoSchema,
@@ -69,7 +61,6 @@ import { type AccessControlService } from '../../../../authModule/application/se
 import { type CreateUserBookCommandHandler } from '../../../application/commandHandlers/createUserBookCommandHandler/createUserBookCommandHandler.js';
 import { type DeleteUserBooksCommandHandler } from '../../../application/commandHandlers/deleteUserBooksCommandHandler/deleteUserBooksCommandHandler.js';
 import { type UpdateUserBookCommandHandler } from '../../../application/commandHandlers/updateUserBookCommandHandler/updateUserBookCommandHandler.js';
-import { type UpdateUserBookGenresCommandHandler } from '../../../application/commandHandlers/updateUserBookGenresCommandHandler/updateUserBookGenresCommandHandler.js';
 import { type UploadUserBookImageCommandHandler } from '../../../application/commandHandlers/uploadUserBookImageCommandHandler/uploadUserBookImageCommandHandler.js';
 import { type FindUserBookQueryHandler } from '../../../application/queryHandlers/findUserBookQueryHandler/findUserBookQueryHandler.js';
 import { type FindUserBooksQueryHandler } from '../../../application/queryHandlers/findUserBooksQueryHandler/findUserBooksQueryHandler.js';
@@ -85,7 +76,6 @@ export class UserBookHttpController implements HttpController {
     private readonly deleteUserBookCommandHandler: DeleteUserBooksCommandHandler,
     private readonly findUserBookQueryHandler: FindUserBookQueryHandler,
     private readonly findUserBooksQueryHandler: FindUserBooksQueryHandler,
-    private readonly updateUserBookGenresCommandHandler: UpdateUserBookGenresCommandHandler,
     private readonly uploadUserBookImageCommandHandler: UploadUserBookImageCommandHandler,
     private readonly accessControlService: AccessControlService,
   ) {}
@@ -132,15 +122,15 @@ export class UserBookHttpController implements HttpController {
       new HttpRoute({
         method: HttpMethodName.get,
         path: '/bookshelf/:bookshelfId',
-        handler: this.findUserBooksByBookshelfId.bind(this),
+        handler: this.findUserBooks.bind(this),
         description: `Find user's books by bookshelf id`,
         schema: {
           request: {
-            pathParams: findUserBooksByBookshelfIdPathParamsDtoSchema,
+            pathParams: findUserBooksPathParamsDtoSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
-              schema: findUserBooksByBookshelfIdResponseBodyDtoSchema,
+              schema: findUserBooksResponseBodyDtoSchema,
               description: `User's books found`,
             },
           },
@@ -217,24 +207,6 @@ export class UserBookHttpController implements HttpController {
           },
         },
       }),
-      new HttpRoute({
-        method: HttpMethodName.patch,
-        path: ':userBookId/genres',
-        description: `Update user's book genres`,
-        handler: this.updateUserBookGenres.bind(this),
-        schema: {
-          request: {
-            pathParams: updateUserBookGenresPathParamsDtoSchema,
-            body: updateUserBookGenresBodyDtoSchema,
-          },
-          response: {
-            [HttpStatusCode.ok]: {
-              description: `User's book genres updated`,
-              schema: updateUserBookGenresResponseBodyDtoSchema,
-            },
-          },
-        },
-      }),
     ];
   }
 
@@ -249,7 +221,7 @@ export class UserBookHttpController implements HttpController {
 
     const { id } = request.pathParams;
 
-    const { status, bookshelfId, imageUrl, isFavorite } = request.body;
+    const { status, bookshelfId, imageUrl, isFavorite, genreIds } = request.body;
 
     const { userBook } = await this.updateUserBookCommandHandler.execute({
       userBookId: id,
@@ -257,6 +229,7 @@ export class UserBookHttpController implements HttpController {
       isFavorite,
       bookshelfId,
       imageUrl,
+      genreIds,
     });
 
     return {
@@ -332,9 +305,9 @@ export class UserBookHttpController implements HttpController {
     };
   }
 
-  private async findUserBooksByBookshelfId(
-    request: HttpRequest<undefined, FindUserBooksByBookshelfIdQueryParamsDto, FindUserBooksByBookshelfIdPathParamsDto>,
-  ): Promise<HttpOkResponse<FindUserBooksByBookshelfIdResponseBodyDto>> {
+  private async findUserBooks(
+    request: HttpRequest<undefined, FindUserBooksQueryParamsDto, FindUserBooksPathParamsDto>,
+  ): Promise<HttpOkResponse<FindUserBooksResponseBodyDto>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
@@ -395,28 +368,6 @@ export class UserBookHttpController implements HttpController {
     return {
       statusCode: HttpStatusCode.noContent,
       body: null,
-    };
-  }
-
-  private async updateUserBookGenres(
-    request: HttpRequest<UpdateUserBookGenresBodyDto, undefined, UpdateUserBookGenresPathParamsDto>,
-  ): Promise<HttpOkResponse<UpdateUserBookGenresResponseBodyDtoSchema>> {
-    await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
-    });
-
-    const { userBookId } = request.pathParams;
-
-    const { genreIds } = request.body;
-
-    const { userBook } = await this.updateUserBookGenresCommandHandler.execute({
-      userBookId,
-      genreIds,
-    });
-
-    return {
-      statusCode: HttpStatusCode.ok,
-      body: this.mapUserBookToUserBookDto(userBook),
     };
   }
 

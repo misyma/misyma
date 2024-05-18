@@ -6,10 +6,11 @@ export interface UpdateUserBookPathParams {
 }
 
 export interface UpdateUserBookRequestBody {
-  readonly imageUlr?: string | null;
+  readonly imageUrl?: string | null;
   readonly status?: ReadingStatus;
   readonly isFavorite?: boolean;
   readonly bookshelfId?: string;
+  readonly genreIds?: string[];
 }
 
 export type UpdateUserBookResponseBody = UserBook;

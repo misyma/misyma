@@ -41,8 +41,6 @@ import { type UpdateQuoteCommandHandler } from './application/commandHandlers/up
 import { UpdateQuoteCommandHandlerImpl } from './application/commandHandlers/updateQuoteCommandHandler/updateQuoteCommandHandlerImpl.js';
 import { type UpdateUserBookCommandHandler } from './application/commandHandlers/updateUserBookCommandHandler/updateUserBookCommandHandler.js';
 import { UpdateUserBookCommandHandlerImpl } from './application/commandHandlers/updateUserBookCommandHandler/updateUserBookCommandHandlerImpl.js';
-import { type UpdateUserBookGenresCommandHandler } from './application/commandHandlers/updateUserBookGenresCommandHandler/updateUserBookGenresCommandHandler.js';
-import { UpdateBookGenresCommandHandlerImpl } from './application/commandHandlers/updateUserBookGenresCommandHandler/updateUserBookGenresCommandHandlerImpl.js';
 import { type UploadUserBookImageCommandHandler } from './application/commandHandlers/uploadUserBookImageCommandHandler/uploadUserBookImageCommandHandler.js';
 import { UploadUserBookImageCommandHandlerImpl } from './application/commandHandlers/uploadUserBookImageCommandHandler/uploadUserBookImageCommandHandlerImpl.js';
 import { type FindAuthorQueryHandler } from './application/queryHandlers/findAuthorQueryHandler/findAuthorQueryHandler.js';
@@ -209,16 +207,6 @@ export class BookModule implements DependencyInjectionModule {
         ),
     );
 
-    container.bind<UpdateUserBookGenresCommandHandler>(
-      symbols.updateUserBookGenresCommandHandler,
-      () =>
-        new UpdateBookGenresCommandHandlerImpl(
-          container.get<UserBookRepository>(symbols.userBookRepository),
-          container.get<GenreRepository>(symbols.genreRepository),
-          container.get<LoggerService>(coreSymbols.loggerService),
-        ),
-    );
-
     container.bind<DeleteBookCommandHandler>(
       symbols.deleteBookCommandHandler,
       () =>
@@ -283,12 +271,13 @@ export class BookModule implements DependencyInjectionModule {
         new UpdateUserBookCommandHandlerImpl(
           container.get<UserBookRepository>(symbols.userBookRepository),
           container.get<BookshelfRepository>(bookshelfSymbols.bookshelfRepository),
+          container.get<GenreRepository>(symbols.genreRepository),
           container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );
 
     container.bind<DeleteUserBooksCommandHandler>(
-      symbols.deleteUserBookCommandHandler,
+      symbols.deleteUserBooksCommandHandler,
       () =>
         new DeleteUserBooksCommandHandlerImpl(
           container.get<UserBookRepository>(symbols.userBookRepository),
@@ -513,10 +502,9 @@ export class BookModule implements DependencyInjectionModule {
         new UserBookHttpController(
           container.get<CreateUserBookCommandHandler>(symbols.createUserBookCommandHandler),
           container.get<UpdateUserBookCommandHandler>(symbols.updateUserBookCommandHandler),
-          container.get<DeleteUserBooksCommandHandler>(symbols.deleteUserBookCommandHandler),
+          container.get<DeleteUserBooksCommandHandler>(symbols.deleteUserBooksCommandHandler),
           container.get<FindUserBookQueryHandler>(symbols.findUserBookQueryHandler),
           container.get<FindUserBooksQueryHandler>(symbols.findUserBooksQueryHandler),
-          container.get<UpdateUserBookGenresCommandHandler>(symbols.updateUserBookGenresCommandHandler),
           container.get<UploadUserBookImageCommandHandler>(symbols.uploadUserBookImageCommandHandler),
           container.get<AccessControlService>(authSymbols.accessControlService),
         ),

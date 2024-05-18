@@ -12,12 +12,15 @@ import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestU
 import { symbols } from '../../../symbols.js';
 import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
+import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
 
 describe('UpdateUserBookCommandHandlerImpl', () => {
   let commandHandler: UpdateUserBookCommandHandler;
 
   let bookTestUtils: BookTestUtils;
+
+  let genreTestUtils: GenreTestUtils;
 
   let bookshelfTestUtils: BookshelfTestUtils;
 
@@ -38,6 +41,8 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
 
     bookTestUtils = container.get<BookTestUtils>(testSymbols.bookTestUtils);
 
+    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+
     bookshelfTestUtils = container.get<BookshelfTestUtils>(testSymbols.bookshelfTestUtils);
 
     authorTestUtils = container.get<AuthorTestUtils>(testSymbols.authorTestUtils);
@@ -55,6 +60,8 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
     await userTestUtils.truncate();
 
     await userBookTestUtils.truncate();
+
+    await genreTestUtils.truncate();
   });
 
   afterEach(async () => {
@@ -67,6 +74,8 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
     await userTestUtils.truncate();
 
     await userBookTestUtils.truncate();
+
+    await genreTestUtils.truncate();
 
     await databaseClient.destroy();
   });
@@ -167,5 +176,80 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
     expect(updatedUserBook.getStatus()).toBe(updatedStatus);
 
     expect(updatedUserBook.getIsFavorite()).toBe(updatedIsFavorite);
+  });
+
+  it('throws an error - when one of the Genres does not exist', async () => {
+    const user = await userTestUtils.createAndPersist();
+
+    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+
+    const author = await authorTestUtils.createAndPersist();
+
+    const book = await bookTestUtils.createAndPersist({
+      input: {
+        authorIds: [author.id],
+      },
+    });
+
+    const userBook = await userBookTestUtils.createAndPersist({
+      input: {
+        bookId: book.id,
+        bookshelfId: bookshelf.id,
+      },
+    });
+
+    const genre1 = await genreTestUtils.createAndPersist();
+
+    const invalidGenreId = Generator.uuid();
+
+    await expect(
+      async () =>
+        await commandHandler.execute({
+          userBookId: userBook.id,
+          genreIds: [genre1.id, invalidGenreId],
+        }),
+    ).toThrowErrorInstance({
+      instance: OperationNotValidError,
+      context: {
+        reason: 'Some genres do not exist.',
+        ids: [genre1.id, invalidGenreId],
+      },
+    });
+  });
+
+  it('updates UserBook Genres', async () => {
+    const user = await userTestUtils.createAndPersist();
+
+    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+
+    const author = await authorTestUtils.createAndPersist();
+
+    const book = await bookTestUtils.createAndPersist({
+      input: {
+        authorIds: [author.id],
+      },
+    });
+
+    const userBook = await userBookTestUtils.createAndPersist({
+      input: {
+        bookId: book.id,
+        bookshelfId: bookshelf.id,
+      },
+    });
+
+    const genre1 = await genreTestUtils.createAndPersist();
+
+    const genre2 = await genreTestUtils.createAndPersist();
+
+    const genre3 = await genreTestUtils.createAndPersist();
+
+    const result = await commandHandler.execute({
+      userBookId: userBook.id,
+      genreIds: [genre1.id, genre2.id, genre3.id],
+    });
+
+    result.userBook.getGenres().forEach((genre) => {
+      expect(genre.getId()).oneOf([genre1.id, genre2.id, genre3.id]);
+    });
   });
 });
