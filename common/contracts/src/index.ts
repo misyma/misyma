@@ -54,7 +54,7 @@ export * from './schemas/book/updateBook.js';
 
 export * from './schemas/userBook/updateUserBookGenres.js';
 
-export * from './schemas/userBook/uploageUserBookImage.js';
+export * from './schemas/userBook/uploadUserBookImage.js';
 
 export * from './schemas/book/deleteBook.js';
 
@@ -68,11 +68,13 @@ export * from './schemas/userBook/userBook.js';
 
 export * from './schemas/userBook/findUserBook.js';
 
-export * from './schemas/userBook/findUserBooksByBookshelfId.js';
+export * from './schemas/userBook/findUserBooks.js';
 
 export * from './schemas/userBook/createUserBook.js';
 
 export * from './schemas/userBook/deleteUserBooks.js';
+
+export * from './schemas/userBook/deleteUserBook.js';
 
 export * from './schemas/userBook/updateUserBook.js';
 

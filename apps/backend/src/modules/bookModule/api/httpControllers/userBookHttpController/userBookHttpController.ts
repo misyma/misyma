@@ -7,6 +7,11 @@ import {
   type CreateUserBookResponseBodyDto,
 } from './schemas/createUserBookSchema.js';
 import {
+  deleteUserBookPathParamsDtoSchema,
+  deleteUserBookResponseBodyDtoSchema,
+  type DeleteUserBookPathParamsDto,
+} from './schemas/deleteUserBookSchema.js';
+import {
   type DeleteUserBooksResponseBodyDto,
   deleteUserBooksQueryParamsDtoSchema,
   deleteUserBooksResponseBodyDtoSchema,
@@ -141,6 +146,24 @@ export class UserBookHttpController implements HttpController {
           },
         },
         securityMode: SecurityMode.bearerToken,
+      }),
+      new HttpRoute({
+        method: HttpMethodName.delete,
+        path: ':id',
+        handler: this.deleteUserBook.bind(this),
+        schema: {
+          request: {
+            pathParams: deleteUserBookPathParamsDtoSchema,
+          },
+          response: {
+            [HttpStatusCode.noContent]: {
+              schema: deleteUserBookResponseBodyDtoSchema,
+              description: `User's book deleted`,
+            },
+          },
+        },
+        securityMode: SecurityMode.bearerToken,
+        description: `Delete user's book`,
       }),
       new HttpRoute({
         method: HttpMethodName.delete,
@@ -338,6 +361,23 @@ export class UserBookHttpController implements HttpController {
         },
       },
       statusCode: HttpStatusCode.ok,
+    };
+  }
+
+  private async deleteUserBook(
+    request: HttpRequest<undefined, undefined, DeleteUserBookPathParamsDto>,
+  ): Promise<HttpNoContentResponse<DeleteUserBooksResponseBodyDto>> {
+    const { id } = request.pathParams;
+
+    await this.accessControlService.verifyBearerToken({
+      authorizationHeader: request.headers['authorization'],
+    });
+
+    await this.deleteUserBookCommandHandler.execute({ userBookIds: [id] });
+
+    return {
+      statusCode: HttpStatusCode.noContent,
+      body: null,
     };
   }
 
