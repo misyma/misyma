@@ -4,6 +4,10 @@ export interface SaveUserBookPayload {
   readonly userBook: UserBook | UserBookState;
 }
 
+export interface SaveUserBooksPayload {
+  readonly userBooks: UserBook[];
+}
+
 export interface FindUserBookPayload {
   readonly id?: string;
   readonly bookshelfId?: string;
@@ -24,6 +28,7 @@ export interface DeleteUserBooksPayload {
 
 export interface UserBookRepository {
   saveUserBook(payload: SaveUserBookPayload): Promise<UserBook>;
+  saveUserBooks(payload: SaveUserBooksPayload): Promise<void>;
   findUserBook(payload: FindUserBookPayload): Promise<UserBook | null>;
   findUserBooks(payload: FindUserBooksPayload): Promise<UserBook[]>;
   countUserBooks(payload: FindUserBooksPayload): Promise<number>;

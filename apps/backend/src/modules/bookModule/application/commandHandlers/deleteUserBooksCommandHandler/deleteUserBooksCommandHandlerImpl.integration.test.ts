@@ -30,7 +30,7 @@ describe('DeleteUserBookCommandHandler', () => {
   beforeEach(async () => {
     const container = TestContainer.create();
 
-    deleteUserBookCommandHandler = container.get<DeleteUserBooksCommandHandler>(symbols.deleteUserBookCommandHandler);
+    deleteUserBookCommandHandler = container.get<DeleteUserBooksCommandHandler>(symbols.deleteUserBooksCommandHandler);
 
     databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
 

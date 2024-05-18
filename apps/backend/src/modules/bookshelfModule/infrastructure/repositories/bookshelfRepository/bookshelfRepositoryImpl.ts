@@ -5,6 +5,7 @@ import { type DatabaseClient } from '../../../../../libs/database/clients/databa
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { Bookshelf, type BookshelfState } from '../../../domain/entities/bookshelf/bookshelf.js';
 import {
+  type CountBookshelvesPayload,
   type BookshelfRepository,
   type DeleteBookshelfPayload,
   type FindBookshelfPayload,
@@ -67,11 +68,11 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
   }
 
   public async findBookshelves(payload: FindBookshelvesPayload): Promise<Bookshelf[]> {
-    const { userId, page, pageSize, type } = payload;
+    const { userId, ids, page, pageSize, type } = payload;
 
     let rawEntities: BookshelfRawEntity[];
 
-    let whereClause: Partial<BookshelfRawEntity> = { userId };
+    let whereClause: Partial<BookshelfRawEntity> = {};
 
     if (type) {
       whereClause = {
@@ -80,11 +81,25 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
       };
     }
 
+    if (userId) {
+      whereClause = {
+        ...whereClause,
+        userId,
+      };
+    }
+
+    const query = this.databaseClient<BookshelfRawEntity>(this.table.name);
+
+    if (Object.entries(whereClause).length > 0) {
+      query.where(whereClause);
+    }
+
+    if (ids) {
+      query.whereIn('id', ids);
+    }
+
     try {
-      rawEntities = await this.databaseClient<BookshelfRawEntity>(this.table.name)
-        .where(whereClause)
-        .limit(pageSize)
-        .offset(pageSize * (page - 1));
+      rawEntities = await query.limit(pageSize).offset(pageSize * (page - 1));
     } catch (error) {
       throw new RepositoryError({
         entity: 'Bookshelf',
@@ -170,7 +185,7 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
     }
   }
 
-  public async countBookshelves(payload: FindBookshelvesPayload): Promise<number> {
+  public async countBookshelves(payload: CountBookshelvesPayload): Promise<number> {
     const { userId } = payload;
 
     try {

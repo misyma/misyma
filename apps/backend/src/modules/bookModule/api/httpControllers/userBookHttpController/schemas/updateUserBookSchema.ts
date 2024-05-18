@@ -27,6 +27,7 @@ export const updateUserBookBodyDtoSchema = Type.Object({
       Type.Null(),
     ]),
   ),
+  genreIds: Type.Optional(Type.Array(Type.String({ format: 'uuid' }))),
 });
 
 export type UpdateUserBookBodyDto = TypeExtends<

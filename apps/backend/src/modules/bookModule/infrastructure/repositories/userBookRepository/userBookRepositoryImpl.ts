@@ -5,6 +5,7 @@ import { type DatabaseClient } from '../../../../../libs/database/clients/databa
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { UserBook, type UserBookState } from '../../../domain/entities/userBook/userBook.js';
 import {
+  type SaveUserBooksPayload,
   type DeleteUserBooksPayload,
   type FindUserBookPayload,
   type FindUserBooksPayload,
@@ -159,6 +160,29 @@ export class UserBookRepositoryImpl implements UserBookRepository {
     }
 
     return (await this.findUserBook({ id: userBook.getId() })) as UserBook;
+  }
+
+  public async saveUserBooks(payload: SaveUserBooksPayload): Promise<void> {
+    const { userBooks } = payload;
+
+    const payloads = userBooks.map((userBook) => ({
+      id: userBook.getId(),
+      imageUrl: userBook.getImageUrl(),
+      status: userBook.getStatus(),
+      isFavorite: userBook.getIsFavorite(),
+      bookshelfId: userBook.getBookshelfId(),
+      bookId: userBook.getBookId(),
+    }));
+
+    try {
+      await this.databaseClient<UserBookRawEntity>(this.userBookTable.name).insert(payloads).onConflict('id').merge();
+    } catch (error) {
+      throw new RepositoryError({
+        entity: 'UserBook',
+        operation: 'save',
+        error,
+      });
+    }
   }
 
   public async findUserBook(payload: FindUserBookPayload): Promise<UserBook | null> {

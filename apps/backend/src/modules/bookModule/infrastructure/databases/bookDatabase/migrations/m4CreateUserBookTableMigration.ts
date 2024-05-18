@@ -23,6 +23,8 @@ export class M4CreateUserBookTableMigration implements Migration {
       table.foreign('bookId').references('id').inTable('books').onDelete('CASCADE');
 
       table.foreign('bookshelfId').references('id').inTable('bookshelves').onDelete('CASCADE');
+
+      table.unique(['bookId', 'bookshelfId']);
     });
   }
 

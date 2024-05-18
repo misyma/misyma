@@ -186,6 +186,65 @@ describe('BookshelfRepositoryImpl', () => {
         type: bookshelf1.type,
       });
     });
+
+    it('paginates results', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+        },
+      });
+
+      await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+        },
+      });
+
+      const result = await repository.findBookshelves({
+        userId: user.id,
+        page: 1,
+        pageSize: 1,
+      });
+
+      expect(result).toHaveLength(1);
+    });
+
+    it('finds by ids', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const bookshelf1 = await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+        },
+      });
+
+      const bookshelf2 = await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+        },
+      });
+
+      const result = await repository.findBookshelves({
+        userId: user.id,
+        ids: [bookshelf1.id, bookshelf2.id],
+        page: 1,
+        pageSize: 10,
+      });
+
+      expect(result).toHaveLength(2);
+
+      [bookshelf1, bookshelf2].forEach((bookshelf) => {
+        const foundBookshelf = result.find((b) => b.getId() === bookshelf.id);
+
+        expect(foundBookshelf?.getState()).toEqual({
+          name: bookshelf.name,
+          userId: bookshelf.userId,
+          type: bookshelf.type,
+        });
+      });
+    });
   });
 
   describe('save', () => {
@@ -259,6 +318,40 @@ describe('BookshelfRepositoryImpl', () => {
       });
 
       expect(result).toBeNull();
+    });
+  });
+
+  describe('count', () => {
+    it('returns 0 - when no Bookshelves were found', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const result = await repository.countBookshelves({
+        userId: user.id,
+      });
+
+      expect(result).toBe(0);
+    });
+
+    it('returns the number of Bookshelves', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+        },
+      });
+
+      await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+        },
+      });
+
+      const result = await repository.countBookshelves({
+        userId: user.id,
+      });
+
+      expect(result).toBe(2);
     });
   });
 });

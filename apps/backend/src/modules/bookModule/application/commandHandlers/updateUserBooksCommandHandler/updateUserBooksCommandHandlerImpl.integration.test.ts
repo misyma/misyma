@@ -1,48 +1,48 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { type UpdateUserBookGenresCommandHandler } from './updateUserBookGenresCommandHandler.js';
+import { type UpdateUserBooksCommandHandler } from './updateUserBooksCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
+import { coreSymbols } from '../../../../../core/symbols.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { symbols } from '../../../symbols.js';
 import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
-import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
 
-describe('UpdateUserBookGenresCommandHandlerImpl', () => {
-  let commandHandler: UpdateUserBookGenresCommandHandler;
-
-  let genreTestUtils: GenreTestUtils;
+describe('UpdateUserBooksCommandHandlerImpl', () => {
+  let commandHandler: UpdateUserBooksCommandHandler;
 
   let bookTestUtils: BookTestUtils;
 
-  let authorTestUtils: AuthorTestUtils;
+  let bookshelfTestUtils: BookshelfTestUtils;
 
   let userTestUtils: UserTestUtils;
 
-  let bookshelfTestUtils: BookshelfTestUtils;
+  let authorTestUtils: AuthorTestUtils;
 
   let userBookTestUtils: UserBookTestUtils;
+
+  let databaseClient: DatabaseClient;
 
   beforeEach(async () => {
     const container = TestContainer.create();
 
-    commandHandler = container.get<UpdateUserBookGenresCommandHandler>(symbols.updateUserBookGenresCommandHandler);
+    commandHandler = container.get<UpdateUserBooksCommandHandler>(symbols.updateUserBooksCommandHandler);
 
-    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
 
     bookTestUtils = container.get<BookTestUtils>(testSymbols.bookTestUtils);
+
+    bookshelfTestUtils = container.get<BookshelfTestUtils>(testSymbols.bookshelfTestUtils);
 
     authorTestUtils = container.get<AuthorTestUtils>(testSymbols.authorTestUtils);
 
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
-
-    bookshelfTestUtils = container.get<BookshelfTestUtils>(testSymbols.bookshelfTestUtils);
 
     userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
 
@@ -67,98 +67,107 @@ describe('UpdateUserBookGenresCommandHandlerImpl', () => {
     await userTestUtils.truncate();
 
     await userBookTestUtils.truncate();
+
+    await databaseClient.destroy();
   });
 
-  it('throws an error - when UserBook does not exist', async () => {
+  it('throws an error - when some of the UserBooks do not exist', async () => {
+    const user = await userTestUtils.createAndPersist();
+
+    const bookshelf1 = await bookshelfTestUtils.createAndPersist({
+      input: {
+        userId: user.id,
+      },
+    });
+
     const nonExistentUserBookId = Generator.uuid();
 
     await expect(async () =>
       commandHandler.execute({
-        userBookId: nonExistentUserBookId,
-        genreIds: [],
+        data: [
+          {
+            userBookId: nonExistentUserBookId,
+            bookshelfId: bookshelf1.id,
+          },
+        ],
       }),
     ).toThrowErrorInstance({
-      instance: ResourceNotFoundError,
-      message: 'Resource not found.',
-      context: {
-        resource: 'UserBook',
-        id: nonExistentUserBookId,
-      },
+      instance: OperationNotValidError,
     });
   });
 
-  it('throws an error - when one of the Genres does not exist', async () => {
+  it('throws an error - when some of the Bookshelves do not exist', async () => {
     const user = await userTestUtils.createAndPersist();
 
-    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-    const author = await authorTestUtils.createAndPersist();
-
-    const book = await bookTestUtils.createAndPersist({
+    const bookshelf = await bookshelfTestUtils.createAndPersist({
       input: {
-        authorIds: [author.id],
+        userId: user.id,
       },
     });
 
-    const userBook = await userBookTestUtils.createAndPersist({
+    const book = await bookTestUtils.createAndPersist();
+
+    const userBooks = await userBookTestUtils.createAndPersist({
       input: {
         bookId: book.id,
         bookshelfId: bookshelf.id,
       },
     });
 
-    const genre1 = await genreTestUtils.createAndPersist();
-
-    const invalidGenreId = Generator.uuid();
+    const invalidBookshelfId = Generator.uuid();
 
     await expect(
       async () =>
         await commandHandler.execute({
-          userBookId: userBook.id,
-          genreIds: [genre1.id, invalidGenreId],
+          data: [
+            {
+              userBookId: userBooks.id,
+              bookshelfId: invalidBookshelfId,
+            },
+          ],
         }),
     ).toThrowErrorInstance({
       instance: OperationNotValidError,
-      context: {
-        reason: 'Some genres do not exist.',
-        ids: [genre1.id, invalidGenreId],
-      },
     });
   });
 
-  it('updates UserBook Genres', async () => {
+  it('updates UserBooks', async () => {
     const user = await userTestUtils.createAndPersist();
 
-    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-    const author = await authorTestUtils.createAndPersist();
-
-    const book = await bookTestUtils.createAndPersist({
+    const bookshelf1 = await bookshelfTestUtils.createAndPersist({
       input: {
-        authorIds: [author.id],
+        userId: user.id,
       },
     });
+
+    const bookshelf2 = await bookshelfTestUtils.createAndPersist({
+      input: {
+        userId: user.id,
+      },
+    });
+
+    const book = await bookTestUtils.createAndPersist();
 
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookId: book.id,
-        bookshelfId: bookshelf.id,
+        bookshelfId: bookshelf1.id,
       },
     });
 
-    const genre1 = await genreTestUtils.createAndPersist();
-
-    const genre2 = await genreTestUtils.createAndPersist();
-
-    const genre3 = await genreTestUtils.createAndPersist();
-
-    const result = await commandHandler.execute({
-      userBookId: userBook.id,
-      genreIds: [genre1.id, genre2.id, genre3.id],
+    await commandHandler.execute({
+      data: [
+        {
+          userBookId: userBook.id,
+          bookshelfId: bookshelf2.id,
+        },
+      ],
     });
 
-    result.userBook.getGenres().forEach((genre) => {
-      expect(genre.getId()).oneOf([genre1.id, genre2.id, genre3.id]);
+    const updatedUserBook = await userBookTestUtils.findById({
+      id: userBook.id,
     });
+
+    expect(updatedUserBook?.bookshelfId).toBe(bookshelf2.id);
   });
 });
