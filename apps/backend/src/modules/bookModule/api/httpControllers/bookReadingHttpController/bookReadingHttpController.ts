@@ -25,6 +25,7 @@ import {
   findBookReadingsPathParamsDtoSchema,
   type FindBookReadingsPathParamsDto,
   type FindBookReadingsQueryParamsDto,
+  findBookReadingsQueryParamsDtoSchema,
 } from './schemas/findBookReadingsSchema.js';
 import {
   updateBookReadingBodyDtoSchema,
@@ -79,6 +80,7 @@ export class BookReadingHttpController implements HttpController {
         schema: {
           request: {
             pathParams: findBookReadingsPathParamsDtoSchema,
+            queryParams: findBookReadingsQueryParamsDtoSchema,
           },
           response: {
             [HttpStatusCode.ok]: {

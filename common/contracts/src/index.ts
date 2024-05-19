@@ -90,6 +90,14 @@ export * from './schemas/bookReading/findBookReadings.js';
 
 export * from './schemas/bookReading/updateBookReading.js';
 
+export * from './schemas/borrowing/createBorrowing.js';
+
+export * from './schemas/borrowing/deleteBorrowing.js';
+
+export * from './schemas/borrowing/findBorrowings.js';
+
+export * from './schemas/borrowing/updateBorrowing.js';
+
 export * from './schemas/genre/genre.js';
 
 export * from './schemas/genre/findGenreByName.js';
