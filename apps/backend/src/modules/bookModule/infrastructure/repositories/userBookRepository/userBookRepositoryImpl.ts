@@ -186,7 +186,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
   }
 
   public async findUserBook(payload: FindUserBookPayload): Promise<UserBook | null> {
-    const { id, title, bookshelfId, authorIds } = payload;
+    const { id, title, bookshelfId, bookId, authorIds } = payload;
 
     let rawEntities: UserBookWithJoinsRawEntity[];
 
@@ -247,7 +247,11 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           }
 
           if (bookshelfId) {
-            builder.where(`"${this.userBookTable.name}.bookshelfId"`, bookshelfId);
+            builder.where(`${this.userBookTable.name}.bookshelfId`, bookshelfId);
+          }
+
+          if (bookId) {
+            builder.where(`${this.userBookTable.name}.bookId`, bookId);
           }
         });
     } catch (error) {
