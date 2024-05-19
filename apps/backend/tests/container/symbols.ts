@@ -4,6 +4,7 @@ export const testSymbols = {
   userBookTestUtils: Symbol('userBookTestUtils'),
   bookshelfTestUtils: Symbol('bookshelfTestUtils'),
   bookReadingTestUtils: Symbol('bookReadingTestUtils'),
+  borrowingTestUtils: Symbol('borrowingTestUtils'),
   quoteTestUtils: Symbol('quoteTestUtils'),
   userTestUtils: Symbol('userTestUtils'),
   blacklistTokenTestUtils: Symbol('blacklistTokenTestUtils'),

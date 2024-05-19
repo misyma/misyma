@@ -9,6 +9,7 @@ import { S3TestUtils } from '../../src/libs/s3/tests/utils/s3TestUtils.js';
 import { AuthorTestUtils } from '../../src/modules/bookModule/tests/utils/authorTestUtils/authorTestUtils.js';
 import { BookReadingTestUtils } from '../../src/modules/bookModule/tests/utils/bookReadingTestUtils/bookReadingTestUtils.js';
 import { BookTestUtils } from '../../src/modules/bookModule/tests/utils/bookTestUtils/bookTestUtils.js';
+import { BorrowingTestUtils } from '../../src/modules/bookModule/tests/utils/borrowingTestUtils/borrowingTestUtils.js';
 import { GenreTestUtils } from '../../src/modules/bookModule/tests/utils/genreTestUtils/genreTestUtils.js';
 import { QuoteTestUtils } from '../../src/modules/bookModule/tests/utils/quoteTestUtils/quoteTestUtils.js';
 import { UserBookTestUtils } from '../../src/modules/bookModule/tests/utils/userBookTestUtils/userBookTestUtils.js';
@@ -66,6 +67,11 @@ export class TestContainer {
     container.bind<BookReadingTestUtils>(
       testSymbols.bookReadingTestUtils,
       () => new BookReadingTestUtils(container.get<DatabaseClient>(coreSymbols.databaseClient)),
+    );
+
+    container.bind<BorrowingTestUtils>(
+      testSymbols.borrowingTestUtils,
+      () => new BorrowingTestUtils(container.get<DatabaseClient>(coreSymbols.databaseClient)),
     );
 
     container.bind<QuoteTestUtils>(
