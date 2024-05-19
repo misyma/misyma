@@ -505,7 +505,7 @@ export class BookModule implements DependencyInjectionModule {
       symbols.findBorrowingsQueryHandler,
       () =>
         new FindBorrowingsQueryHandlerImpl(
-          container.get<BorrowingRepository>(symbols.bookReadingRepository),
+          container.get<BorrowingRepository>(symbols.borrowingRepository),
           container.get<UserBookRepository>(bookSymbols.userBookRepository),
         ),
     );
@@ -620,7 +620,7 @@ export class BookModule implements DependencyInjectionModule {
     );
 
     container.bind<BorrowingHttpController>(
-      symbols.bookReadingHttpController,
+      symbols.borrowingHttpController,
       () =>
         new BorrowingHttpController(
           container.get<FindBorrowingsQueryHandler>(symbols.findBorrowingsQueryHandler),
