@@ -150,14 +150,20 @@ export class HttpService {
     try {
       const { url, headers, body } = payload;
 
+      const requestHeaders: Record<string, string> = {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        ...headers,
+      }
+
+      if (headers && 'Content-Type' in headers) {
+        delete requestHeaders['Content-Type'];
+      }
+
       const response = await fetch(`${this.baseUrl}${url}`, {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          ...headers,
-        },
+        headers: requestHeaders,
         method: 'PATCH',
-        body: body instanceof Buffer ? body :  JSON.stringify(body),
+        body: body instanceof FormData ? body : JSON.stringify(body),
       });
 
       const responseBodyText = await response.text();
@@ -184,6 +190,8 @@ export class HttpService {
         statusCode: response.status,
       };
     } catch (error) {
+      console.error(error);
+
       throw new (class extends Error {
         code: number;
         context: Record<string, string>;

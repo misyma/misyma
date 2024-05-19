@@ -9,6 +9,7 @@ import { Button } from '../../../../../components/ui/button';
 import { useNavigate } from '@tanstack/react-router';
 import { isbnSchema } from '../../../../../common/schemas/isbnSchema';
 import { Breadcrumbs, NumericBreadcrumb } from '../../../../../components/ui/breadcrumbs';
+import { useSearchBookContextDispatch } from '../../context/searchCreateBookContext';
 
 const stepOneIsbnSchema = z.object({
   isbn: isbnSchema,
@@ -19,6 +20,8 @@ interface Props {
 }
 
 export const IsbnPathForm = ({ bookshelfId }: Props): JSX.Element => {
+  const searchBookDispatch = useSearchBookContextDispatch();
+
   const isbnForm = useForm({
     resolver: zodResolver(stepOneIsbnSchema),
     values: {
@@ -33,6 +36,11 @@ export const IsbnPathForm = ({ bookshelfId }: Props): JSX.Element => {
     if (!values.isbn) {
       return;
     }
+
+    searchBookDispatch({
+      isbn: values.isbn
+    })
+
 
     navigate({
       to: '/search/result',

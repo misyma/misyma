@@ -58,19 +58,17 @@ export const SearchResultPage: FC = () => {
   const onAddBook = async (): Promise<void> => {
     const book = foundBooks?.data[currentPage - 1] as Book;
 
-    console.log(book);
-    
     searchCreationDispatch({
       bookId: book.id,
     });
 
     searchCreationDispatch({
       title: book.title,
-    })
+    });
 
     searchCreationDispatch({
       step: 3,
-    })
+    });
 
     navigate({
       to: `/search/create/${searchParams.bookshelfId}`,
@@ -123,43 +121,50 @@ export const SearchResultPage: FC = () => {
     return (
       <div className="relative  justify-center items-center flex-col-reverse md:flex-row w-full flex h-full gap-8">
         <div className="w-full flex flex-col gap-6 px-8 sm:pr-0 sm:pl-8 sm:ml-4">
-          {booksCount > 1 ? (
-            <div className="full flex flex-col justify-center items-center">
-              <Breadcrumbs
-                className="pb-4"
-                crumbs={{
-                  [1]: <NumericBreadcrumb index={1}>1</NumericBreadcrumb>,
-                  [2]: (
-                    <NumericBreadcrumb
-                      className={'font-semibold bg-primary text-white border-primary'}
-                      index={2}
-                    >
-                      2
-                    </NumericBreadcrumb>
-                  ),
-                  [3]: <NumericBreadcrumb index={3}>3</NumericBreadcrumb>,
-                }}
-              />
+          <div className="full flex flex-col justify-center items-center">
+            <Breadcrumbs
+              className="pb-4"
+              crumbs={{
+                [1]: <NumericBreadcrumb index={1}>1</NumericBreadcrumb>,
+                [2]: (
+                  <NumericBreadcrumb
+                    className={'font-semibold bg-primary text-white border-primary'}
+                    index={2}
+                  >
+                    2
+                  </NumericBreadcrumb>
+                ),
+                [3]: <NumericBreadcrumb index={3}>3</NumericBreadcrumb>,
+              }}
+            />
+            {booksCount > 1 ? (
               <span className="font-bold text-2xl text-primary">
                 {currentPage} z {booksCount}
               </span>
-            </div>
-          ) : (
-            <></>
-          )}
+            ) : (
+              <></>
+            )}
+          </div>
           <div className="flex flex-col w-full">
-            <Paginator
-              rootClassName="w-full flex items-center h-16 text-xl sm:text-3xl justify-normal"
-              onPageChange={(page) => setCurrentPage(page)}
-              pagesCount={booksCount}
-              pageNumberSlot={
-                <span className="text-center text-ellipsis w-full line-clamp-2">
-                  {foundBooks?.data[currentPage - 1].title}
-                </span>
-              }
-              contentClassName="w-full"
-            />
-            <p className="pl-12">{foundBooks?.data[currentPage - 1]?.authors[0]?.name ?? ''}</p>
+            {booksCount > 1 ? (
+              <Paginator
+                rootClassName="w-full flex items-center h-16 text-xl sm:text-3xl justify-normal"
+                onPageChange={(page) => setCurrentPage(page)}
+                pagesCount={booksCount}
+                pageNumberSlot={
+                  <span className="text-left text-ellipsis w-full line-clamp-2">
+                    {foundBooks?.data[currentPage - 1].title}
+                  </span>
+                }
+                contentClassName="w-full"
+              />
+            ) : (
+              // className="font-bold text-2xl text-primary"
+              <span className="text-3xl text-left text-ellipsis w-full line-clamp-2">
+                {foundBooks?.data[currentPage - 1].title}
+              </span>
+            )}
+            <p className="pl-1">{foundBooks?.data[currentPage - 1]?.authors[0]?.name ?? ''}</p>
           </div>
           <div className="border border-gray-400 w-full lg:translate-x-[-2rem] px-4"></div>
           <div className="flex flex-col gap-4 w-full">

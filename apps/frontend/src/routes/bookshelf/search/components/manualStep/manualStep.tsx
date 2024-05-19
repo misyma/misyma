@@ -68,6 +68,27 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
 
   const navigate = useNavigate();
 
+  const onGoBack = () => {
+    const search: Record<string, string> = {
+      bookshelfId
+    };
+
+    if (searchBookContext.searchQuery) {
+      search['title'] = searchBookContext.searchQuery;
+    } else if (searchBookContext.isbn) {
+      search['isbn'] = searchBookContext.isbn;
+    } else {
+      return navigate({
+        to: '/shelves'
+      })
+    }
+
+    navigate({
+      to: '/search/result',
+      search,
+    });
+  };
+
   const onSubmit = async (values: Partial<z.infer<typeof stepThreeFormSchema>>) => {
     values as z.infer<typeof stepThreeFormSchema>;
 
@@ -84,7 +105,7 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
         bookId: userBook.id,
         file: file as unknown as File,
         userId: user?.id as string,
-      })
+      });
 
       toast({
         title: 'Książka została położona na półce 😄',
@@ -194,10 +215,10 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
                 <FileInput
                   {...fieldProps}
                   type="file"
-                  accept='image/jpeg'
+                  accept="image/jpeg"
                   fileName={(value as unknown as File)?.name}
                   onChange={(event) => {
-                    onChange(event.target.files && event.target.files[0])
+                    onChange(event.target.files && event.target.files[0]);
 
                     setFile(event.target.files ? event.target?.files[0] ?? undefined : undefined);
                   }}
@@ -237,7 +258,7 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
         <div className="flex w-full gap-4">
           <Button
             className="border border-primary w-full"
-            // onClick={() => {}}
+            onClick={onGoBack}
           >
             Wróć
           </Button>

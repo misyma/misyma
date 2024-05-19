@@ -11,10 +11,7 @@ import { AuthenticatedLayout } from '../../../../../layouts/authenticated/authen
 export const SearchCreatePage: FC = () => {
   const searchBookContext = useSearchBookContext();
 
-  // todo: debug
   const searchParams = searchCreateRoute.useParams();
-
-  console.log(searchParams)
 
   const navigate = useNavigate();
 
@@ -72,7 +69,7 @@ export const SearchCreatePage: FC = () => {
           }}
         />
         {/* eslint-disable-next-line */}
-        <ManualStep bookshelfId={(searchParams as any)['**']} />
+        <ManualStep bookshelfId={(searchParams.bookshelfId)} />
       </div>
       <div className="flex max-w-[250px] w-full sm:max-w-[500px] sm:min-h-[550px] justify-center items-center">
         <img

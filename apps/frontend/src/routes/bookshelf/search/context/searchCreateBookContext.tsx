@@ -5,6 +5,8 @@ const initialState = {
   step: 1,
   bookId: '',
   title: '',
+  searchQuery: '',
+  isbn: '',
 };
 
 const SearchCreateBookContext = createContext<BookCreationSearchState>(initialState);
@@ -23,6 +25,8 @@ export interface BookCreationSearchState {
   step: BookCreationSearchStep;
   bookId: string;
   title: string;
+  searchQuery?: string;
+  isbn?: string;
 }
 
 export type BookCreationSearchSetStepAction = {
@@ -37,10 +41,20 @@ export type SetChosenSearchBookTitle = {
   title: string;
 };
 
+export type SetSearchQuery = {
+  searchQuery: string;
+};
+
+export type SetSearchIsbn = {
+  isbn: string;
+};
+
 export type BookCreationSearchActions =
   | BookCreationSearchSetStepAction
   | SetChosenSearchBookId
-  | SetChosenSearchBookTitle;
+  | SetChosenSearchBookTitle
+  | SetSearchQuery
+  | SetSearchIsbn;
 
 export function SearchCreateBookProvider({ children }: { children: ReactNode }): JSX.Element {
   const [searchContext, dispatch] = useReducer(searchCreateBookContextReducer, initialState);
@@ -72,6 +86,20 @@ function searchCreateBookContextReducer(state: BookCreationSearchState, action: 
     return {
       ...state,
       title: action.title,
+    };
+  }
+
+  if ('searchQuery' in action) {
+    return {
+      ...state,
+      searchQuery: action.searchQuery,
+    };
+  }
+
+  if ('isbn' in action) {
+    return {
+      ...state,
+      isbn: action.isbn,
     };
   }
 
