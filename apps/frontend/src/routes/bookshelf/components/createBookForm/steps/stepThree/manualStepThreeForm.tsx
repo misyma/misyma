@@ -10,7 +10,7 @@ import { ReadingStatus as ContractReadingStatus } from '@common/contracts';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../../../components/ui/form';
-import { Input } from '../../../../../../components/ui/input';
+import { FileInput } from '../../../../../../components/ui/input';
 import { Button } from '../../../../../../components/ui/button';
 import { useCreateBookMutation } from '../../../../../../api/books/mutations/createBookMutation/createBookMutation';
 import { useCreateUserBookMutation } from '../../../../../../api/books/mutations/createUserBookMutation/createUserBookMutation';
@@ -19,16 +19,30 @@ import { useNavigate } from '@tanstack/react-router';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../../../../components/ui/select';
 import { ReadingStatus } from '../../../../../../common/constants/readingStatus';
 import { useToast } from '../../../../../../components/ui/use-toast';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BookApiError } from '../../../../../../api/books/errors/bookApiError';
 import { BookGenre } from '../../../../../../common/constants/bookGenre';
 import { useFindUserBookshelfsQuery } from '../../../../../../api/bookshelf/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
+import { useUploadBookImageMutation } from '../../../../../../api/books/mutations/uploadBookImageMutation/uploadBookImageMutation';
 
 const stepThreeFormSchema = z.object({
-  status: z.nativeEnum(ContractReadingStatus),
-  image: z.string().min(1),
-  bookshelfId: z.string().uuid(),
-  genre: z.string().min(1),
+  status: z.nativeEnum(ContractReadingStatus, {
+    invalid_type_error: 'Niepoprawny typ',
+    required_error: 'Wartość jest wymagana.',
+  }),
+  // todo: validation
+  image: z.object(
+    {},
+    {
+      required_error: 'Wymagany.',
+    },
+  ),
+  bookshelfId: z.string().uuid({
+    message: 'Niewłaściwy format',
+  }),
+  genre: z.string().min(1, {
+    message: 'Niewłaściwa wartość',
+  }),
 });
 
 interface Props {
@@ -40,31 +54,46 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
 
   const [submissionError, setSubmissionError] = useState<string | null>(null);
 
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
   const dispatch = useBookCreationDispatch();
 
   const { data: user } = useFindUserQuery();
 
-  const {
-    data: bookshelvesData,
-  } = useFindUserBookshelfsQuery(user?.id);
+  const { data: bookshelvesData } = useFindUserBookshelfsQuery(user?.id);
+
+  const [file, setFile] = useState<File | undefined>();
 
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (file) {
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(file);
+
+      if (fileInputRef.current) {
+        fileInputRef.current.files = dataTransfer.files;
+      }
+    }
+  }, [file]);
 
   const form = useForm({
     resolver: zodResolver(stepThreeFormSchema),
     values: {
       status: bookCreation.stepThreeDetails?.status,
-      image: bookCreation.stepThreeDetails?.image,
+      image: file,
       bookshelfId,
       genre: bookCreation.stepThreeDetails?.genre,
     },
     reValidateMode: 'onChange',
-    mode: 'onTouched'
+    mode: 'onTouched',
   });
 
   const { mutateAsync: createBookMutation } = useCreateBookMutation({});
 
   const { mutateAsync: createUserBookMutation } = useCreateUserBookMutation({});
+
+  const { mutateAsync: uploadBookImageMutation } = useUploadBookImageMutation({});
 
   const navigate = useNavigate();
 
@@ -83,17 +112,23 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
         translator: bookCreation.stepTwoDetails?.translator,
         pages: bookCreation.stepTwoDetails?.pagesCount,
         releaseYear: bookCreation.yearOfIssue,
-        ...(bookCreation.stepOneDetails as Required<BookCreationNonIsbnState['stepOneDetails']>),
         ...(bookCreation.stepTwoDetails as Required<BookCreationNonIsbnState['stepTwoDetails']>),
         ...(bookCreation.stepThreeDetails as Required<BookCreationNonIsbnState['stepThreeDetails']>),
+        ...(bookCreation.stepOneDetails as Required<BookCreationNonIsbnState['stepOneDetails']>),
       });
 
-      await createUserBookMutation({
+      const userBook = await createUserBookMutation({
         bookId: bookCreationResponse.id,
         bookshelfId,
         status: bookCreation.stepThreeDetails?.status as ContractReadingStatus,
         userId: user?.id as string,
         isFavorite: false,
+      });
+
+      await uploadBookImageMutation({
+        bookId: userBook.id,
+        file: file as unknown as File,
+        userId: user?.id as string,
       });
 
       toast({
@@ -153,9 +188,7 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
               >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue
-                      placeholder="Półka"
-                    />
+                    <SelectValue placeholder="Półka" />
                     <SelectContent>
                       {bookshelvesData?.data.map((bookshelf) => (
                         <SelectItem value={bookshelf.id}>{bookshelf.name}</SelectItem>
@@ -206,21 +239,21 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
         <FormField
           control={form.control}
           name="image"
-          render={({ field }) => (
+          render={({ field: { value, onChange, ...fieldProps } }) => (
             <FormItem>
               <FormLabel>Obrazek</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="Obrazek"
-                  type="text"
-                  includeQuill={false}
-                  onInput={(e) => {
-                    dispatch({
-                      type: BookCreationActionType.setImage,
-                      image: e.currentTarget.value,
-                    });
+                <FileInput
+                  {...fieldProps}
+                  type="file"
+                  accept="image/jpeg"
+                  fileName={(value as unknown as File)?.name}
+                  onChange={(event) => {
+                    onChange(event.target.files && event.target.files[0]);
+
+                    setFile(event.target.files ? event.target?.files[0] ?? undefined : undefined);
                   }}
-                  {...field}
+                  ref={fileInputRef}
                 />
               </FormControl>
               <FormMessage />

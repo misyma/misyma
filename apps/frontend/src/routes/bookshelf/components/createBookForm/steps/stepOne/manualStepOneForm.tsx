@@ -19,12 +19,36 @@ import { useFindAuthorsQuery } from '../../../../../../api/authors/queries/findA
 import { useState } from 'react';
 import { CommandLoading } from 'cmdk';
 import { isbnSchema } from '../../../../../../common/schemas/isbnSchema';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '../../../../../../components/ui/dialog';
+import { useCreateAuthorDraftMutation } from '../../../../../../api/authors/mutations/createAuthorDraftMutation/createAuthorDraftMutation';
 
 const stepOneSchema = z.object({
   isbn: isbnSchema,
-  title: z.string().min(1).max(64),
-  author: z.string().uuid(),
-  publisher: z.string().min(1).max(64),
+  title: z
+    .string()
+    .min(1, {
+      message: 'Tytuł musi mieć co najmniej jeden znak.',
+    })
+    .max(64, {
+      message: 'Tytuł może mieć maksymalnie 64 znaki.',
+    }),
+  author: z.string().uuid({
+    message: 'Brak wybranego autora.',
+  }),
+  publisher: z
+    .string()
+    .min(1, {
+      message: 'Nazwa wydawnictwa powinna mieć co namniej 1 znak.',
+    })
+    .max(64, {
+      message: 'Nazwa wydawnictwa powinna mieć co najwyżej 64 znaki.',
+    }),
   yearOfIssue: z
     .number({
       coerce: true,
@@ -37,12 +61,33 @@ const stepOneSchema = z.object({
     }),
 });
 
+const createAuthorDraftSchema = z.object({
+  name: z
+    .string({
+      required_error: 'Imię jest wymagane.',
+    })
+    .min(1, {
+      message: 'Imię autora musi miec co najmniej jeden znak.',
+    })
+    .max(128, {
+      message: 'Imię autora może mieć maksymalnie 128 znaków.',
+    }),
+});
+
 export const ManualStepOneForm = (): JSX.Element => {
   const bookCreation = useBookCreation<false>() as BookCreationNonIsbnState;
 
   const dispatch = useBookCreationDispatch();
 
+  const [createAuthorDialogVisible, setCreateAuthorDialogVisible] = useState(false);
+
   const [searchedName, setSearchedName] = useState<string | undefined>(undefined);
+
+  const [draftAuthorId, setDraftAuthorId] = useState<string | null>(null);
+
+  const [draftAuthorName, setDraftAuthorName] = useState<string | null>(null);
+
+  const { mutateAsync: createAuthorDraft } = useCreateAuthorDraftMutation({});
 
   const form = useForm({
     resolver: zodResolver(stepOneSchema),
@@ -56,6 +101,38 @@ export const ManualStepOneForm = (): JSX.Element => {
     reValidateMode: 'onChange',
     mode: 'onTouched',
   });
+
+  const createAuthorDraftForm = useForm({
+    resolver: zodResolver(createAuthorDraftSchema),
+    values: {
+      name: '',
+    },
+    reValidateMode: 'onChange',
+    mode: 'onTouched',
+  });
+
+  const onCreateAuthorDraft = async (payload: z.infer<typeof createAuthorDraftSchema>): Promise<void> => {
+    const response = await createAuthorDraft({
+      name: payload.name,
+    });
+
+    setDraftAuthorId(response.id);
+
+    setDraftAuthorName(response.name);
+
+    form.setValue('author', response.id);
+
+    dispatch({
+      type: BookCreationActionType.setAuthor,
+      author: response.id,
+    });
+
+    form.trigger('author');
+
+    setCreateAuthorDialogVisible(false);
+  };
+
+  const onOpenChange = (bool: boolean) => setCreateAuthorDialogVisible(bool);
 
   const onSubmit = (
     values: Partial<z.infer<typeof stepOneSchema>> & {
@@ -165,7 +242,9 @@ export const ManualStepOneForm = (): JSX.Element => {
                         )}
                       >
                         {field.value
-                          ? authors?.data.find((author) => author.id === field.value)?.name ?? 'Wyszukaj autora'
+                          ? draftAuthorId && draftAuthorName
+                            ? draftAuthorName
+                            : authors?.data.find((author) => author.id === field.value)?.name ?? 'Wyszukaj autora'
                           : 'Wyszukaj autora'}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
@@ -179,7 +258,54 @@ export const ManualStepOneForm = (): JSX.Element => {
                       />
                       <CommandList>
                         {isFetched && authors?.data.length === 0 && (
-                          <CommandEmpty>Nie znaleziono autora - {searchedName} </CommandEmpty>
+                          <CommandEmpty className="flex flex-col px-4 py-4 gap-4">
+                            {/* <p>Nie znaleziono autora - {searchedName} </p> */}
+                            <>
+                              <Dialog
+                                open={createAuthorDialogVisible}
+                                onOpenChange={onOpenChange}
+                              >
+                                <DialogTrigger asChild>
+                                  <Button className="bg-slate-100 text-black hover:bg-slate-300">Dodaj</Button>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-md">
+                                  <DialogHeader>
+                                    <DialogTitle>Stwórz autora</DialogTitle>
+                                  </DialogHeader>
+                                  <Form {...createAuthorDraftForm}>
+                                    <form
+                                      className="flex flex-col gap-8 py-4"
+                                      onSubmit={createAuthorDraftForm.handleSubmit(onCreateAuthorDraft)}
+                                    >
+                                      <FormField
+                                        name="name"
+                                        render={({ field }) => (
+                                          <FormItem>
+                                            <FormLabel>Imię</FormLabel>
+                                            <FormControl>
+                                              <Input
+                                                min={1}
+                                                max={128}
+                                                type="text"
+                                                {...field}
+                                              />
+                                            </FormControl>
+                                            <FormMessage></FormMessage>
+                                          </FormItem>
+                                        )}
+                                      />
+                                      <Button
+                                        disabled={!createAuthorDraftForm.formState.isValid}
+                                        type="submit"
+                                      >
+                                        Stwórz
+                                      </Button>
+                                    </form>
+                                  </Form>
+                                </DialogContent>
+                              </Dialog>
+                            </>
+                          </CommandEmpty>
                         )}
                         {loading && <CommandLoading>Wyszukuję autorów</CommandLoading>}
                         {authors?.data.map((author) => (
@@ -223,8 +349,8 @@ export const ManualStepOneForm = (): JSX.Element => {
                   includeQuill={false}
                   onInput={(e) => {
                     dispatch({
-                      type: BookCreationActionType.setGenre,
-                      genre: e.currentTarget.value,
+                      type: BookCreationActionType.setYearOfIssue,
+                      yearOfIssue: Number(e.currentTarget.value),
                     });
                   }}
                   {...field}
