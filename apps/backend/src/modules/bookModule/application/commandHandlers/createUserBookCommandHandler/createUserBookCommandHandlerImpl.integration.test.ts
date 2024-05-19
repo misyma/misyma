@@ -176,4 +176,48 @@ describe('CreateUserBookCommandHandler', () => {
       },
     });
   });
+
+  it('throws an error - when UserBook already exists', async () => {
+    const user = await userTestUtils.createAndPersist();
+
+    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+
+    const author = await authorTestUtils.createAndPersist();
+
+    const book = await bookTestUtils.createAndPersist({
+      input: {
+        authorIds: [author.id],
+      },
+    });
+
+    const status = Generator.readingStatus();
+
+    const imageUrl = Generator.imageUrl();
+
+    const isFavorite = Generator.boolean();
+
+    await userBookTestUtils.createAndPersist({
+      input: {
+        bookId: book.id,
+        bookshelfId: bookshelf.id,
+      },
+    });
+
+    await expect(async () =>
+      createUserBookCommandHandler.execute({
+        imageUrl,
+        status,
+        isFavorite,
+        bookshelfId: bookshelf.id,
+        bookId: book.id,
+      }),
+    ).toThrowErrorInstance({
+      instance: OperationNotValidError,
+      context: {
+        reason: 'UserBook already exists.',
+        bookshelfId: bookshelf.id,
+        bookId: book.id,
+      },
+    });
+  });
 });

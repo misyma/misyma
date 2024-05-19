@@ -11,6 +11,7 @@ export interface SaveUserBooksPayload {
 export interface FindUserBookPayload {
   readonly id?: string;
   readonly bookshelfId?: string;
+  readonly bookId?: string;
   readonly title?: string;
   readonly authorIds?: string[];
 }
