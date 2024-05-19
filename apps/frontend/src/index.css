@@ -68,6 +68,10 @@
   }
 }
 
+input[type="file"] {
+  opacity: 0;
+}
+
 .nice-radio {
   background: unset;
 }

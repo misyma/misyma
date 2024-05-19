@@ -37,7 +37,7 @@ export const Bookshelf: FC = () => {
               {bookshelfResponse?.name ?? ' '}
             </p>
             <p>
-              {bookshelfBooksResponse?.data.length} książek
+              {bookshelfBooksResponse?.data.length ?? 0} książek
             </p>
           </div>
           <Button
@@ -56,8 +56,8 @@ export const Bookshelf: FC = () => {
           </Button>
         </div>
         <div className="flex flex-col justify-center gap-8 pt-4 bg-slate-">
-          {bookshelfBooksResponse?.data.map((userBook) => (
-            <div className="flex flex-col justify-center align-middle items-center border-primary border gap-4">
+          {bookshelfBooksResponse?.data.map((userBook, index) => (
+            <div key={`${userBook.bookId}-${index}`} className="flex flex-col justify-center align-middle items-center border-primary border gap-4">
               <p>Tytuł: {userBook.book.title}</p>
               <h1>Format: {userBook.book.format}</h1>
               <h2>Język: {userBook.book.language}</h2>

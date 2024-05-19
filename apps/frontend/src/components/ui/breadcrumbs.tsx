@@ -4,13 +4,19 @@ import { cn } from '../../lib/utils';
 
 export interface BreadcrumbsProps {
   crumbs: Record<number, JSX.Element>;
+  className?: string;
 }
 
-export const Breadcrumbs = ({ crumbs }: BreadcrumbsProps): JSX.Element => {
+export const Breadcrumbs = ({ crumbs, className }: BreadcrumbsProps): JSX.Element => {
   const entries = Object.entries(crumbs);
 
   return (
-    <div className="flex flex-row gap-2 w-full justify-center items-center align-middle py-4">
+    <div className={
+      cn(
+        "flex flex-row gap-2 w-full justify-center items-center align-middle py-4",
+        className
+      )
+    }>
       {entries.map(([key, value], i) => (
         <>
           <div key={`${key}-breadcrumb`}>{value}</div>
@@ -23,9 +29,9 @@ export const Breadcrumbs = ({ crumbs }: BreadcrumbsProps): JSX.Element => {
 
 interface NumericBreadcrumbProps extends ComponentPropsWithoutRef<'div'> {
   index: number;
-  onClick: () => void;
+  onClick?: () => void;
   children: ReactNode;
-  className: string;
+  className?: string;
 }
 
 export const NumericBreadcrumb = ({

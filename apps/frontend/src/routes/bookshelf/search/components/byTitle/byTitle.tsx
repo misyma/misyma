@@ -5,6 +5,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '../../../../../components/ui/input';
 import { Button } from '../../../../../components/ui/button';
 import { useNavigate } from '@tanstack/react-router';
+import { useSearchBookContextDispatch } from '../../context/searchCreateBookContext';
 
 const stepOneIsbnSchema = z.object({
   title: z
@@ -21,6 +22,8 @@ interface Props {
 }
 
 export const ByTitleForm = ({ bookshelfId }: Props): JSX.Element => {
+  const searchBookDispatch = useSearchBookContextDispatch();
+
   const byTitleForm = useForm({
     resolver: zodResolver(stepOneIsbnSchema),
     values: {
@@ -35,6 +38,10 @@ export const ByTitleForm = ({ bookshelfId }: Props): JSX.Element => {
     if (!values.title) {
       return;
     }
+
+    searchBookDispatch({
+      searchQuery: values.title
+    })
 
     navigate({
       to: '/search/result',
