@@ -156,7 +156,7 @@ export class HttpService {
         ...headers,
       }
 
-      if (headers && 'Content-Type' in headers) {
+      if (headers && 'Content-Type' in headers && headers['Content-Type'] === 'multipart/form-data') {
         delete requestHeaders['Content-Type'];
       }
 
