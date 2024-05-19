@@ -15,6 +15,11 @@ module.exports = {
     },
     extend: {
       colors: {
+        status: {
+          'toRead': '#374151',
+          inProgress: '#3ABEF7',
+          finished: '#14B8A6',
+        },
         periwinkle: {
           50: '#eef1ff',
           100: '#e0e6ff',
