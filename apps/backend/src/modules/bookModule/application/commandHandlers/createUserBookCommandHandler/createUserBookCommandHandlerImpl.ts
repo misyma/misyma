@@ -51,6 +51,19 @@ export class CreateUserBookCommandHandlerImpl implements CreateUserBookCommandHa
       });
     }
 
+    const existingUserBook = await this.userBookRepository.findUserBook({
+      bookshelfId,
+      bookId,
+    });
+
+    if (existingUserBook) {
+      throw new OperationNotValidError({
+        reason: 'UserBook already exists.',
+        bookshelfId,
+        bookId,
+      });
+    }
+
     let genres: Genre[] = [];
 
     if (genreIds) {
