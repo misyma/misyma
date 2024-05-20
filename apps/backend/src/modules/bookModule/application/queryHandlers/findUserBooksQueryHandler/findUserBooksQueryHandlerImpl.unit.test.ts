@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { FindUserBooksQueryHandlerImpl } from './findUserBooksQueryHandlerImpl.js';
-import { DummyFactory } from '../../../../../../tests/dummyFactory.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type BookshelfRepository } from '../../../../bookshelfModule/domain/repositories/bookshelfRepository/bookshelfRepository.js';
@@ -21,15 +20,14 @@ describe('FindUserBooksQueryHandlerImpl', () => {
   const userBookTestFactory = new UserBookTestFactory();
 
   beforeEach(() => {
-    userBookRepositoryMock = DummyFactory.create();
+    userBookRepositoryMock = {
+      findUserBooks: vi.fn(),
+      countUserBooks: vi.fn(),
+    } as never;
 
-    userBookRepositoryMock.findUserBooks = vi.fn();
-
-    userBookRepositoryMock.countUserBooks = vi.fn();
-
-    bookshelfRepositoryMock = DummyFactory.create();
-
-    bookshelfRepositoryMock.findBookshelf = vi.fn();
+    bookshelfRepositoryMock = {
+      findBookshelf: vi.fn(),
+    } as never;
 
     findUserBooksQueryHandlerImpl = new FindUserBooksQueryHandlerImpl(userBookRepositoryMock, bookshelfRepositoryMock);
   });
