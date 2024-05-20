@@ -3,7 +3,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FindUserBooksQueryHandlerImpl } from './findUserBooksQueryHandlerImpl.js';
 import { DummyFactory } from '../../../../../../tests/dummyFactory.js';
 import { Generator } from '../../../../../../tests/generator.js';
-import { SpyFactory } from '../../../../../../tests/spyFactory.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type BookshelfRepository } from '../../../../bookshelfModule/domain/repositories/bookshelfRepository/bookshelfRepository.js';
 import { BookshelfTestFactory } from '../../../../bookshelfModule/tests/factories/bookshelfTestFactory/bookshelfTestFactory.js';
@@ -11,8 +10,6 @@ import { type UserBookRepository } from '../../../domain/repositories/userBookRe
 import { UserBookTestFactory } from '../../../tests/factories/userBookTestFactory/userBookTestFactory.js';
 
 describe('FindUserBooksQueryHandlerImpl', () => {
-  const spyFactory = new SpyFactory(vi);
-
   const bookshelfTestFactory = new BookshelfTestFactory();
 
   let userBookRepositoryMock: UserBookRepository;
@@ -24,9 +21,15 @@ describe('FindUserBooksQueryHandlerImpl', () => {
   const userBookTestFactory = new UserBookTestFactory();
 
   beforeEach(() => {
-    userBookRepositoryMock = new DummyFactory().create();
+    userBookRepositoryMock = DummyFactory.create();
 
-    bookshelfRepositoryMock = new DummyFactory().create();
+    userBookRepositoryMock.findUserBooks = vi.fn();
+
+    userBookRepositoryMock.countUserBooks = vi.fn();
+
+    bookshelfRepositoryMock = DummyFactory.create();
+
+    bookshelfRepositoryMock.findBookshelf = vi.fn();
 
     findUserBooksQueryHandlerImpl = new FindUserBooksQueryHandlerImpl(userBookRepositoryMock, bookshelfRepositoryMock);
   });
@@ -34,7 +37,7 @@ describe('FindUserBooksQueryHandlerImpl', () => {
   it('throws an error - given Bookshelf does not exist', async () => {
     const nonExistentBookshelfId = Generator.uuid();
 
-    spyFactory.create(bookshelfRepositoryMock, 'findBookshelf').mockResolvedValueOnce(null);
+    vi.spyOn(bookshelfRepositoryMock, 'findBookshelf').mockResolvedValueOnce(null);
 
     expect(
       async () =>
@@ -58,7 +61,7 @@ describe('FindUserBooksQueryHandlerImpl', () => {
 
     const nonMatchingUserId = Generator.uuid();
 
-    spyFactory.create(bookshelfRepositoryMock, 'findBookshelf').mockResolvedValueOnce(bookshelf);
+    vi.spyOn(bookshelfRepositoryMock, 'findBookshelf').mockResolvedValueOnce(bookshelf);
 
     expect(
       async () =>
@@ -83,11 +86,11 @@ describe('FindUserBooksQueryHandlerImpl', () => {
 
     const userBook = userBookTestFactory.create();
 
-    spyFactory.create(bookshelfRepositoryMock, 'findBookshelf').mockResolvedValueOnce(bookshelf);
+    vi.spyOn(bookshelfRepositoryMock, 'findBookshelf').mockResolvedValueOnce(bookshelf);
 
-    spyFactory.create(userBookRepositoryMock, 'findUserBooks').mockResolvedValueOnce([userBook]);
+    vi.spyOn(userBookRepositoryMock, 'findUserBooks').mockResolvedValueOnce([userBook]);
 
-    spyFactory.create(userBookRepositoryMock, 'countUserBooks').mockResolvedValueOnce(1);
+    vi.spyOn(userBookRepositoryMock, 'countUserBooks').mockResolvedValueOnce(1);
 
     const { userBooks, total } = await findUserBooksQueryHandlerImpl.execute({
       ids: [],

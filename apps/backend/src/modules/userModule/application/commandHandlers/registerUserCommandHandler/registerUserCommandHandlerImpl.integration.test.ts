@@ -5,7 +5,6 @@ import { BookshelfType, UserRole } from '@common/contracts';
 import { type RegisterUserCommandHandler } from './registerUserCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
-import { SpyFactory } from '../../../../../../tests/spyFactory.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
@@ -17,8 +16,6 @@ import { type UserTestUtils } from '../../../tests/utils/userTestUtils/userTestU
 import { type EmailService } from '../../services/emailService/emailService.js';
 
 describe('RegisterUserCommandHandler', () => {
-  const spyFactory = new SpyFactory(vi);
-
   let registerUserCommandHandler: RegisterUserCommandHandler;
 
   let databaseClient: DatabaseClient;
@@ -60,7 +57,7 @@ describe('RegisterUserCommandHandler', () => {
   it('creates a User and creates bookshelves', async () => {
     const user = userTestFactory.create();
 
-    spyFactory.create(emailService, 'sendEmail').mockImplementation(async () => {});
+    vi.spyOn(emailService, 'sendEmail').mockImplementation(async () => {});
 
     const { user: createdUser } = await registerUserCommandHandler.execute({
       email: user.getEmail(),
