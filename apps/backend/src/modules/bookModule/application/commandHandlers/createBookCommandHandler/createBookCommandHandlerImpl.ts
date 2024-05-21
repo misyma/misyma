@@ -56,7 +56,6 @@ export class CreateBookCommandHandlerImpl implements CreateBookCommandHandler {
       ids: authorIds,
       page: 1,
       pageSize: authorIds.length,
-      isApproved: true,
     });
 
     if (authorIds.length !== authors.length) {
