@@ -3,7 +3,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { type SendResetPasswordEmailCommandHandler } from './sendResetPasswordEmailCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
-import { SpyFactory } from '../../../../../../tests/spyFactory.js';
 import { EmailEventDraft } from '../../../domain/entities/emailEvent/emailEventDraft.ts/emailEventDraft.js';
 import { EmailEventType } from '../../../domain/entities/emailEvent/types/emailEventType.js';
 import { symbols } from '../../../symbols.js';
@@ -19,8 +18,6 @@ describe('SendResetPasswordEmailCommandHandler', () => {
   let userTestUtils: UserTestUtils;
 
   const userTestFactory = new UserTestFactory();
-
-  const spyFactory = new SpyFactory(vi);
 
   beforeEach(() => {
     const container = TestContainer.create();
@@ -49,7 +46,7 @@ describe('SendResetPasswordEmailCommandHandler', () => {
       },
     });
 
-    const sendEmailSpy = spyFactory.create(emailMessageBus, 'sendEvent');
+    const sendEmailSpy = vi.spyOn(emailMessageBus, 'sendEvent');
 
     await commandHandler.execute({
       email: user.getEmail(),

@@ -4,7 +4,6 @@ import { type SendVerificationEmailCommandHandler } from './sendVerificationEmai
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
-import { SpyFactory } from '../../../../../../tests/spyFactory.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { EmailEventDraft } from '../../../domain/entities/emailEvent/emailEventDraft.ts/emailEventDraft.js';
 import { EmailEventType } from '../../../domain/entities/emailEvent/types/emailEventType.js';
@@ -18,8 +17,6 @@ describe('SendVerificationEmailCommandHandler', () => {
   let emailMessageBus: EmailMessageBus;
 
   let userTestUtils: UserTestUtils;
-
-  const spyFactory = new SpyFactory(vi);
 
   beforeEach(() => {
     const container = TestContainer.create();
@@ -42,7 +39,7 @@ describe('SendVerificationEmailCommandHandler', () => {
       },
     });
 
-    const sendEmailSpy = spyFactory.create(emailMessageBus, 'sendEvent');
+    const sendEmailSpy = vi.spyOn(emailMessageBus, 'sendEvent');
 
     await commandHandler.execute({ email: user.email });
 

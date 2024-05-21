@@ -14,6 +14,7 @@ import { GenreTestUtils } from '../../src/modules/bookModule/tests/utils/genreTe
 import { QuoteTestUtils } from '../../src/modules/bookModule/tests/utils/quoteTestUtils/quoteTestUtils.js';
 import { UserBookTestUtils } from '../../src/modules/bookModule/tests/utils/userBookTestUtils/userBookTestUtils.js';
 import { BookshelfTestUtils } from '../../src/modules/bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
+import { type EmailMessageBus } from '../../src/modules/userModule/application/messageBuses/emailMessageBus/emailMessageBus.js';
 import { type EmailService } from '../../src/modules/userModule/application/services/emailService/emailService.js';
 import { symbols as userSymbols } from '../../src/modules/userModule/symbols.js';
 import { BlacklistTokenTestUtils } from '../../src/modules/userModule/tests/utils/blacklistTokenTestUtils/blacklistTokenTestUtils.js';
@@ -81,6 +82,10 @@ export class TestContainer {
 
     container.overrideBinding<EmailService>(userSymbols.emailService, () => ({
       sendEmail: async (): Promise<void> => {},
+    }));
+
+    container.overrideBinding<EmailMessageBus>(userSymbols.emailMessageBus, () => ({
+      sendEvent: async (): Promise<void> => {},
     }));
 
     container.bind<S3TestUtils>(
