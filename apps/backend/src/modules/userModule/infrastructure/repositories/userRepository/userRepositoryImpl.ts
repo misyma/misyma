@@ -1,7 +1,6 @@
 import { type UserMapper } from './userMapper/userMapper.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { User, type UserState } from '../../../domain/entities/user/user.js';
@@ -74,15 +73,6 @@ export class UserRepositoryImpl implements UserRepository {
   private async updateUser(payload: UpdateUserPayload): Promise<User> {
     const { user } = payload;
 
-    const existingUser = await this.findUser({ id: user.getId() });
-
-    if (!existingUser) {
-      throw new ResourceNotFoundError({
-        resource: 'User',
-        id: user.getId(),
-      });
-    }
-
     let rawEntities: UserRawEntity[] = [];
 
     try {
@@ -95,10 +85,6 @@ export class UserRepositoryImpl implements UserRepository {
         operation: 'update',
         error,
       });
-    }
-
-    if (!rawEntities.length) {
-      return existingUser;
     }
 
     const rawEntity = rawEntities[0] as UserRawEntity;
@@ -155,15 +141,6 @@ export class UserRepositoryImpl implements UserRepository {
 
   public async deleteUser(payload: DeleteUserPayload): Promise<void> {
     const { id } = payload;
-
-    const existingUser = await this.findUser({ id });
-
-    if (!existingUser) {
-      throw new ResourceNotFoundError({
-        resource: 'User',
-        id,
-      });
-    }
 
     try {
       await this.databaseClient<UserRawEntity>(this.userDatabaseTable.name).delete().where({ id });

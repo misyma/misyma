@@ -4,7 +4,7 @@ import { type CreateGenreCommandHandler } from './createGenreCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
-import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
+import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
 import { symbols } from '../../../symbols.js';
 import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 
@@ -31,9 +31,9 @@ describe('CreateGenreCommandHandlerImpl', () => {
     const genre = await genreTestUtils.createAndPersist();
 
     await expect(async () => await commandHandler.execute({ name: genre.name })).toThrowErrorInstance({
-      instance: OperationNotValidError,
+      instance: ResourceAlreadyExistsError,
       context: {
-        reason: 'Genre already exists.',
+        resource: 'Genre',
         name: genre.name,
       },
     });

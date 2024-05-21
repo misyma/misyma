@@ -1,6 +1,5 @@
 import { type BookMapper } from './bookMapper/bookMapper.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { type BookState, Book } from '../../../domain/entities/book/book.js';
@@ -102,9 +101,10 @@ export class BookRepositoryImpl implements BookRepository {
     const existingBook = await this.findBook({ id: book.getId() });
 
     if (!existingBook) {
-      throw new ResourceNotFoundError({
-        resource: 'Book',
-        id: book.getId(),
+      throw new RepositoryError({
+        entity: 'Book',
+        operation: 'update',
+        reason: 'Book does not exist.',
       });
     }
 
@@ -264,19 +264,8 @@ export class BookRepositoryImpl implements BookRepository {
   public async deleteBook(payload: DeleteBookPayload): Promise<void> {
     const { id } = payload;
 
-    const existingBook = await this.findBook({ id });
-
-    if (!existingBook) {
-      throw new ResourceNotFoundError({
-        resource: 'Book',
-        id,
-      });
-    }
-
     try {
-      await this.databaseClient<BookRawEntity>(this.bookTable.name).delete().where({
-        id: existingBook.getId(),
-      });
+      await this.databaseClient<BookRawEntity>(this.bookTable.name).delete().where({ id });
     } catch (error) {
       throw new RepositoryError({
         entity: 'Book',
@@ -309,9 +298,10 @@ export class BookRepositoryImpl implements BookRepository {
       const count = countResult?.['count(*)'];
 
       if (count === undefined) {
-        throw new ResourceNotFoundError({
-          resource: 'Book',
+        throw new RepositoryError({
+          entity: 'Book',
           operation: 'count',
+          countResult,
         });
       }
 

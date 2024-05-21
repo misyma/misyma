@@ -3,7 +3,7 @@ import {
   type UpdateQuotePayload,
   type UpdateQuoteResult,
 } from './updateQuoteCommandHandler.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
+import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type QuoteRepository } from '../../../domain/repositories/quoteRepository/quoteRepository.js';
 
@@ -26,8 +26,8 @@ export class UpdateQuoteCommandHandlerImpl implements UpdateQuoteCommandHandler 
     const quote = await this.quoteRepository.findQuote({ id });
 
     if (!quote) {
-      throw new ResourceNotFoundError({
-        resource: 'Quote',
+      throw new OperationNotValidError({
+        reason: 'Quote does not exist.',
         id,
       });
     }

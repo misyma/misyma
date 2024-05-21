@@ -4,20 +4,13 @@
 import { type FastifyInstance, type FastifyReply, type FastifyRequest, type FastifySchema } from 'fastify';
 
 import { coreSymbols } from './symbols.js';
-import { BaseError } from '../common/errors/baseError.js';
-import { OperationNotValidError } from '../common/errors/operationNotValidError.js';
-import { ResourceAlreadyExistsError } from '../common/errors/resourceAlreadyExistsError.js';
-import { ResourceNotFoundError } from '../common/errors/resourceNotFoundError.js';
 import { type HttpController } from '../common/types/http/httpController.js';
 import { HttpHeader } from '../common/types/http/httpHeader.js';
 import { HttpMediaType } from '../common/types/http/httpMediaType.js';
 import { type AttachedFile } from '../common/types/http/httpRequest.js';
 import { type HttpRouteSchema, type HttpRoute } from '../common/types/http/httpRoute.js';
-import { HttpStatusCode } from '../common/types/http/httpStatusCode.js';
 import { type DependencyInjectionContainer } from '../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type LoggerService } from '../libs/logger/services/loggerService/loggerService.js';
-import { ForbiddenAccessError } from '../modules/authModule/application/errors/forbiddenAccessError.js';
-import { UnauthorizedAccessError } from '../modules/authModule/application/errors/unathorizedAccessError.js';
 
 export interface RegisterControllersPayload {
   readonly controllers: HttpController[];
@@ -69,117 +62,48 @@ export class HttpRouter {
       const path = this.normalizePath({ path: `/${this.rootPath}/${basePath}/${controllerPath}` });
 
       const handler = async (fastifyRequest: FastifyRequest, fastifyReply: FastifyReply): Promise<void> => {
-        try {
-          this.loggerService.debug({
-            message: 'Received an HTTP request.',
-            endpoint: `${method} ${fastifyRequest.url}`,
-          });
+        this.loggerService.debug({
+          message: 'Received an HTTP request.',
+          endpoint: `${method} ${fastifyRequest.url}`,
+        });
 
-          let attachedFile: AttachedFile | undefined;
+        let attachedFile: AttachedFile | undefined;
 
-          if (fastifyRequest.isMultipart()) {
-            const file = await fastifyRequest.file();
+        if (fastifyRequest.isMultipart()) {
+          const file = await fastifyRequest.file();
 
-            if (file) {
-              attachedFile = {
-                name: file.filename,
-                type: file.mimetype,
-                data: file.file,
-              };
-            }
-          }
-
-          const { statusCode, body: responseBody } = await httpRoute.handler({
-            body: fastifyRequest.body,
-            pathParams: fastifyRequest.params,
-            queryParams: fastifyRequest.query,
-            headers: fastifyRequest.headers as Record<string, string>,
-            file: attachedFile,
-          });
-
-          fastifyReply.status(statusCode);
-
-          if (responseBody) {
-            fastifyReply.header(HttpHeader.contentType, HttpMediaType.applicationJson);
-
-            fastifyReply.send(responseBody);
-          } else {
-            fastifyReply.send();
-          }
-
-          this.loggerService.info({
-            message: 'Sent an HTTP response.',
-            endpoint: `${method} ${fastifyRequest.url}`,
-            statusCode,
-          });
-        } catch (error) {
-          this.loggerService.error({
-            message: 'Caught an error in the HTTP router.',
-            err: error,
-            path: fastifyRequest.url,
-            method,
-            statusCode: fastifyReply.statusCode,
-          });
-
-          if (error instanceof BaseError) {
-            const formattedError: Record<string, unknown> = {
-              name: error.name,
-              message: error.message,
-              context: error.context,
+          if (file) {
+            attachedFile = {
+              name: file.filename,
+              type: file.mimetype,
+              data: file.file,
             };
-
-            if (error instanceof ResourceNotFoundError) {
-              fastifyReply.status(HttpStatusCode.notFound).send({
-                ...formattedError,
-              });
-
-              return;
-            }
-
-            if (error instanceof OperationNotValidError) {
-              fastifyReply.status(HttpStatusCode.unprocessableEntity).send({
-                ...formattedError,
-              });
-
-              return;
-            }
-
-            if (error instanceof ResourceAlreadyExistsError) {
-              fastifyReply.status(HttpStatusCode.unprocessableEntity).send({
-                ...formattedError,
-              });
-
-              return;
-            }
-
-            if (error instanceof UnauthorizedAccessError) {
-              fastifyReply.status(HttpStatusCode.unauthorized).send({
-                ...formattedError,
-              });
-
-              return;
-            }
-
-            if (error instanceof ForbiddenAccessError) {
-              fastifyReply.status(HttpStatusCode.forbidden).send({
-                ...formattedError,
-              });
-
-              return;
-            }
-
-            fastifyReply.status(HttpStatusCode.internalServerError).send({
-              ...formattedError,
-            });
-
-            return;
           }
-
-          fastifyReply.status(HttpStatusCode.internalServerError).send({
-            name: 'InternalServerError',
-            message: 'Internal server error',
-          });
         }
+
+        const { statusCode, body: responseBody } = await httpRoute.handler({
+          body: fastifyRequest.body,
+          pathParams: fastifyRequest.params,
+          queryParams: fastifyRequest.query,
+          headers: fastifyRequest.headers as Record<string, string>,
+          file: attachedFile,
+        });
+
+        fastifyReply.status(statusCode);
+
+        if (responseBody) {
+          fastifyReply.header(HttpHeader.contentType, HttpMediaType.applicationJson);
+
+          fastifyReply.send(responseBody);
+        } else {
+          fastifyReply.send();
+        }
+
+        this.loggerService.info({
+          message: 'Sent an HTTP response.',
+          endpoint: `${method} ${fastifyRequest.url}`,
+          statusCode,
+        });
       };
 
       this.server.route({

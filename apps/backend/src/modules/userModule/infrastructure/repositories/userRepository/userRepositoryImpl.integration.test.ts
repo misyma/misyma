@@ -2,7 +2,6 @@ import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 
 import { Generator } from '../../../../../../tests/generator.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { Application } from '../../../../../core/application.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
@@ -127,22 +126,6 @@ describe('UserRepositoryImpl', () => {
         role: userRawEntity.role,
       });
     });
-
-    it('throws an error if a User with given id does not exist', async () => {
-      const user = userTestFactory.create();
-
-      try {
-        await userRepository.saveUser({
-          user,
-        });
-      } catch (error) {
-        expect(error).toBeInstanceOf(ResourceNotFoundError);
-
-        return;
-      }
-
-      expect.fail();
-    });
   });
 
   describe('Find', () => {
@@ -180,20 +163,6 @@ describe('UserRepositoryImpl', () => {
       const foundUser = await userTestUtils.findById({ id: user.id });
 
       expect(foundUser).toBeUndefined();
-    });
-
-    it('throws an error if a User with given id does not exist', async () => {
-      const nonExistentUser = userTestFactory.create();
-
-      try {
-        await userRepository.deleteUser({ id: nonExistentUser.getId() });
-      } catch (error) {
-        expect(error).toBeInstanceOf(ResourceNotFoundError);
-
-        return;
-      }
-
-      expect.fail();
     });
   });
 });

@@ -7,7 +7,7 @@ import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
+import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { symbols } from '../../../symbols.js';
 import { type BookshelfTestUtils } from '../../../tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
@@ -42,9 +42,10 @@ describe('CreateBookshelfCommandHandlerImpl', () => {
           type: BookshelfType.standard,
         }),
     ).toThrowErrorInstance({
-      instance: ResourceNotFoundError,
+      instance: OperationNotValidError,
       context: {
-        resource: 'User',
+        reason: 'User does not exist.',
+        id: nonExistentUserId,
       },
     });
   });
@@ -68,7 +69,7 @@ describe('CreateBookshelfCommandHandlerImpl', () => {
           userId: user.id,
           type: BookshelfType.standard,
         }),
-    ).toThrowErrorInstance({ instance: OperationNotValidError });
+    ).toThrowErrorInstance({ instance: ResourceAlreadyExistsError });
   });
 
   it('returns a Bookshelf', async () => {

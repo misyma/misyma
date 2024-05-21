@@ -1,6 +1,5 @@
 import { type BookshelfMapper } from './bookshelfMapper/bookshelfMapper.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { Bookshelf, type BookshelfState } from '../../../domain/entities/bookshelf/bookshelf.js';
@@ -197,9 +196,10 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
       const count = countResult?.['count(*)'];
 
       if (count === undefined) {
-        throw new ResourceNotFoundError({
-          resource: 'Bookshelf',
+        throw new RepositoryError({
+          entity: 'Bookshelf',
           operation: 'count',
+          countResult,
         });
       }
 

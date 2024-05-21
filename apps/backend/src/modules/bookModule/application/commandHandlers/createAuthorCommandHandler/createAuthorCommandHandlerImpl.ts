@@ -22,9 +22,7 @@ export class CreateAuthorCommandHandlerImpl implements CreateAuthorCommandHandle
       isApproved,
     });
 
-    const existingAuthor = await this.authorRepository.findAuthor({
-      name,
-    });
+    const existingAuthor = await this.authorRepository.findAuthor({ name });
 
     if (existingAuthor) {
       throw new ResourceAlreadyExistsError({

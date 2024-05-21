@@ -5,7 +5,7 @@ import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
+import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { Author } from '../../../domain/entities/author/author.js';
@@ -106,9 +106,10 @@ describe('CreateBookCommandHandler', () => {
         authorIds: [authorId],
       }),
     ).toThrowErrorInstance({
-      instance: ResourceNotFoundError,
+      instance: OperationNotValidError,
       context: {
-        resource: 'Author',
+        reason: 'Provided Authors do not exist.',
+        missingIds: [authorId],
       },
     });
   });
@@ -160,9 +161,9 @@ describe('CreateBookCommandHandler', () => {
         authorIds: [author.id],
       }),
     ).toThrowErrorInstance({
-      instance: OperationNotValidError,
+      instance: ResourceAlreadyExistsError,
       context: {
-        reason: 'Book with this ISBN already exists.',
+        resource: 'Book',
         isbn,
         existingBookId: existingBook.id,
       },

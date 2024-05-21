@@ -1,6 +1,5 @@
 import { type QuoteMapper } from './quoteMapper/quoteMapper.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { Quote, type QuoteState } from '../../../domain/entities/quote/quote.js';
@@ -157,9 +156,10 @@ export class QuoteRepositoryImpl implements QuoteRepository {
       const count = countResult?.['count(*)'];
 
       if (count === undefined) {
-        throw new ResourceNotFoundError({
-          resource: 'Quotes',
+        throw new RepositoryError({
+          entity: 'Quote',
           operation: 'count',
+          countResult,
         });
       }
 

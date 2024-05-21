@@ -5,7 +5,6 @@ import { BookFormat } from '@common/contracts';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { Author } from '../../../domain/entities/author/author.js';
@@ -547,18 +546,6 @@ describe('BookRepositoryImpl', () => {
       const foundBook = await bookTestUtils.findById({ id: book.id });
 
       expect(foundBook).toBeUndefined();
-    });
-
-    it('throws an error if book with given id does not exist', async () => {
-      const id = Generator.uuid();
-
-      await expect(async () => await bookRepository.deleteBook({ id })).toThrowErrorInstance({
-        instance: ResourceNotFoundError,
-        context: {
-          resource: 'Book',
-          id,
-        },
-      });
     });
   });
 });

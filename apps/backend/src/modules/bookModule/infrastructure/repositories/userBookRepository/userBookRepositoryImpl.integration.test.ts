@@ -3,7 +3,6 @@ import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
@@ -679,18 +678,6 @@ describe('UserBookRepositoryImpl', () => {
       const foundBookBook = await bookTestUtils.findById({ id: userBook.id });
 
       expect(foundBookBook).toBeUndefined();
-    });
-
-    it('throws an error if UserBook with given id does not exist', async () => {
-      const ids = [Generator.uuid()];
-
-      await expect(async () => await userBookRepository.deleteUserBooks({ ids })).toThrowErrorInstance({
-        instance: ResourceNotFoundError,
-        context: {
-          resource: 'UserBook',
-          ids,
-        },
-      });
     });
   });
 });

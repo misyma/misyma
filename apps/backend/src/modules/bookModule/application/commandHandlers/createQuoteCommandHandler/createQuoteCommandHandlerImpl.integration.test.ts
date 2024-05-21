@@ -4,7 +4,7 @@ import { type CreateQuoteCommandHandler } from './createQuoteCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
+import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type BookTestUtils } from '../../../../bookModule/tests/utils/bookTestUtils/bookTestUtils.js';
 import { type UserBookTestUtils } from '../../../../bookModule/tests/utils/userBookTestUtils/userBookTestUtils.js';
 import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
@@ -79,9 +79,9 @@ describe('CreateQuoteCommandHandlerImpl', () => {
           userBookId: nonExistentUserBookId,
         }),
     ).toThrowErrorInstance({
-      instance: ResourceNotFoundError,
+      instance: OperationNotValidError,
       context: {
-        resource: 'UserBook',
+        reason: 'UserBook does not exist.',
         id: nonExistentUserBookId,
       },
     });

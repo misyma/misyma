@@ -6,7 +6,7 @@ import { type UploadUserBookImageCommandHandler } from './uploadUserBookImageCom
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
+import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type Config } from '../../../../../core/config.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
@@ -110,7 +110,7 @@ describe('UploadUserBookImageCommandHandlerImpl', () => {
         data: createReadStream(filePath),
       });
     } catch (error) {
-      expect(error instanceof ResourceNotFoundError);
+      expect(error).toBeInstanceOf(OperationNotValidError);
 
       return;
     }

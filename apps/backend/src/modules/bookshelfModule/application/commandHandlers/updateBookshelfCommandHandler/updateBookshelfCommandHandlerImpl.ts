@@ -4,7 +4,7 @@ import {
   type UpdateBookshelfResult,
 } from './updateBookshelfCommandHandler.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
+import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type BookshelfRepository } from '../../../domain/repositories/bookshelfRepository/bookshelfRepository.js';
 
@@ -27,8 +27,8 @@ export class UpdateBookshelfCommandHandlerImpl implements UpdateBookshelfCommand
     const existingBookshelf = await this.bookshelfRepository.findBookshelf({ where: { id: bookshelfId } });
 
     if (!existingBookshelf) {
-      throw new ResourceNotFoundError({
-        resource: 'Bookshelf',
+      throw new OperationNotValidError({
+        reason: 'Bookshelf does not exist.',
         bookshelfId,
         userId,
       });
@@ -51,8 +51,8 @@ export class UpdateBookshelfCommandHandlerImpl implements UpdateBookshelfCommand
     });
 
     if (bookshelfWithSameName && bookshelfWithSameName.getId() !== bookshelfId) {
-      throw new OperationNotValidError({
-        reason: 'Bookshelf with this name already exists.',
+      throw new ResourceAlreadyExistsError({
+        resource: 'Bookshelf',
         name,
         userId,
       });

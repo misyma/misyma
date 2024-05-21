@@ -5,7 +5,7 @@ import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
+import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
 import { symbols } from '../../../symbols.js';
 import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 
@@ -29,19 +29,19 @@ describe('UpdateGenreNameCommandHandler', () => {
   });
 
   it('throws an error - when Genre does not exist', async () => {
-    const invalidUuid = Generator.uuid();
+    const genreId = Generator.uuid();
 
     await expect(
       async () =>
         await commandHandler.execute({
-          id: invalidUuid,
+          id: genreId,
           name: Generator.words(2),
         }),
     ).toThrowErrorInstance({
-      instance: ResourceNotFoundError,
+      instance: OperationNotValidError,
       context: {
-        resource: 'Genre',
-        id: invalidUuid,
+        reason: 'Genre does not exist.',
+        id: genreId,
       },
     });
   });
@@ -58,9 +58,9 @@ describe('UpdateGenreNameCommandHandler', () => {
           name: secondGenre.name,
         }),
     ).toThrowErrorInstance({
-      instance: OperationNotValidError,
+      instance: ResourceAlreadyExistsError,
       context: {
-        reason: 'Genre with this name already exists.',
+        resource: 'Genre',
         name: secondGenre.name,
       },
     });

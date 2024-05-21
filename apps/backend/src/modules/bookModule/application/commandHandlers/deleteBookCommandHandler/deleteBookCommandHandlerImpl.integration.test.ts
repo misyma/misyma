@@ -63,11 +63,19 @@ describe('DeleteBookCommandHandler', () => {
   it('throws an error if book with given id does not exist', async () => {
     const id = Generator.uuid();
 
-    await expect(async () => deleteBookCommandHandler.execute({ bookId: id })).toThrowErrorInstance({
-      instance: ResourceNotFoundError,
-      context: {
+    try {
+      await deleteBookCommandHandler.execute({ bookId: id });
+    } catch (error) {
+      expect(error).toBeInstanceOf(ResourceNotFoundError);
+
+      expect((error as ResourceNotFoundError).context).toEqual({
         resource: 'Book',
-      },
-    });
+        id,
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 });

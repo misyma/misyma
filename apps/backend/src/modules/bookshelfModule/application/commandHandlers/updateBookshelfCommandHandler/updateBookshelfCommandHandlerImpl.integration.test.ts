@@ -5,7 +5,7 @@ import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
+import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { symbols } from '../../../symbols.js';
 import { type BookshelfTestUtils } from '../../../tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
@@ -28,19 +28,23 @@ describe('UpdateBookshelfCommandHandlerImpl', () => {
   });
 
   it('throws an error - when Bookshelf was not found', async () => {
-    const nonExistentBookshelfId = Generator.uuid();
+    const bookshelfId = Generator.uuid();
+
+    const userId = Generator.uuid();
 
     expect(
       async () =>
         await commandHandler.execute({
-          bookshelfId: nonExistentBookshelfId,
+          bookshelfId,
           name: Generator.alphaString(20),
-          userId: Generator.uuid(),
+          userId,
         }),
     ).toThrowErrorInstance({
-      instance: ResourceNotFoundError,
+      instance: OperationNotValidError,
       context: {
-        resource: 'Bookshelf',
+        reason: 'Bookshelf does not exist.',
+        bookshelfId,
+        userId,
       },
     });
   });
@@ -94,9 +98,11 @@ describe('UpdateBookshelfCommandHandlerImpl', () => {
           userId: user.id,
         }),
     ).toThrowErrorInstance({
-      instance: OperationNotValidError,
+      instance: ResourceAlreadyExistsError,
       context: {
-        reason: 'Bookshelf with this name already exists.',
+        resource: 'Bookshelf',
+        name: anotherBookshelf.name,
+        userId: user.id,
       },
     });
   });

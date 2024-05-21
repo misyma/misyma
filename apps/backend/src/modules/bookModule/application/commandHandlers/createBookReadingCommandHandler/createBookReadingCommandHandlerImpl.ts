@@ -3,7 +3,7 @@ import {
   type CreateBookReadingPayload,
   type CreateBookReadingResult,
 } from './createBookReadingCommandHandler.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
+import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type UserBookRepository } from '../../../../bookModule/domain/repositories/userBookRepository/userBookRepository.js';
 import { type BookReadingRepository } from '../../../domain/repositories/bookReadingRepository/bookReadingRepository.js';
@@ -32,8 +32,8 @@ export class CreateBookReadingCommandHandlerImpl implements CreateBookReadingCom
     });
 
     if (!existingUserBook) {
-      throw new ResourceNotFoundError({
-        resource: 'UserBook',
+      throw new OperationNotValidError({
+        reason: 'UserBook does not exist.',
         id: userBookId,
       });
     }

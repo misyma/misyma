@@ -3,7 +3,7 @@ import {
   type UpdateBookReadingPayload,
   type UpdateBookReadingResult,
 } from './updateBookReadingCommandHandler.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
+import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type BookReadingRepository } from '../../../domain/repositories/bookReadingRepository/bookReadingRepository.js';
 
@@ -28,8 +28,8 @@ export class UpdateBookReadingCommandHandlerImpl implements UpdateBookReadingCom
     const bookReading = await this.bookReadingRepository.findBookReading({ id });
 
     if (!bookReading) {
-      throw new ResourceNotFoundError({
-        resource: 'BookReading',
+      throw new OperationNotValidError({
+        reason: 'BookReading does not exist.',
         id,
       });
     }
