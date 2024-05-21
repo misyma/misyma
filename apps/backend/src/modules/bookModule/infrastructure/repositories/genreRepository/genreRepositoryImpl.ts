@@ -1,6 +1,5 @@
 import { type GenreMapper } from './genreMapper/genreMapper.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { Genre, type GenreState } from '../../../domain/entities/genre/genre.js';
@@ -184,9 +183,10 @@ export class GenreRepositoryImpl implements GenreRepository {
       const count = countResult?.['count(*)'];
 
       if (count === undefined) {
-        throw new ResourceNotFoundError({
-          resource: 'Genre',
+        throw new RepositoryError({
+          entity: 'Genre',
           operation: 'count',
+          countResult,
         });
       }
 

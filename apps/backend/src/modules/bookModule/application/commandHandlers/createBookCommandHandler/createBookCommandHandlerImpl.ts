@@ -4,7 +4,7 @@ import {
   type CreateBookCommandHandlerResult,
 } from './createBookCommandHandler.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
+import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type AuthorRepository } from '../../../domain/repositories/authorRepository/authorRepository.js';
 import { type BookRepository } from '../../../domain/repositories/bookRepository/bookRepository.js';
@@ -61,8 +61,8 @@ export class CreateBookCommandHandlerImpl implements CreateBookCommandHandler {
     if (authorIds.length !== authors.length) {
       const missingIds = authorIds.filter((authorId) => !authors.some((author) => author.getId() === authorId));
 
-      throw new ResourceNotFoundError({
-        resource: 'Author',
+      throw new OperationNotValidError({
+        reason: 'Provided Authors do not exist.',
         missingIds,
       });
     }
@@ -75,8 +75,8 @@ export class CreateBookCommandHandlerImpl implements CreateBookCommandHandler {
       });
 
       if (existingBook.length) {
-        throw new OperationNotValidError({
-          reason: 'Book with this ISBN already exists.',
+        throw new ResourceAlreadyExistsError({
+          resource: 'Book',
           isbn,
           existingBookId: existingBook[0]?.getId(),
         });

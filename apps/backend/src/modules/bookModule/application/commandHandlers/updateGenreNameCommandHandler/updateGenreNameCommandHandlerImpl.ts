@@ -4,7 +4,7 @@ import {
   type UpdateGenreNameResult,
 } from './updateGenreNameCommandHandler.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
+import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type GenreRepository } from '../../../domain/repositories/genreRepository/genreRepository.js';
 
@@ -28,8 +28,8 @@ export class UpdateGenreNameCommandHandlerImpl implements UpdateGenreNameCommand
     const existingGenre = await this.genreRepository.findGenre({ id });
 
     if (!existingGenre) {
-      throw new ResourceNotFoundError({
-        resource: 'Genre',
+      throw new OperationNotValidError({
+        reason: 'Genre does not exist.',
         id,
       });
     }
@@ -39,8 +39,8 @@ export class UpdateGenreNameCommandHandlerImpl implements UpdateGenreNameCommand
     });
 
     if (nameTaken) {
-      throw new OperationNotValidError({
-        reason: 'Genre with this name already exists.',
+      throw new ResourceAlreadyExistsError({
+        resource: 'Genre',
         name,
       });
     }
@@ -54,7 +54,7 @@ export class UpdateGenreNameCommandHandlerImpl implements UpdateGenreNameCommand
     this.loggerService.debug({
       message: 'Genre name updated.',
       id,
-      name,
+      name: normalizedName,
     });
 
     return {

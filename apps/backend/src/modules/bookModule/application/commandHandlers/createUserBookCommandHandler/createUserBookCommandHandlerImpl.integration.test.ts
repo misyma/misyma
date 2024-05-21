@@ -5,6 +5,7 @@ import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
+import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
@@ -212,9 +213,9 @@ describe('CreateUserBookCommandHandler', () => {
         bookId: book.id,
       }),
     ).toThrowErrorInstance({
-      instance: OperationNotValidError,
+      instance: ResourceAlreadyExistsError,
       context: {
-        reason: 'UserBook already exists.',
+        resource: 'UserBook',
         bookshelfId: bookshelf.id,
         bookId: book.id,
       },

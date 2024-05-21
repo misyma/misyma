@@ -1,6 +1,5 @@
 import { type AuthorMapper } from './authorMapper/authorMapper.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { type Author } from '../../../../bookModule/domain/entities/author/author.js';
@@ -128,15 +127,6 @@ export class AuthorRepositoryImpl implements AuthorRepository {
   public async deleteAuthor(payload: DeleteAuthorPayload): Promise<void> {
     const { id } = payload;
 
-    const existingAuthor = await this.findAuthor({ id });
-
-    if (!existingAuthor) {
-      throw new ResourceNotFoundError({
-        resource: 'Author',
-        id,
-      });
-    }
-
     try {
       await this.databaseClient<AuthorRawEntity>(this.databaseTable.name).delete().where({ id });
     } catch (error) {
@@ -171,9 +161,10 @@ export class AuthorRepositoryImpl implements AuthorRepository {
       const count = countResult?.['count(*)'];
 
       if (count === undefined) {
-        throw new ResourceNotFoundError({
-          resource: 'Author',
+        throw new RepositoryError({
+          entity: 'Author',
           operation: 'count',
+          countResult,
         });
       }
 

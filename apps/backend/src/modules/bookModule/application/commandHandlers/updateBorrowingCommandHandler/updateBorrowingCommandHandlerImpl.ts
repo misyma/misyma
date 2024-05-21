@@ -3,7 +3,7 @@ import {
   type UpdateBorrowingPayload,
   type UpdateBorrowingResult,
 } from './updateBorrowingCommandHandler.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
+import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type BorrowingRepository } from '../../../domain/repositories/borrowingRepository/borrowingRepository.js';
 
@@ -27,8 +27,8 @@ export class UpdateBorrowingCommandHandlerImpl implements UpdateBorrowingCommand
     const borrowing = await this.borrowingRepository.findBorrowing({ id });
 
     if (!borrowing) {
-      throw new ResourceNotFoundError({
-        resource: 'Borrowing',
+      throw new OperationNotValidError({
+        reason: 'Borrowing does not exist.',
         id,
       });
     }

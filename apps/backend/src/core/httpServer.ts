@@ -14,12 +14,18 @@ import { type ApplicationHttpController } from './api/httpControllers/applicatio
 import { type Config } from './config.js';
 import { HttpRouter } from './httpRouter.js';
 import { coreSymbols, symbols } from './symbols.js';
+import { BaseError } from '../common/errors/baseError.js';
 import { InputNotValidError } from '../common/errors/inputNotValidError.js';
+import { OperationNotValidError } from '../common/errors/operationNotValidError.js';
+import { ResourceAlreadyExistsError } from '../common/errors/resourceAlreadyExistsError.js';
+import { ResourceNotFoundError } from '../common/errors/resourceNotFoundError.js';
 import { type HttpController } from '../common/types/http/httpController.js';
 import { HttpStatusCode } from '../common/types/http/httpStatusCode.js';
 import { SecurityMode } from '../common/types/http/securityMode.js';
 import { type DependencyInjectionContainer } from '../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type LoggerService } from '../libs/logger/services/loggerService/loggerService.js';
+import { ForbiddenAccessError } from '../modules/authModule/application/errors/forbiddenAccessError.js';
+import { UnauthorizedAccessError } from '../modules/authModule/application/errors/unathorizedAccessError.js';
 import { type AuthorAdminHttpController } from '../modules/bookModule/api/httpControllers/authorAdminHttpController/authorAdminHttpController.js';
 import { type AuthorHttpController } from '../modules/bookModule/api/httpControllers/authorHttpController/authorHttpController.js';
 import { type BookAdminHttpController } from '../modules/bookModule/api/httpControllers/bookAdminHttpController/bookAdminHttpController.js';
@@ -127,24 +133,67 @@ export class HttpServer {
     });
 
     this.fastifyInstance.setErrorHandler((error, request, reply) => {
-      const formattedError = {
-        name: error.name,
-        message: error.message,
-        ...(error as any)?.context,
+      const errorContext = {
+        ...(error instanceof Error
+          ? {
+              name: error.name,
+              message: error.message,
+              stack: error.stack,
+              cause: error.cause,
+              context: error instanceof BaseError ? error.context : undefined,
+            }
+          : { error }),
       };
-
-      if (error instanceof InputNotValidError) {
-        reply.status(HttpStatusCode.badRequest).send({ ...formattedError });
-      } else {
-        reply.status(HttpStatusCode.internalServerError).send({ ...formattedError });
-      }
 
       this.loggerService.error({
         message: 'Caught an error in the HTTP server.',
-        err: error,
-        path: request.url,
-        method: request.method,
-        statusCode: reply.statusCode,
+        endpoint: `${request.method} ${request.url}`,
+        error: errorContext,
+      });
+
+      const responseError = {
+        ...errorContext,
+        stack: undefined,
+        cause: undefined,
+      };
+
+      if (error instanceof InputNotValidError) {
+        reply.status(HttpStatusCode.badRequest).send(responseError);
+      }
+
+      if (error instanceof ResourceNotFoundError) {
+        reply.status(HttpStatusCode.notFound).send(responseError);
+
+        return;
+      }
+
+      if (error instanceof OperationNotValidError) {
+        reply.status(HttpStatusCode.badRequest).send(responseError);
+
+        return;
+      }
+
+      if (error instanceof ResourceAlreadyExistsError) {
+        reply.status(HttpStatusCode.conflict).send(responseError);
+
+        return;
+      }
+
+      if (error instanceof UnauthorizedAccessError) {
+        reply.status(HttpStatusCode.unauthorized).send(responseError);
+
+        return;
+      }
+
+      if (error instanceof ForbiddenAccessError) {
+        reply.status(HttpStatusCode.forbidden).send(responseError);
+
+        return;
+      }
+
+      reply.status(HttpStatusCode.internalServerError).send({
+        name: 'InternalServerError',
+        message: 'Internal server error',
       });
     });
   }

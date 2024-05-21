@@ -4,6 +4,7 @@ import {
   type CreateUserBookCommandHandlerResult,
 } from './createUserBookCommandHandler.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
+import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type BookshelfRepository } from '../../../../bookshelfModule/domain/repositories/bookshelfRepository/bookshelfRepository.js';
 import { type Genre } from '../../../domain/entities/genre/genre.js';
@@ -57,8 +58,8 @@ export class CreateUserBookCommandHandlerImpl implements CreateUserBookCommandHa
     });
 
     if (existingUserBook) {
-      throw new OperationNotValidError({
-        reason: 'UserBook already exists.',
+      throw new ResourceAlreadyExistsError({
+        resource: 'UserBook',
         bookshelfId,
         bookId,
       });

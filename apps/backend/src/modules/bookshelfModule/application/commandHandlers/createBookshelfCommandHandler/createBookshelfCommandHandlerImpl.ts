@@ -4,7 +4,7 @@ import {
   type CreateBookshelfResult,
 } from './createBookshelfCommandHandler.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
+import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type UserRepository } from '../../../../userModule/domain/repositories/userRepository/userRepository.js';
 import { type BookshelfRepository } from '../../../domain/repositories/bookshelfRepository/bookshelfRepository.js';
@@ -30,8 +30,8 @@ export class CreateBookshelfCommandHandlerImpl implements CreateBookshelfCommand
     });
 
     if (!existingUser) {
-      throw new ResourceNotFoundError({
-        resource: 'User',
+      throw new OperationNotValidError({
+        reason: 'User does not exist.',
         id: userId,
       });
     }
@@ -46,8 +46,8 @@ export class CreateBookshelfCommandHandlerImpl implements CreateBookshelfCommand
     });
 
     if (existingBookshelf) {
-      throw new OperationNotValidError({
-        reason: 'Bookshelf with this name already exists.',
+      throw new ResourceAlreadyExistsError({
+        resource: 'Bookshelf',
         name,
         userId,
       });

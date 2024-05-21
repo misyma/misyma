@@ -1,6 +1,5 @@
 import { type BookReadingMapper } from './bookReadingMapper/bookReadingMapper.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { BookReading, type BookReadingState } from '../../../domain/entities/bookReading/bookReading.js';
@@ -158,9 +157,10 @@ export class BookReadingRepositoryImpl implements BookReadingRepository {
       const count = countResult?.['count(*)'];
 
       if (count === undefined) {
-        throw new ResourceNotFoundError({
-          resource: 'BookReadings',
+        throw new RepositoryError({
+          entity: 'BookReading',
           operation: 'count',
+          countResult,
         });
       }
 

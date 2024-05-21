@@ -1,4 +1,5 @@
 import { type DeleteBookCommandHandler, type DeleteBookCommandHandlerPayload } from './deleteBookCommandHandler.js';
+import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type BookRepository } from '../../../domain/repositories/bookRepository/bookRepository.js';
 
@@ -15,6 +16,15 @@ export class DeleteBookCommandHandlerImpl implements DeleteBookCommandHandler {
       message: 'Deleting book...',
       bookId,
     });
+
+    const existingBook = await this.bookRepository.findBook({ id: bookId });
+
+    if (!existingBook) {
+      throw new ResourceNotFoundError({
+        resource: 'Book',
+        id: bookId,
+      });
+    }
 
     await this.bookRepository.deleteBook({ id: bookId });
 

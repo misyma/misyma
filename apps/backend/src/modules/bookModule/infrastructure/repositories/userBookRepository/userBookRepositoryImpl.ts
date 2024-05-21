@@ -1,6 +1,5 @@
 import { type UserBookMapper } from './userBookMapper/userBookMapper.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { UserBook, type UserBookState } from '../../../domain/entities/userBook/userBook.js';
@@ -96,9 +95,10 @@ export class UserBookRepositoryImpl implements UserBookRepository {
     const existingUserBook = await this.findUserBook({ id: userBook.getId() });
 
     if (!existingUserBook) {
-      throw new ResourceNotFoundError({
-        resource: 'UserBook',
-        id: userBook.getId(),
+      throw new RepositoryError({
+        entity: 'UserBook',
+        operation: 'update',
+        reason: 'UserBook does not exist.',
       });
     }
 
@@ -338,18 +338,6 @@ export class UserBookRepositoryImpl implements UserBookRepository {
   public async deleteUserBooks(payload: DeleteUserBooksPayload): Promise<void> {
     const { ids } = payload;
 
-    const existingRawEntities = await this.databaseClient<UserBookRawEntity>(this.userBookTable.name).whereIn(
-      'id',
-      ids,
-    );
-
-    if (existingRawEntities.length !== ids.length) {
-      throw new ResourceNotFoundError({
-        resource: 'UserBook',
-        ids,
-      });
-    }
-
     try {
       await this.databaseClient<UserBookRawEntity>(this.userBookTable.name).delete().whereIn('id', ids);
     } catch (error) {
@@ -380,9 +368,10 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       const count = countResult?.['count(*)'];
 
       if (count === undefined) {
-        throw new ResourceNotFoundError({
-          resource: 'UserBook',
+        throw new RepositoryError({
+          entity: 'UserBook',
           operation: 'count',
+          countResult,
         });
       }
 

@@ -2,7 +2,6 @@ import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 
 import { Generator } from '../../../../../../tests/generator.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { Application } from '../../../../../core/application.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
@@ -105,20 +104,6 @@ describe('AuthorRepositoryImpl', () => {
       const foundAuthor = await authorTestUtils.findById({ id: author.id });
 
       expect(foundAuthor).toBeUndefined();
-    });
-
-    it('throws an error if author with given id does not exist', async () => {
-      const { id } = authorTestFactory.createRaw();
-
-      try {
-        await authorRepository.deleteAuthor({ id });
-      } catch (error) {
-        expect(error).toBeInstanceOf(ResourceNotFoundError);
-
-        return;
-      }
-
-      expect.fail();
     });
   });
 
