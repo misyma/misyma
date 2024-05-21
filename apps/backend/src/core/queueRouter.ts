@@ -10,11 +10,11 @@ import { type EmailQueueController } from '../modules/userModule/api/queueContro
 import { userSymbols } from '../modules/userModule/symbols.js';
 
 interface RegisterQueueControllerPayload {
-  controllers: QueueController[];
+  readonly controllers: QueueController[];
 }
 
 interface RegisterQueueChannelsPayload {
-  controllers: QueueController[];
+  readonly controllers: QueueController[];
 }
 
 export class QueueRouter {
