@@ -20,11 +20,7 @@ describe('FindAuthorsQueryHandlerImpl', () => {
   });
 
   it('returns Authors', async () => {
-    const author1 = await authorTestUtils.createAndPersist({
-      input: {
-        isApproved: true,
-      },
-    });
+    const author1 = await authorTestUtils.createAndPersist();
 
     const { authors, total } = await queryHandler.execute({
       name: author1.name.substring(0, 3),
