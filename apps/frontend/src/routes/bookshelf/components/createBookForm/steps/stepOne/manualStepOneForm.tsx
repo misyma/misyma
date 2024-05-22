@@ -26,40 +26,46 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '../../../../../../components/ui/dialog';
-import { useCreateAuthorDraftMutation } from '../../../../../../api/authors/mutations/createAuthorDraftMutation/createAuthorDraftMutation';
 
-const stepOneSchema = z.object({
-  isbn: isbnSchema,
-  title: z
-    .string()
-    .min(1, {
-      message: 'Tytuł musi mieć co najmniej jeden znak.',
-    })
-    .max(64, {
-      message: 'Tytuł może mieć maksymalnie 64 znaki.',
-    }),
-  author: z.string().uuid({
-    message: 'Brak wybranego autora.',
-  }),
-  publisher: z
-    .string()
-    .min(1, {
-      message: 'Nazwa wydawnictwa powinna mieć co namniej 1 znak.',
-    })
-    .max(64, {
-      message: 'Nazwa wydawnictwa powinna mieć co najwyżej 64 znaki.',
-    }),
-  yearOfIssue: z
-    .number({
-      coerce: true,
-    })
-    .min(1800, {
-      message: 'Rok wydania musi być późniejszy niż 1800',
-    })
-    .max(2500, {
-      message: 'Rok wydania nie może być późniejszy niż 2500',
-    }),
-});
+const stepOneSchema = z
+  .object({
+    isbn: isbnSchema,
+    title: z
+      .string()
+      .min(1, {
+        message: 'Tytuł musi mieć co najmniej jeden znak.',
+      })
+      .max(64, {
+        message: 'Tytuł może mieć maksymalnie 64 znaki.',
+      }),
+    author: z.union([
+      z.string().length(0),
+      z.string().uuid({
+        message: 'Brak wybranego autora.',
+      }),
+      z.undefined(),
+    ]),
+    authorName: z.string().min(1).max(64).optional(),
+    publisher: z
+      .string()
+      .min(1, {
+        message: 'Nazwa wydawnictwa powinna mieć co namniej 1 znak.',
+      })
+      .max(64, {
+        message: 'Nazwa wydawnictwa powinna mieć co najwyżej 64 znaki.',
+      }),
+    yearOfIssue: z
+      .number({
+        coerce: true,
+      })
+      .min(1800, {
+        message: 'Rok wydania musi być późniejszy niż 1800',
+      })
+      .max(2500, {
+        message: 'Rok wydania nie może być późniejszy niż 2500',
+      }),
+  })
+  .refine((data) => !!data.author || data.authorName, 'Autor jest wymagany.');
 
 const createAuthorDraftSchema = z.object({
   name: z
@@ -83,18 +89,15 @@ export const ManualStepOneForm = (): JSX.Element => {
 
   const [searchedName, setSearchedName] = useState<string | undefined>(undefined);
 
-  const [draftAuthorId, setDraftAuthorId] = useState<string | null>(null);
-
-  const [draftAuthorName, setDraftAuthorName] = useState<string | null>(null);
-
-  const { mutateAsync: createAuthorDraft } = useCreateAuthorDraftMutation({});
+  const [draftAuthorName, setDraftAuthorName] = useState('');
 
   const form = useForm({
     resolver: zodResolver(stepOneSchema),
-    values: {
+    defaultValues: {
       isbn: bookCreation.stepOneDetails?.isbn ?? '',
       title: bookCreation.stepOneDetails?.title ?? '',
       author: bookCreation.stepOneDetails?.author ?? '',
+      authorName: bookCreation.stepOneDetails?.authorName ?? '',
       publisher: bookCreation.stepOneDetails?.publisher ?? '',
       yearOfIssue: bookCreation.stepOneDetails?.yearOfIssue ?? '',
     },
@@ -111,23 +114,20 @@ export const ManualStepOneForm = (): JSX.Element => {
     mode: 'onTouched',
   });
 
-  const onCreateAuthorDraft = async (payload: z.infer<typeof createAuthorDraftSchema>): Promise<void> => {
-    const response = await createAuthorDraft({
-      name: payload.name,
-    });
-
-    setDraftAuthorId(response.id);
-
-    setDraftAuthorName(response.name);
-
-    form.setValue('author', response.id);
+  const onCreateAuthorDraft = (payload: z.infer<typeof createAuthorDraftSchema>): void => {
+    setDraftAuthorName(payload.name);
 
     dispatch({
-      type: BookCreationActionType.setAuthor,
-      author: response.id,
+      type: BookCreationActionType.setAuthorName,
+      authorName: payload.name,
     });
 
-    form.trigger('author');
+    // eslint-disable-next-line
+    form.setValue('author', undefined as any);
+
+    form.setValue('authorName', payload.name, {
+      shouldValidate: true,
+    });
 
     setCreateAuthorDialogVisible(false);
   };
@@ -143,7 +143,7 @@ export const ManualStepOneForm = (): JSX.Element => {
 
     dispatch({
       type: BookCreationActionType.nonIsbnStepOneDetails,
-      author: vals.author,
+      author: vals.author as string,
       isbn: vals.isbn,
       publisher: vals.publisher,
       title: vals.title,
@@ -169,9 +169,8 @@ export const ManualStepOneForm = (): JSX.Element => {
       <form
         onSubmit={form.handleSubmit((values) =>
           onSubmit(
-            values as Partial<z.infer<typeof stepOneSchema>> & {
-              yearOfIssue: number | string;
-            },
+            // eslint-disable-next-line
+            values as any,
           ),
         )}
         className="space-y-8"
@@ -239,13 +238,14 @@ export const ManualStepOneForm = (): JSX.Element => {
                         className={cn(
                           'w-60 sm:w-96 justify-between bg-[#D1D5DB]/20',
                           !field.value && 'text-muted-foreground',
+                          draftAuthorName && 'text-black'
                         )}
                       >
                         {field.value
-                          ? draftAuthorId && draftAuthorName
-                            ? draftAuthorName
-                            : authors?.data.find((author) => author.id === field.value)?.name ?? 'Wyszukaj autora'
-                          : 'Wyszukaj autora'}
+                          ? authors?.data.find((author) => author.id === field.value)?.name
+                            ? authors?.data.find((author) => author.id === field.value)?.name || 'Wyszukaj autora'
+                            : draftAuthorName || 'Wyszukaj autora'
+                          : draftAuthorName || 'Wyszukaj autora'}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
                     </FormControl>
@@ -256,6 +256,7 @@ export const ManualStepOneForm = (): JSX.Element => {
                         placeholder="Wyszukaj autora..."
                         onValueChange={setSearchedName}
                       />
+
                       <CommandList>
                         {isFetched && authors?.data.length === 0 && (
                           <CommandEmpty className="flex flex-col px-4 py-4 gap-4">
@@ -314,6 +315,8 @@ export const ManualStepOneForm = (): JSX.Element => {
                             value={author.name}
                             onSelect={() => {
                               form.setValue('author', author.id);
+
+                              setDraftAuthorName('');
 
                               dispatch({
                                 type: BookCreationActionType.setAuthor,

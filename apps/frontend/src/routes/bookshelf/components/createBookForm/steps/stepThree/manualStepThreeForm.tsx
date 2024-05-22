@@ -6,7 +6,7 @@ import {
   useBookCreation,
   useBookCreationDispatch,
 } from '../../context/bookCreationContext/bookCreationContext';
-import { ReadingStatus as ContractReadingStatus } from '@common/contracts';
+import { ReadingStatus as ContractReadingStatus, CreateAuthorResponseBody } from '@common/contracts';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../../../components/ui/form';
@@ -24,6 +24,7 @@ import { BookApiError } from '../../../../../../api/books/errors/bookApiError';
 import { BookGenre } from '../../../../../../common/constants/bookGenre';
 import { useFindUserBookshelfsQuery } from '../../../../../../api/bookshelf/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 import { useUploadBookImageMutation } from '../../../../../../api/books/mutations/uploadBookImageMutation/uploadBookImageMutation';
+import { useCreateAuthorDraftMutation } from '../../../../../../api/authors/mutations/createAuthorDraftMutation/createAuthorDraftMutation';
 
 const stepThreeFormSchema = z.object({
   status: z.nativeEnum(ContractReadingStatus, {
@@ -62,9 +63,12 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
 
   const { data: bookshelvesData } = useFindUserBookshelfsQuery(user?.id);
 
+  const { mutateAsync: createAuthorDraft } = useCreateAuthorDraftMutation({});
+
   const [file, setFile] = useState<File | undefined>();
 
   const { toast } = useToast();
+
 
   useEffect(() => {
     if (file) {
@@ -79,7 +83,7 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
 
   const form = useForm({
     resolver: zodResolver(stepThreeFormSchema),
-    values: {
+    defaultValues: {
       status: bookCreation.stepThreeDetails?.status,
       image: file,
       bookshelfId,
@@ -101,8 +105,16 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
     values as z.infer<typeof stepThreeFormSchema>;
 
     try {
+      let authorDraftResponse: CreateAuthorResponseBody | undefined = undefined;
+
+      if (bookCreation.stepOneDetails?.authorName) {
+        authorDraftResponse = await createAuthorDraft({
+          name: bookCreation.stepOneDetails.authorName
+        })
+      }
+
       const bookCreationResponse = await createBookMutation({
-        authorIds: [bookCreation.stepOneDetails?.author as string],
+        authorIds: [bookCreation.stepOneDetails?.author || authorDraftResponse?.id as string],
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         format: bookCreation.stepTwoDetails?.format as any,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
