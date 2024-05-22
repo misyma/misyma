@@ -38,5 +38,27 @@
     "endpoint": null,
     "bucketName": "misyma-images",
     "cloudfrontUrl": "https://d35v5fqwflm78g.cloudfront.net"
-  }
+  },
+  "genres": [
+    "literatura piękna",
+    "beletrystyka",
+    "fantastyka",
+    "fantastyka naukowa",
+    "poezja",
+    "literatura dziecięca",
+    "literatura młodzieżowa",
+    "kryminał",
+    "literatura faktu",
+    "reportaż",
+    "literatura podróżnicza",
+    "biografia",
+    "powieść historyczna",
+    "powieść przygodowa",
+    "literatura popularnonaukowa",
+    "literatura naukowa",
+    "książka kucharska",
+    "rozwój osobisty",
+    "album",
+    "inna"
+  ]
 }

@@ -25,6 +25,8 @@ import { UuidServiceImpl } from '../libs/uuid/services/uuidService/uuidServiceIm
 import { AuthModule } from '../modules/authModule/authModule.js';
 import { BookModule } from '../modules/bookModule/bookModule.js';
 import { BookDatabaseManager } from '../modules/bookModule/infrastructure/databases/bookDatabase/bookDatabaseManager.js';
+import { type GenreRawEntity } from '../modules/bookModule/infrastructure/databases/bookDatabase/tables/genreTable/genreRawEntity.js';
+import { GenreTable } from '../modules/bookModule/infrastructure/databases/bookDatabase/tables/genreTable/genreTable.js';
 import { BookshelfModule } from '../modules/bookshelfModule/bookshelfModule.js';
 import { BookshelfDatabaseManager } from '../modules/bookshelfModule/infrastructure/databases/bookshelvesDatabase/bookshelfDatabaseManager.js';
 import { type HashService } from '../modules/userModule/application/services/hashService/hashService.js';
@@ -97,6 +99,31 @@ export class Application {
       message: 'Admin user created.',
       email,
     });
+  }
+
+  private static async createGenres(container: DependencyInjectionContainer): Promise<void> {
+    const databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
+
+    const config = container.get<Config>(coreSymbols.config);
+
+    const uuidService = container.get<UuidService>(coreSymbols.uuidService);
+
+    const genreTable = new GenreTable();
+
+    const existingGenres = await databaseClient<GenreRawEntity>(genreTable.name).select('*');
+
+    if (existingGenres.length > 0) {
+      return;
+    }
+
+    const genreNames = config.genres;
+
+    await databaseClient<GenreRawEntity>(genreTable.name).insert(
+      genreNames.map((name) => ({
+        id: uuidService.generateUuid(),
+        name,
+      })),
+    );
   }
 
   public static createContainer(): DependencyInjectionContainer {
@@ -177,6 +204,8 @@ export class Application {
     await this.setupDatabase(container);
 
     await this.createAdminUser(container);
+
+    await this.createGenres(container);
 
     loggerService.info({ message: 'Migrations executed.' });
 

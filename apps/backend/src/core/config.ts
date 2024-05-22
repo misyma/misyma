@@ -1,7 +1,8 @@
 import { type Static, Type } from '@sinclair/typebox';
-import { Value } from '@sinclair/typebox/value';
+import { TransformDecodeCheckError, Value } from '@sinclair/typebox/value';
 import config from 'config';
 
+import { ConfigurationError } from '../common/errors/configurationError.js';
 import { AwsRegion } from '../common/types/awsRegion.js';
 import { LogLevel } from '../libs/logger/types/logLevel.js';
 
@@ -52,12 +53,21 @@ const configSchema = Type.Object({
     bucketName: Type.String({ minLength: 1 }),
     cloudfrontUrl: Type.String({ minLength: 1 }),
   }),
+  genres: Type.Array(Type.String({ minLength: 1 })),
 });
 
 export type Config = Static<typeof configSchema>;
 
 export class ConfigFactory {
   public static create(): Config {
-    return Value.Decode(configSchema, config);
+    try {
+      return Value.Decode(configSchema, config);
+    } catch (error) {
+      if (error instanceof TransformDecodeCheckError) {
+        throw new ConfigurationError({ ...error.error });
+      }
+
+      throw error;
+    }
   }
 }
