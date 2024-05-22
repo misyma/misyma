@@ -108,11 +108,15 @@ export class Application {
 
     const uuidService = container.get<UuidService>(coreSymbols.uuidService);
 
+    const loggerService = container.get<LoggerService>(coreSymbols.loggerService);
+
     const genreTable = new GenreTable();
 
     const existingGenres = await databaseClient<GenreRawEntity>(genreTable.name).select('*');
 
     if (existingGenres.length > 0) {
+      loggerService.debug({ message: 'Genres already exist.' });
+
       return;
     }
 
@@ -124,6 +128,8 @@ export class Application {
         name,
       })),
     );
+
+    loggerService.debug({ message: 'Genres created.' });
   }
 
   public static createContainer(): DependencyInjectionContainer {
