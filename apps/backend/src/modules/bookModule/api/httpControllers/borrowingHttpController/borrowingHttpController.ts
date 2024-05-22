@@ -128,7 +128,7 @@ export class BorrowingHttpController implements HttpController {
             pathParams: deleteBorrowingPathParamsDtoSchema,
           },
           response: {
-            [HttpStatusCode.ok]: {
+            [HttpStatusCode.noContent]: {
               description: 'Borrowing deleted',
               schema: deleteBorrowingResponseBodyDtoSchema,
             },

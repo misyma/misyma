@@ -151,7 +151,7 @@ export class QuoteHttpController implements HttpController {
             pathParams: deleteQuotePathParamsDtoSchema,
           },
           response: {
-            [HttpStatusCode.ok]: {
+            [HttpStatusCode.noContent]: {
               description: 'Quote deleted',
               schema: deleteQuoteResponseBodyDtoSchema,
             },

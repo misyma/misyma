@@ -207,7 +207,7 @@ export class UserBookHttpController implements HttpController {
             body: updateUserBooksBodyDtoSchema,
           },
           response: {
-            [HttpStatusCode.ok]: {
+            [HttpStatusCode.noContent]: {
               description: `User's books updated`,
               schema: updateUserBooksResponseBodyDtoSchema,
             },
@@ -264,7 +264,7 @@ export class UserBookHttpController implements HttpController {
 
   private async updateUserBooks(
     request: HttpRequest<UpdateUserBooksBodyDto, undefined, undefined>,
-  ): Promise<HttpOkResponse<UpdateUserBooksResponseBodyDto>> {
+  ): Promise<HttpNoContentResponse<UpdateUserBooksResponseBodyDto>> {
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
@@ -274,7 +274,7 @@ export class UserBookHttpController implements HttpController {
     await this.updateUserBooksCommandHandler.execute({ data });
 
     return {
-      statusCode: HttpStatusCode.ok,
+      statusCode: HttpStatusCode.noContent,
       body: null,
     };
   }

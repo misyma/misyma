@@ -153,7 +153,7 @@ export class BookReadingHttpController implements HttpController {
             pathParams: deleteBookReadingPathParamsDtoSchema,
           },
           response: {
-            [HttpStatusCode.ok]: {
+            [HttpStatusCode.noContent]: {
               description: 'BookReading deleted',
               schema: deleteBookReadingResponseBodyDtoSchema,
             },
