@@ -208,4 +208,59 @@ export class HttpService {
       })();
     }
   }
+
+  public static async delete(payload: RequestPayload): Promise<HttpResponse<void>> {
+    try {
+      const { url, headers, body } = payload;
+
+      const response = await fetch(`${this.baseUrl}${url}`, {
+        headers: {
+          ...headers,
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        method: 'DELETE',
+        body: JSON.stringify(body),
+      });
+
+      const responseBodyText = await response.text();
+
+      let responseBody = {};
+
+      try {
+        responseBody = JSON.parse(responseBodyText);
+      } catch (error) {
+        responseBody = {};
+      }
+
+      if (!response.ok) {
+        return {
+          body: responseBody as BaseApiError,
+          success: false,
+          statusCode: response.status,
+        };
+      }
+
+      return {
+        body: undefined,
+        success: true,
+        statusCode: response.status,
+      };
+    } catch (error) {
+      throw new (class extends Error {
+        code: number;
+        context: Record<string, string>;
+
+        constructor() {
+          super('Wewnętrzny błąd serwera. Spróbuj ponownie później.');
+
+          this.code = 500;
+
+          this.context = {
+            message: 'Wewnętrzny błąd serwera. Spróbuj ponownie później.',
+          };
+        }
+      })();
+    }
+  }
 }

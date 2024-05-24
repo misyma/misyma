@@ -19,6 +19,8 @@ import { useCreateBookshelfMutation } from '../../api/bookshelf/mutations/create
 import { Bookmark } from '../../components/bookmark/bookmark';
 import { Paginator } from '../../components/paginator/paginator';
 import { BookshelfType } from '@common/contracts';
+import { DeleteBookshelfModal } from './components/deleteBookshelfModal/deleteBookshelfModal';
+import { cn } from '../../lib/utils';
 
 const bookshelfNameSchema = z
   .string()
@@ -267,7 +269,10 @@ export const ShelvesPage: FC = () => {
                         {editMap[index] !== true ? (
                           <>
                             <HiPencil
-                              className="text-primary h-8 w-8 cursor-pointer"
+                              className={cn(
+                                'text-primary h-8 w-8 cursor-pointer',
+                                bookshelf.name === 'Archiwum' || bookshelf.name === 'Wypożyczalnia' ? 'hidden' : '',
+                              )}
                               onClick={() => startEdit(index)}
                             />
                             <IoMdEye
@@ -276,6 +281,21 @@ export const ShelvesPage: FC = () => {
                                 navigate({
                                   to: `/bookshelf/${bookshelf.id}`,
                                 })
+                              }
+                            />
+                            <DeleteBookshelfModal
+                              bookshelfId={bookshelf.id}
+                              bookshelfName={bookshelf.name}
+                              deletedHandler={async () => {
+                                toast({
+                                  title: `Półka ${bookshelf.name} została usunięta.`,
+                                  variant: 'destructive',
+                                });
+
+                                await refetchBookshelves();
+                              }}
+                              className={
+                                bookshelf.name === 'Archiwum' || bookshelf.name === 'Wypożyczalnia' ? 'invisible' : ''
                               }
                             />
                           </>
