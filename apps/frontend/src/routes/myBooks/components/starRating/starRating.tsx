@@ -2,33 +2,105 @@ import { FC } from 'react';
 import { RadioGroup, RadioGroupItem } from '../../../../components/ui/radio-group';
 import { HiStar } from 'react-icons/hi';
 import { cn } from '../../../../lib/utils';
+import { useQuery } from '@tanstack/react-query';
+import { FindBookReadingsQueryOptions } from '../../../../api/bookReadings/queries/findBookReadings/findBookReadingsQueryOptions';
+import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
+import { useSelector } from 'react-redux';
+import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery';
+import { Skeleton } from '../../../../components/ui/skeleton';
+import { CreateBookReadingModal } from '../createBookReadingModal/createBookReadingModal';
+import { BookReading } from '@common/contracts';
 
 interface Props {
-  grade: number;
+  bookId: string;
 }
 
-export const StarRating: FC<Props> = ({ grade }: Props) => {
+export const StarRating: FC<Props> = ({ bookId }: Props) => {
+  const accessToken = useSelector(userStateSelectors.selectAccessToken);
+
+  const { data: userData } = useFindUserQuery();
+
+  const {
+    data: bookReadings,
+    refetch,
+    isFetched,
+    isFetching,
+    isRefetching,
+  } = useQuery(
+    FindBookReadingsQueryOptions({
+      accessToken: accessToken as string,
+      userBookId: bookId,
+      userId: userData?.id as string,
+    }),
+  );
+
   return (
-    <RadioGroup
-      className="flex flex-row gap-0"
-      value={`${grade}`}
-    >
-      <>
-        {Array.from({ length: 10 }).map((_, index) => {
-          return (
+    <>
+      {isFetching && !isRefetching && (
+        <>
+          <RadioGroup
+            className="flex flex-row gap-0"
+            disabled={true}
+            value={`${bookReadings?.data[0]?.rating ?? 0}`}
+          >
             <>
-              <div className="relative">
-                <RadioGroupItem
-                  className="absolute opacity-0 h-7 w-7"
-                  key={index}
-                  value={`${index}`}
-                />
-                <HiStar className={cn('h-7 w-7', index + 1 === grade ? 'text-primary' : '')} />
-              </div>
+              {Array.from({ length: 10 }).map((_, index) => {
+                return (
+                  <>
+                    <div
+                      className={cn(
+                        'relative star-container',
+                        bookReadings?.data[0]?.rating ?? 0 >= index + 1 ? 'text-primary' : '',
+                      )}
+                    >
+                      <Skeleton className={cn('h-7 w-7')} />
+                    </div>
+                  </>
+                );
+              })}
             </>
-          );
-        })}
-      </>
-    </RadioGroup>
+          </RadioGroup>
+        </>
+      )}
+      {isFetched && (!isRefetching || (isFetching && isRefetching)) && (
+        <RadioGroup
+          className="flex flex-row gap-0"
+          value={`${bookReadings?.data[0]?.rating ?? 0}`}
+        >
+          <>
+            {Array.from({ length: 10 }).map((_, index) => {
+              return (
+                <>
+                  <div
+                    className={cn(
+                      'relative star-container',
+                      (bookReadings?.data[0] as BookReading)?.rating >= index + 1 ? 'text-primary' : '',
+                    )}
+                  >
+                    <CreateBookReadingModal
+                      bookId={bookId}
+                      rating={index + 1}
+                      onMutated={async () => {
+                        refetch();
+                      }}
+                      trigger={
+                        <RadioGroupItem
+                          className="absolute opacity-0 h-7 w-7"
+                          key={index}
+                          value={`${index}`}
+                        />
+                      }
+                    ></CreateBookReadingModal>
+                    <HiStar
+                      className={cn('h-7 w-7', index + 1 === bookReadings?.data[0]?.rating ?? 0 ? 'text-primary' : '')}
+                    />
+                  </div>
+                </>
+              );
+            })}
+          </>
+        </RadioGroup>
+      )}
+    </>
   );
 };

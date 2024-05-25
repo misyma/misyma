@@ -74,6 +74,10 @@ export const BookPage: FC = () => {
                         <Skeleton className="w-40 h-8"></Skeleton>
                         <StatusChooserCards bookId={bookId}></StatusChooserCards>
                       </div>
+                      <div className="flex flex-col items-end gap-2">
+                        <p>Dodaj ocenę</p>
+                        <StarRating bookId={data?.bookId ?? ''}></StarRating>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -111,14 +115,14 @@ export const BookPage: FC = () => {
                       <p>Kategoria: {data?.genres[0]?.name}</p>
                     </div>
                     <div className="flex gap-12 flex-col items-end justify-start">
-                      <BookshelfChoiceDropdown bookId={bookId} />
+                      <BookshelfChoiceDropdown bookId={data?.id ?? ''} />
                       <div className="flex flex-col text-lg items-end gap-2">
                         <p>Status</p>
-                        <StatusChooserCards bookId={bookId}></StatusChooserCards>
+                        <StatusChooserCards bookId={data?.id ?? ''}></StatusChooserCards>
                       </div>
-                      <div className='flex flex-col items-end gap-2'>
+                      <div className="flex flex-col items-end gap-2">
                         <p>Dodaj ocenę</p>
-                        <StarRating grade={0}></StarRating>
+                        <StarRating bookId={data?.id ?? ''}></StarRating>
                       </div>
                     </div>
                   </div>
