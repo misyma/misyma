@@ -38,7 +38,7 @@ export const useFindUserBookQuery = ({ id, userId }: Payload) => {
         id,
         userId,
       }),
-    enabled: !!accessToken && userId ? false : true,
+    enabled: !!accessToken && userId ? true : false,
   });
 };
 
