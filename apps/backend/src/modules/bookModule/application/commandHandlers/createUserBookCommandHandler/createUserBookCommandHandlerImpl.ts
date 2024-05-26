@@ -22,10 +22,11 @@ export class CreateUserBookCommandHandlerImpl implements CreateUserBookCommandHa
   ) {}
 
   public async execute(payload: CreateUserBookCommandHandlerPayload): Promise<CreateUserBookCommandHandlerResult> {
-    const { bookshelfId, bookId, status, imageUrl, genreIds, isFavorite } = payload;
+    const { userId, bookshelfId, bookId, status, imageUrl, genreIds, isFavorite } = payload;
 
     this.loggerService.debug({
       message: 'Creating UserBook...',
+      userId,
       bookshelfId,
       bookId,
       status,
@@ -43,6 +44,14 @@ export class CreateUserBookCommandHandlerImpl implements CreateUserBookCommandHa
       });
     }
 
+    if (bookshelf.getUserId() !== userId) {
+      throw new OperationNotValidError({
+        reason: 'Bookshelf does not belong to the user.',
+        userId,
+        bookshelfId,
+      });
+    }
+
     const book = await this.bookRepository.findBook({ id: bookId });
 
     if (!book) {
@@ -52,12 +61,14 @@ export class CreateUserBookCommandHandlerImpl implements CreateUserBookCommandHa
       });
     }
 
-    const existingUserBook = await this.userBookRepository.findUserBook({
-      bookshelfId,
+    const existingUserBooksWithSameBook = await this.userBookRepository.findUserBooksByUser({
+      userId,
       bookId,
+      page: 1,
+      pageSize: 1,
     });
 
-    if (existingUserBook) {
+    if (existingUserBooksWithSameBook.length > 0) {
       throw new ResourceAlreadyExistsError({
         resource: 'UserBook',
         bookshelfId,
