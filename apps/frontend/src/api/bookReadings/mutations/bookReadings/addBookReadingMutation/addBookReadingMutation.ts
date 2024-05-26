@@ -5,10 +5,10 @@ import {
   CreateBookReadingPathParams,
   CreateBookReadingResponseBody,
 } from '@common/contracts';
-import { HttpService } from '../../../../core/services/httpService/httpService';
-import { BookApiError } from '../../errors/bookApiError';
+import { BookApiError } from '../../../../books/errors/bookApiError';
+import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';
 import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
+import { HttpService } from '../../../../../core/services/httpService/httpService';
 
 type AddBookReadingMutationPayload = CreateBookReadingRequestBody &
   CreateBookReadingPathParams & {
