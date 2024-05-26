@@ -652,6 +652,137 @@ describe('UserBookRepositoryImpl', () => {
     });
   });
 
+  describe('findUserBooksByUser', () => {
+    it('returns UserBooks from a given User', async () => {
+      const user1 = await userTestUtils.createAndPersist();
+
+      const user2 = await userTestUtils.createAndPersist();
+
+      const bookshelf1 = await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user1.id,
+        },
+      });
+
+      const bookshelf2 = await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user2.id,
+        },
+      });
+
+      const author1 = await authorTestUtils.createAndPersist();
+
+      const author2 = await authorTestUtils.createAndPersist();
+
+      const book1 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author1.id],
+        },
+      });
+
+      const book2 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author2.id],
+        },
+      });
+
+      await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book1.id,
+          bookshelfId: bookshelf1.id,
+        },
+      });
+
+      const userBook2 = await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book1.id,
+          bookshelfId: bookshelf2.id,
+        },
+      });
+
+      const userBook3 = await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book2.id,
+          bookshelfId: bookshelf2.id,
+        },
+      });
+
+      const userBooks = await userBookRepository.findUserBooksByUser({
+        userId: user2.id,
+        page: 1,
+        pageSize: 10,
+      });
+
+      expect(userBooks.length).toEqual(2);
+
+      userBooks.forEach((userBook) => {
+        expect(userBook.getId()).oneOf([userBook2.id, userBook3.id]);
+      });
+    });
+
+    it('returns UserBooks from a given User and Book', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const author = await authorTestUtils.createAndPersist();
+
+      const book1 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+        },
+      });
+
+      const book2 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+        },
+      });
+
+      const bookshelf1 = await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+        },
+      });
+
+      const bookshelf2 = await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+        },
+      });
+
+      await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book1.id,
+          bookshelfId: bookshelf1.id,
+        },
+      });
+
+      await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book1.id,
+          bookshelfId: bookshelf2.id,
+        },
+      });
+
+      const userBook = await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book2.id,
+          bookshelfId: bookshelf2.id,
+        },
+      });
+
+      const userBooks = await userBookRepository.findUserBooksByUser({
+        userId: user.id,
+        bookId: book2.id,
+        page: 1,
+        pageSize: 10,
+      });
+
+      expect(userBooks.length).toEqual(1);
+
+      expect(userBooks[0]?.getId()).toEqual(userBook.id);
+    });
+  });
+
   describe('deleteUserBook', () => {
     it('deletes UserBook', async () => {
       const user = await userTestUtils.createAndPersist();

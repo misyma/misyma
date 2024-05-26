@@ -92,6 +92,7 @@ describe('CreateUserBookCommandHandler', () => {
     const isFavorite = Generator.boolean();
 
     const { userBook } = await createUserBookCommandHandler.execute({
+      userId: user.id,
       imageUrl,
       status,
       isFavorite,
@@ -127,12 +128,15 @@ describe('CreateUserBookCommandHandler', () => {
 
     const imageUrl = Generator.imageUrl();
 
+    const userId = Generator.uuid();
+
     const bookshelfId = Generator.uuid();
 
     const isFavorite = Generator.boolean();
 
     await expect(async () =>
       createUserBookCommandHandler.execute({
+        userId,
         imageUrl,
         status,
         isFavorite,
@@ -163,6 +167,7 @@ describe('CreateUserBookCommandHandler', () => {
 
     await expect(async () =>
       createUserBookCommandHandler.execute({
+        userId: user.id,
         imageUrl,
         status,
         isFavorite,
@@ -178,7 +183,7 @@ describe('CreateUserBookCommandHandler', () => {
     });
   });
 
-  it('throws an error - when UserBook already exists', async () => {
+  it('throws an error - when UserBook already exists on same bookshelf', async () => {
     const user = await userTestUtils.createAndPersist();
 
     const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
@@ -206,6 +211,7 @@ describe('CreateUserBookCommandHandler', () => {
 
     await expect(async () =>
       createUserBookCommandHandler.execute({
+        userId: user.id,
         imageUrl,
         status,
         isFavorite,
@@ -217,6 +223,93 @@ describe('CreateUserBookCommandHandler', () => {
       context: {
         resource: 'UserBook',
         bookshelfId: bookshelf.id,
+        bookId: book.id,
+      },
+    });
+  });
+
+  it('throws an error - when Bookshelf does not belong to the User', async () => {
+    const user1 = await userTestUtils.createAndPersist();
+
+    const user2 = await userTestUtils.createAndPersist();
+
+    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user1.id } });
+
+    const author = await authorTestUtils.createAndPersist();
+
+    const book = await bookTestUtils.createAndPersist({
+      input: {
+        authorIds: [author.id],
+      },
+    });
+
+    const status = Generator.readingStatus();
+
+    const imageUrl = Generator.imageUrl();
+
+    const isFavorite = Generator.boolean();
+
+    await expect(async () =>
+      createUserBookCommandHandler.execute({
+        userId: user2.id,
+        imageUrl,
+        status,
+        isFavorite,
+        bookshelfId: bookshelf.id,
+        bookId: book.id,
+      }),
+    ).toThrowErrorInstance({
+      instance: OperationNotValidError,
+      context: {
+        reason: 'Bookshelf does not belong to the user.',
+        userId: user2.id,
+        bookshelfId: bookshelf.id,
+      },
+    });
+  });
+
+  it('throws an error - when User already have that book on some bookshelf', async () => {
+    const user = await userTestUtils.createAndPersist();
+
+    const bookshelf1 = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+
+    const bookshelf2 = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+
+    const author = await authorTestUtils.createAndPersist();
+
+    const book = await bookTestUtils.createAndPersist({
+      input: {
+        authorIds: [author.id],
+      },
+    });
+
+    const status = Generator.readingStatus();
+
+    const imageUrl = Generator.imageUrl();
+
+    const isFavorite = Generator.boolean();
+
+    await userBookTestUtils.createAndPersist({
+      input: {
+        bookId: book.id,
+        bookshelfId: bookshelf1.id,
+      },
+    });
+
+    await expect(async () =>
+      createUserBookCommandHandler.execute({
+        userId: user.id,
+        imageUrl,
+        status,
+        isFavorite,
+        bookshelfId: bookshelf2.id,
+        bookId: book.id,
+      }),
+    ).toThrowErrorInstance({
+      instance: ResourceAlreadyExistsError,
+      context: {
+        resource: 'UserBook',
+        bookshelfId: bookshelf2.id,
         bookId: book.id,
       },
     });
