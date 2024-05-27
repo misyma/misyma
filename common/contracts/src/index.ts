@@ -123,3 +123,5 @@ export * from './schemas/quote/findQuoteById.js';
 export * from './schemas/quote/findQuotes.js';
 
 export * from './schemas/quote/updateQuote.js';
+
+export * from './schemas/sortingType.js';

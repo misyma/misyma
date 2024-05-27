@@ -49,15 +49,21 @@ export class BookReadingRepositoryImpl implements BookReadingRepository {
   }
 
   public async findBookReadings(payload: FindBookReadingsPayload): Promise<BookReading[]> {
-    const { userBookId, page, pageSize } = payload;
+    const { userBookId, page, pageSize, sortDate } = payload;
 
     let rawEntities: BookReadingRawEntity[];
 
     try {
-      rawEntities = await this.databaseClient<BookReadingRawEntity>(this.table.name)
+      const query = this.databaseClient<BookReadingRawEntity>(this.table.name)
         .where({ userBookId })
         .limit(pageSize)
         .offset(pageSize * (page - 1));
+
+      if (sortDate) {
+        query.orderBy('endedAt', sortDate);
+      }
+
+      rawEntities = await query;
     } catch (error) {
       throw new RepositoryError({
         entity: 'BookReading',

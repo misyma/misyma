@@ -4,7 +4,10 @@ import {
   type FindBookReadingsByUserBookIdResult,
 } from './findBookReadingsByUserBookIdQueryHandler.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
-import { type BookReadingRepository } from '../../../domain/repositories/bookReadingRepository/bookReadingRepository.js';
+import {
+  type FindBookReadingsPayload,
+  type BookReadingRepository,
+} from '../../../domain/repositories/bookReadingRepository/bookReadingRepository.js';
 import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
 
 export class FindBookReadingsByUserBookIdQueryHandlerImpl implements FindBookReadingsByUserBookIdQueryHandler {
@@ -14,7 +17,7 @@ export class FindBookReadingsByUserBookIdQueryHandlerImpl implements FindBookRea
   ) {}
 
   public async execute(payload: FindBookReadingsByUserBookIdPayload): Promise<FindBookReadingsByUserBookIdResult> {
-    const { userBookId, page, pageSize } = payload;
+    const { userBookId, page, pageSize, sortDate } = payload;
 
     const bookExists = await this.userBookRepository.findUserBook({
       id: userBookId,
@@ -27,11 +30,18 @@ export class FindBookReadingsByUserBookIdQueryHandlerImpl implements FindBookRea
       });
     }
 
-    const findBookReadingsPayload = {
+    let findBookReadingsPayload: FindBookReadingsPayload = {
       userBookId,
       page,
       pageSize,
     };
+
+    if (sortDate) {
+      findBookReadingsPayload = {
+        ...findBookReadingsPayload,
+        sortDate,
+      };
+    }
 
     const [bookReadings, total] = await Promise.all([
       this.bookReadingRepository.findBookReadings(findBookReadingsPayload),
