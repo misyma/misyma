@@ -6,6 +6,7 @@ export interface CreateQuotePayload {
   readonly content: string;
   readonly isFavorite: boolean;
   readonly createdAt: Date;
+  readonly page?: number | undefined;
 }
 
 export interface CreateQuoteResult {

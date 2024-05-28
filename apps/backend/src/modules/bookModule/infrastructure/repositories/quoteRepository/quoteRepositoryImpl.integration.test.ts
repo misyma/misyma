@@ -227,13 +227,13 @@ describe('QuoteRepositoryImpl', () => {
 
         const newFavorite = Generator.boolean();
 
-        quote.setContent({
-          content: newContent,
-        });
+        const newPage = Generator.number(1, 1000);
 
-        quote.setIsFavorite({
-          isFavorite: newFavorite,
-        });
+        quote.setContent({ content: newContent });
+
+        quote.setIsFavorite({ isFavorite: newFavorite });
+
+        quote.setPage({ page: newPage });
 
         const result = await repository.saveQuote({
           quote,
@@ -248,6 +248,8 @@ describe('QuoteRepositoryImpl', () => {
         expect(updatedQuote?.getContent()).toEqual(newContent);
 
         expect(updatedQuote?.getIsFavorite()).toEqual(newFavorite);
+
+        expect(updatedQuote?.getPage()).toEqual(newPage);
       });
     });
 

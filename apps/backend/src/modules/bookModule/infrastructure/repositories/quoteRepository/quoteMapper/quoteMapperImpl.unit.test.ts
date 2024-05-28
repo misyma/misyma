@@ -24,6 +24,7 @@ describe('QuoteMapperImpl', () => {
         content: quoteEntity.content,
         isFavorite: quoteEntity.isFavorite,
         createdAt: new Date(quoteEntity.createdAt),
+        page: quoteEntity.page,
       },
     });
   });

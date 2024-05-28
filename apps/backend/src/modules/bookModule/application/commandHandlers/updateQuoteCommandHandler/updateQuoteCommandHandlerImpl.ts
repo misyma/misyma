@@ -14,13 +14,14 @@ export class UpdateQuoteCommandHandlerImpl implements UpdateQuoteCommandHandler 
   ) {}
 
   public async execute(payload: UpdateQuotePayload): Promise<UpdateQuoteResult> {
-    const { id, content, isFavorite } = payload;
+    const { id, content, isFavorite, page } = payload;
 
     this.loggerService.debug({
       message: 'Updating Quote...',
       id,
       content,
       isFavorite,
+      page,
     });
 
     const quote = await this.quoteRepository.findQuote({ id });
@@ -38,6 +39,10 @@ export class UpdateQuoteCommandHandlerImpl implements UpdateQuoteCommandHandler 
 
     if (isFavorite !== undefined) {
       quote.setIsFavorite({ isFavorite });
+    }
+
+    if (page !== undefined) {
+      quote.setPage({ page });
     }
 
     const updatedQuote = await this.quoteRepository.saveQuote({

@@ -10,6 +10,7 @@ export class QuoteTestFactory {
       content: Generator.words(),
       createdAt: Generator.pastDate(),
       isFavorite: Generator.boolean(),
+      page: Generator.number(1, 1000),
       ...input,
     });
   }
@@ -21,6 +22,7 @@ export class QuoteTestFactory {
       content: Generator.words(),
       createdAt: Generator.pastDate(),
       isFavorite: Generator.boolean(),
+      page: Generator.number(1, 1000),
       ...input,
     };
   }
