@@ -43,6 +43,11 @@ describe('UserBookMapperImpl', () => {
         isAuthorApproved: null,
         genreId: null,
         genreName: null,
+        readingComment: null,
+        readingEndedAt: null,
+        readingId: null,
+        readingRating: null,
+        readingStartedAt: null,
       },
     ]);
 
@@ -70,6 +75,7 @@ describe('UserBookMapperImpl', () => {
             authors: [],
           },
           genres: [],
+          readings: [],
         },
       },
     ]);

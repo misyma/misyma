@@ -13,6 +13,7 @@ import { type UserBookRepository } from '../../../domain/repositories/userBookRe
 import { symbols } from '../../../symbols.js';
 import { UserBookTestFactory } from '../../../tests/factories/userBookTestFactory/userBookTestFactory.js';
 import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
+import { type BookReadingTestUtils } from '../../../tests/utils/bookReadingTestUtils/bookReadingTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
 import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
@@ -33,6 +34,8 @@ describe('UserBookRepositoryImpl', () => {
   let genreTestUtils: GenreTestUtils;
 
   let userBookTestUtils: UserBookTestUtils;
+
+  let bookReadingTestUtils: BookReadingTestUtils;
 
   const userBookTestFactory = new UserBookTestFactory();
 
@@ -55,6 +58,8 @@ describe('UserBookRepositoryImpl', () => {
 
     userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
 
+    bookReadingTestUtils = container.get<BookReadingTestUtils>(testSymbols.bookReadingTestUtils);
+
     await authorTestUtils.truncate();
 
     await userBookTestUtils.truncate();
@@ -66,6 +71,8 @@ describe('UserBookRepositoryImpl', () => {
     await userTestUtils.truncate();
 
     await genreTestUtils.truncate();
+
+    await bookReadingTestUtils.truncate();
   });
 
   afterEach(async () => {
@@ -80,6 +87,8 @@ describe('UserBookRepositoryImpl', () => {
     await userTestUtils.truncate();
 
     await genreTestUtils.truncate();
+
+    await bookReadingTestUtils.truncate();
 
     await databaseClient.destroy();
   });
@@ -115,6 +124,7 @@ describe('UserBookRepositoryImpl', () => {
           isFavorite: userBookRawEntity.isFavorite,
           imageUrl: userBookRawEntity.imageUrl as string,
           genres: [genre],
+          readings: [],
         },
       });
 
@@ -481,11 +491,13 @@ describe('UserBookRepositoryImpl', () => {
       const userBook1 = new UserBook({
         ...userBookRawEntity1,
         genres: [],
+        readings: [],
       });
 
       const userBook2 = new UserBook({
         ...userBookRawEntity2,
         genres: [],
+        readings: [],
       });
 
       userBook1.setBookshelfId({ bookshelfId: bookshelf2.id });
@@ -532,6 +544,12 @@ describe('UserBookRepositoryImpl', () => {
 
       const userBook = userBookTestFactory.create(userBookRawEntity);
 
+      const bookReading = await bookReadingTestUtils.createAndPersist({
+        input: {
+          userBookId: userBook.getId(),
+        },
+      });
+
       const foundUserBook = await userBookRepository.findUserBook({ id: userBook.getId() });
 
       expect(foundUserBook?.getId()).toEqual(userBook.getId());
@@ -547,6 +565,18 @@ describe('UserBookRepositoryImpl', () => {
             id: genre.id,
             state: {
               name: genre.name,
+            },
+          },
+        ],
+        readings: [
+          {
+            id: bookReading.id,
+            state: {
+              userBookId: bookReading.userBookId,
+              startedAt: bookReading.startedAt,
+              endedAt: bookReading.endedAt,
+              rating: bookReading.rating,
+              comment: bookReading.comment,
             },
           },
         ],

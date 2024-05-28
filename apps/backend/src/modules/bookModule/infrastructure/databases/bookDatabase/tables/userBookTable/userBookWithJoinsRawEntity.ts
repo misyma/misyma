@@ -22,4 +22,9 @@ export interface UserBookWithJoinsRawEntity {
   readonly isAuthorApproved: boolean | null;
   readonly genreId: string | null;
   readonly genreName: string | null;
+  readonly readingId: string | null;
+  readonly readingStartedAt: Date | null;
+  readonly readingEndedAt: Date | null;
+  readonly readingRating: number | null;
+  readonly readingComment: string | null;
 }
