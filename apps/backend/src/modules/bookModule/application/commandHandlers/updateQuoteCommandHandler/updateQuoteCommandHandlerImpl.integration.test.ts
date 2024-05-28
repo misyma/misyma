@@ -105,10 +105,13 @@ describe('UpdateQuoteCommandHandlerImpl', () => {
 
     const newFavorite = Generator.boolean();
 
+    const newPage = Generator.number(1, 1000);
+
     const { quote: updatedQuote } = await commandHandler.execute({
       id: quote.id,
       content: newContent,
       isFavorite: newFavorite,
+      page: newPage,
     });
 
     expect(updatedQuote).toBeInstanceOf(Quote);
@@ -118,6 +121,7 @@ describe('UpdateQuoteCommandHandlerImpl', () => {
       content: newContent,
       isFavorite: newFavorite,
       createdAt: quote.createdAt,
+      page: newPage,
     });
 
     const persistedUpdatedQuote = await quoteTestUtils.findById({
@@ -127,5 +131,7 @@ describe('UpdateQuoteCommandHandlerImpl', () => {
     expect(persistedUpdatedQuote?.content).toEqual(newContent);
 
     expect(persistedUpdatedQuote?.isFavorite).toEqual(newFavorite);
+
+    expect(persistedUpdatedQuote?.page).toEqual(newPage);
   });
 });

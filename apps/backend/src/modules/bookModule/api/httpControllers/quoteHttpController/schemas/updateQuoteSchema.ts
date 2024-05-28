@@ -23,6 +23,12 @@ export const updateQuoteBodyDtoSchema = Type.Object({
     }),
   ),
   isFavorite: Type.Optional(Type.Boolean()),
+  page: Type.Optional(
+    Type.Integer({
+      minimum: 1,
+      maximum: 5000,
+    }),
+  ),
 });
 
 export type UpdateQuoteBodyDto = TypeExtends<Static<typeof updateQuoteBodyDtoSchema>, contracts.UpdateQuoteRequestBody>;

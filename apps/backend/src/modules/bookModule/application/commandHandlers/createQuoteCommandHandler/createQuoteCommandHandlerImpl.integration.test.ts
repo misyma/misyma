@@ -75,8 +75,11 @@ describe('CreateQuoteCommandHandlerImpl', () => {
     expect(
       async () =>
         await commandHandler.execute({
-          ...quote.getState(),
           userBookId: nonExistentUserBookId,
+          content: quote.getContent(),
+          createdAt: quote.getCreatedAt(),
+          isFavorite: quote.getIsFavorite(),
+          page: quote.getPage() as number,
         }),
     ).toThrowErrorInstance({
       instance: OperationNotValidError,
@@ -106,7 +109,11 @@ describe('CreateQuoteCommandHandlerImpl', () => {
     });
 
     const { quote } = await commandHandler.execute({
-      ...quoteDraft.getState(),
+      userBookId: quoteDraft.getUserBookId(),
+      content: quoteDraft.getContent(),
+      createdAt: quoteDraft.getCreatedAt(),
+      isFavorite: quoteDraft.getIsFavorite(),
+      page: quoteDraft.getPage() as number,
     });
 
     expect(quote).toBeInstanceOf(Quote);
@@ -116,6 +123,7 @@ describe('CreateQuoteCommandHandlerImpl', () => {
       content: quoteDraft.getContent(),
       createdAt: quoteDraft.getCreatedAt(),
       isFavorite: quoteDraft.getIsFavorite(),
+      page: quoteDraft.getPage(),
     });
 
     const persistedRawQuote = await quoteTestUtils.findById({
@@ -128,6 +136,7 @@ describe('CreateQuoteCommandHandlerImpl', () => {
       content: quoteDraft.getContent(),
       createdAt: quoteDraft.getCreatedAt(),
       isFavorite: quoteDraft.getIsFavorite(),
+      page: quoteDraft.getPage(),
     });
   });
 });

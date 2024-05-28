@@ -16,7 +16,7 @@ export class CreateQuoteCommandHandlerImpl implements CreateQuoteCommandHandler 
   ) {}
 
   public async execute(payload: CreateQuotePayload): Promise<CreateQuoteResult> {
-    const { userBookId, content, createdAt, isFavorite } = payload;
+    const { userBookId, content, createdAt, isFavorite, page } = payload;
 
     this.loggerService.debug({
       message: 'Creating Quote...',
@@ -24,6 +24,7 @@ export class CreateQuoteCommandHandlerImpl implements CreateQuoteCommandHandler 
       content,
       createdAt,
       isFavorite,
+      page,
     });
 
     const existingUserBook = await this.userBookRepository.findUserBook({
@@ -43,6 +44,7 @@ export class CreateQuoteCommandHandlerImpl implements CreateQuoteCommandHandler 
         content,
         createdAt,
         isFavorite,
+        page,
       },
     });
 
@@ -53,6 +55,7 @@ export class CreateQuoteCommandHandlerImpl implements CreateQuoteCommandHandler 
       content,
       createdAt,
       isFavorite,
+      page,
     });
 
     return { quote };
