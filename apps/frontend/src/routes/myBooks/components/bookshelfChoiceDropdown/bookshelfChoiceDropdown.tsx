@@ -6,6 +6,7 @@ import { useUpdateUserBookMutation } from '../../../../api/books/mutations/updat
 import { useFindUserBookQuery } from '../../../../api/books/queries/findUserBook/findUserBookQuery';
 import { useQueryClient } from '@tanstack/react-query';
 import { Skeleton } from '../../../../components/ui/skeleton';
+import { useToast } from '../../../../components/ui/use-toast';
 
 interface Props {
   bookId: string;
@@ -20,6 +21,9 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId }) => {
     id: bookId,
     userId: userData?.id ?? '',
   });
+
+  const { toast } = useToast()
+
 
   const { data: bookshelfData } = useFindUserBookshelfsQuery(userData?.id ?? '');
 
@@ -37,6 +41,12 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId }) => {
       userId: userData?.id as string,
       bookshelfId: id,
     });
+
+    toast({
+      title: `Zmieniono półkę.`,
+      description: `Książka znajduje się teraz na: XD`,
+      variant: 'success',
+  })
 
     queryClient.invalidateQueries({
       queryKey: ['findUserBookById', bookId, userData?.id],
