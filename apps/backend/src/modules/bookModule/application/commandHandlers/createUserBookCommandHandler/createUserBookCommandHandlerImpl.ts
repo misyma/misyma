@@ -101,6 +101,7 @@ export class CreateUserBookCommandHandlerImpl implements CreateUserBookCommandHa
         isFavorite,
         imageUrl,
         genres,
+        readings: [],
       },
     });
 

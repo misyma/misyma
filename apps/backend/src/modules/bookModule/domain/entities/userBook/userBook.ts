@@ -1,6 +1,7 @@
 import { type ReadingStatus } from '@common/contracts';
 
 import { type BookDraft } from '../book/book.js';
+import { type BookReading } from '../bookReading/bookReading.js';
 import { type Genre } from '../genre/genre.js';
 
 export interface UserBookDraft {
@@ -12,6 +13,7 @@ export interface UserBookDraft {
   readonly bookId: string;
   readonly book?: BookDraft | undefined;
   readonly genres: Genre[];
+  readonly readings: BookReading[];
 }
 
 export interface UserBookState {
@@ -22,6 +24,7 @@ export interface UserBookState {
   readonly bookId: string;
   readonly book?: BookDraft | undefined;
   genres: Genre[];
+  readonly readings: BookReading[];
 }
 
 export interface SetImageUrlPayload {
@@ -49,7 +52,7 @@ export class UserBook {
   private readonly state: UserBookState;
 
   public constructor(draft: UserBookDraft) {
-    const { id, imageUrl, status, isFavorite, bookshelfId, bookId, book, genres } = draft;
+    const { id, imageUrl, status, isFavorite, bookshelfId, bookId, book, genres, readings } = draft;
 
     this.id = id;
 
@@ -59,6 +62,7 @@ export class UserBook {
       bookshelfId,
       bookId,
       genres,
+      readings,
     };
 
     if (imageUrl) {
@@ -109,6 +113,10 @@ export class UserBook {
 
   public getGenres(): Genre[] {
     return this.state.genres;
+  }
+
+  public getReadings(): BookReading[] {
+    return this.state.readings;
   }
 
   public setImageUrl(payload: SetImageUrlPayload): void {

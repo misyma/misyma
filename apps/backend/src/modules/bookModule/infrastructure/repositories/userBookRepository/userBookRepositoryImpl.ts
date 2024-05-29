@@ -14,6 +14,7 @@ import {
   type FindUserBooksByUserPayload,
 } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
 import { AuthorTable } from '../../databases/bookDatabase/tables/authorTable/authorTable.js';
+import { BookReadingTable } from '../../databases/bookDatabase/tables/bookReadingTable/bookReadingTable.js';
 import { BooksAuthorsTable } from '../../databases/bookDatabase/tables/booksAuthorsTable/booksAuthorsTable.js';
 import { BookTable } from '../../databases/bookDatabase/tables/bookTable/bookTable.js';
 import { GenreTable } from '../../databases/bookDatabase/tables/genreTable/genreTable.js';
@@ -35,6 +36,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
   private readonly authorTable = new AuthorTable();
   private readonly userBookGenresTable = new UserBookGenresTable();
   private readonly genresTable = new GenreTable();
+  private readonly bookReadingTable = new BookReadingTable();
 
   public constructor(
     private readonly databaseClient: DatabaseClient,
@@ -217,6 +219,11 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           `${this.authorTable.name}.isApproved as isAuthorApproved`,
           `${this.genresTable.name}.id as genreId`,
           `${this.genresTable.name}.name as genreName`,
+          `${this.bookReadingTable.name}.id as readingId`,
+          `${this.bookReadingTable.name}.startedAt as readingStartedAt`,
+          `${this.bookReadingTable.name}.endedAt as readingEndedAt`,
+          `${this.bookReadingTable.name}.rating as readingRating`,
+          `${this.bookReadingTable.name}.comment as readingComment`,
         ])
         .leftJoin(this.booksAuthorsTable.name, (join) => {
           join.on(`${this.booksAuthorsTable.name}.bookId`, '=', `${this.userBookTable.name}.bookId`);
@@ -239,6 +246,9 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         })
         .leftJoin(this.bookTable.name, (join) => {
           join.on(`${this.bookTable.name}.id`, `=`, `${this.userBookTable.name}.bookId`);
+        })
+        .leftJoin(this.bookReadingTable.name, (join) => {
+          join.on(`${this.bookReadingTable.name}.userBookId`, '=', `${this.userBookTable.name}.id`);
         })
         .where((builder) => {
           if (id) {
@@ -301,6 +311,11 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           `${this.authorTable.name}.isApproved as isAuthorApproved`,
           `${this.genresTable.name}.id as genreId`,
           `${this.genresTable.name}.name as genreName`,
+          `${this.bookReadingTable.name}.id as readingId`,
+          `${this.bookReadingTable.name}.startedAt as readingStartedAt`,
+          `${this.bookReadingTable.name}.endedAt as readingEndedAt`,
+          `${this.bookReadingTable.name}.rating as readingRating`,
+          `${this.bookReadingTable.name}.comment as readingComment`,
         ])
         .leftJoin(this.booksAuthorsTable.name, (join) => {
           join.on(`${this.booksAuthorsTable.name}.bookId`, '=', `${this.userBookTable.name}.bookId`);
@@ -316,6 +331,9 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         })
         .leftJoin(this.bookTable.name, (join) => {
           join.on(`${this.bookTable.name}.id`, `=`, `${this.userBookTable.name}.bookId`);
+        })
+        .leftJoin(this.bookReadingTable.name, (join) => {
+          join.on(`${this.bookReadingTable.name}.userBookId`, '=', `${this.userBookTable.name}.id`);
         });
 
       if (ids.length > 0) {
@@ -367,6 +385,11 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           `${this.authorTable.name}.isApproved as isAuthorApproved`,
           `${this.genresTable.name}.id as genreId`,
           `${this.genresTable.name}.name as genreName`,
+          `${this.bookReadingTable.name}.id as readingId`,
+          `${this.bookReadingTable.name}.startedAt as readingStartedAt`,
+          `${this.bookReadingTable.name}.endedAt as readingEndedAt`,
+          `${this.bookReadingTable.name}.rating as readingRating`,
+          `${this.bookReadingTable.name}.comment as readingComment`,
         ])
         .leftJoin(this.booksAuthorsTable.name, (join) => {
           join.on(`${this.booksAuthorsTable.name}.bookId`, '=', `${this.userBookTable.name}.bookId`);
@@ -385,6 +408,9 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         })
         .leftJoin(this.bookshelfTable.name, (join) => {
           join.on(`${this.bookshelfTable.name}.id`, `=`, `${this.userBookTable.name}.bookshelfId`);
+        })
+        .leftJoin(this.bookReadingTable.name, (join) => {
+          join.on(`${this.bookReadingTable.name}.userBookId`, '=', `${this.userBookTable.name}.id`);
         });
 
       if (bookId) {
