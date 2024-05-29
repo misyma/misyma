@@ -4,12 +4,14 @@ export interface QuoteDraft {
   readonly content: string;
   readonly isFavorite: boolean;
   readonly createdAt: Date;
+  readonly page?: number | undefined;
 }
 
 export interface QuoteState {
   readonly userBookId: string;
   isFavorite: boolean;
   content: string;
+  page?: number | undefined;
   readonly createdAt: Date;
 }
 
@@ -19,6 +21,10 @@ export interface SetContentPayload {
 
 export interface SetIsFavoritePayload {
   readonly isFavorite: boolean;
+}
+
+export interface SetPagePayload {
+  readonly page: number;
 }
 
 export class Quote {
@@ -34,6 +40,10 @@ export class Quote {
       isFavorite: draft.isFavorite,
       createdAt: draft.createdAt,
     };
+
+    if (draft.page) {
+      this.state.page = draft.page;
+    }
   }
 
   public setContent(payload: SetContentPayload): void {
@@ -46,6 +56,12 @@ export class Quote {
     const { isFavorite } = payload;
 
     this.state.isFavorite = isFavorite;
+  }
+
+  public setPage(payload: SetPagePayload): void {
+    const { page } = payload;
+
+    this.state.page = page;
   }
 
   public getId(): string {
@@ -66,6 +82,10 @@ export class Quote {
 
   public getIsFavorite(): boolean {
     return this.state.isFavorite;
+  }
+
+  public getPage(): number | undefined {
+    return this.state.page;
   }
 
   public getState(): QuoteState {

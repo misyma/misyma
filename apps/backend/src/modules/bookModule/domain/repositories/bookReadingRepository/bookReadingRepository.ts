@@ -11,6 +11,7 @@ export interface FindBookReadingsPayload {
   readonly userBookId: string;
   readonly page: number;
   readonly pageSize: number;
+  readonly sortDate?: 'asc' | 'desc';
 }
 
 export interface SavePayload {

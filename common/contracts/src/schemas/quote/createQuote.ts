@@ -8,6 +8,7 @@ export interface CreateQuoteRequestBody {
   readonly content: string;
   readonly isFavorite: boolean;
   readonly createdAt: string;
+  readonly page?: number;
 }
 
 export interface CreateQuoteResponseBody extends Quote {}

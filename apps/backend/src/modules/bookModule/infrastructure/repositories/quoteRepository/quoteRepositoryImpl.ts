@@ -82,6 +82,7 @@ export class QuoteRepositoryImpl implements QuoteRepository {
           content: quote.content,
           createdAt: quote.createdAt,
           isFavorite: quote.isFavorite,
+          page: quote.page,
         },
         '*',
       );

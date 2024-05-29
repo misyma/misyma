@@ -146,6 +146,7 @@ describe('FindQuotesByUserBookIdQueryHandlerImpl', () => {
       content: quote1.content,
       createdAt: quote1.createdAt,
       isFavorite: quote1.isFavorite,
+      page: quote1.page,
     });
 
     expect(quotes[1]?.getState()).toEqual({
@@ -153,6 +154,7 @@ describe('FindQuotesByUserBookIdQueryHandlerImpl', () => {
       content: quote2.content,
       createdAt: quote2.createdAt,
       isFavorite: quote2.isFavorite,
+      page: quote2.page,
     });
 
     expect(total).toEqual(2);

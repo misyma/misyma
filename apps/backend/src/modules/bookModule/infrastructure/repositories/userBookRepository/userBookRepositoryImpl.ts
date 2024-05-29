@@ -2,6 +2,7 @@ import { type UserBookMapper } from './userBookMapper/userBookMapper.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
+import { BookshelfTable } from '../../../../bookshelfModule/infrastructure/databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfTable.js';
 import { UserBook, type UserBookState } from '../../../domain/entities/userBook/userBook.js';
 import {
   type SaveUserBooksPayload,
@@ -10,6 +11,7 @@ import {
   type FindUserBooksPayload,
   type SaveUserBookPayload,
   type UserBookRepository,
+  type FindUserBooksByUserPayload,
 } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
 import { AuthorTable } from '../../databases/bookDatabase/tables/authorTable/authorTable.js';
 import { BooksAuthorsTable } from '../../databases/bookDatabase/tables/booksAuthorsTable/booksAuthorsTable.js';
@@ -28,6 +30,7 @@ type UpdateUserBookPayload = { userBook: UserBook };
 export class UserBookRepositoryImpl implements UserBookRepository {
   private readonly userBookTable = new UserBookTable();
   private readonly bookTable = new BookTable();
+  private readonly bookshelfTable = new BookshelfTable();
   private readonly booksAuthorsTable = new BooksAuthorsTable();
   private readonly authorTable = new AuthorTable();
   private readonly userBookGenresTable = new UserBookGenresTable();
@@ -322,6 +325,73 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       if (bookshelfId) {
         query.where(`${this.userBookTable.name}.bookshelfId`, bookshelfId);
       }
+
+      rawEntities = await query.limit(pageSize).offset(pageSize * (page - 1));
+    } catch (error) {
+      throw new RepositoryError({
+        entity: 'Book',
+        operation: 'find',
+        error,
+      });
+    }
+
+    return this.userBookMapper.mapRawWithJoinsToDomain(rawEntities) as UserBook[];
+  }
+
+  public async findUserBooksByUser(payload: FindUserBooksByUserPayload): Promise<UserBook[]> {
+    const { userId, bookId, page, pageSize } = payload;
+
+    let rawEntities: UserBookWithJoinsRawEntity[];
+
+    try {
+      const query = this.databaseClient<UserBookRawEntity>(this.userBookTable.name)
+        .select([
+          `${this.bookTable.name}.id as bookId`,
+          `${this.bookTable.name}.title as title`,
+          `${this.bookTable.name}.isbn as isbn`,
+          `${this.bookTable.name}.publisher as publisher`,
+          `${this.bookTable.name}.releaseYear as releaseYear`,
+          `${this.bookTable.name}.language as language`,
+          `${this.bookTable.name}.translator as translator`,
+          `${this.bookTable.name}.format as format`,
+          `${this.bookTable.name}.pages as pages`,
+          `${this.bookTable.name}.isApproved`,
+          `${this.bookTable.name}.imageUrl as bookImageUrl`,
+          `${this.userBookTable.name}.id`,
+          `${this.userBookTable.name}.imageUrl`,
+          `${this.userBookTable.name}.status`,
+          `${this.userBookTable.name}.isFavorite`,
+          `${this.userBookTable.name}.bookshelfId`,
+          `${this.authorTable.name}.id as authorId`,
+          `${this.authorTable.name}.name as authorName`,
+          `${this.authorTable.name}.isApproved as isAuthorApproved`,
+          `${this.genresTable.name}.id as genreId`,
+          `${this.genresTable.name}.name as genreName`,
+        ])
+        .leftJoin(this.booksAuthorsTable.name, (join) => {
+          join.on(`${this.booksAuthorsTable.name}.bookId`, '=', `${this.userBookTable.name}.bookId`);
+        })
+        .leftJoin(this.authorTable.name, (join) => {
+          join.on(`${this.authorTable.name}.id`, '=', `${this.booksAuthorsTable.name}.authorId`);
+        })
+        .leftJoin(this.userBookGenresTable.name, (join) => {
+          join.on(`${this.userBookGenresTable.name}.userBookId`, '=', `${this.userBookTable.name}.id`);
+        })
+        .leftJoin(this.genresTable.name, (join) => {
+          join.on(`${this.genresTable.name}.id`, `=`, `${this.userBookGenresTable.name}.genreId`);
+        })
+        .leftJoin(this.bookTable.name, (join) => {
+          join.on(`${this.bookTable.name}.id`, `=`, `${this.userBookTable.name}.bookId`);
+        })
+        .leftJoin(this.bookshelfTable.name, (join) => {
+          join.on(`${this.bookshelfTable.name}.id`, `=`, `${this.userBookTable.name}.bookshelfId`);
+        });
+
+      if (bookId) {
+        query.where(`${this.userBookTable.name}.bookId`, bookId);
+      }
+
+      query.where(`${this.bookshelfTable.name}.userId`, userId);
 
       rawEntities = await query.limit(pageSize).offset(pageSize * (page - 1));
     } catch (error) {

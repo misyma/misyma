@@ -21,10 +21,13 @@ import { ReadingStatus } from '../../../../../../common/constants/readingStatus'
 import { useToast } from '../../../../../../components/ui/use-toast';
 import { useEffect, useRef, useState } from 'react';
 import { BookApiError } from '../../../../../../api/books/errors/bookApiError';
-import { BookGenre } from '../../../../../../common/constants/bookGenre';
 import { useFindUserBookshelfsQuery } from '../../../../../../api/bookshelf/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 import { useUploadBookImageMutation } from '../../../../../../api/books/mutations/uploadBookImageMutation/uploadBookImageMutation';
 import { useCreateAuthorDraftMutation } from '../../../../../../api/authors/mutations/createAuthorDraftMutation/createAuthorDraftMutation';
+import { useQuery } from '@tanstack/react-query';
+import { getGenresQueryOptions } from '../../../../../../api/genres/queries/getGenresQuery/getGenresQueryOptions';
+import { useSelector } from 'react-redux';
+import { userStateSelectors } from '../../../../../../core/store/states/userState/userStateSlice';
 
 const stepThreeFormSchema = z.object({
   status: z.nativeEnum(ContractReadingStatus, {
@@ -65,10 +68,17 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
 
   const { mutateAsync: createAuthorDraft } = useCreateAuthorDraftMutation({});
 
+  const accessToken = useSelector(userStateSelectors.selectAccessToken);
+
+  const { data } = useQuery(
+    getGenresQueryOptions({
+      accessToken: accessToken as string,
+    }),
+  );
+
   const [file, setFile] = useState<File | undefined>();
 
   const { toast } = useToast();
-
 
   useEffect(() => {
     if (file) {
@@ -109,12 +119,12 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
 
       if (bookCreation.stepOneDetails?.authorName) {
         authorDraftResponse = await createAuthorDraft({
-          name: bookCreation.stepOneDetails.authorName
-        })
+          name: bookCreation.stepOneDetails.authorName,
+        });
       }
 
       const bookCreationResponse = await createBookMutation({
-        authorIds: [bookCreation.stepOneDetails?.author || authorDraftResponse?.id as string],
+        authorIds: [bookCreation.stepOneDetails?.author || (authorDraftResponse?.id as string)],
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         format: bookCreation.stepTwoDetails?.format as any,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -135,6 +145,7 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
         status: bookCreation.stepThreeDetails?.status as ContractReadingStatus,
         userId: user?.id as string,
         isFavorite: false,
+        genreIds: [bookCreation.stepThreeDetails?.genre as string]
       });
 
       await uploadBookImageMutation({
@@ -293,8 +304,8 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
                   <SelectTrigger>
                     <SelectValue placeholder={<span className="text-muted-foreground">Kategoria</span>} />
                     <SelectContent>
-                      {Object.entries(BookGenre).map(([key, genre]) => (
-                        <SelectItem value={key}>{genre}</SelectItem>
+                      {Object.values(data?.data ?? []).map((genre) => (
+                        <SelectItem value={genre.id}>{genre.name}</SelectItem>
                       ))}
                     </SelectContent>
                   </SelectTrigger>

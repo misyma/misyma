@@ -26,6 +26,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '../../../../../../components/ui/dialog';
+import { HiOutlineInformationCircle } from "react-icons/hi";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../../../../components/ui/tooltip';
 
 const stepOneSchema = z
   .object({
@@ -38,13 +40,9 @@ const stepOneSchema = z
       .max(64, {
         message: 'Tytuł może mieć maksymalnie 64 znaki.',
       }),
-    author: z.union([
-      z.string().length(0),
-      z.string().uuid({
+    author: z.string().uuid({
         message: 'Brak wybranego autora.',
-      }),
-      z.undefined(),
-    ]),
+      }).optional(),
     authorName: z.string().min(1).max(64).optional(),
     publisher: z
       .string()
@@ -64,8 +62,8 @@ const stepOneSchema = z
       .max(2500, {
         message: 'Rok wydania nie może być późniejszy niż 2500',
       }),
-  })
-  .refine((data) => !!data.author || data.authorName, 'Autor jest wymagany.');
+  });
+  // .refine((data) => !!data.author || data.authorName, 'Autor jest wymagany.');
 
 const createAuthorDraftSchema = z.object({
   name: z
@@ -97,7 +95,7 @@ export const ManualStepOneForm = (): JSX.Element => {
       isbn: bookCreation.stepOneDetails?.isbn ?? '',
       title: bookCreation.stepOneDetails?.title ?? '',
       author: bookCreation.stepOneDetails?.author ?? '',
-      authorName: bookCreation.stepOneDetails?.authorName ?? '',
+      authorName: bookCreation.stepOneDetails?.authorName ?? undefined,
       publisher: bookCreation.stepOneDetails?.publisher ?? '',
       yearOfIssue: bookCreation.stepOneDetails?.yearOfIssue ?? '',
     },
@@ -144,6 +142,7 @@ export const ManualStepOneForm = (): JSX.Element => {
     dispatch({
       type: BookCreationActionType.nonIsbnStepOneDetails,
       author: vals.author as string,
+      authorName: vals?.authorName,
       isbn: vals.isbn,
       publisher: vals.publisher,
       title: vals.title,
@@ -227,7 +226,21 @@ export const ManualStepOneForm = (): JSX.Element => {
           name="author"
           render={({ field }) => (
             <FormItem className="flex flex-col">
-              <FormLabel>Autor</FormLabel>
+              <div className='flex gap-2 items-center'>
+                <FormLabel>Autor</FormLabel>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div>
+                        <HiOutlineInformationCircle className='h-5 w-5' />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Prosimy, podaj nazwisko i imię autora w<br></br> następującym formacie: "Rowling, J. K."</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
               <FormControl>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -315,6 +328,8 @@ export const ManualStepOneForm = (): JSX.Element => {
                             value={author.name}
                             onSelect={() => {
                               form.setValue('author', author.id);
+
+                              form.setValue('authorName', undefined);
 
                               setDraftAuthorName('');
 

@@ -30,6 +30,7 @@ export class QuoteTestUtils {
         content: quote.getContent(),
         createdAt: quote.getCreatedAt(),
         isFavorite: quote.getIsFavorite(),
+        page: quote.getPage() as number,
       },
       '*',
     );
@@ -42,6 +43,7 @@ export class QuoteTestUtils {
       content: rawEntity.content,
       createdAt: new Date(rawEntity.createdAt),
       isFavorite: Boolean(rawEntity.isFavorite),
+      page: rawEntity.page,
     };
   }
 
@@ -60,6 +62,7 @@ export class QuoteTestUtils {
       content: rawEntity.content,
       createdAt: new Date(rawEntity.createdAt),
       isFavorite: Boolean(rawEntity.isFavorite),
+      page: rawEntity.page,
     };
   }
 

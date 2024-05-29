@@ -163,6 +163,131 @@ describe('BookReadingRepositoryImpl', () => {
           expect(bookReading.getUserBookId()).toEqual(user.id);
         });
       });
+
+      it('returns an array of BookReadings - with pagination', async () => {
+        const user = await userTestUtils.createAndPersist();
+
+        const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+
+        const book = await bookTestUtils.createAndPersist();
+
+        const userBook = await userBookTestUtils.createAndPersist({
+          input: {
+            bookshelfId: bookshelf.id,
+            bookId: book.id,
+          },
+        });
+
+        const bookReading1 = await bookReadingTestUtils.createAndPersist({
+          input: {
+            userBookId: userBook.id,
+          },
+        });
+
+        await bookReadingTestUtils.createAndPersist({
+          input: {
+            userBookId: userBook.id,
+          },
+        });
+
+        const result = await repository.findBookReadings({
+          userBookId: userBook.id,
+          page: 1,
+          pageSize: 1,
+        });
+
+        expect(result).toHaveLength(1);
+
+        expect(result[0]?.getId()).toEqual(bookReading1.id);
+      });
+
+      it('returns an array of BookReadings - with sorting by descending date', async () => {
+        const user = await userTestUtils.createAndPersist();
+
+        const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+
+        const book = await bookTestUtils.createAndPersist();
+
+        const userBook = await userBookTestUtils.createAndPersist({
+          input: {
+            bookshelfId: bookshelf.id,
+            bookId: book.id,
+          },
+        });
+
+        const bookReading1 = await bookReadingTestUtils.createAndPersist({
+          input: {
+            userBookId: userBook.id,
+            startedAt: Generator.pastDate(),
+            endedAt: Generator.pastDate(),
+          },
+        });
+
+        const bookReading2 = await bookReadingTestUtils.createAndPersist({
+          input: {
+            userBookId: userBook.id,
+            startedAt: Generator.pastDate(),
+            endedAt: new Date(),
+          },
+        });
+
+        const result = await repository.findBookReadings({
+          userBookId: userBook.id,
+          page: 1,
+          pageSize: 10,
+          sortDate: 'desc',
+        });
+
+        expect(result).toHaveLength(2);
+
+        expect(result[0]?.getId()).toEqual(bookReading2.id);
+
+        expect(result[1]?.getId()).toEqual(bookReading1.id);
+      });
+
+      it('returns an array of BookReadings - with sorting by ascending date', async () => {
+        const user = await userTestUtils.createAndPersist();
+
+        const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+
+        const book = await bookTestUtils.createAndPersist();
+
+        const userBook = await userBookTestUtils.createAndPersist({
+          input: {
+            bookshelfId: bookshelf.id,
+            bookId: book.id,
+          },
+        });
+
+        const bookReading1 = await bookReadingTestUtils.createAndPersist({
+          input: {
+            userBookId: userBook.id,
+            startedAt: Generator.pastDate(),
+            endedAt: Generator.pastDate(),
+          },
+        });
+
+        const bookReading2 = await bookReadingTestUtils.createAndPersist({
+          input: {
+            userBookId: userBook.id,
+            startedAt: Generator.pastDate(),
+            endedAt: new Date(),
+          },
+        });
+
+        const result = await repository.findBookReadings({
+          userBookId: userBook.id,
+          page: 1,
+          pageSize: 10,
+          sortDate: 'asc',
+        });
+
+        expect(result).toHaveLength(2);
+
+        expect(result[0]?.getId()).toEqual(bookReading1.id);
+
+        expect(result[1]?.getId()).toEqual(bookReading2.id);
+      });
     });
 
     describe('save', () => {

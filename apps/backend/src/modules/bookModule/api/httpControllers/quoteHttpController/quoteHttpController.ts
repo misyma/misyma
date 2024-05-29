@@ -226,7 +226,7 @@ export class QuoteHttpController implements HttpController {
 
     const { userBookId } = request.pathParams;
 
-    const { content, createdAt, isFavorite } = request.body;
+    const { content, createdAt, isFavorite, page } = request.body;
 
     // TODO: authorization
 
@@ -241,6 +241,7 @@ export class QuoteHttpController implements HttpController {
       content,
       createdAt: new Date(createdAt),
       isFavorite,
+      page,
     });
 
     return {
@@ -260,12 +261,13 @@ export class QuoteHttpController implements HttpController {
 
     const { id } = request.pathParams;
 
-    const { content, isFavorite } = request.body;
+    const { content, isFavorite, page } = request.body;
 
     const { quote } = await this.updateQuoteCommandHandler.execute({
       id,
       content,
       isFavorite,
+      page,
     });
 
     return {
@@ -296,12 +298,23 @@ export class QuoteHttpController implements HttpController {
   private mapQuoteToQuoteDto(payload: MapQuoteToQuoteDtoPayload): QuoteDto {
     const { quote } = payload;
 
-    return {
+    let quoteDto: QuoteDto = {
       id: quote.getId(),
       userBookId: quote.getUserBookId(),
       content: quote.getContent(),
       createdAt: quote.getCreatedAt().toISOString(),
       isFavorite: quote.getIsFavorite(),
     };
+
+    const page = quote.getPage();
+
+    if (page) {
+      quoteDto = {
+        ...quoteDto,
+        page,
+      };
+    }
+
+    return quoteDto;
   }
 }

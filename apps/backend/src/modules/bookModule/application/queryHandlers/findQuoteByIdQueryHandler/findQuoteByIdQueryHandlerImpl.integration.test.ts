@@ -113,6 +113,7 @@ describe('FindQuoteByIdQueryHandler', () => {
       content: createdQuote.content,
       createdAt: createdQuote.createdAt,
       isFavorite: createdQuote.isFavorite,
+      page: createdQuote.page,
     });
   });
 });

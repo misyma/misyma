@@ -311,11 +311,12 @@ export class UserBookHttpController implements HttpController {
   ): Promise<HttpCreatedResponse<CreateUserBookResponseBodyDto>> {
     const { bookId, bookshelfId, status, imageUrl, isFavorite } = request.body;
 
-    await this.accessControlService.verifyBearerToken({
+    const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
     const { userBook } = await this.createUserBookCommandHandler.execute({
+      userId,
       bookId,
       bookshelfId,
       status,
