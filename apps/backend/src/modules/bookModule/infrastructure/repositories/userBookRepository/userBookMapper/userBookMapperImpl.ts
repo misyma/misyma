@@ -67,8 +67,8 @@ export class UserBookMapperImpl implements UserBookMapper {
           userBookDraft.readings?.push(
             new BookReading({
               id: readingId,
-              startedAt: readingStartedAt,
-              endedAt: readingEndedAt ?? undefined,
+              startedAt: new Date(readingStartedAt),
+              endedAt: readingEndedAt ? new Date(readingEndedAt) : undefined,
               rating: readingRating,
               comment: readingComment,
               userBookId: id,
@@ -96,8 +96,8 @@ export class UserBookMapperImpl implements UserBookMapper {
           readings.push(
             new BookReading({
               id: readingId,
-              startedAt: readingStartedAt,
-              endedAt: readingEndedAt ?? undefined,
+              startedAt: new Date(readingStartedAt),
+              endedAt: readingEndedAt ? new Date(readingEndedAt) : undefined,
               rating: readingRating,
               comment: readingComment,
               userBookId: id,

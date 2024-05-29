@@ -139,6 +139,7 @@ describe('UserBookRepositoryImpl', () => {
         imageUrl: userBookRawEntity.imageUrl,
         isFavorite: userBookRawEntity.isFavorite,
         genres: [genre],
+        readings: [],
         book: {
           id: book.id,
           title: book.title,
@@ -216,6 +217,7 @@ describe('UserBookRepositoryImpl', () => {
         isFavorite: userBook.getIsFavorite(),
         imageUrl: userBook.getImageUrl(),
         genres: [],
+        readings: [],
         book: {
           id: book.id,
           title: book.title,
