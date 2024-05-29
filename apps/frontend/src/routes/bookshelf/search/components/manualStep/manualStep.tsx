@@ -15,8 +15,11 @@ import { FileInput } from '../../../../../components/ui/input';
 import { Button } from '../../../../../components/ui/button';
 import { useSearchBookContext } from '../../context/searchCreateBookContext';
 import { BookApiError } from '../../../../../api/books/errors/bookApiError';
-import { BookGenre } from '../../../../../common/constants/bookGenre';
 import { useUploadBookImageMutation } from '../../../../../api/books/mutations/uploadBookImageMutation/uploadBookImageMutation';
+import { useQuery } from '@tanstack/react-query';
+import { getGenresQueryOptions } from '../../../../../api/genres/queries/getGenresQuery/getGenresQueryOptions';
+import { useSelector } from 'react-redux';
+import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';
 
 const stepThreeFormSchema = z.object({
   status: z.nativeEnum(ContractReadingStatus, {
@@ -65,6 +68,14 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
   const { mutateAsync: createUserBookMutation } = useCreateUserBookMutation({});
 
   const { mutateAsync: uploadBookImageMutation } = useUploadBookImageMutation({});
+
+  const accessToken = useSelector(userStateSelectors.selectAccessToken);
+
+  const { data: genresData } = useQuery(
+    getGenresQueryOptions({
+      accessToken: accessToken as string,
+    }),
+  );
 
   const navigate = useNavigate();
 
@@ -244,8 +255,8 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
                   <SelectTrigger>
                     <SelectValue placeholder={<span className="text-muted-foreground">Kategoria</span>} />
                     <SelectContent>
-                      {Object.entries(BookGenre).map(([key, genre]) => (
-                        <SelectItem value={key}>{genre}</SelectItem>
+                      {Object.values(genresData?.data ?? []).map((genre) => (
+                        <SelectItem value={genre.id}>{genre.name}</SelectItem>
                       ))}
                     </SelectContent>
                   </SelectTrigger>

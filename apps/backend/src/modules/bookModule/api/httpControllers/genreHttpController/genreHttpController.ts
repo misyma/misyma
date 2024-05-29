@@ -14,6 +14,7 @@ import {
   type FindGenresResponseBodyDto,
   findGenresResponseBodyDtoSchema,
   type FindGenresQueryParamsDto,
+  findGenresQueryParamsDtoSchema,
 } from './schemas/findGenresSchema.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
@@ -47,7 +48,9 @@ export class GenreHttpController implements HttpController {
         handler: this.findGenres.bind(this),
         method: HttpMethodName.get,
         schema: {
-          request: {},
+          request: {
+            queryParams: findGenresQueryParamsDtoSchema,
+          },
           response: {
             [HttpStatusCode.ok]: {
               description: 'Genres found',

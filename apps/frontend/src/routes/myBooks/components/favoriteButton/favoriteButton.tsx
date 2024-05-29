@@ -1,7 +1,7 @@
 import { UserBook } from '@common/contracts';
 import { FC, useState } from 'react';
 import { useUpdateUserBookMutation } from '../../../../api/books/mutations/updateUserBookMutation/updateUserBookMutation.js';
-import { HiHeart } from 'react-icons/hi';
+import { HiHeart, HiOutlineHeart } from 'react-icons/hi';
 import { cn } from '../../../../lib/utils.js';
 
 interface Props {
@@ -27,9 +27,18 @@ export const IsFavoriteButton: FC<Props> = ({ userBook, userId }) => {
   };
 
   return (
-    <HiHeart
-      className={cn('h-8 w-8 cursor-pointer', isFavorite ? 'text-primary' : 'text-black')}
-      onClick={onIsFavoriteChange}
-    />
+    <>
+      {!isFavorite ? (
+        <HiOutlineHeart
+          className={cn('h-8 w-8 cursor-pointer', 'text-primary')}
+          onClick={onIsFavoriteChange}
+        />
+      ) : (
+        <HiHeart 
+          className={cn('h-8 w-8 cursor-pointer', 'text-primary' )}
+          onClick={onIsFavoriteChange}
+        />
+      )}
+    </>
   );
 };
