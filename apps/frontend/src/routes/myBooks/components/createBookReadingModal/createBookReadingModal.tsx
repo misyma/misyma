@@ -18,7 +18,6 @@ import { CalendarIcon } from 'lucide-react';
 import { Calendar } from '../../../../components/ui/calendar';
 import { Textarea } from '../../../../components/ui/textarea';
 import { useAddBookReadingMutation } from '../../../../api/bookReadings/mutations/bookReadings/addBookReadingMutation/addBookReadingMutation';
-import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery';
 
 interface Props {
   bookId: string;
@@ -37,8 +36,6 @@ const createBookReadingSchema = z.object({
 });
 
 export const CreateBookReadingModal: FC<Props> = ({ bookId, rating, trigger, onMutated }: Props) => {
-  const { data: userData } = useFindUserQuery();
-
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const [error, setError] = useState('');
@@ -62,7 +59,6 @@ export const CreateBookReadingModal: FC<Props> = ({ bookId, rating, trigger, onM
         ...values,
         startedAt: values.startedAt.toISOString(),
         endedAt: values.endedAt ? values.endedAt.toISOString() : undefined,
-        userId: userData?.id as string,
       });
 
       onMutated();

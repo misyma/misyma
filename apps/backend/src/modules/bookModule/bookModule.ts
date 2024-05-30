@@ -52,8 +52,6 @@ import { type UpdateUserBooksCommandHandler } from './application/commandHandler
 import { UpdateUserBooksCommandHandlerImpl } from './application/commandHandlers/updateUserBooksCommandHandler/updateUserBooksCommandHandlerImpl.js';
 import { type UploadUserBookImageCommandHandler } from './application/commandHandlers/uploadUserBookImageCommandHandler/uploadUserBookImageCommandHandler.js';
 import { UploadUserBookImageCommandHandlerImpl } from './application/commandHandlers/uploadUserBookImageCommandHandler/uploadUserBookImageCommandHandlerImpl.js';
-import { type FindAuthorQueryHandler } from './application/queryHandlers/findAuthorQueryHandler/findAuthorQueryHandler.js';
-import { FindAuthorQueryHandlerImpl } from './application/queryHandlers/findAuthorQueryHandler/findAuthorQueryHandlerImpl.js';
 import { type FindAuthorsQueryHandler } from './application/queryHandlers/findAuthorsQueryHandler/findAuthorsQueryHandler.js';
 import { FindAuthorsQueryHandlerImpl } from './application/queryHandlers/findAuthorsQueryHandler/findAuthorsQueryHandlerImpl.js';
 import { type FindBookQueryHandler } from './application/queryHandlers/findBookQueryHandler/findBookQueryHandler.js';
@@ -64,12 +62,8 @@ import { type FindBooksQueryHandler } from './application/queryHandlers/findBook
 import { FindBooksQueryHandlerImpl } from './application/queryHandlers/findBooksQueryHandler/findBooksQueryHandlerImpl.js';
 import { type FindBorrowingsQueryHandler } from './application/queryHandlers/findBorrowingsQueryHandler/findBorrowingsQueryHandler.js';
 import { FindBorrowingsQueryHandlerImpl } from './application/queryHandlers/findBorrowingsQueryHandler/findBorrowingsQueryHandlerImpl.js';
-import { type FindGenreByNameQueryHandler } from './application/queryHandlers/findGenreByNameQueryHandler/findGenreByNameQueryHandler.js';
-import { FindGenreByNameQueryHandlerImpl } from './application/queryHandlers/findGenreByNameQueryHandler/findGenreByNameQueryHandlerImpl.js';
 import { type FindGenresQueryHandler } from './application/queryHandlers/findGenresQueryHandler/findGenresQueryHandler.js';
 import { FindGenresQueryHandlerImpl } from './application/queryHandlers/findGenresQueryHandler/findGenresQueryHandlerImpl.js';
-import { type FindQuoteByIdQueryHandler } from './application/queryHandlers/findQuoteByIdQueryHandler/findQuoteByIdQueryHandler.js';
-import { FindQuoteByIdQueryHandlerImpl } from './application/queryHandlers/findQuoteByIdQueryHandler/findQuoteByIdQueryHandlerImpl.js';
 import { type FindQuotesByUserBookIdQueryHandler } from './application/queryHandlers/findQuotesByUserBookIdQueryHandler/findQuotesByUserBookIdQueryHandler.js';
 import { FindQuotesByUserBookIdQueryHandlerImpl } from './application/queryHandlers/findQuotesByUserBookIdQueryHandler/findQuotesByUserBookIdQueryHandlerImpl.js';
 import { type FindUserBookQueryHandler } from './application/queryHandlers/findUserBookQueryHandler/findUserBookQueryHandler.js';
@@ -443,11 +437,6 @@ export class BookModule implements DependencyInjectionModule {
       () => new FindBooksQueryHandlerImpl(container.get<BookRepository>(symbols.bookRepository)),
     );
 
-    container.bind<FindGenreByNameQueryHandler>(
-      symbols.findGenreByNameQueryHandler,
-      () => new FindGenreByNameQueryHandlerImpl(container.get<GenreRepository>(symbols.genreRepository)),
-    );
-
     container.bind<FindGenresQueryHandler>(
       symbols.findGenresQueryHandler,
       () => new FindGenresQueryHandlerImpl(container.get<GenreRepository>(symbols.genreRepository)),
@@ -465,11 +454,6 @@ export class BookModule implements DependencyInjectionModule {
           container.get<UserBookRepository>(symbols.userBookRepository),
           container.get<BookshelfRepository>(bookshelfSymbols.bookshelfRepository),
         ),
-    );
-
-    container.bind<FindAuthorQueryHandler>(
-      symbols.findAuthorQueryHandler,
-      () => new FindAuthorQueryHandlerImpl(container.get<AuthorRepository>(symbols.authorRepository)),
     );
 
     container.bind<FindAuthorsQueryHandler>(
@@ -493,11 +477,6 @@ export class BookModule implements DependencyInjectionModule {
           container.get<BorrowingRepository>(symbols.borrowingRepository),
           container.get<UserBookRepository>(bookSymbols.userBookRepository),
         ),
-    );
-
-    container.bind<FindQuoteByIdQueryHandler>(
-      symbols.findQuoteByIdQueryHandler,
-      () => new FindQuoteByIdQueryHandlerImpl(container.get<QuoteRepository>(symbols.quoteRepository)),
     );
 
     container.bind<FindQuotesByUserBookIdQueryHandler>(
@@ -538,7 +517,6 @@ export class BookModule implements DependencyInjectionModule {
       () =>
         new GenreHttpController(
           container.get<FindGenresQueryHandler>(symbols.findGenresQueryHandler),
-          container.get<FindGenreByNameQueryHandler>(symbols.findGenreByNameQueryHandler),
           container.get<AccessControlService>(authSymbols.accessControlService),
         ),
     );
@@ -574,7 +552,6 @@ export class BookModule implements DependencyInjectionModule {
       () =>
         new AuthorHttpController(
           container.get<CreateAuthorCommandHandler>(symbols.createAuthorCommandHandler),
-          container.get<FindAuthorQueryHandler>(symbols.findAuthorQueryHandler),
           container.get<FindAuthorsQueryHandler>(symbols.findAuthorsQueryHandler),
           container.get<AccessControlService>(authSymbols.accessControlService),
         ),
@@ -619,7 +596,6 @@ export class BookModule implements DependencyInjectionModule {
       () =>
         new QuoteHttpController(
           container.get<FindQuotesByUserBookIdQueryHandler>(symbols.findQuotesByUserBookIdQueryHandler),
-          container.get<FindQuoteByIdQueryHandler>(symbols.findQuoteByIdQueryHandler),
           container.get<CreateQuoteCommandHandler>(symbols.createQuoteCommandHandler),
           container.get<UpdateQuoteCommandHandler>(symbols.updateQuoteCommandHandler),
           container.get<DeleteQuoteCommandHandler>(symbols.deleteQuoteCommandHandler),

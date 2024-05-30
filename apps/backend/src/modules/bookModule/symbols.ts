@@ -15,7 +15,6 @@ export const symbols = {
   updateGenreNameCommandHandler: Symbol('updateGenreNameCommandHandler'),
   deleteGenreCommandHandler: Symbol('deleteGenreCommandHandler'),
   findGenresQueryHandler: Symbol('findGenresQueryHandler'),
-  findGenreByNameQueryHandler: Symbol('findGenreByNameQueryHandler'),
   genreHttpController: Symbol('genreHttpController'),
   genreAdminHttpController: Symbol('genreAdminHttpController'),
 
@@ -35,7 +34,6 @@ export const symbols = {
   createAuthorCommandHandler: Symbol('createAuthorCommandHandler'),
   loginAuthorCommandHandler: Symbol('loginAuthorCommandHandler'),
   deleteAuthorCommandHandler: Symbol('deleteAuthorCommandHandler'),
-  findAuthorQueryHandler: Symbol('findAuthorQueryHandler'),
   findAuthorsQueryHandler: Symbol('findAuthorsQueryHandler'),
   authorHttpController: Symbol('authorHttpController'),
   authorAdminHttpController: Symbol('authorAdminHttpController'),
@@ -50,7 +48,6 @@ export const symbols = {
 
   quoteMapper: Symbol('quoteMapper'),
   quoteRepository: Symbol('quoteRepository'),
-  findQuoteByIdQueryHandler: Symbol('findQuoteByIdQueryHandler'),
   findQuotesByUserBookIdQueryHandler: Symbol('findQuotesByUserBookIdQueryHandler'),
   createQuoteCommandHandler: Symbol('createQuoteCommandHandler'),
   updateQuoteCommandHandler: Symbol('updateQuoteCommandHandler'),
