@@ -58,8 +58,6 @@ import { type FindAuthorsQueryHandler } from './application/queryHandlers/findAu
 import { FindAuthorsQueryHandlerImpl } from './application/queryHandlers/findAuthorsQueryHandler/findAuthorsQueryHandlerImpl.js';
 import { type FindBookQueryHandler } from './application/queryHandlers/findBookQueryHandler/findBookQueryHandler.js';
 import { FindBookQueryHandlerImpl } from './application/queryHandlers/findBookQueryHandler/findBookQueryHandlerImpl.js';
-import { type FindBookReadingByIdQueryHandler } from './application/queryHandlers/findBookReadingByIdQueryHandler/findBookReadingByIdQueryHandler.js';
-import { FindBookReadingByIdQueryHandlerImpl } from './application/queryHandlers/findBookReadingByIdQueryHandler/findBookReadingByIdQueryHandlerImpl.js';
 import { type FindBookReadingsByUserBookIdQueryHandler } from './application/queryHandlers/findBookReadingsByUserBookIdQueryHandler/findBookReadingsByUserBookIdQueryHandler.js';
 import { FindBookReadingsByUserBookIdQueryHandlerImpl } from './application/queryHandlers/findBookReadingsByUserBookIdQueryHandler/findBookReadingsByUserBookIdQueryHandlerImpl.js';
 import { type FindBooksQueryHandler } from './application/queryHandlers/findBooksQueryHandler/findBooksQueryHandler.js';
@@ -479,12 +477,6 @@ export class BookModule implements DependencyInjectionModule {
       () => new FindAuthorsQueryHandlerImpl(container.get<AuthorRepository>(symbols.authorRepository)),
     );
 
-    container.bind<FindBookReadingByIdQueryHandler>(
-      symbols.findBookReadingByIdQueryHandler,
-      () =>
-        new FindBookReadingByIdQueryHandlerImpl(container.get<BookReadingRepository>(symbols.bookReadingRepository)),
-    );
-
     container.bind<FindBookReadingsByUserBookIdQueryHandler>(
       symbols.findBookReadingsByUserBookIdQueryHandler,
       () =>
@@ -603,7 +595,6 @@ export class BookModule implements DependencyInjectionModule {
       () =>
         new BookReadingHttpController(
           container.get<FindBookReadingsByUserBookIdQueryHandler>(symbols.findBookReadingsByUserBookIdQueryHandler),
-          container.get<FindBookReadingByIdQueryHandler>(symbols.findBookReadingByIdQueryHandler),
           container.get<CreateBookReadingCommandHandler>(symbols.createBookReadingCommandHandler),
           container.get<UpdateBookReadingCommandHandler>(symbols.updateBookReadingCommandHandler),
           container.get<DeleteBookReadingCommandHandler>(symbols.deleteBookReadingCommandHandler),

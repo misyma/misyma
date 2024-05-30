@@ -42,7 +42,6 @@ export const symbols = {
 
   bookReadingMapper: Symbol('bookReadingMapper'),
   bookReadingRepository: Symbol('bookReadingRepository'),
-  findBookReadingByIdQueryHandler: Symbol('findBookReadingByIdQueryHandler'),
   findBookReadingsByUserBookIdQueryHandler: Symbol('findBookReadingsByUserBookIdQueryHandler'),
   createBookReadingCommandHandler: Symbol('createBookReadingCommandHandler'),
   updateBookReadingCommandHandler: Symbol('updateBookReadingCommandHandler'),

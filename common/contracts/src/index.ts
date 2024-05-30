@@ -84,8 +84,6 @@ export * from './schemas/bookReading/createBookReading.js';
 
 export * from './schemas/bookReading/deleteBookReading.js';
 
-export * from './schemas/bookReading/findBookReadingById.js';
-
 export * from './schemas/bookReading/findBookReadings.js';
 
 export * from './schemas/bookReading/updateBookReading.js';
