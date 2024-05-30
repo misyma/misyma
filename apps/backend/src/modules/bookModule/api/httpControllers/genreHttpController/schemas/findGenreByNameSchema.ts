@@ -5,16 +5,16 @@ import type * as contracts from '@common/contracts';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 import { genreDtoSchema } from '../../common/genreDto.js';
 
-export const findGenreByNameQueryParamsDtoSchema = Type.Object({
+export const findGenreByNamePathParamsDtoSchema = Type.Object({
   name: Type.String({
     minLength: 1,
     maxLength: 64,
   }),
 });
 
-export type FindGenreByNameQueryParamsDto = TypeExtends<
-  contracts.FindGenreByNameQueryParams,
-  Static<typeof findGenreByNameQueryParamsDtoSchema>
+export type FindGenreByNamePathParamsDto = TypeExtends<
+  contracts.FindGenreByNamePathParams,
+  Static<typeof findGenreByNamePathParamsDtoSchema>
 >;
 
 export const findGenreByNameResponseBodyDtoSchema = genreDtoSchema;

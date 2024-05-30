@@ -1,6 +1,6 @@
 import { type Genre } from './genre.js';
 
-export interface FindGenreByNameQueryParams {
+export interface FindGenreByNamePathParams {
   readonly name: string;
 }
 

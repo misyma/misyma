@@ -66,8 +66,6 @@ import { type FindBooksQueryHandler } from './application/queryHandlers/findBook
 import { FindBooksQueryHandlerImpl } from './application/queryHandlers/findBooksQueryHandler/findBooksQueryHandlerImpl.js';
 import { type FindBorrowingsQueryHandler } from './application/queryHandlers/findBorrowingsQueryHandler/findBorrowingsQueryHandler.js';
 import { FindBorrowingsQueryHandlerImpl } from './application/queryHandlers/findBorrowingsQueryHandler/findBorrowingsQueryHandlerImpl.js';
-import { type FindGenreByIdQueryHandler } from './application/queryHandlers/findGenreByIdQueryHandler/findGenreByIdQueryHandler.js';
-import { FindGenreByIdQueryHandlerImpl } from './application/queryHandlers/findGenreByIdQueryHandler/findGenreByIdQueryHandlerImpl.js';
 import { type FindGenreByNameQueryHandler } from './application/queryHandlers/findGenreByNameQueryHandler/findGenreByNameQueryHandler.js';
 import { FindGenreByNameQueryHandlerImpl } from './application/queryHandlers/findGenreByNameQueryHandler/findGenreByNameQueryHandlerImpl.js';
 import { type FindGenresQueryHandler } from './application/queryHandlers/findGenresQueryHandler/findGenresQueryHandler.js';
@@ -457,11 +455,6 @@ export class BookModule implements DependencyInjectionModule {
       () => new FindGenresQueryHandlerImpl(container.get<GenreRepository>(symbols.genreRepository)),
     );
 
-    container.bind<FindGenreByIdQueryHandler>(
-      symbols.findGenreByIdQueryHandler,
-      () => new FindGenreByIdQueryHandlerImpl(container.get<GenreRepository>(symbols.genreRepository)),
-    );
-
     container.bind<FindUserBookQueryHandler>(
       symbols.findUserBookQueryHandler,
       () => new FindUserBookQueryHandlerImpl(container.get<UserBookRepository>(symbols.userBookRepository)),
@@ -554,7 +547,6 @@ export class BookModule implements DependencyInjectionModule {
         new GenreHttpController(
           container.get<FindGenresQueryHandler>(symbols.findGenresQueryHandler),
           container.get<FindGenreByNameQueryHandler>(symbols.findGenreByNameQueryHandler),
-          container.get<FindGenreByIdQueryHandlerImpl>(symbols.findGenreByIdQueryHandler),
           container.get<AccessControlService>(authSymbols.accessControlService),
         ),
     );
