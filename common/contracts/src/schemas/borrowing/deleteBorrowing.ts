@@ -1,3 +1,3 @@
 export interface DeleteBorrowingPathParams {
-  readonly id: string;
+  readonly borrowingId: string;
 }

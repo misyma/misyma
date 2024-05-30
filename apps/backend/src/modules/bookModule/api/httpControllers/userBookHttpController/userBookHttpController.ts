@@ -111,7 +111,7 @@ export class UserBookHttpController implements HttpController {
       }),
       new HttpRoute({
         method: HttpMethodName.get,
-        path: ':id',
+        path: ':userBookId',
         handler: this.findUserBook.bind(this),
         schema: {
           request: {
@@ -148,7 +148,7 @@ export class UserBookHttpController implements HttpController {
       }),
       new HttpRoute({
         method: HttpMethodName.delete,
-        path: ':id',
+        path: ':userBookId',
         handler: this.deleteUserBook.bind(this),
         schema: {
           request: {
@@ -183,7 +183,7 @@ export class UserBookHttpController implements HttpController {
       }),
       new HttpRoute({
         method: HttpMethodName.patch,
-        path: ':id',
+        path: ':userBookId',
         description: `Update user's book`,
         handler: this.updateUserBook.bind(this),
         schema: {
@@ -217,7 +217,7 @@ export class UserBookHttpController implements HttpController {
       }),
       new HttpRoute({
         method: HttpMethodName.patch,
-        path: ':id/images',
+        path: ':userBookId/images',
         description: `Upload user book's image`,
         handler: this.uploadUserBookImage.bind(this),
         schema: {
@@ -244,12 +244,12 @@ export class UserBookHttpController implements HttpController {
       authorizationHeader: request.headers['authorization'],
     });
 
-    const { id } = request.pathParams;
+    const { userBookId } = request.pathParams;
 
     const { status, bookshelfId, imageUrl, isFavorite, genreIds } = request.body;
 
     const { userBook } = await this.updateUserBookCommandHandler.execute({
-      userBookId: id,
+      userBookId,
       status,
       isFavorite,
       bookshelfId,
@@ -287,7 +287,7 @@ export class UserBookHttpController implements HttpController {
       authorizationHeader: request.headers['authorization'],
     });
 
-    const { id } = request.pathParams;
+    const { userBookId } = request.pathParams;
 
     if (!request.file) {
       throw new OperationNotValidError({
@@ -296,7 +296,7 @@ export class UserBookHttpController implements HttpController {
     }
 
     const { userBook } = await this.uploadUserBookImageCommandHandler.execute({
-      userBookId: id,
+      userBookId,
       data: request.file.data,
       contentType: request.file.type,
     });
@@ -334,13 +334,13 @@ export class UserBookHttpController implements HttpController {
   private async findUserBook(
     request: HttpRequest<undefined, undefined, FindUserBookPathParamsDto>,
   ): Promise<HttpOkResponse<FindUserBookResponseBodyDto>> {
-    const { id } = request.pathParams;
+    const { userBookId } = request.pathParams;
 
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
-    const { userBook } = await this.findUserBookQueryHandler.execute({ userBookId: id });
+    const { userBook } = await this.findUserBookQueryHandler.execute({ userBookId });
 
     return {
       statusCode: HttpStatusCode.ok,
@@ -383,13 +383,13 @@ export class UserBookHttpController implements HttpController {
   private async deleteUserBook(
     request: HttpRequest<undefined, undefined, DeleteUserBookPathParamsDto>,
   ): Promise<HttpNoContentResponse<DeleteUserBooksResponseBodyDto>> {
-    const { id } = request.pathParams;
+    const { userBookId } = request.pathParams;
 
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
-    await this.deleteUserBookCommandHandler.execute({ userBookIds: [id] });
+    await this.deleteUserBookCommandHandler.execute({ userBookIds: [userBookId] });
 
     return {
       statusCode: HttpStatusCode.noContent,

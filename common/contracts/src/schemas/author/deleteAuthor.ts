@@ -1,3 +1,3 @@
 export interface DeleteAuthorPathParams {
-  readonly id: string;
+  readonly authorId: string;
 }

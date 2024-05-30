@@ -1,3 +1,3 @@
 export interface DeleteGenrePathParams {
-  readonly id: string;
+  readonly genreId: string;
 }

@@ -6,7 +6,7 @@ import { borrowingDtoSchema } from './borrowingDto.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const updateBorrowingPathParamsDtoSchema = Type.Object({
-  id: Type.String({ format: 'uuid' }),
+  borrowingId: Type.String({ format: 'uuid' }),
   userBookId: Type.String({ format: 'uuid' }),
 });
 

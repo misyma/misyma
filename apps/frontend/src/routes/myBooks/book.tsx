@@ -23,7 +23,7 @@ export const BookPage: FC = () => {
   const { data: userData } = useFindUserQuery();
 
   const { data, isFetched, isFetching, isRefetching } = useFindUserBookQuery({
-    id: bookId,
+    userBookId: bookId,
     userId: userData?.id ?? '',
   });
 

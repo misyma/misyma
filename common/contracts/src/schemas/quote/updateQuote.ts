@@ -7,7 +7,7 @@ export interface UpdateQuoteRequestBody {
 }
 
 export interface UpdateQuotePathParams {
-  readonly id: string;
+  readonly quoteId: string;
   readonly userBookId: string;
 }
 

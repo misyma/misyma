@@ -6,7 +6,7 @@ import { quoteDtoSchema } from './quoteDto.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const updateQuotePathParamsDtoSchema = Type.Object({
-  id: Type.String({ format: 'uuid' }),
+  quoteId: Type.String({ format: 'uuid' }),
   userBookId: Type.String({ format: 'uuid' }),
 });
 

@@ -1,5 +1,5 @@
 export interface LogoutUserPathParams {
-  readonly id: string;
+  readonly userId: string;
 }
 
 export interface LogoutUserRequestBody {

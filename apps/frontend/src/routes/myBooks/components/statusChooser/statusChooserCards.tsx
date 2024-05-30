@@ -20,7 +20,7 @@ export const StatusChooserCards: FC<Props> = ({ bookId }) => {
   const { data: userData } = useFindUserQuery();
 
   const { data, isFetching, isFetched, isRefetching } = useFindUserBookQuery({
-    id: bookId,
+    userBookId: bookId,
     userId: userData?.id ?? '',
   });
 
@@ -37,7 +37,7 @@ export const StatusChooserCards: FC<Props> = ({ bookId }) => {
     }
 
     await updateUserBook({
-      id: data?.id as string,
+      userBookId: data?.id as string,
       userId: userData?.id as string,
       status: chosenStatus,
     });

@@ -1,7 +1,7 @@
 import { type Book } from './book.js';
 
 export interface FindBookPathParams {
-  readonly id: string;
+  readonly bookId: string;
 }
 
 export interface FindBookResponseBody extends Book {}

@@ -102,7 +102,7 @@ export * from './schemas/genre/createGenre.js';
 
 export * from './schemas/genre/deleteGenre.js';
 
-export * from './schemas/genre/updateGenreName.js';
+export * from './schemas/genre/updateGenre.js';
 
 export * from './schemas/quote/quote.js';
 

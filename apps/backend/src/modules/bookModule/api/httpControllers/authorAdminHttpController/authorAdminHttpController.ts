@@ -56,7 +56,7 @@ export class AuthorAdminHttpController implements HttpController {
       }),
       new HttpRoute({
         method: HttpMethodName.delete,
-        path: ':id',
+        path: ':authorId',
         handler: this.deleteAuthor.bind(this),
         schema: {
           request: {
@@ -99,14 +99,14 @@ export class AuthorAdminHttpController implements HttpController {
   private async deleteAuthor(
     request: HttpRequest<undefined, undefined, DeleteAuthorPathParamsDto>,
   ): Promise<HttpNoContentResponse<DeleteAuthorResponseBodyDto>> {
-    const { id } = request.pathParams;
+    const { authorId } = request.pathParams;
 
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
       expectedRole: UserRole.admin,
     });
 
-    await this.deleteAuthorCommandHandler.execute({ authorId: id });
+    await this.deleteAuthorCommandHandler.execute({ authorId });
 
     return {
       statusCode: HttpStatusCode.noContent,

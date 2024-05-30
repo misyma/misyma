@@ -21,10 +21,10 @@ export const useUpdateUserBookMutation = (
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const uploadImage = async (payload: Payload) => {
-    const { id, userId, ...rest } = payload;
+    const { userBookId, userId, ...rest } = payload;
 
     const response = await HttpService.patch<UploadUserBookImageResponseBody>({
-      url: `/users/${userId}/books/${id}`,
+      url: `/users/${userId}/books/${userBookId}`,
       // eslint-disable-next-line
       body: rest as any,
       headers: {

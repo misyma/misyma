@@ -17,7 +17,7 @@ export const IsFavoriteButton: FC<Props> = ({ userBook, userId }) => {
   const onIsFavoriteChange = async (): Promise<void> => {
     if (userBook) {
       await updateUserBook({
-        id: userBook.id,
+        userBookId: userBook.id,
         userId: userId as string,
         isFavorite: !userBook.isFavorite,
       });
@@ -34,7 +34,7 @@ export const IsFavoriteButton: FC<Props> = ({ userBook, userId }) => {
           onClick={onIsFavoriteChange}
         />
       ) : (
-        <HiHeart 
+        <HiHeart
           className={cn('h-8 w-8 cursor-pointer', 'text-primary' )}
           onClick={onIsFavoriteChange}
         />

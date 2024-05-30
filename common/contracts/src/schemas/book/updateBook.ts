@@ -3,7 +3,7 @@ import { type BookFormat } from './bookFormat.js';
 import { type Language } from './language.js';
 
 export interface UpdateBookPathParams {
-  readonly id: string;
+  readonly bookId: string;
 }
 
 export interface UpdateBookRequestBody {

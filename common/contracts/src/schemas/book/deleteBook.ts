@@ -1,3 +1,3 @@
 export interface DeleteBookPathParams {
-  readonly id: string;
+  readonly bookId: string;
 }

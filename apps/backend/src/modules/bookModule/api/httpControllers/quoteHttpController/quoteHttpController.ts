@@ -100,7 +100,7 @@ export class QuoteHttpController implements HttpController {
       }),
       new HttpRoute({
         method: HttpMethodName.patch,
-        path: ':id',
+        path: ':quoteId',
         handler: this.updateQuote.bind(this),
         description: 'Update Quote',
         schema: {
@@ -118,7 +118,7 @@ export class QuoteHttpController implements HttpController {
       }),
       new HttpRoute({
         method: HttpMethodName.delete,
-        path: ':id',
+        path: ':quoteId',
         handler: this.deleteQuote.bind(this),
         description: 'Delete Quote',
         schema: {
@@ -216,12 +216,12 @@ export class QuoteHttpController implements HttpController {
 
     // TODO: authorization
 
-    const { id } = request.pathParams;
+    const { quoteId } = request.pathParams;
 
     const { content, isFavorite, page } = request.body;
 
     const { quote } = await this.updateQuoteCommandHandler.execute({
-      id,
+      id: quoteId,
       content,
       isFavorite,
       page,
@@ -242,9 +242,9 @@ export class QuoteHttpController implements HttpController {
 
     // TODO: authorization
 
-    const { id } = request.pathParams;
+    const { quoteId } = request.pathParams;
 
-    await this.deleteQuoteCommandHandler.execute({ id });
+    await this.deleteQuoteCommandHandler.execute({ id: quoteId });
 
     return {
       statusCode: HttpStatusCode.noContent,

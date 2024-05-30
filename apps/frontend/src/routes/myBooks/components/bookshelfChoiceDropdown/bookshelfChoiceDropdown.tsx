@@ -18,7 +18,7 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId }) => {
   const { data: userData } = useFindUserQuery();
 
   const { data, isFetching, isFetched, isRefetching } = useFindUserBookQuery({
-    id: bookId,
+    userBookId: bookId,
     userId: userData?.id ?? '',
   });
 
@@ -37,7 +37,7 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId }) => {
 
   const onBookshelfChange = async (id: string): Promise<void> => {
     await updateUserBook({
-      id: bookId,
+      userBookId: bookId,
       userId: userData?.id as string,
       bookshelfId: id,
     });

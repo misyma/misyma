@@ -1,4 +1,4 @@
 export interface DeleteQuotePathParams {
-  readonly id: string;
+  readonly quoteId: string;
   readonly userBookId: string;
 }

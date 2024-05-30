@@ -178,7 +178,7 @@ export class UserHttpController implements HttpController {
       }),
       new HttpRoute({
         method: HttpMethodName.get,
-        path: ':id',
+        path: ':userId',
         handler: this.findUser.bind(this),
         schema: {
           request: {
@@ -212,7 +212,7 @@ export class UserHttpController implements HttpController {
       }),
       new HttpRoute({
         method: HttpMethodName.delete,
-        path: ':id',
+        path: ':userId',
         handler: this.deleteUser.bind(this),
         schema: {
           request: {
@@ -264,7 +264,7 @@ export class UserHttpController implements HttpController {
       }),
       new HttpRoute({
         method: HttpMethodName.post,
-        path: ':id/logout',
+        path: ':userId/logout',
         handler: this.logoutUser.bind(this),
         schema: {
           request: {
@@ -370,14 +370,14 @@ export class UserHttpController implements HttpController {
   private async findUser(
     request: HttpRequest<undefined, undefined, FindUserPathParamsDto>,
   ): Promise<HttpOkResponse<FindUserResponseBodyDto>> {
-    const { id } = request.pathParams;
+    const { userId } = request.pathParams;
 
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
-      expectedUserId: id,
+      expectedUserId: userId,
     });
 
-    const { user } = await this.findUserQueryHandler.execute({ userId: id });
+    const { user } = await this.findUserQueryHandler.execute({ userId });
 
     return {
       statusCode: HttpStatusCode.ok,
@@ -401,14 +401,14 @@ export class UserHttpController implements HttpController {
   private async deleteUser(
     request: HttpRequest<undefined, undefined, DeleteUserPathParamsDto>,
   ): Promise<HttpNoContentResponse<DeleteUserResponseBodyDto>> {
-    const { id } = request.pathParams;
+    const { userId } = request.pathParams;
 
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
-      expectedUserId: id,
+      expectedUserId: userId,
     });
 
-    await this.deleteUserCommandHandler.execute({ userId: id });
+    await this.deleteUserCommandHandler.execute({ userId });
 
     return {
       statusCode: HttpStatusCode.noContent,
@@ -447,17 +447,17 @@ export class UserHttpController implements HttpController {
   private async logoutUser(
     request: HttpRequest<LogoutUserBodyDto, undefined, LogoutUserPathParamsDto>,
   ): Promise<HttpOkResponse<LogoutUserResponseBodyDto>> {
-    const { id } = request.pathParams;
+    const { userId } = request.pathParams;
 
     const { refreshToken, accessToken } = request.body;
 
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
-      expectedUserId: id,
+      expectedUserId: userId,
     });
 
     await this.logoutUserCommandHandler.execute({
-      userId: id,
+      userId,
       refreshToken,
       accessToken,
     });
