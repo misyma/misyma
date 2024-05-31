@@ -177,6 +177,8 @@ export function QuotationsTable<TData, TValue>({
                     return;
                   }
 
+                  onSetPage(previousPage -1);
+
                   setCurrentPage(previousPage);
                 }}
                 isActive={previousPage === undefined}
@@ -200,13 +202,12 @@ export function QuotationsTable<TData, TValue>({
                     return setCurrentPage(currentPage + 1);
                   }
 
-
                   if (pageCount == currentPage && pageCount === 2) {
                     return;
                   }
 
                   if (currentPage === pageCount) {
-                    onSetPage(currentPage - 1);
+                    onSetPage(currentPage - 2);
                     return setCurrentPage(pageCount - 1);
                   }
                 }}
@@ -225,10 +226,13 @@ export function QuotationsTable<TData, TValue>({
                   className={nextPage === undefined ? 'pointer-events-none hover:text-none hover:bg-none' : ''}
                   onClick={() => {
                     if (nextPage) {
+                      onSetPage(nextPage -1);
                       setCurrentPage(nextPage);
                     }
                   }}
-                ></PaginationLink>
+                >
+                  {nextPage === undefined ? pageCount : nextPage}
+                </PaginationLink>
               </PaginationItem>
             ) : (
               <> </>
