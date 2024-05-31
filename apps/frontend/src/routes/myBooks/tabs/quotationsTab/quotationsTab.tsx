@@ -2,7 +2,7 @@ import { FC, useMemo, useState } from 'react';
 import { useFindUserBookQuery } from '../../../../api/books/queries/findUserBook/findUserBookQuery';
 import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery';
 import { BasicDataTabSkeleton } from '../basicDataTab/basicDataTabSkeleton';
-import { IsFavoriteButton } from '../../components/favoriteButton/favoriteButton';
+import { FavoriteBookButton } from '../../components/favoriteBookButton/favoriteBookButton';
 import { UserBook } from '@common/contracts';
 import { Separator } from '@radix-ui/react-select';
 import { QuotationsTable } from '../../components/quotationsTable/quotationsTable';
@@ -97,7 +97,7 @@ export const QuotationsTab: FC<Props> = ({ userBookId }) => {
             />
           </div>
           <div className="flex justify-center">
-            <IsFavoriteButton
+            <FavoriteBookButton
               userBook={userBookData as UserBook}
               userId={userData?.id as string}
             />

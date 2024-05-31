@@ -3,7 +3,7 @@ import { StarRating } from '../../components/starRating/starRating.js';
 import { StatusChooserCards } from '../../components/statusChooser/statusChooserCards.js';
 import { BookshelfChoiceDropdown } from '../../components/bookshelfChoiceDropdown/bookshelfChoiceDropdown.js';
 import { Separator } from '../../../../components/ui/separator.js';
-import { IsFavoriteButton } from '../../components/favoriteButton/favoriteButton.js';
+import { FavoriteBookButton } from '../../components/favoriteBookButton/favoriteBookButton.js';
 import { useFindUserBookQuery } from '../../../../api/books/queries/findUserBook/findUserBookQuery.js';
 import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery.js';
 import { UserBook } from '@common/contracts';
@@ -16,7 +16,6 @@ interface Props {
 
 export const BasicDataTab: FC<Props> = ({ bookId }) => {
   const { data: userData } = useFindUserQuery();
-
 
   const { data, isFetched, isFetching, isRefetching } = useFindUserBookQuery({
     id: bookId,
@@ -36,7 +35,7 @@ export const BasicDataTab: FC<Props> = ({ bookId }) => {
             />
           </div>
           <div className="flex justify-center">
-            <IsFavoriteButton
+            <FavoriteBookButton
               userBook={data as UserBook}
               userId={userData?.id as string}
             />

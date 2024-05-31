@@ -10,6 +10,7 @@ import { BasicDataTab } from './tabs/basicDataTab/basicDataTab';
 import { QuotationsTab } from './tabs/quotationsTab/quotationsTab';
 import { GradesTab } from './tabs/gradesTab/gradesTab';
 import { cn } from '../../lib/utils';
+import { CreateQuotationModal } from './components/createQuotationModal/createQuotationModal';
 
 export const BookPage: FC = () => {
   const { bookId } = bookRoute.useParams();
@@ -38,8 +39,8 @@ export const BookPage: FC = () => {
             <ul className="flex justify-between gap-8 text-sm sm:text-lg font-semibold">
               <li
                 className={cn(
-                  "cursor-pointer",
-                  currentTab === 'basicData' ? 'cursor-default text-primary font-bold' : ''
+                  'cursor-pointer',
+                  currentTab === 'basicData' ? 'cursor-default text-primary font-bold' : '',
                 )}
                 onClick={() => setTab('basicData')}
               >
@@ -47,24 +48,31 @@ export const BookPage: FC = () => {
               </li>
               <li
                 className={cn(
-                  "cursor-pointer",
-                  currentTab === 'quotations' ? 'cursor-default text-primary font-bold' : ''
+                  'cursor-pointer',
+                  currentTab === 'quotations' ? 'cursor-default text-primary font-bold' : '',
                 )}
                 onClick={() => setTab('quotations')}
               >
                 Cytaty
               </li>
               <li
-                className={cn(
-                  "cursor-pointer",
-                  currentTab === 'grades' ? 'cursor-default text-primary font-bold' : ''
-                )}
+                className={cn('cursor-pointer', currentTab === 'grades' ? 'cursor-default text-primary font-bold' : '')}
                 onClick={() => setTab('grades')}
               >
                 Oceny
               </li>
             </ul>
-            <Button className="w-32 sm:w-96">Edytuj dane</Button>
+            {currentTab === 'basicData' ? (
+              <Button className="w-32 sm:w-96">Edytuj dane</Button>
+            ) : currentTab === 'grades' ? (
+              <Button className="w-32 sm:w-96">Dodaj ocenę - todo: zmienić na gwiazdki :)</Button>
+            ) : currentTab === 'quotations' ? (
+              <CreateQuotationModal
+                onMutated={() => {}}
+                trigger={<Button className="w-32 sm:w-96">Dodaj cytat</Button>}
+                userBookId={bookId}
+              />
+            ) : null}
           </div>
           {currentTab === 'basicData' ? (
             <BasicDataTab bookId={bookId}></BasicDataTab>

@@ -9,7 +9,7 @@ interface Props {
   userId: string;
 }
 
-export const IsFavoriteButton: FC<Props> = ({ userBook, userId }) => {
+export const FavoriteBookButton: FC<Props> = ({ userBook, userId }) => {
   const [isFavorite, setIsFavorite] = useState(userBook?.isFavorite ?? false);
 
   const { mutateAsync: updateUserBook } = useUpdateUserBookMutation({});

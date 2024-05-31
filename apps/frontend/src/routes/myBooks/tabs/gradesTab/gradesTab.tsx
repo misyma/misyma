@@ -4,7 +4,7 @@ import { StatusChooserCards } from '../../components/statusChooser/statusChooser
 import { BookshelfChoiceDropdown } from '../../components/bookshelfChoiceDropdown/bookshelfChoiceDropdown.js';
 import { Separator } from '../../../../components/ui/separator.js';
 import { IoMdStar } from 'react-icons/io';
-import { IsFavoriteButton } from '../../components/favoriteButton/favoriteButton.js';
+import { FavoriteBookButton } from '../../components/favoriteBookButton/favoriteBookButton.js';
 import { Skeleton } from '../../../../components/ui/skeleton.js';
 import { useFindUserBookQuery } from '../../../../api/books/queries/findUserBook/findUserBookQuery.js';
 import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery.js';
@@ -74,7 +74,7 @@ export const GradesTab: FC<Props> = ({ bookId }) => {
             />
           </div>
           <div className="flex justify-center">
-            <IsFavoriteButton
+            <FavoriteBookButton
               userBook={data as UserBook}
               userId={userData?.id as string}
             />
