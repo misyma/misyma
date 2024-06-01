@@ -58,7 +58,7 @@ export const Navbar: FC = () => {
   const linkClasses = '[&.active]:font-extrabold [&.active]:underline underline-offset-8 decoration-[3px] text-nowrap';
 
   return (
-    <div className="bg-white p-8 top-0 fixed flex justify-end w-full items-center">
+    <div className="bg-white p-8 top-0 fixed z-50 flex justify-end w-full items-center">
       <div className="w-[100%] text-3xl md:text-5xl lg:text-5xl font-logo-bold">
         <Link to="/">MISYMA</Link>
       </div>

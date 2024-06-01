@@ -34,7 +34,7 @@ interface DataTableProps<TData, TValue> {
   onSetPage: (val: number) => Promise<void> | void;
 }
 
-export function QuotationsTable<TData, TValue>({
+export function GradesTable<TData, TValue>({
   columns,
   data,
   pageIndex,

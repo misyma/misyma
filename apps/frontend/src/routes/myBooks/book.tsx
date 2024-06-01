@@ -11,9 +11,16 @@ import { QuotationsTab } from './tabs/quotationsTab/quotationsTab';
 import { GradesTab } from './tabs/gradesTab/gradesTab';
 import { cn } from '../../lib/utils';
 import { CreateQuotationModal } from './components/createQuotationModal/createQuotationModal';
+import { AddStarRatingButton } from './components/addStarRatingButton/addStarRatingButton';
+import { useQueryClient } from '@tanstack/react-query';
+import { useFindUserQuery } from '../../api/user/queries/findUserQuery/findUserQuery';
 
 export const BookPage: FC = () => {
+  const { data: userData } = useFindUserQuery();
+
   const { bookId } = bookRoute.useParams();
+
+  const queryClient = useQueryClient();
 
   const tabMap = {
     basicData: BasicDataTab,
@@ -28,6 +35,12 @@ export const BookPage: FC = () => {
 
     setCurrentTab(tab);
   };
+
+  const invalidateReadingsFetch = () =>
+    queryClient.invalidateQueries({
+      predicate: (query) =>
+        query.queryKey[0] === `findBookReadings` && query.queryKey[1] === userData?.id && query.queryKey[2] === bookId,
+    });
 
   return (
     <AuthenticatedLayout>
@@ -65,7 +78,14 @@ export const BookPage: FC = () => {
             {currentTab === 'basicData' ? (
               <Button className="w-32 sm:w-96">Edytuj dane</Button>
             ) : currentTab === 'grades' ? (
-              <Button className="w-32 sm:w-96">Dodaj ocenę - todo: zmienić na gwiazdki :)</Button>
+              <div className="flex gap-1 justify-center items-end flex-col">
+                <p>Dodaj ocenę</p>
+
+                <AddStarRatingButton
+                  onCreated={async () => await invalidateReadingsFetch()}
+                  userBookId={bookId}
+                />
+              </div>
             ) : currentTab === 'quotations' ? (
               <CreateQuotationModal
                 onMutated={() => {}}
@@ -77,7 +97,7 @@ export const BookPage: FC = () => {
           {currentTab === 'basicData' ? (
             <BasicDataTab bookId={bookId}></BasicDataTab>
           ) : currentTab === 'grades' ? (
-            <GradesTab bookId={bookId} />
+            <GradesTab userBookId={bookId} />
           ) : currentTab === 'quotations' ? (
             <QuotationsTab userBookId={bookId} />
           ) : null}

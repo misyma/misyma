@@ -1,112 +1,116 @@
-import { FC } from 'react';
-import { StarRating } from '../../components/starRating/starRating.js';
-import { StatusChooserCards } from '../../components/statusChooser/statusChooserCards.js';
-import { BookshelfChoiceDropdown } from '../../components/bookshelfChoiceDropdown/bookshelfChoiceDropdown.js';
+import { FC, useMemo, useState } from 'react';
 import { Separator } from '../../../../components/ui/separator.js';
-import { IoMdStar } from 'react-icons/io';
-import { FavoriteBookButton } from '../../components/favoriteBookButton/favoriteBookButton.js';
-import { Skeleton } from '../../../../components/ui/skeleton.js';
 import { useFindUserBookQuery } from '../../../../api/books/queries/findUserBook/findUserBookQuery.js';
 import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery.js';
 import { UserBook } from '@common/contracts';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { FindBookReadingsQueryOptions } from '../../../../api/bookReadings/queries/findBookReadings/findBookReadingsQueryOptions.js';
+import { useSelector } from 'react-redux';
+import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice.js';
+import { CurrentRatingStar } from '../../components/currentRatingStar/currentRatingStar.js';
+import { BasicDataTabSkeleton } from '../basicDataTab/basicDataTabSkeleton.js';
+import { columns } from '../../components/gradesTable/gradesTableColumns.js';
+import { GradesTable } from '../../components/gradesTable/gradesTable.js';
+import { FavoriteBookButton } from '../../components/favoriteBookButton/favoriteBookButton.js';
 
 interface Props {
-  bookId: string;
+  userBookId: string;
 }
 
-export const GradesTab: FC<Props> = ({ bookId }) => {
+export const GradesTab: FC<Props> = ({ userBookId }) => {
   const { data: userData } = useFindUserQuery();
 
-  const { data, isFetched, isFetching, isRefetching } = useFindUserBookQuery({
-    id: bookId,
+  const queryClient = useQueryClient();
+
+  const accessToken = useSelector(userStateSelectors.selectAccessToken);
+
+  const { data: bookReadings } = useQuery(
+    FindBookReadingsQueryOptions({
+      accessToken: accessToken as string,
+      userBookId: userBookId,
+      userId: userData?.id as string,
+    }),
+  );
+
+  const [pageSize] = useState(4);
+
+  const [page, setPage] = useState(0);
+
+  const pageCount = useMemo(() => {
+    return Math.ceil((bookReadings?.metadata?.total ?? 0) / pageSize) || 1;
+  }, [bookReadings?.metadata.total, pageSize]);
+
+  const {
+    data: userBookData,
+    isFetched: isUserBookFetched,
+    isFetching: isUserBookFetching,
+    isRefetching: isUserBookRefetching,
+  } = useFindUserBookQuery({
+    id: userBookId,
     userId: userData?.id ?? '',
   });
 
+  const invalidateReadingsFetch = () =>
+    queryClient.invalidateQueries({
+      predicate: (query) =>
+        query.queryKey[0] === `findBookReadings` &&
+        query.queryKey[1] === userData?.id &&
+        query.queryKey[2] === userBookId,
+    });
+
+  const onNextPage = (): void => {
+    setPage(page + 1);
+
+    invalidateReadingsFetch();
+  };
+
+  const onSetPage = (page: number): void => {
+    setPage(page);
+
+    invalidateReadingsFetch();
+  };
+
+  const onPreviousPage = (): void => {
+    setPage(page - 1);
+
+    invalidateReadingsFetch();
+  };
+
   return (
     <div className="flex flex-col sm:flex-row col-start-1 col-span-2 sm:col-span-5 gap-6 w-full">
-      {isFetching && !isRefetching && (
-        <>
-          <div>
-            <Skeleton className="w-60 h-80"></Skeleton>
-          </div>
-          <div>
-            <Skeleton className="h-8 w-8"></Skeleton>
-          </div>
-          <div className="flex flex-col gap-4 w-full">
-            <div className="flex justify-between w-full">
-              <Skeleton className="w-80 h-9"></Skeleton>
-              <Skeleton className="h-8 w-8" />
-            </div>
-            <Separator></Separator>
-            <div className="flex w-full justify-between">
-              <div className="flex flex-col gap-2">
-                <Skeleton className="w-48 h-6"></Skeleton>
-                <Skeleton className="w-48 h-6"></Skeleton>
-                <Skeleton className="w-48 h-6"></Skeleton>
-                <Skeleton className="w-48 h-6"></Skeleton>
-                <Skeleton className="w-48 h-6"></Skeleton>
-                <Skeleton className="w-48 h-6"></Skeleton>
-                <Skeleton className="w-48 h-6"></Skeleton>
-                <Skeleton className="w-48 h-6"></Skeleton>
-                <Skeleton className="w-48 h-6"></Skeleton>
-              </div>
-              <div className="flex gap-12 flex-col items-end justify-start">
-                <BookshelfChoiceDropdown bookId={bookId} />
-                <div className="flex flex-col text-lg items-end gap-2">
-                  <Skeleton className="w-40 h-8"></Skeleton>
-                  <StatusChooserCards bookId={bookId}></StatusChooserCards>
-                </div>
-                <div className="flex flex-col items-end gap-2">
-                  <p>Dodaj ocenę</p>
-                  <StarRating bookId={data?.bookId ?? ''}></StarRating>
-                </div>
-              </div>
-            </div>
-          </div>
-        </>
-      )}
-      {isFetched && (!isRefetching || (isFetching && isRefetching)) && (
+      {isUserBookFetching && !isUserBookRefetching && <BasicDataTabSkeleton bookId={userBookId} />}
+      {isUserBookFetched && (!isUserBookRefetching || (isUserBookFetching && isUserBookRefetching)) && (
         <>
           <div>
             <img
-              src={data?.imageUrl}
+              src={userBookData?.imageUrl}
               className="object-cover max-w-80"
             />
           </div>
           <div className="flex justify-center">
             <FavoriteBookButton
-              userBook={data as UserBook}
+              userBook={userBookData as UserBook}
               userId={userData?.id as string}
             />
           </div>
           <div className="flex flex-col gap-4 w-full">
             <div className="flex justify-between w-full">
-              <p className="font-semibold text-3xl">{data?.book.title}</p>
-              <IoMdStar className="h-8 w-8" />
+              <p className="font-semibold text-3xl">{userBookData?.book.title}</p>
+              <CurrentRatingStar userBookId={userBookId} />
             </div>
-            <Separator></Separator>
-            <div className="flex w-full justify-between">
-              <div className="flex flex-col gap-2">
-                <p className="text-lg pb-6">{data?.book.authors[0]?.name}</p>
-                <p>ISBN: {data?.book.isbn}</p>
-                <p>Rok wydania: {data?.book.releaseYear}</p>
-                <p>Język: {data?.book.language}</p>
-                <p>Tłumacz: {data?.book.translator}</p>
-                <p>Format: {data?.book.format}</p>
-                <p>Liczba stron: {data?.book.pages}</p>
-                <p>Kategoria: {data?.genres[0]?.name}</p>
-              </div>
-              <div className="flex gap-12 flex-col items-end justify-start">
-                <BookshelfChoiceDropdown bookId={data?.id ?? ''} />
-                <div className="flex flex-col text-lg items-end gap-2">
-                  <p>Status</p>
-                  <StatusChooserCards bookId={data?.id ?? ''}></StatusChooserCards>
-                </div>
-                <div className="flex flex-col items-end gap-2">
-                  <p>Dodaj ocenę</p>
-                  <StarRating bookId={data?.id ?? ''}></StarRating>
-                </div>
-              </div>
+            <Separator className="h-[1px] bg-primary"></Separator>
+            <div className="flex flex-col w-full">
+              <p className="text-lg pb-6"> {userBookData?.book.authors[0].name ?? ''} </p>
+              <GradesTable
+                columns={columns}
+                data={bookReadings?.data ?? []}
+                onNextPage={onNextPage}
+                onPreviousPage={onPreviousPage}
+                onSetPage={onSetPage}
+                pageCount={pageCount}
+                pageIndex={page}
+                pageSize={pageSize}
+              ></GradesTable>
             </div>
           </div>
         </>
