@@ -1,8 +1,7 @@
 import { FC, useState } from 'react';
 import { useFindUserBookQuery } from '../../../../api/books/queries/findUserBook/findUserBookQuery';
 import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery';
-import { GoCheckCircleFill } from 'react-icons/go';
-import { HiDotsCircleHorizontal } from 'react-icons/hi';
+import { HiCheckCircle, HiDotsCircleHorizontal } from 'react-icons/hi';
 import { HiQuestionMarkCircle } from 'react-icons/hi';
 import { ReadingStatus } from '@common/contracts';
 import { cn } from '../../../../lib/utils';
@@ -80,7 +79,7 @@ export const StatusChooserCards: FC<Props> = ({ bookId }) => {
             )}
             onClick={async () => await onChangeStatus(ReadingStatus.finished)}
           >
-            <GoCheckCircleFill className="h-12 w-12"></GoCheckCircleFill>
+            <HiCheckCircle className="h-12 w-12"></HiCheckCircle>
             <p className="font-semibold text-xs">Przeczytana</p>
           </div>
           <div
