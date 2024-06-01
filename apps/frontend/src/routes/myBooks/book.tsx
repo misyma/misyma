@@ -78,10 +78,14 @@ export const BookPage: FC = () => {
             {currentTab === 'basicData' ? (
               <Button className="w-32 sm:w-96">Edytuj dane</Button>
             ) : currentTab === 'grades' ? (
-              <AddStarRatingButton
-                onCreated={async () => await invalidateReadingsFetch()}
-                userBookId={bookId}
-              />
+              <div className="flex gap-1 justify-center items-end flex-col">
+                <p>Dodaj ocenę</p>
+
+                <AddStarRatingButton
+                  onCreated={async () => await invalidateReadingsFetch()}
+                  userBookId={bookId}
+                />
+              </div>
             ) : currentTab === 'quotations' ? (
               <CreateQuotationModal
                 onMutated={() => {}}

@@ -10,7 +10,7 @@ interface Props {
 
 export const AddStarRatingButton: FC<Props> = ({ userBookId, onCreated }: Props) => {
   return (
-    <RadioGroup className="flex h-12 flex-row gap-0">
+    <RadioGroup className="flex flex-row gap-0">
       <>
         {Array.from({ length: 10 }).map((_, index) => {
           return (
@@ -24,13 +24,13 @@ export const AddStarRatingButton: FC<Props> = ({ userBookId, onCreated }: Props)
                   }}
                   trigger={
                     <RadioGroupItem
-                      className="absolute opacity-0 h-12 w-7"
+                      className="absolute opacity-0 h-6 w-6"
                       key={index}
                       value={`${index}`}
                     />
                   }
                 ></CreateBookReadingModal>
-                <HiStar className="h-7 w-7" />
+                <HiStar className="h-6 w-6" />
               </div>
             </>
           );
