@@ -77,7 +77,10 @@ export const BookPage: FC = () => {
               </li>
             </ul>
             {currentTab === 'basicData' ? (
-              <EditOrDeleteBookModal userBookId={bookId} />
+              <EditOrDeleteBookModal
+                bookId={bookId}
+                userBookId={bookId}
+              />
             ) : currentTab === 'grades' ? (
               <div className="flex gap-1 justify-center items-end flex-col">
                 <p>Dodaj ocenę</p>

@@ -13,9 +13,12 @@ import { useUploadBookImageMutation } from '../../../../api/books/mutations/uplo
 import { useDeleteUserBookMutation } from '../../../../api/books/mutations/deleteUserBookMutation/deleteUserBookMutation';
 import { useRouter } from '@tanstack/react-router';
 import { UpdateUserBookForm } from '../updateUserBookForm/updateUserBookForm';
+import { UpdateBookRequestForm } from '../updateBookRequestForm/updateBookRequestForm';
+import { BookDetailsChangeRequestProvider } from '../../contexts/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
 
 interface Props {
   userBookId: string;
+  bookId: string;
 }
 
 type BookEditType = 'dbChangeRequest' | 'myBookChange';
@@ -36,7 +39,7 @@ const changeMyBookDataSchema = z.object({
   }),
 });
 
-export const EditOrDeleteBookModal: FC<Props> = ({ userBookId }) => {
+export const EditOrDeleteBookModal: FC<Props> = ({ bookId, userBookId }) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const { data: userData } = useFindUserQuery();
@@ -61,6 +64,8 @@ export const EditOrDeleteBookModal: FC<Props> = ({ userBookId }) => {
     setBaseAction('edit');
 
     setActionChosen(false);
+
+    setChosenEditAction(false);
 
     setIsOpen(false);
   };
@@ -151,7 +156,18 @@ export const EditOrDeleteBookModal: FC<Props> = ({ userBookId }) => {
           </>
         );
       } else if (chosenEditAction === true && bookEditType === 'dbChangeRequest') {
-        return <></>;
+        return (
+          <>
+            <DialogHeader className="flex justify-center items-center text-xl font-semibold">
+              Prośba o zmianę danych w bazie
+            </DialogHeader>
+            <UpdateBookRequestForm
+              bookId={bookId}
+              onCancel={() => setActionChosen(false)}
+              onSubmit={() => resetModalState()}
+            />
+          </>
+        );
       }
 
       return (
@@ -223,28 +239,30 @@ export const EditOrDeleteBookModal: FC<Props> = ({ userBookId }) => {
   };
 
   return (
-    <Dialog
-      open={isOpen}
-      onOpenChange={(val) => {
-        if (val === false) {
-          resetModalState();
-        }
+    <BookDetailsChangeRequestProvider>
+      <Dialog
+        open={isOpen}
+        onOpenChange={(val) => {
+          if (val === false) {
+            resetModalState();
+          }
 
-        setIsOpen(val);
-      }}
-    >
-      <DialogTrigger asChild>
-        <Button className="w-32 sm:w-96">Edytuj lub usuń książkę</Button>
-      </DialogTrigger>
-      <DialogContent
-        style={{
-          borderRadius: '40px',
+          setIsOpen(val);
         }}
-        className="max-w-sm sm:max-w-xl py-16 flex flex-col items-center gap-8"
-        omitCloseButton={true}
       >
-        {getStateContent()}
-      </DialogContent>
-    </Dialog>
+        <DialogTrigger asChild>
+          <Button className="w-32 sm:w-96">Edytuj lub usuń książkę</Button>
+        </DialogTrigger>
+        <DialogContent
+          style={{
+            borderRadius: '40px',
+          }}
+          className="max-w-sm sm:max-w-xl py-16 flex flex-col items-center gap-8"
+          omitCloseButton={true}
+        >
+          {getStateContent()}
+        </DialogContent>
+      </Dialog>
+    </BookDetailsChangeRequestProvider>
   );
 };

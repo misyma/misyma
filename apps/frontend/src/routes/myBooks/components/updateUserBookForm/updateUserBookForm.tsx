@@ -65,7 +65,7 @@ export const UpdateUserBookForm: FC<Props> = ({ onSubmit, onCancel }) => {
   return (
     <Form {...changeUserBookDataForm}>
       <form
-        className="flex flex-col space-y-4"
+        className="flex flex-col space-y-4 items-center"
         onSubmit={changeUserBookDataForm.handleSubmit(async (data) => {
           await onSubmit({
             ...data,
@@ -129,7 +129,7 @@ export const UpdateUserBookForm: FC<Props> = ({ onSubmit, onCancel }) => {
         />
         <div className="flex gap-4">
           <Button
-            className="w-40"
+            className="w-40 text-primary bg-transparent"
             onClick={onCancel}
           >
             Wróć
