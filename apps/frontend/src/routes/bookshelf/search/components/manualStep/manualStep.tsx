@@ -108,14 +108,12 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
         bookId: searchBookContext.bookId,
         bookshelfId,
         status: values.status as ContractReadingStatus,
-        userId: user?.id as string,
         isFavorite: false,
       });
 
       await uploadBookImageMutation({
         bookId: userBook.id,
         file: file as unknown as File,
-        userId: user?.id as string,
       });
 
       toast({

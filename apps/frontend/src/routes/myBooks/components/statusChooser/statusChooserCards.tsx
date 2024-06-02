@@ -38,7 +38,6 @@ export const StatusChooserCards: FC<Props> = ({ bookId }) => {
 
     await updateUserBook({
       userBookId: data?.id as string,
-      userId: userData?.id as string,
       status: chosenStatus,
     });
 

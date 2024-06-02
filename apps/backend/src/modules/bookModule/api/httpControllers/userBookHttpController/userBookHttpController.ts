@@ -25,10 +25,9 @@ import {
 } from './schemas/findUserBookSchema.js';
 import {
   type FindUserBooksQueryParamsDto,
-  findUserBooksPathParamsDtoSchema,
   findUserBooksResponseBodyDtoSchema,
-  type FindUserBooksPathParamsDto,
   type FindUserBooksResponseBodyDto,
+  findUserBooksQueryParamsDtoSchema,
 } from './schemas/findUserBooksSchema.js';
 import {
   updateUserBookPathParamsDtoSchema,
@@ -75,7 +74,7 @@ import { type UserBook } from '../../../domain/entities/userBook/userBook.js';
 import { type BookReadingDto } from '../bookReadingHttpController/schemas/bookReadingDto.js';
 
 export class UserBookHttpController implements HttpController {
-  public readonly basePath = '/users/:userId/books';
+  public readonly basePath = '/user-books';
   public readonly tags = ['UserBook'];
 
   public constructor(
@@ -89,7 +88,7 @@ export class UserBookHttpController implements HttpController {
     private readonly accessControlService: AccessControlService,
   ) {}
 
-  // TODO: add authorization based on userId from path
+  // TODO: add authorization based on userId
   public getHttpRoutes(): HttpRoute[] {
     return [
       new HttpRoute({
@@ -130,12 +129,11 @@ export class UserBookHttpController implements HttpController {
       //TODO: refactor to search params
       new HttpRoute({
         method: HttpMethodName.get,
-        path: '/bookshelf/:bookshelfId',
         handler: this.findUserBooks.bind(this),
         description: `Find user's books by bookshelf id`,
         schema: {
           request: {
-            pathParams: findUserBooksPathParamsDtoSchema,
+            queryParams: findUserBooksQueryParamsDtoSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
@@ -349,15 +347,13 @@ export class UserBookHttpController implements HttpController {
   }
 
   private async findUserBooks(
-    request: HttpRequest<undefined, FindUserBooksQueryParamsDto, FindUserBooksPathParamsDto>,
+    request: HttpRequest<undefined, FindUserBooksQueryParamsDto, undefined>,
   ): Promise<HttpOkResponse<FindUserBooksResponseBodyDto>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
-    const { bookshelfId } = request.pathParams;
-
-    const { page = 1, pageSize = 10 } = request.queryParams;
+    const { page = 1, pageSize = 10, bookshelfId } = request.queryParams;
 
     const { userBooks, total } = await this.findUserBooksQueryHandler.execute({
       ids: [],

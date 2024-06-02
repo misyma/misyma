@@ -6,7 +6,6 @@ import { useQuery } from '@tanstack/react-query';
 import { FindBookReadingsQueryOptions } from '../../../../api/bookReadings/queries/findBookReadings/findBookReadingsQueryOptions';
 import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
 import { useSelector } from 'react-redux';
-import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery';
 import { Skeleton } from '../../../../components/ui/skeleton';
 import { CreateBookReadingModal } from '../createBookReadingModal/createBookReadingModal';
 import { BookReading } from '@common/contracts';
@@ -18,8 +17,6 @@ interface Props {
 export const StarRating: FC<Props> = ({ bookId }: Props) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
-  const { data: userData } = useFindUserQuery();
-
   const {
     data: bookReadings,
     refetch,
@@ -30,7 +27,6 @@ export const StarRating: FC<Props> = ({ bookId }: Props) => {
     FindBookReadingsQueryOptions({
       accessToken: accessToken as string,
       userBookId: bookId,
-      userId: userData?.id as string,
     }),
   );
 

@@ -10,10 +10,7 @@ import {
 import { BookApiError } from '../../errors/bookApiError.js';
 import { HttpService } from '../../../../core/services/httpService/httpService.js';
 
-type Payload = UpdateUserBookPathParams &
-  UpdateUserBookRequestBody & {
-    userId: string;
-  };
+type Payload = UpdateUserBookPathParams & UpdateUserBookRequestBody;
 
 export const useUpdateUserBookMutation = (
   options: UseMutationOptions<UpdateUserBookResponseBody, BookApiError, Payload>,
@@ -21,10 +18,10 @@ export const useUpdateUserBookMutation = (
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const uploadImage = async (payload: Payload) => {
-    const { userBookId, userId, ...rest } = payload;
+    const { userBookId, ...rest } = payload;
 
     const response = await HttpService.patch<UploadUserBookImageResponseBody>({
-      url: `/users/${userId}/books/${userBookId}`,
+      url: `/user-books/${userBookId}`,
       // eslint-disable-next-line
       body: rest as any,
       headers: {

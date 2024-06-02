@@ -14,7 +14,7 @@ export const useFindUserBookQuery = ({ userBookId, userId }: Payload) => {
 
   const findUserBookById = async (payload: Payload): Promise<FindUserBookResponseBody> => {
     const response = await HttpService.get<FindUserBookResponseBody>({
-      url: `/users/${payload.userId}/books/${payload.userBookId}`,
+      url: `/user-books/${payload.userBookId}`,
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },

@@ -5,9 +5,7 @@ import { CreateUserBookRequestBody, CreateUserBookResponseBody } from '@common/c
 import { BookApiError } from '../../errors/bookApiError';
 import { HttpService } from '../../../../core/services/httpService/httpService';
 
-type Payload = CreateUserBookRequestBody & {
-  userId: string;
-};
+type Payload = CreateUserBookRequestBody;
 
 export const useCreateUserBookMutation = (
   options: UseMutationOptions<CreateUserBookResponseBody, BookApiError, CreateUserBookRequestBody>,
@@ -16,7 +14,7 @@ export const useCreateUserBookMutation = (
 
   const createUserBook = async (payload: Payload) => {
     const response = await HttpService.post<CreateUserBookResponseBody>({
-      url: `/users/${payload.userId}/books`,
+      url: '/user-books',
       body: payload as unknown as Record<string, unknown>,
       headers: {
         Authorization: `Bearer ${accessToken}`,

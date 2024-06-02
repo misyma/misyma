@@ -38,7 +38,6 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId }) => {
   const onBookshelfChange = async (id: string): Promise<void> => {
     await updateUserBook({
       userBookId: bookId,
-      userId: userData?.id as string,
       bookshelfId: id,
     });
 
