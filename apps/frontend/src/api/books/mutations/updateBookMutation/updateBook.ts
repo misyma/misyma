@@ -6,10 +6,10 @@ export interface UpdateBookPayload extends UpdateBookPathParams, UpdateBookReque
 }
 
 export const updateBook = async (payload: UpdateBookPayload): Promise<void> => {
-  const { accessToken, id, ...rest } = payload;
+  const { accessToken, bookId, ...rest } = payload;
 
   const response = await HttpService.patch({
-    url: `/admin/books/${id}`,
+    url: `/admin/books/${bookId}`,
     body: rest,
     headers: {
       Authorization: `Bearer ${accessToken}`,

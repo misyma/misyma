@@ -3,14 +3,13 @@ import { HttpService } from '../../../../core/services/httpService/httpService';
 
 export type DeleteUserBookPayload = DeleteUserBookPathParams & {
   accessToken: string;
-  userId: string;
 };
 
 export const deleteUserBook = async (payload: DeleteUserBookPayload) => {
-  const { accessToken, id, userId } = payload;
+  const { accessToken, userBookId } = payload;
 
   const response = await HttpService.delete({
-    url: `/users/${userId}/books/${id}`,
+    url: `/user-books/${userBookId}`,
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },

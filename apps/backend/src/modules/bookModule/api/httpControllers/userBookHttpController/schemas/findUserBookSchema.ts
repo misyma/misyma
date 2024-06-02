@@ -6,7 +6,7 @@ import { userBookDtoSchema } from './userBookDto.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const findUserBookPathParamsDtoSchema = Type.Object({
-  id: Type.String({ format: 'uuid' }),
+  userBookId: Type.String({ format: 'uuid' }),
 });
 
 export type FindUserBookPathParamsDto = TypeExtends<

@@ -7,12 +7,11 @@ import { HttpService } from '../../../../core/services/httpService/httpService';
 
 export type FindBookReadingsPayload = FindBookReadingsPathParams &
   FindBookReadingsQueryParams & {
-    userId: string;
     accessToken: string;
   };
 
 export const findBookReadings = async (values: FindBookReadingsPayload): Promise<FindBookReadingsResponseBody> => {
-  const { accessToken, userBookId, userId, page, pageSize } = values;
+  const { accessToken, userBookId, page, pageSize } = values;
 
   const queryParams: Record<string, string> = {};
 
@@ -25,7 +24,7 @@ export const findBookReadings = async (values: FindBookReadingsPayload): Promise
   }
 
   const response = await HttpService.get<FindBookReadingsResponseBody>({
-    url: `/users/${userId}/books/${userBookId}/readings`,
+    url: `/user-books/${userBookId}/readings`,
     queryParams,
     headers: {
       Authorization: `Bearer ${accessToken}`,

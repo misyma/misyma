@@ -1,5 +1,4 @@
 import { FC } from 'react';
-import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
 import { useQuery } from '@tanstack/react-query';
@@ -11,15 +10,12 @@ interface Props {
 }
 
 export const CurrentRatingStar: FC<Props> = ({ userBookId }) => {
-  const { data: userData } = useFindUserQuery();
-
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const { data: bookReadings } = useQuery(
     FindBookReadingsQueryOptions({
       accessToken: accessToken as string,
       userBookId,
-      userId: userData?.id as string,
       pageSize: 1,
     }),
   );

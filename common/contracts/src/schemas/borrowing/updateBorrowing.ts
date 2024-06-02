@@ -7,7 +7,7 @@ export interface UpdateBorrowingRequestBody {
 }
 
 export interface UpdateBorrowingPathParams {
-  readonly id: string;
+  readonly borrowingId: string;
 }
 
 export interface UpdateBorrowingResponseBody extends Borrowing {}

@@ -5,18 +5,14 @@ import { userStateSelectors } from '../../../../core/store/states/userState/user
 import { HttpService } from '../../../../core/services/httpService/httpService.js';
 import { BookApiError } from '../../errors/bookApiError.js';
 
-type Payload = UpdateUserBooksRequestBody & {
-  userId: string;
-};
+type Payload = UpdateUserBooksRequestBody;
 
-export const useMoveBooksToBookshelfMutation = (
-  options: UseMutationOptions<void, BookApiError, Payload>,
-) => {
+export const useMoveBooksToBookshelfMutation = (options: UseMutationOptions<void, BookApiError, Payload>) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const updateBookshelf = async (payload: Payload) => {
     const response = await HttpService.patch<void>({
-      url: `/users/${payload.userId}/books`,
+      url: '/user-books',
       body: payload as unknown as Record<string, string>,
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -24,7 +20,7 @@ export const useMoveBooksToBookshelfMutation = (
     });
 
     if (!response.success) {
-      throw new BookApiError({ 
+      throw new BookApiError({
         apiResponseError: response.body.context,
         message: response.body.message,
         statusCode: response.statusCode,

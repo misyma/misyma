@@ -34,7 +34,7 @@ export const QuotationsTab: FC<Props> = ({ userBookId }) => {
     isFetching: isUserBookFetching,
     isRefetching: isUserBookRefetching,
   } = useFindUserBookQuery({
-    id: userBookId,
+    userBookId,
     userId: userData?.id ?? '',
   });
 
@@ -47,7 +47,6 @@ export const QuotationsTab: FC<Props> = ({ userBookId }) => {
     getQuotesOptions({
       accessToken: accessToken as string,
       userBookId,
-      userId: userData?.id as string,
       page,
       pageSize,
     }),
@@ -99,7 +98,6 @@ export const QuotationsTab: FC<Props> = ({ userBookId }) => {
           <div className="flex justify-center">
             <FavoriteBookButton
               userBook={userBookData as UserBook}
-              userId={userData?.id as string}
             />
           </div>
           <div className="flex flex-col gap-4 w-full">

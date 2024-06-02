@@ -6,7 +6,7 @@ export const FindBookReadingsQueryOptions = (
   payload: FindBookReadingsPayload,
 ): UseQueryOptions<FindBookReadingsResponseBody, Error, FindBookReadingsResponseBody, string[]> =>
   queryOptions({
-    queryKey: [`findBookReadings`, payload.userId, payload.userBookId, `${payload.page}`, `${payload.pageSize}`],
+    queryKey: [`findBookReadings`, payload.userBookId, `${payload.page}`, `${payload.pageSize}`],
     queryFn: () => findBookReadings(payload),
     enabled: !!payload.accessToken,
   });

@@ -39,7 +39,7 @@ import { type Book } from '../../../domain/entities/book/book.js';
 import { type BookDto } from '../common/bookDto.js';
 
 export class BookAdminHttpController implements HttpController {
-  public readonly basePath = '/api/admin/books';
+  public readonly basePath = '/admin/books';
   public readonly tags = ['Book'];
 
   public constructor(
@@ -70,7 +70,7 @@ export class BookAdminHttpController implements HttpController {
       }),
       new HttpRoute({
         method: HttpMethodName.delete,
-        path: ':id',
+        path: ':bookId',
         handler: this.deleteBook.bind(this),
         schema: {
           request: {
@@ -88,7 +88,7 @@ export class BookAdminHttpController implements HttpController {
       }),
       new HttpRoute({
         method: HttpMethodName.patch,
-        path: ':id',
+        path: ':bookId',
         description: 'Update a book',
         handler: this.updateBook.bind(this),
         schema: {
@@ -132,14 +132,14 @@ export class BookAdminHttpController implements HttpController {
   private async deleteBook(
     request: HttpRequest<undefined, undefined, DeleteBookPathParamsDto>,
   ): Promise<HttpNoContentResponse<DeleteBookResponseBodyDto>> {
-    const { id } = request.pathParams;
+    const { bookId } = request.pathParams;
 
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
       expectedRole: UserRole.admin,
     });
 
-    await this.deleteBookCommandHandler.execute({ bookId: id });
+    await this.deleteBookCommandHandler.execute({ bookId });
 
     return {
       statusCode: HttpStatusCode.noContent,
@@ -154,12 +154,12 @@ export class BookAdminHttpController implements HttpController {
       authorizationHeader: request.headers['authorization'],
     });
 
-    const { id } = request.pathParams;
+    const { bookId } = request.pathParams;
 
     const { authorIds, format, imageUrl, language, pages, publisher, releaseYear, title, translator } = request.body;
 
     const { book } = await this.updateBookCommandHandler.execute({
-      bookId: id,
+      bookId,
       authorIds,
       format,
       imageUrl,

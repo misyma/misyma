@@ -36,8 +36,6 @@ export * from './schemas/user/sendVerificationEmail.js';
 
 export * from './schemas/user/changeUserPassword.js';
 
-export * from './schemas/author/findAuthor.js';
-
 export * from './schemas/author/findAuthors.js';
 
 export * from './schemas/author/createAuthor.js';
@@ -84,8 +82,6 @@ export * from './schemas/bookReading/createBookReading.js';
 
 export * from './schemas/bookReading/deleteBookReading.js';
 
-export * from './schemas/bookReading/findBookReadingById.js';
-
 export * from './schemas/bookReading/findBookReadings.js';
 
 export * from './schemas/bookReading/updateBookReading.js';
@@ -100,25 +96,19 @@ export * from './schemas/borrowing/updateBorrowing.js';
 
 export * from './schemas/genre/genre.js';
 
-export * from './schemas/genre/findGenreByName.js';
-
-export * from './schemas/genre/findGenreById.js';
-
 export * from './schemas/genre/findGenres.js';
 
 export * from './schemas/genre/createGenre.js';
 
 export * from './schemas/genre/deleteGenre.js';
 
-export * from './schemas/genre/updateGenreName.js';
+export * from './schemas/genre/updateGenre.js';
 
 export * from './schemas/quote/quote.js';
 
 export * from './schemas/quote/createQuote.js';
 
 export * from './schemas/quote/deleteQuote.js';
-
-export * from './schemas/quote/findQuoteById.js';
 
 export * from './schemas/quote/findQuotes.js';
 

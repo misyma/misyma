@@ -8,7 +8,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
 import { useUpdateUserBookMutation } from '../../../../api/books/mutations/updateUserBookMutation/updateUserBookMutation';
-import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery';
 import { useUploadBookImageMutation } from '../../../../api/books/mutations/uploadBookImageMutation/uploadBookImageMutation';
 import { useDeleteUserBookMutation } from '../../../../api/books/mutations/deleteUserBookMutation/deleteUserBookMutation';
 import { useRouter } from '@tanstack/react-router';
@@ -41,8 +40,6 @@ const changeMyBookDataSchema = z.object({
 
 export const EditOrDeleteBookModal: FC<Props> = ({ bookId, userBookId }) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
-  const { data: userData } = useFindUserQuery();
 
   const [baseAction, setBaseAction] = useState<BaseActionType>('edit');
 
@@ -85,13 +82,11 @@ export const EditOrDeleteBookModal: FC<Props> = ({ bookId, userBookId }) => {
       await uploadBookImageMutation({
         bookId: userBookId,
         file: values.image as unknown as File,
-        userId: userData?.id as string,
       });
     }
 
     await updateUserBook({
-      userId: userData?.id as string,
-      id: userBookId,
+      userBookId,
       genreIds: [values.genre],
     });
 
@@ -103,8 +98,7 @@ export const EditOrDeleteBookModal: FC<Props> = ({ bookId, userBookId }) => {
   const onDeleteUserBook = async (): Promise<void> => {
     await deleteUserBook({
       accessToken: accessToken as string,
-      id: userBookId,
-      userId: userData?.id as string,
+      userBookId: userBookId,
     });
 
     router.history.back();

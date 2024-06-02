@@ -143,7 +143,6 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
         bookId: bookCreationResponse.id,
         bookshelfId,
         status: bookCreation.stepThreeDetails?.status as ContractReadingStatus,
-        userId: user?.id as string,
         isFavorite: false,
         genreIds: [bookCreation.stepThreeDetails?.genre as string]
       });
@@ -151,7 +150,6 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
       await uploadBookImageMutation({
         bookId: userBook.id,
         file: file as unknown as File,
-        userId: user?.id as string,
       });
 
       toast({

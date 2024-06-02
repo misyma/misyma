@@ -56,7 +56,7 @@ interface MapBookshelfToBookshelfDtoPayload {
 }
 
 export class BookshelfHttpController implements HttpController {
-  public readonly basePath = '/api/bookshelves';
+  public readonly basePath = '/bookshelves';
   public readonly tags = ['Bookshelf'];
 
   public constructor(

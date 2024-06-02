@@ -8,7 +8,7 @@ export interface UpdateBookReadingRequestBody {
 }
 
 export interface UpdateBookReadingPathParams {
-  readonly id: string;
+  readonly readingId: string;
   readonly userBookId: string;
 }
 

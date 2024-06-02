@@ -28,7 +28,7 @@ export const Navbar: FC = () => {
     logoutUserMutation(
       {
         accessToken,
-        id: res.data?.id,
+        userId: res.data?.id,
         refreshToken,
       },
       {
@@ -54,7 +54,7 @@ export const Navbar: FC = () => {
       },
     );
   };
-  
+
   const linkClasses = '[&.active]:font-extrabold [&.active]:underline underline-offset-8 decoration-[3px] text-nowrap';
 
   return (

@@ -27,7 +27,7 @@ export interface NormalizePathPayload {
 }
 
 export class HttpRouter {
-  private readonly rootPath = '';
+  private readonly rootPath = '/api';
   private readonly loggerService: LoggerService;
 
   public constructor(

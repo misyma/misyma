@@ -5,7 +5,7 @@ import type * as contracts from '@common/contracts';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const deleteAuthorPathParamsDtoSchema = Type.Object({
-  id: Type.String({ format: 'uuid' }),
+  authorId: Type.String({ format: 'uuid' }),
 });
 
 export type DeleteAuthorPathParamsDto = TypeExtends<

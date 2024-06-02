@@ -7,10 +7,10 @@ type Payload = LogoutUserPathParams & LogoutUserRequestBody;
 
 export const useLogoutUserMutation = (options: UseMutationOptions<void, UserApiError, Payload>) => {
   const logoutUser = async (values: Payload) => {
-    const { accessToken, id, refreshToken } = values;
+    const { accessToken, userId, refreshToken } = values;
 
     const logoutUserResponse = await HttpService.post<void>({
-      url: `/users/${id}/logout`,
+      url: `/users/${userId}/logout`,
       body: {
         refreshToken,
         accessToken,

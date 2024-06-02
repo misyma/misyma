@@ -7,10 +7,10 @@ export interface CreateQuoteMutationPayload extends CreateQuotePathParams, Creat
 }
 
 export const createQuote = async (payload: CreateQuoteMutationPayload): Promise<CreateQuoteResponseBody> => {
-  const { accessToken, userBookId, userId, ...body } = payload;
+  const { accessToken, userBookId, ...body } = payload;
 
   const response = await HttpService.post<CreateQuoteResponseBody>({
-    url: `/users/${userId}/books/${userBookId}/quotes`,
+    url: `/user-books/${userBookId}/quotes`,
     body,
     headers: {
       Authorization: `Bearer ${accessToken}`,

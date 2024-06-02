@@ -6,7 +6,7 @@ import { bookReadingDtoSchema } from './bookReadingDto.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const updateBookReadingPathParamsDtoSchema = Type.Object({
-  id: Type.String({ format: 'uuid' }),
+  readingId: Type.String({ format: 'uuid' }),
   userBookId: Type.String({ format: 'uuid' }),
 });
 

@@ -13,12 +13,6 @@ import {
   deleteQuoteResponseBodyDtoSchema,
 } from './schemas/deleteQuoteSchema.js';
 import {
-  type FindQuoteByIdResponseBodyDto,
-  type FindQuoteByIdPathParamsDto,
-  findQuoteByIdResponseBodyDtoSchema,
-  findQuoteByIdPathParamsDtoSchema,
-} from './schemas/findQuoteByIdSchema.js';
-import {
   type FindQuotesResponseBodyDto,
   findQuotesResponseBodyDtoSchema,
   findQuotesPathParamsDtoSchema,
@@ -49,7 +43,6 @@ import { type AccessControlService } from '../../../../authModule/application/se
 import { type CreateQuoteCommandHandler } from '../../../application/commandHandlers/createQuoteCommandHandler/createQuoteCommandHandler.js';
 import { type DeleteQuoteCommandHandler } from '../../../application/commandHandlers/deleteQuoteCommandHandler/deleteQuoteCommandHandler.js';
 import { type UpdateQuoteCommandHandler } from '../../../application/commandHandlers/updateQuoteCommandHandler/updateQuoteCommandHandler.js';
-import { type FindQuoteByIdQueryHandler } from '../../../application/queryHandlers/findQuoteByIdQueryHandler/findQuoteByIdQueryHandler.js';
 import { type FindQuotesByUserBookIdQueryHandler } from '../../../application/queryHandlers/findQuotesByUserBookIdQueryHandler/findQuotesByUserBookIdQueryHandler.js';
 import { type Quote } from '../../../domain/entities/quote/quote.js';
 
@@ -58,12 +51,11 @@ interface MapQuoteToQuoteDtoPayload {
 }
 
 export class QuoteHttpController implements HttpController {
-  public readonly basePath = '/api/users/:userId/books/:userBookId/quotes';
+  public readonly basePath = '/user-books/:userBookId/quotes';
   public readonly tags = ['Quote'];
 
   public constructor(
     private readonly findQuotesByBookIdQueryHandler: FindQuotesByUserBookIdQueryHandler,
-    private readonly findQuoteByIdQueryHandler: FindQuoteByIdQueryHandler,
     private readonly createQuoteCommandHandler: CreateQuoteCommandHandler,
     private readonly updateQuoteCommandHandler: UpdateQuoteCommandHandler,
     private readonly deleteQuoteCommandHandler: DeleteQuoteCommandHandler,
@@ -90,23 +82,6 @@ export class QuoteHttpController implements HttpController {
         securityMode: SecurityMode.bearerToken,
       }),
       new HttpRoute({
-        method: HttpMethodName.get,
-        path: ':id',
-        handler: this.getQuote.bind(this),
-        schema: {
-          request: {
-            pathParams: findQuoteByIdPathParamsDtoSchema,
-          },
-          response: {
-            [HttpStatusCode.ok]: {
-              schema: findQuoteByIdResponseBodyDtoSchema,
-              description: 'Found Quote',
-            },
-          },
-        },
-        description: 'Get a Quote by id',
-      }),
-      new HttpRoute({
         method: HttpMethodName.post,
         handler: this.createQuote.bind(this),
         description: 'Create a Quote',
@@ -126,7 +101,7 @@ export class QuoteHttpController implements HttpController {
       }),
       new HttpRoute({
         method: HttpMethodName.patch,
-        path: ':id',
+        path: ':quoteId',
         handler: this.updateQuote.bind(this),
         description: 'Update Quote',
         schema: {
@@ -144,7 +119,7 @@ export class QuoteHttpController implements HttpController {
       }),
       new HttpRoute({
         method: HttpMethodName.delete,
-        path: ':id',
+        path: ':quoteId',
         handler: this.deleteQuote.bind(this),
         description: 'Delete Quote',
         schema: {
@@ -200,24 +175,6 @@ export class QuoteHttpController implements HttpController {
     };
   }
 
-  private async getQuote(
-    request: HttpRequest<null, null, FindQuoteByIdPathParamsDto>,
-  ): Promise<HttpOkResponse<FindQuoteByIdResponseBodyDto>> {
-    await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
-    });
-
-    // TODO: authorization
-    const { id } = request.pathParams;
-
-    const { quote } = await this.findQuoteByIdQueryHandler.execute({ id });
-
-    return {
-      statusCode: HttpStatusCode.ok,
-      body: this.mapQuoteToQuoteDto({ quote }),
-    };
-  }
-
   private async createQuote(
     request: HttpRequest<CreateQuoteBodyDto, null, CreateQuotePathParamsDto>,
   ): Promise<HttpCreatedResponse<CreateQuoteResponseBodyDto>> {
@@ -260,12 +217,12 @@ export class QuoteHttpController implements HttpController {
 
     // TODO: authorization
 
-    const { id } = request.pathParams;
+    const { quoteId } = request.pathParams;
 
     const { content, isFavorite, page } = request.body;
 
     const { quote } = await this.updateQuoteCommandHandler.execute({
-      id,
+      id: quoteId,
       content,
       isFavorite,
       page,
@@ -286,9 +243,9 @@ export class QuoteHttpController implements HttpController {
 
     // TODO: authorization
 
-    const { id } = request.pathParams;
+    const { quoteId } = request.pathParams;
 
-    await this.deleteQuoteCommandHandler.execute({ id });
+    await this.deleteQuoteCommandHandler.execute({ id: quoteId });
 
     return {
       statusCode: HttpStatusCode.noContent,

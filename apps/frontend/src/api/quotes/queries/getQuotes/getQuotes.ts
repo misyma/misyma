@@ -2,7 +2,6 @@ import { FindQuotesResponseBody } from '@common/contracts';
 import { HttpService } from '../../../../core/services/httpService/httpService';
 
 export interface GetQuotesPayload {
-  userId: string;
   userBookId: string;
   accessToken: string;
   page?: number;
@@ -21,7 +20,7 @@ export const getQuotes = async (payload: GetQuotesPayload) => {
   }
 
   const response = await HttpService.get<FindQuotesResponseBody>({
-    url: `/users/${payload.userId}/books/${payload.userBookId}/quotes`,
+    url: `/user-books/${payload.userBookId}/quotes`,
     headers: {
       Authorization: `Bearer ${payload.accessToken}`,
     },

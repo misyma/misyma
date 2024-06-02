@@ -85,7 +85,6 @@ export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, cl
               bookshelfId: moveBookshelfId,
               userBookId: userBook.id,
             })) ?? [],
-          userId: user?.id ?? '',
         });
       }
 

@@ -52,7 +52,7 @@ interface MapBorrowingToBorrowingDtoPayload {
 }
 
 export class BorrowingHttpController implements HttpController {
-  public readonly basePath = '/api/users/:userId/books/:userBookId/borrowings';
+  public readonly basePath = '/user-books/:userBookId/borrowings';
   public readonly tags = ['Borrowing'];
 
   public constructor(
@@ -102,7 +102,7 @@ export class BorrowingHttpController implements HttpController {
       }),
       new HttpRoute({
         method: HttpMethodName.patch,
-        path: ':id',
+        path: ':borrowingId',
         handler: this.updateBorrowing.bind(this),
         description: 'Update Borrowing',
         schema: {
@@ -120,7 +120,7 @@ export class BorrowingHttpController implements HttpController {
       }),
       new HttpRoute({
         method: HttpMethodName.delete,
-        path: ':id',
+        path: ':borrowingId',
         handler: this.deleteBorrowing.bind(this),
         description: 'Delete Borrowing',
         schema: {
@@ -217,12 +217,12 @@ export class BorrowingHttpController implements HttpController {
 
     // TODO: authorization
 
-    const { id } = request.pathParams;
+    const { borrowingId } = request.pathParams;
 
     const { borrower, startedAt, endedAt } = request.body;
 
     const { borrowing } = await this.updateBorrowingCommandHandler.execute({
-      id,
+      id: borrowingId,
       borrower,
       startedAt: startedAt ? new Date(startedAt) : undefined,
       endedAt: endedAt ? new Date(endedAt) : undefined,
@@ -243,9 +243,9 @@ export class BorrowingHttpController implements HttpController {
 
     // TODO: authorization
 
-    const { id } = request.pathParams;
+    const { borrowingId } = request.pathParams;
 
-    await this.deleteBorrowingCommandHandler.execute({ id });
+    await this.deleteBorrowingCommandHandler.execute({ id: borrowingId });
 
     return {
       statusCode: HttpStatusCode.noContent,

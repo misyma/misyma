@@ -9,12 +9,12 @@ type Payload = FindUserBookPathParams & {
   userId: string;
 };
 
-export const useFindUserBookQuery = ({ id, userId }: Payload) => {
+export const useFindUserBookQuery = ({ userBookId, userId }: Payload) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const findUserBookById = async (payload: Payload): Promise<FindUserBookResponseBody> => {
     const response = await HttpService.get<FindUserBookResponseBody>({
-      url: `/users/${payload.userId}/books/${payload.id}`,
+      url: `/user-books/${payload.userBookId}`,
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -32,10 +32,10 @@ export const useFindUserBookQuery = ({ id, userId }: Payload) => {
   };
 
   return useQuery({
-    queryKey: ['findUserBookById', id, userId],
+    queryKey: ['findUserBookById', userBookId, userId],
     queryFn: () =>
       findUserBookById({
-        id,
+        userBookId,
         userId,
       }),
     enabled: !!accessToken && userId ? true : false,

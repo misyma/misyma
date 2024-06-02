@@ -13,13 +13,13 @@ import {
   type DeleteGenreResponseBodyDto,
 } from './schema/deleteGenreSchema.js';
 import {
-  type UpdateGenreNameBodyDto,
-  type UpdateGenreNameResponseBodyDto,
-  type UpdateGenreNamePathParamsDto,
-  updateGenreNameBodyDtoSchema,
-  updateGenreNameResponseBodyDtoSchema,
-  updateGenreNamePathParamsDtoSchema,
-} from './schema/updateGenreNameSchema.js';
+  type UpdateGenreBodyDto,
+  type UpdateGenreResponseBodyDto,
+  type UpdateGenrePathParamsDto,
+  updateGenreBodyDtoSchema,
+  updateGenreResponseBodyDtoSchema,
+  updateGenrePathParamsDtoSchema,
+} from './schema/updateGenreSchema.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
@@ -39,7 +39,7 @@ import { type Genre } from '../../../domain/entities/genre/genre.js';
 import { type GenreDto } from '../common/genreDto.js';
 
 export class GenreAdminHttpController implements HttpController {
-  public readonly basePath = '/api/admin/genres';
+  public readonly basePath = '/admin/genres';
   public readonly tags = ['Genre'];
 
   public constructor(
@@ -69,23 +69,23 @@ export class GenreAdminHttpController implements HttpController {
         securityMode: SecurityMode.bearerToken,
       }),
       new HttpRoute({
-        description: 'Update Genre name',
-        handler: this.updateGenreName.bind(this),
+        description: 'Update Genre',
+        handler: this.updateGenre.bind(this),
         method: HttpMethodName.patch,
         schema: {
           request: {
-            pathParams: updateGenreNamePathParamsDtoSchema,
-            body: updateGenreNameBodyDtoSchema,
+            pathParams: updateGenrePathParamsDtoSchema,
+            body: updateGenreBodyDtoSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
-              description: 'Genre name updated',
-              schema: updateGenreNameResponseBodyDtoSchema,
+              description: 'Genre updated',
+              schema: updateGenreResponseBodyDtoSchema,
             },
           },
         },
         securityMode: SecurityMode.bearerToken,
-        path: ':id/name',
+        path: ':genreId',
       }),
       new HttpRoute({
         description: 'Delete genre',
@@ -102,7 +102,8 @@ export class GenreAdminHttpController implements HttpController {
             },
           },
         },
-        path: ':id',
+        path: ':genreId',
+        securityMode: SecurityMode.bearerToken,
       }),
     ];
   }
@@ -125,20 +126,20 @@ export class GenreAdminHttpController implements HttpController {
     };
   }
 
-  private async updateGenreName(
-    request: HttpRequest<UpdateGenreNameBodyDto, null, UpdateGenreNamePathParamsDto>,
-  ): Promise<HttpOkResponse<UpdateGenreNameResponseBodyDto>> {
+  private async updateGenre(
+    request: HttpRequest<UpdateGenreBodyDto, null, UpdateGenrePathParamsDto>,
+  ): Promise<HttpOkResponse<UpdateGenreResponseBodyDto>> {
     this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
       expectedRole: UserRole.admin,
     });
 
-    const { id } = request.pathParams;
+    const { genreId } = request.pathParams;
 
     const { name } = request.body;
 
     const { genre } = await this.updateGenreNameCommandHandler.execute({
-      id,
+      id: genreId,
       name,
     });
 
@@ -156,9 +157,9 @@ export class GenreAdminHttpController implements HttpController {
       expectedRole: UserRole.admin,
     });
 
-    const { id } = request.pathParams;
+    const { genreId } = request.pathParams;
 
-    await this.deleteGenreCommandHandler.execute({ id });
+    await this.deleteGenreCommandHandler.execute({ id: genreId });
 
     return {
       statusCode: HttpStatusCode.noContent,

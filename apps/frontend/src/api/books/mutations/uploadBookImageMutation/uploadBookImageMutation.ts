@@ -6,7 +6,6 @@ import { BookApiError } from '../../errors/bookApiError.js';
 import { HttpService } from '../../../../core/services/httpService/httpService.js';
 
 type Payload = {
-  userId: string;
   bookId: string;
   file: File;
 };
@@ -17,20 +16,20 @@ export const useUploadBookImageMutation = (
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const uploadImage = async (payload: Payload) => {
-    const { bookId, file, userId } = payload;
+    const { bookId, file } = payload;
 
     const formData = new FormData();
 
     formData.append('attachedFiles', file, file.name);
 
     const response = await HttpService.patch<UploadUserBookImageResponseBody>({
-      url: `/users/${userId}/books/${bookId}/images`,
+      url: `/user-books/${bookId}/images`,
       // eslint-disable-next-line
       body: formData as any,
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        ['Content-Type']: `multipart/form-data`
-      }
+        ['Content-Type']: `multipart/form-data`,
+      },
     });
 
     if (!response.success) {

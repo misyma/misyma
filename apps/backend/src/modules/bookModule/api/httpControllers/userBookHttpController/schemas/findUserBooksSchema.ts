@@ -5,16 +5,8 @@ import type * as contracts from '@common/contracts';
 import { userBookDtoSchema } from './userBookDto.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
-export const findUserBooksPathParamsDtoSchema = Type.Object({
-  bookshelfId: Type.String({ format: 'uuid' }),
-});
-
-export type FindUserBooksPathParamsDto = TypeExtends<
-  contracts.FindUserBooksPathParams,
-  Static<typeof findUserBooksPathParamsDtoSchema>
->;
-
 export const findUserBooksQueryParamsDtoSchema = Type.Object({
+  bookshelfId: Type.String({ format: 'uuid' }),
   page: Type.Optional(Type.Integer({ minimum: 1 })),
   pageSize: Type.Optional(Type.Integer({ minimum: 1 })),
 });

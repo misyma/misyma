@@ -31,7 +31,7 @@ import { type Book } from '../../../domain/entities/book/book.js';
 import { type BookDto } from '../common/bookDto.js';
 
 export class BookHttpController implements HttpController {
-  public readonly basePath = '/api/books';
+  public readonly basePath = '/books';
   public readonly tags = ['Book'];
 
   public constructor(
@@ -62,7 +62,7 @@ export class BookHttpController implements HttpController {
       }),
       new HttpRoute({
         method: HttpMethodName.get,
-        path: ':id',
+        path: ':bookId',
         handler: this.findBook.bind(this),
         schema: {
           request: {
@@ -122,13 +122,13 @@ export class BookHttpController implements HttpController {
   private async findBook(
     request: HttpRequest<undefined, undefined, FindBookPathParamsDto>,
   ): Promise<HttpOkResponse<FindBookResponseBodyDto>> {
-    const { id } = request.pathParams;
+    const { bookId } = request.pathParams;
 
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
-    const { book } = await this.findBookQueryHandler.execute({ bookId: id });
+    const { book } = await this.findBookQueryHandler.execute({ bookId });
 
     return {
       statusCode: HttpStatusCode.ok,

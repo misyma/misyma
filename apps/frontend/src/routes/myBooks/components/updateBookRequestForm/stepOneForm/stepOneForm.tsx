@@ -103,7 +103,7 @@ export const StepOneForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
   const { data: userData } = useFindUserQuery();
 
   const { data: userBookData } = useFindUserBookQuery({
-    id: bookId,
+    userBookId: bookId,
     userId: userData?.id ?? '',
   });
 
@@ -119,7 +119,7 @@ export const StepOneForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
   const { data: bookData } = useQuery(
     FindBookByIdQueryOptions({
       accessToken: accessToken as string,
-      id: userBookData?.bookId as string,
+      bookId: userBookData?.bookId as string,
     }),
   );
 

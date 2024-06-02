@@ -10,10 +10,7 @@ import { userStateSelectors } from '../../../../../core/store/states/userState/u
 import { useSelector } from 'react-redux';
 import { HttpService } from '../../../../../core/services/httpService/httpService';
 
-type AddBookReadingMutationPayload = CreateBookReadingRequestBody &
-  CreateBookReadingPathParams & {
-    userId: string;
-  };
+type AddBookReadingMutationPayload = CreateBookReadingRequestBody & CreateBookReadingPathParams;
 
 export const useAddBookReadingMutation = (
   options?: UseMutationOptions<BookReading, BookApiError, AddBookReadingMutationPayload, unknown>,
@@ -21,10 +18,10 @@ export const useAddBookReadingMutation = (
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const addBookReading = async (payload: AddBookReadingMutationPayload) => {
-    const { userId, userBookId, ...body } = payload;
+    const { userBookId, ...body } = payload;
 
     const response = await HttpService.post<CreateBookReadingResponseBody>({
-      url: `/users/${userId}/books/${userBookId}/readings`,
+      url: `/user-books/${userBookId}/readings`,
       body: body as unknown as Record<string, unknown>,
       headers: {
         Authorization: `Bearer ${accessToken}`,
