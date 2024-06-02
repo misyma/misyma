@@ -17,7 +17,7 @@ import { type Genre } from '../../../domain/entities/genre/genre.js';
 import { type GenreDto } from '../common/genreDto.js';
 
 export class GenreHttpController implements HttpController {
-  public basePath = '/api/genres';
+  public basePath = '/genres';
   public tags = ['Genre'];
 
   public constructor(

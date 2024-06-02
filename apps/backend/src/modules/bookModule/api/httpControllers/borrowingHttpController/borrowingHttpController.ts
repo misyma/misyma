@@ -52,7 +52,7 @@ interface MapBorrowingToBorrowingDtoPayload {
 }
 
 export class BorrowingHttpController implements HttpController {
-  public readonly basePath = '/api/users/:userId/books/:userBookId/borrowings';
+  public readonly basePath = '/users/:userId/books/:userBookId/borrowings';
   public readonly tags = ['Borrowing'];
 
   public constructor(

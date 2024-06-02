@@ -51,7 +51,7 @@ interface MapQuoteToQuoteDtoPayload {
 }
 
 export class QuoteHttpController implements HttpController {
-  public readonly basePath = '/api/users/:userId/books/:userBookId/quotes';
+  public readonly basePath = '/users/:userId/books/:userBookId/quotes';
   public readonly tags = ['Quote'];
 
   public constructor(

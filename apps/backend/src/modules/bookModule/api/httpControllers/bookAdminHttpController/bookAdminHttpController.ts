@@ -39,7 +39,7 @@ import { type Book } from '../../../domain/entities/book/book.js';
 import { type BookDto } from '../common/bookDto.js';
 
 export class BookAdminHttpController implements HttpController {
-  public readonly basePath = '/api/admin/books';
+  public readonly basePath = '/admin/books';
   public readonly tags = ['Book'];
 
   public constructor(

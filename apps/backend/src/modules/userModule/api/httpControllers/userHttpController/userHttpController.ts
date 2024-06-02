@@ -88,7 +88,7 @@ import { type FindUserQueryHandler } from '../../../application/queryHandlers/fi
 import { type User } from '../../../domain/entities/user/user.js';
 
 export class UserHttpController implements HttpController {
-  public readonly basePath = '/api/users';
+  public readonly basePath = '/users';
   public readonly tags = ['User'];
 
   public constructor(

@@ -52,7 +52,7 @@ interface MapBookReadingToBookReadingDtoPayload {
 }
 
 export class BookReadingHttpController implements HttpController {
-  public readonly basePath = '/api/user-books/:userBookId/readings';
+  public readonly basePath = '/user-books/:userBookId/readings';
   public readonly tags = ['BookReading'];
 
   public constructor(

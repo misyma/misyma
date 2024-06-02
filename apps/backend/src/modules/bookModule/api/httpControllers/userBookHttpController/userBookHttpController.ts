@@ -75,7 +75,7 @@ import { type UserBook } from '../../../domain/entities/userBook/userBook.js';
 import { type BookReadingDto } from '../bookReadingHttpController/schemas/bookReadingDto.js';
 
 export class UserBookHttpController implements HttpController {
-  public readonly basePath = '/api/users/:userId/books';
+  public readonly basePath = '/users/:userId/books';
   public readonly tags = ['UserBook'];
 
   public constructor(

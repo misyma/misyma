@@ -39,7 +39,7 @@ import { type Genre } from '../../../domain/entities/genre/genre.js';
 import { type GenreDto } from '../common/genreDto.js';
 
 export class GenreAdminHttpController implements HttpController {
-  public readonly basePath = '/api/admin/genres';
+  public readonly basePath = '/admin/genres';
   public readonly tags = ['Genre'];
 
   public constructor(

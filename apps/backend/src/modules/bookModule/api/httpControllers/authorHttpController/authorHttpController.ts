@@ -24,7 +24,7 @@ import { type FindAuthorsQueryHandler } from '../../../application/queryHandlers
 import { type Author } from '../../../domain/entities/author/author.js';
 
 export class AuthorHttpController implements HttpController {
-  public readonly basePath = '/api/authors';
+  public readonly basePath = '/authors';
   public readonly tags = ['Author'];
 
   public constructor(

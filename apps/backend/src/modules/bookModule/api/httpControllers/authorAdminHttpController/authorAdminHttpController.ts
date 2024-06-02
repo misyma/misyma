@@ -26,7 +26,7 @@ import { type DeleteAuthorCommandHandler } from '../../../application/commandHan
 import { type Author } from '../../../domain/entities/author/author.js';
 
 export class AuthorAdminHttpController implements HttpController {
-  public readonly basePath = '/api/admin/authors';
+  public readonly basePath = '/admin/authors';
   public readonly tags = ['Author'];
 
   public constructor(
