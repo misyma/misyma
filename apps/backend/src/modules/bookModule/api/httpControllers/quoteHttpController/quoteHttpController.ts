@@ -97,6 +97,7 @@ export class QuoteHttpController implements HttpController {
             },
           },
         },
+        securityMode: SecurityMode.bearerToken,
       }),
       new HttpRoute({
         method: HttpMethodName.patch,

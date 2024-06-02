@@ -6,10 +6,9 @@ import { cn } from '../../../../lib/utils.js';
 
 interface Props {
   userBook: UserBook;
-  userId: string;
 }
 
-export const IsFavoriteButton: FC<Props> = ({ userBook }) => {
+export const FavoriteBookButton: FC<Props> = ({ userBook }) => {
   const [isFavorite, setIsFavorite] = useState(userBook?.isFavorite ?? false);
 
   const { mutateAsync: updateUserBook } = useUpdateUserBookMutation({});

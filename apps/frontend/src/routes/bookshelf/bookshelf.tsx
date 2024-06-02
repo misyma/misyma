@@ -10,7 +10,9 @@ import { Button } from '../../components/ui/button';
 import { useFindUserQuery } from '../../api/user/queries/findUserQuery/findUserQuery';
 import { useFindBookshelfByIdQuery } from '../../api/bookshelf/queries/findBookshelfByIdQuery/findBookshelfByIdQuery';
 import { Separator } from '../../components/ui/separator';
-import { IoMdStar } from "react-icons/io";
+import { HiCheckCircle, HiDotsCircleHorizontal, HiHeart, HiOutlineHeart, HiQuestionMarkCircle } from 'react-icons/hi';
+import { ReadingStatus, UserBook } from '@common/contracts';
+import { cn } from '../../lib/utils';
 
 const bookshelfSearchSchema = z.object({
   id: z.string().uuid().catch(''),
@@ -30,17 +32,31 @@ export const Bookshelf: FC = () => {
 
   const navigate = useNavigate();
 
+  const readingStatusMap = {
+    [ReadingStatus.finished]: HiCheckCircle,
+    [ReadingStatus.inProgress]: HiDotsCircleHorizontal,
+    [ReadingStatus.toRead]: HiQuestionMarkCircle,
+  };
+
+  const readingStatusColor = {
+    [ReadingStatus.finished]: 'text-green-400',
+    [ReadingStatus.inProgress]: 'text-blue-300',
+    [ReadingStatus.toRead]: 'text-slate-500',
+  };
+
+  const renderStatusIcon = (book: UserBook) => {
+    const Icon = readingStatusMap[book.status];
+
+    return <Icon className={cn('h-7 w-7', readingStatusColor[book.status])} />;
+  };
+
   return (
     <AuthenticatedLayout>
       <div className="p-8 flex flex-col justify-center w-full items-center">
         <div className="flex justify-between w-full sm:max-w-7xl">
           <div>
-            <p className='text-xl sm:text-3xl'>
-              {bookshelfResponse?.name ?? ' '}
-            </p>
-            <p>
-              {bookshelfBooksResponse?.data.length ?? 0} książek
-            </p>
+            <p className="text-xl sm:text-3xl">{bookshelfResponse?.name ?? ' '}</p>
+            <p>{bookshelfBooksResponse?.data.length ?? 0} książek</p>
           </div>
           <Button
             onClick={() => {
@@ -59,29 +75,40 @@ export const Bookshelf: FC = () => {
         </div>
         <div className="flex flex-col justify-center gap-8 pt-8 w-full sm:max-w-7xl">
           {bookshelfBooksResponse?.data.map((userBook, index) => (
-            <div 
-            onClick={() => {
-              navigate({
-                to: '/book/$bookId',
-                params: {
-                  bookId: userBook.id
-                }
-              })
-            }}
-            key={`${userBook.bookId}-${index}`} className="flex align-middle items-center gap-4 w-full cursor-pointer">
+            <div
+              onClick={() => {
+                navigate({
+                  to: '/book/$bookId',
+                  params: {
+                    bookId: userBook.id,
+                  },
+                });
+              }}
+              key={`${userBook.bookId}-${index}`}
+              className="flex align-middle items-center gap-4 w-full cursor-pointer"
+            >
               <div>
-                <img src={userBook.imageUrl} className='object-contain aspect-square max-w-[200px]' />
-              </div>    
-              <div className='w-full px-12'>
-                <div className='flex justify-between w-full'>
-                  <div className='font-semibold text-lg sm:text-2xl'>{userBook.book.title}</div>
-                  <div>
-                    {}
-                    <IoMdStar className='h-8 w-8' />
+                <img
+                  src={userBook.imageUrl}
+                  className="object-contain aspect-square max-w-[200px]"
+                />
+              </div>
+              <div className="w-full px-12">
+                <div className="flex justify-between w-full">
+                  <div className="font-semibold text-lg sm:text-2xl">{userBook.book.title}</div>
+                  <div className="flex gap-2 items-center justify-center">
+                    {userBook.isFavorite ? (
+                      <HiHeart className="h-8 w-8 text-primary" />
+                    ) : (
+                      <HiOutlineHeart className="h-8 w-8 text-primary" />
+                    )}
+                    {renderStatusIcon(userBook)}
                   </div>
                 </div>
-                <Separator className='my-4 bg-primary'></Separator>
-                <div className='px-2'>{userBook.book.authors[0].name}, {userBook.book.releaseYear}, {userBook.genres[0]?.name} </div>
+                <Separator className="my-4 bg-primary"></Separator>
+                <div className="px-2">
+                  {userBook.book.authors[0].name}, {userBook.book.releaseYear}, {userBook.genres[0]?.name}{' '}
+                </div>
               </div>
             </div>
           ))}
@@ -89,7 +116,7 @@ export const Bookshelf: FC = () => {
       </div>
     </AuthenticatedLayout>
   );
-}; 
+};
 
 export const bookshelfRoute = createRoute({
   getParentRoute: () => rootRoute,
