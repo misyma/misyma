@@ -7,7 +7,7 @@ export interface FindBookByIdPayload extends FindBookPathParams {
 
 export const findBookById = async (payload: FindBookByIdPayload): Promise<FindBookResponseBody> => {
   const response = await HttpService.get<FindBookResponseBody>({
-    url: `/books/${payload.id}`,
+    url: `/books/${payload.bookId}`,
     headers: {
       Authorization: `Bearer ${payload.accessToken}`,
     },

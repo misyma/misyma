@@ -69,14 +69,14 @@ export const UpdateBookRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit })
   const { data: userData } = useFindUserQuery();
 
   const { data: userBookData } = useFindUserBookQuery({
-    id: bookId,
+    userBookId: bookId,
     userId: userData?.id ?? '',
   });
 
   const { data: bookData } = useQuery(
     FindBookByIdQueryOptions({
       accessToken: accessToken as string,
-      id: userBookData?.bookId as string,
+      bookId: userBookData?.bookId as string,
     }),
   );
 
@@ -120,7 +120,7 @@ export const UpdateBookRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit })
         : {}),
       ...values,
       accessToken: accessToken as string,
-      id: bookData?.id as string,
+      bookId: bookData?.id as string,
     });
 
     onSubmit();

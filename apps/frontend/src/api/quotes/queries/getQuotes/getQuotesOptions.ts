@@ -6,7 +6,7 @@ export const getQuotesOptions = (
   payload: GetQuotesPayload,
 ): UseQueryOptions<FindQuotesResponseBody, Error, FindQuotesResponseBody, string[]> =>
   queryOptions({
-    queryKey: [...getQuotesOptionsQueryKey(payload), payload.userId, `${payload.page}`, `${payload.pageSize}`],
+    queryKey: [...getQuotesOptionsQueryKey(payload), `${payload.page}`, `${payload.pageSize}`],
     queryFn: () => getQuotes(payload),
     enabled: !!payload.accessToken,
     placeholderData: keepPreviousData<FindQuotesResponseBody>,

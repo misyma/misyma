@@ -5,7 +5,6 @@ import { useUpdateQuoteMutation } from '../../../../api/quotes/mutations/updateQ
 import { Quote } from '@common/contracts';
 import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice.js';
 import { useSelector } from 'react-redux';
-import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery.js';
 import { useQueryClient } from '@tanstack/react-query';
 
 interface Props {
@@ -17,8 +16,6 @@ export const FavoriteQuotationButton: FC<Props> = ({ quote }) => {
 
   const queryClient = useQueryClient();
 
-  const { data: userData } = useFindUserQuery();
-
   const isFavorite = useMemo(() => {
     return quote.isFavorite;
   }, [quote.isFavorite]);
@@ -29,9 +26,8 @@ export const FavoriteQuotationButton: FC<Props> = ({ quote }) => {
     if (quote) {
       await updateQuotation({
         accessToken: accessToken as string,
-        id: quote.id,
+        quoteId: quote.id,
         userBookId: quote.userBookId,
-        userId: userData?.id as string,
         isFavorite: !isFavorite,
       });
 

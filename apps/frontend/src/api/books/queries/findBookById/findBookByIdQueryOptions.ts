@@ -6,7 +6,7 @@ export const FindBookByIdQueryOptions = (
   payload: FindBookByIdPayload,
 ): UseQueryOptions<FindBookResponseBody, Error, FindBookResponseBody, string[]> =>
   queryOptions({
-    queryKey: [`findBookById`, payload.id],
+    queryKey: [`findBookById`, payload.bookId],
     queryFn: () => findBookById(payload),
-    enabled: !!payload.accessToken && !!payload.id,
+    enabled: !!payload.accessToken && !!payload.bookId,
   });

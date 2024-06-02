@@ -18,7 +18,7 @@ export const BasicDataTab: FC<Props> = ({ bookId }) => {
   const { data: userData } = useFindUserQuery();
 
   const { data, isFetched, isFetching, isRefetching } = useFindUserBookQuery({
-    id: bookId,
+    userBookId: bookId,
     userId: userData?.id ?? '',
   });
 
@@ -37,7 +37,6 @@ export const BasicDataTab: FC<Props> = ({ bookId }) => {
           <div className="flex justify-center">
             <FavoriteBookButton
               userBook={data as UserBook}
-              userId={userData?.id as string}
             />
           </div>
           <div className="flex flex-col gap-4 w-full">

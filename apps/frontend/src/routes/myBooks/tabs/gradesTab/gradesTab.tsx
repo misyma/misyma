@@ -28,7 +28,6 @@ export const GradesTab: FC<Props> = ({ userBookId }) => {
     FindBookReadingsQueryOptions({
       accessToken: accessToken as string,
       userBookId: userBookId,
-      userId: userData?.id as string,
     }),
   );
 
@@ -46,7 +45,7 @@ export const GradesTab: FC<Props> = ({ userBookId }) => {
     isFetching: isUserBookFetching,
     isRefetching: isUserBookRefetching,
   } = useFindUserBookQuery({
-    id: userBookId,
+    userBookId,
     userId: userData?.id ?? '',
   });
 
@@ -90,7 +89,6 @@ export const GradesTab: FC<Props> = ({ userBookId }) => {
           <div className="flex justify-center">
             <FavoriteBookButton
               userBook={userBookData as UserBook}
-              userId={userData?.id as string}
             />
           </div>
           <div className="flex flex-col gap-4 w-full">
