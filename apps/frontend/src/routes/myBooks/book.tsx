@@ -14,6 +14,7 @@ import { CreateQuotationModal } from './components/createQuotationModal/createQu
 import { AddStarRatingButton } from './components/addStarRatingButton/addStarRatingButton';
 import { useQueryClient } from '@tanstack/react-query';
 import { useFindUserQuery } from '../../api/user/queries/findUserQuery/findUserQuery';
+import { EditOrDeleteBookModal } from './components/editOrDeleteBookModal/editOrDeleteBookModal';
 
 export const BookPage: FC = () => {
   const { data: userData } = useFindUserQuery();
@@ -76,7 +77,10 @@ export const BookPage: FC = () => {
               </li>
             </ul>
             {currentTab === 'basicData' ? (
-              <Button className="w-32 sm:w-96">Edytuj dane</Button>
+              <EditOrDeleteBookModal
+                bookId={bookId}
+                userBookId={bookId}
+              />
             ) : currentTab === 'grades' ? (
               <div className="flex gap-1 justify-center items-end flex-col">
                 <p>Dodaj ocenę</p>
