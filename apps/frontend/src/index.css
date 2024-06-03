@@ -211,5 +211,9 @@ input[type='number'] {
 }
 
 .star-container:has(~ div:is(:hover, :focus-visible)) {
-  @apply text-primary;
+  @apply text-primary
+}
+
+.star-container:is(:hover, :focus-visible) ~ div {
+  @apply text-black
 }

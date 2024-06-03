@@ -239,15 +239,30 @@ export const ShelvesPage: FC = () => {
           <ScrollArea className="w-full h-[70vh]">
             <div className="py-8 grid gap-x-16 gap-y-2 grid-cols-1 w-full min-h-16">
               {visibleBookshelves?.map((bookshelf, index) => (
-                <div>
+                <div key={`${bookshelf.id}-container`}>
                   <Bookmark />
                   <div
                     key={`${bookshelf.id}`}
-                    className="flex ml-10 mt-[-1.25rem] rounded-sm border border-spacing-2 p-4 gap-x-2 h-24 border-transparent bg-primaryBackground"
+                    className="flex relative ml-10 mt-[-1.25rem] rounded-sm border border-spacing-2 p-4 gap-x-2 h-24 border-transparent bg-primaryBackground"
                   >
-                    <div className="flex items-center justify-between w-full">
+                    <div
+                      onClick={() =>
+                        navigate({
+                          to: `/bookshelf/${bookshelf.id}`,
+                        })
+                      }
+                      className="cursor-pointer absolute w-full h-[100%]"
+                    >
+                      &nbsp;
+                    </div>
+                    <div className="flex items-center justify-between w-full pointer-events-none z-10">
                       <h2
-                        className="pl-0 md:pl-4 lg:pl-12 text-lg sm:text-2xl truncate"
+                        onClick={() =>
+                          navigate({
+                            to: `/bookshelf/${bookshelf.id}`,
+                          })
+                        }
+                        className="cursor-pointer pl-0 md:pl-4 lg:pl-12 text-lg sm:text-2xl truncate"
                         key={`${bookshelf.id}-${bookshelf.name}`}
                       >
                         {editMap[index] !== true ? (
@@ -259,7 +274,7 @@ export const ShelvesPage: FC = () => {
                             includeQuill={false}
                             // eslint-disable-next-line
                             id={`${index}-bookshelf`}
-                            className="bg-none text-lg  sm:text-2xl px-0 w-40 sm:w-72"
+                            className="bg-none pointer-events-auto text-lg  sm:text-2xl px-0 w-40 sm:w-72"
                             containerClassName="bg-transparent w-40 sm:w-72"
                             defaultValue={bookshelf.name}
                           />
@@ -270,13 +285,13 @@ export const ShelvesPage: FC = () => {
                           <>
                             <HiPencil
                               className={cn(
-                                'text-primary h-8 w-8 cursor-pointer',
+                                'text-primary pointer-events-auto h-8 w-8 cursor-pointer',
                                 bookshelf.name === 'Archiwum' || bookshelf.name === 'Wypożyczalnia' ? 'hidden' : '',
                               )}
                               onClick={() => startEdit(index)}
                             />
                             <IoMdEye
-                              className="text-primary h-8 w-8 cursor-pointer"
+                              className="text-primary pointer-events-auto h-8 w-8 cursor-pointer"
                               onClick={() =>
                                 navigate({
                                   to: `/bookshelf/${bookshelf.id}`,
@@ -289,20 +304,21 @@ export const ShelvesPage: FC = () => {
                               deletedHandler={async () => {
                                 toast({
                                   title: `Półka ${bookshelf.name} została usunięta.`,
-                                  variant: 'destructive',
+                                  variant: 'success',
                                 });
 
                                 await refetchBookshelves();
                               }}
-                              className={
-                                bookshelf.name === 'Archiwum' || bookshelf.name === 'Wypożyczalnia' ? 'invisible' : ''
-                              }
+                              className={cn(
+                                bookshelf.name === 'Archiwum' || bookshelf.name === 'Wypożyczalnia' ? 'invisible' : '',
+                                'pointer-events-auto',
+                              )}
                             />
                           </>
                         ) : (
                           <>
                             <HiCheck
-                              className="text-primary h-8 w-8 cursor-pointer"
+                              className="pointer-events-auto text-primary h-8 w-8 cursor-pointer"
                               onClick={() => {
                                 if (bookshelves && bookshelves[index]?.id === '') {
                                   onCreateNew(index);
@@ -312,7 +328,7 @@ export const ShelvesPage: FC = () => {
                               }}
                             />
                             <HiOutlineX
-                              className="text-primary h-8 w-8 cursor-pointer"
+                              className="pointer-events-auto text-primary h-8 w-8 cursor-pointer"
                               onClick={() => onCancelEdit(index)}
                             />
                           </>

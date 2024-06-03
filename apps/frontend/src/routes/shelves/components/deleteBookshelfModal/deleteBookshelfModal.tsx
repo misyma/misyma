@@ -102,6 +102,14 @@ export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, cl
     }
   };
 
+  const handleInitialConfirmation = async (): Promise<void> => {
+    if (bookshelfBooksResponse?.data && bookshelfBooksResponse?.data?.length === 0) {
+      await onDelete();
+    } else {
+      setDeletionConfirmed(true);
+    }
+  };
+
   return (
     <Dialog
       open={isOpen}
@@ -141,7 +149,7 @@ export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, cl
               </Button>
               <Button
                 className="bg-primary w-32 sm:w-40"
-                onClick={() => setDeletionConfirmed(true)}
+                onClick={handleInitialConfirmation}
               >
                 Potwierdź
               </Button>

@@ -87,9 +87,7 @@ export const StarRating: FC<Props> = ({ bookId }: Props) => {
                         />
                       }
                     ></CreateBookReadingModal>
-                    <HiStar
-                      className={cn('h-7 w-7', index + 1 === bookReadings?.data[0]?.rating ?? 0 ? 'text-primary' : '')}
-                    />
+                    <HiStar className={cn('h-7 w-7')} />
                   </div>
                 </>
               );
