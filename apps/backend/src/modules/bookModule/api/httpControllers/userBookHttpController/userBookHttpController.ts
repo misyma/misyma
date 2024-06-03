@@ -308,7 +308,7 @@ export class UserBookHttpController implements HttpController {
   private async createUserBook(
     request: HttpRequest<CreateUserBookBodyDto>,
   ): Promise<HttpCreatedResponse<CreateUserBookResponseBodyDto>> {
-    const { bookId, bookshelfId, status, imageUrl, isFavorite } = request.body;
+    const { bookId, bookshelfId, status, imageUrl, isFavorite, collectionIds, genreIds } = request.body;
 
     const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
@@ -321,6 +321,8 @@ export class UserBookHttpController implements HttpController {
       status,
       imageUrl,
       isFavorite,
+      collectionIds,
+      genreIds,
     });
 
     return {
@@ -411,7 +413,8 @@ export class UserBookHttpController implements HttpController {
   }
 
   private mapUserBookToUserBookDto(userBook: UserBook): UserBookDto {
-    const { status, isFavorite, bookshelfId, imageUrl, bookId, genres, book, readings } = userBook.getState();
+    const { status, isFavorite, bookshelfId, imageUrl, bookId, genres, book, readings, collections } =
+      userBook.getState();
 
     const userBookDto: UserBookDto = {
       id: userBook.getId(),
@@ -435,6 +438,12 @@ export class UserBookHttpController implements HttpController {
         genres.map((genre) => ({
           id: genre.getId(),
           name: genre.getName(),
+        })) || [],
+      collections:
+        collections.map((collection) => ({
+          id: collection.getId(),
+          name: collection.getName(),
+          userId: collection.getUserId(),
         })) || [],
       readings:
         readings.map((reading) => {

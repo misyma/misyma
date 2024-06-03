@@ -8,6 +8,7 @@ export interface CreateUserBookRequestBody {
   readonly isFavorite: boolean;
   readonly imageUrl?: string;
   readonly genreIds?: string[];
+  readonly collectionIds?: string[];
 }
 
 export interface CreateUserBookResponseBody extends UserBook {}

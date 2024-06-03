@@ -6,6 +6,7 @@ import {
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type BookshelfRepository } from '../../../../bookshelfModule/domain/repositories/bookshelfRepository/bookshelfRepository.js';
+import { type CollectionRepository } from '../../../domain/repositories/collectionRepository/collectionRepository.js';
 import { type GenreRepository } from '../../../domain/repositories/genreRepository/genreRepository.js';
 import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
 
@@ -14,11 +15,12 @@ export class UpdateUserBookCommandHandlerImpl implements UpdateUserBookCommandHa
     private readonly userBookRepository: UserBookRepository,
     private readonly bookshelfRepository: BookshelfRepository,
     private readonly genreRepository: GenreRepository,
+    private readonly collectionRepository: CollectionRepository,
     private readonly loggerService: LoggerService,
   ) {}
 
   public async execute(payload: UpdateUserBookPayload): Promise<UpdateUserBookResult> {
-    const { userBookId, bookshelfId, imageUrl, status, isFavorite, genreIds } = payload;
+    const { userBookId, bookshelfId, imageUrl, status, isFavorite, genreIds, collectionIds } = payload;
 
     this.loggerService.debug({
       message: 'Updating UserBook...',
@@ -27,6 +29,8 @@ export class UpdateUserBookCommandHandlerImpl implements UpdateUserBookCommandHa
       imageUrl,
       status,
       isFavorite,
+      genreIds,
+      collectionIds,
     });
 
     const userBook = await this.userBookRepository.findUserBook({ id: userBookId });
@@ -66,6 +70,23 @@ export class UpdateUserBookCommandHandlerImpl implements UpdateUserBookCommandHa
       }
 
       userBook.setGenres({ genres });
+    }
+
+    if (collectionIds !== undefined) {
+      const collections = await this.collectionRepository.findCollections({
+        ids: collectionIds,
+        page: 1,
+        pageSize: collectionIds.length,
+      });
+
+      if (collections.length !== collectionIds.length) {
+        throw new OperationNotValidError({
+          reason: 'Some collections do not exist.',
+          ids: collectionIds,
+        });
+      }
+
+      userBook.setCollections({ collections });
     }
 
     if (imageUrl !== undefined) {

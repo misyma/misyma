@@ -1,4 +1,4 @@
-export interface UserBookCollectionsRawEntity {
+export interface UserBookCollectionRawEntity {
   readonly userBookId: string;
   readonly collectionId: string;
 }

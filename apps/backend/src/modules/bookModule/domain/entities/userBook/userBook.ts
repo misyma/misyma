@@ -2,6 +2,7 @@ import { type ReadingStatus } from '@common/contracts';
 
 import { type BookDraft } from '../book/book.js';
 import { type BookReading } from '../bookReading/bookReading.js';
+import { type Collection } from '../collection/collection.js';
 import { type Genre } from '../genre/genre.js';
 
 export interface UserBookDraft {
@@ -13,6 +14,7 @@ export interface UserBookDraft {
   readonly bookId: string;
   readonly book?: BookDraft | undefined;
   readonly genres: Genre[];
+  readonly collections: Collection[];
   readonly readings: BookReading[];
 }
 
@@ -24,6 +26,7 @@ export interface UserBookState {
   readonly bookId: string;
   readonly book?: BookDraft | undefined;
   genres: Genre[];
+  collections: Collection[];
   readonly readings: BookReading[];
 }
 
@@ -47,12 +50,16 @@ export interface SetGenresPayload {
   readonly genres: Genre[];
 }
 
+export interface SetCollectionsPayload {
+  readonly collections: Collection[];
+}
+
 export class UserBook {
   private readonly id: string;
   private readonly state: UserBookState;
 
   public constructor(draft: UserBookDraft) {
-    const { id, imageUrl, status, isFavorite, bookshelfId, bookId, book, genres, readings } = draft;
+    const { id, imageUrl, status, isFavorite, bookshelfId, bookId, book, genres, readings, collections } = draft;
 
     this.id = id;
 
@@ -63,6 +70,7 @@ export class UserBook {
       bookId,
       genres,
       readings,
+      collections,
     };
 
     if (imageUrl) {
@@ -115,6 +123,10 @@ export class UserBook {
     return this.state.genres;
   }
 
+  public getCollections(): Collection[] {
+    return this.state.collections;
+  }
+
   public getReadings(): BookReading[] {
     return this.state.readings;
   }
@@ -147,5 +159,11 @@ export class UserBook {
     const { genres } = payload;
 
     this.state.genres = genres;
+  }
+
+  public setCollections(payload: SetCollectionsPayload): void {
+    const { collections } = payload;
+
+    this.state.collections = collections;
   }
 }

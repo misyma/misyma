@@ -1,6 +1,7 @@
 import { type UserBookMapper } from './userBookMapper.js';
 import { Author } from '../../../../domain/entities/author/author.js';
 import { BookReading } from '../../../../domain/entities/bookReading/bookReading.js';
+import { Collection } from '../../../../domain/entities/collection/collection.js';
 import { Genre } from '../../../../domain/entities/genre/genre.js';
 import { UserBook, type UserBookDraft } from '../../../../domain/entities/userBook/userBook.js';
 import { type UserBookWithJoinsRawEntity } from '../../../databases/bookDatabase/tables/userBookTable/userBookWithJoinsRawEntity.js';
@@ -32,6 +33,9 @@ export class UserBookMapperImpl implements UserBookMapper {
         isAuthorApproved,
         genreId,
         genreName,
+        collectionId,
+        collectionName,
+        userId,
         readingId,
         readingStartedAt,
         readingEndedAt,
@@ -63,6 +67,16 @@ export class UserBookMapperImpl implements UserBookMapper {
           );
         }
 
+        if (collectionId && collectionName && userId) {
+          userBookDraft.collections?.push(
+            new Collection({
+              id: collectionId,
+              name: collectionName,
+              userId,
+            }),
+          );
+        }
+
         if (readingId && readingStartedAt && readingRating && readingComment) {
           userBookDraft.readings?.push(
             new BookReading({
@@ -81,6 +95,8 @@ export class UserBookMapperImpl implements UserBookMapper {
         const genres: Genre[] = [];
 
         const readings: BookReading[] = [];
+
+        const collections: Collection[] = [];
 
         if (authorId) {
           authors.push(
@@ -114,6 +130,16 @@ export class UserBookMapperImpl implements UserBookMapper {
           );
         }
 
+        if (collectionId && collectionName && userId) {
+          collections.push(
+            new Collection({
+              id: collectionId,
+              name: collectionName,
+              userId,
+            }),
+          );
+        }
+
         const userBookDraft: UserBookDraft = {
           id,
           book: {
@@ -137,6 +163,7 @@ export class UserBookMapperImpl implements UserBookMapper {
           bookshelfId,
           genres,
           readings,
+          collections,
         };
 
         userBookDraftsMapping.set(id, userBookDraft);

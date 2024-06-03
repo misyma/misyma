@@ -4,6 +4,7 @@ import * as contracts from '@common/contracts';
 
 import { bookReadingDtoSchema } from '../../bookReadingHttpController/schemas/bookReadingDto.js';
 import { authorDtoSchema } from '../../common/authorDto.js';
+import { collectionDtoSchema } from '../../common/collectionDto.js';
 import { genreDtoSchema } from '../../common/genreDto.js';
 
 export const userBookDtoSchema = Type.Object({
@@ -18,6 +19,7 @@ export const userBookDtoSchema = Type.Object({
   isFavorite: Type.Boolean(),
   bookshelfId: Type.String({ format: 'uuid' }),
   genres: Type.Array(genreDtoSchema),
+  collections: Type.Array(collectionDtoSchema),
   readings: Type.Array(bookReadingDtoSchema),
   bookId: Type.String({ format: 'uuid' }),
   book: Type.Object({
