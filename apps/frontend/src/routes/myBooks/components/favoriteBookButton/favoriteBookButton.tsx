@@ -6,9 +6,10 @@ import { cn } from '../../../../lib/utils.js';
 
 interface Props {
   userBook: UserBook;
+  className?: string;
 }
 
-export const FavoriteBookButton: FC<Props> = ({ userBook }) => {
+export const FavoriteBookButton: FC<Props> = ({ userBook, className }) => {
   const [isFavorite, setIsFavorite] = useState(userBook?.isFavorite ?? false);
 
   const { mutateAsync: updateUserBook } = useUpdateUserBookMutation({});
@@ -28,12 +29,12 @@ export const FavoriteBookButton: FC<Props> = ({ userBook }) => {
     <>
       {!isFavorite ? (
         <HiOutlineHeart
-          className={cn('h-8 w-8 cursor-pointer', 'text-primary')}
+          className={cn('h-8 w-8 cursor-pointer', 'text-primary', className)}
           onClick={onIsFavoriteChange}
         />
       ) : (
         <HiHeart
-          className={cn('h-8 w-8 cursor-pointer', 'text-primary' )}
+          className={cn('h-8 w-8 cursor-pointer', 'text-primary', className)}
           onClick={onIsFavoriteChange}
         />
       )}

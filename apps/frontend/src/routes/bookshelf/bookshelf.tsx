@@ -10,9 +10,10 @@ import { Button } from '../../components/ui/button';
 import { useFindUserQuery } from '../../api/user/queries/findUserQuery/findUserQuery';
 import { useFindBookshelfByIdQuery } from '../../api/bookshelf/queries/findBookshelfByIdQuery/findBookshelfByIdQuery';
 import { Separator } from '../../components/ui/separator';
-import { HiCheckCircle, HiDotsCircleHorizontal, HiHeart, HiOutlineHeart, HiQuestionMarkCircle } from 'react-icons/hi';
+import { HiCheckCircle, HiDotsCircleHorizontal, HiQuestionMarkCircle } from 'react-icons/hi';
 import { ReadingStatus, UserBook } from '@common/contracts';
 import { cn } from '../../lib/utils';
+import { FavoriteBookButton } from '../myBooks/components/favoriteBookButton/favoriteBookButton';
 
 const bookshelfSearchSchema = z.object({
   id: z.string().uuid().catch(''),
@@ -47,7 +48,7 @@ export const Bookshelf: FC = () => {
   const renderStatusIcon = (book: UserBook) => {
     const Icon = readingStatusMap[book.status];
 
-    return <Icon className={cn('h-7 w-7', readingStatusColor[book.status])} />;
+    return <Icon className={cn('h-7 w-7 cursor-default pointer-events-auto', readingStatusColor[book.status])} />;
   };
 
   return (
@@ -76,32 +77,42 @@ export const Bookshelf: FC = () => {
         <div className="flex flex-col justify-center gap-8 pt-8 w-full sm:max-w-7xl">
           {bookshelfBooksResponse?.data.map((userBook, index) => (
             <div
-              onClick={() => {
-                navigate({
-                  to: '/book/$bookId',
-                  params: {
-                    bookId: userBook.id,
-                  },
-                });
-              }}
               key={`${userBook.bookId}-${index}`}
-              className="flex align-middle items-center gap-4 w-full cursor-pointer"
+              className="relative flex align-middle items-center gap-4 w-full cursor-pointer"
             >
-              <div>
+              <div
+                onClick={() => {
+                  navigate({
+                    to: '/book/$bookId',
+                    params: {
+                      bookId: userBook.id,
+                    },
+                  });
+                }}
+                className="cursor-pointer absolute w-full h-[100%]"
+              ></div>
+              <div className="z-10">
                 <img
+                  onClick={() => {
+                    navigate({
+                      to: '/book/$bookId',
+                      params: {
+                        bookId: userBook.id,
+                      },
+                    });
+                  }}
                   src={userBook.imageUrl}
                   className="object-contain aspect-square max-w-[200px]"
                 />
               </div>
-              <div className="w-full px-12">
+              <div className="z-10 w-full px-12 pointer-events-none">
                 <div className="flex justify-between w-full">
                   <div className="font-semibold text-lg sm:text-2xl">{userBook.book.title}</div>
                   <div className="flex gap-2 items-center justify-center">
-                    {userBook.isFavorite ? (
-                      <HiHeart className="h-8 w-8 text-primary" />
-                    ) : (
-                      <HiOutlineHeart className="h-8 w-8 text-primary" />
-                    )}
+                    <FavoriteBookButton
+                      className="pointer-events-auto"
+                      userBook={userBook}
+                    />
                     {renderStatusIcon(userBook)}
                   </div>
                 </div>
