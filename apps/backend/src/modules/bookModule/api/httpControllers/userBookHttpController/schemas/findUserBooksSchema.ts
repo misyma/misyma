@@ -6,7 +6,8 @@ import { userBookDtoSchema } from './userBookDto.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const findUserBooksQueryParamsDtoSchema = Type.Object({
-  bookshelfId: Type.String({ format: 'uuid' }),
+  bookshelfId: Type.Optional(Type.String({ format: 'uuid' })),
+  collectionId: Type.Optional(Type.String({ format: 'uuid' })),
   page: Type.Optional(Type.Integer({ minimum: 1 })),
   pageSize: Type.Optional(Type.Integer({ minimum: 1 })),
 });

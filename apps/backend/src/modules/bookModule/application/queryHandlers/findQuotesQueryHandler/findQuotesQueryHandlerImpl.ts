@@ -1,19 +1,19 @@
 import {
-  type FindQuotesByUserBookIdPayload,
-  type FindQuotesByUserBookIdQueryHandler,
-  type FindQuotesByUserBookIdResult,
-} from './findQuotesByUserBookIdQueryHandler.js';
+  type FindQuotesPayload,
+  type FindQuotesQueryHandler,
+  type FindQuotesResult,
+} from './findQuotesQueryHandler.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type QuoteRepository } from '../../../domain/repositories/quoteRepository/quoteRepository.js';
 import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
 
-export class FindQuotesByUserBookIdQueryHandlerImpl implements FindQuotesByUserBookIdQueryHandler {
+export class FindQuotesQueryHandlerImpl implements FindQuotesQueryHandler {
   public constructor(
     private readonly quoteRepository: QuoteRepository,
     private readonly userBookRepository: UserBookRepository,
   ) {}
 
-  public async execute(payload: FindQuotesByUserBookIdPayload): Promise<FindQuotesByUserBookIdResult> {
+  public async execute(payload: FindQuotesPayload): Promise<FindQuotesResult> {
     const { userBookId, page, pageSize } = payload;
 
     const bookExists = await this.userBookRepository.findUserBook({

@@ -43,7 +43,7 @@ import { type AccessControlService } from '../../../../authModule/application/se
 import { type CreateQuoteCommandHandler } from '../../../application/commandHandlers/createQuoteCommandHandler/createQuoteCommandHandler.js';
 import { type DeleteQuoteCommandHandler } from '../../../application/commandHandlers/deleteQuoteCommandHandler/deleteQuoteCommandHandler.js';
 import { type UpdateQuoteCommandHandler } from '../../../application/commandHandlers/updateQuoteCommandHandler/updateQuoteCommandHandler.js';
-import { type FindQuotesByUserBookIdQueryHandler } from '../../../application/queryHandlers/findQuotesByUserBookIdQueryHandler/findQuotesByUserBookIdQueryHandler.js';
+import { type FindQuotesQueryHandler } from '../../../application/queryHandlers/findQuotesQueryHandler/findQuotesQueryHandler.js';
 import { type Quote } from '../../../domain/entities/quote/quote.js';
 
 interface MapQuoteToQuoteDtoPayload {
@@ -55,7 +55,7 @@ export class QuoteHttpController implements HttpController {
   public readonly tags = ['Quote'];
 
   public constructor(
-    private readonly findQuotesByBookIdQueryHandler: FindQuotesByUserBookIdQueryHandler,
+    private readonly findQuotesByBookIdQueryHandler: FindQuotesQueryHandler,
     private readonly createQuoteCommandHandler: CreateQuoteCommandHandler,
     private readonly updateQuoteCommandHandler: UpdateQuoteCommandHandler,
     private readonly deleteQuoteCommandHandler: DeleteQuoteCommandHandler,

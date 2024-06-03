@@ -7,8 +7,10 @@ import { OperationNotValidError } from '../../../../../common/errors/operationNo
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type BookshelfRepository } from '../../../../bookshelfModule/domain/repositories/bookshelfRepository/bookshelfRepository.js';
+import { type Collection } from '../../../domain/entities/collection/collection.js';
 import { type Genre } from '../../../domain/entities/genre/genre.js';
 import { type BookRepository } from '../../../domain/repositories/bookRepository/bookRepository.js';
+import { type CollectionRepository } from '../../../domain/repositories/collectionRepository/collectionRepository.js';
 import { type GenreRepository } from '../../../domain/repositories/genreRepository/genreRepository.js';
 import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
 
@@ -19,10 +21,11 @@ export class CreateUserBookCommandHandlerImpl implements CreateUserBookCommandHa
     private readonly userBookRepository: UserBookRepository,
     private readonly loggerService: LoggerService,
     private readonly genreRepository: GenreRepository,
+    private readonly collectionRepository: CollectionRepository,
   ) {}
 
   public async execute(payload: CreateUserBookCommandHandlerPayload): Promise<CreateUserBookCommandHandlerResult> {
-    const { userId, bookshelfId, bookId, status, imageUrl, genreIds, isFavorite } = payload;
+    const { userId, bookshelfId, bookId, status, imageUrl, genreIds, collectionIds, isFavorite } = payload;
 
     this.loggerService.debug({
       message: 'Creating UserBook...',
@@ -33,6 +36,7 @@ export class CreateUserBookCommandHandlerImpl implements CreateUserBookCommandHa
       imageUrl,
       genreIds,
       isFavorite,
+      collectionIds,
     });
 
     const bookshelf = await this.bookshelfRepository.findBookshelf({ where: { id: bookshelfId } });
@@ -78,7 +82,7 @@ export class CreateUserBookCommandHandlerImpl implements CreateUserBookCommandHa
 
     let genres: Genre[] = [];
 
-    if (genreIds) {
+    if (genreIds && genreIds.length) {
       genres = await this.genreRepository.findGenres({
         ids: genreIds,
         page: 1,
@@ -93,6 +97,23 @@ export class CreateUserBookCommandHandlerImpl implements CreateUserBookCommandHa
       }
     }
 
+    let collections: Collection[] = [];
+
+    if (collectionIds && collectionIds.length) {
+      collections = await this.collectionRepository.findCollections({
+        ids: collectionIds,
+        page: 1,
+        pageSize: collectionIds.length,
+      });
+
+      if (collections.length !== collectionIds.length) {
+        throw new OperationNotValidError({
+          reason: 'Some collections do not exist.',
+          ids: collectionIds,
+        });
+      }
+    }
+
     const userBook = await this.userBookRepository.saveUserBook({
       userBook: {
         bookId,
@@ -101,6 +122,7 @@ export class CreateUserBookCommandHandlerImpl implements CreateUserBookCommandHa
         isFavorite,
         imageUrl,
         genres,
+        collections,
         readings: [],
       },
     });

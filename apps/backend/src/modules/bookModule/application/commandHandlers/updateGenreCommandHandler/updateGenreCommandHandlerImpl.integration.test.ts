@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { type UpdateGenreNameCommandHandler } from './updateGenreNameCommandHandler.js';
+import { type UpdateGenreCommandHandler } from './updateGenreCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
@@ -9,15 +9,15 @@ import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourc
 import { symbols } from '../../../symbols.js';
 import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 
-describe('UpdateGenreNameCommandHandler', () => {
-  let commandHandler: UpdateGenreNameCommandHandler;
+describe('UpdateGenreCommandHandler', () => {
+  let commandHandler: UpdateGenreCommandHandler;
 
   let genreTestUtils: GenreTestUtils;
 
   beforeEach(() => {
     const container = TestContainer.create();
 
-    commandHandler = container.get<UpdateGenreNameCommandHandler>(symbols.updateGenreNameCommandHandler);
+    commandHandler = container.get<UpdateGenreCommandHandler>(symbols.updateGenreCommandHandler);
 
     genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
   });

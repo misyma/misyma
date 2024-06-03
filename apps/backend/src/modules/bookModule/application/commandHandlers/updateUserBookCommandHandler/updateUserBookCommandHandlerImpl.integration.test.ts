@@ -12,6 +12,7 @@ import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestU
 import { symbols } from '../../../symbols.js';
 import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
+import { type CollectionTestUtils } from '../../../tests/utils/collectionTestUtils/collectionTestUtils.js';
 import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
 
@@ -21,6 +22,8 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
   let bookTestUtils: BookTestUtils;
 
   let genreTestUtils: GenreTestUtils;
+
+  let collectionTestUtils: CollectionTestUtils;
 
   let bookshelfTestUtils: BookshelfTestUtils;
 
@@ -43,6 +46,8 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
 
     genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
 
+    collectionTestUtils = container.get<CollectionTestUtils>(testSymbols.collectionTestUtils);
+
     bookshelfTestUtils = container.get<BookshelfTestUtils>(testSymbols.bookshelfTestUtils);
 
     authorTestUtils = container.get<AuthorTestUtils>(testSymbols.authorTestUtils);
@@ -54,6 +59,8 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
     await authorTestUtils.truncate();
 
     await bookTestUtils.truncate();
+
+    await collectionTestUtils.truncate();
 
     await bookshelfTestUtils.truncate();
 
@@ -68,6 +75,8 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
     await authorTestUtils.truncate();
 
     await bookTestUtils.truncate();
+
+    await collectionTestUtils.truncate();
 
     await bookshelfTestUtils.truncate();
 
@@ -250,6 +259,81 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
 
     result.userBook.getGenres().forEach((genre) => {
       expect(genre.getId()).oneOf([genre1.id, genre2.id, genre3.id]);
+    });
+  });
+
+  it('throws an error - when one of the Collections does not exist', async () => {
+    const user = await userTestUtils.createAndPersist();
+
+    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+
+    const author = await authorTestUtils.createAndPersist();
+
+    const book = await bookTestUtils.createAndPersist({
+      input: {
+        authorIds: [author.id],
+      },
+    });
+
+    const userBook = await userBookTestUtils.createAndPersist({
+      input: {
+        bookId: book.id,
+        bookshelfId: bookshelf.id,
+      },
+    });
+
+    const collection1 = await collectionTestUtils.createAndPersist({ input: { userId: user.id } });
+
+    const invalidCollectionId = Generator.uuid();
+
+    await expect(
+      async () =>
+        await commandHandler.execute({
+          userBookId: userBook.id,
+          collectionIds: [collection1.id, invalidCollectionId],
+        }),
+    ).toThrowErrorInstance({
+      instance: OperationNotValidError,
+      context: {
+        reason: 'Some collections do not exist.',
+        ids: [collection1.id, invalidCollectionId],
+      },
+    });
+  });
+
+  it('updates UserBook Collections', async () => {
+    const user = await userTestUtils.createAndPersist();
+
+    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+
+    const author = await authorTestUtils.createAndPersist();
+
+    const book = await bookTestUtils.createAndPersist({
+      input: {
+        authorIds: [author.id],
+      },
+    });
+
+    const userBook = await userBookTestUtils.createAndPersist({
+      input: {
+        bookId: book.id,
+        bookshelfId: bookshelf.id,
+      },
+    });
+
+    const collection1 = await collectionTestUtils.createAndPersist({ input: { userId: user.id } });
+
+    const collection2 = await collectionTestUtils.createAndPersist({ input: { userId: user.id } });
+
+    const collection3 = await collectionTestUtils.createAndPersist({ input: { userId: user.id } });
+
+    const result = await commandHandler.execute({
+      userBookId: userBook.id,
+      collectionIds: [collection1.id, collection2.id, collection3.id],
+    });
+
+    result.userBook.getCollections().forEach((collection) => {
+      expect(collection.getId()).oneOf([collection1.id, collection2.id, collection3.id]);
     });
   });
 });

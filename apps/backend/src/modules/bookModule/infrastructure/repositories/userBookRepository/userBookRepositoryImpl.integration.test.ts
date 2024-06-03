@@ -15,6 +15,7 @@ import { UserBookTestFactory } from '../../../tests/factories/userBookTestFactor
 import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookReadingTestUtils } from '../../../tests/utils/bookReadingTestUtils/bookReadingTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
+import { type CollectionTestUtils } from '../../../tests/utils/collectionTestUtils/collectionTestUtils.js';
 import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
 
@@ -36,6 +37,8 @@ describe('UserBookRepositoryImpl', () => {
   let userBookTestUtils: UserBookTestUtils;
 
   let bookReadingTestUtils: BookReadingTestUtils;
+
+  let collectionTestUtils: CollectionTestUtils;
 
   const userBookTestFactory = new UserBookTestFactory();
 
@@ -60,6 +63,8 @@ describe('UserBookRepositoryImpl', () => {
 
     bookReadingTestUtils = container.get<BookReadingTestUtils>(testSymbols.bookReadingTestUtils);
 
+    collectionTestUtils = container.get<CollectionTestUtils>(testSymbols.collectionTestUtils);
+
     await authorTestUtils.truncate();
 
     await userBookTestUtils.truncate();
@@ -73,6 +78,8 @@ describe('UserBookRepositoryImpl', () => {
     await genreTestUtils.truncate();
 
     await bookReadingTestUtils.truncate();
+
+    await collectionTestUtils.truncate();
   });
 
   afterEach(async () => {
@@ -89,6 +96,8 @@ describe('UserBookRepositoryImpl', () => {
     await genreTestUtils.truncate();
 
     await bookReadingTestUtils.truncate();
+
+    await collectionTestUtils.truncate();
 
     await databaseClient.destroy();
   });
@@ -125,6 +134,7 @@ describe('UserBookRepositoryImpl', () => {
           imageUrl: userBookRawEntity.imageUrl as string,
           genres: [genre],
           readings: [],
+          collections: [],
         },
       });
 
@@ -140,6 +150,7 @@ describe('UserBookRepositoryImpl', () => {
         isFavorite: userBookRawEntity.isFavorite,
         genres: [genre],
         readings: [],
+        collections: [],
         book: {
           id: book.id,
           title: book.title,
@@ -218,6 +229,7 @@ describe('UserBookRepositoryImpl', () => {
         imageUrl: userBook.getImageUrl(),
         genres: [],
         readings: [],
+        collections: [],
         book: {
           id: book.id,
           title: book.title,
@@ -494,12 +506,14 @@ describe('UserBookRepositoryImpl', () => {
         ...userBookRawEntity1,
         genres: [],
         readings: [],
+        collections: [],
       });
 
       const userBook2 = new UserBook({
         ...userBookRawEntity2,
         genres: [],
         readings: [],
+        collections: [],
       });
 
       userBook1.setBookshelfId({ bookshelfId: bookshelf2.id });
@@ -524,6 +538,8 @@ describe('UserBookRepositoryImpl', () => {
     it('finds UserBook by id', async () => {
       const user = await userTestUtils.createAndPersist();
 
+      const collection = await collectionTestUtils.createAndPersist({ input: { userId: user.id } });
+
       const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
 
       const author = await authorTestUtils.createAndPersist();
@@ -542,6 +558,7 @@ describe('UserBookRepositoryImpl', () => {
           bookshelfId: bookshelf.id,
         },
         genreIds: [genre.id],
+        collectionIds: [collection.id],
       });
 
       const userBook = userBookTestFactory.create(userBookRawEntity);
@@ -567,6 +584,15 @@ describe('UserBookRepositoryImpl', () => {
             id: genre.id,
             state: {
               name: genre.name,
+            },
+          },
+        ],
+        collections: [
+          {
+            id: collection.id,
+            state: {
+              name: collection.name,
+              userId: collection.userId,
             },
           },
         ],

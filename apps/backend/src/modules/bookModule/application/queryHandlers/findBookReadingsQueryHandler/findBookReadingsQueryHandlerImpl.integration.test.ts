@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { type FindBookReadingsByUserBookIdQueryHandler } from './findBookReadingsByUserBookIdQueryHandler.js';
+import { type FindBookReadingsQueryHandler } from './findBookReadingsQueryHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
@@ -12,8 +12,8 @@ import { type BookReadingTestUtils } from '../../../tests/utils/bookReadingTestU
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
 import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
 
-describe('FindBookReadingsByUserBookIdQueryHandlerImpl', () => {
-  let queryHandler: FindBookReadingsByUserBookIdQueryHandler;
+describe('FindBookReadingsQueryHandlerImpl', () => {
+  let queryHandler: FindBookReadingsQueryHandler;
 
   let bookReadingTestUtils: BookReadingTestUtils;
 
@@ -28,9 +28,7 @@ describe('FindBookReadingsByUserBookIdQueryHandlerImpl', () => {
   beforeEach(async () => {
     const container = TestContainer.create();
 
-    queryHandler = container.get<FindBookReadingsByUserBookIdQueryHandler>(
-      symbols.findBookReadingsByUserBookIdQueryHandler,
-    );
+    queryHandler = container.get<FindBookReadingsQueryHandler>(symbols.findBookReadingsQueryHandler);
 
     bookReadingTestUtils = container.get<BookReadingTestUtils>(testSymbols.bookReadingTestUtils);
 

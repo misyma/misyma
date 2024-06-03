@@ -44,7 +44,7 @@ import { type AccessControlService } from '../../../../authModule/application/se
 import { type CreateBookReadingCommandHandler } from '../../../application/commandHandlers/createBookReadingCommandHandler/createBookReadingCommandHandler.js';
 import { type DeleteBookReadingCommandHandler } from '../../../application/commandHandlers/deleteBookReadingCommandHandler/deleteBookReadingCommandHandler.js';
 import { type UpdateBookReadingCommandHandler } from '../../../application/commandHandlers/updateBookReadingCommandHandler/updateBookReadingCommandHandler.js';
-import { type FindBookReadingsByUserBookIdQueryHandler } from '../../../application/queryHandlers/findBookReadingsByUserBookIdQueryHandler/findBookReadingsByUserBookIdQueryHandler.js';
+import { type FindBookReadingsQueryHandler } from '../../../application/queryHandlers/findBookReadingsQueryHandler/findBookReadingsQueryHandler.js';
 import { type BookReading } from '../../../domain/entities/bookReading/bookReading.js';
 
 interface MapBookReadingToBookReadingDtoPayload {
@@ -56,7 +56,7 @@ export class BookReadingHttpController implements HttpController {
   public readonly tags = ['BookReading'];
 
   public constructor(
-    private readonly findBookReadingsByBookIdQueryHandler: FindBookReadingsByUserBookIdQueryHandler,
+    private readonly findBookReadingsByBookIdQueryHandler: FindBookReadingsQueryHandler,
     private readonly createBookReadingCommandHandler: CreateBookReadingCommandHandler,
     private readonly updateBookReadingCommandHandler: UpdateBookReadingCommandHandler,
     private readonly deleteBookReadingCommandHandler: DeleteBookReadingCommandHandler,

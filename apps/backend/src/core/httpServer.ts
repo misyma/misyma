@@ -32,6 +32,7 @@ import { type BookAdminHttpController } from '../modules/bookModule/api/httpCont
 import { type BookHttpController } from '../modules/bookModule/api/httpControllers/bookHttpController/bookHttpController.js';
 import { type BookReadingHttpController } from '../modules/bookModule/api/httpControllers/bookReadingHttpController/bookReadingHttpController.js';
 import { type BorrowingHttpController } from '../modules/bookModule/api/httpControllers/borrowingHttpController/borrowingHttpController.js';
+import { type CollectionHttpController } from '../modules/bookModule/api/httpControllers/collectionHttpController/collectionHttpController.js';
 import { type GenreAdminHttpController } from '../modules/bookModule/api/httpControllers/genreAdminHttpController/genreAdminHttpController.js';
 import { type GenreHttpController } from '../modules/bookModule/api/httpControllers/genreHttpController/genreHttpController.js';
 import { type QuoteHttpController } from '../modules/bookModule/api/httpControllers/quoteHttpController/quoteHttpController.js';
@@ -76,6 +77,7 @@ export class HttpServer {
       this.container.get<BookReadingHttpController>(bookSymbols.bookReadingHttpController),
       this.container.get<QuoteHttpController>(bookSymbols.quoteHttpController),
       this.container.get<BorrowingHttpController>(bookSymbols.borrowingHttpController),
+      this.container.get<CollectionHttpController>(bookSymbols.collectionHttpController),
     ];
   }
 

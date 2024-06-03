@@ -1,7 +1,9 @@
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type Transaction } from '../../../../../libs/database/types/transaction.js';
-import { type UserBookGenresRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/userBookGenresTable/userBookGenresRawEntity.js';
-import { UserBookGenresTable } from '../../../infrastructure/databases/bookDatabase/tables/userBookGenresTable/userBookGenresTable.js';
+import { type UserBookCollectionRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/userBookCollectionsTable/userBookCollectionsRawEntity.js';
+import { UserBookCollectionsTable } from '../../../infrastructure/databases/bookDatabase/tables/userBookCollectionsTable/userBookCollectionsTable.js';
+import { type UserBookGenreRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/userBookGenresTable/userBookGenresRawEntity.js';
+import { UserBookGenreTable } from '../../../infrastructure/databases/bookDatabase/tables/userBookGenresTable/userBookGenresTable.js';
 import { type UserBookRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/userBookTable/userBookRawEntity.js';
 import { UserBookTable } from '../../../infrastructure/databases/bookDatabase/tables/userBookTable/userBookTable.js';
 import { UserBookTestFactory } from '../../factories/userBookTestFactory/userBookTestFactory.js';
@@ -9,6 +11,7 @@ import { UserBookTestFactory } from '../../factories/userBookTestFactory/userBoo
 interface CreateAndPersistPayload {
   readonly input?: Partial<UserBookRawEntity>;
   readonly genreIds?: string[];
+  readonly collectionIds?: string[];
 }
 
 interface FindUserBookGenresPayload {
@@ -25,13 +28,14 @@ interface FindByIdsPayload {
 
 export class UserBookTestUtils {
   private readonly userBookTable = new UserBookTable();
-  private readonly userBookGenresTable = new UserBookGenresTable();
+  private readonly userBookGenresTable = new UserBookGenreTable();
+  private readonly userBookCollectionTable = new UserBookCollectionsTable();
   private readonly userBookTestFactory = new UserBookTestFactory();
 
   public constructor(private readonly databaseClient: DatabaseClient) {}
 
   public async createAndPersist(payload: CreateAndPersistPayload = {}): Promise<UserBookRawEntity> {
-    const { input, genreIds } = payload;
+    const { input, genreIds, collectionIds } = payload;
 
     const userBook = this.userBookTestFactory.createRaw(input);
 
@@ -41,10 +45,20 @@ export class UserBookTestUtils {
       rawEntities = await transaction<UserBookRawEntity>(this.userBookTable.name).insert(userBook, '*');
 
       if (genreIds) {
-        await transaction.batchInsert<UserBookGenresRawEntity>(
+        await transaction.batchInsert<UserBookGenreRawEntity>(
           this.userBookGenresTable.name,
           genreIds.map((genreId) => ({
             genreId,
+            userBookId: userBook.id,
+          })),
+        );
+      }
+
+      if (collectionIds) {
+        await transaction.batchInsert<UserBookCollectionRawEntity>(
+          this.userBookCollectionTable.name,
+          collectionIds.map((collectionId) => ({
+            collectionId,
             userBookId: userBook.id,
           })),
         );
@@ -90,10 +104,10 @@ export class UserBookTestUtils {
     }));
   }
 
-  public async findUserBookGenres(payload: FindUserBookGenresPayload): Promise<UserBookGenresRawEntity[]> {
+  public async findUserBookGenres(payload: FindUserBookGenresPayload): Promise<UserBookGenreRawEntity[]> {
     const { userBookId } = payload;
 
-    const rawEntities = await this.databaseClient<UserBookGenresRawEntity>(this.userBookGenresTable.name)
+    const rawEntities = await this.databaseClient<UserBookGenreRawEntity>(this.userBookGenresTable.name)
       .select('*')
       .where({ userBookId });
 

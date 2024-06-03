@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { type FindQuotesByUserBookIdQueryHandler } from './findQuotesByUserBookIdQueryHandler.js';
+import { type FindQuotesQueryHandler } from './findQuotesQueryHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
@@ -12,8 +12,8 @@ import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestU
 import { type QuoteTestUtils } from '../../../tests/utils/quoteTestUtils/quoteTestUtils.js';
 import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
 
-describe('FindQuotesByUserBookIdQueryHandlerImpl', () => {
-  let queryHandler: FindQuotesByUserBookIdQueryHandler;
+describe('FindQuotesQueryHandlerImpl', () => {
+  let queryHandler: FindQuotesQueryHandler;
 
   let quoteTestUtils: QuoteTestUtils;
 
@@ -28,7 +28,7 @@ describe('FindQuotesByUserBookIdQueryHandlerImpl', () => {
   beforeEach(async () => {
     const container = TestContainer.create();
 
-    queryHandler = container.get<FindQuotesByUserBookIdQueryHandler>(symbols.findQuotesByUserBookIdQueryHandler);
+    queryHandler = container.get<FindQuotesQueryHandler>(symbols.findQuotesQueryHandler);
 
     quoteTestUtils = container.get<QuoteTestUtils>(testSymbols.quoteTestUtils);
 

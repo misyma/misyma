@@ -10,6 +10,7 @@ export interface UpdateUserBookPayload {
   readonly status?: ReadingStatus | undefined;
   readonly isFavorite?: boolean | undefined;
   readonly genreIds?: string[] | undefined;
+  readonly collectionIds?: string[] | undefined;
 }
 
 export interface UpdateUserBookResult {

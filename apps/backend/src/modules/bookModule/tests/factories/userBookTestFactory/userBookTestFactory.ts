@@ -13,6 +13,7 @@ export class UserBookTestFactory {
       bookId: Generator.uuid(),
       genres: [],
       readings: [],
+      collections: [],
       ...input,
     });
   }

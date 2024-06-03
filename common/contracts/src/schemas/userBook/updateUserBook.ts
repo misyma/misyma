@@ -11,6 +11,7 @@ export interface UpdateUserBookRequestBody {
   readonly isFavorite?: boolean;
   readonly bookshelfId?: string;
   readonly genreIds?: string[];
+  readonly collectionIds?: string[];
 }
 
 export type UpdateUserBookResponseBody = UserBook;
