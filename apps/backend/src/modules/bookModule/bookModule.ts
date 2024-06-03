@@ -454,7 +454,7 @@ export class BookModule implements DependencyInjectionModule {
       symbols.createCollectionCommandHandler,
       () =>
         new CreateCollectionCommandHandlerImpl(
-          container.get<CollectionRepository>(symbols.genreRepository),
+          container.get<CollectionRepository>(symbols.collectionRepository),
           container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );
@@ -463,7 +463,7 @@ export class BookModule implements DependencyInjectionModule {
       symbols.deleteCollectionCommandHandler,
       () =>
         new DeleteCollectionCommandHandlerImpl(
-          container.get<CollectionRepository>(symbols.genreRepository),
+          container.get<CollectionRepository>(symbols.collectionRepository),
           container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );
@@ -472,7 +472,7 @@ export class BookModule implements DependencyInjectionModule {
       symbols.updateCollectionCommandHandler,
       () =>
         new UpdateCollectionCommandHandlerImpl(
-          container.get<CollectionRepository>(symbols.genreRepository),
+          container.get<CollectionRepository>(symbols.collectionRepository),
           container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );
@@ -496,7 +496,7 @@ export class BookModule implements DependencyInjectionModule {
 
     container.bind<FindCollectionsQueryHandler>(
       symbols.findCollectionsQueryHandler,
-      () => new FindCollectionsQueryHandlerImpl(container.get<CollectionRepository>(symbols.genreRepository)),
+      () => new FindCollectionsQueryHandlerImpl(container.get<CollectionRepository>(symbols.collectionRepository)),
     );
 
     container.bind<FindUserBookQueryHandler>(
@@ -590,7 +590,7 @@ export class BookModule implements DependencyInjectionModule {
     );
 
     container.bind<CollectionHttpController>(
-      symbols.genreHttpController,
+      symbols.collectionHttpController,
       () =>
         new CollectionHttpController(
           container.get<CreateCollectionCommandHandler>(symbols.createCollectionCommandHandler),

@@ -17,12 +17,10 @@ export class UpdateCollectionCommandHandlerImpl implements UpdateCollectionComma
   public async execute(payload: UpdateCollectionPayload): Promise<UpdateCollectionResult> {
     const { id, name } = payload;
 
-    const normalizedName = name.toLowerCase();
-
     this.loggerService.debug({
-      message: 'Updating Collection name...',
+      message: 'Updating Collection...',
       id,
-      name: normalizedName,
+      name,
     });
 
     const existingCollection = await this.collectionRepository.findCollection({ id });
@@ -35,7 +33,8 @@ export class UpdateCollectionCommandHandlerImpl implements UpdateCollectionComma
     }
 
     const nameTaken = await this.collectionRepository.findCollection({
-      name: normalizedName,
+      name,
+      userId: existingCollection.getUserId(),
     });
 
     if (nameTaken) {
@@ -45,20 +44,16 @@ export class UpdateCollectionCommandHandlerImpl implements UpdateCollectionComma
       });
     }
 
-    existingCollection.setName({ name: normalizedName });
+    existingCollection.setName({ name });
 
-    const collection = await this.collectionRepository.saveCollection({
-      collection: existingCollection,
-    });
+    const collection = await this.collectionRepository.saveCollection({ collection: existingCollection });
 
     this.loggerService.debug({
-      message: 'Collection name updated.',
+      message: 'Collection updated.',
       id,
-      name: normalizedName,
+      name,
     });
 
-    return {
-      collection,
-    };
+    return { collection };
   }
 }

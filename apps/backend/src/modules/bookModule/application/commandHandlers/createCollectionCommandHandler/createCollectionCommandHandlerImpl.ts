@@ -14,36 +14,39 @@ export class CreateCollectionCommandHandlerImpl implements CreateCollectionComma
   ) {}
 
   public async execute(payload: CreateCollectionPayload): Promise<CreateCollectionResult> {
-    const { name } = payload;
-
-    const normalizedName = name.toLowerCase();
+    const { name, userId } = payload;
 
     this.loggerService.debug({
       message: 'Creating Collection...',
       name,
+      userId,
     });
 
     const collectionExists = await this.collectionRepository.findCollection({
-      name: normalizedName,
+      name,
+      userId,
     });
 
     if (collectionExists) {
       throw new ResourceAlreadyExistsError({
         resource: 'Collection',
-        name: normalizedName,
+        name,
+        userId,
       });
     }
 
     const collection = await this.collectionRepository.saveCollection({
       collection: {
-        name: normalizedName,
+        name,
+        userId,
       },
     });
 
     this.loggerService.debug({
       message: 'Collection created.',
       id: collection.getId(),
-      name: normalizedName,
+      name,
+      userId,
     });
 
     return { collection };

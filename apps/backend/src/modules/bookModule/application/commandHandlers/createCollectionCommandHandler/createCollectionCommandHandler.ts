@@ -2,11 +2,12 @@ import { type CommandHandler } from '../../../../../common/types/commandHandler.
 import { type Collection } from '../../../domain/entities/collection/collection.js';
 
 export interface CreateCollectionPayload {
-  name: string;
+  readonly name: string;
+  readonly userId: string;
 }
 
 export interface CreateCollectionResult {
-  collection: Collection;
+  readonly collection: Collection;
 }
 
 export type CreateCollectionCommandHandler = CommandHandler<CreateCollectionPayload, CreateCollectionResult>;

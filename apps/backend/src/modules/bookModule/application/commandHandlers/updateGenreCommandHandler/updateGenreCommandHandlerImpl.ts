@@ -20,7 +20,7 @@ export class UpdateGenreCommandHandlerImpl implements UpdateGenreCommandHandler 
     const normalizedName = name.toLowerCase();
 
     this.loggerService.debug({
-      message: 'Updating Genre name...',
+      message: 'Updating Genre...',
       id,
       name: normalizedName,
     });
@@ -52,7 +52,7 @@ export class UpdateGenreCommandHandlerImpl implements UpdateGenreCommandHandler 
     });
 
     this.loggerService.debug({
-      message: 'Genre name updated.',
+      message: 'Genre updated.',
       id,
       name: normalizedName,
     });

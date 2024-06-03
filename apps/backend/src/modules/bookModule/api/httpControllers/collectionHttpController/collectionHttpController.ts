@@ -162,13 +162,17 @@ export class CollectionHttpController implements HttpController {
   private async createCollection(
     request: HttpRequest<CreateCollectionBodyDto>,
   ): Promise<HttpCreatedResponse<CreateCollectionResponseBodyDto>> {
+    const { name, userId } = request.body;
+
     this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
+      expectedUserId: userId,
     });
 
-    const { name } = request.body;
-
-    const { collection } = await this.createCollectionCommandHandler.execute({ name });
+    const { collection } = await this.createCollectionCommandHandler.execute({
+      name,
+      userId,
+    });
 
     return {
       body: this.mapCollectionToDto(collection),

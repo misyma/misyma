@@ -6,6 +6,7 @@ import { TestContainer } from '../../../../../../tests/container/testContainer.j
 import { Generator } from '../../../../../../tests/generator.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
+import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { symbols } from '../../../symbols.js';
 import { type CollectionTestUtils } from '../../../tests/utils/collectionTestUtils/collectionTestUtils.js';
 
@@ -14,15 +15,21 @@ describe('UpdateCollectionNameCommandHandler', () => {
 
   let collectionTestUtils: CollectionTestUtils;
 
+  let userTestUtils: UserTestUtils;
+
   beforeEach(() => {
     const container = TestContainer.create();
 
     commandHandler = container.get<UpdateCollectionCommandHandler>(symbols.updateCollectionCommandHandler);
 
     collectionTestUtils = container.get<CollectionTestUtils>(testSymbols.collectionTestUtils);
+
+    userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
   });
 
   afterEach(async () => {
+    await userTestUtils.truncate();
+
     await collectionTestUtils.truncate();
 
     await collectionTestUtils.destroyDatabaseConnection();
@@ -47,9 +54,11 @@ describe('UpdateCollectionNameCommandHandler', () => {
   });
 
   it('throws an error - when Collection with given name already exists', async () => {
-    const preExistingCollection = await collectionTestUtils.createAndPersist();
+    const user = await userTestUtils.createAndPersist();
 
-    const secondCollection = await collectionTestUtils.createAndPersist();
+    const preExistingCollection = await collectionTestUtils.createAndPersist({ input: { userId: user.id } });
+
+    const secondCollection = await collectionTestUtils.createAndPersist({ input: { userId: user.id } });
 
     await expect(
       async () =>
