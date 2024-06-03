@@ -22,7 +22,6 @@ export const BasicDataTab: FC<Props> = ({ bookId }) => {
     userId: userData?.id ?? '',
   });
 
-
   return (
     <div className="flex flex-col sm:flex-row col-start-1 col-span-2 sm:col-span-5 gap-6 w-full">
       {isFetching && !isRefetching && <BasicDataTabSkeleton bookId={bookId} />}
@@ -30,6 +29,7 @@ export const BasicDataTab: FC<Props> = ({ bookId }) => {
         <>
           <div>
             <img
+              key={`${data?.imageUrl}-${Date.now()}`}
               src={data?.imageUrl}
               className="object-cover max-w-80"
             />

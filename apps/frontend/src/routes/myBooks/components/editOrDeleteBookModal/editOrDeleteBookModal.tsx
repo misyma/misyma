@@ -14,6 +14,7 @@ import { useRouter } from '@tanstack/react-router';
 import { UpdateUserBookForm } from '../updateUserBookForm/updateUserBookForm';
 import { UpdateBookRequestForm } from '../updateBookRequestForm/updateBookRequestForm';
 import { BookDetailsChangeRequestProvider } from '../../contexts/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface Props {
   userBookId: string;
@@ -39,6 +40,8 @@ const changeMyBookDataSchema = z.object({
 });
 
 export const EditOrDeleteBookModal: FC<Props> = ({ bookId, userBookId }) => {
+  const queryClient = useQueryClient();
+
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const [baseAction, setBaseAction] = useState<BaseActionType>('edit');
@@ -88,6 +91,10 @@ export const EditOrDeleteBookModal: FC<Props> = ({ bookId, userBookId }) => {
     await updateUserBook({
       userBookId,
       genreIds: [values.genre],
+    });
+
+    queryClient.invalidateQueries({
+      predicate: (query) => query.queryKey[0] === 'findUserBookById' && query.queryKey[1] === userBookId,
     });
 
     resetModalState();
