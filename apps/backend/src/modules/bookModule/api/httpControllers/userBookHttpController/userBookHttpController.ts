@@ -244,7 +244,7 @@ export class UserBookHttpController implements HttpController {
 
     const { userBookId } = request.pathParams;
 
-    const { status, bookshelfId, imageUrl, isFavorite, genreIds } = request.body;
+    const { status, bookshelfId, imageUrl, isFavorite, genreIds, collectionIds } = request.body;
 
     const { userBook } = await this.updateUserBookCommandHandler.execute({
       userBookId,
@@ -253,6 +253,7 @@ export class UserBookHttpController implements HttpController {
       bookshelfId,
       imageUrl,
       genreIds,
+      collectionIds,
     });
 
     return {
