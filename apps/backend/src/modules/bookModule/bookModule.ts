@@ -512,6 +512,7 @@ export class BookModule implements DependencyInjectionModule {
         new FindUserBooksQueryHandlerImpl(
           container.get<UserBookRepository>(symbols.userBookRepository),
           container.get<BookshelfRepository>(bookshelfSymbols.bookshelfRepository),
+          container.get<CollectionRepository>(symbols.collectionRepository),
         ),
     );
 

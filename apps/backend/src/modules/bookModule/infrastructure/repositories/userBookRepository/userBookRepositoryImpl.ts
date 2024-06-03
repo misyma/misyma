@@ -345,7 +345,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
   }
 
   public async findUserBooks(payload: FindUserBooksPayload): Promise<UserBook[]> {
-    const { bookshelfId, ids, page, pageSize } = payload;
+    const { bookshelfId, collectionId, ids, page, pageSize } = payload;
 
     let rawEntities: UserBookWithJoinsRawEntity[];
 
@@ -407,12 +407,16 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           join.on(`${this.collectionTable.name}.id`, `=`, `${this.userBookCollectionTable.name}.collectionId`);
         });
 
-      if (ids.length > 0) {
+      if (ids && ids.length > 0) {
         query.whereIn(`${this.userBookTable.name}.id`, ids);
       }
 
       if (bookshelfId) {
         query.where(`${this.userBookTable.name}.bookshelfId`, bookshelfId);
+      }
+
+      if (collectionId) {
+        query.where(`${this.collectionTable.name}.id`, collectionId);
       }
 
       rawEntities = await query.limit(pageSize).offset(pageSize * (page - 1));
@@ -526,17 +530,25 @@ export class UserBookRepositoryImpl implements UserBookRepository {
   }
 
   public async countUserBooks(payload: FindUserBooksPayload): Promise<number> {
-    const { bookshelfId, ids } = payload;
+    const { bookshelfId, ids, collectionId } = payload;
 
     try {
       const query = this.databaseClient<UserBookRawEntity>(this.userBookTable.name);
 
-      if (ids.length > 0) {
+      if (ids && ids.length > 0) {
         query.whereIn(`${this.userBookTable.name}.id`, ids);
       }
 
       if (bookshelfId) {
         query.where(`${this.userBookTable.name}.bookshelfId`, bookshelfId);
+      }
+
+      if (collectionId) {
+        query
+          .join(this.userBookCollectionTable.name, (join) => {
+            join.on(`${this.userBookCollectionTable.name}.userBookId`, '=', `${this.userBookTable.name}.id`);
+          })
+          .where(`${this.userBookCollectionTable.name}.collectionId`, collectionId);
       }
 
       const countResult = await query.count().first();

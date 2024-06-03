@@ -5,16 +5,18 @@ import {
 } from './findUserBooksQueryHandler.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type BookshelfRepository } from '../../../../bookshelfModule/domain/repositories/bookshelfRepository/bookshelfRepository.js';
+import { type CollectionRepository } from '../../../domain/repositories/collectionRepository/collectionRepository.js';
 import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
 
 export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler {
   public constructor(
     private readonly userBookRepository: UserBookRepository,
     private readonly bookshelfRepository: BookshelfRepository,
+    private readonly collectionRepository: CollectionRepository,
   ) {}
 
   public async execute(payload: FindUserBooksPayload): Promise<FindUserBooksResult> {
-    const { bookshelfId, userId, ids, page, pageSize } = payload;
+    const { bookshelfId, userId, collectionId, page, pageSize } = payload;
 
     await this.validateBookshelf({
       bookshelfId,
@@ -23,7 +25,7 @@ export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler 
 
     const findUserBooksPayload = {
       bookshelfId,
-      ids: ids ?? [],
+      collectionId,
       page,
       pageSize,
     };
@@ -65,6 +67,34 @@ export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler 
           throw new ResourceNotFoundError({
             resource: 'Bookshelf',
             id: bookshelfId,
+          });
+        }
+      }
+    }
+  }
+
+  public async validateCollection({
+    collectionId,
+    userId,
+  }: {
+    readonly collectionId: string | undefined;
+    readonly userId: string | undefined;
+  }): Promise<void> {
+    if (collectionId) {
+      const collection = await this.collectionRepository.findCollection({ id: collectionId });
+
+      if (!collection) {
+        throw new ResourceNotFoundError({
+          resource: 'Collection',
+          id: collectionId,
+        });
+      }
+
+      if (userId) {
+        if (collection.getUserId() !== userId) {
+          throw new ResourceNotFoundError({
+            resource: 'Collection',
+            id: collectionId,
           });
         }
       }

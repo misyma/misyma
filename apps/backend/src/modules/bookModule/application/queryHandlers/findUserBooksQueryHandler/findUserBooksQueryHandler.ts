@@ -2,9 +2,9 @@ import { type QueryHandler } from '../../../../../common/types/queryHandler.js';
 import { type UserBook } from '../../../domain/entities/userBook/userBook.js';
 
 export interface FindUserBooksPayload {
-  readonly ids: string[];
   readonly userId?: string | undefined;
   readonly bookshelfId?: string | undefined;
+  readonly collectionId?: string | undefined;
   readonly page: number;
   readonly pageSize: number;
 }

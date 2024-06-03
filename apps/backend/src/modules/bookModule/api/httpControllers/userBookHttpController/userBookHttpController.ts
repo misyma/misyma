@@ -355,12 +355,12 @@ export class UserBookHttpController implements HttpController {
       authorizationHeader: request.headers['authorization'],
     });
 
-    const { page = 1, pageSize = 10, bookshelfId } = request.queryParams;
+    const { page = 1, pageSize = 10, bookshelfId, collectionId } = request.queryParams;
 
     const { userBooks, total } = await this.findUserBooksQueryHandler.execute({
-      ids: [],
       bookshelfId,
       userId,
+      collectionId,
       page,
       pageSize,
     });
