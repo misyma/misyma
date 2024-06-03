@@ -23,6 +23,11 @@ export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler 
       userId,
     });
 
+    await this.validateCollection({
+      collectionId,
+      userId,
+    });
+
     const findUserBooksPayload = {
       bookshelfId,
       collectionId,
