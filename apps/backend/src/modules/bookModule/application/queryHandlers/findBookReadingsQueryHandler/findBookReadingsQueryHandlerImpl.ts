@@ -1,22 +1,22 @@
 import {
-  type FindBookReadingsByUserBookIdPayload,
-  type FindBookReadingsByUserBookIdQueryHandler,
-  type FindBookReadingsByUserBookIdResult,
-} from './findBookReadingsByUserBookIdQueryHandler.js';
+  type FindBookReadingsPayload,
+  type FindBookReadingsQueryHandler,
+  type FindBookReadingsResult,
+} from './findBookReadingsQueryHandler.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import {
-  type FindBookReadingsPayload,
+  type FindBookReadingsPayload as FindDomainBookReadingsPayload,
   type BookReadingRepository,
 } from '../../../domain/repositories/bookReadingRepository/bookReadingRepository.js';
 import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
 
-export class FindBookReadingsByUserBookIdQueryHandlerImpl implements FindBookReadingsByUserBookIdQueryHandler {
+export class FindBookReadingsueryHandlerImpl implements FindBookReadingsQueryHandler {
   public constructor(
     private readonly bookReadingRepository: BookReadingRepository,
     private readonly userBookRepository: UserBookRepository,
   ) {}
 
-  public async execute(payload: FindBookReadingsByUserBookIdPayload): Promise<FindBookReadingsByUserBookIdResult> {
+  public async execute(payload: FindBookReadingsPayload): Promise<FindBookReadingsResult> {
     const { userBookId, page, pageSize, sortDate } = payload;
 
     const bookExists = await this.userBookRepository.findUserBook({
@@ -30,7 +30,7 @@ export class FindBookReadingsByUserBookIdQueryHandlerImpl implements FindBookRea
       });
     }
 
-    let findBookReadingsPayload: FindBookReadingsPayload = {
+    let findBookReadingsPayload: FindDomainBookReadingsPayload = {
       userBookId,
       page,
       pageSize,

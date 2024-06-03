@@ -1,0 +1,48 @@
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
+import { type CollectionRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/collectionTable/collectionRawEntity.js';
+import { CollectionTable } from '../../../infrastructure/databases/bookDatabase/tables/collectionTable/collectionTable.js';
+import { CollectionTestFactory } from '../../factories/collectionTestFactory/collectionTestFactory.js';
+
+interface CreateAndPersistPayload {
+  readonly input?: Partial<CollectionRawEntity>;
+}
+
+export class CollectionTestUtils {
+  private readonly collectionTable = new CollectionTable();
+
+  private readonly collectionTestFactory = new CollectionTestFactory();
+
+  public constructor(private readonly databaseClient: DatabaseClient) {}
+
+  public async createAndPersist(payload: CreateAndPersistPayload = {}): Promise<CollectionRawEntity> {
+    const { input } = payload;
+
+    const data = this.collectionTestFactory.createRaw(input);
+
+    const rawEntities = await this.databaseClient<CollectionRawEntity>(this.collectionTable.name).insert(data, '*');
+
+    return rawEntities[0] as CollectionRawEntity;
+  }
+
+  public async findByName(name: string): Promise<CollectionRawEntity | null> {
+    const collection = await this.databaseClient<CollectionRawEntity>(this.collectionTable.name)
+      .where({ name })
+      .first();
+
+    return collection || null;
+  }
+
+  public async findById(id: string): Promise<CollectionRawEntity | null> {
+    const collection = await this.databaseClient<CollectionRawEntity>(this.collectionTable.name).where({ id }).first();
+
+    return collection || null;
+  }
+
+  public async truncate(): Promise<void> {
+    await this.databaseClient<CollectionRawEntity>(this.collectionTable.name).truncate();
+  }
+
+  public async destroyDatabaseConnection(): Promise<void> {
+    await this.databaseClient.destroy();
+  }
+}

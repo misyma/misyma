@@ -115,3 +115,13 @@ export * from './schemas/quote/findQuotes.js';
 export * from './schemas/quote/updateQuote.js';
 
 export * from './schemas/sortingType.js';
+
+export * from './schemas/collection/collection.js';
+
+export * from './schemas/collection/findCollections.js';
+
+export * from './schemas/collection/createCollection.js';
+
+export * from './schemas/collection/deleteCollection.js';
+
+export * from './schemas/collection/updateCollection.js';

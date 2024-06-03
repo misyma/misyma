@@ -34,7 +34,7 @@ import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
 import { type CreateGenreCommandHandler } from '../../../application/commandHandlers/createGenreCommandHandler/createGenreCommandHandler.js';
 import { type DeleteGenreCommandHandler } from '../../../application/commandHandlers/deleteGenreCommandHandler/deleteGenreCommandHandler.js';
-import { type UpdateGenreNameCommandHandler } from '../../../application/commandHandlers/updateGenreNameCommandHandler/updateGenreNameCommandHandler.js';
+import { type UpdateGenreCommandHandler } from '../../../application/commandHandlers/updateGenreCommandHandler/updateGenreCommandHandler.js';
 import { type Genre } from '../../../domain/entities/genre/genre.js';
 import { type GenreDto } from '../common/genreDto.js';
 
@@ -44,7 +44,7 @@ export class GenreAdminHttpController implements HttpController {
 
   public constructor(
     private readonly createGenreCommandHandler: CreateGenreCommandHandler,
-    private readonly updateGenreNameCommandHandler: UpdateGenreNameCommandHandler,
+    private readonly updateGenreNameCommandHandler: UpdateGenreCommandHandler,
     private readonly deleteGenreCommandHandler: DeleteGenreCommandHandler,
     private readonly accessControlService: AccessControlService,
   ) {}
