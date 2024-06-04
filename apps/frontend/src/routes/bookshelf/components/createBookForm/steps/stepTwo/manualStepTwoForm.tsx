@@ -16,6 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { BookFormat as ContractBookFormat } from '@common/contracts';
 import { BookFormat } from '../../../../../../common/constants/bookFormat';
 import { Language } from '@common/contracts';
+import { useCallback } from 'react';
 
 const stepTwoSchema = z.object({
   language: z.enum(Object.values(Language) as unknown as [string, ...string[]]),
@@ -62,6 +63,22 @@ export const ManualStepTwoForm = (): JSX.Element => {
     },
   });
 
+  const renderBookFormatSelectItems = useCallback(
+    () => Object.entries(BookFormat).map(([key, language]) => <SelectItem value={key}>{language}</SelectItem>),
+    [],
+  );
+
+  const renderLanguageSelectItems = useCallback(
+    () =>
+      Object.entries(Languages).map(([key, language]) => (
+        // todo: potentially fix :)
+        // eslint-disable-next-line
+        // @ts-ignore
+        <SelectItem value={Language[key]}>{language}</SelectItem>
+      )),
+    [],
+  );
+
   const onSubmit = () => {
     dispatch({
       type: BookCreationActionType.setStep,
@@ -95,14 +112,7 @@ export const ManualStepTwoForm = (): JSX.Element => {
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder={<span className="text-muted-foreground">Język</span>} />
-                    <SelectContent>
-                      {Object.entries(Languages).map(([key, language]) => (
-                        // todo: potentially fix :)
-                        // eslint-disable-next-line
-                        // @ts-ignore
-                        <SelectItem value={Language[key]}>{language}</SelectItem>
-                      ))}
-                    </SelectContent>
+                    <SelectContent>{renderLanguageSelectItems()}</SelectContent>
                   </SelectTrigger>
                 </FormControl>
               </Select>
@@ -156,11 +166,7 @@ export const ManualStepTwoForm = (): JSX.Element => {
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder={<span className="text-muted-foreground">Format</span>} />
-                    <SelectContent>
-                      {Object.entries(BookFormat).map(([key, language]) => (
-                        <SelectItem value={key}>{language}</SelectItem>
-                      ))}
-                    </SelectContent>
+                    <SelectContent>{renderBookFormatSelectItems()}</SelectContent>
                   </SelectTrigger>
                 </FormControl>
               </Select>

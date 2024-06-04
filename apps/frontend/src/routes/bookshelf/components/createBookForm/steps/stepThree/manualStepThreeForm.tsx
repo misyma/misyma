@@ -6,7 +6,12 @@ import {
   useBookCreation,
   useBookCreationDispatch,
 } from '../../context/bookCreationContext/bookCreationContext';
-import { ReadingStatus as ContractReadingStatus, CreateAuthorResponseBody } from '@common/contracts';
+import {
+  ReadingStatus as ContractReadingStatus,
+  CreateAuthorResponseBody,
+  CreateBookResponseBody,
+  CreateUserBookResponseBody,
+} from '@common/contracts';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../../../components/ui/form';
@@ -28,6 +33,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getGenresQueryOptions } from '../../../../../../api/genres/queries/getGenresQuery/getGenresQueryOptions';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../../../core/store/states/userState/userStateSlice';
+import { useFindAuthorsQuery } from '../../../../../../api/authors/queries/findAuthorsQuery/findAuthorsQuery';
 
 const stepThreeFormSchema = z.object({
   status: z.nativeEnum(ContractReadingStatus, {
@@ -103,6 +109,11 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
     mode: 'onTouched',
   });
 
+  const { refetch } = useFindAuthorsQuery({
+    name: bookCreation.stepOneDetails?.authorName,
+    enabled: false,
+  });
+
   const { mutateAsync: createBookMutation } = useCreateBookMutation({});
 
   const { mutateAsync: createUserBookMutation } = useCreateUserBookMutation({});
@@ -117,35 +128,91 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
     try {
       let authorDraftResponse: CreateAuthorResponseBody | undefined = undefined;
 
+      let authorId = bookCreation.stepOneDetails?.author as string;
+
       if (bookCreation.stepOneDetails?.authorName) {
-        authorDraftResponse = await createAuthorDraft({
-          name: bookCreation.stepOneDetails.authorName,
-        });
+        try {
+          authorDraftResponse = await createAuthorDraft({
+            name: bookCreation.stepOneDetails.authorName,
+          });
+
+          authorId = authorId || (authorDraftResponse?.id as string);
+        } catch (error) {
+          if (error instanceof Error) {
+            if (error.name === 'ResourceAlreadyExistsError') {
+              const response = await refetch();
+
+              if (!response.data?.data[0]) {
+                return;
+              }
+
+              authorId = response.data?.data[0].id as string;
+            } else {
+              toast({
+                variant: 'destructive',
+                title: `Coś poszło nie tak przy ustawianiu autora. Wróć do kroku pierwszego i spróbuj raz jeszcze.`,
+              });
+            }
+          }
+        }
       }
 
-      const bookCreationResponse = await createBookMutation({
-        authorIds: [bookCreation.stepOneDetails?.author || (authorDraftResponse?.id as string)],
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        format: bookCreation.stepTwoDetails?.format as any,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        language: bookCreation.stepTwoDetails?.language as any,
-        title: bookCreation.stepOneDetails?.title as string,
-        publisher: bookCreation.stepOneDetails?.publisher,
-        translator: bookCreation.stepTwoDetails?.translator,
-        pages: bookCreation.stepTwoDetails?.pagesCount,
-        releaseYear: bookCreation.yearOfIssue,
-        ...(bookCreation.stepTwoDetails as Required<BookCreationNonIsbnState['stepTwoDetails']>),
-        ...(bookCreation.stepThreeDetails as Required<BookCreationNonIsbnState['stepThreeDetails']>),
-        ...(bookCreation.stepOneDetails as Required<BookCreationNonIsbnState['stepOneDetails']>),
-      });
+      let bookCreationResponse: CreateBookResponseBody;
 
-      const userBook = await createUserBookMutation({
-        bookId: bookCreationResponse.id,
-        bookshelfId,
-        status: bookCreation.stepThreeDetails?.status as ContractReadingStatus,
-        isFavorite: false,
-        genreIds: [bookCreation.stepThreeDetails?.genre as string]
-      });
+      try {
+        bookCreationResponse = await createBookMutation({
+          authorIds: [authorId],
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          format: bookCreation.stepTwoDetails?.format as any,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          language: bookCreation.stepTwoDetails?.language as any,
+          title: bookCreation.stepOneDetails?.title as string,
+          publisher: bookCreation.stepOneDetails?.publisher,
+          translator: bookCreation.stepTwoDetails?.translator,
+          pages: bookCreation.stepTwoDetails?.pagesCount,
+          releaseYear: bookCreation.yearOfIssue,
+          ...(bookCreation.stepTwoDetails as Required<BookCreationNonIsbnState['stepTwoDetails']>),
+          ...(bookCreation.stepThreeDetails as Required<BookCreationNonIsbnState['stepThreeDetails']>),
+          ...(bookCreation.stepOneDetails as Required<BookCreationNonIsbnState['stepOneDetails']>),
+        });
+      } catch (error) {
+
+        toast({
+          variant: 'destructive',
+          title: `Książka z isbn: ${bookCreation.stepOneDetails?.isbn} już istnieje.`,
+          description: `Utwórz książkę używając funkcji wyszukiwania.`
+        });
+
+        setSubmissionError(`Książka z isbn ${bookCreation.stepOneDetails?.isbn} już istnieje.`);
+
+        return;
+      }
+
+
+      let userBook: CreateUserBookResponseBody;
+
+      try {
+        userBook = await createUserBookMutation({
+          bookId: bookCreationResponse.id,
+          bookshelfId,
+          status: bookCreation.stepThreeDetails?.status || (values.status as ContractReadingStatus),
+          isFavorite: false,
+          genreIds: [bookCreation.stepThreeDetails?.genre as string],
+        });
+      } catch (error) {
+        if (error instanceof Error && error.message === 'ResourceAlreadyExistsError') {
+          toast({
+            variant: 'destructive',
+            title: `Posiadasz już książkę z isbn: ${bookCreation.stepOneDetails?.isbn} na swojej półce.`,
+          });
+
+          return;
+        }
+
+        setSubmissionError(`Coś poszło nie tak. Spróbuj ponownie.`);
+
+        return;
+      }
 
       await uploadBookImageMutation({
         bookId: userBook.id,

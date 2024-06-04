@@ -42,7 +42,7 @@ export const CreateBookForm: FC<CreateBookProps> = ({ bookshelfId }) => {
   };
   const canNavigateToSecond = useCallback(() => {
     return (
-      bookCreation.stepOneDetails?.author &&
+      (bookCreation.stepOneDetails?.author || bookCreation.stepOneDetails?.authorName) &&
       bookCreation.stepOneDetails?.isbn &&
       bookCreation.stepOneDetails?.yearOfIssue &&
       bookCreation.stepOneDetails?.publisher &&
@@ -98,7 +98,7 @@ export const CreateBookForm: FC<CreateBookProps> = ({ bookshelfId }) => {
               [NonIsbnCreationPathStep.inputFirstDetails]: (
                 <NumericBreadcrumb
                   index={1}
-                  className={setNthSelected(NonIsbnCreationPathStep.inputFirstDetails)}
+                  className={cn(setNthSelected(NonIsbnCreationPathStep.inputFirstDetails), 'cursor-pointer')}
                   onClick={() => {
                     navigateToStep(1);
                   }}
