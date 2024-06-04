@@ -26,44 +26,60 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '../../../../../../components/ui/dialog';
-import { HiOutlineInformationCircle } from "react-icons/hi";
+import { HiOutlineInformationCircle } from 'react-icons/hi';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../../../../components/ui/tooltip';
 
-const stepOneSchema = z
-  .object({
-    isbn: isbnSchema,
-    title: z
-      .string()
-      .min(1, {
-        message: 'Tytuł musi mieć co najmniej jeden znak.',
-      })
-      .max(64, {
-        message: 'Tytuł może mieć maksymalnie 64 znaki.',
+const stepOneSchema = z.object({
+  isbn: isbnSchema,
+  title: z
+    .string()
+    .min(1, {
+      message: 'Tytuł musi mieć co najmniej jeden znak.',
+    })
+    .max(64, {
+      message: 'Tytuł może mieć maksymalnie 64 znaki.',
+    }),
+  author: z
+    .string({
+      required_error: 'Wymagany',
+    })
+    .uuid({
+      message: 'Brak wybranego autora.',
+    })
+    .or(
+      z.literal('', {
+        required_error: 'Wymagany',
       }),
-    author: z.string().uuid({
-        message: 'Brak wybranego autora.',
-      }).optional(),
-    authorName: z.string().min(1).max(64).optional(),
-    publisher: z
-      .string()
-      .min(1, {
-        message: 'Nazwa wydawnictwa powinna mieć co namniej 1 znak.',
-      })
-      .max(64, {
-        message: 'Nazwa wydawnictwa powinna mieć co najwyżej 64 znaki.',
-      }),
-    yearOfIssue: z
-      .number({
-        coerce: true,
-      })
-      .min(1800, {
-        message: 'Rok wydania musi być późniejszy niż 1800',
-      })
-      .max(2500, {
-        message: 'Rok wydania nie może być późniejszy niż 2500',
-      }),
-  });
-  // .refine((data) => !!data.author || data.authorName, 'Autor jest wymagany.');
+    ),
+  authorName: z
+    .string({
+      required_error: 'Wymagany',
+    })
+    .min(1)
+    .max(64)
+    .optional(),
+  publisher: z
+    .string()
+    .min(1, {
+      message: 'Nazwa wydawnictwa powinna mieć co namniej 1 znak.',
+    })
+    .max(64, {
+      message: 'Nazwa wydawnictwa powinna mieć co najwyżej 64 znaki.',
+    }),
+  yearOfIssue: z
+    .number({
+      invalid_type_error: 'Rok wydania musi być liczbą.',
+      required_error: 'Rok wyadania musi być liczbą.',
+      coerce: true,
+    })
+    .min(1800, {
+      message: 'Rok wydania musi być późniejszy niż 1800',
+    })
+    .max(2500, {
+      message: 'Rok wydania nie może być późniejszy niż 2500',
+    }),
+});
+// .refine((data) => !!data.author || data.authorName, 'Autor jest wymagany.');
 
 const createAuthorDraftSchema = z.object({
   name: z
@@ -87,7 +103,7 @@ export const ManualStepOneForm = (): JSX.Element => {
 
   const [searchedName, setSearchedName] = useState<string | undefined>(undefined);
 
-  const [draftAuthorName, setDraftAuthorName] = useState('');
+  const [draftAuthorName, setDraftAuthorName] = useState(bookCreation.stepOneDetails?.authorName);
 
   const form = useForm({
     resolver: zodResolver(stepOneSchema),
@@ -121,11 +137,24 @@ export const ManualStepOneForm = (): JSX.Element => {
     });
 
     // eslint-disable-next-line
-    form.setValue('author', undefined as any);
+    form.setValue('author', '', {
+      shouldValidate: false,
+    });
 
     form.setValue('authorName', payload.name, {
-      shouldValidate: true,
+      shouldValidate: false,
+      shouldDirty: true,
+      shouldTouch: true,
     });
+
+    if (
+      form.formState.touchedFields.isbn &&
+      form.formState.touchedFields.publisher &&
+      form.formState.touchedFields.title &&
+      form.formState.touchedFields.yearOfIssue
+    ) {
+      form.trigger('authorName', {});
+    }
 
     setCreateAuthorDialogVisible(false);
   };
@@ -142,7 +171,7 @@ export const ManualStepOneForm = (): JSX.Element => {
     dispatch({
       type: BookCreationActionType.nonIsbnStepOneDetails,
       author: vals.author as string,
-      authorName: vals?.authorName,
+      authorName: bookCreation.stepOneDetails?.authorName || vals?.authorName,
       isbn: vals.isbn,
       publisher: vals.publisher,
       title: vals.title,
@@ -226,17 +255,19 @@ export const ManualStepOneForm = (): JSX.Element => {
           name="author"
           render={({ field }) => (
             <FormItem className="flex flex-col">
-              <div className='flex gap-2 items-center'>
+              <div className="flex gap-2 items-center">
                 <FormLabel>Autor</FormLabel>
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div>
-                        <HiOutlineInformationCircle className='h-5 w-5' />
+                        <HiOutlineInformationCircle className="h-5 w-5" />
                       </div>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>Prosimy, podaj nazwisko i imię autora w<br></br> następującym formacie: "Rowling, J. K."</p>
+                      <p>
+                        Prosimy, podaj nazwisko i imię autora w<br></br> następującym formacie: "Rowling, J. K."
+                      </p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -251,7 +282,7 @@ export const ManualStepOneForm = (): JSX.Element => {
                         className={cn(
                           'w-60 sm:w-96 justify-between bg-[#D1D5DB]/20',
                           !field.value && 'text-muted-foreground',
-                          draftAuthorName && 'text-black'
+                          draftAuthorName && 'text-black',
                         )}
                       >
                         {field.value
