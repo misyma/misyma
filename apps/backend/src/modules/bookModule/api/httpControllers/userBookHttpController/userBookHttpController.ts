@@ -126,7 +126,6 @@ export class UserBookHttpController implements HttpController {
         securityMode: SecurityMode.bearerToken,
         description: `Find user's book by id`,
       }),
-      //TODO: refactor to search params
       new HttpRoute({
         method: HttpMethodName.get,
         handler: this.findUserBooks.bind(this),
@@ -356,12 +355,13 @@ export class UserBookHttpController implements HttpController {
       authorizationHeader: request.headers['authorization'],
     });
 
-    const { page = 1, pageSize = 10, bookshelfId, collectionId } = request.queryParams;
+    const { page = 1, pageSize = 10, bookshelfId, collectionId, isbn } = request.queryParams;
 
     const { userBooks, total } = await this.findUserBooksQueryHandler.execute({
       bookshelfId,
       userId,
       collectionId,
+      isbn,
       page,
       pageSize,
     });

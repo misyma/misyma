@@ -345,7 +345,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
   }
 
   public async findUserBooks(payload: FindUserBooksPayload): Promise<UserBook[]> {
-    const { bookshelfId, collectionId, ids, page, pageSize } = payload;
+    const { bookshelfId, collectionId, ids, page, pageSize, isbn } = payload;
 
     let rawEntities: UserBookWithJoinsRawEntity[];
 
@@ -411,6 +411,10 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         query.whereIn(`${this.userBookTable.name}.id`, ids);
       }
 
+      if (isbn) {
+        query.where(`${this.bookTable.name}.isbn`, isbn);
+      }
+
       if (bookshelfId) {
         query.where(`${this.userBookTable.name}.bookshelfId`, bookshelfId);
       }
@@ -432,7 +436,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
   }
 
   public async findUserBooksByUser(payload: FindUserBooksByUserPayload): Promise<UserBook[]> {
-    const { userId, bookId, page, pageSize } = payload;
+    const { userId, bookIdentifier, page, pageSize } = payload;
 
     let rawEntities: UserBookWithJoinsRawEntity[];
 
@@ -497,8 +501,12 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           join.on(`${this.collectionTable.name}.id`, `=`, `${this.userBookCollectionTable.name}.collectionId`);
         });
 
-      if (bookId) {
-        query.where(`${this.userBookTable.name}.bookId`, bookId);
+      if (bookIdentifier) {
+        query.where(`${this.userBookTable.name}.bookId`, bookIdentifier.id);
+
+        if (bookIdentifier.isbn) {
+          query.orWhere(`${this.bookTable.name}.isbn`, bookIdentifier.isbn);
+        }
       }
 
       query.where(`${this.bookshelfTable.name}.userId`, userId);

@@ -68,17 +68,18 @@ export class CreateBookCommandHandlerImpl implements CreateBookCommandHandler {
     }
 
     if (isbn) {
-      const existingBook = await this.bookRepository.findBooks({
+      const existingBooks = await this.bookRepository.findBooks({
         isbn,
+        isApproved: true,
         page: 1,
         pageSize: 1,
       });
 
-      if (existingBook.length) {
+      if (existingBooks.length) {
         throw new ResourceAlreadyExistsError({
           resource: 'Book',
           isbn,
-          existingBookId: existingBook[0]?.getId(),
+          existingBookId: existingBooks[0]?.getId(),
         });
       }
     }

@@ -20,12 +20,16 @@ export interface FindUserBooksPayload {
   readonly ids?: string[];
   readonly bookshelfId?: string | undefined;
   readonly collectionId?: string | undefined;
+  readonly isbn?: string | undefined;
   readonly page: number;
   readonly pageSize: number;
 }
 
 export interface FindUserBooksByUserPayload {
-  readonly bookId?: string;
+  readonly bookIdentifier?: {
+    readonly id: string;
+    readonly isbn?: string | undefined;
+  };
   readonly userId: string;
   readonly page: number;
   readonly pageSize: number;

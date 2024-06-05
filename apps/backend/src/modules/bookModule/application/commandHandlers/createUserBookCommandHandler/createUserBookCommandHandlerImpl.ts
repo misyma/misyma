@@ -67,7 +67,10 @@ export class CreateUserBookCommandHandlerImpl implements CreateUserBookCommandHa
 
     const existingUserBooksWithSameBook = await this.userBookRepository.findUserBooksByUser({
       userId,
-      bookId,
+      bookIdentifier: {
+        id: bookId,
+        isbn: book.getIsbn(),
+      },
       page: 1,
       pageSize: 1,
     });
