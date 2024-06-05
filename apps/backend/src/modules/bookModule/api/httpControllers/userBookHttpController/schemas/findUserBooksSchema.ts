@@ -8,6 +8,11 @@ import { type TypeExtends } from '../../../../../../common/types/schemaExtends.j
 export const findUserBooksQueryParamsDtoSchema = Type.Object({
   bookshelfId: Type.Optional(Type.String({ format: 'uuid' })),
   collectionId: Type.Optional(Type.String({ format: 'uuid' })),
+  isbn: Type.Optional(
+    Type.String({
+      pattern: '^(97(8|9))?\\d{9}(\\d|X)$',
+    }),
+  ),
   page: Type.Optional(Type.Integer({ minimum: 1 })),
   pageSize: Type.Optional(Type.Integer({ minimum: 1 })),
 });

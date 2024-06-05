@@ -5,6 +5,7 @@ export interface FindUserBooksPayload {
   readonly userId?: string | undefined;
   readonly bookshelfId?: string | undefined;
   readonly collectionId?: string | undefined;
+  readonly isbn?: string | undefined;
   readonly page: number;
   readonly pageSize: number;
 }

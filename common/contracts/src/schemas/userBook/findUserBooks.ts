@@ -4,6 +4,7 @@ import { type Metadata } from '../metadata.js';
 export interface FindUserBooksQueryParams {
   readonly bookshelfId?: string;
   readonly collectionId?: string;
+  readonly isbn?: string;
   readonly page?: number;
   readonly pageSize?: number;
 }
