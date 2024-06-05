@@ -144,7 +144,14 @@ describe('CreateBookCommandHandler', () => {
 
     const isbn = Generator.isbn();
 
-    const existingBook = await bookTestUtils.createAndPersist({ input: { book: { isbn } } });
+    const existingBook = await bookTestUtils.createAndPersist({
+      input: {
+        book: {
+          isbn,
+          isApproved: true,
+        },
+      },
+    });
 
     await expect(async () =>
       createBookCommandHandler.execute({
