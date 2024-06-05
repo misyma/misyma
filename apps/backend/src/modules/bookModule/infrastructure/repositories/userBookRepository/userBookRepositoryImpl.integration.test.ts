@@ -830,7 +830,9 @@ describe('UserBookRepositoryImpl', () => {
 
       const userBooks = await userBookRepository.findUserBooksByUser({
         userId: user.id,
-        bookId: book2.id,
+        bookIdentifier: {
+          bookId: book2.id,
+        },
         page: 1,
         pageSize: 10,
       });

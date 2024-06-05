@@ -25,7 +25,10 @@ export interface FindUserBooksPayload {
 }
 
 export interface FindUserBooksByUserPayload {
-  readonly bookId?: string;
+  readonly bookIdentifier?: {
+    readonly bookId: string;
+    readonly isbn?: string | undefined;
+  };
   readonly userId: string;
   readonly page: number;
   readonly pageSize: number;
