@@ -79,7 +79,7 @@ describe('CreateQuoteCommandHandlerImpl', () => {
           content: quote.getContent(),
           createdAt: quote.getCreatedAt(),
           isFavorite: quote.getIsFavorite(),
-          page: quote.getPage() as number,
+          page: quote.getPage() as string,
         }),
     ).toThrowErrorInstance({
       instance: OperationNotValidError,
@@ -113,7 +113,7 @@ describe('CreateQuoteCommandHandlerImpl', () => {
       content: quoteDraft.getContent(),
       createdAt: quoteDraft.getCreatedAt(),
       isFavorite: quoteDraft.getIsFavorite(),
-      page: quoteDraft.getPage() as number,
+      page: quoteDraft.getPage() as string,
     });
 
     expect(quote).toBeInstanceOf(Quote);

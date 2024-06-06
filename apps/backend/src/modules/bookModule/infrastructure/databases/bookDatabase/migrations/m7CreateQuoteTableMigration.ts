@@ -18,7 +18,7 @@ export class M7CreateQuoteTableMigration implements Migration {
 
       table.boolean('isFavorite').notNullable();
 
-      table.integer('page');
+      table.text('page');
 
       table.foreign('userBookId').references('id').inTable('userBooks').onDelete('CASCADE');
     });

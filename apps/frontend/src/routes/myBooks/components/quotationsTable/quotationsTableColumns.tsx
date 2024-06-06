@@ -10,12 +10,12 @@ export const columns: ColumnDef<Quote>[] = [
       return (
         <div className="flex flex-col py-4">
           <div className="flex gap-2 items-center">
-            <FavoriteQuotationButton 
+            <FavoriteQuotationButton
               quote={row.original}
             />
             <p className="font-semibold text-lg">
               {row.index + 1 + table.getState().pagination.pageIndex * table.getState().pagination.pageSize}. "
-              {row.original.content}""
+              {row.original.content}"
             </p>
           </div>
           <p className="font-light ml-4 inline-flex items-center gap-2">

@@ -105,7 +105,7 @@ describe('UpdateQuoteCommandHandlerImpl', () => {
 
     const newFavorite = Generator.boolean();
 
-    const newPage = Generator.number(1, 1000);
+    const newPage = Generator.number(1, 1000).toString();
 
     const { quote: updatedQuote } = await commandHandler.execute({
       id: quote.id,

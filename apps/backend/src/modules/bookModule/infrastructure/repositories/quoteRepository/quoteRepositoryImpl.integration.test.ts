@@ -227,7 +227,7 @@ describe('QuoteRepositoryImpl', () => {
 
         const newFavorite = Generator.boolean();
 
-        const newPage = Generator.number(1, 1000);
+        const newPage = Generator.number(1, 1000).toString();
 
         quote.setContent({ content: newContent });
 
