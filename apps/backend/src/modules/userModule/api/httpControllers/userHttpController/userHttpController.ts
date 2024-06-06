@@ -56,7 +56,6 @@ import {
   sendVerificationEmailBodyDtoSchema,
   sendVerificationEmailResponseBodyDtoSchema,
 } from './schemas/sendVerificationEmailSchema.js';
-import { type UserDto } from './schemas/userDto.js';
 import {
   verifyUserBodyDtoSchema,
   verifyUserResponseBodyDtoSchema,
@@ -86,6 +85,7 @@ import { type SendVerificationEmailCommandHandler } from '../../../application/c
 import { type VerifyUserEmailCommandHandler } from '../../../application/commandHandlers/verifyUserEmailCommandHandler/verifyUserEmailCommandHandler.js';
 import { type FindUserQueryHandler } from '../../../application/queryHandlers/findUserQueryHandler/findUserQueryHandler.js';
 import { type User } from '../../../domain/entities/user/user.js';
+import { type UserDto } from '../common/userDto.js';
 
 export class UserHttpController implements HttpController {
   public readonly basePath = '/users';

@@ -1,5 +1,6 @@
 import { beforeEach, expect, describe, it } from 'vitest';
 
+import { UserAdminHttpController } from './api/httpControllers/userAdminHttpController/userAdminHttpController.js';
 import { UserHttpController } from './api/httpControllers/userHttpController/userHttpController.js';
 import { userSymbols } from './symbols.js';
 import { Application } from '../../core/application.js';
@@ -14,5 +15,9 @@ describe('UserModule', () => {
 
   it('declares bindings', async () => {
     expect(container.get<UserHttpController>(userSymbols.userHttpController)).toBeInstanceOf(UserHttpController);
+
+    expect(container.get<UserAdminHttpController>(userSymbols.userAdminHttpController)).toBeInstanceOf(
+      UserAdminHttpController,
+    );
   });
 });

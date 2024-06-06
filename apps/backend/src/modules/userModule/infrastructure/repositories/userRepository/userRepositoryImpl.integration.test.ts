@@ -165,4 +165,35 @@ describe('UserRepositoryImpl', () => {
       expect(foundUser).toBeUndefined();
     });
   });
+
+  describe('FindAll', () => {
+    it('finds all Users', async () => {
+      const user1 = await userTestUtils.createAndPersist();
+
+      const user2 = await userTestUtils.createAndPersist();
+
+      const users = await userRepository.findUsers({
+        page: 1,
+        pageSize: 10,
+      });
+
+      expect(users).toHaveLength(2);
+
+      expect(users[0]?.getId()).toEqual(user1.id);
+
+      expect(users[1]?.getId()).toEqual(user2.id);
+    });
+  });
+
+  describe('Count', () => {
+    it('counts Users', async () => {
+      await userTestUtils.createAndPersist();
+
+      await userTestUtils.createAndPersist();
+
+      const count = await userRepository.countUsers();
+
+      expect(count).toEqual(2);
+    });
+  });
 });

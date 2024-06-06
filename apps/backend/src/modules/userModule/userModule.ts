@@ -1,3 +1,4 @@
+import { UserAdminHttpController } from './api/httpControllers/userAdminHttpController/userAdminHttpController.js';
 import { UserHttpController } from './api/httpControllers/userHttpController/userHttpController.js';
 import { EmailQueueController } from './api/queueControllers/emailQueueController/emailQueueController.js';
 import { type ChangeEmailEventStatusCommandHandler } from './application/commandHandlers/changeEmailEventStatusCommandHandler/changeEmailEventStatusCommandHandler.js';
@@ -25,6 +26,8 @@ import { type FindEmailEventsQueryHandler } from './application/queryHandlers/fi
 import { FindEmailEventsQueryHandlerImpl } from './application/queryHandlers/findEmailEventsQueryHandler/findEmailEventsQueryHandlerImpl.js';
 import { type FindUserQueryHandler } from './application/queryHandlers/findUserQueryHandler/findUserQueryHandler.js';
 import { FindUserQueryHandlerImpl } from './application/queryHandlers/findUserQueryHandler/findUserQueryHandlerImpl.js';
+import { type FindUsersQueryHandler } from './application/queryHandlers/findUsersQueryHandler/findUsersQueryHandler.js';
+import { FindUsersQueryHandlerImpl } from './application/queryHandlers/findUsersQueryHandler/findUsersQueryHandlerImpl.js';
 import { type EmailService } from './application/services/emailService/emailService.js';
 import { type HashService } from './application/services/hashService/hashService.js';
 import { HashServiceImpl } from './application/services/hashService/hashServiceImpl.js';
@@ -186,6 +189,11 @@ export class UserModule implements DependencyInjectionModule {
       () => new FindUserQueryHandlerImpl(container.get<UserRepository>(symbols.userRepository)),
     );
 
+    container.bind<FindUsersQueryHandler>(
+      symbols.findUsersQueryHandler,
+      () => new FindUsersQueryHandlerImpl(container.get<UserRepository>(symbols.userRepository)),
+    );
+
     container.bind<SendVerificationEmailCommandHandler>(
       symbols.sendVerificationEmailCommandHandler,
       () =>
@@ -223,6 +231,15 @@ export class UserModule implements DependencyInjectionModule {
           container.get<LogoutUserCommandHandler>(symbols.logoutUserCommandHandler),
           container.get<RefreshUserTokensCommandHandler>(symbols.refreshUserTokensCommandHandler),
           container.get<SendVerificationEmailCommandHandler>(symbols.sendVerificationEmailCommandHandler),
+        ),
+    );
+
+    container.bind<UserAdminHttpController>(
+      symbols.userAdminHttpController,
+      () =>
+        new UserAdminHttpController(
+          container.get<FindUsersQueryHandler>(symbols.findUsersQueryHandler),
+          container.get<AccessControlService>(authSymbols.accessControlService),
         ),
     );
 
