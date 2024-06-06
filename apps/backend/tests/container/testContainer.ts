@@ -6,6 +6,7 @@ import { coreSymbols } from '../../src/core/symbols.js';
 import { type DatabaseClient } from '../../src/libs/database/clients/databaseClient/databaseClient.js';
 import { type DependencyInjectionContainer } from '../../src/libs/dependencyInjection/dependencyInjectionContainer.js';
 import { S3TestUtils } from '../../src/libs/s3/tests/utils/s3TestUtils.js';
+import { type SendGridService } from '../../src/libs/sendGrid/services/sendGridService/sendGridService.js';
 import { AuthorTestUtils } from '../../src/modules/bookModule/tests/utils/authorTestUtils/authorTestUtils.js';
 import { BookReadingTestUtils } from '../../src/modules/bookModule/tests/utils/bookReadingTestUtils/bookReadingTestUtils.js';
 import { BookTestUtils } from '../../src/modules/bookModule/tests/utils/bookTestUtils/bookTestUtils.js';
@@ -16,7 +17,6 @@ import { QuoteTestUtils } from '../../src/modules/bookModule/tests/utils/quoteTe
 import { UserBookTestUtils } from '../../src/modules/bookModule/tests/utils/userBookTestUtils/userBookTestUtils.js';
 import { BookshelfTestUtils } from '../../src/modules/bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 import { type EmailMessageBus } from '../../src/modules/userModule/application/messageBuses/emailMessageBus/emailMessageBus.js';
-import { type EmailService } from '../../src/modules/userModule/application/services/emailService/emailService.js';
 import { symbols as userSymbols } from '../../src/modules/userModule/symbols.js';
 import { BlacklistTokenTestUtils } from '../../src/modules/userModule/tests/utils/blacklistTokenTestUtils/blacklistTokenTestUtils.js';
 import { EmailEventTestUtils } from '../../src/modules/userModule/tests/utils/emailEventTestUtils/emailEventTestUtils.js';
@@ -86,7 +86,7 @@ export class TestContainer {
       () => new CollectionTestUtils(container.get<DatabaseClient>(coreSymbols.databaseClient)),
     );
 
-    container.overrideBinding<EmailService>(userSymbols.emailService, () => ({
+    container.overrideBinding<SendGridService>(coreSymbols.sendGridService, () => ({
       sendEmail: async (): Promise<void> => {},
     }));
 

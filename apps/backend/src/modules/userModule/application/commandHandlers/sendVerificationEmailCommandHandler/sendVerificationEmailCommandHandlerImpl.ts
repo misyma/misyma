@@ -9,8 +9,8 @@ import { type TokenService } from '../../../../authModule/application/services/t
 import { EmailEventDraft } from '../../../domain/entities/emailEvent/emailEventDraft.ts/emailEventDraft.js';
 import { EmailEventType } from '../../../domain/entities/emailEvent/types/emailEventType.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
+import { TokenType } from '../../../domain/types/tokenType.js';
 import { type EmailMessageBus } from '../../messageBuses/emailMessageBus/emailMessageBus.js';
-import { TokenType } from '../../types/tokenType.js';
 
 export class SendVerificationEmailCommandHandlerImpl implements SendVerificationEmailCommandHandler {
   public constructor(

@@ -4,9 +4,9 @@ import { type LoggerService } from '../../../../../libs/logger/services/loggerSe
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { type BlacklistTokenRepository } from '../../../domain/repositories/blacklistTokenRepository/blacklistTokenRepository.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
+import { TokenType } from '../../../domain/types/tokenType.js';
 import { type HashService } from '../../services/hashService/hashService.js';
 import { type PasswordValidationService } from '../../services/passwordValidationService/passwordValidationService.js';
-import { TokenType } from '../../types/tokenType.js';
 
 export class ChangeUserPasswordCommandHandlerImpl implements ChangeUserPasswordCommandHandler {
   public constructor(

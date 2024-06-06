@@ -9,8 +9,8 @@ import { ForbiddenAccessError } from '../../../../authModule/application/errors/
 import { UnauthorizedAccessError } from '../../../../authModule/application/errors/unathorizedAccessError.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
+import { TokenType } from '../../../domain/types/tokenType.js';
 import { type HashService } from '../../services/hashService/hashService.js';
-import { TokenType } from '../../types/tokenType.js';
 
 export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
   public constructor(

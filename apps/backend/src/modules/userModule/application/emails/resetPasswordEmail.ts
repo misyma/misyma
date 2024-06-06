@@ -2,7 +2,7 @@ import { readFileSync } from 'fs';
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { Email } from '../services/emailService/email/email.js';
+import { Email } from '../../domain/types/email.js';
 
 export interface ResetPasswordEmailTemplateData {
   readonly name: string;
