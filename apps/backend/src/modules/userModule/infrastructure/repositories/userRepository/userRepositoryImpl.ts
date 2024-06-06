@@ -9,6 +9,7 @@ import {
   type SaveUserPayload,
   type FindUserPayload,
   type DeleteUserPayload,
+  type FindUsersPayload,
 } from '../../../domain/repositories/userRepository/userRepository.js';
 import { type UserRawEntity } from '../../databases/userDatabase/tables/userTable/userRawEntity.js';
 import { UserTable } from '../../databases/userDatabase/tables/userTable/userTable.js';
@@ -137,6 +138,57 @@ export class UserRepositoryImpl implements UserRepository {
     }
 
     return this.userMapper.mapToDomain(rawEntity);
+  }
+
+  public async findUsers(payload: FindUsersPayload): Promise<User[]> {
+    const { page, pageSize } = payload;
+
+    let rawEntities: UserRawEntity[];
+
+    try {
+      rawEntities = await this.databaseClient<UserRawEntity>(this.userDatabaseTable.name)
+        .select('*')
+        .limit(pageSize)
+        .offset((page - 1) * pageSize);
+    } catch (error) {
+      throw new RepositoryError({
+        entity: 'User',
+        operation: 'find',
+        error,
+      });
+    }
+
+    return rawEntities.map((rawEntity) => this.userMapper.mapToDomain(rawEntity));
+  }
+
+  public async countUsers(): Promise<number> {
+    try {
+      const query = this.databaseClient<UserRawEntity>(this.userDatabaseTable.name);
+
+      const countResult = await query.count().first();
+
+      const count = countResult?.['count(*)'];
+
+      if (count === undefined) {
+        throw new RepositoryError({
+          entity: 'User',
+          operation: 'count',
+          countResult,
+        });
+      }
+
+      if (typeof count === 'string') {
+        return parseInt(count, 10);
+      }
+
+      return count;
+    } catch (error) {
+      throw new RepositoryError({
+        entity: 'User',
+        operation: 'count',
+        error,
+      });
+    }
   }
 
   public async deleteUser(payload: DeleteUserPayload): Promise<void> {

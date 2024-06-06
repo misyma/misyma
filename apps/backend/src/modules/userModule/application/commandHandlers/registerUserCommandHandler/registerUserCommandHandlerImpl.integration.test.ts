@@ -1,4 +1,4 @@
-import { beforeEach, afterEach, expect, it, describe, vi } from 'vitest';
+import { beforeEach, afterEach, expect, it, describe } from 'vitest';
 
 import { BookshelfType, UserRole } from '@common/contracts';
 
@@ -13,14 +13,11 @@ import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils
 import { symbols } from '../../../symbols.js';
 import { UserTestFactory } from '../../../tests/factories/userTestFactory/userTestFactory.js';
 import { type UserTestUtils } from '../../../tests/utils/userTestUtils/userTestUtils.js';
-import { type EmailService } from '../../services/emailService/emailService.js';
 
 describe('RegisterUserCommandHandler', () => {
   let registerUserCommandHandler: RegisterUserCommandHandler;
 
   let databaseClient: DatabaseClient;
-
-  let emailService: EmailService;
 
   let userTestUtils: UserTestUtils;
 
@@ -34,8 +31,6 @@ describe('RegisterUserCommandHandler', () => {
     registerUserCommandHandler = container.get<RegisterUserCommandHandler>(symbols.registerUserCommandHandler);
 
     databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
-
-    emailService = container.get<EmailService>(symbols.emailService);
 
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
 
@@ -56,8 +51,6 @@ describe('RegisterUserCommandHandler', () => {
 
   it('creates a User and creates bookshelves', async () => {
     const user = userTestFactory.create();
-
-    vi.spyOn(emailService, 'sendEmail').mockImplementation(async () => {});
 
     const { user: createdUser } = await registerUserCommandHandler.execute({
       email: user.getEmail(),

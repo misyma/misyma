@@ -1,7 +1,6 @@
+import { UserAdminHttpController } from './api/httpControllers/userAdminHttpController/userAdminHttpController.js';
 import { UserHttpController } from './api/httpControllers/userHttpController/userHttpController.js';
 import { EmailQueueController } from './api/queueControllers/emailQueueController/emailQueueController.js';
-import { type ChangeEmailEventStatusCommandHandler } from './application/commandHandlers/changeEmailEventStatusCommandHandler/changeEmailEventStatusCommandHandler.js';
-import { ChangeEmailEventStatusCommandHandlerImpl } from './application/commandHandlers/changeEmailEventStatusCommandHandler/changeEmailEventStatusCommandHandlerImpl.js';
 import { type ChangeUserPasswordCommandHandler } from './application/commandHandlers/changeUserPasswordCommandHandler/changeUserPasswordCommandHandler.js';
 import { ChangeUserPasswordCommandHandlerImpl } from './application/commandHandlers/changeUserPasswordCommandHandler/changeUserPasswordCommandHandlerImpl.js';
 import { type DeleteUserCommandHandler } from './application/commandHandlers/deleteUserCommandHandler/deleteUserCommandHandler.js';
@@ -21,11 +20,10 @@ import { SendVerificationEmailCommandHandlerImpl } from './application/commandHa
 import { type VerifyUserEmailCommandHandler } from './application/commandHandlers/verifyUserEmailCommandHandler/verifyUserEmailCommandHandler.js';
 import { VerifyUserEmailCommandHandlerImpl } from './application/commandHandlers/verifyUserEmailCommandHandler/verifyUserEmailCommandHandlerImpl.js';
 import { type EmailMessageBus } from './application/messageBuses/emailMessageBus/emailMessageBus.js';
-import { type FindEmailEventsQueryHandler } from './application/queryHandlers/findEmailEventsQueryHandler/findEmailEventsQueryHandler.js';
-import { FindEmailEventsQueryHandlerImpl } from './application/queryHandlers/findEmailEventsQueryHandler/findEmailEventsQueryHandlerImpl.js';
 import { type FindUserQueryHandler } from './application/queryHandlers/findUserQueryHandler/findUserQueryHandler.js';
 import { FindUserQueryHandlerImpl } from './application/queryHandlers/findUserQueryHandler/findUserQueryHandlerImpl.js';
-import { type EmailService } from './application/services/emailService/emailService.js';
+import { type FindUsersQueryHandler } from './application/queryHandlers/findUsersQueryHandler/findUsersQueryHandler.js';
+import { FindUsersQueryHandlerImpl } from './application/queryHandlers/findUsersQueryHandler/findUsersQueryHandlerImpl.js';
 import { type HashService } from './application/services/hashService/hashService.js';
 import { HashServiceImpl } from './application/services/hashService/hashServiceImpl.js';
 import { type PasswordValidationService } from './application/services/passwordValidationService/passwordValidationService.js';
@@ -42,7 +40,6 @@ import { EmailEventMapper } from './infrastructure/repositories/emailEventReposi
 import { type UserMapper } from './infrastructure/repositories/userRepository/userMapper/userMapper.js';
 import { UserMapperImpl } from './infrastructure/repositories/userRepository/userMapper/userMapperImpl.js';
 import { UserRepositoryImpl } from './infrastructure/repositories/userRepository/userRepositoryImpl.js';
-import { EmailServiceImpl } from './infrastructure/services/emailServiceImpl.js';
 import { symbols } from './symbols.js';
 import { type Config } from '../../core/config.js';
 import { coreSymbols } from '../../core/symbols.js';
@@ -87,11 +84,6 @@ export class UserModule implements DependencyInjectionModule {
     container.bind<HashService>(
       symbols.hashService,
       () => new HashServiceImpl(container.get<Config>(coreSymbols.config)),
-    );
-
-    container.bind<EmailService>(
-      symbols.emailService,
-      () => new EmailServiceImpl(container.get<SendGridService>(coreSymbols.sendGridService)),
     );
 
     container.bind<PasswordValidationService>(
@@ -186,6 +178,11 @@ export class UserModule implements DependencyInjectionModule {
       () => new FindUserQueryHandlerImpl(container.get<UserRepository>(symbols.userRepository)),
     );
 
+    container.bind<FindUsersQueryHandler>(
+      symbols.findUsersQueryHandler,
+      () => new FindUsersQueryHandlerImpl(container.get<UserRepository>(symbols.userRepository)),
+    );
+
     container.bind<SendVerificationEmailCommandHandler>(
       symbols.sendVerificationEmailCommandHandler,
       () =>
@@ -226,6 +223,15 @@ export class UserModule implements DependencyInjectionModule {
         ),
     );
 
+    container.bind<UserAdminHttpController>(
+      symbols.userAdminHttpController,
+      () =>
+        new UserAdminHttpController(
+          container.get<FindUsersQueryHandler>(symbols.findUsersQueryHandler),
+          container.get<AccessControlService>(authSymbols.accessControlService),
+        ),
+    );
+
     container.bind<EmailEventMapper>(symbols.emailEventMapper, () => new EmailEventMapper());
 
     container.bind<EmailEventRepository>(
@@ -243,24 +249,12 @@ export class UserModule implements DependencyInjectionModule {
       () => new EmailMessageBusImpl(container.get<EmailEventRepository>(symbols.emailEventRepository)),
     );
 
-    container.bind<ChangeEmailEventStatusCommandHandler>(
-      symbols.changeEmailEventStatusCommandHandler,
-      () =>
-        new ChangeEmailEventStatusCommandHandlerImpl(container.get<EmailEventRepository>(symbols.emailEventRepository)),
-    );
-
-    container.bind<FindEmailEventsQueryHandler>(
-      symbols.findEmailEventsQueryHandler,
-      () => new FindEmailEventsQueryHandlerImpl(container.get<EmailEventRepository>(symbols.emailEventRepository)),
-    );
-
     container.bind<EmailQueueController>(
       symbols.emailQueueController,
       () =>
         new EmailQueueController(
-          container.get<FindEmailEventsQueryHandler>(symbols.findEmailEventsQueryHandler),
-          container.get<ChangeEmailEventStatusCommandHandler>(symbols.changeEmailEventStatusCommandHandler),
-          container.get<EmailService>(symbols.emailService),
+          container.get<EmailEventRepository>(symbols.emailEventRepository),
+          container.get<SendGridService>(coreSymbols.sendGridService),
           container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );

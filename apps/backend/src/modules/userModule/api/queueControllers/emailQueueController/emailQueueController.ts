@@ -5,7 +5,7 @@ import { type QueueController } from '../../../../../common/types/queue/queueCon
 import { type QueueHandler } from '../../../../../common/types/queue/queueHandler.js';
 import { QueuePath } from '../../../../../common/types/queue/queuePath.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
-import { type ChangeEmailEventStatusCommandHandler } from '../../../application/commandHandlers/changeEmailEventStatusCommandHandler/changeEmailEventStatusCommandHandler.js';
+import { type SendGridService } from '../../../../../libs/sendGrid/services/sendGridService/sendGridService.js';
 import {
   ResetPasswordEmail,
   type ResetPasswordEmailTemplateData,
@@ -14,22 +14,20 @@ import {
   VerificationEmail,
   type VerificationEmailTemplateData,
 } from '../../../application/emails/verificationEmail.js';
-import { type FindEmailEventsQueryHandler } from '../../../application/queryHandlers/findEmailEventsQueryHandler/findEmailEventsQueryHandler.js';
-import { type EmailService } from '../../../application/services/emailService/emailService.js';
 import { type EmailEvent } from '../../../domain/entities/emailEvent/emailEvent.js';
 import { EmailEventStatus } from '../../../domain/entities/emailEvent/types/emailEventStatus.js';
 import { EmailEventType } from '../../../domain/entities/emailEvent/types/emailEventType.js';
+import { type EmailEventRepository } from '../../../domain/repositories/emailEventRepository/emailEventRepository.js';
 
 interface ProcessEmailEventPayload {
-  data: EmailEvent;
-  eventName: string;
+  readonly data: EmailEvent;
+  readonly eventName: string;
 }
 
 export class EmailQueueController implements QueueController {
   public constructor(
-    private readonly findEmailEventsQueryHandler: FindEmailEventsQueryHandler,
-    private readonly changeEmailEventStatusCommandHandler: ChangeEmailEventStatusCommandHandler,
-    private readonly emailService: EmailService,
+    private readonly emailEventRepository: EmailEventRepository,
+    private readonly sendGridService: SendGridService,
     private readonly loggerService: LoggerService,
   ) {}
 
@@ -56,7 +54,7 @@ export class EmailQueueController implements QueueController {
     return [
       {
         getMessages: async (): Promise<QueueMessagePayload[]> => {
-          const { emailEvents } = await this.findEmailEventsQueryHandler.execute();
+          const emailEvents = await this.emailEventRepository.findAllPending();
 
           return emailEvents.map((emailEvent) => ({
             data: emailEvent as unknown as Record<string, unknown>,
@@ -79,7 +77,7 @@ export class EmailQueueController implements QueueController {
           templateData: emailEvent.getPayload() as unknown as VerificationEmailTemplateData,
         });
 
-        await this.changeEmailEventStatusCommandHandler.execute({
+        await this.emailEventRepository.updateStatus({
           id: emailEvent.getId(),
           status: EmailEventStatus.processing,
         });
@@ -94,7 +92,11 @@ export class EmailQueueController implements QueueController {
 
         try {
           await this.retryPolicy.execute(async () => {
-            await this.emailService.sendEmail(verificationEmail);
+            await this.sendGridService.sendEmail({
+              toEmail: verificationEmail.getRecipient(),
+              subject: verificationEmail.getSubject(),
+              body: verificationEmail.getBody(),
+            });
 
             this.loggerService.debug({
               message: 'Sent verification email.',
@@ -103,7 +105,7 @@ export class EmailQueueController implements QueueController {
             });
           });
         } catch (error) {
-          await this.changeEmailEventStatusCommandHandler.execute({
+          await this.emailEventRepository.updateStatus({
             id: emailEvent.getId(),
             status: EmailEventStatus.failed,
           });
@@ -115,7 +117,7 @@ export class EmailQueueController implements QueueController {
 
         retryListener.dispose();
 
-        await this.changeEmailEventStatusCommandHandler.execute({
+        await this.emailEventRepository.updateStatus({
           id: emailEvent.getId(),
           status: EmailEventStatus.processed,
         });
@@ -136,14 +138,18 @@ export class EmailQueueController implements QueueController {
           });
         });
 
-        await this.changeEmailEventStatusCommandHandler.execute({
+        await this.emailEventRepository.updateStatus({
           id: emailEvent.getId(),
           status: EmailEventStatus.processing,
         });
 
         try {
           await this.retryPolicy.execute(async () => {
-            await this.emailService.sendEmail(resetPasswordEmail);
+            await this.sendGridService.sendEmail({
+              toEmail: resetPasswordEmail.getRecipient(),
+              subject: resetPasswordEmail.getSubject(),
+              body: resetPasswordEmail.getBody(),
+            });
 
             this.loggerService.debug({
               message: 'Sent reset password email.',
@@ -152,7 +158,7 @@ export class EmailQueueController implements QueueController {
             });
           });
         } catch (error) {
-          await this.changeEmailEventStatusCommandHandler.execute({
+          await this.emailEventRepository.updateStatus({
             id: emailEvent.getId(),
             status: EmailEventStatus.failed,
           });
@@ -164,7 +170,7 @@ export class EmailQueueController implements QueueController {
 
         retryListener.dispose();
 
-        await this.changeEmailEventStatusCommandHandler.execute({
+        await this.emailEventRepository.updateStatus({
           id: emailEvent.getId(),
           status: EmailEventStatus.processed,
         });
