@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ReadingStatus as ContractReadingStatus } from '@common/contracts';
+import { ReadingStatus as ContractReadingStatus, CreateUserBookResponseBody } from '@common/contracts';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from '@tanstack/react-router';
@@ -26,8 +26,14 @@ const stepThreeFormSchema = z.object({
     invalid_type_error: 'Niepoprawny typ',
     required_error: 'Wartość jest wymagana.',
   }),
-  // todo: validation
-  image: z.object({}),
+  image: z
+    .object(
+      {},
+      {
+        required_error: 'Wymagany.',
+      },
+    )
+    .or(z.undefined()),
   bookshelfId: z.string().uuid({
     message: 'Niewłaściwy format',
   }),
@@ -81,7 +87,7 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
 
   const onGoBack = () => {
     const search: Record<string, string> = {
-      bookshelfId
+      bookshelfId,
     };
 
     if (searchBookContext.searchQuery) {
@@ -90,8 +96,8 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
       search['isbn'] = searchBookContext.isbn;
     } else {
       return navigate({
-        to: '/shelves'
-      })
+        to: '/shelves',
+      });
     }
 
     navigate({
@@ -103,14 +109,31 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
   const onSubmit = async (values: Partial<z.infer<typeof stepThreeFormSchema>>) => {
     values as z.infer<typeof stepThreeFormSchema>;
 
+    let userBook: CreateUserBookResponseBody;
+
     try {
-      const userBook = await createUserBookMutation({
+      userBook = await createUserBookMutation({
         bookId: searchBookContext.bookId,
         bookshelfId,
         status: values.status as ContractReadingStatus,
         isFavorite: false,
       });
+    } catch (error) {
+      if (error instanceof Error && error.message === 'ResourceAlreadyExistsError') {
+        toast({
+          variant: 'destructive',
+          title: `Posiadasz już książkę z ${searchBookContext.isbn ? 'isbn' : 'title'}: ${searchBookContext.isbn ?? searchBookContext.title} na swojej półce.`,
+        });
 
+        return;
+      }
+
+      setSubmissionError(`Coś poszło nie tak. Spróbuj ponownie.`);
+
+      return;
+    }
+
+    try {
       await uploadBookImageMutation({
         bookId: userBook.id,
         file: file as unknown as File,
