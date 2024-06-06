@@ -51,13 +51,30 @@ export const Bookshelf: FC = () => {
     return <Icon className={cn('h-7 w-7 cursor-default pointer-events-auto', readingStatusColor[book.status])} />;
   };
 
+  const getCountNoun = (len: number): string => {
+    switch (len) {
+      case 1:
+        return 'książka';
+
+      case 2:
+      case 3:
+      case 4:
+        return 'książki';
+
+      default:
+        return 'książek';
+    }
+  };
+
   return (
     <AuthenticatedLayout>
       <div className="p-8 flex flex-col justify-center w-full items-center">
         <div className="flex justify-between w-full sm:max-w-7xl">
           <div>
             <p className="text-xl sm:text-3xl">{bookshelfResponse?.name ?? ' '}</p>
-            <p>{bookshelfBooksResponse?.data.length ?? 0} książek</p>
+            <p>
+              {bookshelfBooksResponse?.data.length ?? 0} {getCountNoun(bookshelfBooksResponse?.data.length ?? 0)}
+            </p>
           </div>
           <Button
             onClick={() => {

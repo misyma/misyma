@@ -31,56 +31,57 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../
 
 const pattern = /^[A-Z][^\\x00-\\x7F]*, [A-Z]\. [A-Z]\.$/;
 
-const stepOneSchema = z.object({
-  isbn: isbnSchema,
-  title: z
-    .string()
-    .min(1, {
-      message: 'Tytuł musi mieć co najmniej jeden znak.',
-    })
-    .max(64, {
-      message: 'Tytuł może mieć maksymalnie 64 znaki.',
-    }),
-  author: z
-    .string({
-      required_error: 'Wymagany',
-    })
-    .uuid({
-      message: 'Brak wybranego autora.',
-    })
-    .or(
-      z.literal('', {
-        required_error: 'Wymagany',
+const stepOneSchema = z
+  .object({
+    isbn: isbnSchema,
+    title: z
+      .string()
+      .min(1, {
+        message: 'Tytuł musi mieć co najmniej jeden znak.',
+      })
+      .max(64, {
+        message: 'Tytuł może mieć maksymalnie 64 znaki.',
       }),
-    ),
-  authorName: z
-    .string({
-      required_error: 'Wymagany',
-    })
-    .regex(pattern)
-    .optional(),
-  publisher: z
-    .string()
-    .min(1, {
-      message: 'Nazwa wydawnictwa powinna mieć co namniej 1 znak.',
-    })
-    .max(64, {
-      message: 'Nazwa wydawnictwa powinna mieć co najwyżej 64 znaki.',
-    }),
-  yearOfIssue: z
-    .number({
-      invalid_type_error: 'Rok wydania musi być liczbą.',
-      required_error: 'Rok wyadania musi być liczbą.',
-      coerce: true,
-    })
-    .min(1800, {
-      message: 'Rok wydania musi być późniejszy niż 1800',
-    })
-    .max(2500, {
-      message: 'Rok wydania nie może być późniejszy niż 2500',
-    }),
-});
-// .refine((data) => !!data.author || data.authorName, 'Autor jest wymagany.');
+    author: z
+      .string({
+        required_error: 'Wymagany',
+      })
+      .uuid({
+        message: 'Brak wybranego autora.',
+      })
+      .or(
+        z.literal('', {
+          required_error: 'Wymagany',
+        }),
+      ),
+    authorName: z
+      .string({
+        required_error: 'Wymagany',
+      })
+      .regex(pattern)
+      .optional(),
+    publisher: z
+      .string()
+      .min(1, {
+        message: 'Nazwa wydawnictwa powinna mieć co namniej 1 znak.',
+      })
+      .max(64, {
+        message: 'Nazwa wydawnictwa powinna mieć co najwyżej 64 znaki.',
+      }),
+    yearOfIssue: z
+      .number({
+        invalid_type_error: 'Rok wydania musi być liczbą.',
+        required_error: 'Rok wyadania musi być liczbą.',
+        coerce: true,
+      })
+      .min(1800, {
+        message: 'Rok wydania musi być późniejszy niż 1800',
+      })
+      .max(2500, {
+        message: 'Rok wydania nie może być późniejszy niż 2500',
+      }),
+  })
+  .refine((data) => !!data.author || data.authorName, 'Autor jest wymagany.');
 
 const createAuthorDraftSchema = z.object({
   name: z
