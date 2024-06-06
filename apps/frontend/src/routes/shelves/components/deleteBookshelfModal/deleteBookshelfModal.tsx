@@ -19,6 +19,7 @@ import { useFindUserBookshelfsQuery } from '../../../../api/bookshelf/queries/fi
 import { Select, SelectItem, SelectTrigger, SelectValue } from '../../../../components/ui/select';
 import { SelectContent } from '@radix-ui/react-select';
 import { cn } from '../../../../lib/utils';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface Props {
   bookshelfId: string;
@@ -28,6 +29,8 @@ interface Props {
 }
 
 export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, className, deletedHandler }: Props) => {
+  const queryClient = useQueryClient();
+
   const [deletionConfirmed, setDeletionConfirmed] = useState<boolean>(false);
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -85,6 +88,10 @@ export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, cl
               bookshelfId: moveBookshelfId,
               userBookId: userBook.id,
             })) ?? [],
+        });
+
+        queryClient.invalidateQueries({
+          predicate: (query) => query.queryKey[0] === 'findBookshelfById' && query.queryKey[1] === moveBookshelfId,
         });
       }
 
