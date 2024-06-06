@@ -43,7 +43,9 @@ export class UpdateUserBooksCommandHandlerImpl implements UpdateUserBooksCommand
       pageSize: bookshelfIds.length,
     });
 
-    if (bookshelves.length !== bookshelfIds.length) {
+    const uniqueIds = new Set(bookshelfIds);
+
+    if (bookshelves.length !== uniqueIds.size) {
       throw new OperationNotValidError({
         reason: 'Some of the Bookshelves do not exist.',
         ids: bookshelfIds,
