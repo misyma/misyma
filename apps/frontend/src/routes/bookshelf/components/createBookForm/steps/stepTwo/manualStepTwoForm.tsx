@@ -30,7 +30,7 @@ const stepTwoSchema = z.object({
     .max(64, {
       message: 'Tłumacz może mieć maksymalnie 64 znaki.',
     })
-    .optional(),
+    .or(z.literal('')),
   form: z.nativeEnum(ContractBookFormat),
   pagesCount: z
     .number({

@@ -41,12 +41,14 @@ const stepThreeFormSchema = z.object({
     required_error: 'Wartość jest wymagana.',
   }),
   // todo: validation
-  image: z.object(
-    {},
-    {
-      required_error: 'Wymagany.',
-    },
-  ),
+  image: z
+    .object(
+      {},
+      {
+        required_error: 'Wymagany.',
+      },
+    )
+    .or(z.undefined()),
   bookshelfId: z.string().uuid({
     message: 'Niewłaściwy format',
   }),
@@ -176,18 +178,16 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
           ...(bookCreation.stepOneDetails as Required<BookCreationNonIsbnState['stepOneDetails']>),
         });
       } catch (error) {
-
         toast({
           variant: 'destructive',
           title: `Książka z isbn: ${bookCreation.stepOneDetails?.isbn} już istnieje.`,
-          description: `Utwórz książkę używając funkcji wyszukiwania.`
+          description: `Utwórz książkę używając funkcji wyszukiwania.`,
         });
 
         setSubmissionError(`Książka z isbn ${bookCreation.stepOneDetails?.isbn} już istnieje.`);
 
         return;
       }
-
 
       let userBook: CreateUserBookResponseBody;
 
@@ -214,10 +214,13 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
         return;
       }
 
-      await uploadBookImageMutation({
-        bookId: userBook.id,
-        file: file as unknown as File,
-      });
+      if (file) {
+        await uploadBookImageMutation({
+          bookId: userBook.id,
+          file: file as unknown as File,
+        });
+      }
+
 
       toast({
         title: 'Książka została położona na półce 😄',

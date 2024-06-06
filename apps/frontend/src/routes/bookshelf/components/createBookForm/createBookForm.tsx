@@ -54,8 +54,7 @@ export const CreateBookForm: FC<CreateBookProps> = ({ bookshelfId }) => {
     return (
       bookCreation.stepTwoDetails?.format &&
       bookCreation.stepTwoDetails?.language &&
-      bookCreation.stepTwoDetails?.pagesCount &&
-      bookCreation.stepTwoDetails?.translator
+      bookCreation.stepTwoDetails?.pagesCount
     );
   }, [bookCreation.stepTwoDetails]);
 
