@@ -9,6 +9,8 @@ import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/fin
 import { UserBook } from '@common/contracts';
 import { BasicDataTabSkeleton } from './basicDataTabSkeleton.js';
 import { CurrentRatingStar } from '../../components/currentRatingStar/currentRatingStar.js';
+import { BookFormat } from '../../../../common/constants/bookFormat.js';
+import { ReversedLanguages } from '../../../../common/constants/languages.js';
 
 interface Props {
   bookId: string;
@@ -35,9 +37,7 @@ export const BasicDataTab: FC<Props> = ({ bookId }) => {
             />
           </div>
           <div className="flex justify-center">
-            <FavoriteBookButton
-              userBook={data as UserBook}
-            />
+            <FavoriteBookButton userBook={data as UserBook} />
           </div>
           <div className="flex flex-col gap-4 w-full">
             <div className="flex justify-between w-full">
@@ -50,9 +50,9 @@ export const BasicDataTab: FC<Props> = ({ bookId }) => {
                 <p className="text-lg pb-6">{data?.book.authors[0]?.name}</p>
                 <p>ISBN: {data?.book.isbn}</p>
                 <p>Rok wydania: {data?.book.releaseYear}</p>
-                <p>Język: {data?.book.language}</p>
+                <p>Język: {data?.book.language ? ReversedLanguages[data?.book.language] : ''}</p>
                 <p>Tłumacz: {data?.book.translator}</p>
-                <p>Format: {data?.book.format}</p>
+                <p>Format: {data?.book.format ? BookFormat[data?.book.format] : ''}</p>
                 <p>Liczba stron: {data?.book.pages}</p>
                 <p>Kategoria: {data?.genres[0]?.name}</p>
               </div>
