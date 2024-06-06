@@ -10,9 +10,9 @@ export const quoteDtoSchema = Type.Object({
   isFavorite: Type.Boolean(),
   createdAt: Type.String({ format: 'date-time' }),
   page: Type.Optional(
-    Type.Integer({
-      minimum: 1,
-      maximum: 5000,
+    Type.String({
+      minLength: 1,
+      maxLength: 256,
     }),
   ),
 });

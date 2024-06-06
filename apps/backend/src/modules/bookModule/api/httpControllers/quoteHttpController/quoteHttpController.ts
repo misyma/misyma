@@ -266,7 +266,7 @@ export class QuoteHttpController implements HttpController {
 
     const page = quote.getPage();
 
-    if (page) {
+    if (page !== undefined) {
       quoteDto = {
         ...quoteDto,
         page,

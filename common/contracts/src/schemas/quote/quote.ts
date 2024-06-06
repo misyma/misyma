@@ -4,5 +4,5 @@ export interface Quote {
   readonly content: string;
   readonly isFavorite: boolean;
   readonly createdAt: string;
-  readonly page?: number;
+  readonly page?: string;
 }

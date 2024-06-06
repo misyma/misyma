@@ -30,7 +30,7 @@ export class QuoteTestUtils {
         content: quote.getContent(),
         createdAt: quote.getCreatedAt(),
         isFavorite: quote.getIsFavorite(),
-        page: quote.getPage() as number,
+        page: quote.getPage() as string,
       },
       '*',
     );

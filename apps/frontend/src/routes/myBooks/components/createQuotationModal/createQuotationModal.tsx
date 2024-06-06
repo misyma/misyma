@@ -24,17 +24,9 @@ import { useToast } from '../../../../components/ui/use-toast';
 
 const createQuotationSchema = z.object({
   page: z
-    .number({
+    .string({
       required_error: 'Strona jest wymagana.',
-      coerce: true,
-      invalid_type_error: 'Strona musi być liczbą.',
-    })
-    .int({
-      message: 'Nie możesz ustawić negatywnej strony cytatu.',
-    })
-    .min(1, {
-      message: 'Strona cytatu nie może być mniejsza od 1.',
-    }),
+    }).min(1, 'Strona musi mieć minimum 1 znak.'),
   content: z
     .string({
       required_error: 'Cytat jest wymagany.',
@@ -65,7 +57,7 @@ export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props):
   const form = useForm<z.infer<typeof createQuotationSchema>>({
     resolver: zodResolver(createQuotationSchema),
     defaultValues: {
-      page: 0,
+      page: '0',
       content: '',
       isFavorite: false,
     },
@@ -74,8 +66,6 @@ export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props):
   const { mutateAsync } = useCreateQuoteMutation({});
 
   const onSubmit = async (values: z.infer<typeof createQuotationSchema>): Promise<void> => {
-    console.log("HUH!?")
-
     try {
       await mutateAsync({
         ...values,
@@ -145,8 +135,8 @@ export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props):
                     <FormLabel>Strony</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Ilość stron"
-                        type="number"
+                        placeholder="Strony cytatu"
+                        type="string"
                         {...field}
                       />
                     </FormControl>

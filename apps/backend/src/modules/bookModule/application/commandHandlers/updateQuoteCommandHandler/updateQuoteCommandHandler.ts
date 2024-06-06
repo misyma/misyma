@@ -5,7 +5,7 @@ export interface UpdateQuotePayload {
   readonly id: string;
   readonly content?: string | undefined;
   readonly isFavorite?: boolean | undefined;
-  readonly page?: number | undefined;
+  readonly page?: string | undefined;
 }
 
 export interface UpdateQuoteResult {

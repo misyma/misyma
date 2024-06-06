@@ -24,9 +24,9 @@ export const updateQuoteBodyDtoSchema = Type.Object({
   ),
   isFavorite: Type.Optional(Type.Boolean()),
   page: Type.Optional(
-    Type.Integer({
-      minimum: 1,
-      maximum: 5000,
+    Type.String({
+      minLength: 1,
+      maxLength: 256,
     }),
   ),
 });
