@@ -29,6 +29,8 @@ import {
 import { HiOutlineInformationCircle } from 'react-icons/hi';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../../../../components/ui/tooltip';
 
+const pattern = /^[A-Z][^\\x00-\\x7F]*, [A-Z]\. [A-Z]\.$/;
+
 const stepOneSchema = z.object({
   isbn: isbnSchema,
   title: z
@@ -55,8 +57,7 @@ const stepOneSchema = z.object({
     .string({
       required_error: 'Wymagany',
     })
-    .min(1)
-    .max(64)
+    .regex(pattern)
     .optional(),
   publisher: z
     .string()
@@ -89,9 +90,7 @@ const createAuthorDraftSchema = z.object({
     .min(1, {
       message: 'Imię autora musi miec co najmniej jeden znak.',
     })
-    .max(128, {
-      message: 'Imię autora może mieć maksymalnie 128 znaków.',
-    }),
+    .regex(pattern, 'Błędny format.'),
 });
 
 export const ManualStepOneForm = (): JSX.Element => {
