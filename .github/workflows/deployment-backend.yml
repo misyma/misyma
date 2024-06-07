@@ -1,7 +1,9 @@
 name: Deployment (BE)
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   deploy-backend:
