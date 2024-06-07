@@ -6,6 +6,7 @@ export interface FindBooksQueryHandlerPayload {
   readonly title?: string | undefined;
   readonly page: number;
   readonly pageSize: number;
+  readonly isApproved?: boolean | undefined;
 }
 
 export interface FindBooksQueryHandlerResult {

@@ -13,6 +13,12 @@ import {
   type DeleteBookResponseBodyDto,
 } from './schemas/deleteBookSchema.js';
 import {
+  type FindAdminBooksQueryParamsDto,
+  type FindAdminBooksResponseBodyDto,
+  findAdminBooksQueryParamsDtoSchema,
+  findAdminBooksResponseBodyDtoSchema,
+} from './schemas/findBooksSchema.js';
+import {
   updateBookPathParamsDtoSchema,
   updateBookBodyDtoSchema,
   type UpdateBookBodyDto,
@@ -35,6 +41,7 @@ import { type AccessControlService } from '../../../../authModule/application/se
 import { type CreateBookCommandHandler } from '../../../application/commandHandlers/createBookCommandHandler/createBookCommandHandler.js';
 import { type DeleteBookCommandHandler } from '../../../application/commandHandlers/deleteBookCommandHandler/deleteBookCommandHandler.js';
 import { type UpdateBookCommandHandler } from '../../../application/commandHandlers/updateBookCommandHandler/updateBookCommandHandler.js';
+import { type FindBooksQueryHandler } from '../../../application/queryHandlers/findBooksQueryHandler/findBooksQueryHandler.js';
 import { type Book } from '../../../domain/entities/book/book.js';
 import { type BookDto } from '../common/bookDto.js';
 
@@ -46,6 +53,7 @@ export class BookAdminHttpController implements HttpController {
     private readonly createBookCommandHandler: CreateBookCommandHandler,
     private readonly deleteBookCommandHandler: DeleteBookCommandHandler,
     private readonly updateBookCommandHandler: UpdateBookCommandHandler,
+    private readonly findBooksQueryHandler: FindBooksQueryHandler,
     private readonly accessControlService: AccessControlService,
   ) {}
 
@@ -103,6 +111,23 @@ export class BookAdminHttpController implements HttpController {
             },
           },
         },
+      }),
+      new HttpRoute({
+        method: HttpMethodName.get,
+        handler: this.findBooks.bind(this),
+        description: 'Find books',
+        schema: {
+          request: {
+            queryParams: findAdminBooksQueryParamsDtoSchema,
+          },
+          response: {
+            [HttpStatusCode.ok]: {
+              schema: findAdminBooksResponseBodyDtoSchema,
+              description: 'Books found',
+            },
+          },
+        },
+        securityMode: SecurityMode.bearerToken,
       }),
     ];
   }
@@ -174,6 +199,33 @@ export class BookAdminHttpController implements HttpController {
     return {
       statusCode: HttpStatusCode.ok,
       body: this.mapBookToBookDto(book),
+    };
+  }
+
+  private async findBooks(
+    request: HttpRequest<undefined, FindAdminBooksQueryParamsDto, undefined>,
+  ): Promise<HttpOkResponse<FindAdminBooksResponseBodyDto>> {
+    await this.accessControlService.verifyBearerToken({
+      authorizationHeader: request.headers['authorization'],
+    });
+
+    const { page = 1, pageSize = 10 } = request.queryParams;
+
+    const { books, total } = await this.findBooksQueryHandler.execute({
+      page,
+      pageSize,
+    });
+
+    return {
+      body: {
+        data: books.map((book) => this.mapBookToBookDto(book)),
+        metadata: {
+          page,
+          pageSize,
+          total,
+        },
+      },
+      statusCode: HttpStatusCode.ok,
     };
   }
 
