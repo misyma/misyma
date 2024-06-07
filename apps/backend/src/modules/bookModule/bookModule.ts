@@ -41,6 +41,8 @@ import { type DeleteQuoteCommandHandler } from './application/commandHandlers/de
 import { DeleteQuoteCommandHandlerImpl } from './application/commandHandlers/deleteQuoteCommandHandler/deleteQuoteCommandHandlerImpl.js';
 import { type DeleteUserBooksCommandHandler } from './application/commandHandlers/deleteUserBooksCommandHandler/deleteUserBooksCommandHandler.js';
 import { DeleteUserBooksCommandHandlerImpl } from './application/commandHandlers/deleteUserBooksCommandHandler/deleteUserBooksCommandHandlerImpl.js';
+import { type UpdateAuthorCommandHandler } from './application/commandHandlers/updateAuthorCommandHandler/updateAuthorCommandHandler.js';
+import { UpdateAuthorCommandHandlerImpl } from './application/commandHandlers/updateAuthorCommandHandler/updateAuthorCommandHandlerImpl.js';
 import { type UpdateBookCommandHandler } from './application/commandHandlers/updateBookCommandHandler/updateBookCommandHandler.js';
 import { UpdateBookCommandHandlerImpl } from './application/commandHandlers/updateBookCommandHandler/updateBookCommandHandlerImpl.js';
 import { type UpdateBookReadingCommandHandler } from './application/commandHandlers/updateBookReadingCommandHandler/updateBookReadingCommandHandler.js';
@@ -359,6 +361,15 @@ export class BookModule implements DependencyInjectionModule {
         ),
     );
 
+    container.bind<UpdateAuthorCommandHandler>(
+      symbols.updateAuthorCommandHandler,
+      () =>
+        new UpdateAuthorCommandHandlerImpl(
+          container.get<AuthorRepository>(symbols.authorRepository),
+          container.get<LoggerService>(coreSymbols.loggerService),
+        ),
+    );
+
     container.bind<DeleteAuthorCommandHandler>(
       symbols.deleteAuthorCommandHandler,
       () =>
@@ -635,6 +646,7 @@ export class BookModule implements DependencyInjectionModule {
       () =>
         new AuthorAdminHttpController(
           container.get<CreateAuthorCommandHandler>(symbols.createAuthorCommandHandler),
+          container.get<UpdateAuthorCommandHandler>(symbols.updateAuthorCommandHandler),
           container.get<DeleteAuthorCommandHandler>(symbols.deleteAuthorCommandHandler),
           container.get<AccessControlService>(authSymbols.accessControlService),
         ),

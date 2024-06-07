@@ -12,10 +12,22 @@ import {
   type DeleteAuthorPathParamsDto,
   type DeleteAuthorResponseBodyDto,
 } from './schemas/deleteAuthorSchema.js';
+import {
+  updateAuthorPathParamsDtoSchema,
+  updateAuthorBodyDtoSchema,
+  updateAuthorResponseBodyDtoSchema,
+  type UpdateAuthorBodyDto,
+  type UpdateAuthorPathParamsDto,
+  type UpdateAuthorResponseBodyDto,
+} from './schemas/updateAuthorSchema.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
-import { type HttpCreatedResponse, type HttpNoContentResponse } from '../../../../../common/types/http/httpResponse.js';
+import {
+  type HttpOkResponse,
+  type HttpCreatedResponse,
+  type HttpNoContentResponse,
+} from '../../../../../common/types/http/httpResponse.js';
 import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
 import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.js';
 import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
@@ -23,6 +35,7 @@ import { type AccessControlService } from '../../../../authModule/application/se
 import { type AuthorDto } from '../../../../bookModule/api/httpControllers/common/authorDto.js';
 import { type CreateAuthorCommandHandler } from '../../../application/commandHandlers/createAuthorCommandHandler/createAuthorCommandHandler.js';
 import { type DeleteAuthorCommandHandler } from '../../../application/commandHandlers/deleteAuthorCommandHandler/deleteAuthorCommandHandler.js';
+import { type UpdateAuthorCommandHandler } from '../../../application/commandHandlers/updateAuthorCommandHandler/updateAuthorCommandHandler.js';
 import { type Author } from '../../../domain/entities/author/author.js';
 
 export class AuthorAdminHttpController implements HttpController {
@@ -31,6 +44,7 @@ export class AuthorAdminHttpController implements HttpController {
 
   public constructor(
     private readonly createAuthorCommandHandler: CreateAuthorCommandHandler,
+    private readonly updateAuthorCommandHandler: UpdateAuthorCommandHandler,
     private readonly deleteAuthorCommandHandler: DeleteAuthorCommandHandler,
     private readonly accessControlService: AccessControlService,
   ) {}
@@ -53,6 +67,25 @@ export class AuthorAdminHttpController implements HttpController {
         },
         securityMode: SecurityMode.bearerToken,
         description: 'Create author',
+      }),
+      new HttpRoute({
+        description: 'Update Author',
+        handler: this.updateAuthor.bind(this),
+        method: HttpMethodName.patch,
+        path: ':authorId',
+        schema: {
+          request: {
+            pathParams: updateAuthorPathParamsDtoSchema,
+            body: updateAuthorBodyDtoSchema,
+          },
+          response: {
+            [HttpStatusCode.ok]: {
+              description: 'Author updated',
+              schema: updateAuthorResponseBodyDtoSchema,
+            },
+          },
+        },
+        securityMode: SecurityMode.bearerToken,
       }),
       new HttpRoute({
         method: HttpMethodName.delete,
@@ -93,6 +126,30 @@ export class AuthorAdminHttpController implements HttpController {
     return {
       statusCode: HttpStatusCode.created,
       body: this.mapAuthorToDto(author),
+    };
+  }
+
+  private async updateAuthor(
+    request: HttpRequest<UpdateAuthorBodyDto, null, UpdateAuthorPathParamsDto>,
+  ): Promise<HttpOkResponse<UpdateAuthorResponseBodyDto>> {
+    this.accessControlService.verifyBearerToken({
+      authorizationHeader: request.headers['authorization'],
+      expectedRole: UserRole.admin,
+    });
+
+    const { authorId } = request.pathParams;
+
+    const { name, isApproved } = request.body;
+
+    const { author } = await this.updateAuthorCommandHandler.execute({
+      id: authorId,
+      name,
+      isApproved,
+    });
+
+    return {
+      body: this.mapAuthorToDto(author),
+      statusCode: HttpStatusCode.ok,
     };
   }
 

@@ -32,9 +32,11 @@ export class CreateAuthorCommandHandlerImpl implements CreateAuthorCommandHandle
       });
     }
 
-    const author = await this.authorRepository.createAuthor({
-      name,
-      isApproved,
+    const author = await this.authorRepository.saveAuthor({
+      author: {
+        name,
+        isApproved,
+      },
     });
 
     this.loggerService.debug({
