@@ -150,6 +150,7 @@ export class BookHttpController implements HttpController {
       title,
       page,
       pageSize,
+      isApproved: true,
     });
 
     return {

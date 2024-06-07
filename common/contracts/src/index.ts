@@ -48,6 +48,8 @@ export * from './schemas/book/findBook.js';
 
 export * from './schemas/book/findBooks.js';
 
+export * from './schemas/book/findAdminBooks.js';
+
 export * from './schemas/book/createBook.js';
 
 export * from './schemas/book/updateBook.js';

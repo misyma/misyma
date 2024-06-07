@@ -568,6 +568,7 @@ export class BookModule implements DependencyInjectionModule {
           container.get<CreateBookCommandHandler>(symbols.createBookCommandHandler),
           container.get<DeleteBookCommandHandler>(symbols.deleteBookCommandHandler),
           container.get<UpdateBookCommandHandler>(symbols.updateBookCommandHandler),
+          container.get<FindBooksQueryHandler>(symbols.findBooksQueryHandler),
           container.get<AccessControlService>(authSymbols.accessControlService),
         ),
     );

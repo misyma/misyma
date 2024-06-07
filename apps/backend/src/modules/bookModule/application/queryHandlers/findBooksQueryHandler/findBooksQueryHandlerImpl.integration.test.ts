@@ -133,6 +133,7 @@ describe('FindBooksQueryHandler', () => {
       isbn: book.isbn as string,
       page: 1,
       pageSize: 10,
+      isApproved: true,
     });
 
     expect(books.length).toEqual(0);
