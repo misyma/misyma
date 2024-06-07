@@ -2,16 +2,20 @@ import { type AuthorMapper } from './authorMapper/authorMapper.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
-import { type Author } from '../../../../bookModule/domain/entities/author/author.js';
+import { type AuthorState, Author } from '../../../../bookModule/domain/entities/author/author.js';
 import {
   type AuthorRepository,
-  type CreateAuthorPayload,
+  type SaveAuthorPayload,
   type FindAuthorPayload,
   type DeleteAuthorPayload,
   type FindAuthorsPayload,
 } from '../../../domain/repositories/authorRepository/authorRepository.js';
 import { type AuthorRawEntity } from '../../databases/bookDatabase/tables/authorTable/authorRawEntity.js';
 import { AuthorTable } from '../../databases/bookDatabase/tables/authorTable/authorTable.js';
+
+type CreateAuthorPayload = { author: AuthorState };
+
+type UpdateAuthorPayload = { author: Author };
 
 export class AuthorRepositoryImpl implements AuthorRepository {
   private readonly databaseTable = new AuthorTable();
@@ -22,22 +26,32 @@ export class AuthorRepositoryImpl implements AuthorRepository {
     private readonly uuidService: UuidService,
   ) {}
 
-  public async createAuthor(payload: CreateAuthorPayload): Promise<Author> {
-    const { name, isApproved } = payload;
+  public async saveAuthor(payload: SaveAuthorPayload): Promise<Author> {
+    const { author } = payload;
 
-    let rawEntities: AuthorRawEntity[];
+    if (author instanceof Author) {
+      return this.update({ author });
+    }
 
-    const id = this.uuidService.generateUuid();
+    return this.create({ author });
+  }
+
+  private async create(entity: CreateAuthorPayload): Promise<Author> {
+    const { author } = entity;
+
+    let rawEntity: AuthorRawEntity;
 
     try {
-      rawEntities = await this.databaseClient<AuthorRawEntity>(this.databaseTable.name).insert(
+      const result = await this.databaseClient<AuthorRawEntity>(this.databaseTable.name).insert(
         {
-          id,
-          name,
-          isApproved,
+          id: this.uuidService.generateUuid(),
+          name: author.name,
+          isApproved: author.isApproved,
         },
         '*',
       );
+
+      rawEntity = result[0] as AuthorRawEntity;
     } catch (error) {
       throw new RepositoryError({
         entity: 'Author',
@@ -46,7 +60,27 @@ export class AuthorRepositoryImpl implements AuthorRepository {
       });
     }
 
-    const rawEntity = rawEntities[0] as AuthorRawEntity;
+    return this.authorMapper.mapToDomain(rawEntity);
+  }
+
+  private async update(payload: UpdateAuthorPayload): Promise<Author> {
+    const { author } = payload;
+
+    let rawEntity: AuthorRawEntity;
+
+    try {
+      const result = await this.databaseClient<AuthorRawEntity>(this.databaseTable.name)
+        .where({ id: author.getId() })
+        .update(author.getState(), '*');
+
+      rawEntity = result[0] as AuthorRawEntity;
+    } catch (error) {
+      throw new RepositoryError({
+        entity: 'Author',
+        operation: 'update',
+        error,
+      });
+    }
 
     return this.authorMapper.mapToDomain(rawEntity);
   }

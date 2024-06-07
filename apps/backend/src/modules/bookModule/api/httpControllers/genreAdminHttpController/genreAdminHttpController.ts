@@ -44,7 +44,7 @@ export class GenreAdminHttpController implements HttpController {
 
   public constructor(
     private readonly createGenreCommandHandler: CreateGenreCommandHandler,
-    private readonly updateGenreNameCommandHandler: UpdateGenreCommandHandler,
+    private readonly updateGenreCommandHandler: UpdateGenreCommandHandler,
     private readonly deleteGenreCommandHandler: DeleteGenreCommandHandler,
     private readonly accessControlService: AccessControlService,
   ) {}
@@ -138,7 +138,7 @@ export class GenreAdminHttpController implements HttpController {
 
     const { name } = request.body;
 
-    const { genre } = await this.updateGenreNameCommandHandler.execute({
+    const { genre } = await this.updateGenreCommandHandler.execute({
       id: genreId,
       name,
     });

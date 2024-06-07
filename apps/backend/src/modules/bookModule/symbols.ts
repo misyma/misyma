@@ -32,7 +32,7 @@ export const symbols = {
   authorMapper: Symbol('authorMapper'),
   authorRepository: Symbol('authorRepository'),
   createAuthorCommandHandler: Symbol('createAuthorCommandHandler'),
-  loginAuthorCommandHandler: Symbol('loginAuthorCommandHandler'),
+  updateAuthorCommandHandler: Symbol('updateAuthorCommandHandler'),
   deleteAuthorCommandHandler: Symbol('deleteAuthorCommandHandler'),
   findAuthorsQueryHandler: Symbol('findAuthorsQueryHandler'),
   authorHttpController: Symbol('authorHttpController'),

@@ -1,8 +1,7 @@
-import { type Author } from '../../../../bookModule/domain/entities/author/author.js';
+import { type AuthorState, type Author } from '../../../../bookModule/domain/entities/author/author.js';
 
-export interface CreateAuthorPayload {
-  readonly name: string;
-  readonly isApproved: boolean;
+export interface SaveAuthorPayload {
+  readonly author: Author | AuthorState;
 }
 
 export interface FindAuthorPayload {
@@ -23,7 +22,7 @@ export interface DeleteAuthorPayload {
 }
 
 export interface AuthorRepository {
-  createAuthor(input: CreateAuthorPayload): Promise<Author>;
+  saveAuthor(input: SaveAuthorPayload): Promise<Author>;
   findAuthor(input: FindAuthorPayload): Promise<Author | null>;
   findAuthors(payload: FindAuthorsPayload): Promise<Author[]>;
   countAuthors(payload: FindAuthorsPayload): Promise<number>;

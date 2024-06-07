@@ -41,9 +41,11 @@ describe('AuthorRepositoryImpl', () => {
     it('creates a author', async () => {
       const { name, isApproved } = authorTestFactory.createRaw();
 
-      const author = await authorRepository.createAuthor({
-        name,
-        isApproved,
+      const author = await authorRepository.saveAuthor({
+        author: {
+          name,
+          isApproved,
+        },
       });
 
       const foundAuthor = await authorTestUtils.findByName({
@@ -63,9 +65,11 @@ describe('AuthorRepositoryImpl', () => {
       const existingAuthor = await authorTestUtils.createAndPersist();
 
       try {
-        await authorRepository.createAuthor({
-          name: existingAuthor.name,
-          isApproved: existingAuthor.isApproved,
+        await authorRepository.saveAuthor({
+          author: {
+            name: existingAuthor.name,
+            isApproved: existingAuthor.isApproved,
+          },
         });
       } catch (error) {
         expect(error).toBeInstanceOf(RepositoryError);
