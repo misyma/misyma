@@ -3,10 +3,10 @@ import { FC } from 'react';
 import { IoIosLogOut } from "react-icons/io";
 import { useStoreSelector } from '../../../core/store/hooks/useStoreSelector';
 import { userStateActions, userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
-import { useLogoutUserMutation } from '../../../../api/user/mutations/logoutUserMutation/logoutUserMutation';
 import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery';
 import { useStoreDispatch } from '../../../core/store/hooks/useStoreDispatch';
 import { CookieService } from '../../../core/services/cookieService/cookieService';
+import { useLogoutUserMutation } from '../../../auth/api/logoutUserMutation/logoutUserMutation';
 export const Navbar: FC = () => {
   const navigate = useNavigate();
 

@@ -4,10 +4,9 @@ import { rootRoute } from '../root';
 import { RequireAuthComponent } from '../../modules/core/components/requireAuth/requireAuthComponent';
 import { z } from 'zod';
 import { FindBooksByBookshelfIdQueryOptions } from '../../api/books/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
-import { AuthenticatedLayout } from '../../layouts/authenticated/authenticatedLayout';
+import { AuthenticatedLayout } from '../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { Button } from '../../modules/common/components/ui/button';
 import { useFindUserQuery } from '../../api/user/queries/findUserQuery/findUserQuery';
-import { useFindBookshelfByIdQuery } from '../../api/bookshelf/queries/findBookshelfByIdQuery/findBookshelfByIdQuery';
 import { Separator } from '../../modules/common/components/ui/separator';
 import { HiCheckCircle, HiDotsCircleHorizontal, HiQuestionMarkCircle } from 'react-icons/hi';
 import { ReadingStatus, UserBook } from '@common/contracts';
@@ -16,6 +15,7 @@ import { FavoriteBookButton } from '../myBooks/components/favoriteBookButton/fav
 import { useQuery } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../modules/core/store/states/userState/userStateSlice';
+import { useFindBookshelfByIdQuery } from '../../modules/bookshelf/api/queries/findBookshelfByIdQuery/findBookshelfByIdQuery';
 
 const bookshelfSearchSchema = z.object({
   id: z.string().uuid().catch(''),

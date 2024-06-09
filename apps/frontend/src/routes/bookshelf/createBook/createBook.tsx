@@ -1,11 +1,11 @@
 import { Navigate, createRoute } from '@tanstack/react-router';
 import { FC } from 'react';
 import { RequireAuthComponent } from '../../../modules/core/components/requireAuth/requireAuthComponent';
-import { CreateBookForm } from '../components/createBookForm/createBookForm';
+import { CreateBookForm } from '../../../modules/bookshelf/components/createBookForm/createBookForm';
 import { rootRoute } from '../../root';
-import { BookCreationProvider } from '../components/createBookForm/context/bookCreationContext/bookCreationContext';
-import { AuthenticatedLayout } from '../../../layouts/authenticated/authenticatedLayout';
+import { AuthenticatedLayout } from '../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { z } from 'zod';
+import { BookCreationProvider } from '../../../modules/bookshelf/context/bookCreationContext/bookCreationContext';
 
 const createBookSearchSchema = z.object({
   id: z.string().uuid().catch(''),

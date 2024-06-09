@@ -1,25 +1,25 @@
 import { FC, useEffect, useMemo, useState } from 'react';
-import { AuthenticatedLayout } from '../../layouts/authenticated/authenticatedLayout';
+import { AuthenticatedLayout } from '../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { createRoute, useNavigate } from '@tanstack/react-router';
 import { rootRoute } from '../root';
 import { RequireAuthComponent } from '../../modules/core/components/requireAuth/requireAuthComponent';
-import { useFindUserBookshelfsQuery } from '../../api/bookshelf/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 import { useFindUserQuery } from '../../api/user/queries/findUserQuery/findUserQuery';
 import { Button } from '../../modules/common/components/ui/button';
 import { ScrollArea } from '../../modules/common/components/ui/scroll-area';
 import { HiPencil } from 'react-icons/hi';
 import { IoMdEye } from 'react-icons/io';
 import { HiCheck, HiOutlineX } from 'react-icons/hi';
-import { useUpdateBookshelfMutation } from '../../api/bookshelf/mutations/updateBookshelfMutation/updateBookshelfMutation';
+import { useUpdateBookshelfMutation } from '../../modules/bookshelf/api/mutations/updateBookshelfMutation/updateBookshelfMutation';
 import { useToast } from '../../modules/common/components/ui/use-toast';
-import { AutoselectedInput } from './components/autoselectedInput/autoselectedInput';
+import { AutoselectedInput } from '../../modules/common/components/autoselectedInput/autoselectedInput';
 import { z } from 'zod';
-import { useCreateBookshelfMutation } from '../../api/bookshelf/mutations/createBookshelfMutation/createBookshelfMutation';
+import { useCreateBookshelfMutation } from '../../modules/bookshelf/api/mutations/createBookshelfMutation/createBookshelfMutation';
 import { Bookmark } from '../../modules/common/components/bookmark/bookmark';
 import { BookshelfType } from '@common/contracts';
-import { DeleteBookshelfModal } from './components/deleteBookshelfModal/deleteBookshelfModal';
+import { DeleteBookshelfModal } from '../../modules/bookshelf/components/deleteBookshelfModal/deleteBookshelfModal';
 import { cn } from '../../modules/common/lib/utils';
 import { Paginator } from '../../modules/common/components/paginator/paginator';
+import { useFindUserBookshelfsQuery } from '../../modules/bookshelf/api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 
 const bookshelfNameSchema = z
   .string()

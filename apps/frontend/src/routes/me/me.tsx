@@ -5,7 +5,7 @@ import { FC } from 'react';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../modules/core/store/states/userState/userStateSlice';
 import { useFindUserQuery } from '../../api/user/queries/findUserQuery/findUserQuery';
-import { AuthenticatedLayout } from '../../layouts/authenticated/authenticatedLayout';
+import { AuthenticatedLayout } from '../../modules/auth/layouts/authenticated/authenticatedLayout';
 
 export const AuthenticatedPage: FC = () => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);

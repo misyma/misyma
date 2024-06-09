@@ -2,24 +2,24 @@ import { createRoute } from '@tanstack/react-router';
 import { rootRoute } from '../../root';
 import { RequireAuthComponent } from '../../../modules/core/components/requireAuth/requireAuthComponent';
 import { z } from 'zod';
-import { ChoosePathStep } from './components/pathChoice/pathChoice';
-import { IsbnPathForm } from './components/byIbsn/isbnPathForm';
-import { AuthenticatedLayout } from '../../../layouts/authenticated/authenticatedLayout';
-import { ByTitleForm } from './components/byTitle/byTitle';
+import { SearchBookMethodChoice } from '../../../modules/bookshelf/components/searchBookMethodChoice/searchMethodChoice';
+import { IsbnSearchForm } from '../../../modules/bookshelf/components/isbnSearchForm/isbnSearchForm';
+import { AuthenticatedLayout } from '../../../modules/auth/layouts/authenticated/authenticatedLayout';
+import { TitleSearchForm } from '../../../modules/bookshelf/components/titleSearchForm/titleSearchForm';
 
 export const Search = () => {
   const searchParams = searchRoute.useSearch();
 
   const render = () => {
     if (searchParams.next === 0) {
-      return <ChoosePathStep bookshelfId={searchParams.bookshelfId} initialValue={searchParams.type} />;
+      return <SearchBookMethodChoice bookshelfId={searchParams.bookshelfId} initialValue={searchParams.type} />;
     }
 
     if (searchParams.type === 'isbn') {
-      return <IsbnPathForm bookshelfId={searchParams.bookshelfId} />;
+      return <IsbnSearchForm bookshelfId={searchParams.bookshelfId} />;
     }
 
-    return <ByTitleForm bookshelfId={searchParams.bookshelfId} />;
+    return <TitleSearchForm bookshelfId={searchParams.bookshelfId} />;
   };
 
   return (

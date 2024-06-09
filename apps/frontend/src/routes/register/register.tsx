@@ -1,12 +1,12 @@
 import { Link, createRoute, useNavigate } from '@tanstack/react-router';
 import { rootRoute } from '../root';
 import { FC, useState } from 'react';
-import { RegisterUserForm } from './components/registerUserForm/registerUserForm';
-import { DefaultFormLayout } from '../../layouts/default/defaultFormLayout';
-import { useSendVerificationEmailMutation } from '../../api/user/mutations/sendVerificationEmailMutation/sendVerificationEmailMutation';
+import { RegisterUserForm } from '../../modules/auth/components/registerUserForm/registerUserForm';
 import { useToast } from '@/modules/common/components/ui/use-toast';
 import { RequireNonAuthComponent } from '../../modules/core/components/requireNonAuth/requireNonAuthComponent';
 import { Button } from '../../modules/common/components/ui/button';
+import { DefaultFormLayout } from '../../modules/core/layouts/default/defaultFormLayout';
+import { useSendVerificationEmailMutation } from '../../modules/auth/api/sendVerificationEmailMutation/sendVerificationEmailMutation';
 
 export const RegisterPage: FC = () => {
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
@@ -39,9 +39,9 @@ export const RegisterPage: FC = () => {
           <h1 className="font-semibold text-lg sm:text-xl max-w-[30rem]">
             Znajdziesz w niej link, który pozwoli Ci aktywować konto
           </h1>
-          <div className='pt-5'>
+          <div className="pt-5">
             <Button
-              className='w-full'
+              className="w-full"
               onClick={() => {
                 navigate({
                   to: '/login',
@@ -50,8 +50,8 @@ export const RegisterPage: FC = () => {
             >
               Przejdź do logowania
             </Button>
-            <p className='py-4'>
-              lub {' '}
+            <p className="py-4">
+              lub{' '}
               <a
                 className="text-primary font-semibold cursor-pointer"
                 onClick={() => {

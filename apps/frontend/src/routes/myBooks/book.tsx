@@ -1,7 +1,7 @@
 import { Navigate, createRoute } from '@tanstack/react-router';
 import { FC, useState } from 'react';
 import { rootRoute } from '../root';
-import { AuthenticatedLayout } from '../../layouts/authenticated/authenticatedLayout';
+import { AuthenticatedLayout } from '../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { z } from 'zod';
 import { Button } from '../../modules/common/components/ui/button';
 

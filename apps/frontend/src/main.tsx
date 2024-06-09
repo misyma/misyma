@@ -6,7 +6,7 @@ import './index.css';
 import { QueryClientProvider } from './modules/core/components/providers/queryClientProvider/queryClientProvider.tsx';
 import { notFoundRoute } from './routes/notFound/notFound.tsx';
 import { StoreProvider } from './modules/core/components/providers/storeProvider/storeProvider.tsx';
-import { SearchCreateBookProvider } from './routes/bookshelf/search/context/searchCreateBookContext.tsx';
+import { SearchCreateBookProvider } from './modules/bookshelf/context/searchCreateBookContext/searchCreateBookContext.tsx';
 import { routeTree } from './modules/core/router/router.tsx';
 
 const router = createRouter({

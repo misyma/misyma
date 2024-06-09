@@ -2,9 +2,9 @@ import { createRoute, useNavigate } from '@tanstack/react-router';
 import { rootRoute } from '../../../../root';
 import { FC, useEffect } from 'react';
 import { RequireAuthComponent } from '../../../../../modules/core/components/requireAuth/requireAuthComponent';
-import { useSearchBookContext } from '../../context/searchCreateBookContext';
-import { ManualStep } from '../../components/manualStep/manualStep';
-import { AuthenticatedLayout } from '../../../../../layouts/authenticated/authenticatedLayout';
+import { useSearchBookContext } from '../../../../../modules/bookshelf/context/searchCreateBookContext/searchCreateBookContext';
+import { ManualStep } from '../../../../../modules/bookshelf/components/manualStep/manualStep';
+import { AuthenticatedLayout } from '../../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { Breadcrumbs, NumericBreadcrumb } from '../../../../../modules/common/components/ui/breadcrumbs';
 
 export const SearchCreatePage: FC = () => {

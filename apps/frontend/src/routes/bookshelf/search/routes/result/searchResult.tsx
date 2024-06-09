@@ -4,9 +4,9 @@ import { RequireAuthComponent } from '../../../../../modules/core/components/req
 import { z } from 'zod';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { FindBooksQueryOptions } from '../../../../../api/books/queries/findBooks/findBooksQueryOptions';
-import { AuthenticatedLayout } from '../../../../../layouts/authenticated/authenticatedLayout';
+import { AuthenticatedLayout } from '../../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { Button } from '../../../../../modules/common/components/ui/button';
-import { useSearchBookContextDispatch } from '../../context/searchCreateBookContext';
+import { useSearchBookContextDispatch } from '../../../../../modules/bookshelf/context/searchCreateBookContext/searchCreateBookContext';
 import { Book } from '../../../../../../../../common/contracts/dist/src/schemas/book/book';
 import { useQuery } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';

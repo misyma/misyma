@@ -1,12 +1,12 @@
 import { Link, createRoute, useNavigate } from '@tanstack/react-router';
-import { useVerifyUserEmailMutation } from '../../api/user/mutations/verifyUserEmailMutation/verifyUserEmailMutation';
 import { FC, useEffect } from 'react';
 import { rootRoute } from '../root';
 import { z } from 'zod';
-import { DefaultLayout } from '../../layouts/default/defaultLayout';
 import { RequireNonAuthComponent } from '../../modules/core/components/requireNonAuth/requireNonAuthComponent';
 import { useToast } from '../../modules/common/components/ui/use-toast';
 import { Logo } from '../../modules/common/components/logo/logo';
+import { useVerifyUserEmailMutation } from '../../modules/auth/api/verifyUserEmailMutation/verifyUserEmailMutation';
+import { DefaultLayout } from '../../modules/core/layouts/default/defaultLayout';
 
 export const VerifyEmailPage: FC = () => {
   const navigate = useNavigate();

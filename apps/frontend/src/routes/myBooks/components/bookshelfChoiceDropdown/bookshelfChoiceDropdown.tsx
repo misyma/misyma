@@ -1,6 +1,11 @@
 import { FC, useMemo, useState } from 'react';
-import { useFindUserBookshelfsQuery } from '../../../../api/bookshelf/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../../modules/common/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../../../../modules/common/components/ui/select';
 import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery';
 import { useUpdateUserBookMutation } from '../../../../api/books/mutations/updateUserBookMutation/updateUserBookMutation';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -9,6 +14,7 @@ import { useToast } from '../../../../modules/common/components/ui/use-toast';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
 import { FindUserBookQueryOptions } from '../../../../api/books/queries/findUserBook/findUserBookQueryOptions';
+import { useFindUserBookshelfsQuery } from '../../../../modules/bookshelf/api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 
 interface Props {
   bookId: string;
