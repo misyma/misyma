@@ -2,7 +2,10 @@ import { type UserBookMapper } from './userBookMapper/userBookMapper.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
-import { BookshelfTable } from '../../../../bookshelfModule/infrastructure/databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfTable.js';
+import {
+  bookshelfColumns,
+  bookshelfTable,
+} from '../../../../bookshelfModule/infrastructure/databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfTable.js';
 import { UserBook, type UserBookState } from '../../../domain/entities/userBook/userBook.js';
 import {
   type SaveUserBooksPayload,
@@ -13,19 +16,33 @@ import {
   type UserBookRepository,
   type FindUserBooksByUserPayload,
 } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
-import { AuthorTable } from '../../databases/bookDatabase/tables/authorTable/authorTable.js';
-import { BooksAuthorsTable } from '../../databases/bookDatabase/tables/bookAuthorTable/bookAuthorTable.js';
-import { BookReadingTable } from '../../databases/bookDatabase/tables/bookReadingTable/bookReadingTable.js';
-import { BookTable } from '../../databases/bookDatabase/tables/bookTable/bookTable.js';
-import { CollectionTable } from '../../databases/bookDatabase/tables/collectionTable/collectionTable.js';
-import { GenreTable } from '../../databases/bookDatabase/tables/genreTable/genreTable.js';
-import { QuoteTable } from '../../databases/bookDatabase/tables/quoteTable/quoteTable.js';
+import { authorColumns, authorTable } from '../../databases/bookDatabase/tables/authorTable/authorTable.js';
+import {
+  bookAuthorColumns,
+  bookAuthorTable,
+} from '../../databases/bookDatabase/tables/bookAuthorTable/bookAuthorTable.js';
+import {
+  bookReadingColumns,
+  bookReadingTable,
+} from '../../databases/bookDatabase/tables/bookReadingTable/bookReadingTable.js';
+import { bookColumns, bookTable } from '../../databases/bookDatabase/tables/bookTable/bookTable.js';
+import {
+  collectionColumns,
+  collectionTable,
+} from '../../databases/bookDatabase/tables/collectionTable/collectionTable.js';
+import { genreColumns, genreTable } from '../../databases/bookDatabase/tables/genreTable/genreTable.js';
 import { type UserBookCollectionRawEntity } from '../../databases/bookDatabase/tables/userBookCollectionsTable/userBookCollectionsRawEntity.js';
-import { UserBookCollectionsTable } from '../../databases/bookDatabase/tables/userBookCollectionsTable/userBookCollectionsTable.js';
+import {
+  userBookCollectionColumns,
+  userBookCollectionTable,
+} from '../../databases/bookDatabase/tables/userBookCollectionsTable/userBookCollectionsTable.js';
 import { type UserBookGenreRawEntity } from '../../databases/bookDatabase/tables/userBookGenresTable/userBookGenresRawEntity.js';
-import { UserBookGenreTable } from '../../databases/bookDatabase/tables/userBookGenresTable/userBookGenresTable.js';
+import {
+  userBookGenreColumns,
+  userBookGenreTable,
+} from '../../databases/bookDatabase/tables/userBookGenresTable/userBookGenresTable.js';
 import { type UserBookRawEntity } from '../../databases/bookDatabase/tables/userBookTable/userBookRawEntity.js';
-import { UserBookTable } from '../../databases/bookDatabase/tables/userBookTable/userBookTable.js';
+import { userBookColumns, userBookTable } from '../../databases/bookDatabase/tables/userBookTable/userBookTable.js';
 import { type UserBookWithJoinsRawEntity } from '../../databases/bookDatabase/tables/userBookTable/userBookWithJoinsRawEntity.js';
 
 type CreateUserBookPayload = { userBook: UserBookState };
@@ -33,17 +50,6 @@ type CreateUserBookPayload = { userBook: UserBookState };
 type UpdateUserBookPayload = { userBook: UserBook };
 
 export class UserBookRepositoryImpl implements UserBookRepository {
-  private readonly userBookTable = new UserBookTable();
-  private readonly bookTable = new BookTable();
-  private readonly bookshelfTable = new BookshelfTable();
-  private readonly booksAuthorsTable = new BooksAuthorsTable();
-  private readonly authorTable = new AuthorTable();
-  private readonly userBookGenresTable = new UserBookGenreTable();
-  private readonly genresTable = new GenreTable();
-  private readonly bookReadingTable = new BookReadingTable();
-  private readonly collectionTable = new CollectionTable();
-  private readonly userBookCollectionTable = new UserBookCollectionsTable();
-
   public constructor(
     private readonly databaseClient: DatabaseClient,
     private readonly userBookMapper: UserBookMapper,
@@ -69,7 +75,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
 
     try {
       await this.databaseClient.transaction(async (transaction) => {
-        await transaction<UserBookRawEntity>(this.userBookTable.name).insert(
+        await transaction<UserBookRawEntity>(userBookTable).insert(
           {
             id,
             imageUrl: imageUrl ?? undefined,
@@ -83,7 +89,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
 
         if (genres.length) {
           await transaction.batchInsert<UserBookGenreRawEntity>(
-            this.userBookGenresTable.name,
+            userBookGenreTable,
             genres.map((genre) => ({
               userBookId: id,
               genreId: genre.getId(),
@@ -93,7 +99,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
 
         if (collections.length) {
           await transaction.batchInsert<UserBookCollectionRawEntity>(
-            this.userBookCollectionTable.name,
+            userBookCollectionTable,
             collections.map((collection) => ({
               userBookId: id,
               collectionId: collection.getId(),
@@ -131,7 +137,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       await this.databaseClient.transaction(async (transaction) => {
         const { genres: updatedGenres, collections: updatedCollections } = userBook.getState();
 
-        await transaction<UserBookRawEntity>(this.userBookTable.name)
+        await transaction<UserBookRawEntity>(userBookTable)
           .update({
             bookshelfId,
             status,
@@ -151,7 +157,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         );
 
         if (addedGenres.length > 0) {
-          await transaction<UserBookGenreRawEntity>(this.userBookGenresTable.name)
+          await transaction<UserBookGenreRawEntity>(userBookGenreTable)
             .insert(
               addedGenres.map((genre) => ({
                 userBookId: userBook.getId(),
@@ -163,7 +169,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         }
 
         if (removedGenres.length > 0) {
-          await transaction<UserBookGenreRawEntity>(this.userBookGenresTable.name)
+          await transaction<UserBookGenreRawEntity>(userBookGenreTable)
             .delete()
             .whereIn(
               'genreId',
@@ -187,7 +193,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         );
 
         if (addedCollections.length > 0) {
-          await transaction<UserBookCollectionRawEntity>(this.userBookCollectionTable.name)
+          await transaction<UserBookCollectionRawEntity>(userBookCollectionTable)
             .insert(
               addedCollections.map((collection) => ({
                 userBookId: userBook.getId(),
@@ -199,7 +205,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         }
 
         if (removedCollections.length > 0) {
-          await transaction<UserBookCollectionRawEntity>(this.userBookCollectionTable.name)
+          await transaction<UserBookCollectionRawEntity>(userBookCollectionTable)
             .delete()
             .whereIn(
               'genreId',
@@ -234,7 +240,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
     }));
 
     try {
-      await this.databaseClient<UserBookRawEntity>(this.userBookTable.name).insert(payloads).onConflict('id').merge();
+      await this.databaseClient<UserBookRawEntity>(userBookTable).insert(payloads).onConflict('id').merge();
     } catch (error) {
       throw new RepositoryError({
         entity: 'UserBook',
@@ -250,84 +256,81 @@ export class UserBookRepositoryImpl implements UserBookRepository {
     let rawEntities: UserBookWithJoinsRawEntity[];
 
     try {
-      rawEntities = await this.databaseClient<UserBookRawEntity>(this.userBookTable.name)
+      rawEntities = await this.databaseClient<UserBookRawEntity>(userBookTable)
         .select([
-          `${QuoteTable.qualifiedColumns.id}.id as bookId`,
-          `${this.bookTable.name}.title as title`,
-          `${this.bookTable.name}.isbn as isbn`,
-          `${this.bookTable.name}.publisher as publisher`,
-          `${this.bookTable.name}.releaseYear as releaseYear`,
-          `${this.bookTable.name}.language as language`,
-          `${this.bookTable.name}.translator as translator`,
-          `${this.bookTable.name}.format as format`,
-          `${this.bookTable.name}.pages as pages`,
-          `${this.bookTable.name}.isApproved`,
-          `${this.bookTable.name}.imageUrl as bookImageUrl`,
-          `${this.userBookTable.name}.id`,
-          `${this.userBookTable.name}.imageUrl`,
-          `${this.userBookTable.name}.status`,
-          `${this.userBookTable.name}.isFavorite`,
-          `${this.userBookTable.name}.bookshelfId`,
-          `${this.authorTable.name}.id as authorId`,
-          `${this.authorTable.name}.name as authorName`,
-          `${this.authorTable.name}.isApproved as isAuthorApproved`,
-          `${this.genresTable.name}.id as genreId`,
-          `${this.genresTable.name}.name as genreName`,
-          `${this.collectionTable.name}.id as collectionId`,
-          `${this.collectionTable.name}.name as collectionName`,
-          `${this.collectionTable.name}.userId as userId`,
-          `${this.bookReadingTable.name}.id as readingId`,
-          `${this.bookReadingTable.name}.startedAt as readingStartedAt`,
-          `${this.bookReadingTable.name}.endedAt as readingEndedAt`,
-          `${this.bookReadingTable.name}.rating as readingRating`,
-          `${this.bookReadingTable.name}.comment as readingComment`,
+          userBookColumns.id,
+          userBookColumns.imageUrl,
+          userBookColumns.status,
+          userBookColumns.isFavorite,
+          userBookColumns.bookshelfId,
+          `${bookColumns.id} as bookId`,
+          `${bookColumns.title} as title`,
+          `${bookColumns.isbn} as isbn`,
+          `${bookColumns.publisher} as publisher`,
+          `${bookColumns.releaseYear} as releaseYear`,
+          `${bookColumns.language} as language`,
+          `${bookColumns.translator} as translator`,
+          `${bookColumns.format} as format`,
+          `${bookColumns.pages} as pages`,
+          `${bookColumns.isApproved}`,
+          `${bookColumns.imageUrl} as bookImageUrl`,
+          `${authorColumns.id} as authorId`,
+          `${authorColumns.name} as authorName`,
+          `${authorColumns.isApproved} as isAuthorApproved`,
+          `${genreColumns.id} as genreId`,
+          `${genreColumns.name} as genreName`,
+          `${collectionColumns.id} as collectionId`,
+          `${collectionColumns.name} as collectionName`,
+          `${collectionColumns.userId} as userId`,
+          `${bookReadingColumns.id} as readingId`,
+          `${bookReadingColumns.startedAt} as readingStartedAt`,
+          `${bookReadingColumns.endedAt} as readingEndedAt`,
+          `${bookReadingColumns.rating} as readingRating`,
+          `${bookReadingColumns.comment} as readingComment`,
         ])
-        .leftJoin(this.booksAuthorsTable.name, (join) => {
-          join.on(`${this.booksAuthorsTable.name}.bookId`, '=', `${this.userBookTable.name}.bookId`);
+        .leftJoin(bookAuthorTable, (join) => {
+          join.on(bookAuthorColumns.bookId, '=', userBookColumns.bookId);
 
           if (authorIds) {
-            join.andOnIn(
-              `${this.booksAuthorsTable.name}.authorId`,
-              this.databaseClient.raw('?', [authorIds.join(',')]),
-            );
+            join.andOnIn(bookAuthorColumns.authorId, this.databaseClient.raw('?', [authorIds.join(',')]));
           }
         })
-        .leftJoin(this.authorTable.name, (join) => {
-          join.on(`${this.authorTable.name}.id`, '=', `${this.booksAuthorsTable.name}.authorId`);
+        .leftJoin(authorTable, (join) => {
+          join.on(authorColumns.id, '=', bookAuthorColumns.authorId);
         })
-        .leftJoin(this.userBookGenresTable.name, (join) => {
-          join.on(`${this.userBookGenresTable.name}.userBookId`, '=', `${this.userBookTable.name}.id`);
+        .leftJoin(userBookGenreTable, (join) => {
+          join.on(userBookGenreColumns.userBookId, '=', userBookColumns.id);
         })
-        .leftJoin(this.genresTable.name, (join) => {
-          join.on(`${this.genresTable.name}.id`, `=`, `${this.userBookGenresTable.name}.genreId`);
+        .leftJoin(genreTable, (join) => {
+          join.on(genreColumns.id, `=`, userBookGenreColumns.genreId);
         })
-        .leftJoin(this.bookTable.name, (join) => {
-          join.on(`${this.bookTable.name}.id`, `=`, `${this.userBookTable.name}.bookId`);
+        .leftJoin(bookTable, (join) => {
+          join.on(bookColumns.id, `=`, userBookColumns.bookId);
         })
-        .leftJoin(this.bookReadingTable.name, (join) => {
-          join.on(`${this.bookReadingTable.name}.userBookId`, '=', `${this.userBookTable.name}.id`);
+        .leftJoin(bookReadingTable, (join) => {
+          join.on(bookReadingColumns.userBookId, '=', userBookColumns.id);
         })
-        .leftJoin(this.userBookCollectionTable.name, (join) => {
-          join.on(`${this.userBookCollectionTable.name}.userBookId`, '=', `${this.userBookTable.name}.id`);
+        .leftJoin(userBookCollectionTable, (join) => {
+          join.on(userBookCollectionColumns.userBookId, '=', userBookColumns.id);
         })
-        .leftJoin(this.collectionTable.name, (join) => {
-          join.on(`${this.collectionTable.name}.id`, `=`, `${this.userBookCollectionTable.name}.collectionId`);
+        .leftJoin(collectionTable, (join) => {
+          join.on(collectionColumns.id, `=`, userBookCollectionColumns.collectionId);
         })
         .where((builder) => {
           if (id) {
-            builder.where(`${this.userBookTable.name}.id`, id);
+            builder.where(userBookColumns.id, id);
           }
 
           if (title) {
-            builder.where(`${this.bookTable.name}.title`, title);
+            builder.where(bookColumns.title, title);
           }
 
           if (bookshelfId) {
-            builder.where(`${this.userBookTable.name}.bookshelfId`, bookshelfId);
+            builder.where(userBookColumns.bookshelfId, bookshelfId);
           }
 
           if (bookId) {
-            builder.where(`${this.userBookTable.name}.bookId`, bookId);
+            builder.where(userBookColumns.bookId, bookId);
           }
         });
     } catch (error) {
@@ -351,77 +354,77 @@ export class UserBookRepositoryImpl implements UserBookRepository {
     let rawEntities: UserBookWithJoinsRawEntity[];
 
     try {
-      const query = this.databaseClient<UserBookRawEntity>(this.userBookTable.name)
+      const query = this.databaseClient<UserBookRawEntity>(userBookTable)
         .select([
-          `${this.bookTable.name}.id as bookId`,
-          `${this.bookTable.name}.title as title`,
-          `${this.bookTable.name}.isbn as isbn`,
-          `${this.bookTable.name}.publisher as publisher`,
-          `${this.bookTable.name}.releaseYear as releaseYear`,
-          `${this.bookTable.name}.language as language`,
-          `${this.bookTable.name}.translator as translator`,
-          `${this.bookTable.name}.format as format`,
-          `${this.bookTable.name}.pages as pages`,
-          `${this.bookTable.name}.isApproved`,
-          `${this.bookTable.name}.imageUrl as bookImageUrl`,
-          `${this.userBookTable.name}.id`,
-          `${this.userBookTable.name}.imageUrl`,
-          `${this.userBookTable.name}.status`,
-          `${this.userBookTable.name}.isFavorite`,
-          `${this.userBookTable.name}.bookshelfId`,
-          `${this.authorTable.name}.id as authorId`,
-          `${this.authorTable.name}.name as authorName`,
-          `${this.authorTable.name}.isApproved as isAuthorApproved`,
-          `${this.genresTable.name}.id as genreId`,
-          `${this.genresTable.name}.name as genreName`,
-          `${this.collectionTable.name}.id as collectionId`,
-          `${this.collectionTable.name}.name as collectionName`,
-          `${this.collectionTable.name}.userId as userId`,
-          `${this.bookReadingTable.name}.id as readingId`,
-          `${this.bookReadingTable.name}.startedAt as readingStartedAt`,
-          `${this.bookReadingTable.name}.endedAt as readingEndedAt`,
-          `${this.bookReadingTable.name}.rating as readingRating`,
-          `${this.bookReadingTable.name}.comment as readingComment`,
+          userBookColumns.id,
+          userBookColumns.imageUrl,
+          userBookColumns.status,
+          userBookColumns.isFavorite,
+          userBookColumns.bookshelfId,
+          `${bookColumns.id} as bookId`,
+          `${bookColumns.title} as title`,
+          `${bookColumns.isbn} as isbn`,
+          `${bookColumns.publisher} as publisher`,
+          `${bookColumns.releaseYear} as releaseYear`,
+          `${bookColumns.language} as language`,
+          `${bookColumns.translator} as translator`,
+          `${bookColumns.format} as format`,
+          `${bookColumns.pages} as pages`,
+          `${bookColumns.isApproved}`,
+          `${bookColumns.imageUrl} as bookImageUrl`,
+          `${authorColumns.id} as authorId`,
+          `${authorColumns.name} as authorName`,
+          `${authorColumns.isApproved} as isAuthorApproved`,
+          `${genreColumns.id} as genreId`,
+          `${genreColumns.name} as genreName`,
+          `${collectionColumns.id} as collectionId`,
+          `${collectionColumns.name} as collectionName`,
+          `${collectionColumns.userId} as userId`,
+          `${bookReadingColumns.id} as readingId`,
+          `${bookReadingColumns.startedAt} as readingStartedAt`,
+          `${bookReadingColumns.endedAt} as readingEndedAt`,
+          `${bookReadingColumns.rating} as readingRating`,
+          `${bookReadingColumns.comment} as readingComment`,
         ])
-        .leftJoin(this.booksAuthorsTable.name, (join) => {
-          join.on(`${this.booksAuthorsTable.name}.bookId`, '=', `${this.userBookTable.name}.bookId`);
+        .leftJoin(bookAuthorTable, (join) => {
+          join.on(bookAuthorColumns.bookId, '=', userBookColumns.bookId);
         })
-        .leftJoin(this.authorTable.name, (join) => {
-          join.on(`${this.authorTable.name}.id`, '=', `${this.booksAuthorsTable.name}.authorId`);
+        .leftJoin(authorTable, (join) => {
+          join.on(authorColumns.id, '=', bookAuthorColumns.authorId);
         })
-        .leftJoin(this.userBookGenresTable.name, (join) => {
-          join.on(`${this.userBookGenresTable.name}.userBookId`, '=', `${this.userBookTable.name}.id`);
+        .leftJoin(userBookGenreTable, (join) => {
+          join.on(userBookGenreColumns.userBookId, '=', userBookColumns.id);
         })
-        .leftJoin(this.genresTable.name, (join) => {
-          join.on(`${this.genresTable.name}.id`, `=`, `${this.userBookGenresTable.name}.genreId`);
+        .leftJoin(genreTable, (join) => {
+          join.on(genreColumns.id, `=`, userBookGenreColumns.genreId);
         })
-        .leftJoin(this.bookTable.name, (join) => {
-          join.on(`${this.bookTable.name}.id`, `=`, `${this.userBookTable.name}.bookId`);
+        .leftJoin(bookTable, (join) => {
+          join.on(bookColumns.id, `=`, userBookColumns.bookId);
         })
-        .leftJoin(this.bookReadingTable.name, (join) => {
-          join.on(`${this.bookReadingTable.name}.userBookId`, '=', `${this.userBookTable.name}.id`);
+        .leftJoin(bookReadingTable, (join) => {
+          join.on(bookReadingColumns.userBookId, '=', userBookColumns.id);
         })
-        .leftJoin(this.userBookCollectionTable.name, (join) => {
-          join.on(`${this.userBookCollectionTable.name}.userBookId`, '=', `${this.userBookTable.name}.id`);
+        .leftJoin(userBookCollectionTable, (join) => {
+          join.on(userBookCollectionColumns.userBookId, '=', userBookColumns.id);
         })
-        .leftJoin(this.collectionTable.name, (join) => {
-          join.on(`${this.collectionTable.name}.id`, `=`, `${this.userBookCollectionTable.name}.collectionId`);
+        .leftJoin(collectionTable, (join) => {
+          join.on(collectionColumns.id, `=`, userBookCollectionColumns.collectionId);
         });
 
       if (ids && ids.length > 0) {
-        query.whereIn(`${this.userBookTable.name}.id`, ids);
+        query.whereIn(userBookColumns.id, ids);
       }
 
       if (isbn) {
-        query.where(`${this.bookTable.name}.isbn`, isbn);
+        query.where(bookColumns.isbn, isbn);
       }
 
       if (bookshelfId) {
-        query.where(`${this.userBookTable.name}.bookshelfId`, bookshelfId);
+        query.where(userBookColumns.bookshelfId, bookshelfId);
       }
 
       if (collectionId) {
-        query.where(`${this.collectionTable.name}.id`, collectionId);
+        query.where(collectionColumns.id, collectionId);
       }
 
       rawEntities = await query.limit(pageSize).offset(pageSize * (page - 1));
@@ -442,75 +445,75 @@ export class UserBookRepositoryImpl implements UserBookRepository {
     let rawEntities: UserBookWithJoinsRawEntity[];
 
     try {
-      const query = this.databaseClient<UserBookRawEntity>(this.userBookTable.name)
+      const query = this.databaseClient<UserBookRawEntity>(userBookTable)
         .select([
-          `${this.bookTable.name}.id as bookId`,
-          `${this.bookTable.name}.title as title`,
-          `${this.bookTable.name}.isbn as isbn`,
-          `${this.bookTable.name}.publisher as publisher`,
-          `${this.bookTable.name}.releaseYear as releaseYear`,
-          `${this.bookTable.name}.language as language`,
-          `${this.bookTable.name}.translator as translator`,
-          `${this.bookTable.name}.format as format`,
-          `${this.bookTable.name}.pages as pages`,
-          `${this.bookTable.name}.isApproved`,
-          `${this.bookTable.name}.imageUrl as bookImageUrl`,
-          `${this.userBookTable.name}.id`,
-          `${this.userBookTable.name}.imageUrl`,
-          `${this.userBookTable.name}.status`,
-          `${this.userBookTable.name}.isFavorite`,
-          `${this.userBookTable.name}.bookshelfId`,
-          `${this.authorTable.name}.id as authorId`,
-          `${this.authorTable.name}.name as authorName`,
-          `${this.authorTable.name}.isApproved as isAuthorApproved`,
-          `${this.genresTable.name}.id as genreId`,
-          `${this.genresTable.name}.name as genreName`,
-          `${this.collectionTable.name}.id as collectionId`,
-          `${this.collectionTable.name}.name as collectionName`,
-          `${this.collectionTable.name}.userId as userId`,
-          `${this.bookReadingTable.name}.id as readingId`,
-          `${this.bookReadingTable.name}.startedAt as readingStartedAt`,
-          `${this.bookReadingTable.name}.endedAt as readingEndedAt`,
-          `${this.bookReadingTable.name}.rating as readingRating`,
-          `${this.bookReadingTable.name}.comment as readingComment`,
+          userBookColumns.id,
+          userBookColumns.imageUrl,
+          userBookColumns.status,
+          userBookColumns.isFavorite,
+          userBookColumns.bookshelfId,
+          `${bookColumns.id} as bookId`,
+          `${bookColumns.title} as title`,
+          `${bookColumns.isbn} as isbn`,
+          `${bookColumns.publisher} as publisher`,
+          `${bookColumns.releaseYear} as releaseYear`,
+          `${bookColumns.language} as language`,
+          `${bookColumns.translator} as translator`,
+          `${bookColumns.format} as format`,
+          `${bookColumns.pages} as pages`,
+          `${bookColumns.isApproved}`,
+          `${bookColumns.imageUrl} as bookImageUrl`,
+          `${authorColumns.id} as authorId`,
+          `${authorColumns.name} as authorName`,
+          `${authorColumns.isApproved} as isAuthorApproved`,
+          `${genreColumns.id} as genreId`,
+          `${genreColumns.name} as genreName`,
+          `${collectionColumns.id} as collectionId`,
+          `${collectionColumns.name} as collectionName`,
+          `${collectionColumns.userId} as userId`,
+          `${bookReadingColumns.id} as readingId`,
+          `${bookReadingColumns.startedAt} as readingStartedAt`,
+          `${bookReadingColumns.endedAt} as readingEndedAt`,
+          `${bookReadingColumns.rating} as readingRating`,
+          `${bookReadingColumns.comment} as readingComment`,
         ])
-        .leftJoin(this.booksAuthorsTable.name, (join) => {
-          join.on(`${this.booksAuthorsTable.name}.bookId`, '=', `${this.userBookTable.name}.bookId`);
+        .leftJoin(bookAuthorTable, (join) => {
+          join.on(bookAuthorColumns.bookId, '=', userBookColumns.bookId);
         })
-        .leftJoin(this.authorTable.name, (join) => {
-          join.on(`${this.authorTable.name}.id`, '=', `${this.booksAuthorsTable.name}.authorId`);
+        .leftJoin(authorTable, (join) => {
+          join.on(authorColumns.id, '=', bookAuthorColumns.authorId);
         })
-        .leftJoin(this.userBookGenresTable.name, (join) => {
-          join.on(`${this.userBookGenresTable.name}.userBookId`, '=', `${this.userBookTable.name}.id`);
+        .leftJoin(userBookGenreTable, (join) => {
+          join.on(userBookGenreColumns.userBookId, '=', userBookColumns.id);
         })
-        .leftJoin(this.genresTable.name, (join) => {
-          join.on(`${this.genresTable.name}.id`, `=`, `${this.userBookGenresTable.name}.genreId`);
+        .leftJoin(genreTable, (join) => {
+          join.on(genreColumns.id, `=`, userBookGenreColumns.genreId);
         })
-        .leftJoin(this.bookTable.name, (join) => {
-          join.on(`${this.bookTable.name}.id`, `=`, `${this.userBookTable.name}.bookId`);
+        .leftJoin(bookTable, (join) => {
+          join.on(bookColumns.id, `=`, userBookColumns.bookId);
         })
-        .leftJoin(this.bookshelfTable.name, (join) => {
-          join.on(`${this.bookshelfTable.name}.id`, `=`, `${this.userBookTable.name}.bookshelfId`);
+        .leftJoin(bookshelfTable, (join) => {
+          join.on(bookshelfColumns.id, `=`, userBookColumns.bookshelfId);
         })
-        .leftJoin(this.bookReadingTable.name, (join) => {
-          join.on(`${this.bookReadingTable.name}.userBookId`, '=', `${this.userBookTable.name}.id`);
+        .leftJoin(bookReadingTable, (join) => {
+          join.on(bookReadingColumns.userBookId, '=', userBookColumns.id);
         })
-        .leftJoin(this.userBookCollectionTable.name, (join) => {
-          join.on(`${this.userBookCollectionTable.name}.userBookId`, '=', `${this.userBookTable.name}.id`);
+        .leftJoin(userBookCollectionTable, (join) => {
+          join.on(userBookCollectionColumns.userBookId, '=', userBookColumns.id);
         })
-        .leftJoin(this.collectionTable.name, (join) => {
-          join.on(`${this.collectionTable.name}.id`, `=`, `${this.userBookCollectionTable.name}.collectionId`);
+        .leftJoin(collectionTable, (join) => {
+          join.on(collectionColumns.id, `=`, userBookCollectionColumns.collectionId);
         });
 
       if (bookIdentifier) {
-        query.where(`${this.userBookTable.name}.bookId`, bookIdentifier.id);
+        query.where(userBookColumns.bookId, bookIdentifier.id);
 
         if (bookIdentifier.isbn) {
-          query.orWhere(`${this.bookTable.name}.isbn`, bookIdentifier.isbn);
+          query.orWhere(bookColumns.isbn, bookIdentifier.isbn);
         }
       }
 
-      query.where(`${this.bookshelfTable.name}.userId`, userId);
+      query.where(`${bookshelfTable}.userId`, userId);
 
       rawEntities = await query.limit(pageSize).offset(pageSize * (page - 1));
     } catch (error) {
@@ -528,7 +531,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
     const { ids } = payload;
 
     try {
-      await this.databaseClient<UserBookRawEntity>(this.userBookTable.name).delete().whereIn('id', ids);
+      await this.databaseClient<UserBookRawEntity>(userBookTable).delete().whereIn('id', ids);
     } catch (error) {
       throw new RepositoryError({
         entity: 'UserBook',
@@ -542,22 +545,22 @@ export class UserBookRepositoryImpl implements UserBookRepository {
     const { bookshelfId, ids, collectionId } = payload;
 
     try {
-      const query = this.databaseClient<UserBookRawEntity>(this.userBookTable.name);
+      const query = this.databaseClient<UserBookRawEntity>(userBookTable);
 
       if (ids && ids.length > 0) {
-        query.whereIn(`${this.userBookTable.name}.id`, ids);
+        query.whereIn(`${userBookTable}.id`, ids);
       }
 
       if (bookshelfId) {
-        query.where(`${this.userBookTable.name}.bookshelfId`, bookshelfId);
+        query.where(`${userBookTable}.bookshelfId`, bookshelfId);
       }
 
       if (collectionId) {
         query
-          .join(this.userBookCollectionTable.name, (join) => {
-            join.on(`${this.userBookCollectionTable.name}.userBookId`, '=', `${this.userBookTable.name}.id`);
+          .join(userBookCollectionTable, (join) => {
+            join.on(userBookCollectionColumns.userBookId, '=', userBookColumns.id);
           })
-          .where(`${this.userBookCollectionTable.name}.collectionId`, collectionId);
+          .where(userBookCollectionColumns.collectionId, collectionId);
       }
 
       const countResult = await query.count().first();

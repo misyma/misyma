@@ -26,12 +26,12 @@ import { AuthModule } from '../modules/authModule/authModule.js';
 import { BookModule } from '../modules/bookModule/bookModule.js';
 import { BookDatabaseManager } from '../modules/bookModule/infrastructure/databases/bookDatabase/bookDatabaseManager.js';
 import { type GenreRawEntity } from '../modules/bookModule/infrastructure/databases/bookDatabase/tables/genreTable/genreRawEntity.js';
-import { GenreTable } from '../modules/bookModule/infrastructure/databases/bookDatabase/tables/genreTable/genreTable.js';
+import { genreTable } from '../modules/bookModule/infrastructure/databases/bookDatabase/tables/genreTable/genreTable.js';
 import { BookshelfModule } from '../modules/bookshelfModule/bookshelfModule.js';
 import { BookshelfDatabaseManager } from '../modules/bookshelfModule/infrastructure/databases/bookshelvesDatabase/bookshelfDatabaseManager.js';
 import { type HashService } from '../modules/userModule/application/services/hashService/hashService.js';
 import { type UserRawEntity } from '../modules/userModule/infrastructure/databases/userDatabase/tables/userTable/userRawEntity.js';
-import { UserTable } from '../modules/userModule/infrastructure/databases/userDatabase/tables/userTable/userTable.js';
+import { userTable } from '../modules/userModule/infrastructure/databases/userDatabase/tables/userTable/userTable.js';
 import { UserDatabaseManager } from '../modules/userModule/infrastructure/databases/userDatabase/userDatabaseManager.js';
 import { UserEventsDatabaseManager } from '../modules/userModule/infrastructure/databases/userEventsDatabase/userEventsDatabaseManager.js';
 import { userSymbols } from '../modules/userModule/symbols.js';
@@ -71,9 +71,7 @@ export class Application {
 
     const { email, password } = container.get<Config>(coreSymbols.config).admin;
 
-    const userTable = new UserTable();
-
-    const userExists = await databaseClient<UserRawEntity>(userTable.name).where({ email }).first();
+    const userExists = await databaseClient<UserRawEntity>(userTable).where({ email }).first();
 
     if (userExists) {
       loggerService.debug({
@@ -86,7 +84,7 @@ export class Application {
 
     const hashedPassword = await hashService.hash({ plainData: password });
 
-    await databaseClient<UserRawEntity>(userTable.name).insert({
+    await databaseClient<UserRawEntity>(userTable).insert({
       id: uuidService.generateUuid(),
       name: 'Admin',
       email,
@@ -110,9 +108,7 @@ export class Application {
 
     const loggerService = container.get<LoggerService>(coreSymbols.loggerService);
 
-    const genreTable = new GenreTable();
-
-    const existingGenres = await databaseClient<GenreRawEntity>(genreTable.name).select('*');
+    const existingGenres = await databaseClient<GenreRawEntity>(genreTable).select('*');
 
     if (existingGenres.length > 0) {
       loggerService.debug({ message: 'Genres already exist.' });
@@ -122,7 +118,7 @@ export class Application {
 
     const genreNames = config.genres;
 
-    await databaseClient<GenreRawEntity>(genreTable.name).insert(
+    await databaseClient<GenreRawEntity>(genreTable).insert(
       genreNames.map((name) => ({
         id: uuidService.generateUuid(),
         name,

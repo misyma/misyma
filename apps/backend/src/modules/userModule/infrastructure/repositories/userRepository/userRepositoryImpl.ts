@@ -12,15 +12,13 @@ import {
   type FindUsersPayload,
 } from '../../../domain/repositories/userRepository/userRepository.js';
 import { type UserRawEntity } from '../../databases/userDatabase/tables/userTable/userRawEntity.js';
-import { UserTable } from '../../databases/userDatabase/tables/userTable/userTable.js';
+import { userTable } from '../../databases/userDatabase/tables/userTable/userTable.js';
 
 type CreateUserPayload = { user: UserState };
 
 type UpdateUserPayload = { user: User };
 
 export class UserRepositoryImpl implements UserRepository {
-  private readonly userDatabaseTable = new UserTable();
-
   public constructor(
     private readonly databaseClient: DatabaseClient,
     private readonly userMapper: UserMapper,
@@ -47,7 +45,7 @@ export class UserRepositoryImpl implements UserRepository {
     const id = this.uuidService.generateUuid();
 
     try {
-      rawEntities = await this.databaseClient<UserRawEntity>(this.userDatabaseTable.name).insert(
+      rawEntities = await this.databaseClient<UserRawEntity>(userTable).insert(
         {
           id,
           email,
@@ -77,7 +75,7 @@ export class UserRepositoryImpl implements UserRepository {
     let rawEntities: UserRawEntity[] = [];
 
     try {
-      rawEntities = await this.databaseClient<UserRawEntity>(this.userDatabaseTable.name)
+      rawEntities = await this.databaseClient<UserRawEntity>(userTable)
         .update(user.getState(), '*')
         .where({ id: user.getId() });
     } catch (error) {
@@ -121,10 +119,7 @@ export class UserRepositoryImpl implements UserRepository {
     let rawEntity: UserRawEntity | undefined;
 
     try {
-      rawEntity = await this.databaseClient<UserRawEntity>(this.userDatabaseTable.name)
-        .select('*')
-        .where(whereCondition)
-        .first();
+      rawEntity = await this.databaseClient<UserRawEntity>(userTable).select('*').where(whereCondition).first();
     } catch (error) {
       throw new RepositoryError({
         entity: 'User',
@@ -146,7 +141,7 @@ export class UserRepositoryImpl implements UserRepository {
     let rawEntities: UserRawEntity[];
 
     try {
-      rawEntities = await this.databaseClient<UserRawEntity>(this.userDatabaseTable.name)
+      rawEntities = await this.databaseClient<UserRawEntity>(userTable)
         .select('*')
         .limit(pageSize)
         .offset((page - 1) * pageSize);
@@ -163,7 +158,7 @@ export class UserRepositoryImpl implements UserRepository {
 
   public async countUsers(): Promise<number> {
     try {
-      const query = this.databaseClient<UserRawEntity>(this.userDatabaseTable.name);
+      const query = this.databaseClient<UserRawEntity>(userTable);
 
       const countResult = await query.count().first();
 
@@ -195,7 +190,7 @@ export class UserRepositoryImpl implements UserRepository {
     const { id } = payload;
 
     try {
-      await this.databaseClient<UserRawEntity>(this.userDatabaseTable.name).delete().where({ id });
+      await this.databaseClient<UserRawEntity>(userTable).delete().where({ id });
     } catch (error) {
       throw new RepositoryError({
         entity: 'User',

@@ -1,6 +1,6 @@
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type BorrowingRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/borrowingTable/borrowingRawEntity.js';
-import { BorrowingTable } from '../../../infrastructure/databases/bookDatabase/tables/borrowingTable/borrowingTable.js';
+import { borrowingTable } from '../../../infrastructure/databases/bookDatabase/tables/borrowingTable/borrowingTable.js';
 import { BorrowingTestFactory } from '../../factories/borrowingTestFactory/borrowingTestFactory.js';
 
 interface CreateAndPersistPayload {
@@ -14,8 +14,6 @@ interface FindByIdPayload {
 export class BorrowingTestUtils {
   public constructor(private readonly databaseClient: DatabaseClient) {}
 
-  private readonly table = new BorrowingTable();
-
   private readonly borrowingTestFactory = new BorrowingTestFactory();
 
   public async createAndPersist(payload: CreateAndPersistPayload = { input: {} }): Promise<BorrowingRawEntity> {
@@ -23,7 +21,7 @@ export class BorrowingTestUtils {
 
     const borrowing = this.borrowingTestFactory.create(input);
 
-    const rawEntities = await this.databaseClient<BorrowingRawEntity>(this.table.name).insert(
+    const rawEntities = await this.databaseClient<BorrowingRawEntity>(borrowingTable).insert(
       {
         id: borrowing.getId(),
         userBookId: borrowing.getUserBookId(),
@@ -48,7 +46,7 @@ export class BorrowingTestUtils {
   public async findById(payload: FindByIdPayload): Promise<BorrowingRawEntity | null> {
     const { id } = payload;
 
-    const result = await this.databaseClient<BorrowingRawEntity>(this.table.name).where({ id }).first();
+    const result = await this.databaseClient<BorrowingRawEntity>(borrowingTable).where({ id }).first();
 
     if (!result) {
       return null;
@@ -64,6 +62,6 @@ export class BorrowingTestUtils {
   }
 
   public async truncate(): Promise<void> {
-    await this.databaseClient(this.table.name).truncate();
+    await this.databaseClient(borrowingTable).truncate();
   }
 }

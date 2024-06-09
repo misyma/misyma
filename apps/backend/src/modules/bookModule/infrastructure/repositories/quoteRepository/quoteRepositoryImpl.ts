@@ -11,7 +11,7 @@ import {
   type SavePayload,
 } from '../../../domain/repositories/quoteRepository/quoteRepository.js';
 import { type QuoteRawEntity } from '../../databases/bookDatabase/tables/quoteTable/quoteRawEntity.js';
-import { QuoteTable } from '../../databases/bookDatabase/tables/quoteTable/quoteTable.js';
+import { quoteTable } from '../../databases/bookDatabase/tables/quoteTable/quoteTable.js';
 
 type CreateQuotePayload = { quote: QuoteState };
 
@@ -24,15 +24,13 @@ export class QuoteRepositoryImpl implements QuoteRepository {
     private readonly uuidService: UuidService,
   ) {}
 
-  private readonly table = new QuoteTable();
-
   public async findQuote(payload: FindQuotePayload): Promise<Quote | null> {
     const { id } = payload;
 
     let rawEntity: QuoteRawEntity | undefined;
 
     try {
-      rawEntity = await this.databaseClient<QuoteRawEntity>(this.table.name).where({ id }).first();
+      rawEntity = await this.databaseClient<QuoteRawEntity>(quoteTable).where({ id }).first();
     } catch (error) {
       throw new RepositoryError({
         entity: 'Quote',
@@ -54,7 +52,7 @@ export class QuoteRepositoryImpl implements QuoteRepository {
     let rawEntities: QuoteRawEntity[];
 
     try {
-      rawEntities = await this.databaseClient<QuoteRawEntity>(this.table.name)
+      rawEntities = await this.databaseClient<QuoteRawEntity>(quoteTable)
         .where({ userBookId })
         .limit(pageSize)
         .offset(pageSize * (page - 1));
@@ -75,7 +73,7 @@ export class QuoteRepositoryImpl implements QuoteRepository {
     let rawEntity: QuoteRawEntity;
 
     try {
-      const result = await this.databaseClient<QuoteRawEntity>(this.table.name).insert(
+      const result = await this.databaseClient<QuoteRawEntity>(quoteTable).insert(
         {
           id: this.uuidService.generateUuid(),
           userBookId: quote.userBookId,
@@ -105,7 +103,7 @@ export class QuoteRepositoryImpl implements QuoteRepository {
     let rawEntity: QuoteRawEntity;
 
     try {
-      const result = await this.databaseClient<QuoteRawEntity>(this.table.name)
+      const result = await this.databaseClient<QuoteRawEntity>(quoteTable)
         .where({ id: quote.getId() })
         .update(quote.getState(), '*');
 
@@ -135,7 +133,7 @@ export class QuoteRepositoryImpl implements QuoteRepository {
     const { id } = payload;
 
     try {
-      await this.databaseClient<QuoteRawEntity>(this.table.name).where({ id }).delete();
+      await this.databaseClient<QuoteRawEntity>(quoteTable).where({ id }).delete();
     } catch (error) {
       throw new RepositoryError({
         entity: 'Quote',
@@ -149,10 +147,7 @@ export class QuoteRepositoryImpl implements QuoteRepository {
     const { userBookId } = payload;
 
     try {
-      const countResult = await this.databaseClient<QuoteRawEntity>(this.table.name)
-        .where({ userBookId })
-        .count()
-        .first();
+      const countResult = await this.databaseClient<QuoteRawEntity>(quoteTable).where({ userBookId }).count().first();
 
       const count = countResult?.['count(*)'];
 

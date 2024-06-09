@@ -1,11 +1,11 @@
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type Transaction } from '../../../../../libs/database/types/transaction.js';
 import { type UserBookCollectionRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/userBookCollectionsTable/userBookCollectionsRawEntity.js';
-import { UserBookCollectionsTable } from '../../../infrastructure/databases/bookDatabase/tables/userBookCollectionsTable/userBookCollectionsTable.js';
+import { userBookCollectionTable } from '../../../infrastructure/databases/bookDatabase/tables/userBookCollectionsTable/userBookCollectionsTable.js';
 import { type UserBookGenreRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/userBookGenresTable/userBookGenresRawEntity.js';
-import { UserBookGenreTable } from '../../../infrastructure/databases/bookDatabase/tables/userBookGenresTable/userBookGenresTable.js';
+import { userBookGenreTable } from '../../../infrastructure/databases/bookDatabase/tables/userBookGenresTable/userBookGenresTable.js';
 import { type UserBookRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/userBookTable/userBookRawEntity.js';
-import { UserBookTable } from '../../../infrastructure/databases/bookDatabase/tables/userBookTable/userBookTable.js';
+import { userBookTable } from '../../../infrastructure/databases/bookDatabase/tables/userBookTable/userBookTable.js';
 import { UserBookTestFactory } from '../../factories/userBookTestFactory/userBookTestFactory.js';
 
 interface CreateAndPersistPayload {
@@ -27,9 +27,6 @@ interface FindByIdsPayload {
 }
 
 export class UserBookTestUtils {
-  private readonly userBookTable = new UserBookTable();
-  private readonly userBookGenresTable = new UserBookGenreTable();
-  private readonly userBookCollectionTable = new UserBookCollectionsTable();
   private readonly userBookTestFactory = new UserBookTestFactory();
 
   public constructor(private readonly databaseClient: DatabaseClient) {}
@@ -42,11 +39,11 @@ export class UserBookTestUtils {
     let rawEntities: UserBookRawEntity[] = [];
 
     await this.databaseClient.transaction(async (transaction: Transaction) => {
-      rawEntities = await transaction<UserBookRawEntity>(this.userBookTable.name).insert(userBook, '*');
+      rawEntities = await transaction<UserBookRawEntity>(userBookTable).insert(userBook, '*');
 
       if (genreIds) {
         await transaction.batchInsert<UserBookGenreRawEntity>(
-          this.userBookGenresTable.name,
+          userBookGenreTable,
           genreIds.map((genreId) => ({
             genreId,
             userBookId: userBook.id,
@@ -56,7 +53,7 @@ export class UserBookTestUtils {
 
       if (collectionIds) {
         await transaction.batchInsert<UserBookCollectionRawEntity>(
-          this.userBookCollectionTable.name,
+          userBookCollectionTable,
           collectionIds.map((collectionId) => ({
             collectionId,
             userBookId: userBook.id,
@@ -76,7 +73,7 @@ export class UserBookTestUtils {
   public async findById(payload: FindByIdPayload): Promise<UserBookRawEntity | undefined> {
     const { id } = payload;
 
-    const userBookRawEntity = await this.databaseClient<UserBookRawEntity>(this.userBookTable.name)
+    const userBookRawEntity = await this.databaseClient<UserBookRawEntity>(userBookTable)
       .select('*')
       .where({ id })
       .first();
@@ -94,9 +91,7 @@ export class UserBookTestUtils {
   public async findByIds(payload: FindByIdsPayload): Promise<UserBookRawEntity[]> {
     const { ids } = payload;
 
-    const rawEntities = await this.databaseClient<UserBookRawEntity>(this.userBookTable.name)
-      .select('*')
-      .whereIn('id', ids);
+    const rawEntities = await this.databaseClient<UserBookRawEntity>(userBookTable).select('*').whereIn('id', ids);
 
     return rawEntities.map((rawEntity) => ({
       ...rawEntity,
@@ -107,7 +102,7 @@ export class UserBookTestUtils {
   public async findUserBookGenres(payload: FindUserBookGenresPayload): Promise<UserBookGenreRawEntity[]> {
     const { userBookId } = payload;
 
-    const rawEntities = await this.databaseClient<UserBookGenreRawEntity>(this.userBookGenresTable.name)
+    const rawEntities = await this.databaseClient<UserBookGenreRawEntity>(userBookGenreTable)
       .select('*')
       .where({ userBookId });
 
@@ -115,6 +110,6 @@ export class UserBookTestUtils {
   }
 
   public async truncate(): Promise<void> {
-    await this.databaseClient<UserBookRawEntity>(this.userBookTable.name).truncate();
+    await this.databaseClient<UserBookRawEntity>(userBookTable).truncate();
   }
 }

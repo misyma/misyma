@@ -11,7 +11,7 @@ import {
   type DeleteGenrePayload,
 } from '../../../domain/repositories/genreRepository/genreRepository.js';
 import { type GenreRawEntity } from '../../databases/bookDatabase/tables/genreTable/genreRawEntity.js';
-import { GenreTable } from '../../databases/bookDatabase/tables/genreTable/genreTable.js';
+import { genreTable } from '../../databases/bookDatabase/tables/genreTable/genreTable.js';
 
 type CreateGenrePayload = { genre: GenreState };
 
@@ -23,8 +23,6 @@ export class GenreRepositoryImpl implements GenreRepository {
     private readonly genreMapper: GenreMapper,
     private readonly uuidService: UuidService,
   ) {}
-
-  private readonly genreTable = new GenreTable();
 
   public async findGenre(payload: FindGenrePayload): Promise<Genre | null> {
     const { id, name } = payload;
@@ -48,10 +46,7 @@ export class GenreRepositoryImpl implements GenreRepository {
     }
 
     try {
-      rawEntity = await this.databaseClient<GenreRawEntity>(this.genreTable.name)
-        .select('*')
-        .where(whereCondition)
-        .first();
+      rawEntity = await this.databaseClient<GenreRawEntity>(genreTable).select('*').where(whereCondition).first();
     } catch (error) {
       throw new RepositoryError({
         entity: 'Genre',
@@ -72,7 +67,7 @@ export class GenreRepositoryImpl implements GenreRepository {
 
     let rawEntities: GenreRawEntity[];
 
-    const query = this.databaseClient<GenreRawEntity>(this.genreTable.name)
+    const query = this.databaseClient<GenreRawEntity>(genreTable)
       .select('*')
       .limit(pageSize)
       .offset(pageSize * (page - 1));
@@ -112,7 +107,7 @@ export class GenreRepositoryImpl implements GenreRepository {
     let rawEntities: GenreRawEntity[];
 
     try {
-      rawEntities = await this.databaseClient<GenreRawEntity>(this.genreTable.name)
+      rawEntities = await this.databaseClient<GenreRawEntity>(genreTable)
         .insert({
           id: this.uuidService.generateUuid(),
           name,
@@ -137,7 +132,7 @@ export class GenreRepositoryImpl implements GenreRepository {
     let rawEntities: GenreRawEntity[];
 
     try {
-      rawEntities = await this.databaseClient<GenreRawEntity>(this.genreTable.name)
+      rawEntities = await this.databaseClient<GenreRawEntity>(genreTable)
         .update(genre.getState())
         .where({ id: genre.getId() })
         .returning('*');
@@ -158,7 +153,7 @@ export class GenreRepositoryImpl implements GenreRepository {
     const { id } = payload;
 
     try {
-      await this.databaseClient<GenreRawEntity>(this.genreTable.name).delete().where({ id });
+      await this.databaseClient<GenreRawEntity>(genreTable).delete().where({ id });
     } catch (error) {
       throw new RepositoryError({
         entity: 'Genre',
@@ -172,7 +167,7 @@ export class GenreRepositoryImpl implements GenreRepository {
     const { ids } = payload;
 
     try {
-      const query = this.databaseClient<GenreRawEntity>(this.genreTable.name);
+      const query = this.databaseClient<GenreRawEntity>(genreTable);
 
       if (ids) {
         query.whereIn('id', ids);

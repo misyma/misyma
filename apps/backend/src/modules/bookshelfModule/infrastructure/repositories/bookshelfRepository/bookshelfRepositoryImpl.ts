@@ -12,7 +12,7 @@ import {
   type SaveBookshelfPayload,
 } from '../../../domain/repositories/bookshelfRepository/bookshelfRepository.js';
 import { type BookshelfRawEntity } from '../../databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfRawEntity.js';
-import { BookshelfTable } from '../../databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfTable.js';
+import { bookshelfTable } from '../../databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfTable.js';
 
 type CreateBookshelfPayload = { bookshelf: BookshelfState };
 
@@ -24,8 +24,6 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
     private readonly bookshelfMapper: BookshelfMapper,
     private readonly uuidService: UuidService,
   ) {}
-
-  private readonly table = new BookshelfTable();
 
   public async findBookshelf(payload: FindBookshelfPayload): Promise<Bookshelf | null> {
     let rawEntity: BookshelfRawEntity | undefined;
@@ -48,7 +46,7 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
     }
 
     try {
-      const result = await this.databaseClient<BookshelfRawEntity>(this.table.name).where(whereCondition).first();
+      const result = await this.databaseClient<BookshelfRawEntity>(bookshelfTable).where(whereCondition).first();
 
       rawEntity = result;
     } catch (error) {
@@ -87,7 +85,7 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
       };
     }
 
-    const query = this.databaseClient<BookshelfRawEntity>(this.table.name);
+    const query = this.databaseClient<BookshelfRawEntity>(bookshelfTable);
 
     if (Object.entries(whereClause).length > 0) {
       query.where(whereClause);
@@ -126,7 +124,7 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
     let rawEntity: BookshelfRawEntity;
 
     try {
-      const result = await this.databaseClient<BookshelfRawEntity>(this.table.name).insert(
+      const result = await this.databaseClient<BookshelfRawEntity>(bookshelfTable).insert(
         {
           id: this.uuidService.generateUuid(),
           name: bookshelf.name,
@@ -154,7 +152,7 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
     let rawEntity: BookshelfRawEntity;
 
     try {
-      const result = await this.databaseClient<BookshelfRawEntity>(this.table.name)
+      const result = await this.databaseClient<BookshelfRawEntity>(bookshelfTable)
         .where({ id: bookshelf.getId() })
         .update(bookshelf.getState(), '*');
 
@@ -174,7 +172,7 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
     const { id } = payload;
 
     try {
-      await this.databaseClient<BookshelfRawEntity>(this.table.name).where({ id }).delete();
+      await this.databaseClient<BookshelfRawEntity>(bookshelfTable).where({ id }).delete();
     } catch (error) {
       throw new RepositoryError({
         entity: 'Bookshelf',
@@ -188,7 +186,7 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
     const { userId } = payload;
 
     try {
-      const countResult = await this.databaseClient<BookshelfRawEntity>(this.table.name)
+      const countResult = await this.databaseClient<BookshelfRawEntity>(bookshelfTable)
         .where({ userId })
         .count()
         .first();

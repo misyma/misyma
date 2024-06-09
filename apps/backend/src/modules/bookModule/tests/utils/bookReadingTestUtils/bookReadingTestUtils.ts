@@ -1,6 +1,6 @@
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type BookReadingRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/bookReadingTable/bookReadingRawEntity.js';
-import { BookReadingTable } from '../../../infrastructure/databases/bookDatabase/tables/bookReadingTable/bookReadingTable.js';
+import { bookReadingTable } from '../../../infrastructure/databases/bookDatabase/tables/bookReadingTable/bookReadingTable.js';
 import { BookReadingTestFactory } from '../../factories/bookReadingTestFactory/bookReadingTestFactory.js';
 
 interface CreateAndPersistPayload {
@@ -14,8 +14,6 @@ interface FindByIdPayload {
 export class BookReadingTestUtils {
   public constructor(private readonly databaseClient: DatabaseClient) {}
 
-  private readonly table = new BookReadingTable();
-
   private readonly bookReadingTestFactory = new BookReadingTestFactory();
 
   public async createAndPersist(payload: CreateAndPersistPayload = { input: {} }): Promise<BookReadingRawEntity> {
@@ -23,7 +21,7 @@ export class BookReadingTestUtils {
 
     const bookReading = this.bookReadingTestFactory.create(input);
 
-    const rawEntities = await this.databaseClient<BookReadingRawEntity>(this.table.name).insert(
+    const rawEntities = await this.databaseClient<BookReadingRawEntity>(bookReadingTable).insert(
       {
         id: bookReading.getId(),
         userBookId: bookReading.getUserBookId(),
@@ -50,7 +48,7 @@ export class BookReadingTestUtils {
   public async findById(payload: FindByIdPayload): Promise<BookReadingRawEntity | null> {
     const { id } = payload;
 
-    const result = await this.databaseClient<BookReadingRawEntity>(this.table.name).where({ id }).first();
+    const result = await this.databaseClient<BookReadingRawEntity>(bookReadingTable).where({ id }).first();
 
     if (!result) {
       return null;
@@ -67,6 +65,6 @@ export class BookReadingTestUtils {
   }
 
   public async truncate(): Promise<void> {
-    await this.databaseClient(this.table.name).truncate();
+    await this.databaseClient(bookReadingTable).truncate();
   }
 }

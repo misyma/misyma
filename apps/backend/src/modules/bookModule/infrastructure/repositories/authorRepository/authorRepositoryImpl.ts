@@ -11,15 +11,13 @@ import {
   type FindAuthorsPayload,
 } from '../../../domain/repositories/authorRepository/authorRepository.js';
 import { type AuthorRawEntity } from '../../databases/bookDatabase/tables/authorTable/authorRawEntity.js';
-import { AuthorTable } from '../../databases/bookDatabase/tables/authorTable/authorTable.js';
+import { authorTable } from '../../databases/bookDatabase/tables/authorTable/authorTable.js';
 
 type CreateAuthorPayload = { author: AuthorState };
 
 type UpdateAuthorPayload = { author: Author };
 
 export class AuthorRepositoryImpl implements AuthorRepository {
-  private readonly databaseTable = new AuthorTable();
-
   public constructor(
     private readonly databaseClient: DatabaseClient,
     private readonly authorMapper: AuthorMapper,
@@ -42,7 +40,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
     let rawEntity: AuthorRawEntity;
 
     try {
-      const result = await this.databaseClient<AuthorRawEntity>(this.databaseTable.name).insert(
+      const result = await this.databaseClient<AuthorRawEntity>(authorTable).insert(
         {
           id: this.uuidService.generateUuid(),
           name: author.name,
@@ -69,7 +67,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
     let rawEntity: AuthorRawEntity;
 
     try {
-      const result = await this.databaseClient<AuthorRawEntity>(this.databaseTable.name)
+      const result = await this.databaseClient<AuthorRawEntity>(authorTable)
         .where({ id: author.getId() })
         .update(author.getState(), '*');
 
@@ -107,10 +105,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
     let rawEntity: AuthorRawEntity | undefined;
 
     try {
-      rawEntity = await this.databaseClient<AuthorRawEntity>(this.databaseTable.name)
-        .select('*')
-        .where(whereCondition)
-        .first();
+      rawEntity = await this.databaseClient<AuthorRawEntity>(authorTable).select('*').where(whereCondition).first();
     } catch (error) {
       throw new RepositoryError({
         entity: 'Author',
@@ -132,7 +127,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
     let rawEntities: AuthorRawEntity[];
 
     try {
-      const query = this.databaseClient<AuthorRawEntity>(this.databaseTable.name).select('*');
+      const query = this.databaseClient<AuthorRawEntity>(authorTable).select('*');
 
       if (ids) {
         query.whereIn('id', ids);
@@ -162,7 +157,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
     const { id } = payload;
 
     try {
-      await this.databaseClient<AuthorRawEntity>(this.databaseTable.name).delete().where({ id });
+      await this.databaseClient<AuthorRawEntity>(authorTable).delete().where({ id });
     } catch (error) {
       throw new RepositoryError({
         entity: 'Author',
@@ -176,7 +171,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
     const { ids, name, isApproved } = payload;
 
     try {
-      const query = this.databaseClient<AuthorRawEntity>(this.databaseTable.name);
+      const query = this.databaseClient<AuthorRawEntity>(authorTable);
 
       if (ids) {
         query.whereIn('id', ids);

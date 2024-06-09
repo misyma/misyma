@@ -1,6 +1,6 @@
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type QuoteRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/quoteTable/quoteRawEntity.js';
-import { QuoteTable } from '../../../infrastructure/databases/bookDatabase/tables/quoteTable/quoteTable.js';
+import { quoteTable } from '../../../infrastructure/databases/bookDatabase/tables/quoteTable/quoteTable.js';
 import { QuoteTestFactory } from '../../factories/quoteTestFactory/quoteTestFactory.js';
 
 interface CreateAndPersistPayload {
@@ -14,8 +14,6 @@ interface FindByIdPayload {
 export class QuoteTestUtils {
   public constructor(private readonly databaseClient: DatabaseClient) {}
 
-  private readonly table = new QuoteTable();
-
   private readonly quoteTestFactory = new QuoteTestFactory();
 
   public async createAndPersist(payload: CreateAndPersistPayload = { input: {} }): Promise<QuoteRawEntity> {
@@ -23,7 +21,7 @@ export class QuoteTestUtils {
 
     const quote = this.quoteTestFactory.create(input);
 
-    const rawEntities = await this.databaseClient<QuoteRawEntity>(this.table.name).insert(
+    const rawEntities = await this.databaseClient<QuoteRawEntity>(quoteTable).insert(
       {
         id: quote.getId(),
         userBookId: quote.getUserBookId(),
@@ -50,7 +48,7 @@ export class QuoteTestUtils {
   public async findById(payload: FindByIdPayload): Promise<QuoteRawEntity | null> {
     const { id } = payload;
 
-    const rawEntity = await this.databaseClient<QuoteRawEntity>(this.table.name).where({ id }).first();
+    const rawEntity = await this.databaseClient<QuoteRawEntity>(quoteTable).where({ id }).first();
 
     if (!rawEntity) {
       return null;
@@ -67,6 +65,6 @@ export class QuoteTestUtils {
   }
 
   public async truncate(): Promise<void> {
-    await this.databaseClient(this.table.name).truncate();
+    await this.databaseClient(quoteTable).truncate();
   }
 }

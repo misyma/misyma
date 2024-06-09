@@ -1,6 +1,6 @@
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type BookshelfRawEntity } from '../../../infrastructure/databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfRawEntity.js';
-import { BookshelfTable } from '../../../infrastructure/databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfTable.js';
+import { bookshelfTable } from '../../../infrastructure/databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfTable.js';
 import { BookshelfTestFactory } from '../../factories/bookshelfTestFactory/bookshelfTestFactory.js';
 
 interface CreateAndPersistPayload {
@@ -18,8 +18,6 @@ interface FindByUserIdPayload {
 export class BookshelfTestUtils {
   public constructor(private readonly databaseClient: DatabaseClient) {}
 
-  private readonly table = new BookshelfTable();
-
   private readonly bookshelfTestFactory = new BookshelfTestFactory();
 
   public async createAndPersist(payload: CreateAndPersistPayload = { input: {} }): Promise<BookshelfRawEntity> {
@@ -27,7 +25,7 @@ export class BookshelfTestUtils {
 
     const bookshelf = this.bookshelfTestFactory.create(input);
 
-    const rawEntities = await this.databaseClient<BookshelfRawEntity>(this.table.name).insert(
+    const rawEntities = await this.databaseClient<BookshelfRawEntity>(bookshelfTable).insert(
       {
         id: bookshelf.getId(),
         name: bookshelf.getName(),
@@ -43,7 +41,7 @@ export class BookshelfTestUtils {
   public async findById(payload: FindByIdPayload): Promise<BookshelfRawEntity | null> {
     const { id } = payload;
 
-    const result = await this.databaseClient<BookshelfRawEntity>(this.table.name).where({ id }).first();
+    const result = await this.databaseClient<BookshelfRawEntity>(bookshelfTable).where({ id }).first();
 
     if (!result) {
       return null;
@@ -55,12 +53,12 @@ export class BookshelfTestUtils {
   public async findByUserId(payload: FindByUserIdPayload): Promise<BookshelfRawEntity[]> {
     const { userId } = payload;
 
-    const result = await this.databaseClient<BookshelfRawEntity>(this.table.name).where({ userId });
+    const result = await this.databaseClient<BookshelfRawEntity>(bookshelfTable).where({ userId });
 
     return result;
   }
 
   public async truncate(): Promise<void> {
-    await this.databaseClient<BookshelfRawEntity>(this.table.name).truncate();
+    await this.databaseClient<BookshelfRawEntity>(bookshelfTable).truncate();
   }
 }
