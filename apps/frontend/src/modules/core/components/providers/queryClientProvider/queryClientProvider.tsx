@@ -3,11 +3,11 @@ import React, {  useState } from 'react';
 import { ApiError } from '../../../../common/errors/apiError';
 import { useStoreSelector } from '../../../store/hooks/useStoreSelector';
 import { userStateActions, userStateSelectors } from '../../../store/states/userState/userStateSlice';
-import { UserApiError } from '../../../../../api/user/errors/userApiError';
 import { type RefreshUserTokensResponseBody } from '@common/contracts';
 import { useStoreDispatch } from '../../../store/hooks/useStoreDispatch';
 import { HttpService } from '../../../services/httpService/httpService';
 import { CookieService } from '../../../services/cookieService/cookieService';
+import { UserApiError } from '../../../../user/errors/userApiError';
 
 interface ProviderProps {
   children: React.ReactNode;

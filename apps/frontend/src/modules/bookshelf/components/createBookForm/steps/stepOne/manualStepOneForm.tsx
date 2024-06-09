@@ -28,7 +28,6 @@ import {
   CommandList,
 } from '../../../../../common/components/ui/command';
 import { cn } from '../../../../../common/lib/utils';
-import { useFindAuthorsQuery } from '../../../../../../api/authors/queries/findAuthorsQuery/findAuthorsQuery';
 import { useState } from 'react';
 import { CommandLoading } from 'cmdk';
 import { isbnSchema } from '../../../../../common/schemas/isbnSchema';
@@ -46,6 +45,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '../../../../../common/components/ui/tooltip';
+import { useFindAuthorsQuery } from '../../../../../author/api/queries/findAuthorsQuery/findAuthorsQuery';
 
 const pattern = /^[A-Z][^\\x00-\\x7F]*, [A-Z]\. [A-Z]\.$/;
 

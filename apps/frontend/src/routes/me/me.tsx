@@ -4,7 +4,7 @@ import { RequireAuthComponent } from '../../modules/core/components/requireAuth/
 import { FC } from 'react';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../modules/core/store/states/userState/userStateSlice';
-import { useFindUserQuery } from '../../api/user/queries/findUserQuery/findUserQuery';
+import { useFindUserQuery } from '../../modules/user/api/queries/findUserQuery/findUserQuery';
 import { AuthenticatedLayout } from '../../modules/auth/layouts/authenticated/authenticatedLayout';
 
 export const AuthenticatedPage: FC = () => {

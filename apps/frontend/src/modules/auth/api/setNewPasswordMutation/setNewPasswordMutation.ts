@@ -2,7 +2,7 @@ import { UseMutationOptions, useMutation } from '@tanstack/react-query';
 import { type LoginUserResponseBody } from '@common/contracts';
 
 import { HttpService } from '../../../../modules/core/services/httpService/httpService';
-import { UserApiError } from '../../../../api/user/errors/userApiError';
+import { UserApiError } from '../../../user/errors/userApiError';
 
 export const useSetNewPasswordMutation = (
   options: UseMutationOptions<LoginUserResponseBody, UserApiError, { token: string; password: string }>,

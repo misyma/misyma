@@ -5,7 +5,7 @@ import { BookshelfChoiceDropdown } from '../../components/bookshelfChoiceDropdow
 import { Separator } from '../../../../modules/common/components/ui/separator.js';
 import { FavoriteBookButton } from '../../components/favoriteBookButton/favoriteBookButton.js';
 import { FindUserBookQueryOptions } from '../../../../modules/book/api/queries/findUserBook/findUserBookQueryOptions.js';
-import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery.js';
+import { useFindUserQuery } from '../../../../modules/user/api/queries/findUserQuery/findUserQuery.js';
 import { UserBook } from '@common/contracts';
 import { BasicDataTabSkeleton } from './basicDataTabSkeleton.js';
 import { CurrentRatingStar } from '../../components/currentRatingStar/currentRatingStar.js';

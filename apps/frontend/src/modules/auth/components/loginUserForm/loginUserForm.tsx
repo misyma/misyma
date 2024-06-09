@@ -4,7 +4,6 @@ import { ControllerRenderProps, useForm } from 'react-hook-form';
 import { LoginUserFormValues, loginUserFormSchema } from './schema/loginUserFormSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { type LoginUserResponseBody } from '@common/contracts';
-import { UserApiError } from '../../../../api/user/errors/userApiError';
 import {
   Form,
   FormControl,
@@ -18,6 +17,7 @@ import { Button } from '../../../common/components/ui/button';
 import { cn } from '../../../common/lib/utils';
 import { PasswordEyeIcon } from '../../../common/components/icons/passwordEyeIcon/passwordEyeIcon';
 import { useLoginUserMutation } from '../../api/loginUserMutation/loginUserMutation';
+import { UserApiError } from '../../../user/errors/userApiError';
 
 interface LoginUserFormProps {
   onSuccess: (loginUserResponseBody: LoginUserResponseBody) => void;

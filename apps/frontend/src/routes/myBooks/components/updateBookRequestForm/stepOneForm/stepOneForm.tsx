@@ -9,18 +9,18 @@ import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from '.
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../../../../../modules/common/components/ui/dialog';
 import { CommandLoading } from 'cmdk';
 import { Check, ChevronsUpDown } from 'lucide-react';
-import { useFindAuthorsQuery } from '../../../../../api/authors/queries/findAuthorsQuery/findAuthorsQuery';
 import { isbnSchema } from '../../../../../modules/common/schemas/isbnSchema';
 import { z } from 'zod';
 import { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useFindUserQuery } from '../../../../../api/user/queries/findUserQuery/findUserQuery';
+import { useFindUserQuery } from '../../../../../modules/user/api/queries/findUserQuery/findUserQuery';
 import { useQuery } from '@tanstack/react-query';
 import { FindBookByIdQueryOptions } from '../../../../../modules/book/api/queries/findBookById/findBookByIdQueryOptions';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../../modules/core/store/states/userState/userStateSlice';
 import { FindUserBookQueryOptions } from '../../../../../modules/book/api/queries/findUserBook/findUserBookQueryOptions';
+import { useFindAuthorsQuery } from '../../../../../modules/author/api/queries/findAuthorsQuery/findAuthorsQuery';
 
 const stepOneSchema = z.object({
   isbn: isbnSchema.optional(),

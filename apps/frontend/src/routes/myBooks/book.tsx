@@ -12,7 +12,7 @@ import { cn } from '../../modules/common/lib/utils';
 import { CreateQuotationModal } from './components/createQuotationModal/createQuotationModal';
 import { AddStarRatingButton } from './components/addStarRatingButton/addStarRatingButton';
 import { useQueryClient } from '@tanstack/react-query';
-import { useFindUserQuery } from '../../api/user/queries/findUserQuery/findUserQuery';
+import { useFindUserQuery } from '../../modules/user/api/queries/findUserQuery/findUserQuery';
 import { EditOrDeleteBookModal } from './components/editOrDeleteBookModal/editOrDeleteBookModal';
 
 export const BookPage: FC = () => {

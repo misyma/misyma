@@ -6,7 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../../../../modules/common/components/ui/select';
-import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery';
+import { useFindUserQuery } from '../../../../modules/user/api/queries/findUserQuery/findUserQuery';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Skeleton } from '../../../../modules/common/components/ui/skeleton';
 import { useToast } from '../../../../modules/common/components/ui/use-toast';

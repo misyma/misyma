@@ -2,7 +2,7 @@ import { FC, useState } from 'react';
 import {
   FindUserBookQueryOptions,
 } from '../../../../modules/book/api/queries/findUserBook/findUserBookQueryOptions';
-import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery';
+import { useFindUserQuery } from '../../../../modules/user/api/queries/findUserQuery/findUserQuery';
 import { HiCheckCircle, HiDotsCircleHorizontal } from 'react-icons/hi';
 import { HiQuestionMarkCircle } from 'react-icons/hi';
 import { ReadingStatus } from '@common/contracts';

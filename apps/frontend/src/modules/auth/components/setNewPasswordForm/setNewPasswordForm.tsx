@@ -6,8 +6,8 @@ import { SetNewPasswordFormSchemaValues, setNewPasswordFormSchema } from './sche
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/ui/form';
 import { Input } from '../../../common/components/ui/input';
 import { Button } from '../../../common/components/ui/button';
-import type { UserApiError } from '../../../../api/user/errors/userApiError';
 import { useSetNewPasswordMutation } from '../../api/setNewPasswordMutation/setNewPasswordMutation';
+import { UserApiError } from '../../../user/errors/userApiError';
 
 interface SetNewPasswordFormProps {
   onSuccess: () => void;

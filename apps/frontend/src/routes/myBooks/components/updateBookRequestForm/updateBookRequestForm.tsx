@@ -12,7 +12,7 @@ import { useQuery } from '@tanstack/react-query';
 import { FindBookByIdQueryOptions } from '../../../../modules/book/api/queries/findBookById/findBookByIdQueryOptions';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
-import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery';
+import { useFindUserQuery } from '../../../../modules/user/api/queries/findUserQuery/findUserQuery';
 import { StepOneForm } from './stepOneForm/stepOneForm';
 import { BookFormat } from '../../../../modules/common/constants/bookFormat';
 import {

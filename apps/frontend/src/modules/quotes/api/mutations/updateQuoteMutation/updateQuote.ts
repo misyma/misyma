@@ -1,5 +1,5 @@
 import { UpdateQuotePathParams, UpdateQuoteRequestBody, UpdateQuoteResponseBody } from '@common/contracts';
-import { HttpService } from '../../../../modules/core/services/httpService/httpService';
+import { HttpService } from '../../../../core/services/httpService/httpService';
 
 export interface UpdateQuotePayload extends UpdateQuotePathParams, UpdateQuoteRequestBody {
   accessToken: string;

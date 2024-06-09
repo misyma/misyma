@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { FindBooksByBookshelfIdQueryOptions } from '../../modules/book/api/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
 import { AuthenticatedLayout } from '../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { Button } from '../../modules/common/components/ui/button';
-import { useFindUserQuery } from '../../api/user/queries/findUserQuery/findUserQuery';
+import { useFindUserQuery } from '../../modules/user/api/queries/findUserQuery/findUserQuery';
 import { Separator } from '../../modules/common/components/ui/separator';
 import { HiCheckCircle, HiDotsCircleHorizontal, HiQuestionMarkCircle } from 'react-icons/hi';
 import { ReadingStatus, UserBook } from '@common/contracts';

@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
-import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery';
+import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { useToast } from '../../../common/components/ui/use-toast';
 import {
   Form,

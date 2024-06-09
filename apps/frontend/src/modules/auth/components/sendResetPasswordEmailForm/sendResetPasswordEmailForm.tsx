@@ -2,7 +2,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import type { UserApiError } from '../../../../api/user/errors/userApiError';
 import { Button } from '../../../common/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/ui/form';
 import { Input } from '../../../common/components/ui/input';
@@ -11,6 +10,7 @@ import {
   sendResetPasswordEmailFormSchema,
 } from './schema/sendResetPasswordEmailFormSchema';
 import { useSendResetPasswordEmailMutation } from '../../api/sendResetPasswordEmailMutation/sendResetPasswordEmailMutation';
+import { UserApiError } from '../../../user/errors/userApiError';
 
 interface SendResetPasswordEmailFormProps {
   onSuccess: (email: string) => void;

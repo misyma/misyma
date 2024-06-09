@@ -1,5 +1,5 @@
 import { CreateQuotePathParams, CreateQuoteRequestBody, CreateQuoteResponseBody } from '@common/contracts';
-import { HttpService } from '../../../../modules/core/services/httpService/httpService';
+import { HttpService } from '../../../../core/services/httpService/httpService';
 
 export interface CreateQuoteMutationPayload extends CreateQuotePathParams, CreateQuoteRequestBody {
   accessToken: string;

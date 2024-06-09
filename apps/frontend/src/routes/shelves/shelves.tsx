@@ -3,7 +3,7 @@ import { AuthenticatedLayout } from '../../modules/auth/layouts/authenticated/au
 import { createRoute, useNavigate } from '@tanstack/react-router';
 import { rootRoute } from '../root';
 import { RequireAuthComponent } from '../../modules/core/components/requireAuth/requireAuthComponent';
-import { useFindUserQuery } from '../../api/user/queries/findUserQuery/findUserQuery';
+import { useFindUserQuery } from '../../modules/user/api/queries/findUserQuery/findUserQuery';
 import { Button } from '../../modules/common/components/ui/button';
 import { ScrollArea } from '../../modules/common/components/ui/scroll-area';
 import { HiPencil } from 'react-icons/hi';

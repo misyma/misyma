@@ -13,14 +13,14 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Textarea } from '../../../../modules/common/components/ui/textarea';
 import { Button } from '../../../../modules/common/components/ui/button';
 import { Input } from '../../../../modules/common/components/ui/input';
-import { useCreateQuoteMutation } from '../../../../api/quotes/mutations/createQuoteMutation/createQuoteMutation';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
-import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery';
+import { useFindUserQuery } from '../../../../modules/user/api/queries/findUserQuery/findUserQuery';
 import { useQueryClient } from '@tanstack/react-query';
-import { getQuotesOptionsQueryKey } from '../../../../api/quotes/queries/getQuotes/getQuotesOptions';
 import { Checkbox } from '../../../../modules/common/components/ui/checkbox';
 import { useToast } from '../../../../modules/common/components/ui/use-toast';
+import { useCreateQuoteMutation } from '../../../../modules/quotes/api/mutations/createQuoteMutation/createQuoteMutation';
+import { getQuotesOptionsQueryKey } from '../../../../modules/quotes/api/queries/getQuotes/getQuotesOptions';
 
 const createQuotationSchema = z.object({
   page: z
