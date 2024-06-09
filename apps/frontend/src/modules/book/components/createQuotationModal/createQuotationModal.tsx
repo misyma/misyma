@@ -8,19 +8,19 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTrigger,
-} from '../../../../modules/common/components/ui/dialog';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../modules/common/components/ui/form';
-import { Textarea } from '../../../../modules/common/components/ui/textarea';
-import { Button } from '../../../../modules/common/components/ui/button';
-import { Input } from '../../../../modules/common/components/ui/input';
+} from '../../../common/components/ui/dialog';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/ui/form';
+import { Textarea } from '../../../common/components/ui/textarea';
+import { Button } from '../../../common/components/ui/button';
+import { Input } from '../../../common/components/ui/input';
 import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
-import { useFindUserQuery } from '../../../../modules/user/api/queries/findUserQuery/findUserQuery';
+import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
+import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { useQueryClient } from '@tanstack/react-query';
-import { Checkbox } from '../../../../modules/common/components/ui/checkbox';
-import { useToast } from '../../../../modules/common/components/ui/use-toast';
-import { useCreateQuoteMutation } from '../../../../modules/quotes/api/mutations/createQuoteMutation/createQuoteMutation';
-import { getQuotesOptionsQueryKey } from '../../../../modules/quotes/api/queries/getQuotes/getQuotesOptions';
+import { Checkbox } from '../../../common/components/ui/checkbox';
+import { useToast } from '../../../common/components/ui/use-toast';
+import { useCreateQuoteMutation } from '../../../quotes/api/mutations/createQuoteMutation/createQuoteMutation';
+import { getQuotesOptionsQueryKey } from '../../../quotes/api/queries/getQuotes/getQuotesOptions';
 
 const createQuotationSchema = z.object({
   page: z

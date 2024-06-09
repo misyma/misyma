@@ -1,26 +1,26 @@
 import { HiOutlineInformationCircle } from 'react-icons/hi';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../../modules/common/components/ui/form';
-import { Input } from '../../../../../modules/common/components/ui/input';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../../../modules/common/components/ui/tooltip';
-import { Popover, PopoverContent, PopoverTrigger } from '../../../../../modules/common/components/ui/popover';
-import { Button } from '../../../../../modules/common/components/ui/button';
-import { cn } from '../../../../../modules/common/lib/utils';
-import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from '../../../../../modules/common/components/ui/command';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../../../../../modules/common/components/ui/dialog';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../common/components/ui/form';
+import { Input } from '../../../../common/components/ui/input';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../../common/components/ui/tooltip';
+import { Popover, PopoverContent, PopoverTrigger } from '../../../../common/components/ui/popover';
+import { Button } from '../../../../common/components/ui/button';
+import { cn } from '../../../../common/lib/utils';
+import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from '../../../../common/components/ui/command';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../../../../common/components/ui/dialog';
 import { CommandLoading } from 'cmdk';
 import { Check, ChevronsUpDown } from 'lucide-react';
-import { isbnSchema } from '../../../../../modules/common/schemas/isbnSchema';
+import { isbnSchema } from '../../../../common/schemas/isbnSchema';
 import { z } from 'zod';
 import { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useFindUserQuery } from '../../../../../modules/user/api/queries/findUserQuery/findUserQuery';
+import { useFindUserQuery } from '../../../../user/api/queries/findUserQuery/findUserQuery';
 import { useQuery } from '@tanstack/react-query';
-import { FindBookByIdQueryOptions } from '../../../../../modules/book/api/queries/findBookById/findBookByIdQueryOptions';
+import { FindBookByIdQueryOptions } from '../../../api/queries/findBookById/findBookByIdQueryOptions';
 import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../../../modules/core/store/states/userState/userStateSlice';
-import { FindUserBookQueryOptions } from '../../../../../modules/book/api/queries/findUserBook/findUserBookQueryOptions';
-import { useFindAuthorsQuery } from '../../../../../modules/author/api/queries/findAuthorsQuery/findAuthorsQuery';
+import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
+import { FindUserBookQueryOptions } from '../../../api/queries/findUserBook/findUserBookQueryOptions';
+import { useFindAuthorsQuery } from '../../../../author/api/queries/findAuthorsQuery/findAuthorsQuery';
 
 const stepOneSchema = z.object({
   isbn: isbnSchema.optional(),

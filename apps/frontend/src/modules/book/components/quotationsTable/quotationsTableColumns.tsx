@@ -1,6 +1,6 @@
 import { type ColumnDef } from '@tanstack/react-table';
 import { Quote } from '@common/contracts';
-import { FavoriteQuotationButton } from '../favoriteQuotationButton/favoriteQuotationButton';
+import { FavoriteQuotationButton } from '../../../../modules/book/components/favoriteQuotationButton/favoriteQuotationButton';
 
 export const columns: ColumnDef<Quote>[] = [
   {

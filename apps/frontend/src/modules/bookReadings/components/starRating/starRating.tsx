@@ -1,14 +1,14 @@
 import { FC } from 'react';
-import { RadioGroup, RadioGroupItem } from '../../../../modules/common/components/ui/radio-group';
+import { RadioGroup, RadioGroupItem } from '../../../common/components/ui/radio-group';
 import { HiStar } from 'react-icons/hi';
-import { cn } from '../../../../modules/common/lib/utils';
+import { cn } from '../../../common/lib/utils';
 import { useQuery } from '@tanstack/react-query';
-import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
+import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useSelector } from 'react-redux';
-import { Skeleton } from '../../../../modules/common/components/ui/skeleton';
-import { CreateBookReadingModal } from '../createBookReadingModal/createBookReadingModal';
+import { Skeleton } from '../../../common/components/ui/skeleton';
+import { CreateBookReadingModal } from '../../../book/components/createBookReadingModal/createBookReadingModal';
 import { BookReading } from '@common/contracts';
-import { FindBookReadingsQueryOptions } from '../../../../modules/bookReadings/api/queries/findBookReadings/findBookReadingsQueryOptions';
+import { FindBookReadingsQueryOptions } from '../../api/queries/findBookReadings/findBookReadingsQueryOptions';
 
 interface Props {
   bookId: string;

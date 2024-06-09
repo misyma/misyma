@@ -1,9 +1,9 @@
 import { FC } from 'react';
 import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
+import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useQuery } from '@tanstack/react-query';
 import { IoMdStar } from 'react-icons/io';
-import { FindBookReadingsQueryOptions } from '../../../../modules/bookReadings/api/queries/findBookReadings/findBookReadingsQueryOptions';
+import { FindBookReadingsQueryOptions } from '../../../bookReadings/api/queries/findBookReadings/findBookReadingsQueryOptions';
 
 interface Props {
   userBookId: string;

@@ -1,17 +1,17 @@
 import { FC, useMemo, useState } from 'react';
 import { useFindUserQuery } from '../../../../modules/user/api/queries/findUserQuery/findUserQuery';
 import { BasicDataTabSkeleton } from '../basicDataTab/basicDataTabSkeleton';
-import { FavoriteBookButton } from '../../components/favoriteBookButton/favoriteBookButton';
+import { FavoriteBookButton } from '../../../../modules/book/components/favoriteBookButton/favoriteBookButton';
 import { UserBook } from '@common/contracts';
 import { Separator } from '@radix-ui/react-select';
-import { QuotationsTable } from '../../components/quotationsTable/quotationsTable';
-import { columns } from '../../components/quotationsTable/quotationsTableColumns';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
-import { CurrentRatingStar } from '../../components/currentRatingStar/currentRatingStar';
+import { CurrentRatingStar } from '../../../../modules/book/components/currentRatingStar/currentRatingStar';
 import { FindUserBookQueryOptions } from '../../../../modules/book/api/queries/findUserBook/findUserBookQueryOptions';
 import { getQuotesOptions } from '../../../../modules/quotes/api/queries/getQuotes/getQuotesOptions';
+import { QuotationsTable } from '../../../../modules/book/components/quotationsTable/quotationsTable';
+import { columns } from '../../../../modules/book/components/quotationsTable/quotationsTableColumns';
 
 interface Props {
   userBookId: string;

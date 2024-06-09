@@ -9,11 +9,11 @@ import { BasicDataTab } from './tabs/basicDataTab/basicDataTab';
 import { QuotationsTab } from './tabs/quotationsTab/quotationsTab';
 import { GradesTab } from './tabs/gradesTab/gradesTab';
 import { cn } from '../../modules/common/lib/utils';
-import { CreateQuotationModal } from './components/createQuotationModal/createQuotationModal';
-import { AddStarRatingButton } from './components/addStarRatingButton/addStarRatingButton';
+import { CreateQuotationModal } from '../../modules/book/components/createQuotationModal/createQuotationModal';
+import { AddStarRatingButton } from '../../modules/book/components/addStarRatingButton/addStarRatingButton';
 import { useQueryClient } from '@tanstack/react-query';
 import { useFindUserQuery } from '../../modules/user/api/queries/findUserQuery/findUserQuery';
-import { EditOrDeleteBookModal } from './components/editOrDeleteBookModal/editOrDeleteBookModal';
+import { EditOrDeleteBookModal } from '../../modules/book/components/editOrDeleteBookModal/editOrDeleteBookModal';
 
 export const BookPage: FC = () => {
   const { data: userData } = useFindUserQuery();

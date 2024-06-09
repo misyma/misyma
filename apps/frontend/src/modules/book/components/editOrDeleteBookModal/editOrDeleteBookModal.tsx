@@ -1,20 +1,20 @@
 import { FC, ReactNode, useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTrigger } from '../../../../modules/common/components/ui/dialog';
-import { Button } from '../../../../modules/common/components/ui/button';
-import { RadioGroup, RadioGroupItem } from '../../../../modules/common/components/ui/radio-group';
+import { Dialog, DialogContent, DialogHeader, DialogTrigger } from '../../../common/components/ui/dialog';
+import { Button } from '../../../common/components/ui/button';
+import { RadioGroup, RadioGroupItem } from '../../../common/components/ui/radio-group';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
-import { useUploadBookImageMutation } from '../../../../modules/book/api/mutations/uploadBookImageMutation/uploadBookImageMutation';
+import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
+import { useUploadBookImageMutation } from '../../api/mutations/uploadBookImageMutation/uploadBookImageMutation';
 import { useRouter } from '@tanstack/react-router';
-import { UpdateUserBookForm } from '../updateUserBookForm/updateUserBookForm';
 import { UpdateBookRequestForm } from '../updateBookRequestForm/updateBookRequestForm';
-import { BookDetailsChangeRequestProvider } from '../../contexts/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
+import { BookDetailsChangeRequestProvider } from '../../context/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
 import { useQueryClient } from '@tanstack/react-query';
-import { useDeleteUserBookMutation } from '../../../../modules/book/api/mutations/deleteUserBookMutation/deleteUserBookMutation';
-import { useUpdateUserBookMutation } from '../../../../modules/book/api/mutations/updateUserBookMutation/updateUserBookMutation';
+import { useDeleteUserBookMutation } from '../../api/mutations/deleteUserBookMutation/deleteUserBookMutation';
+import { useUpdateUserBookMutation } from '../../api/mutations/updateUserBookMutation/updateUserBookMutation';
+import { UpdateUserBookForm } from '../updateUserBookForm/updateUserBookForm';
 
 interface Props {
   userBookId: string;

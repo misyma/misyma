@@ -5,16 +5,16 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../../../../modules/common/components/ui/select';
-import { useFindUserQuery } from '../../../../modules/user/api/queries/findUserQuery/findUserQuery';
+} from '../../../common/components/ui/select';
+import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Skeleton } from '../../../../modules/common/components/ui/skeleton';
-import { useToast } from '../../../../modules/common/components/ui/use-toast';
+import { Skeleton } from '../../../common/components/ui/skeleton';
+import { useToast } from '../../../common/components/ui/use-toast';
 import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
-import { FindUserBookQueryOptions } from '../../../../modules/book/api/queries/findUserBook/findUserBookQueryOptions';
-import { useFindUserBookshelfsQuery } from '../../../../modules/bookshelf/api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
-import { useUpdateUserBookMutation } from '../../../../modules/book/api/mutations/updateUserBookMutation/updateUserBookMutation';
+import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
+import { FindUserBookQueryOptions } from '../../api/queries/findUserBook/findUserBookQueryOptions';
+import { useFindUserBookshelfsQuery } from '../../../bookshelf/api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
+import { useUpdateUserBookMutation } from '../../api/mutations/updateUserBookMutation/updateUserBookMutation';
 
 interface Props {
   bookId: string;

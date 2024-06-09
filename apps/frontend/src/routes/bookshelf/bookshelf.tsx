@@ -11,7 +11,7 @@ import { Separator } from '../../modules/common/components/ui/separator';
 import { HiCheckCircle, HiDotsCircleHorizontal, HiQuestionMarkCircle } from 'react-icons/hi';
 import { ReadingStatus, UserBook } from '@common/contracts';
 import { cn } from '../../modules/common/lib/utils';
-import { FavoriteBookButton } from '../myBooks/components/favoriteBookButton/favoriteBookButton';
+import { FavoriteBookButton } from '../../modules/book/components/favoriteBookButton/favoriteBookButton';
 import { useQuery } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../modules/core/store/states/userState/userStateSlice';

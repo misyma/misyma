@@ -6,12 +6,12 @@ import { UserBook } from '@common/contracts';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice.js';
-import { CurrentRatingStar } from '../../components/currentRatingStar/currentRatingStar.js';
+import { CurrentRatingStar } from '../../../../modules/book/components/currentRatingStar/currentRatingStar.js';
 import { BasicDataTabSkeleton } from '../basicDataTab/basicDataTabSkeleton.js';
-import { columns } from '../../components/gradesTable/gradesTableColumns.js';
-import { GradesTable } from '../../components/gradesTable/gradesTable.js';
-import { FavoriteBookButton } from '../../components/favoriteBookButton/favoriteBookButton.js';
+import { FavoriteBookButton } from '../../../../modules/book/components/favoriteBookButton/favoriteBookButton.js';
 import { FindBookReadingsQueryOptions } from '../../../../modules/bookReadings/api/queries/findBookReadings/findBookReadingsQueryOptions.js';
+import { GradesTable } from '../../../../modules/book/components/gradesTable/gradesTable.js';
+import { columns } from '../../../../modules/book/components/gradesTable/gradesTableColumns.js';
 
 interface Props {
   userBookId: string;

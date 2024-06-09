@@ -1,9 +1,9 @@
 import { FC } from 'react';
 import { Skeleton } from '../../../../modules/common/components/ui/skeleton';
 import { Separator } from '@radix-ui/react-separator';
-import { BookshelfChoiceDropdown } from '../../components/bookshelfChoiceDropdown/bookshelfChoiceDropdown';
-import { StatusChooserCards } from '../../components/statusChooser/statusChooserCards';
-import { StarRating } from '../../components/starRating/starRating';
+import { BookshelfChoiceDropdown } from '../../../../modules/book/components/bookshelfChoiceDropdown/bookshelfChoiceDropdown';
+import { StatusChooserCards } from '../../../../modules/book/components/statusChooser/statusChooserCards';
+import { StarRating } from '../../../../modules/bookReadings/components/starRating/starRating';
 
 interface Props {
     bookId: string;

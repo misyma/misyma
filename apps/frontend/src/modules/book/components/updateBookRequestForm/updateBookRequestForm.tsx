@@ -3,25 +3,25 @@ import { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../modules/common/components/ui/form';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../../modules/common/components/ui/select';
-import { Languages } from '../../../../modules/common/constants/languages';
-import { Input } from '../../../../modules/common/components/ui/input';
-import { Button } from '../../../../modules/common/components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/ui/form';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../common/components/ui/select';
+import { Languages } from '../../../common/constants/languages';
+import { Input } from '../../../common/components/ui/input';
+import { Button } from '../../../common/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
-import { FindBookByIdQueryOptions } from '../../../../modules/book/api/queries/findBookById/findBookByIdQueryOptions';
+import { FindBookByIdQueryOptions } from '../../api/queries/findBookById/findBookByIdQueryOptions';
 import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
-import { useFindUserQuery } from '../../../../modules/user/api/queries/findUserQuery/findUserQuery';
+import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
+import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { StepOneForm } from './stepOneForm/stepOneForm';
-import { BookFormat } from '../../../../modules/common/constants/bookFormat';
+import { BookFormat } from '../../../common/constants/bookFormat';
 import {
   BookDetailsChangeRequestAction,
   useBookDetailsChangeRequestContext,
   useBookDetailsChangeRequestDispatch,
-} from '../../contexts/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
-import { FindUserBookQueryOptions } from '../../../../modules/book/api/queries/findUserBook/findUserBookQueryOptions';
-import { useUpdateBookMutation } from '../../../../modules/book/api/mutations/updateBookMutation/updateBookMutation';
+} from '../../context/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
+import { FindUserBookQueryOptions } from '../../api/queries/findUserBook/findUserBookQueryOptions';
+import { useUpdateBookMutation } from '../../api/mutations/updateBookMutation/updateBookMutation';
 
 interface Props {
   bookId: string;
