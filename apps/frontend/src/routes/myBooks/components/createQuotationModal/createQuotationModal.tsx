@@ -70,7 +70,7 @@ export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props):
     try {
       await mutateAsync({
         ...values,
-        page: values.page ? Number(values.page) : undefined,
+        page: values.page,
         accessToken: accessToken as string,
         createdAt: new Date().toISOString(),
         userBookId,
