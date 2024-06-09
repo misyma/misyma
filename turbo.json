@@ -24,6 +24,10 @@
     "test:integration:run": {
       "dependsOn": [],
       "cache": false
+    },
+    "start:dev": {
+      "dependsOn": [],
+      "cache": false
     }
   }
 }
