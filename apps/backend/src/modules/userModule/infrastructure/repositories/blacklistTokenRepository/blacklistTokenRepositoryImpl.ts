@@ -9,11 +9,9 @@ import {
   type FindBlacklistTokenPayload,
 } from '../../../domain/repositories/blacklistTokenRepository/blacklistTokenRepository.js';
 import { type BlacklistTokenRawEntity } from '../../databases/userDatabase/tables/blacklistTokenTable/blacklistTokenRawEntity.js';
-import { BlacklistTokenTable } from '../../databases/userDatabase/tables/blacklistTokenTable/blacklistTokenTable.js';
+import { blacklistTokenTable } from '../../databases/userDatabase/tables/blacklistTokenTable/blacklistTokenTable.js';
 
 export class BlacklistTokenRepositoryImpl implements BlacklistTokenRepository {
-  private readonly blacklistTokenDatabaseTable = new BlacklistTokenTable();
-
   public constructor(
     private readonly databaseClient: DatabaseClient,
     private readonly blacklistTokenMapper: BlacklistTokenMapper,
@@ -26,7 +24,7 @@ export class BlacklistTokenRepositoryImpl implements BlacklistTokenRepository {
     let rawEntities: BlacklistTokenRawEntity[];
 
     try {
-      rawEntities = await this.databaseClient<BlacklistTokenRawEntity>(this.blacklistTokenDatabaseTable.name).insert(
+      rawEntities = await this.databaseClient<BlacklistTokenRawEntity>(blacklistTokenTable).insert(
         {
           id: this.uuidService.generateUuid(),
           token,
@@ -53,7 +51,7 @@ export class BlacklistTokenRepositoryImpl implements BlacklistTokenRepository {
     let rawEntity: BlacklistTokenRawEntity | undefined;
 
     try {
-      rawEntity = await this.databaseClient<BlacklistTokenRawEntity>(this.blacklistTokenDatabaseTable.name)
+      rawEntity = await this.databaseClient<BlacklistTokenRawEntity>(blacklistTokenTable)
         .select('*')
         .where({ token })
         .first();

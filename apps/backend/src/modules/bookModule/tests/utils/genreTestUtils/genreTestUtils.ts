@@ -1,17 +1,15 @@
 import { Generator } from '../../../../../../tests/generator.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type GenreRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/genreTable/genreRawEntity.js';
-import { GenreTable } from '../../../infrastructure/databases/bookDatabase/tables/genreTable/genreTable.js';
+import { genreTable } from '../../../infrastructure/databases/bookDatabase/tables/genreTable/genreTable.js';
 
 interface CreateAndPersistPayload {
   readonly input?: {
-    genre?: Partial<GenreRawEntity>;
+    readonly genre?: Partial<GenreRawEntity>;
   };
 }
 
 export class GenreTestUtils {
-  private readonly genreTable = new GenreTable();
-
   public constructor(private readonly databaseClient: DatabaseClient) {}
 
   public async createAndPersist(payload: CreateAndPersistPayload = {}): Promise<GenreRawEntity> {
@@ -32,25 +30,25 @@ export class GenreTestUtils {
       };
     }
 
-    await this.databaseClient<GenreRawEntity>(this.genreTable.name).insert(genre);
+    await this.databaseClient<GenreRawEntity>(genreTable).insert(genre);
 
     return genre;
   }
 
   public async findByName(name: string): Promise<GenreRawEntity | null> {
-    const genre = await this.databaseClient<GenreRawEntity>(this.genreTable.name).where({ name }).first();
+    const genre = await this.databaseClient<GenreRawEntity>(genreTable).where({ name }).first();
 
     return genre || null;
   }
 
   public async findById(id: string): Promise<GenreRawEntity | null> {
-    const genre = await this.databaseClient<GenreRawEntity>(this.genreTable.name).where({ id }).first();
+    const genre = await this.databaseClient<GenreRawEntity>(genreTable).where({ id }).first();
 
     return genre || null;
   }
 
   public async truncate(): Promise<void> {
-    await this.databaseClient<GenreRawEntity>(this.genreTable.name).truncate();
+    await this.databaseClient<GenreRawEntity>(genreTable).truncate();
   }
 
   public async destroyDatabaseConnection(): Promise<void> {

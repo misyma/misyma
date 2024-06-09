@@ -11,7 +11,7 @@ import {
   type DeleteCollectionPayload,
 } from '../../../domain/repositories/collectionRepository/collectionRepository.js';
 import { type CollectionRawEntity } from '../../databases/bookDatabase/tables/collectionTable/collectionRawEntity.js';
-import { CollectionTable } from '../../databases/bookDatabase/tables/collectionTable/collectionTable.js';
+import { collectionTable } from '../../databases/bookDatabase/tables/collectionTable/collectionTable.js';
 
 type CreateCollectionPayload = { collection: CollectionState };
 
@@ -23,8 +23,6 @@ export class CollectionRepositoryImpl implements CollectionRepository {
     private readonly collectionMapper: CollectionMapper,
     private readonly uuidService: UuidService,
   ) {}
-
-  private readonly collectionTable = new CollectionTable();
 
   public async findCollection(payload: FindCollectionPayload): Promise<Collection | null> {
     let rawEntity: CollectionRawEntity | undefined;
@@ -47,7 +45,7 @@ export class CollectionRepositoryImpl implements CollectionRepository {
     }
 
     try {
-      rawEntity = await this.databaseClient<CollectionRawEntity>(this.collectionTable.name)
+      rawEntity = await this.databaseClient<CollectionRawEntity>(collectionTable)
         .select('*')
         .where(whereCondition)
         .first();
@@ -71,7 +69,7 @@ export class CollectionRepositoryImpl implements CollectionRepository {
 
     let rawEntities: CollectionRawEntity[];
 
-    const query = this.databaseClient<CollectionRawEntity>(this.collectionTable.name)
+    const query = this.databaseClient<CollectionRawEntity>(collectionTable)
       .select('*')
       .limit(pageSize)
       .offset(pageSize * (page - 1));
@@ -111,7 +109,7 @@ export class CollectionRepositoryImpl implements CollectionRepository {
     let rawEntities: CollectionRawEntity[];
 
     try {
-      rawEntities = await this.databaseClient<CollectionRawEntity>(this.collectionTable.name)
+      rawEntities = await this.databaseClient<CollectionRawEntity>(collectionTable)
         .insert({
           id: this.uuidService.generateUuid(),
           name,
@@ -137,7 +135,7 @@ export class CollectionRepositoryImpl implements CollectionRepository {
     let rawEntities: CollectionRawEntity[];
 
     try {
-      rawEntities = await this.databaseClient<CollectionRawEntity>(this.collectionTable.name)
+      rawEntities = await this.databaseClient<CollectionRawEntity>(collectionTable)
         .update(collection.getState())
         .where({ id: collection.getId() })
         .returning('*');
@@ -158,7 +156,7 @@ export class CollectionRepositoryImpl implements CollectionRepository {
     const { id } = payload;
 
     try {
-      await this.databaseClient<CollectionRawEntity>(this.collectionTable.name).delete().where({ id });
+      await this.databaseClient<CollectionRawEntity>(collectionTable).delete().where({ id });
     } catch (error) {
       throw new RepositoryError({
         entity: 'Collection',
@@ -172,7 +170,7 @@ export class CollectionRepositoryImpl implements CollectionRepository {
     const { ids } = payload;
 
     try {
-      const query = this.databaseClient<CollectionRawEntity>(this.collectionTable.name);
+      const query = this.databaseClient<CollectionRawEntity>(collectionTable);
 
       if (ids) {
         query.whereIn('id', ids);

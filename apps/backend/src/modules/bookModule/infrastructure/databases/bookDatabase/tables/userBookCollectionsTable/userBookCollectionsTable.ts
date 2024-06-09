@@ -1,5 +1,8 @@
-import { type DatabaseTable } from '../../../../../../../common/types/databaseTable.js';
+import { type UserBookCollectionRawEntity } from './userBookCollectionsRawEntity.js';
 
-export class UserBookCollectionsTable implements DatabaseTable {
-  public readonly name = 'userBookCollections';
-}
+export const userBookCollectionTable = 'userBookCollections';
+
+export const userBookCollectionColumns: Record<keyof UserBookCollectionRawEntity, string> = {
+  userBookId: `${userBookCollectionTable}.userBookId`,
+  collectionId: `${userBookCollectionTable}.collectionId`,
+};

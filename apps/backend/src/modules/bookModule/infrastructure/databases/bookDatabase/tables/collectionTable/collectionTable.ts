@@ -1,5 +1,9 @@
-import { type DatabaseTable } from '../../../../../../../common/types/databaseTable.js';
+import { type CollectionRawEntity } from './collectionRawEntity.js';
 
-export class CollectionTable implements DatabaseTable {
-  public name = 'collections';
-}
+export const collectionTable = 'collections';
+
+export const collectionColumns: Record<keyof CollectionRawEntity, string> = {
+  id: `${collectionTable}.id`,
+  name: `${collectionTable}.name`,
+  userId: `${collectionTable}.userId`,
+};

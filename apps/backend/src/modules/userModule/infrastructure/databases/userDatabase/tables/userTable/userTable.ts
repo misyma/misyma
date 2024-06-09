@@ -1,5 +1,12 @@
-import { type DatabaseTable } from '../../../../../../../common/types/databaseTable.js';
+import { type UserRawEntity } from './userRawEntity.js';
 
-export class UserTable implements DatabaseTable {
-  public readonly name = 'users';
-}
+export const userTable = 'users';
+
+export const userColumns: Record<keyof UserRawEntity, string> = {
+  id: `${userTable}.id`,
+  email: `${userTable}.email`,
+  password: `${userTable}.password`,
+  name: `${userTable}.name`,
+  isEmailVerified: `${userTable}.isEmailVerified`,
+  role: `${userTable}.role`,
+};

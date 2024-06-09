@@ -11,7 +11,7 @@ import {
   type SavePayload,
 } from '../../../domain/repositories/bookReadingRepository/bookReadingRepository.js';
 import { type BookReadingRawEntity } from '../../databases/bookDatabase/tables/bookReadingTable/bookReadingRawEntity.js';
-import { BookReadingTable } from '../../databases/bookDatabase/tables/bookReadingTable/bookReadingTable.js';
+import { bookReadingTable } from '../../databases/bookDatabase/tables/bookReadingTable/bookReadingTable.js';
 
 type CreateBookReadingPayload = { bookReading: BookReadingState };
 
@@ -24,15 +24,13 @@ export class BookReadingRepositoryImpl implements BookReadingRepository {
     private readonly uuidService: UuidService,
   ) {}
 
-  private readonly table = new BookReadingTable();
-
   public async findBookReading(payload: FindBookReadingPayload): Promise<BookReading | null> {
     const { id } = payload;
 
     let rawEntity: BookReadingRawEntity | undefined;
 
     try {
-      rawEntity = await this.databaseClient<BookReadingRawEntity>(this.table.name).where({ id }).first();
+      rawEntity = await this.databaseClient<BookReadingRawEntity>(bookReadingTable).where({ id }).first();
     } catch (error) {
       throw new RepositoryError({
         entity: 'BookReading',
@@ -54,7 +52,7 @@ export class BookReadingRepositoryImpl implements BookReadingRepository {
     let rawEntities: BookReadingRawEntity[];
 
     try {
-      const query = this.databaseClient<BookReadingRawEntity>(this.table.name)
+      const query = this.databaseClient<BookReadingRawEntity>(bookReadingTable)
         .where({ userBookId })
         .limit(pageSize)
         .offset(pageSize * (page - 1));
@@ -81,7 +79,7 @@ export class BookReadingRepositoryImpl implements BookReadingRepository {
     let rawEntity: BookReadingRawEntity;
 
     try {
-      const result = await this.databaseClient<BookReadingRawEntity>(this.table.name).insert(
+      const result = await this.databaseClient<BookReadingRawEntity>(bookReadingTable).insert(
         {
           id: this.uuidService.generateUuid(),
           userBookId: bookReading.userBookId,
@@ -111,7 +109,7 @@ export class BookReadingRepositoryImpl implements BookReadingRepository {
     let rawEntity: BookReadingRawEntity;
 
     try {
-      const result = await this.databaseClient<BookReadingRawEntity>(this.table.name)
+      const result = await this.databaseClient<BookReadingRawEntity>(bookReadingTable)
         .where({ id: bookReading.getId() })
         .update(bookReading.getState(), '*');
 
@@ -141,7 +139,7 @@ export class BookReadingRepositoryImpl implements BookReadingRepository {
     const { id } = payload;
 
     try {
-      await this.databaseClient<BookReadingRawEntity>(this.table.name).where({ id }).delete();
+      await this.databaseClient<BookReadingRawEntity>(bookReadingTable).where({ id }).delete();
     } catch (error) {
       throw new RepositoryError({
         entity: 'BookReading',
@@ -155,7 +153,7 @@ export class BookReadingRepositoryImpl implements BookReadingRepository {
     const { userBookId } = payload;
 
     try {
-      const countResult = await this.databaseClient<BookReadingRawEntity>(this.table.name)
+      const countResult = await this.databaseClient<BookReadingRawEntity>(bookReadingTable)
         .where({ userBookId })
         .count()
         .first();

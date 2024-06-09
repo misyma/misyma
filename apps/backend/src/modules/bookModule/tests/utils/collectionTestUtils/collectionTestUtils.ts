@@ -1,6 +1,6 @@
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type CollectionRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/collectionTable/collectionRawEntity.js';
-import { CollectionTable } from '../../../infrastructure/databases/bookDatabase/tables/collectionTable/collectionTable.js';
+import { collectionTable } from '../../../infrastructure/databases/bookDatabase/tables/collectionTable/collectionTable.js';
 import { CollectionTestFactory } from '../../factories/collectionTestFactory/collectionTestFactory.js';
 
 interface CreateAndPersistPayload {
@@ -8,8 +8,6 @@ interface CreateAndPersistPayload {
 }
 
 export class CollectionTestUtils {
-  private readonly collectionTable = new CollectionTable();
-
   private readonly collectionTestFactory = new CollectionTestFactory();
 
   public constructor(private readonly databaseClient: DatabaseClient) {}
@@ -19,27 +17,25 @@ export class CollectionTestUtils {
 
     const data = this.collectionTestFactory.createRaw(input);
 
-    const rawEntities = await this.databaseClient<CollectionRawEntity>(this.collectionTable.name).insert(data, '*');
+    const rawEntities = await this.databaseClient<CollectionRawEntity>(collectionTable).insert(data, '*');
 
     return rawEntities[0] as CollectionRawEntity;
   }
 
   public async findByName(name: string): Promise<CollectionRawEntity | null> {
-    const collection = await this.databaseClient<CollectionRawEntity>(this.collectionTable.name)
-      .where({ name })
-      .first();
+    const collection = await this.databaseClient<CollectionRawEntity>(collectionTable).where({ name }).first();
 
     return collection || null;
   }
 
   public async findById(id: string): Promise<CollectionRawEntity | null> {
-    const collection = await this.databaseClient<CollectionRawEntity>(this.collectionTable.name).where({ id }).first();
+    const collection = await this.databaseClient<CollectionRawEntity>(collectionTable).where({ id }).first();
 
     return collection || null;
   }
 
   public async truncate(): Promise<void> {
-    await this.databaseClient<CollectionRawEntity>(this.collectionTable.name).truncate();
+    await this.databaseClient<CollectionRawEntity>(collectionTable).truncate();
   }
 
   public async destroyDatabaseConnection(): Promise<void> {

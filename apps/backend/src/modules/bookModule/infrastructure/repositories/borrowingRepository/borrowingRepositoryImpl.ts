@@ -11,7 +11,7 @@ import {
   type SavePayload,
 } from '../../../domain/repositories/borrowingRepository/borrowingRepository.js';
 import { type BorrowingRawEntity } from '../../databases/bookDatabase/tables/borrowingTable/borrowingRawEntity.js';
-import { BorrowingTable } from '../../databases/bookDatabase/tables/borrowingTable/borrowingTable.js';
+import { borrowingTable } from '../../databases/bookDatabase/tables/borrowingTable/borrowingTable.js';
 
 type CreateBorrowingPayload = { borrowing: BorrowingState };
 
@@ -24,15 +24,13 @@ export class BorrowingRepositoryImpl implements BorrowingRepository {
     private readonly uuidService: UuidService,
   ) {}
 
-  private readonly table = new BorrowingTable();
-
   public async findBorrowing(payload: FindBorrowingPayload): Promise<Borrowing | null> {
     const { id } = payload;
 
     let rawEntity: BorrowingRawEntity | undefined;
 
     try {
-      rawEntity = await this.databaseClient<BorrowingRawEntity>(this.table.name).where({ id }).first();
+      rawEntity = await this.databaseClient<BorrowingRawEntity>(borrowingTable).where({ id }).first();
     } catch (error) {
       throw new RepositoryError({
         entity: 'Borrowing',
@@ -54,7 +52,7 @@ export class BorrowingRepositoryImpl implements BorrowingRepository {
     let rawEntities: BorrowingRawEntity[];
 
     try {
-      rawEntities = await this.databaseClient<BorrowingRawEntity>(this.table.name)
+      rawEntities = await this.databaseClient<BorrowingRawEntity>(borrowingTable)
         .where({ userBookId })
         .limit(pageSize)
         .offset(pageSize * (page - 1));
@@ -75,7 +73,7 @@ export class BorrowingRepositoryImpl implements BorrowingRepository {
     let rawEntity: BorrowingRawEntity;
 
     try {
-      const result = await this.databaseClient<BorrowingRawEntity>(this.table.name).insert(
+      const result = await this.databaseClient<BorrowingRawEntity>(borrowingTable).insert(
         {
           id: this.uuidService.generateUuid(),
           userBookId: borrowing.userBookId,
@@ -104,7 +102,7 @@ export class BorrowingRepositoryImpl implements BorrowingRepository {
     let rawEntity: BorrowingRawEntity;
 
     try {
-      const result = await this.databaseClient<BorrowingRawEntity>(this.table.name)
+      const result = await this.databaseClient<BorrowingRawEntity>(borrowingTable)
         .where({ id: borrowing.getId() })
         .update(borrowing.getState(), '*');
 
@@ -134,7 +132,7 @@ export class BorrowingRepositoryImpl implements BorrowingRepository {
     const { id } = payload;
 
     try {
-      await this.databaseClient<BorrowingRawEntity>(this.table.name).where({ id }).delete();
+      await this.databaseClient<BorrowingRawEntity>(borrowingTable).where({ id }).delete();
     } catch (error) {
       throw new RepositoryError({
         entity: 'Borrowing',
@@ -148,7 +146,7 @@ export class BorrowingRepositoryImpl implements BorrowingRepository {
     const { userBookId } = payload;
 
     try {
-      const countResult = await this.databaseClient<BorrowingRawEntity>(this.table.name)
+      const countResult = await this.databaseClient<BorrowingRawEntity>(borrowingTable)
         .where({ userBookId })
         .count()
         .first();
