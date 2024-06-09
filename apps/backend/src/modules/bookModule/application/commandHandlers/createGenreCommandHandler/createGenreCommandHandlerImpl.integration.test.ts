@@ -23,8 +23,6 @@ describe('CreateGenreCommandHandlerImpl', () => {
 
   afterEach(async () => {
     await genreTestUtils.truncate();
-
-    await genreTestUtils.destroyDatabaseConnection();
   });
 
   it('throws an error - when Genre already exists', async () => {

@@ -1,3 +1,4 @@
+import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type BookshelfRawEntity } from '../../../infrastructure/databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfRawEntity.js';
 import { bookshelfTable } from '../../../infrastructure/databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfTable.js';
@@ -15,7 +16,7 @@ interface FindByUserIdPayload {
   readonly userId: string;
 }
 
-export class BookshelfTestUtils {
+export class BookshelfTestUtils implements TestUtils {
   public constructor(private readonly databaseClient: DatabaseClient) {}
 
   private readonly bookshelfTestFactory = new BookshelfTestFactory();

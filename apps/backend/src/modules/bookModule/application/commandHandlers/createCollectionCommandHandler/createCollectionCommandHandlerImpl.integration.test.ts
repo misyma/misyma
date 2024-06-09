@@ -30,8 +30,6 @@ describe('CreateCollectionCommandHandlerImpl', () => {
     await userTestUtils.truncate();
 
     await collectionTestUtils.truncate();
-
-    await collectionTestUtils.destroyDatabaseConnection();
   });
 
   it('throws an error - when Collection already exists', async () => {

@@ -28,8 +28,6 @@ describe('GenreRepositoryImpl', () => {
 
   afterEach(async () => {
     await genreTestUtils.truncate();
-
-    await genreTestUtils.destroyDatabaseConnection();
   });
 
   describe('findById', () => {

@@ -1,3 +1,4 @@
+import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UserRawEntity } from '../../../infrastructure/databases/userDatabase/tables/userTable/userRawEntity.js';
 import { userTable } from '../../../infrastructure/databases/userDatabase/tables/userTable/userTable.js';
@@ -19,7 +20,7 @@ interface FindByIdPayload {
   readonly id: string;
 }
 
-export class UserTestUtils {
+export class UserTestUtils implements TestUtils {
   private readonly userTestFactory = new UserTestFactory();
 
   public constructor(private readonly databaseClient: DatabaseClient) {}

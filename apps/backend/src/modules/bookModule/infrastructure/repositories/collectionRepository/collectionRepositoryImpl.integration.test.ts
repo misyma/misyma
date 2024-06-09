@@ -39,8 +39,6 @@ describe('CollectionRepositoryImpl', () => {
     await collectionTestUtils.truncate();
 
     await userTestUtils.truncate();
-
-    await collectionTestUtils.destroyDatabaseConnection();
   });
 
   describe('findById', () => {

@@ -31,8 +31,6 @@ describe('UpdateCollectionNameCommandHandler', () => {
     await userTestUtils.truncate();
 
     await collectionTestUtils.truncate();
-
-    await collectionTestUtils.destroyDatabaseConnection();
   });
 
   it('throws an error - when Collection does not exist', async () => {

@@ -1,3 +1,4 @@
+import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type Transaction } from '../../../../../libs/database/types/transaction.js';
 import { type BookAuthorRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/bookAuthorTable/bookAuthorRawEntity.js';
@@ -29,7 +30,7 @@ interface FindByTitleAndAuthorPayload {
   readonly authorId: string;
 }
 
-export class BookTestUtils {
+export class BookTestUtils implements TestUtils {
   private readonly bookTestFactory = new BookTestFactory();
 
   public constructor(private readonly databaseClient: DatabaseClient) {}

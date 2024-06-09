@@ -1,4 +1,5 @@
 import { Generator } from '../../../../../../tests/generator.js';
+import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type GenreRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/genreTable/genreRawEntity.js';
 import { genreTable } from '../../../infrastructure/databases/bookDatabase/tables/genreTable/genreTable.js';
@@ -9,7 +10,7 @@ interface CreateAndPersistPayload {
   };
 }
 
-export class GenreTestUtils {
+export class GenreTestUtils implements TestUtils {
   public constructor(private readonly databaseClient: DatabaseClient) {}
 
   public async createAndPersist(payload: CreateAndPersistPayload = {}): Promise<GenreRawEntity> {
@@ -49,10 +50,6 @@ export class GenreTestUtils {
 
   public async truncate(): Promise<void> {
     await this.databaseClient<GenreRawEntity>(genreTable).truncate();
-  }
-
-  public async destroyDatabaseConnection(): Promise<void> {
-    await this.databaseClient.destroy();
   }
 
   private async getNonClashingName(): Promise<string> {

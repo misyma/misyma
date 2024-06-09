@@ -26,6 +26,8 @@ describe('UpdateBookReadingCommandHandlerImpl', () => {
 
   let userBookTestUtils: UserBookTestUtils;
 
+  let testUtils: { truncate }[] = [];
+
   beforeEach(async () => {
     const container = TestContainer.create();
 
@@ -41,27 +43,17 @@ describe('UpdateBookReadingCommandHandlerImpl', () => {
 
     userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
 
-    await bookTestUtils.truncate();
+    testUtils = [bookTestUtils, bookshelfTestUtils, userTestUtils, bookReadingTestUtils, userBookTestUtils];
 
-    await bookshelfTestUtils.truncate();
-
-    await userTestUtils.truncate();
-
-    await bookReadingTestUtils.truncate();
-
-    await userBookTestUtils.truncate();
+    for (const testUtil of testUtils) {
+      await testUtil.truncate();
+    }
   });
 
   afterEach(async () => {
-    await bookTestUtils.truncate();
-
-    await bookshelfTestUtils.truncate();
-
-    await userTestUtils.truncate();
-
-    await bookReadingTestUtils.truncate();
-
-    await userBookTestUtils.truncate();
+    for (const testUtil of testUtils) {
+      await testUtil.truncate();
+    }
   });
 
   it('throws an error - when BookReading was not found', async () => {
