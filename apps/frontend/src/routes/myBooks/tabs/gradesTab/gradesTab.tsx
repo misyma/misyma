@@ -1,17 +1,17 @@
 import { FC, useMemo, useState } from 'react';
-import { Separator } from '../../../../components/ui/separator.js';
-import { FindUserBookQueryOptions } from '../../../../api/books/queries/findUserBook/findUserBookQueryOptions.js';
-import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery.js';
+import { Separator } from '../../../../modules/common/components/ui/separator.js';
+import { FindUserBookQueryOptions } from '../../../../modules/book/api/queries/findUserBook/findUserBookQueryOptions.js';
+import { useFindUserQuery } from '../../../../modules/user/api/queries/findUserQuery/findUserQuery.js';
 import { UserBook } from '@common/contracts';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { FindBookReadingsQueryOptions } from '../../../../api/bookReadings/queries/findBookReadings/findBookReadingsQueryOptions.js';
 import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice.js';
-import { CurrentRatingStar } from '../../components/currentRatingStar/currentRatingStar.js';
+import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice.js';
+import { CurrentRatingStar } from '../../../../modules/book/components/currentRatingStar/currentRatingStar.js';
 import { BasicDataTabSkeleton } from '../basicDataTab/basicDataTabSkeleton.js';
-import { columns } from '../../components/gradesTable/gradesTableColumns.js';
-import { GradesTable } from '../../components/gradesTable/gradesTable.js';
-import { FavoriteBookButton } from '../../components/favoriteBookButton/favoriteBookButton.js';
+import { FavoriteBookButton } from '../../../../modules/book/components/favoriteBookButton/favoriteBookButton.js';
+import { FindBookReadingsQueryOptions } from '../../../../modules/bookReadings/api/queries/findBookReadings/findBookReadingsQueryOptions.js';
+import { GradesTable } from '../../../../modules/book/components/gradesTable/gradesTable.js';
+import { columns } from '../../../../modules/book/components/gradesTable/gradesTableColumns.js';
 
 interface Props {
   userBookId: string;

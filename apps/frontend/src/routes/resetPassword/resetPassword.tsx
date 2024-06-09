@@ -1,10 +1,10 @@
 import { Link, createRoute, useNavigate } from '@tanstack/react-router';
 import { rootRoute } from '../root';
 import { FC, useState } from 'react';
-import { SendResetPasswordEmailForm } from './components/sendResetPasswordEmailForm/sendResetPasswordEmailForm';
-import { DefaultFormLayout } from '../../layouts/default/defaultFormLayout';
-import { RequireNonAuthComponent } from '../../core/components/requireNonAuth/requireNonAuthComponent';
-import { Button } from '../../components/ui/button';
+import { SendResetPasswordEmailForm } from '../../modules/auth/components/sendResetPasswordEmailForm/sendResetPasswordEmailForm';
+import { RequireNonAuthComponent } from '../../modules/core/components/requireNonAuth/requireNonAuthComponent';
+import { Button } from '../../modules/common/components/ui/button';
+import { DefaultFormLayout } from '../../modules/core/layouts/default/defaultFormLayout';
 
 export const SendResetPasswordEmailPage: FC = () => {
   const navigate = useNavigate();
@@ -43,7 +43,8 @@ export const SendResetPasswordEmailPage: FC = () => {
         <>
           <div className="py-16 w-60 sm:w-96">
             <p className="text-xl mt-3 font-medium py-2">
-              Jeśli istnieje konto przypisane do tego adresu, otrzymasz <span className="text-primary font-semibold">wiadomość email.</span>
+              Jeśli istnieje konto przypisane do tego adresu, otrzymasz{' '}
+              <span className="text-primary font-semibold">wiadomość email.</span>
             </p>
             <p className="text-xl mt-3 font-medium py-2">
               Znajdziesz w niej link, który pozwoli Ci ustawić nowe hasło.

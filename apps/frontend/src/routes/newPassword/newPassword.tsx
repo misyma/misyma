@@ -1,10 +1,10 @@
 import { Navigate, createRoute, useNavigate } from '@tanstack/react-router';
 import { rootRoute } from '../root';
 import { FC } from 'react';
-import { SetNewPasswordForm } from './components/setNewPasswordForm/setNewPasswordForm';
+import { SetNewPasswordForm } from '../../modules/auth/components/setNewPasswordForm/setNewPasswordForm';
 import { z } from 'zod';
-import { DefaultFormLayout } from '../../layouts/default/defaultFormLayout';
-import { RequireNonAuthComponent } from '../../core/components/requireNonAuth/requireNonAuthComponent';
+import { RequireNonAuthComponent } from '../../modules/core/components/requireNonAuth/requireNonAuthComponent';
+import { DefaultFormLayout } from '../../modules/core/layouts/default/defaultFormLayout';
 
 export const SetNewPasswordPage: FC = () => {
   const navigate = useNavigate();

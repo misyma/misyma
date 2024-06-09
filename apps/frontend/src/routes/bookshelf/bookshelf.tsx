@@ -1,21 +1,21 @@
 import { Navigate, createRoute, useNavigate } from '@tanstack/react-router';
 import { FC } from 'react';
 import { rootRoute } from '../root';
-import { RequireAuthComponent } from '../../core/components/requireAuth/requireAuthComponent';
+import { RequireAuthComponent } from '../../modules/core/components/requireAuth/requireAuthComponent';
 import { z } from 'zod';
-import { FindBooksByBookshelfIdQueryOptions } from '../../api/books/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
-import { AuthenticatedLayout } from '../../layouts/authenticated/authenticatedLayout';
-import { Button } from '../../components/ui/button';
-import { useFindUserQuery } from '../../api/user/queries/findUserQuery/findUserQuery';
-import { useFindBookshelfByIdQuery } from '../../api/bookshelf/queries/findBookshelfByIdQuery/findBookshelfByIdQuery';
-import { Separator } from '../../components/ui/separator';
+import { FindBooksByBookshelfIdQueryOptions } from '../../modules/book/api/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
+import { AuthenticatedLayout } from '../../modules/auth/layouts/authenticated/authenticatedLayout';
+import { Button } from '../../modules/common/components/ui/button';
+import { useFindUserQuery } from '../../modules/user/api/queries/findUserQuery/findUserQuery';
+import { Separator } from '../../modules/common/components/ui/separator';
 import { HiCheckCircle, HiDotsCircleHorizontal, HiQuestionMarkCircle } from 'react-icons/hi';
 import { ReadingStatus, UserBook } from '@common/contracts';
-import { cn } from '../../lib/utils';
-import { FavoriteBookButton } from '../myBooks/components/favoriteBookButton/favoriteBookButton';
+import { cn } from '../../modules/common/lib/utils';
+import { FavoriteBookButton } from '../../modules/book/components/favoriteBookButton/favoriteBookButton';
 import { useQuery } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../core/store/states/userState/userStateSlice';
+import { userStateSelectors } from '../../modules/core/store/states/userState/userStateSlice';
+import { useFindBookshelfByIdQuery } from '../../modules/bookshelf/api/queries/findBookshelfByIdQuery/findBookshelfByIdQuery';
 
 const bookshelfSearchSchema = z.object({
   id: z.string().uuid().catch(''),

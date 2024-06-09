@@ -1,19 +1,19 @@
 import { FC } from 'react';
-import { StarRating } from '../../components/starRating/starRating.js';
-import { StatusChooserCards } from '../../components/statusChooser/statusChooserCards.js';
-import { BookshelfChoiceDropdown } from '../../components/bookshelfChoiceDropdown/bookshelfChoiceDropdown.js';
-import { Separator } from '../../../../components/ui/separator.js';
-import { FavoriteBookButton } from '../../components/favoriteBookButton/favoriteBookButton.js';
-import { FindUserBookQueryOptions } from '../../../../api/books/queries/findUserBook/findUserBookQueryOptions.js';
-import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery.js';
+import { StarRating } from '../../../../modules/bookReadings/components/starRating/starRating.js';
+import { StatusChooserCards } from '../../../../modules/book/components/statusChooser/statusChooserCards.js';
+import { BookshelfChoiceDropdown } from '../../../../modules/book/components/bookshelfChoiceDropdown/bookshelfChoiceDropdown.js';
+import { Separator } from '../../../../modules/common/components/ui/separator.js';
+import { FavoriteBookButton } from '../../../../modules/book/components/favoriteBookButton/favoriteBookButton.js';
+import { FindUserBookQueryOptions } from '../../../../modules/book/api/queries/findUserBook/findUserBookQueryOptions.js';
+import { useFindUserQuery } from '../../../../modules/user/api/queries/findUserQuery/findUserQuery.js';
 import { UserBook } from '@common/contracts';
 import { BasicDataTabSkeleton } from './basicDataTabSkeleton.js';
-import { CurrentRatingStar } from '../../components/currentRatingStar/currentRatingStar.js';
-import { BookFormat } from '../../../../common/constants/bookFormat.js';
-import { ReversedLanguages } from '../../../../common/constants/languages.js';
+import { CurrentRatingStar } from '../../../../modules/book/components/currentRatingStar/currentRatingStar.js';
+import { BookFormat } from '../../../../modules/common/constants/bookFormat.js';
+import { ReversedLanguages } from '../../../../modules/common/constants/languages.js';
 import { useQuery } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice.js';
+import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice.js';
 
 interface Props {
   bookId: string;

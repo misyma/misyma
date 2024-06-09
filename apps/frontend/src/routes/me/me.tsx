@@ -1,11 +1,11 @@
 import { Outlet, createRoute } from '@tanstack/react-router';
 import { rootRoute } from '../root';
-import { RequireAuthComponent } from '../../core/components/requireAuth/requireAuthComponent';
+import { RequireAuthComponent } from '../../modules/core/components/requireAuth/requireAuthComponent';
 import { FC } from 'react';
 import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../core/store/states/userState/userStateSlice';
-import { useFindUserQuery } from '../../api/user/queries/findUserQuery/findUserQuery';
-import { AuthenticatedLayout } from '../../layouts/authenticated/authenticatedLayout';
+import { userStateSelectors } from '../../modules/core/store/states/userState/userStateSlice';
+import { useFindUserQuery } from '../../modules/user/api/queries/findUserQuery/findUserQuery';
+import { AuthenticatedLayout } from '../../modules/auth/layouts/authenticated/authenticatedLayout';
 
 export const AuthenticatedPage: FC = () => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);

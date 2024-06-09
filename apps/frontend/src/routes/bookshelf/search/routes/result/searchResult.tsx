@@ -1,18 +1,18 @@
 import { createRoute, useNavigate } from '@tanstack/react-router';
 import { rootRoute } from '../../../../root';
-import { RequireAuthComponent } from '../../../../../core/components/requireAuth/requireAuthComponent';
+import { RequireAuthComponent } from '../../../../../modules/core/components/requireAuth/requireAuthComponent';
 import { z } from 'zod';
 import { FC, useEffect, useMemo, useState } from 'react';
-import { FindBooksQueryOptions } from '../../../../../api/books/queries/findBooks/findBooksQueryOptions';
-import { AuthenticatedLayout } from '../../../../../layouts/authenticated/authenticatedLayout';
-import { Button } from '../../../../../components/ui/button';
-import { Paginator } from '../../../../../components/paginator/paginator';
-import { Breadcrumbs, NumericBreadcrumb } from '../../../../../components/ui/breadcrumbs';
-import { useSearchBookContextDispatch } from '../../context/searchCreateBookContext';
+import { FindBooksQueryOptions } from '../../../../../modules/book/api/queries/findBooks/findBooksQueryOptions';
+import { AuthenticatedLayout } from '../../../../../modules/auth/layouts/authenticated/authenticatedLayout';
+import { Button } from '../../../../../modules/common/components/ui/button';
+import { useSearchBookContextDispatch } from '../../../../../modules/bookshelf/context/searchCreateBookContext/searchCreateBookContext';
 import { Book } from '../../../../../../../../common/contracts/dist/src/schemas/book/book';
 import { useQuery } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';
+import { userStateSelectors } from '../../../../../modules/core/store/states/userState/userStateSlice';
+import { Paginator } from '../../../../../modules/common/components/paginator/paginator';
+import { Breadcrumbs, NumericBreadcrumb } from '../../../../../modules/common/components/ui/breadcrumbs';
 
 export const SearchResultPage: FC = () => {
   const searchParams = searchResultRoute.useSearch();

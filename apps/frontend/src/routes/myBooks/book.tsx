@@ -1,19 +1,19 @@
 import { Navigate, createRoute } from '@tanstack/react-router';
 import { FC, useState } from 'react';
 import { rootRoute } from '../root';
-import { AuthenticatedLayout } from '../../layouts/authenticated/authenticatedLayout';
+import { AuthenticatedLayout } from '../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { z } from 'zod';
-import { Button } from '../../components/ui/button';
+import { Button } from '../../modules/common/components/ui/button';
 
 import { BasicDataTab } from './tabs/basicDataTab/basicDataTab';
 import { QuotationsTab } from './tabs/quotationsTab/quotationsTab';
 import { GradesTab } from './tabs/gradesTab/gradesTab';
-import { cn } from '../../lib/utils';
-import { CreateQuotationModal } from './components/createQuotationModal/createQuotationModal';
-import { AddStarRatingButton } from './components/addStarRatingButton/addStarRatingButton';
+import { cn } from '../../modules/common/lib/utils';
+import { CreateQuotationModal } from '../../modules/book/components/createQuotationModal/createQuotationModal';
+import { AddStarRatingButton } from '../../modules/book/components/addStarRatingButton/addStarRatingButton';
 import { useQueryClient } from '@tanstack/react-query';
-import { useFindUserQuery } from '../../api/user/queries/findUserQuery/findUserQuery';
-import { EditOrDeleteBookModal } from './components/editOrDeleteBookModal/editOrDeleteBookModal';
+import { useFindUserQuery } from '../../modules/user/api/queries/findUserQuery/findUserQuery';
+import { EditOrDeleteBookModal } from '../../modules/book/components/editOrDeleteBookModal/editOrDeleteBookModal';
 
 export const BookPage: FC = () => {
   const { data: userData } = useFindUserQuery();
