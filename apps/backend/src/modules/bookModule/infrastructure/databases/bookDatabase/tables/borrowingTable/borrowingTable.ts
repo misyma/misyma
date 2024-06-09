@@ -1,5 +1,11 @@
-import { type DatabaseTable } from '../../../../../../../common/types/databaseTable.js';
+import { type BorrowingRawEntity } from './borrowingRawEntity.js';
 
-export class BorrowingTable implements DatabaseTable {
-  public readonly name = 'borrowings';
-}
+export const borrowingTable = 'borrowings';
+
+export const borrowingColumns: Record<keyof BorrowingRawEntity, string> = {
+  id: `${borrowingTable}.id`,
+  userBookId: `${borrowingTable}.userBookId`,
+  borrower: `${borrowingTable}.borrower`,
+  startedAt: `${borrowingTable}.startedAt`,
+  endedAt: `${borrowingTable}.endedAt`,
+};

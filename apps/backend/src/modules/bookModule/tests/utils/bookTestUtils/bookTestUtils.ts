@@ -1,7 +1,7 @@
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type Transaction } from '../../../../../libs/database/types/transaction.js';
-import { type BooksAuthorsRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/booksAuthorsTable/booksAuthorsRawEntity.js';
-import { BooksAuthorsTable } from '../../../infrastructure/databases/bookDatabase/tables/booksAuthorsTable/booksAuthorsTable.js';
+import { type BookAuthorRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/bookAuthorTable/bookAuthorRawEntity.js';
+import { BooksAuthorsTable } from '../../../infrastructure/databases/bookDatabase/tables/bookAuthorTable/bookAuthorTable.js';
 import { type BookRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/bookTable/bookRawEntity.js';
 import { BookTable } from '../../../infrastructure/databases/bookDatabase/tables/bookTable/bookTable.js';
 import { BookTestFactory } from '../../factories/bookTestFactory/bookTestFactory.js';
@@ -44,7 +44,7 @@ export class BookTestUtils {
       rawEntities = await transaction<BookRawEntity>(this.bookTable.name).insert(book, '*');
 
       if (input?.authorIds) {
-        await transaction.batchInsert<BooksAuthorsRawEntity>(
+        await transaction.batchInsert<BookAuthorRawEntity>(
           this.booksAuthorsTable.name,
           input.authorIds.map((authorId) => ({
             bookId: book.id,
@@ -57,7 +57,7 @@ export class BookTestUtils {
     return rawEntities[0] as BookRawEntity;
   }
 
-  public async findBookAuthors(payload: FindBookAuthorsPayload): Promise<BooksAuthorsRawEntity[]> {
+  public async findBookAuthors(payload: FindBookAuthorsPayload): Promise<BookAuthorRawEntity[]> {
     const { bookId } = payload;
 
     const rawEntities = await this.databaseClient(this.booksAuthorsTable.name).select('*').where({

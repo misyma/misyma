@@ -1,5 +1,8 @@
-import { type DatabaseTable } from '../../../../../../../common/types/databaseTable.js';
+import { type GenreRawEntity } from './genreRawEntity.js';
 
-export class GenreTable implements DatabaseTable {
-  public name = 'genres';
-}
+export const genreTable = 'genres';
+
+export const genreColumns: Record<keyof GenreRawEntity, string> = {
+  id: `${genreTable}.id`,
+  name: `${genreTable}.name`,
+};

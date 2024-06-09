@@ -1,5 +1,9 @@
-import { type DatabaseTable } from '../../../../../../../common/types/databaseTable.js';
+import { type BlacklistTokenRawEntity } from './blacklistTokenRawEntity.js';
 
-export class BlacklistTokenTable implements DatabaseTable {
-  public readonly name = 'blacklistTokens';
-}
+export const blacklistTokenTable = 'blacklistTokens';
+
+export const blacklistTokenColumns: Record<keyof BlacklistTokenRawEntity, string> = {
+  id: `${blacklistTokenTable}.id`,
+  token: `${blacklistTokenTable}.token`,
+  expiresAt: `${blacklistTokenTable}.expiresAt`,
+};

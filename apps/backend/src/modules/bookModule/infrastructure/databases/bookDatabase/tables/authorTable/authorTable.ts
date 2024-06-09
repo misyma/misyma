@@ -1,5 +1,9 @@
-import { type DatabaseTable } from '../../../../../../../common/types/databaseTable.js';
+import { type AuthorRawEntity } from './authorRawEntity.js';
 
-export class AuthorTable implements DatabaseTable {
-  public readonly name = 'authors';
-}
+export const authorTable = 'authors';
+
+export const authorColumns: Record<keyof AuthorRawEntity, string> = {
+  id: `${authorTable}.id`,
+  name: `${authorTable}.name`,
+  isApproved: `${authorTable}.isApproved`,
+};

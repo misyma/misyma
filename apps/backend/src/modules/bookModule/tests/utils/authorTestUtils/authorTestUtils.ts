@@ -1,6 +1,5 @@
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type AuthorRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/authorTable/authorRawEntity.js';
-import { AuthorTable } from '../../../infrastructure/databases/bookDatabase/tables/authorTable/authorTable.js';
 import { AuthorTestFactory } from '../../factories/authorTestFactory/authorTestFactory.js';
 
 interface CreateAndPersistPayload {
@@ -16,7 +15,6 @@ interface FindByNamePayload {
 }
 
 export class AuthorTestUtils {
-  private readonly databaseTable = new AuthorTable();
   private readonly authorTestFactory = new AuthorTestFactory();
 
   public constructor(private readonly databaseClient: DatabaseClient) {}
@@ -26,7 +24,7 @@ export class AuthorTestUtils {
 
     const author = this.authorTestFactory.createRaw(input);
 
-    const rawEntities = await this.databaseClient<AuthorRawEntity>(this.databaseTable.name).insert(author, '*');
+    const rawEntities = await this.databaseClient<AuthorRawEntity>(AuthorTable.name).insert(author, '*');
 
     const rawEntity = rawEntities[0] as AuthorRawEntity;
 
@@ -39,10 +37,7 @@ export class AuthorTestUtils {
   public async findById(payload: FindByIdPayload): Promise<AuthorRawEntity | undefined> {
     const { id } = payload;
 
-    const rawEntity = await this.databaseClient<AuthorRawEntity>(this.databaseTable.name)
-      .select('*')
-      .where({ id })
-      .first();
+    const rawEntity = await this.databaseClient<AuthorRawEntity>(AuthorTable.name).select('*').where({ id }).first();
 
     if (!rawEntity) {
       return undefined;
@@ -57,10 +52,7 @@ export class AuthorTestUtils {
   public async findByName(payload: FindByNamePayload): Promise<AuthorRawEntity | undefined> {
     const { name } = payload;
 
-    const rawEntity = await this.databaseClient<AuthorRawEntity>(this.databaseTable.name)
-      .select('*')
-      .where({ name })
-      .first();
+    const rawEntity = await this.databaseClient<AuthorRawEntity>(AuthorTable.name).select('*').where({ name }).first();
 
     if (!rawEntity) {
       return undefined;
@@ -73,6 +65,6 @@ export class AuthorTestUtils {
   }
 
   public async truncate(): Promise<void> {
-    await this.databaseClient<AuthorRawEntity>(this.databaseTable.name).truncate();
+    await this.databaseClient<AuthorRawEntity>(AuthorTable.name).truncate();
   }
 }

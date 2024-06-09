@@ -14,11 +14,12 @@ import {
   type FindUserBooksByUserPayload,
 } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
 import { AuthorTable } from '../../databases/bookDatabase/tables/authorTable/authorTable.js';
+import { BooksAuthorsTable } from '../../databases/bookDatabase/tables/bookAuthorTable/bookAuthorTable.js';
 import { BookReadingTable } from '../../databases/bookDatabase/tables/bookReadingTable/bookReadingTable.js';
-import { BooksAuthorsTable } from '../../databases/bookDatabase/tables/booksAuthorsTable/booksAuthorsTable.js';
 import { BookTable } from '../../databases/bookDatabase/tables/bookTable/bookTable.js';
 import { CollectionTable } from '../../databases/bookDatabase/tables/collectionTable/collectionTable.js';
 import { GenreTable } from '../../databases/bookDatabase/tables/genreTable/genreTable.js';
+import { QuoteTable } from '../../databases/bookDatabase/tables/quoteTable/quoteTable.js';
 import { type UserBookCollectionRawEntity } from '../../databases/bookDatabase/tables/userBookCollectionsTable/userBookCollectionsRawEntity.js';
 import { UserBookCollectionsTable } from '../../databases/bookDatabase/tables/userBookCollectionsTable/userBookCollectionsTable.js';
 import { type UserBookGenreRawEntity } from '../../databases/bookDatabase/tables/userBookGenresTable/userBookGenresRawEntity.js';
@@ -251,7 +252,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
     try {
       rawEntities = await this.databaseClient<UserBookRawEntity>(this.userBookTable.name)
         .select([
-          `${this.bookTable.name}.id as bookId`,
+          `${QuoteTable.qualifiedColumns.id}.id as bookId`,
           `${this.bookTable.name}.title as title`,
           `${this.bookTable.name}.isbn as isbn`,
           `${this.bookTable.name}.publisher as publisher`,

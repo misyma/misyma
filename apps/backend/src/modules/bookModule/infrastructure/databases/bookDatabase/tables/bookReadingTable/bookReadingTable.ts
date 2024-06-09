@@ -1,5 +1,12 @@
-import { type DatabaseTable } from '../../../../../../../common/types/databaseTable.js';
+import { type BookReadingRawEntity } from './bookReadingRawEntity.js';
 
-export class BookReadingTable implements DatabaseTable {
-  public readonly name = 'bookReadings';
-}
+export const bookReadingTable = 'bookReadings';
+
+export const bookReadingColumns: Record<keyof BookReadingRawEntity, string> = {
+  id: `${bookReadingTable}.id`,
+  userBookId: `${bookReadingTable}.userBookId`,
+  rating: `${bookReadingTable}.rating`,
+  comment: `${bookReadingTable}.comment`,
+  startedAt: `${bookReadingTable}.startedAt`,
+  endedAt: `${bookReadingTable}.endedAt`,
+};

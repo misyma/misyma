@@ -11,8 +11,8 @@ import {
   type FindBooksPayload,
 } from '../../../domain/repositories/bookRepository/bookRepository.js';
 import { AuthorTable } from '../../databases/bookDatabase/tables/authorTable/authorTable.js';
-import { type BooksAuthorsRawEntity } from '../../databases/bookDatabase/tables/booksAuthorsTable/booksAuthorsRawEntity.js';
-import { BooksAuthorsTable } from '../../databases/bookDatabase/tables/booksAuthorsTable/booksAuthorsTable.js';
+import { type BookAuthorRawEntity } from '../../databases/bookDatabase/tables/bookAuthorTable/bookAuthorRawEntity.js';
+import { BooksAuthorsTable } from '../../databases/bookDatabase/tables/bookAuthorTable/bookAuthorTable.js';
 import { type BookRawEntity } from '../../databases/bookDatabase/tables/bookTable/bookRawEntity.js';
 import { BookTable } from '../../databases/bookDatabase/tables/bookTable/bookTable.js';
 import { type BookWithJoinsRawEntity } from '../../databases/bookDatabase/tables/bookTable/bookWithJoinsRawEntity.js';
@@ -125,7 +125,7 @@ export class BookRepositoryImpl implements BookRepository {
         );
 
         if (addedAuthors.length > 0) {
-          await transaction.batchInsert<BooksAuthorsRawEntity>(
+          await transaction.batchInsert<BookAuthorRawEntity>(
             this.booksAuthorsTable.name,
             addedAuthors.map((author) => ({
               bookId: book.getId(),
@@ -135,7 +135,7 @@ export class BookRepositoryImpl implements BookRepository {
         }
 
         if (removedAuthors.length > 0) {
-          await transaction<BooksAuthorsRawEntity>(this.booksAuthorsTable.name)
+          await transaction<BookAuthorRawEntity>(this.booksAuthorsTable.name)
             .delete()
             .whereIn(
               'authorId',
