@@ -1,6 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "cache": false
@@ -22,10 +22,6 @@
       "cache": false
     },
     "test:integration:run": {
-      "dependsOn": [],
-      "cache": false
-    },
-    "start:dev": {
       "dependsOn": [],
       "cache": false
     }
