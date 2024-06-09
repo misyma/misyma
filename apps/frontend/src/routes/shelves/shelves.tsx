@@ -320,7 +320,7 @@ export const ShelvesPage: FC = () => {
                               className="pointer-events-auto text-primary h-8 w-8 cursor-pointer"
                               onClick={() => {
                                 if (bookshelves && bookshelves[index]?.id === '') {
-                                  onCreateNew(index);
+                                  return onCreateNew(index);
                                 }
 
                                 onSaveEdit(index);
