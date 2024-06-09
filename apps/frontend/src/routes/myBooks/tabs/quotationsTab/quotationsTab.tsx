@@ -11,7 +11,7 @@ import { getQuotesOptions } from '../../../../api/quotes/queries/getQuotes/getQu
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
 import { CurrentRatingStar } from '../../components/currentRatingStar/currentRatingStar';
-import { FindUserBookQueryOptions } from '../../../../api/books/queries/findUserBook/findUserBookQueryOptions';
+import { FindUserBookQueryOptions } from '../../../../modules/book/api/queries/findUserBook/findUserBookQueryOptions';
 
 interface Props {
   userBookId: string;

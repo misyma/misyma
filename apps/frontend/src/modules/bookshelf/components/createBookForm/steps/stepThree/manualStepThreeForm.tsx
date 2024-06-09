@@ -24,8 +24,7 @@ import {
 } from '../../../../../common/components/ui/form';
 import { FileInput } from '../../../../../common/components/ui/input';
 import { Button } from '../../../../../common/components/ui/button';
-import { useCreateBookMutation } from '../../../../../../api/books/mutations/createBookMutation/createBookMutation';
-import { useCreateUserBookMutation } from '../../../../../../api/books/mutations/createUserBookMutation/createUserBookMutation';
+import { useCreateBookMutation } from '../../../../../book/api/mutations/createBookMutation/createBookMutation';
 import { useFindUserQuery } from '../../../../../../api/user/queries/findUserQuery/findUserQuery';
 import { useNavigate } from '@tanstack/react-router';
 import {
@@ -38,15 +37,16 @@ import {
 import { ReadingStatus } from '../../../../../common/constants/readingStatus';
 import { useToast } from '../../../../../common/components/ui/use-toast';
 import { useEffect, useRef, useState } from 'react';
-import { BookApiError } from '../../../../../../api/books/errors/bookApiError';
-import { useUploadBookImageMutation } from '../../../../../../api/books/mutations/uploadBookImageMutation/uploadBookImageMutation';
+import { useUploadBookImageMutation } from '../../../../../book/api/mutations/uploadBookImageMutation/uploadBookImageMutation';
 import { useCreateAuthorDraftMutation } from '../../../../../../api/authors/mutations/createAuthorDraftMutation/createAuthorDraftMutation';
 import { useQuery } from '@tanstack/react-query';
-import { getGenresQueryOptions } from '../../../../../../api/genres/queries/getGenresQuery/getGenresQueryOptions';
+import { getGenresQueryOptions } from '../../../../../genres/api/queries/getGenresQuery/getGenresQueryOptions';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';
 import { useFindAuthorsQuery } from '../../../../../../api/authors/queries/findAuthorsQuery/findAuthorsQuery';
 import { useFindUserBookshelfsQuery } from '../../../../api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
+import { BookApiError } from '../../../../../book/errors/bookApiError';
+import { useCreateUserBookMutation } from '../../../../../book/api/mutations/createUserBookMutation/createUserBookMutation';
 
 const stepThreeFormSchema = z.object({
   status: z.nativeEnum(ContractReadingStatus, {

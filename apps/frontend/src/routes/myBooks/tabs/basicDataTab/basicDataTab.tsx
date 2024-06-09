@@ -4,7 +4,7 @@ import { StatusChooserCards } from '../../components/statusChooser/statusChooser
 import { BookshelfChoiceDropdown } from '../../components/bookshelfChoiceDropdown/bookshelfChoiceDropdown.js';
 import { Separator } from '../../../../modules/common/components/ui/separator.js';
 import { FavoriteBookButton } from '../../components/favoriteBookButton/favoriteBookButton.js';
-import { FindUserBookQueryOptions } from '../../../../api/books/queries/findUserBook/findUserBookQueryOptions.js';
+import { FindUserBookQueryOptions } from '../../../../modules/book/api/queries/findUserBook/findUserBookQueryOptions.js';
 import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery.js';
 import { UserBook } from '@common/contracts';
 import { BasicDataTabSkeleton } from './basicDataTabSkeleton.js';

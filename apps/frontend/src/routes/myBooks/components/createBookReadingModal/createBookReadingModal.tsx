@@ -17,7 +17,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '../../../../modules/com
 import { CalendarIcon } from 'lucide-react';
 import { Calendar } from '../../../../modules/common/components/ui/calendar';
 import { Textarea } from '../../../../modules/common/components/ui/textarea';
-import { useAddBookReadingMutation } from '../../../../api/bookReadings/mutations/bookReadings/addBookReadingMutation/addBookReadingMutation';
+import { useAddBookReadingMutation } from '../../../../modules/bookReadings/api/mutations/bookReadings/addBookReadingMutation/addBookReadingMutation';
 
 interface Props {
   bookId: string;

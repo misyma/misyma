@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Button } from '../../../../modules/common/components/ui/button';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
-import { getGenresQueryOptions } from '../../../../api/genres/queries/getGenresQuery/getGenresQueryOptions';
+import { getGenresQueryOptions } from '../../../../modules/genres/api/queries/getGenresQuery/getGenresQueryOptions';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
 

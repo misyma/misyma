@@ -3,7 +3,7 @@ import { rootRoute } from '../../../../root';
 import { RequireAuthComponent } from '../../../../../modules/core/components/requireAuth/requireAuthComponent';
 import { z } from 'zod';
 import { FC, useEffect, useMemo, useState } from 'react';
-import { FindBooksQueryOptions } from '../../../../../api/books/queries/findBooks/findBooksQueryOptions';
+import { FindBooksQueryOptions } from '../../../../../modules/book/api/queries/findBooks/findBooksQueryOptions';
 import { AuthenticatedLayout } from '../../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { Button } from '../../../../../modules/common/components/ui/button';
 import { useSearchBookContextDispatch } from '../../../../../modules/bookshelf/context/searchCreateBookContext/searchCreateBookContext';

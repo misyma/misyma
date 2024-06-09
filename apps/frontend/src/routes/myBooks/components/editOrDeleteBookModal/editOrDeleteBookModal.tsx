@@ -7,14 +7,14 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
-import { useUpdateUserBookMutation } from '../../../../api/books/mutations/updateUserBookMutation/updateUserBookMutation';
-import { useUploadBookImageMutation } from '../../../../api/books/mutations/uploadBookImageMutation/uploadBookImageMutation';
-import { useDeleteUserBookMutation } from '../../../../api/books/mutations/deleteUserBookMutation/deleteUserBookMutation';
+import { useUploadBookImageMutation } from '../../../../modules/book/api/mutations/uploadBookImageMutation/uploadBookImageMutation';
 import { useRouter } from '@tanstack/react-router';
 import { UpdateUserBookForm } from '../updateUserBookForm/updateUserBookForm';
 import { UpdateBookRequestForm } from '../updateBookRequestForm/updateBookRequestForm';
 import { BookDetailsChangeRequestProvider } from '../../contexts/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
 import { useQueryClient } from '@tanstack/react-query';
+import { useDeleteUserBookMutation } from '../../../../modules/book/api/mutations/deleteUserBookMutation/deleteUserBookMutation';
+import { useUpdateUserBookMutation } from '../../../../modules/book/api/mutations/updateUserBookMutation/updateUserBookMutation';
 
 interface Props {
   userBookId: string;

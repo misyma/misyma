@@ -7,14 +7,14 @@ import {
   SelectValue,
 } from '../../../../modules/common/components/ui/select';
 import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery';
-import { useUpdateUserBookMutation } from '../../../../api/books/mutations/updateUserBookMutation/updateUserBookMutation';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Skeleton } from '../../../../modules/common/components/ui/skeleton';
 import { useToast } from '../../../../modules/common/components/ui/use-toast';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
-import { FindUserBookQueryOptions } from '../../../../api/books/queries/findUserBook/findUserBookQueryOptions';
+import { FindUserBookQueryOptions } from '../../../../modules/book/api/queries/findUserBook/findUserBookQueryOptions';
 import { useFindUserBookshelfsQuery } from '../../../../modules/bookshelf/api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
+import { useUpdateUserBookMutation } from '../../../../modules/book/api/mutations/updateUserBookMutation/updateUserBookMutation';
 
 interface Props {
   bookId: string;

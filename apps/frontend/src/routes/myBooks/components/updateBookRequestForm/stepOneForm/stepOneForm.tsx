@@ -17,10 +17,10 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useFindUserQuery } from '../../../../../api/user/queries/findUserQuery/findUserQuery';
 import { useQuery } from '@tanstack/react-query';
-import { FindBookByIdQueryOptions } from '../../../../../api/books/queries/findBookById/findBookByIdQueryOptions';
+import { FindBookByIdQueryOptions } from '../../../../../modules/book/api/queries/findBookById/findBookByIdQueryOptions';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../../modules/core/store/states/userState/userStateSlice';
-import { FindUserBookQueryOptions } from '../../../../../api/books/queries/findUserBook/findUserBookQueryOptions';
+import { FindUserBookQueryOptions } from '../../../../../modules/book/api/queries/findUserBook/findUserBookQueryOptions';
 
 const stepOneSchema = z.object({
   isbn: isbnSchema.optional(),

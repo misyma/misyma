@@ -10,10 +10,8 @@ import {
 import { Button } from '../../../common/components/ui/button';
 import { HiTrash } from 'react-icons/hi';
 import { useDeleteBookshelfMutation } from '../../api/mutations/deleteBookshelfMutation/deleteBookshelfMutation';
-import { useMoveBooksToBookshelfMutation } from '../../../../api/books/mutations/moveBooksToBookshelfMutation/moveBooksToBookshelfMutation';
 import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery';
-import { FindBooksByBookshelfIdQueryOptions } from '../../../../api/books/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
-import { BookApiError } from '../../../../api/books/errors/bookApiError';
+import { FindBooksByBookshelfIdQueryOptions } from '../../../book/api/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
 import { Select, SelectItem, SelectTrigger, SelectValue } from '../../../common/components/ui/select';
 import { SelectContent } from '@radix-ui/react-select';
 import { cn } from '../../../common/lib/utils';
@@ -22,6 +20,8 @@ import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useFindUserBookshelfsQuery } from '../../api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 import { ShelfApiError } from '../../api/errors/shelfApiError';
+import { BookApiError } from '../../../book/errors/bookApiError';
+import { useMoveBooksToBookshelfMutation } from '../../../book/api/mutations/moveBooksToBookshelfMutation/moveBooksToBookshelfMutation';
 
 interface Props {
   bookshelfId: string;

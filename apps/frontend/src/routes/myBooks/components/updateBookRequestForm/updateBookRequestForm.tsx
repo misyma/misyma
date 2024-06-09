@@ -9,19 +9,19 @@ import { Languages } from '../../../../modules/common/constants/languages';
 import { Input } from '../../../../modules/common/components/ui/input';
 import { Button } from '../../../../modules/common/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
-import { FindBookByIdQueryOptions } from '../../../../api/books/queries/findBookById/findBookByIdQueryOptions';
+import { FindBookByIdQueryOptions } from '../../../../modules/book/api/queries/findBookById/findBookByIdQueryOptions';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
 import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery';
 import { StepOneForm } from './stepOneForm/stepOneForm';
 import { BookFormat } from '../../../../modules/common/constants/bookFormat';
-import { useUpdateBookMutation } from '../../../../api/books/mutations/updateBookMutation/updateBookMutation';
 import {
   BookDetailsChangeRequestAction,
   useBookDetailsChangeRequestContext,
   useBookDetailsChangeRequestDispatch,
 } from '../../contexts/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
-import { FindUserBookQueryOptions } from '../../../../api/books/queries/findUserBook/findUserBookQueryOptions';
+import { FindUserBookQueryOptions } from '../../../../modules/book/api/queries/findUserBook/findUserBookQueryOptions';
+import { useUpdateBookMutation } from '../../../../modules/book/api/mutations/updateBookMutation/updateBookMutation';
 
 interface Props {
   bookId: string;

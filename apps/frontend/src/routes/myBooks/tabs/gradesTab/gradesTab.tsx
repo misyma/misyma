@@ -1,10 +1,9 @@
 import { FC, useMemo, useState } from 'react';
 import { Separator } from '../../../../modules/common/components/ui/separator.js';
-import { FindUserBookQueryOptions } from '../../../../api/books/queries/findUserBook/findUserBookQueryOptions.js';
+import { FindUserBookQueryOptions } from '../../../../modules/book/api/queries/findUserBook/findUserBookQueryOptions.js';
 import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery.js';
 import { UserBook } from '@common/contracts';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { FindBookReadingsQueryOptions } from '../../../../api/bookReadings/queries/findBookReadings/findBookReadingsQueryOptions.js';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice.js';
 import { CurrentRatingStar } from '../../components/currentRatingStar/currentRatingStar.js';
@@ -12,6 +11,7 @@ import { BasicDataTabSkeleton } from '../basicDataTab/basicDataTabSkeleton.js';
 import { columns } from '../../components/gradesTable/gradesTableColumns.js';
 import { GradesTable } from '../../components/gradesTable/gradesTable.js';
 import { FavoriteBookButton } from '../../components/favoriteBookButton/favoriteBookButton.js';
+import { FindBookReadingsQueryOptions } from '../../../../modules/bookReadings/api/queries/findBookReadings/findBookReadingsQueryOptions.js';
 
 interface Props {
   userBookId: string;

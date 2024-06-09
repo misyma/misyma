@@ -3,7 +3,7 @@ import { FC } from 'react';
 import { rootRoute } from '../root';
 import { RequireAuthComponent } from '../../modules/core/components/requireAuth/requireAuthComponent';
 import { z } from 'zod';
-import { FindBooksByBookshelfIdQueryOptions } from '../../api/books/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
+import { FindBooksByBookshelfIdQueryOptions } from '../../modules/book/api/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
 import { AuthenticatedLayout } from '../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { Button } from '../../modules/common/components/ui/button';
 import { useFindUserQuery } from '../../api/user/queries/findUserQuery/findUserQuery';
