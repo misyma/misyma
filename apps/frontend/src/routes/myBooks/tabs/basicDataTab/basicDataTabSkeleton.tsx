@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Skeleton } from '../../../../components/ui/skeleton';
+import { Skeleton } from '../../../../modules/common/components/ui/skeleton';
 import { Separator } from '@radix-ui/react-separator';
 import { BookshelfChoiceDropdown } from '../../components/bookshelfChoiceDropdown/bookshelfChoiceDropdown';
 import { StatusChooserCards } from '../../components/statusChooser/statusChooserCards';

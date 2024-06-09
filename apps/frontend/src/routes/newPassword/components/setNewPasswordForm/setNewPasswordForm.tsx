@@ -3,9 +3,9 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { SetNewPasswordFormSchemaValues, setNewPasswordFormSchema } from './schema/setNewPasswordFormSchema';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../components/ui/form';
-import { Input } from '../../../../components/ui/input';
-import { Button } from '../../../../components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../modules/common/components/ui/form';
+import { Input } from '../../../../modules/common/components/ui/input';
+import { Button } from '../../../../modules/common/components/ui/button';
 import type { UserApiError } from '../../../../api/user/errors/userApiError';
 import { useSetNewPasswordMutation } from '../../../../api/user/mutations/setNewPasswordMutation/setNewPasswordMutation';
 

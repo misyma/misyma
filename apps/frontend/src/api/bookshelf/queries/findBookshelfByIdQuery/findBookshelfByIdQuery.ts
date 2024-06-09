@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
+import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
 import { FindBookshelfByIdParams, FindBookshelfByIdResponseBody } from '@common/contracts';
-import { HttpService } from '../../../../core/services/httpService/httpService';
+import { HttpService } from '../../../../modules/core/services/httpService/httpService';
 import { useQuery } from '@tanstack/react-query';
 
 export const useFindBookshelfByIdQuery = (bookshelfId: string) => {

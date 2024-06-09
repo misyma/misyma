@@ -6,12 +6,12 @@ import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/fin
 import { HiCheckCircle, HiDotsCircleHorizontal } from 'react-icons/hi';
 import { HiQuestionMarkCircle } from 'react-icons/hi';
 import { ReadingStatus } from '@common/contracts';
-import { cn } from '../../../../lib/utils';
+import { cn } from '../../../../modules/common/lib/utils';
 import { useUpdateUserBookMutation } from '../../../../api/books/mutations/updateUserBookMutation/updateUserBookMutation';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Skeleton } from '../../../../components/ui/skeleton';
+import { Skeleton } from '../../../../modules/common/components/ui/skeleton';
 import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
+import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
 
 interface Props {
   bookId: string;

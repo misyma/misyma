@@ -1,9 +1,9 @@
 import { FC, useMemo } from 'react';
 import { HiHeart, HiOutlineHeart } from 'react-icons/hi';
-import { cn } from '../../../../lib/utils.js';
+import { cn } from '../../../../modules/common/lib/utils.js';
 import { useUpdateQuoteMutation } from '../../../../api/quotes/mutations/updateQuoteMutation/updateQuoteMutation.js';
 import { Quote } from '@common/contracts';
-import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice.js';
+import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice.js';
 import { useSelector } from 'react-redux';
 import { useQueryClient } from '@tanstack/react-query';
 

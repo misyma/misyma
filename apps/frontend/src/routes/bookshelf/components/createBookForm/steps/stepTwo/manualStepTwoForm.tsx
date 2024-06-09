@@ -8,13 +8,13 @@ import {
 } from '../../context/bookCreationContext/bookCreationContext';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../../../components/ui/form';
-import { Input } from '../../../../../../components/ui/input';
-import { Button } from '../../../../../../components/ui/button';
-import { Languages } from '../../../../../../common/constants/languages';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../../../../components/ui/select';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../../../modules/common/components/ui/form';
+import { Input } from '../../../../../../modules/common/components/ui/input';
+import { Button } from '../../../../../../modules/common/components/ui/button';
+import { Languages } from '../../../../../../modules/common/constants/languages';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../../../../modules/common/components/ui/select';
 import { BookFormat as ContractBookFormat } from '@common/contracts';
-import { BookFormat } from '../../../../../../common/constants/bookFormat';
+import { BookFormat } from '../../../../../../modules/common/constants/bookFormat';
 import { Language } from '@common/contracts';
 import { useCallback } from 'react';
 

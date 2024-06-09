@@ -4,9 +4,9 @@ import { FC, useEffect } from 'react';
 import { rootRoute } from '../root';
 import { z } from 'zod';
 import { DefaultLayout } from '../../layouts/default/defaultLayout';
-import { Logo } from '../../components/logo/logo';
-import { RequireNonAuthComponent } from '../../core/components/requireNonAuth/requireNonAuthComponent';
-import { useToast } from '../../components/ui/use-toast';
+import { RequireNonAuthComponent } from '../../modules/core/components/requireNonAuth/requireNonAuthComponent';
+import { useToast } from '../../modules/common/components/ui/use-toast';
+import { Logo } from '../../modules/common/components/logo/logo';
 
 export const VerifyEmailPage: FC = () => {
   const navigate = useNavigate();

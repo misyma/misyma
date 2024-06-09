@@ -1,4 +1,4 @@
-import { ApiError } from '../../../common/errors/apiError';
+import { ApiError } from '../../../modules/common/errors/apiError';
 
 interface ShelfApiErrorContext {
   apiResponseError: Record<string, unknown>;

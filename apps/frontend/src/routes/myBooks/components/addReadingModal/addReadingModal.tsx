@@ -1,11 +1,11 @@
 import { FC } from 'react';
-import { Dialog, DialogContent, DialogHeader } from '../../../../components/ui/dialog';
-import { Button } from '../../../../components/ui/button';
+import { Dialog, DialogContent, DialogHeader } from '../../../../modules/common/components/ui/dialog';
+import { Button } from '../../../../modules/common/components/ui/button';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../components/ui/form';
-import { Input } from '../../../../components/ui/input';
-import { Textarea } from '../../../../components/ui/textarea';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../modules/common/components/ui/form';
+import { Input } from '../../../../modules/common/components/ui/input';
+import { Textarea } from '../../../../modules/common/components/ui/textarea';
 import { AddReadingSchemaValues, addReadingSchema } from './schema/addReadingSchema';
 
 interface Props {

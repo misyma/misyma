@@ -2,9 +2,9 @@ import { UserBook } from '@common/contracts';
 import { FC, useState } from 'react';
 import { useUpdateUserBookMutation } from '../../../../api/books/mutations/updateUserBookMutation/updateUserBookMutation.js';
 import { HiHeart, HiOutlineHeart } from 'react-icons/hi';
-import { cn } from '../../../../lib/utils.js';
+import { cn } from '../../../../modules/common/lib/utils.js';
 import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice.js';
+import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice.js';
 
 interface Props {
   userBook: UserBook;

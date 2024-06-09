@@ -13,7 +13,7 @@ import {
 } from '@tanstack/react-table';
 import { useMemo, useState } from 'react';
 
-import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
+import { Table, TableBody, TableCell, TableRow } from '@/modules/common/components/ui/table';
 import {
   Pagination,
   PaginationContent,
@@ -21,7 +21,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from '../../../../components/ui/pagination';
+} from '../../../../modules/common/components/ui/pagination';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

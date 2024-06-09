@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
-import { cn } from '../../lib/utils';
+import { cn } from '../../modules/common/lib/utils';
 import { Link } from '@tanstack/react-router';
-import { Toaster } from '../../components/ui/toaster';
+import { Toaster } from '../../modules/common/components/ui/toaster';
 
 export interface Props {
   children: React.ReactNode;

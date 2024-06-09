@@ -1,5 +1,4 @@
 import { FC, useCallback } from 'react';
-import { Breadcrumbs, NumericBreadcrumb } from '../../../../components/ui/breadcrumbs';
 import {
   BookCreationActionType,
   BookCreationNonIsbnState,
@@ -10,7 +9,8 @@ import {
 import { ManualStepOneForm } from './steps/stepOne/manualStepOneForm';
 import { ManualStepTwoForm } from './steps/stepTwo/manualStepTwoForm';
 import { ManualStepThreeForm } from './steps/stepThree/manualStepThreeForm';
-import { cn } from '../../../../lib/utils';
+import { cn } from '../../../../modules/common/lib/utils';
+import { Breadcrumbs, NumericBreadcrumb } from '../../../../modules/common/components/ui/breadcrumbs';
 
 interface CreateBookProps {
   bookshelfId: string;

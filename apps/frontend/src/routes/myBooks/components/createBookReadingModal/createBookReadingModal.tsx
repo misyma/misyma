@@ -5,18 +5,18 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTrigger,
-} from '../../../../components/ui/dialog';
+} from '../../../../modules/common/components/ui/dialog';
 import { format } from 'date-fns';
-import { Button } from '../../../../components/ui/button';
-import { cn } from '../../../../lib/utils';
+import { Button } from '../../../../modules/common/components/ui/button';
+import { cn } from '../../../../modules/common/lib/utils';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../components/ui/form';
-import { Popover, PopoverContent, PopoverTrigger } from '../../../../components/ui/popover';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../modules/common/components/ui/form';
+import { Popover, PopoverContent, PopoverTrigger } from '../../../../modules/common/components/ui/popover';
 import { CalendarIcon } from 'lucide-react';
-import { Calendar } from '../../../../components/ui/calendar';
-import { Textarea } from '../../../../components/ui/textarea';
+import { Calendar } from '../../../../modules/common/components/ui/calendar';
+import { Textarea } from '../../../../modules/common/components/ui/textarea';
 import { useAddBookReadingMutation } from '../../../../api/bookReadings/mutations/bookReadings/addBookReadingMutation/addBookReadingMutation';
 
 interface Props {

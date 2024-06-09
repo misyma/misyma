@@ -6,8 +6,8 @@ import {
   UploadUserBookImageResponseBody,
 } from '@common/contracts';
 import { BookApiError } from '../../errors/bookApiError.js';
-import { HttpService } from '../../../../core/services/httpService/httpService.js';
-import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMapper/errorCodeMessageMapper.js';
+import { HttpService } from '../../../../modules/core/services/httpService/httpService.js';
+import { ErrorCodeMessageMapper } from '../../../../modules/common/errorCodeMessageMapper/errorCodeMessageMapper.js';
 
 export interface UpdateUserBookPayload extends UpdateUserBookPathParams, UpdateUserBookRequestBody {
   accessToken: string;

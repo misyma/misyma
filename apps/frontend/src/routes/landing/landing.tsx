@@ -1,9 +1,9 @@
 import { createRoute, useNavigate } from '@tanstack/react-router';
 import { rootRoute } from '../root';
 import { FC } from 'react';
-import { Button } from '../../components/ui/button';
-import { Logo } from '../../components/logo/logo';
-import { RequireNonAuthComponent } from '../../core/components/requireNonAuth/requireNonAuthComponent';
+import { Button } from '../../modules/common/components/ui/button';
+import { RequireNonAuthComponent } from '../../modules/core/components/requireNonAuth/requireNonAuthComponent';
+import { Logo } from '../../modules/common/components/logo/logo';
 
 export const LandingPage: FC = () => {
   const navigate = useNavigate();

@@ -4,9 +4,9 @@ import { FC, useState } from 'react';
 import { RegisterUserForm } from './components/registerUserForm/registerUserForm';
 import { DefaultFormLayout } from '../../layouts/default/defaultFormLayout';
 import { useSendVerificationEmailMutation } from '../../api/user/mutations/sendVerificationEmailMutation/sendVerificationEmailMutation';
-import { useToast } from '@/components/ui/use-toast';
-import { RequireNonAuthComponent } from '../../core/components/requireNonAuth/requireNonAuthComponent';
-import { Button } from '../../components/ui/button';
+import { useToast } from '@/modules/common/components/ui/use-toast';
+import { RequireNonAuthComponent } from '../../modules/core/components/requireNonAuth/requireNonAuthComponent';
+import { Button } from '../../modules/common/components/ui/button';
 
 export const RegisterPage: FC = () => {
   const [isSuccess, setIsSuccess] = useState<boolean>(false);

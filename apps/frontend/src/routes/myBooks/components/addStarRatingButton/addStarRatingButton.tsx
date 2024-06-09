@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { RadioGroup, RadioGroupItem } from '../../../../components/ui/radio-group';
+import { RadioGroup, RadioGroupItem } from '../../../../modules/common/components/ui/radio-group';
 import { HiStar } from 'react-icons/hi';
 import { CreateBookReadingModal } from '../createBookReadingModal/createBookReadingModal';
 

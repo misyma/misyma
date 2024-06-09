@@ -6,20 +6,20 @@ import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useFindUserQuery } from '../../../../../api/user/queries/findUserQuery/findUserQuery';
 import { useFindUserBookshelfsQuery } from '../../../../../api/bookshelf/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
-import { useToast } from '../../../../../components/ui/use-toast';
+import { useToast } from '../../../../../modules/common/components/ui/use-toast';
 import { useCreateUserBookMutation } from '../../../../../api/books/mutations/createUserBookMutation/createUserBookMutation';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../../components/ui/form';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../../../components/ui/select';
-import { ReadingStatus } from '../../../../../common/constants/readingStatus';
-import { FileInput } from '../../../../../components/ui/input';
-import { Button } from '../../../../../components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../../modules/common/components/ui/form';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../../../modules/common/components/ui/select';
+import { ReadingStatus } from '../../../../../modules/common/constants/readingStatus';
+import { FileInput } from '../../../../../modules/common/components/ui/input';
+import { Button } from '../../../../../modules/common/components/ui/button';
 import { useSearchBookContext } from '../../context/searchCreateBookContext';
 import { BookApiError } from '../../../../../api/books/errors/bookApiError';
 import { useUploadBookImageMutation } from '../../../../../api/books/mutations/uploadBookImageMutation/uploadBookImageMutation';
 import { useQuery } from '@tanstack/react-query';
 import { getGenresQueryOptions } from '../../../../../api/genres/queries/getGenresQuery/getGenresQueryOptions';
 import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';
+import { userStateSelectors } from '../../../../../modules/core/store/states/userState/userStateSlice';
 
 const stepThreeFormSchema = z.object({
   status: z.nativeEnum(ContractReadingStatus, {

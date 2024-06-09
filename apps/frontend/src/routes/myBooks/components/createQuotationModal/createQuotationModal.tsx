@@ -8,19 +8,19 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTrigger,
-} from '../../../../components/ui/dialog';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../components/ui/form';
-import { Textarea } from '../../../../components/ui/textarea';
-import { Button } from '../../../../components/ui/button';
-import { Input } from '../../../../components/ui/input';
+} from '../../../../modules/common/components/ui/dialog';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../modules/common/components/ui/form';
+import { Textarea } from '../../../../modules/common/components/ui/textarea';
+import { Button } from '../../../../modules/common/components/ui/button';
+import { Input } from '../../../../modules/common/components/ui/input';
 import { useCreateQuoteMutation } from '../../../../api/quotes/mutations/createQuoteMutation/createQuoteMutation';
 import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
+import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
 import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery';
 import { useQueryClient } from '@tanstack/react-query';
 import { getQuotesOptionsQueryKey } from '../../../../api/quotes/queries/getQuotes/getQuotesOptions';
-import { Checkbox } from '../../../../components/ui/checkbox';
-import { useToast } from '../../../../components/ui/use-toast';
+import { Checkbox } from '../../../../modules/common/components/ui/checkbox';
+import { useToast } from '../../../../modules/common/components/ui/use-toast';
 
 const createQuotationSchema = z.object({
   page: z

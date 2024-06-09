@@ -6,11 +6,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { type LoginUserResponseBody } from '@common/contracts';
 import { useLoginUserMutation } from '../../../../api/user/mutations/loginUserMutation/loginUserMutation';
 import { UserApiError } from '../../../../api/user/errors/userApiError';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../components/ui/form';
-import { Input } from '../../../../components/ui/input';
-import { Button } from '../../../../components/ui/button';
-import { cn } from '../../../../lib/utils';
-import { PasswordEyeIcon } from '../../../../components/icons/passwordEyeIcon/passwordEyeIcon';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../modules/common/components/ui/form';
+import { Input } from '../../../../modules/common/components/ui/input';
+import { Button } from '../../../../modules/common/components/ui/button';
+import { cn } from '../../../../modules/common/lib/utils';
+import { PasswordEyeIcon } from '../../../../modules/common/components/icons/passwordEyeIcon/passwordEyeIcon';
 
 interface LoginUserFormProps {
   onSuccess: (loginUserResponseBody: LoginUserResponseBody) => void;

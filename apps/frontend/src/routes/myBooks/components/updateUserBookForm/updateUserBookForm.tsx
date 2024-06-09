@@ -1,15 +1,15 @@
 import { FC, useEffect, useRef, useState } from 'react';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../modules/common/components/ui/form';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
-import { FileInput } from '../../../../components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../../components/ui/select';
-import { Button } from '../../../../components/ui/button';
+import { FileInput } from '../../../../modules/common/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../../modules/common/components/ui/select';
+import { Button } from '../../../../modules/common/components/ui/button';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
 import { getGenresQueryOptions } from '../../../../api/genres/queries/getGenresQuery/getGenresQueryOptions';
 import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
+import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
 
 const changeUserBookDataSchema = z.object({
   image: z.optional(

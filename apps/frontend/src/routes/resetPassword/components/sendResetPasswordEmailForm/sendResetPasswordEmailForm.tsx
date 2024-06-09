@@ -4,9 +4,9 @@ import { useForm } from 'react-hook-form';
 
 import type { UserApiError } from '../../../../api/user/errors/userApiError';
 import { useSendResetPasswordEmailMutation } from '../../../../api/user/mutations/sendResetPasswordEmailMutation/sendResetPasswordEmailMutation';
-import { Button } from '../../../../components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../components/ui/form';
-import { Input } from '../../../../components/ui/input';
+import { Button } from '../../../../modules/common/components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../modules/common/components/ui/form';
+import { Input } from '../../../../modules/common/components/ui/input';
 import {
   SendResetPasswordEmailFormSchemaValues,
   sendResetPasswordEmailFormSchema,

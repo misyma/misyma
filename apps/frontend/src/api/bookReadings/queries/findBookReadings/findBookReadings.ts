@@ -3,7 +3,7 @@ import {
   FindBookReadingsQueryParams,
   FindBookReadingsResponseBody,
 } from '@common/contracts';
-import { HttpService } from '../../../../core/services/httpService/httpService';
+import { HttpService } from '../../../../modules/core/services/httpService/httpService';
 
 export type FindBookReadingsPayload = FindBookReadingsPathParams &
   FindBookReadingsQueryParams & {

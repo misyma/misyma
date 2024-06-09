@@ -1,6 +1,6 @@
 import { Dispatch, ReactNode, createContext, useContext, useReducer } from 'react';
 import { BookFormat, ReadingStatus } from '@common/contracts';
-import { Languages } from '../../../../../../common/constants/languages';
+import { Languages } from '../../../../../../modules/common/constants/languages';
 
 const BookCreationContext = createContext<BookCreationState<true>>(null as unknown as BookCreationState<true>);
 

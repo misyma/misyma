@@ -1,12 +1,12 @@
 import { FC, ReactNode, useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTrigger } from '../../../../components/ui/dialog';
-import { Button } from '../../../../components/ui/button';
-import { RadioGroup, RadioGroupItem } from '../../../../components/ui/radio-group';
+import { Dialog, DialogContent, DialogHeader, DialogTrigger } from '../../../../modules/common/components/ui/dialog';
+import { Button } from '../../../../modules/common/components/ui/button';
+import { RadioGroup, RadioGroupItem } from '../../../../modules/common/components/ui/radio-group';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
+import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
 import { useUpdateUserBookMutation } from '../../../../api/books/mutations/updateUserBookMutation/updateUserBookMutation';
 import { useUploadBookImageMutation } from '../../../../api/books/mutations/uploadBookImageMutation/uploadBookImageMutation';
 import { useDeleteUserBookMutation } from '../../../../api/books/mutations/deleteUserBookMutation/deleteUserBookMutation';

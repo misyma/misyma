@@ -1,8 +1,8 @@
 import { FindAuthorsResponseBody } from '@common/contracts';
 import { UseQueryOptions, useQuery } from '@tanstack/react-query';
-import { ApiError } from '../../../../common/errors/apiError';
+import { ApiError } from '../../../../modules/common/errors/apiError';
 import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
+import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
 import { findAuthors } from './findAuthors';
 
 type Payload = {

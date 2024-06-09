@@ -1,9 +1,9 @@
 import { CreateAuthorRequestBody, CreateAuthorResponseBody } from '@common/contracts';
 import { UseMutationOptions, useMutation } from '@tanstack/react-query';
-import { ApiError } from '../../../../common/errors/apiError';
+import { ApiError } from '../../../../modules/common/errors/apiError';
 import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
-import { HttpService } from '../../../../core/services/httpService/httpService';
+import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
+import { HttpService } from '../../../../modules/core/services/httpService/httpService';
 
 export const useCreateAuthorDraftMutation = (
   options: UseMutationOptions<CreateAuthorResponseBody, ApiError, CreateAuthorRequestBody>,

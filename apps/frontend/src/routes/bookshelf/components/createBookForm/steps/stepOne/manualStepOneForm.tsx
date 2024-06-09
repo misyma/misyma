@@ -8,26 +8,26 @@ import {
 } from '../../context/bookCreationContext/bookCreationContext';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../../../components/ui/form';
-import { Input } from '../../../../../../components/ui/input';
-import { Button } from '../../../../../../components/ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '../../../../../../components/ui/popover';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../../../modules/common/components/ui/form';
+import { Input } from '../../../../../../modules/common/components/ui/input';
+import { Button } from '../../../../../../modules/common/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '../../../../../../modules/common/components/ui/popover';
 import { Check, ChevronsUpDown } from 'lucide-react';
-import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from '../../../../../../components/ui/command';
-import { cn } from '../../../../../../lib/utils';
+import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from '../../../../../../modules/common/components/ui/command';
+import { cn } from '../../../../../../modules/common/lib/utils';
 import { useFindAuthorsQuery } from '../../../../../../api/authors/queries/findAuthorsQuery/findAuthorsQuery';
 import { useState } from 'react';
 import { CommandLoading } from 'cmdk';
-import { isbnSchema } from '../../../../../../common/schemas/isbnSchema';
+import { isbnSchema } from '../../../../../../modules/common/schemas/isbnSchema';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '../../../../../../components/ui/dialog';
+} from '../../../../../../modules/common/components/ui/dialog';
 import { HiOutlineInformationCircle } from 'react-icons/hi';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../../../../components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../../../../modules/common/components/ui/tooltip';
 
 const pattern = /^[A-Z][^\\x00-\\x7F]*, [A-Z]\. [A-Z]\.$/;
 

@@ -6,9 +6,9 @@ import {
   CreateBookReadingResponseBody,
 } from '@common/contracts';
 import { BookApiError } from '../../../../books/errors/bookApiError';
-import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';
+import { userStateSelectors } from '../../../../../modules/core/store/states/userState/userStateSlice';
 import { useSelector } from 'react-redux';
-import { HttpService } from '../../../../../core/services/httpService/httpService';
+import { HttpService } from '../../../../../modules/core/services/httpService/httpService';
 
 type AddBookReadingMutationPayload = CreateBookReadingRequestBody & CreateBookReadingPathParams;
 

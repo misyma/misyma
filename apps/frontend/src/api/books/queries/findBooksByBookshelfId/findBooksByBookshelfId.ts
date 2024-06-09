@@ -1,5 +1,5 @@
-import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
-import { HttpService } from '../../../../core/services/httpService/httpService';
+import { ErrorCodeMessageMapper } from '../../../../modules/common/errorCodeMessageMapper/errorCodeMessageMapper';
+import { HttpService } from '../../../../modules/core/services/httpService/httpService';
 import { FindUserBooksQueryParams, FindUserBooksResponseBody } from '@common/contracts';
 import { BookApiError } from '../../errors/bookApiError';
 

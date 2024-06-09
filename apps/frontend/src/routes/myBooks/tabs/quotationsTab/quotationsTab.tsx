@@ -9,7 +9,7 @@ import { columns } from '../../components/quotationsTable/quotationsTableColumns
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getQuotesOptions } from '../../../../api/quotes/queries/getQuotes/getQuotesOptions';
 import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
+import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
 import { CurrentRatingStar } from '../../components/currentRatingStar/currentRatingStar';
 import { FindUserBookQueryOptions } from '../../../../api/books/queries/findUserBook/findUserBookQueryOptions';
 

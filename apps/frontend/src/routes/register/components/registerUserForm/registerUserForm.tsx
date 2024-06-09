@@ -4,10 +4,10 @@ import { RegisterUserFormSchemaValues, registerUserFormSchema } from './schema/r
 import { zodResolver } from '@hookform/resolvers/zod';
 import { UserApiError } from '../../../../api/user/errors/userApiError';
 import { useRegisterUserMutation } from '../../../../api/user/mutations/registerUserMutation/registerUserMutation';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../components/ui/form';
-import { Input } from '../../../../components/ui/input';
-import { Button } from '../../../../components/ui/button';
-import { PasswordEyeIcon } from '../../../../components/icons/passwordEyeIcon/passwordEyeIcon';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../modules/common/components/ui/form';
+import { Input } from '../../../../modules/common/components/ui/input';
+import { Button } from '../../../../modules/common/components/ui/button';
+import { PasswordEyeIcon } from '../../../../modules/common/components/icons/passwordEyeIcon/passwordEyeIcon';
 
 interface RegisterUserFormProps {
   onSuccess: (result: { email: string; success: boolean }) => void;

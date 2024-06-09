@@ -4,7 +4,7 @@ import { FC } from 'react';
 import { SetNewPasswordForm } from './components/setNewPasswordForm/setNewPasswordForm';
 import { z } from 'zod';
 import { DefaultFormLayout } from '../../layouts/default/defaultFormLayout';
-import { RequireNonAuthComponent } from '../../core/components/requireNonAuth/requireNonAuthComponent';
+import { RequireNonAuthComponent } from '../../modules/core/components/requireNonAuth/requireNonAuthComponent';
 
 export const SetNewPasswordPage: FC = () => {
   const navigate = useNavigate();

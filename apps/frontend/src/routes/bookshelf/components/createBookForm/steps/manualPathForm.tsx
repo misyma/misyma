@@ -8,9 +8,9 @@ import {
   useBookCreation,
   useBookCreationDispatch,
 } from '../context/bookCreationContext/bookCreationContext';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../../components/ui/form';
-import { Input } from '../../../../../components/ui/input';
-import { Button } from '../../../../../components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../../modules/common/components/ui/form';
+import { Input } from '../../../../../modules/common/components/ui/input';
+import { Button } from '../../../../../modules/common/components/ui/button';
 
 const stepOneYoISchema = z.object({
   yearOfIssue: z

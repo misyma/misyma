@@ -3,18 +3,18 @@ import { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../components/ui/form';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../../components/ui/select';
-import { Languages } from '../../../../common/constants/languages';
-import { Input } from '../../../../components/ui/input';
-import { Button } from '../../../../components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../modules/common/components/ui/form';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../../modules/common/components/ui/select';
+import { Languages } from '../../../../modules/common/constants/languages';
+import { Input } from '../../../../modules/common/components/ui/input';
+import { Button } from '../../../../modules/common/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
 import { FindBookByIdQueryOptions } from '../../../../api/books/queries/findBookById/findBookByIdQueryOptions';
 import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
+import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
 import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery';
 import { StepOneForm } from './stepOneForm/stepOneForm';
-import { BookFormat } from '../../../../common/constants/bookFormat';
+import { BookFormat } from '../../../../modules/common/constants/bookFormat';
 import { useUpdateBookMutation } from '../../../../api/books/mutations/updateBookMutation/updateBookMutation';
 import {
   BookDetailsChangeRequestAction,

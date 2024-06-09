@@ -1,8 +1,8 @@
 import { UpdateUserBooksRequestBody } from '@common/contracts';
 import { UseMutationOptions, useMutation } from '@tanstack/react-query';
-import { HttpService } from '../../../../core/services/httpService/httpService.js';
+import { HttpService } from '../../../../modules/core/services/httpService/httpService.js';
 import { BookApiError } from '../../errors/bookApiError.js';
-import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMapper/errorCodeMessageMapper.js';
+import { ErrorCodeMessageMapper } from '../../../../modules/common/errorCodeMessageMapper/errorCodeMessageMapper.js';
 
 export interface MoveBooksToBookshelfMutationPayload extends UpdateUserBooksRequestBody {
   accessToken: string;

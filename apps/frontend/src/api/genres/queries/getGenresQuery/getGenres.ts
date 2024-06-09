@@ -1,5 +1,5 @@
 import { FindGenresQueryParams, FindGenresResponseBody } from '@common/contracts';
-import { HttpService } from '../../../../core/services/httpService/httpService';
+import { HttpService } from '../../../../modules/core/services/httpService/httpService';
 
 export type GetGenresPayload = FindGenresQueryParams & {
   accessToken: string;

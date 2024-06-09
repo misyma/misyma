@@ -1,7 +1,7 @@
 import { FindUserBookPathParams, FindUserBookResponseBody } from '@common/contracts';
-import { HttpService } from '../../../../core/services/httpService/httpService';
+import { HttpService } from '../../../../modules/core/services/httpService/httpService';
 import { BookApiError } from '../../errors/bookApiError';
-import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
+import { ErrorCodeMessageMapper } from '../../../../modules/common/errorCodeMessageMapper/errorCodeMessageMapper';
 
 export interface FindUserBookByIdPayload extends FindUserBookPathParams {
   userId: string;

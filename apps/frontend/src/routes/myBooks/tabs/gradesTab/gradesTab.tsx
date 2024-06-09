@@ -1,12 +1,12 @@
 import { FC, useMemo, useState } from 'react';
-import { Separator } from '../../../../components/ui/separator.js';
+import { Separator } from '../../../../modules/common/components/ui/separator.js';
 import { FindUserBookQueryOptions } from '../../../../api/books/queries/findUserBook/findUserBookQueryOptions.js';
 import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery.js';
 import { UserBook } from '@common/contracts';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { FindBookReadingsQueryOptions } from '../../../../api/bookReadings/queries/findBookReadings/findBookReadingsQueryOptions.js';
 import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice.js';
+import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice.js';
 import { CurrentRatingStar } from '../../components/currentRatingStar/currentRatingStar.js';
 import { BasicDataTabSkeleton } from '../basicDataTab/basicDataTabSkeleton.js';
 import { columns } from '../../components/gradesTable/gradesTableColumns.js';

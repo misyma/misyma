@@ -6,8 +6,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTrigger,
-} from '../../../../components/ui/dialog';
-import { Button } from '../../../../components/ui/button';
+} from '../../../../modules/common/components/ui/dialog';
+import { Button } from '../../../../modules/common/components/ui/button';
 import { HiTrash } from 'react-icons/hi';
 import { useDeleteBookshelfMutation } from '../../../../api/bookshelf/mutations/deleteBookshelfMutation/deleteBookshelfMutation';
 import { ShelfApiError } from '../../../../api/bookshelf/errors/shelfApiError';
@@ -16,12 +16,12 @@ import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/fin
 import { FindBooksByBookshelfIdQueryOptions } from '../../../../api/books/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
 import { BookApiError } from '../../../../api/books/errors/bookApiError';
 import { useFindUserBookshelfsQuery } from '../../../../api/bookshelf/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
-import { Select, SelectItem, SelectTrigger, SelectValue } from '../../../../components/ui/select';
+import { Select, SelectItem, SelectTrigger, SelectValue } from '../../../../modules/common/components/ui/select';
 import { SelectContent } from '@radix-ui/react-select';
-import { cn } from '../../../../lib/utils';
+import { cn } from '../../../../modules/common/lib/utils';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
+import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
 
 interface Props {
   bookshelfId: string;

@@ -3,8 +3,8 @@ import { rootRoute } from '../root';
 import { FC, useState } from 'react';
 import { SendResetPasswordEmailForm } from './components/sendResetPasswordEmailForm/sendResetPasswordEmailForm';
 import { DefaultFormLayout } from '../../layouts/default/defaultFormLayout';
-import { RequireNonAuthComponent } from '../../core/components/requireNonAuth/requireNonAuthComponent';
-import { Button } from '../../components/ui/button';
+import { RequireNonAuthComponent } from '../../modules/core/components/requireNonAuth/requireNonAuthComponent';
+import { Button } from '../../modules/common/components/ui/button';
 
 export const SendResetPasswordEmailPage: FC = () => {
   const navigate = useNavigate();

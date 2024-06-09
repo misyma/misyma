@@ -1,7 +1,7 @@
 import { NotFoundRoute } from '@tanstack/react-router';
 import { rootRoute } from '../root';
 import { FC } from 'react';
-import { Button } from '../../components/ui/button';
+import { Button } from '../../modules/common/components/ui/button';
 import { AuthenticatedLayout } from '../../layouts/authenticated/authenticatedLayout';
 
 export const NotFoundPage: FC = () => {

@@ -1,6 +1,6 @@
 import { Navigate, createRoute } from '@tanstack/react-router';
 import { FC } from 'react';
-import { RequireAuthComponent } from '../../../core/components/requireAuth/requireAuthComponent';
+import { RequireAuthComponent } from '../../../modules/core/components/requireAuth/requireAuthComponent';
 import { CreateBookForm } from '../components/createBookForm/createBookForm';
 import { rootRoute } from '../../root';
 import { BookCreationProvider } from '../components/createBookForm/context/bookCreationContext/bookCreationContext';

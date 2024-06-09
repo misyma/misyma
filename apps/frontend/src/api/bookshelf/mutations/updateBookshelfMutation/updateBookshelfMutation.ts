@@ -2,8 +2,8 @@ import { UpdateBookshelfPathParams, UpdateBookshelfRequestBody, UpdateBookshelfR
 import { UseMutationOptions, useMutation } from '@tanstack/react-query';
 import { ShelfApiError } from '../../errors/shelfApiError';
 import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
-import { HttpService } from '../../../../core/services/httpService/httpService';
+import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
+import { HttpService } from '../../../../modules/core/services/httpService/httpService';
 
 type Payload = UpdateBookshelfRequestBody & UpdateBookshelfPathParams;
 

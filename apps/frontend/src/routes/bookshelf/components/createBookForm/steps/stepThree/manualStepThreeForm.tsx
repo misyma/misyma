@@ -14,16 +14,16 @@ import {
 } from '@common/contracts';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../../../components/ui/form';
-import { FileInput } from '../../../../../../components/ui/input';
-import { Button } from '../../../../../../components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../../../modules/common/components/ui/form';
+import { FileInput } from '../../../../../../modules/common/components/ui/input';
+import { Button } from '../../../../../../modules/common/components/ui/button';
 import { useCreateBookMutation } from '../../../../../../api/books/mutations/createBookMutation/createBookMutation';
 import { useCreateUserBookMutation } from '../../../../../../api/books/mutations/createUserBookMutation/createUserBookMutation';
 import { useFindUserQuery } from '../../../../../../api/user/queries/findUserQuery/findUserQuery';
 import { useNavigate } from '@tanstack/react-router';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../../../../components/ui/select';
-import { ReadingStatus } from '../../../../../../common/constants/readingStatus';
-import { useToast } from '../../../../../../components/ui/use-toast';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../../../../modules/common/components/ui/select';
+import { ReadingStatus } from '../../../../../../modules/common/constants/readingStatus';
+import { useToast } from '../../../../../../modules/common/components/ui/use-toast';
 import { useEffect, useRef, useState } from 'react';
 import { BookApiError } from '../../../../../../api/books/errors/bookApiError';
 import { useFindUserBookshelfsQuery } from '../../../../../../api/bookshelf/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
@@ -32,7 +32,7 @@ import { useCreateAuthorDraftMutation } from '../../../../../../api/authors/muta
 import { useQuery } from '@tanstack/react-query';
 import { getGenresQueryOptions } from '../../../../../../api/genres/queries/getGenresQuery/getGenresQueryOptions';
 import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../../../../core/store/states/userState/userStateSlice';
+import { userStateSelectors } from '../../../../../../modules/core/store/states/userState/userStateSlice';
 import { useFindAuthorsQuery } from '../../../../../../api/authors/queries/findAuthorsQuery/findAuthorsQuery';
 
 const stepThreeFormSchema = z.object({

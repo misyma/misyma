@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
-import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
+import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
 import { UserApiError } from '../../errors/userApiError';
 import { useSelector } from 'react-redux';
 import { type FindUserResponseBody } from '@common/contracts';
-import { HttpService } from '../../../../core/services/httpService/httpService';
+import { HttpService } from '../../../../modules/core/services/httpService/httpService';
 
 interface FindUserPayload {
   accessToken: string;

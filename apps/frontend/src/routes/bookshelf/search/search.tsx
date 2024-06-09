@@ -1,6 +1,6 @@
 import { createRoute } from '@tanstack/react-router';
 import { rootRoute } from '../../root';
-import { RequireAuthComponent } from '../../../core/components/requireAuth/requireAuthComponent';
+import { RequireAuthComponent } from '../../../modules/core/components/requireAuth/requireAuthComponent';
 import { z } from 'zod';
 import { ChoosePathStep } from './components/pathChoice/pathChoice';
 import { IsbnPathForm } from './components/byIbsn/isbnPathForm';

@@ -1,8 +1,8 @@
 import { UseMutationOptions, useMutation } from '@tanstack/react-query';
 import { CreateUserBookRequestBody, CreateUserBookResponseBody } from '@common/contracts';
 import { BookApiError } from '../../errors/bookApiError';
-import { HttpService } from '../../../../core/services/httpService/httpService';
-import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
+import { HttpService } from '../../../../modules/core/services/httpService/httpService';
+import { ErrorCodeMessageMapper } from '../../../../modules/common/errorCodeMessageMapper/errorCodeMessageMapper';
 
 export interface CreateUserBookMutationPayload extends CreateUserBookRequestBody {
   accessToken: string;
