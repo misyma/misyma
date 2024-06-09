@@ -136,7 +136,7 @@ export const ManualStepOneForm = (): JSX.Element => {
       authorName: payload.name,
     });
 
-    // eslint-disable-next-line
+     
     form.setValue('author', '', {
       shouldValidate: false,
     });

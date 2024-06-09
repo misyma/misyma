@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
 import { createRoute, useNavigate } from '@tanstack/react-router';
 import { rootRoute } from '../../../../root';
 import { FC, useEffect } from 'react';
@@ -68,7 +67,7 @@ export const SearchCreatePage: FC = () => {
             ),
           }}
         />
-        {/* eslint-disable-next-line */}
+        { }
         <ManualStep bookshelfId={(searchParams.bookshelfId)} />
       </div>
       <div className="flex max-w-[250px] w-full sm:max-w-[500px] sm:min-h-[550px] justify-center items-center">

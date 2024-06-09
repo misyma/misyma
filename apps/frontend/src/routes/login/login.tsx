@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
 import { createRoute, useNavigate } from '@tanstack/react-router';
 import { rootRoute } from '../root';
 import { LoginUserForm } from './components/loginUserForm/loginUserForm';

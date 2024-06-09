@@ -101,7 +101,7 @@ export class HttpServer {
     });
 
     this.fastifyInstance.setSerializerCompiler(() => {
-      return (data) => JSON.stringify(data);
+      return (data): string => JSON.stringify(data);
     });
 
     this.addRequestPreprocessing();

@@ -8,7 +8,7 @@ interface Props {
   children: ReactNode;
 }
 
-// eslint-disable-next-line no-empty-pattern
+ 
 export const StoreProvider = ({ children }: Props): JSX.Element => {
   const userData = CookieService.getUserDataCookie();
 

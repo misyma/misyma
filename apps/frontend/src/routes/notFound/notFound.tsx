@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
 import { NotFoundRoute } from '@tanstack/react-router';
 import { rootRoute } from '../root';
 import { FC } from 'react';
