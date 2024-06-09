@@ -4,7 +4,7 @@ import { FC } from 'react';
 import { rootRoute } from '../root';
 import { RequireAuthComponent } from '../../core/components/requireAuth/requireAuthComponent';
 import { z } from 'zod';
-import { useFindBooksByBookshelfIdQuery } from '../../api/books/queries/findBooksByBookshelfId/findBooksByBookshelfIdQuery';
+import { FindBooksByBookshelfIdQueryOptions } from '../../api/books/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
 import { AuthenticatedLayout } from '../../layouts/authenticated/authenticatedLayout';
 import { Button } from '../../components/ui/button';
 import { useFindUserQuery } from '../../api/user/queries/findUserQuery/findUserQuery';
@@ -14,6 +14,9 @@ import { HiCheckCircle, HiDotsCircleHorizontal, HiQuestionMarkCircle } from 'rea
 import { ReadingStatus, UserBook } from '@common/contracts';
 import { cn } from '../../lib/utils';
 import { FavoriteBookButton } from '../myBooks/components/favoriteBookButton/favoriteBookButton';
+import { useQuery } from '@tanstack/react-query';
+import { useSelector } from 'react-redux';
+import { userStateSelectors } from '../../core/store/states/userState/userStateSlice';
 
 const bookshelfSearchSchema = z.object({
   id: z.string().uuid().catch(''),
@@ -22,12 +25,17 @@ const bookshelfSearchSchema = z.object({
 export const Bookshelf: FC = () => {
   const { id } = bookshelfRoute.useParams();
 
+  const accessToken = useSelector(userStateSelectors.selectAccessToken)
+
   const { data: user } = useFindUserQuery();
 
-  const { data: bookshelfBooksResponse } = useFindBooksByBookshelfIdQuery({
-    bookshelfId: id,
-    userId: user?.id as string,
-  });
+  const { data: bookshelfBooksResponse } = useQuery(
+    FindBooksByBookshelfIdQueryOptions({
+      accessToken: accessToken as string,
+      bookshelfId: id,
+      userId: user?.id as string,
+    }),
+  );
 
   const { data: bookshelfResponse } = useFindBookshelfByIdQuery(id);
 

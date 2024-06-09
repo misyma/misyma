@@ -64,6 +64,8 @@ interface Props {
 export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
   const bookCreation = useBookCreation<false>() as BookCreationNonIsbnState;
 
+  const accessToken = useSelector(userStateSelectors.selectAccessToken);
+
   const [submissionError, setSubmissionError] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -75,8 +77,6 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
   const { data: bookshelvesData } = useFindUserBookshelfsQuery(user?.id);
 
   const { mutateAsync: createAuthorDraft } = useCreateAuthorDraftMutation({});
-
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const { data } = useQuery(
     getGenresQueryOptions({
@@ -176,6 +176,7 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
           ...(bookCreation.stepTwoDetails as Required<BookCreationNonIsbnState['stepTwoDetails']>),
           ...(bookCreation.stepThreeDetails as Required<BookCreationNonIsbnState['stepThreeDetails']>),
           ...(bookCreation.stepOneDetails as Required<BookCreationNonIsbnState['stepOneDetails']>),
+          accessToken: accessToken as string,
         });
       } catch (error) {
         toast({
@@ -198,6 +199,7 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
           status: bookCreation.stepThreeDetails?.status || (values.status as ContractReadingStatus),
           isFavorite: false,
           genreIds: [bookCreation.stepThreeDetails?.genre as string],
+          accessToken: accessToken as string,
         });
       } catch (error) {
         if (error instanceof Error && error.message === 'ResourceAlreadyExistsError') {
@@ -218,9 +220,9 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
         await uploadBookImageMutation({
           bookId: userBook.id,
           file: file as unknown as File,
+          accessToken: accessToken as string,
         });
       }
-
 
       toast({
         title: 'Książka została położona na półce 😄',

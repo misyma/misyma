@@ -4,13 +4,16 @@ import { rootRoute } from '../../../../root';
 import { RequireAuthComponent } from '../../../../../core/components/requireAuth/requireAuthComponent';
 import { z } from 'zod';
 import { FC, useEffect, useMemo, useState } from 'react';
-import { useFindBooksQuery } from '../../../../../api/books/queries/findBooks/findBooksQuery';
+import { FindBooksQueryOptions } from '../../../../../api/books/queries/findBooks/findBooksQueryOptions';
 import { AuthenticatedLayout } from '../../../../../layouts/authenticated/authenticatedLayout';
 import { Button } from '../../../../../components/ui/button';
 import { Paginator } from '../../../../../components/paginator/paginator';
 import { Breadcrumbs, NumericBreadcrumb } from '../../../../../components/ui/breadcrumbs';
 import { useSearchBookContextDispatch } from '../../context/searchCreateBookContext';
 import { Book } from '../../../../../../../../common/contracts/dist/src/schemas/book/book';
+import { useQuery } from '@tanstack/react-query';
+import { useSelector } from 'react-redux';
+import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';
 
 export const SearchResultPage: FC = () => {
   const searchParams = searchResultRoute.useSearch();
@@ -18,6 +21,8 @@ export const SearchResultPage: FC = () => {
   const navigate = useNavigate();
 
   const searchCreationDispatch = useSearchBookContextDispatch();
+
+  const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   useEffect(() => {
     if (searchParams.isbn === '' && searchParams.title === '') {
@@ -35,10 +40,13 @@ export const SearchResultPage: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
-  const { data: foundBooks } = useFindBooksQuery({
-    title: searchParams.title,
-    isbn: searchParams.isbn,
-  });
+  const { data: foundBooks } = useQuery(
+    FindBooksQueryOptions({
+      title: searchParams.title,
+      isbn: searchParams.isbn,
+      accessToken: accessToken as string,
+    }),
+  );
 
   const onTryAgain = () => {
     navigate({

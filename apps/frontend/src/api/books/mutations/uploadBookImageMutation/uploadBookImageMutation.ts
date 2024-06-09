@@ -1,22 +1,24 @@
 import { UseMutationOptions, useMutation } from '@tanstack/react-query';
-import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice.js';
 import { UploadUserBookImageResponseBody } from '@common/contracts';
 import { BookApiError } from '../../errors/bookApiError.js';
 import { HttpService } from '../../../../core/services/httpService/httpService.js';
+import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMapper/errorCodeMessageMapper.js';
 
-type Payload = {
+export interface UploadBookImageMutationPayload {
   bookId: string;
   file: File;
-};
+  accessToken: string;
+}
 
 export const useUploadBookImageMutation = (
-  options: UseMutationOptions<UploadUserBookImageResponseBody, BookApiError, Payload>,
+  options: UseMutationOptions<UploadUserBookImageResponseBody, BookApiError, UploadBookImageMutationPayload>,
 ) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
+  const mapper = new ErrorCodeMessageMapper({
+    403: `Brak pozwolenia na dodania obrazka do książki`,
+  });
 
-  const uploadImage = async (payload: Payload) => {
-    const { bookId, file } = payload;
+  const uploadImage = async (payload: UploadBookImageMutationPayload) => {
+    const { accessToken, bookId, file } = payload;
 
     const formData = new FormData();
 
@@ -35,7 +37,7 @@ export const useUploadBookImageMutation = (
     if (!response.success) {
       throw new BookApiError({
         apiResponseError: response.body.context,
-        message: mapErrorCodeToErrorMessage(response.statusCode),
+        message: mapper.map(response.statusCode),
         statusCode: response.statusCode,
       });
     }
@@ -47,20 +49,4 @@ export const useUploadBookImageMutation = (
     mutationFn: uploadImage,
     ...options,
   });
-};
-
-const mapErrorCodeToErrorMessage = (statusCode: number): string => {
-  switch (statusCode) {
-    case 400:
-      return `Podano błędne dane.`;
-
-    case 403:
-      return `Brak pozwolenia na dodanie obrazka do książki.`;
-
-    case 500:
-      return `Wewnętrzny błąd serwera.`;
-
-    default:
-      return 'Nieznany błąd.';
-  }
 };

@@ -117,6 +117,7 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
         bookshelfId,
         status: values.status as ContractReadingStatus,
         isFavorite: false,
+        accessToken: accessToken as string,
       });
     } catch (error) {
       if (error instanceof Error && error.message === 'ResourceAlreadyExistsError') {
@@ -137,6 +138,7 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
       await uploadBookImageMutation({
         bookId: userBook.id,
         file: file as unknown as File,
+        accessToken: accessToken as string,
       });
 
       toast({

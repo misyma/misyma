@@ -4,13 +4,16 @@ import { StatusChooserCards } from '../../components/statusChooser/statusChooser
 import { BookshelfChoiceDropdown } from '../../components/bookshelfChoiceDropdown/bookshelfChoiceDropdown.js';
 import { Separator } from '../../../../components/ui/separator.js';
 import { FavoriteBookButton } from '../../components/favoriteBookButton/favoriteBookButton.js';
-import { useFindUserBookQuery } from '../../../../api/books/queries/findUserBook/findUserBookQuery.js';
+import { FindUserBookQueryOptions } from '../../../../api/books/queries/findUserBook/findUserBookQueryOptions.js';
 import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery.js';
 import { UserBook } from '@common/contracts';
 import { BasicDataTabSkeleton } from './basicDataTabSkeleton.js';
 import { CurrentRatingStar } from '../../components/currentRatingStar/currentRatingStar.js';
 import { BookFormat } from '../../../../common/constants/bookFormat.js';
 import { ReversedLanguages } from '../../../../common/constants/languages.js';
+import { useQuery } from '@tanstack/react-query';
+import { useSelector } from 'react-redux';
+import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice.js';
 
 interface Props {
   bookId: string;
@@ -19,10 +22,15 @@ interface Props {
 export const BasicDataTab: FC<Props> = ({ bookId }) => {
   const { data: userData } = useFindUserQuery();
 
-  const { data, isFetched, isFetching, isRefetching } = useFindUserBookQuery({
-    userBookId: bookId,
-    userId: userData?.id ?? '',
-  });
+  const accessToken = useSelector(userStateSelectors.selectAccessToken);
+
+  const { data, isFetched, isFetching, isRefetching } = useQuery(
+    FindUserBookQueryOptions({
+      userBookId: bookId,
+      userId: userData?.id ?? '',
+      accessToken: accessToken as string,
+    }),
+  );
 
   return (
     <div className="flex flex-col sm:flex-row col-start-1 col-span-2 sm:col-span-5 gap-6 w-full">

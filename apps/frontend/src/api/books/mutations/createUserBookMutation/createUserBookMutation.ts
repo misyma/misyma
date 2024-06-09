@@ -1,21 +1,28 @@
 import { UseMutationOptions, useMutation } from '@tanstack/react-query';
-import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
 import { CreateUserBookRequestBody, CreateUserBookResponseBody } from '@common/contracts';
 import { BookApiError } from '../../errors/bookApiError';
 import { HttpService } from '../../../../core/services/httpService/httpService';
+import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
 
-type Payload = CreateUserBookRequestBody;
+export interface CreateUserBookMutationPayload extends CreateUserBookRequestBody {
+  accessToken: string;
+}
 
 export const useCreateUserBookMutation = (
   options: UseMutationOptions<CreateUserBookResponseBody, BookApiError, CreateUserBookRequestBody>,
 ) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
+  const mapper = new ErrorCodeMessageMapper({
+    400: 'Podano błędne dane.',
+    403: 'Brak pozwolenia na stworzenie książki.',
+    500: 'Wewnętrzny błąd serwera.',
+  });
 
-  const createUserBook = async (payload: Payload) => {
+  const createUserBook = async (payload: CreateUserBookMutationPayload) => {
+    const { accessToken, ...body } = payload;
+
     const response = await HttpService.post<CreateUserBookResponseBody>({
       url: '/user-books',
-      body: payload as unknown as Record<string, unknown>,
+      body: body as unknown as Record<string, unknown>,
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -24,7 +31,7 @@ export const useCreateUserBookMutation = (
     if (!response.success) {
       throw new BookApiError({
         apiResponseError: response.body.context,
-        message: mapErrorCodeToErrorMessage(response.statusCode),
+        message: mapper.map(response.statusCode),
         statusCode: response.statusCode,
       });
     }
@@ -36,20 +43,4 @@ export const useCreateUserBookMutation = (
     mutationFn: createUserBook,
     ...options,
   });
-};
-
-const mapErrorCodeToErrorMessage = (statusCode: number): string => {
-  switch (statusCode) {
-    case 400:
-      return `Podano błędne dane.`;
-
-    case 403:
-      return `Brak pozwolenia na stworzenie książki.`;
-
-    case 500:
-      return `Wewnętrzny błąd serwera.`;
-
-    default:
-      return 'Nieznany błąd.';
-  }
 };

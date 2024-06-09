@@ -13,13 +13,15 @@ import { useDeleteBookshelfMutation } from '../../../../api/bookshelf/mutations/
 import { ShelfApiError } from '../../../../api/bookshelf/errors/shelfApiError';
 import { useMoveBooksToBookshelfMutation } from '../../../../api/books/mutations/moveBooksToBookshelfMutation/moveBooksToBookshelfMutation';
 import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery';
-import { useFindBooksByBookshelfIdQuery } from '../../../../api/books/queries/findBooksByBookshelfId/findBooksByBookshelfIdQuery';
+import { FindBooksByBookshelfIdQueryOptions } from '../../../../api/books/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
 import { BookApiError } from '../../../../api/books/errors/bookApiError';
 import { useFindUserBookshelfsQuery } from '../../../../api/bookshelf/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 import { Select, SelectItem, SelectTrigger, SelectValue } from '../../../../components/ui/select';
 import { SelectContent } from '@radix-ui/react-select';
 import { cn } from '../../../../lib/utils';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useSelector } from 'react-redux';
+import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
 
 interface Props {
   bookshelfId: string;
@@ -30,6 +32,8 @@ interface Props {
 
 export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, className, deletedHandler }: Props) => {
   const queryClient = useQueryClient();
+
+  const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const [deletionConfirmed, setDeletionConfirmed] = useState<boolean>(false);
 
@@ -45,10 +49,13 @@ export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, cl
 
   const { mutateAsync: moveBooksToBookshelf } = useMoveBooksToBookshelfMutation({});
 
-  const { data: bookshelfBooksResponse } = useFindBooksByBookshelfIdQuery({
-    bookshelfId,
-    userId: user?.id as string,
-  });
+  const { data: bookshelfBooksResponse } = useQuery(
+    FindBooksByBookshelfIdQueryOptions({
+      bookshelfId,
+      userId: user?.id as string,
+      accessToken: accessToken as string,
+    }),
+  );
 
   const {
     data: bookshelvesData,
@@ -88,6 +95,7 @@ export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, cl
               bookshelfId: moveBookshelfId,
               userBookId: userBook.id,
             })) ?? [],
+          accessToken: accessToken as string,
         });
 
         queryClient.invalidateQueries({

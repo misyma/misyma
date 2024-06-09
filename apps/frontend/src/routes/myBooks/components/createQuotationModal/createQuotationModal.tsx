@@ -26,7 +26,8 @@ const createQuotationSchema = z.object({
   page: z
     .string({
       required_error: 'Strona jest wymagana.',
-    }).min(1, 'Strona musi mieć minimum 1 znak.'),
+    })
+    .min(1, 'Strona musi mieć minimum 1 znak.'),
   content: z
     .string({
       required_error: 'Cytat jest wymagany.',
@@ -69,6 +70,7 @@ export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props):
     try {
       await mutateAsync({
         ...values,
+        page: values.page,
         accessToken: accessToken as string,
         createdAt: new Date().toISOString(),
         userBookId,
@@ -182,9 +184,9 @@ export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props):
               <div className="pt-8 gap-2 flex sm:justify-center justify-center sm:items-center items-center">
                 <Button
                   className="bg-transparent text-primary w-32 sm:w-40"
-                  type='reset'
+                  type="reset"
                   onClick={() => {
-                    setIsOpen(false)
+                    setIsOpen(false);
                   }}
                 >
                   Wróć

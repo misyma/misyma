@@ -3,10 +3,12 @@ import { useFindUserBookshelfsQuery } from '../../../../api/bookshelf/queries/fi
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../../components/ui/select';
 import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery';
 import { useUpdateUserBookMutation } from '../../../../api/books/mutations/updateUserBookMutation/updateUserBookMutation';
-import { useFindUserBookQuery } from '../../../../api/books/queries/findUserBook/findUserBookQuery';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Skeleton } from '../../../../components/ui/skeleton';
 import { useToast } from '../../../../components/ui/use-toast';
+import { useSelector } from 'react-redux';
+import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
+import { FindUserBookQueryOptions } from '../../../../api/books/queries/findUserBook/findUserBookQueryOptions';
 
 interface Props {
   bookId: string;
@@ -15,15 +17,19 @@ interface Props {
 export const BookshelfChoiceDropdown: FC<Props> = ({ bookId }) => {
   const queryClient = useQueryClient();
 
+  const accessToken = useSelector(userStateSelectors.selectAccessToken);
+
   const { data: userData } = useFindUserQuery();
 
-  const { data, isFetching, isFetched, isRefetching } = useFindUserBookQuery({
-    userBookId: bookId,
-    userId: userData?.id ?? '',
-  });
+  const { data, isFetching, isFetched, isRefetching } = useQuery(
+    FindUserBookQueryOptions({
+      userBookId: bookId,
+      userId: userData?.id ?? '',
+      accessToken: accessToken as string,
+    }),
+  );
 
-  const { toast } = useToast()
-
+  const { toast } = useToast();
 
   const { data: bookshelfData } = useFindUserBookshelfsQuery(userData?.id ?? '');
 
@@ -39,13 +45,14 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId }) => {
     await updateUserBook({
       userBookId: bookId,
       bookshelfId: id,
+      accessToken: accessToken as string,
     });
 
     toast({
       title: `Zmieniono półkę.`,
       description: `Książka znajduje się teraz na: XD`,
       variant: 'success',
-  })
+    });
 
     queryClient.invalidateQueries({
       queryKey: ['findUserBookById', bookId, userData?.id],
@@ -54,7 +61,7 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId }) => {
 
   return (
     <>
-      {(isFetching && !isRefetching) && (
+      {isFetching && !isRefetching && (
         <>
           <Skeleton className="w-40 h-8"></Skeleton>
         </>

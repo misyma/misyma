@@ -85,12 +85,14 @@ export const EditOrDeleteBookModal: FC<Props> = ({ bookId, userBookId }) => {
       await uploadBookImageMutation({
         bookId: userBookId,
         file: values.image as unknown as File,
+        accessToken: accessToken as string,
       });
     }
 
     await updateUserBook({
       userBookId,
       genreIds: [values.genre],
+      accessToken: accessToken as string,
     });
 
     queryClient.invalidateQueries({

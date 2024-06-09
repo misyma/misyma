@@ -1,6 +1,4 @@
 import { UseMutationOptions, useMutation } from '@tanstack/react-query';
-import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice.js';
 import {
   UpdateUserBookPathParams,
   UpdateUserBookRequestBody,
@@ -9,16 +7,21 @@ import {
 } from '@common/contracts';
 import { BookApiError } from '../../errors/bookApiError.js';
 import { HttpService } from '../../../../core/services/httpService/httpService.js';
+import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMapper/errorCodeMessageMapper.js';
 
-type Payload = UpdateUserBookPathParams & UpdateUserBookRequestBody;
+export interface UpdateUserBookPayload extends UpdateUserBookPathParams, UpdateUserBookRequestBody {
+  accessToken: string;
+}
 
 export const useUpdateUserBookMutation = (
-  options: UseMutationOptions<UpdateUserBookResponseBody, BookApiError, Payload>,
+  options: UseMutationOptions<UpdateUserBookResponseBody, BookApiError, UpdateUserBookPayload>,
 ) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
+  const mapper = new ErrorCodeMessageMapper({
+    403: 'Brak pozwolenia na zaaktualizowanie danych książki',
+  });
 
-  const uploadImage = async (payload: Payload) => {
-    const { userBookId, ...rest } = payload;
+  const uploadImage = async (payload: UpdateUserBookPayload) => {
+    const { accessToken, userBookId, ...rest } = payload;
 
     const response = await HttpService.patch<UploadUserBookImageResponseBody>({
       url: `/user-books/${userBookId}`,
@@ -32,7 +35,7 @@ export const useUpdateUserBookMutation = (
     if (!response.success) {
       throw new BookApiError({
         apiResponseError: response.body.context,
-        message: mapErrorCodeToErrorMessage(response.statusCode),
+        message: mapper.map(response.statusCode),
         statusCode: response.statusCode,
       });
     }
@@ -44,20 +47,4 @@ export const useUpdateUserBookMutation = (
     mutationFn: uploadImage,
     ...options,
   });
-};
-
-const mapErrorCodeToErrorMessage = (statusCode: number): string => {
-  switch (statusCode) {
-    case 400:
-      return `Podano błędne dane.`;
-
-    case 403:
-      return `Brak pozwolenia na zaaktualizowanie danych książki.`;
-
-    case 500:
-      return `Wewnętrzny błąd serwera.`;
-
-    default:
-      return 'Nieznany błąd.';
-  }
 };
