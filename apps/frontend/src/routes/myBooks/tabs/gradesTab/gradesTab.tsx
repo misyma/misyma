@@ -1,6 +1,6 @@
 import { FC, useMemo, useState } from 'react';
 import { Separator } from '../../../../components/ui/separator.js';
-import { useFindUserBookQuery } from '../../../../api/books/queries/findUserBook/findUserBookQuery.js';
+import { FindUserBookQueryOptions } from '../../../../api/books/queries/findUserBook/findUserBookQueryOptions.js';
 import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery.js';
 import { UserBook } from '@common/contracts';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -44,10 +44,13 @@ export const GradesTab: FC<Props> = ({ userBookId }) => {
     isFetched: isUserBookFetched,
     isFetching: isUserBookFetching,
     isRefetching: isUserBookRefetching,
-  } = useFindUserBookQuery({
-    userBookId,
-    userId: userData?.id ?? '',
-  });
+  } = useQuery(
+    FindUserBookQueryOptions({
+      userBookId,
+      userId: userData?.id ?? '',
+      accessToken: accessToken as string,
+    }),
+  );
 
   const invalidateReadingsFetch = () =>
     queryClient.invalidateQueries({
@@ -87,9 +90,7 @@ export const GradesTab: FC<Props> = ({ userBookId }) => {
             />
           </div>
           <div className="flex justify-center">
-            <FavoriteBookButton
-              userBook={userBookData as UserBook}
-            />
+            <FavoriteBookButton userBook={userBookData as UserBook} />
           </div>
           <div className="flex flex-col gap-4 w-full">
             <div className="flex justify-between w-full">

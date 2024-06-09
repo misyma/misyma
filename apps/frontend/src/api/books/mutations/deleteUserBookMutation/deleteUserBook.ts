@@ -1,5 +1,7 @@
 import { DeleteUserBookPathParams } from '@common/contracts';
 import { HttpService } from '../../../../core/services/httpService/httpService';
+import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
+import { BookApiError } from '../../errors/bookApiError';
 
 export type DeleteUserBookPayload = DeleteUserBookPathParams & {
   accessToken: string;
@@ -16,7 +18,13 @@ export const deleteUserBook = async (payload: DeleteUserBookPayload) => {
   });
 
   if (!response.success) {
-    throw new Error(); // todo: replace with proper error
+    const mapper = new ErrorCodeMessageMapper({});
+
+    throw new BookApiError({
+      apiResponseError: response.body.context,
+      message: mapper.map(response.statusCode),
+      statusCode: response.statusCode,
+    });
   }
 
   return;

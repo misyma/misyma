@@ -1,5 +1,4 @@
 import { FC, useMemo, useState } from 'react';
-import { useFindUserBookQuery } from '../../../../api/books/queries/findUserBook/findUserBookQuery';
 import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery';
 import { BasicDataTabSkeleton } from '../basicDataTab/basicDataTabSkeleton';
 import { FavoriteBookButton } from '../../components/favoriteBookButton/favoriteBookButton';
@@ -12,6 +11,7 @@ import { getQuotesOptions } from '../../../../api/quotes/queries/getQuotes/getQu
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
 import { CurrentRatingStar } from '../../components/currentRatingStar/currentRatingStar';
+import { FindUserBookQueryOptions } from '../../../../api/books/queries/findUserBook/findUserBookQueryOptions';
 
 interface Props {
   userBookId: string;
@@ -33,10 +33,13 @@ export const QuotationsTab: FC<Props> = ({ userBookId }) => {
     isFetched: isUserBookFetched,
     isFetching: isUserBookFetching,
     isRefetching: isUserBookRefetching,
-  } = useFindUserBookQuery({
-    userBookId,
-    userId: userData?.id ?? '',
-  });
+  } = useQuery(
+    FindUserBookQueryOptions({
+      userBookId,
+      userId: userData?.id ?? '',
+      accessToken: accessToken as string,
+    }),
+  );
 
   const {
     data: quotationsData,
@@ -96,9 +99,7 @@ export const QuotationsTab: FC<Props> = ({ userBookId }) => {
             />
           </div>
           <div className="flex justify-center">
-            <FavoriteBookButton
-              userBook={userBookData as UserBook}
-            />
+            <FavoriteBookButton userBook={userBookData as UserBook} />
           </div>
           <div className="flex flex-col gap-4 w-full">
             <div className="flex justify-between w-full">

@@ -1,11 +1,15 @@
 import { FindBooksQueryParams, FindBooksResponseBody } from '@common/contracts';
 import { HttpService } from '../../../../core/services/httpService/httpService';
+import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
+import { BookApiError } from '../../errors/bookApiError';
 
-type Payload = FindBooksQueryParams & {
+export interface FindBooksPayload extends FindBooksQueryParams {
   accessToken: string;
-};
+}
 
-export const findBooks = async (values: Payload) => {
+export const findBooks = async (values: FindBooksPayload) => {
+  const mapper = new ErrorCodeMessageMapper({});
+
   const { accessToken, isbn, title } = values;
 
   const queryParams: Record<string, string> = {};
@@ -27,7 +31,11 @@ export const findBooks = async (values: Payload) => {
   });
 
   if (!response.success) {
-    throw new Error('Error');
+    throw new BookApiError({
+      apiResponseError: response.body.context,
+      message: mapper.map(response.statusCode),
+      statusCode: response.statusCode,
+    });
   }
 
   return response.body;

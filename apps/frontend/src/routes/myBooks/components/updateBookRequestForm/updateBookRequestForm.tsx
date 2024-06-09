@@ -12,7 +12,6 @@ import { useQuery } from '@tanstack/react-query';
 import { FindBookByIdQueryOptions } from '../../../../api/books/queries/findBookById/findBookByIdQueryOptions';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
-import { useFindUserBookQuery } from '../../../../api/books/queries/findUserBook/findUserBookQuery';
 import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery';
 import { StepOneForm } from './stepOneForm/stepOneForm';
 import { BookFormat } from '../../../../common/constants/bookFormat';
@@ -22,6 +21,7 @@ import {
   useBookDetailsChangeRequestContext,
   useBookDetailsChangeRequestDispatch,
 } from '../../contexts/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
+import { FindUserBookQueryOptions } from '../../../../api/books/queries/findUserBook/findUserBookQueryOptions';
 
 interface Props {
   bookId: string;
@@ -68,10 +68,13 @@ export const UpdateBookRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit })
 
   const { data: userData } = useFindUserQuery();
 
-  const { data: userBookData } = useFindUserBookQuery({
-    userBookId: bookId,
-    userId: userData?.id ?? '',
-  });
+  const { data: userBookData } = useQuery(
+    FindUserBookQueryOptions({
+      userBookId: bookId,
+      userId: userData?.id ?? '',
+      accessToken: accessToken as string,
+    }),
+  );
 
   const { data: bookData } = useQuery(
     FindBookByIdQueryOptions({

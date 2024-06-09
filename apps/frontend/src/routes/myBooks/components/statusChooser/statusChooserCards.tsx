@@ -1,13 +1,17 @@
 import { FC, useState } from 'react';
-import { useFindUserBookQuery } from '../../../../api/books/queries/findUserBook/findUserBookQuery';
+import {
+  FindUserBookQueryOptions,
+} from '../../../../api/books/queries/findUserBook/findUserBookQueryOptions';
 import { useFindUserQuery } from '../../../../api/user/queries/findUserQuery/findUserQuery';
 import { HiCheckCircle, HiDotsCircleHorizontal } from 'react-icons/hi';
 import { HiQuestionMarkCircle } from 'react-icons/hi';
 import { ReadingStatus } from '@common/contracts';
 import { cn } from '../../../../lib/utils';
 import { useUpdateUserBookMutation } from '../../../../api/books/mutations/updateUserBookMutation/updateUserBookMutation';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Skeleton } from '../../../../components/ui/skeleton';
+import { useSelector } from 'react-redux';
+import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
 
 interface Props {
   bookId: string;
@@ -16,13 +20,17 @@ interface Props {
 export const StatusChooserCards: FC<Props> = ({ bookId }) => {
   const queryClient = useQueryClient();
 
+  const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const { data: userData } = useFindUserQuery();
 
-  const { data, isFetching, isFetched, isRefetching } = useFindUserBookQuery({
-    userBookId: bookId,
-    userId: userData?.id ?? '',
-  });
+  const { data, isFetching, isFetched, isRefetching } = useQuery(
+    FindUserBookQueryOptions({
+      userBookId: bookId,
+      userId: userData?.id ?? '',
+      accessToken: accessToken as string,
+    }),
+  );
 
   const [readingStatus, setReadingStatus] = useState(data?.status);
 
@@ -39,6 +47,7 @@ export const StatusChooserCards: FC<Props> = ({ bookId }) => {
     await updateUserBook({
       userBookId: data?.id as string,
       status: chosenStatus,
+      accessToken: accessToken as string,
     });
 
     queryClient.invalidateQueries({

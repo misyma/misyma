@@ -16,11 +16,11 @@ import { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useFindUserQuery } from '../../../../../api/user/queries/findUserQuery/findUserQuery';
-import { useFindUserBookQuery } from '../../../../../api/books/queries/findUserBook/findUserBookQuery';
 import { useQuery } from '@tanstack/react-query';
 import { FindBookByIdQueryOptions } from '../../../../../api/books/queries/findBookById/findBookByIdQueryOptions';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';
+import { FindUserBookQueryOptions } from '../../../../../api/books/queries/findUserBook/findUserBookQueryOptions';
 
 const stepOneSchema = z.object({
   isbn: isbnSchema.optional(),
@@ -102,10 +102,13 @@ export const StepOneForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
 
   const { data: userData } = useFindUserQuery();
 
-  const { data: userBookData } = useFindUserBookQuery({
-    userBookId: bookId,
-    userId: userData?.id ?? '',
-  });
+  const { data: userBookData } = useQuery(
+    FindUserBookQueryOptions({
+      userBookId: bookId,
+      userId: userData?.id ?? '',
+      accessToken: accessToken as string,
+    }),
+  );
 
   const createAuthorDraftForm = useForm({
     resolver: zodResolver(createAuthorDraftSchema),
