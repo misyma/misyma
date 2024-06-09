@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
 import { Dispatch, ReactNode, createContext, useContext, useReducer } from 'react';
 
 const initialState = {

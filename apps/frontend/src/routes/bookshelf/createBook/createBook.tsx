@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
 import { Navigate, createRoute } from '@tanstack/react-router';
 import { FC } from 'react';
 import { RequireAuthComponent } from '../../../core/components/requireAuth/requireAuthComponent';

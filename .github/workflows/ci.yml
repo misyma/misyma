@@ -19,6 +19,7 @@ jobs:
       - run: npm run build:dev -- --filter=@common\*
       - run: npm ci
       - run: npm run build:dev
+      - run: npm run lint
       - run: npm run test:unit
       - run: docker-compose up -d
       - run: npm run test:integration

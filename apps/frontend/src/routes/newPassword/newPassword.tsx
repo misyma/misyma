@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
 import { Navigate, createRoute, useNavigate } from '@tanstack/react-router';
 import { rootRoute } from '../root';
 import { FC } from 'react';
@@ -39,7 +38,7 @@ const productSearchSchema = z.object({
 export const newPasswordRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/new-password',
-  component: () =>{ 
+  component: () =>{
     return (
       <RequireNonAuthComponent>
         <SetNewPasswordPage />

@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
 import { Navigate, createRoute, useNavigate } from '@tanstack/react-router';
 import { FC } from 'react';
 import { rootRoute } from '../root';

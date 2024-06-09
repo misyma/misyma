@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
 import { Outlet, createRoute } from '@tanstack/react-router';
 import { rootRoute } from '../root';
 import { RequireAuthComponent } from '../../core/components/requireAuth/requireAuthComponent';

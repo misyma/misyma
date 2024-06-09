@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
 import { FC, useEffect, useMemo, useState } from 'react';
 import { AuthenticatedLayout } from '../../layouts/authenticated/authenticatedLayout';
 import { createRoute, useNavigate } from '@tanstack/react-router';
@@ -272,7 +271,7 @@ export const ShelvesPage: FC = () => {
                             type="text"
                             maxLength={64}
                             includeQuill={false}
-                            // eslint-disable-next-line
+                             
                             id={`${index}-bookshelf`}
                             className="bg-none pointer-events-auto text-lg  sm:text-2xl px-0 w-40 sm:w-72"
                             containerClassName="bg-transparent w-40 sm:w-72"

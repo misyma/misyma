@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
 import { Link, createRoute, useNavigate } from '@tanstack/react-router';
 import { useVerifyUserEmailMutation } from '../../api/user/mutations/verifyUserEmailMutation/verifyUserEmailMutation';
 import { FC, useEffect } from 'react';
