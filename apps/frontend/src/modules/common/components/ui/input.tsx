@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { ImQuill } from 'react-icons/im';
 import { FaCirclePlus } from "react-icons/fa6";
+import { cn } from '../../lib/utils';
 
-import { cn } from '@/modules/common/lib/utils';
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   containerClassName?: string;

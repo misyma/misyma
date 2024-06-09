@@ -138,7 +138,7 @@ export const ShelvesPage: FC = () => {
       await refetchBookshelves();
 
       toast({
-        title: `Nazwa półki zmieniona.`,
+        title: `Półka została stworzona.`,
         description: `Stworzono półkę o nazwie: ${bookshelfName}`,
         variant: 'success',
       });
