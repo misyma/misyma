@@ -73,6 +73,10 @@
     "vite-plugin-checker": "0.6.4"
   },
   "volta": {
-    "node": "20.12.2"
+    "node": "20.14.0",
+    "npm": "10.8.1"
+  },
+    "engines": {
+    "node": "20.14.0"
   }
 }
