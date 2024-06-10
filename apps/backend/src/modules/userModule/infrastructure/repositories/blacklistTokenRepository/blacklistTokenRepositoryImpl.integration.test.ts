@@ -1,7 +1,7 @@
 import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 
+import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
-import { Application } from '../../../../../core/application.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type BlacklistTokenRepository } from '../../../domain/repositories/blacklistTokenRepository/blacklistTokenRepository.js';
@@ -19,7 +19,7 @@ describe('BlacklistTokenRepositoryImpl', () => {
   const blacklistTokenTestFactory = new BlacklistTokenTestFactory();
 
   beforeEach(async () => {
-    const container = Application.createContainer();
+    const container = TestContainer.create();
 
     blacklistTokenRepository = container.get<BlacklistTokenRepository>(symbols.blacklistTokenRepository);
 

@@ -3,6 +3,7 @@ import { beforeEach, afterEach, expect, it, describe } from 'vitest';
 import { type FindBooksQueryHandler } from './findBooksQueryHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
+import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { symbols } from '../../../symbols.js';
@@ -18,6 +19,8 @@ describe('FindBooksQueryHandler', () => {
 
   let bookTestUtils: BookTestUtils;
 
+  let testUtils: TestUtils[];
+
   beforeEach(async () => {
     const container = TestContainer.create();
 
@@ -29,15 +32,17 @@ describe('FindBooksQueryHandler', () => {
 
     bookTestUtils = container.get<BookTestUtils>(testSymbols.bookTestUtils);
 
-    await authorTestUtils.truncate();
+    testUtils = [authorTestUtils, bookTestUtils];
 
-    await bookTestUtils.truncate();
+    for (const testUtil of testUtils) {
+      await testUtil.truncate();
+    }
   });
 
   afterEach(async () => {
-    await authorTestUtils.truncate();
-
-    await bookTestUtils.truncate();
+    for (const testUtil of testUtils) {
+      await testUtil.truncate();
+    }
 
     await databaseClient.destroy();
   });

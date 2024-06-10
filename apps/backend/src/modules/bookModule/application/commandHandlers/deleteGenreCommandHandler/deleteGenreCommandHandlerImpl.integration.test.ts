@@ -13,12 +13,14 @@ describe('DeleteGenreCommandHandler', () => {
 
   let genreTestUtils: GenreTestUtils;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     const container = TestContainer.create();
 
     commandHandler = container.get<DeleteGenreCommandHandler>(symbols.deleteGenreCommandHandler);
 
     genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+
+    await genreTestUtils.truncate();
   });
 
   afterEach(async () => {

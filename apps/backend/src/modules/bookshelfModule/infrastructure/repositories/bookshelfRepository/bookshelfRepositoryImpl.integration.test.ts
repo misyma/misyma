@@ -5,6 +5,7 @@ import { BookshelfType } from '@common/contracts';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
+import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { Bookshelf } from '../../../domain/entities/bookshelf/bookshelf.js';
 import { type BookshelfRepository } from '../../../domain/repositories/bookshelfRepository/bookshelfRepository.js';
@@ -21,6 +22,8 @@ describe('BookshelfRepositoryImpl', () => {
 
   const bookshelfTestFactory = new BookshelfTestFactory();
 
+  let testUtils: TestUtils[];
+
   beforeEach(async () => {
     const container = TestContainer.create();
 
@@ -30,15 +33,17 @@ describe('BookshelfRepositoryImpl', () => {
 
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
 
-    await bookshelfTestUtils.truncate();
+    testUtils = [userTestUtils, bookshelfTestUtils];
 
-    await userTestUtils.truncate();
+    for (const testUtil of testUtils) {
+      await testUtil.truncate();
+    }
   });
 
   afterEach(async () => {
-    await bookshelfTestUtils.truncate();
-
-    await userTestUtils.truncate();
+    for (const testUtil of testUtils) {
+      await testUtil.truncate();
+    }
   });
 
   describe('find', () => {

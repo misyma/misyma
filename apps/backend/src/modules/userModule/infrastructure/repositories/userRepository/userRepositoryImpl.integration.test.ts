@@ -1,8 +1,8 @@
 import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 
+import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
-import { Application } from '../../../../../core/application.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
@@ -20,7 +20,7 @@ describe('UserRepositoryImpl', () => {
   const userTestFactory = new UserTestFactory();
 
   beforeEach(async () => {
-    const container = Application.createContainer();
+    const container = TestContainer.create();
 
     userRepository = container.get<UserRepository>(symbols.userRepository);
 

@@ -3,6 +3,7 @@ import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
+import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
@@ -42,6 +43,8 @@ describe('UserBookRepositoryImpl', () => {
 
   const userBookTestFactory = new UserBookTestFactory();
 
+  let testUtils: TestUtils[];
+
   beforeEach(async () => {
     const container = TestContainer.create();
 
@@ -65,39 +68,26 @@ describe('UserBookRepositoryImpl', () => {
 
     collectionTestUtils = container.get<CollectionTestUtils>(testSymbols.collectionTestUtils);
 
-    await authorTestUtils.truncate();
+    testUtils = [
+      authorTestUtils,
+      bookTestUtils,
+      bookshelfTestUtils,
+      userTestUtils,
+      genreTestUtils,
+      userBookTestUtils,
+      bookReadingTestUtils,
+      collectionTestUtils,
+    ];
 
-    await userBookTestUtils.truncate();
-
-    await bookTestUtils.truncate();
-
-    await bookshelfTestUtils.truncate();
-
-    await userTestUtils.truncate();
-
-    await genreTestUtils.truncate();
-
-    await bookReadingTestUtils.truncate();
-
-    await collectionTestUtils.truncate();
+    for (const testUtil of testUtils) {
+      await testUtil.truncate();
+    }
   });
 
   afterEach(async () => {
-    await authorTestUtils.truncate();
-
-    await userBookTestUtils.truncate();
-
-    await bookTestUtils.truncate();
-
-    await bookshelfTestUtils.truncate();
-
-    await userTestUtils.truncate();
-
-    await genreTestUtils.truncate();
-
-    await bookReadingTestUtils.truncate();
-
-    await collectionTestUtils.truncate();
+    for (const testUtil of testUtils) {
+      await testUtil.truncate();
+    }
 
     await databaseClient.destroy();
   });

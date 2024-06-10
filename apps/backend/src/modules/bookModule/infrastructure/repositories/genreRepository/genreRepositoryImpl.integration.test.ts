@@ -18,12 +18,14 @@ describe('GenreRepositoryImpl', () => {
 
   const genreTestFactory = new GenreTestFactory();
 
-  beforeEach(() => {
+  beforeEach(async () => {
     const container = TestContainer.create();
 
     genreRepository = container.get<GenreRepository>(symbols.genreRepository);
 
     genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+
+    await genreTestUtils.truncate();
   });
 
   afterEach(async () => {

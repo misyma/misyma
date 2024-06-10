@@ -4,6 +4,7 @@ import { type CreateCollectionCommandHandler } from './createCollectionCommandHa
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
+import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { symbols } from '../../../symbols.js';
@@ -16,7 +17,9 @@ describe('CreateCollectionCommandHandlerImpl', () => {
 
   let userTestUtils: UserTestUtils;
 
-  beforeEach(() => {
+  let testUtils: TestUtils[];
+
+  beforeEach(async () => {
     const container = TestContainer.create();
 
     commandHandler = container.get<CreateCollectionCommandHandler>(symbols.createCollectionCommandHandler);
@@ -24,12 +27,18 @@ describe('CreateCollectionCommandHandlerImpl', () => {
     collectionTestUtils = container.get<CollectionTestUtils>(testSymbols.collectionTestUtils);
 
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
+
+    testUtils = [collectionTestUtils, userTestUtils];
+
+    for (const testUtil of testUtils) {
+      await testUtil.truncate();
+    }
   });
 
   afterEach(async () => {
-    await userTestUtils.truncate();
-
-    await collectionTestUtils.truncate();
+    for (const testUtil of testUtils) {
+      await testUtil.truncate();
+    }
   });
 
   it('throws an error - when Collection already exists', async () => {

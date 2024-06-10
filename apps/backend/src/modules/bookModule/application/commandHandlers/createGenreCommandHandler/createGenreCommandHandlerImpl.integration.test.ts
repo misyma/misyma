@@ -13,12 +13,14 @@ describe('CreateGenreCommandHandlerImpl', () => {
 
   let genreTestUtils: GenreTestUtils;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     const container = TestContainer.create();
 
     commandHandler = container.get<CreateGenreCommandHandler>(symbols.createGenreCommandHandler);
 
     genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+
+    await genreTestUtils.truncate();
   });
 
   afterEach(async () => {

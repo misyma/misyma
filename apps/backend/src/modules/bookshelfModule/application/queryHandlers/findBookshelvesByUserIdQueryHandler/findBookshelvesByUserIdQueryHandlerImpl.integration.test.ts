@@ -4,6 +4,7 @@ import { type FindBookshelvesByUserIdQueryHandler } from './findBookshelvesByUse
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
+import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { symbols } from '../../../symbols.js';
@@ -16,6 +17,8 @@ describe('FindBookshelvesByUserIdQueryHandlerImpl', () => {
 
   let bookshelfTestUtils: BookshelfTestUtils;
 
+  let testUtils: TestUtils[];
+
   beforeEach(async () => {
     const container = TestContainer.create();
 
@@ -25,15 +28,17 @@ describe('FindBookshelvesByUserIdQueryHandlerImpl', () => {
 
     bookshelfTestUtils = container.get<BookshelfTestUtils>(testSymbols.bookshelfTestUtils);
 
-    await userTestUtils.truncate();
+    testUtils = [userTestUtils, bookshelfTestUtils];
 
-    await bookshelfTestUtils.truncate();
+    for (const testUtil of testUtils) {
+      await testUtil.truncate();
+    }
   });
 
   afterEach(async () => {
-    await bookshelfTestUtils.truncate();
-
-    await userTestUtils.truncate();
+    for (const testUtil of testUtils) {
+      await testUtil.truncate();
+    }
   });
 
   it('throws an error - when User was not found', async () => {

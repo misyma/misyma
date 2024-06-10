@@ -4,6 +4,7 @@ import { type UpdateBookCommandHandler } from './updateBookCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
+import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
@@ -20,6 +21,8 @@ describe('UpdateBookCommandHandlerImpl', () => {
 
   let databaseClient: DatabaseClient;
 
+  let testUtils: TestUtils[];
+
   beforeEach(async () => {
     const container = TestContainer.create();
 
@@ -31,17 +34,17 @@ describe('UpdateBookCommandHandlerImpl', () => {
 
     authorTestUtils = container.get<AuthorTestUtils>(testSymbols.authorTestUtils);
 
-    bookTestUtils = container.get<BookTestUtils>(testSymbols.bookTestUtils);
+    testUtils = [authorTestUtils, bookTestUtils];
 
-    await authorTestUtils.truncate();
-
-    await bookTestUtils.truncate();
+    for (const testUtil of testUtils) {
+      await testUtil.truncate();
+    }
   });
 
   afterEach(async () => {
-    await authorTestUtils.truncate();
-
-    await bookTestUtils.truncate();
+    for (const testUtil of testUtils) {
+      await testUtil.truncate();
+    }
 
     await databaseClient.destroy();
   });
@@ -91,7 +94,7 @@ describe('UpdateBookCommandHandlerImpl', () => {
 
     const updatedFormat = Generator.bookFormat();
 
-    const updatedPages = Generator.number();
+    const updatedPages = Generator.number(100, 1000);
 
     const updatedAuthor = await authorTestUtils.createAndPersist();
 

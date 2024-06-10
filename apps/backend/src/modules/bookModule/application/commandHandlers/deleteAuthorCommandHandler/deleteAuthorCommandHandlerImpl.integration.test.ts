@@ -1,13 +1,14 @@
 import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 
 import { type DeleteAuthorCommandHandler } from './deleteAuthorCommandHandler.js';
+import { testSymbols } from '../../../../../../tests/container/symbols.js';
+import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
-import { Application } from '../../../../../core/application.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { symbols } from '../../../symbols.js';
 import { AuthorTestFactory } from '../../../tests/factories/authorTestFactory/authorTestFactory.js';
-import { AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
+import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 
 describe('DeleteAuthorCommandHandler', () => {
   let deleteAuthorCommandHandler: DeleteAuthorCommandHandler;
@@ -19,13 +20,13 @@ describe('DeleteAuthorCommandHandler', () => {
   const authorTestFactory = new AuthorTestFactory();
 
   beforeEach(async () => {
-    const container = Application.createContainer();
+    const container = TestContainer.create();
 
     deleteAuthorCommandHandler = container.get<DeleteAuthorCommandHandler>(symbols.deleteAuthorCommandHandler);
 
     databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
 
-    authorTestUtils = new AuthorTestUtils(databaseClient);
+    authorTestUtils = container.get<AuthorTestUtils>(testSymbols.authorTestUtils);
 
     await authorTestUtils.truncate();
   });
