@@ -1,3 +1,4 @@
+import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type BlacklistTokenRawEntity } from '../../../infrastructure/databases/userDatabase/tables/blacklistTokenTable/blacklistTokenRawEntity.js';
 import { blacklistTokenTable } from '../../../infrastructure/databases/userDatabase/tables/blacklistTokenTable/blacklistTokenTable.js';
@@ -15,7 +16,7 @@ interface FindByTokenPayload {
   readonly token: string;
 }
 
-export class BlacklistTokenTestUtils {
+export class BlacklistTokenTestUtils implements TestUtils {
   private readonly blacklistTokenTestFactory = new BlacklistTokenTestFactory();
 
   public constructor(private readonly databaseClient: DatabaseClient) {}

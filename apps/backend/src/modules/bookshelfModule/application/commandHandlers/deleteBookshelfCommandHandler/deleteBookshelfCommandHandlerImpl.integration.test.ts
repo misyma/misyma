@@ -1,9 +1,10 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { type DeleteBookshelfCommandHandler } from './deleteBookshelfCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
+import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
@@ -17,7 +18,9 @@ describe('DeleteBookshelfCommandHandlerImpl', () => {
 
   let bookshelfTestUtils: BookshelfTestUtils;
 
-  beforeEach(() => {
+  let testUtils: TestUtils[];
+
+  beforeEach(async () => {
     const container = TestContainer.create();
 
     commandHandler = container.get<DeleteBookshelfCommandHandler>(symbols.deleteBookshelfCommandHandler);
@@ -25,6 +28,18 @@ describe('DeleteBookshelfCommandHandlerImpl', () => {
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
 
     bookshelfTestUtils = container.get<BookshelfTestUtils>(testSymbols.bookshelfTestUtils);
+
+    testUtils = [userTestUtils, bookshelfTestUtils];
+
+    for (const testUtil of testUtils) {
+      await testUtil.truncate();
+    }
+  });
+
+  afterEach(async () => {
+    for (const testUtil of testUtils) {
+      await testUtil.truncate();
+    }
   });
 
   it('throws an error - when Bookshelf was not found', async () => {

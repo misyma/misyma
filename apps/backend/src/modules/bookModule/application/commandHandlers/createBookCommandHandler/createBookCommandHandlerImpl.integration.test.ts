@@ -4,6 +4,7 @@ import { type CreateBookCommandHandler } from './createBookCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
+import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
@@ -25,6 +26,8 @@ describe('CreateBookCommandHandler', () => {
 
   const bookTestFactory = new BookTestFactory();
 
+  let testUtils: TestUtils[];
+
   beforeEach(async () => {
     const container = TestContainer.create();
 
@@ -36,15 +39,17 @@ describe('CreateBookCommandHandler', () => {
 
     bookTestUtils = container.get<BookTestUtils>(testSymbols.bookTestUtils);
 
-    await authorTestUtils.truncate();
+    testUtils = [authorTestUtils, bookTestUtils];
 
-    await bookTestUtils.truncate();
+    for (const testUtil of testUtils) {
+      await testUtil.truncate();
+    }
   });
 
   afterEach(async () => {
-    await authorTestUtils.truncate();
-
-    await bookTestUtils.truncate();
+    for (const testUtil of testUtils) {
+      await testUtil.truncate();
+    }
 
     await databaseClient.destroy();
   });

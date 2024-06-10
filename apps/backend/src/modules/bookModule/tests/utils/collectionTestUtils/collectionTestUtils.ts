@@ -1,3 +1,4 @@
+import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type CollectionRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/collectionTable/collectionRawEntity.js';
 import { collectionTable } from '../../../infrastructure/databases/bookDatabase/tables/collectionTable/collectionTable.js';
@@ -7,7 +8,7 @@ interface CreateAndPersistPayload {
   readonly input?: Partial<CollectionRawEntity>;
 }
 
-export class CollectionTestUtils {
+export class CollectionTestUtils implements TestUtils {
   private readonly collectionTestFactory = new CollectionTestFactory();
 
   public constructor(private readonly databaseClient: DatabaseClient) {}
@@ -36,9 +37,5 @@ export class CollectionTestUtils {
 
   public async truncate(): Promise<void> {
     await this.databaseClient<CollectionRawEntity>(collectionTable).truncate();
-  }
-
-  public async destroyDatabaseConnection(): Promise<void> {
-    await this.databaseClient.destroy();
   }
 }

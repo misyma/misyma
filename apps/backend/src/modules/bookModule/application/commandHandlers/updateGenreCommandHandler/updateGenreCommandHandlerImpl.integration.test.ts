@@ -14,18 +14,18 @@ describe('UpdateGenreCommandHandler', () => {
 
   let genreTestUtils: GenreTestUtils;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     const container = TestContainer.create();
 
     commandHandler = container.get<UpdateGenreCommandHandler>(symbols.updateGenreCommandHandler);
 
     genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+
+    await genreTestUtils.truncate();
   });
 
   afterEach(async () => {
     await genreTestUtils.truncate();
-
-    await genreTestUtils.destroyDatabaseConnection();
   });
 
   it('throws an error - when Genre does not exist', async () => {

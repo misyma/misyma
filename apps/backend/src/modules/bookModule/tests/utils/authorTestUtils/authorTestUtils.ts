@@ -1,3 +1,4 @@
+import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type AuthorRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/authorTable/authorRawEntity.js';
 import { authorTable } from '../../../infrastructure/databases/bookDatabase/tables/authorTable/authorTable.js';
@@ -15,7 +16,7 @@ interface FindByNamePayload {
   readonly name: string;
 }
 
-export class AuthorTestUtils {
+export class AuthorTestUtils implements TestUtils {
   private readonly authorTestFactory = new AuthorTestFactory();
 
   public constructor(private readonly databaseClient: DatabaseClient) {}

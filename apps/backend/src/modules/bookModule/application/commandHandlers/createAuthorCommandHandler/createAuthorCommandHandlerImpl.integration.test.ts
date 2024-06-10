@@ -1,13 +1,14 @@
 import { beforeEach, afterEach, expect, it, describe } from 'vitest';
 
 import { type CreateAuthorCommandHandler } from './createAuthorCommandHandler.js';
+import { testSymbols } from '../../../../../../tests/container/symbols.js';
+import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
-import { Application } from '../../../../../core/application.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { symbols } from '../../../symbols.js';
 import { AuthorTestFactory } from '../../../tests/factories/authorTestFactory/authorTestFactory.js';
-import { AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
+import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 
 describe('CreateAuthorCommandHandler', () => {
   let createAuthorCommandHandler: CreateAuthorCommandHandler;
@@ -19,13 +20,13 @@ describe('CreateAuthorCommandHandler', () => {
   const authorTestFactory = new AuthorTestFactory();
 
   beforeEach(async () => {
-    const container = Application.createContainer();
+    const container = TestContainer.create();
 
     createAuthorCommandHandler = container.get<CreateAuthorCommandHandler>(symbols.createAuthorCommandHandler);
 
     databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
 
-    authorTestUtils = new AuthorTestUtils(databaseClient);
+    authorTestUtils = container.get<AuthorTestUtils>(testSymbols.authorTestUtils);
 
     await authorTestUtils.truncate();
   });

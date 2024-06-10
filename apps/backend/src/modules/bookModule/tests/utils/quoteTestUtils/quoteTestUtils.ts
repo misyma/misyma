@@ -1,3 +1,4 @@
+import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type QuoteRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/quoteTable/quoteRawEntity.js';
 import { quoteTable } from '../../../infrastructure/databases/bookDatabase/tables/quoteTable/quoteTable.js';
@@ -11,7 +12,7 @@ interface FindByIdPayload {
   readonly id: string;
 }
 
-export class QuoteTestUtils {
+export class QuoteTestUtils implements TestUtils {
   public constructor(private readonly databaseClient: DatabaseClient) {}
 
   private readonly quoteTestFactory = new QuoteTestFactory();

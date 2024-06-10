@@ -4,6 +4,7 @@ import { type CreateBorrowingCommandHandler } from './createBorrowingCommandHand
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
+import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type BookTestUtils } from '../../../../bookModule/tests/utils/bookTestUtils/bookTestUtils.js';
 import { type UserBookTestUtils } from '../../../../bookModule/tests/utils/userBookTestUtils/userBookTestUtils.js';
@@ -29,6 +30,8 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
 
   const borrowingTestFactory = new BorrowingTestFactory();
 
+  let testUtils: TestUtils[];
+
   beforeEach(async () => {
     const container = TestContainer.create();
 
@@ -44,27 +47,17 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
 
     userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
 
-    await bookTestUtils.truncate();
+    testUtils = [bookTestUtils, bookshelfTestUtils, userTestUtils, borrowingTestUtils, userBookTestUtils];
 
-    await bookshelfTestUtils.truncate();
-
-    await userTestUtils.truncate();
-
-    await borrowingTestUtils.truncate();
-
-    await userBookTestUtils.truncate();
+    for (const testUtil of testUtils) {
+      await testUtil.truncate();
+    }
   });
 
   afterEach(async () => {
-    await bookTestUtils.truncate();
-
-    await bookshelfTestUtils.truncate();
-
-    await userTestUtils.truncate();
-
-    await borrowingTestUtils.truncate();
-
-    await userBookTestUtils.truncate();
+    for (const testUtil of testUtils) {
+      await testUtil.truncate();
+    }
   });
 
   it('throws an error - when UserBook does not exist', async () => {

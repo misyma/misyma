@@ -1,8 +1,8 @@
 import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 
+import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
-import { Application } from '../../../../../core/application.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type AuthorRepository } from '../../../domain/repositories/authorRepository/authorRepository.js';
@@ -20,7 +20,7 @@ describe('AuthorRepositoryImpl', () => {
   const authorTestFactory = new AuthorTestFactory();
 
   beforeEach(async () => {
-    const container = Application.createContainer();
+    const container = TestContainer.create();
 
     authorRepository = container.get<AuthorRepository>(symbols.authorRepository);
 

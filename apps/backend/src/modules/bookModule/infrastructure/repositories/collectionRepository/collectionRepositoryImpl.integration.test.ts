@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
+import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { Collection } from '../../../domain/entities/collection/collection.js';
@@ -21,6 +22,8 @@ describe('CollectionRepositoryImpl', () => {
 
   const collectionTestFactory = new CollectionTestFactory();
 
+  let testUtils: TestUtils[];
+
   beforeEach(async () => {
     const container = TestContainer.create();
 
@@ -30,17 +33,17 @@ describe('CollectionRepositoryImpl', () => {
 
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
 
-    await collectionTestUtils.truncate();
+    testUtils = [collectionTestUtils, userTestUtils];
 
-    await userTestUtils.truncate();
+    for (const testUtil of testUtils) {
+      await testUtil.truncate();
+    }
   });
 
   afterEach(async () => {
-    await collectionTestUtils.truncate();
-
-    await userTestUtils.truncate();
-
-    await collectionTestUtils.destroyDatabaseConnection();
+    for (const testUtil of testUtils) {
+      await testUtil.truncate();
+    }
   });
 
   describe('findById', () => {

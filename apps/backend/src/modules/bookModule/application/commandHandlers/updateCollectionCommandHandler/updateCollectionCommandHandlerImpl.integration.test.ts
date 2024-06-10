@@ -4,6 +4,7 @@ import { type UpdateCollectionCommandHandler } from './updateCollectionCommandHa
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
+import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
@@ -17,7 +18,9 @@ describe('UpdateCollectionNameCommandHandler', () => {
 
   let userTestUtils: UserTestUtils;
 
-  beforeEach(() => {
+  let testUtils: TestUtils[];
+
+  beforeEach(async () => {
     const container = TestContainer.create();
 
     commandHandler = container.get<UpdateCollectionCommandHandler>(symbols.updateCollectionCommandHandler);
@@ -25,14 +28,18 @@ describe('UpdateCollectionNameCommandHandler', () => {
     collectionTestUtils = container.get<CollectionTestUtils>(testSymbols.collectionTestUtils);
 
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
+
+    testUtils = [userTestUtils, collectionTestUtils];
+
+    for (const testUtil of testUtils) {
+      await testUtil.truncate();
+    }
   });
 
   afterEach(async () => {
-    await userTestUtils.truncate();
-
-    await collectionTestUtils.truncate();
-
-    await collectionTestUtils.destroyDatabaseConnection();
+    for (const testUtil of testUtils) {
+      await testUtil.truncate();
+    }
   });
 
   it('throws an error - when Collection does not exist', async () => {

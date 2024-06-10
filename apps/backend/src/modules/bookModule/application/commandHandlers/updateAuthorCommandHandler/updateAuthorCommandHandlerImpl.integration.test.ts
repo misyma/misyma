@@ -14,12 +14,14 @@ describe('UpdateAuthorCommandHandler', () => {
 
   let authorTestUtils: AuthorTestUtils;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     const container = TestContainer.create();
 
     commandHandler = container.get<UpdateAuthorCommandHandler>(symbols.updateAuthorCommandHandler);
 
     authorTestUtils = container.get<AuthorTestUtils>(testSymbols.authorTestUtils);
+
+    await authorTestUtils.truncate();
   });
 
   afterEach(async () => {

@@ -1,9 +1,10 @@
+import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type EmailEvent } from '../../../domain/entities/emailEvent/emailEvent.js';
 import { type EmailEventRawEntity } from '../../../infrastructure/databases/userEventsDatabase/tables/emailEventTable/emailEventRawEntity.js';
 import { emailEventTable } from '../../../infrastructure/databases/userEventsDatabase/tables/emailEventTable/emailEventTable.js';
 
-export class EmailEventTestUtils {
+export class EmailEventTestUtils implements TestUtils {
   public constructor(private readonly databaseClient: DatabaseClient) {}
 
   public async create(emailEvent: EmailEvent): Promise<EmailEventRawEntity> {

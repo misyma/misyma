@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 
 import { type FindAuthorsQueryHandler } from './findAuthorsQueryHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
@@ -11,12 +11,18 @@ describe('FindAuthorsQueryHandlerImpl', () => {
 
   let authorTestUtils: AuthorTestUtils;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     const container = TestContainer.create();
 
     queryHandler = container.get<FindAuthorsQueryHandler>(symbols.findAuthorsQueryHandler);
 
     authorTestUtils = container.get<AuthorTestUtils>(testSymbols.authorTestUtils);
+
+    await authorTestUtils.truncate();
+  });
+
+  afterEach(async () => {
+    await authorTestUtils.truncate();
   });
 
   it('returns Authors', async () => {

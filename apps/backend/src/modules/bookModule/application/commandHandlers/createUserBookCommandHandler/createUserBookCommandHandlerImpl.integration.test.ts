@@ -4,6 +4,7 @@ import { type CreateUserBookCommandHandler } from './createUserBookCommandHandle
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
+import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
@@ -30,6 +31,8 @@ describe('CreateUserBookCommandHandler', () => {
 
   let userBookTestUtils: UserBookTestUtils;
 
+  let testUtils: TestUtils[];
+
   beforeEach(async () => {
     const container = TestContainer.create();
 
@@ -47,27 +50,17 @@ describe('CreateUserBookCommandHandler', () => {
 
     userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
 
-    await authorTestUtils.truncate();
+    testUtils = [authorTestUtils, bookTestUtils, bookshelfTestUtils, userTestUtils, userBookTestUtils];
 
-    await bookTestUtils.truncate();
-
-    await bookshelfTestUtils.truncate();
-
-    await userTestUtils.truncate();
-
-    await userBookTestUtils.truncate();
+    for (const testUtil of testUtils) {
+      await testUtil.truncate();
+    }
   });
 
   afterEach(async () => {
-    await authorTestUtils.truncate();
-
-    await bookTestUtils.truncate();
-
-    await bookshelfTestUtils.truncate();
-
-    await userTestUtils.truncate();
-
-    await userBookTestUtils.truncate();
+    for (const testUtil of testUtils) {
+      await testUtil.truncate();
+    }
 
     await databaseClient.destroy();
   });

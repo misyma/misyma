@@ -6,6 +6,7 @@ import { type UploadUserBookImageCommandHandler } from './uploadUserBookImageCom
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
+import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type Config } from '../../../../../core/config.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
@@ -40,6 +41,8 @@ describe('UploadUserBookImageCommandHandlerImpl', () => {
 
   let config: Config;
 
+  let testUtils: TestUtils[];
+
   const resourcesDirectory = path.resolve(__dirname, '../../../../../../../../resources');
 
   const sampleFileName = 'book1.jpg';
@@ -71,29 +74,19 @@ describe('UploadUserBookImageCommandHandlerImpl', () => {
 
     config = container.get<Config>(coreSymbols.config);
 
-    await authorTestUtils.truncate();
+    testUtils = [authorTestUtils, bookTestUtils, bookshelfTestUtils, userTestUtils, userBookTestUtils];
 
-    await bookTestUtils.truncate();
-
-    await bookshelfTestUtils.truncate();
-
-    await userBookTestUtils.truncate();
-
-    await userTestUtils.truncate();
+    for (const testUtil of testUtils) {
+      await testUtil.truncate();
+    }
 
     await s3TestUtils.createBucket(bucketName);
   });
 
   afterEach(async () => {
-    await authorTestUtils.truncate();
-
-    await bookTestUtils.truncate();
-
-    await bookshelfTestUtils.truncate();
-
-    await userTestUtils.truncate();
-
-    await userBookTestUtils.truncate();
+    for (const testUtil of testUtils) {
+      await testUtil.truncate();
+    }
 
     await databaseClient.destroy();
 

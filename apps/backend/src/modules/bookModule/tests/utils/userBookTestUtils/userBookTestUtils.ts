@@ -1,3 +1,4 @@
+import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type Transaction } from '../../../../../libs/database/types/transaction.js';
 import { type UserBookCollectionRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/userBookCollectionsTable/userBookCollectionsRawEntity.js';
@@ -26,7 +27,7 @@ interface FindByIdsPayload {
   readonly ids: string[];
 }
 
-export class UserBookTestUtils {
+export class UserBookTestUtils implements TestUtils {
   private readonly userBookTestFactory = new UserBookTestFactory();
 
   public constructor(private readonly databaseClient: DatabaseClient) {}

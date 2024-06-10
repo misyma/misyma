@@ -1,9 +1,10 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 
 import { type UpdateBookshelfCommandHandler } from './updateBookshelfCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
+import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
@@ -17,7 +18,9 @@ describe('UpdateBookshelfCommandHandlerImpl', () => {
 
   let bookshelfTestUtils: BookshelfTestUtils;
 
-  beforeEach(() => {
+  let testUtils: TestUtils[];
+
+  beforeEach(async () => {
     const container = TestContainer.create();
 
     commandHandler = container.get<UpdateBookshelfCommandHandler>(symbols.updateBookshelfCommandHandler);
@@ -25,6 +28,18 @@ describe('UpdateBookshelfCommandHandlerImpl', () => {
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
 
     bookshelfTestUtils = container.get<BookshelfTestUtils>(testSymbols.bookshelfTestUtils);
+
+    testUtils = [bookshelfTestUtils, userTestUtils];
+
+    for (const testUtil of testUtils) {
+      await testUtil.truncate();
+    }
+  });
+
+  afterEach(async () => {
+    for (const testUtil of testUtils) {
+      await testUtil.truncate();
+    }
   });
 
   it('throws an error - when Bookshelf was not found', async () => {
@@ -90,21 +105,19 @@ describe('UpdateBookshelfCommandHandlerImpl', () => {
       },
     });
 
-    expect(
-      async () =>
-        await commandHandler.execute({
-          bookshelfId: bookshelf.id,
-          name: anotherBookshelf.name,
-          userId: user.id,
-        }),
-    ).toThrowErrorInstance({
-      instance: ResourceAlreadyExistsError,
-      context: {
-        resource: 'Bookshelf',
+    try {
+      await commandHandler.execute({
+        bookshelfId: bookshelf.id,
         name: anotherBookshelf.name,
         userId: user.id,
-      },
-    });
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(ResourceAlreadyExistsError);
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('updates a Bookshelf', async () => {

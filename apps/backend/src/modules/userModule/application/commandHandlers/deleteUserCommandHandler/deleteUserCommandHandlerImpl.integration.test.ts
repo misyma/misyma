@@ -1,8 +1,8 @@
 import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 
 import { type DeleteUserCommandHandler } from './deleteUserCommandHandler.js';
+import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
-import { Application } from '../../../../../core/application.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { symbols } from '../../../symbols.js';
@@ -19,7 +19,7 @@ describe('DeleteUserCommandHandler', () => {
   const userTestFactory = new UserTestFactory();
 
   beforeEach(async () => {
-    const container = Application.createContainer();
+    const container = TestContainer.create();
 
     deleteUserCommandHandler = container.get<DeleteUserCommandHandler>(symbols.deleteUserCommandHandler);
 

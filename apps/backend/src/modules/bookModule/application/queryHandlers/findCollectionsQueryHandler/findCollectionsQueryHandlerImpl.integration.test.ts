@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { type FindCollectionsQueryHandler } from './findCollectionsQueryHandler.js';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
+import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { symbols } from '../../../symbols.js';
 import { type CollectionTestUtils } from '../../../tests/utils/collectionTestUtils/collectionTestUtils.js';
@@ -14,6 +15,8 @@ describe('FindCollectionsQueryHandlerImpl', () => {
 
   let userTestUtils: UserTestUtils;
 
+  let testUtils: TestUtils[];
+
   beforeEach(async () => {
     const container = TestContainer.create();
 
@@ -23,15 +26,17 @@ describe('FindCollectionsQueryHandlerImpl', () => {
 
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
 
-    await userTestUtils.truncate();
+    testUtils = [userTestUtils, collectionTestUtils];
 
-    await collectionTestUtils.truncate();
+    for (const testUtil of testUtils) {
+      await testUtil.truncate();
+    }
   });
 
   afterEach(async () => {
-    await userTestUtils.truncate();
-
-    await collectionTestUtils.truncate();
+    for (const testUtil of testUtils) {
+      await testUtil.truncate();
+    }
   });
 
   it('returns an empty array - when User has no Collections', async () => {

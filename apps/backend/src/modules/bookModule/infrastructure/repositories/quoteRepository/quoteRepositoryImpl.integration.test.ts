@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { testSymbols } from '../../../../../../tests/container/symbols.js';
 import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
+import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { Quote } from '../../../domain/entities/quote/quote.js';
@@ -28,7 +29,9 @@ describe('QuoteRepositoryImpl', () => {
 
   const quoteTestFactory = new QuoteTestFactory();
 
-  beforeEach(() => {
+  let testUtils: TestUtils[];
+
+  beforeEach(async () => {
     const container = TestContainer.create();
 
     repository = container.get<QuoteRepository>(symbols.quoteRepository);
@@ -43,243 +46,235 @@ describe('QuoteRepositoryImpl', () => {
 
     userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
 
-    afterEach(async () => {
-      await bookTestUtils.truncate();
+    testUtils = [bookTestUtils, bookshelfTestUtils, userTestUtils, quoteTestUtils, userBookTestUtils];
 
-      await bookshelfTestUtils.truncate();
+    for (const testUtil of testUtils) {
+      await testUtil.truncate();
+    }
+  });
 
-      await userTestUtils.truncate();
+  afterEach(async () => {
+    for (const testUtil of testUtils) {
+      await testUtil.truncate();
+    }
+  });
 
-      await userBookTestUtils.truncate();
+  describe('findById', () => {
+    it('returns null - when Quote was not found', async () => {
+      const nonExistentQuoteId = Generator.uuid();
 
-      await quoteTestUtils.truncate();
-    });
-
-    afterEach(async () => {
-      await bookTestUtils.truncate();
-
-      await bookshelfTestUtils.truncate();
-
-      await userTestUtils.truncate();
-
-      await userBookTestUtils.truncate();
-
-      await quoteTestUtils.truncate();
-    });
-
-    describe('findById', () => {
-      it('returns null - when Quote was not found', async () => {
-        const nonExistentQuoteId = Generator.uuid();
-
-        const result = await repository.findQuote({
-          id: nonExistentQuoteId,
-        });
-
-        expect(result).toBeNull();
+      const result = await repository.findQuote({
+        id: nonExistentQuoteId,
       });
 
-      it('returns a Quote', async () => {
-        const user = await userTestUtils.createAndPersist();
-
-        const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-        const book = await bookTestUtils.createAndPersist();
-
-        const userBook = await userBookTestUtils.createAndPersist({
-          input: {
-            bookshelfId: bookshelf.id,
-            bookId: book.id,
-          },
-        });
-
-        const quote = await quoteTestUtils.createAndPersist({
-          input: {
-            userBookId: userBook.id,
-          },
-        });
-
-        const result = await repository.findQuote({
-          id: quote.id,
-        });
-
-        expect(result).toBeInstanceOf(Quote);
-
-        expect(result?.getState()).toEqual(quote);
-      });
+      expect(result).toBeNull();
     });
 
-    describe('findByUserBookId', () => {
-      it('returns an empty array - when Quotes were not found', async () => {
-        const userBookId = Generator.uuid();
+    it('returns a Quote', async () => {
+      const user = await userTestUtils.createAndPersist();
 
-        const result = await repository.findQuotes({
-          userBookId,
-          page: 1,
-          pageSize: 10,
-        });
+      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
 
-        expect(result).toHaveLength(0);
+      const book = await bookTestUtils.createAndPersist();
+
+      const userBook = await userBookTestUtils.createAndPersist({
+        input: {
+          bookshelfId: bookshelf.id,
+          bookId: book.id,
+        },
       });
 
-      it('returns an array of Quotes', async () => {
-        const user = await userTestUtils.createAndPersist();
-
-        const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-        const book = await bookTestUtils.createAndPersist();
-
-        const userBook = await userBookTestUtils.createAndPersist({
-          input: {
-            bookshelfId: bookshelf.id,
-            bookId: book.id,
-          },
-        });
-
-        const quote1 = await quoteTestUtils.createAndPersist({
-          input: {
-            userBookId: userBook.id,
-          },
-        });
-
-        const quote2 = await quoteTestUtils.createAndPersist({
-          input: {
-            userBookId: userBook.id,
-          },
-        });
-
-        const result = await repository.findQuotes({
+      const quote = await quoteTestUtils.createAndPersist({
+        input: {
           userBookId: userBook.id,
-          page: 1,
-          pageSize: 10,
-        });
+        },
+      });
 
-        expect(result).toHaveLength(2);
+      const result = await repository.findQuote({
+        id: quote.id,
+      });
 
-        result.forEach((quote) => {
-          expect(quote).toBeInstanceOf(Quote);
+      expect(result).toBeInstanceOf(Quote);
 
-          expect(quote.getId()).oneOf([quote1.id, quote2.id]);
-
-          expect(quote.getUserBookId()).toEqual(user.id);
-        });
+      expect(result?.getState()).toEqual({
+        userBookId: userBook.id,
+        content: quote.content,
+        isFavorite: quote.isFavorite,
+        page: quote.page,
+        createdAt: quote.createdAt,
       });
     });
+  });
 
-    describe('save', () => {
-      it('creates a new Quote - given QuoteDraft', async () => {
-        const user = await userTestUtils.createAndPersist();
+  describe('findByUserBookId', () => {
+    it('returns an empty array - when Quotes were not found', async () => {
+      const userBookId = Generator.uuid();
 
-        const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-        const book = await bookTestUtils.createAndPersist();
-
-        const userBook = await userBookTestUtils.createAndPersist({
-          input: {
-            bookshelfId: bookshelf.id,
-            bookId: book.id,
-          },
-        });
-
-        const quote = quoteTestFactory.create({
-          userBookId: userBook.id,
-        });
-
-        const result = await repository.saveQuote({
-          quote: quote.getState(),
-        });
-
-        expect(result).toBeInstanceOf(Quote);
-
-        expect(result.getUserBookId()).toEqual(book.id);
-
-        expect(result.getContent()).toEqual(quote.getContent());
-
-        expect(result.getIsFavorite()).toEqual(quote.getIsFavorite());
-
-        expect(result.getCreatedAt()).toEqual(quote.getCreatedAt());
+      const result = await repository.findQuotes({
+        userBookId,
+        page: 1,
+        pageSize: 10,
       });
 
-      it('updates a Quote - given a Quote', async () => {
-        const user = await userTestUtils.createAndPersist();
-
-        const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-        const book = await bookTestUtils.createAndPersist();
-
-        const userBook = await userBookTestUtils.createAndPersist({
-          input: {
-            bookshelfId: bookshelf.id,
-            bookId: book.id,
-          },
-        });
-
-        const quote = quoteTestFactory.create({
-          userBookId: userBook.id,
-        });
-
-        await quoteTestUtils.createAndPersist({
-          input: {
-            ...quote.getState(),
-          },
-        });
-
-        const newContent = Generator.alphaString(20);
-
-        const newFavorite = Generator.boolean();
-
-        const newPage = Generator.number(1, 1000).toString();
-
-        quote.setContent({ content: newContent });
-
-        quote.setIsFavorite({ isFavorite: newFavorite });
-
-        quote.setPage({ page: newPage });
-
-        const result = await repository.saveQuote({
-          quote,
-        });
-
-        expect(result).toBeInstanceOf(Quote);
-
-        const updatedQuote = await repository.findQuote({
-          id: quote.getId(),
-        });
-
-        expect(updatedQuote?.getContent()).toEqual(newContent);
-
-        expect(updatedQuote?.getIsFavorite()).toEqual(newFavorite);
-
-        expect(updatedQuote?.getPage()).toEqual(newPage);
-      });
+      expect(result).toHaveLength(0);
     });
 
-    describe('delete', () => {
-      it('deletes a Quote', async () => {
-        const user = await userTestUtils.createAndPersist();
+    it('returns an array of Quotes', async () => {
+      const user = await userTestUtils.createAndPersist();
 
-        const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
 
-        const book = await bookTestUtils.createAndPersist();
+      const book = await bookTestUtils.createAndPersist();
 
-        const userBook = await userBookTestUtils.createAndPersist({
-          input: {
-            bookshelfId: bookshelf.id,
-            bookId: book.id,
-          },
-        });
-
-        const quote = await quoteTestUtils.createAndPersist({
-          input: {
-            userBookId: userBook.id,
-          },
-        });
-
-        await repository.deleteQuote({ id: quote.id });
-
-        const result = await repository.findQuote({ id: quote.id });
-
-        expect(result).toBeNull();
+      const userBook = await userBookTestUtils.createAndPersist({
+        input: {
+          bookshelfId: bookshelf.id,
+          bookId: book.id,
+        },
       });
+
+      const quote1 = await quoteTestUtils.createAndPersist({
+        input: {
+          userBookId: userBook.id,
+        },
+      });
+
+      const quote2 = await quoteTestUtils.createAndPersist({
+        input: {
+          userBookId: userBook.id,
+        },
+      });
+
+      const result = await repository.findQuotes({
+        userBookId: userBook.id,
+        page: 1,
+        pageSize: 10,
+      });
+
+      expect(result).toHaveLength(2);
+
+      result.forEach((quote) => {
+        expect(quote).toBeInstanceOf(Quote);
+
+        expect(quote.getId()).oneOf([quote1.id, quote2.id]);
+
+        expect(quote.getUserBookId()).toEqual(userBook.id);
+      });
+    });
+  });
+
+  describe('save', () => {
+    it('creates a new Quote - given QuoteDraft', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+
+      const book = await bookTestUtils.createAndPersist();
+
+      const userBook = await userBookTestUtils.createAndPersist({
+        input: {
+          bookshelfId: bookshelf.id,
+          bookId: book.id,
+        },
+      });
+
+      const quote = quoteTestFactory.create({
+        userBookId: userBook.id,
+      });
+
+      const result = await repository.saveQuote({
+        quote: quote.getState(),
+      });
+
+      expect(result).toBeInstanceOf(Quote);
+
+      expect(result.getUserBookId()).toEqual(userBook.id);
+
+      expect(result.getContent()).toEqual(quote.getContent());
+
+      expect(result.getIsFavorite()).toEqual(quote.getIsFavorite());
+
+      expect(result.getCreatedAt()).toEqual(quote.getCreatedAt());
+    });
+
+    it('updates a Quote - given a Quote', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+
+      const book = await bookTestUtils.createAndPersist();
+
+      const userBook = await userBookTestUtils.createAndPersist({
+        input: {
+          bookshelfId: bookshelf.id,
+          bookId: book.id,
+        },
+      });
+
+      const quoteRawEntity = await quoteTestUtils.createAndPersist({
+        input: {
+          userBookId: userBook.id,
+        },
+      });
+
+      const quote = new Quote(quoteRawEntity);
+
+      const newContent = Generator.alphaString(20);
+
+      const newFavorite = Generator.boolean();
+
+      const newPage = Generator.number(1, 1000).toString();
+
+      quote.setContent({ content: newContent });
+
+      quote.setIsFavorite({ isFavorite: newFavorite });
+
+      quote.setPage({ page: newPage });
+
+      const result = await repository.saveQuote({
+        quote,
+      });
+
+      expect(result).toBeInstanceOf(Quote);
+
+      const updatedQuote = await repository.findQuote({
+        id: quote.getId(),
+      });
+
+      expect(updatedQuote?.getContent()).toEqual(newContent);
+
+      expect(updatedQuote?.getIsFavorite()).toEqual(newFavorite);
+
+      expect(updatedQuote?.getPage()).toEqual(newPage);
+    });
+  });
+
+  describe('delete', () => {
+    it('deletes a Quote', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+
+      const book = await bookTestUtils.createAndPersist();
+
+      const userBook = await userBookTestUtils.createAndPersist({
+        input: {
+          bookshelfId: bookshelf.id,
+          bookId: book.id,
+        },
+      });
+
+      const quote = await quoteTestUtils.createAndPersist({
+        input: {
+          userBookId: userBook.id,
+        },
+      });
+
+      await repository.deleteQuote({ id: quote.id });
+
+      const result = await repository.findQuote({ id: quote.id });
+
+      expect(result).toBeNull();
     });
   });
 });
