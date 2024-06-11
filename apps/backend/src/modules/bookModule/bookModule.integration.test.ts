@@ -12,7 +12,7 @@ import { GenreHttpController } from './api/httpControllers/genreHttpController/g
 import { QuoteHttpController } from './api/httpControllers/quoteHttpController/quoteHttpController.js';
 import { UserBookHttpController } from './api/httpControllers/userBookHttpController/userBookHttpController.js';
 import { bookSymbols } from './symbols.js';
-import { TestContainer } from '../../../tests/container/testContainer.js';
+import { TestContainer } from '../../../tests/testContainer.js';
 import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
 
 describe('BookModule', () => {

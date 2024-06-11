@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { type CreateGenreCommandHandler } from './createGenreCommandHandler.js';
-import { testSymbols } from '../../../../../../tests/container/symbols.js';
-import { TestContainer } from '../../../../../../tests/container/testContainer.js';
+import { testSymbols } from '../../../../../../tests/symbols.js';
+import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
 import { symbols } from '../../../symbols.js';

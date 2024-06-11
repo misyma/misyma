@@ -3,8 +3,8 @@ import path from 'path';
 import { expect, describe, it, beforeEach, afterEach } from 'vitest';
 
 import { type UploadUserBookImageCommandHandler } from './uploadUserBookImageCommandHandler.js';
-import { testSymbols } from '../../../../../../tests/container/symbols.js';
-import { TestContainer } from '../../../../../../tests/container/testContainer.js';
+import { testSymbols } from '../../../../../../tests/symbols.js';
+import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';

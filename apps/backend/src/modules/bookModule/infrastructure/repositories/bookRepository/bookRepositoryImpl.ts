@@ -183,9 +183,7 @@ export class BookRepositoryImpl implements BookRepository {
           join.on(`${authorTable}.id`, '=', `${bookAuthorTable}.authorId`);
         })
         .where((builder) => {
-          if (id) {
-            builder.where(`${bookTable}.id`, id);
-          }
+          builder.where(`${bookTable}.id`, id);
         });
     } catch (error) {
       throw new RepositoryError({

@@ -1,6 +1,6 @@
 import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 
-import { TestContainer } from '../../../../../../tests/container/testContainer.js';
+import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { coreSymbols } from '../../../../../core/symbols.js';

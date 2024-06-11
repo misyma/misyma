@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { testSymbols } from '../../../../../../tests/container/symbols.js';
-import { TestContainer } from '../../../../../../tests/container/testContainer.js';
+import { testSymbols } from '../../../../../../tests/symbols.js';
+import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { Genre } from '../../../domain/entities/genre/genre.js';

@@ -4,7 +4,7 @@ import { UserAdminHttpController } from './api/httpControllers/userAdminHttpCont
 import { UserHttpController } from './api/httpControllers/userHttpController/userHttpController.js';
 import { EmailQueueController } from './api/queueControllers/emailQueueController/emailQueueController.js';
 import { userSymbols } from './symbols.js';
-import { TestContainer } from '../../../tests/container/testContainer.js';
+import { TestContainer } from '../../../tests/testContainer.js';
 import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
 
 describe('UserModule', () => {

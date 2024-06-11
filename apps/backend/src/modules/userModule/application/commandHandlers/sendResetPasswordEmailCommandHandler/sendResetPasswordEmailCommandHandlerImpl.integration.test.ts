@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { type SendResetPasswordEmailCommandHandler } from './sendResetPasswordEmailCommandHandler.js';
-import { testSymbols } from '../../../../../../tests/container/symbols.js';
-import { TestContainer } from '../../../../../../tests/container/testContainer.js';
+import { testSymbols } from '../../../../../../tests/symbols.js';
+import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { EmailEventDraft } from '../../../domain/entities/emailEvent/emailEventDraft.ts/emailEventDraft.js';
 import { EmailEventType } from '../../../domain/entities/emailEvent/types/emailEventType.js';
 import { symbols } from '../../../symbols.js';

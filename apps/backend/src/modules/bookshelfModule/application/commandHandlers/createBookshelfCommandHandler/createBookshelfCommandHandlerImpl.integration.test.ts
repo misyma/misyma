@@ -3,8 +3,8 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { BookshelfType } from '@common/contracts';
 
 import { type CreateBookshelfCommandHandler } from './createBookshelfCommandHandler.js';
-import { testSymbols } from '../../../../../../tests/container/symbols.js';
-import { TestContainer } from '../../../../../../tests/container/testContainer.js';
+import { testSymbols } from '../../../../../../tests/symbols.js';
+import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';

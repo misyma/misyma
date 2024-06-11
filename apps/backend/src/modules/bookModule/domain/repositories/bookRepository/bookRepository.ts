@@ -5,7 +5,7 @@ export interface SaveBookPayload {
 }
 
 export interface FindBookPayload {
-  readonly id?: string;
+  readonly id: string;
 }
 
 export interface FindBooksPayload {

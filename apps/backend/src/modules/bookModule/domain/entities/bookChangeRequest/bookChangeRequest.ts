@@ -13,6 +13,7 @@ export interface BookChangeRequestDraft {
   readonly imageUrl?: string | undefined;
   readonly userId: string;
   readonly bookId: string;
+  readonly createdAt: Date;
 }
 
 export interface BookChangeRequestState {
@@ -27,6 +28,7 @@ export interface BookChangeRequestState {
   readonly imageUrl?: string | undefined;
   readonly userId: string;
   readonly bookId: string;
+  readonly createdAt: Date;
 }
 
 export class BookChangeRequest {
@@ -34,8 +36,21 @@ export class BookChangeRequest {
   private readonly state: BookChangeRequestState;
 
   public constructor(draft: BookChangeRequestDraft) {
-    const { id, title, isbn, publisher, releaseYear, language, translator, format, pages, imageUrl, bookId, userId } =
-      draft;
+    const {
+      id,
+      title,
+      isbn,
+      publisher,
+      releaseYear,
+      language,
+      translator,
+      format,
+      pages,
+      imageUrl,
+      bookId,
+      userId,
+      createdAt,
+    } = draft;
 
     this.id = id;
 
@@ -51,6 +66,7 @@ export class BookChangeRequest {
       imageUrl,
       bookId,
       userId,
+      createdAt,
     };
   }
 
@@ -104,5 +120,9 @@ export class BookChangeRequest {
 
   public getBookId(): string {
     return this.state.bookId;
+  }
+
+  public getCreatedAt(): Date {
+    return this.state.createdAt;
   }
 }

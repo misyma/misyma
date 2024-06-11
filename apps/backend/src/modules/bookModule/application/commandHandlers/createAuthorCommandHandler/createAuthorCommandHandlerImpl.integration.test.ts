@@ -1,8 +1,8 @@
 import { beforeEach, afterEach, expect, it, describe } from 'vitest';
 
 import { type CreateAuthorCommandHandler } from './createAuthorCommandHandler.js';
-import { testSymbols } from '../../../../../../tests/container/symbols.js';
-import { TestContainer } from '../../../../../../tests/container/testContainer.js';
+import { testSymbols } from '../../../../../../tests/symbols.js';
+import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';

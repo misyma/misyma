@@ -82,6 +82,7 @@ import { FindUserBookQueryHandlerImpl } from './application/queryHandlers/findUs
 import { type FindUserBooksQueryHandler } from './application/queryHandlers/findUserBooksQueryHandler/findUserBooksQueryHandler.js';
 import { FindUserBooksQueryHandlerImpl } from './application/queryHandlers/findUserBooksQueryHandler/findUserBooksQueryHandlerImpl.js';
 import { type AuthorRepository } from './domain/repositories/authorRepository/authorRepository.js';
+import { type BookChangeRequestRepository } from './domain/repositories/bookChangeRequestRepository/bookChangeRequestRepository.js';
 import { type BookReadingRepository } from './domain/repositories/bookReadingRepository/bookReadingRepository.js';
 import { type BookRepository } from './domain/repositories/bookRepository/bookRepository.js';
 import { type BorrowingRepository } from './domain/repositories/borrowingRepository/borrowingRepository.js';
@@ -92,6 +93,9 @@ import { type UserBookRepository } from './domain/repositories/userBookRepositor
 import { type AuthorMapper } from './infrastructure/repositories/authorRepository/authorMapper/authorMapper.js';
 import { AuthorMapperImpl } from './infrastructure/repositories/authorRepository/authorMapper/authorMapperImpl.js';
 import { AuthorRepositoryImpl } from './infrastructure/repositories/authorRepository/authorRepositoryImpl.js';
+import { type BookChangeRequestMapper } from './infrastructure/repositories/bookChangeRequestRepository/bookChangeRequestMapper/bookChangeRequestMapper.js';
+import { BookChangeRequestMapperImpl } from './infrastructure/repositories/bookChangeRequestRepository/bookChangeRequestMapper/bookChangeRequestMapperImpl.js';
+import { BookChangeRequestRepositoryImpl } from './infrastructure/repositories/bookChangeRequestRepository/bookChangeRequestRepositoryImpl.js';
 import { type BookReadingMapper } from './infrastructure/repositories/bookReadingRepository/bookReadingMapper/bookReadingMapper.js';
 import { BookReadingMapperImpl } from './infrastructure/repositories/bookReadingRepository/bookReadingMapper/bookReadingMapperImpl.js';
 import { BookReadingRepositoryImpl } from './infrastructure/repositories/bookReadingRepository/bookReadingRepositoryImpl.js';
@@ -156,6 +160,8 @@ export class BookModule implements DependencyInjectionModule {
     container.bind<QuoteMapper>(symbols.quoteMapper, () => new QuoteMapperImpl());
 
     container.bind<CollectionMapper>(symbols.collectionMapper, () => new CollectionMapperImpl());
+
+    container.bind<BookChangeRequestMapper>(symbols.bookChangeRequestMapper, () => new BookChangeRequestMapperImpl());
   }
 
   private bindRepositories(container: DependencyInjectionContainer): void {
@@ -235,6 +241,16 @@ export class BookModule implements DependencyInjectionModule {
         new CollectionRepositoryImpl(
           container.get<DatabaseClient>(coreSymbols.databaseClient),
           container.get<CollectionMapper>(symbols.collectionMapper),
+          container.get<UuidService>(coreSymbols.uuidService),
+        ),
+    );
+
+    container.bind<BookChangeRequestRepository>(
+      symbols.bookChangeRequestRepository,
+      () =>
+        new BookChangeRequestRepositoryImpl(
+          container.get<DatabaseClient>(coreSymbols.databaseClient),
+          container.get<BookChangeRequestMapper>(symbols.bookChangeRequestMapper),
           container.get<UuidService>(coreSymbols.uuidService),
         ),
     );
