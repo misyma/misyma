@@ -62,7 +62,9 @@ export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, cl
     // refetch: refetchBookshelves,
     // isFetching,
     // isFetched,
-  } = useFindUserBookshelfsQuery(user?.id);
+  } = useFindUserBookshelfsQuery({
+    userId: user?.id as string,
+  });
 
   const onDelete = async (): Promise<void> => {
     try {
@@ -185,6 +187,7 @@ export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, cl
                 <SelectTrigger>
                   <SelectValue placeholder="Wybierz półkę" />
                   <SelectContent
+                  className='w-60 sm:w-80'
                     style={{
                       position: 'absolute',
                       zIndex: 999,

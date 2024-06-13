@@ -10,7 +10,7 @@ import {
 
 export interface PaginatorProps {
   pagesCount: number;
-  onPageChange: (currentPage: number) => void;
+  onPageChange: (currentPage: number) => void | Promise<void>;
   includePageNumber?: boolean;
   includeArrows?: boolean;
   pageNumberSlot?: ReactNode;
@@ -25,7 +25,7 @@ export const Paginator = ({
   includeArrows = true,
   pageNumberSlot,
   rootClassName,
-  contentClassName
+  contentClassName,
 }: PaginatorProps): React.ReactNode => {
   const [currentPage, setCurrentPage] = useState<number>(1);
 
@@ -51,19 +51,19 @@ export const Paginator = ({
     return currentPage + 1;
   }, [currentPage, pagesCount]);
 
-  const goToPreviousPage = (): void => {
+  const goToPreviousPage = async (): Promise<void> => {
     if (previousPage) {
       setCurrentPage(previousPage);
 
-      onPageChange(previousPage);
+      await onPageChange(previousPage);
     }
   };
 
-  const goToNextPage = (): void => {
+  const goToNextPage = async (): Promise<void> => {
     if (currentPage + 1 <= pagesCount) {
       setCurrentPage(currentPage + 1);
 
-      onPageChange(currentPage + 1);
+      await onPageChange(currentPage + 1);
     }
   };
 
@@ -80,14 +80,16 @@ export const Paginator = ({
         ) : (
           <></>
         )}
-        {pageNumberSlot ? pageNumberSlot : includePageNumber ? (
+        {pageNumberSlot ? (
+          pageNumberSlot
+        ) : includePageNumber ? (
           <>
             <PaginationItem
               className={previousPage === undefined ? 'pointer-events-none hover:text-none hover:bg-none' : ''}
             >
               <PaginationLink
                 className={previousPage === undefined ? 'pointer-events-none hover:text-none hover:bg-[unset]' : ''}
-                onClick={() => {
+                onClick={async () => {
                   if (previousPage === undefined) {
                     return;
                   }
@@ -99,7 +101,7 @@ export const Paginator = ({
                   if (currentPage === pagesCount && pagesCount === 2) {
                     setCurrentPage(currentPage - 1);
 
-                    onPageChange(currentPage - 1);
+                    await onPageChange(currentPage - 1);
 
                     return;
                   }
@@ -107,7 +109,7 @@ export const Paginator = ({
                   if (currentPage === pagesCount) {
                     setCurrentPage(currentPage - 2);
 
-                    onPageChange(currentPage - 2);
+                    await onPageChange(currentPage - 2);
 
                     return;
                   }
@@ -128,13 +130,13 @@ export const Paginator = ({
                 isActive={
                   (currentPage !== 1 && currentPage !== pagesCount) || (pagesCount === 2 && currentPage === pagesCount)
                 }
-                onClick={() => {
+                onClick={async () => {
                   if (currentPage === 1) {
-                    onPageChange(currentPage + 1);
+                    await onPageChange(currentPage + 1);
 
                     return setCurrentPage(currentPage + 1);
                   } else if (currentPage === pagesCount) {
-                    onPageChange(currentPage - 1);
+                    await onPageChange(currentPage - 1);
 
                     return setCurrentPage(pagesCount - 1);
                   }
@@ -152,8 +154,10 @@ export const Paginator = ({
                 <PaginationLink
                   isActive={nextPage === undefined && currentPage !== 1 && currentPage === pagesCount && pagesCount > 2}
                   className={nextPage === undefined ? 'pointer-events-none hover:text-none hover:bg-none' : ''}
-                  onClick={() => {
+                  onClick={async () => {
                     if (nextPage) {
+                      await onPageChange(nextPage);
+
                       setCurrentPage(nextPage);
                     }
                   }}

@@ -87,7 +87,10 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
 
   const { data: user } = useFindUserQuery();
 
-  const { data: bookshelvesData } = useFindUserBookshelfsQuery(user?.id);
+  const { data: bookshelvesData } = useFindUserBookshelfsQuery({
+    userId: user?.id as string,
+    pageSize: 50,
+  });
 
   const { mutateAsync: createAuthorDraft } = useCreateAuthorDraftMutation({});
 

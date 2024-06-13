@@ -6,21 +6,8 @@ import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { useToast } from '../../../common/components/ui/use-toast';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '../../../common/components/ui/form';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../../../common/components/ui/select';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/ui/form';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../common/components/ui/select';
 import { ReadingStatus } from '../../../common/constants/readingStatus';
 import { FileInput } from '../../../common/components/ui/input';
 import { Button } from '../../../common/components/ui/button';
@@ -68,7 +55,10 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
 
   const [file, setFile] = useState<File | undefined>();
 
-  const { data: bookshelvesData } = useFindUserBookshelfsQuery(user?.id);
+  const { data: bookshelvesData } = useFindUserBookshelfsQuery({
+    userId: user?.id as string,
+    pageSize: 50,
+  });
 
   const { toast } = useToast();
 

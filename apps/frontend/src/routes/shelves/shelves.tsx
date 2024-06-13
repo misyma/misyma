@@ -18,8 +18,16 @@ import { Bookmark } from '../../modules/common/components/bookmark/bookmark';
 import { BookshelfType } from '@common/contracts';
 import { DeleteBookshelfModal } from '../../modules/bookshelf/components/deleteBookshelfModal/deleteBookshelfModal';
 import { cn } from '../../modules/common/lib/utils';
-import { Paginator } from '../../modules/common/components/paginator/paginator';
 import { useFindUserBookshelfsQuery } from '../../modules/bookshelf/api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '../../modules/common/components/ui/pagination';
+import { useQueryClient } from '@tanstack/react-query';
 
 const bookshelfNameSchema = z
   .string()
@@ -33,40 +41,60 @@ const bookshelfNameSchema = z
 export const ShelvesPage: FC = () => {
   const { data: user } = useFindUserQuery();
 
-  const {
-    data: bookshelvesData,
-    refetch: refetchBookshelves,
-    isFetching,
-    isFetched,
-  } = useFindUserBookshelfsQuery(user?.id);
-
-  useEffect(() => {
-    setBookshelves(bookshelvesData?.data);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFetching]);
-
-  const { mutateAsync: updateBookshelf } = useUpdateBookshelfMutation({});
-
-  const createBookshelfMutation = useCreateBookshelfMutation({});
+  const queryClient = useQueryClient();
 
   const perPage = 5;
 
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const [bookshelves, setBookshelves] = useState(bookshelvesData?.data);
+  const {
+    data: bookshelvesData,
+    refetch: refetchBookshelves,
+  } = useFindUserBookshelfsQuery({
+    userId: user?.id as string,
+    pageSize: perPage,
+    page: currentPage,
+  });
 
-  const visibleBookshelves = useMemo(() => {
-    return bookshelves?.slice((currentPage - 1) * perPage, currentPage * perPage);
-  }, [bookshelves, currentPage, perPage]);
+  useEffect(() => {
+    setBookshelves(bookshelvesData?.data);
+  }, [bookshelvesData]);
+
+  const { mutateAsync: updateBookshelf } = useUpdateBookshelfMutation({});
+
+  const createBookshelfMutation = useCreateBookshelfMutation({});
+
+  const [bookshelves, setBookshelves] = useState(bookshelvesData?.data);
 
   const { toast } = useToast();
 
   const pagesCount = useMemo(() => {
-    const bookshelvesCount = bookshelvesData?.data?.length ?? 0;
+    const bookshelvesCount = bookshelvesData?.metadata?.total ?? 0;
 
     return Math.ceil(bookshelvesCount / perPage);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bookshelvesData, isFetched]);
+  }, [bookshelvesData?.metadata?.total]);
+
+  const previousPage = useMemo(() => {
+    if (currentPage === 1) {
+      return undefined;
+    }
+
+    return currentPage - 1;
+  }, [currentPage]);
+
+  const nextPage = useMemo(() => {
+    if (currentPage === pagesCount) {
+      return undefined;
+    }
+
+    if (currentPage === 1 && pagesCount > 2) {
+      return currentPage + 2;
+    } else if (currentPage === 1 && pagesCount <= 2) {
+      return currentPage;
+    }
+
+    return currentPage + 1;
+  }, [currentPage, pagesCount]);
 
   const navigate = useNavigate();
 
@@ -237,7 +265,7 @@ export const ShelvesPage: FC = () => {
           </div>
           <ScrollArea className="w-full h-[70vh]">
             <div className="py-8 grid gap-x-16 gap-y-2 grid-cols-1 w-full min-h-16">
-              {visibleBookshelves?.map((bookshelf, index) => (
+              {bookshelves?.map((bookshelf, index) => (
                 <div key={`${bookshelf.id}-container`}>
                   <Bookmark />
                   <div
@@ -256,11 +284,14 @@ export const ShelvesPage: FC = () => {
                     </div>
                     <div className="flex items-center justify-between w-full pointer-events-none z-10">
                       <h2
-                        onClick={() =>
+                        onClick={() => {
+                          if (editMap[index] === true) {
+                            return;
+                          }
                           navigate({
                             to: `/bookshelf/${bookshelf.id}`,
-                          })
-                        }
+                          });
+                        }}
                         className="cursor-pointer pl-0 md:pl-4 lg:pl-12 text-lg sm:text-2xl truncate"
                         key={`${bookshelf.id}-${bookshelf.name}`}
                       >
@@ -271,10 +302,9 @@ export const ShelvesPage: FC = () => {
                             type="text"
                             maxLength={64}
                             includeQuill={false}
-                             
                             id={`${index}-bookshelf`}
-                            className="bg-none pointer-events-auto text-lg  sm:text-2xl px-0 w-40 sm:w-72"
-                            containerClassName="bg-transparent w-40 sm:w-72"
+                            className="z-30 bg-none pointer-events-auto text-lg  sm:text-2xl px-0 w-40 sm:w-72"
+                            containerClassName="z-30 pointer-events-auto bg-transparent w-40 sm:w-72"
                             defaultValue={bookshelf.name}
                           />
                         )}
@@ -306,7 +336,25 @@ export const ShelvesPage: FC = () => {
                                   variant: 'success',
                                 });
 
-                                await refetchBookshelves();
+                                const { data } = await refetchBookshelves();
+
+                                const newTotalPages = Math.ceil(
+                                  (data?.metadata.total ?? 0) / (data?.metadata.pageSize ?? 1),
+                                );
+
+                                if (currentPage > newTotalPages) {
+                                  queryClient.invalidateQueries({
+                                    predicate: (query) =>
+                                      query.queryKey[0] === 'findUserBookshelfs' && query.queryKey[1] === currentPage,
+                                  });
+
+                                  queryClient.invalidateQueries({
+                                    predicate: (query) =>
+                                      query.queryKey[0] === 'findUserBookshelfs' && query.queryKey[1] === newTotalPages,
+                                  });
+
+                                  setCurrentPage(newTotalPages);
+                                }
                               }}
                               className={cn(
                                 bookshelf.name === 'Archiwum' || bookshelf.name === 'Wypożyczalnia' ? 'invisible' : '',
@@ -339,12 +387,124 @@ export const ShelvesPage: FC = () => {
               ))}
             </div>
           </ScrollArea>
-          {bookshelves && bookshelves.length > perPage ? (
+          {bookshelves && (bookshelvesData?.metadata?.total ?? 0) > perPage ? (
             <>
-              <Paginator
-                pagesCount={pagesCount}
-                onPageChange={(currentPage) => setCurrentPage(currentPage)}
-              />
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      hasPrevious={currentPage !== 1}
+                      onClick={() => {
+                        setCurrentPage(currentPage - 1);
+                      }}
+                    />
+                  </PaginationItem>
+                  <PaginationItem
+                    className={
+                      !(currentPage > 1 && pagesCount > 1) ? 'pointer-events-none hover:text-none hover:bg-none' : ''
+                    }
+                  >
+                    <PaginationLink
+                      className={
+                        !(currentPage > 1 && pagesCount > 1)
+                          ? 'pointer-events-none hover:text-none hover:bg-[unset]'
+                          : ''
+                      }
+                      onClick={() => {
+                        if (previousPage === undefined) {
+                          return;
+                        }
+
+                        if (previousPage - 1 === -1) {
+                          return;
+                        }
+
+                        if (currentPage === pagesCount && pagesCount === 2) {
+                          setCurrentPage(currentPage - 1);
+
+                          return;
+                        }
+
+                        if (currentPage === pagesCount) {
+                          setCurrentPage(currentPage - 2);
+
+                          return;
+                        }
+
+                        setCurrentPage(previousPage);
+                      }}
+                      isActive={previousPage === undefined}
+                    >
+                      {previousPage !== undefined && currentPage === pagesCount && pagesCount > 2
+                        ? currentPage - 2
+                        : previousPage !== undefined
+                          ? previousPage
+                          : currentPage}
+                    </PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink
+                      isActive={
+                        (currentPage !== 1 && currentPage !== pagesCount) ||
+                        (pagesCount === 2 && currentPage === pagesCount)
+                      }
+                      onClick={() => {
+                        if (currentPage === 1) {
+                          return setCurrentPage(currentPage + 1);
+                        }
+
+                        if (pagesCount == currentPage && pagesCount === 2) {
+                          return;
+                        }
+
+                        if (currentPage === pagesCount) {
+                          return setCurrentPage(pagesCount - 1);
+                        }
+                      }}
+                    >
+                      {currentPage !== 1
+                        ? currentPage === pagesCount && pagesCount > 2
+                          ? pagesCount - 1
+                          : currentPage
+                        : currentPage + 1}
+                    </PaginationLink>
+                  </PaginationItem>
+                  {pagesCount > 2 ? (
+                    <PaginationItem>
+                      <PaginationLink
+                        isActive={
+                          nextPage === undefined && currentPage !== 1 && currentPage === pagesCount && pagesCount > 2
+                        }
+                        className={nextPage === undefined ? 'pointer-events-none hover:text-none hover:bg-none' : ''}
+                        onClick={() => {
+                          if (nextPage) {
+                            setCurrentPage(nextPage);
+                          }
+                        }}
+                      >
+                        {nextPage === undefined ? pagesCount : nextPage}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ) : (
+                    <> </>
+                  )}
+                  <PaginationItem
+                    className={currentPage !== pagesCount ? 'pointer-events-none hover:text-none hover:bg-none' : ''}
+                  >
+                    <PaginationNext
+                      hasNext={currentPage !== pagesCount}
+                      className={
+                        !(currentPage !== pagesCount)
+                          ? 'pointer-events-none hover:text-none hover:bg-[unset]'
+                          : 'pointer-events-auto'
+                      }
+                      onClick={() => {
+                        setCurrentPage(currentPage + 1);
+                      }}
+                    />
+                  </PaginationItem>
+                </PaginationContent>{' '}
+              </Pagination>
             </>
           ) : (
             <></>
