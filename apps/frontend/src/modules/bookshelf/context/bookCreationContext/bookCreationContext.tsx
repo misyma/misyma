@@ -234,7 +234,7 @@ function bookCreationReducer<T extends boolean = true>(
       return {
         ...state,
         stepThreeDetails: {
-          ...(state as BookCreationNonIsbnState).stepOneDetails,
+          ...(state as BookCreationNonIsbnState).stepThreeDetails,
           genre: action.genre,
         } as BookCreationNonIsbnState['stepThreeDetails'],
       };

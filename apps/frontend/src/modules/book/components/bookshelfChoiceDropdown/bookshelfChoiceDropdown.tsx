@@ -1,11 +1,5 @@
 import { FC, useMemo, useState } from 'react';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../../../common/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../common/components/ui/select';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Skeleton } from '../../../common/components/ui/skeleton';
@@ -18,9 +12,10 @@ import { useUpdateUserBookMutation } from '../../api/mutations/updateUserBookMut
 
 interface Props {
   bookId: string;
+  currentBookshelfId: string;
 }
 
-export const BookshelfChoiceDropdown: FC<Props> = ({ bookId }) => {
+export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId }) => {
   const queryClient = useQueryClient();
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
@@ -37,7 +32,10 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId }) => {
 
   const { toast } = useToast();
 
-  const { data: bookshelfData } = useFindUserBookshelfsQuery(userData?.id ?? '');
+  const { data: bookshelfData } = useFindUserBookshelfsQuery({
+    userId: userData?.id as string,
+    pageSize: 50,
+  });
 
   const [selectedBookshelfId, setSelectedBookshelfId] = useState(data?.bookshelfId ?? '');
 
@@ -47,7 +45,7 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId }) => {
 
   const { mutateAsync: updateUserBook } = useUpdateUserBookMutation({});
 
-  const onBookshelfChange = async (id: string): Promise<void> => {
+  const onBookshelfChange = async (id: string, bookshelfName: string): Promise<void> => {
     await updateUserBook({
       userBookId: bookId,
       bookshelfId: id,
@@ -56,12 +54,20 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId }) => {
 
     toast({
       title: `Zmieniono półkę.`,
-      description: `Książka znajduje się teraz na: XD`,
+      description: `Książka znajduje się teraz na: ${bookshelfName}`,
       variant: 'success',
     });
 
     queryClient.invalidateQueries({
       queryKey: ['findUserBookById', bookId, userData?.id],
+    });
+
+    queryClient.invalidateQueries({
+      predicate: (query) => query.queryKey[0] === 'findBooksByBookshelfId' && query.queryKey[1] === id,
+    });
+
+    queryClient.invalidateQueries({
+      predicate: (query) => query.queryKey[0] === 'findBooksByBookshelfId' && query.queryKey[1] === currentBookshelfId,
     });
   };
 
@@ -76,7 +82,7 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId }) => {
         <Select
           value={selectedBookshelfId}
           onValueChange={async (value) => {
-            await onBookshelfChange(value);
+            await onBookshelfChange(value, bookshelfData?.data.find((bookshelf) => bookshelf.id === value)?.name ?? '');
 
             setSelectedBookshelfId(value);
           }}
@@ -86,7 +92,7 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId }) => {
               defaultValue={booksBookshelf?.id}
               placeholder="Półka"
             ></SelectValue>
-            <SelectContent className="sm:w-40">
+            <SelectContent className="sm:w-60">
               {bookshelfData?.data.map((bookshelf) => <SelectItem value={bookshelf.id}>{bookshelf.name}</SelectItem>)}
             </SelectContent>
           </SelectTrigger>

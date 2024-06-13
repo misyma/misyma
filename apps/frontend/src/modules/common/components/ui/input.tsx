@@ -87,7 +87,7 @@ const FileInput = React.forwardRef<HTMLInputElement, FileInputProps>(
             {...props}
           />
         <div className='w-60 sm:w-96 absolute h-12 px-2 top-3 flex justify-between pointer-events-none'>
-          <p>
+          <p className='text-sm'>
             {fileName}
           </p>
           <div className='px-2'>
