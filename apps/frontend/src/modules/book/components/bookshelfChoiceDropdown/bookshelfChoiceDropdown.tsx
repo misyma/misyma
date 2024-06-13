@@ -115,13 +115,19 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
           onMutated={async () => {
             setUsingBorrowFlow(false);
 
+            await updateUserBook({
+              userBookId: bookId,
+              bookshelfId: selectedBookshelfId,
+              accessToken: accessToken as string,
+            });
+
             queryClient.invalidateQueries({
               queryKey: ['findUserBookById', bookId, userData?.id],
             });
 
             queryClient.invalidateQueries({
               predicate: (query) =>
-                query.queryKey[0] === 'findBooksByBookshelfId' && query.queryKey[1] === currentBookshelfId,
+                query.queryKey[0] === 'findBooksByBookshelfId' && query.queryKey[1] === selectedBookshelfId,
             });
           }}
           onClosed={() => {
