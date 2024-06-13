@@ -21,10 +21,121 @@ const bookshelfSearchSchema = z.object({
   id: z.string().uuid().catch(''),
 });
 
+const getCountNoun = (len: number): string => {
+  switch (len) {
+    case 1:
+      return 'książka';
+
+    case 2:
+    case 3:
+    case 4:
+      return 'książki';
+
+    default:
+      return 'książek';
+  }
+};
+
+export const View: FC = () => {
+  const { id } = bookshelfRoute.useParams();
+
+  const accessToken = useSelector(userStateSelectors.selectAccessToken);
+
+  const { data: user } = useFindUserQuery();
+
+  const { data: bookshelfBooksResponse } = useQuery(
+    FindBooksByBookshelfIdQueryOptions({
+      accessToken: accessToken as string,
+      bookshelfId: id,
+      userId: user?.id as string,
+    }),
+  );
+
+  const { data: bookshelfResponse } = useFindBookshelfByIdQuery(id);
+
+  const navigate = useNavigate();
+
+  if (bookshelfResponse?.name === 'Wypożyczalnia') {
+    return (
+      <AuthenticatedLayout>
+        <div className="p-8 flex flex-col justify-center w-full items-center">
+          <div className="flex justify-between w-full sm:max-w-7xl">
+            <div>
+              <p className="text-xl sm:text-3xl">{bookshelfResponse?.name ?? ' '}</p>
+              <p>
+                {bookshelfBooksResponse?.data.length ?? 0} {getCountNoun(bookshelfBooksResponse?.data.length ?? 0)}
+              </p>
+            </div>
+            <Button
+              onClick={() => {
+                navigate({
+                  to: `/search`,
+                  search: {
+                    type: 'isbn',
+                    next: 0,
+                    bookshelfId: id,
+                  },
+                });
+              }}
+            >
+              Dodaj książkę
+            </Button>
+          </div>
+          <div className="flex flex-col justify-center gap-8 pt-8 w-full sm:max-w-7xl">
+            {bookshelfBooksResponse?.data.map((userBook, index) => (
+              <div
+                key={`${userBook.bookId}-${index}`}
+                className="relative flex align-middle items-center gap-4 w-full cursor-pointer"
+              >
+                <div
+                  onClick={() => {
+                    navigate({
+                      to: '/book/$bookId',
+                      params: {
+                        bookId: userBook.id,
+                      },
+                    });
+                  }}
+                  className="cursor-pointer absolute w-full h-[100%]"
+                ></div>
+                <div className="z-10">
+                  <img
+                    onClick={() => {
+                      navigate({
+                        to: '/book/$bookId',
+                        params: {
+                          bookId: userBook.id,
+                        },
+                      });
+                    }}
+                    src={userBook.imageUrl}
+                    className="object-contain aspect-square max-w-[200px]"
+                  />
+                </div>
+                <div className="z-10 w-full px-12 pointer-events-none">
+                  <div className="flex justify-between w-full">
+                    <div className="font-semibold text-lg sm:text-2xl">{userBook.book.title}</div>
+                  </div>
+                  <Separator className="my-4 bg-primary"></Separator>
+                  <div className="px-2">
+                    {userBook.book.authors[0].name}, {userBook.book.releaseYear}, {userBook.genres[0]?.name}{' '}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </AuthenticatedLayout>
+    );
+  }
+
+  return <Bookshelf></Bookshelf>;
+};
+
 export const Bookshelf: FC = () => {
   const { id } = bookshelfRoute.useParams();
 
-  const accessToken = useSelector(userStateSelectors.selectAccessToken)
+  const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const { data: user } = useFindUserQuery();
 
@@ -56,21 +167,6 @@ export const Bookshelf: FC = () => {
     const Icon = readingStatusMap[book.status];
 
     return <Icon className={cn('h-7 w-7 cursor-default pointer-events-auto', readingStatusColor[book.status])} />;
-  };
-
-  const getCountNoun = (len: number): string => {
-    switch (len) {
-      case 1:
-        return 'książka';
-
-      case 2:
-      case 3:
-      case 4:
-        return 'książki';
-
-      default:
-        return 'książek';
-    }
   };
 
   return (
@@ -159,7 +255,7 @@ export const bookshelfRoute = createRoute({
   component: () => {
     return (
       <RequireAuthComponent>
-        <Bookshelf />
+        <View />
       </RequireAuthComponent>
     );
   },
