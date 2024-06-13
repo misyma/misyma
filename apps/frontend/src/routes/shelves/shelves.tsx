@@ -58,7 +58,6 @@ export const ShelvesPage: FC = () => {
 
   useEffect(() => {
     setBookshelves(bookshelvesData?.data);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bookshelvesData]);
 
   const { mutateAsync: updateBookshelf } = useUpdateBookshelfMutation({});
@@ -73,7 +72,6 @@ export const ShelvesPage: FC = () => {
     const bookshelvesCount = bookshelvesData?.metadata?.total ?? 0;
 
     return Math.ceil(bookshelvesCount / perPage);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bookshelvesData?.metadata?.total]);
 
   const previousPage = useMemo(() => {
