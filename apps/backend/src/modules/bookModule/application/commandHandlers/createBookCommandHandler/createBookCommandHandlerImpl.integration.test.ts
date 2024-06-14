@@ -1,9 +1,9 @@
 import { beforeEach, afterEach, expect, it, describe } from 'vitest';
 
 import { type CreateBookCommandHandler } from './createBookCommandHandler.js';
-import { testSymbols } from '../../../../../../tests/container/symbols.js';
-import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
+import { testSymbols } from '../../../../../../tests/symbols.js';
+import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';

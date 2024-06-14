@@ -131,3 +131,15 @@ export * from './schemas/collection/createCollection.js';
 export * from './schemas/collection/deleteCollection.js';
 
 export * from './schemas/collection/updateCollection.js';
+
+export * from './schemas/bookChangeRequest/bookChangeRequest.js';
+
+export * from './schemas/bookChangeRequest/createBookChangeRequest.js';
+
+export * from './schemas/bookChangeRequest/findBookChangeRequests.js';
+
+export * from './schemas/bookChangeRequest/findAdminBookChangeRequests.js';
+
+export * from './schemas/bookChangeRequest/deleteBookChangeRequest.js';
+
+export * from './schemas/bookChangeRequest/applyBookChangeRequest.js';

@@ -1,9 +1,9 @@
 import { describe, it, beforeEach, expect, afterEach } from 'vitest';
 
 import { type FindBookshelfByIdQueryHandler } from './findBookshelfByIdQueryHandler.js';
-import { testSymbols } from '../../../../../../tests/container/symbols.js';
-import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
+import { testSymbols } from '../../../../../../tests/symbols.js';
+import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';

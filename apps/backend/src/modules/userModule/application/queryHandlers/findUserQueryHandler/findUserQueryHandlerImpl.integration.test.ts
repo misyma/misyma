@@ -1,7 +1,7 @@
 import { beforeEach, afterEach, expect, it, describe } from 'vitest';
 
 import { type FindUserQueryHandler } from './findUserQueryHandler.js';
-import { TestContainer } from '../../../../../../tests/container/testContainer.js';
+import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';

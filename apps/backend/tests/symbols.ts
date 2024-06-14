@@ -12,4 +12,5 @@ export const testSymbols = {
   emailEventTestUtils: Symbol('emailEventTestUtils'),
   s3TestUtils: Symbol('s3TestService'),
   collectionTestUtils: Symbol('collectionTestUtils'),
+  bookChangeRequestTestUtils: Symbol('bookChangeRequestTestUtils'),
 };

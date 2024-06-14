@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import { type FindUsersQueryHandler } from './findUsersQueryHandler.js';
-import { testSymbols } from '../../../../../../tests/container/symbols.js';
-import { TestContainer } from '../../../../../../tests/container/testContainer.js';
+import { testSymbols } from '../../../../../../tests/symbols.js';
+import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { symbols } from '../../../symbols.js';
 import { type UserTestUtils } from '../../../tests/utils/userTestUtils/userTestUtils.js';
 

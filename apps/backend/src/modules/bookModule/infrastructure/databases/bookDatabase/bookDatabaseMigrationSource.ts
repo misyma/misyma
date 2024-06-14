@@ -1,4 +1,5 @@
 import { M10CreateUserBookCollectionTableMigration } from './migrations/m10CreateUserBookCollectionTableMigration.js';
+import { M11CreateBookChangeRequestTableMigration } from './migrations/m11CreateBookChangeRequestTableMigration.js';
 import { M1CreateAuthorTableMigration } from './migrations/m1CreateAuthorTableMigration.js';
 import { M2CreateBookTableMigration } from './migrations/m2CreateBookTableMigration.js';
 import { M3CreateGenreTableMigration } from './migrations/m3CreateGenreMigration.js';
@@ -24,6 +25,7 @@ export class BookDatabaseMigrationSource implements MigrationSource {
       new M8CreateBorrowingTableMigration(),
       new M9CreateCollectionTableMigration(),
       new M10CreateUserBookCollectionTableMigration(),
+      new M11CreateBookChangeRequestTableMigration(),
     ];
   }
 

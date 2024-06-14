@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import { type VerifyUserEmailCommandHandler } from './verifyUserEmailCommandHandler.js';
-import { testSymbols } from '../../../../../../tests/container/symbols.js';
-import { TestContainer } from '../../../../../../tests/container/testContainer.js';
 import { Generator } from '../../../../../../tests/generator.js';
+import { testSymbols } from '../../../../../../tests/symbols.js';
+import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { authSymbols } from '../../../../authModule/symbols.js';

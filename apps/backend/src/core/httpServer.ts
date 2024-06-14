@@ -29,6 +29,8 @@ import { UnauthorizedAccessError } from '../modules/authModule/application/error
 import { type AuthorAdminHttpController } from '../modules/bookModule/api/httpControllers/authorAdminHttpController/authorAdminHttpController.js';
 import { type AuthorHttpController } from '../modules/bookModule/api/httpControllers/authorHttpController/authorHttpController.js';
 import { type BookAdminHttpController } from '../modules/bookModule/api/httpControllers/bookAdminHttpController/bookAdminHttpController.js';
+import { type BookChangeRequestAdminHttpController } from '../modules/bookModule/api/httpControllers/bookChangeRequestAdminHttpController/bookChangeRequestAdminHttpController.js';
+import { type BookChangeRequestHttpController } from '../modules/bookModule/api/httpControllers/bookChangeRequestHttpController/bookChangeRequestHttpController.js';
 import { type BookHttpController } from '../modules/bookModule/api/httpControllers/bookHttpController/bookHttpController.js';
 import { type BookReadingHttpController } from '../modules/bookModule/api/httpControllers/bookReadingHttpController/bookReadingHttpController.js';
 import { type BorrowingHttpController } from '../modules/bookModule/api/httpControllers/borrowingHttpController/borrowingHttpController.js';
@@ -80,6 +82,8 @@ export class HttpServer {
       this.container.get<QuoteHttpController>(bookSymbols.quoteHttpController),
       this.container.get<BorrowingHttpController>(bookSymbols.borrowingHttpController),
       this.container.get<CollectionHttpController>(bookSymbols.collectionHttpController),
+      this.container.get<BookChangeRequestHttpController>(bookSymbols.bookChangeRequestHttpController),
+      this.container.get<BookChangeRequestAdminHttpController>(bookSymbols.bookChangeRequestAdminHttpController),
     ];
   }
 

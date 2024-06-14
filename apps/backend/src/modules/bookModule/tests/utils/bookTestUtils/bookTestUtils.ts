@@ -56,7 +56,12 @@ export class BookTestUtils implements TestUtils {
       }
     });
 
-    return rawEntities[0] as BookRawEntity;
+    const bookRawEntity = rawEntities[0] as BookRawEntity;
+
+    return {
+      ...bookRawEntity,
+      isApproved: Boolean(bookRawEntity.isApproved),
+    };
   }
 
   public async findBookAuthors(payload: FindBookAuthorsPayload): Promise<BookAuthorRawEntity[]> {

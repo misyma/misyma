@@ -69,6 +69,15 @@ export const symbols = {
   deleteCollectionCommandHandler: Symbol('deleteCollectionCommandHandler'),
   findCollectionsQueryHandler: Symbol('findCollectionsQueryHandler'),
   collectionHttpController: Symbol('collectionHttpController'),
+
+  bookChangeRequestMapper: Symbol('bookChangeRequestMapper'),
+  bookChangeRequestRepository: Symbol('bookChangeRequestRepository'),
+  createBookChangeRequestCommandHandler: Symbol('createBookChangeRequestCommandHandler'),
+  applyBookChangeRequestCommandHandler: Symbol('applyBookChangeRequestCommandHandler'),
+  deleteBookChangeRequestCommandHandler: Symbol('deleteBookChangeRequestCommandHandler'),
+  findBookChangeRequestsQueryHandler: Symbol('findBookChangeRequestsQueryHandler'),
+  bookChangeRequestHttpController: Symbol('bookChangeRequestHttpController'),
+  bookChangeRequestAdminHttpController: Symbol('bookChangeRequestAdminHttpController'),
 };
 
 export const bookSymbols = {
@@ -85,4 +94,6 @@ export const bookSymbols = {
   borrowingHttpController: symbols.borrowingHttpController,
   quoteHttpController: symbols.quoteHttpController,
   collectionHttpController: symbols.collectionHttpController,
+  bookChangeRequestHttpController: symbols.bookChangeRequestHttpController,
+  bookChangeRequestAdminHttpController: symbols.bookChangeRequestAdminHttpController,
 };
