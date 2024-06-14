@@ -73,6 +73,7 @@ export const symbols = {
   bookChangeRequestMapper: Symbol('bookChangeRequestMapper'),
   bookChangeRequestRepository: Symbol('bookChangeRequestRepository'),
   createBookChangeRequestCommandHandler: Symbol('createBookChangeRequestCommandHandler'),
+  applyBookChangeRequestCommandHandler: Symbol('applyBookChangeRequestCommandHandler'),
   deleteBookChangeRequestCommandHandler: Symbol('deleteBookChangeRequestCommandHandler'),
   findBookChangeRequestsQueryHandler: Symbol('findBookChangeRequestsQueryHandler'),
   bookChangeRequestHttpController: Symbol('bookChangeRequestHttpController'),
