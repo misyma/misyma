@@ -97,14 +97,20 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
   }
 
   public async findBookChangeRequests(payload: FindBookChangeRequestsPayload): Promise<BookChangeRequest[]> {
-    const { page, pageSize } = payload;
+    const { page, pageSize, userId } = payload;
 
     let rawEntities: BookChangeRequestRawEntity[];
 
     try {
-      rawEntities = await this.databaseClient<BookChangeRequestRawEntity>(bookChangeRequestTable)
+      const query = this.databaseClient<BookChangeRequestRawEntity>(bookChangeRequestTable)
         .limit(pageSize)
         .offset(pageSize * (page - 1));
+
+      if (userId) {
+        query.where({ userId });
+      }
+
+      rawEntities = await query;
     } catch (error) {
       throw new RepositoryError({
         entity: 'BookChangeRequest',
@@ -130,9 +136,17 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
     }
   }
 
-  public async countBookChangeRequests(): Promise<number> {
+  public async countBookChangeRequests(payload: FindBookChangeRequestsPayload): Promise<number> {
+    const { userId } = payload;
+
     try {
-      const countResult = await this.databaseClient<BookChangeRequestRawEntity>(bookChangeRequestTable).count().first();
+      const query = this.databaseClient<BookChangeRequestRawEntity>(bookChangeRequestTable).count().first();
+
+      if (userId) {
+        query.where({ userId });
+      }
+
+      const countResult = await query;
 
       const count = countResult?.['count(*)'];
 

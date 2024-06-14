@@ -3,6 +3,8 @@ import { beforeEach, expect, describe, it } from 'vitest';
 import { AuthorAdminHttpController } from './api/httpControllers/authorAdminHttpController/authorAdminHttpController.js';
 import { AuthorHttpController } from './api/httpControllers/authorHttpController/authorHttpController.js';
 import { BookAdminHttpController } from './api/httpControllers/bookAdminHttpController/bookAdminHttpController.js';
+import { BookChangeRequestAdminHttpController } from './api/httpControllers/bookChangeRequestAdminHttpController/bookChangeRequestAdminHttpController.js';
+import { BookChangeRequestHttpController } from './api/httpControllers/bookChangeRequestHttpController/bookChangeRequestHttpController.js';
 import { BookHttpController } from './api/httpControllers/bookHttpController/bookHttpController.js';
 import { BookReadingHttpController } from './api/httpControllers/bookReadingHttpController/bookReadingHttpController.js';
 import { BorrowingHttpController } from './api/httpControllers/borrowingHttpController/borrowingHttpController.js';
@@ -57,6 +59,14 @@ describe('BookModule', () => {
 
     expect(container.get<CollectionHttpController>(bookSymbols.collectionHttpController)).toBeInstanceOf(
       CollectionHttpController,
+    );
+
+    expect(
+      container.get<BookChangeRequestAdminHttpController>(bookSymbols.bookChangeRequestAdminHttpController),
+    ).toBeInstanceOf(BookChangeRequestAdminHttpController);
+
+    expect(container.get<BookChangeRequestHttpController>(bookSymbols.bookChangeRequestHttpController)).toBeInstanceOf(
+      BookChangeRequestHttpController,
     );
   });
 });

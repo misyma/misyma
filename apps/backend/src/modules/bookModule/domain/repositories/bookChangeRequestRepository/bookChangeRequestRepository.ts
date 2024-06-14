@@ -12,6 +12,7 @@ export interface FindBookChangeRequestPayload {
 }
 
 export interface FindBookChangeRequestsPayload {
+  readonly userId?: string;
   readonly page: number;
   readonly pageSize: number;
 }
@@ -24,6 +25,6 @@ export interface BookChangeRequestRepository {
   saveBookChangeRequest(payload: SaveBookChangeRequestPayload): Promise<BookChangeRequest>;
   findBookChangeRequest(payload: FindBookChangeRequestPayload): Promise<BookChangeRequest | null>;
   findBookChangeRequests(payload: FindBookChangeRequestsPayload): Promise<BookChangeRequest[]>;
-  countBookChangeRequests(): Promise<number>;
+  countBookChangeRequests(payload: FindBookChangeRequestsPayload): Promise<number>;
   deleteBookChangeRequest(payload: DeleteBookChangeRequestPayload): Promise<void>;
 }

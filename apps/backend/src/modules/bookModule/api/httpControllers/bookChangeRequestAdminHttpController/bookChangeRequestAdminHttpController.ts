@@ -1,11 +1,11 @@
 import { UserRole } from '@common/contracts';
 
 import {
-  createBookChangeRequestBodyDtoSchema,
-  createBookChangeRequestResponseBodyDtoSchema,
-  type CreateBookChangeRequestBodyDto,
-  type CreateBookChangeRequestResponseBodyDto,
-} from './schemas/createBookChangeRequestSchema.js';
+  type ApplyBookChangeRequestPathParamsDto,
+  type ApplyBookChangeRequestResponseBodyDto,
+  applyBookChangeRequestPathParamsDtoSchema,
+  applyBookChangeRequestResponseBodyDtoSchema,
+} from './schemas/applyBookChangeRequestSchema.js';
 import {
   deleteBookChangeRequestPathParamsDtoSchema,
   deleteBookChangeRequestResponseBodyDtoSchema,
@@ -18,64 +18,33 @@ import {
   findAdminBookChangeRequestsQueryParamsDtoSchema,
   findAdminBookChangeRequestsResponseBodyDtoSchema,
 } from './schemas/findBookChangeRequestsSchema.js';
-import {
-  updateBookChangeRequestPathParamsDtoSchema,
-  updateBookChangeRequestBodyDtoSchema,
-  type UpdateBookChangeRequestBodyDto,
-  type UpdateBookChangeRequestPathParamsDto,
-  updateBookChangeRequestResponseBodyDtoSchema,
-  type UpdateBookChangeRequestResponseBodyDto,
-} from './schemas/updateBookChangeRequestSchema.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
-import {
-  type HttpOkResponse,
-  type HttpCreatedResponse,
-  type HttpNoContentResponse,
-} from '../../../../../common/types/http/httpResponse.js';
+import { type HttpOkResponse, type HttpNoContentResponse } from '../../../../../common/types/http/httpResponse.js';
 import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
 import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.js';
 import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
-import { type UpdateBookChangeRequestCommandHandler } from '../../../application/commandHandlers/applyBookChangeRequestCommandHandler/applyBookChangeRequestCommandHandler.js';
-import { type CreateBookChangeRequestCommandHandler } from '../../../application/commandHandlers/createBookChangeRequestCommandHandler/createBookChangeRequestCommandHandler.js';
+import { type ApplyBookChangeRequestCommandHandler } from '../../../application/commandHandlers/applyBookChangeRequestCommandHandler/applyBookChangeRequestCommandHandler.js';
 import { type DeleteBookChangeRequestCommandHandler } from '../../../application/commandHandlers/deleteBookChangeRequestCommandHandler/deleteBookChangeRequestCommandHandler.js';
 import { type FindBookChangeRequestsQueryHandler } from '../../../application/queryHandlers/findBookChangeRequestsQueryHandler/findBookChangeRequestsQueryHandler.js';
 import { type BookChangeRequest } from '../../../domain/entities/bookChangeRequest/bookChangeRequest.js';
 import { type BookChangeRequestDto } from '../common/bookChangeRequestDto.js';
 
 export class BookChangeRequestAdminHttpController implements HttpController {
-  public readonly basePath = '/admin/bookChangeRequests';
+  public readonly basePath = '/admin/book-change-requests';
   public readonly tags = ['BookChangeRequest'];
 
   public constructor(
-    private readonly createBookChangeRequestCommandHandler: CreateBookChangeRequestCommandHandler,
+    private readonly applyBookChangeRequestCommandHandler: ApplyBookChangeRequestCommandHandler,
     private readonly deleteBookChangeRequestCommandHandler: DeleteBookChangeRequestCommandHandler,
-    private readonly updateBookChangeRequestCommandHandler: UpdateBookChangeRequestCommandHandler,
     private readonly findBookChangeRequestsQueryHandler: FindBookChangeRequestsQueryHandler,
     private readonly accessControlService: AccessControlService,
   ) {}
 
   public getHttpRoutes(): HttpRoute[] {
     return [
-      new HttpRoute({
-        method: HttpMethodName.post,
-        handler: this.createBookChangeRequest.bind(this),
-        schema: {
-          request: {
-            body: createBookChangeRequestBodyDtoSchema,
-          },
-          response: {
-            [HttpStatusCode.created]: {
-              schema: createBookChangeRequestResponseBodyDtoSchema,
-              description: 'BookChangeRequest created',
-            },
-          },
-        },
-        securityMode: SecurityMode.bearerToken,
-        description: 'Create bookChangeRequest',
-      }),
       new HttpRoute({
         method: HttpMethodName.delete,
         path: ':bookChangeRequestId',
@@ -95,19 +64,18 @@ export class BookChangeRequestAdminHttpController implements HttpController {
         description: 'Delete bookChangeRequest',
       }),
       new HttpRoute({
-        method: HttpMethodName.patch,
+        method: HttpMethodName.post,
         path: ':bookChangeRequestId',
-        description: 'Update a bookChangeRequest',
+        description: 'Apply a BookChangeRequest to the Book',
         handler: this.updateBookChangeRequest.bind(this),
         schema: {
           request: {
-            pathParams: updateBookChangeRequestPathParamsDtoSchema,
-            body: updateBookChangeRequestBodyDtoSchema,
+            pathParams: applyBookChangeRequestPathParamsDtoSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
-              description: 'BookChangeRequest updated',
-              schema: updateBookChangeRequestResponseBodyDtoSchema,
+              description: 'BookChangeRequest applied to the Book',
+              schema: applyBookChangeRequestResponseBodyDtoSchema,
             },
           },
         },
@@ -132,28 +100,6 @@ export class BookChangeRequestAdminHttpController implements HttpController {
     ];
   }
 
-  private async createBookChangeRequest(
-    request: HttpRequest<CreateBookChangeRequestBodyDto>,
-  ): Promise<HttpCreatedResponse<CreateBookChangeRequestResponseBodyDto>> {
-    const { authorIds, ...bookChangeRequestData } = request.body;
-
-    await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
-      expectedRole: UserRole.admin,
-    });
-
-    const { bookChangeRequest } = await this.createBookChangeRequestCommandHandler.execute({
-      ...bookChangeRequestData,
-      authorIds,
-      isApproved: true,
-    });
-
-    return {
-      statusCode: HttpStatusCode.created,
-      body: this.mapBookChangeRequestToBookChangeRequestDto(bookChangeRequest),
-    };
-  }
-
   private async deleteBookChangeRequest(
     request: HttpRequest<undefined, undefined, DeleteBookChangeRequestPathParamsDto>,
   ): Promise<HttpNoContentResponse<DeleteBookChangeRequestResponseBodyDto>> {
@@ -173,32 +119,20 @@ export class BookChangeRequestAdminHttpController implements HttpController {
   }
 
   private async updateBookChangeRequest(
-    request: HttpRequest<UpdateBookChangeRequestBodyDto, undefined, UpdateBookChangeRequestPathParamsDto>,
-  ): Promise<HttpOkResponse<UpdateBookChangeRequestResponseBodyDto>> {
+    request: HttpRequest<undefined, undefined, ApplyBookChangeRequestPathParamsDto>,
+  ): Promise<HttpOkResponse<ApplyBookChangeRequestResponseBodyDto>> {
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
+      expectedRole: UserRole.admin,
     });
 
     const { bookChangeRequestId } = request.pathParams;
 
-    const { authorIds, format, imageUrl, language, pages, publisher, releaseYear, title, translator } = request.body;
-
-    const { bookChangeRequest } = await this.updateBookChangeRequestCommandHandler.execute({
-      bookChangeRequestId,
-      authorIds,
-      format,
-      imageUrl,
-      language,
-      pages,
-      publisher,
-      releaseYear,
-      title,
-      translator,
-    });
+    await this.applyBookChangeRequestCommandHandler.execute({ bookChangeRequestId });
 
     return {
       statusCode: HttpStatusCode.ok,
-      body: this.mapBookChangeRequestToBookChangeRequestDto(bookChangeRequest),
+      body: null,
     };
   }
 
@@ -207,6 +141,7 @@ export class BookChangeRequestAdminHttpController implements HttpController {
   ): Promise<HttpOkResponse<FindAdminBookChangeRequestsResponseBodyDto>> {
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
+      expectedRole: UserRole.admin,
     });
 
     const { page = 1, pageSize = 10 } = request.queryParams;
@@ -232,20 +167,26 @@ export class BookChangeRequestAdminHttpController implements HttpController {
   }
 
   private mapBookChangeRequestToBookChangeRequestDto(bookChangeRequest: BookChangeRequest): BookChangeRequestDto {
-    const { title, language, format, isApproved, imageUrl, isbn, publisher, releaseYear, translator, pages } =
-      bookChangeRequest.getState();
-
-    const bookChangeRequestDto: BookChangeRequestDto = {
-      id: bookChangeRequest.getId(),
+    const {
       title,
       language,
       format,
-      isApproved,
-      authors: bookChangeRequest.getAuthors().map((author) => ({
-        id: author.getId(),
-        name: author.getName(),
-        isApproved: author.getIsApproved(),
-      })),
+      imageUrl,
+      isbn,
+      publisher,
+      releaseYear,
+      translator,
+      pages,
+      bookId,
+      createdAt,
+      userId,
+    } = bookChangeRequest.getState();
+
+    const bookChangeRequestDto: BookChangeRequestDto = {
+      id: bookChangeRequest.getId(),
+      bookId,
+      userId,
+      createdAt: createdAt.toISOString(),
     };
 
     if (isbn) {
@@ -270,6 +211,18 @@ export class BookChangeRequestAdminHttpController implements HttpController {
 
     if (imageUrl) {
       bookChangeRequestDto.imageUrl = imageUrl;
+    }
+
+    if (title) {
+      bookChangeRequestDto.title = title;
+    }
+
+    if (language) {
+      bookChangeRequestDto.language = language;
+    }
+
+    if (format) {
+      bookChangeRequestDto.format = format;
     }
 
     return bookChangeRequestDto;

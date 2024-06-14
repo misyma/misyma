@@ -2,11 +2,11 @@ import { type Static, Type } from '@sinclair/typebox';
 
 import * as contracts from '@common/contracts';
 
-import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
-import { bookChangeRequestDtoSchema } from '../../common/bookChangeRequestDto.js';
-
-export const createBookChangeRequestBodyDtoSchema = Type.Object({
+export const bookChangeRequestDtoSchema = Type.Object({
+  id: Type.String({ format: 'uuid' }),
   bookId: Type.String({ format: 'uuid' }),
+  userId: Type.String({ format: 'uuid' }),
+  createdAt: Type.String({ format: 'date-time' }),
   title: Type.Optional(
     Type.String({
       minLength: 1,
@@ -52,14 +52,4 @@ export const createBookChangeRequestBodyDtoSchema = Type.Object({
   ),
 });
 
-export type CreateBookChangeRequestBodyDto = TypeExtends<
-  Static<typeof createBookChangeRequestBodyDtoSchema>,
-  contracts.CreateBookChangeRequestRequestBody
->;
-
-export const createBookChangeRequestResponseBodyDtoSchema = bookChangeRequestDtoSchema;
-
-export type CreateBookChangeRequestResponseBodyDto = TypeExtends<
-  Static<typeof createBookChangeRequestResponseBodyDtoSchema>,
-  contracts.CreateBookChangeRequestResponseBody
->;
+export type BookChangeRequestDto = Static<typeof bookChangeRequestDtoSchema>;

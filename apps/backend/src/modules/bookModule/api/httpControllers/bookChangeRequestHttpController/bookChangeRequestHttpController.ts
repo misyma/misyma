@@ -5,12 +5,6 @@ import {
   createBookChangeRequestResponseBodyDtoSchema,
 } from './schemas/createBookChangeRequestSchema.js';
 import {
-  findBookChangeRequestResponseBodyDtoSchema,
-  type FindBookChangeRequestResponseBodyDto,
-  type FindBookChangeRequestPathParamsDto,
-  findBookChangeRequestPathParamsDtoSchema,
-} from './schemas/findBookChangeRequestSchema.js';
-import {
   type FindBookChangeRequestsResponseBodyDto,
   findBookChangeRequestsResponseBodyDtoSchema,
   findBookChangeRequestsQueryParamsDtoSchema,
@@ -25,18 +19,16 @@ import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.
 import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
 import { type CreateBookChangeRequestCommandHandler } from '../../../application/commandHandlers/createBookChangeRequestCommandHandler/createBookChangeRequestCommandHandler.js';
-import { type FindBookChangeRequestQueryHandler } from '../../../application/queryHandlers/findBookChangeRequestQueryHandler/findBookChangeRequestQueryHandler.js';
 import { type FindBookChangeRequestsQueryHandler } from '../../../application/queryHandlers/findBookChangeRequestsQueryHandler/findBookChangeRequestsQueryHandler.js';
 import { type BookChangeRequest } from '../../../domain/entities/bookChangeRequest/bookChangeRequest.js';
 import { type BookChangeRequestDto } from '../common/bookChangeRequestDto.js';
 
 export class BookChangeRequestHttpController implements HttpController {
-  public readonly basePath = '/bookChangeRequests';
+  public readonly basePath = '/book-change-requests';
   public readonly tags = ['BookChangeRequest'];
 
   public constructor(
     private readonly createBookChangeRequestCommandHandler: CreateBookChangeRequestCommandHandler,
-    private readonly findBookChangeRequestQueryHandler: FindBookChangeRequestQueryHandler,
     private readonly findBookChangeRequestsQueryHandler: FindBookChangeRequestsQueryHandler,
     private readonly accessControlService: AccessControlService,
   ) {}
@@ -53,35 +45,17 @@ export class BookChangeRequestHttpController implements HttpController {
           response: {
             [HttpStatusCode.created]: {
               schema: createBookChangeRequestResponseBodyDtoSchema,
-              description: 'Draft bookChangeRequest created',
+              description: 'BookChangeRequest created',
             },
           },
         },
         securityMode: SecurityMode.bearerToken,
-        description: 'Create draft bookChangeRequest',
-      }),
-      new HttpRoute({
-        method: HttpMethodName.get,
-        path: ':bookChangeRequestId',
-        handler: this.findBookChangeRequest.bind(this),
-        schema: {
-          request: {
-            pathParams: findBookChangeRequestPathParamsDtoSchema,
-          },
-          response: {
-            [HttpStatusCode.ok]: {
-              schema: findBookChangeRequestResponseBodyDtoSchema,
-              description: 'BookChangeRequest found',
-            },
-          },
-        },
-        securityMode: SecurityMode.bearerToken,
-        description: 'Find bookChangeRequest by id',
+        description: 'Create a BookChangeRequest',
       }),
       new HttpRoute({
         method: HttpMethodName.get,
         handler: this.findBookChangeRequests.bind(this),
-        description: 'Find bookChangeRequests',
+        description: 'Find BookChangeRequests',
         schema: {
           request: {
             queryParams: findBookChangeRequestsQueryParamsDtoSchema,
@@ -101,16 +75,15 @@ export class BookChangeRequestHttpController implements HttpController {
   private async createBookChangeRequest(
     request: HttpRequest<CreateBookChangeRequestBodyDto>,
   ): Promise<HttpCreatedResponse<CreateBookChangeRequestResponseBodyDto>> {
-    const { authorIds, ...bookChangeRequestData } = request.body;
+    const { ...bookChangeRequestData } = request.body;
 
-    await this.accessControlService.verifyBearerToken({
+    const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
     const { bookChangeRequest } = await this.createBookChangeRequestCommandHandler.execute({
       ...bookChangeRequestData,
-      authorIds,
-      isApproved: false,
+      userId,
     });
 
     return {
@@ -119,43 +92,26 @@ export class BookChangeRequestHttpController implements HttpController {
     };
   }
 
-  private async findBookChangeRequest(
-    request: HttpRequest<undefined, undefined, FindBookChangeRequestPathParamsDto>,
-  ): Promise<HttpOkResponse<FindBookChangeRequestResponseBodyDto>> {
-    const { bookChangeRequestId } = request.pathParams;
-
-    await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
-    });
-
-    const { bookChangeRequest } = await this.findBookChangeRequestQueryHandler.execute({ bookChangeRequestId });
-
-    return {
-      statusCode: HttpStatusCode.ok,
-      body: this.mapBookChangeRequestToBookChangeRequestDto(bookChangeRequest),
-    };
-  }
-
   private async findBookChangeRequests(
     request: HttpRequest<undefined, FindBookChangeRequestsQueryParamsDto, undefined>,
   ): Promise<HttpOkResponse<FindBookChangeRequestsResponseBodyDto>> {
-    await this.accessControlService.verifyBearerToken({
+    const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
-    const { isbn, title, page = 1, pageSize = 10 } = request.queryParams;
+    const { page = 1, pageSize = 10 } = request.queryParams;
 
     const { bookChangeRequests, total } = await this.findBookChangeRequestsQueryHandler.execute({
-      isbn,
-      title,
+      userId,
       page,
       pageSize,
-      isApproved: true,
     });
 
     return {
       body: {
-        data: bookChangeRequests.map((bookChangeRequest) => this.mapBookChangeRequestToBookChangeRequestDto(bookChangeRequest)),
+        data: bookChangeRequests.map((bookChangeRequest) =>
+          this.mapBookChangeRequestToBookChangeRequestDto(bookChangeRequest),
+        ),
         metadata: {
           page,
           pageSize,
@@ -167,20 +123,26 @@ export class BookChangeRequestHttpController implements HttpController {
   }
 
   private mapBookChangeRequestToBookChangeRequestDto(bookChangeRequest: BookChangeRequest): BookChangeRequestDto {
-    const { title, language, format, isApproved, imageUrl, isbn, publisher, releaseYear, translator, pages } =
-      bookChangeRequest.getState();
-
-    const bookChangeRequestDto: BookChangeRequestDto = {
-      id: bookChangeRequest.getId(),
+    const {
       title,
       language,
       format,
-      isApproved,
-      authors: bookChangeRequest.getAuthors().map((author) => ({
-        id: author.getId(),
-        name: author.getName(),
-        isApproved: author.getIsApproved(),
-      })),
+      imageUrl,
+      isbn,
+      publisher,
+      releaseYear,
+      translator,
+      pages,
+      bookId,
+      createdAt,
+      userId,
+    } = bookChangeRequest.getState();
+
+    const bookChangeRequestDto: BookChangeRequestDto = {
+      id: bookChangeRequest.getId(),
+      bookId,
+      userId,
+      createdAt: createdAt.toISOString(),
     };
 
     if (isbn) {
@@ -205,6 +167,18 @@ export class BookChangeRequestHttpController implements HttpController {
 
     if (imageUrl) {
       bookChangeRequestDto.imageUrl = imageUrl;
+    }
+
+    if (title) {
+      bookChangeRequestDto.title = title;
+    }
+
+    if (language) {
+      bookChangeRequestDto.language = language;
+    }
+
+    if (format) {
+      bookChangeRequestDto.format = format;
     }
 
     return bookChangeRequestDto;

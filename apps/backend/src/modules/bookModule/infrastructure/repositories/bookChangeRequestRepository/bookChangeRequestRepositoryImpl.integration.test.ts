@@ -201,6 +201,47 @@ describe('BookChangeRequestRepositoryImpl', () => {
         ).toBeTruthy();
       });
     });
+
+    it('returns empty array if there are no book change requests', async () => {
+      const foundBookChangeRequests = await bookChangeRequestRepository.findBookChangeRequests({
+        page: 1,
+        pageSize: 10,
+      });
+
+      expect(foundBookChangeRequests.length).toEqual(0);
+    });
+
+    it('finds books change requests by user id', async () => {
+      const user1 = await userTestUtils.createAndPersist();
+
+      const user2 = await userTestUtils.createAndPersist();
+
+      const book = await bookTestUtils.createAndPersist();
+
+      const bookChangeRequest1 = await bookChangeRequestTestUtils.createAndPersist({
+        input: {
+          bookId: book.id,
+          userId: user1.id,
+        },
+      });
+
+      await bookChangeRequestTestUtils.createAndPersist({
+        input: {
+          bookId: book.id,
+          userId: user2.id,
+        },
+      });
+
+      const foundBookChangeRequests = await bookChangeRequestRepository.findBookChangeRequests({
+        userId: user1.id,
+        page: 1,
+        pageSize: 10,
+      });
+
+      expect(foundBookChangeRequests.length).toEqual(1);
+
+      expect(foundBookChangeRequests[0]?.getId()).toEqual(bookChangeRequest1.id);
+    });
   });
 
   describe('delete', () => {

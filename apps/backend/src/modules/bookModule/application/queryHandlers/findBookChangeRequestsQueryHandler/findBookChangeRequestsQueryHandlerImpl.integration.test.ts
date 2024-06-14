@@ -77,4 +77,29 @@ describe('FindBookChangeRequestsQueryHandler', () => {
 
     expect(total).toEqual(1);
   });
+
+  it('finds bookChangeRequests by user', async () => {
+    const user = await userTestUtils.createAndPersist();
+
+    const book = await bookTestUtils.createAndPersist();
+
+    const bookChangeRequest = await bookChangeRequestTestUtils.createAndPersist({
+      input: {
+        userId: user.id,
+        bookId: book.id,
+      },
+    });
+
+    const { bookChangeRequests, total } = await findBookChangeRequestsQueryHandler.execute({
+      page: 1,
+      pageSize: 10,
+      userId: user.id,
+    });
+
+    expect(bookChangeRequests.length).toEqual(1);
+
+    expect(bookChangeRequests[0]?.getId()).toEqual(bookChangeRequest.id);
+
+    expect(total).toEqual(1);
+  });
 });

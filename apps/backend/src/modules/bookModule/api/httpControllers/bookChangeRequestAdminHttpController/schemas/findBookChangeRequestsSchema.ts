@@ -12,7 +12,7 @@ export const findAdminBookChangeRequestsQueryParamsDtoSchema = Type.Object({
 
 export type FindAdminBookChangeRequestsQueryParamsDto = TypeExtends<
   Static<typeof findAdminBookChangeRequestsQueryParamsDtoSchema>,
-  contracts.FindBookChangeRequestsQueryParams
+  contracts.FindAdminBookChangeRequestsQueryParams
 >;
 
 export const findAdminBookChangeRequestsResponseBodyDtoSchema = Type.Object({
@@ -25,6 +25,6 @@ export const findAdminBookChangeRequestsResponseBodyDtoSchema = Type.Object({
 });
 
 export type FindAdminBookChangeRequestsResponseBodyDto = TypeExtends<
-  contracts.FindBookChangeRequestsResponseBody,
+  contracts.FindAdminBookChangeRequestsResponseBody,
   Static<typeof findAdminBookChangeRequestsResponseBodyDtoSchema>
 >;

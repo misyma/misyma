@@ -2,8 +2,6 @@ import { type BookChangeRequest } from './bookChangeRequest.js';
 import { type Metadata } from '../metadata.js';
 
 export interface FindBookChangeRequestsQueryParams {
-  readonly isbn?: string;
-  readonly title?: string;
   readonly page?: number;
   readonly pageSize?: number;
 }

@@ -1,6 +1,8 @@
 import { AuthorAdminHttpController } from './api/httpControllers/authorAdminHttpController/authorAdminHttpController.js';
 import { AuthorHttpController } from './api/httpControllers/authorHttpController/authorHttpController.js';
 import { BookAdminHttpController } from './api/httpControllers/bookAdminHttpController/bookAdminHttpController.js';
+import { BookChangeRequestAdminHttpController } from './api/httpControllers/bookChangeRequestAdminHttpController/bookChangeRequestAdminHttpController.js';
+import { BookChangeRequestHttpController } from './api/httpControllers/bookChangeRequestHttpController/bookChangeRequestHttpController.js';
 import { BookHttpController } from './api/httpControllers/bookHttpController/bookHttpController.js';
 import { BookReadingHttpController } from './api/httpControllers/bookReadingHttpController/bookReadingHttpController.js';
 import { BorrowingHttpController } from './api/httpControllers/borrowingHttpController/borrowingHttpController.js';
@@ -748,6 +750,27 @@ export class BookModule implements DependencyInjectionModule {
           container.get<CreateQuoteCommandHandler>(symbols.createQuoteCommandHandler),
           container.get<UpdateQuoteCommandHandler>(symbols.updateQuoteCommandHandler),
           container.get<DeleteQuoteCommandHandler>(symbols.deleteQuoteCommandHandler),
+          container.get<AccessControlService>(authSymbols.accessControlService),
+        ),
+    );
+
+    container.bind<BookChangeRequestHttpController>(
+      symbols.bookChangeRequestHttpController,
+      () =>
+        new BookChangeRequestHttpController(
+          container.get<CreateBookChangeRequestCommandHandler>(symbols.createBookChangeRequestCommandHandler),
+          container.get<FindBookChangeRequestsQueryHandler>(symbols.findBookChangeRequestsQueryHandler),
+          container.get<AccessControlService>(authSymbols.accessControlService),
+        ),
+    );
+
+    container.bind<BookChangeRequestAdminHttpController>(
+      symbols.bookChangeRequestAdminHttpController,
+      () =>
+        new BookChangeRequestAdminHttpController(
+          container.get<ApplyBookChangeRequestCommandHandler>(symbols.applyBookChangeRequestCommandHandler),
+          container.get<DeleteBookChangeRequestCommandHandler>(symbols.deleteBookChangeRequestCommandHandler),
+          container.get<FindBookChangeRequestsQueryHandler>(symbols.findBookChangeRequestsQueryHandler),
           container.get<AccessControlService>(authSymbols.accessControlService),
         ),
     );
