@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { type SendVerificationEmailCommandHandler } from './sendVerificationEmailCommandHandler.js';
+import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
-import { Generator } from '../../../../../../tests/generator.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { EmailEventDraft } from '../../../domain/entities/emailEvent/emailEventDraft.ts/emailEventDraft.js';
 import { EmailEventType } from '../../../domain/entities/emailEvent/types/emailEventType.js';

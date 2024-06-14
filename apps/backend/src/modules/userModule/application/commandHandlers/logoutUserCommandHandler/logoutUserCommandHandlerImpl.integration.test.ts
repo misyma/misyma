@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { type LogoutUserCommandHandler } from './logoutUserCommandHandler.js';
+import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
-import { Generator } from '../../../../../../tests/generator.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';

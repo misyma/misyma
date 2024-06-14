@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { type CreateCollectionCommandHandler } from './createCollectionCommandHandler.js';
+import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
-import { Generator } from '../../../../../../tests/generator.js';
 import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
