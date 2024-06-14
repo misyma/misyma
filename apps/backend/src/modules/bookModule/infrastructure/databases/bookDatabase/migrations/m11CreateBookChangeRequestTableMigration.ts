@@ -37,8 +37,6 @@ export class M11CreateBookChangeRequestTableMigration implements Migration {
       table.foreign('userId').references('id').inTable('users').onDelete('CASCADE');
 
       table.primary(['id']);
-
-      table.unique(['userId', 'bookId']);
     });
   }
 

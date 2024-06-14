@@ -65,7 +65,7 @@ export class BookChangeRequestAdminHttpController implements HttpController {
       }),
       new HttpRoute({
         method: HttpMethodName.post,
-        path: ':bookChangeRequestId',
+        path: ':bookChangeRequestId/apply',
         description: 'Apply a BookChangeRequest to the Book',
         handler: this.updateBookChangeRequest.bind(this),
         schema: {
