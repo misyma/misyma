@@ -66,7 +66,7 @@ describe('ApplyBookChangeRequestCommandHandlerImpl', () => {
     });
   });
 
-  it('applies a BookChangeRequest to Book', async () => {
+  it('applies a BookChangeRequest to the Book', async () => {
     const user = await userTestUtils.createAndPersist();
 
     const book = await bookTestUtils.createAndPersist();
@@ -83,6 +83,7 @@ describe('ApplyBookChangeRequestCommandHandlerImpl', () => {
     const updatedBook = await bookTestUtils.findById({ id: book.id });
 
     expect(updatedBook).toEqual({
+      id: book.id,
       title: bookChangeRequest.title,
       publisher: bookChangeRequest.publisher,
       releaseYear: bookChangeRequest.releaseYear,

@@ -3,7 +3,7 @@ import { type BookFormat, type Language } from '@common/contracts';
 import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type BookChangeRequestRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/bookChangeRequestTable/bookChangeRequestRawEntity.js';
-import { quoteTable } from '../../../infrastructure/databases/bookDatabase/tables/quoteTable/quoteTable.js';
+import { bookChangeRequestTable } from '../../../infrastructure/databases/bookDatabase/tables/bookChangeRequestTable/bookChangeRequestTable.js';
 import { BookChangeRequestTestFactory } from '../../factories/bookChangeRequestTestFactory/bookChangeRequestTestFactory.js';
 
 interface CreateAndPersistPayload {
@@ -24,7 +24,7 @@ export class BookChangeRequestTestUtils implements TestUtils {
 
     const bookChangeRequest = this.bookChangeRequestTestFactory.create(input);
 
-    const rawEntities = await this.databaseClient<BookChangeRequestRawEntity>(quoteTable).insert(
+    const rawEntities = await this.databaseClient<BookChangeRequestRawEntity>(bookChangeRequestTable).insert(
       {
         id: bookChangeRequest.getId(),
         title: bookChangeRequest.getTitle() as string,
@@ -65,7 +65,9 @@ export class BookChangeRequestTestUtils implements TestUtils {
   public async findById(payload: FindByIdPayload): Promise<BookChangeRequestRawEntity | null> {
     const { id } = payload;
 
-    const rawEntity = await this.databaseClient<BookChangeRequestRawEntity>(quoteTable).where({ id }).first();
+    const rawEntity = await this.databaseClient<BookChangeRequestRawEntity>(bookChangeRequestTable)
+      .where({ id })
+      .first();
 
     if (!rawEntity) {
       return null;
@@ -89,6 +91,6 @@ export class BookChangeRequestTestUtils implements TestUtils {
   }
 
   public async truncate(): Promise<void> {
-    await this.databaseClient(quoteTable).truncate();
+    await this.databaseClient(bookChangeRequestTable).truncate();
   }
 }

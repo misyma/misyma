@@ -103,7 +103,7 @@ describe('BookChangeRequestRepositoryImpl', () => {
       });
 
       expect(foundBookChangeRequest).toEqual({
-        id: createdBookChangeRequest.getId(),
+        id: bookChangeRequest.getId(),
         title: createdBookChangeRequest.getTitle(),
         isbn: createdBookChangeRequest.getIsbn(),
         publisher: createdBookChangeRequest.getPublisher(),
@@ -168,21 +168,23 @@ describe('BookChangeRequestRepositoryImpl', () => {
 
   describe('findBookChangeRequests', () => {
     it('finds books change requests', async () => {
-      const user = await userTestUtils.createAndPersist();
+      const user1 = await userTestUtils.createAndPersist();
+
+      const user2 = await userTestUtils.createAndPersist();
 
       const book = await bookTestUtils.createAndPersist();
 
       const bookChangeRequest1 = await bookChangeRequestTestUtils.createAndPersist({
         input: {
           bookId: book.id,
-          userId: user.id,
+          userId: user1.id,
         },
       });
 
       const bookChangeRequest2 = await bookChangeRequestTestUtils.createAndPersist({
         input: {
           bookId: book.id,
-          userId: user.id,
+          userId: user2.id,
         },
       });
 
@@ -261,7 +263,7 @@ describe('BookChangeRequestRepositoryImpl', () => {
 
       const foundBookChangeRequest = await bookChangeRequestTestUtils.findById({ id: book.id });
 
-      expect(foundBookChangeRequest).toBeUndefined();
+      expect(foundBookChangeRequest).toBeNull();
     });
   });
 });

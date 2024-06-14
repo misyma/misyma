@@ -33,7 +33,7 @@ export class BookChangeRequestMapperImpl implements BookChangeRequestMapper {
       imageUrl,
       bookId,
       userId,
-      createdAt,
+      createdAt: new Date(createdAt),
     });
   }
 }

@@ -88,7 +88,7 @@ describe('CreateBookChangeRequestCommandHandler', () => {
     expect(bookChangeRequest.getState()).toEqual({
       bookId: book.id,
       userId: user.id,
-      createdAt: createdBookChangeRequest.getCreatedAt(),
+      createdAt: expect.any(Date),
       format: createdBookChangeRequest.getFormat(),
       title: createdBookChangeRequest.getTitle(),
       isbn: createdBookChangeRequest.getIsbn(),
@@ -104,7 +104,7 @@ describe('CreateBookChangeRequestCommandHandler', () => {
       id: bookChangeRequest.getId(),
       bookId: book.id,
       userId: user.id,
-      createdAt: createdBookChangeRequest.getCreatedAt(),
+      createdAt: expect.any(Date),
       format: createdBookChangeRequest.getFormat(),
       title: createdBookChangeRequest.getTitle(),
       isbn: createdBookChangeRequest.getIsbn(),

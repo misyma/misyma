@@ -72,7 +72,7 @@ describe('DeleteBookChangeRequestCommandHandler', () => {
 
     const foundBookChangeRequest = await bookChangeRequestTestUtils.findById({ id: bookChangeRequest.id });
 
-    expect(foundBookChangeRequest).toBeUndefined();
+    expect(foundBookChangeRequest).toBeNull();
   });
 
   it('throws an error if bookChangeRequest with given id does not exist', async () => {
