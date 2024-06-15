@@ -3,14 +3,11 @@
 
 import { type FastifyInstance, type FastifyReply, type FastifyRequest, type FastifySchema } from 'fastify';
 
-import { coreSymbols } from './symbols.js';
 import { type HttpController } from '../common/types/http/httpController.js';
 import { HttpHeader } from '../common/types/http/httpHeader.js';
 import { HttpMediaType } from '../common/types/http/httpMediaType.js';
 import { type AttachedFile } from '../common/types/http/httpRequest.js';
 import { type HttpRouteSchema, type HttpRoute } from '../common/types/http/httpRoute.js';
-import { type DependencyInjectionContainer } from '../libs/dependencyInjection/dependencyInjectionContainer.js';
-import { type LoggerService } from '../libs/logger/services/loggerService/loggerService.js';
 
 export interface RegisterControllersPayload {
   readonly controllers: HttpController[];
@@ -28,14 +25,8 @@ export interface NormalizePathPayload {
 
 export class HttpRouter {
   private readonly rootPath = '/api';
-  private readonly loggerService: LoggerService;
 
-  public constructor(
-    private readonly server: FastifyInstance,
-    private readonly container: DependencyInjectionContainer,
-  ) {
-    this.loggerService = this.container.get<LoggerService>(coreSymbols.loggerService);
-  }
+  public constructor(private readonly fastifyServer: FastifyInstance) {}
 
   public registerControllers(payload: RegisterControllersPayload): void {
     const { controllers } = payload;
@@ -62,11 +53,6 @@ export class HttpRouter {
       const path = this.normalizePath({ path: `/${this.rootPath}/${basePath}/${controllerPath}` });
 
       const handler = async (fastifyRequest: FastifyRequest, fastifyReply: FastifyReply): Promise<void> => {
-        this.loggerService.debug({
-          message: 'Received an HTTP request.',
-          endpoint: `${method} ${fastifyRequest.url}`,
-        });
-
         let attachedFile: AttachedFile | undefined;
 
         if (fastifyRequest.isMultipart()) {
@@ -92,21 +78,13 @@ export class HttpRouter {
         fastifyReply.status(statusCode);
 
         if (responseBody) {
-          fastifyReply.header(HttpHeader.contentType, HttpMediaType.applicationJson);
-
-          fastifyReply.send(responseBody);
-        } else {
-          fastifyReply.send();
+          fastifyReply.header(HttpHeader.contentType, HttpMediaType.applicationJson).send(responseBody);
         }
 
-        this.loggerService.info({
-          message: 'Sent an HTTP response.',
-          endpoint: `${method} ${fastifyRequest.url}`,
-          statusCode,
-        });
+        return fastifyReply;
       };
 
-      this.server.route({
+      this.fastifyServer.route({
         method,
         url: path,
         handler,
