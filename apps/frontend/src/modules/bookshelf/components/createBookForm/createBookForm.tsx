@@ -43,7 +43,6 @@ export const CreateBookForm: FC<CreateBookProps> = ({ bookshelfId }) => {
   const canNavigateToSecond = useCallback(() => {
     return (
       (bookCreation.stepOneDetails?.author || bookCreation.stepOneDetails?.authorName) &&
-      bookCreation.stepOneDetails?.isbn &&
       bookCreation.stepOneDetails?.yearOfIssue &&
       bookCreation.stepOneDetails?.publisher &&
       bookCreation.stepOneDetails?.title
