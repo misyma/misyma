@@ -1,7 +1,7 @@
 import {
-  type FindBookReadingsPayload,
+  type FindBookReadingsQueryHandlerPayload,
   type FindBookReadingsQueryHandler,
-  type FindBookReadingsResult,
+  type FindBookReadingsQueryHandlerResult,
 } from './findBookReadingsQueryHandler.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import {
@@ -16,7 +16,7 @@ export class FindBookReadingsueryHandlerImpl implements FindBookReadingsQueryHan
     private readonly userBookRepository: UserBookRepository,
   ) {}
 
-  public async execute(payload: FindBookReadingsPayload): Promise<FindBookReadingsResult> {
+  public async execute(payload: FindBookReadingsQueryHandlerPayload): Promise<FindBookReadingsQueryHandlerResult> {
     const { userBookId, page, pageSize, sortDate } = payload;
 
     const bookExists = await this.userBookRepository.findUserBook({

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { fastifyCors } from '@fastify/cors';
@@ -47,7 +48,7 @@ import { type UserHttpController } from '../modules/userModule/api/httpControlle
 import { userSymbols } from '../modules/userModule/symbols.js';
 
 export class HttpServer {
-  public readonly fastifyInstance: FastifyInstance;
+  public readonly fastifyServer: FastifyInstance;
   private readonly httpRouter: HttpRouter;
   private readonly container: DependencyInjectionContainer;
   private readonly loggerService: LoggerService;
@@ -60,9 +61,9 @@ export class HttpServer {
 
     this.config = container.get<Config>(coreSymbols.config);
 
-    this.fastifyInstance = fastify({ bodyLimit: 10 * 1024 * 1024 }).withTypeProvider<TypeBoxTypeProvider>();
+    this.fastifyServer = fastify({ bodyLimit: 10 * 1024 * 1024 }).withTypeProvider<TypeBoxTypeProvider>();
 
-    this.httpRouter = new HttpRouter(this.fastifyInstance, container);
+    this.httpRouter = new HttpRouter(this.fastifyServer);
   }
 
   private getControllers(): HttpController[] {
@@ -94,17 +95,36 @@ export class HttpServer {
 
     await this.initSwagger();
 
-    await this.fastifyInstance.register(fastifyMultipart);
+    await this.fastifyServer.register(fastifyMultipart);
 
-    await this.fastifyInstance.register(fastifyHelmet);
+    await this.fastifyServer.register(fastifyHelmet);
 
-    await this.fastifyInstance.register(fastifyCors, {
+    await this.fastifyServer.register(fastifyCors, {
       origin: '*',
       methods: '*',
       allowedHeaders: '*',
     });
 
-    this.fastifyInstance.setSerializerCompiler(() => {
+    this.fastifyServer.addHook('onRequest', (request, _reply, done) => {
+      this.loggerService.info({
+        message: 'HTTP request received.',
+        endpoint: `${request.method} ${request.url}`,
+      });
+
+      done();
+    });
+
+    this.fastifyServer.addHook('onSend', (request, reply, _payload, done) => {
+      this.loggerService.info({
+        message: 'HTTP response sent.',
+        endpoint: `${request.method} ${request.url}`,
+        statusCode: reply.statusCode,
+      });
+
+      done();
+    });
+
+    this.fastifyServer.setSerializerCompiler(() => {
       return (data): string => JSON.stringify(data);
     });
 
@@ -114,7 +134,7 @@ export class HttpServer {
       controllers: this.getControllers(),
     });
 
-    await this.fastifyInstance.listen({
+    await this.fastifyServer.listen({
       port,
       host,
     });
@@ -127,11 +147,11 @@ export class HttpServer {
   }
 
   public getInternalServerInstance(): Server {
-    return this.fastifyInstance.server;
+    return this.fastifyServer.server;
   }
 
   private setupErrorHandler(): void {
-    this.fastifyInstance.setSchemaErrorFormatter((errors, dataVar) => {
+    this.fastifyServer.setSchemaErrorFormatter((errors, dataVar) => {
       const { instancePath, message } = errors[0] as FastifySchemaValidationError;
 
       return new InputNotValidError({
@@ -140,7 +160,7 @@ export class HttpServer {
       });
     });
 
-    this.fastifyInstance.setErrorHandler((error, request, reply) => {
+    this.fastifyServer.setErrorHandler((error, request, reply) => {
       const errorContext = {
         ...(error instanceof Error
           ? {
@@ -166,40 +186,30 @@ export class HttpServer {
       };
 
       if (error instanceof InputNotValidError) {
-        reply.status(HttpStatusCode.badRequest).send(responseError);
+        return reply.status(HttpStatusCode.badRequest).send(responseError);
       }
 
       if (error instanceof ResourceNotFoundError) {
-        reply.status(HttpStatusCode.notFound).send(responseError);
-
-        return;
+        return reply.status(HttpStatusCode.notFound).send(responseError);
       }
 
       if (error instanceof OperationNotValidError) {
-        reply.status(HttpStatusCode.badRequest).send(responseError);
-
-        return;
+        return reply.status(HttpStatusCode.badRequest).send(responseError);
       }
 
       if (error instanceof ResourceAlreadyExistsError) {
-        reply.status(HttpStatusCode.conflict).send(responseError);
-
-        return;
+        return reply.status(HttpStatusCode.conflict).send(responseError);
       }
 
       if (error instanceof UnauthorizedAccessError) {
-        reply.status(HttpStatusCode.unauthorized).send(responseError);
-
-        return;
+        return reply.status(HttpStatusCode.unauthorized).send(responseError);
       }
 
       if (error instanceof ForbiddenAccessError) {
-        reply.status(HttpStatusCode.forbidden).send(responseError);
-
-        return;
+        return reply.status(HttpStatusCode.forbidden).send(responseError);
       }
 
-      reply.status(HttpStatusCode.internalServerError).send({
+      return reply.status(HttpStatusCode.internalServerError).send({
         name: 'InternalServerError',
         message: 'Internal server error',
       });
@@ -207,7 +217,7 @@ export class HttpServer {
   }
 
   private async initSwagger(): Promise<void> {
-    await this.fastifyInstance.register(fastifySwagger, {
+    await this.fastifyServer.register(fastifySwagger, {
       openapi: {
         info: {
           title: 'Backend API',
@@ -224,7 +234,7 @@ export class HttpServer {
       },
     });
 
-    await this.fastifyInstance.register(fastifySwaggerUi, {
+    await this.fastifyServer.register(fastifySwaggerUi, {
       routePrefix: '/api/docs',
       uiConfig: {
         defaultModelRendering: 'model',
@@ -237,7 +247,7 @@ export class HttpServer {
 
   private addRequestPreprocessing(): void {
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    this.fastifyInstance.addHook('preValidation', (request, _reply, next) => {
+    this.fastifyServer.addHook('preValidation', (request, _reply, next) => {
       const body = request.body as Record<string, unknown>;
 
       this.trimStringProperties(body);

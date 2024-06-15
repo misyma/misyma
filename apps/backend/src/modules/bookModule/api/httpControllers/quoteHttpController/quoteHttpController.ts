@@ -55,7 +55,7 @@ export class QuoteHttpController implements HttpController {
   public readonly tags = ['Quote'];
 
   public constructor(
-    private readonly findQuotesByBookIdQueryHandler: FindQuotesQueryHandler,
+    private readonly findQuotesQueryHandler: FindQuotesQueryHandler,
     private readonly createQuoteCommandHandler: CreateQuoteCommandHandler,
     private readonly updateQuoteCommandHandler: UpdateQuoteCommandHandler,
     private readonly deleteQuoteCommandHandler: DeleteQuoteCommandHandler,
@@ -156,7 +156,7 @@ export class QuoteHttpController implements HttpController {
     //   });
     // }
 
-    const { quotes, total } = await this.findQuotesByBookIdQueryHandler.execute({
+    const { quotes, total } = await this.findQuotesQueryHandler.execute({
       userBookId,
       page,
       pageSize,

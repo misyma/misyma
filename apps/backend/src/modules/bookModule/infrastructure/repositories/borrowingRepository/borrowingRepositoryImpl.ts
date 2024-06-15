@@ -47,15 +47,21 @@ export class BorrowingRepositoryImpl implements BorrowingRepository {
   }
 
   public async findBorrowings(payload: FindBorrowingsPayload): Promise<Borrowing[]> {
-    const { userBookId, page, pageSize } = payload;
+    const { userBookId, page, pageSize, sortDate } = payload;
 
     let rawEntities: BorrowingRawEntity[];
 
     try {
-      rawEntities = await this.databaseClient<BorrowingRawEntity>(borrowingTable)
+      const query = this.databaseClient<BorrowingRawEntity>(borrowingTable)
         .where({ userBookId })
         .limit(pageSize)
         .offset(pageSize * (page - 1));
+
+      if (sortDate) {
+        query.orderBy('startedAt', sortDate);
+      }
+
+      rawEntities = await query;
     } catch (error) {
       throw new RepositoryError({
         entity: 'Borrowing',
