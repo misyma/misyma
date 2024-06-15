@@ -192,6 +192,7 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
           ...(bookCreation.stepTwoDetails as Required<BookCreationNonIsbnState['stepTwoDetails']>),
           ...(bookCreation.stepThreeDetails as Required<BookCreationNonIsbnState['stepThreeDetails']>),
           ...(bookCreation.stepOneDetails as Required<BookCreationNonIsbnState['stepOneDetails']>),
+          isbn: bookCreation.stepOneDetails?.isbn === '' ? undefined : bookCreation.stepOneDetails?.isbn,
           accessToken: accessToken as string,
         });
       } catch (error) {
