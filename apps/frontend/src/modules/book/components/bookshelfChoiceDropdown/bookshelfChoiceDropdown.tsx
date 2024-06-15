@@ -9,6 +9,7 @@ import { userStateSelectors } from '../../../core/store/states/userState/userSta
 import { FindUserBookQueryOptions } from '../../api/queries/findUserBook/findUserBookQueryOptions';
 import { useFindUserBookshelfsQuery } from '../../../bookshelf/api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 import { useUpdateUserBookMutation } from '../../api/mutations/updateUserBookMutation/updateUserBookMutation';
+import { CreateBorrowingModal } from '../createBorrowingModal/createBorrowingModal';
 
 interface Props {
   bookId: string;
@@ -37,7 +38,11 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
     pageSize: 50,
   });
 
+  const [usingBorrowFlow, setUsingBorrowFlow] = useState(false);
+
   const [selectedBookshelfId, setSelectedBookshelfId] = useState(data?.bookshelfId ?? '');
+
+  const [previousBookshelfId, setPreviousBookshelfId] = useState<string | null>(null);
 
   const booksBookshelf = useMemo(() => {
     return bookshelfData?.data.find((bookshelf) => data?.bookshelfId === bookshelf.id);
@@ -46,6 +51,10 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
   const { mutateAsync: updateUserBook } = useUpdateUserBookMutation({});
 
   const onBookshelfChange = async (id: string, bookshelfName: string): Promise<void> => {
+    if (bookshelfName === 'Wypożyczalnia') {
+      return setUsingBorrowFlow(true);
+    }
+
     await updateUserBook({
       userBookId: bookId,
       bookshelfId: id,
@@ -82,6 +91,8 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
         <Select
           value={selectedBookshelfId}
           onValueChange={async (value) => {
+            setPreviousBookshelfId(selectedBookshelfId);
+
             await onBookshelfChange(value, bookshelfData?.data.find((bookshelf) => bookshelf.id === value)?.name ?? '');
 
             setSelectedBookshelfId(value);
@@ -97,6 +108,35 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
             </SelectContent>
           </SelectTrigger>
         </Select>
+      )}
+      {usingBorrowFlow && (
+        <CreateBorrowingModal
+          bookId={bookId}
+          onMutated={async () => {
+            setUsingBorrowFlow(false);
+
+            await updateUserBook({
+              userBookId: bookId,
+              bookshelfId: selectedBookshelfId,
+              accessToken: accessToken as string,
+            });
+
+            queryClient.invalidateQueries({
+              queryKey: ['findUserBookById', bookId, userData?.id],
+            });
+
+            queryClient.invalidateQueries({
+              predicate: (query) =>
+                query.queryKey[0] === 'findBooksByBookshelfId' && query.queryKey[1] === selectedBookshelfId,
+            });
+          }}
+          onClosed={() => {
+            setUsingBorrowFlow(false);
+
+            setSelectedBookshelfId(previousBookshelfId as string);
+          }}
+          open={usingBorrowFlow}
+        />
       )}
     </>
   );

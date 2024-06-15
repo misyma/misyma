@@ -5,7 +5,6 @@ export interface CreateBorrowingPathParams {
 }
 
 export interface CreateBorrowingRequestBody {
-  readonly rating: number;
   readonly borrower: string;
   readonly startedAt: string;
   readonly endedAt?: string;

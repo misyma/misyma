@@ -1,0 +1,46 @@
+import { CreateBorrowingPathParams, CreateBorrowingRequestBody, CreateBorrowingResponseBody } from '@common/contracts';
+import { UseMutationOptions, useMutation } from '@tanstack/react-query';
+import { BookApiError } from '../../../errors/bookApiError';
+import { HttpService } from '../../../../core/services/httpService/httpService';
+import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
+
+export interface UseCreateBorrowingMutationPayload extends CreateBorrowingRequestBody, CreateBorrowingPathParams {
+  accessToken: string;
+}
+
+export const useCreateBorrowingMutation = (
+  options: UseMutationOptions<CreateBorrowingResponseBody, BookApiError, UseCreateBorrowingMutationPayload>,
+) => {
+  const createBorrowing = async (payload: UseCreateBorrowingMutationPayload) => {
+    const { accessToken, userBookId, ...rest } = payload;
+
+    const mapper = new ErrorCodeMessageMapper({
+      400: 'Podano błędne dane.',
+      403: 'Brak pozwolenia na stworzenie wypożyczenia książki.',
+      500: 'Wewnętrzny błąd serwera.',
+    });
+
+    const response = await HttpService.post<CreateBorrowingResponseBody>({
+      url: `/user-books/${userBookId}/borrowings`,
+      body: rest,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    if (!response.success) {
+      throw new BookApiError({
+        apiResponseError: response.body.context,
+        message: mapper.map(response.statusCode),
+        statusCode: response.statusCode,
+      });
+    }
+
+    return response.body;
+  };
+
+  return useMutation({
+    mutationFn: createBorrowing,
+    ...options,
+  });
+};
