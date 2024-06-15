@@ -56,7 +56,7 @@ export class BookReadingHttpController implements HttpController {
   public readonly tags = ['BookReading'];
 
   public constructor(
-    private readonly findBookReadingsByBookIdQueryHandler: FindBookReadingsQueryHandler,
+    private readonly findBookReadingsQueryHandler: FindBookReadingsQueryHandler,
     private readonly createBookReadingCommandHandler: CreateBookReadingCommandHandler,
     private readonly updateBookReadingCommandHandler: UpdateBookReadingCommandHandler,
     private readonly deleteBookReadingCommandHandler: DeleteBookReadingCommandHandler,
@@ -157,7 +157,7 @@ export class BookReadingHttpController implements HttpController {
     //   });
     // }
 
-    const { bookReadings, total } = await this.findBookReadingsByBookIdQueryHandler.execute({
+    const { bookReadings, total } = await this.findBookReadingsQueryHandler.execute({
       userBookId,
       page,
       pageSize,

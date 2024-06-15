@@ -1,5 +1,6 @@
 import { type Borrowing } from './borrowing.js';
 import { type Metadata } from '../metadata.js';
+import { type SortingType } from '../sortingType.js';
 
 export interface FindBorrowingsPathParams {
   readonly userBookId: string;
@@ -8,6 +9,7 @@ export interface FindBorrowingsPathParams {
 export interface FindBorrowingsQueryParams {
   readonly page?: number;
   readonly pageSize?: number;
+  readonly sortDate?: SortingType;
 }
 
 export interface FindBorrowingsResponseBody {

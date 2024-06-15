@@ -56,7 +56,7 @@ export class BorrowingHttpController implements HttpController {
   public readonly tags = ['Borrowing'];
 
   public constructor(
-    private readonly findBorrowingsByBookIdQueryHandler: FindBorrowingsQueryHandler,
+    private readonly findBorrowingsQueryHandler: FindBorrowingsQueryHandler,
     private readonly createBorrowingCommandHandler: CreateBorrowingCommandHandler,
     private readonly updateBorrowingCommandHandler: UpdateBorrowingCommandHandler,
     private readonly deleteBorrowingCommandHandler: DeleteBorrowingCommandHandler,
@@ -67,8 +67,8 @@ export class BorrowingHttpController implements HttpController {
     return [
       new HttpRoute({
         method: HttpMethodName.get,
-        handler: this.getBorrowings.bind(this),
-        description: 'Get Borrowings',
+        handler: this.findBorrowings.bind(this),
+        description: 'Find Borrowings',
         schema: {
           request: {
             pathParams: findBorrowingsPathParamsDtoSchema,
@@ -138,14 +138,14 @@ export class BorrowingHttpController implements HttpController {
     ];
   }
 
-  private async getBorrowings(
+  private async findBorrowings(
     request: HttpRequest<null, FindBorrowingsQueryParamsDto, FindBorrowingsPathParamsDto>,
   ): Promise<HttpOkResponse<FindBorrowingsResponseBodyDto>> {
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
-    const { page = 1, pageSize = 10 } = request.queryParams;
+    const { page = 1, pageSize = 10, sortDate } = request.queryParams;
 
     const { userBookId } = request.pathParams;
 
@@ -157,10 +157,11 @@ export class BorrowingHttpController implements HttpController {
     //   });
     // }
 
-    const { borrowings, total } = await this.findBorrowingsByBookIdQueryHandler.execute({
+    const { borrowings, total } = await this.findBorrowingsQueryHandler.execute({
       userBookId,
       page,
       pageSize,
+      sortDate,
     });
 
     return {

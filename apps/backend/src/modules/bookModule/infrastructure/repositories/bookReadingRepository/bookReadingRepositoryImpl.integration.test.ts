@@ -106,7 +106,7 @@ describe('BookReadingRepositoryImpl', () => {
     });
   });
 
-  describe('findByUserBookId', () => {
+  describe('findBookReadings', () => {
     it('returns an empty array - when BookReadings were not found', async () => {
       const userBookId = Generator.uuid();
 

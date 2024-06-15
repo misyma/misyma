@@ -105,7 +105,7 @@ describe('BorrowingRepositoryImpl', () => {
     });
   });
 
-  describe('findByUserBookId', () => {
+  describe('findBorrowings', () => {
     it('returns an empty array - when Borrowings were not found', async () => {
       const userBookId = Generator.uuid();
 
@@ -159,6 +159,85 @@ describe('BorrowingRepositoryImpl', () => {
 
         expect(borrowing.getUserBookId()).toEqual(userBook.id);
       });
+    });
+
+    it('returns an array of Borrowings - with pagination', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+
+      const book = await bookTestUtils.createAndPersist();
+
+      const userBook = await userBookTestUtils.createAndPersist({
+        input: {
+          bookshelfId: bookshelf.id,
+          bookId: book.id,
+        },
+      });
+
+      const borrowing1 = await borrowingTestUtils.createAndPersist({
+        input: {
+          userBookId: userBook.id,
+        },
+      });
+
+      await borrowingTestUtils.createAndPersist({
+        input: {
+          userBookId: userBook.id,
+        },
+      });
+
+      const result = await repository.findBorrowings({
+        userBookId: userBook.id,
+        page: 1,
+        pageSize: 1,
+      });
+
+      expect(result).toHaveLength(1);
+
+      expect(result[0]?.getId()).toEqual(borrowing1.id);
+    });
+
+    it('returns an array of Borrowings - sorted by startedAt date', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+
+      const book = await bookTestUtils.createAndPersist();
+
+      const userBook = await userBookTestUtils.createAndPersist({
+        input: {
+          bookshelfId: bookshelf.id,
+          bookId: book.id,
+        },
+      });
+
+      const borrowing1 = await borrowingTestUtils.createAndPersist({
+        input: {
+          userBookId: userBook.id,
+          startedAt: new Date('2021-01-01'),
+        },
+      });
+
+      const borrowing2 = await borrowingTestUtils.createAndPersist({
+        input: {
+          userBookId: userBook.id,
+          startedAt: new Date('2021-01-02'),
+        },
+      });
+
+      const result = await repository.findBorrowings({
+        userBookId: userBook.id,
+        page: 1,
+        pageSize: 10,
+        sortDate: 'desc',
+      });
+
+      expect(result).toHaveLength(2);
+
+      expect(result[0]?.getId()).toEqual(borrowing2.id);
+
+      expect(result[1]?.getId()).toEqual(borrowing1.id);
     });
   });
 

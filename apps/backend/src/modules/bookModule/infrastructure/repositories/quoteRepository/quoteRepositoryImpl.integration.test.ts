@@ -106,7 +106,7 @@ describe('QuoteRepositoryImpl', () => {
     });
   });
 
-  describe('findByUserBookId', () => {
+  describe('findQuotes', () => {
     it('returns an empty array - when Quotes were not found', async () => {
       const userBookId = Generator.uuid();
 
