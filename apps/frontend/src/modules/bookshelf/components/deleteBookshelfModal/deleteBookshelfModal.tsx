@@ -101,6 +101,10 @@ export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, cl
         });
 
         queryClient.invalidateQueries({
+          predicate: (query) => query.queryKey[0] === 'findBooksByBookshelfId',
+        });
+
+        queryClient.invalidateQueries({
           predicate: (query) => query.queryKey[0] === 'findBookshelfById' && query.queryKey[1] === moveBookshelfId,
         });
       }
@@ -187,7 +191,7 @@ export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, cl
                 <SelectTrigger>
                   <SelectValue placeholder="Wybierz półkę" />
                   <SelectContent
-                  className='w-60 sm:w-80'
+                    className="w-60 sm:w-80"
                     style={{
                       position: 'absolute',
                       zIndex: 999,
