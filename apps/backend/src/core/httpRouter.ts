@@ -79,6 +79,8 @@ export class HttpRouter {
 
         if (responseBody) {
           fastifyReply.header(HttpHeader.contentType, HttpMediaType.applicationJson).send(responseBody);
+        } else {
+          fastifyReply.send();
         }
 
         return fastifyReply;

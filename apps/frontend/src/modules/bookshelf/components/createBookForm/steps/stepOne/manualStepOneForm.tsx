@@ -39,7 +39,12 @@ import {
   DialogTrigger,
 } from '../../../../../common/components/ui/dialog';
 import { HiOutlineInformationCircle } from 'react-icons/hi';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../../../common/components/ui/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../../../../../common/components/ui/tooltip';
 import { useFindAuthorsQuery } from '../../../../../author/api/queries/findAuthorsQuery/findAuthorsQuery';
 
 const pattern = /^[A-Z][^\\x00-\\x7F]*, [A-Z]\. [A-Z]\.$/;
@@ -149,6 +154,7 @@ export const ManualStepOneForm = (): JSX.Element => {
       authorName: payload.name,
     });
 
+     
     form.setValue('author', '', {
       shouldValidate: false,
     });

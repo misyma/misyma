@@ -1,4 +1,4 @@
-import { queryOptions } from '@tanstack/react-query';
+import { keepPreviousData, queryOptions } from '@tanstack/react-query';
 import { FindBooksByBookshelfIdPayload, findBooksByBookshelfId } from './findBooksByBookshelfId.js';
 
 export const FindBooksByBookshelfIdQueryOptions = ({
@@ -14,5 +14,6 @@ export const FindBooksByBookshelfIdQueryOptions = ({
         accessToken: accessToken as string,
         userId,
       }),
+    placeholderData: keepPreviousData,
     enabled: !!accessToken && !!bookshelfId,
   });
