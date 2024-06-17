@@ -1,12 +1,12 @@
 import { useSelector } from 'react-redux';
 import { FindBookshelvesByUserIdQueryParams, FindBookshelvesByUserIdResponseBody } from '@common/contracts';
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
 import { HttpService } from '../../../../core/services/httpService/httpService';
 
 type Payload = FindBookshelvesByUserIdQueryParams & {
   userId: string;
-}
+};
 
 export const useFindUserBookshelfsQuery = (payload: Payload) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
@@ -21,8 +21,8 @@ export const useFindUserBookshelfsQuery = (payload: Payload) => {
       },
       queryParams: {
         page: `${page}`,
-        pageSize: `${pageSize}`
-      }
+        pageSize: `${pageSize}`,
+      },
     });
 
     if (response.success === false) {
@@ -36,5 +36,6 @@ export const useFindUserBookshelfsQuery = (payload: Payload) => {
     queryKey: ['findUserBookshelfs', payload.page, payload.pageSize],
     queryFn: () => findUserBookshelfs(),
     enabled: !!accessToken && !!payload.userId,
+    placeholderData: keepPreviousData,
   });
 };

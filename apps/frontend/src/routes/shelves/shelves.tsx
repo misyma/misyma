@@ -342,17 +342,12 @@ export const ShelvesPage: FC = () => {
                                   (data?.metadata.total ?? 0) / (data?.metadata.pageSize ?? 1),
                                 );
 
+                                queryClient.invalidateQueries({
+                                  predicate: (query) =>
+                                    query.queryKey[0] === 'findUserBookshelfs',
+                                });
+
                                 if (currentPage > newTotalPages) {
-                                  queryClient.invalidateQueries({
-                                    predicate: (query) =>
-                                      query.queryKey[0] === 'findUserBookshelfs' && query.queryKey[1] === currentPage,
-                                  });
-
-                                  queryClient.invalidateQueries({
-                                    predicate: (query) =>
-                                      query.queryKey[0] === 'findUserBookshelfs' && query.queryKey[1] === newTotalPages,
-                                  });
-
                                   setCurrentPage(newTotalPages);
                                 }
                               }}
