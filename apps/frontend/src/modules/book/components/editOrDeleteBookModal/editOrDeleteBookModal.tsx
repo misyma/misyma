@@ -34,9 +34,12 @@ const changeMyBookDataSchema = z.object({
       },
     ),
   ),
-  genre: z.string().min(1, {
-    message: 'Niewłaściwa wartość',
-  }),
+  genre: z
+    .string()
+    .min(1, {
+      message: 'Niewłaściwa wartość',
+    })
+    .or(z.literal('')),
 });
 
 export const EditOrDeleteBookModal: FC<Props> = ({ bookId, userBookId }) => {
@@ -89,11 +92,14 @@ export const EditOrDeleteBookModal: FC<Props> = ({ bookId, userBookId }) => {
       });
     }
 
-    await updateUserBook({
-      userBookId,
-      genreIds: [values.genre],
-      accessToken: accessToken as string,
-    });
+    if(values.genre){
+      await updateUserBook({
+        userBookId,
+        genreIds: [values.genre],
+        accessToken: accessToken as string,
+      });
+    }
+
 
     queryClient.invalidateQueries({
       predicate: (query) => query.queryKey[0] === 'findUserBookById' && query.queryKey[1] === userBookId,

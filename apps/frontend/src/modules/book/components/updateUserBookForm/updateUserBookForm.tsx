@@ -22,7 +22,7 @@ const changeUserBookDataSchema = z.object({
   ),
   genre: z.string().min(1, {
     message: 'Niewłaściwa wartość',
-  }),
+  }).or(z.literal('')),
 });
 
 interface Props {
