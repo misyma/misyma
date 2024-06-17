@@ -163,7 +163,9 @@ export const ShelvesPage: FC = () => {
         name: bookshelfName,
       });
 
-      await refetchBookshelves();
+      queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey[0] === 'findUserBookshelfs',
+      });
 
       toast({
         title: `Półka została stworzona.`,
