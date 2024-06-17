@@ -377,6 +377,7 @@ export class BookModule implements DependencyInjectionModule {
           container.get<S3Service>(coreSymbols.s3Service),
           container.get<LoggerService>(coreSymbols.loggerService),
           container.get<Config>(coreSymbols.config),
+          container.get<UuidService>(coreSymbols.uuidService),
         ),
     );
 
