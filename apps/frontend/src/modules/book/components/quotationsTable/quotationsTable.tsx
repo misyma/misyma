@@ -127,7 +127,7 @@ export function QuotationsTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center py-2"
                 >
-                  No results.
+                  Brak wyników.
                 </TableCell>
               </TableRow>
             )}

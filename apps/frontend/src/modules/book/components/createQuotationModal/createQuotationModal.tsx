@@ -22,19 +22,30 @@ import { useToast } from '../../../common/components/ui/use-toast';
 import { useCreateQuoteMutation } from '../../../quotes/api/mutations/createQuoteMutation/createQuoteMutation';
 import { getQuotesOptionsQueryKey } from '../../../quotes/api/queries/getQuotes/getQuotesOptions';
 
-const createQuotationSchema = z.object({
-  page: z
-    .string({
+const createQuotationSchema = z
+  .object({
+    page: z.string({
       required_error: 'Strona jest wymagana.',
-    })
-    .min(1, 'Strona musi mieć minimum 1 znak.'),
-  content: z
-    .string({
-      required_error: 'Cytat jest wymagany.',
-    })
-    .min(1, 'Cytat musi mieć minimum 1 znak.'),
-  isFavorite: z.boolean({}),
-});
+    }),
+    content: z
+      .string({
+        required_error: 'Cytat jest wymagany.',
+      })
+      .min(1, 'Cytat musi mieć minimum 1 znak.')
+      .max(256, 'Strona może mieć maksymalnie 256 znaków.'),
+    isFavorite: z.boolean({}),
+  })
+  .superRefine((value, ctx) => {
+    const match = value.page.match(/[0-9-]+/g);
+
+    if (match?.[0]?.length !== value.page.length) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.invalid_string,
+        message: 'Strona powinna zawierać liczby lub znak `-`',
+        validation: 'regex',
+      });
+    }
+  });
 
 interface Props {
   userBookId: string;
@@ -58,10 +69,12 @@ export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props):
   const form = useForm<z.infer<typeof createQuotationSchema>>({
     resolver: zodResolver(createQuotationSchema),
     defaultValues: {
-      page: '0',
+      page: '',
       content: '',
       isFavorite: false,
     },
+    reValidateMode: 'onChange',
+    mode: 'onChange',
   });
 
   const { mutateAsync } = useCreateQuoteMutation({});
@@ -139,6 +152,7 @@ export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props):
                       <Input
                         placeholder="Strony cytatu"
                         type="string"
+                        inputMode="text"
                         {...field}
                       />
                     </FormControl>
