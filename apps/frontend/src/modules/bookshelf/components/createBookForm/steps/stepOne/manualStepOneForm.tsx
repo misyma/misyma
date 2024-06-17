@@ -128,7 +128,7 @@ export const ManualStepOneForm = (): JSX.Element => {
       author: bookCreation.stepOneDetails?.author ?? '',
       authorName: bookCreation.stepOneDetails?.authorName ?? undefined,
       publisher: bookCreation.stepOneDetails?.publisher ?? '',
-      yearOfIssue: bookCreation.stepOneDetails?.yearOfIssue ?? '',
+      yearOfIssue: bookCreation.stepOneDetails?.yearOfIssue ? bookCreation.stepOneDetails?.yearOfIssue : '',
     },
     reValidateMode: 'onChange',
     mode: 'onTouched',
@@ -382,6 +382,8 @@ export const ManualStepOneForm = (): JSX.Element => {
                                 type: BookCreationActionType.setAuthor,
                                 author: author.id,
                               });
+
+                              form.trigger('author');
                             }}
                           >
                             <Check
