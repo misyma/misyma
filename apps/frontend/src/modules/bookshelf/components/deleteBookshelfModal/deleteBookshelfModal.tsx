@@ -75,6 +75,11 @@ export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, cl
       setIsOpen(false);
 
       await deletedHandler();
+
+
+      queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey[0] === 'findUserBookshelfs',
+      });
     } catch (error) {
       if (error instanceof ShelfApiError) {
         return setError(error.message);
@@ -106,6 +111,10 @@ export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, cl
 
         queryClient.invalidateQueries({
           predicate: (query) => query.queryKey[0] === 'findBookshelfById' && query.queryKey[1] === moveBookshelfId,
+        });
+
+        queryClient.invalidateQueries({
+          predicate: (query) => query.queryKey[0] === 'findUserBookshelfs',
         });
       }
 
