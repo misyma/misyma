@@ -42,8 +42,6 @@ import { HiOutlineInformationCircle } from 'react-icons/hi';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../../../common/components/ui/tooltip';
 import { useFindAuthorsQuery } from '../../../../../author/api/queries/findAuthorsQuery/findAuthorsQuery';
 
-const pattern = /^[A-Z][^\\x00-\\x7F]*, [A-Z]\. [A-Z]\.$/;
-
 const stepOneSchema = z
   .object({
     isbn: isbnSchema.or(z.literal('')),
@@ -71,7 +69,7 @@ const stepOneSchema = z
       .string({
         required_error: 'Wymagany',
       })
-      .regex(pattern)
+      .regex(/\s/)
       .optional(),
     publisher: z
       .string()
@@ -103,10 +101,13 @@ const createAuthorDraftSchema = z.object({
     .string({
       required_error: 'Imię jest wymagane.',
     })
-    .min(1, {
-      message: 'Imię autora musi miec co najmniej jeden znak.',
+    .min(3, {
+      message: 'Imię autora musi miec co najmniej trzy znaki.',
     })
-    .regex(pattern, 'Błędny format.'),
+    .max(128, {
+      message: 'Imię autora powinno mieć maksymalnie 128 znaków.',
+    })
+    .regex(/\s/, 'Błędny format.'),
 });
 
 export const ManualStepOneForm = (): JSX.Element => {
