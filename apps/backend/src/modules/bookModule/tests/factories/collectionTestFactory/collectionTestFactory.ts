@@ -6,7 +6,7 @@ export class CollectionTestFactory {
   public createRaw(overrides: Partial<CollectionRawEntity> = {}): CollectionRawEntity {
     return {
       id: Generator.uuid(),
-      name: Generator.word().toLowerCase(),
+      name: Generator.words().toLowerCase(),
       userId: Generator.uuid(),
       ...overrides,
     };
@@ -15,7 +15,7 @@ export class CollectionTestFactory {
   public create(overrides: Partial<CollectionState> = {}): Collection {
     return new Collection({
       id: Generator.uuid(),
-      name: Generator.word().toLowerCase(),
+      name: Generator.words().toLowerCase(),
       userId: Generator.uuid(),
       ...overrides,
     });

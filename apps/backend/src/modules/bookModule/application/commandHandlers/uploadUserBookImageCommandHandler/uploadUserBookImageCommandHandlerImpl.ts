@@ -7,6 +7,7 @@ import { OperationNotValidError } from '../../../../../common/errors/operationNo
 import { type Config } from '../../../../../core/config.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type S3Service } from '../../../../../libs/s3/services/s3Service/s3Service.js';
+import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
 
 export class UploadUserBookImageCommandHandlerImpl implements UploadUserBookImageCommandHandler {
@@ -15,6 +16,7 @@ export class UploadUserBookImageCommandHandlerImpl implements UploadUserBookImag
     private readonly s3Service: S3Service,
     private readonly loggerService: LoggerService,
     private readonly config: Config,
+    private readonly uuidService: UuidService,
   ) {}
 
   public async execute(
@@ -40,25 +42,35 @@ export class UploadUserBookImageCommandHandlerImpl implements UploadUserBookImag
       contentType,
     });
 
+    const imageId = this.uuidService.generateUuid();
+
     await this.s3Service.uploadBlob({
       bucketName,
-      blobName: userBookId,
+      blobName: imageId,
       data,
       contentType,
     });
+
+    const imageUrl = `${this.config.aws.cloudfrontUrl}/${imageId}`;
 
     this.loggerService.debug({
       message: 'UserBook image uploaded.',
       bucketName,
       userBookId,
+      imageUrl,
       contentType,
     });
 
-    const imageUrl = `${this.config.aws.cloudfrontUrl}/${userBookId}`;
+    const previousImageUrl = existingUserBook.getImageUrl();
 
     existingUserBook.setImageUrl({ imageUrl });
 
     await this.userBookRepository.saveUserBook({ userBook: existingUserBook });
+
+    await this.deletePreviousImage({
+      userBookId,
+      previousImageUrl,
+    });
 
     this.loggerService.debug({
       message: 'UserBook saved.',
@@ -66,5 +78,56 @@ export class UploadUserBookImageCommandHandlerImpl implements UploadUserBookImag
     });
 
     return { userBook: existingUserBook };
+  }
+
+  private async deletePreviousImage({
+    userBookId,
+    previousImageUrl,
+  }: {
+    readonly userBookId: string;
+    readonly previousImageUrl: string | undefined | null;
+  }): Promise<void> {
+    if (!previousImageUrl?.length) {
+      return;
+    }
+
+    const previousImageId = previousImageUrl.split('/').slice(-1)[0];
+
+    if (!previousImageId) {
+      return;
+    }
+
+    const { bucketName } = this.config.aws;
+
+    this.loggerService.debug({
+      message: 'Deleting previous UserBook image...',
+      bucketName,
+      userBookId,
+      previousImageId,
+    });
+
+    try {
+      await this.s3Service.deleteBlob({
+        bucketName,
+        blobName: previousImageId,
+      });
+    } catch (error) {
+      this.loggerService.error({
+        message: 'Error deleting previous UserBook image.',
+        bucketName,
+        userBookId,
+        previousImageId,
+        error,
+      });
+
+      return;
+    }
+
+    this.loggerService.debug({
+      message: 'Previous UserBook image deleted.',
+      bucketName,
+      userBookId,
+      previousImageId,
+    });
   }
 }
