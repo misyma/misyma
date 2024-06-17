@@ -296,7 +296,7 @@ export const Bookshelf: FC = () => {
                 </div>
                 <Separator className="my-4 bg-primary"></Separator>
                 <div className="px-2">
-                  {userBook.book.authors[0].name}, {userBook.book.releaseYear}, {userBook.genres[0]?.name}{' '}
+                  {userBook.book.authors[0].name}, {userBook.book.releaseYear ? `${userBook.book.releaseYear},` : null} {userBook.genres[0]?.name}{' '}
                 </div>
               </div>
             </div>
