@@ -165,8 +165,8 @@ export interface BookCreationNonIsbnState<T extends boolean = false> {
     title: string;
     author: string;
     authorName?: string;
-    publisher: string;
-    yearOfIssue: number;
+    publisher?: string;
+    yearOfIssue?: number;
   };
   stepTwoDetails?: {
     language: string;

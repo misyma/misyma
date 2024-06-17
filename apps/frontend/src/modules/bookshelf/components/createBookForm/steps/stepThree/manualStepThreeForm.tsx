@@ -187,15 +187,16 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           language: bookCreation.stepTwoDetails?.language as any,
           title: bookCreation.stepOneDetails?.title as string,
-          publisher: bookCreation.stepOneDetails?.publisher,
           translator: bookCreation.stepTwoDetails?.translator,
           pages: bookCreation.stepTwoDetails?.pagesCount,
-          releaseYear: bookCreation.yearOfIssue,
           ...(bookCreation.stepTwoDetails as Required<BookCreationNonIsbnState['stepTwoDetails']>),
           ...(bookCreation.stepThreeDetails as Required<BookCreationNonIsbnState['stepThreeDetails']>),
           ...(bookCreation.stepOneDetails as Required<BookCreationNonIsbnState['stepOneDetails']>),
           isbn: bookCreation.stepOneDetails?.isbn === '' ? undefined : bookCreation.stepOneDetails?.isbn,
+          releaseYear: // eslint-disable-next-line
+            (bookCreation.stepOneDetails?.yearOfIssue as any) === '' ? undefined : bookCreation.stepOneDetails?.yearOfIssue,
           accessToken: accessToken as string,
+          publisher: bookCreation.stepOneDetails?.publisher === '' ? undefined : bookCreation.stepOneDetails?.publisher,
         });
       } catch (error) {
         toast({
