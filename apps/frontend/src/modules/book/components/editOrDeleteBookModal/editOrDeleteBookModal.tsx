@@ -11,10 +11,12 @@ import { useUploadBookImageMutation } from '../../api/mutations/uploadBookImageM
 import { useRouter } from '@tanstack/react-router';
 import { UpdateBookRequestForm } from '../updateBookRequestForm/updateBookRequestForm';
 import { BookDetailsChangeRequestProvider } from '../../context/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useDeleteUserBookMutation } from '../../api/mutations/deleteUserBookMutation/deleteUserBookMutation';
 import { useUpdateUserBookMutation } from '../../api/mutations/updateUserBookMutation/updateUserBookMutation';
 import { UpdateUserBookForm } from '../updateUserBookForm/updateUserBookForm';
+import { FindUserBookQueryOptions } from '../../api/queries/findUserBook/findUserBookQueryOptions';
+import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 
 interface Props {
   userBookId: string;
@@ -45,6 +47,8 @@ const changeMyBookDataSchema = z.object({
 export const EditOrDeleteBookModal: FC<Props> = ({ bookId, userBookId }) => {
   const queryClient = useQueryClient();
 
+  const { data: userData } = useFindUserQuery();
+
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const [baseAction, setBaseAction] = useState<BaseActionType>('edit');
@@ -60,6 +64,14 @@ export const EditOrDeleteBookModal: FC<Props> = ({ bookId, userBookId }) => {
   const { mutateAsync: updateUserBook } = useUpdateUserBookMutation({});
 
   const router = useRouter();
+
+  const { data } = useQuery(
+    FindUserBookQueryOptions({
+      userBookId: bookId,
+      userId: userData?.id ?? '',
+      accessToken: accessToken as string,
+    }),
+  );
 
   const { mutateAsync: deleteUserBook } = useDeleteUserBookMutation({});
 
@@ -92,14 +104,13 @@ export const EditOrDeleteBookModal: FC<Props> = ({ bookId, userBookId }) => {
       });
     }
 
-    if(values.genre){
+    if (values.genre) {
       await updateUserBook({
         userBookId,
         genreIds: [values.genre],
         accessToken: accessToken as string,
       });
     }
-
 
     queryClient.invalidateQueries({
       predicate: (query) => query.queryKey[0] === 'findUserBookById' && query.queryKey[1] === userBookId,
@@ -114,6 +125,10 @@ export const EditOrDeleteBookModal: FC<Props> = ({ bookId, userBookId }) => {
     await deleteUserBook({
       accessToken: accessToken as string,
       userBookId: userBookId,
+    });
+
+    queryClient.invalidateQueries({
+      predicate: (query) => query.queryKey[0] === 'findBooksByBookshelfId' && query.queryKey[1] === data?.bookshelfId,
     });
 
     router.history.back();
