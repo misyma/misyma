@@ -119,6 +119,8 @@ export class UploadUserBookImageCommandHandlerImpl implements UploadUserBookImag
         previousImageId,
         error,
       });
+
+      return;
     }
 
     this.loggerService.debug({
