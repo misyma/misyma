@@ -38,7 +38,7 @@ import { ReadingStatus } from '../../../../../common/constants/readingStatus';
 import { useToast } from '../../../../../common/components/ui/use-toast';
 import { useEffect, useRef, useState } from 'react';
 import { useUploadBookImageMutation } from '../../../../../book/api/mutations/uploadBookImageMutation/uploadBookImageMutation';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getGenresQueryOptions } from '../../../../../genres/api/queries/getGenresQuery/getGenresQueryOptions';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';
@@ -76,6 +76,8 @@ interface Props {
 
 export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
   const bookCreation = useBookCreation<false>() as BookCreationNonIsbnState;
+
+  const queryClient = useQueryClient();
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
@@ -232,6 +234,12 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
 
         return;
       }
+
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          query.queryKey[0] === 'findBooksByBookshelfId' &&
+          query.queryKey[1] === bookCreation.stepThreeDetails?.bookshelfId,
+      });
 
       if (file) {
         await uploadBookImageMutation({
