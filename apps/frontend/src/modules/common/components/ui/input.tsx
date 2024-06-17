@@ -80,7 +80,7 @@ const FileInput = React.forwardRef<HTMLInputElement, FileInputProps>(
           <input
             type={type}
             className={cn(
-              'w-[13rem] sm:w-[22rem] flex h-12 px-3 py-2 rounded-md text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 bg-none bg-[unset] focus:border-none outline-none',
+              'w-60 sm:w-96 flex h-12 px-3 py-2 rounded-md text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 bg-none bg-[unset] focus:border-none outline-none cursor-pointer',
               className,
             )}
             ref={ref}
@@ -91,7 +91,7 @@ const FileInput = React.forwardRef<HTMLInputElement, FileInputProps>(
             {fileName}
           </p>
           <div className='px-2'>
-            <FaCirclePlus className='h-6 w-6 text-primary'></FaCirclePlus>
+            <FaCirclePlus className='h-6 w-6 text-primary pointer-events-none'></FaCirclePlus>
           </div>
         </div>
       </div>
