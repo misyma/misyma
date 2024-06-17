@@ -116,6 +116,10 @@ export const EditOrDeleteBookModal: FC<Props> = ({ bookId, userBookId }) => {
       predicate: (query) => query.queryKey[0] === 'findUserBookById' && query.queryKey[1] === userBookId,
     });
 
+    queryClient.invalidateQueries({
+      predicate: (query) => query.queryKey[0] === 'findBooksByBookshelfId' && query.queryKey[1] === data?.bookshelfId,
+    });
+
     resetModalState();
 
     changeMyBookDataForm.reset();
