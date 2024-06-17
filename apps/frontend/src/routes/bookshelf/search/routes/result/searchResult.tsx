@@ -13,6 +13,7 @@ import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../../modules/core/store/states/userState/userStateSlice';
 import { Paginator } from '../../../../../modules/common/components/paginator/paginator';
 import { Breadcrumbs, NumericBreadcrumb } from '../../../../../modules/common/components/ui/breadcrumbs';
+import { LoadingSpinner } from '../../../../../modules/common/components/spinner/loading-spinner';
 
 export const SearchResultPage: FC = () => {
   const searchParams = searchResultRoute.useSearch();
@@ -39,7 +40,7 @@ export const SearchResultPage: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
-  const { data: foundBooks } = useQuery(
+  const { data: foundBooks, isFetching } = useQuery(
     FindBooksQueryOptions({
       title: searchParams.title,
       isbn: searchParams.isbn,
@@ -211,6 +212,14 @@ export const SearchResultPage: FC = () => {
       </div>
     );
   };
+
+  if (isFetching) {
+    return <AuthenticatedLayout>
+      <div className='justify-center max-w-screen-xl mx-auto items-center w-full flex h-full min-h-[700px]'>
+        <LoadingSpinner></LoadingSpinner>
+      </div>
+    </AuthenticatedLayout>
+  }
 
   return (
     <AuthenticatedLayout>
