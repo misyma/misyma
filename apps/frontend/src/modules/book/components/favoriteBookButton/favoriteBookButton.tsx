@@ -22,7 +22,7 @@ export const FavoriteBookButton: FC<Props> = ({ userBook, className }) => {
     if (userBook) {
       await updateUserBook({
         userBookId: userBook.id,
-        isFavorite: !userBook.isFavorite,
+        isFavorite: !isFavorite,
         accessToken: accessToken as string,
       });
 
