@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -22,6 +22,7 @@ import { useFindUserBookshelfsQuery } from '../../api/queries/findUserBookshelfs
 import { ShelfApiError } from '../../api/errors/shelfApiError';
 import { BookApiError } from '../../../book/errors/bookApiError';
 import { useMoveBooksToBookshelfMutation } from '../../../book/api/mutations/moveBooksToBookshelfMutation/moveBooksToBookshelfMutation';
+import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
 
 interface Props {
   bookshelfId: string;
@@ -49,6 +50,7 @@ export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, cl
 
   const { mutateAsync: moveBooksToBookshelf } = useMoveBooksToBookshelfMutation({});
 
+
   const { data: bookshelfBooksResponse } = useQuery(
     FindBooksByBookshelfIdQueryOptions({
       bookshelfId,
@@ -60,11 +62,15 @@ export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, cl
   const {
     data: bookshelvesData,
     // refetch: refetchBookshelves,
-    // isFetching,
+    isFetching: isFetchingBookshelves,
     // isFetched,
   } = useFindUserBookshelfsQuery({
     userId: user?.id as string,
   });
+
+  const defaultBookshelf = useMemo(() => {
+    return bookshelvesData?.data.find((bookshelf) => bookshelf.name === 'Archiwum');
+  }, [bookshelvesData?.data]);
 
   const onDelete = async (): Promise<void> => {
     try {
@@ -75,7 +81,6 @@ export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, cl
       setIsOpen(false);
 
       await deletedHandler();
-
 
       queryClient.invalidateQueries({
         predicate: (query) => query.queryKey[0] === 'findUserBookshelfs',
@@ -99,7 +104,7 @@ export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, cl
         await moveBooksToBookshelf({
           data:
             bookshelfBooksResponse?.data.map((userBook) => ({
-              bookshelfId: moveBookshelfId,
+              bookshelfId: moveBookshelfId || defaultBookshelf?.id as string,
               userBookId: userBook.id,
             })) ?? [],
           accessToken: accessToken as string,
@@ -187,56 +192,62 @@ export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, cl
           </>
         ) : (
           <>
-            <DialogHeader className="font-semibold text-center flex justify-center items-center">
-              Usuń lub przenieś książki
-            </DialogHeader>
-            <DialogDescription className="flex flex-col gap-4 justify-center items-center">
-              {/* Todo: change placeholder to the actual name */}
-              <p>Wybierz półkę, na którą zostaną przeniesione książki</p>
-              <Select
-                onValueChange={setMoveBookshelfId}
-                defaultValue={bookshelvesData?.data.find((bookshelf) => bookshelf.name === 'Archiwum')?.id ?? ''}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Wybierz półkę" />
-                  <SelectContent
-                    className="w-60 sm:w-80"
-                    style={{
-                      position: 'absolute',
-                      zIndex: 999,
-                      top: 20,
-                      left: -10,
-                    }}
+            {isFetchingBookshelves ? (
+              <LoadingSpinner></LoadingSpinner>
+            ) : (
+              <>
+                <DialogHeader className="font-semibold text-center flex justify-center items-center">
+                  Usuń lub przenieś książki
+                </DialogHeader>
+                <DialogDescription className="flex flex-col gap-4 justify-center items-center">
+                  {/* Todo: change placeholder to the actual name */}
+                  <p>Wybierz półkę, na którą zostaną przeniesione książki</p>
+                  <Select
+                    onValueChange={setMoveBookshelfId}
+                    defaultValue={defaultBookshelf?.id}
                   >
-                    {bookshelvesData?.data
-                      .filter((val) => val.id !== bookshelfId)
-                      .map((bookshelf) => (
-                        <SelectItem
-                          className="bg-popover"
-                          value={bookshelf.id}
-                        >
-                          {bookshelf.name}
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </SelectTrigger>
-              </Select>
-              <p className={error ? 'text-red-500' : 'hidden'}>{error}</p>
-            </DialogDescription>
-            <DialogFooter className="pt-8 flex sm:justify-center justify-center sm:items-center items-center">
-              <Button
-                className="w-32 sm:w-40"
-                onClick={onDelete}
-              >
-                Usuń książki
-              </Button>
-              <Button
-                className="bg-primary w-32 sm:w-40"
-                onClick={onMoveAndDelete}
-              >
-                Przenieś na półkę
-              </Button>
-            </DialogFooter>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Wybierz półkę" />
+                      <SelectContent
+                        className="w-60 sm:w-80"
+                        style={{
+                          position: 'absolute',
+                          zIndex: 999,
+                          top: 20,
+                          left: -10,
+                        }}
+                      >
+                        {bookshelvesData?.data
+                          .filter((val) => val.id !== bookshelfId)
+                          .map((bookshelf) => (
+                            <SelectItem
+                              className="bg-popover"
+                              value={bookshelf.id}
+                            >
+                              {bookshelf.name}
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </SelectTrigger>
+                  </Select>
+                  <p className={error ? 'text-red-500' : 'hidden'}>{error}</p>
+                </DialogDescription>
+                <DialogFooter className="pt-8 flex sm:justify-center justify-center sm:items-center items-center">
+                  <Button
+                    className="w-32 sm:w-40"
+                    onClick={onDelete}
+                  >
+                    Usuń książki
+                  </Button>
+                  <Button
+                    className="bg-primary w-32 sm:w-40"
+                    onClick={onMoveAndDelete}
+                  >
+                    Przenieś na półkę
+                  </Button>
+                </DialogFooter>
+              </>
+            )}
           </>
         )}
       </DialogContent>
