@@ -50,7 +50,6 @@ export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, cl
 
   const { mutateAsync: moveBooksToBookshelf } = useMoveBooksToBookshelfMutation({});
 
-
   const { data: bookshelfBooksResponse } = useQuery(
     FindBooksByBookshelfIdQueryOptions({
       bookshelfId,
@@ -63,10 +62,15 @@ export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, cl
     data: bookshelvesData,
     // refetch: refetchBookshelves,
     isFetching: isFetchingBookshelves,
+    isRefetching: isRetchingBookshelves,
     // isFetched,
   } = useFindUserBookshelfsQuery({
     userId: user?.id as string,
   });
+
+  const filteredBookshelves = useMemo(() => {
+    return bookshelvesData?.data.filter((val) => val.id !== bookshelfId && val.name !== 'Wypożyczalnia');
+  }, [bookshelvesData?.data, bookshelfId]);
 
   const defaultBookshelf = useMemo(() => {
     return bookshelvesData?.data.find((bookshelf) => bookshelf.name === 'Archiwum');
@@ -104,7 +108,7 @@ export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, cl
         await moveBooksToBookshelf({
           data:
             bookshelfBooksResponse?.data.map((userBook) => ({
-              bookshelfId: moveBookshelfId || defaultBookshelf?.id as string,
+              bookshelfId: moveBookshelfId || (defaultBookshelf?.id as string),
               userBookId: userBook.id,
             })) ?? [],
           accessToken: accessToken as string,
@@ -192,62 +196,58 @@ export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, cl
           </>
         ) : (
           <>
-            {isFetchingBookshelves ? (
-              <LoadingSpinner></LoadingSpinner>
-            ) : (
-              <>
-                <DialogHeader className="font-semibold text-center flex justify-center items-center">
-                  Usuń lub przenieś książki
-                </DialogHeader>
-                <DialogDescription className="flex flex-col gap-4 justify-center items-center">
-                  {/* Todo: change placeholder to the actual name */}
-                  <p>Wybierz półkę, na którą zostaną przeniesione książki</p>
-                  <Select
-                    onValueChange={setMoveBookshelfId}
-                    defaultValue={defaultBookshelf?.id}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Wybierz półkę" />
-                      <SelectContent
-                        className="w-60 sm:w-80"
-                        style={{
-                          position: 'absolute',
-                          zIndex: 999,
-                          top: 20,
-                          left: -10,
-                        }}
-                      >
-                        {bookshelvesData?.data
-                          .filter((val) => val.id !== bookshelfId)
-                          .map((bookshelf) => (
-                            <SelectItem
-                              className="bg-popover"
-                              value={bookshelf.id}
-                            >
-                              {bookshelf.name}
-                            </SelectItem>
-                          ))}
-                      </SelectContent>
-                    </SelectTrigger>
-                  </Select>
-                  <p className={error ? 'text-red-500' : 'hidden'}>{error}</p>
-                </DialogDescription>
-                <DialogFooter className="pt-8 flex sm:justify-center justify-center sm:items-center items-center">
-                  <Button
-                    className="w-32 sm:w-40"
-                    onClick={onDelete}
-                  >
-                    Usuń książki
-                  </Button>
-                  <Button
-                    className="bg-primary w-32 sm:w-40"
-                    onClick={onMoveAndDelete}
-                  >
-                    Przenieś na półkę
-                  </Button>
-                </DialogFooter>
-              </>
-            )}
+            <DialogHeader className="font-semibold text-center flex justify-center items-center">
+              Usuń lub przenieś książki
+            </DialogHeader>
+            <DialogDescription className="flex flex-col gap-4 justify-center items-center">
+              {/* Todo: change placeholder to the actual name */}
+              <p>Wybierz półkę, na którą zostaną przeniesione książki</p>
+              {isFetchingBookshelves && !isRetchingBookshelves ? (
+                <LoadingSpinner></LoadingSpinner>
+              ) : (
+                <Select
+                  onValueChange={setMoveBookshelfId}
+                  defaultValue={defaultBookshelf?.id}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Wybierz półkę" />
+                    <SelectContent
+                      className="w-60 sm:w-80"
+                      style={{
+                        position: 'absolute',
+                        zIndex: 999,
+                        top: 20,
+                        left: -10,
+                      }}
+                    >
+                      {filteredBookshelves?.map((bookshelf) => (
+                        <SelectItem
+                          className="bg-popover"
+                          value={bookshelf.id}
+                        >
+                          {bookshelf.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </SelectTrigger>
+                </Select>
+              )}
+              <p className={error ? 'text-red-500' : 'hidden'}>{error}</p>
+            </DialogDescription>
+            <DialogFooter className="pt-8 flex sm:justify-center justify-center sm:items-center items-center">
+              <Button
+                className="w-32 sm:w-40"
+                onClick={onDelete}
+              >
+                Usuń książki
+              </Button>
+              <Button
+                className="bg-primary w-32 sm:w-40"
+                onClick={onMoveAndDelete}
+              >
+                Przenieś na półkę
+              </Button>
+            </DialogFooter>
           </>
         )}
       </DialogContent>
