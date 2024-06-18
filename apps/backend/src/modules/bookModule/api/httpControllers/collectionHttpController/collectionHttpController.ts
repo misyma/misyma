@@ -164,7 +164,7 @@ export class CollectionHttpController implements HttpController {
   ): Promise<HttpCreatedResponse<CreateCollectionResponseBodyDto>> {
     const { name, userId } = request.body;
 
-    this.accessControlService.verifyBearerToken({
+    await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
       expectedUserId: userId,
     });
@@ -183,7 +183,7 @@ export class CollectionHttpController implements HttpController {
   private async updateCollection(
     request: HttpRequest<UpdateCollectionBodyDto, null, UpdateCollectionPathParamsDto>,
   ): Promise<HttpOkResponse<UpdateCollectionResponseBodyDto>> {
-    this.accessControlService.verifyBearerToken({
+    await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
@@ -205,7 +205,7 @@ export class CollectionHttpController implements HttpController {
   private async deleteCollection(
     request: HttpRequest<null, null, DeleteCollectionPathParamsDto>,
   ): Promise<HttpNoContentResponse<DeleteCollectionResponseBodyDto>> {
-    this.accessControlService.verifyBearerToken({
+    await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 

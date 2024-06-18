@@ -132,7 +132,7 @@ export class AuthorAdminHttpController implements HttpController {
   private async updateAuthor(
     request: HttpRequest<UpdateAuthorBodyDto, null, UpdateAuthorPathParamsDto>,
   ): Promise<HttpOkResponse<UpdateAuthorResponseBodyDto>> {
-    this.accessControlService.verifyBearerToken({
+    await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
       expectedRole: UserRole.admin,
     });
