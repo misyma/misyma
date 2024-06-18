@@ -20,7 +20,7 @@ import {
   useBookDetailsChangeRequestContext,
   useBookDetailsChangeRequestDispatch,
 } from '../../context/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
-import { FindUserBookQueryOptions } from '../../api/queries/findUserBook/findUserBookQueryOptions';
+import { FindUserBookByIdQueryOptions } from '../../api/queries/findUserBook/findUserBookByIdQueryOptions';
 import { useUpdateBookMutation } from '../../api/mutations/updateBookMutation/updateBookMutation';
 
 interface Props {
@@ -69,7 +69,7 @@ export const UpdateBookRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit })
   const { data: userData } = useFindUserQuery();
 
   const { data: userBookData } = useQuery(
-    FindUserBookQueryOptions({
+    FindUserBookByIdQueryOptions({
       userBookId: bookId,
       userId: userData?.id ?? '',
       accessToken: accessToken as string,

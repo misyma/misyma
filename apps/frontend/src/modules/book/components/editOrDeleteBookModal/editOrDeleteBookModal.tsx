@@ -15,8 +15,9 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useDeleteUserBookMutation } from '../../api/mutations/deleteUserBookMutation/deleteUserBookMutation';
 import { useUpdateUserBookMutation } from '../../api/mutations/updateUserBookMutation/updateUserBookMutation';
 import { UpdateUserBookForm } from '../updateUserBookForm/updateUserBookForm';
-import { FindUserBookQueryOptions } from '../../api/queries/findUserBook/findUserBookQueryOptions';
+import { FindUserBookByIdQueryOptions } from '../../api/queries/findUserBook/findUserBookByIdQueryOptions';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
+import { BookApiQueryKeys } from '../../api/queries/bookApiQueryKeys';
 
 interface Props {
   userBookId: string;
@@ -66,7 +67,7 @@ export const EditOrDeleteBookModal: FC<Props> = ({ bookId, userBookId }) => {
   const router = useRouter();
 
   const { data } = useQuery(
-    FindUserBookQueryOptions({
+    FindUserBookByIdQueryOptions({
       userBookId: bookId,
       userId: userData?.id ?? '',
       accessToken: accessToken as string,
@@ -113,11 +114,11 @@ export const EditOrDeleteBookModal: FC<Props> = ({ bookId, userBookId }) => {
     }
 
     queryClient.invalidateQueries({
-      predicate: (query) => query.queryKey[0] === 'findUserBookById' && query.queryKey[1] === userBookId,
+      predicate: (query) => query.queryKey[0] === BookApiQueryKeys.findUserBookById && query.queryKey[1] === userBookId,
     });
 
     queryClient.invalidateQueries({
-      predicate: (query) => query.queryKey[0] === 'findBooksByBookshelfId' && query.queryKey[1] === data?.bookshelfId,
+      predicate: (query) => query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId && query.queryKey[1] === data?.bookshelfId,
     });
 
     resetModalState();
@@ -132,7 +133,7 @@ export const EditOrDeleteBookModal: FC<Props> = ({ bookId, userBookId }) => {
     });
 
     queryClient.invalidateQueries({
-      predicate: (query) => query.queryKey[0] === 'findBooksByBookshelfId' && query.queryKey[1] === data?.bookshelfId,
+      predicate: (query) => query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId && query.queryKey[1] === data?.bookshelfId,
     });
 
     router.history.back();

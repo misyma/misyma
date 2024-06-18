@@ -1,5 +1,6 @@
 import { queryOptions } from '@tanstack/react-query';
 import { FindBookBorrowingsPayload, findBookBorrowings } from './findBookBorrowings';
+import { BorrowingApiQueryKeys } from '../borrowingApiQueryKeys';
 
 export const FindBookBorrowingsQueryOptions = ({
   accessToken,
@@ -9,7 +10,7 @@ export const FindBookBorrowingsQueryOptions = ({
   sortDate,
 }: FindBookBorrowingsPayload) =>
   queryOptions({
-    queryKey: [`findBookBorrowingsQuery`, userBookId, page, pageSize, sortDate],
+    queryKey: [BorrowingApiQueryKeys.findBookBorrowingsQuery, userBookId, page, pageSize, sortDate],
     enabled: !!accessToken,
     queryFn: () =>
       findBookBorrowings({

@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { type FindUserResponseBody } from '@common/contracts';
 import { HttpService } from '../../../../core/services/httpService/httpService';
 import { UserApiError } from '../../../errors/userApiError';
+import { UserApiQueryKeys } from '../userApiQueryKeys';
 
 interface FindUserPayload {
   accessToken: string;
@@ -37,7 +38,7 @@ export const useFindUserQuery = () => {
   };
 
   return useQuery<FindUserResponseBody>({
-    queryKey: ['findUser'],
+    queryKey: [UserApiQueryKeys.findUser],
     queryFn: () =>
       findUser({
         accessToken: accessToken as string,

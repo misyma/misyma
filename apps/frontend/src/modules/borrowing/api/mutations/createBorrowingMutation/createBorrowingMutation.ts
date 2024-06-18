@@ -1,8 +1,8 @@
 import { CreateBorrowingPathParams, CreateBorrowingRequestBody, CreateBorrowingResponseBody } from '@common/contracts';
 import { UseMutationOptions, useMutation } from '@tanstack/react-query';
-import { BookApiError } from '../../../errors/bookApiError';
 import { HttpService } from '../../../../core/services/httpService/httpService';
 import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
+import { BookApiError } from '../../../../book/errors/bookApiError';
 
 export interface UseCreateBorrowingMutationPayload extends CreateBorrowingRequestBody, CreateBorrowingPathParams {
   accessToken: string;

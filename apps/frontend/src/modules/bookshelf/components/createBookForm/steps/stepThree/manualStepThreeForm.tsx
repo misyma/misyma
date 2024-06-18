@@ -47,6 +47,7 @@ import { BookApiError } from '../../../../../book/errors/bookApiError';
 import { useCreateUserBookMutation } from '../../../../../book/api/mutations/createUserBookMutation/createUserBookMutation';
 import { useCreateAuthorDraftMutation } from '../../../../../author/api/mutations/createAuthorDraftMutation/createAuthorDraftMutation';
 import { useFindAuthorsQuery } from '../../../../../author/api/queries/findAuthorsQuery/findAuthorsQuery';
+import { BookApiQueryKeys } from '../../../../../book/api/queries/bookApiQueryKeys';
 
 const stepThreeFormSchema = z.object({
   status: z.nativeEnum(ContractReadingStatus, {
@@ -238,7 +239,7 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
 
       queryClient.invalidateQueries({
         predicate: (query) =>
-          query.queryKey[0] === 'findBooksByBookshelfId' &&
+          query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId &&
           query.queryKey[1] === bookCreation.stepThreeDetails?.bookshelfId,
       });
 

@@ -1,7 +1,7 @@
 import { FindBorrowingsPathParams, FindBorrowingsQueryParams, FindBorrowingsResponseBody, SortingType } from '@common/contracts';
 import { HttpService } from '../../../../core/services/httpService/httpService';
 import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
-import { BookApiError } from '../../../errors/bookApiError';
+import { BookApiError } from '../../../../book/errors/bookApiError';
 
 export interface FindBookBorrowingsPayload extends FindBorrowingsPathParams, FindBorrowingsQueryParams {
   sortDate: SortingType

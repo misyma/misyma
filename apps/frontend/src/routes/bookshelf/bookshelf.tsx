@@ -16,7 +16,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../modules/core/store/states/userState/userStateSlice';
 import { useFindBookshelfByIdQuery } from '../../modules/bookshelf/api/queries/findBookshelfByIdQuery/findBookshelfByIdQuery';
-import { FindBookBorrowingsQueryOptions } from '../../modules/book/api/queries/findBookBorrowings/findBookBorrowingsQueryOptions';
+import { FindBookBorrowingsQueryOptions } from '../../modules/borrowing/api/queries/findBookBorrowings/findBookBorrowingsQueryOptions';
 import { HiClock } from 'react-icons/hi';
 
 const bookshelfSearchSchema = z.object({

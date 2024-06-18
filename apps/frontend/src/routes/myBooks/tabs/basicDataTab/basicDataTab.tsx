@@ -4,7 +4,7 @@ import { StatusChooserCards } from '../../../../modules/book/components/statusCh
 import { BookshelfChoiceDropdown } from '../../../../modules/book/components/bookshelfChoiceDropdown/bookshelfChoiceDropdown.js';
 import { Separator } from '../../../../modules/common/components/ui/separator.js';
 import { FavoriteBookButton } from '../../../../modules/book/components/favoriteBookButton/favoriteBookButton.js';
-import { FindUserBookQueryOptions } from '../../../../modules/book/api/queries/findUserBook/findUserBookQueryOptions.js';
+import { FindUserBookByIdQueryOptions } from '../../../../modules/book/api/queries/findUserBook/findUserBookByIdQueryOptions.js';
 import { useFindUserQuery } from '../../../../modules/user/api/queries/findUserQuery/findUserQuery.js';
 import { UserBook } from '@common/contracts';
 import { BasicDataTabSkeleton } from './basicDataTabSkeleton.js';
@@ -25,7 +25,7 @@ export const BasicDataTab: FC<Props> = ({ bookId }) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const { data, isFetched, isFetching, isRefetching } = useQuery(
-    FindUserBookQueryOptions({
+    FindUserBookByIdQueryOptions({
       userBookId: bookId,
       userId: userData?.id ?? '',
       accessToken: accessToken as string,

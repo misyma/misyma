@@ -19,7 +19,7 @@ import { useQuery } from '@tanstack/react-query';
 import { FindBookByIdQueryOptions } from '../../../api/queries/findBookById/findBookByIdQueryOptions';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
-import { FindUserBookQueryOptions } from '../../../api/queries/findUserBook/findUserBookQueryOptions';
+import { FindUserBookByIdQueryOptions } from '../../../api/queries/findUserBook/findUserBookByIdQueryOptions';
 import { useFindAuthorsQuery } from '../../../../author/api/queries/findAuthorsQuery/findAuthorsQuery';
 
 const stepOneSchema = z.object({
@@ -103,7 +103,7 @@ export const StepOneForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
   const { data: userData } = useFindUserQuery();
 
   const { data: userBookData } = useQuery(
-    FindUserBookQueryOptions({
+    FindUserBookByIdQueryOptions({
       userBookId: bookId,
       userId: userData?.id ?? '',
       accessToken: accessToken as string,

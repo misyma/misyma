@@ -3,6 +3,7 @@ import { FindBookshelvesByUserIdQueryParams, FindBookshelvesByUserIdResponseBody
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
 import { HttpService } from '../../../../core/services/httpService/httpService';
+import { BookshelvesApiQueryKeys } from '../bookshelvesApiQueryKeys';
 
 type Payload = FindBookshelvesByUserIdQueryParams & {
   userId: string;
@@ -33,7 +34,7 @@ export const useFindUserBookshelfsQuery = (payload: Payload) => {
   };
 
   return useQuery<FindBookshelvesByUserIdResponseBody>({
-    queryKey: ['findUserBookshelfs', payload.page, payload.pageSize],
+    queryKey: [BookshelvesApiQueryKeys.findUserBookshelfs, payload.page, payload.pageSize],
     queryFn: () => findUserBookshelfs(),
     enabled: !!accessToken && !!payload.userId,
     placeholderData: keepPreviousData,

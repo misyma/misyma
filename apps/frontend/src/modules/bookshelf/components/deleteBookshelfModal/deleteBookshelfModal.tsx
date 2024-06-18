@@ -23,6 +23,8 @@ import { ShelfApiError } from '../../api/errors/shelfApiError';
 import { BookApiError } from '../../../book/errors/bookApiError';
 import { useMoveBooksToBookshelfMutation } from '../../../book/api/mutations/moveBooksToBookshelfMutation/moveBooksToBookshelfMutation';
 import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
+import { BookApiQueryKeys } from '../../../book/api/queries/bookApiQueryKeys';
+import { BookshelvesApiQueryKeys } from '../../api/queries/bookshelvesApiQueryKeys';
 
 interface Props {
   bookshelfId: string;
@@ -86,8 +88,8 @@ export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, cl
 
       await deletedHandler();
 
-      queryClient.invalidateQueries({
-        predicate: (query) => query.queryKey[0] === 'findUserBookshelfs',
+      await queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey[0] === BookshelvesApiQueryKeys.findUserBookshelfs,
       });
     } catch (error) {
       if (error instanceof ShelfApiError) {
@@ -114,16 +116,17 @@ export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, cl
           accessToken: accessToken as string,
         });
 
-        queryClient.invalidateQueries({
-          predicate: (query) => query.queryKey[0] === 'findBooksByBookshelfId',
+        await queryClient.invalidateQueries({
+          predicate: (query) => query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId,
         });
 
-        queryClient.invalidateQueries({
-          predicate: (query) => query.queryKey[0] === 'findBookshelfById' && query.queryKey[1] === moveBookshelfId,
+        await queryClient.invalidateQueries({
+          predicate: (query) =>
+            query.queryKey[0] === BookshelvesApiQueryKeys.findBookshelfById && query.queryKey[1] === moveBookshelfId,
         });
 
-        queryClient.invalidateQueries({
-          predicate: (query) => query.queryKey[0] === 'findUserBookshelfs',
+        await queryClient.invalidateQueries({
+          predicate: (query) => query.queryKey[0] === BookshelvesApiQueryKeys.findUserBookshelfs,
         });
       }
 

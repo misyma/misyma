@@ -6,10 +6,11 @@ import { Skeleton } from '../../../common/components/ui/skeleton';
 import { useToast } from '../../../common/components/ui/use-toast';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
-import { FindUserBookQueryOptions } from '../../api/queries/findUserBook/findUserBookQueryOptions';
+import { FindUserBookByIdQueryOptions } from '../../api/queries/findUserBook/findUserBookByIdQueryOptions';
 import { useFindUserBookshelfsQuery } from '../../../bookshelf/api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 import { useUpdateUserBookMutation } from '../../api/mutations/updateUserBookMutation/updateUserBookMutation';
 import { CreateBorrowingModal } from '../createBorrowingModal/createBorrowingModal';
+import { BookApiQueryKeys } from '../../api/queries/bookApiQueryKeys';
 
 interface Props {
   bookId: string;
@@ -24,7 +25,7 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
   const { data: userData } = useFindUserQuery();
 
   const { data, isFetching, isFetched, isRefetching } = useQuery(
-    FindUserBookQueryOptions({
+    FindUserBookByIdQueryOptions({
       userBookId: bookId,
       userId: userData?.id ?? '',
       accessToken: accessToken as string,
@@ -68,15 +69,16 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
     });
 
     queryClient.invalidateQueries({
-      queryKey: ['findUserBookById', bookId, userData?.id],
+      queryKey: [BookApiQueryKeys.findUserBookById, bookId, userData?.id],
     });
 
     queryClient.invalidateQueries({
-      predicate: (query) => query.queryKey[0] === 'findBooksByBookshelfId' && query.queryKey[1] === id,
+      predicate: (query) => query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId && query.queryKey[1] === id,
     });
 
     queryClient.invalidateQueries({
-      predicate: (query) => query.queryKey[0] === 'findBooksByBookshelfId' && query.queryKey[1] === currentBookshelfId,
+      predicate: (query) =>
+        query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId && query.queryKey[1] === currentBookshelfId,
     });
   };
 
@@ -122,12 +124,12 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
             });
 
             queryClient.invalidateQueries({
-              queryKey: ['findUserBookById', bookId, userData?.id],
+              queryKey: [BookApiQueryKeys.findUserBookById, bookId, userData?.id],
             });
 
             queryClient.invalidateQueries({
               predicate: (query) =>
-                query.queryKey[0] === 'findBooksByBookshelfId' && query.queryKey[1] === selectedBookshelfId,
+                query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId && query.queryKey[1] === selectedBookshelfId,
             });
           }}
           onClosed={() => {

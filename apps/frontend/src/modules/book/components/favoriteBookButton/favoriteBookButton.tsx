@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice.js';
 import { useUpdateUserBookMutation } from '../../api/mutations/updateUserBookMutation/updateUserBookMutation.js';
 import { useQueryClient } from '@tanstack/react-query';
+import { BookApiQueryKeys } from '../../api/queries/bookApiQueryKeys.js';
 
 interface Props {
   userBook: UserBook;
@@ -34,10 +35,10 @@ export const FavoriteBookButton: FC<Props> = ({ userBook, className }) => {
       await Promise.all([
         queryClient.invalidateQueries({
           predicate: (query) =>
-            query.queryKey[0] === 'findBooksByBookshelfId' && query.queryKey[1] === userBook.bookshelfId,
+            query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId && query.queryKey[1] === userBook.bookshelfId,
         }),
         queryClient.invalidateQueries({
-          predicate: (query) => query.queryKey[0] === 'findUserBookById' && query.queryKey[1] === userBook.id,
+          predicate: (query) => query.queryKey[0] === BookApiQueryKeys.findUserBookById && query.queryKey[1] === userBook.id,
         }),
       ]);
     }

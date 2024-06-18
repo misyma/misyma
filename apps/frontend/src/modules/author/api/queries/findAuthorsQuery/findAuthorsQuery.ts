@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { findAuthors } from './findAuthors';
 import { ApiError } from '../../../../common/errors/apiError';
 import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
+import { AuthorsApiQueryKeys } from '../authorsApiQueryKeys';
 
 type Payload = {
   name?: string;
@@ -13,7 +14,7 @@ export const useFindAuthorsQuery = ({ name, ...options }: Payload) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   return useQuery({
-    queryKey: ['findAuthorsQuery', name],
+    queryKey: [AuthorsApiQueryKeys.findAuthorsQuery, name],
     queryFn: () =>
       findAuthors({
         accessToken: accessToken as string,
