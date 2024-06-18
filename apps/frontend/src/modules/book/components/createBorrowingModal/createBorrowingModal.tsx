@@ -1,6 +1,6 @@
 import { FC, useState } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader } from '../../../common/components/ui/dialog';
-import { format } from 'date-fns';
+import { formatDate } from 'date-fns';
 import { Button } from '../../../common/components/ui/button';
 import { cn } from '../../../common/lib/utils';
 import { z } from 'zod';
@@ -15,6 +15,7 @@ import { userStateSelectors } from '../../../core/store/states/userState/userSta
 import { Input } from '../../../common/components/ui/input';
 import { useToast } from '../../../common/components/ui/use-toast';
 import { useCreateBorrowingMutation } from '../../../borrowing/api/mutations/createBorrowingMutation/createBorrowingMutation';
+import { pl } from 'date-fns/locale';
 
 interface Props {
   bookId: string;
@@ -148,7 +149,13 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, open, onClosed, onMuta
                               !field.value && 'text-muted-foreground',
                             )}
                           >
-                            {field.value ? format(field.value, 'PPP') : <span>DD-MM-RRRR</span>}
+                            {field.value ? (
+                              formatDate(field.value, 'PPP', {
+                                locale: pl,
+                              })
+                            ) : (
+                              <span>DD-MM-RRRR</span>
+                            )}
                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                           </Button>
                         </FormControl>

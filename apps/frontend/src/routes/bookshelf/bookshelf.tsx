@@ -18,6 +18,7 @@ import { userStateSelectors } from '../../modules/core/store/states/userState/us
 import { useFindBookshelfByIdQuery } from '../../modules/bookshelf/api/queries/findBookshelfByIdQuery/findBookshelfByIdQuery';
 import { FindBookBorrowingsQueryOptions } from '../../modules/borrowing/api/queries/findBookBorrowings/findBookBorrowingsQueryOptions';
 import { HiClock } from 'react-icons/hi';
+import { LoadingSpinner } from '../../modules/common/components/spinner/loading-spinner';
 
 const bookshelfSearchSchema = z.object({
   id: z.string().uuid().catch(''),
@@ -55,7 +56,7 @@ const BorrowedBook: FC<{ userBook: UserBook; index: number }> = ({ userBook, ind
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
-  const { data: bookBorrowing } = useQuery(
+  const { data: bookBorrowing, isFetching, isRefetching } = useQuery(
     FindBookBorrowingsQueryOptions({
       accessToken: accessToken as string,
       userBookId: userBook.id,
@@ -68,7 +69,7 @@ const BorrowedBook: FC<{ userBook: UserBook; index: number }> = ({ userBook, ind
   const totalDaysSinceBorrowing = useMemo(() => {
     const millisInDay = 86400000;
 
-    return Math.ceil((Date.now() - new Date(bookBorrowing?.data[0].startedAt ?? '').getTime()) / millisInDay);
+    return Math.ceil((Date.now() - new Date(bookBorrowing?.data[0]?.startedAt ?? '').getTime()) / millisInDay);
   }, [bookBorrowing?.data]);
 
   const getTimeConstraintFormatting = (days: number): string => {
@@ -76,6 +77,10 @@ const BorrowedBook: FC<{ userBook: UserBook; index: number }> = ({ userBook, ind
 
     return 'text-green-500';
   };
+
+  if (isFetching && !isRefetching) {
+    return <LoadingSpinner />
+  }
 
   return (
     <div

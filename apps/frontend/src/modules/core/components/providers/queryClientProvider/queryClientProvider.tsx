@@ -52,7 +52,7 @@ export const QueryClientProvider = ({ children }: ProviderProps) => {
       queries: {
         staleTime: 1000 * 30,
         gcTime: 1000 * 15,
-        refetchInterval: 1000 * 15,
+        refetchInterval: 1000 * 5,
         retry: (failureCount, error) => {
           if (error instanceof ApiError && (error.context.statusCode === 401 || error.context.statusCode === 400)) {
             return false;
