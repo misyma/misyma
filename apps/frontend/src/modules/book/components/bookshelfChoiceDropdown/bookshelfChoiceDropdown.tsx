@@ -1,4 +1,4 @@
-import { FC, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../common/components/ui/select';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -11,6 +11,10 @@ import { useFindUserBookshelfsQuery } from '../../../bookshelf/api/queries/findU
 import { useUpdateUserBookMutation } from '../../api/mutations/updateUserBookMutation/updateUserBookMutation';
 import { CreateBorrowingModal } from '../createBorrowingModal/createBorrowingModal';
 import { BookApiQueryKeys } from '../../api/queries/bookApiQueryKeys';
+import { SortingType } from '@common/contracts';
+import { FindBookBorrowingsQueryOptions } from '../../../borrowing/api/queries/findBookBorrowings/findBookBorrowingsQueryOptions';
+import { useUpdateBorrowingMutation } from '../../../borrowing/api/mutations/updateBorrowingMutation/updateBorrowingMutation';
+import { BorrowingApiQueryKeys } from '../../../borrowing/api/queries/borrowingApiQueryKeys';
 
 interface Props {
   bookId: string;
@@ -49,7 +53,26 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
     return bookshelfData?.data.find((bookshelf) => data?.bookshelfId === bookshelf.id);
   }, [bookshelfData, data]);
 
+  const { data: bookBorrowing, isFetching: isFetchingBookBorrowing } = useQuery(
+    FindBookBorrowingsQueryOptions({
+      accessToken: accessToken as string,
+      userBookId: bookId,
+      page: 1,
+      pageSize: 1,
+      sortDate: SortingType.desc,
+    }),
+  );
+
+  const [previousBookshelfName, setPreviousBookshelfName] = useState<string | null>(booksBookshelf?.name ?? null);
+
+  useEffect(() => {
+    setPreviousBookshelfName(previousBookshelfName);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [booksBookshelf]);
+
   const { mutateAsync: updateUserBook } = useUpdateUserBookMutation({});
+
+  const { mutateAsync: updateBorrowing } = useUpdateBorrowingMutation({});
 
   const onBookshelfChange = async (id: string, bookshelfName: string): Promise<void> => {
     if (bookshelfName === 'Wypożyczalnia') {
@@ -61,6 +84,20 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
       bookshelfId: id,
       accessToken: accessToken as string,
     });
+
+    if (previousBookshelfName === 'Wypożyczalnia') {
+      await updateBorrowing({
+        accessToken: accessToken as string,
+        borrowingId: bookBorrowing?.data[0].id as string,
+        userBookId: bookId,
+        endedAt: new Date().toISOString(),
+      });
+
+      await queryClient.invalidateQueries({
+        predicate: ({ queryKey }) =>
+          queryKey[0] === BorrowingApiQueryKeys.findBookBorrowingsQuery && queryKey[1] === bookId,
+      });
+    }
 
     toast({
       title: `Zmieniono półkę.`,
@@ -82,13 +119,16 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
     });
   };
 
+  if (previousBookshelfName === 'Wypożyczalnia' && isFetchingBookBorrowing) {
+    return <Skeleton className="w-40 h-8"></Skeleton>;
+  }
+
+  if (isFetching && !isRefetching) {
+    return <Skeleton className="w-40 h-8"></Skeleton>;
+  }
+
   return (
     <>
-      {isFetching && !isRefetching && (
-        <>
-          <Skeleton className="w-40 h-8"></Skeleton>
-        </>
-      )}
       {isFetched && (!isRefetching || (isFetching && isRefetching)) && (
         <Select
           value={selectedBookshelfId}
@@ -123,13 +163,19 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
               accessToken: accessToken as string,
             });
 
+            await queryClient.invalidateQueries({
+              predicate: ({ queryKey }) =>
+                queryKey[0] === BorrowingApiQueryKeys.findBookBorrowingsQuery && queryKey[1] === bookId,
+            });
+
             queryClient.invalidateQueries({
               queryKey: [BookApiQueryKeys.findUserBookById, bookId, userData?.id],
             });
 
             queryClient.invalidateQueries({
               predicate: (query) =>
-                query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId && query.queryKey[1] === selectedBookshelfId,
+                query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId &&
+                query.queryKey[1] === selectedBookshelfId,
             });
           }}
           onClosed={() => {
