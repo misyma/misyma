@@ -82,7 +82,7 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
     });
   });
 
-  it('creates a Borrowing and moves an UserBook to Borrowing Bookshelf', async () => {
+  it('creates a Borrowing and moves a UserBook to Borrowing Bookshelf', async () => {
     const user = await userTestUtils.createAndPersist();
 
     const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
