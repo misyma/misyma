@@ -3,6 +3,7 @@ import { FindBookshelfByIdParams, FindBookshelfByIdResponseBody } from '@common/
 import { useQuery } from '@tanstack/react-query';
 import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
 import { HttpService } from '../../../../core/services/httpService/httpService';
+import { BookshelvesApiQueryKeys } from '../bookshelvesApiQueryKeys';
 
 export const useFindBookshelfByIdQuery = (bookshelfId: string) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
@@ -25,7 +26,7 @@ export const useFindBookshelfByIdQuery = (bookshelfId: string) => {
   };
 
   return useQuery<FindBookshelfByIdResponseBody>({
-    queryKey: ['findBookshelfById', bookshelfId],
+    queryKey: [BookshelvesApiQueryKeys.findBookshelfById, bookshelfId],
     queryFn: () => findBookshelfById({ bookshelfId }),
     enabled: !!accessToken && !!bookshelfId,
   });

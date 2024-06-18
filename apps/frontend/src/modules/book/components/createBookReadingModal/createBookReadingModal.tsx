@@ -18,6 +18,8 @@ import { CalendarIcon } from 'lucide-react';
 import { Calendar } from '../../../common/components/ui/calendar';
 import { Textarea } from '../../../common/components/ui/textarea';
 import { useAddBookReadingMutation } from '../../../bookReadings/api/mutations/bookReadings/addBookReadingMutation/addBookReadingMutation';
+import { useQueryClient } from '@tanstack/react-query';
+import { BookReadingsApiQueryKeys } from '../../../bookReadings/api/queries/bookReadingsApiQueryKeys';
 
 interface Props {
   bookId: string;
@@ -36,6 +38,8 @@ const createBookReadingSchema = z.object({
 });
 
 export const CreateBookReadingModal: FC<Props> = ({ bookId, rating, trigger, onMutated }: Props) => {
+  const queryClient = useQueryClient();
+
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const [error, setError] = useState('');
@@ -62,6 +66,11 @@ export const CreateBookReadingModal: FC<Props> = ({ bookId, rating, trigger, onM
       });
 
       onMutated();
+
+      queryClient.invalidateQueries({
+        predicate: ({ queryKey }) =>
+          queryKey[0] === BookReadingsApiQueryKeys.findBookReadings && queryKey[1] === bookId,
+      });
 
       setIsOpen(false);
     } catch (error) {

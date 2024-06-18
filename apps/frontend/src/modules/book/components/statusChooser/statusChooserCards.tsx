@@ -1,7 +1,7 @@
 import { FC, useState } from 'react';
 import {
-  FindUserBookQueryOptions,
-} from '../../api/queries/findUserBook/findUserBookQueryOptions';
+  FindUserBookByIdQueryOptions,
+} from '../../api/queries/findUserBook/findUserBookByIdQueryOptions';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { HiCheckCircle, HiDotsCircleHorizontal } from 'react-icons/hi';
 import { HiQuestionMarkCircle } from 'react-icons/hi';
@@ -12,6 +12,7 @@ import { Skeleton } from '../../../common/components/ui/skeleton';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useUpdateUserBookMutation } from '../../api/mutations/updateUserBookMutation/updateUserBookMutation';
+import { BookApiQueryKeys } from '../../api/queries/bookApiQueryKeys';
 
 interface Props {
   bookId: string;
@@ -25,7 +26,7 @@ export const StatusChooserCards: FC<Props> = ({ bookId }) => {
   const { data: userData } = useFindUserQuery();
 
   const { data, isFetching, isFetched, isRefetching } = useQuery(
-    FindUserBookQueryOptions({
+    FindUserBookByIdQueryOptions({
       userBookId: bookId,
       userId: userData?.id ?? '',
       accessToken: accessToken as string,
@@ -51,7 +52,7 @@ export const StatusChooserCards: FC<Props> = ({ bookId }) => {
     });
 
     queryClient.invalidateQueries({
-      queryKey: ['findUserBookById', bookId, userData?.id],
+      queryKey: [BookApiQueryKeys.findUserBookById, bookId, userData?.id],
     });
 
     setReadingStatus(chosenStatus);

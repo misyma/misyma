@@ -1,6 +1,7 @@
 import { FindQuotesResponseBody } from '@common/contracts';
 import { UseQueryOptions, keepPreviousData, queryOptions } from '@tanstack/react-query';
 import { GetQuotesPayload, getQuotes } from './getQuotes';
+import { QuotesApiQueryKeys } from '../quotesApiQueryKeys';
 
 export const getQuotesOptions = (
   payload: GetQuotesPayload,
@@ -13,6 +14,6 @@ export const getQuotesOptions = (
   });
 
 export const getQuotesOptionsQueryKey = (payload: Pick<GetQuotesPayload, 'userBookId'>): string[] => [
-  `findQuotes`,
+  QuotesApiQueryKeys.findQuotes,
   payload.userBookId,
 ];

@@ -1,9 +1,10 @@
 import { queryOptions } from '@tanstack/react-query';
 import { FindUserBookByIdPayload, findUserBookById } from './findUserBook.js';
+import { BookApiQueryKeys } from '../bookApiQueryKeys.js';
 
-export const FindUserBookQueryOptions = ({ accessToken, userBookId, userId }: FindUserBookByIdPayload) =>
+export const FindUserBookByIdQueryOptions = ({ accessToken, userBookId, userId }: FindUserBookByIdPayload) =>
   queryOptions({
-    queryKey: ['findUserBookById', userBookId, userId],
+    queryKey: [BookApiQueryKeys.findUserBookById, userBookId, userId],
     queryFn: () =>
       findUserBookById({
         userBookId,

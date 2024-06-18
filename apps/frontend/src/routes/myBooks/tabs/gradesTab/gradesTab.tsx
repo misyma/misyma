@@ -1,6 +1,6 @@
 import { FC, useMemo, useState } from 'react';
 import { Separator } from '../../../../modules/common/components/ui/separator.js';
-import { FindUserBookQueryOptions } from '../../../../modules/book/api/queries/findUserBook/findUserBookQueryOptions.js';
+import { FindUserBookByIdQueryOptions } from '../../../../modules/book/api/queries/findUserBook/findUserBookByIdQueryOptions.js';
 import { useFindUserQuery } from '../../../../modules/user/api/queries/findUserQuery/findUserQuery.js';
 import { UserBook } from '@common/contracts';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -45,7 +45,7 @@ export const GradesTab: FC<Props> = ({ userBookId }) => {
     isFetching: isUserBookFetching,
     isRefetching: isUserBookRefetching,
   } = useQuery(
-    FindUserBookQueryOptions({
+    FindUserBookByIdQueryOptions({
       userBookId,
       userId: userData?.id ?? '',
       accessToken: accessToken as string,

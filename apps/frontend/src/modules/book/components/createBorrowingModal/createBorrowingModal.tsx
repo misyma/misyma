@@ -10,11 +10,11 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Popover, PopoverContent, PopoverTrigger } from '../../../common/components/ui/popover';
 import { CalendarIcon } from 'lucide-react';
 import { Calendar } from '../../../common/components/ui/calendar';
-import { useCreateBorrowingMutation } from '../../api/mutations/createBorrowingMutation/createBorrowingMutation';
 import { useStoreSelector } from '../../../core/store/hooks/useStoreSelector';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { Input } from '../../../common/components/ui/input';
 import { useToast } from '../../../common/components/ui/use-toast';
+import { useCreateBorrowingMutation } from '../../../borrowing/api/mutations/createBorrowingMutation/createBorrowingMutation';
 
 interface Props {
   bookId: string;

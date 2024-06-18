@@ -1,12 +1,13 @@
 import { UseQueryOptions, queryOptions } from '@tanstack/react-query';
 import { FindBookReadingsPayload, findBookReadings } from './findBookReadings';
 import { FindBookReadingsResponseBody } from '@common/contracts';
+import { BookReadingsApiQueryKeys } from '../bookReadingsApiQueryKeys';
 
 export const FindBookReadingsQueryOptions = (
   payload: FindBookReadingsPayload,
 ): UseQueryOptions<FindBookReadingsResponseBody, Error, FindBookReadingsResponseBody, string[]> =>
   queryOptions({
-    queryKey: [`findBookReadings`, payload.userBookId, `${payload.page}`, `${payload.pageSize}`],
+    queryKey: [BookReadingsApiQueryKeys.findBookReadings, payload.userBookId, `${payload.page}`, `${payload.pageSize}`],
     queryFn: () => findBookReadings(payload),
     enabled: !!payload.accessToken,
   });

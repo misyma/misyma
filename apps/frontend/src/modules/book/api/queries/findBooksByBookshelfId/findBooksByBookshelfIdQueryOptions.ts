@@ -1,5 +1,6 @@
 import { keepPreviousData, queryOptions } from '@tanstack/react-query';
 import { FindBooksByBookshelfIdPayload, findBooksByBookshelfId } from './findBooksByBookshelfId.js';
+import { BookApiQueryKeys } from '../bookApiQueryKeys.js';
 
 export const FindBooksByBookshelfIdQueryOptions = ({
   accessToken,
@@ -7,7 +8,7 @@ export const FindBooksByBookshelfIdQueryOptions = ({
   userId,
 }: FindBooksByBookshelfIdPayload) =>
   queryOptions({
-    queryKey: ['findBooksByBookshelfId', bookshelfId, userId],
+    queryKey: [BookApiQueryKeys.findBooksByBookshelfId, bookshelfId, userId],
     queryFn: () =>
       findBooksByBookshelfId({
         bookshelfId,
