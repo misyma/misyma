@@ -111,7 +111,7 @@ export class GenreAdminHttpController implements HttpController {
   private async createGenre(
     request: HttpRequest<CreateGenreBodyDto>,
   ): Promise<HttpCreatedResponse<CreateGenreResponseBodyDto>> {
-    this.accessControlService.verifyBearerToken({
+    await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
       expectedRole: UserRole.admin,
     });
@@ -129,7 +129,7 @@ export class GenreAdminHttpController implements HttpController {
   private async updateGenre(
     request: HttpRequest<UpdateGenreBodyDto, null, UpdateGenrePathParamsDto>,
   ): Promise<HttpOkResponse<UpdateGenreResponseBodyDto>> {
-    this.accessControlService.verifyBearerToken({
+    await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
       expectedRole: UserRole.admin,
     });
@@ -152,7 +152,7 @@ export class GenreAdminHttpController implements HttpController {
   private async deleteGenre(
     request: HttpRequest<null, null, DeleteGenrePathParamsDto>,
   ): Promise<HttpNoContentResponse<DeleteGenreResponseBodyDto>> {
-    this.accessControlService.verifyBearerToken({
+    await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
       expectedRole: UserRole.admin,
     });
