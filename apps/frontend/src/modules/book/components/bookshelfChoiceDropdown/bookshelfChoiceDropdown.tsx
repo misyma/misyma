@@ -157,12 +157,6 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
           onMutated={async () => {
             setUsingBorrowFlow(false);
 
-            await updateUserBook({
-              userBookId: bookId,
-              bookshelfId: selectedBookshelfId,
-              accessToken: accessToken as string,
-            });
-
             await queryClient.invalidateQueries({
               predicate: ({ queryKey }) =>
                 queryKey[0] === BorrowingApiQueryKeys.findBookBorrowingsQuery && queryKey[1] === bookId,

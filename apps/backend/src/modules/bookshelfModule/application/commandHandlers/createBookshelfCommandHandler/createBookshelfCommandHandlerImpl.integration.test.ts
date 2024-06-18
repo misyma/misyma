@@ -1,7 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { BookshelfType } from '@common/contracts';
-
 import { type CreateBookshelfCommandHandler } from './createBookshelfCommandHandler.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
@@ -54,7 +52,6 @@ describe('CreateBookshelfCommandHandlerImpl', () => {
         await commandHandler.execute({
           name,
           userId: nonExistentUserId,
-          type: BookshelfType.standard,
         }),
     ).toThrowErrorInstance({
       instance: OperationNotValidError,
@@ -81,7 +78,6 @@ describe('CreateBookshelfCommandHandlerImpl', () => {
       await commandHandler.execute({
         name,
         userId: user.id,
-        type: BookshelfType.standard,
       });
     } catch (error) {
       expect(error).toBeInstanceOf(ResourceAlreadyExistsError);
@@ -100,7 +96,6 @@ describe('CreateBookshelfCommandHandlerImpl', () => {
     const { bookshelf } = await commandHandler.execute({
       name,
       userId: user.id,
-      type: BookshelfType.standard,
     });
 
     expect(bookshelf.getState()).toEqual({
