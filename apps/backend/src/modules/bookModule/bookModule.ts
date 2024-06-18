@@ -442,6 +442,7 @@ export class BookModule implements DependencyInjectionModule {
         new CreateBorrowingCommandHandlerImpl(
           container.get<BorrowingRepository>(symbols.borrowingRepository),
           container.get<UserBookRepository>(bookSymbols.userBookRepository),
+          container.get<BookshelfRepository>(bookshelfSymbols.bookshelfRepository),
           container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );

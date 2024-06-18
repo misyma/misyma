@@ -6,7 +6,7 @@ import { type Bookshelf } from '../../../domain/entities/bookshelf/bookshelf.js'
 export interface CreateBookshelfPayload {
   readonly userId: string;
   readonly name: string;
-  readonly type: BookshelfType;
+  readonly type?: BookshelfType | undefined;
 }
 
 export interface CreateBookshelfResult {

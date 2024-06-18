@@ -1,5 +1,3 @@
-import { BookshelfType } from '@common/contracts';
-
 import { type BookshelfDto } from './schemas/bookshelfDto.js';
 import {
   type CreateBookshelfBodyDto,
@@ -220,7 +218,6 @@ export class BookshelfHttpController implements HttpController {
     const { bookshelf } = await this.createBookshelfCommandHandler.execute({
       name,
       userId,
-      type: BookshelfType.standard,
     });
 
     return {

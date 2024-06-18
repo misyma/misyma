@@ -1,5 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
+import { BookshelfType } from '@common/contracts';
+
 import { type CreateBorrowingCommandHandler } from './createBorrowingCommandHandler.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
@@ -80,10 +82,17 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
     });
   });
 
-  it('returns a Borrowing', async () => {
+  it('creates a Borrowing and moves an UserBook to Borrowing Bookshelf', async () => {
     const user = await userTestUtils.createAndPersist();
 
     const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+
+    const borrowingBookshelf = await bookshelfTestUtils.createAndPersist({
+      input: {
+        userId: user.id,
+        type: BookshelfType.borrowing,
+      },
+    });
 
     const book = await bookTestUtils.createAndPersist();
 
@@ -121,6 +130,42 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
       borrower: borrowingDraft.getBorrower(),
       startedAt: borrowingDraft.getStartedAt(),
       endedAt: borrowingDraft.getEndedAt(),
+    });
+
+    const persistedUserBook = await userBookTestUtils.findById({ id: userBook.id });
+
+    expect(persistedUserBook?.bookshelfId).toBe(borrowingBookshelf.id);
+  });
+
+  it('throws an error - when Borrowing Bookshelf does not exist', async () => {
+    const user = await userTestUtils.createAndPersist();
+
+    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+
+    const book = await bookTestUtils.createAndPersist();
+
+    const userBook = await userBookTestUtils.createAndPersist({
+      input: {
+        bookshelfId: bookshelf.id,
+        bookId: book.id,
+      },
+    });
+
+    const borrowingDraft = borrowingTestFactory.create({
+      userBookId: userBook.id,
+    });
+
+    expect(
+      async () =>
+        await commandHandler.execute({
+          ...borrowingDraft.getState(),
+        }),
+    ).toThrowErrorInstance({
+      instance: OperationNotValidError,
+      context: {
+        reason: 'Borrowing Bookshelf does not exist.',
+        userId: user.id,
+      },
     });
   });
 });

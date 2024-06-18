@@ -1,3 +1,5 @@
+import { BookshelfType } from '@common/contracts';
+
 import {
   type CreateBookshelfCommandHandler,
   type CreateBookshelfPayload,
@@ -36,8 +38,6 @@ export class CreateBookshelfCommandHandlerImpl implements CreateBookshelfCommand
       });
     }
 
-    // TODO: check if bookshelf with this type already exists if borrowing or archive type
-
     const existingBookshelf = await this.bookshelfRepository.findBookshelf({
       where: {
         userId,
@@ -57,7 +57,7 @@ export class CreateBookshelfCommandHandlerImpl implements CreateBookshelfCommand
       bookshelf: {
         name,
         userId,
-        type,
+        type: type ?? BookshelfType.standard,
       },
     });
 
