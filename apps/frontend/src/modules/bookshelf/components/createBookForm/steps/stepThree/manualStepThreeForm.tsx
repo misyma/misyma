@@ -309,7 +309,7 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
                   <SelectTrigger>
                     <SelectValue placeholder="Półka" />
                     <SelectContent>
-                      {bookshelvesData?.data.map((bookshelf) => (
+                      {bookshelvesData?.data.filter((bookshelf) => bookshelf.name !== 'Wypożyczalnia').map((bookshelf) => (
                         <SelectItem value={bookshelf.id}>{bookshelf.name}</SelectItem>
                       ))}
                     </SelectContent>

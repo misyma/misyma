@@ -101,6 +101,7 @@ export class BookshelfHttpController implements HttpController {
           },
         },
         description: 'Get a bookshelf by id',
+        securityMode: SecurityMode.bearerToken,
       }),
       new HttpRoute({
         method: HttpMethodName.post,
@@ -117,6 +118,7 @@ export class BookshelfHttpController implements HttpController {
             },
           },
         },
+        securityMode: SecurityMode.bearerToken,
       }),
       new HttpRoute({
         method: HttpMethodName.patch,
@@ -135,6 +137,7 @@ export class BookshelfHttpController implements HttpController {
             },
           },
         },
+        securityMode: SecurityMode.bearerToken,
       }),
       new HttpRoute({
         method: HttpMethodName.delete,
@@ -152,6 +155,7 @@ export class BookshelfHttpController implements HttpController {
             },
           },
         },
+        securityMode: SecurityMode.bearerToken,
       }),
     ];
   }
