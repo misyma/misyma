@@ -12,8 +12,29 @@ export const findUserBooksBy = async (payload: FindUserBooksByPayload): Promise<
 
   const { accessToken } = payload;
 
+  const queryParams: Record<string, string> = {};
+
+  const { bookshelfId, isbn, page, pageSize } = payload;
+
+  if (bookshelfId) {
+    queryParams['bookshelfId'] = bookshelfId;
+  }
+
+  if (isbn) {
+    queryParams['isbn'] = isbn;
+  }
+
+  if (page) {
+    queryParams['page'] = `${page}`;
+  }
+
+  if (pageSize) {
+    queryParams['pageSize'] = `${pageSize}`;
+  }
+
   const response = await HttpService.get<FindUserBooksResponseBody>({
     url: `/user-books`,
+    queryParams,
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
