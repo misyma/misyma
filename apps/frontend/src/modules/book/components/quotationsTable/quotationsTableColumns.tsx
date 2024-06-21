@@ -1,6 +1,7 @@
 import { type ColumnDef } from '@tanstack/react-table';
 import { Quote } from '@common/contracts';
 import { FavoriteQuotationButton } from '../../../../modules/book/components/favoriteQuotationButton/favoriteQuotationButton';
+import { QuotationText } from '../quotationText/quotationText';
 
 export const columns: ColumnDef<Quote>[] = [
   {
@@ -8,15 +9,14 @@ export const columns: ColumnDef<Quote>[] = [
     accessorKey: 'updatedAt',
     cell: ({ row, table }): JSX.Element => {
       return (
-        <div className="flex flex-col py-4">
+        <div className="flex flex-wrap flex-col py-4">
           <div className="flex gap-2 items-center">
-            <FavoriteQuotationButton
-              quote={row.original}
+            <FavoriteQuotationButton quote={row.original} />
+            <QuotationText 
+                content={row.original.content}
+                pageIndex={table.getState().pagination.pageIndex * table.getState().pagination.pageSize}
+                index={row.index}
             />
-            <p className="font-semibold text-lg">
-              {row.index + 1 + table.getState().pagination.pageIndex * table.getState().pagination.pageSize}. "
-              {row.original.content}"
-            </p>
           </div>
           <p className="font-light ml-4 inline-flex items-center gap-2">
             <div className="h-1 w-1 rounded-full bg-primary"></div>

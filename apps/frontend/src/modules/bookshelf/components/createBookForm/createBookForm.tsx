@@ -40,11 +40,10 @@ export const CreateBookForm: FC<CreateBookProps> = ({ bookshelfId }) => {
   const setNthSelected = (n: number): string => {
     return bookCreation.step === n ? ' font-semibold bg-primary text-white border-primary' : '';
   };
+
   const canNavigateToSecond = useCallback(() => {
     return (
       (bookCreation.stepOneDetails?.author || bookCreation.stepOneDetails?.authorName) &&
-      bookCreation.stepOneDetails?.yearOfIssue &&
-      bookCreation.stepOneDetails?.publisher &&
       bookCreation.stepOneDetails?.title
     );
   }, [bookCreation.stepOneDetails]);
@@ -139,7 +138,7 @@ export const CreateBookForm: FC<CreateBookProps> = ({ bookshelfId }) => {
         )}
         {renderStep()}
       </div>
-      <div className="flex max-w-[250px] w-full sm:max-w-[500px] sm:min-h-[550px] justify-center items-center">
+      <div className="flex max-w-[250px] w-full sm:max-w-[500px] sm:max-h-[550px] justify-center items-center">
         <img
           src="/books.png"
           alt="Books image"

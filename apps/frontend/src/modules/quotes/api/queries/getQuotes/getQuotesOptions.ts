@@ -11,6 +11,7 @@ export const getQuotesOptions = (
     queryFn: () => getQuotes(payload),
     enabled: !!payload.accessToken,
     placeholderData: keepPreviousData<FindQuotesResponseBody>,
+    staleTime: 1
   });
 
 export const getQuotesOptionsQueryKey = (payload: Pick<GetQuotesPayload, 'userBookId'>): string[] => [

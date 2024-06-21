@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import { StarRating } from '../../../../modules/bookReadings/components/starRating/starRating.js';
 import { StatusChooserCards } from '../../../../modules/book/components/statusChooser/statusChooserCards.js';
 import { BookshelfChoiceDropdown } from '../../../../modules/book/components/bookshelfChoiceDropdown/bookshelfChoiceDropdown.js';
@@ -32,6 +32,8 @@ export const BasicDataTab: FC<Props> = ({ bookId }) => {
     }),
   );
 
+  const imageUrl = useMemo(() => data?.imageUrl, [data?.imageUrl]);
+
   return (
     <div className="flex flex-col sm:flex-row col-start-1 col-span-2 sm:col-span-5 gap-6 w-full">
       {isFetching && !isRefetching && <BasicDataTabSkeleton bookId={bookId} />}
@@ -39,8 +41,8 @@ export const BasicDataTab: FC<Props> = ({ bookId }) => {
         <>
           <div>
             <img
-              key={`${data?.imageUrl}-${Date.now()}`}
-              src={data?.imageUrl}
+              key={`${imageUrl}`}
+              src={imageUrl}
               className="object-cover max-w-80"
             />
           </div>
@@ -71,7 +73,10 @@ export const BasicDataTab: FC<Props> = ({ bookId }) => {
                 />
                 <div className="flex flex-col text-lg items-end gap-2">
                   <p>Status</p>
-                  <StatusChooserCards bookId={data?.id ?? ''}></StatusChooserCards>
+                  <StatusChooserCards
+                    bookshelfId={data?.bookshelfId ?? ''}
+                    bookId={data?.id ?? ''}
+                  ></StatusChooserCards>
                 </div>
                 <div className="flex flex-col items-end gap-2">
                   <p>Dodaj ocenę</p>

@@ -16,9 +16,10 @@ import { BookApiQueryKeys } from '../../api/queries/bookApiQueryKeys';
 
 interface Props {
   bookId: string;
+  bookshelfId: string;
 }
 
-export const StatusChooserCards: FC<Props> = ({ bookId }) => {
+export const StatusChooserCards: FC<Props> = ({ bookId, bookshelfId }) => {
   const queryClient = useQueryClient();
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
@@ -53,6 +54,10 @@ export const StatusChooserCards: FC<Props> = ({ bookId }) => {
 
     queryClient.invalidateQueries({
       queryKey: [BookApiQueryKeys.findUserBookById, bookId, userData?.id],
+    });
+
+    queryClient.invalidateQueries({
+      predicate: (query) => query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId && query.queryKey[1] === bookshelfId,
     });
 
     setReadingStatus(chosenStatus);
