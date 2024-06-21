@@ -28,6 +28,8 @@ import {
   PaginationPrevious,
 } from '../../modules/common/components/ui/pagination';
 import { useQueryClient } from '@tanstack/react-query';
+import { ShelfApiError } from '../../modules/bookshelf/api/errors/shelfApiError';
+import { ShelvesSkeleton } from './shelves-skeleton';
 
 const bookshelfNameSchema = z
   .string()
@@ -47,8 +49,11 @@ export const ShelvesPage: FC = () => {
 
   const [currentPage, setCurrentPage] = useState<number>(1);
 
+  const [isCreatingNew, setIsCreatingNew] = useState(false);
+
   const {
     data: bookshelvesData,
+    isFetching,
     refetch: refetchBookshelves,
   } = useFindUserBookshelfsQuery({
     userId: user?.id as string,
@@ -59,6 +64,7 @@ export const ShelvesPage: FC = () => {
   useEffect(() => {
     setBookshelves(bookshelvesData?.data);
   }, [bookshelvesData]);
+
 
   const { mutateAsync: updateBookshelf } = useUpdateBookshelfMutation({});
 
@@ -96,9 +102,14 @@ export const ShelvesPage: FC = () => {
     return currentPage + 1;
   }, [currentPage, pagesCount]);
 
+  
   const navigate = useNavigate();
 
   const [editMap, setEditMap] = useState<Record<number, boolean>>({});
+
+  if (isFetching) {
+    return <ShelvesSkeleton />;
+  }
 
   const startEdit = (index: number): void => {
     setEditMap({
@@ -123,6 +134,8 @@ export const ShelvesPage: FC = () => {
       const updatedBookshelves = bookshelves.slice(1);
 
       setBookshelves([...updatedBookshelves]);
+
+      setIsCreatingNew(false);
     }
   };
 
@@ -158,6 +171,8 @@ export const ShelvesPage: FC = () => {
       [index]: false,
     });
 
+    setIsCreatingNew(false);
+
     try {
       await createBookshelfMutation.mutateAsync({
         name: bookshelfName,
@@ -173,6 +188,20 @@ export const ShelvesPage: FC = () => {
         variant: 'success',
       });
     } catch (error) {
+      if (error instanceof ShelfApiError) {
+        if (error.context.statusCode === 409) {
+          toast({
+            title: 'Wystąpił błąd',
+            description: 'Półka o podanej przez Ciebie nazwie już istnieje.',
+            variant: `destructive`,
+          });
+
+          setBookshelves(bookshelves?.filter((bookshelf) => bookshelf.id !== ''));
+
+          return;
+        }
+      }
+
       toast({
         title: `Wystąpił błąd.`,
         description: `Coś poszło nie tak przy tworzeniu twojej półki. Spróbuj ponownie.`,
@@ -245,6 +274,8 @@ export const ShelvesPage: FC = () => {
       type: BookshelfType.standard,
     });
 
+    setIsCreatingNew(true);
+
     setBookshelves([...(bookshelves ? bookshelves : [])]);
 
     setEditMap({
@@ -261,6 +292,7 @@ export const ShelvesPage: FC = () => {
             <Button
               className="text-lg px-24 w-60 sm:w-96"
               onClick={() => onAddNewBookshelf()}
+              disabled={isCreatingNew}
             >
               Dodaj nową półkę
             </Button>
@@ -286,6 +318,7 @@ export const ShelvesPage: FC = () => {
                     </div>
                     <div className="flex items-center justify-between w-full pointer-events-none z-10">
                       <h2
+                        id={`name-${index}-bookshelf`}
                         onClick={() => {
                           if (editMap[index] === true) {
                             return;
@@ -345,8 +378,7 @@ export const ShelvesPage: FC = () => {
                                 );
 
                                 queryClient.invalidateQueries({
-                                  predicate: (query) =>
-                                    query.queryKey[0] === 'findUserBookshelfs',
+                                  predicate: (query) => query.queryKey[0] === 'findUserBookshelfs',
                                 });
 
                                 if (currentPage > newTotalPages) {
