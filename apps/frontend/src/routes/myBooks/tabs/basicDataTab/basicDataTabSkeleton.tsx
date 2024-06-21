@@ -6,7 +6,7 @@ import { StatusChooserCards } from '../../../../modules/book/components/statusCh
 import { StarRating } from '../../../../modules/bookReadings/components/starRating/starRating';
 
 interface Props {
-    bookId: string;
+  bookId: string;
 }
 
 export const BasicDataTabSkeleton: FC<Props> = ({ bookId }) => {
@@ -37,10 +37,16 @@ export const BasicDataTabSkeleton: FC<Props> = ({ bookId }) => {
             <Skeleton className="w-48 h-6"></Skeleton>
           </div>
           <div className="flex gap-12 flex-col items-end justify-start">
-            <BookshelfChoiceDropdown currentBookshelfId='' bookId={bookId} />
+            <BookshelfChoiceDropdown
+              currentBookshelfId=""
+              bookId={bookId}
+            />
             <div className="flex flex-col text-lg items-end gap-2">
               <Skeleton className="w-40 h-8"></Skeleton>
-              <StatusChooserCards bookId={bookId}></StatusChooserCards>
+              <StatusChooserCards
+                bookshelfId={''}
+                bookId={bookId}
+              ></StatusChooserCards>
             </div>
             <div className="flex flex-col items-end gap-2">
               <p>Dodaj ocenę</p>

@@ -87,6 +87,10 @@ export const QuotationsTab: FC<Props> = ({ userBookId }) => {
     invalidateQuotesFetch();
   };
 
+  const data = useMemo(() => {
+    return quotationsData?.data ?? [];
+  }, [quotationsData?.data]);
+
   return (
     <div className="flex flex-col sm:flex-row col-start-1 col-span-2 sm:col-span-5 gap-6 w-full">
       {isUserBookFetching && !isUserBookRefetching && <BasicDataTabSkeleton bookId={userBookId} />}
@@ -111,7 +115,7 @@ export const QuotationsTab: FC<Props> = ({ userBookId }) => {
               <p className="text-lg pb-6"> {userBookData?.book.authors[0].name ?? ''} </p>
               <QuotationsTable
                 columns={columns}
-                data={quotationsData?.data ?? []}
+                data={data}
                 onNextPage={onNextPage}
                 onPreviousPage={onPreviousPage}
                 onSetPage={onSetPage}

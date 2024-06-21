@@ -8,11 +8,24 @@ import {
 } from '../../../../context/bookCreationContext/bookCreationContext';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../../common/components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../../../../../common/components/ui/form';
 import { Input } from '../../../../../common/components/ui/input';
 import { Button } from '../../../../../common/components/ui/button';
 import { Languages } from '../../../../../common/constants/languages';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../../../common/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../../../../../common/components/ui/select';
 import { BookFormat as ContractBookFormat } from '@common/contracts';
 import { BookFormat } from '../../../../../common/constants/bookFormat';
 import { Language } from '@common/contracts';
@@ -45,7 +58,8 @@ const stepTwoSchema = z.object({
     })
     .max(10000, {
       message: 'Za dużo stron.',
-    }),
+    })
+    .or(z.literal('')),
 });
 
 export const ManualStepTwoForm = (): JSX.Element => {

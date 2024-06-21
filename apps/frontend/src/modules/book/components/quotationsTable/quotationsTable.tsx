@@ -106,8 +106,8 @@ export function QuotationsTable<TData, TValue>({
   }, [currentPage, pageCount]);
 
   return (
-    <div className="w-full md:max-w-screen-xl ">
-      <div className="w-full min-h-[22rem]">
+    <div>
+      <div className="min-h-[22rem]">
         <Table>
           <TableBody>
             {table.getRowModel().rows?.length ? (
@@ -171,7 +171,7 @@ export function QuotationsTable<TData, TValue>({
                     }
 
                     if (currentPage === pageCount) {
-                      onSetPage(currentPage - 1);
+                      onSetPage(currentPage - 3);
 
                       setCurrentPage(currentPage - 2);
 
