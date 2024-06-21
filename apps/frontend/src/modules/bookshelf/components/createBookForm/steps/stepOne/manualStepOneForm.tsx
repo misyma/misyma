@@ -41,6 +41,11 @@ import {
 import { HiOutlineInformationCircle } from 'react-icons/hi';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../../../common/components/ui/tooltip';
 import { useFindAuthorsQuery } from '../../../../../author/api/queries/findAuthorsQuery/findAuthorsQuery';
+import { findUserBooksBy } from '../../../../../book/api/queries/findUserBookBy/findUserBooksBy';
+import { useSelector } from 'react-redux';
+import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';
+import { toast } from '../../../../../common/components/ui/use-toast';
+import { BookApiError } from '../../../../../book/errors/bookApiError';
 
 const stepOneSchema = z
   .object({
@@ -113,6 +118,10 @@ const createAuthorDraftSchema = z.object({
 export const ManualStepOneForm = (): JSX.Element => {
   const bookCreation = useBookCreation<false>() as BookCreationNonIsbnState;
 
+  const [submitError, setSubmitError] = useState('');
+
+  const accessToken = useSelector(userStateSelectors.selectAccessToken);
+
   const dispatch = useBookCreationDispatch();
 
   const [createAuthorDialogVisible, setCreateAuthorDialogVisible] = useState(false);
@@ -176,12 +185,34 @@ export const ManualStepOneForm = (): JSX.Element => {
 
   const onOpenChange = (bool: boolean) => setCreateAuthorDialogVisible(bool);
 
-  const onSubmit = (
+  const onSubmit = async (
     values: Partial<z.infer<typeof stepOneSchema>> & {
       yearOfIssue: number | string;
     },
   ) => {
     const vals = values as z.infer<typeof stepOneSchema>;
+
+    if (vals.isbn) {
+      try {
+        const exists = await findUserBooksBy({
+          accessToken: accessToken as string,
+          isbn: vals.isbn,
+        });
+
+        if (exists.data.length > 0) {
+          toast({
+            title: 'Posiadasz już książkę z tym numerem isbn!',
+            variant: 'destructive',
+          });
+
+          return;
+        }
+      } catch (error) {
+        if (error instanceof BookApiError) {
+          setSubmitError(error.message);
+        }
+      }
+    }
 
     dispatch({
       type: BookCreationActionType.nonIsbnStepOneDetails,
@@ -450,7 +481,7 @@ export const ManualStepOneForm = (): JSX.Element => {
             </FormItem>
           )}
         />
-        <div className="flex flex-row w-full justify-between gap-4">
+        <div className="flex flex-col w-full justify-between gap-4">
           <Button
             className="border border-primary w-full"
             disabled={!form.formState.isValid}
@@ -458,6 +489,7 @@ export const ManualStepOneForm = (): JSX.Element => {
           >
             Kontynuuj
           </Button>
+          {submitError && <div>XD</div>}
         </div>
       </form>
     </Form>
