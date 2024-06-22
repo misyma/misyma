@@ -427,7 +427,11 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         query.where(collectionColumns.id, collectionId);
       }
 
-      rawEntities = await query.limit(pageSize).offset(pageSize * (page - 1));
+      if (pageSize && page) {
+        query.limit(pageSize).offset(pageSize * (page - 1));
+      }
+
+      rawEntities = await query;
     } catch (error) {
       throw new RepositoryError({
         entity: 'Book',

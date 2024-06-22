@@ -1,25 +1,31 @@
-import { DeleteBookshelfParams, } from '@common/contracts';
+import { DeleteBookshelfParams, DeleteBookshelfQueryParams } from '@common/contracts';
 import { UseMutationOptions, useMutation } from '@tanstack/react-query';
 import { ShelfApiError } from '../../errors/shelfApiError';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
-import { HttpService } from '../../../../core/services/httpService/httpService';
+import { HttpService, RequestPayload } from '../../../../core/services/httpService/httpService';
 
-type Payload = DeleteBookshelfParams;
+type Payload = DeleteBookshelfParams & DeleteBookshelfQueryParams;
 
-export const useDeleteBookshelfMutation = (
-  options: UseMutationOptions<void, ShelfApiError, Payload>,
-) => {
+export const useDeleteBookshelfMutation = (options: UseMutationOptions<void, ShelfApiError, Payload>) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const deleteBookshelf = async (payload: Payload) => {
-    const response = await HttpService.delete({
+    const deletePayload: RequestPayload = {
       url: `/bookshelves/${payload.bookshelfId}`,
       body: payload as unknown as Record<string, string>,
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
-    });
+    };
+
+    if (payload.fallbackBookshelfId) {
+      deletePayload.queryParams = {
+        fallbackBookshelfId: payload.fallbackBookshelfId,
+      };
+    }
+
+    const response = await HttpService.delete(deletePayload);
 
     if (!response.success) {
       throw new ShelfApiError({

@@ -21,9 +21,7 @@ import { userStateSelectors } from '../../../core/store/states/userState/userSta
 import { useFindUserBookshelfsQuery } from '../../api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 import { ShelfApiError } from '../../api/errors/shelfApiError';
 import { BookApiError } from '../../../book/errors/bookApiError';
-import { useMoveBooksToBookshelfMutation } from '../../../book/api/mutations/moveBooksToBookshelfMutation/moveBooksToBookshelfMutation';
 import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
-import { BookApiQueryKeys } from '../../../book/api/queries/bookApiQueryKeys';
 import { BookshelvesApiQueryKeys } from '../../api/queries/bookshelvesApiQueryKeys';
 
 interface Props {
@@ -49,8 +47,6 @@ export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, cl
   const { data: user } = useFindUserQuery();
 
   const { mutateAsync: deleteBookshelf } = useDeleteBookshelfMutation({});
-
-  const { mutateAsync: moveBooksToBookshelf } = useMoveBooksToBookshelfMutation({});
 
   const { data: bookshelfBooksResponse } = useQuery(
     FindBooksByBookshelfIdQueryOptions({
@@ -80,9 +76,7 @@ export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, cl
 
   const onDelete = async (): Promise<void> => {
     try {
-      await deleteBookshelf({
-        bookshelfId,
-      });
+      await deleteBookshelf({bookshelfId});
 
       setIsOpen(false);
 
@@ -106,31 +100,21 @@ export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, cl
 
   const onMoveAndDelete = async (): Promise<void> => {
     try {
-      if (bookshelfBooksResponse?.data && bookshelfBooksResponse?.data?.length > 0) {
-        await moveBooksToBookshelf({
-          data:
-            bookshelfBooksResponse?.data.map((userBook) => ({
-              bookshelfId: moveBookshelfId || (defaultBookshelf?.id as string),
-              userBookId: userBook.id,
-            })) ?? [],
-          accessToken: accessToken as string,
-        });
+      const fallbackBookshelfId = moveBookshelfId.length > 0 ? moveBookshelfId : defaultBookshelf?.id;
 
-        await queryClient.invalidateQueries({
-          predicate: (query) => query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId,
-        });
+      await deleteBookshelf({bookshelfId, fallbackBookshelfId});
 
-        await queryClient.invalidateQueries({
-          predicate: (query) =>
-            query.queryKey[0] === BookshelvesApiQueryKeys.findBookshelfById && query.queryKey[1] === moveBookshelfId,
-        });
+      await queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey[0] === BookshelvesApiQueryKeys.findUserBookshelfs,
+      });
 
-        await queryClient.invalidateQueries({
-          predicate: (query) => query.queryKey[0] === BookshelvesApiQueryKeys.findUserBookshelfs,
-        });
-      }
+      setIsOpen(false);
 
-      await onDelete();
+      await deletedHandler();
+
+      await queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey[0] === BookshelvesApiQueryKeys.findUserBookshelfs,
+      });
     } catch (error) {
       if (error instanceof BookApiError) {
         return setError(error.message);

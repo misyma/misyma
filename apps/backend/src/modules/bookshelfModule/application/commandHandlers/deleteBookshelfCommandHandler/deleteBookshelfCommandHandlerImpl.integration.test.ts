@@ -7,6 +7,8 @@ import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
+import { type BookTestUtils } from '../../../../bookModule/tests/utils/bookTestUtils/bookTestUtils.js';
+import { type UserBookTestUtils } from '../../../../bookModule/tests/utils/userBookTestUtils/userBookTestUtils.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { symbols } from '../../../symbols.js';
 import { type BookshelfTestUtils } from '../../../tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
@@ -18,6 +20,10 @@ describe('DeleteBookshelfCommandHandlerImpl', () => {
 
   let bookshelfTestUtils: BookshelfTestUtils;
 
+  let bookTestUtils: BookTestUtils;
+
+  let userBookTestUtils: UserBookTestUtils;
+
   let testUtils: TestUtils[];
 
   beforeEach(async () => {
@@ -28,6 +34,16 @@ describe('DeleteBookshelfCommandHandlerImpl', () => {
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
 
     bookshelfTestUtils = container.get<BookshelfTestUtils>(testSymbols.bookshelfTestUtils);
+
+    bookTestUtils = container.get<BookTestUtils>(testSymbols.bookTestUtils);
+
+    bookshelfTestUtils = container.get<BookshelfTestUtils>(testSymbols.bookshelfTestUtils);
+
+    userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
+
+    userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
+
+    testUtils = [bookTestUtils, bookshelfTestUtils, userTestUtils, userBookTestUtils];
 
     testUtils = [userTestUtils, bookshelfTestUtils];
 
@@ -100,6 +116,47 @@ describe('DeleteBookshelfCommandHandlerImpl', () => {
 
     const foundBookshelf = await bookshelfTestUtils.findById({
       id: bookshelf.id,
+    });
+
+    expect(foundBookshelf).toBeNull();
+  });
+
+  it('deletes a Bookshelf and moves UserBooks to another Bookshelf', async () => {
+    const user = await userTestUtils.createAndPersist();
+
+    const bookshelf1 = await bookshelfTestUtils.createAndPersist({
+      input: {
+        userId: user.id,
+      },
+    });
+
+    const bookshelf2 = await bookshelfTestUtils.createAndPersist({
+      input: {
+        userId: user.id,
+      },
+    });
+
+    const book = await bookTestUtils.createAndPersist();
+
+    const userBook = await userBookTestUtils.createAndPersist({
+      input: {
+        bookId: book.id,
+        bookshelfId: bookshelf1.id,
+      },
+    });
+
+    await commandHandler.execute({
+      userId: user.id,
+      bookshelfId: bookshelf1.id,
+      fallbackBookshelfId: bookshelf2.id,
+    });
+
+    const updatedUserBook = await userBookTestUtils.findById({ id: userBook.id });
+
+    expect(updatedUserBook?.bookshelfId).toBe(bookshelf2.id);
+
+    const foundBookshelf = await bookshelfTestUtils.findById({
+      id: bookshelf1.id,
     });
 
     expect(foundBookshelf).toBeNull();

@@ -13,6 +13,15 @@ export type DeleteBookshelfPathParamsDto = TypeExtends<
   contracts.DeleteBookshelfParams
 >;
 
+export const deleteBookshelfQueryParamsDtoSchema = Type.Object({
+  fallbackBookshelfId: Type.Optional(Type.String({ format: 'uuid' })),
+});
+
+export type DeleteBookshelfQueryParamsDto = TypeExtends<
+  Static<typeof deleteBookshelfQueryParamsDtoSchema>,
+  contracts.DeleteBookshelfQueryParams
+>;
+
 export const deleteBookshelfResponseBodyDtoSchema = Type.Null();
 
 export type DeleteBookshelfResponseBodyDto = Static<typeof deleteBookshelfResponseBodyDtoSchema>;
