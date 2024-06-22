@@ -21,8 +21,8 @@ export interface FindUserBooksPayload {
   readonly bookshelfId?: string | undefined;
   readonly collectionId?: string | undefined;
   readonly isbn?: string | undefined;
-  readonly page: number;
-  readonly pageSize: number;
+  readonly page?: number;
+  readonly pageSize?: number;
 }
 
 export interface FindUserBooksByUserPayload {

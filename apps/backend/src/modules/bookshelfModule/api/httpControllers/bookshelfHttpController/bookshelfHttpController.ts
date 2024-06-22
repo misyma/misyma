@@ -10,6 +10,8 @@ import {
   type DeleteBookshelfResponseBodyDto,
   deleteBookshelfPathParamsDtoSchema,
   deleteBookshelfResponseBodyDtoSchema,
+  deleteBookshelfQueryParamsDtoSchema,
+  type DeleteBookshelfQueryParamsDto,
 } from './schemas/deleteBookshelfSchema.js';
 import {
   type FindBookshelfByIdResponseBodyDto,
@@ -148,6 +150,7 @@ export class BookshelfHttpController implements HttpController {
         schema: {
           request: {
             pathParams: deleteBookshelfPathParamsDtoSchema,
+            queryParams: deleteBookshelfQueryParamsDtoSchema,
           },
           response: {
             [HttpStatusCode.noContent]: {
@@ -254,7 +257,7 @@ export class BookshelfHttpController implements HttpController {
   }
 
   private async deleteBookshelf(
-    request: HttpRequest<undefined, undefined, DeleteBookshelfPathParamsDto>,
+    request: HttpRequest<undefined, DeleteBookshelfQueryParamsDto, DeleteBookshelfPathParamsDto>,
   ): Promise<HttpNoContentResponse<DeleteBookshelfResponseBodyDto>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
@@ -262,9 +265,12 @@ export class BookshelfHttpController implements HttpController {
 
     const { bookshelfId } = request.pathParams;
 
+    const { fallbackBookshelfId } = request.queryParams;
+
     await this.deleteBookshelfCommandHandler.execute({
-      bookshelfId,
       userId,
+      bookshelfId,
+      fallbackBookshelfId,
     });
 
     return {

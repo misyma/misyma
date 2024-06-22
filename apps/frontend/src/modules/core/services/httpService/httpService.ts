@@ -1,6 +1,6 @@
 import { BaseApiError } from './types/baseApiError';
 
-type RequestPayload = {
+export type RequestPayload = {
   headers?: Record<string, string>;
   queryParams?: Record<string, string>;
   url: string;
@@ -154,7 +154,7 @@ export class HttpService {
         Accept: 'application/json',
         'Content-Type': 'application/json',
         ...headers,
-      }
+      };
 
       if (headers && 'Content-Type' in headers && headers['Content-Type'] === 'multipart/form-data') {
         delete requestHeaders['Content-Type'];
@@ -211,9 +211,17 @@ export class HttpService {
 
   public static async delete(payload: RequestPayload): Promise<HttpResponse<void>> {
     try {
-      const { url, headers, body } = payload;
+      const { url, headers, body, queryParams } = payload;
 
-      const response = await fetch(`${this.baseUrl}${url}`, {
+      let requestUrl = `${this.baseUrl}${url}`;
+
+      if (queryParams) {
+        const queryString = new URLSearchParams(queryParams).toString();
+
+        requestUrl = `${requestUrl}?${queryString}`;
+      }
+
+      const response = await fetch(requestUrl, {
         headers: {
           ...headers,
           Accept: 'application/json',

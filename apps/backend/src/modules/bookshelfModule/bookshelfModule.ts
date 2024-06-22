@@ -22,6 +22,8 @@ import { type LoggerService } from '../../libs/logger/services/loggerService/log
 import { type UuidService } from '../../libs/uuid/services/uuidService/uuidService.js';
 import { type AccessControlService } from '../authModule/application/services/accessControlService/accessControlService.js';
 import { authSymbols } from '../authModule/symbols.js';
+import { type UserBookRepository } from '../bookModule/domain/repositories/userBookRepository/userBookRepository.js';
+import { bookSymbols } from '../bookModule/symbols.js';
 import { type UserRepository } from '../userModule/domain/repositories/userRepository/userRepository.js';
 import { userSymbols } from '../userModule/symbols.js';
 
@@ -102,6 +104,7 @@ export class BookshelfModule implements DependencyInjectionModule {
       () =>
         new DeleteBookshelfCommandHandlerImpl(
           container.get<BookshelfRepository>(symbols.bookshelfRepository),
+          container.get<UserBookRepository>(bookSymbols.userBookRepository),
           container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );

@@ -65,8 +65,6 @@ import { type UpdateQuoteCommandHandler } from './application/commandHandlers/up
 import { UpdateQuoteCommandHandlerImpl } from './application/commandHandlers/updateQuoteCommandHandler/updateQuoteCommandHandlerImpl.js';
 import { type UpdateUserBookCommandHandler } from './application/commandHandlers/updateUserBookCommandHandler/updateUserBookCommandHandler.js';
 import { UpdateUserBookCommandHandlerImpl } from './application/commandHandlers/updateUserBookCommandHandler/updateUserBookCommandHandlerImpl.js';
-import { type UpdateUserBooksCommandHandler } from './application/commandHandlers/updateUserBooksCommandHandler/updateUserBooksCommandHandler.js';
-import { UpdateUserBooksCommandHandlerImpl } from './application/commandHandlers/updateUserBooksCommandHandler/updateUserBooksCommandHandlerImpl.js';
 import { type UploadUserBookImageCommandHandler } from './application/commandHandlers/uploadUserBookImageCommandHandler/uploadUserBookImageCommandHandler.js';
 import { UploadUserBookImageCommandHandlerImpl } from './application/commandHandlers/uploadUserBookImageCommandHandler/uploadUserBookImageCommandHandlerImpl.js';
 import { type FindAuthorsQueryHandler } from './application/queryHandlers/findAuthorsQueryHandler/findAuthorsQueryHandler.js';
@@ -346,16 +344,6 @@ export class BookModule implements DependencyInjectionModule {
           container.get<BookshelfRepository>(bookshelfSymbols.bookshelfRepository),
           container.get<GenreRepository>(symbols.genreRepository),
           container.get<CollectionRepository>(symbols.collectionRepository),
-          container.get<LoggerService>(coreSymbols.loggerService),
-        ),
-    );
-
-    container.bind<UpdateUserBooksCommandHandler>(
-      symbols.updateUserBooksCommandHandler,
-      () =>
-        new UpdateUserBooksCommandHandlerImpl(
-          container.get<UserBookRepository>(symbols.userBookRepository),
-          container.get<BookshelfRepository>(bookshelfSymbols.bookshelfRepository),
           container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );
@@ -690,7 +678,6 @@ export class BookModule implements DependencyInjectionModule {
         new UserBookHttpController(
           container.get<CreateUserBookCommandHandler>(symbols.createUserBookCommandHandler),
           container.get<UpdateUserBookCommandHandler>(symbols.updateUserBookCommandHandler),
-          container.get<UpdateUserBooksCommandHandler>(symbols.updateUserBooksCommandHandler),
           container.get<DeleteUserBooksCommandHandler>(symbols.deleteUserBooksCommandHandler),
           container.get<FindUserBookQueryHandler>(symbols.findUserBookQueryHandler),
           container.get<FindUserBooksQueryHandler>(symbols.findUserBooksQueryHandler),
