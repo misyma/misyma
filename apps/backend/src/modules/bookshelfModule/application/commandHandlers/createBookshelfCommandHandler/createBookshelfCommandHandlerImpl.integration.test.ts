@@ -102,17 +102,17 @@ describe('CreateBookshelfCommandHandlerImpl', () => {
       name,
       userId: user.id,
       type: bookshelf.getType(),
+      createdAt: expect.any(Date),
     });
 
-    const persistedRawBookshelf = await bookshelfTestUtils.findById({
-      id: bookshelf.getId(),
-    });
+    const persistedRawBookshelf = await bookshelfTestUtils.findById({ id: bookshelf.getId() });
 
     expect(persistedRawBookshelf).toMatchObject({
       id: bookshelf.getId(),
       name,
       userId: user.id,
       type: bookshelf.getType(),
+      createdAt: expect.any(Date),
     });
   });
 });

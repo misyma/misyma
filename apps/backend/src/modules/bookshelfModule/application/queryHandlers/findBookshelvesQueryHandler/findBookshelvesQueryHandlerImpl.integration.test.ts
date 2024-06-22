@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { type FindBookshelvesByUserIdQueryHandler } from './findBookshelvesByUserIdQueryHandler.js';
+import { type FindBookshelvesQueryHandler } from './findBookshelvesQueryHandler.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
@@ -11,7 +11,7 @@ import { symbols } from '../../../symbols.js';
 import { type BookshelfTestUtils } from '../../../tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 
 describe('FindBookshelvesByUserIdQueryHandlerImpl', () => {
-  let queryHandler: FindBookshelvesByUserIdQueryHandler;
+  let queryHandler: FindBookshelvesQueryHandler;
 
   let userTestUtils: UserTestUtils;
 
@@ -22,7 +22,7 @@ describe('FindBookshelvesByUserIdQueryHandlerImpl', () => {
   beforeEach(async () => {
     const container = TestContainer.create();
 
-    queryHandler = container.get<FindBookshelvesByUserIdQueryHandler>(symbols.findBookshelvesByUserIdQueryHandler);
+    queryHandler = container.get<FindBookshelvesQueryHandler>(symbols.findBookshelvesByUserIdQueryHandler);
 
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
 
@@ -100,12 +100,14 @@ describe('FindBookshelvesByUserIdQueryHandlerImpl', () => {
       name: bookshelf1.name,
       userId: bookshelf1.userId,
       type: bookshelf1.type,
+      createdAt: expect.any(Date),
     });
 
     expect(bookshelves.find((bookshelf) => bookshelf.getId() === bookshelf2.id)?.getState()).toEqual({
       name: bookshelf2.name,
       userId: bookshelf2.userId,
       type: bookshelf2.type,
+      createdAt: expect.any(Date),
     });
 
     expect(total).toEqual(2);

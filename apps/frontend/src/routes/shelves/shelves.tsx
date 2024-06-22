@@ -102,7 +102,7 @@ export const ShelvesPage: FC = () => {
     return currentPage + 1;
   }, [currentPage, pagesCount]);
 
-  
+
   const navigate = useNavigate();
 
   const [editMap, setEditMap] = useState<Record<number, boolean>>({});
@@ -272,6 +272,7 @@ export const ShelvesPage: FC = () => {
       name: '',
       userId: user?.id as string,
       type: BookshelfType.standard,
+      createdAt: new Date().toISOString(),
     });
 
     setIsCreatingNew(true);

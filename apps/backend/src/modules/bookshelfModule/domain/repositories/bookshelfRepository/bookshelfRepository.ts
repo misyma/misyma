@@ -19,6 +19,7 @@ export interface FindBookshelvesPayload {
   readonly type?: BookshelfType;
   readonly page: number;
   readonly pageSize: number;
+  readonly sortDate?: 'asc' | 'desc';
 }
 
 export interface CountBookshelvesPayload {

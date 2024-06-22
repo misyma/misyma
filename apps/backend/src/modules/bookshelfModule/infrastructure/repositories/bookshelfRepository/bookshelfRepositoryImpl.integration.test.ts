@@ -78,6 +78,7 @@ describe('BookshelfRepositoryImpl', () => {
         name: bookshelf.name,
         userId: bookshelf.userId,
         type: bookshelf.type,
+        createdAt: bookshelf.createdAt,
       });
     });
 
@@ -101,6 +102,7 @@ describe('BookshelfRepositoryImpl', () => {
         name: bookshelf.name,
         userId: bookshelf.userId,
         type: bookshelf.type,
+        createdAt: bookshelf.createdAt,
       });
     });
   });
@@ -148,6 +150,7 @@ describe('BookshelfRepositoryImpl', () => {
           name: bookshelf.name,
           userId: bookshelf.userId,
           type: bookshelf.type,
+          createdAt: bookshelf.createdAt,
         });
       });
     });
@@ -189,6 +192,7 @@ describe('BookshelfRepositoryImpl', () => {
         name: bookshelf1.name,
         userId: bookshelf1.userId,
         type: bookshelf1.type,
+        createdAt: bookshelf1.createdAt,
       });
     });
 
@@ -247,8 +251,90 @@ describe('BookshelfRepositoryImpl', () => {
           name: bookshelf.name,
           userId: bookshelf.userId,
           type: bookshelf.type,
+          createdAt: bookshelf.createdAt,
         });
       });
+    });
+
+    it('finds by ids - when some of the ids are invalid', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const bookshelf1 = await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+        },
+      });
+
+      await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+        },
+      });
+
+      const result = await repository.findBookshelves({
+        userId: user.id,
+        ids: [bookshelf1.id, Generator.uuid()],
+        page: 1,
+        pageSize: 10,
+      });
+
+      expect(result).toHaveLength(1);
+    });
+
+    it('finds by ids - when all ids are invalid', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+        },
+      });
+
+      await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+        },
+      });
+
+      const result = await repository.findBookshelves({
+        userId: user.id,
+        ids: [Generator.uuid(), Generator.uuid()],
+        page: 1,
+        pageSize: 10,
+      });
+
+      expect(result).toHaveLength(0);
+    });
+
+    it('sorts by date', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const bookshelf1 = await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+          createdAt: new Date('2024-08-10'),
+        },
+      });
+
+      const bookshelf2 = await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+          createdAt: new Date('2024-09-02'),
+        },
+      });
+
+      const result = await repository.findBookshelves({
+        userId: user.id,
+        page: 1,
+        pageSize: 10,
+        sortDate: 'desc',
+      });
+
+      expect(result).toHaveLength(2);
+
+      expect(result[0]?.getId()).toBe(bookshelf2.id);
+
+      expect(result[1]?.getId()).toBe(bookshelf1.id);
     });
   });
 
@@ -272,6 +358,7 @@ describe('BookshelfRepositoryImpl', () => {
         name: bookshelfDraft.getName(),
         userId: bookshelfDraft.getUserId(),
         type: bookshelfDraft.getType(),
+        createdAt: bookshelfDraft.getCreatedAt(),
       });
     });
 

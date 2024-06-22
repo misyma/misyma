@@ -18,10 +18,11 @@ import {
   findBookshelfByIdPathParamsDtoSchema,
 } from './schemas/findBookshelfByIdSchema.js';
 import {
-  type FindBookshelvesByUserIdResponseBodyDto,
-  findBookshelvesByUserIdResponseBodyDtoSchema,
-  type FindBookshelvesByUserIdQueryParamsDto,
-} from './schemas/findBookshelvesByUserIdSchema.js';
+  type FindBookshelvesResponseBodyDto,
+  findBookshelvesResponseBodyDtoSchema,
+  type FindBookshelvesQueryParamsDto,
+  findBookshelvesQueryParamsDtoSchema,
+} from './schemas/findBookshelvesSchema.js';
 import {
   type UpdateBookshelfPathParamsDto,
   type UpdateBookshelfBodyDto,
@@ -46,7 +47,7 @@ import { type CreateBookshelfCommandHandler } from '../../../application/command
 import { type DeleteBookshelfCommandHandler } from '../../../application/commandHandlers/deleteBookshelfCommandHandler/deleteBookshelfCommandHandler.js';
 import { type UpdateBookshelfCommandHandler } from '../../../application/commandHandlers/updateBookshelfCommandHandler/updateBookshelfCommandHandler.js';
 import { type FindBookshelfByIdQueryHandler } from '../../../application/queryHandlers/findBookshelfByIdQueryHandler/findBookshelfByIdQueryHandler.js';
-import { type FindBookshelvesByUserIdQueryHandler } from '../../../application/queryHandlers/findBookshelvesByUserIdQueryHandler/findBookshelvesByUserIdQueryHandler.js';
+import { type FindBookshelvesQueryHandler } from '../../../application/queryHandlers/findBookshelvesQueryHandler/findBookshelvesQueryHandler.js';
 import { type Bookshelf } from '../../../domain/entities/bookshelf/bookshelf.js';
 
 interface MapBookshelfToBookshelfDtoPayload {
@@ -58,7 +59,7 @@ export class BookshelfHttpController implements HttpController {
   public readonly tags = ['Bookshelf'];
 
   public constructor(
-    private readonly findBookshelvesByUserIdQueryHandler: FindBookshelvesByUserIdQueryHandler,
+    private readonly findBookshelvesQueryHandler: FindBookshelvesQueryHandler,
     private readonly findBookshelfByIdQueryHandler: FindBookshelfByIdQueryHandler,
     private readonly createBookshelfCommandHandler: CreateBookshelfCommandHandler,
     private readonly updateBookshelfCommandHandler: UpdateBookshelfCommandHandler,
@@ -73,10 +74,12 @@ export class BookshelfHttpController implements HttpController {
         handler: this.getUserBookshelves.bind(this),
         description: 'Get user bookshelves',
         schema: {
-          request: {},
+          request: {
+            queryParams: findBookshelvesQueryParamsDtoSchema,
+          },
           response: {
             [HttpStatusCode.ok]: {
-              schema: findBookshelvesByUserIdResponseBodyDtoSchema,
+              schema: findBookshelvesResponseBodyDtoSchema,
               description: 'Found user bookshelves',
             },
           },
@@ -159,18 +162,19 @@ export class BookshelfHttpController implements HttpController {
   }
 
   private async getUserBookshelves(
-    request: HttpRequest<undefined, FindBookshelvesByUserIdQueryParamsDto, undefined>,
-  ): Promise<HttpOkResponse<FindBookshelvesByUserIdResponseBodyDto>> {
+    request: HttpRequest<undefined, FindBookshelvesQueryParamsDto, undefined>,
+  ): Promise<HttpOkResponse<FindBookshelvesResponseBodyDto>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
-    const { page = 1, pageSize = 10 } = request.queryParams;
+    const { page = 1, pageSize = 10, sortDate } = request.queryParams;
 
-    const { bookshelves, total } = await this.findBookshelvesByUserIdQueryHandler.execute({
+    const { bookshelves, total } = await this.findBookshelvesQueryHandler.execute({
       userId,
       page,
       pageSize,
+      sortDate,
     });
 
     return {
@@ -277,6 +281,7 @@ export class BookshelfHttpController implements HttpController {
       name: bookshelf.getName(),
       userId: bookshelf.getUserId(),
       type: bookshelf.getType(),
+      createdAt: bookshelf.getCreatedAt().toISOString(),
     };
   }
 }

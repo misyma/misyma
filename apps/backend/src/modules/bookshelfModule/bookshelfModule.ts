@@ -7,8 +7,8 @@ import { type UpdateBookshelfCommandHandler } from './application/commandHandler
 import { UpdateBookshelfCommandHandlerImpl } from './application/commandHandlers/updateBookshelfCommandHandler/updateBookshelfCommandHandlerImpl.js';
 import { type FindBookshelfByIdQueryHandler } from './application/queryHandlers/findBookshelfByIdQueryHandler/findBookshelfByIdQueryHandler.js';
 import { FindBookshelfByIdQueryHandlerImpl } from './application/queryHandlers/findBookshelfByIdQueryHandler/findBookshelfByIdQueryHandlerImpl.js';
-import { type FindBookshelvesByUserIdQueryHandler } from './application/queryHandlers/findBookshelvesByUserIdQueryHandler/findBookshelvesByUserIdQueryHandler.js';
-import { FindBookshelvesByUserIdQueryHandlerImpl } from './application/queryHandlers/findBookshelvesByUserIdQueryHandler/findBookshelvesByUserIdQueryHandlerImpl.js';
+import { type FindBookshelvesQueryHandler } from './application/queryHandlers/findBookshelvesQueryHandler/findBookshelvesQueryHandler.js';
+import { FindBookshelvesQueryHandlerImpl } from './application/queryHandlers/findBookshelvesQueryHandler/findBookshelvesQueryHandlerImpl.js';
 import { type BookshelfRepository } from './domain/repositories/bookshelfRepository/bookshelfRepository.js';
 import { type BookshelfMapper } from './infrastructure/repositories/bookshelfRepository/bookshelfMapper/bookshelfMapper.js';
 import { BookshelfMapperImpl } from './infrastructure/repositories/bookshelfRepository/bookshelfMapper/bookshelfMapperImpl.js';
@@ -39,7 +39,7 @@ export class BookshelfModule implements DependencyInjectionModule {
       symbols.bookshelfHttpController,
       () =>
         new BookshelfHttpController(
-          container.get<FindBookshelvesByUserIdQueryHandler>(symbols.findBookshelvesByUserIdQueryHandler),
+          container.get<FindBookshelvesQueryHandler>(symbols.findBookshelvesByUserIdQueryHandler),
           container.get<FindBookshelfByIdQueryHandler>(symbols.findBookshelfByIdQueryHandler),
           container.get<CreateBookshelfCommandHandler>(symbols.createBookshelfCommandHandler),
           container.get<UpdateBookshelfCommandHandler>(symbols.updateBookshelfCommandHandler),
@@ -67,10 +67,10 @@ export class BookshelfModule implements DependencyInjectionModule {
       () => new FindBookshelfByIdQueryHandlerImpl(container.get<BookshelfRepository>(symbols.bookshelfRepository)),
     );
 
-    container.bind<FindBookshelvesByUserIdQueryHandler>(
+    container.bind<FindBookshelvesQueryHandler>(
       symbols.findBookshelvesByUserIdQueryHandler,
       () =>
-        new FindBookshelvesByUserIdQueryHandlerImpl(
+        new FindBookshelvesQueryHandlerImpl(
           container.get<BookshelfRepository>(symbols.bookshelfRepository),
           container.get<UserRepository>(userSymbols.userRepository),
         ),

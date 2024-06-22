@@ -65,7 +65,7 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
   }
 
   public async findBookshelves(payload: FindBookshelvesPayload): Promise<Bookshelf[]> {
-    const { userId, ids, page, pageSize, type } = payload;
+    const { userId, ids, page, pageSize, type, sortDate } = payload;
 
     let rawEntities: BookshelfRawEntity[];
 
@@ -93,6 +93,10 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
 
     if (ids) {
       query.whereIn('id', ids);
+    }
+
+    if (sortDate) {
+      query.orderBy('createdAt', sortDate);
     }
 
     try {
@@ -130,6 +134,7 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
           name: bookshelf.name,
           userId: bookshelf.userId,
           type: bookshelf.type,
+          createdAt: bookshelf.createdAt,
         },
         '*',
       );

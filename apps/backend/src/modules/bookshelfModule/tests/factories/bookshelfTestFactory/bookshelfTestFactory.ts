@@ -11,6 +11,7 @@ export class BookshelfTestFactory {
       name: Generator.alphaString(20, 'lower'),
       userId: Generator.uuid(),
       type: BookshelfType.standard,
+      createdAt: Generator.pastDate(),
       ...input,
     });
   }
@@ -21,6 +22,7 @@ export class BookshelfTestFactory {
       name: Generator.alphaString(20, 'lower'),
       userId: Generator.uuid(),
       type: BookshelfType.standard,
+      createdAt: Generator.pastDate(),
       ...input,
     };
   }
