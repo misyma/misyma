@@ -58,6 +58,7 @@ export class CreateBookshelfCommandHandlerImpl implements CreateBookshelfCommand
         name,
         userId,
         type: type ?? BookshelfType.standard,
+        createdAt: new Date(),
       },
     });
 

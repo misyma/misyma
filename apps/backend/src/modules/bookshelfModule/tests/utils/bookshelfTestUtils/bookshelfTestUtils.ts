@@ -32,31 +32,43 @@ export class BookshelfTestUtils implements TestUtils {
         name: bookshelf.getName(),
         userId: bookshelf.getUserId(),
         type: bookshelf.getType(),
+        createdAt: bookshelf.getCreatedAt(),
       },
       '*',
     );
 
-    return rawEntities[0] as BookshelfRawEntity;
+    const rawEntity = rawEntities[0] as BookshelfRawEntity;
+
+    return {
+      ...rawEntity,
+      createdAt: new Date(rawEntity.createdAt),
+    };
   }
 
   public async findById(payload: FindByIdPayload): Promise<BookshelfRawEntity | null> {
     const { id } = payload;
 
-    const result = await this.databaseClient<BookshelfRawEntity>(bookshelfTable).where({ id }).first();
+    const rawEntity = await this.databaseClient<BookshelfRawEntity>(bookshelfTable).where({ id }).first();
 
-    if (!result) {
+    if (!rawEntity) {
       return null;
     }
 
-    return result;
+    return {
+      ...rawEntity,
+      createdAt: new Date(rawEntity.createdAt),
+    };
   }
 
   public async findByUserId(payload: FindByUserIdPayload): Promise<BookshelfRawEntity[]> {
     const { userId } = payload;
 
-    const result = await this.databaseClient<BookshelfRawEntity>(bookshelfTable).where({ userId });
+    const rawEntities = await this.databaseClient<BookshelfRawEntity>(bookshelfTable).where({ userId });
 
-    return result;
+    return rawEntities.map((rawEntity) => ({
+      ...rawEntity,
+      createdAt: new Date(rawEntity.createdAt),
+    }));
   }
 
   public async truncate(): Promise<void> {

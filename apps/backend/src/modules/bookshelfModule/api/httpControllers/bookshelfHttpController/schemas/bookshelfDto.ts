@@ -10,6 +10,7 @@ export const bookshelfDtoSchema = Type.Object({
   }),
   userId: Type.String({ format: 'uuid' }),
   type: Type.Enum(BookshelfType),
+  createdAt: Type.String({ format: 'date-time' }),
 });
 
 export type BookshelfDto = Static<typeof bookshelfDtoSchema>;

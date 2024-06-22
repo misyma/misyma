@@ -5,12 +5,14 @@ export interface BookshelfDraft {
   readonly userId: string;
   readonly name: string;
   readonly type: BookshelfType;
+  readonly createdAt: Date;
 }
 
 export interface BookshelfState {
   name: string;
   readonly userId: string;
   readonly type: BookshelfType;
+  readonly createdAt: Date;
 }
 
 export interface SetNamePayload {
@@ -28,6 +30,7 @@ export class Bookshelf {
       name: draft.name,
       userId: draft.userId,
       type: draft.type,
+      createdAt: draft.createdAt,
     };
   }
 
@@ -55,5 +58,9 @@ export class Bookshelf {
 
   public getType(): BookshelfType {
     return this.state.type;
+  }
+
+  public getCreatedAt(): Date {
+    return this.state.createdAt;
   }
 }

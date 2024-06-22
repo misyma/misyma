@@ -63,20 +63,20 @@ export class RegisterUserCommandHandlerImpl implements RegisterUserCommandHandle
       userId: user.getId(),
     });
 
-    await this.sendVerificationEmailCommandHandler.execute({
-      email,
+    await this.sendVerificationEmailCommandHandler.execute({ email });
+
+    // TODO: add transaction
+
+    const { bookshelf: archiveBookshelf } = await this.createBookshelfCommandHandler.execute({
+      userId: user.getId(),
+      name: 'Archiwum',
+      type: BookshelfType.archive,
     });
 
     const { bookshelf: borrowingBookshelf } = await this.createBookshelfCommandHandler.execute({
       userId: user.getId(),
       name: 'Wypożyczalnia',
       type: BookshelfType.borrowing,
-    });
-
-    const { bookshelf: archiveBookshelf } = await this.createBookshelfCommandHandler.execute({
-      userId: user.getId(),
-      name: 'Archiwum',
-      type: BookshelfType.archive,
     });
 
     this.loggerService.debug({

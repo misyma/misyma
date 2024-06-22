@@ -5,4 +5,5 @@ export interface BookshelfRawEntity {
   readonly name: string;
   readonly userId: string;
   readonly type: BookshelfType;
+  readonly createdAt: Date;
 }

@@ -152,6 +152,7 @@ describe('UpdateBookshelfCommandHandlerImpl', () => {
       name: newName,
       userId: user.id,
       type: bookshelf.type,
+      createdAt: expect.any(Date),
     });
   });
 });

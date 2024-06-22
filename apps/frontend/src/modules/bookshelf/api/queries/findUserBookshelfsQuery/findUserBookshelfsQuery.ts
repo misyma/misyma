@@ -1,11 +1,11 @@
 import { useSelector } from 'react-redux';
-import { FindBookshelvesByUserIdQueryParams, FindBookshelvesByUserIdResponseBody } from '@common/contracts';
+import { FindBookshelvesQueryParams, FindBookshelvesResponseBody } from '@common/contracts';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
 import { HttpService } from '../../../../core/services/httpService/httpService';
 import { BookshelvesApiQueryKeys } from '../bookshelvesApiQueryKeys';
 
-type Payload = FindBookshelvesByUserIdQueryParams & {
+type Payload = FindBookshelvesQueryParams & {
   userId: string;
 };
 
@@ -13,16 +13,18 @@ export const useFindUserBookshelfsQuery = (payload: Payload) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const findUserBookshelfs = async () => {
-    const { page, pageSize } = payload;
+    // TODO: commented thise as it was undefined
+    // const { page, pageSize } = payload;
 
-    const response = await HttpService.get<FindBookshelvesByUserIdResponseBody>({
+    const response = await HttpService.get<FindBookshelvesResponseBody>({
       url: '/bookshelves',
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
       queryParams: {
-        page: `${page}`,
-        pageSize: `${pageSize}`,
+        page: '1',
+        pageSize: '10',
+        sortDate: 'desc',
       },
     });
 
@@ -33,7 +35,7 @@ export const useFindUserBookshelfsQuery = (payload: Payload) => {
     return response.body;
   };
 
-  return useQuery<FindBookshelvesByUserIdResponseBody>({
+  return useQuery<FindBookshelvesResponseBody>({
     queryKey: [BookshelvesApiQueryKeys.findUserBookshelfs, payload.page, payload.pageSize],
     queryFn: () => findUserBookshelfs(),
     enabled: !!accessToken && !!payload.userId,

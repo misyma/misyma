@@ -16,6 +16,8 @@ export class M1CreateBookshelfTableMigration implements Migration {
 
       table.text('type').notNullable();
 
+      table.timestamp('createdAt').notNullable();
+
       table.foreign('userId').references('id').inTable('users').onDelete('CASCADE');
 
       table.unique(['userId', 'name']);
