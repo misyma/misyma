@@ -4,9 +4,9 @@ import { type BookReading } from '../../../domain/entities/bookReading/bookReadi
 export interface CreateBookReadingPayload {
   readonly userBookId: string;
   readonly rating: number;
-  readonly comment: string;
+  readonly comment?: string | undefined;
   readonly startedAt: Date;
-  readonly endedAt?: Date | undefined;
+  readonly endedAt: Date;
 }
 
 export interface CreateBookReadingResult {

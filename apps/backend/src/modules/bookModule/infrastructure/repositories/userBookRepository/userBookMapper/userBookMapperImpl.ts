@@ -77,14 +77,14 @@ export class UserBookMapperImpl implements UserBookMapper {
           );
         }
 
-        if (readingId && readingStartedAt && readingRating && readingComment) {
+        if (readingId && readingStartedAt && readingRating && readingEndedAt) {
           userBookDraft.readings?.push(
             new BookReading({
               id: readingId,
               startedAt: new Date(readingStartedAt),
-              endedAt: readingEndedAt ? new Date(readingEndedAt) : undefined,
+              endedAt: new Date(readingEndedAt),
               rating: readingRating,
-              comment: readingComment,
+              comment: readingComment ?? undefined,
               userBookId: id,
             }),
           );
@@ -108,14 +108,14 @@ export class UserBookMapperImpl implements UserBookMapper {
           );
         }
 
-        if (readingId && readingStartedAt && readingRating && readingComment) {
+        if (readingId && readingStartedAt && readingRating && readingEndedAt) {
           readings.push(
             new BookReading({
               id: readingId,
               startedAt: new Date(readingStartedAt),
-              endedAt: readingEndedAt ? new Date(readingEndedAt) : undefined,
+              endedAt: new Date(readingEndedAt),
               rating: readingRating,
-              comment: readingComment,
+              comment: readingComment ?? undefined,
               userBookId: id,
             }),
           );

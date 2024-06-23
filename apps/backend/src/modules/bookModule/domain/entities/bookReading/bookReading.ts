@@ -4,17 +4,17 @@ export interface BookReadingDraft {
   readonly id: string;
   readonly userBookId: string;
   readonly rating: number;
-  readonly comment: string;
+  readonly comment?: string | undefined;
   readonly startedAt: Date;
-  readonly endedAt?: Date | undefined;
+  readonly endedAt: Date;
 }
 
 export interface BookReadingState {
   userBookId: string;
   rating: number;
-  comment: string;
+  comment?: string | undefined;
   startedAt: Date;
-  endedAt?: Date | undefined;
+  endedAt: Date;
 }
 
 export interface SetCommentPayload {
@@ -116,7 +116,7 @@ export class BookReading {
     return this.state.rating;
   }
 
-  public getComment(): string {
+  public getComment(): string | undefined {
     return this.state.comment;
   }
 
@@ -124,7 +124,7 @@ export class BookReading {
     return this.state.startedAt;
   }
 
-  public getEndedAt(): Date | undefined {
+  public getEndedAt(): Date {
     return this.state.endedAt;
   }
 

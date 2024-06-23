@@ -14,11 +14,11 @@ export class M6CreateBookReadingTableMigration implements Migration {
 
       table.integer('rating').notNullable();
 
-      table.text('comment').notNullable();
+      table.text('comment');
 
       table.timestamp('startedAt').notNullable();
 
-      table.timestamp('endedAt').nullable();
+      table.timestamp('endedAt').notNullable();
 
       table.foreign('userBookId').references('id').inTable('userBooks').onDelete('CASCADE');
     });

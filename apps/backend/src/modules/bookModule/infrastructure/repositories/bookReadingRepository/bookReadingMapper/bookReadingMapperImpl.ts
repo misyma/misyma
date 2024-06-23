@@ -10,7 +10,7 @@ export class BookReadingMapperImpl implements BookReadingMapper {
       comment,
       rating,
       startedAt: new Date(startedAt),
-      endedAt: endedAt ? new Date(endedAt) : undefined,
+      endedAt: new Date(endedAt),
     });
   }
 }
