@@ -31,10 +31,10 @@ interface Props {
 
 const createBookReadingSchema = z.object({
   userBookId: z.string().uuid(),
-  comment: z.string().min(1).max(256),
+  comment: z.string().min(1).max(256).optional(),
   rating: z.number().min(1).max(10).int(),
   startedAt: z.date(),
-  endedAt: z.date().optional(),
+  endedAt: z.date(),
 });
 
 export const CreateBookReadingModal: FC<Props> = ({ bookId, rating, trigger, onMutated }: Props) => {
@@ -48,7 +48,7 @@ export const CreateBookReadingModal: FC<Props> = ({ bookId, rating, trigger, onM
     resolver: zodResolver(createBookReadingSchema),
     defaultValues: {
       userBookId: bookId,
-      comment: '',
+      comment: undefined,
       rating,
       startedAt: undefined,
       endedAt: undefined,
@@ -62,7 +62,7 @@ export const CreateBookReadingModal: FC<Props> = ({ bookId, rating, trigger, onM
       await mutateAsync({
         ...values,
         startedAt: values.startedAt.toISOString(),
-        endedAt: values.endedAt ? values.endedAt.toISOString() : undefined,
+        endedAt: values.endedAt.toISOString(),
       });
 
       onMutated();

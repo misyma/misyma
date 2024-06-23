@@ -42,7 +42,7 @@ export class BookReadingTestUtils implements TestUtils {
       rating: rawEntity.rating,
       comment: rawEntity.comment,
       startedAt: new Date(rawEntity.startedAt),
-      endedAt: rawEntity.endedAt ? new Date(rawEntity.endedAt) : undefined,
+      endedAt: new Date(rawEntity.endedAt),
     };
   }
 
@@ -61,7 +61,7 @@ export class BookReadingTestUtils implements TestUtils {
       rating: result.rating,
       comment: result.comment,
       startedAt: new Date(result.startedAt),
-      endedAt: result.endedAt ? new Date(result.endedAt) : undefined,
+      endedAt: new Date(result.endedAt),
     };
   }
 

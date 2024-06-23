@@ -15,16 +15,18 @@ export type CreateBookReadingPathParamsDto = TypeExtends<
 >;
 
 export const createBookReadingBodyDtoSchema = Type.Object({
-  comment: Type.String({
-    minLength: 1,
-    maxLength: 256,
-  }),
   rating: Type.Integer({
     minimum: 1,
     maximum: 10,
   }),
+  comment: Type.Optional(
+    Type.String({
+      minLength: 1,
+      maxLength: 256,
+    }),
+  ),
   startedAt: Type.String({ format: 'date-time' }),
-  endedAt: Type.Optional(Type.String({ format: 'date-time' })),
+  endedAt: Type.String({ format: 'date-time' }),
 });
 
 export type CreateBookReadingBodyDto = TypeExtends<

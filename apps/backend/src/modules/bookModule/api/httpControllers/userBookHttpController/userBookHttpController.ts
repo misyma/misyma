@@ -373,15 +373,15 @@ export class UserBookHttpController implements HttpController {
           let readingDto: BookReadingDto = {
             id: reading.getId(),
             startedAt: startedAt.toISOString(),
+            endedAt: endedAt.toISOString(),
             rating,
-            comment,
             userBookId,
           };
 
-          if (endedAt) {
+          if (comment) {
             readingDto = {
               ...readingDto,
-              endedAt: endedAt.toISOString(),
+              comment,
             };
           }
 

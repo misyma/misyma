@@ -24,7 +24,7 @@ describe('BookReadingMapperImpl', () => {
         comment: bookReadingEntity.comment,
         rating: bookReadingEntity.rating,
         startedAt: new Date(bookReadingEntity.startedAt),
-        endedAt: new Date(bookReadingEntity.endedAt as Date),
+        endedAt: new Date(bookReadingEntity.endedAt),
       },
     });
   });

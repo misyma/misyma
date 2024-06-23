@@ -201,7 +201,7 @@ export class BookReadingHttpController implements HttpController {
       comment,
       rating,
       startedAt: new Date(startedAt),
-      endedAt: endedAt ? new Date(endedAt) : undefined,
+      endedAt: new Date(endedAt),
     });
 
     return {
@@ -262,15 +262,15 @@ export class BookReadingHttpController implements HttpController {
     const dto: BookReadingDto = {
       id: bookReading.getId(),
       userBookId: bookReading.getUserBookId(),
-      comment: bookReading.getComment(),
       rating: bookReading.getRating(),
       startedAt: bookReading.getStartedAt().toISOString(),
+      endedAt: bookReading.getEndedAt().toISOString(),
     };
 
-    const endedAt = bookReading.getEndedAt();
+    const comment = bookReading.getComment();
 
-    if (endedAt) {
-      dto.endedAt = endedAt.toISOString();
+    if (comment) {
+      dto.comment = comment;
     }
 
     return dto;
