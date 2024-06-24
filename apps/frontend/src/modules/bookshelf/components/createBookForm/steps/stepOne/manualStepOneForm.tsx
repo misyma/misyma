@@ -112,7 +112,7 @@ const createAuthorDraftSchema = z.object({
     .max(128, {
       message: 'Imię autora powinno mieć maksymalnie 128 znaków.',
     })
-    .regex(/\s/, 'Błędny format.'),
+    .regex(/\s/, 'Autor powinien być w formacie "Imię Nazwisko"'),
 });
 
 export const ManualStepOneForm = (): JSX.Element => {
@@ -312,7 +312,7 @@ export const ManualStepOneForm = (): JSX.Element => {
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>
-                        Prosimy, podaj nazwisko i imię autora w<br></br> następującym formacie: "Rowling, J. K."
+                        Imię i nazwisko autora musi mieć minimum 3 znaki i zawierać spację oddzielającą imię i nazwisko.
                       </p>
                     </TooltipContent>
                   </Tooltip>
@@ -354,7 +354,11 @@ export const ManualStepOneForm = (): JSX.Element => {
                             <>
                               <Dialog
                                 open={createAuthorDialogVisible}
-                                onOpenChange={onOpenChange}
+                                onOpenChange={(val) => {
+                                  onOpenChange(val);
+
+                                  createAuthorDraftForm.setValue('name', searchedName ?? '');
+                                }}
                               >
                                 <DialogTrigger asChild>
                                   <Button className="bg-slate-100 text-black hover:bg-slate-300">Dodaj</Button>

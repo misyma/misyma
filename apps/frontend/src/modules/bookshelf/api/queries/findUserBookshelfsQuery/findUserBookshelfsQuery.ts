@@ -15,16 +15,24 @@ export const useFindUserBookshelfsQuery = (payload: Payload) => {
   const findUserBookshelfs = async () => {
     const { page, pageSize } = payload;
 
+    const queryParams: Record<string, string> = {
+      sortDate: 'desc',
+    };
+
+    if (page) {
+      queryParams['page'] = `${page}`;
+    }
+
+    if (pageSize) {
+      queryParams['pageSize'] = `${pageSize}`;
+    }
+
     const response = await HttpService.get<FindBookshelvesResponseBody>({
       url: '/bookshelves',
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
-      queryParams: {
-        page: page ? `${page}` : '1',
-        pageSize: pageSize ? `${pageSize}` : '5',
-        sortDate: 'desc',
-      },
+      queryParams
     });
 
     if (response.success === false) {
