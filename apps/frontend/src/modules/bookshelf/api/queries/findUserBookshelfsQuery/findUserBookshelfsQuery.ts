@@ -13,8 +13,7 @@ export const useFindUserBookshelfsQuery = (payload: Payload) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const findUserBookshelfs = async () => {
-    // TODO: commented thise as it was undefined
-    // const { page, pageSize } = payload;
+    const { page, pageSize } = payload;
 
     const response = await HttpService.get<FindBookshelvesResponseBody>({
       url: '/bookshelves',
@@ -22,8 +21,8 @@ export const useFindUserBookshelfsQuery = (payload: Payload) => {
         Authorization: `Bearer ${accessToken}`,
       },
       queryParams: {
-        page: '1',
-        pageSize: '10',
+        page: page ? `${page}` : '1',
+        pageSize: pageSize ? `${pageSize}` : '5',
         sortDate: 'desc',
       },
     });
