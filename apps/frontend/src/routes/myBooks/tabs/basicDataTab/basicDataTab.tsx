@@ -58,13 +58,13 @@ export const BasicDataTab: FC<Props> = ({ bookId }) => {
             <div className="flex w-full justify-between">
               <div className="flex flex-col gap-2">
                 <p className="text-lg pb-6">{data?.book.authors[0]?.name}</p>
-                <p>ISBN: {data?.book.isbn}</p>
-                <p>Rok wydania: {data?.book.releaseYear}</p>
+                {data?.book.isbn && <p>ISBN: {data?.book.isbn}</p>}
+                {data?.book.releaseYear && <p>Rok wydania: {data?.book.releaseYear}</p>}
                 <p>Język: {data?.book.language ? ReversedLanguages[data?.book.language]?.toLowerCase() : ''}</p>
-                <p>Tłumacz: {data?.book.translator}</p>
+                {data?.book.translator && <p>Tłumacz: {data?.book.translator}</p>}
                 <p>Format: {data?.book.format ? BookFormat[data?.book.format] : ''}</p>
-                <p>Liczba stron: {data?.book.pages}</p>
-                <p>Kategoria: {data?.genres[0]?.name}</p>
+                {data?.book.pages && <p>Liczba stron: {data?.book.pages}</p>}
+                {data?.genres[0]?.name && <p>Kategoria: {data?.genres[0]?.name}</p>}
               </div>
               <div className="flex gap-12 flex-col items-end justify-start">
                 <BookshelfChoiceDropdown

@@ -65,7 +65,6 @@ export const ShelvesPage: FC = () => {
     setBookshelves(bookshelvesData?.data);
   }, [bookshelvesData]);
 
-
   const { mutateAsync: updateBookshelf } = useUpdateBookshelfMutation({});
 
   const createBookshelfMutation = useCreateBookshelfMutation({});
@@ -101,7 +100,6 @@ export const ShelvesPage: FC = () => {
 
     return currentPage + 1;
   }, [currentPage, pagesCount]);
-
 
   const navigate = useNavigate();
 
