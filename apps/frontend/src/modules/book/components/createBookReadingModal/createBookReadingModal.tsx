@@ -48,12 +48,16 @@ const createBookReadingSchema = z
     }
   });
 
-export const CreateBookReadingModal: FC<Props> = ({ bookId, rating, trigger, onMutated }: Props) => {
+interface CreateBookReadingFormProps {
+  bookId: string;
+  rating: number;
+  onMutated: () => void;
+  setIsOpen: (bol: boolean) => void;
+  setError: (err: string) => void;
+}
+
+const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating, onMutated, setIsOpen, setError }) => {
   const queryClient = useQueryClient();
-
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-
-  const [error, setError] = useState('');
 
   const form = useForm<z.infer<typeof createBookReadingSchema>>({
     resolver: zodResolver(createBookReadingSchema),
@@ -76,6 +80,8 @@ export const CreateBookReadingModal: FC<Props> = ({ bookId, rating, trigger, onM
         endedAt: values.endedAt.toISOString(),
       });
 
+      form.reset();
+
       onMutated();
 
       queryClient.invalidateQueries({
@@ -84,8 +90,6 @@ export const CreateBookReadingModal: FC<Props> = ({ bookId, rating, trigger, onM
       });
 
       setIsOpen(false);
-
-      form.reset();
     } catch (error) {
       if (error instanceof Error) {
         return setError(error.message);
@@ -95,7 +99,142 @@ export const CreateBookReadingModal: FC<Props> = ({ bookId, rating, trigger, onM
     }
   };
 
-  console.log(form.formState.errors);
+  return (
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onCreateBookReading)}
+        className="space-y-8 min-w-96"
+      >
+        <FormField
+          control={form.control}
+          name="comment"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Komentarz</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Komentarz"
+                  maxLength={256}
+                  className="resize-none h-44"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="startedAt"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>Data rozpoczęcia czytania</FormLabel>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant={'outline'}
+                      className={cn('min-w-96 pl-3 text-left font-normal', !field.value && 'text-muted-foreground')}
+                    >
+                      {field.value ? (
+                        formatDate(field.value, 'PPP', {
+                          locale: pl,
+                        })
+                      ) : (
+                        <span>Wybierz dzień rozpoczęcia</span>
+                      )}
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="w-auto p-0"
+                  align="start"
+                >
+                  <Calendar
+                    mode="single"
+                    selected={field.value}
+                    onSelect={field.onChange}
+                    disabled={(date) => date > new Date() || date < new Date('1900-01-01')}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>{' '}
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="endedAt"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>Data zakończenia czytania</FormLabel>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant={'outline'}
+                      className={cn('min-w-96 pl-3 text-left font-normal', !field.value && 'text-muted-foreground')}
+                    >
+                      {field.value ? (
+                        formatDate(field.value, 'PPP', {
+                          locale: pl,
+                        })
+                      ) : (
+                        <span>Wybierz dzień zakończenia</span>
+                      )}
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="w-auto p-0"
+                  align="start"
+                >
+                  <Calendar
+                    mode="single"
+                    selected={field.value}
+                    onSelect={field.onChange}
+                    disabled={(date) => date > new Date() || date < new Date('1900-01-01')}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        {form.getValues()?.startedAt?.getTime() > form.getValues()?.endedAt?.getTime() && (
+          <p className="font-bold text-center text-red-500">
+            Data rozpoczęcia czytania nie może być późniejsza niż data zakończenia czytania.{' '}
+          </p>
+        )}
+        <div className="pt-8 gap-2 flex sm:justify-center justify-center sm:items-center items-center">
+          <Button
+            className="bg-transparent text-primary w-32 sm:w-40"
+            onClick={() => setIsOpen(false)}
+          >
+            Wróć
+          </Button>
+          <Button
+            type="submit"
+            disabled={!form.formState.isValid}
+            className="bg-primary w-32 sm:w-40"
+          >
+            Potwierdź
+          </Button>
+        </div>
+      </form>
+    </Form>
+  );
+};
+
+export const CreateBookReadingModal: FC<Props> = ({ bookId, rating, trigger, onMutated }: Props) => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const [error, setError] = useState('');
+
 
   return (
     <Dialog
@@ -119,139 +258,13 @@ export const CreateBookReadingModal: FC<Props> = ({ bookId, rating, trigger, onM
         </DialogHeader>
         <DialogDescription className="flex flex-col gap-4 justify-center items-center">
           <p className={error ? 'text-red-500' : 'hidden'}>{error}</p>
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onCreateBookReading)}
-              className="space-y-8 min-w-96"
-            >
-              <FormField
-                control={form.control}
-                name="comment"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Komentarz</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Komentarz"
-                        maxLength={256}
-                        className="resize-none h-44"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="startedAt"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Data rozpoczęcia czytania</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant={'outline'}
-                            className={cn(
-                              'min-w-96 pl-3 text-left font-normal',
-                              !field.value && 'text-muted-foreground',
-                            )}
-                          >
-                            {field.value ? (
-                              formatDate(field.value, 'PPP', {
-                                locale: pl,
-                              })
-                            ) : (
-                              <span>Wybierz dzień rozpoczęcia</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent
-                        className="w-auto p-0"
-                        align="start"
-                      >
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          disabled={(date) => date > new Date() || date < new Date('1900-01-01')}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>{' '}
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="endedAt"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Data zakończenia czytania</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant={'outline'}
-                            className={cn(
-                              'min-w-96 pl-3 text-left font-normal',
-                              !field.value && 'text-muted-foreground',
-                            )}
-                          >
-                            {field.value ? (
-                              formatDate(field.value, 'PPP', {
-                                locale: pl,
-                              })
-                            ) : (
-                              <span>Wybierz dzień zakończenia</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent
-                        className="w-auto p-0"
-                        align="start"
-                      >
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          disabled={(date) => date > new Date() || date < new Date('1900-01-01')}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {form.getValues()?.startedAt?.getTime() > form.getValues()?.endedAt?.getTime() && (
-                <p className="font-bold text-center text-red-500">
-                  Data rozpoczęcia czytania nie może być późniejsza niż data zakończenia czytania.{' '}
-                </p>
-              )}
-              <div className="pt-8 gap-2 flex sm:justify-center justify-center sm:items-center items-center">
-                <Button
-                  className="bg-transparent text-primary w-32 sm:w-40"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Wróć
-                </Button>
-                <Button
-                  type="submit"
-                  disabled={!form.formState.isValid}
-                  className="bg-primary w-32 sm:w-40"
-                >
-                  Potwierdź
-                </Button>
-              </div>
-            </form>
-          </Form>
+          <CreateBookReadingForm
+            bookId={bookId}
+            onMutated={onMutated}
+            rating={rating}
+            setIsOpen={setIsOpen}
+            setError={setError}
+          />
         </DialogDescription>
       </DialogContent>
     </Dialog>
