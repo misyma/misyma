@@ -108,7 +108,7 @@ describe('CreateBookReadingCommandHandlerImpl', () => {
     ).toThrowErrorInstance({
       instance: OperationNotValidError,
       context: {
-        reason: 'Start date cannot be earlier then end date.',
+        reason: 'Start date cannot be later than end date.',
       },
     });
   });
