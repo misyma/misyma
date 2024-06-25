@@ -12,6 +12,7 @@ import { FavoriteBookButton } from '../../../../modules/book/components/favorite
 import { FindBookReadingsQueryOptions } from '../../../../modules/bookReadings/api/queries/findBookReadings/findBookReadingsQueryOptions.js';
 import { GradesTable } from '../../../../modules/book/components/gradesTable/gradesTable.js';
 import { columns } from '../../../../modules/book/components/gradesTable/gradesTableColumns.js';
+import { BookReadingsApiQueryKeys } from '../../../../modules/bookReadings/api/queries/bookReadingsApiQueryKeys.js';
 
 interface Props {
   userBookId: string;
@@ -24,16 +25,19 @@ export const GradesTab: FC<Props> = ({ userBookId }) => {
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
+  const [pageSize] = useState(4);
+
+  const [page, setPage] = useState(0);
+
+
   const { data: bookReadings } = useQuery(
     FindBookReadingsQueryOptions({
       accessToken: accessToken as string,
       userBookId: userBookId,
+      page,
+      pageSize,
     }),
   );
-
-  const [pageSize] = useState(4);
-
-  const [page, setPage] = useState(0);
 
   const pageCount = useMemo(() => {
     return Math.ceil((bookReadings?.metadata?.total ?? 0) / pageSize) || 1;
@@ -55,13 +59,15 @@ export const GradesTab: FC<Props> = ({ userBookId }) => {
   const invalidateReadingsFetch = () =>
     queryClient.invalidateQueries({
       predicate: (query) =>
-        query.queryKey[0] === `findBookReadings` &&
+        query.queryKey[0] === BookReadingsApiQueryKeys.findBookReadings &&
         query.queryKey[1] === userData?.id &&
         query.queryKey[2] === userBookId,
     });
 
   const onNextPage = (): void => {
     setPage(page + 1);
+
+    console.log(page);
 
     invalidateReadingsFetch();
   };

@@ -80,6 +80,39 @@ describe('CreateBookReadingCommandHandlerImpl', () => {
     });
   });
 
+  it('throws an error - when startDate is later then endDate', async () => {
+    const user = await userTestUtils.createAndPersist();
+
+    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+
+    const book = await bookTestUtils.createAndPersist();
+
+    const userBook = await userBookTestUtils.createAndPersist({
+      input: {
+        bookshelfId: bookshelf.id,
+        bookId: book.id,
+      },
+    });
+
+    const bookReadingDraft = bookReadingTestFactory.create({
+      userBookId: userBook.id,
+      startedAt: Generator.futureDate(),
+      endedAt: Generator.pastDate(),
+    });
+
+    await expect(
+      async () =>
+        await commandHandler.execute({
+          ...bookReadingDraft.getState(),
+        }),
+    ).toThrowErrorInstance({
+      instance: OperationNotValidError,
+      context: {
+        reason: 'Start date cannot be later than end date.',
+      },
+    });
+  });
+
   it('returns a BookReading', async () => {
     const user = await userTestUtils.createAndPersist();
 

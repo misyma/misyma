@@ -38,6 +38,14 @@ export class CreateBookReadingCommandHandlerImpl implements CreateBookReadingCom
       });
     }
 
+    if (startedAt.getTime() > endedAt.getTime()) {
+      throw new OperationNotValidError({
+        reason: `Start date cannot be later than end date.`,
+        startedAt,
+        endedAt,
+      });
+    }
+
     const bookReading = await this.bookReadingRepository.saveBookReading({
       bookReading: {
         userBookId,

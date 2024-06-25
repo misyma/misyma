@@ -12,6 +12,7 @@ import { FindUserBookByIdQueryOptions } from '../../../../modules/book/api/queri
 import { getQuotesOptions } from '../../../../modules/quotes/api/queries/getQuotes/getQuotesOptions';
 import { QuotationsTable } from '../../../../modules/book/components/quotationsTable/quotationsTable';
 import { columns } from '../../../../modules/book/components/quotationsTable/quotationsTableColumns';
+import { QuotesApiQueryKeys } from '../../../../modules/quotes/api/queries/quotesApiQueryKeys';
 
 interface Props {
   userBookId: string;
@@ -62,7 +63,7 @@ export const QuotationsTab: FC<Props> = ({ userBookId }) => {
   const invalidateQuotesFetch = () =>
     queryClient.invalidateQueries({
       predicate: (query) =>
-        query.queryKey[0] === `findQuotes` &&
+        query.queryKey[0] === QuotesApiQueryKeys.findQuotes &&
         query.queryKey[1] === userBookId &&
         query.queryKey[2] === userData?.id &&
         query.queryKey[3] === `${page}` &&

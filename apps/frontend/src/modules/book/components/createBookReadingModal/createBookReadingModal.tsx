@@ -6,7 +6,7 @@ import {
   DialogHeader,
   DialogTrigger,
 } from '../../../common/components/ui/dialog';
-import { format } from 'date-fns';
+import { formatDate } from 'date-fns';
 import { Button } from '../../../common/components/ui/button';
 import { cn } from '../../../common/lib/utils';
 import { z } from 'zod';
@@ -20,6 +20,7 @@ import { Textarea } from '../../../common/components/ui/textarea';
 import { useAddBookReadingMutation } from '../../../bookReadings/api/mutations/bookReadings/addBookReadingMutation/addBookReadingMutation';
 import { useQueryClient } from '@tanstack/react-query';
 import { BookReadingsApiQueryKeys } from '../../../bookReadings/api/queries/bookReadingsApiQueryKeys';
+import { pl } from 'date-fns/locale';
 
 interface Props {
   bookId: string;
@@ -29,13 +30,23 @@ interface Props {
   onMutated: () => void | Promise<void>;
 }
 
-const createBookReadingSchema = z.object({
-  userBookId: z.string().uuid(),
-  comment: z.string().min(1).max(256).optional(),
-  rating: z.number().min(1).max(10).int(),
-  startedAt: z.date(),
-  endedAt: z.date(),
-});
+const createBookReadingSchema = z
+  .object({
+    userBookId: z.string().uuid(),
+    comment: z.string().min(1).max(256).optional(),
+    rating: z.number().min(1).max(10).int(),
+    startedAt: z.date(),
+    endedAt: z.date(),
+  })
+  .superRefine((args, ctx) => {
+    if (args.startedAt.getTime() > args.endedAt.getTime()) {
+      ctx.addIssue({
+        code: 'invalid_date',
+        message: 'Data rozpoczęcia czytania nie może być późniejsza niż data zakończenia czytania.',
+        path: ['startedAt'],
+      });
+    }
+  });
 
 export const CreateBookReadingModal: FC<Props> = ({ bookId, rating, trigger, onMutated }: Props) => {
   const queryClient = useQueryClient();
@@ -73,6 +84,8 @@ export const CreateBookReadingModal: FC<Props> = ({ bookId, rating, trigger, onM
       });
 
       setIsOpen(false);
+
+      form.reset();
     } catch (error) {
       if (error instanceof Error) {
         return setError(error.message);
@@ -81,6 +94,8 @@ export const CreateBookReadingModal: FC<Props> = ({ bookId, rating, trigger, onM
       throw error;
     }
   };
+
+  console.log(form.formState.errors);
 
   return (
     <Dialog
@@ -143,7 +158,13 @@ export const CreateBookReadingModal: FC<Props> = ({ bookId, rating, trigger, onM
                               !field.value && 'text-muted-foreground',
                             )}
                           >
-                            {field.value ? format(field.value, 'PPP') : <span>Wybierz dzień rozpoczęcia</span>}
+                            {field.value ? (
+                              formatDate(field.value, 'PPP', {
+                                locale: pl,
+                              })
+                            ) : (
+                              <span>Wybierz dzień rozpoczęcia</span>
+                            )}
                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                           </Button>
                         </FormControl>
@@ -181,7 +202,13 @@ export const CreateBookReadingModal: FC<Props> = ({ bookId, rating, trigger, onM
                               !field.value && 'text-muted-foreground',
                             )}
                           >
-                            {field.value ? format(field.value, 'PPP') : <span>Wybierz dzień zakończenia</span>}
+                            {field.value ? (
+                              formatDate(field.value, 'PPP', {
+                                locale: pl,
+                              })
+                            ) : (
+                              <span>Wybierz dzień zakończenia</span>
+                            )}
                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                           </Button>
                         </FormControl>
@@ -203,6 +230,11 @@ export const CreateBookReadingModal: FC<Props> = ({ bookId, rating, trigger, onM
                   </FormItem>
                 )}
               />
+              {form.getValues()?.startedAt?.getTime() > form.getValues()?.endedAt?.getTime() && (
+                <p className="font-bold text-center text-red-500">
+                  Data rozpoczęcia czytania nie może być późniejsza niż data zakończenia czytania.{' '}
+                </p>
+              )}
               <div className="pt-8 gap-2 flex sm:justify-center justify-center sm:items-center items-center">
                 <Button
                   className="bg-transparent text-primary w-32 sm:w-40"
