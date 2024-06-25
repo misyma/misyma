@@ -171,7 +171,7 @@ export function GradesTable<TData, TValue>({
                     }
 
                     if (currentPage === pageCount) {
-                      onSetPage(currentPage - 1);
+                      onSetPage(currentPage - 3);
 
                       setCurrentPage(currentPage - 2);
 
