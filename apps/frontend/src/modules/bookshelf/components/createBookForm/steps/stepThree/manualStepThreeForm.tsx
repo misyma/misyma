@@ -216,7 +216,7 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
       try {
         userBook = await createUserBookMutation({
           bookId: bookCreationResponse.id,
-          bookshelfId,
+          bookshelfId: bookCreation.stepThreeDetails?.bookshelfId || bookshelfId,
           status: bookCreation.stepThreeDetails?.status || (values.status as ContractReadingStatus),
           isFavorite: false,
           genreIds: [bookCreation.stepThreeDetails?.genre as string],

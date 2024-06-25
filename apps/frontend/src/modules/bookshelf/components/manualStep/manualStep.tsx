@@ -117,7 +117,7 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
     try {
       userBook = await createUserBookMutation({
         bookId: searchBookContext.bookId,
-        bookshelfId,
+        bookshelfId: values.bookshelfId || bookshelfId,
         status: values.status as ContractReadingStatus,
         isFavorite: false,
         accessToken: accessToken as string,
