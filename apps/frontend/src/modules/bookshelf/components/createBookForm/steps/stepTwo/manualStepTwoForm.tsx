@@ -68,9 +68,7 @@ export const ManualStepTwoForm = (): JSX.Element => {
 
   const dispatch = useBookCreationDispatch();
 
-  const [isOriginalLanguage, setIsOriginalLanguage] = useState(
-    bookCreation.stepTwoDetails?.translator !== '' ? false : true,
-  );
+  const [isOriginalLanguage, setIsOriginalLanguage] = useState(bookCreation.isOriginal);
 
   const form = useForm({
     resolver: zodResolver(stepTwoSchema),
@@ -222,7 +220,13 @@ export const ManualStepTwoForm = (): JSX.Element => {
         <div className="flex gap-2 items-center">
           <Checkbox
             checked={isOriginalLanguage}
-            onClick={() => setIsOriginalLanguage(!isOriginalLanguage)}
+            onClick={() => {
+              setIsOriginalLanguage(!isOriginalLanguage)
+              dispatch({
+                type: BookCreationActionType.setIsOriginal,
+                isOriginal: !isOriginalLanguage
+              })
+            }}
           ></Checkbox>
           <p>Język oryginalny</p>
         </div>
