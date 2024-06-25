@@ -60,18 +60,22 @@ describe('UpdateBookReadingCommandHandlerImpl', () => {
   it('throws an error - when BookReading was not found', async () => {
     const nonExistentBookReadingId = Generator.uuid();
 
-    expect(
-      async () =>
-        await commandHandler.execute({
-          id: nonExistentBookReadingId,
-        }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+    try {
+      await commandHandler.execute({
+        id: nonExistentBookReadingId,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toMatchObject({
         reason: 'BookReading does not exist.',
         id: nonExistentBookReadingId,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('updates a BookReading', async () => {

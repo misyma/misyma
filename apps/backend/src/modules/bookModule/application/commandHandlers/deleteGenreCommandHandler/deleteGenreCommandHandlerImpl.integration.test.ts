@@ -30,17 +30,22 @@ describe('DeleteGenreCommandHandler', () => {
   it('throws an error - when Genre does not exist', async () => {
     const invalidUuid = Generator.uuid();
 
-    await expect(async () => {
+    try {
       await commandHandler.execute({
         id: invalidUuid,
       });
-    }).toThrowErrorInstance({
-      instance: ResourceNotFoundError,
-      context: {
+    } catch (error) {
+      expect(error).toBeInstanceOf(ResourceNotFoundError);
+
+      expect((error as ResourceNotFoundError).context).toEqual({
         resource: 'Genre',
         id: invalidUuid,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('deletes the Genre', async () => {

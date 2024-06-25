@@ -96,7 +96,7 @@ describe('CreateBookCommandHandler', () => {
 
     const createdBook = bookTestFactory.create();
 
-    await expect(async () =>
+    try {
       createBookCommandHandler.execute({
         title: createdBook.getTitle(),
         isbn: createdBook.getIsbn() as string,
@@ -109,20 +109,25 @@ describe('CreateBookCommandHandler', () => {
         isApproved: createdBook.getIsApproved(),
         imageUrl: createdBook.getImageUrl() as string,
         authorIds: [authorId],
-      }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toEqual({
         reason: 'Provided Authors do not exist.',
         missingIds: [authorId],
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('throws an error - when Authors are not provided', async () => {
     const createdBook = bookTestFactory.create();
 
-    await expect(async () =>
+    try {
       createBookCommandHandler.execute({
         title: createdBook.getTitle(),
         isbn: createdBook.getIsbn() as string,
@@ -135,13 +140,18 @@ describe('CreateBookCommandHandler', () => {
         isApproved: createdBook.getIsApproved(),
         imageUrl: createdBook.getImageUrl() as string,
         authorIds: [],
-      }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toEqual({
         reason: 'Book must have at least one author.',
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('throws an error - when provided ISBN is already taken', async () => {
@@ -158,7 +168,7 @@ describe('CreateBookCommandHandler', () => {
       },
     });
 
-    await expect(async () =>
+    try {
       createBookCommandHandler.execute({
         title: existingBook.title,
         isbn,
@@ -171,14 +181,19 @@ describe('CreateBookCommandHandler', () => {
         isApproved: existingBook.isApproved,
         imageUrl: existingBook.imageUrl,
         authorIds: [author.id],
-      }),
-    ).toThrowErrorInstance({
-      instance: ResourceAlreadyExistsError,
-      context: {
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(ResourceAlreadyExistsError);
+
+      expect((error as ResourceAlreadyExistsError).context).toEqual({
         resource: 'Book',
         isbn,
         existingBookId: existingBook.id,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 });

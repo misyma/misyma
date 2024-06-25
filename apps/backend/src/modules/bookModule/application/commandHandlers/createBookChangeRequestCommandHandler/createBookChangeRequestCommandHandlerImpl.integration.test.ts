@@ -127,28 +127,30 @@ describe('CreateBookChangeRequestCommandHandler', () => {
       userId: user.id,
     });
 
-    await expect(
-      async () =>
-        await createBookChangeRequestCommandHandler.execute({
-          title: createdBookChangeRequest.getTitle(),
-          isbn: createdBookChangeRequest.getIsbn() as string,
-          publisher: createdBookChangeRequest.getPublisher() as string,
-          releaseYear: createdBookChangeRequest.getReleaseYear() as number,
-          language: createdBookChangeRequest.getLanguage(),
-          translator: createdBookChangeRequest.getTranslator() as string,
-          format: createdBookChangeRequest.getFormat(),
-          pages: createdBookChangeRequest.getPages() as number,
-          imageUrl: createdBookChangeRequest.getImageUrl() as string,
-          bookId,
-          userId: user.id,
-        }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+    try {
+      await createBookChangeRequestCommandHandler.execute({
+        title: createdBookChangeRequest.getTitle(),
+        isbn: createdBookChangeRequest.getIsbn() as string,
+        publisher: createdBookChangeRequest.getPublisher() as string,
+        releaseYear: createdBookChangeRequest.getReleaseYear() as number,
+        language: createdBookChangeRequest.getLanguage(),
+        translator: createdBookChangeRequest.getTranslator() as string,
+        format: createdBookChangeRequest.getFormat(),
+        pages: createdBookChangeRequest.getPages() as number,
+        imageUrl: createdBookChangeRequest.getImageUrl() as string,
+        bookId,
+        userId: user.id,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toEqual({
         reason: 'Book does not exist.',
         id: bookId,
-      },
-    });
+      });
+
+      return;
+    }
   });
 
   it('throws an error - when provided Book does not exist', async () => {
@@ -161,27 +163,31 @@ describe('CreateBookChangeRequestCommandHandler', () => {
       userId,
     });
 
-    await expect(
-      async () =>
-        await createBookChangeRequestCommandHandler.execute({
-          title: createdBookChangeRequest.getTitle(),
-          isbn: createdBookChangeRequest.getIsbn() as string,
-          publisher: createdBookChangeRequest.getPublisher() as string,
-          releaseYear: createdBookChangeRequest.getReleaseYear() as number,
-          language: createdBookChangeRequest.getLanguage(),
-          translator: createdBookChangeRequest.getTranslator() as string,
-          format: createdBookChangeRequest.getFormat(),
-          pages: createdBookChangeRequest.getPages() as number,
-          imageUrl: createdBookChangeRequest.getImageUrl() as string,
-          bookId: book.id,
-          userId,
-        }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+    try {
+      await createBookChangeRequestCommandHandler.execute({
+        title: createdBookChangeRequest.getTitle(),
+        isbn: createdBookChangeRequest.getIsbn() as string,
+        publisher: createdBookChangeRequest.getPublisher() as string,
+        releaseYear: createdBookChangeRequest.getReleaseYear() as number,
+        language: createdBookChangeRequest.getLanguage(),
+        translator: createdBookChangeRequest.getTranslator() as string,
+        format: createdBookChangeRequest.getFormat(),
+        pages: createdBookChangeRequest.getPages() as number,
+        imageUrl: createdBookChangeRequest.getImageUrl() as string,
+        bookId: book.id,
+        userId,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toEqual({
         reason: 'User does not exist.',
         id: userId,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 });

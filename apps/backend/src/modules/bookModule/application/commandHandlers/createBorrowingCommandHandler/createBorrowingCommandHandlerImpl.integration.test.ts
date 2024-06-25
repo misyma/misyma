@@ -67,19 +67,23 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
 
     const borrowing = borrowingTestFactory.create();
 
-    expect(
-      async () =>
-        await commandHandler.execute({
-          ...borrowing.getState(),
-          userBookId: nonExistentUserBookId,
-        }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+    try {
+      await commandHandler.execute({
+        ...borrowing.getState(),
+        userBookId: nonExistentUserBookId,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toMatchObject({
         reason: 'UserBook does not exist.',
         id: nonExistentUserBookId,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('throws an error - when startedAt is greater than endedAt', async () => {

@@ -57,13 +57,17 @@ describe('ApplyBookChangeRequestCommandHandlerImpl', () => {
   it('throws an error - when BookChangeRequest does not exist', async () => {
     const nonExistentBookChangeRequestId = Generator.uuid();
 
-    await expect(async () =>
-      commandHandler.execute({
+    try {
+      await commandHandler.execute({
         bookChangeRequestId: nonExistentBookChangeRequestId,
-      }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-    });
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('applies a BookChangeRequest to the Book', async () => {

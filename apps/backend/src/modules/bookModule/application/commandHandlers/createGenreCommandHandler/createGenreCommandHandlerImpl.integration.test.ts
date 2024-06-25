@@ -30,13 +30,18 @@ describe('CreateGenreCommandHandlerImpl', () => {
   it('throws an error - when Genre already exists', async () => {
     const genre = await genreTestUtils.createAndPersist();
 
-    await expect(async () => await commandHandler.execute({ name: genre.name })).toThrowErrorInstance({
-      instance: ResourceAlreadyExistsError,
-      context: {
+    try {
+      await commandHandler.execute({ name: genre.name });
+    } catch (error) {
+      expect(error).toBeInstanceOf(ResourceAlreadyExistsError);
+
+      expect((error as ResourceAlreadyExistsError).context).toEqual({
         resource: 'Genre',
         name: genre.name,
-      },
-    });
+      });
+    }
+
+    expect.fail();
   });
 
   it('creates Genre', async () => {

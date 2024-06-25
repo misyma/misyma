@@ -85,13 +85,22 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
   it('throws an error - when UserBook does not exist', async () => {
     const nonExistentUserBookId = Generator.uuid();
 
-    await expect(async () =>
-      commandHandler.execute({
+    try {
+      await commandHandler.execute({
         userBookId: nonExistentUserBookId,
-      }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-    });
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toMatchObject({
+        reason: 'UserBook does not exist.',
+        id: nonExistentUserBookId,
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('throws an error - when updated Bookshelf does not exist', async () => {
@@ -114,15 +123,23 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
 
     const invalidBookshelfId = Generator.uuid();
 
-    await expect(
-      async () =>
-        await commandHandler.execute({
-          userBookId: userBook.id,
-          bookshelfId: invalidBookshelfId,
-        }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-    });
+    try {
+      await commandHandler.execute({
+        userBookId: userBook.id,
+        bookshelfId: invalidBookshelfId,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toMatchObject({
+        reason: 'Bookshelf does not exist.',
+        id: invalidBookshelfId,
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('updates UserBook', async () => {
@@ -204,19 +221,23 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
 
     const invalidGenreId = Generator.uuid();
 
-    await expect(
-      async () =>
-        await commandHandler.execute({
-          userBookId: userBook.id,
-          genreIds: [genre1.id, invalidGenreId],
-        }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+    try {
+      await commandHandler.execute({
+        userBookId: userBook.id,
+        genreIds: [genre1.id, invalidGenreId],
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toMatchObject({
         reason: 'Some genres do not exist.',
         ids: [genre1.id, invalidGenreId],
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('updates UserBook Genres', async () => {
@@ -279,19 +300,23 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
 
     const invalidCollectionId = Generator.uuid();
 
-    await expect(
-      async () =>
-        await commandHandler.execute({
-          userBookId: userBook.id,
-          collectionIds: [collection1.id, invalidCollectionId],
-        }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+    try {
+      await commandHandler.execute({
+        userBookId: userBook.id,
+        collectionIds: [collection1.id, invalidCollectionId],
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toMatchObject({
         reason: 'Some collections do not exist.',
         ids: [collection1.id, invalidCollectionId],
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('updates UserBook Collections', async () => {

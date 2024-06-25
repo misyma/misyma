@@ -127,22 +127,27 @@ describe('CreateUserBookCommandHandler', () => {
 
     const isFavorite = Generator.boolean();
 
-    await expect(async () =>
-      createUserBookCommandHandler.execute({
+    try {
+      await createUserBookCommandHandler.execute({
         userId,
         imageUrl,
         status,
         isFavorite,
         bookshelfId,
         bookId: book.id,
-      }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toMatchObject({
         reason: 'Bookshelf does not exist.',
         id: bookshelfId,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('throws an error - when provided Book does not exist', async () => {
@@ -158,22 +163,27 @@ describe('CreateUserBookCommandHandler', () => {
 
     const isFavorite = Generator.boolean();
 
-    await expect(async () =>
-      createUserBookCommandHandler.execute({
+    try {
+      await createUserBookCommandHandler.execute({
         userId: user.id,
         imageUrl,
         status,
         isFavorite,
         bookshelfId: bookshelf.id,
         bookId,
-      }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toEqual({
         reason: 'Book does not exist.',
         id: bookId,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('throws an error - when UserBook already exists on same bookshelf', async () => {
@@ -202,23 +212,28 @@ describe('CreateUserBookCommandHandler', () => {
       },
     });
 
-    await expect(async () =>
-      createUserBookCommandHandler.execute({
+    try {
+      await createUserBookCommandHandler.execute({
         userId: user.id,
         imageUrl,
         status,
         isFavorite,
         bookshelfId: bookshelf.id,
         bookId: book.id,
-      }),
-    ).toThrowErrorInstance({
-      instance: ResourceAlreadyExistsError,
-      context: {
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(ResourceAlreadyExistsError);
+
+      expect((error as ResourceAlreadyExistsError).context).toMatchObject({
         resource: 'UserBook',
         bookshelfId: bookshelf.id,
         bookId: book.id,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('throws an error - when Bookshelf does not belong to the User', async () => {
@@ -242,23 +257,28 @@ describe('CreateUserBookCommandHandler', () => {
 
     const isFavorite = Generator.boolean();
 
-    await expect(async () =>
-      createUserBookCommandHandler.execute({
+    try {
+      await createUserBookCommandHandler.execute({
         userId: user2.id,
         imageUrl,
         status,
         isFavorite,
         bookshelfId: bookshelf.id,
         bookId: book.id,
-      }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toMatchObject({
         reason: 'Bookshelf does not belong to the user.',
         userId: user2.id,
         bookshelfId: bookshelf.id,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('throws an error - when User already have that book on some bookshelf', async () => {
@@ -289,22 +309,27 @@ describe('CreateUserBookCommandHandler', () => {
       },
     });
 
-    await expect(async () =>
-      createUserBookCommandHandler.execute({
+    try {
+      await createUserBookCommandHandler.execute({
         userId: user.id,
         imageUrl,
         status,
         isFavorite,
         bookshelfId: bookshelf2.id,
         bookId: book.id,
-      }),
-    ).toThrowErrorInstance({
-      instance: ResourceAlreadyExistsError,
-      context: {
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(ResourceAlreadyExistsError);
+
+      expect((error as ResourceAlreadyExistsError).context).toMatchObject({
         resource: 'UserBook',
         bookshelfId: bookshelf2.id,
         bookId: book.id,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 });

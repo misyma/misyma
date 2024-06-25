@@ -31,19 +31,23 @@ describe('UpdateAuthorCommandHandler', () => {
   it('throws an error - when Author does not exist', async () => {
     const authorId = Generator.uuid();
 
-    await expect(
-      async () =>
-        await commandHandler.execute({
-          id: authorId,
-          name: Generator.words(2),
-        }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+    try {
+      await commandHandler.execute({
+        id: authorId,
+        name: Generator.words(2),
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toEqual({
         reason: 'Author does not exist.',
         id: authorId,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('throws an error - when Author with given name already exists', async () => {
@@ -51,20 +55,24 @@ describe('UpdateAuthorCommandHandler', () => {
 
     const secondAuthor = await authorTestUtils.createAndPersist();
 
-    await expect(
-      async () =>
-        await commandHandler.execute({
-          id: preExistingAuthor.id,
-          name: secondAuthor.name,
-        }),
-    ).toThrowErrorInstance({
-      instance: ResourceAlreadyExistsError,
-      context: {
+    try {
+      await commandHandler.execute({
+        id: secondAuthor.id,
+        name: preExistingAuthor.name,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(ResourceAlreadyExistsError);
+
+      expect((error as ResourceAlreadyExistsError).context).toEqual({
         resource: 'Author',
         id: secondAuthor.id,
-        name: secondAuthor.name,
-      },
-    });
+        name: preExistingAuthor.name,
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('updates author name', async () => {

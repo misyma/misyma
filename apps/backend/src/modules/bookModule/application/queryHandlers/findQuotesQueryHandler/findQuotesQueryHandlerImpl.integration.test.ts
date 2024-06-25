@@ -59,20 +59,24 @@ describe('FindQuotesQueryHandlerImpl', () => {
   it('throws an error - when UserBook was not found', async () => {
     const nonExistentUserBookId = Generator.uuid();
 
-    expect(
-      async () =>
-        await queryHandler.execute({
-          userBookId: nonExistentUserBookId,
-          page: 1,
-          pageSize: 10,
-        }),
-    ).toThrowErrorInstance({
-      instance: ResourceNotFoundError,
-      context: {
+    try {
+      await queryHandler.execute({
+        userBookId: nonExistentUserBookId,
+        page: 1,
+        pageSize: 10,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(ResourceNotFoundError);
+
+      expect((error as ResourceNotFoundError).context).toMatchObject({
         resource: 'UserBook',
         id: nonExistentUserBookId,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('returns an empty array - when UserBook has no Quotes', async () => {

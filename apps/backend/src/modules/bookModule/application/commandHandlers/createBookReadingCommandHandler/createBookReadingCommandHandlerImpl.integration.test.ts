@@ -65,19 +65,23 @@ describe('CreateBookReadingCommandHandlerImpl', () => {
 
     const bookReading = bookReadingTestFactory.create();
 
-    expect(
-      async () =>
-        await commandHandler.execute({
-          ...bookReading.getState(),
-          userBookId: nonExistentUserBookId,
-        }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+    try {
+      await commandHandler.execute({
+        ...bookReading.getState(),
+        userBookId: nonExistentUserBookId,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toMatchObject({
         reason: 'UserBook does not exist.',
         id: nonExistentUserBookId,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('throws an error - when startDate is later then endDate', async () => {
@@ -100,17 +104,21 @@ describe('CreateBookReadingCommandHandlerImpl', () => {
       endedAt: Generator.pastDate(),
     });
 
-    await expect(
-      async () =>
-        await commandHandler.execute({
-          ...bookReadingDraft.getState(),
-        }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+    try {
+      await commandHandler.execute({
+        ...bookReadingDraft.getState(),
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toMatchObject({
         reason: 'Start date cannot be later than end date.',
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('returns a BookReading', async () => {

@@ -59,18 +59,22 @@ describe('DeleteQuoteCommandHandlerImpl', () => {
   it('throws an error - when Quote was not found', async () => {
     const nonExistentQuoteId = Generator.uuid();
 
-    expect(
-      async () =>
-        await commandHandler.execute({
-          id: nonExistentQuoteId,
-        }),
-    ).toThrowErrorInstance({
-      instance: ResourceNotFoundError,
-      context: {
+    try {
+      await commandHandler.execute({
+        id: nonExistentQuoteId,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(ResourceNotFoundError);
+
+      expect((error as ResourceNotFoundError).context).toEqual({
         resource: 'Quote',
         id: nonExistentQuoteId,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('deletes a Quote', async () => {
