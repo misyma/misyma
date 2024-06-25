@@ -29,7 +29,8 @@ import {
 import { BookFormat as ContractBookFormat } from '@common/contracts';
 import { BookFormat } from '../../../../../common/constants/bookFormat';
 import { Language } from '@common/contracts';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
+import { Checkbox } from '../../../../../common/components/ui/checkbox';
 
 const stepTwoSchema = z.object({
   language: z.enum(Object.values(Language) as unknown as [string, ...string[]]),
@@ -66,6 +67,8 @@ export const ManualStepTwoForm = (): JSX.Element => {
   const bookCreation = useBookCreation<false>() as BookCreationNonIsbnState;
 
   const dispatch = useBookCreationDispatch();
+
+  const [isOriginalLanguage, setIsOriginalLanguage] = useState(bookCreation.isOriginal);
 
   const form = useForm({
     resolver: zodResolver(stepTwoSchema),
@@ -136,32 +139,6 @@ export const ManualStepTwoForm = (): JSX.Element => {
         />
         <FormField
           control={form.control}
-          name="translator"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Tłumacz</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Tłumacz"
-                  type="text"
-                  includeQuill={false}
-                  {...field}
-                  onChange={(val) => {
-                    dispatch({
-                      type: BookCreationActionType.setTranslator,
-                      translator: val.currentTarget.value,
-                    });
-
-                    field.onChange(val);
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
           name="form"
           render={({ field }) => (
             <FormItem>
@@ -212,6 +189,47 @@ export const ManualStepTwoForm = (): JSX.Element => {
             </FormItem>
           )}
         />
+        {!isOriginalLanguage && (
+          <FormField
+            control={form.control}
+            name="translator"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tłumacz</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Tłumacz"
+                    type="text"
+                    includeQuill={false}
+                    {...field}
+                    onChange={(val) => {
+                      dispatch({
+                        type: BookCreationActionType.setTranslator,
+                        translator: val.currentTarget.value,
+                      });
+
+                      field.onChange(val);
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+        <div className="flex gap-2 items-center">
+          <Checkbox
+            checked={isOriginalLanguage}
+            onClick={() => {
+              setIsOriginalLanguage(!isOriginalLanguage)
+              dispatch({
+                type: BookCreationActionType.setIsOriginal,
+                isOriginal: !isOriginalLanguage
+              })
+            }}
+          ></Checkbox>
+          <p>Język oryginalny</p>
+        </div>
         <div className="flex justify-between w-full gap-4">
           <Button
             className="border border-primary w-full"

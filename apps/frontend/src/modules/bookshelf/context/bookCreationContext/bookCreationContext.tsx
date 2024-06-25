@@ -33,6 +33,7 @@ export enum BookCreationActionType {
   setStep = 17,
   setBookshelfId = 18,
   setAuthorName = 19,
+  setIsOriginal = 20,
 }
 
 type SetStep = {
@@ -108,6 +109,11 @@ type SetFormat = {
   format: BookFormat;
 };
 
+type SetIsOriginal = {
+  type: BookCreationActionType.setIsOriginal;
+  isOriginal: boolean;
+};
+
 type SetPagesCount = {
   type: BookCreationActionType.setPagesCount;
   pagesCount: number;
@@ -154,12 +160,14 @@ export type BookCreationAction =
   | SetImage
   | SetStep
   | SetBookshelfId
-  | SetAuthorName;
+  | SetAuthorName
+  | SetIsOriginal;
 
 export interface BookCreationNonIsbnState<T extends boolean = false> {
   isbnPath: T;
   step: NonIsbnCreationPathStep;
   yearOfIssue?: number;
+  isOriginal: boolean;
   stepOneDetails?: {
     isbn: string;
     title: string;
@@ -381,10 +389,17 @@ function bookCreationReducer<T extends boolean = true>(
           authorName: action.authorName,
         } as Omit<SetNonIsbnStepOneDetails, 'type'>,
       };
+
+    case BookCreationActionType.setIsOriginal:
+      return {
+        ...state,
+        isOriginal: action.isOriginal,
+      };
   }
 }
 
 const initialState: BookCreationState<false> = {
   step: NonIsbnCreationPathStep.inputFirstDetails,
   isbnPath: false,
+  isOriginal: true,
 };

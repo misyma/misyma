@@ -68,7 +68,7 @@ export const QuotationText: FC<QuotationTextProps> = ({ content, index, pageInde
         id={elementId}
         className="font-semibold break-words text-lg truncate sm:max-w-3xl md:max-w-4xl"
       >
-        {index + 1 + pageIndex}. "{content}"
+        "{content}"
       </p>
       {isTruncated && (
         <div
