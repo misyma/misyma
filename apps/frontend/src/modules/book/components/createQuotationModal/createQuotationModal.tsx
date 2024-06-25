@@ -17,7 +17,6 @@ import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { useQueryClient } from '@tanstack/react-query';
-import { Checkbox } from '../../../common/components/ui/checkbox';
 import { useToast } from '../../../common/components/ui/use-toast';
 import { useCreateQuoteMutation } from '../../../quotes/api/mutations/createQuoteMutation/createQuoteMutation';
 import { getQuotesOptionsQueryKey } from '../../../quotes/api/queries/getQuotes/getQuotesOptions';
@@ -33,7 +32,6 @@ const createQuotationSchema = z
       })
       .min(1, 'Cytat musi mieć minimum 1 znak.')
       .max(256, 'Strona może mieć maksymalnie 256 znaków.'),
-    isFavorite: z.boolean({}),
   })
   .superRefine((value, ctx) => {
     const match = value.page.match(/[0-9-]+/g);
@@ -71,7 +69,6 @@ export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props):
     defaultValues: {
       page: '',
       content: '',
-      isFavorite: false,
     },
     reValidateMode: 'onChange',
     mode: 'onChange',
@@ -88,6 +85,7 @@ export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props):
         createdAt: new Date().toISOString(),
         userBookId,
         userId: userData?.id as string,
+        isFavorite: false,
       });
 
       onMutated();
@@ -175,23 +173,6 @@ export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props):
                       />
                     </FormControl>
                     <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="isFavorite"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel>Ulubiona</FormLabel>
-                    </div>
                   </FormItem>
                 )}
               />

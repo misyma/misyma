@@ -171,12 +171,7 @@ export const ManualStepOneForm = (): JSX.Element => {
       shouldTouch: true,
     });
 
-    if (
-      form.formState.touchedFields.isbn &&
-      form.formState.touchedFields.publisher &&
-      form.formState.touchedFields.title &&
-      form.formState.touchedFields.yearOfIssue
-    ) {
+    if (form.formState.touchedFields.title) {
       form.trigger('authorName', {});
     }
 
@@ -391,7 +386,8 @@ export const ManualStepOneForm = (): JSX.Element => {
                                       />
                                       <Button
                                         disabled={!createAuthorDraftForm.formState.isValid}
-                                        type="submit"
+                                        type='button'
+                                        onClick={() => onCreateAuthorDraft(createAuthorDraftForm.getValues())}
                                       >
                                         Stwórz
                                       </Button>

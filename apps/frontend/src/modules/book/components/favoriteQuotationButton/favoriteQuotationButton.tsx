@@ -41,12 +41,12 @@ export const FavoriteQuotationButton: FC<Props> = ({ quote }) => {
     <>
       {!quote.isFavorite ? (
         <HiOutlineHeart
-          className={cn('h-8 w-8 cursor-pointer', 'text-primary')}
+          className={cn('h-6 w-6 cursor-pointer', 'text-primary')}
           onClick={onIsFavoriteChange}
         />
       ) : (
         <HiHeart
-          className={cn('h-8 w-8 cursor-pointer', 'text-primary')}
+          className={cn('h-6 w-6 cursor-pointer', 'text-primary')}
           onClick={onIsFavoriteChange}
         />
       )}
