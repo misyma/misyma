@@ -82,6 +82,55 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
     });
   });
 
+  it('throws an error - when startedAt is greater than endedAt', async () => {
+    const user = await userTestUtils.createAndPersist();
+
+    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+
+    await bookshelfTestUtils.createAndPersist({
+      input: {
+        userId: user.id,
+        type: BookshelfType.borrowing,
+      },
+    });
+
+    const book = await bookTestUtils.createAndPersist();
+
+    const userBook = await userBookTestUtils.createAndPersist({
+      input: {
+        bookshelfId: bookshelf.id,
+        bookId: book.id,
+      },
+    });
+
+    const startedAt = new Date('2022-02-01');
+
+    const endedAt = new Date('2022-01-01');
+
+    const borrower = Generator.fullName();
+
+    try {
+      await commandHandler.execute({
+        borrower,
+        userBookId: userBook.id,
+        startedAt,
+        endedAt,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toMatchObject({
+        reason: `Start date cannot be later than end date.`,
+        startedAt,
+        endedAt,
+      });
+
+      return;
+    }
+
+    expect.fail();
+  });
+
   it('creates a Borrowing and moves a UserBook to Borrowing Bookshelf', async () => {
     const user = await userTestUtils.createAndPersist();
 
@@ -155,17 +204,21 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
       userBookId: userBook.id,
     });
 
-    expect(
-      async () =>
-        await commandHandler.execute({
-          ...borrowingDraft.getState(),
-        }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+    try {
+      await commandHandler.execute({
+        ...borrowingDraft.getState(),
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toMatchObject({
         reason: 'Borrowing Bookshelf does not exist.',
         userId: user.id,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 });

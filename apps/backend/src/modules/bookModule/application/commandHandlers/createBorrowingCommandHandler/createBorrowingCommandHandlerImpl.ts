@@ -68,6 +68,14 @@ export class CreateBorrowingCommandHandlerImpl implements CreateBorrowingCommand
       });
     }
 
+    if (endedAt && startedAt.getTime() > endedAt.getTime()) {
+      throw new OperationNotValidError({
+        reason: `Start date cannot be later than end date.`,
+        startedAt,
+        endedAt,
+      });
+    }
+
     // TODO: add transaction
 
     const borrowing = await this.borrowingRepository.saveBorrowing({
