@@ -6,13 +6,15 @@ import { meRoute } from '../../../routes/me/me';
 import { resetPasswordRoute } from '../../../routes/resetPassword/resetPassword';
 import { newPasswordRoute } from '../../../routes/newPassword/newPassword';
 import { verifyEmailRoute } from '../../../routes/verifyEmail/verifyEmail';
-import { bookRoute } from '../../../routes/myBooks/book';
 import { shelvesRoute } from '../../../routes/shelves/shelves';
 import { bookshelfRoute } from '../../../routes/bookshelf/bookshelf';
 import { createBookRoute } from '../../../routes/bookshelf/createBook/createBook';
 import { searchRoute } from '../../../routes/bookshelf/search/search';
 import { searchResultRoute } from '../../../routes/bookshelf/search/routes/result/searchResult';
 import { searchCreateRoute } from '../../../routes/bookshelf/search/routes/create/searchCreate';
+import { gradesTabPage } from '../../../routes/myBooks/tabs/gradesTab/gradesTab';
+import { basicBookDataRoute } from '../../../routes/myBooks/tabs/basicDataTab/basicDataTab';
+import { quotationsTabRoute } from '../../../routes/myBooks/tabs/quotationsTab/quotationsTab';
 
 export const routeTree = rootRoute.addChildren([
   landingRoute,
@@ -23,10 +25,12 @@ export const routeTree = rootRoute.addChildren([
   newPasswordRoute,
   verifyEmailRoute,
   createBookRoute,
-  bookRoute,
   shelvesRoute,
   bookshelfRoute,
   searchRoute,
   searchResultRoute,
   searchCreateRoute,
+  basicBookDataRoute,
+  gradesTabPage,
+  quotationsTabRoute
 ]);
