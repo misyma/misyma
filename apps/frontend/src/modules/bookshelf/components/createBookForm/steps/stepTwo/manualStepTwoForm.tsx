@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { ControllerRenderProps, useForm } from 'react-hook-form';
 import {
   BookCreationActionType,
   BookCreationNonIsbnState,
@@ -18,7 +18,6 @@ import {
 } from '../../../../../common/components/ui/form';
 import { Input } from '../../../../../common/components/ui/input';
 import { Button } from '../../../../../common/components/ui/button';
-import { Languages } from '../../../../../common/constants/languages';
 import {
   Select,
   SelectContent,
@@ -29,8 +28,9 @@ import {
 import { BookFormat as ContractBookFormat } from '@common/contracts';
 import { BookFormat } from '../../../../../common/constants/bookFormat';
 import { Language } from '@common/contracts';
-import { useCallback, useState } from 'react';
+import { FC, useCallback, useState } from 'react';
 import { Checkbox } from '../../../../../common/components/ui/checkbox';
+import LanguageSelect from '../../../../../book/components/languageSelect/languageSelect';
 
 const stepTwoSchema = z.object({
   language: z.enum(Object.values(Language) as unknown as [string, ...string[]]),
@@ -63,6 +63,52 @@ const stepTwoSchema = z.object({
     .or(z.literal('')),
 });
 
+const BookFormatSelect: FC<ControllerRenderProps> = (field) => {
+  const dispatch = useBookCreationDispatch();
+
+  const [formatSelectOpen, setFormatSelectOpen] = useState(false);
+
+  const renderBookFormatSelectItems = useCallback(
+    () =>
+      Object.entries(BookFormat).map(([key, language]) => (
+        <SelectItem
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              setFormatSelectOpen(false);
+            }
+          }}
+          value={key}
+        >
+          {language}
+        </SelectItem>
+      )),
+    [],
+  );
+
+  return (
+    <Select
+      open={formatSelectOpen}
+      onOpenChange={setFormatSelectOpen}
+      onValueChange={(val) => {
+        dispatch({
+          type: BookCreationActionType.setFormat,
+          format: val as ContractBookFormat,
+        });
+
+        field.onChange(val);
+      }}
+      defaultValue={field.value}
+    >
+      <FormControl>
+        <SelectTrigger>
+          <SelectValue placeholder={<span className="text-muted-foreground">Format</span>} />
+          <SelectContent>{renderBookFormatSelectItems()}</SelectContent>
+        </SelectTrigger>
+      </FormControl>
+    </Select>
+  );
+};
+
 export const ManualStepTwoForm = (): JSX.Element => {
   const bookCreation = useBookCreation<false>() as BookCreationNonIsbnState;
 
@@ -79,22 +125,6 @@ export const ManualStepTwoForm = (): JSX.Element => {
       pagesCount: bookCreation.stepTwoDetails?.pagesCount ?? '',
     },
   });
-
-  const renderBookFormatSelectItems = useCallback(
-    () => Object.entries(BookFormat).map(([key, language]) => <SelectItem value={key}>{language}</SelectItem>),
-    [],
-  );
-
-  const renderLanguageSelectItems = useCallback(
-    () =>
-      Object.entries(Languages).map(([key, language]) => (
-        // todo: potentially fix :)
-        // eslint-disable-next-line
-        // @ts-ignore
-        <SelectItem value={Language[key]}>{language}</SelectItem>
-      )),
-    [],
-  );
 
   const onSubmit = () => {
     dispatch({
@@ -115,24 +145,7 @@ export const ManualStepTwoForm = (): JSX.Element => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Język</FormLabel>
-              <Select
-                onValueChange={(val) => {
-                  dispatch({
-                    type: BookCreationActionType.setLanguage,
-                    language: val as Languages,
-                  });
-
-                  field.onChange(val);
-                }}
-                defaultValue={field.value}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder={<span className="text-muted-foreground">Język</span>} />
-                    <SelectContent>{renderLanguageSelectItems()}</SelectContent>
-                  </SelectTrigger>
-                </FormControl>
-              </Select>
+              <LanguageSelect {...field} />
               <FormMessage />
             </FormItem>
           )}
@@ -143,24 +156,7 @@ export const ManualStepTwoForm = (): JSX.Element => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Format</FormLabel>
-              <Select
-                onValueChange={(val) => {
-                  dispatch({
-                    type: BookCreationActionType.setFormat,
-                    format: val as ContractBookFormat,
-                  });
-
-                  field.onChange(val);
-                }}
-                defaultValue={field.value}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder={<span className="text-muted-foreground">Format</span>} />
-                    <SelectContent>{renderBookFormatSelectItems()}</SelectContent>
-                  </SelectTrigger>
-                </FormControl>
-              </Select>
+              <BookFormatSelect {...field} />
               <FormMessage />
             </FormItem>
           )}
@@ -221,11 +217,11 @@ export const ManualStepTwoForm = (): JSX.Element => {
           <Checkbox
             checked={isOriginalLanguage}
             onClick={() => {
-              setIsOriginalLanguage(!isOriginalLanguage)
+              setIsOriginalLanguage(!isOriginalLanguage);
               dispatch({
                 type: BookCreationActionType.setIsOriginal,
-                isOriginal: !isOriginalLanguage
-              })
+                isOriginal: !isOriginalLanguage,
+              });
             }}
           ></Checkbox>
           <p>Język oryginalny</p>
