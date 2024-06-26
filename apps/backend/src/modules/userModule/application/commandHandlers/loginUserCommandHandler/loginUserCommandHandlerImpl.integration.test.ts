@@ -104,54 +104,66 @@ describe('LoginUserCommandHandler', () => {
       },
     });
 
-    await expect(
-      async () =>
-        await loginUserCommandHandler.execute({
-          email: createdUser.getEmail(),
-          password: createdUser.getPassword(),
-        }),
-    ).toThrowErrorInstance({
-      instance: ForbiddenAccessError,
-      context: {
+    try {
+      await loginUserCommandHandler.execute({
+        email: createdUser.getEmail(),
+        password: createdUser.getPassword(),
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(ForbiddenAccessError);
+
+      expect((error as ForbiddenAccessError).context).toMatchObject({
         reason: 'User email is not verified.',
         email: createdUser.getEmail(),
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('throws an error if a User with given email does not exist', async () => {
     const nonExistentUser = userTestFactory.create();
 
-    await expect(
-      async () =>
-        await loginUserCommandHandler.execute({
-          email: nonExistentUser.getEmail(),
-          password: nonExistentUser.getPassword(),
-        }),
-    ).toThrowErrorInstance({
-      instance: UnauthorizedAccessError,
-      context: {
+    try {
+      await loginUserCommandHandler.execute({
+        email: nonExistentUser.getEmail(),
+        password: nonExistentUser.getPassword(),
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(UnauthorizedAccessError);
+
+      expect((error as UnauthorizedAccessError).context).toMatchObject({
         reason: 'Invalid credentials.',
         email: nonExistentUser.getEmail(),
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it(`throws an error if User's password does not match stored password`, async () => {
     const { email, password } = await userTestUtils.createAndPersist({ input: { isEmailVerified: true } });
 
-    await expect(
-      async () =>
-        await loginUserCommandHandler.execute({
-          email,
-          password,
-        }),
-    ).toThrowErrorInstance({
-      instance: UnauthorizedAccessError,
-      context: {
+    try {
+      await loginUserCommandHandler.execute({
+        email,
+        password,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(UnauthorizedAccessError);
+
+      expect((error as UnauthorizedAccessError).context).toMatchObject({
         reason: 'Invalid credentials.',
         email,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 });

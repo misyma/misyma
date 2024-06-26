@@ -45,18 +45,22 @@ describe('FindBookshelfByIdQueryHandler', () => {
   it('throws an error - when Bookshelf was not found', async () => {
     const nonExistentBookshelfId = Generator.uuid();
 
-    expect(
-      async () =>
-        await queryHandler.execute({
-          bookshelfId: nonExistentBookshelfId,
-          userId: Generator.uuid(),
-        }),
-    ).toThrowErrorInstance({
-      instance: ResourceNotFoundError,
-      context: {
+    try {
+      await queryHandler.execute({
+        bookshelfId: nonExistentBookshelfId,
+        userId: Generator.uuid(),
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(ResourceNotFoundError);
+
+      expect((error as ResourceNotFoundError).context).toMatchObject({
         resource: 'Bookshelf',
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('returns a Bookshelf', async () => {

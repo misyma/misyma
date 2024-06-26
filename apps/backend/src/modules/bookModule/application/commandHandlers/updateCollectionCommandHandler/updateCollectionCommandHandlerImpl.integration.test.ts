@@ -45,19 +45,23 @@ describe('UpdateCollectionNameCommandHandler', () => {
   it('throws an error - when Collection does not exist', async () => {
     const collectionId = Generator.uuid();
 
-    await expect(
-      async () =>
-        await commandHandler.execute({
-          id: collectionId,
-          name: Generator.words(2),
-        }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+    try {
+      await commandHandler.execute({
+        id: collectionId,
+        name: Generator.words(2),
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toEqual({
         reason: 'Collection does not exist.',
         id: collectionId,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('throws an error - when Collection with given name already exists', async () => {
@@ -67,18 +71,22 @@ describe('UpdateCollectionNameCommandHandler', () => {
 
     const secondCollection = await collectionTestUtils.createAndPersist({ input: { userId: user.id } });
 
-    await expect(
-      async () =>
-        await commandHandler.execute({
-          id: preExistingCollection.id,
-          name: secondCollection.name,
-        }),
-    ).toThrowErrorInstance({
-      instance: ResourceAlreadyExistsError,
-      context: {
+    try {
+      await commandHandler.execute({
+        id: preExistingCollection.id,
+        name: secondCollection.name,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(ResourceAlreadyExistsError);
+
+      expect((error as ResourceAlreadyExistsError).context).toMatchObject({
         resource: 'Collection',
         name: secondCollection.name,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 });

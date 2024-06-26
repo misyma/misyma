@@ -59,18 +59,22 @@ describe('DeleteBorrowingCommandHandlerImpl', () => {
   it('throws an error - when Borrowing was not found', async () => {
     const nonExistentBorrowingId = Generator.uuid();
 
-    expect(
-      async () =>
-        await commandHandler.execute({
-          id: nonExistentBorrowingId,
-        }),
-    ).toThrowErrorInstance({
-      instance: ResourceNotFoundError,
-      context: {
+    try {
+      await commandHandler.execute({
+        id: nonExistentBorrowingId,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(ResourceNotFoundError);
+
+      expect((error as ResourceNotFoundError).context).toEqual({
         resource: 'Borrowing',
         id: nonExistentBorrowingId,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('deletes a Borrowing', async () => {

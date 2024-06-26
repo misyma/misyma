@@ -47,19 +47,23 @@ describe('CreateBookshelfCommandHandlerImpl', () => {
 
     const name = Generator.word();
 
-    expect(
-      async () =>
-        await commandHandler.execute({
-          name,
-          userId: nonExistentUserId,
-        }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+    try {
+      await commandHandler.execute({
+        name,
+        userId: nonExistentUserId,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toMatchObject({
         reason: 'User does not exist.',
         id: nonExistentUserId,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('throws an error - when Bookshelf with this name already exists', async () => {

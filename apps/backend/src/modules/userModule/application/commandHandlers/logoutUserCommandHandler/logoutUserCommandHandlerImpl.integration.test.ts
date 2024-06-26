@@ -100,20 +100,24 @@ describe('LogoutUserCommandHandlerImpl', () => {
 
     const userId = Generator.uuid();
 
-    await expect(
-      async () =>
-        await commandHandler.execute({
-          userId,
-          refreshToken,
-          accessToken,
-        }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+    try {
+      await commandHandler.execute({
+        userId,
+        refreshToken,
+        accessToken,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toMatchObject({
         reason: 'User not found.',
         userId,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('throws an error - when RefreshToken is of different purpose', async () => {
@@ -135,19 +139,23 @@ describe('LogoutUserCommandHandlerImpl', () => {
       expiresIn: Generator.number(10000, 100000),
     });
 
-    await expect(
-      async () =>
-        await commandHandler.execute({
-          userId: user.id,
-          refreshToken: invalidRefreshToken,
-          accessToken,
-        }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+    try {
+      await commandHandler.execute({
+        userId: user.id,
+        refreshToken: invalidRefreshToken,
+        accessToken,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toMatchObject({
         reason: 'Invalid refresh token.',
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('throws an error - when AccessToken is of different purpose', async () => {
@@ -169,18 +177,22 @@ describe('LogoutUserCommandHandlerImpl', () => {
       expiresIn: Generator.number(10000, 100000),
     });
 
-    await expect(
-      async () =>
-        await commandHandler.execute({
-          userId: user.id,
-          refreshToken,
-          accessToken: invalidAccessToken,
-        }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+    try {
+      await commandHandler.execute({
+        userId: user.id,
+        refreshToken,
+        accessToken: invalidAccessToken,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toMatchObject({
         reason: 'Invalid access token.',
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 });

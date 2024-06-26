@@ -60,18 +60,22 @@ describe('UpdateQuoteCommandHandlerImpl', () => {
   it('throws an error - when Quote was not found', async () => {
     const nonExistentQuoteId = Generator.uuid();
 
-    expect(
-      async () =>
-        await commandHandler.execute({
-          id: nonExistentQuoteId,
-        }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+    try {
+      await commandHandler.execute({
+        id: nonExistentQuoteId,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toMatchObject({
         reason: 'Quote does not exist.',
         id: nonExistentQuoteId,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('updates a Quote', async () => {

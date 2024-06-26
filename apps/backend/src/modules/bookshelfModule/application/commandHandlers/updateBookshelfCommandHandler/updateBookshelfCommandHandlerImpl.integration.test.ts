@@ -47,21 +47,25 @@ describe('UpdateBookshelfCommandHandlerImpl', () => {
 
     const userId = Generator.uuid();
 
-    expect(
-      async () =>
-        await commandHandler.execute({
-          bookshelfId,
-          name: Generator.alphaString(20),
-          userId,
-        }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+    try {
+      await commandHandler.execute({
+        bookshelfId,
+        name: Generator.alphaString(20),
+        userId,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toMatchObject({
         reason: 'Bookshelf does not exist.',
         bookshelfId,
         userId,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('throws an error - when User does not have permission to update this Bookshelf', async () => {
@@ -75,19 +79,23 @@ describe('UpdateBookshelfCommandHandlerImpl', () => {
       },
     });
 
-    expect(
-      async () =>
-        await commandHandler.execute({
-          bookshelfId: bookshelf.id,
-          name: Generator.alphaString(20),
-          userId: user.id,
-        }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+    try {
+      await commandHandler.execute({
+        bookshelfId: bookshelf.id,
+        name: Generator.alphaString(20),
+        userId: user.id,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toMatchObject({
         reason: 'User does not have permission to update this bookshelf.',
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('throws an error - when Bookshelf with this name already exists', async () => {

@@ -97,17 +97,22 @@ describe('RefreshUserTokensCommandHandler', () => {
       expiresIn: Generator.number(10000, 100000),
     });
 
-    await expect(async () =>
-      refreshUserTokensCommandHandler.execute({
+    try {
+      await refreshUserTokensCommandHandler.execute({
         refreshToken,
-      }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toEqual({
         reason: 'User not found.',
         userId,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('throws an error - when token has a different purpose', async () => {
@@ -121,16 +126,21 @@ describe('RefreshUserTokensCommandHandler', () => {
       expiresIn: Generator.number(10000, 100000),
     });
 
-    await expect(async () =>
-      refreshUserTokensCommandHandler.execute({
+    try {
+      await refreshUserTokensCommandHandler.execute({
         refreshToken,
-      }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toEqual({
         reason: 'Token type is not refresh token.',
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('throws an error if refresh token does not contain userId', async () => {
@@ -141,16 +151,21 @@ describe('RefreshUserTokensCommandHandler', () => {
       expiresIn: Generator.number(10000, 100000),
     });
 
-    await expect(async () =>
-      refreshUserTokensCommandHandler.execute({
+    try {
+      await refreshUserTokensCommandHandler.execute({
         refreshToken,
-      }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toEqual({
         reason: 'Refresh token does not contain userId.',
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('throws an error if refresh token is blacklisted', async () => {
@@ -163,15 +178,20 @@ describe('RefreshUserTokensCommandHandler', () => {
 
     await blacklistTokenTestUtils.createAndPersist({ input: { token: refreshToken } });
 
-    await expect(async () =>
-      refreshUserTokensCommandHandler.execute({
+    try {
+      await refreshUserTokensCommandHandler.execute({
         refreshToken,
-      }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toEqual({
         reason: 'Refresh token is blacklisted.',
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 });

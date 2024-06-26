@@ -31,19 +31,23 @@ describe('UpdateGenreCommandHandler', () => {
   it('throws an error - when Genre does not exist', async () => {
     const genreId = Generator.uuid();
 
-    await expect(
-      async () =>
-        await commandHandler.execute({
-          id: genreId,
-          name: Generator.words(2),
-        }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+    try {
+      await commandHandler.execute({
+        id: genreId,
+        name: Generator.words(2),
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toEqual({
         reason: 'Genre does not exist.',
         id: genreId,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('throws an error - when Genre with given name already exists', async () => {
@@ -51,18 +55,22 @@ describe('UpdateGenreCommandHandler', () => {
 
     const secondGenre = await genreTestUtils.createAndPersist();
 
-    await expect(
-      async () =>
-        await commandHandler.execute({
-          id: preExistingGenre.id,
-          name: secondGenre.name,
-        }),
-    ).toThrowErrorInstance({
-      instance: ResourceAlreadyExistsError,
-      context: {
+    try {
+      await commandHandler.execute({
+        id: preExistingGenre.id,
+        name: secondGenre.name,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(ResourceAlreadyExistsError);
+
+      expect((error as ResourceAlreadyExistsError).context).toEqual({
         resource: 'Genre',
         name: secondGenre.name,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 });

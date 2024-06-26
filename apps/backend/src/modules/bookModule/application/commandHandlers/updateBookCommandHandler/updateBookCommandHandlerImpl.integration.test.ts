@@ -52,13 +52,17 @@ describe('UpdateBookCommandHandlerImpl', () => {
   it('throws an error - when Book does not exist', async () => {
     const nonExistentBookId = Generator.uuid();
 
-    await expect(async () =>
-      commandHandler.execute({
+    try {
+      await commandHandler.execute({
         bookId: nonExistentBookId,
-      }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-    });
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('throws an error - when updated Author does not exist', async () => {
@@ -66,15 +70,18 @@ describe('UpdateBookCommandHandlerImpl', () => {
 
     const invalidAuthorId = Generator.uuid();
 
-    await expect(
-      async () =>
-        await commandHandler.execute({
-          bookId: book.id,
-          authorIds: [invalidAuthorId],
-        }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-    });
+    try {
+      await commandHandler.execute({
+        bookId: book.id,
+        authorIds: [invalidAuthorId],
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('updates a Book', async () => {

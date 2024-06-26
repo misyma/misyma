@@ -60,18 +60,22 @@ describe('UpdateBorrowingCommandHandlerImpl', () => {
   it('throws an error - when Borrowing was not found', async () => {
     const nonExistentBorrowingId = Generator.uuid();
 
-    expect(
-      async () =>
-        await commandHandler.execute({
-          id: nonExistentBorrowingId,
-        }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+    try {
+      await commandHandler.execute({
+        id: nonExistentBorrowingId,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toMatchObject({
         reason: 'Borrowing does not exist.',
         id: nonExistentBorrowingId,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('updates a Borrowing', async () => {

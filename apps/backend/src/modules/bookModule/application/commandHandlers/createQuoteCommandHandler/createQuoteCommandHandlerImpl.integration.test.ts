@@ -65,22 +65,26 @@ describe('CreateQuoteCommandHandlerImpl', () => {
 
     const quote = quoteTestFactory.create();
 
-    expect(
-      async () =>
-        await commandHandler.execute({
-          userBookId: nonExistentUserBookId,
-          content: quote.getContent(),
-          createdAt: quote.getCreatedAt(),
-          isFavorite: quote.getIsFavorite(),
-          page: quote.getPage() as string,
-        }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+    try {
+      await commandHandler.execute({
+        userBookId: nonExistentUserBookId,
+        content: quote.getContent(),
+        createdAt: quote.getCreatedAt(),
+        isFavorite: quote.getIsFavorite(),
+        page: quote.getPage() as string,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toMatchObject({
         reason: 'UserBook does not exist.',
         id: nonExistentUserBookId,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('returns a Quote', async () => {

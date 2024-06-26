@@ -46,19 +46,24 @@ describe('CreateCollectionCommandHandlerImpl', () => {
 
     const collection = await collectionTestUtils.createAndPersist({ input: { userId: user.id } });
 
-    await expect(
-      async () =>
-        await commandHandler.execute({
-          name: collection.name,
-          userId: user.id,
-        }),
-    ).toThrowErrorInstance({
-      instance: ResourceAlreadyExistsError,
-      context: {
+    try {
+      await commandHandler.execute({
+        name: collection.name,
+        userId: user.id,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(ResourceAlreadyExistsError);
+
+      expect((error as ResourceAlreadyExistsError).context).toEqual({
         resource: 'Collection',
         name: collection.name,
-      },
-    });
+        userId: user.id,
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('creates Collection', async () => {

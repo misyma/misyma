@@ -51,20 +51,24 @@ describe('FindUserBooksQueryHandlerImpl', () => {
 
     vi.spyOn(bookshelfRepositoryMock, 'findBookshelf').mockResolvedValueOnce(null);
 
-    expect(
-      async () =>
-        await findUserBooksQueryHandlerImpl.execute({
-          bookshelfId: nonExistentBookshelfId,
-          page: 1,
-          pageSize: 10,
-        }),
-    ).toThrowErrorInstance({
-      instance: ResourceNotFoundError,
-      context: {
+    try {
+      await findUserBooksQueryHandlerImpl.execute({
+        bookshelfId: nonExistentBookshelfId,
+        page: 1,
+        pageSize: 10,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(ResourceNotFoundError);
+
+      expect((error as ResourceNotFoundError).context).toEqual({
         resource: 'Bookshelf',
         id: nonExistentBookshelfId,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('throws an error - given Bookshelf does not belong to user', async () => {
@@ -74,21 +78,25 @@ describe('FindUserBooksQueryHandlerImpl', () => {
 
     vi.spyOn(bookshelfRepositoryMock, 'findBookshelf').mockResolvedValueOnce(bookshelf);
 
-    expect(
-      async () =>
-        await findUserBooksQueryHandlerImpl.execute({
-          bookshelfId: bookshelf.getId(),
-          userId: nonMatchingUserId,
-          page: 1,
-          pageSize: 10,
-        }),
-    ).toThrowErrorInstance({
-      instance: ResourceNotFoundError,
-      context: {
+    try {
+      await findUserBooksQueryHandlerImpl.execute({
+        bookshelfId: bookshelf.getId(),
+        userId: nonMatchingUserId,
+        page: 1,
+        pageSize: 10,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(ResourceNotFoundError);
+
+      expect((error as ResourceNotFoundError).context).toEqual({
         resource: 'Bookshelf',
         id: bookshelf.getId(),
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('finds UserBooks by Bookshelf', async () => {
@@ -140,19 +148,23 @@ describe('FindUserBooksQueryHandlerImpl', () => {
 
     vi.spyOn(collectionRepositoryMock, 'findCollection').mockResolvedValueOnce(null);
 
-    expect(
-      async () =>
-        await findUserBooksQueryHandlerImpl.execute({
-          collectionId: nonExistentCollectionId,
-          page: 1,
-          pageSize: 10,
-        }),
-    ).toThrowErrorInstance({
-      instance: ResourceNotFoundError,
-      context: {
+    try {
+      await findUserBooksQueryHandlerImpl.execute({
+        collectionId: nonExistentCollectionId,
+        page: 1,
+        pageSize: 10,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(ResourceNotFoundError);
+
+      expect((error as ResourceNotFoundError).context).toEqual({
         resource: 'Collection',
         id: nonExistentCollectionId,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 });

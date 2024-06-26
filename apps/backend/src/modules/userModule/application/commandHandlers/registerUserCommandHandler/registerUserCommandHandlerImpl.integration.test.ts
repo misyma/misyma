@@ -84,32 +84,41 @@ describe('RegisterUserCommandHandler', () => {
   it('throws an error when a User with the same email already exists', async () => {
     const existingUser = await userTestUtils.createAndPersist();
 
-    expect(async () => {
+    try {
       await registerUserCommandHandler.execute({
         email: existingUser.email,
         password: existingUser.password,
         name: existingUser.name,
       });
-    }).toThrowErrorInstance({
-      instance: ResourceAlreadyExistsError,
-      context: {
+    } catch (error) {
+      expect(error).toBeInstanceOf(ResourceAlreadyExistsError);
+
+      expect((error as ResourceAlreadyExistsError).context).toEqual({
         resource: 'User',
         email: existingUser.email,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('throws an error when password does not meet requirements', async () => {
     const user = userTestFactory.create();
 
-    expect(async () => {
+    try {
       await registerUserCommandHandler.execute({
         email: user.getEmail(),
         password: '123',
         name: user.getName(),
       });
-    }).toThrowErrorInstance({
-      instance: OperationNotValidError,
-    });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      return;
+    }
+
+    expect.fail();
   });
 });

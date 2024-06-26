@@ -61,18 +61,26 @@ describe('DeleteBookshelfCommandHandlerImpl', () => {
   it('throws an error - when Bookshelf was not found', async () => {
     const nonExistentBookshelfId = Generator.uuid();
 
-    expect(
-      async () =>
-        await commandHandler.execute({
-          bookshelfId: nonExistentBookshelfId,
-          userId: Generator.uuid(),
-        }),
-    ).toThrowErrorInstance({
-      instance: ResourceNotFoundError,
-      context: {
+    const userId = Generator.uuid();
+
+    try {
+      await commandHandler.execute({
+        bookshelfId: nonExistentBookshelfId,
+        userId,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(ResourceNotFoundError);
+
+      expect((error as ResourceNotFoundError).context).toEqual({
         resource: 'Bookshelf',
-      },
-    });
+        bookshelfId: nonExistentBookshelfId,
+        userId,
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('throws an error - when User does not have permission to delete this Bookshelf', async () => {
@@ -86,18 +94,24 @@ describe('DeleteBookshelfCommandHandlerImpl', () => {
       },
     });
 
-    expect(
-      async () =>
-        await commandHandler.execute({
-          bookshelfId: bookshelf.id,
-          userId: user.id,
-        }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+    try {
+      await commandHandler.execute({
+        bookshelfId: bookshelf.id,
+        userId: user.id,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toMatchObject({
         reason: 'User does not have permission to delete this bookshelf.',
-      },
-    });
+        bookshelfId: bookshelf.id,
+        userId: user.id,
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('deletes a Bookshelf', async () => {
