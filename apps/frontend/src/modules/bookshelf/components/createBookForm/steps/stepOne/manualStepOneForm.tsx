@@ -178,6 +178,8 @@ export const ManualStepOneForm = (): JSX.Element => {
     setCreateAuthorDialogVisible(false);
   };
 
+  const [authorSelectOpen, setAuthorSelectOpen] = useState(false);
+
   const onOpenChange = (bool: boolean) => setCreateAuthorDialogVisible(bool);
 
   const onSubmit = async (
@@ -307,14 +309,18 @@ export const ManualStepOneForm = (): JSX.Element => {
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>
-                        Imię i nazwisko autora musi mieć minimum 3 znaki i zawierać spację oddzielającą imię i nazwisko.
+                        Imię i nazwisko autora musi mieć minimum 3 znaki<br></br> i zawierać spację oddzielającą imię i
+                        nazwisko.
                       </p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               </div>
               <FormControl>
-                <Popover>
+                <Popover
+                  open={authorSelectOpen}
+                  onOpenChange={setAuthorSelectOpen}
+                >
                   <PopoverTrigger asChild>
                     <FormControl>
                       <Button
@@ -340,6 +346,11 @@ export const ManualStepOneForm = (): JSX.Element => {
                       <CommandInput
                         placeholder="Wyszukaj autora..."
                         onValueChange={setSearchedName}
+                        onKeyDown={(event) => {
+                          if (event.key === 'Enter') {
+                            setAuthorSelectOpen(false);
+                          }
+                        }}
                       />
 
                       <CommandList>
@@ -386,7 +397,7 @@ export const ManualStepOneForm = (): JSX.Element => {
                                       />
                                       <Button
                                         disabled={!createAuthorDraftForm.formState.isValid}
-                                        type='button'
+                                        type="button"
                                         onClick={() => onCreateAuthorDraft(createAuthorDraftForm.getValues())}
                                       >
                                         Stwórz

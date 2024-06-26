@@ -7,22 +7,9 @@ const Select = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Root>
 >(({ ...props }) => {
-  const [open, setOpen] = React.useState(props.open);
-
   return (
-    <SelectPrimitive.Root
-      open={open}
-      {...props}
-    >
-      <div
-        onKeyDown={(e) => {
-          if (e.code === 'Enter') {
-            props?.onOpenChange ? props.onOpenChange(false) : setOpen(false);
-          }
-        }}
-      >
-        {props.children}
-      </div>
+    <SelectPrimitive.Root {...props}>
+      <div>{props.children}</div>
     </SelectPrimitive.Root>
   );
 });

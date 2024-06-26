@@ -30,6 +30,6 @@ export const CurrentRatingStar: FC<Props> = ({ userBookId }) => {
       </div>
     </div>
   ) : (
-    <IoMdStar className="h-7 w-7" />
+    <></>
   );
 };
