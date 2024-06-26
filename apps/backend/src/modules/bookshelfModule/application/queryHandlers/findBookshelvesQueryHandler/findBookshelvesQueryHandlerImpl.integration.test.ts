@@ -44,19 +44,23 @@ describe('FindBookshelvesByUserIdQueryHandlerImpl', () => {
   it('throws an error - when User was not found', async () => {
     const nonExistentUserId = Generator.uuid();
 
-    expect(
-      async () =>
-        await queryHandler.execute({
-          userId: nonExistentUserId,
-          page: 1,
-          pageSize: 10,
-        }),
-    ).toThrowErrorInstance({
-      instance: ResourceNotFoundError,
-      context: {
+    try {
+      await queryHandler.execute({
+        userId: nonExistentUserId,
+        page: 1,
+        pageSize: 10,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(ResourceNotFoundError);
+
+      expect((error as ResourceNotFoundError).context).toMatchObject({
         resource: 'User',
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('returns an empty array - when User has no Bookshelves', async () => {

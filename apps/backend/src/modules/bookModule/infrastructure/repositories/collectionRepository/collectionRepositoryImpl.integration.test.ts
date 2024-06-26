@@ -185,21 +185,26 @@ describe('CollectionRepositoryImpl', () => {
         },
       });
 
-      await expect(
-        async () =>
-          await collectionRepository.saveCollection({
-            collection: {
-              name,
-              userId: user.id,
-            },
-          }),
-      ).toThrowErrorInstance({
-        instance: RepositoryError,
-        context: {
+      try {
+        await collectionRepository.saveCollection({
+          collection: {
+            name,
+            userId: user.id,
+          },
+        });
+      } catch (error) {
+        expect(error).toBeInstanceOf(RepositoryError);
+
+        expect((error as RepositoryError).context).toEqual({
           entity: 'Collection',
           operation: 'create',
-        },
-      });
+          error: expect.any(Error),
+        });
+
+        return;
+      }
+
+      expect.fail();
     });
 
     it('updates Collection', async () => {
@@ -235,22 +240,27 @@ describe('CollectionRepositoryImpl', () => {
 
       const createdCollection2 = await collectionTestUtils.createAndPersist({ input: { userId: user.id } });
 
-      await expect(
-        async () =>
-          await collectionRepository.saveCollection({
-            collection: new Collection({
-              id: createdCollection1.id,
-              name: createdCollection2.name,
-              userId: user.id,
-            }),
+      try {
+        await collectionRepository.saveCollection({
+          collection: new Collection({
+            id: createdCollection1.id,
+            name: createdCollection2.name,
+            userId: user.id,
           }),
-      ).toThrowErrorInstance({
-        instance: RepositoryError,
-        context: {
+        });
+      } catch (error) {
+        expect(error).toBeInstanceOf(RepositoryError);
+
+        expect((error as RepositoryError).context).toEqual({
           entity: 'Collection',
           operation: 'update',
-        },
-      });
+          error: expect.any(Error),
+        });
+
+        return;
+      }
+
+      expect.fail();
     });
   });
 

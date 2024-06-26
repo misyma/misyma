@@ -39,6 +39,8 @@ describe('CreateGenreCommandHandlerImpl', () => {
         resource: 'Genre',
         name: genre.name,
       });
+
+      return;
     }
 
     expect.fail();

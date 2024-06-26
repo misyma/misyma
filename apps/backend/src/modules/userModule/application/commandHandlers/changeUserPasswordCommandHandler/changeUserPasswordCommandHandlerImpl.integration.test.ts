@@ -76,19 +76,23 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
       expiresIn: Generator.number(10000, 100000),
     });
 
-    await expect(
-      async () =>
-        await commandHandler.execute({
-          newPassword,
-          resetPasswordToken,
-        }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+    try {
+      await commandHandler.execute({
+        newPassword,
+        resetPasswordToken,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toMatchObject({
         reason: 'User not found.',
         userId,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('throws an error - when password does not meet the requirements', async () => {
@@ -104,15 +108,18 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
 
     const newPassword = Generator.alphaString(5);
 
-    await expect(
-      async () =>
-        await commandHandler.execute({
-          newPassword,
-          resetPasswordToken,
-        }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-    });
+    try {
+      await commandHandler.execute({
+        newPassword,
+        resetPasswordToken,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('throws an error - when resetPasswordToken is invalid', async () => {
@@ -120,19 +127,23 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
 
     const newPassword = Generator.password();
 
-    await expect(
-      async () =>
-        await commandHandler.execute({
-          newPassword,
-          resetPasswordToken: invalidResetPasswordToken,
-        }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+    try {
+      await commandHandler.execute({
+        newPassword,
+        resetPasswordToken: invalidResetPasswordToken,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toMatchObject({
         reason: 'Invalid reset password token.',
         token: invalidResetPasswordToken,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('throws an error - when token is has a different purpose', async () => {
@@ -148,17 +159,22 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
 
     const newPassword = Generator.password();
 
-    await expect(
-      async () =>
-        await commandHandler.execute({
-          newPassword,
-          resetPasswordToken,
-        }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+    try {
+      await commandHandler.execute({
+        newPassword,
+        resetPasswordToken,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toMatchObject({
         reason: 'Invalid reset password token.',
-      },
-    });
+        resetPasswordToken,
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 });

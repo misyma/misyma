@@ -97,7 +97,7 @@ describe('CreateBookCommandHandler', () => {
     const createdBook = bookTestFactory.create();
 
     try {
-      createBookCommandHandler.execute({
+      await createBookCommandHandler.execute({
         title: createdBook.getTitle(),
         isbn: createdBook.getIsbn() as string,
         publisher: createdBook.getPublisher() as string,
@@ -128,7 +128,7 @@ describe('CreateBookCommandHandler', () => {
     const createdBook = bookTestFactory.create();
 
     try {
-      createBookCommandHandler.execute({
+      await createBookCommandHandler.execute({
         title: createdBook.getTitle(),
         isbn: createdBook.getIsbn() as string,
         publisher: createdBook.getPublisher() as string,
@@ -169,7 +169,7 @@ describe('CreateBookCommandHandler', () => {
     });
 
     try {
-      createBookCommandHandler.execute({
+      await createBookCommandHandler.execute({
         title: existingBook.title,
         isbn,
         publisher: existingBook.publisher,

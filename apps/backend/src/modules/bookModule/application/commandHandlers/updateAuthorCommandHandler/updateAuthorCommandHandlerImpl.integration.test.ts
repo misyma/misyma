@@ -57,8 +57,8 @@ describe('UpdateAuthorCommandHandler', () => {
 
     try {
       await commandHandler.execute({
-        id: secondAuthor.id,
-        name: preExistingAuthor.name,
+        id: preExistingAuthor.id,
+        name: secondAuthor.name,
       });
     } catch (error) {
       expect(error).toBeInstanceOf(ResourceAlreadyExistsError);
@@ -66,7 +66,7 @@ describe('UpdateAuthorCommandHandler', () => {
       expect((error as ResourceAlreadyExistsError).context).toEqual({
         resource: 'Author',
         id: secondAuthor.id,
-        name: preExistingAuthor.name,
+        name: secondAuthor.name,
       });
 
       return;

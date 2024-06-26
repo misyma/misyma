@@ -58,13 +58,20 @@ describe('SendVerificationEmailCommandHandler', () => {
   it('throws an error - when user not found', async () => {
     const email = Generator.email();
 
-    await expect(async () => await commandHandler.execute({ email })).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+    try {
+      await commandHandler.execute({ email });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toMatchObject({
         reason: 'User not found.',
         email,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('throws an error - when user is already verified', async () => {
@@ -74,12 +81,19 @@ describe('SendVerificationEmailCommandHandler', () => {
       },
     });
 
-    await expect(async () => await commandHandler.execute({ email: user.email })).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+    try {
+      await commandHandler.execute({ email: user.email });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toMatchObject({
         reason: 'User email is already verified.',
         email: user.email,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 });

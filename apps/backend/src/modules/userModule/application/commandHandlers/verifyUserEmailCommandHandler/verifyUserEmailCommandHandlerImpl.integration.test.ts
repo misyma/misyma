@@ -59,27 +59,39 @@ describe('VerifyUserEmailCommandHandlerImpl', () => {
       expiresIn: Generator.number(10000, 100000),
     });
 
-    await expect(async () => await commandHandler.execute({ emailVerificationToken })).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+    try {
+      await commandHandler.execute({ emailVerificationToken });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toMatchObject({
         reason: 'User not found.',
         userId,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('throws an error - when emailVerificationToken is invalid', async () => {
     const invalidEmailVerificationToken = 'invalidEmailVerificationToken';
 
-    await expect(
-      async () => await commandHandler.execute({ emailVerificationToken: invalidEmailVerificationToken }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+    try {
+      await commandHandler.execute({ emailVerificationToken: invalidEmailVerificationToken });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toMatchObject({
         reason: 'Invalid email verification token.',
         token: invalidEmailVerificationToken,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('throws an error - when token is not an emailVerification token', async () => {
@@ -93,14 +105,19 @@ describe('VerifyUserEmailCommandHandlerImpl', () => {
       expiresIn: Generator.number(10000, 100000),
     });
 
-    await expect(
-      async () => await commandHandler.execute({ emailVerificationToken: invalidEmailVerificationToken }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+    try {
+      await commandHandler.execute({ emailVerificationToken: invalidEmailVerificationToken });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toMatchObject({
         reason: 'Token type is not email verification token.',
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('throws an error - when UserTokens were found but emailVerificationToken is expired', async () => {
@@ -111,18 +128,20 @@ describe('VerifyUserEmailCommandHandlerImpl', () => {
       expiresIn: 0,
     });
 
-    await expect(
-      async () =>
-        await commandHandler.execute({
-          emailVerificationToken,
-        }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+    try {
+      await commandHandler.execute({ emailVerificationToken });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toMatchObject({
         reason: 'Invalid email verification token.',
         token: emailVerificationToken,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('throws an error - when User is already verified', async () => {
@@ -136,17 +155,19 @@ describe('VerifyUserEmailCommandHandlerImpl', () => {
       expiresIn: Generator.number(10000, 100000),
     });
 
-    await expect(
-      async () =>
-        await commandHandler.execute({
-          emailVerificationToken,
-        }),
-    ).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      context: {
+    try {
+      await commandHandler.execute({ emailVerificationToken });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toMatchObject({
         reason: 'User email already verified.',
         email: user.email,
-      },
-    });
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 });

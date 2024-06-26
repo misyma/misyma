@@ -19,45 +19,90 @@ describe('PasswordValidationServiceImpl', () => {
   it('should throw an error if the password is less than 8 characters long', async () => {
     const password = '1234567';
 
-    expect(() => passwordValidationService.validate({ password })).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      message: 'Password must be at least 8 characters long.',
-    });
+    try {
+      passwordValidationService.validate({ password });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toEqual({
+        reason: 'Password must be at least 8 characters long.',
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('should throw an error if the password is more than 64 characters long', async () => {
     const password = '123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890';
 
-    expect(() => passwordValidationService.validate({ password })).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      message: 'Password must be at most 64 characters long.',
-    });
+    try {
+      passwordValidationService.validate({ password });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toEqual({
+        reason: 'Password must be at most 64 characters long.',
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('should throw an error if the password does not contain a number', async () => {
-    const password = 'abcdefgh';
+    const password = 'Abcdefgh';
 
-    expect(() => passwordValidationService.validate({ password })).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      message: 'Password must contain at least one number.',
-    });
+    try {
+      passwordValidationService.validate({ password });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toEqual({
+        reason: 'Password must contain at least one number.',
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('should throw an error if the password does not contain a lowercase letter', async () => {
     const password = 'ABCDEFGH';
 
-    expect(() => passwordValidationService.validate({ password })).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      message: 'Password must contain at least one lowercase letter.',
-    });
+    try {
+      passwordValidationService.validate({ password });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toEqual({
+        reason: 'Password must contain at least one lowercase letter.',
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('should throw an error if the password does not contain an uppercase letter', async () => {
     const password = 'abcdefgh';
 
-    expect(() => passwordValidationService.validate({ password })).toThrowErrorInstance({
-      instance: OperationNotValidError,
-      message: 'Password must contain at least one uppercase letter.',
-    });
+    try {
+      passwordValidationService.validate({ password });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toEqual({
+        reason: 'Password must contain at least one uppercase letter.',
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 });

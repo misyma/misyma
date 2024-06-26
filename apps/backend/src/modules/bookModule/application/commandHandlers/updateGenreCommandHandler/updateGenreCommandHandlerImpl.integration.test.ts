@@ -57,8 +57,8 @@ describe('UpdateGenreCommandHandler', () => {
 
     try {
       await commandHandler.execute({
-        id: secondGenre.id,
-        name: preExistingGenre.name,
+        id: preExistingGenre.id,
+        name: secondGenre.name,
       });
     } catch (error) {
       expect(error).toBeInstanceOf(ResourceAlreadyExistsError);

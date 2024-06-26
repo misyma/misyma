@@ -151,20 +151,25 @@ describe('GenreRepositoryImpl', () => {
         },
       });
 
-      await expect(
-        async () =>
-          await genreRepository.saveGenre({
-            genre: {
-              name,
-            },
-          }),
-      ).toThrowErrorInstance({
-        instance: RepositoryError,
-        context: {
+      try {
+        await genreRepository.saveGenre({
+          genre: {
+            name,
+          },
+        });
+      } catch (error) {
+        expect(error).toBeInstanceOf(RepositoryError);
+
+        expect((error as RepositoryError).context).toEqual({
           entity: 'Genre',
           operation: 'create',
-        },
-      });
+          error: expect.any(Error),
+        });
+
+        return;
+      }
+
+      expect.fail();
     });
 
     it('updates Genre', async () => {
@@ -196,21 +201,26 @@ describe('GenreRepositoryImpl', () => {
 
       const createdGenre2 = await genreTestUtils.createAndPersist();
 
-      await expect(
-        async () =>
-          await genreRepository.saveGenre({
-            genre: new Genre({
-              id: createdGenre1.id,
-              name: createdGenre2.name,
-            }),
+      try {
+        await genreRepository.saveGenre({
+          genre: new Genre({
+            id: createdGenre1.id,
+            name: createdGenre2.name,
           }),
-      ).toThrowErrorInstance({
-        instance: RepositoryError,
-        context: {
+        });
+      } catch (error) {
+        expect(error).toBeInstanceOf(RepositoryError);
+
+        expect((error as RepositoryError).context).toEqual({
           entity: 'Genre',
           operation: 'update',
-        },
-      });
+          error: expect.any(Error),
+        });
+
+        return;
+      }
+
+      expect.fail();
     });
   });
 

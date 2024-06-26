@@ -57,7 +57,10 @@ describe('CreateCollectionCommandHandlerImpl', () => {
       expect((error as ResourceAlreadyExistsError).context).toEqual({
         resource: 'Collection',
         name: collection.name,
+        userId: user.id,
       });
+
+      return;
     }
 
     expect.fail();
