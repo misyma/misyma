@@ -13,6 +13,13 @@ import { getQuotesOptions } from '../../../../modules/quotes/api/queries/getQuot
 import { QuotationsTable } from '../../../../modules/book/components/quotationsTable/quotationsTable';
 import { columns } from '../../../../modules/book/components/quotationsTable/quotationsTableColumns';
 import { QuotesApiQueryKeys } from '../../../../modules/quotes/api/queries/quotesApiQueryKeys';
+import { cn } from '../../../../modules/common/lib/utils';
+import { CreateQuotationModal } from '../../../../modules/book/components/createQuotationModal/createQuotationModal';
+import { Button } from '../../../../modules/common/components/ui/button';
+import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
+import { Navigate, createRoute, useNavigate } from '@tanstack/react-router';
+import { z } from 'zod';
+import { rootRoute } from '../../../root';
 
 interface Props {
   userBookId: string;
@@ -131,3 +138,175 @@ export const QuotationsTab: FC<Props> = ({ userBookId }) => {
     </div>
   );
 };
+
+export const BookPage: FC = () => {
+  const { data: userData } = useFindUserQuery();
+
+  const { bookId } = quotationsTabRoute.useParams();
+
+  const queryClient = useQueryClient();
+
+  const accessToken = useSelector(userStateSelectors.selectAccessToken);
+
+  const [page, setPage] = useState(0);
+
+  const [pageSize] = useState(4);
+
+  const {
+    data: userBookData,
+    isFetched: isUserBookFetched,
+    isFetching: isUserBookFetching,
+    isRefetching: isUserBookRefetching,
+  } = useQuery(
+    FindUserBookByIdQueryOptions({
+      userBookId: bookId,
+      userId: userData?.id ?? '',
+      accessToken: accessToken as string,
+    }),
+  );
+
+  const {
+    data: quotationsData,
+    // isFetched: isQuotationsFetched,
+    // isRefetching: isRefetchingQuotations,
+    // isFetching: isQuotationsFetching,
+  } = useQuery(
+    getQuotesOptions({
+      accessToken: accessToken as string,
+      userBookId: bookId,
+      page,
+      pageSize,
+    }),
+  );
+
+  const pageCount = useMemo(() => {
+    return Math.ceil((quotationsData?.metadata?.total ?? 0) / pageSize) || 1;
+  }, [quotationsData?.metadata.total, pageSize]);
+
+  const invalidateQuotesFetch = () =>
+    queryClient.invalidateQueries({
+      predicate: (query) =>
+        query.queryKey[0] === QuotesApiQueryKeys.findQuotes &&
+        query.queryKey[1] === bookId &&
+        query.queryKey[2] === userData?.id &&
+        query.queryKey[3] === `${page}` &&
+        query.queryKey[4] === `${pageSize}`,
+    });
+
+  const onNextPage = (): void => {
+    setPage(page + 1);
+
+    invalidateQuotesFetch();
+  };
+
+  const onSetPage = (page: number): void => {
+    setPage(page);
+
+    invalidateQuotesFetch();
+  };
+
+  const onPreviousPage = (): void => {
+    setPage(page - 1);
+
+    invalidateQuotesFetch();
+  };
+
+  const data = useMemo(() => {
+    return quotationsData?.data ?? [];
+  }, [quotationsData?.data]);
+
+  const navigate = useNavigate();
+
+  return (
+    <AuthenticatedLayout>
+      {bookId === '' ? <Navigate to={'/login'} /> : null}
+      <div className="flex w-full justify-center items-center w-100% px-8 py-4">
+        <div className="grid grid-cols-2 sm:grid-cols-5 w-full gap-y-8 gap-x-4  sm:max-w-screen-2xl">
+          <div className="col-span-2 sm:col-start-1 sm:col-span-5 flex justify-between">
+            {/* sm:visible otherwise dropdown component visible */}
+            <ul className="flex justify-between gap-8 text-sm sm:text-lg font-semibold">
+              <li
+                className={cn('cursor-pointer')}
+                onClick={() =>
+                  navigate({
+                    to: `/book/${bookId}`,
+                  })
+                }
+              >
+                Dane podstawowe
+              </li>
+              <li className={cn('cursor-default text-primary font-bold')}>Cytaty</li>
+              <li
+                className={cn('cursor-pointer')}
+                onClick={() =>
+                  navigate({
+                    to: `/book/${bookId}/reviews`,
+                  })
+                }
+              >
+                Oceny
+              </li>
+            </ul>
+            <CreateQuotationModal
+              onMutated={() => {}}
+              trigger={<Button className="w-32 sm:w-96">Dodaj cytat</Button>}
+              userBookId={bookId}
+            />
+          </div>
+          <div className="flex flex-col sm:flex-row col-start-1 col-span-2 sm:col-span-5 gap-6 w-full">
+            {isUserBookFetching && !isUserBookRefetching && <BasicDataTabSkeleton bookId={bookId} />}
+            {isUserBookFetched && (!isUserBookRefetching || (isUserBookFetching && isUserBookRefetching)) && (
+              <>
+                <div>
+                  <img
+                    src={userBookData?.imageUrl}
+                    className="object-cover max-w-80"
+                  />
+                </div>
+                <div className="flex justify-center">
+                  <FavoriteBookButton userBook={userBookData as UserBook} />
+                </div>
+                <div className="flex flex-col gap-4 w-full">
+                  <div className="flex justify-between w-full">
+                    <p className="font-semibold text-3xl">{userBookData?.book.title}</p>
+                    <CurrentRatingStar userBookId={bookId} />
+                  </div>
+                  <Separator className="h-[1px] bg-primary"></Separator>
+                  <div className="flex flex-col w-full">
+                    <p className="text-lg pb-6"> {userBookData?.book.authors[0].name ?? ''} </p>
+                    <QuotationsTable
+                      columns={columns}
+                      data={data}
+                      onNextPage={onNextPage}
+                      onPreviousPage={onPreviousPage}
+                      onSetPage={onSetPage}
+                      pageCount={pageCount}
+                      pageIndex={page}
+                      pageSize={pageSize}
+                    ></QuotationsTable>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>{' '}
+        </div>
+      </div>
+    </AuthenticatedLayout>
+  );
+};
+
+const bookPathParamsSchema = z.object({
+  bookId: z.string().uuid().catch(''),
+});
+
+export const quotationsTabRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/book/$bookId/quotations',
+  component: BookPage,
+  onError: () => {
+    return <Navigate to={'/login'} />;
+  },
+  parseParams: (params) => {
+    return bookPathParamsSchema.parse(params);
+  },
+});
