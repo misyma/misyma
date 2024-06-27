@@ -39,6 +39,7 @@ export class CreateCollectionCommandHandlerImpl implements CreateCollectionComma
       collection: {
         name,
         userId,
+        createdAt: new Date(),
       },
     });
 

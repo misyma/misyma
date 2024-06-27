@@ -7,6 +7,7 @@ export const collectionDtoSchema = Type.Object({
     maxLength: 64,
   }),
   userId: Type.String({ format: 'uuid' }),
+  createdAt: Type.String({ format: 'date-time' }),
 });
 
 export type CollectionDto = Static<typeof collectionDtoSchema>;

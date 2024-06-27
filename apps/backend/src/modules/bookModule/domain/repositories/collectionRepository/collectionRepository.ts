@@ -13,10 +13,17 @@ export interface SaveCollectionPayload {
   readonly collection: CollectionState | Collection;
 }
 
-export interface FindCollections {
+export interface FindCollectionsPayload {
   readonly ids?: string[];
+  readonly userId?: string;
   readonly page: number;
   readonly pageSize: number;
+  readonly sortDate?: 'asc' | 'desc';
+}
+
+export interface CountCollectionsPayload {
+  readonly ids?: string[];
+  readonly userId?: string;
 }
 
 export interface DeleteCollectionPayload {
@@ -25,8 +32,8 @@ export interface DeleteCollectionPayload {
 
 export interface CollectionRepository {
   findCollection(payload: FindCollectionPayload): Promise<Collection | null>;
-  findCollections(payload: FindCollections): Promise<Collection[]>;
-  countCollections(payload: FindCollections): Promise<number>;
+  findCollections(payload: FindCollectionsPayload): Promise<Collection[]>;
+  countCollections(payload: CountCollectionsPayload): Promise<number>;
   saveCollection(payload: SaveCollectionPayload): Promise<Collection>;
   deleteCollection(payload: DeleteCollectionPayload): Promise<void>;
 }

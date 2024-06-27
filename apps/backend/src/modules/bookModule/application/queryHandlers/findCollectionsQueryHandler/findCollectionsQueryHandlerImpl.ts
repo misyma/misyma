@@ -1,25 +1,35 @@
 import {
-  type FindCollectionsPayload,
+  type FindCollectionsQueryHandlerPayload,
   type FindCollectionsQueryHandler,
-  type FindCollectionsResult,
+  type FindCollectionsQueryHandlerResult,
 } from './findCollectionsQueryHandler.js';
-import { type CollectionRepository } from '../../../domain/repositories/collectionRepository/collectionRepository.js';
+import {
+  type FindCollectionsPayload,
+  type CollectionRepository,
+} from '../../../domain/repositories/collectionRepository/collectionRepository.js';
 
 export class FindCollectionsQueryHandlerImpl implements FindCollectionsQueryHandler {
   public constructor(private readonly collectionRepository: CollectionRepository) {}
 
-  public async execute(payload: FindCollectionsPayload): Promise<FindCollectionsResult> {
-    const { userId, page, pageSize } = payload;
+  public async execute(payload: FindCollectionsQueryHandlerPayload): Promise<FindCollectionsQueryHandlerResult> {
+    const { userId, page, pageSize, sortDate } = payload;
 
-    const findCollectionsPayload = {
+    let findCollectionsPayload: FindCollectionsPayload = {
       userId,
       page,
       pageSize,
     };
 
+    if (sortDate) {
+      findCollectionsPayload = {
+        ...findCollectionsPayload,
+        sortDate,
+      };
+    }
+
     const [collections, total] = await Promise.all([
       this.collectionRepository.findCollections(findCollectionsPayload),
-      this.collectionRepository.countCollections(findCollectionsPayload),
+      this.collectionRepository.countCollections({ userId }),
     ]);
 
     return {

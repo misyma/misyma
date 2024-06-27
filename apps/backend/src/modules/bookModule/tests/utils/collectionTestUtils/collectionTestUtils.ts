@@ -20,19 +20,44 @@ export class CollectionTestUtils implements TestUtils {
 
     const rawEntities = await this.databaseClient<CollectionRawEntity>(collectionTable).insert(data, '*');
 
-    return rawEntities[0] as CollectionRawEntity;
+    const rawEntity = rawEntities[0] as CollectionRawEntity;
+
+    return {
+      id: rawEntity.id,
+      name: rawEntity.name,
+      userId: rawEntity.userId,
+      createdAt: new Date(rawEntity.createdAt),
+    };
   }
 
   public async findByName(name: string): Promise<CollectionRawEntity | null> {
-    const collection = await this.databaseClient<CollectionRawEntity>(collectionTable).where({ name }).first();
+    const rawEntity = await this.databaseClient<CollectionRawEntity>(collectionTable).where({ name }).first();
 
-    return collection || null;
+    if (!rawEntity) {
+      return null;
+    }
+
+    return {
+      id: rawEntity.id,
+      name: rawEntity.name,
+      userId: rawEntity.userId,
+      createdAt: new Date(rawEntity.createdAt),
+    };
   }
 
   public async findById(id: string): Promise<CollectionRawEntity | null> {
-    const collection = await this.databaseClient<CollectionRawEntity>(collectionTable).where({ id }).first();
+    const rawEntity = await this.databaseClient<CollectionRawEntity>(collectionTable).where({ id }).first();
 
-    return collection || null;
+    if (!rawEntity) {
+      return null;
+    }
+
+    return {
+      id: rawEntity.id,
+      name: rawEntity.name,
+      userId: rawEntity.userId,
+      createdAt: new Date(rawEntity.createdAt),
+    };
   }
 
   public async truncate(): Promise<void> {

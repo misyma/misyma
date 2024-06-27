@@ -6,9 +6,10 @@ import { type CollectionState, Collection } from '../../../domain/entities/colle
 import {
   type CollectionRepository,
   type FindCollectionPayload,
-  type FindCollections,
+  type FindCollectionsPayload,
   type SaveCollectionPayload,
   type DeleteCollectionPayload,
+  type CountCollectionsPayload,
 } from '../../../domain/repositories/collectionRepository/collectionRepository.js';
 import { type CollectionRawEntity } from '../../databases/bookDatabase/tables/collectionTable/collectionRawEntity.js';
 import { collectionTable } from '../../databases/bookDatabase/tables/collectionTable/collectionTable.js';
@@ -64,8 +65,8 @@ export class CollectionRepositoryImpl implements CollectionRepository {
     return this.collectionMapper.mapToDomain(rawEntity);
   }
 
-  public async findCollections(payload: FindCollections): Promise<Collection[]> {
-    const { ids, page, pageSize } = payload;
+  public async findCollections(payload: FindCollectionsPayload): Promise<Collection[]> {
+    const { ids, page, pageSize, sortDate, userId } = payload;
 
     let rawEntities: CollectionRawEntity[];
 
@@ -76,6 +77,14 @@ export class CollectionRepositoryImpl implements CollectionRepository {
 
     if (ids) {
       query.whereIn('id', ids);
+    }
+
+    if (userId) {
+      query.where({ userId });
+    }
+
+    if (sortDate) {
+      query.orderBy('createdAt', sortDate);
     }
 
     try {
@@ -103,7 +112,7 @@ export class CollectionRepositoryImpl implements CollectionRepository {
 
   private async create(payload: CreateCollectionPayload): Promise<Collection> {
     const {
-      collection: { name, userId },
+      collection: { name, userId, createdAt },
     } = payload;
 
     let rawEntities: CollectionRawEntity[];
@@ -114,6 +123,7 @@ export class CollectionRepositoryImpl implements CollectionRepository {
           id: this.uuidService.generateUuid(),
           name,
           userId,
+          createdAt,
         })
         .returning('*');
     } catch (error) {
@@ -166,14 +176,18 @@ export class CollectionRepositoryImpl implements CollectionRepository {
     }
   }
 
-  public async countCollections(payload: FindCollections): Promise<number> {
-    const { ids } = payload;
+  public async countCollections(payload: CountCollectionsPayload): Promise<number> {
+    const { ids, userId } = payload;
 
     try {
       const query = this.databaseClient<CollectionRawEntity>(collectionTable);
 
       if (ids) {
         query.whereIn('id', ids);
+      }
+
+      if (userId) {
+        query.where({ userId });
       }
 
       const countResult = await query.count().first();

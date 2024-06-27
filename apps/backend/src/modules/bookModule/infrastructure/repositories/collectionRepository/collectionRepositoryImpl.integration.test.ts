@@ -155,10 +155,13 @@ describe('CollectionRepositoryImpl', () => {
 
       const name = Generator.word();
 
+      const createdAt = Generator.pastDate();
+
       const collection = await collectionRepository.saveCollection({
         collection: {
           name,
           userId: user.id,
+          createdAt,
         },
       });
 
@@ -178,10 +181,13 @@ describe('CollectionRepositoryImpl', () => {
 
       const name = Generator.word();
 
+      const createdAt = Generator.pastDate();
+
       await collectionRepository.saveCollection({
         collection: {
           name,
           userId: user.id,
+          createdAt,
         },
       });
 
@@ -190,6 +196,7 @@ describe('CollectionRepositoryImpl', () => {
           collection: {
             name,
             userId: user.id,
+            createdAt,
           },
         });
       } catch (error) {
@@ -246,6 +253,7 @@ describe('CollectionRepositoryImpl', () => {
             id: createdCollection1.id,
             name: createdCollection2.name,
             userId: user.id,
+            createdAt: createdCollection1.createdAt,
           }),
         });
       } catch (error) {

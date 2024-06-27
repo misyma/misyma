@@ -14,6 +14,8 @@ export class M9CreateCollectionTableMigration implements Migration {
 
       table.text('userId').notNullable();
 
+      table.timestamp('createdAt').notNullable();
+
       table.foreign('userId').references('id').inTable('users').onDelete('CASCADE');
 
       table.unique(['name', 'userId']);

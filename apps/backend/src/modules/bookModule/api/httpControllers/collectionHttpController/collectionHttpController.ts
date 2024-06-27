@@ -138,12 +138,13 @@ export class CollectionHttpController implements HttpController {
       authorizationHeader: request.headers['authorization'],
     });
 
-    const { page = 1, pageSize = 10, userId } = request.queryParams;
+    const { page = 1, pageSize = 10, userId, sortDate } = request.queryParams;
 
     const { collections, total } = await this.findCollectionsQueryHandler.execute({
       page,
       pageSize,
       userId,
+      sortDate,
     });
 
     return {
@@ -224,6 +225,7 @@ export class CollectionHttpController implements HttpController {
       id: collection.getId(),
       name: collection.getName(),
       userId: collection.getUserId(),
+      createdAt: collection.getCreatedAt().toISOString(),
     };
   }
 }
