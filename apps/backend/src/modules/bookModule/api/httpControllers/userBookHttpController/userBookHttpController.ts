@@ -365,6 +365,7 @@ export class UserBookHttpController implements HttpController {
           id: collection.getId(),
           name: collection.getName(),
           userId: collection.getUserId(),
+          createdAt: collection.getCreatedAt().toISOString(),
         })) || [],
       readings:
         readings.map((reading) => {

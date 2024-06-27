@@ -89,4 +89,23 @@ describe('UpdateCollectionNameCommandHandler', () => {
 
     expect.fail();
   });
+
+  it('updates the Collection name', async () => {
+    const user = await userTestUtils.createAndPersist();
+
+    const collection = await collectionTestUtils.createAndPersist({ input: { userId: user.id } });
+
+    const newName = Generator.words(2);
+
+    const { collection: updatedCollection } = await commandHandler.execute({
+      id: collection.id,
+      name: newName,
+    });
+
+    const foundCollection = await collectionTestUtils.findById(collection.id);
+
+    expect(foundCollection?.name).toEqual(newName);
+
+    expect(updatedCollection.getName()).toEqual(newName);
+  });
 });

@@ -29,6 +29,7 @@ export interface UserBookWithJoinsRawEntity {
 
   readonly collectionId: string | null;
   readonly collectionName: string | null;
+  readonly collectionCreatedAt: Date | null;
 
   readonly readingId: string | null;
   readonly readingStartedAt: Date | null;

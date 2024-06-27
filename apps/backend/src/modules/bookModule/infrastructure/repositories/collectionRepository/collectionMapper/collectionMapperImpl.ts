@@ -8,6 +8,7 @@ export class CollectionMapperImpl implements CollectionMapper {
       id: raw.id,
       name: raw.name,
       userId: raw.userId,
+      createdAt: new Date(raw.createdAt),
     });
   }
 
@@ -16,6 +17,7 @@ export class CollectionMapperImpl implements CollectionMapper {
       id: domain.getId(),
       name: domain.getName(),
       userId: domain.getUserId(),
+      createdAt: domain.getCreatedAt(),
     };
   }
 }

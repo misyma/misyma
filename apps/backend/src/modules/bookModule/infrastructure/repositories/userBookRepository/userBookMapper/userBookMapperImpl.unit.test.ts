@@ -45,6 +45,7 @@ describe('UserBookMapperImpl', () => {
         genreName: null,
         collectionId: null,
         collectionName: null,
+        collectionCreatedAt: null,
         userId: null,
         readingComment: null,
         readingEndedAt: null,

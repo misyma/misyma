@@ -8,6 +8,7 @@ export class CollectionTestFactory {
       id: Generator.uuid(),
       name: Generator.words().toLowerCase(),
       userId: Generator.uuid(),
+      createdAt: Generator.pastDate(),
       ...overrides,
     };
   }
@@ -17,6 +18,7 @@ export class CollectionTestFactory {
       id: Generator.uuid(),
       name: Generator.words().toLowerCase(),
       userId: Generator.uuid(),
+      createdAt: Generator.pastDate(),
       ...overrides,
     });
   }

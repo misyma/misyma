@@ -1,15 +1,21 @@
+import { type SortingType } from '@common/contracts';
+
 import { type QueryHandler } from '../../../../../common/types/queryHandler.js';
 import { type Collection } from '../../../domain/entities/collection/collection.js';
 
-export interface FindCollectionsPayload {
+export interface FindCollectionsQueryHandlerPayload {
   readonly userId: string;
   readonly page: number;
   readonly pageSize: number;
+  readonly sortDate?: SortingType | undefined;
 }
 
-export interface FindCollectionsResult {
+export interface FindCollectionsQueryHandlerResult {
   readonly collections: Collection[];
   readonly total: number;
 }
 
-export type FindCollectionsQueryHandler = QueryHandler<FindCollectionsPayload, FindCollectionsResult>;
+export type FindCollectionsQueryHandler = QueryHandler<
+  FindCollectionsQueryHandlerPayload,
+  FindCollectionsQueryHandlerResult
+>;

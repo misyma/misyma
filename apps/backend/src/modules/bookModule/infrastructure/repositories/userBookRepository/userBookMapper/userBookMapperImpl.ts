@@ -35,6 +35,7 @@ export class UserBookMapperImpl implements UserBookMapper {
         genreName,
         collectionId,
         collectionName,
+        collectionCreatedAt,
         userId,
         readingId,
         readingStartedAt,
@@ -67,12 +68,13 @@ export class UserBookMapperImpl implements UserBookMapper {
           );
         }
 
-        if (collectionId && collectionName && userId) {
+        if (collectionId && collectionName && userId && collectionCreatedAt) {
           userBookDraft.collections?.push(
             new Collection({
               id: collectionId,
               name: collectionName,
               userId,
+              createdAt: new Date(collectionCreatedAt),
             }),
           );
         }
@@ -130,12 +132,13 @@ export class UserBookMapperImpl implements UserBookMapper {
           );
         }
 
-        if (collectionId && collectionName && userId) {
+        if (collectionId && collectionName && userId && collectionCreatedAt) {
           collections.push(
             new Collection({
               id: collectionId,
               name: collectionName,
               userId,
+              createdAt: new Date(collectionCreatedAt),
             }),
           );
         }

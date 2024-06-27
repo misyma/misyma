@@ -583,6 +583,7 @@ describe('UserBookRepositoryImpl', () => {
             state: {
               name: collection.name,
               userId: collection.userId,
+              createdAt: collection.createdAt,
             },
           },
         ],

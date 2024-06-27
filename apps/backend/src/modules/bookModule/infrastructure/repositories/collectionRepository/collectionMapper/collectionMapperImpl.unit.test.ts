@@ -22,6 +22,7 @@ describe('CollectionMapperImpl', () => {
       state: {
         name: collectionEntity.name,
         userId: collectionEntity.userId,
+        createdAt: collectionEntity.createdAt,
       },
     });
   });
@@ -35,6 +36,7 @@ describe('CollectionMapperImpl', () => {
       id: collection.getId(),
       name: collection.getName(),
       userId: collection.getUserId(),
+      createdAt: collection.getCreatedAt(),
     });
   });
 });

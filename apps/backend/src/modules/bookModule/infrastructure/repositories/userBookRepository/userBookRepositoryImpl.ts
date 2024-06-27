@@ -281,6 +281,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           `${genreColumns.name} as genreName`,
           `${collectionColumns.id} as collectionId`,
           `${collectionColumns.name} as collectionName`,
+          `${collectionColumns.createdAt} as collectionCreatedAt`,
           `${collectionColumns.userId} as userId`,
           `${bookReadingColumns.id} as readingId`,
           `${bookReadingColumns.startedAt} as readingStartedAt`,
