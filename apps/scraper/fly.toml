@@ -1,0 +1,23 @@
+app = "misyma-scraper"
+primary_region = "waw"
+
+[build]
+  dockerfile = "./Dockerfile"
+  build-target = "runner"
+
+[deploy]
+  strategy = "rolling"
+
+[env]
+  DATABASE_PATH = "/data/misyma.db"
+  NODE_ENV = "production"
+
+[mounts]
+  source = "misyma_data"
+  destination = "/data"
+  processes = ["app"]
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 4
+  memory_mb = "8gb"
