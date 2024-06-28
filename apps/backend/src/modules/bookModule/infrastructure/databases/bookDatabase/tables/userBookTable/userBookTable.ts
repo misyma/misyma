@@ -9,4 +9,5 @@ export const userBookColumns: Record<keyof UserBookRawEntity, string> = {
   isFavorite: `${userBookTable}.isFavorite`,
   bookId: `${userBookTable}.bookId`,
   bookshelfId: `${userBookTable}.bookshelfId`,
+  createdAt: `${userBookTable}.createdAt`,
 };

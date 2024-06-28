@@ -6,6 +6,7 @@ export interface UserBookWithJoinsRawEntity {
   readonly status: ReadingStatus;
   readonly isFavorite: boolean;
   readonly bookshelfId: string;
+  readonly createdAt: Date;
 
   readonly bookId: string;
   readonly title: string;

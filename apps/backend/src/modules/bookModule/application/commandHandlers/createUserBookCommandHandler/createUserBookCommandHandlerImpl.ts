@@ -123,6 +123,7 @@ export class CreateUserBookCommandHandlerImpl implements CreateUserBookCommandHa
         bookshelfId,
         status,
         isFavorite,
+        createdAt: new Date(),
         imageUrl,
         genres,
         collections,

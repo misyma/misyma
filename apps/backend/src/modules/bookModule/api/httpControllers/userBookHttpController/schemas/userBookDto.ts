@@ -18,6 +18,7 @@ export const userBookDtoSchema = Type.Object({
   status: Type.Enum(contracts.ReadingStatus),
   isFavorite: Type.Boolean(),
   bookshelfId: Type.String({ format: 'uuid' }),
+  createdAt: Type.String({ format: 'date-time' }),
   genres: Type.Array(genreDtoSchema),
   collections: Type.Array(collectionDtoSchema),
   readings: Type.Array(bookReadingDtoSchema),

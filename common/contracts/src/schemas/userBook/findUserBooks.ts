@@ -1,5 +1,6 @@
 import { type UserBook } from './userBook.js';
 import { type Metadata } from '../metadata.js';
+import { type SortingType } from '../sortingType.js';
 
 export interface FindUserBooksQueryParams {
   readonly bookshelfId?: string;
@@ -7,6 +8,7 @@ export interface FindUserBooksQueryParams {
   readonly isbn?: string;
   readonly page?: number;
   readonly pageSize?: number;
+  readonly sortDate?: SortingType;
 }
 
 export interface FindUserBooksResponseBody {

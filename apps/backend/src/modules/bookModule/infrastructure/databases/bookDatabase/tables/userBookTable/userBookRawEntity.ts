@@ -7,4 +7,5 @@ export interface UserBookRawEntity {
   readonly isFavorite: boolean;
   readonly bookId: string;
   readonly bookshelfId: string;
+  readonly createdAt: Date;
 }

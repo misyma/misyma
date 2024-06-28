@@ -1,14 +1,14 @@
 import {
-  type FindUserBooksPayload,
+  type FindUserBooksQueryHandlerPayload,
   type FindUserBooksQueryHandler,
-  type FindUserBooksResult,
+  type FindUserBooksQueryHandlerResult,
 } from './findUserBooksQueryHandler.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type BookshelfRepository } from '../../../../bookshelfModule/domain/repositories/bookshelfRepository/bookshelfRepository.js';
 import { type CollectionRepository } from '../../../domain/repositories/collectionRepository/collectionRepository.js';
 import {
   type UserBookRepository,
-  type FindUserBooksPayload as FinUserBooksDomainPayload,
+  type FindUserBooksPayload,
 } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
 
 export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler {
@@ -18,8 +18,8 @@ export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler 
     private readonly collectionRepository: CollectionRepository,
   ) {}
 
-  public async execute(payload: FindUserBooksPayload): Promise<FindUserBooksResult> {
-    const { bookshelfId, userId, collectionId, page, pageSize, isbn } = payload;
+  public async execute(payload: FindUserBooksQueryHandlerPayload): Promise<FindUserBooksQueryHandlerResult> {
+    const { bookshelfId, userId, collectionId, page, pageSize, isbn, sortDate } = payload;
 
     await this.validateBookshelf({
       bookshelfId,
@@ -31,13 +31,20 @@ export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler 
       userId,
     });
 
-    const findUserBooksPayload: FinUserBooksDomainPayload = {
+    let findUserBooksPayload: FindUserBooksPayload = {
       bookshelfId,
       collectionId,
       isbn,
       page,
       pageSize,
     };
+
+    if (sortDate) {
+      findUserBooksPayload = {
+        ...findUserBooksPayload,
+        sortDate,
+      };
+    }
 
     const [userBooks, total] = await Promise.all([
       await this.userBookRepository.findUserBooks(findUserBooksPayload),

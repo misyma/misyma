@@ -18,6 +18,8 @@ export class M4CreateUserBookTableMigration implements Migration {
 
       table.text('bookshelfId').notNullable();
 
+      table.timestamp('createdAt').notNullable();
+
       table.primary(['id']);
 
       table.foreign('bookId').references('id').inTable('books').onDelete('CASCADE');

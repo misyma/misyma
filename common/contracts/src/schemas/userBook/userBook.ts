@@ -26,6 +26,7 @@ export interface UserBook {
   readonly status: ReadingStatus;
   readonly isFavorite: boolean;
   readonly bookshelfId: string;
+  readonly createdAt: string;
   readonly genres: Genre[];
   readonly collections: Collection[];
   readonly readings: BookReading[];

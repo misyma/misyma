@@ -63,29 +63,28 @@ export class UserBookTestUtils implements TestUtils {
       }
     });
 
-    const userBookRawEntity = rawEntities[0] as UserBookRawEntity;
+    const rawEntity = rawEntities[0] as UserBookRawEntity;
 
     return {
-      ...userBookRawEntity,
-      isFavorite: Boolean(userBookRawEntity.isFavorite),
+      ...rawEntity,
+      isFavorite: Boolean(rawEntity.isFavorite),
+      createdAt: new Date(rawEntity.createdAt),
     };
   }
 
   public async findById(payload: FindByIdPayload): Promise<UserBookRawEntity | undefined> {
     const { id } = payload;
 
-    const userBookRawEntity = await this.databaseClient<UserBookRawEntity>(userBookTable)
-      .select('*')
-      .where({ id })
-      .first();
+    const rawEntity = await this.databaseClient<UserBookRawEntity>(userBookTable).select('*').where({ id }).first();
 
-    if (!userBookRawEntity) {
+    if (!rawEntity) {
       return undefined;
     }
 
     return {
-      ...userBookRawEntity,
-      isFavorite: Boolean(userBookRawEntity.isFavorite),
+      ...rawEntity,
+      isFavorite: Boolean(rawEntity.isFavorite),
+      createdAt: new Date(rawEntity.createdAt),
     };
   }
 
@@ -97,6 +96,7 @@ export class UserBookTestUtils implements TestUtils {
     return rawEntities.map((rawEntity) => ({
       ...rawEntity,
       isFavorite: Boolean(rawEntity.isFavorite),
+      createdAt: new Date(rawEntity.createdAt),
     }));
   }
 
