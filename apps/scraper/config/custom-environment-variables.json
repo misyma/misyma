@@ -1,0 +1,4 @@
+{
+  "logLevel": "LOG_LEVEL",
+  "databasePath": "DATABASE_PATH"
+}

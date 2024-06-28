@@ -19,11 +19,6 @@ RUN turbo prune --scope="@apps/frontend" --docker
 
 FROM base AS installer
 
-ARG APPLICATION_VERSION
-
-ENV APPLICATION_VERSION=$APPLICATION_VERSION
-ENV CI=true
-
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/package-lock.json ./package-lock.json
 COPY tsconfig.json ./

@@ -19,8 +19,6 @@ RUN turbo prune --scope="@apps/backend" --docker
 
 FROM base AS installer
 
-ENV CI=true
-
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/package-lock.json ./package-lock.json
 COPY tsconfig.json ./
@@ -33,12 +31,8 @@ RUN npm run build --filter="@apps/backend"
 
 FROM base AS runner
 
-ARG APPLICATION_VERSION
-
-ENV APPLICATION_VERSION=$APPLICATION_VERSION
 ENV NODE_ENV=production
 ENV NODE_CONFIG_DIR=/app/apps/backend/config
-ENV CI=true
 
 COPY package*.json ./
 COPY --from=installer /app/apps/backend/dist ./apps/backend
