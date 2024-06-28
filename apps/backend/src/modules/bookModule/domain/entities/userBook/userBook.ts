@@ -11,6 +11,7 @@ export interface UserBookDraft {
   readonly status: ReadingStatus;
   readonly isFavorite: boolean;
   readonly bookshelfId: string;
+  readonly createdAt: Date;
   readonly bookId: string;
   readonly book?: BookDraft | undefined;
   readonly genres: Genre[];
@@ -23,6 +24,7 @@ export interface UserBookState {
   status: ReadingStatus;
   isFavorite: boolean;
   bookshelfId: string;
+  readonly createdAt: Date;
   readonly bookId: string;
   readonly book?: BookDraft | undefined;
   genres: Genre[];
@@ -59,7 +61,8 @@ export class UserBook {
   private readonly state: UserBookState;
 
   public constructor(draft: UserBookDraft) {
-    const { id, imageUrl, status, isFavorite, bookshelfId, bookId, book, genres, readings, collections } = draft;
+    const { id, imageUrl, status, isFavorite, bookshelfId, createdAt, bookId, book, genres, readings, collections } =
+      draft;
 
     this.id = id;
 
@@ -67,6 +70,7 @@ export class UserBook {
       status,
       isFavorite,
       bookshelfId,
+      createdAt,
       bookId,
       genres,
       readings,
@@ -113,6 +117,10 @@ export class UserBook {
 
   public getBookshelfId(): string {
     return this.state.bookshelfId;
+  }
+
+  public getCreatedAt(): Date {
+    return this.state.createdAt;
   }
 
   public getBookId(): string {

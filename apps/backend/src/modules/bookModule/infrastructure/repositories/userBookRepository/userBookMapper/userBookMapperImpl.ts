@@ -17,6 +17,7 @@ export class UserBookMapperImpl implements UserBookMapper {
         status,
         isFavorite,
         bookshelfId,
+        createdAt,
         bookId,
         title,
         isbn,
@@ -145,6 +146,12 @@ export class UserBookMapperImpl implements UserBookMapper {
 
         const userBookDraft: UserBookDraft = {
           id,
+          imageUrl: imageUrl ?? undefined,
+          status,
+          isFavorite: Boolean(isFavorite),
+          bookshelfId,
+          createdAt: new Date(createdAt),
+          bookId,
           book: {
             id: bookId,
             title,
@@ -159,11 +166,6 @@ export class UserBookMapperImpl implements UserBookMapper {
             authors,
             imageUrl: bookImageUrl ?? undefined,
           },
-          bookId,
-          imageUrl: imageUrl ?? undefined,
-          status,
-          isFavorite: Boolean(isFavorite),
-          bookshelfId,
           genres,
           readings,
           collections,

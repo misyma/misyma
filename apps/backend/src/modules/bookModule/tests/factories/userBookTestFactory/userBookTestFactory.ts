@@ -10,6 +10,7 @@ export class UserBookTestFactory {
       status: Generator.readingStatus(),
       isFavorite: Generator.boolean(),
       bookshelfId: Generator.uuid(),
+      createdAt: Generator.pastDate(),
       bookId: Generator.uuid(),
       genres: [],
       readings: [],
@@ -25,6 +26,7 @@ export class UserBookTestFactory {
       status: Generator.readingStatus(),
       isFavorite: Generator.boolean(),
       bookshelfId: Generator.uuid(),
+      createdAt: Generator.pastDate(),
       bookId: Generator.uuid(),
       ...input,
     };

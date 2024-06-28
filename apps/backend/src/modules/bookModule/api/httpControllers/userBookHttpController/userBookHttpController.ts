@@ -334,7 +334,7 @@ export class UserBookHttpController implements HttpController {
   }
 
   private mapUserBookToUserBookDto(userBook: UserBook): UserBookDto {
-    const { status, isFavorite, bookshelfId, imageUrl, bookId, genres, book, readings, collections } =
+    const { status, isFavorite, bookshelfId, imageUrl, bookId, genres, book, readings, collections, createdAt } =
       userBook.getState();
 
     const userBookDto: UserBookDto = {
@@ -342,6 +342,7 @@ export class UserBookHttpController implements HttpController {
       status,
       isFavorite,
       bookshelfId,
+      createdAt: createdAt.toISOString(),
       bookId,
       book: {
         title: book?.title as string,

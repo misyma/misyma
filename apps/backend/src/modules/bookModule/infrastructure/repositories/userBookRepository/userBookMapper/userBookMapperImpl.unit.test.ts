@@ -38,6 +38,7 @@ describe('UserBookMapperImpl', () => {
         status: userBook.status,
         isFavorite: userBook.isFavorite,
         bookshelfId: userBook.bookshelfId,
+        createdAt: userBook.createdAt,
         authorId: null,
         authorName: null,
         isAuthorApproved: null,
@@ -63,6 +64,7 @@ describe('UserBookMapperImpl', () => {
           status: userBook.status,
           isFavorite: userBook.isFavorite,
           bookshelfId: userBook.bookshelfId,
+          createdAt: userBook.createdAt,
           bookId: userBook.bookId,
           book: {
             id: book.id,

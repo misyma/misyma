@@ -23,6 +23,14 @@ export interface FindUserBooksPayload {
   readonly isbn?: string | undefined;
   readonly page?: number;
   readonly pageSize?: number;
+  readonly sortDate?: 'asc' | 'desc';
+}
+
+export interface CountUserBooksPayload {
+  readonly ids?: string[];
+  readonly bookshelfId?: string | undefined;
+  readonly collectionId?: string | undefined;
+  readonly isbn?: string | undefined;
 }
 
 export interface FindUserBooksByUserPayload {
@@ -33,6 +41,7 @@ export interface FindUserBooksByUserPayload {
   readonly userId: string;
   readonly page: number;
   readonly pageSize: number;
+  readonly sortDate?: 'asc' | 'desc';
 }
 
 export interface DeleteUserBooksPayload {
@@ -45,6 +54,6 @@ export interface UserBookRepository {
   findUserBook(payload: FindUserBookPayload): Promise<UserBook | null>;
   findUserBooks(payload: FindUserBooksPayload): Promise<UserBook[]>;
   findUserBooksByUser(payload: FindUserBooksByUserPayload): Promise<UserBook[]>;
-  countUserBooks(payload: FindUserBooksPayload): Promise<number>;
+  countUserBooks(payload: CountUserBooksPayload): Promise<number>;
   deleteUserBooks(payload: DeleteUserBooksPayload): Promise<void>;
 }

@@ -122,6 +122,7 @@ describe('UserBookRepositoryImpl', () => {
           status: userBookRawEntity.status,
           isFavorite: userBookRawEntity.isFavorite,
           imageUrl: userBookRawEntity.imageUrl as string,
+          createdAt: userBookRawEntity.createdAt,
           genres: [genre],
           readings: [],
           collections: [],
@@ -138,6 +139,7 @@ describe('UserBookRepositoryImpl', () => {
         status: userBookRawEntity.status,
         imageUrl: userBookRawEntity.imageUrl,
         isFavorite: userBookRawEntity.isFavorite,
+        createdAt: userBookRawEntity.createdAt,
         genres: [genre],
         readings: [],
         collections: [],
@@ -169,6 +171,7 @@ describe('UserBookRepositoryImpl', () => {
         id: userBook.getId(),
         bookId: userBookRawEntity.bookId,
         bookshelfId: userBookRawEntity.bookshelfId,
+        createdAt: userBookRawEntity.createdAt,
         status: userBookRawEntity.status,
         isFavorite: userBookRawEntity.isFavorite,
         imageUrl: userBookRawEntity.imageUrl,
@@ -217,6 +220,7 @@ describe('UserBookRepositoryImpl', () => {
         status: userBook.getStatus(),
         isFavorite: userBook.getIsFavorite(),
         imageUrl: userBook.getImageUrl(),
+        createdAt: userBook.getCreatedAt(),
         genres: [],
         readings: [],
         collections: [],
@@ -251,6 +255,7 @@ describe('UserBookRepositoryImpl', () => {
         status: userBook.getStatus(),
         isFavorite: userBook.getIsFavorite(),
         imageUrl: userBook.getImageUrl(),
+        createdAt: userBook.getCreatedAt(),
       });
     });
 
@@ -569,6 +574,7 @@ describe('UserBookRepositoryImpl', () => {
         status: userBook.getStatus(),
         isFavorite: userBook.getIsFavorite(),
         imageUrl: userBook.getImageUrl(),
+        createdAt: userBook.getCreatedAt(),
         genres: [
           {
             id: genre.id,
@@ -1043,9 +1049,9 @@ describe('UserBookRepositoryImpl', () => {
 
       await userBookRepository.deleteUserBooks({ ids: [userBook.id] });
 
-      const foundBookBook = await bookTestUtils.findById({ id: userBook.id });
+      const foundUserBook = await bookTestUtils.findById({ id: userBook.id });
 
-      expect(foundBookBook).toBeUndefined();
+      expect(foundUserBook).toBeUndefined();
     });
   });
 });

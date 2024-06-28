@@ -15,6 +15,7 @@ import {
   type SaveUserBookPayload,
   type UserBookRepository,
   type FindUserBooksByUserPayload,
+  type CountUserBooksPayload,
 } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
 import { authorColumns, authorTable } from '../../databases/bookDatabase/tables/authorTable/authorTable.js';
 import {
@@ -68,7 +69,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
 
   private async createUserBook(payload: CreateUserBookPayload): Promise<UserBook> {
     const {
-      userBook: { imageUrl, status, isFavorite, bookshelfId, bookId, genres, collections },
+      userBook: { imageUrl, status, isFavorite, bookshelfId, bookId, genres, collections, createdAt },
     } = payload;
 
     const id = this.uuidService.generateUuid();
@@ -83,6 +84,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
             isFavorite,
             bookshelfId,
             bookId,
+            createdAt,
           },
           '*',
         );
@@ -230,13 +232,14 @@ export class UserBookRepositoryImpl implements UserBookRepository {
   public async saveUserBooks(payload: SaveUserBooksPayload): Promise<void> {
     const { userBooks } = payload;
 
-    const payloads = userBooks.map((userBook) => ({
+    const payloads: Partial<UserBookRawEntity>[] = userBooks.map((userBook) => ({
       id: userBook.getId(),
       imageUrl: userBook.getImageUrl(),
       status: userBook.getStatus(),
       isFavorite: userBook.getIsFavorite(),
       bookshelfId: userBook.getBookshelfId(),
       bookId: userBook.getBookId(),
+      createdAt: userBook.getCreatedAt(),
     }));
 
     try {
@@ -263,6 +266,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           userBookColumns.status,
           userBookColumns.isFavorite,
           userBookColumns.bookshelfId,
+          userBookColumns.createdAt,
           `${bookColumns.id} as bookId`,
           `${bookColumns.title} as title`,
           `${bookColumns.isbn} as isbn`,
@@ -350,7 +354,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
   }
 
   public async findUserBooks(payload: FindUserBooksPayload): Promise<UserBook[]> {
-    const { bookshelfId, collectionId, ids, page, pageSize, isbn } = payload;
+    const { bookshelfId, collectionId, ids, page, pageSize, isbn, sortDate } = payload;
 
     let rawEntities: UserBookWithJoinsRawEntity[];
 
@@ -362,6 +366,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           userBookColumns.status,
           userBookColumns.isFavorite,
           userBookColumns.bookshelfId,
+          userBookColumns.createdAt,
           `${bookColumns.id} as bookId`,
           `${bookColumns.title} as title`,
           `${bookColumns.isbn} as isbn`,
@@ -380,6 +385,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           `${genreColumns.name} as genreName`,
           `${collectionColumns.id} as collectionId`,
           `${collectionColumns.name} as collectionName`,
+          `${collectionColumns.createdAt} as collectionCreatedAt`,
           `${collectionColumns.userId} as userId`,
           `${bookReadingColumns.id} as readingId`,
           `${bookReadingColumns.startedAt} as readingStartedAt`,
@@ -432,6 +438,10 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         query.limit(pageSize).offset(pageSize * (page - 1));
       }
 
+      if (sortDate) {
+        query.orderBy('createdAt', sortDate);
+      }
+
       rawEntities = await query;
     } catch (error) {
       throw new RepositoryError({
@@ -445,7 +455,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
   }
 
   public async findUserBooksByUser(payload: FindUserBooksByUserPayload): Promise<UserBook[]> {
-    const { userId, bookIdentifier, page, pageSize } = payload;
+    const { userId, bookIdentifier, page, pageSize, sortDate } = payload;
 
     let rawEntities: UserBookWithJoinsRawEntity[];
 
@@ -457,6 +467,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           userBookColumns.status,
           userBookColumns.isFavorite,
           userBookColumns.bookshelfId,
+          userBookColumns.createdAt,
           `${bookColumns.id} as bookId`,
           `${bookColumns.title} as title`,
           `${bookColumns.isbn} as isbn`,
@@ -475,6 +486,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           `${genreColumns.name} as genreName`,
           `${collectionColumns.id} as collectionId`,
           `${collectionColumns.name} as collectionName`,
+          `${collectionColumns.createdAt} as collectionCreatedAt`,
           `${collectionColumns.userId} as userId`,
           `${bookReadingColumns.id} as readingId`,
           `${bookReadingColumns.startedAt} as readingStartedAt`,
@@ -520,6 +532,10 @@ export class UserBookRepositoryImpl implements UserBookRepository {
 
       query.where(`${bookshelfTable}.userId`, userId);
 
+      if (sortDate) {
+        query.orderBy('createdAt', sortDate);
+      }
+
       rawEntities = await query.limit(pageSize).offset(pageSize * (page - 1));
     } catch (error) {
       throw new RepositoryError({
@@ -546,7 +562,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
     }
   }
 
-  public async countUserBooks(payload: FindUserBooksPayload): Promise<number> {
+  public async countUserBooks(payload: CountUserBooksPayload): Promise<number> {
     const { bookshelfId, ids, collectionId } = payload;
 
     try {
