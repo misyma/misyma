@@ -40,7 +40,7 @@ import {
 } from '../../../../../common/components/ui/dialog';
 import { HiOutlineInformationCircle } from 'react-icons/hi';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../../../common/components/ui/tooltip';
-import { useFindAuthorsQuery } from '../../../../../author/api/queries/findAuthorsQuery/findAuthorsQuery';
+import { useFindAuthorsQuery } from '../../../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
 import { findUserBooksBy } from '../../../../../book/api/queries/findUserBookBy/findUserBooksBy';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';

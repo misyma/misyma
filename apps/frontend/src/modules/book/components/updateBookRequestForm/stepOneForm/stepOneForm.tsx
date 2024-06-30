@@ -20,7 +20,7 @@ import { FindBookByIdQueryOptions } from '../../../api/queries/findBookById/find
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
 import { FindUserBookByIdQueryOptions } from '../../../api/queries/findUserBook/findUserBookByIdQueryOptions';
-import { useFindAuthorsQuery } from '../../../../author/api/queries/findAuthorsQuery/findAuthorsQuery';
+import { useFindAuthorsQuery } from '../../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
 
 const stepOneSchema = z.object({
   isbn: isbnSchema.optional(),

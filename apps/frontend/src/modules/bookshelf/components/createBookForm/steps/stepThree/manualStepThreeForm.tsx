@@ -45,8 +45,8 @@ import { userStateSelectors } from '../../../../../core/store/states/userState/u
 import { useFindUserBookshelfsQuery } from '../../../../api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 import { BookApiError } from '../../../../../book/errors/bookApiError';
 import { useCreateUserBookMutation } from '../../../../../book/api/mutations/createUserBookMutation/createUserBookMutation';
-import { useCreateAuthorDraftMutation } from '../../../../../author/api/mutations/createAuthorDraftMutation/createAuthorDraftMutation';
-import { useFindAuthorsQuery } from '../../../../../author/api/queries/findAuthorsQuery/findAuthorsQuery';
+import { useCreateAuthorDraftMutation } from '../../../../../author/api/user/mutations/createAuthorDraftMutation/createAuthorDraftMutation';
+import { useFindAuthorsQuery } from '../../../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
 import { BookApiQueryKeys } from '../../../../../book/api/queries/bookApiQueryKeys';
 
 const stepThreeFormSchema = z.object({

@@ -1,12 +1,13 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import { FC } from 'react';
-import { IoIosLogOut } from "react-icons/io";
+import { IoIosLogOut } from 'react-icons/io';
 import { useStoreSelector } from '../../../core/store/hooks/useStoreSelector';
 import { userStateActions, userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { useStoreDispatch } from '../../../core/store/hooks/useStoreDispatch';
 import { CookieService } from '../../../core/services/cookieService/cookieService';
 import { useLogoutUserMutation } from '../../../auth/api/logoutUserMutation/logoutUserMutation';
+import { UserRole } from '@common/contracts';
 export const Navbar: FC = () => {
   const navigate = useNavigate();
 
@@ -72,6 +73,16 @@ export const Navbar: FC = () => {
         <span className="burger-span"></span>
       </div>
       <ul className="hidden sm:flex sm:flex-1 md:gap-4 lg:gap-12 sm:justify-end w-full items-center align-middle">
+        {res.data?.role === UserRole.admin && (
+          <li className="text-primary text-xl text-center font-semibold">
+            <Link
+              to={'/admin'}
+              className={linkClasses}
+            >
+              Panel administratora
+            </Link>
+          </li>
+        )}
         <li className="text-primary text-xl text-center font-semibold">
           <Link
             to={'/shelves'}
