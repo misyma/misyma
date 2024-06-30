@@ -1,3 +1,5 @@
+export * from './schemas/author/author.js';
+
 export * from './schemas/bookshelf/bookshelf.js';
 
 export * from './schemas/bookshelf/createBookshelf.js';
