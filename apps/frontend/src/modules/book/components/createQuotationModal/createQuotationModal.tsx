@@ -39,8 +39,9 @@ const createQuotationSchema = z
     if (match?.[0]?.length !== value.page.length) {
       ctx.addIssue({
         code: z.ZodIssueCode.invalid_string,
-        message: 'Strona powinna zawierać liczby lub znak `-`',
+        message: 'Strona powinna zawierać cyfry lub znak `-`',
         validation: 'regex',
+        path: ['page'],
       });
     }
   });
@@ -71,7 +72,7 @@ export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props):
       content: '',
     },
     reValidateMode: 'onChange',
-    mode: 'onChange',
+    mode: 'onTouched',
   });
 
   const { mutateAsync } = useCreateQuoteMutation({});

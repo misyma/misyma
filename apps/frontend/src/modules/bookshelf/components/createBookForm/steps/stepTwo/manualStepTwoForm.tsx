@@ -141,17 +141,6 @@ export const ManualStepTwoForm = (): JSX.Element => {
       >
         <FormField
           control={form.control}
-          name="language"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Język</FormLabel>
-              <LanguageSelect {...field} />
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
           name="form"
           render={({ field }) => (
             <FormItem>
@@ -181,6 +170,17 @@ export const ManualStepTwoForm = (): JSX.Element => {
                   {...field}
                 />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="language"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Język</FormLabel>
+              <LanguageSelect {...field} />
               <FormMessage />
             </FormItem>
           )}

@@ -55,6 +55,12 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
 
   const [file, setFile] = useState<File | undefined>();
 
+  const [genreSelectOpen, setGenreSelectOpen] = useState(false);
+
+  const [bookshelfSelectOpen, setBookshelfSelectOpen] = useState(false);
+
+  const [statusSelectOpen, setStatusSelectOpen] = useState(false);
+
   const { data: bookshelvesData } = useFindUserBookshelfsQuery({
     userId: user?.id as string,
     pageSize: 50,
@@ -192,6 +198,8 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
             <FormItem>
               <FormLabel>Półka</FormLabel>
               <Select
+                open={bookshelfSelectOpen}
+                onOpenChange={setBookshelfSelectOpen}
                 onValueChange={(val) => {
                   field.onChange(val);
                 }}
@@ -202,7 +210,16 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
                     <SelectValue placeholder="Półka" />
                     <SelectContent>
                       {bookshelvesData?.data.map((bookshelf) => (
-                        <SelectItem value={bookshelf.id}>{bookshelf.name}</SelectItem>
+                        <SelectItem
+                          onKeyDown={(event) => {
+                            if (event.key === 'Enter') {
+                              setBookshelfSelectOpen(false);
+                            }
+                          }}
+                          value={bookshelf.id}
+                        >
+                          {bookshelf.name}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </SelectTrigger>
@@ -219,6 +236,8 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
             <FormItem>
               <FormLabel>Status</FormLabel>
               <Select
+                open={statusSelectOpen}
+                onOpenChange={setStatusSelectOpen}
                 onValueChange={(val) => {
                   field.onChange(val);
                 }}
@@ -232,7 +251,16 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
                     />
                     <SelectContent>
                       {Object.entries(ReadingStatus).map(([key, status]) => (
-                        <SelectItem value={key}>{status}</SelectItem>
+                        <SelectItem
+                          onKeyDown={(event) => {
+                            if (event.key === 'Enter') {
+                              setStatusSelectOpen(false);
+                            }
+                          }}
+                          value={key}
+                        >
+                          {status}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </SelectTrigger>
@@ -272,6 +300,8 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
             <FormItem>
               <FormLabel>Kategoria</FormLabel>
               <Select
+                open={genreSelectOpen}
+                onOpenChange={setGenreSelectOpen}
                 onValueChange={(val) => {
                   field.onChange(val);
                 }}
@@ -282,7 +312,16 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
                     <SelectValue placeholder={<span className="text-muted-foreground">Kategoria</span>} />
                     <SelectContent>
                       {Object.values(genresData?.data ?? []).map((genre) => (
-                        <SelectItem value={genre.id}>{genre.name}</SelectItem>
+                        <SelectItem
+                          onKeyDown={(event) => {
+                            if (event.key === 'Enter') {
+                              setGenreSelectOpen(false);
+                            }
+                          }}
+                          value={genre.id}
+                        >
+                          {genre.name}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </SelectTrigger>
