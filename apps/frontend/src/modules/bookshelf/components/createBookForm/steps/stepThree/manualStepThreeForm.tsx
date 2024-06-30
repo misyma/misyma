@@ -84,6 +84,12 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
 
   const [submissionError, setSubmissionError] = useState<string | null>(null);
 
+  const [genreSelectOpen, setGenreSelectOpen] = useState(false);
+
+  const [bookshelfSelectOpen, setBookshelfSelectOpen] = useState(false);
+
+  const [statusSelectOpen, setStatusSelectOpen] = useState(false);
+
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const dispatch = useBookCreationDispatch();
@@ -194,8 +200,11 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
           ...(bookCreation.stepThreeDetails as Required<BookCreationNonIsbnState['stepThreeDetails']>),
           ...(bookCreation.stepOneDetails as Required<BookCreationNonIsbnState['stepOneDetails']>),
           isbn: bookCreation.stepOneDetails?.isbn === '' ? undefined : bookCreation.stepOneDetails?.isbn,
-          releaseYear: // eslint-disable-next-line
-            (bookCreation.stepOneDetails?.yearOfIssue as any) === '' ? undefined : bookCreation.stepOneDetails?.yearOfIssue,
+          releaseYear:
+            // eslint-disable-next-line
+            (bookCreation.stepOneDetails?.yearOfIssue as any) === ''
+              ? undefined
+              : bookCreation.stepOneDetails?.yearOfIssue,
           accessToken: accessToken as string,
           publisher: bookCreation.stepOneDetails?.publisher === '' ? undefined : bookCreation.stepOneDetails?.publisher,
         });
@@ -296,6 +305,8 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
             <FormItem>
               <FormLabel>Półka</FormLabel>
               <Select
+                open={bookshelfSelectOpen}
+                onOpenChange={setBookshelfSelectOpen}
                 onValueChange={(val) => {
                   dispatch({
                     type: BookCreationActionType.setBookshelfId,
@@ -310,9 +321,20 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
                   <SelectTrigger>
                     <SelectValue placeholder="Półka" />
                     <SelectContent>
-                      {bookshelvesData?.data.filter((bookshelf) => bookshelf.name !== 'Wypożyczalnia').map((bookshelf) => (
-                        <SelectItem value={bookshelf.id}>{bookshelf.name}</SelectItem>
-                      ))}
+                      {bookshelvesData?.data
+                        .filter((bookshelf) => bookshelf.name !== 'Wypożyczalnia')
+                        .map((bookshelf) => (
+                          <SelectItem
+                            onKeyDown={(event) => {
+                              if (event.key === 'Enter') {
+                                setBookshelfSelectOpen(false);
+                              }
+                            }}
+                            value={bookshelf.id}
+                          >
+                            {bookshelf.name}
+                          </SelectItem>
+                        ))}
                     </SelectContent>
                   </SelectTrigger>
                 </FormControl>
@@ -328,6 +350,8 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
             <FormItem>
               <FormLabel>Status</FormLabel>
               <Select
+                open={statusSelectOpen}
+                onOpenChange={setStatusSelectOpen}
                 onValueChange={(val) => {
                   dispatch({
                     type: BookCreationActionType.setStatus,
@@ -346,7 +370,16 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
                     />
                     <SelectContent>
                       {Object.entries(ReadingStatus).map(([key, status]) => (
-                        <SelectItem value={key}>{status}</SelectItem>
+                        <SelectItem
+                          onKeyDown={(event) => {
+                            if (event.key === 'Enter') {
+                              setStatusSelectOpen(false);
+                            }
+                          }}
+                          value={key}
+                        >
+                          {status}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </SelectTrigger>
@@ -387,6 +420,8 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
             <FormItem>
               <FormLabel>Kategoria</FormLabel>
               <Select
+                open={genreSelectOpen}
+                onOpenChange={setGenreSelectOpen}
                 onValueChange={(val) => {
                   dispatch({
                     type: BookCreationActionType.setGenre,
@@ -402,7 +437,16 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
                     <SelectValue placeholder={<span className="text-muted-foreground">Kategoria</span>} />
                     <SelectContent>
                       {Object.values(data?.data ?? []).map((genre) => (
-                        <SelectItem value={genre.id}>{genre.name}</SelectItem>
+                        <SelectItem
+                          onKeyDown={(event) => {
+                            if (event.key === 'Enter') {
+                              setGenreSelectOpen(false);
+                            }
+                          }}
+                          value={genre.id}
+                        >
+                          {genre.name}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </SelectTrigger>
