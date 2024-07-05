@@ -63,7 +63,7 @@ try {
 
   const bookRepository = new BookRepository(dbClient, uuidService);
 
-  const scrapeOpenLibraryAction = new ScrapeOpenLibraryAction(authorRepository, logger);
+  const scrapeOpenLibraryAction = new ScrapeOpenLibraryAction(authorRepository, bookRepository, logger);
 
   yargs(hideBin(process.argv))
     .command([
