@@ -5,12 +5,12 @@ import { Skeleton } from '../../modules/common/components/ui/skeleton';
 export const ShelvesSkeleton: FC = () => {
   return (
     <AuthenticatedLayout>
-      <div className="flex items-center justify-center w-100% px-8 py-1 sm:py-4">
+      <div className="flex items-center justify-center w-100% px-8 py-1 sm:py-2">
         <div className="flex flex-col w-[80vw] sm:w-[90vw] sm:px-48 items-center justify-center gap-4">
           <div className="w-full flex items-end justify-center sm:justify-end">
             <Skeleton className="h-12 w-60 sm:w-96"></Skeleton>
           </div>
-            <div className="py-8 grid gap-x-16 gap-y-2 grid-cols-1 w-full min-h-16">
+            <div className="py-4 grid gap-x-16 gap-y-2 grid-cols-1 w-full min-h-16">
               {Array.from({ length: 5 })?.map((index) => (
                 <div key={`${index}-skeleton-container`}>
                 <div className="flex items-center">

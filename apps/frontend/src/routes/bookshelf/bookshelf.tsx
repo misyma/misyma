@@ -8,7 +8,7 @@ import { AuthenticatedLayout } from '../../modules/auth/layouts/authenticated/au
 import { Button } from '../../modules/common/components/ui/button';
 import { useFindUserQuery } from '../../modules/user/api/queries/findUserQuery/findUserQuery';
 import { Separator } from '../../modules/common/components/ui/separator';
-import { HiCheckCircle, HiDotsCircleHorizontal, HiQuestionMarkCircle } from 'react-icons/hi';
+import { HiCheckCircle, HiDotsCircleHorizontal, HiOutlineHeart, HiQuestionMarkCircle } from 'react-icons/hi';
 import { ReadingStatus, SortingType, UserBook } from '@common/contracts';
 import { cn } from '../../modules/common/lib/utils';
 import { FavoriteBookButton } from '../../modules/book/components/favoriteBookButton/favoriteBookButton';
@@ -19,6 +19,7 @@ import { useFindBookshelfByIdQuery } from '../../modules/bookshelf/api/queries/f
 import { FindBookBorrowingsQueryOptions } from '../../modules/borrowing/api/queries/findBookBorrowings/findBookBorrowingsQueryOptions';
 import { HiClock } from 'react-icons/hi';
 import { LoadingSpinner } from '../../modules/common/components/spinner/loading-spinner';
+import { Skeleton } from '../../modules/common/components/ui/skeleton';
 
 const bookshelfSearchSchema = z.object({
   id: z.string().uuid().catch(''),
@@ -56,7 +57,11 @@ const BorrowedBook: FC<{ userBook: UserBook; index: number }> = ({ userBook, ind
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
-  const { data: bookBorrowing, isFetching, isRefetching } = useQuery(
+  const {
+    data: bookBorrowing,
+    isFetching,
+    isRefetching,
+  } = useQuery(
     FindBookBorrowingsQueryOptions({
       accessToken: accessToken as string,
       userBookId: userBook.id,
@@ -79,7 +84,7 @@ const BorrowedBook: FC<{ userBook: UserBook; index: number }> = ({ userBook, ind
   };
 
   if (isFetching && !isRefetching) {
-    return <LoadingSpinner />
+    return <LoadingSpinner />;
   }
 
   return (
@@ -127,7 +132,8 @@ const BorrowedBook: FC<{ userBook: UserBook; index: number }> = ({ userBook, ind
         <Separator className="my-4 bg-primary"></Separator>
         <div className="flex justify-between w-full px-2">
           <p>
-            {userBook.book.authors[0].name}, {userBook.book.releaseYear}, {userBook.genres[0]?.name}{' '}
+            {userBook.book.authors[0]?.name ? `${userBook.book.authors[0]?.name},` : ''} {userBook.book.releaseYear},{' '}
+            {userBook.genres[0]?.name}{' '}
           </p>
           <p>wypożyczony przez: {bookBorrowing?.data[0].borrower}</p>
         </div>
@@ -195,6 +201,28 @@ export const BorrowingBookshelf: FC = () => {
   );
 };
 
+const BookshelfSkeleton = () => {
+  return Array.from({ length: 5 }).map((_, index) => (
+    <div
+      key={`skeleton-${index}`}
+      className="relative flex align-middle items-center gap-4 w-full cursor-pointer"
+    >
+      <Skeleton className='w-40 h-60' />
+      <div className="z-10 w-full px-12 pointer-events-none">
+        <div className="flex justify-between w-full">
+          <Skeleton className='w-52 h-8' />
+          <div className="flex gap-2 items-center justify-center">
+            <HiOutlineHeart className='h-8 w-8 text-primary' />
+            <Skeleton className='h-7 w-7 rounded-full' />
+          </div>
+        </div>
+        <Separator className="my-4 bg-primary"></Separator>
+        <Skeleton className='w-40 h-4' />
+      </div>
+    </div>
+  ));
+};
+
 export const Bookshelf: FC = () => {
   const { id } = bookshelfRoute.useParams();
 
@@ -202,7 +230,7 @@ export const Bookshelf: FC = () => {
 
   const { data: user } = useFindUserQuery();
 
-  const { data: bookshelfBooksResponse } = useQuery(
+  const { data: bookshelfBooksResponse, isFetching, isRefetching } = useQuery(
     FindBooksByBookshelfIdQueryOptions({
       accessToken: accessToken as string,
       bookshelfId: id,
@@ -258,24 +286,15 @@ export const Bookshelf: FC = () => {
           </Button>
         </div>
         <div className="flex flex-col justify-center gap-8 pt-8 w-full sm:max-w-7xl">
-          {bookshelfBooksResponse?.data.map((userBook, index) => (
-            <div
-              key={`${userBook.bookId}-${index}`}
-              className="relative flex align-middle items-center gap-4 w-full cursor-pointer"
-            >
+          {(isFetching && !isRefetching) ? (
+            <BookshelfSkeleton />
+          ) : (
+            bookshelfBooksResponse?.data.map((userBook, index) => (
               <div
-                onClick={() => {
-                  navigate({
-                    to: '/book/$bookId',
-                    params: {
-                      bookId: userBook.id,
-                    },
-                  });
-                }}
-                className="cursor-pointer absolute w-full h-[100%]"
-              ></div>
-              <div className="z-10">
-                <img
+                key={`${userBook.bookId}-${index}`}
+                className="relative flex align-middle items-center gap-4 w-full cursor-pointer"
+              >
+                <div
                   onClick={() => {
                     navigate({
                       to: '/book/$bookId',
@@ -284,28 +303,42 @@ export const Bookshelf: FC = () => {
                       },
                     });
                   }}
-                  src={userBook.imageUrl}
-                  className="object-contain aspect-square max-w-[200px]"
-                />
-              </div>
-              <div className="z-10 w-full px-12 pointer-events-none">
-                <div className="flex justify-between w-full">
-                  <div className="font-semibold text-lg sm:text-2xl">{userBook.book.title}</div>
-                  <div className="flex gap-2 items-center justify-center">
-                    <FavoriteBookButton
-                      className="pointer-events-auto"
-                      userBook={userBook}
-                    />
-                    {renderStatusIcon(userBook)}
+                  className="cursor-pointer absolute w-full h-[100%]"
+                ></div>
+                <div className="z-10">
+                  <img
+                    onClick={() => {
+                      navigate({
+                        to: '/book/$bookId',
+                        params: {
+                          bookId: userBook.id,
+                        },
+                      });
+                    }}
+                    src={userBook.imageUrl || '/book.jpg'}
+                    className="object-contain aspect-square w-40 h-60 bg-slate-50"
+                  />
+                </div>
+                <div className="z-10 w-full px-12 pointer-events-none">
+                  <div className="flex justify-between w-full">
+                    <div className="font-semibold text-lg sm:text-2xl">{userBook.book.title}</div>
+                    <div className="flex gap-2 items-center justify-center">
+                      <FavoriteBookButton
+                        className="pointer-events-auto"
+                        userBook={userBook}
+                      />
+                      {renderStatusIcon(userBook)}
+                    </div>
+                  </div>
+                  <Separator className="my-4 bg-primary"></Separator>
+                  <div className="px-2">
+                    {userBook.book.authors[0]?.name ? `${userBook.book.authors[0]?.name},` : ''}{' '}
+                    {userBook.book.releaseYear ? `${userBook.book.releaseYear},` : null} {userBook.genres[0]?.name}{' '}
                   </div>
                 </div>
-                <Separator className="my-4 bg-primary"></Separator>
-                <div className="px-2">
-                  {userBook.book.authors[0].name}, {userBook.book.releaseYear ? `${userBook.book.releaseYear},` : null} {userBook.genres[0]?.name}{' '}
-                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
     </AuthenticatedLayout>

@@ -54,6 +54,7 @@ export const ShelvesPage: FC = () => {
   const {
     data: bookshelvesData,
     isFetching,
+    isRefetching,
     refetch: refetchBookshelves,
   } = useFindUserBookshelfsQuery({
     userId: user?.id as string,
@@ -105,7 +106,7 @@ export const ShelvesPage: FC = () => {
 
   const [editMap, setEditMap] = useState<Record<number, boolean>>({});
 
-  if (isFetching) {
+  if (isFetching && !isRefetching) {
     return <ShelvesSkeleton />;
   }
 
@@ -285,7 +286,7 @@ export const ShelvesPage: FC = () => {
 
   return (
     <AuthenticatedLayout>
-      <div className="flex items-center justify-center w-100% px-8 py-1 sm:py-4">
+      <div className="flex items-center justify-center w-100% px-8 py-1 sm:py-2">
         <div className="flex flex-col w-[80vw] sm:w-[90vw] sm:px-48 items-center justify-center gap-4">
           <div className="w-full flex items-end justify-center sm:justify-end">
             <Button
@@ -297,21 +298,28 @@ export const ShelvesPage: FC = () => {
             </Button>
           </div>
           <ScrollArea className="w-full h-[70vh]">
-            <div className="py-8 grid gap-x-16 gap-y-2 grid-cols-1 w-full min-h-16">
+            <div className="py-4 grid gap-x-16 gap-y-2 grid-cols-1 w-full min-h-16">
               {bookshelves?.map((bookshelf, index) => (
-                <div key={`${bookshelf.id}-container`}>
+                <div
+                  className={cn(index > 4 ? 'hidden' : '')}
+                  key={`${bookshelf.id}-container`}
+                >
                   <Bookmark />
                   <div
                     key={`${bookshelf.id}`}
                     className="flex relative ml-10 mt-[-1.25rem] rounded-sm border border-spacing-2 p-4 gap-x-2 h-24 border-transparent bg-primaryBackground"
                   >
                     <div
-                      onClick={() =>
-                        navigate({
-                          to: `/bookshelf/${bookshelf.id}`,
-                        })
-                      }
-                      className="cursor-pointer absolute w-full h-[100%]"
+                      onClick={() => {
+                        if (bookshelf.id) {
+                          navigate({
+                            to: `/bookshelf/${bookshelf.id}`,
+                          });
+                        }
+                      }}
+                      className={cn('absolute w-full h-[100%]', {
+                        ['cursor-pointer']: bookshelf.id ? true : false,
+                      })}
                     >
                       &nbsp;
                     </div>
@@ -340,6 +348,15 @@ export const ShelvesPage: FC = () => {
                             className="z-30 bg-none pointer-events-auto text-lg  sm:text-2xl px-0 w-40 sm:w-72"
                             containerClassName="z-30 pointer-events-auto bg-transparent w-40 sm:w-72"
                             defaultValue={bookshelf.name}
+                            onKeyDown={(event) => {
+                              if (event.key === 'Enter') {
+                                if (bookshelves && bookshelves[index]?.id === '') {
+                                  return onCreateNew(index);
+                                }
+
+                                onSaveEdit(index);
+                              }
+                            }}
                           />
                         )}
                       </h2>
@@ -355,11 +372,13 @@ export const ShelvesPage: FC = () => {
                             />
                             <IoMdEye
                               className="text-primary pointer-events-auto h-8 w-8 cursor-pointer"
-                              onClick={() =>
-                                navigate({
-                                  to: `/bookshelf/${bookshelf.id}`,
-                                })
-                              }
+                              onClick={() => {
+                                if (bookshelf.id) {
+                                  navigate({
+                                    to: `/bookshelf/${bookshelf.id}`,
+                                  });
+                                }
+                              }}
                             />
                             <DeleteBookshelfModal
                               bookshelfId={bookshelf.id}
