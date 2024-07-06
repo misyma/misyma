@@ -142,7 +142,7 @@ export const UpdateBookRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit })
           <form
             //   eslint-disable-next-line
             onSubmit={stepTwoForm.handleSubmit(async (data) => await onUpdate(data as any))}
-            className="space-y-8"
+            className="space-y-4"
           >
             <FormField
               control={stepTwoForm.control}
