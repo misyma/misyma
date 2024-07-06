@@ -3,7 +3,6 @@ import { FC, useMemo, useState } from 'react';
 import { rootRoute } from '../root';
 import { RequireAuthComponent } from '../../modules/core/components/requireAuth/requireAuthComponent';
 import { z } from 'zod';
-import { FindBooksByBookshelfIdQueryOptions } from '../../modules/book/api/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
 import { AuthenticatedLayout } from '../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { Button } from '../../modules/common/components/ui/button';
 import { useFindUserQuery } from '../../modules/user/api/queries/findUserQuery/findUserQuery';
@@ -28,6 +27,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '../../modules/common/components/ui/pagination';
+import { FindBooksByBookshelfIdQueryOptions } from '../../modules/book/api/user/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
 
 const bookshelfSearchSchema = z.object({
   id: z.string().uuid().catch(''),

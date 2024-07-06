@@ -1,10 +1,50 @@
 import { Link, createRoute } from '@tanstack/react-router';
-import { FC } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { RequireAuthComponent } from '../../../../modules/core/components/requireAuth/requireAuthComponent';
 import { rootRoute } from '../../../root';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
+import { BookTable } from '../../../../modules/book/components/bookTable/bookTable';
+import { bookTableColumns } from '../../../../modules/book/components/bookTable/bookTableColumns';
+import { useFindBooksQuery } from '../../../../modules/book/api/admin/queries/findBooksQuery/findBooksQueryOptions';
 
 export const BooksAdminPage: FC = () => {
+  const [page, setPage] = useState(0);
+
+  const [pageSize] = useState(10);
+
+  const [searchTitleName, setSearchTitleName] = useState('');
+
+  const {
+    data: booksData,
+    // isFetched: isAuthorsFetched,
+    // isFetching: isAuthorsFetching,
+    // isRefetching: isAuthorsRefetching,
+  } = useFindBooksQuery({
+    all: true,
+    page,
+    title: searchTitleName,
+  });
+
+  const pageCount = useMemo(() => {
+    return Math.ceil((booksData?.metadata?.total ?? 0) / pageSize) || 1;
+  }, [booksData?.metadata.total, pageSize]);
+
+  const onNextPage = (): void => {
+    setPage(page + 1);
+  };
+
+  const onSetPage = (page: number): void => {
+    setPage(page);
+  };
+
+  const onPreviousPage = (): void => {
+    setPage(page - 1);
+  };
+
+  const data = useMemo(() => {
+    return booksData?.data ?? [];
+  }, [booksData?.data]);
+
   return (
     <AuthenticatedLayout>
       <div className="flex w-full justify-center items-center w-100% px-8 py-2">
@@ -20,7 +60,22 @@ export const BooksAdminPage: FC = () => {
               <Link className="cursor-default text-primary font-bold">Książki</Link>
             </ul>
           </div>
-          <div className="flex flex-col px-4 col-span-2 sm:col-span-5"></div>
+          <div className="flex flex-col px-4 col-span-2 sm:col-span-5">
+            <div className="flex items-center justify-center w-100% px-8 py-1 sm:py-4">
+              <BookTable
+                data={data}
+                columns={bookTableColumns}
+                pageCount={pageCount}
+                onNextPage={onNextPage}
+                onPreviousPage={onPreviousPage}
+                onSetPage={onSetPage}
+                pageSize={pageSize}
+                pageIndex={page}
+                searchBookTitle={searchTitleName}
+                setSearchBookTitle={setSearchTitleName}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </AuthenticatedLayout>

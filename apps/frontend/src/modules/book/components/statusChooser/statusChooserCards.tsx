@@ -1,7 +1,4 @@
 import { FC, useState } from 'react';
-import {
-  FindUserBookByIdQueryOptions,
-} from '../../api/queries/findUserBook/findUserBookByIdQueryOptions';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { HiCheckCircle, HiDotsCircleHorizontal } from 'react-icons/hi';
 import { HiQuestionMarkCircle } from 'react-icons/hi';
@@ -11,8 +8,9 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Skeleton } from '../../../common/components/ui/skeleton';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
-import { useUpdateUserBookMutation } from '../../api/mutations/updateUserBookMutation/updateUserBookMutation';
-import { BookApiQueryKeys } from '../../api/queries/bookApiQueryKeys';
+import { useUpdateUserBookMutation } from '../../api/user/mutations/updateUserBookMutation/updateUserBookMutation';
+import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
+import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
 
 interface Props {
   bookId: string;

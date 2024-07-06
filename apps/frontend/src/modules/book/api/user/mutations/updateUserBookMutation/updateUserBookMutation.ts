@@ -5,9 +5,9 @@ import {
   UpdateUserBookResponseBody,
   UploadUserBookImageResponseBody,
 } from '@common/contracts';
-import { BookApiError } from '../../../errors/bookApiError';
-import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
-import { HttpService } from '../../../../core/services/httpService/httpService';
+import { BookApiError } from '../../../../errors/bookApiError';
+import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
+import { HttpService } from '../../../../../core/services/httpService/httpService';
 
 export interface UpdateUserBookPayload extends UpdateUserBookPathParams, UpdateUserBookRequestBody {
   accessToken: string;
