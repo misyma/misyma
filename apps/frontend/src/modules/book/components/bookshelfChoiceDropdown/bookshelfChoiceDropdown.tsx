@@ -1,5 +1,4 @@
 import { FC, useEffect, useMemo, useState } from 'react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../common/components/ui/select';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Skeleton } from '../../../common/components/ui/skeleton';
@@ -15,6 +14,11 @@ import { BorrowingApiQueryKeys } from '../../../borrowing/api/queries/borrowingA
 import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 import { useUpdateUserBookMutation } from '../../api/user/mutations/updateUserBookMutation/updateUserBookMutation';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
+import { Command } from 'cmdk';
+import { CommandInput, CommandItem, CommandList } from '../../../common/components/ui/command';
+import { Popover, PopoverContent } from '../../../common/components/ui/popover';
+import { PopoverTrigger } from '@radix-ui/react-popover';
+import { Button } from '../../../common/components/ui/button';
 
 interface Props {
   bookId: string;
@@ -42,6 +46,8 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
     userId: userData?.id as string,
     pageSize: 50,
   });
+
+  const [open, setOpen] = useState(false);
 
   const [usingBorrowFlow, setUsingBorrowFlow] = useState(false);
 
@@ -129,57 +135,74 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
 
   return (
     <>
-      {isFetched && (!isRefetching || (isFetching && isRefetching)) && (
-        <Select
-          value={selectedBookshelfId}
-          onValueChange={async (value) => {
-            setPreviousBookshelfId(selectedBookshelfId);
+      <Popover
+        open={open}
+        onOpenChange={setOpen}
+      >
+        <PopoverTrigger asChild>
+          <Button className="sm:w-60 bg-transparent border-none text-primary text-xl">
+            {bookshelfData?.data.find((bookshelf) => bookshelf.id === selectedBookshelfId)?.name}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent>
+          <Command>
+            <CommandInput placeholder="Search framework..." />
+            {isFetched && (!isRefetching || (isFetching && isRefetching)) && (
+              <CommandList>
+                {bookshelfData?.data.map((bookshelf) => (
+                  <CommandItem
+                    key={`bookshelf-${bookshelf.id}`}
+                    value={bookshelf.id}
+                    onSelect={async (value) => {
+                      setPreviousBookshelfId(selectedBookshelfId);
 
-            await onBookshelfChange(value, bookshelfData?.data.find((bookshelf) => bookshelf.id === value)?.name ?? '');
+                      await onBookshelfChange(
+                        value,
+                        bookshelfData?.data.find((bookshelf) => bookshelf.id === value)?.name ?? '',
+                      );
 
-            setSelectedBookshelfId(value);
-          }}
-        >
-          <SelectTrigger className="sm:w-60 bg-transparent border-none text-primary font-semibold text-xl items-center justify-end">
-            <SelectValue
-              defaultValue={booksBookshelf?.id}
-              placeholder="Półka"
-            ></SelectValue>
-            <SelectContent className="sm:w-60">
-              {bookshelfData?.data.map((bookshelf) => <SelectItem value={bookshelf.id}>{bookshelf.name}</SelectItem>)}
-            </SelectContent>
-          </SelectTrigger>
-        </Select>
-      )}
-      {usingBorrowFlow && (
-        <CreateBorrowingModal
-          bookId={bookId}
-          onMutated={async () => {
-            setUsingBorrowFlow(false);
+                      setSelectedBookshelfId(value);
 
-            await queryClient.invalidateQueries({
-              predicate: ({ queryKey }) =>
-                queryKey[0] === BorrowingApiQueryKeys.findBookBorrowingsQuery && queryKey[1] === bookId,
-            });
+                      setOpen(false);
+                    }}
+                  >
+                    {bookshelf.name}
+                  </CommandItem>
+                ))}
+              </CommandList>
+            )}
+            {usingBorrowFlow && (
+              <CreateBorrowingModal
+                bookId={bookId}
+                onMutated={async () => {
+                  setUsingBorrowFlow(false);
 
-            queryClient.invalidateQueries({
-              queryKey: [BookApiQueryKeys.findUserBookById, bookId, userData?.id],
-            });
+                  await queryClient.invalidateQueries({
+                    predicate: ({ queryKey }) =>
+                      queryKey[0] === BorrowingApiQueryKeys.findBookBorrowingsQuery && queryKey[1] === bookId,
+                  });
 
-            queryClient.invalidateQueries({
-              predicate: (query) =>
-                query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId &&
-                query.queryKey[1] === selectedBookshelfId,
-            });
-          }}
-          onClosed={() => {
-            setUsingBorrowFlow(false);
+                  queryClient.invalidateQueries({
+                    queryKey: [BookApiQueryKeys.findUserBookById, bookId, userData?.id],
+                  });
 
-            setSelectedBookshelfId(previousBookshelfId as string);
-          }}
-          open={usingBorrowFlow}
-        />
-      )}
+                  queryClient.invalidateQueries({
+                    predicate: (query) =>
+                      query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId &&
+                      query.queryKey[1] === selectedBookshelfId,
+                  });
+                }}
+                onClosed={() => {
+                  setUsingBorrowFlow(false);
+
+                  setSelectedBookshelfId(previousBookshelfId as string);
+                }}
+                open={usingBorrowFlow}
+              />
+            )}
+          </Command>
+        </PopoverContent>
+      </Popover>
     </>
   );
 };
