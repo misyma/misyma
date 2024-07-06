@@ -158,7 +158,7 @@ export const StepOneForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
     <Form {...stepOneForm}>
       <form
         onSubmit={stepOneForm.handleSubmit(onSubmit)}
-        className="space-y-8"
+        className="space-y-4"
       >
         <FormField
           name="isbn"

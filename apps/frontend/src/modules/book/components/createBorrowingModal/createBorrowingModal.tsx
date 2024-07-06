@@ -113,7 +113,7 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, open, onClosed, onMuta
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onCreateBookReading)}
-              className="space-y-8 min-w-96"
+              className="space-y-4 min-w-96"
             >
               <FormField
                 control={form.control}

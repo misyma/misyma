@@ -189,7 +189,7 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
       <form
         //   eslint-disable-next-line
         onSubmit={form.handleSubmit(onSubmit as any)}
-        className="space-y-8"
+        className="space-y-4"
       >
         <FormField
           control={form.control}

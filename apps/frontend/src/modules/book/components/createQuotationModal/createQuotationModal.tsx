@@ -139,7 +139,7 @@ export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props):
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-8 min-w-96"
+              className="space-y-4 min-w-96"
             >
               <FormField
                 control={form.control}

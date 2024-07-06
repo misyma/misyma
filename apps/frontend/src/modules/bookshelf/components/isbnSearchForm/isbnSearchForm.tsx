@@ -73,7 +73,7 @@ export const IsbnSearchForm = ({ bookshelfId }: Props): JSX.Element => {
       <Form {...isbnForm}>
         <form
           onSubmit={isbnForm.handleSubmit(onFormSubmit)}
-          className="space-y-8 pt-8"
+          className="space-y-4 pt-8"
         >
           <FormField
             control={isbnForm.control}
