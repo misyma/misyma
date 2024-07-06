@@ -17,9 +17,11 @@ import { basicBookDataRoute } from '../../../routes/myBooks/tabs/basicDataTab/ba
 import { quotationsTabRoute } from '../../../routes/myBooks/tabs/quotationsTab/quotationsTab';
 import { booksAdminRoute } from '../../../routes/admin/tabs/books/books';
 import { authorsAdminRoute } from '../../../routes/admin/tabs/authors/authors';
+import { booksEditAdminRoute } from '../../../routes/admin/tabs/books/edit/books-edit';
 
 export const routeTree = rootRoute.addChildren([
   booksAdminRoute,
+  booksEditAdminRoute,
   authorsAdminRoute,
   landingRoute,
   loginRoute,
