@@ -76,7 +76,7 @@ export const Navbar: FC = () => {
         {res.data?.role === UserRole.admin && (
           <li className="text-primary text-xl text-center font-semibold">
             <Link
-              to={'/admin'}
+              to={'/admin/authors'}
               className={linkClasses}
             >
               Panel administratora

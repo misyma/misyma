@@ -14,6 +14,8 @@ export const AuthorsAdminPage: FC = () => {
 
   const [pageSize] = useState(10);
 
+  const [searchAuthorName, setSearchAuthorName] = useState('');
+
   const {
     data: authorsData,
     // isFetched: isAuthorsFetched,
@@ -21,7 +23,8 @@ export const AuthorsAdminPage: FC = () => {
     // isRefetching: isAuthorsRefetching,
   } = useFindAuthorsQuery({
     all: true,
-    page
+    page,
+    name: searchAuthorName,
   });
 
   const pageCount = useMemo(() => {
@@ -46,8 +49,8 @@ export const AuthorsAdminPage: FC = () => {
 
   return (
     <AuthenticatedLayout>
-      <div className="flex w-full justify-center items-center w-100% px-8 py-4">
-        <div className="grid grid-cols-4 sm:grid-cols-5 w-full gap-y-8 gap-x-4  sm:max-w-screen-2xl">
+      <div className="flex w-full justify-center items-center w-100% px-8 py-2">
+        <div className="grid grid-cols-4 sm:grid-cols-5 w-full gap-y-4 gap-x-4 sm:max-w-screen-2xl">
           <div className="flex justify-between gap-4 col-span-5">
             <ul className="flex justify-between gap-8 text-sm sm:text-lg font-semibold">
               <Link className="cursor-default text-primary font-bold">Autorzy</Link>
@@ -76,6 +79,8 @@ export const AuthorsAdminPage: FC = () => {
                 onSetPage={onSetPage}
                 pageSize={pageSize}
                 pageIndex={page}
+                searchAuthorName={searchAuthorName}
+                setSearchAuthorName={setSearchAuthorName}
               />
             </div>
           </div>

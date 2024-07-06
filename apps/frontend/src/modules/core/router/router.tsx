@@ -15,12 +15,10 @@ import { searchCreateRoute } from '../../../routes/bookshelf/search/routes/creat
 import { gradesTabPage } from '../../../routes/myBooks/tabs/gradesTab/gradesTab';
 import { basicBookDataRoute } from '../../../routes/myBooks/tabs/basicDataTab/basicDataTab';
 import { quotationsTabRoute } from '../../../routes/myBooks/tabs/quotationsTab/quotationsTab';
-import { adminRoute } from '../../../routes/admin/admin';
 import { booksAdminRoute } from '../../../routes/admin/tabs/books/books';
 import { authorsAdminRoute } from '../../../routes/admin/tabs/authors/authors';
 
 export const routeTree = rootRoute.addChildren([
-  adminRoute,
   booksAdminRoute,
   authorsAdminRoute,
   landingRoute,
