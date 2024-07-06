@@ -96,6 +96,8 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, open, onClosed, onMuta
         setIsOpen(val);
 
         setError('');
+
+        onClosed();
       }}
     >
       <DialogContent
@@ -119,11 +121,12 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, open, onClosed, onMuta
                 control={form.control}
                 name="borrower"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className='flex flex-col gap-2'>
                     <FormLabel>Imię osoby wypożyczającej</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Imię osoby wypożyczającej"
+                        maxLength={32}
                         type="text"
                         includeQuill={true}
                         {...field}
