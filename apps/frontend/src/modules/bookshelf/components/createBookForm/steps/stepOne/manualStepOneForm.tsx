@@ -244,7 +244,7 @@ export const ManualStepOneForm = (): JSX.Element => {
             values as any,
           ),
         )}
-        className="space-y-8"
+        className="space-y-4"
       >
         <FormField
           control={form.control}

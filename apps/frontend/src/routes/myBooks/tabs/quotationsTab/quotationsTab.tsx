@@ -106,7 +106,7 @@ export const QuotationsTab: FC<Props> = ({ userBookId }) => {
         <>
           <div>
             <img
-              src={userBookData?.imageUrl}
+              src={userBookData?.imageUrl  || '/book.jpg'}
               className="object-cover max-w-80"
             />
           </div>
@@ -120,7 +120,7 @@ export const QuotationsTab: FC<Props> = ({ userBookId }) => {
             </div>
             <Separator className="h-[1px] bg-primary"></Separator>
             <div className="flex flex-col w-full">
-              <p className="text-lg pb-6"> {userBookData?.book.authors[0].name ?? ''} </p>
+              <p className="text-lg pb-6"> {userBookData?.book?.authors[0]?.name ?? ''} </p>
               <QuotationsTable
                 columns={columns}
                 data={data}
@@ -259,7 +259,7 @@ export const BookPage: FC = () => {
               <>
                 <div>
                   <img
-                    src={userBookData?.imageUrl}
+                    src={userBookData?.imageUrl || '/book.jpg'}
                     className="object-cover max-w-80"
                   />
                 </div>
@@ -273,7 +273,7 @@ export const BookPage: FC = () => {
                   </div>
                   <Separator className="h-[1px] bg-primary"></Separator>
                   <div className="flex flex-col w-full">
-                    <p className="text-lg pb-6"> {userBookData?.book.authors[0].name ?? ''} </p>
+                    <p className="text-lg pb-6"> {userBookData?.book?.authors[0]?.name ?? ''} </p>
                     <QuotationsTable
                       columns={columns}
                       data={data}

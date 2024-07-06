@@ -83,7 +83,7 @@ export const BasicDataPage: FC = () => {
                 <div>
                   <img
                     key={`${imageUrl}`}
-                    src={imageUrl}
+                    src={imageUrl || '/book.jpg'}
                     className="object-cover max-w-80"
                   />
                 </div>
