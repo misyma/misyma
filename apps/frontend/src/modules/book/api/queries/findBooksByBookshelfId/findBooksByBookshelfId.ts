@@ -11,7 +11,23 @@ export interface FindBooksByBookshelfIdPayload extends FindUserBooksQueryParams 
 export const findBooksByBookshelfId = async (values: FindBooksByBookshelfIdPayload) => {
   const mapper = new ErrorCodeMessageMapper({});
 
-  const { bookshelfId, accessToken } = values;
+  const { bookshelfId, accessToken, page, pageSize } = values;
+
+  const queryParams: Record<string, string> = {
+    sortDate: 'desc',
+  };
+
+  if (page) {
+    queryParams['page'] = `${page}`;
+  }
+
+  if (pageSize) {
+    queryParams['pageSize'] = `${pageSize}`;
+  }
+
+  if (bookshelfId) {
+    queryParams['bookshelfId'] = bookshelfId;
+  }
 
   // For skeleton testing
   // await new Promise((res) => {
@@ -19,7 +35,8 @@ export const findBooksByBookshelfId = async (values: FindBooksByBookshelfIdPaylo
   // });
 
   const response = await HttpService.get<FindUserBooksResponseBody>({
-    url: `/user-books?bookshelfId=${bookshelfId}`,
+    url: `/user-books`,
+    queryParams,
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
