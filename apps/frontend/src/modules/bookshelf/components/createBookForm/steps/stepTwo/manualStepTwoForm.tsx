@@ -191,10 +191,10 @@ export const ManualStepTwoForm = (): JSX.Element => {
             name="translator"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Tłumacz</FormLabel>
+                <FormLabel>Przekład</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Tłumacz"
+                    placeholder="Przekład"
                     type="text"
                     includeQuill={false}
                     {...field}

@@ -34,8 +34,8 @@ const createBorrowingSchema = z.object({
     .min(1, {
       message: 'Wymagany jest minimum 1 znak.',
     })
-    .max(256, {
-      message: 'Pole wypożyczający może mieć maksymalnie 256 znaków.',
+    .max(32, {
+      message: 'Pole wypożyczający może mieć maksymalnie 32 znaki.',
     }),
   startedAt: z.date({
     required_error: 'Data rozpoczęcia jest wymagana.',

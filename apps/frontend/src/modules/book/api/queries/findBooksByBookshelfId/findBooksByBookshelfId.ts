@@ -13,6 +13,11 @@ export const findBooksByBookshelfId = async (values: FindBooksByBookshelfIdPaylo
 
   const { bookshelfId, accessToken } = values;
 
+  // For skeleton testing
+  // await new Promise((res) => {
+  //   setTimeout(res, 10000);
+  // });
+
   const response = await HttpService.get<FindUserBooksResponseBody>({
     url: `/user-books?bookshelfId=${bookshelfId}`,
     headers: {
