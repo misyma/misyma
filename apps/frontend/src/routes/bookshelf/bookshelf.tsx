@@ -1,5 +1,5 @@
 import { Navigate, createRoute, useNavigate } from '@tanstack/react-router';
-import { FC, useMemo } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { rootRoute } from '../root';
 import { RequireAuthComponent } from '../../modules/core/components/requireAuth/requireAuthComponent';
 import { z } from 'zod';
@@ -20,6 +20,14 @@ import { FindBookBorrowingsQueryOptions } from '../../modules/borrowing/api/quer
 import { HiClock } from 'react-icons/hi';
 import { LoadingSpinner } from '../../modules/common/components/spinner/loading-spinner';
 import { Skeleton } from '../../modules/common/components/ui/skeleton';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '../../modules/common/components/ui/pagination';
 
 const bookshelfSearchSchema = z.object({
   id: z.string().uuid().catch(''),
@@ -207,17 +215,17 @@ const BookshelfSkeleton = () => {
       key={`skeleton-${index}`}
       className="relative flex align-middle items-center gap-4 w-full cursor-pointer"
     >
-      <Skeleton className='w-40 h-60' />
+      <Skeleton className="w-40 h-60" />
       <div className="z-10 w-full px-12 pointer-events-none">
         <div className="flex justify-between w-full">
-          <Skeleton className='w-52 h-8' />
+          <Skeleton className="w-52 h-8" />
           <div className="flex gap-2 items-center justify-center">
-            <HiOutlineHeart className='h-8 w-8 text-primary' />
-            <Skeleton className='h-7 w-7 rounded-full' />
+            <HiOutlineHeart className="h-8 w-8 text-primary" />
+            <Skeleton className="h-7 w-7 rounded-full" />
           </div>
         </div>
         <Separator className="my-4 bg-primary"></Separator>
-        <Skeleton className='w-40 h-4' />
+        <Skeleton className="w-40 h-4" />
       </div>
     </div>
   ));
@@ -230,13 +238,51 @@ export const Bookshelf: FC = () => {
 
   const { data: user } = useFindUserQuery();
 
-  const { data: bookshelfBooksResponse, isFetching, isRefetching } = useQuery(
+  const perPage = 5;
+
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
+  const {
+    data: bookshelfBooksResponse,
+    isFetching,
+    isRefetching,
+  } = useQuery(
     FindBooksByBookshelfIdQueryOptions({
       accessToken: accessToken as string,
       bookshelfId: id,
       userId: user?.id as string,
+      page: currentPage,
+      pageSize: perPage,
     }),
   );
+  
+  const pagesCount = useMemo(() => {
+    const bookshelvesCount = bookshelfBooksResponse?.metadata?.total ?? 0;
+
+    return Math.ceil(bookshelvesCount / perPage);
+  }, [bookshelfBooksResponse?.metadata?.total]);
+
+  const previousPage = useMemo(() => {
+    if (currentPage === 1) {
+      return undefined;
+    }
+
+    return currentPage - 1;
+  }, [currentPage]);
+
+  const nextPage = useMemo(() => {
+    if (currentPage === pagesCount) {
+      return undefined;
+    }
+
+    if (currentPage === 1 && pagesCount > 2) {
+      return currentPage + 2;
+    } else if (currentPage === 1 && pagesCount <= 2) {
+      return currentPage;
+    }
+
+    return currentPage + 1;
+  }, [currentPage, pagesCount]);
 
   const { data: bookshelfResponse } = useFindBookshelfByIdQuery(id);
 
@@ -286,7 +332,7 @@ export const Bookshelf: FC = () => {
           </Button>
         </div>
         <div className="flex flex-col justify-center gap-8 pt-8 w-full sm:max-w-7xl">
-          {(isFetching && !isRefetching) ? (
+          {isFetching && !isRefetching ? (
             <BookshelfSkeleton />
           ) : (
             bookshelfBooksResponse?.data.map((userBook, index) => (
@@ -338,6 +384,128 @@ export const Bookshelf: FC = () => {
                 </div>
               </div>
             ))
+          )}
+          {bookshelfBooksResponse && (bookshelfBooksResponse?.metadata?.total ?? 0) > perPage ? (
+            <>
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      hasPrevious={currentPage !== 1}
+                      onClick={() => {
+                        setCurrentPage(currentPage - 1);
+                      }}
+                    />
+                  </PaginationItem>
+                  <PaginationItem
+                    className={
+                      !(currentPage > 1 && pagesCount > 1) ? 'pointer-events-none hover:text-none hover:bg-none' : ''
+                    }
+                  >
+                    <PaginationLink
+                      className={
+                        !(currentPage > 1 && pagesCount > 1)
+                          ? 'pointer-events-none hover:text-none hover:bg-[unset]'
+                          : ''
+                      }
+                      onClick={() => {
+                        if (previousPage === undefined) {
+                          return;
+                        }
+
+                        if (previousPage - 1 === -1) {
+                          return;
+                        }
+
+                        if (currentPage === pagesCount && pagesCount === 2) {
+                          setCurrentPage(currentPage - 1);
+
+                          return;
+                        }
+
+                        if (currentPage === pagesCount) {
+                          setCurrentPage(currentPage - 2);
+
+                          return;
+                        }
+
+                        setCurrentPage(previousPage);
+                      }}
+                      isActive={previousPage === undefined}
+                    >
+                      {previousPage !== undefined && currentPage === pagesCount && pagesCount > 2
+                        ? currentPage - 2
+                        : previousPage !== undefined
+                          ? previousPage
+                          : currentPage}
+                    </PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink
+                      isActive={
+                        (currentPage !== 1 && currentPage !== pagesCount) ||
+                        (pagesCount === 2 && currentPage === pagesCount)
+                      }
+                      onClick={() => {
+                        if (currentPage === 1) {
+                          return setCurrentPage(currentPage + 1);
+                        }
+
+                        if (pagesCount == currentPage && pagesCount === 2) {
+                          return;
+                        }
+
+                        if (currentPage === pagesCount) {
+                          return setCurrentPage(pagesCount - 1);
+                        }
+                      }}
+                    >
+                      {currentPage !== 1
+                        ? currentPage === pagesCount && pagesCount > 2
+                          ? pagesCount - 1
+                          : currentPage
+                        : currentPage + 1}
+                    </PaginationLink>
+                  </PaginationItem>
+                  {pagesCount > 2 ? (
+                    <PaginationItem>
+                      <PaginationLink
+                        isActive={
+                          nextPage === undefined && currentPage !== 1 && currentPage === pagesCount && pagesCount > 2
+                        }
+                        className={nextPage === undefined ? 'pointer-events-none hover:text-none hover:bg-none' : ''}
+                        onClick={() => {
+                          if (nextPage) {
+                            setCurrentPage(nextPage);
+                          }
+                        }}
+                      >
+                        {nextPage === undefined ? pagesCount : nextPage}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ) : (
+                    <> </>
+                  )}
+                  <PaginationItem
+                    className={currentPage !== pagesCount ? 'pointer-events-none hover:text-none hover:bg-none' : ''}
+                  >
+                    <PaginationNext
+                      hasNext={currentPage !== pagesCount}
+                      className={
+                        !(currentPage !== pagesCount)
+                          ? 'pointer-events-none hover:text-none hover:bg-[unset]'
+                          : 'pointer-events-auto'
+                      }
+                      onClick={() => {
+                        setCurrentPage(currentPage + 1);
+                      }}
+                    />
+                  </PaginationItem>
+                </PaginationContent>{' '}
+              </Pagination>
+            </>
+          ) : (
+            <></>
           )}
         </div>
       </div>
