@@ -31,6 +31,7 @@ import { Language } from '@common/contracts';
 import { FC, useCallback, useState } from 'react';
 import { Checkbox } from '../../../../../common/components/ui/checkbox';
 import LanguageSelect from '../../../../../book/components/languageSelect/languageSelect';
+import { Languages } from '../../../../../common/constants/languages';
 
 const stepTwoSchema = z.object({
   language: z.enum(Object.values(Language) as unknown as [string, ...string[]]),
@@ -126,6 +127,13 @@ export const ManualStepTwoForm = (): JSX.Element => {
     },
   });
 
+  const onLanguageSelected = (val: string) => {
+    dispatch({
+      type: BookCreationActionType.setLanguage,
+      language: val as Languages,
+    });
+  };
+
   const onSubmit = () => {
     dispatch({
       type: BookCreationActionType.setStep,
@@ -180,7 +188,10 @@ export const ManualStepTwoForm = (): JSX.Element => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Język</FormLabel>
-              <LanguageSelect {...field} />
+              <LanguageSelect
+                onValueChange={onLanguageSelected}
+                {...field}
+              />
               <FormMessage />
             </FormItem>
           )}
