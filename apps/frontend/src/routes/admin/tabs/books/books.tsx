@@ -1,11 +1,11 @@
 import { Link, createRoute } from '@tanstack/react-router';
 import { FC, useMemo, useState } from 'react';
-import { RequireAuthComponent } from '../../../../modules/core/components/requireAuth/requireAuthComponent';
 import { rootRoute } from '../../../root';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { BookTable } from '../../../../modules/book/components/bookTable/bookTable';
 import { bookTableColumns } from '../../../../modules/book/components/bookTable/bookTableColumns';
 import { useFindBooksQuery } from '../../../../modules/book/api/admin/queries/findBooksQuery/findBooksQueryOptions';
+import { RequireAdmin } from '../../../../modules/core/components/requireAdmin/requireAdmin';
 
 export const BooksAdminPage: FC = () => {
   const [page, setPage] = useState(0);
@@ -87,9 +87,9 @@ export const booksAdminRoute = createRoute({
   path: 'admin/books',
   component: () => {
     return (
-      <RequireAuthComponent>
+      <RequireAdmin>
         <BooksAdminPage />
-      </RequireAuthComponent>
+      </RequireAdmin>
     );
   },
 });

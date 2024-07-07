@@ -14,7 +14,7 @@ export const LoginPage: FC = () => {
 
   const navigate = useNavigate();
 
-  const onSuccessfulLogin = (loginUserResponseBody: LoginUserResponseBody) => {
+  const onSuccessfulLogin = async (loginUserResponseBody: LoginUserResponseBody) => {
     const { refreshToken, accessToken, expiresIn } = loginUserResponseBody;
 
     storeDispatch(

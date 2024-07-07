@@ -1,6 +1,5 @@
 import { Link, createRoute } from '@tanstack/react-router';
 import { FC, useMemo, useState } from 'react';
-import { RequireAuthComponent } from '../../../../modules/core/components/requireAuth/requireAuthComponent';
 import { rootRoute } from '../../../root';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { AuthorTable } from '../../../../modules/author/components/authorTable/authorTable';
@@ -8,6 +7,7 @@ import { columns } from '../../../../modules/author/components/authorTable/autho
 import { useFindAuthorsQuery } from '../../../../modules/author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
 import { AddAuthorModal } from '../../../../modules/author/components/addAuthorModal/addAuthorModal';
 import { Button } from '../../../../modules/common/components/ui/button';
+import { RequireAdmin } from '../../../../modules/core/components/requireAdmin/requireAdmin';
 
 export const AuthorsAdminPage: FC = () => {
   const [page, setPage] = useState(0);
@@ -95,9 +95,9 @@ export const authorsAdminRoute = createRoute({
   path: 'admin/authors',
   component: () => {
     return (
-      <RequireAuthComponent>
+      <RequireAdmin>
         <AuthorsAdminPage />
-      </RequireAuthComponent>
+      </RequireAdmin>
     );
   },
 });

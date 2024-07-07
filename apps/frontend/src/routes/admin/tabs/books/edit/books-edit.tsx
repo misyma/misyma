@@ -1,7 +1,6 @@
 import { createRoute, Navigate } from '@tanstack/react-router';
 import { rootRoute } from '../../../../root';
 import { z } from 'zod';
-import { RequireAuthComponent } from '../../../../../modules/core/components/requireAuth/requireAuthComponent';
 import { FC, useState } from 'react';
 import { AuthenticatedLayout } from '../../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { useForm } from 'react-hook-form';
@@ -53,6 +52,7 @@ import { useUpdateBookMutation } from '../../../../../modules/book/api/admin/mut
 import { useToast } from '../../../../../modules/common/components/ui/use-toast';
 import { BookApiError } from '../../../../../modules/book/errors/bookApiError';
 import { Checkbox } from '../../../../../modules/common/components/ui/checkbox';
+import { RequireAdmin } from '../../../../../modules/core/components/requireAdmin/requireAdmin';
 
 const booksSearchSchema = z.object({
   id: z.string().uuid().catch(''),
@@ -558,9 +558,9 @@ export const booksEditAdminRoute = createRoute({
   path: `admin/books/$id/edit`,
   component: () => {
     return (
-      <RequireAuthComponent>
+      <RequireAdmin>
         <BooksEdit />
-      </RequireAuthComponent>
+      </RequireAdmin>
     );
   },
   parseParams: booksSearchSchema.parse,

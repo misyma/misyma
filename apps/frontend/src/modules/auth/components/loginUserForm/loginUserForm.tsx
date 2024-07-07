@@ -52,6 +52,7 @@ export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccess, onError }: Lo
         onError: (error) => {
           setResponseErrorMessage(error.context.message);
 
+          console.log(error.context)
           if (onError) {
             onError(error);
           }

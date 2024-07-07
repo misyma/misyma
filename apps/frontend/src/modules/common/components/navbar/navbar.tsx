@@ -21,6 +21,17 @@ export const Navbar: FC = () => {
 
   const dispatch = useStoreDispatch();
 
+  dispatch(
+    userStateActions.setCurrentUser({
+      user: res.data ?? {
+        email: '',
+        id: '',
+        name: '',
+        role: UserRole.user,
+      },
+    }),
+  );
+
   const handleLogout = () => {
     if (!accessToken || !refreshToken || !res.data?.id) {
       return;
