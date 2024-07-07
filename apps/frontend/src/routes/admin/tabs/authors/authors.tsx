@@ -1,6 +1,5 @@
 import { Link, createRoute } from '@tanstack/react-router';
 import { FC, useMemo, useState } from 'react';
-import { RequireAuthComponent } from '../../../../modules/core/components/requireAuth/requireAuthComponent';
 import { rootRoute } from '../../../root';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { AuthorTable } from '../../../../modules/author/components/authorTable/authorTable';
@@ -8,11 +7,14 @@ import { columns } from '../../../../modules/author/components/authorTable/autho
 import { useFindAuthorsQuery } from '../../../../modules/author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
 import { AddAuthorModal } from '../../../../modules/author/components/addAuthorModal/addAuthorModal';
 import { Button } from '../../../../modules/common/components/ui/button';
+import { RequireAdmin } from '../../../../modules/core/components/requireAdmin/requireAdmin';
 
 export const AuthorsAdminPage: FC = () => {
   const [page, setPage] = useState(0);
 
   const [pageSize] = useState(10);
+
+  const [searchAuthorName, setSearchAuthorName] = useState('');
 
   const {
     data: authorsData,
@@ -21,7 +23,8 @@ export const AuthorsAdminPage: FC = () => {
     // isRefetching: isAuthorsRefetching,
   } = useFindAuthorsQuery({
     all: true,
-    page
+    page,
+    name: searchAuthorName,
   });
 
   const pageCount = useMemo(() => {
@@ -46,16 +49,22 @@ export const AuthorsAdminPage: FC = () => {
 
   return (
     <AuthenticatedLayout>
-      <div className="flex w-full justify-center items-center w-100% px-8 py-4">
-        <div className="grid grid-cols-4 sm:grid-cols-5 w-full gap-y-8 gap-x-4  sm:max-w-screen-2xl">
+      <div className="flex w-full justify-center items-center w-100% px-8 py-2">
+        <div className="grid grid-cols-4 sm:grid-cols-5 w-full gap-y-4 gap-x-4 sm:max-w-screen-2xl">
           <div className="flex justify-between gap-4 col-span-5">
-            <ul className="flex justify-between gap-8 text-sm sm:text-lg font-semibold">
+            <ul className="flex justify-between gap-8 text-sm sm:text-lg font-semibold min-w-96">
               <Link className="cursor-default text-primary font-bold">Autorzy</Link>
               <Link
                 to="/admin/books"
                 className="cursor-pointer"
               >
                 Książki
+              </Link>
+              <Link
+                to="/admin/change-requests"
+                className="cursor-pointer"
+              >
+                Prośby o zmianę
               </Link>
             </ul>
             <div className="flex w-full justify-end">
@@ -76,6 +85,8 @@ export const AuthorsAdminPage: FC = () => {
                 onSetPage={onSetPage}
                 pageSize={pageSize}
                 pageIndex={page}
+                searchAuthorName={searchAuthorName}
+                setSearchAuthorName={setSearchAuthorName}
               />
             </div>
           </div>
@@ -90,9 +101,9 @@ export const authorsAdminRoute = createRoute({
   path: 'admin/authors',
   component: () => {
     return (
-      <RequireAuthComponent>
+      <RequireAdmin>
         <AuthorsAdminPage />
-      </RequireAuthComponent>
+      </RequireAdmin>
     );
   },
 });

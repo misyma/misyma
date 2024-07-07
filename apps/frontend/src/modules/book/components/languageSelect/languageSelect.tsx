@@ -1,8 +1,4 @@
 import { ControllerRenderProps } from 'react-hook-form';
-import {
-  BookCreationActionType,
-  useBookCreationDispatch,
-} from '../../../bookshelf/context/bookCreationContext/bookCreationContext';
 import { FC, memo, useState } from 'react';
 import { Languages } from '../../../common/constants/languages';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../common/components/ui/select';
@@ -33,9 +29,11 @@ const LanguagesList: FC<Props> = ({ setLanguageSelectOpen }) => {
 
 const MemoizedLanguagesList = memo(LanguagesList);
 
-const LanguageSelect: FC<ControllerRenderProps> = (field) => {
-  const dispatch = useBookCreationDispatch();
+interface LanguageSelectProps extends ControllerRenderProps {
+  onValueChange?: (val: string) => void;
+}
 
+const LanguageSelect: FC<LanguageSelectProps> = ({ onValueChange, ...field }) => {
   const [languageSelectOpen, setLanguageSelectOpen] = useState(false);
 
   return (
@@ -43,10 +41,9 @@ const LanguageSelect: FC<ControllerRenderProps> = (field) => {
       open={languageSelectOpen}
       onOpenChange={setLanguageSelectOpen}
       onValueChange={(val) => {
-        dispatch({
-          type: BookCreationActionType.setLanguage,
-          language: val as Languages,
-        });
+        if (onValueChange) {
+          onValueChange(val);
+        }
 
         field.onChange(val);
       }}

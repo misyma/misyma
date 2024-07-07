@@ -11,7 +11,7 @@ interface FindUserPayload {
   refreshToken: string;
 }
 
-export const useFindUserQuery = () => {
+export const useFindUserQuery = (opt?: FindUserPayload) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const refreshToken = useSelector(userStateSelectors.selectRefreshToken);
@@ -22,7 +22,7 @@ export const useFindUserQuery = () => {
     const findUserResponse = await HttpService.get<FindUserResponseBody>({
       url: '/users/me',
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${accessToken || opt?.accessToken}`,
       },
     });
 
@@ -41,10 +41,10 @@ export const useFindUserQuery = () => {
     queryKey: [UserApiQueryKeys.findUser],
     queryFn: () =>
       findUser({
-        accessToken: accessToken as string,
-        refreshToken: refreshToken as string,
+        accessToken: (accessToken || opt?.accessToken) as string,
+        refreshToken: (refreshToken || opt?.refreshToken) as string,
       }),
-    enabled: !!accessToken,
+    enabled: !!accessToken || !!opt?.accessToken,
   });
 };
 

@@ -1,6 +1,5 @@
 import { FC, useMemo, useState } from 'react';
 import { Separator } from '../../../../modules/common/components/ui/separator.js';
-import { FindUserBookByIdQueryOptions } from '../../../../modules/book/api/queries/findUserBook/findUserBookByIdQueryOptions.js';
 import { useFindUserQuery } from '../../../../modules/user/api/queries/findUserQuery/findUserQuery.js';
 import { UserBook } from '@common/contracts';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -19,6 +18,7 @@ import { Navigate, createRoute, useNavigate } from '@tanstack/react-router';
 import { cn } from '../../../../modules/common/lib/utils.js';
 import { rootRoute } from '../../../root.js';
 import { z } from 'zod';
+import { FindUserBookByIdQueryOptions } from '../../../../modules/book/api/user/queries/findUserBook/findUserBookByIdQueryOptions.js';
 
 export const GradesPage: FC = () => {
   const { bookId } = gradesTabPage.useParams();

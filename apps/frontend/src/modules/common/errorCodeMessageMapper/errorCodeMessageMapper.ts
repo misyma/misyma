@@ -10,8 +10,8 @@ export class ErrorCodeMessageMapper {
 
   public constructor(errorMap: Record<number, string>) {
     this.errorMap = {
-      ...errorMap,
       ...this.defaults,
+      ...errorMap,
     };
   }
 

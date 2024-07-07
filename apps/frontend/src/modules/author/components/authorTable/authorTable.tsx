@@ -8,7 +8,6 @@ import {
   getSortedRowModel,
   type ColumnFiltersState,
   type VisibilityState,
-  getFilteredRowModel,
   type TableState,
 } from '@tanstack/react-table';
 import { useMemo, useState } from 'react';
@@ -22,6 +21,7 @@ import {
   PaginationPrevious,
 } from '../../../../modules/common/components/ui/pagination';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../common/components/ui/table';
+import { Input } from '../../../common/components/ui/input';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -32,6 +32,8 @@ interface DataTableProps<TData, TValue> {
   onNextPage: () => Promise<void> | void;
   onPreviousPage: () => Promise<void> | void;
   onSetPage: (val: number) => Promise<void> | void;
+  searchAuthorName: string | undefined;
+  setSearchAuthorName: (val: string) => void;
 }
 
 export function AuthorTable<TData, TValue>({
@@ -43,6 +45,8 @@ export function AuthorTable<TData, TValue>({
   onNextPage,
   onPreviousPage,
   onSetPage,
+  searchAuthorName,
+  setSearchAuthorName,
 }: DataTableProps<TData, TValue>): JSX.Element {
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -69,8 +73,8 @@ export function AuthorTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
-    getFilteredRowModel: getFilteredRowModel(),
     manualPagination: true,
+    manualFiltering: true,
     state: {
       pagination: {
         pageIndex,
@@ -107,26 +111,29 @@ export function AuthorTable<TData, TValue>({
 
   return (
     <div className="w-full md:max-w-screen-xl ">
+      <div className="flex items-center py-2">
+        <Input
+          placeholder="Wyszukaj autora..."
+          value={searchAuthorName ?? ''}
+          onChange={(event) => setSearchAuthorName(event.target.value)}
+          className="max-w-sm"
+        />
+      </div>
       <div className="w-full min-h-[22rem]">
         <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                )
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                    </TableHead>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (

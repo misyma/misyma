@@ -8,7 +8,6 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
 import { CurrentRatingStar } from '../../../../modules/book/components/currentRatingStar/currentRatingStar';
-import { FindUserBookByIdQueryOptions } from '../../../../modules/book/api/queries/findUserBook/findUserBookByIdQueryOptions';
 import { getQuotesOptions } from '../../../../modules/quotes/api/queries/getQuotes/getQuotesOptions';
 import { QuotationsTable } from '../../../../modules/book/components/quotationsTable/quotationsTable';
 import { columns } from '../../../../modules/book/components/quotationsTable/quotationsTableColumns';
@@ -20,6 +19,7 @@ import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authentica
 import { Navigate, createRoute, useNavigate } from '@tanstack/react-router';
 import { z } from 'zod';
 import { rootRoute } from '../../../root';
+import { FindUserBookByIdQueryOptions } from '../../../../modules/book/api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 
 interface Props {
   userBookId: string;

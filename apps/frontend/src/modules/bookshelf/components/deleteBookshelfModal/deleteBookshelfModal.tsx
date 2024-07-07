@@ -11,7 +11,7 @@ import { Button } from '../../../common/components/ui/button';
 import { HiTrash } from 'react-icons/hi';
 import { useDeleteBookshelfMutation } from '../../api/mutations/deleteBookshelfMutation/deleteBookshelfMutation';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
-import { FindBooksByBookshelfIdQueryOptions } from '../../../book/api/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
+import { FindBooksByBookshelfIdQueryOptions } from '../../../book/api/user/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
 import { Select, SelectItem, SelectTrigger, SelectValue } from '../../../common/components/ui/select';
 import { SelectContent } from '@radix-ui/react-select';
 import { cn } from '../../../common/lib/utils';
