@@ -20,19 +20,21 @@ export const ChangeRequestsAdminPage: FC = () => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const {
-    data: authorsData,
+    data: changeRequestsData,
     // isFetched: isAuthorsFetched,
     // isFetching: isAuthorsFetching,
     // isRefetching: isAuthorsRefetching,
   } = useQuery(
     FindBookChangeRequestsQueryOptions({
       accessToken: accessToken as string,
+      page,
+      pageSize,
     }),
   );
 
   const pageCount = useMemo(() => {
-    return Math.ceil((authorsData?.metadata?.total ?? 0) / pageSize) || 1;
-  }, [authorsData?.metadata.total, pageSize]);
+    return Math.ceil((changeRequestsData?.metadata?.total ?? 0) / pageSize) || 1;
+  }, [changeRequestsData?.metadata.total, pageSize]);
 
   const onNextPage = (): void => {
     setPage(page + 1);
@@ -47,8 +49,8 @@ export const ChangeRequestsAdminPage: FC = () => {
   };
 
   const data = useMemo(() => {
-    return authorsData?.data ?? [];
-  }, [authorsData?.data]);
+    return changeRequestsData?.data ?? [];
+  }, [changeRequestsData?.data]);
 
   return (
     <AuthenticatedLayout>

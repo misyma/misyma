@@ -19,7 +19,7 @@ export const findBookChangeRequests = async (payload: FindBookChangeRequestsPayl
   }
 
   const response = await HttpService.get<FindBookChangeRequestsResponseBody>({
-    url: '/authors',
+    url: '/admin/book-change-requests',
     queryParams: query,
     headers: {
       Authorization: `Bearer ${accessToken}`,
