@@ -2,32 +2,37 @@ import { Link, createRoute } from '@tanstack/react-router';
 import { FC, useMemo, useState } from 'react';
 import { rootRoute } from '../../../root';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
-import { BookTable } from '../../../../modules/book/components/bookTable/bookTable';
-import { bookTableColumns } from '../../../../modules/book/components/bookTable/bookTableColumns';
-import { useFindBooksQuery } from '../../../../modules/book/api/admin/queries/findBooksQuery/findBooksQueryOptions';
 import { RequireAdmin } from '../../../../modules/core/components/requireAdmin/requireAdmin';
+import { ChangeRequestsTable } from '../../../../modules/bookChangeRequests/components/changeRequestsTable/changeRequestsTable';
+import { changeRequestsColumns } from '../../../../modules/bookChangeRequests/components/changeRequestsTable/changeRequestsTableColumns';
+import { useQuery } from '@tanstack/react-query';
+import { useSelector } from 'react-redux';
+import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
+import { FindBookChangeRequestsQueryOptions } from '../../../../modules/bookChangeRequests/api/admin/queries/findBookChangeRequests/findBookChangeRequestsQueryOptions';
 
-export const BooksAdminPage: FC = () => {
+export const ChangeRequestsAdminPage: FC = () => {
   const [page, setPage] = useState(0);
 
   const [pageSize] = useState(10);
 
-  const [searchTitleName, setSearchTitleName] = useState('');
+  const [searchTitle, setSearchTitle] = useState('');
+
+  const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const {
-    data: booksData,
+    data: authorsData,
     // isFetched: isAuthorsFetched,
     // isFetching: isAuthorsFetching,
     // isRefetching: isAuthorsRefetching,
-  } = useFindBooksQuery({
-    all: true,
-    page,
-    title: searchTitleName,
-  });
+  } = useQuery(
+    FindBookChangeRequestsQueryOptions({
+      accessToken: accessToken as string,
+    }),
+  );
 
   const pageCount = useMemo(() => {
-    return Math.ceil((booksData?.metadata?.total ?? 0) / pageSize) || 1;
-  }, [booksData?.metadata.total, pageSize]);
+    return Math.ceil((authorsData?.metadata?.total ?? 0) / pageSize) || 1;
+  }, [authorsData?.metadata.total, pageSize]);
 
   const onNextPage = (): void => {
     setPage(page + 1);
@@ -42,13 +47,13 @@ export const BooksAdminPage: FC = () => {
   };
 
   const data = useMemo(() => {
-    return booksData?.data ?? [];
-  }, [booksData?.data]);
+    return authorsData?.data ?? [];
+  }, [authorsData?.data]);
 
   return (
     <AuthenticatedLayout>
       <div className="flex w-full justify-center items-center w-100% px-8 py-2">
-        <div className="grid grid-cols-4 sm:grid-cols-5 w-full gap-y-8 gap-x-4  sm:max-w-screen-2xl">
+        <div className="grid grid-cols-4 sm:grid-cols-5 w-full gap-y-4 gap-x-4 sm:max-w-screen-2xl">
           <div className="flex justify-between gap-4 col-span-5">
             <ul className="flex justify-between gap-8 text-sm sm:text-lg font-semibold min-w-96">
               <Link
@@ -57,28 +62,28 @@ export const BooksAdminPage: FC = () => {
               >
                 Autorzy
               </Link>
-              <Link className="cursor-default text-primary font-bold">Książki</Link>
               <Link
-                to="/admin/change-requests"
+                to="/admin/books"
                 className="cursor-pointer"
               >
-                Prośby o zmianę
+                Książki
               </Link>
+              <Link className="cursor-default text-primary font-bold">Prośby o zmianę</Link>
             </ul>
           </div>
           <div className="flex flex-col px-4 col-span-2 sm:col-span-5">
             <div className="flex items-center justify-center w-100% px-8 py-1 sm:py-4">
-              <BookTable
+              <ChangeRequestsTable
                 data={data}
-                columns={bookTableColumns}
+                columns={changeRequestsColumns}
                 pageCount={pageCount}
                 onNextPage={onNextPage}
                 onPreviousPage={onPreviousPage}
                 onSetPage={onSetPage}
                 pageSize={pageSize}
                 pageIndex={page}
-                searchBookTitle={searchTitleName}
-                setSearchBookTitle={setSearchTitleName}
+                searchTitle={searchTitle}
+                setSearchTitle={setSearchTitle}
               />
             </div>
           </div>
@@ -88,13 +93,13 @@ export const BooksAdminPage: FC = () => {
   );
 };
 
-export const booksAdminRoute = createRoute({
+export const changeRequestsAdminRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: 'admin/books',
+  path: 'admin/change-requests',
   component: () => {
     return (
       <RequireAdmin>
-        <BooksAdminPage />
+        <ChangeRequestsAdminPage />
       </RequireAdmin>
     );
   },

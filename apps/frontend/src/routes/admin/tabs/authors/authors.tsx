@@ -52,13 +52,19 @@ export const AuthorsAdminPage: FC = () => {
       <div className="flex w-full justify-center items-center w-100% px-8 py-2">
         <div className="grid grid-cols-4 sm:grid-cols-5 w-full gap-y-4 gap-x-4 sm:max-w-screen-2xl">
           <div className="flex justify-between gap-4 col-span-5">
-            <ul className="flex justify-between gap-8 text-sm sm:text-lg font-semibold">
+            <ul className="flex justify-between gap-8 text-sm sm:text-lg font-semibold min-w-96">
               <Link className="cursor-default text-primary font-bold">Autorzy</Link>
               <Link
                 to="/admin/books"
                 className="cursor-pointer"
               >
                 Książki
+              </Link>
+              <Link
+                to="/admin/change-requests"
+                className="cursor-pointer"
+              >
+                Prośby o zmianę
               </Link>
             </ul>
             <div className="flex w-full justify-end">

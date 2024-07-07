@@ -18,10 +18,12 @@ import { quotationsTabRoute } from '../../../routes/myBooks/tabs/quotationsTab/q
 import { booksAdminRoute } from '../../../routes/admin/tabs/books/books';
 import { authorsAdminRoute } from '../../../routes/admin/tabs/authors/authors';
 import { booksEditAdminRoute } from '../../../routes/admin/tabs/books/edit/books-edit';
+import { changeRequestsAdminRoute } from '../../../routes/admin/tabs/changeRequests/changeRequests';
 
 export const routeTree = rootRoute.addChildren([
   booksAdminRoute,
   booksEditAdminRoute,
+  changeRequestsAdminRoute,
   authorsAdminRoute,
   landingRoute,
   loginRoute,
