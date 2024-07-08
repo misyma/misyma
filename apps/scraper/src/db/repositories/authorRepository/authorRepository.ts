@@ -38,6 +38,7 @@ export class AuthorRepository {
       throw new RepositoryError({
         entity: 'Author',
         operation: 'create',
+        name,
         error,
       });
     }

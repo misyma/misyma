@@ -167,3 +167,7 @@ export enum Language {
   'Chinese' = 'zh',
   'Zulu' = 'zu',
 }
+
+export function isValidLanguage(value: string): value is Language {
+  return Object.values(Language).includes(value as Language);
+}

@@ -3,9 +3,11 @@
 import yargs, { type Argv } from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
-import { ScrapeOpenLibraryAction } from './actions/scrapeOpenLibraryAction.js';
+import { OpenLibraryMapper } from './actions/scrapeOpenLibraryAction/openLibraryMapper.js';
+import { ScrapeOpenLibraryAction } from './actions/scrapeOpenLibraryAction/scrapeOpenLibraryAction.js';
 import { ConfigFactory } from './config.js';
 import { AuthorRepository } from './db/repositories/authorRepository/authorRepository.js';
+import { BookRepository } from './db/repositories/bookRepository/bookRepository.js';
 import { BaseError } from './errors/baseError.js';
 import { DatabaseClientType } from './libs/database/databaseClientConfig.js';
 import { DatabaseClientFactory } from './libs/database/databaseClientFactory.js';
@@ -60,7 +62,16 @@ try {
 
   const authorRepository = new AuthorRepository(dbClient, uuidService);
 
-  const scrapeOpenLibraryAction = new ScrapeOpenLibraryAction(authorRepository, logger);
+  const bookRepository = new BookRepository(dbClient, uuidService);
+
+  const openLibraryMapper = new OpenLibraryMapper();
+
+  const scrapeOpenLibraryAction = new ScrapeOpenLibraryAction(
+    authorRepository,
+    bookRepository,
+    openLibraryMapper,
+    logger,
+  );
 
   yargs(hideBin(process.argv))
     .command([
