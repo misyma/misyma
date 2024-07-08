@@ -1,7 +1,45 @@
-import { isValidLanguage, type Language } from '../../db/entities/book/language.js';
+import { type OpenLibraryBookBinding, type OpenLibraryBook } from './openLibraryBook.js';
+import { type BookDraft } from '../../db/entities/book/book.js';
+import { BookFormat } from '../../db/entities/book/bookFormat.js';
+import { isValidLanguage, Language } from '../../db/entities/book/language.js';
 
 export class OpenLibraryMapper {
-  public mapAuthorName(openLibraryAuthorName: string): string {
+  public mapBook(openLibraryBook: OpenLibraryBook): BookDraft | undefined {
+    if (
+      !openLibraryBook.authors ||
+      !openLibraryBook.authors.length ||
+      !openLibraryBook.title ||
+      !openLibraryBook.isbn13
+    ) {
+      return undefined;
+    }
+
+    const authorNames = openLibraryBook.authors
+      .filter((openLibraryAuthorName) => openLibraryAuthorName.length)
+      .map((openLibraryAuthorName) => this.mapAuthorName(openLibraryAuthorName));
+
+    const language = this.mapLanguage(openLibraryBook.language);
+
+    const format = this.mapFormat(openLibraryBook.binding);
+
+    const releaseYear = this.mapReleaseYear(openLibraryBook.date_published);
+
+    return {
+      title: openLibraryBook.title,
+      isbn: openLibraryBook.isbn13,
+      publisher: openLibraryBook.publisher,
+      format,
+      isApproved: true,
+      language,
+      imageUrl: openLibraryBook.image,
+      pages: openLibraryBook.pages,
+      releaseYear,
+      authorNames,
+      translator: undefined,
+    };
+  }
+
+  private mapAuthorName(openLibraryAuthorName: string): string {
     const nameParts = openLibraryAuthorName.split(',');
 
     if (nameParts.length === 1) {
@@ -11,17 +49,43 @@ export class OpenLibraryMapper {
     return `${String(nameParts[1]).trimStart()} ${String(nameParts[0])}`;
   }
 
-  public mapLanguage(openLibraryLanguage: string): Language | undefined {
-    const abbreviatedLanguage = openLibraryLanguage.toLowerCase().substring(0, 2);
-
-    if (abbreviatedLanguage.length !== 2) {
-      return undefined;
+  private mapReleaseYear(openLibraryDatePublished: string | number | undefined): number | undefined {
+    if (typeof openLibraryDatePublished === 'string') {
+      return new Date(openLibraryDatePublished).getFullYear();
+    } else if (typeof openLibraryDatePublished === 'number') {
+      return openLibraryDatePublished;
     }
+
+    return undefined;
+  }
+
+  private mapFormat(openLibraryFormat: OpenLibraryBookBinding | undefined): BookFormat {
+    switch (openLibraryFormat) {
+      case 'Paperback':
+        return BookFormat.paperback;
+
+      case 'Hardcover':
+        return BookFormat.hardcover;
+
+      case 'Kindle Edition':
+        return BookFormat.ebook;
+
+      default:
+        return BookFormat.paperback;
+    }
+  }
+
+  private mapLanguage(openLibraryLanguage: string | undefined): Language {
+    if (!openLibraryLanguage) {
+      return Language.English;
+    }
+
+    const abbreviatedLanguage = openLibraryLanguage.toLowerCase().substring(0, 2);
 
     if (isValidLanguage(abbreviatedLanguage)) {
       return abbreviatedLanguage;
     }
 
-    return undefined;
+    return Language.English;
   }
 }

@@ -7,8 +7,6 @@ import { type AuthorRepository } from '../../db/repositories/authorRepository/au
 import { type BookRepository } from '../../db/repositories/bookRepository/bookRepository.js';
 import { type LoggerService } from '../../libs/logger/loggerService.js';
 
-const languages = new Set<string>();
-
 export class ScrapeOpenLibraryAction {
   private readonly openLibraryDumpLocation = '/home/michal/Desktop/openlib_dump.jsonl';
 
@@ -28,37 +26,6 @@ export class ScrapeOpenLibraryAction {
     });
 
     await this.processFile(this.openLibraryDumpLocation);
-
-    // const openLibraryAuthorNames = openLibraryBook.authors;
-
-    // if (!openLibraryAuthorNames || !openLibraryAuthorNames.length) {
-    //   this.logger.info({
-    //     message: 'Skipping book without authors.',
-    //     lineNumber,
-    //   });
-
-    //   continue;
-    // }
-
-    // const authorNames = openLibraryAuthorNames
-    //   .filter((openLibraryAuthorName) => openLibraryAuthorName.length)
-    //   .map((openLibraryAuthorName) => this.openLibraryMapper.mapAuthorName(openLibraryAuthorName));
-
-    // const authorIds = [];
-
-    // for (const authorName of authorNames) {
-    //   const author = await this.authorRepository.findAuthor({ name: authorName });
-
-    //   if (!author) {
-    //     const createdAuthor = await this.authorRepository.create({ name: authorName });
-
-    //     authorIds.push(createdAuthor.id);
-    //   } else {
-    //     authorIds.push(author.id);
-    //   }
-    // }
-
-    console.log({ languages });
 
     this.logger.info({
       message: 'Scraping Open Library completed.',
@@ -87,13 +54,29 @@ export class ScrapeOpenLibraryAction {
   private async processLine(line: string): Promise<void> {
     const openLibraryBook = JSON.parse(line.toString()) as OpenLibraryBook;
 
-    this.logger.info({
-      message: 'Processing book...',
-      language: openLibraryBook.language,
-    });
+    const bookDraft = this.openLibraryMapper.mapBook(openLibraryBook);
 
-    if (openLibraryBook.language) {
-      languages.add(openLibraryBook.language);
+    if (!bookDraft) {
+      return;
     }
+
+    const authorIds = await Promise.all(
+      bookDraft.authorNames.map(async (authorName) => {
+        const author = await this.authorRepository.findAuthor({ name: authorName });
+
+        if (!author) {
+          const createdAuthor = await this.authorRepository.create({ name: authorName });
+
+          return createdAuthor.id;
+        }
+
+        return author.id;
+      }),
+    );
+
+    console.log({
+      authors: openLibraryBook.authors,
+      authorIds,
+    });
   }
 }
