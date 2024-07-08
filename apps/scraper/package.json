@@ -15,7 +15,6 @@
     "better-sqlite3": "11.0.0",
     "config": "3.3.11",
     "knex": "3.1.0",
-    "n-readlines": "1.0.1",
     "node-fetch": "3.3.2",
     "pino": "9.1.0",
     "uuid": "10.0.0",
@@ -24,7 +23,6 @@
   "devDependencies": {
     "@types/bcrypt": "5.0.2",
     "@types/config": "3.3.4",
-    "@types/n-readlines": "1.0.6",
     "@types/node": "20.14.0",
     "@types/uuid": "9.0.8",
     "@types/yargs": "17.0.32",

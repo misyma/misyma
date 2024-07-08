@@ -24,9 +24,13 @@ export class ScrapeOpenLibraryAction {
 
     const liner = new lineByLine(this.openLibraryDumpLocation);
 
+    console.log({ liner });
+
     let line;
 
     let lineNumber = 0;
+
+    const languages = new Set<string>();
 
     while ((line = liner.next())) {
       const openLibraryBook = JSON.parse(line.toString()) as OpenLibraryBook;
@@ -37,37 +41,46 @@ export class ScrapeOpenLibraryAction {
         message: 'Processing book...',
         lineNumber,
         openLibraryBook,
+        authorRepository: this.authorRepository,
+        bookRepository: this.bookRepository,
+        openLibraryMapper: this.openLibraryMapper,
       });
 
-      const openLibraryAuthorNames = openLibraryBook.authors;
-
-      if (!openLibraryAuthorNames || !openLibraryAuthorNames.length) {
-        this.logger.info({
-          message: 'Skipping book without authors.',
-          lineNumber,
-        });
-
-        continue;
+      if (openLibraryBook.language) {
+        languages.add(openLibraryBook.language);
       }
 
-      const authorNames = openLibraryAuthorNames
-        .filter((openLibraryAuthorName) => openLibraryAuthorName.length)
-        .map((openLibraryAuthorName) => this.openLibraryMapper.mapAuthorName(openLibraryAuthorName));
+      // const openLibraryAuthorNames = openLibraryBook.authors;
 
-      const authorIds = [];
+      // if (!openLibraryAuthorNames || !openLibraryAuthorNames.length) {
+      //   this.logger.info({
+      //     message: 'Skipping book without authors.',
+      //     lineNumber,
+      //   });
 
-      for (const authorName of authorNames) {
-        const author = await this.authorRepository.findAuthor({ name: authorName });
+      //   continue;
+      // }
 
-        if (!author) {
-          const createdAuthor = await this.authorRepository.create({ name: authorName });
+      // const authorNames = openLibraryAuthorNames
+      //   .filter((openLibraryAuthorName) => openLibraryAuthorName.length)
+      //   .map((openLibraryAuthorName) => this.openLibraryMapper.mapAuthorName(openLibraryAuthorName));
 
-          authorIds.push(createdAuthor.id);
-        } else {
-          authorIds.push(author.id);
-        }
-      }
+      // const authorIds = [];
+
+      // for (const authorName of authorNames) {
+      //   const author = await this.authorRepository.findAuthor({ name: authorName });
+
+      //   if (!author) {
+      //     const createdAuthor = await this.authorRepository.create({ name: authorName });
+
+      //     authorIds.push(createdAuthor.id);
+      //   } else {
+      //     authorIds.push(author.id);
+      //   }
+      // }
     }
+
+    console.log({ languages });
 
     this.logger.info({
       message: 'Scraping Open Library completed.',
