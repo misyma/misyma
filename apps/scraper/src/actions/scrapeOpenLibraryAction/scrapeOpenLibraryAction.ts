@@ -38,15 +38,9 @@ export class ScrapeOpenLibraryAction {
       crlfDelay: Infinity,
     });
 
-    rl.on('line', (line: string) => {
-      this.processLine(line); // Process each line
-    });
-
-    await new Promise((resolve, reject) => {
-      rl.on('close', resolve);
-
-      rl.on('error', reject);
-    });
+    for await (const line of rl) {
+      await this.processLine(line);
+    }
 
     console.log('File processing completed.');
   }
@@ -60,19 +54,17 @@ export class ScrapeOpenLibraryAction {
       return;
     }
 
-    const authorIds = await Promise.all(
-      bookDraft.authorNames.map(async (authorName) => {
-        const author = await this.authorRepository.findAuthor({ name: authorName });
+    const authorIds: string[] = [];
 
-        if (!author) {
-          const createdAuthor = await this.authorRepository.create({ name: authorName });
+    for (const authorName of bookDraft.authorNames) {
+      let author = await this.authorRepository.findAuthor({ name: authorName });
 
-          return createdAuthor.id;
-        }
+      if (!author) {
+        author = await this.authorRepository.create({ name: authorName });
+      }
 
-        return author.id;
-      }),
-    );
+      authorIds.push(author.id);
+    }
 
     console.log({
       authors: openLibraryBook.authors,
