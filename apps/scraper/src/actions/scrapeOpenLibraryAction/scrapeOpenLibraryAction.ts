@@ -25,24 +25,28 @@ export class ScrapeOpenLibraryAction {
       openLibraryMapper: this.openLibraryMapper,
     });
 
-    await this.processFile(this.openLibraryDumpLocation);
+    const rl = createInterface({
+      input: createReadStream(this.openLibraryDumpLocation),
+      crlfDelay: Infinity,
+    });
+
+    let lineCount = 0;
+
+    for await (const line of rl) {
+      await this.processLine(line);
+
+      lineCount += 1;
+
+      if (lineCount % 1000 === 0) {
+        this.logger.info({
+          message: `Processed ${lineCount} line.`,
+        });
+      }
+    }
 
     this.logger.info({
       message: 'Scraping Open Library completed.',
     });
-  }
-
-  private async processFile(filePath: string): Promise<void> {
-    const rl = createInterface({
-      input: createReadStream(filePath),
-      crlfDelay: Infinity,
-    });
-
-    for await (const line of rl) {
-      await this.processLine(line);
-    }
-
-    console.log('File processing completed.');
   }
 
   private async processLine(line: string): Promise<void> {
@@ -65,10 +69,5 @@ export class ScrapeOpenLibraryAction {
 
       authorIds.push(author.id);
     }
-
-    console.log({
-      authors: openLibraryBook.authors,
-      authorIds,
-    });
   }
 }
