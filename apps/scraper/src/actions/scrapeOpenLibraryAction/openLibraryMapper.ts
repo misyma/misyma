@@ -5,12 +5,7 @@ import { isValidLanguage, Language } from '../../db/entities/book/language.js';
 
 export class OpenLibraryMapper {
   public mapBook(openLibraryBook: OpenLibraryBook): BookDraft | undefined {
-    if (
-      !openLibraryBook.authors ||
-      !openLibraryBook.authors.length ||
-      !openLibraryBook.title ||
-      !openLibraryBook.isbn13
-    ) {
+    if (!openLibraryBook.authors || !openLibraryBook.authors.length || !openLibraryBook.title) {
       return undefined;
     }
 

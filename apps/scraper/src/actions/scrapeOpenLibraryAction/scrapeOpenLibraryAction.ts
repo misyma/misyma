@@ -1,19 +1,19 @@
-import { createReadStream } from 'fs';
-import { createInterface } from 'readline';
+import { createReadStream } from 'node:fs';
+import { createInterface } from 'node:readline';
 
 import { type OpenLibraryBook } from './openLibraryBook.js';
 import { type OpenLibraryMapper } from './openLibraryMapper.js';
+import { type Config } from '../../config.js';
 import { type AuthorRepository } from '../../db/repositories/authorRepository/authorRepository.js';
 import { type BookRepository } from '../../db/repositories/bookRepository/bookRepository.js';
 import { type LoggerService } from '../../libs/logger/loggerService.js';
 
 export class ScrapeOpenLibraryAction {
-  private readonly openLibraryDumpLocation = '/home/michal/Desktop/openlib_dump.jsonl';
-
   public constructor(
     private readonly authorRepository: AuthorRepository,
     private readonly bookRepository: BookRepository,
     private readonly openLibraryMapper: OpenLibraryMapper,
+    private readonly config: Config,
     private readonly logger: LoggerService,
   ) {}
 
@@ -26,7 +26,7 @@ export class ScrapeOpenLibraryAction {
     });
 
     const rl = createInterface({
-      input: createReadStream(this.openLibraryDumpLocation),
+      input: createReadStream(this.config.openLibraryPath),
       crlfDelay: Infinity,
     });
 
@@ -69,5 +69,25 @@ export class ScrapeOpenLibraryAction {
 
       authorIds.push(author.id);
     }
+
+    const book = await this.bookRepository.findBook({ title: bookDraft.title });
+
+    if (book) {
+      return;
+    }
+
+    await this.bookRepository.createBook({
+      title: bookDraft.title,
+      isbn: bookDraft.isbn,
+      publisher: bookDraft.publisher,
+      format: bookDraft.format,
+      isApproved: bookDraft.isApproved,
+      language: bookDraft.language,
+      imageUrl: bookDraft.imageUrl,
+      releaseYear: bookDraft.releaseYear,
+      translator: bookDraft.translator,
+      pages: bookDraft.pages,
+      authorIds,
+    });
   }
 }
