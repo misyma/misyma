@@ -6,9 +6,9 @@ export * from './schemas/book/book.js';
 
 export * from './schemas/bookshelf/createBookshelf.js';
 
-export * from './schemas/bookshelf/findBookshelfById.js';
+export * from './schemas/bookshelf/findBookshelf.js';
 
-export * from './schemas/bookshelf/findUserBookshelves.js';
+export * from './schemas/bookshelf/findBookshelves.js';
 
 export * from './schemas/bookshelf/updateBookshelf.js';
 

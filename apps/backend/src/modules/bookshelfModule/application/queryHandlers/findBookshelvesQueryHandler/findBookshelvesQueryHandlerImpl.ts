@@ -8,6 +8,7 @@ import { type UserRepository } from '../../../../userModule/domain/repositories/
 import {
   type FindBookshelvesPayload,
   type BookshelfRepository,
+  type CountBookshelvesPayload,
 } from '../../../domain/repositories/bookshelfRepository/bookshelfRepository.js';
 
 export class FindBookshelvesQueryHandlerImpl implements FindBookshelvesQueryHandler {
@@ -17,7 +18,7 @@ export class FindBookshelvesQueryHandlerImpl implements FindBookshelvesQueryHand
   ) {}
 
   public async execute(payload: FindBookshelvesQueryHandlerPayload): Promise<FindBookshelvesQueryHandlerResult> {
-    const { userId, page, pageSize, sortDate } = payload;
+    const { userId, name, page, pageSize, sortDate } = payload;
 
     const existingUser = await this.userRepository.findUser({
       id: userId,
@@ -42,9 +43,27 @@ export class FindBookshelvesQueryHandlerImpl implements FindBookshelvesQueryHand
       };
     }
 
+    if (name) {
+      findBookshelvesPayload = {
+        ...findBookshelvesPayload,
+        name,
+      };
+    }
+
+    let countBookshelvesPayload: CountBookshelvesPayload = {
+      userId,
+    };
+
+    if (name) {
+      countBookshelvesPayload = {
+        ...countBookshelvesPayload,
+        name,
+      };
+    }
+
     const [bookshelves, total] = await Promise.all([
       this.bookshelfRepository.findBookshelves(findBookshelvesPayload),
-      this.bookshelfRepository.countBookshelves({ userId }),
+      this.bookshelfRepository.countBookshelves(countBookshelvesPayload),
     ]);
 
     return {
