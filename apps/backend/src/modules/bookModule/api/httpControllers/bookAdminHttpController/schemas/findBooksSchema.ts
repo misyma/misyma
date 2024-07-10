@@ -6,6 +6,17 @@ import { type TypeExtends } from '../../../../../../common/types/schemaExtends.j
 import { bookDtoSchema } from '../../common/bookDto.js';
 
 export const findAdminBooksQueryParamsDtoSchema = Type.Object({
+  isbn: Type.Optional(
+    Type.String({
+      pattern: '^(97(8|9))?\\d{9}(\\d|X)$',
+    }),
+  ),
+  title: Type.Optional(
+    Type.String({
+      minLength: 1,
+      maxLength: 64,
+    }),
+  ),
   page: Type.Optional(Type.Integer({ minimum: 1 })),
   pageSize: Type.Optional(Type.Integer({ minimum: 1 })),
 });
