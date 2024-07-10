@@ -39,7 +39,7 @@ export class ScrapeOpenLibraryAction {
 
       if (lineCount % 1000 === 0) {
         this.logger.info({
-          message: `Processed ${lineCount} line.`,
+          message: `Processed ${lineCount} books.`,
         });
       }
     }

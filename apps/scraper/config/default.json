@@ -1,4 +1,5 @@
 {
   "logLevel": "debug",
-  "databasePath": null
+  "databasePath": null,
+  "openLibraryPath": null
 }

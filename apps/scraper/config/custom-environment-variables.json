@@ -1,4 +1,5 @@
 {
   "logLevel": "LOG_LEVEL",
-  "databasePath": "DATABASE_PATH"
+  "databasePath": "DATABASE_PATH",
+  "openLibraryPath": "OPEN_LIBRARY_PATH"
 }
