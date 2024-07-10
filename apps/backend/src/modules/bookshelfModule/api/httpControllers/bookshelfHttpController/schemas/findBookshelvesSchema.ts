@@ -6,6 +6,12 @@ import { bookshelfDtoSchema } from './bookshelfDto.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const findBookshelvesQueryParamsDtoSchema = Type.Object({
+  name: Type.Optional(
+    Type.String({
+      minLength: 1,
+      maxLength: 64,
+    }),
+  ),
   page: Type.Optional(Type.Integer({ minimum: 1 })),
   pageSize: Type.Optional(Type.Integer({ minimum: 1 })),
   sortDate: Type.Optional(Type.Enum(contracts.SortingType)),

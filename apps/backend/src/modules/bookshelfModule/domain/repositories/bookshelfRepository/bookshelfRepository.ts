@@ -14,8 +14,8 @@ export interface FindBookshelfPayload {
 }
 
 export interface FindBookshelvesPayload {
-  readonly ids?: string[];
   readonly userId?: string;
+  readonly name?: string;
   readonly type?: BookshelfType;
   readonly page: number;
   readonly pageSize: number;
@@ -24,6 +24,7 @@ export interface FindBookshelvesPayload {
 
 export interface CountBookshelvesPayload {
   readonly userId: string;
+  readonly name?: string;
 }
 
 export interface SaveBookshelfPayload {

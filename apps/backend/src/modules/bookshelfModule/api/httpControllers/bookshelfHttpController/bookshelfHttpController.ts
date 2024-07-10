@@ -14,11 +14,11 @@ import {
   type DeleteBookshelfQueryParamsDto,
 } from './schemas/deleteBookshelfSchema.js';
 import {
-  type FindBookshelfByIdResponseBodyDto,
-  type FindBookshelfByIdPathParamsDto,
-  findBookshelfByIdResponseBodyDtoSchema,
-  findBookshelfByIdPathParamsDtoSchema,
-} from './schemas/findBookshelfByIdSchema.js';
+  type FindBookshelfResponseBodyDto,
+  type FindBookshelfPathParamsDto,
+  findBookshelfResponseBodyDtoSchema,
+  findBookshelfPathParamsDtoSchema,
+} from './schemas/findBookshelfSchema.js';
 import {
   type FindBookshelvesResponseBodyDto,
   findBookshelvesResponseBodyDtoSchema,
@@ -73,7 +73,7 @@ export class BookshelfHttpController implements HttpController {
     return [
       new HttpRoute({
         method: HttpMethodName.get,
-        handler: this.getUserBookshelves.bind(this),
+        handler: this.getBookshelves.bind(this),
         description: 'Get user bookshelves',
         schema: {
           request: {
@@ -94,11 +94,11 @@ export class BookshelfHttpController implements HttpController {
         handler: this.getBookshelf.bind(this),
         schema: {
           request: {
-            pathParams: findBookshelfByIdPathParamsDtoSchema,
+            pathParams: findBookshelfPathParamsDtoSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
-              schema: findBookshelfByIdResponseBodyDtoSchema,
+              schema: findBookshelfResponseBodyDtoSchema,
               description: 'Found bookshelf',
             },
           },
@@ -164,17 +164,18 @@ export class BookshelfHttpController implements HttpController {
     ];
   }
 
-  private async getUserBookshelves(
+  private async getBookshelves(
     request: HttpRequest<undefined, FindBookshelvesQueryParamsDto, undefined>,
   ): Promise<HttpOkResponse<FindBookshelvesResponseBodyDto>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
-    const { page = 1, pageSize = 10, sortDate } = request.queryParams;
+    const { page = 1, pageSize = 10, sortDate, name } = request.queryParams;
 
     const { bookshelves, total } = await this.findBookshelvesQueryHandler.execute({
       userId,
+      name,
       page,
       pageSize,
       sortDate,
@@ -194,8 +195,8 @@ export class BookshelfHttpController implements HttpController {
   }
 
   private async getBookshelf(
-    request: HttpRequest<undefined, undefined, FindBookshelfByIdPathParamsDto>,
-  ): Promise<HttpOkResponse<FindBookshelfByIdResponseBodyDto>> {
+    request: HttpRequest<undefined, undefined, FindBookshelfPathParamsDto>,
+  ): Promise<HttpOkResponse<FindBookshelfResponseBodyDto>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });

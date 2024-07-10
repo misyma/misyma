@@ -65,7 +65,7 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
   }
 
   public async findBookshelves(payload: FindBookshelvesPayload): Promise<Bookshelf[]> {
-    const { userId, ids, page, pageSize, type, sortDate } = payload;
+    const { userId, name, page, pageSize, type, sortDate } = payload;
 
     let rawEntities: BookshelfRawEntity[];
 
@@ -91,8 +91,8 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
       query.where(whereClause);
     }
 
-    if (ids) {
-      query.whereIn('id', ids);
+    if (name) {
+      query.whereRaw('LOWER(name) LIKE LOWER(?)', `%${name}%`);
     }
 
     if (sortDate) {
@@ -188,13 +188,16 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
   }
 
   public async countBookshelves(payload: CountBookshelvesPayload): Promise<number> {
-    const { userId } = payload;
+    const { userId, name } = payload;
 
     try {
-      const countResult = await this.databaseClient<BookshelfRawEntity>(bookshelfTable)
-        .where({ userId })
-        .count()
-        .first();
+      const query = this.databaseClient<BookshelfRawEntity>(bookshelfTable).where({ userId });
+
+      if (name) {
+        query.whereRaw('LOWER(name) LIKE LOWER(?)', `%${name}%`);
+      }
+
+      const countResult = await query.count().first();
 
       const count = countResult?.['count(*)'];
 

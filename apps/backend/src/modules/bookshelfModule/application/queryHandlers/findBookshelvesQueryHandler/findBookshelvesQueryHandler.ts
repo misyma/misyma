@@ -5,6 +5,7 @@ import { type Bookshelf } from '../../../domain/entities/bookshelf/bookshelf.js'
 
 export interface FindBookshelvesQueryHandlerPayload {
   readonly userId: string;
+  readonly name?: string | undefined;
   readonly page: number;
   readonly pageSize: number;
   readonly sortDate?: SortingType | undefined;

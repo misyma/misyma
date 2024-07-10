@@ -155,6 +155,40 @@ describe('BookshelfRepositoryImpl', () => {
       });
     });
 
+    it(`finds all user's bookshelves by name`, async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const bookshelf1 = await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+          name: 'Harry Potter',
+        },
+      });
+
+      await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+          name: 'Lord of the Rings',
+        },
+      });
+
+      const result = await repository.findBookshelves({
+        userId: user.id,
+        name: 'harry',
+        page: 1,
+        pageSize: 10,
+      });
+
+      expect(result).toHaveLength(1);
+
+      expect(result[0]?.getState()).toEqual({
+        name: bookshelf1.name,
+        userId: bookshelf1.userId,
+        type: bookshelf1.type,
+        createdAt: bookshelf1.createdAt,
+      });
+    });
+
     it(`finds all user's bookshelves by type`, async () => {
       const user = await userTestUtils.createAndPersist();
 
@@ -218,92 +252,6 @@ describe('BookshelfRepositoryImpl', () => {
       });
 
       expect(result).toHaveLength(1);
-    });
-
-    it('finds by ids', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf1 = await bookshelfTestUtils.createAndPersist({
-        input: {
-          userId: user.id,
-        },
-      });
-
-      const bookshelf2 = await bookshelfTestUtils.createAndPersist({
-        input: {
-          userId: user.id,
-        },
-      });
-
-      const result = await repository.findBookshelves({
-        userId: user.id,
-        ids: [bookshelf1.id, bookshelf2.id],
-        page: 1,
-        pageSize: 10,
-      });
-
-      expect(result).toHaveLength(2);
-
-      [bookshelf1, bookshelf2].forEach((bookshelf) => {
-        const foundBookshelf = result.find((b) => b.getId() === bookshelf.id);
-
-        expect(foundBookshelf?.getState()).toEqual({
-          name: bookshelf.name,
-          userId: bookshelf.userId,
-          type: bookshelf.type,
-          createdAt: bookshelf.createdAt,
-        });
-      });
-    });
-
-    it('finds by ids - when some of the ids are invalid', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf1 = await bookshelfTestUtils.createAndPersist({
-        input: {
-          userId: user.id,
-        },
-      });
-
-      await bookshelfTestUtils.createAndPersist({
-        input: {
-          userId: user.id,
-        },
-      });
-
-      const result = await repository.findBookshelves({
-        userId: user.id,
-        ids: [bookshelf1.id, Generator.uuid()],
-        page: 1,
-        pageSize: 10,
-      });
-
-      expect(result).toHaveLength(1);
-    });
-
-    it('finds by ids - when all ids are invalid', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      await bookshelfTestUtils.createAndPersist({
-        input: {
-          userId: user.id,
-        },
-      });
-
-      await bookshelfTestUtils.createAndPersist({
-        input: {
-          userId: user.id,
-        },
-      });
-
-      const result = await repository.findBookshelves({
-        userId: user.id,
-        ids: [Generator.uuid(), Generator.uuid()],
-        page: 1,
-        pageSize: 10,
-      });
-
-      expect(result).toHaveLength(0);
     });
 
     it('sorts by date', async () => {
