@@ -28,6 +28,7 @@ export class UpdateBookCommandHandlerImpl implements UpdateBookCommandHandler {
       title,
       translator,
       isApproved,
+      isbn,
     } = payload;
 
     this.loggerService.debug({
@@ -43,6 +44,7 @@ export class UpdateBookCommandHandlerImpl implements UpdateBookCommandHandler {
       title,
       translator,
       isApproved,
+      isbn,
     });
 
     const book = await this.bookRepository.findBook({ id: bookId });
@@ -105,6 +107,10 @@ export class UpdateBookCommandHandlerImpl implements UpdateBookCommandHandler {
 
     if (isApproved !== undefined) {
       book.setIsApproved({ isApproved });
+    }
+
+    if (isbn) {
+      book.setIsbn({ isbn });
     }
 
     await this.bookRepository.saveBook({ book });

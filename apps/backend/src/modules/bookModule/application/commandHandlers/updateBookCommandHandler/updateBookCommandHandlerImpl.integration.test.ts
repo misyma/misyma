@@ -105,6 +105,8 @@ describe('UpdateBookCommandHandlerImpl', () => {
 
     const updatedIsApproved = Generator.boolean();
 
+    const updatedIsbn = Generator.isbn();
+
     const updatedAuthor = await authorTestUtils.createAndPersist();
 
     const { book: updatedBook } = await commandHandler.execute({
@@ -119,6 +121,7 @@ describe('UpdateBookCommandHandlerImpl', () => {
       title: updatedTitle,
       translator: updatedTranslator,
       isApproved: updatedIsApproved,
+      isbn: updatedIsbn,
     });
 
     expect(updatedBook.getId()).toBe(book.id);
@@ -126,6 +129,8 @@ describe('UpdateBookCommandHandlerImpl', () => {
     expect(updatedBook.getImageUrl()).toBe(updatedImageUrl);
 
     expect(updatedBook.getTitle()).toBe(updatedTitle);
+
+    expect(updatedBook.getIsbn()).toBe(updatedIsbn);
 
     expect(updatedBook.getPublisher()).toBe(updatedPublisher);
 
