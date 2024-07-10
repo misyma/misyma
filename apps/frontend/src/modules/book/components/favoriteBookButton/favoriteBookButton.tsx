@@ -4,9 +4,9 @@ import { HiHeart, HiOutlineHeart } from 'react-icons/hi';
 import { cn } from '../../../common/lib/utils.js';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice.js';
-import { useUpdateUserBookMutation } from '../../api/mutations/updateUserBookMutation/updateUserBookMutation.js';
+import { useUpdateUserBookMutation } from '../../api/user/mutations/updateUserBookMutation/updateUserBookMutation.js';
 import { useQueryClient } from '@tanstack/react-query';
-import { BookApiQueryKeys } from '../../api/queries/bookApiQueryKeys.js';
+import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys.js';
 
 interface Props {
   userBook: UserBook;

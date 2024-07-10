@@ -56,7 +56,7 @@ export const TitleSearchForm = ({ bookshelfId }: Props): JSX.Element => {
     <Form {...byTitleForm}>
       <form
         onSubmit={byTitleForm.handleSubmit(onFormSubmit)}
-        className="space-y-8"
+        className="space-y-4"
       >
         <FormField
           control={byTitleForm.control}

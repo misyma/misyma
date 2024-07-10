@@ -16,11 +16,11 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useFindUserQuery } from '../../../../user/api/queries/findUserQuery/findUserQuery';
 import { useQuery } from '@tanstack/react-query';
-import { FindBookByIdQueryOptions } from '../../../api/queries/findBookById/findBookByIdQueryOptions';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
-import { FindUserBookByIdQueryOptions } from '../../../api/queries/findUserBook/findUserBookByIdQueryOptions';
 import { useFindAuthorsQuery } from '../../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
+import { FindBookByIdQueryOptions } from '../../../api/user/queries/findBookById/findBookByIdQueryOptions';
+import { FindUserBookByIdQueryOptions } from '../../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 
 const stepOneSchema = z.object({
   isbn: isbnSchema.optional(),
@@ -158,7 +158,7 @@ export const StepOneForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
     <Form {...stepOneForm}>
       <form
         onSubmit={stepOneForm.handleSubmit(onSubmit)}
-        className="space-y-8"
+        className="space-y-4"
       >
         <FormField
           name="isbn"

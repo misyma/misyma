@@ -7,17 +7,17 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
-import { useUploadBookImageMutation } from '../../api/mutations/uploadBookImageMutation/uploadBookImageMutation';
+import { useUploadBookImageMutation } from '../../api/user/mutations/uploadBookImageMutation/uploadBookImageMutation';
 import { useRouter } from '@tanstack/react-router';
 import { UpdateBookRequestForm } from '../updateBookRequestForm/updateBookRequestForm';
 import { BookDetailsChangeRequestProvider } from '../../context/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useDeleteUserBookMutation } from '../../api/mutations/deleteUserBookMutation/deleteUserBookMutation';
-import { useUpdateUserBookMutation } from '../../api/mutations/updateUserBookMutation/updateUserBookMutation';
+import { useDeleteUserBookMutation } from '../../api/user/mutations/deleteUserBookMutation/deleteUserBookMutation';
+import { useUpdateUserBookMutation } from '../../api/user/mutations/updateUserBookMutation/updateUserBookMutation';
 import { UpdateUserBookForm } from '../updateUserBookForm/updateUserBookForm';
-import { FindUserBookByIdQueryOptions } from '../../api/queries/findUserBook/findUserBookByIdQueryOptions';
+import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
-import { BookApiQueryKeys } from '../../api/queries/bookApiQueryKeys';
+import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
 
 interface Props {
   userBookId: string;
@@ -118,7 +118,8 @@ export const EditOrDeleteBookModal: FC<Props> = ({ bookId, userBookId }) => {
     });
 
     queryClient.invalidateQueries({
-      predicate: (query) => query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId && query.queryKey[1] === data?.bookshelfId,
+      predicate: (query) =>
+        query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId && query.queryKey[1] === data?.bookshelfId,
     });
 
     resetModalState();
@@ -133,7 +134,8 @@ export const EditOrDeleteBookModal: FC<Props> = ({ bookId, userBookId }) => {
     });
 
     queryClient.invalidateQueries({
-      predicate: (query) => query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId && query.queryKey[1] === data?.bookshelfId,
+      predicate: (query) =>
+        query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId && query.queryKey[1] === data?.bookshelfId,
     });
 
     router.history.back();

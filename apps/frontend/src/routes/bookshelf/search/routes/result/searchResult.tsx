@@ -3,7 +3,6 @@ import { rootRoute } from '../../../../root';
 import { RequireAuthComponent } from '../../../../../modules/core/components/requireAuth/requireAuthComponent';
 import { z } from 'zod';
 import { FC, useEffect, useMemo, useState } from 'react';
-import { FindBooksQueryOptions } from '../../../../../modules/book/api/queries/findBooks/findBooksQueryOptions';
 import { AuthenticatedLayout } from '../../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { Button } from '../../../../../modules/common/components/ui/button';
 import { useSearchBookContextDispatch } from '../../../../../modules/bookshelf/context/searchCreateBookContext/searchCreateBookContext';
@@ -14,6 +13,7 @@ import { userStateSelectors } from '../../../../../modules/core/store/states/use
 import { Paginator } from '../../../../../modules/common/components/paginator/paginator';
 import { Breadcrumbs, NumericBreadcrumb } from '../../../../../modules/common/components/ui/breadcrumbs';
 import { LoadingSpinner } from '../../../../../modules/common/components/spinner/loading-spinner';
+import { FindBooksQueryOptions } from '../../../../../modules/book/api/user/queries/findBooks/findBooksQueryOptions';
 
 export const SearchResultPage: FC = () => {
   const searchParams = searchResultRoute.useSearch();

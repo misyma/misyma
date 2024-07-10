@@ -103,13 +103,13 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onCreateBookReading)}
-        className="space-y-8 min-w-96"
+        className="space-y-4 min-w-96"
       >
         <FormField
           control={form.control}
           name="comment"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className='flex flex-col gap-2'>
               <FormLabel>Komentarz</FormLabel>
               <FormControl>
                 <Textarea
@@ -207,7 +207,7 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
         />
         {form.getValues()?.startedAt?.getTime() > form.getValues()?.endedAt?.getTime() && (
           <p className="font-bold text-center text-red-500">
-            Data rozpoczęcia czytania nie może być późniejsza niż data zakończenia czytania.{' '}
+            Data rozpoczęcia czytania nie może <br></br> być późniejsza niż data zakończenia czytania.{' '}
           </p>
         )}
         <div className="pt-8 gap-2 flex sm:justify-center justify-center sm:items-center items-center">
@@ -234,7 +234,6 @@ export const CreateBookReadingModal: FC<Props> = ({ bookId, rating, trigger, onM
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const [error, setError] = useState('');
-
 
   return (
     <Dialog

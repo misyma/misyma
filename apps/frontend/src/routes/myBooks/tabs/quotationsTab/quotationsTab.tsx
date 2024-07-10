@@ -8,7 +8,6 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
 import { CurrentRatingStar } from '../../../../modules/book/components/currentRatingStar/currentRatingStar';
-import { FindUserBookByIdQueryOptions } from '../../../../modules/book/api/queries/findUserBook/findUserBookByIdQueryOptions';
 import { getQuotesOptions } from '../../../../modules/quotes/api/queries/getQuotes/getQuotesOptions';
 import { QuotationsTable } from '../../../../modules/book/components/quotationsTable/quotationsTable';
 import { columns } from '../../../../modules/book/components/quotationsTable/quotationsTableColumns';
@@ -20,6 +19,7 @@ import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authentica
 import { Navigate, createRoute, useNavigate } from '@tanstack/react-router';
 import { z } from 'zod';
 import { rootRoute } from '../../../root';
+import { FindUserBookByIdQueryOptions } from '../../../../modules/book/api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 
 interface Props {
   userBookId: string;
@@ -106,7 +106,7 @@ export const QuotationsTab: FC<Props> = ({ userBookId }) => {
         <>
           <div>
             <img
-              src={userBookData?.imageUrl}
+              src={userBookData?.imageUrl  || '/book.jpg'}
               className="object-cover max-w-80"
             />
           </div>
@@ -120,7 +120,7 @@ export const QuotationsTab: FC<Props> = ({ userBookId }) => {
             </div>
             <Separator className="h-[1px] bg-primary"></Separator>
             <div className="flex flex-col w-full">
-              <p className="text-lg pb-6"> {userBookData?.book.authors[0].name ?? ''} </p>
+              <p className="text-lg pb-6"> {userBookData?.book?.authors[0]?.name ?? ''} </p>
               <QuotationsTable
                 columns={columns}
                 data={data}
@@ -259,7 +259,7 @@ export const BookPage: FC = () => {
               <>
                 <div>
                   <img
-                    src={userBookData?.imageUrl}
+                    src={userBookData?.imageUrl || '/book.jpg'}
                     className="object-cover max-w-80"
                   />
                 </div>
@@ -273,7 +273,7 @@ export const BookPage: FC = () => {
                   </div>
                   <Separator className="h-[1px] bg-primary"></Separator>
                   <div className="flex flex-col w-full">
-                    <p className="text-lg pb-6"> {userBookData?.book.authors[0].name ?? ''} </p>
+                    <p className="text-lg pb-6"> {userBookData?.book?.authors[0]?.name ?? ''} </p>
                     <QuotationsTable
                       columns={columns}
                       data={data}

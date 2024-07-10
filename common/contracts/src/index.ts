@@ -2,6 +2,8 @@ export * from './schemas/author/author.js';
 
 export * from './schemas/bookshelf/bookshelf.js';
 
+export * from './schemas/book/book.js';
+
 export * from './schemas/bookshelf/createBookshelf.js';
 
 export * from './schemas/bookshelf/findBookshelfById.js';

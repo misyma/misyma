@@ -12,14 +12,14 @@ import { ReadingStatus } from '../../../common/constants/readingStatus';
 import { FileInput } from '../../../common/components/ui/input';
 import { Button } from '../../../common/components/ui/button';
 import { useSearchBookContext } from '../../context/searchCreateBookContext/searchCreateBookContext';
-import { useUploadBookImageMutation } from '../../../book/api/mutations/uploadBookImageMutation/uploadBookImageMutation';
+import { useUploadBookImageMutation } from '../../../book/api/user/mutations/uploadBookImageMutation/uploadBookImageMutation';
 import { useQuery } from '@tanstack/react-query';
 import { getGenresQueryOptions } from '../../../genres/api/queries/getGenresQuery/getGenresQueryOptions';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useFindUserBookshelfsQuery } from '../../api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 import { BookApiError } from '../../../book/errors/bookApiError';
-import { useCreateUserBookMutation } from '../../../book/api/mutations/createUserBookMutation/createUserBookMutation';
+import { useCreateUserBookMutation } from '../../../book/api/user/mutations/createUserBookMutation/createUserBookMutation';
 
 const stepThreeFormSchema = z.object({
   status: z.nativeEnum(ContractReadingStatus, {
@@ -189,7 +189,7 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
       <form
         //   eslint-disable-next-line
         onSubmit={form.handleSubmit(onSubmit as any)}
-        className="space-y-8"
+        className="space-y-4"
       >
         <FormField
           control={form.control}

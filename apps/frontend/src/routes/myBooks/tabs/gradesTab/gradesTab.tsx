@@ -1,6 +1,5 @@
 import { FC, useMemo, useState } from 'react';
 import { Separator } from '../../../../modules/common/components/ui/separator.js';
-import { FindUserBookByIdQueryOptions } from '../../../../modules/book/api/queries/findUserBook/findUserBookByIdQueryOptions.js';
 import { useFindUserQuery } from '../../../../modules/user/api/queries/findUserQuery/findUserQuery.js';
 import { UserBook } from '@common/contracts';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -19,6 +18,7 @@ import { Navigate, createRoute, useNavigate } from '@tanstack/react-router';
 import { cn } from '../../../../modules/common/lib/utils.js';
 import { rootRoute } from '../../../root.js';
 import { z } from 'zod';
+import { FindUserBookByIdQueryOptions } from '../../../../modules/book/api/user/queries/findUserBook/findUserBookByIdQueryOptions.js';
 
 export const GradesPage: FC = () => {
   const { bookId } = gradesTabPage.useParams();
@@ -70,8 +70,6 @@ export const GradesPage: FC = () => {
   const onNextPage = (): void => {
     setPage(page + 1);
 
-    console.log(page);
-
     invalidateReadingsFetch();
   };
 
@@ -119,9 +117,8 @@ export const GradesPage: FC = () => {
               </li>
               <li className={cn('cursor-default text-primary font-bold')}>Oceny</li>
             </ul>
-            <div className="flex gap-1 justify-center items-end flex-col">
+            <div className="flex justify-center items-end flex-col">
               <p>Dodaj ocenę</p>
-
               <AddStarRatingButton
                 onCreated={async () => await invalidateReadingsFetch()}
                 userBookId={bookId}
@@ -134,7 +131,7 @@ export const GradesPage: FC = () => {
               <>
                 <div>
                   <img
-                    src={userBookData?.imageUrl}
+                    src={userBookData?.imageUrl || '/book.jpg'}
                     className="object-cover max-w-80"
                   />
                 </div>
@@ -148,7 +145,7 @@ export const GradesPage: FC = () => {
                   </div>
                   <Separator className="h-[1px] bg-primary"></Separator>
                   <div className="flex flex-col w-full">
-                    <p className="text-lg pb-6"> {userBookData?.book.authors[0].name ?? ''} </p>
+                    <p className="text-lg pb-6"> {userBookData?.book?.authors[0]?.name ?? ''} </p>
                     <GradesTable
                       columns={columns}
                       data={bookReadings?.data ?? []}

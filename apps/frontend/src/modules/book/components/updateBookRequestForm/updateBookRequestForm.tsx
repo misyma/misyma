@@ -9,7 +9,6 @@ import { Languages } from '../../../common/constants/languages';
 import { Input } from '../../../common/components/ui/input';
 import { Button } from '../../../common/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
-import { FindBookByIdQueryOptions } from '../../api/queries/findBookById/findBookByIdQueryOptions';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
@@ -20,8 +19,9 @@ import {
   useBookDetailsChangeRequestContext,
   useBookDetailsChangeRequestDispatch,
 } from '../../context/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
-import { FindUserBookByIdQueryOptions } from '../../api/queries/findUserBook/findUserBookByIdQueryOptions';
-import { useUpdateBookMutation } from '../../api/mutations/updateBookMutation/updateBookMutation';
+import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
+import { FindBookByIdQueryOptions } from '../../api/user/queries/findBookById/findBookByIdQueryOptions';
+import { useUpdateBookMutation } from '../../api/user/mutations/updateBookMutation/updateBookMutation';
 
 interface Props {
   bookId: string;
@@ -142,7 +142,7 @@ export const UpdateBookRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit })
           <form
             //   eslint-disable-next-line
             onSubmit={stepTwoForm.handleSubmit(async (data) => await onUpdate(data as any))}
-            className="space-y-8"
+            className="space-y-4"
           >
             <FormField
               control={stepTwoForm.control}

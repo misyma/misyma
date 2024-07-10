@@ -41,7 +41,7 @@ import {
 import { HiOutlineInformationCircle } from 'react-icons/hi';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../../../common/components/ui/tooltip';
 import { useFindAuthorsQuery } from '../../../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
-import { findUserBooksBy } from '../../../../../book/api/queries/findUserBookBy/findUserBooksBy';
+import { findUserBooksBy } from '../../../../../book/api/user/queries/findUserBookBy/findUserBooksBy';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';
 import { toast } from '../../../../../common/components/ui/use-toast';
@@ -244,7 +244,7 @@ export const ManualStepOneForm = (): JSX.Element => {
             values as any,
           ),
         )}
-        className="space-y-8"
+        className="space-y-4"
       >
         <FormField
           control={form.control}

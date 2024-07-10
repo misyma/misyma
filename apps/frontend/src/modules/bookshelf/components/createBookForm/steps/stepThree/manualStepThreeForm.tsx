@@ -24,7 +24,7 @@ import {
 } from '../../../../../common/components/ui/form';
 import { FileInput } from '../../../../../common/components/ui/input';
 import { Button } from '../../../../../common/components/ui/button';
-import { useCreateBookMutation } from '../../../../../book/api/mutations/createBookMutation/createBookMutation';
+import { useCreateBookMutation } from '../../../../../book/api/user/mutations/createBookMutation/createBookMutation';
 import { useFindUserQuery } from '../../../../../user/api/queries/findUserQuery/findUserQuery';
 import { useNavigate } from '@tanstack/react-router';
 import {
@@ -37,17 +37,17 @@ import {
 import { ReadingStatus } from '../../../../../common/constants/readingStatus';
 import { useToast } from '../../../../../common/components/ui/use-toast';
 import { useEffect, useRef, useState } from 'react';
-import { useUploadBookImageMutation } from '../../../../../book/api/mutations/uploadBookImageMutation/uploadBookImageMutation';
+import { useUploadBookImageMutation } from '../../../../../book/api/user/mutations/uploadBookImageMutation/uploadBookImageMutation';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getGenresQueryOptions } from '../../../../../genres/api/queries/getGenresQuery/getGenresQueryOptions';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';
 import { useFindUserBookshelfsQuery } from '../../../../api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 import { BookApiError } from '../../../../../book/errors/bookApiError';
-import { useCreateUserBookMutation } from '../../../../../book/api/mutations/createUserBookMutation/createUserBookMutation';
+import { useCreateUserBookMutation } from '../../../../../book/api/user/mutations/createUserBookMutation/createUserBookMutation';
 import { useCreateAuthorDraftMutation } from '../../../../../author/api/user/mutations/createAuthorDraftMutation/createAuthorDraftMutation';
 import { useFindAuthorsQuery } from '../../../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
-import { BookApiQueryKeys } from '../../../../../book/api/queries/bookApiQueryKeys';
+import { BookApiQueryKeys } from '../../../../../book/api/user/queries/bookApiQueryKeys';
 
 const stepThreeFormSchema = z.object({
   status: z.nativeEnum(ContractReadingStatus, {
@@ -296,7 +296,7 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-8"
+        className="space-y-4"
       >
         <FormField
           control={form.control}

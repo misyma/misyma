@@ -6,15 +6,15 @@ import { Skeleton } from '../../../common/components/ui/skeleton';
 import { useToast } from '../../../common/components/ui/use-toast';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
-import { FindUserBookByIdQueryOptions } from '../../api/queries/findUserBook/findUserBookByIdQueryOptions';
 import { useFindUserBookshelfsQuery } from '../../../bookshelf/api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
-import { useUpdateUserBookMutation } from '../../api/mutations/updateUserBookMutation/updateUserBookMutation';
 import { CreateBorrowingModal } from '../createBorrowingModal/createBorrowingModal';
-import { BookApiQueryKeys } from '../../api/queries/bookApiQueryKeys';
 import { SortingType } from '@common/contracts';
 import { FindBookBorrowingsQueryOptions } from '../../../borrowing/api/queries/findBookBorrowings/findBookBorrowingsQueryOptions';
 import { useUpdateBorrowingMutation } from '../../../borrowing/api/mutations/updateBorrowingMutation/updateBorrowingMutation';
 import { BorrowingApiQueryKeys } from '../../../borrowing/api/queries/borrowingApiQueryKeys';
+import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
+import { useUpdateUserBookMutation } from '../../api/user/mutations/updateUserBookMutation/updateUserBookMutation';
+import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
 
 interface Props {
   bookId: string;

@@ -4,7 +4,6 @@ import { StatusChooserCards } from '../../../../modules/book/components/statusCh
 import { BookshelfChoiceDropdown } from '../../../../modules/book/components/bookshelfChoiceDropdown/bookshelfChoiceDropdown.js';
 import { Separator } from '../../../../modules/common/components/ui/separator.js';
 import { FavoriteBookButton } from '../../../../modules/book/components/favoriteBookButton/favoriteBookButton.js';
-import { FindUserBookByIdQueryOptions } from '../../../../modules/book/api/queries/findUserBook/findUserBookByIdQueryOptions.js';
 import { UserBook } from '@common/contracts';
 import { BasicDataTabSkeleton } from './basicDataTabSkeleton.js';
 import { CurrentRatingStar } from '../../../../modules/book/components/currentRatingStar/currentRatingStar.js';
@@ -21,6 +20,7 @@ import { cn } from '../../../../modules/common/lib/utils.js';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout.js';
 import { useFindUserQuery } from '../../../../modules/user/api/queries/findUserQuery/findUserQuery.js';
 import { EditOrDeleteBookModal } from '../../../../modules/book/components/editOrDeleteBookModal/editOrDeleteBookModal.js';
+import { FindUserBookByIdQueryOptions } from '../../../../modules/book/api/user/queries/findUserBook/findUserBookByIdQueryOptions.js';
 
 export const BasicDataPage: FC = () => {
   const { data: userData } = useFindUserQuery();
@@ -83,7 +83,7 @@ export const BasicDataPage: FC = () => {
                 <div>
                   <img
                     key={`${imageUrl}`}
-                    src={imageUrl}
+                    src={imageUrl || '/book.jpg'}
                     className="object-cover max-w-80"
                   />
                 </div>

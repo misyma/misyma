@@ -34,8 +34,8 @@ const createBorrowingSchema = z.object({
     .min(1, {
       message: 'Wymagany jest minimum 1 znak.',
     })
-    .max(256, {
-      message: 'Pole wypożyczający może mieć maksymalnie 256 znaków.',
+    .max(32, {
+      message: 'Pole wypożyczający może mieć maksymalnie 32 znaki.',
     }),
   startedAt: z.date({
     required_error: 'Data rozpoczęcia jest wymagana.',
@@ -96,6 +96,8 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, open, onClosed, onMuta
         setIsOpen(val);
 
         setError('');
+
+        onClosed();
       }}
     >
       <DialogContent
@@ -113,17 +115,18 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, open, onClosed, onMuta
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onCreateBookReading)}
-              className="space-y-8 min-w-96"
+              className="space-y-4 min-w-96"
             >
               <FormField
                 control={form.control}
                 name="borrower"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className='flex flex-col gap-2'>
                     <FormLabel>Imię osoby wypożyczającej</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Imię osoby wypożyczającej"
+                        maxLength={32}
                         type="text"
                         includeQuill={true}
                         {...field}
