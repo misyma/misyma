@@ -6,6 +6,7 @@ import { type Book } from '../../../domain/entities/book/book.js';
 export interface UpdateBookPayload {
   readonly bookId: string;
   readonly title?: string | undefined;
+  readonly isbn?: string | undefined;
   readonly publisher?: string | undefined;
   readonly releaseYear?: number | undefined;
   readonly language?: Language | undefined;

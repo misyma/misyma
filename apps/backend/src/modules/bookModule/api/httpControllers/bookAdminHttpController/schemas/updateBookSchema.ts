@@ -21,6 +21,11 @@ export const updateBookBodyDtoSchema = Type.Object({
       maxLength: 64,
     }),
   ),
+  isbn: Type.Optional(
+    Type.String({
+      pattern: '^(97(8|9))?\\d{9}(\\d|X)$',
+    }),
+  ),
   publisher: Type.Optional(
     Type.String({
       minLength: 1,

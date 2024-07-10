@@ -182,8 +182,19 @@ export class BookAdminHttpController implements HttpController {
 
     const { bookId } = request.pathParams;
 
-    const { authorIds, format, imageUrl, language, pages, publisher, releaseYear, title, translator, isApproved } =
-      request.body;
+    const {
+      authorIds,
+      format,
+      imageUrl,
+      language,
+      pages,
+      publisher,
+      releaseYear,
+      title,
+      translator,
+      isApproved,
+      isbn,
+    } = request.body;
 
     const { book } = await this.updateBookCommandHandler.execute({
       bookId,
@@ -197,6 +208,7 @@ export class BookAdminHttpController implements HttpController {
       title,
       translator,
       isApproved,
+      isbn,
     });
 
     return {
