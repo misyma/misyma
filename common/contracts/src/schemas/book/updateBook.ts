@@ -15,6 +15,7 @@ export interface UpdateBookRequestBody {
   readonly format?: BookFormat;
   readonly pages?: number;
   readonly imageUrl?: string;
+  readonly isApproved?: boolean;
   readonly authorIds?: string[];
 }
 
