@@ -5,7 +5,7 @@ export const borrowingDtoSchema = Type.Object({
   userBookId: Type.String({ format: 'uuid' }),
   borrower: Type.String({
     minLength: 1,
-    maxLength: 256,
+    maxLength: 32,
   }),
   startedAt: Type.String({ format: 'date-time' }),
   endedAt: Type.Optional(Type.String({ format: 'date-time' })),

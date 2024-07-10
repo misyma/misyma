@@ -19,7 +19,7 @@ export const updateBorrowingBodyDtoSchema = Type.Object({
   borrower: Type.Optional(
     Type.String({
       minLength: 1,
-      maxLength: 256,
+      maxLength: 32,
     }),
   ),
   startedAt: Type.Optional(Type.String({ format: 'date-time' })),
