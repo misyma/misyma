@@ -53,6 +53,7 @@ export const updateBookBodyDtoSchema = Type.Object({
       maxLength: 128,
     }),
   ),
+  isApproved: Type.Optional(Type.Boolean()),
   authorIds: Type.Optional(Type.Array(Type.String({ format: 'uuid' }))),
 });
 

@@ -13,6 +13,7 @@ export interface UpdateBookPayload {
   readonly format?: BookFormat | undefined;
   readonly pages?: number | undefined;
   readonly imageUrl?: string | undefined;
+  readonly isApproved?: boolean | undefined;
   readonly authorIds?: string[] | undefined;
 }
 

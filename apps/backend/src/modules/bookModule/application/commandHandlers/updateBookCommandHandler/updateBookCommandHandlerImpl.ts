@@ -16,7 +16,19 @@ export class UpdateBookCommandHandlerImpl implements UpdateBookCommandHandler {
   ) {}
 
   public async execute(payload: UpdateBookPayload): Promise<UpdateBookResult> {
-    const { bookId, authorIds, format, imageUrl, language, pages, publisher, releaseYear, title, translator } = payload;
+    const {
+      bookId,
+      authorIds,
+      format,
+      imageUrl,
+      language,
+      pages,
+      publisher,
+      releaseYear,
+      title,
+      translator,
+      isApproved,
+    } = payload;
 
     this.loggerService.debug({
       message: 'Updating Book...',
@@ -30,6 +42,7 @@ export class UpdateBookCommandHandlerImpl implements UpdateBookCommandHandler {
       releaseYear,
       title,
       translator,
+      isApproved,
     });
 
     const book = await this.bookRepository.findBook({ id: bookId });
@@ -88,6 +101,10 @@ export class UpdateBookCommandHandlerImpl implements UpdateBookCommandHandler {
 
     if (imageUrl) {
       book.setImageUrl({ imageUrl });
+    }
+
+    if (isApproved !== undefined) {
+      book.setIsApproved({ isApproved });
     }
 
     await this.bookRepository.saveBook({ book });
