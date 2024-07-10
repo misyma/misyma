@@ -70,6 +70,7 @@ try {
     authorRepository,
     bookRepository,
     openLibraryMapper,
+    config,
     logger,
   );
 

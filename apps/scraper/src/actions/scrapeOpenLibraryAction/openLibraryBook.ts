@@ -3,8 +3,8 @@
 export interface OpenLibraryBook {
   readonly image?: string;
   readonly pages?: number;
-  readonly title: string;
-  readonly isbn13: string;
+  readonly title?: string;
+  readonly isbn13?: string;
   readonly authors?: string[];
   readonly binding?: OpenLibraryBookBinding;
   readonly language?: string;

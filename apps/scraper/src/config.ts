@@ -8,6 +8,7 @@ import { LogLevel } from './libs/logger/logLevel.js';
 const configSchema = Type.Object({
   logLevel: Type.Enum(LogLevel),
   databasePath: Type.String({ minLength: 1 }),
+  openLibraryPath: Type.String({ minLength: 1 }),
 });
 
 export type Config = Static<typeof configSchema>;
