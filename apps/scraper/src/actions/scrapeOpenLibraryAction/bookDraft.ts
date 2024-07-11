@@ -1,8 +1,6 @@
-import { type Book } from './book.js';
-import { type BookFormat } from './bookFormat.js';
-import { type Language } from './language.js';
+import { type BookFormat, type Language } from '@common/contracts';
 
-export interface CreateBookRequestBody {
+export interface BookDraft {
   readonly title: string;
   readonly isbn?: string | undefined;
   readonly publisher?: string | undefined;
@@ -11,8 +9,7 @@ export interface CreateBookRequestBody {
   readonly translator?: string | undefined;
   readonly format: BookFormat;
   readonly pages?: number | undefined;
+  readonly isApproved: boolean;
   readonly imageUrl?: string | undefined;
-  readonly authorIds: string[];
+  readonly authorNames: string[];
 }
-
-export interface CreateBookResponseBody extends Book {}

@@ -1,7 +1,7 @@
+import { type BookDraft } from './bookDraft.js';
 import { type OpenLibraryBookBinding, type OpenLibraryBook } from './openLibraryBook.js';
-import { type BookDraft } from '../../db/entities/book/book.js';
-import { BookFormat } from '../../db/entities/book/bookFormat.js';
-import { isValidLanguage, Language } from '../../db/entities/book/language.js';
+import { BookFormat } from '../../infrastructure/entities/book/bookFormat.js';
+import { isValidLanguage, Language } from '../../infrastructure/entities/book/language.js';
 
 export class OpenLibraryMapper {
   public mapBook(openLibraryBook: OpenLibraryBook): BookDraft | undefined {

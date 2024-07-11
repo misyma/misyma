@@ -9,6 +9,10 @@ const configSchema = Type.Object({
   logLevel: Type.Enum(LogLevel),
   databasePath: Type.String({ minLength: 1 }),
   openLibraryPath: Type.String({ minLength: 1 }),
+  misyma: Type.Object({
+    url: Type.String({ minLength: 1 }),
+    apiKey: Type.String({ minLength: 1 }),
+  }),
 });
 
 export type Config = Static<typeof configSchema>;

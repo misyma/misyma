@@ -6,13 +6,10 @@ import { hideBin } from 'yargs/helpers';
 import { OpenLibraryMapper } from './actions/scrapeOpenLibraryAction/openLibraryMapper.js';
 import { ScrapeOpenLibraryAction } from './actions/scrapeOpenLibraryAction/scrapeOpenLibraryAction.js';
 import { ConfigFactory } from './config.js';
-import { AuthorRepository } from './db/repositories/authorRepository/authorRepository.js';
-import { BookRepository } from './db/repositories/bookRepository/bookRepository.js';
 import { BaseError } from './errors/baseError.js';
-import { DatabaseClientType } from './libs/database/databaseClientConfig.js';
-import { DatabaseClientFactory } from './libs/database/databaseClientFactory.js';
+import { MisymaHttpClientFactory } from './infrastructure/services/misymaHttpClient.js';
+import { MisymaService } from './infrastructure/services/misymaService.js';
 import { LoggerServiceFactory } from './libs/logger/loggerServiceFactory.js';
-import { UuidService } from './libs/uuid/uuidService.js';
 
 const finalErrorHandler = async (error: unknown): Promise<void> => {
   let errorContext;
@@ -50,29 +47,13 @@ try {
 
   const logger = LoggerServiceFactory.create(config);
 
-  const dbClient = DatabaseClientFactory.create({
-    clientType: DatabaseClientType.sqlite,
-    filePath: config.databasePath,
-    useNullAsDefault: true,
-    minPoolConnections: 1,
-    maxPoolConnections: 1,
-  });
-
-  const uuidService = new UuidService();
-
-  const authorRepository = new AuthorRepository(dbClient, uuidService);
-
-  const bookRepository = new BookRepository(dbClient, uuidService);
-
   const openLibraryMapper = new OpenLibraryMapper();
 
-  const scrapeOpenLibraryAction = new ScrapeOpenLibraryAction(
-    authorRepository,
-    bookRepository,
-    openLibraryMapper,
-    config,
-    logger,
-  );
+  const misymaHttpClient = MisymaHttpClientFactory.create(config);
+
+  const misymaService = new MisymaService(misymaHttpClient, logger);
+
+  const scrapeOpenLibraryAction = new ScrapeOpenLibraryAction(misymaService, openLibraryMapper, config, logger);
 
   yargs(hideBin(process.argv))
     .command([

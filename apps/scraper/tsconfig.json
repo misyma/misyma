@@ -5,4 +5,9 @@
   },
   "include": ["src/**/*.ts"],
   "exclude": ["dist"],
+  "references": [
+    {
+      "path": "../../common/contracts/tsconfig.json"
+    }
+  ]
 }

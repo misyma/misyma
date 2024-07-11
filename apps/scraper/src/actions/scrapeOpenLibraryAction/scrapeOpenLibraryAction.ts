@@ -4,14 +4,12 @@ import { createInterface } from 'node:readline';
 import { type OpenLibraryBook } from './openLibraryBook.js';
 import { type OpenLibraryMapper } from './openLibraryMapper.js';
 import { type Config } from '../../config.js';
-import { type AuthorRepository } from '../../db/repositories/authorRepository/authorRepository.js';
-import { type BookRepository } from '../../db/repositories/bookRepository/bookRepository.js';
+import { type MisymaService } from '../../infrastructure/services/misymaService.js';
 import { type LoggerService } from '../../libs/logger/loggerService.js';
 
 export class ScrapeOpenLibraryAction {
   public constructor(
-    private readonly authorRepository: AuthorRepository,
-    private readonly bookRepository: BookRepository,
+    private readonly misymaService: MisymaService,
     private readonly openLibraryMapper: OpenLibraryMapper,
     private readonly config: Config,
     private readonly logger: LoggerService,
@@ -20,8 +18,6 @@ export class ScrapeOpenLibraryAction {
   public async execute(): Promise<void> {
     this.logger.info({
       message: 'Scraping Open Library...',
-      bookRepository: this.bookRepository,
-      authorRepository: this.authorRepository,
       openLibraryMapper: this.openLibraryMapper,
     });
 
@@ -61,33 +57,36 @@ export class ScrapeOpenLibraryAction {
     const authorIds: string[] = [];
 
     for (const authorName of bookDraft.authorNames) {
-      let author = await this.authorRepository.findAuthor({ name: authorName });
+      let authorId = await this.misymaService.findAuthorId({ name: authorName });
 
-      if (!author) {
-        author = await this.authorRepository.create({ name: authorName });
+      if (!authorId) {
+        const author = await this.misymaService.createAuthor({ name: authorName });
+
+        authorId = author.id;
       }
 
-      authorIds.push(author.id);
+      authorIds.push(authorId);
     }
 
-    const book = await this.bookRepository.findBook({ title: bookDraft.title });
+    const bookExists = await this.misymaService.bookExists({ title: bookDraft.title });
 
-    if (book) {
+    if (bookExists) {
       return;
     }
 
-    await this.bookRepository.createBook({
-      title: bookDraft.title,
-      isbn: bookDraft.isbn,
-      publisher: bookDraft.publisher,
-      format: bookDraft.format,
-      isApproved: bookDraft.isApproved,
-      language: bookDraft.language,
-      imageUrl: bookDraft.imageUrl,
-      releaseYear: bookDraft.releaseYear,
-      translator: bookDraft.translator,
-      pages: bookDraft.pages,
-      authorIds,
+    await this.misymaService.createBook({
+      data: {
+        title: bookDraft.title,
+        isbn: bookDraft.isbn,
+        publisher: bookDraft.publisher,
+        format: bookDraft.format,
+        language: bookDraft.language,
+        imageUrl: bookDraft.imageUrl,
+        releaseYear: bookDraft.releaseYear,
+        translator: bookDraft.translator,
+        pages: bookDraft.pages,
+        authorIds,
+      },
     });
   }
 }
