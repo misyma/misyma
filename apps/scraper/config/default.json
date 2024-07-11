@@ -1,5 +1,9 @@
 {
   "logLevel": "debug",
   "databasePath": null,
-  "openLibraryPath": null
+  "openLibraryPath": null,
+  "misyma": {
+    "url": "https://misyma-backend.fly.dev",
+    "apiKey": null
+  }
 }

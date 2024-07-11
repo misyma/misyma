@@ -11,7 +11,9 @@
     "lint:fix": "npm run lint -- --fix"
   },
   "dependencies": {
+    "@common/contracts": "*",
     "@sinclair/typebox": "0.32.31",
+    "axios": "1.7.2",
     "better-sqlite3": "11.0.0",
     "config": "3.3.11",
     "knex": "3.1.0",
