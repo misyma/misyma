@@ -68,7 +68,7 @@ export class MisymaService {
     const { name } = payload;
 
     try {
-      const response = await this.httpClient.get<FindAuthorsResponseBody>('api/admin/authors', { params: { name } });
+      const response = await this.httpClient.get<FindAuthorsResponseBody>('api/authors', { params: { name } });
 
       return response.data.data[0]?.id;
     } catch (error) {

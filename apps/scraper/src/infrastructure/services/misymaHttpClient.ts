@@ -10,6 +10,8 @@ export class MisymaHttpClientFactory {
       baseURL: config.misyma.url,
       headers: {
         Authorization: `Bearer ${config.misyma.apiKey}`,
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
       },
       timeout: 5000,
     });
