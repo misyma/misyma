@@ -26,7 +26,7 @@ export const userBookDtoSchema = Type.Object({
   book: Type.Object({
     title: Type.String({
       minLength: 1,
-      maxLength: 64,
+      maxLength: 128,
     }),
     isbn: Type.Optional(
       Type.String({

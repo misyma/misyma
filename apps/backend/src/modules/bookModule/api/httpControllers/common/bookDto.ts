@@ -8,7 +8,7 @@ export const bookDtoSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
   title: Type.String({
     minLength: 1,
-    maxLength: 64,
+    maxLength: 128,
   }),
   isbn: Type.Optional(
     Type.String({
