@@ -14,7 +14,7 @@ export const findBooksQueryParamsDtoSchema = Type.Object({
   title: Type.Optional(
     Type.String({
       minLength: 1,
-      maxLength: 64,
+      maxLength: 128,
     }),
   ),
   page: Type.Optional(Type.Integer({ minimum: 1 })),
