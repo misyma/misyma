@@ -105,4 +105,7 @@ export const changeRequestsAdminRoute = createRoute({
       </RequireAdmin>
     );
   },
+  staticData: {
+    routeDisplayableNameParts: ['Admin', 'Prośby o zmianę'],
+  },
 });

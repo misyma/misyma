@@ -106,4 +106,7 @@ export const authorsAdminRoute = createRoute({
       </RequireAdmin>
     );
   },
+  staticData: {
+    routeDisplayableNameParts: ['Admin', 'Authors'],
+  },
 });

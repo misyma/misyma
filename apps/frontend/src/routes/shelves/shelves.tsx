@@ -30,6 +30,7 @@ import {
 import { useQueryClient } from '@tanstack/react-query';
 import { ShelfApiError } from '../../modules/bookshelf/api/errors/shelfApiError';
 import { ShelvesSkeleton } from './shelves-skeleton';
+import { useBreadcrumbKeysDispatch } from '../../modules/common/contexts/breadcrumbKeysContext';
 
 const bookshelfNameSchema = z
   .string()
@@ -47,6 +48,8 @@ export const ShelvesPage: FC = () => {
 
   const perPage = 5;
 
+  const dispatch = useBreadcrumbKeysDispatch();
+
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const [isCreatingNew, setIsCreatingNew] = useState(false);
@@ -61,6 +64,13 @@ export const ShelvesPage: FC = () => {
     pageSize: perPage,
     page: currentPage,
   });
+
+  useEffect(() => {
+    dispatch({
+      clear: true,
+    });
+    // eslint-disable-next-line
+  }, []);
 
   useEffect(() => {
     setBookshelves(bookshelvesData?.data);
@@ -571,5 +581,8 @@ export const shelvesRoute = createRoute({
         <ShelvesPage />
       </RequireAuthComponent>
     );
+  },
+  staticData: {
+    routeDisplayableNameParts: ['Półki'],
   },
 });

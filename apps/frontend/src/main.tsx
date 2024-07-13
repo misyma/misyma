@@ -8,18 +8,27 @@ import { notFoundRoute } from './routes/notFound/notFound.tsx';
 import { StoreProvider } from './modules/core/components/providers/storeProvider/storeProvider.tsx';
 import { SearchCreateBookProvider } from './modules/bookshelf/context/searchCreateBookContext/searchCreateBookContext.tsx';
 import { routeTree } from './modules/core/router/router.tsx';
+import { BreadcrumbKeysProvider } from './modules/common/contexts/breadcrumbKeysContext.tsx';
 
 const router = createRouter({
   routeTree,
   notFoundRoute,
 });
 
+declare module '@tanstack/react-router' {
+  interface StaticDataRouteOption {
+    routeDisplayableNameParts?: string[];
+  }
+}
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <StoreProvider>
       <QueryClientProvider>
         <SearchCreateBookProvider>
-          <RouterProvider router={router} />
+          <BreadcrumbKeysProvider>
+            <RouterProvider router={router} />
+          </BreadcrumbKeysProvider>
         </SearchCreateBookProvider>
       </QueryClientProvider>
     </StoreProvider>

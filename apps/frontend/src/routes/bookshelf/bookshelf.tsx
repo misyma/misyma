@@ -1,5 +1,5 @@
 import { Navigate, createRoute, useNavigate } from '@tanstack/react-router';
-import { FC, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { rootRoute } from '../root';
 import { RequireAuthComponent } from '../../modules/core/components/requireAuth/requireAuthComponent';
 import { z } from 'zod';
@@ -28,6 +28,10 @@ import {
   PaginationPrevious,
 } from '../../modules/common/components/ui/pagination';
 import { FindBooksByBookshelfIdQueryOptions } from '../../modules/book/api/user/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
+import {
+  useBreadcrumbKeysContext,
+  useBreadcrumbKeysDispatch,
+} from '../../modules/common/contexts/breadcrumbKeysContext';
 
 const bookshelfSearchSchema = z.object({
   id: z.string().uuid().catch(''),
@@ -52,6 +56,29 @@ export const View: FC = () => {
   const { id } = bookshelfRoute.useParams();
 
   const { data: bookshelfResponse } = useFindBookshelfByIdQuery(id);
+
+  const breadcrumbKeys = useBreadcrumbKeysContext();
+
+  const dispatch = useBreadcrumbKeysDispatch();
+
+  useEffect(() => {
+    if (bookshelfResponse?.name) {
+      dispatch({
+        key: '$bookshelfName',
+        value: bookshelfResponse?.name,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bookshelfResponse]);
+
+  useEffect(() => {
+    if (breadcrumbKeys['$bookName']) {
+      dispatch({
+        key: '$bookName',
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (bookshelfResponse?.name === 'Wypożyczalnia') {
     return <BorrowingBookshelf></BorrowingBookshelf>;
@@ -255,7 +282,7 @@ export const Bookshelf: FC = () => {
       pageSize: perPage,
     }),
   );
-  
+
   const pagesCount = useMemo(() => {
     const bookshelvesCount = bookshelfBooksResponse?.metadata?.total ?? 0;
 
@@ -524,8 +551,10 @@ export const bookshelfRoute = createRoute({
     );
   },
   parseParams: bookshelfSearchSchema.parse,
-  validateSearch: bookshelfSearchSchema,
   onError: () => {
     return <Navigate to={'/shelves'} />;
+  },
+  staticData: {
+    routeDisplayableNameParts: ['Półki', '$bookshelfName'],
   },
 });

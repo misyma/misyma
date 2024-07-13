@@ -21,6 +21,11 @@ import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authentica
 import { useFindUserQuery } from '../../../../modules/user/api/queries/findUserQuery/findUserQuery.js';
 import { EditOrDeleteBookModal } from '../../../../modules/book/components/editOrDeleteBookModal/editOrDeleteBookModal.js';
 import { FindUserBookByIdQueryOptions } from '../../../../modules/book/api/user/queries/findUserBook/findUserBookByIdQueryOptions.js';
+import {
+  useBreadcrumbKeysContext,
+  useBreadcrumbKeysDispatch,
+} from '../../../../modules/common/contexts/breadcrumbKeysContext.js';
+import { useFindBookshelfByIdQuery } from '../../../../modules/bookshelf/api/queries/findBookshelfByIdQuery/findBookshelfByIdQuery.js';
 
 export const BasicDataPage: FC = () => {
   const { data: userData } = useFindUserQuery();
@@ -31,6 +36,10 @@ export const BasicDataPage: FC = () => {
 
   const { bookId } = basicBookDataRoute.useParams();
 
+  const dispatch = useBreadcrumbKeysDispatch();
+
+  const breadcrumbKeys = useBreadcrumbKeysContext();
+
   const { data, isFetched, isFetching, isRefetching } = useQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
@@ -38,6 +47,22 @@ export const BasicDataPage: FC = () => {
       accessToken: accessToken as string,
     }),
   );
+
+  const { data: bookshelfResponse } = useFindBookshelfByIdQuery(data?.bookshelfId as string);
+
+  if (data?.book.title && !breadcrumbKeys['$bookName']) {
+    dispatch({
+      key: '$bookName',
+      value: data?.book.title,
+    });
+  }
+
+  if (bookshelfResponse?.id && !breadcrumbKeys['$bookshelfName']) {
+    dispatch({
+      key: '$bookshelfName',
+      value: bookshelfResponse.name,
+    });
+  }
 
   const imageUrl = useMemo(() => data?.imageUrl, [data?.imageUrl]);
 
@@ -148,5 +173,8 @@ export const basicBookDataRoute = createRoute({
   },
   parseParams: (params) => {
     return bookPathParamsSchema.parse(params);
+  },
+  staticData: {
+    routeDisplayableNameParts: ['Półki', '$bookshelfName', '$bookName'],
   },
 });

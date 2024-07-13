@@ -1,7 +1,6 @@
 import { FC } from 'react';
 import { Toaster } from '../../../common/components/ui/toaster';
 import { Navbar } from '../../../common/components/navbar/navbar';
-
 export interface Props {
   children: React.ReactNode;
 }

@@ -98,4 +98,7 @@ export const booksAdminRoute = createRoute({
       </RequireAdmin>
     );
   },
+  staticData: {
+    routeDisplayableNameParts: ['Admin', 'Książki'],
+  },
 });
