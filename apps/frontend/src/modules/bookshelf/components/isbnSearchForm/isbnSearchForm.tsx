@@ -42,10 +42,11 @@ export const IsbnSearchForm = ({ bookshelfId }: Props): JSX.Element => {
     });
 
     navigate({
-      to: '/search/result',
+      to: '/bookshelf/search/result',
       search: {
         isbn: values.isbn,
         bookshelfId,
+        title: '',
       },
     });
   };

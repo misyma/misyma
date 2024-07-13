@@ -137,7 +137,7 @@ export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccess, onError }: Lo
             </Button>
             <div className="text-xs text-center w-60 sm:w-96 pt-[4px]">
               <Link
-                to="/reset-password"
+                to="/resetPassword"
                 className="text-primary"
               >
                 Nie pamiętasz hasła?{' '}

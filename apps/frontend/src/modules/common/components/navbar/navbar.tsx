@@ -1,5 +1,5 @@
-import { Link, useNavigate } from '@tanstack/react-router';
-import { FC } from 'react';
+import { Link, useNavigate, useRouter } from '@tanstack/react-router';
+import { FC, useMemo } from 'react';
 import { IoIosLogOut } from 'react-icons/io';
 import { useStoreSelector } from '../../../core/store/hooks/useStoreSelector';
 import { userStateActions, userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
@@ -8,8 +8,18 @@ import { useStoreDispatch } from '../../../core/store/hooks/useStoreDispatch';
 import { CookieService } from '../../../core/services/cookieService/cookieService';
 import { useLogoutUserMutation } from '../../../auth/api/logoutUserMutation/logoutUserMutation';
 import { UserRole } from '@common/contracts';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from '../breadcrumb/breadcrumb';
+import { useBreadcrumbKeysContext } from '../../contexts/breadcrumbKeysContext';
 export const Navbar: FC = () => {
   const navigate = useNavigate();
+
+  const breadcrumbKeys = useBreadcrumbKeysContext();
 
   const { mutate: logoutUserMutation } = useLogoutUserMutation({});
 
@@ -20,6 +30,12 @@ export const Navbar: FC = () => {
   const res = useFindUserQuery();
 
   const dispatch = useStoreDispatch();
+
+  const router = useRouter();
+
+  const context = router.state.matches;
+
+  const filteredPaths = context.filter((route) => route.id !== '__root__');
 
   const handleLogout = () => {
     if (!accessToken || !refreshToken || !res.data?.id) {
@@ -58,76 +74,128 @@ export const Navbar: FC = () => {
 
   const linkClasses = '[&.active]:font-extrabold [&.active]:underline underline-offset-8 decoration-[3px] text-nowrap';
 
+  const allDollarKeys = filteredPaths[0].staticData.routeDisplayableNameParts
+    ?.map((val) => {
+      const dollarValues = [];
+
+      if (val.readableName.includes('$')) {
+        dollarValues.push(val.readableName);
+      }
+
+      if (val.href.includes('$')) {
+        dollarValues.push(val.href);
+      }
+
+      return dollarValues;
+    })
+    .filter(Boolean)
+    .flat(2);
+
+  const allCorrespondingValuesPresent = allDollarKeys?.every((entry) => {
+    return Object.entries(breadcrumbKeys).find(([key]) => entry.includes(key));
+  });
+
+  const replaceHrefPlaceholderWithValue = (href: string): string => {
+    const regex = /\$[^/]*\/?$/g;
+
+    const hrefPlaceholderKeys = href.match(regex);
+
+    let finalHref = href;
+
+    hrefPlaceholderKeys?.forEach((matchedKey) => {
+      finalHref = href.replace(matchedKey, breadcrumbKeys[matchedKey]);
+    });
+
+    return finalHref;
+  };
+
+  // console.log(allCorrespondingValuesPresent, breadcrumbKeys)
+
+  const breadcrumbItems = useMemo(() => {
+    {
+      return (
+        filteredPaths[0].staticData.routeDisplayableNameParts?.map((val) => (
+          <BreadcrumbItem>
+            <BreadcrumbLink>
+              <Link to={replaceHrefPlaceholderWithValue(val.href)}>
+                {val?.readableName?.includes('$') ? breadcrumbKeys[val?.readableName] : val.readableName}
+              </Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+        )) ?? []
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filteredPaths[0], breadcrumbKeys]);
+
   return (
-    <div className="bg-white p-8 top-0 fixed z-50 flex justify-end w-full items-center">
-      <div className="w-[100%] text-3xl md:text-5xl lg:text-5xl font-logo-bold">
-        <Link to="/">MISYMA</Link>
-      </div>
-      <input
-        type="checkbox"
-        className="md:hidden burger-input"
-      ></input>
-      <div className="md:hidden">
-        <span className="burger-span"></span>
-        <span className="burger-span"></span>
-        <span className="burger-span"></span>
-      </div>
-      <ul className="hidden sm:flex sm:flex-1 md:gap-4 lg:gap-6 sm:justify-end w-full items-center align-middle">
-        {res.data?.role === UserRole.admin && (
+    <div className="flex p-8 flex-col w-full top-0 fixed z-50">
+      <div className="bg-white flex justify-end w-full items-center">
+        <div className="w-[100%] text-3xl md:text-5xl lg:text-5xl font-logo-bold">
+          <Link to="/">MISYMA</Link>
+        </div>
+        <input
+          type="checkbox"
+          className="md:hidden burger-input"
+        ></input>
+        <div className="md:hidden">
+          <span className="burger-span"></span>
+          <span className="burger-span"></span>
+          <span className="burger-span"></span>
+        </div>
+        <ul className="hidden sm:flex sm:flex-1 md:gap-4 lg:gap-6 sm:justify-end w-full items-center align-middle">
+          {res.data?.role === UserRole.admin && (
+            <li className="text-primary text-md text-center font-semibold">
+              <Link
+                to={'/admin/tabs/authors'}
+                className={linkClasses}
+              >
+                Panel administratora
+              </Link>
+            </li>
+          )}
           <li className="text-primary text-md text-center font-semibold">
             <Link
-              to={'/admin/authors'}
+              to={'/shelves'}
               className={linkClasses}
             >
-              Panel administratora
+              Moje półki
             </Link>
           </li>
-        )}
-        <li className="text-primary text-md text-center font-semibold">
-          <Link
-            to={'/shelves'}
-            className={linkClasses}
-          >
-            Moje półki
-          </Link>
-        </li>
-        <li className="text-primary text-md text-center font-semibold">
-          <Link
-            to={'/quotes'}
-            className={linkClasses}
-          >
-            Cytaty
-          </Link>
-        </li>
-        <li className="text-primary text-md text-center font-semibold">
-          <Link
-            to={'/collections'}
-            className={linkClasses}
-          >
-            Kolekcje
-          </Link>
-        </li>
-        <li className="text-primary text-md text-center font-semibold">
-          <Link
-            to={'/statistics'}
-            className={linkClasses}
-          >
-            Statystyki
-          </Link>
-        </li>
-        <li className="text-primary text-md text-center font-semibold">
-          <Link
-            to={'/profile'}
-            className={linkClasses}
-          >
-            Profil
-          </Link>
-        </li>
-        <IoIosLogOut
-          onClick={handleLogout}
-          className="cursor-pointer text-xl sm:text-4xl text-primary"
-        />
-      </ul>
+          <li className="text-primary text-md text-center font-semibold">
+            <Link className={linkClasses}>Cytaty</Link>
+          </li>
+          <li className="text-primary text-md text-center font-semibold">
+            <Link className={linkClasses}>Kolekcje</Link>
+          </li>
+          <li className="text-primary text-md text-center font-semibold">
+            <Link className={linkClasses}>Statystyki</Link>
+          </li>
+          <li className="text-primary text-md text-center font-semibold">
+            <Link
+              to={'/profile'}
+              className={linkClasses}
+            >
+              Profil
+            </Link>
+          </li>
+          <IoIosLogOut
+            onClick={handleLogout}
+            className="cursor-pointer text-xl sm:text-4xl text-primary"
+          />
+        </ul>
+      </div>
+      <Breadcrumb className="pt-4">
+        <BreadcrumbList>
+          {allCorrespondingValuesPresent &&
+            breadcrumbItems.map((item, index) => (
+              <>
+                {item}
+                {index !== breadcrumbItems.length - 1 && <BreadcrumbSeparator></BreadcrumbSeparator>}
+              </>
+            ))}
+        </BreadcrumbList>
+      </Breadcrumb>
     </div>
   );
 };

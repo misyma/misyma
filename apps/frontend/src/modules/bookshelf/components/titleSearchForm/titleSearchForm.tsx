@@ -44,9 +44,10 @@ export const TitleSearchForm = ({ bookshelfId }: Props): JSX.Element => {
     })
 
     navigate({
-      to: '/search/result',
+      to: '/bookshelf/search/result',
       search: {
         title: values.title,
+        isbn: '',
         bookshelfId,
       },
     });

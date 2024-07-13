@@ -1,27 +1,41 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { createRouter, RouterProvider } from '@tanstack/react-router';
+import { RouterProvider } from '@tanstack/react-router';
 import './i18n.ts';
 import './index.css';
 import { QueryClientProvider } from './modules/core/components/providers/queryClientProvider/queryClientProvider.tsx';
-import { notFoundRoute } from './routes/notFound/notFound.tsx';
 import { StoreProvider } from './modules/core/components/providers/storeProvider/storeProvider.tsx';
 import { SearchCreateBookProvider } from './modules/bookshelf/context/searchCreateBookContext/searchCreateBookContext.tsx';
-import { routeTree } from './modules/core/router/router.tsx';
+import { BreadcrumbKeysProvider } from './modules/common/contexts/breadcrumbKeysContext.tsx';
+import { AppRouter, router } from './modules/core/router/router.ts';
 
-const router = createRouter({
-  routeTree,
-  notFoundRoute,
-});
+declare module '@tanstack/react-router' {
+  interface Register {
+    router: AppRouter;
+  }
+  interface StaticDataRouteOption {
+    routeDisplayableNameParts?: {
+      readableName: string;
+      href: keyof FileRoutesByPath;
+    }[];
+  }
+}
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <StoreProvider>
-      <QueryClientProvider>
-        <SearchCreateBookProvider>
-          <RouterProvider router={router} />
-        </SearchCreateBookProvider>
-      </QueryClientProvider>
-    </StoreProvider>
-  </React.StrictMode>,
-);
+const rootElement = document.getElementById('root')!;
+
+if (!rootElement.innerHTML) {
+  const root = ReactDOM.createRoot(rootElement);
+  root.render(
+    <React.StrictMode>
+      <StoreProvider>
+        <QueryClientProvider>
+          <SearchCreateBookProvider>
+            <BreadcrumbKeysProvider>
+              <RouterProvider router={router} />
+            </BreadcrumbKeysProvider>
+          </SearchCreateBookProvider>
+        </QueryClientProvider>
+      </StoreProvider>
+    </React.StrictMode>,
+  );
+}
