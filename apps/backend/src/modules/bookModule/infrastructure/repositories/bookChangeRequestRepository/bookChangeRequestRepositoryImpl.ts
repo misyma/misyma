@@ -97,7 +97,7 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
   }
 
   public async findBookChangeRequests(payload: FindBookChangeRequestsPayload): Promise<BookChangeRequest[]> {
-    const { page, pageSize, userId } = payload;
+    const { page, pageSize, userId, id } = payload;
 
     let rawEntities: BookChangeRequestRawEntity[];
 
@@ -108,6 +108,10 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
 
       if (userId) {
         query.where({ userId });
+      }
+
+      if (id) {
+        query.where({ id });
       }
 
       rawEntities = await query;

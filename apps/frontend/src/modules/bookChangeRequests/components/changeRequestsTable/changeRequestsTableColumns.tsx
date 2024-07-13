@@ -2,6 +2,24 @@ import { type ColumnDef } from '@tanstack/react-table';
 import { BookChangeRequest } from '@common/contracts';
 import { formatDate } from 'date-fns';
 import { pl } from 'date-fns/locale';
+import {  useNavigate } from '@tanstack/react-router';
+import { ImQuill } from 'react-icons/im';
+import { FC } from 'react';
+
+const NavigateToRequest: FC<{ id: string }> = ({ id }) => {
+  const navigate = useNavigate();
+
+  return (
+    <ImQuill
+      onClick={() => {
+        navigate({
+          to: `/admin/change-requests/${id}`,
+        });
+      }}
+      className="cursor-pointer text-primary text-3xl"
+    ></ImQuill>
+  );
+};
 
 export const changeRequestsColumns: ColumnDef<BookChangeRequest>[] = [
   {
@@ -18,7 +36,7 @@ export const changeRequestsColumns: ColumnDef<BookChangeRequest>[] = [
     },
   },
   {
-    header: () => <p>Created at</p>,
+    header: () => <p>Stworzone dnia</p>,
     accessorKey: 'createdAt',
     cell: ({ row }): JSX.Element => {
       return (
@@ -32,6 +50,17 @@ export const changeRequestsColumns: ColumnDef<BookChangeRequest>[] = [
                 : ''}
             </p>
           </div>
+        </div>
+      );
+    },
+  },
+  {
+    header: () => <p></p>,
+    accessorKey: 'createdAt',
+    cell: ({ row }): JSX.Element => {
+      return (
+        <div className="flex items-center gap-2">
+          <NavigateToRequest id={row.original.id} />
         </div>
       );
     },

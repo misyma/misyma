@@ -13,6 +13,12 @@ import {
   type DeleteBookChangeRequestResponseBodyDto,
 } from './schemas/deleteBookChangeRequestSchema.js';
 import {
+  type FindAdminBookChangeRequestByIdResponseBodyDto,
+  findAdminBookChangeRequestByIdResponseBodyDtoSchema,
+  findBookChangeRequestByIdPathParamsDtoSchema,
+  type FindBookChangeRequestByIdPathParamsDto,
+} from './schemas/findBookChangeRequestByIdSchema.js';
+import {
   type FindAdminBookChangeRequestsQueryParamsDto,
   type FindAdminBookChangeRequestsResponseBodyDto,
   findAdminBookChangeRequestsQueryParamsDtoSchema,
@@ -97,6 +103,24 @@ export class BookChangeRequestAdminHttpController implements HttpController {
         },
         securityMode: SecurityMode.bearerToken,
       }),
+      new HttpRoute({
+        method: HttpMethodName.get,
+        path: ':id',
+        handler: this.findBookChangeRequestsById.bind(this),
+        description: 'Find bookChangeRequest by id',
+        schema: {
+          request: {
+            pathParams: findBookChangeRequestByIdPathParamsDtoSchema,
+          },
+          response: {
+            [HttpStatusCode.ok]: {
+              schema: findAdminBookChangeRequestByIdResponseBodyDtoSchema,
+              description: 'BookChangeRequest found',
+            },
+          },
+        },
+        securityMode: SecurityMode.bearerToken,
+      }),
     ];
   }
 
@@ -161,6 +185,32 @@ export class BookChangeRequestAdminHttpController implements HttpController {
           pageSize,
           total,
         },
+      },
+      statusCode: HttpStatusCode.ok,
+    };
+  }
+
+  private async findBookChangeRequestsById(
+    request: HttpRequest<undefined, undefined, FindBookChangeRequestByIdPathParamsDto>,
+  ): Promise<HttpOkResponse<FindAdminBookChangeRequestByIdResponseBodyDto>> {
+    await this.accessControlService.verifyBearerToken({
+      authorizationHeader: request.headers['authorization'],
+      expectedRole: UserRole.admin,
+    });
+
+    const { id } = request.pathParams;
+
+    const { bookChangeRequests } = await this.findBookChangeRequestsQueryHandler.execute({
+      page: 1,
+      pageSize: 1,
+      id,
+    });
+
+    return {
+      body: {
+        data: bookChangeRequests[0]
+          ? this.mapBookChangeRequestToBookChangeRequestDto(bookChangeRequests[0])
+          : undefined,
       },
       statusCode: HttpStatusCode.ok,
     };

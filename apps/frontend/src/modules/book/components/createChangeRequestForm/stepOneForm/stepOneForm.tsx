@@ -5,8 +5,20 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../
 import { Popover, PopoverContent, PopoverTrigger } from '../../../../common/components/ui/popover';
 import { Button } from '../../../../common/components/ui/button';
 import { cn } from '../../../../common/lib/utils';
-import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from '../../../../common/components/ui/command';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../../../../common/components/ui/dialog';
+import {
+  Command,
+  CommandEmpty,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '../../../../common/components/ui/command';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '../../../../common/components/ui/dialog';
 import { CommandLoading } from 'cmdk';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import { isbnSchema } from '../../../../common/schemas/isbnSchema';
@@ -29,7 +41,7 @@ const stepOneSchema = z.object({
     .min(1, {
       message: 'Tytuł musi mieć co najmniej jeden znak.',
     })
-    .max(64, {
+    .max(128, {
       message: 'Tytuł może mieć maksymalnie 64 znaki.',
     })
     .or(z.literal('')),
@@ -253,7 +265,11 @@ export const StepOneForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
                             <>
                               <Dialog
                                 open={createAuthorDialogVisible}
-                                onOpenChange={onOpenChange}
+                                onOpenChange={(val) => {
+                                  onOpenChange(val);
+
+                                  createAuthorDraftForm.setValue('name', searchedName ?? '');
+                                }}
                               >
                                 <DialogTrigger asChild>
                                   <Button className="bg-slate-100 text-black hover:bg-slate-300">Dodaj</Button>

@@ -13,13 +13,18 @@ export const useCreateBookChangeRequestMutation = (
   const createBookChangeRequest = async (payload: Payload) => {
     const { accessToken, ...rest } = payload;
 
-    const response = await HttpService.post<CreateBookshelfResponseBody>({
-      url: `/book-change-requests`,
-      body: rest as unknown as Record<string, unknown>,
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
+    const response = await HttpService.post<CreateBookshelfResponseBody>(
+      {
+        url: `/book-change-requests`,
+        body: rest as unknown as Record<string, unknown>,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
       },
-    });
+      {
+        filterEmptyStrings: true,
+      },
+    );
 
     if (!response.success) {
       throw new BookApiError({

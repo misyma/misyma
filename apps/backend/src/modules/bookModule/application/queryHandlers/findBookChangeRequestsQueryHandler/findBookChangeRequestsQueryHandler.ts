@@ -3,6 +3,7 @@ import { type BookChangeRequest } from '../../../domain/entities/bookChangeReque
 
 export interface FindBookChangeRequestsQueryHandlerPayload {
   readonly userId?: string;
+  readonly id?: string;
   readonly page: number;
   readonly pageSize: number;
 }
