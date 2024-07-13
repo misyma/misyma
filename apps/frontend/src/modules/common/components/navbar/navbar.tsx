@@ -72,9 +72,9 @@ export const Navbar: FC = () => {
         <span className="burger-span"></span>
         <span className="burger-span"></span>
       </div>
-      <ul className="hidden sm:flex sm:flex-1 md:gap-4 lg:gap-12 sm:justify-end w-full items-center align-middle">
+      <ul className="hidden sm:flex sm:flex-1 md:gap-4 lg:gap-6 sm:justify-end w-full items-center align-middle">
         {res.data?.role === UserRole.admin && (
-          <li className="text-primary text-xl text-center font-semibold">
+          <li className="text-primary text-md text-center font-semibold">
             <Link
               to={'/admin/authors'}
               className={linkClasses}
@@ -83,7 +83,7 @@ export const Navbar: FC = () => {
             </Link>
           </li>
         )}
-        <li className="text-primary text-xl text-center font-semibold">
+        <li className="text-primary text-md text-center font-semibold">
           <Link
             to={'/shelves'}
             className={linkClasses}
@@ -91,7 +91,7 @@ export const Navbar: FC = () => {
             Moje półki
           </Link>
         </li>
-        <li className="text-primary text-xl text-center font-semibold">
+        <li className="text-primary text-md text-center font-semibold">
           <Link
             to={'/quotes'}
             className={linkClasses}
@@ -99,7 +99,7 @@ export const Navbar: FC = () => {
             Cytaty
           </Link>
         </li>
-        <li className="text-primary text-xl text-center font-semibold">
+        <li className="text-primary text-md text-center font-semibold">
           <Link
             to={'/collections'}
             className={linkClasses}
@@ -107,12 +107,20 @@ export const Navbar: FC = () => {
             Kolekcje
           </Link>
         </li>
-        <li className="text-primary text-xl text-center font-semibold">
+        <li className="text-primary text-md text-center font-semibold">
           <Link
             to={'/statistics'}
             className={linkClasses}
           >
             Statystyki
+          </Link>
+        </li>
+        <li className="text-primary text-md text-center font-semibold">
+          <Link
+            to={'/profile'}
+            className={linkClasses}
+          >
+            Profil
           </Link>
         </li>
         <IoIosLogOut
