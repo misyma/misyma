@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useUploadBookImageMutation } from '../../api/user/mutations/uploadBookImageMutation/uploadBookImageMutation';
 import { useRouter } from '@tanstack/react-router';
-import { UpdateBookRequestForm } from '../updateBookRequestForm/updateBookRequestForm';
+import { CreateChangeRequestForm } from '../createChangeRequestForm/createChangeRequestForm';
 import { BookDetailsChangeRequestProvider } from '../../context/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useDeleteUserBookMutation } from '../../api/user/mutations/deleteUserBookMutation/deleteUserBookMutation';
@@ -192,7 +192,7 @@ export const EditOrDeleteBookModal: FC<Props> = ({ bookId, userBookId }) => {
             <DialogHeader className="flex justify-center items-center text-xl font-semibold">
               Prośba o zmianę danych w bazie
             </DialogHeader>
-            <UpdateBookRequestForm
+            <CreateChangeRequestForm
               bookId={bookId}
               onCancel={() => setActionChosen(false)}
               onSubmit={() => resetModalState()}

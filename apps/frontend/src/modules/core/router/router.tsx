@@ -2,7 +2,6 @@ import { rootRoute } from '../../../routes/root';
 import { landingRoute } from '../../../routes/landing/landing';
 import { loginRoute } from '../../../routes/login/login';
 import { registerRoute } from '../../../routes/register/register';
-import { meRoute } from '../../../routes/me/me';
 import { resetPasswordRoute } from '../../../routes/resetPassword/resetPassword';
 import { newPasswordRoute } from '../../../routes/newPassword/newPassword';
 import { verifyEmailRoute } from '../../../routes/verifyEmail/verifyEmail';
@@ -19,6 +18,7 @@ import { booksAdminRoute } from '../../../routes/admin/tabs/books/books';
 import { authorsAdminRoute } from '../../../routes/admin/tabs/authors/authors';
 import { booksEditAdminRoute } from '../../../routes/admin/tabs/books/edit/books-edit';
 import { changeRequestsAdminRoute } from '../../../routes/admin/tabs/changeRequests/changeRequests';
+import { profileRoute } from '../../../routes/profile/profile';
 
 export const routeTree = rootRoute.addChildren([
   booksAdminRoute,
@@ -28,7 +28,7 @@ export const routeTree = rootRoute.addChildren([
   landingRoute,
   loginRoute,
   registerRoute,
-  meRoute,
+  profileRoute,
   resetPasswordRoute,
   newPasswordRoute,
   verifyEmailRoute,

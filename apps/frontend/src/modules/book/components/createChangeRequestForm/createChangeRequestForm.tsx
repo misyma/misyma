@@ -21,7 +21,7 @@ import {
 } from '../../context/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
 import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 import { FindBookByIdQueryOptions } from '../../api/user/queries/findBookById/findBookByIdQueryOptions';
-import { useUpdateBookMutation } from '../../api/user/mutations/updateBookMutation/updateBookMutation';
+import { useCreateBookChangeRequestMutation } from '../../../bookChangeRequests/api/user/mutations/createBookChangeRequestMutation/createBookChangeRequestMutation';
 
 interface Props {
   bookId: string;
@@ -59,7 +59,7 @@ const stepTwoSchema = z.object({
     }),
 });
 
-export const UpdateBookRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
+export const CreateChangeRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const context = useBookDetailsChangeRequestContext();
@@ -83,7 +83,7 @@ export const UpdateBookRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit })
     }),
   );
 
-  const { mutateAsync: updateBook } = useUpdateBookMutation({});
+  const { mutateAsync: createBookChangeRequest } = useCreateBookChangeRequestMutation({});
 
   const [currentStep, setCurrentStep] = useState<number>(1);
 
@@ -114,7 +114,7 @@ export const UpdateBookRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit })
   };
 
   const onUpdate = async (values: z.infer<typeof stepTwoSchema>) => {
-    await updateBook({
+    await createBookChangeRequest({
       ...context,
       ...(context?.author
         ? {
