@@ -4,15 +4,14 @@ import { createRouter, RouterProvider } from '@tanstack/react-router';
 import './i18n.ts';
 import './index.css';
 import { QueryClientProvider } from './modules/core/components/providers/queryClientProvider/queryClientProvider.tsx';
-import { notFoundRoute } from './routes/notFound/notFound.tsx';
 import { StoreProvider } from './modules/core/components/providers/storeProvider/storeProvider.tsx';
 import { SearchCreateBookProvider } from './modules/bookshelf/context/searchCreateBookContext/searchCreateBookContext.tsx';
-import { routeTree } from './modules/core/router/router.tsx';
 import { BreadcrumbKeysProvider } from './modules/common/contexts/breadcrumbKeysContext.tsx';
+import { routeTree } from './routeTree.gen.ts';
 
 const router = createRouter({
   routeTree,
-  notFoundRoute,
+  notFoundMode: 'root',
 });
 
 declare module '@tanstack/react-router' {
