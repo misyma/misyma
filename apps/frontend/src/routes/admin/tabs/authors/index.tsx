@@ -104,6 +104,15 @@ export const Route = createFileRoute('/admin/tabs/authors/')({
     );
   },
   staticData: {
-    routeDisplayableNameParts: ['Admin', 'Authors'],
+    routeDisplayableNameParts: [
+      {
+        href: '/admin/tabs/authors',
+        readableName: 'Admin',
+      },
+      {
+        href: '/admin/tabs/authors',
+        readableName: 'Autorzy',
+      },
+    ],
   },
 });

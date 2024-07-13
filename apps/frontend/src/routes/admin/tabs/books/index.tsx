@@ -96,6 +96,15 @@ export const Route = createFileRoute('/admin/tabs/books/')({
     );
   },
   staticData: {
-    routeDisplayableNameParts: ['Admin', 'Książki'],
+    routeDisplayableNameParts: [
+      {
+        href: '/admin/tabs/authors',
+        readableName: 'Admin',
+      },
+      {
+        href: '/admin/tabs/books',
+        readableName: 'Książki',
+      },
+    ],
   },
 });

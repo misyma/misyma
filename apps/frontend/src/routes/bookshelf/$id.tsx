@@ -66,6 +66,11 @@ export const View: FC = () => {
         key: '$bookshelfName',
         value: bookshelfResponse?.name,
       });
+
+      dispatch({
+        key: '$bookshelfId',
+        value: bookshelfResponse.id,
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bookshelfResponse]);
@@ -552,6 +557,15 @@ export const Route = createFileRoute('/bookshelf/$id')({
     return <Navigate to={'/shelves'} />;
   },
   staticData: {
-    routeDisplayableNameParts: ['Półki', '$bookshelfName'],
+    routeDisplayableNameParts: [
+      {
+        readableName: 'Półki',
+        href: '/shelves',
+      },
+      {
+        readableName: '$bookshelfName',
+        href: `/bookshelf/$bookshelfId`,
+      },
+    ],
   },
 });

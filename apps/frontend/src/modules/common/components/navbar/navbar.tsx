@@ -74,18 +74,51 @@ export const Navbar: FC = () => {
 
   const linkClasses = '[&.active]:font-extrabold [&.active]:underline underline-offset-8 decoration-[3px] text-nowrap';
 
-  const dollarKeys = filteredPaths[0].staticData.routeDisplayableNameParts?.filter((val) => val.includes('$'));
+  const allDollarKeys = filteredPaths[0].staticData.routeDisplayableNameParts
+    ?.map((val) => {
+      const dollarValues = [];
 
-  const allCorrespondingValuesPresent = dollarKeys?.every((entry) => {
-    return Object.entries(breadcrumbKeys).find(([key]) => entry === key);
+      if (val.readableName.includes('$')) {
+        dollarValues.push(val.readableName);
+      }
+
+      if (val.href.includes('$')) {
+        dollarValues.push(val.href);
+      }
+
+      return dollarValues;
+    })
+    .filter(Boolean)
+    .flat(2);
+
+  const allCorrespondingValuesPresent = allDollarKeys?.every((entry) => {
+    return Object.entries(breadcrumbKeys).find(([key]) => entry.includes(key));
   });
+
+  const replaceHrefPlaceholderWithValue = (href: string): string => {
+    const regex = /\$[^/]*\/?$/g;
+
+    const hrefPlaceholderKeys = href.match(regex);
+
+    let finalHref = href;
+
+    hrefPlaceholderKeys?.forEach((matchedKey) => {
+      finalHref = href.replace(matchedKey, breadcrumbKeys[matchedKey]);
+    });
+
+    return finalHref;
+  };
 
   const breadcrumbItems = useMemo(() => {
     {
       return (
         filteredPaths[0].staticData.routeDisplayableNameParts?.map((val) => (
           <BreadcrumbItem>
-            <BreadcrumbLink>{val.includes('$') ? breadcrumbKeys[val] : val}</BreadcrumbLink>
+            <BreadcrumbLink>
+              <Link to={replaceHrefPlaceholderWithValue(val.href)}>
+                {val?.readableName?.includes('$') ? breadcrumbKeys[val?.readableName] : val.readableName}
+              </Link>
+            </BreadcrumbLink>
           </BreadcrumbItem>
         )) ?? []
       );

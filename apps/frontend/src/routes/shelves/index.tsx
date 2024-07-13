@@ -580,6 +580,11 @@ export const Route = createFileRoute('/shelves/')({
     );
   },
   staticData: {
-    routeDisplayableNameParts: ['Półki'],
+    routeDisplayableNameParts: [
+      {
+        readableName: 'Półki',
+        href: '/shelves',
+      },
+    ],
   },
-})
+});

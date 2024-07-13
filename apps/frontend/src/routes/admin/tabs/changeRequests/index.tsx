@@ -103,6 +103,15 @@ export const Route = createFileRoute('/admin/tabs/changeRequests/')({
     );
   },
   staticData: {
-    routeDisplayableNameParts: ['Admin', 'Prośby o zmianę'],
+    routeDisplayableNameParts: [
+      {
+        href: '/admin/tabs/authors',
+        readableName: 'Admin',
+      },
+      {
+        readableName: 'Prośby o zmianę',
+        href: '/admin/tabs/changeRequests',
+      },
+    ],
   },
 });

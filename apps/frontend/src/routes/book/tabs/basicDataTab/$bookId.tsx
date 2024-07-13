@@ -56,10 +56,22 @@ export const BasicDataPage: FC = () => {
     });
   }
 
+  if (!breadcrumbKeys['$bookId']) {
+    dispatch({
+      key: '$bookId',
+      value: bookId,
+    });
+  }
+
   if (bookshelfResponse?.id && !breadcrumbKeys['$bookshelfName']) {
     dispatch({
       key: '$bookshelfName',
       value: bookshelfResponse.name,
+    });
+
+    dispatch({
+      key: '$bookshelfId',
+      value: bookId,
     });
   }
 
@@ -172,6 +184,19 @@ export const Route = createFileRoute('/book/tabs/basicDataTab/$bookId')({
     return bookPathParamsSchema.parse(params);
   },
   staticData: {
-    routeDisplayableNameParts: ['Półki', '$bookshelfName', '$bookName'],
+    routeDisplayableNameParts: [
+      {
+        readableName: 'Półki',
+        href: '/shelves',
+      },
+      {
+        readableName: '$bookshelfName',
+        href: '/bookshelf/$bookshelfId',
+      },
+      {
+        readableName: '$bookName',
+        href: '/book/tabs/basicData/$bookId',
+      },
+    ],
   },
-})
+});
