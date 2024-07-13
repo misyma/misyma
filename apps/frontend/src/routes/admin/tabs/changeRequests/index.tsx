@@ -59,12 +59,12 @@ export const ChangeRequestsAdminPage: FC = () => {
             <ul className="flex justify-between gap-8 text-sm sm:text-lg font-semibold min-w-96">
               <Link
                 className="cursor-pointer"
-                to="/admin/authors"
+                to="/admin/tabs/authors"
               >
                 Autorzy
               </Link>
               <Link
-                to="/admin/books"
+                to="/admin/tabs/books"
                 className="cursor-pointer"
               >
                 Książki
@@ -105,4 +105,4 @@ export const Route = createFileRoute('/admin/tabs/changeRequests/')({
   staticData: {
     routeDisplayableNameParts: ['Admin', 'Prośby o zmianę'],
   },
-})
+});

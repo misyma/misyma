@@ -1,35 +1,38 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { createRouter, RouterProvider } from '@tanstack/react-router';
+import { RouterProvider } from '@tanstack/react-router';
 import './i18n.ts';
 import './index.css';
 import { QueryClientProvider } from './modules/core/components/providers/queryClientProvider/queryClientProvider.tsx';
 import { StoreProvider } from './modules/core/components/providers/storeProvider/storeProvider.tsx';
 import { SearchCreateBookProvider } from './modules/bookshelf/context/searchCreateBookContext/searchCreateBookContext.tsx';
 import { BreadcrumbKeysProvider } from './modules/common/contexts/breadcrumbKeysContext.tsx';
-import { routeTree } from './routeTree.gen.ts';
-
-const router = createRouter({
-  routeTree,
-  notFoundMode: 'root',
-});
+import { AppRouter, router } from './modules/core/router/router.ts';
 
 declare module '@tanstack/react-router' {
+  interface Register {
+    router: AppRouter;
+  }
   interface StaticDataRouteOption {
     routeDisplayableNameParts?: string[];
   }
 }
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <StoreProvider>
-      <QueryClientProvider>
-        <SearchCreateBookProvider>
-          <BreadcrumbKeysProvider>
-            <RouterProvider router={router} />
-          </BreadcrumbKeysProvider>
-        </SearchCreateBookProvider>
-      </QueryClientProvider>
-    </StoreProvider>
-  </React.StrictMode>,
-);
+const rootElement = document.getElementById('root')!;
+
+if (!rootElement.innerHTML) {
+  const root = ReactDOM.createRoot(rootElement);
+  root.render(
+    <React.StrictMode>
+      <StoreProvider>
+        <QueryClientProvider>
+          <SearchCreateBookProvider>
+            <BreadcrumbKeysProvider>
+              <RouterProvider router={router} />
+            </BreadcrumbKeysProvider>
+          </SearchCreateBookProvider>
+        </QueryClientProvider>
+      </StoreProvider>
+    </React.StrictMode>,
+  );
+}

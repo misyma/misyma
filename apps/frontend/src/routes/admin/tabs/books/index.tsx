@@ -52,13 +52,13 @@ export const BooksAdminPage: FC = () => {
             <ul className="flex justify-between gap-8 text-sm sm:text-lg font-semibold min-w-96">
               <Link
                 className="cursor-pointer"
-                to="/admin/authors"
+                to="/admin/tabs/authors"
               >
                 Autorzy
               </Link>
               <Link className="cursor-default text-primary font-bold">Książki</Link>
               <Link
-                to="/admin/change-requests"
+                to="/admin/tabs/changeRequests"
                 className="cursor-pointer"
               >
                 Prośby o zmianę

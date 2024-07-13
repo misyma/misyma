@@ -11,6 +11,7 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as IndexImport } from './routes/index'
 import { Route as VerifyEmailIndexImport } from './routes/verifyEmail/index'
 import { Route as ShelvesIndexImport } from './routes/shelves/index'
 import { Route as ResetPasswordIndexImport } from './routes/resetPassword/index'
@@ -19,7 +20,7 @@ import { Route as ProfileIndexImport } from './routes/profile/index'
 import { Route as NotFoundIndexImport } from './routes/notFound/index'
 import { Route as NewPasswordIndexImport } from './routes/newPassword/index'
 import { Route as LoginIndexImport } from './routes/login/index'
-import { Route as BookshelfIndexImport } from './routes/bookshelf/index'
+import { Route as BookshelfIdImport } from './routes/bookshelf/$id'
 import { Route as BookshelfSearchIndexImport } from './routes/bookshelf/search/index'
 import { Route as BookshelfCreateBookIndexImport } from './routes/bookshelf/createBook/index'
 import { Route as BookshelfSearchResultIndexImport } from './routes/bookshelf/search/result/index'
@@ -34,6 +35,11 @@ import { Route as AdminTabsChangeRequestsIdImport } from './routes/admin/tabs/ch
 import { Route as AdminTabsBooksEditIdImport } from './routes/admin/tabs/books/edit/$id'
 
 // Create/Update Routes
+
+const IndexRoute = IndexImport.update({
+  path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const VerifyEmailIndexRoute = VerifyEmailIndexImport.update({
   path: '/verifyEmail/',
@@ -75,8 +81,8 @@ const LoginIndexRoute = LoginIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const BookshelfIndexRoute = BookshelfIndexImport.update({
-  path: '/bookshelf/',
+const BookshelfIdRoute = BookshelfIdImport.update({
+  path: '/bookshelf/$id',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -151,11 +157,18 @@ const AdminTabsBooksEditIdRoute = AdminTabsBooksEditIdImport.update({
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/bookshelf/': {
-      id: '/bookshelf/'
-      path: '/bookshelf'
-      fullPath: '/bookshelf'
-      preLoaderRoute: typeof BookshelfIndexImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/bookshelf/$id': {
+      id: '/bookshelf/$id'
+      path: '/bookshelf/$id'
+      fullPath: '/bookshelf/$id'
+      preLoaderRoute: typeof BookshelfIdImport
       parentRoute: typeof rootRoute
     }
     '/login/': {
@@ -304,7 +317,8 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 export const routeTree = rootRoute.addChildren({
-  BookshelfIndexRoute,
+  IndexRoute,
+  BookshelfIdRoute,
   LoginIndexRoute,
   NewPasswordIndexRoute,
   NotFoundIndexRoute,
@@ -335,7 +349,8 @@ export const routeTree = rootRoute.addChildren({
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/bookshelf/",
+        "/",
+        "/bookshelf/$id",
         "/login/",
         "/newPassword/",
         "/notFound/",
@@ -358,8 +373,11 @@ export const routeTree = rootRoute.addChildren({
         "/admin/tabs/books/edit/$id"
       ]
     },
-    "/bookshelf/": {
-      "filePath": "bookshelf/index.tsx"
+    "/": {
+      "filePath": "index.tsx"
+    },
+    "/bookshelf/$id": {
+      "filePath": "bookshelf/$id.tsx"
     },
     "/login/": {
       "filePath": "login/index.tsx"

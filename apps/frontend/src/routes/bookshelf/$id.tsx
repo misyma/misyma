@@ -129,7 +129,7 @@ const BorrowedBook: FC<{ userBook: UserBook; index: number }> = ({ userBook, ind
       <div
         onClick={() => {
           navigate({
-            to: '/book/$bookId',
+            to: '/book/tabs/gradesTab/$bookId',
             params: {
               bookId: userBook.id,
             },
@@ -141,7 +141,7 @@ const BorrowedBook: FC<{ userBook: UserBook; index: number }> = ({ userBook, ind
         <img
           onClick={() => {
             navigate({
-              to: '/book/$bookId',
+              to: '/book/tabs/gradesTab/$bookId',
               params: {
                 bookId: userBook.id,
               },
@@ -209,7 +209,7 @@ export const BorrowingBookshelf: FC = () => {
             <Button
               onClick={() => {
                 navigate({
-                  to: `/search`,
+                  to: `/bookshelf/search`,
                   search: {
                     type: 'isbn',
                     next: 0,
@@ -345,7 +345,7 @@ export const Bookshelf: FC = () => {
           <Button
             onClick={() => {
               navigate({
-                to: `/search`,
+                to: `/bookshelf/search`,
                 search: {
                   type: 'isbn',
                   next: 0,
@@ -369,7 +369,7 @@ export const Bookshelf: FC = () => {
                 <div
                   onClick={() => {
                     navigate({
-                      to: '/book/$bookId',
+                      to: '/book/tabs/basicDataTab/$bookId',
                       params: {
                         bookId: userBook.id,
                       },
@@ -381,7 +381,7 @@ export const Bookshelf: FC = () => {
                   <img
                     onClick={() => {
                       navigate({
-                        to: '/book/$bookId',
+                        to: '/book/tabs/basicDataTab/$bookId',
                         params: {
                           bookId: userBook.id,
                         },
@@ -539,7 +539,7 @@ export const Bookshelf: FC = () => {
   );
 };
 
-export const Route = createFileRoute('/bookshelf/')({
+export const Route = createFileRoute('/bookshelf/$id')({
   component: () => {
     return (
       <RequireAuthComponent>

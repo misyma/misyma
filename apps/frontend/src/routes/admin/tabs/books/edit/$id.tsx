@@ -563,6 +563,6 @@ export const Route = createFileRoute('/admin/tabs/books/edit/$id')({
   parseParams: booksSearchSchema.parse,
   validateSearch: booksSearchSchema,
   onError: () => {
-    return <Navigate to={'/admin/books'} />;
+    return <Navigate to={'/admin/tabs/books'} />;
   },
 });

@@ -54,13 +54,13 @@ export const AuthorsAdminPage: FC = () => {
             <ul className="flex justify-between gap-8 text-sm sm:text-lg font-semibold min-w-96">
               <Link className="cursor-default text-primary font-bold">Autorzy</Link>
               <Link
-                to="/admin/books"
+                to="/admin/tabs/books"
                 className="cursor-pointer"
               >
                 Książki
               </Link>
               <Link
-                to="/admin/change-requests"
+                to="/admin/tabs/changeRequests"
                 className="cursor-pointer"
               >
                 Prośby o zmianę
@@ -106,4 +106,4 @@ export const Route = createFileRoute('/admin/tabs/authors/')({
   staticData: {
     routeDisplayableNameParts: ['Admin', 'Authors'],
   },
-})
+});

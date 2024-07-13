@@ -18,11 +18,18 @@ export const SearchCreatePage: FC = () => {
       navigate({
         to: '/shelves',
       });
+
+      return;
     }
 
     if (searchBookContext.step !== 3) {
       navigate({
-        to: '/search',
+        to: '/bookshelf/search',
+        search: {
+          bookshelfId: searchParams.bookshelfId,
+          next: 0,
+          type: 'title',
+        },
       });
 
       return;

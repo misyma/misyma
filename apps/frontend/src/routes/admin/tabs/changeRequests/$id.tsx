@@ -78,7 +78,7 @@ export const ChangeRequestView: FC = () => {
   });
 
   if (isChangeRequestFetched && !changeRequestData?.data) {
-    return <Navigate to={'/admin/change-requests'} />;
+    return <Navigate to={'/admin/tabs/changeRequests'} />;
   }
 
   if (!isChangeRequestFetched || !isBookDataFetched) {
@@ -257,7 +257,7 @@ export const ChangeRequestView: FC = () => {
     }
 
     navigate({
-      to: '/admin/change-requests',
+      to: '/admin/tabs/changeRequests',
     });
   };
 
@@ -304,7 +304,7 @@ const changeRequestSearchSchema = z.object({
 export const Route = createFileRoute('/admin/tabs/changeRequests/$id')({
   parseParams: changeRequestSearchSchema.parse,
   onError: () => {
-    return <Navigate to={'/admin/change-requests'} />;
+    return <Navigate to={'/admin/tabs/changeRequests'} />;
   },
   component: () => {
     return (

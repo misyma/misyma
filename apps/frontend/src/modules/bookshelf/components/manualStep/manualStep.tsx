@@ -95,8 +95,14 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
   const navigate = useNavigate();
 
   const onGoBack = () => {
-    const search: Record<string, string> = {
+    const search: {
+      isbn: string;
+      title: string;
+      bookshelfId: string;
+    } = {
       bookshelfId,
+      isbn: '',
+      title: '',
     };
 
     if (searchBookContext.searchQuery) {
@@ -110,8 +116,10 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
     }
 
     navigate({
-      to: '/search/result',
-      search,
+      to: '/bookshelf/search/result',
+      search: {
+        ...search,
+      },
     });
   };
 

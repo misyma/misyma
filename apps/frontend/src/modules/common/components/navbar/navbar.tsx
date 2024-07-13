@@ -112,7 +112,7 @@ export const Navbar: FC = () => {
           {res.data?.role === UserRole.admin && (
             <li className="text-primary text-md text-center font-semibold">
               <Link
-                to={'/admin/authors'}
+                to={'/admin/tabs/authors'}
                 className={linkClasses}
               >
                 Panel administratora
@@ -128,28 +128,13 @@ export const Navbar: FC = () => {
             </Link>
           </li>
           <li className="text-primary text-md text-center font-semibold">
-            <Link
-              to={'/quotes'}
-              className={linkClasses}
-            >
-              Cytaty
-            </Link>
+            <Link className={linkClasses}>Cytaty</Link>
           </li>
           <li className="text-primary text-md text-center font-semibold">
-            <Link
-              to={'/collections'}
-              className={linkClasses}
-            >
-              Kolekcje
-            </Link>
+            <Link className={linkClasses}>Kolekcje</Link>
           </li>
           <li className="text-primary text-md text-center font-semibold">
-            <Link
-              to={'/statistics'}
-              className={linkClasses}
-            >
-              Statystyki
-            </Link>
+            <Link className={linkClasses}>Statystyki</Link>
           </li>
           <li className="text-primary text-md text-center font-semibold">
             <Link

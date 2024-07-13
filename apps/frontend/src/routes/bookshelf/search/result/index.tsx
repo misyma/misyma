@@ -26,7 +26,12 @@ export const SearchResultPage: FC = () => {
   useEffect(() => {
     if (searchParams.isbn === '' && searchParams.title === '') {
       navigate({
-        to: '/search',
+        to: '/bookshelf/search',
+        search: {
+          bookshelfId: searchParams.bookshelfId,
+          type: 'title',
+          next: 0,
+        },
       });
     }
 
@@ -49,9 +54,11 @@ export const SearchResultPage: FC = () => {
 
   const onTryAgain = () => {
     navigate({
-      to: '/search',
+      to: '/bookshelf/search',
       search: {
         bookshelfId: searchParams.bookshelfId,
+        type: 'title',
+        next: 0,
       },
     });
   };
