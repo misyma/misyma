@@ -19,126 +19,13 @@ import { Navigate, createFileRoute, useNavigate } from '@tanstack/react-router';
 import { z } from 'zod';
 import { FindUserBookByIdQueryOptions } from '../../../../modules/book/api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 import { BasicDataTabSkeleton } from '../../../../modules/book/components/basicDataSkeleton/basicDataTabSkeleton';
+import { useFindBookshelfByIdQuery } from '../../../../modules/bookshelf/api/queries/findBookshelfByIdQuery/findBookshelfByIdQuery';
+import {
+  useBreadcrumbKeysContext,
+  useBreadcrumbKeysDispatch,
+} from '../../../../modules/common/contexts/breadcrumbKeysContext';
 
-interface Props {
-  userBookId: string;
-}
-
-export const QuotationsTab: FC<Props> = ({ userBookId }) => {
-  const queryClient = useQueryClient();
-
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
-  const { data: userData } = useFindUserQuery();
-
-  const [page, setPage] = useState(0);
-
-  const [pageSize] = useState(4);
-
-  const {
-    data: userBookData,
-    isFetched: isUserBookFetched,
-    isFetching: isUserBookFetching,
-    isRefetching: isUserBookRefetching,
-  } = useQuery(
-    FindUserBookByIdQueryOptions({
-      userBookId,
-      userId: userData?.id ?? '',
-      accessToken: accessToken as string,
-    }),
-  );
-
-  const {
-    data: quotationsData,
-    // isFetched: isQuotationsFetched,
-    // isRefetching: isRefetchingQuotations,
-    // isFetching: isQuotationsFetching,
-  } = useQuery(
-    getQuotesOptions({
-      accessToken: accessToken as string,
-      userBookId,
-      page,
-      pageSize,
-    }),
-  );
-
-  const pageCount = useMemo(() => {
-    return Math.ceil((quotationsData?.metadata?.total ?? 0) / pageSize) || 1;
-  }, [quotationsData?.metadata.total, pageSize]);
-
-  const invalidateQuotesFetch = () =>
-    queryClient.invalidateQueries({
-      predicate: (query) =>
-        query.queryKey[0] === QuotesApiQueryKeys.findQuotes &&
-        query.queryKey[1] === userBookId &&
-        query.queryKey[2] === userData?.id &&
-        query.queryKey[3] === `${page}` &&
-        query.queryKey[4] === `${pageSize}`,
-    });
-
-  const onNextPage = (): void => {
-    setPage(page + 1);
-
-    invalidateQuotesFetch();
-  };
-
-  const onSetPage = (page: number): void => {
-    setPage(page);
-
-    invalidateQuotesFetch();
-  };
-
-  const onPreviousPage = (): void => {
-    setPage(page - 1);
-
-    invalidateQuotesFetch();
-  };
-
-  const data = useMemo(() => {
-    return quotationsData?.data ?? [];
-  }, [quotationsData?.data]);
-
-  return (
-    <div className="flex flex-col sm:flex-row col-start-1 col-span-2 sm:col-span-5 gap-6 w-full">
-      {isUserBookFetching && !isUserBookRefetching && <BasicDataTabSkeleton bookId={userBookId} />}
-      {isUserBookFetched && (!isUserBookRefetching || (isUserBookFetching && isUserBookRefetching)) && (
-        <>
-          <div>
-            <img
-              src={userBookData?.imageUrl  || '/book.jpg'}
-              className="object-cover max-w-80"
-            />
-          </div>
-          <div className="flex justify-center">
-            <FavoriteBookButton userBook={userBookData as UserBook} />
-          </div>
-          <div className="flex flex-col gap-4 w-full">
-            <div className="flex justify-between w-full">
-              <p className="font-semibold text-3xl">{userBookData?.book.title}</p>
-              <CurrentRatingStar userBookId={userBookId} />
-            </div>
-            <Separator className="h-[1px] bg-primary"></Separator>
-            <div className="flex flex-col w-full">
-              <p className="text-lg pb-6"> {userBookData?.book?.authors[0]?.name ?? ''} </p>
-              <QuotationsTable
-                columns={columns}
-                data={data}
-                onNextPage={onNextPage}
-                onPreviousPage={onPreviousPage}
-                onSetPage={onSetPage}
-                pageCount={pageCount}
-                pageIndex={page}
-                pageSize={pageSize}
-              ></QuotationsTable>
-            </div>
-          </div>
-        </>
-      )}
-    </div>
-  );
-};
-
-export const BookPage: FC = () => {
+export const QuotesPage: FC = () => {
   const { data: userData } = useFindUserQuery();
 
   const { bookId } = Route.useParams();
@@ -150,6 +37,10 @@ export const BookPage: FC = () => {
   const [page, setPage] = useState(0);
 
   const [pageSize] = useState(4);
+
+  const dispatch = useBreadcrumbKeysDispatch();
+
+  const breadcrumbKeys = useBreadcrumbKeysContext();
 
   const {
     data: userBookData,
@@ -163,6 +54,34 @@ export const BookPage: FC = () => {
       accessToken: accessToken as string,
     }),
   );
+
+  const { data: bookshelfResponse } = useFindBookshelfByIdQuery(userBookData?.bookshelfId as string);
+
+  if (userBookData?.book.title && !breadcrumbKeys['$bookName']) {
+    dispatch({
+      key: '$bookName',
+      value: userBookData?.book.title,
+    });
+  }
+
+  if (!breadcrumbKeys['$bookId']) {
+    dispatch({
+      key: '$bookId',
+      value: bookId,
+    });
+  }
+
+  if (bookshelfResponse?.id && !breadcrumbKeys['$bookshelfName']) {
+    dispatch({
+      key: '$bookshelfName',
+      value: bookshelfResponse.name,
+    });
+
+    dispatch({
+      key: '$bookshelfId',
+      value: userBookData?.bookshelfId,
+    });
+  }
 
   const {
     data: quotationsData,
@@ -228,7 +147,7 @@ export const BookPage: FC = () => {
                 className={cn('cursor-pointer')}
                 onClick={() =>
                   navigate({
-                    to: `/book/${bookId}`,
+                    to: `/book/tabs/basicDataTab/${bookId}`,
                   })
                 }
               >
@@ -239,7 +158,7 @@ export const BookPage: FC = () => {
                 className={cn('cursor-pointer')}
                 onClick={() =>
                   navigate({
-                    to: `/book/${bookId}/reviews`,
+                    to: `/book/tabs/gradesTab/${bookId}`,
                   })
                 }
               >
@@ -299,12 +218,31 @@ const bookPathParamsSchema = z.object({
 });
 
 export const Route = createFileRoute('/book/tabs/quotationsTab/$bookId')({
-  component: BookPage,
+  component: QuotesPage,
   onError: () => {
     return <Navigate to={'/login'} />;
   },
   parseParams: (params) => {
     return bookPathParamsSchema.parse(params);
   },
-})
-
+  staticData: {
+    routeDisplayableNameParts: [
+      {
+        readableName: 'Półki',
+        href: '/shelves/',
+      },
+      {
+        readableName: '$bookshelfName',
+        href: '/bookshelf/$bookshelfId',
+      },
+      {
+        readableName: '$bookName',
+        href: '/book/tabs/basicDataTab/$bookId',
+      },
+      {
+        readableName: 'Cytaty',
+        href: '/book/tabs/quotationsTab/$bookId',
+      },
+    ],
+  },
+});

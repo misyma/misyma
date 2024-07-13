@@ -106,11 +106,11 @@ export const Route = createFileRoute('/admin/tabs/authors/')({
   staticData: {
     routeDisplayableNameParts: [
       {
-        href: '/admin/tabs/authors',
+        href: '/admin/tabs/authors/',
         readableName: 'Admin',
       },
       {
-        href: '/admin/tabs/authors',
+        href: '/admin/tabs/authors/',
         readableName: 'Autorzy',
       },
     ],

@@ -583,7 +583,7 @@ export const Route = createFileRoute('/shelves/')({
     routeDisplayableNameParts: [
       {
         readableName: 'Półki',
-        href: '/shelves',
+        href: '/shelves/',
       },
     ],
   },

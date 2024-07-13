@@ -18,6 +18,11 @@ import { cn } from '../../../../modules/common/lib/utils.js';
 import { z } from 'zod';
 import { FindUserBookByIdQueryOptions } from '../../../../modules/book/api/user/queries/findUserBook/findUserBookByIdQueryOptions.js';
 import { BasicDataTabSkeleton } from '../../../../modules/book/components/basicDataSkeleton/basicDataTabSkeleton.js';
+import {
+  useBreadcrumbKeysContext,
+  useBreadcrumbKeysDispatch,
+} from '../../../../modules/common/contexts/breadcrumbKeysContext.js';
+import { useFindBookshelfByIdQuery } from '../../../../modules/bookshelf/api/queries/findBookshelfByIdQuery/findBookshelfByIdQuery.js';
 
 export const GradesPage: FC = () => {
   const { bookId } = Route.useParams();
@@ -57,6 +62,38 @@ export const GradesPage: FC = () => {
       accessToken: accessToken as string,
     }),
   );
+
+  const dispatch = useBreadcrumbKeysDispatch();
+
+  const breadcrumbKeys = useBreadcrumbKeysContext();
+
+  const { data: bookshelfResponse } = useFindBookshelfByIdQuery(userBookData?.bookshelfId as string);
+
+  if (userBookData?.book.title && !breadcrumbKeys['$bookName']) {
+    dispatch({
+      key: '$bookName',
+      value: userBookData?.book.title,
+    });
+  }
+
+  if (!breadcrumbKeys['$bookId']) {
+    dispatch({
+      key: '$bookId',
+      value: bookId,
+    });
+  }
+
+  if (bookshelfResponse?.id && !breadcrumbKeys['$bookshelfName']) {
+    dispatch({
+      key: '$bookshelfName',
+      value: bookshelfResponse.name,
+    });
+
+    dispatch({
+      key: '$bookshelfId',
+      value: userBookData?.bookshelfId,
+    });
+  }
 
   const invalidateReadingsFetch = () =>
     queryClient.invalidateQueries({
@@ -98,7 +135,7 @@ export const GradesPage: FC = () => {
                 className={cn('cursor-pointer')}
                 onClick={() =>
                   navigate({
-                    to: `/book/${bookId}`,
+                    to: `/book/tabs/basicDataTab/${bookId}`,
                   })
                 }
               >
@@ -108,7 +145,7 @@ export const GradesPage: FC = () => {
                 className={cn('cursor-pointer')}
                 onClick={() =>
                   navigate({
-                    to: `/book/${bookId}/quotations`,
+                    to: `/book/tabs/quotationsTab/${bookId}`,
                   })
                 }
               >
@@ -177,5 +214,25 @@ export const Route = createFileRoute('/book/tabs/gradesTab/$bookId')({
   },
   parseParams: (params) => {
     return bookPathParamsSchema.parse(params);
+  },
+  staticData: {
+    routeDisplayableNameParts: [
+      {
+        readableName: 'Półki',
+        href: '/shelves/',
+      },
+      {
+        readableName: '$bookshelfName',
+        href: '/bookshelf/$bookshelfId',
+      },
+      {
+        readableName: '$bookName',
+        href: '/book/tabs/basicDataTab/$bookId',
+      },
+      {
+        readableName: 'Oceny',
+        href: '/book/tabs/gradesTab/$bookId',
+      },
+    ],
   },
 });

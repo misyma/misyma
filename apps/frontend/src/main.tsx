@@ -9,17 +9,15 @@ import { SearchCreateBookProvider } from './modules/bookshelf/context/searchCrea
 import { BreadcrumbKeysProvider } from './modules/common/contexts/breadcrumbKeysContext.tsx';
 import { AppRouter, router } from './modules/core/router/router.ts';
 
-interface BreadcrumbData {
-  readableName: string;
-  href: string;
-}
-
 declare module '@tanstack/react-router' {
   interface Register {
     router: AppRouter;
   }
   interface StaticDataRouteOption {
-    routeDisplayableNameParts?: BreadcrumbData[];
+    routeDisplayableNameParts?: {
+      readableName: string;
+      href: keyof FileRoutesByPath;
+    }[];
   }
 }
 

@@ -33,7 +33,7 @@ import {
 } from '../../modules/common/contexts/breadcrumbKeysContext';
 
 const bookshelfSearchSchema = z.object({
-  id: z.string().uuid().catch(''),
+  bookshelfId: z.string().uuid().catch(''),
 });
 
 const getCountNoun = (len: number): string => {
@@ -52,9 +52,9 @@ const getCountNoun = (len: number): string => {
 };
 
 export const View: FC = () => {
-  const { id } = Route.useParams();
+  const { bookshelfId } = Route.useParams();
 
-  const { data: bookshelfResponse } = useFindBookshelfByIdQuery(id);
+  const { data: bookshelfResponse } = useFindBookshelfByIdQuery(bookshelfId);
 
   const breadcrumbKeys = useBreadcrumbKeysContext();
 
@@ -182,7 +182,7 @@ const BorrowedBook: FC<{ userBook: UserBook; index: number }> = ({ userBook, ind
 };
 
 export const BorrowingBookshelf: FC = () => {
-  const { id } = Route.useParams();
+  const { bookshelfId } = Route.useParams();
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
@@ -191,12 +191,12 @@ export const BorrowingBookshelf: FC = () => {
   const { data: bookshelfBooksResponse } = useQuery(
     FindBooksByBookshelfIdQueryOptions({
       accessToken: accessToken as string,
-      bookshelfId: id,
+      bookshelfId,
       userId: user?.id as string,
     }),
   );
 
-  const { data: bookshelfResponse } = useFindBookshelfByIdQuery(id);
+  const { data: bookshelfResponse } = useFindBookshelfByIdQuery(bookshelfId);
 
   const navigate = useNavigate();
 
@@ -218,7 +218,7 @@ export const BorrowingBookshelf: FC = () => {
                   search: {
                     type: 'isbn',
                     next: 0,
-                    bookshelfId: id,
+                    bookshelfId,
                   },
                 });
               }}
@@ -263,7 +263,7 @@ const BookshelfSkeleton = () => {
 };
 
 export const Bookshelf: FC = () => {
-  const { id } = Route.useParams();
+  const { bookshelfId } = Route.useParams();
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
@@ -280,7 +280,7 @@ export const Bookshelf: FC = () => {
   } = useQuery(
     FindBooksByBookshelfIdQueryOptions({
       accessToken: accessToken as string,
-      bookshelfId: id,
+      bookshelfId,
       userId: user?.id as string,
       page: currentPage,
       pageSize: perPage,
@@ -315,7 +315,7 @@ export const Bookshelf: FC = () => {
     return currentPage + 1;
   }, [currentPage, pagesCount]);
 
-  const { data: bookshelfResponse } = useFindBookshelfByIdQuery(id);
+  const { data: bookshelfResponse } = useFindBookshelfByIdQuery(bookshelfId);
 
   const navigate = useNavigate();
 
@@ -354,7 +354,7 @@ export const Bookshelf: FC = () => {
                 search: {
                   type: 'isbn',
                   next: 0,
-                  bookshelfId: id,
+                  bookshelfId,
                 },
               });
             }}
@@ -544,7 +544,7 @@ export const Bookshelf: FC = () => {
   );
 };
 
-export const Route = createFileRoute('/bookshelf/$id')({
+export const Route = createFileRoute('/bookshelf/$bookshelfId')({
   component: () => {
     return (
       <RequireAuthComponent>
@@ -560,7 +560,7 @@ export const Route = createFileRoute('/bookshelf/$id')({
     routeDisplayableNameParts: [
       {
         readableName: 'Półki',
-        href: '/shelves',
+        href: '/shelves/',
       },
       {
         readableName: '$bookshelfName',

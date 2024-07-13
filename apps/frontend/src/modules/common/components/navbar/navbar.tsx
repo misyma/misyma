@@ -109,6 +109,8 @@ export const Navbar: FC = () => {
     return finalHref;
   };
 
+  // console.log(allCorrespondingValuesPresent, breadcrumbKeys)
+
   const breadcrumbItems = useMemo(() => {
     {
       return (

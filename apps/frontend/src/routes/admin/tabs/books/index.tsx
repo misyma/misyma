@@ -98,11 +98,11 @@ export const Route = createFileRoute('/admin/tabs/books/')({
   staticData: {
     routeDisplayableNameParts: [
       {
-        href: '/admin/tabs/authors',
+        href: '/admin/tabs/authors/',
         readableName: 'Admin',
       },
       {
-        href: '/admin/tabs/books',
+        href: '/admin/tabs/books/',
         readableName: 'Książki',
       },
     ],

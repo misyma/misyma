@@ -20,7 +20,7 @@ import { Route as ProfileIndexImport } from './routes/profile/index'
 import { Route as NotFoundIndexImport } from './routes/notFound/index'
 import { Route as NewPasswordIndexImport } from './routes/newPassword/index'
 import { Route as LoginIndexImport } from './routes/login/index'
-import { Route as BookshelfIdImport } from './routes/bookshelf/$id'
+import { Route as BookshelfBookshelfIdImport } from './routes/bookshelf/$bookshelfId'
 import { Route as BookshelfSearchIndexImport } from './routes/bookshelf/search/index'
 import { Route as BookshelfCreateBookIndexImport } from './routes/bookshelf/createBook/index'
 import { Route as BookshelfSearchResultIndexImport } from './routes/bookshelf/search/result/index'
@@ -81,8 +81,8 @@ const LoginIndexRoute = LoginIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const BookshelfIdRoute = BookshelfIdImport.update({
-  path: '/bookshelf/$id',
+const BookshelfBookshelfIdRoute = BookshelfBookshelfIdImport.update({
+  path: '/bookshelf/$bookshelfId',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -164,11 +164,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/bookshelf/$id': {
-      id: '/bookshelf/$id'
-      path: '/bookshelf/$id'
-      fullPath: '/bookshelf/$id'
-      preLoaderRoute: typeof BookshelfIdImport
+    '/bookshelf/$bookshelfId': {
+      id: '/bookshelf/$bookshelfId'
+      path: '/bookshelf/$bookshelfId'
+      fullPath: '/bookshelf/$bookshelfId'
+      preLoaderRoute: typeof BookshelfBookshelfIdImport
       parentRoute: typeof rootRoute
     }
     '/login/': {
@@ -318,7 +318,7 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren({
   IndexRoute,
-  BookshelfIdRoute,
+  BookshelfBookshelfIdRoute,
   LoginIndexRoute,
   NewPasswordIndexRoute,
   NotFoundIndexRoute,
@@ -350,7 +350,7 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/bookshelf/$id",
+        "/bookshelf/$bookshelfId",
         "/login/",
         "/newPassword/",
         "/notFound/",
@@ -376,8 +376,8 @@ export const routeTree = rootRoute.addChildren({
     "/": {
       "filePath": "index.tsx"
     },
-    "/bookshelf/$id": {
-      "filePath": "bookshelf/$id.tsx"
+    "/bookshelf/$bookshelfId": {
+      "filePath": "bookshelf/$bookshelfId.tsx"
     },
     "/login/": {
       "filePath": "login/index.tsx"

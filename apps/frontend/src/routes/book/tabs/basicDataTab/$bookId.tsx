@@ -71,7 +71,7 @@ export const BasicDataPage: FC = () => {
 
     dispatch({
       key: '$bookshelfId',
-      value: bookId,
+      value: data?.bookshelfId,
     });
   }
 
@@ -90,7 +90,7 @@ export const BasicDataPage: FC = () => {
                 className={cn('cursor-pointer')}
                 onClick={() =>
                   navigate({
-                    to: `/book/${bookId}/quotations`,
+                    to: `/book/tabs/quotationsTab/${bookId}`,
                   })
                 }
               >
@@ -100,7 +100,7 @@ export const BasicDataPage: FC = () => {
                 className={cn('cursor-pointer')}
                 onClick={() =>
                   navigate({
-                    to: `/book/${bookId}/reviews`,
+                    to: `/book/tabs/gradesTab/${bookId}`,
                   })
                 }
               >
@@ -187,7 +187,7 @@ export const Route = createFileRoute('/book/tabs/basicDataTab/$bookId')({
     routeDisplayableNameParts: [
       {
         readableName: 'Półki',
-        href: '/shelves',
+        href: '/shelves/',
       },
       {
         readableName: '$bookshelfName',
@@ -195,7 +195,7 @@ export const Route = createFileRoute('/book/tabs/basicDataTab/$bookId')({
       },
       {
         readableName: '$bookName',
-        href: '/book/tabs/basicData/$bookId',
+        href: '/book/tabs/basicDataTab/$bookId',
       },
     ],
   },
