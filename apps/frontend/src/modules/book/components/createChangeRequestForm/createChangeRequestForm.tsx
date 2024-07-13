@@ -102,8 +102,6 @@ export const CreateChangeRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit 
 
   // eslint-disable-next-line
   const onProceedToNextStep = (vals: any) => {
-    stepTwoForm.trigger('format');
-
     dispatch({
       type: BookDetailsChangeRequestAction.setValues,
       values: {
