@@ -268,7 +268,7 @@ export const StepOneForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
                                 onOpenChange={(val) => {
                                   onOpenChange(val);
 
-                                  createAuthorDraftForm.setValue('name', searchedName);
+                                  createAuthorDraftForm.setValue('name', searchedName ?? '');
                                 }}
                               >
                                 <DialogTrigger asChild>
