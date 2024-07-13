@@ -244,6 +244,29 @@ describe('BookChangeRequestRepositoryImpl', () => {
 
       expect(foundBookChangeRequests[0]?.getId()).toEqual(bookChangeRequest1.id);
     });
+
+    it('finds book change request by id', async () => {
+      const user1 = await userTestUtils.createAndPersist();
+
+      const book = await bookTestUtils.createAndPersist();
+
+      const bookChangeRequest1 = await bookChangeRequestTestUtils.createAndPersist({
+        input: {
+          bookId: book.id,
+          userId: user1.id,
+        },
+      });
+
+      const foundBookChangeRequests = await bookChangeRequestRepository.findBookChangeRequests({
+        userId: user1.id,
+        page: 1,
+        pageSize: 10,
+      });
+
+      expect(foundBookChangeRequests.length).toEqual(1);
+
+      expect(foundBookChangeRequests[0]?.getId()).toEqual(bookChangeRequest1.id);
+    });
   });
 
   describe('delete', () => {

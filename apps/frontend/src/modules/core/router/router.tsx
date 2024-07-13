@@ -19,11 +19,13 @@ import { authorsAdminRoute } from '../../../routes/admin/tabs/authors/authors';
 import { booksEditAdminRoute } from '../../../routes/admin/tabs/books/edit/books-edit';
 import { changeRequestsAdminRoute } from '../../../routes/admin/tabs/changeRequests/changeRequests';
 import { profileRoute } from '../../../routes/profile/profile';
+import { changeRequestsViewAdminRoute } from '../../../routes/admin/tabs/changeRequests/id/changeRequestView';
 
 export const routeTree = rootRoute.addChildren([
   booksAdminRoute,
   booksEditAdminRoute,
   changeRequestsAdminRoute,
+  changeRequestsViewAdminRoute,
   authorsAdminRoute,
   landingRoute,
   loginRoute,

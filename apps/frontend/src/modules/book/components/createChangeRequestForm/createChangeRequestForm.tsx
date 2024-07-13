@@ -30,7 +30,7 @@ interface Props {
 }
 
 const stepTwoSchema = z.object({
-  language: z.nativeEnum(Language),
+  language: z.nativeEnum(Language).optional(),
   translator: z
     .string({
       required_error: 'Tłumacz jest wymagany.',
@@ -42,7 +42,7 @@ const stepTwoSchema = z.object({
       message: 'Tłumacz może mieć maksymalnie 64 znaki.',
     })
     .optional(),
-  format: z.nativeEnum(ContractBookFormat),
+  format: z.nativeEnum(ContractBookFormat).optional(),
   pagesCount: z
     .number({
       required_error: 'Ilość stron jest wymagana.',
@@ -56,7 +56,8 @@ const stepTwoSchema = z.object({
     })
     .max(10000, {
       message: 'Za dużo stron.',
-    }),
+    })
+    .optional(),
 });
 
 export const CreateChangeRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
@@ -114,7 +115,7 @@ export const CreateChangeRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit 
   };
 
   const onUpdate = async (values: z.infer<typeof stepTwoSchema>) => {
-    await createBookChangeRequest({
+    const payload = {
       ...context,
       ...(context?.author
         ? {
@@ -124,7 +125,15 @@ export const CreateChangeRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit 
       ...values,
       accessToken: accessToken as string,
       bookId: bookData?.id as string,
-    });
+    };
+
+    if (Object.values(context).filter(Boolean).length === 0) {
+      onSubmit();
+
+      return;
+    }
+
+    await createBookChangeRequest(payload);
 
     onSubmit();
   };

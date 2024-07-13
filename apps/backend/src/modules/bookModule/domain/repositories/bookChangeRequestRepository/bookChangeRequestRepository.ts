@@ -13,6 +13,7 @@ export interface FindBookChangeRequestPayload {
 
 export interface FindBookChangeRequestsPayload {
   readonly userId?: string;
+  readonly id?: string;
   readonly page: number;
   readonly pageSize: number;
 }

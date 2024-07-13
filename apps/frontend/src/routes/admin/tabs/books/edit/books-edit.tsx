@@ -65,7 +65,7 @@ const editBookFormSchema = z.object({
     .min(1, {
       message: 'Tytuł musi mieć co najmniej jeden znak.',
     })
-    .max(64, {
+    .max(128, {
       message: 'Tytuł może mieć maksymalnie 64 znaki.',
     })
     .optional(),

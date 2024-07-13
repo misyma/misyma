@@ -27,6 +27,10 @@ interface BaseHttpResponse<T> {
   statusCode: number;
 }
 
+interface Options {
+  filterEmptyStrings: boolean;
+}
+
 export class HttpService {
   private static readonly baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://api.misyma.com/api';
 
@@ -91,9 +95,31 @@ export class HttpService {
     }
   }
 
-  public static async post<T = unknown>(payload: RequestPayload): Promise<HttpResponse<T>> {
+  public static async post<T = unknown>(
+    payload: RequestPayload,
+    options: Options = {
+      filterEmptyStrings: false,
+    },
+  ): Promise<HttpResponse<T>> {
     try {
       const { url, headers, body } = payload;
+
+      let requestBody = body;
+
+      if (options.filterEmptyStrings && body) {
+        requestBody = Object.entries(body).reduce(
+          (filteredPayload, [key, value]) => {
+            if (value === '') {
+              return filteredPayload;
+            }
+
+            filteredPayload[key as string] = value;
+
+            return filteredPayload;
+          },
+          {} as Record<string, unknown>,
+        );
+      }
 
       const response = await fetch(`${this.baseUrl}${url}`, {
         headers: {
@@ -102,7 +128,7 @@ export class HttpService {
           'Content-Type': 'application/json',
         },
         method: 'POST',
-        body: JSON.stringify(body),
+        body: JSON.stringify(requestBody),
       });
 
       const responseBodyText = await response.text();
