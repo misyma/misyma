@@ -18,7 +18,7 @@ export const bookDtoSchema = Type.Object({
   publisher: Type.Optional(
     Type.String({
       minLength: 1,
-      maxLength: 64,
+      maxLength: 128,
     }),
   ),
   releaseYear: Type.Optional(
