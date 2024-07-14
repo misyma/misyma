@@ -257,7 +257,6 @@ export const StepOneForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
                         placeholder="Wyszukaj autora..."
                         onValueChange={setSearchedName}
                       />
-
                       <CommandList>
                         {isFetched && authors?.data.length === 0 && (
                           <CommandEmpty className="flex flex-col px-4 py-4 gap-4">

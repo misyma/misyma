@@ -14,11 +14,18 @@ import { BorrowingApiQueryKeys } from '../../../borrowing/api/queries/borrowingA
 import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 import { useUpdateUserBookMutation } from '../../api/user/mutations/updateUserBookMutation/updateUserBookMutation';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
-import { Command } from 'cmdk';
-import { CommandInput, CommandItem, CommandList } from '../../../common/components/ui/command';
 import { Popover, PopoverContent } from '../../../common/components/ui/popover';
 import { PopoverTrigger } from '@radix-ui/react-popover';
 import { Button } from '../../../common/components/ui/button';
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '../../../common/components/ui/command';
+import { CommandLoading } from 'cmdk';
 
 interface Props {
   bookId: string;
@@ -42,9 +49,12 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
 
   const { toast } = useToast();
 
-  const { data: bookshelfData } = useFindUserBookshelfsQuery({
+  const [searchedName, setSearchedName] = useState<string | undefined>(undefined);
+
+  const { data: bookshelfData, isLoading } = useFindUserBookshelfsQuery({
     userId: userData?.id as string,
     pageSize: 50,
+    name: searchedName,
   });
 
   const [open, setOpen] = useState(false);
@@ -70,6 +80,8 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
   );
 
   const [previousBookshelfName, setPreviousBookshelfName] = useState<string | null>(booksBookshelf?.name ?? null);
+
+  const [currentBookshelf, setCurrentBookshelf] = useState('');
 
   useEffect(() => {
     setPreviousBookshelfName(previousBookshelfName);
@@ -125,6 +137,13 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
     });
   };
 
+  useEffect(() => {
+    if (!currentBookshelf) {
+      setCurrentBookshelf(bookshelfData?.data.find((bookshelf) => bookshelf.id === selectedBookshelfId)?.name ?? '');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bookshelfData]);
+
   if (previousBookshelfName === 'Wypożyczalnia' && isFetchingBookBorrowing) {
     return <Skeleton className="w-40 h-8"></Skeleton>;
   }
@@ -140,37 +159,48 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
         onOpenChange={setOpen}
       >
         <PopoverTrigger asChild>
-          <Button className="sm:w-60 bg-transparent border-none text-primary text-xl">
-            {bookshelfData?.data.find((bookshelf) => bookshelf.id === selectedBookshelfId)?.name}
-          </Button>
+          <Button className="sm:w-60 bg-transparent border-none text-primary text-xl">{currentBookshelf}</Button>
         </PopoverTrigger>
         <PopoverContent>
-          <Command>
-            <CommandInput placeholder="Search framework..." />
-            {isFetched && (!isRefetching || (isFetching && isRefetching)) && (
-              <CommandList>
-                {bookshelfData?.data.map((bookshelf) => (
-                  <CommandItem
-                    key={`bookshelf-${bookshelf.id}`}
-                    value={bookshelf.id}
-                    onSelect={async (value) => {
-                      setPreviousBookshelfId(selectedBookshelfId);
+          <Command shouldFilter={false}>
+            <CommandInput
+              placeholder=""
+              onValueChange={setSearchedName}
+            />
+            <CommandList>
+              {
+                <>
+                  {isFetched && bookshelfData?.data.length === 0 && (
+                    <CommandEmpty>Nie znaleziono półki...</CommandEmpty>
+                  )}
+                  {isLoading && <CommandLoading>Wyszukuję półki</CommandLoading>}
+                  <CommandGroup>
+                    {bookshelfData?.data.map((bookshelf) => (
+                      <CommandItem
+                        key={`bookshelf-${bookshelf.id}`}
+                        value={bookshelf.id}
+                        onSelect={async (value) => {
+                          setPreviousBookshelfId(selectedBookshelfId);
 
-                      await onBookshelfChange(
-                        value,
-                        bookshelfData?.data.find((bookshelf) => bookshelf.id === value)?.name ?? '',
-                      );
+                          await onBookshelfChange(
+                            value,
+                            bookshelfData?.data.find((bookshelf) => bookshelf.id === value)?.name ?? '',
+                          );
 
-                      setSelectedBookshelfId(value);
+                          setSelectedBookshelfId(value);
 
-                      setOpen(false);
-                    }}
-                  >
-                    {bookshelf.name}
-                  </CommandItem>
-                ))}
-              </CommandList>
-            )}
+                          setCurrentBookshelf(bookshelf.name);
+
+                          setOpen(false);
+                        }}
+                      >
+                        {bookshelf.name}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </>
+              }
+            </CommandList>
             {usingBorrowFlow && (
               <CreateBorrowingModal
                 bookId={bookId}

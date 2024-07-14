@@ -13,7 +13,7 @@ export const useFindUserBookshelfsQuery = (payload: Payload) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const findUserBookshelfs = async () => {
-    const { page, pageSize } = payload;
+    const { page, pageSize, name } = payload;
 
     const queryParams: Record<string, string> = {
       sortDate: 'desc',
@@ -27,12 +27,16 @@ export const useFindUserBookshelfsQuery = (payload: Payload) => {
       queryParams['pageSize'] = `${pageSize}`;
     }
 
+    if (name) {
+      queryParams['name'] = name;
+    }
+
     const response = await HttpService.get<FindBookshelvesResponseBody>({
       url: '/bookshelves',
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
-      queryParams
+      queryParams,
     });
 
     if (response.success === false) {
@@ -43,7 +47,7 @@ export const useFindUserBookshelfsQuery = (payload: Payload) => {
   };
 
   return useQuery<FindBookshelvesResponseBody>({
-    queryKey: [BookshelvesApiQueryKeys.findUserBookshelfs, payload.page, payload.pageSize],
+    queryKey: [BookshelvesApiQueryKeys.findUserBookshelfs, payload.page, payload.pageSize, payload.name],
     queryFn: () => findUserBookshelfs(),
     enabled: !!accessToken && !!payload.userId,
     placeholderData: keepPreviousData,
