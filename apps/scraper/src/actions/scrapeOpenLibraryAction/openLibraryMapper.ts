@@ -1,10 +1,11 @@
-import { type BookDraft } from './bookDraft.js';
+import { type ImportBookRequestBody } from '@common/contracts';
+
 import { type OpenLibraryBookBinding, type OpenLibraryBook } from './openLibraryBook.js';
 import { BookFormat } from '../../infrastructure/entities/book/bookFormat.js';
 import { isValidLanguage, Language } from '../../infrastructure/entities/book/language.js';
 
 export class OpenLibraryMapper {
-  public mapBook(openLibraryBook: OpenLibraryBook): BookDraft | undefined {
+  public mapBook(openLibraryBook: OpenLibraryBook): ImportBookRequestBody | undefined {
     if (!openLibraryBook.authors || !openLibraryBook.authors.length || !openLibraryBook.title) {
       return undefined;
     }
@@ -24,7 +25,6 @@ export class OpenLibraryMapper {
       isbn: openLibraryBook.isbn13,
       publisher: openLibraryBook.publisher?.length ? openLibraryBook.publisher : undefined,
       format,
-      isApproved: true,
       language,
       imageUrl: openLibraryBook.image?.length ? openLibraryBook.image : undefined,
       pages: openLibraryBook.pages || undefined,
