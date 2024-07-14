@@ -23,8 +23,8 @@ export const createBookBodyDtoSchema = Type.Object({
   ),
   releaseYear: Type.Optional(
     Type.Integer({
-      minimum: 1500,
-      maximum: 2500,
+      minimum: 1,
+      maximum: 2100,
     }),
   ),
   language: Type.Enum(contracts.Language),
