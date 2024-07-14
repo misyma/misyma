@@ -19,6 +19,12 @@ import {
   findAdminBooksResponseBodyDtoSchema,
 } from './schemas/findBooksSchema.js';
 import {
+  importBookBodyDtoSchema,
+  importBookResponseBodyDtoSchema,
+  type ImportBookBodyDto,
+  type ImportBookResponseBodyDto,
+} from './schemas/importBookSchema.js';
+import {
   updateBookPathParamsDtoSchema,
   updateBookBodyDtoSchema,
   type UpdateBookBodyDto,
@@ -42,7 +48,10 @@ import { type CreateBookCommandHandler } from '../../../application/commandHandl
 import { type DeleteBookCommandHandler } from '../../../application/commandHandlers/deleteBookCommandHandler/deleteBookCommandHandler.js';
 import { type UpdateBookCommandHandler } from '../../../application/commandHandlers/updateBookCommandHandler/updateBookCommandHandler.js';
 import { type FindBooksQueryHandler } from '../../../application/queryHandlers/findBooksQueryHandler/findBooksQueryHandler.js';
+import { type Author } from '../../../domain/entities/author/author.js';
 import { type Book } from '../../../domain/entities/book/book.js';
+import { type AuthorRepository } from '../../../domain/repositories/authorRepository/authorRepository.js';
+import { type BookRepository } from '../../../domain/repositories/bookRepository/bookRepository.js';
 import { type BookDto } from '../common/bookDto.js';
 
 export class BookAdminHttpController implements HttpController {
@@ -54,6 +63,8 @@ export class BookAdminHttpController implements HttpController {
     private readonly deleteBookCommandHandler: DeleteBookCommandHandler,
     private readonly updateBookCommandHandler: UpdateBookCommandHandler,
     private readonly findBooksQueryHandler: FindBooksQueryHandler,
+    private readonly authorRepository: AuthorRepository,
+    private readonly bookRepository: BookRepository,
     private readonly accessControlService: AccessControlService,
   ) {}
 
@@ -129,6 +140,24 @@ export class BookAdminHttpController implements HttpController {
         },
         securityMode: SecurityMode.bearerToken,
       }),
+      new HttpRoute({
+        method: HttpMethodName.post,
+        path: '/import',
+        handler: this.importBook.bind(this),
+        schema: {
+          request: {
+            body: importBookBodyDtoSchema,
+          },
+          response: {
+            [HttpStatusCode.noContent]: {
+              schema: importBookResponseBodyDtoSchema,
+              description: 'Book imported',
+            },
+          },
+        },
+        securityMode: SecurityMode.bearerToken,
+        description: 'Import book',
+      }),
     ];
   }
 
@@ -151,6 +180,69 @@ export class BookAdminHttpController implements HttpController {
     return {
       statusCode: HttpStatusCode.created,
       body: this.mapBookToBookDto(book),
+    };
+  }
+
+  // TODO: remove when migration to postgres is done
+  private async importBook(
+    request: HttpRequest<ImportBookBodyDto>,
+  ): Promise<HttpNoContentResponse<ImportBookResponseBodyDto>> {
+    const { authorNames, ...bookDraft } = request.body;
+
+    await this.accessControlService.verifyBearerToken({
+      authorizationHeader: request.headers['authorization'],
+      expectedRole: UserRole.admin,
+    });
+
+    const authors: Author[] = [];
+
+    for (const authorName of authorNames) {
+      let author = await this.authorRepository.findAuthor({ name: authorName });
+
+      if (!author) {
+        author = await this.authorRepository.saveAuthor({
+          author: {
+            name: authorName,
+            isApproved: true,
+          },
+        });
+      }
+
+      authors.push(author);
+    }
+
+    const existingBook = await this.bookRepository.findBooks({
+      title: bookDraft.title,
+      page: 1,
+      pageSize: 1,
+    });
+
+    if (existingBook) {
+      return {
+        statusCode: HttpStatusCode.noContent,
+        body: null,
+      };
+    }
+
+    await this.bookRepository.saveBook({
+      book: {
+        title: bookDraft.title,
+        isbn: bookDraft.isbn,
+        publisher: bookDraft.publisher,
+        format: bookDraft.format,
+        isApproved: true,
+        language: bookDraft.language,
+        imageUrl: bookDraft.imageUrl,
+        releaseYear: bookDraft.releaseYear,
+        translator: bookDraft.translator,
+        pages: bookDraft.pages,
+        authors,
+      },
+    });
+
+    return {
+      statusCode: HttpStatusCode.noContent,
+      body: null,
     };
   }
 

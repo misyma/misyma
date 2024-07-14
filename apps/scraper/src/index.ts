@@ -8,7 +8,6 @@ import { ScrapeOpenLibraryAction } from './actions/scrapeOpenLibraryAction/scrap
 import { ConfigFactory } from './config.js';
 import { BaseError } from './errors/baseError.js';
 import { MisymaHttpClientFactory } from './infrastructure/services/misymaHttpClient.js';
-import { MisymaService } from './infrastructure/services/misymaService.js';
 import { LoggerServiceFactory } from './libs/logger/loggerServiceFactory.js';
 
 const finalErrorHandler = async (error: unknown): Promise<void> => {
@@ -51,9 +50,7 @@ try {
 
   const misymaHttpClient = MisymaHttpClientFactory.create(config);
 
-  const misymaService = new MisymaService(misymaHttpClient, logger);
-
-  const scrapeOpenLibraryAction = new ScrapeOpenLibraryAction(misymaService, openLibraryMapper, config, logger);
+  const scrapeOpenLibraryAction = new ScrapeOpenLibraryAction(misymaHttpClient, openLibraryMapper, config, logger);
 
   yargs(hideBin(process.argv))
     .command([
