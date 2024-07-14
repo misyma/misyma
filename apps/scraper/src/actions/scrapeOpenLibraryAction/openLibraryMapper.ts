@@ -27,8 +27,8 @@ export class OpenLibraryMapper {
       isApproved: true,
       language,
       imageUrl: openLibraryBook.image,
-      pages: openLibraryBook.pages,
-      releaseYear,
+      pages: openLibraryBook.pages || undefined,
+      releaseYear: releaseYear || undefined,
       authorNames,
       translator: undefined,
     };

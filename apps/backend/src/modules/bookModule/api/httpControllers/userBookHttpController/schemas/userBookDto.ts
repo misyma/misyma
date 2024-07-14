@@ -7,6 +7,7 @@ import { authorDtoSchema } from '../../common/authorDto.js';
 import { collectionDtoSchema } from '../../common/collectionDto.js';
 import { genreDtoSchema } from '../../common/genreDto.js';
 
+// TODO: add common schemas for isbn, title, etc.
 export const userBookDtoSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
   imageUrl: Type.Optional(
@@ -26,7 +27,7 @@ export const userBookDtoSchema = Type.Object({
   book: Type.Object({
     title: Type.String({
       minLength: 1,
-      maxLength: 128,
+      maxLength: 256,
     }),
     isbn: Type.Optional(
       Type.String({
