@@ -212,6 +212,7 @@ export const BorrowingBookshelf: FC = () => {
           </div>
           {bookshelfResponse?.name !== 'Wypożyczalnia' && (
             <Button
+              size="xl"
               onClick={() => {
                 navigate({
                   to: `/bookshelf/search`,
@@ -348,6 +349,7 @@ export const Bookshelf: FC = () => {
             </p>
           </div>
           <Button
+            size="xl"
             onClick={() => {
               navigate({
                 to: `/bookshelf/search`,

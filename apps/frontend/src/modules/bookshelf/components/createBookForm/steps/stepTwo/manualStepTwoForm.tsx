@@ -239,7 +239,8 @@ export const ManualStepTwoForm = (): JSX.Element => {
         </div>
         <div className="flex justify-between w-full gap-4">
           <Button
-            className="border border-primary w-full"
+            variant='outline'
+            size="lg"
             onClick={() => {
               dispatch({
                 type: BookCreationActionType.setStep,
@@ -250,6 +251,7 @@ export const ManualStepTwoForm = (): JSX.Element => {
             Wróć
           </Button>
           <Button
+            size="lg"
             className="border border-primary w-full"
             disabled={!form.formState.isValid}
             type="submit"

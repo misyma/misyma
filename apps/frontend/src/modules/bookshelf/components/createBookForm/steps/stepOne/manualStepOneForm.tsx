@@ -39,7 +39,12 @@ import {
   DialogTrigger,
 } from '../../../../../common/components/dialog/dialog';
 import { HiOutlineInformationCircle } from 'react-icons/hi';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../../../common/components/tooltip/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../../../../../common/components/tooltip/tooltip';
 import { useFindAuthorsQuery } from '../../../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
 import { findUserBooksBy } from '../../../../../book/api/user/queries/findUserBookBy/findUserBooksBy';
 import { useSelector } from 'react-redux';
@@ -324,6 +329,7 @@ export const ManualStepOneForm = (): JSX.Element => {
                   <PopoverTrigger asChild>
                     <FormControl>
                       <Button
+                        size="xl"
                         variant="outline"
                         role="combobox"
                         className={cn(
@@ -494,6 +500,7 @@ export const ManualStepOneForm = (): JSX.Element => {
         />
         <div className="flex flex-col w-full justify-between gap-4">
           <Button
+            size="xl"
             className="border border-primary w-full"
             disabled={!form.formState.isValid}
             type="submit"

@@ -167,7 +167,7 @@ export const QuotesPage: FC = () => {
             </ul>
             <CreateQuotationModal
               onMutated={() => {}}
-              trigger={<Button className="w-32 sm:w-96">Dodaj cytat</Button>}
+              trigger={<Button size="xl">Dodaj cytat</Button>}
               userBookId={bookId}
             />
           </div>

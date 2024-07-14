@@ -338,8 +338,9 @@ const BooksEdit: FC = () => {
                           <Button
                             variant="outline"
                             role="combobox"
+                            size="xl"
                             className={cn(
-                              'w-60 sm:w-96 justify-between bg-[#D1D5DB]/20',
+                              'justify-between bg-[#D1D5DB]/20',
                               !field.value && 'text-muted-foreground',
                               draftAuthorName && 'text-black',
                             )}

@@ -109,7 +109,7 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
           control={form.control}
           name="comment"
           render={({ field }) => (
-            <FormItem className='flex flex-col gap-2'>
+            <FormItem className="flex flex-col gap-2">
               <FormLabel>Komentarz</FormLabel>
               <FormControl>
                 <Textarea
@@ -129,7 +129,7 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel>Data rozpoczęcia czytania</FormLabel>
-              <Popover>
+              <Popover modal={true}>
                 <PopoverTrigger asChild>
                   <FormControl>
                     <Button
@@ -170,7 +170,7 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel>Data zakończenia czytania</FormLabel>
-              <Popover>
+              <Popover modal={true}>
                 <PopoverTrigger asChild>
                   <FormControl>
                     <Button

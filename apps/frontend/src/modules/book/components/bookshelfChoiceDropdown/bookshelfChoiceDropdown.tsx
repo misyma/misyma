@@ -159,7 +159,13 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
         onOpenChange={setOpen}
       >
         <PopoverTrigger asChild>
-          <Button className="sm:w-60 bg-transparent border-none text-primary text-xl">{currentBookshelf}</Button>
+          <Button
+            size="xl"
+            variant="outline"
+            className="border-none text-xl"
+          >
+            {currentBookshelf}
+          </Button>
         </PopoverTrigger>
         <PopoverContent>
           <Command shouldFilter={false}>
@@ -201,38 +207,38 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
                 </>
               }
             </CommandList>
-            {usingBorrowFlow && (
-              <CreateBorrowingModal
-                bookId={bookId}
-                onMutated={async () => {
-                  setUsingBorrowFlow(false);
-
-                  await queryClient.invalidateQueries({
-                    predicate: ({ queryKey }) =>
-                      queryKey[0] === BorrowingApiQueryKeys.findBookBorrowingsQuery && queryKey[1] === bookId,
-                  });
-
-                  queryClient.invalidateQueries({
-                    queryKey: [BookApiQueryKeys.findUserBookById, bookId, userData?.id],
-                  });
-
-                  queryClient.invalidateQueries({
-                    predicate: (query) =>
-                      query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId &&
-                      query.queryKey[1] === selectedBookshelfId,
-                  });
-                }}
-                onClosed={() => {
-                  setUsingBorrowFlow(false);
-
-                  setSelectedBookshelfId(previousBookshelfId as string);
-                }}
-                open={usingBorrowFlow}
-              />
-            )}
           </Command>
         </PopoverContent>
       </Popover>
+      {usingBorrowFlow && (
+        <CreateBorrowingModal
+          bookId={bookId}
+          onMutated={async () => {
+            setUsingBorrowFlow(false);
+
+            await queryClient.invalidateQueries({
+              predicate: ({ queryKey }) =>
+                queryKey[0] === BorrowingApiQueryKeys.findBookBorrowingsQuery && queryKey[1] === bookId,
+            });
+
+            queryClient.invalidateQueries({
+              queryKey: [BookApiQueryKeys.findUserBookById, bookId, userData?.id],
+            });
+
+            queryClient.invalidateQueries({
+              predicate: (query) =>
+                query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId &&
+                query.queryKey[1] === selectedBookshelfId,
+            });
+          }}
+          onClosed={() => {
+            setUsingBorrowFlow(false);
+
+            setSelectedBookshelfId(previousBookshelfId as string);
+          }}
+          open={usingBorrowFlow}
+        />
+      )}
     </>
   );
 };

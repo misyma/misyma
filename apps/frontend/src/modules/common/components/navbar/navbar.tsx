@@ -16,10 +16,85 @@ import {
   BreadcrumbSeparator,
 } from '../breadcrumb/breadcrumb';
 import { useBreadcrumbKeysContext } from '../../contexts/breadcrumbKeysContext';
+
+const NavbarBreadcrumbs = () => {
+  const breadcrumbKeys = useBreadcrumbKeysContext();
+
+  const router = useRouter();
+
+  const context = router.state.matches;
+
+  const filteredPaths = context.filter((route) => route.id !== '__root__');
+
+  const allDollarKeys = filteredPaths[0].staticData.routeDisplayableNameParts
+    ?.map((val) => {
+      const dollarValues = [];
+
+      if (val.readableName.includes('$')) {
+        dollarValues.push(val.readableName);
+      }
+
+      if (val.href.includes('$')) {
+        dollarValues.push(val.href);
+      }
+
+      return dollarValues;
+    })
+    .filter(Boolean)
+    .flat(2);
+
+  const allCorrespondingValuesPresent = allDollarKeys?.every((entry) => {
+    return Object.entries(breadcrumbKeys).find(([key]) => entry.includes(key));
+  });
+
+  const replaceHrefPlaceholderWithValue = (href: string): string => {
+    const regex = /\$[^/]*\/?$/g;
+
+    const hrefPlaceholderKeys = href.match(regex);
+
+    let finalHref = href;
+
+    hrefPlaceholderKeys?.forEach((matchedKey) => {
+      finalHref = href.replace(matchedKey, breadcrumbKeys[matchedKey]);
+    });
+
+    return finalHref;
+  };
+
+  const breadcrumbItems = useMemo(() => {
+    {
+      return (
+        filteredPaths[0].staticData.routeDisplayableNameParts?.map((val) => (
+          <BreadcrumbItem>
+            <BreadcrumbLink>
+              <Link to={replaceHrefPlaceholderWithValue(val.href)}>
+                {val?.readableName?.includes('$') ? breadcrumbKeys[val?.readableName] : val.readableName}
+              </Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+        )) ?? []
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filteredPaths[0], breadcrumbKeys]);
+
+  return (
+    <Breadcrumb className="pt-4">
+      <BreadcrumbList>
+        {allCorrespondingValuesPresent &&
+          breadcrumbItems.map((item, index) => (
+            <>
+              {item}
+              {index !== breadcrumbItems.length - 1 && <BreadcrumbSeparator></BreadcrumbSeparator>}
+            </>
+          ))}
+      </BreadcrumbList>
+    </Breadcrumb>
+  );
+};
+
 export const Navbar: FC = () => {
   const navigate = useNavigate();
-
-  const breadcrumbKeys = useBreadcrumbKeysContext();
 
   const { mutate: logoutUserMutation } = useLogoutUserMutation({});
 
@@ -30,12 +105,6 @@ export const Navbar: FC = () => {
   const res = useFindUserQuery();
 
   const dispatch = useStoreDispatch();
-
-  const router = useRouter();
-
-  const context = router.state.matches;
-
-  const filteredPaths = context.filter((route) => route.id !== '__root__');
 
   const handleLogout = () => {
     if (!accessToken || !refreshToken || !res.data?.id) {
@@ -73,60 +142,6 @@ export const Navbar: FC = () => {
   };
 
   const linkClasses = '[&.active]:font-extrabold [&.active]:underline underline-offset-8 decoration-[3px] text-nowrap';
-
-  const allDollarKeys = filteredPaths[0].staticData.routeDisplayableNameParts
-    ?.map((val) => {
-      const dollarValues = [];
-
-      if (val.readableName.includes('$')) {
-        dollarValues.push(val.readableName);
-      }
-
-      if (val.href.includes('$')) {
-        dollarValues.push(val.href);
-      }
-
-      return dollarValues;
-    })
-    .filter(Boolean)
-    .flat(2);
-
-  const allCorrespondingValuesPresent = allDollarKeys?.every((entry) => {
-    return Object.entries(breadcrumbKeys).find(([key]) => entry.includes(key));
-  });
-
-  const replaceHrefPlaceholderWithValue = (href: string): string => {
-    const regex = /\$[^/]*\/?$/g;
-
-    const hrefPlaceholderKeys = href.match(regex);
-
-    let finalHref = href;
-
-    hrefPlaceholderKeys?.forEach((matchedKey) => {
-      finalHref = href.replace(matchedKey, breadcrumbKeys[matchedKey]);
-    });
-
-    return finalHref;
-  };
-
-  // console.log(allCorrespondingValuesPresent, breadcrumbKeys)
-
-  const breadcrumbItems = useMemo(() => {
-    {
-      return (
-        filteredPaths[0].staticData.routeDisplayableNameParts?.map((val) => (
-          <BreadcrumbItem>
-            <BreadcrumbLink>
-              <Link to={replaceHrefPlaceholderWithValue(val.href)}>
-                {val?.readableName?.includes('$') ? breadcrumbKeys[val?.readableName] : val.readableName}
-              </Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-        )) ?? []
-      );
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filteredPaths[0], breadcrumbKeys]);
 
   return (
     <div className="flex p-8 flex-col w-full top-0 fixed z-50">
@@ -185,17 +200,7 @@ export const Navbar: FC = () => {
           />
         </ul>
       </div>
-      <Breadcrumb className="pt-4">
-        <BreadcrumbList>
-          {allCorrespondingValuesPresent &&
-            breadcrumbItems.map((item, index) => (
-              <>
-                {item}
-                {index !== breadcrumbItems.length - 1 && <BreadcrumbSeparator></BreadcrumbSeparator>}
-              </>
-            ))}
-        </BreadcrumbList>
-      </Breadcrumb>
+      <NavbarBreadcrumbs />
     </div>
   );
 };

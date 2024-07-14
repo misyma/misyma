@@ -299,7 +299,8 @@ export const ShelvesPage: FC = () => {
         <div className="flex flex-col w-[80vw] sm:w-[90vw] sm:px-48 items-center justify-center gap-4">
           <div className="w-full flex items-end justify-center sm:justify-end">
             <Button
-              className="text-lg px-24 w-60 sm:w-96"
+              size="xl"
+              className="text-lg px-24"
               onClick={() => onAddNewBookshelf()}
               disabled={isCreatingNew}
             >

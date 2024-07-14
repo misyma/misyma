@@ -2,7 +2,7 @@ import * as React from 'react';
 import { MoreHorizontal } from 'lucide-react';
 import { FaArrowLeftLong, FaArrowRightLong } from 'react-icons/fa6';
 import { cn } from '../../lib/utils';
-import { ButtonProps, buttonVariants } from '../button/button';
+import { ButtonProps, buttonSizesStylesMap, buttonVariantsStylesMap } from '../button/button';
 
 const Pagination = ({ className, ...props }: React.ComponentProps<'nav'>) => (
   <nav
@@ -44,10 +44,8 @@ const PaginationLink = ({ className, isActive, hasPrevious = true, size = 'icon'
   <a
     aria-current={isActive ? 'page' : undefined}
     className={cn(
-      buttonVariants({
-        variant: isActive ? 'default' : 'ghost',
-        size,
-      }),
+      buttonVariantsStylesMap[isActive ? 'default' : 'ghost'],
+      buttonSizesStylesMap[size],
       !hasPrevious ? 'pointer-events-none bg-white text-primary cursor-not-allowed' : '',
       className,
     )}
@@ -63,7 +61,7 @@ const PaginationPrevious = ({
 }: React.ComponentProps<typeof PaginationLink>) => (
   <PaginationLink
     aria-label="Go to previous page"
-    size="default"
+    size="base"
     className={cn(
       'gap-1 pl-2.5',
       !hasPrevious ? 'pointer-events-none bg-white opacity-50 cursor-not-allowed' : '',
@@ -90,7 +88,7 @@ const PaginationNext = ({
 }) => (
   <PaginationLink
     aria-label="Go to next page"
-    size="default"
+    size="base"
     className={cn(
       'gap-1 pr-2.5',
       !hasNext ? 'pointer-events-none bg-white opacity-50 cursor-not-allowed' : '',

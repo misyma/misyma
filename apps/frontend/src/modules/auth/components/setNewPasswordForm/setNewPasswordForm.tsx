@@ -99,7 +99,7 @@ export const SetNewPasswordForm: FC<SetNewPasswordFormProps> = ({
         <Button
           type="submit"
           disabled={!form.formState.isValid}
-          className="w-60 sm:w-96 border border-primary"
+          size='xl'
         >
           Ustaw nowe hasło
         </Button>

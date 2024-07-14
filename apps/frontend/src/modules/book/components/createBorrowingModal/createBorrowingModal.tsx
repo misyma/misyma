@@ -1,5 +1,11 @@
 import { FC, useState } from 'react';
-import { Dialog, DialogContent, DialogDescription, DialogHeader } from '../../../common/components/dialog/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '../../../common/components/dialog/dialog';
 import { formatDate } from 'date-fns';
 import { Button } from '../../../common/components/button/button';
 import { cn } from '../../../common/lib/utils';
@@ -52,6 +58,8 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, open, onClosed, onMuta
 
   const [error, setError] = useState('');
 
+  const [calendarVisible, setCalendarVisible] = useState(false);
+
   const form = useForm<z.infer<typeof createBorrowingSchema>>({
     resolver: zodResolver(createBorrowingSchema),
     defaultValues: {
@@ -61,6 +69,10 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, open, onClosed, onMuta
   });
 
   const { mutateAsync } = useCreateBorrowingMutation({});
+
+  const onOpenChange = (val: boolean) => {
+    setCalendarVisible(val);
+  };
 
   const onCreateBookReading = async (values: z.infer<typeof createBorrowingSchema>) => {
     try {
@@ -108,7 +120,7 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, open, onClosed, onMuta
         omitCloseButton={true}
       >
         <DialogHeader className="font-semibold text-center flex justify-center items-center">
-          Dodatkowe informacje
+          <DialogTitle>Dodatkowe informacje</DialogTitle>
         </DialogHeader>
         <DialogDescription className="flex flex-col gap-4 justify-center items-center">
           <p className={error ? 'text-red-500' : 'hidden'}>{error}</p>
@@ -121,7 +133,7 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, open, onClosed, onMuta
                 control={form.control}
                 name="borrower"
                 render={({ field }) => (
-                  <FormItem className='flex flex-col gap-2'>
+                  <FormItem className="flex flex-col gap-2">
                     <FormLabel>Imię osoby wypożyczającej</FormLabel>
                     <FormControl>
                       <Input
@@ -140,13 +152,18 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, open, onClosed, onMuta
                 control={form.control}
                 name="startedAt"
                 render={({ field }) => (
-                  <FormItem className="flex flex-col">
+                  <FormItem className="flex flex-col gap-2">
                     <FormLabel>Data wypożyczenia</FormLabel>
-                    <Popover>
+                    <Popover
+                      modal={true}
+                      open={calendarVisible}
+                      onOpenChange={onOpenChange}
+                    >
                       <PopoverTrigger asChild>
                         <FormControl>
                           <Button
                             variant={'outline'}
+                            type="button"
                             className={cn(
                               'min-w-96 pl-3 text-left font-normal',
                               !field.value && 'text-muted-foreground',
@@ -182,7 +199,9 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, open, onClosed, onMuta
               />
               <div className="pt-8 gap-2 flex sm:justify-center justify-center sm:items-center items-center">
                 <Button
-                  className="bg-transparent text-primary w-32 sm:w-40"
+                  variant={'outline'}
+                  size={'lg'}
+                  type="reset"
                   onClick={() => {
                     setIsOpen(false);
 
@@ -192,9 +211,10 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, open, onClosed, onMuta
                   Wróć
                 </Button>
                 <Button
+                  variant={'default'}
+                  size={'lg'}
                   type="submit"
                   disabled={!form.formState.isValid}
-                  className="bg-primary w-32 sm:w-40"
                 >
                   Potwierdź
                 </Button>

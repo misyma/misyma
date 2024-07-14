@@ -456,9 +456,10 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
             </FormItem>
           )}
         />
-        <div className="flex w-full gap-4">
+        <div className="flex w-full gap-4 justify-between">
           <Button
-            className="border border-primary w-full"
+            size="lg"
+            variant="outline"
             onClick={() => {
               dispatch({
                 type: BookCreationActionType.setStep,
@@ -469,7 +470,7 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
             Wróć
           </Button>
           <Button
-            className="border border-primary w-full"
+            size="lg"
             disabled={!form.formState.isValid}
             type="submit"
           >

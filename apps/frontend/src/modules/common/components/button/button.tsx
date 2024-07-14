@@ -1,56 +1,76 @@
-import * as React from "react"
-import { Slot } from "@radix-ui/react-slot"
-import { cva, type VariantProps } from "class-variance-authority"
-import { cn } from "../../lib/utils"
+import * as React from 'react';
+import { Slot } from '@radix-ui/react-slot';
+import { cn } from '../../lib/utils';
 
+import styles from './index.module.css';
 
-const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:bg-white disabled:text-primary disabled:cursor-not-allowed",
-  {
-    variants: {
-      variant: {
-        default: "bg-primary text-primary-foreground hover:opacity-90 border-primary border-[1.25px]",
-        destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
-        secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
-      },
-      size: {
-        default: "h-12 px-4 py-2",
-        sm: "h-9 rounded-md px-3",
-        lg: "h-11 rounded-md px-8",
-        icon: "h-10 w-10",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-      size: "default",
-    },
+export const buttonVariantsStylesMap = {
+  default: styles['default-button'],
+  destructive: styles['destructive-button'],
+  outline: styles['outline-button'],
+  secondary: styles['secondary-button'],
+  ghost: styles['ghost-button'],
+  link: styles['link-button'],
+} as const;
+
+export const buttonSizesStylesMap = {
+  base: styles['base-size'],
+  sm: styles['sm-size'],
+  lg: styles['lg-size'],
+  xl: styles['xl-size'],
+  icon: styles['icon-size'],
+} as const;
+
+const getVariantStyles = (variant: ButtonVariant): string => {
+  const value = buttonVariantsStylesMap[variant];
+
+  if (!value) {
+    throw new Error('Invalid variant provided.');
   }
-)
 
-export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
-  asChild?: boolean
+  return value;
+};
+
+const getSizeStyles = (size: Size): string => {
+  const value = buttonSizesStylesMap[size];
+
+  if (!value) {
+    throw new Error('Invalid size provided.');
+  }
+
+  return value;
+};
+
+export type ButtonVariant = keyof typeof buttonVariantsStylesMap;
+
+type Size = keyof typeof buttonSizesStylesMap;
+
+interface Props {
+  variant?: ButtonVariant;
+  size?: Size;
+}
+
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, Props {
+  asChild?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? Slot : "button"
+  ({ className, variant = 'default', size = 'base', asChild = false, ...props }, ref) => {
+    const Comp = asChild ? Slot : 'button';
+
+    const variantStyles = getVariantStyles(variant);
+
+    const sizeStyles = getSizeStyles(size);
+
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={cn(styles['button'], variantStyles, sizeStyles, className)}
         ref={ref}
         {...props}
       />
-    )
-  }
-)
-Button.displayName = "Button"
+    );
+  },
+);
+Button.displayName = 'Button';
 
-export { Button, buttonVariants }
+export { Button };

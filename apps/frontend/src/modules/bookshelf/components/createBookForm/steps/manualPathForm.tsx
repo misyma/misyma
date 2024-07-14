@@ -98,7 +98,7 @@ export const ManualPathForm = (): JSX.Element => {
         <Button
           type="submit"
           disabled={!form.formState.isValid}
-          className="border border-primary w-60 sm:w-96"
+          size='xl'
           onClick={() => {
             onSubmit(form.getValues());
           }}
