@@ -8,16 +8,16 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTrigger,
-} from '../../../common/components/ui/dialog';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/ui/form';
-import { Textarea } from '../../../common/components/ui/textarea';
-import { Button } from '../../../common/components/ui/button';
-import { Input } from '../../../common/components/ui/input';
+} from '../../../common/components/dialog/dialog';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/form/form';
+import { Textarea } from '../../../common/components/textArea/textarea';
+import { Button } from '../../../common/components/button/button';
+import { Input } from '../../../common/components/input/input';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { useQueryClient } from '@tanstack/react-query';
-import { useToast } from '../../../common/components/ui/use-toast';
+import { useToast } from '../../../common/components/toast/use-toast';
 import { useCreateQuoteMutation } from '../../../quotes/api/mutations/createQuoteMutation/createQuoteMutation';
 import { getQuotesOptionsQueryKey } from '../../../quotes/api/queries/getQuotes/getQuotesOptions';
 

@@ -8,18 +8,18 @@ import { FindBookChangeRequestByIdQueryOptions } from '../../../../modules/bookC
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
 import { FindBookByIdQueryOptions } from '../../../../modules/book/api/user/queries/findBookById/findBookByIdQueryOptions';
-import { Button } from '../../../../modules/common/components/ui/button';
+import { Button } from '../../../../modules/common/components/button/button';
 import { LoadingSpinner } from '../../../../modules/common/components/spinner/loading-spinner';
 import { ReversedLanguages } from '../../../../modules/common/constants/languages';
 import { BookFormat } from '../../../../modules/common/constants/bookFormat';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormField, FormItem } from '../../../../modules/common/components/ui/form';
+import { Form, FormField, FormItem } from '../../../../modules/common/components/form/form';
 import { Switch } from '../../../../modules/common/components/switch/switch';
 import { useUpdateBookMutation } from '../../../../modules/book/api/admin/mutations/updateBookMutation/updateBookMutation';
 import { useDeleteBookChangeRequestMutation } from '../../../../modules/bookChangeRequests/api/admin/mutations/deleteBookChangeRequest/deleteBookChangeRequest';
 import { BookApiError } from '../../../../modules/book/errors/bookApiError';
-import { useToast } from '../../../../modules/common/components/ui/use-toast';
+import { useToast } from '../../../../modules/common/components/toast/use-toast';
 
 type ChangeKeys = 'format' | 'isbn' | 'language' | 'releaseYear' | 'title' | 'translator';
 

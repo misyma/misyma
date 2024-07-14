@@ -2,7 +2,7 @@ import { Link, createFileRoute, useNavigate } from '@tanstack/react-router';
 import { FC, useState } from 'react';
 import { SendResetPasswordEmailForm } from '../../modules/auth/components/sendResetPasswordEmailForm/sendResetPasswordEmailForm';
 import { RequireNonAuthComponent } from '../../modules/core/components/requireNonAuth/requireNonAuthComponent';
-import { Button } from '../../modules/common/components/ui/button';
+import { Button } from '../../modules/common/components/button/button';
 import { DefaultFormLayout } from '../../modules/core/layouts/default/defaultFormLayout';
 
 export const SendResetPasswordEmailPage: FC = () => {

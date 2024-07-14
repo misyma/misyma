@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { Button } from '../modules/common/components/ui/button';
+import { Button } from '../modules/common/components/button/button';
 import { FC } from 'react';
 import { Logo } from '../modules/common/components/logo/logo';
 

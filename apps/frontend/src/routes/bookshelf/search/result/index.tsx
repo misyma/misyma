@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { RequireAuthComponent } from '../../../../modules/core/components/requireAuth/requireAuthComponent';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { LoadingSpinner } from '../../../../modules/common/components/spinner/loading-spinner';
-import { Button } from '../../../../modules/common/components/ui/button';
+import { Button } from '../../../../modules/common/components/button/button';
 import { Paginator } from '../../../../modules/common/components/paginator/paginator';
 import { Breadcrumbs, NumericBreadcrumb } from '../../../../modules/common/components/ui/breadcrumbs';
 import { useSearchBookContextDispatch } from '../../../../modules/bookshelf/context/searchCreateBookContext/searchCreateBookContext';

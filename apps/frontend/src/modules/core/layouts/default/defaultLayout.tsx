@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Link } from '@tanstack/react-router';
-import { Toaster } from '../../../common/components/ui/toaster';
+import { Toaster } from '../../../common/components/toast/toaster';
 import { cn } from '../../../common/lib/utils';
 
 export interface Props {

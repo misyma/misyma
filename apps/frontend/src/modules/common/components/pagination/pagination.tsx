@@ -2,7 +2,7 @@ import * as React from 'react';
 import { MoreHorizontal } from 'lucide-react';
 import { FaArrowLeftLong, FaArrowRightLong } from 'react-icons/fa6';
 import { cn } from '../../lib/utils';
-import { ButtonProps, buttonVariants } from './button';
+import { ButtonProps, buttonVariants } from '../button/button';
 
 const Pagination = ({ className, ...props }: React.ComponentProps<'nav'>) => (
   <nav

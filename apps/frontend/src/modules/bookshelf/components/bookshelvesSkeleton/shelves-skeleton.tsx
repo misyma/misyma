@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { AuthenticatedLayout } from '../../../auth/layouts/authenticated/authenticatedLayout';
-import { Skeleton } from '../../../common/components/ui/skeleton';
+import { Skeleton } from '../../../common/components/skeleton/skeleton';
 
 export const ShelvesSkeleton: FC = () => {
   return (

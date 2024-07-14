@@ -2,7 +2,7 @@ import { FC, useMemo } from 'react';
 import { StarRating } from '../../../../modules/bookReadings/components/starRating/starRating.js';
 import { StatusChooserCards } from '../../../../modules/book/components/statusChooser/statusChooserCards.js';
 import { BookshelfChoiceDropdown } from '../../../../modules/book/components/bookshelfChoiceDropdown/bookshelfChoiceDropdown.js';
-import { Separator } from '../../../../modules/common/components/ui/separator.js';
+import { Separator } from '../../../../modules/common/components/separator/separator.js';
 import { FavoriteBookButton } from '../../../../modules/book/components/favoriteBookButton/favoriteBookButton.js';
 import { UserBook } from '@common/contracts';
 import { CurrentRatingStar } from '../../../../modules/book/components/currentRatingStar/currentRatingStar.js';

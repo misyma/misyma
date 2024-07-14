@@ -17,17 +17,17 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../../../../../modules/common/components/ui/form';
-import { Input } from '../../../../../modules/common/components/ui/input';
+} from '../../../../../modules/common/components/form/form';
+import { Input } from '../../../../../modules/common/components/input/input';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '../../../../../modules/common/components/ui/tooltip';
+} from '../../../../../modules/common/components/tooltip/tooltip';
 import { HiOutlineInformationCircle } from 'react-icons/hi';
-import { Popover, PopoverContent, PopoverTrigger } from '../../../../../modules/common/components/ui/popover';
-import { Button } from '../../../../../modules/common/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '../../../../../modules/common/components/popover/popover';
+import { Button } from '../../../../../modules/common/components/button/button';
 import { cn } from '../../../../../modules/common/lib/utils';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import {
@@ -36,21 +36,21 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '../../../../../modules/common/components/ui/command';
+} from '../../../../../modules/common/components/command/command';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '../../../../../modules/common/components/ui/dialog';
+} from '../../../../../modules/common/components/dialog/dialog';
 import { useFindAuthorsQuery } from '../../../../../modules/author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
 import { CommandLoading } from 'cmdk';
 import LanguageSelect from '../../../../../modules/book/components/languageSelect/languageSelect';
 import { useUpdateBookMutation } from '../../../../../modules/book/api/admin/mutations/updateBookMutation/updateBookMutation';
-import { useToast } from '../../../../../modules/common/components/ui/use-toast';
+import { useToast } from '../../../../../modules/common/components/toast/use-toast';
 import { BookApiError } from '../../../../../modules/book/errors/bookApiError';
-import { Checkbox } from '../../../../../modules/common/components/ui/checkbox';
+import { Checkbox } from '../../../../../modules/common/components/checkbox/checkbox';
 import { RequireAdmin } from '../../../../../modules/core/components/requireAdmin/requireAdmin';
 
 const booksSearchSchema = z.object({

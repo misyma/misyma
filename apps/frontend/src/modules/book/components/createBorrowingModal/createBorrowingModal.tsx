@@ -1,19 +1,19 @@
 import { FC, useState } from 'react';
-import { Dialog, DialogContent, DialogDescription, DialogHeader } from '../../../common/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader } from '../../../common/components/dialog/dialog';
 import { formatDate } from 'date-fns';
-import { Button } from '../../../common/components/ui/button';
+import { Button } from '../../../common/components/button/button';
 import { cn } from '../../../common/lib/utils';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/ui/form';
-import { Popover, PopoverContent, PopoverTrigger } from '../../../common/components/ui/popover';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/form/form';
+import { Popover, PopoverContent, PopoverTrigger } from '../../../common/components/popover/popover';
 import { CalendarIcon } from 'lucide-react';
-import { Calendar } from '../../../common/components/ui/calendar';
+import { Calendar } from '../../../common/components/calendar/calendar';
 import { useStoreSelector } from '../../../core/store/hooks/useStoreSelector';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
-import { Input } from '../../../common/components/ui/input';
-import { useToast } from '../../../common/components/ui/use-toast';
+import { Input } from '../../../common/components/input/input';
+import { useToast } from '../../../common/components/toast/use-toast';
 import { useCreateBorrowingMutation } from '../../../borrowing/api/mutations/createBorrowingMutation/createBorrowingMutation';
 import { pl } from 'date-fns/locale';
 

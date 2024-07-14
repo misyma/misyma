@@ -20,8 +20,8 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from '../../../../modules/common/components/ui/pagination';
-import { Table, TableBody, TableCell, TableRow } from '../../../common/components/ui/table';
+} from '../../../common/components/pagination/pagination';
+import { Table, TableBody, TableCell, TableRow } from '../../../common/components/table/table';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

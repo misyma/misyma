@@ -6,7 +6,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from '../ui/pagination';
+} from '../pagination/pagination';
 
 export interface PaginatorProps {
   pagesCount: number;

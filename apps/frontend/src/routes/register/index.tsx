@@ -2,10 +2,10 @@ import { Link, createFileRoute, useNavigate } from '@tanstack/react-router';
 import { FC, useState } from 'react';
 import { RegisterUserForm } from '../../modules/auth/components/registerUserForm/registerUserForm';
 import { RequireNonAuthComponent } from '../../modules/core/components/requireNonAuth/requireNonAuthComponent';
-import { Button } from '../../modules/common/components/ui/button';
+import { Button } from '../../modules/common/components/button/button';
 import { DefaultFormLayout } from '../../modules/core/layouts/default/defaultFormLayout';
 import { useSendVerificationEmailMutation } from '../../modules/auth/api/sendVerificationEmailMutation/sendVerificationEmailMutation';
-import { useToast } from '../../modules/common/components/ui/use-toast';
+import { useToast } from '../../modules/common/components/toast/use-toast';
 
 export const RegisterPage: FC = () => {
   const [isSuccess, setIsSuccess] = useState<boolean>(false);

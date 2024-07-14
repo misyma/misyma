@@ -5,7 +5,7 @@ import { AuthorTable } from '../../../../modules/author/components/authorTable/a
 import { columns } from '../../../../modules/author/components/authorTable/authorTableColumns';
 import { useFindAuthorsQuery } from '../../../../modules/author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
 import { AddAuthorModal } from '../../../../modules/author/components/addAuthorModal/addAuthorModal';
-import { Button } from '../../../../modules/common/components/ui/button';
+import { Button } from '../../../../modules/common/components/button/button';
 import { RequireAdmin } from '../../../../modules/core/components/requireAdmin/requireAdmin';
 
 export const AuthorsAdminPage: FC = () => {

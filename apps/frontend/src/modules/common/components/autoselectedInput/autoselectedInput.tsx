@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import * as React from 'react';
-import { Input, InputProps } from '../ui/input';
+import { Input, InputProps } from '../input/input';
 
 export const AutoselectedInput = React.forwardRef<HTMLInputElement, InputProps>(
   (props: InputProps) => {

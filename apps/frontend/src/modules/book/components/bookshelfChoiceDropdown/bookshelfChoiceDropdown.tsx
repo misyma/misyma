@@ -1,8 +1,8 @@
 import { FC, useEffect, useMemo, useState } from 'react';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Skeleton } from '../../../common/components/ui/skeleton';
-import { useToast } from '../../../common/components/ui/use-toast';
+import { Skeleton } from '../../../common/components/skeleton/skeleton';
+import { useToast } from '../../../common/components/toast/use-toast';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useFindUserBookshelfsQuery } from '../../../bookshelf/api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
@@ -14,9 +14,9 @@ import { BorrowingApiQueryKeys } from '../../../borrowing/api/queries/borrowingA
 import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 import { useUpdateUserBookMutation } from '../../api/user/mutations/updateUserBookMutation/updateUserBookMutation';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
-import { Popover, PopoverContent } from '../../../common/components/ui/popover';
+import { Popover, PopoverContent } from '../../../common/components/popover/popover';
 import { PopoverTrigger } from '@radix-ui/react-popover';
-import { Button } from '../../../common/components/ui/button';
+import { Button } from '../../../common/components/button/button';
 import {
   Command,
   CommandEmpty,
@@ -24,7 +24,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '../../../common/components/ui/command';
+} from '../../../common/components/command/command';
 import { CommandLoading } from 'cmdk';
 
 interface Props {

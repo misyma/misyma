@@ -1,5 +1,5 @@
 import { FC, useMemo, useState } from 'react';
-import { Separator } from '../../../../modules/common/components/ui/separator.js';
+import { Separator } from '../../../../modules/common/components/separator/separator.js';
 import { useFindUserQuery } from '../../../../modules/user/api/queries/findUserQuery/findUserQuery.js';
 import { UserBook } from '@common/contracts';
 import { useQuery, useQueryClient } from '@tanstack/react-query';

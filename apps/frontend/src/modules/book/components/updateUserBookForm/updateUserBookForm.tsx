@@ -1,10 +1,10 @@
 import { FC, useEffect, useRef, useState } from 'react';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../modules/common/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/form/form';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
-import { FileInput } from '../../../../modules/common/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../../modules/common/components/ui/select';
-import { Button } from '../../../../modules/common/components/ui/button';
+import { FileInput } from '../../../common/components/input/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../common/components/select/select';
+import { Button } from '../../../common/components/button/button';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
 import { getGenresQueryOptions } from '../../../../modules/genres/api/queries/getGenresQuery/getGenresQueryOptions';
