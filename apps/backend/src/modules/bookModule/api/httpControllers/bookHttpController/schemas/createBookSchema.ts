@@ -8,7 +8,7 @@ import { bookDtoSchema } from '../../common/bookDto.js';
 export const createBookBodyDtoSchema = Type.Object({
   title: Type.String({
     minLength: 1,
-    maxLength: 128,
+    maxLength: 256,
   }),
   isbn: Type.Optional(
     Type.String({

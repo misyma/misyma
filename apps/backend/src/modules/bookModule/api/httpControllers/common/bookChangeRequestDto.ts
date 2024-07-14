@@ -10,7 +10,7 @@ export const bookChangeRequestDtoSchema = Type.Object({
   title: Type.Optional(
     Type.String({
       minLength: 1,
-      maxLength: 128,
+      maxLength: 256,
     }),
   ),
   isbn: Type.Optional(
