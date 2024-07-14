@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
 import axios, { type AxiosInstance } from 'axios';
+import axiosRetry from 'axios-retry';
 
 import { type Config } from '../../config.js';
 
 export class MisymaHttpClientFactory {
   public static create(config: Config): AxiosInstance {
-    return axios.create({
+    const httpClient = axios.create({
       baseURL: config.misyma.url,
       headers: {
         Authorization: `Bearer ${config.misyma.apiKey}`,
@@ -15,5 +16,9 @@ export class MisymaHttpClientFactory {
       },
       timeout: 5000,
     });
+
+    axiosRetry(httpClient, { retries: 3 });
+
+    return httpClient;
   }
 }
