@@ -5,7 +5,7 @@ import { HiQuestionMarkCircle } from 'react-icons/hi';
 import { ReadingStatus } from '@common/contracts';
 import { cn } from '../../../common/lib/utils';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Skeleton } from '../../../common/components/ui/skeleton';
+import { Skeleton } from '../../../common/components/skeleton/skeleton';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useUpdateUserBookMutation } from '../../api/user/mutations/updateUserBookMutation/updateUserBookMutation';

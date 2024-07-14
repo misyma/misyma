@@ -1,8 +1,8 @@
 import { FC, useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
-import { Button } from '../../../common/components/ui/button.js';
-import { RadioGroup, RadioGroupItem } from '../../../common/components/ui/radio-group.js';
-import { Label } from '../../../common/components/ui/label.js';
+import { Button } from '../../../common/components/button/button.js';
+import { RadioGroup, RadioGroupItem } from '../../../common/components/radioGroup/radio-group.js';
+import { Label } from '../../../common/components/label/label.js';
 
 interface Props {
   initialValue: 'isbn' | 'title';

@@ -1,6 +1,6 @@
 import { type ColumnDef } from '@tanstack/react-table';
 import { BookReading } from '@common/contracts';
-import { Separator } from '../../../../modules/common/components/ui/separator';
+import { Separator } from '../../../common/components/separator/separator';
 import { HiStar } from 'react-icons/hi';
 
 export const columns: ColumnDef<BookReading>[] = [

@@ -1,5 +1,5 @@
 import { FC, useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTrigger } from '../../../common/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTrigger } from '../../../common/components/dialog/dialog';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';

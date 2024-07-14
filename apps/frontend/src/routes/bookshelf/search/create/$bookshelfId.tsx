@@ -9,12 +9,13 @@ import { Breadcrumbs, NumericBreadcrumb } from '../../../../modules/common/compo
 export const SearchCreatePage: FC = () => {
   const searchBookContext = useSearchBookContext();
 
-  const searchParams = Route.useParams();
+  // TODO: fix
+  const params = Route.useParams() as { bookshelfId: string};
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (searchParams.bookshelfId === '') {
+    if (params.bookshelfId === '') {
       navigate({
         to: '/shelves',
       });
@@ -26,7 +27,7 @@ export const SearchCreatePage: FC = () => {
       navigate({
         to: '/bookshelf/search',
         search: {
-          bookshelfId: searchParams.bookshelfId,
+          bookshelfId: params.bookshelfId,
           next: 0,
           type: 'title',
         },
@@ -74,7 +75,7 @@ export const SearchCreatePage: FC = () => {
             }}
           />
           {}
-          <ManualStep bookshelfId={searchParams.bookshelfId} />
+          <ManualStep bookshelfId={params.bookshelfId} />
         </div>
       </div>
     </AuthenticatedLayout>

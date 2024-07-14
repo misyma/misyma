@@ -1,11 +1,11 @@
 import { FC } from 'react';
-import { RadioGroup, RadioGroupItem } from '../../../common/components/ui/radio-group';
+import { RadioGroup, RadioGroupItem } from '../../../common/components/radioGroup/radio-group';
 import { HiStar } from 'react-icons/hi';
 import { cn } from '../../../common/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useSelector } from 'react-redux';
-import { Skeleton } from '../../../common/components/ui/skeleton';
+import { Skeleton } from '../../../common/components/skeleton/skeleton';
 import { CreateBookReadingModal } from '../../../book/components/createBookReadingModal/createBookReadingModal';
 import { BookReading } from '@common/contracts';
 import { FindBookReadingsQueryOptions } from '../../api/queries/findBookReadings/findBookReadingsQueryOptions';

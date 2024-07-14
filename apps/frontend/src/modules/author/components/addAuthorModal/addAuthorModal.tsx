@@ -5,20 +5,20 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTrigger,
-} from '../../../common/components/ui/dialog';
+} from '../../../common/components/dialog/dialog';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/ui/form';
-import { Input } from '../../../common/components/ui/input';
-import { Button } from '../../../common/components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/form/form';
+import { Input } from '../../../common/components/input/input';
+import { Button } from '../../../common/components/button/button';
 import { useCreateAuthorMutation } from '../../api/admin/mutations/createAuthorMutation/createAuthorMutation';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { ApiError } from '../../../common/errors/apiError';
 import { useQueryClient } from '@tanstack/react-query';
 import { AuthorsApiQueryKeys } from '../../api/user/queries/authorsApiQueryKeys';
-import { useToast } from '../../../common/components/ui/use-toast';
+import { useToast } from '../../../common/components/toast/use-toast';
 
 interface Props {
   className?: string;

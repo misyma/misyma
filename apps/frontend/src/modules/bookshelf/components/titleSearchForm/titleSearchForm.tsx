@@ -1,9 +1,16 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/ui/form.js';
-import { Input } from '../../../common/components/ui/input.js';
-import { Button } from '../../../common/components/ui/button.js';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../../../common/components/form/form.js';
+import { Input } from '../../../common/components/input/input.js';
+import { Button } from '../../../common/components/button/button.js';
 import { useNavigate } from '@tanstack/react-router';
 import { useSearchBookContextDispatch } from '../../context/searchCreateBookContext/searchCreateBookContext.js';
 
@@ -40,8 +47,8 @@ export const TitleSearchForm = ({ bookshelfId }: Props): JSX.Element => {
     }
 
     searchBookDispatch({
-      searchQuery: values.title
-    })
+      searchQuery: values.title,
+    });
 
     navigate({
       to: '/bookshelf/search/result',
@@ -81,7 +88,7 @@ export const TitleSearchForm = ({ bookshelfId }: Props): JSX.Element => {
         <Button
           type="submit"
           disabled={!byTitleForm.formState.isValid}
-          className="border border-primary w-60 sm:w-96"
+          size="xl"
         >
           Pobierz dane
         </Button>

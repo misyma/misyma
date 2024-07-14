@@ -15,21 +15,21 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../../../../../common/components/ui/form';
-import { Input } from '../../../../../common/components/ui/input';
-import { Button } from '../../../../../common/components/ui/button';
+} from '../../../../../common/components/form/form';
+import { Input } from '../../../../../common/components/input/input';
+import { Button } from '../../../../../common/components/button/button';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../../../../../common/components/ui/select';
+} from '../../../../../common/components/select/select';
 import { BookFormat as ContractBookFormat } from '@common/contracts';
 import { BookFormat } from '../../../../../common/constants/bookFormat';
 import { Language } from '@common/contracts';
 import { FC, useCallback, useState } from 'react';
-import { Checkbox } from '../../../../../common/components/ui/checkbox';
+import { Checkbox } from '../../../../../common/components/checkbox/checkbox';
 import LanguageSelect from '../../../../../book/components/languageSelect/languageSelect';
 import { Languages } from '../../../../../common/constants/languages';
 
@@ -239,7 +239,8 @@ export const ManualStepTwoForm = (): JSX.Element => {
         </div>
         <div className="flex justify-between w-full gap-4">
           <Button
-            className="border border-primary w-full"
+            variant='outline'
+            size="lg"
             onClick={() => {
               dispatch({
                 type: BookCreationActionType.setStep,
@@ -250,6 +251,7 @@ export const ManualStepTwoForm = (): JSX.Element => {
             Wróć
           </Button>
           <Button
+            size="lg"
             className="border border-primary w-full"
             disabled={!form.formState.isValid}
             type="submit"

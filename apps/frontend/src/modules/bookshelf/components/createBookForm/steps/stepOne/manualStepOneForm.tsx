@@ -15,10 +15,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../../../../../common/components/ui/form';
-import { Input } from '../../../../../common/components/ui/input';
-import { Button } from '../../../../../common/components/ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '../../../../../common/components/ui/popover';
+} from '../../../../../common/components/form/form';
+import { Input } from '../../../../../common/components/input/input';
+import { Button } from '../../../../../common/components/button/button';
+import { Popover, PopoverContent, PopoverTrigger } from '../../../../../common/components/popover/popover';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import {
   Command,
@@ -26,7 +26,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '../../../../../common/components/ui/command';
+} from '../../../../../common/components/command/command';
 import { cn } from '../../../../../common/lib/utils';
 import { useState } from 'react';
 import { CommandLoading } from 'cmdk';
@@ -37,14 +37,19 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '../../../../../common/components/ui/dialog';
+} from '../../../../../common/components/dialog/dialog';
 import { HiOutlineInformationCircle } from 'react-icons/hi';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../../../common/components/ui/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../../../../../common/components/tooltip/tooltip';
 import { useFindAuthorsQuery } from '../../../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
 import { findUserBooksBy } from '../../../../../book/api/user/queries/findUserBookBy/findUserBooksBy';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';
-import { toast } from '../../../../../common/components/ui/use-toast';
+import { toast } from '../../../../../common/components/toast/use-toast';
 import { BookApiError } from '../../../../../book/errors/bookApiError';
 
 const stepOneSchema = z
@@ -324,6 +329,7 @@ export const ManualStepOneForm = (): JSX.Element => {
                   <PopoverTrigger asChild>
                     <FormControl>
                       <Button
+                        size="xl"
                         variant="outline"
                         role="combobox"
                         className={cn(
@@ -494,6 +500,7 @@ export const ManualStepOneForm = (): JSX.Element => {
         />
         <div className="flex flex-col w-full justify-between gap-4">
           <Button
+            size="xl"
             className="border border-primary w-full"
             disabled={!form.formState.isValid}
             type="submit"

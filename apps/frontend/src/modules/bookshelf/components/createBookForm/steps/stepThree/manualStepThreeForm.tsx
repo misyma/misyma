@@ -21,9 +21,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../../../../../common/components/ui/form';
-import { FileInput } from '../../../../../common/components/ui/input';
-import { Button } from '../../../../../common/components/ui/button';
+} from '../../../../../common/components/form/form';
+import { FileInput } from '../../../../../common/components/input/input';
+import { Button } from '../../../../../common/components/button/button';
 import { useCreateBookMutation } from '../../../../../book/api/user/mutations/createBookMutation/createBookMutation';
 import { useFindUserQuery } from '../../../../../user/api/queries/findUserQuery/findUserQuery';
 import { useNavigate } from '@tanstack/react-router';
@@ -33,9 +33,9 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../../../../../common/components/ui/select';
+} from '../../../../../common/components/select/select';
 import { ReadingStatus } from '../../../../../common/constants/readingStatus';
-import { useToast } from '../../../../../common/components/ui/use-toast';
+import { useToast } from '../../../../../common/components/toast/use-toast';
 import { useEffect, useRef, useState } from 'react';
 import { useUploadBookImageMutation } from '../../../../../book/api/user/mutations/uploadBookImageMutation/uploadBookImageMutation';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -456,9 +456,10 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
             </FormItem>
           )}
         />
-        <div className="flex w-full gap-4">
+        <div className="flex w-full gap-4 justify-between">
           <Button
-            className="border border-primary w-full"
+            size="lg"
+            variant="outline"
             onClick={() => {
               dispatch({
                 type: BookCreationActionType.setStep,
@@ -469,7 +470,7 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
             Wróć
           </Button>
           <Button
-            className="border border-primary w-full"
+            size="lg"
             disabled={!form.formState.isValid}
             type="submit"
           >

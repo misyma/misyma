@@ -3,13 +3,13 @@ import { AuthenticatedLayout } from '../../modules/auth/layouts/authenticated/au
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { RequireAuthComponent } from '../../modules/core/components/requireAuth/requireAuthComponent';
 import { useFindUserQuery } from '../../modules/user/api/queries/findUserQuery/findUserQuery';
-import { Button } from '../../modules/common/components/ui/button';
-import { ScrollArea } from '../../modules/common/components/ui/scroll-area';
+import { Button } from '../../modules/common/components/button/button';
+import { ScrollArea } from '../../modules/common/components/scrollArea/scroll-area';
 import { HiPencil } from 'react-icons/hi';
 import { IoMdEye } from 'react-icons/io';
 import { HiCheck, HiOutlineX } from 'react-icons/hi';
 import { useUpdateBookshelfMutation } from '../../modules/bookshelf/api/mutations/updateBookshelfMutation/updateBookshelfMutation';
-import { useToast } from '../../modules/common/components/ui/use-toast';
+import { useToast } from '../../modules/common/components/toast/use-toast';
 import { AutoselectedInput } from '../../modules/common/components/autoselectedInput/autoselectedInput';
 import { z } from 'zod';
 import { useCreateBookshelfMutation } from '../../modules/bookshelf/api/mutations/createBookshelfMutation/createBookshelfMutation';
@@ -25,7 +25,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from '../../modules/common/components/ui/pagination';
+} from '../../modules/common/components/pagination/pagination';
 import { useQueryClient } from '@tanstack/react-query';
 import { ShelfApiError } from '../../modules/bookshelf/api/errors/shelfApiError';
 import { useBreadcrumbKeysDispatch } from '../../modules/common/contexts/breadcrumbKeysContext';
@@ -299,7 +299,8 @@ export const ShelvesPage: FC = () => {
         <div className="flex flex-col w-[80vw] sm:w-[90vw] sm:px-48 items-center justify-center gap-4">
           <div className="w-full flex items-end justify-center sm:justify-end">
             <Button
-              className="text-lg px-24 w-60 sm:w-96"
+              size="xl"
+              className="text-lg px-24"
               onClick={() => onAddNewBookshelf()}
               disabled={isCreatingNew}
             >

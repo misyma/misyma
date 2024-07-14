@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { RequireAuthComponent } from '../../../../modules/core/components/requireAuth/requireAuthComponent';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { LoadingSpinner } from '../../../../modules/common/components/spinner/loading-spinner';
-import { Button } from '../../../../modules/common/components/ui/button';
+import { Button } from '../../../../modules/common/components/button/button';
 import { Paginator } from '../../../../modules/common/components/paginator/paginator';
 import { Breadcrumbs, NumericBreadcrumb } from '../../../../modules/common/components/ui/breadcrumbs';
 import { useSearchBookContextDispatch } from '../../../../modules/bookshelf/context/searchCreateBookContext/searchCreateBookContext';
@@ -65,7 +65,10 @@ export const SearchResultPage: FC = () => {
 
   const onCreateManually = () => {
     navigate({
-      to: `/manually-create-book/${searchParams.bookshelfId}`,
+      to: `/bookshelf/createBook`,
+      params: {
+        id: searchParams.bookshelfId,
+      },
     });
   };
 
@@ -193,7 +196,7 @@ export const SearchResultPage: FC = () => {
           <div className="flex flex-col gap-4">
             <Button
               onClick={onAddBook}
-              className="w-60 sm:w-96"
+              size="xl"
             >
               Kontynuuj
             </Button>

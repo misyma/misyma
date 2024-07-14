@@ -13,7 +13,7 @@ import { columns } from '../../../../modules/book/components/quotationsTable/quo
 import { QuotesApiQueryKeys } from '../../../../modules/quotes/api/queries/quotesApiQueryKeys';
 import { cn } from '../../../../modules/common/lib/utils';
 import { CreateQuotationModal } from '../../../../modules/book/components/createQuotationModal/createQuotationModal';
-import { Button } from '../../../../modules/common/components/ui/button';
+import { Button } from '../../../../modules/common/components/button/button';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { Navigate, createFileRoute, useNavigate } from '@tanstack/react-router';
 import { z } from 'zod';
@@ -167,7 +167,7 @@ export const QuotesPage: FC = () => {
             </ul>
             <CreateQuotationModal
               onMutated={() => {}}
-              trigger={<Button className="w-32 sm:w-96">Dodaj cytat</Button>}
+              trigger={<Button size="xl">Dodaj cytat</Button>}
               userBookId={bookId}
             />
           </div>

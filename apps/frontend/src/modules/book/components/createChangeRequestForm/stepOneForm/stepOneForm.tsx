@@ -1,9 +1,9 @@
 import { HiOutlineInformationCircle } from 'react-icons/hi';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../common/components/ui/form';
-import { Input } from '../../../../common/components/ui/input';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../../common/components/ui/tooltip';
-import { Popover, PopoverContent, PopoverTrigger } from '../../../../common/components/ui/popover';
-import { Button } from '../../../../common/components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../common/components/form/form';
+import { Input } from '../../../../common/components/input/input';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../../common/components/tooltip/tooltip';
+import { Popover, PopoverContent, PopoverTrigger } from '../../../../common/components/popover/popover';
+import { Button } from '../../../../common/components/button/button';
 import { cn } from '../../../../common/lib/utils';
 import {
   Command,
@@ -11,14 +11,14 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '../../../../common/components/ui/command';
+} from '../../../../common/components/command/command';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '../../../../common/components/ui/dialog';
+} from '../../../../common/components/dialog/dialog';
 import { CommandLoading } from 'cmdk';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import { isbnSchema } from '../../../../common/schemas/isbnSchema';
@@ -236,8 +236,9 @@ export const StepOneForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
                       <Button
                         variant="outline"
                         role="combobox"
+                        size='xl'
                         className={cn(
-                          'w-60 sm:w-96 justify-between bg-[#D1D5DB]/20',
+                          'justify-between bg-[#D1D5DB]/20',
                           !field.value && 'text-muted-foreground',
                           draftAuthorName && 'text-black',
                         )}

@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { FC } from 'react';
-import { Button } from '../../modules/common/components/ui/button';
+import { Button } from '../../modules/common/components/button/button';
 import { AuthenticatedLayout } from '../../modules/auth/layouts/authenticated/authenticatedLayout';
 
 export const NotFoundPage: FC = () => {

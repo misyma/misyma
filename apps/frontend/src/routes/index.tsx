@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { Button } from '../modules/common/components/ui/button';
+import { Button } from '../modules/common/components/button/button';
 import { FC } from 'react';
 import { Logo } from '../modules/common/components/logo/logo';
 
@@ -27,7 +27,8 @@ export const LandingPage: FC = () => {
                     to: '/login',
                   })
                 }
-                className="w-60 sm:w-96 py-6 px-6 mt-8 sm:mt-16 text-sm sm:text-xl"
+                size="xl"
+                className="py-6 px-6 mt-8 sm:mt-16 text-sm sm:text-xl"
               >
                 Odkryj jej możliwości
               </Button>

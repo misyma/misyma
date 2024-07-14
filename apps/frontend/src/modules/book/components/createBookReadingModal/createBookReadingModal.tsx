@@ -5,18 +5,18 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTrigger,
-} from '../../../common/components/ui/dialog';
+} from '../../../common/components/dialog/dialog';
 import { formatDate } from 'date-fns';
-import { Button } from '../../../common/components/ui/button';
+import { Button } from '../../../common/components/button/button';
 import { cn } from '../../../common/lib/utils';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/ui/form';
-import { Popover, PopoverContent, PopoverTrigger } from '../../../common/components/ui/popover';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/form/form';
+import { Popover, PopoverContent, PopoverTrigger } from '../../../common/components/popover/popover';
 import { CalendarIcon } from 'lucide-react';
-import { Calendar } from '../../../common/components/ui/calendar';
-import { Textarea } from '../../../common/components/ui/textarea';
+import { Calendar } from '../../../common/components/calendar/calendar';
+import { Textarea } from '../../../common/components/textArea/textarea';
 import { useAddBookReadingMutation } from '../../../bookReadings/api/mutations/bookReadings/addBookReadingMutation/addBookReadingMutation';
 import { useQueryClient } from '@tanstack/react-query';
 import { BookReadingsApiQueryKeys } from '../../../bookReadings/api/queries/bookReadingsApiQueryKeys';
@@ -109,7 +109,7 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
           control={form.control}
           name="comment"
           render={({ field }) => (
-            <FormItem className='flex flex-col gap-2'>
+            <FormItem className="flex flex-col gap-2">
               <FormLabel>Komentarz</FormLabel>
               <FormControl>
                 <Textarea
@@ -129,7 +129,7 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel>Data rozpoczęcia czytania</FormLabel>
-              <Popover>
+              <Popover modal={true}>
                 <PopoverTrigger asChild>
                   <FormControl>
                     <Button
@@ -170,7 +170,7 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel>Data zakończenia czytania</FormLabel>
-              <Popover>
+              <Popover modal={true}>
                 <PopoverTrigger asChild>
                   <FormControl>
                     <Button

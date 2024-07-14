@@ -1,8 +1,8 @@
 import { FC, useEffect, useMemo, useState } from 'react';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Skeleton } from '../../../common/components/ui/skeleton';
-import { useToast } from '../../../common/components/ui/use-toast';
+import { Skeleton } from '../../../common/components/skeleton/skeleton';
+import { useToast } from '../../../common/components/toast/use-toast';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useFindUserBookshelfsQuery } from '../../../bookshelf/api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
@@ -14,9 +14,9 @@ import { BorrowingApiQueryKeys } from '../../../borrowing/api/queries/borrowingA
 import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 import { useUpdateUserBookMutation } from '../../api/user/mutations/updateUserBookMutation/updateUserBookMutation';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
-import { Popover, PopoverContent } from '../../../common/components/ui/popover';
+import { Popover, PopoverContent } from '../../../common/components/popover/popover';
 import { PopoverTrigger } from '@radix-ui/react-popover';
-import { Button } from '../../../common/components/ui/button';
+import { Button } from '../../../common/components/button/button';
 import {
   Command,
   CommandEmpty,
@@ -24,7 +24,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '../../../common/components/ui/command';
+} from '../../../common/components/command/command';
 import { CommandLoading } from 'cmdk';
 
 interface Props {
@@ -159,7 +159,13 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
         onOpenChange={setOpen}
       >
         <PopoverTrigger asChild>
-          <Button className="sm:w-60 bg-transparent border-none text-primary text-xl">{currentBookshelf}</Button>
+          <Button
+            size="xl"
+            variant="outline"
+            className="border-none text-xl"
+          >
+            {currentBookshelf}
+          </Button>
         </PopoverTrigger>
         <PopoverContent>
           <Command shouldFilter={false}>
@@ -201,38 +207,38 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
                 </>
               }
             </CommandList>
-            {usingBorrowFlow && (
-              <CreateBorrowingModal
-                bookId={bookId}
-                onMutated={async () => {
-                  setUsingBorrowFlow(false);
-
-                  await queryClient.invalidateQueries({
-                    predicate: ({ queryKey }) =>
-                      queryKey[0] === BorrowingApiQueryKeys.findBookBorrowingsQuery && queryKey[1] === bookId,
-                  });
-
-                  queryClient.invalidateQueries({
-                    queryKey: [BookApiQueryKeys.findUserBookById, bookId, userData?.id],
-                  });
-
-                  queryClient.invalidateQueries({
-                    predicate: (query) =>
-                      query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId &&
-                      query.queryKey[1] === selectedBookshelfId,
-                  });
-                }}
-                onClosed={() => {
-                  setUsingBorrowFlow(false);
-
-                  setSelectedBookshelfId(previousBookshelfId as string);
-                }}
-                open={usingBorrowFlow}
-              />
-            )}
           </Command>
         </PopoverContent>
       </Popover>
+      {usingBorrowFlow && (
+        <CreateBorrowingModal
+          bookId={bookId}
+          onMutated={async () => {
+            setUsingBorrowFlow(false);
+
+            await queryClient.invalidateQueries({
+              predicate: ({ queryKey }) =>
+                queryKey[0] === BorrowingApiQueryKeys.findBookBorrowingsQuery && queryKey[1] === bookId,
+            });
+
+            queryClient.invalidateQueries({
+              queryKey: [BookApiQueryKeys.findUserBookById, bookId, userData?.id],
+            });
+
+            queryClient.invalidateQueries({
+              predicate: (query) =>
+                query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId &&
+                query.queryKey[1] === selectedBookshelfId,
+            });
+          }}
+          onClosed={() => {
+            setUsingBorrowFlow(false);
+
+            setSelectedBookshelfId(previousBookshelfId as string);
+          }}
+          open={usingBorrowFlow}
+        />
+      )}
     </>
   );
 };

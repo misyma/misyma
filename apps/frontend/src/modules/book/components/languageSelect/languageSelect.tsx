@@ -1,8 +1,8 @@
 import { ControllerRenderProps } from 'react-hook-form';
 import { FC, memo, useState } from 'react';
 import { Languages } from '../../../common/constants/languages';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../common/components/ui/select';
-import { FormControl } from '../../../common/components/ui/form';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../common/components/select/select';
+import { FormControl } from '../../../common/components/form/form';
 import { Language } from '@common/contracts';
 
 interface Props {

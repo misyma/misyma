@@ -158,156 +158,90 @@ const AdminTabsBooksEditIdRoute = AdminTabsBooksEditIdImport.update({
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
     '/bookshelf/$bookshelfId': {
-      id: '/bookshelf/$bookshelfId'
-      path: '/bookshelf/$bookshelfId'
-      fullPath: '/bookshelf/$bookshelfId'
       preLoaderRoute: typeof BookshelfBookshelfIdImport
       parentRoute: typeof rootRoute
     }
     '/login/': {
-      id: '/login/'
-      path: '/login'
-      fullPath: '/login'
       preLoaderRoute: typeof LoginIndexImport
       parentRoute: typeof rootRoute
     }
     '/newPassword/': {
-      id: '/newPassword/'
-      path: '/newPassword'
-      fullPath: '/newPassword'
       preLoaderRoute: typeof NewPasswordIndexImport
       parentRoute: typeof rootRoute
     }
     '/notFound/': {
-      id: '/notFound/'
-      path: '/notFound'
-      fullPath: '/notFound'
       preLoaderRoute: typeof NotFoundIndexImport
       parentRoute: typeof rootRoute
     }
     '/profile/': {
-      id: '/profile/'
-      path: '/profile'
-      fullPath: '/profile'
       preLoaderRoute: typeof ProfileIndexImport
       parentRoute: typeof rootRoute
     }
     '/register/': {
-      id: '/register/'
-      path: '/register'
-      fullPath: '/register'
       preLoaderRoute: typeof RegisterIndexImport
       parentRoute: typeof rootRoute
     }
     '/resetPassword/': {
-      id: '/resetPassword/'
-      path: '/resetPassword'
-      fullPath: '/resetPassword'
       preLoaderRoute: typeof ResetPasswordIndexImport
       parentRoute: typeof rootRoute
     }
     '/shelves/': {
-      id: '/shelves/'
-      path: '/shelves'
-      fullPath: '/shelves'
       preLoaderRoute: typeof ShelvesIndexImport
       parentRoute: typeof rootRoute
     }
     '/verifyEmail/': {
-      id: '/verifyEmail/'
-      path: '/verifyEmail'
-      fullPath: '/verifyEmail'
       preLoaderRoute: typeof VerifyEmailIndexImport
       parentRoute: typeof rootRoute
     }
     '/bookshelf/createBook/': {
-      id: '/bookshelf/createBook/'
-      path: '/bookshelf/createBook'
-      fullPath: '/bookshelf/createBook'
       preLoaderRoute: typeof BookshelfCreateBookIndexImport
       parentRoute: typeof rootRoute
     }
     '/bookshelf/search/': {
-      id: '/bookshelf/search/'
-      path: '/bookshelf/search'
-      fullPath: '/bookshelf/search'
       preLoaderRoute: typeof BookshelfSearchIndexImport
       parentRoute: typeof rootRoute
     }
     '/admin/tabs/changeRequests/$id': {
-      id: '/admin/tabs/changeRequests/$id'
-      path: '/admin/tabs/changeRequests/$id'
-      fullPath: '/admin/tabs/changeRequests/$id'
       preLoaderRoute: typeof AdminTabsChangeRequestsIdImport
       parentRoute: typeof rootRoute
     }
     '/book/tabs/basicDataTab/$bookId': {
-      id: '/book/tabs/basicDataTab/$bookId'
-      path: '/book/tabs/basicDataTab/$bookId'
-      fullPath: '/book/tabs/basicDataTab/$bookId'
       preLoaderRoute: typeof BookTabsBasicDataTabBookIdImport
       parentRoute: typeof rootRoute
     }
     '/book/tabs/gradesTab/$bookId': {
-      id: '/book/tabs/gradesTab/$bookId'
-      path: '/book/tabs/gradesTab/$bookId'
-      fullPath: '/book/tabs/gradesTab/$bookId'
       preLoaderRoute: typeof BookTabsGradesTabBookIdImport
       parentRoute: typeof rootRoute
     }
     '/book/tabs/quotationsTab/$bookId': {
-      id: '/book/tabs/quotationsTab/$bookId'
-      path: '/book/tabs/quotationsTab/$bookId'
-      fullPath: '/book/tabs/quotationsTab/$bookId'
       preLoaderRoute: typeof BookTabsQuotationsTabBookIdImport
       parentRoute: typeof rootRoute
     }
     '/bookshelf/search/create/$bookshelfId': {
-      id: '/bookshelf/search/create/$bookshelfId'
-      path: '/bookshelf/search/create/$bookshelfId'
-      fullPath: '/bookshelf/search/create/$bookshelfId'
       preLoaderRoute: typeof BookshelfSearchCreateBookshelfIdImport
       parentRoute: typeof rootRoute
     }
     '/admin/tabs/authors/': {
-      id: '/admin/tabs/authors/'
-      path: '/admin/tabs/authors'
-      fullPath: '/admin/tabs/authors'
       preLoaderRoute: typeof AdminTabsAuthorsIndexImport
       parentRoute: typeof rootRoute
     }
     '/admin/tabs/books/': {
-      id: '/admin/tabs/books/'
-      path: '/admin/tabs/books'
-      fullPath: '/admin/tabs/books'
       preLoaderRoute: typeof AdminTabsBooksIndexImport
       parentRoute: typeof rootRoute
     }
     '/admin/tabs/changeRequests/': {
-      id: '/admin/tabs/changeRequests/'
-      path: '/admin/tabs/changeRequests'
-      fullPath: '/admin/tabs/changeRequests'
       preLoaderRoute: typeof AdminTabsChangeRequestsIndexImport
       parentRoute: typeof rootRoute
     }
     '/bookshelf/search/result/': {
-      id: '/bookshelf/search/result/'
-      path: '/bookshelf/search/result'
-      fullPath: '/bookshelf/search/result'
       preLoaderRoute: typeof BookshelfSearchResultIndexImport
       parentRoute: typeof rootRoute
     }
     '/admin/tabs/books/edit/$id': {
-      id: '/admin/tabs/books/edit/$id'
-      path: '/admin/tabs/books/edit/$id'
-      fullPath: '/admin/tabs/books/edit/$id'
       preLoaderRoute: typeof AdminTabsBooksEditIdImport
       parentRoute: typeof rootRoute
     }
@@ -316,7 +250,7 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren({
+export const routeTree = rootRoute.addChildren([
   IndexRoute,
   BookshelfBookshelfIdRoute,
   LoginIndexRoute,
@@ -339,106 +273,6 @@ export const routeTree = rootRoute.addChildren({
   AdminTabsChangeRequestsIndexRoute,
   BookshelfSearchResultIndexRoute,
   AdminTabsBooksEditIdRoute,
-})
+])
 
 /* prettier-ignore-end */
-
-/* ROUTE_MANIFEST_START
-{
-  "routes": {
-    "__root__": {
-      "filePath": "__root.tsx",
-      "children": [
-        "/",
-        "/bookshelf/$bookshelfId",
-        "/login/",
-        "/newPassword/",
-        "/notFound/",
-        "/profile/",
-        "/register/",
-        "/resetPassword/",
-        "/shelves/",
-        "/verifyEmail/",
-        "/bookshelf/createBook/",
-        "/bookshelf/search/",
-        "/admin/tabs/changeRequests/$id",
-        "/book/tabs/basicDataTab/$bookId",
-        "/book/tabs/gradesTab/$bookId",
-        "/book/tabs/quotationsTab/$bookId",
-        "/bookshelf/search/create/$bookshelfId",
-        "/admin/tabs/authors/",
-        "/admin/tabs/books/",
-        "/admin/tabs/changeRequests/",
-        "/bookshelf/search/result/",
-        "/admin/tabs/books/edit/$id"
-      ]
-    },
-    "/": {
-      "filePath": "index.tsx"
-    },
-    "/bookshelf/$bookshelfId": {
-      "filePath": "bookshelf/$bookshelfId.tsx"
-    },
-    "/login/": {
-      "filePath": "login/index.tsx"
-    },
-    "/newPassword/": {
-      "filePath": "newPassword/index.tsx"
-    },
-    "/notFound/": {
-      "filePath": "notFound/index.tsx"
-    },
-    "/profile/": {
-      "filePath": "profile/index.tsx"
-    },
-    "/register/": {
-      "filePath": "register/index.tsx"
-    },
-    "/resetPassword/": {
-      "filePath": "resetPassword/index.tsx"
-    },
-    "/shelves/": {
-      "filePath": "shelves/index.tsx"
-    },
-    "/verifyEmail/": {
-      "filePath": "verifyEmail/index.tsx"
-    },
-    "/bookshelf/createBook/": {
-      "filePath": "bookshelf/createBook/index.tsx"
-    },
-    "/bookshelf/search/": {
-      "filePath": "bookshelf/search/index.tsx"
-    },
-    "/admin/tabs/changeRequests/$id": {
-      "filePath": "admin/tabs/changeRequests/$id.tsx"
-    },
-    "/book/tabs/basicDataTab/$bookId": {
-      "filePath": "book/tabs/basicDataTab/$bookId.tsx"
-    },
-    "/book/tabs/gradesTab/$bookId": {
-      "filePath": "book/tabs/gradesTab/$bookId.tsx"
-    },
-    "/book/tabs/quotationsTab/$bookId": {
-      "filePath": "book/tabs/quotationsTab/$bookId.tsx"
-    },
-    "/bookshelf/search/create/$bookshelfId": {
-      "filePath": "bookshelf/search/create/$bookshelfId.tsx"
-    },
-    "/admin/tabs/authors/": {
-      "filePath": "admin/tabs/authors/index.tsx"
-    },
-    "/admin/tabs/books/": {
-      "filePath": "admin/tabs/books/index.tsx"
-    },
-    "/admin/tabs/changeRequests/": {
-      "filePath": "admin/tabs/changeRequests/index.tsx"
-    },
-    "/bookshelf/search/result/": {
-      "filePath": "bookshelf/search/result/index.tsx"
-    },
-    "/admin/tabs/books/edit/$id": {
-      "filePath": "admin/tabs/books/edit/$id.tsx"
-    }
-  }
-}
-ROUTE_MANIFEST_END */

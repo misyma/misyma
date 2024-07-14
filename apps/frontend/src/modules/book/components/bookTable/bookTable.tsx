@@ -19,9 +19,9 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from '../../../../modules/common/components/ui/pagination';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../common/components/ui/table';
-import { Input } from '../../../common/components/ui/input';
+} from '../../../common/components/pagination/pagination';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../common/components/table/table';
+import { Input } from '../../../common/components/input/input';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

@@ -3,9 +3,9 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { SetNewPasswordFormSchemaValues, setNewPasswordFormSchema } from './schema/setNewPasswordFormSchema';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/ui/form';
-import { Input } from '../../../common/components/ui/input';
-import { Button } from '../../../common/components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/form/form';
+import { Input } from '../../../common/components/input/input';
+import { Button } from '../../../common/components/button/button';
 import { useSetNewPasswordMutation } from '../../api/setNewPasswordMutation/setNewPasswordMutation';
 import { UserApiError } from '../../../user/errors/userApiError';
 
@@ -99,7 +99,7 @@ export const SetNewPasswordForm: FC<SetNewPasswordFormProps> = ({
         <Button
           type="submit"
           disabled={!form.formState.isValid}
-          className="w-60 sm:w-96 border border-primary"
+          size='xl'
         >
           Ustaw nowe hasło
         </Button>

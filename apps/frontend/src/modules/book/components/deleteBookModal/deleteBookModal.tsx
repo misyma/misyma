@@ -1,13 +1,13 @@
 import { FC, useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTrigger } from '../../../common/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTrigger } from '../../../common/components/dialog/dialog';
 import { HiTrash } from 'react-icons/hi';
 import { cn } from '../../../common/lib/utils';
 import { useQueryClient } from '@tanstack/react-query';
 import { ApiError } from '../../../common/errors/apiError';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
-import { Button } from '../../../common/components/ui/button';
-import { useToast } from '../../../common/components/ui/use-toast';
+import { Button } from '../../../common/components/button/button';
+import { useToast } from '../../../common/components/toast/use-toast';
 import { useDeleteBookMutation } from '../../api/admin/mutations/deleteBookMutation/deleteBookMutation';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
 

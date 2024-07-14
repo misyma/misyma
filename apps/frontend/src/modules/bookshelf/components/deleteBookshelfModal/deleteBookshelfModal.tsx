@@ -6,13 +6,13 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTrigger,
-} from '../../../common/components/ui/dialog';
-import { Button } from '../../../common/components/ui/button';
+} from '../../../common/components/dialog/dialog';
+import { Button } from '../../../common/components/button/button';
 import { HiTrash } from 'react-icons/hi';
 import { useDeleteBookshelfMutation } from '../../api/mutations/deleteBookshelfMutation/deleteBookshelfMutation';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { FindBooksByBookshelfIdQueryOptions } from '../../../book/api/user/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
-import { Select, SelectItem, SelectTrigger, SelectValue } from '../../../common/components/ui/select';
+import { Select, SelectItem, SelectTrigger, SelectValue } from '../../../common/components/select/select';
 import { SelectContent } from '@radix-ui/react-select';
 import { cn } from '../../../common/lib/utils';
 import { useQuery, useQueryClient } from '@tanstack/react-query';

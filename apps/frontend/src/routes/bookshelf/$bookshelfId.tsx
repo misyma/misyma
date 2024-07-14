@@ -3,9 +3,9 @@ import { FC, useEffect, useMemo, useState } from 'react';
 import { RequireAuthComponent } from '../../modules/core/components/requireAuth/requireAuthComponent';
 import { z } from 'zod';
 import { AuthenticatedLayout } from '../../modules/auth/layouts/authenticated/authenticatedLayout';
-import { Button } from '../../modules/common/components/ui/button';
+import { Button } from '../../modules/common/components/button/button';
 import { useFindUserQuery } from '../../modules/user/api/queries/findUserQuery/findUserQuery';
-import { Separator } from '../../modules/common/components/ui/separator';
+import { Separator } from '../../modules/common/components/separator/separator';
 import { HiCheckCircle, HiDotsCircleHorizontal, HiOutlineHeart, HiQuestionMarkCircle } from 'react-icons/hi';
 import { ReadingStatus, SortingType, UserBook } from '@common/contracts';
 import { cn } from '../../modules/common/lib/utils';
@@ -17,7 +17,7 @@ import { useFindBookshelfByIdQuery } from '../../modules/bookshelf/api/queries/f
 import { FindBookBorrowingsQueryOptions } from '../../modules/borrowing/api/queries/findBookBorrowings/findBookBorrowingsQueryOptions';
 import { HiClock } from 'react-icons/hi';
 import { LoadingSpinner } from '../../modules/common/components/spinner/loading-spinner';
-import { Skeleton } from '../../modules/common/components/ui/skeleton';
+import { Skeleton } from '../../modules/common/components/skeleton/skeleton';
 import {
   Pagination,
   PaginationContent,
@@ -25,7 +25,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from '../../modules/common/components/ui/pagination';
+} from '../../modules/common/components/pagination/pagination';
 import { FindBooksByBookshelfIdQueryOptions } from '../../modules/book/api/user/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
 import {
   useBreadcrumbKeysContext,
@@ -212,6 +212,7 @@ export const BorrowingBookshelf: FC = () => {
           </div>
           {bookshelfResponse?.name !== 'Wypożyczalnia' && (
             <Button
+              size="xl"
               onClick={() => {
                 navigate({
                   to: `/bookshelf/search`,
@@ -348,6 +349,7 @@ export const Bookshelf: FC = () => {
             </p>
           </div>
           <Button
+            size="xl"
             onClick={() => {
               navigate({
                 to: `/bookshelf/search`,

@@ -2,7 +2,7 @@ import { Link, createFileRoute, useNavigate } from '@tanstack/react-router';
 import { FC, useEffect } from 'react';
 import { z } from 'zod';
 import { RequireNonAuthComponent } from '../../modules/core/components/requireNonAuth/requireNonAuthComponent';
-import { useToast } from '../../modules/common/components/ui/use-toast';
+import { useToast } from '../../modules/common/components/toast/use-toast';
 import { Logo } from '../../modules/common/components/logo/logo';
 import { useVerifyUserEmailMutation } from '../../modules/auth/api/verifyUserEmailMutation/verifyUserEmailMutation';
 import { DefaultLayout } from '../../modules/core/layouts/default/defaultLayout';
