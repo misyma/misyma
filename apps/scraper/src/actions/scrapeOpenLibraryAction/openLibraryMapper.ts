@@ -6,7 +6,13 @@ import { isValidLanguage, Language } from '../../infrastructure/entities/book/la
 
 export class OpenLibraryMapper {
   public mapBook(openLibraryBook: OpenLibraryBook): ImportBookRequestBody | undefined {
-    if (!openLibraryBook.authors || !openLibraryBook.authors.length || !openLibraryBook.title) {
+    if (
+      !openLibraryBook.authors ||
+      !openLibraryBook.authors.length ||
+      !openLibraryBook.title ||
+      !openLibraryBook.title.length ||
+      openLibraryBook.title.length > 256
+    ) {
       return undefined;
     }
 
@@ -23,7 +29,10 @@ export class OpenLibraryMapper {
     return {
       title: openLibraryBook.title,
       isbn: openLibraryBook.isbn13,
-      publisher: openLibraryBook.publisher?.length ? openLibraryBook.publisher : undefined,
+      publisher:
+        openLibraryBook.publisher?.length && openLibraryBook.publisher.length < 128
+          ? openLibraryBook.publisher
+          : undefined,
       format,
       language,
       imageUrl: openLibraryBook.image?.length ? openLibraryBook.image : undefined,
