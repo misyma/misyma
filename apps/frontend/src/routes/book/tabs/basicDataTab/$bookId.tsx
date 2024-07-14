@@ -17,7 +17,6 @@ import { z } from 'zod';
 import { cn } from '../../../../modules/common/lib/utils.js';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout.js';
 import { useFindUserQuery } from '../../../../modules/user/api/queries/findUserQuery/findUserQuery.js';
-import { EditOrDeleteBookModal } from '../../../../modules/book/components/editOrDeleteBookModal/editOrDeleteBookModal.js';
 import { FindUserBookByIdQueryOptions } from '../../../../modules/book/api/user/queries/findUserBook/findUserBookByIdQueryOptions.js';
 import {
   useBreadcrumbKeysContext,
@@ -25,6 +24,10 @@ import {
 } from '../../../../modules/common/contexts/breadcrumbKeysContext.js';
 import { useFindBookshelfByIdQuery } from '../../../../modules/bookshelf/api/queries/findBookshelfByIdQuery/findBookshelfByIdQuery.js';
 import { BasicDataTabSkeleton } from '../../../../modules/book/components/basicDataSkeleton/basicDataTabSkeleton.js';
+
+import { DeleteBookModal } from '../../../../modules/book/components/deleteBookModal/deleteBookModal.js';
+import { CreateChangeRequestModal } from '../../../../modules/book/components/createChangeRequestModal/createChangeRequestModal.js';
+import { EditBookModal } from '../../../../modules/book/components/editBookModal/editBookModal.js';
 
 export const BasicDataPage: FC = () => {
   const { data: userData } = useFindUserQuery();
@@ -107,10 +110,14 @@ export const BasicDataPage: FC = () => {
                 Oceny
               </li>
             </ul>
-            <EditOrDeleteBookModal
-              bookId={bookId}
-              userBookId={bookId}
-            />
+            <div className="flex gap-4 p-2">
+              <CreateChangeRequestModal bookId={bookId} />
+              <EditBookModal bookId={bookId} />
+              <DeleteBookModal
+                bookId={bookId}
+                bookName={data?.book.title ?? ''}
+              />
+            </div>
           </div>
           <div className="flex flex-col sm:flex-row col-start-1 col-span-2 sm:col-span-5 gap-6 w-full">
             {isFetching && !isRefetching && <BasicDataTabSkeleton bookId={bookId} />}
