@@ -22,11 +22,11 @@ export class OpenLibraryMapper {
     return {
       title: openLibraryBook.title,
       isbn: openLibraryBook.isbn13,
-      publisher: openLibraryBook.publisher,
+      publisher: openLibraryBook.publisher?.length ? openLibraryBook.publisher : undefined,
       format,
       isApproved: true,
       language,
-      imageUrl: openLibraryBook.image,
+      imageUrl: openLibraryBook.image?.length ? openLibraryBook.image : undefined,
       pages: openLibraryBook.pages || undefined,
       releaseYear: releaseYear || undefined,
       authorNames,
