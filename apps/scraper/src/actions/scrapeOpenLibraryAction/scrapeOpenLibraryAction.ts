@@ -16,10 +16,7 @@ export class ScrapeOpenLibraryAction {
   ) {}
 
   public async execute(): Promise<void> {
-    this.logger.info({
-      message: 'Scraping Open Library...',
-      openLibraryMapper: this.openLibraryMapper,
-    });
+    this.logger.info({ message: 'Scraping Open Library...' });
 
     const rl = createInterface({
       input: createReadStream(this.config.openLibraryPath),
@@ -40,9 +37,7 @@ export class ScrapeOpenLibraryAction {
       }
     }
 
-    this.logger.info({
-      message: 'Scraping Open Library completed.',
-    });
+    this.logger.info({ message: 'Scraping Open Library completed.' });
   }
 
   private async processLine(line: string): Promise<void> {
