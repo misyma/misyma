@@ -36,7 +36,7 @@ export class OpenLibraryMapper {
       format,
       language,
       imageUrl: openLibraryBook.image?.length ? openLibraryBook.image : undefined,
-      pages: openLibraryBook.pages || undefined,
+      pages: openLibraryBook.pages && openLibraryBook.pages < 5000 ? openLibraryBook.pages : undefined,
       releaseYear: releaseYear && releaseYear < 2100 ? releaseYear : undefined,
       authorNames,
       translator: undefined,
