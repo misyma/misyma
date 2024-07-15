@@ -2,7 +2,7 @@ import { type ColumnDef } from '@tanstack/react-table';
 import { BookChangeRequest } from '@common/contracts';
 import { formatDate } from 'date-fns';
 import { pl } from 'date-fns/locale';
-import {  useNavigate } from '@tanstack/react-router';
+import { useNavigate } from '@tanstack/react-router';
 import { ImQuill } from 'react-icons/im';
 import { FC } from 'react';
 
@@ -55,8 +55,39 @@ export const changeRequestsColumns: ColumnDef<BookChangeRequest>[] = [
     },
   },
   {
+    header: () => <p>Zmienione wartości</p>,
+    accessorKey: 'changedKeys',
+    cell: ({ row }): JSX.Element => {
+      const ignoredKeys = ['id', 'bookId', 'createdAt', 'userId'];
+
+      const translationMap = {
+        ['isbn']: 'isbn',
+        ['translator']: 'przekład',
+        ['publisher']: 'wydawnictwo',
+        ['title']: 'tytuł',
+        ['language']: 'język',
+        ['format']: 'format',
+      } as const;
+
+      const changedValues = Object.keys(row.original).filter((value) => !ignoredKeys.includes(value)) as Array<
+        keyof typeof translationMap
+      >;
+
+      console.log(row.original)
+
+      return (
+
+        <div className="flex flex-col py-4 gap-2">
+          <div className="flex items-center gap-1">
+            <p className="font-semibold text-lg">{changedValues.map((val) => translationMap[val]).join(', ')}</p>
+          </div>
+        </div>
+      );
+    },
+  },
+  {
     header: () => <p></p>,
-    accessorKey: 'createdAt',
+    accessorKey: 'navigation',
     cell: ({ row }): JSX.Element => {
       return (
         <div className="flex items-center gap-2">
