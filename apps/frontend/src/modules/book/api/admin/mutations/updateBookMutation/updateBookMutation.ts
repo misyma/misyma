@@ -7,7 +7,7 @@ import { BookApiError } from '../../../../errors/bookApiError';
 
 interface Payload extends UpdateBookPathParams, UpdateBookRequestBody {
   accessToken: string | undefined;
-  isApproved?: boolean
+  isApproved?: boolean;
 }
 
 export const useUpdateBookMutation = (options: UseMutationOptions<UpdateBookResponseBody, ApiError, Payload>) => {
@@ -16,11 +16,13 @@ export const useUpdateBookMutation = (options: UseMutationOptions<UpdateBookResp
   });
 
   const deleteBook = async (payload: Payload) => {
+    const { accessToken, ...body } = payload;
+
     const response = await HttpService.patch<UpdateBookResponseBody>({
       url: `/admin/books/${payload.bookId}`,
-      body: payload as unknown as Record<string, unknown>,
+      body: body as unknown as Record<string, unknown>,
       headers: {
-        Authorization: `Bearer ${payload.accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
 

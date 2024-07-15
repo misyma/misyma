@@ -62,7 +62,7 @@ export const SearchBookMethodChoice: FC<Props> = ({ initialValue = 'isbn', books
         </RadioGroup>
         <div>
           <Button
-            className="w-full"
+            size='xl'
             onClick={onProceed}
           >
             Przejdź dalej

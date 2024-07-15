@@ -1,8 +1,20 @@
 import { HiOutlineInformationCircle } from 'react-icons/hi';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../../common/components/form/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../../../../common/components/form/form';
 import { Input } from '../../../../common/components/input/input';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../../common/components/tooltip/tooltip';
-import { Popover, PopoverContent, PopoverTrigger } from '../../../../common/components/popover/popover';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../../../../common/components/tooltip/tooltip';
+import { DialogPopoverContent, Popover, PopoverTrigger } from '../../../../common/components/popover/popover';
 import { Button } from '../../../../common/components/button/button';
 import { cn } from '../../../../common/lib/utils';
 import {
@@ -230,13 +242,13 @@ export const StepOneForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
                 </TooltipProvider>
               </div>
               <FormControl>
-                <Popover>
+                <Popover modal={true}>
                   <PopoverTrigger asChild>
                     <FormControl>
                       <Button
                         variant="outline"
                         role="combobox"
-                        size='xl'
+                        size="xl"
                         className={cn(
                           'justify-between bg-[#D1D5DB]/20',
                           !field.value && 'text-muted-foreground',
@@ -252,9 +264,10 @@ export const StepOneForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
-                  <PopoverContent className="w-60 sm:w-96 p-0">
+                  <DialogPopoverContent className="w-60 sm:w-96 p-0">
                     <Command>
                       <CommandInput
+                        disabled={false}
                         placeholder="Wyszukaj autora..."
                         onValueChange={setSearchedName}
                       />
@@ -334,7 +347,7 @@ export const StepOneForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
                         ))}
                       </CommandList>
                     </Command>
-                  </PopoverContent>
+                  </DialogPopoverContent>
                 </Popover>
               </FormControl>
               <FormMessage />
@@ -379,6 +392,8 @@ export const StepOneForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
         />
         <div className="flex flex-row w-full justify-between gap-4">
           <Button
+            size="lg"
+            variant="outline"
             onClick={onCancel}
             className="border border-primary w-full bg-transparent text-primary"
           >
@@ -386,6 +401,7 @@ export const StepOneForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
           </Button>
           <Button
             type="submit"
+            size="lg"
             className="border border-primary w-full"
             onClick={() => {
               onSubmit(stepOneForm.getValues());

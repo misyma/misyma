@@ -2,7 +2,7 @@ import * as React from 'react';
 import { MoreHorizontal } from 'lucide-react';
 import { FaArrowLeftLong, FaArrowRightLong } from 'react-icons/fa6';
 import { cn } from '../../lib/utils';
-import { ButtonProps, buttonSizesStylesMap, buttonVariantsStylesMap } from '../button/button';
+import { ButtonProps, buttonSizesStylesMap } from '../button/button';
 
 const Pagination = ({ className, ...props }: React.ComponentProps<'nav'>) => (
   <nav
@@ -18,7 +18,7 @@ const PaginationContent = React.forwardRef<HTMLUListElement, React.ComponentProp
   ({ className, ...props }, ref) => (
     <ul
       ref={ref}
-      className={cn('flex flex-row items-center gap-1', className)}
+      className={cn('flex justify-center flex-row items-center gap-2', className)}
       {...props}
     />
   ),
@@ -28,7 +28,7 @@ PaginationContent.displayName = 'PaginationContent';
 const PaginationItem = React.forwardRef<HTMLLIElement, React.ComponentProps<'li'>>(({ className, ...props }, ref) => (
   <li
     ref={ref}
-    className={cn('', className)}
+    className={cn('flex items-center gap-2', className)}
     {...props}
   />
 ));
@@ -40,43 +40,55 @@ type PaginationLinkProps = {
 } & Pick<ButtonProps, 'size'> &
   React.ComponentProps<'a'>;
 
-const PaginationLink = ({ className, isActive, hasPrevious = true, size = 'icon', ...props }: PaginationLinkProps) => (
-  <a
-    aria-current={isActive ? 'page' : undefined}
-    className={cn(
-      buttonVariantsStylesMap[isActive ? 'default' : 'ghost'],
-      buttonSizesStylesMap[size],
-      !hasPrevious ? 'pointer-events-none bg-white text-primary cursor-not-allowed' : '',
-      className,
-    )}
-    {...props}
-  />
-);
+const PaginationLink = ({
+  className,
+  isActive,
+  hasPrevious = true,
+  size = 'icon',
+  ...props
+}: PaginationLinkProps) => {
+
+  return (
+    <a
+      aria-current={isActive ? 'page' : undefined}
+      className={cn(
+        buttonSizesStylesMap[size],
+        !hasPrevious ? 'pointer-events-none bg-white text-primary cursor-not-allowed' : '',
+        'inline-flex items-center justify-center whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:bg-gray-200  disabled:text-gray-500 disabled:cursor-not-allowed hover:bg-accent hover:text-accent-foreground cursor-pointer text-lg px-1',
+        isActive && 'bg-primary text-white',
+        className,
+      )}
+      {...props}
+    />
+  );
+};
 PaginationLink.displayName = 'PaginationLink';
 
 const PaginationPrevious = ({
   className,
   hasPrevious = true,
   ...props
-}: React.ComponentProps<typeof PaginationLink>) => (
-  <PaginationLink
-    aria-label="Go to previous page"
-    size="base"
-    className={cn(
-      'gap-1 pl-2.5',
-      !hasPrevious ? 'pointer-events-none bg-white opacity-50 cursor-not-allowed' : '',
-      className,
-    )}
-    {...props}
-  >
-    <FaArrowLeftLong
+}: React.ComponentProps<typeof PaginationLink>) => {
+  return (
+    <PaginationLink
+      aria-label="Go to previous page"
+      size="base"
       className={cn(
-        'h-6 w-6 hover:text-primary',
-        !hasPrevious ? 'pointer-events-none bg-white cursor-not-allowed' : '',
+        'gap-1 pl-2.5',
+        !hasPrevious ? 'pointer-events-none bg-white opacity-50 cursor-not-allowed' : '',
+        className,
       )}
-    />
-  </PaginationLink>
-);
+      {...props}
+    >
+      <FaArrowLeftLong
+        className={cn(
+          'h-6 w-6 hover:text-primary',
+          !hasPrevious ? 'pointer-events-none bg-white cursor-not-allowed' : '',
+        )}
+      />
+    </PaginationLink>
+  );
+};
 PaginationPrevious.displayName = 'PaginationPrevious';
 
 const PaginationNext = ({

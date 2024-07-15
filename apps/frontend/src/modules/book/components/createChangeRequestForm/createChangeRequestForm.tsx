@@ -4,7 +4,13 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/form/form';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../common/components/select/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../../../common/components/select/select';
 import { Languages } from '../../../common/constants/languages';
 import { Input } from '../../../common/components/input/input';
 import { Button } from '../../../common/components/button/button';
@@ -246,13 +252,14 @@ export const CreateChangeRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit 
             />
             <div className="flex justify-between w-full gap-4">
               <Button
+                size="lg"
+                variant="outline"
                 onClick={() => setCurrentStep(1)}
-                className="border border-primary w-full bg-transparent text-primary"
               >
                 Wróć
               </Button>
               <Button
-                className="border border-primary w-full"
+                size="lg"
                 disabled={!stepTwoForm.formState.isValid}
                 type="submit"
               >

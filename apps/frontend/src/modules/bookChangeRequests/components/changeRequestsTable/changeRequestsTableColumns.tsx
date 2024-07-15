@@ -13,7 +13,7 @@ const NavigateToRequest: FC<{ id: string }> = ({ id }) => {
     <ImQuill
       onClick={() => {
         navigate({
-          to: `/admin/change-requests/${id}`,
+          to: `/admin/tabs/changeRequests/${id}`,
         });
       }}
       className="cursor-pointer text-primary text-3xl"

@@ -267,7 +267,7 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
       });
 
       await navigate({
-        to: `/bookshelf/${bookshelfId}`,
+        to: `/bookshelf/${bookCreation.stepThreeDetails?.bookshelfId || bookshelfId}`,
       });
     } catch (error) {
       if (error instanceof BookApiError) {
