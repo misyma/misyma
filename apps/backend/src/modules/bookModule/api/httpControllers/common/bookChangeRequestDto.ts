@@ -41,7 +41,7 @@ export const bookChangeRequestDtoSchema = Type.Object({
   pages: Type.Optional(
     Type.Integer({
       minimum: 1,
-      maximum: 10000,
+      maximum: 5000,
     }),
   ),
   imageUrl: Type.Optional(
