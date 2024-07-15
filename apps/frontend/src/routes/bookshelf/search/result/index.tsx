@@ -108,8 +108,8 @@ export const SearchResultPage: FC = () => {
             </span>
             <div className="flex flex-col gap-4">
               <Button
+                size='xl'
                 onClick={onCreateManually}
-                className="w-[70%]"
               >
                 Wprowadź dane
               </Button>

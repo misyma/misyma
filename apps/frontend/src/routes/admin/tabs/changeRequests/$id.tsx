@@ -267,12 +267,14 @@ export const ChangeRequestView: FC = () => {
         <div className="flex flex-col gap-8 w-full">
           <div className="flex justify-end gap-2">
             <Button
+              size="xl"
               onClick={onRejectAll}
-              className="bg-red-500"
+              variant="outline"
             >
               Odrzuć wszystkie
             </Button>
             <Button
+              size="xl"
               onClick={onAcceptAll}
               className="bg-green-500"
             >
@@ -287,7 +289,7 @@ export const ChangeRequestView: FC = () => {
               >
                 {...buildDifferencesView()}
 
-                <Button>Zapisz zmiany</Button>
+                <Button size="xl">Zapisz zmiany</Button>
               </form>
             </Form>
           </div>
