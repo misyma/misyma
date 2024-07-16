@@ -1,10 +1,10 @@
+import { type Language, type BookFormat } from '@common/contracts';
+
 import { RepositoryError } from '../../../errors/repositoryError.js';
 import { type DatabaseClient } from '../../../libs/database/databaseClient.js';
 import { type UuidService } from '../../../libs/uuid/uuidService.js';
 import { type Book } from '../../entities/book/book.js';
-import { type BookFormat } from '../../entities/book/bookFormat.js';
 import { bookTable } from '../../entities/book/bookTable.js';
-import { type Language } from '../../entities/book/language.js';
 import { bookAuthorTable } from '../../entities/bookAuthor/bookAuthorTable.js';
 
 export interface CreateBookPayload {

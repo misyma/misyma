@@ -1,5 +1,4 @@
-import { type BookFormat } from './bookFormat.js';
-import { type Language } from './language.js';
+import { type Language, type BookFormat } from '@common/contracts';
 
 export interface Book {
   readonly id: string;
