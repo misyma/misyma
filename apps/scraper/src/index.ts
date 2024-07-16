@@ -7,7 +7,7 @@ import { OpenLibraryMapper } from './actions/scrapeOpenLibraryAction/openLibrary
 import { ScrapeOpenLibraryAction } from './actions/scrapeOpenLibraryAction/scrapeOpenLibraryAction.js';
 import { ConfigFactory } from './config.js';
 import { BaseError } from './errors/baseError.js';
-import { MisymaHttpClientFactory } from './infrastructure/services/misymaHttpClient.js';
+import { MisymaHttpClientFactory } from './infrastructure/clients/misymaHttpClient.js';
 import { LoggerServiceFactory } from './libs/logger/loggerServiceFactory.js';
 
 const finalErrorHandler = async (error: unknown): Promise<void> => {

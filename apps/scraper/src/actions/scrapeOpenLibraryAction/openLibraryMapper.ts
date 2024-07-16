@@ -1,24 +1,20 @@
-import { type ImportBookRequestBody } from '@common/contracts';
+import { BookFormat, isValidLanguage, Language, type ImportBookRequestBody } from '@common/contracts';
 
 import { type OpenLibraryBookBinding, type OpenLibraryBook } from './openLibraryBook.js';
-import { BookFormat } from '../../infrastructure/entities/book/bookFormat.js';
-import { isValidLanguage, Language } from '../../infrastructure/entities/book/language.js';
 
 export class OpenLibraryMapper {
   public mapBook(openLibraryBook: OpenLibraryBook): ImportBookRequestBody | undefined {
-    if (
-      !openLibraryBook.authors ||
-      !openLibraryBook.authors.length ||
-      !openLibraryBook.title ||
-      !openLibraryBook.title.length ||
-      openLibraryBook.title.length > 256
-    ) {
+    if (!openLibraryBook.title?.length || openLibraryBook.title.length > 256) {
+      console.log({ openLibraryBook });
+
       return undefined;
     }
 
-    const authorNames = openLibraryBook.authors
-      .filter((openLibraryAuthorName) => openLibraryAuthorName.length)
-      .map((openLibraryAuthorName) => this.mapAuthorName(openLibraryAuthorName));
+    const authorNames = openLibraryBook.authors?.length
+      ? openLibraryBook.authors
+          .filter((openLibraryAuthorName) => openLibraryAuthorName.length)
+          .map((openLibraryAuthorName) => this.mapAuthorName(openLibraryAuthorName))
+      : ['Unknown'];
 
     const language = this.mapLanguage(openLibraryBook.language);
 
@@ -75,7 +71,7 @@ export class OpenLibraryMapper {
         return BookFormat.ebook;
 
       default:
-        return BookFormat.paperback;
+        return BookFormat.unknown;
     }
   }
 
