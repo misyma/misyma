@@ -46,6 +46,8 @@ export class ScrapeOpenLibraryAction {
     const bookDraft = this.openLibraryMapper.mapBook(openLibraryBook);
 
     if (!bookDraft) {
+      console.log({ bookDraft });
+
       return;
     }
 
