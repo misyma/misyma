@@ -15,8 +15,6 @@ export class M1CreateAuthorTableMigration implements Migration {
       table.primary(['id']);
 
       table.unique(['name']);
-
-      table.index(['name']);
     });
 
     // TODO add when migrating to Postgres
