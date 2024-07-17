@@ -183,7 +183,6 @@ export class BookAdminHttpController implements HttpController {
     };
   }
 
-  // TODO: remove when migration to postgres is done
   private async importBook(
     request: HttpRequest<ImportBookBodyDto>,
   ): Promise<HttpNoContentResponse<ImportBookResponseBodyDto>> {
@@ -193,6 +192,19 @@ export class BookAdminHttpController implements HttpController {
       authorizationHeader: request.headers['authorization'],
       expectedRole: UserRole.admin,
     });
+
+    const existingBook = await this.bookRepository.findBooks({
+      title: bookDraft.title,
+      page: 1,
+      pageSize: 1,
+    });
+
+    if (existingBook.length > 0) {
+      return {
+        statusCode: HttpStatusCode.noContent,
+        body: null,
+      };
+    }
 
     const authors: Author[] = [];
 
@@ -209,19 +221,6 @@ export class BookAdminHttpController implements HttpController {
       }
 
       authors.push(author);
-    }
-
-    const existingBook = await this.bookRepository.findBooks({
-      title: bookDraft.title,
-      page: 1,
-      pageSize: 1,
-    });
-
-    if (existingBook) {
-      return {
-        statusCode: HttpStatusCode.noContent,
-        body: null,
-      };
     }
 
     await this.bookRepository.saveBook({
