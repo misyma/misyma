@@ -4,7 +4,9 @@ import { type OpenLibraryBookBinding, type OpenLibraryBook } from './openLibrary
 
 export class OpenLibraryMapper {
   public mapBook(openLibraryBook: OpenLibraryBook): ImportBookRequestBody | undefined {
-    if (!openLibraryBook.title?.length || openLibraryBook.title.length > 256) {
+    const format = this.mapFormat(openLibraryBook.binding);
+
+    if (!openLibraryBook.title?.length || openLibraryBook.title.length > 256 || !format) {
       return undefined;
     }
 
@@ -19,8 +21,6 @@ export class OpenLibraryMapper {
       : ['Unknown'];
 
     const language = this.mapLanguage(openLibraryBook.language);
-
-    const format = this.mapFormat(openLibraryBook.binding);
 
     const releaseYear = this.mapReleaseYear(openLibraryBook.date_published);
 
@@ -61,7 +61,7 @@ export class OpenLibraryMapper {
     return undefined;
   }
 
-  private mapFormat(openLibraryFormat: OpenLibraryBookBinding | undefined): BookFormat {
+  private mapFormat(openLibraryFormat: OpenLibraryBookBinding | undefined): BookFormat | undefined {
     switch (openLibraryFormat) {
       case 'Paperback':
         return BookFormat.paperback;
@@ -73,7 +73,7 @@ export class OpenLibraryMapper {
         return BookFormat.ebook;
 
       default:
-        return BookFormat.unknown;
+        return undefined;
     }
   }
 

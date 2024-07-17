@@ -4,5 +4,4 @@ export const BookFormat = {
   [ContractBookFormat.ebook]: 'ebook',
   [ContractBookFormat.hardcover]: 'twarda oprawa',
   [ContractBookFormat.paperback]: 'oprawa miękka',
-  [ContractBookFormat.unknown]: 'nienznanego typu',
 } as const;
