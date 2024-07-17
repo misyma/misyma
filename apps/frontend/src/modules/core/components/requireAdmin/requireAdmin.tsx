@@ -30,10 +30,6 @@ export function RequireAdmin({ children }: RequireAuthComponentProps): React.Rea
     );
   }
 
-  console.log(user.currentUser);
-
-  console.log(res.data, res.isFetched);
-
   if (accessToken && refreshToken && user.currentUser !== null && user.currentUser?.role === UserRole.admin) {
     return <>{children}</>;
   }
