@@ -216,7 +216,6 @@ const BookEditForm: FC<FormProps> = ({ data }) => {
       const payload = (Object.entries(values) as [keyof WriteablePayload, string | number | boolean][]).reduce(
         (agg, [key, value]) => {
           if (value && key) {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             agg[key as keyof WriteablePayload] = value;
 
             return agg;
