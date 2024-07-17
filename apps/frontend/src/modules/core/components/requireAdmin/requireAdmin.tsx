@@ -46,6 +46,14 @@ export function RequireAdmin({ children }: RequireAuthComponentProps): React.Rea
     );
   }
 
+  if (user.currentUser === null && !res.isFetching) {
+    return (
+      <div className="w-full h-[100%] flex justify-center items-center">
+        <LoadingSpinner></LoadingSpinner>
+      </div>
+    );
+  }
+
   if (accessToken && refreshToken) {
     return <Navigate to="/shelves" />;
   }
