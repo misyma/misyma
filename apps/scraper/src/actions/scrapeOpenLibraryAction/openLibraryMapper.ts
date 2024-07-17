@@ -5,15 +5,17 @@ import { type OpenLibraryBookBinding, type OpenLibraryBook } from './openLibrary
 export class OpenLibraryMapper {
   public mapBook(openLibraryBook: OpenLibraryBook): ImportBookRequestBody | undefined {
     if (!openLibraryBook.title?.length || openLibraryBook.title.length > 256) {
-      console.log({ openLibraryBook });
-
       return undefined;
     }
 
     const authorNames = openLibraryBook.authors?.length
-      ? openLibraryBook.authors
-          .filter((openLibraryAuthorName) => openLibraryAuthorName.length)
-          .map((openLibraryAuthorName) => this.mapAuthorName(openLibraryAuthorName))
+      ? [
+          ...new Set(
+            openLibraryBook.authors
+              .filter((openLibraryAuthorName) => openLibraryAuthorName.length)
+              .map((openLibraryAuthorName) => this.mapAuthorName(openLibraryAuthorName)),
+          ),
+        ]
       : ['Unknown'];
 
     const language = this.mapLanguage(openLibraryBook.language);
