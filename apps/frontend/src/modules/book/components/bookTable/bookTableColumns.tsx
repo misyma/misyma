@@ -18,7 +18,7 @@ const NavigateToEdit = ({ bookId }: Props): ReactNode => {
     <ImQuill
       onClick={() =>
         navigate({
-          to: `/admin/books/${bookId}/edit`,
+          to: `/admin/tabs/books/edit/${bookId}`,
         })
       }
       className="cursor-pointer text-primary text-3xl"

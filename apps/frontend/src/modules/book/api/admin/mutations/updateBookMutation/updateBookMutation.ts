@@ -5,17 +5,17 @@ import { HttpService } from '../../../../../core/services/httpService/httpServic
 import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
 import { BookApiError } from '../../../../errors/bookApiError';
 
-interface Payload extends UpdateBookPathParams, UpdateBookRequestBody {
+export interface UpdateBookPayload extends UpdateBookPathParams, UpdateBookRequestBody {
   accessToken: string | undefined;
   isApproved?: boolean;
 }
 
-export const useUpdateBookMutation = (options: UseMutationOptions<UpdateBookResponseBody, ApiError, Payload>) => {
+export const useUpdateBookMutation = (options: UseMutationOptions<UpdateBookResponseBody, ApiError, UpdateBookPayload>) => {
   const mapper = new ErrorCodeMessageMapper({
     403: `Brak pozwolenia na zaaktualizowanie książki.`,
   });
 
-  const deleteBook = async (payload: Payload) => {
+  const deleteBook = async (payload: UpdateBookPayload) => {
     const { accessToken, ...body } = payload;
 
     const response = await HttpService.patch<UpdateBookResponseBody>({

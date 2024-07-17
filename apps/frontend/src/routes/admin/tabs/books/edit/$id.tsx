@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { FC, useState } from 'react';
 import { AuthenticatedLayout } from '../../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { useForm } from 'react-hook-form';
-import { Language } from '@common/contracts';
+import { FindBookResponseBody, Language, UpdateBookRequestBody } from '@common/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
@@ -52,13 +52,18 @@ import { useToast } from '../../../../../modules/common/components/toast/use-toa
 import { BookApiError } from '../../../../../modules/book/errors/bookApiError';
 import { Checkbox } from '../../../../../modules/common/components/checkbox/checkbox';
 import { RequireAdmin } from '../../../../../modules/core/components/requireAdmin/requireAdmin';
+import { isbnSchema } from '../../../../../modules/common/schemas/isbnSchema';
+
+type Writeable<T> = { -readonly [P in keyof T]: T[P] };
+
+type WriteablePayload = Writeable<UpdateBookRequestBody>;
 
 const booksSearchSchema = z.object({
   id: z.string().uuid().catch(''),
 });
 
 const editBookFormSchema = z.object({
-  // isbn: isbnSchema.or(z.literal('')),
+  isbn: isbnSchema.or(z.literal('')),
   title: z
     .string()
     .min(1, {
@@ -141,33 +146,15 @@ const createAuthorDraftSchema = z.object({
     .regex(/\s/, 'Autor powinien być w formacie "Imię Nazwisko"'),
 });
 
-const BooksEdit: FC = () => {
-  const { id } = Route.useParams();
+interface FormProps {
+  data: FindBookResponseBody;
+}
 
-  const { toast } = useToast();
-
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
-  const [searchedName, setSearchedName] = useState<string | undefined>(undefined);
-
-  const [draftAuthorName, setDraftAuthorName] = useState('');
-
-  const [authorSelectOpen, setAuthorSelectOpen] = useState(false);
-
-  const onOpenChange = (bool: boolean) => setCreateAuthorDialogVisible(bool);
-
-  const [createAuthorDialogVisible, setCreateAuthorDialogVisible] = useState(false);
-
-  const { data, isFetching, isRefetching } = useQuery(
-    FindBookByIdQueryOptions({
-      accessToken: accessToken as string,
-      bookId: id,
-    }),
-  );
-
+const BookEditForm: FC<FormProps> = ({ data }) => {
   const editBookForm = useForm<z.infer<typeof editBookFormSchema>>({
     resolver: zodResolver(editBookFormSchema),
-    values: {
+    defaultValues: {
+      isbn: '',
       author: data?.authors[0]?.id ?? '',
       language: data?.language ?? '',
       publisher: data?.publisher,
@@ -177,6 +164,22 @@ const BooksEdit: FC = () => {
       isApproved: data?.isApproved,
     },
   });
+
+  const { toast } = useToast();
+
+  const { id } = Route.useParams();
+
+  const accessToken = useSelector(userStateSelectors.selectAccessToken);
+
+  const [searchedName, setSearchedName] = useState<string | undefined>(undefined);
+
+  const onOpenChange = (bool: boolean) => setCreateAuthorDialogVisible(bool);
+
+  const [draftAuthorName, setDraftAuthorName] = useState('');
+
+  const [createAuthorDialogVisible, setCreateAuthorDialogVisible] = useState(false);
+
+  const [authorSelectOpen, setAuthorSelectOpen] = useState(false);
 
   const { mutateAsync: updateBook } = useUpdateBookMutation({});
 
@@ -203,20 +206,31 @@ const BooksEdit: FC = () => {
       data?.title === values.title &&
       data?.releaseYear === values.yearOfIssue &&
       data?.language === values.language &&
-      data?.translator === values.translator
+      data?.translator === values.translator &&
+      data?.isbn === values.isbn
     ) {
       return;
     }
 
     try {
+      const payload = (Object.entries(values) as [keyof WriteablePayload, string | number | boolean][]).reduce(
+        (agg, [key, value]) => {
+          if (value && key) {
+            agg[key as keyof WriteablePayload] = value;
+
+            return agg;
+          }
+
+          return agg;
+        },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        {} as any,
+      ) as WriteablePayload;
+
       await updateBook({
+        ...payload,
         accessToken: accessToken as string,
         bookId: id,
-        publisher: values.publisher,
-        releaseYear: values.yearOfIssue,
-        title: values.title,
-        language: values.language as Language,
-        authorIds: [values.author],
       });
 
       toast({
@@ -262,6 +276,302 @@ const BooksEdit: FC = () => {
     setCreateAuthorDialogVisible(false);
   };
 
+  return (
+    <Form {...editBookForm}>
+      <form
+        className="space-y-2"
+        onSubmit={editBookForm.handleSubmit(onSubmit)}
+      >
+        <FormField
+          name="isbn"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>ISBN</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="isbn"
+                  type="text"
+                  includeQuill={false}
+                  {...field}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={editBookForm.control}
+          name="title"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Tytuł</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Tytuł"
+                  type="text"
+                  includeQuill={false}
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          name="author"
+          render={({ field }) => (
+            <FormItem>
+              <div className="flex gap-2 items-center">
+                <FormLabel>Autor</FormLabel>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div>
+                        <HiOutlineInformationCircle className="h-5 w-5" />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>
+                        Imię i nazwisko autora musi mieć minimum 3 znaki<br></br> i zawierać spację oddzielającą imię i
+                        nazwisko.
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+              <FormControl>
+                <Popover
+                  open={authorSelectOpen}
+                  onOpenChange={setAuthorSelectOpen}
+                >
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        size="xl"
+                        className={cn(
+                          'justify-between bg-[#D1D5DB]/20',
+                          !field.value && 'text-muted-foreground',
+                          draftAuthorName && 'text-black',
+                        )}
+                      >
+                        {field.value
+                          ? authors?.data.find((author) => author.id === field.value)?.name
+                            ? authors?.data.find((author) => author.id === field.value)?.name || 'Wyszukaj autora'
+                            : draftAuthorName || 'Wyszukaj autora'
+                          : draftAuthorName || 'Wyszukaj autora'}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-60 sm:w-96 p-0">
+                    <Command>
+                      <CommandInput
+                        placeholder="Wyszukaj autora..."
+                        onValueChange={setSearchedName}
+                        onKeyDown={(event) => {
+                          if (event.key === 'Enter') {
+                            setAuthorSelectOpen(false);
+                          }
+                        }}
+                      />
+
+                      <CommandList>
+                        {isFetched && authors?.data.length === 0 && (
+                          <CommandEmpty className="flex flex-col px-4 py-4 gap-4">
+                            {/* <p>Nie znaleziono autora - {searchedName} </p> */}
+                            <>
+                              <Dialog
+                                open={createAuthorDialogVisible}
+                                onOpenChange={(val) => {
+                                  onOpenChange(val);
+
+                                  createAuthorDraftForm.setValue('name', searchedName ?? '');
+                                }}
+                              >
+                                <DialogTrigger asChild>
+                                  <Button className="bg-slate-100 text-black hover:bg-slate-300">Dodaj</Button>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-md">
+                                  <DialogHeader>
+                                    <DialogTitle>Stwórz autora</DialogTitle>
+                                  </DialogHeader>
+                                  <Form {...createAuthorDraftForm}>
+                                    <form
+                                      className="flex flex-col gap-8 py-4"
+                                      onSubmit={createAuthorDraftForm.handleSubmit(onCreateAuthorDraft)}
+                                    >
+                                      <FormField
+                                        name="name"
+                                        render={({ field }) => (
+                                          <FormItem>
+                                            <FormLabel>Imię</FormLabel>
+                                            <FormControl>
+                                              <Input
+                                                min={1}
+                                                max={128}
+                                                type="text"
+                                                {...field}
+                                              />
+                                            </FormControl>
+                                            <FormMessage></FormMessage>
+                                          </FormItem>
+                                        )}
+                                      />
+                                      <Button
+                                        disabled={!createAuthorDraftForm.formState.isValid}
+                                        type="button"
+                                        onClick={() => onCreateAuthorDraft(createAuthorDraftForm.getValues())}
+                                      >
+                                        Stwórz
+                                      </Button>
+                                    </form>
+                                  </Form>
+                                </DialogContent>
+                              </Dialog>
+                            </>
+                          </CommandEmpty>
+                        )}
+                        {loading && <CommandLoading>Wyszukuję autorów</CommandLoading>}
+                        {authors?.data.map((author) => (
+                          <CommandItem
+                            key={`author-${author.id}`}
+                            value={author.name}
+                            onSelect={() => {
+                              editBookForm.setValue('author', author.id);
+
+                              editBookForm.setValue('authorName', undefined);
+
+                              setDraftAuthorName('');
+
+                              editBookForm.trigger('author');
+                            }}
+                          >
+                            <Check
+                              className={cn('mr-2 h-4 w-4', author.id === field.value ? 'opacity-100' : 'opacity-0')}
+                            />
+                            {author.name}
+                          </CommandItem>
+                        ))}
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          name="publisher"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Wydawnictwo</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Wydawnictwo"
+                  type="text"
+                  includeQuill={false}
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          name="yearOfIssue"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Rok wydania</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="1939"
+                  type="text"
+                  includeQuill={false}
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          name="language"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Język</FormLabel>
+              <LanguageSelect {...field} />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          name="translator"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Przekład</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Przekład"
+                  type="text"
+                  includeQuill={false}
+                  {...field}
+                  onChange={(val) => {
+                    field.onChange(val);
+                  }}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          name="isApproved"
+          render={({ field }) => (
+            <FormItem className="flex gap-2 pb-2">
+              <FormLabel>Zaakceptowana?</FormLabel>
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type="submit">Zapisz</Button>
+        {/* <FormField
+      name="genre"
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel></FormLabel>
+          <FormControl>
+            <Input></Input>
+          </FormControl>
+        </FormItem>
+      )}
+    /> */}
+      </form>
+    </Form>
+  );
+};
+
+const BooksEdit: FC = () => {
+  const { id } = Route.useParams();
+
+  const accessToken = useSelector(userStateSelectors.selectAccessToken);
+
+  const { data, isFetching, isRefetching } = useQuery(
+    FindBookByIdQueryOptions({
+      accessToken: accessToken as string,
+      bookId: id,
+    }),
+  );
+
   if (isFetching && !isRefetching) {
     return (
       <AuthenticatedLayout>
@@ -273,281 +583,7 @@ const BooksEdit: FC = () => {
   return (
     <AuthenticatedLayout>
       <div className="w-full flex items-center justify-center pt-4">
-        <Form {...editBookForm}>
-          <form onSubmit={editBookForm.handleSubmit(onSubmit)}>
-            {/* <FormField
-            name="isbn"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel></FormLabel>
-                <FormControl>
-                  <Input></Input>
-                </FormControl>
-              </FormItem>
-            )}
-          /> */}
-
-            <FormField
-              control={editBookForm.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Tytuł</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Tytuł"
-                      type="text"
-                      includeQuill={false}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              name="author"
-              render={({ field }) => (
-                <FormItem>
-                  <div className="flex gap-2 items-center">
-                    <FormLabel>Autor</FormLabel>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <div>
-                            <HiOutlineInformationCircle className="h-5 w-5" />
-                          </div>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>
-                            Imię i nazwisko autora musi mieć minimum 3 znaki<br></br> i zawierać spację oddzielającą
-                            imię i nazwisko.
-                          </p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </div>
-                  <FormControl>
-                    <Popover
-                      open={authorSelectOpen}
-                      onOpenChange={setAuthorSelectOpen}
-                    >
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            size="xl"
-                            className={cn(
-                              'justify-between bg-[#D1D5DB]/20',
-                              !field.value && 'text-muted-foreground',
-                              draftAuthorName && 'text-black',
-                            )}
-                          >
-                            {field.value
-                              ? authors?.data.find((author) => author.id === field.value)?.name
-                                ? authors?.data.find((author) => author.id === field.value)?.name || 'Wyszukaj autora'
-                                : draftAuthorName || 'Wyszukaj autora'
-                              : draftAuthorName || 'Wyszukaj autora'}
-                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-60 sm:w-96 p-0">
-                        <Command>
-                          <CommandInput
-                            placeholder="Wyszukaj autora..."
-                            onValueChange={setSearchedName}
-                            onKeyDown={(event) => {
-                              if (event.key === 'Enter') {
-                                setAuthorSelectOpen(false);
-                              }
-                            }}
-                          />
-
-                          <CommandList>
-                            {isFetched && authors?.data.length === 0 && (
-                              <CommandEmpty className="flex flex-col px-4 py-4 gap-4">
-                                {/* <p>Nie znaleziono autora - {searchedName} </p> */}
-                                <>
-                                  <Dialog
-                                    open={createAuthorDialogVisible}
-                                    onOpenChange={(val) => {
-                                      onOpenChange(val);
-
-                                      createAuthorDraftForm.setValue('name', searchedName ?? '');
-                                    }}
-                                  >
-                                    <DialogTrigger asChild>
-                                      <Button className="bg-slate-100 text-black hover:bg-slate-300">Dodaj</Button>
-                                    </DialogTrigger>
-                                    <DialogContent className="sm:max-w-md">
-                                      <DialogHeader>
-                                        <DialogTitle>Stwórz autora</DialogTitle>
-                                      </DialogHeader>
-                                      <Form {...createAuthorDraftForm}>
-                                        <form
-                                          className="flex flex-col gap-8 py-4"
-                                          onSubmit={createAuthorDraftForm.handleSubmit(onCreateAuthorDraft)}
-                                        >
-                                          <FormField
-                                            name="name"
-                                            render={({ field }) => (
-                                              <FormItem>
-                                                <FormLabel>Imię</FormLabel>
-                                                <FormControl>
-                                                  <Input
-                                                    min={1}
-                                                    max={128}
-                                                    type="text"
-                                                    {...field}
-                                                  />
-                                                </FormControl>
-                                                <FormMessage></FormMessage>
-                                              </FormItem>
-                                            )}
-                                          />
-                                          <Button
-                                            disabled={!createAuthorDraftForm.formState.isValid}
-                                            type="button"
-                                            onClick={() => onCreateAuthorDraft(createAuthorDraftForm.getValues())}
-                                          >
-                                            Stwórz
-                                          </Button>
-                                        </form>
-                                      </Form>
-                                    </DialogContent>
-                                  </Dialog>
-                                </>
-                              </CommandEmpty>
-                            )}
-                            {loading && <CommandLoading>Wyszukuję autorów</CommandLoading>}
-                            {authors?.data.map((author) => (
-                              <CommandItem
-                                key={`author-${author.id}`}
-                                value={author.name}
-                                onSelect={() => {
-                                  editBookForm.setValue('author', author.id);
-
-                                  editBookForm.setValue('authorName', undefined);
-
-                                  setDraftAuthorName('');
-
-                                  editBookForm.trigger('author');
-                                }}
-                              >
-                                <Check
-                                  className={cn(
-                                    'mr-2 h-4 w-4',
-                                    author.id === field.value ? 'opacity-100' : 'opacity-0',
-                                  )}
-                                />
-                                {author.name}
-                              </CommandItem>
-                            ))}
-                          </CommandList>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              name="publisher"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Wydawnictwo</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Wydawnictwo"
-                      type="text"
-                      includeQuill={false}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              name="yearOfIssue"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Rok wydania</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="1939"
-                      type="text"
-                      includeQuill={false}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              name="language"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Język</FormLabel>
-                  <LanguageSelect {...field} />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              name="translator"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Przekład</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Przekład"
-                      type="text"
-                      includeQuill={false}
-                      {...field}
-                      onChange={(val) => {
-                        field.onChange(val);
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              name="isApproved"
-              render={({ field }) => (
-                <FormItem className="flex gap-2 pb-2">
-                  <FormLabel>Zaakceptowana?</FormLabel>
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit">Zapisz</Button>
-            {/* <FormField
-            name="genre"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel></FormLabel>
-                <FormControl>
-                  <Input></Input>
-                </FormControl>
-              </FormItem>
-            )}
-          /> */}
-          </form>
-        </Form>
+        <BookEditForm data={data as FindBookResponseBody}></BookEditForm>
       </div>
     </AuthenticatedLayout>
   );
