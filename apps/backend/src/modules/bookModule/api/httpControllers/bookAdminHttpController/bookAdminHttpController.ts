@@ -218,13 +218,6 @@ export class BookAdminHttpController implements HttpController {
 
         authors.push(author);
       }
-      
-    if (existingBook.length > 0) {
-      return {
-        statusCode: HttpStatusCode.noContent,
-        body: null,
-      };
-    }
 
       const existingBook = await this.bookRepository.findBooks({
         title: bookDraft.title,
@@ -233,10 +226,7 @@ export class BookAdminHttpController implements HttpController {
       });
 
       if (existingBook.length > 0) {
-        return {
-          statusCode: HttpStatusCode.noContent,
-          body: null,
-        };
+        continue;
       }
 
       await this.bookRepository.saveBook({
