@@ -7,11 +7,14 @@ import { FC } from 'react';
 import { RequireNonAuthComponent } from '../../modules/core/components/requireNonAuth/requireNonAuthComponent';
 import { CookieService } from '../../modules/core/services/cookieService/cookieService';
 import { DefaultFormLayout } from '../../modules/core/layouts/default/defaultFormLayout';
+import { useFindUserQuery } from '../../modules/user/api/queries/findUserQuery/findUserQuery';
 
 export const LoginPage: FC = () => {
   const storeDispatch = useStoreDispatch();
 
   const navigate = useNavigate();
+
+  const userData = useFindUserQuery();
 
   const onSuccessfulLogin = async (loginUserResponseBody: LoginUserResponseBody) => {
     const { refreshToken, accessToken, expiresIn } = loginUserResponseBody;
@@ -22,6 +25,18 @@ export const LoginPage: FC = () => {
         refreshToken,
       }),
     );
+
+    const { data } = await userData.refetch();
+
+    if (data) {
+      storeDispatch(
+        userStateActions.setCurrentUser({
+          user: data,
+        }),
+      );
+    } else {
+      throw new Error('Something wrong with setting user state.');
+    }
 
     CookieService.setUserTokensCookie({
       accessToken,
@@ -49,4 +64,4 @@ export const Route = createFileRoute('/login/')({
       </RequireNonAuthComponent>
     );
   },
-})
+});
