@@ -1,7 +1,7 @@
 import { type BookFormat } from './bookFormat.js';
 import { type Language } from './language.js';
 
-export interface ImportBookRequestBody {
+export interface BookImportData {
   readonly title: string;
   readonly isbn?: string | undefined;
   readonly publisher?: string | undefined;
@@ -12,4 +12,8 @@ export interface ImportBookRequestBody {
   readonly pages?: number | undefined;
   readonly imageUrl?: string | undefined;
   readonly authorNames: string[];
+}
+
+export interface ImportBooksRequestBody {
+  readonly data: BookImportData[];
 }

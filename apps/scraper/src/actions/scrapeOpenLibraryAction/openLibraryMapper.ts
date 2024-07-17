@@ -1,9 +1,9 @@
-import { BookFormat, isValidLanguage, Language, type ImportBookRequestBody } from '@common/contracts';
+import { BookFormat, isValidLanguage, Language, type BookImportData } from '@common/contracts';
 
 import { type OpenLibraryBookBinding, type OpenLibraryBook } from './openLibraryBook.js';
 
 export class OpenLibraryMapper {
-  public mapBook(openLibraryBook: OpenLibraryBook): ImportBookRequestBody | undefined {
+  public mapBook(openLibraryBook: OpenLibraryBook): BookImportData | undefined {
     if (!openLibraryBook.title?.length || openLibraryBook.title.length > 256) {
       return undefined;
     }
