@@ -27,9 +27,9 @@ export const QuotationText: FC<QuotationTextProps> = ({ content, index, pageInde
 
     clone.id = '';
 
-    clone.classList.remove('truncate');
+    clone.classList.remove('custom-truncate');
 
-    clone.classList.add('inline');
+    clone.classList.add('custom-inline');
 
     const root = document.querySelector('body');
 
@@ -40,10 +40,8 @@ export const QuotationText: FC<QuotationTextProps> = ({ content, index, pageInde
     const cloneWidth = clone.getBoundingClientRect().width;
 
     if (originalWidth < cloneWidth) {
-      console.log(`Truncated`);
       setIsTruncated(true);
     } else {
-      console.log(`Not Truncated`);
       setIsTruncated(false);
     }
 

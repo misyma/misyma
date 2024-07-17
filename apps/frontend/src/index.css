@@ -211,9 +211,19 @@ input[type='number'] {
 }
 
 .star-container:has(~ div:is(:hover, :focus-visible)) {
-  @apply text-primary
+  @apply text-primary;
 }
 
 .star-container:is(:hover, :focus-visible) ~ div {
-  @apply text-black
+  @apply text-black;
+}
+
+.custom-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.custom-inline {
+  display: inline;
 }
