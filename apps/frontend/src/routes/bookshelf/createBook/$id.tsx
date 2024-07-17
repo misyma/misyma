@@ -22,7 +22,7 @@ export const CreateBook: FC = () => {
   );
 };
 
-export const Route = createFileRoute('/bookshelf/createBook/')({
+export const Route = createFileRoute('/bookshelf/createBook/$id')({
   component: () => {
     return (
       <RequireAuthComponent>

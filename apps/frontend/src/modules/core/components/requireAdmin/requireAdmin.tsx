@@ -28,6 +28,12 @@ export function RequireAdmin({ children }: RequireAuthComponentProps): React.Rea
         user: res.data,
       }),
     );
+
+    return (
+      <div className="w-full h-[100%] flex justify-center items-center">
+        <LoadingSpinner></LoadingSpinner>
+      </div>
+    );
   }
 
   if (accessToken && refreshToken && user.currentUser !== null && user.currentUser?.role === UserRole.admin) {
