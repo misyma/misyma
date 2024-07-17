@@ -40,7 +40,6 @@ export const SearchResultPage: FC = () => {
         to: '/shelves',
       });
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
@@ -65,7 +64,7 @@ export const SearchResultPage: FC = () => {
 
   const onCreateManually = () => {
     navigate({
-      to: `/bookshelf/createBook`,
+      to: `/bookshelf/createBook/$id`,
       params: {
         id: searchParams.bookshelfId,
       },
