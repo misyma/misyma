@@ -209,7 +209,7 @@ export class Application {
 
     await this.createGenres(container);
 
-    loggerService.info({ message: 'Migrations executed.' });
+    loggerService.debug({ message: 'Migrations executed.' });
 
     const server = new HttpServer(container);
 

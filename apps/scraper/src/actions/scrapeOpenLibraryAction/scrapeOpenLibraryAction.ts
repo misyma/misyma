@@ -26,7 +26,9 @@ export class ScrapeOpenLibraryAction {
     let lineCount = 0;
 
     for await (const line of rl) {
-      await this.processLine(line);
+      const openLibraryBook = JSON.parse(line.toString()) as OpenLibraryBook;
+
+      const bookDraft = this.openLibraryMapper.mapBook(openLibraryBook);
 
       lineCount += 1;
 
@@ -35,20 +37,14 @@ export class ScrapeOpenLibraryAction {
           message: `Processed ${lineCount} books.`,
         });
       }
+
+      if (!bookDraft) {
+        return;
+      }
+
+      await this.misymaHttpClient.post('/api/admin/books/import', bookDraft);
     }
 
     this.logger.info({ message: 'Scraping Open Library completed.' });
-  }
-
-  private async processLine(line: string): Promise<void> {
-    const openLibraryBook = JSON.parse(line.toString()) as OpenLibraryBook;
-
-    const bookDraft = this.openLibraryMapper.mapBook(openLibraryBook);
-
-    if (!bookDraft) {
-      return;
-    }
-
-    await this.misymaHttpClient.post('/api/admin/books/import', bookDraft);
   }
 }

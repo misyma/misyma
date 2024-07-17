@@ -106,7 +106,7 @@ export class HttpServer {
     });
 
     this.fastifyServer.addHook('onRequest', (request, _reply, done) => {
-      this.loggerService.info({
+      this.loggerService.debug({
         message: 'HTTP request received.',
         endpoint: `${request.method} ${request.url}`,
       });
@@ -115,7 +115,7 @@ export class HttpServer {
     });
 
     this.fastifyServer.addHook('onSend', (request, reply, _payload, done) => {
-      this.loggerService.info({
+      this.loggerService.debug({
         message: 'HTTP response sent.',
         endpoint: `${request.method} ${request.url}`,
         statusCode: reply.statusCode,
