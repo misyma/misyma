@@ -2,6 +2,8 @@ import { type AxiosInstance } from 'axios';
 import { createReadStream } from 'node:fs';
 import { createInterface } from 'node:readline';
 
+import { type ImportBooksRequestBody, type BookImportData } from '@common/contracts';
+
 import { type OpenLibraryBook } from './openLibraryBook.js';
 import { type OpenLibraryMapper } from './openLibraryMapper.js';
 import { type Config } from '../../config.js';
@@ -25,30 +27,44 @@ export class ScrapeOpenLibraryAction {
 
     let lineCount = 0;
 
-    for await (const line of rl) {
-      await this.processLine(line);
+    let bookRequestBodies: BookImportData[] = [];
 
+    for await (const line of rl) {
       lineCount += 1;
 
-      if (lineCount % 1000 === 0) {
-        this.logger.info({
-          message: `Processed ${lineCount} books.`,
-        });
+      const openLibraryBook = JSON.parse(line.toString()) as OpenLibraryBook;
+
+      const bookDraft = this.openLibraryMapper.mapBook(openLibraryBook);
+
+      if (!bookDraft) {
+        continue;
       }
+
+      bookRequestBodies.push(bookDraft);
+
+      if (bookRequestBodies.length < 1000) {
+        continue;
+      }
+
+      const requestBody = {
+        data: bookRequestBodies,
+      } satisfies ImportBooksRequestBody;
+
+      await this.misymaHttpClient.post('/api/admin/books/import', requestBody);
+
+      bookRequestBodies = [];
+
+      this.logger.info({ message: `Processed ${lineCount} books.` });
+    }
+
+    if (bookRequestBodies.length) {
+      const requestBody = {
+        data: bookRequestBodies,
+      } satisfies ImportBooksRequestBody;
+
+      await this.misymaHttpClient.post('/api/admin/books/import', requestBody);
     }
 
     this.logger.info({ message: 'Scraping Open Library completed.' });
-  }
-
-  private async processLine(line: string): Promise<void> {
-    const openLibraryBook = JSON.parse(line.toString()) as OpenLibraryBook;
-
-    const bookDraft = this.openLibraryMapper.mapBook(openLibraryBook);
-
-    if (!bookDraft) {
-      return;
-    }
-
-    await this.misymaHttpClient.post('/api/admin/books/import', bookDraft);
   }
 }

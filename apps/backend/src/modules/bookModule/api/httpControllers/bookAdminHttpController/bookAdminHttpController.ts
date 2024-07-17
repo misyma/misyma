@@ -19,10 +19,10 @@ import {
   findAdminBooksResponseBodyDtoSchema,
 } from './schemas/findBooksSchema.js';
 import {
-  importBookBodyDtoSchema,
-  importBookResponseBodyDtoSchema,
-  type ImportBookBodyDto,
-  type ImportBookResponseBodyDto,
+  importBooksBodyDtoSchema,
+  importBooksResponseBodyDtoSchema,
+  type ImportBooksBodyDto,
+  type ImportBooksResponseBodyDto,
 } from './schemas/importBookSchema.js';
 import {
   updateBookPathParamsDtoSchema,
@@ -143,20 +143,20 @@ export class BookAdminHttpController implements HttpController {
       new HttpRoute({
         method: HttpMethodName.post,
         path: '/import',
-        handler: this.importBook.bind(this),
+        handler: this.importBooks.bind(this),
         schema: {
           request: {
-            body: importBookBodyDtoSchema,
+            body: importBooksBodyDtoSchema,
           },
           response: {
             [HttpStatusCode.noContent]: {
-              schema: importBookResponseBodyDtoSchema,
-              description: 'Book imported',
+              schema: importBooksResponseBodyDtoSchema,
+              description: 'Books imported',
             },
           },
         },
         securityMode: SecurityMode.bearerToken,
-        description: 'Import book',
+        description: 'Import books',
       }),
     ];
   }
@@ -183,61 +183,68 @@ export class BookAdminHttpController implements HttpController {
     };
   }
 
-  private async importBook(
-    request: HttpRequest<ImportBookBodyDto>,
-  ): Promise<HttpNoContentResponse<ImportBookResponseBodyDto>> {
-    const { authorNames, ...bookDraft } = request.body;
+  private async importBooks(
+    request: HttpRequest<ImportBooksBodyDto>,
+  ): Promise<HttpNoContentResponse<ImportBooksResponseBodyDto>> {
+    const { data } = request.body;
 
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
       expectedRole: UserRole.admin,
     });
 
-    const authors: Author[] = [];
+    const authorsCache: Record<string, Author> = {};
 
-    for (const authorName of authorNames) {
-      let author = await this.authorRepository.findAuthor({ name: authorName });
+    for (const bookDraft of data) {
+      const authors: Author[] = [];
 
-      if (!author) {
-        author = await this.authorRepository.saveAuthor({
-          author: {
-            name: authorName,
-            isApproved: true,
-          },
-        });
+      for (const authorName of bookDraft.authorNames) {
+        const cachedAuthor = authorsCache[authorName];
+
+        let author = cachedAuthor ? cachedAuthor : await this.authorRepository.findAuthor({ name: authorName });
+
+        if (!author) {
+          author = await this.authorRepository.saveAuthor({
+            author: {
+              name: authorName,
+              isApproved: true,
+            },
+          });
+        }
+
+        if (!cachedAuthor) {
+          authorsCache[authorName] = author;
+        }
+
+        authors.push(author);
       }
 
-      authors.push(author);
-    }
-
-    const existingBook = await this.bookRepository.findBooks({
-      title: bookDraft.title,
-      page: 1,
-      pageSize: 1,
-    });
-
-    if (existingBook.length > 0) {
-      return {
-        statusCode: HttpStatusCode.noContent,
-        body: null,
-      };
-    }
-
-    await this.bookRepository.saveBook({
-      book: {
+      const existingBook = await this.bookRepository.findBooks({
         title: bookDraft.title,
-        isbn: bookDraft.isbn,
-        publisher: bookDraft.publisher,
-        format: bookDraft.format,
-        isApproved: true,
-        language: bookDraft.language,
-        imageUrl: bookDraft.imageUrl,
-        releaseYear: bookDraft.releaseYear,
-        translator: bookDraft.translator,
-        pages: bookDraft.pages,
-        authors,
-      },
-    });
+        page: 1,
+        pageSize: 1,
+      });
+
+      if (existingBook.length > 0) {
+        continue;
+      }
+
+      await this.bookRepository.saveBook({
+        book: {
+          title: bookDraft.title,
+          isbn: bookDraft.isbn,
+          publisher: bookDraft.publisher,
+          format: bookDraft.format,
+          isApproved: true,
+          language: bookDraft.language,
+          imageUrl: bookDraft.imageUrl,
+          releaseYear: bookDraft.releaseYear,
+          translator: bookDraft.translator,
+          pages: bookDraft.pages,
+          authors,
+        },
+      });
+    }
 
     return {
       statusCode: HttpStatusCode.noContent,

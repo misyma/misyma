@@ -61,7 +61,7 @@ export class HttpServer {
 
     this.config = container.get<Config>(coreSymbols.config);
 
-    this.fastifyServer = fastify({ bodyLimit: 10 * 1024 * 1024 }).withTypeProvider<TypeBoxTypeProvider>();
+    this.fastifyServer = fastify({ bodyLimit: 25 * 1024 * 1024 }).withTypeProvider<TypeBoxTypeProvider>();
 
     this.httpRouter = new HttpRouter(this.fastifyServer);
   }
