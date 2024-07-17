@@ -9,6 +9,7 @@ import {
   type DeleteBookPayload,
   type SaveBookPayload,
   type FindBooksPayload,
+  type ImportBookPayload,
 } from '../../../domain/repositories/bookRepository/bookRepository.js';
 import { authorColumns, authorTable } from '../../databases/bookDatabase/tables/authorTable/authorTable.js';
 import { type BookAuthorRawEntity } from '../../databases/bookDatabase/tables/bookAuthorTable/bookAuthorRawEntity.js';
@@ -89,6 +90,49 @@ export class BookRepositoryImpl implements BookRepository {
     authors.forEach((author) => createdBook.addAuthor(author));
 
     return createdBook;
+  }
+
+  public async importBook(payload: ImportBookPayload): Promise<void> {
+    const {
+      book: { title, isbn, publisher, releaseYear, language, translator, format, pages, isApproved, imageUrl, authors },
+    } = payload;
+
+    const id = this.uuidService.generateUuid();
+
+    try {
+      await this.databaseClient.transaction(async (transaction) => {
+        await transaction<BookRawEntity>(bookTable).insert(
+          {
+            id,
+            title,
+            isbn,
+            publisher,
+            releaseYear,
+            language,
+            translator,
+            format,
+            pages,
+            isApproved,
+            imageUrl,
+          },
+          '*',
+        );
+
+        await transaction.batchInsert(
+          bookAuthorTable,
+          authors.map((author) => ({
+            bookId: id,
+            authorId: author.getId(),
+          })),
+        );
+      });
+    } catch (error) {
+      throw new RepositoryError({
+        entity: 'Book',
+        operation: 'create',
+        error,
+      });
+    }
   }
 
   private async updateBook(payload: UpdateBookPayload): Promise<Book> {
