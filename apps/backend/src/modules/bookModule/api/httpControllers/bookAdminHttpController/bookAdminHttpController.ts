@@ -183,7 +183,6 @@ export class BookAdminHttpController implements HttpController {
     };
   }
 
-  // TODO: remove when migration to postgres is done
   private async importBook(
     request: HttpRequest<ImportBookBodyDto>,
   ): Promise<HttpNoContentResponse<ImportBookResponseBodyDto>> {
@@ -217,7 +216,7 @@ export class BookAdminHttpController implements HttpController {
       pageSize: 1,
     });
 
-    if (existingBook) {
+    if (existingBook.length > 0) {
       return {
         statusCode: HttpStatusCode.noContent,
         body: null,
