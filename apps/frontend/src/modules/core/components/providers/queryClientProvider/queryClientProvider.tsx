@@ -50,7 +50,7 @@ export const QueryClientProvider = ({ children }: ProviderProps) => {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: 300,
+        staleTime: 1500,
         gcTime: 300,
         retry: (failureCount, error) => {
           if (error instanceof ApiError && (error.context.statusCode === 401 || error.context.statusCode === 400)) {
