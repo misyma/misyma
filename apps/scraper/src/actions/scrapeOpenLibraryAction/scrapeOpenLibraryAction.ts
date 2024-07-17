@@ -30,12 +30,6 @@ export class ScrapeOpenLibraryAction {
 
       const bookDraft = this.openLibraryMapper.mapBook(openLibraryBook);
 
-      if (!bookDraft) {
-        continue;
-      }
-
-      await this.misymaHttpClient.post('/api/admin/books/import', bookDraft);
-
       lineCount += 1;
 
       if (lineCount % 1000 === 0) {
@@ -43,6 +37,12 @@ export class ScrapeOpenLibraryAction {
           message: `Processed ${lineCount} books.`,
         });
       }
+
+      if (!bookDraft) {
+        continue;
+      }
+
+      await this.misymaHttpClient.post('/api/admin/books/import', bookDraft);
     }
 
     this.logger.info({ message: 'Scraping Open Library completed.' });
