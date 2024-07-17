@@ -195,13 +195,11 @@ export class BookAdminHttpController implements HttpController {
 
     const authorsCache: Record<string, Author> = {};
 
-    for (const bookDraft of data) {
-      const authors: Author[] = [];
+    const allAuthors = [...new Set(data.map((bookDraft) => bookDraft.authorNames).flat())];
 
-      for (const authorName of bookDraft.authorNames) {
-        const cachedAuthor = authorsCache[authorName];
-
-        let author = cachedAuthor ? cachedAuthor : await this.authorRepository.findAuthor({ name: authorName });
+    await Promise.all(
+      allAuthors.map(async (authorName) => {
+        let author = await this.authorRepository.findAuthor({ name: authorName });
 
         if (!author) {
           author = await this.authorRepository.saveAuthor({
@@ -212,39 +210,41 @@ export class BookAdminHttpController implements HttpController {
           });
         }
 
-        if (!cachedAuthor) {
-          authorsCache[authorName] = author;
+        authorsCache[authorName] = author;
+      }),
+    );
+
+    await Promise.all(
+      data.map(async (bookDraft) => {
+        const existingBook = await this.bookRepository.findBooks({
+          title: bookDraft.title,
+          page: 1,
+          pageSize: 1,
+        });
+
+        if (existingBook.length > 0) {
+          return;
         }
 
-        authors.push(author);
-      }
+        const authors = bookDraft.authorNames.map((authorName) => authorsCache[authorName] as Author);
 
-      const existingBook = await this.bookRepository.findBooks({
-        title: bookDraft.title,
-        page: 1,
-        pageSize: 1,
-      });
-
-      if (existingBook.length > 0) {
-        continue;
-      }
-
-      await this.bookRepository.saveBook({
-        book: {
-          title: bookDraft.title,
-          isbn: bookDraft.isbn,
-          publisher: bookDraft.publisher,
-          format: bookDraft.format,
-          isApproved: true,
-          language: bookDraft.language,
-          imageUrl: bookDraft.imageUrl,
-          releaseYear: bookDraft.releaseYear,
-          translator: bookDraft.translator,
-          pages: bookDraft.pages,
-          authors,
-        },
-      });
-    }
+        await this.bookRepository.saveBook({
+          book: {
+            title: bookDraft.title,
+            isbn: bookDraft.isbn,
+            publisher: bookDraft.publisher,
+            format: bookDraft.format,
+            isApproved: true,
+            language: bookDraft.language,
+            imageUrl: bookDraft.imageUrl,
+            releaseYear: bookDraft.releaseYear,
+            translator: bookDraft.translator,
+            pages: bookDraft.pages,
+            authors,
+          },
+        });
+      }),
+    );
 
     return {
       statusCode: HttpStatusCode.noContent,

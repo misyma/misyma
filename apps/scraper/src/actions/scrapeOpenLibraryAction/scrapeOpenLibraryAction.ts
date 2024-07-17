@@ -42,7 +42,7 @@ export class ScrapeOpenLibraryAction {
 
       bookRequestBodies.push(bookDraft);
 
-      if (bookRequestBodies.length < 1000) {
+      if (bookRequestBodies.length < 500) {
         continue;
       }
 

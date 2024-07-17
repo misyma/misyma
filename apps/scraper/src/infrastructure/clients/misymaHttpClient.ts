@@ -14,7 +14,7 @@ export class MisymaHttpClientFactory {
         'Content-Type': 'application/json',
         Accept: 'application/json',
       },
-      timeout: 5000,
+      timeout: 20000,
     });
 
     axiosRetry(httpClient, { retries: 3 });
