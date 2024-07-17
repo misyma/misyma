@@ -39,7 +39,7 @@ export class ScrapeOpenLibraryAction {
       }
 
       if (!bookDraft) {
-        return;
+        continue;
       }
 
       await this.misymaHttpClient.post('/api/admin/books/import', bookDraft);
