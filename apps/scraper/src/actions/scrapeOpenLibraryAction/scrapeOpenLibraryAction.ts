@@ -7,6 +7,10 @@ import { type OpenLibraryMapper } from './openLibraryMapper.js';
 import { type Config } from '../../config.js';
 import { type LoggerService } from '../../libs/logger/loggerService.js';
 
+export interface ScrapeOpenLibraryActionExecutePayload {
+  readonly from: number | undefined;
+}
+
 export class ScrapeOpenLibraryAction {
   public constructor(
     private readonly misymaHttpClient: AxiosInstance,
@@ -15,8 +19,13 @@ export class ScrapeOpenLibraryAction {
     private readonly logger: LoggerService,
   ) {}
 
-  public async execute(): Promise<void> {
-    this.logger.info({ message: 'Scraping Open Library...' });
+  public async execute(payload: ScrapeOpenLibraryActionExecutePayload): Promise<void> {
+    const { from } = payload;
+
+    this.logger.info({
+      message: 'Scraping Open Library...',
+      from,
+    });
 
     const rl = createInterface({
       input: createReadStream(this.config.openLibraryPath),
@@ -26,11 +35,15 @@ export class ScrapeOpenLibraryAction {
     let lineCount = 0;
 
     for await (const line of rl) {
+      lineCount += 1;
+
+      if (from && lineCount < from) {
+        continue;
+      }
+
       const openLibraryBook = JSON.parse(line.toString()) as OpenLibraryBook;
 
       const bookDraft = this.openLibraryMapper.mapBook(openLibraryBook);
-
-      lineCount += 1;
 
       if (lineCount % 1000 === 0) {
         this.logger.info({

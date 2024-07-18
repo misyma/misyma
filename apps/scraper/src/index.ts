@@ -4,7 +4,10 @@ import yargs, { type Argv } from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
 import { OpenLibraryMapper } from './actions/scrapeOpenLibraryAction/openLibraryMapper.js';
-import { ScrapeOpenLibraryAction } from './actions/scrapeOpenLibraryAction/scrapeOpenLibraryAction.js';
+import {
+  ScrapeOpenLibraryAction,
+  type ScrapeOpenLibraryActionExecutePayload,
+} from './actions/scrapeOpenLibraryAction/scrapeOpenLibraryAction.js';
 import { ConfigFactory } from './config.js';
 import { BaseError } from './errors/baseError.js';
 import { MisymaHttpClientFactory } from './infrastructure/clients/misymaHttpClient.js';
@@ -57,11 +60,19 @@ try {
       {
         command: 'scrape openlibrary',
         describe: 'Scrape resources from Open Library.',
-        builder: (builder: any): Argv => {
-          return builder.usage('Usage: scraper scrape openlibrary');
+        builder: (builder: Argv): Argv<ScrapeOpenLibraryActionExecutePayload> => {
+          return builder
+            .option({
+              from: {
+                description: 'Start scraping from book number',
+                number: true,
+                alias: 'f',
+              },
+            })
+            .usage('Usage: scraper scrape openlibrary');
         },
-        handler: async (): Promise<void> => {
-          await scrapeOpenLibraryAction.execute();
+        handler: async (argv: any): Promise<void> => {
+          await scrapeOpenLibraryAction.execute(argv);
         },
       },
     ])
