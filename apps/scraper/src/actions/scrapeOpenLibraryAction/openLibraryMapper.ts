@@ -16,20 +16,23 @@ export class OpenLibraryMapper {
       !format ||
       !openLibraryBook.isbn13 ||
       !language ||
-      !isSupportedLanguage
+      !isSupportedLanguage ||
+      !openLibraryBook.authors?.length
     ) {
       return undefined;
     }
 
-    const authorNames = openLibraryBook.authors?.length
-      ? [
-          ...new Set(
-            openLibraryBook.authors
-              .filter((openLibraryAuthorName) => openLibraryAuthorName.length)
-              .map((openLibraryAuthorName) => this.mapAuthorName(openLibraryAuthorName)),
-          ),
-        ]
-      : ['Unknown'];
+    const authorNames = [
+      ...new Set(
+        openLibraryBook.authors
+          .filter((openLibraryAuthorName) => openLibraryAuthorName.length)
+          .map((openLibraryAuthorName) => this.mapAuthorName(openLibraryAuthorName)),
+      ),
+    ];
+
+    if (authorNames.length > 2) {
+      return undefined;
+    }
 
     const releaseYear = this.mapReleaseYear(openLibraryBook.date_published);
 
