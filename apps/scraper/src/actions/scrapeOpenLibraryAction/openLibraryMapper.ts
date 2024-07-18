@@ -6,7 +6,18 @@ export class OpenLibraryMapper {
   public mapBook(openLibraryBook: OpenLibraryBook): ImportBookRequestBody | undefined {
     const format = this.mapFormat(openLibraryBook.binding);
 
-    if (!openLibraryBook.title?.length || openLibraryBook.title.length > 256 || !format) {
+    const language = this.mapLanguage(openLibraryBook.language);
+
+    const isSupportedLanguage = language === Language.English || language === Language.Polish;
+
+    if (
+      !openLibraryBook.title?.length ||
+      openLibraryBook.title.length > 256 ||
+      !format ||
+      !openLibraryBook.isbn13 ||
+      !language ||
+      !isSupportedLanguage
+    ) {
       return undefined;
     }
 
@@ -19,8 +30,6 @@ export class OpenLibraryMapper {
           ),
         ]
       : ['Unknown'];
-
-    const language = this.mapLanguage(openLibraryBook.language);
 
     const releaseYear = this.mapReleaseYear(openLibraryBook.date_published);
 
@@ -77,9 +86,9 @@ export class OpenLibraryMapper {
     }
   }
 
-  private mapLanguage(openLibraryLanguage: string | undefined): Language {
+  private mapLanguage(openLibraryLanguage: string | undefined): Language | undefined {
     if (!openLibraryLanguage) {
-      return Language.English;
+      return undefined;
     }
 
     const abbreviatedLanguage = openLibraryLanguage.toLowerCase().substring(0, 2);
@@ -88,6 +97,6 @@ export class OpenLibraryMapper {
       return abbreviatedLanguage;
     }
 
-    return Language.English;
+    return undefined;
   }
 }
