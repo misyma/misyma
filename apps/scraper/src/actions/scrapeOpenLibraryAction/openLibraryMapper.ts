@@ -48,7 +48,7 @@ export class OpenLibraryMapper {
       return String(nameParts[0]).trim();
     }
 
-    return `${String(nameParts[1]).trimStart()} ${String(nameParts[0])}`;
+    return `${String(nameParts[1]).trimStart()} ${String(nameParts[0])}`.trim();
   }
 
   private mapReleaseYear(openLibraryDatePublished: string | number | undefined): number | undefined {
