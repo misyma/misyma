@@ -30,7 +30,7 @@ export class OpenLibraryMapper {
       ),
     ];
 
-    if (authorNames.length > 2) {
+    if (authorNames.length > 1) {
       return undefined;
     }
 
