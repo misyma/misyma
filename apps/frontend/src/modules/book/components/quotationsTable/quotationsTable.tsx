@@ -22,7 +22,6 @@ import {
   PaginationPrevious,
 } from '../../../common/components/pagination/pagination';
 import { Table, TableBody, TableCell, TableRow } from '../../../common/components/table/table';
-import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -128,7 +127,7 @@ export function QuotationsTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center flex justify-center items-center py-2"
                 >
-                  <LoadingSpinner></LoadingSpinner>
+                  Brak wyników.
                 </TableCell>
               </TableRow>
             )}
