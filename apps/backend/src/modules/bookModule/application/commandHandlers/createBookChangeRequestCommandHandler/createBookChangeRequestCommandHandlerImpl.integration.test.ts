@@ -190,4 +190,29 @@ describe('CreateBookChangeRequestCommandHandler', () => {
 
     expect.fail();
   });
+
+  it('throws an error - when no book data provided', async () => {
+    const user = await userTestUtils.createAndPersist();
+
+    const book = await bookTestUtils.createAndPersist();
+
+    try {
+      await createBookChangeRequestCommandHandler.execute({
+        bookId: book.id,
+        userId: user.id,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toEqual({
+        reason: 'No book data provided to create a change request.',
+        bookId: book.id,
+        userId: user.id,
+      });
+
+      return;
+    }
+
+    expect.fail();
+  });
 });

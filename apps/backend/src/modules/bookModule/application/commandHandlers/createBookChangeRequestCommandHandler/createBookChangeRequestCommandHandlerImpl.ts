@@ -20,11 +20,22 @@ export class CreateBookChangeRequestCommandHandlerImpl implements CreateBookChan
   public async execute(
     payload: CreateBookChangeRequestCommandHandlerPayload,
   ): Promise<CreateBookChangeRequestCommandHandlerResult> {
-    const { format, language, title, imageUrl, isbn, pages, publisher, releaseYear, translator, bookId, userId } =
-      payload;
+    const { bookId, userId, ...updateData } = payload;
+
+    if (Object.keys(updateData).length === 0) {
+      throw new OperationNotValidError({
+        reason: 'No book data provided to create a change request.',
+        bookId,
+        userId,
+      });
+    }
+
+    const { format, language, title, imageUrl, isbn, pages, publisher, releaseYear, translator } = updateData;
 
     this.loggerService.debug({
       message: 'Creating BookChangeRequest...',
+      bookId,
+      userId,
       format,
       language,
       title,
@@ -34,8 +45,6 @@ export class CreateBookChangeRequestCommandHandlerImpl implements CreateBookChan
       publisher,
       releaseYear,
       translator,
-      bookId,
-      userId,
     });
 
     const book = await this.bookRepository.findBook({ id: bookId });
@@ -77,6 +86,8 @@ export class CreateBookChangeRequestCommandHandlerImpl implements CreateBookChan
 
     this.loggerService.debug({
       message: 'BookChangeRequest created.',
+      bookId,
+      userId,
       bookChangeRequestId: bookChangeRequest.getId(),
     });
 
