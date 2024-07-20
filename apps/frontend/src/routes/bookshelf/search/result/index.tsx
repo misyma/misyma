@@ -13,6 +13,13 @@ import { FC, useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { FindBooksQueryOptions } from '../../../../modules/book/api/user/queries/findBooks/findBooksQueryOptions';
 import { Book } from '@common/contracts';
+import { FindUserBooksByQueryOptions } from '../../../../modules/book/api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../../../../modules/common/components/tooltip/tooltip';
 
 export const SearchResultPage: FC = () => {
   const searchParams = Route.useSearch();
@@ -20,6 +27,8 @@ export const SearchResultPage: FC = () => {
   const navigate = useNavigate();
 
   const searchCreationDispatch = useSearchBookContextDispatch();
+
+  const [currentBookIsbn, setCurrentBookIsbn] = useState('');
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
@@ -50,6 +59,19 @@ export const SearchResultPage: FC = () => {
       accessToken: accessToken as string,
     }),
   );
+
+  const {
+    data: userBookWithIsbn,
+    isFetching: initialCheckForIsbnInProgress,
+    isRefetching: checkForIsbnInProgress,
+  } = useQuery(
+    FindUserBooksByQueryOptions({
+      accessToken: accessToken as string,
+      isbn: currentBookIsbn,
+    }),
+  );
+
+  const bookExistsOnUserAccount = useMemo(() => (userBookWithIsbn?.data?.length ?? 100) > 0, [userBookWithIsbn?.data]);
 
   const onTryAgain = () => {
     navigate({
@@ -107,7 +129,7 @@ export const SearchResultPage: FC = () => {
             </span>
             <div className="flex flex-col gap-4">
               <Button
-                size='xl'
+                size="xl"
                 onClick={onCreateManually}
               >
                 Wprowadź dane
@@ -165,7 +187,10 @@ export const SearchResultPage: FC = () => {
             {booksCount > 1 ? (
               <Paginator
                 rootClassName="w-full flex items-center h-16 text-xl sm:text-3xl justify-normal"
-                onPageChange={(page) => setCurrentPage(page)}
+                onPageChange={(page) => {
+                  setCurrentPage(page);
+                  setCurrentBookIsbn(foundBooks?.data[currentPage - 1].isbn ?? '');
+                }}
                 pagesCount={booksCount}
                 pageNumberSlot={
                   <span className="text-left text-ellipsis w-full line-clamp-2">
@@ -193,12 +218,26 @@ export const SearchResultPage: FC = () => {
             <p>Liczba stron: {foundBooks?.data[currentPage - 1].pages}</p>
           </div>
           <div className="flex flex-col gap-4">
-            <Button
-              onClick={onAddBook}
-              size="xl"
-            >
-              Kontynuuj
-            </Button>
+            {initialCheckForIsbnInProgress || checkForIsbnInProgress || bookExistsOnUserAccount ? (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger className='flex'>
+                    <Button
+                      onClick={onAddBook}
+                      size="xl"
+                      disabled={initialCheckForIsbnInProgress || checkForIsbnInProgress || bookExistsOnUserAccount}
+                    >
+                      Kontynuuj
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Posiadasz już te książkę na swoim koncie :)</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            ) : (
+              <Button size="xl">Kontynuuj</Button>
+            )}
             <p>
               lub{' '}
               <span

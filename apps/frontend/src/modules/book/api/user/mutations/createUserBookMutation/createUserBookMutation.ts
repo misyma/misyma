@@ -14,6 +14,7 @@ export const useCreateUserBookMutation = (
   const mapper = new ErrorCodeMessageMapper({
     400: 'Podano błędne dane.',
     403: 'Brak pozwolenia na stworzenie książki.',
+    409: 'Książka z podanym isbn już istnieje.',
     500: 'Wewnętrzny błąd serwera.',
   });
 

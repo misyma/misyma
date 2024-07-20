@@ -4,4 +4,5 @@ export const BookApiQueryKeys = {
   findBooksAdmin: 'findBooksAdmin',
   findBooksByBookshelfId: 'findBooksByBookshelfId',
   findUserBookById: 'findUserBookById',
+  findUserBooksBy: 'findUserBooksBy',
 };
