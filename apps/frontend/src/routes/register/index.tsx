@@ -40,7 +40,7 @@ export const RegisterPage: FC = () => {
           </h1>
           <div className="pt-5">
             <Button
-              className="w-full"
+              size="xl"
               onClick={() => {
                 navigate({
                   to: '/login',
@@ -106,4 +106,4 @@ export const Route = createFileRoute('/register/')({
       </RequireNonAuthComponent>
     );
   },
-})
+});

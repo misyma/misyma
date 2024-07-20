@@ -133,15 +133,18 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
                 <PopoverTrigger asChild>
                   <FormControl>
                     <Button
+                      size="xl"
                       variant={'outline'}
-                      className={cn('min-w-96 pl-3 text-left font-normal', !field.value && 'text-muted-foreground')}
+                      className={cn('px-3 text-left font-normal')}
                     >
                       {field.value ? (
-                        formatDate(field.value, 'PPP', {
-                          locale: pl,
-                        })
+                        <span className={cn(!field.value && 'text-muted-foreground', 'text-left w-full font-light text-black')}>
+                          {formatDate(field.value, 'PPP', {
+                            locale: pl,
+                          })}
+                        </span>
                       ) : (
-                        <span>Wybierz dzień rozpoczęcia</span>
+                        <span className={cn('text-muted-foreground font-light text-left w-full')}>Wybierz dzień rozpoczęcia</span>
                       )}
                       <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                     </Button>
@@ -175,14 +178,17 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
                   <FormControl>
                     <Button
                       variant={'outline'}
-                      className={cn('min-w-96 pl-3 text-left font-normal', !field.value && 'text-muted-foreground')}
+                      size="xl"
+                      className={cn('px-3 text-left font-normal')}
                     >
                       {field.value ? (
-                        formatDate(field.value, 'PPP', {
-                          locale: pl,
-                        })
+                        <span className={cn(!field.value && 'text-muted-foreground', 'text-left w-full text-black')}>
+                          {formatDate(field.value, 'PPP', {
+                            locale: pl,
+                          })}
+                        </span>
                       ) : (
-                        <span>Wybierz dzień zakończenia</span>
+                        <span className={cn('text-muted-foreground text-left w-full')}>Wybierz dzień zakończenia</span>
                       )}
                       <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                     </Button>

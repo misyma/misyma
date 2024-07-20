@@ -24,9 +24,9 @@ const NavbarBreadcrumbs = () => {
 
   const context = router.state.matches;
 
-  const filteredPaths = context.filter((route) => route.id !== '__root__');
+  const filteredPaths = context.filter((route) => route.id !== '__root__') ?? [];
 
-  const allDollarKeys = filteredPaths[0].staticData.routeDisplayableNameParts
+  const allDollarKeys = filteredPaths[0]?.staticData.routeDisplayableNameParts
     ?.map((val) => {
       const dollarValues = [];
 
@@ -64,7 +64,7 @@ const NavbarBreadcrumbs = () => {
   const breadcrumbItems = useMemo(() => {
     {
       return (
-        filteredPaths[0].staticData.routeDisplayableNameParts?.map((val) => (
+        filteredPaths[0]?.staticData.routeDisplayableNameParts?.map((val) => (
           <BreadcrumbItem>
             <BreadcrumbLink>
               <Link to={replaceHrefPlaceholderWithValue(val.href)}>
@@ -144,10 +144,10 @@ export const Navbar: FC = () => {
   const linkClasses = '[&.active]:font-extrabold [&.active]:underline underline-offset-8 decoration-[3px] text-nowrap';
 
   return (
-    <div className="flex p-8 flex-col w-full top-0 fixed z-50">
+    <div className="flex pt-8 px-8 flex-col bg-white w-full top-0 fixed z-50">
       <div className="bg-white flex justify-end w-full items-center">
         <div className="w-[100%] text-3xl md:text-5xl lg:text-5xl font-logo-bold">
-          <Link to="/">MISYMA</Link>
+          <Link to="/shelves">MISYMA</Link>
         </div>
         <input
           type="checkbox"
@@ -178,13 +178,28 @@ export const Navbar: FC = () => {
             </Link>
           </li>
           <li className="text-primary text-md text-center font-semibold">
-            <Link className={linkClasses}>Cytaty</Link>
+            <Link
+              to="/non-existent1"
+              className={linkClasses}
+            >
+              Cytaty
+            </Link>
           </li>
           <li className="text-primary text-md text-center font-semibold">
-            <Link className={linkClasses}>Kolekcje</Link>
+            <Link
+              to="/non-existent2"
+              className={linkClasses}
+            >
+              Kolekcje
+            </Link>
           </li>
           <li className="text-primary text-md text-center font-semibold">
-            <Link className={linkClasses}>Statystyki</Link>
+            <Link
+              to="/non-existent3"
+              className={linkClasses}
+            >
+              Statystyki
+            </Link>
           </li>
           <li className="text-primary text-md text-center font-semibold">
             <Link

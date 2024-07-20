@@ -17,7 +17,6 @@ import { Route as ShelvesIndexImport } from './routes/shelves/index'
 import { Route as ResetPasswordIndexImport } from './routes/resetPassword/index'
 import { Route as RegisterIndexImport } from './routes/register/index'
 import { Route as ProfileIndexImport } from './routes/profile/index'
-import { Route as NotFoundIndexImport } from './routes/notFound/index'
 import { Route as NewPasswordIndexImport } from './routes/newPassword/index'
 import { Route as LoginIndexImport } from './routes/login/index'
 import { Route as BookshelfBookshelfIdImport } from './routes/bookshelf/$bookshelfId'
@@ -63,11 +62,6 @@ const RegisterIndexRoute = RegisterIndexImport.update({
 
 const ProfileIndexRoute = ProfileIndexImport.update({
   path: '/profile/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const NotFoundIndexRoute = NotFoundIndexImport.update({
-  path: '/notFound/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -173,10 +167,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NewPasswordIndexImport
       parentRoute: typeof rootRoute
     }
-    '/notFound/': {
-      preLoaderRoute: typeof NotFoundIndexImport
-      parentRoute: typeof rootRoute
-    }
     '/profile/': {
       preLoaderRoute: typeof ProfileIndexImport
       parentRoute: typeof rootRoute
@@ -255,7 +245,6 @@ export const routeTree = rootRoute.addChildren([
   BookshelfBookshelfIdRoute,
   LoginIndexRoute,
   NewPasswordIndexRoute,
-  NotFoundIndexRoute,
   ProfileIndexRoute,
   RegisterIndexRoute,
   ResetPasswordIndexRoute,
