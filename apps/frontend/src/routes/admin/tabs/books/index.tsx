@@ -13,9 +13,15 @@ export const BooksAdminPage: FC = () => {
 
   const [searchTitleName, setSearchTitleName] = useState('');
 
+  const onSetSearchTitle = (val: string) => {
+    setPage(0);
+
+    setSearchTitleName(val);
+  };
+
   const {
     data: booksData,
-    // isFetched: isAuthorsFetched,
+    isFetched: isBooksFetched,
     // isFetching: isAuthorsFetching,
     // isRefetching: isAuthorsRefetching,
   } = useFindBooksQuery({
@@ -23,6 +29,10 @@ export const BooksAdminPage: FC = () => {
     page,
     title: searchTitleName,
   });
+
+  if (isBooksFetched && page !== (booksData?.metadata.page as number) - 1) {
+    setPage((booksData?.metadata.page as number) - 1);
+  }
 
   const pageCount = useMemo(() => {
     return Math.ceil((booksData?.metadata?.total ?? 0) / pageSize) || 1;
@@ -77,7 +87,7 @@ export const BooksAdminPage: FC = () => {
                 pageSize={pageSize}
                 pageIndex={page}
                 searchBookTitle={searchTitleName}
-                setSearchBookTitle={setSearchTitleName}
+                setSearchBookTitle={onSetSearchTitle}
               />
             </div>
           </div>
