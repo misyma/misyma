@@ -246,20 +246,32 @@ export const StepOneForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
                   <PopoverTrigger asChild>
                     <FormControl>
                       <Button
-                        variant="outline"
+                        variant="link"
                         role="combobox"
                         size="xl"
                         className={cn(
                           'justify-between bg-[#D1D5DB]/20',
                           !field.value && 'text-muted-foreground',
                           draftAuthorName && 'text-black',
+                          'border',
                         )}
+                        style={{
+                          height: '3rem',
+                        }}
                       >
-                        {field.value
-                          ? authors?.data.find((author) => author.id === field.value)?.name
-                            ? authors?.data.find((author) => author.id === field.value)?.name || 'Wyszukaj autora'
-                            : draftAuthorName || 'Wyszukaj autora'
-                          : draftAuthorName || 'Wyszukaj autora'}
+                        <p
+                          className={cn(
+                            !field.value && 'text-muted-foreground',
+                            draftAuthorName && 'text-black',
+                            'w-full text-start px-3',
+                          )}
+                        >
+                          {field.value
+                            ? authors?.data.find((author) => author.id === field.value)?.name
+                              ? authors?.data.find((author) => author.id === field.value)?.name || 'Wyszukaj autora'
+                              : draftAuthorName || 'Wyszukaj autora'
+                            : draftAuthorName || 'Wyszukaj autora'}
+                        </p>
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
                     </FormControl>

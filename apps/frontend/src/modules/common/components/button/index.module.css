@@ -47,5 +47,5 @@
 }
 
 .link-button.button {
-  @apply text-primary underline-offset-4 hover:underline;
+  @apply text-primary;
 }
