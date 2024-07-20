@@ -163,6 +163,10 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
             size="xl"
             variant="outline"
             className="border-none text-xl"
+            style={{
+              fontSize: '1.25rem',
+              lineHeight: '1.75rem',
+            }}
           >
             {currentBookshelf}
           </Button>

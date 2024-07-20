@@ -147,7 +147,7 @@ export const Navbar: FC = () => {
     <div className="flex pt-8 px-8 flex-col bg-white w-full top-0 fixed z-50">
       <div className="bg-white flex justify-end w-full items-center">
         <div className="w-[100%] text-3xl md:text-5xl lg:text-5xl font-logo-bold">
-          <Link to="/">MISYMA</Link>
+          <Link to="/shelves">MISYMA</Link>
         </div>
         <input
           type="checkbox"
