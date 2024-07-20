@@ -23,7 +23,7 @@
 }
 
 .xl-size.button {
-  @apply w-60 sm:w-96 h-10;
+  @apply w-60 sm:w-96 h-12;
 }
 
 .icon-size.button {
