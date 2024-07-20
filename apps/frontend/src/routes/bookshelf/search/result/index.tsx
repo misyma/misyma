@@ -87,7 +87,7 @@ export const SearchResultPage: FC = () => {
     });
 
     navigate({
-      to: `/search/create/${searchParams.bookshelfId}`,
+      to: `/bookshelf/search/create/${searchParams.bookshelfId}`,
     });
   };
 
