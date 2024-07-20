@@ -62,6 +62,7 @@ import {
   type VerifyUserBodyDto,
   type VerifyUserResponseBodyDto,
 } from './schemas/verifyUserSchema.js';
+import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
@@ -356,9 +357,35 @@ export class UserHttpController implements HttpController {
   ): Promise<HttpOkResponse<ChangeUserPasswordResponseBodyDto>> {
     const { password, token } = request.body;
 
+    let userId: string | undefined;
+
+    try {
+      const result = await this.accessControlService.verifyBearerToken({
+        authorizationHeader: request.headers['authorization'],
+      });
+
+      userId = result.userId;
+    } catch (error) {
+      userId = undefined;
+    }
+
+    let identifier: { userId: string } | { resetPasswordToken: string };
+
+    if (userId) {
+      identifier = { userId };
+    } else {
+      if (!token) {
+        throw new OperationNotValidError({
+          reason: 'Reset password token is required.',
+        });
+      }
+
+      identifier = { resetPasswordToken: token };
+    }
+
     await this.changeUserPasswordCommandHandler.execute({
       newPassword: password,
-      resetPasswordToken: token,
+      identifier,
     });
 
     return {

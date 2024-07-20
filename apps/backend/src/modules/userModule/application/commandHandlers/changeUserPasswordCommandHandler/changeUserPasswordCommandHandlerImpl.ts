@@ -1,4 +1,7 @@
-import { type ChangeUserPasswordCommandHandler, type ExecutePayload } from './changeUserPasswordCommandHandler.js';
+import {
+  type ChangeUserPasswordCommandHandler,
+  type ChangeUserPasswordCommandHandlerPayload,
+} from './changeUserPasswordCommandHandler.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
@@ -18,60 +21,25 @@ export class ChangeUserPasswordCommandHandlerImpl implements ChangeUserPasswordC
     private readonly loggerService: LoggerService,
   ) {}
 
-  public async execute(payload: ExecutePayload): Promise<void> {
-    const { resetPasswordToken, newPassword } = payload;
-
-    let tokenPayload: Record<string, string>;
-
-    try {
-      tokenPayload = this.tokenService.verifyToken({ token: resetPasswordToken });
-    } catch (error) {
-      throw new OperationNotValidError({
-        reason: 'Invalid reset password token.',
-        token: resetPasswordToken,
-      });
-    }
-
-    const { userId, type } = tokenPayload;
+  public async execute(payload: ChangeUserPasswordCommandHandlerPayload): Promise<void> {
+    const { identifier, newPassword } = payload;
 
     this.loggerService.debug({
       message: 'Changing User password...',
-      userId,
+      identifier,
     });
 
-    if (!userId) {
-      throw new OperationNotValidError({
-        reason: 'Invalid reset password token.',
-        resetPasswordToken,
-      });
-    }
+    const userId =
+      'userId' in identifier
+        ? identifier.userId
+        : (await this.verifyResetPasswordToken({ resetPasswordToken: identifier.resetPasswordToken })).userId;
 
-    if (type !== TokenType.passwordReset) {
-      throw new OperationNotValidError({
-        reason: 'Invalid reset password token.',
-        resetPasswordToken,
-      });
-    }
-
-    const user = await this.userRepository.findUser({
-      id: userId,
-    });
+    const user = await this.userRepository.findUser({ id: userId });
 
     if (!user) {
       throw new OperationNotValidError({
         reason: 'User not found.',
         userId,
-      });
-    }
-
-    const isBlacklisted = await this.blacklistTokenRepository.findBlacklistToken({
-      token: resetPasswordToken,
-    });
-
-    if (isBlacklisted) {
-      throw new OperationNotValidError({
-        reason: 'Reset password token is blacklisted.',
-        resetPasswordToken,
       });
     }
 
@@ -83,18 +51,57 @@ export class ChangeUserPasswordCommandHandlerImpl implements ChangeUserPasswordC
 
     await this.userRepository.saveUser({ user });
 
-    const { expiresAt } = this.tokenService.decodeToken({
-      token: resetPasswordToken,
-    });
+    if ('resetPasswordToken' in identifier) {
+      const { expiresAt } = this.tokenService.decodeToken({
+        token: identifier.resetPasswordToken,
+      });
 
-    await this.blacklistTokenRepository.createBlacklistToken({
-      expiresAt: new Date(expiresAt),
-      token: resetPasswordToken,
-    });
+      await this.blacklistTokenRepository.createBlacklistToken({
+        expiresAt: new Date(expiresAt),
+        token: identifier.resetPasswordToken,
+      });
+    }
 
     this.loggerService.debug({
       message: 'User password changed.',
       userId,
     });
+  }
+
+  private async verifyResetPasswordToken({ resetPasswordToken }: { resetPasswordToken: string }): Promise<{
+    userId: string;
+  }> {
+    let tokenPayload: Record<string, string>;
+
+    try {
+      tokenPayload = this.tokenService.verifyToken({ token: resetPasswordToken });
+    } catch (error) {
+      throw new OperationNotValidError({
+        reason: 'Invalid reset password token.',
+        token: resetPasswordToken,
+      });
+    }
+
+    const isBlacklisted = await this.blacklistTokenRepository.findBlacklistToken({
+      token: resetPasswordToken,
+    });
+
+    if (isBlacklisted) {
+      throw new OperationNotValidError({
+        reason: 'Reset password token is already used.',
+        resetPasswordToken,
+      });
+    }
+
+    const { userId, type } = tokenPayload;
+
+    if (!userId || type !== TokenType.passwordReset) {
+      throw new OperationNotValidError({
+        reason: 'Invalid reset password token.',
+        resetPasswordToken,
+      });
+    }
+
+    return { userId };
   }
 }

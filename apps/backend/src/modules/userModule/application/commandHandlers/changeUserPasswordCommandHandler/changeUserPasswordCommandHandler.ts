@@ -1,8 +1,14 @@
 import { type CommandHandler } from '../../../../../common/types/commandHandler.js';
 
-export interface ExecutePayload {
+export interface ChangeUserPasswordCommandHandlerPayload {
   readonly newPassword: string;
-  readonly resetPasswordToken: string;
+  readonly identifier:
+    | {
+        readonly resetPasswordToken: string;
+      }
+    | {
+        readonly userId: string;
+      };
 }
 
-export type ChangeUserPasswordCommandHandler = CommandHandler<ExecutePayload, void>;
+export type ChangeUserPasswordCommandHandler = CommandHandler<ChangeUserPasswordCommandHandlerPayload, void>;
