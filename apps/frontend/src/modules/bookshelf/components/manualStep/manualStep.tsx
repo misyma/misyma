@@ -7,7 +7,13 @@ import { useState } from 'react';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { useToast } from '../../../common/components/toast/use-toast';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/form/form';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../common/components/select/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../../../common/components/select/select';
 import { ReadingStatus } from '../../../common/constants/readingStatus';
 import { FileInput } from '../../../common/components/input/input';
 import { Button } from '../../../common/components/button/button';
@@ -137,7 +143,7 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
         accessToken: accessToken as string,
       });
     } catch (error) {
-      if (error instanceof Error && error.message === 'ResourceAlreadyExistsError') {
+      if (error instanceof BookApiError && error.context.statusCode === 409) {
         toast({
           variant: 'destructive',
           title: `Posiadasz już książkę z ${searchBookContext.isbn ? 'isbn' : 'title'}: ${searchBookContext.isbn ?? searchBookContext.title} na swojej półce.`,
@@ -152,11 +158,13 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
     }
 
     try {
-      await uploadBookImageMutation({
-        bookId: userBook.id,
-        file: file as unknown as File,
-        accessToken: accessToken as string,
-      });
+      if (file) {
+        await uploadBookImageMutation({
+          bookId: userBook.id,
+          file: file as unknown as File,
+          accessToken: accessToken as string,
+        });
+      }
 
       toast({
         title: 'Książka została położona na półce 😄',
@@ -168,8 +176,6 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
         to: `/bookshelf/${values.bookshelfId || bookshelfId}`,
       });
     } catch (error) {
-      console.error(error);
-
       if (error instanceof BookApiError) {
         setSubmissionError(error.context.message);
 
@@ -343,14 +349,14 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
           <Button
             className="border border-primary w-full"
             onClick={onGoBack}
-            size='lg'
+            size="lg"
           >
             Wróć
           </Button>
           <Button
             className="border border-primary w-full"
             disabled={!form.formState.isValid}
-            size='lg'
+            size="lg"
             type="submit"
           >
             Dodaj książkę
