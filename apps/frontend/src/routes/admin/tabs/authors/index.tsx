@@ -15,6 +15,12 @@ export const AuthorsAdminPage: FC = () => {
 
   const [searchAuthorName, setSearchAuthorName] = useState('');
 
+  const onSetSearchAuthorName = (val: string) => {
+    setPage(0);
+
+    setSearchAuthorName(val);
+  }
+
   const {
     data: authorsData,
     // isFetched: isAuthorsFetched,
@@ -85,7 +91,7 @@ export const AuthorsAdminPage: FC = () => {
                 pageSize={pageSize}
                 pageIndex={page}
                 searchAuthorName={searchAuthorName}
-                setSearchAuthorName={setSearchAuthorName}
+                setSearchAuthorName={onSetSearchAuthorName}
               />
             </div>
           </div>

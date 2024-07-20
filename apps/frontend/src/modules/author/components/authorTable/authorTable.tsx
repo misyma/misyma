@@ -87,6 +87,10 @@ export function AuthorTable<TData, TValue>({
 
   const [currentPage, setCurrentPage] = useState<number>(1);
 
+  if (pageIndex !== currentPage - 1) {
+    setCurrentPage(pageIndex + 1);
+  }
+
   const previousPage = useMemo(() => {
     if (currentPage === 1) {
       return undefined;
