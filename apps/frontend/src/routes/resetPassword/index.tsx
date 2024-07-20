@@ -50,7 +50,7 @@ export const SendResetPasswordEmailPage: FC = () => {
             </p>
             <p className="py-8 w-[100%]">
               <Button
-                className="w-[100%]"
+                size='xl'
                 onClick={() =>
                   navigate({
                     to: '/login',
