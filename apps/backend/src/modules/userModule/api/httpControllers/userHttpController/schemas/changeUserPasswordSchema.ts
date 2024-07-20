@@ -9,7 +9,7 @@ export const changeUserPasswordBodyDtoSchema = Type.Object({
     minLength: 8,
     maxLength: 64,
   }),
-  token: Type.String({ minLength: 1 }),
+  token: Type.Optional(Type.String({ minLength: 1 })),
 });
 
 export type ChangeUserPasswordBodyDto = TypeExtends<
