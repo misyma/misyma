@@ -165,7 +165,7 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
       });
 
       await navigate({
-        to: `/bookshelf/${bookshelfId}`,
+        to: `/bookshelf/${values.bookshelfId || bookshelfId}`,
       });
     } catch (error) {
       console.error(error);
@@ -343,12 +343,14 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
           <Button
             className="border border-primary w-full"
             onClick={onGoBack}
+            size='lg'
           >
             Wróć
           </Button>
           <Button
             className="border border-primary w-full"
             disabled={!form.formState.isValid}
+            size='lg'
             type="submit"
           >
             Dodaj książkę

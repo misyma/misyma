@@ -56,7 +56,7 @@ export class SendVerificationEmailCommandHandlerImpl implements SendVerification
       expiresIn: this.config.token.emailVerification.expiresIn,
     });
 
-    const emailVerificationLink = `${this.config.frontendUrl}/verify-email?token=${emailVerificationToken}`;
+    const emailVerificationLink = `${this.config.frontendUrl}/verifyEmail?token=${emailVerificationToken}`;
 
     await this.emailMessageBus.sendEvent(
       new EmailEventDraft({

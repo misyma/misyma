@@ -50,7 +50,7 @@ export class SendResetPasswordEmailCommandHandlerImpl implements SendResetPasswo
       expiresIn: this.config.token.resetPassword.expiresIn,
     });
 
-    const resetPasswordLink = `${this.config.frontendUrl}/new-password?token=${resetPasswordToken}`;
+    const resetPasswordLink = `${this.config.frontendUrl}/newPassword?token=${resetPasswordToken}`;
 
     await this.emailMessageBus.sendEvent(
       new EmailEventDraft({
