@@ -50,7 +50,22 @@ export const bookTableColumns: ColumnDef<Book>[] = [
         <div className="flex flex-col py-4 gap-2">
           <div className="flex items-center gap-1">
             <p className="font-semibold text-lg">
-              {row.original.language ? ReversedLanguages[row.original.language]?.toLowerCase() : ''}
+              {row.original.language ? ReversedLanguages[row.original.language]?.toLowerCase() : '-'}
+            </p>
+          </div>
+        </div>
+      );
+    },
+  },
+  {
+    header: () => <p>Autorzy</p>,
+    accessorKey: 'authors',
+    cell: ({ row }): JSX.Element => {
+      return (
+        <div className="flex flex-col py-4 gap-2">
+          <div className="flex items-center gap-1">
+            <p className="font-semibold text-lg">
+              {row.original.authors.length > 0 ? row.original.authors.map((author) => author.name).join(', ') : '-'}
             </p>
           </div>
         </div>
