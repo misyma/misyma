@@ -215,23 +215,19 @@ export const SearchResultPage: FC = () => {
             {foundBooks?.data[currentPage - 1].releaseYear && (
               <p>Rok wydania: {foundBooks?.data[currentPage - 1].releaseYear}</p>
             )}
-            <p>
-              Język:{' '}
-              {foundBooks?.data[currentPage - 1].language
-                ? ReversedLanguages[foundBooks?.data[currentPage - 1].language]?.toLowerCase()
-                : ''}
-            </p>
+            {foundBooks?.data[currentPage - 1].language && (
+              <p>`Język: ${ReversedLanguages[foundBooks?.data[currentPage - 1].language]?.toLowerCase()}`</p>
+            )}
             {foundBooks?.data[currentPage - 1].publisher && (
               <p>Wydawnictwo: {foundBooks?.data[currentPage - 1].publisher}</p>
             )}
             {foundBooks?.data[currentPage - 1].translator && (
               <p>Tłumacz: {foundBooks?.data[currentPage - 1].translator}</p>
             )}
-            <p>
-              Format:{' '}
-              {foundBooks?.data[currentPage - 1].format ? BookFormat[foundBooks?.data[currentPage - 1].format] : ''}
-            </p>
-            {foundBooks?.data[currentPage - 1]?.pages && <p>Liczba stron: {foundBooks?.data[currentPage - 1].pages}</p>}{' '}
+            {foundBooks?.data[currentPage - 1].format && (
+              <p>`Format: ${BookFormat[foundBooks?.data[currentPage - 1].format]}`</p>
+            )}
+            {foundBooks?.data[currentPage - 1]?.pages && <p>Liczba stron: {foundBooks?.data[currentPage - 1].pages}</p>}
           </div>
           <div className="flex flex-col gap-4">
             {initialCheckForIsbnInProgress || checkForIsbnInProgress || bookExistsOnUserAccount ? (
