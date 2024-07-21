@@ -248,7 +248,12 @@ export const SearchResultPage: FC = () => {
                 </Tooltip>
               </TooltipProvider>
             ) : (
-              <Button size="xl">Kontynuuj</Button>
+              <Button
+                onClick={onAddBook}
+                size="xl"
+              >
+                Kontynuuj
+              </Button>
             )}
             <p>
               lub{' '}
