@@ -28,11 +28,11 @@ const stepOneYoISchema = z.object({
     .int({
       message: 'Data wydania musi być wartością całkowitą.',
     })
-    .min(1500, {
-      message: 'Serio?', // todo
+    .min(1, {
+      message: 'Rok wydania musi być wcześniejszy niż 1',
     })
-    .max(2500, {
-      message: 'xd', // todo
+    .max(2100, {
+      message: 'Rok wydania nie może być późniejszy niż 2100',
     }), // consider dynamic limit till "current" year
 });
 
@@ -81,7 +81,7 @@ export const ManualPathForm = (): JSX.Element => {
                   placeholder="Data wydania"
                   type="number"
                   includeQuill={true}
-                  min={1500}
+                  min={1}
                   onInput={(e) => {
                     dispatch({
                       type: BookCreationActionType.setYearOfIssue,

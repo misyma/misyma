@@ -69,8 +69,8 @@ const editBookFormSchema = z.object({
     .min(1, {
       message: 'Tytuł musi mieć co najmniej jeden znak.',
     })
-    .max(128, {
-      message: 'Tytuł może mieć maksymalnie 64 znaki.',
+    .max(256, {
+      message: 'Tytuł może mieć maksymalnie 256 znaków.',
     })
     .optional(),
   author: z
@@ -96,8 +96,8 @@ const editBookFormSchema = z.object({
     .min(1, {
       message: 'Nazwa wydawnictwa powinna mieć co namniej 1 znak.',
     })
-    .max(64, {
-      message: 'Nazwa wydawnictwa powinna mieć co najwyżej 64 znaki.',
+    .max(128, {
+      message: 'Nazwa wydawnictwa powinna mieć co najwyżej 128 znaków.',
     })
     .optional(),
   yearOfIssue: z
@@ -106,11 +106,11 @@ const editBookFormSchema = z.object({
       required_error: 'Rok wyadania musi być liczbą.',
       coerce: true,
     })
-    .min(1800, {
+    .min(1, {
       message: 'Rok wydania musi być późniejszy niż 1800',
     })
-    .max(2500, {
-      message: 'Rok wydania nie może być późniejszy niż 2500',
+    .max(2100, {
+      message: 'Rok wydania nie może być późniejszy niż 2100',
     })
     .optional(),
   language: z.enum(Object.values(Language) as unknown as [string, ...string[]]),
@@ -473,6 +473,7 @@ const BookEditForm: FC<FormProps> = ({ data }) => {
                 <Input
                   placeholder="Wydawnictwo"
                   type="text"
+                  maxLength={128}
                   includeQuill={false}
                   {...field}
                 />

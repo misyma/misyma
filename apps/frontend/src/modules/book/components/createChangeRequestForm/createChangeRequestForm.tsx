@@ -60,8 +60,8 @@ const stepTwoSchema = z.object({
     .min(1, {
       message: 'Książka nie może mieć mniej niż jedną stronę.',
     })
-    .max(10000, {
-      message: 'Za dużo stron.',
+    .max(5000, {
+      message: 'Za dużo stron. Maksymalnie 5000 stron jest dozwolonych.',
     })
     .optional(),
 });

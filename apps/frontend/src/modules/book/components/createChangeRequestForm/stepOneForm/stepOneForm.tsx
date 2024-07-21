@@ -68,11 +68,11 @@ const stepOneSchema = z.object({
     .number({
       coerce: true,
     })
-    .min(1800, {
-      message: 'Rok wydania musi być późniejszy niż 1800',
+    .min(1, {
+      message: 'Rok wydania musi być wcześniejszy niż 1',
     })
-    .max(2500, {
-      message: 'Rok wydania nie może być późniejszy niż 2500',
+    .max(2100, {
+      message: 'Rok wydania nie może być późniejszy niż 2100',
     })
     .or(z.undefined()),
   publisher: z
@@ -80,8 +80,8 @@ const stepOneSchema = z.object({
     .min(1, {
       message: 'Nazwa wydawnictwa powinna mieć co namniej 1 znak.',
     })
-    .max(64, {
-      message: 'Nazwa wydawnictwa powinna mieć co najwyżej 64 znaki.',
+    .max(128, {
+      message: 'Nazwa wydawnictwa powinna mieć co najwyżej 128 znaków.',
     })
     .or(z.literal('')),
 });
@@ -394,6 +394,7 @@ export const StepOneForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
                 <Input
                   placeholder="Wydawnictwo"
                   type="text"
+                  maxLength={128}
                   includeQuill={false}
                   {...field}
                 />
