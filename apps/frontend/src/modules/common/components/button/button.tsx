@@ -31,7 +31,7 @@ const getVariantStyles = (variant: ButtonVariant): string => {
   return value;
 };
 
-const getSizeStyles = (size: Size): string => {
+const getSizeStyles = (size: ButtonSize): string => {
   const value = buttonSizesStylesMap[size];
 
   if (!value) {
@@ -43,24 +43,37 @@ const getSizeStyles = (size: Size): string => {
 
 export type ButtonVariant = keyof typeof buttonVariantsStylesMap;
 
-type Size = keyof typeof buttonSizesStylesMap;
+export type ButtonSize = keyof typeof buttonSizesStylesMap;
 
 interface Props {
   variant?: ButtonVariant;
-  size?: Size;
+  size?: ButtonSize;
 }
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, Props {
   asChild?: boolean;
+  label?: string;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = 'default', size = 'lg', asChild = false, ...props }, ref) => {
+  ({ className, variant = 'default', size = 'lg', label, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : 'button';
 
     const variantStyles = getVariantStyles(variant);
 
     const sizeStyles = getSizeStyles(size);
+
+    if (label && !asChild) {
+      return (
+        <Comp
+          className={cn(className, styles['button'], variantStyles, sizeStyles)}
+          ref={ref}
+          {...props}
+        >
+          {label}
+        </Comp>
+      );
+    }
 
     return (
       <Comp
