@@ -1,5 +1,4 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { z } from 'zod';
 import { RequireAuthComponent } from '../../../../modules/core/components/requireAuth/requireAuthComponent';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { LoadingSpinner } from '../../../../modules/common/components/spinner/loading-spinner';
@@ -9,7 +8,7 @@ import { Breadcrumbs, NumericBreadcrumb } from '../../../../modules/common/compo
 import { useSearchBookContextDispatch } from '../../../../modules/bookshelf/context/searchCreateBookContext/searchCreateBookContext';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { FindBooksQueryOptions } from '../../../../modules/book/api/user/queries/findBooks/findBooksQueryOptions';
 import { Book } from '@common/contracts';
@@ -22,6 +21,8 @@ import {
 } from '../../../../modules/common/components/tooltip/tooltip';
 import { BookFormat } from '../../../../modules/common/constants/bookFormat';
 import { ReversedLanguages } from '../../../../modules/common/constants/languages';
+import { AutoselectedInput } from '../../../../modules/common/components/autoselectedInput/autoselectedInput';
+import { z } from 'zod';
 
 export const SearchResultPage: FC = () => {
   const searchParams = Route.useSearch();
@@ -35,6 +36,8 @@ export const SearchResultPage: FC = () => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const [currentPage, setCurrentPage] = useState<number>(1);
+
+  const inputValue = useRef(0);
 
   useEffect(() => {
     if (searchParams.isbn === '' && searchParams.title === '') {
@@ -65,6 +68,8 @@ export const SearchResultPage: FC = () => {
       pageSize: 1,
     }),
   );
+
+  const [manualPageNumberInputOpen, setManualPageNumberInputOpen] = useState(false);
 
   const totalBooks = useMemo(() => foundBooks?.metadata.total ?? 0, [foundBooks?.metadata.total]);
 
@@ -193,8 +198,35 @@ export const SearchResultPage: FC = () => {
               }}
             />
             {totalBooks > 1 ? (
-              <span className="font-bold text-2xl text-primary">
-                {currentPage} z {totalBooks}
+              <span className="flex gap-2 font-bold text-2xl text-primary">
+                {!manualPageNumberInputOpen ? (
+                  <p
+                    className="cursor-pointer"
+                    onClick={() => setManualPageNumberInputOpen(true)}
+                  >
+                    {currentPage}
+                  </p>
+                ) : (
+                  <AutoselectedInput
+                    className="sm:w-20 w-20 h-10 text-xl font-bold"
+                    containerClassName="sm:w-20 w-20 h-10"
+                    includeQuill={false}
+                    type="number"
+                    onChange={(val) => {
+                      if (val.currentTarget.value && !Number.isNaN(Number(val.currentTarget.value))) {
+                        inputValue.current = Number(val.currentTarget.value);
+                      }
+                    }}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter') {
+                        setCurrentPage(inputValue.current);
+                        setManualPageNumberInputOpen(false);
+                      }
+                    }}
+                  ></AutoselectedInput>
+                )}
+                <p> z </p>
+                <p>{totalBooks}</p>
               </span>
             ) : (
               <></>
@@ -305,7 +337,6 @@ const searchSchema = z.object({
   title: z.string().min(1).catch(''),
   bookshelfId: z.string().uuid().catch(''),
 });
-
 export const Route = createFileRoute('/bookshelf/search/result/')({
   component: () => {
     return (
