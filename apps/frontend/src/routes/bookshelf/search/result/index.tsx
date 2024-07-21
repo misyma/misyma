@@ -1,5 +1,4 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { z } from 'zod';
 import { RequireAuthComponent } from '../../../../modules/core/components/requireAuth/requireAuthComponent';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { LoadingSpinner } from '../../../../modules/common/components/spinner/loading-spinner';
@@ -9,7 +8,7 @@ import { Breadcrumbs, NumericBreadcrumb } from '../../../../modules/common/compo
 import { useSearchBookContextDispatch } from '../../../../modules/bookshelf/context/searchCreateBookContext/searchCreateBookContext';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { FindBooksQueryOptions } from '../../../../modules/book/api/user/queries/findBooks/findBooksQueryOptions';
 import { Book } from '@common/contracts';
@@ -22,6 +21,8 @@ import {
 } from '../../../../modules/common/components/tooltip/tooltip';
 import { BookFormat } from '../../../../modules/common/constants/bookFormat';
 import { ReversedLanguages } from '../../../../modules/common/constants/languages';
+import { AutoselectedInput } from '../../../../modules/common/components/autoselectedInput/autoselectedInput';
+import { z } from 'zod';
 
 export const SearchResultPage: FC = () => {
   const searchParams = Route.useSearch();
@@ -33,6 +34,10 @@ export const SearchResultPage: FC = () => {
   const [currentBookIsbn, setCurrentBookIsbn] = useState('');
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
+
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
+  const inputValue = useRef(0);
 
   useEffect(() => {
     if (searchParams.isbn === '' && searchParams.title === '') {
@@ -59,8 +64,14 @@ export const SearchResultPage: FC = () => {
       title: searchParams.title,
       isbn: searchParams.isbn,
       accessToken: accessToken as string,
+      page: currentPage,
+      pageSize: 1,
     }),
   );
+
+  const [manualPageNumberInputOpen, setManualPageNumberInputOpen] = useState(false);
+
+  const totalBooks = useMemo(() => foundBooks?.metadata.total ?? 0, [foundBooks?.metadata.total]);
 
   const {
     data: userBookWithIsbn,
@@ -96,7 +107,7 @@ export const SearchResultPage: FC = () => {
   };
 
   const onAddBook = async (): Promise<void> => {
-    const book = foundBooks?.data[currentPage - 1] as Book;
+    const book = foundBooks?.data[0] as Book;
 
     searchCreationDispatch({
       bookId: book.id,
@@ -114,12 +125,6 @@ export const SearchResultPage: FC = () => {
       to: `/bookshelf/search/create/${searchParams.bookshelfId}`,
     });
   };
-
-  const booksCount = useMemo(() => {
-    return foundBooks?.data.length ?? 0;
-  }, [foundBooks]);
-
-  const [currentPage, setCurrentPage] = useState<number>(1);
 
   const render = () => {
     if (foundBooks?.data.length === 0) {
@@ -165,7 +170,22 @@ export const SearchResultPage: FC = () => {
             <Breadcrumbs
               className="pb-4"
               crumbs={{
-                [1]: <NumericBreadcrumb index={1}>1</NumericBreadcrumb>,
+                [1]: (
+                  <NumericBreadcrumb
+                    onClick={() =>
+                      navigate({
+                        to: '/bookshelf/search',
+                        search: {
+                          bookshelfId: searchParams.bookshelfId,
+                        },
+                      })
+                    }
+                    className="cursor-pointer"
+                    index={1}
+                  >
+                    1
+                  </NumericBreadcrumb>
+                ),
                 [2]: (
                   <NumericBreadcrumb
                     className={'font-semibold bg-primary text-white border-primary'}
@@ -177,57 +197,73 @@ export const SearchResultPage: FC = () => {
                 [3]: <NumericBreadcrumb index={3}>3</NumericBreadcrumb>,
               }}
             />
-            {booksCount > 1 ? (
-              <span className="font-bold text-2xl text-primary">
-                {currentPage} z {booksCount}
+            {totalBooks > 1 ? (
+              <span className="flex gap-2 font-bold text-2xl text-primary">
+                {!manualPageNumberInputOpen ? (
+                  <p
+                    className="cursor-pointer"
+                    onClick={() => setManualPageNumberInputOpen(true)}
+                  >
+                    {currentPage}
+                  </p>
+                ) : (
+                  <AutoselectedInput
+                    className="sm:w-20 w-20 h-10 text-xl font-bold"
+                    containerClassName="sm:w-20 w-20 h-10"
+                    includeQuill={false}
+                    type="number"
+                    onChange={(val) => {
+                      if (val.currentTarget.value && !Number.isNaN(Number(val.currentTarget.value))) {
+                        inputValue.current = Number(val.currentTarget.value);
+                      }
+                    }}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter') {
+                        setCurrentPage(inputValue.current);
+                        setManualPageNumberInputOpen(false);
+                      }
+                    }}
+                  ></AutoselectedInput>
+                )}
+                <p> z </p>
+                <p>{totalBooks}</p>
               </span>
             ) : (
               <></>
             )}
           </div>
           <div className="flex flex-col w-full">
-            {booksCount > 1 ? (
+            {totalBooks > 1 ? (
               <Paginator
+                pageIndex={currentPage}
                 rootClassName="w-full flex items-center h-16 text-xl sm:text-3xl justify-normal"
                 onPageChange={(page) => {
                   setCurrentPage(page);
-                  setCurrentBookIsbn(foundBooks?.data[currentPage - 1].isbn ?? '');
+                  setCurrentBookIsbn(foundBooks?.data[0].isbn ?? '');
                 }}
-                pagesCount={booksCount}
+                pagesCount={totalBooks}
                 pageNumberSlot={
-                  <span className="text-left text-ellipsis w-full line-clamp-2">
-                    {foundBooks?.data[currentPage - 1].title}
-                  </span>
+                  <span className="text-left text-ellipsis w-full line-clamp-2">{foundBooks?.data[0].title}</span>
                 }
                 contentClassName="w-full"
               />
             ) : (
               // className="font-bold text-2xl text-primary"
-              <span className="text-3xl text-left text-ellipsis w-full line-clamp-2">
-                {foundBooks?.data[currentPage - 1].title}
-              </span>
+              <span className="text-3xl text-left text-ellipsis w-full line-clamp-2">{foundBooks?.data[0].title}</span>
             )}
-            <p className="pl-1">{foundBooks?.data[currentPage - 1]?.authors[0]?.name ?? ''}</p>
+            <p className="pl-1">{foundBooks?.data[0]?.authors[0]?.name ?? ''}</p>
           </div>
           <div className="border border-gray-400 w-full lg:translate-x-[-2rem] px-4"></div>
           <div className="flex flex-col gap-4 w-full">
-            {foundBooks?.data[currentPage - 1].isbn && <p>ISBN: {foundBooks?.data[currentPage - 1].isbn}</p>}
-            {foundBooks?.data[currentPage - 1].releaseYear && (
-              <p>Rok wydania: {foundBooks?.data[currentPage - 1].releaseYear}</p>
+            {foundBooks?.data[0].isbn && <p>ISBN: {foundBooks?.data[0].isbn}</p>}
+            {foundBooks?.data[0].releaseYear && <p>Rok wydania: {foundBooks?.data[0].releaseYear}</p>}
+            {foundBooks?.data[0].language && (
+              <p>Język: {ReversedLanguages[foundBooks?.data[0].language]?.toLowerCase()}</p>
             )}
-            {foundBooks?.data[currentPage - 1].language && (
-              <p>Język: {ReversedLanguages[foundBooks?.data[currentPage - 1].language]?.toLowerCase()}</p>
-            )}
-            {foundBooks?.data[currentPage - 1].publisher && (
-              <p>Wydawnictwo: {foundBooks?.data[currentPage - 1].publisher}</p>
-            )}
-            {foundBooks?.data[currentPage - 1].translator && (
-              <p>Tłumacz: {foundBooks?.data[currentPage - 1].translator}</p>
-            )}
-            {foundBooks?.data[currentPage - 1].format && (
-              <p>Format: {BookFormat[foundBooks?.data[currentPage - 1].format]}</p>
-            )}
-            {foundBooks?.data[currentPage - 1]?.pages && <p>Liczba stron: {foundBooks?.data[currentPage - 1].pages}</p>}
+            {foundBooks?.data[0].publisher && <p>Wydawnictwo: {foundBooks?.data[0].publisher}</p>}
+            {foundBooks?.data[0].translator && <p>Tłumacz: {foundBooks?.data[0].translator}</p>}
+            {foundBooks?.data[0].format && <p>Format: {BookFormat[foundBooks?.data[0].format]}</p>}
+            {foundBooks?.data[0]?.pages && <p>Liczba stron: {foundBooks?.data[0].pages}</p>}
           </div>
           <div className="flex flex-col gap-4">
             {initialCheckForIsbnInProgress || checkForIsbnInProgress || bookExistsOnUserAccount ? (
@@ -301,7 +337,6 @@ const searchSchema = z.object({
   title: z.string().min(1).catch(''),
   bookshelfId: z.string().uuid().catch(''),
 });
-
 export const Route = createFileRoute('/bookshelf/search/result/')({
   component: () => {
     return (

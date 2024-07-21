@@ -10,7 +10,7 @@ export interface FindBooksPayload extends FindBooksQueryParams {
 export const findBooks = async (values: FindBooksPayload) => {
   const mapper = new ErrorCodeMessageMapper({});
 
-  const { accessToken, isbn, title } = values;
+  const { accessToken, isbn, title, page, pageSize } = values;
 
   const queryParams: Record<string, string> = {};
 
@@ -20,6 +20,14 @@ export const findBooks = async (values: FindBooksPayload) => {
 
   if (isbn) {
     queryParams['isbn'] = isbn;
+  }
+
+  if (page) {
+    queryParams['page'] = `${page}`;
+  }
+
+  if (pageSize) {
+    queryParams['pageSize'] = `${pageSize}`;
   }
 
   const response = await HttpService.get<FindBooksResponseBody>({
