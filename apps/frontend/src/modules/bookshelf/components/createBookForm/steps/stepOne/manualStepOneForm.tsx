@@ -61,7 +61,7 @@ const stepOneSchema = z
         message: 'Tytuł musi mieć co najmniej jeden znak.',
       })
       .max(128, {
-        message: 'Tytuł może mieć maksymalnie 64 znaki.',
+        message: 'Tytuł może mieć maksymalnie 128 znaków.',
       }),
     author: z
       .string({
@@ -284,6 +284,7 @@ export const ManualStepOneForm = (): JSX.Element => {
                 <Input
                   placeholder="Tytuł"
                   type="text"
+                  maxLength={129}
                   includeQuill={false}
                   onInput={(e) => {
                     dispatch({
