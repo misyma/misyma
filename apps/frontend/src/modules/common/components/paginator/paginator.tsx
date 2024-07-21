@@ -10,6 +10,7 @@ import {
 
 export interface PaginatorProps {
   pagesCount: number;
+  pageIndex: number;
   onPageChange: (currentPage: number) => void | Promise<void>;
   includePageNumber?: boolean;
   includeArrows?: boolean;
@@ -20,6 +21,7 @@ export interface PaginatorProps {
 
 export const Paginator = ({
   pagesCount,
+  pageIndex,
   onPageChange,
   includePageNumber = true,
   includeArrows = true,
@@ -27,7 +29,7 @@ export const Paginator = ({
   rootClassName,
   contentClassName,
 }: PaginatorProps): React.ReactNode => {
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [currentPage, setCurrentPage] = useState<number>(pageIndex);
 
   const previousPage = useMemo(() => {
     if (currentPage === 1) {
@@ -99,20 +101,22 @@ export const Paginator = ({
                   }
 
                   if (currentPage === pagesCount && pagesCount === 2) {
-                    setCurrentPage(currentPage - 1);
+                    onPageChange(currentPage - 2);
 
-                    await onPageChange(currentPage - 1);
+                    setCurrentPage(currentPage - 1);
 
                     return;
                   }
 
                   if (currentPage === pagesCount) {
-                    setCurrentPage(currentPage - 2);
+                    onPageChange(currentPage - 3);
 
-                    await onPageChange(currentPage - 2);
+                    setCurrentPage(currentPage - 2);
 
                     return;
                   }
+
+                  onPageChange(previousPage - 1);
 
                   setCurrentPage(previousPage);
                 }}
@@ -156,8 +160,7 @@ export const Paginator = ({
                   className={nextPage === undefined ? 'pointer-events-none hover:text-none hover:bg-none' : ''}
                   onClick={async () => {
                     if (nextPage) {
-                      await onPageChange(nextPage);
-
+                      onPageChange(nextPage - 1);
                       setCurrentPage(nextPage);
                     }
                   }}
