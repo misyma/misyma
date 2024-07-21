@@ -23,9 +23,14 @@ import { getQuotesOptionsQueryKey } from '../../../quotes/api/queries/getQuotes/
 
 const createQuotationSchema = z
   .object({
-    page: z.string({
-      required_error: 'Strona jest wymagana.',
-    }),
+    page: z
+      .string({
+        required_error: 'Strona jest wymagana.',
+      })
+      .max(256, {
+        message: 'Strona może mieć maksylamnie 256 znaków.',
+      })
+      .or(z.literal('')),
     content: z
       .string({
         required_error: 'Cytat jest wymagany.',
@@ -34,6 +39,10 @@ const createQuotationSchema = z
       .max(256, 'Strona może mieć maksymalnie 256 znaków.'),
   })
   .superRefine((value, ctx) => {
+    if (!value.page) {
+      return;
+    }
+
     const match = value.page.match(/[0-9-]+/g);
 
     if (match?.[0]?.length !== value.page.length) {
@@ -78,10 +87,22 @@ export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props):
   const { mutateAsync } = useCreateQuoteMutation({});
 
   const onSubmit = async (values: z.infer<typeof createQuotationSchema>): Promise<void> => {
+    const payload: {
+      content: string;
+      page: string | undefined;
+    } = {
+      content: values.content,
+      page: undefined,
+    };
+
+    if (values.page) {
+      payload.page = values.page;
+    }
+
     try {
       await mutateAsync({
         ...values,
-        page: values.page,
+        ...payload,
         accessToken: accessToken as string,
         createdAt: new Date().toISOString(),
         userBookId,
