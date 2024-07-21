@@ -184,9 +184,9 @@ export const QuotesPage: FC = () => {
                 <div className="flex justify-center">
                   <FavoriteBookButton userBook={userBookData as UserBook} />
                 </div>
-                <div className="flex flex-col gap-4 w-full">
+                <div className="flex flex-col gap-4 w-3/4">
                   <div className="flex justify-between w-full">
-                    <p className="font-semibold text-3xl">{userBookData?.book.title}</p>
+                    <p className="font-semibold text-3xl w-1/2 block truncate">{userBookData?.book.title}</p>
                     <CurrentRatingStar userBookId={bookId} />
                   </div>
                   <Separator className="h-[1px] bg-primary"></Separator>

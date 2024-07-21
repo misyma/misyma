@@ -400,7 +400,11 @@ export const Bookshelf: FC = () => {
                 </div>
                 <div className="z-10 w-full px-12 pointer-events-none">
                   <div className="flex justify-between w-full">
-                    <div className="font-semibold text-lg sm:text-2xl">{userBook.book.title}</div>
+                    <div className="font-semibold text-lg sm:text-2xl">
+                      <p className='max-w-40 sm:max-w-xl md:max-w-2xl truncate inline-block'>
+                      {userBook.book.title}
+                      </p>
+                    </div>
                     <div className="flex gap-2 items-center justify-center">
                       <FavoriteBookButton
                         className="pointer-events-auto"
