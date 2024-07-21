@@ -8,11 +8,12 @@ import { FindBooksResponseBody } from '@common/contracts';
 
 type Payload = {
   title?: string;
+  pageSize?: number;
   all?: boolean;
   page?: number;
 } & Partial<Omit<UseQueryOptions<FindBooksResponseBody, ApiError>, 'queryFn'>>;
 
-export const useFindBooksQuery = ({ title, all = false, page, ...options }: Payload) => {
+export const useFindBooksQuery = ({ title, all = false, page, pageSize = 10, ...options }: Payload) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   return useQuery({
@@ -22,6 +23,7 @@ export const useFindBooksQuery = ({ title, all = false, page, ...options }: Payl
         accessToken: accessToken as string,
         title,
         page,
+        pageSize,
       }),
     enabled: !!accessToken && (!!title || all),
     ...options,
