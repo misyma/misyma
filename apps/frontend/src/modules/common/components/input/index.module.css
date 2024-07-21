@@ -1,0 +1,35 @@
+.input {
+  @apply flex flex-row has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-ring has-[input:focus-visible]:ring-offset-4 rounded-md border ring-offset-background;
+}
+
+.small-input {
+  @apply h-8 w-20 sm:w-28;
+}
+
+.small-inner {
+  @apply h-8 w-16 sm:w-24;
+}
+
+.base-input {
+  @apply w-32 sm:w-44;
+}
+
+.base-inner {
+  @apply w-28 sm:w-40;
+}
+
+.large-input {
+  @apply w-52 sm:w-72;
+}
+
+.large-inner {
+  @apply w-48 sm:w-64;
+}
+
+.xlarge-input {
+  @apply w-60 sm:w-96;
+}
+
+.xlarge-inner {
+  @apply w-56 sm:w-88;
+}
