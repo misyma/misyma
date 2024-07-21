@@ -53,6 +53,10 @@ import { BookApiError } from '../../../../../modules/book/errors/bookApiError';
 import { Checkbox } from '../../../../../modules/common/components/checkbox/checkbox';
 import { RequireAdmin } from '../../../../../modules/core/components/requireAdmin/requireAdmin';
 import { isbnSchema } from '../../../../../modules/common/schemas/isbnSchema';
+import {
+  useBreadcrumbKeysContext,
+  useBreadcrumbKeysDispatch,
+} from '../../../../../modules/common/contexts/breadcrumbKeysContext';
 
 type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
@@ -154,7 +158,7 @@ const BookEditForm: FC<FormProps> = ({ data }) => {
   const editBookForm = useForm<z.infer<typeof editBookFormSchema>>({
     resolver: zodResolver(editBookFormSchema),
     defaultValues: {
-      isbn: '',
+      isbn: data?.isbn ?? '',
       author: data?.authors[0]?.id ?? '',
       language: data?.language ?? '',
       publisher: data?.publisher,
@@ -207,7 +211,8 @@ const BookEditForm: FC<FormProps> = ({ data }) => {
       data?.releaseYear === values.yearOfIssue &&
       data?.language === values.language &&
       data?.translator === values.translator &&
-      data?.isbn === values.isbn
+      data?.isbn === values.isbn &&
+      data.isApproved === values.isApproved
     ) {
       return;
     }
@@ -216,6 +221,12 @@ const BookEditForm: FC<FormProps> = ({ data }) => {
       const payload = (Object.entries(values) as [keyof WriteablePayload, string | number | boolean][]).reduce(
         (agg, [key, value]) => {
           if (value && key) {
+            agg[key as keyof WriteablePayload] = value;
+
+            return agg;
+          }
+
+          if (typeof value === 'boolean' && key) {
             agg[key as keyof WriteablePayload] = value;
 
             return agg;
@@ -566,6 +577,10 @@ const BooksEdit: FC = () => {
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
+  const dispatch = useBreadcrumbKeysDispatch();
+
+  const breadcrumbKeys = useBreadcrumbKeysContext();
+
   const { data, isFetching, isRefetching } = useQuery(
     FindBookByIdQueryOptions({
       accessToken: accessToken as string,
@@ -579,6 +594,20 @@ const BooksEdit: FC = () => {
         <LoadingSpinner />
       </AuthenticatedLayout>
     );
+  }
+
+  if (!breadcrumbKeys['$bookId']) {
+    dispatch({
+      key: '$bookId',
+      value: id,
+    });
+  }
+
+  if (data?.title && !breadcrumbKeys['$bookName']) {
+    dispatch({
+      key: '$bookName',
+      value: data?.title,
+    });
   }
 
   return (
@@ -602,5 +631,21 @@ export const Route = createFileRoute('/admin/tabs/books/edit/$id')({
   validateSearch: booksSearchSchema,
   onError: () => {
     return <Navigate to={'/admin/tabs/books'} />;
+  },
+  staticData: {
+    routeDisplayableNameParts: [
+      {
+        href: '/admin/tabs/authors/',
+        readableName: 'Admin',
+      },
+      {
+        href: '/admin/tabs/books/',
+        readableName: 'Książki',
+      },
+      {
+        readableName: '$bookName',
+        href: '/book/tabs/basicDataTab/$bookId',
+      },
+    ],
   },
 });
