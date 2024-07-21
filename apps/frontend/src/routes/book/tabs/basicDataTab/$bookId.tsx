@@ -133,9 +133,9 @@ export const BasicDataPage: FC = () => {
                 <div className="flex justify-center">
                   <FavoriteBookButton userBook={data as UserBook} />
                 </div>
-                <div className="flex flex-col gap-4 w-full">
-                  <div className="flex justify-between w-full">
-                    <p className="font-semibold text-3xl">{data?.book.title}</p>
+                <div className="flex flex-col gap-4 w-3/4">
+                  <div className="flex justify-between">
+                    <p className="font-semibold text-3xl w-1/2 block truncate">{data?.book.title}</p>
                     <CurrentRatingStar userBookId={bookId} />
                   </div>
                   <Separator className="h-[1px] bg-primary"></Separator>

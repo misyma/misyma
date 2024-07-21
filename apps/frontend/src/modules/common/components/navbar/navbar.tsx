@@ -61,14 +61,33 @@ const NavbarBreadcrumbs = () => {
     return finalHref;
   };
 
+  const truncateText = (text: string, maxWords: number): string => {
+    if (!text) {
+      return '';
+    }
+
+    const parts = text.split(' ');
+
+    if (parts.length <= maxWords) {
+      return text;
+    }
+
+    return `${parts.slice(0, maxWords).join(' ')} ...`;
+  };
+
   const breadcrumbItems = useMemo(() => {
     {
       return (
         filteredPaths[0]?.staticData.routeDisplayableNameParts?.map((val) => (
           <BreadcrumbItem>
             <BreadcrumbLink>
-              <Link to={replaceHrefPlaceholderWithValue(val.href)}>
-                {val?.readableName?.includes('$') ? breadcrumbKeys[val?.readableName] : val.readableName}
+              <Link
+                className="max-w-80 truncate inline-block"
+                to={replaceHrefPlaceholderWithValue(val.href)}
+              >
+                {val?.readableName?.includes('$')
+                  ? truncateText(breadcrumbKeys[val?.readableName], 4)
+                  : val.readableName}
               </Link>
             </BreadcrumbLink>
           </BreadcrumbItem>

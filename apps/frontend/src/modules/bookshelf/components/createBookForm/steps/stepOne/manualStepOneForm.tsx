@@ -60,8 +60,8 @@ const stepOneSchema = z
       .min(1, {
         message: 'Tytuł musi mieć co najmniej jeden znak.',
       })
-      .max(128, {
-        message: 'Tytuł może mieć maksymalnie 64 znaki.',
+      .max(256, {
+        message: 'Tytuł może mieć maksymalnie 256 znaków.',
       }),
     author: z
       .string({
@@ -86,8 +86,8 @@ const stepOneSchema = z
       .min(1, {
         message: 'Nazwa wydawnictwa powinna mieć co namniej 1 znak.',
       })
-      .max(64, {
-        message: 'Nazwa wydawnictwa powinna mieć co najwyżej 64 znaki.',
+      .max(128, {
+        message: 'Nazwa wydawnictwa powinna mieć co najwyżej 128 znaków.',
       })
       .or(z.literal('')),
     yearOfIssue: z
@@ -96,11 +96,11 @@ const stepOneSchema = z
         required_error: 'Rok wyadania musi być liczbą.',
         coerce: true,
       })
-      .min(1800, {
-        message: 'Rok wydania musi być późniejszy niż 1800',
+      .min(1, {
+        message: 'Rok wydania musi być wcześniejszy niż 1',
       })
-      .max(2500, {
-        message: 'Rok wydania nie może być późniejszy niż 2500',
+      .max(2100, {
+        message: 'Rok wydania nie może być późniejszy niż 2100',
       })
       .or(z.literal('')),
   })
@@ -111,8 +111,8 @@ const createAuthorDraftSchema = z.object({
     .string({
       required_error: 'Imię jest wymagane.',
     })
-    .min(3, {
-      message: 'Imię autora musi miec co najmniej trzy znaki.',
+    .min(1, {
+      message: 'Imię autora musi miec co najmniej jeden znak.',
     })
     .max(128, {
       message: 'Imię autora powinno mieć maksymalnie 128 znaków.',
@@ -284,6 +284,7 @@ export const ManualStepOneForm = (): JSX.Element => {
                 <Input
                   placeholder="Tytuł"
                   type="text"
+                  maxLength={257}
                   includeQuill={false}
                   onInput={(e) => {
                     dispatch({
