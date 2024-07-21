@@ -22,6 +22,8 @@ export const findBooks = async (values: Payload) => {
     query.pageSize = `${pageSize}`;
   }
 
+  console.log(query);
+
   const response = await HttpService.get<FindBooksResponseBody>({
     url: '/admin/books',
     queryParams: query,

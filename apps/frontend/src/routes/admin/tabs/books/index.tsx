@@ -27,6 +27,7 @@ export const BooksAdminPage: FC = () => {
   } = useFindBooksQuery({
     all: true,
     page,
+    pageSize,
     title: searchTitleName,
   });
 

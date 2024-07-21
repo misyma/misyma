@@ -29,7 +29,7 @@ const NavigateToEdit = ({ bookId }: Props): ReactNode => {
 export const bookTableColumns: ColumnDef<Book>[] = [
   {
     header: () => <p>Tytuł</p>,
-    accessorKey: 'name',
+    accessorKey: 'title',
     cell: ({ row }): JSX.Element => {
       return (
         <div className="flex flex-col py-4 gap-2">
@@ -42,7 +42,7 @@ export const bookTableColumns: ColumnDef<Book>[] = [
   },
   {
     header: () => <p>ISBN</p>,
-    accessorKey: 'name',
+    accessorKey: 'isbn',
     cell: ({ row }): JSX.Element => {
       return (
         <div className="flex flex-col py-4 gap-2">
@@ -55,7 +55,7 @@ export const bookTableColumns: ColumnDef<Book>[] = [
   },
   {
     header: () => <p>Format</p>,
-    accessorKey: 'name',
+    accessorKey: 'format',
     cell: ({ row }): JSX.Element => {
       return (
         <div className="flex flex-col py-4 gap-2">
