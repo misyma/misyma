@@ -11,7 +11,7 @@ export type FindBookReadingsPayload = FindBookReadingsPathParams &
   };
 
 export const findBookReadings = async (values: FindBookReadingsPayload): Promise<FindBookReadingsResponseBody> => {
-  const { accessToken, userBookId, page, pageSize } = values;
+  const { accessToken, userBookId, page, pageSize, sortDate } = values;
 
   const queryParams: Record<string, string> = {};
 
@@ -21,6 +21,10 @@ export const findBookReadings = async (values: FindBookReadingsPayload): Promise
 
   if (pageSize) {
     queryParams['pageSize'] = `${pageSize}`;
+  }
+
+  if (sortDate) {
+    queryParams['sortDate'] = `${sortDate}`;
   }
 
   const response = await HttpService.get<FindBookReadingsResponseBody>({

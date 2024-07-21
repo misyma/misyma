@@ -4,6 +4,7 @@ import { userStateSelectors } from '../../../core/store/states/userState/userSta
 import { useQuery } from '@tanstack/react-query';
 import { IoMdStar } from 'react-icons/io';
 import { FindBookReadingsQueryOptions } from '../../../bookReadings/api/queries/findBookReadings/findBookReadingsQueryOptions';
+import { SortingType } from '@common/contracts';
 
 interface Props {
   userBookId: string;
@@ -17,6 +18,7 @@ export const CurrentRatingStar: FC<Props> = ({ userBookId }) => {
       accessToken: accessToken as string,
       userBookId,
       pageSize: 1,
+      sortDate: SortingType.desc,
     }),
   );
 
