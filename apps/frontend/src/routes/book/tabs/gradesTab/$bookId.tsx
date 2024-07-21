@@ -1,7 +1,7 @@
 import { FC, useMemo, useState } from 'react';
 import { Separator } from '../../../../modules/common/components/separator/separator.js';
 import { useFindUserQuery } from '../../../../modules/user/api/queries/findUserQuery/findUserQuery.js';
-import { UserBook } from '@common/contracts';
+import { SortingType, UserBook } from '@common/contracts';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice.js';
@@ -43,6 +43,7 @@ export const GradesPage: FC = () => {
       userBookId: bookId,
       page,
       pageSize,
+      sortDate: SortingType.desc,
     }),
   );
 

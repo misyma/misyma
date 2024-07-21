@@ -182,13 +182,13 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
                       className={cn('px-3 text-left font-normal')}
                     >
                       {field.value ? (
-                        <span className={cn(!field.value && 'text-muted-foreground', 'text-left w-full text-black')}>
+                        <span className={cn(!field.value && 'text-muted-foreground', 'font-light text-left w-full text-black')}>
                           {formatDate(field.value, 'PPP', {
                             locale: pl,
                           })}
                         </span>
                       ) : (
-                        <span className={cn('text-muted-foreground text-left w-full')}>Wybierz dzień zakończenia</span>
+                        <span className={cn('text-muted-foreground font-light text-left w-full')}>Wybierz dzień zakończenia</span>
                       )}
                       <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                     </Button>
