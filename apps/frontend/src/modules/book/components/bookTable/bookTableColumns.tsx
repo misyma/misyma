@@ -6,6 +6,8 @@ import { ImQuill } from 'react-icons/im';
 import { DeleteBookModal } from '../deleteBookModal/deleteBookModal';
 import { ReactNode } from 'react';
 import { useNavigate } from '@tanstack/react-router';
+import { ReversedLanguages } from '../../../common/constants/languages';
+import { BookFormat } from '../../../common/constants/bookFormat';
 
 interface Props {
   bookId: string;
@@ -32,9 +34,24 @@ export const bookTableColumns: ColumnDef<Book>[] = [
     accessorKey: 'title',
     cell: ({ row }): JSX.Element => {
       return (
+        <div className="flex flex-col py-4 gap-2 w-full">
+          <div className="flex items-center gap-1 max-w-xl">
+            <p className="font-semibold text-lg truncate">{row.original.title}</p>
+          </div>
+        </div>
+      );
+    },
+  },
+  {
+    header: () => <p>Język</p>,
+    accessorKey: 'language',
+    cell: ({ row }): JSX.Element => {
+      return (
         <div className="flex flex-col py-4 gap-2">
           <div className="flex items-center gap-1">
-            <p className="font-semibold text-lg">{row.original.title}</p>
+            <p className="font-semibold text-lg">
+              {row.original.language ? ReversedLanguages[row.original.language]?.toLowerCase() : ''}
+            </p>
           </div>
         </div>
       );
@@ -60,7 +77,7 @@ export const bookTableColumns: ColumnDef<Book>[] = [
       return (
         <div className="flex flex-col py-4 gap-2">
           <div className="flex items-center gap-1">
-            <p className="font-semibold text-lg">{row.original?.format ?? '-'}</p>
+            <p className="font-semibold text-lg">{row.original?.format ? BookFormat[row.original?.format] : '-'}</p>
           </div>
         </div>
       );

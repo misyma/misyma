@@ -20,6 +20,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '../../../../modules/common/components/tooltip/tooltip';
+import { BookFormat } from '../../../../modules/common/constants/bookFormat';
+import { ReversedLanguages } from '../../../../modules/common/constants/languages';
 
 export const SearchResultPage: FC = () => {
   const searchParams = Route.useSearch();
@@ -209,12 +211,12 @@ export const SearchResultPage: FC = () => {
           </div>
           <div className="border border-gray-400 w-full lg:translate-x-[-2rem] px-4"></div>
           <div className="flex flex-col gap-4 w-full">
-            <p>ISBN: {foundBooks?.data[currentPage - 1].isbn}</p>
-            <p>Rok wydania: {foundBooks?.data[currentPage - 1].releaseYear}</p>
-            <p>Język: {foundBooks?.data[currentPage - 1].language}</p>
+            {foundBooks?.data[currentPage - 1].isbn && <p>ISBN: {foundBooks?.data[currentPage - 1].isbn}</p>}
+            {foundBooks?.data[currentPage - 1].releaseYear && <p>Rok wydania: {foundBooks?.data[currentPage - 1].releaseYear}</p>}
+            <p>Język: {foundBooks?.data[currentPage - 1].language ? ReversedLanguages[foundBooks?.data[currentPage - 1].language]?.toLowerCase() : ''}</p>
             <p>Wydawnictwo: {foundBooks?.data[currentPage - 1].publisher}</p>
-            <p>Tłumacz: {foundBooks?.data[currentPage - 1].translator}</p>
-            <p>Format: {foundBooks?.data[currentPage - 1].format}</p>
+            {foundBooks?.data[currentPage - 1].translator && <p>Tłumacz: {foundBooks?.data[currentPage - 1].translator}</p>}
+            <p>Format: {foundBooks?.data[currentPage - 1].format ? BookFormat[foundBooks?.data[currentPage - 1].format] : ''}</p>
             <p>Liczba stron: {foundBooks?.data[currentPage - 1].pages}</p>
           </div>
           <div className="flex flex-col gap-4">
