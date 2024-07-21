@@ -216,7 +216,7 @@ export const SearchResultPage: FC = () => {
               <p>Rok wydania: {foundBooks?.data[currentPage - 1].releaseYear}</p>
             )}
             {foundBooks?.data[currentPage - 1].language && (
-              <p>`Język: ${ReversedLanguages[foundBooks?.data[currentPage - 1].language]?.toLowerCase()}`</p>
+              <p>Język: {ReversedLanguages[foundBooks?.data[currentPage - 1].language]?.toLowerCase()}</p>
             )}
             {foundBooks?.data[currentPage - 1].publisher && (
               <p>Wydawnictwo: {foundBooks?.data[currentPage - 1].publisher}</p>
@@ -225,7 +225,7 @@ export const SearchResultPage: FC = () => {
               <p>Tłumacz: {foundBooks?.data[currentPage - 1].translator}</p>
             )}
             {foundBooks?.data[currentPage - 1].format && (
-              <p>`Format: ${BookFormat[foundBooks?.data[currentPage - 1].format]}`</p>
+              <p>Format: {BookFormat[foundBooks?.data[currentPage - 1].format]}</p>
             )}
             {foundBooks?.data[currentPage - 1]?.pages && <p>Liczba stron: {foundBooks?.data[currentPage - 1].pages}</p>}
           </div>
