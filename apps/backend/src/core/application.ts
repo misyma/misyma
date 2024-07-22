@@ -33,7 +33,6 @@ import { type HashService } from '../modules/userModule/application/services/has
 import { type UserRawEntity } from '../modules/userModule/infrastructure/databases/userDatabase/tables/userTable/userRawEntity.js';
 import { userTable } from '../modules/userModule/infrastructure/databases/userDatabase/tables/userTable/userTable.js';
 import { UserDatabaseManager } from '../modules/userModule/infrastructure/databases/userDatabase/userDatabaseManager.js';
-import { UserEventsDatabaseManager } from '../modules/userModule/infrastructure/databases/userEventsDatabase/userEventsDatabaseManager.js';
 import { userSymbols } from '../modules/userModule/symbols.js';
 import { UserModule } from '../modules/userModule/userModule.js';
 
@@ -41,23 +40,9 @@ export class Application {
   private static async setupDatabase(container: DependencyInjectionContainer): Promise<void> {
     const coreDatabaseManagers = [UserDatabaseManager, BookDatabaseManager, BookshelfDatabaseManager];
 
-    const eventsDatabaseManagers = [UserEventsDatabaseManager];
-
     for await (const databaseManager of coreDatabaseManagers) {
       await databaseManager.bootstrapDatabase(container);
     }
-
-    for await (const databaseManager of eventsDatabaseManagers) {
-      await databaseManager.bootstrapDatabase(container);
-    }
-
-    const databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
-
-    const entityEventsDatabaseClient = container.get<DatabaseClient>(coreSymbols.entityEventsDatabaseClient);
-
-    await databaseClient.raw('PRAGMA journal_mode = WAL');
-
-    await entityEventsDatabaseClient.raw('PRAGMA journal_mode = WAL');
   }
 
   private static async createAdminUser(container: DependencyInjectionContainer): Promise<void> {
@@ -154,21 +139,15 @@ export class Application {
 
     container.bind<DatabaseClient>(symbols.databaseClient, () =>
       DatabaseClientFactory.create({
-        clientType: DatabaseClientType.sqlite,
-        filePath: config.databasePath,
+        clientType: DatabaseClientType.postgres,
+        host: config.database.host,
+        port: config.database.port,
+        databaseName: config.database.name,
+        user: config.database.username,
+        password: config.database.password,
         useNullAsDefault: true,
         minPoolConnections: 1,
-        maxPoolConnections: 1,
-      }),
-    );
-
-    container.bind<DatabaseClient>(symbols.entityEventsDatabaseClient, () =>
-      DatabaseClientFactory.create({
-        clientType: DatabaseClientType.sqlite,
-        filePath: config.queueDatabasePath,
-        useNullAsDefault: true,
-        minPoolConnections: 1,
-        maxPoolConnections: 1,
+        maxPoolConnections: 10,
       }),
     );
 
