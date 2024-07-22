@@ -3,8 +3,10 @@
     "email": "admin@misyma.com",
     "password": "AdminPassword123"
   },
-  "databasePath": "data/test.db",
-  "queueDatabasePath": "data/test-queue.db",
+  "database": {
+    "username": "postgres",
+    "password": "posgres"
+  },
   "token": {
     "secret": "12321313423565365654546654121890008"
   },

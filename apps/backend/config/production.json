@@ -1,3 +1,7 @@
 {
+  "database": {
+    "host": "misymadb-dev.cp04ssawajdq.eu-central-1.rds.amazonaws.com",
+    "name": "misymadb-dev"
+  },
   "logLevel": "info"
 }

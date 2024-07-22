@@ -16,3 +16,18 @@ services:
       DATA_DIR: /tmp/localstack/data
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock'
+
+  database-postgres:
+    image: postgres:16.3
+    container_name: misyma-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: misymadb
+    ports:
+      - 5432:5432
+    volumes:
+      - misyma-pgdata:/var/lib/postgresql/data
+
+volumes:
+  misyma-pgdata:
