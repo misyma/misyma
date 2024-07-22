@@ -36,6 +36,8 @@ export * from './schemas/user/deleteUser.js';
 
 export * from './schemas/user/verifyUser.js';
 
+export * from './schemas/user/updateUser.js';
+
 export * from './schemas/user/refreshUserTokens.js';
 
 export * from './schemas/user/resetUserPassword.js';

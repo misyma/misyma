@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, afterEach } from 'vitest';
 
 import { type VerifyUserEmailCommandHandler } from './verifyUserEmailCommandHandler.js';
 import { Generator } from '../../../../../../tests/generator.js';
@@ -18,7 +18,7 @@ describe('VerifyUserEmailCommandHandlerImpl', () => {
 
   let userTestUtils: UserTestUtils;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     const container = TestContainer.create();
 
     commandHandler = container.get<VerifyUserEmailCommandHandler>(symbols.verifyUserEmailCommandHandler);
@@ -26,6 +26,12 @@ describe('VerifyUserEmailCommandHandlerImpl', () => {
     tokenService = container.get<TokenService>(authSymbols.tokenService);
 
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
+
+    await userTestUtils.truncate();
+  });
+
+  afterEach(async () => {
+    await userTestUtils.truncate();
   });
 
   it('verifies user email', async () => {

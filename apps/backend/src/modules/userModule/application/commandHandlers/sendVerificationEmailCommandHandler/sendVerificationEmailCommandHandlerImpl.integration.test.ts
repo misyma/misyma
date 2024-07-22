@@ -18,7 +18,7 @@ describe('SendVerificationEmailCommandHandler', () => {
 
   let userTestUtils: UserTestUtils;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     const container = TestContainer.create();
 
     commandHandler = container.get<SendVerificationEmailCommandHandler>(symbols.sendVerificationEmailCommandHandler);
@@ -26,6 +26,8 @@ describe('SendVerificationEmailCommandHandler', () => {
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
 
     emailMessageBus = container.get<EmailMessageBus>(symbols.emailMessageBus);
+
+    await userTestUtils.truncate();
   });
 
   afterEach(async () => {

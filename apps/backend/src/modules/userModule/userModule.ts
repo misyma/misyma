@@ -17,6 +17,8 @@ import { type SendResetPasswordEmailCommandHandler } from './application/command
 import { SendResetPasswordEmailCommandHandlerImpl } from './application/commandHandlers/sendResetPasswordEmailCommandHandler/sendResetPasswordEmailCommandHandlerImpl.js';
 import { type SendVerificationEmailCommandHandler } from './application/commandHandlers/sendVerificationEmailCommandHandler/sendVerificationEmailCommandHandler.js';
 import { SendVerificationEmailCommandHandlerImpl } from './application/commandHandlers/sendVerificationEmailCommandHandler/sendVerificationEmailCommandHandlerImpl.js';
+import { type UpdateUserCommandHandler } from './application/commandHandlers/updateUserCommandHandler/updateUserCommandHandler.js';
+import { UpdateUserCommandHandlerImpl } from './application/commandHandlers/updateUserCommandHandler/updateUserCommandHandlerImpl.js';
 import { type VerifyUserEmailCommandHandler } from './application/commandHandlers/verifyUserEmailCommandHandler/verifyUserEmailCommandHandler.js';
 import { VerifyUserEmailCommandHandlerImpl } from './application/commandHandlers/verifyUserEmailCommandHandler/verifyUserEmailCommandHandlerImpl.js';
 import { type EmailMessageBus } from './application/messageBuses/emailMessageBus/emailMessageBus.js';
@@ -173,6 +175,15 @@ export class UserModule implements DependencyInjectionModule {
         ),
     );
 
+    container.bind<UpdateUserCommandHandler>(
+      symbols.updateUserCommandHandler,
+      () =>
+        new UpdateUserCommandHandlerImpl(
+          container.get<UserRepository>(symbols.userRepository),
+          container.get<LoggerService>(coreSymbols.loggerService),
+        ),
+    );
+
     container.bind<FindUserQueryHandler>(
       symbols.findUserQueryHandler,
       () => new FindUserQueryHandlerImpl(container.get<UserRepository>(symbols.userRepository)),
@@ -212,6 +223,7 @@ export class UserModule implements DependencyInjectionModule {
           container.get<RegisterUserCommandHandler>(symbols.registerUserCommandHandler),
           container.get<LoginUserCommandHandler>(symbols.loginUserCommandHandler),
           container.get<DeleteUserCommandHandler>(symbols.deleteUserCommandHandler),
+          container.get<UpdateUserCommandHandler>(symbols.updateUserCommandHandler),
           container.get<FindUserQueryHandler>(symbols.findUserQueryHandler),
           container.get<AccessControlService>(authSymbols.accessControlService),
           container.get<VerifyUserEmailCommandHandler>(symbols.verifyUserEmailCommandHandler),
