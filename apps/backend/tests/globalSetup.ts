@@ -7,7 +7,7 @@ export async function setup(): Promise<void> {
   try {
     const container = TestContainer.create();
 
-    const databaseManagers = [UserDatabaseManager, BookDatabaseManager, BookshelfDatabaseManager];
+    const databaseManagers = [UserDatabaseManager, BookshelfDatabaseManager, BookDatabaseManager];
 
     for (const databaseManager of databaseManagers) {
       await databaseManager.bootstrapDatabase(container);

@@ -38,7 +38,7 @@ import { UserModule } from '../modules/userModule/userModule.js';
 
 export class Application {
   private static async setupDatabase(container: DependencyInjectionContainer): Promise<void> {
-    const coreDatabaseManagers = [UserDatabaseManager, BookDatabaseManager, BookshelfDatabaseManager];
+    const coreDatabaseManagers = [UserDatabaseManager, BookshelfDatabaseManager, BookDatabaseManager];
 
     for await (const databaseManager of coreDatabaseManagers) {
       await databaseManager.bootstrapDatabase(container);
