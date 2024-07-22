@@ -11,6 +11,7 @@ export const symbols = {
   refreshUserTokensCommandHandler: Symbol('refreshUserTokensCommandHandler'),
   logoutUserCommandHandler: Symbol('logoutUserCommandHandler'),
   deleteUserCommandHandler: Symbol('deleteUserCommandHandler'),
+  updateUserCommandHandler: Symbol('updateUserCommandHandler'),
   sendResetPasswordEmailCommandHandler: Symbol('sendResetPasswordEmailCommandHandler'),
   sendVerificationEmailCommandHandler: Symbol('sendVerificationEmailCommandHandler'),
   changeUserPasswordCommandHandler: Symbol('changeUserPasswordCommandHandler'),

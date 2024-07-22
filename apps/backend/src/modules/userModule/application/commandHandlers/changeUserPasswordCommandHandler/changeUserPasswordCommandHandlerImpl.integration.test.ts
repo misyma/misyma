@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, afterEach } from 'vitest';
 
 import { type ChangeUserPasswordCommandHandler } from './changeUserPasswordCommandHandler.js';
 import { Generator } from '../../../../../../tests/generator.js';
@@ -21,7 +21,7 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
 
   let hashService: HashService;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     const container = TestContainer.create();
 
     commandHandler = container.get<ChangeUserPasswordCommandHandler>(symbols.changeUserPasswordCommandHandler);
@@ -31,6 +31,12 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
     hashService = container.get<HashService>(symbols.hashService);
 
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
+
+    await userTestUtils.truncate();
+  });
+
+  afterEach(async () => {
+    await userTestUtils.truncate();
   });
 
   describe('change user password with token', () => {

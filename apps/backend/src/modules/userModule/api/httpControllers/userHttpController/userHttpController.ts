@@ -38,10 +38,10 @@ import {
   type RefreshUserTokensResponseBodyDto,
 } from './schemas/refreshUserTokensSchema.js';
 import {
-  registerUserBodyDtoSchema,
+  registerUserRequestBodyDtoSchema,
   registerUserResponseBodyDtoSchema,
   type RegisterUserResponseBodyDto,
-  type RegisterUserBodyDto,
+  type RegisterUserRequestBodyDto,
   registerUserBodyPreValidationHook,
 } from './schemas/registerUserSchema.js';
 import {
@@ -56,6 +56,14 @@ import {
   sendVerificationEmailBodyDtoSchema,
   sendVerificationEmailResponseBodyDtoSchema,
 } from './schemas/sendVerificationEmailSchema.js';
+import {
+  type UpdateUserResponseBodyDto,
+  type UpdateUserPathParamsDto,
+  type UpdateUserRequestBodyDto,
+  updateUserPathParamsDtoSchema,
+  updateUserRequestBodyDtoSchema,
+  updateUserResponseBodyDtoSchema,
+} from './schemas/updateUserSchema.js';
 import {
   verifyUserBodyDtoSchema,
   verifyUserResponseBodyDtoSchema,
@@ -83,6 +91,7 @@ import { type RefreshUserTokensCommandHandler } from '../../../application/comma
 import { type RegisterUserCommandHandler } from '../../../application/commandHandlers/registerUserCommandHandler/registerUserCommandHandler.js';
 import { type SendResetPasswordEmailCommandHandler } from '../../../application/commandHandlers/sendResetPasswordEmailCommandHandler/sendResetPasswordEmailCommandHandler.js';
 import { type SendVerificationEmailCommandHandler } from '../../../application/commandHandlers/sendVerificationEmailCommandHandler/sendVerificationEmailCommandHandler.js';
+import { type UpdateUserCommandHandler } from '../../../application/commandHandlers/updateUserCommandHandler/updateUserCommandHandler.js';
 import { type VerifyUserEmailCommandHandler } from '../../../application/commandHandlers/verifyUserEmailCommandHandler/verifyUserEmailCommandHandler.js';
 import { type FindUserQueryHandler } from '../../../application/queryHandlers/findUserQueryHandler/findUserQueryHandler.js';
 import { type User } from '../../../domain/entities/user/user.js';
@@ -96,6 +105,7 @@ export class UserHttpController implements HttpController {
     private readonly registerUserCommandHandler: RegisterUserCommandHandler,
     private readonly loginUserCommandHandler: LoginUserCommandHandler,
     private readonly deleteUserCommandHandler: DeleteUserCommandHandler,
+    private readonly updateUserCommandHandler: UpdateUserCommandHandler,
     private readonly findUserQueryHandler: FindUserQueryHandler,
     private readonly accessControlService: AccessControlService,
     private readonly verifyUserEmailCommandHandler: VerifyUserEmailCommandHandler,
@@ -114,7 +124,7 @@ export class UserHttpController implements HttpController {
         handler: this.registerUser.bind(this),
         schema: {
           request: {
-            body: registerUserBodyDtoSchema,
+            body: registerUserRequestBodyDtoSchema,
           },
           response: {
             [HttpStatusCode.created]: {
@@ -257,7 +267,7 @@ export class UserHttpController implements HttpController {
           response: {
             [HttpStatusCode.ok]: {
               schema: verifyUserResponseBodyDtoSchema,
-              description: `User's email verified.`,
+              description: "User's email verified",
             },
           },
         },
@@ -275,12 +285,31 @@ export class UserHttpController implements HttpController {
           response: {
             [HttpStatusCode.ok]: {
               schema: logoutUserResponseBodyDtoSchema,
-              description: `User logged out.`,
+              description: 'User logged out',
             },
           },
         },
         securityMode: SecurityMode.bearerToken,
         description: 'Logout user',
+      }),
+      new HttpRoute({
+        method: HttpMethodName.patch,
+        path: ':userId',
+        handler: this.updateUser.bind(this),
+        schema: {
+          request: {
+            pathParams: updateUserPathParamsDtoSchema,
+            body: updateUserRequestBodyDtoSchema,
+          },
+          response: {
+            [HttpStatusCode.ok]: {
+              schema: updateUserResponseBodyDtoSchema,
+              description: 'User updated',
+            },
+          },
+        },
+        securityMode: SecurityMode.bearerToken,
+        description: 'Update user',
       }),
       new HttpRoute({
         method: HttpMethodName.post,
@@ -303,7 +332,7 @@ export class UserHttpController implements HttpController {
   }
 
   private async registerUser(
-    request: HttpRequest<RegisterUserBodyDto>,
+    request: HttpRequest<RegisterUserRequestBodyDto>,
   ): Promise<HttpCreatedResponse<RegisterUserResponseBodyDto>> {
     const { email, password, name } = request.body;
 
@@ -440,6 +469,29 @@ export class UserHttpController implements HttpController {
     return {
       statusCode: HttpStatusCode.noContent,
       body: null,
+    };
+  }
+
+  private async updateUser(
+    request: HttpRequest<UpdateUserRequestBodyDto, undefined, UpdateUserPathParamsDto>,
+  ): Promise<HttpOkResponse<UpdateUserResponseBodyDto>> {
+    const { userId } = request.pathParams;
+
+    const { name } = request.body;
+
+    await this.accessControlService.verifyBearerToken({
+      authorizationHeader: request.headers['authorization'],
+      expectedUserId: userId,
+    });
+
+    const { user } = await this.updateUserCommandHandler.execute({
+      id: userId,
+      name,
+    });
+
+    return {
+      statusCode: HttpStatusCode.ok,
+      body: this.mapUserToUserDto(user),
     };
   }
 

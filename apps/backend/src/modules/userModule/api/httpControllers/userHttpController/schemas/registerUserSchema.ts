@@ -9,7 +9,7 @@ import { InputNotValidError } from '../../../../../../common/errors/inputNotVali
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 import { userDtoSchema } from '../../common/userDto.js';
 
-export const registerUserBodyDtoSchema = Type.Object({
+export const registerUserRequestBodyDtoSchema = Type.Object({
   email: Type.String({
     format: 'email',
     maxLength: 254,
@@ -24,7 +24,10 @@ export const registerUserBodyDtoSchema = Type.Object({
   }),
 });
 
-export type RegisterUserBodyDto = TypeExtends<Static<typeof registerUserBodyDtoSchema>, contracts.LoginUserRequestBody>;
+export type RegisterUserRequestBodyDto = TypeExtends<
+  Static<typeof registerUserRequestBodyDtoSchema>,
+  contracts.RegisterUserRequestBody
+>;
 
 export const registerUserResponseBodyDtoSchema = userDtoSchema;
 
@@ -33,7 +36,9 @@ export type RegisterUserResponseBodyDto = TypeExtends<
   contracts.RegisterUserResponseBody
 >;
 
-export const registerUserBodyPreValidationHook = (request: FastifyRequest<{ Body: RegisterUserBodyDto }>): void => {
+export const registerUserBodyPreValidationHook = (
+  request: FastifyRequest<{ Body: RegisterUserRequestBodyDto }>,
+): void => {
   const { name } = request.body;
 
   const specialCharacterRegex = /[!@#$%^&*(),.?":{}|<>]/g;

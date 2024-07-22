@@ -25,7 +25,7 @@ describe('LogoutUserCommandHandlerImpl', () => {
 
   let blacklistTokenTestUtils: BlacklistTokenTestUtils;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     const container = TestContainer.create();
 
     commandHandler = container.get<LogoutUserCommandHandler>(symbols.logoutUserCommandHandler);
@@ -37,6 +37,10 @@ describe('LogoutUserCommandHandlerImpl', () => {
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
 
     blacklistTokenTestUtils = container.get<BlacklistTokenTestUtils>(testSymbols.blacklistTokenTestUtils);
+
+    await userTestUtils.truncate();
+
+    await blacklistTokenTestUtils.truncate();
   });
 
   afterEach(async () => {

@@ -19,7 +19,7 @@ describe('SendResetPasswordEmailCommandHandler', () => {
 
   const userTestFactory = new UserTestFactory();
 
-  beforeEach(() => {
+  beforeEach(async () => {
     const container = TestContainer.create();
 
     commandHandler = container.get<SendResetPasswordEmailCommandHandler>(symbols.sendResetPasswordEmailCommandHandler);
@@ -27,6 +27,8 @@ describe('SendResetPasswordEmailCommandHandler', () => {
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
 
     emailMessageBus = container.get<EmailMessageBus>(symbols.emailMessageBus);
+
+    await userTestUtils.truncate();
   });
 
   afterEach(async () => {
