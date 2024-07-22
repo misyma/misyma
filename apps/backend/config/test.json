@@ -5,7 +5,7 @@
   },
   "database": {
     "username": "postgres",
-    "password": "posgres"
+    "password": "postgres"
   },
   "token": {
     "secret": "12321313423565365654546654121890008"
