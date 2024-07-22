@@ -24,7 +24,7 @@ export const createQuoteBodyDtoSchema = Type.Object({
   page: Type.Optional(
     Type.String({
       minLength: 1,
-      maxLength: 256,
+      maxLength: 16,
     }),
   ),
 });
