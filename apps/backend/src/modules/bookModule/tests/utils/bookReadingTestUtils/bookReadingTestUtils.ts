@@ -1,4 +1,4 @@
-import { type TestUtils } from '../../../../../../tests/testUtils.js';
+import { TestUtils } from '../../../../../../tests/testUtils.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type BookReadingRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/bookReadingTable/bookReadingRawEntity.js';
 import { bookReadingTable } from '../../../infrastructure/databases/bookDatabase/tables/bookReadingTable/bookReadingTable.js';
@@ -12,8 +12,10 @@ interface FindByIdPayload {
   readonly id: string;
 }
 
-export class BookReadingTestUtils implements TestUtils {
-  public constructor(private readonly databaseClient: DatabaseClient) {}
+export class BookReadingTestUtils extends TestUtils {
+  public constructor(databaseClient: DatabaseClient) {
+    super(databaseClient, bookReadingTable);
+  }
 
   private readonly bookReadingTestFactory = new BookReadingTestFactory();
 
@@ -63,9 +65,5 @@ export class BookReadingTestUtils implements TestUtils {
       startedAt: new Date(result.startedAt),
       endedAt: new Date(result.endedAt),
     };
-  }
-
-  public async truncate(): Promise<void> {
-    await this.databaseClient(bookReadingTable).truncate();
   }
 }

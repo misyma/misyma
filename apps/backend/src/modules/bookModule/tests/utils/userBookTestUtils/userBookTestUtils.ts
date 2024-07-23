@@ -1,4 +1,4 @@
-import { type TestUtils } from '../../../../../../tests/testUtils.js';
+import { TestUtils } from '../../../../../../tests/testUtils.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type Transaction } from '../../../../../libs/database/types/transaction.js';
 import { type UserBookCollectionRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/userBookCollectionsTable/userBookCollectionsRawEntity.js';
@@ -27,10 +27,12 @@ interface FindByIdsPayload {
   readonly ids: string[];
 }
 
-export class UserBookTestUtils implements TestUtils {
+export class UserBookTestUtils extends TestUtils {
   private readonly userBookTestFactory = new UserBookTestFactory();
 
-  public constructor(private readonly databaseClient: DatabaseClient) {}
+  public constructor(databaseClient: DatabaseClient) {
+    super(databaseClient, userBookTable);
+  }
 
   public async createAndPersist(payload: CreateAndPersistPayload = {}): Promise<UserBookRawEntity> {
     const { input, genreIds, collectionIds } = payload;
@@ -108,9 +110,5 @@ export class UserBookTestUtils implements TestUtils {
       .where({ userBookId });
 
     return rawEntities;
-  }
-
-  public async truncate(): Promise<void> {
-    await this.databaseClient<UserBookRawEntity>(userBookTable).truncate();
   }
 }

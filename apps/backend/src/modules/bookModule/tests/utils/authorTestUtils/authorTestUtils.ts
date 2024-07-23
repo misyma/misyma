@@ -1,4 +1,4 @@
-import { type TestUtils } from '../../../../../../tests/testUtils.js';
+import { TestUtils } from '../../../../../../tests/testUtils.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type AuthorRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/authorTable/authorRawEntity.js';
 import { authorTable } from '../../../infrastructure/databases/bookDatabase/tables/authorTable/authorTable.js';
@@ -16,10 +16,12 @@ interface FindByNamePayload {
   readonly name: string;
 }
 
-export class AuthorTestUtils implements TestUtils {
+export class AuthorTestUtils extends TestUtils {
   private readonly authorTestFactory = new AuthorTestFactory();
 
-  public constructor(private readonly databaseClient: DatabaseClient) {}
+  public constructor(databaseClient: DatabaseClient) {
+    super(databaseClient, authorTable);
+  }
 
   public async createAndPersist(payload: CreateAndPersistPayload = {}): Promise<AuthorRawEntity> {
     const { input } = payload;
@@ -64,9 +66,5 @@ export class AuthorTestUtils implements TestUtils {
       ...rawEntity,
       isApproved: Boolean(rawEntity.isApproved),
     };
-  }
-
-  public async truncate(): Promise<void> {
-    await this.databaseClient<AuthorRawEntity>(authorTable).truncate();
   }
 }

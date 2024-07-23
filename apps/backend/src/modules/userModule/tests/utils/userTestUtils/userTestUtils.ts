@@ -1,4 +1,4 @@
-import { type TestUtils } from '../../../../../../tests/testUtils.js';
+import { TestUtils } from '../../../../../../tests/testUtils.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UserRawEntity } from '../../../infrastructure/databases/userDatabase/tables/userTable/userRawEntity.js';
 import { userTable } from '../../../infrastructure/databases/userDatabase/tables/userTable/userTable.js';
@@ -20,10 +20,12 @@ interface FindByIdPayload {
   readonly id: string;
 }
 
-export class UserTestUtils implements TestUtils {
+export class UserTestUtils extends TestUtils {
   private readonly userTestFactory = new UserTestFactory();
 
-  public constructor(private readonly databaseClient: DatabaseClient) {}
+  public constructor(databaseClient: DatabaseClient) {
+    super(databaseClient, userTable);
+  }
 
   public async createAndPersist(payload: CreateAndPersistPayload = {}): Promise<UserRawEntity> {
     const { input } = payload;
@@ -86,9 +88,5 @@ export class UserTestUtils implements TestUtils {
       ...userRawEntity,
       isEmailVerified: Boolean(userRawEntity.isEmailVerified),
     };
-  }
-
-  public async truncate(): Promise<void> {
-    await this.databaseClient<UserRawEntity>(userTable).truncate();
   }
 }
