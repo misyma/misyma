@@ -144,12 +144,17 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bookshelfData]);
 
+  useEffect(() => {
+    setCurrentBookshelf(bookshelfData?.data.find((bookshelf) => bookshelf.id === currentBookshelfId)?.name ?? '');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentBookshelfId])
+
   if (previousBookshelfName === 'Wypożyczalnia' && isFetchingBookBorrowing) {
-    return <Skeleton className="w-40 h-8"></Skeleton>;
+    return <Skeleton className="w-60 sm:w-92 h-12"></Skeleton>;
   }
 
   if (isFetching && !isRefetching) {
-    return <Skeleton className="w-40 h-8"></Skeleton>;
+    return <Skeleton className="w-60 sm:w-92 h-12"></Skeleton>;
   }
 
   return (

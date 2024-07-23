@@ -22,13 +22,17 @@ import { Input } from '../../../common/components/input/input';
 import { useToast } from '../../../common/components/toast/use-toast';
 import { useCreateBorrowingMutation } from '../../../borrowing/api/mutations/createBorrowingMutation/createBorrowingMutation';
 import { pl } from 'date-fns/locale';
+import { BorrowingApiQueryKeys } from '../../../borrowing/api/queries/borrowingApiQueryKeys';
+import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
+import { useQueryClient } from '@tanstack/react-query';
+import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 
 interface Props {
   bookId: string;
   className?: string;
   open: boolean;
-  onMutated: () => void | Promise<void>;
-  onClosed: () => void | Promise<void>;
+  onMutated?: () => void | Promise<void>;
+  onClosed?: () => void | Promise<void>;
 }
 
 const createBorrowingSchema = z.object({
@@ -52,7 +56,11 @@ const createBorrowingSchema = z.object({
 export const CreateBorrowingModal: FC<Props> = ({ bookId, open, onClosed, onMutated }: Props) => {
   const accessToken = useStoreSelector(userStateSelectors.selectAccessToken);
 
+  const queryClient = useQueryClient();
+
   const { toast } = useToast();
+
+  const { data: userData } = useFindUserQuery();
 
   const [isOpen, setIsOpen] = useState<boolean>(open);
 
@@ -74,7 +82,7 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, open, onClosed, onMuta
     setCalendarVisible(val);
   };
 
-  const onCreateBookReading = async (values: z.infer<typeof createBorrowingSchema>) => {
+  const onCreateBorrowing = async (values: z.infer<typeof createBorrowingSchema>) => {
     try {
       await mutateAsync({
         ...values,
@@ -83,7 +91,9 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, open, onClosed, onMuta
         userBookId: bookId,
       });
 
-      onMutated();
+      if (onMutated) {
+        onMutated();
+      }
 
       setIsOpen(false);
 
@@ -91,6 +101,15 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, open, onClosed, onMuta
         title: 'Książka została wypożyczona.',
         description: `Książka została wypożyczona ${values.borrower} od dnia ${values.startedAt.toDateString()}`,
         variant: 'success',
+      });
+
+      await queryClient.invalidateQueries({
+        predicate: ({ queryKey }) =>
+          queryKey[0] === BorrowingApiQueryKeys.findBookBorrowingsQuery && queryKey[1] === bookId,
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: [BookApiQueryKeys.findUserBookById, bookId, userData?.id],
       });
     } catch (error) {
       if (error instanceof Error) {
@@ -109,7 +128,9 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, open, onClosed, onMuta
 
         setError('');
 
-        onClosed();
+        if (onClosed) {
+          onClosed();
+        }
       }}
     >
       <DialogContent
@@ -126,7 +147,7 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, open, onClosed, onMuta
           <p className={error ? 'text-red-500' : 'hidden'}>{error}</p>
           <Form {...form}>
             <form
-              onSubmit={form.handleSubmit(onCreateBookReading)}
+              onSubmit={form.handleSubmit(onCreateBorrowing)}
               className="space-y-4 min-w-96"
             >
               <FormField
@@ -205,7 +226,9 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, open, onClosed, onMuta
                   onClick={() => {
                     setIsOpen(false);
 
-                    onClosed();
+                    if (onClosed) {
+                      onClosed();
+                    }
                   }}
                 >
                   Wróć

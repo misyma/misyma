@@ -28,6 +28,7 @@ import {
 import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 import { FindBookByIdQueryOptions } from '../../api/user/queries/findBookById/findBookByIdQueryOptions';
 import { useCreateBookChangeRequestMutation } from '../../../bookChangeRequests/api/user/mutations/createBookChangeRequestMutation/createBookChangeRequestMutation';
+import { useToast } from '../../../common/components/toast/use-toast';
 
 interface Props {
   bookId: string;
@@ -72,6 +73,8 @@ export const CreateChangeRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit 
   const context = useBookDetailsChangeRequestContext();
 
   const dispatch = useBookDetailsChangeRequestDispatch();
+
+  const { toast } = useToast();
 
   const { data: userData } = useFindUserQuery();
 
@@ -138,6 +141,11 @@ export const CreateChangeRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit 
     }
 
     await createBookChangeRequest(payload);
+
+    toast({
+      title: 'Prośba o zmianę została wysłana.',
+      variant: 'success',
+    });
 
     onSubmit();
   };
