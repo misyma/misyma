@@ -25,6 +25,8 @@ import { ShelvesSkeleton } from '../../modules/bookshelf/components/bookshelvesS
 
 import styles from './index.module.css';
 import { Paginator } from '../../modules/common/components/paginator/paginator';
+import { Input } from '../../modules/common/components/input/input';
+import { HiMagnifyingGlass } from 'react-icons/hi2';
 
 const bookshelfNameSchema = z
   .string()
@@ -48,6 +50,8 @@ export const ShelvesPage: FC = () => {
 
   const [isCreatingNew, setIsCreatingNew] = useState(false);
 
+  const [searchedName, setSearchedName] = useState('');
+
   const {
     data: bookshelvesData,
     isFetching,
@@ -57,6 +61,7 @@ export const ShelvesPage: FC = () => {
     userId: user?.id as string,
     pageSize: perPage,
     page: currentPage,
+    name: searchedName,
   });
 
   useEffect(() => {
@@ -275,6 +280,17 @@ export const ShelvesPage: FC = () => {
       <div className="flex items-center justify-center w-100% px-8 py-1 sm:py-2">
         <div className={styles['page-container']}>
           <div className={styles['action-bar-container']}>
+            <Input
+              iSize="lg"
+              placeholder="Wyszukaj półkę..."
+              onChange={(e) => {
+                setSearchedName(e.currentTarget.value);
+
+                setCurrentPage(1);
+              }}
+              includeQuill={false}
+              otherIcon={<HiMagnifyingGlass className='text-primary h-8 w-8' />}
+            />
             <Button
               size="xl"
               onClick={() => onAddNewBookshelf()}
@@ -421,7 +437,7 @@ export const ShelvesPage: FC = () => {
             </div>
           </ScrollArea>
           {bookshelves && (bookshelvesData?.metadata?.total ?? 0) > perPage && (
-            <Paginator 
+            <Paginator
               pagesCount={pagesCount}
               onPageChange={setCurrentPage}
               pageIndex={currentPage}
