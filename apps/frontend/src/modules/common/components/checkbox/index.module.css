@@ -1,0 +1,15 @@
+.base-checkbox {
+  @apply h-4 w-4;
+}
+
+.large-checkbox {
+  @apply h-6 w-6;
+}
+
+.xlarge-checkbox {
+  @apply h-8 w-8;
+}
+
+.checkbox-indicator-container {
+  @apply flex items-center justify-center text-current;
+}

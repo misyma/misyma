@@ -16,6 +16,7 @@ import {
   BreadcrumbSeparator,
 } from '../breadcrumb/breadcrumb';
 import { useBreadcrumbKeysContext } from '../../contexts/breadcrumbKeysContext';
+import { User } from '@common/contracts';
 
 const NavbarBreadcrumbs = () => {
   const breadcrumbKeys = useBreadcrumbKeysContext();
@@ -112,10 +113,10 @@ const NavbarBreadcrumbs = () => {
   );
 };
 
-export const Navbar: FC = () => {
-  const navigate = useNavigate();
-
+const useUserState = () => {
   const { mutate: logoutUserMutation } = useLogoutUserMutation({});
+
+  const navigate = useNavigate();
 
   const accessToken = useStoreSelector(userStateSelectors.selectAccessToken);
 
@@ -160,14 +161,88 @@ export const Navbar: FC = () => {
     );
   };
 
+  return {
+    handleLogout,
+    res,
+  };
+};
+
+const TextLogo: FC = () => (
+  <div className="w-[100%] text-3xl md:text-5xl lg:text-5xl font-logo-bold">
+    <Link to="/shelves">MISYMA</Link>
+  </div>
+);
+
+const NavbarList: FC<{ user?: User; handleLogout: () => void }> = ({ user, handleLogout }) => {
   const linkClasses = '[&.active]:font-extrabold [&.active]:underline underline-offset-8 decoration-[3px] text-nowrap';
+
+  return (
+    <ul className="hidden sm:flex sm:flex-1 md:gap-4 lg:gap-6 sm:justify-end w-full items-center align-middle">
+      {user?.role === UserRole.admin && (
+        <li className="text-primary text-md text-center font-semibold">
+          <Link
+            to={'/admin/tabs/authors'}
+            className={linkClasses}
+          >
+            Panel administratora
+          </Link>
+        </li>
+      )}
+      <li className="text-primary text-md text-center font-semibold">
+        <Link
+          to={'/shelves'}
+          className={linkClasses}
+        >
+          Moje półki
+        </Link>
+      </li>
+      <li className="text-primary text-md text-center font-semibold">
+        <Link
+          to="/non-existent1"
+          className={linkClasses}
+        >
+          Cytaty
+        </Link>
+      </li>
+      <li className="text-primary text-md text-center font-semibold">
+        <Link
+          to="/non-existent2"
+          className={linkClasses}
+        >
+          Kolekcje
+        </Link>
+      </li>
+      <li className="text-primary text-md text-center font-semibold">
+        <Link
+          to="/non-existent3"
+          className={linkClasses}
+        >
+          Statystyki
+        </Link>
+      </li>
+      <li className="text-primary text-md text-center font-semibold">
+        <Link
+          to={'/profile'}
+          className={linkClasses}
+        >
+          Profil
+        </Link>
+      </li>
+      <IoIosLogOut
+        onClick={handleLogout}
+        className="cursor-pointer text-xl sm:text-4xl text-primary"
+      />
+    </ul>
+  );
+};
+
+export const Navbar: FC = () => {
+  const { res, handleLogout } = useUserState();
 
   return (
     <div className="flex pt-8 px-8 flex-col bg-white w-full top-0 fixed z-50">
       <div className="bg-white flex justify-end w-full items-center">
-        <div className="w-[100%] text-3xl md:text-5xl lg:text-5xl font-logo-bold">
-          <Link to="/shelves">MISYMA</Link>
-        </div>
+        <TextLogo />
         <input
           type="checkbox"
           className="md:hidden burger-input"
@@ -177,62 +252,10 @@ export const Navbar: FC = () => {
           <span className="burger-span"></span>
           <span className="burger-span"></span>
         </div>
-        <ul className="hidden sm:flex sm:flex-1 md:gap-4 lg:gap-6 sm:justify-end w-full items-center align-middle">
-          {res.data?.role === UserRole.admin && (
-            <li className="text-primary text-md text-center font-semibold">
-              <Link
-                to={'/admin/tabs/authors'}
-                className={linkClasses}
-              >
-                Panel administratora
-              </Link>
-            </li>
-          )}
-          <li className="text-primary text-md text-center font-semibold">
-            <Link
-              to={'/shelves'}
-              className={linkClasses}
-            >
-              Moje półki
-            </Link>
-          </li>
-          <li className="text-primary text-md text-center font-semibold">
-            <Link
-              to="/non-existent1"
-              className={linkClasses}
-            >
-              Cytaty
-            </Link>
-          </li>
-          <li className="text-primary text-md text-center font-semibold">
-            <Link
-              to="/non-existent2"
-              className={linkClasses}
-            >
-              Kolekcje
-            </Link>
-          </li>
-          <li className="text-primary text-md text-center font-semibold">
-            <Link
-              to="/non-existent3"
-              className={linkClasses}
-            >
-              Statystyki
-            </Link>
-          </li>
-          <li className="text-primary text-md text-center font-semibold">
-            <Link
-              to={'/profile'}
-              className={linkClasses}
-            >
-              Profil
-            </Link>
-          </li>
-          <IoIosLogOut
-            onClick={handleLogout}
-            className="cursor-pointer text-xl sm:text-4xl text-primary"
-          />
-        </ul>
+        <NavbarList
+          handleLogout={handleLogout}
+          user={res.data}
+        />
       </div>
       <NavbarBreadcrumbs />
     </div>

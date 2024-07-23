@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
-import { Input, InputProps } from './input';
+import { Input, InputProps, FileInput, FileInputProps } from './input';
 import * as HiIcons from 'react-icons/hi';
 import { useArgs } from '@storybook/preview-api';
 
@@ -63,6 +63,38 @@ export const Playground: Story = {
             <></>
           )
         }
+      />
+    );
+  },
+};
+
+type FileInputStory = StoryObj<FileInputProps>;
+
+export const FileInputStory: FileInputStory = {
+  args: {
+    iSize: 'xl',
+    fileName: 'file-name.jpg',
+  },
+  argTypes: {
+    iSize: {
+      control: 'select',
+      options: ['sm', 'base', 'lg', 'xl'],
+    },
+    fileName: {
+      control: 'text',
+    },
+  },
+  render: function Render(args) {
+    const [{ iSize, fileName }] = useArgs();
+
+    return (
+      <FileInput
+        type="file"
+        accept="image/jpeg"
+        iSize={iSize}
+        placeholder={fileName}
+        {...args}
+        fileName={fileName}
       />
     );
   },

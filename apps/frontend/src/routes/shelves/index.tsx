@@ -29,7 +29,9 @@ import {
 import { useQueryClient } from '@tanstack/react-query';
 import { ShelfApiError } from '../../modules/bookshelf/api/errors/shelfApiError';
 import { useBreadcrumbKeysDispatch } from '../../modules/common/contexts/breadcrumbKeysContext';
-import { ShelvesSkeleton } from '../../modules/bookshelf/components/bookshelvesSkeleton/shelves-skeleton';
+import { ShelvesSkeleton } from '../../modules/bookshelf/components/bookshelvesSkeleton/shelvesSkeleton';
+
+import styles from './index.module.css';
 
 const bookshelfNameSchema = z
   .string()
@@ -116,7 +118,11 @@ export const ShelvesPage: FC = () => {
   const [editMap, setEditMap] = useState<Record<number, boolean>>({});
 
   if (isFetching && !isRefetching) {
-    return <ShelvesSkeleton />;
+    return (
+      <AuthenticatedLayout>
+        <ShelvesSkeleton />
+      </AuthenticatedLayout>
+    );
   }
 
   const startEdit = (index: number): void => {
@@ -296,19 +302,18 @@ export const ShelvesPage: FC = () => {
   return (
     <AuthenticatedLayout>
       <div className="flex items-center justify-center w-100% px-8 py-1 sm:py-2">
-        <div className="flex flex-col w-[80vw] sm:w-[90vw] sm:px-48 items-center justify-center gap-4">
-          <div className="w-full flex items-end justify-center sm:justify-end">
+        <div className={styles['page-container']}>
+          <div className={styles['action-bar-container']}>
             <Button
               size="xl"
-              className="text-lg px-24"
               onClick={() => onAddNewBookshelf()}
               disabled={isCreatingNew}
             >
               Dodaj nową półkę
             </Button>
           </div>
-          <ScrollArea className="w-full h-[70vh]">
-            <div className="py-4 grid gap-x-16 gap-y-2 grid-cols-1 w-full min-h-16">
+          <ScrollArea className={styles['shelves-scroll-area']}>
+            <div className={styles['shelves-container']}>
               {bookshelves?.map((bookshelf, index) => (
                 <div
                   className={cn(index > 4 ? 'hidden' : '')}
@@ -317,7 +322,7 @@ export const ShelvesPage: FC = () => {
                   <Bookmark />
                   <div
                     key={`${bookshelf.id}`}
-                    className="flex relative ml-10 mt-[-1.25rem] rounded-sm border border-spacing-2 p-4 gap-x-2 h-24 border-transparent bg-primaryBackground"
+                    className={styles['shelf']}
                   >
                     <div
                       onClick={() => {
