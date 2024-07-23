@@ -7,7 +7,7 @@ import { useFindBooksQuery } from '../../../../modules/book/api/admin/queries/fi
 import { RequireAdmin } from '../../../../modules/core/components/requireAdmin/requireAdmin';
 
 export const BooksAdminPage: FC = () => {
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
 
   const [pageSize] = useState(10);
 
@@ -31,24 +31,16 @@ export const BooksAdminPage: FC = () => {
     title: searchTitleName,
   });
 
-  if (isBooksFetched && page !== (booksData?.metadata.page as number) - 1) {
-    setPage((booksData?.metadata.page as number) - 1);
+  if (isBooksFetched && page !== (booksData?.metadata.page as number)) {
+    setPage((booksData?.metadata.page as number));
   }
 
   const pageCount = useMemo(() => {
     return Math.ceil((booksData?.metadata?.total ?? 0) / pageSize) || 1;
   }, [booksData?.metadata.total, pageSize]);
 
-  const onNextPage = (): void => {
-    setPage(page + 1);
-  };
-
   const onSetPage = (page: number): void => {
     setPage(page);
-  };
-
-  const onPreviousPage = (): void => {
-    setPage(page - 1);
   };
 
   const data = useMemo(() => {
@@ -82,8 +74,6 @@ export const BooksAdminPage: FC = () => {
                 data={data}
                 columns={bookTableColumns}
                 pageCount={pageCount}
-                onNextPage={onNextPage}
-                onPreviousPage={onPreviousPage}
                 onSetPage={onSetPage}
                 pageSize={pageSize}
                 pageIndex={page}

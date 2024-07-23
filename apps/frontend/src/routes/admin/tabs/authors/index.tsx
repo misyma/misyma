@@ -9,7 +9,7 @@ import { Button } from '../../../../modules/common/components/button/button';
 import { RequireAdmin } from '../../../../modules/core/components/requireAdmin/requireAdmin';
 
 export const AuthorsAdminPage: FC = () => {
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
 
   const [pageSize] = useState(10);
 
@@ -36,16 +36,8 @@ export const AuthorsAdminPage: FC = () => {
     return Math.ceil((authorsData?.metadata?.total ?? 0) / pageSize) || 1;
   }, [authorsData?.metadata.total, pageSize]);
 
-  const onNextPage = (): void => {
-    setPage(page + 1);
-  };
-
   const onSetPage = (page: number): void => {
     setPage(page);
-  };
-
-  const onPreviousPage = (): void => {
-    setPage(page - 1);
   };
 
   const data = useMemo(() => {
@@ -85,8 +77,6 @@ export const AuthorsAdminPage: FC = () => {
                 data={data}
                 columns={columns}
                 pageCount={pageCount}
-                onNextPage={onNextPage}
-                onPreviousPage={onPreviousPage}
                 onSetPage={onSetPage}
                 pageSize={pageSize}
                 pageIndex={page}

@@ -31,6 +31,10 @@ export const Paginator = ({
 }: PaginatorProps): React.ReactNode => {
   const [currentPage, setCurrentPage] = useState<number>(pageIndex);
 
+  if (pageIndex !== currentPage) {
+    setCurrentPage(pageIndex);
+  }
+
   const previousPage = useMemo(() => {
     if (currentPage === 1) {
       return undefined;
@@ -101,7 +105,7 @@ export const Paginator = ({
                   }
 
                   if (currentPage === pagesCount && pagesCount === 2) {
-                    onPageChange(currentPage - 2);
+                    onPageChange(currentPage - 1);
 
                     setCurrentPage(currentPage - 1);
 
@@ -109,14 +113,14 @@ export const Paginator = ({
                   }
 
                   if (currentPage === pagesCount) {
-                    onPageChange(currentPage - 3);
+                    onPageChange(currentPage - 2);
 
                     setCurrentPage(currentPage - 2);
 
                     return;
                   }
 
-                  onPageChange(previousPage - 1);
+                  onPageChange(previousPage);
 
                   setCurrentPage(previousPage);
                 }}
@@ -160,7 +164,7 @@ export const Paginator = ({
                   className={nextPage === undefined ? 'pointer-events-none hover:text-none hover:bg-none' : ''}
                   onClick={async () => {
                     if (nextPage) {
-                      onPageChange(nextPage - 1);
+                      onPageChange(nextPage);
                       setCurrentPage(nextPage);
                     }
                   }}

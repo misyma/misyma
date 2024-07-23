@@ -18,20 +18,13 @@ import { BookshelfType } from '@common/contracts';
 import { DeleteBookshelfModal } from '../../modules/bookshelf/components/deleteBookshelfModal/deleteBookshelfModal';
 import { cn } from '../../modules/common/lib/utils';
 import { useFindUserBookshelfsQuery } from '../../modules/bookshelf/api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from '../../modules/common/components/pagination/pagination';
 import { useQueryClient } from '@tanstack/react-query';
 import { ShelfApiError } from '../../modules/bookshelf/api/errors/shelfApiError';
 import { useBreadcrumbKeysDispatch } from '../../modules/common/contexts/breadcrumbKeysContext';
 import { ShelvesSkeleton } from '../../modules/bookshelf/components/bookshelvesSkeleton/shelvesSkeleton';
 
 import styles from './index.module.css';
+import { Paginator } from '../../modules/common/components/paginator/paginator';
 
 const bookshelfNameSchema = z
   .string()
@@ -90,28 +83,6 @@ export const ShelvesPage: FC = () => {
 
     return Math.ceil(bookshelvesCount / perPage);
   }, [bookshelvesData?.metadata?.total]);
-
-  const previousPage = useMemo(() => {
-    if (currentPage === 1) {
-      return undefined;
-    }
-
-    return currentPage - 1;
-  }, [currentPage]);
-
-  const nextPage = useMemo(() => {
-    if (currentPage === pagesCount) {
-      return undefined;
-    }
-
-    if (currentPage === 1 && pagesCount > 2) {
-      return currentPage + 2;
-    } else if (currentPage === 1 && pagesCount <= 2) {
-      return currentPage;
-    }
-
-    return currentPage + 1;
-  }, [currentPage, pagesCount]);
 
   const navigate = useNavigate();
 
@@ -449,127 +420,12 @@ export const ShelvesPage: FC = () => {
               ))}
             </div>
           </ScrollArea>
-          {bookshelves && (bookshelvesData?.metadata?.total ?? 0) > perPage ? (
-            <>
-              <Pagination>
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious
-                      hasPrevious={currentPage !== 1}
-                      onClick={() => {
-                        setCurrentPage(currentPage - 1);
-                      }}
-                    />
-                  </PaginationItem>
-                  <PaginationItem
-                    className={
-                      !(currentPage > 1 && pagesCount > 1) ? 'pointer-events-none hover:text-none hover:bg-none' : ''
-                    }
-                  >
-                    <PaginationLink
-                      className={
-                        !(currentPage > 1 && pagesCount > 1)
-                          ? 'pointer-events-none hover:text-none hover:bg-[unset]'
-                          : ''
-                      }
-                      onClick={() => {
-                        if (previousPage === undefined) {
-                          return;
-                        }
-
-                        if (previousPage - 1 === -1) {
-                          return;
-                        }
-
-                        if (currentPage === pagesCount && pagesCount === 2) {
-                          setCurrentPage(currentPage - 1);
-
-                          return;
-                        }
-
-                        if (currentPage === pagesCount) {
-                          setCurrentPage(currentPage - 2);
-
-                          return;
-                        }
-
-                        setCurrentPage(previousPage);
-                      }}
-                      isActive={previousPage === undefined}
-                    >
-                      {previousPage !== undefined && currentPage === pagesCount && pagesCount > 2
-                        ? currentPage - 2
-                        : previousPage !== undefined
-                          ? previousPage
-                          : currentPage}
-                    </PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink
-                      isActive={
-                        (currentPage !== 1 && currentPage !== pagesCount) ||
-                        (pagesCount === 2 && currentPage === pagesCount)
-                      }
-                      onClick={() => {
-                        if (currentPage === 1) {
-                          return setCurrentPage(currentPage + 1);
-                        }
-
-                        if (pagesCount == currentPage && pagesCount === 2) {
-                          return;
-                        }
-
-                        if (currentPage === pagesCount) {
-                          return setCurrentPage(pagesCount - 1);
-                        }
-                      }}
-                    >
-                      {currentPage !== 1
-                        ? currentPage === pagesCount && pagesCount > 2
-                          ? pagesCount - 1
-                          : currentPage
-                        : currentPage + 1}
-                    </PaginationLink>
-                  </PaginationItem>
-                  {pagesCount > 2 ? (
-                    <PaginationItem>
-                      <PaginationLink
-                        isActive={
-                          nextPage === undefined && currentPage !== 1 && currentPage === pagesCount && pagesCount > 2
-                        }
-                        className={nextPage === undefined ? 'pointer-events-none hover:text-none hover:bg-none' : ''}
-                        onClick={() => {
-                          if (nextPage) {
-                            setCurrentPage(nextPage);
-                          }
-                        }}
-                      >
-                        {nextPage === undefined ? pagesCount : nextPage}
-                      </PaginationLink>
-                    </PaginationItem>
-                  ) : (
-                    <> </>
-                  )}
-                  <PaginationItem
-                    className={currentPage !== pagesCount ? 'pointer-events-none hover:text-none hover:bg-none' : ''}
-                  >
-                    <PaginationNext
-                      hasNext={currentPage !== pagesCount}
-                      className={
-                        !(currentPage !== pagesCount)
-                          ? 'pointer-events-none hover:text-none hover:bg-[unset]'
-                          : 'pointer-events-auto'
-                      }
-                      onClick={() => {
-                        setCurrentPage(currentPage + 1);
-                      }}
-                    />
-                  </PaginationItem>
-                </PaginationContent>{' '}
-              </Pagination>
-            </>
-          ) : (
-            <></>
+          {bookshelves && (bookshelvesData?.metadata?.total ?? 0) > perPage && (
+            <Paginator 
+              pagesCount={pagesCount}
+              onPageChange={setCurrentPage}
+              pageIndex={currentPage}
+            />
           )}
         </div>
       </div>

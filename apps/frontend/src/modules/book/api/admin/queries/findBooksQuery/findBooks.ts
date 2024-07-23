@@ -15,7 +15,7 @@ export const findBooks = async (values: Payload) => {
   }
 
   if (page) {
-    query.page = `${page + 1}`;
+    query.page = `${page}`;
   }
 
   if (pageSize) {

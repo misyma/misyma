@@ -15,7 +15,7 @@ export const findBookChangeRequests = async (payload: FindBookChangeRequestsPayl
   }
 
   if (page) {
-    query.page = `${page + 1}`;
+    query.page = `${page}`;
   }
 
   const response = await HttpService.get<FindBookChangeRequestsResponseBody>({
