@@ -25,7 +25,7 @@ import {
 import { useFindBookshelfByIdQuery } from '../../../../modules/bookshelf/api/queries/findBookshelfByIdQuery/findBookshelfByIdQuery.js';
 import { BasicDataTabSkeleton } from '../../../../modules/book/components/basicDataSkeleton/basicDataTabSkeleton.js';
 
-import { DeleteBookModal } from '../../../../modules/book/components/deleteBookModal/deleteBookModal.js';
+import { DeleteUserBookModal } from '../../../../modules/book/components/deleteUserBookModal/deleteUserBookModal.js';
 import { CreateChangeRequestModal } from '../../../../modules/book/components/createChangeRequestModal/createChangeRequestModal.js';
 import { EditBookModal } from '../../../../modules/book/components/editBookModal/editBookModal.js';
 
@@ -113,8 +113,9 @@ export const BasicDataPage: FC = () => {
             <div className="flex gap-4 p-2">
               <CreateChangeRequestModal bookId={bookId} />
               <EditBookModal bookId={bookId} />
-              <DeleteBookModal
+              <DeleteUserBookModal
                 bookId={bookId}
+                bookshelfId={data?.bookshelfId ?? ''}
                 bookName={data?.book.title ?? ''}
               />
             </div>

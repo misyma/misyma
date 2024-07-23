@@ -3,11 +3,11 @@ import { Book } from '@common/contracts';
 import { HiCheckCircle } from 'react-icons/hi';
 import { HiXCircle } from 'react-icons/hi';
 import { ImQuill } from 'react-icons/im';
-import { DeleteBookModal } from '../deleteBookModal/deleteBookModal';
 import { ReactNode } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { ReversedLanguages } from '../../../common/constants/languages';
 import { BookFormat } from '../../../common/constants/bookFormat';
+import { DeleteBookModal } from '../deleteBookModal/deleteBookModal';
 
 interface Props {
   bookId: string;
