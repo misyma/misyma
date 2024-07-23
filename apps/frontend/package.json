@@ -65,6 +65,7 @@
     "@storybook/addon-links": "^8.2.2",
     "@storybook/addon-onboarding": "^8.2.2",
     "@storybook/blocks": "^8.2.2",
+    "@storybook/preview-api": "^8.2.5",
     "@storybook/react": "^8.2.2",
     "@storybook/react-vite": "^8.2.2",
     "@storybook/test": "^8.2.2",
@@ -82,6 +83,8 @@
     "eslint-plugin-react-refresh": "0.4.6",
     "eslint-plugin-storybook": "^0.8.0",
     "jsdom": "24.0.0",
+    "msw": "^2.3.2",
+    "msw-storybook-addon": "^2.0.3",
     "postcss": "8.4.38",
     "prop-types": "^15.8.1",
     "storybook": "^8.2.2",
@@ -95,5 +98,11 @@
   },
   "engines": {
     "node": "20.14.0"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public",
+      "msw"
+    ]
   }
 }

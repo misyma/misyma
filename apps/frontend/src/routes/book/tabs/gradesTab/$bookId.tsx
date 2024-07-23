@@ -104,20 +104,8 @@ export const GradesPage: FC = () => {
         query.queryKey[2] === bookId,
     });
 
-  const onNextPage = (): void => {
-    setPage(page + 1);
-
-    invalidateReadingsFetch();
-  };
-
   const onSetPage = (page: number): void => {
     setPage(page);
-
-    invalidateReadingsFetch();
-  };
-
-  const onPreviousPage = (): void => {
-    setPage(page - 1);
 
     invalidateReadingsFetch();
   };
@@ -186,8 +174,6 @@ export const GradesPage: FC = () => {
                     <GradesTable
                       columns={columns}
                       data={bookReadings?.data ?? []}
-                      onNextPage={onNextPage}
-                      onPreviousPage={onPreviousPage}
                       onSetPage={onSetPage}
                       pageCount={pageCount}
                       pageIndex={page}

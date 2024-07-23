@@ -15,7 +15,7 @@ export const findAuthors = async (values: Payload) => {
   }
 
   if (page) {
-    query.page = `${page + 1}`;
+    query.page = `${page}`;
   }
 
   const response = await HttpService.get<FindAuthorsResponseBody>({

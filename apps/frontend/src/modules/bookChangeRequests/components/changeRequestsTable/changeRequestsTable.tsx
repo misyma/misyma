@@ -12,16 +12,9 @@ import {
 } from '@tanstack/react-table';
 import { useMemo, useState } from 'react';
 
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from '../../../common/components/pagination/pagination';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../common/components/table/table';
 import { Input } from '../../../common/components/input/input';
+import { Paginator } from '../../../common/components/paginator/paginator';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -29,8 +22,6 @@ interface DataTableProps<TData, TValue> {
   pageIndex: number;
   pageSize: number;
   pageCount: number;
-  onNextPage: () => Promise<void> | void;
-  onPreviousPage: () => Promise<void> | void;
   onSetPage: (val: number) => Promise<void> | void;
   searchTitle: string | undefined;
   setSearchTitle: (val: string) => void;
@@ -42,8 +33,6 @@ export function ChangeRequestsTable<TData, TValue>({
   pageIndex,
   pageSize,
   pageCount,
-  onNextPage,
-  onPreviousPage,
   onSetPage,
   searchTitle,
   setSearchTitle,
@@ -85,30 +74,6 @@ export function ChangeRequestsTable<TData, TValue>({
     rowCount,
   });
 
-  const [currentPage, setCurrentPage] = useState<number>(1);
-
-  const previousPage = useMemo(() => {
-    if (currentPage === 1) {
-      return undefined;
-    }
-
-    return currentPage - 1;
-  }, [currentPage]);
-
-  const nextPage = useMemo(() => {
-    if (currentPage === pageCount) {
-      return undefined;
-    }
-
-    if (currentPage === 1 && pageCount > 2) {
-      return currentPage + 2;
-    } else if (currentPage === 1 && pageCount <= 2) {
-      return currentPage;
-    }
-
-    return currentPage + 1;
-  }, [currentPage, pageCount]);
-
   return (
     <div className="w-full md:max-w-screen-xl ">
       <div className="flex items-center py-2">
@@ -142,8 +107,7 @@ export function ChangeRequestsTable<TData, TValue>({
                   data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                   ))}
                 </TableRow>
               ))
@@ -162,123 +126,11 @@ export function ChangeRequestsTable<TData, TValue>({
       </div>
       <div className="flex items-center justify-end space-x-2 py-4 mr-4">
         {table.getPageCount() > 1 && (
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  hasPrevious={currentPage !== 1}
-                  onClick={() => {
-                    onPreviousPage();
-
-                    setCurrentPage(currentPage - 1);
-                  }}
-                />
-              </PaginationItem>
-              <PaginationItem
-                className={!table.getCanPreviousPage() ? 'pointer-events-none hover:text-none hover:bg-none' : ''}
-              >
-                <PaginationLink
-                  className={!table.getCanPreviousPage() ? 'pointer-events-none hover:text-none hover:bg-[unset]' : ''}
-                  onClick={() => {
-                    if (previousPage === undefined) {
-                      return;
-                    }
-
-                    if (previousPage - 1 === -1) {
-                      return;
-                    }
-
-                    if (currentPage === pageCount && pageCount === 2) {
-                      onSetPage(currentPage - 2);
-
-                      setCurrentPage(currentPage - 1);
-
-                      return;
-                    }
-
-                    if (currentPage === pageCount) {
-                      onSetPage(currentPage - 3);
-
-                      setCurrentPage(currentPage - 2);
-
-                      return;
-                    }
-
-                    onSetPage(previousPage - 1);
-
-                    setCurrentPage(previousPage);
-                  }}
-                  isActive={previousPage === undefined}
-                >
-                  {previousPage !== undefined && currentPage === pageCount && pageCount > 2
-                    ? currentPage - 2
-                    : previousPage !== undefined
-                      ? previousPage
-                      : currentPage}
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink
-                  isActive={
-                    (currentPage !== 1 && currentPage !== pageCount) || (pageCount === 2 && currentPage === pageCount)
-                  }
-                  onClick={() => {
-                    if (currentPage === 1) {
-                      onSetPage(currentPage);
-
-                      return setCurrentPage(currentPage + 1);
-                    }
-
-                    if (pageCount == currentPage && pageCount === 2) {
-                      return;
-                    }
-
-                    if (currentPage === pageCount) {
-                      onSetPage(currentPage - 2);
-                      return setCurrentPage(pageCount - 1);
-                    }
-                  }}
-                >
-                  {currentPage !== 1
-                    ? currentPage === pageCount && pageCount > 2
-                      ? pageCount - 1
-                      : currentPage
-                    : currentPage + 1}
-                </PaginationLink>
-              </PaginationItem>
-              {table.getPageCount() > 2 ? (
-                <PaginationItem>
-                  <PaginationLink
-                    isActive={nextPage === undefined && currentPage !== 1 && currentPage === pageCount && pageCount > 2}
-                    className={nextPage === undefined ? 'pointer-events-none hover:text-none hover:bg-none' : ''}
-                    onClick={() => {
-                      if (nextPage) {
-                        onSetPage(nextPage - 1);
-                        setCurrentPage(nextPage);
-                      }
-                    }}
-                  >
-                    {nextPage === undefined ? pageCount : nextPage}
-                  </PaginationLink>
-                </PaginationItem>
-              ) : (
-                <> </>
-              )}
-              <PaginationItem
-                className={!table.getCanNextPage() ? 'pointer-events-none hover:text-none hover:bg-none' : ''}
-              >
-                <PaginationNext
-                  hasNext={table.getCanNextPage()}
-                  className={!table.getCanNextPage() ? 'pointer-events-none hover:text-none hover:bg-[unset]' : ''}
-                  onClick={() => {
-                    onNextPage();
-
-                    setCurrentPage(currentPage + 1);
-                  }}
-                />
-              </PaginationItem>
-            </PaginationContent>{' '}
-          </Pagination>
+          <Paginator
+            onPageChange={onSetPage}
+            pageIndex={pageIndex}
+            pagesCount={pageCount}
+          />
         )}
       </div>
     </div>

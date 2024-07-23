@@ -22,5 +22,6 @@ const config = {
     name: getAbsolutePath('@storybook/react-vite'),
     options: {},
   },
+  staticDirs: ['../public', '../msw'],
 };
 export default config;

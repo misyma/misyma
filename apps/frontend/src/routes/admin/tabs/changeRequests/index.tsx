@@ -10,7 +10,7 @@ import { userStateSelectors } from '../../../../modules/core/store/states/userSt
 import { FindBookChangeRequestsQueryOptions } from '../../../../modules/bookChangeRequests/api/admin/queries/findBookChangeRequests/findBookChangeRequestsQueryOptions';
 
 export const ChangeRequestsAdminPage: FC = () => {
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
 
   const [pageSize] = useState(10);
 
@@ -35,16 +35,8 @@ export const ChangeRequestsAdminPage: FC = () => {
     return Math.ceil((changeRequestsData?.metadata?.total ?? 0) / pageSize) || 1;
   }, [changeRequestsData?.metadata.total, pageSize]);
 
-  const onNextPage = (): void => {
-    setPage(page + 1);
-  };
-
   const onSetPage = (page: number): void => {
     setPage(page);
-  };
-
-  const onPreviousPage = (): void => {
-    setPage(page - 1);
   };
 
   const data = useMemo(() => {
@@ -78,8 +70,6 @@ export const ChangeRequestsAdminPage: FC = () => {
                 data={data}
                 columns={changeRequestsColumns}
                 pageCount={pageCount}
-                onNextPage={onNextPage}
-                onPreviousPage={onPreviousPage}
                 onSetPage={onSetPage}
                 pageSize={pageSize}
                 pageIndex={page}

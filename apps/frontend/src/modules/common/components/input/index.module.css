@@ -1,0 +1,63 @@
+.input-container {
+  @apply flex bg-[#D1D5DB]/20 flex-row has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-ring has-[input:focus-visible]:ring-offset-4 rounded-md border ring-offset-background;
+}
+
+.input {
+  @apply flex rounded-md text-sm file:border-0 placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 bg-none bg-[unset] focus:border-none outline-none;
+}
+
+.icon-container {
+  @apply absolute h-12 pointer-events-none flex items-center justify-end px-2;
+}
+
+.input-icon {
+  @apply text-primary opacity-65;
+}
+
+.small-input {
+  @apply h-8 w-20 sm:w-28;
+}
+
+.small-inner {
+  @apply h-8 w-14 sm:w-24;
+}
+
+.small-icon {
+  @apply h-5 w-5;
+}
+
+.base-input {
+  @apply w-32 sm:w-44;
+}
+
+.base-inner {
+  @apply w-24 sm:w-36;
+}
+
+.base-icon {
+  @apply h-7 w-7;
+}
+
+.large-input {
+  @apply w-52 sm:w-72;
+}
+
+.large-inner {
+  @apply w-48 sm:w-64;
+}
+
+.large-icon {
+  @apply h-8 w-8;
+}
+
+.xlarge-input {
+  @apply w-60 sm:w-96;
+}
+
+.xlarge-inner {
+  @apply w-56 sm:w-88;
+}
+
+.xlarge-icon {
+  @apply h-8 w-8;
+}

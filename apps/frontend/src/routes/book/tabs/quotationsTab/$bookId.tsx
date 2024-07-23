@@ -111,20 +111,8 @@ export const QuotesPage: FC = () => {
         query.queryKey[4] === `${pageSize}`,
     });
 
-  const onNextPage = (): void => {
-    setPage(page + 1);
-
-    invalidateQuotesFetch();
-  };
-
   const onSetPage = (page: number): void => {
     setPage(page);
-
-    invalidateQuotesFetch();
-  };
-
-  const onPreviousPage = (): void => {
-    setPage(page - 1);
 
     invalidateQuotesFetch();
   };
@@ -195,8 +183,6 @@ export const QuotesPage: FC = () => {
                     <QuotationsTable
                       columns={columns}
                       data={data}
-                      onNextPage={onNextPage}
-                      onPreviousPage={onPreviousPage}
                       onSetPage={onSetPage}
                       pageCount={pageCount}
                       pageIndex={page}

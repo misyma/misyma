@@ -20,6 +20,8 @@ export * from './schemas/bookshelf/bookshelfType.js';
 
 export * from './schemas/user/userRole.js';
 
+export * from './schemas/user/user.js';
+
 export * from './schemas/user/findUser.js';
 
 export * from './schemas/user/findUsers.js';

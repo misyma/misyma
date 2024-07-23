@@ -32,6 +32,7 @@ export const findBookReadings = async (values: FindBookReadingsPayload): Promise
     queryParams,
     headers: {
       Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json'
     },
   });
 
