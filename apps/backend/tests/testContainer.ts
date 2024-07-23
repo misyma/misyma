@@ -59,7 +59,7 @@ export class TestContainer {
 
     container.bind<EmailEventTestUtils>(
       testSymbols.emailEventTestUtils,
-      () => new EmailEventTestUtils(container.get<DatabaseClient>(coreSymbols.entityEventsDatabaseClient)),
+      () => new EmailEventTestUtils(container.get<DatabaseClient>(coreSymbols.databaseClient)),
     );
 
     container.bind<BookshelfTestUtils>(

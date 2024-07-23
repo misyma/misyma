@@ -1,4 +1,4 @@
-import { type TestUtils } from '../../../../../../tests/testUtils.js';
+import { TestUtils } from '../../../../../../tests/testUtils.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type BookshelfRawEntity } from '../../../infrastructure/databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfRawEntity.js';
 import { bookshelfTable } from '../../../infrastructure/databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfTable.js';
@@ -16,8 +16,10 @@ interface FindByUserIdPayload {
   readonly userId: string;
 }
 
-export class BookshelfTestUtils implements TestUtils {
-  public constructor(private readonly databaseClient: DatabaseClient) {}
+export class BookshelfTestUtils extends TestUtils {
+  public constructor(databaseClient: DatabaseClient) {
+    super(databaseClient, bookshelfTable);
+  }
 
   private readonly bookshelfTestFactory = new BookshelfTestFactory();
 
@@ -69,9 +71,5 @@ export class BookshelfTestUtils implements TestUtils {
       ...rawEntity,
       createdAt: new Date(rawEntity.createdAt),
     }));
-  }
-
-  public async truncate(): Promise<void> {
-    await this.databaseClient<BookshelfRawEntity>(bookshelfTable).truncate();
   }
 }

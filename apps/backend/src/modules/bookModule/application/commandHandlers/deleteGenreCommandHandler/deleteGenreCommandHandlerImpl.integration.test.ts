@@ -5,11 +5,15 @@ import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
+import { coreSymbols } from '../../../../../core/symbols.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { symbols } from '../../../symbols.js';
 import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 
 describe('DeleteGenreCommandHandler', () => {
   let commandHandler: DeleteGenreCommandHandler;
+
+  let databaseClient: DatabaseClient;
 
   let genreTestUtils: GenreTestUtils;
 
@@ -18,6 +22,8 @@ describe('DeleteGenreCommandHandler', () => {
 
     commandHandler = container.get<DeleteGenreCommandHandler>(symbols.deleteGenreCommandHandler);
 
+    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
+
     genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
 
     await genreTestUtils.truncate();
@@ -25,6 +31,8 @@ describe('DeleteGenreCommandHandler', () => {
 
   afterEach(async () => {
     await genreTestUtils.truncate();
+
+    await databaseClient.destroy();
   });
 
   it('throws an error - when Genre does not exist', async () => {

@@ -1,4 +1,4 @@
-import { type TestUtils } from '../../../../../../tests/testUtils.js';
+import { TestUtils } from '../../../../../../tests/testUtils.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type BorrowingRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/borrowingTable/borrowingRawEntity.js';
 import { borrowingTable } from '../../../infrastructure/databases/bookDatabase/tables/borrowingTable/borrowingTable.js';
@@ -12,8 +12,10 @@ interface FindByIdPayload {
   readonly id: string;
 }
 
-export class BorrowingTestUtils implements TestUtils {
-  public constructor(private readonly databaseClient: DatabaseClient) {}
+export class BorrowingTestUtils extends TestUtils {
+  public constructor(databaseClient: DatabaseClient) {
+    super(databaseClient, borrowingTable);
+  }
 
   private readonly borrowingTestFactory = new BorrowingTestFactory();
 
@@ -60,9 +62,5 @@ export class BorrowingTestUtils implements TestUtils {
       startedAt: new Date(result.startedAt),
       endedAt: result.endedAt ? new Date(result.endedAt) : undefined,
     };
-  }
-
-  public async truncate(): Promise<void> {
-    await this.databaseClient(borrowingTable).truncate();
   }
 }

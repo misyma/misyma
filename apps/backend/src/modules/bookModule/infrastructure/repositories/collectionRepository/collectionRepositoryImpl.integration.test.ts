@@ -5,6 +5,8 @@ import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
+import { coreSymbols } from '../../../../../core/symbols.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { Collection } from '../../../domain/entities/collection/collection.js';
 import { type CollectionRepository } from '../../../domain/repositories/collectionRepository/collectionRepository.js';
@@ -15,6 +17,8 @@ import { type CollectionRawEntity } from '../../databases/bookDatabase/tables/co
 
 describe('CollectionRepositoryImpl', () => {
   let collectionRepository: CollectionRepository;
+
+  let databaseClient: DatabaseClient;
 
   let collectionTestUtils: CollectionTestUtils;
 
@@ -28,6 +32,8 @@ describe('CollectionRepositoryImpl', () => {
     const container = TestContainer.create();
 
     collectionRepository = container.get<CollectionRepository>(symbols.collectionRepository);
+
+    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
 
     collectionTestUtils = container.get<CollectionTestUtils>(testSymbols.collectionTestUtils);
 
@@ -44,6 +50,8 @@ describe('CollectionRepositoryImpl', () => {
     for (const testUtil of testUtils) {
       await testUtil.truncate();
     }
+
+    await databaseClient.destroy();
   });
 
   describe('findById', () => {

@@ -4,8 +4,10 @@
     "password": "ADMIN_PASSWORD"
   },
   "logLevel": "LOG_LEVEL",
-  "databasePath": "DATABASE_PATH",
-  "queueDatabasePath": "QUEUE_DATABASE_PATH",
+  "database": {
+    "username": "DATABASE_USERNAME",
+    "password": "DATABASE_PASSWORD"
+  },
   "token": {
     "secret": "TOKEN_SECRET"
   },

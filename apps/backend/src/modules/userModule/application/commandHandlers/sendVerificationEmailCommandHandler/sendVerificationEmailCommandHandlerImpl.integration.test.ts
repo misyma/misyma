@@ -5,6 +5,8 @@ import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
+import { coreSymbols } from '../../../../../core/symbols.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { EmailEventDraft } from '../../../domain/entities/emailEvent/emailEventDraft.ts/emailEventDraft.js';
 import { EmailEventType } from '../../../domain/entities/emailEvent/types/emailEventType.js';
 import { symbols } from '../../../symbols.js';
@@ -13,6 +15,8 @@ import { type EmailMessageBus } from '../../messageBuses/emailMessageBus/emailMe
 
 describe('SendVerificationEmailCommandHandler', () => {
   let commandHandler: SendVerificationEmailCommandHandler;
+
+  let databaseClient: DatabaseClient;
 
   let emailMessageBus: EmailMessageBus;
 
@@ -23,6 +27,8 @@ describe('SendVerificationEmailCommandHandler', () => {
 
     commandHandler = container.get<SendVerificationEmailCommandHandler>(symbols.sendVerificationEmailCommandHandler);
 
+    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
+
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
 
     emailMessageBus = container.get<EmailMessageBus>(symbols.emailMessageBus);
@@ -32,6 +38,8 @@ describe('SendVerificationEmailCommandHandler', () => {
 
   afterEach(async () => {
     await userTestUtils.truncate();
+
+    await databaseClient.destroy();
   });
 
   it('sends verification email', async () => {

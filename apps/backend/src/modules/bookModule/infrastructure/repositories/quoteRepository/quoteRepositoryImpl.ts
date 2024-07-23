@@ -149,7 +149,7 @@ export class QuoteRepositoryImpl implements QuoteRepository {
     try {
       const countResult = await this.databaseClient<QuoteRawEntity>(quoteTable).where({ userBookId }).count().first();
 
-      const count = countResult?.['count(*)'];
+      const count = countResult?.['count'];
 
       if (count === undefined) {
         throw new RepositoryError({

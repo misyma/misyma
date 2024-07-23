@@ -1,4 +1,4 @@
-import { type TestUtils } from '../../../../../../tests/testUtils.js';
+import { TestUtils } from '../../../../../../tests/testUtils.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type BlacklistTokenRawEntity } from '../../../infrastructure/databases/userDatabase/tables/blacklistTokenTable/blacklistTokenRawEntity.js';
 import { blacklistTokenTable } from '../../../infrastructure/databases/userDatabase/tables/blacklistTokenTable/blacklistTokenTable.js';
@@ -16,10 +16,12 @@ interface FindByTokenPayload {
   readonly token: string;
 }
 
-export class BlacklistTokenTestUtils implements TestUtils {
+export class BlacklistTokenTestUtils extends TestUtils {
   private readonly blacklistTokenTestFactory = new BlacklistTokenTestFactory();
 
-  public constructor(private readonly databaseClient: DatabaseClient) {}
+  public constructor(databaseClient: DatabaseClient) {
+    super(databaseClient, blacklistTokenTable);
+  }
 
   public async createAndPersist(payload: CreateAndPersistPayload = {}): Promise<BlacklistTokenRawEntity> {
     const { input } = payload;
@@ -63,9 +65,5 @@ export class BlacklistTokenTestUtils implements TestUtils {
       token: blacklistTokenRawEntity.token,
       expiresAt: new Date(blacklistTokenRawEntity.expiresAt),
     };
-  }
-
-  public async truncate(): Promise<void> {
-    await this.databaseClient<BlacklistTokenRawEntity>(blacklistTokenTable).truncate();
   }
 }

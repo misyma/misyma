@@ -7,6 +7,8 @@ import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
+import { coreSymbols } from '../../../../../core/symbols.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { symbols } from '../../../symbols.js';
 import { type BookshelfTestUtils } from '../../../tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
@@ -16,12 +18,16 @@ describe('CreateBookshelfCommandHandlerImpl', () => {
 
   let userTestUtils: UserTestUtils;
 
+  let databaseClient: DatabaseClient;
+
   let bookshelfTestUtils: BookshelfTestUtils;
 
   let testUtils: TestUtils[];
 
   beforeEach(async () => {
     const container = TestContainer.create();
+
+    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
 
     commandHandler = container.get<CreateBookshelfCommandHandler>(symbols.createBookshelfCommandHandler);
 
@@ -40,6 +46,8 @@ describe('CreateBookshelfCommandHandlerImpl', () => {
     for (const testUtil of testUtils) {
       await testUtil.truncate();
     }
+
+    await databaseClient.destroy();
   });
 
   it('throws an error - when User does not exist', async () => {

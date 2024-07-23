@@ -1,8 +1,8 @@
 import { type DatabaseClient } from '../../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type Migration } from '../../../../../../libs/database/types/migration.js';
 
-export class M1CreateEmailEventTableMigration implements Migration {
-  public readonly name = 'M1CreateEmailEventTableMigration';
+export class M3CreateEmailEventTableMigration implements Migration {
+  public readonly name = 'M3CreateEmailEventTableMigration';
 
   private readonly tableName = 'emailEvents';
 

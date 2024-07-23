@@ -6,12 +6,16 @@ import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
+import { coreSymbols } from '../../../../../core/symbols.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { symbols } from '../../../symbols.js';
 import { type CollectionTestUtils } from '../../../tests/utils/collectionTestUtils/collectionTestUtils.js';
 
 describe('DeleteCollectionCommandHandler', () => {
   let commandHandler: DeleteCollectionCommandHandler;
+
+  let databaseClient: DatabaseClient;
 
   let collectionTestUtils: CollectionTestUtils;
 
@@ -23,6 +27,8 @@ describe('DeleteCollectionCommandHandler', () => {
     const container = TestContainer.create();
 
     commandHandler = container.get<DeleteCollectionCommandHandler>(symbols.deleteCollectionCommandHandler);
+
+    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
 
     collectionTestUtils = container.get<CollectionTestUtils>(testSymbols.collectionTestUtils);
 
@@ -39,6 +45,8 @@ describe('DeleteCollectionCommandHandler', () => {
     for (const testUtil of testUtils) {
       await testUtil.truncate();
     }
+
+    await databaseClient.destroy();
   });
 
   it('throws an error - when Collection does not exist', async () => {

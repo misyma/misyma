@@ -10,8 +10,8 @@ import {
   type EmailEventRepository,
   type FindAllCreatedAfterPayload,
 } from '../../../domain/repositories/emailEventRepository/emailEventRepository.js';
-import { type EmailEventRawEntity } from '../../databases/userEventsDatabase/tables/emailEventTable/emailEventRawEntity.js';
-import { emailEventTable } from '../../databases/userEventsDatabase/tables/emailEventTable/emailEventTable.js';
+import { type EmailEventRawEntity } from '../../databases/userDatabase/tables/emailEventTable/emailEventRawEntity.js';
+import { emailEventTable } from '../../databases/userDatabase/tables/emailEventTable/emailEventTable.js';
 
 export class EmailEventRepositoryImpl implements EmailEventRepository {
   public constructor(

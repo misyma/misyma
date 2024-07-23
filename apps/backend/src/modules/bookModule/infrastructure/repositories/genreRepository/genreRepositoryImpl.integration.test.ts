@@ -4,6 +4,8 @@ import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
+import { coreSymbols } from '../../../../../core/symbols.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { Genre } from '../../../domain/entities/genre/genre.js';
 import { type GenreRepository } from '../../../domain/repositories/genreRepository/genreRepository.js';
 import { symbols } from '../../../symbols.js';
@@ -14,6 +16,8 @@ import { type GenreRawEntity } from '../../databases/bookDatabase/tables/genreTa
 describe('GenreRepositoryImpl', () => {
   let genreRepository: GenreRepository;
 
+  let databaseClient: DatabaseClient;
+
   let genreTestUtils: GenreTestUtils;
 
   const genreTestFactory = new GenreTestFactory();
@@ -23,6 +27,8 @@ describe('GenreRepositoryImpl', () => {
 
     genreRepository = container.get<GenreRepository>(symbols.genreRepository);
 
+    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
+
     genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
 
     await genreTestUtils.truncate();
@@ -30,6 +36,8 @@ describe('GenreRepositoryImpl', () => {
 
   afterEach(async () => {
     await genreTestUtils.truncate();
+
+    await databaseClient.destroy();
   });
 
   describe('findById', () => {

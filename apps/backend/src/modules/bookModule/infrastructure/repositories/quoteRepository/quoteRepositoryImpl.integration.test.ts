@@ -4,6 +4,8 @@ import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { type TestUtils } from '../../../../../../tests/testUtils.js';
+import { coreSymbols } from '../../../../../core/symbols.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { Quote } from '../../../domain/entities/quote/quote.js';
@@ -16,6 +18,8 @@ import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/u
 
 describe('QuoteRepositoryImpl', () => {
   let repository: QuoteRepository;
+
+  let databaseClient: DatabaseClient;
 
   let quoteTestUtils: QuoteTestUtils;
 
@@ -35,6 +39,8 @@ describe('QuoteRepositoryImpl', () => {
     const container = TestContainer.create();
 
     repository = container.get<QuoteRepository>(symbols.quoteRepository);
+
+    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
 
     quoteTestUtils = container.get<QuoteTestUtils>(testSymbols.quoteTestUtils);
 
@@ -57,6 +63,8 @@ describe('QuoteRepositoryImpl', () => {
     for (const testUtil of testUtils) {
       await testUtil.truncate();
     }
+
+    await databaseClient.destroy();
   });
 
   describe('findById', () => {

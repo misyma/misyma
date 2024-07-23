@@ -3,10 +3,12 @@
     "email": "admin@misyma.com",
     "password": "AdminPassword123"
   },
-  "databasePath": "data/dev.db",
-  "queueDatabasePath": "data/dev-queue.db",
   "token": {
     "secret": "12321313423565365654546654121890008"
+  },
+  "database": {
+    "username": "postgres",
+    "password": "posgres"
   },
   "sendGrid": {
     "apiKey": "1234567890"
@@ -16,4 +18,4 @@
     "secretAccessKey": "test",
     "region": "eu-central-1"
   }
-} 
+}

@@ -250,7 +250,7 @@ export class UserModule implements DependencyInjectionModule {
       symbols.emailEventRepository,
       () =>
         new EmailEventRepositoryImpl(
-          container.get<DatabaseClient>(coreSymbols.entityEventsDatabaseClient),
+          container.get<DatabaseClient>(coreSymbols.databaseClient),
           container.get<UuidService>(coreSymbols.uuidService),
           container.get<EmailEventMapper>(symbols.emailEventMapper),
         ),

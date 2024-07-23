@@ -6,6 +6,8 @@ import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
+import { coreSymbols } from '../../../../../core/symbols.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { Bookshelf } from '../../../domain/entities/bookshelf/bookshelf.js';
 import { symbols } from '../../../symbols.js';
@@ -13,6 +15,8 @@ import { type BookshelfTestUtils } from '../../../tests/utils/bookshelfTestUtils
 
 describe('FindBookshelfByIdQueryHandler', () => {
   let queryHandler: FindBookshelfByIdQueryHandler;
+
+  let databaseClient: DatabaseClient;
 
   let userTestUtils: UserTestUtils;
 
@@ -24,6 +28,8 @@ describe('FindBookshelfByIdQueryHandler', () => {
     const container = TestContainer.create();
 
     queryHandler = container.get<FindBookshelfByIdQueryHandler>(symbols.findBookshelfByIdQueryHandler);
+
+    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
 
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
 
@@ -40,6 +46,8 @@ describe('FindBookshelfByIdQueryHandler', () => {
     for (const testUtil of testUtils) {
       await testUtil.truncate();
     }
+
+    await databaseClient.destroy();
   });
 
   it('throws an error - when Bookshelf was not found', async () => {

@@ -1,6 +1,6 @@
 import { type BookFormat, type Language } from '@common/contracts';
 
-import { type TestUtils } from '../../../../../../tests/testUtils.js';
+import { TestUtils } from '../../../../../../tests/testUtils.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type BookChangeRequestRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/bookChangeRequestTable/bookChangeRequestRawEntity.js';
 import { bookChangeRequestTable } from '../../../infrastructure/databases/bookDatabase/tables/bookChangeRequestTable/bookChangeRequestTable.js';
@@ -14,8 +14,10 @@ interface FindByIdPayload {
   readonly id: string;
 }
 
-export class BookChangeRequestTestUtils implements TestUtils {
-  public constructor(private readonly databaseClient: DatabaseClient) {}
+export class BookChangeRequestTestUtils extends TestUtils {
+  public constructor(databaseClient: DatabaseClient) {
+    super(databaseClient, bookChangeRequestTable);
+  }
 
   private readonly bookChangeRequestTestFactory = new BookChangeRequestTestFactory();
 
@@ -88,9 +90,5 @@ export class BookChangeRequestTestUtils implements TestUtils {
       userId: rawEntity.userId,
       createdAt: new Date(rawEntity.createdAt),
     };
-  }
-
-  public async truncate(): Promise<void> {
-    await this.databaseClient(bookChangeRequestTable).truncate();
   }
 }

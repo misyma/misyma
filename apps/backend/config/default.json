@@ -8,8 +8,13 @@
     "password": null
   },
   "logLevel": "debug",
-  "databasePath": null,
-  "queueDatabasePath": null,
+  "database": {
+    "host": "localhost",
+    "port": 5432,
+    "username": null,
+    "password": null,
+    "name": "misymadb"
+  },
   "hashSaltRounds": 10,
   "token": {
     "secret": null,
