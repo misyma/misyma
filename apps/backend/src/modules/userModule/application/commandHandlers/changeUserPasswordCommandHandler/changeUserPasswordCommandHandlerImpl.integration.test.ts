@@ -5,6 +5,8 @@ import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
+import { coreSymbols } from '../../../../../core/symbols.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { authSymbols } from '../../../../authModule/symbols.js';
 import { TokenType } from '../../../domain/types/tokenType.js';
@@ -14,6 +16,8 @@ import { type HashService } from '../../services/hashService/hashService.js';
 
 describe('ChangeUserPasswordCommandHandlerImpl', () => {
   let commandHandler: ChangeUserPasswordCommandHandler;
+
+  let databaseClient: DatabaseClient;
 
   let tokenService: TokenService;
 
@@ -26,6 +30,8 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
 
     commandHandler = container.get<ChangeUserPasswordCommandHandler>(symbols.changeUserPasswordCommandHandler);
 
+    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
+
     tokenService = container.get<TokenService>(authSymbols.tokenService);
 
     hashService = container.get<HashService>(symbols.hashService);
@@ -37,6 +43,8 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
 
   afterEach(async () => {
     await userTestUtils.truncate();
+
+    await databaseClient.destroy();
   });
 
   describe('change user password with token', () => {

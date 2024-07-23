@@ -6,6 +6,8 @@ import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { type TestUtils } from '../../../../../../tests/testUtils.js';
+import { coreSymbols } from '../../../../../core/symbols.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { Bookshelf } from '../../../domain/entities/bookshelf/bookshelf.js';
 import { type BookshelfRepository } from '../../../domain/repositories/bookshelfRepository/bookshelfRepository.js';
@@ -20,12 +22,16 @@ describe('BookshelfRepositoryImpl', () => {
 
   let userTestUtils: UserTestUtils;
 
+  let databaseClient: DatabaseClient;
+
   const bookshelfTestFactory = new BookshelfTestFactory();
 
   let testUtils: TestUtils[];
 
   beforeEach(async () => {
     const container = TestContainer.create();
+
+    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
 
     repository = container.get<BookshelfRepository>(symbols.bookshelfRepository);
 
@@ -44,6 +50,8 @@ describe('BookshelfRepositoryImpl', () => {
     for (const testUtil of testUtils) {
       await testUtil.truncate();
     }
+
+    await databaseClient.destroy();
   });
 
   describe('find', () => {

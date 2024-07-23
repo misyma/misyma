@@ -5,11 +5,15 @@ import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
+import { coreSymbols } from '../../../../../core/symbols.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { symbols } from '../../../symbols.js';
 import { type UserTestUtils } from '../../../tests/utils/userTestUtils/userTestUtils.js';
 
 describe('ChangeUserPasswordCommandHandlerImpl', () => {
   let commandHandler: UpdateUserCommandHandler;
+
+  let databaseClient: DatabaseClient;
 
   let userTestUtils: UserTestUtils;
 
@@ -18,6 +22,8 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
 
     commandHandler = container.get<UpdateUserCommandHandler>(symbols.updateUserCommandHandler);
 
+    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
+
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
 
     await userTestUtils.truncate();
@@ -25,6 +31,8 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
 
   afterEach(async () => {
     await userTestUtils.truncate();
+
+    await databaseClient.destroy();
   });
 
   it('updates user name', async () => {

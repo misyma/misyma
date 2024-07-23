@@ -158,7 +158,7 @@ export class BookReadingRepositoryImpl implements BookReadingRepository {
         .count()
         .first();
 
-      const count = countResult?.['count(*)'];
+      const count = countResult?.['count'];
 
       if (count === undefined) {
         throw new RepositoryError({

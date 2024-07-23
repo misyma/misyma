@@ -4,6 +4,8 @@ import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { type TestUtils } from '../../../../../../tests/testUtils.js';
+import { coreSymbols } from '../../../../../core/symbols.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { Borrowing } from '../../../domain/entities/borrowing/borrowing.js';
@@ -16,6 +18,8 @@ import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/u
 
 describe('BorrowingRepositoryImpl', () => {
   let repository: BorrowingRepository;
+
+  let databaseClient: DatabaseClient;
 
   let borrowingTestUtils: BorrowingTestUtils;
 
@@ -35,6 +39,8 @@ describe('BorrowingRepositoryImpl', () => {
     const container = TestContainer.create();
 
     repository = container.get<BorrowingRepository>(symbols.borrowingRepository);
+
+    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
 
     borrowingTestUtils = container.get<BorrowingTestUtils>(testSymbols.borrowingTestUtils);
 
@@ -57,6 +63,8 @@ describe('BorrowingRepositoryImpl', () => {
     for (const testUtil of testUtils) {
       await testUtil.truncate();
     }
+
+    await databaseClient.destroy();
   });
 
   describe('findById', () => {

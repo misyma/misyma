@@ -6,6 +6,8 @@ import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
+import { coreSymbols } from '../../../../../core/symbols.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type BookTestUtils } from '../../../../bookModule/tests/utils/bookTestUtils/bookTestUtils.js';
 import { type UserBookTestUtils } from '../../../../bookModule/tests/utils/userBookTestUtils/userBookTestUtils.js';
 import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
@@ -17,6 +19,8 @@ import { type QuoteTestUtils } from '../../../tests/utils/quoteTestUtils/quoteTe
 
 describe('CreateQuoteCommandHandlerImpl', () => {
   let commandHandler: CreateQuoteCommandHandler;
+
+  let databaseClient: DatabaseClient;
 
   let quoteTestUtils: QuoteTestUtils;
 
@@ -36,6 +40,8 @@ describe('CreateQuoteCommandHandlerImpl', () => {
     const container = TestContainer.create();
 
     commandHandler = container.get<CreateQuoteCommandHandler>(symbols.createQuoteCommandHandler);
+
+    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
 
     quoteTestUtils = container.get<QuoteTestUtils>(testSymbols.quoteTestUtils);
 
@@ -58,6 +64,8 @@ describe('CreateQuoteCommandHandlerImpl', () => {
     for (const testUtil of testUtils) {
       await testUtil.truncate();
     }
+
+    await databaseClient.destroy();
   });
 
   it('throws an error - when UserBook does not exist', async () => {

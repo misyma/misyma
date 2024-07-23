@@ -5,11 +5,15 @@ import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
+import { coreSymbols } from '../../../../../core/symbols.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { symbols } from '../../../symbols.js';
 import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 
 describe('CreateGenreCommandHandlerImpl', () => {
   let commandHandler: CreateGenreCommandHandler;
+
+  let databaseClient: DatabaseClient;
 
   let genreTestUtils: GenreTestUtils;
 
@@ -18,6 +22,8 @@ describe('CreateGenreCommandHandlerImpl', () => {
 
     commandHandler = container.get<CreateGenreCommandHandler>(symbols.createGenreCommandHandler);
 
+    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
+
     genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
 
     await genreTestUtils.truncate();
@@ -25,6 +31,8 @@ describe('CreateGenreCommandHandlerImpl', () => {
 
   afterEach(async () => {
     await genreTestUtils.truncate();
+
+    await databaseClient.destroy();
   });
 
   it('throws an error - when Genre already exists', async () => {

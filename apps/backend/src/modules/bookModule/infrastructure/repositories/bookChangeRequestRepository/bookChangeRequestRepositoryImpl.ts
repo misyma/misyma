@@ -152,7 +152,7 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
 
       const countResult = await query;
 
-      const count = countResult?.['count(*)'];
+      const count = countResult?.['count'];
 
       if (count === undefined) {
         throw new RepositoryError({

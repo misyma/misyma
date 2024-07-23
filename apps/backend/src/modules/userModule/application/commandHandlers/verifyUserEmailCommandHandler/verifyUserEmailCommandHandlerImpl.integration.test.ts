@@ -5,6 +5,8 @@ import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
+import { coreSymbols } from '../../../../../core/symbols.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { authSymbols } from '../../../../authModule/symbols.js';
 import { TokenType } from '../../../domain/types/tokenType.js';
@@ -13,6 +15,8 @@ import { type UserTestUtils } from '../../../tests/utils/userTestUtils/userTestU
 
 describe('VerifyUserEmailCommandHandlerImpl', () => {
   let commandHandler: VerifyUserEmailCommandHandler;
+
+  let databaseClient: DatabaseClient;
 
   let tokenService: TokenService;
 
@@ -23,6 +27,8 @@ describe('VerifyUserEmailCommandHandlerImpl', () => {
 
     commandHandler = container.get<VerifyUserEmailCommandHandler>(symbols.verifyUserEmailCommandHandler);
 
+    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
+
     tokenService = container.get<TokenService>(authSymbols.tokenService);
 
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
@@ -32,6 +38,8 @@ describe('VerifyUserEmailCommandHandlerImpl', () => {
 
   afterEach(async () => {
     await userTestUtils.truncate();
+
+    await databaseClient.destroy();
   });
 
   it('verifies user email', async () => {

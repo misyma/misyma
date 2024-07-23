@@ -3,11 +3,15 @@ import { beforeEach, describe, expect, it, afterEach } from 'vitest';
 import { type FindUsersQueryHandler } from './findUsersQueryHandler.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
+import { coreSymbols } from '../../../../../core/symbols.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { symbols } from '../../../symbols.js';
 import { type UserTestUtils } from '../../../tests/utils/userTestUtils/userTestUtils.js';
 
 describe('FindUsersQueryHandlerImpl', () => {
   let queryHandler: FindUsersQueryHandler;
+
+  let databaseClient: DatabaseClient;
 
   let userTestUtils: UserTestUtils;
 
@@ -16,6 +20,8 @@ describe('FindUsersQueryHandlerImpl', () => {
 
     queryHandler = container.get<FindUsersQueryHandler>(symbols.findUsersQueryHandler);
 
+    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
+
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
 
     await userTestUtils.truncate();
@@ -23,6 +29,8 @@ describe('FindUsersQueryHandlerImpl', () => {
 
   afterEach(async () => {
     await userTestUtils.truncate();
+
+    await databaseClient.destroy();
   });
 
   it('returns Users', async () => {

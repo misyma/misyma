@@ -175,7 +175,7 @@ export class GenreRepositoryImpl implements GenreRepository {
 
       const countResult = await query.count().first();
 
-      const count = countResult?.['count(*)'];
+      const count = countResult?.['count'];
 
       if (count === undefined) {
         throw new RepositoryError({

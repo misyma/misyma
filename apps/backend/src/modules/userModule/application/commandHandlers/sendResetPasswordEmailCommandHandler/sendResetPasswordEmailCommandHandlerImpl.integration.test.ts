@@ -3,6 +3,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { type SendResetPasswordEmailCommandHandler } from './sendResetPasswordEmailCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
+import { coreSymbols } from '../../../../../core/symbols.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { EmailEventDraft } from '../../../domain/entities/emailEvent/emailEventDraft.ts/emailEventDraft.js';
 import { EmailEventType } from '../../../domain/entities/emailEvent/types/emailEventType.js';
 import { symbols } from '../../../symbols.js';
@@ -12,6 +14,8 @@ import { type EmailMessageBus } from '../../messageBuses/emailMessageBus/emailMe
 
 describe('SendResetPasswordEmailCommandHandler', () => {
   let commandHandler: SendResetPasswordEmailCommandHandler;
+
+  let databaseClient: DatabaseClient;
 
   let emailMessageBus: EmailMessageBus;
 
@@ -24,6 +28,8 @@ describe('SendResetPasswordEmailCommandHandler', () => {
 
     commandHandler = container.get<SendResetPasswordEmailCommandHandler>(symbols.sendResetPasswordEmailCommandHandler);
 
+    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
+
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
 
     emailMessageBus = container.get<EmailMessageBus>(symbols.emailMessageBus);
@@ -33,6 +39,8 @@ describe('SendResetPasswordEmailCommandHandler', () => {
 
   afterEach(async () => {
     await userTestUtils.truncate();
+
+    await databaseClient.destroy();
   });
 
   it('sends ResetPasswordEmail', async () => {

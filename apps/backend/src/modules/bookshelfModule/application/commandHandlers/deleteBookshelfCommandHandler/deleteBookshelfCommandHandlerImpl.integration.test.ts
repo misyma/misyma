@@ -7,6 +7,8 @@ import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
+import { coreSymbols } from '../../../../../core/symbols.js';
+import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type BookTestUtils } from '../../../../bookModule/tests/utils/bookTestUtils/bookTestUtils.js';
 import { type UserBookTestUtils } from '../../../../bookModule/tests/utils/userBookTestUtils/userBookTestUtils.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
@@ -15,6 +17,8 @@ import { type BookshelfTestUtils } from '../../../tests/utils/bookshelfTestUtils
 
 describe('DeleteBookshelfCommandHandlerImpl', () => {
   let commandHandler: DeleteBookshelfCommandHandler;
+
+  let databaseClient: DatabaseClient;
 
   let userTestUtils: UserTestUtils;
 
@@ -30,6 +34,8 @@ describe('DeleteBookshelfCommandHandlerImpl', () => {
     const container = TestContainer.create();
 
     commandHandler = container.get<DeleteBookshelfCommandHandler>(symbols.deleteBookshelfCommandHandler);
+
+    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
 
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
 
@@ -56,6 +62,8 @@ describe('DeleteBookshelfCommandHandlerImpl', () => {
     for (const testUtil of testUtils) {
       await testUtil.truncate();
     }
+
+    await databaseClient.destroy();
   });
 
   it('throws an error - when Bookshelf was not found', async () => {
