@@ -3,7 +3,7 @@
 }
 
 .action-bar-container {
-  @apply w-full flex items-end justify-center sm:justify-end;
+  @apply w-full flex items-end justify-between;
 }
 
 .shelves-scroll-area {
