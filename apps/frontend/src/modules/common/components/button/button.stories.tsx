@@ -19,6 +19,7 @@ export const Playground: StoryObj<
     bold: boolean;
     borderWidth: number;
     borderColor: string;
+    textColor: string
   }
 > = {
   args: {
