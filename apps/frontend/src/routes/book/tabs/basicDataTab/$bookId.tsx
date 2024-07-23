@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { StarRating } from '../../../../modules/bookReadings/components/starRating/starRating.js';
 import { StatusChooserCards } from '../../../../modules/book/components/statusChooser/statusChooserCards.js';
 import { BookshelfChoiceDropdown } from '../../../../modules/book/components/bookshelfChoiceDropdown/bookshelfChoiceDropdown.js';
@@ -8,7 +8,7 @@ import { UserBook } from '@common/contracts';
 import { CurrentRatingStar } from '../../../../modules/book/components/currentRatingStar/currentRatingStar.js';
 import { BookFormat } from '../../../../modules/common/constants/bookFormat.js';
 import { ReversedLanguages } from '../../../../modules/common/constants/languages.js';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice.js';
 
@@ -26,11 +26,16 @@ import { useFindBookshelfByIdQuery } from '../../../../modules/bookshelf/api/que
 import { BasicDataTabSkeleton } from '../../../../modules/book/components/basicDataSkeleton/basicDataTabSkeleton.js';
 
 import { DeleteUserBookModal } from '../../../../modules/book/components/deleteUserBookModal/deleteUserBookModal.js';
-import { CreateChangeRequestModal } from '../../../../modules/book/components/createChangeRequestModal/createChangeRequestModal.js';
 import { EditBookModal } from '../../../../modules/book/components/editBookModal/editBookModal.js';
+import { HiArrowsRightLeft } from 'react-icons/hi2';
+import { CreateBorrowingModal } from '../../../../modules/book/components/createBorrowingModal/createBorrowingModal.js';
+import { BookApiQueryKeys } from '../../../../modules/book/api/user/queries/bookApiQueryKeys.js';
+import { BookshelvesApiQueryKeys } from '../../../../modules/bookshelf/api/queries/bookshelvesApiQueryKeys.js';
 
 export const BasicDataPage: FC = () => {
   const { data: userData } = useFindUserQuery();
+
+  const queryClient = useQueryClient();
 
   const navigate = useNavigate();
 
@@ -41,6 +46,8 @@ export const BasicDataPage: FC = () => {
   const dispatch = useBreadcrumbKeysDispatch();
 
   const breadcrumbKeys = useBreadcrumbKeysContext();
+
+  const [createBookBorrowingModalOpen, setCreateBookBorrowingModalOpen] = useState(false);
 
   const { data, isFetched, isFetching, isRefetching } = useQuery(
     FindUserBookByIdQueryOptions({
@@ -111,7 +118,39 @@ export const BasicDataPage: FC = () => {
               </li>
             </ul>
             <div className="flex gap-4 p-2">
-              <CreateChangeRequestModal bookId={bookId} />
+              <HiArrowsRightLeft
+                className="cursor-pointer  text-primary h-8 w-8"
+                onClick={() => {
+                  setCreateBookBorrowingModalOpen(true);
+                }}
+              ></HiArrowsRightLeft>
+              {createBookBorrowingModalOpen && (
+                <CreateBorrowingModal
+                  bookId={bookId}
+                  open={createBookBorrowingModalOpen}
+                  onMutated={async () => {
+                    queryClient.invalidateQueries({
+                      predicate: (query) =>
+                        query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId &&
+                        query.queryKey[1] === bookshelfResponse?.id,
+                    });
+
+                    queryClient.invalidateQueries({
+                      predicate: (query) =>
+                        query.queryKey[0] === BookApiQueryKeys.findUserBookById && query.queryKey[1] === bookId,
+                    });
+
+                    queryClient.invalidateQueries({
+                      predicate: (query) => query.queryKey[0] === BookshelvesApiQueryKeys.findUserBookshelfs,
+                    });
+
+                    setCreateBookBorrowingModalOpen(false);
+                  }}
+                  onClosed={() => {
+                    setCreateBookBorrowingModalOpen(false);
+                  }}
+                />
+              )}
               <EditBookModal bookId={bookId} />
               <DeleteUserBookModal
                 bookId={bookId}

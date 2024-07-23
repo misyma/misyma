@@ -47,7 +47,7 @@ import { FindBookByIdQueryOptions } from '../../../api/user/queries/findBookById
 import { FindUserBookByIdQueryOptions } from '../../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 
 const stepOneSchema = z.object({
-  isbn: isbnSchema.optional(),
+  isbn: isbnSchema.optional().or(z.literal('')),
   title: z
     .string()
     .min(1, {
