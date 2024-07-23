@@ -9,19 +9,22 @@ import { userStateSelectors } from '../../../core/store/states/userState/userSta
 import { Button } from '../../../common/components/button/button';
 import { useToast } from '../../../common/components/toast/use-toast';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
-import { useDeleteBookMutation } from '../../api/admin/mutations/deleteBookMutation/deleteBookMutation';
+import { useDeleteUserBookMutation } from '../../api/user/mutations/deleteUserBookMutation/deleteUserBookMutation';
+import { useNavigate } from '@tanstack/react-router';
 
 interface Props {
   bookId: string;
+  bookshelfId: string;
   bookName: string;
   className?: string;
 }
 
-export const DeleteBookModal: FC<Props> = ({ bookId, bookName, className }: Props) => {
+export const DeleteUserBookModal: FC<Props> = ({ bookId, bookshelfId, bookName, className }: Props) => {
   const queryClient = useQueryClient();
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
+  const navigate = useNavigate();
 
   const { toast } = useToast();
 
@@ -29,12 +32,12 @@ export const DeleteBookModal: FC<Props> = ({ bookId, bookName, className }: Prop
 
   const [error, setError] = useState('');
 
-  const { mutateAsync: deleteBook } = useDeleteBookMutation({});
+  const { mutateAsync: deleteBook } = useDeleteUserBookMutation({});
 
   const onDelete = async (): Promise<void> => {
     try {
       await deleteBook({
-        bookId,
+        userBookId: bookId,
         accessToken: accessToken ?? '',
       });
 
@@ -55,6 +58,10 @@ export const DeleteBookModal: FC<Props> = ({ bookId, bookName, className }: Prop
       toast({
         variant: 'success',
         title: `Książka: ${bookName} została usunięta.`,
+      });
+
+      navigate({
+        to: `/bookshelf/${bookshelfId}`,
       });
     } catch (error) {
       if (error instanceof ApiError) {
