@@ -373,6 +373,8 @@ describe('BookRepositoryImpl', () => {
       [book1.id, book2.id].every((bookId) => {
         expect(foundBooks.some((book) => book.getId() === bookId)).toBeTruthy();
       });
+
+      expect(foundBooks.every((book) => book.getAuthors()[0]?.getId() === author.id)).toBeTruthy();
     });
 
     it('finds approved books', async () => {
@@ -401,6 +403,14 @@ describe('BookRepositoryImpl', () => {
       expect(foundBooks.length).toEqual(1);
 
       expect(foundBooks[0]?.getId()).toEqual(book1.id);
+
+      expect(foundBooks[0]?.getAuthors()[0]).toEqual({
+        id: author.id,
+        state: {
+          name: author.name,
+          isApproved: author.isApproved,
+        },
+      });
     });
 
     it('finds book by isbn', async () => {

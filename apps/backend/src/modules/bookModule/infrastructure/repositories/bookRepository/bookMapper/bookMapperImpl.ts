@@ -20,15 +20,13 @@ export class BookMapperImpl implements BookMapper {
       format,
       pages,
       authors: [],
-      isApproved: Boolean(isApproved), // sqlite returns 0 or 1
+      isApproved: Boolean(isApproved),
       imageUrl,
     });
   }
 
   public mapRawWithJoinsToDomain(entities: BookWithJoinsRawEntity[]): Book[] {
-    const bookDraftsMap = new Map<string, BookDraft>();
-
-    entities.forEach((entity) => {
+    return entities.map((entity) => {
       const {
         id: bookId,
         title,
@@ -40,58 +38,39 @@ export class BookMapperImpl implements BookMapper {
         format,
         pages,
         isApproved,
-        authorId,
-        authorName,
-        isAuthorApproved,
+        authorIds,
+        authorNames,
+        authorApprovals,
         imageUrl,
       } = entity;
 
-      const bookExists = bookDraftsMap.has(bookId);
+      const bookDraft: BookDraft = {
+        id: bookId,
+        title,
+        isbn: isbn ?? undefined,
+        publisher: publisher ?? undefined,
+        releaseYear: releaseYear ?? undefined,
+        language,
+        translator: translator ?? undefined,
+        format,
+        pages: pages ?? undefined,
+        isApproved: Boolean(isApproved),
+        authors:
+          authorIds && authorNames && authorApprovals
+            ? authorIds
+                .filter((authorId) => authorId !== null)
+                .map((authorId, index) => {
+                  return new Author({
+                    id: authorId,
+                    name: authorNames[index] as string,
+                    isApproved: authorApprovals[index] as boolean,
+                  });
+                })
+            : [],
+        imageUrl: imageUrl ?? undefined,
+      };
 
-      if (bookExists) {
-        const bookDraft = bookDraftsMap.get(bookId) as BookDraft;
-
-        if (authorId) {
-          bookDraft.authors?.push(
-            new Author({
-              id: authorId,
-              name: authorName as string,
-              isApproved: Boolean(isAuthorApproved),
-            }),
-          );
-        }
-      } else {
-        const authors: Author[] = [];
-
-        if (authorId) {
-          authors.push(
-            new Author({
-              id: authorId,
-              name: authorName as string,
-              isApproved: Boolean(isAuthorApproved),
-            }),
-          );
-        }
-
-        const bookDraft: BookDraft = {
-          id: bookId,
-          title,
-          isbn: isbn ?? undefined,
-          publisher: publisher ?? undefined,
-          releaseYear: releaseYear ?? undefined,
-          language,
-          translator: translator ?? undefined,
-          format,
-          pages: pages ?? undefined,
-          isApproved: Boolean(isApproved),
-          authors,
-          imageUrl: imageUrl ?? undefined,
-        };
-
-        bookDraftsMap.set(bookId, bookDraft);
-      }
+      return new Book(bookDraft);
     });
-
-    return [...bookDraftsMap.values()].map((bookDraft) => new Book(bookDraft));
   }
 }

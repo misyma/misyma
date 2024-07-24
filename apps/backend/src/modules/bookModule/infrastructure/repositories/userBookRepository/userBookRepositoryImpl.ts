@@ -26,7 +26,7 @@ import {
   bookReadingColumns,
   bookReadingTable,
 } from '../../databases/bookDatabase/tables/bookReadingTable/bookReadingTable.js';
-import { bookColumns, bookTable } from '../../databases/bookDatabase/tables/bookTable/bookTable.js';
+import { bookTable } from '../../databases/bookDatabase/tables/bookTable/bookTable.js';
 import {
   collectionColumns,
   collectionTable,
@@ -267,17 +267,17 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           userBookColumns.isFavorite,
           userBookColumns.bookshelfId,
           userBookColumns.createdAt,
-          `${bookColumns.id} as bookId`,
-          `${bookColumns.title} as title`,
-          `${bookColumns.isbn} as isbn`,
-          `${bookColumns.publisher} as publisher`,
-          `${bookColumns.releaseYear} as releaseYear`,
-          `${bookColumns.language} as language`,
-          `${bookColumns.translator} as translator`,
-          `${bookColumns.format} as format`,
-          `${bookColumns.pages} as pages`,
-          `${bookColumns.isApproved}`,
-          `${bookColumns.imageUrl} as bookImageUrl`,
+          `${bookTable}.id as bookId`,
+          `${bookTable}.title as title`,
+          `${bookTable}.isbn as isbn`,
+          `${bookTable}.publisher as publisher`,
+          `${bookTable}.releaseYear as releaseYear`,
+          `${bookTable}.language as language`,
+          `${bookTable}.translator as translator`,
+          `${bookTable}.format as format`,
+          `${bookTable}.pages as pages`,
+          `${bookTable}.isApproved`,
+          `${bookTable}.imageUrl as bookImageUrl`,
           `${authorColumns.id} as authorId`,
           `${authorColumns.name} as authorName`,
           `${authorColumns.isApproved} as isAuthorApproved`,
@@ -310,7 +310,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           join.on(genreColumns.id, `=`, userBookGenreColumns.genreId);
         })
         .leftJoin(bookTable, (join) => {
-          join.on(bookColumns.id, `=`, userBookColumns.bookId);
+          join.on(`${bookTable}.id`, `=`, userBookColumns.bookId);
         })
         .leftJoin(bookReadingTable, (join) => {
           join.on(bookReadingColumns.userBookId, '=', userBookColumns.id);
@@ -327,7 +327,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           }
 
           if (title) {
-            builder.where(bookColumns.title, title);
+            builder.where(`${bookTable}.title`, title);
           }
 
           if (bookshelfId) {
@@ -367,17 +367,17 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           userBookColumns.isFavorite,
           userBookColumns.bookshelfId,
           userBookColumns.createdAt,
-          `${bookColumns.id} as bookId`,
-          `${bookColumns.title} as title`,
-          `${bookColumns.isbn} as isbn`,
-          `${bookColumns.publisher} as publisher`,
-          `${bookColumns.releaseYear} as releaseYear`,
-          `${bookColumns.language} as language`,
-          `${bookColumns.translator} as translator`,
-          `${bookColumns.format} as format`,
-          `${bookColumns.pages} as pages`,
-          `${bookColumns.isApproved}`,
-          `${bookColumns.imageUrl} as bookImageUrl`,
+          `${bookTable}.id as bookId`,
+          `${bookTable}.title as title`,
+          `${bookTable}.isbn as isbn`,
+          `${bookTable}.publisher as publisher`,
+          `${bookTable}.releaseYear as releaseYear`,
+          `${bookTable}.language as language`,
+          `${bookTable}.translator as translator`,
+          `${bookTable}.format as format`,
+          `${bookTable}.pages as pages`,
+          `${bookTable}.isApproved`,
+          `${bookTable}.imageUrl as bookImageUrl`,
           `${authorColumns.id} as authorId`,
           `${authorColumns.name} as authorName`,
           `${authorColumns.isApproved} as isAuthorApproved`,
@@ -406,7 +406,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           join.on(genreColumns.id, `=`, userBookGenreColumns.genreId);
         })
         .leftJoin(bookTable, (join) => {
-          join.on(bookColumns.id, `=`, userBookColumns.bookId);
+          join.on(`${bookTable}.id`, `=`, userBookColumns.bookId);
         })
         .leftJoin(bookReadingTable, (join) => {
           join.on(bookReadingColumns.userBookId, '=', userBookColumns.id);
@@ -423,7 +423,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       }
 
       if (isbn) {
-        query.where(bookColumns.isbn, isbn);
+        query.where(`${bookTable}.isbn`, isbn);
       }
 
       if (bookshelfId) {
@@ -468,17 +468,17 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           userBookColumns.isFavorite,
           userBookColumns.bookshelfId,
           userBookColumns.createdAt,
-          `${bookColumns.id} as bookId`,
-          `${bookColumns.title} as title`,
-          `${bookColumns.isbn} as isbn`,
-          `${bookColumns.publisher} as publisher`,
-          `${bookColumns.releaseYear} as releaseYear`,
-          `${bookColumns.language} as language`,
-          `${bookColumns.translator} as translator`,
-          `${bookColumns.format} as format`,
-          `${bookColumns.pages} as pages`,
-          `${bookColumns.isApproved}`,
-          `${bookColumns.imageUrl} as bookImageUrl`,
+          `${bookTable}.id as bookId`,
+          `${bookTable}.title as title`,
+          `${bookTable}.isbn as isbn`,
+          `${bookTable}.publisher as publisher`,
+          `${bookTable}.releaseYear as releaseYear`,
+          `${bookTable}.language as language`,
+          `${bookTable}.translator as translator`,
+          `${bookTable}.format as format`,
+          `${bookTable}.pages as pages`,
+          `${bookTable}.isApproved`,
+          `${bookTable}.imageUrl as bookImageUrl`,
           `${authorColumns.id} as authorId`,
           `${authorColumns.name} as authorName`,
           `${authorColumns.isApproved} as isAuthorApproved`,
@@ -507,7 +507,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           join.on(genreColumns.id, `=`, userBookGenreColumns.genreId);
         })
         .leftJoin(bookTable, (join) => {
-          join.on(bookColumns.id, `=`, userBookColumns.bookId);
+          join.on(`${bookTable}.id`, `=`, userBookColumns.bookId);
         })
         .leftJoin(bookshelfTable, (join) => {
           join.on(bookshelfColumns.id, `=`, userBookColumns.bookshelfId);
@@ -526,7 +526,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         query.where(userBookColumns.bookId, bookIdentifier.id);
 
         if (bookIdentifier.isbn) {
-          query.orWhere(bookColumns.isbn, bookIdentifier.isbn);
+          query.orWhere(`${bookTable}.isbn`, bookIdentifier.isbn);
         }
       }
 

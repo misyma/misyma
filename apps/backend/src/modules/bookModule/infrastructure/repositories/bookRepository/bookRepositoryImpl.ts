@@ -10,11 +10,11 @@ import {
   type SaveBookPayload,
   type FindBooksPayload,
 } from '../../../domain/repositories/bookRepository/bookRepository.js';
-import { authorColumns, authorTable } from '../../databases/bookDatabase/tables/authorTable/authorTable.js';
+import { authorTable } from '../../databases/bookDatabase/tables/authorTable/authorTable.js';
 import { type BookAuthorRawEntity } from '../../databases/bookDatabase/tables/bookAuthorTable/bookAuthorRawEntity.js';
 import { bookAuthorTable } from '../../databases/bookDatabase/tables/bookAuthorTable/bookAuthorTable.js';
 import { type BookRawEntity } from '../../databases/bookDatabase/tables/bookTable/bookRawEntity.js';
-import { bookColumns, bookTable } from '../../databases/bookDatabase/tables/bookTable/bookTable.js';
+import { bookTable } from '../../databases/bookDatabase/tables/bookTable/bookTable.js';
 import { type BookWithJoinsRawEntity } from '../../databases/bookDatabase/tables/bookTable/bookWithJoinsRawEntity.js';
 
 type CreateBookPayload = { book: BookState };
@@ -161,20 +161,20 @@ export class BookRepositoryImpl implements BookRepository {
     try {
       rawEntities = await this.databaseClient<BookRawEntity>(bookTable)
         .select([
-          bookColumns.id,
-          bookColumns.title,
-          bookColumns.isbn,
-          bookColumns.publisher,
-          bookColumns.releaseYear,
-          bookColumns.language,
-          bookColumns.translator,
-          bookColumns.format,
-          bookColumns.pages,
-          bookColumns.isApproved,
-          bookColumns.imageUrl,
-          `${authorColumns.id} as authorId`,
-          `${authorColumns.name} as authorName`,
-          `${authorColumns.isApproved} as isAuthorApproved`,
+          `${bookTable}.id`,
+          `${bookTable}.title`,
+          `${bookTable}.isbn`,
+          `${bookTable}.publisher`,
+          `${bookTable}.releaseYear`,
+          `${bookTable}.language`,
+          `${bookTable}.translator`,
+          `${bookTable}.format`,
+          `${bookTable}.pages`,
+          `${bookTable}.isApproved`,
+          `${bookTable}.imageUrl`,
+          this.databaseClient.raw(`array_agg("authors"."id") as "authorIds"`),
+          this.databaseClient.raw(`array_agg("authors"."name") as "authorNames"`),
+          this.databaseClient.raw(`array_agg("authors"."isApproved") as "authorApprovals"`),
         ])
         .leftJoin(bookAuthorTable, (join) => {
           join.on(`${bookAuthorTable}.bookId`, '=', `${bookTable}.id`);
@@ -184,7 +184,8 @@ export class BookRepositoryImpl implements BookRepository {
         })
         .where((builder) => {
           builder.where(`${bookTable}.id`, id);
-        });
+        })
+        .groupBy(`${bookTable}.id`);
     } catch (error) {
       throw new RepositoryError({
         entity: 'Book',
@@ -206,22 +207,22 @@ export class BookRepositoryImpl implements BookRepository {
     let rawEntities: BookWithJoinsRawEntity[];
 
     try {
-      const query = this.databaseClient<BookRawEntity>(bookTable)
+      rawEntities = await this.databaseClient<BookRawEntity>(bookTable)
         .select([
-          bookColumns.id,
-          bookColumns.title,
-          bookColumns.isbn,
-          bookColumns.publisher,
-          bookColumns.releaseYear,
-          bookColumns.language,
-          bookColumns.translator,
-          bookColumns.format,
-          bookColumns.pages,
-          bookColumns.isApproved,
-          bookColumns.imageUrl,
-          `${authorColumns.id} as authorId`,
-          `${authorColumns.name} as authorName`,
-          `${authorColumns.isApproved} as isAuthorApproved`,
+          `${bookTable}.id`,
+          `${bookTable}.title`,
+          `${bookTable}.isbn`,
+          `${bookTable}.publisher`,
+          `${bookTable}.releaseYear`,
+          `${bookTable}.language`,
+          `${bookTable}.translator`,
+          `${bookTable}.format`,
+          `${bookTable}.pages`,
+          `${bookTable}.isApproved`,
+          `${bookTable}.imageUrl`,
+          this.databaseClient.raw(`array_agg("authors"."id") as "authorIds"`),
+          this.databaseClient.raw(`array_agg("authors"."name") as "authorNames"`),
+          this.databaseClient.raw(`array_agg("authors"."isApproved") as "authorApprovals"`),
         ])
         .leftJoin(bookAuthorTable, (join) => {
           join.on(`${bookAuthorTable}.bookId`, '=', `${bookTable}.id`);
@@ -241,9 +242,10 @@ export class BookRepositoryImpl implements BookRepository {
           if (title) {
             builder.whereRaw('LOWER(title) LIKE LOWER(?)', `%${title}%`);
           }
-        });
-
-      rawEntities = await query.limit(pageSize).offset(pageSize * (page - 1));
+        })
+        .groupBy(`${bookTable}.id`)
+        .limit(pageSize)
+        .offset(pageSize * (page - 1));
     } catch (error) {
       throw new RepositoryError({
         entity: 'Book',
