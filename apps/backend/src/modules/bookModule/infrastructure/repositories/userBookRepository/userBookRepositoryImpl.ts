@@ -43,7 +43,7 @@ import {
   userBookGenreTable,
 } from '../../databases/bookDatabase/tables/userBookGenresTable/userBookGenresTable.js';
 import { type UserBookRawEntity } from '../../databases/bookDatabase/tables/userBookTable/userBookRawEntity.js';
-import { userBookColumns, userBookTable } from '../../databases/bookDatabase/tables/userBookTable/userBookTable.js';
+import { userBookTable } from '../../databases/bookDatabase/tables/userBookTable/userBookTable.js';
 import { type UserBookWithJoinsRawEntity } from '../../databases/bookDatabase/tables/userBookTable/userBookWithJoinsRawEntity.js';
 
 type CreateUserBookPayload = { userBook: UserBookState };
@@ -261,12 +261,13 @@ export class UserBookRepositoryImpl implements UserBookRepository {
     try {
       rawEntities = await this.databaseClient<UserBookRawEntity>(userBookTable)
         .select([
-          userBookColumns.id,
-          userBookColumns.imageUrl,
-          userBookColumns.status,
-          userBookColumns.isFavorite,
-          userBookColumns.bookshelfId,
-          userBookColumns.createdAt,
+          `${userBookTable}.id`,
+          `${userBookTable}.imageUrl`,
+          `${userBookTable}.status`,
+          `${userBookTable}.isFavorite`,
+          `${userBookTable}.bookshelfId`,
+          `${userBookTable}.createdAt`,
+
           `${bookTable}.id as bookId`,
           `${bookTable}.title as title`,
           `${bookTable}.isbn as isbn`,
@@ -291,14 +292,14 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           this.databaseClient.raw(`array_agg("collections"."createdAt") as "collectionCreatedAtDates"`),
           this.databaseClient.raw(`array_agg("collections"."userId") as "collectionUserIds"`),
 
-          this.databaseClient.raw(`array_agg("readings"."id") as "readingIds"`),
-          this.databaseClient.raw(`array_agg("readings"."startedAt") as "readingStartedAtDates"`),
-          this.databaseClient.raw(`array_agg("readings"."endedAt") as "readingEndedAtDates"`),
-          this.databaseClient.raw(`array_agg("readings"."rating") as "readingRatings"`),
-          this.databaseClient.raw(`array_agg("readings"."comment") as "readingComments"`),
+          this.databaseClient.raw(`array_agg("bookReadings"."id") as "readingIds"`),
+          this.databaseClient.raw(`array_agg("bookReadings"."startedAt") as "readingStartedAtDates"`),
+          this.databaseClient.raw(`array_agg("bookReadings"."endedAt") as "readingEndedAtDates"`),
+          this.databaseClient.raw(`array_agg("bookReadings"."rating") as "readingRatings"`),
+          this.databaseClient.raw(`array_agg("bookReadings"."comment") as "readingComments"`),
         ])
         .leftJoin(bookAuthorTable, (join) => {
-          join.on(bookAuthorColumns.bookId, '=', userBookColumns.bookId);
+          join.on(bookAuthorColumns.bookId, '=', `${userBookTable}.bookId`);
 
           if (authorIds) {
             join.andOnIn(bookAuthorColumns.authorId, this.databaseClient.raw('?', [authorIds.join(',')]));
@@ -308,26 +309,26 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           join.on(authorColumns.id, '=', bookAuthorColumns.authorId);
         })
         .leftJoin(userBookGenreTable, (join) => {
-          join.on(userBookGenreColumns.userBookId, '=', userBookColumns.id);
+          join.on(userBookGenreColumns.userBookId, '=', `${userBookTable}.id`);
         })
         .leftJoin(genreTable, (join) => {
           join.on(genreColumns.id, `=`, userBookGenreColumns.genreId);
         })
         .leftJoin(bookTable, (join) => {
-          join.on(`${bookTable}.id`, `=`, userBookColumns.bookId);
+          join.on(`${bookTable}.id`, `=`, `${userBookTable}.bookId`);
         })
         .leftJoin(bookReadingTable, (join) => {
-          join.on(bookReadingColumns.userBookId, '=', userBookColumns.id);
+          join.on(bookReadingColumns.userBookId, '=', `${userBookTable}.id`);
         })
         .leftJoin(userBookCollectionTable, (join) => {
-          join.on(userBookCollectionColumns.userBookId, '=', userBookColumns.id);
+          join.on(userBookCollectionColumns.userBookId, '=', `${userBookTable}.id`);
         })
         .leftJoin(collectionTable, (join) => {
           join.on(collectionColumns.id, `=`, userBookCollectionColumns.collectionId);
         })
         .where((builder) => {
           if (id) {
-            builder.where(userBookColumns.id, id);
+            builder.where(`${userBookTable}.id`, id);
           }
 
           if (title) {
@@ -335,14 +336,14 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           }
 
           if (bookshelfId) {
-            builder.where(userBookColumns.bookshelfId, bookshelfId);
+            builder.where(`${userBookTable}.bookshelfId`, bookshelfId);
           }
 
           if (bookId) {
-            builder.where(userBookColumns.bookId, bookId);
+            builder.where(`${userBookTable}.bookId`, bookId);
           }
         })
-        .groupBy(`${userBookTable}.id`);
+        .groupBy([`${userBookTable}.id`, `${bookTable}.id`]);
     } catch (error) {
       throw new RepositoryError({
         entity: 'UserBook',
@@ -366,12 +367,13 @@ export class UserBookRepositoryImpl implements UserBookRepository {
     try {
       const query = this.databaseClient<UserBookRawEntity>(userBookTable)
         .select([
-          userBookColumns.id,
-          userBookColumns.imageUrl,
-          userBookColumns.status,
-          userBookColumns.isFavorite,
-          userBookColumns.bookshelfId,
-          userBookColumns.createdAt,
+          `${userBookTable}.id`,
+          `${userBookTable}.imageUrl`,
+          `${userBookTable}.status`,
+          `${userBookTable}.isFavorite`,
+          `${userBookTable}.bookshelfId`,
+          `${userBookTable}.createdAt`,
+
           `${bookTable}.id as bookId`,
           `${bookTable}.title as title`,
           `${bookTable}.isbn as isbn`,
@@ -396,40 +398,40 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           this.databaseClient.raw(`array_agg("collections"."createdAt") as "collectionCreatedAtDates"`),
           this.databaseClient.raw(`array_agg("collections"."userId") as "collectionUserIds"`),
 
-          this.databaseClient.raw(`array_agg("readings"."id") as "readingIds"`),
-          this.databaseClient.raw(`array_agg("readings"."startedAt") as "readingStartedAtDates"`),
-          this.databaseClient.raw(`array_agg("readings"."endedAt") as "readingEndedAtDates"`),
-          this.databaseClient.raw(`array_agg("readings"."rating") as "readingRatings"`),
-          this.databaseClient.raw(`array_agg("readings"."comment") as "readingComments"`),
+          this.databaseClient.raw(`array_agg("bookReadings"."id") as "readingIds"`),
+          this.databaseClient.raw(`array_agg("bookReadings"."startedAt") as "readingStartedAtDates"`),
+          this.databaseClient.raw(`array_agg("bookReadings"."endedAt") as "readingEndedAtDates"`),
+          this.databaseClient.raw(`array_agg("bookReadings"."rating") as "readingRatings"`),
+          this.databaseClient.raw(`array_agg("bookReadings"."comment") as "readingComments"`),
         ])
         .leftJoin(bookAuthorTable, (join) => {
-          join.on(bookAuthorColumns.bookId, '=', userBookColumns.bookId);
+          join.on(bookAuthorColumns.bookId, '=', `${userBookTable}.bookId`);
         })
         .leftJoin(authorTable, (join) => {
           join.on(authorColumns.id, '=', bookAuthorColumns.authorId);
         })
         .leftJoin(userBookGenreTable, (join) => {
-          join.on(userBookGenreColumns.userBookId, '=', userBookColumns.id);
+          join.on(userBookGenreColumns.userBookId, '=', `${userBookTable}.id`);
         })
         .leftJoin(genreTable, (join) => {
           join.on(genreColumns.id, `=`, userBookGenreColumns.genreId);
         })
         .leftJoin(bookTable, (join) => {
-          join.on(`${bookTable}.id`, `=`, userBookColumns.bookId);
+          join.on(`${bookTable}.id`, `=`, `${userBookTable}.bookId`);
         })
         .leftJoin(bookReadingTable, (join) => {
-          join.on(bookReadingColumns.userBookId, '=', userBookColumns.id);
+          join.on(bookReadingColumns.userBookId, '=', `${userBookTable}.id`);
         })
         .leftJoin(userBookCollectionTable, (join) => {
-          join.on(userBookCollectionColumns.userBookId, '=', userBookColumns.id);
+          join.on(userBookCollectionColumns.userBookId, '=', `${userBookTable}.id`);
         })
         .leftJoin(collectionTable, (join) => {
           join.on(collectionColumns.id, `=`, userBookCollectionColumns.collectionId);
         })
-        .groupBy(`${userBookTable}.id`);
+        .groupBy([`${userBookTable}.id`, `${bookTable}.id`]);
 
       if (ids && ids.length > 0) {
-        query.whereIn(userBookColumns.id, ids);
+        query.whereIn(`${userBookTable}.id`, ids);
       }
 
       if (isbn) {
@@ -437,7 +439,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       }
 
       if (bookshelfId) {
-        query.where(userBookColumns.bookshelfId, bookshelfId);
+        query.where(`${userBookTable}.bookshelfId`, bookshelfId);
       }
 
       if (collectionId) {
@@ -472,12 +474,13 @@ export class UserBookRepositoryImpl implements UserBookRepository {
     try {
       const query = this.databaseClient<UserBookRawEntity>(userBookTable)
         .select([
-          userBookColumns.id,
-          userBookColumns.imageUrl,
-          userBookColumns.status,
-          userBookColumns.isFavorite,
-          userBookColumns.bookshelfId,
-          userBookColumns.createdAt,
+          `${userBookTable}.id`,
+          `${userBookTable}.imageUrl`,
+          `${userBookTable}.status`,
+          `${userBookTable}.isFavorite`,
+          `${userBookTable}.bookshelfId`,
+          `${userBookTable}.createdAt`,
+
           `${bookTable}.id as bookId`,
           `${bookTable}.title as title`,
           `${bookTable}.isbn as isbn`,
@@ -502,43 +505,43 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           this.databaseClient.raw(`array_agg("collections"."createdAt") as "collectionCreatedAtDates"`),
           this.databaseClient.raw(`array_agg("collections"."userId") as "collectionUserIds"`),
 
-          this.databaseClient.raw(`array_agg("readings"."id") as "readingIds"`),
-          this.databaseClient.raw(`array_agg("readings"."startedAt") as "readingStartedAtDates"`),
-          this.databaseClient.raw(`array_agg("readings"."endedAt") as "readingEndedAtDates"`),
-          this.databaseClient.raw(`array_agg("readings"."rating") as "readingRatings"`),
-          this.databaseClient.raw(`array_agg("readings"."comment") as "readingComments"`),
+          this.databaseClient.raw(`array_agg("bookReadings"."id") as "readingIds"`),
+          this.databaseClient.raw(`array_agg("bookReadings"."startedAt") as "readingStartedAtDates"`),
+          this.databaseClient.raw(`array_agg("bookReadings"."endedAt") as "readingEndedAtDates"`),
+          this.databaseClient.raw(`array_agg("bookReadings"."rating") as "readingRatings"`),
+          this.databaseClient.raw(`array_agg("bookReadings"."comment") as "readingComments"`),
         ])
         .leftJoin(bookAuthorTable, (join) => {
-          join.on(bookAuthorColumns.bookId, '=', userBookColumns.bookId);
+          join.on(bookAuthorColumns.bookId, '=', `${userBookTable}.bookId`);
         })
         .leftJoin(authorTable, (join) => {
           join.on(authorColumns.id, '=', bookAuthorColumns.authorId);
         })
         .leftJoin(userBookGenreTable, (join) => {
-          join.on(userBookGenreColumns.userBookId, '=', userBookColumns.id);
+          join.on(userBookGenreColumns.userBookId, '=', `${userBookTable}.id`);
         })
         .leftJoin(genreTable, (join) => {
           join.on(genreColumns.id, `=`, userBookGenreColumns.genreId);
         })
         .leftJoin(bookTable, (join) => {
-          join.on(`${bookTable}.id`, `=`, userBookColumns.bookId);
+          join.on(`${bookTable}.id`, `=`, `${userBookTable}.bookId`);
         })
         .leftJoin(bookshelfTable, (join) => {
-          join.on(bookshelfColumns.id, `=`, userBookColumns.bookshelfId);
+          join.on(bookshelfColumns.id, `=`, `${userBookTable}.bookshelfId`);
         })
         .leftJoin(bookReadingTable, (join) => {
-          join.on(bookReadingColumns.userBookId, '=', userBookColumns.id);
+          join.on(bookReadingColumns.userBookId, '=', `${userBookTable}.id`);
         })
         .leftJoin(userBookCollectionTable, (join) => {
-          join.on(userBookCollectionColumns.userBookId, '=', userBookColumns.id);
+          join.on(userBookCollectionColumns.userBookId, '=', `${userBookTable}.id`);
         })
         .leftJoin(collectionTable, (join) => {
           join.on(collectionColumns.id, `=`, userBookCollectionColumns.collectionId);
         })
-        .groupBy(`${userBookTable}.id`);
+        .groupBy([`${userBookTable}.id`, `${bookTable}.id`]);
 
       if (bookIdentifier) {
-        query.where(userBookColumns.bookId, bookIdentifier.id);
+        query.where(`${userBookTable}.bookId`, bookIdentifier.id);
 
         if (bookIdentifier.isbn) {
           query.orWhere(`${bookTable}.isbn`, bookIdentifier.isbn);
@@ -594,7 +597,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       if (collectionId) {
         query
           .join(userBookCollectionTable, (join) => {
-            join.on(userBookCollectionColumns.userBookId, '=', userBookColumns.id);
+            join.on(userBookCollectionColumns.userBookId, '=', `${userBookTable}.id`);
           })
           .where(userBookCollectionColumns.collectionId, collectionId);
       }
