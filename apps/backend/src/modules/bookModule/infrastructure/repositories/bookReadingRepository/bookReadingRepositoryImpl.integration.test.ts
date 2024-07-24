@@ -225,15 +225,13 @@ describe('BookReadingRepositoryImpl', () => {
         input: {
           userBookId: userBook.id,
           startedAt: Generator.pastDate(),
-          endedAt: Generator.pastDate(),
         },
       });
 
       const bookReading2 = await bookReadingTestUtils.createAndPersist({
         input: {
           userBookId: userBook.id,
-          startedAt: Generator.pastDate(),
-          endedAt: new Date(),
+          startedAt: new Date(),
         },
       });
 
@@ -269,15 +267,13 @@ describe('BookReadingRepositoryImpl', () => {
         input: {
           userBookId: userBook.id,
           startedAt: Generator.pastDate(),
-          endedAt: Generator.pastDate(),
         },
       });
 
       const bookReading2 = await bookReadingTestUtils.createAndPersist({
         input: {
           userBookId: userBook.id,
-          startedAt: Generator.pastDate(),
-          endedAt: new Date(),
+          startedAt: new Date(),
         },
       });
 
