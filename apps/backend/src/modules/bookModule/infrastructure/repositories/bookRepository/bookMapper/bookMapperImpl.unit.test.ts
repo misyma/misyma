@@ -51,9 +51,9 @@ describe('BookMapperImpl', () => {
         pages: book.pages as number,
         isApproved: book.isApproved,
         imageUrl: book.imageUrl as string,
-        authorId: null,
-        authorName: null,
-        isAuthorApproved: null,
+        authorIds: [],
+        authorNames: [],
+        authorApprovals: [],
       },
     ]);
 

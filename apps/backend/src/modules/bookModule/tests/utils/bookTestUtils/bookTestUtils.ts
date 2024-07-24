@@ -7,7 +7,7 @@ import {
   bookAuthorTable,
 } from '../../../infrastructure/databases/bookDatabase/tables/bookAuthorTable/bookAuthorTable.js';
 import { type BookRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/bookTable/bookRawEntity.js';
-import { bookColumns, bookTable } from '../../../infrastructure/databases/bookDatabase/tables/bookTable/bookTable.js';
+import { bookTable } from '../../../infrastructure/databases/bookDatabase/tables/bookTable/bookTable.js';
 import { BookTestFactory } from '../../factories/bookTestFactory/bookTestFactory.js';
 
 interface CreateAndPersistPayload {
@@ -96,17 +96,17 @@ export class BookTestUtils extends TestUtils {
 
     const bookRawEntity = await this.databaseClient<BookRawEntity>(bookTable)
       .select([
-        bookColumns.id,
-        bookColumns.title,
-        bookColumns.isbn,
-        bookColumns.publisher,
-        bookColumns.releaseYear,
-        bookColumns.language,
-        bookColumns.translator,
-        bookColumns.format,
-        bookColumns.pages,
-        bookColumns.isApproved,
-        bookColumns.imageUrl,
+        `${bookTable}.id`,
+        `${bookTable}.title`,
+        `${bookTable}.isbn`,
+        `${bookTable}.publisher`,
+        `${bookTable}.releaseYear`,
+        `${bookTable}.language`,
+        `${bookTable}.translator`,
+        `${bookTable}.format`,
+        `${bookTable}.pages`,
+        `${bookTable}.isApproved`,
+        `${bookTable}.imageUrl`,
       ])
       .join(bookAuthorTable, (join) => {
         if (authorId) {

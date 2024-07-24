@@ -7,7 +7,6 @@ import { QueueRouter } from './queueRouter.js';
 import { coreSymbols, symbols } from './symbols.js';
 import { type DatabaseClient } from '../libs/database/clients/databaseClient/databaseClient.js';
 import { DatabaseClientFactory } from '../libs/database/factories/databaseClientFactory/databaseClientFactory.js';
-import { DatabaseClientType } from '../libs/database/types/databaseClientType.js';
 import { type DependencyInjectionContainer } from '../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { DependencyInjectionContainerFactory } from '../libs/dependencyInjection/dependencyInjectionContainerFactory.js';
 import { type DependencyInjectionModule } from '../libs/dependencyInjection/dependencyInjectionModule.js';
@@ -139,7 +138,6 @@ export class Application {
 
     container.bind<DatabaseClient>(symbols.databaseClient, () =>
       DatabaseClientFactory.create({
-        clientType: DatabaseClientType.postgres,
         host: config.database.host,
         port: config.database.port,
         databaseName: config.database.name,

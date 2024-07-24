@@ -8,9 +8,7 @@ import { type UserBookWithJoinsRawEntity } from '../../../databases/bookDatabase
 
 export class UserBookMapperImpl implements UserBookMapper {
   public mapRawWithJoinsToDomain(entities: UserBookWithJoinsRawEntity[]): UserBook[] {
-    const userBookDraftsMapping = new Map<string, UserBookDraft>();
-
-    entities.forEach((entity) => {
+    return entities.map((entity) => {
       const {
         id,
         imageUrl,
@@ -29,152 +27,97 @@ export class UserBookMapperImpl implements UserBookMapper {
         isApproved,
         pages,
         bookImageUrl,
-        authorId,
-        authorName,
-        isAuthorApproved,
-        genreId,
-        genreName,
-        collectionId,
-        collectionName,
-        collectionCreatedAt,
-        userId,
-        readingId,
-        readingStartedAt,
-        readingEndedAt,
-        readingRating,
-        readingComment,
+        authorIds,
+        authorNames,
+        authorApprovals,
+        genreIds,
+        genreNames,
+        collectionIds,
+        collectionNames,
+        collectionUserIds,
+        collectionCreatedAtDates,
+        readingIds,
+        readingStartedAtDates,
+        readingEndedAtDates,
+        readingRatings,
+        readingComments,
       } = entity;
 
-      const userBookExists = userBookDraftsMapping.has(id);
+      const userBookDraft: UserBookDraft = {
+        id,
+        imageUrl: imageUrl ?? undefined,
+        status,
+        isFavorite: Boolean(isFavorite),
+        bookshelfId,
+        createdAt: new Date(createdAt),
+        bookId,
+        book: {
+          id: bookId,
+          title,
+          isbn: isbn ?? undefined,
+          publisher: publisher ?? undefined,
+          releaseYear: releaseYear ?? undefined,
+          language,
+          translator: translator ?? undefined,
+          format,
+          pages: pages ?? undefined,
+          isApproved: Boolean(isApproved),
+          authors:
+            authorIds && authorNames && authorApprovals
+              ? authorIds
+                  .filter((authorId) => authorId !== null)
+                  .map((authorId, index) => {
+                    return new Author({
+                      id: authorId,
+                      name: authorNames[index] as string,
+                      isApproved: authorApprovals[index] as boolean,
+                    });
+                  })
+              : [],
+          imageUrl: bookImageUrl ?? undefined,
+        },
+        genres:
+          genreIds && genreNames
+            ? genreIds
+                .filter((genreId) => genreId !== null)
+                .map((genreId, index) => {
+                  return new Genre({
+                    id: genreId,
+                    name: genreNames[index] as string,
+                  });
+                })
+            : [],
+        readings:
+          readingIds && readingStartedAtDates && readingEndedAtDates && readingRatings && readingComments
+            ? readingIds
+                .filter((readingId) => readingId !== null)
+                .map((readingId, index) => {
+                  return new BookReading({
+                    id: readingId,
+                    startedAt: readingStartedAtDates[index] as Date,
+                    endedAt: readingEndedAtDates[index] as Date,
+                    rating: readingRatings[index] as number,
+                    comment: readingComments[index] ?? undefined,
+                    userBookId: id,
+                  });
+                })
+            : [],
+        collections:
+          collectionIds && collectionNames && collectionCreatedAtDates && collectionUserIds
+            ? collectionIds
+                .filter((collectionId) => collectionId !== null)
+                .map((collectionId, index) => {
+                  return new Collection({
+                    id: collectionId,
+                    name: collectionNames[index] as string,
+                    userId: collectionUserIds[index] as string,
+                    createdAt: collectionCreatedAtDates[index] as Date,
+                  });
+                })
+            : [],
+      };
 
-      if (userBookExists) {
-        const userBookDraft = userBookDraftsMapping.get(id) as UserBookDraft;
-
-        if (authorId) {
-          userBookDraft.book?.authors?.push(
-            new Author({
-              id: authorId,
-              name: authorName as string,
-              isApproved: Boolean(isAuthorApproved),
-            }),
-          );
-        }
-
-        if (genreId && genreName) {
-          userBookDraft.genres?.push(
-            new Genre({
-              id: genreId,
-              name: genreName,
-            }),
-          );
-        }
-
-        if (collectionId && collectionName && userId && collectionCreatedAt) {
-          userBookDraft.collections?.push(
-            new Collection({
-              id: collectionId,
-              name: collectionName,
-              userId,
-              createdAt: new Date(collectionCreatedAt),
-            }),
-          );
-        }
-
-        if (readingId && readingStartedAt && readingRating && readingEndedAt) {
-          userBookDraft.readings?.push(
-            new BookReading({
-              id: readingId,
-              startedAt: new Date(readingStartedAt),
-              endedAt: new Date(readingEndedAt),
-              rating: readingRating,
-              comment: readingComment ?? undefined,
-              userBookId: id,
-            }),
-          );
-        }
-      } else {
-        const authors: Author[] = [];
-
-        const genres: Genre[] = [];
-
-        const readings: BookReading[] = [];
-
-        const collections: Collection[] = [];
-
-        if (authorId) {
-          authors.push(
-            new Author({
-              id: authorId,
-              name: authorName as string,
-              isApproved: Boolean(isAuthorApproved),
-            }),
-          );
-        }
-
-        if (readingId && readingStartedAt && readingRating && readingEndedAt) {
-          readings.push(
-            new BookReading({
-              id: readingId,
-              startedAt: new Date(readingStartedAt),
-              endedAt: new Date(readingEndedAt),
-              rating: readingRating,
-              comment: readingComment ?? undefined,
-              userBookId: id,
-            }),
-          );
-        }
-
-        if (genreId && genreName) {
-          genres.push(
-            new Genre({
-              id: genreId,
-              name: genreName,
-            }),
-          );
-        }
-
-        if (collectionId && collectionName && userId && collectionCreatedAt) {
-          collections.push(
-            new Collection({
-              id: collectionId,
-              name: collectionName,
-              userId,
-              createdAt: new Date(collectionCreatedAt),
-            }),
-          );
-        }
-
-        const userBookDraft: UserBookDraft = {
-          id,
-          imageUrl: imageUrl ?? undefined,
-          status,
-          isFavorite: Boolean(isFavorite),
-          bookshelfId,
-          createdAt: new Date(createdAt),
-          bookId,
-          book: {
-            id: bookId,
-            title,
-            isbn: isbn ?? undefined,
-            publisher: publisher ?? undefined,
-            releaseYear: releaseYear ?? undefined,
-            language,
-            translator: translator ?? undefined,
-            format,
-            pages: pages ?? undefined,
-            isApproved: Boolean(isApproved),
-            authors,
-            imageUrl: bookImageUrl ?? undefined,
-          },
-          genres,
-          readings,
-          collections,
-        };
-
-        userBookDraftsMapping.set(id, userBookDraft);
-      }
+      return new UserBook(userBookDraft);
     });
-
-    return [...userBookDraftsMapping.values()].map((userBookDraft) => new UserBook(userBookDraft));
   }
 }
