@@ -9,6 +9,7 @@ import {
   type FindQuotePayload,
   type FindQuotesPayload,
   type SavePayload,
+  type CountQuotesPayload,
 } from '../../../domain/repositories/quoteRepository/quoteRepository.js';
 import { type QuoteRawEntity } from '../../databases/bookDatabase/tables/quoteTable/quoteRawEntity.js';
 import { quoteTable } from '../../databases/bookDatabase/tables/quoteTable/quoteTable.js';
@@ -47,15 +48,21 @@ export class QuoteRepositoryImpl implements QuoteRepository {
   }
 
   public async findQuotes(payload: FindQuotesPayload): Promise<Quote[]> {
-    const { userBookId, page, pageSize } = payload;
+    const { userBookId, page, pageSize, sortDate } = payload;
 
     let rawEntities: QuoteRawEntity[];
 
     try {
-      rawEntities = await this.databaseClient<QuoteRawEntity>(quoteTable)
+      const query = this.databaseClient<QuoteRawEntity>(quoteTable)
         .where({ userBookId })
         .limit(pageSize)
         .offset(pageSize * (page - 1));
+
+      if (sortDate) {
+        query.orderBy('createdAt', sortDate);
+      }
+
+      rawEntities = await query;
     } catch (error) {
       throw new RepositoryError({
         entity: 'Quote',
@@ -143,7 +150,7 @@ export class QuoteRepositoryImpl implements QuoteRepository {
     }
   }
 
-  public async countQuotes(payload: FindQuotesPayload): Promise<number> {
+  public async countQuotes(payload: CountQuotesPayload): Promise<number> {
     const { userBookId } = payload;
 
     try {

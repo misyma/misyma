@@ -18,6 +18,7 @@ import {
   findQuotesPathParamsDtoSchema,
   type FindQuotesPathParamsDto,
   type FindQuotesQueryParamsDto,
+  findQuotesQueryParamsDtoSchema,
 } from './schemas/findQuotesSchema.js';
 import { type QuoteDto } from './schemas/quoteDto.js';
 import {
@@ -71,6 +72,7 @@ export class QuoteHttpController implements HttpController {
         schema: {
           request: {
             pathParams: findQuotesPathParamsDtoSchema,
+            queryParams: findQuotesQueryParamsDtoSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
@@ -146,7 +148,7 @@ export class QuoteHttpController implements HttpController {
 
     const { userBookId } = request.pathParams;
 
-    const { page = 1, pageSize = 10 } = request.queryParams;
+    const { page = 1, pageSize = 10, sortDate } = request.queryParams;
 
     // TODO: authorization, consider adding userId to book for easy access to book owner
 
@@ -160,6 +162,7 @@ export class QuoteHttpController implements HttpController {
       userBookId,
       page,
       pageSize,
+      sortDate,
     });
 
     return {

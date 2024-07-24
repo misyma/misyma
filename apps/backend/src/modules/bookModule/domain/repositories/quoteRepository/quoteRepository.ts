@@ -8,6 +8,11 @@ export interface FindQuotesPayload {
   readonly userBookId: string;
   readonly page: number;
   readonly pageSize: number;
+  readonly sortDate?: 'asc' | 'desc';
+}
+
+export interface CountQuotesPayload {
+  readonly userBookId: string;
 }
 
 export interface SavePayload {
@@ -21,7 +26,7 @@ export interface DeletePayload {
 export interface QuoteRepository {
   findQuote(payload: FindQuotePayload): Promise<Quote | null>;
   findQuotes(payload: FindQuotesPayload): Promise<Quote[]>;
-  countQuotes(payload: FindQuotesPayload): Promise<number>;
+  countQuotes(payload: CountQuotesPayload): Promise<number>;
   saveQuote(payload: SavePayload): Promise<Quote>;
   deleteQuote(payload: DeletePayload): Promise<void>;
 }
