@@ -9,7 +9,7 @@ export class AuthorMapperImpl implements AuthorMapper {
     return new Author({
       id,
       name,
-      isApproved: Boolean(isApproved), // sqlite returns 0 or 1
+      isApproved,
     });
   }
 }
