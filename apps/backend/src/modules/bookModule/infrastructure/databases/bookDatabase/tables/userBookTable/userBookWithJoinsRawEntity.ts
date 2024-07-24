@@ -20,21 +20,21 @@ export interface UserBookWithJoinsRawEntity {
   readonly isApproved: boolean;
   readonly bookImageUrl: string | null;
 
-  readonly authorId: string | null;
-  readonly authorName: string | null;
-  readonly isAuthorApproved: boolean | null;
+  readonly authorIds?: (string | null)[];
+  readonly authorNames?: (string | null)[];
+  readonly authorApprovals?: (boolean | null)[];
 
-  readonly genreId: string | null;
-  readonly genreName: string | null;
-  readonly userId: string | null;
+  readonly genreIds?: (string | null)[];
+  readonly genreNames?: (string | null)[];
 
-  readonly collectionId: string | null;
-  readonly collectionName: string | null;
-  readonly collectionCreatedAt: Date | null;
+  readonly collectionIds?: (string | null)[];
+  readonly collectionNames?: (string | null)[];
+  readonly collectionUserIds?: (string | null)[];
+  readonly collectionCreatedAtDates?: (Date | null)[];
 
-  readonly readingId: string | null;
-  readonly readingStartedAt: Date | null;
-  readonly readingEndedAt: Date | null;
-  readonly readingRating: number | null;
-  readonly readingComment: string | null;
+  readonly readingIds?: (string | null)[];
+  readonly readingStartedAtDates?: (Date | null)[];
+  readonly readingEndedAtDates?: (Date | null)[];
+  readonly readingRatings?: (number | null)[];
+  readonly readingComments?: (string | null)[];
 }
