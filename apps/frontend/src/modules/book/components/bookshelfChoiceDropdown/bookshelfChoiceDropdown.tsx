@@ -147,7 +147,7 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
   useEffect(() => {
     setCurrentBookshelf(bookshelfData?.data.find((bookshelf) => bookshelf.id === currentBookshelfId)?.name ?? '');
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentBookshelfId])
+  }, [currentBookshelfId]);
 
   if (previousBookshelfName === 'Wypożyczalnia' && isFetchingBookBorrowing) {
     return <Skeleton className="w-60 sm:w-92 h-12"></Skeleton>;
@@ -165,15 +165,18 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
       >
         <PopoverTrigger asChild>
           <Button
-            size="xl"
+            size="lg"
             variant="outline"
             className="border-none text-xl"
             style={{
               fontSize: '1.25rem',
               lineHeight: '1.75rem',
+              justifyContent: 'end',
+              padding: 0,
+              height: 'auto',
             }}
           >
-            {currentBookshelf}
+            <p className="truncate">{currentBookshelf}</p>
           </Button>
         </PopoverTrigger>
         <PopoverContent>
