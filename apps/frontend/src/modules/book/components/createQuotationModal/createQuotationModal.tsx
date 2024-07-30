@@ -27,8 +27,8 @@ const createQuotationSchema = z
       .string({
         required_error: 'Strona jest wymagana.',
       })
-      .max(256, {
-        message: 'Strona może mieć maksylamnie 256 znaków.',
+      .max(16, {
+        message: 'Strona może mieć maksylamnie 16 znaków.',
       })
       .or(z.literal('')),
     content: z
@@ -112,7 +112,7 @@ export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props):
 
       onMutated();
 
-      queryClient.invalidateQueries({
+      await queryClient.invalidateQueries({
         queryKey: getQuotesOptionsQueryKey({
           userBookId,
         }),
@@ -172,6 +172,7 @@ export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props):
                       <Input
                         placeholder="Strony cytatu"
                         type="string"
+                        maxLength={16}
                         inputMode="text"
                         {...field}
                       />

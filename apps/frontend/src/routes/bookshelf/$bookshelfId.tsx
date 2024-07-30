@@ -146,7 +146,7 @@ const BorrowedBook: FC<{ userBook: UserBook; index: number }> = ({ userBook, ind
               },
             });
           }}
-          src={userBook.imageUrl}
+          src={userBook.imageUrl || '/book.jpg'}
           className="object-contain aspect-square max-w-[200px]"
         />
       </div>
