@@ -100,6 +100,7 @@ const BorrowedBook: FC<{ userBook: UserBook; index: number }> = ({ userBook, ind
       page: 1,
       pageSize: 1,
       sortDate: SortingType.desc,
+      isOpen: true,
     }),
   );
 
@@ -127,7 +128,7 @@ const BorrowedBook: FC<{ userBook: UserBook; index: number }> = ({ userBook, ind
       <div
         onClick={() => {
           navigate({
-            to: '/book/tabs/gradesTab/$bookId',
+            to: '/book/tabs/basicDataTab/$bookId',
             params: {
               bookId: userBook.id,
             },
@@ -139,7 +140,7 @@ const BorrowedBook: FC<{ userBook: UserBook; index: number }> = ({ userBook, ind
         <img
           onClick={() => {
             navigate({
-              to: '/book/tabs/gradesTab/$bookId',
+              to: '/book/tabs/basicDataTab/$bookId',
               params: {
                 bookId: userBook.id,
               },
