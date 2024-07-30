@@ -17,7 +17,7 @@ export class FindBorrowingsQueryHandlerImpl implements FindBorrowingsQueryHandle
   ) {}
 
   public async execute(payload: FindBorrowingsQueryHandlerPayload): Promise<FindBorrowingsQueryHandlerResult> {
-    const { userBookId, page, pageSize, sortDate } = payload;
+    const { userBookId, page, pageSize, sortDate, isOpen } = payload;
 
     const bookExists = await this.userBookRepository.findUserBook({
       id: userBookId,
@@ -40,6 +40,13 @@ export class FindBorrowingsQueryHandlerImpl implements FindBorrowingsQueryHandle
       findBorrowingsPayload = {
         ...findBorrowingsPayload,
         sortDate,
+      };
+    }
+
+    if (isOpen !== undefined) {
+      findBorrowingsPayload = {
+        ...findBorrowingsPayload,
+        isOpen,
       };
     }
 

@@ -247,6 +247,86 @@ describe('BorrowingRepositoryImpl', () => {
 
       expect(result[1]?.getId()).toEqual(borrowing1.id);
     });
+
+    it('returns an array of Borrowings - filtered by isOpen', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+
+      const book = await bookTestUtils.createAndPersist();
+
+      const userBook = await userBookTestUtils.createAndPersist({
+        input: {
+          bookshelfId: bookshelf.id,
+          bookId: book.id,
+        },
+      });
+
+      const borrowing1 = await borrowingTestUtils.createAndPersist({
+        input: {
+          userBookId: userBook.id,
+          endedAt: undefined,
+        },
+      });
+
+      await borrowingTestUtils.createAndPersist({
+        input: {
+          userBookId: userBook.id,
+          endedAt: new Date(),
+        },
+      });
+
+      const result = await repository.findBorrowings({
+        userBookId: userBook.id,
+        page: 1,
+        pageSize: 10,
+        isOpen: true,
+      });
+
+      expect(result).toHaveLength(1);
+
+      expect(result[0]?.getId()).toEqual(borrowing1.id);
+    });
+
+    it('returns an array of Borrowings - filtered by not isOpen', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+
+      const book = await bookTestUtils.createAndPersist();
+
+      const userBook = await userBookTestUtils.createAndPersist({
+        input: {
+          bookshelfId: bookshelf.id,
+          bookId: book.id,
+        },
+      });
+
+      await borrowingTestUtils.createAndPersist({
+        input: {
+          userBookId: userBook.id,
+          endedAt: undefined,
+        },
+      });
+
+      const borrowing1 = await borrowingTestUtils.createAndPersist({
+        input: {
+          userBookId: userBook.id,
+          endedAt: new Date(),
+        },
+      });
+
+      const result = await repository.findBorrowings({
+        userBookId: userBook.id,
+        page: 1,
+        pageSize: 10,
+        isOpen: false,
+      });
+
+      expect(result).toHaveLength(1);
+
+      expect(result[0]?.getId()).toEqual(borrowing1.id);
+    });
   });
 
   describe('save', () => {

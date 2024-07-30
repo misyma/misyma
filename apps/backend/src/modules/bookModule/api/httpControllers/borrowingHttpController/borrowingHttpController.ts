@@ -145,7 +145,7 @@ export class BorrowingHttpController implements HttpController {
       authorizationHeader: request.headers['authorization'],
     });
 
-    const { page = 1, pageSize = 10, sortDate } = request.queryParams;
+    const { page = 1, pageSize = 10, sortDate, isOpen } = request.queryParams;
 
     const { userBookId } = request.pathParams;
 
@@ -162,6 +162,7 @@ export class BorrowingHttpController implements HttpController {
       page,
       pageSize,
       sortDate,
+      isOpen,
     });
 
     return {

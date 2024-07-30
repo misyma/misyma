@@ -8,6 +8,7 @@ export interface FindBorrowingsQueryHandlerPayload {
   readonly page: number;
   readonly pageSize: number;
   readonly sortDate?: SortingType | undefined;
+  readonly isOpen?: boolean | undefined;
 }
 
 export interface FindBorrowingsQueryHandlerResult {

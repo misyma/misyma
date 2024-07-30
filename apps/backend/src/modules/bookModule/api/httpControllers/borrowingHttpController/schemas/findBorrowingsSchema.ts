@@ -18,6 +18,7 @@ export const findBorrowingsQueryParamsDtoSchema = Type.Object({
   page: Type.Optional(Type.Integer({ minimum: 1 })),
   pageSize: Type.Optional(Type.Integer({ minimum: 1 })),
   sortDate: Type.Optional(Type.Enum(contracts.SortingType)),
+  isOpen: Type.Optional(Type.Boolean()),
 });
 
 export type FindBorrowingsQueryParamsDto = TypeExtends<
