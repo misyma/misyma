@@ -27,6 +27,10 @@ export const findBookBorrowings = async (payload: FindBookBorrowingsPayload) => 
     queryParams.sortDate = `${query.sortDate}`;
   }
 
+  if (query.isOpen !== undefined) {
+    queryParams.isOpen = `${query.isOpen}`
+  }
+
   const response = await HttpService.get<FindBorrowingsResponseBody>({
     url: `/user-books/${userBookId}/borrowings`,
     queryParams,
