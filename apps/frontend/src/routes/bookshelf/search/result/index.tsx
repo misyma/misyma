@@ -69,6 +69,7 @@ export const SearchResultPage: FC = () => {
     }),
   );
 
+
   const [manualPageNumberInputOpen, setManualPageNumberInputOpen] = useState(false);
 
   const totalBooks = useMemo(() => foundBooks?.metadata.total ?? 0, [foundBooks?.metadata.total]);
@@ -83,6 +84,10 @@ export const SearchResultPage: FC = () => {
       isbn: currentBookIsbn,
     }),
   );
+
+  if ((foundBooks?.data?.length ?? 0) > 0 && currentPage === 1 && currentBookIsbn === '') {
+    setCurrentBookIsbn(foundBooks?.data[0]?.isbn as string)
+  }
 
   const bookExistsOnUserAccount = useMemo(() => (userBookWithIsbn?.data?.length ?? 100) > 0, [userBookWithIsbn?.data]);
 
@@ -269,7 +274,7 @@ export const SearchResultPage: FC = () => {
             {initialCheckForIsbnInProgress || checkForIsbnInProgress || bookExistsOnUserAccount ? (
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger className="flex">
+                  <TooltipTrigger asChild className="flex">
                     <Button
                       onClick={onAddBook}
                       size="xl"
