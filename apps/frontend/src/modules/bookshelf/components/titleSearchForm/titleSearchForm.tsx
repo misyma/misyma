@@ -56,6 +56,7 @@ export const TitleSearchForm = ({ bookshelfId }: Props): JSX.Element => {
         title: values.title,
         isbn: '',
         bookshelfId,
+        searchBy: 'title',
       },
     });
   };

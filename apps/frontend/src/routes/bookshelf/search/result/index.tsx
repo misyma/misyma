@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, Navigate, useNavigate } from '@tanstack/react-router';
 import { RequireAuthComponent } from '../../../../modules/core/components/requireAuth/requireAuthComponent';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { LoadingSpinner } from '../../../../modules/common/components/spinner/loading-spinner';
@@ -31,11 +31,7 @@ export const SearchResultPage: FC = () => {
 
   const searchCreationDispatch = useSearchBookContextDispatch();
 
-  const [currentBookIsbn, setCurrentBookIsbn] = useState('');
-
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
-  const [currentPage, setCurrentPage] = useState<number>(1);
 
   const inputValue = useRef(0);
 
@@ -46,6 +42,7 @@ export const SearchResultPage: FC = () => {
         search: {
           bookshelfId: searchParams.bookshelfId,
           type: 'title',
+          searchBy: 'title',
           next: 0,
         },
       });
@@ -57,18 +54,22 @@ export const SearchResultPage: FC = () => {
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
+  }, [searchParams.searchBy]);
 
   const { data: foundBooks, isFetching } = useQuery(
     FindBooksQueryOptions({
-      title: searchParams.title,
-      isbn: searchParams.isbn,
+      ...(searchParams.searchBy === 'title'
+        ? {
+            title: searchParams.title,
+          }
+        : {
+            isbn: searchParams.isbn,
+          }),
       accessToken: accessToken as string,
-      page: currentPage,
+      page: searchParams.page,
       pageSize: 1,
     }),
   );
-
 
   const [manualPageNumberInputOpen, setManualPageNumberInputOpen] = useState(false);
 
@@ -76,18 +77,14 @@ export const SearchResultPage: FC = () => {
 
   const {
     data: userBookWithIsbn,
-    isFetching: initialCheckForIsbnInProgress,
+    isFetching: checkingForIsbn,
     isRefetching: checkForIsbnInProgress,
   } = useQuery(
     FindUserBooksByQueryOptions({
       accessToken: accessToken as string,
-      isbn: currentBookIsbn,
+      isbn: searchParams.isbn,
     }),
   );
-
-  if ((foundBooks?.data?.length ?? 0) > 0 && currentPage === 1 && currentBookIsbn === '') {
-    setCurrentBookIsbn(foundBooks?.data[0]?.isbn as string)
-  }
 
   const bookExistsOnUserAccount = useMemo(() => (userBookWithIsbn?.data?.length ?? 100) > 0, [userBookWithIsbn?.data]);
 
@@ -209,7 +206,7 @@ export const SearchResultPage: FC = () => {
                     className="cursor-pointer"
                     onClick={() => setManualPageNumberInputOpen(true)}
                   >
-                    {currentPage}
+                    {searchParams.page}
                   </p>
                 ) : (
                   <AutoselectedInput
@@ -224,7 +221,10 @@ export const SearchResultPage: FC = () => {
                     }}
                     onKeyDown={(event) => {
                       if (event.key === 'Enter') {
-                        setCurrentPage(inputValue.current);
+                        navigate({
+                          search: (prev) => ({ ...prev, page: inputValue.current }),
+                        });
+
                         setManualPageNumberInputOpen(false);
                       }
                     }}
@@ -240,11 +240,12 @@ export const SearchResultPage: FC = () => {
           <div className="flex flex-col w-full">
             {totalBooks > 1 ? (
               <Paginator
-                pageIndex={currentPage}
+                pageIndex={searchParams.page}
                 rootClassName="w-full flex items-center h-16 text-xl sm:text-3xl justify-normal"
                 onPageChange={(page) => {
-                  setCurrentPage(page);
-                  setCurrentBookIsbn(foundBooks?.data[0].isbn ?? '');
+                  navigate({
+                    search: (prev) => ({ ...prev, isbn: foundBooks?.data[0].isbn ?? '', page }),
+                  });
                 }}
                 pagesCount={totalBooks}
                 pageNumberSlot={
@@ -271,14 +272,17 @@ export const SearchResultPage: FC = () => {
             {foundBooks?.data[0]?.pages && <p>Liczba stron: {foundBooks?.data[0].pages}</p>}
           </div>
           <div className="flex flex-col gap-4">
-            {initialCheckForIsbnInProgress || checkForIsbnInProgress || bookExistsOnUserAccount ? (
+            {checkingForIsbn || checkForIsbnInProgress || bookExistsOnUserAccount ? (
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger asChild className="flex">
+                  <TooltipTrigger
+                    asChild
+                    className="flex"
+                  >
                     <Button
                       onClick={onAddBook}
                       size="xl"
-                      disabled={initialCheckForIsbnInProgress || checkForIsbnInProgress || bookExistsOnUserAccount}
+                      disabled={checkingForIsbn || checkForIsbnInProgress || bookExistsOnUserAccount}
                     >
                       Kontynuuj
                     </Button>
@@ -328,6 +332,22 @@ export const SearchResultPage: FC = () => {
     );
   }
 
+  if(checkingForIsbn){
+    return (
+      <AuthenticatedLayout>
+        <div className="justify-center max-w-screen-xl mx-auto items-center w-full flex h-full min-h-[700px]">
+          <LoadingSpinner></LoadingSpinner>
+        </div>
+      </AuthenticatedLayout>
+    );
+  }
+
+  if (foundBooks?.data && foundBooks.data.length > 0 && searchParams.searchBy === 'title' && searchParams.isbn !== foundBooks?.data[0].isbn) {
+    const isbn = foundBooks?.data[0].isbn;
+
+    return <Navigate search={(prev) => ({ ...prev, isbn })}></Navigate>;
+  }
+
   return (
     <AuthenticatedLayout>
       <div className="justify-center max-w-screen-xl mx-auto items-center w-full flex h-full min-h-[700px]">
@@ -338,9 +358,11 @@ export const SearchResultPage: FC = () => {
 };
 
 const searchSchema = z.object({
-  isbn: z.string().min(1).catch(''),
+  isbn: z.string(),
   title: z.string().min(1).catch(''),
   bookshelfId: z.string().uuid().catch(''),
+  page: z.number().int().default(1).catch(1),
+  searchBy: z.enum(['isbn', 'title']),
 });
 export const Route = createFileRoute('/bookshelf/search/result/')({
   component: () => {
