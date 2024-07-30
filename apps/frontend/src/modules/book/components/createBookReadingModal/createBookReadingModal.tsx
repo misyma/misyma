@@ -21,6 +21,13 @@ import { useAddBookReadingMutation } from '../../../bookReadings/api/mutations/b
 import { useQueryClient } from '@tanstack/react-query';
 import { BookReadingsApiQueryKeys } from '../../../bookReadings/api/queries/bookReadingsApiQueryKeys';
 import { pl } from 'date-fns/locale';
+import {
+  Select,
+  SelectContentNoPortal,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../../../common/components/select/select';
 
 interface Props {
   bookId: string;
@@ -34,7 +41,13 @@ const createBookReadingSchema = z
   .object({
     userBookId: z.string().uuid(),
     comment: z.string().min(1).max(256).optional(),
-    rating: z.number().min(1).max(10).int(),
+    rating: z
+      .number({
+        coerce: true,
+      })
+      .min(1)
+      .max(10)
+      .int(),
     startedAt: z.date(),
     endedAt: z.date(),
   })
@@ -125,6 +138,33 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
         />
         <FormField
           control={form.control}
+          name="rating"
+          render={({ field }) => (
+            <FormItem className="flex flex-col items-end">
+              <FormLabel>Ocena</FormLabel>
+              <Select
+                onValueChange={(val) => {
+                  field.onChange(val);
+                }}
+                defaultValue={`${field.value}`}
+              >
+                <FormControl>
+                  <SelectTrigger className="w-20 sm:w-32">
+                    <SelectValue className="text-red-500"></SelectValue>
+                    <SelectContentNoPortal className="w-20 sm:w-32">
+                      {Array.from({ length: 10 }).map((_, index) => (
+                        <SelectItem value={`${index + 1}`}>{index + 1}</SelectItem>
+                      ))}
+                    </SelectContentNoPortal>
+                  </SelectTrigger>
+                </FormControl>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
           name="startedAt"
           render={({ field }) => (
             <FormItem className="flex flex-col">
@@ -138,13 +178,20 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
                       className={cn('px-3 text-left font-normal')}
                     >
                       {field.value ? (
-                        <span className={cn(!field.value && 'text-muted-foreground', 'text-left w-full font-light text-black')}>
+                        <span
+                          className={cn(
+                            !field.value && 'text-muted-foreground',
+                            'text-left w-full font-light text-black',
+                          )}
+                        >
                           {formatDate(field.value, 'PPP', {
                             locale: pl,
                           })}
                         </span>
                       ) : (
-                        <span className={cn('text-muted-foreground font-light text-left w-full')}>Wybierz dzień rozpoczęcia</span>
+                        <span className={cn('text-muted-foreground font-light text-left w-full')}>
+                          Wybierz dzień rozpoczęcia
+                        </span>
                       )}
                       <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                     </Button>
@@ -182,13 +229,20 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
                       className={cn('px-3 text-left font-normal')}
                     >
                       {field.value ? (
-                        <span className={cn(!field.value && 'text-muted-foreground', 'font-light text-left w-full text-black')}>
+                        <span
+                          className={cn(
+                            !field.value && 'text-muted-foreground',
+                            'font-light text-left w-full text-black',
+                          )}
+                        >
                           {formatDate(field.value, 'PPP', {
                             locale: pl,
                           })}
                         </span>
                       ) : (
-                        <span className={cn('text-muted-foreground font-light text-left w-full')}>Wybierz dzień zakończenia</span>
+                        <span className={cn('text-muted-foreground font-light text-left w-full')}>
+                          Wybierz dzień zakończenia
+                        </span>
                       )}
                       <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                     </Button>
@@ -243,6 +297,7 @@ export const CreateBookReadingModal: FC<Props> = ({ bookId, rating, trigger, onM
 
   return (
     <Dialog
+      modal={true}
       open={isOpen}
       onOpenChange={(val) => {
         setIsOpen(val);

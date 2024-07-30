@@ -16,7 +16,7 @@ module.exports = {
     extend: {
       colors: {
         status: {
-          'toRead': '#374151',
+          toRead: '#374151',
           inProgress: '#3ABEF7',
           finished: '#14B8A6',
         },
@@ -77,10 +77,14 @@ module.exports = {
         sm: 'calc(var(--radius) - 4px)',
       },
       width: {
-        '88': '22rem',
-        '104': '26rem',
+        88: '22rem',
+        104: '26rem',
       },
       keyframes: {
+        wiggle: {
+          '0%, 100%': { transform: 'rotate(-3deg)' },
+          '50%': { transform: 'rotate(3deg)' },
+        },
         'accordion-down': {
           from: { height: '0' },
           to: { height: 'var(--radix-accordion-content-height)' },
