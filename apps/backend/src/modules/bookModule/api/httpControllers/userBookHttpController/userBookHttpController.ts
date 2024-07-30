@@ -88,12 +88,12 @@ export class UserBookHttpController implements HttpController {
           response: {
             [HttpStatusCode.created]: {
               schema: createUserBookResponseBodyDtoSchema,
-              description: `User's book created`,
+              description: "User's book created",
             },
           },
         },
         securityMode: SecurityMode.bearerToken,
-        description: `Create user's book`,
+        description: "Create user's book",
       }),
       new HttpRoute({
         method: HttpMethodName.get,
@@ -106,17 +106,17 @@ export class UserBookHttpController implements HttpController {
           response: {
             [HttpStatusCode.ok]: {
               schema: findUserBookResponseBodyDtoSchema,
-              description: `User's book found`,
+              description: "User's book found",
             },
           },
         },
         securityMode: SecurityMode.bearerToken,
-        description: `Find user's book by id`,
+        description: "Find user's book by id",
       }),
       new HttpRoute({
         method: HttpMethodName.get,
         handler: this.findUserBooks.bind(this),
-        description: `Find user's books by bookshelf id`,
+        description: "Find user's books by bookshelf id",
         schema: {
           request: {
             queryParams: findUserBooksQueryParamsDtoSchema,
@@ -124,7 +124,7 @@ export class UserBookHttpController implements HttpController {
           response: {
             [HttpStatusCode.ok]: {
               schema: findUserBooksResponseBodyDtoSchema,
-              description: `User's books found`,
+              description: "User's books found",
             },
           },
         },
@@ -141,17 +141,17 @@ export class UserBookHttpController implements HttpController {
           response: {
             [HttpStatusCode.noContent]: {
               schema: deleteUserBookResponseBodyDtoSchema,
-              description: `User's book deleted`,
+              description: "User's book deleted",
             },
           },
         },
         securityMode: SecurityMode.bearerToken,
-        description: `Delete user's book`,
+        description: "Delete user's book",
       }),
       new HttpRoute({
         method: HttpMethodName.patch,
         path: ':userBookId',
-        description: `Update user's book`,
+        description: "Update user's book",
         handler: this.updateUserBook.bind(this),
         schema: {
           request: {
@@ -160,7 +160,7 @@ export class UserBookHttpController implements HttpController {
           },
           response: {
             [HttpStatusCode.ok]: {
-              description: `User's book updated`,
+              description: "User's book updated",
               schema: updateUserBookResponseBodyDtoSchema,
             },
           },
@@ -169,7 +169,7 @@ export class UserBookHttpController implements HttpController {
       new HttpRoute({
         method: HttpMethodName.patch,
         path: ':userBookId/images',
-        description: `Upload user book's image`,
+        description: "Upload user book's image",
         handler: this.uploadUserBookImage.bind(this),
         schema: {
           request: {
@@ -177,7 +177,7 @@ export class UserBookHttpController implements HttpController {
           },
           response: {
             [HttpStatusCode.ok]: {
-              description: `User book's image uploaded`,
+              description: "User book's image uploaded",
               schema: uploadUserBookImageResponseBodyDtoSchema,
             },
           },

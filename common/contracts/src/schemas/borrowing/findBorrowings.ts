@@ -10,6 +10,7 @@ export interface FindBorrowingsQueryParams {
   readonly page?: number;
   readonly pageSize?: number;
   readonly sortDate?: SortingType;
+  readonly isOpen?: boolean;
 }
 
 export interface FindBorrowingsResponseBody {

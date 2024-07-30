@@ -47,7 +47,7 @@ export class BorrowingRepositoryImpl implements BorrowingRepository {
   }
 
   public async findBorrowings(payload: FindBorrowingsPayload): Promise<Borrowing[]> {
-    const { userBookId, page, pageSize, sortDate } = payload;
+    const { userBookId, page, pageSize, sortDate, isOpen } = payload;
 
     let rawEntities: BorrowingRawEntity[];
 
@@ -59,6 +59,14 @@ export class BorrowingRepositoryImpl implements BorrowingRepository {
 
       if (sortDate) {
         query.orderBy('startedAt', sortDate);
+      }
+
+      if (isOpen !== undefined) {
+        if (isOpen) {
+          query.whereNull('endedAt');
+        } else {
+          query.whereNotNull('endedAt');
+        }
       }
 
       rawEntities = await query;

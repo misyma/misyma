@@ -9,6 +9,7 @@ export interface FindBorrowingsPayload {
   readonly page: number;
   readonly pageSize: number;
   readonly sortDate?: 'asc' | 'desc';
+  readonly isOpen?: boolean;
 }
 
 export interface SavePayload {
