@@ -47,6 +47,7 @@ export const IsbnSearchForm = ({ bookshelfId }: Props): JSX.Element => {
         isbn: values.isbn,
         bookshelfId,
         title: '',
+        searchBy: 'isbn',
       },
     });
   };
@@ -107,7 +108,7 @@ export const IsbnSearchForm = ({ bookshelfId }: Props): JSX.Element => {
           <Button
             type="submit"
             disabled={!isbnForm.formState.isValid}
-            size='xl'
+            size="xl"
           >
             Pobierz dane
           </Button>
