@@ -73,8 +73,6 @@ export const changeRequestsColumns: ColumnDef<BookChangeRequest>[] = [
         keyof typeof translationMap
       >;
 
-      console.log(row.original)
-
       return (
 
         <div className="flex flex-col py-4 gap-2">
