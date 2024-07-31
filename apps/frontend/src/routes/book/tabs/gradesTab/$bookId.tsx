@@ -35,7 +35,7 @@ export const GradesPage: FC = () => {
 
   const [pageSize] = useState(4);
 
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
 
   const { data: bookReadings } = useQuery(
     FindBookReadingsQueryOptions({
