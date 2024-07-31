@@ -31,6 +31,8 @@ import { HiArrowsRightLeft } from 'react-icons/hi2';
 import { CreateBorrowingModal } from '../../../../modules/book/components/createBorrowingModal/createBorrowingModal.js';
 import { BookApiQueryKeys } from '../../../../modules/book/api/user/queries/bookApiQueryKeys.js';
 import { BookshelvesApiQueryKeys } from '../../../../modules/bookshelf/api/queries/bookshelvesApiQueryKeys.js';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../../modules/common/components/tooltip/tooltip.js';
+import { Button } from '../../../../modules/common/components/button/button.js';
 
 export const BasicDataPage: FC = () => {
   const { data: userData } = useFindUserQuery();
@@ -118,12 +120,27 @@ export const BasicDataPage: FC = () => {
               </li>
             </ul>
             <div className="flex gap-4 p-2">
-              <HiArrowsRightLeft
-                className="cursor-pointer  text-primary h-8 w-8"
-                onClick={() => {
-                  setCreateBookBorrowingModalOpen(true);
-                }}
-              ></HiArrowsRightLeft>
+              <TooltipProvider delayDuration={0}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      onClick={() => setCreateBookBorrowingModalOpen(true)}
+                      variant="ghost"
+                      size="icon"
+                    >
+                      <HiArrowsRightLeft
+                        className="cursor-pointer  text-primary h-8 w-8"
+                        onClick={() => {
+                          setCreateBookBorrowingModalOpen(true);
+                        }}
+                      ></HiArrowsRightLeft>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Wypożycz książkę</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
               {createBookBorrowingModalOpen && (
                 <CreateBorrowingModal
                   bookId={bookId}
