@@ -45,6 +45,7 @@ import { userStateSelectors } from '../../../../core/store/states/userState/user
 import { useFindAuthorsQuery } from '../../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
 import { FindBookByIdQueryOptions } from '../../../api/user/queries/findBookById/findBookByIdQueryOptions';
 import { FindUserBookByIdQueryOptions } from '../../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
+import { LoadingSpinner } from '../../../../common/components/spinner/loading-spinner';
 
 const stepOneSchema = z.object({
   isbn: isbnSchema.optional().or(z.literal('')),
@@ -57,7 +58,7 @@ const stepOneSchema = z.object({
       message: 'Tytuł może mieć maksymalnie 64 znaki.',
     })
     .or(z.literal('')),
-  author: z
+  authorIds: z
     .string()
     .uuid({
       message: 'Brak wybranego autora.',
@@ -105,7 +106,48 @@ const createAuthorDraftSchema = z.object({
     }),
 });
 
-export const StepOneForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
+export const StepOneForm: FC<Props> = ({ bookId, onCancel, onSubmit }) => {
+  const accessToken = useSelector(userStateSelectors.selectAccessToken);
+
+  const { data: userData, isFetched: isUserDataFetched } = useFindUserQuery();
+
+  const { data: userBookData, isFetched: isUserBookDataFetched } = useQuery(
+    FindUserBookByIdQueryOptions({
+      userBookId: bookId,
+      userId: userData?.id ?? '',
+      accessToken: accessToken as string,
+    }),
+  );
+
+  const { isFetched: isBookDataFetched } = useQuery(
+    FindBookByIdQueryOptions({
+      accessToken: accessToken as string,
+      bookId: userBookData?.bookId as string,
+    }),
+  );
+
+  if (!isUserDataFetched) {
+    return <LoadingSpinner />;
+  }
+
+  if (!isBookDataFetched) {
+    return <LoadingSpinner />;
+  }
+
+  if (!isUserBookDataFetched) {
+    return <LoadingSpinner />;
+  }
+
+  return (
+    <ModalForm
+      bookId={bookId}
+      onCancel={onCancel}
+      onSubmit={onSubmit}
+    />
+  );
+};
+
+const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const [searchedName, setSearchedName] = useState<string | undefined>(undefined);
@@ -150,25 +192,11 @@ export const StepOneForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
     }),
   );
 
-  const stepOneForm = useForm({
-    resolver: zodResolver(stepOneSchema),
-    defaultValues: {
-      isbn: bookData?.isbn ?? '',
-      title: bookData?.title ?? '',
-      author: bookData?.authors[0].id ?? '',
-      authorName: '',
-      publisher: bookData?.publisher ?? '',
-      releaseYear: bookData?.releaseYear,
-    },
-    reValidateMode: 'onChange',
-    mode: 'onTouched',
-  });
-
   const onCreateAuthorDraft = (payload: z.infer<typeof createAuthorDraftSchema>): void => {
     setDraftAuthorName(payload.name);
 
     // eslint-disable-next-line
-    stepOneForm.setValue('author', undefined as any);
+    stepOneForm.setValue('authorIds', undefined as any);
 
     // eslint-disable-next-line
     stepOneForm.setValue('authorName', payload.name as any, {
@@ -177,6 +205,20 @@ export const StepOneForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
 
     setCreateAuthorDialogVisible(false);
   };
+
+  const stepOneForm = useForm({
+    resolver: zodResolver(stepOneSchema),
+    defaultValues: {
+      isbn: bookData?.isbn ?? '',
+      title: bookData?.title ?? '',
+      authorIds: bookData?.authors[0].id ?? '',
+      authorName: '',
+      publisher: bookData?.publisher ?? '',
+      releaseYear: bookData?.releaseYear ?? undefined,
+    },
+    reValidateMode: 'onChange',
+    mode: 'onTouched',
+  });
 
   return (
     <Form {...stepOneForm}>
@@ -220,7 +262,7 @@ export const StepOneForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
           )}
         />
         <FormField
-          name="author"
+          name="authorIds"
           control={stepOneForm.control}
           render={({ field }) => (
             <FormItem className="flex flex-col">
@@ -344,7 +386,7 @@ export const StepOneForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
                             key={`author-${author.id}`}
                             value={author.name}
                             onSelect={() => {
-                              stepOneForm.setValue('author', author.id);
+                              stepOneForm.setValue('authorIds', author.id);
 
                               stepOneForm.setValue('authorName', '');
 

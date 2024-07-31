@@ -29,6 +29,8 @@ import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBoo
 import { FindBookByIdQueryOptions } from '../../api/user/queries/findBookById/findBookByIdQueryOptions';
 import { useCreateBookChangeRequestMutation } from '../../../bookChangeRequests/api/user/mutations/createBookChangeRequestMutation/createBookChangeRequestMutation';
 import { useToast } from '../../../common/components/toast/use-toast';
+import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
+import { BookApiError } from '../../errors/bookApiError';
 
 interface Props {
   bookId: string;
@@ -68,6 +70,47 @@ const stepTwoSchema = z.object({
 });
 
 export const CreateChangeRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
+  const accessToken = useSelector(userStateSelectors.selectAccessToken);
+
+  const { data: userData, isFetched: isUserDataFetched } = useFindUserQuery();
+
+  const { data: userBookData, isFetched: isUserBookDataFetched } = useQuery(
+    FindUserBookByIdQueryOptions({
+      userBookId: bookId,
+      userId: userData?.id ?? '',
+      accessToken: accessToken as string,
+    }),
+  );
+
+  const { isFetched: isBookDataFetched } = useQuery(
+    FindBookByIdQueryOptions({
+      accessToken: accessToken as string,
+      bookId: userBookData?.bookId as string,
+    }),
+  );
+
+  if (!isUserDataFetched) {
+    return <LoadingSpinner />;
+  }
+
+  if (!isUserBookDataFetched) {
+    return <LoadingSpinner />;
+  }
+
+  if (!isBookDataFetched) {
+    return <LoadingSpinner />;
+  }
+
+  return (
+    <UnderlyingForm
+      bookId={bookId}
+      onCancel={onCancel}
+      onSubmit={onSubmit}
+    />
+  );
+};
+
+const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const context = useBookDetailsChangeRequestContext();
@@ -124,9 +167,9 @@ export const CreateChangeRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit 
   const onUpdate = async (values: z.infer<typeof stepTwoSchema>) => {
     const payload = {
       ...context,
-      ...(context?.author
+      ...(context?.authorIds
         ? {
-            authorIds: [context.author],
+            authorIds: [context.authorIds],
           }
         : {}),
       ...values,
@@ -134,20 +177,66 @@ export const CreateChangeRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit 
       bookId: bookData?.id as string,
     };
 
-    if (Object.values(context).filter(Boolean).length === 0) {
+    Object.entries(payload).forEach(([key, value]) => {
+      const bookDataKey = key as keyof typeof bookData;
+
+      if (bookData && bookData[bookDataKey] === value) {
+        delete payload[key as keyof typeof payload];
+      }
+
+      if (
+        bookData &&
+        bookData[bookDataKey] &&
+        Array.isArray(bookData[bookDataKey]) &&
+        bookData[bookDataKey][0] === value
+      ) {
+        delete payload[key as keyof typeof payload];
+      }
+
+      if (
+        bookData &&
+        bookData['authors'] &&
+        Array.isArray(bookData['authors']) &&
+        key === 'authorIds' &&
+        Array.isArray(value) &&
+        bookData['authors'][0]?.id === value[0]
+      ) {
+        delete payload['authorIds'];
+      }
+
+      if (!value) {
+        delete payload[key as keyof typeof payload];
+      }
+    });
+
+    if (Object.entries(payload).length === 2) {
       onSubmit();
 
       return;
     }
 
-    await createBookChangeRequest(payload);
+    try {
+      await createBookChangeRequest(payload);
 
-    toast({
-      title: 'Prośba o zmianę została wysłana.',
-      variant: 'success',
-    });
+      toast({
+        title: 'Prośba o zmianę została wysłana.',
+        variant: 'success',
+      });
+    } catch (error) {
+      if (error instanceof BookApiError) {
+        return toast({
+          title: 'Coś poszlo nie tak. Spróbuj ponownie.',
+          variant: 'destructive',
+        });
+      }
 
-    onSubmit();
+      toast({
+        title: 'Nieznany błąd.',
+        variant: 'destructive',
+      });
+    } finally {
+      onSubmit();
+    }
   };
 
   return (
