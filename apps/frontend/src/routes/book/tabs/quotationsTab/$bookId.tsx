@@ -34,7 +34,7 @@ export const QuotesPage: FC = () => {
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
 
   const [pageSize] = useState(4);
 

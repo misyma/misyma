@@ -12,12 +12,14 @@ export const getQuotes = async (payload: GetQuotesPayload) => {
   const queryParams: Record<string, string> = {};
 
   if (payload.page || payload.page === 0) {
-    queryParams.page = `${payload.page + 1}`;
+    queryParams.page = `${payload.page}`;
   }
 
   if (payload.pageSize) {
     queryParams.pageSize = `${payload.pageSize}`;
   }
+
+  queryParams.sortDate = 'desc'
 
   const response = await HttpService.get<FindQuotesResponseBody>({
     url: `/user-books/${payload.userBookId}/quotes`,
