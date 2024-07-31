@@ -50,7 +50,7 @@ const stepTwoSchema = z.object({
     })
     .optional(),
   format: z.nativeEnum(ContractBookFormat).optional(),
-  pagesCount: z
+  pages: z
     .number({
       required_error: 'Ilość stron jest wymagana.',
       coerce: true,
@@ -103,7 +103,7 @@ export const CreateChangeRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit 
       language: bookData?.language,
       translator: bookData?.translator,
       format: bookData?.format,
-      pagesCount: bookData?.pages,
+      pages: bookData?.pages,
     },
     reValidateMode: 'onChange',
     mode: 'onTouched',
@@ -242,7 +242,7 @@ export const CreateChangeRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit 
             />
             <FormField
               control={stepTwoForm.control}
-              name="pagesCount"
+              name="pages"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Ilość stron</FormLabel>

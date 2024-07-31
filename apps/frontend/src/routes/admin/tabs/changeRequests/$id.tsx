@@ -3,7 +3,7 @@ import { RequireAdmin } from '../../../../modules/core/components/requireAdmin/r
 import { FC, ReactNode } from 'react';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { z } from 'zod';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { FindBookChangeRequestByIdQueryOptions } from '../../../../modules/bookChangeRequests/api/admin/queries/findBookChangeRequestById/findBookChangeRequestByIdQueryOptions';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
@@ -20,8 +20,9 @@ import { useUpdateBookMutation } from '../../../../modules/book/api/admin/mutati
 import { useDeleteBookChangeRequestMutation } from '../../../../modules/bookChangeRequests/api/admin/mutations/deleteBookChangeRequest/deleteBookChangeRequest';
 import { BookApiError } from '../../../../modules/book/errors/bookApiError';
 import { useToast } from '../../../../modules/common/components/toast/use-toast';
+import { BookApiQueryKeys } from '../../../../modules/book/api/user/queries/bookApiQueryKeys';
 
-type ChangeKeys = 'format' | 'isbn' | 'language' | 'releaseYear' | 'title' | 'translator';
+type ChangeKeys = 'format' | 'isbn' | 'language' | 'releaseYear' | 'title' | 'translator' | 'publisher' | 'pages';
 
 type ChangeArguments = {
   current: string;
@@ -36,12 +37,16 @@ const schema = z.object({
   releaseYear: z.boolean().default(false),
   title: z.boolean().default(false),
   translator: z.boolean().default(false),
+  publisher: z.boolean().default(false),
+  pages: z.boolean().default(false),
 });
 
 export const ChangeRequestView: FC = () => {
   const { id } = Route.useParams();
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
+
+  const queryClient = useQueryClient();
 
   const { toast } = useToast();
 
@@ -74,6 +79,8 @@ export const ChangeRequestView: FC = () => {
       releaseYear: false,
       title: false,
       translator: false,
+      publisher: false,
+      pages: false,
     },
   });
 
@@ -118,6 +125,14 @@ export const ChangeRequestView: FC = () => {
       translator: {
         current: 'Obecny przekład',
         desired: 'Pożądany przekład',
+      },
+      pages: {
+        current: 'Obecna ilość stron',
+        desired: 'Pożądana ilość strong',
+      },
+      publisher: {
+        current: 'Obecne wydawnictwo',
+        desired: 'Pożądane wydawnictwo'
       },
     } as const;
 
@@ -180,31 +195,15 @@ export const ChangeRequestView: FC = () => {
   };
 
   const onRejectAll = (): void => {
-    form.setValue('format', false);
-
-    form.setValue('isbn', false);
-
-    form.setValue('language', false);
-
-    form.setValue('releaseYear', false);
-
-    form.setValue('title', false);
-
-    form.setValue('translator', false);
+    Object.keys((changeRequestData?.data ?? {})).forEach((key) => {
+      form.setValue(key as ChangeKeys, false);
+    })
   };
 
   const onAcceptAll = (): void => {
-    form.setValue('format', true);
-
-    form.setValue('isbn', true);
-
-    form.setValue('language', true);
-
-    form.setValue('releaseYear', true);
-
-    form.setValue('title', true);
-
-    form.setValue('translator', true);
+    Object.keys((changeRequestData?.data ?? {})).forEach((key) => {
+      form.setValue(key as ChangeKeys, true);
+    })
   };
 
   const onSubmit = async (values: z.infer<typeof schema>) => {
@@ -227,6 +226,10 @@ export const ChangeRequestView: FC = () => {
         bookId: bookData?.id as string,
         ...payload,
       });
+
+      await queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey[0] === BookApiQueryKeys.findBookById && query.queryKey[1] === bookData?.id
+      })
     } catch (error) {
       if (error instanceof BookApiError) {
         toast({
@@ -287,6 +290,11 @@ export const ChangeRequestView: FC = () => {
                 className="space-y-4"
                 onSubmit={form.handleSubmit(onSubmit)}
               >
+                <div className='grid grid-cols-3 w-full'>
+                  <div></div>
+                  <div></div>
+                  <div>Zmiana zaakceptowana</div>
+                </div>
                 {...buildDifferencesView()}
 
                 <Button size="xl">Zapisz zmiany</Button>

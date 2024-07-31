@@ -64,7 +64,7 @@ const stepOneSchema = z.object({
     })
     .or(z.literal('')),
   authorName: z.string().min(1).max(64).optional(),
-  yearOfIssue: z
+  releaseYear: z
     .number({
       coerce: true,
     })
@@ -158,7 +158,7 @@ export const StepOneForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
       author: bookData?.authors[0].id ?? '',
       authorName: '',
       publisher: bookData?.publisher ?? '',
-      yearOfIssue: bookData?.releaseYear,
+      releaseYear: bookData?.releaseYear,
     },
     reValidateMode: 'onChange',
     mode: 'onTouched',
@@ -367,7 +367,7 @@ export const StepOneForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
           )}
         />
         <FormField
-          name="yearOfIssue"
+          name="releaseYear"
           control={stepOneForm.control}
           render={({ field }) => (
             <FormItem>
