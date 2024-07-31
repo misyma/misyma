@@ -4,14 +4,14 @@ import { Dispatch, ReactNode, createContext, useContext, useReducer } from 'reac
 export interface BookDetailsChangeRequestState {
   isbn: string;
   title: string;
-  author: string | undefined;
+  authorIds: string | undefined;
   authorName: string | undefined;
-  yearOfIssue: number;
+  releaseYear: undefined;
   publisher: string;
   language: Language;
   translator: string;
   format: BookFormat;
-  numberOfPages: number;
+  pages: undefined;
 }
 
 export enum BookDetailsChangeRequestAction {
@@ -24,16 +24,16 @@ type SetContextValuesAction = {
 };
 
 const defaultValues: BookDetailsChangeRequestState = {
-  author: undefined,
+  authorIds: undefined,
   authorName: undefined,
   format: BookFormat.paperback,
   isbn: '',
   language: Language.English,
-  numberOfPages: 500,
+  pages: undefined,
   publisher: '',
   title: '',
   translator: '',
-  yearOfIssue: 1900,
+  releaseYear: undefined,
 };
 
 const BookDetailsChangeRequestContext = createContext<BookDetailsChangeRequestState>(defaultValues);
