@@ -16,7 +16,7 @@ export const findBookReadings = async (values: FindBookReadingsPayload): Promise
   const queryParams: Record<string, string> = {};
 
   if (page) {
-    queryParams['page'] = `${page + 1}`;
+    queryParams['page'] = `${page}`;
   }
 
   if (pageSize) {
