@@ -1,7 +1,6 @@
 import { FC, useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTrigger } from '../../../common/components/dialog/dialog';
 import { HiTrash } from 'react-icons/hi';
-import { cn } from '../../../common/lib/utils';
 import { useQueryClient } from '@tanstack/react-query';
 import { ApiError } from '../../../common/errors/apiError';
 import { useSelector } from 'react-redux';
@@ -11,6 +10,12 @@ import { useToast } from '../../../common/components/toast/use-toast';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
 import { useDeleteUserBookMutation } from '../../api/user/mutations/deleteUserBookMutation/deleteUserBookMutation';
 import { useNavigate } from '@tanstack/react-router';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../../../common/components/tooltip/tooltip';
 
 interface Props {
   bookId: string;
@@ -19,7 +24,7 @@ interface Props {
   className?: string;
 }
 
-export const DeleteUserBookModal: FC<Props> = ({ bookId, bookshelfId, bookName, className }: Props) => {
+export const DeleteUserBookModal: FC<Props> = ({ bookId, bookshelfId, bookName }: Props) => {
   const queryClient = useQueryClient();
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
@@ -86,7 +91,22 @@ export const DeleteUserBookModal: FC<Props> = ({ bookId, bookshelfId, bookName, 
       }}
     >
       <DialogTrigger asChild>
-        <HiTrash className={cn('text-primary h-8 w-8 cursor-pointer', className)} />
+        <TooltipProvider delayDuration={0}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={() => setIsOpen(true)}
+                variant="ghost"
+                size="icon"
+              >
+                <HiTrash className="w-full h-full text-primary" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Usuń książkę</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </DialogTrigger>
       <DialogContent
         style={{

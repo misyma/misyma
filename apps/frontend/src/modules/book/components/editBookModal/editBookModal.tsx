@@ -17,6 +17,7 @@ import { CreateChangeRequestForm } from '../createChangeRequestForm/createChange
 import { RadioGroup, RadioGroupItem } from '../../../common/components/radioGroup/radio-group';
 import { Button } from '../../../common/components/button/button';
 import { BookDetailsChangeRequestProvider } from '../../context/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../common/components/tooltip/tooltip';
 
 interface Props {
   bookId: string;
@@ -203,7 +204,22 @@ export const EditBookModal: FC<Props> = ({ bookId }) => {
         }}
       >
         <DialogTrigger asChild>
-          <HiPencil className="cursor-pointer text-primary h-8 w-8" />
+          <TooltipProvider delayDuration={0}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  onClick={() => setIsOpen(true)}
+                  variant="ghost"
+                  size="icon"
+                >
+                  <HiPencil className="cursor-pointer text-primary h-8 w-8" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Edytuj książkę</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </DialogTrigger>
         <DialogContent
           style={{
