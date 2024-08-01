@@ -311,8 +311,8 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
                           {field.value
                             ? authors?.data.find((author) => author.id === field.value)?.name
                               ? authors?.data.find((author) => author.id === field.value)?.name || 'Wyszukaj autora'
-                              : draftAuthorName || 'Wyszukaj autora'
-                            : draftAuthorName || 'Wyszukaj autora'}
+                              : draftAuthorName || bookData?.authors[0]?.name || 'Wyszukaj autora'
+                            : draftAuthorName || bookData?.authors[0]?.name || 'Wyszukaj autora'}
                         </p>
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
