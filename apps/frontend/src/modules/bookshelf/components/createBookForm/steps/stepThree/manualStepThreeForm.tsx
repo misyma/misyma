@@ -6,12 +6,7 @@ import {
   useBookCreation,
   useBookCreationDispatch,
 } from '../../../../context/bookCreationContext/bookCreationContext';
-import {
-  ReadingStatus as ContractReadingStatus,
-  CreateAuthorResponseBody,
-  CreateBookResponseBody,
-  CreateUserBookResponseBody,
-} from '@common/contracts';
+import { ReadingStatus as ContractReadingStatus } from '@common/contracts';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -24,9 +19,7 @@ import {
 } from '../../../../../common/components/form/form';
 import { FileInput } from '../../../../../common/components/input/input';
 import { Button } from '../../../../../common/components/button/button';
-import { useCreateBookMutation } from '../../../../../book/api/user/mutations/createBookMutation/createBookMutation';
 import { useFindUserQuery } from '../../../../../user/api/queries/findUserQuery/findUserQuery';
-import { useNavigate } from '@tanstack/react-router';
 import {
   Select,
   SelectContent,
@@ -35,19 +28,15 @@ import {
   SelectValue,
 } from '../../../../../common/components/select/select';
 import { ReadingStatus } from '../../../../../common/constants/readingStatus';
-import { useToast } from '../../../../../common/components/toast/use-toast';
 import { useEffect, useRef, useState } from 'react';
-import { useUploadBookImageMutation } from '../../../../../book/api/user/mutations/uploadBookImageMutation/uploadBookImageMutation';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { getGenresQueryOptions } from '../../../../../genres/api/queries/getGenresQuery/getGenresQueryOptions';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';
 import { useFindUserBookshelfsQuery } from '../../../../api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
-import { BookApiError } from '../../../../../book/errors/bookApiError';
-import { useCreateUserBookMutation } from '../../../../../book/api/user/mutations/createUserBookMutation/createUserBookMutation';
-import { useCreateAuthorDraftMutation } from '../../../../../author/api/user/mutations/createAuthorDraftMutation/createAuthorDraftMutation';
 import { useFindAuthorsQuery } from '../../../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
-import { BookApiQueryKeys } from '../../../../../book/api/user/queries/bookApiQueryKeys';
+import { useCreateBookWithUserBook } from '../../../../hooks/createBookWithUserBook/createBookWithUserBook';
+import { LoadingSpinner } from '../../../../../common/components/spinner/loading-spinner';
 
 const stepThreeFormSchema = z.object({
   status: z.nativeEnum(ContractReadingStatus, {
@@ -78,8 +67,6 @@ interface Props {
 export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
   const bookCreation = useBookCreation<false>() as BookCreationNonIsbnState;
 
-  const queryClient = useQueryClient();
-
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const [submissionError, setSubmissionError] = useState<string | null>(null);
@@ -101,8 +88,6 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
     pageSize: 50,
   });
 
-  const { mutateAsync: createAuthorDraft } = useCreateAuthorDraftMutation({});
-
   const { data } = useQuery(
     getGenresQueryOptions({
       accessToken: accessToken as string,
@@ -110,8 +95,6 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
   );
 
   const [file, setFile] = useState<File | undefined>();
-
-  const { toast } = useToast();
 
   useEffect(() => {
     if (file) {
@@ -141,155 +124,50 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
     enabled: false,
   });
 
-  const { mutateAsync: createBookMutation } = useCreateBookMutation({});
+  const { create, isProcessing } = useCreateBookWithUserBook({
+    onAuthorCreationError: async () => {
+      const result = await refetch();
 
-  const { mutateAsync: createUserBookMutation } = useCreateUserBookMutation({});
-
-  const { mutateAsync: uploadBookImageMutation } = useUploadBookImageMutation({});
-
-  const navigate = useNavigate();
+      return result.data;
+    },
+    onOperationError: setSubmissionError,
+  });
 
   const onSubmit = async (values: Partial<z.infer<typeof stepThreeFormSchema>>) => {
-    values as z.infer<typeof stepThreeFormSchema>;
-
-    try {
-      let authorDraftResponse: CreateAuthorResponseBody | undefined = undefined;
-
-      let authorId = bookCreation.stepOneDetails?.author as string;
-
-      if (bookCreation.stepOneDetails?.authorName) {
-        try {
-          authorDraftResponse = await createAuthorDraft({
-            name: bookCreation.stepOneDetails.authorName,
-          });
-
-          authorId = authorId || (authorDraftResponse?.id as string);
-        } catch (error) {
-          if (error instanceof Error) {
-            if (error.name === 'ResourceAlreadyExistsError') {
-              const response = await refetch();
-
-              if (!response.data?.data[0]) {
-                return;
-              }
-
-              authorId = response.data?.data[0].id as string;
-            } else {
-              toast({
-                variant: 'destructive',
-                title: `Coś poszło nie tak przy ustawianiu autora. Wróć do kroku pierwszego i spróbuj raz jeszcze.`,
-              });
-            }
-          }
-        }
-      }
-
-      let bookCreationResponse: CreateBookResponseBody;
-
-      try {
-        bookCreationResponse = await createBookMutation({
-          authorIds: [authorId],
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          format: bookCreation.stepTwoDetails?.format as any,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          language: bookCreation.stepTwoDetails?.language as any,
-          title: bookCreation.stepOneDetails?.title as string,
-          translator: bookCreation.stepTwoDetails?.translator,
-          pages: bookCreation.stepTwoDetails?.pagesCount,
-          ...(bookCreation.stepTwoDetails as Required<BookCreationNonIsbnState['stepTwoDetails']>),
-          ...(bookCreation.stepThreeDetails as Required<BookCreationNonIsbnState['stepThreeDetails']>),
-          ...(bookCreation.stepOneDetails as Required<BookCreationNonIsbnState['stepOneDetails']>),
-          isbn: bookCreation.stepOneDetails?.isbn === '' ? undefined : bookCreation.stepOneDetails?.isbn,
-          releaseYear:
-            // eslint-disable-next-line
-            (bookCreation.stepOneDetails?.yearOfIssue as any) === ''
-              ? undefined
-              : bookCreation.stepOneDetails?.yearOfIssue,
-          accessToken: accessToken as string,
-          publisher: bookCreation.stepOneDetails?.publisher === '' ? undefined : bookCreation.stepOneDetails?.publisher,
-        });
-      } catch (error) {
-        toast({
-          variant: 'destructive',
-          title: `Książka z isbn: ${bookCreation.stepOneDetails?.isbn} już istnieje.`,
-          description: `Utwórz książkę używając funkcji wyszukiwania.`,
-        });
-
-        setSubmissionError(`Książka z isbn ${bookCreation.stepOneDetails?.isbn} już istnieje.`);
-
-        return;
-      }
-
-      let userBook: CreateUserBookResponseBody;
-
-      try {
-        userBook = await createUserBookMutation({
-          bookId: bookCreationResponse.id,
-          bookshelfId: bookCreation.stepThreeDetails?.bookshelfId || bookshelfId,
-          status: bookCreation.stepThreeDetails?.status || (values.status as ContractReadingStatus),
-          isFavorite: false,
-          genreIds: [bookCreation.stepThreeDetails?.genre as string],
-          accessToken: accessToken as string,
-        });
-      } catch (error) {
-        if (error instanceof Error && error.message === 'ResourceAlreadyExistsError') {
-          toast({
-            variant: 'destructive',
-            title: `Posiadasz już książkę z isbn: ${bookCreation.stepOneDetails?.isbn} na swojej półce.`,
-          });
-
-          return;
-        }
-
-        setSubmissionError(`Coś poszło nie tak. Spróbuj ponownie.`);
-
-        return;
-      }
-
-      queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId &&
-          query.queryKey[1] === bookCreation.stepThreeDetails?.bookshelfId,
-      });
-
-      if (file) {
-        await uploadBookImageMutation({
-          bookId: userBook.id,
-          file: file as unknown as File,
-          accessToken: accessToken as string,
-        });
-      }
-
-      toast({
-        title: 'Książka została położona na półce 😄',
-        description: `Książka ${bookCreation.stepOneDetails?.title} została położona na półce 😄`,
-        variant: 'success',
-      });
-
-      await navigate({
-        to: `/bookshelf/${bookCreation.stepThreeDetails?.bookshelfId || bookshelfId}`,
-      });
-    } catch (error) {
-      if (error instanceof BookApiError) {
-        setSubmissionError(error.context.message);
-
-        toast({
-          title: 'Coś poszło nie tak...',
-          description: 'Nie udało się utworzyć książki. Spróbuj ponownie.',
-          variant: 'destructive',
-        });
-
-        return;
-      }
-
-      setSubmissionError('Coś poszło nie tak. Spróbuj ponownie.');
-
-      toast({
-        title: 'Coś poszło nie tak...',
-        description: 'Nie udało się utworzyć książki. Spróbuj ponownie.',
-        variant: 'destructive',
-      });
-    }
+    await create({
+      authorPayload: {
+        authorId: bookCreation.stepOneDetails?.author,
+        name: bookCreation.stepOneDetails?.authorName,
+      },
+      bookPayload: {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        format: bookCreation.stepTwoDetails?.format as any,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        language: bookCreation.stepTwoDetails?.language as any,
+        title: bookCreation.stepOneDetails?.title as string,
+        translator: bookCreation.stepTwoDetails?.translator,
+        pages: bookCreation.stepTwoDetails?.pagesCount,
+        ...(bookCreation.stepTwoDetails as Required<BookCreationNonIsbnState['stepTwoDetails']>),
+        ...(bookCreation.stepThreeDetails as Required<BookCreationNonIsbnState['stepThreeDetails']>),
+        ...(bookCreation.stepOneDetails as Required<BookCreationNonIsbnState['stepOneDetails']>),
+        isbn: bookCreation.stepOneDetails?.isbn === '' ? undefined : bookCreation.stepOneDetails?.isbn,
+        releaseYear:
+          // eslint-disable-next-line
+          (bookCreation.stepOneDetails?.yearOfIssue as any) === ''
+            ? undefined
+            : bookCreation.stepOneDetails?.yearOfIssue,
+        accessToken: accessToken as string,
+        publisher: bookCreation.stepOneDetails?.publisher === '' ? undefined : bookCreation.stepOneDetails?.publisher,
+      },
+      userBookPayload: {
+        bookshelfId: bookCreation.stepThreeDetails?.bookshelfId || bookshelfId,
+        status: bookCreation.stepThreeDetails?.status || (values.status as ContractReadingStatus),
+        isFavorite: false,
+        genreIds: [bookCreation.stepThreeDetails?.genre as string],
+        accessToken: accessToken as string,
+      },
+      image: file,
+    });
   };
 
   return (
@@ -459,7 +337,8 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
         <div className="flex w-full gap-4 justify-between">
           <Button
             size="lg"
-            variant="outline"
+            variant={isProcessing ? 'ghost' : 'outline'}
+            disabled={isProcessing}
             onClick={() => {
               dispatch({
                 type: BookCreationActionType.setStep,
@@ -471,10 +350,12 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
           </Button>
           <Button
             size="lg"
-            disabled={!form.formState.isValid}
+            variant={isProcessing ? 'ghost' : 'default'}
+            disabled={!form.formState.isValid || isProcessing}
             type="submit"
           >
-            Dodaj książkę
+            { isProcessing && <LoadingSpinner size={40} />}
+            { !isProcessing && <>Dodaj książkę</>}
           </Button>
         </div>
         {submissionError ? <p className="text-red-500">{submissionError}</p> : <></>}
