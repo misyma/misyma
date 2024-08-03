@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import {
@@ -15,13 +15,16 @@ import { Button } from '../../../common/components/button/button';
 import { Input } from '../../../common/components/input/input';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
-import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '../../../common/components/toast/use-toast';
-import { useCreateQuoteMutation } from '../../../quotes/api/mutations/createQuoteMutation/createQuoteMutation';
-import { getQuotesOptionsQueryKey } from '../../../quotes/api/queries/getQuotes/getQuotesOptions';
+import { useUpdateQuoteMutation } from '../../api/mutations/updateQuoteMutation/updateQuoteMutation';
+import { QuotesApiQueryKeys } from '../../api/queries/quotesApiQueryKeys';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../common/components/tooltip/tooltip';
+import { HiPencil } from 'react-icons/hi';
+import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
+import { getQuotesOptions } from '../../api/queries/getQuotes/getQuotesOptions';
 
-const createQuotationSchema = z
+const editQuoteSchema = z
   .object({
     page: z
       .string({
@@ -30,13 +33,15 @@ const createQuotationSchema = z
       .max(16, {
         message: 'Strona może mieć maksylamnie 16 znaków.',
       })
+      .optional()
       .or(z.literal('')),
     content: z
       .string({
         required_error: 'Cytat jest wymagany.',
       })
       .min(1, 'Cytat musi mieć minimum 1 znak.')
-      .max(256, 'Strona może mieć maksymalnie 256 znaków.'),
+      .max(256, 'Strona może mieć maksymalnie 256 znaków.')
+      .optional(),
   })
   .superRefine((value, ctx) => {
     if (!value.page) {
@@ -56,39 +61,104 @@ const createQuotationSchema = z
   });
 
 interface Props {
+  quoteId: string;
   userBookId: string;
-  trigger: ReactNode;
-  onMutated: () => void | Promise<void>;
 }
 
-export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props): ReactNode => {
+export const EditQuoteModal = ({ quoteId, userBookId }: Props) => {
+  const accessToken = useSelector(userStateSelectors.selectAccessToken);
+
+  const { isFetching: isQuotationsFetching } = useQuery(
+    getQuotesOptions({
+      accessToken: accessToken as string,
+      userBookId,
+      page: 1,
+      pageSize: 100,
+    }),
+  );
+
+  if (isQuotationsFetching) {
+    return (
+      <Dialog>
+        <DialogTrigger asChild>
+          <HiPencil
+            onClick={() => {}}
+            className="cursor-pointer text-gray-500 h-8 w-8"
+          />
+        </DialogTrigger>
+        <DialogContent
+          style={{
+            borderRadius: '40px',
+          }}
+          className="max-w-xl py-16"
+          omitCloseButton={true}
+        >
+          <DialogHeader className="font-semibold text-center flex justify-center items-center">
+            Dodaj cytat
+          </DialogHeader>
+          <DialogDescription>
+            <LoadingSpinner />
+          </DialogDescription>
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
+  return (
+    <WrappedModal
+      quoteId={quoteId}
+      userBookId={userBookId}
+    />
+  );
+};
+
+const WrappedModal = ({ quoteId, userBookId }: Props): ReactNode => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const { toast } = useToast();
 
   const queryClient = useQueryClient();
 
-  const { data: userData } = useFindUserQuery();
-
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const [error, setError] = useState('');
 
-  const form = useForm<z.infer<typeof createQuotationSchema>>({
-    resolver: zodResolver(createQuotationSchema),
+  const { data: quotationsData } = useQuery(
+    getQuotesOptions({
+      accessToken: accessToken as string,
+      userBookId,
+      page: 1,
+      pageSize: 100,
+    }),
+  );
+
+  const defaultPage = useMemo(
+    () => quotationsData?.data.find((quote) => quote.id === quoteId)?.page ?? '',
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [quotationsData?.data],
+  );
+
+  const defaultContent = useMemo(
+    () => quotationsData?.data.find((quote) => quote.id === quoteId)?.content,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [quotationsData?.data],
+  );
+
+  const form = useForm<z.infer<typeof editQuoteSchema>>({
+    resolver: zodResolver(editQuoteSchema),
     defaultValues: {
-      page: '',
-      content: '',
+      page: defaultPage,
+      content: defaultContent,
     },
     reValidateMode: 'onChange',
     mode: 'onTouched',
   });
 
-  const { mutateAsync } = useCreateQuoteMutation({});
+  const { mutateAsync, isPending: isUpdating } = useUpdateQuoteMutation({});
 
-  const onSubmit = async (values: z.infer<typeof createQuotationSchema>): Promise<void> => {
+  const onSubmit = async (values: z.infer<typeof editQuoteSchema>): Promise<void> => {
     const payload: {
-      content: string;
+      content: string | undefined;
       page: string | undefined;
     } = {
       content: values.content,
@@ -104,24 +174,21 @@ export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props):
         ...values,
         ...payload,
         accessToken: accessToken as string,
-        createdAt: new Date().toISOString(),
+        quoteId,
         userBookId,
-        userId: userData?.id as string,
-        isFavorite: false,
+        errorHandling: {
+          title: 'Błąd podczas aktualizowania cytatu.',
+        },
       });
 
-      onMutated();
-
       await queryClient.invalidateQueries({
-        queryKey: getQuotesOptionsQueryKey({
-          userBookId,
-        }),
+        predicate: ({ queryKey }) => queryKey[0] === QuotesApiQueryKeys.findQuotes,
       });
 
       setIsOpen(false);
 
       toast({
-        title: 'Cytat został dodany 😄',
+        title: 'Cytat został zaaktualizowany 😄',
         variant: 'success',
       });
     } catch (error) {
@@ -146,7 +213,24 @@ export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props):
         setError('');
       }}
     >
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      <DialogTrigger asChild>
+        <TooltipProvider delayDuration={0}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={() => setIsOpen(true)}
+                variant="ghost"
+                size="icon"
+              >
+                <HiPencil className="cursor-pointer text-primary h-8 w-8" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Zaaktualizuj cytat</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </DialogTrigger>
       <DialogContent
         style={{
           borderRadius: '40px',
@@ -201,6 +285,8 @@ export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props):
               />
               <div className="pt-8 gap-2 flex sm:justify-center justify-center sm:items-center items-center">
                 <Button
+                  variant={isUpdating ? 'ghost' : 'outline'}
+                  disabled={isUpdating}
                   className="bg-transparent text-primary w-32 sm:w-40"
                   type="reset"
                   onClick={() => {
@@ -211,10 +297,12 @@ export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props):
                 </Button>
                 <Button
                   type="submit"
-                  disabled={!form.formState.isValid}
+                  variant={isUpdating ? 'ghost' : 'default'}
+                  disabled={!form.formState.isValid || isUpdating}
                   className="bg-primary w-32 sm:w-40"
                 >
-                  Potwierdź
+                  {isUpdating && <LoadingSpinner size={40} />}
+                  {!isUpdating && <p>Potwierdź</p>}
                 </Button>
               </div>
             </form>
