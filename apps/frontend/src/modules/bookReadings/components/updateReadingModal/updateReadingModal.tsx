@@ -1,4 +1,4 @@
-import { FC, ReactNode, useState } from 'react';
+import { FC, useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -17,9 +17,8 @@ import { Popover, PopoverContent, PopoverTrigger } from '../../../common/compone
 import { CalendarIcon } from 'lucide-react';
 import { Calendar } from '../../../common/components/calendar/calendar';
 import { Textarea } from '../../../common/components/textArea/textarea';
-import { useAddBookReadingMutation } from '../../../bookReadings/api/mutations/bookReadings/addBookReadingMutation/addBookReadingMutation';
 import { useQueryClient } from '@tanstack/react-query';
-import { BookReadingsApiQueryKeys } from '../../../bookReadings/api/queries/bookReadingsApiQueryKeys';
+import { BookReadingsApiQueryKeys } from '../../api/queries/bookReadingsApiQueryKeys';
 import { pl } from 'date-fns/locale';
 import {
   Select,
@@ -28,16 +27,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../../../common/components/select/select';
+import { useUpdateBookReadingMutation } from '../../api/mutations/bookReadings/updateBookReadingMutation/updateBookReadingMutation';
+import { BookReading } from '@common/contracts';
+import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../common/components/tooltip/tooltip';
+import { HiPencil } from 'react-icons/hi';
+import { useToast } from '../../../common/components/toast/use-toast';
 
 interface Props {
-  bookId: string;
-  rating: number;
+  bookReading: BookReading;
   className?: string;
-  trigger: ReactNode;
-  onMutated: () => void | Promise<void>;
 }
 
-const createBookReadingSchema = z
+const updateBookReadingSchema = z
   .object({
     userBookId: z.string().uuid(),
     comment: z.string().min(1).max(256).optional(),
@@ -47,12 +49,13 @@ const createBookReadingSchema = z
       })
       .min(1)
       .max(10)
-      .int(),
+      .int()
+      .optional(),
     startedAt: z.date(),
     endedAt: z.date(),
   })
   .superRefine((args, ctx) => {
-    if (args.startedAt.getTime() > args.endedAt.getTime()) {
+    if (args.startedAt && args.endedAt && args.startedAt.getTime() > args.endedAt.getTime()) {
       ctx.addIssue({
         code: 'invalid_date',
         message: 'Data rozpoczęcia czytania nie może być późniejsza niż data zakończenia czytania.',
@@ -61,48 +64,52 @@ const createBookReadingSchema = z
     }
   });
 
-interface CreateBookReadingFormProps {
-  bookId: string;
-  rating: number;
-  onMutated: () => void;
+interface UpdateBookReadingFormProps {
+  bookReading: BookReading;
   setIsOpen: (bol: boolean) => void;
   setError: (err: string) => void;
 }
 
-const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating, onMutated, setIsOpen, setError }) => {
+const UpdateBookReadingForm: FC<UpdateBookReadingFormProps> = ({ bookReading, setIsOpen, setError }) => {
   const queryClient = useQueryClient();
 
-  const form = useForm<z.infer<typeof createBookReadingSchema>>({
-    resolver: zodResolver(createBookReadingSchema),
+  const { toast } = useToast();
+
+  const form = useForm<z.infer<typeof updateBookReadingSchema>>({
+    resolver: zodResolver(updateBookReadingSchema),
     defaultValues: {
-      userBookId: bookId,
-      comment: undefined,
-      rating,
-      startedAt: undefined,
-      endedAt: undefined,
+      userBookId: bookReading.userBookId,
+      comment: bookReading?.comment,
+      rating: bookReading?.rating as number,
+      startedAt: new Date(bookReading?.startedAt as string) as Date,
+      endedAt: new Date(bookReading?.endedAt as string) as Date,
     },
   });
 
-  const { mutateAsync } = useAddBookReadingMutation({});
+  const { mutateAsync, isPending: isUpdatingBookReading } = useUpdateBookReadingMutation({});
 
-  const onCreateBookReading = async (values: z.infer<typeof createBookReadingSchema>) => {
+  const onCreateBookReading = async (values: z.infer<typeof updateBookReadingSchema>) => {
     try {
       await mutateAsync({
         ...values,
+        readingId: bookReading.id,
         startedAt: values.startedAt.toISOString(),
         endedAt: values.endedAt.toISOString(),
       });
 
       form.reset();
 
-      onMutated();
+      setIsOpen(false);
 
-      queryClient.invalidateQueries({
+      await queryClient.invalidateQueries({
         predicate: ({ queryKey }) =>
-          queryKey[0] === BookReadingsApiQueryKeys.findBookReadings && queryKey[1] === bookId,
+          queryKey[0] === BookReadingsApiQueryKeys.findBookReadings && queryKey[1] === bookReading.userBookId,
       });
 
-      setIsOpen(false);
+      toast({
+        variant: 'success',
+        title: `Ocena została zaaktualizowana.`,
+      });
     } catch (error) {
       if (error instanceof Error) {
         return setError(error.message);
@@ -274,15 +281,17 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
           <Button
             className="bg-transparent text-primary w-32 sm:w-40"
             onClick={() => setIsOpen(false)}
+            disabled={isUpdatingBookReading}
           >
             Wróć
           </Button>
           <Button
             type="submit"
-            disabled={!form.formState.isValid}
+            disabled={!form.formState.isValid || isUpdatingBookReading}
             className="bg-primary w-32 sm:w-40"
           >
-            Potwierdź
+            {isUpdatingBookReading && <LoadingSpinner size={40} />}
+            {!isUpdatingBookReading && <>Potwierdź</>}
           </Button>
         </div>
       </form>
@@ -290,7 +299,7 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
   );
 };
 
-export const CreateBookReadingModal: FC<Props> = ({ bookId, rating, trigger, onMutated }: Props) => {
+export const UpdateBookReadingModal: FC<Props> = ({ bookReading }: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const [error, setError] = useState('');
@@ -305,7 +314,24 @@ export const CreateBookReadingModal: FC<Props> = ({ bookId, rating, trigger, onM
         setError('');
       }}
     >
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      <DialogTrigger asChild>
+        <TooltipProvider delayDuration={0}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={() => setIsOpen(true)}
+                variant="ghost"
+                size="icon"
+              >
+                <HiPencil className="h-8 w-8 text-primary" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Zaaktualizuj ocenę</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </DialogTrigger>
       <DialogContent
         style={{
           borderRadius: '40px',
@@ -314,14 +340,12 @@ export const CreateBookReadingModal: FC<Props> = ({ bookId, rating, trigger, onM
         omitCloseButton={true}
       >
         <DialogHeader className="font-semibold text-center flex justify-center items-center">
-          Dodatkowe informacje
+          Zaaktualizuj ocenę
         </DialogHeader>
         <DialogDescription className="flex flex-col gap-4 justify-center items-center">
           <p className={error ? 'text-red-500' : 'hidden'}>{error}</p>
-          <CreateBookReadingForm
-            bookId={bookId}
-            onMutated={onMutated}
-            rating={rating}
+          <UpdateBookReadingForm
+            bookReading={bookReading}
             setIsOpen={setIsOpen}
             setError={setError}
           />

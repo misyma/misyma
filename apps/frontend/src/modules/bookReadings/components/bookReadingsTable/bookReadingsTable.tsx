@@ -25,7 +25,7 @@ interface DataTableProps<TData, TValue> {
   onSetPage: (val: number) => Promise<void> | void;
 }
 
-export function GradesTable<TData, TValue>({
+export function BookReadingsTable<TData, TValue>({
   columns,
   data,
   pageIndex,

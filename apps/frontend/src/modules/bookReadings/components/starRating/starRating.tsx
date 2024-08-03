@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useSelector } from 'react-redux';
 import { Skeleton } from '../../../common/components/skeleton/skeleton';
-import { CreateBookReadingModal } from '../../../book/components/createBookReadingModal/createBookReadingModal';
+import { CreateBookReadingModal } from '../createBookReadingModal/createBookReadingModal';
 import { BookReading } from '@common/contracts';
 import { FindBookReadingsQueryOptions } from '../../api/queries/findBookReadings/findBookReadingsQueryOptions';
 
