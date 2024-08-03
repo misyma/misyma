@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ReactNode, useMemo, useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import {
@@ -15,14 +15,14 @@ import { Button } from '../../../common/components/button/button';
 import { Input } from '../../../common/components/input/input';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { useToast } from '../../../common/components/toast/use-toast';
 import { useUpdateQuoteMutation } from '../../api/mutations/updateQuoteMutation/updateQuoteMutation';
 import { QuotesApiQueryKeys } from '../../api/queries/quotesApiQueryKeys';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../common/components/tooltip/tooltip';
 import { HiPencil } from 'react-icons/hi';
 import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
-import { getQuotesOptions } from '../../api/queries/getQuotes/getQuotesOptions';
+import { Quote } from '@common/contracts';
 
 const editQuoteSchema = z
   .object({
@@ -61,58 +61,14 @@ const editQuoteSchema = z
   });
 
 interface Props {
-  quoteId: string;
-  userBookId: string;
+  quote: Quote;
 }
 
-export const EditQuoteModal = ({ quoteId, userBookId }: Props) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
-  const { isFetching: isQuotationsFetching } = useQuery(
-    getQuotesOptions({
-      accessToken: accessToken as string,
-      userBookId,
-      page: 1,
-      pageSize: 100,
-    }),
-  );
-
-  if (isQuotationsFetching) {
-    return (
-      <Dialog>
-        <DialogTrigger asChild>
-          <HiPencil
-            onClick={() => {}}
-            className="cursor-pointer text-gray-500 h-8 w-8"
-          />
-        </DialogTrigger>
-        <DialogContent
-          style={{
-            borderRadius: '40px',
-          }}
-          className="max-w-xl py-16"
-          omitCloseButton={true}
-        >
-          <DialogHeader className="font-semibold text-center flex justify-center items-center">
-            Dodaj cytat
-          </DialogHeader>
-          <DialogDescription>
-            <LoadingSpinner />
-          </DialogDescription>
-        </DialogContent>
-      </Dialog>
-    );
-  }
-
-  return (
-    <WrappedModal
-      quoteId={quoteId}
-      userBookId={userBookId}
-    />
-  );
+export const EditQuoteModal = ({ quote }: Props) => {
+  return <WrappedModal quote={quote} />;
 };
 
-const WrappedModal = ({ quoteId, userBookId }: Props): ReactNode => {
+const WrappedModal = ({ quote }: Props): ReactNode => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const { toast } = useToast();
@@ -123,32 +79,11 @@ const WrappedModal = ({ quoteId, userBookId }: Props): ReactNode => {
 
   const [error, setError] = useState('');
 
-  const { data: quotationsData } = useQuery(
-    getQuotesOptions({
-      accessToken: accessToken as string,
-      userBookId,
-      page: 1,
-      pageSize: 100,
-    }),
-  );
-
-  const defaultPage = useMemo(
-    () => quotationsData?.data.find((quote) => quote.id === quoteId)?.page ?? '',
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [quotationsData?.data],
-  );
-
-  const defaultContent = useMemo(
-    () => quotationsData?.data.find((quote) => quote.id === quoteId)?.content,
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [quotationsData?.data],
-  );
-
   const form = useForm<z.infer<typeof editQuoteSchema>>({
     resolver: zodResolver(editQuoteSchema),
     defaultValues: {
-      page: defaultPage,
-      content: defaultContent,
+      page: quote.page,
+      content: quote.content,
     },
     reValidateMode: 'onChange',
     mode: 'onTouched',
@@ -174,8 +109,8 @@ const WrappedModal = ({ quoteId, userBookId }: Props): ReactNode => {
         ...values,
         ...payload,
         accessToken: accessToken as string,
-        quoteId,
-        userBookId,
+        quoteId: quote.id,
+        userBookId: quote.userBookId,
         errorHandling: {
           title: 'Błąd podczas aktualizowania cytatu.',
         },

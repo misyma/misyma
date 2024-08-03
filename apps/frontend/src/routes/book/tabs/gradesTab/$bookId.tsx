@@ -8,8 +8,8 @@ import { userStateSelectors } from '../../../../modules/core/store/states/userSt
 import { CurrentRatingStar } from '../../../../modules/book/components/currentRatingStar/currentRatingStar.js';
 import { FavoriteBookButton } from '../../../../modules/book/components/favoriteBookButton/favoriteBookButton.js';
 import { FindBookReadingsQueryOptions } from '../../../../modules/bookReadings/api/queries/findBookReadings/findBookReadingsQueryOptions.js';
-import { GradesTable } from '../../../../modules/book/components/gradesTable/gradesTable.js';
-import { columns } from '../../../../modules/book/components/gradesTable/gradesTableColumns.js';
+import { BookReadingsTable } from '../../../../modules/bookReadings/components/bookReadingsTable/bookReadingsTable.js';
+import { bookReadingsTableColumns } from '../../../../modules/bookReadings/components/bookReadingsTable/bookReadingsTableColumns.js';
 import { BookReadingsApiQueryKeys } from '../../../../modules/bookReadings/api/queries/bookReadingsApiQueryKeys.js';
 import { AddStarRatingButton } from '../../../../modules/book/components/addStarRatingButton/addStarRatingButton.js';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout.js';
@@ -171,14 +171,14 @@ export const GradesPage: FC = () => {
                   <Separator className="h-[1px] bg-primary"></Separator>
                   <div className="flex flex-col w-full">
                     <p className="text-lg pb-6"> {userBookData?.book?.authors[0]?.name ?? ''} </p>
-                    <GradesTable
-                      columns={columns}
+                    <BookReadingsTable
+                      columns={bookReadingsTableColumns}
                       data={bookReadings?.data ?? []}
                       onSetPage={onSetPage}
                       pageCount={pageCount}
                       pageIndex={page}
                       pageSize={pageSize}
-                    ></GradesTable>
+                    ></BookReadingsTable>
                   </div>
                 </div>
               </>

@@ -12,7 +12,7 @@ interface Payload extends DeleteQuotePathParams {
 
 export const useDeleteQuoteMutation = (options: UseMutationOptions<void, ApiError, Payload>) => {
   const mapper = new ErrorCodeMessageMapper({
-    403: `Brak pozwolenia na usunięcie książki.`,
+    403: `Brak pozwolenia na usunięcie cytatu.`,
   });
 
   const deleteQuote = async (payload: Payload) => {
