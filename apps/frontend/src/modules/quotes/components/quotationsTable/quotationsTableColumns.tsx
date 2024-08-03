@@ -22,10 +22,7 @@ export const columns: ColumnDef<Quote>[] = [
               />
             </div>
             <div className="flex gap-2">
-              <EditQuoteModal
-                quoteId={row.original.id}
-                userBookId={row.original.userBookId}
-              />
+              <EditQuoteModal quote={row.original} />
               <DeleteQuoteModal
                 quoteId={row.original.id}
                 userBookId={row.original.userBookId}

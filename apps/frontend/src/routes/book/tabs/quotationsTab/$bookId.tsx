@@ -8,11 +8,8 @@ import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
 import { CurrentRatingStar } from '../../../../modules/book/components/currentRatingStar/currentRatingStar';
 import { getQuotesOptions } from '../../../../modules/quotes/api/queries/getQuotes/getQuotesOptions';
-import { QuotationsTable } from '../../../../modules/quotes/components/quotationsTable/quotationsTable';
-import { columns } from '../../../../modules/quotes/components/quotationsTable/quotationsTableColumns';
 import { QuotesApiQueryKeys } from '../../../../modules/quotes/api/queries/quotesApiQueryKeys';
 import { cn } from '../../../../modules/common/lib/utils';
-import { CreateQuotationModal } from '../../../../modules/quotes/components/createQuotationModal/createQuotationModal';
 import { Button } from '../../../../modules/common/components/button/button';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { Navigate, createFileRoute, useNavigate } from '@tanstack/react-router';
@@ -24,6 +21,9 @@ import {
   useBreadcrumbKeysContext,
   useBreadcrumbKeysDispatch,
 } from '../../../../modules/common/contexts/breadcrumbKeysContext';
+import { CreateQuotationModal } from '../../../../modules/quotes/components/createQuotationModal/createQuotationModal';
+import { QuotationsTable } from '../../../../modules/quotes/components/quotationsTable/quotationsTable';
+import { columns } from '../../../../modules/quotes/components/quotationsTable/quotationsTableColumns';
 
 export const QuotesPage: FC = () => {
   const { data: userData } = useFindUserQuery();
