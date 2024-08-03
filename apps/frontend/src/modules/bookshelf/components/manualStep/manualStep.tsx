@@ -1,11 +1,10 @@
 import { z } from 'zod';
-import { ReadingStatus as ContractReadingStatus, CreateUserBookResponseBody } from '@common/contracts';
+import { ReadingStatus as ContractReadingStatus } from '@common/contracts';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
-import { useToast } from '../../../common/components/toast/use-toast';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/form/form';
 import {
   Select,
@@ -18,14 +17,14 @@ import { ReadingStatus } from '../../../common/constants/readingStatus';
 import { FileInput } from '../../../common/components/input/input';
 import { Button } from '../../../common/components/button/button';
 import { useSearchBookContext } from '../../context/searchCreateBookContext/searchCreateBookContext';
-import { useUploadBookImageMutation } from '../../../book/api/user/mutations/uploadBookImageMutation/uploadBookImageMutation';
 import { useQuery } from '@tanstack/react-query';
 import { getGenresQueryOptions } from '../../../genres/api/queries/getGenresQuery/getGenresQueryOptions';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useFindUserBookshelfsQuery } from '../../api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 import { BookApiError } from '../../../book/errors/bookApiError';
-import { useCreateUserBookMutation } from '../../../book/api/user/mutations/createUserBookMutation/createUserBookMutation';
+import { useCreateBookWithUserBook } from '../../hooks/createBookWithUserBook/createBookWithUserBook';
+import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
 
 const stepThreeFormSchema = z.object({
   status: z.nativeEnum(ContractReadingStatus, {
@@ -72,8 +71,6 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
     pageSize: 50,
   });
 
-  const { toast } = useToast();
-
   const form = useForm({
     resolver: zodResolver(stepThreeFormSchema),
     values: {
@@ -85,10 +82,6 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
     reValidateMode: 'onChange',
     mode: 'onTouched',
   });
-
-  const { mutateAsync: createUserBookMutation } = useCreateUserBookMutation({});
-
-  const { mutateAsync: uploadBookImageMutation } = useUploadBookImageMutation({});
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
@@ -129,72 +122,30 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
     });
   };
 
+  const { create, isProcessing } = useCreateBookWithUserBook({
+    onOperationError: setSubmissionError,
+  });
+
   const onSubmit = async (values: Partial<z.infer<typeof stepThreeFormSchema>>) => {
-    values as z.infer<typeof stepThreeFormSchema>;
-
-    let userBook: CreateUserBookResponseBody;
-
     try {
-      userBook = await createUserBookMutation({
-        bookId: searchBookContext.bookId,
-        bookshelfId: values.bookshelfId || bookshelfId,
-        status: values.status as ContractReadingStatus,
-        isFavorite: false,
-        accessToken: accessToken as string,
+      await create({
+        userBookPayload: {
+          bookId: searchBookContext.bookId,
+          bookshelfId: values.bookshelfId || bookshelfId,
+          status: values.status as ContractReadingStatus,
+          isFavorite: false,
+          accessToken: accessToken as string,
+        },
+        image: file,
       });
     } catch (error) {
       if (error instanceof BookApiError && error.context.statusCode === 409) {
-        toast({
-          variant: 'destructive',
-          title: `Posiadasz już książkę z ${searchBookContext.isbn ? 'isbn' : 'title'}: ${searchBookContext.isbn ?? searchBookContext.title} na swojej półce.`,
-        });
-
         return;
       }
 
       setSubmissionError(`Coś poszło nie tak. Spróbuj ponownie.`);
 
       return;
-    }
-
-    try {
-      if (file) {
-        await uploadBookImageMutation({
-          bookId: userBook.id,
-          file: file as unknown as File,
-          accessToken: accessToken as string,
-        });
-      }
-
-      toast({
-        title: 'Książka została położona na półce 😄',
-        description: `Książka ${searchBookContext?.title} została położona na półce 😄`,
-        variant: 'success',
-      });
-
-      await navigate({
-        to: `/bookshelf/${values.bookshelfId || bookshelfId}`,
-      });
-    } catch (error) {
-      if (error instanceof BookApiError) {
-        setSubmissionError(error.context.message);
-
-        toast({
-          title: 'Coś poszło nie tak...',
-          description: 'Nie udało się utworzyć książki. Spróbuj ponownie.',
-          variant: 'destructive',
-        });
-
-        return;
-      }
-
-      setSubmissionError('Coś poszło nie tak. Spróbuj ponownie.');
-
-      toast({
-        title: 'Coś poszło nie tak...',
-        description: 'Nie udało się utworzyć książki. Spróbuj ponownie.',
-        variant: 'destructive',
-      });
     }
   };
 
@@ -350,16 +301,19 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
             className="border border-primary w-full"
             onClick={onGoBack}
             size="lg"
+            variant={isProcessing ? 'ghost' : 'outline'}
+            disabled={isProcessing}
           >
             Wróć
           </Button>
           <Button
-            className="border border-primary w-full"
-            disabled={!form.formState.isValid}
             size="lg"
+            variant={isProcessing ? 'ghost' : 'default'}
+            disabled={!form.formState.isValid || isProcessing}
             type="submit"
           >
-            Dodaj książkę
+            {isProcessing && <LoadingSpinner size={40} />}
+            {!isProcessing && <>Dodaj książkę</>}
           </Button>
         </div>
         {submissionError ? <p className="text-red-500">{submissionError}</p> : <></>}

@@ -1,8 +1,9 @@
-import { UseMutationOptions, useMutation } from '@tanstack/react-query';
+import { UseMutationOptions } from '@tanstack/react-query';
 import { CreateBookRequestBody, CreateBookResponseBody } from '@common/contracts';
 import { HttpService } from '../../../../../core/services/httpService/httpService';
 import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
 import { BookApiError } from '../../../../errors/bookApiError';
+import { useErrorHandledMutation } from '../../../../../common/hooks/useErrorHandledMutation';
 
 export interface UseCreateBookMutationPayload extends CreateBookRequestBody {
   accessToken: string;
@@ -17,6 +18,7 @@ export const useCreateBookMutation = (
     const mapper = new ErrorCodeMessageMapper({
       400: 'Podano błędne dane.',
       403: 'Brak pozwolenia na stworzenie książki.',
+      409: 'Książka już istnieje.',
       500: 'Wewnętrzny błąd serwera.',
     });
 
@@ -39,7 +41,7 @@ export const useCreateBookMutation = (
     return response.body;
   };
 
-  return useMutation({
+  return useErrorHandledMutation({
     mutationFn: createBook,
     ...options,
   });

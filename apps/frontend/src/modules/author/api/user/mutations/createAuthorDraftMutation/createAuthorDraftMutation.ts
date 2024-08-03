@@ -1,10 +1,11 @@
 import { CreateAuthorRequestBody, CreateAuthorResponseBody } from '@common/contracts';
-import { UseMutationOptions, useMutation } from '@tanstack/react-query';
+import { UseMutationOptions } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { ApiError } from '../../../../../common/errors/apiError';
 import { HttpService } from '../../../../../core/services/httpService/httpService';
 import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';
 import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
+import { useErrorHandledMutation } from '../../../../../common/hooks/useErrorHandledMutation';
 
 export const useCreateAuthorDraftMutation = (
   options: UseMutationOptions<CreateAuthorResponseBody, ApiError, CreateAuthorRequestBody>,
@@ -35,7 +36,7 @@ export const useCreateAuthorDraftMutation = (
     return response.body;
   };
 
-  return useMutation({
+  return useErrorHandledMutation({
     mutationFn: createAuthor,
     ...options,
   });
