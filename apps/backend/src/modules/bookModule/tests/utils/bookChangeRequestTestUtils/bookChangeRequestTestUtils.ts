@@ -1,5 +1,3 @@
-import { type BookFormat, type Language } from '@common/contracts';
-
 import { TestUtils } from '../../../../../../tests/testUtils.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type BookChangeRequestRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/bookChangeRequestTable/bookChangeRequestRawEntity.js';
@@ -24,23 +22,24 @@ export class BookChangeRequestTestUtils extends TestUtils {
   public async createAndPersist(payload: CreateAndPersistPayload = { input: {} }): Promise<BookChangeRequestRawEntity> {
     const { input } = payload;
 
-    const bookChangeRequest = this.bookChangeRequestTestFactory.create(input);
+    const bookChangeRequest = this.bookChangeRequestTestFactory.createRaw(input);
 
     const rawEntities = await this.databaseClient<BookChangeRequestRawEntity>(bookChangeRequestTable).insert(
       {
-        id: bookChangeRequest.getId(),
-        title: bookChangeRequest.getTitle() as string,
-        isbn: bookChangeRequest.getIsbn() as string,
-        publisher: bookChangeRequest.getPublisher() as string,
-        releaseYear: bookChangeRequest.getReleaseYear() as number,
-        language: bookChangeRequest.getLanguage() as Language,
-        translator: bookChangeRequest.getTranslator() as string,
-        format: bookChangeRequest.getFormat() as BookFormat,
-        pages: bookChangeRequest.getPages() as number,
-        imageUrl: bookChangeRequest.getImageUrl() as string,
-        bookId: bookChangeRequest.getBookId(),
-        userId: bookChangeRequest.getUserId(),
-        createdAt: bookChangeRequest.getCreatedAt(),
+        id: bookChangeRequest.id,
+        title: bookChangeRequest.title,
+        isbn: bookChangeRequest.isbn,
+        publisher: bookChangeRequest.publisher,
+        releaseYear: bookChangeRequest.releaseYear,
+        language: bookChangeRequest.language,
+        translator: bookChangeRequest.translator,
+        format: bookChangeRequest.format,
+        pages: bookChangeRequest.pages,
+        imageUrl: bookChangeRequest.imageUrl,
+        bookId: bookChangeRequest.bookId,
+        userId: bookChangeRequest.userId,
+        createdAt: bookChangeRequest.createdAt,
+        authorIds: bookChangeRequest.authorIds,
       },
       '*',
     );
@@ -61,6 +60,7 @@ export class BookChangeRequestTestUtils extends TestUtils {
       bookId: rawEntity.bookId,
       userId: rawEntity.userId,
       createdAt: new Date(rawEntity.createdAt),
+      authorIds: rawEntity.authorIds,
     };
   }
 
@@ -89,6 +89,7 @@ export class BookChangeRequestTestUtils extends TestUtils {
       bookId: rawEntity.bookId,
       userId: rawEntity.userId,
       createdAt: new Date(rawEntity.createdAt),
+      authorIds: rawEntity.authorIds,
     };
   }
 }

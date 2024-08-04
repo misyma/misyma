@@ -11,6 +11,7 @@ export interface BookChangeRequestRawEntity {
   readonly format?: BookFormat | undefined;
   readonly pages?: number | undefined;
   readonly imageUrl?: string | undefined;
+  readonly authorIds?: string | undefined;
   readonly bookId: string;
   readonly userId: string;
   readonly createdAt: Date;

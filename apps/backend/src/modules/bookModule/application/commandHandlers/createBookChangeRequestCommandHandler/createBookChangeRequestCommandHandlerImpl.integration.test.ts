@@ -11,6 +11,7 @@ import { type DatabaseClient } from '../../../../../libs/database/clients/databa
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { symbols } from '../../../symbols.js';
 import { BookChangeRequestTestFactory } from '../../../tests/factories/bookChangeRequestTestFactory/bookChangeRequestTestFactory.js';
+import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookChangeRequestTestUtils } from '../../../tests/utils/bookChangeRequestTestUtils/bookChangeRequestTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
 
@@ -24,6 +25,8 @@ describe('CreateBookChangeRequestCommandHandler', () => {
   let bookChangeRequestTestUtils: BookChangeRequestTestUtils;
 
   let userTestUtils: UserTestUtils;
+
+  let authorTestUtils: AuthorTestUtils;
 
   const bookChangeRequestTestFactory = new BookChangeRequestTestFactory();
 
@@ -39,6 +42,8 @@ describe('CreateBookChangeRequestCommandHandler', () => {
     databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
 
     bookTestUtils = container.get<BookTestUtils>(testSymbols.bookTestUtils);
+
+    authorTestUtils = container.get<AuthorTestUtils>(testSymbols.authorTestUtils);
 
     bookChangeRequestTestUtils = container.get<BookChangeRequestTestUtils>(testSymbols.bookChangeRequestTestUtils);
 
@@ -64,6 +69,8 @@ describe('CreateBookChangeRequestCommandHandler', () => {
 
     const book = await bookTestUtils.createAndPersist();
 
+    const author = await authorTestUtils.createAndPersist();
+
     const createdBookChangeRequest = bookChangeRequestTestFactory.create({
       bookId: book.id,
       userId: user.id,
@@ -79,6 +86,7 @@ describe('CreateBookChangeRequestCommandHandler', () => {
       format: createdBookChangeRequest.getFormat(),
       pages: createdBookChangeRequest.getPages() as number,
       imageUrl: createdBookChangeRequest.getImageUrl() as string,
+      authorIds: [author.id],
       bookId: book.id,
       userId: user.id,
     });
@@ -98,6 +106,7 @@ describe('CreateBookChangeRequestCommandHandler', () => {
       translator: createdBookChangeRequest.getTranslator(),
       pages: createdBookChangeRequest.getPages(),
       imageUrl: createdBookChangeRequest.getImageUrl(),
+      authorIds: [author.id],
     });
 
     expect(foundBookChangeRequest).toEqual({
@@ -114,7 +123,35 @@ describe('CreateBookChangeRequestCommandHandler', () => {
       translator: createdBookChangeRequest.getTranslator(),
       pages: createdBookChangeRequest.getPages(),
       imageUrl: createdBookChangeRequest.getImageUrl(),
+      authorIds: author.id,
     });
+  });
+
+  it('throws an error - when some of the authors do not exist', async () => {
+    const user = await userTestUtils.createAndPersist();
+
+    const book = await bookTestUtils.createAndPersist();
+
+    const authorIds = [Generator.uuid(), Generator.uuid()];
+
+    try {
+      await createBookChangeRequestCommandHandler.execute({
+        authorIds,
+        bookId: book.id,
+        userId: user.id,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toEqual({
+        reason: 'Some authors do not exist.',
+        authorIds,
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 
   it('throws an error - when provided User does not exist', async () => {

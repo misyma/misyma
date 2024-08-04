@@ -6,6 +6,7 @@ import {
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type UserRepository } from '../../../../userModule/domain/repositories/userRepository/userRepository.js';
+import { type AuthorRepository } from '../../../domain/repositories/authorRepository/authorRepository.js';
 import { type BookChangeRequestRepository } from '../../../domain/repositories/bookChangeRequestRepository/bookChangeRequestRepository.js';
 import { type BookRepository } from '../../../domain/repositories/bookRepository/bookRepository.js';
 
@@ -14,6 +15,7 @@ export class CreateBookChangeRequestCommandHandlerImpl implements CreateBookChan
     private readonly bookChangeRequestRepository: BookChangeRequestRepository,
     private readonly bookRepository: BookRepository,
     private readonly userRepository: UserRepository,
+    private readonly authorRepository: AuthorRepository,
     private readonly loggerService: LoggerService,
   ) {}
 
@@ -30,7 +32,8 @@ export class CreateBookChangeRequestCommandHandlerImpl implements CreateBookChan
       });
     }
 
-    const { format, language, title, imageUrl, isbn, pages, publisher, releaseYear, translator } = updateData;
+    const { format, language, title, imageUrl, isbn, pages, publisher, releaseYear, translator, authorIds } =
+      updateData;
 
     this.loggerService.debug({
       message: 'Creating BookChangeRequest...',
@@ -65,6 +68,28 @@ export class CreateBookChangeRequestCommandHandlerImpl implements CreateBookChan
       });
     }
 
+    if (authorIds) {
+      if (authorIds.length === 0) {
+        throw new OperationNotValidError({
+          reason: 'Authors cannot be empty.',
+          authorIds,
+        });
+      }
+
+      const authors = await this.authorRepository.findAuthors({
+        ids: authorIds,
+        page: 1,
+        pageSize: authorIds.length,
+      });
+
+      if (authors.length !== authorIds.length) {
+        throw new OperationNotValidError({
+          reason: 'Some authors do not exist.',
+          authorIds,
+        });
+      }
+    }
+
     const currentDate = new Date();
 
     const bookChangeRequest = await this.bookChangeRequestRepository.saveBookChangeRequest({
@@ -81,6 +106,7 @@ export class CreateBookChangeRequestCommandHandlerImpl implements CreateBookChan
         publisher,
         releaseYear,
         translator,
+        authorIds,
       },
     });
 

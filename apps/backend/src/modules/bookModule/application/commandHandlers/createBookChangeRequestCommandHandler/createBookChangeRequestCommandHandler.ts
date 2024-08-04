@@ -15,6 +15,7 @@ export interface CreateBookChangeRequestCommandHandlerPayload {
   readonly format?: BookFormat | undefined;
   readonly pages?: number | undefined;
   readonly imageUrl?: string | undefined;
+  readonly authorIds?: string[] | undefined;
 }
 
 export interface CreateBookChangeRequestCommandHandlerResult {

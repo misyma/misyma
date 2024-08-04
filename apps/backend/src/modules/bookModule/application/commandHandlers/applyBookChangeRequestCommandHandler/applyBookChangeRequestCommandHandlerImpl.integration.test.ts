@@ -10,6 +10,7 @@ import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { symbols } from '../../../symbols.js';
+import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookChangeRequestTestUtils } from '../../../tests/utils/bookChangeRequestTestUtils/bookChangeRequestTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
 
@@ -21,6 +22,8 @@ describe('ApplyBookChangeRequestCommandHandlerImpl', () => {
   let bookChangeRequestTestUtils: BookChangeRequestTestUtils;
 
   let userTestUtils: UserTestUtils;
+
+  let authorTestUtils: AuthorTestUtils;
 
   let databaseClient: DatabaseClient;
 
@@ -38,6 +41,8 @@ describe('ApplyBookChangeRequestCommandHandlerImpl', () => {
     bookChangeRequestTestUtils = container.get<BookChangeRequestTestUtils>(testSymbols.bookChangeRequestTestUtils);
 
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
+
+    authorTestUtils = container.get<AuthorTestUtils>(testSymbols.authorTestUtils);
 
     testUtils = [bookTestUtils, userTestUtils, bookChangeRequestTestUtils];
 
@@ -75,10 +80,13 @@ describe('ApplyBookChangeRequestCommandHandlerImpl', () => {
 
     const book = await bookTestUtils.createAndPersist();
 
+    const author = await authorTestUtils.createAndPersist();
+
     const bookChangeRequest = await bookChangeRequestTestUtils.createAndPersist({
       input: {
         bookId: book.id,
         userId: user.id,
+        authorIds: author.id,
       },
     });
 
@@ -99,5 +107,40 @@ describe('ApplyBookChangeRequestCommandHandlerImpl', () => {
       imageUrl: bookChangeRequest.imageUrl,
       isApproved: book.isApproved,
     });
+
+    const bookAuthors = await bookTestUtils.findBookAuthors({ bookId: book.id });
+
+    expect(bookAuthors).toEqual([
+      {
+        authorId: author.id,
+        bookId: book.id,
+      },
+    ]);
+  });
+
+  it('throws an error - when some of the authors do not exist', async () => {
+    const user = await userTestUtils.createAndPersist();
+
+    const book = await bookTestUtils.createAndPersist();
+
+    const authorIds = [Generator.uuid(), Generator.uuid()];
+
+    const bookChangeRequest = await bookChangeRequestTestUtils.createAndPersist({
+      input: {
+        bookId: book.id,
+        userId: user.id,
+        authorIds: authorIds.join(','),
+      },
+    });
+
+    try {
+      await commandHandler.execute({ bookChangeRequestId: bookChangeRequest.id });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      return;
+    }
+
+    expect.fail();
   });
 });

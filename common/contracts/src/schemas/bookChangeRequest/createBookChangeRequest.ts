@@ -13,6 +13,7 @@ export interface CreateBookChangeRequestRequestBody {
   readonly format?: BookFormat;
   readonly pages?: number;
   readonly imageUrl?: string;
+  readonly authorIds?: string[];
 }
 
 export interface CreateBookChangeRequestResponseBody extends BookChangeRequest {}

@@ -1,7 +1,7 @@
 import { type BookChangeRequest } from './bookChangeRequest.js';
 
 export interface FindBookChangeRequestByIdPathParams {
-  id: string;
+  readonly id: string;
 }
 
 export interface FindAdminBookChangeRequestByIdResponseBody {
