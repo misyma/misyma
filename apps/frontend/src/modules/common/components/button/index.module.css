@@ -1,5 +1,5 @@
 .button {
-  @apply inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:bg-gray-200  disabled:text-gray-500 disabled:cursor-not-allowed;
+  @apply inline-flex items-center justify-center whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:bg-gray-200  disabled:text-gray-500 disabled:cursor-not-allowed;
 }
 
 .disabled-button.button {
@@ -11,23 +11,23 @@
 }
 
 .base-size.button {
-  @apply h-10 w-20 px-4 py-2;
+  @apply h-10 w-20 px-4 py-2 text-sm;
 }
 
 .sm-size.button {
-  @apply h-9 w-14 rounded-md px-3;
+  @apply h-9 w-14 rounded-md px-3 text-sm;
 }
 
 .lg-size.button {
-  @apply h-11 w-40 rounded-md px-8;
+  @apply h-11 w-40 rounded-md px-8 text-sm;
 }
 
 .xl-size.button {
-  @apply w-60 sm:w-96 h-12;
+  @apply w-60 sm:w-96 h-12 text-sm;
 }
 
 .icon-size.button {
-  @apply text-xs h-8 w-8;
+  @apply text-xs h-8 w-8 text-sm;
 }
 
 .destructive-button.button {

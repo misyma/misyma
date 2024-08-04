@@ -123,18 +123,18 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
       variant: 'success',
     });
 
-    queryClient.invalidateQueries({
-      queryKey: [BookApiQueryKeys.findUserBookById, bookId, userData?.id],
-    });
-
-    queryClient.invalidateQueries({
-      predicate: (query) => query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId && query.queryKey[1] === id,
-    });
-
-    queryClient.invalidateQueries({
-      predicate: (query) =>
-        query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId && query.queryKey[1] === currentBookshelfId,
-    });
+    await Promise.all([
+      queryClient.invalidateQueries({
+        queryKey: [BookApiQueryKeys.findUserBookById, bookId, userData?.id],
+      }),
+      queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId && query.queryKey[1] === id,
+      }),
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId && query.queryKey[1] === currentBookshelfId,
+      }),
+    ]);
   };
 
   useEffect(() => {
@@ -165,12 +165,10 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
       >
         <PopoverTrigger asChild>
           <Button
-            size="lg"
+            size="custom"
             variant="outline"
-            className="border-none text-xl"
+            className="border-none text-lg w-60"
             style={{
-              fontSize: '1.25rem',
-              lineHeight: '1.75rem',
               justifyContent: 'end',
               padding: 0,
               height: 'auto',

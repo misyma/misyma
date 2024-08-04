@@ -19,6 +19,7 @@ export const buttonSizesStylesMap = {
   lg: styles['lg-size'],
   xl: styles['xl-size'],
   icon: styles['icon-size'],
+  custom: ''
 } as const;
 
 const getVariantStyles = (variant: ButtonVariant): string => {
@@ -34,7 +35,7 @@ const getVariantStyles = (variant: ButtonVariant): string => {
 const getSizeStyles = (size: ButtonSize): string => {
   const value = buttonSizesStylesMap[size];
 
-  if (!value) {
+  if (!value && value !== '') {
     throw new Error('Invalid size provided.');
   }
 
