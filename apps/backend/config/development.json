@@ -8,7 +8,7 @@
   },
   "database": {
     "username": "postgres",
-    "password": "posgres"
+    "password": "postgres"
   },
   "sendGrid": {
     "apiKey": "1234567890"
