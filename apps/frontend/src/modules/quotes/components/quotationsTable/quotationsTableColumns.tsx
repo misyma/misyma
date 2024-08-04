@@ -3,7 +3,7 @@ import { Quote } from '@common/contracts';
 import { FavoriteQuotationButton } from '../../../book/components/favoriteQuotationButton/favoriteQuotationButton';
 import { QuotationText } from '../../../book/components/quotationText/quotationText';
 import { DeleteQuoteModal } from '../deleteQuoteModal/deleteQuoteModal';
-import { EditQuoteModal } from '../editQuoteModal/editQuoteModal';
+import { UpdateQuoteModal } from '../updateQuoteModal/updateQuoteModal';
 
 export const columns: ColumnDef<Quote>[] = [
   {
@@ -24,7 +24,7 @@ export const columns: ColumnDef<Quote>[] = [
               />
             </div>
             <div className="flex gap-2">
-              <EditQuoteModal quote={{...row.original}} />
+              <UpdateQuoteModal quote={{...row.original}} />
               <DeleteQuoteModal
                 quoteId={foundRow?.original.id as string}
                 userBookId={foundRow?.original.userBookId as string}
