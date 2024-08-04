@@ -1,11 +1,5 @@
 import { FC, useState } from 'react';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTrigger,
-} from '../../../common/components/dialog/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTrigger } from '../../../common/components/dialog/dialog';
 import { formatDate } from 'date-fns';
 import { Button } from '../../../common/components/button/button';
 import { cn } from '../../../common/lib/utils';
@@ -20,19 +14,13 @@ import { Textarea } from '../../../common/components/textArea/textarea';
 import { useQueryClient } from '@tanstack/react-query';
 import { BookReadingsApiQueryKeys } from '../../api/queries/bookReadingsApiQueryKeys';
 import { pl } from 'date-fns/locale';
-import {
-  Select,
-  SelectContentNoPortal,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../../../common/components/select/select';
 import { useUpdateBookReadingMutation } from '../../api/mutations/bookReadings/updateBookReadingMutation/updateBookReadingMutation';
 import { BookReading } from '@common/contracts';
 import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../common/components/tooltip/tooltip';
-import { HiPencil } from 'react-icons/hi';
+import { HiPencil, HiStar } from 'react-icons/hi';
 import { useToast } from '../../../common/components/toast/use-toast';
+import { RadioGroup, RadioGroupItem } from '../../../common/components/radioGroup/radio-group';
 
 interface Props {
   bookReading: BookReading;
@@ -86,6 +74,8 @@ const UpdateBookReadingForm: FC<UpdateBookReadingFormProps> = ({ bookReading, se
     },
   });
 
+  const [hoveredValue, setHoveredValue] = useState<number | undefined>();
+
   const { mutateAsync, isPending: isUpdatingBookReading } = useUpdateBookReadingMutation({});
 
   const onCreateBookReading = async (values: z.infer<typeof updateBookReadingSchema>) => {
@@ -127,6 +117,50 @@ const UpdateBookReadingForm: FC<UpdateBookReadingFormProps> = ({ bookReading, se
       >
         <FormField
           control={form.control}
+          name="rating"
+          render={({ field }) => (
+            <FormItem className="flex flex-col justify-end">
+              <div className="flex gap-2 items-center justify-end">
+                <FormLabel className="text-base">
+                  <div className="animate-wiggle text-primary font-bold ">{hoveredValue || field.value}</div>
+                </FormLabel>
+                <RadioGroup
+                  onValueChange={(value) => field.onChange(`${Number(value) + 1}`)}
+                  value={`${field.value ?? 0}`}
+                  className="flex flex-row gap-0"
+                >
+                  <>
+                    {Array.from({ length: 10 }).map((_, index) => {
+                      return (
+                        <>
+                          <div className="relative star-container">
+                            <RadioGroupItem
+                              className="absolute opacity-0 h-7 w-7"
+                              disabled={false}
+                              key={index}
+                              value={`${index}`}
+                              onMouseEnter={() => setHoveredValue(index + 1)}
+                              onMouseLeave={() => setHoveredValue(undefined)}
+                            />
+                            <HiStar
+                              className={cn(
+                                'h-7 w-7',
+                                Number(field.value) >= index + 1 && !hoveredValue ? 'text-primary' : '',
+                              )}
+                            />
+                          </div>
+                        </>
+                      );
+                    })}
+                  </>
+                </RadioGroup>
+              </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
           name="comment"
           render={({ field }) => (
             <FormItem className="flex flex-col gap-2">
@@ -139,33 +173,6 @@ const UpdateBookReadingForm: FC<UpdateBookReadingFormProps> = ({ bookReading, se
                   {...field}
                 />
               </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="rating"
-          render={({ field }) => (
-            <FormItem className="flex flex-col items-end">
-              <FormLabel>Ocena</FormLabel>
-              <Select
-                onValueChange={(val) => {
-                  field.onChange(val);
-                }}
-                defaultValue={`${field.value}`}
-              >
-                <FormControl>
-                  <SelectTrigger className="w-20 sm:w-32">
-                    <SelectValue className="text-red-500"></SelectValue>
-                    <SelectContentNoPortal className="w-20 sm:w-32">
-                      {Array.from({ length: 10 }).map((_, index) => (
-                        <SelectItem value={`${index + 1}`}>{index + 1}</SelectItem>
-                      ))}
-                    </SelectContentNoPortal>
-                  </SelectTrigger>
-                </FormControl>
-              </Select>
               <FormMessage />
             </FormItem>
           )}
@@ -280,6 +287,7 @@ const UpdateBookReadingForm: FC<UpdateBookReadingFormProps> = ({ bookReading, se
         <div className="pt-8 gap-2 flex sm:justify-center justify-center sm:items-center items-center">
           <Button
             className="bg-transparent text-primary w-32 sm:w-40"
+            type="button"
             onClick={() => setIsOpen(false)}
             disabled={isUpdatingBookReading}
           >
@@ -342,14 +350,14 @@ export const UpdateBookReadingModal: FC<Props> = ({ bookReading }: Props) => {
         <DialogHeader className="font-semibold text-center flex justify-center items-center">
           Zaaktualizuj ocenę
         </DialogHeader>
-        <DialogDescription className="flex flex-col gap-4 justify-center items-center">
+        <div className="flex flex-col gap-4 justify-center items-center">
           <p className={error ? 'text-red-500' : 'hidden'}>{error}</p>
           <UpdateBookReadingForm
             bookReading={bookReading}
             setIsOpen={setIsOpen}
             setError={setError}
           />
-        </DialogDescription>
+        </div>
       </DialogContent>
     </Dialog>
   );

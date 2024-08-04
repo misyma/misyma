@@ -106,7 +106,7 @@ export const DeleteBookReadingModal: FC<Props> = ({ readingId, userBookId }: Pro
               className="w-40"
               onClick={() => setIsOpen(false)}
             >
-              Nie
+              Anuluj
             </Button>
             <Button
               className="w-40"
@@ -114,7 +114,7 @@ export const DeleteBookReadingModal: FC<Props> = ({ readingId, userBookId }: Pro
               onClick={onDelete}
             >
               {isDeleting && <LoadingSpinner size={40} />}
-              {!isDeleting && <p>Tak</p>}
+              {!isDeleting && <p>Potwierdź</p>}
             </Button>
           </div>
           {error && <p className="text-sm font-medium text-destructive">error</p>}
