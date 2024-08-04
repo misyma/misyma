@@ -8,6 +8,7 @@ export const FindBookBorrowingsQueryOptions = ({
   page,
   pageSize,
   sortDate,
+  isOpen,
 }: FindBookBorrowingsPayload) =>
   queryOptions({
     queryKey: [BorrowingApiQueryKeys.findBookBorrowingsQuery, userBookId, page, pageSize, sortDate],
@@ -19,5 +20,6 @@ export const FindBookBorrowingsQueryOptions = ({
         page,
         pageSize,
         sortDate,
+        isOpen,
       }),
   });
