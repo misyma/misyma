@@ -10,22 +10,24 @@ export const columns: ColumnDef<Quote>[] = [
     header: () => <></>,
     accessorKey: 'updatedAt',
     cell: ({ row, table }): JSX.Element => {
+      const foundRow = table.getRowModel().rows.find((row) => row.index === row.index)
+
       return (
         <div className="flex flex-wrap flex-col py-4 gap-4">
           <div className="flex gap-2 items-center justify-between">
             <div className="flex gap-2 justify-start items-between">
               <FavoriteQuotationButton quote={row.original} />
               <QuotationText
-                content={row.original.content}
+                content={row?.original.content as string}
                 pageIndex={table.getState().pagination.pageIndex * table.getState().pagination.pageSize}
                 index={row.index}
               />
             </div>
             <div className="flex gap-2">
-              <EditQuoteModal quote={row.original} />
+              <EditQuoteModal quote={{...row.original}} />
               <DeleteQuoteModal
-                quoteId={row.original.id}
-                userBookId={row.original.userBookId}
+                quoteId={foundRow?.original.id as string}
+                userBookId={foundRow?.original.userBookId as string}
               />
             </div>
           </div>

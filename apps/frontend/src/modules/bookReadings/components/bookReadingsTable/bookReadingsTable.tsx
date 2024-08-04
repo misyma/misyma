@@ -15,6 +15,7 @@ import { useMemo, useState } from 'react';
 
 import { Table, TableBody, TableCell, TableRow } from '../../../common/components/table/table';
 import { Paginator } from '../../../common/components/paginator/paginator';
+import { BookReading } from '@common/contracts';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -25,14 +26,14 @@ interface DataTableProps<TData, TValue> {
   onSetPage: (val: number) => Promise<void> | void;
 }
 
-export function BookReadingsTable<TData, TValue>({
+export function BookReadingsTable<TValue>({
   columns,
   data,
   pageIndex,
   pageSize,
   pageCount,
   onSetPage,
-}: DataTableProps<TData, TValue>): JSX.Element {
+}: DataTableProps<BookReading, TValue>): JSX.Element {
   const [sorting, setSorting] = useState<SortingState>([]);
 
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -54,6 +55,9 @@ export function BookReadingsTable<TData, TValue>({
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    getRowId: (tData) => {
+      return tData.id;
+    },
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,

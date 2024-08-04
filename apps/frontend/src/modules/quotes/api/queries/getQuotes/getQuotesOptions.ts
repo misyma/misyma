@@ -1,5 +1,5 @@
 import { FindQuotesResponseBody } from '@common/contracts';
-import { UseQueryOptions, queryOptions } from '@tanstack/react-query';
+import { UseQueryOptions, keepPreviousData, queryOptions } from '@tanstack/react-query';
 import { GetQuotesPayload, getQuotes } from './getQuotes';
 import { QuotesApiQueryKeys } from '../quotesApiQueryKeys';
 
@@ -10,6 +10,7 @@ export const getQuotesOptions = (
     queryKey: [...getQuotesOptionsQueryKey(payload), `${payload.page}`, `${payload.pageSize}`],
     queryFn: () => getQuotes(payload),
     enabled: !!payload.accessToken,
+    placeholderData: keepPreviousData,
   });
 
 export const getQuotesOptionsQueryKey = (payload: Pick<GetQuotesPayload, 'userBookId'>): string[] => [
