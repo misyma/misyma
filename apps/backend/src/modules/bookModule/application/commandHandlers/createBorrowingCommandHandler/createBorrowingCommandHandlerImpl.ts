@@ -20,7 +20,7 @@ export class CreateBorrowingCommandHandlerImpl implements CreateBorrowingCommand
   ) {}
 
   public async execute(payload: CreateBorrowingPayload): Promise<CreateBorrowingResult> {
-    const { userBookId, borrower, startedAt, endedAt } = payload;
+    const { userBookId, borrower, startedAt, endedAt, userId } = payload;
 
     this.loggerService.debug({
       message: 'Creating Borrowing...',
@@ -28,6 +28,7 @@ export class CreateBorrowingCommandHandlerImpl implements CreateBorrowingCommand
       borrower,
       startedAt,
       endedAt,
+      userId,
     });
 
     const existingUserBook = await this.userBookRepository.findUserBook({
@@ -49,6 +50,14 @@ export class CreateBorrowingCommandHandlerImpl implements CreateBorrowingCommand
       throw new OperationNotValidError({
         reason: 'Bookshelf does not exist.',
         id: existingUserBook.getBookshelfId(),
+      });
+    }
+
+    if (existingBookshelf.getUserId() !== userId) {
+      throw new OperationNotValidError({
+        reason: 'Bookshelf does not belong to the user.',
+        bookshelfUserId: existingBookshelf.getUserId(),
+        userId,
       });
     }
 

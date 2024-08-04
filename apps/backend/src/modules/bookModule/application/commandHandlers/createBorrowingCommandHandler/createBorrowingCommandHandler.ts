@@ -6,6 +6,7 @@ export interface CreateBorrowingPayload {
   readonly borrower: string;
   readonly startedAt: Date;
   readonly endedAt?: Date | undefined;
+  readonly userId: string;
 }
 
 export interface CreateBorrowingResult {

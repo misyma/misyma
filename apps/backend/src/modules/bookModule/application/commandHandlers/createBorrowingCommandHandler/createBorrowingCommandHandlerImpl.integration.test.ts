@@ -71,6 +71,8 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
   });
 
   it('throws an error - when UserBook does not exist', async () => {
+    const user = await userTestUtils.createAndPersist();
+
     const nonExistentUserBookId = Generator.uuid();
 
     const borrowing = borrowingTestFactory.create();
@@ -79,6 +81,7 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
       await commandHandler.execute({
         ...borrowing.getState(),
         userBookId: nonExistentUserBookId,
+        userId: user.id,
       });
     } catch (error) {
       expect(error).toBeInstanceOf(OperationNotValidError);
@@ -127,6 +130,7 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
         userBookId: userBook.id,
         startedAt,
         endedAt,
+        userId: user.id,
       });
     } catch (error) {
       expect(error).toBeInstanceOf(OperationNotValidError);
@@ -170,6 +174,7 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
 
     const { borrowing } = await commandHandler.execute({
       ...borrowingDraft.getState(),
+      userId: user.id,
     });
 
     expect(borrowing).toBeInstanceOf(Borrowing);
@@ -219,6 +224,7 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
     try {
       await commandHandler.execute({
         ...borrowingDraft.getState(),
+        userId: user.id,
       });
     } catch (error) {
       expect(error).toBeInstanceOf(OperationNotValidError);
@@ -226,6 +232,53 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
       expect((error as OperationNotValidError).context).toMatchObject({
         reason: 'Borrowing Bookshelf does not exist.',
         userId: user.id,
+      });
+
+      return;
+    }
+
+    expect.fail();
+  });
+
+  it('throws an error - when Bookshelf does not belong to the user', async () => {
+    const user = await userTestUtils.createAndPersist();
+
+    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+
+    await bookshelfTestUtils.createAndPersist({
+      input: {
+        userId: user.id,
+        type: BookshelfType.borrowing,
+      },
+    });
+
+    const book = await bookTestUtils.createAndPersist();
+
+    const userBook = await userBookTestUtils.createAndPersist({
+      input: {
+        bookshelfId: bookshelf.id,
+        bookId: book.id,
+      },
+    });
+
+    const borrowingDraft = borrowingTestFactory.create({
+      userBookId: userBook.id,
+    });
+
+    const otherUser = await userTestUtils.createAndPersist();
+
+    try {
+      await commandHandler.execute({
+        ...borrowingDraft.getState(),
+        userId: otherUser.id,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toMatchObject({
+        reason: 'Bookshelf does not belong to the user.',
+        bookshelfUserId: bookshelf.userId,
+        userId: otherUser.id,
       });
 
       return;
