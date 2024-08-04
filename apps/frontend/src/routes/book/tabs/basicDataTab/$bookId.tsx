@@ -31,7 +31,12 @@ import { HiArrowsRightLeft } from 'react-icons/hi2';
 import { CreateBorrowingModal } from '../../../../modules/book/components/createBorrowingModal/createBorrowingModal.js';
 import { BookApiQueryKeys } from '../../../../modules/book/api/user/queries/bookApiQueryKeys.js';
 import { BookshelvesApiQueryKeys } from '../../../../modules/bookshelf/api/queries/bookshelvesApiQueryKeys.js';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../../modules/common/components/tooltip/tooltip.js';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../../../../modules/common/components/tooltip/tooltip.js';
 import { Button } from '../../../../modules/common/components/button/button.js';
 
 export const BasicDataPage: FC = () => {
@@ -87,6 +92,20 @@ export const BasicDataPage: FC = () => {
     });
   }
 
+  if (bookshelfResponse?.id && breadcrumbKeys['$bookshelfName'] !== bookshelfResponse.name) {
+    dispatch({
+      key: '$bookshelfName',
+      value: bookshelfResponse.name,
+    });
+
+    dispatch({
+      key: '$bookshelfId',
+      value: data?.bookshelfId,
+    });
+  }
+
+  const isBorrowingBookshelf = useMemo(() => bookshelfResponse?.name === 'Wypożyczalnia', [bookshelfResponse?.name]);
+
   const imageUrl = useMemo(() => data?.imageUrl, [data?.imageUrl]);
 
   return (
@@ -124,12 +143,19 @@ export const BasicDataPage: FC = () => {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
+                      disabled={isBorrowingBookshelf}
                       onClick={() => setCreateBookBorrowingModalOpen(true)}
                       variant="ghost"
                       size="icon"
+                      style={{
+                        background: 'none',
+                      }}
                     >
                       <HiArrowsRightLeft
-                        className="cursor-pointer  text-primary h-8 w-8"
+                        className={cn(
+                          'cursor-pointer text-primary h-8 w-8',
+                          isBorrowingBookshelf ? 'text-disabled' : '',
+                        )}
                         onClick={() => {
                           setCreateBookBorrowingModalOpen(true);
                         }}

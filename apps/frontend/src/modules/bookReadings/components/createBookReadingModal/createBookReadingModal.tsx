@@ -86,7 +86,7 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
 
       onMutated();
 
-      queryClient.invalidateQueries({
+      await queryClient.invalidateQueries({
         predicate: ({ queryKey }) =>
           queryKey[0] === BookReadingsApiQueryKeys.findBookReadings && queryKey[1] === bookId,
       });
