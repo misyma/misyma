@@ -79,6 +79,19 @@ const UpdateBookReadingForm: FC<UpdateBookReadingFormProps> = ({ bookReading, se
   const { mutateAsync, isPending: isUpdatingBookReading } = useUpdateBookReadingMutation({});
 
   const onCreateBookReading = async (values: z.infer<typeof updateBookReadingSchema>) => {
+    if (
+      values.comment === bookReading.comment &&
+      new Date(values.endedAt).getTime() === new Date(bookReading.endedAt).getTime() &&
+      new Date(values.startedAt).getTime() === new Date(bookReading.startedAt).getTime() &&
+      values.rating === bookReading.rating &&
+      values.userBookId === bookReading.userBookId
+    ) {
+      form.reset();
+
+      setIsOpen(false);
+
+      return;
+    }
     try {
       await mutateAsync({
         ...values,

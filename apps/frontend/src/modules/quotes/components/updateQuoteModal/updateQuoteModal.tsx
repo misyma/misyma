@@ -64,7 +64,7 @@ interface Props {
   quote: Quote;
 }
 
-export const EditQuoteModal = ({ quote }: Props) => {
+export const UpdateQuoteModal = ({ quote }: Props) => {
   return <WrappedModal quote={quote} />;
 };
 
@@ -92,6 +92,12 @@ const WrappedModal = ({ quote }: Props): ReactNode => {
   const { mutateAsync, isPending: isUpdating } = useUpdateQuoteMutation({});
 
   const onSubmit = async (values: z.infer<typeof editQuoteSchema>): Promise<void> => {
+    if (values.content === quote.content && values.page === quote.page) {
+      setIsOpen(false);
+
+      return;
+    }
+
     const payload: {
       content: string | undefined;
       page: string | undefined;
