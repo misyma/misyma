@@ -20,6 +20,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useToast } from '../../../common/components/toast/use-toast';
 import { useCreateQuoteMutation } from '../../api/mutations/createQuoteMutation/createQuoteMutation';
 import { getQuotesOptionsQueryKey } from '../../api/queries/getQuotes/getQuotesOptions';
+import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
 
 const createQuotationSchema = z
   .object({
@@ -84,7 +85,7 @@ export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props):
     mode: 'onTouched',
   });
 
-  const { mutateAsync } = useCreateQuoteMutation({});
+  const { mutateAsync, isPending: isCreating } = useCreateQuoteMutation({});
 
   const onSubmit = async (values: z.infer<typeof createQuotationSchema>): Promise<void> => {
     const payload: {
@@ -112,13 +113,13 @@ export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props):
 
       onMutated();
 
+      setIsOpen(false);
+
       await queryClient.invalidateQueries({
         queryKey: getQuotesOptionsQueryKey({
           userBookId,
         }),
       });
-
-      setIsOpen(false);
 
       toast({
         title: 'Cytat został dodany 😄',
@@ -203,6 +204,7 @@ export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props):
                 <Button
                   className="bg-transparent text-primary w-32 sm:w-40"
                   type="reset"
+                  disabled={isCreating}
                   onClick={() => {
                     setIsOpen(false);
                   }}
@@ -211,10 +213,11 @@ export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props):
                 </Button>
                 <Button
                   type="submit"
-                  disabled={!form.formState.isValid}
+                  disabled={!form.formState.isValid || isCreating}
                   className="bg-primary w-32 sm:w-40"
                 >
-                  Potwierdź
+                  {!isCreating && <>Potwierdź</>}
+                  {isCreating && <LoadingSpinner size={40} />}
                 </Button>
               </div>
             </form>

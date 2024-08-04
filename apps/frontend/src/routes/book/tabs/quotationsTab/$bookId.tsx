@@ -182,7 +182,7 @@ export const QuotesPage: FC = () => {
                     <p className="text-lg pb-6"> {userBookData?.book?.authors[0]?.name ?? ''} </p>
                     <QuotationsTable
                       columns={columns}
-                      data={data}
+                      data={[...data]}
                       onSetPage={onSetPage}
                       pageCount={pageCount}
                       pageIndex={page}

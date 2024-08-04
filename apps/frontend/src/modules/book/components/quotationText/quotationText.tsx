@@ -46,7 +46,7 @@ export const QuotationText: FC<QuotationTextProps> = ({ content, index, pageInde
     }
 
     clone.remove();
-  }, [index, pageIndex]);
+  }, [content]);
 
   const onShowMore = (showMore: boolean) => {
     const element = document.querySelector(`#${elementId}`);

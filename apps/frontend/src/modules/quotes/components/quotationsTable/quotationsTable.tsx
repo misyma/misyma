@@ -15,6 +15,7 @@ import { useMemo, useState } from 'react';
 
 import { Table, TableBody, TableCell, TableRow } from '../../../common/components/table/table';
 import { Paginator } from '../../../common/components/paginator/paginator';
+import { Quote } from '@common/contracts';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -25,14 +26,14 @@ interface DataTableProps<TData, TValue> {
   onSetPage: (val: number) => Promise<void> | void;
 }
 
-export function QuotationsTable<TData, TValue>({
+export function QuotationsTable<TValue>({
   columns,
   data,
   pageIndex,
   pageSize,
   pageCount,
   onSetPage,
-}: DataTableProps<TData, TValue>): JSX.Element {
+}: DataTableProps<Quote, TValue>): JSX.Element {
   const [sorting, setSorting] = useState<SortingState>([]);
 
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -49,10 +50,13 @@ export function QuotationsTable<TData, TValue>({
     return (pageCount ?? 0) * (pageSize ?? 0);
   }, [pageCount, pageSize]);
 
-  const table = useReactTable({
+  const table = useReactTable<Quote>({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getRowId: (tData) => {
+      return tData.id;
+    },
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
@@ -100,7 +104,7 @@ export function QuotationsTable<TData, TValue>({
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4 mr-4">
-      {table.getPageCount() > 1 && (
+        {table.getPageCount() > 1 && (
           <Paginator
             onPageChange={onSetPage}
             pageIndex={pageIndex}
