@@ -219,7 +219,7 @@ export const BasicDataPage: FC = () => {
                 <div className="flex flex-col gap-4 w-3/4">
                   <div className="flex justify-between">
                     <p className="font-semibold text-3xl w-1/2 block truncate">{data?.book.title}</p>
-                    <CurrentRatingStar userBookId={bookId} />
+                  <CurrentRatingStar userBookId={bookId} />
                   </div>
                   <Separator className="h-[1px] bg-primary"></Separator>
                   <div className="flex w-full justify-between">
