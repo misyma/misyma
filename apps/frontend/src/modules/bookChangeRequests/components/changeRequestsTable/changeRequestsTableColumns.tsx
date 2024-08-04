@@ -69,7 +69,8 @@ export const changeRequestsColumns: ColumnDef<BookChangeRequest>[] = [
         ['format']: 'format',
         ['pages']: 'liczba stron',
         ['authors']: 'autorzy',
-        ['releaseYear']: 'data wydania'
+        ['releaseYear']: 'data wydania',
+        ['authorIds']: 'autorzy',
       } as const;
 
       const changedValues = Object.keys(row.original).filter((value) => !ignoredKeys.includes(value)) as Array<

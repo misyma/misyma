@@ -6,7 +6,7 @@ type Payload = FindAuthorsQueryParams & {
 };
 
 export const findAuthors = async (values: Payload) => {
-  const { name, page, accessToken } = values;
+  const { name, page, pageSize, ids, accessToken } = values;
 
   const query: Record<string, string> = {};
 
@@ -18,9 +18,22 @@ export const findAuthors = async (values: Payload) => {
     query.page = `${page}`;
   }
 
+  if (pageSize) {
+    query.pageSize = `${pageSize}`;
+  }
+
+  const customQueryAppend: Array<[string, string]> = [];
+
+  if (ids) {
+    for (const id of ids) {
+      customQueryAppend.push([`ids`, id]);
+    }
+  }
+
   const response = await HttpService.get<FindAuthorsResponseBody>({
     url: '/authors',
     queryParams: query,
+    customQueryAppend,
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
