@@ -220,6 +220,8 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
     mode: 'onTouched',
   });
 
+  console.log(stepOneForm.getValues())
+
   return (
     <Form {...stepOneForm}>
       <form
@@ -284,7 +286,7 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
                 </TooltipProvider>
               </div>
               <FormControl>
-                <Popover modal={true}>
+                <Popover modal={false}>
                   <PopoverTrigger asChild>
                     <FormControl>
                       <Button
@@ -331,6 +333,7 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
                             {/* <p>Nie znaleziono autora - {searchedName} </p> */}
                             <>
                               <Dialog
+                                modal={true}
                                 open={createAuthorDialogVisible}
                                 onOpenChange={(val) => {
                                   onOpenChange(val);
@@ -341,7 +344,7 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
                                 <DialogTrigger asChild>
                                   <Button className="bg-slate-100 text-black hover:bg-slate-300">Dodaj</Button>
                                 </DialogTrigger>
-                                <DialogContent className="sm:max-w-md">
+                                <DialogContent className="sm:max-w-md z-[100]">
                                   <DialogHeader>
                                     <DialogTitle>Stwórz autora</DialogTitle>
                                   </DialogHeader>

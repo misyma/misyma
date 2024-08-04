@@ -3,6 +3,7 @@ import { BaseApiError } from './types/baseApiError';
 export type RequestPayload = {
   headers?: Record<string, string>;
   queryParams?: Record<string, string>;
+  customQueryAppend?: Array<[string, string]>;
   url: string;
   /**
    * Defaults to 'application/json'. Determines how the response will be parsed. \\
@@ -36,14 +37,20 @@ export class HttpService {
 
   public static async get<T = unknown>(payload: GetRequestPayload): Promise<HttpResponse<T>> {
     try {
-      const { url, headers, queryParams } = payload;
+      const { url, headers, queryParams, customQueryAppend } = payload;
 
       let requestUrl = `${this.baseUrl}${url}`;
 
       if (queryParams) {
-        const queryString = new URLSearchParams(queryParams).toString();
+        const queryString = new URLSearchParams(queryParams);
 
-        requestUrl = `${requestUrl}?${queryString}`;
+        if (customQueryAppend) {
+          for (const [key, value] of customQueryAppend) {
+            queryString.append(key, value);
+          }
+        }
+
+        requestUrl = `${requestUrl}?${queryString.toString()}`;
       }
 
       const response = await fetch(`${requestUrl}`, {

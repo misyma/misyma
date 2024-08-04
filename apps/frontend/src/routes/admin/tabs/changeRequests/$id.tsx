@@ -1,6 +1,6 @@
 import { createFileRoute, Navigate, useNavigate } from '@tanstack/react-router';
 import { RequireAdmin } from '../../../../modules/core/components/requireAdmin/requireAdmin';
-import { FC, ReactNode } from 'react';
+import { FC, ReactNode, useMemo } from 'react';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { z } from 'zod';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -21,8 +21,18 @@ import { useDeleteBookChangeRequestMutation } from '../../../../modules/bookChan
 import { BookApiError } from '../../../../modules/book/errors/bookApiError';
 import { useToast } from '../../../../modules/common/components/toast/use-toast';
 import { BookApiQueryKeys } from '../../../../modules/book/api/user/queries/bookApiQueryKeys';
+import { useFindAuthorsQuery } from '../../../../modules/author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
 
-type ChangeKeys = 'format' | 'isbn' | 'language' | 'releaseYear' | 'title' | 'translator' | 'publisher' | 'pages';
+type ChangeKeys =
+  | 'format'
+  | 'isbn'
+  | 'language'
+  | 'releaseYear'
+  | 'title'
+  | 'translator'
+  | 'publisher'
+  | 'pages'
+  | 'authorIds';
 
 type ChangeArguments = {
   current: string;
@@ -39,6 +49,7 @@ const schema = z.object({
   translator: z.boolean().default(false),
   publisher: z.boolean().default(false),
   pages: z.boolean().default(false),
+  authorIds: z.boolean().default(false),
 });
 
 export const ChangeRequestView: FC = () => {
@@ -64,6 +75,10 @@ export const ChangeRequestView: FC = () => {
     }),
   );
 
+  const { data: authorsResponse, isFetching: isFetchingAuthors } = useFindAuthorsQuery({
+    ids: [...(bookData?.authors.map((author) => author.id) ?? []), ...(changeRequestData?.data?.authorIds ?? [])],
+  });
+
   const { mutateAsync: updateBook } = useUpdateBookMutation({});
 
   const { mutateAsync: deleteBookChangeRequest } = useDeleteBookChangeRequestMutation({});
@@ -81,14 +96,22 @@ export const ChangeRequestView: FC = () => {
       translator: false,
       publisher: false,
       pages: false,
+      authorIds: false,
     },
   });
+
+  const desiredAuthors = useMemo(() => {
+    return authorsResponse?.data
+      .filter((author) => changeRequestData?.data?.authorIds?.includes(author.id))
+      .map((author) => author.name)
+      .join(',');
+  }, [authorsResponse?.data, changeRequestData?.data]);
 
   if (isChangeRequestFetched && !changeRequestData?.data) {
     return <Navigate to={'/admin/tabs/changeRequests'} />;
   }
 
-  if (!isChangeRequestFetched || !isBookDataFetched) {
+  if (!isChangeRequestFetched || !isBookDataFetched || isFetchingAuthors) {
     return (
       <AuthenticatedLayout>
         <LoadingSpinner />
@@ -132,7 +155,11 @@ export const ChangeRequestView: FC = () => {
       },
       publisher: {
         current: 'Obecne wydawnictwo',
-        desired: 'Pożądane wydawnictwo'
+        desired: 'Pożądane wydawnictwo',
+      },
+      authorIds: {
+        current: 'Obecni autorzy',
+        desired: 'Pożądani autorzy',
       },
     } as const;
 
@@ -144,7 +171,7 @@ export const ChangeRequestView: FC = () => {
           return;
         }
 
-        if (changeValues.mapping) {
+        if (changeValues.mapping && key !== 'authorIds') {
           components.push(
             <FormField
               control={form.control}
@@ -165,6 +192,31 @@ export const ChangeRequestView: FC = () => {
               )}
             />,
           );
+          return;
+        }
+
+        if (key === 'authorIds') {
+          components.push(
+            <FormField
+              control={form.control}
+              name={'authorIds'}
+              render={({ field }) => (
+                <FormItem className="grid grid-cols-3 w-full">
+                  <p>
+                    {changeValues.current}: {bookData['authors'].map((val) => val.name)}
+                  </p>
+                  <p>
+                    {changeValues.desired}: {desiredAuthors}
+                  </p>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormItem>
+              )}
+            />,
+          );
+
           return;
         }
 
@@ -195,15 +247,15 @@ export const ChangeRequestView: FC = () => {
   };
 
   const onRejectAll = (): void => {
-    Object.keys((changeRequestData?.data ?? {})).forEach((key) => {
+    Object.keys(changeRequestData?.data ?? {}).forEach((key) => {
       form.setValue(key as ChangeKeys, false);
-    })
+    });
   };
 
   const onAcceptAll = (): void => {
-    Object.keys((changeRequestData?.data ?? {})).forEach((key) => {
+    Object.keys(changeRequestData?.data ?? {}).forEach((key) => {
       form.setValue(key as ChangeKeys, true);
-    })
+    });
   };
 
   const onSubmit = async (values: z.infer<typeof schema>) => {
@@ -228,8 +280,8 @@ export const ChangeRequestView: FC = () => {
       });
 
       await queryClient.invalidateQueries({
-        predicate: (query) => query.queryKey[0] === BookApiQueryKeys.findBookById && query.queryKey[1] === bookData?.id
-      })
+        predicate: (query) => query.queryKey[0] === BookApiQueryKeys.findBookById && query.queryKey[1] === bookData?.id,
+      });
     } catch (error) {
       if (error instanceof BookApiError) {
         toast({
@@ -290,7 +342,7 @@ export const ChangeRequestView: FC = () => {
                 className="space-y-4"
                 onSubmit={form.handleSubmit(onSubmit)}
               >
-                <div className='grid grid-cols-3 w-full'>
+                <div className="grid grid-cols-3 w-full">
                   <div></div>
                   <div></div>
                   <div>Zmiana zaakceptowana</div>

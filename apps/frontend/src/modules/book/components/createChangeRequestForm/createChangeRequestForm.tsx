@@ -31,6 +31,7 @@ import { useCreateBookChangeRequestMutation } from '../../../bookChangeRequests/
 import { useToast } from '../../../common/components/toast/use-toast';
 import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
 import { BookApiError } from '../../errors/bookApiError';
+import { useCreateAuthorDraftMutation } from '../../../author/api/user/mutations/createAuthorDraftMutation/createAuthorDraftMutation';
 
 interface Props {
   bookId: string;
@@ -164,6 +165,8 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
     setCurrentStep(2);
   };
 
+  const { mutateAsync: createAuthorDraft, isPending: isCreateAuthorPending } = useCreateAuthorDraftMutation({});
+
   const onUpdate = async (values: z.infer<typeof stepTwoSchema>) => {
     const payload = {
       ...context,
@@ -176,6 +179,14 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
       accessToken: accessToken as string,
       bookId: bookData?.id as string,
     };
+
+    if (context.authorName) {
+      const createdAuthor = await createAuthorDraft({
+        name: context.authorName,
+      });
+
+      payload.authorIds = [createdAuthor.id];
+    }
 
     Object.entries(payload).forEach(([key, value]) => {
       const bookDataKey = key as keyof typeof bookData;
@@ -218,7 +229,7 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
     try {
       await createBookChangeRequest({
         ...payload,
-        authorIds: Array.isArray(payload.authorIds)? payload.authorIds : payload.authorIds?.split(','),
+        authorIds: Array.isArray(payload.authorIds) ? payload.authorIds : payload.authorIds?.split(','),
       });
 
       toast({
@@ -360,7 +371,7 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
               </Button>
               <Button
                 size="lg"
-                disabled={!stepTwoForm.formState.isValid}
+                disabled={!stepTwoForm.formState.isValid || isCreateAuthorPending}
                 type="submit"
               >
                 Prześlij prośbę
