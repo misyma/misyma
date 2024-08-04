@@ -12,6 +12,7 @@ export const findAuthorsQueryParamsDtoSchema = Type.Object({
       maxLength: 128,
     }),
   ),
+  ids: Type.Optional(Type.Array(Type.String({ format: 'uuid' }))),
   page: Type.Optional(Type.Integer({ minimum: 1 })),
   pageSize: Type.Optional(Type.Integer({ minimum: 1 })),
 });
