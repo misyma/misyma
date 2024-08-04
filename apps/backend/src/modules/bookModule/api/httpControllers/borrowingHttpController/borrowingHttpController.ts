@@ -181,7 +181,7 @@ export class BorrowingHttpController implements HttpController {
   private async createBorrowing(
     request: HttpRequest<CreateBorrowingBodyDto, undefined, CreateBorrowingPathParamsDto>,
   ): Promise<HttpCreatedResponse<CreateBorrowingResponseBodyDto>> {
-    await this.accessControlService.verifyBearerToken({
+    const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
@@ -202,6 +202,7 @@ export class BorrowingHttpController implements HttpController {
       borrower,
       startedAt: new Date(startedAt),
       endedAt: endedAt ? new Date(endedAt) : undefined,
+      userId,
     });
 
     return {
