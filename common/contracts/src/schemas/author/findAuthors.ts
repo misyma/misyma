@@ -3,6 +3,7 @@ import { type Metadata } from '../metadata.js';
 
 export interface FindAuthorsQueryParams {
   readonly name?: string;
+  readonly ids?: string[];
   readonly page?: number;
   readonly pageSize?: number;
 }
