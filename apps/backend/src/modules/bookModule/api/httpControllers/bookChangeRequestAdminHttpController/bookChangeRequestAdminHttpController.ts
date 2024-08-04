@@ -230,6 +230,7 @@ export class BookChangeRequestAdminHttpController implements HttpController {
       bookId,
       createdAt,
       userId,
+      authorIds,
     } = bookChangeRequest.getState();
 
     const bookChangeRequestDto: BookChangeRequestDto = {
@@ -238,6 +239,10 @@ export class BookChangeRequestAdminHttpController implements HttpController {
       userId,
       createdAt: createdAt.toISOString(),
     };
+
+    if (authorIds) {
+      bookChangeRequestDto.authorIds = authorIds;
+    }
 
     if (isbn) {
       bookChangeRequestDto.isbn = isbn;
