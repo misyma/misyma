@@ -344,6 +344,7 @@ export class BookModule implements DependencyInjectionModule {
           container.get<BookshelfRepository>(bookshelfSymbols.bookshelfRepository),
           container.get<GenreRepository>(symbols.genreRepository),
           container.get<CollectionRepository>(symbols.collectionRepository),
+          container.get<BorrowingRepository>(symbols.borrowingRepository),
           container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );
