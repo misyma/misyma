@@ -35,6 +35,7 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
         bookId,
         userId,
         createdAt,
+        authorIds,
       },
     } = payload;
 
@@ -58,6 +59,7 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
           bookId,
           userId,
           createdAt,
+          authorIds: authorIds?.join(',') ?? undefined,
         },
         '*',
       );

@@ -21,6 +21,7 @@ export class BookChangeRequestTestFactory {
       bookId: Generator.uuid(),
       userId: Generator.uuid(),
       createdAt: Generator.pastDate(),
+      authorIds: [],
       ...input,
     });
   }

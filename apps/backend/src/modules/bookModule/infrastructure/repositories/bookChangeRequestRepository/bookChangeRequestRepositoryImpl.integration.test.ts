@@ -68,6 +68,8 @@ describe('BookChangeRequestRepositoryImpl', () => {
         userId: user.id,
       });
 
+      const authorId = Generator.uuid();
+
       const bookChangeRequest = await bookChangeRequestRepository.saveBookChangeRequest({
         bookChangeRequest: {
           title: createdBookChangeRequest.getTitle(),
@@ -82,6 +84,7 @@ describe('BookChangeRequestRepositoryImpl', () => {
           bookId: createdBookChangeRequest.getBookId(),
           userId: createdBookChangeRequest.getUserId(),
           createdAt: createdBookChangeRequest.getCreatedAt(),
+          authorIds: [authorId],
         },
       });
 
@@ -100,6 +103,7 @@ describe('BookChangeRequestRepositoryImpl', () => {
         bookId: createdBookChangeRequest.getBookId(),
         userId: createdBookChangeRequest.getUserId(),
         createdAt: createdBookChangeRequest.getCreatedAt(),
+        authorIds: [authorId],
       });
 
       expect(foundBookChangeRequest).toEqual({
@@ -116,6 +120,7 @@ describe('BookChangeRequestRepositoryImpl', () => {
         bookId: createdBookChangeRequest.getBookId(),
         userId: createdBookChangeRequest.getUserId(),
         createdAt: createdBookChangeRequest.getCreatedAt(),
+        authorIds: authorId,
       });
     });
   });

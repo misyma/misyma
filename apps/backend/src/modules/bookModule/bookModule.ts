@@ -514,6 +514,7 @@ export class BookModule implements DependencyInjectionModule {
         new ApplyBookChangeRequestCommandHandlerImpl(
           container.get<BookChangeRequestRepository>(symbols.bookChangeRequestRepository),
           container.get<BookRepository>(symbols.bookRepository),
+          container.get<AuthorRepository>(symbols.authorRepository),
           container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );
@@ -525,6 +526,7 @@ export class BookModule implements DependencyInjectionModule {
           container.get<BookChangeRequestRepository>(symbols.bookChangeRequestRepository),
           container.get<BookRepository>(symbols.bookRepository),
           container.get<UserRepository>(userSymbols.userRepository),
+          container.get<AuthorRepository>(symbols.authorRepository),
           container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );

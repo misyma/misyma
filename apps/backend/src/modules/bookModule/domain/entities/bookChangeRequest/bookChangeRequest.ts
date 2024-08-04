@@ -11,6 +11,7 @@ export interface BookChangeRequestDraft {
   readonly format?: BookFormat | undefined;
   readonly pages?: number | undefined;
   readonly imageUrl?: string | undefined;
+  readonly authorIds?: string[] | undefined;
   readonly userId: string;
   readonly bookId: string;
   readonly createdAt: Date;
@@ -26,6 +27,7 @@ export interface BookChangeRequestState {
   readonly format?: BookFormat | undefined;
   readonly pages?: number | undefined;
   readonly imageUrl?: string | undefined;
+  readonly authorIds?: string[] | undefined;
   readonly userId: string;
   readonly bookId: string;
   readonly createdAt: Date;
@@ -50,6 +52,7 @@ export class BookChangeRequest {
       bookId,
       userId,
       createdAt,
+      authorIds,
     } = draft;
 
     this.id = id;
@@ -67,6 +70,7 @@ export class BookChangeRequest {
       bookId,
       userId,
       createdAt,
+      authorIds,
     };
   }
 
@@ -112,6 +116,10 @@ export class BookChangeRequest {
 
   public getPages(): number | undefined {
     return this.state.pages;
+  }
+
+  public getAuthorIds(): string[] | undefined {
+    return this.state.authorIds;
   }
 
   public getUserId(): string {

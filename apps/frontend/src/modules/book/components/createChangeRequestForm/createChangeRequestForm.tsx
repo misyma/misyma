@@ -216,7 +216,10 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
     }
 
     try {
-      await createBookChangeRequest(payload);
+      await createBookChangeRequest({
+        ...payload,
+        authorIds: Array.isArray(payload.authorIds)? payload.authorIds : payload.authorIds?.split(','),
+      });
 
       toast({
         title: 'Prośba o zmianę została wysłana.',

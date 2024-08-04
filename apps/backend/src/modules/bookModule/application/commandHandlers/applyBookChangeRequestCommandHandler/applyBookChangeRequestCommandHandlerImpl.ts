@@ -4,6 +4,7 @@ import {
 } from './applyBookChangeRequestCommandHandler.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
+import { type AuthorRepository } from '../../../domain/repositories/authorRepository/authorRepository.js';
 import { type BookChangeRequestRepository } from '../../../domain/repositories/bookChangeRequestRepository/bookChangeRequestRepository.js';
 import { type BookRepository } from '../../../domain/repositories/bookRepository/bookRepository.js';
 
@@ -11,6 +12,7 @@ export class ApplyBookChangeRequestCommandHandlerImpl implements ApplyBookChange
   public constructor(
     private readonly bookChangeRequestRepository: BookChangeRequestRepository,
     private readonly bookRepository: BookRepository,
+    private readonly authorRepository: AuthorRepository,
     private readonly loggerService: LoggerService,
   ) {}
 
@@ -40,7 +42,7 @@ export class ApplyBookChangeRequestCommandHandlerImpl implements ApplyBookChange
       });
     }
 
-    const { format, imageUrl, isbn, language, pages, publisher, translator, releaseYear, title } =
+    const { format, imageUrl, isbn, language, pages, publisher, translator, releaseYear, title, authorIds } =
       bookChangeRequest.getState();
 
     if (title) {
@@ -77,6 +79,25 @@ export class ApplyBookChangeRequestCommandHandlerImpl implements ApplyBookChange
 
     if (isbn) {
       book.setIsbn({ isbn });
+    }
+
+    if (authorIds !== undefined) {
+      if (authorIds.length) {
+        const authors = await this.authorRepository.findAuthors({
+          ids: authorIds,
+          page: 1,
+          pageSize: authorIds.length,
+        });
+
+        if (authors.length !== authorIds.length) {
+          throw new OperationNotValidError({
+            reason: 'Some authors do not exist.',
+            authorIds,
+          });
+        }
+
+        book.setAuthors(authors);
+      }
     }
 
     await this.bookRepository.saveBook({ book });

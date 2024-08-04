@@ -50,6 +50,14 @@ export const bookChangeRequestDtoSchema = Type.Object({
       maxLength: 128,
     }),
   ),
+  authorIds: Type.Optional(
+    Type.Array(
+      Type.String({
+        format: 'uuid',
+      }),
+      { minItems: 1 },
+    ),
+  ),
 });
 
 export type BookChangeRequestDto = Static<typeof bookChangeRequestDtoSchema>;
