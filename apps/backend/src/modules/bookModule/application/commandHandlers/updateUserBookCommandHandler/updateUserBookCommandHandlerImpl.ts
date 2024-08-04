@@ -1,3 +1,5 @@
+import { BookshelfType } from '@common/contracts';
+
 import {
   type UpdateUserBookCommandHandler,
   type UpdateUserBookPayload,
@@ -6,6 +8,7 @@ import {
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type BookshelfRepository } from '../../../../bookshelfModule/domain/repositories/bookshelfRepository/bookshelfRepository.js';
+import { type BorrowingRepository } from '../../../domain/repositories/borrowingRepository/borrowingRepository.js';
 import { type CollectionRepository } from '../../../domain/repositories/collectionRepository/collectionRepository.js';
 import { type GenreRepository } from '../../../domain/repositories/genreRepository/genreRepository.js';
 import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
@@ -16,6 +19,7 @@ export class UpdateUserBookCommandHandlerImpl implements UpdateUserBookCommandHa
     private readonly bookshelfRepository: BookshelfRepository,
     private readonly genreRepository: GenreRepository,
     private readonly collectionRepository: CollectionRepository,
+    private readonly borrowingRepository: BorrowingRepository,
     private readonly loggerService: LoggerService,
   ) {}
 
@@ -50,6 +54,36 @@ export class UpdateUserBookCommandHandlerImpl implements UpdateUserBookCommandHa
           reason: 'Bookshelf does not exist.',
           id: bookshelfId,
         });
+      }
+
+      const currentBookshelf = await this.bookshelfRepository.findBookshelf({
+        where: { id: userBook.getBookshelfId() },
+      });
+
+      if (!currentBookshelf) {
+        throw new OperationNotValidError({
+          reason: 'Bookshelf does not exist.',
+          id: userBook.getBookshelfId(),
+        });
+      }
+
+      // TODO: add transaction
+
+      if (currentBookshelf.getType() === BookshelfType.borrowing) {
+        const openBorrowings = await this.borrowingRepository.findBorrowings({
+          userBookId,
+          page: 1,
+          pageSize: 1,
+          isOpen: true,
+        });
+
+        const userBookBorrowing = openBorrowings[0];
+
+        if (userBookBorrowing) {
+          userBookBorrowing.setEndedAtDate({ endedAt: new Date() });
+
+          await this.borrowingRepository.saveBorrowing({ borrowing: userBookBorrowing });
+        }
       }
 
       userBook.setBookshelfId({ bookshelfId });

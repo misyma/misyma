@@ -1,5 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
+import { BookshelfType } from '@common/contracts';
+
 import { type UpdateUserBookCommandHandler } from './updateUserBookCommandHandler.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
@@ -13,6 +15,7 @@ import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestU
 import { symbols } from '../../../symbols.js';
 import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
+import { type BorrowingTestUtils } from '../../../tests/utils/borrowingTestUtils/borrowingTestUtils.js';
 import { type CollectionTestUtils } from '../../../tests/utils/collectionTestUtils/collectionTestUtils.js';
 import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
@@ -33,6 +36,8 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
   let authorTestUtils: AuthorTestUtils;
 
   let userBookTestUtils: UserBookTestUtils;
+
+  let borrowingTestUtils: BorrowingTestUtils;
 
   let databaseClient: DatabaseClient;
 
@@ -59,6 +64,8 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
 
     userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
 
+    borrowingTestUtils = container.get<BorrowingTestUtils>(testSymbols.borrowingTestUtils);
+
     testUtils = [
       authorTestUtils,
       bookTestUtils,
@@ -67,6 +74,7 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
       userTestUtils,
       userBookTestUtils,
       genreTestUtils,
+      borrowingTestUtils,
     ];
 
     for (const testUtil of testUtils) {
@@ -140,6 +148,54 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
     }
 
     expect.fail();
+  });
+
+  it('closes a borrowing- when bookshelf is updated from borrowing bookshelf to the standard one', async () => {
+    const user = await userTestUtils.createAndPersist();
+
+    const borrowingBookshelf = await bookshelfTestUtils.createAndPersist({
+      input: {
+        userId: user.id,
+        type: BookshelfType.borrowing,
+      },
+    });
+
+    const standardBookshelf = await bookshelfTestUtils.createAndPersist({
+      input: {
+        userId: user.id,
+        type: BookshelfType.standard,
+      },
+    });
+
+    const book = await bookTestUtils.createAndPersist();
+
+    const userBook = await userBookTestUtils.createAndPersist({
+      input: {
+        bookId: book.id,
+        bookshelfId: borrowingBookshelf.id,
+      },
+    });
+
+    const borrowing = await borrowingTestUtils.createAndPersist({
+      input: {
+        userBookId: userBook.id,
+        startedAt: new Date(),
+        endedAt: undefined,
+      },
+    });
+
+    await commandHandler.execute({
+      userBookId: userBook.id,
+      bookshelfId: standardBookshelf.id,
+    });
+
+    const updatedUserBook = await userBookTestUtils.findById({ id: userBook.id });
+
+    expect(updatedUserBook?.bookshelfId).toBe(standardBookshelf.id);
+
+    const updatedBorrowing = await borrowingTestUtils.findById({ id: borrowing.id });
+
+    expect(updatedBorrowing?.endedAt).toBeDefined();
   });
 
   it('updates UserBook', async () => {
