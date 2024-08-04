@@ -64,8 +64,6 @@ export * from './schemas/book/findAdminBooks.js';
 
 export * from './schemas/book/createBook.js';
 
-export * from './schemas/book/importBook.js';
-
 export * from './schemas/book/updateBook.js';
 
 export * from './schemas/userBook/uploadUserBookImage.js';

@@ -1,9 +1,10 @@
-import { BookFormat, isValidLanguage, Language, type ImportBookRequestBody } from '@common/contracts';
+import { BookFormat, isValidLanguage, Language } from '@common/contracts';
 
 import { type OpenLibraryBookBinding, type OpenLibraryBook } from './openLibraryBook.js';
+import { type BookDraft } from '../../infrastructure/entities/book/book.js';
 
 export class OpenLibraryMapper {
-  public mapBook(openLibraryBook: OpenLibraryBook): ImportBookRequestBody | undefined {
+  public mapBook(openLibraryBook: OpenLibraryBook): BookDraft | undefined {
     const format = this.mapFormat(openLibraryBook.binding);
 
     const language = this.mapLanguage(openLibraryBook.language);
@@ -30,7 +31,7 @@ export class OpenLibraryMapper {
       ),
     ];
 
-    if (authorNames.length > 1) {
+    if (authorNames.length > 2) {
       return undefined;
     }
 
@@ -50,6 +51,7 @@ export class OpenLibraryMapper {
       releaseYear: releaseYear && releaseYear < 2100 ? releaseYear : undefined,
       authorNames,
       translator: undefined,
+      isApproved: true,
     };
   }
 

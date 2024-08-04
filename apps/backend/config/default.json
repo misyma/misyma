@@ -13,7 +13,7 @@
     "port": 5432,
     "username": null,
     "password": null,
-    "name": "misymadb"
+    "name": "postgres"
   },
   "hashSaltRounds": 10,
   "token": {

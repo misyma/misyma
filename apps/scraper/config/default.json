@@ -1,9 +1,11 @@
 {
   "logLevel": "debug",
-  "databasePath": null,
-  "openLibraryPath": null,
-  "misyma": {
-    "url": "https://misyma-backend.fly.dev",
-    "apiKey": null
-  }
+  "database": {
+    "host": "misymadb-dev.cp04ssawajdq.eu-central-1.rds.amazonaws.com",
+    "port": 5432,
+    "username": null,
+    "password": null,
+    "name": "postgres"
+  },
+  "openLibraryPath": null
 }

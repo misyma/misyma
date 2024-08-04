@@ -7,12 +7,17 @@ import { LogLevel } from './libs/logger/logLevel.js';
 
 const configSchema = Type.Object({
   logLevel: Type.Enum(LogLevel),
-  databasePath: Type.String({ minLength: 1 }),
-  openLibraryPath: Type.String({ minLength: 1 }),
-  misyma: Type.Object({
-    url: Type.String({ minLength: 1 }),
-    apiKey: Type.String({ minLength: 1 }),
+  database: Type.Object({
+    host: Type.String({ minLength: 1 }),
+    port: Type.Number({
+      minimum: 1,
+      maximum: 65535,
+    }),
+    username: Type.String({ minLength: 1 }),
+    password: Type.String({ minLength: 1 }),
+    name: Type.String({ minLength: 1 }),
   }),
+  openLibraryPath: Type.String({ minLength: 1 }),
 });
 
 export type Config = Static<typeof configSchema>;

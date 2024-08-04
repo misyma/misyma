@@ -10,8 +10,11 @@ import {
 } from './actions/scrapeOpenLibraryAction/scrapeOpenLibraryAction.js';
 import { ConfigFactory } from './config.js';
 import { BaseError } from './errors/baseError.js';
-import { MisymaHttpClientFactory } from './infrastructure/clients/misymaHttpClient.js';
+import { AuthorRepository } from './infrastructure/repositories/authorRepository/authorRepository.js';
+import { BookRepository } from './infrastructure/repositories/bookRepository/bookRepository.js';
+import { DatabaseClientFactory } from './libs/database/databaseClientFactory.js';
 import { LoggerServiceFactory } from './libs/logger/loggerServiceFactory.js';
+import { UuidService } from './libs/uuid/uuidService.js';
 
 const finalErrorHandler = async (error: unknown): Promise<void> => {
   let errorContext;
@@ -49,11 +52,32 @@ try {
 
   const logger = LoggerServiceFactory.create(config);
 
+  const dbClient = DatabaseClientFactory.create({
+    host: config.database.host,
+    port: config.database.port,
+    databaseName: config.database.name,
+    user: config.database.username,
+    password: config.database.password,
+    useNullAsDefault: true,
+    minPoolConnections: 1,
+    maxPoolConnections: 10,
+  });
+
+  const uuidService = new UuidService();
+
+  const authorRepository = new AuthorRepository(dbClient, uuidService);
+
+  const bookRepository = new BookRepository(dbClient, uuidService);
+
   const openLibraryMapper = new OpenLibraryMapper();
 
-  const misymaHttpClient = MisymaHttpClientFactory.create(config);
-
-  const scrapeOpenLibraryAction = new ScrapeOpenLibraryAction(misymaHttpClient, openLibraryMapper, config, logger);
+  const scrapeOpenLibraryAction = new ScrapeOpenLibraryAction(
+    authorRepository,
+    bookRepository,
+    openLibraryMapper,
+    config,
+    logger,
+  );
 
   yargs(hideBin(process.argv))
     .command([
