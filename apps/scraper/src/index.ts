@@ -3,13 +3,16 @@
 import yargs, { type Argv } from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
+import { EIsbnMapper } from './actions/scrapeEIsbnAction/eIsbnMapper.js';
+import { ScrapeEIsbnAction, type ScrapeEIsbnActionPayload } from './actions/scrapeEIsbnAction/scrapeEIsbnAction.js';
 import { OpenLibraryMapper } from './actions/scrapeOpenLibraryAction/openLibraryMapper.js';
 import {
   ScrapeOpenLibraryAction,
-  type ScrapeOpenLibraryActionExecutePayload,
+  type ScrapeOpenLibraryActionPayload,
 } from './actions/scrapeOpenLibraryAction/scrapeOpenLibraryAction.js';
 import { ConfigFactory } from './config.js';
 import { BaseError } from './errors/baseError.js';
+import { EIsbnClientFactory } from './infrastructure/clients/eIsbnClient.js';
 import { AuthorRepository } from './infrastructure/repositories/authorRepository/authorRepository.js';
 import { BookRepository } from './infrastructure/repositories/bookRepository/bookRepository.js';
 import { DatabaseClientFactory } from './libs/database/databaseClientFactory.js';
@@ -79,12 +82,18 @@ try {
     logger,
   );
 
+  const eisbnClient = EIsbnClientFactory.create(config);
+
+  const eIsbnMapper = new EIsbnMapper();
+
+  const scrapeEIsbnAction = new ScrapeEIsbnAction(authorRepository, bookRepository, eIsbnMapper, eisbnClient, logger);
+
   yargs(hideBin(process.argv))
     .command([
       {
         command: 'scrape openlibrary',
         describe: 'Scrape resources from Open Library.',
-        builder: (builder: Argv): Argv<ScrapeOpenLibraryActionExecutePayload> => {
+        builder: (builder: Argv): Argv<ScrapeOpenLibraryActionPayload> => {
           return builder
             .option({
               from: {
@@ -97,6 +106,24 @@ try {
         },
         handler: async (argv: any): Promise<void> => {
           await scrapeOpenLibraryAction.execute(argv);
+        },
+      },
+      {
+        command: 'scrape eisbn',
+        describe: 'Scrape resources from E-ISBN.',
+        builder: (builder: Argv): Argv<ScrapeEIsbnActionPayload> => {
+          return builder
+            .option({
+              from: {
+                description: 'Start scraping from book number',
+                number: true,
+                alias: 'f',
+              },
+            })
+            .usage('Usage: scraper scrape eisbn');
+        },
+        handler: async (argv: any): Promise<void> => {
+          await scrapeEIsbnAction.execute(argv);
         },
       },
     ])

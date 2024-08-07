@@ -8,7 +8,7 @@ import { type AuthorRepository } from '../../infrastructure/repositories/authorR
 import { type BookRepository } from '../../infrastructure/repositories/bookRepository/bookRepository.js';
 import { type LoggerService } from '../../libs/logger/loggerService.js';
 
-export interface ScrapeOpenLibraryActionExecutePayload {
+export interface ScrapeOpenLibraryActionPayload {
   readonly from: number | undefined;
 }
 
@@ -21,7 +21,7 @@ export class ScrapeOpenLibraryAction {
     private readonly logger: LoggerService,
   ) {}
 
-  public async execute(payload: ScrapeOpenLibraryActionExecutePayload): Promise<void> {
+  public async execute(payload: ScrapeOpenLibraryActionPayload): Promise<void> {
     const { from } = payload;
 
     this.logger.info({
