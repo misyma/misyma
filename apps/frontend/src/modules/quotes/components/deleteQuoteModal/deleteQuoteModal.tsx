@@ -97,8 +97,8 @@ export const DeleteQuoteModal: FC<Props> = ({ quoteId, userBookId }: Props) => {
         omitCloseButton={true}
       >
         <div className="flex flex-col items-center gap-8">
-          <DialogHeader className="font-bold">Usunięcia cytatu jest nieodwracalne!</DialogHeader>
-          <div>Czy jesteś tego pewien?</div>
+          <DialogHeader className="font-bold">Czy na pewno chcesz usunąć cytat?</DialogHeader>
+          <div>Ta akcja jest nieodwracalna.</div>
           <div className="flex w-full pt-4 gap-4 justify-center">
             <Button
               disabled={isDeleting}
