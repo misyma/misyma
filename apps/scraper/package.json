@@ -13,7 +13,10 @@
   "dependencies": {
     "@common/contracts": "*",
     "@sinclair/typebox": "0.32.31",
+    "axios": "1.7.3",
+    "axios-retry": "4.5.0",
     "config": "3.3.11",
+    "fast-xml-parser": "4.4.1",
     "knex": "3.1.0",
     "pino": "9.1.0",
     "uuid": "10.0.0",
