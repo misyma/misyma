@@ -114,10 +114,7 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
           name="rating"
           render={({ field }) => (
             <FormItem className="flex flex-col justify-end">
-              <div className="flex gap-2 items-center justify-end">
-                <FormLabel className="text-base">
-                  <div className="animate-wiggle text-primary font-bold ">{hoveredValue || field.value}</div>
-                </FormLabel>
+              <div className="flex gap-2 items-center justify-start">
                 <RadioGroup
                   onValueChange={(value) => field.onChange(`${Number(value) + 1}`)}
                   value={`${field.value ?? 0}`}
@@ -148,6 +145,9 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
                     })}
                   </>
                 </RadioGroup>
+                <FormLabel className="text-base">
+                  <div className="animate-wiggle text-primary font-bold ">{hoveredValue || field.value}</div>
+                </FormLabel>
               </div>
               <FormMessage />
             </FormItem>

@@ -97,6 +97,10 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
       return setUsingBorrowFlow(true);
     }
 
+    if (id === currentBookshelfId) {
+      return;
+    }
+
     await updateUserBook({
       userBookId: bookId,
       bookshelfId: id,
@@ -143,6 +147,11 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bookshelfData]);
+
+  useEffect(() => {
+    setCurrentBookshelf(bookshelfData?.data.find((bookshelf) => bookshelf.id === selectedBookshelfId)?.name ?? '');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedBookshelfId])
 
   useEffect(() => {
     setCurrentBookshelf(bookshelfData?.data.find((bookshelf) => bookshelf.id === currentBookshelfId)?.name ?? '');
@@ -226,20 +235,20 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
           onMutated={async () => {
             setUsingBorrowFlow(false);
 
-            await queryClient.invalidateQueries({
-              predicate: ({ queryKey }) =>
-                queryKey[0] === BorrowingApiQueryKeys.findBookBorrowingsQuery && queryKey[1] === bookId,
-            });
-
-            queryClient.invalidateQueries({
-              queryKey: [BookApiQueryKeys.findUserBookById, bookId, userData?.id],
-            });
-
-            queryClient.invalidateQueries({
-              predicate: (query) =>
-                query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId &&
-                query.queryKey[1] === selectedBookshelfId,
-            });
+            await Promise.all([
+              queryClient.invalidateQueries({
+                predicate: ({ queryKey }) =>
+                  queryKey[0] === BorrowingApiQueryKeys.findBookBorrowingsQuery && queryKey[1] === bookId,
+              }),
+              queryClient.invalidateQueries({
+                queryKey: [BookApiQueryKeys.findUserBookById, bookId, userData?.id],
+              }),
+              queryClient.invalidateQueries({
+                predicate: (query) =>
+                  query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId &&
+                  query.queryKey[1] === selectedBookshelfId,
+              }),
+            ]);
           }}
           onClosed={() => {
             setUsingBorrowFlow(false);

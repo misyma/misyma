@@ -7,7 +7,7 @@ import { userStateSelectors } from '../../../core/store/states/userState/userSta
 import { useSelector } from 'react-redux';
 import { Skeleton } from '../../../common/components/skeleton/skeleton';
 import { CreateBookReadingModal } from '../createBookReadingModal/createBookReadingModal';
-import { BookReading } from '@common/contracts';
+import { BookReading, SortingType } from '@common/contracts';
 import { FindBookReadingsQueryOptions } from '../../api/queries/findBookReadings/findBookReadingsQueryOptions';
 
 interface Props {
@@ -29,6 +29,8 @@ export const StarRating: FC<Props> = ({ bookId }: Props) => {
     FindBookReadingsQueryOptions({
       accessToken: accessToken as string,
       userBookId: bookId,
+      pageSize: 1,
+      sortDate: SortingType.desc,
     }),
   );
 
