@@ -39,12 +39,19 @@ export function useErrorHandledMutation<TResponseBody, TError, TPayload>(
     error: unknown,
     { errorHandling }: ExtendedTPayload<TPayload>,
   ): Promise<TResponseBody | undefined> => {
-    const descriptionValue =
-      errorHandling?.description === ''
-        ? errorHandling?.description
-        : errorHandling?.description ?? (error as Error)?.message
-          ? (error as Error).message
-          : '';
+    let descriptionValue = "";
+
+    if (errorHandling?.description) {
+      descriptionValue = errorHandling.description;
+    }
+
+    if (!errorHandling?.description && error instanceof ApiError) {
+      descriptionValue = (error as ApiError)?.context?.message
+    }
+
+    if (!errorHandling?.description && !(error instanceof ApiError) &&  error instanceof Error) {
+      descriptionValue = (error as Error)?.message;
+    }
 
     if (error instanceof ApiError) {
       toast({
