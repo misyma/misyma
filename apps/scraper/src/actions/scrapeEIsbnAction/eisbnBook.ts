@@ -10,12 +10,8 @@ export interface EIsbnBook {
   readonly ProductIdentifier: EIsbnProductID | EIsbnProductID[];
   readonly DescriptiveDetail: {
     readonly ProductForm: string;
-    readonly TitleDetail: {
-      readonly TitleElement: {
-        readonly TitleText: string;
-      };
-    };
-    readonly Contributor: EIsbnContributor | EIsbnContributor[];
+    readonly TitleDetail: EIsbnTitleDetail | EIsbnTitleDetail[];
+    readonly Contributor?: EIsbnContributor | EIsbnContributor[];
     readonly Language: {
       readonly LanguageCode: string;
     };
@@ -29,9 +25,15 @@ export interface EIsbnBook {
   };
   readonly PublishingDetail: {
     readonly Publisher: {
-      readonly PublisherName: string;
+      readonly PublisherName?: string;
     };
     readonly PublishingDate: EIsbnDate | EIsbnDate[];
+  };
+}
+
+export interface EIsbnTitleDetail {
+  readonly TitleElement: {
+    readonly TitleText: string;
   };
 }
 
@@ -41,7 +43,8 @@ export interface EIsbnProductID {
 }
 
 export interface EIsbnContributor {
-  readonly PersonNameInverted: string;
+  readonly ContributorRole: string;
+  readonly PersonNameInverted?: string;
 }
 
 export interface EIsbnDate {

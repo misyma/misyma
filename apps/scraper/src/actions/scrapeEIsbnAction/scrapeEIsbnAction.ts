@@ -38,7 +38,7 @@ export class ScrapeEIsbnAction {
     const response = await this.eisbnClient.get('/IsbnWeb/api.xml', {
       params: {
         from: initialFrom,
-        max: 10,
+        max: 100,
       },
     });
 
@@ -52,13 +52,7 @@ export class ScrapeEIsbnAction {
 
     const bookDrafts = eisbnBooks.map((book) => this.eIsbnMapper.mapBook(book)).filter((book) => book !== undefined);
 
-    console.log(bookDrafts);
-
-    // const bookDraft = this.openLibraryMapper.mapBook(openLibraryBook);
-
-    // if (!bookDraft) {
-    //   return;
-    // }
+    console.log(bookDrafts.length);
 
     // const existingBook = await this.bookRepository.findBook({ title: bookDraft.title });
 

@@ -21,15 +21,27 @@ export class EIsbnMapper {
       return undefined;
     }
 
-    const title = eisbnBook.DescriptiveDetail.TitleDetail.TitleElement.TitleText;
+    const title = Array.isArray(eisbnBook.DescriptiveDetail.TitleDetail)
+      ? eisbnBook.DescriptiveDetail.TitleDetail[0]?.TitleElement.TitleText
+      : eisbnBook.DescriptiveDetail.TitleDetail.TitleElement.TitleText;
 
     const isbn = String(isbnEntry.IDValue);
 
-    const authorNames = Array.isArray(eisbnBook.DescriptiveDetail.Contributor)
-      ? eisbnBook.DescriptiveDetail.Contributor.map((contributor) => this.mapAuthorName(contributor.PersonNameInverted))
-      : [this.mapAuthorName(eisbnBook.DescriptiveDetail.Contributor.PersonNameInverted)];
+    let authorNames: string[] = [];
 
-    if (title.length > 256 || !format || !language || !authorNames.length) {
+    if (Array.isArray(eisbnBook.DescriptiveDetail.Contributor)) {
+      authorNames = eisbnBook.DescriptiveDetail.Contributor.filter(
+        (contributor) => contributor.ContributorRole === 'A01' && contributor.PersonNameInverted !== undefined,
+      ).map((contributor) => this.mapAuthorName(contributor.PersonNameInverted!));
+    } else if (
+      eisbnBook.DescriptiveDetail.Contributor &&
+      eisbnBook.DescriptiveDetail.Contributor.ContributorRole === 'A01' &&
+      eisbnBook.DescriptiveDetail.Contributor.PersonNameInverted
+    ) {
+      authorNames = [this.mapAuthorName(eisbnBook.DescriptiveDetail.Contributor.PersonNameInverted)];
+    }
+
+    if (!title || title.length > 256 || !format || !language || !authorNames.length) {
       return undefined;
     }
 
@@ -46,13 +58,13 @@ export class EIsbnMapper {
     return {
       title,
       isbn,
-      publisher: publisher.length && publisher.length < 128 ? publisher : undefined,
+      publisher: publisher?.length && publisher.length < 128 ? publisher : undefined,
       format,
       language,
       imageUrl: imageUrl ?? undefined,
       pages: undefined,
       releaseYear,
-      authorNames: authorNames.slice(0, 1),
+      authorNames,
       translator: undefined,
       isApproved: true,
     };
