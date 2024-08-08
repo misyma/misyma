@@ -24,7 +24,7 @@ export class EIsbnMapper {
 
       const title = Array.isArray(eisbnBook.DescriptiveDetail.TitleDetail)
         ? eisbnBook.DescriptiveDetail.TitleDetail[0]?.TitleElement.TitleText
-        : eisbnBook.DescriptiveDetail.TitleDetail.TitleElement.TitleText;
+        : eisbnBook.DescriptiveDetail.TitleDetail?.TitleElement.TitleText;
 
       const isbn = String(isbnEntry.IDValue);
 
@@ -46,13 +46,15 @@ export class EIsbnMapper {
         return undefined;
       }
 
-      const releaseYear = this.mapReleaseYear(
-        Array.isArray(eisbnBook.PublishingDetail.PublishingDate)
-          ? eisbnBook.PublishingDetail.PublishingDate[0]?.Date
-          : eisbnBook.PublishingDetail.PublishingDate.Date,
-      );
+      let releaseYear: number | undefined;
 
-      const publisher = eisbnBook.PublishingDetail.Publisher.PublisherName;
+      if (Array.isArray(eisbnBook.PublishingDetail?.PublishingDate)) {
+        releaseYear = this.mapReleaseYear(eisbnBook.PublishingDetail.PublishingDate[0]?.Date);
+      } else {
+        releaseYear = this.mapReleaseYear(eisbnBook.PublishingDetail?.PublishingDate.Date);
+      }
+
+      const publisher = eisbnBook.PublishingDetail?.Publisher.PublisherName;
 
       const imageUrl = eisbnBook.CollateralDetail?.SupportingResource?.ResourceVersion?.ResourceLink;
 
@@ -103,7 +105,7 @@ export class EIsbnMapper {
     return undefined;
   }
 
-  private mapFormat(eIsbnBookFormat: string): BookFormat | undefined {
+  private mapFormat(eIsbnBookFormat: string | undefined): BookFormat | undefined {
     switch (eIsbnBookFormat) {
       case 'BC':
         return BookFormat.paperback;

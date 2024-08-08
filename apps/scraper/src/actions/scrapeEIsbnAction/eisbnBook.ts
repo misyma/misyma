@@ -10,8 +10,8 @@ export interface EIsbnMessage {
 export interface EIsbnBook {
   readonly ProductIdentifier: EIsbnProductID | EIsbnProductID[];
   readonly DescriptiveDetail: {
-    readonly ProductForm: string;
-    readonly TitleDetail: EIsbnTitleDetail | EIsbnTitleDetail[];
+    readonly ProductForm?: string;
+    readonly TitleDetail?: EIsbnTitleDetail | EIsbnTitleDetail[];
     readonly Contributor?: EIsbnContributor | EIsbnContributor[];
     readonly Language?: {
       readonly LanguageCode: string;
@@ -24,7 +24,7 @@ export interface EIsbnBook {
       };
     };
   };
-  readonly PublishingDetail: {
+  readonly PublishingDetail?: {
     readonly Publisher: {
       readonly PublisherName?: string;
     };
