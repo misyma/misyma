@@ -87,7 +87,7 @@ export const CreateBookForm: FC<CreateBookProps> = ({ bookshelfId }) => {
   };
 
   return (
-    <div className="flex flex-col-reverse sm:px-10 pt-8 sm:flex-row gap-10 sm:gap-20 md:gap-30 lg:gap-60 max-w-[15rem] sm:max-w-[unset]">
+    <div className="flex flex-col-reverse sm:px-10 pt-4 sm:flex-row gap-10 sm:gap-20 md:gap-30 lg:gap-60 max-w-[15rem] sm:max-w-[unset]">
       <div className="sm:min-h-[40rem]">
         {!bookCreation.isbnPath && bookCreation.step > 0 ? (
           <Breadcrumbs

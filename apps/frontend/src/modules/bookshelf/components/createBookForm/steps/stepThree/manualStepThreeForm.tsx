@@ -196,13 +196,16 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
                 defaultValue={field.value}
               >
                 <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Półka" />
+                  <SelectTrigger className='text-start'>
+                    <SelectValue
+                      placeholder="Półka"
+                    />
                     <SelectContent>
                       {bookshelvesData?.data
                         .filter((bookshelf) => bookshelf.name !== 'Wypożyczalnia')
                         .map((bookshelf) => (
                           <SelectItem
+                            className='text-start'
                             onKeyDown={(event) => {
                               if (event.key === 'Enter') {
                                 setBookshelfSelectOpen(false);
@@ -354,8 +357,8 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
             disabled={!form.formState.isValid || isProcessing}
             type="submit"
           >
-            { isProcessing && <LoadingSpinner size={40} />}
-            { !isProcessing && <>Dodaj książkę</>}
+            {isProcessing && <LoadingSpinner size={40} />}
+            {!isProcessing && <>Dodaj książkę</>}
           </Button>
         </div>
         {submissionError ? <p className="text-red-500">{submissionError}</p> : <></>}

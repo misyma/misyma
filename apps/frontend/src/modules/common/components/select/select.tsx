@@ -16,7 +16,22 @@ const Select = React.forwardRef<
 
 const SelectGroup = SelectPrimitive.Group;
 
-const SelectValue = SelectPrimitive.Value;
+const SelectValue = React.forwardRef<
+  React.ForwardRefExoticComponent<SelectPrimitive.SelectValueProps & React.RefAttributes<HTMLSpanElement>>,
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.SelectValue>
+>(({ className, children, ...props }) => {
+  return (
+    <SelectPrimitive.SelectValue
+      className={cn(className)}
+      {...props}
+      style={{
+        background: "red"
+      }}
+    >
+      {children}
+    </SelectPrimitive.SelectValue>
+  );
+});
 
 const SelectTrigger = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
