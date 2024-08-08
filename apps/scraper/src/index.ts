@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import { XMLParser } from 'fast-xml-parser';
 import yargs, { type Argv } from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
@@ -86,7 +87,16 @@ try {
 
   const eIsbnMapper = new EIsbnMapper();
 
-  const scrapeEIsbnAction = new ScrapeEIsbnAction(authorRepository, bookRepository, eIsbnMapper, eisbnClient, logger);
+  const parser = new XMLParser();
+
+  const scrapeEIsbnAction = new ScrapeEIsbnAction(
+    authorRepository,
+    bookRepository,
+    eIsbnMapper,
+    eisbnClient,
+    logger,
+    parser,
+  );
 
   yargs(hideBin(process.argv))
     .command([

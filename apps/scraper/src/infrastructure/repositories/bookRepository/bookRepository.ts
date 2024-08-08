@@ -39,7 +39,7 @@ export interface FindBookPayload {
 
 export class BookRepository {
   private readonly bookTable = 'books';
-  private readonly bookAuthorTable = 'bookAuthors';
+  private readonly bookAuthorTable = 'booksAuthors';
 
   public constructor(
     private readonly databaseClient: DatabaseClient,
