@@ -14,7 +14,7 @@ export class EIsbnClientFactory {
       headers: {
         Accept: 'application/xml',
       },
-      timeout: 15000,
+      timeout: 30000,
     });
 
     axiosRetry(httpClient, { retries: 3 });

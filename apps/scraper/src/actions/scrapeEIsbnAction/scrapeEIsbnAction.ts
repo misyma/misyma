@@ -31,7 +31,9 @@ export class ScrapeEIsbnAction {
 
     let idFrom: number | null = initialFrom ?? 1401282;
 
-    let booksCount = 0;
+    let savedBooksCount = 0;
+
+    let i = 0;
 
     while (idFrom) {
       const response = await this.eisbnClient.get('/IsbnWeb/api.xml', {
@@ -85,11 +87,14 @@ export class ScrapeEIsbnAction {
         });
       }
 
-      booksCount += bookDrafts.length;
+      savedBooksCount += bookDrafts.length;
+
+      i += 1;
 
       this.logger.info({
-        message: `Processed ${booksCount} books.`,
+        message: `Processed ${i * 100} books.`,
         idFrom,
+        savedBooks: savedBooksCount,
       });
 
       const nextPageRegex = /eisbn:nextPage="([^"]+)"/;
