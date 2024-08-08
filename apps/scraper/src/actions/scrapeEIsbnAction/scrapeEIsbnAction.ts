@@ -45,7 +45,7 @@ export class ScrapeEIsbnAction {
 
       const parsedResponse = this.xmlParser.parse(response.data) as EIsbnMessage;
 
-      const eisbnBooks = parsedResponse.ONIXMessage.Product;
+      const eisbnBooks = parsedResponse?.ONIXMessage?.Product;
 
       if (!Array.isArray(eisbnBooks)) {
         return;

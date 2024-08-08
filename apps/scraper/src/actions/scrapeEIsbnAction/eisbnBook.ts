@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
 export interface EIsbnMessage {
-  readonly ONIXMessage: {
-    readonly Product: EIsbnBook | EIsbnBook[];
+  readonly ONIXMessage?: {
+    readonly Product?: EIsbnBook | EIsbnBook[];
     readonly 'eisbn:nextPage'?: string;
   };
 }
