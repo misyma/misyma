@@ -3,6 +3,7 @@
 export interface EIsbnMessage {
   readonly ONIXMessage: {
     readonly Product: EIsbnBook | EIsbnBook[];
+    readonly 'eisbn:nextPage'?: string;
   };
 }
 
@@ -12,7 +13,7 @@ export interface EIsbnBook {
     readonly ProductForm: string;
     readonly TitleDetail: EIsbnTitleDetail | EIsbnTitleDetail[];
     readonly Contributor?: EIsbnContributor | EIsbnContributor[];
-    readonly Language: {
+    readonly Language?: {
       readonly LanguageCode: string;
     };
   };
