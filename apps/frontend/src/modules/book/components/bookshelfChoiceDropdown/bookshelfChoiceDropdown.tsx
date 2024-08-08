@@ -76,6 +76,7 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
       page: 1,
       pageSize: 1,
       sortDate: SortingType.desc,
+      isOpen: true,
     }),
   );
 
