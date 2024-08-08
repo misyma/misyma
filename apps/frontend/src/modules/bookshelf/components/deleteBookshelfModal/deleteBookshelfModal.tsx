@@ -62,11 +62,13 @@ const DialogContentPreConfirmation: FC<DialogContentPreConfirmationProps> = ({
       <DialogHeader className="font-semibold text-center flex justify-center items-center">
         Czy na pewno chcesz usunąć półkę?
       </DialogHeader>
-      <DialogDescription className="flex flex-col gap-4 justify-center items-center">
-        <p>Nie będziesz mieć już dostępu do "{bookshelfName}".</p>
-        <p>Ta akcja jest nieodwracalna.</p>
-        <p className={error ? 'text-red-500' : 'hidden'}>{error}</p>
-      </DialogDescription>
+      <div className="w-full flex items-center justify-center">
+        <div className="text-center w-[60%]">
+          <p className="pt-4">Nie będziesz mieć już dostępu do "{bookshelfName}".</p>
+          <p className="pt-4">Ta akcja jest nieodwracalna.</p>
+          <p className={error ? 'text-red-500' : 'hidden'}>{error}</p>
+        </div>
+      </div>
       <DialogFooter className="pt-8 flex sm:justify-center justify-center sm:items-center items-center">
         <Button
           className="bg-primary w-32 sm:w-40"
