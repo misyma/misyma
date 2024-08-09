@@ -17,7 +17,12 @@ export class EIsbnClientFactory {
       timeout: 30000,
     });
 
-    axiosRetry(httpClient, { retries: 3 });
+    axiosRetry(httpClient, {
+      retries: 5,
+      validateResponse: (response) => {
+        return !response.data.includes('Container has suffered a SystemException');
+      },
+    });
 
     return httpClient;
   }

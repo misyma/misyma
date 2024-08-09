@@ -33,8 +33,8 @@ export interface EIsbnBook {
 }
 
 export interface EIsbnTitleDetail {
-  readonly TitleElement: {
-    readonly TitleText: string;
+  readonly TitleElement?: {
+    readonly TitleText?: string;
   };
 }
 
@@ -45,7 +45,7 @@ export interface EIsbnProductID {
 
 export interface EIsbnContributor {
   readonly ContributorRole: string;
-  readonly PersonNameInverted?: string;
+  readonly PersonNameInverted?: string | number;
 }
 
 export interface EIsbnDate {
