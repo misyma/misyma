@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-export interface EIsbnMessage {
+export interface EIsbnResponseBody {
   readonly ONIXMessage?: {
     readonly Product?: EIsbnBook | EIsbnBook[];
     readonly 'eisbn:nextPage'?: string;

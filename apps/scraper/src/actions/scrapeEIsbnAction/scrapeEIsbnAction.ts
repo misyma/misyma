@@ -1,8 +1,10 @@
+import { type AxiosResponse } from 'axios';
 import { type XMLParser } from 'fast-xml-parser';
 
-import { type EIsbnMessage } from './eisbnBook.js';
+import { type EIsbnResponseBody } from './eisbnBook.js';
 import { type EIsbnMapper } from './eIsbnMapper.js';
 import { type EIsbnClient } from '../../infrastructure/clients/eIsbnClient.js';
+import { type BookDraft } from '../../infrastructure/entities/book/book.js';
 import { type AuthorRepository } from '../../infrastructure/repositories/authorRepository/authorRepository.js';
 import { type BookRepository } from '../../infrastructure/repositories/bookRepository/bookRepository.js';
 import { type LoggerService } from '../../libs/logger/loggerService.js';
@@ -36,21 +38,16 @@ export class ScrapeEIsbnAction {
     let i = 0;
 
     while (idFrom) {
-      const response = await this.eisbnClient.get('/IsbnWeb/api.xml', {
-        params: {
-          idFrom,
-          max: 100,
-        },
-      });
+      const response = await this.fetchEIsbnBooks(idFrom);
 
-      const parsedResponse = this.xmlParser.parse(response.data) as EIsbnMessage;
+      const parsedResponseBody = this.xmlParser.parse(response.data) as EIsbnResponseBody;
 
-      const eisbnBooks = parsedResponse?.ONIXMessage?.Product;
+      const eisbnBooks = parsedResponseBody?.ONIXMessage?.Product;
 
       if (!Array.isArray(eisbnBooks)) {
         this.logger.error({
           message: 'Invalid response from E-ISBN.',
-          response: parsedResponse,
+          response: parsedResponseBody,
         });
 
         throw new Error('Invalid response from E-ISBN.');
@@ -59,37 +56,7 @@ export class ScrapeEIsbnAction {
       const bookDrafts = eisbnBooks.map((book) => this.eIsbnMapper.mapBook(book)).filter((book) => book !== undefined);
 
       for await (const bookDraft of bookDrafts) {
-        const existingBook = await this.bookRepository.findBook({ title: bookDraft.title });
-
-        if (existingBook) {
-          continue;
-        }
-
-        const authorIds: string[] = [];
-
-        for await (const authorName of bookDraft.authorNames) {
-          let author = await this.authorRepository.findAuthor({ name: authorName });
-
-          if (!author) {
-            author = await this.authorRepository.create({ name: authorName });
-          }
-
-          authorIds.push(author.id);
-        }
-
-        await this.bookRepository.createBook({
-          title: bookDraft.title,
-          isbn: bookDraft.isbn,
-          publisher: bookDraft.publisher,
-          format: bookDraft.format,
-          isApproved: true,
-          language: bookDraft.language,
-          imageUrl: bookDraft.imageUrl,
-          releaseYear: bookDraft.releaseYear,
-          translator: bookDraft.translator,
-          pages: bookDraft.pages,
-          authorIds,
-        });
+        await this.saveBook(bookDraft);
       }
 
       savedBooksCount += bookDrafts.length;
@@ -116,5 +83,59 @@ export class ScrapeEIsbnAction {
     }
 
     this.logger.info({ message: 'Scraping E-ISBN completed.' });
+  }
+
+  private async fetchEIsbnBooks(idFrom: number): Promise<AxiosResponse> {
+    const response = await this.eisbnClient.get('/IsbnWeb/api.xml', {
+      params: {
+        idFrom,
+        max: 100,
+      },
+    });
+
+    if (typeof response.data === 'string' && response.data.includes('javax.transaction.SystemException')) {
+      this.logger.error({
+        message: 'E-ISBN request failed, retrying...',
+        response: response.data,
+      });
+
+      return this.fetchEIsbnBooks(idFrom);
+    }
+
+    return response;
+  }
+
+  private async saveBook(bookDraft: BookDraft): Promise<void> {
+    const existingBook = await this.bookRepository.findBook({ title: bookDraft.title });
+
+    if (existingBook) {
+      return;
+    }
+
+    const authorIds: string[] = [];
+
+    for await (const authorName of bookDraft.authorNames) {
+      let author = await this.authorRepository.findAuthor({ name: authorName });
+
+      if (!author) {
+        author = await this.authorRepository.create({ name: authorName });
+      }
+
+      authorIds.push(author.id);
+    }
+
+    await this.bookRepository.createBook({
+      title: bookDraft.title,
+      isbn: bookDraft.isbn,
+      publisher: bookDraft.publisher,
+      format: bookDraft.format,
+      isApproved: true,
+      language: bookDraft.language,
+      imageUrl: bookDraft.imageUrl,
+      releaseYear: bookDraft.releaseYear,
+      translator: bookDraft.translator,
+      pages: bookDraft.pages,
+      authorIds,
+    });
   }
 }
