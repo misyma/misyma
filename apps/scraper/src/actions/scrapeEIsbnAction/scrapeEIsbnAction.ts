@@ -48,7 +48,12 @@ export class ScrapeEIsbnAction {
       const eisbnBooks = parsedResponse?.ONIXMessage?.Product;
 
       if (!Array.isArray(eisbnBooks)) {
-        return;
+        this.logger.error({
+          message: 'Invalid response from E-ISBN.',
+          response: parsedResponse,
+        });
+
+        throw new Error('Invalid response from E-ISBN.');
       }
 
       const bookDrafts = eisbnBooks.map((book) => this.eIsbnMapper.mapBook(book)).filter((book) => book !== undefined);

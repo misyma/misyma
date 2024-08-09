@@ -116,6 +116,8 @@ try {
         },
         handler: async (argv: any): Promise<void> => {
           await scrapeOpenLibraryAction.execute(argv);
+
+          process.exit(0);
         },
       },
       {
@@ -134,6 +136,8 @@ try {
         },
         handler: async (argv: any): Promise<void> => {
           await scrapeEIsbnAction.execute(argv);
+
+          process.exit(0);
         },
       },
     ])

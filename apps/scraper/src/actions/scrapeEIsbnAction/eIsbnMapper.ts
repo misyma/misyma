@@ -23,8 +23,8 @@ export class EIsbnMapper {
       }
 
       const title = Array.isArray(eisbnBook.DescriptiveDetail.TitleDetail)
-        ? eisbnBook.DescriptiveDetail.TitleDetail[0]?.TitleElement.TitleText
-        : eisbnBook.DescriptiveDetail.TitleDetail?.TitleElement.TitleText;
+        ? eisbnBook.DescriptiveDetail.TitleDetail[0]?.TitleElement?.TitleText
+        : eisbnBook.DescriptiveDetail.TitleDetail?.TitleElement?.TitleText;
 
       const isbn = String(isbnEntry.IDValue);
 
@@ -33,13 +33,17 @@ export class EIsbnMapper {
       if (Array.isArray(eisbnBook.DescriptiveDetail.Contributor)) {
         authorNames = eisbnBook.DescriptiveDetail.Contributor.filter(
           (contributor) => contributor.ContributorRole === 'A01' && contributor.PersonNameInverted !== undefined,
-        ).map((contributor) => this.mapAuthorName(contributor.PersonNameInverted!));
+        )
+          .map((contributor) => this.mapAuthorName(contributor.PersonNameInverted!))
+          .filter((authorName) => authorName !== undefined);
       } else if (
         eisbnBook.DescriptiveDetail.Contributor &&
         eisbnBook.DescriptiveDetail.Contributor.ContributorRole === 'A01' &&
         eisbnBook.DescriptiveDetail.Contributor.PersonNameInverted
       ) {
-        authorNames = [this.mapAuthorName(eisbnBook.DescriptiveDetail.Contributor.PersonNameInverted)];
+        authorNames = [this.mapAuthorName(eisbnBook.DescriptiveDetail.Contributor.PersonNameInverted)].filter(
+          (authorName) => authorName !== undefined,
+        );
       }
 
       if (!title || title.length > 256 || !format || !language || !authorNames.length) {
@@ -83,8 +87,12 @@ export class EIsbnMapper {
     }
   }
 
-  private mapAuthorName(openLibraryAuthorName: string): string {
-    const nameParts = openLibraryAuthorName.split(',');
+  private mapAuthorName(eIsbnAuthorName: string | number): string | undefined {
+    if (typeof eIsbnAuthorName === 'number') {
+      return undefined;
+    }
+
+    const nameParts = eIsbnAuthorName.split(',');
 
     if (nameParts.length === 1) {
       return String(nameParts[0]).trim();
