@@ -1,0 +1,20 @@
+{
+  "folders": [
+    {
+      "path": ".",
+      "name": "root",
+    },
+    {
+      "path": "apps/frontend",
+      "name": "misyma-frontend",
+    },
+    {
+      "path": "apps/backend",
+      "name": "misyma-backend",
+    },
+  ],
+  "settings": {},
+  "extensions": {
+    "recommendations": ["bradlc.vscode-tailwindcss", "rvest.vs-code-prettier-eslint", "YoavBls.pretty-ts-errors"],
+  },
+}

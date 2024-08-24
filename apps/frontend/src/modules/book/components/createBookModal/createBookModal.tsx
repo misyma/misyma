@@ -1,5 +1,5 @@
 import { FC, useState } from 'react';
-import { Dialog, DialogContent, DialogTrigger } from '../../../common/components/dialog/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '../../../common/components/dialog/dialog';
 import { Button } from '../../../common/components/button/button';
 import { BookDetailsChangeRequestProvider } from '../../context/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
 import {
@@ -43,6 +43,7 @@ export const CreateBookModal: FC = () => {
           className="max-w-sm sm:max-w-xl py-16 flex flex-col items-center gap-8"
           omitCloseButton={true}
         >
+          <DialogTitle className='hidden'>Admin create book modal</DialogTitle>
           <AdminCreateBookForm
             onSubmit={() => {
               resetModalState();

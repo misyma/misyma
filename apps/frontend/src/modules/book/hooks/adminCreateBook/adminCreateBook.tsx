@@ -73,18 +73,14 @@ export const useAdminCreateBook = ({
       }
 
       if (bookPayload) {
-        try {
-          await createBookMutation({
-            ...bookPayload,
-            authorIds: [authorId],
-            errorHandling: {
-              title: 'Nie udało się stworzyć książki.',
-              description: '',
-            },
-          });
-        } catch (error) {
-          return;
-        }
+        await createBookMutation({
+          ...bookPayload,
+          authorIds: [authorId],
+          errorHandling: {
+            title: 'Nie udało się stworzyć książki.',
+            description: '',
+          },
+        });
       }
 
       await queryClient.invalidateQueries({
@@ -96,8 +92,8 @@ export const useAdminCreateBook = ({
       });
 
       toast({
-        title: 'Książka została położona na półce 😄',
-        description: `Książka ${bookPayload?.title} została położona na półce 😄`,
+        title: 'Książka została stworzona.',
+        description: `Książka ${bookPayload?.title} została stworzona 😄`,
         variant: 'success',
       });
     } catch (error) {

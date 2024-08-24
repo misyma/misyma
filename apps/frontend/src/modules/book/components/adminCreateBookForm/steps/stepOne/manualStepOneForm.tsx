@@ -233,9 +233,14 @@ export const ManualStepOneForm = (): JSX.Element => {
     isLoading: loading,
   } = useFindAuthorsQuery({
     name: searchedName,
+    ids: bookCreation.stepOneDetails?.author ? [bookCreation.stepOneDetails?.author]: []
   });
 
-  // console.log(stepOneSchema.safeParse(form.getValues()), form.getValues())
+  // if (!isFetched) {
+  //   return <div className='h-[50%] w-60 flex items-center justify-center'>
+  //     <LoadingSpinner />
+  //   </div>
+  // }
 
   return (
     <Form {...form}>
@@ -423,10 +428,15 @@ export const ManualStepOneForm = (): JSX.Element => {
                             value={author.name}
                             onSelect={() => {
                               form.setValue('author', author.id);
-
                               form.setValue('authorName', '');
-
                               setDraftAuthorName('');
+
+                              dispatch({
+                                type: BookCreationActionType.setAuthor,
+                                author: author.id,
+                              });
+
+                              form.trigger("author")
                             }}
                           >
                             <Check

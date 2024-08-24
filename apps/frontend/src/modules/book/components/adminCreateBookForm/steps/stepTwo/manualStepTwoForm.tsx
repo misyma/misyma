@@ -83,6 +83,7 @@ const BookFormatSelect: FC<ControllerRenderProps> = (field) => {
     () =>
       Object.entries(BookFormat).map(([key, language]) => (
         <SelectItem
+          key={`${key}-${language}`}
           onKeyDown={(event) => {
             if (event.key === 'Enter') {
               setFormatSelectOpen(false);
