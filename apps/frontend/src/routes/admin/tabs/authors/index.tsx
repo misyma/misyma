@@ -10,14 +10,11 @@ import { RequireAdmin } from '../../../../modules/core/components/requireAdmin/r
 
 export const AuthorsAdminPage: FC = () => {
   const [page, setPage] = useState(1);
-
   const [pageSize] = useState(10);
-
   const [searchAuthorName, setSearchAuthorName] = useState('');
 
   const onSetSearchAuthorName = (val: string) => {
     setPage(0);
-
     setSearchAuthorName(val);
   }
 

@@ -5,7 +5,7 @@ import {
   NonIsbnCreationPathStep,
   useBookCreation,
   useBookCreationDispatch,
-} from '../../../../context/bookCreationContext/bookCreationContext';
+} from '../../../../../bookshelf/context/bookCreationContext/bookCreationContext';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -30,8 +30,15 @@ import { BookFormat } from '../../../../../common/constants/bookFormat';
 import { Language } from '@common/contracts';
 import { FC, useCallback, useState } from 'react';
 import { Checkbox } from '../../../../../common/components/checkbox/checkbox';
-import LanguageSelect from '../../../../../book/components/languageSelect/languageSelect';
+import LanguageSelect from '../../../languageSelect/languageSelect';
 import { Languages } from '../../../../../common/constants/languages';
+import { useQuery } from '@tanstack/react-query';
+import { getGenresQueryOptions } from '../../../../../genres/api/queries/getGenresQuery/getGenresQueryOptions';
+import { useSelector } from 'react-redux';
+import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';
+import { useAdminCreateBook } from '../../../../hooks/adminCreateBook/adminCreateBook';
+import { LoadingSpinner } from '../../../../../common/components/spinner/loading-spinner';
+import { useFindAuthorsQuery } from '../../../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
 
 const stepTwoSchema = z.object({
   language: z.enum(Object.values(Language) as unknown as [string, ...string[]]),
@@ -62,6 +69,9 @@ const stepTwoSchema = z.object({
       message: 'Za dużo stron. Maksymalnie 5000 jest dopuszczalnych.',
     })
     .or(z.literal('')),
+  genre: z.string().min(1, {
+    message: 'Niewłaściwa wartość',
+  }),
 });
 
 const BookFormatSelect: FC<ControllerRenderProps> = (field) => {
@@ -110,8 +120,15 @@ const BookFormatSelect: FC<ControllerRenderProps> = (field) => {
   );
 };
 
-export const ManualStepTwoForm = (): JSX.Element => {
+interface Props {
+  onSubmit: () => void;
+}
+
+export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
   const bookCreation = useBookCreation<false>() as BookCreationNonIsbnState;
+  const accessToken = useSelector(userStateSelectors.selectAccessToken);
+  const [genreSelectOpen, setGenreSelectOpen] = useState(false);
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
 
   const dispatch = useBookCreationDispatch();
 
@@ -124,8 +141,29 @@ export const ManualStepTwoForm = (): JSX.Element => {
       translator: bookCreation.stepTwoDetails?.translator ?? '',
       form: bookCreation.stepTwoDetails?.format ?? '',
       pagesCount: bookCreation.stepTwoDetails?.pagesCount ?? '',
+      genre: '',
     },
   });
+
+  const { refetch } = useFindAuthorsQuery({
+    name: bookCreation.stepOneDetails?.authorName,
+    enabled: false,
+  });
+
+  const { create, isProcessing } = useAdminCreateBook({
+    onAuthorCreationError: async () => {
+      const result = await refetch();
+
+      return result.data;
+    },
+    onOperationError: setSubmissionError,
+  });
+
+  const { data: genres } = useQuery(
+    getGenresQueryOptions({
+      accessToken: accessToken as string,
+    }),
+  );
 
   const onLanguageSelected = (val: string) => {
     dispatch({
@@ -134,11 +172,34 @@ export const ManualStepTwoForm = (): JSX.Element => {
     });
   };
 
-  const onSubmit = () => {
-    dispatch({
-      type: BookCreationActionType.setStep,
-      step: NonIsbnCreationPathStep.inputThirdDetail,
+  const onSubmit = async (): Promise<void> => {
+    await create({
+      authorPayload: {
+        authorId: bookCreation.stepOneDetails?.author,
+        name: bookCreation.stepOneDetails?.authorName,
+      },
+      bookPayload: {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        format: bookCreation.stepTwoDetails?.format as any,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        language: bookCreation.stepTwoDetails?.language as any,
+        title: bookCreation.stepOneDetails?.title as string,
+        translator: bookCreation.stepTwoDetails?.translator,
+        pages: bookCreation.stepTwoDetails?.pagesCount,
+        ...(bookCreation.stepTwoDetails as Required<BookCreationNonIsbnState['stepTwoDetails']>),
+        ...(bookCreation.stepOneDetails as Required<BookCreationNonIsbnState['stepOneDetails']>),
+        isbn: bookCreation.stepOneDetails?.isbn === '' ? undefined : bookCreation.stepOneDetails?.isbn,
+        releaseYear:
+          // eslint-disable-next-line
+          (bookCreation.stepOneDetails?.yearOfIssue as any) === ''
+            ? undefined
+            : bookCreation.stepOneDetails?.yearOfIssue,
+        accessToken: accessToken as string,
+        publisher: bookCreation.stepOneDetails?.publisher === '' ? undefined : bookCreation.stepOneDetails?.publisher,
+      },
     });
+
+    onSubmitCb();
   };
 
   return (
@@ -224,6 +285,49 @@ export const ManualStepTwoForm = (): JSX.Element => {
             )}
           />
         )}
+        <FormField
+          control={form.control}
+          name="genre"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Kategoria</FormLabel>
+              <Select
+                open={genreSelectOpen}
+                onOpenChange={setGenreSelectOpen}
+                onValueChange={(val) => {
+                  dispatch({
+                    type: BookCreationActionType.setGenre,
+                    genre: val,
+                  });
+
+                  field.onChange(val);
+                }}
+                defaultValue={field.value}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder={<span className="text-muted-foreground">Kategoria</span>} />
+                    <SelectContent>
+                      {Object.values(genres?.data ?? []).map((genre) => (
+                        <SelectItem
+                          onKeyDown={(event) => {
+                            if (event.key === 'Enter') {
+                              setGenreSelectOpen(false);
+                            }
+                          }}
+                          value={genre.id}
+                        >
+                          {genre.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </SelectTrigger>
+                </FormControl>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <div className="flex gap-2 items-center">
           <Checkbox
             checked={isOriginalLanguage}
@@ -239,7 +343,8 @@ export const ManualStepTwoForm = (): JSX.Element => {
         </div>
         <div className="flex justify-between w-full gap-4">
           <Button
-            variant='outline'
+            variant={isProcessing ? 'ghost' : 'outline'}
+            disabled={isProcessing}
             size="lg"
             onClick={() => {
               dispatch({
@@ -253,12 +358,15 @@ export const ManualStepTwoForm = (): JSX.Element => {
           <Button
             size="lg"
             className="border border-primary w-full"
-            disabled={!form.formState.isValid}
+            variant={isProcessing ? 'ghost' : 'default'}
+            disabled={!form.formState.isValid || isProcessing}
             type="submit"
           >
-            Kontynuuj
+            {isProcessing && <LoadingSpinner size={40} />}
+            {!isProcessing && <>Dodaj książkę</>}
           </Button>
         </div>
+        {submissionError ? <p className="text-red-500">{submissionError}</p> : <></>}
       </form>
     </Form>
   );

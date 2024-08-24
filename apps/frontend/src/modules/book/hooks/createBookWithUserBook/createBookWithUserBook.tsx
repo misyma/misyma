@@ -7,20 +7,20 @@ import {
 import {
   useCreateBookMutation,
   UseCreateBookMutationPayload,
-} from '../../../book/api/user/mutations/createBookMutation/createBookMutation';
+} from '../../api/user/mutations/createBookMutation/createBookMutation';
 import {
   CreateUserBookMutationPayload,
   useCreateUserBookMutation,
-} from '../../../book/api/user/mutations/createUserBookMutation/createUserBookMutation';
-import { useUploadBookImageMutation } from '../../../book/api/user/mutations/uploadBookImageMutation/uploadBookImageMutation';
-import { BookApiQueryKeys } from '../../../book/api/user/queries/bookApiQueryKeys';
+} from '../../api/user/mutations/createUserBookMutation/createUserBookMutation';
+import { useUploadBookImageMutation } from '../../api/user/mutations/uploadBookImageMutation/uploadBookImageMutation';
+import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
 import { useToast } from '../../../common/components/toast/use-toast';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCreateAuthorDraftMutation } from '../../../author/api/user/mutations/createAuthorDraftMutation/createAuthorDraftMutation';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useNavigate } from '@tanstack/react-router';
-import { BookApiError } from '../../../book/errors/bookApiError';
+import { BookApiError } from '../../errors/bookApiError';
 
 interface CreatePayload {
   authorPayload?: Partial<CreateAuthorRequestBody> & {
@@ -52,11 +52,8 @@ export const useCreateBookWithUserBook = ({
   const queryClient = useQueryClient();
 
   const { mutateAsync: createBookMutation, isPending: isCreateBookPending } = useCreateBookMutation({});
-
   const { mutateAsync: createUserBookMutation, isPending: isCreateUserBookPending } = useCreateUserBookMutation({});
-
   const { mutateAsync: uploadBookImageMutation, isPending: isUploadImagePending } = useUploadBookImageMutation({});
-
   const { mutateAsync: createAuthorDraft, isPending: isCreateAuthorPending } = useCreateAuthorDraftMutation({});
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);

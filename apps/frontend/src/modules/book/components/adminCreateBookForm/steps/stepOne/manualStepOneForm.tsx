@@ -1,4 +1,13 @@
-import { HiOutlineInformationCircle } from 'react-icons/hi';
+import { z } from 'zod';
+import {
+  BookCreationActionType,
+  BookCreationNonIsbnState,
+  NonIsbnCreationPathStep,
+  useBookCreation,
+  useBookCreationDispatch,
+} from '../../../../../bookshelf/context/bookCreationContext/bookCreationContext';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Form,
   FormControl,
@@ -6,92 +15,96 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../../../../common/components/form/form';
-import { Input } from '../../../../common/components/input/input';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '../../../../common/components/tooltip/tooltip';
-import { DialogPopoverContent, Popover, PopoverTrigger } from '../../../../common/components/popover/popover';
-import { Button } from '../../../../common/components/button/button';
-import { cn } from '../../../../common/lib/utils';
+} from '../../../../../common/components/form/form';
+import { Input } from '../../../../../common/components/input/input';
+import { Button } from '../../../../../common/components/button/button';
+import { DialogPopoverContent, Popover, PopoverTrigger } from '../../../../../common/components/popover/popover';
+import { Check, ChevronsUpDown } from 'lucide-react';
 import {
   Command,
   CommandEmpty,
   CommandInput,
   CommandItem,
   CommandList,
-} from '../../../../common/components/command/command';
+} from '../../../../../common/components/command/command';
+import { cn } from '../../../../../common/lib/utils';
+import { useState } from 'react';
+import { CommandLoading } from 'cmdk';
+import { isbnSchema } from '../../../../../common/schemas/isbnSchema';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '../../../../common/components/dialog/dialog';
-import { CommandLoading } from 'cmdk';
-import { Check, ChevronsUpDown } from 'lucide-react';
-import { isbnSchema } from '../../../../common/schemas/isbnSchema';
-import { z } from 'zod';
-import { FC, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useFindUserQuery } from '../../../../user/api/queries/findUserQuery/findUserQuery';
-import { useQuery } from '@tanstack/react-query';
+} from '../../../../../common/components/dialog/dialog';
+import { HiOutlineInformationCircle } from 'react-icons/hi';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../../../../../common/components/tooltip/tooltip';
+import { useFindAuthorsQuery } from '../../../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
+import { findUserBooksBy } from '../../../../api/user/queries/findUserBookBy/findUserBooksBy';
 import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
-import { useFindAuthorsQuery } from '../../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
-import { FindBookByIdQueryOptions } from '../../../api/user/queries/findBookById/findBookByIdQueryOptions';
-import { FindUserBookByIdQueryOptions } from '../../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
-import { LoadingSpinner } from '../../../../common/components/spinner/loading-spinner';
+import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';
+import { toast } from '../../../../../common/components/toast/use-toast';
+import { BookApiError } from '../../../../errors/bookApiError';
 
-const stepOneSchema = z.object({
-  isbn: isbnSchema.optional().or(z.literal('')),
-  title: z
-    .string()
-    .min(1, {
-      message: 'Tytuł musi mieć co najmniej jeden znak.',
-    })
-    .max(128, {
-      message: 'Tytuł może mieć maksymalnie 64 znaki.',
-    })
-    .or(z.literal('')),
-  authorIds: z
-    .string()
-    .uuid({
-      message: 'Brak wybranego autora.',
-    })
-    .or(z.literal('')),
-  authorName: z.string().min(1).max(64).optional(),
-  releaseYear: z
-    .number({
-      coerce: true,
-    })
-    .min(1, {
-      message: 'Rok wydania musi być wcześniejszy niż 1',
-    })
-    .max(2100, {
-      message: 'Rok wydania nie może być późniejszy niż 2100',
-    })
-    .or(z.undefined()),
-  publisher: z
-    .string()
-    .min(1, {
-      message: 'Nazwa wydawnictwa powinna mieć co namniej 1 znak.',
-    })
-    .max(128, {
-      message: 'Nazwa wydawnictwa powinna mieć co najwyżej 128 znaków.',
-    })
-    .or(z.literal('')),
-});
-
-interface Props {
-  onCancel: () => void;
-  onSubmit: (values: z.infer<typeof stepOneSchema>) => void;
-  bookId: string;
-}
+const stepOneSchema = z
+  .object({
+    isbn: isbnSchema.or(z.literal('')),
+    title: z
+      .string()
+      .min(1, {
+        message: 'Tytuł musi mieć co najmniej jeden znak.',
+      })
+      .max(256, {
+        message: 'Tytuł może mieć maksymalnie 256 znaków.',
+      }),
+    author: z
+      .string({
+        required_error: 'Wymagany',
+      })
+      .uuid({
+        message: 'Brak wybranego autora.',
+      })
+      .or(
+        z.literal('', {
+          required_error: 'Wymagany',
+        }),
+      ),
+    authorName: z
+      .string({
+        required_error: 'Wymagany',
+      })
+      .regex(/\s/)
+      .or(z.literal("")),
+    publisher: z
+      .string()
+      .min(1, {
+        message: 'Nazwa wydawnictwa powinna mieć co namniej 1 znak.',
+      })
+      .max(128, {
+        message: 'Nazwa wydawnictwa powinna mieć co najwyżej 128 znaków.',
+      })
+      .or(z.literal('')),
+    yearOfIssue: z
+      .number({
+        invalid_type_error: 'Rok wydania musi być liczbą.',
+        required_error: 'Rok wyadania musi być liczbą.',
+        coerce: true,
+      })
+      .min(1, {
+        message: 'Rok wydania musi być wcześniejszy niż 1',
+      })
+      .max(2100, {
+        message: 'Rok wydania nie może być późniejszy niż 2100',
+      })
+      .or(z.literal('')),
+  })
+  .refine((data) => !!data.author || data.authorName, 'Autor jest wymagany.');
 
 const createAuthorDraftSchema = z.object({
   name: z
@@ -102,71 +115,36 @@ const createAuthorDraftSchema = z.object({
       message: 'Imię autora musi miec co najmniej jeden znak.',
     })
     .max(128, {
-      message: 'Imię autora może mieć maksymalnie 128 znaków.',
-    }),
+      message: 'Imię autora powinno mieć maksymalnie 128 znaków.',
+    })
+    .regex(/\s/, 'Autor powinien być w formacie "Imię Nazwisko"'),
 });
 
-export const StepOneForm: FC<Props> = ({ bookId, onCancel, onSubmit }) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
+export const ManualStepOneForm = (): JSX.Element => {
+  const bookCreation = useBookCreation<false>() as BookCreationNonIsbnState;
 
-  const { data: userData, isFetched: isUserDataFetched } = useFindUserQuery();
-
-  const { data: userBookData, isFetched: isUserBookDataFetched } = useQuery(
-    FindUserBookByIdQueryOptions({
-      userBookId: bookId,
-      userId: userData?.id ?? '',
-      accessToken: accessToken as string,
-    }),
-  );
-
-  const { isFetched: isBookDataFetched } = useQuery(
-    FindBookByIdQueryOptions({
-      accessToken: accessToken as string,
-      bookId: userBookData?.bookId as string,
-    }),
-  );
-
-  if (!isUserDataFetched || !isBookDataFetched || !isUserBookDataFetched) {
-    return <LoadingSpinner />;
-  }
-
-  return (
-    <ModalForm
-      bookId={bookId}
-      onCancel={onCancel}
-      onSubmit={onSubmit}
-    />
-  );
-};
-
-const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
-  const [searchedName, setSearchedName] = useState<string | undefined>(undefined);
-
-  const [draftAuthorName, setDraftAuthorName] = useState('');
-
+  const [submitError, setSubmitError] = useState('');
   const [createAuthorDialogVisible, setCreateAuthorDialogVisible] = useState(false);
+  const [searchedName, setSearchedName] = useState<string | undefined>(undefined);
+  const [draftAuthorName, setDraftAuthorName] = useState(bookCreation.stepOneDetails?.authorName);
 
-  const onOpenChange = (bool: boolean) => setCreateAuthorDialogVisible(bool);
+  const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
-  const {
-    data: authors,
-    isFetched,
-    isLoading: loading,
-  } = useFindAuthorsQuery({
-    name: searchedName,
+  const dispatch = useBookCreationDispatch();
+
+  const form = useForm({
+    resolver: zodResolver(stepOneSchema),
+    defaultValues: {
+      isbn: bookCreation.stepOneDetails?.isbn ?? '',
+      title: bookCreation.stepOneDetails?.title ?? '',
+      author: bookCreation.stepOneDetails?.author ?? '',
+      authorName: bookCreation.stepOneDetails?.authorName ?? undefined,
+      publisher: bookCreation.stepOneDetails?.publisher ?? '',
+      yearOfIssue: bookCreation.stepOneDetails?.yearOfIssue ? bookCreation.stepOneDetails?.yearOfIssue : '',
+    },
+    reValidateMode: 'onChange',
+    mode: 'onTouched',
   });
-
-  const { data: userData } = useFindUserQuery();
-
-  const { data: userBookData } = useQuery(
-    FindUserBookByIdQueryOptions({
-      userBookId: bookId,
-      userId: userData?.id ?? '',
-      accessToken: accessToken as string,
-    }),
-  );
 
   const createAuthorDraftForm = useForm({
     resolver: zodResolver(createAuthorDraftSchema),
@@ -177,52 +155,102 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
     mode: 'onTouched',
   });
 
-  const { data: bookData } = useQuery(
-    FindBookByIdQueryOptions({
-      accessToken: accessToken as string,
-      bookId: userBookData?.bookId as string,
-    }),
-  );
-
   const onCreateAuthorDraft = (payload: z.infer<typeof createAuthorDraftSchema>): void => {
     setDraftAuthorName(payload.name);
 
-    // eslint-disable-next-line
-    stepOneForm.setValue('authorIds', undefined as any);
-
-    // eslint-disable-next-line
-    stepOneForm.setValue('authorName', payload.name as any, {
-      shouldValidate: true,
+    dispatch({
+      type: BookCreationActionType.setAuthorName,
+      authorName: payload.name,
     });
+
+    form.setValue('author', '', {
+      shouldValidate: false,
+    });
+
+    form.setValue('authorName', payload.name, {
+      shouldValidate: false,
+      shouldDirty: true,
+      shouldTouch: true,
+    });
+
+    if (form.formState.touchedFields.title) {
+      form.trigger('authorName', {});
+    }
 
     setCreateAuthorDialogVisible(false);
   };
 
-  const stepOneForm = useForm({
-    resolver: zodResolver(stepOneSchema),
-    defaultValues: {
-      isbn: bookData?.isbn ?? '',
-      title: bookData?.title ?? '',
-      authorIds: bookData?.authors[0].id ?? '',
-      authorName: '',
-      publisher: bookData?.publisher ?? '',
-      releaseYear: bookData?.releaseYear ?? undefined,
+  const onOpenChange = (bool: boolean) => setCreateAuthorDialogVisible(bool);
+
+  const onSubmit = async (
+    values: Partial<z.infer<typeof stepOneSchema>> & {
+      yearOfIssue: number | string;
     },
-    reValidateMode: 'onChange',
-    mode: 'onTouched',
+  ) => {
+    const vals = values as z.infer<typeof stepOneSchema>;
+
+    if (vals.isbn) {
+      try {
+        const exists = await findUserBooksBy({
+          accessToken: accessToken as string,
+          isbn: vals.isbn,
+        });
+
+        if (exists.data.length > 0) {
+          toast({
+            title: 'Posiadasz już książkę z tym numerem isbn!',
+            variant: 'destructive',
+          });
+
+          return;
+        }
+      } catch (error) {
+        if (error instanceof BookApiError) {
+          setSubmitError(error.message);
+        }
+      }
+    }
+
+    dispatch({
+      type: BookCreationActionType.nonIsbnStepOneDetails,
+      author: vals.author as string,
+      authorName: bookCreation.stepOneDetails?.authorName || vals?.authorName,
+      isbn: vals.isbn,
+      publisher: vals.publisher,
+      title: vals.title,
+      yearOfIssue: vals.yearOfIssue as unknown as number,
+    });
+
+    dispatch({
+      type: BookCreationActionType.setStep,
+      step: NonIsbnCreationPathStep.inputSecondDetails,
+    });
+  };
+
+  const {
+    data: authors,
+    isFetched,
+    isLoading: loading,
+  } = useFindAuthorsQuery({
+    name: searchedName,
   });
 
-  console.log(stepOneForm.getValues())
+  // console.log(stepOneSchema.safeParse(form.getValues()), form.getValues())
 
   return (
-    <Form {...stepOneForm}>
+    <Form {...form}>
       <form
-        onSubmit={stepOneForm.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit((values) =>
+          onSubmit(
+            // eslint-disable-next-line
+            values as any,
+          ),
+        )}
         className="space-y-4"
       >
         <FormField
+          control={form.control}
           name="isbn"
-          control={stepOneForm.control}
           render={({ field }) => (
             <FormItem>
               <FormLabel>ISBN</FormLabel>
@@ -230,6 +258,12 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
                 <Input
                   placeholder="111-11-1111-111-1"
                   type="text"
+                  onInput={(e) => {
+                    dispatch({
+                      type: BookCreationActionType.setIsbn,
+                      isbn: e.currentTarget.value,
+                    });
+                  }}
                   {...field}
                 />
               </FormControl>
@@ -238,8 +272,8 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
           )}
         />
         <FormField
+          control={form.control}
           name="title"
-          control={stepOneForm.control}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Tytuł</FormLabel>
@@ -247,7 +281,14 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
                 <Input
                   placeholder="Tytuł"
                   type="text"
+                  maxLength={257}
                   includeQuill={false}
+                  onInput={(e) => {
+                    dispatch({
+                      type: BookCreationActionType.setTitle,
+                      title: e.currentTarget.value,
+                    });
+                  }}
                   {...field}
                 />
               </FormControl>
@@ -256,8 +297,8 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
           )}
         />
         <FormField
-          name="authorIds"
-          control={stepOneForm.control}
+          control={form.control}
+          name="author"
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <div className="flex gap-2 items-center">
@@ -305,8 +346,8 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
                           {field.value
                             ? authors?.data.find((author) => author.id === field.value)?.name
                               ? authors?.data.find((author) => author.id === field.value)?.name || 'Wyszukaj autora'
-                              : draftAuthorName || bookData?.authors[0]?.name || 'Wyszukaj autora'
-                            : draftAuthorName || bookData?.authors[0]?.name || 'Wyszukaj autora'}
+                              : 'Wyszukaj autora'
+                            : 'Wyszukaj autora'}
                         </p>
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
@@ -381,9 +422,9 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
                             key={`author-${author.id}`}
                             value={author.name}
                             onSelect={() => {
-                              stepOneForm.setValue('authorIds', author.id);
+                              form.setValue('author', author.id);
 
-                              stepOneForm.setValue('authorName', '');
+                              form.setValue('authorName', '');
 
                               setDraftAuthorName('');
                             }}
@@ -404,8 +445,8 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
           )}
         />
         <FormField
-          name="releaseYear"
-          control={stepOneForm.control}
+          control={form.control}
+          name="yearOfIssue"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Rok wydania</FormLabel>
@@ -414,6 +455,12 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
                   placeholder="1939"
                   type="text"
                   includeQuill={false}
+                  onInput={(e) => {
+                    dispatch({
+                      type: BookCreationActionType.setYearOfIssue,
+                      yearOfIssue: Number(e.currentTarget.value),
+                    });
+                  }}
                   {...field}
                 />
               </FormControl>
@@ -422,8 +469,8 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
           )}
         />
         <FormField
+          control={form.control}
           name="publisher"
-          control={stepOneForm.control}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Wydawnictwo</FormLabel>
@@ -431,8 +478,13 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
                 <Input
                   placeholder="Wydawnictwo"
                   type="text"
-                  maxLength={128}
                   includeQuill={false}
+                  onInput={(e) => {
+                    dispatch({
+                      type: BookCreationActionType.setPublisher,
+                      publisher: e.currentTarget.value,
+                    });
+                  }}
                   {...field}
                 />
               </FormControl>
@@ -440,25 +492,16 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
             </FormItem>
           )}
         />
-        <div className="flex flex-row w-full justify-between gap-4">
+        <div className="flex flex-col w-full justify-between gap-4">
           <Button
-            size="lg"
-            variant="outline"
-            onClick={onCancel}
-            className="border border-primary w-full bg-transparent text-primary"
-          >
-            Wróć
-          </Button>
-          <Button
-            type="submit"
-            size="lg"
+            size="xl"
             className="border border-primary w-full"
-            onClick={() => {
-              onSubmit(stepOneForm.getValues());
-            }}
+            disabled={!form.formState.isValid}
+            type="submit"
           >
             Kontynuuj
           </Button>
+          {submitError && <div>XD</div>}
         </div>
       </form>
     </Form>

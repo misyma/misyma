@@ -5,7 +5,7 @@ import {
   NonIsbnCreationPathStep,
   useBookCreation,
   useBookCreationDispatch,
-} from '../../../../context/bookCreationContext/bookCreationContext';
+} from '../../../../../bookshelf/context/bookCreationContext/bookCreationContext';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -46,11 +46,11 @@ import {
   TooltipTrigger,
 } from '../../../../../common/components/tooltip/tooltip';
 import { useFindAuthorsQuery } from '../../../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
-import { findUserBooksBy } from '../../../../../book/api/user/queries/findUserBookBy/findUserBooksBy';
+import { findUserBooksBy } from '../../../../api/user/queries/findUserBookBy/findUserBooksBy';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';
 import { toast } from '../../../../../common/components/toast/use-toast';
-import { BookApiError } from '../../../../../book/errors/bookApiError';
+import { BookApiError } from '../../../../errors/bookApiError';
 
 const stepOneSchema = z
   .object({
