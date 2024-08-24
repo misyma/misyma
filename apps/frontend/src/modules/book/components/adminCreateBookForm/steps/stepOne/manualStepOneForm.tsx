@@ -138,12 +138,12 @@ export const ManualStepOneForm = (): JSX.Element => {
       isbn: bookCreation.stepOneDetails?.isbn ?? '',
       title: bookCreation.stepOneDetails?.title ?? '',
       author: bookCreation.stepOneDetails?.author ?? '',
-      authorName: bookCreation.stepOneDetails?.authorName ?? undefined,
+      authorName: bookCreation.stepOneDetails?.authorName ?? '',
       publisher: bookCreation.stepOneDetails?.publisher ?? '',
       yearOfIssue: bookCreation.stepOneDetails?.yearOfIssue ? bookCreation.stepOneDetails?.yearOfIssue : '',
     },
-    reValidateMode: 'onChange',
-    mode: 'onTouched',
+    reValidateMode: 'onBlur',
+    mode: 'onChange',
   });
 
   const createAuthorDraftForm = useForm({
@@ -351,8 +351,8 @@ export const ManualStepOneForm = (): JSX.Element => {
                           {field.value
                             ? authors?.data.find((author) => author.id === field.value)?.name
                               ? authors?.data.find((author) => author.id === field.value)?.name || 'Wyszukaj autora'
-                              : 'Wyszukaj autora'
-                            : 'Wyszukaj autora'}
+                              : draftAuthorName || 'Wyszukaj autora'
+                            : draftAuthorName || 'Wyszukaj autora'}
                         </p>
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
