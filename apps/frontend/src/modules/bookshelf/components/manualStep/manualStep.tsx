@@ -23,7 +23,7 @@ import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useFindUserBookshelfsQuery } from '../../api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 import { BookApiError } from '../../../book/errors/bookApiError';
-import { useCreateBookWithUserBook } from '../../hooks/createBookWithUserBook/createBookWithUserBook';
+import { useCreateBookWithUserBook } from '../../../book/hooks/createBookWithUserBook/createBookWithUserBook';
 import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
 
 const stepThreeFormSchema = z.object({

@@ -43,20 +43,16 @@ const changeMyBookDataSchema = z.object({
 });
 
 export const EditBookModal: FC<Props> = ({ bookId }) => {
-  const queryClient = useQueryClient();
-
-  const { data: userData } = useFindUserQuery();
-
   const [bookEditType, setBookEditType] = useState<BookEditType | undefined>('myBookChange');
-
   const [actionChosen, setActionChosen] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const queryClient = useQueryClient();
+  const { mutateAsync: updateUserBook } = useUpdateUserBookMutation({});
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-
-  const { mutateAsync: updateUserBook } = useUpdateUserBookMutation({});
-
+  const { data: userData } = useFindUserQuery();
   const { data } = useQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,

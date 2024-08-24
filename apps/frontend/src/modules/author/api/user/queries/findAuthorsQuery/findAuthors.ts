@@ -24,7 +24,7 @@ export const findAuthors = async (values: Payload) => {
 
   const customQueryAppend: Array<[string, string]> = [];
 
-  if (ids) {
+  if (ids && !name) {
     for (const id of ids) {
       customQueryAppend.push([`ids`, id]);
     }

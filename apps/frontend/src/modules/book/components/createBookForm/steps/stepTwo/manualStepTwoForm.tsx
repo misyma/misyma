@@ -5,7 +5,7 @@ import {
   NonIsbnCreationPathStep,
   useBookCreation,
   useBookCreationDispatch,
-} from '../../../../context/bookCreationContext/bookCreationContext';
+} from '../../../../../bookshelf/context/bookCreationContext/bookCreationContext';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -30,7 +30,7 @@ import { BookFormat } from '../../../../../common/constants/bookFormat';
 import { Language } from '@common/contracts';
 import { FC, useCallback, useState } from 'react';
 import { Checkbox } from '../../../../../common/components/checkbox/checkbox';
-import LanguageSelect from '../../../../../book/components/languageSelect/languageSelect';
+import LanguageSelect from '../../../languageSelect/languageSelect';
 import { Languages } from '../../../../../common/constants/languages';
 
 const stepTwoSchema = z.object({

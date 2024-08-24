@@ -5,7 +5,7 @@ import {
   NonIsbnCreationPathStep,
   useBookCreation,
   useBookCreationDispatch,
-} from '../../../../context/bookCreationContext/bookCreationContext';
+} from '../../../../../bookshelf/context/bookCreationContext/bookCreationContext';
 import { ReadingStatus as ContractReadingStatus } from '@common/contracts';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -33,7 +33,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getGenresQueryOptions } from '../../../../../genres/api/queries/getGenresQuery/getGenresQueryOptions';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';
-import { useFindUserBookshelfsQuery } from '../../../../api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
+import { useFindUserBookshelfsQuery } from '../../../../../bookshelf/api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 import { useFindAuthorsQuery } from '../../../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
 import { useCreateBookWithUserBook } from '../../../../hooks/createBookWithUserBook/createBookWithUserBook';
 import { LoadingSpinner } from '../../../../../common/components/spinner/loading-spinner';

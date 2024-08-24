@@ -5,7 +5,7 @@ import {
   NonIsbnCreationPathStep,
   useBookCreation,
   useBookCreationDispatch,
-} from '../../../../context/bookCreationContext/bookCreationContext';
+} from '../../../../../bookshelf/context/bookCreationContext/bookCreationContext';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -18,7 +18,7 @@ import {
 } from '../../../../../common/components/form/form';
 import { Input } from '../../../../../common/components/input/input';
 import { Button } from '../../../../../common/components/button/button';
-import { Popover, PopoverContent, PopoverTrigger } from '../../../../../common/components/popover/popover';
+import { DialogPopoverContent, Popover, PopoverTrigger } from '../../../../../common/components/popover/popover';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import {
   Command,
@@ -46,11 +46,11 @@ import {
   TooltipTrigger,
 } from '../../../../../common/components/tooltip/tooltip';
 import { useFindAuthorsQuery } from '../../../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
-import { findUserBooksBy } from '../../../../../book/api/user/queries/findUserBookBy/findUserBooksBy';
+import { findUserBooksBy } from '../../../../api/user/queries/findUserBookBy/findUserBooksBy';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';
 import { toast } from '../../../../../common/components/toast/use-toast';
-import { BookApiError } from '../../../../../book/errors/bookApiError';
+import { BookApiError } from '../../../../errors/bookApiError';
 
 const stepOneSchema = z
   .object({
@@ -80,7 +80,7 @@ const stepOneSchema = z
         required_error: 'Wymagany',
       })
       .regex(/\s/)
-      .optional(),
+      .or(z.literal("")),
     publisher: z
       .string()
       .min(1, {
@@ -124,16 +124,13 @@ export const ManualStepOneForm = (): JSX.Element => {
   const bookCreation = useBookCreation<false>() as BookCreationNonIsbnState;
 
   const [submitError, setSubmitError] = useState('');
+  const [createAuthorDialogVisible, setCreateAuthorDialogVisible] = useState(false);
+  const [searchedName, setSearchedName] = useState<string | undefined>(undefined);
+  const [draftAuthorName, setDraftAuthorName] = useState(bookCreation.stepOneDetails?.authorName);
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const dispatch = useBookCreationDispatch();
-
-  const [createAuthorDialogVisible, setCreateAuthorDialogVisible] = useState(false);
-
-  const [searchedName, setSearchedName] = useState<string | undefined>(undefined);
-
-  const [draftAuthorName, setDraftAuthorName] = useState(bookCreation.stepOneDetails?.authorName);
 
   const form = useForm({
     resolver: zodResolver(stepOneSchema),
@@ -141,12 +138,12 @@ export const ManualStepOneForm = (): JSX.Element => {
       isbn: bookCreation.stepOneDetails?.isbn ?? '',
       title: bookCreation.stepOneDetails?.title ?? '',
       author: bookCreation.stepOneDetails?.author ?? '',
-      authorName: bookCreation.stepOneDetails?.authorName ?? undefined,
+      authorName: bookCreation.stepOneDetails?.authorName ?? '',
       publisher: bookCreation.stepOneDetails?.publisher ?? '',
       yearOfIssue: bookCreation.stepOneDetails?.yearOfIssue ? bookCreation.stepOneDetails?.yearOfIssue : '',
     },
-    reValidateMode: 'onChange',
-    mode: 'onTouched',
+    reValidateMode: 'onBlur',
+    mode: 'onChange',
   });
 
   const createAuthorDraftForm = useForm({
@@ -182,8 +179,6 @@ export const ManualStepOneForm = (): JSX.Element => {
 
     setCreateAuthorDialogVisible(false);
   };
-
-  const [authorSelectOpen, setAuthorSelectOpen] = useState(false);
 
   const onOpenChange = (bool: boolean) => setCreateAuthorDialogVisible(bool);
 
@@ -238,7 +233,14 @@ export const ManualStepOneForm = (): JSX.Element => {
     isLoading: loading,
   } = useFindAuthorsQuery({
     name: searchedName,
+    ids: bookCreation.stepOneDetails?.author ? [bookCreation.stepOneDetails?.author]: []
   });
+
+  // if (!isFetched) {
+  //   return <div className='h-[50%] w-60 flex items-center justify-center'>
+  //     <LoadingSpinner />
+  //   </div>
+  // }
 
   return (
     <Form {...form}>
@@ -315,18 +317,14 @@ export const ManualStepOneForm = (): JSX.Element => {
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>
-                        Imię i nazwisko autora musi mieć minimum 3 znaki<br></br> i zawierać spację oddzielającą imię i
-                        nazwisko.
+                        Prosimy, podaj nazwisko i imię autora w<br></br> następującym formacie: "Rowling, J. K."
                       </p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               </div>
               <FormControl>
-                <Popover
-                  open={authorSelectOpen}
-                  onOpenChange={setAuthorSelectOpen}
-                >
+                <Popover modal={false}>
                   <PopoverTrigger asChild>
                     <FormControl>
                       <Button
@@ -337,7 +335,7 @@ export const ManualStepOneForm = (): JSX.Element => {
                           'justify-between bg-[#D1D5DB]/20',
                           !field.value && 'text-muted-foreground',
                           draftAuthorName && 'text-black',
-                          'border h-12',
+                          'border',
                         )}
                         style={{
                           height: '3rem',
@@ -347,7 +345,7 @@ export const ManualStepOneForm = (): JSX.Element => {
                           className={cn(
                             !field.value && 'text-muted-foreground',
                             draftAuthorName && 'text-black',
-                            'w-full text-start px-3 py-2',
+                            'w-full text-start px-3',
                           )}
                         >
                           {field.value
@@ -360,24 +358,20 @@ export const ManualStepOneForm = (): JSX.Element => {
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
-                  <PopoverContent className="w-60 sm:w-96 p-0">
+                  <DialogPopoverContent className="w-60 sm:w-96 p-0">
                     <Command>
                       <CommandInput
+                        disabled={false}
                         placeholder="Wyszukaj autora..."
                         onValueChange={setSearchedName}
-                        onKeyDown={(event) => {
-                          if (event.key === 'Enter') {
-                            setAuthorSelectOpen(false);
-                          }
-                        }}
                       />
-
                       <CommandList>
                         {isFetched && authors?.data.length === 0 && (
                           <CommandEmpty className="flex flex-col px-4 py-4 gap-4">
                             {/* <p>Nie znaleziono autora - {searchedName} </p> */}
                             <>
                               <Dialog
+                                modal={true}
                                 open={createAuthorDialogVisible}
                                 onOpenChange={(val) => {
                                   onOpenChange(val);
@@ -388,7 +382,7 @@ export const ManualStepOneForm = (): JSX.Element => {
                                 <DialogTrigger asChild>
                                   <Button className="bg-slate-100 text-black hover:bg-slate-300">Dodaj</Button>
                                 </DialogTrigger>
-                                <DialogContent className="sm:max-w-md">
+                                <DialogContent className="sm:max-w-md z-[100]">
                                   <DialogHeader>
                                     <DialogTitle>Stwórz autora</DialogTitle>
                                   </DialogHeader>
@@ -416,8 +410,7 @@ export const ManualStepOneForm = (): JSX.Element => {
                                       />
                                       <Button
                                         disabled={!createAuthorDraftForm.formState.isValid}
-                                        type="button"
-                                        onClick={() => onCreateAuthorDraft(createAuthorDraftForm.getValues())}
+                                        type="submit"
                                       >
                                         Stwórz
                                       </Button>
@@ -435,9 +428,7 @@ export const ManualStepOneForm = (): JSX.Element => {
                             value={author.name}
                             onSelect={() => {
                               form.setValue('author', author.id);
-
-                              form.setValue('authorName', undefined);
-
+                              form.setValue('authorName', '');
                               setDraftAuthorName('');
 
                               dispatch({
@@ -445,7 +436,7 @@ export const ManualStepOneForm = (): JSX.Element => {
                                 author: author.id,
                               });
 
-                              form.trigger('author');
+                              form.trigger("author")
                             }}
                           >
                             <Check
@@ -456,7 +447,7 @@ export const ManualStepOneForm = (): JSX.Element => {
                         ))}
                       </CommandList>
                     </Command>
-                  </PopoverContent>
+                  </DialogPopoverContent>
                 </Popover>
               </FormControl>
               <FormMessage />

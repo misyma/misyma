@@ -5,25 +5,22 @@ import { BookTable } from '../../../../modules/book/components/bookTable/bookTab
 import { bookTableColumns } from '../../../../modules/book/components/bookTable/bookTableColumns';
 import { useFindBooksQuery } from '../../../../modules/book/api/admin/queries/findBooksQuery/findBooksQueryOptions';
 import { RequireAdmin } from '../../../../modules/core/components/requireAdmin/requireAdmin';
+import { BookCreationProvider } from '../../../../modules/bookshelf/context/bookCreationContext/bookCreationContext';
+import { CreateBookModal } from '../../../../modules/book/components/createBookModal/createBookModal';
 
 export const BooksAdminPage: FC = () => {
   const [page, setPage] = useState(1);
-
   const [pageSize] = useState(10);
-
   const [searchTitleName, setSearchTitleName] = useState('');
 
   const onSetSearchTitle = (val: string) => {
     setPage(0);
-
     setSearchTitleName(val);
   };
 
   const {
     data: booksData,
     isFetched: isBooksFetched,
-    // isFetching: isAuthorsFetching,
-    // isRefetching: isAuthorsRefetching,
   } = useFindBooksQuery({
     all: true,
     page,
@@ -32,7 +29,7 @@ export const BooksAdminPage: FC = () => {
   });
 
   if (isBooksFetched && page !== (booksData?.metadata.page as number)) {
-    setPage((booksData?.metadata.page as number));
+    setPage(booksData?.metadata.page as number);
   }
 
   const pageCount = useMemo(() => {
@@ -67,6 +64,11 @@ export const BooksAdminPage: FC = () => {
                 Prośby o zmianę
               </Link>
             </ul>
+            <div className='flex w-full justify-end'>
+            <BookCreationProvider>
+              <CreateBookModal />
+            </BookCreationProvider>
+            </div>
           </div>
           <div className="flex flex-col px-4 col-span-2 sm:col-span-5">
             <div className="flex items-center justify-center w-100% px-8 py-1 sm:py-4">

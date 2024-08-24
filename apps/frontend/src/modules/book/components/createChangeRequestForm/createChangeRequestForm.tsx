@@ -90,15 +90,7 @@ export const CreateChangeRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit 
     }),
   );
 
-  if (!isUserDataFetched) {
-    return <LoadingSpinner />;
-  }
-
-  if (!isUserBookDataFetched) {
-    return <LoadingSpinner />;
-  }
-
-  if (!isBookDataFetched) {
+  if (!isUserDataFetched || !isUserBookDataFetched || !isBookDataFetched) {
     return <LoadingSpinner />;
   }
 
@@ -114,14 +106,15 @@ export const CreateChangeRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit 
 const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
-  const context = useBookDetailsChangeRequestContext();
-
-  const dispatch = useBookDetailsChangeRequestDispatch();
-
   const { toast } = useToast();
 
-  const { data: userData } = useFindUserQuery();
+  const [currentStep, setCurrentStep] = useState<number>(1);
 
+  const context = useBookDetailsChangeRequestContext();
+  const dispatch = useBookDetailsChangeRequestDispatch();
+
+
+  const { data: userData } = useFindUserQuery();
   const { data: userBookData } = useQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
@@ -129,7 +122,6 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
       accessToken: accessToken as string,
     }),
   );
-
   const { data: bookData } = useQuery(
     FindBookByIdQueryOptions({
       accessToken: accessToken as string,
@@ -138,8 +130,6 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
   );
 
   const { mutateAsync: createBookChangeRequest } = useCreateBookChangeRequestMutation({});
-
-  const [currentStep, setCurrentStep] = useState<number>(1);
 
   const stepTwoForm = useForm({
     resolver: zodResolver(stepTwoSchema),
@@ -285,10 +275,7 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
                         <SelectValue placeholder={<span className="text-muted-foreground">Język</span>} />
                         <SelectContent>
                           {Object.entries(Languages).map(([key, language]) => (
-                            // todo: potentially fix :)
-                            // eslint-disable-next-line
-                            // @ts-ignore
-                            <SelectItem value={Language[key]}>{language}</SelectItem>
+                            <SelectItem value={Language[key as keyof typeof Language]}>{language}</SelectItem>
                           ))}
                         </SelectContent>
                       </SelectTrigger>

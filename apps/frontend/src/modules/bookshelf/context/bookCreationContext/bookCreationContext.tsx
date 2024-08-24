@@ -34,6 +34,7 @@ export enum BookCreationActionType {
   setBookshelfId = 18,
   setAuthorName = 19,
   setIsOriginal = 20,
+  WipeData = 21,
 }
 
 type SetStep = {
@@ -142,6 +143,11 @@ type SetBookshelfId = {
   bookshelfId: string;
 };
 
+type WipeData = {
+  type: BookCreationActionType.WipeData;
+  wipe: true
+}
+
 export type BookCreationAction =
   | SetIsbnAction
   | SetYearOfIssueAction
@@ -161,7 +167,8 @@ export type BookCreationAction =
   | SetStep
   | SetBookshelfId
   | SetAuthorName
-  | SetIsOriginal;
+  | SetIsOriginal
+  | WipeData;
 
 export interface BookCreationNonIsbnState<T extends boolean = false> {
   isbnPath: T;
@@ -215,6 +222,14 @@ function bookCreationReducer<T extends boolean = true>(
   action: BookCreationAction,
 ): BookCreationState<T> {
   switch (action.type) {
+    case BookCreationActionType.WipeData: {
+      return {
+        isbnPath: false as T,
+        step: 1,
+        isOriginal: true,
+      }
+    }
+
     case BookCreationActionType.nonIsbnStepOneDetails:
       return {
         ...state,
