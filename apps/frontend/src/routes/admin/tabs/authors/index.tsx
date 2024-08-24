@@ -79,6 +79,7 @@ export const AuthorsAdminPage: FC = () => {
                 pageIndex={page}
                 searchAuthorName={searchAuthorName}
                 setSearchAuthorName={onSetSearchAuthorName}
+                itemsCount={authorsData?.metadata.total}
               />
             </div>
           </div>

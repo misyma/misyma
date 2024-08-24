@@ -22,6 +22,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   pageIndex: number;
   pageSize: number;
+  itemsCount?: number;
   pageCount: number;
   onSetPage: (val: number) => Promise<void> | void;
 }
@@ -33,6 +34,7 @@ export function QuotationsTable<TValue>({
   pageSize,
   pageCount,
   onSetPage,
+  itemsCount
 }: DataTableProps<Quote, TValue>): JSX.Element {
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -109,6 +111,8 @@ export function QuotationsTable<TValue>({
             onPageChange={onSetPage}
             pageIndex={pageIndex}
             pagesCount={pageCount}
+            includeArrows={true}
+            itemsCount={itemsCount}
           />
         )}
       </div>

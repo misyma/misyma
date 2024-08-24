@@ -187,6 +187,7 @@ export const QuotesPage: FC = () => {
                       pageCount={pageCount}
                       pageIndex={page}
                       pageSize={pageSize}
+                      itemsCount={quotationsData?.metadata.total}
                     ></QuotationsTable>
                   </div>
                 </div>

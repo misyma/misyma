@@ -81,6 +81,7 @@ export const BooksAdminPage: FC = () => {
                 pageIndex={page}
                 searchBookTitle={searchTitleName}
                 setSearchBookTitle={onSetSearchTitle}
+                itemsCount={booksData?.metadata.total}
               />
             </div>
           </div>

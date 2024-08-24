@@ -27,16 +27,13 @@ import { useFindBookshelfByIdQuery } from '../../../../modules/bookshelf/api/que
 export const GradesPage: FC = () => {
   const { bookId } = Route.useParams();
 
-  const { data: userData } = useFindUserQuery();
-
-  const queryClient = useQueryClient();
-
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const [pageSize] = useState(4);
-
   const [page, setPage] = useState(1);
 
+  const queryClient = useQueryClient();
+  const { data: userData } = useFindUserQuery();
   const { data: bookReadings } = useQuery(
     FindBookReadingsQueryOptions({
       accessToken: accessToken as string,
@@ -46,11 +43,6 @@ export const GradesPage: FC = () => {
       sortDate: SortingType.desc,
     }),
   );
-
-  const pageCount = useMemo(() => {
-    return Math.ceil((bookReadings?.metadata?.total ?? 0) / pageSize) || 1;
-  }, [bookReadings?.metadata.total, pageSize]);
-
   const {
     data: userBookData,
     isFetched: isUserBookFetched,
@@ -63,12 +55,16 @@ export const GradesPage: FC = () => {
       accessToken: accessToken as string,
     }),
   );
+  const { data: bookshelfResponse } = useFindBookshelfByIdQuery(userBookData?.bookshelfId as string);
+
+  const pageCount = useMemo(() => {
+    return Math.ceil((bookReadings?.metadata?.total ?? 0) / pageSize) || 1;
+  }, [bookReadings?.metadata.total, pageSize]);
+
 
   const dispatch = useBreadcrumbKeysDispatch();
-
   const breadcrumbKeys = useBreadcrumbKeysContext();
 
-  const { data: bookshelfResponse } = useFindBookshelfByIdQuery(userBookData?.bookshelfId as string);
 
   if (userBookData?.book.title && !breadcrumbKeys['$bookName']) {
     dispatch({
@@ -178,6 +174,7 @@ export const GradesPage: FC = () => {
                       pageCount={pageCount}
                       pageIndex={page}
                       pageSize={pageSize}
+                      itemsCount={bookReadings?.metadata.total}
                     ></BookReadingsTable>
                   </div>
                 </div>

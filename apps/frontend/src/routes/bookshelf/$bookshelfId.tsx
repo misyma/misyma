@@ -395,6 +395,8 @@ export const Bookshelf: FC = () => {
               onPageChange={setCurrentPage}
               pageIndex={currentPage}
               pagesCount={pageCount ?? 0}
+              includeArrows={true}
+              itemsCount={bookshelfBooksResponse.metadata.total}
             />
           )}
         </div>
