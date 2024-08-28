@@ -1,6 +1,6 @@
 import { type Static, Type } from '@sinclair/typebox';
 
-import type * as contracts from '@common/contracts';
+import * as contracts from '@common/contracts';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 import { bookDtoSchema } from '../../common/bookDto.js';
@@ -15,6 +15,21 @@ export const findAdminBooksQueryParamsDtoSchema = Type.Object({
     Type.String({
       minLength: 1,
       maxLength: 256,
+    }),
+  ),
+  authorIds: Type.Optional(Type.Array(Type.String({ format: 'uuid' }))),
+  language: Type.Optional(Type.Enum(contracts.Language)),
+  isApproved: Type.Optional(Type.Boolean()),
+  releaseYearBefore: Type.Optional(
+    Type.Integer({
+      minimum: 1,
+      maximum: 2100,
+    }),
+  ),
+  releaseYearAfter: Type.Optional(
+    Type.Integer({
+      minimum: 1,
+      maximum: 2100,
     }),
   ),
   page: Type.Optional(Type.Integer({ minimum: 1 })),

@@ -1,6 +1,6 @@
 import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 
-import { BookFormat } from '@common/contracts';
+import { BookFormat, Language } from '@common/contracts';
 
 import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
@@ -539,6 +539,173 @@ describe('BookRepositoryImpl', () => {
           expect(foundBook.getTitle()).oneOf([book1.title, book2.title]);
         });
       });
+    });
+
+    it('finds books by author ids', async () => {
+      const author1 = await authorTestUtils.createAndPersist();
+
+      const author2 = await authorTestUtils.createAndPersist();
+
+      const author3 = await authorTestUtils.createAndPersist();
+
+      const book1 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author1.id],
+        },
+      });
+
+      const book2 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author2.id],
+        },
+      });
+
+      await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author3.id],
+        },
+      });
+
+      const foundBooks = await bookRepository.findBooks({
+        authorIds: [author1.id, author2.id],
+        page: 1,
+        pageSize: 10,
+      });
+
+      expect(foundBooks.length).toEqual(2);
+
+      [book1.id, book2.id].every((bookId) => {
+        expect(foundBooks.some((book) => book.getId() === bookId)).toBeTruthy();
+      });
+    });
+
+    it('finds books by language', async () => {
+      const author = await authorTestUtils.createAndPersist();
+
+      const book1 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+          book: {
+            language: Language.Polish,
+          },
+        },
+      });
+
+      await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+          book: {
+            language: Language.English,
+          },
+        },
+      });
+
+      const foundBooks = await bookRepository.findBooks({
+        language: Language.Polish,
+        page: 1,
+        pageSize: 10,
+      });
+
+      expect(foundBooks.length).toEqual(1);
+
+      expect(foundBooks[0]?.getId()).toEqual(book1.id);
+    });
+
+    it('finds books by release year after date', async () => {
+      const author = await authorTestUtils.createAndPersist();
+
+      await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+          book: {
+            releaseYear: 1995,
+          },
+        },
+      });
+
+      const book2 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+          book: {
+            releaseYear: 1997,
+          },
+        },
+      });
+
+      const foundBooks = await bookRepository.findBooks({
+        releaseYearAfter: 1996,
+        page: 1,
+        pageSize: 10,
+      });
+
+      expect(foundBooks.length).toEqual(1);
+
+      expect(foundBooks[0]?.getId()).toEqual(book2.id);
+    });
+
+    it('finds books by release year before date', async () => {
+      const author = await authorTestUtils.createAndPersist();
+
+      const book1 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+          book: {
+            releaseYear: 1995,
+          },
+        },
+      });
+
+      await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+          book: {
+            releaseYear: 1997,
+          },
+        },
+      });
+
+      const foundBooks = await bookRepository.findBooks({
+        releaseYearBefore: 1996,
+        page: 1,
+        pageSize: 10,
+      });
+
+      expect(foundBooks.length).toEqual(1);
+
+      expect(foundBooks[0]?.getId()).toEqual(book1.id);
+    });
+
+    it('finds books by release year between dates', async () => {
+      const author = await authorTestUtils.createAndPersist();
+
+      const book1 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+          book: {
+            releaseYear: 1995,
+          },
+        },
+      });
+
+      await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+          book: {
+            releaseYear: 1997,
+          },
+        },
+      });
+
+      const foundBooks = await bookRepository.findBooks({
+        releaseYearAfter: 1994,
+        releaseYearBefore: 1996,
+        page: 1,
+        pageSize: 10,
+      });
+
+      expect(foundBooks.length).toEqual(1);
+
+      expect(foundBooks[0]?.getId()).toEqual(book1.id);
     });
   });
 

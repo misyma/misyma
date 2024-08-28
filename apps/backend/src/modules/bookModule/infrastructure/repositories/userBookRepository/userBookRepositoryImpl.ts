@@ -300,10 +300,6 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         ])
         .leftJoin(bookAuthorTable, (join) => {
           join.on(bookAuthorColumns.bookId, '=', `${userBookTable}.bookId`);
-
-          if (authorIds) {
-            join.andOnIn(bookAuthorColumns.authorId, this.databaseClient.raw('?', [authorIds.join(',')]));
-          }
         })
         .leftJoin(authorTable, (join) => {
           join.on(authorColumns.id, '=', bookAuthorColumns.authorId);
@@ -341,6 +337,10 @@ export class UserBookRepositoryImpl implements UserBookRepository {
 
           if (bookId) {
             builder.where(`${userBookTable}.bookId`, bookId);
+          }
+
+          if (authorIds) {
+            builder.whereIn(`${authorTable}.id`, authorIds);
           }
         })
         .groupBy([`${userBookTable}.id`, `${bookTable}.id`]);
