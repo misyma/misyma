@@ -202,7 +202,8 @@ export class BookRepositoryImpl implements BookRepository {
   }
 
   public async findBooks(payload: FindBooksPayload): Promise<Book[]> {
-    const { isbn, isApproved, title, page, pageSize } = payload;
+    const { isbn, isApproved, title, language, releaseYearBefore, releaseYearAfter, authorIds, page, pageSize } =
+      payload;
 
     let rawEntities: BookWithJoinsRawEntity[];
 
@@ -239,8 +240,24 @@ export class BookRepositoryImpl implements BookRepository {
             builder.where(`${bookTable}.isApproved`, isApproved);
           }
 
+          if (language) {
+            builder.where(`${bookTable}.language`, language);
+          }
+
+          if (releaseYearBefore) {
+            builder.where(`${bookTable}.releaseYear`, '<=', releaseYearBefore);
+          }
+
+          if (releaseYearAfter) {
+            builder.where(`${bookTable}.releaseYear`, '>=', releaseYearAfter);
+          }
+
           if (title) {
             builder.whereRaw('LOWER(title) LIKE LOWER(?)', `%${title}%`);
+          }
+
+          if (authorIds) {
+            builder.whereIn(`${authorTable}.id`, authorIds);
           }
         })
         .groupBy(`${bookTable}.id`)

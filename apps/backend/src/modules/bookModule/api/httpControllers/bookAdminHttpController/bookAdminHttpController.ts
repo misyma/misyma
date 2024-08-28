@@ -225,11 +225,26 @@ export class BookAdminHttpController implements HttpController {
       expectedRole: UserRole.admin,
     });
 
-    const { page = 1, pageSize = 10, isbn, title } = request.queryParams;
+    const {
+      page = 1,
+      pageSize = 10,
+      isbn,
+      title,
+      isApproved,
+      authorIds,
+      language,
+      releaseYearAfter,
+      releaseYearBefore,
+    } = request.queryParams;
 
     const { books, total } = await this.findBooksQueryHandler.execute({
       isbn,
       title,
+      isApproved,
+      authorIds,
+      language,
+      releaseYearAfter,
+      releaseYearBefore,
       page,
       pageSize,
     });

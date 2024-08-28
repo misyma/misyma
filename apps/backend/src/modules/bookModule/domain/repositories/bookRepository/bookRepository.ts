@@ -1,3 +1,5 @@
+import { type Language } from '@common/contracts';
+
 import { type BookState, type Book } from '../../../domain/entities/book/book.js';
 
 export interface SaveBookPayload {
@@ -12,6 +14,10 @@ export interface FindBooksPayload {
   readonly isbn?: string;
   readonly isApproved?: boolean;
   readonly title?: string;
+  readonly authorIds?: string[];
+  readonly language?: Language;
+  readonly releaseYearBefore?: number;
+  readonly releaseYearAfter?: number;
   readonly page: number;
   readonly pageSize: number;
 }
