@@ -246,7 +246,7 @@ export const ChangeRequestView: FC = () => {
                   <Button onClick={onDecline} size="lg" variant="outline">
                     Odrzuć{' '}
                   </Button>
-                  <Button onClick={onSubmit} size="lg">
+                  <Button type="submit" size="lg">
                     Potwierdź
                   </Button>
                 </div>
