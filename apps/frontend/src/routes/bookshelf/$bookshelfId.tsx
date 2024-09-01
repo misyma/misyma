@@ -29,6 +29,7 @@ import {
   useBreadcrumbKeysDispatch,
 } from '../../modules/common/contexts/breadcrumbKeysContext';
 import { Paginator } from '../../modules/common/components/paginator/paginator';
+import { BookImageMiniature } from '../../modules/book/components/bookImageMiniature/bookImageMiniature';
 
 const bookshelfSearchSchema = z.object({
   bookshelfId: z.string().uuid().catch(''),
@@ -87,29 +88,6 @@ export const View: FC = () => {
   }
 
   return <Bookshelf></Bookshelf>;
-};
-
-interface BookImageProps {
-  userBook: UserBook;
-}
-
-const BookImage: FC<BookImageProps> = ({ userBook }) => {
-  const navigate = useNavigate();
-
-  return (
-    <img
-      onClick={() => {
-        navigate({
-          to: '/book/tabs/basicDataTab/$bookId',
-          params: {
-            bookId: userBook.id,
-          },
-        });
-      }}
-      src={userBook.imageUrl || userBook.book.imageUrl || '/book.jpg'}
-      className="object-contain aspect-square max-w-[200px]"
-    />
-  );
 };
 
 const BorrowedBook: FC<{ userBook: UserBook; index: number }> = ({
@@ -172,7 +150,17 @@ const BorrowedBook: FC<{ userBook: UserBook; index: number }> = ({
         className="cursor-pointer absolute w-full h-[100%]"
       ></div>
       <div className="z-10">
-        <BookImage userBook={userBook} />
+        <BookImageMiniature
+          onClick={() => {
+            navigate({
+              to: '/book/tabs/basicDataTab/$bookId',
+              params: {
+                bookId: userBook.id,
+              },
+            });
+          }}
+          userBook={userBook}
+        />
       </div>
       <div className="z-10 w-full px-12 pointer-events-none">
         <div className="flex justify-between w-full">
@@ -404,7 +392,17 @@ export const Bookshelf: FC = () => {
                   className="cursor-pointer absolute w-full h-[100%]"
                 ></div>
                 <div className="z-10">
-                  <BookImage userBook={userBook} />
+                  <BookImageMiniature
+                    onClick={() => {
+                      navigate({
+                        to: '/book/tabs/basicDataTab/$bookId',
+                        params: {
+                          bookId: userBook.id,
+                        },
+                      });
+                    }}
+                    userBook={userBook}
+                  />
                 </div>
                 <div className="z-10 w-full px-12 pointer-events-none">
                   <div className="flex justify-between w-full">
