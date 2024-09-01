@@ -26,13 +26,12 @@ import { z } from 'zod';
 
 export const SearchResultPage: FC = () => {
   const searchParams = Route.useSearch();
-
   const navigate = useNavigate();
-
+  
+  const [manualPageNumberInputOpen, setManualPageNumberInputOpen] = useState(false);
   const searchCreationDispatch = useSearchBookContextDispatch();
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const inputValue = useRef(0);
 
   useEffect(() => {
@@ -70,8 +69,6 @@ export const SearchResultPage: FC = () => {
       pageSize: 1,
     }),
   );
-
-  const [manualPageNumberInputOpen, setManualPageNumberInputOpen] = useState(false);
 
   const totalBooks = useMemo(() => foundBooks?.metadata.total ?? 0, [foundBooks?.metadata.total]);
 
@@ -114,11 +111,9 @@ export const SearchResultPage: FC = () => {
     searchCreationDispatch({
       bookId: book.id,
     });
-
     searchCreationDispatch({
       title: book.title,
     });
-
     searchCreationDispatch({
       step: 3,
     });
@@ -251,7 +246,9 @@ export const SearchResultPage: FC = () => {
                 pageNumberSlot={
                   <span className="text-left text-ellipsis w-full line-clamp-2">{foundBooks?.data[0].title}</span>
                 }
+                includeArrows={true}
                 contentClassName="w-full"
+                itemsCount={foundBooks?.metadata.total}
               />
             ) : (
               // className="font-bold text-2xl text-primary"

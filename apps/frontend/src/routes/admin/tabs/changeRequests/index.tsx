@@ -75,6 +75,7 @@ export const ChangeRequestsAdminPage: FC = () => {
                 pageIndex={page}
                 searchTitle={searchTitle}
                 setSearchTitle={setSearchTitle}
+                itemsCount={changeRequestsData?.metadata.total}
               />
             </div>
           </div>

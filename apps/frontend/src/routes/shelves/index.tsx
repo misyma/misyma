@@ -38,20 +38,16 @@ const bookshelfNameSchema = z
   });
 
 export const ShelvesPage: FC = () => {
-  const { data: user } = useFindUserQuery();
-
-  const queryClient = useQueryClient();
-
-  const perPage = 5;
-
   const dispatch = useBreadcrumbKeysDispatch();
-
+  
+  const perPage = 5;
   const [currentPage, setCurrentPage] = useState<number>(1);
-
   const [isCreatingNew, setIsCreatingNew] = useState(false);
-
   const [searchedName, setSearchedName] = useState('');
-
+  const [editMap, setEditMap] = useState<Record<number, boolean>>({});
+  
+  const queryClient = useQueryClient();
+  const { data: user } = useFindUserQuery();
   const {
     data: bookshelvesData,
     isFetching,
@@ -63,6 +59,12 @@ export const ShelvesPage: FC = () => {
     page: currentPage,
     name: searchedName,
   });
+  const [bookshelves, setBookshelves] = useState(bookshelvesData?.data);
+  
+  const { mutateAsync: updateBookshelf } = useUpdateBookshelfMutation({});
+  const createBookshelfMutation = useCreateBookshelfMutation({});
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch({
@@ -75,11 +77,6 @@ export const ShelvesPage: FC = () => {
     setBookshelves(bookshelvesData?.data);
   }, [bookshelvesData]);
 
-  const { mutateAsync: updateBookshelf } = useUpdateBookshelfMutation({});
-
-  const createBookshelfMutation = useCreateBookshelfMutation({});
-
-  const [bookshelves, setBookshelves] = useState(bookshelvesData?.data);
 
   const { toast } = useToast();
 
@@ -89,9 +86,6 @@ export const ShelvesPage: FC = () => {
     return Math.ceil(bookshelvesCount / perPage);
   }, [bookshelvesData?.metadata?.total]);
 
-  const navigate = useNavigate();
-
-  const [editMap, setEditMap] = useState<Record<number, boolean>>({});
 
   if (isFetching && !isRefetching) {
     return (
@@ -441,6 +435,8 @@ export const ShelvesPage: FC = () => {
               pagesCount={pagesCount}
               onPageChange={setCurrentPage}
               pageIndex={currentPage}
+              includeArrows={true}
+              itemsCount={bookshelvesData?.metadata.total}
             />
           )}
         </div>

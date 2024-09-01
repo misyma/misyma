@@ -22,6 +22,7 @@ interface DataTableProps<TData, TValue> {
   pageIndex: number;
   pageSize: number;
   pageCount: number;
+  itemsCount?: number;
   onSetPage: (val: number) => Promise<void> | void;
   searchAuthorName: string | undefined;
   setSearchAuthorName: (val: string) => void;
@@ -36,6 +37,7 @@ export function AuthorTable<TData, TValue>({
   onSetPage,
   searchAuthorName,
   setSearchAuthorName,
+  itemsCount
 }: DataTableProps<TData, TValue>): JSX.Element {
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -134,8 +136,10 @@ export function AuthorTable<TData, TValue>({
         {table.getPageCount() > 1 && (
           <Paginator
             onPageChange={onSetPage}
+            includeArrows={true}
             pageIndex={pageIndex}
             pagesCount={pageCount}
+            itemsCount={itemsCount}
           />
         )}
       </div>

@@ -22,6 +22,7 @@ interface DataTableProps<TData, TValue> {
   pageIndex: number;
   pageSize: number;
   pageCount: number;
+  itemsCount?: number;
   onSetPage: (val: number) => Promise<void> | void;
   searchTitle: string | undefined;
   setSearchTitle: (val: string) => void;
@@ -33,6 +34,7 @@ export function ChangeRequestsTable<TData, TValue>({
   pageIndex,
   pageSize,
   pageCount,
+  itemsCount,
   onSetPage,
   searchTitle,
   setSearchTitle,
@@ -130,6 +132,8 @@ export function ChangeRequestsTable<TData, TValue>({
             onPageChange={onSetPage}
             pageIndex={pageIndex}
             pagesCount={pageCount}
+            includeArrows={true}
+            itemsCount={itemsCount}
           />
         )}
       </div>

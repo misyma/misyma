@@ -26,6 +26,7 @@ interface DataTableProps<TData, TValue> {
   onSetPage: (val: number) => Promise<void> | void;
   searchBookTitle: string | undefined;
   setSearchBookTitle: (val: string) => void;
+  itemsCount: number | undefined;
 }
 
 export function BookTable<TValue>({
@@ -37,6 +38,7 @@ export function BookTable<TValue>({
   onSetPage,
   searchBookTitle,
   setSearchBookTitle,
+  itemsCount
 }: DataTableProps<Book, TValue>): JSX.Element {
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -140,6 +142,8 @@ export function BookTable<TValue>({
             onPageChange={onSetPage}
             pageIndex={pageIndex}
             pagesCount={pageCount}
+            includeArrows={true}
+            itemsCount={itemsCount}
           />
         )}
       </div>

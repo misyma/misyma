@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo, useState } from 'react';
+import React, { FC, ReactNode, useMemo, useState } from 'react';
 import {
   Pagination,
   PaginationContent,
@@ -11,24 +11,26 @@ import {
 export interface PaginatorProps {
   pagesCount: number;
   pageIndex: number;
+  itemsCount?: number;
   onPageChange: (currentPage: number) => void | Promise<void>;
   includePageNumber?: boolean;
-  includeArrows?: boolean;
+  includeArrows: boolean;
   pageNumberSlot?: ReactNode;
   rootClassName?: string;
   contentClassName?: string;
+  version?: 1 | 2;
 }
 
-export const Paginator = ({
-  pagesCount,
-  pageIndex,
+const V1Paginator: FC<PaginatorProps> = ({
   onPageChange,
-  includePageNumber = true,
+  pageIndex,
+  pagesCount,
+  contentClassName,
   includeArrows = true,
+  includePageNumber,
   pageNumberSlot,
   rootClassName,
-  contentClassName,
-}: PaginatorProps): React.ReactNode => {
+}) => {
   const [currentPage, setCurrentPage] = useState<number>(pageIndex);
 
   if (pageIndex !== currentPage) {
@@ -193,4 +195,99 @@ export const Paginator = ({
       </PaginationContent>{' '}
     </Pagination>
   );
+};
+
+const V2Paginator: FC<PaginatorProps> = ({
+  onPageChange,
+  pageIndex,
+  pagesCount,
+  itemsCount,
+  contentClassName,
+  includeArrows = true,
+  rootClassName,
+}) => {
+  const [currentPage, setCurrentPage] = useState<number>(pageIndex);
+
+  if (pageIndex !== currentPage) {
+    setCurrentPage(pageIndex);
+  }
+
+  const previousPage = useMemo(() => {
+    if (currentPage === 1) {
+      return undefined;
+    }
+
+    return currentPage - 1;
+  }, [currentPage]);
+
+  const nextPage = useMemo(() => {
+    if (currentPage === pagesCount) {
+      return undefined;
+    }
+
+    if (currentPage === 1 && pagesCount > 2) {
+      return currentPage + 2;
+    } else if (currentPage === 1 && pagesCount <= 2) {
+      return currentPage;
+    }
+
+    return currentPage + 1;
+  }, [currentPage, pagesCount]);
+
+  const goToPreviousPage = async (): Promise<void> => {
+    if (previousPage) {
+      setCurrentPage(previousPage);
+
+      await onPageChange(previousPage);
+    }
+  };
+
+  const goToNextPage = async (): Promise<void> => {
+    if (currentPage + 1 <= pagesCount) {
+      setCurrentPage(currentPage + 1);
+
+      await onPageChange(currentPage + 1);
+    }
+  };
+
+  return (
+    <Pagination className={rootClassName}>
+      <PaginationContent className={contentClassName}>
+        {includeArrows ? (
+          <PaginationItem>
+            <PaginationPrevious
+              hasPrevious={currentPage !== 1}
+              onClick={goToPreviousPage}
+            />
+          </PaginationItem>
+        ) : (
+          <></>
+        )}
+        {
+          <p className='font-semibold'>
+           {((pageIndex - 1) * 10) > 0 ? (pageIndex - 1) * 10 + 1 : 1}-{pageIndex * 10} z {itemsCount}
+          </p>
+        }
+        {includeArrows ? (
+          <PaginationItem className={nextPage === undefined ? 'pointer-events-none hover:text-none hover:bg-none' : ''}>
+            <PaginationNext
+              hasNext={currentPage !== pagesCount}
+              className={nextPage === undefined ? 'pointer-events-none hover:text-none hover:bg-[unset]' : ''}
+              onClick={goToNextPage}
+            />
+          </PaginationItem>
+        ) : (
+          <></>
+        )}
+      </PaginationContent>{' '}
+    </Pagination>
+  );
+};
+
+export const Paginator = (props: PaginatorProps): React.ReactNode => {
+  if (props.version === 1) {
+    return <V1Paginator {...props} />;
+  }
+
+  return <V2Paginator {...props}/>;
 };
