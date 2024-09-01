@@ -107,5 +107,12 @@ export class ApplyBookChangeRequestCommandHandlerImpl implements ApplyBookChange
       bookChangeRequestId,
       bookId: bookChangeRequest.getBookId(),
     });
+
+    await this.bookChangeRequestRepository.deleteBookChangeRequest({ id: bookChangeRequestId });
+
+    this.loggerService.debug({
+      message: 'BookChangeRequest deleted.',
+      bookChangeRequestId,
+    });
   }
 }

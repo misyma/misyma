@@ -116,6 +116,10 @@ describe('ApplyBookChangeRequestCommandHandlerImpl', () => {
         bookId: book.id,
       },
     ]);
+
+    const bookChangeRequestAfter = await bookChangeRequestTestUtils.findById({ id: bookChangeRequest.id });
+
+    expect(bookChangeRequestAfter).toBeNull();
   });
 
   it('throws an error - when some of the authors do not exist', async () => {
