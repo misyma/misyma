@@ -1,9 +1,9 @@
 import { createFileRoute, Navigate, useNavigate } from '@tanstack/react-router';
 import { RequireAdmin } from '../../../../modules/core/components/requireAdmin/requireAdmin';
-import { FC, ReactNode, useMemo } from 'react';
+import { FC, useMemo } from 'react';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { z } from 'zod';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { FindBookChangeRequestByIdQueryOptions } from '../../../../modules/bookChangeRequests/api/admin/queries/findBookChangeRequestById/findBookChangeRequestByIdQueryOptions';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
@@ -14,14 +14,15 @@ import { ReversedLanguages } from '../../../../modules/common/constants/language
 import { BookFormat } from '../../../../modules/common/constants/bookFormat';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormField, FormItem } from '../../../../modules/common/components/form/form';
-import { Switch } from '../../../../modules/common/components/switch/switch';
-import { useUpdateBookMutation } from '../../../../modules/book/api/admin/mutations/updateBookMutation/updateBookMutation';
-import { useDeleteBookChangeRequestMutation } from '../../../../modules/bookChangeRequests/api/admin/mutations/deleteBookChangeRequest/deleteBookChangeRequest';
-import { BookApiError } from '../../../../modules/book/errors/bookApiError';
-import { useToast } from '../../../../modules/common/components/toast/use-toast';
-import { BookApiQueryKeys } from '../../../../modules/book/api/user/queries/bookApiQueryKeys';
+import { Form } from '../../../../modules/common/components/form/form';
 import { useFindAuthorsQuery } from '../../../../modules/author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
+import { ChangeRequestTable } from '../../../../modules/bookChangeRequests/components/changeRequestTable/changeRequestTable';
+import {
+  BookChangeRequestRow,
+  changeRequestColumns,
+} from '../../../../modules/bookChangeRequests/components/changeRequestTable/changeRequestTableColumns';
+import { useApplyBookChangeRequestMutation } from '../../../../modules/bookChangeRequests/api/admin/mutations/applyBookChangeRequest/applyBookChangeRequest';
+import { useDeleteBookChangeRequestMutation } from '../../../../modules/bookChangeRequests/api/admin/mutations/deleteBookChangeRequest/deleteBookChangeRequest';
 
 type ChangeKeys =
   | 'format'
@@ -57,31 +58,31 @@ export const ChangeRequestView: FC = () => {
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
-  const queryClient = useQueryClient();
-
-  const { toast } = useToast();
-
-  const { data: changeRequestData, isFetched: isChangeRequestFetched } = useQuery(
-    FindBookChangeRequestByIdQueryOptions({
-      accessToken: accessToken as string,
-      id,
-    }),
-  );
-
+  const { data: changeRequestData, isFetched: isChangeRequestFetched } =
+    useQuery(
+      FindBookChangeRequestByIdQueryOptions({
+        accessToken: accessToken as string,
+        id,
+      })
+    );
   const { data: bookData, isFetched: isBookDataFetched } = useQuery(
     FindBookByIdQueryOptions({
       accessToken: accessToken as string,
       bookId: changeRequestData?.data?.bookId ?? '',
-    }),
+    })
   );
+  const { data: authorsResponse, isFetching: isFetchingAuthors } =
+    useFindAuthorsQuery({
+      ids: [
+        ...(bookData?.authors.map((author) => author.id) ?? []),
+        ...(changeRequestData?.data?.authorIds ?? []),
+      ],
+    });
 
-  const { data: authorsResponse, isFetching: isFetchingAuthors } = useFindAuthorsQuery({
-    ids: [...(bookData?.authors.map((author) => author.id) ?? []), ...(changeRequestData?.data?.authorIds ?? [])],
-  });
-
-  const { mutateAsync: updateBook } = useUpdateBookMutation({});
-
-  const { mutateAsync: deleteBookChangeRequest } = useDeleteBookChangeRequestMutation({});
+  const { mutateAsync: deleteBookChangeRequest } =
+    useDeleteBookChangeRequestMutation({});
+  const { mutateAsync: applyBookChangeRequest } =
+    useApplyBookChangeRequestMutation({});
 
   const navigate = useNavigate();
 
@@ -102,27 +103,15 @@ export const ChangeRequestView: FC = () => {
 
   const desiredAuthors = useMemo(() => {
     return authorsResponse?.data
-      .filter((author) => changeRequestData?.data?.authorIds?.includes(author.id))
+      .filter((author) =>
+        changeRequestData?.data?.authorIds?.includes(author.id)
+      )
       .map((author) => author.name)
       .join(',');
   }, [authorsResponse?.data, changeRequestData?.data]);
 
-  if (isChangeRequestFetched && !changeRequestData?.data) {
-    return <Navigate to={'/admin/tabs/changeRequests'} />;
-  }
-
-  if (!isChangeRequestFetched || !isBookDataFetched || isFetchingAuthors) {
-    return (
-      <AuthenticatedLayout>
-        <LoadingSpinner />
-      </AuthenticatedLayout>
-    );
-  }
-
-  const buildDifferencesView = () => {
-    const components: ReactNode[] = [];
-
-    const changeNameMap: Record<ChangeKeys, ChangeArguments> = {
+  const changeNameMap: Record<ChangeKeys, ChangeArguments> = useMemo(
+    () => ({
       format: {
         current: 'Obecny format',
         desired: 'Pożądany format',
@@ -161,155 +150,78 @@ export const ChangeRequestView: FC = () => {
         current: 'Obecni autorzy',
         desired: 'Pożądani autorzy',
       },
-    } as const;
+    }),
+    []
+  );
 
-    if (changeRequestData?.data && bookData) {
-      (Object.entries(changeRequestData?.data) as Array<[ChangeKeys, string | number]>).forEach(([key, value]) => {
-        const changeValues = changeNameMap[key];
+  const changeValues = useMemo(() => {
+    const rows: BookChangeRequestRow[] = [];
 
-        if (!changeValues) {
-          return;
-        }
+    (
+      Object.entries(changeRequestData?.data ?? {}) as Array<
+        [ChangeKeys, string | number]
+      >
+    ).forEach(([key, value]) => {
+      const changeValues = changeNameMap[key];
 
-        if (changeValues.mapping && key !== 'authorIds') {
-          components.push(
-            <FormField
-              control={form.control}
-              name={key}
-              render={({ field }) => (
-                <FormItem className="grid grid-cols-3 w-full">
-                  <p>
-                    {changeValues.current}: {changeValues?.mapping![bookData[key] as string]}
-                  </p>
-                  <p>
-                    {changeValues.desired}: {changeValues?.mapping![value]}
-                  </p>
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormItem>
-              )}
-            />,
-          );
-          return;
-        }
-
-        if (key === 'authorIds') {
-          components.push(
-            <FormField
-              control={form.control}
-              name={'authorIds'}
-              render={({ field }) => (
-                <FormItem className="grid grid-cols-3 w-full">
-                  <p>
-                    {changeValues.current}: {bookData['authors'].map((val) => val.name)}
-                  </p>
-                  <p>
-                    {changeValues.desired}: {desiredAuthors}
-                  </p>
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormItem>
-              )}
-            />,
-          );
-
-          return;
-        }
-
-        components.push(
-          <FormField
-            control={form.control}
-            name={key}
-            render={({ field }) => (
-              <FormItem className="grid grid-cols-3 w-full">
-                <p>
-                  {changeValues.current}: {bookData[key]}
-                </p>
-                <p>
-                  {changeValues.desired}: {value}
-                </p>
-                <Switch
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormItem>
-            )}
-          />,
-        );
-      });
-    }
-
-    return components;
-  };
-
-  const onRejectAll = (): void => {
-    Object.keys(changeRequestData?.data ?? {}).forEach((key) => {
-      form.setValue(key as ChangeKeys, false);
-    });
-  };
-
-  const onAcceptAll = (): void => {
-    Object.keys(changeRequestData?.data ?? {}).forEach((key) => {
-      form.setValue(key as ChangeKeys, true);
-    });
-  };
-
-  const onSubmit = async (values: z.infer<typeof schema>) => {
-    const payload = Object.entries(changeRequestData!.data!).reduce<Record<string, unknown>>(
-      (aggregate, [key, value]) => {
-        if (values[key as keyof typeof values]) {
-          aggregate[key] = value;
-
-          return aggregate;
-        }
-
-        return aggregate;
-      },
-      {} as Record<string, unknown>,
-    );
-
-    try {
-      await updateBook({
-        accessToken: accessToken as string,
-        bookId: bookData?.id as string,
-        ...payload,
-      });
-
-      await queryClient.invalidateQueries({
-        predicate: (query) => query.queryKey[0] === BookApiQueryKeys.findBookById && query.queryKey[1] === bookData?.id,
-      });
-    } catch (error) {
-      if (error instanceof BookApiError) {
-        toast({
-          title: 'Coś poszło nie tak podczas aktualizowania książki...',
-          description: error.context.message,
-        });
-
+      if (!changeValues) {
         return;
       }
 
-      throw error;
-    }
-
-    try {
-      await deleteBookChangeRequest({
-        accessToken: accessToken as string,
-        bookChangeRequestId: changeRequestData?.data?.id as string,
-      });
-    } catch (error) {
-      if (error instanceof BookApiError) {
-        toast({
-          title: 'Coś poszło nie tak przy usuwaniu prośby o zmianę...',
-          description: error.context.message,
+      if (changeValues.mapping && key !== 'authorIds') {
+        return rows.push({
+          key,
+          currentValue: bookData ? `${bookData[key]}` : '',
+          proposedValue: `${value}`,
         });
       }
 
-      throw error;
-    }
+      if (key === 'authorIds') {
+        return rows.push({
+          key,
+          currentValue: bookData
+            ? bookData['authors'].map((val) => val.name).join(',')
+            : '',
+          proposedValue: desiredAuthors ?? '',
+        });
+      }
+    });
+
+    return rows;
+  }, [bookData, desiredAuthors, changeNameMap, changeRequestData?.data]);
+
+  if (isChangeRequestFetched && !changeRequestData?.data) {
+    return <Navigate to={'/admin/tabs/changeRequests'} />;
+  }
+
+  if (!isChangeRequestFetched || !isBookDataFetched || isFetchingAuthors) {
+    return (
+      <AuthenticatedLayout>
+        <div className="flex w-full justify-center items-center w-100% px-8 py-4">
+          <div className="flex w-full items-start justify-center">
+            <LoadingSpinner />
+          </div>
+        </div>
+      </AuthenticatedLayout>
+    );
+  }
+
+  const onSubmit = async () => {
+    await applyBookChangeRequest({
+      bookChangeRequestId: changeRequestData?.data?.id as string,
+      accessToken: accessToken as string,
+    });
+
+    navigate({
+      to: '/admin/tabs/changeRequests',
+    });
+  };
+
+  const onDecline = async () => {
+    await deleteBookChangeRequest({
+      accessToken: accessToken as string,
+      bookChangeRequestId: changeRequestData?.data?.id as string,
+    });
 
     navigate({
       to: '/admin/tabs/changeRequests',
@@ -318,38 +230,26 @@ export const ChangeRequestView: FC = () => {
 
   return (
     <AuthenticatedLayout>
-      <div className="flex w-full justify-center items-center w-100% px-8 py-4">
+      <div className="flex w-full justify-center items-center w-100% px-4 py-4">
         <div className="flex flex-col gap-8 w-full">
-          <div className="flex justify-end gap-2">
-            <Button
-              size="xl"
-              onClick={onRejectAll}
-              variant="outline"
-            >
-              Odrzuć wszystkie
-            </Button>
-            <Button
-              size="xl"
-              onClick={onAcceptAll}
-              className="bg-green-500"
-            >
-              Zaakceptuj wszystkie
-            </Button>
-          </div>
-          <div className="flex flex-col gap-4 w-full">
+          <div className="flex items-center flex-col gap-4">
+            <ChangeRequestTable
+              columns={changeRequestColumns}
+              data={changeValues}
+            />
             <Form {...form}>
               <form
                 className="space-y-4"
                 onSubmit={form.handleSubmit(onSubmit)}
               >
-                <div className="grid grid-cols-3 w-full">
-                  <div></div>
-                  <div></div>
-                  <div>Zmiana zaakceptowana</div>
+                <div className="flex justify-center gap-2 items-center">
+                  <Button onClick={onDecline} size="lg" variant="outline">
+                    Odrzuć{' '}
+                  </Button>
+                  <Button onClick={onSubmit} size="lg">
+                    Potwierdź
+                  </Button>
                 </div>
-                {...buildDifferencesView()}
-
-                <Button size="xl">Zapisz zmiany</Button>
               </form>
             </Form>
           </div>
