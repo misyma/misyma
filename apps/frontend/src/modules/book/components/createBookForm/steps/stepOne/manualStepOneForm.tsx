@@ -28,7 +28,7 @@ import {
   CommandList,
 } from '../../../../../common/components/command/command';
 import { cn } from '../../../../../common/lib/utils';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { CommandLoading } from 'cmdk';
 import { isbnSchema } from '../../../../../common/schemas/isbnSchema';
 import {
@@ -51,6 +51,7 @@ import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';
 import { toast } from '../../../../../common/components/toast/use-toast';
 import { BookApiError } from '../../../../errors/bookApiError';
+import { LoadingSpinner } from '../../../../../common/components/spinner/loading-spinner';
 
 const stepOneSchema = z
   .object({
@@ -124,16 +125,14 @@ export const ManualStepOneForm = (): JSX.Element => {
   const bookCreation = useBookCreation<false>() as BookCreationNonIsbnState;
 
   const [submitError, setSubmitError] = useState('');
+  const [createAuthorDialogVisible, setCreateAuthorDialogVisible] = useState(false);
+  const [searchedName, setSearchedName] = useState<string | undefined>(undefined);
+  const [draftAuthorName, setDraftAuthorName] = useState(bookCreation.stepOneDetails?.authorName);
+  const [authorSelectOpen, setAuthorSelectOpen] = useState(false);
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const dispatch = useBookCreationDispatch();
-
-  const [createAuthorDialogVisible, setCreateAuthorDialogVisible] = useState(false);
-
-  const [searchedName, setSearchedName] = useState<string | undefined>(undefined);
-
-  const [draftAuthorName, setDraftAuthorName] = useState(bookCreation.stepOneDetails?.authorName);
 
   const form = useForm({
     resolver: zodResolver(stepOneSchema),
@@ -169,21 +168,17 @@ export const ManualStepOneForm = (): JSX.Element => {
     form.setValue('author', '', {
       shouldValidate: false,
     });
-
     form.setValue('authorName', payload.name, {
       shouldValidate: false,
       shouldDirty: true,
       shouldTouch: true,
     });
-
     if (form.formState.touchedFields.title) {
       form.trigger('authorName', {});
     }
 
     setCreateAuthorDialogVisible(false);
   };
-
-  const [authorSelectOpen, setAuthorSelectOpen] = useState(false);
 
   const onOpenChange = (bool: boolean) => setCreateAuthorDialogVisible(bool);
 
@@ -239,6 +234,35 @@ export const ManualStepOneForm = (): JSX.Element => {
   } = useFindAuthorsQuery({
     name: searchedName,
   });
+  const { data: currentAuthor, isFetching: isFetchingCurrentAuthor } =
+    useFindAuthorsQuery({
+      ids: bookCreation.stepOneDetails?.author
+        ? [bookCreation.stepOneDetails?.author]
+        : [],
+    });
+
+  const getAuthorName = useCallback(
+    (val: string | undefined) => {
+      if (currentAuthor) {
+        return currentAuthor.data[0].name;
+      }
+
+      const chosenAuthor = authors?.data.find(
+        (author) => author.id === val
+      )?.name;
+      if (chosenAuthor) {
+        return chosenAuthor;
+      }
+
+      if (!draftAuthorName) {
+        return 'Wyszukaj autora';
+      }
+
+      return draftAuthorName;
+    },
+    [authors?.data, currentAuthor, draftAuthorName]
+  );
+
 
   return (
     <Form {...form}>
@@ -350,11 +374,13 @@ export const ManualStepOneForm = (): JSX.Element => {
                             'w-full text-start px-3 py-2',
                           )}
                         >
-                          {field.value
-                            ? authors?.data.find((author) => author.id === field.value)?.name
-                              ? authors?.data.find((author) => author.id === field.value)?.name || 'Wyszukaj autora'
-                              : draftAuthorName || 'Wyszukaj autora'
-                            : draftAuthorName || 'Wyszukaj autora'}
+                          {!field.value && 'Wyszukaj autora'}
+                          {field.value && isFetchingCurrentAuthor && (
+                            <LoadingSpinner size={20} />
+                          )}
+                          {field.value && !isFetchingCurrentAuthor
+                            ? getAuthorName(field.value)
+                            : ''}
                         </p>
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>

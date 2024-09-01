@@ -212,8 +212,6 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
     mode: 'onTouched',
   });
 
-  console.log(stepOneForm.getValues())
-
   return (
     <Form {...stepOneForm}>
       <form

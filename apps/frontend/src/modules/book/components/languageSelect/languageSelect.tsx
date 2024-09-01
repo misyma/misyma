@@ -35,8 +35,6 @@ const LanguagesList: FC<Props> = ({ setLanguageSelectOpen }) => {
     ([key]) => !customSortOrder.find(([lang]) => key === lang)
   );
 
-  console.log(sortedLanguages);
-
   return [...customSortOrder, ...sortedLanguages].map(([key, language]) => (
     <SelectItem
       value={Language[key as keyof typeof Language]}
