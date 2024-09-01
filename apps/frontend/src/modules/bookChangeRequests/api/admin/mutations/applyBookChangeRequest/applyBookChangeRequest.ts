@@ -1,4 +1,4 @@
-import { DeleteBookChangeRequestPathParams } from '@common/contracts';
+import { ApplyBookChangeRequestPathParams } from '@common/contracts';
 import { UseMutationOptions } from '@tanstack/react-query';
 import { ApiError } from '../../../../../common/errors/apiError';
 import { HttpService } from '../../../../../core/services/httpService/httpService';
@@ -6,20 +6,20 @@ import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMa
 import { BookApiError } from '../../../../../book/errors/bookApiError';
 import { useErrorHandledMutation } from '../../../../../common/hooks/useErrorHandledMutation';
 
-interface Payload extends DeleteBookChangeRequestPathParams {
+interface Payload extends ApplyBookChangeRequestPathParams {
 	accessToken: string | undefined;
 }
 
-export const useDeleteBookChangeRequestMutation = (
+export const useApplyBookChangeRequestMutation = (
 	options: UseMutationOptions<void, ApiError, Payload>
 ) => {
 	const mapper = new ErrorCodeMessageMapper({
-		403: `Brak pozwolenia na usunięcie prośby zmiany.`,
+		403: `Brak pozwolenia na zaaplikowanie prośby zmiany.`,
 	});
 
-	const deleteBook = async (payload: Payload) => {
-		const response = await HttpService.delete({
-			url: `/admin/book-change-requests/${payload.bookChangeRequestId}`,
+	const applyBookChangeRequest = async (payload: Payload) => {
+		const response = await HttpService.post({
+			url: `/admin/book-change-requests/${payload.bookChangeRequestId}/apply`,
 			body: payload as unknown as Record<string, unknown>,
 			headers: {
 				Authorization: `Bearer ${payload.accessToken}`,
@@ -38,7 +38,7 @@ export const useDeleteBookChangeRequestMutation = (
 	};
 
 	return useErrorHandledMutation({
-		mutationFn: deleteBook,
+		mutationFn: applyBookChangeRequest,
 		...options,
 	});
 };

@@ -9,7 +9,14 @@ import {
 import { Writeable, z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/form/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../../../common/components/form/form';
 import { Input } from '../../../common/components/input/input';
 import { Button } from '../../../common/components/button/button';
 import { useSelector } from 'react-redux';
@@ -55,7 +62,14 @@ interface FormProps {
   onMutated: () => void | Promise<void>;
 }
 
-const UpdateAuthorForm: FC<FormProps> = ({ authorId, setError, setIsOpen, authorName, isApproved, onMutated }) => {
+const UpdateAuthorForm: FC<FormProps> = ({
+  authorId,
+  setError,
+  setIsOpen,
+  authorName,
+  isApproved,
+  onMutated,
+}) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const queryClient = useQueryClient();
@@ -99,7 +113,8 @@ const UpdateAuthorForm: FC<FormProps> = ({ authorId, setError, setIsOpen, author
       await onMutated();
 
       await queryClient.invalidateQueries({
-        predicate: (query) => query.queryKey[0] === AuthorsApiQueryKeys.findAuthorsQuery,
+        predicate: (query) =>
+          query.queryKey[0] === AuthorsApiQueryKeys.findAuthorsQuery,
       });
     } catch (error) {
       if (error instanceof ApiError) {
@@ -124,12 +139,7 @@ const UpdateAuthorForm: FC<FormProps> = ({ authorId, setError, setIsOpen, author
             <FormItem>
               <FormLabel>Imię</FormLabel>
               <FormControl>
-                <Input
-                  min={1}
-                  max={128}
-                  type="text"
-                  {...field}
-                />
+                <Input min={1} max={128} type="text" {...field} />
               </FormControl>
               <FormMessage></FormMessage>
             </FormItem>
@@ -151,10 +161,7 @@ const UpdateAuthorForm: FC<FormProps> = ({ authorId, setError, setIsOpen, author
             </FormItem>
           )}
         />
-        <Button
-          disabled={!form.formState.isValid}
-          type="submit"
-        >
+        <Button disabled={!form.formState.isValid} type="submit">
           Stwórz
         </Button>
       </form>
@@ -162,7 +169,13 @@ const UpdateAuthorForm: FC<FormProps> = ({ authorId, setError, setIsOpen, author
   );
 };
 
-export const UpdateAuthorModal: FC<Props> = ({ trigger, authorId, authorName, isApproved, onMutated }: Props) => {
+export const UpdateAuthorModal: FC<Props> = ({
+  trigger,
+  authorId,
+  authorName,
+  isApproved,
+  onMutated,
+}: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const [error, setError] = useState('');
@@ -176,7 +189,9 @@ export const UpdateAuthorModal: FC<Props> = ({ trigger, authorId, authorName, is
         setError('');
       }}
     >
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      <DialogTrigger asChild>
+        <div className="cursor-pointer">{trigger}</div>
+      </DialogTrigger>
       <DialogContent
         style={{
           borderRadius: '40px',
