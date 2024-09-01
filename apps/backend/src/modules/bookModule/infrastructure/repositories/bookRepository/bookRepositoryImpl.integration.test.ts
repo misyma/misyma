@@ -709,6 +709,120 @@ describe('BookRepositoryImpl', () => {
     });
   });
 
+  describe('count', () => {
+    it('counts books', async () => {
+      const author = await authorTestUtils.createAndPersist();
+
+      await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+        },
+      });
+
+      await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+        },
+      });
+
+      const count = await bookRepository.countBooks({});
+
+      expect(count).toEqual(2);
+    });
+
+    it('counts approved books', async () => {
+      const author = await authorTestUtils.createAndPersist();
+
+      await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+          book: { isApproved: true },
+        },
+      });
+
+      await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+          book: { isApproved: true },
+        },
+      });
+
+      await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+          book: { isApproved: false },
+        },
+      });
+
+      const count = await bookRepository.countBooks({ isApproved: true });
+
+      expect(count).toEqual(2);
+    });
+
+    it('counts books by author ids', async () => {
+      const author1 = await authorTestUtils.createAndPersist();
+
+      const author2 = await authorTestUtils.createAndPersist();
+
+      await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author1.id],
+        },
+      });
+
+      await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author2.id],
+        },
+      });
+
+      await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author2.id],
+        },
+      });
+
+      const count = await bookRepository.countBooks({ authorIds: [author1.id] });
+
+      expect(count).toEqual(1);
+    });
+
+    it('counts books by language', async () => {
+      const author = await authorTestUtils.createAndPersist();
+
+      await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+          book: {
+            language: Language.Polish,
+          },
+        },
+      });
+
+      await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+          book: {
+            language: Language.English,
+          },
+        },
+      });
+
+      await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+          book: {
+            language: Language.German,
+          },
+        },
+      });
+
+      const count = await bookRepository.countBooks({ language: Language.Polish });
+
+      expect(count).toEqual(1);
+    });
+  });
+
   describe('delete', () => {
     it('deletes book', async () => {
       const author = await authorTestUtils.createAndPersist();

@@ -22,6 +22,16 @@ export interface FindBooksPayload {
   readonly pageSize: number;
 }
 
+export interface CountBooksPayload {
+  readonly isbn?: string;
+  readonly isApproved?: boolean;
+  readonly title?: string;
+  readonly authorIds?: string[];
+  readonly language?: Language;
+  readonly releaseYearBefore?: number;
+  readonly releaseYearAfter?: number;
+}
+
 export interface DeleteBookPayload {
   readonly id: string;
 }
@@ -30,6 +40,6 @@ export interface BookRepository {
   saveBook(payload: SaveBookPayload): Promise<Book>;
   findBook(payload: FindBookPayload): Promise<Book | null>;
   findBooks(payload: FindBooksPayload): Promise<Book[]>;
-  countBooks(payload: FindBooksPayload): Promise<number>;
+  countBooks(payload: CountBooksPayload): Promise<number>;
   deleteBook(payload: DeleteBookPayload): Promise<void>;
 }
