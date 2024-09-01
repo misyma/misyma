@@ -1,6 +1,9 @@
 import { ControllerRenderProps } from 'react-hook-form';
 import { FC, memo, useState } from 'react';
-import { Languages } from '../../../common/constants/languages';
+import {
+  Languages,
+  LanguagesValues,
+} from '../../../common/constants/languages';
 import {
   Select,
   SelectContent,
@@ -17,12 +20,26 @@ interface Props {
 }
 
 const LanguagesList: FC<Props> = ({ setLanguageSelectOpen }) => {
-  return Object.entries(Languages).map(([key, language]) => (
+  const customSortOrder: Array<[string, string]> = [
+    [LanguagesValues.Polski, Languages.Polish],
+    [LanguagesValues.Angielski, Languages.English],
+    [LanguagesValues.Hiszpański, Languages.Spanish],
+    [LanguagesValues.Niemiecki, Languages.German],
+    [LanguagesValues.Włoski, Languages.Italian],
+    [LanguagesValues.Duński, Languages.Dutch],
+    [LanguagesValues.Szwedzki, Languages.Swedish],
+    [LanguagesValues.Rosyjski, Languages.Russian],
+  ];
+
+  const sortedLanguages = Object.entries(Languages).filter(
+    ([key]) => !customSortOrder.find(([lang]) => key === lang)
+  );
+
+  console.log(sortedLanguages);
+
+  return [...customSortOrder, ...sortedLanguages].map(([key, language]) => (
     <SelectItem
-      // todo: potentially fix :)
-      // eslint-disable-next-line
-      // @ts-ignore
-      value={Language[key]}
+      value={Language[key as keyof typeof Language]}
       onKeyDown={(event) => {
         if (event.key === 'Enter') {
           setLanguageSelectOpen(false);
