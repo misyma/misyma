@@ -1,5 +1,10 @@
 import { FC, useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTrigger } from '../../../common/components/dialog/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTrigger,
+} from '../../../common/components/dialog/dialog';
 import { HiTrash } from 'react-icons/hi';
 import { cn } from '../../../common/lib/utils';
 import { useQueryClient } from '@tanstack/react-query';
@@ -17,7 +22,11 @@ interface Props {
   className?: string;
 }
 
-export const DeleteAuthorModal: FC<Props> = ({ authorId, authorName, className }: Props) => {
+export const DeleteAuthorModal: FC<Props> = ({
+  authorId,
+  authorName,
+  className,
+}: Props) => {
   const queryClient = useQueryClient();
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
@@ -40,7 +49,8 @@ export const DeleteAuthorModal: FC<Props> = ({ authorId, authorName, className }
       setIsOpen(false);
 
       await queryClient.invalidateQueries({
-        predicate: (query) => query.queryKey[0] === AuthorsApiQueryKeys.findAuthorsQuery,
+        predicate: (query) =>
+          query.queryKey[0] === AuthorsApiQueryKeys.findAuthorsQuery,
       });
 
       toast({
@@ -70,7 +80,11 @@ export const DeleteAuthorModal: FC<Props> = ({ authorId, authorName, className }
       }}
     >
       <DialogTrigger asChild>
-        <HiTrash className={cn('text-primary h-8 w-8 cursor-pointer', className)} />
+        <div className="cursor-pointer">
+          <HiTrash
+            className={cn('text-primary h-8 w-8 cursor-pointer', className)}
+          />
+        </div>
       </DialogTrigger>
       <DialogContent
         style={{
@@ -80,23 +94,21 @@ export const DeleteAuthorModal: FC<Props> = ({ authorId, authorName, className }
         omitCloseButton={true}
       >
         <div className="flex flex-col items-center gap-8">
-          <DialogHeader className="font-bold">Usunięcia autora jest nieodwracalne!</DialogHeader>
+          <DialogHeader className="font-bold">
+            Usunięcia autora jest nieodwracalne!
+          </DialogHeader>
           <div>Czy jesteś tego pewien?</div>
           <div className="flex w-full pt-4 gap-4 justify-center">
-            <Button
-              className="w-40"
-              onClick={() => setIsOpen(false)}
-            >
+            <Button className="w-40" onClick={() => setIsOpen(false)}>
               Nie
             </Button>
-            <Button
-              className="w-40"
-              onClick={onDelete}
-            >
+            <Button className="w-40" onClick={onDelete}>
               Tak
             </Button>
           </div>
-          {error && <p className="text-sm font-medium text-destructive">error</p>}
+          {error && (
+            <p className="text-sm font-medium text-destructive">error</p>
+          )}
         </div>
       </DialogContent>
     </Dialog>

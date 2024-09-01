@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import { useStoreSelector } from '../../store/hooks/useStoreSelector.js';
 import { Navigate } from '@tanstack/react-router';
-import { userStateActions, userStateSelectors } from '../../store/states/userState/userStateSlice.js';
+import {
+  userStateActions,
+  userStateSelectors,
+} from '../../store/states/userState/userStateSlice.js';
 import { UserRole } from '@common/contracts';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery.js';
 import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner.js';
@@ -11,7 +14,9 @@ interface RequireAuthComponentProps {
   children: React.ReactNode;
 }
 
-export function RequireAdmin({ children }: RequireAuthComponentProps): React.ReactNode {
+export function RequireAdmin({
+  children,
+}: RequireAuthComponentProps): React.ReactNode {
   const accessToken = useStoreSelector(userStateSelectors.selectAccessToken);
 
   const refreshToken = useStoreSelector(userStateSelectors.selectRefreshToken);
@@ -22,15 +27,23 @@ export function RequireAdmin({ children }: RequireAuthComponentProps): React.Rea
 
   const res = useFindUserQuery();
 
-  if (res.isFetched && res.data) {
-    dispatch(
-      userStateActions.setCurrentUser({
-        user: res.data,
-      }),
-    );
-  }
+  useLayoutEffect(() => {
+    if (res.isFetched && res.data) {
+      dispatch(
+        userStateActions.setCurrentUser({
+          user: res.data,
+        })
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [res]);
 
-  if (accessToken && refreshToken && user.currentUser !== null && user.currentUser?.role === UserRole.admin) {
+  if (
+    accessToken &&
+    refreshToken &&
+    user.currentUser !== null &&
+    user.currentUser?.role === UserRole.admin
+  ) {
     return <>{children}</>;
   }
 
