@@ -289,22 +289,45 @@ export class BookRepositoryImpl implements BookRepository {
   }
 
   public async countBooks(payload: FindBooksPayload): Promise<number> {
-    const { isbn, isApproved, title } = payload;
+    const { isbn, isApproved, title, authorIds, language, releaseYearAfter, releaseYearBefore } = payload;
 
     try {
-      const query = this.databaseClient<BookRawEntity>(bookTable);
+      const query = this.databaseClient<BookRawEntity>(bookTable)
+        .leftJoin(bookAuthorTable, (join) => {
+          join.on(`${bookAuthorTable}.bookId`, '=', `${bookTable}.id`);
+        })
+        .leftJoin(authorTable, (join) => {
+          join.on(`${authorTable}.id`, '=', `${bookAuthorTable}.authorId`);
+        })
+        .where((builder) => {
+          if (isbn) {
+            builder.where({ isbn });
+          }
 
-      if (isbn) {
-        query.where({ isbn });
-      }
+          if (isApproved !== undefined) {
+            builder.where(`${bookTable}.isApproved`, isApproved);
+          }
 
-      if (title) {
-        query.whereRaw('LOWER(title) LIKE LOWER(?)', `%${title}%`);
-      }
+          if (language) {
+            builder.where(`${bookTable}.language`, language);
+          }
 
-      if (isApproved !== undefined) {
-        query.where({ isApproved });
-      }
+          if (releaseYearBefore) {
+            builder.where(`${bookTable}.releaseYear`, '<=', releaseYearBefore);
+          }
+
+          if (releaseYearAfter) {
+            builder.where(`${bookTable}.releaseYear`, '>=', releaseYearAfter);
+          }
+
+          if (title) {
+            builder.whereRaw('LOWER(title) LIKE LOWER(?)', `%${title}%`);
+          }
+
+          if (authorIds) {
+            builder.whereIn(`${authorTable}.id`, authorIds);
+          }
+        });
 
       const countResult = await query.count().first();
 
