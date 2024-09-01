@@ -38,6 +38,7 @@ import {
   TooltipTrigger,
 } from '../../../../modules/common/components/tooltip/tooltip.js';
 import { Button } from '../../../../modules/common/components/button/button.js';
+import { BookImageMiniature } from '../../../../modules/book/components/bookImageMiniature/bookImageMiniature.js';
 
 export const BasicDataPage: FC = () => {
   const { data: userData } = useFindUserQuery();
@@ -54,17 +55,20 @@ export const BasicDataPage: FC = () => {
 
   const breadcrumbKeys = useBreadcrumbKeysContext();
 
-  const [createBookBorrowingModalOpen, setCreateBookBorrowingModalOpen] = useState(false);
+  const [createBookBorrowingModalOpen, setCreateBookBorrowingModalOpen] =
+    useState(false);
 
   const { data, isFetched, isFetching, isRefetching } = useQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
       userId: userData?.id ?? '',
       accessToken: accessToken as string,
-    }),
+    })
   );
 
-  const { data: bookshelfResponse } = useFindBookshelfByIdQuery(data?.bookshelfId as string);
+  const { data: bookshelfResponse } = useFindBookshelfByIdQuery(
+    data?.bookshelfId as string
+  );
 
   if (data?.book.title && !breadcrumbKeys['$bookName']) {
     dispatch({
@@ -92,7 +96,10 @@ export const BasicDataPage: FC = () => {
     });
   }
 
-  if (bookshelfResponse?.id && breadcrumbKeys['$bookshelfName'] !== bookshelfResponse.name) {
+  if (
+    bookshelfResponse?.id &&
+    breadcrumbKeys['$bookshelfName'] !== bookshelfResponse.name
+  ) {
     dispatch({
       key: '$bookshelfName',
       value: bookshelfResponse.name,
@@ -104,9 +111,10 @@ export const BasicDataPage: FC = () => {
     });
   }
 
-  const isBorrowingBookshelf = useMemo(() => bookshelfResponse?.name === 'Wypożyczalnia', [bookshelfResponse?.name]);
-
-  const imageUrl = useMemo(() => data?.imageUrl, [data?.imageUrl]);
+  const isBorrowingBookshelf = useMemo(
+    () => bookshelfResponse?.name === 'Wypożyczalnia',
+    [bookshelfResponse?.name]
+  );
 
   return (
     <AuthenticatedLayout>
@@ -116,7 +124,9 @@ export const BasicDataPage: FC = () => {
           <div className="col-span-2 sm:col-start-1 sm:col-span-5 flex justify-between">
             {/* sm:visible otherwise dropdown component visible */}
             <ul className="flex justify-between gap-8 text-sm sm:text-lg font-semibold">
-              <li className={cn('cursor-default text-primary font-bold')}>Dane podstawowe</li>
+              <li className={cn('cursor-default text-primary font-bold')}>
+                Dane podstawowe
+              </li>
               <li
                 className={cn('cursor-pointer')}
                 onClick={() =>
@@ -154,7 +164,7 @@ export const BasicDataPage: FC = () => {
                       <HiArrowsRightLeft
                         className={cn(
                           'cursor-pointer text-primary h-8 w-8',
-                          isBorrowingBookshelf ? 'text-disabled' : '',
+                          isBorrowingBookshelf ? 'text-disabled' : ''
                         )}
                         onClick={() => {
                           setCreateBookBorrowingModalOpen(true);
@@ -174,17 +184,22 @@ export const BasicDataPage: FC = () => {
                   onMutated={async () => {
                     queryClient.invalidateQueries({
                       predicate: (query) =>
-                        query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId &&
+                        query.queryKey[0] ===
+                          BookApiQueryKeys.findBooksByBookshelfId &&
                         query.queryKey[1] === bookshelfResponse?.id,
                     });
 
                     queryClient.invalidateQueries({
                       predicate: (query) =>
-                        query.queryKey[0] === BookApiQueryKeys.findUserBookById && query.queryKey[1] === bookId,
+                        query.queryKey[0] ===
+                          BookApiQueryKeys.findUserBookById &&
+                        query.queryKey[1] === bookId,
                     });
 
                     queryClient.invalidateQueries({
-                      predicate: (query) => query.queryKey[0] === BookshelvesApiQueryKeys.findUserBookshelfs,
+                      predicate: (query) =>
+                        query.queryKey[0] ===
+                        BookshelvesApiQueryKeys.findUserBookshelfs,
                     });
 
                     setCreateBookBorrowingModalOpen(false);
@@ -203,14 +218,15 @@ export const BasicDataPage: FC = () => {
             </div>
           </div>
           <div className="flex flex-col sm:flex-row col-start-1 col-span-2 sm:col-span-5 gap-6 w-full">
-            {isFetching && !isRefetching && <BasicDataTabSkeleton bookId={bookId} />}
+            {isFetching && !isRefetching && (
+              <BasicDataTabSkeleton bookId={bookId} />
+            )}
             {isFetched && (!isRefetching || (isFetching && isRefetching)) && (
               <>
                 <div>
-                  <img
-                    key={`${imageUrl}`}
-                    src={imageUrl || '/book.jpg'}
+                  <BookImageMiniature
                     className="object-cover max-w-80"
+                    userBook={data}
                   />
                 </div>
                 <div className="flex justify-center">
@@ -218,20 +234,42 @@ export const BasicDataPage: FC = () => {
                 </div>
                 <div className="flex flex-col gap-4 w-3/4">
                   <div className="flex justify-between">
-                    <p className="font-semibold text-3xl w-1/2 block truncate">{data?.book.title}</p>
-                  <CurrentRatingStar userBookId={bookId} />
+                    <p className="font-semibold text-3xl w-1/2 block truncate">
+                      {data?.book.title}
+                    </p>
+                    <CurrentRatingStar userBookId={bookId} />
                   </div>
                   <Separator className="h-[1px] bg-primary"></Separator>
                   <div className="flex w-full justify-between">
                     <div className="flex flex-col gap-2">
-                      <p className="text-lg pb-6">{data?.book.authors[0]?.name}</p>
+                      <p className="text-lg pb-6">
+                        {data?.book.authors[0]?.name}
+                      </p>
                       {data?.book.isbn && <p>ISBN: {data?.book.isbn}</p>}
-                      {data?.book.releaseYear && <p>Rok wydania: {data?.book.releaseYear}</p>}
-                      <p>Język: {data?.book.language ? ReversedLanguages[data?.book.language]?.toLowerCase() : ''}</p>
-                      {data?.book.translator && <p>Tłumacz: {data?.book.translator}</p>}
-                      <p>Format: {data?.book.format ? BookFormat[data?.book.format] : ''}</p>
-                      {data?.book.pages && <p>Liczba stron: {data?.book.pages}</p>}
-                      {data?.genres[0]?.name && <p>Kategoria: {data?.genres[0]?.name}</p>}
+                      {data?.book.releaseYear && (
+                        <p>Rok wydania: {data?.book.releaseYear}</p>
+                      )}
+                      <p>
+                        Język:{' '}
+                        {data?.book.language
+                          ? ReversedLanguages[
+                              data?.book.language
+                            ]?.toLowerCase()
+                          : ''}
+                      </p>
+                      {data?.book.translator && (
+                        <p>Tłumacz: {data?.book.translator}</p>
+                      )}
+                      <p>
+                        Format:{' '}
+                        {data?.book.format ? BookFormat[data?.book.format] : ''}
+                      </p>
+                      {data?.book.pages && (
+                        <p>Liczba stron: {data?.book.pages}</p>
+                      )}
+                      {data?.genres[0]?.name && (
+                        <p>Kategoria: {data?.genres[0]?.name}</p>
+                      )}
                     </div>
                     <div className="flex gap-12 flex-col items-end justify-start">
                       <BookshelfChoiceDropdown

@@ -13,7 +13,12 @@ import {
 } from '@tanstack/react-table';
 import { useMemo, useState } from 'react';
 
-import { Table, TableBody, TableCell, TableRow } from '../../../common/components/table/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+} from '../../../common/components/table/table';
 import { Paginator } from '../../../common/components/paginator/paginator';
 import { BookReading } from '@common/contracts';
 
@@ -88,7 +93,12 @@ export function BookReadingsTable<TValue>({
                   data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
                   ))}
                 </TableRow>
               ))
@@ -106,10 +116,11 @@ export function BookReadingsTable<TValue>({
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4 mr-4">
-      {table.getPageCount() > 1 && (
+        {table.getPageCount() > 1 && (
           <Paginator
             onPageChange={onSetPage}
             pageIndex={pageIndex}
+            perPage={pageSize}
             pagesCount={pageCount}
             includeArrows={true}
             itemsCount={itemsCount}

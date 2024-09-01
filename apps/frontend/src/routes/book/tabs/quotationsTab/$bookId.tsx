@@ -24,6 +24,7 @@ import {
 import { CreateQuotationModal } from '../../../../modules/quotes/components/createQuotationModal/createQuotationModal';
 import { QuotationsTable } from '../../../../modules/quotes/components/quotationsTable/quotationsTable';
 import { columns } from '../../../../modules/quotes/components/quotationsTable/quotationsTableColumns';
+import { BookImageMiniature } from '../../../../modules/book/components/bookImageMiniature/bookImageMiniature';
 
 export const QuotesPage: FC = () => {
   const { data: userData } = useFindUserQuery();
@@ -35,11 +36,9 @@ export const QuotesPage: FC = () => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const [page, setPage] = useState(1);
-
   const [pageSize] = useState(4);
 
   const dispatch = useBreadcrumbKeysDispatch();
-
   const breadcrumbKeys = useBreadcrumbKeysContext();
 
   const {
@@ -52,10 +51,12 @@ export const QuotesPage: FC = () => {
       userBookId: bookId,
       userId: userData?.id ?? '',
       accessToken: accessToken as string,
-    }),
+    })
   );
 
-  const { data: bookshelfResponse } = useFindBookshelfByIdQuery(userBookData?.bookshelfId as string);
+  const { data: bookshelfResponse } = useFindBookshelfByIdQuery(
+    userBookData?.bookshelfId as string
+  );
 
   if (userBookData?.book.title && !breadcrumbKeys['$bookName']) {
     dispatch({
@@ -94,7 +95,7 @@ export const QuotesPage: FC = () => {
       userBookId: bookId,
       page,
       pageSize,
-    }),
+    })
   );
 
   const pageCount = useMemo(() => {
@@ -141,7 +142,9 @@ export const QuotesPage: FC = () => {
               >
                 Dane podstawowe
               </li>
-              <li className={cn('cursor-default text-primary font-bold')}>Cytaty</li>
+              <li className={cn('cursor-default text-primary font-bold')}>
+                Cytaty
+              </li>
               <li
                 className={cn('cursor-pointer')}
                 onClick={() =>
@@ -160,39 +163,48 @@ export const QuotesPage: FC = () => {
             />
           </div>
           <div className="flex flex-col sm:flex-row col-start-1 col-span-2 sm:col-span-5 gap-6 w-full">
-            {isUserBookFetching && !isUserBookRefetching && <BasicDataTabSkeleton bookId={bookId} />}
-            {isUserBookFetched && (!isUserBookRefetching || (isUserBookFetching && isUserBookRefetching)) && (
-              <>
-                <div>
-                  <img
-                    src={userBookData?.imageUrl || '/book.jpg'}
-                    className="object-cover max-w-80"
-                  />
-                </div>
-                <div className="flex justify-center">
-                  <FavoriteBookButton userBook={userBookData as UserBook} />
-                </div>
-                <div className="flex flex-col gap-4 w-3/4">
-                  <div className="flex justify-between w-full">
-                    <p className="font-semibold text-3xl w-1/2 block truncate">{userBookData?.book.title}</p>
-                    <CurrentRatingStar userBookId={bookId} />
-                  </div>
-                  <Separator className="h-[1px] bg-primary"></Separator>
-                  <div className="flex flex-col w-full">
-                    <p className="text-lg pb-6"> {userBookData?.book?.authors[0]?.name ?? ''} </p>
-                    <QuotationsTable
-                      columns={columns}
-                      data={[...data]}
-                      onSetPage={onSetPage}
-                      pageCount={pageCount}
-                      pageIndex={page}
-                      pageSize={pageSize}
-                      itemsCount={quotationsData?.metadata.total}
-                    ></QuotationsTable>
-                  </div>
-                </div>
-              </>
+            {isUserBookFetching && !isUserBookRefetching && (
+              <BasicDataTabSkeleton bookId={bookId} />
             )}
+            {isUserBookFetched &&
+              (!isUserBookRefetching ||
+                (isUserBookFetching && isUserBookRefetching)) && (
+                <>
+                  <div>
+                    <BookImageMiniature
+                      className="object-cover max-w-80"
+                      userBook={userBookData}
+                    />
+                  </div>
+                  <div className="flex justify-center">
+                    <FavoriteBookButton userBook={userBookData as UserBook} />
+                  </div>
+                  <div className="flex flex-col gap-4 w-3/4">
+                    <div className="flex justify-between w-full">
+                      <p className="font-semibold text-3xl w-1/2 block truncate">
+                        {userBookData?.book.title}
+                      </p>
+                      <CurrentRatingStar userBookId={bookId} />
+                    </div>
+                    <Separator className="h-[1px] bg-primary"></Separator>
+                    <div className="flex flex-col w-full">
+                      <p className="text-lg pb-6">
+                        {' '}
+                        {userBookData?.book?.authors[0]?.name ?? ''}{' '}
+                      </p>
+                      <QuotationsTable
+                        columns={columns}
+                        data={[...data]}
+                        onSetPage={onSetPage}
+                        pageCount={pageCount}
+                        pageIndex={page}
+                        pageSize={pageSize}
+                        itemsCount={quotationsData?.metadata.total}
+                      ></QuotationsTable>
+                    </div>
+                  </div>
+                </>
+              )}
           </div>{' '}
         </div>
       </div>
