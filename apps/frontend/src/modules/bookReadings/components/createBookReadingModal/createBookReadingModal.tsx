@@ -17,6 +17,7 @@ import { BookReadingsApiQueryKeys } from '../../api/queries/bookReadingsApiQuery
 import { pl } from 'date-fns/locale';
 import { RadioGroup, RadioGroupItem } from '../../../common/components/radioGroup/radio-group';
 import { HiStar } from 'react-icons/hi';
+import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
 
 interface Props {
   bookId: string;
@@ -72,7 +73,7 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
     },
   });
 
-  const { mutateAsync } = useAddBookReadingMutation({});
+  const { mutateAsync, isPending } = useAddBookReadingMutation({});
 
   const onCreateBookReading = async (values: z.infer<typeof createBookReadingSchema>) => {
     try {
@@ -287,10 +288,15 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
           </Button>
           <Button
             type="submit"
-            disabled={!form.formState.isValid}
+            disabled={!form.formState.isValid || isPending}
             className="bg-primary w-32 sm:w-40"
           >
-            Potwierdź
+            {
+              isPending && <LoadingSpinner size={20} />
+            }
+            {
+              !isPending && <p>{'Potwierdź'}</p>
+            }
           </Button>
         </div>
       </form>
@@ -300,7 +306,6 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
 
 export const CreateBookReadingModal: FC<Props> = ({ bookId, rating, trigger, onMutated }: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-
   const [error, setError] = useState('');
 
   return (

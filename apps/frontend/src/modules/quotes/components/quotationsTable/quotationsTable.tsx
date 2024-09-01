@@ -13,7 +13,12 @@ import {
 } from '@tanstack/react-table';
 import { useMemo, useState } from 'react';
 
-import { Table, TableBody, TableCell, TableRow } from '../../../common/components/table/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+} from '../../../common/components/table/table';
 import { Paginator } from '../../../common/components/paginator/paginator';
 import { Quote } from '@common/contracts';
 
@@ -34,7 +39,7 @@ export function QuotationsTable<TValue>({
   pageSize,
   pageCount,
   onSetPage,
-  itemsCount
+  itemsCount,
 }: DataTableProps<Quote, TValue>): JSX.Element {
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -88,7 +93,12 @@ export function QuotationsTable<TValue>({
                   data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
                   ))}
                 </TableRow>
               ))
@@ -110,6 +120,7 @@ export function QuotationsTable<TValue>({
           <Paginator
             onPageChange={onSetPage}
             pageIndex={pageIndex}
+            perPage={pageSize}
             pagesCount={pageCount}
             includeArrows={true}
             itemsCount={itemsCount}
