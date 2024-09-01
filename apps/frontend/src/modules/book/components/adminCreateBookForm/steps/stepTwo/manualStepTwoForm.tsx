@@ -176,8 +176,6 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
     onSubmitCb();
   };
 
-  console.log(form.getValues());
-
   return (
     <Form {...form}>
       {/* eslint-disable-next-line @typescript-eslint/no-explicit-any*/}
