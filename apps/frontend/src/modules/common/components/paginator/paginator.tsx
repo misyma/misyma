@@ -11,6 +11,7 @@ import {
 export interface PaginatorProps {
   pagesCount: number;
   pageIndex: number;
+  perPage?: number;
   itemsCount?: number;
   onPageChange: (currentPage: number) => void | Promise<void>;
   includePageNumber?: boolean;
@@ -93,10 +94,18 @@ const V1Paginator: FC<PaginatorProps> = ({
         ) : includePageNumber ? (
           <>
             <PaginationItem
-              className={previousPage === undefined ? 'pointer-events-none hover:text-none hover:bg-none' : ''}
+              className={
+                previousPage === undefined
+                  ? 'pointer-events-none hover:text-none hover:bg-none'
+                  : ''
+              }
             >
               <PaginationLink
-                className={previousPage === undefined ? 'pointer-events-none hover:text-none hover:bg-[unset]' : ''}
+                className={
+                  previousPage === undefined
+                    ? 'pointer-events-none hover:text-none hover:bg-[unset]'
+                    : ''
+                }
                 onClick={async () => {
                   if (previousPage === undefined) {
                     return;
@@ -128,7 +137,9 @@ const V1Paginator: FC<PaginatorProps> = ({
                 }}
                 isActive={previousPage === undefined}
               >
-                {previousPage !== undefined && currentPage === pagesCount && pagesCount > 2
+                {previousPage !== undefined &&
+                currentPage === pagesCount &&
+                pagesCount > 2
                   ? currentPage - 2
                   : previousPage !== undefined
                     ? previousPage
@@ -138,7 +149,8 @@ const V1Paginator: FC<PaginatorProps> = ({
             <PaginationItem>
               <PaginationLink
                 isActive={
-                  (currentPage !== 1 && currentPage !== pagesCount) || (pagesCount === 2 && currentPage === pagesCount)
+                  (currentPage !== 1 && currentPage !== pagesCount) ||
+                  (pagesCount === 2 && currentPage === pagesCount)
                 }
                 onClick={async () => {
                   if (currentPage === 1) {
@@ -162,8 +174,17 @@ const V1Paginator: FC<PaginatorProps> = ({
             {pagesCount > 2 ? (
               <PaginationItem>
                 <PaginationLink
-                  isActive={nextPage === undefined && currentPage !== 1 && currentPage === pagesCount && pagesCount > 2}
-                  className={nextPage === undefined ? 'pointer-events-none hover:text-none hover:bg-none' : ''}
+                  isActive={
+                    nextPage === undefined &&
+                    currentPage !== 1 &&
+                    currentPage === pagesCount &&
+                    pagesCount > 2
+                  }
+                  className={
+                    nextPage === undefined
+                      ? 'pointer-events-none hover:text-none hover:bg-none'
+                      : ''
+                  }
                   onClick={async () => {
                     if (nextPage) {
                       onPageChange(nextPage);
@@ -182,10 +203,20 @@ const V1Paginator: FC<PaginatorProps> = ({
           <></>
         )}
         {includeArrows ? (
-          <PaginationItem className={nextPage === undefined ? 'pointer-events-none hover:text-none hover:bg-none' : ''}>
+          <PaginationItem
+            className={
+              nextPage === undefined
+                ? 'pointer-events-none hover:text-none hover:bg-none'
+                : ''
+            }
+          >
             <PaginationNext
               hasNext={currentPage !== pagesCount}
-              className={nextPage === undefined ? 'pointer-events-none hover:text-none hover:bg-[unset]' : ''}
+              className={
+                nextPage === undefined
+                  ? 'pointer-events-none hover:text-none hover:bg-[unset]'
+                  : ''
+              }
               onClick={goToNextPage}
             />
           </PaginationItem>
@@ -201,6 +232,7 @@ const V2Paginator: FC<PaginatorProps> = ({
   onPageChange,
   pageIndex,
   pagesCount,
+  perPage = 10,
   itemsCount,
   contentClassName,
   includeArrows = true,
@@ -250,6 +282,15 @@ const V2Paginator: FC<PaginatorProps> = ({
     }
   };
 
+  const fromItemNum = useMemo(() => {
+    return (pageIndex - 1) * perPage > 0 ? (pageIndex - 1) * perPage + 1 : 1;
+  }, [pageIndex, perPage]);
+
+  const toItemNum = useMemo(
+    () => (pageIndex * perPage > (itemsCount ?? 0) ? itemsCount : pageIndex * perPage),
+    [pageIndex, perPage, itemsCount]
+  );
+
   return (
     <Pagination className={rootClassName}>
       <PaginationContent className={contentClassName}>
@@ -264,15 +305,25 @@ const V2Paginator: FC<PaginatorProps> = ({
           <></>
         )}
         {
-          <p className='font-semibold'>
-           {((pageIndex - 1) * 10) > 0 ? (pageIndex - 1) * 10 + 1 : 1}-{pageIndex * 10} z {itemsCount}
+          <p className="font-semibold">
+            {fromItemNum}-{toItemNum} z {itemsCount}
           </p>
         }
         {includeArrows ? (
-          <PaginationItem className={nextPage === undefined ? 'pointer-events-none hover:text-none hover:bg-none' : ''}>
+          <PaginationItem
+            className={
+              nextPage === undefined
+                ? 'pointer-events-none hover:text-none hover:bg-none'
+                : ''
+            }
+          >
             <PaginationNext
               hasNext={currentPage !== pagesCount}
-              className={nextPage === undefined ? 'pointer-events-none hover:text-none hover:bg-[unset]' : ''}
+              className={
+                nextPage === undefined
+                  ? 'pointer-events-none hover:text-none hover:bg-[unset]'
+                  : ''
+              }
               onClick={goToNextPage}
             />
           </PaginationItem>
@@ -289,5 +340,5 @@ export const Paginator = (props: PaginatorProps): React.ReactNode => {
     return <V1Paginator {...props} />;
   }
 
-  return <V2Paginator {...props}/>;
+  return <V2Paginator {...props} />;
 };

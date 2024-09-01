@@ -29,7 +29,6 @@ export const AdminCreateBookForm: FC<Props> = (props) => {
       const Component = steps[bookCreation.step as 1 | 2];
       return <Component {...props} />;
     } else {
-      console.log("XDDD")
       return null;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

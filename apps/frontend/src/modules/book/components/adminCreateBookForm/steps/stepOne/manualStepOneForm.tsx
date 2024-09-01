@@ -248,7 +248,6 @@ export const ManualStepOneForm = (): JSX.Element => {
   } = useFindAuthorsQuery({
     name: searchedName,
   });
-
   const { data: currentAuthor, isFetching: isFetchingCurrentAuthor } =
     useFindAuthorsQuery({
       ids: bookCreation.stepOneDetails?.author
@@ -268,8 +267,6 @@ export const ManualStepOneForm = (): JSX.Element => {
       if (chosenAuthor) {
         return chosenAuthor;
       }
-
-      console.log(draftAuthorName, 'xd?');
 
       if (!draftAuthorName) {
         return 'Wyszukaj autora';

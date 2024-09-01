@@ -131,7 +131,9 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
     });
   };
 
-  const onSubmit = async (): Promise<void> => {
+  const onSubmit = async (
+    values: z.infer<typeof stepTwoSchema>
+  ): Promise<void> => {
     await create({
       authorPayload: {
         authorId: bookCreation.stepOneDetails?.author,
@@ -165,6 +167,7 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
           bookCreation.stepOneDetails?.publisher === ''
             ? undefined
             : bookCreation.stepOneDetails?.publisher,
+        imageUrl: values.imageUrl,
       },
     });
 
@@ -173,7 +176,8 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any*/}
+      <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-4">
         <FormField
           control={form.control}
           name="form"

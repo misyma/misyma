@@ -39,13 +39,13 @@ const bookshelfNameSchema = z
 
 export const ShelvesPage: FC = () => {
   const dispatch = useBreadcrumbKeysDispatch();
-  
+
   const perPage = 5;
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isCreatingNew, setIsCreatingNew] = useState(false);
   const [searchedName, setSearchedName] = useState('');
   const [editMap, setEditMap] = useState<Record<number, boolean>>({});
-  
+
   const queryClient = useQueryClient();
   const { data: user } = useFindUserQuery();
   const {
@@ -60,7 +60,7 @@ export const ShelvesPage: FC = () => {
     name: searchedName,
   });
   const [bookshelves, setBookshelves] = useState(bookshelvesData?.data);
-  
+
   const { mutateAsync: updateBookshelf } = useUpdateBookshelfMutation({});
   const createBookshelfMutation = useCreateBookshelfMutation({});
 
@@ -77,7 +77,6 @@ export const ShelvesPage: FC = () => {
     setBookshelves(bookshelvesData?.data);
   }, [bookshelvesData]);
 
-
   const { toast } = useToast();
 
   const pagesCount = useMemo(() => {
@@ -85,7 +84,6 @@ export const ShelvesPage: FC = () => {
 
     return Math.ceil(bookshelvesCount / perPage);
   }, [bookshelvesData?.metadata?.total]);
-
 
   if (isFetching && !isRefetching) {
     return (
@@ -124,7 +122,9 @@ export const ShelvesPage: FC = () => {
   };
 
   const onCreateNew = async (index: number): Promise<void> => {
-    const input = document.querySelector(`[id="${index}-bookshelf"]`) as HTMLInputElement | undefined;
+    const input = document.querySelector(`[id="${index}-bookshelf"]`) as
+      | HTMLInputElement
+      | undefined;
 
     if (!input) {
       toast({
@@ -180,7 +180,9 @@ export const ShelvesPage: FC = () => {
             variant: `destructive`,
           });
 
-          setBookshelves(bookshelves?.filter((bookshelf) => bookshelf.id !== ''));
+          setBookshelves(
+            bookshelves?.filter((bookshelf) => bookshelf.id !== '')
+          );
 
           return;
         }
@@ -195,7 +197,9 @@ export const ShelvesPage: FC = () => {
   };
 
   const onSaveEdit = async (index: number): Promise<void> => {
-    const input = document.querySelector(`[id="${index}-bookshelf"]`) as HTMLInputElement | undefined;
+    const input = document.querySelector(`[id="${index}-bookshelf"]`) as
+      | HTMLInputElement
+      | undefined;
 
     if (!input) {
       toast({
@@ -283,7 +287,7 @@ export const ShelvesPage: FC = () => {
                 setCurrentPage(1);
               }}
               includeQuill={false}
-              otherIcon={<HiMagnifyingGlass className='text-primary h-8 w-8' />}
+              otherIcon={<HiMagnifyingGlass className="text-primary h-8 w-8" />}
             />
             <Button
               size="xl"
@@ -301,10 +305,7 @@ export const ShelvesPage: FC = () => {
                   key={`${bookshelf.id}-container`}
                 >
                   <Bookmark />
-                  <div
-                    key={`${bookshelf.id}`}
-                    className={styles['shelf']}
-                  >
+                  <div key={`${bookshelf.id}`} className={styles['shelf']}>
                     <div
                       onClick={() => {
                         if (bookshelf.id) {
@@ -346,7 +347,10 @@ export const ShelvesPage: FC = () => {
                             defaultValue={bookshelf.name}
                             onKeyDown={(event) => {
                               if (event.key === 'Enter') {
-                                if (bookshelves && bookshelves[index]?.id === '') {
+                                if (
+                                  bookshelves &&
+                                  bookshelves[index]?.id === ''
+                                ) {
                                   return onCreateNew(index);
                                 }
 
@@ -362,7 +366,10 @@ export const ShelvesPage: FC = () => {
                             <HiPencil
                               className={cn(
                                 'text-primary pointer-events-auto h-8 w-8 cursor-pointer',
-                                bookshelf.name === 'Archiwum' || bookshelf.name === 'Wypożyczalnia' ? 'hidden' : '',
+                                bookshelf.name === 'Archiwum' ||
+                                  bookshelf.name === 'Wypożyczalnia'
+                                  ? 'hidden'
+                                  : ''
                               )}
                               onClick={() => startEdit(index)}
                             />
@@ -388,11 +395,13 @@ export const ShelvesPage: FC = () => {
                                 const { data } = await refetchBookshelves();
 
                                 const newTotalPages = Math.ceil(
-                                  (data?.metadata.total ?? 0) / (data?.metadata.pageSize ?? 1),
+                                  (data?.metadata.total ?? 0) /
+                                    (data?.metadata.pageSize ?? 1)
                                 );
 
                                 queryClient.invalidateQueries({
-                                  predicate: (query) => query.queryKey[0] === 'findUserBookshelfs',
+                                  predicate: (query) =>
+                                    query.queryKey[0] === 'findUserBookshelfs',
                                 });
 
                                 if (currentPage > newTotalPages) {
@@ -400,8 +409,11 @@ export const ShelvesPage: FC = () => {
                                 }
                               }}
                               className={cn(
-                                bookshelf.name === 'Archiwum' || bookshelf.name === 'Wypożyczalnia' ? 'invisible' : '',
-                                'pointer-events-auto',
+                                bookshelf.name === 'Archiwum' ||
+                                  bookshelf.name === 'Wypożyczalnia'
+                                  ? 'invisible'
+                                  : '',
+                                'pointer-events-auto'
                               )}
                             />
                           </>
@@ -410,7 +422,10 @@ export const ShelvesPage: FC = () => {
                             <HiCheck
                               className="pointer-events-auto text-primary h-8 w-8 cursor-pointer"
                               onClick={() => {
-                                if (bookshelves && bookshelves[index]?.id === '') {
+                                if (
+                                  bookshelves &&
+                                  bookshelves[index]?.id === ''
+                                ) {
                                   return onCreateNew(index);
                                 }
 
@@ -433,6 +448,7 @@ export const ShelvesPage: FC = () => {
           {bookshelves && (bookshelvesData?.metadata?.total ?? 0) > perPage && (
             <Paginator
               pagesCount={pagesCount}
+              perPage={perPage}
               onPageChange={setCurrentPage}
               pageIndex={currentPage}
               includeArrows={true}

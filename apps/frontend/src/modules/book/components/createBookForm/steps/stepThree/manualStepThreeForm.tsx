@@ -37,6 +37,7 @@ import { useFindUserBookshelfsQuery } from '../../../../../bookshelf/api/queries
 import { useFindAuthorsQuery } from '../../../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
 import { useCreateBookWithUserBook } from '../../../../hooks/createBookWithUserBook/createBookWithUserBook';
 import { LoadingSpinner } from '../../../../../common/components/spinner/loading-spinner';
+import GenreSelect from '../../../genreSelect/genreSelect';
 
 const stepThreeFormSchema = z.object({
   status: z.nativeEnum(ContractReadingStatus, {
@@ -70,31 +71,28 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const [submissionError, setSubmissionError] = useState<string | null>(null);
-
-  const [genreSelectOpen, setGenreSelectOpen] = useState(false);
-
   const [bookshelfSelectOpen, setBookshelfSelectOpen] = useState(false);
-
   const [statusSelectOpen, setStatusSelectOpen] = useState(false);
+  const [file, setFile] = useState<File | undefined>();
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const dispatch = useBookCreationDispatch();
 
   const { data: user } = useFindUserQuery();
-
   const { data: bookshelvesData } = useFindUserBookshelfsQuery({
     userId: user?.id as string,
     pageSize: 50,
   });
-
-  const { data } = useQuery(
+  const { data: genres } = useQuery(
     getGenresQueryOptions({
       accessToken: accessToken as string,
     }),
   );
-
-  const [file, setFile] = useState<File | undefined>();
+  const { refetch } = useFindAuthorsQuery({
+    name: bookCreation.stepOneDetails?.authorName,
+    enabled: false,
+  });
 
   useEffect(() => {
     if (file) {
@@ -117,11 +115,6 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
     },
     reValidateMode: 'onChange',
     mode: 'onTouched',
-  });
-
-  const { refetch } = useFindAuthorsQuery({
-    name: bookCreation.stepOneDetails?.authorName,
-    enabled: false,
   });
 
   const { create, isProcessing } = useCreateBookWithUserBook({
@@ -300,39 +293,16 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Kategoria</FormLabel>
-              <Select
-                open={genreSelectOpen}
-                onOpenChange={setGenreSelectOpen}
+              <GenreSelect
+                genres={genres?.data ?? []}
                 onValueChange={(val) => {
                   dispatch({
                     type: BookCreationActionType.setGenre,
                     genre: val,
                   });
-
-                  field.onChange(val);
                 }}
-                defaultValue={field.value}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder={<span className="text-muted-foreground">Kategoria</span>} />
-                    <SelectContent>
-                      {Object.values(data?.data ?? []).map((genre) => (
-                        <SelectItem
-                          onKeyDown={(event) => {
-                            if (event.key === 'Enter') {
-                              setGenreSelectOpen(false);
-                            }
-                          }}
-                          value={genre.id}
-                        >
-                          {genre.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </SelectTrigger>
-                </FormControl>
-              </Select>
+                {...field}
+              />
               <FormMessage />
             </FormItem>
           )}
