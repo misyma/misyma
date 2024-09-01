@@ -36,7 +36,7 @@ export const bookTableColumns: ColumnDef<Book>[] = [
       return (
         <div className="flex flex-col py-4 gap-2 w-full">
           <div className="flex items-center gap-1 max-w-xl">
-            <p className="font-semibold text-lg truncate">{row.original.title}</p>
+            <p className="font-semibold text-lg max-w-80 truncate">{row.original.title}</p>
           </div>
         </div>
       );
@@ -64,7 +64,7 @@ export const bookTableColumns: ColumnDef<Book>[] = [
       return (
         <div className="flex flex-col py-4 gap-2">
           <div className="flex items-center gap-1">
-            <p className="font-semibold text-lg">
+            <p className="font-semibold text-lg truncate max-w-32">
               {row.original.authors.length > 0 ? row.original.authors.map((author) => author.name).join(', ') : '-'}
             </p>
           </div>

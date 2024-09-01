@@ -266,7 +266,7 @@ const V2Paginator: FC<PaginatorProps> = ({
           <></>
         )}
         {
-          <p>
+          <p className='font-semibold'>
            {((pageIndex - 1) * 10) > 0 ? (pageIndex - 1) * 10 + 1 : 1}-{pageIndex * 10} z {itemsCount}
           </p>
         }

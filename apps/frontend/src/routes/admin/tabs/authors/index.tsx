@@ -14,7 +14,7 @@ export const AuthorsAdminPage: FC = () => {
   const [searchAuthorName, setSearchAuthorName] = useState('');
 
   const onSetSearchAuthorName = (val: string) => {
-    setPage(0);
+    setPage(1);
     setSearchAuthorName(val);
   }
 
