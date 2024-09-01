@@ -1,7 +1,14 @@
 import { ControllerRenderProps } from 'react-hook-form';
 import { FC, memo, useState } from 'react';
 import { Languages } from '../../../common/constants/languages';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../common/components/select/select';
+import {
+  Select,
+  SelectContent,
+  SelectContentNoPortal,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../../../common/components/select/select';
 import { FormControl } from '../../../common/components/form/form';
 import { Language } from '@common/contracts';
 
@@ -31,9 +38,14 @@ const MemoizedLanguagesList = memo(LanguagesList);
 
 interface LanguageSelectProps extends ControllerRenderProps {
   onValueChange?: (val: string) => void;
+  dialog?: boolean;
 }
 
-const LanguageSelect: FC<LanguageSelectProps> = ({ onValueChange, ...field }) => {
+const LanguageSelect: FC<LanguageSelectProps> = ({
+  onValueChange,
+  dialog = false,
+  ...field
+}) => {
   const [languageSelectOpen, setLanguageSelectOpen] = useState(false);
 
   return (
@@ -51,8 +63,27 @@ const LanguageSelect: FC<LanguageSelectProps> = ({ onValueChange, ...field }) =>
     >
       <FormControl>
         <SelectTrigger>
-          <SelectValue placeholder={<span className="text-muted-foreground">Język</span>} />
-          <SelectContent>{<MemoizedLanguagesList setLanguageSelectOpen={setLanguageSelectOpen} />}</SelectContent>
+          <SelectValue
+            placeholder={<span className="text-muted-foreground">Język</span>}
+          />
+          {!dialog && (
+            <SelectContent>
+              {
+                <MemoizedLanguagesList
+                  setLanguageSelectOpen={setLanguageSelectOpen}
+                />
+              }
+            </SelectContent>
+          )}
+          {dialog && (
+            <SelectContentNoPortal>
+              {
+                <MemoizedLanguagesList
+                  setLanguageSelectOpen={setLanguageSelectOpen}
+                />
+              }
+            </SelectContentNoPortal>
+          )}
         </SelectTrigger>
       </FormControl>
     </Select>

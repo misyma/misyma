@@ -1,4 +1,8 @@
-import { CreateAuthorRequestBody, CreateAuthorResponseBody, FindAuthorsResponseBody } from '@common/contracts';
+import {
+  CreateAuthorRequestBody,
+  CreateAuthorResponseBody,
+  FindAuthorsResponseBody,
+} from '@common/contracts';
 import {
   useCreateBookMutation,
   UseCreateBookMutationPayload,
@@ -8,6 +12,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useCreateAuthorDraftMutation } from '../../../author/api/user/mutations/createAuthorDraftMutation/createAuthorDraftMutation';
 import { BookApiError } from '../../errors/bookApiError';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
+import { stripFalsyObjectKeys } from '../../../common/utils/stripFalsyObjectKeys';
 
 interface CreatePayload {
   authorPayload?: Partial<CreateAuthorRequestBody> & {
@@ -34,8 +39,10 @@ export const useAdminCreateBook = ({
 
   const queryClient = useQueryClient();
 
-  const { mutateAsync: createBookMutation, isPending: isCreateBookPending } = useCreateBookMutation({});
-  const { mutateAsync: createAuthorDraft, isPending: isCreateAuthorPending } = useCreateAuthorDraftMutation({});
+  const { mutateAsync: createBookMutation, isPending: isCreateBookPending } =
+    useCreateBookMutation({});
+  const { mutateAsync: createAuthorDraft, isPending: isCreateAuthorPending } =
+    useCreateAuthorDraftMutation({});
 
   const create = async ({ authorPayload, bookPayload }: CreatePayload) => {
     try {
@@ -73,8 +80,9 @@ export const useAdminCreateBook = ({
       }
 
       if (bookPayload) {
+        const bookPayloadNoNil = stripFalsyObjectKeys(bookPayload);
         await createBookMutation({
-          ...bookPayload,
+          ...bookPayloadNoNil,
           authorIds: [authorId],
           errorHandling: {
             title: 'Nie udało się stworzyć książki.',
@@ -88,7 +96,8 @@ export const useAdminCreateBook = ({
       });
 
       await queryClient.invalidateQueries({
-        predicate: ({ queryKey }) => queryKey[0] === BookApiQueryKeys.findBooksAdmin,
+        predicate: ({ queryKey }) =>
+          queryKey[0] === BookApiQueryKeys.findBooksAdmin,
       });
 
       toast({

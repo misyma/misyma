@@ -1,4 +1,4 @@
-import { ControllerRenderProps, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import {
   BookCreationActionType,
   BookCreationNonIsbnState,
@@ -18,17 +18,9 @@ import {
 } from '../../../../../common/components/form/form';
 import { Input } from '../../../../../common/components/input/input';
 import { Button } from '../../../../../common/components/button/button';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../../../../../common/components/select/select';
 import { BookFormat as ContractBookFormat } from '@common/contracts';
-import { BookFormat } from '../../../../../common/constants/bookFormat';
 import { Language } from '@common/contracts';
-import { FC, useCallback, useState } from 'react';
+import { FC, useState } from 'react';
 import { Checkbox } from '../../../../../common/components/checkbox/checkbox';
 import LanguageSelect from '../../../languageSelect/languageSelect';
 import { Languages } from '../../../../../common/constants/languages';
@@ -39,6 +31,8 @@ import { userStateSelectors } from '../../../../../core/store/states/userState/u
 import { useAdminCreateBook } from '../../../../hooks/adminCreateBook/adminCreateBook';
 import { LoadingSpinner } from '../../../../../common/components/spinner/loading-spinner';
 import { useFindAuthorsQuery } from '../../../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
+import GenreSelect from '../../../genreSelect/genreSelect';
+import BookFormatSelect from '../../../bookFormatSelect/bookFormatSelect';
 
 const stepTwoSchema = z.object({
   language: z.enum(Object.values(Language) as unknown as [string, ...string[]]),
@@ -72,54 +66,15 @@ const stepTwoSchema = z.object({
   genre: z.string().min(1, {
     message: 'Niewłaściwa wartość',
   }),
+  imageUrl: z
+    .string({
+      message: 'Niepoprawna wartość.',
+    })
+    .url({
+      message: 'Podana wartość nie jest prawidłowym linkiem.',
+    })
+    .or(z.literal('')),
 });
-
-const BookFormatSelect: FC<ControllerRenderProps> = (field) => {
-  const dispatch = useBookCreationDispatch();
-
-  const [formatSelectOpen, setFormatSelectOpen] = useState(false);
-
-  const renderBookFormatSelectItems = useCallback(
-    () =>
-      Object.entries(BookFormat).map(([key, language]) => (
-        <SelectItem
-          key={`${key}-${language}`}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter') {
-              setFormatSelectOpen(false);
-            }
-          }}
-          value={key}
-        >
-          {language}
-        </SelectItem>
-      )),
-    [],
-  );
-
-  return (
-    <Select
-      open={formatSelectOpen}
-      onOpenChange={setFormatSelectOpen}
-      onValueChange={(val) => {
-        dispatch({
-          type: BookCreationActionType.setFormat,
-          format: val as ContractBookFormat,
-        });
-
-        field.onChange(val);
-      }}
-      defaultValue={field.value}
-    >
-      <FormControl>
-        <SelectTrigger>
-          <SelectValue placeholder={<span className="text-muted-foreground">Format</span>} />
-          <SelectContent>{renderBookFormatSelectItems()}</SelectContent>
-        </SelectTrigger>
-      </FormControl>
-    </Select>
-  );
-};
 
 interface Props {
   onSubmit: () => void;
@@ -128,12 +83,13 @@ interface Props {
 export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
   const bookCreation = useBookCreation<false>() as BookCreationNonIsbnState;
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
-  const [genreSelectOpen, setGenreSelectOpen] = useState(false);
   const [submissionError, setSubmissionError] = useState<string | null>(null);
 
   const dispatch = useBookCreationDispatch();
 
-  const [isOriginalLanguage, setIsOriginalLanguage] = useState(bookCreation.isOriginal);
+  const [isOriginalLanguage, setIsOriginalLanguage] = useState(
+    bookCreation.isOriginal
+  );
 
   const form = useForm({
     resolver: zodResolver(stepTwoSchema),
@@ -143,7 +99,9 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
       form: bookCreation.stepTwoDetails?.format ?? '',
       pagesCount: bookCreation.stepTwoDetails?.pagesCount ?? '',
       genre: '',
+      imageUrl: '',
     },
+    mode: 'onChange',
   });
 
   const { refetch } = useFindAuthorsQuery({
@@ -163,7 +121,7 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
   const { data: genres } = useQuery(
     getGenresQueryOptions({
       accessToken: accessToken as string,
-    }),
+    })
   );
 
   const onLanguageSelected = (val: string) => {
@@ -187,16 +145,26 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
         title: bookCreation.stepOneDetails?.title as string,
         translator: bookCreation.stepTwoDetails?.translator,
         pages: bookCreation.stepTwoDetails?.pagesCount,
-        ...(bookCreation.stepTwoDetails as Required<BookCreationNonIsbnState['stepTwoDetails']>),
-        ...(bookCreation.stepOneDetails as Required<BookCreationNonIsbnState['stepOneDetails']>),
-        isbn: bookCreation.stepOneDetails?.isbn === '' ? undefined : bookCreation.stepOneDetails?.isbn,
+        ...(bookCreation.stepTwoDetails as Required<
+          BookCreationNonIsbnState['stepTwoDetails']
+        >),
+        ...(bookCreation.stepOneDetails as Required<
+          BookCreationNonIsbnState['stepOneDetails']
+        >),
+        isbn:
+          bookCreation.stepOneDetails?.isbn === ''
+            ? undefined
+            : bookCreation.stepOneDetails?.isbn,
         releaseYear:
           // eslint-disable-next-line
           (bookCreation.stepOneDetails?.yearOfIssue as any) === ''
             ? undefined
             : bookCreation.stepOneDetails?.yearOfIssue,
         accessToken: accessToken as string,
-        publisher: bookCreation.stepOneDetails?.publisher === '' ? undefined : bookCreation.stepOneDetails?.publisher,
+        publisher:
+          bookCreation.stepOneDetails?.publisher === ''
+            ? undefined
+            : bookCreation.stepOneDetails?.publisher,
       },
     });
 
@@ -205,17 +173,23 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-4"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="form"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Format</FormLabel>
-              <BookFormatSelect {...field} />
+              <BookFormatSelect
+                dialog={true}
+                onValueChange={(val) => {
+                  dispatch({
+                    type: BookCreationActionType.setFormat,
+                    format: val as ContractBookFormat,
+                  });
+                }}
+                {...field}
+              />
               <FormMessage />
             </FormItem>
           )}
@@ -251,6 +225,7 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
             <FormItem>
               <FormLabel>Język</FormLabel>
               <LanguageSelect
+                dialog={true}
                 onValueChange={onLanguageSelected}
                 {...field}
               />
@@ -292,39 +267,41 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Kategoria</FormLabel>
-              <Select
-                open={genreSelectOpen}
-                onOpenChange={setGenreSelectOpen}
+              <GenreSelect
+                dialog={true}
+                genres={genres?.data ?? []}
                 onValueChange={(val) => {
                   dispatch({
                     type: BookCreationActionType.setGenre,
                     genre: val,
                   });
-
-                  field.onChange(val);
                 }}
-                defaultValue={field.value}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder={<span className="text-muted-foreground">Kategoria</span>} />
-                    <SelectContent>
-                      {Object.values(genres?.data ?? []).map((genre) => (
-                        <SelectItem
-                          onKeyDown={(event) => {
-                            if (event.key === 'Enter') {
-                              setGenreSelectOpen(false);
-                            }
-                          }}
-                          value={genre.id}
-                        >
-                          {genre.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </SelectTrigger>
-                </FormControl>
-              </Select>
+                {...field}
+              />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="imageUrl"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Link do obrazka</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Link do obrazka"
+                  type="text"
+                  includeQuill={false}
+                  onInput={(e) => {
+                    dispatch({
+                      type: BookCreationActionType.setPagesCount,
+                      pagesCount: e.currentTarget.valueAsNumber,
+                    });
+                  }}
+                  {...field}
+                />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
@@ -367,7 +344,11 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
             {!isProcessing && <>Dodaj książkę</>}
           </Button>
         </div>
-        {submissionError ? <p className="text-red-500">{submissionError}</p> : <></>}
+        {submissionError ? (
+          <p className="text-red-500">{submissionError}</p>
+        ) : (
+          <></>
+        )}
       </form>
     </Form>
   );
