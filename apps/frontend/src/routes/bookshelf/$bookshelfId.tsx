@@ -1,12 +1,17 @@
 import { Navigate, createFileRoute, useNavigate } from '@tanstack/react-router';
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { RequireAuthComponent } from '../../modules/core/components/requireAuth/requireAuthComponent';
 import { z } from 'zod';
 import { AuthenticatedLayout } from '../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { Button } from '../../modules/common/components/button/button';
 import { useFindUserQuery } from '../../modules/user/api/queries/findUserQuery/findUserQuery';
 import { Separator } from '../../modules/common/components/separator/separator';
-import { HiCheckCircle, HiDotsCircleHorizontal, HiOutlineHeart, HiQuestionMarkCircle } from 'react-icons/hi';
+import {
+  HiCheckCircle,
+  HiDotsCircleHorizontal,
+  HiOutlineHeart,
+  HiQuestionMarkCircle,
+} from 'react-icons/hi';
 import { ReadingStatus, SortingType, UserBook } from '@common/contracts';
 import { cn } from '../../modules/common/lib/utils';
 import { FavoriteBookButton } from '../../modules/book/components/favoriteBookButton/favoriteBookButton';
@@ -84,7 +89,33 @@ export const View: FC = () => {
   return <Bookshelf></Bookshelf>;
 };
 
-const BorrowedBook: FC<{ userBook: UserBook; index: number }> = ({ userBook, index }) => {
+interface BookImageProps {
+  userBook: UserBook;
+}
+
+const BookImage: FC<BookImageProps> = ({ userBook }) => {
+  const navigate = useNavigate();
+
+  return (
+    <img
+      onClick={() => {
+        navigate({
+          to: '/book/tabs/basicDataTab/$bookId',
+          params: {
+            bookId: userBook.id,
+          },
+        });
+      }}
+      src={userBook.imageUrl || userBook.book.imageUrl || '/book.jpg'}
+      className="object-contain aspect-square max-w-[200px]"
+    />
+  );
+};
+
+const BorrowedBook: FC<{ userBook: UserBook; index: number }> = ({
+  userBook,
+  index,
+}) => {
   const navigate = useNavigate();
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
@@ -101,13 +132,17 @@ const BorrowedBook: FC<{ userBook: UserBook; index: number }> = ({ userBook, ind
       pageSize: 1,
       sortDate: SortingType.desc,
       isOpen: true,
-    }),
+    })
   );
 
   const totalDaysSinceBorrowing = useMemo(() => {
     const millisInDay = 86400000;
 
-    return Math.ceil((Date.now() - new Date(bookBorrowing?.data[0]?.startedAt ?? '').getTime()) / millisInDay);
+    return Math.ceil(
+      (Date.now() -
+        new Date(bookBorrowing?.data[0]?.startedAt ?? '').getTime()) /
+        millisInDay
+    );
   }, [bookBorrowing?.data]);
 
   const getTimeConstraintFormatting = (days: number): string => {
@@ -137,26 +172,17 @@ const BorrowedBook: FC<{ userBook: UserBook; index: number }> = ({ userBook, ind
         className="cursor-pointer absolute w-full h-[100%]"
       ></div>
       <div className="z-10">
-        <img
-          onClick={() => {
-            navigate({
-              to: '/book/tabs/basicDataTab/$bookId',
-              params: {
-                bookId: userBook.id,
-              },
-            });
-          }}
-          src={userBook.imageUrl || '/book.jpg'}
-          className="object-contain aspect-square max-w-[200px]"
-        />
+        <BookImage userBook={userBook} />
       </div>
       <div className="z-10 w-full px-12 pointer-events-none">
         <div className="flex justify-between w-full">
-          <div className="font-semibold text-lg sm:text-2xl">{userBook.book.title}</div>
+          <div className="font-semibold text-lg sm:text-2xl">
+            {userBook.book.title}
+          </div>
           <div
             className={cn(
               'flex gap-2 items-center font-semibold',
-              getTimeConstraintFormatting(totalDaysSinceBorrowing),
+              getTimeConstraintFormatting(totalDaysSinceBorrowing)
             )}
           >
             dni: {totalDaysSinceBorrowing} <HiClock className="h-5 w-5" />
@@ -165,8 +191,10 @@ const BorrowedBook: FC<{ userBook: UserBook; index: number }> = ({ userBook, ind
         <Separator className="my-4 bg-primary"></Separator>
         <div className="flex justify-between w-full px-2">
           <p>
-            {userBook.book.authors[0]?.name ? `${userBook.book.authors[0]?.name},` : ''} {userBook.book.releaseYear},{' '}
-            {userBook.genres[0]?.name}{' '}
+            {userBook.book.authors[0]?.name
+              ? `${userBook.book.authors[0]?.name},`
+              : ''}{' '}
+            {userBook.book.releaseYear}, {userBook.genres[0]?.name}{' '}
           </p>
           <p>wypożyczony przez: {bookBorrowing?.data[0].borrower}</p>
         </div>
@@ -187,7 +215,7 @@ export const BorrowingBookshelf: FC = () => {
       accessToken: accessToken as string,
       bookshelfId,
       userId: user?.id as string,
-    }),
+    })
   );
 
   const { data: bookshelfResponse } = useFindBookshelfByIdQuery(bookshelfId);
@@ -199,9 +227,12 @@ export const BorrowingBookshelf: FC = () => {
       <div className="p-8 flex flex-col justify-center w-full items-center">
         <div className="flex justify-between w-full sm:max-w-7xl">
           <div>
-            <p className="text-xl sm:text-3xl">{bookshelfResponse?.name ?? ' '}</p>
+            <p className="text-xl sm:text-3xl">
+              {bookshelfResponse?.name ?? ' '}
+            </p>
             <p>
-              {bookshelfBooksResponse?.metadata.total ?? 0} {getCountNoun(bookshelfBooksResponse?.metadata.total ?? 0)}
+              {bookshelfBooksResponse?.metadata.total ?? 0}{' '}
+              {getCountNoun(bookshelfBooksResponse?.metadata.total ?? 0)}
             </p>
           </div>
           {bookshelfResponse?.name !== 'Wypożyczalnia' && (
@@ -224,10 +255,7 @@ export const BorrowingBookshelf: FC = () => {
         </div>
         <div className="flex flex-col justify-center gap-8 pt-8 w-full sm:max-w-7xl">
           {bookshelfBooksResponse?.data.map((userBook, index) => (
-            <BorrowedBook
-              index={index}
-              userBook={userBook}
-            />
+            <BorrowedBook index={index} userBook={userBook} />
           ))}
         </div>
       </div>
@@ -279,43 +307,64 @@ export const Bookshelf: FC = () => {
       userId: user?.id as string,
       page: currentPage,
       pageSize: perPage,
-    }),
+    })
   );
 
   const pageCount = useMemo(() => {
-    return Math.ceil((bookshelfBooksResponse?.metadata?.total ?? 0) / perPage) || 1;
+    return (
+      Math.ceil((bookshelfBooksResponse?.metadata?.total ?? 0) / perPage) || 1
+    );
   }, [bookshelfBooksResponse?.metadata.total, perPage]);
 
   const { data: bookshelfResponse } = useFindBookshelfByIdQuery(bookshelfId);
 
   const navigate = useNavigate();
 
-  const readingStatusMap = {
-    [ReadingStatus.finished]: HiCheckCircle,
-    [ReadingStatus.inProgress]: HiDotsCircleHorizontal,
-    [ReadingStatus.toRead]: HiQuestionMarkCircle,
-  };
+  const readingStatusMap = useMemo(
+    () => ({
+      [ReadingStatus.finished]: HiCheckCircle,
+      [ReadingStatus.inProgress]: HiDotsCircleHorizontal,
+      [ReadingStatus.toRead]: HiQuestionMarkCircle,
+    }),
+    []
+  );
 
-  const readingStatusColor = {
-    [ReadingStatus.finished]: 'text-green-400',
-    [ReadingStatus.inProgress]: 'text-blue-300',
-    [ReadingStatus.toRead]: 'text-slate-500',
-  };
+  const readingStatusColor = useMemo(
+    () => ({
+      [ReadingStatus.finished]: 'text-green-400',
+      [ReadingStatus.inProgress]: 'text-blue-300',
+      [ReadingStatus.toRead]: 'text-slate-500',
+    }),
+    []
+  );
 
-  const renderStatusIcon = (book: UserBook) => {
-    const Icon = readingStatusMap[book.status];
+  const renderStatusIcon = useCallback(
+    (book: UserBook) => {
+      const Icon = readingStatusMap[book.status];
 
-    return <Icon className={cn('h-7 w-7 cursor-default pointer-events-auto', readingStatusColor[book.status])} />;
-  };
+      return (
+        <Icon
+          className={cn(
+            'h-7 w-7 cursor-default pointer-events-auto',
+            readingStatusColor[book.status]
+          )}
+        />
+      );
+    },
+    [readingStatusMap, readingStatusColor]
+  );
 
   return (
     <AuthenticatedLayout>
       <div className="p-8 flex flex-col justify-center w-full items-center">
         <div className="flex justify-between w-full sm:max-w-7xl">
           <div>
-            <p className="text-xl sm:text-3xl">{bookshelfResponse?.name ?? ' '}</p>
+            <p className="text-xl sm:text-3xl">
+              {bookshelfResponse?.name ?? ' '}
+            </p>
             <p>
-              {bookshelfBooksResponse?.metadata.total ?? 0} {getCountNoun(bookshelfBooksResponse?.metadata.total ?? 0)}
+              {bookshelfBooksResponse?.metadata.total ?? 0}{' '}
+              {getCountNoun(bookshelfBooksResponse?.metadata.total ?? 0)}
             </p>
           </div>
           <Button
@@ -355,23 +404,14 @@ export const Bookshelf: FC = () => {
                   className="cursor-pointer absolute w-full h-[100%]"
                 ></div>
                 <div className="z-10">
-                  <img
-                    onClick={() => {
-                      navigate({
-                        to: '/book/tabs/basicDataTab/$bookId',
-                        params: {
-                          bookId: userBook.id,
-                        },
-                      });
-                    }}
-                    src={userBook.imageUrl || '/book.jpg'}
-                    className="object-contain aspect-square w-40 h-60 bg-slate-50"
-                  />
+                  <BookImage userBook={userBook} />
                 </div>
                 <div className="z-10 w-full px-12 pointer-events-none">
                   <div className="flex justify-between w-full">
                     <div className="font-semibold text-lg sm:text-2xl">
-                      <p className="max-w-40 sm:max-w-xl md:max-w-2xl truncate inline-block">{userBook.book.title}</p>
+                      <p className="max-w-40 sm:max-w-xl md:max-w-2xl truncate inline-block">
+                        {userBook.book.title}
+                      </p>
                     </div>
                     <div className="flex gap-2 items-center justify-center">
                       <FavoriteBookButton
@@ -383,22 +423,28 @@ export const Bookshelf: FC = () => {
                   </div>
                   <Separator className="my-4 bg-primary"></Separator>
                   <div className="px-2">
-                    {userBook.book.authors[0]?.name ? `${userBook.book.authors[0]?.name},` : ''}{' '}
-                    {userBook.book.releaseYear ? `${userBook.book.releaseYear},` : null} {userBook.genres[0]?.name}{' '}
+                    {userBook.book.authors[0]?.name
+                      ? `${userBook.book.authors[0]?.name},`
+                      : ''}{' '}
+                    {userBook.book.releaseYear
+                      ? `${userBook.book.releaseYear},`
+                      : null}{' '}
+                    {userBook.genres[0]?.name}{' '}
                   </div>
                 </div>
               </div>
             ))
           )}
-          {bookshelfBooksResponse && (bookshelfBooksResponse?.metadata?.total ?? 0) > perPage && (
-            <Paginator
-              onPageChange={setCurrentPage}
-              pageIndex={currentPage}
-              pagesCount={pageCount ?? 0}
-              includeArrows={true}
-              itemsCount={bookshelfBooksResponse.metadata.total}
-            />
-          )}
+          {bookshelfBooksResponse &&
+            (bookshelfBooksResponse?.metadata?.total ?? 0) > perPage && (
+              <Paginator
+                onPageChange={setCurrentPage}
+                pageIndex={currentPage}
+                pagesCount={pageCount ?? 0}
+                includeArrows={true}
+                itemsCount={bookshelfBooksResponse.metadata.total}
+              />
+            )}
         </div>
       </div>
     </AuthenticatedLayout>

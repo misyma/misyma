@@ -4,7 +4,10 @@ import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authentica
 import { LoadingSpinner } from '../../../../modules/common/components/spinner/loading-spinner';
 import { Button } from '../../../../modules/common/components/button/button';
 import { Paginator } from '../../../../modules/common/components/paginator/paginator';
-import { Breadcrumbs, NumericBreadcrumb } from '../../../../modules/common/components/ui/breadcrumbs';
+import {
+  Breadcrumbs,
+  NumericBreadcrumb,
+} from '../../../../modules/common/components/ui/breadcrumbs';
 import { useSearchBookContextDispatch } from '../../../../modules/bookshelf/context/searchCreateBookContext/searchCreateBookContext';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
@@ -27,8 +30,9 @@ import { z } from 'zod';
 export const SearchResultPage: FC = () => {
   const searchParams = Route.useSearch();
   const navigate = useNavigate();
-  
-  const [manualPageNumberInputOpen, setManualPageNumberInputOpen] = useState(false);
+
+  const [manualPageNumberInputOpen, setManualPageNumberInputOpen] =
+    useState(false);
   const searchCreationDispatch = useSearchBookContextDispatch();
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
@@ -67,10 +71,13 @@ export const SearchResultPage: FC = () => {
       accessToken: accessToken as string,
       page: searchParams.page,
       pageSize: 1,
-    }),
+    })
   );
 
-  const totalBooks = useMemo(() => foundBooks?.metadata.total ?? 0, [foundBooks?.metadata.total]);
+  const totalBooks = useMemo(
+    () => foundBooks?.metadata.total ?? 0,
+    [foundBooks?.metadata.total]
+  );
 
   const {
     data: userBookWithIsbn,
@@ -80,10 +87,16 @@ export const SearchResultPage: FC = () => {
     FindUserBooksByQueryOptions({
       accessToken: accessToken as string,
       isbn: searchParams.isbn,
-    }),
+    })
   );
 
-  const bookExistsOnUserAccount = useMemo(() => (userBookWithIsbn?.data?.length ?? 100) > 0, [userBookWithIsbn?.data]);
+  const bookExistsOnUserAccount = useMemo(() => {
+    if (searchParams.isbn === '' || searchParams.isbn === undefined) {
+      return false;
+    }
+
+    return (userBookWithIsbn?.data?.length ?? 100) > 0;
+  }, [userBookWithIsbn?.data, searchParams.isbn]);
 
   const onTryAgain = () => {
     navigate({
@@ -132,10 +145,7 @@ export const SearchResultPage: FC = () => {
               Nie możemy znaleźć danych dla podanego przez Ciebie tytułu
             </span>
             <div className="flex flex-col gap-4">
-              <Button
-                size="xl"
-                onClick={onCreateManually}
-              >
+              <Button size="xl" onClick={onCreateManually}>
                 Wprowadź dane
               </Button>
               <p>
@@ -185,7 +195,9 @@ export const SearchResultPage: FC = () => {
                 ),
                 [2]: (
                   <NumericBreadcrumb
-                    className={'font-semibold bg-primary text-white border-primary'}
+                    className={
+                      'font-semibold bg-primary text-white border-primary'
+                    }
                     index={2}
                   >
                     2
@@ -210,14 +222,20 @@ export const SearchResultPage: FC = () => {
                     includeQuill={false}
                     type="number"
                     onChange={(val) => {
-                      if (val.currentTarget.value && !Number.isNaN(Number(val.currentTarget.value))) {
+                      if (
+                        val.currentTarget.value &&
+                        !Number.isNaN(Number(val.currentTarget.value))
+                      ) {
                         inputValue.current = Number(val.currentTarget.value);
                       }
                     }}
                     onKeyDown={(event) => {
                       if (event.key === 'Enter') {
                         navigate({
-                          search: (prev) => ({ ...prev, page: inputValue.current }),
+                          search: (prev) => ({
+                            ...prev,
+                            page: inputValue.current,
+                          }),
                         });
 
                         setManualPageNumberInputOpen(false);
@@ -239,12 +257,18 @@ export const SearchResultPage: FC = () => {
                 rootClassName="w-full flex items-center h-16 text-xl sm:text-3xl justify-normal"
                 onPageChange={(page) => {
                   navigate({
-                    search: (prev) => ({ ...prev, isbn: foundBooks?.data[0].isbn ?? '', page }),
+                    search: (prev) => ({
+                      ...prev,
+                      isbn: foundBooks?.data[0].isbn ?? '',
+                      page,
+                    }),
                   });
                 }}
                 pagesCount={totalBooks}
                 pageNumberSlot={
-                  <span className="text-left text-ellipsis w-full line-clamp-2">{foundBooks?.data[0].title}</span>
+                  <span className="text-left text-ellipsis w-full line-clamp-2">
+                    {foundBooks?.data[0].title}
+                  </span>
                 }
                 includeArrows={true}
                 contentClassName="w-full"
@@ -252,34 +276,56 @@ export const SearchResultPage: FC = () => {
               />
             ) : (
               // className="font-bold text-2xl text-primary"
-              <span className="text-3xl text-left text-ellipsis w-full line-clamp-2">{foundBooks?.data[0].title}</span>
+              <span className="text-3xl text-left text-ellipsis w-full line-clamp-2">
+                {foundBooks?.data[0].title}
+              </span>
             )}
-            <p className="pl-1">{foundBooks?.data[0]?.authors[0]?.name ?? ''}</p>
+            <p className="pl-1">
+              {foundBooks?.data[0]?.authors[0]?.name ?? ''}
+            </p>
           </div>
           <div className="border border-gray-400 w-full lg:translate-x-[-2rem] px-4"></div>
           <div className="flex flex-col gap-4 w-full">
-            {foundBooks?.data[0].isbn && <p>ISBN: {foundBooks?.data[0].isbn}</p>}
-            {foundBooks?.data[0].releaseYear && <p>Rok wydania: {foundBooks?.data[0].releaseYear}</p>}
-            {foundBooks?.data[0].language && (
-              <p>Język: {ReversedLanguages[foundBooks?.data[0].language]?.toLowerCase()}</p>
+            {foundBooks?.data[0].isbn && (
+              <p>ISBN: {foundBooks?.data[0].isbn}</p>
             )}
-            {foundBooks?.data[0].publisher && <p>Wydawnictwo: {foundBooks?.data[0].publisher}</p>}
-            {foundBooks?.data[0].translator && <p>Tłumacz: {foundBooks?.data[0].translator}</p>}
-            {foundBooks?.data[0].format && <p>Format: {BookFormat[foundBooks?.data[0].format]}</p>}
-            {foundBooks?.data[0]?.pages && <p>Liczba stron: {foundBooks?.data[0].pages}</p>}
+            {foundBooks?.data[0].releaseYear && (
+              <p>Rok wydania: {foundBooks?.data[0].releaseYear}</p>
+            )}
+            {foundBooks?.data[0].language && (
+              <p>
+                Język:{' '}
+                {ReversedLanguages[foundBooks?.data[0].language]?.toLowerCase()}
+              </p>
+            )}
+            {foundBooks?.data[0].publisher && (
+              <p>Wydawnictwo: {foundBooks?.data[0].publisher}</p>
+            )}
+            {foundBooks?.data[0].translator && (
+              <p>Tłumacz: {foundBooks?.data[0].translator}</p>
+            )}
+            {foundBooks?.data[0].format && (
+              <p>Format: {BookFormat[foundBooks?.data[0].format]}</p>
+            )}
+            {foundBooks?.data[0]?.pages && (
+              <p>Liczba stron: {foundBooks?.data[0].pages}</p>
+            )}
           </div>
           <div className="flex flex-col gap-4">
-            {checkingForIsbn || checkForIsbnInProgress || bookExistsOnUserAccount ? (
+            {checkingForIsbn ||
+            checkForIsbnInProgress ||
+            bookExistsOnUserAccount ? (
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger
-                    asChild
-                    className="flex"
-                  >
+                  <TooltipTrigger asChild className="flex">
                     <Button
                       onClick={onAddBook}
                       size="xl"
-                      disabled={checkingForIsbn || checkForIsbnInProgress || bookExistsOnUserAccount}
+                      disabled={
+                        checkingForIsbn ||
+                        checkForIsbnInProgress ||
+                        bookExistsOnUserAccount
+                      }
                     >
                       Kontynuuj
                     </Button>
@@ -290,10 +336,7 @@ export const SearchResultPage: FC = () => {
                 </Tooltip>
               </TooltipProvider>
             ) : (
-              <Button
-                onClick={onAddBook}
-                size="xl"
-              >
+              <Button onClick={onAddBook} size="xl">
                 Kontynuuj
               </Button>
             )}
@@ -329,7 +372,7 @@ export const SearchResultPage: FC = () => {
     );
   }
 
-  if(checkingForIsbn){
+  if (checkingForIsbn) {
     return (
       <AuthenticatedLayout>
         <div className="justify-center max-w-screen-xl mx-auto items-center w-full flex h-full min-h-[700px]">
@@ -339,9 +382,13 @@ export const SearchResultPage: FC = () => {
     );
   }
 
-  if (foundBooks?.data && foundBooks.data.length > 0 && searchParams.searchBy === 'title' && searchParams.isbn !== foundBooks?.data[0].isbn) {
+  if (
+    foundBooks?.data &&
+    foundBooks.data.length > 0 &&
+    searchParams.searchBy === 'title' &&
+    searchParams.isbn !== (foundBooks?.data[0].isbn ?? '')
+  ) {
     const isbn = foundBooks?.data[0].isbn;
-
     return <Navigate search={(prev) => ({ ...prev, isbn })}></Navigate>;
   }
 
@@ -355,7 +402,7 @@ export const SearchResultPage: FC = () => {
 };
 
 const searchSchema = z.object({
-  isbn: z.string(),
+  isbn: z.string().catch(''),
   title: z.string().min(1).catch(''),
   bookshelfId: z.string().uuid().catch(''),
   page: z.number().int().default(1).catch(1),
