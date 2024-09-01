@@ -5,7 +5,7 @@ import { cn } from '../../../common/lib/utils';
 interface BookImageProps {
   userBook?: UserBook;
   onClick?: () => void;
-  className: string;
+  className?: string;
 }
 
 export const BookImageMiniature: FC<BookImageProps> = ({
