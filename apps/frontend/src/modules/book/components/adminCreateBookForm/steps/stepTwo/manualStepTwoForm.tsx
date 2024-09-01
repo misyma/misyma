@@ -98,7 +98,7 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
       translator: bookCreation.stepTwoDetails?.translator ?? '',
       form: bookCreation.stepTwoDetails?.format ?? '',
       pagesCount: bookCreation.stepTwoDetails?.pagesCount ?? '',
-      genre: '',
+      genre: bookCreation.stepThreeDetails?.genre ?? '',
       imageUrl: '',
     },
     mode: 'onChange',
