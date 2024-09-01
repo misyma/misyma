@@ -250,8 +250,6 @@ const V2Paginator: FC<PaginatorProps> = ({
     }
   };
 
-  console.log(includeArrows)
-
   return (
     <Pagination className={rootClassName}>
       <PaginationContent className={contentClassName}>
