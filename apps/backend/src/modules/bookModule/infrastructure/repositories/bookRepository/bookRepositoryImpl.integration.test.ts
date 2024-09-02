@@ -711,23 +711,43 @@ describe('BookRepositoryImpl', () => {
 
   describe('count', () => {
     it('counts books', async () => {
-      const author = await authorTestUtils.createAndPersist();
+      const author1 = await authorTestUtils.createAndPersist();
+
+      const author2 = await authorTestUtils.createAndPersist();
 
       await bookTestUtils.createAndPersist({
         input: {
-          authorIds: [author.id],
+          authorIds: [author1.id],
         },
       });
 
       await bookTestUtils.createAndPersist({
         input: {
-          authorIds: [author.id],
+          authorIds: [author1.id],
+        },
+      });
+
+      await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author2.id],
+        },
+      });
+
+      await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author1.id],
+        },
+      });
+
+      await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author2.id],
         },
       });
 
       const count = await bookRepository.countBooks({});
 
-      expect(count).toEqual(2);
+      expect(count).toEqual(5);
     });
 
     it('counts approved books', async () => {

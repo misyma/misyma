@@ -292,7 +292,8 @@ export class BookRepositoryImpl implements BookRepository {
     const { isbn, isApproved, title, authorIds, language, releaseYearAfter, releaseYearBefore } = payload;
 
     try {
-      const query = this.databaseClient<BookRawEntity>(bookTable)
+      const countResult = await this.databaseClient<BookRawEntity>(bookTable)
+        .countDistinct({ count: `${bookTable}.id` })
         .leftJoin(bookAuthorTable, (join) => {
           join.on(`${bookAuthorTable}.bookId`, '=', `${bookTable}.id`);
         })
@@ -327,9 +328,8 @@ export class BookRepositoryImpl implements BookRepository {
           if (authorIds) {
             builder.whereIn(`${authorTable}.id`, authorIds);
           }
-        });
-
-      const countResult = await query.count().first();
+        })
+        .first();
 
       const count = countResult?.['count'];
 
