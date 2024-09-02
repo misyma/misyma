@@ -10,8 +10,6 @@ import { userStateSelectors } from '../../../../modules/core/store/states/userSt
 import { FindBookByIdQueryOptions } from '../../../../modules/book/api/user/queries/findBookById/findBookByIdQueryOptions';
 import { Button } from '../../../../modules/common/components/button/button';
 import { LoadingSpinner } from '../../../../modules/common/components/spinner/loading-spinner';
-import { ReversedLanguages } from '../../../../modules/common/constants/languages';
-import { BookFormat } from '../../../../modules/common/constants/bookFormat';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form } from '../../../../modules/common/components/form/form';
@@ -23,6 +21,8 @@ import {
 } from '../../../../modules/bookChangeRequests/components/changeRequestTable/changeRequestTableColumns';
 import { useApplyBookChangeRequestMutation } from '../../../../modules/bookChangeRequests/api/admin/mutations/applyBookChangeRequest/applyBookChangeRequest';
 import { useDeleteBookChangeRequestMutation } from '../../../../modules/bookChangeRequests/api/admin/mutations/deleteBookChangeRequest/deleteBookChangeRequest';
+import { ReversedLanguages } from '../../../../modules/common/constants/languages';
+import { BookFormat } from '../../../../modules/common/constants/bookFormat';
 
 type ChangeKeys =
   | 'format'
@@ -34,12 +34,6 @@ type ChangeKeys =
   | 'publisher'
   | 'pages'
   | 'authorIds';
-
-type ChangeArguments = {
-  current: string;
-  desired: string;
-  mapping?: Record<string, string>;
-};
 
 const schema = z.object({
   format: z.boolean().default(false),
@@ -81,7 +75,7 @@ export const ChangeRequestView: FC = () => {
 
   const { mutateAsync: deleteBookChangeRequest } =
     useDeleteBookChangeRequestMutation({});
-  const { mutateAsync: applyBookChangeRequest } =
+  const { mutateAsync: applyBookChangeRequest, isPending } =
     useApplyBookChangeRequestMutation({});
 
   const navigate = useNavigate();
@@ -110,46 +104,17 @@ export const ChangeRequestView: FC = () => {
       .join(',');
   }, [authorsResponse?.data, changeRequestData?.data]);
 
-  const changeNameMap: Record<ChangeKeys, ChangeArguments> = useMemo(
+  const changeTranslatedKeysMap: Record<ChangeKeys, string> = useMemo(
     () => ({
-      format: {
-        current: 'Obecny format',
-        desired: 'Pożądany format',
-        mapping: BookFormat,
-      },
-      isbn: {
-        current: 'Obecny isbn',
-        desired: 'Pożądany isbn',
-      },
-      language: {
-        current: 'Obecny język',
-        desired: 'Pożądany język',
-        mapping: ReversedLanguages,
-      },
-      releaseYear: {
-        current: 'Obecna data wydania',
-        desired: 'Pożądana data wydania',
-      },
-      title: {
-        current: 'Obecny tytuł',
-        desired: 'Pożądany tytuł',
-      },
-      translator: {
-        current: 'Obecny przekład',
-        desired: 'Pożądany przekład',
-      },
-      pages: {
-        current: 'Obecna ilość stron',
-        desired: 'Pożądana ilość strong',
-      },
-      publisher: {
-        current: 'Obecne wydawnictwo',
-        desired: 'Pożądane wydawnictwo',
-      },
-      authorIds: {
-        current: 'Obecni autorzy',
-        desired: 'Pożądani autorzy',
-      },
+      format: 'format',
+      isbn: 'numer isbn',
+      language: 'język',
+      releaseYear: 'data wydania',
+      title: 'tytuł',
+      translator: 'przekład',
+      pages: 'liczba stron',
+      publisher: 'wydawnictwo',
+      authorIds: 'autorzy',
     }),
     []
   );
@@ -162,23 +127,42 @@ export const ChangeRequestView: FC = () => {
         [ChangeKeys, string | number]
       >
     ).forEach(([key, value]) => {
-      const changeValues = changeNameMap[key];
+      const changeTranslatedKey = changeTranslatedKeysMap[key];
 
-      if (!changeValues) {
+      if (!changeTranslatedKey) {
         return;
       }
 
-      if (changeValues.mapping && key !== 'authorIds') {
+      if (key === 'language') {
         return rows.push({
-          key,
-          currentValue: bookData ? `${bookData[key]}` : '',
+          key: changeTranslatedKey,
+          currentValue: bookData
+            ? `${ReversedLanguages[bookData[key] as keyof typeof ReversedLanguages]}`
+            : '',
+          proposedValue:
+            ReversedLanguages[value as keyof typeof ReversedLanguages],
+        });
+      }
+
+      if (key === 'format') {
+        return rows.push({
+          key: changeTranslatedKey,
+          currentValue: bookData ? `${BookFormat[bookData[key]]}` : '',
+          proposedValue: `${BookFormat[value as keyof typeof BookFormat]}`,
+        });
+      }
+
+      if (key !== 'authorIds') {
+        return rows.push({
+          key: changeTranslatedKey,
+          currentValue: bookData ? `${bookData[key] ?? 'brak'}` : '',
           proposedValue: `${value}`,
         });
       }
 
       if (key === 'authorIds') {
         return rows.push({
-          key,
+          key: changeTranslatedKey,
           currentValue: bookData
             ? bookData['authors'].map((val) => val.name).join(',')
             : '',
@@ -188,7 +172,12 @@ export const ChangeRequestView: FC = () => {
     });
 
     return rows;
-  }, [bookData, desiredAuthors, changeNameMap, changeRequestData?.data]);
+  }, [
+    bookData,
+    desiredAuthors,
+    changeTranslatedKeysMap,
+    changeRequestData?.data,
+  ]);
 
   if (isChangeRequestFetched && !changeRequestData?.data) {
     return <Navigate to={'/admin/tabs/changeRequests'} />;
@@ -243,11 +232,17 @@ export const ChangeRequestView: FC = () => {
                 onSubmit={form.handleSubmit(onSubmit)}
               >
                 <div className="flex justify-center gap-2 items-center">
-                  <Button onClick={onDecline} size="lg" variant="outline">
+                  <Button
+                    disabled={isPending}
+                    onClick={onDecline}
+                    size="lg"
+                    variant="outline"
+                  >
                     Odrzuć{' '}
                   </Button>
-                  <Button type="submit" size="lg">
-                    Potwierdź
+                  <Button disabled={isPending} type="submit" size="lg">
+                    {isPending && <LoadingSpinner size={20} />}
+                    {!isPending && <>Potwierdź</>}
                   </Button>
                 </div>
               </form>

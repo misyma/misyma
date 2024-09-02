@@ -26,9 +26,9 @@ const BookFormatSelect: FC<BookFormatSelectProps> = ({
 
   const renderBookFormatSelectItems = useCallback(
     () =>
-      Object.entries(BookFormat).map(([key, language]) => (
+      Object.entries(BookFormat).map(([key, name]) => (
         <SelectItem
-          key={`${key}-${language}`}
+          key={`${key}-${name}`}
           onKeyDown={(event) => {
             if (event.key === 'Enter') {
               setFormatSelectOpen(false);
@@ -36,7 +36,7 @@ const BookFormatSelect: FC<BookFormatSelectProps> = ({
           }}
           value={key}
         >
-          {language}
+          {name}
         </SelectItem>
       )),
     []

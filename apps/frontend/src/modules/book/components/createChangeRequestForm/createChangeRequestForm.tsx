@@ -3,15 +3,14 @@ import { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/form/form';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../../../common/components/select/select';
-import { Languages } from '../../../common/constants/languages';
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../../../common/components/form/form';
 import { Input } from '../../../common/components/input/input';
 import { Button } from '../../../common/components/button/button';
 import { useQuery } from '@tanstack/react-query';
@@ -19,7 +18,6 @@ import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { StepOneForm } from './stepOneForm/stepOneForm';
-import { BookFormat } from '../../../common/constants/bookFormat';
 import {
   BookDetailsChangeRequestAction,
   useBookDetailsChangeRequestContext,
@@ -32,6 +30,8 @@ import { useToast } from '../../../common/components/toast/use-toast';
 import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
 import { BookApiError } from '../../errors/bookApiError';
 import { useCreateAuthorDraftMutation } from '../../../author/api/user/mutations/createAuthorDraftMutation/createAuthorDraftMutation';
+import LanguageSelect from '../languageSelect/languageSelect';
+import BookFormatSelect from '../bookFormatSelect/bookFormatSelect';
 
 interface Props {
   bookId: string;
@@ -70,7 +70,11 @@ const stepTwoSchema = z.object({
     .optional(),
 });
 
-export const CreateChangeRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
+export const CreateChangeRequestForm: FC<Props> = ({
+  onCancel,
+  bookId,
+  onSubmit,
+}) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const { data: userData, isFetched: isUserDataFetched } = useFindUserQuery();
@@ -80,14 +84,14 @@ export const CreateChangeRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit 
       userBookId: bookId,
       userId: userData?.id ?? '',
       accessToken: accessToken as string,
-    }),
+    })
   );
 
   const { isFetched: isBookDataFetched } = useQuery(
     FindBookByIdQueryOptions({
       accessToken: accessToken as string,
       bookId: userBookData?.bookId as string,
-    }),
+    })
   );
 
   if (!isUserDataFetched || !isUserBookDataFetched || !isBookDataFetched) {
@@ -95,11 +99,7 @@ export const CreateChangeRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit 
   }
 
   return (
-    <UnderlyingForm
-      bookId={bookId}
-      onCancel={onCancel}
-      onSubmit={onSubmit}
-    />
+    <UnderlyingForm bookId={bookId} onCancel={onCancel} onSubmit={onSubmit} />
   );
 };
 
@@ -113,23 +113,23 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
   const context = useBookDetailsChangeRequestContext();
   const dispatch = useBookDetailsChangeRequestDispatch();
 
-
   const { data: userData } = useFindUserQuery();
   const { data: userBookData } = useQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
       userId: userData?.id ?? '',
       accessToken: accessToken as string,
-    }),
+    })
   );
   const { data: bookData } = useQuery(
     FindBookByIdQueryOptions({
       accessToken: accessToken as string,
       bookId: userBookData?.bookId as string,
-    }),
+    })
   );
 
-  const { mutateAsync: createBookChangeRequest } = useCreateBookChangeRequestMutation({});
+  const { mutateAsync: createBookChangeRequest } =
+    useCreateBookChangeRequestMutation({});
 
   const stepTwoForm = useForm({
     resolver: zodResolver(stepTwoSchema),
@@ -155,7 +155,8 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
     setCurrentStep(2);
   };
 
-  const { mutateAsync: createAuthorDraft, isPending: isCreateAuthorPending } = useCreateAuthorDraftMutation({});
+  const { mutateAsync: createAuthorDraft, isPending: isCreateAuthorPending } =
+    useCreateAuthorDraftMutation({});
 
   const onUpdate = async (values: z.infer<typeof stepTwoSchema>) => {
     const payload = {
@@ -219,7 +220,9 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
     try {
       await createBookChangeRequest({
         ...payload,
-        authorIds: Array.isArray(payload.authorIds) ? payload.authorIds : payload.authorIds?.split(','),
+        authorIds: Array.isArray(payload.authorIds)
+          ? payload.authorIds
+          : payload.authorIds?.split(','),
       });
 
       toast({
@@ -254,8 +257,10 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
       ) : (
         <Form {...stepTwoForm}>
           <form
-            //   eslint-disable-next-line
-            onSubmit={stepTwoForm.handleSubmit(async (data) => await onUpdate(data as any))}
+            onSubmit={stepTwoForm.handleSubmit(
+              //   eslint-disable-next-line
+              async (data) => await onUpdate(data as any)
+            )}
             className="space-y-4"
           >
             <FormField
@@ -264,23 +269,13 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Język</FormLabel>
-                  <Select
+                  <LanguageSelect
+                    dialog={true}
                     onValueChange={(val) => {
                       field.onChange(val);
                     }}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder={<span className="text-muted-foreground">Język</span>} />
-                        <SelectContent>
-                          {Object.entries(Languages).map(([key, language]) => (
-                            <SelectItem value={Language[key as keyof typeof Language]}>{language}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </SelectTrigger>
-                    </FormControl>
-                  </Select>
+                    {...field}
+                  />
                   <FormMessage />
                 </FormItem>
               )}
@@ -309,23 +304,13 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Format</FormLabel>
-                  <Select
+                  <BookFormatSelect
+                    dialog={true}
                     onValueChange={(val) => {
                       field.onChange(val);
                     }}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder={<span className="text-muted-foreground">Format</span>} />
-                        <SelectContent defaultValue={field.value}>
-                          {Object.entries(BookFormat).map(([key, language]) => (
-                            <SelectItem value={key}>{language}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </SelectTrigger>
-                    </FormControl>
-                  </Select>
+                    {...field}
+                  />
                   <FormMessage />
                 </FormItem>
               )}
@@ -358,7 +343,9 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
               </Button>
               <Button
                 size="lg"
-                disabled={!stepTwoForm.formState.isValid || isCreateAuthorPending}
+                disabled={
+                  !stepTwoForm.formState.isValid || isCreateAuthorPending
+                }
                 type="submit"
               >
                 Prześlij prośbę

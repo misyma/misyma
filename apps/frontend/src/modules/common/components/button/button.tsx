@@ -61,7 +61,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const Comp = asChild ? Slot : 'button';
 
     const variantStyles = getVariantStyles(variant);
-
     const sizeStyles = getSizeStyles(size);
 
     if (label && !asChild) {
