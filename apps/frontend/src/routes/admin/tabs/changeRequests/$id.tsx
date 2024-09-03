@@ -73,9 +73,9 @@ export const ChangeRequestView: FC = () => {
       ],
     });
 
-  const { mutateAsync: deleteBookChangeRequest } =
+  const { mutateAsync: deleteBookChangeRequest, isPending: isDeletePending } =
     useDeleteBookChangeRequestMutation({});
-  const { mutateAsync: applyBookChangeRequest, isPending } =
+  const { mutateAsync: applyBookChangeRequest, isPending: isApplyPending } =
     useApplyBookChangeRequestMutation({});
 
   const navigate = useNavigate();
@@ -233,16 +233,22 @@ export const ChangeRequestView: FC = () => {
               >
                 <div className="flex justify-center gap-2 items-center">
                   <Button
-                    disabled={isPending}
+                    type="button"
+                    disabled={isApplyPending || isDeletePending}
                     onClick={onDecline}
                     size="lg"
                     variant="outline"
                   >
-                    Odrzuć{' '}
+                    {isDeletePending && <LoadingSpinner size={20} />}
+                    {!isDeletePending && <>Odrzuć</>}
                   </Button>
-                  <Button disabled={isPending} type="submit" size="lg">
-                    {isPending && <LoadingSpinner size={20} />}
-                    {!isPending && <>Potwierdź</>}
+                  <Button
+                    disabled={isApplyPending || isDeletePending}
+                    type="submit"
+                    size="lg"
+                  >
+                    {isApplyPending && <LoadingSpinner size={20} />}
+                    {!isApplyPending && <>Potwierdź</>}
                   </Button>
                 </div>
               </form>
