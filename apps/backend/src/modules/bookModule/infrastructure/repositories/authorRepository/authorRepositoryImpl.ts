@@ -45,6 +45,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
           id: this.uuidService.generateUuid(),
           name: author.name,
           isApproved: author.isApproved,
+          createdAt: author.createdAt,
         },
         '*',
       );

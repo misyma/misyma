@@ -108,6 +108,7 @@ describe('BookRepositoryImpl', () => {
             state: {
               name: author.name,
               isApproved: author.isApproved,
+              createdAt: author.createdAt,
             },
           },
         ],
@@ -414,6 +415,7 @@ describe('BookRepositoryImpl', () => {
         state: {
           name: author.name,
           isApproved: author.isApproved,
+          createdAt: author.createdAt,
         },
       });
     });

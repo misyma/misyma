@@ -24,6 +24,7 @@ export interface UserBookWithJoinsRawEntity {
   readonly authorIds?: (string | null)[];
   readonly authorNames?: (string | null)[];
   readonly authorApprovals?: (boolean | null)[];
+  readonly authorCreatedAtDates?: (Date | null)[];
 
   readonly genreIds?: (string | null)[];
   readonly genreNames?: (string | null)[];

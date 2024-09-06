@@ -56,6 +56,7 @@ describe('BookMapperImpl', () => {
         authorIds: [],
         authorNames: [],
         authorApprovals: [],
+        authorCreatedAtDates: [],
       },
     ]);
 

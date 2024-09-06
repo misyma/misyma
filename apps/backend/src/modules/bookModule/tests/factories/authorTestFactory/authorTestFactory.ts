@@ -8,6 +8,7 @@ export class AuthorTestFactory {
       id: Generator.uuid(),
       name: Generator.fullName(),
       isApproved: Generator.boolean(),
+      createdAt: Generator.pastDate(),
       ...input,
     };
   }
@@ -17,6 +18,7 @@ export class AuthorTestFactory {
       id: Generator.uuid(),
       name: Generator.fullName(),
       isApproved: Generator.boolean(),
+      createdAt: Generator.pastDate(),
       ...input,
     });
   }

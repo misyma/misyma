@@ -54,6 +54,7 @@ export class BookMapperImpl implements BookMapper {
         authorIds,
         authorNames,
         authorApprovals,
+        authorCreatedAtDates,
         imageUrl,
         createdAt,
       } = entity;
@@ -71,7 +72,7 @@ export class BookMapperImpl implements BookMapper {
         isApproved: Boolean(isApproved),
         createdAt,
         authors:
-          authorIds && authorNames && authorApprovals
+          authorIds && authorNames && authorApprovals && authorCreatedAtDates
             ? authorIds
                 .filter((authorId) => authorId !== null)
                 .map((authorId, index) => {
@@ -79,6 +80,7 @@ export class BookMapperImpl implements BookMapper {
                     id: authorId,
                     name: authorNames[index] as string,
                     isApproved: authorApprovals[index] as boolean,
+                    createdAt: authorCreatedAtDates[index] as Date,
                   });
                 })
             : [],

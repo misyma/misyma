@@ -68,6 +68,7 @@ describe('UserBookRepositoryImpl', () => {
 
     collectionTestUtils = container.get<CollectionTestUtils>(testSymbols.collectionTestUtils);
 
+    // refactor to use only one truncate, based on test - for example for this file use userBookTestUtils.truncate
     testUtils = [
       authorTestUtils,
       bookTestUtils,
@@ -162,6 +163,7 @@ describe('UserBookRepositoryImpl', () => {
               state: {
                 name: author.name,
                 isApproved: author.isApproved,
+                createdAt: author.createdAt,
               },
             },
           ],
@@ -244,6 +246,7 @@ describe('UserBookRepositoryImpl', () => {
               state: {
                 name: author.name,
                 isApproved: author.isApproved,
+                createdAt: author.createdAt,
               },
             },
           ],
@@ -626,6 +629,7 @@ describe('UserBookRepositoryImpl', () => {
               state: {
                 name: author.name,
                 isApproved: author.isApproved,
+                createdAt: author.createdAt,
               },
             },
           ],

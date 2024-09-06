@@ -39,12 +39,13 @@ describe('AuthorRepositoryImpl', () => {
 
   describe('Create', () => {
     it('creates a author', async () => {
-      const { name, isApproved } = authorTestFactory.createRaw();
+      const { name, isApproved, createdAt } = authorTestFactory.createRaw();
 
       const author = await authorRepository.saveAuthor({
         author: {
           name,
           isApproved,
+          createdAt,
         },
       });
 
@@ -59,6 +60,8 @@ describe('AuthorRepositoryImpl', () => {
       expect(foundAuthor?.name).toEqual(name);
 
       expect(foundAuthor?.isApproved).toEqual(isApproved);
+
+      expect(foundAuthor?.createdAt).toEqual(createdAt);
     });
 
     it('throws an error when author with the same firstName and author already exists', async () => {
@@ -69,6 +72,7 @@ describe('AuthorRepositoryImpl', () => {
           author: {
             name: existingAuthor.name,
             isApproved: existingAuthor.isApproved,
+            createdAt: existingAuthor.createdAt,
           },
         });
       } catch (error) {
