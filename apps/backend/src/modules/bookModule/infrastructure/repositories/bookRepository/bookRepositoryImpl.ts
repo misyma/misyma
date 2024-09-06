@@ -218,13 +218,23 @@ export class BookRepositoryImpl implements BookRepository {
   }
 
   public async findBooks(payload: FindBooksPayload): Promise<Book[]> {
-    const { isbn, isApproved, title, language, releaseYearBefore, releaseYearAfter, authorIds, page, pageSize } =
-      payload;
+    const {
+      isbn,
+      isApproved,
+      title,
+      language,
+      releaseYearBefore,
+      releaseYearAfter,
+      authorIds,
+      page,
+      pageSize,
+      sortDate,
+    } = payload;
 
     let rawEntities: BookWithJoinsRawEntity[];
 
     try {
-      rawEntities = await this.databaseClient<BookRawEntity>(bookTable)
+      const query = this.databaseClient<BookRawEntity>(bookTable)
         .select([
           `${bookTable}.id`,
           `${bookTable}.title`,
@@ -281,6 +291,12 @@ export class BookRepositoryImpl implements BookRepository {
         .groupBy(`${bookTable}.id`)
         .limit(pageSize)
         .offset(pageSize * (page - 1));
+
+      if (sortDate) {
+        query.orderBy('createdAt', sortDate);
+      }
+
+      rawEntities = await query;
     } catch (error) {
       throw new RepositoryError({
         entity: 'Book',

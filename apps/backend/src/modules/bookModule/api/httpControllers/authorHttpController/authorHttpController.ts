@@ -95,7 +95,7 @@ export class AuthorHttpController implements HttpController {
   private async findAuthors(
     request: HttpRequest<undefined, FindAuthorsQueryParamsDto, undefined>,
   ): Promise<HttpOkResponse<FindAuthorsResponseBodyDto>> {
-    const { name, page = 1, pageSize = 10, ids } = request.queryParams;
+    const { name, page = 1, pageSize = 10, ids, sortDate } = request.queryParams;
 
     await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
@@ -106,6 +106,7 @@ export class AuthorHttpController implements HttpController {
       name,
       page,
       pageSize,
+      sortDate,
     });
 
     return {

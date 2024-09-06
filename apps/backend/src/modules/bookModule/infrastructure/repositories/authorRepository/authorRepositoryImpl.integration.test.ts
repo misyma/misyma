@@ -231,5 +231,125 @@ describe('AuthorRepositoryImpl', () => {
         });
       });
     });
+
+    it('returns authors when given partial name that matches author name - case insensitive', async () => {
+      const author1 = await authorTestUtils.createAndPersist({
+        input: {
+          name: 'Tolkien',
+        },
+      });
+
+      const author2 = await authorTestUtils.createAndPersist({
+        input: {
+          name: 'Tolstoy',
+        },
+      });
+
+      await authorTestUtils.createAndPersist({
+        input: {
+          name: 'Rowling',
+        },
+      });
+
+      const foundAuthors1 = await authorRepository.findAuthors({
+        name: 'tol',
+        page: 1,
+        pageSize: 10,
+      });
+
+      const foundAuthors2 = await authorRepository.findAuthors({
+        name: 'Tol',
+        page: 1,
+        pageSize: 10,
+      });
+
+      const foundAuthors3 = await authorRepository.findAuthors({
+        name: 'TOL',
+        page: 1,
+        pageSize: 10,
+      });
+
+      expect(foundAuthors1).toHaveLength(2);
+
+      expect(foundAuthors2).toHaveLength(2);
+
+      expect(foundAuthors3).toHaveLength(2);
+
+      [foundAuthors1, foundAuthors2, foundAuthors3].forEach((foundAuthors) => {
+        foundAuthors.forEach((foundAuthor) => {
+          expect(foundAuthor.getId()).oneOf([author1.id, author2.id]);
+
+          expect(foundAuthor.getName()).oneOf([author1.name, author2.name]);
+        });
+      });
+    });
+
+    it('finds authors sorted by createdAt ascending', async () => {
+      const author1 = await authorTestUtils.createAndPersist({
+        input: {
+          createdAt: new Date('2021-01-01'),
+        },
+      });
+
+      const author2 = await authorTestUtils.createAndPersist({
+        input: {
+          createdAt: new Date('2021-01-02'),
+        },
+      });
+
+      const author3 = await authorTestUtils.createAndPersist({
+        input: {
+          createdAt: new Date('2021-01-03'),
+        },
+      });
+
+      const foundAuthors = await authorRepository.findAuthors({
+        page: 1,
+        pageSize: 10,
+        sortDate: 'asc',
+      });
+
+      expect(foundAuthors).toHaveLength(3);
+
+      expect(foundAuthors[0]?.getId()).toEqual(author1.id);
+
+      expect(foundAuthors[1]?.getId()).toEqual(author2.id);
+
+      expect(foundAuthors[2]?.getId()).toEqual(author3.id);
+    });
+
+    it('finds authors sorted by createdAt descending', async () => {
+      const author1 = await authorTestUtils.createAndPersist({
+        input: {
+          createdAt: new Date('2021-01-01'),
+        },
+      });
+
+      const author2 = await authorTestUtils.createAndPersist({
+        input: {
+          createdAt: new Date('2021-01-02'),
+        },
+      });
+
+      const author3 = await authorTestUtils.createAndPersist({
+        input: {
+          createdAt: new Date('2021-01-03'),
+        },
+      });
+
+      const foundAuthors = await authorRepository.findAuthors({
+        page: 1,
+        pageSize: 10,
+        sortDate: 'desc',
+      });
+
+      expect(foundAuthors).toHaveLength(3);
+
+      expect(foundAuthors[0]?.getId()).toEqual(author3.id);
+
+      expect(foundAuthors[1]?.getId()).toEqual(author2.id);
+
+      expect(foundAuthors[2]?.getId()).toEqual(author1.id);
+    });
   });
 });

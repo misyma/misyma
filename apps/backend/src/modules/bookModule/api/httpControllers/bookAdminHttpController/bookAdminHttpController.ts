@@ -235,6 +235,7 @@ export class BookAdminHttpController implements HttpController {
       language,
       releaseYearAfter,
       releaseYearBefore,
+      sortDate,
     } = request.queryParams;
 
     const { books, total } = await this.findBooksQueryHandler.execute({
@@ -247,6 +248,7 @@ export class BookAdminHttpController implements HttpController {
       releaseYearBefore,
       page,
       pageSize,
+      sortDate,
     });
 
     return {

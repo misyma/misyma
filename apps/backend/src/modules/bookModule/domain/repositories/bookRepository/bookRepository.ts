@@ -20,6 +20,7 @@ export interface FindBooksPayload {
   readonly releaseYearAfter?: number;
   readonly page: number;
   readonly pageSize: number;
+  readonly sortDate?: 'asc' | 'desc';
 }
 
 export interface CountBooksPayload {

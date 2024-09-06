@@ -1,6 +1,6 @@
 import { type Static, Type } from '@sinclair/typebox';
 
-import type * as contracts from '@common/contracts';
+import * as contracts from '@common/contracts';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 import { authorDtoSchema } from '../../../../../bookModule/api/httpControllers/common/authorDto.js';
@@ -15,6 +15,7 @@ export const findAuthorsQueryParamsDtoSchema = Type.Object({
   ids: Type.Optional(Type.Array(Type.String({ format: 'uuid' }))),
   page: Type.Optional(Type.Integer({ minimum: 1 })),
   pageSize: Type.Optional(Type.Integer({ minimum: 1 })),
+  sortDate: Type.Optional(Type.Enum(contracts.SortingType)),
 });
 
 export type FindAuthorsQueryParamsDto = TypeExtends<

@@ -714,6 +714,74 @@ describe('BookRepositoryImpl', () => {
 
       expect(foundBooks[0]?.getId()).toEqual(book1.id);
     });
+
+    it('finds books sorted by createdAt ascending', async () => {
+      const author = await authorTestUtils.createAndPersist();
+
+      const book1 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+          book: {
+            createdAt: new Date('2020-01-01'),
+          },
+        },
+      });
+
+      const book2 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+          book: {
+            createdAt: new Date('2020-01-02'),
+          },
+        },
+      });
+
+      const foundBooks = await bookRepository.findBooks({
+        page: 1,
+        pageSize: 10,
+        sortDate: 'asc',
+      });
+
+      expect(foundBooks.length).toEqual(2);
+
+      expect(foundBooks[0]?.getId()).toEqual(book1.id);
+
+      expect(foundBooks[1]?.getId()).toEqual(book2.id);
+    });
+
+    it('finds books sorted by createdAt descending', async () => {
+      const author = await authorTestUtils.createAndPersist();
+
+      const book1 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+          book: {
+            createdAt: new Date('2020-01-01'),
+          },
+        },
+      });
+
+      const book2 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+          book: {
+            createdAt: new Date('2020-01-02'),
+          },
+        },
+      });
+
+      const foundBooks = await bookRepository.findBooks({
+        page: 1,
+        pageSize: 10,
+        sortDate: 'desc',
+      });
+
+      expect(foundBooks.length).toEqual(2);
+
+      expect(foundBooks[0]?.getId()).toEqual(book2.id);
+
+      expect(foundBooks[1]?.getId()).toEqual(book1.id);
+    });
   });
 
   describe('count', () => {

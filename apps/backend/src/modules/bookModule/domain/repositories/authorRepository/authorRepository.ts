@@ -15,6 +15,13 @@ export interface FindAuthorsPayload {
   readonly isApproved?: boolean;
   readonly page: number;
   readonly pageSize: number;
+  readonly sortDate?: 'asc' | 'desc';
+}
+
+export interface CountAuthorsPayload {
+  readonly ids?: string[];
+  readonly name?: string;
+  readonly isApproved?: boolean;
 }
 
 export interface DeleteAuthorPayload {
@@ -25,6 +32,6 @@ export interface AuthorRepository {
   saveAuthor(input: SaveAuthorPayload): Promise<Author>;
   findAuthor(input: FindAuthorPayload): Promise<Author | null>;
   findAuthors(payload: FindAuthorsPayload): Promise<Author[]>;
-  countAuthors(payload: FindAuthorsPayload): Promise<number>;
+  countAuthors(payload: CountAuthorsPayload): Promise<number>;
   deleteAuthor(input: DeleteAuthorPayload): Promise<void>;
 }
