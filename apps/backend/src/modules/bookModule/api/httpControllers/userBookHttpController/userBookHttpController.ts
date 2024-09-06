@@ -292,7 +292,7 @@ export class UserBookHttpController implements HttpController {
       authorizationHeader: request.headers['authorization'],
     });
 
-    const { page = 1, pageSize = 10, bookshelfId, collectionId, isbn } = request.queryParams;
+    const { page = 1, pageSize = 10, bookshelfId, collectionId, isbn, sortDate } = request.queryParams;
 
     const { userBooks, total } = await this.findUserBooksQueryHandler.execute({
       bookshelfId,
@@ -301,6 +301,7 @@ export class UserBookHttpController implements HttpController {
       isbn,
       page,
       pageSize,
+      sortDate,
     });
 
     return {

@@ -9,6 +9,7 @@ import {
   type FindAuthorPayload,
   type DeleteAuthorPayload,
   type FindAuthorsPayload,
+  type CountAuthorsPayload,
 } from '../../../domain/repositories/authorRepository/authorRepository.js';
 import { type AuthorRawEntity } from '../../databases/bookDatabase/tables/authorTable/authorRawEntity.js';
 import { authorTable } from '../../databases/bookDatabase/tables/authorTable/authorTable.js';
@@ -123,7 +124,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
   }
 
   public async findAuthors(payload: FindAuthorsPayload): Promise<Author[]> {
-    const { ids, name, isApproved, page, pageSize } = payload;
+    const { ids, name, isApproved, page, pageSize, sortDate } = payload;
 
     let rawEntities: AuthorRawEntity[];
 
@@ -140,6 +141,10 @@ export class AuthorRepositoryImpl implements AuthorRepository {
 
       if (isApproved !== undefined) {
         query.where({ isApproved });
+      }
+
+      if (sortDate) {
+        query.orderBy('createdAt', sortDate);
       }
 
       rawEntities = await query.limit(pageSize).offset((page - 1) * pageSize);
@@ -168,7 +173,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
     }
   }
 
-  public async countAuthors(payload: FindAuthorsPayload): Promise<number> {
+  public async countAuthors(payload: CountAuthorsPayload): Promise<number> {
     const { ids, name, isApproved } = payload;
 
     try {

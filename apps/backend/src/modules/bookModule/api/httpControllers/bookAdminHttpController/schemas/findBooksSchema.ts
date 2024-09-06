@@ -34,6 +34,7 @@ export const findAdminBooksQueryParamsDtoSchema = Type.Object({
   ),
   page: Type.Optional(Type.Integer({ minimum: 1 })),
   pageSize: Type.Optional(Type.Integer({ minimum: 1 })),
+  sortDate: Type.Optional(Type.Enum(contracts.SortingType)),
 });
 
 export type FindAdminBooksQueryParamsDto = TypeExtends<

@@ -1,3 +1,5 @@
+import { type SortingType } from '@common/contracts';
+
 import { type QueryHandler } from '../../../../../common/types/queryHandler.js';
 import { type Author } from '../../../domain/entities/author/author.js';
 
@@ -6,6 +8,7 @@ export interface ExecutePayload {
   readonly name?: string | undefined;
   readonly page: number;
   readonly pageSize: number;
+  readonly sortDate?: SortingType | undefined;
 }
 
 export interface ExecuteResult {
