@@ -6,25 +6,17 @@ export class M3CreateEmailEventTableMigration implements Migration {
 
   private readonly tableName = 'emailEvents';
 
-  private readonly tableColumns = {
-    id: 'id',
-    payload: 'payload',
-    eventName: 'eventName',
-    status: 'status',
-    createdAt: 'createdAt',
-  };
-
   public async up(databaseClient: DatabaseClient): Promise<void> {
     await databaseClient.schema.createTable(this.tableName, (table) => {
-      table.text(this.tableColumns.id).primary();
+      table.text('id').primary();
 
-      table.text(this.tableColumns.payload).notNullable();
+      table.text('payload').notNullable();
 
-      table.text(this.tableColumns.status).notNullable();
+      table.text('status').notNullable();
 
-      table.text(this.tableColumns.eventName).notNullable();
+      table.text('eventName').notNullable();
 
-      table.dateTime(this.tableColumns.createdAt).notNullable();
+      table.dateTime('createdAt').notNullable();
     });
   }
 
