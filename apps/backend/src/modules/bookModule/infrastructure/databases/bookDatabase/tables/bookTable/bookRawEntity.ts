@@ -12,4 +12,5 @@ export interface BookRawEntity {
   readonly pages?: number | undefined;
   readonly isApproved: boolean;
   readonly imageUrl?: string | undefined;
+  readonly createdAt: Date;
 }

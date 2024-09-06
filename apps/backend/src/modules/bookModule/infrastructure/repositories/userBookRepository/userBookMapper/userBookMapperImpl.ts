@@ -27,6 +27,7 @@ export class UserBookMapperImpl implements UserBookMapper {
         isApproved,
         pages,
         bookImageUrl,
+        bookCreatedAt,
         authorIds,
         authorNames,
         authorApprovals,
@@ -62,6 +63,7 @@ export class UserBookMapperImpl implements UserBookMapper {
           format,
           pages: pages ?? undefined,
           isApproved: Boolean(isApproved),
+          createdAt: new Date(bookCreatedAt),
           authors:
             authorIds && authorNames && authorApprovals
               ? authorIds

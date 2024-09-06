@@ -106,6 +106,7 @@ describe('ApplyBookChangeRequestCommandHandlerImpl', () => {
       pages: bookChangeRequest.pages,
       imageUrl: bookChangeRequest.imageUrl,
       isApproved: book.isApproved,
+      createdAt: book.createdAt,
     });
 
     const bookAuthors = await bookTestUtils.findBookAuthors({ bookId: book.id });

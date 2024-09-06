@@ -104,6 +104,7 @@ export class BookTestUtils extends TestUtils {
         `${bookTable}.pages`,
         `${bookTable}.isApproved`,
         `${bookTable}.imageUrl`,
+        `${bookTable}.createdAt`,
       ])
       .join(bookAuthorTable, (join) => {
         if (authorId) {

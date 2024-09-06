@@ -16,6 +16,7 @@ export interface BookDraft {
   readonly authors: Author[];
   readonly isApproved: boolean;
   readonly imageUrl?: string | undefined;
+  readonly createdAt: Date;
 }
 
 export interface BookState {
@@ -30,6 +31,7 @@ export interface BookState {
   isApproved: boolean;
   imageUrl?: string | undefined;
   authors: Author[];
+  createdAt: Date;
 }
 
 export interface SetTitlePayload {
@@ -94,6 +96,7 @@ export class Book {
       authors,
       isApproved,
       imageUrl,
+      createdAt,
     } = draft;
 
     this.id = id;
@@ -104,6 +107,7 @@ export class Book {
       format,
       authors,
       isApproved,
+      createdAt,
     };
 
     if (isbn) {
@@ -181,6 +185,10 @@ export class Book {
 
   public getImageUrl(): string | undefined {
     return this.state.imageUrl;
+  }
+
+  public getCreatedAt(): Date {
+    return this.state.createdAt;
   }
 
   public setTitle(payload: SetTitlePayload): void {

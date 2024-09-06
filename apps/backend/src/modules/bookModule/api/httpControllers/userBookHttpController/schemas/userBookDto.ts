@@ -67,6 +67,7 @@ export const userBookDtoSchema = Type.Object({
         maxLength: 128,
       }),
     ),
+    createdAt: Type.String({ format: 'date-time' }),
     authors: Type.Array(authorDtoSchema),
   }),
 });

@@ -15,4 +15,5 @@ export interface Book {
   readonly isApproved: boolean;
   readonly imageUrl?: string;
   readonly authors: Author[];
+  readonly createdAt: string;
 }

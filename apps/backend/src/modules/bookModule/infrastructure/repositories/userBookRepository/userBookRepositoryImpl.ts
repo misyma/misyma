@@ -56,6 +56,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
 
     const id = this.uuidService.generateUuid();
 
+    // TODO: add creating createdAt here
     try {
       await this.databaseClient.transaction(async (transaction) => {
         await transaction<UserBookRawEntity>(userBookTable).insert(
@@ -261,6 +262,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           `${bookTable}.pages as pages`,
           `${bookTable}.isApproved`,
           `${bookTable}.imageUrl as bookImageUrl`,
+          `${bookTable}.createdAt as bookCreatedAt`,
 
           this.databaseClient.raw(`array_agg("authors"."id") as "authorIds"`),
           this.databaseClient.raw(`array_agg("authors"."name") as "authorNames"`),
@@ -367,6 +369,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           `${bookTable}.pages as pages`,
           `${bookTable}.isApproved`,
           `${bookTable}.imageUrl as bookImageUrl`,
+          `${bookTable}.createdAt as bookCreatedAt`,
 
           this.databaseClient.raw(`array_agg("authors"."id") as "authorIds"`),
           this.databaseClient.raw(`array_agg("authors"."name") as "authorNames"`),
@@ -474,6 +477,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           `${bookTable}.pages as pages`,
           `${bookTable}.isApproved`,
           `${bookTable}.imageUrl as bookImageUrl`,
+          `${bookTable}.createdAt as bookCreatedAt`,
 
           this.databaseClient.raw(`array_agg("authors"."id") as "authorIds"`),
           this.databaseClient.raw(`array_agg("authors"."name") as "authorNames"`),
@@ -493,6 +497,12 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           this.databaseClient.raw(`array_agg("bookReadings"."rating") as "readingRatings"`),
           this.databaseClient.raw(`array_agg("bookReadings"."comment") as "readingComments"`),
         ])
+        .leftJoin(bookAuthorTable, (join) => {
+          join.on(`${bookAuthorTable}.bookId`, '=', `${userBookTable}.bookId`);
+        })
+        .leftJoin(authorTable, (join) => {
+          join.on(`${authorTable}.id`, '=', `${bookAuthorTable}.authorId`);
+        })
         .leftJoin(userBookGenreTable, (join) => {
           join.on(`${userBookGenreTable}.userBookId`, '=', `${userBookTable}.id`);
         })
