@@ -40,7 +40,20 @@ export class BookRepositoryImpl implements BookRepository {
 
   private async createBook(payload: CreateBookPayload): Promise<Book> {
     const {
-      book: { title, isbn, publisher, releaseYear, language, translator, format, pages, isApproved, imageUrl, authors },
+      book: {
+        title,
+        isbn,
+        publisher,
+        releaseYear,
+        language,
+        translator,
+        format,
+        pages,
+        isApproved,
+        imageUrl,
+        authors,
+        createdAt,
+      },
     } = payload;
 
     let rawEntities: BookRawEntity[] = [];
@@ -62,6 +75,7 @@ export class BookRepositoryImpl implements BookRepository {
             pages,
             isApproved,
             imageUrl,
+            createdAt,
           },
           '*',
         );
@@ -172,6 +186,7 @@ export class BookRepositoryImpl implements BookRepository {
           `${bookTable}.pages`,
           `${bookTable}.isApproved`,
           `${bookTable}.imageUrl`,
+          `${bookTable}.createdAt`,
           this.databaseClient.raw(`array_agg("authors"."id") as "authorIds"`),
           this.databaseClient.raw(`array_agg("authors"."name") as "authorNames"`),
           this.databaseClient.raw(`array_agg("authors"."isApproved") as "authorApprovals"`),
@@ -221,6 +236,7 @@ export class BookRepositoryImpl implements BookRepository {
           `${bookTable}.pages`,
           `${bookTable}.isApproved`,
           `${bookTable}.imageUrl`,
+          `${bookTable}.createdAt`,
           this.databaseClient.raw(`array_agg("authors"."id") as "authorIds"`),
           this.databaseClient.raw(`array_agg("authors"."name") as "authorNames"`),
           this.databaseClient.raw(`array_agg("authors"."isApproved") as "authorApprovals"`),

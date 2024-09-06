@@ -80,6 +80,7 @@ describe('BookRepositoryImpl', () => {
           pages: createdBook.getPages(),
           isApproved: createdBook.getIsApproved(),
           imageUrl: createdBook.getImageUrl(),
+          createdAt: createdBook.getCreatedAt(),
           authors: [new Author(author)],
         },
       });
@@ -100,6 +101,7 @@ describe('BookRepositoryImpl', () => {
         pages: createdBook.getPages(),
         isApproved: createdBook.getIsApproved(),
         imageUrl: createdBook.getImageUrl(),
+        createdAt: createdBook.getCreatedAt(),
         authors: [
           {
             id: author.id,
@@ -123,6 +125,7 @@ describe('BookRepositoryImpl', () => {
         pages: createdBook.getPages(),
         isApproved: createdBook.getIsApproved(),
         imageUrl: createdBook.getImageUrl(),
+        createdAt: createdBook.getCreatedAt(),
       });
     });
 
@@ -288,6 +291,7 @@ describe('BookRepositoryImpl', () => {
         pages: newPages,
         isApproved: newIsApproved,
         imageUrl: newImageUrl,
+        createdAt: book.getCreatedAt(),
         authors: [],
       });
 
@@ -303,6 +307,7 @@ describe('BookRepositoryImpl', () => {
         pages: newPages,
         isApproved: newIsApproved,
         imageUrl: newImageUrl,
+        createdAt: book.getCreatedAt(),
       });
     });
   });

@@ -83,6 +83,7 @@ export class UserBookTestUtils extends TestUtils {
       return undefined;
     }
 
+    // TODO: remove Boolean and Date castings
     return {
       ...rawEntity,
       isFavorite: Boolean(rawEntity.isFavorite),

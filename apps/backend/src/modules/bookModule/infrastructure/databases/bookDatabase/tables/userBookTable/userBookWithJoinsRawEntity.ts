@@ -19,6 +19,7 @@ export interface UserBookWithJoinsRawEntity {
   readonly pages: number | null;
   readonly isApproved: boolean;
   readonly bookImageUrl: string | null;
+  readonly bookCreatedAt: Date;
 
   readonly authorIds?: (string | null)[];
   readonly authorNames?: (string | null)[];

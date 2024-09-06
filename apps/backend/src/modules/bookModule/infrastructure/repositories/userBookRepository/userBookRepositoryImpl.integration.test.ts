@@ -155,6 +155,7 @@ describe('UserBookRepositoryImpl', () => {
           pages: book.pages,
           isApproved: Boolean(book.isApproved),
           imageUrl: book.imageUrl,
+          createdAt: book.createdAt,
           authors: [
             {
               id: author.id,
@@ -236,6 +237,7 @@ describe('UserBookRepositoryImpl', () => {
           pages: book.pages,
           isApproved: Boolean(book.isApproved),
           imageUrl: book.imageUrl,
+          createdAt: book.createdAt,
           authors: [
             {
               id: author.id,
@@ -617,6 +619,7 @@ describe('UserBookRepositoryImpl', () => {
           pages: book.pages,
           isApproved: Boolean(book.isApproved),
           imageUrl: book.imageUrl,
+          createdAt: book.createdAt,
           authors: [
             {
               id: author.id,

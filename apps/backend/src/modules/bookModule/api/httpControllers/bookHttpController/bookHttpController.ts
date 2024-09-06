@@ -167,8 +167,19 @@ export class BookHttpController implements HttpController {
   }
 
   private mapBookToBookDto(book: Book): BookDto {
-    const { title, language, format, isApproved, imageUrl, isbn, publisher, releaseYear, translator, pages } =
-      book.getState();
+    const {
+      title,
+      language,
+      format,
+      isApproved,
+      imageUrl,
+      isbn,
+      publisher,
+      releaseYear,
+      translator,
+      pages,
+      createdAt,
+    } = book.getState();
 
     const bookDto: BookDto = {
       id: book.getId(),
@@ -176,6 +187,7 @@ export class BookHttpController implements HttpController {
       language,
       format,
       isApproved,
+      createdAt: createdAt.toISOString(),
       authors: book.getAuthors().map((author) => ({
         id: author.getId(),
         name: author.getName(),

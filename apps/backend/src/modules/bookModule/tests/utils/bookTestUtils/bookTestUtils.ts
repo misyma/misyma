@@ -2,10 +2,7 @@ import { TestUtils } from '../../../../../../tests/testUtils.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type Transaction } from '../../../../../libs/database/types/transaction.js';
 import { type BookAuthorRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/bookAuthorTable/bookAuthorRawEntity.js';
-import {
-  bookAuthorColumns,
-  bookAuthorTable,
-} from '../../../infrastructure/databases/bookDatabase/tables/bookAuthorTable/bookAuthorTable.js';
+import { bookAuthorTable } from '../../../infrastructure/databases/bookDatabase/tables/bookAuthorTable/bookAuthorTable.js';
 import { type BookRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/bookTable/bookRawEntity.js';
 import { bookTable } from '../../../infrastructure/databases/bookDatabase/tables/bookTable/bookTable.js';
 import { BookTestFactory } from '../../factories/bookTestFactory/bookTestFactory.js';
@@ -107,10 +104,11 @@ export class BookTestUtils extends TestUtils {
         `${bookTable}.pages`,
         `${bookTable}.isApproved`,
         `${bookTable}.imageUrl`,
+        `${bookTable}.createdAt`,
       ])
       .join(bookAuthorTable, (join) => {
         if (authorId) {
-          join.onIn(bookAuthorColumns.authorId, this.databaseClient.raw('?', [authorId]));
+          join.onIn(`${bookAuthorTable}.authorId`, this.databaseClient.raw('?', [authorId]));
         }
       })
       .where({ title })

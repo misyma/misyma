@@ -30,6 +30,7 @@ describe('BookMapperImpl', () => {
         pages: bookRawEntity.pages,
         isApproved: bookRawEntity.isApproved,
         imageUrl: bookRawEntity.imageUrl,
+        createdAt: bookRawEntity.createdAt,
         authors: [],
       },
     });
@@ -51,6 +52,7 @@ describe('BookMapperImpl', () => {
         pages: book.pages as number,
         isApproved: book.isApproved,
         imageUrl: book.imageUrl as string,
+        createdAt: book.createdAt,
         authorIds: [],
         authorNames: [],
         authorApprovals: [],
@@ -71,6 +73,7 @@ describe('BookMapperImpl', () => {
           pages: book.pages,
           isApproved: book.isApproved,
           imageUrl: book.imageUrl,
+          createdAt: book.createdAt,
           authors: [],
         },
       },
