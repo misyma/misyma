@@ -16,4 +16,5 @@ export interface BookWithJoinsRawEntity {
   readonly authorIds?: (string | null)[];
   readonly authorNames?: (string | null)[];
   readonly authorApprovals?: (boolean | null)[];
+  readonly authorCreatedAtDates?: (Date | null)[];
 }

@@ -63,6 +63,7 @@ describe('CreateBookCommandHandler', () => {
           id: author.id,
           name: author.name,
           isApproved: author.isApproved,
+          createdAt: author.createdAt,
         }),
       ],
     });

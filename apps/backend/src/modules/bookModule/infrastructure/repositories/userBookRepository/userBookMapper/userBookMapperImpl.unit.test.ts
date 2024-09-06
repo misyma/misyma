@@ -43,6 +43,7 @@ describe('UserBookMapperImpl', () => {
         authorIds: [],
         authorNames: [],
         authorApprovals: [],
+        authorCreatedAtDates: [],
         genreIds: [],
         genreNames: [],
         collectionIds: [],

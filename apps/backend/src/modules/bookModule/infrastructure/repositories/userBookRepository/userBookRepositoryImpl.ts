@@ -267,6 +267,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           this.databaseClient.raw(`array_agg("authors"."id") as "authorIds"`),
           this.databaseClient.raw(`array_agg("authors"."name") as "authorNames"`),
           this.databaseClient.raw(`array_agg("authors"."isApproved") as "authorApprovals"`),
+          this.databaseClient.raw(`array_agg("authors"."createdAt") as "authorCreatedAtDates"`),
 
           this.databaseClient.raw(`array_agg("genres"."id") as "genreIds"`),
           this.databaseClient.raw(`array_agg("genres"."name") as "genreNames"`),
@@ -374,6 +375,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           this.databaseClient.raw(`array_agg("authors"."id") as "authorIds"`),
           this.databaseClient.raw(`array_agg("authors"."name") as "authorNames"`),
           this.databaseClient.raw(`array_agg("authors"."isApproved") as "authorApprovals"`),
+          this.databaseClient.raw(`array_agg("authors"."createdAt") as "authorCreatedAtDates"`),
 
           this.databaseClient.raw(`array_agg("genres"."id") as "genreIds"`),
           this.databaseClient.raw(`array_agg("genres"."name") as "genreNames"`),
@@ -482,6 +484,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           this.databaseClient.raw(`array_agg("authors"."id") as "authorIds"`),
           this.databaseClient.raw(`array_agg("authors"."name") as "authorNames"`),
           this.databaseClient.raw(`array_agg("authors"."isApproved") as "authorApprovals"`),
+          this.databaseClient.raw(`array_agg("authors"."createdAt") as "authorCreatedAtDates"`),
 
           this.databaseClient.raw(`array_agg("genres"."id") as "genreIds"`),
           this.databaseClient.raw(`array_agg("genres"."name") as "genreNames"`),

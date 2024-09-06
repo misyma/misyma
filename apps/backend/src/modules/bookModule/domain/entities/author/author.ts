@@ -2,11 +2,13 @@ export interface AuthorDraft {
   readonly id: string;
   readonly name: string;
   readonly isApproved: boolean;
+  readonly createdAt: Date;
 }
 
 export interface AuthorState {
   name: string;
   isApproved: boolean;
+  readonly createdAt: Date;
 }
 
 export interface SetNamePayload {
@@ -22,13 +24,14 @@ export class Author {
   private readonly state: AuthorState;
 
   public constructor(draft: AuthorDraft) {
-    const { id, name, isApproved } = draft;
+    const { id, name, isApproved, createdAt } = draft;
 
     this.id = id;
 
     this.state = {
       name,
       isApproved,
+      createdAt,
     };
   }
 
@@ -46,6 +49,10 @@ export class Author {
 
   public getIsApproved(): boolean {
     return this.state.isApproved;
+  }
+
+  public getCreatedAt(): Date {
+    return this.state.createdAt;
   }
 
   public setName(payload: SetNamePayload): void {

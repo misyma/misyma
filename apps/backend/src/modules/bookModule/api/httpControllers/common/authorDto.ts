@@ -7,6 +7,7 @@ export const authorDtoSchema = Type.Object({
     maxLength: 128,
   }),
   isApproved: Type.Boolean(),
+  createdAt: Type.String({ format: 'date-time' }),
 });
 
 export type AuthorDto = Static<typeof authorDtoSchema>;

@@ -31,7 +31,7 @@ export interface BookState {
   isApproved: boolean;
   imageUrl?: string | undefined;
   authors: Author[];
-  createdAt: Date;
+  readonly createdAt: Date;
 }
 
 export interface SetTitlePayload {

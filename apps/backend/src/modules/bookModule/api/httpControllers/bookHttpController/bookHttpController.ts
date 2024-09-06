@@ -192,6 +192,7 @@ export class BookHttpController implements HttpController {
         id: author.getId(),
         name: author.getName(),
         isApproved: author.getIsApproved(),
+        createdAt: author.getCreatedAt().toISOString(),
       })),
     };
 

@@ -4,12 +4,13 @@ import { type AuthorRawEntity } from '../../../databases/bookDatabase/tables/aut
 
 export class AuthorMapperImpl implements AuthorMapper {
   public mapToDomain(entity: AuthorRawEntity): Author {
-    const { id, name, isApproved } = entity;
+    const { id, name, isApproved, createdAt } = entity;
 
     return new Author({
       id,
       name,
       isApproved,
+      createdAt,
     });
   }
 }

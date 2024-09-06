@@ -31,6 +31,7 @@ export class UserBookMapperImpl implements UserBookMapper {
         authorIds,
         authorNames,
         authorApprovals,
+        authorCreatedAtDates,
         genreIds,
         genreNames,
         collectionIds,
@@ -65,7 +66,7 @@ export class UserBookMapperImpl implements UserBookMapper {
           isApproved: Boolean(isApproved),
           createdAt: new Date(bookCreatedAt),
           authors:
-            authorIds && authorNames && authorApprovals
+            authorIds && authorNames && authorApprovals && authorCreatedAtDates
               ? authorIds
                   .filter((authorId) => authorId !== null)
                   .map((authorId, index) => {
@@ -73,6 +74,7 @@ export class UserBookMapperImpl implements UserBookMapper {
                       id: authorId,
                       name: authorNames[index] as string,
                       isApproved: authorApprovals[index] as boolean,
+                      createdAt: authorCreatedAtDates[index] as Date,
                     });
                   })
               : [],
