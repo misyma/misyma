@@ -1,4 +1,4 @@
-import { FC, useMemo, useState } from 'react';
+import { FC, forwardRef, useMemo, useState } from 'react';
 import { FilterComponent } from '../filter/filter';
 import { useFilterContext } from '../../contexts/filterContext';
 import {
@@ -10,7 +10,21 @@ import {
 import { FilterOpts } from '../../types/filter';
 import { Separator } from '../separator/separator';
 import { HiPlus } from 'react-icons/hi2';
+import { Button } from '../button/button';
 
+const CustomButton = forwardRef<
+  HTMLButtonElement,
+  React.ComponentPropsWithoutRef<'button'>
+>(({ children, ...props }, ref) => (
+  <Button
+    ref={ref}
+    size='base'
+    variant='outline'
+    {...props}
+  >
+    {children}
+  </Button>
+));
 export const DynamicFilter: FC = () => {
   const { filters, addFilter, allowedValues } = useFilterContext();
 
@@ -56,17 +70,20 @@ export const DynamicFilter: FC = () => {
         </div>
       ))}
       <Select
-        className='flex items-center justify-center'
+        className="flex items-center justify-center"
         open={open}
         onOpenChange={(e) => setOpen(e)}
         onValueChange={(e) => handleAddFilter(e)}
       >
         {filtersChoice.length > 0 && (
           <SelectTrigger
+            asChild
             ignoreIcons
             className="w-16 sm:w-16 bg-transparent border-none flex items-center justify-center"
           >
-            <HiPlus className="h-8 w-8 border-2 rounded-xl text-primary"></HiPlus>
+            <CustomButton>
+              <HiPlus className="h-8 w-8 border-2 rounded-xl text-primary"></HiPlus>
+            </CustomButton>
           </SelectTrigger>
         )}
         <SelectContent className="w-60">

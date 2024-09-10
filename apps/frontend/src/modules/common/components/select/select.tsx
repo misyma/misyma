@@ -5,8 +5,10 @@ import { cn } from '../../lib/utils';
 
 const Select = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Root> & { className?: string}
->(({ className,...props }) => {
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Root> & {
+    className?: string;
+  }
+>(({ className, ...props }) => {
   return (
     <SelectPrimitive.Root {...props}>
       <div className={className}>{props.children}</div>
@@ -43,23 +45,35 @@ interface SelectTriggerProps
 const SelectTrigger = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
   SelectTriggerProps
->(({ className, children, ignoreIcons = false, ...props }, ref) => (
-  <SelectPrimitive.Trigger
-    ref={ref}
-    className={cn(
-      'flex w-60 sm:w-96 h-12 bg-[#D1D5DB]/20 items-center justify-between rounded-md border border-input px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1',
-      className
-    )}
-    {...props}
-  >
-      {children}
-      {!ignoreIcons && (
-        <SelectPrimitive.Icon asChild>
-          <ChevronDown className="h-8 w-8 text-primary" />
-        </SelectPrimitive.Icon>
+>(({ className, children, ignoreIcons = false, ...props }, ref) => {
+  if (props.asChild) {
+    return (
+      <SelectPrimitive.Trigger
+        ref={ref}
+        className={cn(
+          'flex w-60 sm:w-96 h-12 bg-[#D1D5DB]/20 items-center justify-between rounded-md border border-input px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1',
+          className
+        )}
+        {...props}
+      >
+        {children}
+      </SelectPrimitive.Trigger>
+    );
+  }
+  return (
+    <SelectPrimitive.Trigger
+      ref={ref}
+      className={cn(
+        'flex w-60 sm:w-96 h-12 bg-[#D1D5DB]/20 items-center justify-between rounded-md border border-input px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1',
+        className
       )}
-  </SelectPrimitive.Trigger>
-));
+      {...props}
+    >
+      {children}
+      {!ignoreIcons && <ChevronDown className="h-8 w-8 text-primary" />}
+    </SelectPrimitive.Trigger>
+  );
+});
 SelectTrigger.displayName = SelectPrimitive.Trigger.displayName;
 
 const SelectScrollUpButton = React.forwardRef<
