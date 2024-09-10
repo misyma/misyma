@@ -9,6 +9,7 @@ import {
 } from '../select/select';
 import { FilterOpts } from '../../types/filter';
 import { Separator } from '../separator/separator';
+import { HiPlus } from 'react-icons/hi2';
 
 export const DynamicFilter: FC = () => {
   const { filters, addFilter, allowedValues } = useFilterContext();
@@ -55,12 +56,18 @@ export const DynamicFilter: FC = () => {
         </div>
       ))}
       <Select
+        className='flex items-center justify-center'
         open={open}
         onOpenChange={(e) => setOpen(e)}
         onValueChange={(e) => handleAddFilter(e)}
       >
         {filtersChoice.length > 0 && (
-          <SelectTrigger className="w-60"></SelectTrigger>
+          <SelectTrigger
+            ignoreIcons
+            className="w-16 sm:w-16 bg-transparent border-none flex items-center justify-center"
+          >
+            <HiPlus className="h-8 w-8 border-2 rounded-xl text-primary"></HiPlus>
+          </SelectTrigger>
         )}
         <SelectContent className="w-60">
           {filtersChoice.length > 0 &&
