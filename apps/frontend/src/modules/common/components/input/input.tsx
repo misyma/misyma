@@ -66,7 +66,7 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, iSize = 'xl', containerClassName, type, includeQuill = true, otherIcon, ...props }, ref) => {
+  ({ className, iSize = 'xl', containerClassName, type, includeQuill = false, otherIcon, ...props }, ref) => {
     const sizeClass = getInputSizeClass(iSize);
 
     const innerSizeClass = getInnerSizeClass(iSize);
