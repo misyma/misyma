@@ -1,8 +1,11 @@
+import { FC } from 'react';
+
 export type BaseFilterOpts = {
 	id: string;
 	type: FilterTypes;
 	label: string;
 	key: PropertyKey;
+	customSlot?: FC<FilterComponentProps>;
 };
 
 export type FilterTypes = 'text' | 'select' | 'checkbox' | 'date';
@@ -32,3 +35,9 @@ export type FilterOpts =
 	| DateFilterOpts
 	| SelectFilterOpts
 	| CheckboxFilterOpts;
+
+export interface FilterComponentProps {
+	filter: FilterOpts;
+	className?: string;
+	dialog?: boolean;
+}

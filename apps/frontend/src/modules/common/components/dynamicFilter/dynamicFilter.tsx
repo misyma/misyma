@@ -35,6 +35,7 @@ export const DynamicFilter: FC = () => {
       id: correspondingFilter?.id || `filter-${filters.length + 1}-${key}`,
       label: correspondingFilter?.label as string,
       key: key,
+      customSlot: correspondingFilter?.customSlot,
     };
 
     switch (correspondingFilter?.type) {

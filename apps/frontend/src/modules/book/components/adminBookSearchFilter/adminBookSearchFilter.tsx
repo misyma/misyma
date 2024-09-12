@@ -1,4 +1,4 @@
-import { FC, useMemo, useState } from 'react';
+import { FC, useCallback, useMemo, useState } from 'react';
 import {
   Popover,
   PopoverContent,
@@ -7,9 +7,105 @@ import {
 import { HiOutlineSearchCircle, HiX } from 'react-icons/hi';
 import { Button } from '../../../common/components/button/button';
 import { DynamicFilter } from '../../../common/components/dynamicFilter/dynamicFilter';
-import { FilterProvider } from '../../../common/contexts/filterContext';
+import {
+  FilterProvider,
+  useFilterContext,
+} from '../../../common/contexts/filterContext';
 import { ReversedLanguages } from '../../../common/constants/languages';
-import { FilterOpts } from '../../../common/types/filter';
+import { FilterComponentProps, FilterOpts } from '../../../common/types/filter';
+import { AuthorSearchSelector } from '../../../auth/components/authorSearchSelector/authorSearchSelector';
+import { cn } from '../../../common/lib/utils';
+import { ChevronsUpDown } from 'lucide-react';
+import { useFindAuthorsQuery } from '../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
+import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
+import { RemoveFilterButton } from '../../../common/components/filter/removeFilterButton';
+
+const CustomAuthorSearchFilter: FC<FilterComponentProps> = ({ filter }) => {
+  const { updateFilterValue, filterValues } = useFilterContext();
+  const [selectedAuthorName, setSelectedAuthorName] = useState('');
+
+  const handleChange = (
+    value: string | boolean | Date | undefined,
+    authorName: string
+  ) => {
+    updateFilterValue(filter.id, value);
+    setSelectedAuthorName(authorName);
+  };
+  const [open, setOpen] = useState(false);
+
+  const currentAuthorId = useMemo(
+    () => filterValues[filter.id],
+    [filterValues, filter.id]
+  );
+
+  const { data: currentAuthor, isFetching: isFetchingCurrentAuthor } =
+    useFindAuthorsQuery({
+      ids: currentAuthorId ? [currentAuthorId as string] : [],
+    });
+
+  const getAuthorName = useCallback(() => {
+    if (currentAuthor) {
+      return currentAuthor.data[0].name;
+    }
+
+    if (selectedAuthorName) {
+      return selectedAuthorName;
+    }
+
+    return 'Wyszukaj autora';
+  }, [currentAuthor, selectedAuthorName]);
+
+  return (
+    // todo: make a template with a slot for filter content :)
+    <div className="flex items-center w-full justify-between space-x-4">
+      <label>{filter.label}</label>
+      <div className="flex gap-2 items-center">
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="link"
+              role="combobox"
+              size="custom"
+              className={cn(
+                'justify-between bg-[#D1D5DB]/20',
+                !currentAuthorId && 'text-muted-foreground',
+                'border h-12',
+                'w-48 sm:w-72'
+              )}
+              style={{
+                height: '3rem',
+              }}
+            >
+              <p
+                className={cn(
+                  !currentAuthorId && 'text-muted-foreground',
+                  'w-full text-start px-3 py-2'
+                )}
+              >
+                {!currentAuthorId && 'Wyszukaj autora'}
+                {currentAuthorId && isFetchingCurrentAuthor && (
+                  <LoadingSpinner size={20} />
+                )}
+                {currentAuthorId && !isFetchingCurrentAuthor
+                  ? getAuthorName()
+                  : ''}
+              </p>
+              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <AuthorSearchSelector
+            onCreateAuthorDraft={() => {}}
+            includeAuthorCreation={false}
+            onSelect={handleChange}
+            createAuthorDialogVisible={open}
+            setAuthorSelectOpen={setOpen}
+          />
+        </Popover>
+        <RemoveFilterButton filterId={filter.id} />
+      </div>
+    </div>
+  );
+};
 
 export const AdminBookSearchFilter: FC = () => {
   const filterOptions = useMemo(
@@ -19,6 +115,7 @@ export const AdminBookSearchFilter: FC = () => {
         key: 'authorIds',
         label: 'Autor',
         type: 'text',
+        customSlot: CustomAuthorSearchFilter,
       },
       {
         id: 'isbn-filter',

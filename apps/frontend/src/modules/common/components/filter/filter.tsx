@@ -2,7 +2,7 @@ import { FC, useCallback, useMemo, useState } from 'react';
 import { useFilterContext } from '../../contexts/filterContext';
 import {
   DateFilterOpts,
-  FilterOpts,
+  FilterComponentProps,
   SelectFilterOpts,
 } from '../../types/filter';
 import { Button } from '../button/button';
@@ -15,33 +15,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../select/select';
-import { HiTrash } from 'react-icons/hi';
 import { Checkbox } from '../checkbox/checkbox';
 import { Popover, PopoverContent, PopoverTrigger } from '../popover/popover';
 import { pl } from 'date-fns/locale';
 import { formatDate } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { Calendar } from '../calendar/calendar';
-
-interface FilterComponentProps {
-  filter: FilterOpts;
-  className?: string;
-  dialog?: boolean;
-}
-
-const RemoveFilterButton: FC<{ filterId: string }> = ({ filterId }) => {
-  const { removeFilter } = useFilterContext();
-
-  return (
-    <Button
-      size="big-icon"
-      variant="outline"
-      onClick={() => removeFilter(filterId)}
-    >
-      <HiTrash></HiTrash>
-    </Button>
-  );
-};
+import { RemoveFilterButton } from './removeFilterButton';
 
 const TextFilter: FC<FilterComponentProps> = ({ filter }) => {
   const { updateFilterValue, filterValues } = useFilterContext();
@@ -235,6 +215,12 @@ export const DateFilter: FC<DateFilterComponentProps> = ({ filter }) => {
 };
 
 export const FilterComponent: FC<FilterComponentProps> = ({ filter }) => {
+  if (filter.customSlot) {
+    // todo: fix types later
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return <filter.customSlot filter={filter} />;
+  }
+
   switch (filter.type) {
     case 'text':
       return <TextFilter filter={filter} />;
