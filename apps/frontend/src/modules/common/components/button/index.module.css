@@ -19,7 +19,7 @@
 }
 
 .lg-size.button {
-  @apply h-11 w-40 rounded-md px-8 text-sm;
+  @apply h-10 w-40 rounded-md px-8 text-sm;
 }
 
 .xl-size.button {

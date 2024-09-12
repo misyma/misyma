@@ -1,52 +1,34 @@
 import { createContext, FC, ReactNode, useContext, useState } from 'react';
-import { FilterOpts, FilterTypes } from '../types/filter';
+import { FilterOpts } from '../types/filter';
 
 type FilterValues = {
-  [filterId: string]: string | boolean;
+  [filterId: string]: string | boolean | Date | undefined;
 };
 type FilterContextType = {
   filters: FilterOpts[];
   filterValues: FilterValues;
   addFilter: (filter: FilterOpts) => void;
   removeFilter: (id: string) => void;
-  updateFilterValue: (id: string, value: string | boolean) => void;
-  allowedValues: FilterOptions[];
+  updateFilterValue: (
+    id: string,
+    value: string | boolean | Date | undefined
+  ) => void;
+  filterOptions: FilterOpts[];
+  filtersOrder?: string[];
 };
 
 const FilterContext = createContext<FilterContextType | undefined>(undefined);
 
-interface BaseFilterOptions {
-  key: PropertyKey;
-  label: string;
-  type: FilterTypes;
-}
-
-interface TextFilterOptions extends BaseFilterOptions {
-  type: 'text';
-}
-
-interface CheckboxFilterOptions extends BaseFilterOptions {
-  type: 'checkbox';
-}
-
-interface SelectFilterOptions extends BaseFilterOptions {
-  key: PropertyKey;
-  label: string;
-  type: 'select';
-  options: string[];
-  multiSelect?: boolean;
-}
-
-export type FilterOptions = TextFilterOptions | CheckboxFilterOptions | SelectFilterOptions;
-
 interface FilterProviderProps {
   children: ReactNode;
-  filterOptions: FilterOptions[];
+  filterOptions: FilterOpts[];
+  filtersOrder?: string[];
 }
 
 export const FilterProvider: FC<FilterProviderProps> = ({
   children,
-  filterOptions: allowedValues,
+  filtersOrder,
+  filterOptions,
 }) => {
   const [filters, setFilters] = useState<FilterOpts[]>([]);
   const [filterValues, setFilterValues] = useState<FilterValues>({});
@@ -56,8 +38,15 @@ export const FilterProvider: FC<FilterProviderProps> = ({
   };
   const removeFilter = (id: string) => {
     setFilters((prev) => prev.filter((filter) => filter.id !== id));
+    setFilterValues((prev) => {
+      delete prev[id];
+      return prev;
+    });
   };
-  const updateFilterValue = (id: string, value: string | boolean) => {
+  const updateFilterValue = (
+    id: string,
+    value: string | boolean | Date | undefined
+  ) => {
     setFilterValues((prev) => ({ ...prev, [id]: value }));
   };
 
@@ -69,7 +58,8 @@ export const FilterProvider: FC<FilterProviderProps> = ({
         addFilter,
         removeFilter,
         updateFilterValue,
-        allowedValues,
+        filterOptions,
+        filtersOrder,
       }}
     >
       {children}

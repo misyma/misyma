@@ -21,13 +21,18 @@ const CustomButton = forwardRef<
   </Button>
 ));
 export const DynamicFilter: FC = () => {
-  const { filters, addFilter, allowedValues } = useFilterContext();
+  const {
+    filters,
+    addFilter,
+    filterOptions: allowedValues,
+    filtersOrder,
+  } = useFilterContext();
 
   const handleAddFilter = (key: string) => {
     const correspondingFilter = allowedValues.find((el) => el.key === key);
 
     const filterPayload: Omit<FilterOpts, 'type'> = {
-      id: `filter-${filters.length + 1}-${key}`,
+      id: correspondingFilter?.id || `filter-${filters.length + 1}-${key}`,
       label: correspondingFilter?.label as string,
       key: key,
     };
@@ -44,6 +49,16 @@ export const DynamicFilter: FC = () => {
         addFilter({
           ...filterPayload,
           type: 'checkbox',
+        });
+        break;
+      }
+      case 'date': {
+        addFilter({
+          ...filterPayload,
+          dateRangeSiblingId: correspondingFilter.dateRangeSiblingId,
+          isAfterFilter: correspondingFilter.isAfterFilter,
+          isBeforeFilter: correspondingFilter.isBeforeFilter,
+          type: 'date',
         });
         break;
       }
@@ -69,10 +84,41 @@ export const DynamicFilter: FC = () => {
     [filters, allowedValues]
   );
 
+  const orderedFilters = useMemo(() => {
+    if (!filtersOrder) {
+      return filters;
+    }
+    let ordered = [];
+    const rest = [];
+
+    for (const filter of filters) {
+      const isOrdered = filtersOrder.find((f) => filter.key === f);
+      if (isOrdered) {
+        ordered.push(filter);
+        continue;
+      }
+      rest.push(filter);
+    }
+
+    if (ordered.length > 1) {
+      const sorted = [];
+      for (const key of filtersOrder) {
+        const val = ordered.find((v) => v.key === key);
+        if (!val) {
+          continue;
+        }
+        sorted.push(val);
+      }
+      ordered = sorted;
+    }
+
+    return [...ordered, ...rest];
+  }, [filters, filtersOrder]);
+
   return (
     <div className="space-y-4">
-      {filters.map((filter) => (
-        <div className="grid gap-4">
+      {orderedFilters.map((filter) => (
+        <div key={`container-${filter.id}`} className="grid gap-4">
           <FilterComponent key={filter.id} filter={filter} />
           <Separator></Separator>
         </div>
