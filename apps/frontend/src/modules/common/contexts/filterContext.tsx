@@ -2,14 +2,14 @@ import { createContext, FC, ReactNode, useContext, useState } from 'react';
 import { FilterOpts, FilterTypes } from '../types/filter';
 
 type FilterValues = {
-  [filterId: string]: string;
+  [filterId: string]: string | boolean;
 };
 type FilterContextType = {
   filters: FilterOpts[];
   filterValues: FilterValues;
   addFilter: (filter: FilterOpts) => void;
   removeFilter: (id: string) => void;
-  updateFilterValue: (id: string, value: string) => void;
+  updateFilterValue: (id: string, value: string | boolean) => void;
   allowedValues: FilterOptions[];
 };
 
@@ -24,6 +24,11 @@ interface BaseFilterOptions {
 interface TextFilterOptions extends BaseFilterOptions {
   type: 'text';
 }
+
+interface CheckboxFilterOptions extends BaseFilterOptions {
+  type: 'checkbox';
+}
+
 interface SelectFilterOptions extends BaseFilterOptions {
   key: PropertyKey;
   label: string;
@@ -32,7 +37,7 @@ interface SelectFilterOptions extends BaseFilterOptions {
   multiSelect?: boolean;
 }
 
-export type FilterOptions = TextFilterOptions | SelectFilterOptions;
+export type FilterOptions = TextFilterOptions | CheckboxFilterOptions | SelectFilterOptions;
 
 interface FilterProviderProps {
   children: ReactNode;
@@ -52,7 +57,7 @@ export const FilterProvider: FC<FilterProviderProps> = ({
   const removeFilter = (id: string) => {
     setFilters((prev) => prev.filter((filter) => filter.id !== id));
   };
-  const updateFilterValue = (id: string, value: string) => {
+  const updateFilterValue = (id: string, value: string | boolean) => {
     setFilterValues((prev) => ({ ...prev, [id]: value }));
   };
 

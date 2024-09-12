@@ -16,12 +16,7 @@ const CustomButton = forwardRef<
   HTMLButtonElement,
   React.ComponentPropsWithoutRef<'button'>
 >(({ children, ...props }, ref) => (
-  <Button
-    ref={ref}
-    size='base'
-    variant='outline'
-    {...props}
-  >
+  <Button ref={ref} size="base" variant="outline" {...props}>
     {children}
   </Button>
 ));
@@ -37,21 +32,34 @@ export const DynamicFilter: FC = () => {
       key: key,
     };
 
-    if (correspondingFilter?.type === 'select') {
-      return addFilter({
-        ...filterPayload,
-        type: 'select',
-        options: correspondingFilter.options,
-      });
+    switch (correspondingFilter?.type) {
+      case 'select': {
+        return addFilter({
+          ...filterPayload,
+          type: 'select',
+          options: correspondingFilter.options,
+        });
+      }
+      case 'checkbox': {
+        addFilter({
+          ...filterPayload,
+          type: 'checkbox',
+        });
+        break;
+      }
+      case 'text':
+      default: {
+        addFilter({
+          ...filterPayload,
+          type: 'text',
+        });
+        break;
+      }
     }
-
-    addFilter({
-      ...filterPayload,
-      type: 'text',
-    });
   };
 
   const [open, setOpen] = useState(false);
+  const [selectValue] = useState('');
 
   const filtersChoice = useMemo(
     () =>
@@ -72,6 +80,7 @@ export const DynamicFilter: FC = () => {
       <Select
         className="flex items-center justify-center"
         open={open}
+        value={selectValue}
         onOpenChange={(e) => setOpen(e)}
         onValueChange={(e) => handleAddFilter(e)}
       >
@@ -90,8 +99,10 @@ export const DynamicFilter: FC = () => {
           {filtersChoice.length > 0 &&
             filtersChoice.map((value, index) => (
               <SelectItem
+                skipCheckIcon
                 key={`${String(value.key)}-${index}`}
                 value={`${String(value.key)}`}
+                onClick={() => console.log('BOOP')}
               >
                 {value.label}
               </SelectItem>

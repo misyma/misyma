@@ -19,6 +19,7 @@ export const buttonSizesStylesMap = {
   lg: styles['lg-size'],
   xl: styles['xl-size'],
   icon: styles['icon-size'],
+  ['big-icon' as const]: styles['big-icon'],
   custom: ''
 } as const;
 

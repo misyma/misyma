@@ -35,8 +35,7 @@ export const AdminBookSearchFilter: FC = () => {
       {
         key: 'isApproved',
         label: 'Zaakceptowana',
-        type: 'select',
-        options: ['Tak', 'Nie'],
+        type: 'checkbox',
       },
       {
         key: 'releaseYearBefore',

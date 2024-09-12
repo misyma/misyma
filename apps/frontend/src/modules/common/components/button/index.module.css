@@ -27,7 +27,11 @@
 }
 
 .icon-size.button {
-  @apply text-xs h-8 w-8 text-sm;
+  @apply text-xs h-8 w-8;
+}
+
+.big-icon.button {
+  @apply text-sm h-10 w-10;
 }
 
 .destructive-button.button {

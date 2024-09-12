@@ -5,10 +5,14 @@ type BaseFilterOpts = {
 	key: PropertyKey;
 };
 
-export type FilterTypes = 'text' | 'select';
+export type FilterTypes = 'text' | 'select' | 'checkbox';
 
 export type TextFilterOpts = BaseFilterOpts & {
 	type: 'text';
+};
+
+export type CheckboxFilterOpts = BaseFilterOpts & {
+	type: 'checkbox';
 };
 
 export type SelectFilterOpts = BaseFilterOpts & {
@@ -16,4 +20,4 @@ export type SelectFilterOpts = BaseFilterOpts & {
 	options: string[];
 };
 
-export type FilterOpts = TextFilterOpts | SelectFilterOpts;
+export type FilterOpts = TextFilterOpts | SelectFilterOpts | CheckboxFilterOpts;
