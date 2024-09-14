@@ -1,16 +1,13 @@
 import { FC, useCallback, useMemo, useState } from 'react';
 import {
   Popover,
-  PopoverContent,
   PopoverTrigger,
 } from '../../../common/components/popover/popover';
-import { HiOutlineSearchCircle, HiX } from 'react-icons/hi';
 import { Button } from '../../../common/components/button/button';
-import { DynamicFilter } from '../../../common/components/dynamicFilter/dynamicFilter';
 import {
-  FilterProvider,
-  useFilterContext,
-} from '../../../common/contexts/filterContext';
+  DynamicFilterProvider,
+  useDynamicFilterContext,
+} from '../../../common/contexts/dynamicFilterContext';
 import { ReversedLanguages } from '../../../common/constants/languages';
 import { FilterComponentProps, FilterOpts } from '../../../common/types/filter';
 import { AuthorSearchSelector } from '../../../auth/components/authorSearchSelector/authorSearchSelector';
@@ -18,10 +15,12 @@ import { cn } from '../../../common/lib/utils';
 import { ChevronsUpDown } from 'lucide-react';
 import { useFindAuthorsQuery } from '../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
 import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
-import { RemoveFilterButton } from '../../../common/components/filter/removeFilterButton';
+import { FiltersDrawer } from '../../../common/components/filtersDrawer/filtersDrawer';
+import { useFilterContext } from '../../../common/contexts/filterContext';
+import { FilterContainer } from '../../../common/components/filter/filterContainer';
 
 const CustomAuthorSearchFilter: FC<FilterComponentProps> = ({ filter }) => {
-  const { updateFilterValue, filterValues } = useFilterContext();
+  const { updateFilterValue, filterValues } = useDynamicFilterContext();
   const [selectedAuthorName, setSelectedAuthorName] = useState('');
 
   const handleChange = (
@@ -56,10 +55,9 @@ const CustomAuthorSearchFilter: FC<FilterComponentProps> = ({ filter }) => {
   }, [currentAuthor, selectedAuthorName]);
 
   return (
-    // todo: make a template with a slot for filter content :)
-    <div className="flex items-center w-full justify-between space-x-4">
-      <label>{filter.label}</label>
-      <div className="flex gap-2 items-center">
+    <FilterContainer
+      filter={filter}
+      slot={
         <Popover>
           <PopoverTrigger asChild>
             <Button
@@ -70,7 +68,7 @@ const CustomAuthorSearchFilter: FC<FilterComponentProps> = ({ filter }) => {
                 'justify-between bg-[#D1D5DB]/20',
                 !currentAuthorId && 'text-muted-foreground',
                 'border h-12',
-                'w-48 sm:w-72'
+                'w-48 sm:w-48'
               )}
               style={{
                 height: '3rem',
@@ -101,9 +99,8 @@ const CustomAuthorSearchFilter: FC<FilterComponentProps> = ({ filter }) => {
             setAuthorSelectOpen={setOpen}
           />
         </Popover>
-        <RemoveFilterButton filterId={filter.id} />
-      </div>
-    </div>
+      }
+    ></FilterContainer>
   );
 };
 
@@ -137,15 +134,6 @@ export const AdminBookSearchFilter: FC = () => {
         type: 'checkbox',
       },
       {
-        id: 'release-year-before-filter',
-        key: 'releaseYearBefore',
-        label: 'Wydana przed',
-        type: 'date',
-        dateRangeSiblingId: 'release-year-after-filter',
-        isAfterFilter: false,
-        isBeforeFilter: true,
-      },
-      {
         id: 'release-year-after-filter',
         key: 'releaseYearAfter',
         label: 'Wydana po',
@@ -153,6 +141,15 @@ export const AdminBookSearchFilter: FC = () => {
         dateRangeSiblingId: 'release-year-before-filter',
         isAfterFilter: true,
         isBeforeFilter: false,
+      },
+      {
+        id: 'release-year-before-filter',
+        key: 'releaseYearBefore',
+        label: 'Wydana przed',
+        type: 'date',
+        dateRangeSiblingId: 'release-year-after-filter',
+        isAfterFilter: false,
+        isBeforeFilter: true,
       },
       {
         id: 'title-filter',
@@ -167,36 +164,14 @@ export const AdminBookSearchFilter: FC = () => {
     () => ['releaseYearAfter', 'releaseYearBefore'],
     []
   );
+  const { isFilterVisible } = useFilterContext();
 
-  const [open, setOpen] = useState(false);
   return (
-    <FilterProvider filterOptions={filterOptions} filtersOrder={filtersOrder}>
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <div>
-            <Button variant="default" size="big-icon">
-              <HiOutlineSearchCircle className="w-8 h-8"></HiOutlineSearchCircle>
-            </Button>
-          </div>
-        </PopoverTrigger>
-        <PopoverContent
-          align="start"
-          className="w-[40rem]"
-          onInteractOutside={(e) => e.preventDefault()}
-        >
-          <div className="p-2 flex flex-col gap-4">
-            <div className="flex w-full items-center justify-end">
-              <HiX
-                onClick={() => setOpen(false)}
-                className="cursor-pointer h-6 w-6"
-              ></HiX>
-            </div>
-            <div>
-              <DynamicFilter></DynamicFilter>
-            </div>
-          </div>
-        </PopoverContent>
-      </Popover>
-    </FilterProvider>
+    <DynamicFilterProvider
+      filterOptions={filterOptions}
+      filtersOrder={filtersOrder}
+    >
+      <FiltersDrawer className={isFilterVisible ? '' : 'hidden'} />
+    </DynamicFilterProvider>
   );
 };

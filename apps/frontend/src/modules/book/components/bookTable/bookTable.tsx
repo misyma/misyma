@@ -84,7 +84,7 @@ export function BookTable<TValue>({
   }
 
   return (
-    <div className="w-full md:max-w-screen-xl ">
+    <div className="w-full">
       <div className="w-full min-h-[22rem]">
         <Table>
           <TableHeader>

@@ -1,6 +1,6 @@
 import { FC, forwardRef, useMemo, useState } from 'react';
 import { FilterComponent } from '../filter/filter';
-import { useFilterContext } from '../../contexts/filterContext';
+import { useDynamicFilterContext } from '../../contexts/dynamicFilterContext';
 import {
   Select,
   SelectContent,
@@ -26,7 +26,7 @@ export const DynamicFilter: FC = () => {
     addFilter,
     filterOptions: allowedValues,
     filtersOrder,
-  } = useFilterContext();
+  } = useDynamicFilterContext();
 
   const handleAddFilter = (key: string) => {
     const correspondingFilter = allowedValues.find((el) => el.key === key);

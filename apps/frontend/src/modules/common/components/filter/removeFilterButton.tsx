@@ -1,10 +1,10 @@
 import { FC } from 'react';
-import { useFilterContext } from '../../contexts/filterContext';
+import { useDynamicFilterContext } from '../../contexts/dynamicFilterContext';
 import { Button } from '../button/button';
 import { HiTrash } from 'react-icons/hi2';
 
 export const RemoveFilterButton: FC<{ filterId: string }> = ({ filterId }) => {
-  const { removeFilter } = useFilterContext();
+  const { removeFilter } = useDynamicFilterContext();
 
   return (
     <Button

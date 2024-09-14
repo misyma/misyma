@@ -7,12 +7,19 @@ import { useFindBooksQuery } from '../../../../modules/book/api/admin/queries/fi
 import { RequireAdmin } from '../../../../modules/core/components/requireAdmin/requireAdmin';
 import { BookCreationProvider } from '../../../../modules/bookshelf/context/bookCreationContext/bookCreationContext';
 import { CreateBookModal } from '../../../../modules/book/components/createBookModal/createBookModal';
-import { AdminBookSearchFilter } from '../../../../modules/book/components/adminBookSearchFilter/adminBookSearchFilter';
+import { AdminBookSearchFilter } from '../../../../modules/book/components/adminBookSearchFilters/adminBookSearchFilters';
+import {
+  FilterProvider,
+  useFilterContext,
+} from '../../../../modules/common/contexts/filterContext';
+import { Button } from '../../../../modules/common/components/button/button';
+import { HiOutlineFilter } from 'react-icons/hi';
 
 export const BooksAdminPage: FC = () => {
   const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
   const [searchTitleName, setSearchTitleName] = useState('');
+  const { isFilterVisible, toggleFilterVisibility } = useFilterContext();
 
   const onSetSearchTitle = (val: string) => {
     setPage(1);
@@ -45,8 +52,8 @@ export const BooksAdminPage: FC = () => {
   return (
     <AuthenticatedLayout>
       <div className="flex w-full justify-center items-center w-100% px-8 py-2">
-        <div className="grid grid-cols-4 sm:grid-cols-5 w-full gap-y-4 gap-x-4  sm:max-w-screen-2xl">
-          <div className="flex justify-between gap-4 col-span-5">
+        <div className="grid grid-cols-5 sm:grid-cols-6 w-full gap-y-4 gap-x-4 sm:max-w-screen-2xl">
+          <div className="flex justify-between gap-4 col-span-6">
             <ul className="flex justify-between gap-8 text-sm sm:text-lg font-semibold min-w-96">
               <Link className="cursor-pointer" to="/admin/tabs/authors">
                 Autorzy
@@ -59,15 +66,17 @@ export const BooksAdminPage: FC = () => {
               </Link>
             </ul>
             <div className="flex w-full justify-end"></div>
+            <BookCreationProvider>
+              <CreateBookModal />
+            </BookCreationProvider>
+            <Button size="big-icon" onClick={toggleFilterVisibility}>
+              <HiOutlineFilter className="w-8 h-8"></HiOutlineFilter>
+            </Button>
           </div>
-          <div className="flex flex-col justify-center px-8 col-span-2 sm:col-span-5">
-            <div className="flex items-center justify-between">
-              <AdminBookSearchFilter />
-              <BookCreationProvider>
-                <CreateBookModal />
-              </BookCreationProvider>
-            </div>
-            <div className="flex items-center justify-center w-100% px-8 py-1 sm:py-4">
+          <div
+            className={`flex flex-col justify-center px-8 col-span-2 sm:col-span-${isFilterVisible ? '5' : '6'}`}
+          >
+            <div className="flex items-center justify-start w-100% py-1 sm:py-4">
               <BookTable
                 data={data}
                 columns={bookTableColumns}
@@ -80,6 +89,9 @@ export const BooksAdminPage: FC = () => {
                 itemsCount={booksData?.metadata.total}
               />
             </div>
+          </div>{' '}
+          <div className="flex items-center justify-end gap-2">
+            <AdminBookSearchFilter />
           </div>
         </div>
       </div>
@@ -91,7 +103,9 @@ export const Route = createFileRoute('/admin/tabs/books/')({
   component: () => {
     return (
       <RequireAdmin>
-        <BooksAdminPage />
+        <FilterProvider>
+          <BooksAdminPage />
+        </FilterProvider>
       </RequireAdmin>
     );
   },

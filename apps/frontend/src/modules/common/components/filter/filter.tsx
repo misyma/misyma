@@ -1,5 +1,5 @@
 import { FC, useCallback, useMemo, useState } from 'react';
-import { useFilterContext } from '../../contexts/filterContext';
+import { useDynamicFilterContext } from '../../contexts/dynamicFilterContext';
 import {
   DateFilterOpts,
   FilterComponentProps,
@@ -21,29 +21,29 @@ import { pl } from 'date-fns/locale';
 import { formatDate } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { Calendar } from '../calendar/calendar';
-import { RemoveFilterButton } from './removeFilterButton';
+import { FilterContainer } from './filterContainer';
 
 const TextFilter: FC<FilterComponentProps> = ({ filter }) => {
-  const { updateFilterValue, filterValues } = useFilterContext();
+  const { updateFilterValue, filterValues } = useDynamicFilterContext();
 
   const handleChange = (value: string) => {
     updateFilterValue(filter.id, value);
   };
 
   return (
-    <div className="flex items-center w-full justify-between space-x-4">
-      <label>{filter.label}</label>
-      <div className="flex gap-2 items-center">
+    <FilterContainer
+      slot={
         <Input
           placeholder={`Podaj ${filter.label.toLowerCase()}`}
           value={(filterValues[filter.id] as string) || ''}
-          iSize="lg"
+          iSize="custom"
+          className="w-48"
           type="text"
           onChange={(e) => handleChange(e.target.value)}
         />
-        <RemoveFilterButton filterId={filter.id} />
-      </div>
-    </div>
+      }
+      filter={filter}
+    ></FilterContainer>
   );
 };
 
@@ -52,7 +52,7 @@ interface SelectFilterProps extends FilterComponentProps {
 }
 
 const SelectFilter: FC<SelectFilterProps> = ({ filter, dialog = false }) => {
-  const { updateFilterValue, filterValues } = useFilterContext();
+  const { updateFilterValue, filterValues } = useDynamicFilterContext();
 
   const handleChange = (value: string) => {
     updateFilterValue(filter.id, value);
@@ -62,7 +62,7 @@ const SelectFilter: FC<SelectFilterProps> = ({ filter, dialog = false }) => {
     return (
       <>
         {filter.options?.map((option) => (
-          <SelectItem className="w-48 sm:w-72" key={option} value={option}>
+          <SelectItem className="w-48 sm:w-48" key={option} value={option}>
             {option}
           </SelectItem>
         ))}
@@ -71,18 +71,17 @@ const SelectFilter: FC<SelectFilterProps> = ({ filter, dialog = false }) => {
   }, [filter?.options]);
 
   return (
-    <div className="flex items-center justify-between space-x-4 w-full">
-      <label>{filter.label}</label>
-      <div className="flex gap-2 items-center">
+    <FilterContainer
+      slot={
         <Select
           value={(filterValues[filter.id] as string) || ''}
           onValueChange={handleChange}
         >
-          <SelectTrigger className="w-48 sm:w-72">
-            <SelectValue className="w-48 sm:w-72"></SelectValue>
+          <SelectTrigger className="w-48 sm:w-48">
+            <SelectValue className="w-48 sm:w-48"></SelectValue>
           </SelectTrigger>
           {dialog && (
-            <SelectContent className="w-48 sm:w-72">
+            <SelectContent className="w-48 sm:w-48">
               {filterItems}
             </SelectContent>
           )}
@@ -90,36 +89,34 @@ const SelectFilter: FC<SelectFilterProps> = ({ filter, dialog = false }) => {
             <SelectContentNoPortal>{filterItems}</SelectContentNoPortal>
           )}
         </Select>
-        <RemoveFilterButton filterId={filter.id} />
-      </div>
-    </div>
+      }
+      filter={filter}
+    ></FilterContainer>
   );
 };
 
 export const CheckboxFilter: FC<FilterComponentProps> = ({ filter }) => {
-  const { updateFilterValue, filterValues } = useFilterContext();
+  const { updateFilterValue, filterValues } = useDynamicFilterContext();
 
   const handleChange = (value: string | boolean) => {
     updateFilterValue(filter.id, value);
   };
 
-  const filterValue = useMemo(
-    () => filterValues[filter.id],
-    [filterValues, filter.id]
-  );
+  const filterValue = filterValues[filter.id];
+
+  console.log(filterValue);
 
   return (
-    <div className="flex items-center w-full justify-between space-x-4">
-      <label>{filter.label}</label>
-      <div className="flex gap-2 items-center">
+    <FilterContainer
+      slot={
         <Checkbox
           size="xxl"
           checked={!!filterValue}
           onCheckedChange={handleChange}
         />
-        <RemoveFilterButton filterId={filter.id} />
-      </div>
-    </div>
+      }
+      filter={filter}
+    ></FilterContainer>
   );
 };
 
@@ -127,26 +124,24 @@ interface DateFilterComponentProps extends FilterComponentProps {
   filter: DateFilterOpts;
 }
 export const DateFilter: FC<DateFilterComponentProps> = ({ filter }) => {
-  const { updateFilterValue, filterValues } = useFilterContext();
+  const { updateFilterValue, filterValues } = useDynamicFilterContext();
 
   const handleChange = (value: string | boolean | Date | undefined) => {
     updateFilterValue(filter.id, value);
   };
 
-  const filterValue = useMemo(
-    () => filterValues[filter.id],
-    [filterValues, filter.id]
-  );
+  const filterValue = filterValues[filter.id];
+  const siblingFilterValue = filterValues[filter.dateRangeSiblingId];
+
   const [calendarVisible, onOpenChange] = useState(false);
 
   const siblingValue = useMemo(() => {
-    const siblingValuePresent = filterValues[filter.dateRangeSiblingId];
-    if (!siblingValuePresent) {
+    if (!siblingFilterValue) {
       return null;
     }
 
-    return siblingValuePresent;
-  }, [filterValues, filter.dateRangeSiblingId]);
+    return siblingFilterValue;
+  }, [siblingFilterValue]);
 
   const isSiblingBefore = useCallback(() => {
     if (siblingValue === null || filter.isBeforeFilter) {
@@ -174,9 +169,8 @@ export const DateFilter: FC<DateFilterComponentProps> = ({ filter }) => {
   );
 
   return (
-    <div className="flex items-center w-full justify-between space-x-4">
-      <label>{filter.label}</label>
-      <div className="flex gap-2 items-center">
+    <FilterContainer
+      slot={
         <Popover
           modal={true}
           open={calendarVisible}
@@ -186,7 +180,7 @@ export const DateFilter: FC<DateFilterComponentProps> = ({ filter }) => {
             <Button
               variant={'outline'}
               type="button"
-              className={'w-48 sm:min-w-72 pl-3 text-left font-normal'}
+              className={'w-48 sm:min-w-48 pl-3 text-left font-normal'}
             >
               {filterValue ? (
                 formatDate(filterValue as Date, 'PPP', {
@@ -207,17 +201,15 @@ export const DateFilter: FC<DateFilterComponentProps> = ({ filter }) => {
               initialFocus
             />
           </PopoverContent>
-        </Popover>{' '}
-        <RemoveFilterButton filterId={filter.id} />
-      </div>
-    </div>
+        </Popover>
+      }
+      filter={filter}
+    ></FilterContainer>
   );
 };
 
 export const FilterComponent: FC<FilterComponentProps> = ({ filter }) => {
   if (filter.customSlot) {
-    // todo: fix types later
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return <filter.customSlot filter={filter} />;
   }
 
