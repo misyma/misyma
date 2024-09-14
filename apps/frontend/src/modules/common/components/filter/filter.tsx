@@ -22,6 +22,7 @@ import { formatDate } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { Calendar } from '../calendar/calendar';
 import { FilterContainer } from './filterContainer';
+import { YearPicker } from '../yearPicker/yearPicker';
 
 const TextFilter: FC<FilterComponentProps> = ({ filter }) => {
   const { updateFilterValue, filterValues } = useDynamicFilterContext();
@@ -214,6 +215,53 @@ export const DateFilter: FC<DateFilterComponentProps> = ({ filter }) => {
   );
 };
 
+export const YearFilter: FC<DateFilterComponentProps> = ({ filter }) => {
+  const { updateFilterValue, filterValues } = useDynamicFilterContext();
+
+  const handleChange = (
+    value: string | boolean | Date | number | undefined
+  ) => {
+    updateFilterValue(filter.key, value);
+  };
+
+  const filterValue = filterValues[filter.key as string];
+
+  const [calendarVisible, onOpenChange] = useState(false);
+
+  return (
+    <FilterContainer
+      slot={
+        <Popover
+          modal={true}
+          open={calendarVisible}
+          onOpenChange={onOpenChange}
+        >
+          <PopoverTrigger asChild>
+            <Button
+              variant={'outline'}
+              type="button"
+              size="custom"
+              className={'w-full truncate h-10 pl-3 text-left font-normal'}
+            >
+              {filterValue ? (filterValue as string) : <>RRRR</>}
+              {!filterValue && (
+                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+              )}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <YearPicker
+              value={filterValue as unknown as number}
+              onChange={handleChange}
+            />
+          </PopoverContent>
+        </Popover>
+      }
+      filter={filter}
+    ></FilterContainer>
+  );
+};
+
 export const FilterComponent: FC<FilterComponentProps> = ({ filter }) => {
   if (filter.customSlot) {
     return <filter.customSlot filter={filter} />;
@@ -228,6 +276,9 @@ export const FilterComponent: FC<FilterComponentProps> = ({ filter }) => {
       return <CheckboxFilter filter={filter} />;
     case 'date':
       return <DateFilter filter={filter} />;
+    case 'year':
+      // eslint-disable-next-line
+      return <YearFilter filter={filter as any} />;
     default:
       return null;
   }

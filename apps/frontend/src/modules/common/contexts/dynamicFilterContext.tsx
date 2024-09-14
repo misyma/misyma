@@ -2,7 +2,7 @@ import { createContext, FC, ReactNode, useContext, useState } from 'react';
 import { FilterOpts } from '../types/filter';
 
 export type DynamicFilterValues = {
-  [filterKey: string]: string | boolean | Date | undefined;
+  [filterKey: string]: string | number | boolean | Date | undefined;
 };
 type DynamicFilterContextType = {
   filters: FilterOpts[];
@@ -11,7 +11,7 @@ type DynamicFilterContextType = {
   removeFilter: (key: PropertyKey) => void;
   updateFilterValue: (
     id: PropertyKey,
-    value: string | boolean | Date | undefined
+    value: string | boolean | number | Date | undefined
   ) => void;
   filterOptions: FilterOpts[];
   filtersOrder?: string[];
@@ -47,7 +47,7 @@ export const DynamicFilterProvider: FC<DynamicFilterProviderProps> = ({
   };
   const updateFilterValue = (
     key: PropertyKey,
-    value: string | boolean | Date | undefined
+    value: string | boolean | number | Date | undefined
   ) => {
     if (value === undefined) {
       setFilterValues((prev) => {

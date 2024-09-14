@@ -114,11 +114,10 @@ export const BooksAdminPage: FC = () => {
           <div className="flex items-center justify-end self-start gap-2 border-l w-full">
             <AdminBookSearchFilter
               onApplyFilters={async (val) => {
-                const previousSig = Object.values(searchPayload).toString();
                 const newSig = Object.values(val).toString();
                 setSearchPayload({ ...val });
 
-                if (previousSig !== newSig) {
+                if (newSig === '') {
                   await queryClient.invalidateQueries({
                     predicate: (query) =>
                       query.queryKey[0] === BookApiQueryKeys.findBooksAdmin,
