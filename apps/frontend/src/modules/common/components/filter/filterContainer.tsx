@@ -9,7 +9,7 @@ interface FilterContainerProps extends FilterComponentProps {
 export const FilterContainer: FC<FilterContainerProps> = ({ filter, slot }) => {
   const { filterValues } = useDynamicFilterContext();
 
-  const correspondingFilterValue = filterValues[filter.id];
+  const correspondingFilterValue = filterValues[filter.key as string];
 
   const correspondingFilterValueExists = useMemo(
     () => !!correspondingFilterValue,
@@ -21,7 +21,7 @@ export const FilterContainer: FC<FilterContainerProps> = ({ filter, slot }) => {
       <label>{filter.label}</label>
       <div className="flex gap-2 items-center">
         {correspondingFilterValueExists && (
-          <RemoveFilterButton filterId={filter.id} />
+          <RemoveFilterButton filterKey={filter.key} />
         )}
         {slot}
       </div>

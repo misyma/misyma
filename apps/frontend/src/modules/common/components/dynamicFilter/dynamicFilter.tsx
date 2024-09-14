@@ -149,7 +149,6 @@ export const DynamicFilter: FC = () => {
                 skipCheckIcon
                 key={`${String(value.key)}-${index}`}
                 value={`${String(value.key)}`}
-                onClick={() => console.log('BOOP')}
               >
                 {value.label}
               </SelectItem>

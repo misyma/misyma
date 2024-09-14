@@ -1,12 +1,19 @@
 import { FC, useMemo } from 'react';
 import { FilterComponent } from '../filter/filter';
 import { Separator } from '../separator/separator';
-import { useDynamicFilterContext } from '../../contexts/dynamicFilterContext';
+import {
+  DynamicFilterValues,
+  useDynamicFilterContext,
+} from '../../contexts/dynamicFilterContext';
 import { FilterOpts } from '../../types/filter';
 import { cn } from '../../lib/utils';
+import { Button } from '../button/button';
 
-export const FiltersDrawer: FC<{ className: string }> = ({ className }) => {
-  const { filters, filterOptions } = useDynamicFilterContext();
+export const FiltersDrawer: FC<{
+  className: string;
+  onApplyFilters: (vals: DynamicFilterValues) => void;
+}> = ({ className, onApplyFilters }) => {
+  const { filters, filterOptions, filterValues } = useDynamicFilterContext();
 
   const constructedFilters = useMemo((): Array<FilterOpts> => {
     return filterOptions.map(
@@ -32,6 +39,13 @@ export const FiltersDrawer: FC<{ className: string }> = ({ className }) => {
           {idx !== constructedFilters.length - 1 && <Separator></Separator>}
         </div>
       ))}
+      <div className="flex items-center justify-center">
+        <Button
+          onClick={() => onApplyFilters(filterValues)}
+        >
+          Aplikuj
+        </Button>
+      </div>
     </div>
   );
 };

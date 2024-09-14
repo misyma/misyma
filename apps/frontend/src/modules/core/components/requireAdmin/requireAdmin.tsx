@@ -47,8 +47,6 @@ export function RequireAdmin({
     return <>{children}</>;
   }
 
-  console.log(user.currentUser, res.isFetching);
-
   if (user.currentUser === null && res.isFetching) {
     return (
       <div className="w-full h-[100%] flex justify-center items-center">

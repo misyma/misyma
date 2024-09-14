@@ -27,7 +27,7 @@ const TextFilter: FC<FilterComponentProps> = ({ filter }) => {
   const { updateFilterValue, filterValues } = useDynamicFilterContext();
 
   const handleChange = (value: string) => {
-    updateFilterValue(filter.id, value);
+    updateFilterValue(filter.key, value);
   };
 
   return (
@@ -35,7 +35,7 @@ const TextFilter: FC<FilterComponentProps> = ({ filter }) => {
       slot={
         <Input
           placeholder={`Podaj ${filter.label.toLowerCase()}`}
-          value={(filterValues[filter.id] as string) || ''}
+          value={(filterValues[filter.key as string] as string) || ''}
           iSize="custom"
           className="w-full"
           type="text"
@@ -55,7 +55,7 @@ const SelectFilter: FC<SelectFilterProps> = ({ filter, dialog = false }) => {
   const { updateFilterValue, filterValues } = useDynamicFilterContext();
 
   const handleChange = (value: string) => {
-    updateFilterValue(filter.id, value);
+    updateFilterValue(filter.key, value);
   };
 
   const filterItems = useMemo(() => {
@@ -74,7 +74,7 @@ const SelectFilter: FC<SelectFilterProps> = ({ filter, dialog = false }) => {
     <FilterContainer
       slot={
         <Select
-          value={(filterValues[filter.id] as string) || ''}
+          value={(filterValues[filter.key as string] as string) || ''}
           onValueChange={handleChange}
         >
           <SelectTrigger className="w-full sm:w-full">
@@ -99,10 +99,15 @@ export const CheckboxFilter: FC<FilterComponentProps> = ({ filter }) => {
   const { updateFilterValue, filterValues } = useDynamicFilterContext();
 
   const handleChange = (value: string | boolean) => {
-    updateFilterValue(filter.id, value);
+    if (value === true) {
+      updateFilterValue(filter.key, value);
+      return;
+    }
+
+    updateFilterValue(filter.key, undefined);
   };
 
-  const filterValue = filterValues[filter.id];
+  const filterValue = filterValues[filter.key as string];
 
   return (
     <FilterContainer
@@ -125,10 +130,10 @@ export const DateFilter: FC<DateFilterComponentProps> = ({ filter }) => {
   const { updateFilterValue, filterValues } = useDynamicFilterContext();
 
   const handleChange = (value: string | boolean | Date | undefined) => {
-    updateFilterValue(filter.id, value);
+    updateFilterValue(filter.key, value);
   };
 
-  const filterValue = filterValues[filter.id];
+  const filterValue = filterValues[filter.key as string];
   const siblingFilterValue = filterValues[filter.dateRangeSiblingId];
 
   const [calendarVisible, onOpenChange] = useState(false);

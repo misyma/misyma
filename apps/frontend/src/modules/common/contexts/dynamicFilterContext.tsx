@@ -1,23 +1,25 @@
 import { createContext, FC, ReactNode, useContext, useState } from 'react';
 import { FilterOpts } from '../types/filter';
 
-type DynamicFilterValues = {
-  [filterId: string]: string | boolean | Date | undefined;
+export type DynamicFilterValues = {
+  [filterKey: string]: string | boolean | Date | undefined;
 };
 type DynamicFilterContextType = {
   filters: FilterOpts[];
   filterValues: DynamicFilterValues;
   addFilter: (filter: FilterOpts) => void;
-  removeFilter: (id: string) => void;
+  removeFilter: (key: PropertyKey) => void;
   updateFilterValue: (
-    id: string,
+    id: PropertyKey,
     value: string | boolean | Date | undefined
   ) => void;
   filterOptions: FilterOpts[];
   filtersOrder?: string[];
 };
 
-const FilterContext = createContext<DynamicFilterContextType | undefined>(undefined);
+const FilterContext = createContext<DynamicFilterContextType | undefined>(
+  undefined
+);
 
 interface DynamicFilterProviderProps {
   children: ReactNode;
@@ -36,18 +38,26 @@ export const DynamicFilterProvider: FC<DynamicFilterProviderProps> = ({
   const addFilter = (filter: FilterOpts) => {
     setFilters((prev) => [...prev, filter]);
   };
-  const removeFilter = (id: string) => {
-    setFilters((prev) => prev.filter((filter) => filter.id !== id));
+  const removeFilter = (key: PropertyKey) => {
+    setFilters((prev) => prev.filter((filter) => filter.key !== key));
     setFilterValues((prev) => {
-      delete prev[id];
+      delete prev[key as string];
       return prev;
     });
   };
   const updateFilterValue = (
-    id: string,
+    key: PropertyKey,
     value: string | boolean | Date | undefined
   ) => {
-    setFilterValues((prev) => ({ ...prev, [id]: value }));
+    if (value === undefined) {
+      setFilterValues((prev) => {
+        delete prev[key as string];
+        return prev;
+      });
+      return;
+    }
+
+    setFilterValues((prev) => ({ ...prev, [key]: value }));
   };
 
   return (

@@ -79,8 +79,6 @@ const LanguageSelect: FC<LanguageSelectProps> = ({
 }) => {
   const [languageSelectOpen, setLanguageSelectOpen] = useState(false);
 
-  console.log('In ls: ', selectorValue);
-
   const selectContent = (
     <SelectTrigger className={className}>
       {ReversedLanguages[selectorValue as keyof typeof ReversedLanguages] ||

@@ -1,32 +1,67 @@
-import { UseQueryOptions, keepPreviousData, useQuery } from '@tanstack/react-query';
+import {
+	UseQueryOptions,
+	keepPreviousData,
+	useQuery,
+} from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { ApiError } from '../../../../../common/errors/apiError';
 import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';
 import { BookApiQueryKeys } from '../../../user/queries/bookApiQueryKeys';
-import { findBooks } from './findBooks';
-import { FindBooksResponseBody } from '@common/contracts';
+import { adminFindBooks } from './findBooks';
+import {
+	FindBooksResponseBody,
+	FindAdminBooksQueryParams,
+	SortingType,
+} from '@common/contracts';
 
-type Payload = {
-  title?: string;
-  pageSize?: number;
-  all?: boolean;
-  page?: number;
+type Payload = FindAdminBooksQueryParams & {
+	all: boolean;
 } & Partial<Omit<UseQueryOptions<FindBooksResponseBody, ApiError>, 'queryFn'>>;
 
-export const useFindBooksQuery = ({ title, all = false, page, pageSize = 10, ...options }: Payload) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
+export const useAdminFindBooksQuery = ({
+	title,
+	all = false,
+	page,
+	pageSize = 10,
+	authorIds,
+	language,
+	isApproved,
+	releaseYearBefore,
+	releaseYearAfter,
+	isbn,
+	sortDate = SortingType.desc,
+	...options
+}: Payload) => {
+	const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
-  return useQuery({
-    queryKey: [BookApiQueryKeys.findBooksAdmin, title, `${page}`],
-    queryFn: () =>
-      findBooks({
-        accessToken: accessToken as string,
-        title,
-        page,
-        pageSize,
-      }),
-    enabled: !!accessToken && (!!title || all),
-    ...options,
-    placeholderData: keepPreviousData,
-  });
+	return useQuery({
+		queryKey: [
+			BookApiQueryKeys.findBooksAdmin,
+			title,
+			`${page}`,
+			Array.isArray(authorIds) ? authorIds?.join(',') : authorIds,
+			isbn,
+			language,
+			isApproved,
+			releaseYearBefore,
+			releaseYearAfter,
+		],
+		queryFn: () =>
+			adminFindBooks({
+				accessToken: accessToken as string,
+				title,
+				page,
+				pageSize,
+				authorIds,
+				isApproved,
+				isbn,
+				language,
+				releaseYearAfter,
+				releaseYearBefore,
+				sortDate,
+			}),
+		enabled: !!accessToken && (!!title || all),
+		...options,
+		placeholderData: keepPreviousData,
+	});
 };

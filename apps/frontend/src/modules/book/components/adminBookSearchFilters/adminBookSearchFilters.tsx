@@ -6,6 +6,7 @@ import {
 import { Button } from '../../../common/components/button/button';
 import {
   DynamicFilterProvider,
+  DynamicFilterValues,
   useDynamicFilterContext,
 } from '../../../common/contexts/dynamicFilterContext';
 import { FilterComponentProps, FilterOpts } from '../../../common/types/filter';
@@ -27,15 +28,12 @@ const CustomAuthorSearchFilter: FC<FilterComponentProps> = ({ filter }) => {
     value: string | boolean | Date | undefined,
     authorName: string
   ) => {
-    updateFilterValue(filter.id, value);
+    updateFilterValue(filter.key, value);
     setSelectedAuthorName(authorName);
   };
   const [open, setOpen] = useState(false);
 
-  const currentAuthorId = useMemo(
-    () => filterValues[filter.id],
-    [filterValues, filter.id]
-  );
+  const currentAuthorId = filterValues[filter.key as string];
 
   const { data: currentAuthor, isFetching: isFetchingCurrentAuthor } =
     useFindAuthorsQuery({
@@ -68,7 +66,7 @@ const CustomAuthorSearchFilter: FC<FilterComponentProps> = ({ filter }) => {
                 'justify-between bg-[#D1D5DB]/20',
                 !currentAuthorId && 'text-muted-foreground',
                 'border h-12',
-                'w-full'
+                'w-48 sm:w-48'
               )}
               style={{
                 height: '3rem',
@@ -77,7 +75,7 @@ const CustomAuthorSearchFilter: FC<FilterComponentProps> = ({ filter }) => {
               <p
                 className={cn(
                   !currentAuthorId && 'text-muted-foreground',
-                  'w-full text-start px-3 py-2'
+                  'w-full truncate text-start px-3 py-2'
                 )}
               >
                 {!currentAuthorId && 'Wyszukaj autora'}
@@ -92,6 +90,7 @@ const CustomAuthorSearchFilter: FC<FilterComponentProps> = ({ filter }) => {
             </Button>
           </PopoverTrigger>
           <AuthorSearchSelector
+            className='w-48 sm:w-48'
             onCreateAuthorDraft={() => {}}
             includeAuthorCreation={false}
             onSelect={handleChange}
@@ -108,10 +107,10 @@ const SearchLanguageSelect: FC<FilterComponentProps> = ({ filter }) => {
   const { updateFilterValue, filterValues } = useDynamicFilterContext();
 
   const handleChange = (value: string | boolean | Date | undefined) => {
-    updateFilterValue(filter.id, value);
+    updateFilterValue(filter.key, value);
   };
 
-  const filterValue = filterValues[filter.id];
+  const filterValue = filterValues[filter.key as string];
 
   return (
     <FilterContainer
@@ -128,7 +127,13 @@ const SearchLanguageSelect: FC<FilterComponentProps> = ({ filter }) => {
   );
 };
 
-export const AdminBookSearchFilter: FC = () => {
+interface AdminBookSearchFilterProps {
+  onApplyFilters: (filterValues: DynamicFilterValues) => void;
+}
+
+export const AdminBookSearchFilter: FC<AdminBookSearchFilterProps> = ({
+  onApplyFilters,
+}) => {
   const filterOptions = useMemo(
     (): FilterOpts[] => [
       {
@@ -188,7 +193,10 @@ export const AdminBookSearchFilter: FC = () => {
 
   return (
     <DynamicFilterProvider filterOptions={filterOptions}>
-      <FiltersDrawer className={isFilterVisible ? '' : 'hidden'} />
+      <FiltersDrawer
+        onApplyFilters={onApplyFilters}
+        className={isFilterVisible ? '' : 'hidden'}
+      />
     </DynamicFilterProvider>
   );
 };

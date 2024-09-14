@@ -3,7 +3,7 @@ import { FC, useMemo, useState } from 'react';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { BookTable } from '../../../../modules/book/components/bookTable/bookTable';
 import { bookTableColumns } from '../../../../modules/book/components/bookTable/bookTableColumns';
-import { useFindBooksQuery } from '../../../../modules/book/api/admin/queries/findBooksQuery/findBooksQueryOptions';
+import { useAdminFindBooksQuery } from '../../../../modules/book/api/admin/queries/findBooksQuery/findBooksQueryOptions';
 import { RequireAdmin } from '../../../../modules/core/components/requireAdmin/requireAdmin';
 import { BookCreationProvider } from '../../../../modules/bookshelf/context/bookCreationContext/bookCreationContext';
 import { CreateBookModal } from '../../../../modules/book/components/createBookModal/createBookModal';
@@ -15,6 +15,9 @@ import {
 import { Button } from '../../../../modules/common/components/button/button';
 import { HiOutlineFilter } from 'react-icons/hi';
 import { cn } from '../../../../modules/common/lib/utils';
+import { FindAdminBooksQueryParams } from '@common/contracts';
+import { useQueryClient } from '@tanstack/react-query';
+import { BookApiQueryKeys } from '../../../../modules/book/api/user/queries/bookApiQueryKeys';
 
 const TableSizing = {
   visible: `sm:col-span-4 md:col-span-5`,
@@ -27,17 +30,26 @@ export const BooksAdminPage: FC = () => {
   const [searchTitleName, setSearchTitleName] = useState('');
   const { isFilterVisible, toggleFilterVisibility } = useFilterContext();
 
+  const queryClient = useQueryClient();
+
   const onSetSearchTitle = (val: string) => {
     setPage(1);
     setSearchTitleName(val);
   };
 
-  const { data: booksData, isFetched: isBooksFetched } = useFindBooksQuery({
-    all: true,
-    page,
-    pageSize,
-    title: searchTitleName,
-  });
+  const [searchPayload, setSearchPayload] = useState<FindAdminBooksQueryParams>(
+    {}
+  );
+
+  const { data: booksData, isFetched: isBooksFetched } = useAdminFindBooksQuery(
+    {
+      all: true,
+      page,
+      pageSize,
+      title: searchTitleName,
+      ...searchPayload,
+    }
+  );
 
   if (isBooksFetched && page !== (booksData?.metadata.page as number)) {
     setPage(booksData?.metadata.page as number);
@@ -81,7 +93,7 @@ export const BooksAdminPage: FC = () => {
           </div>
           <div
             className={cn(
-              `flex flex-col justify-center px-8 col-span-4`,
+              `flex flex-col justify-start px-8 col-span-4`,
               TableSizing[isFilterVisible ? 'visible' : 'invisible']
             )}
           >
@@ -99,8 +111,21 @@ export const BooksAdminPage: FC = () => {
               />
             </div>
           </div>{' '}
-          <div className="flex items-center justify-end align self-start gap-2 border-l w-full">
-            <AdminBookSearchFilter />
+          <div className="flex items-center justify-end self-start gap-2 border-l w-full">
+            <AdminBookSearchFilter
+              onApplyFilters={async (val) => {
+                const previousSig = Object.values(searchPayload).toString();
+                const newSig = Object.values(val).toString();
+                setSearchPayload({ ...val });
+
+                if (previousSig !== newSig) {
+                  await queryClient.invalidateQueries({
+                    predicate: (query) =>
+                      query.queryKey[0] === BookApiQueryKeys.findBooksAdmin,
+                  });
+                }
+              }}
+            />
           </div>
         </div>
       </div>

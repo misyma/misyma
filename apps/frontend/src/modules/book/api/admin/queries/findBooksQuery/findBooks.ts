@@ -1,38 +1,52 @@
-import { FindBooksQueryParams, FindBooksResponseBody } from '@common/contracts';
+import {
+	FindAdminBooksQueryParams,
+	FindBooksResponseBody,
+} from '@common/contracts';
 import { HttpService } from '../../../../../core/services/httpService/httpService';
 
-type Payload = FindBooksQueryParams & {
-  accessToken: string;
+type Payload = FindAdminBooksQueryParams & {
+	accessToken: string;
 };
 
-export const findBooks = async (values: Payload) => {
-  const { title, page, pageSize, accessToken } = values;
+export const adminFindBooks = async (values: Payload) => {
+	const { title, page, pageSize, accessToken, ...remaining } = values;
 
-  const query: Record<string, string> = {};
+	const query: Record<PropertyKey, string> = {};
 
-  if (title) {
-    query.title = title;
-  }
+	if (title) {
+		query.title = title;
+	}
 
-  if (page) {
-    query.page = `${page}`;
-  }
+	if (page) {
+		query.page = `${page}`;
+	}
 
-  if (pageSize) {
-    query.pageSize = `${pageSize}`;
-  }
+	if (pageSize) {
+		query.pageSize = `${pageSize}`;
+	}
 
-  const response = await HttpService.get<FindBooksResponseBody>({
-    url: '/admin/books',
-    queryParams: query,
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
+	Object.entries(remaining).forEach(([key, val]) => {
+		if (val === undefined) {
+			return;
+		}
+		if (Array.isArray(val)) {
+			return (query[key] = val.join(','));
+		}
 
-  if (!response.success) {
-    throw new Error('Error');
-  }
+		query[key] = `${val}`;
+	});
 
-  return response.body;
+	const response = await HttpService.get<FindBooksResponseBody>({
+		url: '/admin/books',
+		queryParams: query,
+		headers: {
+			Authorization: `Bearer ${accessToken}`,
+		},
+	});
+
+	if (!response.success) {
+		throw new Error('Error');
+	}
+
+	return response.body;
 };
