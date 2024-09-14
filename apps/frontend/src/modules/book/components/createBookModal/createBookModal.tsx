@@ -1,5 +1,10 @@
 import { FC, useState } from 'react';
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '../../../common/components/dialog/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from '../../../common/components/dialog/dialog';
 import { Button } from '../../../common/components/button/button';
 import { BookDetailsChangeRequestProvider } from '../../context/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
 import {
@@ -7,6 +12,7 @@ import {
   useBookCreationDispatch,
 } from '../../../bookshelf/context/bookCreationContext/bookCreationContext';
 import { AdminCreateBookForm } from '../adminCreateBookForm/adminCreateBookForm';
+import { HiPlus } from 'react-icons/hi2';
 
 export const CreateBookModal: FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -34,7 +40,9 @@ export const CreateBookModal: FC = () => {
         }}
       >
         <DialogTrigger asChild>
-          <Button>Stwórz książkę</Button>
+          <Button size="big-icon">
+            <HiPlus className='w-8 h-8'></HiPlus>
+          </Button>
         </DialogTrigger>
         <DialogContent
           style={{
@@ -43,7 +51,7 @@ export const CreateBookModal: FC = () => {
           className="max-w-sm sm:max-w-xl py-16 flex flex-col items-center gap-8"
           omitCloseButton={true}
         >
-          <DialogTitle className='hidden'>Admin create book modal</DialogTitle>
+          <DialogTitle>Create a book</DialogTitle>
           <AdminCreateBookForm
             onSubmit={() => {
               resetModalState();

@@ -18,7 +18,11 @@ import {
 } from '../../../../../common/components/form/form';
 import { Input } from '../../../../../common/components/input/input';
 import { Button } from '../../../../../common/components/button/button';
-import { Popover, PopoverContent, PopoverTrigger } from '../../../../../common/components/popover/popover';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '../../../../../common/components/popover/popover';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import {
   Command,
@@ -74,7 +78,7 @@ const stepOneSchema = z
       .or(
         z.literal('', {
           required_error: 'Wymagany',
-        }),
+        })
       ),
     authorName: z
       .string({
@@ -125,9 +129,14 @@ export const ManualStepOneForm = (): JSX.Element => {
   const bookCreation = useBookCreation<false>() as BookCreationNonIsbnState;
 
   const [submitError, setSubmitError] = useState('');
-  const [createAuthorDialogVisible, setCreateAuthorDialogVisible] = useState(false);
-  const [searchedName, setSearchedName] = useState<string | undefined>(undefined);
-  const [draftAuthorName, setDraftAuthorName] = useState(bookCreation.stepOneDetails?.authorName);
+  const [createAuthorDialogVisible, setCreateAuthorDialogVisible] =
+    useState(false);
+  const [searchedName, setSearchedName] = useState<string | undefined>(
+    undefined
+  );
+  const [draftAuthorName, setDraftAuthorName] = useState(
+    bookCreation.stepOneDetails?.authorName
+  );
   const [authorSelectOpen, setAuthorSelectOpen] = useState(false);
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
@@ -142,7 +151,9 @@ export const ManualStepOneForm = (): JSX.Element => {
       author: bookCreation.stepOneDetails?.author ?? '',
       authorName: bookCreation.stepOneDetails?.authorName ?? undefined,
       publisher: bookCreation.stepOneDetails?.publisher ?? '',
-      yearOfIssue: bookCreation.stepOneDetails?.yearOfIssue ? bookCreation.stepOneDetails?.yearOfIssue : '',
+      yearOfIssue: bookCreation.stepOneDetails?.yearOfIssue
+        ? bookCreation.stepOneDetails?.yearOfIssue
+        : '',
     },
     reValidateMode: 'onChange',
     mode: 'onTouched',
@@ -157,7 +168,9 @@ export const ManualStepOneForm = (): JSX.Element => {
     mode: 'onTouched',
   });
 
-  const onCreateAuthorDraft = (payload: z.infer<typeof createAuthorDraftSchema>): void => {
+  const onCreateAuthorDraft = (
+    payload: z.infer<typeof createAuthorDraftSchema>
+  ): void => {
     setDraftAuthorName(payload.name);
 
     dispatch({
@@ -185,7 +198,7 @@ export const ManualStepOneForm = (): JSX.Element => {
   const onSubmit = async (
     values: Partial<z.infer<typeof stepOneSchema>> & {
       yearOfIssue: number | string;
-    },
+    }
   ) => {
     const vals = values as z.infer<typeof stepOneSchema>;
 
@@ -263,15 +276,14 @@ export const ManualStepOneForm = (): JSX.Element => {
     [authors?.data, currentAuthor, draftAuthorName]
   );
 
-
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit((values) =>
           onSubmit(
             // eslint-disable-next-line
-            values as any,
-          ),
+            values as any
+          )
         )}
         className="space-y-4"
       >
@@ -339,7 +351,8 @@ export const ManualStepOneForm = (): JSX.Element => {
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>
-                        Imię i nazwisko autora musi mieć minimum 3 znaki<br></br> i zawierać spację oddzielającą imię i
+                        Imię i nazwisko autora musi mieć minimum 3 znaki
+                        <br></br> i zawierać spację oddzielającą imię i
                         nazwisko.
                       </p>
                     </TooltipContent>
@@ -361,7 +374,7 @@ export const ManualStepOneForm = (): JSX.Element => {
                           'justify-between bg-[#D1D5DB]/20',
                           !field.value && 'text-muted-foreground',
                           draftAuthorName && 'text-black',
-                          'border h-12',
+                          'border h-12'
                         )}
                         style={{
                           height: '3rem',
@@ -371,7 +384,7 @@ export const ManualStepOneForm = (): JSX.Element => {
                           className={cn(
                             !field.value && 'text-muted-foreground',
                             draftAuthorName && 'text-black',
-                            'w-full text-start px-3 py-2',
+                            'w-full text-start px-3 py-2'
                           )}
                         >
                           {!field.value && 'Wyszukaj autora'}
@@ -397,7 +410,7 @@ export const ManualStepOneForm = (): JSX.Element => {
                           }
                         }}
                       />
-
+                      {/* TODO: Replace with AuthorSearchSelector */}
                       <CommandList>
                         {isFetched && authors?.data.length === 0 && (
                           <CommandEmpty className="flex flex-col px-4 py-4 gap-4">
@@ -408,11 +421,16 @@ export const ManualStepOneForm = (): JSX.Element => {
                                 onOpenChange={(val) => {
                                   onOpenChange(val);
 
-                                  createAuthorDraftForm.setValue('name', searchedName ?? '');
+                                  createAuthorDraftForm.setValue(
+                                    'name',
+                                    searchedName ?? ''
+                                  );
                                 }}
                               >
                                 <DialogTrigger asChild>
-                                  <Button className="bg-slate-100 text-black hover:bg-slate-300">Dodaj</Button>
+                                  <Button className="bg-slate-100 text-black hover:bg-slate-300">
+                                    Dodaj
+                                  </Button>
                                 </DialogTrigger>
                                 <DialogContent className="sm:max-w-md">
                                   <DialogHeader>
@@ -421,7 +439,9 @@ export const ManualStepOneForm = (): JSX.Element => {
                                   <Form {...createAuthorDraftForm}>
                                     <form
                                       className="flex flex-col gap-8 py-4"
-                                      onSubmit={createAuthorDraftForm.handleSubmit(onCreateAuthorDraft)}
+                                      onSubmit={createAuthorDraftForm.handleSubmit(
+                                        onCreateAuthorDraft
+                                      )}
                                     >
                                       <FormField
                                         name="name"
@@ -441,9 +461,16 @@ export const ManualStepOneForm = (): JSX.Element => {
                                         )}
                                       />
                                       <Button
-                                        disabled={!createAuthorDraftForm.formState.isValid}
+                                        disabled={
+                                          !createAuthorDraftForm.formState
+                                            .isValid
+                                        }
                                         type="button"
-                                        onClick={() => onCreateAuthorDraft(createAuthorDraftForm.getValues())}
+                                        onClick={() =>
+                                          onCreateAuthorDraft(
+                                            createAuthorDraftForm.getValues()
+                                          )
+                                        }
                                       >
                                         Stwórz
                                       </Button>
@@ -454,7 +481,9 @@ export const ManualStepOneForm = (): JSX.Element => {
                             </>
                           </CommandEmpty>
                         )}
-                        {loading && <CommandLoading>Wyszukuję autorów</CommandLoading>}
+                        {loading && (
+                          <CommandLoading>Wyszukuję autorów</CommandLoading>
+                        )}
                         {authors?.data.map((author) => (
                           <CommandItem
                             key={`author-${author.id}`}
@@ -475,7 +504,12 @@ export const ManualStepOneForm = (): JSX.Element => {
                             }}
                           >
                             <Check
-                              className={cn('mr-2 h-4 w-4', author.id === field.value ? 'opacity-100' : 'opacity-0')}
+                              className={cn(
+                                'mr-2 h-4 w-4',
+                                author.id === field.value
+                                  ? 'opacity-100'
+                                  : 'opacity-0'
+                              )}
                             />
                             {author.name}
                           </CommandItem>

@@ -13,7 +13,6 @@ import {
 import { useMemo, useState } from 'react';
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../common/components/table/table';
-import { Input } from '../../../common/components/input/input';
 import { Paginator } from '../../../common/components/paginator/paginator';
 import { Book } from '@common/contracts';
 
@@ -36,8 +35,6 @@ export function BookTable<TValue>({
   pageSize,
   pageCount,
   onSetPage,
-  searchBookTitle,
-  setSearchBookTitle,
   itemsCount
 }: DataTableProps<Book, TValue>): JSX.Element {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -87,15 +84,7 @@ export function BookTable<TValue>({
   }
 
   return (
-    <div className="w-full md:max-w-screen-xl ">
-      <div className="flex items-center py-2">
-        <Input
-          placeholder="Wyszukaj tytuł..."
-          value={searchBookTitle ?? ''}
-          onChange={(event) => setSearchBookTitle(event.target.value)}
-          className="max-w-sm"
-        />
-      </div>
+    <div className="w-full">
       <div className="w-full min-h-[22rem]">
         <Table>
           <TableHeader>

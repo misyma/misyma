@@ -83,7 +83,7 @@ const BookFormatSelect: FC<ControllerRenderProps> = (field) => {
           {language}
         </SelectItem>
       )),
-    [],
+    []
   );
 
   return (
@@ -102,7 +102,9 @@ const BookFormatSelect: FC<ControllerRenderProps> = (field) => {
     >
       <FormControl>
         <SelectTrigger>
-          <SelectValue placeholder={<span className="text-muted-foreground">Format</span>} />
+          <SelectValue
+            placeholder={<span className="text-muted-foreground">Format</span>}
+          />
           <SelectContent>{renderBookFormatSelectItems()}</SelectContent>
         </SelectTrigger>
       </FormControl>
@@ -115,7 +117,9 @@ export const ManualStepTwoForm = (): JSX.Element => {
 
   const dispatch = useBookCreationDispatch();
 
-  const [isOriginalLanguage, setIsOriginalLanguage] = useState(bookCreation.isOriginal);
+  const [isOriginalLanguage, setIsOriginalLanguage] = useState(
+    bookCreation.isOriginal
+  );
 
   const form = useForm({
     resolver: zodResolver(stepTwoSchema),
@@ -143,10 +147,7 @@ export const ManualStepTwoForm = (): JSX.Element => {
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-4"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="form"
@@ -190,6 +191,7 @@ export const ManualStepTwoForm = (): JSX.Element => {
               <FormLabel>Język</FormLabel>
               <LanguageSelect
                 onValueChange={onLanguageSelected}
+                type="form"
                 {...field}
               />
               <FormMessage />
@@ -239,7 +241,7 @@ export const ManualStepTwoForm = (): JSX.Element => {
         </div>
         <div className="flex justify-between w-full gap-4">
           <Button
-            variant='outline'
+            variant="outline"
             size="lg"
             onClick={() => {
               dispatch({

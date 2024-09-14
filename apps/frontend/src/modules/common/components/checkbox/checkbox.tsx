@@ -5,13 +5,15 @@ import { cn } from '../../lib/utils';
 
 import styles from './index.module.css';
 
-type CheckboxSize = 'base' | 'lg' | 'xl';
+type CheckboxSize = 'base' | 'lg' | 'xl' | 'xxl' | 'xxxl';
 
 const getSizeClass = (size: CheckboxSize): string => {
   const sizeMap = {
     ['base']: styles['base-checkbox'],
     ['lg']: styles['large-checkbox'],
     ['xl']: styles['xlarge-checkbox'],
+    ['xxl']: styles['xxlarge-checkbox'],
+    ['xxxl']: styles['xxxlarge-checkbox'],
   } as const;
 
   const value = sizeMap[size];

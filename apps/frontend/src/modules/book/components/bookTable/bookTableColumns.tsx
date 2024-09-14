@@ -36,7 +36,7 @@ export const bookTableColumns: ColumnDef<Book>[] = [
       return (
         <div className="flex flex-col py-4 gap-2 w-full">
           <div className="flex items-center gap-1 max-w-xl">
-            <p className="font-semibold text-lg max-w-80 truncate">{row.original.title}</p>
+            <p className="font-semibold text-lg sm:max-w-60 lg:max-w-80 truncate">{row.original.title}</p>
           </div>
         </div>
       );
@@ -79,7 +79,7 @@ export const bookTableColumns: ColumnDef<Book>[] = [
       return (
         <div className="flex flex-col py-4 gap-2">
           <div className="flex items-center gap-1">
-            <p className="font-semibold text-lg">{row.original?.isbn ?? '-'}</p>
+            <p className="font-semibold text-lg truncate">{row.original?.isbn ?? '-'}</p>
           </div>
         </div>
       );
@@ -92,7 +92,7 @@ export const bookTableColumns: ColumnDef<Book>[] = [
       return (
         <div className="flex flex-col py-4 gap-2">
           <div className="flex items-center gap-1">
-            <p className="font-semibold text-lg">{row.original?.format ? BookFormat[row.original?.format] : '-'}</p>
+            <p className="font-semibold text-lg whitespace-nowrap">{row.original?.format ? BookFormat[row.original?.format] : '-'}</p>
           </div>
         </div>
       );

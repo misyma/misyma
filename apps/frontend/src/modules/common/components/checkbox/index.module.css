@@ -10,6 +10,14 @@
   @apply h-8 w-8;
 }
 
+.xxlarge-checkbox {
+  @apply h-10 w-10;
+}
+
+.xxxlarge-checkbox {
+  @apply h-12 w-12;
+}
+
 .checkbox-indicator-container {
   @apply flex items-center justify-center text-current;
 }

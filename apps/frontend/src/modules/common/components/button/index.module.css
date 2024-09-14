@@ -19,7 +19,7 @@
 }
 
 .lg-size.button {
-  @apply h-11 w-40 rounded-md px-8 text-sm;
+  @apply h-10 w-40 rounded-md px-8 text-sm;
 }
 
 .xl-size.button {
@@ -27,7 +27,11 @@
 }
 
 .icon-size.button {
-  @apply text-xs h-8 w-8 text-sm;
+  @apply text-xs h-8 w-8;
+}
+
+.big-icon.button {
+  @apply text-sm h-10 w-10;
 }
 
 .destructive-button.button {
@@ -35,7 +39,7 @@
 }
 
 .outline-button.button {
-  @apply border border-primary text-primary bg-background hover:bg-accent disabled:bg-gray-200  disabled:text-gray-500;
+  @apply border border-primary text-primary bg-background hover:bg-accent disabled:bg-gray-200 disabled:text-gray-500;
 }
 
 .secondary-button.button {
