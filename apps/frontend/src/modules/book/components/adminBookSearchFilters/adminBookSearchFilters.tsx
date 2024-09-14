@@ -8,7 +8,6 @@ import {
   DynamicFilterProvider,
   useDynamicFilterContext,
 } from '../../../common/contexts/dynamicFilterContext';
-import { ReversedLanguages } from '../../../common/constants/languages';
 import { FilterComponentProps, FilterOpts } from '../../../common/types/filter';
 import { AuthorSearchSelector } from '../../../auth/components/authorSearchSelector/authorSearchSelector';
 import { cn } from '../../../common/lib/utils';
@@ -18,6 +17,7 @@ import { LoadingSpinner } from '../../../common/components/spinner/loading-spinn
 import { FiltersDrawer } from '../../../common/components/filtersDrawer/filtersDrawer';
 import { useFilterContext } from '../../../common/contexts/filterContext';
 import { FilterContainer } from '../../../common/components/filter/filterContainer';
+import LanguageSelect from '../languageSelect/languageSelect';
 
 const CustomAuthorSearchFilter: FC<FilterComponentProps> = ({ filter }) => {
   const { updateFilterValue, filterValues } = useDynamicFilterContext();
@@ -104,6 +104,30 @@ const CustomAuthorSearchFilter: FC<FilterComponentProps> = ({ filter }) => {
   );
 };
 
+const SearchLanguageSelect: FC<FilterComponentProps> = ({ filter }) => {
+  const { updateFilterValue, filterValues } = useDynamicFilterContext();
+
+  const handleChange = (value: string | boolean | Date | undefined) => {
+    updateFilterValue(filter.id, value);
+  };
+
+  const filterValue = filterValues[filter.id];
+
+  return (
+    <FilterContainer
+      filter={filter}
+      slot={
+        <LanguageSelect
+          className="w-full sm:w-full"
+          type="free"
+          selectorValue={filterValue as string}
+          onValueChange={handleChange}
+        />
+      }
+    ></FilterContainer>
+  );
+};
+
 export const AdminBookSearchFilter: FC = () => {
   const filterOptions = useMemo(
     (): FilterOpts[] => [
@@ -124,8 +148,8 @@ export const AdminBookSearchFilter: FC = () => {
         id: 'language-filter',
         key: 'language',
         label: 'Język',
-        type: 'select',
-        options: Object.values(ReversedLanguages),
+        type: 'text',
+        customSlot: SearchLanguageSelect,
       },
       {
         id: 'is-approved-filter',
@@ -160,17 +184,10 @@ export const AdminBookSearchFilter: FC = () => {
     ],
     []
   );
-  const filtersOrder = useMemo(
-    () => ['releaseYearAfter', 'releaseYearBefore'],
-    []
-  );
   const { isFilterVisible } = useFilterContext();
 
   return (
-    <DynamicFilterProvider
-      filterOptions={filterOptions}
-      filtersOrder={filtersOrder}
-    >
+    <DynamicFilterProvider filterOptions={filterOptions}>
       <FiltersDrawer className={isFilterVisible ? '' : 'hidden'} />
     </DynamicFilterProvider>
   );

@@ -3,7 +3,11 @@ import { z } from 'zod';
 import { FC, useState } from 'react';
 import { AuthenticatedLayout } from '../../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { useForm } from 'react-hook-form';
-import { FindBookResponseBody, Language, UpdateBookRequestBody } from '@common/contracts';
+import {
+  FindBookResponseBody,
+  Language,
+  UpdateBookRequestBody,
+} from '@common/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
@@ -26,7 +30,11 @@ import {
   TooltipTrigger,
 } from '../../../../../modules/common/components/tooltip/tooltip';
 import { HiOutlineInformationCircle } from 'react-icons/hi';
-import { Popover, PopoverContent, PopoverTrigger } from '../../../../../modules/common/components/popover/popover';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '../../../../../modules/common/components/popover/popover';
 import { Button } from '../../../../../modules/common/components/button/button';
 import { cn } from '../../../../../modules/common/lib/utils';
 import { Check, ChevronsUpDown } from 'lucide-react';
@@ -87,7 +95,7 @@ const editBookFormSchema = z.object({
     .or(
       z.literal('', {
         required_error: 'Wymagany',
-      }),
+      })
     ),
   authorName: z
     .string({
@@ -175,13 +183,16 @@ const BookEditForm: FC<FormProps> = ({ data }) => {
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
-  const [searchedName, setSearchedName] = useState<string | undefined>(undefined);
+  const [searchedName, setSearchedName] = useState<string | undefined>(
+    undefined
+  );
 
   const onOpenChange = (bool: boolean) => setCreateAuthorDialogVisible(bool);
 
   const [draftAuthorName, setDraftAuthorName] = useState('');
 
-  const [createAuthorDialogVisible, setCreateAuthorDialogVisible] = useState(false);
+  const [createAuthorDialogVisible, setCreateAuthorDialogVisible] =
+    useState(false);
 
   const [authorSelectOpen, setAuthorSelectOpen] = useState(false);
 
@@ -218,7 +229,12 @@ const BookEditForm: FC<FormProps> = ({ data }) => {
     }
 
     try {
-      const payload = (Object.entries(values) as [keyof WriteablePayload, string | number | boolean][]).reduce(
+      const payload = (
+        Object.entries(values) as [
+          keyof WriteablePayload,
+          string | number | boolean,
+        ][]
+      ).reduce(
         (agg, [key, value]) => {
           if (value && key) {
             agg[key as keyof WriteablePayload] = value;
@@ -235,7 +251,7 @@ const BookEditForm: FC<FormProps> = ({ data }) => {
           return agg;
         },
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        {} as any,
+        {} as any
       ) as WriteablePayload;
 
       await updateBook({
@@ -269,7 +285,9 @@ const BookEditForm: FC<FormProps> = ({ data }) => {
     }
   };
 
-  const onCreateAuthorDraft = (payload: z.infer<typeof createAuthorDraftSchema>): void => {
+  const onCreateAuthorDraft = (
+    payload: z.infer<typeof createAuthorDraftSchema>
+  ): void => {
     setDraftAuthorName(payload.name);
 
     editBookForm.setValue('author', '', {
@@ -344,7 +362,8 @@ const BookEditForm: FC<FormProps> = ({ data }) => {
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>
-                        Imię i nazwisko autora musi mieć minimum 3 znaki<br></br> i zawierać spację oddzielającą imię i
+                        Imię i nazwisko autora musi mieć minimum 3 znaki
+                        <br></br> i zawierać spację oddzielającą imię i
                         nazwisko.
                       </p>
                     </TooltipContent>
@@ -365,12 +384,16 @@ const BookEditForm: FC<FormProps> = ({ data }) => {
                         className={cn(
                           'justify-between bg-[#D1D5DB]/20',
                           !field.value && 'text-muted-foreground',
-                          draftAuthorName && 'text-black',
+                          draftAuthorName && 'text-black'
                         )}
                       >
                         {field.value
-                          ? authors?.data.find((author) => author.id === field.value)?.name
-                            ? authors?.data.find((author) => author.id === field.value)?.name || 'Wyszukaj autora'
+                          ? authors?.data.find(
+                              (author) => author.id === field.value
+                            )?.name
+                            ? authors?.data.find(
+                                (author) => author.id === field.value
+                              )?.name || 'Wyszukaj autora'
                             : draftAuthorName || 'Wyszukaj autora'
                           : draftAuthorName || 'Wyszukaj autora'}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -399,11 +422,16 @@ const BookEditForm: FC<FormProps> = ({ data }) => {
                                 onOpenChange={(val) => {
                                   onOpenChange(val);
 
-                                  createAuthorDraftForm.setValue('name', searchedName ?? '');
+                                  createAuthorDraftForm.setValue(
+                                    'name',
+                                    searchedName ?? ''
+                                  );
                                 }}
                               >
                                 <DialogTrigger asChild>
-                                  <Button className="bg-slate-100 text-black hover:bg-slate-300">Dodaj</Button>
+                                  <Button className="bg-slate-100 text-black hover:bg-slate-300">
+                                    Dodaj
+                                  </Button>
                                 </DialogTrigger>
                                 <DialogContent className="sm:max-w-md">
                                   <DialogHeader>
@@ -412,7 +440,9 @@ const BookEditForm: FC<FormProps> = ({ data }) => {
                                   <Form {...createAuthorDraftForm}>
                                     <form
                                       className="flex flex-col gap-8 py-4"
-                                      onSubmit={createAuthorDraftForm.handleSubmit(onCreateAuthorDraft)}
+                                      onSubmit={createAuthorDraftForm.handleSubmit(
+                                        onCreateAuthorDraft
+                                      )}
                                     >
                                       <FormField
                                         name="name"
@@ -432,9 +462,16 @@ const BookEditForm: FC<FormProps> = ({ data }) => {
                                         )}
                                       />
                                       <Button
-                                        disabled={!createAuthorDraftForm.formState.isValid}
+                                        disabled={
+                                          !createAuthorDraftForm.formState
+                                            .isValid
+                                        }
                                         type="button"
-                                        onClick={() => onCreateAuthorDraft(createAuthorDraftForm.getValues())}
+                                        onClick={() =>
+                                          onCreateAuthorDraft(
+                                            createAuthorDraftForm.getValues()
+                                          )
+                                        }
                                       >
                                         Stwórz
                                       </Button>
@@ -445,7 +482,9 @@ const BookEditForm: FC<FormProps> = ({ data }) => {
                             </>
                           </CommandEmpty>
                         )}
-                        {loading && <CommandLoading>Wyszukuję autorów</CommandLoading>}
+                        {loading && (
+                          <CommandLoading>Wyszukuję autorów</CommandLoading>
+                        )}
                         {authors?.data.map((author) => (
                           <CommandItem
                             key={`author-${author.id}`}
@@ -461,7 +500,12 @@ const BookEditForm: FC<FormProps> = ({ data }) => {
                             }}
                           >
                             <Check
-                              className={cn('mr-2 h-4 w-4', author.id === field.value ? 'opacity-100' : 'opacity-0')}
+                              className={cn(
+                                'mr-2 h-4 w-4',
+                                author.id === field.value
+                                  ? 'opacity-100'
+                                  : 'opacity-0'
+                              )}
                             />
                             {author.name}
                           </CommandItem>
@@ -515,7 +559,7 @@ const BookEditForm: FC<FormProps> = ({ data }) => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Język</FormLabel>
-              <LanguageSelect {...field} />
+              <LanguageSelect type="form" {...field} />
               <FormMessage />
             </FormItem>
           )}
@@ -585,7 +629,7 @@ const BooksEdit: FC = () => {
     FindBookByIdQueryOptions({
       accessToken: accessToken as string,
       bookId: id,
-    }),
+    })
   );
 
   if (isFetching && !isRefetching) {

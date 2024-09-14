@@ -3,6 +3,7 @@ import { FC, memo, useState } from 'react';
 import {
   Languages,
   LanguagesValues,
+  ReversedLanguages,
 } from '../../../common/constants/languages';
 import {
   Select,
@@ -51,17 +52,67 @@ const LanguagesList: FC<Props> = ({ setLanguageSelectOpen }) => {
 
 const MemoizedLanguagesList = memo(LanguagesList);
 
-interface LanguageSelectProps extends ControllerRenderProps {
+interface BaseLanguageSelectProps {
   onValueChange?: (val: string) => void;
   dialog?: boolean;
+  selectorValue?: string;
+  type?: 'form' | 'free';
+
+  className?: string;
 }
+
+interface FormLanguageSelectProps
+  extends ControllerRenderProps,
+    BaseLanguageSelectProps {
+  type: 'form';
+}
+
+type LanguageSelectProps = BaseLanguageSelectProps | FormLanguageSelectProps;
 
 const LanguageSelect: FC<LanguageSelectProps> = ({
   onValueChange,
   dialog = false,
+  type = 'form',
+  selectorValue,
+  className,
   ...field
 }) => {
   const [languageSelectOpen, setLanguageSelectOpen] = useState(false);
+
+  console.log('In ls: ', selectorValue);
+
+  const selectContent = (
+    <SelectTrigger className={className}>
+      {ReversedLanguages[selectorValue as keyof typeof ReversedLanguages] ||
+        ReversedLanguages[
+          // eslint-disable-next-line
+          (field as any)?.value as keyof typeof ReversedLanguages
+        ]}
+      <SelectValue
+        asChild
+        className={className}
+        placeholder={<span className="text-muted-foreground">Język</span>}
+      ></SelectValue>
+      {!dialog && (
+        <SelectContent className={className}>
+          {
+            <MemoizedLanguagesList
+              setLanguageSelectOpen={setLanguageSelectOpen}
+            />
+          }
+        </SelectContent>
+      )}
+      {dialog && (
+        <SelectContentNoPortal>
+          {
+            <MemoizedLanguagesList
+              setLanguageSelectOpen={setLanguageSelectOpen}
+            />
+          }
+        </SelectContentNoPortal>
+      )}
+    </SelectTrigger>
+  );
 
   return (
     <Select
@@ -72,35 +123,22 @@ const LanguageSelect: FC<LanguageSelectProps> = ({
           onValueChange(val);
         }
 
-        field.onChange(val);
+        if (field && 'onChange' in field) {
+          field.onChange(val);
+        }
       }}
-      defaultValue={field.value}
+      // todo: fix type later
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      defaultValue={type === 'form' ? (field as any).value : selectorValue}
+      // todo: fix type later
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      value={type === 'form' ? (field as any).value : selectorValue}
     >
-      <FormControl>
-        <SelectTrigger>
-          <SelectValue
-            placeholder={<span className="text-muted-foreground">Język</span>}
-          />
-          {!dialog && (
-            <SelectContent>
-              {
-                <MemoizedLanguagesList
-                  setLanguageSelectOpen={setLanguageSelectOpen}
-                />
-              }
-            </SelectContent>
-          )}
-          {dialog && (
-            <SelectContentNoPortal>
-              {
-                <MemoizedLanguagesList
-                  setLanguageSelectOpen={setLanguageSelectOpen}
-                />
-              }
-            </SelectContentNoPortal>
-          )}
-        </SelectTrigger>
-      </FormControl>
+      {type === 'form' ? (
+        <FormControl>{selectContent}</FormControl>
+      ) : (
+        selectContent
+      )}
     </Select>
   );
 };

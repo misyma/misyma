@@ -232,6 +232,7 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
               <FormLabel>Język</FormLabel>
               <LanguageSelect
                 dialog={true}
+                type={'form'}
                 onValueChange={onLanguageSelected}
                 {...field}
               />
