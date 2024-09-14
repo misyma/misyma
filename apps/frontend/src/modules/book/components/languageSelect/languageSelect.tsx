@@ -86,11 +86,10 @@ const LanguageSelect: FC<LanguageSelectProps> = ({
           // eslint-disable-next-line
           (field as any)?.value as keyof typeof ReversedLanguages
         ]}
-      <SelectValue
-        asChild
-        className={className}
-        placeholder={<span className="text-muted-foreground">Język</span>}
-      ></SelectValue>
+      {!selectorValue && !(field as ControllerRenderProps)?.value && (
+        <span className="text-muted-foreground">Język</span>
+      )}
+      <SelectValue asChild className={className}></SelectValue>
       {!dialog && (
         <SelectContent className={className}>
           {
@@ -126,11 +125,9 @@ const LanguageSelect: FC<LanguageSelectProps> = ({
         }
       }}
       // todo: fix type later
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      defaultValue={type === 'form' ? (field as any).value : selectorValue}
+      defaultValue={type === 'form' ? (field as ControllerRenderProps)?.value : selectorValue}
       // todo: fix type later
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      value={type === 'form' ? (field as any).value : selectorValue}
+      value={type === 'form' ? (field as ControllerRenderProps)?.value : selectorValue}
     >
       {type === 'form' ? (
         <FormControl>{selectContent}</FormControl>

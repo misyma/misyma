@@ -32,6 +32,11 @@ export const adminFindBooks = async (values: Payload) => {
 		if (Array.isArray(val)) {
 			return (query[key] = val.join(','));
 		}
+		// eslint-disable-next-line
+		if ((val as any) instanceof Date) {
+			query[key] = (val as unknown as Date).getFullYear().toString();
+			return;
+		}
 
 		query[key] = `${val}`;
 	});
