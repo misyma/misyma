@@ -66,31 +66,32 @@ const CustomAuthorSearchFilter: FC<FilterComponentProps> = ({ filter }) => {
                 'justify-between bg-[#D1D5DB]/20',
                 !currentAuthorId && 'text-muted-foreground',
                 'border h-12',
-                'w-48 sm:w-48'
+                'w-full'
               )}
-              style={{
-                height: '3rem',
-              }}
             >
-              <p
-                className={cn(
-                  !currentAuthorId && 'text-muted-foreground',
-                  'w-full truncate text-start px-3 py-2'
-                )}
-              >
-                {!currentAuthorId && 'Wyszukaj autora'}
-                {currentAuthorId && isFetchingCurrentAuthor && (
-                  <LoadingSpinner size={20} />
-                )}
-                {currentAuthorId && !isFetchingCurrentAuthor
-                  ? getAuthorName()
-                  : ''}
-              </p>
-              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              <div className="flex-1 min-w-0 max-w-[calc(100%-2rem)]">
+                {' '}
+                {/* Limit width and ensure truncation */}
+                <span
+                  className={cn(
+                    !currentAuthorId && 'text-muted-foreground',
+                    'block truncate text-start'
+                  )}
+                >
+                  {!currentAuthorId && 'Wyszukaj autora'}
+                  {currentAuthorId && isFetchingCurrentAuthor && (
+                    <LoadingSpinner size={20} />
+                  )}
+                  {currentAuthorId && !isFetchingCurrentAuthor
+                    ? getAuthorName()
+                    : ''}
+                </span>
+              </div>{' '}
+              <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
             </Button>
           </PopoverTrigger>
           <AuthorSearchSelector
-            className='w-48 sm:w-48'
+            className="w-48 sm:w-48"
             onCreateAuthorDraft={() => {}}
             includeAuthorCreation={false}
             onSelect={handleChange}
