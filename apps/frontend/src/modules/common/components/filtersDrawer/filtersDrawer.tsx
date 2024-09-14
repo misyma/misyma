@@ -25,7 +25,7 @@ export const FiltersDrawer: FC<{ className: string }> = ({ className }) => {
   }, [filters, filterOptions]);
 
   return (
-    <div className={cn('space-y-4', className)}>
+    <div className={cn('space-y-4 w-full', className)}>
       {constructedFilters.map((filter, idx) => (
         <div key={`container-${filter.id}`} className="grid gap-4">
           <FilterComponent key={filter.id} filter={filter} />

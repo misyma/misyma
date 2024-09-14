@@ -68,7 +68,7 @@ const CustomAuthorSearchFilter: FC<FilterComponentProps> = ({ filter }) => {
                 'justify-between bg-[#D1D5DB]/20',
                 !currentAuthorId && 'text-muted-foreground',
                 'border h-12',
-                'w-48 sm:w-48'
+                'w-full'
               )}
               style={{
                 height: '3rem',

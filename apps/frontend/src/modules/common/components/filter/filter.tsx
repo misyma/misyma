@@ -37,7 +37,7 @@ const TextFilter: FC<FilterComponentProps> = ({ filter }) => {
           placeholder={`Podaj ${filter.label.toLowerCase()}`}
           value={(filterValues[filter.id] as string) || ''}
           iSize="custom"
-          className="w-48"
+          className="w-full"
           type="text"
           onChange={(e) => handleChange(e.target.value)}
         />
@@ -62,7 +62,7 @@ const SelectFilter: FC<SelectFilterProps> = ({ filter, dialog = false }) => {
     return (
       <>
         {filter.options?.map((option) => (
-          <SelectItem className="w-48 sm:w-48" key={option} value={option}>
+          <SelectItem className="w-full sm:w-full" key={option} value={option}>
             {option}
           </SelectItem>
         ))}
@@ -77,11 +77,11 @@ const SelectFilter: FC<SelectFilterProps> = ({ filter, dialog = false }) => {
           value={(filterValues[filter.id] as string) || ''}
           onValueChange={handleChange}
         >
-          <SelectTrigger className="w-48 sm:w-48">
-            <SelectValue className="w-48 sm:w-48"></SelectValue>
+          <SelectTrigger className="w-full sm:w-full">
+            <SelectValue className="w-full sm:w-full"></SelectValue>
           </SelectTrigger>
           {dialog && (
-            <SelectContent className="w-48 sm:w-48">
+            <SelectContent className="w-full sm:w-full">
               {filterItems}
             </SelectContent>
           )}
@@ -103,8 +103,6 @@ export const CheckboxFilter: FC<FilterComponentProps> = ({ filter }) => {
   };
 
   const filterValue = filterValues[filter.id];
-
-  console.log(filterValue);
 
   return (
     <FilterContainer
@@ -180,16 +178,19 @@ export const DateFilter: FC<DateFilterComponentProps> = ({ filter }) => {
             <Button
               variant={'outline'}
               type="button"
-              className={'w-48 sm:min-w-48 pl-3 text-left font-normal'}
+              size="custom"
+              className={'w-full truncate h-10 pl-3 text-left font-normal'}
             >
               {filterValue ? (
                 formatDate(filterValue as Date, 'PPP', {
                   locale: pl,
                 })
               ) : (
-                <span>DD-MM-RRRR</span>
+                <>DD-MM-RRRR</>
               )}
-              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+              {!filterValue && (
+                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+              )}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">

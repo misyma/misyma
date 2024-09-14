@@ -17,7 +17,7 @@ export const FilterContainer: FC<FilterContainerProps> = ({ filter, slot }) => {
   );
 
   return (
-    <div className="flex flex-col items-end w-full justify-between gap-1">
+    <div className="flex flex-col items-end w-full justify-between gap-1 px-1">
       <label>{filter.label}</label>
       <div className="flex gap-2 items-center">
         {correspondingFilterValueExists && (

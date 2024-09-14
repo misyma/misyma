@@ -14,6 +14,12 @@ import {
 } from '../../../../modules/common/contexts/filterContext';
 import { Button } from '../../../../modules/common/components/button/button';
 import { HiOutlineFilter } from 'react-icons/hi';
+import { cn } from '../../../../modules/common/lib/utils';
+
+const TableSizing = {
+  visible: `sm:col-span-4 md:col-span-5`,
+  invisible: `sm:col-span-5 md:col-span-6`,
+} as const;
 
 export const BooksAdminPage: FC = () => {
   const [page, setPage] = useState(1);
@@ -52,7 +58,7 @@ export const BooksAdminPage: FC = () => {
   return (
     <AuthenticatedLayout>
       <div className="flex w-full justify-center items-center w-100% px-8 py-2">
-        <div className="grid grid-cols-5 sm:grid-cols-6 w-full gap-y-4 gap-x-4 sm:max-w-screen-2xl">
+        <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 w-full gap-y-4 gap-x-4 sm:max-w-screen-2xl">
           <div className="flex justify-between gap-4 col-span-6">
             <ul className="flex justify-between gap-8 text-sm sm:text-lg font-semibold min-w-96">
               <Link className="cursor-pointer" to="/admin/tabs/authors">
@@ -74,7 +80,10 @@ export const BooksAdminPage: FC = () => {
             </Button>
           </div>
           <div
-            className={`flex flex-col justify-center px-8 col-span-2 sm:col-span-${isFilterVisible ? '5' : '6'}`}
+            className={cn(
+              `flex flex-col justify-center px-8 col-span-4`,
+              TableSizing[isFilterVisible ? 'visible' : 'invisible']
+            )}
           >
             <div className="flex items-center justify-start w-100% py-1 sm:py-4">
               <BookTable
@@ -90,7 +99,7 @@ export const BooksAdminPage: FC = () => {
               />
             </div>
           </div>{' '}
-          <div className="flex items-center justify-end gap-2">
+          <div className="flex items-center justify-end align self-start gap-2 border-l w-full">
             <AdminBookSearchFilter />
           </div>
         </div>
