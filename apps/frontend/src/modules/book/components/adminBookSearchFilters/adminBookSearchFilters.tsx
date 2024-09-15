@@ -71,7 +71,6 @@ const CustomAuthorSearchFilter: FC<FilterComponentProps> = ({ filter }) => {
             >
               <div className="flex-1 min-w-0 max-w-[calc(100%-2rem)]">
                 {' '}
-                {/* Limit width and ensure truncation */}
                 <span
                   className={cn(
                     !currentAuthorId && 'text-muted-foreground',
@@ -112,7 +111,6 @@ const SearchLanguageSelect: FC<FilterComponentProps> = ({ filter }) => {
   };
 
   const filterValue = filterValues[filter.key as string];
-  console.log(filterValues);
 
   return (
     <FilterContainer
