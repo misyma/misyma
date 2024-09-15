@@ -27,7 +27,7 @@ const LanguagesList: FC<Props> = ({ setLanguageSelectOpen }) => {
     [LanguagesValues.Hiszpański, Languages.Spanish],
     [LanguagesValues.Niemiecki, Languages.German],
     [LanguagesValues.Włoski, Languages.Italian],
-    [LanguagesValues.Duński, Languages.Dutch],
+    [LanguagesValues.Holenderski, Languages.Dutch],
     [LanguagesValues.Szwedzki, Languages.Swedish],
     [LanguagesValues.Rosyjski, Languages.Russian],
   ];
