@@ -8,7 +8,13 @@ export type BaseFilterOpts = {
 	customSlot?: FC<FilterComponentProps>;
 };
 
-export type FilterTypes = 'text' | 'select' | 'checkbox' | 'date' | 'year';
+export type FilterTypes =
+	| 'text'
+	| 'select'
+	| 'checkbox'
+	| 'three-state-checkbox'
+	| 'date'
+	| 'year';
 
 export type TextFilterOpts = BaseFilterOpts & {
 	type: 'text';
@@ -23,6 +29,10 @@ export type YearFilerOpts = BaseFilterOpts & {
 
 export type CheckboxFilterOpts = BaseFilterOpts & {
 	type: 'checkbox';
+};
+
+export type ThreeStateCheckboxFilterOpts = BaseFilterOpts & {
+	type: 'three-state-checkbox';
 };
 
 export type DateFilterOpts = BaseFilterOpts & {
@@ -42,7 +52,8 @@ export type FilterOpts =
 	| TextFilterOpts
 	| DateFilterOpts
 	| SelectFilterOpts
-	| CheckboxFilterOpts;
+	| CheckboxFilterOpts
+	| ThreeStateCheckboxFilterOpts;
 
 export interface FilterComponentProps {
 	filter: FilterOpts;

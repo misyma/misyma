@@ -1,5 +1,5 @@
 import { Link, useNavigate, useRouter } from '@tanstack/react-router';
-import { FC, useMemo } from 'react';
+import { FC, Fragment, useMemo } from 'react';
 import { IoIosLogOut } from 'react-icons/io';
 import { useStoreSelector } from '../../../core/store/hooks/useStoreSelector';
 import {
@@ -30,7 +30,6 @@ const NavbarBreadcrumbs = () => {
 
   const filteredPaths =
     context.filter((route) => route.id !== '__root__') ?? [];
-
   const allDollarKeys = filteredPaths[0]?.staticData.routeDisplayableNameParts
     ?.map((val) => {
       const dollarValues = [];
@@ -54,11 +53,9 @@ const NavbarBreadcrumbs = () => {
 
   const replaceHrefPlaceholderWithValue = (href: string): string => {
     const regex = /\$[^/]*\/?$/g;
-
     const hrefPlaceholderKeys = href.match(regex);
 
     let finalHref = href;
-
     hrefPlaceholderKeys?.forEach((matchedKey) => {
       finalHref = href.replace(matchedKey, breadcrumbKeys[matchedKey]);
     });
@@ -88,6 +85,7 @@ const NavbarBreadcrumbs = () => {
             <BreadcrumbItem key={`${index}-${val}-breadcrumb`}>
               <BreadcrumbLink asChild>
                 <Link
+                  key={`${index}-${val}-breadcrumb-link`}
                   className="max-w-80 truncate inline-block"
                   to={replaceHrefPlaceholderWithValue(val.href)}
                 >
@@ -109,12 +107,12 @@ const NavbarBreadcrumbs = () => {
       <BreadcrumbList>
         {allCorrespondingValuesPresent &&
           breadcrumbItems.map((item, index) => (
-            <>
+            <Fragment key={`breadcrumb-fragment-${index}`}>
               {item}
               {index !== breadcrumbItems.length - 1 && (
                 <BreadcrumbSeparator></BreadcrumbSeparator>
               )}
-            </>
+            </Fragment>
           ))}
       </BreadcrumbList>
     </Breadcrumb>

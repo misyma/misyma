@@ -161,7 +161,7 @@ export const AdminBookSearchFilter: FC<AdminBookSearchFilterProps> = ({
         id: 'is-approved-filter',
         key: 'isApproved',
         label: 'Zaakceptowana',
-        type: 'checkbox',
+        type: 'three-state-checkbox',
       },
       {
         id: 'release-year-after-filter',
