@@ -17,9 +17,9 @@ export const FilterContainer: FC<FilterContainerProps> = ({ filter, slot }) => {
   );
 
   return (
-    <div className="flex flex-col items-end w-full justify-between gap-1 px-1">
+    <div className="flex flex-col items-end w-full justify-between gap-1 px-1 overflow-hidden">
       <label>{filter.label}</label>
-      <div className="flex gap-2 items-center justify-end w-full overflow-hidden">
+      <div className="flex gap-2 items-center justify-end w-full overflow-hidden truncate">
         {correspondingFilterValueExists && (
           <RemoveFilterButton filterKey={filter.key} />
         )}

@@ -66,25 +66,24 @@ const CustomAuthorSearchFilter: FC<FilterComponentProps> = ({ filter }) => {
                 'justify-between bg-[#D1D5DB]/20',
                 !currentAuthorId && 'text-muted-foreground',
                 'border h-12',
-                'w-full'
+                'w-full truncate',
               )}
             >
-              <div className="flex-1 min-w-0 max-w-[calc(100%-2rem)]">
+              <div className="flex-1 min-w-0 max-w-full">
                 {' '}
-                <span
-                  className={cn(
-                    !currentAuthorId && 'text-muted-foreground',
-                    'block truncate text-start'
+                <div className="flex items-center w-full overflow-hidden">
+                  {!currentAuthorId && (
+                    <span className="text-muted-foreground">
+                      Wyszukaj autora
+                    </span>
                   )}
-                >
-                  {!currentAuthorId && 'Wyszukaj autora'}
                   {currentAuthorId && isFetchingCurrentAuthor && (
                     <LoadingSpinner size={20} />
                   )}
-                  {currentAuthorId && !isFetchingCurrentAuthor
-                    ? getAuthorName()
-                    : ''}
-                </span>
+                  {currentAuthorId && !isFetchingCurrentAuthor && (
+                    <span className="block truncate">{getAuthorName()}</span>
+                  )}
+                </div>
               </div>{' '}
               <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
             </Button>
