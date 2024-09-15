@@ -37,7 +37,6 @@ const createAuthorSchema = z.object({
     .max(128, {
       message: 'Imię autora powinno mieć maksymalnie 128 znaków.',
     })
-    .regex(/\s/, 'Autor powinien być w formacie "Imię Nazwisko"'),
 });
 
 export const AddAuthorModal: FC<Props> = ({ trigger, onMutated }: Props) => {

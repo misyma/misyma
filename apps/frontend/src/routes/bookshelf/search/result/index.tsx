@@ -253,6 +253,7 @@ export const SearchResultPage: FC = () => {
           <div className="flex flex-col w-full">
             {totalBooks > 1 ? (
               <Paginator
+                version={1}
                 pageIndex={searchParams.page}
                 rootClassName="w-full flex items-center h-16 text-xl sm:text-3xl justify-normal"
                 onPageChange={(page) => {
