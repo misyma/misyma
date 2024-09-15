@@ -46,6 +46,7 @@ import { useFindAuthorsQuery } from '../../../../author/api/user/queries/findAut
 import { FindBookByIdQueryOptions } from '../../../api/user/queries/findBookById/findBookByIdQueryOptions';
 import { FindUserBookByIdQueryOptions } from '../../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 import { LoadingSpinner } from '../../../../common/components/spinner/loading-spinner';
+import { createAuthorDraftSchema } from '../../../../author/schemas/createAuthorDraftSchema';
 
 const stepOneSchema = z.object({
   isbn: isbnSchema.optional().or(z.literal('')),
@@ -93,18 +94,6 @@ interface Props {
   bookId: string;
 }
 
-const createAuthorDraftSchema = z.object({
-  name: z
-    .string({
-      required_error: 'Imię jest wymagane.',
-    })
-    .min(1, {
-      message: 'Imię autora musi miec co najmniej jeden znak.',
-    })
-    .max(128, {
-      message: 'Imię autora może mieć maksymalnie 128 znaków.',
-    }),
-});
 
 export const StepOneForm: FC<Props> = ({ bookId, onCancel, onSubmit }) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);

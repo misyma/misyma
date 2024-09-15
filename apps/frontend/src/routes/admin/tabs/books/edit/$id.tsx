@@ -65,6 +65,7 @@ import {
   useBreadcrumbKeysContext,
   useBreadcrumbKeysDispatch,
 } from '../../../../../modules/common/contexts/breadcrumbKeysContext';
+import { createAuthorDraftSchema } from '../../../../../modules/author/schemas/createAuthorDraftSchema';
 
 type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
@@ -142,19 +143,6 @@ const editBookFormSchema = z.object({
   // genre: z.string().min(1, {
   //   message: 'Niewłaściwa wartość',
   // }),
-});
-
-const createAuthorDraftSchema = z.object({
-  name: z
-    .string({
-      required_error: 'Imię jest wymagane.',
-    })
-    .min(3, {
-      message: 'Imię autora musi miec co najmniej trzy znaki.',
-    })
-    .max(128, {
-      message: 'Imię autora powinno mieć maksymalnie 128 znaków.',
-    })
 });
 
 interface FormProps {

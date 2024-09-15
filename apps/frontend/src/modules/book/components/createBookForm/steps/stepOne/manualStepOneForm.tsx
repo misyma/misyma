@@ -56,6 +56,7 @@ import { userStateSelectors } from '../../../../../core/store/states/userState/u
 import { toast } from '../../../../../common/components/toast/use-toast';
 import { BookApiError } from '../../../../errors/bookApiError';
 import { LoadingSpinner } from '../../../../../common/components/spinner/loading-spinner';
+import { createAuthorDraftSchema } from '../../../../../author/schemas/createAuthorDraftSchema';
 
 const stepOneSchema = z
   .object({
@@ -110,19 +111,6 @@ const stepOneSchema = z
       .or(z.literal('')),
   })
   .refine((data) => !!data.author || data.authorName, 'Autor jest wymagany.');
-
-const createAuthorDraftSchema = z.object({
-  name: z
-    .string({
-      required_error: 'Imię jest wymagane.',
-    })
-    .min(1, {
-      message: 'Imię autora musi miec co najmniej jeden znak.',
-    })
-    .max(128, {
-      message: 'Imię autora powinno mieć maksymalnie 128 znaków.',
-    })
-});
 
 export const ManualStepOneForm = (): JSX.Element => {
   const bookCreation = useBookCreation<false>() as BookCreationNonIsbnState;
