@@ -43,12 +43,11 @@ const updateAuthorSchema = z.object({
       required_error: 'Imię jest wymagane.',
     })
     .min(3, {
-      message: 'Imię autora musi miec co najmniej trzy znaki.',
+      message: 'Imię i nazwisko autora musi miec co najmniej trzy znaki.',
     })
     .max(128, {
       message: 'Imię autora powinno mieć maksymalnie 128 znaków.',
     })
-    .regex(/\s/, 'Autor powinien być w formacie "Imię Nazwisko"')
     .or(z.literal('')),
   isApproved: z.boolean().or(z.undefined()),
 });
@@ -162,7 +161,7 @@ const UpdateAuthorForm: FC<FormProps> = ({
           )}
         />
         <Button disabled={!form.formState.isValid} type="submit">
-          Stwórz
+          Aktualizuj
         </Button>
       </form>
     </Form>
@@ -200,7 +199,7 @@ export const UpdateAuthorModal: FC<Props> = ({
         omitCloseButton={true}
       >
         <DialogHeader className="font-semibold text-center flex justify-center items-center">
-          Stwórz autora
+          Zaaktualizuj autora
         </DialogHeader>
         <DialogDescription className="flex flex-col gap-4 justify-center items-center">
           <p className={error ? 'text-red-500' : 'hidden'}>{error}</p>

@@ -70,7 +70,6 @@ const stepOneSchema = z
       .string({
         required_error: 'Wymagany',
       })
-      .regex(/\s/)
       .or(z.literal('')),
     publisher: z
       .string()
@@ -132,8 +131,6 @@ export const ManualStepOneForm = (): JSX.Element => {
     payload: z.infer<typeof createAuthorDraftSchema>
   ): void => {
     setDraftAuthorName(payload.name);
-
-    console.log(payload, draftAuthorName);
 
     dispatch({
       type: BookCreationActionType.setAuthorName,
@@ -210,7 +207,6 @@ export const ManualStepOneForm = (): JSX.Element => {
     });
 
   const authorName = useMemo(() => {
-
     if (currentAuthor) {
       return currentAuthor.data[0].name;
     }
