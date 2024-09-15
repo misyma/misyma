@@ -12,7 +12,6 @@ export const FilterContainer: FC<FilterContainerProps> = ({ filter, slot }) => {
   const correspondingFilterValue = filterValues[filter.key as string];
 
   const correspondingFilterValueExists = useMemo(() => {
-    // console.log(correspondingFilterValue)
     if (correspondingFilterValue == null) {
       return false;
     }

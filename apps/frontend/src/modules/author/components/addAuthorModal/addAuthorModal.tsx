@@ -47,7 +47,6 @@ export const AddAuthorModal: FC<Props> = ({ trigger, onMutated }: Props) => {
   const queryClient = useQueryClient();
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
-
   const [error, setError] = useState('');
 
   const { mutateAsync: createAuthor } = useCreateAuthorMutation({});
