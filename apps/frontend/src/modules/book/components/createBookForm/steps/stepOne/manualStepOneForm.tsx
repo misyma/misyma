@@ -20,28 +20,12 @@ import { Input } from '../../../../../common/components/input/input';
 import { Button } from '../../../../../common/components/button/button';
 import {
   Popover,
-  PopoverContent,
   PopoverTrigger,
 } from '../../../../../common/components/popover/popover';
-import { Check, ChevronsUpDown } from 'lucide-react';
-import {
-  Command,
-  CommandEmpty,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from '../../../../../common/components/command/command';
+import { ChevronsUpDown } from 'lucide-react';
 import { cn } from '../../../../../common/lib/utils';
-import { useCallback, useState } from 'react';
-import { CommandLoading } from 'cmdk';
+import { useCallback as useMemo, useState } from 'react';
 import { isbnSchema } from '../../../../../common/schemas/isbnSchema';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '../../../../../common/components/dialog/dialog';
 import { HiOutlineInformationCircle } from 'react-icons/hi';
 import {
   Tooltip,
@@ -57,6 +41,7 @@ import { toast } from '../../../../../common/components/toast/use-toast';
 import { BookApiError } from '../../../../errors/bookApiError';
 import { LoadingSpinner } from '../../../../../common/components/spinner/loading-spinner';
 import { createAuthorDraftSchema } from '../../../../../author/schemas/createAuthorDraftSchema';
+import { AuthorSearchSelector } from '../../../../../auth/components/authorSearchSelector/authorSearchSelector';
 
 const stepOneSchema = z
   .object({
@@ -86,7 +71,7 @@ const stepOneSchema = z
         required_error: 'Wymagany',
       })
       .regex(/\s/)
-      .optional(),
+      .or(z.literal('')),
     publisher: z
       .string()
       .min(1, {
@@ -118,9 +103,6 @@ export const ManualStepOneForm = (): JSX.Element => {
   const [submitError, setSubmitError] = useState('');
   const [createAuthorDialogVisible, setCreateAuthorDialogVisible] =
     useState(false);
-  const [searchedName, setSearchedName] = useState<string | undefined>(
-    undefined
-  );
   const [draftAuthorName, setDraftAuthorName] = useState(
     bookCreation.stepOneDetails?.authorName
   );
@@ -146,19 +128,12 @@ export const ManualStepOneForm = (): JSX.Element => {
     mode: 'onTouched',
   });
 
-  const createAuthorDraftForm = useForm({
-    resolver: zodResolver(createAuthorDraftSchema),
-    values: {
-      name: '',
-    },
-    reValidateMode: 'onChange',
-    mode: 'onTouched',
-  });
-
   const onCreateAuthorDraft = (
     payload: z.infer<typeof createAuthorDraftSchema>
   ): void => {
     setDraftAuthorName(payload.name);
+
+    console.log(payload, draftAuthorName);
 
     dispatch({
       type: BookCreationActionType.setAuthorName,
@@ -227,13 +202,6 @@ export const ManualStepOneForm = (): JSX.Element => {
     });
   };
 
-  const {
-    data: authors,
-    isFetched,
-    isLoading: loading,
-  } = useFindAuthorsQuery({
-    name: searchedName,
-  });
   const { data: currentAuthor, isFetching: isFetchingCurrentAuthor } =
     useFindAuthorsQuery({
       ids: bookCreation.stepOneDetails?.author
@@ -241,27 +209,18 @@ export const ManualStepOneForm = (): JSX.Element => {
         : [],
     });
 
-  const getAuthorName = useCallback(
-    (val: string | undefined) => {
-      if (currentAuthor) {
-        return currentAuthor.data[0].name;
-      }
+  const authorName = useMemo(() => {
 
-      const chosenAuthor = authors?.data.find(
-        (author) => author.id === val
-      )?.name;
-      if (chosenAuthor) {
-        return chosenAuthor;
-      }
+    if (currentAuthor) {
+      return currentAuthor.data[0].name;
+    }
 
-      if (!draftAuthorName) {
-        return 'Wyszukaj autora';
-      }
+    if (!draftAuthorName) {
+      return 'Wyszukaj autora';
+    }
 
-      return draftAuthorName;
-    },
-    [authors?.data, currentAuthor, draftAuthorName]
-  );
+    return draftAuthorName;
+  }, [currentAuthor, draftAuthorName]);
 
   return (
     <Form {...form}>
@@ -374,136 +333,37 @@ export const ManualStepOneForm = (): JSX.Element => {
                             'w-full text-start px-3 py-2'
                           )}
                         >
-                          {!field.value && 'Wyszukaj autora'}
                           {field.value && isFetchingCurrentAuthor && (
                             <LoadingSpinner size={20} />
                           )}
+                          {draftAuthorName}
                           {field.value && !isFetchingCurrentAuthor
-                            ? getAuthorName(field.value)
+                            ? authorName()
                             : ''}
                         </p>
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
-                  <PopoverContent className="w-60 sm:w-96 p-0">
-                    <Command>
-                      <CommandInput
-                        placeholder="Wyszukaj autora..."
-                        onValueChange={setSearchedName}
-                        onKeyDown={(event) => {
-                          if (event.key === 'Enter') {
-                            setAuthorSelectOpen(false);
-                          }
-                        }}
-                      />
-                      {/* TODO: Replace with AuthorSearchSelector */}
-                      <CommandList>
-                        {isFetched && authors?.data.length === 0 && (
-                          <CommandEmpty className="flex flex-col px-4 py-4 gap-4">
-                            {/* <p>Nie znaleziono autora - {searchedName} </p> */}
-                            <>
-                              <Dialog
-                                open={createAuthorDialogVisible}
-                                onOpenChange={(val) => {
-                                  onOpenChange(val);
+                  <AuthorSearchSelector
+                    createAuthorDialogVisible={createAuthorDialogVisible}
+                    setAuthorSelectOpen={onOpenChange}
+                    currentlySelectedAuthorId={field.value}
+                    onCreateAuthorDraft={onCreateAuthorDraft}
+                    onSelect={(authorId) => {
+                      form.setValue('author', authorId);
+                      form.setValue('authorName', '');
+                      setDraftAuthorName('');
 
-                                  createAuthorDraftForm.setValue(
-                                    'name',
-                                    searchedName ?? ''
-                                  );
-                                }}
-                              >
-                                <DialogTrigger asChild>
-                                  <Button className="bg-slate-100 text-black hover:bg-slate-300">
-                                    Dodaj
-                                  </Button>
-                                </DialogTrigger>
-                                <DialogContent className="sm:max-w-md">
-                                  <DialogHeader>
-                                    <DialogTitle>Stwórz autora</DialogTitle>
-                                  </DialogHeader>
-                                  <Form {...createAuthorDraftForm}>
-                                    <form
-                                      className="flex flex-col gap-8 py-4"
-                                      onSubmit={createAuthorDraftForm.handleSubmit(
-                                        onCreateAuthorDraft
-                                      )}
-                                    >
-                                      <FormField
-                                        name="name"
-                                        render={({ field }) => (
-                                          <FormItem>
-                                            <FormLabel>Imię i nazwisko</FormLabel>
-                                            <FormControl>
-                                              <Input
-                                                min={1}
-                                                max={128}
-                                                type="text"
-                                                {...field}
-                                              />
-                                            </FormControl>
-                                            <FormMessage></FormMessage>
-                                          </FormItem>
-                                        )}
-                                      />
-                                      <Button
-                                        disabled={
-                                          !createAuthorDraftForm.formState
-                                            .isValid
-                                        }
-                                        type="button"
-                                        onClick={() =>
-                                          onCreateAuthorDraft(
-                                            createAuthorDraftForm.getValues()
-                                          )
-                                        }
-                                      >
-                                        Stwórz
-                                      </Button>
-                                    </form>
-                                  </Form>
-                                </DialogContent>
-                              </Dialog>
-                            </>
-                          </CommandEmpty>
-                        )}
-                        {loading && (
-                          <CommandLoading>Wyszukuję autorów</CommandLoading>
-                        )}
-                        {authors?.data.map((author) => (
-                          <CommandItem
-                            key={`author-${author.id}`}
-                            value={author.name}
-                            onSelect={() => {
-                              form.setValue('author', author.id);
+                      dispatch({
+                        type: BookCreationActionType.setAuthor,
+                        author: authorId,
+                      });
 
-                              form.setValue('authorName', undefined);
-
-                              setDraftAuthorName('');
-
-                              dispatch({
-                                type: BookCreationActionType.setAuthor,
-                                author: author.id,
-                              });
-
-                              form.trigger('author');
-                            }}
-                          >
-                            <Check
-                              className={cn(
-                                'mr-2 h-4 w-4',
-                                author.id === field.value
-                                  ? 'opacity-100'
-                                  : 'opacity-0'
-                              )}
-                            />
-                            {author.name}
-                          </CommandItem>
-                        ))}
-                      </CommandList>
-                    </Command>
-                  </PopoverContent>
+                      form.trigger('author');
+                    }}
+                    includeAuthorCreation={true}
+                  />
                 </Popover>
               </FormControl>
               <FormMessage />
