@@ -347,7 +347,7 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
                                         name="name"
                                         render={({ field }) => (
                                           <FormItem>
-                                            <FormLabel>Imię</FormLabel>
+                                            <FormLabel>Imię i nazwisko</FormLabel>
                                             <FormControl>
                                               <Input
                                                 min={1}

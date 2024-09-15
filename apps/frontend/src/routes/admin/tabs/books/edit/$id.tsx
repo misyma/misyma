@@ -448,7 +448,7 @@ const BookEditForm: FC<FormProps> = ({ data }) => {
                                         name="name"
                                         render={({ field }) => (
                                           <FormItem>
-                                            <FormLabel>Imię</FormLabel>
+                                            <FormLabel>Imię i nazwisko</FormLabel>
                                             <FormControl>
                                               <Input
                                                 min={1}

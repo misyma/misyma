@@ -62,7 +62,7 @@ export const CreateBookModal: FC = () => {
           className="max-w-sm sm:max-w-xl py-16 flex flex-col items-center gap-8"
           omitCloseButton={true}
         >
-          <DialogTitle>Create a book</DialogTitle>
+          <DialogTitle>Stwórz książkę</DialogTitle>
           <AdminCreateBookForm
             onSubmit={onSubmit}
           ></AdminCreateBookForm>
