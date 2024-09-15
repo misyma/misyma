@@ -8,7 +8,7 @@ export class FindAuthorsQueryHandlerImpl implements FindAuthorsQueryHandler {
   public constructor(private readonly authorRepository: AuthorRepository) {}
 
   public async execute(payload: ExecutePayload): Promise<ExecuteResult> {
-    const { ids, name, page, pageSize } = payload;
+    const { ids, name, page, pageSize, sortDate } = payload;
 
     let findAuthorsPayload: FindAuthorsPayload = {
       page,
@@ -26,6 +26,13 @@ export class FindAuthorsQueryHandlerImpl implements FindAuthorsQueryHandler {
       findAuthorsPayload = {
         ...findAuthorsPayload,
         ids,
+      };
+    }
+
+    if (sortDate) {
+      findAuthorsPayload = {
+        ...findAuthorsPayload,
+        sortDate,
       };
     }
 
