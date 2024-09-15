@@ -2,7 +2,7 @@ import { type Static, Type } from '@sinclair/typebox';
 
 import type * as contracts from '@common/contracts';
 
-import { borrowingDtoSchema } from './borrowingDto.js';
+import { borrowingBorrowerSchema, borrowingDtoSchema } from './borrowingDto.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const updateBorrowingPathParamsDtoSchema = Type.Object({
@@ -16,12 +16,7 @@ export type UpdateBorrowingPathParamsDto = TypeExtends<
 >;
 
 export const updateBorrowingBodyDtoSchema = Type.Object({
-  borrower: Type.Optional(
-    Type.String({
-      minLength: 1,
-      maxLength: 32,
-    }),
-  ),
+  borrower: Type.Optional(borrowingBorrowerSchema),
   startedAt: Type.Optional(Type.String({ format: 'date-time' })),
   endedAt: Type.Optional(Type.String({ format: 'date-time' })),
 });

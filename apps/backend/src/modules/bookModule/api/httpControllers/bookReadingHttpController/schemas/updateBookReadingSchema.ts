@@ -2,7 +2,7 @@ import { type Static, Type } from '@sinclair/typebox';
 
 import type * as contracts from '@common/contracts';
 
-import { bookReadingDtoSchema } from './bookReadingDto.js';
+import { bookReadingCommentSchema, bookReadingDtoSchema, bookReadingRatingSchema } from './bookReadingDto.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const updateBookReadingPathParamsDtoSchema = Type.Object({
@@ -16,18 +16,8 @@ export type UpdateBookReadingPathParamsDto = TypeExtends<
 >;
 
 export const updateBookReadingBodyDtoSchema = Type.Object({
-  comment: Type.Optional(
-    Type.String({
-      minLength: 1,
-      maxLength: 256,
-    }),
-  ),
-  rating: Type.Optional(
-    Type.Integer({
-      minimum: 1,
-      maximum: 10,
-    }),
-  ),
+  rating: Type.Optional(bookReadingRatingSchema),
+  comment: Type.Optional(bookReadingCommentSchema),
   startedAt: Type.Optional(Type.String({ format: 'date-time' })),
   endedAt: Type.Optional(Type.String({ format: 'date-time' })),
 });

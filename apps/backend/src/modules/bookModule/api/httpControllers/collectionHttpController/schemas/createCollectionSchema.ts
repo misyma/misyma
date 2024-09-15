@@ -3,13 +3,10 @@ import { type Static, Type } from '@sinclair/typebox';
 import type * as contracts from '@common/contracts';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
-import { collectionDtoSchema } from '../../common/collectionDto.js';
+import { collectionDtoSchema, collectionNameSchema } from '../../common/collectionDto.js';
 
 export const createCollectionBodyDtoSchema = Type.Object({
-  name: Type.String({
-    minLength: 1,
-    maxLength: 64,
-  }),
+  name: collectionNameSchema,
   userId: Type.String({ format: 'uuid' }),
 });
 

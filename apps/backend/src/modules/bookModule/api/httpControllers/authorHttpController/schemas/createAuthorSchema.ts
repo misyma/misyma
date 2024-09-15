@@ -3,13 +3,10 @@ import { type Static, Type } from '@sinclair/typebox';
 import type * as contracts from '@common/contracts';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
-import { authorDtoSchema } from '../../../../../bookModule/api/httpControllers/common/authorDto.js';
+import { authorDtoSchema, authorNameSchema } from '../../../../../bookModule/api/httpControllers/common/authorDto.js';
 
 export const createAuthorBodyDtoSchema = Type.Object({
-  name: Type.String({
-    minLength: 1,
-    maxLength: 128,
-  }),
+  name: authorNameSchema,
 });
 
 export type CreateAuthorBodyDto = TypeExtends<

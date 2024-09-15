@@ -2,54 +2,30 @@ import { type Static, Type } from '@sinclair/typebox';
 
 import * as contracts from '@common/contracts';
 
+import {
+  bookTitleSchema,
+  bookIsbnSchema,
+  bookPublisherSchema,
+  bookReleaseYearSchema,
+  bookTranslatorSchema,
+  bookPagesSchema,
+  bookImageUrlSchema,
+} from './bookDto.js';
+
 export const bookChangeRequestDtoSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
   bookId: Type.String({ format: 'uuid' }),
   userId: Type.String({ format: 'uuid' }),
   createdAt: Type.String({ format: 'date-time' }),
-  title: Type.Optional(
-    Type.String({
-      minLength: 1,
-      maxLength: 256,
-    }),
-  ),
-  isbn: Type.Optional(
-    Type.String({
-      pattern: '^(97(8|9))?\\d{9}(\\d|X)$',
-    }),
-  ),
-  publisher: Type.Optional(
-    Type.String({
-      minLength: 1,
-      maxLength: 128,
-    }),
-  ),
-  releaseYear: Type.Optional(
-    Type.Integer({
-      minimum: 1,
-      maximum: 2100,
-    }),
-  ),
+  title: Type.Optional(bookTitleSchema),
+  isbn: Type.Optional(bookIsbnSchema),
+  publisher: Type.Optional(bookPublisherSchema),
+  releaseYear: Type.Optional(bookReleaseYearSchema),
   language: Type.Optional(Type.Enum(contracts.Language)),
-  translator: Type.Optional(
-    Type.String({
-      minLength: 1,
-      maxLength: 64,
-    }),
-  ),
+  translator: Type.Optional(bookTranslatorSchema),
   format: Type.Optional(Type.Enum(contracts.BookFormat)),
-  pages: Type.Optional(
-    Type.Integer({
-      minimum: 1,
-      maximum: 5000,
-    }),
-  ),
-  imageUrl: Type.Optional(
-    Type.String({
-      minLength: 1,
-      maxLength: 128,
-    }),
-  ),
+  pages: Type.Optional(bookPagesSchema),
+  imageUrl: Type.Optional(bookImageUrlSchema),
   authorIds: Type.Optional(
     Type.Array(
       Type.String({

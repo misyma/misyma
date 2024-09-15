@@ -2,7 +2,7 @@ import { type Static, Type } from '@sinclair/typebox';
 
 import type * as contracts from '@common/contracts';
 
-import { quoteDtoSchema } from './quoteDto.js';
+import { quoteContentSchema, quoteDtoSchema, quotePageSchema } from './quoteDto.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const createQuotePathParamsDtoSchema = Type.Object({
@@ -15,18 +15,10 @@ export type CreateQuotePathParamsDto = TypeExtends<
 >;
 
 export const createQuoteBodyDtoSchema = Type.Object({
-  content: Type.String({
-    minLength: 1,
-    maxLength: 256,
-  }),
+  content: Type.String(quoteContentSchema),
   isFavorite: Type.Boolean(),
   createdAt: Type.String({ format: 'date-time' }),
-  page: Type.Optional(
-    Type.String({
-      minLength: 1,
-      maxLength: 16,
-    }),
-  ),
+  page: Type.Optional(quotePageSchema),
 });
 
 export type CreateQuoteBodyDto = TypeExtends<Static<typeof createQuoteBodyDtoSchema>, contracts.CreateQuoteRequestBody>;

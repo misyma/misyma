@@ -2,7 +2,7 @@ import { type Static, Type } from '@sinclair/typebox';
 
 import type * as contracts from '@common/contracts';
 
-import { quoteDtoSchema } from './quoteDto.js';
+import { quoteContentSchema, quoteDtoSchema, quotePageSchema } from './quoteDto.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const updateQuotePathParamsDtoSchema = Type.Object({
@@ -16,19 +16,9 @@ export type UpdateQuotePathParamsDto = TypeExtends<
 >;
 
 export const updateQuoteBodyDtoSchema = Type.Object({
-  content: Type.Optional(
-    Type.String({
-      minLength: 1,
-      maxLength: 256,
-    }),
-  ),
+  content: Type.Optional(quoteContentSchema),
   isFavorite: Type.Optional(Type.Boolean()),
-  page: Type.Optional(
-    Type.String({
-      minLength: 1,
-      maxLength: 16,
-    }),
-  ),
+  page: Type.Optional(quotePageSchema),
 });
 
 export type UpdateQuoteBodyDto = TypeExtends<Static<typeof updateQuoteBodyDtoSchema>, contracts.UpdateQuoteRequestBody>;

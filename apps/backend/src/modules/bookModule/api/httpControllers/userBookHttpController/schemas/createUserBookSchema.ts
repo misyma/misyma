@@ -4,14 +4,10 @@ import * as contracts from '@common/contracts';
 
 import { userBookDtoSchema } from './userBookDto.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
+import { bookImageUrlSchema } from '../../common/bookDto.js';
 
 export const createUserBookBodyDtoSchema = Type.Object({
-  imageUrl: Type.Optional(
-    Type.String({
-      minLength: 1,
-      maxLength: 128,
-    }),
-  ),
+  imageUrl: Type.Optional(bookImageUrlSchema),
   status: Type.Enum(contracts.ReadingStatus),
   isFavorite: Type.Boolean(),
   bookshelfId: Type.String({ format: 'uuid' }),

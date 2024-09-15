@@ -4,15 +4,12 @@ import * as contracts from '@common/contracts';
 
 import { userBookDtoSchema } from './userBookDto.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
+import { bookIsbnSchema } from '../../common/bookDto.js';
 
 export const findUserBooksQueryParamsDtoSchema = Type.Object({
   bookshelfId: Type.Optional(Type.String({ format: 'uuid' })),
   collectionId: Type.Optional(Type.String({ format: 'uuid' })),
-  isbn: Type.Optional(
-    Type.String({
-      pattern: '^(97(8|9))?\\d{9}(\\d|X)$',
-    }),
-  ),
+  isbn: Type.Optional(bookIsbnSchema),
   page: Type.Optional(Type.Integer({ minimum: 1 })),
   pageSize: Type.Optional(Type.Integer({ minimum: 1 })),
   sortDate: Type.Optional(Type.Enum(contracts.SortingType)),
