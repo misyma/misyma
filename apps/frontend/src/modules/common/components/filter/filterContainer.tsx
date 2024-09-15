@@ -11,10 +11,16 @@ export const FilterContainer: FC<FilterContainerProps> = ({ filter, slot }) => {
 
   const correspondingFilterValue = filterValues[filter.key as string];
 
-  const correspondingFilterValueExists = useMemo(
-    () => !!correspondingFilterValue,
-    [correspondingFilterValue]
-  );
+  const correspondingFilterValueExists = useMemo(() => {
+    // console.log(correspondingFilterValue)
+    if (correspondingFilterValue == null) {
+      return false;
+    }
+    if (correspondingFilterValue === '') {
+      return false;
+    }
+    return true;
+  }, [correspondingFilterValue]);
 
   return (
     <div className="flex flex-col items-end w-full justify-between gap-1 px-1 overflow-hidden">

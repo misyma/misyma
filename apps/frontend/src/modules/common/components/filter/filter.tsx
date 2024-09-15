@@ -1,4 +1,4 @@
-import { FC, useCallback, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useDynamicFilterContext } from '../../contexts/dynamicFilterContext';
 import {
   DateFilterOpts,
@@ -23,6 +23,9 @@ import { CalendarIcon } from 'lucide-react';
 import { Calendar } from '../calendar/calendar';
 import { FilterContainer } from './filterContainer';
 import { YearPicker } from '../yearPicker/yearPicker';
+import ThreeStateCheckbox, {
+  ThreeStateCheckboxStates,
+} from '../threeStatesCheckbox/threeStatesCheckbox';
 
 const TextFilter: FC<FilterComponentProps> = ({ filter }) => {
   const { updateFilterValue, filterValues } = useDynamicFilterContext();
@@ -117,6 +120,49 @@ export const CheckboxFilter: FC<FilterComponentProps> = ({ filter }) => {
           size="xxl"
           checked={!!filterValue}
           onCheckedChange={handleChange}
+        />
+      }
+      filter={filter}
+    ></FilterContainer>
+  );
+};
+
+export const ThreeStateCheckboxFilter: FC<FilterComponentProps> = ({
+  filter,
+}) => {
+  const { updateFilterValue, filterValues } = useDynamicFilterContext();
+
+  const [internalValue, setInternalValue] = useState('unchecked');
+
+  useEffect(() => {
+    const filterValue = filterValues[filter.key as string];
+    if (filterValue === true) {
+      setInternalValue('checked');
+    } else if (filterValue === false) {
+      setInternalValue('indeterminate');
+    } else {
+      setInternalValue('unchecked');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterValues, filter.key, filterValues[filter.key as string]]);
+  const handleChange = (value: string | boolean) => {
+    if (value === 'checked') {
+      updateFilterValue(filter.key, true);
+      return;
+    } else if (value === 'indeterminate') {
+      updateFilterValue(filter.key, false);
+      return;
+    }
+
+    updateFilterValue(filter.key, undefined);
+  };
+
+  return (
+    <FilterContainer
+      slot={
+        <ThreeStateCheckbox
+          value={internalValue as ThreeStateCheckboxStates}
+          onValueChanged={(val) => handleChange(val as string)}
         />
       }
       filter={filter}
@@ -255,6 +301,9 @@ export const FilterComponent: FC<FilterComponentProps> = ({ filter }) => {
       return <SelectFilter filter={filter} />;
     case 'checkbox':
       return <CheckboxFilter filter={filter} />;
+
+    case 'three-state-checkbox':
+      return <ThreeStateCheckboxFilter filter={filter} />;
     case 'date':
       return <DateFilter filter={filter} />;
     case 'year':
