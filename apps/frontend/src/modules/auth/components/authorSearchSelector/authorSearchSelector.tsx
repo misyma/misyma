@@ -23,7 +23,10 @@ import {
   FormMessage,
 } from '../../../common/components/form/form';
 import { Input } from '../../../common/components/input/input';
-import { DialogPopoverContent, PopoverContent } from '../../../common/components/popover/popover';
+import {
+  DialogPopoverContent,
+  PopoverContent,
+} from '../../../common/components/popover/popover';
 import { FC, Fragment, useState } from 'react';
 import { Check } from 'lucide-react';
 import { cn } from '../../../common/lib/utils';
@@ -51,15 +54,17 @@ interface CreateAuthorDraftFormProps {
   onCreateAuthorDraft: (
     payload: z.infer<typeof createAuthorDraftSchema>
   ) => void;
+  initialName?: string;
 }
 
 const CreateAuthorDraftForm: FC<CreateAuthorDraftFormProps> = ({
   onCreateAuthorDraft,
+  initialName,
 }) => {
   const createAuthorDraftForm = useForm({
     resolver: zodResolver(createAuthorDraftSchema),
     values: {
-      name: '',
+      name: initialName || '',
     },
     reValidateMode: 'onChange',
     mode: 'onTouched',
@@ -166,6 +171,7 @@ export const AuthorSearchSelector: FC<AuthorSearchSelectorProps> = ({
                     </DialogHeader>
                     <CreateAuthorDraftForm
                       onCreateAuthorDraft={onCreateAuthorDraft}
+                      initialName={searchedName}
                     />
                   </DialogContent>
                 </Dialog>
