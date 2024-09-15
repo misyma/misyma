@@ -77,7 +77,7 @@ export function useErrorHandledMutation<TResponseBody, TError, TPayload>(
 
 		if (error instanceof ApiError) {
 			toast({
-				title: errorHandling?.title || 'Nieznany bład.',
+				title: errorHandling?.title || 'Wystąpił bład.',
 				description: descriptionValue,
 				variant: 'destructive',
 			});
@@ -87,7 +87,7 @@ export function useErrorHandledMutation<TResponseBody, TError, TPayload>(
 
 		if (error instanceof Error) {
 			toast({
-				title: errorHandling?.title || 'Nieznany bład.',
+				title: errorHandling?.title || 'Wystąpił bład.',
 				description: descriptionValue,
 				variant: 'destructive',
 			});
@@ -96,7 +96,7 @@ export function useErrorHandledMutation<TResponseBody, TError, TPayload>(
 		}
 
 		toast({
-			title: 'Nieznany błąd. Spróbuj ponownie.',
+			title: 'Wystąpił błąd. Spróbuj ponownie.',
 			description: descriptionValue,
 			variant: 'destructive',
 		});

@@ -31,17 +31,14 @@ export const useFindAuthorsQuery = ({
 	const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
 	const isEnabled = () => {
-		if (!!name || all || !!ids) {
+		if (all) {
 			return true;
 		}
 
-    if (all) {
+		if (ids && (ids as Array<unknown>)?.length > 0) {
 			return true;
 		}
 
-		if (ids) {
-			return true;
-		}
 
 		if (!name) {
 			return false;

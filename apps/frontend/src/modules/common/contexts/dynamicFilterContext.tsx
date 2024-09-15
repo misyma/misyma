@@ -57,7 +57,6 @@ export const DynamicFilterProvider: FC<DynamicFilterProviderProps> = ({
     value: string | boolean | number | Date | undefined
   ) => {
     if (value === undefined) {
-      console.log("BEEP BOOP MF")
       setFilterValues((prev) => {
         delete prev[key as string];
         return prev;
