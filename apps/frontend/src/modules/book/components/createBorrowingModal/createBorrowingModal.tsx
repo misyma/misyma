@@ -161,7 +161,7 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, open, onClosed, onMuta
                         placeholder="Imię osoby wypożyczającej"
                         maxLength={32}
                         type="text"
-                        includeQuill={true}
+                        includeQuill={false}
                         {...field}
                       />
                     </FormControl>
