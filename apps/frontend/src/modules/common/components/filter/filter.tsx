@@ -1,4 +1,11 @@
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  ChangeEvent,
+  FC,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useDynamicFilterContext } from '../../contexts/dynamicFilterContext';
 import {
   DateFilterOpts,
@@ -26,25 +33,69 @@ import { YearPicker } from '../yearPicker/yearPicker';
 import ThreeStateCheckbox, {
   ThreeStateCheckboxStates,
 } from '../threeStatesCheckbox/threeStatesCheckbox';
+import { cn } from '../../lib/utils';
 
 const TextFilter: FC<FilterComponentProps> = ({ filter }) => {
-  const { updateFilterValue, filterValues } = useDynamicFilterContext();
+  const { updateFilterValue, filterValues, removeFilter } =
+    useDynamicFilterContext();
+  const [isValid, setIsValid] = useState(true);
+  const [value, setValue] = useState(
+    (filterValues[filter.key as string] as string) ?? ''
+  );
+  const [validationError, setValidationError] = useState('');
 
   const handleChange = (value: string) => {
     updateFilterValue(filter.key, value);
+  };
+  useEffect(() => {
+    if (filterValues[filter.key as string] === '') {
+      setValue('');
+    }
+    if (value === '') {
+      removeFilter(filter.key);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterValues[filter.key as string], filter.key]);
+
+  const onValueChanged = (e: ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value);
+
+    if (e.target.value === '') {
+      setIsValid(true);
+      return;
+    }
+
+    if (filter.schema) {
+      const res = filter.schema.safeParse(e.target.value);
+
+      if (res.error) {
+        const err = res.error.flatten();
+        setValidationError(err.formErrors[0]);
+        setIsValid(false);
+        return;
+      }
+    }
+
+    setIsValid(true);
+    handleChange(e.target.value);
   };
 
   return (
     <FilterContainer
       slot={
-        <Input
-          placeholder={`Podaj ${filter.label.toLowerCase()}`}
-          value={(filterValues[filter.key as string] as string) || ''}
-          iSize="custom"
-          className="w-full"
-          type="text"
-          onChange={(e) => handleChange(e.target.value)}
-        />
+        <div className={cn('flex flex-col', filter.schema ? ' pb-4' : '')}>
+          <Input
+            placeholder={`Podaj ${filter.label.toLowerCase()}`}
+            value={value}
+            iSize="custom"
+            className="w-full"
+            type="text"
+            onChange={onValueChanged}
+          />
+          {!isValid && (
+            <p className="text-sm text-red-500">{validationError}</p>
+          )}
+        </div>
       }
       filter={filter}
     ></FilterContainer>

@@ -23,8 +23,6 @@ interface DataTableProps<TData, TValue> {
   pageSize: number;
   pageCount: number;
   onSetPage: (val: number) => Promise<void> | void;
-  searchBookTitle: string | undefined;
-  setSearchBookTitle: (val: string) => void;
   itemsCount: number | undefined;
 }
 

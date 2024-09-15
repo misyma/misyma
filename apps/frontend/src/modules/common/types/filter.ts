@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { z } from 'zod';
 
 export type BaseFilterOpts = {
 	id: string;
@@ -6,6 +7,7 @@ export type BaseFilterOpts = {
 	label: string;
 	key: PropertyKey;
 	customSlot?: FC<FilterComponentProps>;
+	schema?: z.Schema;
 };
 
 export type FilterTypes =

@@ -19,6 +19,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { BookApiQueryKeys } from '../../../../modules/book/api/user/queries/bookApiQueryKeys';
 import { z } from 'zod';
 import { FindAdminBooksQueryParams } from '@common/contracts';
+import { DynamicFilterValues } from '../../../../modules/common/contexts/dynamicFilterContext';
 
 const TableSizing = {
   visible: `sm:col-span-4 md:col-span-5`,
@@ -26,9 +27,7 @@ const TableSizing = {
 } as const;
 
 export const BooksAdminPage: FC = () => {
-  const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
-  const [searchTitleName, setSearchTitleName] = useState('');
   const { isFilterVisible, toggleFilterVisibility } = useFilterContext();
 
   const queryClient = useQueryClient();
@@ -37,36 +36,38 @@ export const BooksAdminPage: FC = () => {
 
   const navigate = useNavigate();
 
-  const onSetSearchTitle = (val: string) => {
-    setPage(1);
-    setSearchTitleName(val);
-  };
-
-  const { data: booksData, isFetched: isBooksFetched } = useAdminFindBooksQuery(
-    {
-      all: true,
-      page,
-      pageSize,
-      title: searchTitleName,
-      ...(searchParams as unknown as FindAdminBooksQueryParams),
-    }
-  );
-
-  if (isBooksFetched && page !== (booksData?.metadata.page as number)) {
-    setPage(booksData?.metadata.page as number);
-  }
+  const { data: booksData } = useAdminFindBooksQuery({
+    all: true,
+    ...(searchParams as unknown as FindAdminBooksQueryParams),
+  });
 
   const pageCount = useMemo(() => {
     return Math.ceil((booksData?.metadata?.total ?? 0) / pageSize) || 1;
   }, [booksData?.metadata.total, pageSize]);
 
   const onSetPage = (page: number): void => {
-    setPage(page);
+    navigate({
+      search: (prev) => ({ ...prev, page }),
+    });
   };
 
   const data = useMemo(() => {
     return booksData?.data ?? [];
   }, [booksData?.data]);
+
+  const onApplyFilters = async (val: DynamicFilterValues) => {
+    const newSig = Object.values(val).toString();
+    navigate({
+      search: () => ({ ...val, page: 1 }),
+    });
+
+    if (newSig === '') {
+      await queryClient.invalidateQueries({
+        predicate: (query) =>
+          query.queryKey[0] === BookApiQueryKeys.findBooksAdmin,
+      });
+    }
+  };
 
   return (
     <AuthenticatedLayout>
@@ -104,10 +105,8 @@ export const BooksAdminPage: FC = () => {
                 columns={bookTableColumns}
                 pageCount={pageCount}
                 onSetPage={onSetPage}
-                pageSize={pageSize}
-                pageIndex={page}
-                searchBookTitle={searchTitleName}
-                setSearchBookTitle={onSetSearchTitle}
+                pageSize={searchParams.pageSize}
+                pageIndex={searchParams.page}
                 itemsCount={booksData?.metadata.total}
               />
             </div>
@@ -115,19 +114,7 @@ export const BooksAdminPage: FC = () => {
           <div className="flex items-center justify-end self-start gap-2 border-l w-full">
             <AdminBookSearchFilter
               initialValues={searchParams}
-              onApplyFilters={async (val) => {
-                const newSig = Object.values(val).toString();
-                navigate({
-                  search: () => val,
-                });
-
-                if (newSig === '') {
-                  await queryClient.invalidateQueries({
-                    predicate: (query) =>
-                      query.queryKey[0] === BookApiQueryKeys.findBooksAdmin,
-                  });
-                }
-              }}
+              onApplyFilters={onApplyFilters}
             />
           </div>
         </div>
