@@ -4,7 +4,6 @@ import {
   FindAuthorsResponseBody,
 } from '@common/contracts';
 import {
-  useCreateBookMutation,
   UseCreateBookMutationPayload,
 } from '../../api/user/mutations/createBookMutation/createBookMutation';
 import { useToast } from '../../../common/components/toast/use-toast';
@@ -13,6 +12,7 @@ import { useCreateAuthorDraftMutation } from '../../../author/api/user/mutations
 import { BookApiError } from '../../errors/bookApiError';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
 import { stripFalsyObjectKeys } from '../../../common/utils/stripFalsyObjectKeys';
+import { useCreateAdminBookMutation } from '../../api/admin/mutations/createAdminBookMutation/createAdminBookMutation';
 
 interface CreatePayload {
   authorPayload?: Partial<CreateAuthorRequestBody> & {
@@ -40,7 +40,7 @@ export const useAdminCreateBook = ({
   const queryClient = useQueryClient();
 
   const { mutateAsync: createBookMutation, isPending: isCreateBookPending } =
-    useCreateBookMutation({});
+    useCreateAdminBookMutation({});
   const { mutateAsync: createAuthorDraft, isPending: isCreateAuthorPending } =
     useCreateAuthorDraftMutation({});
 

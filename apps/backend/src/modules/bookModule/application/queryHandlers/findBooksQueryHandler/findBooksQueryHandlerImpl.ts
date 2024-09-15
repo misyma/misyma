@@ -12,62 +12,21 @@ export class FindBooksQueryHandlerImpl implements FindBooksQueryHandler {
   public constructor(private readonly bookRepository: BookRepository) {}
 
   public async execute(payload: FindBooksQueryHandlerPayload): Promise<FindBooksQueryHandlerResult> {
-    const { isbn, title, page, pageSize, isApproved, authorIds, language, releaseYearAfter, releaseYearBefore } =
-      payload;
+    const { page, pageSize, ...rest } = payload;
 
     let findBooksPayload: FindBooksPayload = {
       page,
       pageSize,
     };
 
-    if (isbn) {
-      findBooksPayload = {
-        ...findBooksPayload,
-        isbn,
-      };
-    }
-
-    if (title) {
-      findBooksPayload = {
-        ...findBooksPayload,
-        title,
-      };
-    }
-
-    if (isApproved !== undefined) {
-      findBooksPayload = {
-        ...findBooksPayload,
-        isApproved,
-      };
-    }
-
-    if (authorIds) {
-      findBooksPayload = {
-        ...findBooksPayload,
-        authorIds,
-      };
-    }
-
-    if (language) {
-      findBooksPayload = {
-        ...findBooksPayload,
-        language,
-      };
-    }
-
-    if (releaseYearAfter) {
-      findBooksPayload = {
-        ...findBooksPayload,
-        releaseYearAfter,
-      };
-    }
-
-    if (releaseYearBefore) {
-      findBooksPayload = {
-        ...findBooksPayload,
-        releaseYearBefore,
-      };
-    }
+    Object.entries(rest).forEach(([key, val]) => {
+      if (val !== undefined && val !== '') {
+        findBooksPayload = {
+          ...findBooksPayload,
+          [key]: val,
+        };
+      }
+    });
 
     const [books, total] = await Promise.all([
       this.bookRepository.findBooks(findBooksPayload),
