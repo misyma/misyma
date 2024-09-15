@@ -115,8 +115,6 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
   const { authorIds } = useBookDetailsChangeRequestContext();
 
-  console.log(authorIds);
-
   const { data: userData } = useFindUserQuery();
   const { data: userBookData } = useQuery(
     FindUserBookByIdQueryOptions({
@@ -187,8 +185,6 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
 
     return draftAuthorName;
   }, [currentAuthor, draftAuthorName]);
-
-  console.log(stepOneForm.getValues());
 
   return (
     <Form {...stepOneForm}>
@@ -275,7 +271,6 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
                           {field.value && isFetchingCurrentAuthor && (
                             <LoadingSpinner size={20} />
                           )}
-                          {draftAuthorName}
                           {field.value && !isFetchingCurrentAuthor
                             ? authorName
                             : ''}
