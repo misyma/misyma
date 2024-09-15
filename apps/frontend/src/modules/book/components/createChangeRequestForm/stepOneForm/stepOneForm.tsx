@@ -113,7 +113,8 @@ export const StepOneForm: FC<Props> = ({ bookId, onCancel, onSubmit }) => {
 
 const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
-  const { authorIds } = useBookDetailsChangeRequestContext();
+  const { authorIds, authorName: dAuthorName } =
+    useBookDetailsChangeRequestContext();
 
   const { data: userData } = useFindUserQuery();
   const { data: userBookData } = useQuery(
@@ -133,7 +134,7 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
   const [currentAuthorId, setCurrentAuthorId] = useState(
     authorIds ?? bookData?.authors[0].id ?? ''
   );
-  const [draftAuthorName, setDraftAuthorName] = useState('');
+  const [draftAuthorName, setDraftAuthorName] = useState(dAuthorName ?? '');
   const [createAuthorDialogVisible, setCreateAuthorDialogVisible] =
     useState(false);
 
@@ -160,8 +161,10 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
     defaultValues: {
       isbn: bookData?.isbn ?? '',
       title: bookData?.title ?? '',
-      authorIds: authorIds ?? bookData?.authors[0].id ?? '',
-      authorName: '',
+      authorIds: !draftAuthorName
+        ? authorIds ?? bookData?.authors[0].id ?? ''
+        : '',
+      authorName: draftAuthorName ?? '',
       publisher: bookData?.publisher ?? '',
       releaseYear: bookData?.releaseYear ?? undefined,
     },
@@ -175,15 +178,15 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
     });
 
   const authorName = useMemo(() => {
+    if (draftAuthorName) {
+      return draftAuthorName;
+    }
+
     if (currentAuthor) {
       return currentAuthor.data[0].name;
     }
 
-    if (!draftAuthorName) {
-      return 'Wyszukaj autora';
-    }
-
-    return draftAuthorName;
+    return 'Wyszukaj autora';
   }, [currentAuthor, draftAuthorName]);
 
   return (
