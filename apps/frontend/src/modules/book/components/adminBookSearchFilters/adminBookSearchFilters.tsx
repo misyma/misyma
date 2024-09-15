@@ -66,26 +66,24 @@ const CustomAuthorSearchFilter: FC<FilterComponentProps> = ({ filter }) => {
                 'justify-between bg-[#D1D5DB]/20',
                 !currentAuthorId && 'text-muted-foreground',
                 'border h-12',
-                'w-full'
+                'w-full truncate',
               )}
             >
-              <div className="flex-1 min-w-0 max-w-[calc(100%-2rem)]">
+              <div className="flex-1 min-w-0 max-w-full">
                 {' '}
-                {/* Limit width and ensure truncation */}
-                <span
-                  className={cn(
-                    !currentAuthorId && 'text-muted-foreground',
-                    'block truncate text-start'
+                <div className="flex items-center w-full overflow-hidden">
+                  {!currentAuthorId && (
+                    <span className="text-muted-foreground">
+                      Wyszukaj autora
+                    </span>
                   )}
-                >
-                  {!currentAuthorId && 'Wyszukaj autora'}
                   {currentAuthorId && isFetchingCurrentAuthor && (
                     <LoadingSpinner size={20} />
                   )}
-                  {currentAuthorId && !isFetchingCurrentAuthor
-                    ? getAuthorName()
-                    : ''}
-                </span>
+                  {currentAuthorId && !isFetchingCurrentAuthor && (
+                    <span className="block truncate">{getAuthorName()}</span>
+                  )}
+                </div>
               </div>{' '}
               <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
             </Button>
@@ -130,9 +128,11 @@ const SearchLanguageSelect: FC<FilterComponentProps> = ({ filter }) => {
 
 interface AdminBookSearchFilterProps {
   onApplyFilters: (filterValues: DynamicFilterValues) => void;
+  initialValues: DynamicFilterValues;
 }
 
 export const AdminBookSearchFilter: FC<AdminBookSearchFilterProps> = ({
+  initialValues,
   onApplyFilters,
 }) => {
   const filterOptions = useMemo(
@@ -167,7 +167,7 @@ export const AdminBookSearchFilter: FC<AdminBookSearchFilterProps> = ({
         id: 'release-year-after-filter',
         key: 'releaseYearAfter',
         label: 'Wydana po',
-        type: 'date',
+        type: 'year',
         dateRangeSiblingId: 'release-year-before-filter',
         isAfterFilter: true,
         isBeforeFilter: false,
@@ -176,7 +176,7 @@ export const AdminBookSearchFilter: FC<AdminBookSearchFilterProps> = ({
         id: 'release-year-before-filter',
         key: 'releaseYearBefore',
         label: 'Wydana przed',
-        type: 'date',
+        type: 'year',
         dateRangeSiblingId: 'release-year-after-filter',
         isAfterFilter: false,
         isBeforeFilter: true,
@@ -193,7 +193,10 @@ export const AdminBookSearchFilter: FC<AdminBookSearchFilterProps> = ({
   const { isFilterVisible } = useFilterContext();
 
   return (
-    <DynamicFilterProvider filterOptions={filterOptions}>
+    <DynamicFilterProvider
+      initialValues={initialValues}
+      filterOptions={filterOptions}
+    >
       <FiltersDrawer
         onApplyFilters={onApplyFilters}
         className={isFilterVisible ? '' : 'hidden'}

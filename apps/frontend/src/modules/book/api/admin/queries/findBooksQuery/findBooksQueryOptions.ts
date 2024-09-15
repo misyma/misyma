@@ -29,7 +29,7 @@ export const useAdminFindBooksQuery = ({
 	releaseYearBefore,
 	releaseYearAfter,
 	isbn,
-	sortDate = SortingType.asc,
+	sortDate = SortingType.desc,
 	...options
 }: Payload) => {
 	const accessToken = useSelector(userStateSelectors.selectAccessToken);

@@ -8,10 +8,17 @@ export type BaseFilterOpts = {
 	customSlot?: FC<FilterComponentProps>;
 };
 
-export type FilterTypes = 'text' | 'select' | 'checkbox' | 'date';
+export type FilterTypes = 'text' | 'select' | 'checkbox' | 'date' | 'year';
 
 export type TextFilterOpts = BaseFilterOpts & {
 	type: 'text';
+};
+
+export type YearFilerOpts = BaseFilterOpts & {
+	type: 'year';
+	dateRangeSiblingId: string;
+	isAfterFilter: boolean;
+	isBeforeFilter: boolean;
 };
 
 export type CheckboxFilterOpts = BaseFilterOpts & {
@@ -31,6 +38,7 @@ export type SelectFilterOpts = BaseFilterOpts & {
 };
 
 export type FilterOpts =
+	| YearFilerOpts
 	| TextFilterOpts
 	| DateFilterOpts
 	| SelectFilterOpts

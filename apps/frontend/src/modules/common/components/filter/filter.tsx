@@ -22,6 +22,7 @@ import { formatDate } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { Calendar } from '../calendar/calendar';
 import { FilterContainer } from './filterContainer';
+import { YearPicker } from '../yearPicker/yearPicker';
 
 const TextFilter: FC<FilterComponentProps> = ({ filter }) => {
   const { updateFilterValue, filterValues } = useDynamicFilterContext();
@@ -214,6 +215,34 @@ export const DateFilter: FC<DateFilterComponentProps> = ({ filter }) => {
   );
 };
 
+export const YearFilter: FC<DateFilterComponentProps> = ({ filter }) => {
+  const { updateFilterValue, filterValues } = useDynamicFilterContext();
+
+  const handleChange = (
+    value: string | boolean | Date | number | undefined
+  ) => {
+    updateFilterValue(filter.key, value);
+  };
+
+  const filterValue = filterValues[filter.key as string];
+
+  const [calendarVisible, onOpenChange] = useState(false);
+
+  return (
+    <FilterContainer
+      slot={
+        <YearPicker
+          value={filterValue as unknown as number}
+          open={calendarVisible}
+          onOpenChange={onOpenChange}
+          onValueChange={handleChange}
+        />
+      }
+      filter={filter}
+    ></FilterContainer>
+  );
+};
+
 export const FilterComponent: FC<FilterComponentProps> = ({ filter }) => {
   if (filter.customSlot) {
     return <filter.customSlot filter={filter} />;
@@ -228,6 +257,9 @@ export const FilterComponent: FC<FilterComponentProps> = ({ filter }) => {
       return <CheckboxFilter filter={filter} />;
     case 'date':
       return <DateFilter filter={filter} />;
+    case 'year':
+      // eslint-disable-next-line
+      return <YearFilter filter={filter as any} />;
     default:
       return null;
   }

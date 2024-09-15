@@ -2,7 +2,7 @@ import { createContext, FC, ReactNode, useContext, useState } from 'react';
 import { FilterOpts } from '../types/filter';
 
 export type DynamicFilterValues = {
-  [filterKey: string]: string | boolean | Date | undefined;
+  [filterKey: string]: string | number | boolean | Date | undefined;
 };
 type DynamicFilterContextType = {
   filters: FilterOpts[];
@@ -11,7 +11,7 @@ type DynamicFilterContextType = {
   removeFilter: (key: PropertyKey) => void;
   updateFilterValue: (
     id: PropertyKey,
-    value: string | boolean | Date | undefined
+    value: string | boolean | number | Date | undefined
   ) => void;
   filterOptions: FilterOpts[];
   filtersOrder?: string[];
@@ -24,6 +24,7 @@ const FilterContext = createContext<DynamicFilterContextType | undefined>(
 interface DynamicFilterProviderProps {
   children: ReactNode;
   filterOptions: FilterOpts[];
+  initialValues: DynamicFilterValues;
   filtersOrder?: string[];
 }
 
@@ -31,9 +32,10 @@ export const DynamicFilterProvider: FC<DynamicFilterProviderProps> = ({
   children,
   filtersOrder,
   filterOptions,
+  initialValues,
 }) => {
   const [filters, setFilters] = useState<FilterOpts[]>([]);
-  const [filterValues, setFilterValues] = useState<DynamicFilterValues>({});
+  const [filterValues, setFilterValues] = useState<DynamicFilterValues>(initialValues);
 
   const addFilter = (filter: FilterOpts) => {
     setFilters((prev) => [...prev, filter]);
@@ -41,13 +43,18 @@ export const DynamicFilterProvider: FC<DynamicFilterProviderProps> = ({
   const removeFilter = (key: PropertyKey) => {
     setFilters((prev) => prev.filter((filter) => filter.key !== key));
     setFilterValues((prev) => {
+      if(typeof prev[key as string] === 'string') {
+        prev[key as string] = '';
+        return prev;
+      }
+
       delete prev[key as string];
       return prev;
     });
   };
   const updateFilterValue = (
     key: PropertyKey,
-    value: string | boolean | Date | undefined
+    value: string | boolean | number | Date | undefined
   ) => {
     if (value === undefined) {
       setFilterValues((prev) => {
