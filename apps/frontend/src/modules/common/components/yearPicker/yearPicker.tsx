@@ -20,7 +20,7 @@ export type YearPickerProps = {
 
 function YearPicker({
   value,
-  minYear = 1850,
+  minYear = 1900,
   maxYear = new Date().getFullYear(),
   className,
   open,
