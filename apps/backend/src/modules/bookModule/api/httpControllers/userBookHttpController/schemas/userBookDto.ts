@@ -4,18 +4,21 @@ import * as contracts from '@common/contracts';
 
 import { bookReadingDtoSchema } from '../../bookReadingHttpController/schemas/bookReadingDto.js';
 import { authorDtoSchema } from '../../common/authorDto.js';
+import {
+  bookImageUrlSchema,
+  bookIsbnSchema,
+  bookPagesSchema,
+  bookPublisherSchema,
+  bookReleaseYearSchema,
+  bookTitleSchema,
+  bookTranslatorSchema,
+} from '../../common/bookDto.js';
 import { collectionDtoSchema } from '../../common/collectionDto.js';
 import { genreDtoSchema } from '../../common/genreDto.js';
 
-// TODO: add common schemas for isbn, title, etc.
 export const userBookDtoSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
-  imageUrl: Type.Optional(
-    Type.String({
-      minLength: 1,
-      maxLength: 128,
-    }),
-  ),
+  imageUrl: Type.Optional(bookImageUrlSchema),
   status: Type.Enum(contracts.ReadingStatus),
   isFavorite: Type.Boolean(),
   bookshelfId: Type.String({ format: 'uuid' }),
@@ -25,48 +28,16 @@ export const userBookDtoSchema = Type.Object({
   readings: Type.Array(bookReadingDtoSchema),
   bookId: Type.String({ format: 'uuid' }),
   book: Type.Object({
-    title: Type.String({
-      minLength: 1,
-      maxLength: 256,
-    }),
-    isbn: Type.Optional(
-      Type.String({
-        pattern: '^(97(8|9))?\\d{9}(\\d|X)$',
-      }),
-    ),
-    publisher: Type.Optional(
-      Type.String({
-        minLength: 1,
-        maxLength: 128,
-      }),
-    ),
-    releaseYear: Type.Optional(
-      Type.Integer({
-        minimum: 1500,
-        maximum: 2500,
-      }),
-    ),
+    title: bookTitleSchema,
+    isbn: Type.Optional(bookIsbnSchema),
+    publisher: Type.Optional(bookPublisherSchema),
+    releaseYear: Type.Optional(bookReleaseYearSchema),
     language: Type.Enum(contracts.Language),
-    translator: Type.Optional(
-      Type.String({
-        minLength: 1,
-        maxLength: 64,
-      }),
-    ),
+    translator: Type.Optional(bookTranslatorSchema),
     format: Type.Enum(contracts.BookFormat),
-    pages: Type.Optional(
-      Type.Integer({
-        minimum: 1,
-        maximum: 10000,
-      }),
-    ),
+    pages: Type.Optional(bookPagesSchema),
     isApproved: Type.Boolean(),
-    imageUrl: Type.Optional(
-      Type.String({
-        minLength: 1,
-        maxLength: 128,
-      }),
-    ),
+    imageUrl: Type.Optional(bookImageUrlSchema),
     createdAt: Type.String({ format: 'date-time' }),
     authors: Type.Array(authorDtoSchema),
   }),

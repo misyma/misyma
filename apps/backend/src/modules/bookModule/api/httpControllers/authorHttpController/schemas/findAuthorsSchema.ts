@@ -3,15 +3,10 @@ import { type Static, Type } from '@sinclair/typebox';
 import * as contracts from '@common/contracts';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
-import { authorDtoSchema } from '../../../../../bookModule/api/httpControllers/common/authorDto.js';
+import { authorDtoSchema, authorNameSchema } from '../../../../../bookModule/api/httpControllers/common/authorDto.js';
 
 export const findAuthorsQueryParamsDtoSchema = Type.Object({
-  name: Type.Optional(
-    Type.String({
-      minLength: 1,
-      maxLength: 128,
-    }),
-  ),
+  name: Type.Optional(authorNameSchema),
   ids: Type.Optional(Type.Array(Type.String({ format: 'uuid' }))),
   page: Type.Optional(Type.Integer({ minimum: 1 })),
   pageSize: Type.Optional(Type.Integer({ minimum: 1 })),

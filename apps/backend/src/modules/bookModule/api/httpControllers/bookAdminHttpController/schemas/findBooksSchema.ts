@@ -3,35 +3,16 @@ import { type Static, Type } from '@sinclair/typebox';
 import * as contracts from '@common/contracts';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
-import { bookDtoSchema } from '../../common/bookDto.js';
+import { bookDtoSchema, bookIsbnSchema, bookReleaseYearSchema, bookTitleSchema } from '../../common/bookDto.js';
 
 export const findAdminBooksQueryParamsDtoSchema = Type.Object({
-  isbn: Type.Optional(
-    Type.String({
-      pattern: '^(97(8|9))?\\d{9}(\\d|X)$',
-    }),
-  ),
-  title: Type.Optional(
-    Type.String({
-      minLength: 1,
-      maxLength: 256,
-    }),
-  ),
+  isbn: Type.Optional(bookIsbnSchema),
+  title: Type.Optional(bookTitleSchema),
   authorIds: Type.Optional(Type.Array(Type.String({ format: 'uuid' }))),
   language: Type.Optional(Type.Enum(contracts.Language)),
   isApproved: Type.Optional(Type.Boolean()),
-  releaseYearBefore: Type.Optional(
-    Type.Integer({
-      minimum: 1,
-      maximum: 2100,
-    }),
-  ),
-  releaseYearAfter: Type.Optional(
-    Type.Integer({
-      minimum: 1,
-      maximum: 2100,
-    }),
-  ),
+  releaseYearBefore: Type.Optional(bookReleaseYearSchema),
+  releaseYearAfter: Type.Optional(bookReleaseYearSchema),
   page: Type.Optional(Type.Integer({ minimum: 1 })),
   pageSize: Type.Optional(Type.Integer({ minimum: 1 })),
   sortDate: Type.Optional(Type.Enum(contracts.SortingType)),

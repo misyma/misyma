@@ -3,7 +3,7 @@ import { type Static, Type } from '@sinclair/typebox';
 import type * as contracts from '@common/contracts';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
-import { collectionDtoSchema } from '../../common/collectionDto.js';
+import { collectionDtoSchema, collectionNameSchema } from '../../common/collectionDto.js';
 
 export const updateCollectionPathParamsDtoSchema = Type.Object({
   collectionId: Type.String({ format: 'uuid' }),
@@ -15,10 +15,7 @@ export type UpdateCollectionPathParamsDto = TypeExtends<
 >;
 
 export const updateCollectionBodyDtoSchema = Type.Object({
-  name: Type.String({
-    minLength: 1,
-    maxLength: 64,
-  }),
+  name: collectionNameSchema,
 });
 
 export type UpdateCollectionBodyDto = TypeExtends<
