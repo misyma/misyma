@@ -1,8 +1,9 @@
 import { CreateBorrowingPathParams, CreateBorrowingRequestBody, CreateBorrowingResponseBody } from '@common/contracts';
-import { UseMutationOptions, useMutation } from '@tanstack/react-query';
+import { UseMutationOptions } from '@tanstack/react-query';
 import { HttpService } from '../../../../core/services/httpService/httpService';
 import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
 import { BookApiError } from '../../../../book/errors/bookApiError';
+import { useErrorHandledMutation } from '../../../../common/hooks/useErrorHandledMutation';
 
 export interface UseCreateBorrowingMutationPayload extends CreateBorrowingRequestBody, CreateBorrowingPathParams {
   accessToken: string;
@@ -39,7 +40,7 @@ export const useCreateBorrowingMutation = (
     return response.body;
   };
 
-  return useMutation({
+  return useErrorHandledMutation({
     mutationFn: createBorrowing,
     ...options,
   });
