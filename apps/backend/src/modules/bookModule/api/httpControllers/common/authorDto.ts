@@ -1,9 +1,8 @@
 import { type Static, Type } from '@sinclair/typebox';
 
 export const authorNameSchema = Type.String({
-  minLength: 1,
+  minLength: 3,
   maxLength: 128,
-  pattern: '^[A-Za-z]+ [A-Za-z]+$',
 });
 
 export const authorDtoSchema = Type.Object({
