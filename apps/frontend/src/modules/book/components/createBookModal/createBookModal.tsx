@@ -13,9 +13,12 @@ import {
 } from '../../../bookshelf/context/bookCreationContext/bookCreationContext';
 import { AdminCreateBookForm } from '../adminCreateBookForm/adminCreateBookForm';
 import { HiPlus } from 'react-icons/hi2';
+import { useQueryClient } from '@tanstack/react-query';
+import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
 
 export const CreateBookModal: FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const queryClient = useQueryClient();
 
   const dispatch = useBookCreationDispatch();
 
@@ -24,6 +27,14 @@ export const CreateBookModal: FC = () => {
     dispatch({
       type: BookCreationActionType.WipeData,
       wipe: true,
+    });
+  };
+
+  const onSubmit = async () => {
+    resetModalState();
+
+    await queryClient.invalidateQueries({
+      predicate: (q) => q.queryKey[0] === BookApiQueryKeys.findBooksAdmin,
     });
   };
 
@@ -41,7 +52,7 @@ export const CreateBookModal: FC = () => {
       >
         <DialogTrigger asChild>
           <Button size="big-icon">
-            <HiPlus className='w-8 h-8'></HiPlus>
+            <HiPlus className="w-8 h-8"></HiPlus>
           </Button>
         </DialogTrigger>
         <DialogContent
@@ -53,9 +64,7 @@ export const CreateBookModal: FC = () => {
         >
           <DialogTitle>Create a book</DialogTitle>
           <AdminCreateBookForm
-            onSubmit={() => {
-              resetModalState();
-            }}
+            onSubmit={onSubmit}
           ></AdminCreateBookForm>
         </DialogContent>
       </Dialog>
