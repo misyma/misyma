@@ -1,9 +1,10 @@
 import { UpdateBookPathParams, UpdateBookRequestBody, UpdateBookResponseBody } from '@common/contracts';
-import { UseMutationOptions, useMutation } from '@tanstack/react-query';
+import { UseMutationOptions } from '@tanstack/react-query';
 import { ApiError } from '../../../../../common/errors/apiError';
 import { HttpService } from '../../../../../core/services/httpService/httpService';
 import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
 import { BookApiError } from '../../../../errors/bookApiError';
+import { useErrorHandledMutation } from '../../../../../common/hooks/useErrorHandledMutation';
 
 export interface UpdateBookPayload extends UpdateBookPathParams, UpdateBookRequestBody {
   accessToken: string | undefined;
@@ -37,7 +38,7 @@ export const useUpdateBookMutation = (options: UseMutationOptions<UpdateBookResp
     return response.body;
   };
 
-  return useMutation({
+  return useErrorHandledMutation({
     mutationFn: deleteBook,
     ...options,
   });

@@ -1,8 +1,9 @@
-import { UseMutationOptions, useMutation } from '@tanstack/react-query';
+import { UseMutationOptions } from '@tanstack/react-query';
 import { type LoginUserResponseBody } from '@common/contracts';
 import { HttpService } from '../../../../modules/core/services/httpService/httpService';
 import { AuthApiError } from '../../errors/authApiError/authApiError';
 import { ErrorCodeMessageMapper } from '../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
+import { useErrorHandledMutation } from '../../../common/hooks/useErrorHandledMutation';
 
 export const useLoginUserMutation = (
   options: UseMutationOptions<LoginUserResponseBody, AuthApiError, { email: string; password: string }>,
@@ -33,7 +34,7 @@ export const useLoginUserMutation = (
     return loginUserResponse.body;
   };
 
-  return useMutation({
+  return useErrorHandledMutation({
     mutationFn: loginUser,
     ...options,
   });

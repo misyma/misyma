@@ -1,9 +1,10 @@
 import { UpdateBookshelfPathParams, UpdateBookshelfRequestBody, UpdateBookshelfResponseBody } from '@common/contracts';
-import { UseMutationOptions, useMutation } from '@tanstack/react-query';
+import { UseMutationOptions } from '@tanstack/react-query';
 import { ShelfApiError } from '../../errors/shelfApiError';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
 import { HttpService } from '../../../../core/services/httpService/httpService';
+import { useErrorHandledMutation } from '../../../../common/hooks/useErrorHandledMutation';
 
 type Payload = UpdateBookshelfRequestBody & UpdateBookshelfPathParams;
 
@@ -32,7 +33,7 @@ export const useUpdateBookshelfMutation = (
     return response.body;
   };
 
-  return useMutation({
+  return useErrorHandledMutation({
     mutationFn: updateBookshelf,
     ...options,
   });

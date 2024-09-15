@@ -1,41 +1,44 @@
 import { DeleteBookPathParams } from '@common/contracts';
-import { UseMutationOptions, useMutation } from '@tanstack/react-query';
+import { UseMutationOptions } from '@tanstack/react-query';
 import { ApiError } from '../../../../../common/errors/apiError';
 import { HttpService } from '../../../../../core/services/httpService/httpService';
 import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
 import { BookApiError } from '../../../../errors/bookApiError';
+import { useErrorHandledMutation } from '../../../../../common/hooks/useErrorHandledMutation';
 
 interface Payload extends DeleteBookPathParams {
-  accessToken: string | undefined;
+	accessToken: string | undefined;
 }
 
-export const useDeleteBookMutation = (options: UseMutationOptions<void, ApiError, Payload>) => {
-  const mapper = new ErrorCodeMessageMapper({
-    403: `Brak pozwolenia na usunięcie książki.`,
-  });
+export const useDeleteBookMutation = (
+	options: UseMutationOptions<void, ApiError, Payload>
+) => {
+	const mapper = new ErrorCodeMessageMapper({
+		403: `Brak pozwolenia na usunięcie książki.`,
+	});
 
-  const deleteBook = async (payload: Payload) => {
-    const response = await HttpService.delete({
-      url: `/admin/books/${payload.bookId}`,
-      body: payload as unknown as Record<string, unknown>,
-      headers: {
-        Authorization: `Bearer ${payload.accessToken}`,
-      },
-    });
+	const deleteBook = async (payload: Payload) => {
+		const response = await HttpService.delete({
+			url: `/admin/books/${payload.bookId}`,
+			body: payload as unknown as Record<string, unknown>,
+			headers: {
+				Authorization: `Bearer ${payload.accessToken}`,
+			},
+		});
 
-    if (!response.success) {
-      throw new BookApiError({
-        apiResponseError: response.body.context,
-        message: mapper.map(response.statusCode),
-        statusCode: response.statusCode,
-      });
-    }
+		if (!response.success) {
+			throw new BookApiError({
+				apiResponseError: response.body.context,
+				message: mapper.map(response.statusCode),
+				statusCode: response.statusCode,
+			});
+		}
 
-    return;
-  };
+		return;
+	};
 
-  return useMutation({
-    mutationFn: deleteBook,
-    ...options,
-  });
+	return useErrorHandledMutation({
+		mutationFn: deleteBook,
+		...options,
+	});
 };

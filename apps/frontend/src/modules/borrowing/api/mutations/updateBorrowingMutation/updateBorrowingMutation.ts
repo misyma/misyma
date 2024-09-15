@@ -1,8 +1,9 @@
 import { CreateBorrowingResponseBody, UpdateBorrowingPathParams, UpdateBorrowingRequestBody, UpdateBorrowingResponseBody } from '@common/contracts';
-import { UseMutationOptions, useMutation } from '@tanstack/react-query';
+import { UseMutationOptions } from '@tanstack/react-query';
 import { HttpService } from '../../../../core/services/httpService/httpService';
 import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
 import { BookApiError } from '../../../../book/errors/bookApiError';
+import { useErrorHandledMutation } from '../../../../common/hooks/useErrorHandledMutation';
 
 export interface UseUpdateBorrowingMutationPayload extends UpdateBorrowingRequestBody, UpdateBorrowingPathParams {
   accessToken: string;
@@ -40,7 +41,7 @@ export const useUpdateBorrowingMutation = (
     return response.body;
   };
 
-  return useMutation({
+  return useErrorHandledMutation({
     mutationFn: updateBorrowing,
     ...options,
   });
