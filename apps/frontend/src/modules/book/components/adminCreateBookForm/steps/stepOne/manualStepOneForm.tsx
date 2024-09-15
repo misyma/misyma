@@ -440,7 +440,7 @@ export const ManualStepOneForm = (): JSX.Element => {
                                         name="name"
                                         render={({ field }) => (
                                           <FormItem>
-                                            <FormLabel>Imię</FormLabel>
+                                            <FormLabel>Imię i nazwisko</FormLabel>
                                             <FormControl>
                                               <Input
                                                 min={1}
