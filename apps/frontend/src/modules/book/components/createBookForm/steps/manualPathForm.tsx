@@ -80,7 +80,7 @@ export const ManualPathForm = (): JSX.Element => {
                 <Input
                   placeholder="Data wydania"
                   type="number"
-                  includeQuill={true}
+                  includeQuill={false}
                   min={1}
                   onInput={(e) => {
                     dispatch({

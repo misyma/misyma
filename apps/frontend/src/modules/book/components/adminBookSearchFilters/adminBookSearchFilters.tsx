@@ -144,12 +144,12 @@ export const AdminBookSearchFilter: FC<AdminBookSearchFilterProps> = ({
         type: 'text',
         customSlot: CustomAuthorSearchFilter,
       },
-      {
-        id: 'isbn-filter',
-        key: 'isbn',
-        label: 'Isbn',
-        type: 'text',
-      },
+      // {
+      //   id: 'isbn-filter',
+      //   key: 'isbn',
+      //   label: 'Isbn',
+      //   type: 'text',
+      // },
       {
         id: 'language-filter',
         key: 'language',
