@@ -19,6 +19,7 @@ import { FiltersDrawer } from '../../../common/components/filtersDrawer/filtersD
 import { useFilterContext } from '../../../common/contexts/filterContext';
 import { FilterContainer } from '../../../common/components/filter/filterContainer';
 import LanguageSelect from '../languageSelect/languageSelect';
+import { isbnSchema } from '../../../common/schemas/isbnSchema';
 
 const CustomAuthorSearchFilter: FC<FilterComponentProps> = ({ filter }) => {
   const { updateFilterValue, filterValues } = useDynamicFilterContext();
@@ -66,7 +67,7 @@ const CustomAuthorSearchFilter: FC<FilterComponentProps> = ({ filter }) => {
                 'justify-between bg-[#D1D5DB]/20',
                 !currentAuthorId && 'text-muted-foreground',
                 'border h-12',
-                'w-full truncate',
+                'w-full truncate'
               )}
             >
               <div className="flex-1 min-w-0 max-w-full">
@@ -144,12 +145,13 @@ export const AdminBookSearchFilter: FC<AdminBookSearchFilterProps> = ({
         type: 'text',
         customSlot: CustomAuthorSearchFilter,
       },
-      // {
-      //   id: 'isbn-filter',
-      //   key: 'isbn',
-      //   label: 'Isbn',
-      //   type: 'text',
-      // },
+      {
+        id: 'isbn-filter',
+        key: 'isbn',
+        label: 'Isbn',
+        type: 'text',
+        schema: isbnSchema,
+      },
       {
         id: 'language-filter',
         key: 'language',
