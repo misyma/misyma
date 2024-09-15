@@ -29,6 +29,9 @@ export const adminFindBooks = async (values: Payload) => {
 		if (val === undefined || val === '') {
 			return;
 		}
+		if (val === 0) {
+			return;
+		}
 		if (Array.isArray(val)) {
 			return (query[key] = val.join(','));
 		}
