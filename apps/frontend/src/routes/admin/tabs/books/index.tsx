@@ -1,4 +1,4 @@
-import { Link, createFileRoute } from '@tanstack/react-router';
+import { Link, createFileRoute, useNavigate } from '@tanstack/react-router';
 import { FC, useMemo, useState } from 'react';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { BookTable } from '../../../../modules/book/components/bookTable/bookTable';
@@ -15,9 +15,10 @@ import {
 import { Button } from '../../../../modules/common/components/button/button';
 import { HiOutlineFilter } from 'react-icons/hi';
 import { cn } from '../../../../modules/common/lib/utils';
-import { FindAdminBooksQueryParams } from '@common/contracts';
 import { useQueryClient } from '@tanstack/react-query';
 import { BookApiQueryKeys } from '../../../../modules/book/api/user/queries/bookApiQueryKeys';
+import { z } from 'zod';
+import { FindAdminBooksQueryParams } from '@common/contracts';
 
 const TableSizing = {
   visible: `sm:col-span-4 md:col-span-5`,
@@ -32,14 +33,14 @@ export const BooksAdminPage: FC = () => {
 
   const queryClient = useQueryClient();
 
+  const searchParams = Route.useSearch();
+
+  const navigate = useNavigate();
+
   const onSetSearchTitle = (val: string) => {
     setPage(1);
     setSearchTitleName(val);
   };
-
-  const [searchPayload, setSearchPayload] = useState<FindAdminBooksQueryParams>(
-    {}
-  );
 
   const { data: booksData, isFetched: isBooksFetched } = useAdminFindBooksQuery(
     {
@@ -47,7 +48,7 @@ export const BooksAdminPage: FC = () => {
       page,
       pageSize,
       title: searchTitleName,
-      ...searchPayload,
+      ...(searchParams as unknown as FindAdminBooksQueryParams),
     }
   );
 
@@ -113,9 +114,12 @@ export const BooksAdminPage: FC = () => {
           </div>{' '}
           <div className="flex items-center justify-end self-start gap-2 border-l w-full">
             <AdminBookSearchFilter
+              initialValues={searchParams}
               onApplyFilters={async (val) => {
                 const newSig = Object.values(val).toString();
-                setSearchPayload({ ...val });
+                navigate({
+                  search: () => val,
+                });
 
                 if (newSig === '') {
                   await queryClient.invalidateQueries({
@@ -131,6 +135,36 @@ export const BooksAdminPage: FC = () => {
     </AuthenticatedLayout>
   );
 };
+
+const RouteSearchSchema = z.object({
+  page: z
+    .number({
+      coerce: true,
+    })
+    .catch(1),
+  pageSize: z
+    .number({
+      coerce: true,
+    })
+    .catch(10),
+  title: z.string().catch(''),
+  authorIds: z.string().catch(''),
+  isbn: z.string().catch(''),
+  language: z.string().catch(''),
+  isApproved: z.boolean().optional(),
+  releaseYearAfter: z
+    .number({
+      coerce: true,
+    })
+    .int()
+    .optional(),
+  releaseYearBefore: z
+    .number({
+      coerce: true,
+    })
+    .int()
+    .optional(),
+});
 
 export const Route = createFileRoute('/admin/tabs/books/')({
   component: () => {
@@ -154,4 +188,5 @@ export const Route = createFileRoute('/admin/tabs/books/')({
       },
     ],
   },
+  validateSearch: (s) => RouteSearchSchema.parse(s),
 });

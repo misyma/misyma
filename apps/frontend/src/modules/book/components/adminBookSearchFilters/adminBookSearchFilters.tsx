@@ -112,6 +112,7 @@ const SearchLanguageSelect: FC<FilterComponentProps> = ({ filter }) => {
   };
 
   const filterValue = filterValues[filter.key as string];
+  console.log(filterValues);
 
   return (
     <FilterContainer
@@ -130,9 +131,11 @@ const SearchLanguageSelect: FC<FilterComponentProps> = ({ filter }) => {
 
 interface AdminBookSearchFilterProps {
   onApplyFilters: (filterValues: DynamicFilterValues) => void;
+  initialValues: DynamicFilterValues;
 }
 
 export const AdminBookSearchFilter: FC<AdminBookSearchFilterProps> = ({
+  initialValues,
   onApplyFilters,
 }) => {
   const filterOptions = useMemo(
@@ -193,7 +196,10 @@ export const AdminBookSearchFilter: FC<AdminBookSearchFilterProps> = ({
   const { isFilterVisible } = useFilterContext();
 
   return (
-    <DynamicFilterProvider filterOptions={filterOptions}>
+    <DynamicFilterProvider
+      initialValues={initialValues}
+      filterOptions={filterOptions}
+    >
       <FiltersDrawer
         onApplyFilters={onApplyFilters}
         className={isFilterVisible ? '' : 'hidden'}

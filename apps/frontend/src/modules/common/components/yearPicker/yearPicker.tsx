@@ -1,59 +1,63 @@
 import { useMemo } from 'react';
 import { cn } from '../../lib/utils';
-import { Button, buttonVariantsStylesMap } from '../button/button';
-import buttonStyles from '../button/index.module.css';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../select/select';
 
 export type YearPickerProps = {
-  onChange: (year: number) => void;
   value?: number;
   minYear?: number;
   maxYear?: number;
   className?: string;
+  open: boolean;
+  onOpenChange: (val: boolean) => void;
+  onValueChange: (val: string) => void;
 };
 
 function YearPicker({
-  onChange,
   value,
   minYear = 1850,
   maxYear = new Date().getFullYear(),
   className,
+  open,
+  onOpenChange,
+  onValueChange,
 }: YearPickerProps) {
-  const currentYear = value || new Date().getFullYear();
+  const years = useMemo(() => {
+    const items = Array.from({ length: maxYear - minYear + 1 });
 
-  const years = useMemo(
-    () =>
-      Array.from(
-        { length: maxYear - minYear + 1 },
-        (_, index) => minYear + index
-      ),
-    [maxYear, minYear]
-  );
-
-  const handleYearChange = (year: number) => {
-    onChange(year);
-  };
+    return items.map((_, index) => (
+      <SelectItem
+        className={cn('w-full sm:w-full', className)}
+        key={`year-${minYear + index}`}
+        value={`${minYear + index}`}
+      >
+        {minYear + index}
+      </SelectItem>
+    ));
+  }, [minYear, maxYear, className]);
 
   return (
-    <div className={cn('relative', className)}>
-      <div className="w-48 mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
-        {years.map((year) => (
-          <Button
-            size="base"
-            key={year}
-            variant='default'
-            className={cn(
-              buttonStyles['button'],
-              buttonVariantsStylesMap['ghost'],
-              'w-full justify-start',
-              year === currentYear && 'bg-accent text-accent-foreground'
-            )}
-            onClick={() => handleYearChange(year)}
-          >
-            {year}
-          </Button>
-        ))}
-      </div>
-    </div>
+    <Select
+      value={value?.toString() || ''}
+      open={open}
+      onOpenChange={onOpenChange}
+      onValueChange={onValueChange}
+    >
+      <SelectTrigger className={cn('w-full sm:w-full', className)}>
+        {!value && "RRRR"}
+        <SelectValue
+          className={cn('w-full sm:w-full', className)}
+        ></SelectValue>
+      </SelectTrigger>
+      <SelectContent className={cn('w-full sm:w-full', className)}>
+        {years}
+      </SelectContent>
+    </Select>
   );
 }
 

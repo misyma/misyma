@@ -26,7 +26,7 @@ export const adminFindBooks = async (values: Payload) => {
 	}
 
 	Object.entries(remaining).forEach(([key, val]) => {
-		if (val === undefined) {
+		if (val === undefined || val === '') {
 			return;
 		}
 		if (Array.isArray(val)) {

@@ -24,6 +24,7 @@ const FilterContext = createContext<DynamicFilterContextType | undefined>(
 interface DynamicFilterProviderProps {
   children: ReactNode;
   filterOptions: FilterOpts[];
+  initialValues: DynamicFilterValues;
   filtersOrder?: string[];
 }
 
@@ -31,9 +32,10 @@ export const DynamicFilterProvider: FC<DynamicFilterProviderProps> = ({
   children,
   filtersOrder,
   filterOptions,
+  initialValues,
 }) => {
   const [filters, setFilters] = useState<FilterOpts[]>([]);
-  const [filterValues, setFilterValues] = useState<DynamicFilterValues>({});
+  const [filterValues, setFilterValues] = useState<DynamicFilterValues>(initialValues);
 
   const addFilter = (filter: FilterOpts) => {
     setFilters((prev) => [...prev, filter]);
@@ -41,6 +43,11 @@ export const DynamicFilterProvider: FC<DynamicFilterProviderProps> = ({
   const removeFilter = (key: PropertyKey) => {
     setFilters((prev) => prev.filter((filter) => filter.key !== key));
     setFilterValues((prev) => {
+      if(typeof prev[key as string] === 'string') {
+        prev[key as string] = '';
+        return prev;
+      }
+
       delete prev[key as string];
       return prev;
     });

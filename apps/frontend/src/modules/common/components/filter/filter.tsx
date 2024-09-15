@@ -231,31 +231,12 @@ export const YearFilter: FC<DateFilterComponentProps> = ({ filter }) => {
   return (
     <FilterContainer
       slot={
-        <Popover
-          modal={true}
+        <YearPicker
+          value={filterValue as unknown as number}
           open={calendarVisible}
           onOpenChange={onOpenChange}
-        >
-          <PopoverTrigger asChild>
-            <Button
-              variant={'outline'}
-              type="button"
-              size="custom"
-              className={'w-full truncate h-10 pl-3 text-left font-normal'}
-            >
-              {filterValue ? (filterValue as string) : <>RRRR</>}
-              {!filterValue && (
-                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-              )}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="start">
-            <YearPicker
-              value={filterValue as unknown as number}
-              onChange={handleChange}
-            />
-          </PopoverContent>
-        </Popover>
+          onValueChange={handleChange}
+        />
       }
       filter={filter}
     ></FilterContainer>
