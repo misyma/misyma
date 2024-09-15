@@ -38,6 +38,7 @@ const LanguagesList: FC<Props> = ({ setLanguageSelectOpen }) => {
 
   return [...customSortOrder, ...sortedLanguages].map(([key, language]) => (
     <SelectItem
+      key={`language-${key}-${language}`}
       value={Language[key as keyof typeof Language]}
       onKeyDown={(event) => {
         if (event.key === 'Enter') {
@@ -125,9 +126,17 @@ const LanguageSelect: FC<LanguageSelectProps> = ({
         }
       }}
       // todo: fix type later
-      defaultValue={type === 'form' ? (field as ControllerRenderProps)?.value : selectorValue}
+      defaultValue={
+        type === 'form'
+          ? (field as ControllerRenderProps)?.value
+          : selectorValue
+      }
       // todo: fix type later
-      value={type === 'form' ? (field as ControllerRenderProps)?.value : selectorValue}
+      value={
+        type === 'form'
+          ? (field as ControllerRenderProps)?.value
+          : selectorValue
+      }
     >
       {type === 'form' ? (
         <FormControl>{selectContent}</FormControl>
