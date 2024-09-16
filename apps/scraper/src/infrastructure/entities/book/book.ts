@@ -67,7 +67,7 @@ export const bookDraftSchema = Type.Object({
   pages: Type.Optional(bookPagesSchema),
   isApproved: Type.Boolean(),
   imageUrl: Type.Optional(bookImageUrlSchema),
-  authorNames: Type.Array(authorNameSchema),
+  authorNames: Type.Array(authorNameSchema, { minItems: 1 }),
 });
 
 export type BookDraft = Static<typeof bookDraftSchema>;

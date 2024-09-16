@@ -58,10 +58,6 @@ export class EIsbnMapper {
         );
       }
 
-      if (!title || title.length > 256 || !format || !language || !authorNames.length) {
-        return undefined;
-      }
-
       let releaseYear: number | undefined;
 
       if (Array.isArray(eisbnBook.PublishingDetail?.PublishingDate)) {
@@ -74,35 +70,44 @@ export class EIsbnMapper {
 
       const imageUrl = eisbnBook.CollateralDetail?.SupportingResource?.ResourceVersion?.ResourceLink;
 
-      const bookDraft: BookDraft = {
-        title,
-        format,
-        language,
+      const bookDraftInput: Partial<BookDraft> = {
         isApproved: true,
         authorNames,
       };
 
+      if (title) {
+        bookDraftInput.title = title;
+      }
+
+      if (format) {
+        bookDraftInput.format = format;
+      }
+
+      if (language) {
+        bookDraftInput.language = language;
+      }
+
       if (isbn) {
-        bookDraft.isbn = isbn;
+        bookDraftInput.isbn = isbn;
       }
 
       if (publisher) {
-        bookDraft.publisher = publisher;
+        bookDraftInput.publisher = publisher;
       }
 
       if (releaseYear) {
-        bookDraft.releaseYear = releaseYear;
+        bookDraftInput.releaseYear = releaseYear;
       }
 
       if (translator) {
-        bookDraft.translator = translator;
+        bookDraftInput.translator = translator;
       }
 
       if (imageUrl) {
-        bookDraft.imageUrl = imageUrl;
+        bookDraftInput.imageUrl = imageUrl;
       }
 
-      return Value.Decode(bookDraftSchema, bookDraft);
+      return Value.Decode(bookDraftSchema, bookDraftInput);
     } catch (error) {
       console.error(
         JSON.stringify({
@@ -156,13 +161,7 @@ export class EIsbnMapper {
   }
 
   private mapLanguage(eIsbnBookLanguage: string | undefined): Language | undefined {
-    if (!eIsbnBookLanguage) {
-      return undefined;
-    }
-
-    if (eIsbnBookLanguage === 'eng') {
-      return Language.English;
-    } else if (eIsbnBookLanguage === 'pol') {
+    if (eIsbnBookLanguage === 'pol') {
       return Language.Polish;
     }
 
