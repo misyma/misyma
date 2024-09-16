@@ -39,7 +39,7 @@ export const changeRequestColumns: ColumnDef<BookChangeRequestRow>[] = [
     cell: ({ row }): JSX.Element => {
       return (
         <div className="flex items-center gap-2">
-          <p className="text-primary text-lg">{row.original.proposedValue}</p>
+          <p className="text-primary text-base">{row.original.proposedValue}</p>
         </div>
       );
     },
