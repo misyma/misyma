@@ -106,15 +106,15 @@ export const ChangeRequestView: FC = () => {
 
   const changeTranslatedKeysMap: Record<ChangeKeys, string> = useMemo(
     () => ({
-      format: 'format',
-      isbn: 'numer isbn',
-      language: 'język',
-      releaseYear: 'data wydania',
-      title: 'tytuł',
-      translator: 'przekład',
-      pages: 'liczba stron',
-      publisher: 'wydawnictwo',
-      authorIds: 'autorzy',
+      format: 'Format',
+      isbn: 'Numer isbn',
+      language: 'Język',
+      releaseYear: 'Data wydania',
+      title: 'Tytuł',
+      translator: 'Przekład',
+      pages: 'Liczba stron',
+      publisher: 'Wydawnictwo',
+      authorIds: 'Autorzy',
     }),
     []
   );

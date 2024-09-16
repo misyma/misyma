@@ -30,7 +30,7 @@ export const changeRequestsColumns: ColumnDef<BookChangeRequest>[] = [
       return (
         <div className="flex flex-col py-4 gap-2">
           <div className="flex items-center gap-1">
-            <p className="text-lg">{row.original.id}</p>
+            <p className="text-base">{row.original.id}</p>
           </div>
         </div>
       );
@@ -43,7 +43,7 @@ export const changeRequestsColumns: ColumnDef<BookChangeRequest>[] = [
       return (
         <div className="flex flex-col py-4 gap-2">
           <div className="flex items-center gap-1">
-            <p className="text-lg">
+            <p className="text-base">
               {row.original?.createdAt
                 ? formatDate(row.original?.createdAt, 'PPP', {
                     locale: pl,
@@ -81,7 +81,7 @@ export const changeRequestsColumns: ColumnDef<BookChangeRequest>[] = [
       return (
         <div className="flex flex-col py-4 gap-2">
           <div className="flex items-center gap-1">
-            <p className="text-lg">
+            <p className="text-base">
               {changedValues.map((val) => translationMap[val]).join(', ')}
             </p>
           </div>
