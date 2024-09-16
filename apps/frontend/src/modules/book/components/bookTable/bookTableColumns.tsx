@@ -8,6 +8,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { ReversedLanguages } from '../../../common/constants/languages';
 import { BookFormat } from '../../../common/constants/bookFormat';
 import { DeleteBookModal } from '../deleteBookModal/deleteBookModal';
+import { TableHeader } from '../../../common/components/tableHeader/tableHeader';
 
 interface Props {
   bookId: string;
@@ -30,27 +31,31 @@ const NavigateToEdit = ({ bookId }: Props): ReactNode => {
 
 export const bookTableColumns: ColumnDef<Book>[] = [
   {
-    header: () => <p>Tytuł</p>,
+    header: () => <TableHeader label="Tytuł" />,
     accessorKey: 'title',
     cell: ({ row }): JSX.Element => {
       return (
         <div className="flex flex-col py-4 gap-2 w-full">
           <div className="flex items-center gap-1 max-w-xl">
-            <p className="font-semibold text-lg sm:max-w-60 lg:max-w-80 truncate">{row.original.title}</p>
+            <p className="text-lg sm:max-w-48 lg:max-w-60 truncate">
+              {row.original.title}
+            </p>
           </div>
         </div>
       );
     },
   },
   {
-    header: () => <p>Język</p>,
+    header: () => <TableHeader label="Język" />,
     accessorKey: 'language',
     cell: ({ row }): JSX.Element => {
       return (
         <div className="flex flex-col py-4 gap-2">
           <div className="flex items-center gap-1">
-            <p className="font-semibold text-lg">
-              {row.original.language ? ReversedLanguages[row.original.language]?.toLowerCase() : '-'}
+            <p className="text-lg">
+              {row.original.language
+                ? ReversedLanguages[row.original.language]?.toLowerCase()
+                : '-'}
             </p>
           </div>
         </div>
@@ -58,14 +63,16 @@ export const bookTableColumns: ColumnDef<Book>[] = [
     },
   },
   {
-    header: () => <p>Autorzy</p>,
+    header: () => <TableHeader label="Autorzy" />,
     accessorKey: 'authors',
     cell: ({ row }): JSX.Element => {
       return (
         <div className="flex flex-col py-4 gap-2">
           <div className="flex items-center gap-1">
-            <p className="font-semibold text-lg truncate max-w-32">
-              {row.original.authors.length > 0 ? row.original.authors.map((author) => author.name).join(', ') : '-'}
+            <p className="text-lg truncate max-w-48">
+              {row.original.authors.length > 0
+                ? row.original.authors.map((author) => author.name).join(', ')
+                : '-'}
             </p>
           </div>
         </div>
@@ -73,33 +80,35 @@ export const bookTableColumns: ColumnDef<Book>[] = [
     },
   },
   {
-    header: () => <p>ISBN</p>,
+    header: () => <TableHeader label="ISBN" />,
     accessorKey: 'isbn',
     cell: ({ row }): JSX.Element => {
       return (
         <div className="flex flex-col py-4 gap-2">
           <div className="flex items-center gap-1">
-            <p className="font-semibold text-lg truncate">{row.original?.isbn ?? '-'}</p>
+            <p className="text-lg truncate">{row.original?.isbn ?? '-'}</p>
           </div>
         </div>
       );
     },
   },
   {
-    header: () => <p>Format</p>,
+    header: () => <TableHeader label="Format" />,
     accessorKey: 'format',
     cell: ({ row }): JSX.Element => {
       return (
         <div className="flex flex-col py-4 gap-2">
           <div className="flex items-center gap-1">
-            <p className="font-semibold text-lg whitespace-nowrap">{row.original?.format ? BookFormat[row.original?.format] : '-'}</p>
+            <p className="text-lg whitespace-nowrap">
+              {row.original?.format ? BookFormat[row.original?.format] : '-'}
+            </p>
           </div>
         </div>
       );
     },
   },
   {
-    header: () => <p>Potwierdzona</p>,
+    header: () => <TableHeader label="Potwierdzona" />,
     accessorKey: 'isApproved',
     cell: ({ row }): JSX.Element => {
       return (
@@ -114,18 +123,15 @@ export const bookTableColumns: ColumnDef<Book>[] = [
     },
   },
   {
-    header: () => <p>Akcje</p>,
+    header: () => <TableHeader label="Akcje" />,
     accessorKey: 'actions',
-    cell: ({ row }): JSX.Element => {
+  cell: ({ row }): JSX.Element => {
       const book = row.original;
 
       return (
         <div className="flex items-center gap-2">
           <NavigateToEdit bookId={book.id} />
-          <DeleteBookModal
-            bookId={book.id}
-            bookName={book.title}
-          />
+          <DeleteBookModal bookId={book.id} bookName={book.title} />
         </div>
       );
     },
