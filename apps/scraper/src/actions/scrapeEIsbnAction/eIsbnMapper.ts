@@ -1,7 +1,9 @@
+import { Value } from '@sinclair/typebox/value';
+
 import { BookFormat, Language } from '@common/contracts';
 
 import { type EIsbnProductID, type EIsbnBook } from './eisbnBook.js';
-import { type BookDraft } from '../../infrastructure/entities/book/book.js';
+import { bookDraftSchema, type BookDraft } from '../../infrastructure/entities/book/book.js';
 
 export class EIsbnMapper {
   public mapBook(eisbnBook: EIsbnBook): BookDraft | undefined {
@@ -30,12 +32,22 @@ export class EIsbnMapper {
 
       let authorNames: string[] = [];
 
+      let translator: string | undefined;
+
       if (Array.isArray(eisbnBook.DescriptiveDetail.Contributor)) {
         authorNames = eisbnBook.DescriptiveDetail.Contributor.filter(
           (contributor) => contributor.ContributorRole === 'A01' && contributor.PersonNameInverted !== undefined,
         )
           .map((contributor) => this.mapAuthorName(contributor.PersonNameInverted!))
           .filter((authorName) => authorName !== undefined);
+
+        const foundTranslator = eisbnBook.DescriptiveDetail.Contributor.find(
+          (contributor) => contributor.ContributorRole === 'B06' && contributor.PersonNameInverted !== undefined,
+        )?.PersonNameInverted;
+
+        if (foundTranslator) {
+          translator = this.mapAuthorName(foundTranslator);
+        }
       } else if (
         eisbnBook.DescriptiveDetail.Contributor &&
         eisbnBook.DescriptiveDetail.Contributor.ContributorRole === 'A01' &&
@@ -44,10 +56,6 @@ export class EIsbnMapper {
         authorNames = [this.mapAuthorName(eisbnBook.DescriptiveDetail.Contributor.PersonNameInverted)].filter(
           (authorName) => authorName !== undefined,
         );
-      }
-
-      if (!title || title.length > 256 || !format || !language || !authorNames.length) {
-        return undefined;
       }
 
       let releaseYear: number | undefined;
@@ -62,24 +70,54 @@ export class EIsbnMapper {
 
       const imageUrl = eisbnBook.CollateralDetail?.SupportingResource?.ResourceVersion?.ResourceLink;
 
-      return {
-        title,
-        isbn,
-        publisher: publisher?.length && publisher.length < 128 ? publisher : undefined,
-        format,
-        language,
-        imageUrl: imageUrl ?? undefined,
-        pages: undefined,
-        releaseYear,
-        authorNames,
-        translator: undefined,
+      const bookDraftInput: Partial<BookDraft> = {
         isApproved: true,
+        authorNames,
       };
+
+      if (title) {
+        bookDraftInput.title = title;
+      }
+
+      if (format) {
+        bookDraftInput.format = format;
+      }
+
+      if (language) {
+        bookDraftInput.language = language;
+      }
+
+      if (isbn) {
+        bookDraftInput.isbn = isbn;
+      }
+
+      if (publisher) {
+        bookDraftInput.publisher = publisher;
+      }
+
+      if (releaseYear) {
+        bookDraftInput.releaseYear = releaseYear;
+      }
+
+      if (translator) {
+        bookDraftInput.translator = translator;
+      }
+
+      if (imageUrl) {
+        bookDraftInput.imageUrl = imageUrl;
+      }
+
+      if (!Value.Check(bookDraftSchema, bookDraftInput)) {
+        return undefined;
+      }
+
+      return bookDraftInput;
     } catch (error) {
       console.error(
         JSON.stringify({
           message: 'Book mapping error.',
           eisbnBook,
+          error,
         }),
       );
 
@@ -92,13 +130,33 @@ export class EIsbnMapper {
       return undefined;
     }
 
-    const nameParts = eIsbnAuthorName.split(',');
-
-    if (nameParts.length === 1) {
-      return String(nameParts[0]).trim();
+    if (/\d/.test(eIsbnAuthorName)) {
+      return undefined;
     }
 
-    return `${String(nameParts[1]).trimStart()} ${String(nameParts[0])}`.trim();
+    const removeTextWithinParentheses = (str: string): string => str.replace(/\([^)]*\)/g, '').trim();
+
+    const cleanedName = removeTextWithinParentheses(eIsbnAuthorName);
+
+    const nameParts = cleanedName.split(',');
+
+    const toTitleCase = (str: string): string =>
+      str
+        .split(' ')
+        .map((word) => {
+          if (word.includes('.') || word.includes('-')) {
+            return word;
+          }
+
+          return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+        })
+        .join(' ');
+
+    if (nameParts.length === 1) {
+      return toTitleCase(String(nameParts[0]).trim());
+    }
+
+    return toTitleCase(`${String(nameParts[1]).trimStart()} ${String(nameParts[0])}`.trim());
   }
 
   private mapReleaseYear(eIsbnPublishedDate: number | undefined): number | undefined {
@@ -127,13 +185,7 @@ export class EIsbnMapper {
   }
 
   private mapLanguage(eIsbnBookLanguage: string | undefined): Language | undefined {
-    if (!eIsbnBookLanguage) {
-      return undefined;
-    }
-
-    if (eIsbnBookLanguage === 'eng') {
-      return Language.English;
-    } else if (eIsbnBookLanguage === 'pol') {
+    if (eIsbnBookLanguage === 'pol') {
       return Language.Polish;
     }
 

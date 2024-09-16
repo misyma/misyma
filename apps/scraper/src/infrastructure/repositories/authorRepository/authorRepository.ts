@@ -29,6 +29,7 @@ export class AuthorRepository {
           id: this.uuidService.generateUuid(),
           name,
           isApproved: true,
+          createdAt: new Date(),
         },
         '*',
       );

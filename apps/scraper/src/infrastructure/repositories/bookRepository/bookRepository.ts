@@ -77,6 +77,7 @@ export class BookRepository {
           pages,
           isApproved,
           imageUrl,
+          createdAt: new Date(),
         });
 
         await transaction.batchInsert(
