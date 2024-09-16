@@ -1,7 +1,9 @@
+import { Value } from '@sinclair/typebox/value';
+
 import { BookFormat, Language } from '@common/contracts';
 
 import { type EIsbnProductID, type EIsbnBook } from './eisbnBook.js';
-import { type BookDraft } from '../../infrastructure/entities/book/book.js';
+import { bookDraftSchema, type BookDraft } from '../../infrastructure/entities/book/book.js';
 
 export class EIsbnMapper {
   public mapBook(eisbnBook: EIsbnBook): BookDraft | undefined {
@@ -30,12 +32,22 @@ export class EIsbnMapper {
 
       let authorNames: string[] = [];
 
+      let translator: string | undefined;
+
       if (Array.isArray(eisbnBook.DescriptiveDetail.Contributor)) {
         authorNames = eisbnBook.DescriptiveDetail.Contributor.filter(
           (contributor) => contributor.ContributorRole === 'A01' && contributor.PersonNameInverted !== undefined,
         )
           .map((contributor) => this.mapAuthorName(contributor.PersonNameInverted!))
           .filter((authorName) => authorName !== undefined);
+
+        const foundTranslator = eisbnBook.DescriptiveDetail.Contributor.find(
+          (contributor) => contributor.ContributorRole === 'B06' && contributor.PersonNameInverted !== undefined,
+        )?.PersonNameInverted;
+
+        if (foundTranslator) {
+          translator = this.mapAuthorName(foundTranslator);
+        }
       } else if (
         eisbnBook.DescriptiveDetail.Contributor &&
         eisbnBook.DescriptiveDetail.Contributor.ContributorRole === 'A01' &&
@@ -62,24 +74,41 @@ export class EIsbnMapper {
 
       const imageUrl = eisbnBook.CollateralDetail?.SupportingResource?.ResourceVersion?.ResourceLink;
 
-      return {
+      const bookDraft: BookDraft = {
         title,
-        isbn,
-        publisher: publisher?.length && publisher.length < 128 ? publisher : undefined,
         format,
         language,
-        imageUrl: imageUrl ?? undefined,
-        pages: undefined,
-        releaseYear,
-        authorNames,
-        translator: undefined,
         isApproved: true,
+        authorNames,
       };
+
+      if (isbn) {
+        bookDraft.isbn = isbn;
+      }
+
+      if (publisher) {
+        bookDraft.publisher = publisher;
+      }
+
+      if (releaseYear) {
+        bookDraft.releaseYear = releaseYear;
+      }
+
+      if (translator) {
+        bookDraft.translator = translator;
+      }
+
+      if (imageUrl) {
+        bookDraft.imageUrl = imageUrl;
+      }
+
+      return Value.Decode(bookDraftSchema, bookDraft);
     } catch (error) {
       console.error(
         JSON.stringify({
           message: 'Book mapping error.',
           eisbnBook,
+          error,
         }),
       );
 

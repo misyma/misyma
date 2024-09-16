@@ -1,7 +1,9 @@
+import { Value } from '@sinclair/typebox/value';
+
 import { BookFormat, isValidLanguage, Language } from '@common/contracts';
 
 import { type OpenLibraryBookBinding, type OpenLibraryBook } from './openLibraryBook.js';
-import { type BookDraft } from '../../infrastructure/entities/book/book.js';
+import { bookDraftSchema, type BookDraft } from '../../infrastructure/entities/book/book.js';
 
 export class OpenLibraryMapper {
   public mapBook(openLibraryBook: OpenLibraryBook): BookDraft | undefined {
@@ -35,24 +37,37 @@ export class OpenLibraryMapper {
       return undefined;
     }
 
-    const releaseYear = this.mapReleaseYear(openLibraryBook.date_published);
-
-    return {
+    const bookDraft: BookDraft = {
       title: openLibraryBook.title,
-      isbn: openLibraryBook.isbn13,
-      publisher:
-        openLibraryBook.publisher?.length && openLibraryBook.publisher.length < 128
-          ? openLibraryBook.publisher
-          : undefined,
       format,
       language,
-      imageUrl: openLibraryBook.image?.length ? openLibraryBook.image : undefined,
-      pages: openLibraryBook.pages && openLibraryBook.pages < 5000 ? openLibraryBook.pages : undefined,
-      releaseYear: releaseYear && releaseYear < 2100 ? releaseYear : undefined,
-      authorNames,
-      translator: undefined,
       isApproved: true,
+      authorNames,
     };
+
+    if (openLibraryBook.isbn13) {
+      bookDraft.isbn = openLibraryBook.isbn13;
+    }
+
+    if (openLibraryBook.publisher) {
+      bookDraft.publisher = openLibraryBook.publisher;
+    }
+
+    if (openLibraryBook.pages) {
+      bookDraft.pages = openLibraryBook.pages;
+    }
+
+    if (openLibraryBook.image) {
+      bookDraft.imageUrl = openLibraryBook.image;
+    }
+
+    const releaseYear = this.mapReleaseYear(openLibraryBook.date_published);
+
+    if (releaseYear) {
+      bookDraft.releaseYear = releaseYear;
+    }
+
+    return Value.Decode(bookDraftSchema, bookDraft);
   }
 
   private mapAuthorName(openLibraryAuthorName: string): string {
