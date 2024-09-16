@@ -16,12 +16,19 @@ export interface BookDetailsChangeRequestState {
 
 export enum BookDetailsChangeRequestAction {
   setValues = 1,
+  resetContext = 2,
+}
+
+type ResetContextValues = {
+  type: BookDetailsChangeRequestAction.resetContext;
 }
 
 type SetContextValuesAction = {
-  type: BookDetailsChangeRequestAction;
+  type: BookDetailsChangeRequestAction.setValues;
   values: Partial<BookDetailsChangeRequestState>;
 };
+
+type Actions = ResetContextValues | SetContextValuesAction;
 
 const defaultValues: BookDetailsChangeRequestState = {
   authorIds: undefined,
@@ -38,7 +45,7 @@ const defaultValues: BookDetailsChangeRequestState = {
 
 const BookDetailsChangeRequestContext = createContext<BookDetailsChangeRequestState>(defaultValues);
 
-const BookDetailsChangeRequestDispatchContext = createContext(null as unknown as Dispatch<SetContextValuesAction>);
+const BookDetailsChangeRequestDispatchContext = createContext(null as unknown as Dispatch<Actions>);
 
 export function BookDetailsChangeRequestProvider({ children }: { children: ReactNode }): JSX.Element {
   const [bookDetailsChangeRequest, dispatch] = useReducer(bookDetailsChangeRequestReducer, defaultValues);
@@ -60,7 +67,22 @@ export function useBookDetailsChangeRequestDispatch() {
   return useContext(BookDetailsChangeRequestDispatchContext);
 }
 
-function bookDetailsChangeRequestReducer(state: BookDetailsChangeRequestState, action: SetContextValuesAction) {
+function bookDetailsChangeRequestReducer(state: BookDetailsChangeRequestState, action: Actions) {
+  if (action.type === BookDetailsChangeRequestAction.resetContext) {
+    return {
+      authorIds: undefined,
+      authorName: undefined,
+      format: BookFormat.paperback,
+      isbn: '',
+      language: Language.English,
+      pages: undefined,
+      publisher: '',
+      title: '',
+      translator: '',
+      releaseYear: undefined,
+    };
+  }
+
   return {
     ...state,
     ...action.values,

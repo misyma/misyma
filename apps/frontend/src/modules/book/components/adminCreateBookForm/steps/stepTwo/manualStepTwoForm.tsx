@@ -24,14 +24,11 @@ import { FC, useState } from 'react';
 import { Checkbox } from '../../../../../common/components/checkbox/checkbox';
 import LanguageSelect from '../../../languageSelect/languageSelect';
 import { Languages } from '../../../../../common/constants/languages';
-import { useQuery } from '@tanstack/react-query';
-import { getGenresQueryOptions } from '../../../../../genres/api/queries/getGenresQuery/getGenresQueryOptions';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';
 import { useAdminCreateBook } from '../../../../hooks/adminCreateBook/adminCreateBook';
 import { LoadingSpinner } from '../../../../../common/components/spinner/loading-spinner';
 import { useFindAuthorsQuery } from '../../../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
-import GenreSelect from '../../../genreSelect/genreSelect';
 import BookFormatSelect from '../../../bookFormatSelect/bookFormatSelect';
 
 const stepTwoSchema = z.object({
@@ -63,9 +60,6 @@ const stepTwoSchema = z.object({
       message: 'Za dużo stron. Maksymalnie 5000 jest dopuszczalnych.',
     })
     .or(z.literal('')),
-  genre: z.string().min(1, {
-    message: 'Niewłaściwa wartość',
-  }),
   imageUrl: z
     .string({
       message: 'Niepoprawna wartość.',
@@ -100,7 +94,6 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
       pagesCount: Number.isNaN(bookCreation.stepTwoDetails?.pagesCount)
         ? ''
         : bookCreation.stepTwoDetails?.pagesCount ?? '',
-      genre: bookCreation.stepThreeDetails?.genre ?? '',
       imageUrl: '',
     },
     mode: 'onChange',
@@ -119,12 +112,6 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
     },
     onOperationError: setSubmissionError,
   });
-
-  const { data: genres } = useQuery(
-    getGenresQueryOptions({
-      accessToken: accessToken as string,
-    })
-  );
 
   const onLanguageSelected = (val: string) => {
     dispatch({
@@ -268,27 +255,6 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
             )}
           />
         )}
-        <FormField
-          control={form.control}
-          name="genre"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Kategoria</FormLabel>
-              <GenreSelect
-                dialog={true}
-                genres={genres?.data ?? []}
-                onValueChange={(val) => {
-                  dispatch({
-                    type: BookCreationActionType.setGenre,
-                    genre: val,
-                  });
-                }}
-                {...field}
-              />
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <FormField
           control={form.control}
           name="imageUrl"

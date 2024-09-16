@@ -2,32 +2,11 @@ import { type ColumnDef } from '@tanstack/react-table';
 import { Book } from '@common/contracts';
 import { HiCheckCircle } from 'react-icons/hi';
 import { HiXCircle } from 'react-icons/hi';
-import { ImQuill } from 'react-icons/im';
-import { ReactNode } from 'react';
-import { useNavigate } from '@tanstack/react-router';
 import { ReversedLanguages } from '../../../common/constants/languages';
 import { BookFormat } from '../../../common/constants/bookFormat';
 import { DeleteBookModal } from '../deleteBookModal/deleteBookModal';
 import { TableHeader } from '../../../common/components/tableHeader/tableHeader';
-
-interface Props {
-  bookId: string;
-}
-
-const NavigateToEdit = ({ bookId }: Props): ReactNode => {
-  const navigate = useNavigate();
-
-  return (
-    <ImQuill
-      onClick={() =>
-        navigate({
-          to: `/admin/tabs/books/edit/${bookId}`,
-        })
-      }
-      className="cursor-pointer text-primary text-3xl"
-    />
-  );
-};
+import { AdminEditBookModal } from '../adminEditBookModal/adminEditBookModal';
 
 export const bookTableColumns: ColumnDef<Book>[] = [
   {
@@ -130,7 +109,7 @@ export const bookTableColumns: ColumnDef<Book>[] = [
 
       return (
         <div className="flex items-center gap-2">
-          <NavigateToEdit bookId={book.id} />
+          <AdminEditBookModal bookId={book.id} />
           <DeleteBookModal bookId={book.id} bookName={book.title} />
         </div>
       );

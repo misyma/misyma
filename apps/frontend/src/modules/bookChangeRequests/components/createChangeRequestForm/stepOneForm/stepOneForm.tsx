@@ -30,13 +30,13 @@ import { useFindUserQuery } from '../../../../user/api/queries/findUserQuery/fin
 import { useQuery } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
-import { FindBookByIdQueryOptions } from '../../../api/user/queries/findBookById/findBookByIdQueryOptions';
-import { FindUserBookByIdQueryOptions } from '../../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
+import { FindBookByIdQueryOptions } from '../../../../book/api/user/queries/findBookById/findBookByIdQueryOptions';
+import { FindUserBookByIdQueryOptions } from '../../../../book/api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 import { LoadingSpinner } from '../../../../common/components/spinner/loading-spinner';
 import { createAuthorDraftSchema } from '../../../../author/schemas/createAuthorDraftSchema';
 import { AuthorSearchSelector } from '../../../../auth/components/authorSearchSelector/authorSearchSelector';
 import { useFindAuthorsQuery } from '../../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
-import { useBookDetailsChangeRequestContext } from '../../../context/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
+import { useBookDetailsChangeRequestContext } from '../../../../book/context/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
 
 const stepOneSchema = z.object({
   isbn: isbnSchema.optional().or(z.literal('')),

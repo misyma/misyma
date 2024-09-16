@@ -1,6 +1,6 @@
 import { FC, useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTrigger } from '../../../common/components/dialog/dialog';
-import { CreateChangeRequestForm } from '../createChangeRequestForm/createChangeRequestForm';
+import { CreateChangeRequestForm } from '../../../bookChangeRequests/components/createChangeRequestForm/createChangeRequestForm';
 import { HiArrowsRightLeft } from 'react-icons/hi2';
 import { BookDetailsChangeRequestProvider } from '../../context/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
 
