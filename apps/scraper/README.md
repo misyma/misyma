@@ -3,11 +3,11 @@
 ## Scrape E-ISBN Database
 
 ```bash
-scraper scrape eisbn
+npm run start -- scrape eisbn --from 1673848
 ```
 
 ## Scrape Open Library
 
 ```bash
-scraper scrape openlibrary
+npm run start -- scrape open-library
 ```
