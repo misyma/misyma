@@ -107,6 +107,10 @@ export class EIsbnMapper {
         bookDraftInput.imageUrl = imageUrl;
       }
 
+      if (!Value.Check(bookDraftSchema, bookDraftInput)) {
+        return undefined;
+      }
+
       return Value.Decode(bookDraftSchema, bookDraftInput);
     } catch (error) {
       console.error(

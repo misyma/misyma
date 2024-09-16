@@ -37,7 +37,7 @@ export class OpenLibraryMapper {
       return undefined;
     }
 
-    const bookDraft: BookDraft = {
+    const bookDraftInput: BookDraft = {
       title: openLibraryBook.title,
       format,
       language,
@@ -46,28 +46,32 @@ export class OpenLibraryMapper {
     };
 
     if (openLibraryBook.isbn13) {
-      bookDraft.isbn = openLibraryBook.isbn13;
+      bookDraftInput.isbn = openLibraryBook.isbn13;
     }
 
     if (openLibraryBook.publisher) {
-      bookDraft.publisher = openLibraryBook.publisher;
+      bookDraftInput.publisher = openLibraryBook.publisher;
     }
 
     if (openLibraryBook.pages) {
-      bookDraft.pages = openLibraryBook.pages;
+      bookDraftInput.pages = openLibraryBook.pages;
     }
 
     if (openLibraryBook.image) {
-      bookDraft.imageUrl = openLibraryBook.image;
+      bookDraftInput.imageUrl = openLibraryBook.image;
     }
 
     const releaseYear = this.mapReleaseYear(openLibraryBook.date_published);
 
     if (releaseYear) {
-      bookDraft.releaseYear = releaseYear;
+      bookDraftInput.releaseYear = releaseYear;
     }
 
-    return Value.Decode(bookDraftSchema, bookDraft);
+    if (!Value.Check(bookDraftSchema, bookDraftInput)) {
+      return undefined;
+    }
+
+    return Value.Decode(bookDraftSchema, bookDraftInput);
   }
 
   private mapAuthorName(openLibraryAuthorName: string): string {
