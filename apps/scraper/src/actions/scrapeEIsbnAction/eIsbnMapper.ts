@@ -134,18 +134,26 @@ export class EIsbnMapper {
       return undefined;
     }
 
+    const removeTextWithinParentheses = (str: string): string => str.replace(/\([^)]*\)/g, '').trim();
+
+    const cleanedName = removeTextWithinParentheses(eIsbnAuthorName);
+
+    const nameParts = cleanedName.split(',');
+
     const toTitleCase = (str: string): string =>
       str
-        .toLowerCase()
         .split(' ')
-        .filter((word) => !word.includes('.') && !word.includes('-'))
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .map((word) => {
+          if (word.includes('.') || word.includes('-')) {
+            return word;
+          }
+
+          return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+        })
         .join(' ');
 
-    const nameParts = eIsbnAuthorName.split(',');
-
     if (nameParts.length === 1) {
-      return String(nameParts[0]).trim();
+      return toTitleCase(String(nameParts[0]).trim());
     }
 
     return toTitleCase(`${String(nameParts[1]).trimStart()} ${String(nameParts[0])}`.trim());
