@@ -63,10 +63,10 @@ export class EIsbnMapper {
       if (Array.isArray(eisbnBook.PublishingDetail?.PublishingDate)) {
         releaseYear = this.mapReleaseYear(eisbnBook.PublishingDetail.PublishingDate[0]?.Date);
       } else {
-        releaseYear = this.mapReleaseYear(eisbnBook.PublishingDetail?.PublishingDate.Date);
+        releaseYear = this.mapReleaseYear(eisbnBook.PublishingDetail?.PublishingDate?.Date);
       }
 
-      const publisher = eisbnBook.PublishingDetail?.Publisher.PublisherName;
+      const publisher = eisbnBook.PublishingDetail?.Publisher?.PublisherName;
 
       const imageUrl = eisbnBook.CollateralDetail?.SupportingResource?.ResourceVersion?.ResourceLink;
 
