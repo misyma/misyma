@@ -111,7 +111,7 @@ export class EIsbnMapper {
         return undefined;
       }
 
-      return Value.Decode(bookDraftSchema, bookDraftInput);
+      return bookDraftInput;
     } catch (error) {
       console.error(
         JSON.stringify({
@@ -130,13 +130,25 @@ export class EIsbnMapper {
       return undefined;
     }
 
+    if (/\d/.test(eIsbnAuthorName)) {
+      return undefined;
+    }
+
+    const toTitleCase = (str: string): string =>
+      str
+        .toLowerCase()
+        .split(' ')
+        .filter((word) => !word.includes('.') && !word.includes('-'))
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+
     const nameParts = eIsbnAuthorName.split(',');
 
     if (nameParts.length === 1) {
       return String(nameParts[0]).trim();
     }
 
-    return `${String(nameParts[1]).trimStart()} ${String(nameParts[0])}`.trim();
+    return toTitleCase(`${String(nameParts[1]).trimStart()} ${String(nameParts[0])}`.trim());
   }
 
   private mapReleaseYear(eIsbnPublishedDate: number | undefined): number | undefined {

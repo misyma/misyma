@@ -71,7 +71,7 @@ export class OpenLibraryMapper {
       return undefined;
     }
 
-    return Value.Decode(bookDraftSchema, bookDraftInput);
+    return bookDraftInput;
   }
 
   private mapAuthorName(openLibraryAuthorName: string): string {
