@@ -5,6 +5,7 @@ import { pl } from 'date-fns/locale';
 import { useNavigate } from '@tanstack/react-router';
 import { ImQuill } from 'react-icons/im';
 import { FC } from 'react';
+import { TableHeader } from '../../../common/components/tableHeader/tableHeader';
 
 const NavigateToRequest: FC<{ id: string }> = ({ id }) => {
   const navigate = useNavigate();
@@ -23,26 +24,26 @@ const NavigateToRequest: FC<{ id: string }> = ({ id }) => {
 
 export const changeRequestsColumns: ColumnDef<BookChangeRequest>[] = [
   {
-    header: () => <p>ID</p>,
+    header: () => <TableHeader label="ID" />,
     accessorKey: 'name',
     cell: ({ row }): JSX.Element => {
       return (
         <div className="flex flex-col py-4 gap-2">
           <div className="flex items-center gap-1">
-            <p className="font-semibold text-lg">{row.original.id}</p>
+            <p className="text-lg">{row.original.id}</p>
           </div>
         </div>
       );
     },
   },
   {
-    header: () => <p>Stworzone dnia</p>,
+    header: () => <TableHeader label="Stworzone dnia" />,
     accessorKey: 'createdAt',
     cell: ({ row }): JSX.Element => {
       return (
         <div className="flex flex-col py-4 gap-2">
           <div className="flex items-center gap-1">
-            <p className="font-semibold text-lg">
+            <p className="text-lg">
               {row.original?.createdAt
                 ? formatDate(row.original?.createdAt, 'PPP', {
                     locale: pl,
@@ -55,7 +56,7 @@ export const changeRequestsColumns: ColumnDef<BookChangeRequest>[] = [
     },
   },
   {
-    header: () => <p>Zmienione wartości</p>,
+    header: () => <TableHeader label="Zmienione wartości" />,
     accessorKey: 'changedKeys',
     cell: ({ row }): JSX.Element => {
       const ignoredKeys = ['id', 'bookId', 'createdAt', 'userId'];
@@ -73,15 +74,16 @@ export const changeRequestsColumns: ColumnDef<BookChangeRequest>[] = [
         ['authorIds']: 'autorzy',
       } as const;
 
-      const changedValues = Object.keys(row.original).filter((value) => !ignoredKeys.includes(value)) as Array<
-        keyof typeof translationMap
-      >;
+      const changedValues = Object.keys(row.original).filter(
+        (value) => !ignoredKeys.includes(value)
+      ) as Array<keyof typeof translationMap>;
 
       return (
-
         <div className="flex flex-col py-4 gap-2">
           <div className="flex items-center gap-1">
-            <p className="font-semibold text-lg">{changedValues.map((val) => translationMap[val]).join(', ')}</p>
+            <p className="text-lg">
+              {changedValues.map((val) => translationMap[val]).join(', ')}
+            </p>
           </div>
         </div>
       );

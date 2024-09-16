@@ -1,4 +1,5 @@
 import { type ColumnDef } from '@tanstack/react-table';
+import { TableHeader } from '../../../common/components/tableHeader/tableHeader';
 
 export interface BookChangeRequestRow {
   key: string;
@@ -7,35 +8,33 @@ export interface BookChangeRequestRow {
 }
 export const changeRequestColumns: ColumnDef<BookChangeRequestRow>[] = [
   {
-    header: () => <p className="font-semibold text-xl">Element</p>,
+    header: () => <TableHeader label="Element" />,
     accessorKey: 'elementKey',
     cell: ({ row }): JSX.Element => {
       return (
         <div className="flex flex-col py-4 gap-2">
           <div className="flex items-center gap-1">
-            <p className="text-lg">{row.original.key}</p>
+            <p className="text-base">{row.original.key}</p>
           </div>
         </div>
       );
     },
   },
   {
-    header: () => <p className="font-semibold  text-xl">Obecna wartość</p>,
+    header: () => <TableHeader label="Obecna wartość" />,
     accessorKey: 'currentValue',
     cell: ({ row }): JSX.Element => {
       return (
         <div className="flex flex-col py-4 gap-2">
           <div className="flex items-center gap-1">
-            <p className="text-lg">{row.original.currentValue}</p>
+            <p className="text-base">{row.original.currentValue}</p>
           </div>
         </div>
       );
     },
   },
   {
-    header: () => (
-      <p className="font-semibold text-xl">Zaproponowana wartość</p>
-    ),
+    header: () => <TableHeader label="Zaproponowana wartość" />,
     accessorKey: 'proposedValue',
     cell: ({ row }): JSX.Element => {
       return (

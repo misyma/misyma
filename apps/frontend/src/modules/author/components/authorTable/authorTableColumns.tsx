@@ -5,23 +5,24 @@ import { HiXCircle } from 'react-icons/hi';
 import { DeleteAuthorModal } from '../deleteAuthorModal/deleteAuthorModal';
 import { ImQuill } from 'react-icons/im';
 import { UpdateAuthorModal } from '../updateAuthorModal/updateAuthorModal';
+import { TableHeader } from '../../../common/components/tableHeader/tableHeader';
 
 export const columns: ColumnDef<Author>[] = [
   {
-    header: () => <p>Imię i nazwisko</p>,
+    header: () => <TableHeader label="Imię i nazwisko" />,
     accessorKey: 'name',
     cell: ({ row }): JSX.Element => {
       return (
         <div className="flex flex-col py-4 gap-2">
           <div className="flex items-center gap-1">
-            <p className="font-semibold text-lg">{row.original.name}</p>
+            <p className="text-lg">{row.original.name}</p>
           </div>
         </div>
       );
     },
   },
   {
-    header: () => <p>Potwierdzony</p>,
+    header: () => <TableHeader label="Potwierdzony" />,
     accessorKey: 'isApproved',
     cell: ({ row }): JSX.Element => {
       return (
@@ -36,7 +37,7 @@ export const columns: ColumnDef<Author>[] = [
     },
   },
   {
-    header: () => <p>Akcje</p>,
+    header: () => <TableHeader label="Akcje" />,
     accessorKey: 'actions',
     cell: ({ row }): JSX.Element => {
       return (
