@@ -25,10 +25,10 @@ export interface EIsbnBook {
     };
   };
   readonly PublishingDetail?: {
-    readonly Publisher: {
+    readonly Publisher?: {
       readonly PublisherName?: string;
     };
-    readonly PublishingDate: EIsbnDate | EIsbnDate[];
+    readonly PublishingDate?: EIsbnDate | EIsbnDate[];
   };
 }
 
