@@ -22,16 +22,16 @@ import {
   BookDetailsChangeRequestAction,
   useBookDetailsChangeRequestContext,
   useBookDetailsChangeRequestDispatch,
-} from '../../context/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
-import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
-import { FindBookByIdQueryOptions } from '../../api/user/queries/findBookById/findBookByIdQueryOptions';
-import { useCreateBookChangeRequestMutation } from '../../../bookChangeRequests/api/user/mutations/createBookChangeRequestMutation/createBookChangeRequestMutation';
+} from '../../../book/context/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
+import { FindUserBookByIdQueryOptions } from '../../../book/api/user/queries/findUserBook/findUserBookByIdQueryOptions';
+import { FindBookByIdQueryOptions } from '../../../book/api/user/queries/findBookById/findBookByIdQueryOptions';
+import { useCreateBookChangeRequestMutation } from '../../api/user/mutations/createBookChangeRequestMutation/createBookChangeRequestMutation';
 import { useToast } from '../../../common/components/toast/use-toast';
 import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
-import { BookApiError } from '../../errors/bookApiError';
+import { BookApiError } from '../../../book/errors/bookApiError';
 import { useCreateAuthorDraftMutation } from '../../../author/api/user/mutations/createAuthorDraftMutation/createAuthorDraftMutation';
-import LanguageSelect from '../languageSelect/languageSelect';
-import BookFormatSelect from '../bookFormatSelect/bookFormatSelect';
+import LanguageSelect from '../../../book/components/languageSelect/languageSelect';
+import BookFormatSelect from '../../../book/components/bookFormatSelect/bookFormatSelect';
 
 interface Props {
   bookId: string;

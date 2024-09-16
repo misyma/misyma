@@ -13,7 +13,7 @@ import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBoo
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
 import { HiPencil } from 'react-icons/hi';
-import { CreateChangeRequestForm } from '../createChangeRequestForm/createChangeRequestForm';
+import { CreateChangeRequestForm } from '../../../bookChangeRequests/components/createChangeRequestForm/createChangeRequestForm';
 import { RadioGroup, RadioGroupItem } from '../../../common/components/radioGroup/radio-group';
 import { Button } from '../../../common/components/button/button';
 import { BookDetailsChangeRequestProvider } from '../../context/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
