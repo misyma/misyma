@@ -75,9 +75,9 @@ export const bookTableColumns: ColumnDef<Book>[] = [
     accessorKey: 'title',
     cell: ({ row }): JSX.Element => {
       return (
-        <div className="flex flex-col py-4 gap-2 w-full">
-          <div className="flex items-center gap-1 max-w-xl">
-            <p className="text-base sm:max-w-48 lg:max-w-72 truncate">
+        <div className="flex flex-col py-4 gap-2 sm:w-80 md:w-[32rem] truncate">
+          <div className="flex items-center gap-1 sm:w-80 md:w-[32rem]">
+            <p className="text-base truncate">
               {row.original.title}
             </p>
           </div>
