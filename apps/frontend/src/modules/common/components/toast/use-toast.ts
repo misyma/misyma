@@ -1,15 +1,16 @@
-// Inspired by react-hot-toast library
 import * as React from "react"
 import { ToastActionElement, ToastProps } from "./toast"
 
 const TOAST_LIMIT = 1
-const TOAST_REMOVE_DELAY = 3000
+const TOAST_REMOVE_DELAY = 300
+const DEFAULT_TOAST_DURATION = 2000 // Default duration in milliseconds
 
 type ToasterToast = ToastProps & {
   id: string
   title?: React.ReactNode
   description?: React.ReactNode
   action?: ToastActionElement
+  duration?: number
 }
 
 const actionTypes = {
@@ -20,14 +21,12 @@ const actionTypes = {
 } as const
 
 let count = 0
-
 function genId() {
   count = (count + 1) % Number.MAX_SAFE_INTEGER
   return count.toString()
 }
 
 type ActionType = typeof actionTypes
-
 type Action =
   | {
       type: ActionType["ADD_TOAST"]
@@ -87,8 +86,6 @@ export const reducer = (state: State, action: Action): State => {
     case "DISMISS_TOAST": {
       const { toastId } = action
 
-      // ! Side effects ! - This could be extracted into a dismissToast() action,
-      // but I'll keep it here for simplicity
       if (toastId) {
         addToRemoveQueue(toastId)
       } else {
@@ -109,6 +106,7 @@ export const reducer = (state: State, action: Action): State => {
         ),
       }
     }
+
     case "REMOVE_TOAST":
       if (action.toastId === undefined) {
         return {
@@ -124,7 +122,6 @@ export const reducer = (state: State, action: Action): State => {
 }
 
 const listeners: Array<(state: State) => void> = []
-
 let memoryState: State = { toasts: [] }
 
 function dispatch(action: Action) {
@@ -144,6 +141,7 @@ function toast({ ...props }: Toast) {
       type: "UPDATE_TOAST",
       toast: { ...props, id },
     })
+
   const dismiss = () => dispatch({ type: "DISMISS_TOAST", toastId: id })
 
   dispatch({
@@ -157,6 +155,10 @@ function toast({ ...props }: Toast) {
       },
     },
   })
+
+  // Set up auto-dismiss
+  const duration = props.duration ?? DEFAULT_TOAST_DURATION
+  setTimeout(dismiss, duration)
 
   return {
     id: id,
