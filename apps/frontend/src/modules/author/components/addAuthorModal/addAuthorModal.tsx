@@ -44,7 +44,15 @@ const createAuthorSchema = z.object({
     })
     .max(128, {
       message: 'Imię autora powinno mieć maksymalnie 128 znaków.',
-    }),
+    })
+    .refine(
+      (value) => {
+        return value.trim().length > 3;
+      },
+      {
+        message: 'Imię nie może być puste.',
+      }
+    ),
 });
 
 export const AddAuthorModal: FC<Props> = ({ trigger, onMutated }: Props) => {
@@ -65,7 +73,7 @@ export const AddAuthorModal: FC<Props> = ({ trigger, onMutated }: Props) => {
       name: '',
     },
     reValidateMode: 'onChange',
-    mode: 'onTouched',
+    mode: 'onChange',
   });
 
   const onCreate = async (values: z.infer<typeof createAuthorSchema>) => {
@@ -104,6 +112,7 @@ export const AddAuthorModal: FC<Props> = ({ trigger, onMutated }: Props) => {
         setIsOpen(val);
 
         setError('');
+        form.reset();
       }}
     >
       <DialogTrigger asChild>{trigger}</DialogTrigger>
