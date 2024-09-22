@@ -122,7 +122,7 @@ const IsbnCell: FC<CellProps> = ({ row }) => {
   if (loading) {
     return (
       <div className="flex flex-col py-4 gap-2">
-        <Skeleton className="h-6 w-24" />
+        <Skeleton className="h-6 w-[125px]" />
       </div>
     );
   }
@@ -158,15 +158,15 @@ const FormatCell: FC<CellProps> = ({ row }) => {
   if (loading) {
     return (
       <div className="flex flex-col py-4 gap-2">
-        <Skeleton className="h-6 w-20" />
+        <Skeleton className="h-6 w-[125px]" />
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col py-4 gap-2">
+    <div className="flex flex-col py-4 gap-2 w-[125px]">
       <div className="flex items-center gap-1">
-        <p className="text-base whitespace-nowrap">
+        <p className="text-base whitespace-nowrap w-[125px]">
           {row.original?.format ? BookFormat[row.original?.format] : '-'}
         </p>
       </div>
@@ -231,7 +231,7 @@ export const bookTableColumns: ColumnDef<Book>[] = [
     },
   },
   {
-    header: () => <TableHeader label="ISBN" />,
+    header: () => <TableHeader className='w-[125px]' label="ISBN" />,
     minSize: 75,
     size: 125,
     maxSize: 150,
@@ -239,7 +239,7 @@ export const bookTableColumns: ColumnDef<Book>[] = [
     cell: IsbnCell,
   },
   {
-    header: () => <TableHeader label="Format" />,
+    header: () => <TableHeader className='w-[125px]' label="Format" />,
     minSize: 75,
     size: 125,
     maxSize: 150,
