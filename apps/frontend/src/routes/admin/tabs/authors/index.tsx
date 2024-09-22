@@ -4,7 +4,7 @@ import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authentica
 import { AuthorTable } from '../../../../modules/author/components/authorTable/authorTable';
 import { columns } from '../../../../modules/author/components/authorTable/authorTableColumns';
 import { useFindAuthorsQuery } from '../../../../modules/author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
-import { AddAuthorModal } from '../../../../modules/author/components/addAuthorModal/addAuthorModal';
+import { CreateAuthorModal } from '../../../../modules/author/components/createAuthorModal/createAuthorModal';
 import { Button } from '../../../../modules/common/components/button/button';
 import { RequireAdmin } from '../../../../modules/core/components/requireAdmin/requireAdmin';
 
@@ -62,10 +62,10 @@ export const AuthorsAdminPage: FC = () => {
               </Link>
             </ul>
             <div className="flex w-full justify-end">
-              <AddAuthorModal
+              <CreateAuthorModal
                 onMutated={() => {}}
                 trigger={<Button>Stwórz autora</Button>}
-              ></AddAuthorModal>
+              ></CreateAuthorModal>
             </div>
           </div>
           <div className="flex flex-col px-4 col-span-2 sm:col-span-5">

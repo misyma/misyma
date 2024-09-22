@@ -35,6 +35,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { createAuthorDraftSchema } from '../../../author/schemas/createAuthorDraftSchema';
+import { AuthorFieldTooltip } from '../../../author/components/authorFieldTooltip/authorFieldTooltip';
 
 interface AuthorSearchSelectorProps {
   onSelect: (authorId: string, authorName: string) => void;
@@ -80,7 +81,10 @@ const CreateAuthorDraftForm: FC<CreateAuthorDraftFormProps> = ({
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Imię i nazwisko</FormLabel>
+              <div className="flex gap-2 items-center pb-1">
+                <FormLabel>Imię i nazwisko</FormLabel>
+                <AuthorFieldTooltip side='bottom' />
+              </div>
               <FormControl>
                 <Input min={1} max={128} type="text" {...field} />
               </FormControl>

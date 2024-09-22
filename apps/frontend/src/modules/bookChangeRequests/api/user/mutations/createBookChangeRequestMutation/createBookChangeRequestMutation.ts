@@ -7,7 +7,7 @@ import { BookApiError } from '../../../../../book/errors/bookApiError';
 import { HttpService } from '../../../../../core/services/httpService/httpService';
 import { useErrorHandledMutation } from '../../../../../common/hooks/useErrorHandledMutation';
 
-interface Payload extends CreateBookChangeRequestRequestBody {
+export interface CreateBookChangeRequestPayload extends CreateBookChangeRequestRequestBody {
 	accessToken: string;
 }
 
@@ -15,10 +15,10 @@ export const useCreateBookChangeRequestMutation = (
 	options: UseMutationOptions<
 		CreateBookshelfResponseBody,
 		BookApiError,
-		Payload
+		CreateBookChangeRequestPayload
 	>
 ) => {
-	const createBookChangeRequest = async (payload: Payload) => {
+	const createBookChangeRequest = async (payload: CreateBookChangeRequestPayload) => {
 		const { accessToken, ...rest } = payload;
 
 		const response = await HttpService.post<CreateBookshelfResponseBody>(

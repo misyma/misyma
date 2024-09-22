@@ -27,6 +27,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { AuthorsApiQueryKeys } from '../../api/user/queries/authorsApiQueryKeys';
 import { useToast } from '../../../common/components/toast/use-toast';
 import { DialogTitle } from '@radix-ui/react-dialog';
+import { AuthorFieldTooltip } from '../authorFieldTooltip/authorFieldTooltip';
 
 interface Props {
   className?: string;
@@ -55,7 +56,7 @@ const createAuthorSchema = z.object({
     ),
 });
 
-export const AddAuthorModal: FC<Props> = ({ trigger, onMutated }: Props) => {
+export const CreateAuthorModal: FC<Props> = ({ trigger, onMutated }: Props) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const { toast } = useToast();
@@ -138,7 +139,10 @@ export const AddAuthorModal: FC<Props> = ({ trigger, onMutated }: Props) => {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Imię i nazwisko</FormLabel>
+                    <div className="flex gap-2 items-center pb-1">
+                      <FormLabel>Imię i nazwisko</FormLabel>
+                      <AuthorFieldTooltip side='bottom' />
+                    </div>
                     <FormControl>
                       <Input min={1} max={128} type="text" {...field} />
                     </FormControl>

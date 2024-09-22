@@ -34,8 +34,6 @@ import { LoadingSpinner } from '../../../../common/components/spinner/loading-sp
 import { createAuthorDraftSchema } from '../../../../author/schemas/createAuthorDraftSchema';
 import { AuthorSearchSelector } from '../../../../auth/components/authorSearchSelector/authorSearchSelector';
 import { useFindAuthorsQuery } from '../../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
-import { useBookDetailsChangeRequestContext } from '../../../../book/context/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
-import { useAdminEditBookContext } from '../../../context/adminEditBookContext/adminEditBookContext';
 
 const stepOneSchema = z.object({
   isbn: isbnSchema.optional().or(z.literal('')),
@@ -136,8 +134,6 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
 
     setCreateAuthorDialogVisible(false);
   };
-
-  console.log(useBookDetailsChangeRequestContext())
 
   const stepOneForm = useForm({
     resolver: zodResolver(stepOneSchema),

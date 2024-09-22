@@ -25,7 +25,10 @@ import {
 } from '../../../book/context/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
 import { FindUserBookByIdQueryOptions } from '../../../book/api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 import { FindBookByIdQueryOptions } from '../../../book/api/user/queries/findBookById/findBookByIdQueryOptions';
-import { useCreateBookChangeRequestMutation } from '../../api/user/mutations/createBookChangeRequestMutation/createBookChangeRequestMutation';
+import {
+  CreateBookChangeRequestPayload,
+  useCreateBookChangeRequestMutation,
+} from '../../api/user/mutations/createBookChangeRequestMutation/createBookChangeRequestMutation';
 import { useToast } from '../../../common/components/toast/use-toast';
 import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
 import { BookApiError } from '../../../book/errors/bookApiError';
@@ -51,6 +54,7 @@ const stepTwoSchema = z.object({
     .max(64, {
       message: 'Tłumacz może mieć maksymalnie 64 znaki.',
     })
+    .or(z.literal(''))
     .optional(),
   format: z.nativeEnum(ContractBookFormat).optional(),
   pages: z
@@ -67,6 +71,7 @@ const stepTwoSchema = z.object({
     .max(5000, {
       message: 'Za dużo stron. Maksymalnie 5000 stron jest dozwolonych.',
     })
+    .or(z.literal(''))
     .optional(),
 });
 
@@ -182,32 +187,45 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
     Object.entries(payload).forEach(([key, value]) => {
       const bookDataKey = key as keyof typeof bookData;
 
-      if (bookData && bookData[bookDataKey] === value) {
-        delete payload[key as keyof typeof payload];
+      if (!bookData) {
+        return;
+      }
+
+      if (bookData[bookDataKey] === value) {
+        delete payload[bookDataKey];
+        return;
       }
 
       if (
-        bookData &&
-        bookData[bookDataKey] &&
         Array.isArray(bookData[bookDataKey]) &&
-        bookData[bookDataKey][0] === value
+        bookData[bookDataKey]?.[0] === value
       ) {
-        delete payload[key as keyof typeof payload];
+        delete payload[bookDataKey];
+        return;
       }
 
       if (
-        bookData &&
-        bookData['authors'] &&
-        Array.isArray(bookData['authors']) &&
-        key === 'authorIds' &&
+        bookData?.authors &&
         Array.isArray(value) &&
-        bookData['authors'][0]?.id === value[0]
+        key === 'authorIds' &&
+        bookData.authors[0]?.id === value[0]
       ) {
         delete payload['authorIds'];
+        return;
+      }
+
+      if (key === 'pages' && value === '' && bookData.pages !== 0) {
+        payload[key] = null as unknown as number;
+        return;
+      }
+
+      if (key === 'translator' && value === '' && bookData.translator !== '') {
+        payload[key] = null as unknown as string;
+        return;
       }
 
       if (!value) {
-        delete payload[key as keyof typeof payload];
+        delete payload[bookDataKey];
       }
     });
 
@@ -220,10 +238,11 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
     try {
       await createBookChangeRequest({
         ...payload,
+        pages: payload.pages !== undefined ? null : payload.pages,
         authorIds: Array.isArray(payload.authorIds)
           ? payload.authorIds
           : payload.authorIds?.split(','),
-      });
+      } as CreateBookChangeRequestPayload);
 
       toast({
         title: 'Prośba o zmianę została wysłana.',
@@ -327,6 +346,9 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
                       type="number"
                       includeQuill={false}
                       {...field}
+                      onChange={(e) => {
+                        field.onChange(e);
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
