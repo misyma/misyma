@@ -40,7 +40,6 @@ export const DeleteBookModal: FC<Props> = ({
   const { toast } = useToast();
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
-
   const [error, setError] = useState('');
 
   const { mutateAsync: deleteBook } = useDeleteBookMutation({});
@@ -100,7 +99,11 @@ export const DeleteBookModal: FC<Props> = ({
         <TooltipProvider delayDuration={0}>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button size="custom" variant="none">
+              <Button
+                onClick={() => setIsOpen(true)}
+                size="custom"
+                variant="none"
+              >
                 <HiTrash
                   className={cn(
                     'text-primary h-8 w-8 cursor-pointer',

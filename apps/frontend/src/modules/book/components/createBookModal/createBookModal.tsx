@@ -60,7 +60,7 @@ export const CreateBookModal: FC = () => {
           <TooltipProvider delayDuration={0}>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button size="big-icon">
+                <Button onClick={() => setIsOpen(true)} size="big-icon">
                   <HiPlus className="w-8 h-8"></HiPlus>
                 </Button>
               </TooltipTrigger>
