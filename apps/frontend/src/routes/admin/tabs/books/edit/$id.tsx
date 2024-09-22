@@ -24,13 +24,6 @@ import {
 } from '../../../../../modules/common/components/form/form';
 import { Input } from '../../../../../modules/common/components/input/input';
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '../../../../../modules/common/components/tooltip/tooltip';
-import { HiOutlineInformationCircle } from 'react-icons/hi';
-import {
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -66,6 +59,7 @@ import {
   useBreadcrumbKeysDispatch,
 } from '../../../../../modules/common/contexts/breadcrumbKeysContext';
 import { createAuthorDraftSchema } from '../../../../../modules/author/schemas/createAuthorDraftSchema';
+import { AuthorFieldTooltip } from '../../../../../modules/author/components/authorFieldTooltip/authorFieldTooltip';
 
 type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
@@ -340,22 +334,7 @@ const BookEditForm: FC<FormProps> = ({ data }) => {
             <FormItem>
               <div className="flex gap-2 items-center">
                 <FormLabel>Autor</FormLabel>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div>
-                        <HiOutlineInformationCircle className="h-5 w-5" />
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>
-                        Imię i nazwisko autora musi mieć minimum 3 znaki
-                        <br></br> i zawierać spację oddzielającą imię i
-                        nazwisko.
-                      </p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+                <AuthorFieldTooltip />
               </div>
               <FormControl>
                 <Popover

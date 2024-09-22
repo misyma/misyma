@@ -1,4 +1,3 @@
-import { HiOutlineInformationCircle } from 'react-icons/hi';
 import {
   Form,
   FormControl,
@@ -8,12 +7,6 @@ import {
   FormMessage,
 } from '../../../../common/components/form/form';
 import { Input } from '../../../../common/components/input/input';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '../../../../common/components/tooltip/tooltip';
 import {
   Popover,
   PopoverTrigger,
@@ -37,6 +30,7 @@ import { createAuthorDraftSchema } from '../../../../author/schemas/createAuthor
 import { AuthorSearchSelector } from '../../../../auth/components/authorSearchSelector/authorSearchSelector';
 import { useFindAuthorsQuery } from '../../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
 import { useBookDetailsChangeRequestContext } from '../../../../book/context/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
+import { AuthorFieldTooltip } from '../../../../author/components/authorFieldTooltip/authorFieldTooltip';
 
 const stepOneSchema = z.object({
   isbn: isbnSchema.optional().or(z.literal('')),
@@ -230,21 +224,7 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
             <FormItem className="flex flex-col">
               <div className="flex gap-2 items-center">
                 <FormLabel>Autor</FormLabel>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div>
-                        <HiOutlineInformationCircle className="h-5 w-5" />
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>
-                        Prosimy, podaj nazwisko i imię autora w<br></br>{' '}
-                        następującym formacie: "Rowling, J. K."
-                      </p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+                <AuthorFieldTooltip />
               </div>
               <FormControl>
                 <Popover modal={false}>
