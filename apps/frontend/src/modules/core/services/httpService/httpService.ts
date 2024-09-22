@@ -1,15 +1,16 @@
 import { BaseApiError } from './types/baseApiError';
 
 export type RequestPayload = {
-  headers?: Record<string, string>;
-  queryParams?: Record<string, string>;
-  customQueryAppend?: Array<[string, string]>;
-  url: string;
-  /**
-   * Defaults to 'application/json'. Determines how the response will be parsed. \\
-   * Currently only supports 'application/json' and 'text/plain'.
-   */
-  body?: Record<string, unknown>;
+	headers?: Record<string, string>;
+	queryParams?: Record<string, string>;
+	customQueryAppend?: Array<[string, string]>;
+	url: string;
+	/**
+	 * Defaults to 'application/json'. Determines how the response will be parsed. \\
+	 * Currently only supports 'application/json' and 'text/plain'.
+	 */
+	body?: Record<string, unknown>;
+	signal?: AbortSignal;
 };
 
 type GetRequestPayload = Omit<RequestPayload, 'body'>;
@@ -17,291 +18,303 @@ type GetRequestPayload = Omit<RequestPayload, 'body'>;
 type HttpResponse<T> = BaseHttpResponse<T> | ErrorHttpResponse;
 
 interface ErrorHttpResponse {
-  body: BaseApiError;
-  success: false;
-  statusCode: number;
+	body: BaseApiError;
+	success: false;
+	statusCode: number;
 }
 
 interface BaseHttpResponse<T> {
-  body: T;
-  success: true;
-  statusCode: number;
+	body: T;
+	success: true;
+	statusCode: number;
 }
 
 interface Options {
-  filterEmptyStrings: boolean;
+	filterEmptyStrings: boolean;
 }
 
 export class HttpService {
-  private static readonly baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://api.misyma.com/api';
+	private static readonly baseUrl =
+		import.meta.env.VITE_API_BASE_URL || 'https://api.misyma.com/api';
 
-  public static async get<T = unknown>(payload: GetRequestPayload): Promise<HttpResponse<T>> {
-    try {
-      const { url, headers, queryParams, customQueryAppend } = payload;
+	public static async get<T = unknown>(
+		payload: GetRequestPayload
+	): Promise<HttpResponse<T>> {
+		try {
+			const { signal, url, headers, queryParams, customQueryAppend } = payload;
 
-      let requestUrl = `${this.baseUrl}${url}`;
+			let requestUrl = `${this.baseUrl}${url}`;
 
-      if (queryParams) {
-        const queryString = new URLSearchParams(queryParams);
+			if (queryParams) {
+				const queryString = new URLSearchParams(queryParams);
 
-        if (customQueryAppend) {
-          for (const [key, value] of customQueryAppend) {
-            queryString.append(key, value);
-          }
-        }
+				if (customQueryAppend) {
+					for (const [key, value] of customQueryAppend) {
+						queryString.append(key, value);
+					}
+				}
 
-        requestUrl = `${requestUrl}?${queryString.toString()}`;
-      }
+				requestUrl = `${requestUrl}?${queryString.toString()}`;
+			}
 
-      const response = await fetch(`${requestUrl}`, {
-        headers: {
-          ...headers,
-          Accept: 'application/json',
-        },
-        method: 'GET',
-      });
+			const response = await fetch(`${requestUrl}`, {
+				headers: {
+					...headers,
+					Accept: 'application/json',
+				},
+				method: 'GET',
+				signal,
+			});
 
-      const responseBodyText = await response.text();
+			const responseBodyText = await response.text();
 
-      let responseBody = {};
+			let responseBody = {};
 
-      try {
-        responseBody = JSON.parse(responseBodyText);
-      } catch (error) {
-        responseBody = {};
-      }
+			try {
+				responseBody = JSON.parse(responseBodyText);
+			} catch (error) {
+				responseBody = {};
+			}
 
-      if (!response.ok) {
-        return {
-          body: responseBody as BaseApiError,
-          success: false,
-          statusCode: response.status,
-        };
-      }
+			if (!response.ok) {
+				return {
+					body: responseBody as BaseApiError,
+					success: false,
+					statusCode: response.status,
+				};
+			}
 
-      return {
-        body: responseBody as T,
-        success: true,
-        statusCode: response.status,
-      };
-    } catch (error) {
-      throw new (class extends Error {
-        code: number;
-        context: Record<string, string>;
+			return {
+				body: responseBody as T,
+				success: true,
+				statusCode: response.status,
+			};
+		} catch (error) {
+			throw new (class extends Error {
+				code: number;
+				context: Record<string, string>;
 
-        constructor() {
-          super('Wewnętrzny błąd serwera. Spróbuj ponownie później.');
+				constructor() {
+					super('Wewnętrzny błąd serwera. Spróbuj ponownie później.');
 
-          this.code = 500;
+					this.code = 500;
 
-          this.context = {
-            message: 'Wewnętrzny błąd serwera. Spróbuj ponownie później.',
-          };
-        }
-      })();
-    }
-  }
+					this.context = {
+						message: 'Wewnętrzny błąd serwera. Spróbuj ponownie później.',
+					};
+				}
+			})();
+		}
+	}
 
-  public static async post<T = unknown>(
-    payload: RequestPayload,
-    options: Options = {
-      filterEmptyStrings: false,
-    },
-  ): Promise<HttpResponse<T>> {
-    try {
-      const { url, headers, body } = payload;
+	public static async post<T = unknown>(
+		payload: RequestPayload,
+		options: Options = {
+			filterEmptyStrings: false,
+		}
+	): Promise<HttpResponse<T>> {
+		try {
+			const { url, headers, body } = payload;
 
-      let requestBody = body;
+			let requestBody = body;
 
-      if (options.filterEmptyStrings && body) {
-        requestBody = Object.entries(body).reduce(
-          (filteredPayload, [key, value]) => {
-            if (value === '') {
-              return filteredPayload;
-            }
+			if (options.filterEmptyStrings && body) {
+				requestBody = Object.entries(body).reduce(
+					(filteredPayload, [key, value]) => {
+						if (value === '') {
+							return filteredPayload;
+						}
 
-            filteredPayload[key as string] = value;
+						filteredPayload[key as string] = value;
 
-            return filteredPayload;
-          },
-          {} as Record<string, unknown>,
-        );
-      }
+						return filteredPayload;
+					},
+					{} as Record<string, unknown>
+				);
+			}
 
-      const response = await fetch(`${this.baseUrl}${url}`, {
-        headers: {
-          ...headers,
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-        body: JSON.stringify(requestBody),
-      });
+			const response = await fetch(`${this.baseUrl}${url}`, {
+				headers: {
+					...headers,
+					Accept: 'application/json',
+					'Content-Type': 'application/json',
+				},
+				method: 'POST',
+				body: JSON.stringify(requestBody),
+			});
 
-      const responseBodyText = await response.text();
+			const responseBodyText = await response.text();
 
-      let responseBody = {};
+			let responseBody = {};
 
-      try {
-        responseBody = JSON.parse(responseBodyText);
-      } catch (error) {
-        responseBody = {};
-      }
+			try {
+				responseBody = JSON.parse(responseBodyText);
+			} catch (error) {
+				responseBody = {};
+			}
 
-      if (!response.ok) {
-        return {
-          body: responseBody as BaseApiError,
-          success: false,
-          statusCode: response.status,
-        };
-      }
+			if (!response.ok) {
+				return {
+					body: responseBody as BaseApiError,
+					success: false,
+					statusCode: response.status,
+				};
+			}
 
-      return {
-        body: responseBody as T,
-        success: true,
-        statusCode: response.status,
-      };
-    } catch (error) {
-      throw new (class extends Error {
-        code: number;
-        context: Record<string, string>;
+			return {
+				body: responseBody as T,
+				success: true,
+				statusCode: response.status,
+			};
+		} catch (error) {
+			throw new (class extends Error {
+				code: number;
+				context: Record<string, string>;
 
-        constructor() {
-          super('Wewnętrzny błąd serwera. Spróbuj ponownie później.');
+				constructor() {
+					super('Wewnętrzny błąd serwera. Spróbuj ponownie później.');
 
-          this.code = 500;
+					this.code = 500;
 
-          this.context = {
-            message: 'Wewnętrzny błąd serwera. Spróbuj ponownie później.',
-          };
-        }
-      })();
-    }
-  }
+					this.context = {
+						message: 'Wewnętrzny błąd serwera. Spróbuj ponownie później.',
+					};
+				}
+			})();
+		}
+	}
 
-  public static async patch<T = unknown>(payload: RequestPayload): Promise<HttpResponse<T>> {
-    try {
-      const { url, headers, body } = payload;
+	public static async patch<T = unknown>(
+		payload: RequestPayload
+	): Promise<HttpResponse<T>> {
+		try {
+			const { url, headers, body } = payload;
 
-      const requestHeaders: Record<string, string> = {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        ...headers,
-      };
+			const requestHeaders: Record<string, string> = {
+				Accept: 'application/json',
+				'Content-Type': 'application/json',
+				...headers,
+			};
 
-      if (headers && 'Content-Type' in headers && headers['Content-Type'] === 'multipart/form-data') {
-        delete requestHeaders['Content-Type'];
-      }
+			if (
+				headers &&
+				'Content-Type' in headers &&
+				headers['Content-Type'] === 'multipart/form-data'
+			) {
+				delete requestHeaders['Content-Type'];
+			}
 
-      const response = await fetch(`${this.baseUrl}${url}`, {
-        headers: requestHeaders,
-        method: 'PATCH',
-        body: body instanceof FormData ? body : JSON.stringify(body),
-      });
+			const response = await fetch(`${this.baseUrl}${url}`, {
+				headers: requestHeaders,
+				method: 'PATCH',
+				body: body instanceof FormData ? body : JSON.stringify(body),
+			});
 
-      const responseBodyText = await response.text();
+			const responseBodyText = await response.text();
 
-      let responseBody = {};
+			let responseBody = {};
 
-      try {
-        responseBody = JSON.parse(responseBodyText);
-      } catch (error) {
-        responseBody = {};
-      }
+			try {
+				responseBody = JSON.parse(responseBodyText);
+			} catch (error) {
+				responseBody = {};
+			}
 
-      if (!response.ok) {
-        return {
-          body: responseBody as BaseApiError,
-          success: false,
-          statusCode: response.status,
-        };
-      }
+			if (!response.ok) {
+				return {
+					body: responseBody as BaseApiError,
+					success: false,
+					statusCode: response.status,
+				};
+			}
 
-      return {
-        body: responseBody as T,
-        success: true,
-        statusCode: response.status,
-      };
-    } catch (error) {
-      console.error(error);
+			return {
+				body: responseBody as T,
+				success: true,
+				statusCode: response.status,
+			};
+		} catch (error) {
+			console.error(error);
 
-      throw new (class extends Error {
-        code: number;
-        context: Record<string, string>;
+			throw new (class extends Error {
+				code: number;
+				context: Record<string, string>;
 
-        constructor() {
-          super('Wewnętrzny błąd serwera. Spróbuj ponownie później.');
+				constructor() {
+					super('Wewnętrzny błąd serwera. Spróbuj ponownie później.');
 
-          this.code = 500;
+					this.code = 500;
 
-          this.context = {
-            message: 'Wewnętrzny błąd serwera. Spróbuj ponownie później.',
-          };
-        }
-      })();
-    }
-  }
+					this.context = {
+						message: 'Wewnętrzny błąd serwera. Spróbuj ponownie później.',
+					};
+				}
+			})();
+		}
+	}
 
-  public static async delete(payload: RequestPayload): Promise<HttpResponse<void>> {
-    try {
-      const { url, headers, body, queryParams } = payload;
+	public static async delete(
+		payload: RequestPayload
+	): Promise<HttpResponse<void>> {
+		try {
+			const { url, headers, body, queryParams } = payload;
 
-      let requestUrl = `${this.baseUrl}${url}`;
+			let requestUrl = `${this.baseUrl}${url}`;
 
-      if (queryParams) {
-        const queryString = new URLSearchParams(queryParams).toString();
+			if (queryParams) {
+				const queryString = new URLSearchParams(queryParams).toString();
 
-        requestUrl = `${requestUrl}?${queryString}`;
-      }
+				requestUrl = `${requestUrl}?${queryString}`;
+			}
 
-      const response = await fetch(requestUrl, {
-        headers: {
-          ...headers,
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        method: 'DELETE',
-        body: JSON.stringify(body),
-      });
+			const response = await fetch(requestUrl, {
+				headers: {
+					...headers,
+					Accept: 'application/json',
+					'Content-Type': 'application/json',
+				},
+				method: 'DELETE',
+				body: JSON.stringify(body),
+			});
 
-      const responseBodyText = await response.text();
+			const responseBodyText = await response.text();
 
-      let responseBody = {};
+			let responseBody = {};
 
-      try {
-        responseBody = JSON.parse(responseBodyText);
-      } catch (error) {
-        responseBody = {};
-      }
+			try {
+				responseBody = JSON.parse(responseBodyText);
+			} catch (error) {
+				responseBody = {};
+			}
 
-      if (!response.ok) {
-        return {
-          body: responseBody as BaseApiError,
-          success: false,
-          statusCode: response.status,
-        };
-      }
+			if (!response.ok) {
+				return {
+					body: responseBody as BaseApiError,
+					success: false,
+					statusCode: response.status,
+				};
+			}
 
-      return {
-        body: undefined,
-        success: true,
-        statusCode: response.status,
-      };
-    } catch (error) {
-      throw new (class extends Error {
-        code: number;
-        context: Record<string, string>;
+			return {
+				body: undefined,
+				success: true,
+				statusCode: response.status,
+			};
+		} catch (error) {
+			throw new (class extends Error {
+				code: number;
+				context: Record<string, string>;
 
-        constructor() {
-          super('Wewnętrzny błąd serwera. Spróbuj ponownie później.');
+				constructor() {
+					super('Wewnętrzny błąd serwera. Spróbuj ponownie później.');
 
-          this.code = 500;
+					this.code = 500;
 
-          this.context = {
-            message: 'Wewnętrzny błąd serwera. Spróbuj ponownie później.',
-          };
-        }
-      })();
-    }
-  }
+					this.context = {
+						message: 'Wewnętrzny błąd serwera. Spróbuj ponownie później.',
+					};
+				}
+			})();
+		}
+	}
 }

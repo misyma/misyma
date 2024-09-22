@@ -6,10 +6,11 @@ import { HttpService } from '../../../../../core/services/httpService/httpServic
 
 type Payload = FindAdminBooksQueryParams & {
 	accessToken: string;
+	signal: AbortSignal;
 };
 
 export const adminFindBooks = async (values: Payload) => {
-	const { title, page, pageSize, accessToken, ...remaining } = values;
+	const { title, page, pageSize, accessToken, signal, ...remaining } = values;
 
 	const query: Record<PropertyKey, string> = {};
 
@@ -50,6 +51,7 @@ export const adminFindBooks = async (values: Payload) => {
 		headers: {
 			Authorization: `Bearer ${accessToken}`,
 		},
+		signal,
 	});
 
 	if (!response.success) {

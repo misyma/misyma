@@ -14,12 +14,12 @@ import {
   TooltipTrigger,
 } from '../../../common/components/tooltip/tooltip';
 import { AdminEditBookForm } from '../adminEditBookForm/adminEditBookForm';
-import { ImQuill } from 'react-icons/im';
 import {
   AdminEditBookAction,
   AdminEditBookProvider,
   useAdminEditBookDispatch,
 } from '../../context/adminEditBookContext/adminEditBookContext';
+import { HiPencil } from 'react-icons/hi2';
 
 interface Props {
   bookId: string;
@@ -64,7 +64,7 @@ const InnerContainer: FC<Props> = ({ bookId }) => {
                 variant="ghost"
                 size="icon"
               >
-                <ImQuill className="cursor-pointer text-primary h-8 w-8" />
+                <HiPencil className="cursor-pointer text-primary h-8 w-8" />
               </Button>
             </TooltipTrigger>
             <TooltipContent>
