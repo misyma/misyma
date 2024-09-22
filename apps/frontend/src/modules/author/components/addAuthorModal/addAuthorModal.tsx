@@ -19,6 +19,7 @@ import { ApiError } from '../../../common/errors/apiError';
 import { useQueryClient } from '@tanstack/react-query';
 import { AuthorsApiQueryKeys } from '../../api/user/queries/authorsApiQueryKeys';
 import { useToast } from '../../../common/components/toast/use-toast';
+import { DialogTitle } from '@radix-ui/react-dialog';
 
 interface Props {
   className?: string;
@@ -105,6 +106,7 @@ export const AddAuthorModal: FC<Props> = ({ trigger, onMutated }: Props) => {
         className="max-w-xl py-16"
         omitCloseButton={true}
       >
+        <DialogTitle className='hidden'>Stwórz autora</DialogTitle>
         <DialogHeader className="font-semibold text-center flex justify-center items-center">
           Stwórz autora
         </DialogHeader>
