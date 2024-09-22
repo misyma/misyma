@@ -3,41 +3,41 @@ import { BookChangeRequest } from '@common/contracts';
 import { formatDate } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { useNavigate } from '@tanstack/react-router';
-import { ImQuill } from 'react-icons/im';
 import { FC } from 'react';
 import { TableHeader } from '../../../common/components/tableHeader/tableHeader';
+import { HiPencil } from 'react-icons/hi2';
 
 const NavigateToRequest: FC<{ id: string }> = ({ id }) => {
   const navigate = useNavigate();
 
   return (
-    <ImQuill
+    <HiPencil
       onClick={() => {
         navigate({
           to: `/admin/tabs/changeRequests/${id}`,
         });
       }}
       className="cursor-pointer text-primary text-3xl"
-    ></ImQuill>
+    ></HiPencil>
   );
 };
 
 export const changeRequestsColumns: ColumnDef<BookChangeRequest>[] = [
   {
-    header: () => <TableHeader label="ID" />,
+    header: () => <TableHeader label="Tytuł" />,
     accessorKey: 'name',
     cell: ({ row }): JSX.Element => {
       return (
         <div className="flex flex-col py-4 gap-2">
           <div className="flex items-center gap-1">
-            <p className="text-base">{row.original.id}</p>
+            <p className="text-base">{row.original.title}</p>
           </div>
         </div>
       );
     },
   },
   {
-    header: () => <TableHeader label="Stworzone dnia" />,
+    header: () => <TableHeader label="Data" />,
     accessorKey: 'createdAt',
     cell: ({ row }): JSX.Element => {
       return (

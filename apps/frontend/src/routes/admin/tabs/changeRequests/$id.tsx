@@ -155,7 +155,7 @@ export const ChangeRequestView: FC = () => {
       if (key !== 'authorIds') {
         return rows.push({
           key: changeTranslatedKey,
-          currentValue: bookData ? `${bookData[key] ?? 'brak'}` : '',
+          currentValue: bookData ? `${bookData[key] ?? '-'}` : '',
           proposedValue: `${value}`,
         });
       }
@@ -228,10 +228,10 @@ export const ChangeRequestView: FC = () => {
             />
             <Form {...form}>
               <form
-                className="space-y-4"
+                className="space-y-4 w-full"
                 onSubmit={form.handleSubmit(onSubmit)}
               >
-                <div className="flex justify-center gap-2 items-center">
+                <div className="w-full flex justify-end gap-2 items-end">
                   <Button
                     type="button"
                     disabled={isApplyPending || isDeletePending}

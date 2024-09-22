@@ -1,5 +1,5 @@
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router';
-import { FC, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { BookTable } from '../../../../modules/book/components/bookTable/bookTable';
 import { bookTableColumns } from '../../../../modules/book/components/bookTable/bookTableColumns';
@@ -18,17 +18,61 @@ import { cn } from '../../../../modules/common/lib/utils';
 import { useQueryClient } from '@tanstack/react-query';
 import { BookApiQueryKeys } from '../../../../modules/book/api/user/queries/bookApiQueryKeys';
 import { z } from 'zod';
-import { FindAdminBooksQueryParams } from '@common/contracts';
+import { Book, FindAdminBooksQueryParams } from '@common/contracts';
 import { DynamicFilterValues } from '../../../../modules/common/contexts/dynamicFilterContext';
+import {
+  BookTableProvider,
+  useBookTableContext,
+} from '../../../../modules/book/components/bookTable/bookTableContext';
 
 const TableSizing = {
   visible: `sm:col-span-4 md:col-span-5`,
   invisible: `sm:col-span-5 md:col-span-6`,
 } as const;
 
+interface TableContainerProps {
+  pageCount: number;
+  pageSize: number;
+  pageIndex: number;
+  itemsCount: number;
+  onSetPage: (val: number) => void;
+  data: Book[];
+  loading: boolean;
+}
+
+const TableContainer: FC<TableContainerProps> = ({
+  itemsCount,
+  onSetPage,
+  pageCount,
+  pageIndex,
+  pageSize,
+  data,
+  loading,
+}) => {
+  const { setLoading } = useBookTableContext();
+
+  useEffect(() => setLoading(loading), [loading, setLoading]);
+
+  return (
+    <div className="flex items-center justify-start w-100% py-1 sm:py-4">
+      <BookTable
+        data={data}
+        columns={bookTableColumns}
+        pageCount={pageCount}
+        onSetPage={onSetPage}
+        pageSize={pageSize}
+        pageIndex={pageIndex}
+        itemsCount={itemsCount}
+      />
+    </div>
+  );
+};
+
 export const BooksAdminPage: FC = () => {
   const [pageSize] = useState(10);
   const { isFilterVisible, toggleFilterVisibility } = useFilterContext();
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [displayLoading, setDisplayLoading] = useState(false);
 
   const queryClient = useQueryClient();
 
@@ -36,10 +80,27 @@ export const BooksAdminPage: FC = () => {
 
   const navigate = useNavigate();
 
-  const { data: booksData } = useAdminFindBooksQuery({
+  const { data: booksData, isFetching } = useAdminFindBooksQuery({
     all: true,
     ...(searchParams as unknown as FindAdminBooksQueryParams),
   });
+
+  useEffect(() => {
+    if (isFetching) {
+      const timeout = setTimeout(() => setDisplayLoading(true), 500);
+      debounceRef.current = timeout;
+    } else {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+      setDisplayLoading(false);
+      debounceRef.current = null;
+    }
+    return () => {
+      setDisplayLoading(false);
+      debounceRef.current = null;
+    };
+  }, [isFetching]);
 
   const pageCount = useMemo(() => {
     return Math.ceil((booksData?.metadata?.total ?? 0) / pageSize) || 1;
@@ -99,17 +160,17 @@ export const BooksAdminPage: FC = () => {
               TableSizing[isFilterVisible ? 'visible' : 'invisible']
             )}
           >
-            <div className="flex items-center justify-start w-100% py-1 sm:py-4">
-              <BookTable
+            <BookTableProvider>
+              <TableContainer
                 data={data}
-                columns={bookTableColumns}
+                loading={displayLoading}
                 pageCount={pageCount}
-                onSetPage={onSetPage}
                 pageSize={searchParams.pageSize}
                 pageIndex={searchParams.page}
-                itemsCount={booksData?.metadata.total}
+                itemsCount={booksData?.metadata.total as number}
+                onSetPage={onSetPage}
               />
-            </div>
+            </BookTableProvider>
           </div>{' '}
           <div className="flex items-center justify-end self-start gap-2 border-l w-full">
             <AdminBookSearchFilter

@@ -46,7 +46,7 @@ export const useAdminFindBooksQuery = ({
 			releaseYearBefore,
 			releaseYearAfter,
 		],
-		queryFn: () =>
+		queryFn: ({ signal }) =>
 			adminFindBooks({
 				accessToken: accessToken as string,
 				title,
@@ -59,6 +59,7 @@ export const useAdminFindBooksQuery = ({
 				releaseYearAfter,
 				releaseYearBefore,
 				sortDate,
+				signal,
 			}),
 		enabled: !!accessToken && (!!title || all),
 		...options,
