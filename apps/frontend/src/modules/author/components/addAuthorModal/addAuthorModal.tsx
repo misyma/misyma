@@ -9,7 +9,14 @@ import {
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/form/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../../../common/components/form/form';
 import { Input } from '../../../common/components/input/input';
 import { Button } from '../../../common/components/button/button';
 import { useCreateAuthorMutation } from '../../api/admin/mutations/createAuthorMutation/createAuthorMutation';
@@ -37,7 +44,7 @@ const createAuthorSchema = z.object({
     })
     .max(128, {
       message: 'Imię autora powinno mieć maksymalnie 128 znaków.',
-    })
+    }),
 });
 
 export const AddAuthorModal: FC<Props> = ({ trigger, onMutated }: Props) => {
@@ -71,7 +78,8 @@ export const AddAuthorModal: FC<Props> = ({ trigger, onMutated }: Props) => {
       await onMutated();
 
       await queryClient.invalidateQueries({
-        predicate: (query) => query.queryKey[0] === AuthorsApiQueryKeys.findAuthorsQuery,
+        predicate: (query) =>
+          query.queryKey[0] === AuthorsApiQueryKeys.findAuthorsQuery,
       });
 
       toast({
@@ -106,7 +114,7 @@ export const AddAuthorModal: FC<Props> = ({ trigger, onMutated }: Props) => {
         className="max-w-xl py-16"
         omitCloseButton={true}
       >
-        <DialogTitle className='hidden'>Stwórz autora</DialogTitle>
+        <DialogTitle className="hidden">Stwórz autora</DialogTitle>
         <DialogHeader className="font-semibold text-center flex justify-center items-center">
           Stwórz autora
         </DialogHeader>
@@ -123,21 +131,13 @@ export const AddAuthorModal: FC<Props> = ({ trigger, onMutated }: Props) => {
                   <FormItem>
                     <FormLabel>Imię i nazwisko</FormLabel>
                     <FormControl>
-                      <Input
-                        min={1}
-                        max={128}
-                        type="text"
-                        {...field}
-                      />
+                      <Input min={1} max={128} type="text" {...field} />
                     </FormControl>
                     <FormMessage></FormMessage>
                   </FormItem>
                 )}
               />
-              <Button
-                disabled={!form.formState.isValid}
-                type="submit"
-              >
+              <Button disabled={!form.formState.isValid} type="submit">
                 Stwórz
               </Button>
             </form>

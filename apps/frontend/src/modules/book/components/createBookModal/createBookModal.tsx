@@ -15,6 +15,12 @@ import { AdminCreateBookForm } from '../adminCreateBookForm/adminCreateBookForm'
 import { HiPlus } from 'react-icons/hi2';
 import { useQueryClient } from '@tanstack/react-query';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../../../common/components/tooltip/tooltip';
 
 export const CreateBookModal: FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -51,9 +57,18 @@ export const CreateBookModal: FC = () => {
         }}
       >
         <DialogTrigger asChild>
-          <Button size="big-icon">
-            <HiPlus className="w-8 h-8"></HiPlus>
-          </Button>
+          <TooltipProvider delayDuration={0}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button size="big-icon">
+                  <HiPlus className="w-8 h-8"></HiPlus>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Stwórz książkę</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </DialogTrigger>
         <DialogContent
           style={{
@@ -63,9 +78,7 @@ export const CreateBookModal: FC = () => {
           omitCloseButton={true}
         >
           <DialogTitle>Stwórz książkę</DialogTitle>
-          <AdminCreateBookForm
-            onSubmit={onSubmit}
-          ></AdminCreateBookForm>
+          <AdminCreateBookForm onSubmit={onSubmit}></AdminCreateBookForm>
         </DialogContent>
       </Dialog>
     </BookDetailsChangeRequestProvider>

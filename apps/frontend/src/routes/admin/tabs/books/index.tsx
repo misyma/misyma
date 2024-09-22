@@ -24,6 +24,12 @@ import {
   BookTableProvider,
   useBookTableContext,
 } from '../../../../modules/book/components/bookTable/bookTableContext';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../../../../modules/common/components/tooltip/tooltip';
 
 const TableSizing = {
   visible: `sm:col-span-4 md:col-span-5`,
@@ -71,8 +77,9 @@ const TableContainer: FC<TableContainerProps> = ({
 export const BooksAdminPage: FC = () => {
   const [pageSize] = useState(10);
   const { isFilterVisible, toggleFilterVisibility } = useFilterContext();
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [displayLoading, setDisplayLoading] = useState(false);
+  const loadingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const isInitialFetchRef = useRef(true);
 
   const queryClient = useQueryClient();
 
@@ -87,18 +94,23 @@ export const BooksAdminPage: FC = () => {
 
   useEffect(() => {
     if (isFetching) {
-      const timeout = setTimeout(() => setDisplayLoading(true), 500);
-      debounceRef.current = timeout;
-    } else {
-      if (debounceRef.current) {
-        clearTimeout(debounceRef.current);
+      if (isInitialFetchRef.current) {
+        setIsLoading(true);
+        isInitialFetchRef.current = false;
+      } else {
+        loadingTimerRef.current = setTimeout(() => setIsLoading(true), 500);
       }
-      setDisplayLoading(false);
-      debounceRef.current = null;
+    } else {
+      if (loadingTimerRef.current) {
+        clearTimeout(loadingTimerRef.current);
+      }
+      setIsLoading(false);
     }
+
     return () => {
-      setDisplayLoading(false);
-      debounceRef.current = null;
+      if (loadingTimerRef.current) {
+        clearTimeout(loadingTimerRef.current);
+      }
     };
   }, [isFetching]);
 
@@ -112,8 +124,42 @@ export const BooksAdminPage: FC = () => {
     });
   };
 
-  const data = useMemo(() => {
-    return booksData?.data ?? [];
+  const data = useMemo<Book[]>(() => {
+    return (
+      booksData?.data ??
+      ([
+        {
+          authors: [],
+        },
+        {
+          authors: [],
+        },
+        {
+          authors: [],
+        },
+        {
+          authors: [],
+        },
+        {
+          authors: [],
+        },
+        {
+          authors: [],
+        },
+        {
+          authors: [],
+        },
+        {
+          authors: [],
+        },
+        {
+          authors: [],
+        },
+        {
+          authors: [],
+        },
+      ] as unknown as Book[])
+    );
   }, [booksData?.data]);
 
   const onApplyFilters = async (val: DynamicFilterValues) => {
@@ -150,9 +196,18 @@ export const BooksAdminPage: FC = () => {
             <BookCreationProvider>
               <CreateBookModal />
             </BookCreationProvider>
-            <Button size="big-icon" onClick={toggleFilterVisibility}>
-              <HiOutlineFilter className="w-8 h-8"></HiOutlineFilter>
-            </Button>
+            <TooltipProvider delayDuration={0}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button size="big-icon" onClick={toggleFilterVisibility}>
+                    <HiOutlineFilter className="w-8 h-8"></HiOutlineFilter>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Filtruj</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
           <div
             className={cn(
@@ -163,7 +218,7 @@ export const BooksAdminPage: FC = () => {
             <BookTableProvider>
               <TableContainer
                 data={data}
-                loading={displayLoading}
+                loading={isLoading}
                 pageCount={pageCount}
                 pageSize={searchParams.pageSize}
                 pageIndex={searchParams.page}

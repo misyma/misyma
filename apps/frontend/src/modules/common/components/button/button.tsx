@@ -11,6 +11,7 @@ export const buttonVariantsStylesMap = {
   secondary: styles['secondary-button'],
   ghost: styles['ghost-button'],
   link: styles['link-button'],
+  none: '',
 } as const;
 
 export const buttonSizesStylesMap = {
@@ -26,7 +27,7 @@ export const buttonSizesStylesMap = {
 const getVariantStyles = (variant: ButtonVariant): string => {
   const value = buttonVariantsStylesMap[variant];
 
-  if (!value) {
+  if (!value && value !== '') {
     throw new Error('Invalid variant provided.');
   }
 

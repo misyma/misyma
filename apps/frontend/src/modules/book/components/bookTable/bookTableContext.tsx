@@ -20,7 +20,7 @@ export const useBookTableContext = () => {
 export const BookTableProvider: FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   return (
     <BookTableContext.Provider value={{ loading, setLoading }}>
