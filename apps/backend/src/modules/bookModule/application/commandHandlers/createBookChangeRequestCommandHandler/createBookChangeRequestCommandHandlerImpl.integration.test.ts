@@ -71,10 +71,7 @@ describe('CreateBookChangeRequestCommandHandler', () => {
 
     const author = await authorTestUtils.createAndPersist();
 
-    const createdBookChangeRequest = bookChangeRequestTestFactory.create({
-      bookId: book.id,
-      userId: user.id,
-    });
+    const createdBookChangeRequest = bookChangeRequestTestFactory.create();
 
     const { bookChangeRequest } = await createBookChangeRequestCommandHandler.execute({
       title: createdBookChangeRequest.getTitle(),
@@ -95,7 +92,7 @@ describe('CreateBookChangeRequestCommandHandler', () => {
 
     expect(bookChangeRequest.getState()).toEqual({
       bookId: book.id,
-      userId: user.id,
+      userEmail: user.email,
       createdAt: expect.any(Date),
       format: createdBookChangeRequest.getFormat(),
       title: createdBookChangeRequest.getTitle(),
@@ -112,7 +109,7 @@ describe('CreateBookChangeRequestCommandHandler', () => {
     expect(foundBookChangeRequest).toEqual({
       id: bookChangeRequest.getId(),
       bookId: book.id,
-      userId: user.id,
+      userEmail: user.email,
       createdAt: expect.any(Date),
       format: createdBookChangeRequest.getFormat(),
       title: createdBookChangeRequest.getTitle(),
@@ -159,10 +156,7 @@ describe('CreateBookChangeRequestCommandHandler', () => {
 
     const bookId = Generator.uuid();
 
-    const createdBookChangeRequest = bookChangeRequestTestFactory.create({
-      bookId,
-      userId: user.id,
-    });
+    const createdBookChangeRequest = bookChangeRequestTestFactory.create();
 
     try {
       await createBookChangeRequestCommandHandler.execute({
@@ -197,7 +191,6 @@ describe('CreateBookChangeRequestCommandHandler', () => {
 
     const createdBookChangeRequest = bookChangeRequestTestFactory.create({
       bookId: book.id,
-      userId,
     });
 
     try {

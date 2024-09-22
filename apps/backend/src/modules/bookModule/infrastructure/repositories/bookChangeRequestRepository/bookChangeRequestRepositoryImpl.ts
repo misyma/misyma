@@ -10,8 +10,12 @@ import {
   type FindBookChangeRequestsPayload,
   type FindBookChangeRequestPayload,
 } from '../../../domain/repositories/bookChangeRequestRepository/bookChangeRequestRepository.js';
+import { authorTable } from '../../databases/bookDatabase/tables/authorTable/authorTable.js';
+import { bookAuthorTable } from '../../databases/bookDatabase/tables/bookAuthorTable/bookAuthorTable.js';
 import { type BookChangeRequestRawEntity } from '../../databases/bookDatabase/tables/bookChangeRequestTable/bookChangeRequestRawEntity.js';
 import { bookChangeRequestTable } from '../../databases/bookDatabase/tables/bookChangeRequestTable/bookChangeRequestTable.js';
+import { type BookChangeRequestWithJoinsRawEntity } from '../../databases/bookDatabase/tables/bookChangeRequestTable/bookChangeRequestWithJoinsRawEntity.js';
+import { bookTable } from '../../databases/bookDatabase/tables/bookTable/bookTable.js';
 
 export class BookChangeRequestRepositoryImpl implements BookChangeRequestRepository {
   public constructor(
@@ -33,18 +37,16 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
         pages,
         imageUrl,
         bookId,
-        userId,
+        userEmail,
         createdAt,
         authorIds,
       },
     } = payload;
 
-    let rawEntities: BookChangeRequestRawEntity[] = [];
-
     const id = this.uuidService.generateUuid();
 
     try {
-      rawEntities = await this.databaseClient<BookChangeRequestRawEntity>(bookChangeRequestTable).insert(
+      await this.databaseClient<BookChangeRequestRawEntity>(bookChangeRequestTable).insert(
         {
           id,
           title,
@@ -57,7 +59,7 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
           pages,
           imageUrl,
           bookId,
-          userId,
+          userEmail,
           createdAt,
           authorIds: authorIds?.join(',') ?? undefined,
         },
@@ -71,18 +73,62 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
       });
     }
 
-    const rawEntity = rawEntities[0] as BookChangeRequestRawEntity;
-
-    return this.bookChangeRequestMapper.mapToDomain(rawEntity);
+    return (await this.findBookChangeRequest({ id })) as BookChangeRequest;
   }
 
   public async findBookChangeRequest(payload: FindBookChangeRequestPayload): Promise<BookChangeRequest | null> {
     const { id } = payload;
 
-    let rawEntity: BookChangeRequestRawEntity | undefined;
+    let rawEntities: BookChangeRequestWithJoinsRawEntity[];
 
     try {
-      rawEntity = await this.databaseClient<BookChangeRequestRawEntity>(bookChangeRequestTable).where({ id }).first();
+      rawEntities = await this.databaseClient<BookChangeRequestRawEntity>(bookChangeRequestTable)
+        .select([
+          `${bookChangeRequestTable}.id`,
+          `${bookChangeRequestTable}.title`,
+          `${bookChangeRequestTable}.isbn`,
+          `${bookChangeRequestTable}.publisher`,
+          `${bookChangeRequestTable}.releaseYear`,
+          `${bookChangeRequestTable}.language`,
+          `${bookChangeRequestTable}.translator`,
+          `${bookChangeRequestTable}.format`,
+          `${bookChangeRequestTable}.pages`,
+          `${bookChangeRequestTable}.imageUrl`,
+          `${bookChangeRequestTable}.authorIds`,
+          `${bookChangeRequestTable}.bookId`,
+          `${bookChangeRequestTable}.userEmail`,
+          `${bookChangeRequestTable}.createdAt`,
+
+          `${bookTable}.title as "bookTitle"`,
+          `${bookTable}.isbn as "bookIsbn"`,
+          `${bookTable}.publisher as "bookPublisher"`,
+          `${bookTable}.releaseYear as "bookReleaseYear"`,
+          `${bookTable}.language as "bookLanguage"`,
+          `${bookTable}.translator as "bookTranslator"`,
+          `${bookTable}.format as "bookFormat"`,
+          `${bookTable}.pages as "bookPages"`,
+          `${bookTable}.isApproved as "bookIsApproved"`,
+          `${bookTable}.imageUrl as "bookImageUrl"`,
+          `${bookTable}.createdAt as "bookCreatedAt"`,
+
+          this.databaseClient.raw(`array_agg("authors"."id") as "bookAuthorIds"`),
+          this.databaseClient.raw(`array_agg("authors"."name") as "bookAuthorNames"`),
+          this.databaseClient.raw(`array_agg("authors"."isApproved") as "bookAuthorApprovals"`),
+          this.databaseClient.raw(`array_agg("authors"."createdAt") as "bookAuthorCreatedAtDates"`),
+        ])
+        .leftJoin(bookAuthorTable, (join) => {
+          join.on(`${bookAuthorTable}.bookId`, '=', `${bookChangeRequestTable}.bookId`);
+        })
+        .leftJoin(authorTable, (join) => {
+          join.on(`${authorTable}.id`, '=', `${bookAuthorTable}.authorId`);
+        })
+        .leftJoin(bookTable, (join) => {
+          join.on(`${bookTable}.id`, `=`, `${bookChangeRequestTable}.bookId`);
+        })
+        .where((builder) => {
+          builder.where(`${bookChangeRequestTable}.id`, id);
+        })
+        .groupBy([`${bookChangeRequestTable}.id`, `${bookTable}.id`]);
     } catch (error) {
       throw new RepositoryError({
         entity: 'BookChangeRequest',
@@ -91,32 +137,70 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
       });
     }
 
-    if (!rawEntity) {
-      return null;
-    }
-
-    return this.bookChangeRequestMapper.mapToDomain(rawEntity);
+    return this.bookChangeRequestMapper.mapRawWithJoinsToDomain(rawEntities)[0] as BookChangeRequest;
   }
 
   public async findBookChangeRequests(payload: FindBookChangeRequestsPayload): Promise<BookChangeRequest[]> {
-    const { page, pageSize, userId, id } = payload;
+    const { page, pageSize, userEmail, id } = payload;
 
-    let rawEntities: BookChangeRequestRawEntity[];
+    let rawEntities: BookChangeRequestWithJoinsRawEntity[];
 
     try {
-      const query = this.databaseClient<BookChangeRequestRawEntity>(bookChangeRequestTable)
+      rawEntities = await this.databaseClient<BookChangeRequestRawEntity>(bookChangeRequestTable)
+        .select([
+          `${bookChangeRequestTable}.id`,
+          `${bookChangeRequestTable}.title`,
+          `${bookChangeRequestTable}.isbn`,
+          `${bookChangeRequestTable}.publisher`,
+          `${bookChangeRequestTable}.releaseYear`,
+          `${bookChangeRequestTable}.language`,
+          `${bookChangeRequestTable}.translator`,
+          `${bookChangeRequestTable}.format`,
+          `${bookChangeRequestTable}.pages`,
+          `${bookChangeRequestTable}.imageUrl`,
+          `${bookChangeRequestTable}.authorIds`,
+          `${bookChangeRequestTable}.bookId`,
+          `${bookChangeRequestTable}.userEmail`,
+          `${bookChangeRequestTable}.createdAt`,
+
+          `${bookTable}.title as "bookTitle"`,
+          `${bookTable}.isbn as "bookIsbn"`,
+          `${bookTable}.publisher as "bookPublisher"`,
+          `${bookTable}.releaseYear as "bookReleaseYear"`,
+          `${bookTable}.language as "bookLanguage"`,
+          `${bookTable}.translator as "bookTranslator"`,
+          `${bookTable}.format as "bookFormat"`,
+          `${bookTable}.pages as "bookPages"`,
+          `${bookTable}.isApproved as "bookIsApproved"`,
+          `${bookTable}.imageUrl as "bookImageUrl"`,
+          `${bookTable}.createdAt as "bookCreatedAt"`,
+
+          this.databaseClient.raw(`array_agg("authors"."id") as "bookAuthorIds"`),
+          this.databaseClient.raw(`array_agg("authors"."name") as "bookAuthorNames"`),
+          this.databaseClient.raw(`array_agg("authors"."isApproved") as "bookAuthorApprovals"`),
+          this.databaseClient.raw(`array_agg("authors"."createdAt") as "bookAuthorCreatedAtDates"`),
+        ])
+        .leftJoin(bookAuthorTable, (join) => {
+          join.on(`${bookAuthorTable}.bookId`, '=', `${bookChangeRequestTable}.bookId`);
+        })
+        .leftJoin(authorTable, (join) => {
+          join.on(`${authorTable}.id`, '=', `${bookAuthorTable}.authorId`);
+        })
+        .leftJoin(bookTable, (join) => {
+          join.on(`${bookTable}.id`, `=`, `${bookChangeRequestTable}.bookId`);
+        })
+        .where((builder) => {
+          if (id) {
+            builder.where(`${bookChangeRequestTable}.id`, id);
+          }
+
+          if (userEmail) {
+            builder.where(`${bookChangeRequestTable}.userEmail`, userEmail);
+          }
+        })
+        .groupBy([`${bookChangeRequestTable}.id`, `${bookTable}.id`])
         .limit(pageSize)
         .offset(pageSize * (page - 1));
-
-      if (userId) {
-        query.where({ userId });
-      }
-
-      if (id) {
-        query.where({ id });
-      }
-
-      rawEntities = await query;
     } catch (error) {
       throw new RepositoryError({
         entity: 'BookChangeRequest',
@@ -125,7 +209,7 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
       });
     }
 
-    return rawEntities.map((rawEntity) => this.bookChangeRequestMapper.mapToDomain(rawEntity));
+    return this.bookChangeRequestMapper.mapRawWithJoinsToDomain(rawEntities);
   }
 
   public async deleteBookChangeRequest(payload: DeleteBookChangeRequestPayload): Promise<void> {
@@ -143,13 +227,13 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
   }
 
   public async countBookChangeRequests(payload: FindBookChangeRequestsPayload): Promise<number> {
-    const { userId } = payload;
+    const { userEmail } = payload;
 
     try {
       const query = this.databaseClient<BookChangeRequestRawEntity>(bookChangeRequestTable).count().first();
 
-      if (userId) {
-        query.where({ userId });
+      if (userEmail) {
+        query.where({ userEmail });
       }
 
       const countResult = await query;

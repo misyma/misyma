@@ -13,6 +13,6 @@ export interface BookChangeRequestRawEntity {
   readonly imageUrl?: string | undefined;
   readonly authorIds?: string | undefined;
   readonly bookId: string;
-  readonly userId: string;
+  readonly userEmail: string;
   readonly createdAt: Date;
 }

@@ -37,7 +37,7 @@ export class BookChangeRequestTestUtils extends TestUtils {
         pages: bookChangeRequest.pages,
         imageUrl: bookChangeRequest.imageUrl,
         bookId: bookChangeRequest.bookId,
-        userId: bookChangeRequest.userId,
+        userEmail: bookChangeRequest.userEmail,
         createdAt: bookChangeRequest.createdAt,
         authorIds: bookChangeRequest.authorIds,
       },
@@ -58,7 +58,7 @@ export class BookChangeRequestTestUtils extends TestUtils {
       pages: rawEntity.pages,
       imageUrl: rawEntity.imageUrl,
       bookId: rawEntity.bookId,
-      userId: rawEntity.userId,
+      userEmail: rawEntity.userEmail,
       createdAt: new Date(rawEntity.createdAt),
       authorIds: rawEntity.authorIds,
     };
@@ -87,7 +87,7 @@ export class BookChangeRequestTestUtils extends TestUtils {
       pages: rawEntity.pages,
       imageUrl: rawEntity.imageUrl,
       bookId: rawEntity.bookId,
-      userId: rawEntity.userId,
+      userEmail: rawEntity.userEmail,
       createdAt: new Date(rawEntity.createdAt),
       authorIds: rawEntity.authorIds,
     };

@@ -59,13 +59,13 @@ describe('BookChangeRequestRepositoryImpl', () => {
 
   describe('saveBookChangeRequest', () => {
     it('creates a book change request', async () => {
-      const user = await userTestUtils.createAndPersist();
+      const { email } = await userTestUtils.createAndPersist();
 
       const book = await bookTestUtils.createAndPersist();
 
       const createdBookChangeRequest = bookChangeRequestTestFactory.create({
         bookId: book.id,
-        userId: user.id,
+        userEmail: email,
       });
 
       const authorId = Generator.uuid();
@@ -82,7 +82,7 @@ describe('BookChangeRequestRepositoryImpl', () => {
           pages: createdBookChangeRequest.getPages(),
           imageUrl: createdBookChangeRequest.getImageUrl(),
           bookId: createdBookChangeRequest.getBookId(),
-          userId: createdBookChangeRequest.getUserId(),
+          userEmail: createdBookChangeRequest.getUserEmail(),
           createdAt: createdBookChangeRequest.getCreatedAt(),
           authorIds: [authorId],
         },
@@ -101,7 +101,7 @@ describe('BookChangeRequestRepositoryImpl', () => {
         pages: createdBookChangeRequest.getPages(),
         imageUrl: createdBookChangeRequest.getImageUrl(),
         bookId: createdBookChangeRequest.getBookId(),
-        userId: createdBookChangeRequest.getUserId(),
+        userEmail: createdBookChangeRequest.getUserEmail(),
         createdAt: createdBookChangeRequest.getCreatedAt(),
         authorIds: [authorId],
       });
@@ -118,7 +118,7 @@ describe('BookChangeRequestRepositoryImpl', () => {
         pages: createdBookChangeRequest.getPages(),
         imageUrl: createdBookChangeRequest.getImageUrl(),
         bookId: createdBookChangeRequest.getBookId(),
-        userId: createdBookChangeRequest.getUserId(),
+        userEmail: createdBookChangeRequest.getUserEmail(),
         createdAt: createdBookChangeRequest.getCreatedAt(),
         authorIds: authorId,
       });
@@ -127,14 +127,14 @@ describe('BookChangeRequestRepositoryImpl', () => {
 
   describe('findBookChangeRequest', () => {
     it('finds a book change request by id', async () => {
-      const user = await userTestUtils.createAndPersist();
+      const { email } = await userTestUtils.createAndPersist();
 
       const book = await bookTestUtils.createAndPersist();
 
       const bookChangeRequest = await bookChangeRequestTestUtils.createAndPersist({
         input: {
           bookId: book.id,
-          userId: user.id,
+          userEmail: email,
         },
       });
 
@@ -157,7 +157,7 @@ describe('BookChangeRequestRepositoryImpl', () => {
         pages: foundBookChangeRequest?.getPages(),
         imageUrl: foundBookChangeRequest?.getImageUrl(),
         bookId: foundBookChangeRequest?.getBookId(),
-        userId: foundBookChangeRequest?.getUserId(),
+        userEmail: foundBookChangeRequest?.getUserEmail(),
         createdAt: foundBookChangeRequest?.getCreatedAt(),
       });
     });
@@ -182,14 +182,14 @@ describe('BookChangeRequestRepositoryImpl', () => {
       const bookChangeRequest1 = await bookChangeRequestTestUtils.createAndPersist({
         input: {
           bookId: book.id,
-          userId: user1.id,
+          userEmail: user1.email,
         },
       });
 
       const bookChangeRequest2 = await bookChangeRequestTestUtils.createAndPersist({
         input: {
           bookId: book.id,
-          userId: user2.id,
+          userEmail: user2.email,
         },
       });
 
@@ -228,19 +228,19 @@ describe('BookChangeRequestRepositoryImpl', () => {
       const bookChangeRequest1 = await bookChangeRequestTestUtils.createAndPersist({
         input: {
           bookId: book.id,
-          userId: user1.id,
+          userEmail: user1.email,
         },
       });
 
       await bookChangeRequestTestUtils.createAndPersist({
         input: {
           bookId: book.id,
-          userId: user2.id,
+          userEmail: user2.email,
         },
       });
 
       const foundBookChangeRequests = await bookChangeRequestRepository.findBookChangeRequests({
-        userId: user1.id,
+        userEmail: user1.email,
         page: 1,
         pageSize: 10,
       });
@@ -258,12 +258,12 @@ describe('BookChangeRequestRepositoryImpl', () => {
       const bookChangeRequest1 = await bookChangeRequestTestUtils.createAndPersist({
         input: {
           bookId: book.id,
-          userId: user1.id,
+          userEmail: user1.email,
         },
       });
 
       const foundBookChangeRequests = await bookChangeRequestRepository.findBookChangeRequests({
-        userId: user1.id,
+        userEmail: user1.email,
         page: 1,
         pageSize: 10,
       });
@@ -283,7 +283,7 @@ describe('BookChangeRequestRepositoryImpl', () => {
       const bookChangeRequest = await bookChangeRequestTestUtils.createAndPersist({
         input: {
           bookId: book.id,
-          userId: user.id,
+          userEmail: user.email,
         },
       });
 

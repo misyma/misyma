@@ -1,5 +1,7 @@
 import { type Language, type BookFormat } from '@common/contracts';
 
+import { type BookDraft } from '../book/book.js';
+
 export interface BookChangeRequestDraft {
   readonly id: string;
   readonly title?: string | undefined;
@@ -12,8 +14,9 @@ export interface BookChangeRequestDraft {
   readonly pages?: number | undefined;
   readonly imageUrl?: string | undefined;
   readonly authorIds?: string[] | undefined;
-  readonly userId: string;
+  readonly userEmail: string;
   readonly bookId: string;
+  readonly book?: BookDraft | undefined;
   readonly createdAt: Date;
 }
 
@@ -28,8 +31,9 @@ export interface BookChangeRequestState {
   readonly pages?: number | undefined;
   readonly imageUrl?: string | undefined;
   readonly authorIds?: string[] | undefined;
-  readonly userId: string;
+  readonly userEmail: string;
   readonly bookId: string;
+  readonly book?: BookDraft | undefined;
   readonly createdAt: Date;
 }
 
@@ -50,9 +54,10 @@ export class BookChangeRequest {
       pages,
       imageUrl,
       bookId,
-      userId,
+      userEmail,
       createdAt,
       authorIds,
+      book,
     } = draft;
 
     this.id = id;
@@ -68,10 +73,17 @@ export class BookChangeRequest {
       pages,
       imageUrl,
       bookId,
-      userId,
+      userEmail,
       createdAt,
       authorIds,
     };
+
+    if (book) {
+      this.state = {
+        ...this.state,
+        book,
+      };
+    }
   }
 
   public getState(): BookChangeRequestState {
@@ -122,12 +134,16 @@ export class BookChangeRequest {
     return this.state.authorIds;
   }
 
-  public getUserId(): string {
-    return this.state.userId;
+  public getUserEmail(): string {
+    return this.state.userEmail;
   }
 
   public getBookId(): string {
     return this.state.bookId;
+  }
+
+  public getBook(): BookDraft | undefined {
+    return this.state.book;
   }
 
   public getCreatedAt(): Date {

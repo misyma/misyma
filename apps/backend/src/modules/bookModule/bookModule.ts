@@ -615,6 +615,7 @@ export class BookModule implements DependencyInjectionModule {
       () =>
         new FindBookChangeRequestsQueryHandlerImpl(
           container.get<BookChangeRequestRepository>(symbols.bookChangeRequestRepository),
+          container.get<UserRepository>(userSymbols.userRepository),
         ),
     );
   }

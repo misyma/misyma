@@ -1,4 +1,4 @@
-import { UserRole } from '@common/contracts';
+import { type BookFormat, type Language, UserRole } from '@common/contracts';
 
 import {
   type ApplyBookChangeRequestPathParamsDto,
@@ -229,15 +229,30 @@ export class BookChangeRequestAdminHttpController implements HttpController {
       pages,
       bookId,
       createdAt,
-      userId,
+      userEmail,
       authorIds,
+      book,
     } = bookChangeRequest.getState();
 
     const bookChangeRequestDto: BookChangeRequestDto = {
       id: bookChangeRequest.getId(),
       bookId,
-      userId,
+      userEmail,
       createdAt: createdAt.toISOString(),
+      book: {
+        title: book?.title as string,
+        language: book?.language as Language,
+        isApproved: book?.isApproved as boolean,
+        format: book?.format as BookFormat,
+        createdAt: book?.createdAt.toISOString() as string,
+        authors:
+          book?.authors.map((author) => ({
+            id: author.getId(),
+            name: author.getName(),
+            isApproved: author.getIsApproved(),
+            createdAt: author.getCreatedAt().toISOString(),
+          })) || [],
+      },
     };
 
     if (authorIds) {
@@ -278,6 +293,30 @@ export class BookChangeRequestAdminHttpController implements HttpController {
 
     if (format) {
       bookChangeRequestDto.format = format;
+    }
+
+    if (book?.isbn) {
+      bookChangeRequestDto.book.isbn = book.isbn;
+    }
+
+    if (book?.publisher) {
+      bookChangeRequestDto.book.publisher = book.publisher;
+    }
+
+    if (book?.releaseYear) {
+      bookChangeRequestDto.book.releaseYear = book.releaseYear;
+    }
+
+    if (book?.translator) {
+      bookChangeRequestDto.book.translator = book.translator;
+    }
+
+    if (book?.pages) {
+      bookChangeRequestDto.book.pages = book.pages;
+    }
+
+    if (book?.imageUrl) {
+      bookChangeRequestDto.book.imageUrl = book.imageUrl;
     }
 
     return bookChangeRequestDto;
