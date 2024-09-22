@@ -36,7 +36,7 @@ export function ChangeRequestTable<TData, TValue>({
   });
 
   return (
-    <div className="w-full md:max-w-screen-xl ">
+    <div className="w-full md:max-w-screen-xl">
       <div className="flex items-center py-2"></div>
       <div className="w-full min-h-[22rem]">
         <Table>

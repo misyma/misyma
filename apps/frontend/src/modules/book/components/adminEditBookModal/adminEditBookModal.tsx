@@ -64,7 +64,9 @@ const InnerContainer: FC<Props> = ({ bookId }) => {
                 variant="ghost"
                 size="icon"
               >
-                <HiPencil className="cursor-pointer text-primary h-8 w-8" />
+                <Button size="custom" variant="none">
+                  <HiPencil className="cursor-pointer text-primary h-8 w-8" />
+                </Button>
               </Button>
             </TooltipTrigger>
             <TooltipContent>

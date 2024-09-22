@@ -228,7 +228,7 @@ export const ChangeRequestView: FC = () => {
             />
             <Form {...form}>
               <form
-                className="space-y-4 w-full"
+                className="space-y-4 w-full md:max-w-screen-xl"
                 onSubmit={form.handleSubmit(onSubmit)}
               >
                 <div className="w-full flex justify-end gap-2 items-end">
