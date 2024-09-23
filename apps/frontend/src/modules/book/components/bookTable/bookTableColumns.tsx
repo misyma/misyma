@@ -1,13 +1,11 @@
 import { CellContext, type ColumnDef } from '@tanstack/react-table';
 import { Book } from '@common/contracts';
-import { HiCheckCircle } from 'react-icons/hi';
-import { HiXCircle } from 'react-icons/hi';
 import { ReversedLanguages } from '../../../common/constants/languages';
 import { BookFormat } from '../../../common/constants/bookFormat';
 import { DeleteBookModal } from '../deleteBookModal/deleteBookModal';
 import { TableHeader } from '../../../common/components/tableHeader/tableHeader';
 import { AdminEditBookModal } from '../adminEditBookModal/adminEditBookModal';
-import { FC, useEffect, useMemo, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import {
   Tooltip,
   TooltipContent,
@@ -16,6 +14,7 @@ import {
 } from '../../../common/components/tooltip/tooltip';
 import { useBookTableContext } from './bookTableContext';
 import { Skeleton } from '../../../common/components/skeleton/skeleton';
+import { ChangeBookStatusModal } from '../changeBookStatusModal/changeBookStatusModal';
 
 type CellProps = CellContext<Book, unknown>;
 
@@ -136,18 +135,17 @@ const IsbnCell: FC<CellProps> = ({ row }) => {
   );
 };
 
-const StatusCell: FC<CellProps> = ({ row }) => {
+const StatusCell: FC<CellProps> = ({ row, table }) => {
   const { loading } = useBookTableContext();
-  const StatusIcon = useMemo(() => {
-    if (row.original.isApproved) {
-      return <HiCheckCircle className="h-6 w-6 text-green-500" />;
-    }
-    return <HiXCircle className="h-6 w-6 text-red-500" />;
-  }, [row.original.isApproved]);
 
   return (
     <div className="max-w-16 flex justify-center items-center gap-1">
-      {loading ? <Skeleton className="h-6 w-6" /> : StatusIcon}
+      {loading ? <Skeleton className="h-6 w-6" /> : 
+        <ChangeBookStatusModal 
+          book={row.original}
+          page={table.getState().pagination.pageIndex}
+        />
+      }
     </div>
   );
 };
