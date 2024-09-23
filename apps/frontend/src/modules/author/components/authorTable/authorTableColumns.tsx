@@ -27,7 +27,7 @@ const ActionsCell: FC<CellContext<Author, unknown>> = ({ row }) => {
             <Button
               onClick={() =>
                 navigate({
-                  to: '/admin/tabs/books/',
+                  to: '/admin/tabs/books',
                   search: {
                     authorIds: row.original.id,
                     page: 1,
