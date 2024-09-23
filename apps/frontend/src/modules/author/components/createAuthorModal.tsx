@@ -84,8 +84,6 @@ export const CreateAuthorModal: FC<Props> = ({ trigger, onMutated }: Props) => {
         name: values.name,
       });
 
-      await onMutated();
-
       await queryClient.invalidateQueries({
         predicate: (query) =>
           query.queryKey[0] === AuthorsApiQueryKeys.findAuthorsQuery,
@@ -95,6 +93,8 @@ export const CreateAuthorModal: FC<Props> = ({ trigger, onMutated }: Props) => {
         variant: 'success',
         title: `Autor: ${values.name} został stworzony.`,
       });
+
+      await onMutated();
     } catch (error) {
       if (error instanceof ApiError) {
         setError(error.message);
@@ -123,7 +123,7 @@ export const CreateAuthorModal: FC<Props> = ({ trigger, onMutated }: Props) => {
           borderRadius: '40px',
         }}
         className="max-w-xl py-16"
-        omitCloseButton={true}
+        omitCloseButton={false}
       >
         <DialogDescription className="hidden">
           Author creation dialog
