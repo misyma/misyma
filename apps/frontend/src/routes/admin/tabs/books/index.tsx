@@ -185,7 +185,10 @@ export const BooksAdminPage: FC = () => {
               <Link className="cursor-pointer" to="/admin/tabs/authors">
                 Autorzy
               </Link>
-              <Link className="cursor-default text-primary font-bold">
+              <Link
+                to="/admin/tabs/books"
+                className="cursor-default text-primary font-bold"
+              >
                 Książki
               </Link>
               <Link to="/admin/tabs/changeRequests" className="cursor-pointer">
