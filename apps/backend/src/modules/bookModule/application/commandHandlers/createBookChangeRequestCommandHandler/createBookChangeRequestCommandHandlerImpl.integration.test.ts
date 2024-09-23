@@ -67,9 +67,11 @@ describe('CreateBookChangeRequestCommandHandler', () => {
   it('creates a BookChangeRequest', async () => {
     const user = await userTestUtils.createAndPersist();
 
-    const book = await bookTestUtils.createAndPersist();
+    const author1 = await authorTestUtils.createAndPersist();
 
-    const author = await authorTestUtils.createAndPersist();
+    const book = await bookTestUtils.createAndPersist({ input: { authorIds: [author1.id] } });
+
+    const author2 = await authorTestUtils.createAndPersist();
 
     const createdBookChangeRequest = bookChangeRequestTestFactory.create();
 
@@ -83,12 +85,10 @@ describe('CreateBookChangeRequestCommandHandler', () => {
       format: createdBookChangeRequest.getFormat(),
       pages: createdBookChangeRequest.getPages() as number,
       imageUrl: createdBookChangeRequest.getImageUrl() as string,
-      authorIds: [author.id],
+      authorIds: [author2.id],
       bookId: book.id,
       userId: user.id,
     });
-
-    const foundBookChangeRequest = await bookChangeRequestTestUtils.findById({ id: bookChangeRequest.getId() });
 
     expect(bookChangeRequest.getState()).toEqual({
       bookId: book.id,
@@ -103,8 +103,34 @@ describe('CreateBookChangeRequestCommandHandler', () => {
       translator: createdBookChangeRequest.getTranslator(),
       pages: createdBookChangeRequest.getPages(),
       imageUrl: createdBookChangeRequest.getImageUrl(),
-      authorIds: [author.id],
+      authorIds: [author2.id],
+      book: {
+        id: book.id,
+        title: book.title,
+        isbn: book.isbn,
+        publisher: book.publisher,
+        releaseYear: book.releaseYear,
+        language: book.language,
+        translator: book.translator,
+        format: book.format,
+        pages: book.pages,
+        imageUrl: book.imageUrl,
+        createdAt: book.createdAt,
+        isApproved: book.isApproved,
+        authors: [
+          {
+            id: author1.id,
+            state: {
+              name: author1.name,
+              createdAt: author1.createdAt,
+              isApproved: author1.isApproved,
+            },
+          },
+        ],
+      },
     });
+
+    const foundBookChangeRequest = await bookChangeRequestTestUtils.findById({ id: bookChangeRequest.getId() });
 
     expect(foundBookChangeRequest).toEqual({
       id: bookChangeRequest.getId(),
@@ -120,7 +146,7 @@ describe('CreateBookChangeRequestCommandHandler', () => {
       translator: createdBookChangeRequest.getTranslator(),
       pages: createdBookChangeRequest.getPages(),
       imageUrl: createdBookChangeRequest.getImageUrl(),
-      authorIds: author.id,
+      authorIds: author2.id,
     });
   });
 

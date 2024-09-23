@@ -99,17 +99,17 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
           `${bookChangeRequestTable}.userEmail`,
           `${bookChangeRequestTable}.createdAt`,
 
-          `${bookTable}.title as "bookTitle"`,
-          `${bookTable}.isbn as "bookIsbn"`,
-          `${bookTable}.publisher as "bookPublisher"`,
-          `${bookTable}.releaseYear as "bookReleaseYear"`,
-          `${bookTable}.language as "bookLanguage"`,
-          `${bookTable}.translator as "bookTranslator"`,
-          `${bookTable}.format as "bookFormat"`,
-          `${bookTable}.pages as "bookPages"`,
-          `${bookTable}.isApproved as "bookIsApproved"`,
-          `${bookTable}.imageUrl as "bookImageUrl"`,
-          `${bookTable}.createdAt as "bookCreatedAt"`,
+          `${bookTable}.title as bookTitle`,
+          `${bookTable}.isbn as bookIsbn`,
+          `${bookTable}.publisher as bookPublisher`,
+          `${bookTable}.releaseYear as bookReleaseYear`,
+          `${bookTable}.language as bookLanguage`,
+          `${bookTable}.translator as bookTranslator`,
+          `${bookTable}.format as bookFormat`,
+          `${bookTable}.pages as bookPages`,
+          `${bookTable}.isApproved as bookIsApproved`,
+          `${bookTable}.imageUrl as bookImageUrl`,
+          `${bookTable}.createdAt as bookCreatedAt`,
 
           this.databaseClient.raw(`array_agg("authors"."id") as "bookAuthorIds"`),
           this.databaseClient.raw(`array_agg("authors"."name") as "bookAuthorNames"`),
@@ -137,7 +137,13 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
       });
     }
 
-    return this.bookChangeRequestMapper.mapRawWithJoinsToDomain(rawEntities)[0] as BookChangeRequest;
+    const bookChangeRequest = this.bookChangeRequestMapper.mapRawWithJoinsToDomain(rawEntities)[0] as BookChangeRequest;
+
+    if (!bookChangeRequest) {
+      return null;
+    }
+
+    return bookChangeRequest;
   }
 
   public async findBookChangeRequests(payload: FindBookChangeRequestsPayload): Promise<BookChangeRequest[]> {
@@ -163,17 +169,17 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
           `${bookChangeRequestTable}.userEmail`,
           `${bookChangeRequestTable}.createdAt`,
 
-          `${bookTable}.title as "bookTitle"`,
-          `${bookTable}.isbn as "bookIsbn"`,
-          `${bookTable}.publisher as "bookPublisher"`,
-          `${bookTable}.releaseYear as "bookReleaseYear"`,
-          `${bookTable}.language as "bookLanguage"`,
-          `${bookTable}.translator as "bookTranslator"`,
-          `${bookTable}.format as "bookFormat"`,
-          `${bookTable}.pages as "bookPages"`,
-          `${bookTable}.isApproved as "bookIsApproved"`,
-          `${bookTable}.imageUrl as "bookImageUrl"`,
-          `${bookTable}.createdAt as "bookCreatedAt"`,
+          `${bookTable}.title as bookTitle`,
+          `${bookTable}.isbn as bookIsbn`,
+          `${bookTable}.publisher as bookPublisher`,
+          `${bookTable}.releaseYear as bookReleaseYear`,
+          `${bookTable}.language as bookLanguage`,
+          `${bookTable}.translator as bookTranslator`,
+          `${bookTable}.format as bookFormat`,
+          `${bookTable}.pages as bookPages`,
+          `${bookTable}.isApproved as bookIsApproved`,
+          `${bookTable}.imageUrl as bookImageUrl`,
+          `${bookTable}.createdAt as bookCreatedAt`,
 
           this.databaseClient.raw(`array_agg("authors"."id") as "bookAuthorIds"`),
           this.databaseClient.raw(`array_agg("authors"."name") as "bookAuthorNames"`),
