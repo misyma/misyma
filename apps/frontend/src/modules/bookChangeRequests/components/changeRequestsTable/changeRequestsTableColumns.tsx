@@ -26,11 +26,30 @@ export const changeRequestsColumns: ColumnDef<BookChangeRequest>[] = [
   {
     header: () => <TableHeader label="Tytuł" />,
     accessorKey: 'name',
+    minSize: 150,
+    size: 200,
+    maxSize: 300,
     cell: ({ row }): JSX.Element => {
       return (
         <div className="flex flex-col py-4 gap-2">
           <div className="flex items-center gap-1">
-            <p className="text-base">{row.original.title}</p>
+            <p className="text-base">{row.original?.book?.title ?? '-'}</p>
+          </div>
+        </div>
+      );
+    },
+  },
+  {
+    header: () => <TableHeader label="Email użytkownika" />,
+    accessorKey: 'name',
+    minSize: 150,
+    size: 200,
+    maxSize: 300,
+    cell: ({ row }): JSX.Element => {
+      return (
+        <div className="flex flex-col py-4 gap-2">
+          <div className="flex items-center gap-1">
+            <p className="text-base">{row.original?.userEmail ?? '-'}</p>
           </div>
         </div>
       );
@@ -39,6 +58,9 @@ export const changeRequestsColumns: ColumnDef<BookChangeRequest>[] = [
   {
     header: () => <TableHeader label="Data" />,
     accessorKey: 'createdAt',
+    minSize: 150,
+    size: 200,
+    maxSize: 300,
     cell: ({ row }): JSX.Element => {
       return (
         <div className="flex flex-col py-4 gap-2">
@@ -59,7 +81,14 @@ export const changeRequestsColumns: ColumnDef<BookChangeRequest>[] = [
     header: () => <TableHeader label="Zmienione wartości" />,
     accessorKey: 'changedKeys',
     cell: ({ row }): JSX.Element => {
-      const ignoredKeys = ['id', 'bookId', 'createdAt', 'userId'];
+      const ignoredKeys = [
+        'id',
+        'bookId',
+        'createdAt',
+        'userId',
+        'userEmail',
+        'book',
+      ];
 
       const translationMap = {
         ['isbn']: 'isbn',
