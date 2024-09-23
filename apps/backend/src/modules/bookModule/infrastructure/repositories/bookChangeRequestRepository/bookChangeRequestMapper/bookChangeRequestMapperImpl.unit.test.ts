@@ -36,22 +36,7 @@ describe('BookChangeRequestMapperImpl', () => {
         userEmail: bookChangeRequestRawEntity.userEmail,
         createdAt: bookChangeRequestRawEntity.createdAt,
         authorIds: bookChangeRequestRawEntity.authorIds,
-
         bookTitle: bookRawEntity.title,
-        bookIsbn: bookRawEntity.isbn as string,
-        bookPublisher: bookRawEntity.publisher as string,
-        bookReleaseYear: bookRawEntity.releaseYear as number,
-        bookLanguage: bookRawEntity.language,
-        bookTranslator: bookRawEntity.translator as string,
-        bookFormat: bookRawEntity.format,
-        bookPages: bookRawEntity.pages as number,
-        bookIsApproved: bookRawEntity.isApproved,
-        bookImageUrl: bookRawEntity.imageUrl as string,
-        bookCreatedAt: bookRawEntity.createdAt,
-        bookAuthorIds: [],
-        bookAuthorNames: [],
-        bookAuthorApprovals: [],
-        bookAuthorCreatedAtDates: [],
       },
     ]);
 
@@ -71,22 +56,7 @@ describe('BookChangeRequestMapperImpl', () => {
         userEmail: bookChangeRequestRawEntity.userEmail,
         createdAt: bookChangeRequestRawEntity.createdAt,
         authorIds: bookChangeRequestRawEntity.authorIds,
-
-        book: {
-          id: bookChangeRequestRawEntity.bookId,
-          title: bookRawEntity.title,
-          isbn: bookRawEntity.isbn,
-          publisher: bookRawEntity.publisher,
-          releaseYear: bookRawEntity.releaseYear,
-          language: bookRawEntity.language,
-          translator: bookRawEntity.translator,
-          format: bookRawEntity.format,
-          pages: bookRawEntity.pages,
-          isApproved: bookRawEntity.isApproved,
-          imageUrl: bookRawEntity.imageUrl,
-          createdAt: bookRawEntity.createdAt,
-          authors: [],
-        },
+        bookTitle: bookRawEntity.title,
       },
     });
   });

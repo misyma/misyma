@@ -2,7 +2,6 @@ import { type Static, Type } from '@sinclair/typebox';
 
 import * as contracts from '@common/contracts';
 
-import { authorDtoSchema } from './authorDto.js';
 import {
   bookTitleSchema,
   bookIsbnSchema,
@@ -16,20 +15,7 @@ import {
 export const bookChangeRequestDtoSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
   bookId: Type.String({ format: 'uuid' }),
-  book: Type.Object({
-    title: bookTitleSchema,
-    isbn: Type.Optional(bookIsbnSchema),
-    publisher: Type.Optional(bookPublisherSchema),
-    releaseYear: Type.Optional(bookReleaseYearSchema),
-    language: Type.Enum(contracts.Language),
-    translator: Type.Optional(bookTranslatorSchema),
-    format: Type.Enum(contracts.BookFormat),
-    pages: Type.Optional(bookPagesSchema),
-    isApproved: Type.Boolean(),
-    imageUrl: Type.Optional(bookImageUrlSchema),
-    createdAt: Type.String({ format: 'date-time' }),
-    authors: Type.Array(authorDtoSchema),
-  }),
+  bookTitle: bookTitleSchema,
   userEmail: Type.String({ format: 'email' }),
   createdAt: Type.String({ format: 'date-time' }),
   title: Type.Optional(bookTitleSchema),

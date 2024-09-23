@@ -33,7 +33,7 @@ export const changeRequestsColumns: ColumnDef<BookChangeRequest>[] = [
       return (
         <div className="flex flex-col py-4 gap-2">
           <div className="flex items-center gap-1">
-            <p className="text-base">{row.original?.book?.title ?? '-'}</p>
+            <p className="text-base">{row.original?.bookTitle ?? '-'}</p>
           </div>
         </div>
       );

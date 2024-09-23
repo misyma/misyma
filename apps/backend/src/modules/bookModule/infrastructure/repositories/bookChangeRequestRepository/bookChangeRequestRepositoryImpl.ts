@@ -98,37 +98,14 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
           `${bookChangeRequestTable}.bookId`,
           `${bookChangeRequestTable}.userEmail`,
           `${bookChangeRequestTable}.createdAt`,
-
           `${bookTable}.title as bookTitle`,
-          `${bookTable}.isbn as bookIsbn`,
-          `${bookTable}.publisher as bookPublisher`,
-          `${bookTable}.releaseYear as bookReleaseYear`,
-          `${bookTable}.language as bookLanguage`,
-          `${bookTable}.translator as bookTranslator`,
-          `${bookTable}.format as bookFormat`,
-          `${bookTable}.pages as bookPages`,
-          `${bookTable}.isApproved as bookIsApproved`,
-          `${bookTable}.imageUrl as bookImageUrl`,
-          `${bookTable}.createdAt as bookCreatedAt`,
-
-          this.databaseClient.raw(`array_agg("authors"."id") as "bookAuthorIds"`),
-          this.databaseClient.raw(`array_agg("authors"."name") as "bookAuthorNames"`),
-          this.databaseClient.raw(`array_agg("authors"."isApproved") as "bookAuthorApprovals"`),
-          this.databaseClient.raw(`array_agg("authors"."createdAt") as "bookAuthorCreatedAtDates"`),
         ])
-        .leftJoin(bookAuthorTable, (join) => {
-          join.on(`${bookAuthorTable}.bookId`, '=', `${bookChangeRequestTable}.bookId`);
-        })
-        .leftJoin(authorTable, (join) => {
-          join.on(`${authorTable}.id`, '=', `${bookAuthorTable}.authorId`);
-        })
         .leftJoin(bookTable, (join) => {
           join.on(`${bookTable}.id`, `=`, `${bookChangeRequestTable}.bookId`);
         })
         .where((builder) => {
           builder.where(`${bookChangeRequestTable}.id`, id);
-        })
-        .groupBy([`${bookChangeRequestTable}.id`, `${bookTable}.id`]);
+        });
     } catch (error) {
       throw new RepositoryError({
         entity: 'BookChangeRequest',
@@ -168,23 +145,7 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
           `${bookChangeRequestTable}.bookId`,
           `${bookChangeRequestTable}.userEmail`,
           `${bookChangeRequestTable}.createdAt`,
-
           `${bookTable}.title as bookTitle`,
-          `${bookTable}.isbn as bookIsbn`,
-          `${bookTable}.publisher as bookPublisher`,
-          `${bookTable}.releaseYear as bookReleaseYear`,
-          `${bookTable}.language as bookLanguage`,
-          `${bookTable}.translator as bookTranslator`,
-          `${bookTable}.format as bookFormat`,
-          `${bookTable}.pages as bookPages`,
-          `${bookTable}.isApproved as bookIsApproved`,
-          `${bookTable}.imageUrl as bookImageUrl`,
-          `${bookTable}.createdAt as bookCreatedAt`,
-
-          this.databaseClient.raw(`array_agg("authors"."id") as "bookAuthorIds"`),
-          this.databaseClient.raw(`array_agg("authors"."name") as "bookAuthorNames"`),
-          this.databaseClient.raw(`array_agg("authors"."isApproved") as "bookAuthorApprovals"`),
-          this.databaseClient.raw(`array_agg("authors"."createdAt") as "bookAuthorCreatedAtDates"`),
         ])
         .leftJoin(bookAuthorTable, (join) => {
           join.on(`${bookAuthorTable}.bookId`, '=', `${bookChangeRequestTable}.bookId`);
@@ -204,7 +165,6 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
             builder.where(`${bookChangeRequestTable}.userEmail`, userEmail);
           }
         })
-        .groupBy([`${bookChangeRequestTable}.id`, `${bookTable}.id`])
         .limit(pageSize)
         .offset(pageSize * (page - 1));
     } catch (error) {

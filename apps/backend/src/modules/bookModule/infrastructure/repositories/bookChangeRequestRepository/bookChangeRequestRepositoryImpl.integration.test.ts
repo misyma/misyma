@@ -104,21 +104,7 @@ describe('BookChangeRequestRepositoryImpl', () => {
         userEmail: createdBookChangeRequest.getUserEmail(),
         createdAt: createdBookChangeRequest.getCreatedAt(),
         authorIds: [authorId],
-        book: {
-          id: book.id,
-          title: book.title,
-          isbn: book.isbn,
-          publisher: book.publisher,
-          releaseYear: book.releaseYear,
-          language: book.language,
-          translator: book.translator,
-          format: book.format,
-          pages: book.pages,
-          imageUrl: book.imageUrl,
-          createdAt: book.createdAt,
-          isApproved: book.isApproved,
-          authors: [],
-        },
+        bookTitle: book.title,
       });
 
       expect(foundBookChangeRequest).toEqual({
@@ -174,21 +160,7 @@ describe('BookChangeRequestRepositoryImpl', () => {
         bookId: foundBookChangeRequest?.getBookId(),
         userEmail: foundBookChangeRequest?.getUserEmail(),
         createdAt: foundBookChangeRequest?.getCreatedAt(),
-        book: {
-          id: book.id,
-          title: book.title,
-          isbn: book.isbn,
-          publisher: book.publisher,
-          releaseYear: book.releaseYear,
-          language: book.language,
-          translator: book.translator,
-          format: book.format,
-          pages: book.pages,
-          imageUrl: book.imageUrl,
-          createdAt: book.createdAt,
-          isApproved: book.isApproved,
-          authors: [],
-        },
+        bookTitle: book.title,
       });
     });
 

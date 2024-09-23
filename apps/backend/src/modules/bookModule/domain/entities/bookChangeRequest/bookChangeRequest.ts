@@ -1,7 +1,5 @@
 import { type Language, type BookFormat } from '@common/contracts';
 
-import { type BookDraft } from '../book/book.js';
-
 export interface BookChangeRequestDraft {
   readonly id: string;
   readonly title?: string | undefined;
@@ -16,7 +14,7 @@ export interface BookChangeRequestDraft {
   readonly authorIds?: string[] | undefined;
   readonly userEmail: string;
   readonly bookId: string;
-  readonly book?: BookDraft | undefined;
+  readonly bookTitle?: string | undefined;
   readonly createdAt: Date;
 }
 
@@ -33,7 +31,7 @@ export interface BookChangeRequestState {
   readonly authorIds?: string[] | undefined;
   readonly userEmail: string;
   readonly bookId: string;
-  readonly book?: BookDraft | undefined;
+  readonly bookTitle?: string | undefined;
   readonly createdAt: Date;
 }
 
@@ -57,7 +55,7 @@ export class BookChangeRequest {
       userEmail,
       createdAt,
       authorIds,
-      book,
+      bookTitle,
     } = draft;
 
     this.id = id;
@@ -78,10 +76,10 @@ export class BookChangeRequest {
       authorIds,
     };
 
-    if (book) {
+    if (bookTitle) {
       this.state = {
         ...this.state,
-        book,
+        bookTitle,
       };
     }
   }
@@ -142,8 +140,8 @@ export class BookChangeRequest {
     return this.state.bookId;
   }
 
-  public getBook(): BookDraft | undefined {
-    return this.state.book;
+  public getBookTitle(): string | undefined {
+    return this.state.bookTitle;
   }
 
   public getCreatedAt(): Date {
