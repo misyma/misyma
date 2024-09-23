@@ -1,14 +1,22 @@
 import { FC, ReactNode, useState } from 'react';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useSelector } from 'react-redux';
+import { useQueryClient } from '@tanstack/react-query';
+import { DialogTitle } from '@radix-ui/react-dialog';
+import { userStateSelectors } from '../../core/store/states/userState/userStateSlice';
+import { useToast } from '../../common/components/toast/use-toast';
+import { useCreateAuthorMutation } from '../api/admin/mutations/createAuthorMutation/createAuthorMutation';
+import { AuthorsApiQueryKeys } from '../api/user/queries/authorsApiQueryKeys';
+import { ApiError } from '../../common/errors/apiError';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTrigger,
-} from '../../../common/components/dialog/dialog';
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+} from '../../common/components/dialog/dialog';
 import {
   Form,
   FormControl,
@@ -16,18 +24,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../../../common/components/form/form';
-import { Input } from '../../../common/components/input/input';
-import { Button } from '../../../common/components/button/button';
-import { useCreateAuthorMutation } from '../../api/admin/mutations/createAuthorMutation/createAuthorMutation';
-import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
-import { ApiError } from '../../../common/errors/apiError';
-import { useQueryClient } from '@tanstack/react-query';
-import { AuthorsApiQueryKeys } from '../../api/user/queries/authorsApiQueryKeys';
-import { useToast } from '../../../common/components/toast/use-toast';
-import { DialogTitle } from '@radix-ui/react-dialog';
-import { AuthorFieldTooltip } from '../authorFieldTooltip/authorFieldTooltip';
+} from '../../common/components/form/form';
+import { AuthorFieldTooltip } from './authorFieldTooltip';
+import { Input } from '../../common/components/input/input';
+import { Button } from '../../common/components/button/button';
 
 interface Props {
   className?: string;
@@ -118,17 +118,24 @@ export const CreateAuthorModal: FC<Props> = ({ trigger, onMutated }: Props) => {
     >
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent
+        aria-describedby="Author creation dialog"
         style={{
           borderRadius: '40px',
         }}
         className="max-w-xl py-16"
         omitCloseButton={true}
       >
+        <DialogDescription className="hidden">
+          Author creation dialog
+        </DialogDescription>
         <DialogTitle className="hidden">Stwórz autora</DialogTitle>
-        <DialogHeader className="font-semibold text-center flex justify-center items-center">
+        <DialogHeader
+          aria-label="Create author modal header"
+          className="font-semibold text-center flex justify-center items-center"
+        >
           Stwórz autora
         </DialogHeader>
-        <DialogDescription className="flex flex-col gap-4 justify-center items-center">
+        <div className="flex items-center justify-center">
           <p className={error ? 'text-red-500' : 'hidden'}>{error}</p>
           <Form {...form}>
             <form
@@ -141,7 +148,7 @@ export const CreateAuthorModal: FC<Props> = ({ trigger, onMutated }: Props) => {
                   <FormItem>
                     <div className="flex gap-2 items-center pb-1">
                       <FormLabel>Imię i nazwisko</FormLabel>
-                      <AuthorFieldTooltip side='bottom' />
+                      <AuthorFieldTooltip side="bottom" />
                     </div>
                     <FormControl>
                       <Input min={1} max={128} type="text" {...field} />
@@ -155,7 +162,7 @@ export const CreateAuthorModal: FC<Props> = ({ trigger, onMutated }: Props) => {
               </Button>
             </form>
           </Form>
-        </DialogDescription>
+        </div>
       </DialogContent>
     </Dialog>
   );

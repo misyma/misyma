@@ -35,7 +35,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { createAuthorDraftSchema } from '../../../author/schemas/createAuthorDraftSchema';
-import { AuthorFieldTooltip } from '../../../author/components/authorFieldTooltip/authorFieldTooltip';
+import { AuthorFieldTooltip } from '../../../author/components/authorFieldTooltip';
 
 interface AuthorSearchSelectorProps {
   onSelect: (authorId: string, authorName: string) => void;

@@ -4,17 +4,17 @@ import {
   DialogContent,
   DialogHeader,
   DialogTrigger,
-} from '../../../common/components/dialog/dialog';
+} from '../../common/components/dialog/dialog';
 import { HiTrash } from 'react-icons/hi';
-import { cn } from '../../../common/lib/utils';
+import { cn } from '../../common/lib/utils';
 import { useQueryClient } from '@tanstack/react-query';
-import { ApiError } from '../../../common/errors/apiError';
-import { useDeleteAuthorMutation } from '../../api/admin/mutations/deleteAuthorMutation/deleteAuthorMutation';
+import { ApiError } from '../../common/errors/apiError';
+import { useDeleteAuthorMutation } from '../api/admin/mutations/deleteAuthorMutation/deleteAuthorMutation';
 import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
-import { AuthorsApiQueryKeys } from '../../api/user/queries/authorsApiQueryKeys';
-import { Button } from '../../../common/components/button/button';
-import { useToast } from '../../../common/components/toast/use-toast';
+import { userStateSelectors } from '../../core/store/states/userState/userStateSlice';
+import { AuthorsApiQueryKeys } from '../api/user/queries/authorsApiQueryKeys';
+import { Button } from '../../common/components/button/button';
+import { useToast } from '../../common/components/toast/use-toast';
 
 interface Props {
   authorId: string;

@@ -30,7 +30,7 @@ import { createAuthorDraftSchema } from '../../../../author/schemas/createAuthor
 import { AuthorSearchSelector } from '../../../../auth/components/authorSearchSelector/authorSearchSelector';
 import { useFindAuthorsQuery } from '../../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
 import { useBookDetailsChangeRequestContext } from '../../../../book/context/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
-import { AuthorFieldTooltip } from '../../../../author/components/authorFieldTooltip/authorFieldTooltip';
+import { AuthorFieldTooltip } from '../../../../author/components/authorFieldTooltip';
 
 const stepOneSchema = z.object({
   isbn: isbnSchema.optional().or(z.literal('')),

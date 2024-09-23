@@ -59,7 +59,7 @@ import {
   useBreadcrumbKeysDispatch,
 } from '../../../../../modules/common/contexts/breadcrumbKeysContext';
 import { createAuthorDraftSchema } from '../../../../../modules/author/schemas/createAuthorDraftSchema';
-import { AuthorFieldTooltip } from '../../../../../modules/author/components/authorFieldTooltip/authorFieldTooltip';
+import { AuthorFieldTooltip } from '../../../../../modules/author/components/authorFieldTooltip';
 
 type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
