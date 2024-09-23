@@ -95,7 +95,7 @@ export class CreateBookChangeRequestCommandHandlerImpl implements CreateBookChan
     const bookChangeRequest = await this.bookChangeRequestRepository.saveBookChangeRequest({
       bookChangeRequest: {
         bookId,
-        userId,
+        userEmail: user.getEmail(),
         createdAt: currentDate,
         format,
         language,
@@ -113,7 +113,7 @@ export class CreateBookChangeRequestCommandHandlerImpl implements CreateBookChan
     this.loggerService.debug({
       message: 'BookChangeRequest created.',
       bookId,
-      userId,
+      userEmail: user.getEmail(),
       bookChangeRequestId: bookChangeRequest.getId(),
     });
 

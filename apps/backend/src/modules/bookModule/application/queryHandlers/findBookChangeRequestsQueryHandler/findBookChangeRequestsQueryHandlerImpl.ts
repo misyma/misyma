@@ -3,13 +3,18 @@ import {
   type FindBookChangeRequestsQueryHandler,
   type FindBookChangeRequestsQueryHandlerResult,
 } from './findBookChangeRequestsQueryHandler.js';
+import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
+import { type UserRepository } from '../../../../userModule/domain/repositories/userRepository/userRepository.js';
 import {
   type FindBookChangeRequestsPayload,
   type BookChangeRequestRepository,
 } from '../../../domain/repositories/bookChangeRequestRepository/bookChangeRequestRepository.js';
 
 export class FindBookChangeRequestsQueryHandlerImpl implements FindBookChangeRequestsQueryHandler {
-  public constructor(private readonly bookChangeRequestRepository: BookChangeRequestRepository) {}
+  public constructor(
+    private readonly bookChangeRequestRepository: BookChangeRequestRepository,
+    private readonly userRepository: UserRepository,
+  ) {}
 
   public async execute(
     payload: FindBookChangeRequestsQueryHandlerPayload,
@@ -22,9 +27,18 @@ export class FindBookChangeRequestsQueryHandlerImpl implements FindBookChangeReq
     };
 
     if (userId) {
+      const user = await this.userRepository.findUser({ id: userId });
+
+      if (!user) {
+        throw new ResourceNotFoundError({
+          resource: 'User',
+          id: userId,
+        });
+      }
+
       findBookChangeRequestsPayload = {
         ...findBookChangeRequestsPayload,
-        userId,
+        userEmail: user.getEmail(),
       };
     }
 

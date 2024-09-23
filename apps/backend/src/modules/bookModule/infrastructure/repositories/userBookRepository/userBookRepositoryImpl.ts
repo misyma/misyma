@@ -450,7 +450,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       });
     }
 
-    return this.userBookMapper.mapRawWithJoinsToDomain(rawEntities) as UserBook[];
+    return this.userBookMapper.mapRawWithJoinsToDomain(rawEntities);
   }
 
   public async findUserBooksByUser(payload: FindUserBooksByUserPayload): Promise<UserBook[]> {
@@ -552,7 +552,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       });
     }
 
-    return this.userBookMapper.mapRawWithJoinsToDomain(rawEntities) as UserBook[];
+    return this.userBookMapper.mapRawWithJoinsToDomain(rawEntities);
   }
 
   public async deleteUserBooks(payload: DeleteUserBooksPayload): Promise<void> {

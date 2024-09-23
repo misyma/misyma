@@ -2,36 +2,91 @@ import { beforeEach, expect, describe, it } from 'vitest';
 
 import { BookChangeRequestMapperImpl } from './bookChangeRequestMapperImpl.js';
 import { BookChangeRequestTestFactory } from '../../../../tests/factories/bookChangeRequestTestFactory/bookChangeRequestTestFactory.js';
+import { BookTestFactory } from '../../../../tests/factories/bookTestFactory/bookTestFactory.js';
 
 describe('BookChangeRequestMapperImpl', () => {
   let mapper: BookChangeRequestMapperImpl;
 
-  const bookTestFactory = new BookChangeRequestTestFactory();
+  const bookTestFactory = new BookTestFactory();
+
+  const bookChangeRequestTestFactory = new BookChangeRequestTestFactory();
 
   beforeEach(async () => {
     mapper = new BookChangeRequestMapperImpl();
   });
 
-  it('maps from book raw entity to domain book', async () => {
-    const rawEntity = bookTestFactory.createRaw();
+  it('maps from book change request raw entity to domain book change request', async () => {
+    const bookRawEntity = bookTestFactory.createRaw();
 
-    const entity = mapper.mapToDomain(rawEntity);
+    const bookChangeRequestRawEntity = bookChangeRequestTestFactory.createRaw();
 
-    expect(entity).toEqual({
-      id: rawEntity.id,
+    const bookChangeRequests = mapper.mapRawWithJoinsToDomain([
+      {
+        id: bookChangeRequestRawEntity.id,
+        title: bookChangeRequestRawEntity.title,
+        isbn: bookChangeRequestRawEntity.isbn,
+        publisher: bookChangeRequestRawEntity.publisher,
+        releaseYear: bookChangeRequestRawEntity.releaseYear,
+        language: bookChangeRequestRawEntity.language,
+        translator: bookChangeRequestRawEntity.translator,
+        format: bookChangeRequestRawEntity.format,
+        pages: bookChangeRequestRawEntity.pages,
+        imageUrl: bookChangeRequestRawEntity.imageUrl,
+        bookId: bookChangeRequestRawEntity.bookId,
+        userEmail: bookChangeRequestRawEntity.userEmail,
+        createdAt: bookChangeRequestRawEntity.createdAt,
+        authorIds: bookChangeRequestRawEntity.authorIds,
+
+        bookTitle: bookRawEntity.title,
+        bookIsbn: bookRawEntity.isbn as string,
+        bookPublisher: bookRawEntity.publisher as string,
+        bookReleaseYear: bookRawEntity.releaseYear as number,
+        bookLanguage: bookRawEntity.language,
+        bookTranslator: bookRawEntity.translator as string,
+        bookFormat: bookRawEntity.format,
+        bookPages: bookRawEntity.pages as number,
+        bookIsApproved: bookRawEntity.isApproved,
+        bookImageUrl: bookRawEntity.imageUrl as string,
+        bookCreatedAt: bookRawEntity.createdAt,
+        bookAuthorIds: [],
+        bookAuthorNames: [],
+        bookAuthorApprovals: [],
+        bookAuthorCreatedAtDates: [],
+      },
+    ]);
+
+    expect(bookChangeRequests[0]).toEqual({
+      id: bookChangeRequestRawEntity.id,
       state: {
-        title: rawEntity.title,
-        isbn: rawEntity.isbn,
-        publisher: rawEntity.publisher,
-        releaseYear: rawEntity.releaseYear,
-        language: rawEntity.language,
-        translator: rawEntity.translator,
-        format: rawEntity.format,
-        pages: rawEntity.pages,
-        imageUrl: rawEntity.imageUrl,
-        bookId: rawEntity.bookId,
-        userId: rawEntity.userId,
-        createdAt: rawEntity.createdAt,
+        title: bookChangeRequestRawEntity.title,
+        isbn: bookChangeRequestRawEntity.isbn,
+        publisher: bookChangeRequestRawEntity.publisher,
+        releaseYear: bookChangeRequestRawEntity.releaseYear,
+        language: bookChangeRequestRawEntity.language,
+        translator: bookChangeRequestRawEntity.translator,
+        format: bookChangeRequestRawEntity.format,
+        pages: bookChangeRequestRawEntity.pages,
+        imageUrl: bookChangeRequestRawEntity.imageUrl,
+        bookId: bookChangeRequestRawEntity.bookId,
+        userEmail: bookChangeRequestRawEntity.userEmail,
+        createdAt: bookChangeRequestRawEntity.createdAt,
+        authorIds: bookChangeRequestRawEntity.authorIds,
+
+        book: {
+          id: bookChangeRequestRawEntity.bookId,
+          title: bookRawEntity.title,
+          isbn: bookRawEntity.isbn,
+          publisher: bookRawEntity.publisher,
+          releaseYear: bookRawEntity.releaseYear,
+          language: bookRawEntity.language,
+          translator: bookRawEntity.translator,
+          format: bookRawEntity.format,
+          pages: bookRawEntity.pages,
+          isApproved: bookRawEntity.isApproved,
+          imageUrl: bookRawEntity.imageUrl,
+          createdAt: bookRawEntity.createdAt,
+          authors: [],
+        },
       },
     });
   });

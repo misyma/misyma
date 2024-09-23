@@ -63,7 +63,7 @@ describe('DeleteBookChangeRequestCommandHandler', () => {
 
     const bookChangeRequest = await bookChangeRequestTestUtils.createAndPersist({
       input: {
-        userId: user.id,
+        userEmail: user.email,
         bookId: book.id,
       },
     });

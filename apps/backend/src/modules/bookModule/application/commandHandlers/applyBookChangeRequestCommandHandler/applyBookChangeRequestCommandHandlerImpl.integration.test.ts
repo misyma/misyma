@@ -85,7 +85,7 @@ describe('ApplyBookChangeRequestCommandHandlerImpl', () => {
     const bookChangeRequest = await bookChangeRequestTestUtils.createAndPersist({
       input: {
         bookId: book.id,
-        userId: user.id,
+        userEmail: user.email,
         authorIds: author.id,
       },
     });
@@ -133,7 +133,7 @@ describe('ApplyBookChangeRequestCommandHandlerImpl', () => {
     const bookChangeRequest = await bookChangeRequestTestUtils.createAndPersist({
       input: {
         bookId: book.id,
-        userId: user.id,
+        userEmail: user.email,
         authorIds: authorIds.join(','),
       },
     });
