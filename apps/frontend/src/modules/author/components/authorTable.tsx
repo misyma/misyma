@@ -19,9 +19,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '../../../common/components/table/table';
-import { Input } from '../../../common/components/input/input';
-import { Paginator } from '../../../common/components/paginator/paginator';
+} from '../../common/components/table/table';
+import { Input } from '../../common/components/input/input';
+import { Paginator } from '../../common/components/paginator/paginator';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

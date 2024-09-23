@@ -2,17 +2,17 @@ import { CellContext, type ColumnDef } from '@tanstack/react-table';
 import { Author } from '@common/contracts';
 import { HiCheckCircle } from 'react-icons/hi';
 import { HiXCircle } from 'react-icons/hi';
-import { DeleteAuthorModal } from '../deleteAuthorModal/deleteAuthorModal';
-import { UpdateAuthorModal } from '../updateAuthorModal/updateAuthorModal';
-import { TableHeader } from '../../../common/components/tableHeader/tableHeader';
+import { DeleteAuthorModal } from './deleteAuthorModal';
+import { UpdateAuthorModal } from './updateAuthorModal';
+import { TableHeader } from '../../common/components/tableHeader/tableHeader';
 import { HiBookOpen, HiPencil } from 'react-icons/hi2';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '../../../common/components/tooltip/tooltip';
-import { Button } from '../../../common/components/button/button';
+} from '../../common/components/tooltip/tooltip';
+import { Button } from '../../common/components/button/button';
 import { FC } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 

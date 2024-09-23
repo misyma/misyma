@@ -4,7 +4,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '../../../common/components/tooltip/tooltip';
+} from '../../common/components/tooltip/tooltip';
 import { FC } from 'react';
 
 interface AuthorFieldTooltipProps {
@@ -18,11 +18,15 @@ export const AuthorFieldTooltip: FC<AuthorFieldTooltipProps> = ({
       <Tooltip>
         <TooltipTrigger asChild>
           <div>
-            <HiOutlineInformationCircle className="h-5 w-5" />
+            <HiOutlineInformationCircle
+              aria-label="author information tooltip trigger"
+              data-testid="authorInformationTooltipTrigger"
+              className="h-5 w-5"
+            />
           </div>
         </TooltipTrigger>
         <TooltipContent side={side}>
-          <p>
+          <p aria-label="author information tooltip content">
             Imię i nazwisko autora musi mieć minimum 3 znaki
             <br></br> i zawierać spację oddzielającą imię i nazwisko.{' '}
           </p>

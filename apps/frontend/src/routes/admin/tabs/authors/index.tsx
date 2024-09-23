@@ -1,10 +1,10 @@
 import { Link, createFileRoute } from '@tanstack/react-router';
 import { FC, useMemo, useState } from 'react';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
-import { AuthorTable } from '../../../../modules/author/components/authorTable/authorTable';
-import { columns } from '../../../../modules/author/components/authorTable/authorTableColumns';
+import { AuthorTable } from '../../../../modules/author/components/authorTable';
+import { columns } from '../../../../modules/author/components/authorTableColumns';
 import { useFindAuthorsQuery } from '../../../../modules/author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
-import { CreateAuthorModal } from '../../../../modules/author/components/createAuthorModal/createAuthorModal';
+import { CreateAuthorModal } from '../../../../modules/author/components/createAuthorModal';
 import { Button } from '../../../../modules/common/components/button/button';
 import { RequireAdmin } from '../../../../modules/core/components/requireAdmin/requireAdmin';
 
