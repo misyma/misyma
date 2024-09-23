@@ -2,7 +2,9 @@ import { FC, useState } from 'react';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
+  DialogTitle,
   DialogTrigger,
 } from '../../common/components/dialog/dialog';
 import { HiTrash } from 'react-icons/hi';
@@ -15,7 +17,7 @@ import { userStateSelectors } from '../../core/store/states/userState/userStateS
 import { AuthorsApiQueryKeys } from '../api/user/queries/authorsApiQueryKeys';
 import { Button } from '../../common/components/button/button';
 import { useToast } from '../../common/components/toast/use-toast';
-
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 interface Props {
   authorId: string;
   authorName: string;
@@ -28,13 +30,10 @@ export const DeleteAuthorModal: FC<Props> = ({
   className,
 }: Props) => {
   const queryClient = useQueryClient();
-
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const { toast } = useToast();
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
-
   const [error, setError] = useState('');
 
   const { mutateAsync: deleteAuthor } = useDeleteAuthorMutation({});
@@ -80,11 +79,11 @@ export const DeleteAuthorModal: FC<Props> = ({
       }}
     >
       <DialogTrigger asChild>
-        <div className="cursor-pointer">
+        <Button size="custom" variant="none">
           <HiTrash
             className={cn('text-primary h-8 w-8 cursor-pointer', className)}
           />
-        </div>
+        </Button>
       </DialogTrigger>
       <DialogContent
         style={{
@@ -94,9 +93,17 @@ export const DeleteAuthorModal: FC<Props> = ({
         omitCloseButton={true}
       >
         <div className="flex flex-col items-center gap-8">
+          <VisuallyHidden>
+            <DialogTitle>Usuń autora</DialogTitle>
+          </VisuallyHidden>
           <DialogHeader className="font-bold">
             Usunięcia autora jest nieodwracalne!
           </DialogHeader>
+          <VisuallyHidden>
+            <DialogDescription>
+              This dialog allows you to delete an author.
+            </DialogDescription>
+          </VisuallyHidden>
           <div>Czy jesteś tego pewien?</div>
           <div className="flex w-full pt-4 gap-4 justify-center">
             <Button className="w-40" onClick={() => setIsOpen(false)}>

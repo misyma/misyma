@@ -6,6 +6,10 @@ import { BreadcrumbKeysProvider } from '../modules/common/contexts/breadcrumbKey
 import { ReactNode, useEffect } from 'react';
 import { useStoreDispatch } from '../modules/core/store/hooks/useStoreDispatch';
 import { userStateActions } from '../modules/core/store/states/userState/userStateSlice';
+import {
+  ToastProvider,
+} from '../modules/common/components/toast/toast';
+import { Toaster } from '../modules/common/components/toast/toaster';
 
 const AllTheProviders = ({ children }: { children: ReactNode }) => {
   return (
@@ -13,7 +17,12 @@ const AllTheProviders = ({ children }: { children: ReactNode }) => {
       <SuplementedDummyData>
         <QueryClientProvider>
           <SearchCreateBookProvider>
-            <BreadcrumbKeysProvider>{children}</BreadcrumbKeysProvider>
+            <BreadcrumbKeysProvider>
+              <ToastProvider>
+                {children}
+                <Toaster />
+              </ToastProvider>
+            </BreadcrumbKeysProvider>
           </SearchCreateBookProvider>
         </QueryClientProvider>
       </SuplementedDummyData>
