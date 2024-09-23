@@ -10,6 +10,7 @@
     "lint": "eslint . --ext ts,tsx --cache --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "npm run lint -- --fix",
     "preview": "vite preview",
+    "test:unit": "npm run test",
     "test": "vitest .test.tsx",
     "test:unit:run": "npm run test:unit -- --run",
     "test:integration": "vitest .integration.test.tsx --pool forks --poolOptions.forks.singleFork",
