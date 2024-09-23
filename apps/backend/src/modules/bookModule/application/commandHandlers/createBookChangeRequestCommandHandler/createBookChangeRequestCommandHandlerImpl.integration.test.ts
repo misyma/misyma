@@ -104,30 +104,7 @@ describe('CreateBookChangeRequestCommandHandler', () => {
       pages: createdBookChangeRequest.getPages(),
       imageUrl: createdBookChangeRequest.getImageUrl(),
       authorIds: [author2.id],
-      book: {
-        id: book.id,
-        title: book.title,
-        isbn: book.isbn,
-        publisher: book.publisher,
-        releaseYear: book.releaseYear,
-        language: book.language,
-        translator: book.translator,
-        format: book.format,
-        pages: book.pages,
-        imageUrl: book.imageUrl,
-        createdAt: book.createdAt,
-        isApproved: book.isApproved,
-        authors: [
-          {
-            id: author1.id,
-            state: {
-              name: author1.name,
-              createdAt: author1.createdAt,
-              isApproved: author1.isApproved,
-            },
-          },
-        ],
-      },
+      bookTitle: book.title,
     });
 
     const foundBookChangeRequest = await bookChangeRequestTestUtils.findById({ id: bookChangeRequest.getId() });
