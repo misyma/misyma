@@ -61,7 +61,7 @@ const ActionsCell: FC<CellContext<Author, unknown>> = ({ row }) => {
   );
 };
 
-export const columns: ColumnDef<Author>[] = [
+export const authorTableColumns: ColumnDef<Author>[] = [
   {
     header: () => <TableHeader label="Imię i nazwisko" />,
     accessorKey: 'name',
