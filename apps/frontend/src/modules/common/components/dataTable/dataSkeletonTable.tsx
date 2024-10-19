@@ -20,48 +20,67 @@ import {
   TableHeader,
   TableRow,
 } from '../table/table';
+import { Skeleton } from '../skeleton/skeleton';
 import { Paginator } from '../paginator/paginator';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
-  data: TData[];
   pageIndex?: number;
-  pageSize?: number;
+  pageSize: number;
   pageCount?: number;
-  onSetPage: (val: number) => Promise<void> | void;
   filterLabel?: string;
   includeColumnsSelector?: boolean;
+  onSetPage: (val: number) => Promise<void> | void;
+  skeletonHeight: number;
   PaginationSlot?: ReactNode;
 }
 
-export function DataTable<TData extends object, TValue>({
+export function DataSkeletonTable<TData extends object, TValue>({
   columns,
-  data,
   pageIndex,
-  pageSize,
+  pageSize = 10,
   pageCount,
-  onSetPage,
   PaginationSlot,
+  skeletonHeight,
+  onSetPage,
 }: DataTableProps<TData, TValue>): JSX.Element {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+
   const state: Partial<TableState> = {
     sorting,
     columnFilters,
     columnVisibility,
   };
 
-  if (pageIndex && pageSize) {
+  if (pageIndex !== undefined && pageSize) {
     state.pagination = {
       pageIndex,
       pageSize,
     };
   }
 
-  const rowCount = useMemo(() => {
-    return (pageCount ?? 0) * (pageSize ?? 0);
-  }, [pageCount, pageSize]);
+  const data = useMemo(
+    () =>
+      Array.from({ length: pageSize }).map(() =>
+        columns.reduce(
+          (acc, column) => {
+            if ('accessorKey' in column) {
+              acc[column.accessorKey as string] = '';
+            }
+            return acc;
+          },
+          {} as Record<string, string>
+        )
+      ) as TData[],
+    [columns, pageSize]
+  );
+
+  const rowCount = useMemo(
+    () => (pageCount ?? 0) * pageSize,
+    [pageCount, pageSize]
+  );
 
   const table = useReactTable({
     data,
@@ -78,13 +97,6 @@ export function DataTable<TData extends object, TValue>({
       ...state,
     },
     rowCount,
-    getRowId: (originalRow, index) => {
-      if ('id' in originalRow && typeof originalRow.id === 'string') {
-        return originalRow.id;
-      }
-
-      return index.toString();
-    },
   });
 
   return (
@@ -94,54 +106,37 @@ export function DataTable<TData extends object, TValue>({
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead
-                      style={{
-                        width: `${header.getSize()}px`,
-                      }}
-                      className="p-4 m-0 h-14"
-                      key={header.id}
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
+                {headerGroup.headers.map((header) => (
+                  <TableHead
+                    style={{
+                      width: `${header.getSize()}px`,
+                    }}
+                    className="p-4 m-0 h-14"
+                    key={header.id}
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
+            {data.map((_, index) => (
+              <TableRow key={index}>
+                {columns.map((column, cellIndex) => (
+                  <TableCell key={cellIndex}>
+                    <Skeleton
+                      className={`w-${column.size} h-${skeletonHeight}`}
+                    />
+                  </TableCell>
+                ))}
               </TableRow>
-            )}
+            ))}
           </TableBody>
         </Table>
       </div>

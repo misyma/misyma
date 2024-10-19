@@ -6,7 +6,7 @@ import { Button } from '../../../../modules/common/components/button/button';
 import { RequireAdmin } from '../../../../modules/core/components/requireAdmin/requireAdmin';
 import { AdminTabLayout } from '../../../../modules/common/layouts/adminTabLayout';
 import { AdminTabs } from '../../../../modules/admin/components/adminTabs';
-import { AdminAuthorsTable } from '../../../../modules/admin/components/adminAuthorsTable';
+import { AuthorsTable } from '../../../../modules/admin/components/authorsTable';
 
 export const AuthorsAdminPage: FC = () => {
   const [page, setPage] = useState(1);
@@ -16,7 +16,7 @@ export const AuthorsAdminPage: FC = () => {
       <AdminTabLayout
         TabsSlot={<AdminTabs currentlySelected="authors" />}
         TableSlot={
-          <AdminAuthorsTable
+          <AuthorsTable
             page={page}
             setPage={setPage}
           />
