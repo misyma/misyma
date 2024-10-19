@@ -8,10 +8,10 @@ import {
   getSortedRowModel,
   type ColumnFiltersState,
   type VisibilityState,
+  getFilteredRowModel,
   type TableState,
 } from '@tanstack/react-table';
-import { useMemo, useState } from 'react';
-
+import { ReactNode, useMemo, useState } from 'react';
 import {
   Table,
   TableBody,
@@ -19,44 +19,45 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '../../common/components/table/table';
-import { Input } from '../../common/components/input/input';
-import { Paginator } from '../../common/components/paginator/paginator';
+} from '../table/table';
+import { Paginator } from '../paginator/paginator';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  pageIndex: number;
-  pageSize: number;
-  pageCount: number;
-  itemsCount?: number;
+  pageIndex?: number;
+  pageSize?: number;
+  pageCount?: number;
   onSetPage: (val: number) => Promise<void> | void;
-  searchAuthorName: string | undefined;
-  setSearchAuthorName: (val: string) => void;
+  filterLabel?: string;
+  includeColumnsSelector?: boolean;
+  PaginationSlot?: ReactNode;
 }
 
-export function AuthorTable<TData, TValue>({
+export function DataTable<TData extends object, TValue>({
   columns,
   data,
   pageIndex,
   pageSize,
   pageCount,
   onSetPage,
-  searchAuthorName,
-  setSearchAuthorName,
-  itemsCount,
+  PaginationSlot,
 }: DataTableProps<TData, TValue>): JSX.Element {
   const [sorting, setSorting] = useState<SortingState>([]);
-
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-
   const state: Partial<TableState> = {
     sorting,
     columnFilters,
     columnVisibility,
   };
+
+  if (pageIndex && pageSize) {
+    state.pagination = {
+      pageIndex,
+      pageSize,
+    };
+  }
 
   const rowCount = useMemo(() => {
     return (pageCount ?? 0) * (pageSize ?? 0);
@@ -71,34 +72,23 @@ export function AuthorTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
+    getFilteredRowModel: getFilteredRowModel(),
     manualPagination: true,
-    manualFiltering: true,
     state: {
-      pagination: {
-        pageIndex,
-        pageSize,
-      },
       ...state,
     },
     rowCount,
+    getRowId: (originalRow, index) => {
+      if ('id' in originalRow && typeof originalRow.id === 'string') {
+        return originalRow.id;
+      }
+
+      return index.toString();
+    },
   });
-
-  const [currentPage, setCurrentPage] = useState<number>(1);
-
-  if (pageIndex !== currentPage - 1) {
-    setCurrentPage(pageIndex + 1);
-  }
 
   return (
     <div className="w-full md:max-w-screen-xl">
-      <div className="flex items-center py-2">
-        <Input
-          placeholder="Wyszukaj autora..."
-          value={searchAuthorName ?? ''}
-          onChange={(event) => setSearchAuthorName(event.target.value)}
-          className="max-w-sm"
-        />
-      </div>
       <div className="w-full min-h-[22rem]">
         <Table>
           <TableHeader>
@@ -110,6 +100,7 @@ export function AuthorTable<TData, TValue>({
                       style={{
                         width: `${header.getSize()}px`,
                       }}
+                      className="p-4 m-0 h-14"
                       key={header.id}
                     >
                       {header.isPlaceholder
@@ -145,26 +136,26 @@ export function AuthorTable<TData, TValue>({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center py-2"
+                  className="h-24 text-center"
                 >
-                  Brak wyników.
+                  No results.
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4 mr-4">
-        {table.getPageCount() > 1 && (
+      {PaginationSlot ?? (
+        <div className="flex items-center justify-end space-x-2 py-4 mr-4">
           <Paginator
             onPageChange={onSetPage}
             includeArrows={true}
-            pageIndex={pageIndex}
-            pagesCount={pageCount}
-            itemsCount={itemsCount}
+            pageIndex={pageIndex ?? 0}
+            pagesCount={pageCount ?? 0}
+            itemsCount={pageCount}
           />
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

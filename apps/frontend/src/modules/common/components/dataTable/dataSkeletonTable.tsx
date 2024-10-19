@@ -1,0 +1,156 @@
+import {
+  type ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+  getPaginationRowModel,
+  type SortingState,
+  getSortedRowModel,
+  type ColumnFiltersState,
+  type VisibilityState,
+  getFilteredRowModel,
+  type TableState,
+} from '@tanstack/react-table';
+import { ReactNode, useMemo, useState } from 'react';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '../table/table';
+import { Skeleton } from '../skeleton/skeleton';
+import { Paginator } from '../paginator/paginator';
+
+interface DataTableProps<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[];
+  pageIndex?: number;
+  pageSize: number;
+  pageCount?: number;
+  filterLabel?: string;
+  includeColumnsSelector?: boolean;
+  onSetPage: (val: number) => Promise<void> | void;
+  skeletonHeight: number;
+  PaginationSlot?: ReactNode;
+}
+
+export function DataSkeletonTable<TData extends object, TValue>({
+  columns,
+  pageIndex,
+  pageSize = 10,
+  pageCount,
+  PaginationSlot,
+  skeletonHeight,
+  onSetPage,
+}: DataTableProps<TData, TValue>): JSX.Element {
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+
+  const state: Partial<TableState> = {
+    sorting,
+    columnFilters,
+    columnVisibility,
+  };
+
+  if (pageIndex !== undefined && pageSize) {
+    state.pagination = {
+      pageIndex,
+      pageSize,
+    };
+  }
+
+  const data = useMemo(
+    () =>
+      Array.from({ length: pageSize }).map(() =>
+        columns.reduce(
+          (acc, column) => {
+            if ('accessorKey' in column) {
+              acc[column.accessorKey as string] = '';
+            }
+            return acc;
+          },
+          {} as Record<string, string>
+        )
+      ) as TData[],
+    [columns, pageSize]
+  );
+
+  const rowCount = useMemo(
+    () => (pageCount ?? 0) * pageSize,
+    [pageCount, pageSize]
+  );
+
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    onColumnVisibilityChange: setColumnVisibility,
+    getFilteredRowModel: getFilteredRowModel(),
+    manualPagination: true,
+    state: {
+      ...state,
+    },
+    rowCount,
+  });
+
+  return (
+    <div className="w-full md:max-w-screen-xl">
+      <div className="w-full min-h-[22rem]">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <TableHead
+                    style={{
+                      width: `${header.getSize()}px`,
+                    }}
+                    className="p-4 m-0 h-14"
+                    key={header.id}
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {data.map((_, index) => (
+              <TableRow key={index}>
+                {columns.map((column, cellIndex) => (
+                  <TableCell key={cellIndex}>
+                    <Skeleton
+                      className={`w-${column.size} h-${skeletonHeight}`}
+                    />
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+      {PaginationSlot ?? (
+        <div className="flex items-center justify-end space-x-2 py-4 mr-4">
+          <Paginator
+            onPageChange={onSetPage}
+            includeArrows={true}
+            pageIndex={pageIndex ?? 0}
+            pagesCount={pageCount ?? 0}
+            itemsCount={pageCount}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
