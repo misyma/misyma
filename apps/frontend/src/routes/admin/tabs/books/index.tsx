@@ -75,12 +75,10 @@ export const BooksAdminPage: FC = () => {
         columnsClassName="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-y-4 gap-x-4"
         tableContainerClassName={cn(
           TableSizing[isFilterVisible ? 'visible' : 'invisible'],
-          'flex flex-col justify-start px-0 col-span-4 w-full'
+          'flex flex-col justify-start col-span-4 w-full'
         )}
         tabsSlotClassName="flex justify-between gap-4 col-span-6"
-        tableWrapperClassName="px-0"
         additionalColumnClassName="flex items-center justify-end self-start gap-2 border-l w-full"
-        mainWrapperClassName="px-0"
       />
     </AuthenticatedLayout>
   );

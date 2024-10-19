@@ -50,7 +50,7 @@ export const AdminTabLayout: FC<AdminTabLayoutProps> = ({
         </div>
         <div
           className={cn(
-            'flex flex-col px-4',
+            'flex flex-col px-4 w-[100%] col-span-full',
             tableContainerClassName
           )}
         >
