@@ -8,11 +8,13 @@ import { type Config } from '../../../../../core/config.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type S3Service } from '../../../../../libs/s3/services/s3Service/s3Service.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
+import { type BookshelfRepository } from '../../../../bookshelfModule/domain/repositories/bookshelfRepository/bookshelfRepository.js';
 import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
 
 export class UploadUserBookImageCommandHandlerImpl implements UploadUserBookImageCommandHandler {
   public constructor(
     private readonly userBookRepository: UserBookRepository,
+    private readonly bookshelfRepository: BookshelfRepository,
     private readonly s3Service: S3Service,
     private readonly loggerService: LoggerService,
     private readonly config: Config,
@@ -22,7 +24,7 @@ export class UploadUserBookImageCommandHandlerImpl implements UploadUserBookImag
   public async execute(
     payload: UploadUserBookImageCommandHandlerPayload,
   ): Promise<UploadUserBookImageCommandHandlerResult> {
-    const { userBookId, contentType, data } = payload;
+    const { userId, userBookId, contentType, data } = payload;
 
     const existingUserBook = await this.userBookRepository.findUserBook({ id: userBookId });
 
@@ -30,6 +32,25 @@ export class UploadUserBookImageCommandHandlerImpl implements UploadUserBookImag
       throw new OperationNotValidError({
         reason: 'UserBook does not exist.',
         id: userBookId,
+      });
+    }
+
+    const existingBookshelf = await this.bookshelfRepository.findBookshelf({
+      where: { id: existingUserBook.getBookshelfId() },
+    });
+
+    if (!existingBookshelf) {
+      throw new OperationNotValidError({
+        reason: 'Bookshelf does not exist.',
+        id: existingUserBook.getBookshelfId(),
+      });
+    }
+
+    if (existingBookshelf.getUserId() !== userId) {
+      throw new OperationNotValidError({
+        reason: 'User does not own this UserBook.',
+        userId,
+        userBookId,
       });
     }
 

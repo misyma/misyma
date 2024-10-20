@@ -24,10 +24,11 @@ export class UpdateUserBookCommandHandlerImpl implements UpdateUserBookCommandHa
   ) {}
 
   public async execute(payload: UpdateUserBookPayload): Promise<UpdateUserBookResult> {
-    const { userBookId, bookshelfId, imageUrl, status, isFavorite, genreIds, collectionIds } = payload;
+    const { userId, userBookId, bookshelfId, imageUrl, status, isFavorite, genreIds, collectionIds } = payload;
 
     this.loggerService.debug({
       message: 'Updating UserBook...',
+      userId,
       userBookId,
       bookshelfId,
       imageUrl,
@@ -46,6 +47,25 @@ export class UpdateUserBookCommandHandlerImpl implements UpdateUserBookCommandHa
       });
     }
 
+    const currentBookshelf = await this.bookshelfRepository.findBookshelf({
+      where: { id: userBook.getBookshelfId() },
+    });
+
+    if (!currentBookshelf) {
+      throw new OperationNotValidError({
+        reason: 'Bookshelf does not exist.',
+        id: userBook.getBookshelfId(),
+      });
+    }
+
+    if (currentBookshelf.getUserId() !== userId) {
+      throw new OperationNotValidError({
+        reason: 'User does not own this UserBook.',
+        userId,
+        userBookId,
+      });
+    }
+
     if (bookshelfId) {
       const bookshelf = await this.bookshelfRepository.findBookshelf({ where: { id: bookshelfId } });
 
@@ -53,17 +73,6 @@ export class UpdateUserBookCommandHandlerImpl implements UpdateUserBookCommandHa
         throw new OperationNotValidError({
           reason: 'Bookshelf does not exist.',
           id: bookshelfId,
-        });
-      }
-
-      const currentBookshelf = await this.bookshelfRepository.findBookshelf({
-        where: { id: userBook.getBookshelfId() },
-      });
-
-      if (!currentBookshelf) {
-        throw new OperationNotValidError({
-          reason: 'Bookshelf does not exist.',
-          id: userBook.getBookshelfId(),
         });
       }
 

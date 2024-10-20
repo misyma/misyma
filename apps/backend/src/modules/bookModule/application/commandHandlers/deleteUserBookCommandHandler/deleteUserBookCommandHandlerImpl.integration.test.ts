@@ -1,9 +1,12 @@
 import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 
-import { type DeleteUserBooksCommandHandler } from './deleteUserBooksCommandHandler.js';
+import { type DeleteUserBookCommandHandler } from './deleteUserBookCommandHandler.js';
+import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { type TestUtils } from '../../../../../../tests/testUtils.js';
+import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
+import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
@@ -14,7 +17,7 @@ import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestU
 import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
 
 describe('DeleteUserBookCommandHandler', () => {
-  let deleteUserBookCommandHandler: DeleteUserBooksCommandHandler;
+  let deleteUserBookCommandHandler: DeleteUserBookCommandHandler;
 
   let databaseClient: DatabaseClient;
 
@@ -33,7 +36,7 @@ describe('DeleteUserBookCommandHandler', () => {
   beforeEach(async () => {
     const container = TestContainer.create();
 
-    deleteUserBookCommandHandler = container.get<DeleteUserBooksCommandHandler>(symbols.deleteUserBooksCommandHandler);
+    deleteUserBookCommandHandler = container.get<DeleteUserBookCommandHandler>(symbols.deleteUserBookCommandHandler);
 
     databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
 
@@ -82,10 +85,79 @@ describe('DeleteUserBookCommandHandler', () => {
       },
     });
 
-    await deleteUserBookCommandHandler.execute({ userBookIds: [userBook.id] });
+    await deleteUserBookCommandHandler.execute({
+      userId: user.id,
+      userBookId: userBook.id,
+    });
 
     const foundUserBook = await userBookTestUtils.findById({ id: userBook.id });
 
     expect(foundUserBook).toBeUndefined();
+  });
+
+  it('throws an error - when UserBook does not exist', async () => {
+    const user = await userTestUtils.createAndPersist();
+
+    const nonExistentUserBookId = Generator.uuid();
+
+    try {
+      await deleteUserBookCommandHandler.execute({
+        userId: user.id,
+        userBookId: nonExistentUserBookId,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(ResourceNotFoundError);
+
+      expect((error as ResourceNotFoundError).context).toMatchObject({
+        resource: 'UserBook',
+        id: nonExistentUserBookId,
+      });
+
+      return;
+    }
+
+    expect.fail();
+  });
+
+  it('throws an error - when UserBook does not belong to User', async () => {
+    const user = await userTestUtils.createAndPersist();
+
+    const anotherUser = await userTestUtils.createAndPersist();
+
+    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: anotherUser.id } });
+
+    const author = await authorTestUtils.createAndPersist();
+
+    const book = await bookTestUtils.createAndPersist({
+      input: {
+        authorIds: [author.id],
+      },
+    });
+
+    const userBook = await userBookTestUtils.createAndPersist({
+      input: {
+        bookId: book.id,
+        bookshelfId: bookshelf.id,
+      },
+    });
+
+    try {
+      await deleteUserBookCommandHandler.execute({
+        userId: user.id,
+        userBookId: userBook.id,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toMatchObject({
+        reason: 'User does not own this UserBook.',
+        userId: user.id,
+        userBookId: userBook.id,
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 });

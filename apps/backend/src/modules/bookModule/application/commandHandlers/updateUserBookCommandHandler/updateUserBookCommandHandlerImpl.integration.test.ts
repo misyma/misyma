@@ -91,10 +91,13 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
   });
 
   it('throws an error - when UserBook does not exist', async () => {
+    const user = await userTestUtils.createAndPersist();
+
     const nonExistentUserBookId = Generator.uuid();
 
     try {
       await commandHandler.execute({
+        userId: user.id,
         userBookId: nonExistentUserBookId,
       });
     } catch (error) {
@@ -133,6 +136,7 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
 
     try {
       await commandHandler.execute({
+        userId: user.id,
         userBookId: userBook.id,
         bookshelfId: invalidBookshelfId,
       });
@@ -185,6 +189,7 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
     });
 
     await commandHandler.execute({
+      userId: user.id,
       userBookId: userBook.id,
       bookshelfId: standardBookshelf.id,
     });
@@ -235,6 +240,7 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
     const updatedIsFavorite = Generator.boolean();
 
     const { userBook: updatedUserBook } = await commandHandler.execute({
+      userId: user.id,
       userBookId: userBook.id,
       bookshelfId: bookshelf2.id,
       imageUrl: updatedImageUrl,
@@ -279,6 +285,7 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
 
     try {
       await commandHandler.execute({
+        userId: user.id,
         userBookId: userBook.id,
         genreIds: [genre1.id, invalidGenreId],
       });
@@ -323,6 +330,7 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
     const genre3 = await genreTestUtils.createAndPersist();
 
     const result = await commandHandler.execute({
+      userId: user.id,
       userBookId: userBook.id,
       genreIds: [genre1.id, genre2.id, genre3.id],
     });
@@ -358,6 +366,7 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
 
     try {
       await commandHandler.execute({
+        userId: user.id,
         userBookId: userBook.id,
         collectionIds: [collection1.id, invalidCollectionId],
       });
@@ -402,6 +411,7 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
     const collection3 = await collectionTestUtils.createAndPersist({ input: { userId: user.id } });
 
     const result = await commandHandler.execute({
+      userId: user.id,
       userBookId: userBook.id,
       collectionIds: [collection1.id, collection2.id, collection3.id],
     });
@@ -409,5 +419,47 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
     result.userBook.getCollections().forEach((collection) => {
       expect(collection.getId()).oneOf([collection1.id, collection2.id, collection3.id]);
     });
+  });
+
+  it('throws an error - when User does not own this UserBook', async () => {
+    const user1 = await userTestUtils.createAndPersist();
+
+    const user2 = await userTestUtils.createAndPersist();
+
+    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user1.id } });
+
+    const author = await authorTestUtils.createAndPersist();
+
+    const book = await bookTestUtils.createAndPersist({
+      input: {
+        authorIds: [author.id],
+      },
+    });
+
+    const userBook = await userBookTestUtils.createAndPersist({
+      input: {
+        bookId: book.id,
+        bookshelfId: bookshelf.id,
+      },
+    });
+
+    try {
+      await commandHandler.execute({
+        userId: user2.id,
+        userBookId: userBook.id,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      expect((error as OperationNotValidError).context).toMatchObject({
+        reason: 'User does not own this UserBook.',
+        userId: user2.id,
+        userBookId: userBook.id,
+      });
+
+      return;
+    }
+
+    expect.fail();
   });
 });

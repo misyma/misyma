@@ -53,7 +53,7 @@ import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.
 import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
 import { type CreateUserBookCommandHandler } from '../../../application/commandHandlers/createUserBookCommandHandler/createUserBookCommandHandler.js';
-import { type DeleteUserBooksCommandHandler } from '../../../application/commandHandlers/deleteUserBooksCommandHandler/deleteUserBooksCommandHandler.js';
+import { type DeleteUserBookCommandHandler } from '../../../application/commandHandlers/deleteUserBookCommandHandler/deleteUserBookCommandHandler.js';
 import { type UpdateUserBookCommandHandler } from '../../../application/commandHandlers/updateUserBookCommandHandler/updateUserBookCommandHandler.js';
 import { type UploadUserBookImageCommandHandler } from '../../../application/commandHandlers/uploadUserBookImageCommandHandler/uploadUserBookImageCommandHandler.js';
 import { type FindUserBookQueryHandler } from '../../../application/queryHandlers/findUserBookQueryHandler/findUserBookQueryHandler.js';
@@ -68,14 +68,13 @@ export class UserBookHttpController implements HttpController {
   public constructor(
     private readonly createUserBookCommandHandler: CreateUserBookCommandHandler,
     private readonly updateUserBookCommandHandler: UpdateUserBookCommandHandler,
-    private readonly deleteUserBookCommandHandler: DeleteUserBooksCommandHandler,
+    private readonly deleteUserBookCommandHandler: DeleteUserBookCommandHandler,
     private readonly findUserBookQueryHandler: FindUserBookQueryHandler,
     private readonly findUserBooksQueryHandler: FindUserBooksQueryHandler,
     private readonly uploadUserBookImageCommandHandler: UploadUserBookImageCommandHandler,
     private readonly accessControlService: AccessControlService,
   ) {}
 
-  // TODO: add authorization based on userId
   public getHttpRoutes(): HttpRoute[] {
     return [
       new HttpRoute({
@@ -186,12 +185,10 @@ export class UserBookHttpController implements HttpController {
     ];
   }
 
-  // add authorization based on userId and userBook bookshelf
-
   private async updateUserBook(
     request: HttpRequest<UpdateUserBookBodyDto, undefined, UpdateUserBookPathParamsDto>,
   ): Promise<HttpOkResponse<UpdateUserBookResponseBodyDto>> {
-    await this.accessControlService.verifyBearerToken({
+    const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
@@ -200,6 +197,7 @@ export class UserBookHttpController implements HttpController {
     const { status, bookshelfId, imageUrl, isFavorite, genreIds, collectionIds } = request.body;
 
     const { userBook } = await this.updateUserBookCommandHandler.execute({
+      userId,
       userBookId,
       status,
       isFavorite,
@@ -218,7 +216,7 @@ export class UserBookHttpController implements HttpController {
   private async uploadUserBookImage(
     request: HttpRequest<undefined, undefined, UploadUserBookImagePathParamsDto>,
   ): Promise<HttpOkResponse<UploadUserBookImageResponseBodyDtoSchema>> {
-    await this.accessControlService.verifyBearerToken({
+    const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
@@ -231,6 +229,7 @@ export class UserBookHttpController implements HttpController {
     }
 
     const { userBook } = await this.uploadUserBookImageCommandHandler.execute({
+      userId,
       userBookId,
       data: request.file.data,
       contentType: request.file.type,
@@ -273,11 +272,14 @@ export class UserBookHttpController implements HttpController {
   ): Promise<HttpOkResponse<FindUserBookResponseBodyDto>> {
     const { userBookId } = request.pathParams;
 
-    await this.accessControlService.verifyBearerToken({
+    const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
-    const { userBook } = await this.findUserBookQueryHandler.execute({ userBookId });
+    const { userBook } = await this.findUserBookQueryHandler.execute({
+      userId,
+      userBookId,
+    });
 
     return {
       statusCode: HttpStatusCode.ok,
@@ -322,11 +324,14 @@ export class UserBookHttpController implements HttpController {
   ): Promise<HttpNoContentResponse<DeleteUserBookResponseBodyDto>> {
     const { userBookId } = request.pathParams;
 
-    await this.accessControlService.verifyBearerToken({
+    const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
-    await this.deleteUserBookCommandHandler.execute({ userBookIds: [userBookId] });
+    await this.deleteUserBookCommandHandler.execute({
+      userId,
+      userBookId,
+    });
 
     return {
       statusCode: HttpStatusCode.noContent,
