@@ -4,8 +4,8 @@ import { User, UserState } from './userState';
 
 const initialState: UserState = {
   currentUser: null,
-  refreshToken: null,
-  accessToken: null,
+  refreshToken: "",
+  accessToken: "",
 };
 
 interface SetCurrentUserActionPayload {
@@ -32,8 +32,8 @@ export const userStateSlice = createSlice({
       state.accessToken = action.payload;
     },
     removeUserState: (state) => {
-      state.accessToken = null;
-      state.refreshToken = null;
+      state.accessToken = "";
+      state.refreshToken = "";
       state.currentUser = null;
     }
   },

@@ -8,6 +8,7 @@ import { quotationTableColumns } from '../quotationsTable/quotationsTableColumns
 import { getQuotesOptions } from '../../api/queries/getQuotes/getQuotesOptions';
 import { QuotesApiQueryKeys } from '../../api/queries/quotesApiQueryKeys';
 import { DataTable } from '../../../common/components/dataTable/dataTable';
+import { Skeleton } from '../../../common/components/skeleton/skeleton';
 
 interface QuotationTabTableProps {
   bookId: string;
@@ -23,6 +24,7 @@ export const QuotationTabTable: FC<QuotationTabTableProps> = ({ bookId }) => {
 
   const {
     data: userBookData,
+    isFetching,
     // isFetched: isUserBookFetched,
     // isFetching: isUserBookFetching,
     // isRefetching: isUserBookRefetching,
@@ -74,10 +76,17 @@ export const QuotationTabTable: FC<QuotationTabTableProps> = ({ bookId }) => {
 
   return (
     <div className="flex flex-col w-full">
-      <p className="text-lg pb-6">
-        {' '}
-        {userBookData?.book?.authors[0]?.name ?? ''}{' '}
-      </p>
+      {!isFetching && (
+        <p className="text-lg pb-6">
+          {' '}
+          {userBookData?.book?.authors[0]?.name ?? ''}{' '}
+        </p>
+      )}
+      {isFetching && (
+        <div className="pb-6">
+          <Skeleton className="h-7 w-40" />
+        </div>
+      )}
       <DataTable
         hideHeaders={true}
         columns={quotationTableColumns}
@@ -87,6 +96,7 @@ export const QuotationTabTable: FC<QuotationTabTableProps> = ({ bookId }) => {
         pageIndex={page}
         pageSize={pageSize}
         itemsCount={quotationsData?.metadata.total}
+        PaginationSlot={pageCount <= 1 ? <></> : null}
       />
     </div>
   );
