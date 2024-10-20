@@ -9,6 +9,6 @@ export interface User {
 
 export interface UserState {
   currentUser: User | null;
-  refreshToken: string | null;
-  accessToken: string | null;
+  refreshToken: string;
+  accessToken: string;
 }
