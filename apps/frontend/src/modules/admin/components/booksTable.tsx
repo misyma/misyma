@@ -103,6 +103,7 @@ export const BooksTable: FC<BooksTableProps> = ({
           pageIndex={Number(params.page)}
           skeletonHeight={6}
           PaginationSlot={totalPages === 0 ? <></> : null}
+          itemsCount={booksData?.metadata.total}
         />
       )}
       {!isFetching && (
@@ -113,6 +114,7 @@ export const BooksTable: FC<BooksTableProps> = ({
           pageSize={Number(params.pageSize)}
           pageIndex={Number(params.page)}
           onSetPage={onSetPage}
+          itemsCount={booksData?.metadata.total}
         />
       )}
     </div>
