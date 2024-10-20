@@ -1,7 +1,5 @@
 import { CellContext, type ColumnDef } from '@tanstack/react-table';
 import { Author } from '@common/contracts';
-import { HiCheckCircle } from 'react-icons/hi';
-import { HiXCircle } from 'react-icons/hi';
 import { DeleteAuthorModal } from './deleteAuthorModal';
 import { UpdateAuthorModal } from './updateAuthorModal';
 import { TableHeader } from '../../common/components/tableHeader/tableHeader';
@@ -15,6 +13,7 @@ import {
 import { Button } from '../../common/components/button/button';
 import { FC } from 'react';
 import { useNavigate } from '@tanstack/react-router';
+import { ChangeAuthorStatusModal } from './changeAuthorStatusModal';
 
 const ActionsCell: FC<CellContext<Author, unknown>> = ({ row }) => {
   const navigate = useNavigate();
@@ -86,12 +85,13 @@ export const authorTableColumns: ColumnDef<Author>[] = [
     maxSize: 150,
     cell: ({ row }): JSX.Element => {
       return (
-        <div className="flex max-w-16 justify-center items-center gap-1">
-          {row.original.isApproved ? (
-            <HiCheckCircle className="h-6 w-6 text-green-500" />
-          ) : (
-            <HiXCircle className="h-6 w-6 text-red-500" />
-          )}
+        <div className="flex justify-center items-center max-w-16">
+          <ChangeAuthorStatusModal
+            authorId={row.original.id}
+            authorName={row.original.name}
+            page={1}
+            status={row.original.isApproved}
+          />
         </div>
       );
     },
