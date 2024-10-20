@@ -1,19 +1,19 @@
 import { FC, ReactNode } from 'react';
-import { BookImageMiniature } from '../components/bookImageMiniature/bookImageMiniature';
+import { BookImageLoader } from '../components/bookImageLoader/bookImageLoader';
 
 interface BookTabLayoutProps {
   MainBodySlot: ReactNode;
   ActionsSlot: ReactNode;
   NavigationSlot: ReactNode;
   ButtonSlot: ReactNode;
-  bookImageSrc: string;
+  bookId: string;
 }
 export const BookTabLayout: FC<BookTabLayoutProps> = ({
   MainBodySlot,
   ActionsSlot,
   NavigationSlot,
   ButtonSlot,
-  bookImageSrc,
+  bookId,
 }) => {
   return (
     <div className="flex w-full justify-center items-center w-100% px-8 py-4">
@@ -25,10 +25,7 @@ export const BookTabLayout: FC<BookTabLayoutProps> = ({
         </div>
         <div className="flex flex-col sm:flex-row col-start-1 col-span-2 sm:col-span-5 gap-6 w-full">
           <div>
-            <BookImageMiniature
-              className="object-cover max-w-80"
-              bookImageSrc={bookImageSrc}
-            />
+            <BookImageLoader bookId={bookId} />
           </div>
           <div className="flex justify-center">{ButtonSlot}</div>
           <div className="flex flex-col gap-4 w-3/4">{MainBodySlot}</div>

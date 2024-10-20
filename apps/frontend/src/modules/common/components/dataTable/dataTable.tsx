@@ -159,6 +159,7 @@ export function DataTable<TData extends object, TValue>({
             pageIndex={pageIndex ?? 0}
             pagesCount={pageCount ?? 0}
             itemsCount={itemsCount}
+            perPage={pageSize}
           />
         </div>
       )}
