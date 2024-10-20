@@ -4,17 +4,15 @@ import { FC, useMemo, useState } from 'react';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useSelector } from 'react-redux';
-import { QuotationsTable } from '../quotationsTable/quotationsTable';
 import { quotationTableColumns } from '../quotationsTable/quotationsTableColumns';
 import { getQuotesOptions } from '../../api/queries/getQuotes/getQuotesOptions';
 import { QuotesApiQueryKeys } from '../../api/queries/quotesApiQueryKeys';
+import { DataTable } from '../../../common/components/dataTable/dataTable';
 
 interface QuotationTabTableProps {
   bookId: string;
 }
-export const QuotationTabTable: FC<QuotationTabTableProps> = ({
-  bookId,
-}) => {
+export const QuotationTabTable: FC<QuotationTabTableProps> = ({ bookId }) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
   const [page, setPage] = useState(1);
   const [pageSize] = useState(4);
@@ -74,14 +72,14 @@ export const QuotationTabTable: FC<QuotationTabTableProps> = ({
     invalidateQuotesFetch();
   };
 
-
   return (
     <div className="flex flex-col w-full">
       <p className="text-lg pb-6">
         {' '}
         {userBookData?.book?.authors[0]?.name ?? ''}{' '}
       </p>
-      <QuotationsTable
+      <DataTable
+        hideHeaders={true}
         columns={quotationTableColumns}
         data={[...data]}
         onSetPage={onSetPage}
@@ -89,7 +87,7 @@ export const QuotationTabTable: FC<QuotationTabTableProps> = ({
         pageIndex={page}
         pageSize={pageSize}
         itemsCount={quotationsData?.metadata.total}
-      ></QuotationsTable>
+      />
     </div>
   );
 };

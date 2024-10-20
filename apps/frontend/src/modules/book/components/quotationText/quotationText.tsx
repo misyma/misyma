@@ -13,14 +13,11 @@ export const QuotationText: FC<QuotationTextProps> = ({
   pageIndex,
 }) => {
   const [isTruncated, setIsTruncated] = useState(false);
-
   const [showMore, setShowMore] = useState(false);
-
+  const parentRef = useRef<HTMLParagraphElement>(null);
   const elementId = useMemo(() => {
     return `element${index}-${pageIndex}`;
   }, [index, pageIndex]);
-
-  const parentRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
     if (!parentRef) {
@@ -65,11 +62,11 @@ export const QuotationText: FC<QuotationTextProps> = ({
   };
 
   return (
-    <div className="truncate">
+    <div className="w-full">
       <p
         ref={parentRef}
         id={elementId}
-        className="font-semibold break-words text-lg truncate sm:w-104 md:w-[36rem]"
+        className="font-semibold break-words text-lg truncate w-[90%]"
       >
         "{content}"
       </p>
@@ -93,6 +90,7 @@ export const QuotationText: FC<QuotationTextProps> = ({
           )}
         </div>
       )}
+      {!isTruncated && <div className='show-more-placeholder h-5'> </div>}
     </div>
   );
 };
