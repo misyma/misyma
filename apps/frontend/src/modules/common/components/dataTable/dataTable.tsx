@@ -28,6 +28,7 @@ interface DataTableProps<TData, TValue> {
   pageIndex?: number;
   pageSize?: number;
   pageCount?: number;
+  itemsCount?: number;
   onSetPage: (val: number) => Promise<void> | void;
   filterLabel?: string;
   includeColumnsSelector?: boolean;
@@ -40,6 +41,7 @@ export function DataTable<TData extends object, TValue>({
   pageIndex,
   pageSize,
   pageCount,
+  itemsCount,
   onSetPage,
   PaginationSlot,
 }: DataTableProps<TData, TValue>): JSX.Element {
@@ -152,7 +154,7 @@ export function DataTable<TData extends object, TValue>({
             includeArrows={true}
             pageIndex={pageIndex ?? 0}
             pagesCount={pageCount ?? 0}
-            itemsCount={pageCount}
+            itemsCount={itemsCount}
           />
         </div>
       )}

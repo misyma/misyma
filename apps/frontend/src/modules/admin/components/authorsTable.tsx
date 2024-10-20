@@ -23,7 +23,11 @@ export const AuthorsTable: FC<AdminAuthorsTableProps> = ({ page, setPage }) => {
     setSearchAuthorName(val);
   };
 
-  const { data: authorsData, isFetching, isFetched } = useFindAuthorsQuery({
+  const {
+    data: authorsData,
+    isFetching,
+    isFetched,
+  } = useFindAuthorsQuery({
     all: true,
     page,
     name: debouncedSearchValue,
@@ -38,12 +42,15 @@ export const AuthorsTable: FC<AdminAuthorsTableProps> = ({ page, setPage }) => {
   useEffect(() => {
     if (isFetched) {
       setTotalPages(
-        Math.ceil(
-          Number(authorsData?.metadata.total) / Number(pageSize)
-        ) || 1
+        Math.ceil(Number(authorsData?.metadata.total) / Number(pageSize)) || 1
       );
     }
   }, [isFetched, authorsData, pageSize]);
+
+  const itemsCount = useMemo(
+    () => authorsData?.metadata.total,
+    [authorsData?.metadata.total]
+  );
 
   return (
     <div className="flex flex-col w-full">
@@ -60,6 +67,7 @@ export const AuthorsTable: FC<AdminAuthorsTableProps> = ({ page, setPage }) => {
           pageCount={totalPages}
           pageSize={pageSize}
           pageIndex={page}
+          itemsCount={authorsData?.metadata.total}
           onSetPage={setPage}
         />
       )}
@@ -71,6 +79,7 @@ export const AuthorsTable: FC<AdminAuthorsTableProps> = ({ page, setPage }) => {
           pageIndex={page}
           skeletonHeight={6}
           onSetPage={setPage}
+          itemsCount={itemsCount}
           PaginationSlot={totalPages === 0 ? <></> : null}
         />
       )}

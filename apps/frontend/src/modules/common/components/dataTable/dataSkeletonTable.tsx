@@ -29,6 +29,7 @@ interface DataTableProps<TData, TValue> {
   pageIndex?: number;
   pageSize: number;
   pageCount?: number;
+  itemsCount?: number;
   filterLabel?: string;
   includeColumnsSelector?: boolean;
   onSetPage: (val: number) => Promise<void> | void;
@@ -43,6 +44,7 @@ export function DataSkeletonTable<TData extends object, TValue>({
   pageIndex,
   pageSize = 10,
   pageCount,
+  itemsCount,
   PaginationSlot,
   skeletonHeight,
   skeletonBoxClass,
@@ -157,7 +159,7 @@ export function DataSkeletonTable<TData extends object, TValue>({
             includeArrows={true}
             pageIndex={pageIndex ?? 0}
             pagesCount={pageCount ?? 0}
-            itemsCount={pageCount}
+            itemsCount={itemsCount}
           />
         </div>
       )}
