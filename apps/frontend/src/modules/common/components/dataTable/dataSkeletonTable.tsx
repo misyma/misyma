@@ -22,6 +22,7 @@ import {
 } from '../table/table';
 import { Skeleton } from '../skeleton/skeleton';
 import { Paginator } from '../paginator/paginator';
+import { cn } from '../../lib/utils';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -32,6 +33,8 @@ interface DataTableProps<TData, TValue> {
   includeColumnsSelector?: boolean;
   onSetPage: (val: number) => Promise<void> | void;
   skeletonHeight: number;
+  skeletonBoxClass?: string;
+  skeletonClassName?: string;
   PaginationSlot?: ReactNode;
 }
 
@@ -42,6 +45,8 @@ export function DataSkeletonTable<TData extends object, TValue>({
   pageCount,
   PaginationSlot,
   skeletonHeight,
+  skeletonBoxClass,
+  skeletonClassName,
   onSetPage,
 }: DataTableProps<TData, TValue>): JSX.Element {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -130,9 +135,14 @@ export function DataSkeletonTable<TData extends object, TValue>({
               <TableRow key={index}>
                 {columns.map((column, cellIndex) => (
                   <TableCell key={cellIndex}>
-                    <Skeleton
-                      className={`w-${column.size} h-${skeletonHeight}`}
-                    />
+                    <div className={cn(`w-full py-4`, skeletonBoxClass)}>
+                      <Skeleton
+                        className={cn(`h-${skeletonHeight}`, skeletonClassName)}
+                        style={{
+                          width: `${column.size}px`,
+                        }}
+                      />
+                    </div>
                   </TableCell>
                 ))}
               </TableRow>

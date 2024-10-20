@@ -45,6 +45,8 @@ export const adminFindBooks = async (values: Payload) => {
 		query[key] = `${val}`;
 	});
 
+	await new Promise((res) => setTimeout(res, 10000));
+
 	const response = await HttpService.get<FindBooksResponseBody>({
 		url: '/admin/books',
 		queryParams: query,
