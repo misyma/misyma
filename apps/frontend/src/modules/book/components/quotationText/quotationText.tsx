@@ -7,7 +7,11 @@ interface QuotationTextProps {
   pageIndex: number;
 }
 
-export const QuotationText: FC<QuotationTextProps> = ({ content, index, pageIndex }) => {
+export const QuotationText: FC<QuotationTextProps> = ({
+  content,
+  index,
+  pageIndex,
+}) => {
   const [isTruncated, setIsTruncated] = useState(false);
 
   const [showMore, setShowMore] = useState(false);
@@ -35,7 +39,8 @@ export const QuotationText: FC<QuotationTextProps> = ({ content, index, pageInde
 
     root?.append(clone);
 
-    const originalWidth = parentRef.current?.getBoundingClientRect().width as number;
+    const originalWidth = parentRef.current?.getBoundingClientRect()
+      .width as number;
 
     const cloneWidth = clone.getBoundingClientRect().width;
 
@@ -52,15 +57,15 @@ export const QuotationText: FC<QuotationTextProps> = ({ content, index, pageInde
     const element = document.querySelector(`#${elementId}`);
     setShowMore(showMore);
 
-    if (showMore) {
-      return element?.classList.remove('truncate');
-    }
+    element?.classList.add('truncate', 'text-wrap');
 
-    element?.classList.add('truncate');
+    if (!showMore) {
+      return element?.classList.remove('text-wrap');
+    }
   };
 
   return (
-    <div className='truncate'>
+    <div className="truncate">
       <p
         ref={parentRef}
         id={elementId}
