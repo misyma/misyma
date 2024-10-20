@@ -1,4 +1,4 @@
-import { FC, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { useFindAuthorsQuery } from '../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
 import { authorTableColumns } from '../../author/components/authorTableColumns';
 import { DataTable } from '../../common/components/dataTable/dataTable';
@@ -15,6 +15,7 @@ interface AdminAuthorsTableProps {
 export const AuthorsTable: FC<AdminAuthorsTableProps> = ({ page, setPage }) => {
   const [searchAuthorName, setSearchAuthorName] = useState('');
   const [pageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
   const debouncedSearchValue = useDebounce(searchAuthorName, 250);
 
   const onSetSearchAuthorName = (val: string) => {
@@ -22,7 +23,7 @@ export const AuthorsTable: FC<AdminAuthorsTableProps> = ({ page, setPage }) => {
     setSearchAuthorName(val);
   };
 
-  const { data: authorsData, isFetching } = useFindAuthorsQuery({
+  const { data: authorsData, isFetching, isFetched } = useFindAuthorsQuery({
     all: true,
     page,
     name: debouncedSearchValue,
@@ -34,9 +35,15 @@ export const AuthorsTable: FC<AdminAuthorsTableProps> = ({ page, setPage }) => {
     return authorsData?.data ?? [];
   }, [authorsData?.data]);
 
-  const pageCount = useMemo(() => {
-    return Math.ceil((authorsData?.metadata?.total ?? 0) / pageSize) || 1;
-  }, [authorsData?.metadata.total, pageSize]);
+  useEffect(() => {
+    if (isFetched) {
+      setTotalPages(
+        Math.ceil(
+          Number(authorsData?.metadata.total) / Number(pageSize)
+        ) || 1
+      );
+    }
+  }, [isFetched, authorsData, pageSize]);
 
   return (
     <div className="flex flex-col w-full">
@@ -50,7 +57,7 @@ export const AuthorsTable: FC<AdminAuthorsTableProps> = ({ page, setPage }) => {
         <DataTable<Author, unknown>
           data={data}
           columns={authorTableColumns}
-          pageCount={pageCount}
+          pageCount={totalPages}
           pageSize={pageSize}
           pageIndex={page}
           onSetPage={setPage}
@@ -59,11 +66,12 @@ export const AuthorsTable: FC<AdminAuthorsTableProps> = ({ page, setPage }) => {
       {isLoading && (
         <DataSkeletonTable
           columns={authorTableColumns}
-          pageCount={pageCount}
+          pageCount={totalPages}
           pageSize={pageSize}
           pageIndex={page}
-          skeletonHeight={14}
+          skeletonHeight={6}
           onSetPage={setPage}
+          PaginationSlot={totalPages === 0 ? <></> : null}
         />
       )}
     </div>
