@@ -4,6 +4,7 @@ import { type CommandHandler } from '../../../../../common/types/commandHandler.
 import { type UserBook } from '../../../domain/entities/userBook/userBook.js';
 
 export interface UpdateUserBookPayload {
+  readonly userId: string;
   readonly userBookId: string;
   readonly imageUrl?: string | undefined | null;
   readonly bookshelfId?: string | undefined;

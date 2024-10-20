@@ -5,6 +5,7 @@ import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { type TestUtils } from '../../../../../../tests/testUtils.js';
+import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
@@ -84,18 +85,62 @@ describe('FindUserBookQueryHandler', () => {
       },
     });
 
-    const { userBook: foundUserBook } = await findUserBookQueryHandler.execute({ userBookId: userBook.id });
+    const { userBook: foundUserBook } = await findUserBookQueryHandler.execute({
+      userId: user.id,
+      userBookId: userBook.id,
+    });
 
     expect(foundUserBook).not.toBeNull();
   });
 
   it('throws an error if UserBook with given id does not exist', async () => {
+    const user = await userTestUtils.createAndPersist();
+
     const id = Generator.uuid();
 
     try {
-      await findUserBookQueryHandler.execute({ userBookId: id });
+      await findUserBookQueryHandler.execute({
+        userId: user.id,
+        userBookId: id,
+      });
     } catch (error) {
       expect(error).toBeInstanceOf(ResourceNotFoundError);
+
+      return;
+    }
+
+    expect.fail();
+  });
+
+  it('throws an error if UserBook does not belong to User', async () => {
+    const user = await userTestUtils.createAndPersist();
+
+    const anotherUser = await userTestUtils.createAndPersist();
+
+    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: anotherUser.id } });
+
+    const author = await authorTestUtils.createAndPersist();
+
+    const book = await bookTestUtils.createAndPersist({
+      input: {
+        authorIds: [author.id],
+      },
+    });
+
+    const userBook = await userBookTestUtils.createAndPersist({
+      input: {
+        bookId: book.id,
+        bookshelfId: bookshelf.id,
+      },
+    });
+
+    try {
+      await findUserBookQueryHandler.execute({
+        userId: user.id,
+        userBookId: userBook.id,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
 
       return;
     }

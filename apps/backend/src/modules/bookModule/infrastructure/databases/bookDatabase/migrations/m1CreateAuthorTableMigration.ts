@@ -16,9 +16,6 @@ export class M1CreateAuthorTableMigration implements Migration {
 
       table.unique(['name']);
     });
-
-    // TODO add when migrating to Postgres
-    // await databaseClient.schema.raw('CREATE INDEX names_txt ON names (name text_pattern_ops);');
   }
 
   public async down(databaseClient: DatabaseClient): Promise<void> {

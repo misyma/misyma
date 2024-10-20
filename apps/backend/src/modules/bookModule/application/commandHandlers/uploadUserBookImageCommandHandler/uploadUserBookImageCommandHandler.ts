@@ -4,6 +4,7 @@ import { type CommandHandler } from '../../../../../common/types/commandHandler.
 import { type UserBook } from '../../../domain/entities/userBook/userBook.js';
 
 export interface UploadUserBookImageCommandHandlerPayload {
+  readonly userId: string;
   readonly userBookId: string;
   readonly data: Readable;
   readonly contentType: string;

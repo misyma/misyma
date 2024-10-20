@@ -101,10 +101,13 @@ describe('UploadUserBookImageCommandHandlerImpl', () => {
   });
 
   it('throws an error - when UserBook does not exist', async () => {
+    const user = await userTestUtils.createAndPersist();
+
     const userBookId = Generator.uuid();
 
     try {
       await commandHandler.execute({
+        userId: user.id,
         userBookId,
         contentType: 'image/jpg',
         data: createReadStream(filePath),
@@ -147,6 +150,7 @@ describe('UploadUserBookImageCommandHandlerImpl', () => {
     expect(existsBefore).toBe(false);
 
     const { userBook: updatedUserBook } = await commandHandler.execute({
+      userId: user.id,
       userBookId: userBook.id,
       data: createReadStream(filePath),
       contentType: 'image/jpg',
@@ -201,6 +205,7 @@ describe('UploadUserBookImageCommandHandlerImpl', () => {
     expect(newImageExistsBefore).toBe(false);
 
     const { userBook: updatedUserBook } = await commandHandler.execute({
+      userId: user.id,
       userBookId: userBook.id,
       data: createReadStream(filePath),
       contentType: 'image/jpg',
@@ -219,5 +224,47 @@ describe('UploadUserBookImageCommandHandlerImpl', () => {
     const oldImageExistsAfter = await s3TestUtils.objectExists(bucketName, existingImageId);
 
     expect(oldImageExistsAfter).toBe(false);
+  });
+
+  it('throws an error - when User does not own the book', async () => {
+    const user1 = await userTestUtils.createAndPersist();
+
+    const user2 = await userTestUtils.createAndPersist();
+
+    const author = await authorTestUtils.createAndPersist();
+
+    const bookshelf = await bookshelfTestUtils.createAndPersist({
+      input: {
+        userId: user1.id,
+      },
+    });
+
+    const book = await bookTestUtils.createAndPersist({
+      input: {
+        authorIds: [author.id],
+      },
+    });
+
+    const userBook = await userBookTestUtils.createAndPersist({
+      input: {
+        bookId: book.id,
+        bookshelfId: bookshelf.id,
+      },
+    });
+
+    try {
+      await commandHandler.execute({
+        userId: user2.id,
+        userBookId: userBook.id,
+        data: createReadStream(filePath),
+        contentType: 'image/jpg',
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationNotValidError);
+
+      return;
+    }
+
+    expect.fail();
   });
 });
