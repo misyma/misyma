@@ -105,7 +105,7 @@ export function DataTable<TData extends object, TValue>({
                         style={{
                           width: `${header.getSize()}px`,
                         }}
-                        className="p-4 m-0 h-14"
+                        className="py-4 m-0 h-14"
                         key={header.id}
                       >
                         {header.isPlaceholder

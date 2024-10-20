@@ -41,7 +41,7 @@ const AuthorCell: FC<{ label: string }> = ({ label }) => {
   );
 
   return (
-    <div className="flex flex-col py-4 gap-2 max-w-[150px]">
+    <div className="flex flex-col py-4 gap-2 max-w-[200px]">
       <div className="flex items-center gap-1">
         {isTruncated ? (
           <TooltipProvider>
@@ -70,9 +70,12 @@ const TitleCell: FC<CellProps> = ({ row }) => {
   );
 };
 
-const LanguageCell: FC<CellProps> = ({ row }) => {
+const LanguageCell: FC<CellProps> = ({ row, column }) => {
   return (
-    <div style={{ width: '75px' }} className="flex flex-col py-4 gap-2">
+    <div
+      style={{ width: `${column.getSize()}px` }}
+      className="flex flex-col py-4 gap-2"
+    >
       <div className="flex items-center gap-1">
         <p className="text-base truncate">
           {row.original.language
@@ -84,11 +87,23 @@ const LanguageCell: FC<CellProps> = ({ row }) => {
   );
 };
 
-const IsbnCell: FC<CellProps> = ({ row }) => {
+const IsbnCell: FC<CellProps> = ({ row, column }) => {
   return (
-    <div className="flex flex-col py-4 gap-2">
+    <div
+      style={{
+        width: `${column.getSize()}px`,
+      }}
+      className="flex flex-col py-4 gap-2"
+    >
       <div className="flex items-center gap-1">
-        <p className="text-base truncate">{row.original?.isbn ?? '-'}</p>
+        <p
+          style={{
+            width: `${column.getSize()}px`,
+          }}
+          className="text-base truncate"
+        >
+          {row.original?.isbn ?? '-'}
+        </p>
       </div>
     </div>
   );
@@ -105,11 +120,21 @@ const StatusCell: FC<CellProps> = ({ row, table }) => {
   );
 };
 
-const FormatCell: FC<CellProps> = ({ row }) => {
+const FormatCell: FC<CellProps> = ({ row, column }) => {
   return (
-    <div className="flex flex-col py-4 gap-2 w-[125px]">
+    <div
+      style={{
+        width: `${column.getSize()}px`,
+      }}
+      className="flex flex-col py-4 gap-2"
+    >
       <div className="flex items-center gap-1">
-        <p className="text-base whitespace-nowrap w-[125px]">
+        <p
+          style={{
+            width: `${column.getSize()}px`,
+          }}
+          className="text-base whitespace-nowrap"
+        >
           {row.original?.format ? BookFormat[row.original?.format] : '-'}
         </p>
       </div>
@@ -140,8 +165,8 @@ export const bookTableColumns: ColumnDef<Book>[] = [
   {
     header: () => <TableHeader label="Język" />,
     accessorKey: 'language',
-    minSize: 75,
-    size: 125,
+    minSize: 100,
+    size: 100,
     maxSize: 150,
     cell: LanguageCell,
   },
@@ -149,8 +174,8 @@ export const bookTableColumns: ColumnDef<Book>[] = [
     header: () => <TableHeader label="Autorzy" />,
     accessorKey: 'authors',
     minSize: 125,
-    size: 150,
-    maxSize: 175,
+    size: 175,
+    maxSize: 200,
     cell: ({ row }): JSX.Element => {
       return (
         <AuthorCell
@@ -163,7 +188,7 @@ export const bookTableColumns: ColumnDef<Book>[] = [
   },
   {
     header: () => <TableHeader className="w-[125px]" label="ISBN" />,
-    minSize: 75,
+    minSize: 125,
     size: 125,
     maxSize: 150,
     accessorKey: 'isbn',
@@ -171,15 +196,15 @@ export const bookTableColumns: ColumnDef<Book>[] = [
   },
   {
     header: () => <TableHeader className="w-[125px]" label="Format" />,
-    minSize: 75,
-    size: 125,
+    minSize: 100,
+    size: 100,
     maxSize: 150,
     accessorKey: 'format',
     cell: FormatCell,
   },
   {
     header: () => <TableHeader label="Status" />,
-    minSize: 75,
+    minSize: 125,
     size: 125,
     maxSize: 150,
     accessorKey: 'isApproved',
@@ -187,7 +212,7 @@ export const bookTableColumns: ColumnDef<Book>[] = [
   },
   {
     header: () => <TableHeader label="Akcje" />,
-    minSize: 75,
+    minSize: 125,
     size: 125,
     maxSize: 150,
     accessorKey: 'actions',
