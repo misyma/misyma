@@ -1,51 +1,10 @@
 import { Book, FindAdminBooksQueryParams } from '@common/contracts';
-import {
-  BookTableProvider,
-  useBookTableContext,
-} from '../../book/components/bookTable/bookTableContext';
-import { FC, useEffect, useMemo } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { bookTableColumns } from '../../book/components/bookTable/bookTableColumns';
-import { BookTable } from '../../book/components/bookTable/bookTable';
 import { cn } from '../../common/lib/utils';
 import { useAdminFindBooksQuery } from '../../book/api/admin/queries/findBooksQuery/findBooksQueryOptions';
-import { useInitialFetch } from '../../common/hooks/useInitialFetch';
-
-interface TableContainerProps {
-  pageCount: number;
-  pageSize: number;
-  pageIndex: number;
-  itemsCount: number;
-  onSetPage: (val: number) => void;
-  data: Book[];
-  loading: boolean;
-}
-const TableContainer: FC<TableContainerProps> = ({
-  itemsCount,
-  onSetPage,
-  pageCount,
-  pageIndex,
-  pageSize,
-  data,
-  loading,
-}) => {
-  const { setLoading } = useBookTableContext();
-
-  useEffect(() => setLoading(loading), [loading, setLoading]);
-
-  return (
-    <div className="flex items-center justify-start w-100% py-1 sm:py-4">
-      <BookTable
-        data={data}
-        columns={bookTableColumns}
-        pageCount={pageCount}
-        onSetPage={onSetPage}
-        pageSize={pageSize}
-        pageIndex={pageIndex}
-        itemsCount={itemsCount}
-      />
-    </div>
-  );
-};
+import { DataTable } from '../../common/components/dataTable/dataTable';
+import { DataSkeletonTable } from '../../common/components/dataTable/dataSkeletonTable';
 
 const TableSizing = {
   visible: `sm:col-span-4 md:col-span-5`,
@@ -63,12 +22,15 @@ export const BooksTable: FC<BooksTableProps> = ({
   params,
   isFilterVisible,
 }) => {
-  const { data: booksData, isFetching } = useAdminFindBooksQuery({
+  const {
+    data: booksData,
+    isFetching,
+    isFetched,
+  } = useAdminFindBooksQuery({
     all: true,
     ...params,
   });
-
-  const { isLoading } = useInitialFetch({ isFetching });
+  const [totalPages, setTotalPages] = useState(0);
 
   const pageCount = useMemo(() => {
     return (
@@ -115,6 +77,16 @@ export const BooksTable: FC<BooksTableProps> = ({
     );
   }, [booksData?.data]);
 
+  useEffect(() => {
+    if (isFetched) {
+      setTotalPages(
+        Math.ceil(
+          Number(booksData?.metadata.total) / Number(params.pageSize)
+        ) || 1
+      );
+    }
+  }, [isFetched, booksData, params.pageSize]);
+
   return (
     <div
       className={cn(
@@ -122,17 +94,27 @@ export const BooksTable: FC<BooksTableProps> = ({
         TableSizing[isFilterVisible ? 'visible' : 'invisible']
       )}
     >
-      <BookTableProvider>
-        <TableContainer
+      {isFetching && (
+        <DataSkeletonTable
+          columns={bookTableColumns}
+          onSetPage={onSetPage}
+          pageSize={Number(params.pageSize)}
+          pageCount={totalPages}
+          pageIndex={Number(params.page)}
+          skeletonHeight={6}
+          PaginationSlot={totalPages === 0 ? <></> : null}
+        />
+      )}
+      {!isFetching && (
+        <DataTable
           data={data}
-          loading={isLoading}
+          columns={bookTableColumns}
           pageCount={pageCount}
           pageSize={Number(params.pageSize)}
           pageIndex={Number(params.page)}
-          itemsCount={booksData?.metadata.total as number}
           onSetPage={onSetPage}
         />
-      </BookTableProvider>
+      )}
     </div>
   );
 };

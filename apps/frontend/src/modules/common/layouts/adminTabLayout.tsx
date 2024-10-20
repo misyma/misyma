@@ -29,7 +29,7 @@ export const AdminTabLayout: FC<AdminTabLayoutProps> = ({
   return (
     <div
       className={cn(
-        'flex w-full justify-center items-center w-100% px-8 py-2',
+        'flex w-full justify-center items-start w-100% px-8 py-2',
         mainWrapperClassName
       )}
     >

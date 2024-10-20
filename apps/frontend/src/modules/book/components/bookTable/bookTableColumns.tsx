@@ -12,14 +12,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '../../../common/components/tooltip/tooltip';
-import { useBookTableContext } from './bookTableContext';
-import { Skeleton } from '../../../common/components/skeleton/skeleton';
 import { ChangeBookStatusModal } from '../changeBookStatusModal/changeBookStatusModal';
 
 type CellProps = CellContext<Book, unknown>;
 
 const AuthorCell: FC<{ label: string }> = ({ label }) => {
-  const { loading } = useBookTableContext();
   const [isTruncated, setIsTruncated] = useState(false);
   const parentRef = useRef<HTMLParagraphElement>(null);
 
@@ -43,14 +40,6 @@ const AuthorCell: FC<{ label: string }> = ({ label }) => {
     </p>
   );
 
-  if (loading) {
-    return (
-      <div className="flex flex-col py-4 gap-2">
-        <Skeleton className="h-6 w-[150px]" />
-      </div>
-    );
-  }
-
   return (
     <div className="flex flex-col py-4 gap-2 max-w-[150px]">
       <div className="flex items-center gap-1">
@@ -72,19 +61,9 @@ const AuthorCell: FC<{ label: string }> = ({ label }) => {
 };
 
 const TitleCell: FC<CellProps> = ({ row }) => {
-  const { loading } = useBookTableContext();
-
-  if (loading) {
-    return (
-      <div className="flex flex-col py-4 gap-2 sm:w-80 md:w-[32rem]">
-        <Skeleton className="h-6 w-full" />
-      </div>
-    );
-  }
-
   return (
-    <div className="flex flex-col py-4 gap-2 sm:w-80 md:w-[32rem] truncate">
-      <div className="flex items-center gap-1 sm:w-80 md:w-[32rem]">
+    <div className="flex flex-col py-4 gap-2 w-[450px] truncate">
+      <div className="flex items-center gap-1 w-full">
         <p className="text-base truncate">{row.original.title}</p>
       </div>
     </div>
@@ -92,16 +71,6 @@ const TitleCell: FC<CellProps> = ({ row }) => {
 };
 
 const LanguageCell: FC<CellProps> = ({ row }) => {
-  const { loading } = useBookTableContext();
-
-  if (loading) {
-    return (
-      <div style={{ width: '75px' }} className="flex flex-col py-4 gap-2">
-        <Skeleton className="h-6 w-16" />
-      </div>
-    );
-  }
-
   return (
     <div style={{ width: '75px' }} className="flex flex-col py-4 gap-2">
       <div className="flex items-center gap-1">
@@ -116,16 +85,6 @@ const LanguageCell: FC<CellProps> = ({ row }) => {
 };
 
 const IsbnCell: FC<CellProps> = ({ row }) => {
-  const { loading } = useBookTableContext();
-
-  if (loading) {
-    return (
-      <div className="flex flex-col py-4 gap-2">
-        <Skeleton className="h-6 w-[125px]" />
-      </div>
-    );
-  }
-
   return (
     <div className="flex flex-col py-4 gap-2">
       <div className="flex items-center gap-1">
@@ -136,31 +95,17 @@ const IsbnCell: FC<CellProps> = ({ row }) => {
 };
 
 const StatusCell: FC<CellProps> = ({ row, table }) => {
-  const { loading } = useBookTableContext();
-
   return (
     <div className="max-w-16 flex justify-center items-center gap-1">
-      {loading ? <Skeleton className="h-6 w-6" /> : 
-        <ChangeBookStatusModal 
-          book={row.original}
-          page={table.getState().pagination.pageIndex}
-        />
-      }
+      <ChangeBookStatusModal
+        book={row.original}
+        page={table.getState().pagination.pageIndex}
+      />
     </div>
   );
 };
 
 const FormatCell: FC<CellProps> = ({ row }) => {
-  const { loading } = useBookTableContext();
-
-  if (loading) {
-    return (
-      <div className="flex flex-col py-4 gap-2">
-        <Skeleton className="h-6 w-[125px]" />
-      </div>
-    );
-  }
-
   return (
     <div className="flex flex-col py-4 gap-2 w-[125px]">
       <div className="flex items-center gap-1">
@@ -173,24 +118,12 @@ const FormatCell: FC<CellProps> = ({ row }) => {
 };
 
 const ActionsCell: FC<CellProps> = ({ row }) => {
-  const { loading } = useBookTableContext();
-
   const book = row.original;
 
   return (
     <div className="flex items-center gap-2">
-      {!loading && (
-        <>
-          <AdminEditBookModal bookId={book.id} />
-          <DeleteBookModal bookId={book.id} bookName={book.title} />
-        </>
-      )}
-      {loading && (
-        <>
-          <Skeleton className="w-8 h-8"></Skeleton>
-          <Skeleton className="w-8 h-8"></Skeleton>
-        </>
-      )}
+      <AdminEditBookModal bookId={book.id} />
+      <DeleteBookModal bookId={book.id} bookName={book.title} />
     </div>
   );
 };
@@ -201,7 +134,7 @@ export const bookTableColumns: ColumnDef<Book>[] = [
     accessorKey: 'title',
     minSize: 150,
     size: 450,
-    maxSize: 600,
+    maxSize: 450,
     cell: TitleCell,
   },
   {
@@ -229,7 +162,7 @@ export const bookTableColumns: ColumnDef<Book>[] = [
     },
   },
   {
-    header: () => <TableHeader className='w-[125px]' label="ISBN" />,
+    header: () => <TableHeader className="w-[125px]" label="ISBN" />,
     minSize: 75,
     size: 125,
     maxSize: 150,
@@ -237,7 +170,7 @@ export const bookTableColumns: ColumnDef<Book>[] = [
     cell: IsbnCell,
   },
   {
-    header: () => <TableHeader className='w-[125px]' label="Format" />,
+    header: () => <TableHeader className="w-[125px]" label="Format" />,
     minSize: 75,
     size: 125,
     maxSize: 150,
