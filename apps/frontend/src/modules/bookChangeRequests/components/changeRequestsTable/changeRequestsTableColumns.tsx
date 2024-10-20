@@ -88,6 +88,7 @@ export const changeRequestsColumns: ColumnDef<BookChangeRequest>[] = [
         'userId',
         'userEmail',
         'book',
+        'bookTitle'
       ];
 
       const translationMap = {
