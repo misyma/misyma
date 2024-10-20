@@ -1,21 +1,54 @@
 import { UserBook } from '@common/contracts';
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { cn } from '../../../common/lib/utils';
+import { Skeleton } from '../../../common/components/skeleton/skeleton';
+
+const DEFAULT_BOOK_SRC = '/book.jpg';
 
 interface BookImageProps {
   userBook?: UserBook;
   onClick?: () => void;
   className?: string;
+  bookImageSrc?: string;
 }
 
 export const BookImageMiniature: FC<BookImageProps> = ({
   userBook,
   onClick,
   className,
-}) => (
-  <img
-    onClick={onClick}
-    src={userBook?.imageUrl || userBook?.book.imageUrl || '/book.jpg'}
-    className={cn('object-contain aspect-square max-w-[200px]', className)}
-  />
-);
+  bookImageSrc,
+}) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [imageSrc, setImageSrc] = useState('');
+
+  useEffect(() => {
+    const src =
+      userBook?.imageUrl ||
+      userBook?.book.imageUrl ||
+      bookImageSrc ||
+      DEFAULT_BOOK_SRC;
+    setImageSrc(src);
+  }, [userBook, bookImageSrc]);
+
+  const handleImageLoad = () => {
+    setIsLoading(false);
+  };
+
+  return (
+    <div className={cn('relative aspect-square max-w-[200px]', className)}>
+      {isLoading && (
+        <Skeleton className='w-full h-full' />
+      )}
+      <img
+        onClick={onClick}
+        src={imageSrc}
+        onLoad={handleImageLoad}
+        className={cn(
+          'object-contain w-full h-full',
+          isLoading ? 'invisible' : 'visible'
+        )}
+        alt="Book cover"
+      />
+    </div>
+  );
+};

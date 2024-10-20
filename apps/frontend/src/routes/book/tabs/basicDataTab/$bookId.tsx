@@ -4,7 +4,6 @@ import { StatusChooserCards } from '../../../../modules/book/components/statusCh
 import { BookshelfChoiceDropdown } from '../../../../modules/book/components/bookshelfChoiceDropdown/bookshelfChoiceDropdown.js';
 import { Separator } from '../../../../modules/common/components/separator/separator.js';
 import { FavoriteBookButton } from '../../../../modules/book/components/favoriteBookButton/favoriteBookButton.js';
-import { UserBook } from '@common/contracts';
 import { CurrentRatingStar } from '../../../../modules/book/components/currentRatingStar/currentRatingStar.js';
 import { BookFormat } from '../../../../modules/common/constants/bookFormat.js';
 import { ReversedLanguages } from '../../../../modules/common/constants/languages.js';
@@ -230,7 +229,7 @@ export const BasicDataPage: FC = () => {
                   />
                 </div>
                 <div className="flex justify-center">
-                  <FavoriteBookButton userBook={data as UserBook} />
+                  <FavoriteBookButton bookId={bookId} />
                 </div>
                 <div className="flex flex-col gap-4 w-3/4">
                   <div className="flex justify-between">

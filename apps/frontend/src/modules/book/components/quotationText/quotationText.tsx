@@ -7,16 +7,17 @@ interface QuotationTextProps {
   pageIndex: number;
 }
 
-export const QuotationText: FC<QuotationTextProps> = ({ content, index, pageIndex }) => {
+export const QuotationText: FC<QuotationTextProps> = ({
+  content,
+  index,
+  pageIndex,
+}) => {
   const [isTruncated, setIsTruncated] = useState(false);
-
   const [showMore, setShowMore] = useState(false);
-
+  const parentRef = useRef<HTMLParagraphElement>(null);
   const elementId = useMemo(() => {
     return `element${index}-${pageIndex}`;
   }, [index, pageIndex]);
-
-  const parentRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
     if (!parentRef) {
@@ -35,7 +36,8 @@ export const QuotationText: FC<QuotationTextProps> = ({ content, index, pageInde
 
     root?.append(clone);
 
-    const originalWidth = parentRef.current?.getBoundingClientRect().width as number;
+    const originalWidth = parentRef.current?.getBoundingClientRect()
+      .width as number;
 
     const cloneWidth = clone.getBoundingClientRect().width;
 
@@ -52,19 +54,19 @@ export const QuotationText: FC<QuotationTextProps> = ({ content, index, pageInde
     const element = document.querySelector(`#${elementId}`);
     setShowMore(showMore);
 
-    if (showMore) {
-      return element?.classList.remove('truncate');
-    }
+    element?.classList.add('truncate', 'text-wrap');
 
-    element?.classList.add('truncate');
+    if (!showMore) {
+      return element?.classList.remove('text-wrap');
+    }
   };
 
   return (
-    <div>
+    <div className="w-full">
       <p
         ref={parentRef}
         id={elementId}
-        className="font-semibold break-words text-lg truncate sm:max-w-3xl md:max-w-4xl"
+        className="font-semibold break-words text-lg truncate w-[90%]"
       >
         "{content}"
       </p>
@@ -88,6 +90,7 @@ export const QuotationText: FC<QuotationTextProps> = ({ content, index, pageInde
           )}
         </div>
       )}
+      {!isTruncated && <div className='show-more-placeholder h-5'> </div>}
     </div>
   );
 };

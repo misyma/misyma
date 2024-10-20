@@ -1,7 +1,7 @@
 import { FC, useMemo, useState } from 'react';
 import { Separator } from '../../../../modules/common/components/separator/separator.js';
 import { useFindUserQuery } from '../../../../modules/user/api/queries/findUserQuery/findUserQuery.js';
-import { SortingType, UserBook } from '@common/contracts';
+import { SortingType } from '@common/contracts';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice.js';
@@ -164,7 +164,7 @@ export const GradesPage: FC = () => {
                     />
                   </div>
                   <div className="flex justify-center">
-                    <FavoriteBookButton userBook={userBookData as UserBook} />
+                    <FavoriteBookButton bookId={bookId} />
                   </div>
                   <div className="flex flex-col gap-4 w-3/4">
                     <div className="flex justify-between w-full">

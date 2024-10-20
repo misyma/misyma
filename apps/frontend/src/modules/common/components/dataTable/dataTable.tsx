@@ -32,6 +32,7 @@ interface DataTableProps<TData, TValue> {
   onSetPage: (val: number) => Promise<void> | void;
   filterLabel?: string;
   includeColumnsSelector?: boolean;
+  hideHeaders?: boolean;
   PaginationSlot?: ReactNode;
 }
 
@@ -42,6 +43,7 @@ export function DataTable<TData extends object, TValue>({
   pageSize,
   pageCount,
   itemsCount,
+  hideHeaders,
   onSetPage,
   PaginationSlot,
 }: DataTableProps<TData, TValue>): JSX.Element {
@@ -93,30 +95,32 @@ export function DataTable<TData extends object, TValue>({
     <div className="w-full md:max-w-screen-xl">
       <div className="w-full min-h-[22rem]">
         <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead
-                      style={{
-                        width: `${header.getSize()}px`,
-                      }}
-                      className="p-4 m-0 h-14"
-                      key={header.id}
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
+          {!hideHeaders && (
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead
+                        style={{
+                          width: `${header.getSize()}px`,
+                        }}
+                        className="p-4 m-0 h-14"
+                        key={header.id}
+                      >
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    );
+                  })}
+                </TableRow>
+              ))}
+            </TableHeader>
+          )}
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
@@ -155,6 +159,7 @@ export function DataTable<TData extends object, TValue>({
             pageIndex={pageIndex ?? 0}
             pagesCount={pageCount ?? 0}
             itemsCount={itemsCount}
+            perPage={pageSize}
           />
         </div>
       )}
