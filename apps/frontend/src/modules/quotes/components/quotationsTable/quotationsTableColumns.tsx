@@ -5,7 +5,7 @@ import { QuotationText } from '../../../book/components/quotationText/quotationT
 import { DeleteQuoteModal } from '../deleteQuoteModal/deleteQuoteModal';
 import { UpdateQuoteModal } from '../updateQuoteModal/updateQuoteModal';
 
-export const columns: ColumnDef<Quote>[] = [
+export const quotationTableColumns: ColumnDef<Quote>[] = [
   {
     header: () => <></>,
     accessorKey: 'updatedAt',
@@ -13,7 +13,7 @@ export const columns: ColumnDef<Quote>[] = [
       const foundRow = table.getRowModel().rows.find((row) => row.index === row.index)
 
       return (
-        <div className="flex flex-wrap flex-col py-4 gap-4">
+        <div className="flex flex-wrap flex-col py-4 gap-4 sm:w-104 md:w-[36rem]">
           <div className="flex gap-2 items-center justify-between">
             <div className="flex gap-2 justify-start items-between">
               <FavoriteQuotationButton quote={row.original} />

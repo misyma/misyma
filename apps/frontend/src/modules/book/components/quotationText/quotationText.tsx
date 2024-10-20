@@ -60,11 +60,11 @@ export const QuotationText: FC<QuotationTextProps> = ({ content, index, pageInde
   };
 
   return (
-    <div>
+    <div className='truncate'>
       <p
         ref={parentRef}
         id={elementId}
-        className="font-semibold break-words text-lg truncate sm:max-w-3xl md:max-w-4xl"
+        className="font-semibold break-words text-lg truncate sm:w-104 md:w-[36rem]"
       >
         "{content}"
       </p>

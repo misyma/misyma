@@ -25,7 +25,7 @@ export const FavoriteBookButton: FC<Props> = ({ userBook, className }) => {
   const onIsFavoriteChange = async (): Promise<void> => {
     if (userBook) {
       await updateUserBook({
-        userBookId: userBook.id,
+        userBookId: userBook?.id,
         isFavorite: !isFavorite,
         accessToken: accessToken as string,
       });
@@ -35,17 +35,17 @@ export const FavoriteBookButton: FC<Props> = ({ userBook, className }) => {
       await Promise.all([
         queryClient.invalidateQueries({
           predicate: (query) =>
-            query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId && query.queryKey[1] === userBook.bookshelfId,
+            query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId && query.queryKey[1] === userBook?.bookshelfId,
         }),
         queryClient.invalidateQueries({
-          predicate: (query) => query.queryKey[0] === BookApiQueryKeys.findUserBookById && query.queryKey[1] === userBook.id,
+          predicate: (query) => query.queryKey[0] === BookApiQueryKeys.findUserBookById && query.queryKey[1] === userBook?.id,
         }),
       ]);
     }
   };
 
   useEffect(() => {
-    setIsFavorite(userBook.isFavorite)
+    setIsFavorite(userBook?.isFavorite)
   }, [userBook])
 
   return (
