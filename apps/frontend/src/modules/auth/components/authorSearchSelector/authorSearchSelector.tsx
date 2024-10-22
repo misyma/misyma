@@ -36,6 +36,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { createAuthorDraftSchema } from '../../../author/schemas/createAuthorDraftSchema';
 import { AuthorFieldTooltip } from '../../../author/components/authorFieldTooltip';
+import useDebounce from '../../../common/hooks/useDebounce';
 
 interface AuthorSearchSelectorProps {
   onSelect: (authorId: string, authorName: string) => void;
@@ -82,8 +83,8 @@ const CreateAuthorDraftForm: FC<CreateAuthorDraftFormProps> = ({
           render={({ field }) => (
             <FormItem>
               <div className="flex gap-2 items-center pb-1">
-                <FormLabel>Imię i nazwisko</FormLabel>
-                <AuthorFieldTooltip side='bottom' />
+                <FormLabel>Imię i nazwisko*</FormLabel>
+                <AuthorFieldTooltip side="bottom" />
               </div>
               <FormControl>
                 <Input min={1} max={128} type="text" {...field} />
@@ -119,12 +120,14 @@ export const AuthorSearchSelector: FC<AuthorSearchSelectorProps> = ({
     propSearchedName
   );
 
+  const debouncedSearchedName = useDebounce(searchedName, 300);
+
   const {
     data: authors,
     isFetched,
     isLoading: loading,
   } = useFindAuthorsQuery({
-    name: searchedName,
+    name: debouncedSearchedName,
   });
 
   const createAuthorDraftForm = useForm({
@@ -147,7 +150,6 @@ export const AuthorSearchSelector: FC<AuthorSearchSelectorProps> = ({
           }
         }}
       />
-
       <CommandList>
         {isFetched && authors?.data.length === 0 && (
           <CommandEmpty className="flex flex-col px-4 py-4 gap-4">
@@ -183,7 +185,11 @@ export const AuthorSearchSelector: FC<AuthorSearchSelectorProps> = ({
             )}
           </CommandEmpty>
         )}
-        {loading && <CommandLoading>Wyszukuję autorów</CommandLoading>}
+        {loading && (
+          <CommandLoading className='p-2'>
+            <span>Wyszukuję autorów</span>
+          </CommandLoading>
+        )}
         {authors?.data.map((author) => (
           <CommandItem
             key={`author-${author.id}`}

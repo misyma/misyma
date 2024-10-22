@@ -172,7 +172,7 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
           name="form"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Format</FormLabel>
+              <FormLabel>Format*</FormLabel>
               <BookFormatSelect
                 dialog={true}
                 onValueChange={(val) => {
@@ -216,7 +216,7 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
           name="language"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Język</FormLabel>
+              <FormLabel>Język*</FormLabel>
               <LanguageSelect
                 dialog={true}
                 type={'form'}

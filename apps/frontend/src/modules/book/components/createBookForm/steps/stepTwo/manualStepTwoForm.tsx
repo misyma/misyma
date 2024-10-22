@@ -153,7 +153,7 @@ export const ManualStepTwoForm = (): JSX.Element => {
           name="form"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Format</FormLabel>
+              <FormLabel>Format*</FormLabel>
               <BookFormatSelect {...field} />
               <FormMessage />
             </FormItem>
@@ -188,7 +188,7 @@ export const ManualStepTwoForm = (): JSX.Element => {
           name="language"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Język</FormLabel>
+              <FormLabel>Język*</FormLabel>
               <LanguageSelect
                 onValueChange={onLanguageSelected}
                 type="form"

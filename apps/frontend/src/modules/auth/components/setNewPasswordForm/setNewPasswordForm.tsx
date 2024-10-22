@@ -2,12 +2,23 @@ import { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { SetNewPasswordFormSchemaValues, setNewPasswordFormSchema } from './schema/setNewPasswordFormSchema';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/form/form';
+import {
+  SetNewPasswordFormSchemaValues,
+  setNewPasswordFormSchema,
+} from './schema/setNewPasswordFormSchema';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../../../common/components/form/form';
 import { Input } from '../../../common/components/input/input';
 import { Button } from '../../../common/components/button/button';
 import { useSetNewPasswordMutation } from '../../api/setNewPasswordMutation/setNewPasswordMutation';
 import { UserApiError } from '../../../user/errors/userApiError';
+import { PasswordEyeIcon } from '../../../common/components/icons/passwordEyeIcon/passwordEyeIcon';
 
 interface SetNewPasswordFormProps {
   onSuccess: () => void;
@@ -26,10 +37,18 @@ export const SetNewPasswordForm: FC<SetNewPasswordFormProps> = ({
       repeatedPassword: '',
       password: '',
     },
-    mode: 'onTouched'
+    mode: 'onTouched',
   });
+  const [passwordInputType, setPasswordInputType] = useState<
+    'text' | 'password'
+  >('password');
+  const [repeatPasswordInputType, setRepeatPasswordInputType] = useState<
+    'text' | 'password'
+  >('password');
 
-  const [responseErrorMessage, setResponseErrorMessage] = useState<string | null>(null);
+  const [responseErrorMessage, setResponseErrorMessage] = useState<
+    string | null
+  >(null);
 
   const setNewPasswordMutation = useSetNewPasswordMutation({});
 
@@ -48,29 +67,36 @@ export const SetNewPasswordForm: FC<SetNewPasswordFormProps> = ({
             onError(error);
           }
         },
-      },
+      }
     );
   };
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-4"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="password"
           render={({ field }) => (
             <FormItem className="h-[5.5rem]">
-              <FormLabel>Nowe hasło</FormLabel>
+              <FormLabel>Nowe hasło*</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Hasło"
-                  type="password"
+                  type={passwordInputType}
                   className="w-60 sm:w-96"
                   autoComplete="new-password"
                   {...field}
+                  otherIcon={
+                    <PasswordEyeIcon
+                      onClick={() =>
+                        setPasswordInputType(
+                          passwordInputType === 'password' ? 'text' : 'password'
+                        )
+                      }
+                      passwordType={passwordInputType}
+                    />
+                  }
                 />
               </FormControl>
               <FormMessage />
@@ -82,13 +108,23 @@ export const SetNewPasswordForm: FC<SetNewPasswordFormProps> = ({
           name="repeatedPassword"
           render={({ field }) => (
             <FormItem className="h-[5.5rem]">
-              <FormLabel>Powtórz hasło</FormLabel>
+              <FormLabel>Powtórz hasło*</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Hasło"
-                  type="password"
+                  type={repeatPasswordInputType}
                   className="w-60 sm:w-96"
                   autoComplete="new-password"
+                  otherIcon={
+                    <PasswordEyeIcon
+                      onClick={() =>
+                        setRepeatPasswordInputType(
+                          repeatPasswordInputType === 'password' ? 'text' : 'password'
+                        )
+                      }
+                      passwordType={repeatPasswordInputType}
+                    />
+                  }
                   {...field}
                 />
               </FormControl>
@@ -96,14 +132,12 @@ export const SetNewPasswordForm: FC<SetNewPasswordFormProps> = ({
             </FormItem>
           )}
         />
-        <Button
-          type="submit"
-          disabled={!form.formState.isValid}
-          size='xl'
-        >
+        <Button type="submit" disabled={!form.formState.isValid} size="xl">
           Ustaw nowe hasło
         </Button>
-        {responseErrorMessage && <FormMessage>{responseErrorMessage}</FormMessage>}
+        {responseErrorMessage && (
+          <FormMessage>{responseErrorMessage}</FormMessage>
+        )}
       </form>
     </Form>
   );
