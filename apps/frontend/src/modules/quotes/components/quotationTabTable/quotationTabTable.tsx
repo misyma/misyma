@@ -88,6 +88,7 @@ export const QuotationTabTable: FC<QuotationTabTableProps> = ({ bookId }) => {
         </div>
       )}
       <DataTable
+        tableContainerClassName='min-h-[32rem]'
         hideHeaders={true}
         columns={quotationTableColumns}
         data={[...data]}

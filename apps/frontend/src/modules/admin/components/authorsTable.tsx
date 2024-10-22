@@ -11,9 +11,16 @@ import { DataSkeletonTable } from '../../common/components/dataTable/dataSkeleto
 interface AdminAuthorsTableProps {
   page: number;
   setPage: (val: number) => void;
+  authorName: string;
+  setAuthorName: (val: string) => void;
 }
-export const AuthorsTable: FC<AdminAuthorsTableProps> = ({ page, setPage }) => {
-  const [searchAuthorName, setSearchAuthorName] = useState('');
+export const AuthorsTable: FC<AdminAuthorsTableProps> = ({
+  page,
+  setPage,
+  setAuthorName,
+  authorName,
+}) => {
+  const [searchAuthorName, setSearchAuthorName] = useState(authorName);
   const [pageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
   const debouncedSearchValue = useDebounce(searchAuthorName, 250);
@@ -22,6 +29,10 @@ export const AuthorsTable: FC<AdminAuthorsTableProps> = ({ page, setPage }) => {
     setPage(1);
     setSearchAuthorName(val);
   };
+
+  useEffect(() => {
+    setAuthorName(debouncedSearchValue);
+  }, [debouncedSearchValue, setAuthorName]);
 
   const {
     data: authorsData,
@@ -48,9 +59,11 @@ export const AuthorsTable: FC<AdminAuthorsTableProps> = ({ page, setPage }) => {
   }, [isFetched, authorsData, pageSize]);
 
   const itemsCount = useMemo(
-    () => authorsData?.metadata.total,
+    () => Number(authorsData?.metadata.total ?? 0),
     [authorsData?.metadata.total]
   );
+
+  console.log(itemsCount, pageSize)
 
   return (
     <div className="flex flex-col w-full">
@@ -69,6 +82,7 @@ export const AuthorsTable: FC<AdminAuthorsTableProps> = ({ page, setPage }) => {
           pageIndex={page}
           itemsCount={authorsData?.metadata.total}
           onSetPage={setPage}
+          PaginationSlot={itemsCount <= pageSize ? <></> : null}
         />
       )}
       {isLoading && (
@@ -80,7 +94,7 @@ export const AuthorsTable: FC<AdminAuthorsTableProps> = ({ page, setPage }) => {
           skeletonHeight={6}
           onSetPage={setPage}
           itemsCount={itemsCount}
-          PaginationSlot={totalPages === 0 ? <></> : null}
+          PaginationSlot={itemsCount <= pageSize ? <></> : null}
         />
       )}
     </div>

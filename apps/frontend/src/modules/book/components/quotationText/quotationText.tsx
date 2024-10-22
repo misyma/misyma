@@ -25,15 +25,11 @@ export const QuotationText: FC<QuotationTextProps> = ({
     }
 
     const clone = parentRef.current?.cloneNode(true) as HTMLParagraphElement;
-
     clone.id = '';
-
     clone.classList.remove('custom-truncate');
-
     clone.classList.add('custom-inline');
 
     const root = document.querySelector('body');
-
     root?.append(clone);
 
     const originalWidth = parentRef.current?.getBoundingClientRect()

@@ -1,5 +1,5 @@
-import { createFileRoute } from '@tanstack/react-router';
-import { FC, useState } from 'react';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { FC } from 'react';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { CreateAuthorModal } from '../../../../modules/author/components/createAuthorModal';
 import { Button } from '../../../../modules/common/components/button/button';
@@ -7,9 +7,24 @@ import { RequireAdmin } from '../../../../modules/core/components/requireAdmin/r
 import { AdminTabLayout } from '../../../../modules/common/layouts/adminTabLayout';
 import { AdminTabs } from '../../../../modules/admin/components/adminTabs';
 import { AuthorsTable } from '../../../../modules/admin/components/authorsTable';
+import { z } from 'zod';
 
 export const AuthorsAdminPage: FC = () => {
-  const [page, setPage] = useState(1);
+  const navigate = useNavigate();
+
+  const searchParams = Route.useSearch();
+
+  const setPage = (page: number) => {
+    navigate({
+      search: (values) => ({ ...values, page }),
+    });
+  };
+
+  const setSearchAuthorName = (val: string) => {
+    navigate({
+      search: (values) => ({ ...values, name: val }),
+    });
+  };
 
   return (
     <AuthenticatedLayout>
@@ -17,8 +32,10 @@ export const AuthorsAdminPage: FC = () => {
         TabsSlot={<AdminTabs currentlySelected="authors" />}
         TableSlot={
           <AuthorsTable
-            page={page}
+            authorName={searchParams.name}
+            page={searchParams.page}
             setPage={setPage}
+            setAuthorName={setSearchAuthorName}
           />
         }
         AdditionalActionsSlot={
@@ -31,6 +48,20 @@ export const AuthorsAdminPage: FC = () => {
     </AuthenticatedLayout>
   );
 };
+
+const RouteSearchSchema = z.object({
+  page: z
+    .number({
+      coerce: true,
+    })
+    .catch(1),
+  pageSize: z
+    .number({
+      coerce: true,
+    })
+    .catch(10),
+  name: z.string().catch(''),
+});
 
 export const Route = createFileRoute('/admin/tabs/authors/')({
   component: () => {
@@ -52,4 +83,5 @@ export const Route = createFileRoute('/admin/tabs/authors/')({
       },
     ],
   },
+  validateSearch: (s) => RouteSearchSchema.parse(s),
 });
