@@ -303,7 +303,7 @@ export const SearchResultPage: FC = () => {
               <p>Wydawnictwo: {foundBooks?.data[0].publisher}</p>
             )}
             {foundBooks?.data[0].translator && (
-              <p>Tłumacz: {foundBooks?.data[0].translator}</p>
+              <p>Przekład: {foundBooks?.data[0].translator}</p>
             )}
             {foundBooks?.data[0].format && (
               <p>Format: {BookFormat[foundBooks?.data[0].format]}</p>

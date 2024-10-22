@@ -50,7 +50,7 @@ export const BasicDataMainBody: FC<BasicDataMainBodyProps> = ({ bookId }) => {
               ? ReversedLanguages[data?.book.language]?.toLowerCase()
               : ''}
           </p>
-          {data?.book.translator && <p>Tłumacz: {data?.book.translator}</p>}
+          {data?.book.translator && <p>Przekład: {data?.book.translator}</p>}
           <p>
             Format: {data?.book.format ? BookFormat[data?.book.format] : ''}
           </p>

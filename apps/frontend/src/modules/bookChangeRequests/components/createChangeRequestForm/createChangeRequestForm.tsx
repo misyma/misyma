@@ -46,13 +46,13 @@ const stepTwoSchema = z.object({
   language: z.nativeEnum(Language).optional(),
   translator: z
     .string({
-      required_error: 'Tłumacz jest wymagany.',
+      required_error: 'Przekład jest wymagany.',
     })
     .min(1, {
-      message: 'Tłumacz jest zbyt krótki.',
+      message: 'Przekład jest zbyt krótki.',
     })
     .max(64, {
-      message: 'Tłumacz może mieć maksymalnie 64 znaki.',
+      message: 'Przekład może mieć maksymalnie 64 znaki.',
     })
     .or(z.literal(''))
     .optional(),
@@ -304,10 +304,10 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
               name="translator"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Tłumacz</FormLabel>
+                  <FormLabel>Przekład</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Tłumacz"
+                      placeholder="Przekład"
                       type="text"
                       includeQuill={false}
                       {...field}
