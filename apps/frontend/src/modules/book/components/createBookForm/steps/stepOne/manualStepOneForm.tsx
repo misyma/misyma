@@ -257,7 +257,7 @@ export const ManualStepOneForm = (): JSX.Element => {
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Tytuł</FormLabel>
+              <FormLabel>Tytuł*</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Tytuł"
@@ -283,7 +283,7 @@ export const ManualStepOneForm = (): JSX.Element => {
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <div className="flex gap-2 items-center">
-                <FormLabel>Autor</FormLabel>
+                <FormLabel>Autor*</FormLabel>
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -325,7 +325,8 @@ export const ManualStepOneForm = (): JSX.Element => {
                         <p
                           className={cn(
                             !field.value && 'text-muted-foreground',
-                            draftAuthorName && 'text-black',
+                            draftAuthorName && 'text-black font-normal',
+                            authorName() && 'text-black font-normal',
                             'w-full text-start px-3 py-2'
                           )}
                         >
@@ -333,9 +334,13 @@ export const ManualStepOneForm = (): JSX.Element => {
                             <LoadingSpinner size={20} />
                           )}
                           {draftAuthorName}
+                          {!field.value &&
+                            !draftAuthorName &&
+                            !isFetchingCurrentAuthor &&
+                            'Wyszukaj autora'}
                           {field.value && !isFetchingCurrentAuthor
                             ? authorName()
-                            : 'Wyszukaj autora'}
+                            : ''}
                         </p>
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>

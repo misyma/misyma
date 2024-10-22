@@ -19,25 +19,19 @@ import {
 } from '../../../../../common/components/form/form';
 import { FileInput } from '../../../../../common/components/input/input';
 import { Button } from '../../../../../common/components/button/button';
-import { useFindUserQuery } from '../../../../../user/api/queries/findUserQuery/findUserQuery';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../../../../../common/components/select/select';
-import { ReadingStatus } from '../../../../../common/constants/readingStatus';
-import { useEffect, useRef, useState } from 'react';
+import { Select } from '../../../../../common/components/select/select';
+import { useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getGenresQueryOptions } from '../../../../../genres/api/queries/getGenresQuery/getGenresQueryOptions';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';
-import { useFindUserBookshelfsQuery } from '../../../../../bookshelf/api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 import { useFindAuthorsQuery } from '../../../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
 import { useCreateBookWithUserBook } from '../../../../hooks/createBookWithUserBook/createBookWithUserBook';
 import { LoadingSpinner } from '../../../../../common/components/spinner/loading-spinner';
 import GenreSelect from '../../../genreSelect/genreSelect';
+import { BookshelfSelector } from '../../../../../bookshelf/components/bookshelfSelector/bookshelfSelector';
+import { GenreSelector } from '../../../../../bookshelf/components/genreSelector/genreSelector';
+import { useFileUpload } from '../../../../../common/hooks/useFileUpload';
 
 const stepThreeFormSchema = z.object({
   status: z.nativeEnum(ContractReadingStatus, {
@@ -50,7 +44,7 @@ const stepThreeFormSchema = z.object({
       {},
       {
         required_error: 'Wymagany.',
-      },
+      }
     )
     .or(z.undefined()),
   bookshelfId: z.string().uuid({
@@ -72,38 +66,23 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
 
   const [submissionError, setSubmissionError] = useState<string | null>(null);
   const [bookshelfSelectOpen, setBookshelfSelectOpen] = useState(false);
-  const [statusSelectOpen, setStatusSelectOpen] = useState(false);
-  const [file, setFile] = useState<File | undefined>();
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+  const { file, setFile } = useFileUpload({
+    fileInputRef,
+  });
   const dispatch = useBookCreationDispatch();
 
-  const { data: user } = useFindUserQuery();
-  const { data: bookshelvesData } = useFindUserBookshelfsQuery({
-    userId: user?.id as string,
-    pageSize: 50,
-  });
   const { data: genres } = useQuery(
     getGenresQueryOptions({
       accessToken: accessToken as string,
-    }),
+    })
   );
   const { refetch } = useFindAuthorsQuery({
     name: bookCreation.stepOneDetails?.authorName,
     enabled: false,
   });
-
-  useEffect(() => {
-    if (file) {
-      const dataTransfer = new DataTransfer();
-      dataTransfer.items.add(file);
-
-      if (fileInputRef.current) {
-        fileInputRef.current.files = dataTransfer.files;
-      }
-    }
-  }, [file]);
 
   const form = useForm({
     resolver: zodResolver(stepThreeFormSchema),
@@ -126,7 +105,9 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
     onOperationError: setSubmissionError,
   });
 
-  const onSubmit = async (values: Partial<z.infer<typeof stepThreeFormSchema>>) => {
+  const onSubmit = async (
+    values: Partial<z.infer<typeof stepThreeFormSchema>>
+  ) => {
     await create({
       authorPayload: {
         authorId: bookCreation.stepOneDetails?.author,
@@ -140,21 +121,35 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
         title: bookCreation.stepOneDetails?.title as string,
         translator: bookCreation.stepTwoDetails?.translator,
         pages: bookCreation.stepTwoDetails?.pagesCount,
-        ...(bookCreation.stepTwoDetails as Required<BookCreationNonIsbnState['stepTwoDetails']>),
-        ...(bookCreation.stepThreeDetails as Required<BookCreationNonIsbnState['stepThreeDetails']>),
-        ...(bookCreation.stepOneDetails as Required<BookCreationNonIsbnState['stepOneDetails']>),
-        isbn: bookCreation.stepOneDetails?.isbn === '' ? undefined : bookCreation.stepOneDetails?.isbn,
+        ...(bookCreation.stepTwoDetails as Required<
+          BookCreationNonIsbnState['stepTwoDetails']
+        >),
+        ...(bookCreation.stepThreeDetails as Required<
+          BookCreationNonIsbnState['stepThreeDetails']
+        >),
+        ...(bookCreation.stepOneDetails as Required<
+          BookCreationNonIsbnState['stepOneDetails']
+        >),
+        isbn:
+          bookCreation.stepOneDetails?.isbn === ''
+            ? undefined
+            : bookCreation.stepOneDetails?.isbn,
         releaseYear:
           // eslint-disable-next-line
           (bookCreation.stepOneDetails?.yearOfIssue as any) === ''
             ? undefined
             : bookCreation.stepOneDetails?.yearOfIssue,
         accessToken: accessToken as string,
-        publisher: bookCreation.stepOneDetails?.publisher === '' ? undefined : bookCreation.stepOneDetails?.publisher,
+        publisher:
+          bookCreation.stepOneDetails?.publisher === ''
+            ? undefined
+            : bookCreation.stepOneDetails?.publisher,
       },
       userBookPayload: {
         bookshelfId: bookCreation.stepThreeDetails?.bookshelfId || bookshelfId,
-        status: bookCreation.stepThreeDetails?.status || (values.status as ContractReadingStatus),
+        status:
+          bookCreation.stepThreeDetails?.status ||
+          (values.status as ContractReadingStatus),
         isFavorite: false,
         genreIds: [bookCreation.stepThreeDetails?.genre as string],
         accessToken: accessToken as string,
@@ -165,16 +160,13 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-4"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="bookshelfId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Półka</FormLabel>
+              <FormLabel>Półka*</FormLabel>
               <Select
                 open={bookshelfSelectOpen}
                 onOpenChange={setBookshelfSelectOpen}
@@ -189,28 +181,13 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
                 defaultValue={field.value}
               >
                 <FormControl>
-                  <SelectTrigger className='text-start'>
-                    <SelectValue
-                      placeholder="Półka"
-                    />
-                    <SelectContent>
-                      {bookshelvesData?.data
-                        .filter((bookshelf) => bookshelf.name !== 'Wypożyczalnia')
-                        .map((bookshelf) => (
-                          <SelectItem
-                            className='text-start'
-                            onKeyDown={(event) => {
-                              if (event.key === 'Enter') {
-                                setBookshelfSelectOpen(false);
-                              }
-                            }}
-                            value={bookshelf.id}
-                          >
-                            {bookshelf.name}
-                          </SelectItem>
-                        ))}
-                    </SelectContent>
-                  </SelectTrigger>
+                  <BookshelfSelector
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter') {
+                        setBookshelfSelectOpen(false);
+                      }
+                    }}
+                  />
                 </FormControl>
               </Select>
               <FormMessage />
@@ -222,10 +199,9 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
           name="status"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Status</FormLabel>
-              <Select
-                open={statusSelectOpen}
-                onOpenChange={setStatusSelectOpen}
+              <FormLabel>Status*</FormLabel>
+              <GenreSelector
+                defaultValue={field.value}
                 onValueChange={(val) => {
                   dispatch({
                     type: BookCreationActionType.setStatus,
@@ -234,31 +210,10 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
 
                   field.onChange(val);
                 }}
-                defaultValue={field.value}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue
-                      placeholder="Status"
-                      className="bg-red-500"
-                    />
-                    <SelectContent>
-                      {Object.entries(ReadingStatus).map(([key, status]) => (
-                        <SelectItem
-                          onKeyDown={(event) => {
-                            if (event.key === 'Enter') {
-                              setStatusSelectOpen(false);
-                            }
-                          }}
-                          value={key}
-                        >
-                          {status}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </SelectTrigger>
-                </FormControl>
-              </Select>
+                renderer={({ children }) => (
+                  <FormControl>{children({})}</FormControl>
+                )}
+              />
               <FormMessage />
             </FormItem>
           )}
@@ -278,7 +233,11 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
                   onChange={(event) => {
                     onChange(event.target.files && event.target.files[0]);
 
-                    setFile(event.target.files ? event.target?.files[0] ?? undefined : undefined);
+                    setFile(
+                      event.target.files
+                        ? (event.target?.files[0] ?? undefined)
+                        : undefined
+                    );
                   }}
                   ref={fileInputRef}
                 />
@@ -292,7 +251,7 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
           name="genre"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Kategoria</FormLabel>
+              <FormLabel>Kategoria*</FormLabel>
               <GenreSelect
                 genres={genres?.data ?? []}
                 onValueChange={(val) => {
@@ -331,7 +290,11 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
             {!isProcessing && <>Dodaj książkę</>}
           </Button>
         </div>
-        {submissionError ? <p className="text-red-500">{submissionError}</p> : <></>}
+        {submissionError ? (
+          <p className="text-red-500">{submissionError}</p>
+        ) : (
+          <></>
+        )}
       </form>
     </Form>
   );

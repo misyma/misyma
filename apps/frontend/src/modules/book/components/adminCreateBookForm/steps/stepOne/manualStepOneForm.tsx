@@ -330,7 +330,7 @@ export const ManualStepOneForm = (): JSX.Element => {
                             'w-full text-start px-3'
                           )}
                         >
-                          {!field.value && 'Wyszukaj autora'}
+                          {!field.value && !isFetchingCurrentAuthor && 'Wyszukaj autora'}
                           {field.value && isFetchingCurrentAuthor && (
                             <LoadingSpinner size={20} />
                           )}

@@ -177,7 +177,7 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
           control={stepOneForm.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>ISBN</FormLabel>
+              <FormLabel>ISBN*</FormLabel>
               <FormControl>
                 <Input placeholder="111-11-1111-111-1" type="text" {...field} />
               </FormControl>
