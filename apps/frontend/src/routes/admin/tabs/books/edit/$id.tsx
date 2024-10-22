@@ -123,13 +123,13 @@ const editBookFormSchema = z.object({
   language: z.enum(Object.values(Language) as unknown as [string, ...string[]]),
   translator: z
     .string({
-      required_error: 'Tłumacz jest wymagany.',
+      required_error: 'Przekład jest wymagany.',
     })
     .min(1, {
-      message: 'Tłumacz jest zbyt krótki.',
+      message: 'Przekład jest zbyt krótki.',
     })
     .max(64, {
-      message: 'Tłumacz może mieć maksymalnie 64 znaki.',
+      message: 'Przekład może mieć maksymalnie 64 znaki.',
     })
     .or(z.literal('')),
   isApproved: z.boolean().optional(),
