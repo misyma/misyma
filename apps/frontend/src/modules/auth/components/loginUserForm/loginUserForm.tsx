@@ -1,7 +1,10 @@
 import { FC, useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { ControllerRenderProps, useForm } from 'react-hook-form';
-import { LoginUserFormValues, loginUserFormSchema } from './schema/loginUserFormSchema';
+import {
+  LoginUserFormValues,
+  loginUserFormSchema,
+} from './schema/loginUserFormSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { type LoginUserResponseBody } from '@common/contracts';
 import {
@@ -18,16 +21,22 @@ import { cn } from '../../../common/lib/utils';
 import { PasswordEyeIcon } from '../../../common/components/icons/passwordEyeIcon/passwordEyeIcon';
 import { useLoginUserMutation } from '../../api/loginUserMutation/loginUserMutation';
 import { UserApiError } from '../../../user/errors/userApiError';
+import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
 
 interface LoginUserFormProps {
   onSuccess: (loginUserResponseBody: LoginUserResponseBody) => void;
   onError?: (error: UserApiError) => void;
 }
 
-export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccess, onError }: LoginUserFormProps) => {
-  const loginUserMutation = useLoginUserMutation({});
+export const LoginUserForm: FC<LoginUserFormProps> = ({
+  onSuccess,
+  onError,
+}: LoginUserFormProps) => {
+  const { mutate, isPending } = useLoginUserMutation({});
 
-  const [passwordInputType, setPasswordInputType] = useState<'text' | 'password'>('password');
+  const [passwordInputType, setPasswordInputType] = useState<
+    'text' | 'password'
+  >('password');
 
   const form = useForm<LoginUserFormValues>({
     resolver: zodResolver(loginUserFormSchema),
@@ -39,10 +48,12 @@ export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccess, onError }: Lo
     mode: 'onTouched',
   });
 
-  const [responseErrorMessage, setResponseErrorMessage] = useState<null | string>(null);
+  const [responseErrorMessage, setResponseErrorMessage] = useState<
+    null | string
+  >(null);
 
   const onSubmit = async (values: LoginUserFormValues) => {
-    loginUserMutation.mutate(
+    mutate(
       {
         email: values.email,
         password: values.password,
@@ -56,7 +67,7 @@ export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccess, onError }: Lo
             onError(error);
           }
         },
-      },
+      }
     );
   };
 
@@ -67,7 +78,7 @@ export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccess, onError }: Lo
         }>
       | ControllerRenderProps<{
           password: string;
-        }>,
+        }>
   ) => {
     if (form.formState.errors[field.name]) {
       return 'border-red-500';
@@ -79,21 +90,21 @@ export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccess, onError }: Lo
   return (
     <>
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-4"
-        >
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
             control={form.control}
             name="email"
             render={({ field }) => (
               <FormItem className="h-[5.5rem]">
-                <FormLabel>Email</FormLabel>
+                <FormLabel>Email*</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Email"
                     maxLength={254}
-                    containerClassName={cn('focus:border-input', setInputFieldErrorState(field))}
+                    containerClassName={cn(
+                      'focus:border-input',
+                      setInputFieldErrorState(field)
+                    )}
                     {...field}
                   />
                 </FormControl>
@@ -106,7 +117,7 @@ export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccess, onError }: Lo
             name="password"
             render={({ field }) => (
               <FormItem className="h-[5.5rem]">
-                <FormLabel>Hasło</FormLabel>
+                <FormLabel>Hasło*</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Hasło"
@@ -115,11 +126,20 @@ export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccess, onError }: Lo
                     includeQuill={false}
                     otherIcon={
                       <PasswordEyeIcon
-                        onClick={() => setPasswordInputType(passwordInputType === 'password' ? 'text' : 'password')}
+                        onClick={() =>
+                          setPasswordInputType(
+                            passwordInputType === 'password'
+                              ? 'text'
+                              : 'password'
+                          )
+                        }
                         passwordType={passwordInputType}
                       />
                     }
-                    containerClassName={cn('focus:border-input', setInputFieldErrorState(field))}
+                    containerClassName={cn(
+                      'focus:border-input',
+                      setInputFieldErrorState(field)
+                    )}
                     {...field}
                   />
                 </FormControl>
@@ -130,27 +150,24 @@ export const LoginUserForm: FC<LoginUserFormProps> = ({ onSuccess, onError }: Lo
           <div>
             <Button
               type="submit"
-              size='xl'
-              disabled={!form.formState.isValid}
+              size="xl"
+              disabled={!form.formState.isValid || isPending}
             >
-              Wejdź do biblioteki
+              {!isPending && "Wejdź do biblioteki"}
+              {isPending && <LoadingSpinner size={24} />}
             </Button>
             <div className="text-xs text-center w-60 sm:w-96 pt-[4px]">
-              <Link
-                to="/resetPassword"
-                className="text-primary"
-              >
+              <Link to="/resetPassword" className="text-primary">
                 Nie pamiętasz hasła?{' '}
               </Link>
             </div>
           </div>
-          {responseErrorMessage && <FormMessage>{responseErrorMessage}</FormMessage>}
+          {responseErrorMessage && (
+            <FormMessage>{responseErrorMessage}</FormMessage>
+          )}
           <p className="font-light">
             Nie masz konta?{' '}
-            <Link
-              to="/register"
-              className="text-primary font-semibold"
-            >
+            <Link to="/register" className="text-primary font-semibold">
               Zarejestruj się :)
             </Link>
           </p>

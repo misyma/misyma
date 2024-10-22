@@ -50,7 +50,7 @@ export const AddReadingModal: FC<Props> = ({ open, setOpenChange, onSubmit }: Pr
                 name="startedAt"
                 render={({ field }) => (
                   <FormItem className="h-[5.5rem]">
-                    <FormLabel>Czytanie rozpoczęte dnia...</FormLabel>
+                    <FormLabel>Czytanie rozpoczęte dnia*</FormLabel>
                     <FormControl>
                       <Input
                         type="date"
@@ -67,7 +67,7 @@ export const AddReadingModal: FC<Props> = ({ open, setOpenChange, onSubmit }: Pr
                 name="endedAt"
                 render={({ field }) => (
                   <FormItem className="h-[5.5rem]">
-                    <FormLabel>Czytanie zakończone dnia...</FormLabel>
+                    <FormLabel>Czytanie zakończone dnia*</FormLabel>
                     <FormControl>
                       <Input
                         type="date"
@@ -84,7 +84,7 @@ export const AddReadingModal: FC<Props> = ({ open, setOpenChange, onSubmit }: Pr
                 name="rating"
                 render={({ field }) => (
                   <FormItem className="h-[5.5rem]">
-                    <FormLabel>Ocena</FormLabel>
+                    <FormLabel>Ocena*</FormLabel>
                     <FormControl>
                       <Input
                         type="number"

@@ -262,7 +262,7 @@ export const ManualStepOneForm = (): JSX.Element => {
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Tytuł</FormLabel>
+              <FormLabel>Tytuł*</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Tytuł"
@@ -288,7 +288,7 @@ export const ManualStepOneForm = (): JSX.Element => {
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <div className="flex gap-2 items-center">
-                <FormLabel>Autor</FormLabel>
+                <FormLabel>Autor*</FormLabel>
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -330,7 +330,7 @@ export const ManualStepOneForm = (): JSX.Element => {
                             'w-full text-start px-3'
                           )}
                         >
-                          {!field.value && !isFetchingCurrentAuthor && 'Wyszukaj autora'}
+                          {!field.value && !draftAuthorName && !isFetchingCurrentAuthor && 'Wyszukaj autora'}
                           {field.value && isFetchingCurrentAuthor && (
                             <LoadingSpinner size={20} />
                           )}

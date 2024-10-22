@@ -155,7 +155,7 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, open, onClosed, onMuta
                 name="borrower"
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
-                    <FormLabel>Imię osoby wypożyczającej</FormLabel>
+                    <FormLabel>Imię osoby wypożyczającej*</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Imię osoby wypożyczającej"
@@ -174,7 +174,7 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, open, onClosed, onMuta
                 name="startedAt"
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-2">
-                    <FormLabel>Data wypożyczenia</FormLabel>
+                    <FormLabel>Data wypożyczenia*</FormLabel>
                     <Popover
                       modal={true}
                       open={calendarVisible}
