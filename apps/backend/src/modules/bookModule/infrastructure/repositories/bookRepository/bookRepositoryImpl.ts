@@ -294,6 +294,8 @@ export class BookRepositoryImpl implements BookRepository {
 
       if (sortDate) {
         query.orderBy('createdAt', sortDate);
+      } else {
+        query.orderBy('id', 'asc');
       }
 
       rawEntities = await query;
