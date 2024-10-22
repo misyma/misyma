@@ -21,6 +21,7 @@ import {
   TableRow,
 } from '../table/table';
 import { Paginator } from '../paginator/paginator';
+import { cn } from '../../lib/utils';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -34,6 +35,7 @@ interface DataTableProps<TData, TValue> {
   includeColumnsSelector?: boolean;
   hideHeaders?: boolean;
   PaginationSlot?: ReactNode;
+  tableContainerClassName?: string
 }
 
 export function DataTable<TData extends object, TValue>({
@@ -46,6 +48,7 @@ export function DataTable<TData extends object, TValue>({
   hideHeaders,
   onSetPage,
   PaginationSlot,
+  tableContainerClassName,
 }: DataTableProps<TData, TValue>): JSX.Element {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -93,7 +96,7 @@ export function DataTable<TData extends object, TValue>({
 
   return (
     <div className="w-full md:max-w-screen-xl">
-      <div className="w-full min-h-[22rem]">
+      <div className={cn("w-full min-h-[40rem]", tableContainerClassName)}>
         <Table>
           {!hideHeaders && (
             <TableHeader>

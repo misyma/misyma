@@ -108,8 +108,8 @@ export function DataSkeletonTable<TData extends object, TValue>({
 
   return (
     <div className="w-full md:max-w-screen-xl">
-      <div className="w-full min-h-[22rem]">
-        <Table>
+      <div className="w-full min-h-[40rem]">
+      <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>

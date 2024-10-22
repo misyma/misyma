@@ -86,6 +86,7 @@ export const BookGradesTabMainBody: FC<BookGradesTabMainBodyProps> = ({
           </div>
         )}
         <DataTable
+          tableContainerClassName="min-h-[32rem]"
           hideHeaders={true}
           columns={bookReadingsTableColumns}
           data={bookReadings?.data ?? []}
