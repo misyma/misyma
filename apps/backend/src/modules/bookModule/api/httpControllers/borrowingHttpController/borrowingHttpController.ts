@@ -141,7 +141,7 @@ export class BorrowingHttpController implements HttpController {
   private async findBorrowings(
     request: HttpRequest<null, FindBorrowingsQueryParamsDto, FindBorrowingsPathParamsDto>,
   ): Promise<HttpOkResponse<FindBorrowingsResponseBodyDto>> {
-    await this.accessControlService.verifyBearerToken({
+    const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
@@ -149,15 +149,8 @@ export class BorrowingHttpController implements HttpController {
 
     const { userBookId } = request.pathParams;
 
-    // TODO: authorization, consider adding userId to book for easy access to book owner
-
-    // if (userId !== tokenUserId) {
-    //   throw new ForbiddenAccessError({
-    //     reason: 'User can only access their own borrowings',
-    //   });
-    // }
-
     const { borrowings, total } = await this.findBorrowingsQueryHandler.execute({
+      userId,
       userBookId,
       page,
       pageSize,
@@ -189,14 +182,6 @@ export class BorrowingHttpController implements HttpController {
 
     const { borrower, startedAt, endedAt } = request.body;
 
-    // TODO: authorization
-
-    // if (userId !== tokenUserId) {
-    //   throw new ForbiddenAccessError({
-    //     reason: 'User can only create borrowings for themselves',
-    //   });
-    // }
-
     const { borrowing } = await this.createBorrowingCommandHandler.execute({
       userBookId,
       borrower,
@@ -214,18 +199,17 @@ export class BorrowingHttpController implements HttpController {
   private async updateBorrowing(
     request: HttpRequest<UpdateBorrowingBodyDto, null, UpdateBorrowingPathParamsDto>,
   ): Promise<HttpOkResponse<UpdateBorrowingResponseBodyDto>> {
-    await this.accessControlService.verifyBearerToken({
+    const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
-
-    // TODO: authorization
 
     const { borrowingId } = request.pathParams;
 
     const { borrower, startedAt, endedAt } = request.body;
 
     const { borrowing } = await this.updateBorrowingCommandHandler.execute({
-      id: borrowingId,
+      userId,
+      borrowingId,
       borrower,
       startedAt: startedAt ? new Date(startedAt) : undefined,
       endedAt: endedAt ? new Date(endedAt) : undefined,
@@ -240,15 +224,16 @@ export class BorrowingHttpController implements HttpController {
   private async deleteBorrowing(
     request: HttpRequest<null, null, DeleteBorrowingPathParamsDto>,
   ): Promise<HttpNoContentResponse<DeleteBorrowingResponseBodyDto>> {
-    await this.accessControlService.verifyBearerToken({
+    const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
-    // TODO: authorization
-
     const { borrowingId } = request.pathParams;
 
-    await this.deleteBorrowingCommandHandler.execute({ id: borrowingId });
+    await this.deleteBorrowingCommandHandler.execute({
+      userId,
+      borrowingId,
+    });
 
     return {
       statusCode: HttpStatusCode.noContent,

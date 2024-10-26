@@ -65,10 +65,13 @@ describe('FindBorrowingsQueryHandlerImpl', () => {
   });
 
   it('throws an error - when UserBook was not found', async () => {
+    const user = await userTestUtils.createAndPersist();
+
     const nonExistentUserBookId = Generator.uuid();
 
     try {
       await queryHandler.execute({
+        userId: user.id,
         userBookId: nonExistentUserBookId,
         page: 1,
         pageSize: 10,
@@ -102,6 +105,7 @@ describe('FindBorrowingsQueryHandlerImpl', () => {
     });
 
     const { borrowings, total } = await queryHandler.execute({
+      userId: user.id,
       userBookId: userBook.id,
       page: 1,
       pageSize: 10,
@@ -139,6 +143,7 @@ describe('FindBorrowingsQueryHandlerImpl', () => {
     });
 
     const { borrowings, total } = await queryHandler.execute({
+      userId: user.id,
       userBookId: userBook.id,
       page: 1,
       pageSize: 10,

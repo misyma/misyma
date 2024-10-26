@@ -66,11 +66,14 @@ describe('UpdateBorrowingCommandHandlerImpl', () => {
   });
 
   it('throws an error - when Borrowing was not found', async () => {
+    const user = await userTestUtils.createAndPersist();
+
     const nonExistentBorrowingId = Generator.uuid();
 
     try {
       await commandHandler.execute({
-        id: nonExistentBorrowingId,
+        userId: user.id,
+        borrowingId: nonExistentBorrowingId,
       });
     } catch (error) {
       expect(error).toBeInstanceOf(OperationNotValidError);
@@ -113,7 +116,8 @@ describe('UpdateBorrowingCommandHandlerImpl', () => {
     const newEndedAt = Generator.futureDate();
 
     const { borrowing: updatedBorrowing } = await commandHandler.execute({
-      id: borrowing.id,
+      userId: user.id,
+      borrowingId: borrowing.id,
       borrower: newBorrower,
       startedAt: newStartedAt,
       endedAt: newEndedAt,

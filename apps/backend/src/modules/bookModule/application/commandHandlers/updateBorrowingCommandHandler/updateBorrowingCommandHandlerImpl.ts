@@ -6,30 +6,45 @@ import {
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type BorrowingRepository } from '../../../domain/repositories/borrowingRepository/borrowingRepository.js';
+import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
 
 export class UpdateBorrowingCommandHandlerImpl implements UpdateBorrowingCommandHandler {
   public constructor(
     private readonly borrowingRepository: BorrowingRepository,
+    private readonly userBookRepository: UserBookRepository,
     private readonly loggerService: LoggerService,
   ) {}
 
   public async execute(payload: UpdateBorrowingPayload): Promise<UpdateBorrowingResult> {
-    const { id, borrower, startedAt, endedAt } = payload;
+    const { userId, borrowingId, borrower, startedAt, endedAt } = payload;
 
     this.loggerService.debug({
       message: 'Updating Borrowing...',
-      id,
+      id: borrowingId,
+      userId,
       borrower,
       startedAt,
       endedAt,
     });
 
-    const borrowing = await this.borrowingRepository.findBorrowing({ id });
+    const borrowing = await this.borrowingRepository.findBorrowing({ id: borrowingId });
 
     if (!borrowing) {
       throw new OperationNotValidError({
         reason: 'Borrowing does not exist.',
-        id,
+        id: borrowingId,
+      });
+    }
+
+    const { userId: ownerId } = await this.userBookRepository.findUserBookOwner({
+      id: borrowing.getUserBookId(),
+    });
+
+    if (userId !== ownerId) {
+      throw new OperationNotValidError({
+        reason: 'User does not own the Borrowing.',
+        userId,
+        borrowingId,
       });
     }
 
@@ -64,7 +79,7 @@ export class UpdateBorrowingCommandHandlerImpl implements UpdateBorrowingCommand
 
     this.loggerService.debug({
       message: 'Borrowing updated.',
-      id,
+      id: borrowingId,
       borrower,
       startedAt,
       endedAt,
