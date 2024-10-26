@@ -99,11 +99,11 @@
     "vite-plugin-checker": "0.8.0"
   },
   "volta": {
-    "node": "20.14.0",
-    "npm": "10.8.2"
+    "node": "22.10.0",
+    "npm": "10.9.0"
   },
   "engines": {
-    "node": "20.14.0"
+    "node": "22.10.0"
   },
   "msw": {
     "workerDirectory": [
