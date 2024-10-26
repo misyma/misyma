@@ -6,30 +6,44 @@ import {
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type QuoteRepository } from '../../../domain/repositories/quoteRepository/quoteRepository.js';
+import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
 
 export class UpdateQuoteCommandHandlerImpl implements UpdateQuoteCommandHandler {
   public constructor(
     private readonly quoteRepository: QuoteRepository,
+    private readonly userBookRepository: UserBookRepository,
     private readonly loggerService: LoggerService,
   ) {}
 
   public async execute(payload: UpdateQuotePayload): Promise<UpdateQuoteResult> {
-    const { id, content, isFavorite, page } = payload;
+    const { userId, quoteId, content, isFavorite, page } = payload;
 
     this.loggerService.debug({
       message: 'Updating Quote...',
-      id,
+      id: quoteId,
       content,
       isFavorite,
       page,
     });
 
-    const quote = await this.quoteRepository.findQuote({ id });
+    const quote = await this.quoteRepository.findQuote({ id: quoteId });
 
     if (!quote) {
       throw new OperationNotValidError({
         reason: 'Quote does not exist.',
-        id,
+        id: quoteId,
+      });
+    }
+
+    const { userId: ownerId } = await this.userBookRepository.findUserBookOwner({
+      id: quote.getUserBookId(),
+    });
+
+    if (userId !== ownerId) {
+      throw new OperationNotValidError({
+        reason: 'User does not own the Quote.',
+        userId,
+        quoteId,
       });
     }
 
@@ -51,7 +65,7 @@ export class UpdateQuoteCommandHandlerImpl implements UpdateQuoteCommandHandler 
 
     this.loggerService.debug({
       message: 'Quote updated.',
-      id,
+      id: quoteId,
       content,
       isFavorite,
     });

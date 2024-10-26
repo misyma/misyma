@@ -65,11 +65,14 @@ describe('DeleteQuoteCommandHandlerImpl', () => {
   });
 
   it('throws an error - when Quote was not found', async () => {
+    const user = await userTestUtils.createAndPersist();
+
     const nonExistentQuoteId = Generator.uuid();
 
     try {
       await commandHandler.execute({
-        id: nonExistentQuoteId,
+        userId: user.id,
+        quoteId: nonExistentQuoteId,
       });
     } catch (error) {
       expect(error).toBeInstanceOf(ResourceNotFoundError);
@@ -106,7 +109,8 @@ describe('DeleteQuoteCommandHandlerImpl', () => {
     });
 
     await commandHandler.execute({
-      id: quote.id,
+      userId: user.id,
+      quoteId: quote.id,
     });
 
     const foundQuote = await quoteTestUtils.findById({
