@@ -66,11 +66,14 @@ describe('UpdateBookReadingCommandHandlerImpl', () => {
   });
 
   it('throws an error - when BookReading was not found', async () => {
+    const user = await userTestUtils.createAndPersist();
+
     const nonExistentBookReadingId = Generator.uuid();
 
     try {
       await commandHandler.execute({
-        id: nonExistentBookReadingId,
+        bookReadingId: nonExistentBookReadingId,
+        userId: user.id,
       });
     } catch (error) {
       expect(error).toBeInstanceOf(OperationNotValidError);
@@ -115,7 +118,8 @@ describe('UpdateBookReadingCommandHandlerImpl', () => {
     const newEndedAt = Generator.futureDate();
 
     const { bookReading: updatedBookReading } = await commandHandler.execute({
-      id: bookReading.id,
+      userId: user.id,
+      bookReadingId: bookReading.id,
       comment: newComment,
       rating: newRating,
       startedAt: newStartedAt,

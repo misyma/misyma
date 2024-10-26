@@ -2,6 +2,7 @@ import { type CommandHandler } from '../../../../../common/types/commandHandler.
 import { type BookReading } from '../../../domain/entities/bookReading/bookReading.js';
 
 export interface CreateBookReadingPayload {
+  readonly userId: string;
   readonly userBookId: string;
   readonly rating: number;
   readonly comment?: string | undefined;

@@ -414,6 +414,7 @@ export class BookModule implements DependencyInjectionModule {
       () =>
         new UpdateBookReadingCommandHandlerImpl(
           container.get<BookReadingRepository>(symbols.bookReadingRepository),
+          container.get<UserBookRepository>(bookSymbols.userBookRepository),
           container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );
@@ -423,6 +424,7 @@ export class BookModule implements DependencyInjectionModule {
       () =>
         new DeleteBookReadingCommandHandlerImpl(
           container.get<BookReadingRepository>(symbols.bookReadingRepository),
+          container.get<UserBookRepository>(bookSymbols.userBookRepository),
           container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );

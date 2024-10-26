@@ -16,7 +16,7 @@ export class CreateBookReadingCommandHandlerImpl implements CreateBookReadingCom
   ) {}
 
   public async execute(payload: CreateBookReadingPayload): Promise<CreateBookReadingResult> {
-    const { userBookId, comment, rating, startedAt, endedAt } = payload;
+    const { userId, userBookId, comment, rating, startedAt, endedAt } = payload;
 
     this.loggerService.debug({
       message: 'Creating BookReading...',
@@ -35,6 +35,18 @@ export class CreateBookReadingCommandHandlerImpl implements CreateBookReadingCom
       throw new OperationNotValidError({
         reason: 'UserBook does not exist.',
         id: userBookId,
+      });
+    }
+
+    const { userId: ownerId } = await this.userBookRepository.findUserBookOwner({
+      id: userBookId,
+    });
+
+    if (userId !== ownerId) {
+      throw new OperationNotValidError({
+        reason: 'User does not own the UserBook.',
+        userId,
+        userBookId,
       });
     }
 

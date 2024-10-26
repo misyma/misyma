@@ -1033,6 +1033,110 @@ describe('UserBookRepositoryImpl', () => {
     });
   });
 
+  describe('countUserBooks', () => {
+    it('returns number of UserBooks from a given Bookshelf', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const bookshelf1 = await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+        },
+      });
+
+      const bookshelf2 = await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+        },
+      });
+
+      const author1 = await authorTestUtils.createAndPersist();
+
+      const author2 = await authorTestUtils.createAndPersist();
+
+      const book1 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author1.id],
+        },
+      });
+
+      const book2 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author2.id],
+        },
+      });
+
+      await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book1.id,
+          bookshelfId: bookshelf1.id,
+        },
+      });
+
+      await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book1.id,
+          bookshelfId: bookshelf2.id,
+        },
+      });
+
+      await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book2.id,
+          bookshelfId: bookshelf2.id,
+        },
+      });
+
+      const count = await userBookRepository.countUserBooks({
+        bookshelfId: bookshelf2.id,
+      });
+
+      expect(count).toEqual(2);
+    });
+  });
+
+  describe('findUserBookOwner', () => {
+    it('returns UserBook owner', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const bookshelf = await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+        },
+      });
+
+      const author = await authorTestUtils.createAndPersist();
+
+      const book = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+        },
+      });
+
+      const userBook = await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book.id,
+          bookshelfId: bookshelf.id,
+        },
+      });
+
+      const { userId } = await userBookRepository.findUserBookOwner({
+        id: userBook.id,
+      });
+
+      expect(userId).toEqual(user.id);
+    });
+
+    it('returns undefined if UserBook with given id does not exist', async () => {
+      const id = Generator.uuid();
+
+      const foundUserBookOwner = await userBookRepository.findUserBookOwner({
+        id,
+      });
+
+      expect(foundUserBookOwner.userId).toBeUndefined();
+    });
+  });
+
   describe('deleteUserBook', () => {
     it('deletes UserBook', async () => {
       const user = await userTestUtils.createAndPersist();

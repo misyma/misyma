@@ -65,11 +65,14 @@ describe('DeleteBookReadingCommandHandlerImpl', () => {
   });
 
   it('throws an error - when BookReading was not found', async () => {
+    const user = await userTestUtils.createAndPersist();
+
     const nonExistentBookReadingId = Generator.uuid();
 
     try {
       await commandHandler.execute({
-        id: nonExistentBookReadingId,
+        bookReadingId: nonExistentBookReadingId,
+        userId: user.id,
       });
     } catch (error) {
       expect(error).toBeInstanceOf(ResourceNotFoundError);
@@ -106,7 +109,8 @@ describe('DeleteBookReadingCommandHandlerImpl', () => {
     });
 
     await commandHandler.execute({
-      id: bookReading.id,
+      bookReadingId: bookReading.id,
+      userId: user.id,
     });
 
     const foundBookReading = await bookReadingTestUtils.findById({

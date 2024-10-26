@@ -69,6 +69,8 @@ describe('CreateBookReadingCommandHandlerImpl', () => {
   });
 
   it('throws an error - when UserBook does not exist', async () => {
+    const user = await userTestUtils.createAndPersist();
+
     const nonExistentUserBookId = Generator.uuid();
 
     const bookReading = bookReadingTestFactory.create();
@@ -77,6 +79,7 @@ describe('CreateBookReadingCommandHandlerImpl', () => {
       await commandHandler.execute({
         ...bookReading.getState(),
         userBookId: nonExistentUserBookId,
+        userId: user.id,
       });
     } catch (error) {
       expect(error).toBeInstanceOf(OperationNotValidError);
@@ -115,6 +118,7 @@ describe('CreateBookReadingCommandHandlerImpl', () => {
     try {
       await commandHandler.execute({
         ...bookReadingDraft.getState(),
+        userId: user.id,
       });
     } catch (error) {
       expect(error).toBeInstanceOf(OperationNotValidError);
@@ -149,6 +153,7 @@ describe('CreateBookReadingCommandHandlerImpl', () => {
 
     const { bookReading } = await commandHandler.execute({
       ...bookReadingDraft.getState(),
+      userId: user.id,
     });
 
     expect(bookReading).toBeInstanceOf(BookReading);
