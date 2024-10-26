@@ -65,11 +65,14 @@ describe('DeleteBorrowingCommandHandlerImpl', () => {
   });
 
   it('throws an error - when Borrowing was not found', async () => {
+    const user = await userTestUtils.createAndPersist();
+
     const nonExistentBorrowingId = Generator.uuid();
 
     try {
       await commandHandler.execute({
-        id: nonExistentBorrowingId,
+        userId: user.id,
+        borrowingId: nonExistentBorrowingId,
       });
     } catch (error) {
       expect(error).toBeInstanceOf(ResourceNotFoundError);
@@ -106,7 +109,8 @@ describe('DeleteBorrowingCommandHandlerImpl', () => {
     });
 
     await commandHandler.execute({
-      id: borrowing.id,
+      userId: user.id,
+      borrowingId: borrowing.id,
     });
 
     const foundBorrowing = await borrowingTestUtils.findById({
