@@ -13,6 +13,8 @@ import {
   type UserBookRepository,
   type FindUserBooksByUserPayload,
   type CountUserBooksPayload,
+  type FindUserBookOwnerPayload,
+  type FindUserBookOwnerResult,
 } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
 import { authorTable } from '../../databases/bookDatabase/tables/authorTable/authorTable.js';
 import { bookAuthorTable } from '../../databases/bookDatabase/tables/bookAuthorTable/bookAuthorTable.js';
@@ -56,7 +58,6 @@ export class UserBookRepositoryImpl implements UserBookRepository {
 
     const id = this.uuidService.generateUuid();
 
-    // TODO: add creating createdAt here
     try {
       await this.databaseClient.transaction(async (transaction) => {
         await transaction<UserBookRawEntity>(userBookTable).insert(
@@ -553,6 +554,32 @@ export class UserBookRepositoryImpl implements UserBookRepository {
     }
 
     return this.userBookMapper.mapRawWithJoinsToDomain(rawEntities);
+  }
+
+  public async findUserBookOwner(payload: FindUserBookOwnerPayload): Promise<FindUserBookOwnerResult> {
+    const { id } = payload;
+
+    try {
+      const result = await this.databaseClient(userBookTable)
+        .select([`${bookshelfTable}.userId as userId`])
+        .leftJoin(bookshelfTable, (join) => {
+          join.on(`${bookshelfTable}.id`, `=`, `${userBookTable}.bookshelfId`);
+        })
+        .where(`${userBookTable}.id`, id)
+        .first();
+
+      if (!result) {
+        return { userId: undefined };
+      }
+
+      return { userId: result.userId };
+    } catch (error) {
+      throw new RepositoryError({
+        entity: 'Book',
+        operation: 'findOwner',
+        error,
+      });
+    }
   }
 
   public async deleteUserBooks(payload: DeleteUserBooksPayload): Promise<void> {

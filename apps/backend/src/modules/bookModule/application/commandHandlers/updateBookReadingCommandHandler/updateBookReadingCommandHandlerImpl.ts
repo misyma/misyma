@@ -6,31 +6,45 @@ import {
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type BookReadingRepository } from '../../../domain/repositories/bookReadingRepository/bookReadingRepository.js';
+import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
 
 export class UpdateBookReadingCommandHandlerImpl implements UpdateBookReadingCommandHandler {
   public constructor(
     private readonly bookReadingRepository: BookReadingRepository,
+    private readonly userBookRepository: UserBookRepository,
     private readonly loggerService: LoggerService,
   ) {}
 
   public async execute(payload: UpdateBookReadingPayload): Promise<UpdateBookReadingResult> {
-    const { id, comment, rating, startedAt, endedAt } = payload;
+    const { userId, bookReadingId, comment, rating, startedAt, endedAt } = payload;
 
     this.loggerService.debug({
       message: 'Updating BookReading...',
-      id,
+      id: bookReadingId,
       comment,
       rating,
       startedAt,
       endedAt,
     });
 
-    const bookReading = await this.bookReadingRepository.findBookReading({ id });
+    const bookReading = await this.bookReadingRepository.findBookReading({ id: bookReadingId });
 
     if (!bookReading) {
       throw new OperationNotValidError({
         reason: 'BookReading does not exist.',
-        id,
+        id: bookReadingId,
+      });
+    }
+
+    const { userId: ownerId } = await this.userBookRepository.findUserBookOwner({
+      id: bookReading.getUserBookId(),
+    });
+
+    if (userId !== ownerId) {
+      throw new OperationNotValidError({
+        reason: 'User does not own the BookReading.',
+        userId,
+        bookReadingId,
       });
     }
 
@@ -71,7 +85,7 @@ export class UpdateBookReadingCommandHandlerImpl implements UpdateBookReadingCom
 
     this.loggerService.debug({
       message: 'BookReading updated.',
-      id,
+      id: bookReadingId,
       comment,
       rating,
       startedAt,

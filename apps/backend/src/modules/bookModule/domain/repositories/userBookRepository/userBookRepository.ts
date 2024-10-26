@@ -8,6 +8,14 @@ export interface SaveUserBooksPayload {
   readonly userBooks: UserBook[];
 }
 
+export interface FindUserBookOwnerPayload {
+  readonly id: string;
+}
+
+export interface FindUserBookOwnerResult {
+  readonly userId: string | undefined;
+}
+
 export interface FindUserBookPayload {
   readonly id?: string;
   readonly bookshelfId?: string;
@@ -54,6 +62,7 @@ export interface UserBookRepository {
   findUserBook(payload: FindUserBookPayload): Promise<UserBook | null>;
   findUserBooks(payload: FindUserBooksPayload): Promise<UserBook[]>;
   findUserBooksByUser(payload: FindUserBooksByUserPayload): Promise<UserBook[]>;
+  findUserBookOwner(payload: FindUserBookOwnerPayload): Promise<FindUserBookOwnerResult>;
   countUserBooks(payload: CountUserBooksPayload): Promise<number>;
   deleteUserBooks(payload: DeleteUserBooksPayload): Promise<void>;
 }

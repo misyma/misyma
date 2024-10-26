@@ -141,7 +141,7 @@ export class BookReadingHttpController implements HttpController {
   private async getBookReadings(
     request: HttpRequest<null, FindBookReadingsQueryParamsDto, FindBookReadingsPathParamsDto>,
   ): Promise<HttpOkResponse<FindBookReadingsResponseBodyDto>> {
-    await this.accessControlService.verifyBearerToken({
+    const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
@@ -149,15 +149,8 @@ export class BookReadingHttpController implements HttpController {
 
     const { page = 1, pageSize = 10, sortDate } = request.queryParams;
 
-    // TODO: authorization, consider adding userId to book for easy access to book owner
-
-    // if (userId !== tokenUserId) {
-    //   throw new ForbiddenAccessError({
-    //     reason: 'User can only access their own bookReadings',
-    //   });
-    // }
-
     const { bookReadings, total } = await this.findBookReadingsQueryHandler.execute({
+      userId,
       userBookId,
       page,
       pageSize,
@@ -180,7 +173,7 @@ export class BookReadingHttpController implements HttpController {
   private async createBookReading(
     request: HttpRequest<CreateBookReadingBodyDto, null, CreateBookReadingPathParamsDto>,
   ): Promise<HttpCreatedResponse<CreateBookReadingResponseBodyDto>> {
-    await this.accessControlService.verifyBearerToken({
+    const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
@@ -188,15 +181,8 @@ export class BookReadingHttpController implements HttpController {
 
     const { comment, rating, startedAt, endedAt } = request.body;
 
-    // TODO: authorization
-
-    // if (userId !== tokenUserId) {
-    //   throw new ForbiddenAccessError({
-    //     reason: 'User can only create bookReadings for themselves',
-    //   });
-    // }
-
     const { bookReading } = await this.createBookReadingCommandHandler.execute({
+      userId,
       userBookId,
       comment,
       rating,
@@ -213,18 +199,17 @@ export class BookReadingHttpController implements HttpController {
   private async updateBookReading(
     request: HttpRequest<UpdateBookReadingBodyDto, null, UpdateBookReadingPathParamsDto>,
   ): Promise<HttpOkResponse<UpdateBookReadingResponseBodyDto>> {
-    await this.accessControlService.verifyBearerToken({
+    const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
-
-    // TODO: authorization
 
     const { readingId } = request.pathParams;
 
     const { comment, rating, startedAt, endedAt } = request.body;
 
     const { bookReading } = await this.updateBookReadingCommandHandler.execute({
-      id: readingId,
+      userId,
+      bookReadingId: readingId,
       comment,
       rating,
       startedAt: startedAt ? new Date(startedAt) : undefined,
@@ -240,15 +225,16 @@ export class BookReadingHttpController implements HttpController {
   private async deleteBookReading(
     request: HttpRequest<null, null, DeleteBookReadingPathParamsDto>,
   ): Promise<HttpNoContentResponse<DeleteBookReadingResponseBodyDto>> {
-    await this.accessControlService.verifyBearerToken({
+    const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
-    // TODO: authorization
-
     const { readingId } = request.pathParams;
 
-    await this.deleteBookReadingCommandHandler.execute({ id: readingId });
+    await this.deleteBookReadingCommandHandler.execute({
+      userId,
+      bookReadingId: readingId,
+    });
 
     return {
       statusCode: HttpStatusCode.noContent,

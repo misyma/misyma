@@ -3,6 +3,7 @@ import {
   type FindBookReadingsQueryHandler,
   type FindBookReadingsQueryHandlerResult,
 } from './findBookReadingsQueryHandler.js';
+import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import {
   type FindBookReadingsPayload as FindDomainBookReadingsPayload,
@@ -17,7 +18,7 @@ export class FindBookReadingsueryHandlerImpl implements FindBookReadingsQueryHan
   ) {}
 
   public async execute(payload: FindBookReadingsQueryHandlerPayload): Promise<FindBookReadingsQueryHandlerResult> {
-    const { userBookId, page, pageSize, sortDate } = payload;
+    const { userId, userBookId, page, pageSize, sortDate } = payload;
 
     const bookExists = await this.userBookRepository.findUserBook({
       id: userBookId,
@@ -27,6 +28,18 @@ export class FindBookReadingsueryHandlerImpl implements FindBookReadingsQueryHan
       throw new ResourceNotFoundError({
         resource: 'UserBook',
         id: userBookId,
+      });
+    }
+
+    const { userId: ownerId } = await this.userBookRepository.findUserBookOwner({
+      id: userBookId,
+    });
+
+    if (userId !== ownerId) {
+      throw new OperationNotValidError({
+        reason: 'User does not own the UserBook.',
+        userId,
+        userBookId,
       });
     }
 
