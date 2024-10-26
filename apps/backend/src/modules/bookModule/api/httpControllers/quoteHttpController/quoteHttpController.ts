@@ -67,8 +67,8 @@ export class QuoteHttpController implements HttpController {
     return [
       new HttpRoute({
         method: HttpMethodName.get,
-        handler: this.getQuotes.bind(this),
-        description: 'Get Quotes',
+        handler: this.findQuotes.bind(this),
+        description: 'Find Quotes',
         schema: {
           request: {
             pathParams: findQuotesPathParamsDtoSchema,
@@ -139,10 +139,10 @@ export class QuoteHttpController implements HttpController {
     ];
   }
 
-  private async getQuotes(
+  private async findQuotes(
     request: HttpRequest<null, FindQuotesQueryParamsDto, FindQuotesPathParamsDto>,
   ): Promise<HttpOkResponse<FindQuotesResponseBodyDto>> {
-    await this.accessControlService.verifyBearerToken({
+    const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
@@ -150,15 +150,8 @@ export class QuoteHttpController implements HttpController {
 
     const { page = 1, pageSize = 10, sortDate } = request.queryParams;
 
-    // TODO: authorization, consider adding userId to book for easy access to book owner
-
-    // if (userId !== tokenUserId) {
-    //   throw new ForbiddenAccessError({
-    //     reason: 'User can only access their own quotes',
-    //   });
-    // }
-
     const { quotes, total } = await this.findQuotesQueryHandler.execute({
+      userId,
       userBookId,
       page,
       pageSize,
@@ -181,7 +174,7 @@ export class QuoteHttpController implements HttpController {
   private async createQuote(
     request: HttpRequest<CreateQuoteBodyDto, null, CreateQuotePathParamsDto>,
   ): Promise<HttpCreatedResponse<CreateQuoteResponseBodyDto>> {
-    await this.accessControlService.verifyBearerToken({
+    const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
@@ -189,15 +182,8 @@ export class QuoteHttpController implements HttpController {
 
     const { content, createdAt, isFavorite, page } = request.body;
 
-    // TODO: authorization
-
-    // if (userId !== tokenUserId) {
-    //   throw new ForbiddenAccessError({
-    //     reason: 'User can only create quotes for themselves',
-    //   });
-    // }
-
     const { quote } = await this.createQuoteCommandHandler.execute({
+      userId,
       userBookId,
       content,
       createdAt: new Date(createdAt),
@@ -214,18 +200,17 @@ export class QuoteHttpController implements HttpController {
   private async updateQuote(
     request: HttpRequest<UpdateQuoteBodyDto, null, UpdateQuotePathParamsDto>,
   ): Promise<HttpOkResponse<UpdateQuoteResponseBodyDto>> {
-    await this.accessControlService.verifyBearerToken({
+    const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
-
-    // TODO: authorization
 
     const { quoteId } = request.pathParams;
 
     const { content, isFavorite, page } = request.body;
 
     const { quote } = await this.updateQuoteCommandHandler.execute({
-      id: quoteId,
+      userId,
+      quoteId,
       content,
       isFavorite,
       page,
@@ -240,15 +225,16 @@ export class QuoteHttpController implements HttpController {
   private async deleteQuote(
     request: HttpRequest<null, null, DeleteQuotePathParamsDto>,
   ): Promise<HttpNoContentResponse<DeleteQuoteResponseBodyDto>> {
-    await this.accessControlService.verifyBearerToken({
+    const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
-    // TODO: authorization
-
     const { quoteId } = request.pathParams;
 
-    await this.deleteQuoteCommandHandler.execute({ id: quoteId });
+    await this.deleteQuoteCommandHandler.execute({
+      userId,
+      quoteId,
+    });
 
     return {
       statusCode: HttpStatusCode.noContent,

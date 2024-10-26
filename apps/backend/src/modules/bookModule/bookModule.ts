@@ -473,6 +473,7 @@ export class BookModule implements DependencyInjectionModule {
       () =>
         new UpdateQuoteCommandHandlerImpl(
           container.get<QuoteRepository>(symbols.quoteRepository),
+          container.get<UserBookRepository>(bookSymbols.userBookRepository),
           container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );
@@ -482,6 +483,7 @@ export class BookModule implements DependencyInjectionModule {
       () =>
         new DeleteQuoteCommandHandlerImpl(
           container.get<QuoteRepository>(symbols.quoteRepository),
+          container.get<UserBookRepository>(bookSymbols.userBookRepository),
           container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );

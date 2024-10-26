@@ -66,11 +66,14 @@ describe('UpdateQuoteCommandHandlerImpl', () => {
   });
 
   it('throws an error - when Quote was not found', async () => {
+    const user = await userTestUtils.createAndPersist();
+
     const nonExistentQuoteId = Generator.uuid();
 
     try {
       await commandHandler.execute({
-        id: nonExistentQuoteId,
+        userId: user.id,
+        quoteId: nonExistentQuoteId,
       });
     } catch (error) {
       expect(error).toBeInstanceOf(OperationNotValidError);
@@ -113,7 +116,8 @@ describe('UpdateQuoteCommandHandlerImpl', () => {
     const newPage = Generator.number(1, 1000).toString();
 
     const { quote: updatedQuote } = await commandHandler.execute({
-      id: quote.id,
+      userId: user.id,
+      quoteId: quote.id,
       content: newContent,
       isFavorite: newFavorite,
       page: newPage,

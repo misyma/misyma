@@ -2,6 +2,7 @@ import { type CommandHandler } from '../../../../../common/types/commandHandler.
 import { type Quote } from '../../../domain/entities/quote/quote.js';
 
 export interface CreateQuotePayload {
+  readonly userId: string;
   readonly userBookId: string;
   readonly content: string;
   readonly isFavorite: boolean;

@@ -69,12 +69,15 @@ describe('CreateQuoteCommandHandlerImpl', () => {
   });
 
   it('throws an error - when UserBook does not exist', async () => {
+    const user = await userTestUtils.createAndPersist();
+
     const nonExistentUserBookId = Generator.uuid();
 
     const quote = quoteTestFactory.create();
 
     try {
       await commandHandler.execute({
+        userId: user.id,
         userBookId: nonExistentUserBookId,
         content: quote.getContent(),
         createdAt: quote.getCreatedAt(),
@@ -114,6 +117,7 @@ describe('CreateQuoteCommandHandlerImpl', () => {
     });
 
     const { quote } = await commandHandler.execute({
+      userId: user.id,
       userBookId: quoteDraft.getUserBookId(),
       content: quoteDraft.getContent(),
       createdAt: quoteDraft.getCreatedAt(),

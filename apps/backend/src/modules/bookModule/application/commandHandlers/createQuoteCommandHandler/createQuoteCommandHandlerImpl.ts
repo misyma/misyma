@@ -16,7 +16,7 @@ export class CreateQuoteCommandHandlerImpl implements CreateQuoteCommandHandler 
   ) {}
 
   public async execute(payload: CreateQuotePayload): Promise<CreateQuoteResult> {
-    const { userBookId, content, createdAt, isFavorite, page } = payload;
+    const { userId, userBookId, content, createdAt, isFavorite, page } = payload;
 
     this.loggerService.debug({
       message: 'Creating Quote...',
@@ -35,6 +35,18 @@ export class CreateQuoteCommandHandlerImpl implements CreateQuoteCommandHandler 
       throw new OperationNotValidError({
         reason: 'UserBook does not exist.',
         id: userBookId,
+      });
+    }
+
+    const { userId: ownerId } = await this.userBookRepository.findUserBookOwner({
+      id: userBookId,
+    });
+
+    if (userId !== ownerId) {
+      throw new OperationNotValidError({
+        reason: 'User does not own the UserBook.',
+        userId,
+        userBookId,
       });
     }
 
