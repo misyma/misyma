@@ -9,6 +9,7 @@ import {
   TooltipTrigger,
 } from '../../common/components/tooltip/tooltip';
 import { FC } from 'react';
+import { BooksSortButton } from './booksSortButton';
 
 interface BooksTabActionsProps {
   toggleFilterVisibility: () => void;
@@ -17,11 +18,11 @@ export const BooksTabActions: FC<BooksTabActionsProps> = ({
   toggleFilterVisibility,
 }) => {
   return (
-    <div className='flex gap-2'>
+    <div className="flex flex-shrink-0 gap-2">
       <BookCreationProvider>
         <CreateBookModal />
       </BookCreationProvider>
-      <TooltipProvider delayDuration={0}>
+      <TooltipProvider delayDuration={300}>
         <Tooltip>
           <TooltipTrigger asChild>
             <Button size="big-icon" onClick={toggleFilterVisibility}>
@@ -33,6 +34,7 @@ export const BooksTabActions: FC<BooksTabActionsProps> = ({
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
+      <BooksSortButton />
     </div>
   );
 };
