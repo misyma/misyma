@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo, useMemo } from 'react';
 import { BookImageMiniature } from '../bookImageMiniature/bookImageMiniature';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { useSelector } from 'react-redux';
@@ -9,11 +9,16 @@ import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBoo
 interface BookImageLoaderProps {
   bookId: string;
 }
-export const BookImageLoader: FC<BookImageLoaderProps> = ({ bookId }) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
-  const { data: userData } = useFindUserQuery();
-  const { data: userBookData } = useQuery(
+const BookImageLoaderComponent: FC<BookImageLoaderProps> = ({ bookId }) => {
+  const accessToken = useSelector(userStateSelectors.selectAccessToken);
+  const { data: userData, isLoading: isUserLoading } = useFindUserQuery();
+  
+  const { 
+    data: userBookData, 
+    isLoading: isBookLoading,
+    isError
+  } = useQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
       userId: userData?.id ?? '',
@@ -21,12 +26,31 @@ export const BookImageLoader: FC<BookImageLoaderProps> = ({ bookId }) => {
     })
   );
 
+  const imageUrl = useMemo(() => {
+    return userBookData?.imageUrl || userBookData?.book.imageUrl || '';
+  }, [userBookData?.imageUrl, userBookData?.book.imageUrl]);
+
+  if (isUserLoading || isBookLoading) {
+    return (
+      <div className="w-80 bg-gray-200 animate-pulse rounded-md" />
+    );
+  }
+
+  // Show error state
+  if (isError) {
+    return (
+      <div className="w-80 bg-gray-100 flex items-center justify-center rounded-md">
+        <span className="text-gray-400">Image not available</span>
+      </div>
+    );
+  }
+
   return (
     <BookImageMiniature
       className="object-cover max-w-80"
-      bookImageSrc={
-        (userBookData?.imageUrl || userBookData?.book.imageUrl) ?? ''
-      }
+      bookImageSrc={imageUrl}
     />
   );
 };
+
+export const BookImageLoader = memo(BookImageLoaderComponent);

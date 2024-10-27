@@ -121,6 +121,9 @@ export const changeRequestsColumns: ColumnDef<BookChangeRequest>[] = [
   },
   {
     header: () => <p></p>,
+    minSize: 50,
+    size: 50,
+    maxSize: 150,
     accessorKey: 'navigation',
     cell: ({ row }): JSX.Element => {
       return (
