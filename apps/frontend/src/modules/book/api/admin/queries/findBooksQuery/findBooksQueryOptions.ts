@@ -45,6 +45,7 @@ export const useAdminFindBooksQuery = ({
 			isApproved,
 			releaseYearBefore,
 			releaseYearAfter,
+			sortDate,
 		],
 		queryFn: ({ signal }) =>
 			adminFindBooks({

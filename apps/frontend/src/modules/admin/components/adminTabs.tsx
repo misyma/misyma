@@ -39,7 +39,7 @@ export const AdminTabs: FC<AdminTabsProps> = ({ currentlySelected }) => {
       <AdminTabLink
         currentlySelected={currentlySelected === 'books'}
         label="Książki"
-        to="/admin/tabs/books"
+        to="/admin/tabs/books?page=1&pageSize=10"
       />
       <AdminTabLink
         currentlySelected={currentlySelected === 'changeRequests'}

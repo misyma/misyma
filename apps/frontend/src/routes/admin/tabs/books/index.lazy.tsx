@@ -63,13 +63,21 @@ export const BooksAdminPage: FC = () => {
           <BooksTable
             isFilterVisible={isFilterVisible}
             onSetPage={onSetPage}
-            params={searchParams as unknown as FindAdminBooksQueryParams}
+            params={
+              searchParams as unknown as FindAdminBooksQueryParams & {
+                sort: string;
+              }
+            }
           />
         }
         AdditionalColumn={
           <BooksTableAdditionalColumn
             onApplyFilters={onApplyFilters}
-            searchParams={searchParams as unknown as FindAdminBooksQueryParams}
+            searchParams={
+              searchParams as unknown as FindAdminBooksQueryParams & {
+                sort: string;
+              }
+            }
           />
         }
         columnsClassName="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-y-4 gap-x-4"
@@ -95,6 +103,7 @@ const RouteSearchSchema = z.object({
       coerce: true,
     })
     .catch(10),
+  sort: z.enum(['date-asc', 'date-desc', '']).catch(''),
   title: z.string().catch(''),
   authorIds: z.string().catch(''),
   isbn: z.string().catch(''),

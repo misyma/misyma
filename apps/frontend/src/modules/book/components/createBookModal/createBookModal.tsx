@@ -57,7 +57,7 @@ export const CreateBookModal: FC = () => {
         }}
       >
         <DialogTrigger asChild>
-          <TooltipProvider delayDuration={0}>
+          <TooltipProvider delayDuration={300}>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button onClick={() => setIsOpen(true)} size="big-icon">

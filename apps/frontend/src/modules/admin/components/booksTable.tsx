@@ -1,4 +1,8 @@
-import { Book, FindAdminBooksQueryParams } from '@common/contracts';
+import {
+  Book,
+  FindAdminBooksQueryParams,
+  SortingType,
+} from '@common/contracts';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { bookTableColumns } from '../../book/components/bookTable/bookTableColumns';
 import { cn } from '../../common/lib/utils';
@@ -13,7 +17,7 @@ const TableSizing = {
 
 interface BooksTableProps {
   isFilterVisible: boolean;
-  params: FindAdminBooksQueryParams;
+  params: FindAdminBooksQueryParams & { sort: string };
   onSetPage: (val: number) => void;
 }
 
@@ -29,6 +33,12 @@ export const BooksTable: FC<BooksTableProps> = ({
   } = useAdminFindBooksQuery({
     all: true,
     ...params,
+    sortDate:
+      params.sort === 'date-desc'
+        ? SortingType.desc
+        : params.sort === 'date-asc'
+          ? SortingType.asc
+          : '' as SortingType,
   });
   const [totalPages, setTotalPages] = useState(0);
 
