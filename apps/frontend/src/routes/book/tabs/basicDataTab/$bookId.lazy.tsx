@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import { FavoriteBookButton } from '../../../../modules/book/components/favoriteBookButton/favoriteBookButton.js';
 
 import { Navigate, createFileRoute } from '@tanstack/react-router';
@@ -9,25 +9,32 @@ import { BookTabNavigation } from '../../../../modules/book/components/bookTabNa
 import { BasicDataTabActionButtons } from '../../../../modules/book/components/basicDataTab/basicDataTabActionButtons.js';
 import { BasicDataMainBody } from '../../../../modules/book/components/basicDataTab/basicDataMainBody.js';
 
+const MemoizedBookTabNavigation = memo(BookTabNavigation);
+const MemoizedBasicDataTabActionButtons = memo(BasicDataTabActionButtons);
+const MemoizedFavoriteBookButton = memo(FavoriteBookButton);
+const MemoizedBasicDataMainBody = memo(BasicDataMainBody);
+
 export const BasicDataPage: FC = () => {
   const { bookId } = Route.useParams();
+  
+  if (bookId === '') {
+    return <Navigate to="/login" />;
+  }
 
   return (
     <AuthenticatedLayout>
-      {bookId === '' ? <Navigate to={'/login'} /> : null}
       <BookTabLayout
         bookId={bookId}
         NavigationSlot={
-          <BookTabNavigation bookId={bookId} currentTab="basicData" />
+          <MemoizedBookTabNavigation bookId={bookId} currentTab="basicData" />
         }
-        ActionsSlot={<BasicDataTabActionButtons bookId={bookId} />}
-        ButtonSlot={<FavoriteBookButton bookId={bookId} />}
-        MainBodySlot={<BasicDataMainBody bookId={bookId} />}
+        ActionsSlot={<MemoizedBasicDataTabActionButtons bookId={bookId} />}
+        ButtonSlot={<MemoizedFavoriteBookButton bookId={bookId} />}
+        MainBodySlot={<MemoizedBasicDataMainBody bookId={bookId} />}
       />
     </AuthenticatedLayout>
   );
 };
-
 const bookPathParamsSchema = z.object({
   bookId: z.string().uuid().catch(''),
 });

@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { IoMdStar } from 'react-icons/io';
 import { FindBookReadingsQueryOptions } from '../../../bookReadings/api/queries/findBookReadings/findBookReadingsQueryOptions';
 import { SortingType } from '@common/contracts';
+import { Skeleton } from '../../../common/components/skeleton/skeleton';
 
 interface Props {
   userBookId: string;
@@ -13,7 +14,7 @@ interface Props {
 export const CurrentRatingStar: FC<Props> = ({ userBookId }) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
-  const { data: bookReadings } = useQuery(
+  const { data: bookReadings, isLoading } = useQuery(
     FindBookReadingsQueryOptions({
       accessToken: accessToken as string,
       userBookId,
@@ -22,8 +23,12 @@ export const CurrentRatingStar: FC<Props> = ({ userBookId }) => {
     }),
   );
 
+  if (isLoading) {
+    return <Skeleton className='h-7 w-7'/>
+  }
+
   return bookReadings?.data[0] ? (
-    <div className="flex items-center">
+    <div className="flex flex-shrink-0 items-center">
       <div>
         <p className="text-2xl">{bookReadings.data[0].rating}</p>
       </div>
