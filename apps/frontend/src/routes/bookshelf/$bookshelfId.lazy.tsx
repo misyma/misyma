@@ -257,7 +257,7 @@ const BookshelfSkeleton = () => {
       key={`skeleton-${index}`}
       className="relative flex align-middle items-center gap-4 w-full cursor-pointer"
     >
-      <Skeleton className="w-40 h-60" />
+      <Skeleton className="w-40 h-40" />
       <div className="z-10 w-full px-12 pointer-events-none">
         <div className="flex justify-between w-full">
           <Skeleton className="w-52 h-8" />
@@ -378,7 +378,7 @@ export const Bookshelf: FC = () => {
             bookshelfBooksResponse?.data.map((userBook, index) => (
               <div
                 key={`${userBook.bookId}-${index}`}
-                className="relative flex align-middle items-center gap-4 w-full cursor-pointer"
+                className="relative flex flex-shrink-0 align-middle items-center gap-4 w-full cursor-pointer"
               >
                 <div
                   onClick={() => {
@@ -439,6 +439,7 @@ export const Bookshelf: FC = () => {
                 onPageChange={setCurrentPage}
                 pageIndex={currentPage}
                 pagesCount={pageCount ?? 0}
+                perPage={perPage}
                 includeArrows={true}
                 itemsCount={bookshelfBooksResponse.metadata.total}
               />

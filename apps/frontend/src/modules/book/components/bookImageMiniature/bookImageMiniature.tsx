@@ -35,7 +35,7 @@ export const BookImageMiniature: FC<BookImageProps> = ({
   };
 
   return (
-    <div className={cn('relative aspect-square max-w-[200px]', className)}>
+    <div className={cn('relative aspect-square w-40', className)}>
       {isLoading && (
         <Skeleton className='w-full h-full' />
       )}
