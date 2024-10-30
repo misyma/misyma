@@ -3,8 +3,10 @@ import { FavoriteBookButton } from '../../../../modules/book/components/favorite
 import { Separator } from '@radix-ui/react-select';
 import { Button } from '../../../../modules/common/components/button/button';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
-import { Navigate, createFileRoute } from '@tanstack/react-router';
-import { z } from 'zod';
+import {
+  Navigate,
+  createLazyFileRoute,
+} from '@tanstack/react-router';
 import { CreateQuotationModal } from '../../../../modules/quotes/components/createQuotationModal/createQuotationModal';
 import { BookTabLayout } from '../../../../modules/book/layouts/bookTabLayout';
 import { QuotationTabTitleBar } from '../../../../modules/quotes/components/quotationTabTitleBar/quotationTabTitleBar';
@@ -45,36 +47,6 @@ export const QuotesPage: FC = () => {
   );
 };
 
-const bookPathParamsSchema = z.object({
-  bookId: z.string().uuid().catch(''),
-});
-
-export const Route = createFileRoute('/book/tabs/quotationsTab/$bookId')({
+export const Route = createLazyFileRoute('/book/tabs/quotationsTab/$bookId')({
   component: QuotesPage,
-  onError: () => {
-    return <Navigate to={'/login'} />;
-  },
-  parseParams: (params) => {
-    return bookPathParamsSchema.parse(params);
-  },
-  staticData: {
-    routeDisplayableNameParts: [
-      {
-        readableName: 'Półki',
-        href: '/shelves/',
-      },
-      {
-        readableName: '$bookshelfName',
-        href: '/bookshelf/$bookshelfId',
-      },
-      {
-        readableName: '$bookName',
-        href: '/book/tabs/basicDataTab/$bookId',
-      },
-      {
-        readableName: 'Cytaty',
-        href: '/book/tabs/quotationsTab/$bookId',
-      },
-    ],
-  },
 });

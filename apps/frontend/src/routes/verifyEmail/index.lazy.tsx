@@ -1,6 +1,5 @@
-import { Link, createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createLazyFileRoute, useNavigate } from '@tanstack/react-router';
 import { FC, useEffect } from 'react';
-import { z } from 'zod';
 import { RequireNonAuthComponent } from '../../modules/core/components/requireNonAuth/requireNonAuthComponent';
 import { useToast } from '../../modules/common/components/toast/use-toast';
 import { Logo } from '../../modules/common/components/logo/logo';
@@ -57,20 +56,12 @@ export const VerifyEmailPage: FC = () => {
   );
 };
 
-const searchSchema = z.object({
-  token: z.string().min(1).catch(''),
-});
-
-export const Route = createFileRoute('/verifyEmail/')({
+export const Route = createLazyFileRoute('/verifyEmail/')({
   component: () => {
     return (
       <RequireNonAuthComponent>
         <VerifyEmailPage />
       </RequireNonAuthComponent>
     );
-  },
-  validateSearch: searchSchema,
-  onError: () => {
-    return <Link to={'/login'} />;
   },
 })

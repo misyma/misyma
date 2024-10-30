@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createLazyFileRoute } from '@tanstack/react-router';
 import { FC } from 'react';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { RequireAdmin } from '../../../../modules/core/components/requireAdmin/requireAdmin';
@@ -9,7 +9,6 @@ import {
 import { cn } from '../../../../modules/common/lib/utils';
 import { useQueryClient } from '@tanstack/react-query';
 import { BookApiQueryKeys } from '../../../../modules/book/api/user/queries/bookApiQueryKeys';
-import { z } from 'zod';
 import { FindAdminBooksQueryParams } from '@common/contracts';
 import { DynamicFilterValues } from '../../../../modules/common/contexts/dynamicFilterContext';
 import { AdminTabLayout } from '../../../../modules/common/layouts/adminTabLayout';
@@ -30,18 +29,25 @@ export const BooksAdminPage: FC = () => {
 
   const searchParams = Route.useSearch();
 
-  const navigate = useNavigate();
+  const navigate = Route.useNavigate();
 
   const onSetPage = (page: number): void => {
     navigate({
+      to: '',
       search: (prev) => ({ ...prev, page }),
     });
   };
 
   const onApplyFilters = async (val: DynamicFilterValues) => {
     const newSig = Object.values(val).toString();
+
     navigate({
-      search: () => ({ ...val, page: 1 }),
+      to: '',
+      search: (prev) => ({
+        ...prev,
+        ...val,
+        page: 1,
+      }),
     });
 
     if (newSig === '') {
@@ -92,38 +98,7 @@ export const BooksAdminPage: FC = () => {
   );
 };
 
-const RouteSearchSchema = z.object({
-  page: z
-    .number({
-      coerce: true,
-    })
-    .catch(1),
-  pageSize: z
-    .number({
-      coerce: true,
-    })
-    .catch(10),
-  sort: z.enum(['date-asc', 'date-desc', '']).catch(''),
-  title: z.string().catch(''),
-  authorIds: z.string().catch(''),
-  isbn: z.string().catch(''),
-  language: z.string().catch(''),
-  isApproved: z.boolean().optional(),
-  releaseYearAfter: z
-    .number({
-      coerce: true,
-    })
-    .int()
-    .optional(),
-  releaseYearBefore: z
-    .number({
-      coerce: true,
-    })
-    .int()
-    .optional(),
-});
-
-export const Route = createFileRoute('/admin/tabs/books/')({
+export const Route = createLazyFileRoute('/admin/tabs/books/')({
   component: () => {
     return (
       <RequireAdmin>
@@ -133,17 +108,4 @@ export const Route = createFileRoute('/admin/tabs/books/')({
       </RequireAdmin>
     );
   },
-  staticData: {
-    routeDisplayableNameParts: [
-      {
-        href: '/admin/tabs/authors/',
-        readableName: 'Admin',
-      },
-      {
-        href: '/admin/tabs/books/',
-        readableName: 'Książki',
-      },
-    ],
-  },
-  validateSearch: (s) => RouteSearchSchema.parse(s),
 });

@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createLazyFileRoute } from '@tanstack/react-router';
 import { FC } from 'react';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { RequireAdmin } from '../../../../modules/core/components/requireAdmin/requireAdmin';
@@ -11,33 +11,19 @@ export const ChangeRequestsAdminPage: FC = () => {
     <AuthenticatedLayout>
       <AdminTabLayout
         TabsSlot={<AdminTabs currentlySelected="changeRequests" />}
-        TableSlot={
-          <AdminChangeRequestsTable />
-        }
+        TableSlot={<AdminChangeRequestsTable />}
         AdditionalActionsSlot={<></>}
       />
     </AuthenticatedLayout>
   );
 };
 
-export const Route = createFileRoute('/admin/tabs/changeRequests/')({
+export const Route = createLazyFileRoute('/admin/tabs/changeRequests/')({
   component: () => {
     return (
       <RequireAdmin>
         <ChangeRequestsAdminPage />
       </RequireAdmin>
     );
-  },
-  staticData: {
-    routeDisplayableNameParts: [
-      {
-        href: '/admin/tabs/authors/',
-        readableName: 'Admin',
-      },
-      {
-        readableName: 'Prośby o zmianę',
-        href: '/admin/tabs/changeRequests/',
-      },
-    ],
   },
 });

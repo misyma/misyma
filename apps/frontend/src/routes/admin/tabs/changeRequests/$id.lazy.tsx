@@ -1,4 +1,4 @@
-import { createFileRoute, Navigate, useNavigate } from '@tanstack/react-router';
+import { createLazyFileRoute, Navigate, useNavigate } from '@tanstack/react-router';
 import { RequireAdmin } from '../../../../modules/core/components/requireAdmin/requireAdmin';
 import { FC, useMemo } from 'react';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
@@ -260,15 +260,7 @@ export const ChangeRequestView: FC = () => {
   );
 };
 
-const changeRequestSearchSchema = z.object({
-  id: z.string().uuid().catch(''),
-});
-
-export const Route = createFileRoute('/admin/tabs/changeRequests/$id')({
-  parseParams: changeRequestSearchSchema.parse,
-  onError: () => {
-    return <Navigate to={'/admin/tabs/changeRequests'} />;
-  },
+export const Route = createLazyFileRoute('/admin/tabs/changeRequests/$id')({
   component: () => {
     return (
       <RequireAdmin>

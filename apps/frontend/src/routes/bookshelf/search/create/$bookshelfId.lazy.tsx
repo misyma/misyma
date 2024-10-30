@@ -1,10 +1,16 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import {
+  createLazyFileRoute,
+  useNavigate,
+} from '@tanstack/react-router';
 import { FC, useEffect } from 'react';
 import { RequireAuthComponent } from '../../../../modules/core/components/requireAuth/requireAuthComponent';
 import { useSearchBookContext } from '../../../../modules/bookshelf/context/searchCreateBookContext/searchCreateBookContext';
 import { ManualStep } from '../../../../modules/bookshelf/components/manualStep/manualStep';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
-import { Breadcrumbs, NumericBreadcrumb } from '../../../../modules/common/components/ui/breadcrumbs';
+import {
+  Breadcrumbs,
+  NumericBreadcrumb,
+} from '../../../../modules/common/components/ui/breadcrumbs';
 
 export const SearchCreatePage: FC = () => {
   const searchBookContext = useSearchBookContext();
@@ -58,7 +64,7 @@ export const SearchCreatePage: FC = () => {
 
   return (
     <AuthenticatedLayout>
-      <div className='w-full flex items-center justify-center'>
+      <div className="w-full flex items-center justify-center">
         <div className="flex flex-col-reverse sm:px-10 pt-8 sm:pt-24 sm:flex-row gap-10 sm:gap-20 md:gap-30 lg:gap-60 max-w-[15rem] sm:max-w-[unset]">
           <div className="sm:min-h-[40rem]">
             <Breadcrumbs
@@ -93,7 +99,9 @@ export const SearchCreatePage: FC = () => {
   );
 };
 
-export const Route = createFileRoute('/bookshelf/search/create/$bookshelfId')({
+export const Route = createLazyFileRoute(
+  '/bookshelf/search/create/$bookshelfId'
+)({
   component: () => {
     return (
       <RequireAuthComponent>

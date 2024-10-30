@@ -1,4 +1,4 @@
-import { createFileRoute, Navigate, useNavigate } from '@tanstack/react-router';
+import { createLazyFileRoute, Navigate } from '@tanstack/react-router';
 import { RequireAuthComponent } from '../../../../modules/core/components/requireAuth/requireAuthComponent';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { LoadingSpinner } from '../../../../modules/common/components/spinner/loading-spinner';
@@ -25,11 +25,10 @@ import {
 import { BookFormat } from '../../../../modules/common/constants/bookFormat';
 import { ReversedLanguages } from '../../../../modules/common/constants/languages';
 import { AutoselectedInput } from '../../../../modules/common/components/autoselectedInput/autoselectedInput';
-import { z } from 'zod';
 
 export const SearchResultPage: FC = () => {
   const searchParams = Route.useSearch();
-  const navigate = useNavigate();
+  const navigate = Route.useNavigate();
 
   const [manualPageNumberInputOpen, setManualPageNumberInputOpen] =
     useState(false);
@@ -232,6 +231,7 @@ export const SearchResultPage: FC = () => {
                     onKeyDown={(event) => {
                       if (event.key === 'Enter') {
                         navigate({
+                          to: '',
                           search: (prev) => ({
                             ...prev,
                             page: inputValue.current,
@@ -258,6 +258,7 @@ export const SearchResultPage: FC = () => {
                 rootClassName="w-full flex items-center h-16 text-xl sm:text-3xl justify-normal"
                 onPageChange={(page) => {
                   navigate({
+                    to: '',
                     search: (prev) => ({
                       ...prev,
                       isbn: foundBooks?.data[0].isbn ?? '',
@@ -402,14 +403,7 @@ export const SearchResultPage: FC = () => {
   );
 };
 
-const searchSchema = z.object({
-  isbn: z.string().catch(''),
-  title: z.string().min(1).catch(''),
-  bookshelfId: z.string().uuid().catch(''),
-  page: z.number().int().default(1).catch(1),
-  searchBy: z.enum(['isbn', 'title']),
-});
-export const Route = createFileRoute('/bookshelf/search/result/')({
+export const Route = createLazyFileRoute('/bookshelf/search/result/')({
   component: () => {
     return (
       <RequireAuthComponent>
@@ -417,5 +411,4 @@ export const Route = createFileRoute('/bookshelf/search/result/')({
       </RequireAuthComponent>
     );
   },
-  validateSearch: (search) => searchSchema.parse(search),
 });

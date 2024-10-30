@@ -21,7 +21,7 @@ import { useNavigate, useSearch } from '@tanstack/react-router';
 
 export const BooksSortButton = () => {
   const [popoverOpen, setPopoverOpen] = useState(false);
-  const navigate = useNavigate();
+  const navigate = useNavigate({ from: '/admin/tabs/books'});
   const search = useSearch({ strict: false });
 
   const handleSort = (sortValue: 'date-asc' | 'date-desc' | '') => {

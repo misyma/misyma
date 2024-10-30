@@ -5,8 +5,10 @@ import { FavoriteBookButton } from '../../../../modules/book/components/favorite
 import { BookReadingsApiQueryKeys } from '../../../../modules/bookReadings/api/queries/bookReadingsApiQueryKeys.js';
 import { AddStarRatingButton } from '../../../../modules/book/components/addStarRatingButton/addStarRatingButton.js';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout.js';
-import { Navigate, createFileRoute } from '@tanstack/react-router';
-import { z } from 'zod';
+import {
+  Navigate,
+  createLazyFileRoute,
+} from '@tanstack/react-router';
 import { BookTabLayout } from '../../../../modules/book/layouts/bookTabLayout.js';
 import { BookTabNavigation } from '../../../../modules/book/components/bookTabNavigation/bookTabNavigation.js';
 import { useBookBreadcrumbs } from '../../../../modules/book/hooks/useBookBreadcrumbs.js';
@@ -52,36 +54,6 @@ export const GradesPage: FC = () => {
   );
 };
 
-const bookPathParamsSchema = z.object({
-  bookId: z.string().uuid().catch(''),
-});
-
-export const Route = createFileRoute('/book/tabs/gradesTab/$bookId')({
+export const Route = createLazyFileRoute('/book/tabs/gradesTab/$bookId')({
   component: GradesPage,
-  onError: () => {
-    return <Navigate to={'/login'} />;
-  },
-  parseParams: (params) => {
-    return bookPathParamsSchema.parse(params);
-  },
-  staticData: {
-    routeDisplayableNameParts: [
-      {
-        readableName: 'Półki',
-        href: '/shelves/',
-      },
-      {
-        readableName: '$bookshelfName',
-        href: '/bookshelf/$bookshelfId',
-      },
-      {
-        readableName: '$bookName',
-        href: '/book/tabs/basicDataTab/$bookId',
-      },
-      {
-        readableName: 'Oceny',
-        href: '/book/tabs/gradesTab/$bookId',
-      },
-    ],
-  },
 });

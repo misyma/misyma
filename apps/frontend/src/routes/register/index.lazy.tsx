@@ -1,4 +1,4 @@
-import { Link, createFileRoute, useNavigate } from '@tanstack/react-router';
+import { Link, createLazyFileRoute, useNavigate } from '@tanstack/react-router';
 import { FC, useState } from 'react';
 import { RegisterUserForm } from '../../modules/auth/components/registerUserForm/registerUserForm';
 import { RequireNonAuthComponent } from '../../modules/core/components/requireNonAuth/requireNonAuthComponent';
@@ -98,7 +98,7 @@ export const RegisterPage: FC = () => {
   );
 };
 
-export const Route = createFileRoute('/register/')({
+export const Route = createLazyFileRoute('/register/')({
   component: () => {
     return (
       <RequireNonAuthComponent>
