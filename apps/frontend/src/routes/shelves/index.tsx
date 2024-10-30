@@ -1,25 +1,11 @@
 import { FC, useEffect, useMemo, useState } from 'react';
 import { AuthenticatedLayout } from '../../modules/auth/layouts/authenticated/authenticatedLayout';
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { RequireAuthComponent } from '../../modules/core/components/requireAuth/requireAuthComponent';
 import { useFindUserQuery } from '../../modules/user/api/queries/findUserQuery/findUserQuery';
 import { Button } from '../../modules/common/components/button/button';
-import { ScrollArea } from '../../modules/common/components/scrollArea/scroll-area';
-import { HiPencil } from 'react-icons/hi';
-import { IoMdEye } from 'react-icons/io';
-import { HiCheck, HiOutlineX } from 'react-icons/hi';
-import { useUpdateBookshelfMutation } from '../../modules/bookshelf/api/mutations/updateBookshelfMutation/updateBookshelfMutation';
-import { useToast } from '../../modules/common/components/toast/use-toast';
-import { AutoselectedInput } from '../../modules/common/components/autoselectedInput/autoselectedInput';
-import { z } from 'zod';
-import { useCreateBookshelfMutation } from '../../modules/bookshelf/api/mutations/createBookshelfMutation/createBookshelfMutation';
-import { Bookmark } from '../../modules/common/components/bookmark/bookmark';
 import { BookshelfType } from '@common/contracts';
-import { DeleteBookshelfModal } from '../../modules/bookshelf/components/deleteBookshelfModal/deleteBookshelfModal';
-import { cn } from '../../modules/common/lib/utils';
 import { useFindUserBookshelfsQuery } from '../../modules/bookshelf/api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
-import { useQueryClient } from '@tanstack/react-query';
-import { ShelfApiError } from '../../modules/bookshelf/api/errors/shelfApiError';
 import { useBreadcrumbKeysDispatch } from '../../modules/common/contexts/breadcrumbKeysContext';
 import { ShelvesSkeleton } from '../../modules/bookshelf/components/bookshelvesSkeleton/shelvesSkeleton';
 
@@ -27,15 +13,7 @@ import styles from './index.module.css';
 import { Paginator } from '../../modules/common/components/paginator/paginator';
 import { Input } from '../../modules/common/components/input/input';
 import { HiMagnifyingGlass } from 'react-icons/hi2';
-
-const bookshelfNameSchema = z
-  .string()
-  .min(1, {
-    message: `Nazwa jest zbyt krotka.`,
-  })
-  .max(64, {
-    message: `Nazwa jest zbyt długa.`,
-  });
+import { BookshelfsList } from '../../modules/bookshelf/components/bookshelfsList/bookshelfsList';
 
 export const ShelvesPage: FC = () => {
   const dispatch = useBreadcrumbKeysDispatch();
@@ -46,13 +24,11 @@ export const ShelvesPage: FC = () => {
   const [searchedName, setSearchedName] = useState('');
   const [editMap, setEditMap] = useState<Record<number, boolean>>({});
 
-  const queryClient = useQueryClient();
   const { data: user } = useFindUserQuery();
   const {
     data: bookshelvesData,
-    isFetching,
+    isLoading,
     isRefetching,
-    refetch: refetchBookshelves,
   } = useFindUserBookshelfsQuery({
     userId: user?.id as string,
     pageSize: perPage,
@@ -60,11 +36,6 @@ export const ShelvesPage: FC = () => {
     name: searchedName,
   });
   const [bookshelves, setBookshelves] = useState(bookshelvesData?.data);
-
-  const { mutateAsync: updateBookshelf } = useUpdateBookshelfMutation({});
-  const createBookshelfMutation = useCreateBookshelfMutation({});
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch({
@@ -77,182 +48,19 @@ export const ShelvesPage: FC = () => {
     setBookshelves(bookshelvesData?.data);
   }, [bookshelvesData]);
 
-  const { toast } = useToast();
-
   const pagesCount = useMemo(() => {
     const bookshelvesCount = bookshelvesData?.metadata?.total ?? 0;
 
     return Math.ceil(bookshelvesCount / perPage);
   }, [bookshelvesData?.metadata?.total]);
 
-  if (isFetching && !isRefetching) {
+  if (isLoading && !isRefetching) {
     return (
       <AuthenticatedLayout>
         <ShelvesSkeleton />
       </AuthenticatedLayout>
     );
   }
-
-  const startEdit = (index: number): void => {
-    setEditMap({
-      ...editMap,
-      [index]: true,
-    });
-  };
-
-  const onCancelEdit = (index: number): void => {
-    setEditMap({
-      ...editMap,
-      [index]: false,
-    });
-
-    if (!bookshelves) {
-      return;
-    }
-
-    const element = bookshelves[index];
-
-    if (element.id === '') {
-      const updatedBookshelves = bookshelves.slice(1);
-
-      setBookshelves([...updatedBookshelves]);
-
-      setIsCreatingNew(false);
-    }
-  };
-
-  const onCreateNew = async (index: number): Promise<void> => {
-    const input = document.querySelector(`[id="${index}-bookshelf"]`) as
-      | HTMLInputElement
-      | undefined;
-
-    if (!input) {
-      toast({
-        title: `Wystąpił błąd.`,
-        description: `Coś poszło nie tak przy tworzeniu twojej półki. Spróbuj ponownie.`,
-        variant: `destructive`,
-      });
-
-      return;
-    }
-
-    const bookshelfName = input?.value;
-
-    const validatedBookshelfName = bookshelfNameSchema.safeParse(bookshelfName);
-
-    if (!validatedBookshelfName.success) {
-      toast({
-        title: 'Niepoprawna nazwa.',
-        description: validatedBookshelfName.error.errors[0].message,
-        variant: 'destructive',
-      });
-
-      return;
-    }
-
-    setEditMap({
-      ...editMap,
-      [index]: false,
-    });
-
-    setIsCreatingNew(false);
-
-    try {
-      await createBookshelfMutation.mutateAsync({
-        name: bookshelfName,
-      });
-
-      queryClient.invalidateQueries({
-        predicate: (query) => query.queryKey[0] === 'findUserBookshelfs',
-      });
-
-      toast({
-        title: `Półka została stworzona.`,
-        description: `Stworzono półkę o nazwie: ${bookshelfName}`,
-        variant: 'success',
-      });
-    } catch (error) {
-      if (error instanceof ShelfApiError) {
-        if (error.context.statusCode === 409) {
-          toast({
-            title: 'Wystąpił błąd',
-            description: 'Półka o podanej przez Ciebie nazwie już istnieje.',
-            variant: `destructive`,
-          });
-
-          setBookshelves(
-            bookshelves?.filter((bookshelf) => bookshelf.id !== '')
-          );
-
-          return;
-        }
-      }
-
-      toast({
-        title: `Wystąpił błąd.`,
-        description: `Coś poszło nie tak przy tworzeniu twojej półki. Spróbuj ponownie.`,
-        variant: `destructive`,
-      });
-    }
-  };
-
-  const onSaveEdit = async (index: number): Promise<void> => {
-    const input = document.querySelector(`[id="${index}-bookshelf"]`) as
-      | HTMLInputElement
-      | undefined;
-
-    if (!input) {
-      toast({
-        title: `Wystąpił błąd.`,
-        description: `Coś poszło nie tak przy aktualizowaniu twojej półki. Spróbuj ponownie.`,
-        variant: `destructive`,
-      });
-
-      return;
-    }
-
-    const newName = input?.value;
-
-    const validatedNewName = bookshelfNameSchema.safeParse(newName);
-
-    if (!validatedNewName.success) {
-      toast({
-        title: 'Niepoprawna nazwa.',
-        description: validatedNewName.error.errors[0].message,
-        variant: 'destructive',
-      });
-
-      return;
-    }
-
-    setEditMap({
-      ...editMap,
-      [index]: false,
-    });
-
-    try {
-      const oldName = bookshelvesData?.data[index].name as string;
-
-      await updateBookshelf({
-        bookshelfId: bookshelvesData?.data[index].id as string,
-        name: newName,
-      });
-
-      await refetchBookshelves();
-
-      toast({
-        title: `Nazwa półki zmieniona.`,
-        description: `Półka ${oldName} to teraz ${newName}`,
-        variant: 'success',
-      });
-    } catch (error) {
-      toast({
-        title: `Wystąpił błąd.`,
-        description: `Coś poszło nie tak przy aktualizowaniu twojej półki. Spróbuj ponownie.`,
-        variant: `destructive`,
-      });
-    }
-  };
 
   const onAddNewBookshelf = (): void => {
     bookshelves?.unshift({
@@ -297,154 +105,11 @@ export const ShelvesPage: FC = () => {
               Dodaj nową półkę
             </Button>
           </div>
-          <ScrollArea className={styles['shelves-scroll-area']}>
-            <div className={styles['shelves-container']}>
-              {bookshelves?.map((bookshelf, index) => (
-                <div
-                  className={cn(index > 4 ? 'hidden' : '')}
-                  key={`${bookshelf.id}-container`}
-                >
-                  <Bookmark />
-                  <div key={`${bookshelf.id}`} className={styles['shelf']}>
-                    <div
-                      onClick={() => {
-                        if (bookshelf.id) {
-                          navigate({
-                            to: `/bookshelf/${bookshelf.id}`,
-                          });
-                        }
-                      }}
-                      className={cn('absolute w-full h-[100%]', {
-                        ['cursor-pointer']: bookshelf.id ? true : false,
-                      })}
-                    >
-                      &nbsp;
-                    </div>
-                    <div className="flex items-center justify-between w-full pointer-events-none z-10">
-                      <h2
-                        id={`name-${index}-bookshelf`}
-                        onClick={() => {
-                          if (editMap[index] === true) {
-                            return;
-                          }
-                          navigate({
-                            to: `/bookshelf/${bookshelf.id}`,
-                          });
-                        }}
-                        className="cursor-pointer pl-0 md:pl-4 lg:pl-12 text-lg sm:text-2xl truncate"
-                        key={`${bookshelf.id}-${bookshelf.name}`}
-                      >
-                        {editMap[index] !== true ? (
-                          bookshelf.name
-                        ) : (
-                          <AutoselectedInput
-                            type="text"
-                            maxLength={64}
-                            includeQuill={false}
-                            id={`${index}-bookshelf`}
-                            className="z-30 bg-none pointer-events-auto text-lg  sm:text-2xl px-0 w-40 sm:w-72"
-                            containerClassName="z-30 pointer-events-auto bg-transparent w-40 sm:w-72"
-                            defaultValue={bookshelf.name}
-                            onKeyDown={(event) => {
-                              if (event.key === 'Enter') {
-                                if (
-                                  bookshelves &&
-                                  bookshelves[index]?.id === ''
-                                ) {
-                                  return onCreateNew(index);
-                                }
-
-                                onSaveEdit(index);
-                              }
-                            }}
-                          />
-                        )}
-                      </h2>
-                      <div className="px-4 sm:px-8 flex gap-4">
-                        {editMap[index] !== true ? (
-                          <>
-                            <HiPencil
-                              className={cn(
-                                'text-primary pointer-events-auto h-8 w-8 cursor-pointer',
-                                bookshelf.name === 'Archiwum' ||
-                                  bookshelf.name === 'Wypożyczalnia'
-                                  ? 'hidden'
-                                  : ''
-                              )}
-                              onClick={() => startEdit(index)}
-                            />
-                            <IoMdEye
-                              className="text-primary pointer-events-auto h-8 w-8 cursor-pointer"
-                              onClick={() => {
-                                if (bookshelf.id) {
-                                  navigate({
-                                    to: `/bookshelf/${bookshelf.id}`,
-                                  });
-                                }
-                              }}
-                            />
-                            <DeleteBookshelfModal
-                              bookshelfId={bookshelf.id}
-                              bookshelfName={bookshelf.name}
-                              deletedHandler={async () => {
-                                toast({
-                                  title: `Półka ${bookshelf.name} została usunięta.`,
-                                  variant: 'success',
-                                });
-
-                                const { data } = await refetchBookshelves();
-
-                                const newTotalPages = Math.ceil(
-                                  (data?.metadata.total ?? 0) /
-                                    (data?.metadata.pageSize ?? 1)
-                                );
-
-                                queryClient.invalidateQueries({
-                                  predicate: (query) =>
-                                    query.queryKey[0] === 'findUserBookshelfs',
-                                });
-
-                                if (currentPage > newTotalPages) {
-                                  setCurrentPage(newTotalPages);
-                                }
-                              }}
-                              className={cn(
-                                bookshelf.name === 'Archiwum' ||
-                                  bookshelf.name === 'Wypożyczalnia'
-                                  ? 'invisible'
-                                  : '',
-                                'pointer-events-auto'
-                              )}
-                            />
-                          </>
-                        ) : (
-                          <>
-                            <HiCheck
-                              className="pointer-events-auto text-primary h-8 w-8 cursor-pointer"
-                              onClick={() => {
-                                if (
-                                  bookshelves &&
-                                  bookshelves[index]?.id === ''
-                                ) {
-                                  return onCreateNew(index);
-                                }
-
-                                onSaveEdit(index);
-                              }}
-                            />
-                            <HiOutlineX
-                              className="pointer-events-auto text-primary h-8 w-8 cursor-pointer"
-                              onClick={() => onCancelEdit(index)}
-                            />
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </ScrollArea>
+          <BookshelfsList
+            onCreatingNew={(val) => setIsCreatingNew(val)}
+            currentPage={currentPage}
+            searchedName={searchedName}
+          />
           {bookshelves && (bookshelvesData?.metadata?.total ?? 0) > perPage && (
             <Paginator
               pagesCount={pagesCount}

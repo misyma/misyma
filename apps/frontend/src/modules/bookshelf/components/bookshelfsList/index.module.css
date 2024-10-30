@@ -1,0 +1,11 @@
+.shelves-scroll-area {
+  @apply w-full h-[70vh];
+}
+
+.shelves-container {
+  @apply py-4 grid gap-x-16 gap-y-2 grid-cols-1 w-full min-h-16;
+}
+
+.shelf {
+  @apply flex relative ml-10 mt-[-1.25rem] rounded-sm border border-spacing-2 p-4 gap-x-2 h-24 border-transparent bg-primaryBackground;
+}
