@@ -193,14 +193,10 @@ const ChangeUserDataForm = ({ userData }: FormProps) => {
           )}
         />
         <Button
-          className={changeUserDataForm.formState.isDirty ? 'visible' : 'hidden'}
-          style={{
-            visibility: changeUserDataForm.formState.isDirty ? 'visible' : 'hidden',
-          }}
-          disabled={!changeUserDataForm.formState.isValid || isUserUpdatePending || isChangeUserPasswordPending}
+          disabled={!changeUserDataForm.formState.isDirty || isUserUpdatePending || isChangeUserPasswordPending}
         >
-          {!isUserUpdatePending && !isChangeUserPasswordPending && <>Zaaktualizuj</>}
-          {isUserUpdatePending || (isChangeUserPasswordPending && <LoadingSpinner size={40} />)}
+          {!isUserUpdatePending && !isChangeUserPasswordPending && <>Zapisz</>}
+          {(isUserUpdatePending || isChangeUserPasswordPending) && <LoadingSpinner size={40} />}
         </Button>
       </form>
     </Form>

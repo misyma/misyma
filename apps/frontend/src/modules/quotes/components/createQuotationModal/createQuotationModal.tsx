@@ -9,7 +9,14 @@ import {
   DialogHeader,
   DialogTrigger,
 } from '../../../common/components/dialog/dialog';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/form/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../../../common/components/form/form';
 import { Textarea } from '../../../common/components/textArea/textarea';
 import { Button } from '../../../common/components/button/button';
 import { Input } from '../../../common/components/input/input';
@@ -40,16 +47,17 @@ const createQuotationSchema = z
       .max(256, 'Strona może mieć maksymalnie 256 znaków.'),
   })
   .superRefine((value, ctx) => {
+    const pageRegex = /^\d+-\d+$/;
+
+    // Usage with Zod:
     if (!value.page) {
       return;
     }
 
-    const match = value.page.match(/[0-9-]+/g);
-
-    if (match?.[0]?.length !== value.page.length) {
+    if (!pageRegex.test(value.page)) {
       ctx.addIssue({
         code: z.ZodIssueCode.invalid_string,
-        message: 'Strona powinna zawierać cyfry lub znak `-`',
+        message: 'Zły format. Pożądany format liczba-liczba',
         validation: 'regex',
         path: ['page'],
       });
@@ -62,7 +70,11 @@ interface Props {
   onMutated: () => void | Promise<void>;
 }
 
-export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props): ReactNode => {
+export const CreateQuotationModal = ({
+  userBookId,
+  onMutated,
+  trigger,
+}: Props): ReactNode => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const { toast } = useToast();
@@ -87,7 +99,9 @@ export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props):
 
   const { mutateAsync, isPending: isCreating } = useCreateQuoteMutation({});
 
-  const onSubmit = async (values: z.infer<typeof createQuotationSchema>): Promise<void> => {
+  const onSubmit = async (
+    values: z.infer<typeof createQuotationSchema>
+  ): Promise<void> => {
     const payload: {
       content: string;
       page: string | undefined;
@@ -155,7 +169,9 @@ export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props):
         className="max-w-xl py-16"
         omitCloseButton={true}
       >
-        <DialogHeader className="font-semibold text-center flex justify-center items-center">Dodaj cytat</DialogHeader>
+        <DialogHeader className="font-semibold text-center flex justify-center items-center">
+          Dodaj cytat
+        </DialogHeader>
         <DialogDescription className="flex flex-col gap-4 justify-center items-center">
           <p className={error ? 'text-red-500' : 'hidden'}>{error}</p>
           <Form {...form}>

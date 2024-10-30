@@ -63,8 +63,6 @@ export const AuthorsTable: FC<AdminAuthorsTableProps> = ({
     [authorsData?.metadata.total]
   );
 
-  console.log(itemsCount, pageSize)
-
   return (
     <div className="flex flex-col w-full">
       <Input
