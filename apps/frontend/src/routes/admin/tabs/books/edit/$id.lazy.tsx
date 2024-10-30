@@ -1,4 +1,4 @@
-import { createFileRoute, Navigate } from '@tanstack/react-router';
+import { createLazyFileRoute } from '@tanstack/react-router';
 import { z } from 'zod';
 import { FC, useState } from 'react';
 import { AuthenticatedLayout } from '../../../../../modules/auth/layouts/authenticated/authenticatedLayout';
@@ -60,14 +60,11 @@ import {
 } from '../../../../../modules/common/contexts/breadcrumbKeysContext';
 import { createAuthorDraftSchema } from '../../../../../modules/author/schemas/createAuthorDraftSchema';
 import { AuthorFieldTooltip } from '../../../../../modules/author/components/authorFieldTooltip';
+import { Route } from './$id';
 
 type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
 type WriteablePayload = Writeable<UpdateBookRequestBody>;
-
-const booksSearchSchema = z.object({
-  id: z.string().uuid().catch(''),
-});
 
 const editBookFormSchema = z.object({
   isbn: isbnSchema.or(z.literal('')),
@@ -629,33 +626,12 @@ const BooksEdit: FC = () => {
   );
 };
 
-export const Route = createFileRoute('/admin/tabs/books/edit/$id')({
+export const LazyRoute = createLazyFileRoute('/admin/tabs/books/edit/$id')({
   component: () => {
     return (
       <RequireAdmin>
         <BooksEdit />
       </RequireAdmin>
     );
-  },
-  parseParams: booksSearchSchema.parse,
-  validateSearch: booksSearchSchema,
-  onError: () => {
-    return <Navigate to={'/admin/tabs/books'} />;
-  },
-  staticData: {
-    routeDisplayableNameParts: [
-      {
-        href: '/admin/tabs/authors/',
-        readableName: 'Admin',
-      },
-      {
-        href: '/admin/tabs/books/',
-        readableName: 'Książki',
-      },
-      {
-        readableName: '$bookName',
-        href: '/book/tabs/basicDataTab/$bookId',
-      },
-    ],
   },
 });

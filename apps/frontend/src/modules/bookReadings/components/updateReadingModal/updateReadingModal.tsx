@@ -1,13 +1,29 @@
 import { FC, useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTrigger } from '../../../common/components/dialog/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTrigger,
+} from '../../../common/components/dialog/dialog';
 import { formatDate } from 'date-fns';
 import { Button } from '../../../common/components/button/button';
 import { cn } from '../../../common/lib/utils';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/form/form';
-import { Popover, PopoverContent, PopoverTrigger } from '../../../common/components/popover/popover';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../../../common/components/form/form';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '../../../common/components/popover/popover';
 import { CalendarIcon } from 'lucide-react';
 import { Calendar } from '../../../common/components/calendar/calendar';
 import { Textarea } from '../../../common/components/textArea/textarea';
@@ -17,10 +33,18 @@ import { pl } from 'date-fns/locale';
 import { useUpdateBookReadingMutation } from '../../api/mutations/bookReadings/updateBookReadingMutation/updateBookReadingMutation';
 import { BookReading } from '@common/contracts';
 import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../common/components/tooltip/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../../../common/components/tooltip/tooltip';
 import { HiPencil, HiStar } from 'react-icons/hi';
 import { useToast } from '../../../common/components/toast/use-toast';
-import { RadioGroup, RadioGroupItem } from '../../../common/components/radioGroup/radio-group';
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from '../../../common/components/radioGroup/radio-group';
 
 interface Props {
   bookReading: BookReading;
@@ -43,10 +67,15 @@ const updateBookReadingSchema = z
     endedAt: z.date(),
   })
   .superRefine((args, ctx) => {
-    if (args.startedAt && args.endedAt && args.startedAt.getTime() > args.endedAt.getTime()) {
+    if (
+      args.startedAt &&
+      args.endedAt &&
+      args.startedAt.getTime() > args.endedAt.getTime()
+    ) {
       ctx.addIssue({
         code: 'invalid_date',
-        message: 'Data rozpoczęcia czytania nie może być późniejsza niż data zakończenia czytania.',
+        message:
+          'Data rozpoczęcia czytania nie może być późniejsza niż data zakończenia czytania.',
         path: ['startedAt'],
       });
     }
@@ -58,7 +87,11 @@ interface UpdateBookReadingFormProps {
   setError: (err: string) => void;
 }
 
-const UpdateBookReadingForm: FC<UpdateBookReadingFormProps> = ({ bookReading, setIsOpen, setError }) => {
+const UpdateBookReadingForm: FC<UpdateBookReadingFormProps> = ({
+  bookReading,
+  setIsOpen,
+  setError,
+}) => {
   const queryClient = useQueryClient();
 
   const { toast } = useToast();
@@ -76,13 +109,18 @@ const UpdateBookReadingForm: FC<UpdateBookReadingFormProps> = ({ bookReading, se
 
   const [hoveredValue, setHoveredValue] = useState<number | undefined>();
 
-  const { mutateAsync, isPending: isUpdatingBookReading } = useUpdateBookReadingMutation({});
+  const { mutateAsync, isPending: isUpdatingBookReading } =
+    useUpdateBookReadingMutation({});
 
-  const onCreateBookReading = async (values: z.infer<typeof updateBookReadingSchema>) => {
+  const onCreateBookReading = async (
+    values: z.infer<typeof updateBookReadingSchema>
+  ) => {
     if (
       values.comment === bookReading.comment &&
-      new Date(values.endedAt).getTime() === new Date(bookReading.endedAt).getTime() &&
-      new Date(values.startedAt).getTime() === new Date(bookReading.startedAt).getTime() &&
+      new Date(values.endedAt).getTime() ===
+        new Date(bookReading.endedAt).getTime() &&
+      new Date(values.startedAt).getTime() ===
+        new Date(bookReading.startedAt).getTime() &&
       values.rating === bookReading.rating &&
       values.userBookId === bookReading.userBookId
     ) {
@@ -106,7 +144,8 @@ const UpdateBookReadingForm: FC<UpdateBookReadingFormProps> = ({ bookReading, se
 
       await queryClient.invalidateQueries({
         predicate: ({ queryKey }) =>
-          queryKey[0] === BookReadingsApiQueryKeys.findBookReadings && queryKey[1] === bookReading.userBookId,
+          queryKey[0] === BookReadingsApiQueryKeys.findBookReadings &&
+          queryKey[1] === bookReading.userBookId,
       });
 
       toast({
@@ -135,10 +174,14 @@ const UpdateBookReadingForm: FC<UpdateBookReadingFormProps> = ({ bookReading, se
             <FormItem className="flex flex-col justify-end">
               <div className="flex gap-2 items-center justify-end">
                 <FormLabel className="text-base">
-                  <div className="animate-wiggle text-primary font-bold ">{hoveredValue || field.value}</div>
+                  <div className="animate-wiggle text-primary font-bold ">
+                    {hoveredValue || field.value}
+                  </div>
                 </FormLabel>
                 <RadioGroup
-                  onValueChange={(value) => field.onChange(`${Number(value) + 1}`)}
+                  onValueChange={(value) =>
+                    field.onChange(`${Number(value) + 1}`)
+                  }
                   value={`${field.value ?? 0}`}
                   className="flex flex-row gap-0"
                 >
@@ -158,7 +201,10 @@ const UpdateBookReadingForm: FC<UpdateBookReadingFormProps> = ({ bookReading, se
                             <HiStar
                               className={cn(
                                 'h-7 w-7',
-                                Number(field.value) >= index + 1 && !hoveredValue ? 'text-primary' : '',
+                                Number(field.value) >= index + 1 &&
+                                  !hoveredValue
+                                  ? 'text-primary'
+                                  : ''
                               )}
                             />
                           </div>
@@ -208,7 +254,7 @@ const UpdateBookReadingForm: FC<UpdateBookReadingFormProps> = ({ bookReading, se
                         <span
                           className={cn(
                             !field.value && 'text-muted-foreground',
-                            'text-left w-full font-light text-black',
+                            'text-left w-full font-light text-black'
                           )}
                         >
                           {formatDate(field.value, 'PPP', {
@@ -216,7 +262,11 @@ const UpdateBookReadingForm: FC<UpdateBookReadingFormProps> = ({ bookReading, se
                           })}
                         </span>
                       ) : (
-                        <span className={cn('text-muted-foreground font-light text-left w-full')}>
+                        <span
+                          className={cn(
+                            'text-muted-foreground font-light text-left w-full'
+                          )}
+                        >
                           Wybierz dzień rozpoczęcia
                         </span>
                       )}
@@ -224,16 +274,15 @@ const UpdateBookReadingForm: FC<UpdateBookReadingFormProps> = ({ bookReading, se
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
-                <PopoverContent
-                  className="w-auto p-0"
-                  align="start"
-                >
+                <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
                     mode="single"
                     selected={field.value}
                     onSelect={field.onChange}
-                    disabled={(date) => date > new Date() || date < new Date('1900-01-01')}
-                    initialFocus
+                    disabled={(date) =>
+                      date > new Date() || date < new Date('1900-01-01')
+                    }
+                    autoFocus
                   />
                 </PopoverContent>
               </Popover>{' '}
@@ -259,7 +308,7 @@ const UpdateBookReadingForm: FC<UpdateBookReadingFormProps> = ({ bookReading, se
                         <span
                           className={cn(
                             !field.value && 'text-muted-foreground',
-                            'font-light text-left w-full text-black',
+                            'font-light text-left w-full text-black'
                           )}
                         >
                           {formatDate(field.value, 'PPP', {
@@ -267,7 +316,11 @@ const UpdateBookReadingForm: FC<UpdateBookReadingFormProps> = ({ bookReading, se
                           })}
                         </span>
                       ) : (
-                        <span className={cn('text-muted-foreground font-light text-left w-full')}>
+                        <span
+                          className={cn(
+                            'text-muted-foreground font-light text-left w-full'
+                          )}
+                        >
                           Wybierz dzień zakończenia
                         </span>
                       )}
@@ -275,16 +328,15 @@ const UpdateBookReadingForm: FC<UpdateBookReadingFormProps> = ({ bookReading, se
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
-                <PopoverContent
-                  className="w-auto p-0"
-                  align="start"
-                >
+                <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
                     mode="single"
                     selected={field.value}
                     onSelect={field.onChange}
-                    disabled={(date) => date > new Date() || date < new Date('1900-01-01')}
-                    initialFocus
+                    disabled={(date) =>
+                      date > new Date() || date < new Date('1900-01-01')
+                    }
+                    autoFocus
                   />
                 </PopoverContent>
               </Popover>
@@ -292,9 +344,11 @@ const UpdateBookReadingForm: FC<UpdateBookReadingFormProps> = ({ bookReading, se
             </FormItem>
           )}
         />
-        {form.getValues()?.startedAt?.getTime() > form.getValues()?.endedAt?.getTime() && (
+        {form.getValues()?.startedAt?.getTime() >
+          form.getValues()?.endedAt?.getTime() && (
           <p className="font-bold text-center text-red-500">
-            Data rozpoczęcia czytania nie może <br></br> być późniejsza niż data zakończenia czytania.{' '}
+            Data rozpoczęcia czytania nie może <br></br> być późniejsza niż data
+            zakończenia czytania.{' '}
           </p>
         )}
         <div className="pt-8 gap-2 flex sm:justify-center justify-center sm:items-center items-center">

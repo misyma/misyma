@@ -1,4 +1,4 @@
-import { Link, createFileRoute, useNavigate } from '@tanstack/react-router';
+import { Link, createLazyFileRoute, useNavigate } from '@tanstack/react-router';
 import { FC, useState } from 'react';
 import { SendResetPasswordEmailForm } from '../../modules/auth/components/sendResetPasswordEmailForm/sendResetPasswordEmailForm';
 import { RequireNonAuthComponent } from '../../modules/core/components/requireNonAuth/requireNonAuthComponent';
@@ -71,7 +71,7 @@ export const SendResetPasswordEmailPage: FC = () => {
   );
 };
 
-export const Route = createFileRoute('/resetPassword/')({
+export const Route = createLazyFileRoute('/resetPassword/')({
   component: () => {
     return (
       <RequireNonAuthComponent>

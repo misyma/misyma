@@ -1,13 +1,29 @@
 import { FC, ReactNode, useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTrigger } from '../../../common/components/dialog/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTrigger,
+} from '../../../common/components/dialog/dialog';
 import { formatDate } from 'date-fns';
 import { Button } from '../../../common/components/button/button';
 import { cn } from '../../../common/lib/utils';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/form/form';
-import { Popover, PopoverContent, PopoverTrigger } from '../../../common/components/popover/popover';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../../../common/components/form/form';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '../../../common/components/popover/popover';
 import { CalendarIcon } from 'lucide-react';
 import { Calendar } from '../../../common/components/calendar/calendar';
 import { Textarea } from '../../../common/components/textArea/textarea';
@@ -15,7 +31,10 @@ import { useAddBookReadingMutation } from '../../api/mutations/bookReadings/addB
 import { useQueryClient } from '@tanstack/react-query';
 import { BookReadingsApiQueryKeys } from '../../api/queries/bookReadingsApiQueryKeys';
 import { pl } from 'date-fns/locale';
-import { RadioGroup, RadioGroupItem } from '../../../common/components/radioGroup/radio-group';
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from '../../../common/components/radioGroup/radio-group';
 import { HiStar } from 'react-icons/hi';
 import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
 
@@ -45,7 +64,8 @@ const createBookReadingSchema = z
     if (args.startedAt.getTime() > args.endedAt.getTime()) {
       ctx.addIssue({
         code: 'invalid_date',
-        message: 'Data rozpoczęcia czytania nie może być późniejsza niż data zakończenia czytania.',
+        message:
+          'Data rozpoczęcia czytania nie może być późniejsza niż data zakończenia czytania.',
         path: ['startedAt'],
       });
     }
@@ -59,7 +79,13 @@ interface CreateBookReadingFormProps {
   setError: (err: string) => void;
 }
 
-const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating, onMutated, setIsOpen, setError }) => {
+const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({
+  bookId,
+  rating,
+  onMutated,
+  setIsOpen,
+  setError,
+}) => {
   const queryClient = useQueryClient();
 
   const form = useForm<z.infer<typeof createBookReadingSchema>>({
@@ -75,7 +101,9 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
 
   const { mutateAsync, isPending } = useAddBookReadingMutation({});
 
-  const onCreateBookReading = async (values: z.infer<typeof createBookReadingSchema>) => {
+  const onCreateBookReading = async (
+    values: z.infer<typeof createBookReadingSchema>
+  ) => {
     try {
       await mutateAsync({
         ...values,
@@ -89,7 +117,8 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
 
       await queryClient.invalidateQueries({
         predicate: ({ queryKey }) =>
-          queryKey[0] === BookReadingsApiQueryKeys.findBookReadings && queryKey[1] === bookId,
+          queryKey[0] === BookReadingsApiQueryKeys.findBookReadings &&
+          queryKey[1] === bookId,
       });
 
       setIsOpen(false);
@@ -117,7 +146,9 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
             <FormItem className="flex flex-col justify-end">
               <div className="flex gap-2 items-center justify-start">
                 <RadioGroup
-                  onValueChange={(value) => field.onChange(`${Number(value) + 1}`)}
+                  onValueChange={(value) =>
+                    field.onChange(`${Number(value) + 1}`)
+                  }
                   value={`${field.value ?? 0}`}
                   className="flex flex-row gap-0"
                 >
@@ -137,7 +168,10 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
                             <HiStar
                               className={cn(
                                 'h-7 w-7',
-                                Number(field.value) >= index + 1 && !hoveredValue ? 'text-primary' : '',
+                                Number(field.value) >= index + 1 &&
+                                  !hoveredValue
+                                  ? 'text-primary'
+                                  : ''
                               )}
                             />
                           </div>
@@ -147,7 +181,9 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
                   </>
                 </RadioGroup>
                 <FormLabel className="text-base">
-                  <div className="animate-wiggle text-primary font-bold ">{hoveredValue || field.value}</div>
+                  <div className="animate-wiggle text-primary font-bold ">
+                    {hoveredValue || field.value}
+                  </div>
                 </FormLabel>
               </div>
               <FormMessage />
@@ -190,7 +226,7 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
                         <span
                           className={cn(
                             !field.value && 'text-muted-foreground',
-                            'text-left w-full font-light text-black',
+                            'text-left w-full font-light text-black'
                           )}
                         >
                           {formatDate(field.value, 'PPP', {
@@ -198,7 +234,11 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
                           })}
                         </span>
                       ) : (
-                        <span className={cn('text-muted-foreground font-light text-left w-full')}>
+                        <span
+                          className={cn(
+                            'text-muted-foreground font-light text-left w-full'
+                          )}
+                        >
                           Wybierz dzień rozpoczęcia
                         </span>
                       )}
@@ -206,16 +246,15 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
-                <PopoverContent
-                  className="w-auto p-0"
-                  align="start"
-                >
+                <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
                     mode="single"
                     selected={field.value}
                     onSelect={field.onChange}
-                    disabled={(date) => date > new Date() || date < new Date('1900-01-01')}
-                    initialFocus
+                    disabled={(date) =>
+                      date > new Date() || date < new Date('1900-01-01')
+                    }
+                    autoFocus
                   />
                 </PopoverContent>
               </Popover>{' '}
@@ -241,7 +280,7 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
                         <span
                           className={cn(
                             !field.value && 'text-muted-foreground',
-                            'font-light text-left w-full text-black',
+                            'font-light text-left w-full text-black'
                           )}
                         >
                           {formatDate(field.value, 'PPP', {
@@ -249,7 +288,11 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
                           })}
                         </span>
                       ) : (
-                        <span className={cn('text-muted-foreground font-light text-left w-full')}>
+                        <span
+                          className={cn(
+                            'text-muted-foreground font-light text-left w-full'
+                          )}
+                        >
                           Wybierz dzień zakończenia
                         </span>
                       )}
@@ -257,16 +300,15 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
-                <PopoverContent
-                  className="w-auto p-0"
-                  align="start"
-                >
+                <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
                     mode="single"
                     selected={field.value}
                     onSelect={field.onChange}
-                    disabled={(date) => date > new Date() || date < new Date('1900-01-01')}
-                    initialFocus
+                    disabled={(date) =>
+                      date > new Date() || date < new Date('1900-01-01')
+                    }
+                    autoFocus
                   />
                 </PopoverContent>
               </Popover>
@@ -274,9 +316,11 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
             </FormItem>
           )}
         />
-        {form.getValues()?.startedAt?.getTime() > form.getValues()?.endedAt?.getTime() && (
+        {form.getValues()?.startedAt?.getTime() >
+          form.getValues()?.endedAt?.getTime() && (
           <p className="font-bold text-center text-red-500">
-            Data rozpoczęcia czytania nie może <br></br> być późniejsza niż data zakończenia czytania.{' '}
+            Data rozpoczęcia czytania nie może <br></br> być późniejsza niż data
+            zakończenia czytania.{' '}
           </p>
         )}
         <div className="pt-8 gap-2 flex sm:justify-center justify-center sm:items-center items-center">
@@ -291,12 +335,8 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
             disabled={!form.formState.isValid || isPending}
             className="bg-primary w-32 sm:w-40"
           >
-            {
-              isPending && <LoadingSpinner size={20} />
-            }
-            {
-              !isPending && <p>{'Potwierdź'}</p>
-            }
+            {isPending && <LoadingSpinner size={20} />}
+            {!isPending && <p>{'Potwierdź'}</p>}
           </Button>
         </div>
       </form>
@@ -304,7 +344,12 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
   );
 };
 
-export const CreateBookReadingModal: FC<Props> = ({ bookId, rating, trigger, onMutated }: Props) => {
+export const CreateBookReadingModal: FC<Props> = ({
+  bookId,
+  rating,
+  trigger,
+  onMutated,
+}: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [error, setError] = useState('');
 
