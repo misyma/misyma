@@ -302,7 +302,7 @@ export const DateFilter: FC<DateFilterComponentProps> = ({ filter }) => {
               selected={filterValue as Date}
               onSelect={handleChange}
               disabled={getDisabledValues}
-              autoFocus
+              initialFocus
             />
           </PopoverContent>
         </Popover>

@@ -210,7 +210,7 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, open, onClosed, onMuta
                           selected={field.value}
                           onSelect={field.onChange}
                           disabled={(date) => date > new Date() || date < new Date('1900-01-01')}
-                          autoFocus
+                          initialFocus
                         />
                       </PopoverContent>
                     </Popover>{' '}

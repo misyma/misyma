@@ -254,7 +254,7 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({
                     disabled={(date) =>
                       date > new Date() || date < new Date('1900-01-01')
                     }
-                    autoFocus
+                    initialFocus
                   />
                 </PopoverContent>
               </Popover>{' '}
@@ -308,7 +308,7 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({
                     disabled={(date) =>
                       date > new Date() || date < new Date('1900-01-01')
                     }
-                    autoFocus
+                    initialFocus
                   />
                 </PopoverContent>
               </Popover>
