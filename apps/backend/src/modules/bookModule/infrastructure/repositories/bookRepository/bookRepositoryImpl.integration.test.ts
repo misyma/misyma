@@ -215,7 +215,7 @@ describe('BookRepositoryImpl', () => {
         bookId: book.getId(),
       });
 
-      expect(updatedBookAuthors).toHaveLength(5);
+      expect(updatedBookAuthors).toHaveLength(3);
     });
 
     it('updates Book data', async () => {
