@@ -24,12 +24,7 @@ export class CollectionTestUtils extends TestUtils {
 
     const rawEntity = rawEntities[0] as CollectionRawEntity;
 
-    return {
-      id: rawEntity.id,
-      name: rawEntity.name,
-      userId: rawEntity.userId,
-      createdAt: new Date(rawEntity.createdAt),
-    };
+    return rawEntity;
   }
 
   public async findByName(name: string): Promise<CollectionRawEntity | null> {
@@ -39,12 +34,7 @@ export class CollectionTestUtils extends TestUtils {
       return null;
     }
 
-    return {
-      id: rawEntity.id,
-      name: rawEntity.name,
-      userId: rawEntity.userId,
-      createdAt: new Date(rawEntity.createdAt),
-    };
+    return rawEntity;
   }
 
   public async findById(id: string): Promise<CollectionRawEntity | null> {
@@ -54,11 +44,6 @@ export class CollectionTestUtils extends TestUtils {
       return null;
     }
 
-    return {
-      id: rawEntity.id,
-      name: rawEntity.name,
-      userId: rawEntity.userId,
-      createdAt: new Date(rawEntity.createdAt),
-    };
+    return rawEntity;
   }
 }

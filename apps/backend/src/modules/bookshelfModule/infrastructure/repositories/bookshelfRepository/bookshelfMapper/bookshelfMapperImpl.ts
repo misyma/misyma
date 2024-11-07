@@ -9,7 +9,7 @@ export class BookshelfMapperImpl implements BookshelfMapper {
       name,
       userId,
       type,
-      createdAt: new Date(createdAt),
+      createdAt,
     });
   }
 }

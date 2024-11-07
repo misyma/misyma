@@ -32,10 +32,7 @@ export class AuthorTestUtils extends TestUtils {
 
     const rawEntity = rawEntities[0] as AuthorRawEntity;
 
-    return {
-      ...rawEntity,
-      isApproved: Boolean(rawEntity.isApproved),
-    };
+    return rawEntity;
   }
 
   public async findById(payload: FindByIdPayload): Promise<AuthorRawEntity | undefined> {
@@ -47,10 +44,7 @@ export class AuthorTestUtils extends TestUtils {
       return undefined;
     }
 
-    return {
-      ...rawEntity,
-      isApproved: Boolean(rawEntity.isApproved),
-    };
+    return rawEntity;
   }
 
   public async findByName(payload: FindByNamePayload): Promise<AuthorRawEntity | undefined> {
@@ -62,9 +56,6 @@ export class AuthorTestUtils extends TestUtils {
       return undefined;
     }
 
-    return {
-      ...rawEntity,
-      isApproved: Boolean(rawEntity.isApproved),
-    };
+    return rawEntity;
   }
 }

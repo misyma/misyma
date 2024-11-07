@@ -8,7 +8,7 @@ export class CollectionMapperImpl implements CollectionMapper {
       id: raw.id,
       name: raw.name,
       userId: raw.userId,
-      createdAt: new Date(raw.createdAt),
+      createdAt: raw.createdAt,
     });
   }
 

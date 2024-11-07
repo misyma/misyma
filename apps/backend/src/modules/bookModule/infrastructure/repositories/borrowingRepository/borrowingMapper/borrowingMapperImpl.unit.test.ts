@@ -22,8 +22,8 @@ describe('BorrowingMapperImpl', () => {
       state: {
         userBookId: borrowingEntity.userBookId,
         borrower: borrowingEntity.borrower,
-        startedAt: new Date(borrowingEntity.startedAt),
-        endedAt: new Date(borrowingEntity.endedAt as Date),
+        startedAt: borrowingEntity.startedAt,
+        endedAt: borrowingEntity.endedAt,
       },
     });
   });

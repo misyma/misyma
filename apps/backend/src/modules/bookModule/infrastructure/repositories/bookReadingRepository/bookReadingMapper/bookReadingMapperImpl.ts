@@ -9,8 +9,8 @@ export class BookReadingMapperImpl implements BookReadingMapper {
       userBookId,
       comment,
       rating,
-      startedAt: new Date(startedAt),
-      endedAt: new Date(endedAt),
+      startedAt,
+      endedAt,
     });
   }
 }

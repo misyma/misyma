@@ -38,32 +38,18 @@ export class BookReadingTestUtils extends TestUtils {
 
     const rawEntity = rawEntities[0] as BookReadingRawEntity;
 
-    return {
-      id: rawEntity.id,
-      userBookId: rawEntity.userBookId,
-      rating: rawEntity.rating,
-      comment: rawEntity.comment,
-      startedAt: new Date(rawEntity.startedAt),
-      endedAt: new Date(rawEntity.endedAt),
-    };
+    return rawEntity;
   }
 
   public async findById(payload: FindByIdPayload): Promise<BookReadingRawEntity | null> {
     const { id } = payload;
 
-    const result = await this.databaseClient<BookReadingRawEntity>(bookReadingTable).where({ id }).first();
+    const rawEntity = await this.databaseClient<BookReadingRawEntity>(bookReadingTable).where({ id }).first();
 
-    if (!result) {
+    if (!rawEntity) {
       return null;
     }
 
-    return {
-      id: result.id,
-      userBookId: result.userBookId,
-      rating: result.rating,
-      comment: result.comment,
-      startedAt: new Date(result.startedAt),
-      endedAt: new Date(result.endedAt),
-    };
+    return rawEntity;
   }
 }

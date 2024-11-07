@@ -41,10 +41,7 @@ export class BookshelfTestUtils extends TestUtils {
 
     const rawEntity = rawEntities[0] as BookshelfRawEntity;
 
-    return {
-      ...rawEntity,
-      createdAt: new Date(rawEntity.createdAt),
-    };
+    return rawEntity;
   }
 
   public async findById(payload: FindByIdPayload): Promise<BookshelfRawEntity | null> {
@@ -56,10 +53,7 @@ export class BookshelfTestUtils extends TestUtils {
       return null;
     }
 
-    return {
-      ...rawEntity,
-      createdAt: new Date(rawEntity.createdAt),
-    };
+    return rawEntity;
   }
 
   public async findByUserId(payload: FindByUserIdPayload): Promise<BookshelfRawEntity[]> {
@@ -67,9 +61,6 @@ export class BookshelfTestUtils extends TestUtils {
 
     const rawEntities = await this.databaseClient<BookshelfRawEntity>(bookshelfTable).where({ userId });
 
-    return rawEntities.map((rawEntity) => ({
-      ...rawEntity,
-      createdAt: new Date(rawEntity.createdAt),
-    }));
+    return rawEntities;
   }
 }

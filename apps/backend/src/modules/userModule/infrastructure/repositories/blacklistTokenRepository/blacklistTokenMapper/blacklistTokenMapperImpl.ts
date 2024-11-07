@@ -8,7 +8,7 @@ export class BlacklistTokenMapperImpl implements BlacklistTokenMapper {
 
     return new BlacklistToken({
       id,
-      expiresAt: new Date(expiresAt),
+      expiresAt,
       token,
     });
   }

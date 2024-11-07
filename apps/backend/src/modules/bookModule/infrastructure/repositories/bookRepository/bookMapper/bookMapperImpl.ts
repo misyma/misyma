@@ -32,7 +32,7 @@ export class BookMapperImpl implements BookMapper {
       format,
       pages,
       authors: [],
-      isApproved: Boolean(isApproved),
+      isApproved,
       imageUrl,
       createdAt,
     });
@@ -69,7 +69,7 @@ export class BookMapperImpl implements BookMapper {
         translator: translator ?? undefined,
         format,
         pages: pages ?? undefined,
-        isApproved: Boolean(isApproved),
+        isApproved,
         createdAt,
         authors:
           authorIds && authorNames && authorApprovals && authorCreatedAtDates

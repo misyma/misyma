@@ -46,22 +46,7 @@ export class BookChangeRequestTestUtils extends TestUtils {
 
     const rawEntity = rawEntities[0] as BookChangeRequestRawEntity;
 
-    return {
-      id: rawEntity.id,
-      title: rawEntity.title,
-      isbn: rawEntity.isbn,
-      publisher: rawEntity.publisher,
-      releaseYear: rawEntity.releaseYear,
-      language: rawEntity.language,
-      translator: rawEntity.translator,
-      format: rawEntity.format,
-      pages: rawEntity.pages,
-      imageUrl: rawEntity.imageUrl,
-      bookId: rawEntity.bookId,
-      userEmail: rawEntity.userEmail,
-      createdAt: new Date(rawEntity.createdAt),
-      authorIds: rawEntity.authorIds,
-    };
+    return rawEntity;
   }
 
   public async findById(payload: FindByIdPayload): Promise<BookChangeRequestRawEntity | null> {
@@ -75,21 +60,6 @@ export class BookChangeRequestTestUtils extends TestUtils {
       return null;
     }
 
-    return {
-      id: rawEntity.id,
-      title: rawEntity.title,
-      isbn: rawEntity.isbn,
-      publisher: rawEntity.publisher,
-      releaseYear: rawEntity.releaseYear,
-      language: rawEntity.language,
-      translator: rawEntity.translator,
-      format: rawEntity.format,
-      pages: rawEntity.pages,
-      imageUrl: rawEntity.imageUrl,
-      bookId: rawEntity.bookId,
-      userEmail: rawEntity.userEmail,
-      createdAt: new Date(rawEntity.createdAt),
-      authorIds: rawEntity.authorIds,
-    };
+    return rawEntity;
   }
 }

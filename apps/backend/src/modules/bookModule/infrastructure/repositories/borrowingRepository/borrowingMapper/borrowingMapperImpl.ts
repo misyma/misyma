@@ -8,8 +8,8 @@ export class BorrowingMapperImpl implements BorrowingMapper {
       id,
       userBookId,
       borrower,
-      startedAt: new Date(startedAt),
-      endedAt: endedAt ? new Date(endedAt) : undefined,
+      startedAt,
+      endedAt,
     });
   }
 }

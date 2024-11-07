@@ -23,7 +23,7 @@ describe('QuoteMapperImpl', () => {
         userBookId: quoteEntity.userBookId,
         content: quoteEntity.content,
         isFavorite: quoteEntity.isFavorite,
-        createdAt: new Date(quoteEntity.createdAt),
+        createdAt: quoteEntity.createdAt,
         page: quoteEntity.page,
       },
     });

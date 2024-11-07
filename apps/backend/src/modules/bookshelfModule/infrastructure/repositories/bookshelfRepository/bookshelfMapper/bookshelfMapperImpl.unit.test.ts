@@ -23,7 +23,7 @@ describe('BookshelfMapperImpl', () => {
         name: bookshelfRawEntity.name,
         userId: bookshelfRawEntity.userId,
         type: bookshelfRawEntity.type,
-        createdAt: new Date(bookshelfRawEntity.createdAt),
+        createdAt: bookshelfRawEntity.createdAt,
       },
     });
   });
