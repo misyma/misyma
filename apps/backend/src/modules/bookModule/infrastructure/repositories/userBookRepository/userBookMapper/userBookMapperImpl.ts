@@ -49,9 +49,9 @@ export class UserBookMapperImpl implements UserBookMapper {
         id,
         imageUrl: imageUrl ?? undefined,
         status,
-        isFavorite: Boolean(isFavorite),
+        isFavorite,
         bookshelfId,
-        createdAt: new Date(createdAt),
+        createdAt,
         bookId,
         book: {
           id: bookId,
@@ -63,8 +63,8 @@ export class UserBookMapperImpl implements UserBookMapper {
           translator: translator ?? undefined,
           format,
           pages: pages ?? undefined,
-          isApproved: Boolean(isApproved),
-          createdAt: new Date(bookCreatedAt),
+          isApproved,
+          createdAt: bookCreatedAt,
           authors:
             authorIds && authorNames && authorApprovals && authorCreatedAtDates
               ? authorIds

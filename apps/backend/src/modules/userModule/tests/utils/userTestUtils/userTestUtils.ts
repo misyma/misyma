@@ -46,10 +46,7 @@ export class UserTestUtils extends TestUtils {
 
     const rawEntity = rawEntities[0] as UserRawEntity;
 
-    return {
-      ...rawEntity,
-      isEmailVerified: Boolean(rawEntity.isEmailVerified),
-    };
+    return rawEntity;
   }
 
   public async persist(payload: PersistPayload): Promise<void> {
@@ -63,30 +60,24 @@ export class UserTestUtils extends TestUtils {
 
     const email = emailInput.toLowerCase();
 
-    const userRawEntity = await this.databaseClient<UserRawEntity>(userTable).select('*').where({ email }).first();
+    const rawEntity = await this.databaseClient<UserRawEntity>(userTable).select('*').where({ email }).first();
 
-    if (!userRawEntity) {
+    if (!rawEntity) {
       return undefined;
     }
 
-    return {
-      ...userRawEntity,
-      isEmailVerified: Boolean(userRawEntity.isEmailVerified),
-    };
+    return rawEntity;
   }
 
   public async findById(payload: FindByIdPayload): Promise<UserRawEntity | undefined> {
     const { id } = payload;
 
-    const userRawEntity = await this.databaseClient<UserRawEntity>(userTable).select('*').where({ id }).first();
+    const rawEntity = await this.databaseClient<UserRawEntity>(userTable).select('*').where({ id }).first();
 
-    if (!userRawEntity) {
+    if (!rawEntity) {
       return undefined;
     }
 
-    return {
-      ...userRawEntity,
-      isEmailVerified: Boolean(userRawEntity.isEmailVerified),
-    };
+    return rawEntity;
   }
 }

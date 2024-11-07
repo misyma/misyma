@@ -8,7 +8,7 @@ export class EmailEventMapper {
     const { createdAt, id, payload, status, eventName } = rawEntity;
 
     return new EmailEvent({
-      createdAt: new Date(createdAt),
+      createdAt,
       id,
       payload: JSON.parse(payload),
       status: status as EmailEventStatus,

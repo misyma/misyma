@@ -36,7 +36,7 @@ export class BookChangeRequestMapperImpl implements BookChangeRequestMapper {
         imageUrl,
         bookId,
         userEmail,
-        createdAt: new Date(createdAt),
+        createdAt,
         authorIds: authorIds ? authorIds.split(',') : undefined,
         bookTitle,
       });

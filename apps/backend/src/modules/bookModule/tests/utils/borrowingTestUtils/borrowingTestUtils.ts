@@ -37,30 +37,18 @@ export class BorrowingTestUtils extends TestUtils {
 
     const rawEntity = rawEntities[0] as BorrowingRawEntity;
 
-    return {
-      id: rawEntity.id,
-      userBookId: rawEntity.userBookId,
-      borrower: rawEntity.borrower,
-      startedAt: new Date(rawEntity.startedAt),
-      endedAt: rawEntity.endedAt ? new Date(rawEntity.endedAt) : undefined,
-    };
+    return rawEntity;
   }
 
   public async findById(payload: FindByIdPayload): Promise<BorrowingRawEntity | null> {
     const { id } = payload;
 
-    const result = await this.databaseClient<BorrowingRawEntity>(borrowingTable).where({ id }).first();
+    const rawEntity = await this.databaseClient<BorrowingRawEntity>(borrowingTable).where({ id }).first();
 
-    if (!result) {
+    if (!rawEntity) {
       return null;
     }
 
-    return {
-      id: result.id,
-      userBookId: result.userBookId,
-      borrower: result.borrower,
-      startedAt: new Date(result.startedAt),
-      endedAt: result.endedAt ? new Date(result.endedAt) : undefined,
-    };
+    return rawEntity;
   }
 }

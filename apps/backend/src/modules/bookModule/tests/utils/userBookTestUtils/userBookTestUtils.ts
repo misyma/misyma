@@ -67,11 +67,7 @@ export class UserBookTestUtils extends TestUtils {
 
     const rawEntity = rawEntities[0] as UserBookRawEntity;
 
-    return {
-      ...rawEntity,
-      isFavorite: Boolean(rawEntity.isFavorite),
-      createdAt: new Date(rawEntity.createdAt),
-    };
+    return rawEntity;
   }
 
   public async findById(payload: FindByIdPayload): Promise<UserBookRawEntity | undefined> {
@@ -83,12 +79,7 @@ export class UserBookTestUtils extends TestUtils {
       return undefined;
     }
 
-    // TODO: remove Boolean and Date castings
-    return {
-      ...rawEntity,
-      isFavorite: Boolean(rawEntity.isFavorite),
-      createdAt: new Date(rawEntity.createdAt),
-    };
+    return rawEntity;
   }
 
   public async findByIds(payload: FindByIdsPayload): Promise<UserBookRawEntity[]> {
@@ -96,11 +87,7 @@ export class UserBookTestUtils extends TestUtils {
 
     const rawEntities = await this.databaseClient<UserBookRawEntity>(userBookTable).select('*').whereIn('id', ids);
 
-    return rawEntities.map((rawEntity) => ({
-      ...rawEntity,
-      isFavorite: Boolean(rawEntity.isFavorite),
-      createdAt: new Date(rawEntity.createdAt),
-    }));
+    return rawEntities;
   }
 
   public async findUserBookGenres(payload: FindUserBookGenresPayload): Promise<UserBookGenreRawEntity[]> {

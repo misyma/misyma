@@ -38,14 +38,7 @@ export class QuoteTestUtils extends TestUtils {
 
     const rawEntity = rawEntities[0] as QuoteRawEntity;
 
-    return {
-      id: rawEntity.id,
-      userBookId: rawEntity.userBookId,
-      content: rawEntity.content,
-      createdAt: new Date(rawEntity.createdAt),
-      isFavorite: Boolean(rawEntity.isFavorite),
-      page: rawEntity.page,
-    };
+    return rawEntity;
   }
 
   public async findById(payload: FindByIdPayload): Promise<QuoteRawEntity | null> {
@@ -57,13 +50,6 @@ export class QuoteTestUtils extends TestUtils {
       return null;
     }
 
-    return {
-      id: rawEntity.id,
-      userBookId: rawEntity.userBookId,
-      content: rawEntity.content,
-      createdAt: new Date(rawEntity.createdAt),
-      isFavorite: Boolean(rawEntity.isFavorite),
-      page: rawEntity.page,
-    };
+    return rawEntity;
   }
 }

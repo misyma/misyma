@@ -39,11 +39,7 @@ export class BlacklistTokenTestUtils extends TestUtils {
 
     const rawEntity = rawEntities[0] as BlacklistTokenRawEntity;
 
-    return {
-      id: rawEntity.id,
-      token: rawEntity.token,
-      expiresAt: new Date(rawEntity.expiresAt),
-    };
+    return rawEntity;
   }
 
   public async persist(payload: PersistPayload): Promise<void> {
@@ -55,15 +51,11 @@ export class BlacklistTokenTestUtils extends TestUtils {
   public async findByToken(payload: FindByTokenPayload): Promise<BlacklistTokenRawEntity> {
     const { token } = payload;
 
-    const blacklistTokenRawEntity = (await this.databaseClient<BlacklistTokenRawEntity>(blacklistTokenTable)
+    const rawEntity = await this.databaseClient<BlacklistTokenRawEntity>(blacklistTokenTable)
       .select('*')
       .where({ token })
-      .first()) as BlacklistTokenRawEntity;
+      .first();
 
-    return {
-      id: blacklistTokenRawEntity.id,
-      token: blacklistTokenRawEntity.token,
-      expiresAt: new Date(blacklistTokenRawEntity.expiresAt),
-    };
+    return rawEntity as BlacklistTokenRawEntity;
   }
 }

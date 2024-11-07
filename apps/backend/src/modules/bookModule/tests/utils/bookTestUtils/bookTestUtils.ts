@@ -57,10 +57,7 @@ export class BookTestUtils extends TestUtils {
 
     const bookRawEntity = rawEntities[0] as BookRawEntity;
 
-    return {
-      ...bookRawEntity,
-      isApproved: Boolean(bookRawEntity.isApproved),
-    };
+    return bookRawEntity;
   }
 
   public async findBookAuthors(payload: FindBookAuthorsPayload): Promise<BookAuthorRawEntity[]> {
@@ -76,22 +73,19 @@ export class BookTestUtils extends TestUtils {
   public async findById(payload: FindByIdPayload): Promise<BookRawEntity | undefined> {
     const { id } = payload;
 
-    const bookRawEntity = await this.databaseClient<BookRawEntity>(bookTable).select('*').where({ id }).first();
+    const rawEntity = await this.databaseClient<BookRawEntity>(bookTable).select('*').where({ id }).first();
 
-    if (!bookRawEntity) {
+    if (!rawEntity) {
       return undefined;
     }
 
-    return {
-      ...bookRawEntity,
-      isApproved: Boolean(bookRawEntity.isApproved),
-    };
+    return rawEntity;
   }
 
   public async findByTitleAndAuthor(payload: FindByTitleAndAuthorPayload): Promise<BookRawEntity | undefined> {
     const { title, authorId } = payload;
 
-    const bookRawEntity = await this.databaseClient<BookRawEntity>(bookTable)
+    const rawEntity = await this.databaseClient<BookRawEntity>(bookTable)
       .select([
         `${bookTable}.id`,
         `${bookTable}.title`,
@@ -114,13 +108,10 @@ export class BookTestUtils extends TestUtils {
       .where({ title })
       .first();
 
-    if (!bookRawEntity) {
+    if (!rawEntity) {
       return undefined;
     }
 
-    return {
-      ...bookRawEntity,
-      isApproved: Boolean(bookRawEntity.isApproved),
-    };
+    return rawEntity;
   }
 }

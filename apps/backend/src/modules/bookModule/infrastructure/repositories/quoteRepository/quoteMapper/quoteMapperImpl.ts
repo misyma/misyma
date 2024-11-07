@@ -8,8 +8,8 @@ export class QuoteMapperImpl implements QuoteMapper {
       id,
       userBookId,
       content,
-      isFavorite: Boolean(isFavorite),
-      createdAt: new Date(createdAt),
+      isFavorite,
+      createdAt,
       page,
     });
   }

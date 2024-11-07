@@ -23,8 +23,8 @@ describe('BookReadingMapperImpl', () => {
         userBookId: bookReadingEntity.userBookId,
         comment: bookReadingEntity.comment,
         rating: bookReadingEntity.rating,
-        startedAt: new Date(bookReadingEntity.startedAt),
-        endedAt: new Date(bookReadingEntity.endedAt),
+        startedAt: bookReadingEntity.startedAt,
+        endedAt: bookReadingEntity.endedAt,
       },
     });
   });
