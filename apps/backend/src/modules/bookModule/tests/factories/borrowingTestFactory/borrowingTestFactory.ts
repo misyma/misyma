@@ -7,7 +7,7 @@ export class BorrowingTestFactory {
     return new Borrowing({
       id: Generator.uuid(),
       userBookId: Generator.uuid(),
-      borrower: Generator.words(),
+      borrower: Generator.fullName(),
       startedAt: Generator.pastDate(),
       endedAt: Generator.futureDate(),
       ...input,
@@ -18,7 +18,7 @@ export class BorrowingTestFactory {
     return {
       id: Generator.uuid(),
       userBookId: Generator.uuid(),
-      borrower: Generator.words(),
+      borrower: Generator.fullName(),
       startedAt: Generator.pastDate(),
       endedAt: Generator.futureDate(),
       ...input,

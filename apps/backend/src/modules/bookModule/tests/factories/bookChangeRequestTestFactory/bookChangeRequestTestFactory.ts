@@ -9,9 +9,9 @@ export class BookChangeRequestTestFactory {
   public create(input: Partial<BookChangeRequestDraft> = {}): BookChangeRequest {
     return new BookChangeRequest({
       id: Generator.uuid(),
-      title: Generator.word(),
+      title: Generator.title(),
       isbn: Generator.isbn(),
-      publisher: Generator.word(),
+      publisher: Generator.publisher(),
       language: Generator.language(),
       translator: Generator.fullName(),
       format: Generator.bookFormat(),
@@ -29,9 +29,9 @@ export class BookChangeRequestTestFactory {
   public createRaw(input: Partial<BookChangeRequestRawEntity> = {}): BookChangeRequestRawEntity {
     return {
       id: Generator.uuid(),
-      title: Generator.word(),
+      title: Generator.title(),
       isbn: Generator.isbn(),
-      publisher: Generator.word(),
+      publisher: Generator.publisher(),
       language: Generator.language(),
       translator: Generator.fullName(),
       format: Generator.bookFormat(),
