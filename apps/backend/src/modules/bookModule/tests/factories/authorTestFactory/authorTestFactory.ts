@@ -6,7 +6,7 @@ export class AuthorTestFactory {
   public createRaw(input: Partial<AuthorRawEntity> = {}): AuthorRawEntity {
     return {
       id: Generator.uuid(),
-      name: Generator.fullName(),
+      name: Generator.author(),
       isApproved: Generator.boolean(),
       createdAt: Generator.pastDate(),
       ...input,
@@ -16,7 +16,7 @@ export class AuthorTestFactory {
   public create(input: Partial<AuthorDraft> = {}): Author {
     return new Author({
       id: Generator.uuid(),
-      name: Generator.fullName(),
+      name: Generator.author(),
       isApproved: Generator.boolean(),
       createdAt: Generator.pastDate(),
       ...input,

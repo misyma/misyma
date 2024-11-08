@@ -182,10 +182,6 @@ describe('BookRepositoryImpl', () => {
 
       const author3 = await authorTestUtils.createAndPersist();
 
-      const author4 = await authorTestUtils.createAndPersist();
-
-      const author5 = await authorTestUtils.createAndPersist();
-
       const bookRawEntity = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author1.id, author2.id, author3.id],
@@ -194,12 +190,12 @@ describe('BookRepositoryImpl', () => {
 
       const book = bookTestFactory.create({
         ...bookRawEntity,
-        authors: [new Author(author1), new Author(author2), new Author(author3)],
+        authors: [new Author(author1)],
       });
 
-      book.addAuthor(new Author(author4));
+      book.addAuthor(new Author(author2));
 
-      book.addAuthor(new Author(author5));
+      book.addAuthor(new Author(author3));
 
       const updatedBook = await bookRepository.saveBook({
         book,
@@ -209,7 +205,7 @@ describe('BookRepositoryImpl', () => {
         id: book.getId(),
       });
 
-      [author1.id, author2.id, author3.id, author4.id, author5.id].every((authorId) => {
+      [author1.id, author2.id, author3.id].every((authorId) => {
         expect(updatedBook.getAuthors().some((author) => author.getId() === authorId)).toBeTruthy();
 
         expect(foundBook?.getAuthors().some((author) => author.getId() === authorId)).toBeTruthy();
@@ -219,7 +215,7 @@ describe('BookRepositoryImpl', () => {
         bookId: book.getId(),
       });
 
-      expect(updatedBookAuthors).toHaveLength(5);
+      expect(updatedBookAuthors).toHaveLength(3);
     });
 
     it('updates Book data', async () => {

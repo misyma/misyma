@@ -97,6 +97,22 @@ export class Generator {
     return faker.commerce.isbn({ variant: 13 });
   }
 
+  public static title(): string {
+    return faker.book.title();
+  }
+
+  public static author(): string {
+    return faker.book.author();
+  }
+
+  public static publisher(): string {
+    return faker.book.publisher();
+  }
+
+  public static genre(): string {
+    return faker.book.genre();
+  }
+
   public static language(): Language {
     return faker.helpers.arrayElement([Language.English, Language.Polish, Language.German, Language.French]);
   }

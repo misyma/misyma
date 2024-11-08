@@ -6,9 +6,9 @@ export class BookTestFactory {
   public create(input: Partial<BookDraft> = {}): Book {
     return new Book({
       id: Generator.uuid(),
-      title: Generator.word(),
+      title: Generator.title(),
       isbn: Generator.isbn(),
-      publisher: Generator.word(),
+      publisher: Generator.publisher(),
       language: Generator.language(),
       translator: Generator.fullName(),
       format: Generator.bookFormat(),
@@ -25,9 +25,9 @@ export class BookTestFactory {
   public createRaw(input: Partial<BookRawEntity> = {}): BookRawEntity {
     return {
       id: Generator.uuid(),
-      title: Generator.word(),
+      title: Generator.title(),
       isbn: Generator.isbn(),
-      publisher: Generator.word(),
+      publisher: Generator.publisher(),
       language: Generator.language(),
       translator: Generator.fullName(),
       format: Generator.bookFormat(),
