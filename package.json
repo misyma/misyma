@@ -1,6 +1,5 @@
 {
   "name": "misyma",
-  "private": true,
   "scripts": {
     "build": "turbo run build",
     "build:dev": "turbo run build:dev",

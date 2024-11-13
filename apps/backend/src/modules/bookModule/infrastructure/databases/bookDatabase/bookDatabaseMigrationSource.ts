@@ -4,6 +4,7 @@ import { M12AddAuthorsToBookChangeRequestTableMigration } from './migrations/m12
 import { M13AddCreatedAtToBookTableMigration } from './migrations/m13AddCreatedAtToBookTableMigration.js';
 import { M14AddCreatedAtToAuthorTableMigration } from './migrations/m14AddCreatedAtToAuthorTableMigration.js';
 import { M15ChangeUserIdToEmailInBookChangeRequestTableMigration } from './migrations/m15ChangeUserIdToEmailInBookChangeRequestTableMigration.js';
+import { M16AddChangedFieldsToBookChangeRequestTableMigration } from './migrations/m16AddChangedFieldsToBookChangeRequestTableMigration.js';
 import { M1CreateAuthorTableMigration } from './migrations/m1CreateAuthorTableMigration.js';
 import { M2CreateBookTableMigration } from './migrations/m2CreateBookTableMigration.js';
 import { M3CreateGenreTableMigration } from './migrations/m3CreateGenreMigration.js';
@@ -34,6 +35,7 @@ export class BookDatabaseMigrationSource implements MigrationSource {
       new M13AddCreatedAtToBookTableMigration(),
       new M14AddCreatedAtToAuthorTableMigration(),
       new M15ChangeUserIdToEmailInBookChangeRequestTableMigration(),
+      new M16AddChangedFieldsToBookChangeRequestTableMigration(),
     ];
   }
 

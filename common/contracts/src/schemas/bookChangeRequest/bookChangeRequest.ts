@@ -17,4 +17,5 @@ export interface BookChangeRequest {
   readonly pages?: number;
   readonly imageUrl?: string;
   readonly authorIds?: string[];
+  readonly changedFields: string[];
 }

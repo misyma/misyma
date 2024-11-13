@@ -173,14 +173,14 @@ describe('CreateBookCommandHandler', () => {
       await createBookCommandHandler.execute({
         title: existingBook.title,
         isbn,
-        publisher: existingBook.publisher,
-        releaseYear: existingBook.releaseYear,
+        publisher: existingBook.publisher as string,
+        releaseYear: existingBook.releaseYear as number,
         language: existingBook.language,
-        translator: existingBook.translator,
+        translator: existingBook.translator as string,
         format: existingBook.format,
-        pages: existingBook.pages,
+        pages: existingBook.pages as number,
         isApproved: existingBook.isApproved,
-        imageUrl: existingBook.imageUrl,
+        imageUrl: existingBook.imageUrl as string,
         authorIds: [author.id],
       });
     } catch (error) {

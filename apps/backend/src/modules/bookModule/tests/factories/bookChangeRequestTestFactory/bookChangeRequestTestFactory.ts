@@ -22,6 +22,7 @@ export class BookChangeRequestTestFactory {
       userEmail: Generator.uuid(),
       createdAt: Generator.pastDate(),
       authorIds: [],
+      changedFields: [],
       ...input,
     });
   }
@@ -41,6 +42,7 @@ export class BookChangeRequestTestFactory {
       bookId: Generator.uuid(),
       userEmail: Generator.email(),
       createdAt: Generator.pastDate(),
+      changedFields: Generator.words(5).split(' ').join(','),
       ...input,
     };
   }

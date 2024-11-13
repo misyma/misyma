@@ -6,30 +6,30 @@ import { type Author } from '../author/author.js';
 export interface BookDraft {
   readonly id: string;
   readonly title: string;
-  readonly isbn?: string | undefined;
-  readonly publisher?: string | undefined;
-  readonly releaseYear?: number | undefined;
+  readonly isbn?: string | undefined | null;
+  readonly publisher?: string | undefined | null;
+  readonly releaseYear?: number | undefined | null;
   readonly language: Language;
-  readonly translator?: string | undefined;
+  readonly translator?: string | undefined | null;
   readonly format: BookFormat;
-  readonly pages?: number | undefined;
+  readonly pages?: number | undefined | null;
   readonly authors: Author[];
   readonly isApproved: boolean;
-  readonly imageUrl?: string | undefined;
+  readonly imageUrl?: string | undefined | null;
   readonly createdAt: Date;
 }
 
 export interface BookState {
   title: string;
-  isbn?: string | undefined;
-  publisher?: string | undefined;
-  releaseYear?: number | undefined;
+  isbn?: string | undefined | null;
+  publisher?: string | undefined | null;
+  releaseYear?: number | undefined | null;
   language: Language;
-  translator?: string | undefined;
+  translator?: string | undefined | null;
   format: BookFormat;
-  pages?: number | undefined;
+  pages?: number | undefined | null;
   isApproved: boolean;
-  imageUrl?: string | undefined;
+  imageUrl?: string | undefined | null;
   authors: Author[];
   readonly createdAt: Date;
 }
@@ -39,15 +39,15 @@ export interface SetTitlePayload {
 }
 
 export interface SetIsbnPayload {
-  readonly isbn: string;
+  readonly isbn: string | null;
 }
 
 export interface SetPublisherPayload {
-  readonly publisher: string;
+  readonly publisher: string | null;
 }
 
 export interface SetReleaseYearPayload {
-  readonly releaseYear: number;
+  readonly releaseYear: number | null;
 }
 
 export interface SetLanguagePayload {
@@ -55,7 +55,7 @@ export interface SetLanguagePayload {
 }
 
 export interface SetTranslatorPayload {
-  readonly translator: string;
+  readonly translator: string | null;
 }
 
 export interface SetFormatPayload {
@@ -63,7 +63,7 @@ export interface SetFormatPayload {
 }
 
 export interface SetPagesPayload {
-  readonly pages: number;
+  readonly pages: number | null;
 }
 
 export interface SetAuthorsPayload {
@@ -75,7 +75,7 @@ export interface SetIsApprovedPayload {
 }
 
 export interface SetImageUrlPayload {
-  readonly imageUrl: string;
+  readonly imageUrl: string | null;
 }
 
 export class Book {
@@ -147,15 +147,15 @@ export class Book {
     return this.state.title;
   }
 
-  public getIsbn(): string | undefined {
+  public getIsbn(): string | undefined | null {
     return this.state.isbn;
   }
 
-  public getPublisher(): string | undefined {
+  public getPublisher(): string | undefined | null {
     return this.state.publisher;
   }
 
-  public getReleaseYear(): number | undefined {
+  public getReleaseYear(): number | undefined | null {
     return this.state.releaseYear;
   }
 
@@ -163,7 +163,7 @@ export class Book {
     return this.state.language;
   }
 
-  public getTranslator(): string | undefined {
+  public getTranslator(): string | undefined | null {
     return this.state.translator;
   }
 
@@ -171,7 +171,7 @@ export class Book {
     return this.state.format;
   }
 
-  public getPages(): number | undefined {
+  public getPages(): number | undefined | null {
     return this.state.pages;
   }
 
@@ -183,7 +183,7 @@ export class Book {
     return this.state.isApproved;
   }
 
-  public getImageUrl(): string | undefined {
+  public getImageUrl(): string | undefined | null {
     return this.state.imageUrl;
   }
 

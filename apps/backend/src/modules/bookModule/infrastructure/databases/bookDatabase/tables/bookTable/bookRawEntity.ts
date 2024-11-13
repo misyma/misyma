@@ -3,14 +3,14 @@ import { type Language, type BookFormat } from '@common/contracts';
 export interface BookRawEntity {
   readonly id: string;
   readonly title: string;
-  readonly isbn?: string | undefined;
-  readonly publisher?: string | undefined;
-  readonly releaseYear?: number | undefined;
+  readonly isbn?: string | undefined | null;
+  readonly publisher?: string | undefined | null;
+  readonly releaseYear?: number | undefined | null;
   readonly language: Language;
-  readonly translator?: string | undefined;
+  readonly translator?: string | undefined | null;
   readonly format: BookFormat;
-  readonly pages?: number | undefined;
+  readonly pages?: number | undefined | null;
   readonly isApproved: boolean;
-  readonly imageUrl?: string | undefined;
+  readonly imageUrl?: string | undefined | null;
   readonly createdAt: Date;
 }

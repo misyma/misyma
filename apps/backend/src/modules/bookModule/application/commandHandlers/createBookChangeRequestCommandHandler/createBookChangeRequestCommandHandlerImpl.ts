@@ -92,6 +92,10 @@ export class CreateBookChangeRequestCommandHandlerImpl implements CreateBookChan
 
     const currentDate = new Date();
 
+    const changedFields = Object.entries(updateData)
+      .map(([key, value]) => (value !== undefined ? key : undefined))
+      .filter((key) => key !== undefined);
+
     const bookChangeRequest = await this.bookChangeRequestRepository.saveBookChangeRequest({
       bookChangeRequest: {
         bookId,
@@ -100,13 +104,14 @@ export class CreateBookChangeRequestCommandHandlerImpl implements CreateBookChan
         format,
         language,
         title,
-        imageUrl,
-        isbn,
-        pages,
-        publisher,
-        releaseYear,
-        translator,
+        imageUrl: imageUrl || undefined,
+        isbn: isbn || undefined,
+        pages: pages || undefined,
+        publisher: publisher || undefined,
+        releaseYear: releaseYear || undefined,
+        translator: translator || undefined,
         authorIds,
+        changedFields,
       },
     });
 
