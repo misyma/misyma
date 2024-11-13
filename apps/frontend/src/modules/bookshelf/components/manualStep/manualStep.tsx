@@ -5,7 +5,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/form/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../../../common/components/form/form';
 import {
   Select,
   SelectContent,
@@ -17,7 +24,6 @@ import { ReadingStatus } from '../../../common/constants/readingStatus';
 import { FileInput } from '../../../common/components/input/input';
 import { Button } from '../../../common/components/button/button';
 import { useSearchBookContext } from '../../context/searchCreateBookContext/searchCreateBookContext';
-import { useQuery } from '@tanstack/react-query';
 import { getGenresQueryOptions } from '../../../genres/api/queries/getGenresQuery/getGenresQueryOptions';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
@@ -25,6 +31,7 @@ import { useFindUserBookshelfsQuery } from '../../api/queries/findUserBookshelfs
 import { BookApiError } from '../../../book/errors/bookApiError';
 import { useCreateBookWithUserBook } from '../../../book/hooks/createBookWithUserBook/createBookWithUserBook';
 import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
+import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
 
 const stepThreeFormSchema = z.object({
   status: z.nativeEnum(ContractReadingStatus, {
@@ -36,7 +43,7 @@ const stepThreeFormSchema = z.object({
       {},
       {
         required_error: 'Wymagany.',
-      },
+      }
     )
     .or(z.undefined()),
   bookshelfId: z.string().uuid({
@@ -85,10 +92,10 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
-  const { data: genresData } = useQuery(
+  const { data: genresData } = useErrorHandledQuery(
     getGenresQueryOptions({
       accessToken: accessToken as string,
-    }),
+    })
   );
 
   const navigate = useNavigate();
@@ -126,7 +133,9 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
     onOperationError: setSubmissionError,
   });
 
-  const onSubmit = async (values: Partial<z.infer<typeof stepThreeFormSchema>>) => {
+  const onSubmit = async (
+    values: Partial<z.infer<typeof stepThreeFormSchema>>
+  ) => {
     try {
       await create({
         userBookPayload: {
@@ -210,10 +219,7 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
               >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue
-                      placeholder="Status"
-                      className="bg-red-500"
-                    />
+                    <SelectValue placeholder="Status" className="bg-red-500" />
                     <SelectContent>
                       {Object.entries(ReadingStatus).map(([key, status]) => (
                         <SelectItem
@@ -250,7 +256,11 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
                   onChange={(event) => {
                     onChange(event.target.files && event.target.files[0]);
 
-                    setFile(event.target.files ? event.target?.files[0] ?? undefined : undefined);
+                    setFile(
+                      event.target.files
+                        ? (event.target?.files[0] ?? undefined)
+                        : undefined
+                    );
                   }}
                 />
               </FormControl>
@@ -274,7 +284,11 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
               >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder={<span className="text-muted-foreground">Kategoria</span>} />
+                    <SelectValue
+                      placeholder={
+                        <span className="text-muted-foreground">Kategoria</span>
+                      }
+                    />
                     <SelectContent>
                       {Object.values(genresData?.data ?? []).map((genre) => (
                         <SelectItem
@@ -316,7 +330,11 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
             {!isProcessing && <>Dodaj książkę</>}
           </Button>
         </div>
-        {submissionError ? <p className="text-red-500">{submissionError}</p> : <></>}
+        {submissionError ? (
+          <p className="text-red-500">{submissionError}</p>
+        ) : (
+          <></>
+        )}
       </form>
     </Form>
   );

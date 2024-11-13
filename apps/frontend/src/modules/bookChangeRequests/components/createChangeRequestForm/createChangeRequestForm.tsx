@@ -13,7 +13,6 @@ import {
 } from '../../../common/components/form/form';
 import { Input } from '../../../common/components/input/input';
 import { Button } from '../../../common/components/button/button';
-import { useQuery } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
@@ -35,6 +34,7 @@ import { BookApiError } from '../../../book/errors/bookApiError';
 import { useCreateAuthorDraftMutation } from '../../../author/api/user/mutations/createAuthorDraftMutation/createAuthorDraftMutation';
 import LanguageSelect from '../../../book/components/languageSelect/languageSelect';
 import BookFormatSelect from '../../../book/components/bookFormatSelect/bookFormatSelect';
+import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
 
 interface Props {
   bookId: string;
@@ -84,7 +84,7 @@ export const CreateChangeRequestForm: FC<Props> = ({
 
   const { data: userData, isFetched: isUserDataFetched } = useFindUserQuery();
 
-  const { data: userBookData, isFetched: isUserBookDataFetched } = useQuery(
+  const { data: userBookData, isFetched: isUserBookDataFetched } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
       userId: userData?.id ?? '',
@@ -92,7 +92,7 @@ export const CreateChangeRequestForm: FC<Props> = ({
     })
   );
 
-  const { isFetched: isBookDataFetched } = useQuery(
+  const { isFetched: isBookDataFetched } = useErrorHandledQuery(
     FindBookByIdQueryOptions({
       accessToken: accessToken as string,
       bookId: userBookData?.bookId as string,
@@ -119,14 +119,14 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
   const dispatch = useBookDetailsChangeRequestDispatch();
 
   const { data: userData } = useFindUserQuery();
-  const { data: userBookData } = useQuery(
+  const { data: userBookData } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
       userId: userData?.id ?? '',
       accessToken: accessToken as string,
     })
   );
-  const { data: bookData } = useQuery(
+  const { data: bookData } = useErrorHandledQuery(
     FindBookByIdQueryOptions({
       accessToken: accessToken as string,
       bookId: userBookData?.bookId as string,

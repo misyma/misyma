@@ -21,7 +21,6 @@ import { FileInput } from '../../../../../common/components/input/input';
 import { Button } from '../../../../../common/components/button/button';
 import { Select } from '../../../../../common/components/select/select';
 import { useRef, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { getGenresQueryOptions } from '../../../../../genres/api/queries/getGenresQuery/getGenresQueryOptions';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';
@@ -32,6 +31,7 @@ import GenreSelect from '../../../genreSelect/genreSelect';
 import { BookshelfSelector } from '../../../../../bookshelf/components/bookshelfSelector/bookshelfSelector';
 import { GenreSelector } from '../../../../../bookshelf/components/genreSelector/genreSelector';
 import { useFileUpload } from '../../../../../common/hooks/useFileUpload';
+import { useErrorHandledQuery } from '../../../../../common/hooks/useErrorHandledQuery';
 
 const stepThreeFormSchema = z.object({
   status: z.nativeEnum(ContractReadingStatus, {
@@ -74,7 +74,7 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
   });
   const dispatch = useBookCreationDispatch();
 
-  const { data: genres } = useQuery(
+  const { data: genres } = useErrorHandledQuery(
     getGenresQueryOptions({
       accessToken: accessToken as string,
     })

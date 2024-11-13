@@ -1,4 +1,3 @@
-import { useQuery } from '@tanstack/react-query';
 import {
   useBreadcrumbKeysContext,
   useBreadcrumbKeysDispatch,
@@ -9,6 +8,7 @@ import { userStateSelectors } from '../../core/store/states/userState/userStateS
 import { useFindBookshelfByIdQuery } from '../../bookshelf/api/queries/findBookshelfByIdQuery/findBookshelfByIdQuery';
 import { useFindUserQuery } from '../../user/api/queries/findUserQuery/findUserQuery';
 import { useEffect } from 'react';
+import { useErrorHandledQuery } from '../../common/hooks/useErrorHandledQuery';
 
 interface UseBookBreadcrumbsProps {
   bookId: string;
@@ -18,7 +18,7 @@ export const useBookBreadcrumbs = ({ bookId }: UseBookBreadcrumbsProps) => {
   const dispatch = useBreadcrumbKeysDispatch();
   const breadcrumbKeys = useBreadcrumbKeysContext();
   const { data: userData } = useFindUserQuery();
-  const { data: userBookData } = useQuery(
+  const { data: userBookData } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
       userId: userData?.id ?? '',

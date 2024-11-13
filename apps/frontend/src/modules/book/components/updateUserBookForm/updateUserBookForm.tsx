@@ -6,10 +6,10 @@ import { FileInput } from '../../../common/components/input/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../common/components/select/select';
 import { Button } from '../../../common/components/button/button';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQuery } from '@tanstack/react-query';
 import { getGenresQueryOptions } from '../../../../modules/genres/api/queries/getGenresQuery/getGenresQueryOptions';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
+import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
 
 const changeUserBookDataSchema = z.object({
   image: z.optional(
@@ -56,7 +56,7 @@ export const UpdateUserBookForm: FC<Props> = ({ onSubmit, onCancel }) => {
     },
   });
 
-  const { data: genresData } = useQuery(
+  const { data: genresData } = useErrorHandledQuery(
     getGenresQueryOptions({
       accessToken: accessToken as string,
     }),

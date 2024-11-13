@@ -20,7 +20,6 @@ import { FC, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useFindUserQuery } from '../../../../user/api/queries/findUserQuery/findUserQuery';
-import { useQuery } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
 import { FindBookByIdQueryOptions } from '../../../../book/api/user/queries/findBookById/findBookByIdQueryOptions';
@@ -31,6 +30,7 @@ import { AuthorSearchSelector } from '../../../../auth/components/authorSearchSe
 import { useFindAuthorsQuery } from '../../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
 import { useBookDetailsChangeRequestContext } from '../../../../book/context/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
 import { AuthorFieldTooltip } from '../../../../author/components/authorFieldTooltip';
+import { useErrorHandledQuery } from '../../../../common/hooks/useErrorHandledQuery';
 
 const stepOneSchema = z.object({
   isbn: isbnSchema.optional().or(z.literal('')),
@@ -83,7 +83,7 @@ export const StepOneForm: FC<Props> = ({ bookId, onCancel, onSubmit }) => {
 
   const { data: userData, isFetched: isUserDataFetched } = useFindUserQuery();
 
-  const { data: userBookData, isFetched: isUserBookDataFetched } = useQuery(
+  const { data: userBookData, isFetched: isUserBookDataFetched } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
       userId: userData?.id ?? '',
@@ -91,7 +91,7 @@ export const StepOneForm: FC<Props> = ({ bookId, onCancel, onSubmit }) => {
     })
   );
 
-  const { isFetched: isBookDataFetched } = useQuery(
+  const { isFetched: isBookDataFetched } = useErrorHandledQuery(
     FindBookByIdQueryOptions({
       accessToken: accessToken as string,
       bookId: userBookData?.bookId as string,
@@ -111,14 +111,14 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
     useBookDetailsChangeRequestContext();
 
   const { data: userData } = useFindUserQuery();
-  const { data: userBookData } = useQuery(
+  const { data: userBookData } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
       userId: userData?.id ?? '',
       accessToken: accessToken as string,
     })
   );
-  const { data: bookData } = useQuery(
+  const { data: bookData } = useErrorHandledQuery(
     FindBookByIdQueryOptions({
       accessToken: accessToken as string,
       bookId: userBookData?.bookId as string,

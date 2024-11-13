@@ -4,10 +4,11 @@ import { cn } from '../../../common/lib/utils.js';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice.js';
 import { useUpdateUserBookMutation } from '../../api/user/mutations/updateUserBookMutation/updateUserBookMutation.js';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys.js';
 import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions.js';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery.js';
+import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery.js';
 
 interface Props {
   bookId: string;
@@ -20,7 +21,7 @@ export const FavoriteBookButton: FC<Props> = ({ bookId, className }) => {
 
   const { data: userData } = useFindUserQuery();
 
-  const { data: userBookData } = useQuery(
+  const { data: userBookData } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
       userId: userData?.id ?? '',

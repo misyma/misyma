@@ -8,7 +8,7 @@ import {
 } from '../../../common/components/tooltip/tooltip';
 import { FC, useMemo, useState } from 'react';
 import { useFindBookshelfByIdQuery } from '../../../bookshelf/api/queries/findBookshelfByIdQuery/findBookshelfByIdQuery';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { useSelector } from 'react-redux';
@@ -17,6 +17,7 @@ import { cn } from '../../../common/lib/utils';
 import { CreateBorrowingModal } from '../createBorrowingModal/createBorrowingModal';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
 import { BookshelvesApiQueryKeys } from '../../../bookshelf/api/queries/bookshelvesApiQueryKeys';
+import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
 
 interface BorrowBookButtonProps {
   bookId: string;
@@ -30,7 +31,7 @@ export const BorrowBookButton: FC<BorrowBookButtonProps> = ({ bookId }) => {
 
   const queryClient = useQueryClient();
 
-  const { data } = useQuery(
+  const { data } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
       userId: userData?.id ?? '',

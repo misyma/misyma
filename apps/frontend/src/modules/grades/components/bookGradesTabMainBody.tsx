@@ -1,7 +1,7 @@
 import { FC, useMemo, useState } from 'react';
 import { CurrentRatingStar } from '../../book/components/currentRatingStar/currentRatingStar';
 import { Separator } from '../../common/components/separator/separator';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { useFindUserQuery } from '../../user/api/queries/findUserQuery/findUserQuery';
 import { FindBookReadingsQueryOptions } from '../../bookReadings/api/queries/findBookReadings/findBookReadingsQueryOptions';
 import { SortingType } from '@common/contracts';
@@ -12,6 +12,7 @@ import { bookReadingsTableColumns } from '../../bookReadings/components/bookRead
 import { BookReadingsApiQueryKeys } from '../../bookReadings/api/queries/bookReadingsApiQueryKeys';
 import { Skeleton } from '../../common/components/skeleton/skeleton';
 import { DataTable } from '../../common/components/dataTable/dataTable';
+import { useErrorHandledQuery } from '../../common/hooks/useErrorHandledQuery';
 
 interface BookGradesTabMainBodyProps {
   bookId: string;
@@ -25,7 +26,7 @@ export const BookGradesTabMainBody: FC<BookGradesTabMainBodyProps> = ({
 
   const queryClient = useQueryClient();
   const { data: userData } = useFindUserQuery();
-  const { data: bookReadings } = useQuery(
+  const { data: bookReadings } = useErrorHandledQuery(
     FindBookReadingsQueryOptions({
       accessToken,
       userBookId: bookId,
@@ -34,7 +35,7 @@ export const BookGradesTabMainBody: FC<BookGradesTabMainBodyProps> = ({
       sortDate: SortingType.desc,
     })
   );
-  const { data: userBookData, isFetching } = useQuery(
+  const { data: userBookData, isFetching } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
       userId: userData?.id ?? '',

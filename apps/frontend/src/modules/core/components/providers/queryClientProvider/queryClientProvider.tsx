@@ -50,6 +50,7 @@ export const QueryClientProvider = ({ children }: ProviderProps) => {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
+        retryDelay: 400,
         staleTime: 10 * 1000,
         gcTime: 10 * 1000,
         retry: (failureCount, error) => {
