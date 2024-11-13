@@ -47,7 +47,7 @@ const BookImageLoaderComponent: FC<BookImageLoaderProps> = ({ bookId }) => {
 
   return (
     <BookImageMiniature
-      className="object-cover max-w-80"
+      className="object-cover w-80"
       bookImageSrc={imageUrl}
     />
   );

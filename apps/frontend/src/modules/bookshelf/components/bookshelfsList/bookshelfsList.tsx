@@ -2,7 +2,7 @@ import { Bookmark } from '../../../common/components/bookmark/bookmark';
 import { ScrollArea } from '../../../common/components/scrollArea/scroll-area';
 import { cn } from '../../../common/lib/utils';
 import styles from './index.module.css';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useFindUserBookshelfsQuery } from '../../api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { useNavigate } from '@tanstack/react-router';
@@ -52,6 +52,10 @@ export const BookshelfsList: FC<Props> = ({
 
   const [bookshelves, setBookshelves] = useState(bookshelvesData?.data);
   const { toast } = useToast();
+
+  useEffect(() => {
+    setBookshelves(bookshelvesData?.data ?? [])
+  }, [bookshelvesData])
 
   const { mutateAsync: updateBookshelf } = useUpdateBookshelfMutation({});
   const createBookshelfMutation = useCreateBookshelfMutation({});
