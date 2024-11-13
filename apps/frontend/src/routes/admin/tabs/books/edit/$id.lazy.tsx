@@ -9,7 +9,6 @@ import {
   UpdateBookRequestBody,
 } from '@common/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQuery } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../../modules/core/store/states/userState/userStateSlice';
 import { FindBookByIdQueryOptions } from '../../../../../modules/book/api/user/queries/findBookById/findBookByIdQueryOptions';
@@ -61,6 +60,7 @@ import {
 import { createAuthorDraftSchema } from '../../../../../modules/author/schemas/createAuthorDraftSchema';
 import { AuthorFieldTooltip } from '../../../../../modules/author/components/authorFieldTooltip';
 import { Route } from './$id';
+import { useErrorHandledQuery } from '../../../../../modules/common/hooks/useErrorHandledQuery';
 
 type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
@@ -588,7 +588,7 @@ const BooksEdit: FC = () => {
 
   const breadcrumbKeys = useBreadcrumbKeysContext();
 
-  const { data, isFetching, isRefetching } = useQuery(
+  const { data, isFetching, isRefetching } = useErrorHandledQuery(
     FindBookByIdQueryOptions({
       accessToken: accessToken as string,
       bookId: id,

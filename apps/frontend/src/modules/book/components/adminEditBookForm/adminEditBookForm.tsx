@@ -13,7 +13,7 @@ import {
 } from '../../../common/components/form/form';
 import { Input } from '../../../common/components/input/input';
 import { Button } from '../../../common/components/button/button';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { StepOneForm } from './stepOneForm/stepOneForm';
@@ -31,6 +31,7 @@ import {
   useAdminEditBookContext,
   useAdminEditBookDispatch,
 } from '../../context/adminEditBookContext/adminEditBookContext';
+import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
 
 interface Props {
   bookId: string;
@@ -84,7 +85,7 @@ export const AdminEditBookForm: FC<Props> = ({
 }) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
-  const { isFetched: isBookDataFetched } = useQuery(
+  const { isFetched: isBookDataFetched } = useErrorHandledQuery(
     FindBookByIdQueryOptions({
       accessToken: accessToken as string,
       bookId: bookId,
@@ -112,7 +113,7 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
   const context = useAdminEditBookContext();
   const dispatch = useAdminEditBookDispatch();
 
-  const { data: bookData } = useQuery(
+  const { data: bookData } = useErrorHandledQuery(
     FindBookByIdQueryOptions({
       accessToken: accessToken as string,
       bookId: bookId as string,

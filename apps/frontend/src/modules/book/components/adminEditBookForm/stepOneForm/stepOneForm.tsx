@@ -26,7 +26,6 @@ import { z } from 'zod';
 import { FC, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQuery } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
 import { FindBookByIdQueryOptions } from '../../../../book/api/user/queries/findBookById/findBookByIdQueryOptions';
@@ -35,6 +34,7 @@ import { createAuthorDraftSchema } from '../../../../author/schemas/createAuthor
 import { AuthorSearchSelector } from '../../../../auth/components/authorSearchSelector/authorSearchSelector';
 import { useFindAuthorsQuery } from '../../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
 import { useAdminEditBookContext } from '../../../context/adminEditBookContext/adminEditBookContext';
+import { useErrorHandledQuery } from '../../../../common/hooks/useErrorHandledQuery';
 
 const stepOneSchema = z.object({
   isbn: isbnSchema.optional().or(z.literal('')),
@@ -85,7 +85,7 @@ interface Props {
 export const StepOneForm: FC<Props> = ({ bookId, onCancel, onSubmit }) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
-  const { isFetched: isBookDataFetched } = useQuery(
+  const { isFetched: isBookDataFetched } = useErrorHandledQuery(
     FindBookByIdQueryOptions({
       accessToken: accessToken as string,
       bookId: bookId,
@@ -104,7 +104,7 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
   const { authorIds, authorName: dAuthorName } =
     useAdminEditBookContext();
 
-  const { data: bookData } = useQuery(
+  const { data: bookData } = useErrorHandledQuery(
     FindBookByIdQueryOptions({
       accessToken: accessToken as string,
       bookId: bookId,

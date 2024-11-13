@@ -1,11 +1,11 @@
 import { FC } from 'react';
 import { CurrentRatingStar } from '../../../book/components/currentRatingStar/currentRatingStar';
-import { useQuery } from '@tanstack/react-query';
 import { FindUserBookByIdQueryOptions } from '../../../book/api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { Skeleton } from '../../../common/components/skeleton/skeleton';
+import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
 
 interface QuotationTabTitleBarProps {
   bookId: string;
@@ -17,7 +17,7 @@ export const QuotationTabTitleBar: FC<QuotationTabTitleBarProps> = ({
 
   const { data: userData } = useFindUserQuery();
 
-  const { data: userBookData, isFetching } = useQuery(
+  const { data: userBookData, isFetching } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
       userId: userData?.id ?? '',

@@ -3,8 +3,8 @@ import { BookImageMiniature } from '../bookImageMiniature/bookImageMiniature';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
-import { useQuery } from '@tanstack/react-query';
 import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
+import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
 
 interface BookImageLoaderProps {
   bookId: string;
@@ -18,7 +18,7 @@ const BookImageLoaderComponent: FC<BookImageLoaderProps> = ({ bookId }) => {
     data: userBookData, 
     isLoading: isBookLoading,
     isError
-  } = useQuery(
+  } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
       userId: userData?.id ?? '',

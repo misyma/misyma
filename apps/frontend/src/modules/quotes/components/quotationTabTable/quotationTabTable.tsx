@@ -1,4 +1,3 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { FindUserBookByIdQueryOptions } from '../../../book/api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 import { FC, useMemo, useState } from 'react';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
@@ -6,9 +5,9 @@ import { userStateSelectors } from '../../../core/store/states/userState/userSta
 import { useSelector } from 'react-redux';
 import { quotationTableColumns } from '../quotationsTable/quotationsTableColumns';
 import { getQuotesOptions } from '../../api/queries/getQuotes/getQuotesOptions';
-import { QuotesApiQueryKeys } from '../../api/queries/quotesApiQueryKeys';
 import { DataTable } from '../../../common/components/dataTable/dataTable';
 import { Skeleton } from '../../../common/components/skeleton/skeleton';
+import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
 
 interface QuotationTabTableProps {
   bookId: string;
@@ -20,15 +19,13 @@ export const QuotationTabTable: FC<QuotationTabTableProps> = ({ bookId }) => {
 
   const { data: userData } = useFindUserQuery();
 
-  const queryClient = useQueryClient();
-
   const {
     data: userBookData,
     isFetching,
     // isFetched: isUserBookFetched,
     // isFetching: isUserBookFetching,
     // isRefetching: isUserBookRefetching,
-  } = useQuery(
+  } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
       userId: userData?.id ?? '',
@@ -38,10 +35,7 @@ export const QuotationTabTable: FC<QuotationTabTableProps> = ({ bookId }) => {
 
   const {
     data: quotationsData,
-    // isFetched: isQuotationsFetched,
-    // isRefetching: isRefetchingQuotations,
-    // isFetching: isQuotationsFetching,
-  } = useQuery(
+  } = useErrorHandledQuery(
     getQuotesOptions({
       accessToken: accessToken as string,
       userBookId: bookId,
@@ -49,6 +43,8 @@ export const QuotationTabTable: FC<QuotationTabTableProps> = ({ bookId }) => {
       pageSize,
     })
   );
+
+  console.log(quotationsData);
 
   const pageCount = useMemo(() => {
     return Math.ceil((quotationsData?.metadata?.total ?? 0) / pageSize) || 1;
@@ -58,20 +54,8 @@ export const QuotationTabTable: FC<QuotationTabTableProps> = ({ bookId }) => {
     return quotationsData?.data ?? [];
   }, [quotationsData?.data]);
 
-  const invalidateQuotesFetch = () =>
-    queryClient.invalidateQueries({
-      predicate: (query) =>
-        query.queryKey[0] === QuotesApiQueryKeys.findQuotes &&
-        query.queryKey[1] === bookId &&
-        query.queryKey[2] === userData?.id &&
-        query.queryKey[3] === `${page}` &&
-        query.queryKey[4] === `${pageSize}`,
-    });
-
   const onSetPage = (page: number): void => {
     setPage(page);
-
-    invalidateQuotesFetch();
   };
 
   return (

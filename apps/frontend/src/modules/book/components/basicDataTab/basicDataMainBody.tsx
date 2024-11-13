@@ -4,7 +4,6 @@ import { Separator } from '../../../common/components/separator/separator';
 import { BookshelfChoiceDropdown } from '../bookshelfChoiceDropdown/bookshelfChoiceDropdown';
 import { StatusChooserCards } from '../statusChooser/statusChooserCards';
 import { StarRating } from '../../../bookReadings/components/starRating/starRating';
-import { useQuery } from '@tanstack/react-query';
 import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
@@ -12,6 +11,7 @@ import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUs
 import { ReversedLanguages } from '../../../common/constants/languages';
 import { BookFormat } from '../../../common/constants/bookFormat';
 import { Skeleton } from '../../../common/components/skeleton/skeleton';
+import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
 
 interface BasicDataMainBodyProps {
   bookId: string;
@@ -31,7 +31,7 @@ export const BasicDataMainBody: FC<BasicDataMainBodyProps> = ({ bookId }) => {
     [bookId, userData?.id, accessToken]
   );
 
-  const { data, isFetching } = useQuery(queryOptions);
+  const { data, isFetching } = useErrorHandledQuery(queryOptions);
 
   const bookDetails = useMemo(
     () => ({

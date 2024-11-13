@@ -12,7 +12,6 @@ import { useSearchBookContextDispatch } from '../../../../modules/bookshelf/cont
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
 import { FC, useEffect, useMemo, useRef, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { FindBooksQueryOptions } from '../../../../modules/book/api/user/queries/findBooks/findBooksQueryOptions';
 import { Book } from '@common/contracts';
 import { FindUserBooksByQueryOptions } from '../../../../modules/book/api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
@@ -25,6 +24,7 @@ import {
 import { BookFormat } from '../../../../modules/common/constants/bookFormat';
 import { ReversedLanguages } from '../../../../modules/common/constants/languages';
 import { AutoselectedInput } from '../../../../modules/common/components/autoselectedInput/autoselectedInput';
+import { useErrorHandledQuery } from '../../../../modules/common/hooks/useErrorHandledQuery';
 
 export const SearchResultPage: FC = () => {
   const searchParams = Route.useSearch();
@@ -58,7 +58,7 @@ export const SearchResultPage: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams.searchBy]);
 
-  const { data: foundBooks, isFetching } = useQuery(
+  const { data: foundBooks, isFetching } = useErrorHandledQuery(
     FindBooksQueryOptions({
       ...(searchParams.searchBy === 'title'
         ? {
@@ -82,7 +82,7 @@ export const SearchResultPage: FC = () => {
     data: userBookWithIsbn,
     isFetching: checkingForIsbn,
     isRefetching: checkForIsbnInProgress,
-  } = useQuery(
+  } = useErrorHandledQuery(
     FindUserBooksByQueryOptions({
       accessToken: accessToken as string,
       isbn: searchParams.isbn,

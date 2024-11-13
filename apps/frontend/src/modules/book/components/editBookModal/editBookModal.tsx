@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useUploadBookImageMutation } from '../../api/user/mutations/uploadBookImageMutation/uploadBookImageMutation';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { useUpdateUserBookMutation } from '../../api/user/mutations/updateUserBookMutation/updateUserBookMutation';
 import { UpdateUserBookForm } from '../updateUserBookForm/updateUserBookForm';
 import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
@@ -18,6 +18,7 @@ import { RadioGroup, RadioGroupItem } from '../../../common/components/radioGrou
 import { Button } from '../../../common/components/button/button';
 import { BookDetailsChangeRequestProvider } from '../../context/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../common/components/tooltip/tooltip';
+import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
 
 interface Props {
   bookId: string;
@@ -53,7 +54,7 @@ export const EditBookModal: FC<Props> = ({ bookId }) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const { data: userData } = useFindUserQuery();
-  const { data } = useQuery(
+  const { data } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
       userId: userData?.id ?? '',

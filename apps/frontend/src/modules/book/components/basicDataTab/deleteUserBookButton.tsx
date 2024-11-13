@@ -1,10 +1,10 @@
 import { FC } from 'react';
 import { DeleteUserBookModal } from '../deleteUserBookModal/deleteUserBookModal';
-import { useQuery } from '@tanstack/react-query';
 import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
+import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
 
 interface DeleteUserBookButtonProps {
   bookId: string;
@@ -16,7 +16,7 @@ export const DeleteUserBookButton: FC<DeleteUserBookButtonProps> = ({
 
   const { data: userData } = useFindUserQuery();
 
-  const { data } = useQuery(
+  const { data } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
       userId: userData?.id ?? '',

@@ -15,7 +15,7 @@ import { FindBooksByBookshelfIdQueryOptions } from '../../../book/api/user/queri
 import { Select, SelectItem, SelectTrigger, SelectValue } from '../../../common/components/select/select';
 import { SelectContent } from '@radix-ui/react-select';
 import { cn } from '../../../common/lib/utils';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useFindUserBookshelfsQuery } from '../../api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
@@ -23,6 +23,7 @@ import { ShelfApiError } from '../../api/errors/shelfApiError';
 import { BookApiError } from '../../../book/errors/bookApiError';
 import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
 import { BookshelvesApiQueryKeys } from '../../api/queries/bookshelvesApiQueryKeys';
+import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
 
 interface DialogContentPreConfirmationProps {
   bookshelfId: string;
@@ -41,7 +42,7 @@ const DialogContentPreConfirmation: FC<DialogContentPreConfirmationProps> = ({
 }) => {
   const { data: user } = useFindUserQuery();
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
-  const { data: bookshelfBooksResponse } = useQuery(
+  const { data: bookshelfBooksResponse } = useErrorHandledQuery(
     FindBooksByBookshelfIdQueryOptions({
       bookshelfId,
       userId: user?.id as string,

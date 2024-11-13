@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import { changeRequestsColumns } from '../../bookChangeRequests/components/changeRequestsTable/changeRequestsTableColumns';
-import { useQuery } from '@tanstack/react-query';
 import { FindBookChangeRequestsQueryOptions } from '../../bookChangeRequests/api/admin/queries/findBookChangeRequests/findBookChangeRequestsQueryOptions';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../core/store/states/userState/userStateSlice';
 import { DataTable } from '../../common/components/dataTable/dataTable';
 import { DataSkeletonTable } from '../../common/components/dataTable/dataSkeletonTable';
 import { useInitialFetch } from '../../common/hooks/useInitialFetch';
+import { useErrorHandledQuery } from '../../common/hooks/useErrorHandledQuery';
 
 export const AdminChangeRequestsTable = () => {
   const [page, setPage] = useState(1);
@@ -19,7 +19,7 @@ export const AdminChangeRequestsTable = () => {
     data: changeRequestsData,
     isFetching,
     isFetched,
-  } = useQuery(
+  } = useErrorHandledQuery(
     FindBookChangeRequestsQueryOptions({
       accessToken: accessToken as string,
       page,

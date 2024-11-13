@@ -19,7 +19,7 @@ export const getQuotes = async (payload: GetQuotesPayload) => {
     queryParams.pageSize = `${payload.pageSize}`;
   }
 
-  queryParams.sortDate = 'desc'
+  queryParams.sortDate = 'desc';
 
   const response = await HttpService.get<FindQuotesResponseBody>({
     url: `/user-books/${payload.userBookId}/quotes`,

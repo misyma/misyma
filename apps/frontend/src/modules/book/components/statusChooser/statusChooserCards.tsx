@@ -4,13 +4,14 @@ import { HiCheckCircle, HiDotsCircleHorizontal } from 'react-icons/hi';
 import { HiQuestionMarkCircle } from 'react-icons/hi';
 import { ReadingStatus } from '@common/contracts';
 import { cn } from '../../../common/lib/utils';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { Skeleton } from '../../../common/components/skeleton/skeleton';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useUpdateUserBookMutation } from '../../api/user/mutations/updateUserBookMutation/updateUserBookMutation';
 import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
+import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
 
 interface Props {
   bookId: string;
@@ -24,7 +25,7 @@ export const StatusChooserCards: FC<Props> = ({ bookId, bookshelfId }) => {
 
   const { data: userData } = useFindUserQuery();
 
-  const { data, isFetching, isFetched, isRefetching } = useQuery(
+  const { data, isFetching, isFetched, isRefetching } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
       userId: userData?.id ?? '',

@@ -1,11 +1,11 @@
 import { FC } from 'react';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
-import { useQuery } from '@tanstack/react-query';
 import { IoMdStar } from 'react-icons/io';
 import { FindBookReadingsQueryOptions } from '../../../bookReadings/api/queries/findBookReadings/findBookReadingsQueryOptions';
 import { SortingType } from '@common/contracts';
 import { Skeleton } from '../../../common/components/skeleton/skeleton';
+import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
 
 interface Props {
   userBookId: string;
@@ -14,7 +14,7 @@ interface Props {
 export const CurrentRatingStar: FC<Props> = ({ userBookId }) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
-  const { data: bookReadings, isLoading } = useQuery(
+  const { data: bookReadings, isLoading } = useErrorHandledQuery(
     FindBookReadingsQueryOptions({
       accessToken: accessToken as string,
       userBookId,

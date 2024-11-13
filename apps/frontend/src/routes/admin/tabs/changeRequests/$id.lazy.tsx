@@ -3,7 +3,6 @@ import { RequireAdmin } from '../../../../modules/core/components/requireAdmin/r
 import { FC, useMemo } from 'react';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { z } from 'zod';
-import { useQuery } from '@tanstack/react-query';
 import { FindBookChangeRequestByIdQueryOptions } from '../../../../modules/bookChangeRequests/api/admin/queries/findBookChangeRequestById/findBookChangeRequestByIdQueryOptions';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
@@ -23,6 +22,7 @@ import { useApplyBookChangeRequestMutation } from '../../../../modules/bookChang
 import { useDeleteBookChangeRequestMutation } from '../../../../modules/bookChangeRequests/api/admin/mutations/deleteBookChangeRequest/deleteBookChangeRequest';
 import { ReversedLanguages } from '../../../../modules/common/constants/languages';
 import { BookFormat } from '../../../../modules/common/constants/bookFormat';
+import { useErrorHandledQuery } from '../../../../modules/common/hooks/useErrorHandledQuery';
 
 type ChangeKeys =
   | 'format'
@@ -53,13 +53,13 @@ export const ChangeRequestView: FC = () => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const { data: changeRequestData, isFetched: isChangeRequestFetched } =
-    useQuery(
+  useErrorHandledQuery(
       FindBookChangeRequestByIdQueryOptions({
         accessToken: accessToken as string,
         id,
       })
     );
-  const { data: bookData, isFetched: isBookDataFetched } = useQuery(
+  const { data: bookData, isFetched: isBookDataFetched } = useErrorHandledQuery(
     FindBookByIdQueryOptions({
       accessToken: accessToken as string,
       bookId: changeRequestData?.data?.bookId ?? '',

@@ -15,7 +15,6 @@ import {
 import { ReadingStatus, SortingType, UserBook } from '@common/contracts';
 import { cn } from '../../modules/common/lib/utils';
 import { FavoriteBookButton } from '../../modules/book/components/favoriteBookButton/favoriteBookButton';
-import { useQuery } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { userStateSelectors } from '../../modules/core/store/states/userState/userStateSlice';
 import { useFindBookshelfByIdQuery } from '../../modules/bookshelf/api/queries/findBookshelfByIdQuery/findBookshelfByIdQuery';
@@ -30,6 +29,7 @@ import {
 } from '../../modules/common/contexts/breadcrumbKeysContext';
 import { Paginator } from '../../modules/common/components/paginator/paginator';
 import { BookImageMiniature } from '../../modules/book/components/bookImageMiniature/bookImageMiniature';
+import { useErrorHandledQuery } from '../../modules/common/hooks/useErrorHandledQuery';
 
 const bookshelfSearchSchema = z.object({
   bookshelfId: z.string().uuid().catch(''),
@@ -102,7 +102,7 @@ const BorrowedBook: FC<{ userBook: UserBook; index: number }> = ({
     data: bookBorrowing,
     isFetching,
     isRefetching,
-  } = useQuery(
+  } = useErrorHandledQuery(
     FindBookBorrowingsQueryOptions({
       accessToken: accessToken as string,
       userBookId: userBook.id,
@@ -198,7 +198,7 @@ export const BorrowingBookshelf: FC = () => {
 
   const { data: user } = useFindUserQuery();
 
-  const { data: bookshelfBooksResponse } = useQuery(
+  const { data: bookshelfBooksResponse } = useErrorHandledQuery(
     FindBooksByBookshelfIdQueryOptions({
       accessToken: accessToken as string,
       bookshelfId,
@@ -288,7 +288,7 @@ export const Bookshelf: FC = () => {
     data: bookshelfBooksResponse,
     isFetching,
     isRefetching,
-  } = useQuery(
+  } = useErrorHandledQuery(
     FindBooksByBookshelfIdQueryOptions({
       accessToken: accessToken as string,
       bookshelfId,
