@@ -369,7 +369,6 @@ export const CreateBookReadingModal: FC<Props> = ({
           borderRadius: '40px',
         }}
         className="max-w-xl py-16"
-        omitCloseButton={true}
       >
         <DialogHeader className="font-semibold text-center flex justify-center items-center">
           Dodatkowe informacje

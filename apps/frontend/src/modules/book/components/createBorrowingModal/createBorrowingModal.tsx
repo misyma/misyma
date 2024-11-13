@@ -55,16 +55,14 @@ const createBorrowingSchema = z.object({
 
 export const CreateBorrowingModal: FC<Props> = ({ bookId, open, onClosed, onMutated }: Props) => {
   const accessToken = useStoreSelector(userStateSelectors.selectAccessToken);
+  const [isOpen, setIsOpen] = useState<boolean>(open);
+  const [error, setError] = useState('');
 
   const queryClient = useQueryClient();
 
   const { toast } = useToast();
 
   const { data: userData } = useFindUserQuery();
-
-  const [isOpen, setIsOpen] = useState<boolean>(open);
-
-  const [error, setError] = useState('');
 
   const [calendarVisible, setCalendarVisible] = useState(false);
 
@@ -99,7 +97,10 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, open, onClosed, onMuta
 
       toast({
         title: 'Książka została wypożyczona.',
-        description: `Książka została wypożyczona ${values.borrower} od dnia ${values.startedAt.toDateString()}`,
+        description: `Książka została wypożyczona przez ${values.borrower} od dnia ${
+          formatDate(values.startedAt, 'PPP', {
+            locale: pl,
+          })}`,
         variant: 'success',
       });
 
