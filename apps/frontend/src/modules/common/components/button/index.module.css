@@ -43,7 +43,7 @@
 }
 
 .secondary-button.button {
-  @apply bg-secondary text-secondary-foreground hover:bg-secondary/80;
+  @apply bg-secondary text-primary hover:bg-secondary/80;
 }
 
 .ghost-button.button {
