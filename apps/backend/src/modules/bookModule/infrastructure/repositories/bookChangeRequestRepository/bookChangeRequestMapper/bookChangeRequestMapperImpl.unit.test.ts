@@ -37,6 +37,7 @@ describe('BookChangeRequestMapperImpl', () => {
         createdAt: bookChangeRequestRawEntity.createdAt,
         authorIds: bookChangeRequestRawEntity.authorIds,
         bookTitle: bookRawEntity.title,
+        changedFields: bookChangeRequestRawEntity.changedFields,
       },
     ]);
 
@@ -57,6 +58,7 @@ describe('BookChangeRequestMapperImpl', () => {
         createdAt: bookChangeRequestRawEntity.createdAt,
         authorIds: bookChangeRequestRawEntity.authorIds,
         bookTitle: bookRawEntity.title,
+        changedFields: bookChangeRequestRawEntity.changedFields.split(','),
       },
     });
   });

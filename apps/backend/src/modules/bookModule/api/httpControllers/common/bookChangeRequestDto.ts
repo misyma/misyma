@@ -35,6 +35,7 @@ export const bookChangeRequestDtoSchema = Type.Object({
       { minItems: 1 },
     ),
   ),
+  changedFields: Type.Array(Type.String({ minLength: 1 }), { minItems: 1 }),
 });
 
 export type BookChangeRequestDto = Static<typeof bookChangeRequestDtoSchema>;

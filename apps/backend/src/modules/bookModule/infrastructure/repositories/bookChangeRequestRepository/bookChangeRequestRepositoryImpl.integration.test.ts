@@ -85,6 +85,7 @@ describe('BookChangeRequestRepositoryImpl', () => {
           userEmail: createdBookChangeRequest.getUserEmail(),
           createdAt: createdBookChangeRequest.getCreatedAt(),
           authorIds: [authorId],
+          changedFields: ['title', 'translator'],
         },
       });
 
@@ -105,6 +106,7 @@ describe('BookChangeRequestRepositoryImpl', () => {
         createdAt: createdBookChangeRequest.getCreatedAt(),
         authorIds: [authorId],
         bookTitle: book.title,
+        changedFields: ['title', 'translator'],
       });
 
       expect(foundBookChangeRequest).toEqual({
@@ -122,6 +124,7 @@ describe('BookChangeRequestRepositoryImpl', () => {
         userEmail: createdBookChangeRequest.getUserEmail(),
         createdAt: createdBookChangeRequest.getCreatedAt(),
         authorIds: authorId,
+        changedFields: 'title,translator',
       });
     });
   });
@@ -161,6 +164,7 @@ describe('BookChangeRequestRepositoryImpl', () => {
         userEmail: foundBookChangeRequest?.getUserEmail(),
         createdAt: foundBookChangeRequest?.getCreatedAt(),
         bookTitle: book.title,
+        changedFields: foundBookChangeRequest?.getChangedFields(),
       });
     });
 

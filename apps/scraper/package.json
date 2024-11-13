@@ -1,6 +1,5 @@
 {
   "name": "@apps/scraper",
-  "private": true,
   "type": "module",
   "scripts": {
     "start": "node dist/src/index.js",

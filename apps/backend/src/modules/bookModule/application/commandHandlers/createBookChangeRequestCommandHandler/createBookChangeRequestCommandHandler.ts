@@ -7,14 +7,14 @@ export interface CreateBookChangeRequestCommandHandlerPayload {
   readonly bookId: string;
   readonly userId: string;
   readonly title?: string | undefined;
-  readonly isbn?: string | undefined;
-  readonly publisher?: string | undefined;
-  readonly releaseYear?: number | undefined;
+  readonly isbn?: string | undefined | null;
+  readonly publisher?: string | undefined | null;
+  readonly releaseYear?: number | undefined | null;
   readonly language?: Language | undefined;
-  readonly translator?: string | undefined;
+  readonly translator?: string | undefined | null;
   readonly format?: BookFormat | undefined;
-  readonly pages?: number | undefined;
-  readonly imageUrl?: string | undefined;
+  readonly pages?: number | undefined | null;
+  readonly imageUrl?: string | undefined | null;
   readonly authorIds?: string[] | undefined;
 }
 

@@ -16,6 +16,7 @@ export interface BookChangeRequestDraft {
   readonly bookId: string;
   readonly bookTitle?: string | undefined;
   readonly createdAt: Date;
+  readonly changedFields: string[];
 }
 
 export interface BookChangeRequestState {
@@ -33,6 +34,7 @@ export interface BookChangeRequestState {
   readonly bookId: string;
   readonly bookTitle?: string | undefined;
   readonly createdAt: Date;
+  readonly changedFields: string[];
 }
 
 export class BookChangeRequest {
@@ -56,6 +58,7 @@ export class BookChangeRequest {
       createdAt,
       authorIds,
       bookTitle,
+      changedFields,
     } = draft;
 
     this.id = id;
@@ -74,6 +77,7 @@ export class BookChangeRequest {
       userEmail,
       createdAt,
       authorIds,
+      changedFields,
     };
 
     if (bookTitle) {
@@ -146,5 +150,9 @@ export class BookChangeRequest {
 
   public getCreatedAt(): Date {
     return this.state.createdAt;
+  }
+
+  public getChangedFields(): string[] {
+    return this.state.changedFields;
   }
 }

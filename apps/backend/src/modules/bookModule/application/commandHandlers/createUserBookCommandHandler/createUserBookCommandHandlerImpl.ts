@@ -69,7 +69,7 @@ export class CreateUserBookCommandHandlerImpl implements CreateUserBookCommandHa
       userId,
       bookIdentifier: {
         id: bookId,
-        isbn: book.getIsbn(),
+        isbn: book.getIsbn() ?? undefined,
       },
       page: 1,
       pageSize: 1,

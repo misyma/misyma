@@ -21,6 +21,7 @@ export class BookChangeRequestMapperImpl implements BookChangeRequestMapper {
         createdAt,
         authorIds,
         bookTitle,
+        changedFields,
       } = entity;
 
       return new BookChangeRequest({
@@ -39,6 +40,7 @@ export class BookChangeRequestMapperImpl implements BookChangeRequestMapper {
         createdAt,
         authorIds: authorIds ? authorIds.split(',') : undefined,
         bookTitle,
+        changedFields: changedFields.split(','),
       });
     });
   }

@@ -40,6 +40,7 @@ export class BookChangeRequestTestUtils extends TestUtils {
         userEmail: bookChangeRequest.userEmail,
         createdAt: bookChangeRequest.createdAt,
         authorIds: bookChangeRequest.authorIds,
+        changedFields: bookChangeRequest.changedFields,
       },
       '*',
     );

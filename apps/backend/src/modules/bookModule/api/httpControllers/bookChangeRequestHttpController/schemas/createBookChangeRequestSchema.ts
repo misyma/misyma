@@ -17,14 +17,14 @@ import {
 export const createBookChangeRequestBodyDtoSchema = Type.Object({
   bookId: Type.String({ format: 'uuid' }),
   title: Type.Optional(bookTitleSchema),
-  isbn: Type.Optional(bookIsbnSchema),
-  publisher: Type.Optional(bookPublisherSchema),
-  releaseYear: Type.Optional(bookReleaseYearSchema),
+  isbn: Type.Optional(Type.Union([bookIsbnSchema, Type.Null()])),
+  publisher: Type.Optional(Type.Union([bookPublisherSchema, Type.Null()])),
+  releaseYear: Type.Optional(Type.Union([bookReleaseYearSchema, Type.Null()])),
   language: Type.Optional(Type.Enum(contracts.Language)),
-  translator: Type.Optional(bookTranslatorSchema),
+  translator: Type.Optional(Type.Union([bookTranslatorSchema, Type.Null()])),
   format: Type.Optional(Type.Enum(contracts.BookFormat)),
-  pages: Type.Optional(bookPagesSchema),
-  imageUrl: Type.Optional(bookImageUrlSchema),
+  pages: Type.Optional(Type.Union([bookPagesSchema, Type.Null()])),
+  imageUrl: Type.Optional(Type.Union([bookImageUrlSchema, Type.Null()])),
   authorIds: Type.Optional(
     Type.Array(
       Type.String({

@@ -40,6 +40,7 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
         userEmail,
         createdAt,
         authorIds,
+        changedFields,
       },
     } = payload;
 
@@ -62,6 +63,7 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
           userEmail,
           createdAt,
           authorIds: authorIds?.join(',') ?? undefined,
+          changedFields: changedFields.join(','),
         },
         '*',
       );
@@ -98,6 +100,7 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
           `${bookChangeRequestTable}.bookId`,
           `${bookChangeRequestTable}.userEmail`,
           `${bookChangeRequestTable}.createdAt`,
+          `${bookChangeRequestTable}.changedFields`,
           `${bookTable}.title as bookTitle`,
         ])
         .leftJoin(bookTable, (join) => {
@@ -145,6 +148,7 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
           `${bookChangeRequestTable}.bookId`,
           `${bookChangeRequestTable}.userEmail`,
           `${bookChangeRequestTable}.createdAt`,
+          `${bookChangeRequestTable}.changedFields`,
           `${bookTable}.title as bookTitle`,
         ])
         .leftJoin(bookAuthorTable, (join) => {

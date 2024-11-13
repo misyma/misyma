@@ -16,4 +16,5 @@ export interface BookChangeRequestWithJoinsRawEntity {
   readonly userEmail: string;
   readonly createdAt: Date;
   readonly bookTitle: string;
+  readonly changedFields: string;
 }

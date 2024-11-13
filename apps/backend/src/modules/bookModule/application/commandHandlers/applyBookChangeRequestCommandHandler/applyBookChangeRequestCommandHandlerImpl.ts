@@ -42,8 +42,19 @@ export class ApplyBookChangeRequestCommandHandlerImpl implements ApplyBookChange
       });
     }
 
-    const { format, imageUrl, isbn, language, pages, publisher, translator, releaseYear, title, authorIds } =
-      bookChangeRequest.getState();
+    const {
+      format,
+      imageUrl,
+      isbn,
+      language,
+      pages,
+      publisher,
+      translator,
+      releaseYear,
+      title,
+      authorIds,
+      changedFields,
+    } = bookChangeRequest.getState();
 
     if (title) {
       book.setTitle({ title });
@@ -57,28 +68,28 @@ export class ApplyBookChangeRequestCommandHandlerImpl implements ApplyBookChange
       book.setFormat({ format });
     }
 
-    if (pages) {
-      book.setPages({ pages });
+    if (pages || changedFields.includes('pages')) {
+      book.setPages({ pages: pages ?? null });
     }
 
-    if (publisher) {
-      book.setPublisher({ publisher });
+    if (publisher || changedFields.includes('publisher')) {
+      book.setPublisher({ publisher: publisher ?? null });
     }
 
-    if (releaseYear) {
-      book.setReleaseYear({ releaseYear });
+    if (releaseYear || changedFields.includes('releaseYear')) {
+      book.setReleaseYear({ releaseYear: releaseYear ?? null });
     }
 
-    if (translator) {
-      book.setTranslator({ translator });
+    if (translator || changedFields.includes('translator')) {
+      book.setTranslator({ translator: translator ?? null });
     }
 
-    if (imageUrl) {
-      book.setImageUrl({ imageUrl });
+    if (imageUrl || changedFields.includes('imageUrl')) {
+      book.setImageUrl({ imageUrl: imageUrl ?? null });
     }
 
-    if (isbn) {
-      book.setIsbn({ isbn });
+    if (isbn || changedFields.includes('isbn')) {
+      book.setIsbn({ isbn: isbn ?? null });
     }
 
     if (authorIds !== undefined) {

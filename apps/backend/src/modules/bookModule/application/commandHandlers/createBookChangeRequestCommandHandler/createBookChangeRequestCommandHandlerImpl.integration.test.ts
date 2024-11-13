@@ -84,7 +84,7 @@ describe('CreateBookChangeRequestCommandHandler', () => {
       translator: createdBookChangeRequest.getTranslator() as string,
       format: createdBookChangeRequest.getFormat(),
       pages: createdBookChangeRequest.getPages() as number,
-      imageUrl: createdBookChangeRequest.getImageUrl() as string,
+      imageUrl: null,
       authorIds: [author2.id],
       bookId: book.id,
       userId: user.id,
@@ -102,9 +102,21 @@ describe('CreateBookChangeRequestCommandHandler', () => {
       language: createdBookChangeRequest.getLanguage(),
       translator: createdBookChangeRequest.getTranslator(),
       pages: createdBookChangeRequest.getPages(),
-      imageUrl: createdBookChangeRequest.getImageUrl(),
+      imageUrl: null,
       authorIds: [author2.id],
       bookTitle: book.title,
+      changedFields: [
+        'title',
+        'isbn',
+        'publisher',
+        'releaseYear',
+        'language',
+        'translator',
+        'format',
+        'pages',
+        'imageUrl',
+        'authorIds',
+      ],
     });
 
     const foundBookChangeRequest = await bookChangeRequestTestUtils.findById({ id: bookChangeRequest.getId() });
@@ -122,8 +134,9 @@ describe('CreateBookChangeRequestCommandHandler', () => {
       language: createdBookChangeRequest.getLanguage(),
       translator: createdBookChangeRequest.getTranslator(),
       pages: createdBookChangeRequest.getPages(),
-      imageUrl: createdBookChangeRequest.getImageUrl(),
+      imageUrl: null,
       authorIds: author2.id,
+      changedFields: 'title,isbn,publisher,releaseYear,language,translator,format,pages,imageUrl,authorIds',
     });
   });
 
