@@ -25,7 +25,7 @@ export const StarRating: FC<Props> = ({ bookId }: Props) => {
             {Array.from({ length: 10 }).map((_, index) => {
               return (
                 <>
-                  <div className={cn('relative star-container')}>
+                  <div key={`star-rating-${index}`} className={cn('relative star-container')}>
                     <CreateBookReadingModal
                       bookId={bookId}
                       rating={index + 1}

@@ -414,7 +414,7 @@ export const Bookshelf: FC = () => {
                     <div className="flex gap-2 items-center justify-center">
                       <FavoriteBookButton
                         className="pointer-events-auto"
-                        bookId={userBook.bookId}
+                        bookId={userBook.id}
                       />
                       {renderStatusIcon(userBook)}
                     </div>

@@ -20,7 +20,7 @@ export const ShelvesSkeleton: FC<ShelvesSkeletonProps> = ({ skeletonColor }) => 
           ></Skeleton>
         </div>
         <div className={styles['shelves-container']}>
-          {Array.from({ length: 5 })?.map((index) => (
+          {Array.from({ length: 5 })?.map((_, index) => (
             <div key={`${index}-skeleton-container`}>
               <div className="flex items-center">
                 <Skeleton

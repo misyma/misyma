@@ -11,5 +11,5 @@ export const FindUserBookByIdQueryOptions = ({ accessToken, userBookId, userId }
         userId,
         accessToken,
       }),
-    enabled: !!accessToken && userId ? true : false,
+    enabled: !!accessToken && userId && userBookId ? true : false,
   });
