@@ -1,5 +1,10 @@
-import { FC, useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTrigger } from '../../../common/components/dialog/dialog';
+import { FC, forwardRef, useState } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTrigger,
+} from '../../../common/components/dialog/dialog';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -14,10 +19,18 @@ import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUs
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
 import { HiPencil } from 'react-icons/hi';
 import { CreateChangeRequestForm } from '../../../bookChangeRequests/components/createChangeRequestForm/createChangeRequestForm';
-import { RadioGroup, RadioGroupItem } from '../../../common/components/radioGroup/radio-group';
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from '../../../common/components/radioGroup/radio-group';
 import { Button } from '../../../common/components/button/button';
 import { BookDetailsChangeRequestProvider } from '../../context/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../common/components/tooltip/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../../../common/components/tooltip/tooltip';
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
 
 interface Props {
@@ -32,8 +45,8 @@ const changeMyBookDataSchema = z.object({
       {},
       {
         required_error: 'Wymagany.',
-      },
-    ),
+      }
+    )
   ),
   genre: z
     .string()
@@ -43,8 +56,24 @@ const changeMyBookDataSchema = z.object({
     .or(z.literal('')),
 });
 
+interface EditBookIconProps {
+  onClick: () => void;
+}
+
+const EditBookIcon = forwardRef<HTMLButtonElement, EditBookIconProps>(
+  ({ onClick }, ref) => {
+    return (
+      <Button ref={ref} onClick={onClick} variant="ghost" size="icon">
+        <HiPencil className="cursor-pointer text-primary h-8 w-8" />
+      </Button>
+    );
+  }
+);
+
 export const EditBookModal: FC<Props> = ({ bookId }) => {
-  const [bookEditType, setBookEditType] = useState<BookEditType | undefined>('myBookChange');
+  const [bookEditType, setBookEditType] = useState<BookEditType | undefined>(
+    'myBookChange'
+  );
   const [actionChosen, setActionChosen] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -59,7 +88,7 @@ export const EditBookModal: FC<Props> = ({ bookId }) => {
       userBookId: bookId,
       userId: userData?.id ?? '',
       accessToken: accessToken as string,
-    }),
+    })
   );
 
   const resetModalState = () => {
@@ -75,9 +104,13 @@ export const EditBookModal: FC<Props> = ({ bookId }) => {
     },
   });
 
-  const { mutateAsync: uploadBookImageMutation } = useUploadBookImageMutation({});
+  const { mutateAsync: uploadBookImageMutation } = useUploadBookImageMutation(
+    {}
+  );
 
-  const onSubmitChangeMyBookDataForm = async (values: z.infer<typeof changeMyBookDataSchema>) => {
+  const onSubmitChangeMyBookDataForm = async (
+    values: z.infer<typeof changeMyBookDataSchema>
+  ) => {
     if (values.image) {
       await uploadBookImageMutation({
         bookId: bookId,
@@ -95,12 +128,15 @@ export const EditBookModal: FC<Props> = ({ bookId }) => {
     }
 
     queryClient.invalidateQueries({
-      predicate: (query) => query.queryKey[0] === BookApiQueryKeys.findUserBookById && query.queryKey[1] === bookId,
+      predicate: (query) =>
+        query.queryKey[0] === BookApiQueryKeys.findUserBookById &&
+        query.queryKey[1] === bookId,
     });
 
     queryClient.invalidateQueries({
       predicate: (query) =>
-        query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId && query.queryKey[1] === data?.bookshelfId,
+        query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId &&
+        query.queryKey[1] === data?.bookshelfId,
     });
 
     resetModalState();
@@ -154,10 +190,7 @@ export const EditBookModal: FC<Props> = ({ bookId }) => {
           onValueChange={(val) => setBookEditType(val as BookEditType)}
         >
           <div className="flex gap-4">
-            <RadioGroupItem
-              type="button"
-              value="myBookChange"
-            ></RadioGroupItem>
+            <RadioGroupItem type="button" value="myBookChange"></RadioGroupItem>
             <p>zmiana danych dla mojej książki</p>
           </div>
           <div className="flex gap-4">
@@ -169,10 +202,7 @@ export const EditBookModal: FC<Props> = ({ bookId }) => {
           </div>
         </RadioGroup>
         <div className="flex gap-4">
-          <Button
-            variant="outline"
-            onClick={() => resetModalState()}
-          >
+          <Button variant="outline" onClick={() => resetModalState()}>
             Wróć
           </Button>
           <Button
@@ -189,45 +219,39 @@ export const EditBookModal: FC<Props> = ({ bookId }) => {
   };
 
   return (
-    <BookDetailsChangeRequestProvider>
-      <Dialog
-        open={isOpen}
-        onOpenChange={(val) => {
-          if (val === false) {
-            resetModalState();
-          }
+    <TooltipProvider delayDuration={0}>
+      <BookDetailsChangeRequestProvider>
+        <Dialog
+          open={isOpen}
+          onOpenChange={(val) => {
+            if (val === false) {
+              resetModalState();
+            }
 
-          setIsOpen(val);
-        }}
-      >
-        <DialogTrigger asChild>
-          <TooltipProvider delayDuration={0}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  onClick={() => setIsOpen(true)}
-                  variant="ghost"
-                  size="icon"
-                >
-                  <HiPencil className="cursor-pointer text-primary h-8 w-8" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Edytuj książkę</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </DialogTrigger>
-        <DialogContent
-          style={{
-            borderRadius: '40px',
+            setIsOpen(val);
           }}
-          className="max-w-sm sm:max-w-xl py-16 flex flex-col items-center gap-8"
-          omitCloseButton={true}
         >
-          {renderContents()}
-        </DialogContent>
-      </Dialog>
-    </BookDetailsChangeRequestProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <DialogTrigger asChild>
+                <EditBookIcon onClick={() => setIsOpen(true)} />
+              </DialogTrigger>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Edytuj książkę</p>
+            </TooltipContent>
+          </Tooltip>
+          <DialogContent
+            style={{
+              borderRadius: '40px',
+            }}
+            className="max-w-sm sm:max-w-xl py-16 flex flex-col items-center gap-8"
+            omitCloseButton={true}
+          >
+            {renderContents()}
+          </DialogContent>
+        </Dialog>
+      </BookDetailsChangeRequestProvider>
+    </TooltipProvider>
   );
 };

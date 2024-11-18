@@ -9,7 +9,14 @@ import {
   DialogHeader,
   DialogTrigger,
 } from '../../../common/components/dialog/dialog';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/form/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../../../common/components/form/form';
 import { Textarea } from '../../../common/components/textArea/textarea';
 import { Button } from '../../../common/components/button/button';
 import { Input } from '../../../common/components/input/input';
@@ -19,7 +26,12 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useToast } from '../../../common/components/toast/use-toast';
 import { useUpdateQuoteMutation } from '../../api/mutations/updateQuoteMutation/updateQuoteMutation';
 import { QuotesApiQueryKeys } from '../../api/queries/quotesApiQueryKeys';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../common/components/tooltip/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../../../common/components/tooltip/tooltip';
 import { HiPencil } from 'react-icons/hi';
 import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
 import { Quote } from '@common/contracts';
@@ -91,7 +103,9 @@ const WrappedModal = ({ quote }: Props): ReactNode => {
 
   const { mutateAsync, isPending: isUpdating } = useUpdateQuoteMutation({});
 
-  const onSubmit = async (values: z.infer<typeof editQuoteSchema>): Promise<void> => {
+  const onSubmit = async (
+    values: z.infer<typeof editQuoteSchema>
+  ): Promise<void> => {
     if (values.content === quote.content && values.page === quote.page) {
       setIsOpen(false);
 
@@ -123,7 +137,8 @@ const WrappedModal = ({ quote }: Props): ReactNode => {
       });
 
       await queryClient.invalidateQueries({
-        predicate: ({ queryKey }) => queryKey[0] === QuotesApiQueryKeys.findQuotes,
+        predicate: ({ queryKey }) =>
+          queryKey[0] === QuotesApiQueryKeys.findQuotes,
       });
 
       setIsOpen(false);
@@ -142,22 +157,22 @@ const WrappedModal = ({ quote }: Props): ReactNode => {
   };
 
   return (
-    <Dialog
-      open={isOpen}
-      onOpenChange={(val) => {
-        setIsOpen(val);
+    <TooltipProvider delayDuration={0}>
+      <Dialog
+        open={isOpen}
+        onOpenChange={(val) => {
+          setIsOpen(val);
 
-        form.reset();
+          form.reset();
 
-        form.clearErrors();
+          form.clearErrors();
 
-        setError('');
-      }}
-    >
-      <DialogTrigger asChild>
-        <TooltipProvider delayDuration={0}>
-          <Tooltip>
-            <TooltipTrigger asChild>
+          setError('');
+        }}
+      >
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <DialogTrigger asChild>
               <Button
                 onClick={() => setIsOpen(true)}
                 variant="ghost"
@@ -165,91 +180,93 @@ const WrappedModal = ({ quote }: Props): ReactNode => {
               >
                 <HiPencil className="cursor-pointer text-primary h-8 w-8" />
               </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Zaaktualizuj cytat</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </DialogTrigger>
-      <DialogContent
-        style={{
-          borderRadius: '40px',
-        }}
-        className="max-w-xl py-16"
-        omitCloseButton={true}
-      >
-        <DialogHeader className="font-semibold text-center flex justify-center items-center">Dodaj cytat</DialogHeader>
-        <DialogDescription className="flex flex-col gap-4 justify-center items-center">
-          <p className={error ? 'text-red-500' : 'hidden'}>{error}</p>
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-4 min-w-96"
-            >
-              <FormField
-                control={form.control}
-                name="page"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Strony</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Strony cytatu"
-                        type="string"
-                        maxLength={16}
-                        inputMode="text"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="content"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Cytat</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Komentarz"
-                        maxLength={256}
-                        className="resize-none h-44"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div className="pt-8 gap-2 flex sm:justify-center justify-center sm:items-center items-center">
-                <Button
-                  variant={isUpdating ? 'ghost' : 'outline'}
-                  disabled={isUpdating}
-                  className="bg-transparent text-primary w-32 sm:w-40"
-                  type="reset"
-                  onClick={() => {
-                    setIsOpen(false);
-                  }}
-                >
-                  Wróć
-                </Button>
-                <Button
-                  type="submit"
-                  variant={isUpdating ? 'ghost' : 'default'}
-                  disabled={!form.formState.isValid || isUpdating}
-                  className="bg-primary w-32 sm:w-40"
-                >
-                  {isUpdating && <LoadingSpinner size={40} />}
-                  {!isUpdating && <p>Potwierdź</p>}
-                </Button>
-              </div>
-            </form>
-          </Form>
-        </DialogDescription>
-      </DialogContent>
-    </Dialog>
+            </DialogTrigger>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Zaaktualizuj cytat</p>
+          </TooltipContent>
+        </Tooltip>
+        <DialogContent
+          style={{
+            borderRadius: '40px',
+          }}
+          className="max-w-xl py-16"
+          omitCloseButton={true}
+        >
+          <DialogHeader className="font-semibold text-center flex justify-center items-center">
+            Dodaj cytat
+          </DialogHeader>
+          <DialogDescription className="flex flex-col gap-4 justify-center items-center">
+            <p className={error ? 'text-red-500' : 'hidden'}>{error}</p>
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4 min-w-96"
+              >
+                <FormField
+                  control={form.control}
+                  name="page"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Strony</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Strony cytatu"
+                          type="string"
+                          maxLength={16}
+                          inputMode="text"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="content"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Cytat</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Komentarz"
+                          maxLength={256}
+                          className="resize-none h-44"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="pt-8 gap-2 flex sm:justify-center justify-center sm:items-center items-center">
+                  <Button
+                    variant={isUpdating ? 'ghost' : 'outline'}
+                    disabled={isUpdating}
+                    className="bg-transparent text-primary w-32 sm:w-40"
+                    type="reset"
+                    onClick={() => {
+                      setIsOpen(false);
+                    }}
+                  >
+                    Wróć
+                  </Button>
+                  <Button
+                    type="submit"
+                    variant={isUpdating ? 'ghost' : 'default'}
+                    disabled={!form.formState.isValid || isUpdating}
+                    className="bg-primary w-32 sm:w-40"
+                  >
+                    {isUpdating && <LoadingSpinner size={40} />}
+                    {!isUpdating && <p>Potwierdź</p>}
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </DialogDescription>
+        </DialogContent>
+      </Dialog>
+    </TooltipProvider>
   );
 };

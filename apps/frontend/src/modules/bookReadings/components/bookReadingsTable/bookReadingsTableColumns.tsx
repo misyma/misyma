@@ -26,11 +26,11 @@ export const bookReadingsTableColumns: ColumnDef<BookReading>[] = [
             </div>
           </div>
           <p className="font-semibold text-lg">{row.original.comment}</p>
-          <p className="font-light inline-flex items-center gap-2">
+          <div className="font-light inline-flex items-center gap-2">
             rozpoczęcie czytania: {new Date(row.original.startedAt).toLocaleDateString('pl-PL')}
             <Separator className="w-[10%]" /> zakończenie czytania:{' '}
             {row.original.endedAt ? new Date(row.original.endedAt).toLocaleDateString('pl-PL') : ''}
-          </p>
+          </div>
         </div>
       );
     },

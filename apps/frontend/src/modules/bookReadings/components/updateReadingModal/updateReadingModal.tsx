@@ -380,19 +380,19 @@ export const UpdateBookReadingModal: FC<Props> = ({ bookReading }: Props) => {
   const [error, setError] = useState('');
 
   return (
-    <Dialog
-      modal={true}
-      open={isOpen}
-      onOpenChange={(val) => {
-        setIsOpen(val);
+    <TooltipProvider delayDuration={0}>
+      <Dialog
+        modal={true}
+        open={isOpen}
+        onOpenChange={(val) => {
+          setIsOpen(val);
 
-        setError('');
-      }}
-    >
-      <DialogTrigger asChild>
-        <TooltipProvider delayDuration={0}>
-          <Tooltip>
-            <TooltipTrigger asChild>
+          setError('');
+        }}
+      >
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <DialogTrigger asChild>
               <Button
                 onClick={() => setIsOpen(true)}
                 variant="ghost"
@@ -400,32 +400,32 @@ export const UpdateBookReadingModal: FC<Props> = ({ bookReading }: Props) => {
               >
                 <HiPencil className="h-8 w-8 text-primary" />
               </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Zaaktualizuj ocenę</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </DialogTrigger>
-      <DialogContent
-        style={{
-          borderRadius: '40px',
-        }}
-        className="max-w-xl py-16"
-        omitCloseButton={true}
-      >
-        <DialogHeader className="font-semibold text-center flex justify-center items-center">
-          Zaaktualizuj ocenę
-        </DialogHeader>
-        <div className="flex flex-col gap-4 justify-center items-center">
-          <p className={error ? 'text-red-500' : 'hidden'}>{error}</p>
-          <UpdateBookReadingForm
-            bookReading={bookReading}
-            setIsOpen={setIsOpen}
-            setError={setError}
-          />
-        </div>
-      </DialogContent>
-    </Dialog>
+            </DialogTrigger>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Zaaktualizuj ocenę</p>
+          </TooltipContent>
+        </Tooltip>
+        <DialogContent
+          style={{
+            borderRadius: '40px',
+          }}
+          className="max-w-xl py-16"
+          omitCloseButton={true}
+        >
+          <DialogHeader className="font-semibold text-center flex justify-center items-center">
+            Zaaktualizuj ocenę
+          </DialogHeader>
+          <div className="flex flex-col gap-4 justify-center items-center">
+            <p className={error ? 'text-red-500' : 'hidden'}>{error}</p>
+            <UpdateBookReadingForm
+              bookReading={bookReading}
+              setIsOpen={setIsOpen}
+              setError={setError}
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
+    </TooltipProvider>
   );
 };

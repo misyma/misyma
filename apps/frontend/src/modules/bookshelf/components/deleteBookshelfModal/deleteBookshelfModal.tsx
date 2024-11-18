@@ -12,7 +12,12 @@ import { HiTrash } from 'react-icons/hi';
 import { useDeleteBookshelfMutation } from '../../api/mutations/deleteBookshelfMutation/deleteBookshelfMutation';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { FindBooksByBookshelfIdQueryOptions } from '../../../book/api/user/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
-import { Select, SelectItem, SelectTrigger, SelectValue } from '../../../common/components/select/select';
+import {
+  Select,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../../../common/components/select/select';
 import { SelectContent } from '@radix-ui/react-select';
 import { cn } from '../../../common/lib/utils';
 import { useQueryClient } from '@tanstack/react-query';
@@ -47,11 +52,14 @@ const DialogContentPreConfirmation: FC<DialogContentPreConfirmationProps> = ({
       bookshelfId,
       userId: user?.id as string,
       accessToken: accessToken as string,
-    }),
+    })
   );
 
   const handleInitialConfirmation = async (): Promise<void> => {
-    if (bookshelfBooksResponse?.data && bookshelfBooksResponse?.data?.length === 0) {
+    if (
+      bookshelfBooksResponse?.data &&
+      bookshelfBooksResponse?.data?.length === 0
+    ) {
       return await onDelete(true);
     }
 
@@ -65,16 +73,15 @@ const DialogContentPreConfirmation: FC<DialogContentPreConfirmationProps> = ({
       </DialogHeader>
       <div className="w-full flex items-center justify-center">
         <div className="text-center w-[60%]">
-          <p className="pt-4">Nie będziesz mieć już dostępu do "{bookshelfName}".</p>
+          <p className="pt-4">
+            Nie będziesz mieć już dostępu do "{bookshelfName}".
+          </p>
           <p className="pt-4">Ta akcja jest nieodwracalna.</p>
           <p className={error ? 'text-red-500' : 'hidden'}>{error}</p>
         </div>
       </div>
       <DialogFooter className="pt-8 flex sm:justify-center justify-center sm:items-center items-center">
-        <Button
-          className="bg-primary w-32 sm:w-40"
-          onClick={onCancel}
-        >
+        <Button className="bg-primary w-32 sm:w-40" onClick={onCancel}>
           Anuluj
         </Button>
         <Button
@@ -122,12 +129,14 @@ const DialogContentPostConfirmation: FC<DialogContentPostConfirmationProps> = ({
 
   const onMoveAndDelete = async (): Promise<void> => {
     try {
-      const fallbackBookshelfId = moveBookshelfId.length > 0 ? moveBookshelfId : defaultBookshelf?.id;
+      const fallbackBookshelfId =
+        moveBookshelfId.length > 0 ? moveBookshelfId : defaultBookshelf?.id;
 
       await deleteBookshelf({ bookshelfId, fallbackBookshelfId });
 
       await queryClient.invalidateQueries({
-        predicate: (query) => query.queryKey[0] === BookshelvesApiQueryKeys.findUserBookshelfs,
+        predicate: (query) =>
+          query.queryKey[0] === BookshelvesApiQueryKeys.findUserBookshelfs,
       });
 
       onFinished();
@@ -135,7 +144,8 @@ const DialogContentPostConfirmation: FC<DialogContentPostConfirmationProps> = ({
       await deletedHandler();
 
       await queryClient.invalidateQueries({
-        predicate: (query) => query.queryKey[0] === BookshelvesApiQueryKeys.findUserBookshelfs,
+        predicate: (query) =>
+          query.queryKey[0] === BookshelvesApiQueryKeys.findUserBookshelfs,
       });
     } catch (error) {
       if (error instanceof BookApiError) {
@@ -151,11 +161,15 @@ const DialogContentPostConfirmation: FC<DialogContentPostConfirmationProps> = ({
   };
 
   const filteredBookshelves = useMemo(() => {
-    return bookshelvesData?.data.filter((val) => val.id !== bookshelfId && val.name !== 'Wypożyczalnia');
+    return bookshelvesData?.data.filter(
+      (val) => val.id !== bookshelfId && val.name !== 'Wypożyczalnia'
+    );
   }, [bookshelvesData?.data, bookshelfId]);
 
   const defaultBookshelf = useMemo(() => {
-    return bookshelvesData?.data.find((bookshelf) => bookshelf.name === 'Archiwum');
+    return bookshelvesData?.data.find(
+      (bookshelf) => bookshelf.name === 'Archiwum'
+    );
   }, [bookshelvesData?.data]);
 
   return (
@@ -185,10 +199,7 @@ const DialogContentPostConfirmation: FC<DialogContentPostConfirmationProps> = ({
                 }}
               >
                 {filteredBookshelves?.map((bookshelf) => (
-                  <SelectItem
-                    className="bg-popover"
-                    value={bookshelf.id}
-                  >
+                  <SelectItem className="bg-popover" value={bookshelf.id}>
                     {bookshelf.name}
                   </SelectItem>
                 ))}
@@ -199,16 +210,10 @@ const DialogContentPostConfirmation: FC<DialogContentPostConfirmationProps> = ({
         <p className={error ? 'text-red-500' : 'hidden'}>{error}</p>
       </DialogDescription>
       <DialogFooter className="pt-8 flex sm:justify-center justify-center sm:items-center items-center">
-        <Button
-          className="w-32 sm:w-40"
-          onClick={onDelete}
-        >
+        <Button className="w-32 sm:w-40" onClick={onDelete}>
           Usuń książki
         </Button>
-        <Button
-          className="bg-primary w-32 sm:w-40"
-          onClick={onMoveAndDelete}
-        >
+        <Button className="bg-primary w-32 sm:w-40" onClick={onMoveAndDelete}>
           Przenieś na półkę
         </Button>
       </DialogFooter>
@@ -223,7 +228,12 @@ interface Props {
   className?: string;
 }
 
-export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, className, deletedHandler }: Props) => {
+export const DeleteBookshelfModal: FC<Props> = ({
+  bookshelfId,
+  bookshelfName,
+  className,
+  deletedHandler,
+}: Props) => {
   const queryClient = useQueryClient();
 
   const [deletionConfirmed, setDeletionConfirmed] = useState<boolean>(false);
@@ -243,7 +253,8 @@ export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, cl
       await deletedHandler();
 
       await queryClient.invalidateQueries({
-        predicate: (query) => query.queryKey[0] === BookshelvesApiQueryKeys.findUserBookshelfs,
+        predicate: (query) =>
+          query.queryKey[0] === BookshelvesApiQueryKeys.findUserBookshelfs,
       });
     } catch (error) {
       if (error instanceof ShelfApiError) {
@@ -270,7 +281,11 @@ export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, cl
       }}
     >
       <DialogTrigger asChild>
-        <HiTrash className={cn('text-primary h-8 w-8 cursor-pointer', className)} />
+        <Button size='custom' variant="none">
+          <HiTrash
+            className={cn('text-primary h-8 w-8 cursor-pointer', className)}
+          />
+        </Button>
       </DialogTrigger>
       <DialogContent
         style={{

@@ -44,8 +44,6 @@ export const QuotationTabTable: FC<QuotationTabTableProps> = ({ bookId }) => {
     })
   );
 
-  console.log(quotationsData);
-
   const pageCount = useMemo(() => {
     return Math.ceil((quotationsData?.metadata?.total ?? 0) / pageSize) || 1;
   }, [quotationsData?.metadata.total, pageSize]);

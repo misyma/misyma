@@ -8,10 +8,10 @@ const Select = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Root> & {
     className?: string;
   }
->(({ className, ...props }) => {
+>(({ className, ...props }, ref) => {
   return (
     <SelectPrimitive.Root {...props}>
-      <div className={className}>{props.children}</div>
+      <div ref={ref} className={className}>{props.children}</div>
     </SelectPrimitive.Root>
   );
 });
@@ -23,11 +23,13 @@ const SelectValue = React.forwardRef<
     SelectPrimitive.SelectValueProps & React.RefAttributes<HTMLSpanElement>
   >,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.SelectValue>
->(({ className, children, ...props }) => {
+>(({ className, children, ...props }, ref) => {
   return (
     <SelectPrimitive.SelectValue
       className={cn(className)}
       {...props}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ref={ref as unknown as any}
       style={{
         background: 'red',
       }}
