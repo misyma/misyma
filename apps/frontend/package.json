@@ -3,6 +3,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
+		"start": "vite",
 		"start:dev": "npm run dev",
 		"build": "tsc --noEmit && vite build",
 		"build:dev": "tsc --noEmit && vite build",
