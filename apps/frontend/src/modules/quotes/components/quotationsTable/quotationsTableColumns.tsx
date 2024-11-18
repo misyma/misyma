@@ -36,11 +36,11 @@ export const quotationTableColumns: ColumnDef<Quote>[] = [
               />
             </div>
           </div>
-          <p className="font-light ml-4 inline-flex items-center gap-2">
+          <div className="font-light ml-4 inline-flex items-center gap-2">
             <div className="h-1 w-1 rounded-full bg-primary"></div>
             {new Date(row.original.createdAt).toLocaleDateString('pl-PL')}{' '}
             {row.original.page ? `, strony: ${row.original.page}` : ''}
-          </p>
+          </div>
         </div>
       );
     },

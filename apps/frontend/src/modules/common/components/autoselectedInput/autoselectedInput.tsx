@@ -1,24 +1,17 @@
 import { useEffect } from 'react';
-import * as React from 'react';
+import { useRef, FC } from 'react';
 import { Input, InputProps } from '../input/input';
 
-export const AutoselectedInput = React.forwardRef<HTMLInputElement, InputProps>(
-  (props: InputProps) => {
-    const inputRef = React.useRef<HTMLInputElement | null>(null);
+export const AutoselectedInput: FC<InputProps> = ((props: InputProps) => {
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
-    useEffect(() => {
-      const input = inputRef.current;
+  useEffect(() => {
+    const input = inputRef.current;
 
-      if (input) {
-        input.select();
-      }
-    }, []);
+    if (input) {
+      input.select();
+    }
+  }, []);
 
-    return (
-      <Input
-        {...props}
-        ref={inputRef}
-      />
-    );
-  },
-);
+  return <Input {...props} ref={inputRef} />;
+});

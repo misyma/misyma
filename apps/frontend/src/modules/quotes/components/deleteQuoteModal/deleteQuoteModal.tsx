@@ -1,5 +1,10 @@
 import { FC, useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTrigger } from '../../../common/components/dialog/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTrigger,
+} from '../../../common/components/dialog/dialog';
 import { HiTrash } from 'react-icons/hi';
 import { useQueryClient } from '@tanstack/react-query';
 import { ApiError } from '../../../common/errors/apiError';
@@ -9,7 +14,12 @@ import { Button } from '../../../common/components/button/button';
 import { useToast } from '../../../common/components/toast/use-toast';
 import { QuotesApiQueryKeys } from '../../api/queries/quotesApiQueryKeys';
 import { useDeleteQuoteMutation } from '../../api/mutations/deleteQuoteMutation/deleteQuoteMutation';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../common/components/tooltip/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../../../common/components/tooltip/tooltip';
 import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
 
 interface Props {
@@ -29,7 +39,8 @@ export const DeleteQuoteModal: FC<Props> = ({ quoteId, userBookId }: Props) => {
 
   const [error, setError] = useState('');
 
-  const { mutateAsync: deleteQuote, isPending: isDeleting } = useDeleteQuoteMutation({});
+  const { mutateAsync: deleteQuote, isPending: isDeleting } =
+    useDeleteQuoteMutation({});
 
   const onDelete = async (): Promise<void> => {
     try {
@@ -42,7 +53,8 @@ export const DeleteQuoteModal: FC<Props> = ({ quoteId, userBookId }: Props) => {
       setIsOpen(false);
 
       await queryClient.invalidateQueries({
-        predicate: (query) => query.queryKey[0] === QuotesApiQueryKeys.findQuotes,
+        predicate: (query) =>
+          query.queryKey[0] === QuotesApiQueryKeys.findQuotes,
       });
 
       toast({
@@ -63,18 +75,18 @@ export const DeleteQuoteModal: FC<Props> = ({ quoteId, userBookId }: Props) => {
   };
 
   return (
-    <Dialog
-      open={isOpen}
-      onOpenChange={(val) => {
-        setIsOpen(val);
+    <TooltipProvider delayDuration={0}>
+      <Dialog
+        open={isOpen}
+        onOpenChange={(val) => {
+          setIsOpen(val);
 
-        setError('');
-      }}
-    >
-      <DialogTrigger asChild>
-        <TooltipProvider delayDuration={0}>
-          <Tooltip>
-            <TooltipTrigger asChild>
+          setError('');
+        }}
+      >
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <DialogTrigger asChild>
               <Button
                 onClick={() => setIsOpen(true)}
                 variant="ghost"
@@ -82,44 +94,48 @@ export const DeleteQuoteModal: FC<Props> = ({ quoteId, userBookId }: Props) => {
               >
                 <HiTrash className="h-8 w-8 text-primary" />
               </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Usuń cytat</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </DialogTrigger>
-      <DialogContent
-        style={{
-          borderRadius: '40px',
-        }}
-        className="max-w-xl py-16"
-        omitCloseButton={true}
-      >
-        <div className="flex flex-col items-center gap-8">
-          <DialogHeader className="font-bold">Czy na pewno chcesz usunąć cytat?</DialogHeader>
-          <div>Ta akcja jest nieodwracalna.</div>
-          <div className="flex w-full pt-4 gap-4 justify-center">
-            <Button
-              disabled={isDeleting}
-              variant={isDeleting ? 'ghost' : 'outline'}
-              className="w-40"
-              onClick={() => setIsOpen(false)}
-            >
-              Nie
-            </Button>
-            <Button
-              className="w-40"
-              variant={isDeleting ? 'ghost' : 'default'}
-              onClick={onDelete}
-            >
-              {isDeleting && <LoadingSpinner size={40} />}
-              {!isDeleting && <p>Tak</p>}
-            </Button>
+            </DialogTrigger>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Usuń cytat</p>
+          </TooltipContent>
+        </Tooltip>
+        <DialogContent
+          style={{
+            borderRadius: '40px',
+          }}
+          className="max-w-xl py-16"
+          omitCloseButton={true}
+        >
+          <div className="flex flex-col items-center gap-8">
+            <DialogHeader className="font-bold">
+              Czy na pewno chcesz usunąć cytat?
+            </DialogHeader>
+            <div>Ta akcja jest nieodwracalna.</div>
+            <div className="flex w-full pt-4 gap-4 justify-center">
+              <Button
+                disabled={isDeleting}
+                variant={isDeleting ? 'ghost' : 'outline'}
+                className="w-40"
+                onClick={() => setIsOpen(false)}
+              >
+                Nie
+              </Button>
+              <Button
+                className="w-40"
+                variant={isDeleting ? 'ghost' : 'default'}
+                onClick={onDelete}
+              >
+                {isDeleting && <LoadingSpinner size={40} />}
+                {!isDeleting && <p>Tak</p>}
+              </Button>
+            </div>
+            {error && (
+              <p className="text-sm font-medium text-destructive">error</p>
+            )}
           </div>
-          {error && <p className="text-sm font-medium text-destructive">error</p>}
-        </div>
-      </DialogContent>
-    </Dialog>
+        </DialogContent>
+      </Dialog>
+    </TooltipProvider>
   );
 };
