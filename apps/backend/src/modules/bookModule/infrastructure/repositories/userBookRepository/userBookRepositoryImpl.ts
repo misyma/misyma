@@ -457,7 +457,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         });
       }
 
-      if (expandFields.includes(UserBookExpandField.collections)) {
+      if (expandFields.includes(UserBookExpandField.collections) || collectionId) {
         query
           .leftJoin(userBookCollectionTable, (join) => {
             join.on(`${userBookCollectionTable}.userBookId`, '=', `${userBookTable}.id`);
