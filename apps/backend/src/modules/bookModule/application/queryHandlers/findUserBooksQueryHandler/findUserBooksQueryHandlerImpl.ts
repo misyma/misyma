@@ -16,7 +16,7 @@ export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler 
   ) {}
 
   public async execute(payload: FindUserBooksQueryHandlerPayload): Promise<FindUserBooksQueryHandlerResult> {
-    const { bookshelfId, requesterUserId, userId, collectionId, page, pageSize, isbn, sortDate, expandFields } =
+    const { bookshelfId, requesterUserId, userId, collectionId, page, pageSize, isbn, title, sortDate, expandFields } =
       payload;
 
     if (bookshelfId) {
@@ -46,6 +46,7 @@ export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler 
         collectionId,
         userId,
         isbn,
+        title,
         page,
         pageSize,
         sortDate,
@@ -56,6 +57,7 @@ export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler 
         collectionId,
         userId,
         isbn,
+        title,
       }),
     ]);
 
