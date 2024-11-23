@@ -53,9 +53,11 @@ describe('FindUserBooksQueryHandlerImpl', () => {
 
     try {
       await findUserBooksQueryHandlerImpl.execute({
+        requesterUserId: Generator.uuid(),
         bookshelfId: nonExistentBookshelfId,
         page: 1,
         pageSize: 10,
+        expandFields: [],
       });
     } catch (error) {
       expect(error).toBeInstanceOf(ResourceNotFoundError);
@@ -81,9 +83,10 @@ describe('FindUserBooksQueryHandlerImpl', () => {
     try {
       await findUserBooksQueryHandlerImpl.execute({
         bookshelfId: bookshelf.getId(),
-        userId: nonMatchingUserId,
+        requesterUserId: nonMatchingUserId,
         page: 1,
         pageSize: 10,
+        expandFields: [],
       });
     } catch (error) {
       expect(error).toBeInstanceOf(ResourceNotFoundError);
@@ -111,9 +114,11 @@ describe('FindUserBooksQueryHandlerImpl', () => {
     vi.spyOn(userBookRepositoryMock, 'countUserBooks').mockResolvedValueOnce(1);
 
     const { userBooks, total } = await findUserBooksQueryHandlerImpl.execute({
+      requesterUserId: bookshelf.getUserId(),
       bookshelfId: bookshelf.getId(),
       page: 1,
       pageSize: 10,
+      expandFields: [],
     });
 
     expect(userBooks).toEqual([userBook]);
@@ -134,8 +139,10 @@ describe('FindUserBooksQueryHandlerImpl', () => {
 
     const { userBooks, total } = await findUserBooksQueryHandlerImpl.execute({
       collectionId: collection.getId(),
+      requesterUserId: collection.getUserId(),
       page: 1,
       pageSize: 10,
+      expandFields: [],
     });
 
     expect(userBooks).toEqual([userBook]);
@@ -150,9 +157,11 @@ describe('FindUserBooksQueryHandlerImpl', () => {
 
     try {
       await findUserBooksQueryHandlerImpl.execute({
+        requesterUserId: Generator.uuid(),
         collectionId: nonExistentCollectionId,
         page: 1,
         pageSize: 10,
+        expandFields: [],
       });
     } catch (error) {
       expect(error).toBeInstanceOf(ResourceNotFoundError);

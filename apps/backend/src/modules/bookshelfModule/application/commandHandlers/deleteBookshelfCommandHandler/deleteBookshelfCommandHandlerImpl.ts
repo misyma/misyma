@@ -1,3 +1,5 @@
+import { UserBookExpandField } from '@common/contracts';
+
 import { type DeleteBookshelfCommandHandler, type DeleteBookshelfPayload } from './deleteBookshelfCommandHandler.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
@@ -73,7 +75,10 @@ export class DeleteBookshelfCommandHandlerImpl implements DeleteBookshelfCommand
   }
 
   public async moveUserBooksToOtherBookshelf(bookshelfId: string, otherBookshelfId: string): Promise<void> {
-    const userBooks = await this.userBookRepository.findUserBooks({ bookshelfId });
+    const userBooks = await this.userBookRepository.findUserBooks({
+      bookshelfId,
+      expandFields: [UserBookExpandField.collections, UserBookExpandField.genres, UserBookExpandField.readings],
+    });
 
     if (!userBooks.length) {
       this.loggerService.debug({

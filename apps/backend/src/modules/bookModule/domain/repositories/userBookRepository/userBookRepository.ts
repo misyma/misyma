@@ -1,3 +1,5 @@
+import { type UserBookExpandField } from '@common/contracts';
+
 import { type UserBook, type UserBookState } from '../../entities/userBook/userBook.js';
 
 export interface SaveUserBookPayload {
@@ -25,31 +27,23 @@ export interface FindUserBookPayload {
 }
 
 export interface FindUserBooksPayload {
-  readonly ids?: string[];
+  readonly bookId?: string | undefined;
+  readonly isbn?: string | undefined;
+  readonly userId?: string | undefined;
   readonly bookshelfId?: string | undefined;
   readonly collectionId?: string | undefined;
-  readonly isbn?: string | undefined;
   readonly page?: number;
   readonly pageSize?: number;
-  readonly sortDate?: 'asc' | 'desc';
+  readonly sortDate?: 'asc' | 'desc' | undefined;
+  readonly expandFields: UserBookExpandField[];
 }
 
 export interface CountUserBooksPayload {
-  readonly ids?: string[];
+  readonly bookId?: string | undefined;
+  readonly isbn?: string | undefined;
+  readonly userId?: string | undefined;
   readonly bookshelfId?: string | undefined;
   readonly collectionId?: string | undefined;
-  readonly isbn?: string | undefined;
-}
-
-export interface FindUserBooksByUserPayload {
-  readonly bookIdentifier?: {
-    readonly id: string;
-    readonly isbn?: string | undefined;
-  };
-  readonly userId: string;
-  readonly page: number;
-  readonly pageSize: number;
-  readonly sortDate?: 'asc' | 'desc';
 }
 
 export interface DeleteUserBooksPayload {
@@ -61,7 +55,6 @@ export interface UserBookRepository {
   saveUserBooks(payload: SaveUserBooksPayload): Promise<void>;
   findUserBook(payload: FindUserBookPayload): Promise<UserBook | null>;
   findUserBooks(payload: FindUserBooksPayload): Promise<UserBook[]>;
-  findUserBooksByUser(payload: FindUserBooksByUserPayload): Promise<UserBook[]>;
   findUserBookOwner(payload: FindUserBookOwnerPayload): Promise<FindUserBookOwnerResult>;
   countUserBooks(payload: CountUserBooksPayload): Promise<number>;
   deleteUserBooks(payload: DeleteUserBooksPayload): Promise<void>;

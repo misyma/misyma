@@ -700,10 +700,10 @@ describe('UserBookRepositoryImpl', () => {
       });
 
       const userBooks = await userBookRepository.findUserBooks({
-        ids: [],
         bookshelfId: bookshelf2.id,
         page: 1,
         pageSize: 10,
+        expandFields: [],
       });
 
       expect(userBooks.length).toEqual(2);
@@ -777,6 +777,7 @@ describe('UserBookRepositoryImpl', () => {
         collectionId: collection1.id,
         page: 1,
         pageSize: 10,
+        expandFields: [],
       });
 
       expect(userBooks.length).toEqual(1);
@@ -827,16 +828,15 @@ describe('UserBookRepositoryImpl', () => {
         isbn: book2.isbn as string,
         page: 1,
         pageSize: 10,
+        expandFields: [],
       });
 
       expect(userBooks.length).toEqual(1);
 
       expect(userBooks[0]?.getId()).toEqual(userBook2.id);
     });
-  });
 
-  describe('findUserBooksByUser', () => {
-    it('returns UserBooks from a given User', async () => {
+    it('returns UserBooks by User', async () => {
       const user1 = await userTestUtils.createAndPersist();
 
       const user2 = await userTestUtils.createAndPersist();
@@ -890,10 +890,11 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const userBooks = await userBookRepository.findUserBooksByUser({
+      const userBooks = await userBookRepository.findUserBooks({
         userId: user2.id,
         page: 1,
         pageSize: 10,
+        expandFields: [],
       });
 
       expect(userBooks.length).toEqual(2);
@@ -903,7 +904,7 @@ describe('UserBookRepositoryImpl', () => {
       });
     });
 
-    it('returns UserBooks from a given User and Book', async () => {
+    it('returns UserBooks by a given User and Book', async () => {
       const user = await userTestUtils.createAndPersist();
 
       const author = await authorTestUtils.createAndPersist();
@@ -953,13 +954,12 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const userBooks = await userBookRepository.findUserBooksByUser({
+      const userBooks = await userBookRepository.findUserBooks({
         userId: user.id,
-        bookIdentifier: {
-          id: book2.id,
-        },
+        bookId: book2.id,
         page: 1,
         pageSize: 10,
+        expandFields: [],
       });
 
       expect(userBooks.length).toEqual(1);
@@ -967,7 +967,7 @@ describe('UserBookRepositoryImpl', () => {
       expect(userBooks[0]?.getId()).toEqual(userBook.id);
     });
 
-    it('returns UserBooks from a given User and ISBN', async () => {
+    it('returns UserBooks by a given User and ISBN', async () => {
       const user = await userTestUtils.createAndPersist();
 
       const author = await authorTestUtils.createAndPersist();
@@ -1017,14 +1017,13 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const userBooks = await userBookRepository.findUserBooksByUser({
+      const userBooks = await userBookRepository.findUserBooks({
         userId: user.id,
-        bookIdentifier: {
-          id: book2.id,
-          isbn: book2.isbn as string,
-        },
+        bookId: book2.id,
+        isbn: book2.isbn as string,
         page: 1,
         pageSize: 10,
+        expandFields: [],
       });
 
       expect(userBooks.length).toEqual(1);

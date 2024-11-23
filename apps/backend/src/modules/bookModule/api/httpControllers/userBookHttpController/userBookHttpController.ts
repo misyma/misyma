@@ -1,4 +1,4 @@
-import { type Language, type BookFormat } from '@common/contracts';
+import { type Language, type BookFormat, type UserBookExpandField } from '@common/contracts';
 
 import {
   createUserBookBodyDtoSchema,
@@ -115,7 +115,7 @@ export class UserBookHttpController implements HttpController {
       new HttpRoute({
         method: HttpMethodName.get,
         handler: this.findUserBooks.bind(this),
-        description: "Find user's books by bookshelf id",
+        description: "Find user's books",
         schema: {
           request: {
             queryParams: findUserBooksQueryParamsDtoSchema,
@@ -290,20 +290,31 @@ export class UserBookHttpController implements HttpController {
   private async findUserBooks(
     request: HttpRequest<undefined, FindUserBooksQueryParamsDto, undefined>,
   ): Promise<HttpOkResponse<FindUserBooksResponseBodyDto>> {
-    const { userId } = await this.accessControlService.verifyBearerToken({
+    const { userId: requesterUserId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
-    const { page = 1, pageSize = 10, bookshelfId, collectionId, isbn, sortDate } = request.queryParams;
+    const {
+      page = 1,
+      pageSize = 10,
+      bookshelfId,
+      collectionId,
+      userId,
+      isbn,
+      sortDate,
+      expandFields,
+    } = request.queryParams;
 
     const { userBooks, total } = await this.findUserBooksQueryHandler.execute({
+      requesterUserId,
       bookshelfId,
-      userId,
       collectionId,
+      userId,
       isbn,
       page,
       pageSize,
       sortDate,
+      expandFields: (expandFields?.split(',') as UserBookExpandField[]) || [],
     });
 
     return {
