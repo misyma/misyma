@@ -1,9 +1,10 @@
-import { type SortingType } from '@common/contracts';
+import { type UserBookExpandField, type SortingType } from '@common/contracts';
 
 import { type QueryHandler } from '../../../../../common/types/queryHandler.js';
 import { type UserBook } from '../../../domain/entities/userBook/userBook.js';
 
 export interface FindUserBooksQueryHandlerPayload {
+  readonly requesterUserId: string;
   readonly userId?: string | undefined;
   readonly bookshelfId?: string | undefined;
   readonly collectionId?: string | undefined;
@@ -11,6 +12,7 @@ export interface FindUserBooksQueryHandlerPayload {
   readonly page: number;
   readonly pageSize: number;
   readonly sortDate?: SortingType | undefined;
+  readonly expandFields: UserBookExpandField[] | undefined;
 }
 
 export interface FindUserBooksQueryHandlerResult {
