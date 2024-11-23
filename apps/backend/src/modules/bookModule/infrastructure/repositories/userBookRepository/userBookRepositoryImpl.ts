@@ -366,7 +366,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
   }
 
   public async findUserBooks(payload: FindUserBooksPayload): Promise<UserBook[]> {
-    const { bookshelfId, collectionId, userId, bookId, page, pageSize, isbn, sortDate, expandFields } = payload;
+    const { bookshelfId, collectionId, userId, bookId, page, pageSize, isbn, title, sortDate, expandFields } = payload;
 
     let rawEntities: UserBookWithJoinsRawEntity[];
 
@@ -483,6 +483,10 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         query.where(`${bookTable}.isbn`, isbn);
       }
 
+      if (title) {
+        query.whereRaw(`LOWER(${bookTable}.title) LIKE LOWER(?)`, `%${title}%`);
+      }
+
       if (bookshelfId) {
         query.where(`${userBookTable}.bookshelfId`, bookshelfId);
       }
@@ -556,17 +560,23 @@ export class UserBookRepositoryImpl implements UserBookRepository {
   }
 
   public async countUserBooks(payload: CountUserBooksPayload): Promise<number> {
-    const { bookId, isbn, bookshelfId, collectionId, userId } = payload;
+    const { bookId, isbn, title, bookshelfId, collectionId, userId } = payload;
 
     try {
       const query = this.databaseClient<UserBookRawEntity>(userBookTable);
 
+      if (isbn || title) {
+        query.join(bookTable, (join) => {
+          join.on(`${bookTable}.id`, '=', `${userBookTable}.bookId`);
+        });
+      }
+
       if (isbn) {
-        query
-          .join(bookTable, (join) => {
-            join.on(`${bookTable}.id`, '=', `${userBookTable}.bookId`);
-          })
-          .where(`${bookTable}.isbn`, isbn);
+        query.where(`${bookTable}.isbn`, isbn);
+      }
+
+      if (title) {
+        query.whereRaw(`LOWER(${bookTable}.title) LIKE LOWER(?)`, `%${title}%`);
       }
 
       if (bookId) {

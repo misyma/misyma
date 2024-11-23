@@ -301,6 +301,7 @@ export class UserBookHttpController implements HttpController {
       collectionId,
       userId,
       isbn,
+      title,
       sortDate,
       expandFields,
     } = request.queryParams;
@@ -311,6 +312,7 @@ export class UserBookHttpController implements HttpController {
       collectionId,
       userId,
       isbn,
+      title,
       page,
       pageSize,
       sortDate,

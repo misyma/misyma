@@ -29,6 +29,7 @@ export interface FindUserBookPayload {
 export interface FindUserBooksPayload {
   readonly bookId?: string | undefined;
   readonly isbn?: string | undefined;
+  readonly title?: string | undefined;
   readonly userId?: string | undefined;
   readonly bookshelfId?: string | undefined;
   readonly collectionId?: string | undefined;
@@ -41,6 +42,7 @@ export interface FindUserBooksPayload {
 export interface CountUserBooksPayload {
   readonly bookId?: string | undefined;
   readonly isbn?: string | undefined;
+  readonly title?: string | undefined;
   readonly userId?: string | undefined;
   readonly bookshelfId?: string | undefined;
   readonly collectionId?: string | undefined;
