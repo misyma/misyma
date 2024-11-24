@@ -34,6 +34,8 @@ export class M11CreateBookChangeRequestTableMigration implements Migration {
 
       table.timestamp('createdAt').notNullable();
 
+      table.text('changedFields').notNullable();
+
       table.text('userEmail').references('email').inTable('users').onDelete('CASCADE');
 
       table.foreign('bookId').references('id').inTable('books').onDelete('CASCADE');
