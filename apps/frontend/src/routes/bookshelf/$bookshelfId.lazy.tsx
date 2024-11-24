@@ -371,6 +371,7 @@ export const BorrowingBookshelf: FC = () => {
           bookshelfResponse={bookshelfResponse}
         />
         <div className="flex flex-col justify-center gap-8 pt-8 w-full sm:max-w-7xl">
+          {renderPaginator}
           <ScrollArea className="w-full h-[600px]">
             <div className="flex flex-col gap-2">
               {bookshelfBooksResponse?.data.map((userBook, index) => (
@@ -382,7 +383,6 @@ export const BorrowingBookshelf: FC = () => {
               ))}
             </div>
           </ScrollArea>
-          {renderPaginator}
         </div>
       </div>
     </AuthenticatedLayout>
@@ -469,7 +469,8 @@ export const Bookshelf: FC = () => {
           key={bookshelfId}
           className="flex flex-col justify-center pt-8 w-full sm:max-w-7xl"
         >
-          <ScrollArea className="w-full h-[600px]">
+          {renderPaginator}
+          <ScrollArea className="w-full h-[600px] pr-8">
             <div className="flex flex-col gap-2">
               {isFetching && !isRefetching ? (
                 <BookshelfSkeleton />
@@ -484,7 +485,6 @@ export const Bookshelf: FC = () => {
               )}
             </div>
           </ScrollArea>
-          {renderPaginator}
         </div>
       </div>
     </AuthenticatedLayout>
