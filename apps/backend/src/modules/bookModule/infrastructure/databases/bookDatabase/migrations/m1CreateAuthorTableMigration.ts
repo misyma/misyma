@@ -12,6 +12,8 @@ export class M1CreateAuthorTableMigration implements Migration {
 
       table.boolean('isApproved').notNullable();
 
+      table.dateTime('createdAt').notNullable();
+
       table.primary(['id']);
 
       table.unique(['name']);

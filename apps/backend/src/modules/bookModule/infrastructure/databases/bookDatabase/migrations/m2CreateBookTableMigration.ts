@@ -28,6 +28,8 @@ export class M2CreateBookTableMigration implements Migration {
 
       table.text('imageUrl');
 
+      table.dateTime('createdAt').notNullable();
+
       table.primary(['id']);
 
       table.index(['title']);
