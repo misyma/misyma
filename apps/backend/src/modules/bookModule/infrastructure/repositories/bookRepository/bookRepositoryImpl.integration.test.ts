@@ -711,24 +711,18 @@ describe('BookRepositoryImpl', () => {
       expect(foundBooks[0]?.getId()).toEqual(book1.id);
     });
 
-    it('finds books sorted by createdAt ascending', async () => {
+    it('finds books sorted by id ascending', async () => {
       const author = await authorTestUtils.createAndPersist();
 
       const book1 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author.id],
-          book: {
-            createdAt: new Date('2020-01-01'),
-          },
         },
       });
 
       const book2 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author.id],
-          book: {
-            createdAt: new Date('2020-01-02'),
-          },
         },
       });
 
@@ -745,24 +739,18 @@ describe('BookRepositoryImpl', () => {
       expect(foundBooks[1]?.getId()).toEqual(book2.id);
     });
 
-    it('finds books sorted by createdAt descending', async () => {
+    it('finds books sorted by ids descending', async () => {
       const author = await authorTestUtils.createAndPersist();
 
       const book1 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author.id],
-          book: {
-            createdAt: new Date('2020-01-01'),
-          },
         },
       });
 
       const book2 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author.id],
-          book: {
-            createdAt: new Date('2020-01-02'),
-          },
         },
       });
 

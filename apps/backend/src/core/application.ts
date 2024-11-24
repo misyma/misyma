@@ -1,4 +1,4 @@
-import { UserRole } from '@common/contracts';
+import { BookshelfType, UserRole } from '@common/contracts';
 
 import { ApplicationHttpController } from './api/httpControllers/applicationHttpController/applicationHttpController.js';
 import { type Config, ConfigFactory } from './config.js';
@@ -28,6 +28,8 @@ import { type GenreRawEntity } from '../modules/bookModule/infrastructure/databa
 import { genreTable } from '../modules/bookModule/infrastructure/databases/bookDatabase/tables/genreTable/genreTable.js';
 import { BookshelfModule } from '../modules/bookshelfModule/bookshelfModule.js';
 import { BookshelfDatabaseManager } from '../modules/bookshelfModule/infrastructure/databases/bookshelvesDatabase/bookshelfDatabaseManager.js';
+import { type BookshelfRawEntity } from '../modules/bookshelfModule/infrastructure/databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfRawEntity.js';
+import { bookshelfTable } from '../modules/bookshelfModule/infrastructure/databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfTable.js';
 import { type HashService } from '../modules/userModule/application/services/hashService/hashService.js';
 import { type UserRawEntity } from '../modules/userModule/infrastructure/databases/userDatabase/tables/userTable/userRawEntity.js';
 import { userTable } from '../modules/userModule/infrastructure/databases/userDatabase/tables/userTable/userTable.js';
@@ -77,6 +79,22 @@ export class Application {
       password: hashedPassword,
       isEmailVerified: true,
       role: UserRole.admin,
+    });
+
+    await databaseClient<BookshelfRawEntity>(bookshelfTable).insert({
+      id: uuidService.generateUuid(),
+      name: 'Archiwum',
+      userId,
+      type: BookshelfType.archive,
+      createdAt: new Date(),
+    });
+
+    await databaseClient<BookshelfRawEntity>(bookshelfTable).insert({
+      id: uuidService.generateUuid(),
+      name: 'Wypożyczalnia',
+      userId,
+      type: BookshelfType.borrowing,
+      createdAt: new Date(),
     });
 
     loggerService.debug({
