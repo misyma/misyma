@@ -1,5 +1,13 @@
 import { Navigate, createFileRoute, useNavigate } from '@tanstack/react-router';
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  FC,
+  Fragment,
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { RequireAuthComponent } from '../../modules/core/components/requireAuth/requireAuthComponent';
 import { z } from 'zod';
 import { AuthenticatedLayout } from '../../modules/auth/layouts/authenticated/authenticatedLayout';
@@ -12,7 +20,13 @@ import {
   HiOutlineHeart,
   HiQuestionMarkCircle,
 } from 'react-icons/hi';
-import { ReadingStatus, SortingType, UserBook } from '@common/contracts';
+import {
+  FindBookshelfResponseBody,
+  FindUserBooksResponseBody,
+  ReadingStatus,
+  SortingType,
+  UserBook,
+} from '@common/contracts';
 import { cn } from '../../modules/common/lib/utils';
 import { FavoriteBookButton } from '../../modules/book/components/favoriteBookButton/favoriteBookButton';
 import { useSelector } from 'react-redux';
@@ -20,7 +34,6 @@ import { userStateSelectors } from '../../modules/core/store/states/userState/us
 import { useFindBookshelfByIdQuery } from '../../modules/bookshelf/api/queries/findBookshelfByIdQuery/findBookshelfByIdQuery';
 import { FindBookBorrowingsQueryOptions } from '../../modules/borrowing/api/queries/findBookBorrowings/findBookBorrowingsQueryOptions';
 import { HiClock } from 'react-icons/hi';
-import { LoadingSpinner } from '../../modules/common/components/spinner/loading-spinner';
 import { Skeleton } from '../../modules/common/components/skeleton/skeleton';
 import { FindBooksByBookshelfIdQueryOptions } from '../../modules/book/api/user/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
 import {
@@ -30,6 +43,7 @@ import {
 import { Paginator } from '../../modules/common/components/paginator/paginator';
 import { BookImageMiniature } from '../../modules/book/components/bookImageMiniature/bookImageMiniature';
 import { useErrorHandledQuery } from '../../modules/common/hooks/useErrorHandledQuery';
+import { ScrollArea } from '../../modules/common/components/scrollArea/scroll-area';
 
 const bookshelfSearchSchema = z.object({
   bookshelfId: z.string().uuid().catch(''),
@@ -90,19 +104,70 @@ export const View: FC = () => {
   return <Bookshelf></Bookshelf>;
 };
 
-const BorrowedBook: FC<{ userBook: UserBook; index: number }> = ({
+interface BookAuthorDetailsProps {
+  userBook: UserBook;
+}
+const BookAuthorDetails: FC<PropsWithChildren<BookAuthorDetailsProps>> = ({
   userBook,
-  index,
+  children,
 }) => {
+  return (
+    <div>
+      <p>
+        {userBook.book.authors[0]?.name
+          ? `${userBook.book.authors[0]?.name},`
+          : ''}{' '}
+        {userBook.book.releaseYear ? `${userBook.book.releaseYear},` : null}{' '}
+        {userBook.genres[0]?.name}{' '}
+      </p>
+      {children}
+    </div>
+  );
+};
+
+const BookTitle: FC<{ title: string }> = ({ title }) => {
+  return (
+    <div className="font-semibold text-lg sm:text-2xl">
+      <p className="max-w-40 sm:max-w-xl md:max-w-2xl truncate inline-block">
+        {title}
+      </p>
+    </div>
+  );
+};
+
+const BookshelfBookImageMiniature: FC<{ userBook: UserBook }> = ({
+  userBook,
+}) => {
+  const navigate = useNavigate();
+
+  return (
+    <div className="z-10">
+      <BookImageMiniature
+        className="w-20"
+        onClick={() => {
+          navigate({
+            to: '/book/tabs/basicDataTab/$bookId',
+            params: {
+              bookId: userBook.id,
+            },
+          });
+        }}
+        userBook={userBook}
+      />
+    </div>
+  );
+};
+
+const BookshelfBook: FC<{
+  userBook: UserBook;
+  index: number;
+  isBorrowed: boolean;
+}> = ({ userBook, index, isBorrowed }) => {
   const navigate = useNavigate();
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
-  const {
-    data: bookBorrowing,
-    isFetching,
-    isRefetching,
-  } = useErrorHandledQuery(
+  const { data: bookBorrowing } = useErrorHandledQuery(
     FindBookBorrowingsQueryOptions({
       accessToken: accessToken as string,
       userBookId: userBook.id,
@@ -114,199 +179,23 @@ const BorrowedBook: FC<{ userBook: UserBook; index: number }> = ({
   );
 
   const totalDaysSinceBorrowing = useMemo(() => {
-    const millisInDay = 86400000;
+    if (!isBorrowed) {
+      return 0;
+    }
+    const millisecondsInDay = 86400000;
 
     return Math.ceil(
       (Date.now() -
         new Date(bookBorrowing?.data[0]?.startedAt ?? '').getTime()) /
-        millisInDay
+        millisecondsInDay
     );
-  }, [bookBorrowing?.data]);
+  }, [bookBorrowing?.data, isBorrowed]);
 
   const getTimeConstraintFormatting = (days: number): string => {
     if (days >= 90) return 'text-red-500';
 
     return 'text-green-500';
   };
-
-  if (isFetching && !isRefetching) {
-    return <LoadingSpinner />;
-  }
-
-  return (
-    <div
-      key={`${userBook.bookId}-${index}`}
-      className="relative flex align-middle items-center gap-4 w-full cursor-pointer"
-    >
-      <div
-        onClick={() => {
-          navigate({
-            to: '/book/tabs/basicDataTab/$bookId',
-            params: {
-              bookId: userBook.id,
-            },
-          });
-        }}
-        className="cursor-pointer absolute w-full h-[100%]"
-      ></div>
-      <div className="z-10">
-        <BookImageMiniature
-          onClick={() => {
-            navigate({
-              to: '/book/tabs/basicDataTab/$bookId',
-              params: {
-                bookId: userBook.id,
-              },
-            });
-          }}
-          userBook={userBook}
-        />
-      </div>
-      <div className="z-10 w-full px-12 pointer-events-none">
-        <div className="flex justify-between w-full">
-          <div className="font-semibold text-lg sm:text-2xl">
-            {userBook.book.title}
-          </div>
-          <div
-            className={cn(
-              'flex gap-2 items-center font-semibold',
-              getTimeConstraintFormatting(totalDaysSinceBorrowing)
-            )}
-          >
-            dni: {totalDaysSinceBorrowing} <HiClock className="h-5 w-5" />
-          </div>
-        </div>
-        <Separator className="my-4 bg-primary"></Separator>
-        <div className="flex justify-between w-full px-2">
-          <p>
-            {userBook.book.authors[0]?.name
-              ? `${userBook.book.authors[0]?.name},`
-              : ''}{' '}
-            {userBook.book.releaseYear}, {userBook.genres[0]?.name}{' '}
-          </p>
-          <p>wypożyczony przez: {bookBorrowing?.data[0].borrower}</p>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export const BorrowingBookshelf: FC = () => {
-  const { bookshelfId } = Route.useParams();
-
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
-  const { data: user } = useFindUserQuery();
-
-  const { data: bookshelfBooksResponse } = useErrorHandledQuery(
-    FindBooksByBookshelfIdQueryOptions({
-      accessToken: accessToken as string,
-      bookshelfId,
-      userId: user?.id as string,
-    })
-  );
-
-  const { data: bookshelfResponse } = useFindBookshelfByIdQuery(bookshelfId);
-
-  const navigate = useNavigate();
-
-  return (
-    <AuthenticatedLayout>
-      <div className="p-8 flex flex-col justify-center w-full items-center">
-        <div className="flex justify-between w-full sm:max-w-7xl">
-          <div>
-            <p className="text-xl sm:text-3xl">
-              {bookshelfResponse?.name ?? ' '}
-            </p>
-            <p>
-              {bookshelfBooksResponse?.metadata.total ?? 0}{' '}
-              {getCountNoun(bookshelfBooksResponse?.metadata.total ?? 0)}
-            </p>
-          </div>
-          {bookshelfResponse?.name !== 'Wypożyczalnia' && (
-            <Button
-              size="xl"
-              onClick={() => {
-                navigate({
-                  to: `/bookshelf/search`,
-                  search: {
-                    type: 'isbn',
-                    next: 0,
-                    bookshelfId,
-                  },
-                });
-              }}
-            >
-              Dodaj książkę
-            </Button>
-          )}
-        </div>
-        <div className="flex flex-col justify-center gap-8 pt-8 w-full sm:max-w-7xl">
-          {bookshelfBooksResponse?.data.map((userBook, index) => (
-            <BorrowedBook index={index} userBook={userBook} />
-          ))}
-        </div>
-      </div>
-    </AuthenticatedLayout>
-  );
-};
-
-const BookshelfSkeleton = () => {
-  return Array.from({ length: 5 }).map((_, index) => (
-    <div
-      key={`skeleton-${index}`}
-      className="relative flex align-middle items-center gap-4 w-full cursor-pointer"
-    >
-      <Skeleton className="w-40 h-40" />
-      <div className="z-10 w-full px-12 pointer-events-none">
-        <div className="flex justify-between w-full">
-          <Skeleton className="w-52 h-8" />
-          <div className="flex gap-2 items-center justify-center">
-            <HiOutlineHeart className="h-8 w-8 text-primary" />
-            <Skeleton className="h-7 w-7 rounded-full" />
-          </div>
-        </div>
-        <Separator className="my-4 bg-primary"></Separator>
-        <Skeleton className="w-40 h-4" />
-      </div>
-    </div>
-  ));
-};
-
-export const Bookshelf: FC = () => {
-  const { bookshelfId } = Route.useParams();
-
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
-  const { data: user } = useFindUserQuery();
-
-  const perPage = 5;
-
-  const [currentPage, setCurrentPage] = useState<number>(1);
-
-  const {
-    data: bookshelfBooksResponse,
-    isFetching,
-    isRefetching,
-  } = useErrorHandledQuery(
-    FindBooksByBookshelfIdQueryOptions({
-      accessToken: accessToken as string,
-      bookshelfId,
-      userId: user?.id as string,
-      page: currentPage,
-      pageSize: perPage,
-    })
-  );
-
-  const pageCount = useMemo(() => {
-    return (
-      Math.ceil((bookshelfBooksResponse?.metadata?.total ?? 0) / perPage) || 1
-    );
-  }, [bookshelfBooksResponse?.metadata.total, perPage]);
-
-  const { data: bookshelfResponse } = useFindBookshelfByIdQuery(bookshelfId);
-
-  const navigate = useNavigate();
 
   const readingStatusMap = useMemo(
     () => ({
@@ -316,7 +205,6 @@ export const Bookshelf: FC = () => {
     }),
     []
   );
-
   const readingStatusColor = useMemo(
     () => ({
       [ReadingStatus.finished]: 'text-green-400',
@@ -343,107 +231,260 @@ export const Bookshelf: FC = () => {
   );
 
   return (
+    <div
+      key={`${userBook.bookId}-${index}`}
+      className="relative flex align-middle items-center gap-4 w-full cursor-pointer"
+    >
+      <div
+        onClick={() => {
+          navigate({
+            to: '/book/tabs/basicDataTab/$bookId',
+            params: {
+              bookId: userBook.id,
+            },
+          });
+        }}
+        className="cursor-pointer absolute w-full h-[100%]"
+      ></div>
+      <BookshelfBookImageMiniature userBook={userBook} />
+      <div className="z-10 w-full pointer-events-none">
+        <div className="flex justify-between w-full">
+          <BookTitle title={userBook.book.title} />
+          <div
+            className={cn(
+              'flex gap-2 items-center font-semibold',
+              getTimeConstraintFormatting(totalDaysSinceBorrowing)
+            )}
+          >
+            {isBorrowed ? (
+              <Fragment>
+                dni: {totalDaysSinceBorrowing} <HiClock className="h-5 w-5" />{' '}
+              </Fragment>
+            ) : (
+              <div className="flex gap-2 items-center justify-center">
+                <FavoriteBookButton
+                  className="pointer-events-auto"
+                  bookId={userBook.id}
+                />
+                {renderStatusIcon(userBook)}
+              </div>
+            )}
+          </div>
+        </div>
+        <Separator className="my-1 bg-primary"></Separator>
+        <BookAuthorDetails userBook={userBook}>
+          {isBorrowed && (
+            <p>wypożyczony przez: {bookBorrowing?.data[0].borrower}</p>
+          )}
+        </BookAuthorDetails>
+      </div>
+    </div>
+  );
+};
+
+interface BookshelfTopBarProps {
+  bookshelfResponse: FindBookshelfResponseBody | undefined;
+  bookshelfBooksResponse: FindUserBooksResponseBody | undefined;
+  bookshelfId: string;
+}
+const BookshelfTopBar: FC<BookshelfTopBarProps> = ({
+  bookshelfResponse,
+  bookshelfBooksResponse,
+  bookshelfId,
+}) => {
+  const navigate = useNavigate();
+
+  return (
+    <div className="flex justify-between w-full sm:max-w-7xl">
+      <div>
+        <p className="text-xl sm:text-3xl">{bookshelfResponse?.name ?? ' '}</p>
+        <p>
+          {bookshelfBooksResponse?.metadata.total ?? 0}{' '}
+          {getCountNoun(bookshelfBooksResponse?.metadata.total ?? 0)}
+        </p>
+      </div>
+      <Button
+        size="xl"
+        onClick={() => {
+          navigate({
+            to: `/bookshelf/search`,
+            search: {
+              type: 'isbn',
+              next: 0,
+              bookshelfId,
+            },
+          });
+        }}
+      >
+        Dodaj książkę
+      </Button>
+    </div>
+  );
+};
+
+export const BorrowingBookshelf: FC = () => {
+  const { bookshelfId } = Route.useParams();
+
+  const accessToken = useSelector(userStateSelectors.selectAccessToken);
+  const perPage = 10;
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
+  const { data: user } = useFindUserQuery();
+
+  const { data: bookshelfBooksResponse } = useErrorHandledQuery(
+    FindBooksByBookshelfIdQueryOptions({
+      accessToken: accessToken as string,
+      bookshelfId,
+      userId: user?.id as string,
+    })
+  );
+
+  const { data: bookshelfResponse } = useFindBookshelfByIdQuery(bookshelfId);
+
+  const pageCount = useMemo(() => {
+    return (
+      Math.ceil((bookshelfBooksResponse?.metadata?.total ?? 0) / perPage) || 1
+    );
+  }, [bookshelfBooksResponse?.metadata.total, perPage]);
+
+  const renderPaginator = useMemo(() => {
+    return (
+      (bookshelfBooksResponse?.metadata?.total ?? 0) > perPage && (
+        <Paginator
+          onPageChange={setCurrentPage}
+          pageIndex={currentPage}
+          pagesCount={pageCount ?? 0}
+          perPage={perPage}
+          includeArrows={true}
+          itemsCount={bookshelfBooksResponse?.metadata?.total}
+        />
+      )
+    );
+  }, [bookshelfBooksResponse?.metadata?.total, currentPage, pageCount]);
+
+  return (
     <AuthenticatedLayout>
       <div className="p-8 flex flex-col justify-center w-full items-center">
-        <div className="flex justify-between w-full sm:max-w-7xl">
-          <div>
-            <p className="text-xl sm:text-3xl">
-              {bookshelfResponse?.name ?? ' '}
-            </p>
-            <p>
-              {bookshelfBooksResponse?.metadata.total ?? 0}{' '}
-              {getCountNoun(bookshelfBooksResponse?.metadata.total ?? 0)}
-            </p>
-          </div>
-          <Button
-            size="xl"
-            onClick={() => {
-              navigate({
-                to: `/bookshelf/search`,
-                search: {
-                  type: 'isbn',
-                  next: 0,
-                  bookshelfId,
-                },
-              });
-            }}
-          >
-            Dodaj książkę
-          </Button>
-        </div>
+        <BookshelfTopBar
+          bookshelfBooksResponse={bookshelfBooksResponse}
+          bookshelfId={bookshelfId}
+          bookshelfResponse={bookshelfResponse}
+        />
         <div className="flex flex-col justify-center gap-8 pt-8 w-full sm:max-w-7xl">
-          {isFetching && !isRefetching ? (
-            <BookshelfSkeleton />
-          ) : (
-            bookshelfBooksResponse?.data.map((userBook, index) => (
-              <div
-                key={`${userBook.bookId}-${index}`}
-                className="relative flex flex-shrink-0 align-middle items-center gap-4 w-full cursor-pointer"
-              >
-                <div
-                  onClick={() => {
-                    navigate({
-                      to: '/book/tabs/basicDataTab/$bookId',
-                      params: {
-                        bookId: userBook.id,
-                      },
-                    });
-                  }}
-                  className="cursor-pointer absolute w-full h-[100%]"
-                ></div>
-                <div className="z-10">
-                  <BookImageMiniature
-                    onClick={() => {
-                      navigate({
-                        to: '/book/tabs/basicDataTab/$bookId',
-                        params: {
-                          bookId: userBook.id,
-                        },
-                      });
-                    }}
+          {renderPaginator}
+          <ScrollArea className="w-full h-[600px]">
+            <div className="flex flex-col gap-2">
+              {bookshelfBooksResponse?.data.map((userBook, index) => (
+                <BookshelfBook
+                  index={index}
+                  userBook={userBook}
+                  isBorrowed={true}
+                />
+              ))}
+            </div>
+          </ScrollArea>
+        </div>
+      </div>
+    </AuthenticatedLayout>
+  );
+};
+
+const BookshelfSkeleton = () => {
+  return Array.from({ length: 10 }).map((_, index) => (
+    <div
+      key={`skeleton-${index}`}
+      className="relative flex align-middle items-center gap-4 w-full cursor-default"
+    >
+      <Skeleton className="w-20 h-20" />
+      <div className="z-10 w-full pointer-events-none">
+        <div className="flex justify-between w-full">
+          <Skeleton className="w-52 h-6" />
+          <div className="flex gap-2 items-center justify-center">
+            <HiOutlineHeart className="h-8 w-8 text-primary cursor-none" />
+            <Skeleton className="h-7 w-7 rounded-full" />
+          </div>
+        </div>
+        <Separator className="my-1 bg-primary"></Separator>
+        <Skeleton className="w-40 h-4" />
+      </div>
+    </div>
+  ));
+};
+
+export const Bookshelf: FC = () => {
+  const { bookshelfId } = Route.useParams();
+
+  const accessToken = useSelector(userStateSelectors.selectAccessToken);
+  const perPage = 10;
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
+  const { data: user } = useFindUserQuery();
+
+  const {
+    data: bookshelfBooksResponse,
+    isFetching,
+    isRefetching,
+  } = useErrorHandledQuery(
+    FindBooksByBookshelfIdQueryOptions({
+      accessToken: accessToken as string,
+      bookshelfId,
+      userId: user?.id as string,
+      page: currentPage,
+      pageSize: perPage,
+    })
+  );
+
+  const pageCount = useMemo(() => {
+    return (
+      Math.ceil((bookshelfBooksResponse?.metadata?.total ?? 0) / perPage) || 1
+    );
+  }, [bookshelfBooksResponse?.metadata.total, perPage]);
+
+  const { data: bookshelfResponse } = useFindBookshelfByIdQuery(bookshelfId);
+
+  const renderPaginator = useMemo(() => {
+    return (
+      (bookshelfBooksResponse?.metadata?.total ?? 0) > perPage && (
+        <Paginator
+          onPageChange={setCurrentPage}
+          pageIndex={currentPage}
+          pagesCount={pageCount ?? 0}
+          perPage={perPage}
+          includeArrows={true}
+          itemsCount={bookshelfBooksResponse?.metadata?.total}
+        />
+      )
+    );
+  }, [bookshelfBooksResponse?.metadata?.total, currentPage, pageCount]);
+
+  return (
+    <AuthenticatedLayout>
+      <div className="p-8 flex flex-col justify-center w-full items-center">
+        <BookshelfTopBar
+          bookshelfBooksResponse={bookshelfBooksResponse}
+          bookshelfId={bookshelfId}
+          bookshelfResponse={bookshelfResponse}
+        />
+        <div
+          key={bookshelfId}
+          className="flex flex-col justify-center pt-8 w-full sm:max-w-7xl"
+        >
+          {renderPaginator}
+          <ScrollArea className="w-full h-[600px] pr-8">
+            <div className="flex flex-col gap-2">
+              {isFetching && !isRefetching ? (
+                <BookshelfSkeleton />
+              ) : (
+                bookshelfBooksResponse?.data.map((userBook, index) => (
+                  <BookshelfBook
+                    index={index}
+                    isBorrowed={false}
                     userBook={userBook}
                   />
-                </div>
-                <div className="z-10 w-full px-12 pointer-events-none">
-                  <div className="flex justify-between w-full">
-                    <div className="font-semibold text-lg sm:text-2xl">
-                      <p className="max-w-40 sm:max-w-xl md:max-w-2xl truncate inline-block">
-                        {userBook.book.title}
-                      </p>
-                    </div>
-                    <div className="flex gap-2 items-center justify-center">
-                      <FavoriteBookButton
-                        className="pointer-events-auto"
-                        bookId={userBook.id}
-                      />
-                      {renderStatusIcon(userBook)}
-                    </div>
-                  </div>
-                  <Separator className="my-4 bg-primary"></Separator>
-                  <div className="px-2">
-                    {userBook.book.authors[0]?.name
-                      ? `${userBook.book.authors[0]?.name},`
-                      : ''}{' '}
-                    {userBook.book.releaseYear
-                      ? `${userBook.book.releaseYear},`
-                      : null}{' '}
-                    {userBook.genres[0]?.name}{' '}
-                  </div>
-                </div>
-              </div>
-            ))
-          )}
-          {bookshelfBooksResponse &&
-            (bookshelfBooksResponse?.metadata?.total ?? 0) > perPage && (
-              <Paginator
-                onPageChange={setCurrentPage}
-                pageIndex={currentPage}
-                pagesCount={pageCount ?? 0}
-                perPage={perPage}
-                includeArrows={true}
-                itemsCount={bookshelfBooksResponse.metadata.total}
-              />
-            )}
+                ))
+              )}
+            </div>
+          </ScrollArea>
         </div>
       </div>
     </AuthenticatedLayout>
