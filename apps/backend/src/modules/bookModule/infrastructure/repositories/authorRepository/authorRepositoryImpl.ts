@@ -143,9 +143,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
         query.where({ isApproved });
       }
 
-      if (sortDate) {
-        query.orderBy('createdAt', sortDate);
-      }
+      query.orderBy('id', sortDate ?? 'desc');
 
       rawEntities = await query.limit(pageSize).offset((page - 1) * pageSize);
     } catch (error) {

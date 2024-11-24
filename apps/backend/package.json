@@ -1,6 +1,5 @@
 {
   "name": "@apps/backend",
-  "private": true,
   "type": "module",
   "scripts": {
     "start": "node src/index.js",
@@ -35,7 +34,8 @@
     "knex": "3.1.0",
     "node-fetch": "3.3.2",
     "pg": "8.13.1",
-    "pino": "9.5.0"
+    "pino": "9.5.0",
+    "uuid": "11.0.3"
   },
   "devDependencies": {
     "@faker-js/faker": "9.2.0",

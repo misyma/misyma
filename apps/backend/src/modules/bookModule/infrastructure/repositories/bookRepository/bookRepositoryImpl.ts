@@ -292,11 +292,7 @@ export class BookRepositoryImpl implements BookRepository {
         .limit(pageSize)
         .offset(pageSize * (page - 1));
 
-      if (sortDate) {
-        query.orderBy('createdAt', sortDate);
-      } else {
-        query.orderBy('id', 'asc');
-      }
+      query.orderBy('id', sortDate ?? 'desc');
 
       rawEntities = await query;
     } catch (error) {

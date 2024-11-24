@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker';
+import { v7 as uuidv7 } from 'uuid';
 
 import { BookFormat, BookshelfType, Language, ReadingStatus, UserRole } from '@common/contracts';
 
@@ -33,7 +34,7 @@ export class Generator {
   }
 
   public static uuid(): string {
-    return faker.string.uuid();
+    return uuidv7();
   }
 
   public static arrayElement<T>(array: T[]): T {

@@ -28,8 +28,6 @@ export class M11CreateBookChangeRequestTableMigration implements Migration {
 
       table.text('bookId').notNullable();
 
-      table.text('userId').notNullable();
-
       table.text('authorIds');
 
       table.timestamp('createdAt').notNullable();

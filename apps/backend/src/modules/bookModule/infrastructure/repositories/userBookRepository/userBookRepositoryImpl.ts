@@ -503,9 +503,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         query.limit(pageSize).offset(pageSize * (page - 1));
       }
 
-      if (sortDate) {
-        query.orderBy('createdAt', sortDate);
-      }
+      query.orderBy('id', sortDate ?? 'desc');
 
       rawEntities = await query;
     } catch (error) {
