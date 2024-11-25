@@ -197,7 +197,7 @@ const NavbarList: FC<{ user?: User; handleLogout: () => void }> = ({
       )}
       <li className="text-primary text-md text-center font-semibold">
         <Link to={'/shelves'} className={linkClasses}>
-          Moje półki
+          Moje książki
         </Link>
       </li>
       <li className="text-primary text-md text-center font-semibold">

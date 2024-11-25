@@ -14,6 +14,9 @@ import { z } from 'zod';
 import { useCreateBookshelfMutation } from '../../api/mutations/createBookshelfMutation/createBookshelfMutation';
 import { BookshelfActionButtons } from './bookshelfActionButtons';
 import { BookshelfName } from './bookshelfName';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../../core/store/store';
+import { setEditMap } from '../../../core/store/states/bookshelvesState/bookshelfStateSlice';
 
 const bookshelfNameSchema = z
   .string()
@@ -35,11 +38,15 @@ export const BookshelfsList: FC<Props> = ({
   onCreatingNew,
 }) => {
   const perPage = 5;
-  const [editMap, setEditMap] = useState<Record<number, boolean>>({});
 
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
 
   const queryClient = useQueryClient();
+
+  const editMap = useSelector<RootState, Record<number, boolean>>(
+    (state) => state.bookshelves.editMap
+  );
 
   const { data: user } = useFindUserQuery();
   const { data: bookshelvesData, refetch: refetchBookshelves } =
@@ -54,24 +61,28 @@ export const BookshelfsList: FC<Props> = ({
   const { toast } = useToast();
 
   useEffect(() => {
-    setBookshelves(bookshelvesData?.data ?? [])
-  }, [bookshelvesData])
+    setBookshelves(bookshelvesData?.data ?? []);
+  }, [bookshelvesData]);
 
   const { mutateAsync: updateBookshelf } = useUpdateBookshelfMutation({});
   const createBookshelfMutation = useCreateBookshelfMutation({});
 
   const startEdit = (index: number): void => {
-    setEditMap({
-      ...editMap,
-      [index]: true,
-    });
+    dispatch(
+      setEditMap({
+        ...editMap,
+        [index]: true,
+      })
+    );
   };
 
   const onCancelEdit = (index: number): void => {
-    setEditMap({
-      ...editMap,
-      [index]: false,
-    });
+    dispatch(
+      setEditMap({
+        ...editMap,
+        [index]: false,
+      })
+    );
 
     if (!bookshelves) {
       return;
@@ -117,10 +128,12 @@ export const BookshelfsList: FC<Props> = ({
       return;
     }
 
-    setEditMap({
-      ...editMap,
-      [index]: false,
-    });
+    dispatch(
+      setEditMap({
+        ...editMap,
+        [index]: false,
+      })
+    );
 
     onCreatingNew(false);
 
@@ -192,10 +205,12 @@ export const BookshelfsList: FC<Props> = ({
       return;
     }
 
-    setEditMap({
-      ...editMap,
-      [index]: false,
-    });
+    dispatch(
+      setEditMap({
+        ...editMap,
+        [index]: false,
+      })
+    );
 
     try {
       const oldName = bookshelvesData?.data[index].name as string;

@@ -54,13 +54,17 @@ const DialogContentPreConfirmation: FC<DialogContentPreConfirmationProps> = ({
       accessToken: accessToken as string,
     })
   );
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleInitialConfirmation = async (): Promise<void> => {
     if (
       bookshelfBooksResponse?.data &&
       bookshelfBooksResponse?.data?.length === 0
     ) {
-      return await onDelete(true);
+      setIsDeleting(true);
+      await onDelete(true);
+      setIsDeleting(false);
+      return;
     }
 
     return await onDelete(false);
@@ -87,6 +91,7 @@ const DialogContentPreConfirmation: FC<DialogContentPreConfirmationProps> = ({
         <Button
           className="bg-primary w-32 sm:w-40"
           onClick={handleInitialConfirmation}
+          disabled={isDeleting}
         >
           Potwierdź
         </Button>
@@ -237,9 +242,7 @@ export const DeleteBookshelfModal: FC<Props> = ({
   const queryClient = useQueryClient();
 
   const [deletionConfirmed, setDeletionConfirmed] = useState<boolean>(false);
-
   const [isOpen, setIsOpen] = useState<boolean>(false);
-
   const [error, setError] = useState('');
 
   const { mutateAsync: deleteBookshelf } = useDeleteBookshelfMutation({});
@@ -281,7 +284,7 @@ export const DeleteBookshelfModal: FC<Props> = ({
       }}
     >
       <DialogTrigger asChild>
-        <Button size='custom' variant="none">
+        <Button size="custom" variant="none">
           <HiTrash
             className={cn('text-primary h-8 w-8 cursor-pointer', className)}
           />

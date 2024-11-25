@@ -1,23 +1,36 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createAction, createSlice } from '@reduxjs/toolkit';
 
-import { PreferencesState, UiMode } from './preferencesState';
+import { BookshelfView, PreferencesState, UiMode } from './preferencesState';
 
 const initialState: PreferencesState = {
-  uiMode: 'light' as UiMode,
+	uiMode: 'light' as UiMode,
+	bookshelfView: 'books',
 };
 
 interface SetUiModeActionPayload {
-  uiMode: UiMode;
+	uiMode: UiMode;
 }
 
 export const preferencesStateSlice = createSlice({
-  name: 'preferences',
-  initialState,
-  reducers: {
-    setUiMode: (state, action: PayloadAction<SetUiModeActionPayload>) => {
-      state.uiMode = action.payload.uiMode;
-    },
-  },
+	name: 'preferences',
+	initialState,
+	reducers: {
+		setUiMode: (state, action: PayloadAction<SetUiModeActionPayload>) => {
+			state.uiMode = action.payload.uiMode;
+		},
+		setBookshelfView: (
+			state,
+			action: PayloadAction<BookshelfView>
+		) => {
+			state.bookshelfView = action.payload;
+		},
+	},
+	selectors: {
+		selectUiMode: (state) => state.uiMode,
+		selectBookshelfView: (state) => state.bookshelfView,
+	},
 });
+
+export const setBookshelfView = createAction<BookshelfView>('preferences/setBookshelfView');
 
 export const preferencesStateActions = preferencesStateSlice.actions;
