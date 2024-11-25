@@ -113,6 +113,7 @@ export const ShelvesPage: FC = () => {
       dispatchBookshelvesUpdate();
     }
     // Todo: figure out the infinite loop occurring here
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queryBookshelves]);
 
   const pagesCount = useMemo(() => {
