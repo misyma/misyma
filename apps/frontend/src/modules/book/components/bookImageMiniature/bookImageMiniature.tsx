@@ -10,6 +10,7 @@ interface BookImageProps {
   onClick?: () => void;
   className?: string;
   bookImageSrc?: string;
+  imageClassName?: string;
 }
 
 export const BookImageMiniature: FC<BookImageProps> = ({
@@ -17,6 +18,7 @@ export const BookImageMiniature: FC<BookImageProps> = ({
   onClick,
   className,
   bookImageSrc,
+  imageClassName,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [imageSrc, setImageSrc] = useState('');
@@ -36,16 +38,15 @@ export const BookImageMiniature: FC<BookImageProps> = ({
 
   return (
     <div className={cn('relative aspect-square w-40', className)}>
-      {isLoading && (
-        <Skeleton className='w-full h-full' />
-      )}
+      {isLoading && <Skeleton className="w-full h-full" />}
       <img
         onClick={onClick}
         src={imageSrc}
         onLoad={handleImageLoad}
         className={cn(
           'object-contain w-full h-full',
-          isLoading ? 'invisible' : 'visible'
+          isLoading ? 'invisible' : 'visible',
+          imageClassName
         )}
         alt="Book cover"
       />
