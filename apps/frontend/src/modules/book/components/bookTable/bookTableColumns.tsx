@@ -5,56 +5,19 @@ import { BookFormat } from '../../../common/constants/bookFormat';
 import { DeleteBookModal } from '../deleteBookModal/deleteBookModal';
 import { TableHeader } from '../../../common/components/tableHeader/tableHeader';
 import { AdminEditBookModal } from '../adminEditBookModal/adminEditBookModal';
-import { FC, useEffect, useRef, useState } from 'react';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '../../../common/components/tooltip/tooltip';
+import { FC } from 'react';
 import { ChangeBookStatusModal } from '../changeBookStatusModal/changeBookStatusModal';
+import { TruncatedTextTooltip } from '../truncatedTextTooltip/truncatedTextTooltip';
 
 type CellProps = CellContext<Book, unknown>;
 
 const AuthorCell: FC<{ label: string }> = ({ label }) => {
-  const [isTruncated, setIsTruncated] = useState(false);
-  const parentRef = useRef<HTMLParagraphElement>(null);
-
-  useEffect(() => {
-    if (!parentRef.current) return;
-    const clone = parentRef.current.cloneNode(true) as HTMLParagraphElement;
-    clone.id = '';
-    clone.classList.remove('custom-truncate');
-    clone.classList.add('custom-inline');
-    const root = document.querySelector('body');
-    root?.append(clone);
-    const originalWidth = parentRef.current.getBoundingClientRect().width;
-    const cloneWidth = clone.getBoundingClientRect().width;
-    setIsTruncated(originalWidth < cloneWidth);
-    clone.remove();
-  }, [label]);
-
-  const content = (
-    <p ref={parentRef} className="text-base truncate">
-      {label ?? '-'}
-    </p>
-  );
-
   return (
     <div className="flex flex-col py-4 gap-2 max-w-[200px]">
       <div className="flex items-center gap-1">
-        {isTruncated ? (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>{content}</TooltipTrigger>
-              <TooltipContent className="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl">
-                <p className="whitespace-normal break-words">{label}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        ) : (
-          content
-        )}
+        <TruncatedTextTooltip text={label}>
+          <p className="text-base truncate">{label ?? '-'}</p>
+        </TruncatedTextTooltip>
       </div>
     </div>
   );
@@ -64,7 +27,9 @@ const TitleCell: FC<CellProps> = ({ row }) => {
   return (
     <div className="flex flex-col py-4 gap-2 w-[450px] truncate">
       <div className="flex items-center gap-1 w-full">
-        <p className="text-base truncate">{row.original.title}</p>
+        <TruncatedTextTooltip text={row.original.title}>
+          <p className="text-base truncate">{row.original.title}</p>
+        </TruncatedTextTooltip>
       </div>
     </div>
   );
@@ -189,8 +154,8 @@ export const bookTableColumns: ColumnDef<Book>[] = [
   {
     header: () => <TableHeader className="w-[125px]" label="ISBN" />,
     minSize: 125,
-    size: 125,
-    maxSize: 150,
+    size: 150,
+    maxSize: 175,
     accessorKey: 'isbn',
     cell: IsbnCell,
   },
