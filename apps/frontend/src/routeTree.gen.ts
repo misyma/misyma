@@ -16,6 +16,8 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
 import { Route as VerifyEmailIndexImport } from './routes/verifyEmail/index'
 import { Route as ShelvesIndexImport } from './routes/shelves/index'
+import { Route as MybooksIndexImport } from './routes/mybooks/index'
+import { Route as BookshelfBookshelfIdImport } from './routes/bookshelf/$bookshelfId'
 import { Route as AdminTabsIndexImport } from './routes/admin/tabs/index'
 import { Route as BookshelfCreateBookIdImport } from './routes/bookshelf/createBook/$id'
 import { Route as BookshelfSearchResultIndexImport } from './routes/bookshelf/search/result/index'
@@ -24,6 +26,7 @@ import { Route as AdminTabsBooksIndexImport } from './routes/admin/tabs/books/in
 import { Route as AdminTabsAuthorsIndexImport } from './routes/admin/tabs/authors/index'
 import { Route as BookTabsQuotationsTabBookIdImport } from './routes/book/tabs/quotationsTab/$bookId'
 import { Route as BookTabsGradesTabBookIdImport } from './routes/book/tabs/gradesTab/$bookId'
+import { Route as BookTabsBasicDataTabBookIdImport } from './routes/book/tabs/basicDataTab/$bookId'
 import { Route as AdminTabsChangeRequestsIdImport } from './routes/admin/tabs/changeRequests/$id'
 import { Route as AdminTabsBooksEditIdImport } from './routes/admin/tabs/books/edit/$id'
 
@@ -34,15 +37,9 @@ const RegisterIndexLazyImport = createFileRoute('/register/')()
 const ProfileIndexLazyImport = createFileRoute('/profile/')()
 const NewPasswordIndexLazyImport = createFileRoute('/newPassword/')()
 const LoginIndexLazyImport = createFileRoute('/login/')()
-const BookshelfBookshelfIdLazyImport = createFileRoute(
-  '/bookshelf/$bookshelfId',
-)()
 const BookshelfSearchIndexLazyImport = createFileRoute('/bookshelf/search/')()
 const BookshelfSearchCreateBookshelfIdLazyImport = createFileRoute(
   '/bookshelf/search/create/$bookshelfId',
-)()
-const BookTabsBasicDataTabBookIdLazyImport = createFileRoute(
-  '/book/tabs/basicDataTab/$bookId',
 )()
 
 // Create/Update Routes
@@ -95,7 +92,12 @@ const ShelvesIndexRoute = ShelvesIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const BookshelfBookshelfIdLazyRoute = BookshelfBookshelfIdLazyImport.update({
+const MybooksIndexRoute = MybooksIndexImport.update({
+  path: '/mybooks/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const BookshelfBookshelfIdRoute = BookshelfBookshelfIdImport.update({
   path: '/bookshelf/$bookshelfId',
   getParentRoute: () => rootRoute,
 } as any).lazy(() =>
@@ -164,14 +166,6 @@ const BookshelfSearchCreateBookshelfIdLazyRoute =
     ),
   )
 
-const BookTabsBasicDataTabBookIdLazyRoute =
-  BookTabsBasicDataTabBookIdLazyImport.update({
-    path: '/book/tabs/basicDataTab/$bookId',
-    getParentRoute: () => rootRoute,
-  } as any).lazy(() =>
-    import('./routes/book/tabs/basicDataTab/$bookId.lazy').then((d) => d.Route),
-  )
-
 const BookTabsQuotationsTabBookIdRoute =
   BookTabsQuotationsTabBookIdImport.update({
     path: '/book/tabs/quotationsTab/$bookId',
@@ -187,6 +181,15 @@ const BookTabsGradesTabBookIdRoute = BookTabsGradesTabBookIdImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() =>
   import('./routes/book/tabs/gradesTab/$bookId.lazy').then((d) => d.Route),
+)
+
+const BookTabsBasicDataTabBookIdRoute = BookTabsBasicDataTabBookIdImport.update(
+  {
+    path: '/book/tabs/basicDataTab/$bookId',
+    getParentRoute: () => rootRoute,
+  } as any,
+).lazy(() =>
+  import('./routes/book/tabs/basicDataTab/$bookId.lazy').then((d) => d.Route),
 )
 
 const AdminTabsChangeRequestsIdRoute = AdminTabsChangeRequestsIdImport.update({
@@ -212,7 +215,11 @@ declare module '@tanstack/react-router' {
       parentRoute: typeof rootRoute
     }
     '/bookshelf/$bookshelfId': {
-      preLoaderRoute: typeof BookshelfBookshelfIdLazyImport
+      preLoaderRoute: typeof BookshelfBookshelfIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/mybooks/': {
+      preLoaderRoute: typeof MybooksIndexImport
       parentRoute: typeof rootRoute
     }
     '/shelves/': {
@@ -259,16 +266,16 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminTabsChangeRequestsIdImport
       parentRoute: typeof rootRoute
     }
+    '/book/tabs/basicDataTab/$bookId': {
+      preLoaderRoute: typeof BookTabsBasicDataTabBookIdImport
+      parentRoute: typeof rootRoute
+    }
     '/book/tabs/gradesTab/$bookId': {
       preLoaderRoute: typeof BookTabsGradesTabBookIdImport
       parentRoute: typeof rootRoute
     }
     '/book/tabs/quotationsTab/$bookId': {
       preLoaderRoute: typeof BookTabsQuotationsTabBookIdImport
-      parentRoute: typeof rootRoute
-    }
-    '/book/tabs/basicDataTab/$bookId': {
-      preLoaderRoute: typeof BookTabsBasicDataTabBookIdLazyImport
       parentRoute: typeof rootRoute
     }
     '/bookshelf/search/create/$bookshelfId': {
@@ -302,7 +309,8 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren([
   IndexRoute,
-  BookshelfBookshelfIdLazyRoute,
+  BookshelfBookshelfIdRoute,
+  MybooksIndexRoute,
   ShelvesIndexRoute,
   VerifyEmailIndexRoute,
   LoginIndexLazyRoute,
@@ -314,9 +322,9 @@ export const routeTree = rootRoute.addChildren([
   AdminTabsIndexRoute,
   BookshelfSearchIndexLazyRoute,
   AdminTabsChangeRequestsIdRoute,
+  BookTabsBasicDataTabBookIdRoute,
   BookTabsGradesTabBookIdRoute,
   BookTabsQuotationsTabBookIdRoute,
-  BookTabsBasicDataTabBookIdLazyRoute,
   BookshelfSearchCreateBookshelfIdLazyRoute,
   AdminTabsAuthorsIndexRoute,
   AdminTabsBooksIndexRoute,
