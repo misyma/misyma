@@ -11,7 +11,7 @@ export const AuthenticatedLayout: FC<Props> = ({ children }) => {
       <RequireAuthComponent>
         <div className='grid grid-cols-1'>
           <Navbar />
-          <div className="w-[1536px] md:max-w-screen-2xl mx-auto">{children}</div>
+          <div className="w-full md:max-w-screen-2xl mx-auto">{children}</div>
           <Toaster />
         </div>
       </RequireAuthComponent>
