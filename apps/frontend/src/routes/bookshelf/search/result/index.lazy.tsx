@@ -52,7 +52,7 @@ export const SearchResultPage: FC = () => {
 
     if (searchParams.bookshelfId === '') {
       navigate({
-        to: '/shelves',
+        to: '/mybooks',
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

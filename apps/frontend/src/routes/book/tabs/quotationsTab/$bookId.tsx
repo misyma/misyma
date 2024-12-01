@@ -15,8 +15,8 @@ export const Route = createFileRoute('/book/tabs/quotationsTab/$bookId')({
   staticData: {
     routeDisplayableNameParts: [
       {
-        readableName: 'Półki',
-        href: '/shelves/',
+        readableName: 'Moje książki',
+        href: '/mybooks/',
       },
       {
         readableName: '$bookshelfName',

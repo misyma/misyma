@@ -6,6 +6,7 @@ import { HiCheckCircle, HiQuestionMarkCircle } from 'react-icons/hi2';
 import { HiDotsCircleHorizontal } from 'react-icons/hi';
 import { cn } from '../../../common/lib/utils';
 import { AltFavoriteBookButton } from '../../../book/components/favoriteBookButton/altFavoriteBookButton';
+import { useNavigateToBook } from '../../../book/api/hooks/useNavigateToBook';
 
 export const BookCard: FC<{ book: UserBook; key: string }> = ({
   book,
@@ -15,6 +16,10 @@ export const BookCard: FC<{ book: UserBook; key: string }> = ({
     () => book.book.authors.map((a) => a.name).join(', '),
     [book]
   );
+
+  const { navigateToBook } = useNavigateToBook({
+    bookId: book.id,
+  });
 
   const readingStatusMap = useMemo(
     () => ({
@@ -40,7 +45,11 @@ export const BookCard: FC<{ book: UserBook; key: string }> = ({
   const statusInfo = readingStatusMap[book.status];
 
   return (
-    <div className="relative h-full" key={key}>
+    <div
+      className="relative h-full cursor-pointer"
+      key={key}
+      onClick={navigateToBook}
+    >
       <div className="absolute right-2 top-2 z-10">
         <AltFavoriteBookButton book={book} />
       </div>

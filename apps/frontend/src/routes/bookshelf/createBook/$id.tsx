@@ -8,6 +8,6 @@ const createBookSearchSchema = z.object({
 export const Route = createFileRoute('/bookshelf/createBook/$id')({
   parseParams: createBookSearchSchema.parse,
   onError: () => {
-    return <Navigate to={'/shelves'} />;
+    return <Navigate to={'/mybooks'} />;
   },
 });
