@@ -44,11 +44,11 @@ export const BookCard: FC<{ book: UserBook; key: string }> = ({
       <div className="absolute right-2 top-2 z-10">
         <AltFavoriteBookButton book={book} />
       </div>
-      <div className="flex flex-col h-full rounded-[20px] shadow-sm shadow-gray-400 transition-transform duration-300 ease-in-out">
+      <div className="flex flex-col h-full rounded-[20px] border shadow-sm shadow-gray-400 transition-transform duration-300 ease-in-out">
         <div className="pt-4 pb-2 px-4 aspect-[2/1] rounded-[4px] flex-shrink-0">
           <BookImageMiniature
             bookImageSrc={book.imageUrl}
-            className="w-full overflow border border-gray-400 border-opacity-20 rounded-[4px]"
+            className="w-full overflow border-gray-400 border-opacity-20 rounded-[4px]"
             imageClassName="object-contain rounded-md"
           />
         </div>
