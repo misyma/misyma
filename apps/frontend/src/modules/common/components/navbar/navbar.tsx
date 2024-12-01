@@ -232,7 +232,7 @@ export const Navbar: FC = () => {
   const { res, handleLogout } = useUserState();
 
   return (
-    <div className="flex pt-8 px-8 flex-col bg-white w-full top-0 fixed z-50">
+    <div className="flex pt-8 px-8 flex-col bg-white w-full sticky">
       <div className="bg-white flex justify-end w-full items-center">
         <TextLogo />
         <input type="checkbox" className="md:hidden burger-input"></input>

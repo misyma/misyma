@@ -27,7 +27,6 @@ import {
   setBookshelves,
   setEditMap,
 } from '../../modules/core/store/states/bookshelvesState/bookshelfStateSlice.js';
-import { ScrollArea } from '../../modules/common/components/scrollArea/scroll-area.js';
 
 export const ShelvesPage: FC = () => {
   const breadcrumbKeysDispatch = useBreadcrumbKeysDispatch();
@@ -218,15 +217,15 @@ const BooksPage: FC = () => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3 }}
-      className="w-full px-8 rounded-md shadow-lg shadow-primary"
+      className="w-full px-8"
     >
-      <ScrollArea className='w-full h-[40rem]'>
+      {/* <ScrollArea className='w-full'> */}
         <div className="grid grid-cols-6 gap-4 pt-2 w-full px-2">
           {data?.data.map((book, index) => (
             <BookCard key={`book-card-${index}`} book={book} />
           ))}
         </div>
-      </ScrollArea>
+      {/* </ScrollArea> */}
     </motion.div>
   );
 };

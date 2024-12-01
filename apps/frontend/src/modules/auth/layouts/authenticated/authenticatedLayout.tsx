@@ -9,9 +9,11 @@ export interface Props {
 export const AuthenticatedLayout: FC<Props> = ({ children }) => {
   return (
       <RequireAuthComponent>
-        <Navbar />
-        <div className="pt-24 sm:pt-32 max-w-screen-2xl mx-auto">{children}</div>
-        <Toaster />
+        <div className='grid grid-cols-1'>
+          <Navbar />
+          <div className="w-[1536px] md:max-w-screen-2xl mx-auto">{children}</div>
+          <Toaster />
+        </div>
       </RequireAuthComponent>
   );
 };

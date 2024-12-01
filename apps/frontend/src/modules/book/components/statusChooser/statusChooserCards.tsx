@@ -30,7 +30,7 @@ export const StatusChooserCards: FC<Props> = ({ bookId, bookshelfId }) => {
       userBookId: bookId,
       userId: userData?.id ?? '',
       accessToken: accessToken as string,
-    }),
+    })
   );
 
   const [readingStatus, setReadingStatus] = useState(data?.status);
@@ -51,13 +51,16 @@ export const StatusChooserCards: FC<Props> = ({ bookId, bookshelfId }) => {
       accessToken: accessToken as string,
     });
 
-    queryClient.invalidateQueries({
-      queryKey: [BookApiQueryKeys.findUserBookById, bookId, userData?.id],
-    });
-
-    queryClient.invalidateQueries({
-      predicate: (query) => query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId && query.queryKey[1] === bookshelfId,
-    });
+    await Promise.all([
+      queryClient.invalidateQueries({
+        queryKey: [BookApiQueryKeys.findUserBookById, bookId, userData?.id],
+      }),
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId &&
+          query.queryKey[1] === bookshelfId,
+      }),
+    ]);
 
     setReadingStatus(chosenStatus);
   };
@@ -88,7 +91,7 @@ export const StatusChooserCards: FC<Props> = ({ bookId, bookshelfId }) => {
               readingStatus === ReadingStatus.finished
                 ? 'text-green-400 border-green-500 cursor-default pointer-events-none'
                 : '',
-              'hover:text-green-400 hover:border-green-500',
+              'hover:text-green-400 hover:border-green-500'
             )}
             onClick={async () => await onChangeStatus(ReadingStatus.finished)}
           >
@@ -101,7 +104,7 @@ export const StatusChooserCards: FC<Props> = ({ bookId, bookshelfId }) => {
               readingStatus === ReadingStatus.inProgress
                 ? 'text-blue-300 border-blue-400 cursor-default pointer-events-none'
                 : '',
-              'hover:text-blue-300 hover:border-blue-400',
+              'hover:text-blue-300 hover:border-blue-400'
             )}
             onClick={async () => await onChangeStatus(ReadingStatus.inProgress)}
           >
@@ -114,7 +117,7 @@ export const StatusChooserCards: FC<Props> = ({ bookId, bookshelfId }) => {
               readingStatus === ReadingStatus.toRead
                 ? 'text-slate-500 border-slate-700 cursor-default pointer-events-none'
                 : '',
-              'hover:text-slate-500 hover:border-slate-700',
+              'hover:text-slate-500 hover:border-slate-700'
             )}
             onClick={async () => await onChangeStatus(ReadingStatus.toRead)}
           >

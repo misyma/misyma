@@ -31,7 +31,7 @@ export const BookshelfActionButtons: FC<BookshelfActionButtonsProps> = ({
   const queryClient = useQueryClient();
 
   return (
-    <div className="px-4 sm:px-8 flex gap-4">
+    <div className="px-4 sm:px-8 flex gap-4 z-40">
       {editMap[index] !== true ? (
         <>
           <HiPencil
