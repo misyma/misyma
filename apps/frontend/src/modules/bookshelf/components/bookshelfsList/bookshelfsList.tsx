@@ -236,7 +236,7 @@ export const BookshelfsList: FC<Props> = ({
   };
 
   return (
-    <ScrollArea className={styles['shelves-scroll-area']}>
+    <ScrollArea className={cn(styles['shelves-scroll-area'], 'w-full')}>
       <div className={styles['shelves-container']}>
         {bookshelves?.map((bookshelf, index) => (
           <div

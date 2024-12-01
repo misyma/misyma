@@ -45,7 +45,7 @@ export const BookImageMiniature: FC<BookImageProps> = ({
         onLoad={handleImageLoad}
         className={cn(
           'object-contain w-full h-full',
-          isLoading ? 'invisible' : 'visible',
+          isLoading ? 'hidden' : 'visible',
           imageClassName
         )}
         alt="Book cover"
