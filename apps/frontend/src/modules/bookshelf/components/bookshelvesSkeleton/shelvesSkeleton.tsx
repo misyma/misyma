@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { Skeleton } from '../../../common/components/skeleton/skeleton';
 
-import styles from '../../../../routes/shelves/index.module.css';
+import styles from '../../../../routes/mybooks/index.module.css';
 import { cn } from '../../../common/lib/utils';
 
 export interface ShelvesSkeletonProps {

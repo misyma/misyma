@@ -30,7 +30,7 @@ export const LoginPage: FC = () => {
     });
 
     navigate({
-      to: '/shelves',
+      to: '/mybooks',
     });
   };
 

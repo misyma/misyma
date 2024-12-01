@@ -501,13 +501,13 @@ export const Route = createFileRoute('/bookshelf/$bookshelfId')({
   },
   parseParams: bookshelfSearchSchema.parse,
   onError: () => {
-    return <Navigate to={'/shelves'} />;
+    return <Navigate to={'/mybooks'} />;
   },
   staticData: {
     routeDisplayableNameParts: [
       {
-        readableName: 'Półki',
-        href: '/shelves/',
+        readableName: 'Moje książki',
+        href: '/mybooks/',
       },
       {
         readableName: '$bookshelfName',

@@ -26,8 +26,6 @@ export const useFindUserBookshelfsQuery = (payload: Payload) => {
 			queryParams['page'] = `${page}`;
 		}
 
-		console.log(pageSize);
-
 		if (pageSize) {
 			queryParams['pageSize'] = `${pageSize}`;
 		}

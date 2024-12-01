@@ -117,7 +117,7 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
       search['isbn'] = searchBookContext.isbn;
     } else {
       return navigate({
-        to: '/shelves',
+        to: '/mybooks',
       });
     }
 

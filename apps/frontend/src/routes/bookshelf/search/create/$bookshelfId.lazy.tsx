@@ -23,7 +23,7 @@ export const SearchCreatePage: FC = () => {
   useEffect(() => {
     if (params.bookshelfId === '') {
       navigate({
-        to: '/shelves',
+        to: '/mybooks',
       });
 
       return;
@@ -44,7 +44,7 @@ export const SearchCreatePage: FC = () => {
 
     if (searchBookContext.bookId === undefined) {
       navigate({
-        to: '/shelves',
+        to: '/mybooks',
       });
 
       return;
@@ -52,7 +52,7 @@ export const SearchCreatePage: FC = () => {
 
     if (searchBookContext.title === undefined) {
       navigate({
-        to: '/shelves',
+        to: '/mybooks',
       });
 
       return;

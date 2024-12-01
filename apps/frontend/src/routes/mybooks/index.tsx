@@ -7,7 +7,7 @@ import { Button } from '../../modules/common/components/button/button.js';
 import { Bookshelf, BookshelfType } from '@common/contracts';
 import { useFindUserBookshelfsQuery } from '../../modules/bookshelf/api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery.js';
 import { useBreadcrumbKeysDispatch } from '../../modules/common/contexts/breadcrumbKeysContext.js';
-import { ShelvesSkeleton } from '../../modules/bookshelf/components/bookshelvesSkeleton/shelvesSkeleton.js';
+import { ShelvesSkeleton } from '../../modules/bookshelf/components/bookshelvesSkeleton/shelvesSkeleton';
 import { motion } from 'framer-motion';
 import styles from './index.module.css';
 import { Paginator } from '../../modules/common/components/paginator/paginator.js';

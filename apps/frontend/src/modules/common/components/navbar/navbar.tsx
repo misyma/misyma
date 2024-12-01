@@ -121,11 +121,9 @@ const NavbarBreadcrumbs = () => {
 
 const useUserState = () => {
   const { mutate: logoutUserMutation } = useLogoutUserMutation({});
-
   const navigate = useNavigate();
 
   const accessToken = useStoreSelector(userStateSelectors.selectAccessToken);
-
   const refreshToken = useStoreSelector(userStateSelectors.selectRefreshToken);
 
   const res = useFindUserQuery();
@@ -146,7 +144,6 @@ const useUserState = () => {
       {
         onSuccess: () => {
           CookieService.removeUserDataCookie();
-
           CookieService.removeUserTokensCookie();
 
           dispatch(userStateActions.removeUserState());
@@ -158,7 +155,6 @@ const useUserState = () => {
         onError: () => {
           // TODO: Think through error handling
           CookieService.removeUserDataCookie();
-
           CookieService.removeUserTokensCookie();
 
           dispatch(userStateActions.removeUserState());
@@ -175,7 +171,7 @@ const useUserState = () => {
 
 const TextLogo: FC = () => (
   <div className="w-[100%] text-3xl md:text-5xl lg:text-5xl font-logo-bold">
-    <Link to="/shelves">MISYMA</Link>
+    <Link to="/mybooks">MISYMA</Link>
   </div>
 );
 
@@ -196,7 +192,7 @@ const NavbarList: FC<{ user?: User; handleLogout: () => void }> = ({
         </li>
       )}
       <li className="text-primary text-md text-center font-semibold">
-        <Link to={'/shelves'} className={linkClasses}>
+        <Link to={'/mybooks'} className={linkClasses}>
           Moje książki
         </Link>
       </li>

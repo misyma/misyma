@@ -68,7 +68,7 @@ export function RequireAdmin({
   }
 
   if (accessToken && refreshToken) {
-    return <Navigate to="/shelves" />;
+    return <Navigate to="/mybooks" />;
   }
 
   return <Navigate to="/login" />;
