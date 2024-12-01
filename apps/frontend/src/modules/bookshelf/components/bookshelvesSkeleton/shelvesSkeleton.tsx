@@ -13,18 +13,23 @@ export const ShelvesSkeleton: FC<ShelvesSkeletonProps> = ({
 }) => {
   return (
     <div className={styles['page-container']}>
-      <div className={cn(styles['action-bar-container'], 'flex justify-between w-full')}>
+      <div
+        className={cn(
+          styles['action-bar-container'],
+          'flex justify-between w-full'
+        )}
+      >
         <Skeleton
           style={{
             background: skeletonColor,
           }}
           className="h-12 w-60 sm:w-96"
         ></Skeleton>
-        <Skeleton 
-          className='h-12 w-80 sm:w-96'
-        />
+        <Skeleton className="h-12 w-80 sm:w-96" />
       </div>
-      <div className={cn(styles['shelves-container'], 'w-full')}>
+      <div
+        className={cn(styles['shelves-container'], 'w-full max-w-screen-2xl')}
+      >
         {Array.from({ length: 7 })?.map((_, index) => (
           <div key={`${index}-skeleton-container`} className={styles['shelf']}>
             <div className="flex items-center w-full"></div>

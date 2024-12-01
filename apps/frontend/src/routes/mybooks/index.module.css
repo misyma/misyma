@@ -3,7 +3,7 @@
 }
 
 .action-bar-container {
-  @apply w-full flex items-end justify-between;
+  @apply w-full flex items-end justify-between max-w-screen-2xl;
 }
 
 .shelves-container {
