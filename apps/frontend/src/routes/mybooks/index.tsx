@@ -123,11 +123,7 @@ export const ShelvesPage: FC = () => {
   }, [bookshelvesData?.metadata?.total]);
 
   if (isLoading && !isRefetching) {
-    return (
-      <AuthenticatedLayout>
-        <ShelvesSkeleton />
-      </AuthenticatedLayout>
-    );
+    return <ShelvesSkeleton />;
   }
 
   const onAddNewBookshelf = (): void => {
@@ -220,11 +216,11 @@ const BooksPage: FC = () => {
       className="w-full px-8"
     >
       {/* <ScrollArea className='w-full'> */}
-        <div className="grid grid-cols-6 gap-4 pt-2 w-full px-2">
-          {data?.data.map((book, index) => (
-            <BookCard key={`book-card-${index}`} book={book} />
-          ))}
-        </div>
+      <div className="grid grid-cols-6 gap-4 pt-2 w-full px-2">
+        {data?.data.map((book, index) => (
+          <BookCard key={`book-card-${index}`} book={book} />
+        ))}
+      </div>
       {/* </ScrollArea> */}
     </motion.div>
   );

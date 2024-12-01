@@ -15,7 +15,6 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
 import { Route as VerifyEmailIndexImport } from './routes/verifyEmail/index'
-import { Route as ShelvesIndexImport } from './routes/shelves/index'
 import { Route as MybooksIndexImport } from './routes/mybooks/index'
 import { Route as BookshelfBookshelfIdImport } from './routes/bookshelf/$bookshelfId'
 import { Route as AdminTabsIndexImport } from './routes/admin/tabs/index'
@@ -86,11 +85,6 @@ const VerifyEmailIndexRoute = VerifyEmailIndexImport.update({
 } as any).lazy(() =>
   import('./routes/verifyEmail/index.lazy').then((d) => d.Route),
 )
-
-const ShelvesIndexRoute = ShelvesIndexImport.update({
-  path: '/shelves/',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const MybooksIndexRoute = MybooksIndexImport.update({
   path: '/mybooks/',
@@ -222,10 +216,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MybooksIndexImport
       parentRoute: typeof rootRoute
     }
-    '/shelves/': {
-      preLoaderRoute: typeof ShelvesIndexImport
-      parentRoute: typeof rootRoute
-    }
     '/verifyEmail/': {
       preLoaderRoute: typeof VerifyEmailIndexImport
       parentRoute: typeof rootRoute
@@ -311,7 +301,6 @@ export const routeTree = rootRoute.addChildren([
   IndexRoute,
   BookshelfBookshelfIdRoute,
   MybooksIndexRoute,
-  ShelvesIndexRoute,
   VerifyEmailIndexRoute,
   LoginIndexLazyRoute,
   NewPasswordIndexLazyRoute,
