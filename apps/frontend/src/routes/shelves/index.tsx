@@ -32,7 +32,7 @@ export const ShelvesPage: FC = () => {
   const breadcrumbKeysDispatch = useBreadcrumbKeysDispatch();
   const dispatch = useDispatch<AppDispatch>();
 
-  const perPage = 5;
+  const perPage = 7;
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isCreatingNew, setIsCreatingNew] = useState(false);
   const [searchedName, setSearchedName] = useState('');
@@ -123,11 +123,7 @@ export const ShelvesPage: FC = () => {
   }, [bookshelvesData?.metadata?.total]);
 
   if (isLoading && !isRefetching) {
-    return (
-      <AuthenticatedLayout>
-        <ShelvesSkeleton />
-      </AuthenticatedLayout>
-    );
+    return <ShelvesSkeleton />;
   }
 
   const onAddNewBookshelf = (): void => {
@@ -158,7 +154,7 @@ export const ShelvesPage: FC = () => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3 }}
-      className={styles['page-container']}
+      className="w-full px-8 pb-4"
     >
       <div className={styles['action-bar-container']}>
         <Input
@@ -217,9 +213,9 @@ const BooksPage: FC = () => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3 }}
-      className="w-full px-8"
+      className="w-full px-8 pb-4"
     >
-      <div className="grid grid-cols-6 gap-4 pt-2 w-full px-8">
+      <div className="grid grid-cols-5 gap-8 pt-2 w-full px-8">
         {data?.data.map((book, index) => (
           <BookCard key={`book-card-${index}`} book={book} />
         ))}
@@ -235,7 +231,8 @@ const View: FC = () => {
     <AuthenticatedLayout>
       <div className="flex flex-col items-center justify-center w-100% px-8 py-1 sm:py-2">
         <div className="flex items-center space-x-2"></div>
-        <div className="w-full px-16 flex justify-between items-center gap-4 pb-8">
+        <div className="flex flex-between items-center justify-between w-full sticky py-4 top-0 z-20 bg-white/90 backdrop-blur-sm">
+          {' '}
           <h2 className="text-2xl font-semibold text-primary">
             {view === 'books' ? 'Widok książek' : 'Widok półek'}
           </h2>

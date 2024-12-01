@@ -45,8 +45,8 @@ export const TruncatedTextTooltip: FC<
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>{elementWithRef}</TooltipTrigger>
-            <TooltipContent className="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl">
-              <p className="whitespace-normal break-words">{text}</p>
+            <TooltipContent className="max-w-xs sm:max-w-[80px] md:max-w-md lg:max-w-lg xl:max-w-xl">
+              <p className="whitespace-normal max-w-none sm:max-w-40 break-words">{text}</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>

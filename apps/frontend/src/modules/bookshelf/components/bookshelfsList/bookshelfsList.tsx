@@ -1,4 +1,3 @@
-import { Bookmark } from '../../../common/components/bookmark/bookmark';
 import { ScrollArea } from '../../../common/components/scrollArea/scroll-area';
 import { cn } from '../../../common/lib/utils';
 import styles from './index.module.css';
@@ -37,7 +36,7 @@ export const BookshelfsList: FC<Props> = ({
   currentPage,
   onCreatingNew,
 }) => {
-  const perPage = 5;
+  const perPage = 7;
 
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
@@ -241,10 +240,9 @@ export const BookshelfsList: FC<Props> = ({
       <div className={styles['shelves-container']}>
         {bookshelves?.map((bookshelf, index) => (
           <div
-            className={cn(index > 4 ? 'hidden' : '')}
+            className={cn(index > perPage - 1 ? 'hidden' : '')}
             key={`${bookshelf.id}-container`}
           >
-            <Bookmark />
             <div key={`${bookshelf.id}`} className={styles['shelf']}>
               <div
                 onClick={() => {
@@ -260,35 +258,36 @@ export const BookshelfsList: FC<Props> = ({
               >
                 &nbsp;
               </div>
-              <div className="flex items-center justify-between w-full pointer-events-none z-10">
-                <BookshelfName
-                  bookshelfId={bookshelf.id}
-                  name={bookshelf.name}
-                  index={index}
-                  editMap={editMap}
-                  onSave={(index) => {
-                    if (bookshelves && bookshelves[index]?.id === '') {
-                      return onCreateNew(index);
-                    }
+              <div className="flex flex-col w-full">
+                <div className="flex items-center h-full border-t-primary border-t-2 rounded-sm justify-between w-full top-0 pointer-events-none">
+                  <BookshelfName
+                    bookshelfId={bookshelf.id}
+                    name={bookshelf.name}
+                    index={index}
+                    editMap={editMap}
+                    onSave={(index) => {
+                      if (bookshelves && bookshelves[index]?.id === '') {
+                        return onCreateNew(index);
+                      }
+                      onSaveEdit(index);
+                    }}
+                  />
+                  <BookshelfActionButtons
+                    bookshelfId={bookshelf.id}
+                    editMap={editMap}
+                    index={index}
+                    name={bookshelf.name}
+                    onCancelEdit={(val) => onCancelEdit(val)}
+                    onSave={(val) => {
+                      if (bookshelves && bookshelves[val]?.id === '') {
+                        return onCreateNew(val);
+                      }
 
-                    onSaveEdit(index);
-                  }}
-                />
-                <BookshelfActionButtons
-                  bookshelfId={bookshelf.id}
-                  editMap={editMap}
-                  index={index}
-                  name={bookshelf.name}
-                  onCancelEdit={(val) => onCancelEdit(val)}
-                  onSave={(val) => {
-                    if (bookshelves && bookshelves[val]?.id === '') {
-                      return onCreateNew(val);
-                    }
-
-                    onSaveEdit(val);
-                  }}
-                  onStartEdit={(val) => startEdit(val)}
-                />
+                      onSaveEdit(val);
+                    }}
+                    onStartEdit={(val) => startEdit(val)}
+                  />
+                </div>
               </div>
             </div>
           </div>
