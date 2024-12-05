@@ -103,7 +103,8 @@ const CustomAuthorSearchFilter: FC<FilterComponentProps> = ({ filter }) => {
   );
 };
 
-const SearchLanguageSelect: FC<FilterComponentProps> = ({ filter }) => {
+// Todo: move to "common" or something
+export const SearchLanguageSelect: FC<FilterComponentProps> = ({ filter }) => {
   const { updateFilterValue, filterValues } = useDynamicFilterContext();
 
   const handleChange = (value: string | boolean | Date | undefined) => {
@@ -117,7 +118,7 @@ const SearchLanguageSelect: FC<FilterComponentProps> = ({ filter }) => {
       filter={filter}
       slot={
         <LanguageSelect
-          className="w-full sm:w-full"
+          className="w-[calc(100%-2rem)]"
           type="free"
           selectorValue={filterValue as string}
           onValueChange={handleChange}

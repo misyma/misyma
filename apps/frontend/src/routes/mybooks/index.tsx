@@ -27,6 +27,23 @@ import {
   setBookshelves,
   setEditMap,
 } from '../../modules/core/store/states/bookshelvesState/bookshelfStateSlice.js';
+import { Skeleton } from '../../modules/common/components/skeleton/skeleton.js';
+import {
+  FilterProvider,
+  useFilterContext,
+} from '../../modules/common/contexts/filterContext.js';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../../modules/common/components/tooltip/tooltip.js';
+import { HiOutlineFilter } from 'react-icons/hi';
+import { FilterOpts } from '../../modules/common/types/filter.js';
+import { z } from 'zod';
+import { SearchLanguageSelect } from '../../modules/book/components/adminBookSearchFilters/adminBookSearchFilters.js';
+import { FiltersDrawer } from '../../modules/common/components/filtersDrawer/filtersDrawer.js';
+import { DynamicFilterProvider } from '../../modules/common/contexts/dynamicFilterContext.js';
 
 export const ShelvesPage: FC = () => {
   const breadcrumbKeysDispatch = useBreadcrumbKeysDispatch();
@@ -196,10 +213,63 @@ export const ShelvesPage: FC = () => {
   );
 };
 
+const BookPageFiltersBar = () => {
+  const filterOptions = useMemo(
+    (): FilterOpts[] => [
+      {
+        id: 'title-filter',
+        key: 'title',
+        label: 'Tytuł',
+        type: 'text',
+        schema: z.string().min(3),
+      },
+      {
+        id: 'language-filter',
+        key: 'language',
+        label: 'Język',
+        type: 'text',
+        customSlot: SearchLanguageSelect,
+      },
+      {
+        id: 'release-year-after-filter',
+        key: 'releaseYearAfter',
+        label: 'Wydana po',
+        type: 'year',
+        dateRangeSiblingId: 'release-year-before-filter',
+        isAfterFilter: true,
+        isBeforeFilter: false,
+      },
+      {
+        id: 'release-year-before-filter',
+        key: 'releaseYearBefore',
+        label: 'Wydana przed',
+        type: 'year',
+        dateRangeSiblingId: 'release-year-after-filter',
+        isAfterFilter: false,
+        isBeforeFilter: true,
+      },
+    ],
+    []
+  );
+
+  return (
+    <DynamicFilterProvider
+      initialValues={{}}
+      filterOptions={filterOptions}
+    >
+      <FiltersDrawer 
+      className='grid grid-cols-3'
+      onApplyFilters={() => {}} />
+    </DynamicFilterProvider>
+  );
+};
+
 const BooksPage: FC = () => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
-  const { data } = useQuery(
+  const { isFilterVisible } = useFilterContext();
+
+  const { data, isLoading } = useQuery(
     FindUserBooksByQueryOptions({
       accessToken: accessToken as string,
       pageSize: 100,
@@ -215,12 +285,25 @@ const BooksPage: FC = () => {
       transition={{ duration: 0.3 }}
       className="w-full px-8"
     >
+      {isFilterVisible && <BookPageFiltersBar />}
       {/* <ScrollArea className='w-full'> */}
-      <div className="grid grid-cols-6 gap-4 pt-2 w-full px-2">
-        {data?.data.map((book, index) => (
-          <BookCard key={`book-card-${index}`} book={book} />
-        ))}
-      </div>
+      {isLoading && (
+        <div className="grid grid-cols-6 gap-4 pt-2 w-full px-2">
+          {Array.from({ length: 12 }).map((_, idx) => (
+            <Skeleton
+              key={`book-card-skeleton-${idx}`}
+              className="w-full aspect-[2/3]"
+            />
+          ))}
+        </div>
+      )}
+      {!isLoading && (
+        <div className="grid grid-cols-6 gap-4 pt-2 w-full px-2">
+          {data?.data.map((book, index) => (
+            <BookCard key={`book-card-${index}`} book={book} />
+          ))}
+        </div>
+      )}
       {/* </ScrollArea> */}
     </motion.div>
   );
@@ -228,6 +311,7 @@ const BooksPage: FC = () => {
 
 const View: FC = () => {
   const { view, updateBookshelfView } = useBookshelfView();
+  const { isFilterVisible, toggleFilterVisibility } = useFilterContext();
 
   return (
     <AuthenticatedLayout>
@@ -237,16 +321,36 @@ const View: FC = () => {
           <h2 className="text-2xl font-semibold text-primary">
             {view === 'books' ? 'Książki' : 'Półki'}
           </h2>
-          <Switch
-            onClick={() => {
-              const viewMap: Record<BookshelfView, BookshelfView> = {
-                books: 'shelves',
-                shelves: 'books',
-              };
-              updateBookshelfView(viewMap[view]);
-            }}
-            id="bookshelf-view-mode"
-          />
+          <div className="flex items-center gap-4">
+            {view === 'books' ? (
+              <TooltipProvider delayDuration={300}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button size="big-icon" onClick={toggleFilterVisibility}>
+                      <HiOutlineFilter className="w-8 h-8"></HiOutlineFilter>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Filtruj</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            ) : null}
+            <Switch
+              onClick={() => {
+                const viewMap: Record<BookshelfView, BookshelfView> = {
+                  books: 'shelves',
+                  shelves: 'books',
+                };
+                updateBookshelfView(viewMap[view]);
+
+                if (isFilterVisible) {
+                  toggleFilterVisibility();
+                }
+              }}
+              id="bookshelf-view-mode"
+            />
+          </div>
         </div>
         {view === 'books' ? <BooksPage /> : <ShelvesPage />}
       </div>
@@ -258,7 +362,9 @@ export const Route = createFileRoute('/mybooks/')({
   component: () => {
     return (
       <RequireAuthComponent>
-        <View />
+        <FilterProvider>
+          <View />
+        </FilterProvider>
       </RequireAuthComponent>
     );
   },

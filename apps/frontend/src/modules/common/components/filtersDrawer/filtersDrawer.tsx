@@ -1,6 +1,5 @@
 import { FC, useMemo } from 'react';
 import { FilterComponent } from '../filter/filter';
-import { Separator } from '../separator/separator';
 import {
   DynamicFilterValues,
   useDynamicFilterContext,
@@ -10,7 +9,7 @@ import { cn } from '../../lib/utils';
 import { Button } from '../button/button';
 
 export const FiltersDrawer: FC<{
-  className: string;
+  className?: string;
   onApplyFilters: (vals: DynamicFilterValues) => void;
 }> = ({ className, onApplyFilters }) => {
   const { filters, filterOptions, filterValues } = useDynamicFilterContext();
@@ -32,19 +31,19 @@ export const FiltersDrawer: FC<{
   }, [filters, filterOptions]);
 
   return (
-    <div className={cn('space-y-4 w-full', className)}>
-      {constructedFilters.map((filter, idx) => (
-        <div key={`container-${filter.id}`} className="grid gap-4">
-          <FilterComponent key={filter.id} filter={filter} />
-          {idx !== constructedFilters.length - 1 && <Separator></Separator>}
-        </div>
-      ))}
-      <div className="flex items-center justify-center">
-        <Button
-          onClick={() => onApplyFilters(filterValues)}
-        >
-          Aplikuj
-        </Button>
+    <div className="flex flex-col gap-2">
+      <div className={cn('space-y-4 w-full', className)}>
+        {constructedFilters.map((filter) => (
+          <div
+            key={`container-${filter.id}`}
+            className="flex items-end justify-center"
+          >
+            <FilterComponent key={filter.id} filter={filter} />
+          </div>
+        ))}
+      </div>
+      <div className={cn('flex items-center justify-center pb-4', className)}>
+        <Button onClick={() => onApplyFilters(filterValues)}>Aplikuj</Button>
       </div>
     </div>
   );

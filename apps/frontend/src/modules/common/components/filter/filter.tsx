@@ -33,16 +33,13 @@ import { YearPicker } from '../yearPicker/yearPicker';
 import ThreeStateCheckbox, {
   ThreeStateCheckboxStates,
 } from '../threeStatesCheckbox/threeStatesCheckbox';
-import { cn } from '../../lib/utils';
 
 const TextFilter: FC<FilterComponentProps> = ({ filter }) => {
   const { updateFilterValue, filterValues, removeFilter } =
     useDynamicFilterContext();
-  const [isValid, setIsValid] = useState(true);
   const [value, setValue] = useState(
     (filterValues[filter.key as string] as string) ?? ''
   );
-  const [validationError, setValidationError] = useState('');
 
   const handleChange = (value: string) => {
     updateFilterValue(filter.key, value);
@@ -60,42 +57,29 @@ const TextFilter: FC<FilterComponentProps> = ({ filter }) => {
   const onValueChanged = (e: ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
 
-    if (e.target.value === '') {
-      setIsValid(true);
-      return;
-    }
-
     if (filter.schema) {
       const res = filter.schema.safeParse(e.target.value);
 
-      if (res.error) {
-        const err = res.error.flatten();
-        setValidationError(err.formErrors[0]);
-        setIsValid(false);
+      if (res.error && e.target.value !== '') {
         return;
       }
     }
 
-    setIsValid(true);
     handleChange(e.target.value);
   };
 
   return (
     <FilterContainer
       slot={
-        <div className={cn('flex flex-col', filter.schema ? ' pb-4' : '')}>
-          <Input
-            placeholder={`Podaj ${filter.label.toLowerCase()}`}
-            value={value}
-            iSize="custom"
-            className="w-full"
-            type="text"
-            onChange={onValueChanged}
-          />
-          {!isValid && (
-            <p className="text-sm text-red-500">{validationError}</p>
-          )}
-        </div>
+        <Input
+          containerClassName="sm:w-96"
+          placeholder={`Podaj ${filter.label.toLowerCase()}`}
+          value={value}
+          iSize="custom"
+          className="sm:w-96"
+          type="text"
+          onChange={onValueChanged}
+        />
       }
       filter={filter}
     ></FilterContainer>
