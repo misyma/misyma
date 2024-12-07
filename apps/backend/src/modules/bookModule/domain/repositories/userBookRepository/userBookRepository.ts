@@ -1,4 +1,4 @@
-import { type UserBookExpandField } from '@common/contracts';
+import { type ReadingStatus, type UserBookExpandField } from '@common/contracts';
 
 import { type UserBook, type UserBookState } from '../../entities/userBook/userBook.js';
 
@@ -27,12 +27,15 @@ export interface FindUserBookPayload {
 }
 
 export interface FindUserBooksPayload {
+  readonly bookshelfId?: string | undefined;
+  readonly collectionId?: string | undefined;
+  readonly authorId?: string | undefined;
+  readonly userId?: string | undefined;
   readonly bookId?: string | undefined;
   readonly isbn?: string | undefined;
   readonly title?: string | undefined;
-  readonly userId?: string | undefined;
-  readonly bookshelfId?: string | undefined;
-  readonly collectionId?: string | undefined;
+  readonly status?: ReadingStatus | undefined;
+  readonly isFavorite?: boolean | undefined;
   readonly page?: number;
   readonly pageSize?: number;
   readonly sortDate?: 'asc' | 'desc' | undefined;
@@ -40,12 +43,15 @@ export interface FindUserBooksPayload {
 }
 
 export interface CountUserBooksPayload {
+  readonly bookshelfId?: string | undefined;
+  readonly collectionId?: string | undefined;
+  readonly authorId?: string | undefined;
+  readonly userId?: string | undefined;
   readonly bookId?: string | undefined;
   readonly isbn?: string | undefined;
   readonly title?: string | undefined;
-  readonly userId?: string | undefined;
-  readonly bookshelfId?: string | undefined;
-  readonly collectionId?: string | undefined;
+  readonly status?: ReadingStatus | undefined;
+  readonly isFavorite?: boolean | undefined;
 }
 
 export interface DeleteUserBooksPayload {
