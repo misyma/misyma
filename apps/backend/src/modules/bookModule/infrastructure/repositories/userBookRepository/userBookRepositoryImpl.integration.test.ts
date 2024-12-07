@@ -1150,7 +1150,7 @@ describe('UserBookRepositoryImpl', () => {
 
       const userBooks = await userBookRepository.findUserBooks({
         userId: user.id,
-        authorId: author1.id,
+        authorId: author2.id,
         page: 1,
         pageSize: 10,
         expandFields: [],

@@ -281,7 +281,7 @@ export class BookRepositoryImpl implements BookRepository {
           }
 
           if (title) {
-            builder.whereRaw('LOWER(title) LIKE LOWER(?)', `%${title}%`);
+            builder.whereRaw('title ILIKE ?', `%${title}%`);
           }
 
           if (authorIds) {
@@ -354,7 +354,7 @@ export class BookRepositoryImpl implements BookRepository {
           }
 
           if (title) {
-            builder.whereRaw('LOWER(title) LIKE LOWER(?)', `%${title}%`);
+            builder.whereRaw('title ILIKE ?', `%${title}%`);
           }
 
           if (authorIds) {

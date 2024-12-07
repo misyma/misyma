@@ -92,7 +92,7 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
     }
 
     if (name) {
-      query.whereRaw('LOWER(name) LIKE LOWER(?)', `%${name}%`);
+      query.whereRaw('name ILIKE ?', `%${name}%`);
     }
 
     if (sortDate) {
@@ -194,7 +194,7 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
       const query = this.databaseClient<BookshelfRawEntity>(bookshelfTable).where({ userId });
 
       if (name) {
-        query.whereRaw('LOWER(name) LIKE LOWER(?)', `%${name}%`);
+        query.whereRaw('name ILIKE ?', `%${name}%`);
       }
 
       const countResult = await query.count().first();

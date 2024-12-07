@@ -449,9 +449,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           join.on(`${bookAuthorTable}.bookId`, '=', `${userBookTable}.bookId`);
         })
         .leftJoin(authorTable, (join) => {
-          join
-            .on(`${authorTable}.id`, '=', `${bookAuthorTable}.authorId`)
-            .andOn(`${authorTable}.id`, '=', this.databaseClient.raw('?', [authorId]));
+          join.on(`${authorTable}.id`, '=', `${bookAuthorTable}.authorId`);
         })
         .leftJoin(bookTable, (join) => {
           join.on(`${bookTable}.id`, `=`, `${userBookTable}.bookId`);
@@ -495,12 +493,16 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         query.where(`${userBookTable}.bookId`, bookId);
       }
 
+      if (authorId) {
+        query.where(`${bookAuthorTable}.authorId`, authorId);
+      }
+
       if (isbn) {
         query.where(`${bookTable}.isbn`, isbn);
       }
 
       if (title) {
-        query.whereRaw(`LOWER(${bookTable}.title) LIKE LOWER(?)`, `%${title}%`);
+        query.whereRaw(`${bookTable}.title ILIKE ?`, `%${title}%`);
       }
 
       if (status) {
@@ -606,7 +608,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       }
 
       if (title) {
-        query.whereRaw(`LOWER(${bookTable}.title) LIKE LOWER(?)`, `%${title}%`);
+        query.whereRaw(`${bookTable}.title ILIKE ?`, `%${title}%`);
       }
 
       if (status) {
