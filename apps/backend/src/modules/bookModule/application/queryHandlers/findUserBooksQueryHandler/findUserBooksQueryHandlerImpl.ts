@@ -16,8 +16,21 @@ export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler 
   ) {}
 
   public async execute(payload: FindUserBooksQueryHandlerPayload): Promise<FindUserBooksQueryHandlerResult> {
-    const { bookshelfId, requesterUserId, userId, collectionId, page, pageSize, isbn, title, sortDate, expandFields } =
-      payload;
+    const {
+      bookshelfId,
+      requesterUserId,
+      userId,
+      collectionId,
+      authorId,
+      page,
+      pageSize,
+      isbn,
+      title,
+      status,
+      isFavorite,
+      sortDate,
+      expandFields,
+    } = payload;
 
     if (bookshelfId) {
       await this.validateBookshelf({
@@ -44,9 +57,12 @@ export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler 
       await this.userBookRepository.findUserBooks({
         bookshelfId,
         collectionId,
+        authorId,
         userId,
         isbn,
         title,
+        status,
+        isFavorite,
         page,
         pageSize,
         sortDate,
@@ -55,9 +71,12 @@ export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler 
       await this.userBookRepository.countUserBooks({
         bookshelfId,
         collectionId,
+        authorId,
         userId,
         isbn,
         title,
+        status,
+        isFavorite,
       }),
     ]);
 

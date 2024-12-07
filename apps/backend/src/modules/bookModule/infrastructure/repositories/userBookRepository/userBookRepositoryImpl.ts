@@ -366,7 +366,21 @@ export class UserBookRepositoryImpl implements UserBookRepository {
   }
 
   public async findUserBooks(payload: FindUserBooksPayload): Promise<UserBook[]> {
-    const { bookshelfId, collectionId, userId, bookId, page, pageSize, isbn, title, sortDate, expandFields } = payload;
+    const {
+      bookshelfId,
+      collectionId,
+      userId,
+      bookId,
+      authorId,
+      page,
+      pageSize,
+      isbn,
+      title,
+      status,
+      isFavorite,
+      sortDate,
+      expandFields,
+    } = payload;
 
     let rawEntities: UserBookWithJoinsRawEntity[];
 
@@ -479,12 +493,24 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         query.where(`${userBookTable}.bookId`, bookId);
       }
 
+      if (authorId) {
+        query.where(`${bookAuthorTable}.authorId`, authorId);
+      }
+
       if (isbn) {
         query.where(`${bookTable}.isbn`, isbn);
       }
 
       if (title) {
-        query.whereRaw(`LOWER(${bookTable}.title) LIKE LOWER(?)`, `%${title}%`);
+        query.whereRaw(`${bookTable}.title ILIKE ?`, `%${title}%`);
+      }
+
+      if (status) {
+        query.where(`${userBookTable}.status`, status);
+      }
+
+      if (isFavorite !== undefined) {
+        query.where(`${userBookTable}.isFavorite`, isFavorite);
       }
 
       if (bookshelfId) {
@@ -558,10 +584,18 @@ export class UserBookRepositoryImpl implements UserBookRepository {
   }
 
   public async countUserBooks(payload: CountUserBooksPayload): Promise<number> {
-    const { bookId, isbn, title, bookshelfId, collectionId, userId } = payload;
+    const { bookshelfId, collectionId, userId, authorId, bookId, isbn, title, status, isFavorite } = payload;
 
     try {
       const query = this.databaseClient<UserBookRawEntity>(userBookTable);
+
+      if (authorId) {
+        query
+          .join(bookAuthorTable, (join) => {
+            join.on(`${bookAuthorTable}.bookId`, '=', `${userBookTable}.bookId`);
+          })
+          .where(`${bookAuthorTable}.authorId`, authorId);
+      }
 
       if (isbn || title) {
         query.join(bookTable, (join) => {
@@ -574,7 +608,15 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       }
 
       if (title) {
-        query.whereRaw(`LOWER(${bookTable}.title) LIKE LOWER(?)`, `%${title}%`);
+        query.whereRaw(`${bookTable}.title ILIKE ?`, `%${title}%`);
+      }
+
+      if (status) {
+        query.where(`${userBookTable}.status`, status);
+      }
+
+      if (isFavorite !== undefined) {
+        query.where(`${userBookTable}.isFavorite`, isFavorite);
       }
 
       if (bookId) {

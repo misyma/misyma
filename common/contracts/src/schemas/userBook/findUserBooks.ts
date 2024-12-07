@@ -1,3 +1,4 @@
+import { type ReadingStatus } from './readingStatus.js';
 import { type UserBook } from './userBook.js';
 import { type Metadata } from '../metadata.js';
 import { type SortingType } from '../sortingType.js';
@@ -12,8 +13,11 @@ export interface FindUserBooksQueryParams {
   readonly userId?: string;
   readonly bookshelfId?: string;
   readonly collectionId?: string;
+  readonly authorId?: string;
   readonly isbn?: string;
   readonly title?: string;
+  readonly status?: ReadingStatus;
+  readonly isFavorite?: boolean;
   readonly page?: number;
   readonly pageSize?: number;
   readonly sortDate?: SortingType;

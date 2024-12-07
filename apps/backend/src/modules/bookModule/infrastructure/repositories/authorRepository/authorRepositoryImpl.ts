@@ -136,7 +136,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
       }
 
       if (name) {
-        query.whereRaw('LOWER(name) LIKE LOWER(?)', `%${name}%`);
+        query.whereRaw('name ILIKE ?', `%${name}%`);
       }
 
       if (isApproved !== undefined) {
@@ -182,7 +182,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
       }
 
       if (name) {
-        query.whereRaw('LOWER(name) LIKE LOWER(?)', `%${name}%`);
+        query.whereRaw('name ILIKE ?', `%${name}%`);
       }
 
       if (isApproved !== undefined) {
