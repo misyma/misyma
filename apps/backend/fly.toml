@@ -25,6 +25,8 @@ primary_region = "waw"
   method = "GET"
   timeout = "5s"
   path = "/health"
+  protocol = "http"
+  port = 5000
 
 [[vm]]
   cpu_kind = "shared"
