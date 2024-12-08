@@ -61,7 +61,7 @@ export const BookCard: FC<{ book: UserBook; key: string }> = ({
         </div>
         <div className="p-4 flex flex-col flex-grow">
           <TruncatedTextTooltip text={book.book.title}>
-            <h3 className="font-bold text-lg mb-2 line-clamp-2 min-h-[2.75rem]">
+            <h3 className="font-bold text-lg line-clamp-2 min-h-[3.5rem]">
               {book.book.title}
             </h3>
           </TruncatedTextTooltip>
