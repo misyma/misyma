@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, MouseEvent, useEffect, useState } from 'react';
 import { HiHeart, HiOutlineHeart } from 'react-icons/hi';
 import { cn } from '../../../common/lib/utils.js';
 import { useSelector } from 'react-redux';
@@ -7,6 +7,9 @@ import { useUpdateUserBookMutation } from '../../api/user/mutations/updateUserBo
 import { useQueryClient } from '@tanstack/react-query';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys.js';
 import { UserBook } from '@common/contracts';
+import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery.js';
+import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions.js';
+import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery.js';
 
 interface Props {
   book: UserBook;
@@ -24,7 +27,20 @@ export const AltFavoriteBookButton: FC<Props> = ({ book, className }) => {
     {}
   );
 
-  const onIsFavoriteChange = async (): Promise<void> => {
+  const { data } = useFindUserQuery();
+
+  const { data: userBookData } = useErrorHandledQuery(
+    FindUserBookByIdQueryOptions({
+      userBookId: book.id,
+      userId: data?.id ?? '',
+      accessToken: accessToken as string,
+    })
+  );
+
+  const onIsFavoriteChange = async (
+    e: MouseEvent<HTMLOrSVGElement>
+  ): Promise<void> => {
+    e.stopPropagation();
     if (isPending) {
       return;
     }
@@ -56,8 +72,16 @@ export const AltFavoriteBookButton: FC<Props> = ({ book, className }) => {
   };
 
   useEffect(() => {
-    setIsFavorite(book?.isFavorite);
-  }, [book]);
+    if (userBookData?.isFavorite === book.isFavorite) {
+      setIsFavorite(book.isFavorite);
+    }
+    if (!userBookData?.isFavorite) {
+      setIsFavorite(book.isFavorite);
+    }
+    if (userBookData && userBookData?.isFavorite !== book.isFavorite) {
+      setIsFavorite(userBookData.isFavorite);
+    }
+  }, [book, userBookData]);
 
   return (
     <div className="h-8 w-8">
