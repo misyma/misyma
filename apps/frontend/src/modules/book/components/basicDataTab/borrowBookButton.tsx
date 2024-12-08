@@ -51,8 +51,12 @@ const BorrowBookIcon = forwardRef<HTMLButtonElement, BorrowBookIconProps>(
 
 interface BorrowBookButtonProps {
   bookId: string;
+  currentBookshelfId: string;
 }
-export const BorrowBookButton: FC<BorrowBookButtonProps> = ({ bookId }) => {
+export const BorrowBookButton: FC<BorrowBookButtonProps> = ({
+  bookId,
+  currentBookshelfId,
+}) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
   const [createBookBorrowingModalOpen, setCreateBookBorrowingModalOpen] =
     useState(false);
@@ -83,7 +87,7 @@ export const BorrowBookButton: FC<BorrowBookButtonProps> = ({ bookId }) => {
       <TooltipProvider delayDuration={0}>
         <Tooltip>
           <TooltipTrigger asChild>
-            <BorrowBookIcon 
+            <BorrowBookIcon
               isBorrowingBookshelf={isBorrowingBookshelf}
               onClick={() => setCreateBookBorrowingModalOpen(true)}
             />
@@ -95,6 +99,7 @@ export const BorrowBookButton: FC<BorrowBookButtonProps> = ({ bookId }) => {
       </TooltipProvider>
       {createBookBorrowingModalOpen && (
         <CreateBorrowingModal
+          currentBookshelfId={currentBookshelfId}
           bookId={bookId}
           open={createBookBorrowingModalOpen}
           onMutated={async () => {

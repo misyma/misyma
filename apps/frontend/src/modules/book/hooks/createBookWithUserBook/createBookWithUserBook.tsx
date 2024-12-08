@@ -51,16 +51,29 @@ export const useCreateBookWithUserBook = ({
 
   const queryClient = useQueryClient();
 
-  const { mutateAsync: createBookMutation, isPending: isCreateBookPending } = useCreateBookMutation({});
-  const { mutateAsync: createUserBookMutation, isPending: isCreateUserBookPending } = useCreateUserBookMutation({});
-  const { mutateAsync: uploadBookImageMutation, isPending: isUploadImagePending } = useUploadBookImageMutation({});
-  const { mutateAsync: createAuthorDraft, isPending: isCreateAuthorPending } = useCreateAuthorDraftMutation({});
+  const { mutateAsync: createBookMutation, isPending: isCreateBookPending } =
+    useCreateBookMutation({});
+  const {
+    mutateAsync: createUserBookMutation,
+    isPending: isCreateUserBookPending,
+  } = useCreateUserBookMutation({});
+  const {
+    mutateAsync: uploadBookImageMutation,
+    isPending: isUploadImagePending,
+  } = useUploadBookImageMutation({});
+  const { mutateAsync: createAuthorDraft, isPending: isCreateAuthorPending } =
+    useCreateAuthorDraftMutation({});
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const navigate = useNavigate();
 
-  const create = async ({ authorPayload, bookPayload, userBookPayload, image }: CreatePayload) => {
+  const create = async ({
+    authorPayload,
+    bookPayload,
+    userBookPayload,
+    image,
+  }: CreatePayload) => {
     if (!bookPayload && !userBookPayload.bookId) {
       throw new Error(`BookId prop is required if book is not being created.`);
     }
@@ -134,11 +147,19 @@ export const useCreateBookWithUserBook = ({
         return;
       }
 
-      await queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId &&
-          query.queryKey[1] === userBookPayload?.bookshelfId,
-      });
+      await Promise.all([
+        queryClient.invalidateQueries({
+          predicate: (query) =>
+            query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId &&
+            query.queryKey[1] === userBookPayload?.bookshelfId,
+        }),
+        queryClient.invalidateQueries({
+          predicate: (query) =>
+            query.queryKey[0] === BookApiQueryKeys.findUserBooksBy &&
+            query.queryKey.includes('infinite-query') &&
+            query.queryKey[1] === userBookPayload?.bookshelfId,
+        }),
+      ]);
 
       if (image) {
         try {
@@ -177,6 +198,10 @@ export const useCreateBookWithUserBook = ({
 
   return {
     create,
-    isProcessing: isCreateBookPending || isCreateUserBookPending || isUploadImagePending || isCreateAuthorPending,
+    isProcessing:
+      isCreateBookPending ||
+      isCreateUserBookPending ||
+      isUploadImagePending ||
+      isCreateAuthorPending,
   };
 };

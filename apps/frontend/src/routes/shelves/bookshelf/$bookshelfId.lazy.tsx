@@ -94,7 +94,7 @@ const BookshelfTopBar: FC<BookshelfTopBarProps> = ({
   return (
     <div className="flex justify-between w-full sm:max-w-7xl">
       <div>
-        <p className="text-xl sm:text-3xl">{bookshelfResponse?.name ?? ' '}</p>
+        <p className="text-xl min-h-[1.75rem] sm:min-h-[2.25rem] sm:text-3xl">{bookshelfResponse?.name ?? ' '}</p>
         <p>
           {bookshelfBooksResponse?.metadata.total ?? 0}{' '}
           {getCountNoun(bookshelfBooksResponse?.metadata.total ?? 0)}
@@ -138,7 +138,7 @@ export const BorrowingBookshelf: FC = () => {
 
   return (
     <AuthenticatedLayout>
-      <div className="p-8 flex flex-col justify-center w-full items-center">
+      <div className="px-8 flex flex-col justify-center w-full items-center">
         <BookshelfTopBar
           bookshelfBooksResponse={bookshelfBooksResponse}
           bookshelfId={bookshelfId}
@@ -206,8 +206,8 @@ export const Route = createFileRoute('/shelves/bookshelf/$bookshelfId')({
   staticData: {
     routeDisplayableNameParts: [
       {
-        readableName: 'Moje książki',
-        href: '/mybooks/',
+        readableName: 'Półki',
+        href: '/shelves/',
       },
       {
         readableName: '$bookshelfName',

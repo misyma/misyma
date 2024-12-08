@@ -12,8 +12,19 @@ import { cn } from '../../../common/lib/utils';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/form/form';
-import { Popover, PopoverContent, PopoverTrigger } from '../../../common/components/popover/popover';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../../../common/components/form/form';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '../../../common/components/popover/popover';
 import { CalendarIcon } from 'lucide-react';
 import { Calendar } from '../../../common/components/calendar/calendar';
 import { useStoreSelector } from '../../../core/store/hooks/useStoreSelector';
@@ -25,10 +36,10 @@ import { pl } from 'date-fns/locale';
 import { BorrowingApiQueryKeys } from '../../../borrowing/api/queries/borrowingApiQueryKeys';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
 import { useQueryClient } from '@tanstack/react-query';
-import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 
 interface Props {
   bookId: string;
+  currentBookshelfId: string;
   className?: string;
   open: boolean;
   onMutated?: () => void | Promise<void>;
@@ -53,7 +64,13 @@ const createBorrowingSchema = z.object({
   }),
 });
 
-export const CreateBorrowingModal: FC<Props> = ({ bookId, open, onClosed, onMutated }: Props) => {
+export const CreateBorrowingModal: FC<Props> = ({
+  bookId,
+  currentBookshelfId,
+  open,
+  onClosed,
+  onMutated,
+}: Props) => {
   const accessToken = useStoreSelector(userStateSelectors.selectAccessToken);
   const [isOpen, setIsOpen] = useState<boolean>(open);
   const [error, setError] = useState('');
@@ -61,8 +78,6 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, open, onClosed, onMuta
   const queryClient = useQueryClient();
 
   const { toast } = useToast();
-
-  const { data: userData } = useFindUserQuery();
 
   const [calendarVisible, setCalendarVisible] = useState(false);
 
@@ -80,7 +95,9 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, open, onClosed, onMuta
     setCalendarVisible(val);
   };
 
-  const onCreateBorrowing = async (values: z.infer<typeof createBorrowingSchema>) => {
+  const onCreateBorrowing = async (
+    values: z.infer<typeof createBorrowingSchema>
+  ) => {
     try {
       await mutateAsync({
         ...values,
@@ -97,21 +114,34 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, open, onClosed, onMuta
 
       toast({
         title: 'Książka została wypożyczona.',
-        description: `Książka została wypożyczona przez ${values.borrower} od dnia ${
-          formatDate(values.startedAt, 'PPP', {
+        description: `Książka została wypożyczona przez ${values.borrower} od dnia ${formatDate(
+          values.startedAt,
+          'PPP',
+          {
             locale: pl,
-          })}`,
+          }
+        )}`,
         variant: 'success',
       });
 
-      await queryClient.invalidateQueries({
-        predicate: ({ queryKey }) =>
-          queryKey[0] === BorrowingApiQueryKeys.findBookBorrowingsQuery && queryKey[1] === bookId,
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: [BookApiQueryKeys.findUserBookById, bookId, userData?.id],
-      });
+      await Promise.all([
+        queryClient.invalidateQueries({
+          predicate: ({ queryKey }) =>
+            queryKey[0] === BorrowingApiQueryKeys.findBookBorrowingsQuery &&
+            queryKey[1] === bookId,
+        }),
+        queryClient.invalidateQueries({
+          predicate: ({ queryKey }) =>
+            queryKey.includes('infinite-query') &&
+            queryKey[0] === BookApiQueryKeys.findUserBooksBy &&
+            queryKey[1] === currentBookshelfId,
+        }),
+        queryClient.invalidateQueries({
+          predicate: ({ queryKey }) =>
+            queryKey[0] === BookApiQueryKeys.findUserBookById &&
+            queryKey[1] === bookId,
+        }),
+      ]);
     } catch (error) {
       if (error instanceof Error) {
         return setError(error.message);
@@ -188,7 +218,7 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, open, onClosed, onMuta
                             type="button"
                             className={cn(
                               'min-w-96 pl-3 text-left font-normal',
-                              !field.value && 'text-muted-foreground',
+                              !field.value && 'text-muted-foreground'
                             )}
                           >
                             {field.value ? (
@@ -202,15 +232,14 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, open, onClosed, onMuta
                           </Button>
                         </FormControl>
                       </PopoverTrigger>
-                      <PopoverContent
-                        className="w-auto p-0"
-                        align="start"
-                      >
+                      <PopoverContent className="w-auto p-0" align="start">
                         <Calendar
                           mode="single"
                           selected={field.value}
                           onSelect={field.onChange}
-                          disabled={(date) => date > new Date() || date < new Date('1900-01-01')}
+                          disabled={(date) =>
+                            date > new Date() || date < new Date('1900-01-01')
+                          }
                           initialFocus
                         />
                       </PopoverContent>
