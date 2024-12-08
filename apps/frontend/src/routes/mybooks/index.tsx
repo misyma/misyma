@@ -17,17 +17,12 @@ import { BookshelfsList } from '../../modules/bookshelf/components/bookshelfsLis
 import { useBookshelfView } from '../../modules/core/store/hooks/useBookshelfView.js';
 import { Switch } from '../../modules/common/components/switch/switch.js';
 import { BookshelfView } from '../../modules/core/store/states/preferencesState/preferencesState.js';
-import { useQuery } from '@tanstack/react-query';
 import { useDispatch, useSelector } from 'react-redux';
-import { userStateSelectors } from '../../modules/core/store/states/userState/userStateSlice.js';
-import { BookCard } from '../../modules/bookshelf/components/bookCard/bookCard.js';
-import { FindUserBooksByQueryOptions } from '../../modules/book/api/user/queries/findUserBookBy/findUserBooksByQueryOptions.js';
 import { AppDispatch, RootState } from '../../modules/core/store/store.js';
 import {
   setBookshelves,
   setEditMap,
 } from '../../modules/core/store/states/bookshelvesState/bookshelfStateSlice.js';
-import { Skeleton } from '../../modules/common/components/skeleton/skeleton.js';
 import {
   FilterProvider,
   useFilterContext,
@@ -44,6 +39,7 @@ import { z } from 'zod';
 import { SearchLanguageSelect } from '../../modules/book/components/adminBookSearchFilters/adminBookSearchFilters.js';
 import { FiltersDrawer } from '../../modules/common/components/filtersDrawer/filtersDrawer.js';
 import { DynamicFilterProvider } from '../../modules/common/contexts/dynamicFilterContext.js';
+import { VirtualizedBooksList } from '../../modules/bookshelf/components/virtualizedBooksList/virtualizedBooksList.js';
 
 export const ShelvesPage: FC = () => {
   const breadcrumbKeysDispatch = useBreadcrumbKeysDispatch();
@@ -253,28 +249,17 @@ const BookPageFiltersBar = () => {
   );
 
   return (
-    <DynamicFilterProvider
-      initialValues={{}}
-      filterOptions={filterOptions}
-    >
-      <FiltersDrawer 
-      className='grid grid-cols-3'
-      onApplyFilters={() => {}} />
+    <DynamicFilterProvider initialValues={{}} filterOptions={filterOptions}>
+      <FiltersDrawer
+        className="grid grid-cols-3 px-2"
+        onApplyFilters={() => {}}
+      />
     </DynamicFilterProvider>
   );
 };
 
 const BooksPage: FC = () => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const { isFilterVisible } = useFilterContext();
-
-  const { data, isLoading } = useQuery(
-    FindUserBooksByQueryOptions({
-      accessToken: accessToken as string,
-      pageSize: 100,
-    })
-  );
 
   return (
     <motion.div
@@ -286,25 +271,7 @@ const BooksPage: FC = () => {
       className="w-full px-8"
     >
       {isFilterVisible && <BookPageFiltersBar />}
-      {/* <ScrollArea className='w-full'> */}
-      {isLoading && (
-        <div className="grid grid-cols-6 gap-4 pt-2 w-full px-2">
-          {Array.from({ length: 12 }).map((_, idx) => (
-            <Skeleton
-              key={`book-card-skeleton-${idx}`}
-              className="w-full aspect-[2/3]"
-            />
-          ))}
-        </div>
-      )}
-      {!isLoading && (
-        <div className="grid grid-cols-6 gap-4 pt-2 w-full px-2">
-          {data?.data.map((book, index) => (
-            <BookCard key={`book-card-${index}`} book={book} />
-          ))}
-        </div>
-      )}
-      {/* </ScrollArea> */}
+      <VirtualizedBooksList />
     </motion.div>
   );
 };
@@ -318,9 +285,25 @@ const View: FC = () => {
       <div className="flex flex-col items-center justify-center w-100% px-8 py-1 sm:py-2">
         <div className="flex items-center space-x-2"></div>
         <div className="w-full px-16 flex justify-between items-center gap-4 pb-8">
-          <h2 className="text-2xl font-semibold text-primary">
-            {view === 'books' ? 'Książki' : 'Półki'}
-          </h2>
+          <div className="flex items-center gap-4">
+            <h2 className="text-2xl font-semibold text-primary">
+              {view === 'books' ? 'Książki' : 'Półki'}
+            </h2>
+            <Switch
+              onClick={() => {
+                const viewMap: Record<BookshelfView, BookshelfView> = {
+                  books: 'shelves',
+                  shelves: 'books',
+                };
+                updateBookshelfView(viewMap[view]);
+
+                if (isFilterVisible) {
+                  toggleFilterVisibility();
+                }
+              }}
+              id="bookshelf-view-mode"
+            />
+          </div>
           <div className="flex items-center gap-4">
             {view === 'books' ? (
               <TooltipProvider delayDuration={300}>
@@ -336,20 +319,6 @@ const View: FC = () => {
                 </Tooltip>
               </TooltipProvider>
             ) : null}
-            <Switch
-              onClick={() => {
-                const viewMap: Record<BookshelfView, BookshelfView> = {
-                  books: 'shelves',
-                  shelves: 'books',
-                };
-                updateBookshelfView(viewMap[view]);
-
-                if (isFilterVisible) {
-                  toggleFilterVisibility();
-                }
-              }}
-              id="bookshelf-view-mode"
-            />
           </div>
         </div>
         {view === 'books' ? <BooksPage /> : <ShelvesPage />}
@@ -368,12 +337,5 @@ export const Route = createFileRoute('/mybooks/')({
       </RequireAuthComponent>
     );
   },
-  staticData: {
-    routeDisplayableNameParts: [
-      {
-        readableName: 'Moje książki',
-        href: '/mybooks/',
-      },
-    ],
-  },
+  staticData: {},
 });

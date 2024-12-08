@@ -10,7 +10,6 @@ import { useNavigateToBook } from '../../../book/api/hooks/useNavigateToBook';
 
 export const BookCard: FC<{ book: UserBook; key: string }> = ({
   book,
-  key,
 }) => {
   const authors = useMemo(
     () => book.book.authors.map((a) => a.name).join(', '),
@@ -47,13 +46,12 @@ export const BookCard: FC<{ book: UserBook; key: string }> = ({
   return (
     <div
       className="relative h-full cursor-pointer"
-      key={key}
       onClick={navigateToBook}
     >
-      <div className="absolute right-2 top-2 z-10">
+      <div className="absolute right-2 top-2 z-40">
         <AltFavoriteBookButton book={book} />
       </div>
-      <div className="flex flex-col h-full rounded-[20px] border shadow-sm shadow-gray-400 transition-transform duration-300 ease-in-out">
+      <div className="flex flex-col h-full max-h-[344px] rounded-[20px] border shadow-sm shadow-gray-400 transition-transform duration-300 ease-in-out">
         <div className="pt-4 pb-2 px-4 aspect-[2/1] rounded-[4px] flex-shrink-0">
           <BookImageMiniature
             bookImageSrc={book.imageUrl}

@@ -42,8 +42,20 @@ export const FiltersDrawer: FC<{
           </div>
         ))}
       </div>
-      <div className={cn('flex items-center justify-center pb-4', className)}>
-        <Button onClick={() => onApplyFilters(filterValues)}>Aplikuj</Button>
+      <div
+        className={cn(
+          'w-full pb-4',
+          className,
+          'flex items-center justify-center'
+        )}
+      >
+        <Button
+          variant="none"
+          className="text-primary"
+          onClick={() => onApplyFilters(filterValues)}
+        >
+          Wyczyść wszystkie filtry
+        </Button>
       </div>
     </div>
   );
