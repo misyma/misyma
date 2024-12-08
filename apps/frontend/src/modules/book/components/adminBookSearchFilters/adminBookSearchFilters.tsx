@@ -67,22 +67,26 @@ const CustomAuthorSearchFilter: FC<FilterComponentProps> = ({ filter }) => {
                 'justify-between bg-[#D1D5DB]/20',
                 !currentAuthorId && 'text-muted-foreground',
                 'border h-12',
-                'w-full truncate'
+                'w-96 truncate'
               )}
             >
               <div className="flex-1 min-w-0 max-w-full">
                 {' '}
                 <div className="flex items-center w-full overflow-hidden">
                   {!currentAuthorId && (
-                    <span className="text-muted-foreground">
+                    <span className="px-2 text-muted-foreground text-sm">
                       Wyszukaj autora
                     </span>
                   )}
                   {currentAuthorId && isFetchingCurrentAuthor && (
-                    <LoadingSpinner size={20} />
+                    <div className='px-2'>
+                      <LoadingSpinner size={20} />
+                    </div>
                   )}
                   {currentAuthorId && !isFetchingCurrentAuthor && (
-                    <span className="block truncate">{getAuthorName()}</span>
+                    <span className="block truncate px-2 text-sm">
+                      {getAuthorName()}
+                    </span>
                   )}
                 </div>
               </div>{' '}
@@ -90,7 +94,7 @@ const CustomAuthorSearchFilter: FC<FilterComponentProps> = ({ filter }) => {
             </Button>
           </PopoverTrigger>
           <AuthorSearchSelector
-            className="w-48 sm:w-48"
+            className="w-96 sm:w-96"
             onCreateAuthorDraft={() => {}}
             includeAuthorCreation={false}
             onSelect={handleChange}
@@ -118,7 +122,6 @@ export const SearchLanguageSelect: FC<FilterComponentProps> = ({ filter }) => {
       filter={filter}
       slot={
         <LanguageSelect
-          className="w-[calc(100%-2rem)]"
           type="free"
           selectorValue={filterValue as string}
           onValueChange={handleChange}
@@ -139,6 +142,12 @@ export const AdminBookSearchFilter: FC<AdminBookSearchFilterProps> = ({
 }) => {
   const filterOptions = useMemo(
     (): FilterOpts[] => [
+      {
+        id: 'title-filter',
+        key: 'title',
+        label: 'Tytuł',
+        type: 'text',
+      },
       {
         id: 'author-ids-filter',
         key: 'authorIds',
@@ -161,12 +170,6 @@ export const AdminBookSearchFilter: FC<AdminBookSearchFilterProps> = ({
         customSlot: SearchLanguageSelect,
       },
       {
-        id: 'is-approved-filter',
-        key: 'isApproved',
-        label: 'Zaakceptowana',
-        type: 'three-state-checkbox',
-      },
-      {
         id: 'release-year-after-filter',
         key: 'releaseYearAfter',
         label: 'Wydana po',
@@ -185,10 +188,10 @@ export const AdminBookSearchFilter: FC<AdminBookSearchFilterProps> = ({
         isBeforeFilter: true,
       },
       {
-        id: 'title-filter',
-        key: 'title',
-        label: 'Tytuł',
-        type: 'text',
+        id: 'is-approved-filter',
+        key: 'isApproved',
+        label: 'Zaakceptowana',
+        type: 'three-state-checkbox',
       },
     ],
     []
@@ -202,7 +205,11 @@ export const AdminBookSearchFilter: FC<AdminBookSearchFilterProps> = ({
     >
       <FiltersDrawer
         onApplyFilters={onApplyFilters}
-        className={isFilterVisible ? '' : 'hidden'}
+        className={cn(
+          'sm:col-span-4 md:col-span-5 lg:col-span-6 grid grid-cols-3 px-2',
+          isFilterVisible ? '' : 'hidden'
+        )}
+        actionButtonClassName={isFilterVisible ? '' : 'hidden'}
       />
     </DynamicFilterProvider>
   );

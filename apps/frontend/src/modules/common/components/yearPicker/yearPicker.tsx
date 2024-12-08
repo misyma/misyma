@@ -47,15 +47,14 @@ function YearPicker({
       open={open}
       onOpenChange={onOpenChange}
       onValueChange={onValueChange}
-      className='w-full'
     >
-      <SelectTrigger className={cn('w-[calc(100%-2rem)]', className)}>
+      <SelectTrigger className={cn(className)}>
         {!value && "RRRR"}
         <SelectValue
-          className={cn('w-[calc(100%-2rem)]', className)}
+          className={cn( className)}
         ></SelectValue>
       </SelectTrigger>
-      <SelectContent className={cn('w-[calc(100%-2rem)]', className)}>
+      <SelectContent className={cn(className)}>
         {years}
       </SelectContent>
     </Select>

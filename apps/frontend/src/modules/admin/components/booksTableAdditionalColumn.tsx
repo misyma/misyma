@@ -11,7 +11,7 @@ export const BooksTableAdditionalColumn: FC<
   BooksTableAdditionalColumnProps
 > = ({ onApplyFilters, searchParams }) => {
   return (
-    <div className="flex items-center justify-end self-start gap-2 border-l w-full">
+    <div className="px-2">
       <AdminBookSearchFilter
         initialValues={searchParams as DynamicFilterValues}
         onApplyFilters={onApplyFilters}

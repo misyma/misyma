@@ -10,8 +10,9 @@ import { Button } from '../button/button';
 
 export const FiltersDrawer: FC<{
   className?: string;
+  actionButtonClassName?: string;
   onApplyFilters: (vals: DynamicFilterValues) => void;
-}> = ({ className, onApplyFilters }) => {
+}> = ({ className, actionButtonClassName, onApplyFilters }) => {
   const { filters, filterOptions, filterValues } = useDynamicFilterContext();
 
   const constructedFilters = useMemo((): Array<FilterOpts> => {
@@ -46,12 +47,13 @@ export const FiltersDrawer: FC<{
         className={cn(
           'w-full pb-4',
           className,
-          'flex items-center justify-center'
+          'flex items-center justify-center',
+          actionButtonClassName
         )}
       >
         <Button
           variant="none"
-          className="text-primary"
+          className={cn('text-primary', actionButtonClassName)}
           onClick={() => onApplyFilters(filterValues)}
         >
           Wyczyść wszystkie filtry

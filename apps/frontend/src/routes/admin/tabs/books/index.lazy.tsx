@@ -6,7 +6,6 @@ import {
   FilterProvider,
   useFilterContext,
 } from '../../../../modules/common/contexts/filterContext';
-import { cn } from '../../../../modules/common/lib/utils';
 import { useQueryClient } from '@tanstack/react-query';
 import { BookApiQueryKeys } from '../../../../modules/book/api/user/queries/bookApiQueryKeys';
 import { FindAdminBooksQueryParams } from '@common/contracts';
@@ -16,11 +15,6 @@ import { AdminTabs } from '../../../../modules/admin/components/adminTabs';
 import { BooksTable } from '../../../../modules/admin/components/booksTable';
 import { BooksTabActions } from '../../../../modules/admin/components/booksTabActions';
 import { BooksTableAdditionalColumn } from '../../../../modules/admin/components/booksTableAdditionalColumn';
-
-const TableSizing = {
-  visible: `sm:col-span-4 md:col-span-5`,
-  invisible: `sm:col-span-5 md:col-span-6`,
-} as const;
 
 export const BooksAdminPage: FC = () => {
   const { isFilterVisible, toggleFilterVisibility } = useFilterContext();
@@ -87,12 +81,9 @@ export const BooksAdminPage: FC = () => {
           />
         }
         columnsClassName="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-y-4 gap-x-4"
-        tableContainerClassName={cn(
-          TableSizing[isFilterVisible ? 'visible' : 'invisible'],
-          'flex flex-col justify-start col-span-4 w-full'
-        )}
+        tableContainerClassName={'sm:col-span-5 md:col-span-6'}
         tabsSlotClassName="flex justify-between gap-4 col-span-6"
-        additionalColumnClassName="flex items-center justify-end self-start gap-2 border-l w-full"
+        additionalColumnClassName="col-span-6"
       />
     </AuthenticatedLayout>
   );
