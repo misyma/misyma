@@ -4,8 +4,7 @@ import { type QueryHandler } from '../../../../../common/types/queryHandler.js';
 import { type UserBook } from '../../../domain/entities/userBook/userBook.js';
 
 export interface FindUserBooksQueryHandlerPayload {
-  readonly requesterUserId: string;
-  readonly userId?: string | undefined;
+  readonly userId: string;
   readonly bookshelfId?: string | undefined;
   readonly collectionId?: string | undefined;
   readonly authorId?: string | undefined;

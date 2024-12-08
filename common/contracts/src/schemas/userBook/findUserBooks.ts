@@ -10,7 +10,6 @@ export enum UserBookExpandField {
 }
 
 export interface FindUserBooksQueryParams {
-  readonly userId?: string;
   readonly bookshelfId?: string;
   readonly collectionId?: string;
   readonly authorId?: string;

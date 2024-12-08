@@ -9,7 +9,6 @@ import { bookIsbnSchema, bookTitleSchema } from '../../common/bookDto.js';
 const expandFieldPattern = `^(${Object.values(contracts.UserBookExpandField).join('|')})(,(${Object.values(contracts.UserBookExpandField).join('|')}))*$`;
 
 export const findUserBooksQueryParamsDtoSchema = Type.Object({
-  userId: Type.Optional(Type.String({ format: 'uuid' })),
   bookshelfId: Type.Optional(Type.String({ format: 'uuid' })),
   collectionId: Type.Optional(Type.String({ format: 'uuid' })),
   authorId: Type.Optional(Type.String({ format: 'uuid' })),
