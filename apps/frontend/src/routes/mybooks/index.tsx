@@ -24,7 +24,6 @@ import {
   setEditMap,
 } from '../../modules/core/store/states/bookshelvesState/bookshelfStateSlice.js';
 import {
-  FilterProvider,
   useFilterContext,
 } from '../../modules/common/contexts/filterContext.js';
 import {
@@ -40,6 +39,10 @@ import { SearchLanguageSelect } from '../../modules/book/components/adminBookSea
 import { FiltersDrawer } from '../../modules/common/components/filtersDrawer/filtersDrawer.js';
 import { DynamicFilterProvider } from '../../modules/common/contexts/dynamicFilterContext.js';
 import { VirtualizedBooksList } from '../../modules/bookshelf/components/virtualizedBooksList/virtualizedBooksList.js';
+import {
+  myBooksStateSelectors,
+  setFilterVisible,
+} from '../../modules/core/store/states/myBooksFilterState/myBooksFilterStateSlice.js';
 
 export const ShelvesPage: FC = () => {
   const breadcrumbKeysDispatch = useBreadcrumbKeysDispatch();
@@ -235,15 +238,6 @@ const BookPageFiltersBar = () => {
         isAfterFilter: true,
         isBeforeFilter: false,
       },
-      {
-        id: 'release-year-before-filter',
-        key: 'releaseYearBefore',
-        label: 'Wydana przed',
-        type: 'year',
-        dateRangeSiblingId: 'release-year-after-filter',
-        isAfterFilter: false,
-        isBeforeFilter: true,
-      },
     ],
     []
   );
@@ -259,7 +253,9 @@ const BookPageFiltersBar = () => {
 };
 
 const BooksPage: FC = () => {
-  const { isFilterVisible } = useFilterContext();
+  const isFilterVisible = useSelector(
+    myBooksStateSelectors.getFilterVisibility
+  );
 
   return (
     <motion.div
@@ -273,6 +269,24 @@ const BooksPage: FC = () => {
       {isFilterVisible && <BookPageFiltersBar />}
       <VirtualizedBooksList />
     </motion.div>
+  );
+};
+
+const BooksFiltersVisibilityButton = () => {
+  const isFilterVisible = useSelector(
+    myBooksStateSelectors.getFilterVisibility
+  );
+  const dispatch = useDispatch();
+
+  return (
+    <Button
+      size="big-icon"
+      onClick={() => {
+        dispatch(setFilterVisible(!isFilterVisible));
+      }}
+    >
+      <HiOutlineFilter className="w-8 h-8"></HiOutlineFilter>
+    </Button>
   );
 };
 
@@ -309,9 +323,7 @@ const View: FC = () => {
               <TooltipProvider delayDuration={300}>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button size="big-icon" onClick={toggleFilterVisibility}>
-                      <HiOutlineFilter className="w-8 h-8"></HiOutlineFilter>
-                    </Button>
+                    <BooksFiltersVisibilityButton />
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>Filtruj</p>
@@ -331,9 +343,7 @@ export const Route = createFileRoute('/mybooks/')({
   component: () => {
     return (
       <RequireAuthComponent>
-        <FilterProvider>
-          <View />
-        </FilterProvider>
+        <View />
       </RequireAuthComponent>
     );
   },

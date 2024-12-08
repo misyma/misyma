@@ -58,7 +58,6 @@ interface BaseLanguageSelectProps {
   dialog?: boolean;
   selectorValue?: string;
   type?: 'form' | 'free';
-
   className?: string;
 }
 
@@ -125,13 +124,11 @@ const LanguageSelect: FC<LanguageSelectProps> = ({
           field.onChange(val);
         }
       }}
-      // todo: fix type later
       defaultValue={
         type === 'form'
           ? (field as ControllerRenderProps)?.value
           : selectorValue
       }
-      // todo: fix type later
       value={
         type === 'form'
           ? (field as ControllerRenderProps)?.value
