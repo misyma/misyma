@@ -69,11 +69,13 @@ export const VirtualizedBooksList: FC<VirtualizedBooksListProps> = () => {
     ) {
       fetchNextPage();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     hasNextPage,
     fetchNextPage,
     allBookChunks.length,
     isFetchingNextPage,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     rowVirtualizer.getVirtualItems(),
   ]);
 
