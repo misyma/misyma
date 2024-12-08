@@ -18,7 +18,6 @@ export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler 
   public async execute(payload: FindUserBooksQueryHandlerPayload): Promise<FindUserBooksQueryHandlerResult> {
     const {
       bookshelfId,
-      requesterUserId,
       userId,
       collectionId,
       authorId,
@@ -35,21 +34,14 @@ export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler 
     if (bookshelfId) {
       await this.validateBookshelf({
         bookshelfId,
-        requesterUserId,
+        userId,
       });
     }
 
     if (collectionId) {
       await this.validateCollection({
         collectionId,
-        requesterUserId,
-      });
-    }
-
-    if (userId) {
-      await this.validateUser({
         userId,
-        requesterUserId,
       });
     }
 
@@ -88,10 +80,10 @@ export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler 
 
   private async validateBookshelf({
     bookshelfId,
-    requesterUserId,
+    userId,
   }: {
     readonly bookshelfId: string;
-    readonly requesterUserId: string;
+    readonly userId: string;
   }): Promise<void> {
     const bookshelf = await this.bookshelfRepository.findBookshelf({
       where: {
@@ -106,7 +98,7 @@ export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler 
       });
     }
 
-    if (bookshelf.getUserId() !== requesterUserId) {
+    if (bookshelf.getUserId() !== userId) {
       throw new ResourceNotFoundError({
         resource: 'Bookshelf',
         id: bookshelfId,
@@ -116,10 +108,10 @@ export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler 
 
   public async validateCollection({
     collectionId,
-    requesterUserId,
+    userId,
   }: {
     readonly collectionId: string;
-    readonly requesterUserId: string;
+    readonly userId: string;
   }): Promise<void> {
     const collection = await this.collectionRepository.findCollection({ id: collectionId });
 
@@ -130,25 +122,10 @@ export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler 
       });
     }
 
-    if (collection.getUserId() !== requesterUserId) {
+    if (collection.getUserId() !== userId) {
       throw new ResourceNotFoundError({
         resource: 'Collection',
         id: collectionId,
-      });
-    }
-  }
-
-  public async validateUser({
-    userId,
-    requesterUserId,
-  }: {
-    readonly userId: string;
-    readonly requesterUserId: string;
-  }): Promise<void> {
-    if (userId !== requesterUserId) {
-      throw new ResourceNotFoundError({
-        resource: 'User',
-        id: userId,
       });
     }
   }

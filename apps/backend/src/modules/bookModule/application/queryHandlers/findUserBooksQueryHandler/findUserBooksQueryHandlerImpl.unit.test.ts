@@ -53,7 +53,7 @@ describe('FindUserBooksQueryHandlerImpl', () => {
 
     try {
       await findUserBooksQueryHandlerImpl.execute({
-        requesterUserId: Generator.uuid(),
+        userId: Generator.uuid(),
         bookshelfId: nonExistentBookshelfId,
         page: 1,
         pageSize: 10,
@@ -83,7 +83,7 @@ describe('FindUserBooksQueryHandlerImpl', () => {
     try {
       await findUserBooksQueryHandlerImpl.execute({
         bookshelfId: bookshelf.getId(),
-        requesterUserId: nonMatchingUserId,
+        userId: nonMatchingUserId,
         page: 1,
         pageSize: 10,
         expandFields: [],
@@ -114,7 +114,7 @@ describe('FindUserBooksQueryHandlerImpl', () => {
     vi.spyOn(userBookRepositoryMock, 'countUserBooks').mockResolvedValueOnce(1);
 
     const { userBooks, total } = await findUserBooksQueryHandlerImpl.execute({
-      requesterUserId: bookshelf.getUserId(),
+      userId: bookshelf.getUserId(),
       bookshelfId: bookshelf.getId(),
       page: 1,
       pageSize: 10,
@@ -139,7 +139,7 @@ describe('FindUserBooksQueryHandlerImpl', () => {
 
     const { userBooks, total } = await findUserBooksQueryHandlerImpl.execute({
       collectionId: collection.getId(),
-      requesterUserId: collection.getUserId(),
+      userId: collection.getUserId(),
       page: 1,
       pageSize: 10,
       expandFields: [],
@@ -157,7 +157,7 @@ describe('FindUserBooksQueryHandlerImpl', () => {
 
     try {
       await findUserBooksQueryHandlerImpl.execute({
-        requesterUserId: Generator.uuid(),
+        userId: Generator.uuid(),
         collectionId: nonExistentCollectionId,
         page: 1,
         pageSize: 10,

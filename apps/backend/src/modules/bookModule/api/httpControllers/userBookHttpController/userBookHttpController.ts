@@ -290,7 +290,7 @@ export class UserBookHttpController implements HttpController {
   private async findUserBooks(
     request: HttpRequest<undefined, FindUserBooksQueryParamsDto, undefined>,
   ): Promise<HttpOkResponse<FindUserBooksResponseBodyDto>> {
-    const { userId: requesterUserId } = await this.accessControlService.verifyBearerToken({
+    const { userId } = await this.accessControlService.verifyBearerToken({
       authorizationHeader: request.headers['authorization'],
     });
 
@@ -300,7 +300,6 @@ export class UserBookHttpController implements HttpController {
       bookshelfId,
       collectionId,
       authorId,
-      userId,
       isbn,
       title,
       isFavorite,
@@ -310,7 +309,6 @@ export class UserBookHttpController implements HttpController {
     } = request.queryParams;
 
     const { userBooks, total } = await this.findUserBooksQueryHandler.execute({
-      requesterUserId,
       bookshelfId,
       collectionId,
       authorId,
