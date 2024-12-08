@@ -2,10 +2,10 @@ import {
   createLazyFileRoute,
 } from '@tanstack/react-router';
 import { FC } from 'react';
-import { RequireAuthComponent } from '../../../modules/core/components/requireAuth/requireAuthComponent';
-import { CreateBookForm } from '../../../modules/book/components/createBookForm/createBookForm';
-import { AuthenticatedLayout } from '../../../modules/auth/layouts/authenticated/authenticatedLayout';
-import { BookCreationProvider } from '../../../modules/bookshelf/context/bookCreationContext/bookCreationContext';
+import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
+import { CreateBookForm } from '../../../../modules/book/components/createBookForm/createBookForm';
+import { RequireAuthComponent } from '../../../../modules/core/components/requireAuth/requireAuthComponent';
+import { BookCreationProvider } from '../../../../modules/bookshelf/context/bookCreationContext/bookCreationContext';
 
 export const CreateBook: FC = () => {
   const { id } = Route.useParams();
@@ -19,7 +19,7 @@ export const CreateBook: FC = () => {
   );
 };
 
-export const Route = createLazyFileRoute('/bookshelf/createBook/$id')({
+export const Route = createLazyFileRoute('/shelves/bookshelf/createBook/$id')({
   component: () => {
     return (
       <RequireAuthComponent>

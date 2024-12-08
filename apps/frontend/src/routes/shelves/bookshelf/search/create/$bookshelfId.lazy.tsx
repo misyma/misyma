@@ -1,16 +1,13 @@
-import {
-  createLazyFileRoute,
-  useNavigate,
-} from '@tanstack/react-router';
+import { createLazyFileRoute, useNavigate } from '@tanstack/react-router';
 import { FC, useEffect } from 'react';
-import { RequireAuthComponent } from '../../../../modules/core/components/requireAuth/requireAuthComponent';
-import { useSearchBookContext } from '../../../../modules/bookshelf/context/searchCreateBookContext/searchCreateBookContext';
-import { ManualStep } from '../../../../modules/bookshelf/components/manualStep/manualStep';
-import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
+import { useSearchBookContext } from '../../../../../modules/bookshelf/context/searchCreateBookContext/searchCreateBookContext';
+import { AuthenticatedLayout } from '../../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import {
   Breadcrumbs,
   NumericBreadcrumb,
-} from '../../../../modules/common/components/ui/breadcrumbs';
+} from '../../../../../modules/common/components/ui/breadcrumbs';
+import { ManualStep } from '../../../../../modules/bookshelf/components/manualStep/manualStep';
+import { RequireAuthComponent } from '../../../../../modules/core/components/requireAuth/requireAuthComponent';
 
 export const SearchCreatePage: FC = () => {
   const searchBookContext = useSearchBookContext();
@@ -31,7 +28,7 @@ export const SearchCreatePage: FC = () => {
 
     if (searchBookContext.step !== 3) {
       navigate({
-        to: '/bookshelf/search',
+        to: '/shelves/bookshelf/search',
         search: {
           bookshelfId: params.bookshelfId,
           next: 0,
@@ -100,7 +97,7 @@ export const SearchCreatePage: FC = () => {
 };
 
 export const Route = createLazyFileRoute(
-  '/bookshelf/search/create/$bookshelfId'
+  '/shelves/bookshelf/search/create/$bookshelfId'
 )({
   component: () => {
     return (

@@ -1,11 +1,11 @@
-import { createFileRoute, Navigate } from '@tanstack/react-router'
+import { createFileRoute, Navigate } from '@tanstack/react-router';
 import { z } from 'zod';
 
 const bookshelfSearchSchema = z.object({
   bookshelfId: z.string().uuid().catch(''),
 });
 
-export const Route = createFileRoute('/bookshelf/$bookshelfId')({
+export const Route = createFileRoute('/shelves/bookshelf/$bookshelfId')({
   component: () => <div>Hello /bookshelf/$bookshelfId!</div>,
   parseParams: bookshelfSearchSchema.parse,
   onError: () => {
@@ -19,8 +19,8 @@ export const Route = createFileRoute('/bookshelf/$bookshelfId')({
       },
       {
         readableName: '$bookshelfName',
-        href: `/bookshelf/$bookshelfId`,
+        href: `/shelves/bookshelf/$bookshelfId`,
       },
     ],
   },
-})
+});

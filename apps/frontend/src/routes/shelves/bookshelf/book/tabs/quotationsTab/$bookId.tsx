@@ -1,12 +1,11 @@
-import { createFileRoute, Navigate } from '@tanstack/react-router'
+import { createFileRoute, Navigate } from '@tanstack/react-router';
 import { z } from 'zod';
-
 
 const bookPathParamsSchema = z.object({
   bookId: z.string().uuid().catch(''),
 });
 
-export const Route = createFileRoute('/book/tabs/gradesTab/$bookId')({
+export const Route = createFileRoute('/shelves/bookshelf/book/tabs/quotationsTab/$bookId')({
   onError: () => {
     return <Navigate to={'/login'} />;
   },
@@ -21,16 +20,16 @@ export const Route = createFileRoute('/book/tabs/gradesTab/$bookId')({
       },
       {
         readableName: '$bookshelfName',
-        href: '/bookshelf/$bookshelfId',
+        href: '/shelves/bookshelf/$bookshelfId',
       },
       {
         readableName: '$bookName',
-        href: '/book/tabs/basicDataTab/$bookId',
+        href: '/shelves/bookshelf/book/tabs/basicDataTab/$bookId',
       },
       {
-        readableName: 'Oceny',
-        href: '/book/tabs/gradesTab/$bookId',
+        readableName: 'Cytaty',
+        href: '/shelves/bookshelf/book/tabs/quotationsTab/$bookId',
       },
     ],
   },
-})
+});

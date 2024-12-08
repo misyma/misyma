@@ -9,6 +9,6 @@ const searchSchema = z.object({
   searchBy: z.enum(['isbn', 'title']),
 });
 
-export const Route = createFileRoute('/bookshelf/search/result/')({
+export const Route = createFileRoute('/shelves/bookshelf/search/result/')({
   validateSearch: (search) => searchSchema.parse(search),
 })

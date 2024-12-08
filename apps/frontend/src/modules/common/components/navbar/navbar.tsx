@@ -197,6 +197,11 @@ const NavbarList: FC<{ user?: User; handleLogout: () => void }> = ({
         </Link>
       </li>
       <li className="text-black text-md text-center font-semibold">
+        <Link to={'/shelves'} className={linkClasses}>
+          Półki
+        </Link>
+      </li>
+      <li className="text-black text-md text-center font-semibold">
         <Link to={'/profile'} className={linkClasses}>
           Profil
         </Link>

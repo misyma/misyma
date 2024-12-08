@@ -8,12 +8,7 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { RequireAuthComponent } from '../../modules/core/components/requireAuth/requireAuthComponent';
 import { z } from 'zod';
-import { AuthenticatedLayout } from '../../modules/auth/layouts/authenticated/authenticatedLayout';
-import { Button } from '../../modules/common/components/button/button';
-import { useFindUserQuery } from '../../modules/user/api/queries/findUserQuery/findUserQuery';
-import { Separator } from '../../modules/common/components/separator/separator';
 import {
   HiCheckCircle,
   HiDotsCircleHorizontal,
@@ -27,23 +22,28 @@ import {
   SortingType,
   UserBook,
 } from '@common/contracts';
-import { cn } from '../../modules/common/lib/utils';
-import { FavoriteBookButton } from '../../modules/book/components/favoriteBookButton/favoriteBookButton';
-import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../modules/core/store/states/userState/userStateSlice';
-import { useFindBookshelfByIdQuery } from '../../modules/bookshelf/api/queries/findBookshelfByIdQuery/findBookshelfByIdQuery';
-import { FindBookBorrowingsQueryOptions } from '../../modules/borrowing/api/queries/findBookBorrowings/findBookBorrowingsQueryOptions';
 import { HiClock } from 'react-icons/hi';
-import { Skeleton } from '../../modules/common/components/skeleton/skeleton';
-import { FindBooksByBookshelfIdQueryOptions } from '../../modules/book/api/user/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
+import { useFindBookshelfByIdQuery } from '../../../modules/bookshelf/api/queries/findBookshelfByIdQuery/findBookshelfByIdQuery';
 import {
   useBreadcrumbKeysContext,
   useBreadcrumbKeysDispatch,
-} from '../../modules/common/contexts/breadcrumbKeysContext';
-import { Paginator } from '../../modules/common/components/paginator/paginator';
-import { BookImageMiniature } from '../../modules/book/components/bookImageMiniature/bookImageMiniature';
-import { useErrorHandledQuery } from '../../modules/common/hooks/useErrorHandledQuery';
-import { ScrollArea } from '../../modules/common/components/scrollArea/scroll-area';
+} from '../../../modules/common/contexts/breadcrumbKeysContext';
+import { BookImageMiniature } from '../../../modules/book/components/bookImageMiniature/bookImageMiniature';
+import { useSelector } from 'react-redux';
+import { userStateSelectors } from '../../../modules/core/store/states/userState/userStateSlice';
+import { useErrorHandledQuery } from '../../../modules/common/hooks/useErrorHandledQuery';
+import { FindBookBorrowingsQueryOptions } from '../../../modules/borrowing/api/queries/findBookBorrowings/findBookBorrowingsQueryOptions';
+import { cn } from '../../../modules/common/lib/utils';
+import { FavoriteBookButton } from '../../../modules/book/components/favoriteBookButton/favoriteBookButton';
+import { Separator } from '../../../modules/common/components/separator/separator';
+import { Button } from '../../../modules/common/components/button/button';
+import { useFindUserQuery } from '../../../modules/user/api/queries/findUserQuery/findUserQuery';
+import { FindBooksByBookshelfIdQueryOptions } from '../../../modules/book/api/user/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
+import { Paginator } from '../../../modules/common/components/paginator/paginator';
+import { AuthenticatedLayout } from '../../../modules/auth/layouts/authenticated/authenticatedLayout';
+import { ScrollArea } from '../../../modules/common/components/scrollArea/scroll-area';
+import { Skeleton } from '../../../modules/common/components/skeleton/skeleton';
+import { RequireAuthComponent } from '../../../modules/core/components/requireAuth/requireAuthComponent';
 
 const bookshelfSearchSchema = z.object({
   bookshelfId: z.string().uuid().catch(''),
@@ -146,7 +146,7 @@ const BookshelfBookImageMiniature: FC<{ userBook: UserBook }> = ({
         className="w-20"
         onClick={() => {
           navigate({
-            to: '/book/tabs/basicDataTab/$bookId',
+            to: '/shelves/bookshelf/book/tabs/basicDataTab/$bookId',
             params: {
               bookId: userBook.id,
             },
@@ -238,7 +238,7 @@ const BookshelfBook: FC<{
       <div
         onClick={() => {
           navigate({
-            to: '/book/tabs/basicDataTab/$bookId',
+            to: '/shelves/bookshelf/book/tabs/basicDataTab/$bookId',
             params: {
               bookId: userBook.id,
             },
@@ -307,7 +307,7 @@ const BookshelfTopBar: FC<BookshelfTopBarProps> = ({
         size="xl"
         onClick={() => {
           navigate({
-            to: `/bookshelf/search`,
+            to: `/shelves/bookshelf/search`,
             search: {
               type: 'isbn',
               next: 0,
@@ -491,7 +491,7 @@ export const Bookshelf: FC = () => {
   );
 };
 
-export const Route = createFileRoute('/bookshelf/$bookshelfId')({
+export const Route = createFileRoute('/shelves/bookshelf/$bookshelfId')({
   component: () => {
     return (
       <RequireAuthComponent>
@@ -511,7 +511,7 @@ export const Route = createFileRoute('/bookshelf/$bookshelfId')({
       },
       {
         readableName: '$bookshelfName',
-        href: `/bookshelf/$bookshelfId`,
+        href: `/shelves/bookshelf/$bookshelfId`,
       },
     ],
   },

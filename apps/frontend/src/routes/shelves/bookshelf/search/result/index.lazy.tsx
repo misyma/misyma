@@ -1,30 +1,22 @@
 import { createLazyFileRoute, Navigate } from '@tanstack/react-router';
-import { RequireAuthComponent } from '../../../../modules/core/components/requireAuth/requireAuthComponent';
-import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
-import { LoadingSpinner } from '../../../../modules/common/components/spinner/loading-spinner';
-import { Button } from '../../../../modules/common/components/button/button';
-import { Paginator } from '../../../../modules/common/components/paginator/paginator';
-import {
-  Breadcrumbs,
-  NumericBreadcrumb,
-} from '../../../../modules/common/components/ui/breadcrumbs';
-import { useSearchBookContextDispatch } from '../../../../modules/bookshelf/context/searchCreateBookContext/searchCreateBookContext';
 import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
 import { FC, useEffect, useMemo, useRef, useState } from 'react';
-import { FindBooksQueryOptions } from '../../../../modules/book/api/user/queries/findBooks/findBooksQueryOptions';
 import { Book } from '@common/contracts';
-import { FindUserBooksByQueryOptions } from '../../../../modules/book/api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '../../../../modules/common/components/tooltip/tooltip';
-import { BookFormat } from '../../../../modules/common/constants/bookFormat';
-import { ReversedLanguages } from '../../../../modules/common/constants/languages';
-import { AutoselectedInput } from '../../../../modules/common/components/autoselectedInput/autoselectedInput';
-import { useErrorHandledQuery } from '../../../../modules/common/hooks/useErrorHandledQuery';
+import { useSearchBookContextDispatch } from '../../../../../modules/bookshelf/context/searchCreateBookContext/searchCreateBookContext';
+import { userStateSelectors } from '../../../../../modules/core/store/states/userState/userStateSlice';
+import { useErrorHandledQuery } from '../../../../../modules/common/hooks/useErrorHandledQuery';
+import { FindBooksQueryOptions } from '../../../../../modules/book/api/user/queries/findBooks/findBooksQueryOptions';
+import { FindUserBooksByQueryOptions } from '../../../../../modules/book/api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
+import { Button } from '../../../../../modules/common/components/button/button';
+import { Breadcrumbs, NumericBreadcrumb } from '../../../../../modules/common/components/ui/breadcrumbs';
+import { AutoselectedInput } from '../../../../../modules/common/components/autoselectedInput/autoselectedInput';
+import { Paginator } from '../../../../../modules/common/components/paginator/paginator';
+import { ReversedLanguages } from '../../../../../modules/common/constants/languages';
+import { BookFormat } from '../../../../../modules/common/constants/bookFormat';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../../../modules/common/components/tooltip/tooltip';
+import { AuthenticatedLayout } from '../../../../../modules/auth/layouts/authenticated/authenticatedLayout';
+import { LoadingSpinner } from '../../../../../modules/common/components/spinner/loading-spinner';
+import { RequireAuthComponent } from '../../../../../modules/core/components/requireAuth/requireAuthComponent';
 
 export const SearchResultPage: FC = () => {
   const searchParams = Route.useSearch();
@@ -40,7 +32,7 @@ export const SearchResultPage: FC = () => {
   useEffect(() => {
     if (searchParams.isbn === '' && searchParams.title === '') {
       navigate({
-        to: '/bookshelf/search',
+        to: '/shelves/bookshelf/search',
         search: {
           bookshelfId: searchParams.bookshelfId,
           type: 'title',
@@ -99,7 +91,7 @@ export const SearchResultPage: FC = () => {
 
   const onTryAgain = () => {
     navigate({
-      to: '/bookshelf/search',
+      to: '/shelves/bookshelf/search',
       search: {
         bookshelfId: searchParams.bookshelfId,
         type: 'title',
@@ -110,7 +102,7 @@ export const SearchResultPage: FC = () => {
 
   const onCreateManually = () => {
     navigate({
-      to: `/bookshelf/createBook/$id`,
+      to: `/shelves/bookshelf/createBook/$id`,
       params: {
         id: searchParams.bookshelfId,
       },
@@ -180,7 +172,7 @@ export const SearchResultPage: FC = () => {
                   <NumericBreadcrumb
                     onClick={() =>
                       navigate({
-                        to: '/bookshelf/search',
+                        to: '/shelves/bookshelf/search',
                         search: {
                           bookshelfId: searchParams.bookshelfId,
                         },
@@ -403,7 +395,7 @@ export const SearchResultPage: FC = () => {
   );
 };
 
-export const Route = createLazyFileRoute('/bookshelf/search/result/')({
+export const Route = createLazyFileRoute('/shelves/bookshelf/search/result/')({
   component: () => {
     return (
       <RequireAuthComponent>

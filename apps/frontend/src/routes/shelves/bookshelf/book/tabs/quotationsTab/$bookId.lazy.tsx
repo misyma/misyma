@@ -1,18 +1,18 @@
 import { FC } from 'react';
-import { FavoriteBookButton } from '../../../../modules/book/components/favoriteBookButton/favoriteBookButton';
+import { FavoriteBookButton } from '../../../../../../modules/book/components/favoriteBookButton/favoriteBookButton';
 import { Separator } from '@radix-ui/react-select';
-import { Button } from '../../../../modules/common/components/button/button';
-import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
+import { Button } from '../../../../../../modules/common/components/button/button';
+import { AuthenticatedLayout } from '../../../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import {
   Navigate,
   createLazyFileRoute,
 } from '@tanstack/react-router';
-import { CreateQuotationModal } from '../../../../modules/quotes/components/createQuotationModal/createQuotationModal';
-import { BookTabLayout } from '../../../../modules/book/layouts/bookTabLayout';
-import { QuotationTabTitleBar } from '../../../../modules/quotes/components/quotationTabTitleBar/quotationTabTitleBar';
-import { BookTabNavigation } from '../../../../modules/book/components/bookTabNavigation/bookTabNavigation';
-import { QuotationTabTable } from '../../../../modules/quotes/components/quotationTabTable/quotationTabTable';
-import { useBookBreadcrumbs } from '../../../../modules/book/hooks/useBookBreadcrumbs';
+import { CreateQuotationModal } from '../../../../../../modules/quotes/components/createQuotationModal/createQuotationModal';
+import { BookTabLayout } from '../../../../../../modules/book/layouts/bookTabLayout';
+import { QuotationTabTitleBar } from '../../../../../../modules/quotes/components/quotationTabTitleBar/quotationTabTitleBar';
+import { BookTabNavigation } from '../../../../../../modules/book/components/bookTabNavigation/bookTabNavigation';
+import { QuotationTabTable } from '../../../../../../modules/quotes/components/quotationTabTable/quotationTabTable';
+import { useBookBreadcrumbs } from '../../../../../../modules/book/hooks/useBookBreadcrumbs';
 
 export const QuotesPage: FC = () => {
   const { bookId } = Route.useParams();
@@ -47,6 +47,6 @@ export const QuotesPage: FC = () => {
   );
 };
 
-export const Route = createLazyFileRoute('/book/tabs/quotationsTab/$bookId')({
+export const Route = createLazyFileRoute('/shelves/bookshelf/book/tabs/quotationsTab/$bookId')({
   component: QuotesPage,
 });

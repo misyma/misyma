@@ -122,7 +122,7 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
     }
 
     navigate({
-      to: '/bookshelf/search/result',
+      to: '/shelves/bookshelf/search/result',
       search: {
         ...search,
       },
