@@ -106,6 +106,10 @@ export class HttpServer {
     });
 
     this.fastifyServer.addHook('onRequest', (request, _reply, done) => {
+      if (request.url.includes('/api/docs') || request.url.includes('/api/health')) {
+        return done();
+      }
+
       this.loggerService.info({
         message: 'HTTP request received.',
         endpoint: `${request.method} ${request.url}`,
@@ -115,6 +119,10 @@ export class HttpServer {
     });
 
     this.fastifyServer.addHook('onSend', (request, reply, _payload, done) => {
+      if (request.url.includes('/api/docs') || request.url.includes('/api/health')) {
+        return done();
+      }
+
       this.loggerService.info({
         message: 'HTTP response sent.',
         endpoint: `${request.method} ${request.url}`,
