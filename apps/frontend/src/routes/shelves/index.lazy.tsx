@@ -115,7 +115,11 @@ export const ShelvesPage: FC = () => {
   }, [bookshelvesData?.metadata?.total]);
 
   if (isLoading && !isRefetching) {
-    return <ShelvesSkeleton />;
+    return (
+      <div className="flex flex-col items-center justify-center w-100% px-8 py-1 sm:py-2">
+        <ShelvesSkeleton />
+      </div>
+    );
   }
 
   const onAddNewBookshelf = (): void => {
