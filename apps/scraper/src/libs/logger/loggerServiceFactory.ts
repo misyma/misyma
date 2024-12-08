@@ -10,7 +10,6 @@ export interface LoggerConfig {
 export class LoggerServiceFactory {
   public static create(config: LoggerConfig): LoggerService {
     const loggerClient = pino({
-      name: 'Logger',
       level: config.logLevel,
     });
 
