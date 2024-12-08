@@ -267,15 +267,24 @@ export class HttpService {
 				requestUrl = `${requestUrl}?${queryString}`;
 			}
 
-			const response = await fetch(requestUrl, {
+			const requestOptions: RequestInit = {
 				headers: {
 					...headers,
 					Accept: 'application/json',
-					'Content-Type': 'application/json',
 				},
 				method: 'DELETE',
-				body: JSON.stringify(body),
-			});
+			};
+
+			if (body) {
+				requestOptions.headers = {
+					...headers,
+					'Content-Type': 'application/json',
+				};
+
+				requestOptions.body = JSON.stringify(body);
+			}
+
+			const response = await fetch(requestUrl, requestOptions);
 
 			const responseBodyText = await response.text();
 
