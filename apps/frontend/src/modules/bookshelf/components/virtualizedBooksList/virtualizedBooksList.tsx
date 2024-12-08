@@ -48,12 +48,12 @@ export const VirtualizedBooksList: FC<VirtualizedBooksListProps> = ({
 
     if (allBookChunks.length > 0) {
       return allBookChunks.length;
-    } else if (allBookChunks.length === 0) {
+    } else if (allBookChunks.length === 0 && !hasNextPage && !isLoading) {
       return 0;
     }
 
     return 3;
-  }, [hasNextPage, data?.pages, allBookChunks.length]);
+  }, [hasNextPage, isLoading, data?.pages, allBookChunks.length]);
 
   const rowVirtualizer = useVirtualizer({
     count: rowsCount,
