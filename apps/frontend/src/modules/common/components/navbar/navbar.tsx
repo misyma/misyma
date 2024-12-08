@@ -86,7 +86,7 @@ const NavbarBreadcrumbs = () => {
               <BreadcrumbLink asChild>
                 <Link
                   key={`${index}-${val}-breadcrumb-link`}
-                  className="max-w-80 truncate inline-block"
+                  className="max-w-80 truncate inline-block flex-shrink-0"
                   to={replaceHrefPlaceholderWithValue(val.href)}
                 >
                   {val?.readableName?.includes('$')
@@ -103,8 +103,8 @@ const NavbarBreadcrumbs = () => {
   }, [filteredPaths[0], breadcrumbKeys]);
 
   return (
-    <Breadcrumb className="pt-4">
-      <BreadcrumbList>
+    <Breadcrumb className="pt-4 flex-shrink-0">
+      <BreadcrumbList className='flex-shrink-0 min-h-[1.25rem]'>
         {allCorrespondingValuesPresent &&
           breadcrumbItems.map((item, index) => (
             <Fragment key={`breadcrumb-fragment-${index}`}>

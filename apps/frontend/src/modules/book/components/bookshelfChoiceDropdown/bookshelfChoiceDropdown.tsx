@@ -84,16 +84,17 @@ export const BookshelfChoiceDropdown: FC<Props> = ({
     );
   }, [bookshelfData, data]);
 
-  const { data: bookBorrowing, isFetching: isFetchingBookBorrowing } = useErrorHandledQuery(
-    FindBookBorrowingsQueryOptions({
-      accessToken: accessToken as string,
-      userBookId: bookId,
-      page: 1,
-      pageSize: 1,
-      sortDate: SortingType.desc,
-      isOpen: true,
-    })
-  );
+  const { data: bookBorrowing, isFetching: isFetchingBookBorrowing } =
+    useErrorHandledQuery(
+      FindBookBorrowingsQueryOptions({
+        accessToken: accessToken as string,
+        userBookId: bookId,
+        page: 1,
+        pageSize: 1,
+        sortDate: SortingType.desc,
+        isOpen: true,
+      })
+    );
 
   const [previousBookshelfName, setPreviousBookshelfName] = useState<
     string | null
@@ -266,6 +267,7 @@ export const BookshelfChoiceDropdown: FC<Props> = ({
       </Popover>
       {usingBorrowFlow && (
         <CreateBorrowingModal
+          currentBookshelfId={currentBookshelfId}
           bookId={bookId}
           onMutated={async () => {
             setUsingBorrowFlow(false);

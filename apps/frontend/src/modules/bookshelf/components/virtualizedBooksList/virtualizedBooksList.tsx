@@ -7,8 +7,14 @@ import { useSelector } from 'react-redux';
 import { BookCardRow } from '../bookCardRow/bookCardRow';
 import { BookCardRowSkeleton } from '../bookCardRow/bookCardRowSkeleton';
 
-interface VirtualizedBooksListProps {}
-export const VirtualizedBooksList: FC<VirtualizedBooksListProps> = () => {
+interface VirtualizedBooksListProps {
+  bookshelfId?: string;
+  borrowedBooks?: boolean;
+}
+export const VirtualizedBooksList: FC<VirtualizedBooksListProps> = ({
+  bookshelfId,
+  borrowedBooks = false,
+}) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const parentRef = useRef<HTMLDivElement>(null);
@@ -17,6 +23,7 @@ export const VirtualizedBooksList: FC<VirtualizedBooksListProps> = () => {
     useInfiniteQuery(
       FindUserBooksByInfiniteQueryOptions({
         accessToken,
+        bookshelfId,
         pageSize: 18,
       })
     );
@@ -41,6 +48,8 @@ export const VirtualizedBooksList: FC<VirtualizedBooksListProps> = () => {
 
     if (allBookChunks.length > 0) {
       return allBookChunks.length;
+    } else if (allBookChunks.length === 0) {
+      return 0;
     }
 
     return 3;
@@ -113,7 +122,7 @@ export const VirtualizedBooksList: FC<VirtualizedBooksListProps> = () => {
               {isFirstLoaderAttempt && <BookCardRowSkeleton />}
               {isSubsequentLoader && <BookCardRowSkeleton />}
               {!isSubsequentLoader && booksChunk && (
-                <BookCardRow books={booksChunk} />
+                <BookCardRow borrowedBooks={borrowedBooks} books={booksChunk} />
               )}
             </div>
           );
