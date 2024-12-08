@@ -24,9 +24,6 @@ import {
   setEditMap,
 } from '../../modules/core/store/states/bookshelvesState/bookshelfStateSlice.js';
 import {
-  useFilterContext,
-} from '../../modules/common/contexts/filterContext.js';
-import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
@@ -292,7 +289,6 @@ const BooksFiltersVisibilityButton = () => {
 
 const View: FC = () => {
   const { view, updateBookshelfView } = useBookshelfView();
-  const { isFilterVisible, toggleFilterVisibility } = useFilterContext();
 
   return (
     <AuthenticatedLayout>
@@ -310,10 +306,6 @@ const View: FC = () => {
                   shelves: 'books',
                 };
                 updateBookshelfView(viewMap[view]);
-
-                if (isFilterVisible) {
-                  toggleFilterVisibility();
-                }
               }}
               id="bookshelf-view-mode"
             />
