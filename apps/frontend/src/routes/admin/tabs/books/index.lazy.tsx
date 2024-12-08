@@ -1,5 +1,5 @@
 import { createLazyFileRoute } from '@tanstack/react-router';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { RequireAdmin } from '../../../../modules/core/components/requireAdmin/requireAdmin';
 import {
@@ -14,15 +14,15 @@ import { AdminTabLayout } from '../../../../modules/common/layouts/adminTabLayou
 import { AdminTabs } from '../../../../modules/admin/components/adminTabs';
 import { BooksTable } from '../../../../modules/admin/components/booksTable';
 import { BooksTabActions } from '../../../../modules/admin/components/booksTabActions';
-import { BooksTableAdditionalColumn } from '../../../../modules/admin/components/booksTableAdditionalColumn';
+import { BooksTableFilters } from '../../../../modules/admin/components/booksTableFilters';
 
 export const BooksAdminPage: FC = () => {
+  const [filterApplied, setFilterApplied] = useState(false);
   const { isFilterVisible, toggleFilterVisibility } = useFilterContext();
 
   const queryClient = useQueryClient();
 
   const searchParams = Route.useSearch();
-
   const navigate = Route.useNavigate();
 
   const onSetPage = (page: number): void => {
@@ -35,16 +35,36 @@ export const BooksAdminPage: FC = () => {
   const onApplyFilters = async (val: DynamicFilterValues) => {
     const newSig = Object.values(val).toString();
 
+    const acceptedFilterValueMap = {
+      Zaakceptowana: true,
+      Niezaakceptowana: false,
+      '': undefined,
+    };
+
+    const acceptedFilter = val[
+      'isApproved'
+    ] as keyof typeof acceptedFilterValueMap;
+    const acceptedFilterValue = acceptedFilter
+      ? acceptedFilterValueMap[acceptedFilter]
+      : undefined;
+
+    console.log({
+      ...val,
+    });
+
     navigate({
       to: '',
-      search: (prev) => ({
-        ...prev,
+      search: () => ({
         ...val,
+        isApproved: acceptedFilterValue,
         page: 1,
       }),
     });
 
+    setFilterApplied(true);
+
     if (newSig === '') {
+      setFilterApplied(false);
       await queryClient.invalidateQueries({
         predicate: (query) =>
           query.queryKey[0] === BookApiQueryKeys.findBooksAdmin,
@@ -57,7 +77,10 @@ export const BooksAdminPage: FC = () => {
       <AdminTabLayout
         TabsSlot={<AdminTabs currentlySelected="books" />}
         AdditionalActionsSlot={
-          <BooksTabActions toggleFilterVisibility={toggleFilterVisibility} />
+          <BooksTabActions
+            filterApplied={filterApplied}
+            toggleFilterVisibility={toggleFilterVisibility}
+          />
         }
         TableSlot={
           <BooksTable
@@ -71,7 +94,7 @@ export const BooksAdminPage: FC = () => {
           />
         }
         AdditionalColumn={
-          <BooksTableAdditionalColumn
+          <BooksTableFilters
             onApplyFilters={onApplyFilters}
             searchParams={
               searchParams as unknown as FindAdminBooksQueryParams & {
@@ -81,7 +104,6 @@ export const BooksAdminPage: FC = () => {
           />
         }
         columnsClassName="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-y-4 gap-x-4"
-        tableContainerClassName={'sm:col-span-5 md:col-span-6'}
         tabsSlotClassName="flex justify-between gap-4 col-span-6"
         additionalColumnClassName="col-span-6"
       />

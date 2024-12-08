@@ -13,7 +13,8 @@ export const FiltersDrawer: FC<{
   actionButtonClassName?: string;
   onApplyFilters: (vals: DynamicFilterValues) => void;
 }> = ({ className, actionButtonClassName, onApplyFilters }) => {
-  const { filters, filterOptions, filterValues } = useDynamicFilterContext();
+  const { filters, filterOptions, filterValues, removeAllFilters } =
+    useDynamicFilterContext();
 
   const constructedFilters = useMemo((): Array<FilterOpts> => {
     return filterOptions.map(
@@ -31,6 +32,11 @@ export const FiltersDrawer: FC<{
     );
   }, [filters, filterOptions]);
 
+  const onRemoveAll = () => {
+    removeAllFilters();
+    onApplyFilters({});
+  };
+
   return (
     <div className="flex flex-col gap-2">
       <div className={cn('space-y-4 w-full', className)}>
@@ -45,19 +51,20 @@ export const FiltersDrawer: FC<{
       </div>
       <div
         className={cn(
-          'w-full pb-4',
+          'w-full py-4',
           className,
-          'flex items-center justify-center',
+          'flex gap-8 items-center justify-center',
           actionButtonClassName
         )}
       >
         <Button
           variant="none"
           className={cn('text-primary', actionButtonClassName)}
-          onClick={() => onApplyFilters(filterValues)}
+          onClick={onRemoveAll}
         >
           Wyczyść wszystkie filtry
         </Button>
+        <Button onClick={() => onApplyFilters(filterValues)}>Aplikuj</Button>
       </div>
     </div>
   );

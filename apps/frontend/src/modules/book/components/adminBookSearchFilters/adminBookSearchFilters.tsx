@@ -179,19 +179,11 @@ export const AdminBookSearchFilter: FC<AdminBookSearchFilterProps> = ({
         isBeforeFilter: false,
       },
       {
-        id: 'release-year-before-filter',
-        key: 'releaseYearBefore',
-        label: 'Wydana przed',
-        type: 'year',
-        dateRangeSiblingId: 'release-year-after-filter',
-        isAfterFilter: false,
-        isBeforeFilter: true,
-      },
-      {
         id: 'is-approved-filter',
         key: 'isApproved',
         label: 'Zaakceptowana',
-        type: 'three-state-checkbox',
+        type: 'select',
+        options: ['Zaakceptowana', 'Niezaakceptowana']
       },
     ],
     []

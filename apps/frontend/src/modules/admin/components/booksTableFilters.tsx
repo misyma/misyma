@@ -7,7 +7,7 @@ interface BooksTableAdditionalColumnProps {
   searchParams: FindAdminBooksQueryParams;
   onApplyFilters: (val: DynamicFilterValues) => Promise<void>;
 }
-export const BooksTableAdditionalColumn: FC<
+export const BooksTableFilters: FC<
   BooksTableAdditionalColumnProps
 > = ({ onApplyFilters, searchParams }) => {
   return (

@@ -113,6 +113,7 @@ const SelectFilter: FC<SelectFilterProps> = ({ filter, dialog = false }) => {
     <FilterContainer
       slot={
         <Select
+          className='w-96'
           value={(filterValues[filter.key as string] as string) || ''}
           onValueChange={handleChange}
         >

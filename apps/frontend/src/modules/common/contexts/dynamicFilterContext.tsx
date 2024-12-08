@@ -9,6 +9,7 @@ type DynamicFilterContextType = {
   filterValues: DynamicFilterValues;
   addFilter: (filter: FilterOpts) => void;
   removeFilter: (key: PropertyKey) => void;
+  removeAllFilters: () => void;
   updateFilterValue: (
     id: PropertyKey,
     value: string | boolean | number | Date | undefined
@@ -35,7 +36,8 @@ export const DynamicFilterProvider: FC<DynamicFilterProviderProps> = ({
   initialValues,
 }) => {
   const [filters, setFilters] = useState<FilterOpts[]>([]);
-  const [filterValues, setFilterValues] = useState<DynamicFilterValues>(initialValues);
+  const [filterValues, setFilterValues] =
+    useState<DynamicFilterValues>(initialValues);
 
   const addFilter = (filter: FilterOpts) => {
     setFilters((prev) => [...prev, filter]);
@@ -43,7 +45,7 @@ export const DynamicFilterProvider: FC<DynamicFilterProviderProps> = ({
   const removeFilter = (key: PropertyKey) => {
     setFilters((prev) => prev.filter((filter) => filter.key !== key));
     setFilterValues((prev) => {
-      if(typeof prev[key as string] === 'string') {
+      if (typeof prev[key as string] === 'string') {
         prev[key as string] = '';
         return prev;
       }
@@ -51,6 +53,9 @@ export const DynamicFilterProvider: FC<DynamicFilterProviderProps> = ({
       delete prev[key as string];
       return prev;
     });
+  };
+  const removeAllFilters = () => {
+    setFilterValues({});
   };
   const updateFilterValue = (
     key: PropertyKey,
@@ -74,6 +79,7 @@ export const DynamicFilterProvider: FC<DynamicFilterProviderProps> = ({
         filterValues,
         addFilter,
         removeFilter,
+        removeAllFilters,
         updateFilterValue,
         filterOptions,
         filtersOrder,
