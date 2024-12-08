@@ -1,10 +1,8 @@
-import { useNavigate } from '@tanstack/react-router';
 import { FC } from 'react';
 import { useToast } from '../../../common/components/toast/use-toast';
 import { useQueryClient } from '@tanstack/react-query';
 import { HiCheck, HiPencil } from 'react-icons/hi2';
 import { cn } from '../../../common/lib/utils';
-import { IoMdEye } from 'react-icons/io';
 import { DeleteBookshelfModal } from '../deleteBookshelfModal/deleteBookshelfModal';
 import { HiOutlineX } from 'react-icons/hi';
 
@@ -26,7 +24,6 @@ export const BookshelfActionButtons: FC<BookshelfActionButtonsProps> = ({
   onSave,
   onCancelEdit,
 }) => {
-  const navigate = useNavigate();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -40,16 +37,6 @@ export const BookshelfActionButtons: FC<BookshelfActionButtonsProps> = ({
               name === 'Archiwum' || name === 'Wypożyczalnia' ? 'hidden' : ''
             )}
             onClick={() => onStartEdit(index)}
-          />
-          <IoMdEye
-            className="text-primary pointer-events-auto h-8 w-8 cursor-pointer"
-            onClick={() => {
-              if (bookshelfId) {
-                navigate({
-                  to: `/bookshelf/${bookshelfId}`,
-                });
-              }
-            }}
           />
           <DeleteBookshelfModal
             bookshelfId={bookshelfId}

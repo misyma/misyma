@@ -48,6 +48,11 @@ export const AdminTabLayout: FC<AdminTabLayoutProps> = ({
           {TabsSlot}
           <div className="flex w-full justify-end">{AdditionalActionsSlot}</div>
         </div>
+        {AdditionalColumn && (
+          <div className={cn( 'w-full', additionalColumnClassName)}>
+            {AdditionalColumn}
+          </div>
+        )}
         <div
           className={cn(
             'flex flex-col px-4 w-[100%] col-span-full',
@@ -63,11 +68,6 @@ export const AdminTabLayout: FC<AdminTabLayoutProps> = ({
             {TableSlot}
           </div>
         </div>
-        {AdditionalColumn && (
-          <div className={cn('col-span-1', additionalColumnClassName)}>
-            {AdditionalColumn}
-          </div>
-        )}
       </div>
     </div>
   );

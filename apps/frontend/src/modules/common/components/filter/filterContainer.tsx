@@ -22,13 +22,13 @@ export const FilterContainer: FC<FilterContainerProps> = ({ filter, slot }) => {
   }, [correspondingFilterValue]);
 
   return (
-    <div className="flex flex-col items-end w-full justify-between gap-1 px-1 overflow-hidden">
+    <div className="flex flex-col items-start w-full justify-between gap-1 px-1 overflow-hidden">
       <label>{filter.label}</label>
-      <div className="flex gap-2 items-center justify-end w-full overflow-hidden truncate">
+      <div className="flex gap-2 items-center justify-start w-full overflow-hidden truncate">
+        {slot}
         {correspondingFilterValueExists && (
           <RemoveFilterButton filterKey={filter.key} />
         )}
-        {slot}
       </div>
     </div>
   );

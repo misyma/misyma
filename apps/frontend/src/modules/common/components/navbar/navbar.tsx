@@ -180,38 +180,23 @@ const NavbarList: FC<{ user?: User; handleLogout: () => void }> = ({
   handleLogout,
 }) => {
   const linkClasses =
-    '[&.active]:font-extrabold [&.active]:underline underline-offset-8 decoration-[3px] text-nowrap';
+    '[&.active]:font-extrabold hover:text-primary [&.active]:text-primary underline-offset-8 decoration-[3px] text-nowrap';
 
   return (
     <ul className="hidden sm:flex sm:flex-1 md:gap-4 lg:gap-6 sm:justify-end w-full items-center align-middle">
       {user?.role === UserRole.admin && (
-        <li className="text-primary text-md text-center font-semibold">
+        <li className="text-black text-md text-center font-semibold">
           <Link to={'/admin/tabs/authors'} className={linkClasses}>
             Panel administratora
           </Link>
         </li>
       )}
-      <li className="text-primary text-md text-center font-semibold">
+      <li className="text-black text-md text-center font-semibold">
         <Link to={'/mybooks'} className={linkClasses}>
           Moje książki
         </Link>
       </li>
-      <li className="text-primary text-md text-center font-semibold">
-        <Link to="/non-existent1" className={linkClasses}>
-          Cytaty
-        </Link>
-      </li>
-      <li className="text-primary text-md text-center font-semibold">
-        <Link to="/non-existent2" className={linkClasses}>
-          Kolekcje
-        </Link>
-      </li>
-      <li className="text-primary text-md text-center font-semibold">
-        <Link to="/non-existent3" className={linkClasses}>
-          Statystyki
-        </Link>
-      </li>
-      <li className="text-primary text-md text-center font-semibold">
+      <li className="text-black text-md text-center font-semibold">
         <Link to={'/profile'} className={linkClasses}>
           Profil
         </Link>

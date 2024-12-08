@@ -1,6 +1,5 @@
 import { FC, useMemo } from 'react';
 import { FilterComponent } from '../filter/filter';
-import { Separator } from '../separator/separator';
 import {
   DynamicFilterValues,
   useDynamicFilterContext,
@@ -10,10 +9,12 @@ import { cn } from '../../lib/utils';
 import { Button } from '../button/button';
 
 export const FiltersDrawer: FC<{
-  className: string;
+  className?: string;
+  actionButtonClassName?: string;
   onApplyFilters: (vals: DynamicFilterValues) => void;
-}> = ({ className, onApplyFilters }) => {
-  const { filters, filterOptions, filterValues } = useDynamicFilterContext();
+}> = ({ className, actionButtonClassName, onApplyFilters }) => {
+  const { filters, filterOptions, filterValues, removeAllFilters } =
+    useDynamicFilterContext();
 
   const constructedFilters = useMemo((): Array<FilterOpts> => {
     return filterOptions.map(
@@ -31,20 +32,39 @@ export const FiltersDrawer: FC<{
     );
   }, [filters, filterOptions]);
 
+  const onRemoveAll = () => {
+    removeAllFilters();
+    onApplyFilters({});
+  };
+
   return (
-    <div className={cn('space-y-4 w-full', className)}>
-      {constructedFilters.map((filter, idx) => (
-        <div key={`container-${filter.id}`} className="grid gap-4">
-          <FilterComponent key={filter.id} filter={filter} />
-          {idx !== constructedFilters.length - 1 && <Separator></Separator>}
-        </div>
-      ))}
-      <div className="flex items-center justify-center">
+    <div className="flex flex-col gap-2">
+      <div className={cn('space-y-4 w-full', className)}>
+        {constructedFilters.map((filter) => (
+          <div
+            key={`container-${filter.id}`}
+            className="flex items-end justify-center"
+          >
+            <FilterComponent key={filter.id} filter={filter} />
+          </div>
+        ))}
+      </div>
+      <div
+        className={cn(
+          'w-full py-4',
+          className,
+          'flex gap-8 items-center justify-center',
+          actionButtonClassName
+        )}
+      >
         <Button
-          onClick={() => onApplyFilters(filterValues)}
+          variant="none"
+          className={cn('text-primary', actionButtonClassName)}
+          onClick={onRemoveAll}
         >
-          Aplikuj
+          Wyczyść wszystkie filtry
         </Button>
+        <Button onClick={() => onApplyFilters(filterValues)}>Aplikuj</Button>
       </div>
     </div>
   );

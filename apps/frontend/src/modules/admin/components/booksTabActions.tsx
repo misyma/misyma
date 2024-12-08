@@ -13,8 +13,10 @@ import { BooksSortButton } from './booksSortButton';
 
 interface BooksTabActionsProps {
   toggleFilterVisibility: () => void;
+  filterApplied: boolean;
 }
 export const BooksTabActions: FC<BooksTabActionsProps> = ({
+  filterApplied,
   toggleFilterVisibility,
 }) => {
   return (
@@ -26,7 +28,14 @@ export const BooksTabActions: FC<BooksTabActionsProps> = ({
         <Tooltip>
           <TooltipTrigger asChild>
             <Button size="big-icon" onClick={toggleFilterVisibility}>
-              <HiOutlineFilter className="w-8 h-8"></HiOutlineFilter>
+              <div className="relative w-full">
+                <div className="flex w-full items-center justify-center">
+                  <HiOutlineFilter className="w-8 h-8"></HiOutlineFilter>
+                </div>
+                {filterApplied && (
+                  <div className="absolute h-4 w-4 top-[-10px] right-[-8px] rounded-full bg-green-500"></div>
+                )}
+              </div>
             </Button>
           </TooltipTrigger>
           <TooltipContent>

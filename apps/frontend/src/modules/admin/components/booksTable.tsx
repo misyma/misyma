@@ -100,7 +100,7 @@ export const BooksTable: FC<BooksTableProps> = ({
   return (
     <div
       className={cn(
-        `flex flex-col justify-start w-[100%] col-span-4`,
+        `flex flex-col justify-start w-[100%] col-span-full`,
         TableSizing[isFilterVisible ? 'visible' : 'invisible']
       )}
     >
