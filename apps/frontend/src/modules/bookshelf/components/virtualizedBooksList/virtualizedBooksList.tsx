@@ -34,8 +34,6 @@ export const VirtualizedBooksList: FC<VirtualizedBooksListProps> = () => {
       const pageSize = lastPage?.metadata.pageSize;
       const totalItems = lastPage?.metadata.total;
 
-      console.log(data?.pages);
-
       return totalItems && pageSize
         ? Math.ceil(totalItems / (pageSize / 3))
         : allBookChunks.length + 1;

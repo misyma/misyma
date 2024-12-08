@@ -37,8 +37,6 @@ export const findUserBooksBy = async (
 		queryParams['pageSize'] = `${pageSize}`;
 	}
 
-	await new Promise((res) => setTimeout(res, 5000));
-
 	const response = await HttpService.get<FindUserBooksResponseBody>({
 		url: `/user-books`,
 		queryParams,
