@@ -30,8 +30,8 @@ export const FindUserBooksByInfiniteQueryOptions = ({
 	infiniteQueryOptions({
 		queryKey: [
 			BookApiQueryKeys.findUserBooksBy,
-			rest.isbn,
 			rest.bookshelfId,
+			rest.isbn,
 			page,
 			rest.pageSize,
 			'infinite-query',
@@ -45,6 +45,9 @@ export const FindUserBooksByInfiniteQueryOptions = ({
 			}),
 		getNextPageParam: (lastPage) => {
 			if (!lastPage) {
+				return undefined;
+			}
+			if (lastPage.metadata.total === 0) {
 				return undefined;
 			}
 			const totalPages = Math.ceil(
