@@ -103,7 +103,7 @@ export class Generator {
   }
 
   public static author(): string {
-    return faker.book.author();
+    return this.fullName();
   }
 
   public static publisher(): string {
