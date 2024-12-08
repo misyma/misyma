@@ -1,13 +1,13 @@
 import { FC, memo } from 'react';
-import { FavoriteBookButton } from '../../../../modules/book/components/favoriteBookButton/favoriteBookButton.js';
+import { FavoriteBookButton } from '../../../../../../modules/book/components/favoriteBookButton/favoriteBookButton.js';
 
 import { Navigate, createLazyFileRoute } from '@tanstack/react-router';
-import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout.js';
-import { BookTabLayout } from '../../../../modules/book/layouts/bookTabLayout.js';
-import { BookTabNavigation } from '../../../../modules/book/components/bookTabNavigation/bookTabNavigation.js';
-import { BasicDataTabActionButtons } from '../../../../modules/book/components/basicDataTab/basicDataTabActionButtons.js';
-import { BasicDataMainBody } from '../../../../modules/book/components/basicDataTab/basicDataMainBody.js';
-import { useBookBreadcrumbs } from '../../../../modules/book/hooks/useBookBreadcrumbs.js';
+import { AuthenticatedLayout } from '../../../../../../modules/auth/layouts/authenticated/authenticatedLayout.js';
+import { BookTabLayout } from '../../../../../../modules/book/layouts/bookTabLayout.js';
+import { BookTabNavigation } from '../../../../../../modules/book/components/bookTabNavigation/bookTabNavigation.js';
+import { BasicDataTabActionButtons } from '../../../../../../modules/book/components/basicDataTab/basicDataTabActionButtons.js';
+import { BasicDataMainBody } from '../../../../../../modules/book/components/basicDataTab/basicDataMainBody.js';
+import { useBookBreadcrumbs } from '../../../../../../modules/book/hooks/useBookBreadcrumbs.js';
 
 const MemoizedBookTabNavigation = memo(BookTabNavigation);
 const MemoizedBasicDataTabActionButtons = memo(BasicDataTabActionButtons);
@@ -40,6 +40,6 @@ export const BasicDataPage: FC = () => {
   );
 };
 
-export const Route = createLazyFileRoute('/book/tabs/basicDataTab/$bookId')({
+export const Route = createLazyFileRoute('/shelves/bookshelf/book/tabs/basicDataTab/$bookId')({
   component: BasicDataPage,
 });

@@ -1,18 +1,18 @@
 import { FC } from 'react';
-import { useFindUserQuery } from '../../../../modules/user/api/queries/findUserQuery/findUserQuery.js';
+import { useFindUserQuery } from '../../../../../../modules/user/api/queries/findUserQuery/findUserQuery.js';
 import { useQueryClient } from '@tanstack/react-query';
-import { FavoriteBookButton } from '../../../../modules/book/components/favoriteBookButton/favoriteBookButton.js';
-import { BookReadingsApiQueryKeys } from '../../../../modules/bookReadings/api/queries/bookReadingsApiQueryKeys.js';
-import { AddStarRatingButton } from '../../../../modules/book/components/addStarRatingButton/addStarRatingButton.js';
-import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout.js';
+import { FavoriteBookButton } from '../../../../../../modules/book/components/favoriteBookButton/favoriteBookButton.js';
+import { BookReadingsApiQueryKeys } from '../../../../../../modules/bookReadings/api/queries/bookReadingsApiQueryKeys.js';
+import { AddStarRatingButton } from '../../../../../../modules/book/components/addStarRatingButton/addStarRatingButton.js';
+import { AuthenticatedLayout } from '../../../../../../modules/auth/layouts/authenticated/authenticatedLayout.js';
 import {
   Navigate,
   createLazyFileRoute,
 } from '@tanstack/react-router';
-import { BookTabLayout } from '../../../../modules/book/layouts/bookTabLayout.js';
-import { BookTabNavigation } from '../../../../modules/book/components/bookTabNavigation/bookTabNavigation.js';
-import { useBookBreadcrumbs } from '../../../../modules/book/hooks/useBookBreadcrumbs.js';
-import { BookGradesTabMainBody } from '../../../../modules/grades/components/bookGradesTabMainBody.js';
+import { BookTabLayout } from '../../../../../../modules/book/layouts/bookTabLayout.js';
+import { BookTabNavigation } from '../../../../../../modules/book/components/bookTabNavigation/bookTabNavigation.js';
+import { useBookBreadcrumbs } from '../../../../../../modules/book/hooks/useBookBreadcrumbs.js';
+import { BookGradesTabMainBody } from '../../../../../../modules/grades/components/bookGradesTabMainBody.js';
 
 export const GradesPage: FC = () => {
   const { bookId } = Route.useParams();
@@ -54,6 +54,6 @@ export const GradesPage: FC = () => {
   );
 };
 
-export const Route = createLazyFileRoute('/book/tabs/gradesTab/$bookId')({
+export const Route = createLazyFileRoute('/shelves/bookshelf/book/tabs/gradesTab/$bookId')({
   component: GradesPage,
 });

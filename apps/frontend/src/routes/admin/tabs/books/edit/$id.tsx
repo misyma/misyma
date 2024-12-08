@@ -23,7 +23,7 @@ export const Route = createFileRoute('/admin/tabs/books/edit/$id')({
       },
       {
         readableName: '$bookName',
-        href: '/book/tabs/basicDataTab/$bookId',
+        href: '/shelves/bookshelf/book/tabs/basicDataTab/$bookId',
       },
     ],
   },

@@ -16,7 +16,7 @@ export const SearchBookMethodChoice: FC<Props> = ({ initialValue = 'isbn', books
 
   const onProceed = () => {
     navigate({
-      to: '/bookshelf/search',
+      to: '/shelves/bookshelf/search',
       search: {
         type: chosenSearch,
         next: 1,

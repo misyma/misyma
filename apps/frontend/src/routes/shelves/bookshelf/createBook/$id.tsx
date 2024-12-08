@@ -5,7 +5,7 @@ const createBookSearchSchema = z.object({
   id: z.string().uuid().catch(''),
 });
 
-export const Route = createFileRoute('/bookshelf/createBook/$id')({
+export const Route = createFileRoute('/shelves/bookshelf/createBook/$id')({
   parseParams: createBookSearchSchema.parse,
   onError: () => {
     return <Navigate to={'/mybooks'} />;

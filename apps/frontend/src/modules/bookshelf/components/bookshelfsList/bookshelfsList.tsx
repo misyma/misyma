@@ -248,7 +248,7 @@ export const BookshelfsList: FC<Props> = ({
                 onClick={() => {
                   if (bookshelf.id) {
                     navigate({
-                      to: `/bookshelf/${bookshelf.id}`,
+                      to: `/shelves/bookshelf/${bookshelf.id}`,
                     });
                   }
                 }}

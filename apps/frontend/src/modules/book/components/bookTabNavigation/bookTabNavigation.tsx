@@ -40,21 +40,21 @@ export const BookTabNavigation: FC<BookTabNavigationProps> = ({
       <li>
         <BookTabLink
           label="Dane podstawowe"
-          link={`/book/tabs/basicDataTab/${bookId}`}
+          link={`/shelves/bookshelf/book/tabs/basicDataTab/${bookId}`}
           selected={currentTab === 'basicData'}
         />
       </li>
       <li>
         <BookTabLink
           label="Cytaty"
-          link={`/book/tabs/quotationsTab/${bookId}`}
+          link={`/shelves/bookshelf/book/tabs/quotationsTab/${bookId}`}
           selected={currentTab === 'quotations'}
         />
       </li>
       <li>
         <BookTabLink
           label="Oceny"
-          link={`/book/tabs/gradesTab/${bookId}`}
+          link={`/shelves/bookshelf/book/tabs/gradesTab/${bookId}`}
           selected={currentTab === 'grades'}
         />
       </li>

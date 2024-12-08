@@ -1,10 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { RequireAuthComponent } from '../../../modules/core/components/requireAuth/requireAuthComponent';
 import { z } from 'zod';
-import { SearchBookMethodChoice } from '../../../modules/bookshelf/components/searchBookMethodChoice/searchMethodChoice';
-import { IsbnSearchForm } from '../../../modules/bookshelf/components/isbnSearchForm/isbnSearchForm';
-import { AuthenticatedLayout } from '../../../modules/auth/layouts/authenticated/authenticatedLayout';
-import { TitleSearchForm } from '../../../modules/bookshelf/components/titleSearchForm/titleSearchForm';
+import { SearchBookMethodChoice } from '../../../../modules/bookshelf/components/searchBookMethodChoice/searchMethodChoice';
+import { IsbnSearchForm } from '../../../../modules/bookshelf/components/isbnSearchForm/isbnSearchForm';
+import { TitleSearchForm } from '../../../../modules/bookshelf/components/titleSearchForm/titleSearchForm';
+import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
+import { RequireAuthComponent } from '../../../../modules/core/components/requireAuth/requireAuthComponent';
 
 export const Search = () => {
   const searchParams = Route.useSearch();
@@ -48,7 +48,7 @@ const searchSchema = z.object({
   bookshelfId: z.string().uuid().catch(''),
 });
 
-export const Route = createFileRoute('/bookshelf/search/')({
+export const Route = createFileRoute('/shelves/bookshelf/search/')({
   component: () => {
     return (
       <RequireAuthComponent>

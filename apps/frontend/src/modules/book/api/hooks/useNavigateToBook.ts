@@ -8,7 +8,7 @@ export const useNavigateToBook = ({ bookId }: UseNavigateToBookProps) => {
 
 	const navigateToBook = () => {
 		navigate({
-			to: '/book/tabs/basicDataTab/$bookId',
+			to: '/shelves/bookshelf/book/tabs/basicDataTab/$bookId',
 			params: {
 				bookId,
 			},

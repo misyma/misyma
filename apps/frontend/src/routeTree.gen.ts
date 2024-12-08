@@ -15,19 +15,20 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
 import { Route as VerifyEmailIndexImport } from './routes/verifyEmail/index'
+import { Route as ShelvesIndexImport } from './routes/shelves/index'
 import { Route as MybooksIndexImport } from './routes/mybooks/index'
-import { Route as BookshelfBookshelfIdImport } from './routes/bookshelf/$bookshelfId'
 import { Route as AdminTabsIndexImport } from './routes/admin/tabs/index'
-import { Route as BookshelfCreateBookIdImport } from './routes/bookshelf/createBook/$id'
-import { Route as BookshelfSearchResultIndexImport } from './routes/bookshelf/search/result/index'
+import { Route as ShelvesBookshelfBookshelfIdImport } from './routes/shelves/bookshelf/$bookshelfId'
 import { Route as AdminTabsChangeRequestsIndexImport } from './routes/admin/tabs/changeRequests/index'
 import { Route as AdminTabsBooksIndexImport } from './routes/admin/tabs/books/index'
 import { Route as AdminTabsAuthorsIndexImport } from './routes/admin/tabs/authors/index'
-import { Route as BookTabsQuotationsTabBookIdImport } from './routes/book/tabs/quotationsTab/$bookId'
-import { Route as BookTabsGradesTabBookIdImport } from './routes/book/tabs/gradesTab/$bookId'
-import { Route as BookTabsBasicDataTabBookIdImport } from './routes/book/tabs/basicDataTab/$bookId'
+import { Route as ShelvesBookshelfCreateBookIdImport } from './routes/shelves/bookshelf/createBook/$id'
 import { Route as AdminTabsChangeRequestsIdImport } from './routes/admin/tabs/changeRequests/$id'
+import { Route as ShelvesBookshelfSearchResultIndexImport } from './routes/shelves/bookshelf/search/result/index'
 import { Route as AdminTabsBooksEditIdImport } from './routes/admin/tabs/books/edit/$id'
+import { Route as ShelvesBookshelfBookTabsQuotationsTabBookIdImport } from './routes/shelves/bookshelf/book/tabs/quotationsTab/$bookId'
+import { Route as ShelvesBookshelfBookTabsGradesTabBookIdImport } from './routes/shelves/bookshelf/book/tabs/gradesTab/$bookId'
+import { Route as ShelvesBookshelfBookTabsBasicDataTabBookIdImport } from './routes/shelves/bookshelf/book/tabs/basicDataTab/$bookId'
 
 // Create Virtual Routes
 
@@ -36,9 +37,11 @@ const RegisterIndexLazyImport = createFileRoute('/register/')()
 const ProfileIndexLazyImport = createFileRoute('/profile/')()
 const NewPasswordIndexLazyImport = createFileRoute('/newPassword/')()
 const LoginIndexLazyImport = createFileRoute('/login/')()
-const BookshelfSearchIndexLazyImport = createFileRoute('/bookshelf/search/')()
-const BookshelfSearchCreateBookshelfIdLazyImport = createFileRoute(
-  '/bookshelf/search/create/$bookshelfId',
+const ShelvesBookshelfSearchIndexLazyImport = createFileRoute(
+  '/shelves/bookshelf/search/',
+)()
+const ShelvesBookshelfSearchCreateBookshelfIdLazyImport = createFileRoute(
+  '/shelves/bookshelf/search/create/$bookshelfId',
 )()
 
 // Create/Update Routes
@@ -86,45 +89,36 @@ const VerifyEmailIndexRoute = VerifyEmailIndexImport.update({
   import('./routes/verifyEmail/index.lazy').then((d) => d.Route),
 )
 
+const ShelvesIndexRoute = ShelvesIndexImport.update({
+  path: '/shelves/',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/shelves/index.lazy').then((d) => d.Route))
+
 const MybooksIndexRoute = MybooksIndexImport.update({
   path: '/mybooks/',
   getParentRoute: () => rootRoute,
 } as any)
-
-const BookshelfBookshelfIdRoute = BookshelfBookshelfIdImport.update({
-  path: '/bookshelf/$bookshelfId',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() =>
-  import('./routes/bookshelf/$bookshelfId.lazy').then((d) => d.Route),
-)
-
-const BookshelfSearchIndexLazyRoute = BookshelfSearchIndexLazyImport.update({
-  path: '/bookshelf/search/',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() =>
-  import('./routes/bookshelf/search/index.lazy').then((d) => d.Route),
-)
 
 const AdminTabsIndexRoute = AdminTabsIndexImport.update({
   path: '/admin/tabs/',
   getParentRoute: () => rootRoute,
 } as any)
 
-const BookshelfCreateBookIdRoute = BookshelfCreateBookIdImport.update({
-  path: '/bookshelf/createBook/$id',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() =>
-  import('./routes/bookshelf/createBook/$id.lazy').then((d) => d.Route),
-)
-
-const BookshelfSearchResultIndexRoute = BookshelfSearchResultIndexImport.update(
-  {
-    path: '/bookshelf/search/result/',
+const ShelvesBookshelfBookshelfIdRoute =
+  ShelvesBookshelfBookshelfIdImport.update({
+    path: '/shelves/bookshelf/$bookshelfId',
     getParentRoute: () => rootRoute,
-  } as any,
-).lazy(() =>
-  import('./routes/bookshelf/search/result/index.lazy').then((d) => d.Route),
-)
+  } as any).lazy(() =>
+    import('./routes/shelves/bookshelf/$bookshelfId.lazy').then((d) => d.Route),
+  )
+
+const ShelvesBookshelfSearchIndexLazyRoute =
+  ShelvesBookshelfSearchIndexLazyImport.update({
+    path: '/shelves/bookshelf/search/',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/shelves/bookshelf/search/index.lazy').then((d) => d.Route),
+  )
 
 const AdminTabsChangeRequestsIndexRoute =
   AdminTabsChangeRequestsIndexImport.update({
@@ -150,41 +144,15 @@ const AdminTabsAuthorsIndexRoute = AdminTabsAuthorsIndexImport.update({
   import('./routes/admin/tabs/authors/index.lazy').then((d) => d.Route),
 )
 
-const BookshelfSearchCreateBookshelfIdLazyRoute =
-  BookshelfSearchCreateBookshelfIdLazyImport.update({
-    path: '/bookshelf/search/create/$bookshelfId',
+const ShelvesBookshelfCreateBookIdRoute =
+  ShelvesBookshelfCreateBookIdImport.update({
+    path: '/shelves/bookshelf/createBook/$id',
     getParentRoute: () => rootRoute,
   } as any).lazy(() =>
-    import('./routes/bookshelf/search/create/$bookshelfId.lazy').then(
+    import('./routes/shelves/bookshelf/createBook/$id.lazy').then(
       (d) => d.Route,
     ),
   )
-
-const BookTabsQuotationsTabBookIdRoute =
-  BookTabsQuotationsTabBookIdImport.update({
-    path: '/book/tabs/quotationsTab/$bookId',
-    getParentRoute: () => rootRoute,
-  } as any).lazy(() =>
-    import('./routes/book/tabs/quotationsTab/$bookId.lazy').then(
-      (d) => d.Route,
-    ),
-  )
-
-const BookTabsGradesTabBookIdRoute = BookTabsGradesTabBookIdImport.update({
-  path: '/book/tabs/gradesTab/$bookId',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() =>
-  import('./routes/book/tabs/gradesTab/$bookId.lazy').then((d) => d.Route),
-)
-
-const BookTabsBasicDataTabBookIdRoute = BookTabsBasicDataTabBookIdImport.update(
-  {
-    path: '/book/tabs/basicDataTab/$bookId',
-    getParentRoute: () => rootRoute,
-  } as any,
-).lazy(() =>
-  import('./routes/book/tabs/basicDataTab/$bookId.lazy').then((d) => d.Route),
-)
 
 const AdminTabsChangeRequestsIdRoute = AdminTabsChangeRequestsIdImport.update({
   path: '/admin/tabs/changeRequests/$id',
@@ -193,12 +161,62 @@ const AdminTabsChangeRequestsIdRoute = AdminTabsChangeRequestsIdImport.update({
   import('./routes/admin/tabs/changeRequests/$id.lazy').then((d) => d.Route),
 )
 
+const ShelvesBookshelfSearchResultIndexRoute =
+  ShelvesBookshelfSearchResultIndexImport.update({
+    path: '/shelves/bookshelf/search/result/',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/shelves/bookshelf/search/result/index.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const ShelvesBookshelfSearchCreateBookshelfIdLazyRoute =
+  ShelvesBookshelfSearchCreateBookshelfIdLazyImport.update({
+    path: '/shelves/bookshelf/search/create/$bookshelfId',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/shelves/bookshelf/search/create/$bookshelfId.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
 const AdminTabsBooksEditIdRoute = AdminTabsBooksEditIdImport.update({
   path: '/admin/tabs/books/edit/$id',
   getParentRoute: () => rootRoute,
 } as any).lazy(() =>
   import('./routes/admin/tabs/books/edit/$id.lazy').then((d) => d.Route),
 )
+
+const ShelvesBookshelfBookTabsQuotationsTabBookIdRoute =
+  ShelvesBookshelfBookTabsQuotationsTabBookIdImport.update({
+    path: '/shelves/bookshelf/book/tabs/quotationsTab/$bookId',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import(
+      './routes/shelves/bookshelf/book/tabs/quotationsTab/$bookId.lazy'
+    ).then((d) => d.Route),
+  )
+
+const ShelvesBookshelfBookTabsGradesTabBookIdRoute =
+  ShelvesBookshelfBookTabsGradesTabBookIdImport.update({
+    path: '/shelves/bookshelf/book/tabs/gradesTab/$bookId',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/shelves/bookshelf/book/tabs/gradesTab/$bookId.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const ShelvesBookshelfBookTabsBasicDataTabBookIdRoute =
+  ShelvesBookshelfBookTabsBasicDataTabBookIdImport.update({
+    path: '/shelves/bookshelf/book/tabs/basicDataTab/$bookId',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import(
+      './routes/shelves/bookshelf/book/tabs/basicDataTab/$bookId.lazy'
+    ).then((d) => d.Route),
+  )
 
 // Populate the FileRoutesByPath interface
 
@@ -208,12 +226,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/bookshelf/$bookshelfId': {
-      preLoaderRoute: typeof BookshelfBookshelfIdImport
-      parentRoute: typeof rootRoute
-    }
     '/mybooks/': {
       preLoaderRoute: typeof MybooksIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/shelves/': {
+      preLoaderRoute: typeof ShelvesIndexImport
       parentRoute: typeof rootRoute
     }
     '/verifyEmail/': {
@@ -240,36 +258,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResetPasswordIndexLazyImport
       parentRoute: typeof rootRoute
     }
-    '/bookshelf/createBook/$id': {
-      preLoaderRoute: typeof BookshelfCreateBookIdImport
+    '/shelves/bookshelf/$bookshelfId': {
+      preLoaderRoute: typeof ShelvesBookshelfBookshelfIdImport
       parentRoute: typeof rootRoute
     }
     '/admin/tabs/': {
       preLoaderRoute: typeof AdminTabsIndexImport
       parentRoute: typeof rootRoute
     }
-    '/bookshelf/search/': {
-      preLoaderRoute: typeof BookshelfSearchIndexLazyImport
-      parentRoute: typeof rootRoute
-    }
     '/admin/tabs/changeRequests/$id': {
       preLoaderRoute: typeof AdminTabsChangeRequestsIdImport
       parentRoute: typeof rootRoute
     }
-    '/book/tabs/basicDataTab/$bookId': {
-      preLoaderRoute: typeof BookTabsBasicDataTabBookIdImport
-      parentRoute: typeof rootRoute
-    }
-    '/book/tabs/gradesTab/$bookId': {
-      preLoaderRoute: typeof BookTabsGradesTabBookIdImport
-      parentRoute: typeof rootRoute
-    }
-    '/book/tabs/quotationsTab/$bookId': {
-      preLoaderRoute: typeof BookTabsQuotationsTabBookIdImport
-      parentRoute: typeof rootRoute
-    }
-    '/bookshelf/search/create/$bookshelfId': {
-      preLoaderRoute: typeof BookshelfSearchCreateBookshelfIdLazyImport
+    '/shelves/bookshelf/createBook/$id': {
+      preLoaderRoute: typeof ShelvesBookshelfCreateBookIdImport
       parentRoute: typeof rootRoute
     }
     '/admin/tabs/authors/': {
@@ -284,12 +286,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminTabsChangeRequestsIndexImport
       parentRoute: typeof rootRoute
     }
-    '/bookshelf/search/result/': {
-      preLoaderRoute: typeof BookshelfSearchResultIndexImport
+    '/shelves/bookshelf/search/': {
+      preLoaderRoute: typeof ShelvesBookshelfSearchIndexLazyImport
       parentRoute: typeof rootRoute
     }
     '/admin/tabs/books/edit/$id': {
       preLoaderRoute: typeof AdminTabsBooksEditIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/shelves/bookshelf/search/create/$bookshelfId': {
+      preLoaderRoute: typeof ShelvesBookshelfSearchCreateBookshelfIdLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/shelves/bookshelf/search/result/': {
+      preLoaderRoute: typeof ShelvesBookshelfSearchResultIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/shelves/bookshelf/book/tabs/basicDataTab/$bookId': {
+      preLoaderRoute: typeof ShelvesBookshelfBookTabsBasicDataTabBookIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/shelves/bookshelf/book/tabs/gradesTab/$bookId': {
+      preLoaderRoute: typeof ShelvesBookshelfBookTabsGradesTabBookIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/shelves/bookshelf/book/tabs/quotationsTab/$bookId': {
+      preLoaderRoute: typeof ShelvesBookshelfBookTabsQuotationsTabBookIdImport
       parentRoute: typeof rootRoute
     }
   }
@@ -299,27 +321,28 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren([
   IndexRoute,
-  BookshelfBookshelfIdRoute,
   MybooksIndexRoute,
+  ShelvesIndexRoute,
   VerifyEmailIndexRoute,
   LoginIndexLazyRoute,
   NewPasswordIndexLazyRoute,
   ProfileIndexLazyRoute,
   RegisterIndexLazyRoute,
   ResetPasswordIndexLazyRoute,
-  BookshelfCreateBookIdRoute,
+  ShelvesBookshelfBookshelfIdRoute,
   AdminTabsIndexRoute,
-  BookshelfSearchIndexLazyRoute,
   AdminTabsChangeRequestsIdRoute,
-  BookTabsBasicDataTabBookIdRoute,
-  BookTabsGradesTabBookIdRoute,
-  BookTabsQuotationsTabBookIdRoute,
-  BookshelfSearchCreateBookshelfIdLazyRoute,
+  ShelvesBookshelfCreateBookIdRoute,
   AdminTabsAuthorsIndexRoute,
   AdminTabsBooksIndexRoute,
   AdminTabsChangeRequestsIndexRoute,
-  BookshelfSearchResultIndexRoute,
+  ShelvesBookshelfSearchIndexLazyRoute,
   AdminTabsBooksEditIdRoute,
+  ShelvesBookshelfSearchCreateBookshelfIdLazyRoute,
+  ShelvesBookshelfSearchResultIndexRoute,
+  ShelvesBookshelfBookTabsBasicDataTabBookIdRoute,
+  ShelvesBookshelfBookTabsGradesTabBookIdRoute,
+  ShelvesBookshelfBookTabsQuotationsTabBookIdRoute,
 ])
 
 /* prettier-ignore-end */
