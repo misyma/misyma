@@ -68,7 +68,7 @@ describe('UserBookRepositoryImpl', () => {
 
     collectionTestUtils = container.get<CollectionTestUtils>(testSymbols.collectionTestUtils);
 
-    // refactor to use only one truncate, based on test - for example for this file use userBookTestUtils.truncate
+    // TODO: refactor to use only one truncate, based on test - for example for this file use userBookTestUtils.truncate
     testUtils = [
       authorTestUtils,
       bookTestUtils,

@@ -8,6 +8,8 @@ import { authorDtoSchema, authorNameSchema } from '../../../../../bookModule/api
 export const findAuthorsQueryParamsDtoSchema = Type.Object({
   name: Type.Optional(authorNameSchema),
   ids: Type.Optional(Type.Array(Type.String({ format: 'uuid' }))),
+  userId: Type.Optional(Type.String({ format: 'uuid' })),
+  bookshelfId: Type.Optional(Type.String({ format: 'uuid' })),
   page: Type.Optional(Type.Integer({ minimum: 1 })),
   pageSize: Type.Optional(Type.Integer({ minimum: 1 })),
   sortDate: Type.Optional(Type.Enum(contracts.SortingType)),

@@ -5,6 +5,8 @@ import { type SortingType } from '../sortingType.js';
 export interface FindAuthorsQueryParams {
   readonly name?: string;
   readonly ids?: string[];
+  readonly userId?: string;
+  readonly bookshelfId?: string;
   readonly page?: number;
   readonly pageSize?: number;
   readonly sortDate?: SortingType;

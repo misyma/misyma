@@ -269,30 +269,30 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       ];
 
       const authorsSelect = [
-        this.databaseClient.raw(`array_agg("authors"."id") as "authorIds"`),
-        this.databaseClient.raw(`array_agg("authors"."name") as "authorNames"`),
-        this.databaseClient.raw(`array_agg("authors"."isApproved") as "authorApprovals"`),
-        this.databaseClient.raw(`array_agg("authors"."createdAt") as "authorCreatedAtDates"`),
+        this.databaseClient.raw(`array_agg("${authorTable}"."id") as "authorIds"`),
+        this.databaseClient.raw(`array_agg("${authorTable}"."name") as "authorNames"`),
+        this.databaseClient.raw(`array_agg("${authorTable}"."isApproved") as "authorApprovals"`),
+        this.databaseClient.raw(`array_agg("${authorTable}"."createdAt") as "authorCreatedAtDates"`),
       ];
 
       const genresSelect = [
-        this.databaseClient.raw(`array_agg("genres"."id") as "genreIds"`),
-        this.databaseClient.raw(`array_agg("genres"."name") as "genreNames"`),
+        this.databaseClient.raw(`array_agg("${genreTable}"."id") as "genreIds"`),
+        this.databaseClient.raw(`array_agg("${genreTable}"."name") as "genreNames"`),
       ];
 
       const collectionsSelect = [
-        this.databaseClient.raw(`array_agg("collections"."id") as "collectionIds"`),
-        this.databaseClient.raw(`array_agg("collections"."name") as "collectionNames"`),
-        this.databaseClient.raw(`array_agg("collections"."createdAt") as "collectionCreatedAtDates"`),
-        this.databaseClient.raw(`array_agg("collections"."userId") as "collectionUserIds"`),
+        this.databaseClient.raw(`array_agg("${collectionTable}"."id") as "collectionIds"`),
+        this.databaseClient.raw(`array_agg("${collectionTable}"."name") as "collectionNames"`),
+        this.databaseClient.raw(`array_agg("${collectionTable}"."createdAt") as "collectionCreatedAtDates"`),
+        this.databaseClient.raw(`array_agg("${collectionTable}"."userId") as "collectionUserIds"`),
       ];
 
       const readingsSelect = [
-        this.databaseClient.raw(`array_agg("bookReadings"."id") as "readingIds"`),
-        this.databaseClient.raw(`array_agg("bookReadings"."startedAt") as "readingStartedAtDates"`),
-        this.databaseClient.raw(`array_agg("bookReadings"."endedAt") as "readingEndedAtDates"`),
-        this.databaseClient.raw(`array_agg("bookReadings"."rating") as "readingRatings"`),
-        this.databaseClient.raw(`array_agg("bookReadings"."comment") as "readingComments"`),
+        this.databaseClient.raw(`array_agg("${bookReadingTable}"."id") as "readingIds"`),
+        this.databaseClient.raw(`array_agg("${bookReadingTable}"."startedAt") as "readingStartedAtDates"`),
+        this.databaseClient.raw(`array_agg("${bookReadingTable}"."endedAt") as "readingEndedAtDates"`),
+        this.databaseClient.raw(`array_agg("${bookReadingTable}"."rating") as "readingRatings"`),
+        this.databaseClient.raw(`array_agg("${bookReadingTable}"."comment") as "readingComments"`),
       ];
 
       rawEntities = await this.databaseClient<UserBookRawEntity>(userBookTable)
@@ -410,30 +410,30 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       ];
 
       const authorsSelect = [
-        this.databaseClient.raw(`array_agg("authors"."id") as "authorIds"`),
-        this.databaseClient.raw(`array_agg("authors"."name") as "authorNames"`),
-        this.databaseClient.raw(`array_agg("authors"."isApproved") as "authorApprovals"`),
-        this.databaseClient.raw(`array_agg("authors"."createdAt") as "authorCreatedAtDates"`),
+        this.databaseClient.raw(`array_agg("${authorTable}"."id") as "authorIds"`),
+        this.databaseClient.raw(`array_agg("${authorTable}"."name") as "authorNames"`),
+        this.databaseClient.raw(`array_agg("${authorTable}"."isApproved") as "authorApprovals"`),
+        this.databaseClient.raw(`array_agg("${authorTable}"."createdAt") as "authorCreatedAtDates"`),
       ];
 
       const genresSelect = [
-        this.databaseClient.raw(`array_agg("genres"."id") as "genreIds"`),
-        this.databaseClient.raw(`array_agg("genres"."name") as "genreNames"`),
+        this.databaseClient.raw(`array_agg("${genreTable}"."id") as "genreIds"`),
+        this.databaseClient.raw(`array_agg("${genreTable}"."name") as "genreNames"`),
       ];
 
       const collectionsSelect = [
-        this.databaseClient.raw(`array_agg("collections"."id") as "collectionIds"`),
-        this.databaseClient.raw(`array_agg("collections"."name") as "collectionNames"`),
-        this.databaseClient.raw(`array_agg("collections"."createdAt") as "collectionCreatedAtDates"`),
-        this.databaseClient.raw(`array_agg("collections"."userId") as "collectionUserIds"`),
+        this.databaseClient.raw(`array_agg("${collectionTable}"."id") as "collectionIds"`),
+        this.databaseClient.raw(`array_agg("${collectionTable}"."name") as "collectionNames"`),
+        this.databaseClient.raw(`array_agg("${collectionTable}"."createdAt") as "collectionCreatedAtDates"`),
+        this.databaseClient.raw(`array_agg("${collectionTable}"."userId") as "collectionUserIds"`),
       ];
 
       const readingsSelect = [
-        this.databaseClient.raw(`array_agg("bookReadings"."id") as "readingIds"`),
-        this.databaseClient.raw(`array_agg("bookReadings"."startedAt") as "readingStartedAtDates"`),
-        this.databaseClient.raw(`array_agg("bookReadings"."endedAt") as "readingEndedAtDates"`),
-        this.databaseClient.raw(`array_agg("bookReadings"."rating") as "readingRatings"`),
-        this.databaseClient.raw(`array_agg("bookReadings"."comment") as "readingComments"`),
+        this.databaseClient.raw(`array_agg("${bookReadingTable}"."id") as "readingIds"`),
+        this.databaseClient.raw(`array_agg("${bookReadingTable}"."startedAt") as "readingStartedAtDates"`),
+        this.databaseClient.raw(`array_agg("${bookReadingTable}"."endedAt") as "readingEndedAtDates"`),
+        this.databaseClient.raw(`array_agg("${bookReadingTable}"."rating") as "readingRatings"`),
+        this.databaseClient.raw(`array_agg("${bookReadingTable}"."comment") as "readingComments"`),
       ];
 
       const query = this.databaseClient<UserBookRawEntity>(userBookTable)

@@ -6,6 +6,8 @@ import { type Author } from '../../../domain/entities/author/author.js';
 export interface ExecutePayload {
   readonly ids?: string[] | undefined;
   readonly name?: string | undefined;
+  readonly userId?: string | undefined;
+  readonly bookshelfId?: string | undefined;
   readonly page: number;
   readonly pageSize: number;
   readonly sortDate?: SortingType | undefined;

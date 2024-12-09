@@ -12,6 +12,8 @@ export interface FindAuthorPayload {
 export interface FindAuthorsPayload {
   readonly ids?: string[];
   readonly name?: string;
+  readonly userId?: string;
+  readonly bookshelfId?: string;
   readonly isApproved?: boolean;
   readonly page: number;
   readonly pageSize: number;
@@ -21,6 +23,8 @@ export interface FindAuthorsPayload {
 export interface CountAuthorsPayload {
   readonly ids?: string[];
   readonly name?: string;
+  readonly userId?: string;
+  readonly bookshelfId?: string;
   readonly isApproved?: boolean;
 }
 
