@@ -1,6 +1,6 @@
 import { FC, useMemo } from 'react';
 import { AuthenticatedLayout } from '../../modules/auth/layouts/authenticated/authenticatedLayout.js';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { RequireAuthComponent } from '../../modules/core/components/requireAuth/requireAuthComponent.js';
 import { Button } from '../../modules/common/components/button/button.js';
 import { motion } from 'framer-motion';
@@ -22,6 +22,7 @@ import {
   myBooksStateSelectors,
   setFilterVisible,
 } from '../../modules/core/store/states/myBooksFilterState/myBooksFilterStateSlice.js';
+import { HiPlus } from 'react-icons/hi2';
 
 const BookPageFiltersBar = () => {
   const filterOptions = useMemo(
@@ -102,11 +103,12 @@ const BooksFiltersVisibilityButton = () => {
 };
 
 const View: FC = () => {
+  const navigate = useNavigate();
+
   return (
     <AuthenticatedLayout>
       <div className="flex flex-col items-center justify-center w-100% px-8 py-1 sm:py-2">
-        <div className="flex items-center space-x-2"></div>
-        <div className="w-full px-16 flex justify-end items-center gap-4 pb-4">
+        <div className="w-full px-8 flex justify-end items-center gap-4 pb-4">
           <div className="flex items-center gap-4">
             <TooltipProvider delayDuration={300}>
               <Tooltip>
@@ -115,6 +117,29 @@ const View: FC = () => {
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>Filtruj</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <TooltipProvider delayDuration={300}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    size="big-icon"
+                    onClick={() => {
+                      navigate({
+                        to: `/shelves/bookshelf/search`,
+                        search: {
+                          type: 'isbn',
+                          next: 0,
+                        },
+                      });
+                    }}
+                  >
+                    <HiPlus className="w-8 h-8" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Stwórz książkę</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
