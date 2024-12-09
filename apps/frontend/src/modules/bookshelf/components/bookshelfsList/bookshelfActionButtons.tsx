@@ -43,7 +43,8 @@ export const BookshelfActionButtons: FC<BookshelfActionButtonsProps> = ({
             bookshelfName={name}
             deletedHandler={async () => {
               toast({
-                title: `Półka ${name} została usunięta.`,
+                title: `Usunięto półkę`,
+                description: `${name}`,
                 variant: 'success',
               });
 

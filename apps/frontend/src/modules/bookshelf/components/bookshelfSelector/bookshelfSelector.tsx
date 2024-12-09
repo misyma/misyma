@@ -1,4 +1,4 @@
-import { FC, KeyboardEvent } from 'react';
+import { FC, Fragment, KeyboardEvent } from 'react';
 import {
   SelectContent,
   SelectItem,
@@ -9,10 +9,12 @@ import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUs
 import { useFindUserBookshelfsQuery } from '../../api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 
 interface BookshelfSelectorProps {
-    onKeyDown: (event: KeyboardEvent<HTMLDivElement>) => void;
+  selectedValue: string;
+  onKeyDown: (event: KeyboardEvent<HTMLDivElement>) => void;
 }
 export const BookshelfSelector: FC<BookshelfSelectorProps> = ({
-    onKeyDown
+  selectedValue,
+  onKeyDown,
 }) => {
   const { data: user } = useFindUserQuery();
 
@@ -22,8 +24,14 @@ export const BookshelfSelector: FC<BookshelfSelectorProps> = ({
   });
 
   return (
-    <SelectTrigger className="text-start">
-      <SelectValue placeholder="Półka" />
+    <Fragment>
+      <SelectTrigger className="text-start">
+        <SelectValue asChild placeholder="Półka">
+          <span className="pointer-events-none">
+            {bookshelvesData?.data?.find((b) => b.id === selectedValue)?.name}
+          </span>
+        </SelectValue>
+      </SelectTrigger>
       <SelectContent>
         {bookshelvesData?.data
           .filter((bookshelf) => bookshelf.name !== 'Wypożyczalnia')
@@ -32,11 +40,12 @@ export const BookshelfSelector: FC<BookshelfSelectorProps> = ({
               className="text-start"
               onKeyDown={onKeyDown}
               value={bookshelf.id}
+              key={'bookshelf-selector-' + bookshelf.id}
             >
               {bookshelf.name}
             </SelectItem>
           ))}
       </SelectContent>
-    </SelectTrigger>
+    </Fragment>
   );
 };

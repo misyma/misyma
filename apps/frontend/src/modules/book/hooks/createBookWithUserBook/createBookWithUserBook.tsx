@@ -183,7 +183,7 @@ export const useCreateBookWithUserBook = ({
       });
 
       await navigate({
-        to: `/bookshelf/${userBookPayload.bookshelfId}`,
+        to: `/shelves/bookshelf/${userBookPayload.bookshelfId}`,
       });
     } catch (error) {
       if (error instanceof BookApiError) {

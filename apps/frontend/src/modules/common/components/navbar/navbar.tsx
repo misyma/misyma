@@ -20,6 +20,7 @@ import {
 } from '../breadcrumb/breadcrumb';
 import { useBreadcrumbKeysContext } from '../../contexts/breadcrumbKeysContext';
 import { User } from '@common/contracts';
+import { useQueryClient } from '@tanstack/react-query';
 
 const NavbarBreadcrumbs = () => {
   const breadcrumbKeys = useBreadcrumbKeysContext();
@@ -104,7 +105,7 @@ const NavbarBreadcrumbs = () => {
 
   return (
     <Breadcrumb className="pt-4 flex-shrink-0">
-      <BreadcrumbList className='flex-shrink-0 min-h-[1.25rem]'>
+      <BreadcrumbList className="flex-shrink-0 min-h-[1.25rem]">
         {allCorrespondingValuesPresent &&
           breadcrumbItems.map((item, index) => (
             <Fragment key={`breadcrumb-fragment-${index}`}>
@@ -125,6 +126,8 @@ const useUserState = () => {
 
   const accessToken = useStoreSelector(userStateSelectors.selectAccessToken);
   const refreshToken = useStoreSelector(userStateSelectors.selectRefreshToken);
+
+  const queryClient = useQueryClient();
 
   const res = useFindUserQuery();
 
@@ -147,6 +150,8 @@ const useUserState = () => {
           CookieService.removeUserTokensCookie();
 
           dispatch(userStateActions.removeUserState());
+
+          queryClient.invalidateQueries({});
 
           navigate({
             to: '/login',

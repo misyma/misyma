@@ -77,9 +77,8 @@ const DialogContentPreConfirmation: FC<DialogContentPreConfirmationProps> = ({
       </DialogHeader>
       <div className="w-full flex items-center justify-center">
         <div className="text-center w-[60%]">
-          <p className="pt-4">
-            Nie będziesz mieć już dostępu do "{bookshelfName}".
-          </p>
+          <p className="pt-4">Nie będziesz mieć już dostępu do</p>
+          <p className="w-88 truncate">{bookshelfName}</p>
           <p className="pt-4">Ta akcja jest nieodwracalna.</p>
           <p className={error ? 'text-red-500' : 'hidden'}>{error}</p>
         </div>
