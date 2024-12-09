@@ -89,7 +89,7 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
     defaultValues: {
       status: bookCreation.stepThreeDetails?.status,
       image: file,
-      bookshelfId,
+      bookshelfId: bookCreation.stepThreeDetails?.bookshelfId ?? '',
       genre: bookCreation.stepThreeDetails?.genre,
     },
     reValidateMode: 'onChange',
@@ -183,7 +183,6 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
               >
                 <FormControl>
                   <BookshelfSelector
-                    selectedValue={field.value}
                     onKeyDown={(event) => {
                       if (event.key === 'Enter') {
                         setBookshelfSelectOpen(false);

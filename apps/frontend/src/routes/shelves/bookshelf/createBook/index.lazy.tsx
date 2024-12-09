@@ -8,7 +8,7 @@ import { RequireAuthComponent } from '../../../../modules/core/components/requir
 import { BookCreationProvider } from '../../../../modules/bookshelf/context/bookCreationContext/bookCreationContext';
 
 export const CreateBook: FC = () => {
-  const { id } = Route.useParams();
+  const { id } = Route.useSearch();
 
   return (
     <AuthenticatedLayout>
@@ -19,7 +19,7 @@ export const CreateBook: FC = () => {
   );
 };
 
-export const Route = createLazyFileRoute('/shelves/bookshelf/createBook/$id')({
+export const Route = createLazyFileRoute('/shelves/bookshelf/createBook/')({
   component: () => {
     return (
       <RequireAuthComponent>

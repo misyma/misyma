@@ -19,6 +19,13 @@ import { FindBooksByBookshelfIdQueryOptions } from '../../../modules/book/api/us
 import { AuthenticatedLayout } from '../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { RequireAuthComponent } from '../../../modules/core/components/requireAuth/requireAuthComponent';
 import { VirtualizedBooksList } from '../../../modules/bookshelf/components/virtualizedBooksList/virtualizedBooksList';
+import { HiPlus } from 'react-icons/hi2';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../../../modules/common/components/tooltip/tooltip';
 
 const bookshelfSearchSchema = z.object({
   bookshelfId: z.string().uuid().catch(''),
@@ -94,27 +101,38 @@ const BookshelfTopBar: FC<BookshelfTopBarProps> = ({
   return (
     <div className="flex justify-between w-full sm:max-w-7xl">
       <div>
-        <p className="text-xl min-h-[1.75rem] sm:min-h-[2.25rem] max-w-[40rem] truncate sm:text-3xl">{bookshelfResponse?.name ?? ' '}</p>
+        <p className="text-xl min-h-[1.75rem] sm:min-h-[2.25rem] max-w-[40rem] truncate sm:text-3xl">
+          {bookshelfResponse?.name ?? ' '}
+        </p>
         <p>
           {bookshelfBooksResponse?.metadata.total ?? 0}{' '}
           {getCountNoun(bookshelfBooksResponse?.metadata.total ?? 0)}
         </p>
       </div>
-      <Button
-        size="xl"
-        onClick={() => {
-          navigate({
-            to: `/shelves/bookshelf/search`,
-            search: {
-              type: 'isbn',
-              next: 0,
-              bookshelfId,
-            },
-          });
-        }}
-      >
-        Dodaj książkę
-      </Button>
+      <TooltipProvider delayDuration={300}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              size="big-icon"
+              onClick={() => {
+                navigate({
+                  to: `/shelves/bookshelf/search`,
+                  search: {
+                    type: 'isbn',
+                    next: 0,
+                    bookshelfId,
+                  },
+                });
+              }}
+            >
+              <HiPlus className="w-8 h-8" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Stwórz książkę</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     </div>
   );
 };

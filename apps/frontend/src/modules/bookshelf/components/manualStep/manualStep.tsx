@@ -55,7 +55,7 @@ const stepThreeFormSchema = z.object({
 });
 
 interface Props {
-  bookshelfId: string;
+  bookshelfId?: string;
 }
 
 export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
@@ -106,7 +106,7 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
       title: string;
       bookshelfId: string;
     } = {
-      bookshelfId,
+      bookshelfId: bookshelfId ?? '',
       isbn: '',
       title: '',
     };
@@ -140,7 +140,7 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
       await create({
         userBookPayload: {
           bookId: searchBookContext.bookId,
-          bookshelfId: values.bookshelfId || bookshelfId,
+          bookshelfId: (values.bookshelfId || bookshelfId) ?? '',
           status: values.status as ContractReadingStatus,
           isFavorite: false,
           accessToken: accessToken as string,

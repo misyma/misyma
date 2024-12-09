@@ -8,12 +8,20 @@ import { useErrorHandledQuery } from '../../../../../modules/common/hooks/useErr
 import { FindBooksQueryOptions } from '../../../../../modules/book/api/user/queries/findBooks/findBooksQueryOptions';
 import { FindUserBooksByQueryOptions } from '../../../../../modules/book/api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
 import { Button } from '../../../../../modules/common/components/button/button';
-import { Breadcrumbs, NumericBreadcrumb } from '../../../../../modules/common/components/ui/breadcrumbs';
+import {
+  Breadcrumbs,
+  NumericBreadcrumb,
+} from '../../../../../modules/common/components/ui/breadcrumbs';
 import { AutoselectedInput } from '../../../../../modules/common/components/autoselectedInput/autoselectedInput';
 import { Paginator } from '../../../../../modules/common/components/paginator/paginator';
 import { ReversedLanguages } from '../../../../../modules/common/constants/languages';
 import { BookFormat } from '../../../../../modules/common/constants/bookFormat';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../../../modules/common/components/tooltip/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../../../../../modules/common/components/tooltip/tooltip';
 import { AuthenticatedLayout } from '../../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { LoadingSpinner } from '../../../../../modules/common/components/spinner/loading-spinner';
 import { RequireAuthComponent } from '../../../../../modules/core/components/requireAuth/requireAuthComponent';
@@ -41,14 +49,13 @@ export const SearchResultPage: FC = () => {
         },
       });
     }
-
-    if (searchParams.bookshelfId === '') {
-      navigate({
-        to: '/mybooks',
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams.searchBy]);
+  }, [
+    searchParams.searchBy,
+    searchParams.bookshelfId,
+    searchParams.isbn,
+    searchParams.title,
+    navigate,
+  ]);
 
   const { data: foundBooks, isFetching } = useErrorHandledQuery(
     FindBooksQueryOptions({
@@ -102,9 +109,9 @@ export const SearchResultPage: FC = () => {
 
   const onCreateManually = () => {
     navigate({
-      to: `/shelves/bookshelf/createBook/$id`,
-      params: {
-        id: searchParams.bookshelfId,
+      to: `/shelves/bookshelf/createBook`,
+      search: {
+        bookshelfId: searchParams.bookshelfId,
       },
     });
   };

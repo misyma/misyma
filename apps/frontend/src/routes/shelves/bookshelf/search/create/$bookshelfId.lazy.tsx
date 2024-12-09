@@ -18,14 +18,6 @@ export const SearchCreatePage: FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (params.bookshelfId === '') {
-      navigate({
-        to: '/mybooks',
-      });
-
-      return;
-    }
-
     if (searchBookContext.step !== 3) {
       navigate({
         to: '/shelves/bookshelf/search',
@@ -54,8 +46,13 @@ export const SearchCreatePage: FC = () => {
 
       return;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [
+    navigate,
+    params.bookshelfId,
+    searchBookContext.title,
+    searchBookContext.bookId,
+    searchBookContext.step,
+  ]);
 
   //   return <ManualStep bookshelfId={searchParams.bookshelfId}></ManualStep>;
 
