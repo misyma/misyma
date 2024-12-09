@@ -19,6 +19,7 @@ import { Button } from '../../modules/common/components/button/button';
 import { BookshelfsList } from '../../modules/bookshelf/components/bookshelfsList/bookshelfsList';
 import { Paginator } from '../../modules/common/components/paginator/paginator';
 import { AuthenticatedLayout } from '../../modules/auth/layouts/authenticated/authenticatedLayout';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../modules/common/components/tooltip/tooltip';
 
 export const ShelvesPage: FC = () => {
   const breadcrumbKeysDispatch = useBreadcrumbKeysDispatch();
@@ -175,13 +176,22 @@ export const ShelvesPage: FC = () => {
             includeQuill={false}
             otherIcon={<HiMagnifyingGlass className="text-primary h-8 w-8" />}
           />
-          <Button
-            size="big-icon"
-            onClick={() => onAddNewBookshelf()}
-            disabled={isCreatingNew}
-          >
-            <HiPlus className="w-8 h-8"></HiPlus>
-          </Button>
+          <TooltipProvider delayDuration={300}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  size="big-icon"
+                  onClick={() => onAddNewBookshelf()}
+                  disabled={isCreatingNew}
+                >
+                  <HiPlus className="w-8 h-8"></HiPlus>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Stwórz półkę</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
         <BookshelfsList
           bookshelves={queryBookshelves ?? []}
