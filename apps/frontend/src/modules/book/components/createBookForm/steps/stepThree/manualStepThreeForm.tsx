@@ -166,7 +166,7 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
           name="bookshelfId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Półka*</FormLabel>
+              <FormLabel>Półka</FormLabel>
               <Select
                 open={bookshelfSelectOpen}
                 onOpenChange={setBookshelfSelectOpen}
@@ -201,7 +201,7 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
           name="status"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Status*</FormLabel>
+              <FormLabel>Status</FormLabel>
               <GenreSelector
                 defaultValue={field.value}
                 onValueChange={(val) => {
@@ -225,7 +225,10 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
           name="image"
           render={({ field: { value, onChange, ...fieldProps } }) => (
             <FormItem>
-              <FormLabel>Obrazek</FormLabel>
+              <FormLabel>
+                <span>Obrazek</span>{' '}
+                <span className="text-gray-500">(opcjonalne)</span>
+              </FormLabel>
               <FormControl>
                 <FileInput
                   {...fieldProps}
@@ -253,7 +256,7 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
           name="genre"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Kategoria*</FormLabel>
+              <FormLabel>Kategoria</FormLabel>
               <GenreSelect
                 genres={genres?.data ?? []}
                 onValueChange={(val) => {

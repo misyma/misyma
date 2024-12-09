@@ -234,7 +234,10 @@ export const ManualStepOneForm = (): JSX.Element => {
           name="isbn"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>ISBN</FormLabel>
+              <FormLabel>
+                <span>ISBN</span>{' '}
+                <span className="text-gray-500">(opcjonalne)</span>
+              </FormLabel>
               <FormControl>
                 <Input
                   placeholder="111-11-1111-111-1"
@@ -257,7 +260,7 @@ export const ManualStepOneForm = (): JSX.Element => {
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Tytuł*</FormLabel>
+              <FormLabel>Tytuł</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Tytuł"
@@ -283,7 +286,7 @@ export const ManualStepOneForm = (): JSX.Element => {
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <div className="flex gap-2 items-center">
-                <FormLabel>Autor*</FormLabel>
+                <FormLabel>Autor</FormLabel>
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -376,7 +379,10 @@ export const ManualStepOneForm = (): JSX.Element => {
           name="yearOfIssue"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Rok wydania</FormLabel>
+              <FormLabel>
+                <span>Rok wydania</span>{' '}
+                <span className="text-gray-500">(opcjonalne)</span>
+              </FormLabel>
               <FormControl>
                 <Input
                   placeholder="1939"
@@ -400,7 +406,10 @@ export const ManualStepOneForm = (): JSX.Element => {
           name="publisher"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Wydawnictwo</FormLabel>
+              <FormLabel>
+                <span>Wydawnictwo</span>{' '}
+                <span className="text-gray-500">(opcjonalne)</span>
+              </FormLabel>
               <FormControl>
                 <Input
                   placeholder="Wydawnictwo"

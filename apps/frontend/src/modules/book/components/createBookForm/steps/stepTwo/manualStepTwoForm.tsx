@@ -49,7 +49,6 @@ const stepTwoSchema = z.object({
   form: z.nativeEnum(ContractBookFormat),
   pagesCount: z
     .number({
-      required_error: 'Ilość stron jest wymagana.',
       coerce: true,
     })
     .int({
@@ -153,7 +152,7 @@ export const ManualStepTwoForm = (): JSX.Element => {
           name="form"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Format*</FormLabel>
+              <FormLabel>Format</FormLabel>
               <BookFormatSelect {...field} />
               <FormMessage />
             </FormItem>
@@ -164,7 +163,10 @@ export const ManualStepTwoForm = (): JSX.Element => {
           name="pagesCount"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Ilość stron</FormLabel>
+              <FormLabel>
+                <span>Ilość stron</span>{' '}
+                <span className='text-gray-500'>(opcjonalne)</span>
+              </FormLabel>
               <FormControl>
                 <Input
                   placeholder="Ilość stron"
@@ -188,7 +190,7 @@ export const ManualStepTwoForm = (): JSX.Element => {
           name="language"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Język*</FormLabel>
+              <FormLabel>Język</FormLabel>
               <LanguageSelect
                 onValueChange={onLanguageSelected}
                 type="form"
@@ -204,7 +206,10 @@ export const ManualStepTwoForm = (): JSX.Element => {
             name="translator"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Przekład</FormLabel>
+                <FormLabel>
+                  <span>Przekład</span>{' '}
+                  <span className='text-gray-500'>(opcjonalne)</span>
+                </FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Przekład"

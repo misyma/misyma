@@ -172,7 +172,7 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
           name="form"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Format*</FormLabel>
+              <FormLabel>Format</FormLabel>
               <BookFormatSelect
                 dialog={true}
                 onValueChange={(val) => {
@@ -192,7 +192,10 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
           name="pagesCount"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Ilość stron</FormLabel>
+              <FormLabel>
+                <span>Ilość stron</span>{' '}
+                <span className='text-gray-500'>(opcjonalne)</span>
+              </FormLabel>
               <FormControl>
                 <Input
                   placeholder="Ilość stron"
@@ -216,7 +219,7 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
           name="language"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Język*</FormLabel>
+              <FormLabel>Język</FormLabel>
               <LanguageSelect
                 dialog={true}
                 type={'form'}
@@ -260,7 +263,10 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
           name="imageUrl"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Link do obrazka</FormLabel>
+              <FormLabel>
+                <span>Link do obrazka</span>{' '}
+                <span className='text-gray-500'>(opcjonalne)</span>
+              </FormLabel>
               <FormControl>
                 <Input
                   placeholder="Link do obrazka"

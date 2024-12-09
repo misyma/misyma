@@ -79,7 +79,7 @@ export const SetNewPasswordForm: FC<SetNewPasswordFormProps> = ({
           name="password"
           render={({ field }) => (
             <FormItem className="h-[5.5rem]">
-              <FormLabel>Nowe hasło*</FormLabel>
+              <FormLabel>Nowe hasło</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Hasło"
@@ -108,7 +108,7 @@ export const SetNewPasswordForm: FC<SetNewPasswordFormProps> = ({
           name="repeatedPassword"
           render={({ field }) => (
             <FormItem className="h-[5.5rem]">
-              <FormLabel>Powtórz hasło*</FormLabel>
+              <FormLabel>Powtórz hasło</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Hasło"

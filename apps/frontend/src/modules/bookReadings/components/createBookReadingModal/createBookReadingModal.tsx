@@ -213,7 +213,7 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({
           name="startedAt"
           render={({ field }) => (
             <FormItem className="flex flex-col">
-              <FormLabel>Data rozpoczęcia czytania*</FormLabel>
+              <FormLabel>Data rozpoczęcia czytania</FormLabel>
               <Popover modal={true}>
                 <PopoverTrigger asChild>
                   <FormControl>
@@ -267,7 +267,7 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({
           name="endedAt"
           render={({ field }) => (
             <FormItem className="flex flex-col">
-              <FormLabel>Data zakończenia czytania*</FormLabel>
+              <FormLabel>Data zakończenia czytania</FormLabel>
               <Popover modal={true}>
                 <PopoverTrigger asChild>
                   <FormControl>

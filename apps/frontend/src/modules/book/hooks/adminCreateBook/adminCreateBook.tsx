@@ -3,9 +3,7 @@ import {
   CreateAuthorResponseBody,
   FindAuthorsResponseBody,
 } from '@common/contracts';
-import {
-  UseCreateBookMutationPayload,
-} from '../../api/user/mutations/createBookMutation/createBookMutation';
+import { UseCreateBookMutationPayload } from '../../api/user/mutations/createBookMutation/createBookMutation';
 import { useToast } from '../../../common/components/toast/use-toast';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCreateAuthorDraftMutation } from '../../../author/api/user/mutations/createAuthorDraftMutation/createAuthorDraftMutation';
@@ -91,14 +89,16 @@ export const useAdminCreateBook = ({
         });
       }
 
-      await queryClient.invalidateQueries({
-        predicate: ({ queryKey }) => queryKey[0] === BookApiQueryKeys.findBooks,
-      });
-
-      await queryClient.invalidateQueries({
-        predicate: ({ queryKey }) =>
-          queryKey[0] === BookApiQueryKeys.findBooksAdmin,
-      });
+      await Promise.all([
+        queryClient.invalidateQueries({
+          predicate: ({ queryKey }) =>
+            queryKey[0] === BookApiQueryKeys.findBooks,
+        }),
+        queryClient.invalidateQueries({
+          predicate: ({ queryKey }) =>
+            queryKey[0] === BookApiQueryKeys.findBooksAdmin,
+        }),
+      ]);
 
       toast({
         title: 'Książka została stworzona.',
