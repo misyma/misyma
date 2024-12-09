@@ -96,7 +96,7 @@ export const DeleteUserBookModal: FC<Props> = ({
       });
 
       navigate({
-        to: `/bookshelf/${bookshelfId}`,
+        to: `/shelves/bookshelf/${bookshelfId}`,
       });
     } catch (error) {
       if (error instanceof ApiError) {

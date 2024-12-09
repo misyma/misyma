@@ -94,7 +94,7 @@ const BookshelfTopBar: FC<BookshelfTopBarProps> = ({
   return (
     <div className="flex justify-between w-full sm:max-w-7xl">
       <div>
-        <p className="text-xl min-h-[1.75rem] sm:min-h-[2.25rem] sm:text-3xl">{bookshelfResponse?.name ?? ' '}</p>
+        <p className="text-xl min-h-[1.75rem] sm:min-h-[2.25rem] max-w-[40rem] truncate sm:text-3xl">{bookshelfResponse?.name ?? ' '}</p>
         <p>
           {bookshelfBooksResponse?.metadata.total ?? 0}{' '}
           {getCountNoun(bookshelfBooksResponse?.metadata.total ?? 0)}

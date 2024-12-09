@@ -24,7 +24,7 @@ export const ShelvesPage: FC = () => {
   const breadcrumbKeysDispatch = useBreadcrumbKeysDispatch();
   const dispatch = useDispatch<AppDispatch>();
 
-  const perPage = 5;
+  const perPage = 7;
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isCreatingNew, setIsCreatingNew] = useState(false);
   const [searchedName, setSearchedName] = useState('');

@@ -53,21 +53,21 @@ export const DeleteBookModal: FC<Props> = ({
 
       setIsOpen(false);
 
-      await queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey[0] === BookApiQueryKeys.findBookById &&
-          query.queryKey[1] === bookId,
-      });
-
-      await queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey[0] === BookApiQueryKeys.findBooksAdmin,
-      });
-
-      await queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId,
-      });
+      await Promise.all([
+        queryClient.invalidateQueries({
+          predicate: (query) =>
+            query.queryKey[0] === BookApiQueryKeys.findBookById &&
+            query.queryKey[1] === bookId,
+        }),
+        queryClient.invalidateQueries({
+          predicate: (query) =>
+            query.queryKey[0] === BookApiQueryKeys.findBooksAdmin,
+        }),
+        queryClient.invalidateQueries({
+          predicate: (query) =>
+            query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId,
+        }),
+      ])
 
       toast({
         variant: 'success',
