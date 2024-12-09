@@ -14,11 +14,12 @@ import {
 import { ShelvesSkeleton } from '../../modules/bookshelf/components/bookshelvesSkeleton/shelvesSkeleton';
 import { motion } from 'framer-motion';
 import { Input } from '../../modules/common/components/input/input';
-import { HiMagnifyingGlass } from 'react-icons/hi2';
+import { HiMagnifyingGlass, HiPlus } from 'react-icons/hi2';
 import { Button } from '../../modules/common/components/button/button';
 import { BookshelfsList } from '../../modules/bookshelf/components/bookshelfsList/bookshelfsList';
 import { Paginator } from '../../modules/common/components/paginator/paginator';
 import { AuthenticatedLayout } from '../../modules/auth/layouts/authenticated/authenticatedLayout';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../modules/common/components/tooltip/tooltip';
 
 export const ShelvesPage: FC = () => {
   const breadcrumbKeysDispatch = useBreadcrumbKeysDispatch();
@@ -130,6 +131,8 @@ export const ShelvesPage: FC = () => {
       type: BookshelfType.standard,
       createdAt: new Date().toISOString(),
     });
+    setBookshelves(queryBookshelves ?? []);
+    setIsCreatingNew(true);
 
     dispatch(
       setEditMap({
@@ -137,10 +140,14 @@ export const ShelvesPage: FC = () => {
         [0]: true,
       })
     );
-
-    setIsCreatingNew(true);
-
     setQueryBookshelves([...(queryBookshelves ? queryBookshelves : [])]);
+  };
+
+  const onCancelEdit = (index: number): void => {
+    if (queryBookshelves?.[index]?.id === '') {
+      setQueryBookshelves(queryBookshelves.slice(1));
+    }
+    setIsCreatingNew(false);
   };
 
   return (
@@ -169,18 +176,30 @@ export const ShelvesPage: FC = () => {
             includeQuill={false}
             otherIcon={<HiMagnifyingGlass className="text-primary h-8 w-8" />}
           />
-          <Button
-            size="xl"
-            onClick={() => onAddNewBookshelf()}
-            disabled={isCreatingNew}
-          >
-            Dodaj nową półkę
-          </Button>
+          <TooltipProvider delayDuration={300}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  size="big-icon"
+                  onClick={() => onAddNewBookshelf()}
+                  disabled={isCreatingNew}
+                >
+                  <HiPlus className="w-8 h-8"></HiPlus>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Stwórz półkę</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
         <BookshelfsList
+          bookshelves={queryBookshelves ?? []}
           onCreatingNew={(val) => setIsCreatingNew(val)}
+          onCancelEdit={onCancelEdit}
           currentPage={currentPage}
           searchedName={searchedName}
+          setBookshelves={setQueryBookshelves}
         />
         {queryBookshelves &&
           (bookshelvesData?.metadata?.total ?? 0) > perPage && (
