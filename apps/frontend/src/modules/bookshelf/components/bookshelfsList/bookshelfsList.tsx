@@ -1,9 +1,7 @@
 import { ScrollArea } from '../../../common/components/scrollArea/scroll-area';
 import { cn } from '../../../common/lib/utils';
 import styles from './index.module.css';
-import { FC, useEffect, useState } from 'react';
-import { useFindUserBookshelfsQuery } from '../../api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
-import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
+import { FC } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { useQueryClient } from '@tanstack/react-query';
 import { useToast } from '../../../common/components/toast/use-toast';
@@ -16,6 +14,8 @@ import { BookshelfName } from './bookshelfName';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../../core/store/store';
 import { setEditMap } from '../../../core/store/states/bookshelvesState/bookshelfStateSlice';
+import { Bookshelf } from '@common/contracts';
+import { BookshelvesApiQueryKeys } from '../../api/queries/bookshelvesApiQueryKeys';
 
 const bookshelfNameSchema = z
   .string()
@@ -30,11 +30,15 @@ interface Props {
   currentPage: number;
   searchedName: string;
   onCreatingNew: (val: boolean) => void;
+  onCancelEdit: (index: number) => void;
+  bookshelves: Bookshelf[];
+  setBookshelves: (bookshelves: Bookshelf[]) => void;
 }
 export const BookshelfsList: FC<Props> = ({
-  searchedName,
-  currentPage,
+  bookshelves,
   onCreatingNew,
+  onCancelEdit,
+  setBookshelves,
 }) => {
   const perPage = 7;
 
@@ -47,21 +51,7 @@ export const BookshelfsList: FC<Props> = ({
     (state) => state.bookshelves.editMap
   );
 
-  const { data: user } = useFindUserQuery();
-  const { data: bookshelvesData, refetch: refetchBookshelves } =
-    useFindUserBookshelfsQuery({
-      userId: user?.id as string,
-      pageSize: perPage,
-      page: currentPage,
-      name: searchedName,
-    });
-
-  const [bookshelves, setBookshelves] = useState(bookshelvesData?.data);
   const { toast } = useToast();
-
-  useEffect(() => {
-    setBookshelves(bookshelvesData?.data ?? []);
-  }, [bookshelvesData]);
 
   const { mutateAsync: updateBookshelf } = useUpdateBookshelfMutation({});
   const createBookshelfMutation = useCreateBookshelfMutation({});
@@ -75,7 +65,8 @@ export const BookshelfsList: FC<Props> = ({
     );
   };
 
-  const onCancelEdit = (index: number): void => {
+  const onCancelEditInternal = (index: number): void => {
+    onCancelEdit(index);
     dispatch(
       setEditMap({
         ...editMap,
@@ -83,12 +74,11 @@ export const BookshelfsList: FC<Props> = ({
       })
     );
 
-    if (!bookshelves) {
+    if (!bookshelves || bookshelves.length === 0) {
       return;
     }
 
     const element = bookshelves[index];
-
     if (element.id === '') {
       const updatedBookshelves = bookshelves.slice(1);
 
@@ -211,17 +201,20 @@ export const BookshelfsList: FC<Props> = ({
       })
     );
 
+    await queryClient.invalidateQueries({
+      predicate: ({ queryKey }) =>
+        queryKey[0] === BookshelvesApiQueryKeys.findUserBookshelfs,
+    });
+
     try {
-      const oldName = bookshelvesData?.data[index].name as string;
+      const oldName = bookshelves[index].name as string;
 
       await updateBookshelf({
-        bookshelfId: bookshelvesData?.data[index].id as string,
+        bookshelfId: bookshelves[index].id as string,
         name: newName,
       });
 
-      await refetchBookshelves();
-
-      toast({
+      await toast({
         title: `Nazwa półki zmieniona.`,
         description: `Półka ${oldName} to teraz ${newName}`,
         variant: 'success',
@@ -241,7 +234,7 @@ export const BookshelfsList: FC<Props> = ({
         {bookshelves?.map((bookshelf, index) => (
           <div
             className={cn(index > perPage - 1 ? 'hidden' : '')}
-            key={`${bookshelf.id}-container`}
+            key={`${bookshelf.id ?? 'temporary' + '-' + index}-container`}
           >
             <div key={`${bookshelf.id}`} className={styles['shelf']}>
               <div
@@ -277,7 +270,7 @@ export const BookshelfsList: FC<Props> = ({
                     editMap={editMap}
                     index={index}
                     name={bookshelf.name}
-                    onCancelEdit={(val) => onCancelEdit(val)}
+                    onCancelEdit={(val) => onCancelEditInternal(val)}
                     onSave={(val) => {
                       if (bookshelves && bookshelves[val]?.id === '') {
                         return onCreateNew(val);
