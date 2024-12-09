@@ -3,6 +3,7 @@ import { RepositoryError } from '../../../../../common/errors/repositoryError.js
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { type AuthorState, Author } from '../../../../bookModule/domain/entities/author/author.js';
+import { bookshelfTable } from '../../../../bookshelfModule/infrastructure/databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfTable.js';
 import {
   type AuthorRepository,
   type SaveAuthorPayload,
@@ -13,6 +14,8 @@ import {
 } from '../../../domain/repositories/authorRepository/authorRepository.js';
 import { type AuthorRawEntity } from '../../databases/bookDatabase/tables/authorTable/authorRawEntity.js';
 import { authorTable } from '../../databases/bookDatabase/tables/authorTable/authorTable.js';
+import { bookAuthorTable } from '../../databases/bookDatabase/tables/bookAuthorTable/bookAuthorTable.js';
+import { userBookTable } from '../../databases/bookDatabase/tables/userBookTable/userBookTable.js';
 
 type CreateAuthorPayload = { author: AuthorState };
 
@@ -124,12 +127,35 @@ export class AuthorRepositoryImpl implements AuthorRepository {
   }
 
   public async findAuthors(payload: FindAuthorsPayload): Promise<Author[]> {
-    const { ids, name, isApproved, page, pageSize, sortDate } = payload;
+    const { ids, name, isApproved, userId, bookshelfId, page, pageSize, sortDate } = payload;
 
     let rawEntities: AuthorRawEntity[];
 
     try {
-      const query = this.databaseClient<AuthorRawEntity>(authorTable).select('*');
+      const query = this.databaseClient(authorTable)
+        .select([`${authorTable}.id`, `${authorTable}.name`, `${authorTable}.isApproved`, `${authorTable}.createdAt`])
+        .distinct();
+
+      if (userId || bookshelfId) {
+        query
+          .leftJoin(bookAuthorTable, (join) => {
+            join.on(`${bookAuthorTable}.authorId`, '=', `${authorTable}.id`);
+          })
+          .leftJoin(userBookTable, (join) => {
+            join.on(`${userBookTable}.bookId`, '=', `${bookAuthorTable}.bookId`);
+          })
+          .leftJoin(bookshelfTable, (join) => {
+            join.on(`${bookshelfTable}.id`, '=', `${userBookTable}.bookshelfId`);
+          });
+
+        if (userId) {
+          query.where(`${bookshelfTable}.userId`, userId);
+        }
+
+        if (bookshelfId) {
+          query.where(`${bookshelfTable}.id`, bookshelfId);
+        }
+      }
 
       if (ids) {
         query.whereIn('id', ids);
@@ -172,10 +198,31 @@ export class AuthorRepositoryImpl implements AuthorRepository {
   }
 
   public async countAuthors(payload: CountAuthorsPayload): Promise<number> {
-    const { ids, name, isApproved } = payload;
+    const { ids, name, userId, bookshelfId, isApproved } = payload;
 
     try {
       const query = this.databaseClient<AuthorRawEntity>(authorTable);
+
+      if (userId || bookshelfId) {
+        query
+          .leftJoin(bookAuthorTable, (join) => {
+            join.on(`${bookAuthorTable}.authorId`, '=', `${authorTable}.id`);
+          })
+          .leftJoin(userBookTable, (join) => {
+            join.on(`${userBookTable}.bookId`, '=', `${bookAuthorTable}.bookId`);
+          })
+          .leftJoin(bookshelfTable, (join) => {
+            join.on(`${bookshelfTable}.id`, '=', `${userBookTable}.bookshelfId`);
+          });
+
+        if (userId) {
+          query.where(`${bookshelfTable}.userId`, userId);
+        }
+
+        if (bookshelfId) {
+          query.where(`${bookshelfTable}.id`, bookshelfId);
+        }
+      }
 
       if (ids) {
         query.whereIn('id', ids);
@@ -189,9 +236,11 @@ export class AuthorRepositoryImpl implements AuthorRepository {
         query.where({ isApproved });
       }
 
-      const countResult = await query.count().first();
+      const countResult = (await query.countDistinct(`${authorTable}.id as count`).first()) as
+        | { count: string }
+        | undefined;
 
-      const count = countResult?.['count'];
+      const count = countResult?.count;
 
       if (count === undefined) {
         throw new RepositoryError({
