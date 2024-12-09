@@ -75,7 +75,7 @@ export const ManualPathForm = (): JSX.Element => {
           name="yearOfIssue"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Data wydania*</FormLabel>
+              <FormLabel>Data wydania</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Data wydania"

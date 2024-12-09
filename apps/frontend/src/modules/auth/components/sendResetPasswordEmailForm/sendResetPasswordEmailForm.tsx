@@ -64,7 +64,7 @@ export const SendResetPasswordEmailForm: FC<SendResetPasswordEmailFormProps> = (
           name="email"
           render={({ field }) => (
             <FormItem className="h-[5.5rem]">
-              <FormLabel>Email*</FormLabel>
+              <FormLabel>Email</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Email"

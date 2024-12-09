@@ -83,7 +83,7 @@ const CreateAuthorDraftForm: FC<CreateAuthorDraftFormProps> = ({
           render={({ field }) => (
             <FormItem>
               <div className="flex gap-2 items-center pb-1">
-                <FormLabel>Imię i nazwisko*</FormLabel>
+                <FormLabel>Imię i nazwisko</FormLabel>
                 <AuthorFieldTooltip side="bottom" />
               </div>
               <FormControl>

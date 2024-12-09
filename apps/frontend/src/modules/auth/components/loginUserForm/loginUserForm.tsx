@@ -96,7 +96,7 @@ export const LoginUserForm: FC<LoginUserFormProps> = ({
             name="email"
             render={({ field }) => (
               <FormItem className="h-[5.5rem]">
-                <FormLabel>Email*</FormLabel>
+                <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Email"
@@ -117,7 +117,7 @@ export const LoginUserForm: FC<LoginUserFormProps> = ({
             name="password"
             render={({ field }) => (
               <FormItem className="h-[5.5rem]">
-                <FormLabel>Hasło*</FormLabel>
+                <FormLabel>Hasło</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Hasło"

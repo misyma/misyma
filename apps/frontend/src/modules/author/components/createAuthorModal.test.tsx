@@ -71,7 +71,7 @@ it('validates form input', async () => {
   );
 
   await userEvent.click(screen.getByText('Open Modal'));
-  const input = screen.getByLabelText('Imię i nazwisko*');
+  const input = screen.getByLabelText('Imię i nazwisko');
   const submitButton = screen.getByText('Stwórz');
 
   expect(submitButton).toBeDisabled();
@@ -99,7 +99,7 @@ it('submits form successfully', async () => {
   );
 
   await userEvent.click(screen.getByText('Open Modal'));
-  const input = screen.getByLabelText('Imię i nazwisko*');
+  const input = screen.getByLabelText('Imię i nazwisko');
   const submitButton = screen.getByText('Stwórz');
 
   await userEvent.type(input, 'John Doe');
@@ -135,7 +135,7 @@ it('handles API error', async () => {
   );
 
   await userEvent.click(screen.getByText('Open Modal'));
-  const input = screen.getByLabelText('Imię i nazwisko*');
+  const input = screen.getByLabelText('Imię i nazwisko');
   const submitButton = screen.getByText('Stwórz');
 
   await userEvent.type(input, 'John Doe');
@@ -155,7 +155,7 @@ it('closes modal on successful submission', async () => {
   );
 
   await userEvent.click(screen.getByText('Open Modal'));
-  const input = screen.getByLabelText('Imię i nazwisko*');
+  const input = screen.getByLabelText('Imię i nazwisko');
   const submitButton = screen.getByText('Stwórz');
 
   await userEvent.type(input, 'John Doe');
@@ -176,7 +176,7 @@ it('resets form on modal close', async () => {
   );
 
   await userEvent.click(screen.getByText('Open Modal'));
-  const input = screen.getByLabelText('Imię i nazwisko*');
+  const input = screen.getByLabelText('Imię i nazwisko');
 
   await userEvent.type(input, 'John Doe');
   await userEvent.click(screen.getByLabelText('Close dialog'));

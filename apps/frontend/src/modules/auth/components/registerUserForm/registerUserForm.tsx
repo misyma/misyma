@@ -70,7 +70,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ onSuccess, onError
             name="firstName"
             render={({ field }) => (
               <FormItem className="h-[5.5rem]">
-                <FormLabel>Imię*</FormLabel>
+                <FormLabel>Imię</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Imię"
@@ -87,7 +87,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ onSuccess, onError
             name="email"
             render={({ field }) => (
               <FormItem className="h-[5.5rem]">
-                <FormLabel>Email*</FormLabel>
+                <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Email"
@@ -104,7 +104,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ onSuccess, onError
             name="password"
             render={({ field }) => (
               <FormItem className="h-[5.5rem]">
-                <FormLabel>Hasło*</FormLabel>
+                <FormLabel>Hasło</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Hasło"
@@ -128,7 +128,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ onSuccess, onError
             name="repeatedPassword"
             render={({ field }) => (
               <FormItem className="h-[5.5rem]">
-                <FormLabel>Powtórz hasło*</FormLabel>
+                <FormLabel>Powtórz hasło</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Hasło"

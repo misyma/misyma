@@ -191,7 +191,7 @@ const NavbarList: FC<{ user?: User; handleLogout: () => void }> = ({
     <ul className="hidden sm:flex sm:flex-1 md:gap-4 lg:gap-6 sm:justify-end w-full items-center align-middle">
       {user?.role === UserRole.admin && (
         <li className="text-black text-md text-center font-semibold">
-          <Link to={'/admin/tabs/authors'} className={linkClasses}>
+          <Link to={'/admin/tabs/'} className={linkClasses}>
             Panel administratora
           </Link>
         </li>
