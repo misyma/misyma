@@ -1,69 +1,94 @@
 import { ScrollArea } from '../../../common/components/scrollArea/scroll-area';
 import { cn } from '../../../common/lib/utils';
 import styles from './index.module.css';
-import { FC } from 'react';
+import { FC, useLayoutEffect } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { useQueryClient } from '@tanstack/react-query';
 import { useToast } from '../../../common/components/toast/use-toast';
 import { ShelfApiError } from '../../api/errors/shelfApiError';
-import { useUpdateBookshelfMutation } from '../../api/mutations/updateBookshelfMutation/updateBookshelfMutation';
-import { z } from 'zod';
-import { useCreateBookshelfMutation } from '../../api/mutations/createBookshelfMutation/createBookshelfMutation';
 import { BookshelfActionButtons } from './bookshelfActionButtons';
 import { BookshelfName } from './bookshelfName';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../../core/store/store';
-import { setEditMap } from '../../../core/store/states/bookshelvesState/bookshelfStateSlice';
-import { Bookshelf } from '@common/contracts';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../../core/store/store';
+import {
+  setCreatingNew,
+  setEditMap,
+} from '../../../core/store/states/bookshelvesState/bookshelfStateSlice';
 import { BookshelvesApiQueryKeys } from '../../api/queries/bookshelvesApiQueryKeys';
+import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
+import { useBookshelves } from './hooks/useBookshelves';
 
-const bookshelfNameSchema = z
-  .string()
-  .min(1, {
-    message: `Nazwa jest zbyt krotka.`,
-  })
-  .max(64, {
-    message: `Nazwa jest zbyt długa.`,
-  });
+interface BookshelfNavigationAreaProps {
+  bookshelfId: string;
+}
+const BookshelfNavigationArea: FC<BookshelfNavigationAreaProps> = ({
+  bookshelfId,
+}) => {
+  const navigate = useNavigate();
+  return (
+    <div
+      onClick={() => {
+        if (bookshelfId) {
+          navigate({
+            to: `/shelves/bookshelf/${bookshelfId}`,
+          });
+        }
+      }}
+      className={cn('absolute w-full h-[100%]', {
+        ['cursor-pointer']: bookshelfId ? true : false,
+      })}
+    >
+      &nbsp;
+    </div>
+  );
+};
 
 interface Props {
-  currentPage: number;
-  searchedName: string;
-  onCreatingNew: (val: boolean) => void;
+  page: number;
+  perPage: number;
+  name: string | undefined;
   onCancelEdit: (index: number) => void;
-  bookshelves: Bookshelf[];
-  setBookshelves: (bookshelves: Bookshelf[]) => void;
 }
 export const BookshelfsList: FC<Props> = ({
-  bookshelves,
-  onCreatingNew,
+  page,
+  perPage,
+  name,
   onCancelEdit,
-  setBookshelves,
 }) => {
-  const perPage = 7;
-
-  const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
 
   const queryClient = useQueryClient();
 
-  const editMap = useSelector<RootState, Record<number, boolean>>(
-    (state) => state.bookshelves.editMap
-  );
+  const { data: user } = useFindUserQuery();
+  const {
+    creatingNew,
+    bookshelves,
+    editMap,
+    createBookshelfDraft,
+    onUpdateBookshelfName,
+    onCreateBookshelf,
+    startEdit,
+    setBookshelves,
+  } = useBookshelves({
+    name,
+    page,
+    pageSize: perPage,
+  });
 
   const { toast } = useToast();
 
-  const { mutateAsync: updateBookshelf } = useUpdateBookshelfMutation({});
-  const createBookshelfMutation = useCreateBookshelfMutation({});
-
-  const startEdit = (index: number): void => {
-    dispatch(
-      setEditMap({
-        ...editMap,
-        [index]: true,
-      })
-    );
-  };
+  useLayoutEffect(() => {
+    if (creatingNew === true) {
+      setBookshelves([createBookshelfDraft(), ...bookshelves]);
+      return;
+    }
+    if (creatingNew === false && bookshelves[0]?.id === '') {
+      setBookshelves([...bookshelves.slice(1)]);
+      return;
+    }
+    // Add 'bookshelves' and watch your browser burn due to an infinite loop
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [creatingNew, user?.id]);
 
   const onCancelEditInternal = (index: number): void => {
     onCancelEdit(index);
@@ -84,15 +109,18 @@ export const BookshelfsList: FC<Props> = ({
 
       setBookshelves([...updatedBookshelves]);
 
-      onCreatingNew(false);
+      dispatch(setCreatingNew(false));
     }
   };
 
-  const onCreateNew = async (index: number): Promise<void> => {
-    const input = document.querySelector(`[id="${index}-bookshelf"]`) as
+  const getBookshelfInputByQuerySelector = (index: number) => {
+    return document.querySelector(`[id="${index}-bookshelf"]`) as
       | HTMLInputElement
       | undefined;
+  };
 
+  const onCreateNew = async (index: number): Promise<void> => {
+    const input = getBookshelfInputByQuerySelector(index);
     if (!input) {
       toast({
         title: `Wystąpił błąd.`,
@@ -105,40 +133,11 @@ export const BookshelfsList: FC<Props> = ({
 
     const bookshelfName = input?.value;
 
-    const validatedBookshelfName = bookshelfNameSchema.safeParse(bookshelfName);
-
-    if (!validatedBookshelfName.success) {
-      toast({
-        title: 'Niepoprawna nazwa.',
-        description: validatedBookshelfName.error.errors[0].message,
-        variant: 'destructive',
-      });
-
-      return;
-    }
-
-    dispatch(
-      setEditMap({
-        ...editMap,
-        [index]: false,
-      })
-    );
-
-    onCreatingNew(false);
-
     try {
-      await createBookshelfMutation.mutateAsync({
-        name: bookshelfName,
-      });
+      await onCreateBookshelf(index, bookshelfName);
 
-      queryClient.invalidateQueries({
+      await queryClient.invalidateQueries({
         predicate: (query) => query.queryKey[0] === 'findUserBookshelfs',
-      });
-
-      toast({
-        title: `Półka została stworzona.`,
-        description: `Stworzono półkę o nazwie: ${bookshelfName}`,
-        variant: 'success',
       });
     } catch (error) {
       if (error instanceof ShelfApiError) {
@@ -166,10 +165,7 @@ export const BookshelfsList: FC<Props> = ({
   };
 
   const onSaveEdit = async (index: number): Promise<void> => {
-    const input = document.querySelector(`[id="${index}-bookshelf"]`) as
-      | HTMLInputElement
-      | undefined;
-
+    const input = getBookshelfInputByQuerySelector(index);
     if (!input) {
       toast({
         title: `Wystąpił błąd.`,
@@ -180,44 +176,17 @@ export const BookshelfsList: FC<Props> = ({
       return;
     }
 
-    const newName = input?.value;
-
-    const validatedNewName = bookshelfNameSchema.safeParse(newName);
-
-    if (!validatedNewName.success) {
-      toast({
-        title: 'Niepoprawna nazwa.',
-        description: validatedNewName.error.errors[0].message,
-        variant: 'destructive',
-      });
-
-      return;
-    }
-
-    dispatch(
-      setEditMap({
-        ...editMap,
-        [index]: false,
-      })
-    );
-
-    await queryClient.invalidateQueries({
-      predicate: ({ queryKey }) =>
-        queryKey[0] === BookshelvesApiQueryKeys.findUserBookshelfs,
-    });
-
     try {
-      const oldName = bookshelves[index].name as string;
+      await onUpdateBookshelfName(
+        index,
+        bookshelves[index]?.id as string,
+        input?.value,
+        bookshelves[index]?.name
+      );
 
-      await updateBookshelf({
-        bookshelfId: bookshelves[index].id as string,
-        name: newName,
-      });
-
-      await toast({
-        title: `Nazwa półki zmieniona.`,
-        description: `Półka ${oldName} to teraz ${newName}`,
-        variant: 'success',
+      await queryClient.invalidateQueries({
+        predicate: ({ queryKey }) =>
+          queryKey[0] === BookshelvesApiQueryKeys.findUserBookshelfs,
       });
     } catch (error) {
       toast({
@@ -237,20 +206,7 @@ export const BookshelfsList: FC<Props> = ({
             key={`${bookshelf.id ?? 'temporary' + '-' + index}-container`}
           >
             <div key={`${bookshelf.id}`} className={styles['shelf']}>
-              <div
-                onClick={() => {
-                  if (bookshelf.id) {
-                    navigate({
-                      to: `/shelves/bookshelf/${bookshelf.id}`,
-                    });
-                  }
-                }}
-                className={cn('absolute w-full h-[100%]', {
-                  ['cursor-pointer']: bookshelf.id ? true : false,
-                })}
-              >
-                &nbsp;
-              </div>
+              <BookshelfNavigationArea bookshelfId={bookshelf.id} />
               <div className="flex flex-col w-full">
                 <div className="flex items-center h-full border-t-primary border-t-2 rounded-sm justify-between w-full top-0 pointer-events-none">
                   <BookshelfName
