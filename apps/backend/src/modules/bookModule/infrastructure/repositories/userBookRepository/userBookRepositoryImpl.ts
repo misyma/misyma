@@ -380,7 +380,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       isFavorite,
       sortDate,
       language,
-      releaseAfter,
+      releaseYearAfter,
       expandFields,
     } = payload;
 
@@ -531,12 +531,12 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         query.limit(pageSize).offset(pageSize * (page - 1));
       }
 
-      if (releaseAfter) {
-        query.where(`${bookTable}."createdAt`, '>=', releaseAfter);
+      if (releaseYearAfter !== undefined) {
+        query.where(`${bookTable}.releaseYear`, '>=', releaseYearAfter);
       }
 
       if (language) {
-        query.where(`${bookTable}."language"`, '=', language);
+        query.where(`${bookTable}.language`, '=', language);
       }
 
       query.orderBy('id', sortDate ?? 'desc');
@@ -594,7 +594,19 @@ export class UserBookRepositoryImpl implements UserBookRepository {
   }
 
   public async countUserBooks(payload: CountUserBooksPayload): Promise<number> {
-    const { bookshelfId, collectionId, userId, authorId, bookId, isbn, title, status, isFavorite } = payload;
+    const {
+      bookshelfId,
+      collectionId,
+      userId,
+      authorId,
+      bookId,
+      isbn,
+      title,
+      status,
+      isFavorite,
+      language,
+      releaseYearAfter,
+    } = payload;
 
     try {
       const query = this.databaseClient<UserBookRawEntity>(userBookTable);
@@ -607,7 +619,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           .where(`${bookAuthorTable}.authorId`, authorId);
       }
 
-      if (isbn || title) {
+      if (isbn || title || releaseYearAfter !== undefined || language) {
         query.join(bookTable, (join) => {
           join.on(`${bookTable}.id`, '=', `${userBookTable}.bookId`);
         });
@@ -619,6 +631,14 @@ export class UserBookRepositoryImpl implements UserBookRepository {
 
       if (title) {
         query.whereRaw(`${bookTable}.title ILIKE ?`, `%${title}%`);
+      }
+
+      if (releaseYearAfter !== undefined) {
+        query.where(`${bookTable}.releaseYear`, '>=', releaseYearAfter);
+      }
+
+      if (language) {
+        query.where(`${bookTable}.language`, language);
       }
 
       if (status) {

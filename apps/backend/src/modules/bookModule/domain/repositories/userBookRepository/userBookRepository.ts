@@ -39,7 +39,7 @@ export interface FindUserBooksPayload {
   readonly page?: number;
   readonly pageSize?: number;
   readonly language?: Language | undefined;
-  readonly releaseAfter?: Date | undefined;
+  readonly releaseYearAfter?: number | undefined;
   readonly sortDate?: 'asc' | 'desc' | undefined;
   readonly expandFields: UserBookExpandField[];
 }
@@ -54,6 +54,8 @@ export interface CountUserBooksPayload {
   readonly title?: string | undefined;
   readonly status?: ReadingStatus | undefined;
   readonly isFavorite?: boolean | undefined;
+  readonly language?: Language | undefined;
+  readonly releaseYearAfter?: number | undefined;
 }
 
 export interface DeleteUserBooksPayload {

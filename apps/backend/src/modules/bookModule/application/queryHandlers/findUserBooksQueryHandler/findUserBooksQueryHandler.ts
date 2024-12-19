@@ -14,7 +14,7 @@ export interface FindUserBooksQueryHandlerPayload {
   readonly isFavorite?: boolean | undefined;
   readonly page: number;
   readonly pageSize: number;
-  readonly releaseAfter?: Date | undefined;
+  readonly releaseYearAfter?: number | undefined;
   readonly language?: Language | undefined;
   readonly sortDate?: SortingType | undefined;
   readonly expandFields: UserBookExpandField[] | undefined;

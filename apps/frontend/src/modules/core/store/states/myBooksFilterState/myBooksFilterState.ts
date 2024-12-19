@@ -1,6 +1,6 @@
 export interface MyBooksFilterState {
 	title?: string;
 	language?: string;
-	releaseAfter?: Date;
+	releaseYearAfter?: number;
 	filterVisible: boolean;
 }

@@ -35,7 +35,7 @@ export const FindUserBooksByInfiniteQueryOptions = ({
 			page,
 			rest.pageSize,
 			'infinite-query',
-			rest.releaseAfter,
+			rest.releaseYearAfter,
 			rest.language,
 			rest.title,
 		],
