@@ -3,7 +3,7 @@ import { MyBooksFilterState } from './myBooksFilterState';
 
 const initialState: MyBooksFilterState = {
 	language: '',
-	releaseAfter: undefined,
+	releaseYearAfter: undefined,
 	title: '',
 	filterVisible: false,
 };
@@ -18,8 +18,8 @@ export const myBooksFilterStateSlice = createSlice({
 		setTitle: (state, action: PayloadAction<string>) => {
 			state.title = action.payload;
 		},
-		setReleasedAfter: (state, action: PayloadAction<Date>) => {
-			state.releaseAfter = action.payload;
+		setReleasedYearAfter: (state, action: PayloadAction<number>) => {
+			state.releaseYearAfter = action.payload;
 		},
 		setFilterVisible: (state, action: PayloadAction<boolean>) => {
 			state.filterVisible = action.payload;
@@ -27,14 +27,14 @@ export const myBooksFilterStateSlice = createSlice({
 		resetAllFilters: (state) => {
 			state.language = '';
 			state.title = '';
-			state.releaseAfter = undefined;
+			state.releaseYearAfter = undefined;
 		},
 	},
 	selectors: {
 		getFilterVisibility: (state) => state.filterVisible,
 		getLanguage: (state) => state.language,
 		getTitle: (state) => state.title,
-		getReleaseAfter: (state) => state.releaseAfter,
+		getReleaseYearAfter: (state) => state.releaseYearAfter,
 	},
 });
 
@@ -42,8 +42,8 @@ export const setLanguage = createAction<string>('myBooksFilter/setLanguage');
 
 export const setTitle = createAction<string>('myBooksFilter/setTitle');
 
-export const setReleasedAfter = createAction<Date | undefined>(
-	'myBooksFilter/setReleasedAfter'
+export const setReleaseYearAfter = createAction<number | undefined>(
+	'myBooksFilter/setReleaseYearAfter'
 );
 
 export const setFilterVisible = createAction<boolean>(

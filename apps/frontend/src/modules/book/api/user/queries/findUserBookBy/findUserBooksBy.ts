@@ -19,8 +19,15 @@ export const findUserBooksBy = async (
 
 	const queryParams: Record<string, string> = {};
 
-	const { bookshelfId, isbn, page, title, pageSize, releaseAfter, language } =
-		payload;
+	const {
+		bookshelfId,
+		isbn,
+		page,
+		title,
+		pageSize,
+		releaseYearAfter,
+		language,
+	} = payload;
 
 	if (bookshelfId) {
 		queryParams['bookshelfId'] = bookshelfId;
@@ -42,8 +49,8 @@ export const findUserBooksBy = async (
 		queryParams['language'] = language;
 	}
 
-	if (releaseAfter) {
-		queryParams['releaseAfter'] = releaseAfter.toISOString();
+	if (releaseYearAfter) {
+		queryParams['releaseYearAfter'] = `${releaseYearAfter}`;
 	}
 
 	if (title) {

@@ -20,7 +20,7 @@ export const findUserBooksQueryParamsDtoSchema = Type.Object({
   pageSize: Type.Optional(Type.Integer({ minimum: 1 })),
   sortDate: Type.Optional(Type.Enum(contracts.SortingType)),
   expandFields: Type.Optional(Type.String({ pattern: expandFieldPattern })),
-  releaseAfter: Type.Optional(Type.Date()),
+  releaseYearAfter: Type.Optional(Type.Integer({ minimum: 1 })),
   language: Type.Optional(Type.Enum(contracts.Language)),
 });
 

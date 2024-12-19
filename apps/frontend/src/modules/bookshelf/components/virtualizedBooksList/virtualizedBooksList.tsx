@@ -23,9 +23,9 @@ export const VirtualizedBooksList: FC<VirtualizedBooksListProps> = ({
   const language = useSelector<RootState>(
     (selector) => selector.myBooksFilter.language
   ) as Language;
-  const releaseAfter = useSelector<RootState>(
-    (selector) => selector.myBooksFilter.releaseAfter
-  ) as Date;
+  const releaseYearAfter = useSelector<RootState>(
+    (selector) => selector.myBooksFilter.releaseYearAfter
+  ) as number;
   const title = useSelector<RootState>(
     (selector) => selector.myBooksFilter.title
   ) as string;
@@ -37,7 +37,7 @@ export const VirtualizedBooksList: FC<VirtualizedBooksListProps> = ({
         bookshelfId,
         pageSize: 18,
         title,
-        releaseAfter,
+        releaseYearAfter,
         language,
       })
     );

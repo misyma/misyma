@@ -18,10 +18,10 @@ export interface FindUserBooksQueryParams {
   readonly title?: string;
   readonly status?: ReadingStatus;
   readonly isFavorite?: boolean;
+  readonly releaseYearAfter?: number;
+  readonly language?: Language;
   readonly page?: number;
   readonly pageSize?: number;
-  readonly releaseAfter?: Date;
-  readonly language?: Language;
   readonly sortDate?: SortingType;
   // comma separated list of fields to expand, e.g. collections,genres,readings
   readonly expandFields?: string;

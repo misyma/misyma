@@ -29,7 +29,7 @@ export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler 
       isFavorite,
       sortDate,
       language,
-      releaseAfter,
+      releaseYearAfter,
       expandFields,
     } = payload;
 
@@ -57,11 +57,11 @@ export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler 
         title,
         status,
         isFavorite,
+        language,
+        releaseYearAfter,
         page,
         pageSize,
         sortDate,
-        language,
-        releaseAfter,
         expandFields: expandFields ?? [],
       }),
       await this.userBookRepository.countUserBooks({
@@ -73,6 +73,8 @@ export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler 
         title,
         status,
         isFavorite,
+        language,
+        releaseYearAfter,
       }),
     ]);
 

@@ -25,7 +25,7 @@ import {
   myBooksStateSelectors,
   setFilterVisible,
   setLanguage,
-  setReleasedAfter,
+  setReleaseYearAfter,
   setTitle,
 } from '../../modules/core/store/states/myBooksFilterState/myBooksFilterStateSlice.js';
 import { HiPlus } from 'react-icons/hi2';
@@ -65,8 +65,8 @@ const BookPageFiltersBar = () => {
     if (vals['language']) {
       dispatch(setLanguage(vals['language'] as string));
     }
-    if (vals['releaseAfter']) {
-      dispatch(setReleasedAfter(vals['releaseAfter'] as Date));
+    if (vals['releaseYearAfter']) {
+      dispatch(setReleaseYearAfter(vals['releaseYearAfter'] as number));
     }
     if (vals['title']) {
       dispatch(setTitle(vals['title'] as string));
@@ -75,7 +75,7 @@ const BookPageFiltersBar = () => {
 
   const onClearAll = () => {
     dispatch(setLanguage(''));
-    dispatch(setReleasedAfter(undefined));
+    dispatch(setReleaseYearAfter(undefined));
     dispatch(setTitle(''));
   };
 
