@@ -61,4 +61,5 @@ export interface FilterComponentProps {
 	filter: FilterOpts;
 	className?: string;
 	dialog?: boolean;
+	onRemoveFilter?: (name: string) => void;
 }

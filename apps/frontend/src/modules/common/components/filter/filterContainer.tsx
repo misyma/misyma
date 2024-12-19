@@ -6,7 +6,11 @@ import { useDynamicFilterContext } from '../../contexts/dynamicFilterContext';
 interface FilterContainerProps extends FilterComponentProps {
   slot: ReactNode;
 }
-export const FilterContainer: FC<FilterContainerProps> = ({ filter, slot }) => {
+export const FilterContainer: FC<FilterContainerProps> = ({
+  filter,
+  slot,
+  onRemoveFilter,
+}) => {
   const { filterValues } = useDynamicFilterContext();
 
   const correspondingFilterValue = filterValues[filter.key as string];
@@ -27,7 +31,10 @@ export const FilterContainer: FC<FilterContainerProps> = ({ filter, slot }) => {
       <div className="flex gap-2 items-center justify-start w-full overflow-hidden truncate">
         {slot}
         {correspondingFilterValueExists && (
-          <RemoveFilterButton filterKey={filter.key} />
+          <RemoveFilterButton
+            onRemoveFilter={onRemoveFilter}
+            filterKey={filter.key}
+          />
         )}
       </div>
     </div>

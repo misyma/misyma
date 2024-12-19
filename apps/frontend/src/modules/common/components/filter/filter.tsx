@@ -34,7 +34,7 @@ import ThreeStateCheckbox, {
   ThreeStateCheckboxStates,
 } from '../threeStatesCheckbox/threeStatesCheckbox';
 
-const TextFilter: FC<FilterComponentProps> = ({ filter }) => {
+const TextFilter: FC<FilterComponentProps> = ({ filter, onRemoveFilter }) => {
   const { updateFilterValue, filterValues, removeFilter } =
     useDynamicFilterContext();
   const [value, setValue] = useState(
@@ -82,6 +82,7 @@ const TextFilter: FC<FilterComponentProps> = ({ filter }) => {
         />
       }
       filter={filter}
+      onRemoveFilter={onRemoveFilter}
     ></FilterContainer>
   );
 };
@@ -90,7 +91,11 @@ interface SelectFilterProps extends FilterComponentProps {
   filter: SelectFilterOpts;
 }
 
-const SelectFilter: FC<SelectFilterProps> = ({ filter, dialog = false }) => {
+const SelectFilter: FC<SelectFilterProps> = ({
+  filter,
+  onRemoveFilter,
+  dialog = false,
+}) => {
   const { updateFilterValue, filterValues } = useDynamicFilterContext();
 
   const handleChange = (value: string) => {
@@ -113,7 +118,7 @@ const SelectFilter: FC<SelectFilterProps> = ({ filter, dialog = false }) => {
     <FilterContainer
       slot={
         <Select
-          className='w-96'
+          className="w-96"
           value={(filterValues[filter.key as string] as string) || ''}
           onValueChange={handleChange}
         >
@@ -131,11 +136,15 @@ const SelectFilter: FC<SelectFilterProps> = ({ filter, dialog = false }) => {
         </Select>
       }
       filter={filter}
+      onRemoveFilter={onRemoveFilter}
     ></FilterContainer>
   );
 };
 
-export const CheckboxFilter: FC<FilterComponentProps> = ({ filter }) => {
+export const CheckboxFilter: FC<FilterComponentProps> = ({
+  filter,
+  onRemoveFilter,
+}) => {
   const { updateFilterValue, filterValues } = useDynamicFilterContext();
 
   const handleChange = (value: string | boolean) => {
@@ -159,6 +168,7 @@ export const CheckboxFilter: FC<FilterComponentProps> = ({ filter }) => {
         />
       }
       filter={filter}
+      onRemoveFilter={onRemoveFilter}
     ></FilterContainer>
   );
 };
@@ -297,7 +307,10 @@ export const DateFilter: FC<DateFilterComponentProps> = ({ filter }) => {
   );
 };
 
-export const YearFilter: FC<DateFilterComponentProps> = ({ filter }) => {
+export const YearFilter: FC<DateFilterComponentProps> = ({
+  filter,
+  onRemoveFilter,
+}) => {
   const { updateFilterValue, filterValues } = useDynamicFilterContext();
 
   const handleChange = (
@@ -321,30 +334,38 @@ export const YearFilter: FC<DateFilterComponentProps> = ({ filter }) => {
         />
       }
       filter={filter}
+      onRemoveFilter={onRemoveFilter}
     ></FilterContainer>
   );
 };
 
-export const FilterComponent: FC<FilterComponentProps> = ({ filter }) => {
+export const FilterComponent: FC<FilterComponentProps> = ({
+  filter,
+  onRemoveFilter,
+}) => {
   if (filter.customSlot) {
-    return <filter.customSlot filter={filter} />;
+    return (
+      <filter.customSlot onRemoveFilter={onRemoveFilter} filter={filter} />
+    );
   }
 
   switch (filter.type) {
     case 'text':
-      return <TextFilter filter={filter} />;
+      return <TextFilter onRemoveFilter={onRemoveFilter} filter={filter} />;
     case 'select':
-      return <SelectFilter filter={filter} />;
+      return <SelectFilter onRemoveFilter={onRemoveFilter} filter={filter} />;
     case 'checkbox':
-      return <CheckboxFilter filter={filter} />;
+      return <CheckboxFilter onRemoveFilter={onRemoveFilter} filter={filter} />;
 
     case 'three-state-checkbox':
       return <ThreeStateCheckboxFilter filter={filter} />;
     case 'date':
-      return <DateFilter filter={filter} />;
+      return <DateFilter onRemoveFilter={onRemoveFilter} filter={filter} />;
     case 'year':
-      // eslint-disable-next-line
-      return <YearFilter filter={filter as any} />;
+      return (
+        // eslint-disable-next-line
+        <YearFilter onRemoveFilter={onRemoveFilter} filter={filter as any} />
+      );
     default:
       return null;
   }
