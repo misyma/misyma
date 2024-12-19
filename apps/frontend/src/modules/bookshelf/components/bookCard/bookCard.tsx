@@ -2,7 +2,11 @@ import { ReadingStatus, SortingType, UserBook } from '@common/contracts';
 import { FC, useMemo } from 'react';
 import { BookImageMiniature } from '../../../book/components/bookImageMiniature/bookImageMiniature';
 import { TruncatedTextTooltip } from '../../../book/components/truncatedTextTooltip/truncatedTextTooltip';
-import { HiCheckCircle, HiEnvelope, HiQuestionMarkCircle } from 'react-icons/hi2';
+import {
+  HiCheckCircle,
+  HiEnvelope,
+  HiQuestionMarkCircle,
+} from 'react-icons/hi2';
 import { HiClock, HiDotsCircleHorizontal } from 'react-icons/hi';
 import { cn } from '../../../common/lib/utils';
 import { AltFavoriteBookButton } from '../../../book/components/favoriteBookButton/altFavoriteBookButton';
@@ -38,13 +42,11 @@ const BorrowedSinceText: FC<{ userBookId: string }> = ({ userBookId }) => {
 
   return (
     <div className="grid grid-cols-1">
-      <div className='flex gap-2 items-center'>
-        <HiEnvelope className='w-4 h-4 text-primary'/>
-        <p className="text-sm">
-          {bookBorrowing?.data[0].borrower}
-        </p>
+      <div className="flex gap-2 items-center">
+        <HiEnvelope className="w-4 h-4 text-primary" />
+        <p className="text-sm">{bookBorrowing?.data[0].borrower}</p>
       </div>
-      <span className='flex gap-2 text-sm'>
+      <span className="flex gap-2 text-sm">
         dni: {totalDaysSinceBorrowing} <HiClock className="h-5 w-5" />{' '}
       </span>
     </div>
