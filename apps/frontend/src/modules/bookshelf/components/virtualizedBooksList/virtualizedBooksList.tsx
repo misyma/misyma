@@ -102,7 +102,7 @@ export const VirtualizedBooksList: FC<VirtualizedBooksListProps> = ({
 
   return (
     <div
-      className="w-full px-2 h-[800px] 4xl:h-[1068px] overflow-auto"
+      className="w-full px-2 h-[800px] 4xl:h-[1068px] overflow-auto no-scrollbar"
       ref={parentRef}
     >
       <div

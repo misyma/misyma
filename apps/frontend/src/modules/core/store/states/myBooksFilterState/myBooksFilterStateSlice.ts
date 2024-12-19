@@ -42,7 +42,7 @@ export const setLanguage = createAction<string>('myBooksFilter/setLanguage');
 
 export const setTitle = createAction<string>('myBooksFilter/setTitle');
 
-export const setReleasedAfter = createAction<Date>(
+export const setReleasedAfter = createAction<Date | undefined>(
 	'myBooksFilter/setReleasedAfter'
 );
 

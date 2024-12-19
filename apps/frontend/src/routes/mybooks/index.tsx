@@ -16,7 +16,10 @@ import { FilterOpts } from '../../modules/common/types/filter.js';
 import { z } from 'zod';
 import { SearchLanguageSelect } from '../../modules/book/components/adminBookSearchFilters/adminBookSearchFilters.js';
 import { FiltersDrawer } from '../../modules/common/components/filtersDrawer/filtersDrawer.js';
-import { DynamicFilterProvider, DynamicFilterValues } from '../../modules/common/contexts/dynamicFilterContext.js';
+import {
+  DynamicFilterProvider,
+  DynamicFilterValues,
+} from '../../modules/common/contexts/dynamicFilterContext.js';
 import { VirtualizedBooksList } from '../../modules/bookshelf/components/virtualizedBooksList/virtualizedBooksList.js';
 import {
   myBooksStateSelectors,
@@ -59,22 +62,29 @@ const BookPageFiltersBar = () => {
   );
 
   const onApplyFilters = (vals: DynamicFilterValues) => {
-    if(vals["language"]) {
-      dispatch(setLanguage(vals["language"] as string));
+    if (vals['language']) {
+      dispatch(setLanguage(vals['language'] as string));
     }
-    if(vals["releaseAfter"]) {
-      dispatch(setReleasedAfter(vals["releaseAfter"] as Date));
+    if (vals['releaseAfter']) {
+      dispatch(setReleasedAfter(vals['releaseAfter'] as Date));
     }
-    if(vals["title"]) {
-      dispatch(setTitle(vals["title"] as string));
+    if (vals['title']) {
+      dispatch(setTitle(vals['title'] as string));
     }
-  }
+  };
+
+  const onClearAll = () => {
+    dispatch(setLanguage(''));
+    dispatch(setReleasedAfter(undefined));
+    dispatch(setTitle(''));
+  };
 
   return (
     <DynamicFilterProvider initialValues={{}} filterOptions={filterOptions}>
       <FiltersDrawer
         className="grid grid-cols-3 px-2"
         onApplyFilters={onApplyFilters}
+        onClearAll={onClearAll}
       />
     </DynamicFilterProvider>
   );

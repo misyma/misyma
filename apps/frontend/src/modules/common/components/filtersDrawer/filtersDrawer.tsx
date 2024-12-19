@@ -12,7 +12,8 @@ export const FiltersDrawer: FC<{
   className?: string;
   actionButtonClassName?: string;
   onApplyFilters: (vals: DynamicFilterValues) => void;
-}> = ({ className, actionButtonClassName, onApplyFilters }) => {
+  onClearAll?: () => void;
+}> = ({ className, actionButtonClassName, onClearAll, onApplyFilters }) => {
   const { filters, filterOptions, filterValues, removeAllFilters } =
     useDynamicFilterContext();
 
@@ -35,6 +36,9 @@ export const FiltersDrawer: FC<{
   const onRemoveAll = () => {
     removeAllFilters();
     onApplyFilters({});
+    if(onClearAll){
+      onClearAll();
+    }
   };
 
   return (
