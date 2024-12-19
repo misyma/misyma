@@ -86,7 +86,6 @@ const BookPageFiltersBar = () => {
         onApplyFilters={onApplyFilters}
         onClearAll={onClearAll}
         onRemoveFilter={(key) => {
-          console.log(key);
           switch (key) {
             case 'language':
               dispatch(setLanguage(''));
