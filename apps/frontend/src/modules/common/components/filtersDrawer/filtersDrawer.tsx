@@ -13,7 +13,14 @@ export const FiltersDrawer: FC<{
   actionButtonClassName?: string;
   onApplyFilters: (vals: DynamicFilterValues) => void;
   onClearAll?: () => void;
-}> = ({ className, actionButtonClassName, onClearAll, onApplyFilters }) => {
+  onRemoveFilter?: (filterKey: string) => void;
+}> = ({
+  className,
+  actionButtonClassName,
+  onClearAll,
+  onApplyFilters,
+  onRemoveFilter,
+}) => {
   const { filters, filterOptions, filterValues, removeAllFilters } =
     useDynamicFilterContext();
 
@@ -36,7 +43,7 @@ export const FiltersDrawer: FC<{
   const onRemoveAll = () => {
     removeAllFilters();
     onApplyFilters({});
-    if(onClearAll){
+    if (onClearAll) {
       onClearAll();
     }
   };
@@ -49,7 +56,11 @@ export const FiltersDrawer: FC<{
             key={`container-${filter.id}`}
             className="flex items-end justify-center"
           >
-            <FilterComponent key={filter.id} filter={filter} />
+            <FilterComponent
+              onRemoveFilter={onRemoveFilter}
+              key={filter.id}
+              filter={filter}
+            />
           </div>
         ))}
       </div>

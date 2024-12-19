@@ -79,7 +79,7 @@ const CustomAuthorSearchFilter: FC<FilterComponentProps> = ({ filter }) => {
                     </span>
                   )}
                   {currentAuthorId && isFetchingCurrentAuthor && (
-                    <div className='px-2'>
+                    <div className="px-2">
                       <LoadingSpinner size={20} />
                     </div>
                   )}
@@ -108,7 +108,10 @@ const CustomAuthorSearchFilter: FC<FilterComponentProps> = ({ filter }) => {
 };
 
 // Todo: move to "common" or something
-export const SearchLanguageSelect: FC<FilterComponentProps> = ({ filter }) => {
+export const SearchLanguageSelect: FC<FilterComponentProps> = ({
+  filter,
+  onRemoveFilter,
+}) => {
   const { updateFilterValue, filterValues } = useDynamicFilterContext();
 
   const handleChange = (value: string | boolean | Date | undefined) => {
@@ -127,6 +130,7 @@ export const SearchLanguageSelect: FC<FilterComponentProps> = ({ filter }) => {
           onValueChange={handleChange}
         />
       }
+      onRemoveFilter={onRemoveFilter}
     ></FilterContainer>
   );
 };
@@ -183,7 +187,7 @@ export const AdminBookSearchFilter: FC<AdminBookSearchFilterProps> = ({
         key: 'isApproved',
         label: 'Zaakceptowana',
         type: 'select',
-        options: ['Zaakceptowana', 'Niezaakceptowana']
+        options: ['Zaakceptowana', 'Niezaakceptowana'],
       },
     ],
     []

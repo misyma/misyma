@@ -85,6 +85,20 @@ const BookPageFiltersBar = () => {
         className="grid grid-cols-3 px-2"
         onApplyFilters={onApplyFilters}
         onClearAll={onClearAll}
+        onRemoveFilter={(key) => {
+          switch (key) {
+            case 'language':
+              dispatch(setLanguage(''));
+              break;
+
+            case 'releaseYearAfter':
+              dispatch(setReleaseYearAfter(undefined));
+              break;
+
+            case 'title':
+              dispatch(setTitle(''));
+          }
+        }}
       />
     </DynamicFilterProvider>
   );
