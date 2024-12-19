@@ -18,7 +18,7 @@ export const myBooksFilterStateSlice = createSlice({
 		setTitle: (state, action: PayloadAction<string>) => {
 			state.title = action.payload;
 		},
-		setReleasedYearAfter: (state, action: PayloadAction<number>) => {
+		setReleaseYearAfter: (state, action: PayloadAction<number>) => {
 			state.releaseYearAfter = action.payload;
 		},
 		setFilterVisible: (state, action: PayloadAction<boolean>) => {
