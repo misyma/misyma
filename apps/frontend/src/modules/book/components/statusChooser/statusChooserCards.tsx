@@ -60,6 +60,11 @@ export const StatusChooserCards: FC<Props> = ({ bookId, bookshelfId }) => {
           query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId &&
           query.queryKey[1] === bookshelfId,
       }),
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          query.queryKey[0] === BookApiQueryKeys.findUserBooksBy &&
+          query.queryKey.includes('infinite-query'),
+      }),
     ]);
 
     setReadingStatus(chosenStatus);
