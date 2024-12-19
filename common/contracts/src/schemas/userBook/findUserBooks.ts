@@ -1,5 +1,6 @@
 import { type ReadingStatus } from './readingStatus.js';
 import { type UserBook } from './userBook.js';
+import { type Language } from '../book/language.js';
 import { type Metadata } from '../metadata.js';
 import { type SortingType } from '../sortingType.js';
 
@@ -19,6 +20,8 @@ export interface FindUserBooksQueryParams {
   readonly isFavorite?: boolean;
   readonly page?: number;
   readonly pageSize?: number;
+  readonly releaseAfter?: Date;
+  readonly language?: Language;
   readonly sortDate?: SortingType;
   // comma separated list of fields to expand, e.g. collections,genres,readings
   readonly expandFields?: string;

@@ -379,6 +379,8 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       status,
       isFavorite,
       sortDate,
+      language,
+      releaseAfter,
       expandFields,
     } = payload;
 
@@ -527,6 +529,14 @@ export class UserBookRepositoryImpl implements UserBookRepository {
 
       if (pageSize && page) {
         query.limit(pageSize).offset(pageSize * (page - 1));
+      }
+
+      if (releaseAfter) {
+        query.where(`${bookTable}."createdAt`, '>=', releaseAfter);
+      }
+
+      if (language) {
+        query.where(`${bookTable}."language"`, '=', language);
       }
 
       query.orderBy('id', sortDate ?? 'desc');

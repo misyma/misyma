@@ -28,6 +28,8 @@ export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler 
       status,
       isFavorite,
       sortDate,
+      language,
+      releaseAfter,
       expandFields,
     } = payload;
 
@@ -58,6 +60,8 @@ export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler 
         page,
         pageSize,
         sortDate,
+        language,
+        releaseAfter,
         expandFields: expandFields ?? [],
       }),
       await this.userBookRepository.countUserBooks({

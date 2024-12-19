@@ -1,4 +1,4 @@
-import { type UserBookExpandField, type SortingType, type ReadingStatus } from '@common/contracts';
+import { type UserBookExpandField, type SortingType, type ReadingStatus, type Language } from '@common/contracts';
 
 import { type QueryHandler } from '../../../../../common/types/queryHandler.js';
 import { type UserBook } from '../../../domain/entities/userBook/userBook.js';
@@ -14,6 +14,8 @@ export interface FindUserBooksQueryHandlerPayload {
   readonly isFavorite?: boolean | undefined;
   readonly page: number;
   readonly pageSize: number;
+  readonly releaseAfter?: Date | undefined;
+  readonly language?: Language | undefined;
   readonly sortDate?: SortingType | undefined;
   readonly expandFields: UserBookExpandField[] | undefined;
 }
