@@ -305,6 +305,8 @@ export class UserBookHttpController implements HttpController {
       isFavorite,
       status,
       sortDate,
+      language,
+      releaseAfter,
       expandFields,
     } = request.queryParams;
 
@@ -320,6 +322,8 @@ export class UserBookHttpController implements HttpController {
       page,
       pageSize,
       sortDate,
+      language,
+      releaseAfter,
       expandFields: (expandFields?.split(',') as UserBookExpandField[]) || [],
     });
 

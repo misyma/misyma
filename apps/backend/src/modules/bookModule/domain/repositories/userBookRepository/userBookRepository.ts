@@ -1,4 +1,4 @@
-import { type ReadingStatus, type UserBookExpandField } from '@common/contracts';
+import { type Language, type ReadingStatus, type UserBookExpandField } from '@common/contracts';
 
 import { type UserBook, type UserBookState } from '../../entities/userBook/userBook.js';
 
@@ -38,6 +38,8 @@ export interface FindUserBooksPayload {
   readonly isFavorite?: boolean | undefined;
   readonly page?: number;
   readonly pageSize?: number;
+  readonly language?: Language | undefined;
+  readonly releaseAfter?: Date | undefined;
   readonly sortDate?: 'asc' | 'desc' | undefined;
   readonly expandFields: UserBookExpandField[];
 }
