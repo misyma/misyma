@@ -29,7 +29,7 @@ import { useCreateBookWithUserBook } from '../../../../hooks/createBookWithUserB
 import { LoadingSpinner } from '../../../../../common/components/spinner/loading-spinner';
 import GenreSelect from '../../../genreSelect/genreSelect';
 import { BookshelfSelector } from '../../../../../bookshelf/components/bookshelfSelector/bookshelfSelector';
-import { GenreSelector } from '../../../../../bookshelf/components/genreSelector/genreSelector';
+import { StatusSelector } from '../../../../../bookshelf/components/statusSelector/statusSelector';
 import { useFileUpload } from '../../../../../common/hooks/useFileUpload';
 import { useErrorHandledQuery } from '../../../../../common/hooks/useErrorHandledQuery';
 
@@ -201,7 +201,7 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Status</FormLabel>
-              <GenreSelector
+              <StatusSelector
                 defaultValue={field.value}
                 onValueChange={(val) => {
                   dispatch({

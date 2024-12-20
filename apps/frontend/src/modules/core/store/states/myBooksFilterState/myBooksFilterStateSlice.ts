@@ -1,4 +1,4 @@
-import { createAction, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { MyBooksFilterState } from './myBooksFilterState';
 
 const initialState: MyBooksFilterState = {
@@ -6,19 +6,23 @@ const initialState: MyBooksFilterState = {
 	releaseYearAfter: undefined,
 	title: '',
 	filterVisible: false,
+	genreId: '',
+	status: '',
+	isFavorite: '',
+	authorId: '',
 };
 
 export const myBooksFilterStateSlice = createSlice({
 	name: 'myBooksFilter',
 	initialState,
 	reducers: {
-		setLanguage: (state, action: PayloadAction<string>) => {
+		setLanguage: (state, action: PayloadAction<string | undefined>) => {
 			state.language = action.payload;
 		},
-		setTitle: (state, action: PayloadAction<string>) => {
+		setTitle: (state, action: PayloadAction<string | undefined>) => {
 			state.title = action.payload;
 		},
-		setReleaseYearAfter: (state, action: PayloadAction<number>) => {
+		setReleaseYearAfter: (state, action: PayloadAction<number | undefined>) => {
 			state.releaseYearAfter = action.payload;
 		},
 		setFilterVisible: (state, action: PayloadAction<boolean>) => {
@@ -29,29 +33,41 @@ export const myBooksFilterStateSlice = createSlice({
 			state.title = '';
 			state.releaseYearAfter = undefined;
 		},
+		setGenreId: (state, action: PayloadAction<string>) => {
+			state.genreId = action.payload;
+		},
+		setStatus: (state, action: PayloadAction<string>) => {
+			state.status = action.payload;
+		},
+		setIsFavorite: (state, action: PayloadAction<string | undefined>) => {
+			state.isFavorite = action.payload;
+		},
+		setAuthorId: (state, action: PayloadAction<string | undefined>) => {
+			state.authorId = action.payload;
+		},
 	},
 	selectors: {
 		getFilterVisibility: (state) => state.filterVisible,
 		getLanguage: (state) => state.language,
 		getTitle: (state) => state.title,
 		getReleaseYearAfter: (state) => state.releaseYearAfter,
+		getGenreId: (state) => state.genreId,
+		getStatus: (state) => state.status,
+		getIsFavorite: (state) => state.authorId,
+		getAuthorId: (state) => state.authorId,
 	},
 });
 
-export const setLanguage = createAction<string>('myBooksFilter/setLanguage');
-
-export const setTitle = createAction<string>('myBooksFilter/setTitle');
-
-export const setReleaseYearAfter = createAction<number | undefined>(
-	'myBooksFilter/setReleaseYearAfter'
-);
-
-export const setFilterVisible = createAction<boolean>(
-	'myBooksFilter/setFilterVisible'
-);
-
-export const resetAllFilters = createAction<void>(
-	'myBooksFilter/resetAllFilters'
-);
-
 export const myBooksStateSelectors = myBooksFilterStateSlice.selectors;
+
+export const {
+	resetAllFilters,
+	setFilterVisible,
+	setLanguage,
+	setReleaseYearAfter,
+	setTitle,
+	setGenreId,
+	setStatus,
+	setIsFavorite,
+	setAuthorId
+} = myBooksFilterStateSlice.actions;

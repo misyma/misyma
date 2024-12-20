@@ -6,29 +6,22 @@ import { userStateSelectors } from '../../../core/store/states/userState/userSta
 import { useSelector } from 'react-redux';
 import { BookCardRow } from '../bookCardRow/bookCardRow';
 import { BookCardRowSkeleton } from '../bookCardRow/bookCardRowSkeleton';
-import { RootState } from '../../../core/store/store';
-import { Language } from '@common/contracts';
+import { FindUserBooksByPayload } from '../../../book/api/user/queries/findUserBookBy/findUserBooksBy';
 
 interface VirtualizedBooksListProps {
   bookshelfId?: string;
   borrowedBooks?: boolean;
+  filtersToInclude?: Record<string, boolean>;
+  booksQueryArgs?: Omit<FindUserBooksByPayload, 'accessToken'>;
 }
 export const VirtualizedBooksList: FC<VirtualizedBooksListProps> = ({
   bookshelfId,
   borrowedBooks = false,
+  booksQueryArgs,
 }) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const parentRef = useRef<HTMLDivElement>(null);
-  const language = useSelector<RootState>(
-    (selector) => selector.myBooksFilter.language
-  ) as Language;
-  const releaseYearAfter = useSelector<RootState>(
-    (selector) => selector.myBooksFilter.releaseYearAfter
-  ) as number;
-  const title = useSelector<RootState>(
-    (selector) => selector.myBooksFilter.title
-  ) as string;
 
   const { data, fetchNextPage, isLoading, isFetchingNextPage, hasNextPage } =
     useInfiniteQuery(
@@ -36,9 +29,7 @@ export const VirtualizedBooksList: FC<VirtualizedBooksListProps> = ({
         accessToken,
         bookshelfId,
         pageSize: 18,
-        title,
-        releaseYearAfter,
-        language,
+        ...booksQueryArgs
       })
     );
 

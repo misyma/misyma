@@ -2,10 +2,6 @@ import { createLazyFileRoute } from '@tanstack/react-router';
 import { FC, useState } from 'react';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { RequireAdmin } from '../../../../modules/core/components/requireAdmin/requireAdmin';
-import {
-  FilterProvider,
-  useFilterContext,
-} from '../../../../modules/common/contexts/filterContext';
 import { useQueryClient } from '@tanstack/react-query';
 import { BookApiQueryKeys } from '../../../../modules/book/api/user/queries/bookApiQueryKeys';
 import { FindAdminBooksQueryParams } from '@common/contracts';
@@ -15,10 +11,22 @@ import { AdminTabs } from '../../../../modules/admin/components/adminTabs';
 import { BooksTable } from '../../../../modules/admin/components/booksTable';
 import { BooksTabActions } from '../../../../modules/admin/components/booksTabActions';
 import { BooksTableFilters } from '../../../../modules/admin/components/booksTableFilters';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  adminBookFilterStateActions,
+  adminBookFilterStateSelectors,
+} from '../../../../modules/core/store/states/adminBookFilterState/adminBookFilterStateSlice';
 
 export const BooksAdminPage: FC = () => {
   const [filterApplied, setFilterApplied] = useState(false);
-  const { isFilterVisible, toggleFilterVisibility } = useFilterContext();
+  const isFilterVisible = useSelector(
+    adminBookFilterStateSelectors.getFilterVisible
+  );
+  const dispatch = useDispatch();
+
+  const toggleFilterVisibility = () => {
+    dispatch(adminBookFilterStateActions.setFilterVisible(!isFilterVisible));
+  };
 
   const queryClient = useQueryClient();
 
@@ -68,6 +76,13 @@ export const BooksAdminPage: FC = () => {
     }
   };
 
+  const onClearAll = () => {
+    navigate({
+      to: '',
+      search: () => ({}),
+    });
+  };
+
   return (
     <AuthenticatedLayout>
       <AdminTabLayout
@@ -80,7 +95,7 @@ export const BooksAdminPage: FC = () => {
         }
         TableSlot={
           <BooksTable
-            isFilterVisible={isFilterVisible}
+            isFilterVisible={!!isFilterVisible}
             onSetPage={onSetPage}
             params={
               searchParams as unknown as FindAdminBooksQueryParams & {
@@ -92,6 +107,7 @@ export const BooksAdminPage: FC = () => {
         AdditionalColumn={
           <BooksTableFilters
             onApplyFilters={onApplyFilters}
+            onClearAll={onClearAll}
             searchParams={
               searchParams as unknown as FindAdminBooksQueryParams & {
                 sort: string;
@@ -111,9 +127,7 @@ export const Route = createLazyFileRoute('/admin/tabs/books/')({
   component: () => {
     return (
       <RequireAdmin>
-        <FilterProvider>
-          <BooksAdminPage />
-        </FilterProvider>
+        <BooksAdminPage />
       </RequireAdmin>
     );
   },

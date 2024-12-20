@@ -4,6 +4,7 @@ import { preferencesStateSlice } from './states/preferencesState/preferencesStat
 import { userStateSlice } from './states/userState/userStateSlice';
 import { bookshelfStateSlice } from './states/bookshelvesState/bookshelfStateSlice';
 import { myBooksFilterStateSlice } from './states/myBooksFilterState/myBooksFilterStateSlice';
+import { adminBookFilterStateSlice } from './states/adminBookFilterState/adminBookFilterStateSlice';
 
 export const store = configureStore({
 	reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
 		user: userStateSlice.reducer,
 		bookshelves: bookshelfStateSlice.reducer,
 		myBooksFilter: myBooksFilterStateSlice.reducer,
+		adminBookFilter: adminBookFilterStateSlice.reducer,
 	},
 });
 

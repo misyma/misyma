@@ -1,41 +1,22 @@
-import { FC, ReactNode, useMemo } from 'react';
-import { RemoveFilterButton } from './removeFilterButton';
+import { FC, ReactNode } from 'react';
 import { FilterComponentProps } from '../../types/filter';
-import { useDynamicFilterContext } from '../../contexts/dynamicFilterContext';
+import { cn } from '../../lib/utils';
 
-interface FilterContainerProps extends FilterComponentProps {
+interface FilterContainerProps
+  extends Omit<FilterComponentProps, 'setFilterAction'> {
   slot: ReactNode;
+  filterContainerClassName?: string;
 }
 export const FilterContainer: FC<FilterContainerProps> = ({
   filter,
   slot,
-  onRemoveFilter,
+  filterContainerClassName
 }) => {
-  const { filterValues } = useDynamicFilterContext();
-
-  const correspondingFilterValue = filterValues[filter.key as string];
-
-  const correspondingFilterValueExists = useMemo(() => {
-    if (correspondingFilterValue == null) {
-      return false;
-    }
-    if (correspondingFilterValue === '') {
-      return false;
-    }
-    return true;
-  }, [correspondingFilterValue]);
-
   return (
-    <div className="flex flex-col items-start w-full justify-between gap-1 px-1 overflow-hidden">
-      <label>{filter.label}</label>
-      <div className="flex gap-2 items-center justify-start w-full overflow-hidden truncate">
+    <div className="flex flex-col items-start w-full justify-between gap-1 overflow-hidden">
+      <label className='px-2'>{filter.label}</label>
+      <div className={cn("flex gap-2 items-center justify-start w-full overflow-hidden truncate p-2", filterContainerClassName)}>
         {slot}
-        {correspondingFilterValueExists && (
-          <RemoveFilterButton
-            onRemoveFilter={onRemoveFilter}
-            filterKey={filter.key}
-          />
-        )}
       </div>
     </div>
   );

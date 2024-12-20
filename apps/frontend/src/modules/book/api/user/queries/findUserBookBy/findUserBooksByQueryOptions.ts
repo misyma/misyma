@@ -24,7 +24,7 @@ export const FindUserBooksByQueryOptions = ({
 
 export const FindUserBooksByInfiniteQueryOptions = ({
 	accessToken,
-	page = 0,
+	page = 1,
 	...rest
 }: FindUserBooksByPayload) =>
 	infiniteQueryOptions({
@@ -38,6 +38,10 @@ export const FindUserBooksByInfiniteQueryOptions = ({
 			rest.releaseYearAfter,
 			rest.language,
 			rest.title,
+			rest.genreId,
+			rest.status,
+			rest.authorId,
+			rest.isFavorite,
 		],
 		initialPageParam: page,
 		queryFn: ({ pageParam }) =>

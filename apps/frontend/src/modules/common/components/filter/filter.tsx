@@ -1,18 +1,9 @@
-import {
-  ChangeEvent,
-  FC,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
-import { useDynamicFilterContext } from '../../contexts/dynamicFilterContext';
+import { ChangeEvent, FC, useEffect, useMemo, useState } from 'react';
 import {
   DateFilterOpts,
   FilterComponentProps,
   SelectFilterOpts,
 } from '../../types/filter';
-import { Button } from '../button/button';
 import { Input } from '../input/input';
 import {
   Select,
@@ -23,49 +14,31 @@ import {
   SelectValue,
 } from '../select/select';
 import { Checkbox } from '../checkbox/checkbox';
-import { Popover, PopoverContent, PopoverTrigger } from '../popover/popover';
-import { pl } from 'date-fns/locale';
-import { formatDate } from 'date-fns';
-import { CalendarIcon } from 'lucide-react';
-import { Calendar } from '../calendar/calendar';
 import { FilterContainer } from './filterContainer';
 import { YearPicker } from '../yearPicker/yearPicker';
 import ThreeStateCheckbox, {
   ThreeStateCheckboxStates,
-} from '../threeStatesCheckbox/threeStatesCheckbox';
+} from '../threeStatesCheckbox/ThreeStatesCheckbox';
 
-const TextFilter: FC<FilterComponentProps> = ({ filter, onRemoveFilter }) => {
-  const { updateFilterValue, filterValues, removeFilter } =
-    useDynamicFilterContext();
-  const [value, setValue] = useState(
-    (filterValues[filter.key as string] as string) ?? ''
-  );
+// Adjust in admin books filtering
 
-  const handleChange = (value: string) => {
-    updateFilterValue(filter.key, value);
-  };
+export const TextFilter: FC<
+  FilterComponentProps & { skipValidation?: boolean }
+> = ({ filter, initialValue, onRemoveFilter, setFilterAction }) => {
+  const [value, setValue] = useState(initialValue ?? '');
+
   useEffect(() => {
-    if (filterValues[filter.key as string] === '') {
+    if (initialValue === undefined) {
       setValue('');
+    } else {
+      setValue(initialValue);
     }
-    if (value === '') {
-      removeFilter(filter.key);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterValues[filter.key as string], filter.key]);
+  }, [initialValue]);
 
   const onValueChanged = (e: ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.value);
-
-    if (filter.schema) {
-      const res = filter.schema.safeParse(e.target.value);
-
-      if (res.error && e.target.value !== '') {
-        return;
-      }
-    }
-
-    handleChange(e.target.value);
+    const newValue = e.target.value;
+    setValue(newValue);
+    setFilterAction(newValue);
   };
 
   return (
@@ -83,7 +56,7 @@ const TextFilter: FC<FilterComponentProps> = ({ filter, onRemoveFilter }) => {
       }
       filter={filter}
       onRemoveFilter={onRemoveFilter}
-    ></FilterContainer>
+    />
   );
 };
 
@@ -91,19 +64,15 @@ interface SelectFilterProps extends FilterComponentProps {
   filter: SelectFilterOpts;
 }
 
-const SelectFilter: FC<SelectFilterProps> = ({
+export const SelectFilter: FC<SelectFilterProps> = ({
   filter,
+  initialValue,
   onRemoveFilter,
+  setFilterAction,
   dialog = false,
 }) => {
-  const { updateFilterValue, filterValues } = useDynamicFilterContext();
-
-  const handleChange = (value: string) => {
-    updateFilterValue(filter.key, value);
-  };
-
-  const filterItems = useMemo(() => {
-    return (
+  const filterItems = useMemo(
+    () => (
       <>
         {filter.options?.map((option) => (
           <SelectItem className="w-full sm:w-full" key={option} value={option}>
@@ -111,226 +80,206 @@ const SelectFilter: FC<SelectFilterProps> = ({
           </SelectItem>
         ))}
       </>
-    );
-  }, [filter?.options]);
+    ),
+    [filter?.options]
+  );
 
   return (
     <FilterContainer
       slot={
         <Select
           className="w-96"
-          value={(filterValues[filter.key as string] as string) || ''}
-          onValueChange={handleChange}
+          value={initialValue ?? ''}
+          onValueChange={setFilterAction}
         >
           <SelectTrigger className="w-full sm:w-full">
-            <SelectValue className="w-full sm:w-full"></SelectValue>
+            <SelectValue className="w-full sm:w-full" />
           </SelectTrigger>
-          {dialog && (
+          {dialog ? (
             <SelectContent className="w-full sm:w-full">
               {filterItems}
             </SelectContent>
-          )}
-          {!dialog && (
+          ) : (
             <SelectContentNoPortal>{filterItems}</SelectContentNoPortal>
           )}
         </Select>
       }
       filter={filter}
       onRemoveFilter={onRemoveFilter}
-    ></FilterContainer>
+    />
   );
 };
 
 export const CheckboxFilter: FC<FilterComponentProps> = ({
   filter,
+  initialValue,
   onRemoveFilter,
-}) => {
-  const { updateFilterValue, filterValues } = useDynamicFilterContext();
-
-  const handleChange = (value: string | boolean) => {
-    if (value === true) {
-      updateFilterValue(filter.key, value);
-      return;
+  setFilterAction,
+}) => (
+  <FilterContainer
+    slot={
+      <Checkbox
+        size="xxl"
+        checked={!!initialValue}
+        onCheckedChange={setFilterAction}
+      />
     }
-
-    updateFilterValue(filter.key, undefined);
-  };
-
-  const filterValue = filterValues[filter.key as string];
-
-  return (
-    <FilterContainer
-      slot={
-        <Checkbox
-          size="xxl"
-          checked={!!filterValue}
-          onCheckedChange={handleChange}
-        />
-      }
-      filter={filter}
-      onRemoveFilter={onRemoveFilter}
-    ></FilterContainer>
-  );
-};
-
+    filter={filter}
+    onRemoveFilter={onRemoveFilter}
+  />
+);
 export const ThreeStateCheckboxFilter: FC<FilterComponentProps> = ({
   filter,
+  initialValue,
+  setFilterAction,
 }) => {
-  const { updateFilterValue, filterValues } = useDynamicFilterContext();
+  const stateMap = {
+    ['true']: 'checked',
+    ['false']: 'indeterminate',
+    ['']: 'unchecked',
+  };
+  const value = stateMap[initialValue as keyof typeof stateMap ?? ''];
 
-  const [internalValue, setInternalValue] = useState('unchecked');
-
-  useEffect(() => {
-    const filterValue = filterValues[filter.key as string];
-    if (filterValue === true) {
-      setInternalValue('checked');
-    } else if (filterValue === false) {
-      setInternalValue('indeterminate');
-    } else {
-      setInternalValue('unchecked');
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterValues, filter.key, filterValues[filter.key as string]]);
   const handleChange = (value: string | boolean) => {
-    if (value === 'checked') {
-      updateFilterValue(filter.key, true);
-      return;
-    } else if (value === 'indeterminate') {
-      updateFilterValue(filter.key, false);
-      return;
-    }
+    switch (value) {
+      case 'checked':
+        setFilterAction(true);
+        break;
 
-    updateFilterValue(filter.key, undefined);
+      case 'indeterminate':
+        setFilterAction(false);
+        break;
+
+      default:
+        setFilterAction(undefined);
+        break;
+    }
   };
 
   return (
     <FilterContainer
+      filterContainerClassName=''
       slot={
         <ThreeStateCheckbox
-          value={internalValue as ThreeStateCheckboxStates}
+          value={value as ThreeStateCheckboxStates}
           onValueChanged={(val) => handleChange(val as string)}
         />
       }
       filter={filter}
-    ></FilterContainer>
+    />
   );
 };
-
 interface DateFilterComponentProps extends FilterComponentProps {
   filter: DateFilterOpts;
 }
-export const DateFilter: FC<DateFilterComponentProps> = ({ filter }) => {
-  const { updateFilterValue, filterValues } = useDynamicFilterContext();
+// export const DateFilter: FC<DateFilterComponentProps> = ({
+//   filter,
+//   setFilterAction,
+// }) => {
+//   const handleChange = (value: string | boolean | Date | undefined) => {
+//     updateFilterValue(filter.key, value);
+//     if (setFilterAction) {
+//       setFilterAction(value);
+//     }
+//   };
 
-  const handleChange = (value: string | boolean | Date | undefined) => {
-    updateFilterValue(filter.key, value);
-  };
+//   const filterValue = filterValues[filter.key as string];
+//   const siblingFilterValue = filterValues[filter.dateRangeSiblingId];
 
-  const filterValue = filterValues[filter.key as string];
-  const siblingFilterValue = filterValues[filter.dateRangeSiblingId];
+//   const [calendarVisible, onOpenChange] = useState(false);
 
-  const [calendarVisible, onOpenChange] = useState(false);
+//   const siblingValue = useMemo(() => {
+//     if (!siblingFilterValue) {
+//       return null;
+//     }
 
-  const siblingValue = useMemo(() => {
-    if (!siblingFilterValue) {
-      return null;
-    }
+//     return siblingFilterValue;
+//   }, [siblingFilterValue]);
 
-    return siblingFilterValue;
-  }, [siblingFilterValue]);
+//   const isSiblingBefore = useCallback(() => {
+//     if (siblingValue === null || filter.isBeforeFilter) {
+//       return false;
+//     }
 
-  const isSiblingBefore = useCallback(() => {
-    if (siblingValue === null || filter.isBeforeFilter) {
-      return false;
-    }
+//     return true;
+//   }, [siblingValue, filter.isBeforeFilter]);
 
-    return true;
-  }, [siblingValue, filter.isBeforeFilter]);
+//   const isSiblingAfter = useCallback(() => {
+//     if (siblingValue === null || filter.isAfterFilter) {
+//       return false;
+//     }
 
-  const isSiblingAfter = useCallback(() => {
-    if (siblingValue === null || filter.isAfterFilter) {
-      return false;
-    }
+//     return true;
+//   }, [siblingValue, filter.isAfterFilter]);
 
-    return true;
-  }, [siblingValue, filter.isAfterFilter]);
+//   const getDisabledValues = useCallback(
+//     (date: Date) =>
+//       date > new Date() ||
+//       date < new Date('1900-01-01') ||
+//       (isSiblingAfter() && date < (siblingValue as Date)) ||
+//       (isSiblingBefore() && date > (siblingValue as Date)),
+//     [isSiblingAfter, isSiblingBefore, siblingValue]
+//   );
 
-  const getDisabledValues = useCallback(
-    (date: Date) =>
-      date > new Date() ||
-      date < new Date('1900-01-01') ||
-      (isSiblingAfter() && date < (siblingValue as Date)) ||
-      (isSiblingBefore() && date > (siblingValue as Date)),
-    [isSiblingAfter, isSiblingBefore, siblingValue]
-  );
-
-  return (
-    <FilterContainer
-      slot={
-        <Popover
-          modal={true}
-          open={calendarVisible}
-          onOpenChange={onOpenChange}
-        >
-          <PopoverTrigger asChild>
-            <Button
-              variant={'outline'}
-              type="button"
-              size="custom"
-              className={'w-full truncate h-10 pl-3 text-left font-normal'}
-            >
-              {filterValue ? (
-                formatDate(filterValue as Date, 'PPP', {
-                  locale: pl,
-                })
-              ) : (
-                <>DD-MM-RRRR</>
-              )}
-              {!filterValue && (
-                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-              )}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="start">
-            <Calendar
-              mode="single"
-              selected={filterValue as Date}
-              onSelect={handleChange}
-              disabled={getDisabledValues}
-              initialFocus
-            />
-          </PopoverContent>
-        </Popover>
-      }
-      filter={filter}
-    ></FilterContainer>
-  );
-};
+//   return (
+//     <FilterContainer
+//       slot={
+//         <Popover
+//           modal={true}
+//           open={calendarVisible}
+//           onOpenChange={onOpenChange}
+//         >
+//           <PopoverTrigger asChild>
+//             <Button
+//               variant={'outline'}
+//               type="button"
+//               size="custom"
+//               className={'w-full truncate h-10 pl-3 text-left font-normal'}
+//             >
+//               {filterValue ? (
+//                 formatDate(filterValue as Date, 'PPP', {
+//                   locale: pl,
+//                 })
+//               ) : (
+//                 <>DD-MM-RRRR</>
+//               )}
+//               {!filterValue && (
+//                 <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+//               )}
+//             </Button>
+//           </PopoverTrigger>
+//           <PopoverContent className="w-auto p-0" align="start">
+//             <Calendar
+//               mode="single"
+//               selected={filterValue as Date}
+//               onSelect={handleChange}
+//               disabled={getDisabledValues}
+//               initialFocus
+//             />
+//           </PopoverContent>
+//         </Popover>
+//       }
+//       filter={filter}
+//     ></FilterContainer>
+//   );
+// };
 
 export const YearFilter: FC<DateFilterComponentProps> = ({
   filter,
+  initialValue,
   onRemoveFilter,
+  setFilterAction,
 }) => {
-  const { updateFilterValue, filterValues } = useDynamicFilterContext();
-
-  const handleChange = (
-    value: string | boolean | Date | number | undefined
-  ) => {
-    updateFilterValue(filter.key, value);
-  };
-
-  const filterValue = filterValues[filter.key as string];
-
   const [calendarVisible, onOpenChange] = useState(false);
 
   return (
     <FilterContainer
       slot={
         <YearPicker
-          value={filterValue as unknown as number}
+          value={initialValue as unknown as number}
           open={calendarVisible}
           onOpenChange={onOpenChange}
-          onValueChange={handleChange}
+          onValueChange={setFilterAction}
         />
       }
       filter={filter}
@@ -342,29 +291,59 @@ export const YearFilter: FC<DateFilterComponentProps> = ({
 export const FilterComponent: FC<FilterComponentProps> = ({
   filter,
   onRemoveFilter,
+  setFilterAction,
 }) => {
   if (filter.customSlot) {
     return (
-      <filter.customSlot onRemoveFilter={onRemoveFilter} filter={filter} />
+      <filter.customSlot
+        setFilterAction={setFilterAction}
+        onRemoveFilter={onRemoveFilter}
+        filter={filter}
+      />
     );
   }
 
   switch (filter.type) {
     case 'text':
-      return <TextFilter onRemoveFilter={onRemoveFilter} filter={filter} />;
+      return (
+        <TextFilter
+          setFilterAction={setFilterAction}
+          onRemoveFilter={onRemoveFilter}
+          filter={filter}
+        />
+      );
     case 'select':
-      return <SelectFilter onRemoveFilter={onRemoveFilter} filter={filter} />;
+      return (
+        <SelectFilter
+          setFilterAction={setFilterAction}
+          onRemoveFilter={onRemoveFilter}
+          filter={filter}
+        />
+      );
     case 'checkbox':
-      return <CheckboxFilter onRemoveFilter={onRemoveFilter} filter={filter} />;
+      return (
+        <CheckboxFilter
+          setFilterAction={setFilterAction}
+          onRemoveFilter={onRemoveFilter}
+          filter={filter}
+        />
+      );
 
     case 'three-state-checkbox':
-      return <ThreeStateCheckboxFilter filter={filter} />;
-    case 'date':
-      return <DateFilter onRemoveFilter={onRemoveFilter} filter={filter} />;
+      return (
+        <ThreeStateCheckboxFilter
+          filter={filter}
+          setFilterAction={setFilterAction}
+        />
+      );
     case 'year':
       return (
-        // eslint-disable-next-line
-        <YearFilter onRemoveFilter={onRemoveFilter} filter={filter as any} />
+        <YearFilter
+          setFilterAction={setFilterAction}
+          onRemoveFilter={onRemoveFilter}
+          // eslint-disable-next-line
+          filter={filter as any}
+        />
       );
     default:
       return null;

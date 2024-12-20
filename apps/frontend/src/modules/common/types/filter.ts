@@ -1,13 +1,14 @@
 import { FC } from 'react';
-import { z } from 'zod';
 
 export type BaseFilterOpts = {
 	id: string;
+	initialValue?: string;
 	type: FilterTypes;
 	label: string;
 	key: PropertyKey;
 	customSlot?: FC<FilterComponentProps>;
-	schema?: z.Schema;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	setFilterAction?: (value: any) => void;
 };
 
 export type FilterTypes =
@@ -62,4 +63,7 @@ export interface FilterComponentProps {
 	className?: string;
 	dialog?: boolean;
 	onRemoveFilter?: (name: string) => void;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	setFilterAction: (value: any) => void;
+	initialValue?: string;
 }
