@@ -25,6 +25,7 @@ import { Route as AdminTabsBooksIndexImport } from './routes/admin/tabs/books/in
 import { Route as AdminTabsAuthorsIndexImport } from './routes/admin/tabs/authors/index'
 import { Route as AdminTabsChangeRequestsIdImport } from './routes/admin/tabs/changeRequests/$id'
 import { Route as ShelvesBookshelfSearchResultIndexImport } from './routes/shelves/bookshelf/search/result/index'
+import { Route as ShelvesBookshelfSearchCreateIndexImport } from './routes/shelves/bookshelf/search/create/index'
 import { Route as AdminTabsBooksEditIdImport } from './routes/admin/tabs/books/edit/$id'
 import { Route as ShelvesBookshelfBookTabsQuotationsTabBookIdImport } from './routes/shelves/bookshelf/book/tabs/quotationsTab/$bookId'
 import { Route as ShelvesBookshelfBookTabsGradesTabBookIdImport } from './routes/shelves/bookshelf/book/tabs/gradesTab/$bookId'
@@ -171,6 +172,16 @@ const ShelvesBookshelfSearchResultIndexRoute =
     ),
   )
 
+const ShelvesBookshelfSearchCreateIndexRoute =
+  ShelvesBookshelfSearchCreateIndexImport.update({
+    path: '/shelves/bookshelf/search/create/',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/shelves/bookshelf/search/create/index.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
 const ShelvesBookshelfSearchCreateBookshelfIdLazyRoute =
   ShelvesBookshelfSearchCreateBookshelfIdLazyImport.update({
     path: '/shelves/bookshelf/search/create/$bookshelfId',
@@ -298,6 +309,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShelvesBookshelfSearchCreateBookshelfIdLazyImport
       parentRoute: typeof rootRoute
     }
+    '/shelves/bookshelf/search/create/': {
+      preLoaderRoute: typeof ShelvesBookshelfSearchCreateIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/shelves/bookshelf/search/result/': {
       preLoaderRoute: typeof ShelvesBookshelfSearchResultIndexImport
       parentRoute: typeof rootRoute
@@ -339,6 +354,7 @@ export const routeTree = rootRoute.addChildren([
   ShelvesBookshelfSearchIndexLazyRoute,
   AdminTabsBooksEditIdRoute,
   ShelvesBookshelfSearchCreateBookshelfIdLazyRoute,
+  ShelvesBookshelfSearchCreateIndexRoute,
   ShelvesBookshelfSearchResultIndexRoute,
   ShelvesBookshelfBookTabsBasicDataTabBookIdRoute,
   ShelvesBookshelfBookTabsGradesTabBookIdRoute,

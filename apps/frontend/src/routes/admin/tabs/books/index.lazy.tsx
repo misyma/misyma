@@ -48,10 +48,6 @@ export const BooksAdminPage: FC = () => {
       ? acceptedFilterValueMap[acceptedFilter]
       : undefined;
 
-    console.log({
-      ...val,
-    });
-
     navigate({
       to: '',
       search: () => ({
