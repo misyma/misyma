@@ -130,7 +130,7 @@ export const SearchResultPage: FC = () => {
     });
 
     navigate({
-      to: `/bookshelf/search/create/${searchParams.bookshelfId}`,
+      to: `/shelves/bookshelf/search/create/${searchParams.bookshelfId}`,
     });
   };
 

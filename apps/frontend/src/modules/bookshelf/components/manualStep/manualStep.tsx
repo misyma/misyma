@@ -105,16 +105,20 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
       isbn: string;
       title: string;
       bookshelfId: string;
+      searchBy: 'title' | 'isbn';
     } = {
       bookshelfId: bookshelfId ?? '',
       isbn: '',
       title: '',
+      searchBy: 'title',
     };
 
     if (searchBookContext.searchQuery) {
       search['title'] = searchBookContext.searchQuery;
+      search['searchBy'] = 'title';
     } else if (searchBookContext.isbn) {
       search['isbn'] = searchBookContext.isbn;
+      search['searchBy'] = 'isbn';
     } else {
       return navigate({
         to: '/mybooks',
