@@ -138,7 +138,7 @@ export class BookAdminHttpController implements HttpController {
     const { authorIds, ...bookData } = request.body;
 
     await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
       expectedRole: UserRole.admin,
     });
 
@@ -160,7 +160,7 @@ export class BookAdminHttpController implements HttpController {
     const { bookId } = request.pathParams;
 
     await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
       expectedRole: UserRole.admin,
     });
 
@@ -176,7 +176,7 @@ export class BookAdminHttpController implements HttpController {
     request: HttpRequest<UpdateBookBodyDto, undefined, UpdateBookPathParamsDto>,
   ): Promise<HttpOkResponse<UpdateBookResponseBodyDto>> {
     await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
       expectedRole: UserRole.admin,
     });
 
@@ -221,7 +221,7 @@ export class BookAdminHttpController implements HttpController {
     request: HttpRequest<undefined, FindAdminBooksQueryParamsDto, undefined>,
   ): Promise<HttpOkResponse<FindAdminBooksResponseBodyDto>> {
     await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
       expectedRole: UserRole.admin,
     });
 

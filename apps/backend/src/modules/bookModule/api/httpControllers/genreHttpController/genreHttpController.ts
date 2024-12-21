@@ -51,7 +51,7 @@ export class GenreHttpController implements HttpController {
     request: HttpRequest<undefined, FindGenresQueryParamsDto, undefined>,
   ): Promise<HttpOkResponse<FindGenresResponseBodyDto>> {
     await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
     });
 
     const { page = 1, pageSize = 10 } = request.queryParams;

@@ -78,7 +78,7 @@ export class BookChangeRequestHttpController implements HttpController {
     const { ...bookChangeRequestData } = request.body;
 
     const { userId } = await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
     });
 
     const { bookChangeRequest } = await this.createBookChangeRequestCommandHandler.execute({
@@ -96,7 +96,7 @@ export class BookChangeRequestHttpController implements HttpController {
     request: HttpRequest<undefined, FindBookChangeRequestsQueryParamsDto, undefined>,
   ): Promise<HttpOkResponse<FindBookChangeRequestsResponseBodyDto>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
     });
 
     const { page = 1, pageSize = 10 } = request.queryParams;

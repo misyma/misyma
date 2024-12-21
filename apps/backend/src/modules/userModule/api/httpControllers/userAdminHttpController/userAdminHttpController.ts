@@ -55,7 +55,7 @@ export class UserAdminHttpController implements HttpController {
     const { page = 1, pageSize = 10 } = request.queryParams;
 
     await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
       expectedRole: UserRole.admin,
     });
 

@@ -168,7 +168,7 @@ export class BookshelfHttpController implements HttpController {
     request: HttpRequest<undefined, FindBookshelvesQueryParamsDto, undefined>,
   ): Promise<HttpOkResponse<FindBookshelvesResponseBodyDto>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
     });
 
     const { page = 1, pageSize = 10, sortDate, name } = request.queryParams;
@@ -198,7 +198,7 @@ export class BookshelfHttpController implements HttpController {
     request: HttpRequest<undefined, undefined, FindBookshelfPathParamsDto>,
   ): Promise<HttpOkResponse<FindBookshelfResponseBodyDto>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
     });
 
     const { bookshelfId } = request.pathParams;
@@ -220,7 +220,7 @@ export class BookshelfHttpController implements HttpController {
     const { name } = request.body;
 
     const { userId } = await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
     });
 
     const { bookshelf } = await this.createBookshelfCommandHandler.execute({
@@ -238,7 +238,7 @@ export class BookshelfHttpController implements HttpController {
     request: HttpRequest<UpdateBookshelfBodyDto, undefined, UpdateBookshelfPathParamsDto>,
   ): Promise<HttpOkResponse<UpdateBookshelfResponseBodyDto>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
     });
 
     const { bookshelfId } = request.pathParams;
@@ -261,7 +261,7 @@ export class BookshelfHttpController implements HttpController {
     request: HttpRequest<undefined, DeleteBookshelfQueryParamsDto, DeleteBookshelfPathParamsDto>,
   ): Promise<HttpNoContentResponse<DeleteBookshelfResponseBodyDto>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
     });
 
     const { bookshelfId } = request.pathParams;

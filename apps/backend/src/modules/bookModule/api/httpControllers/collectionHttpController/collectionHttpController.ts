@@ -135,7 +135,7 @@ export class CollectionHttpController implements HttpController {
     request: HttpRequest<undefined, FindCollectionsQueryParamsDto, undefined>,
   ): Promise<HttpOkResponse<FindCollectionsResponseBodyDto>> {
     await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
     });
 
     const { page = 1, pageSize = 10, userId, sortDate } = request.queryParams;
@@ -166,7 +166,7 @@ export class CollectionHttpController implements HttpController {
     const { name, userId } = request.body;
 
     await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
       expectedUserId: userId,
     });
 
@@ -185,7 +185,7 @@ export class CollectionHttpController implements HttpController {
     request: HttpRequest<UpdateCollectionBodyDto, null, UpdateCollectionPathParamsDto>,
   ): Promise<HttpOkResponse<UpdateCollectionResponseBodyDto>> {
     await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
     });
 
     const { collectionId } = request.pathParams;
@@ -207,7 +207,7 @@ export class CollectionHttpController implements HttpController {
     request: HttpRequest<null, null, DeleteCollectionPathParamsDto>,
   ): Promise<HttpNoContentResponse<DeleteCollectionResponseBodyDto>> {
     await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
     });
 
     const { collectionId } = request.pathParams;

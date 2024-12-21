@@ -143,7 +143,7 @@ export class QuoteHttpController implements HttpController {
     request: HttpRequest<null, FindQuotesQueryParamsDto, FindQuotesPathParamsDto>,
   ): Promise<HttpOkResponse<FindQuotesResponseBodyDto>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
     });
 
     const { userBookId } = request.pathParams;
@@ -175,7 +175,7 @@ export class QuoteHttpController implements HttpController {
     request: HttpRequest<CreateQuoteBodyDto, null, CreateQuotePathParamsDto>,
   ): Promise<HttpCreatedResponse<CreateQuoteResponseBodyDto>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
     });
 
     const { userBookId } = request.pathParams;
@@ -201,7 +201,7 @@ export class QuoteHttpController implements HttpController {
     request: HttpRequest<UpdateQuoteBodyDto, null, UpdateQuotePathParamsDto>,
   ): Promise<HttpOkResponse<UpdateQuoteResponseBodyDto>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
     });
 
     const { quoteId } = request.pathParams;
@@ -226,7 +226,7 @@ export class QuoteHttpController implements HttpController {
     request: HttpRequest<null, null, DeleteQuotePathParamsDto>,
   ): Promise<HttpNoContentResponse<DeleteQuoteResponseBodyDto>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
     });
 
     const { quoteId } = request.pathParams;

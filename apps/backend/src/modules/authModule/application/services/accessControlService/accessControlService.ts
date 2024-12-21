@@ -1,7 +1,7 @@
 import { type UserRole } from '@common/contracts';
 
 export interface VerifyBearerTokenPayload {
-  readonly authorizationHeader: string | undefined;
+  readonly requestHeaders: Record<string, string>;
   readonly expectedUserId?: string | undefined;
   readonly expectedRole?: UserRole | undefined;
 }

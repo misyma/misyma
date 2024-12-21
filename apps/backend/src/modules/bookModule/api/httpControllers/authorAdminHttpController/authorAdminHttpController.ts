@@ -114,7 +114,7 @@ export class AuthorAdminHttpController implements HttpController {
     const { name } = request.body;
 
     await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
       expectedRole: UserRole.admin,
     });
 
@@ -133,7 +133,7 @@ export class AuthorAdminHttpController implements HttpController {
     request: HttpRequest<UpdateAuthorBodyDto, null, UpdateAuthorPathParamsDto>,
   ): Promise<HttpOkResponse<UpdateAuthorResponseBodyDto>> {
     await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
       expectedRole: UserRole.admin,
     });
 
@@ -159,7 +159,7 @@ export class AuthorAdminHttpController implements HttpController {
     const { authorId } = request.pathParams;
 
     await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
       expectedRole: UserRole.admin,
     });
 

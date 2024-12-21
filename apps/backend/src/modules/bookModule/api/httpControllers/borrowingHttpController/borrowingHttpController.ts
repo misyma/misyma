@@ -142,7 +142,7 @@ export class BorrowingHttpController implements HttpController {
     request: HttpRequest<null, FindBorrowingsQueryParamsDto, FindBorrowingsPathParamsDto>,
   ): Promise<HttpOkResponse<FindBorrowingsResponseBodyDto>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
     });
 
     const { page = 1, pageSize = 10, sortDate, isOpen } = request.queryParams;
@@ -175,7 +175,7 @@ export class BorrowingHttpController implements HttpController {
     request: HttpRequest<CreateBorrowingBodyDto, undefined, CreateBorrowingPathParamsDto>,
   ): Promise<HttpCreatedResponse<CreateBorrowingResponseBodyDto>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
     });
 
     const { userBookId } = request.pathParams;
@@ -200,7 +200,7 @@ export class BorrowingHttpController implements HttpController {
     request: HttpRequest<UpdateBorrowingBodyDto, null, UpdateBorrowingPathParamsDto>,
   ): Promise<HttpOkResponse<UpdateBorrowingResponseBodyDto>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
     });
 
     const { borrowingId } = request.pathParams;
@@ -225,7 +225,7 @@ export class BorrowingHttpController implements HttpController {
     request: HttpRequest<null, null, DeleteBorrowingPathParamsDto>,
   ): Promise<HttpNoContentResponse<DeleteBorrowingResponseBodyDto>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
     });
 
     const { borrowingId } = request.pathParams;

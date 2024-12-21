@@ -78,7 +78,7 @@ export class AuthorHttpController implements HttpController {
     const { name } = request.body;
 
     await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
     });
 
     const { author } = await this.createAuthorCommandHandler.execute({
@@ -98,7 +98,7 @@ export class AuthorHttpController implements HttpController {
     const { name, page = 1, pageSize = 10, userId, bookshelfId, ids, sortDate } = request.queryParams;
 
     await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
       expectedUserId: userId,
     });
 
