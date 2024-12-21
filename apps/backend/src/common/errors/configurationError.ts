@@ -1,11 +1,7 @@
-import { BaseError } from './baseError.js';
+import { BaseError, type BaseErrorContext } from './baseError.js';
 
-interface Context {
-  readonly [key: string]: unknown;
-}
-
-export class ConfigurationError extends BaseError<Context> {
-  public constructor(context: Context) {
+export class ConfigurationError extends BaseError {
+  public constructor(context: BaseErrorContext) {
     super('ConfigurationError', 'Configuration not valid.', context);
   }
 }

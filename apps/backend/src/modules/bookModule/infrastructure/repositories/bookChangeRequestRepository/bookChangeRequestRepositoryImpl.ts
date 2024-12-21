@@ -71,7 +71,7 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
       throw new RepositoryError({
         entity: 'BookChangeRequest',
         operation: 'create',
-        error,
+        originalError: error,
       });
     }
 
@@ -113,7 +113,7 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
       throw new RepositoryError({
         entity: 'BookChangeRequest',
         operation: 'find',
-        error,
+        originalError: error,
       });
     }
 
@@ -175,7 +175,7 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
       throw new RepositoryError({
         entity: 'BookChangeRequest',
         operation: 'find',
-        error,
+        originalError: error,
       });
     }
 
@@ -191,7 +191,7 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
       throw new RepositoryError({
         entity: 'BookChangeRequest',
         operation: 'delete',
-        error,
+        originalError: error,
       });
     }
   }
@@ -227,7 +227,7 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
       throw new RepositoryError({
         entity: 'BookChangeRequest',
         operation: 'count',
-        error,
+        originalError: error,
       });
     }
   }

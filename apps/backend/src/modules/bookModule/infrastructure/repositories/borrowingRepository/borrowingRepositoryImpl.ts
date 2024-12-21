@@ -35,7 +35,7 @@ export class BorrowingRepositoryImpl implements BorrowingRepository {
       throw new RepositoryError({
         entity: 'Borrowing',
         operation: 'find',
-        error,
+        originalError: error,
       });
     }
 
@@ -74,7 +74,7 @@ export class BorrowingRepositoryImpl implements BorrowingRepository {
       throw new RepositoryError({
         entity: 'Borrowing',
         operation: 'find',
-        error,
+        originalError: error,
       });
     }
 
@@ -103,7 +103,7 @@ export class BorrowingRepositoryImpl implements BorrowingRepository {
       throw new RepositoryError({
         entity: 'Borrowing',
         operation: 'create',
-        error,
+        originalError: error,
       });
     }
 
@@ -125,7 +125,7 @@ export class BorrowingRepositoryImpl implements BorrowingRepository {
       throw new RepositoryError({
         entity: 'Borrowing',
         operation: 'update',
-        error,
+        originalError: error,
       });
     }
 
@@ -151,7 +151,7 @@ export class BorrowingRepositoryImpl implements BorrowingRepository {
       throw new RepositoryError({
         entity: 'Borrowing',
         operation: 'delete',
-        error,
+        originalError: error,
       });
     }
   }
@@ -184,7 +184,7 @@ export class BorrowingRepositoryImpl implements BorrowingRepository {
       throw new RepositoryError({
         entity: 'Borrowing',
         operation: 'count',
-        error,
+        originalError: error,
       });
     }
   }

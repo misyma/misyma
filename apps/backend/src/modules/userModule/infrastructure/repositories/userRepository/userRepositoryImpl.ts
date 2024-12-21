@@ -60,7 +60,7 @@ export class UserRepositoryImpl implements UserRepository {
       throw new RepositoryError({
         entity: 'User',
         operation: 'create',
-        error,
+        originalError: error,
       });
     }
 
@@ -82,7 +82,7 @@ export class UserRepositoryImpl implements UserRepository {
       throw new RepositoryError({
         entity: 'User',
         operation: 'update',
-        error,
+        originalError: error,
       });
     }
 
@@ -124,7 +124,7 @@ export class UserRepositoryImpl implements UserRepository {
       throw new RepositoryError({
         entity: 'User',
         operation: 'find',
-        error,
+        originalError: error,
       });
     }
 
@@ -149,7 +149,7 @@ export class UserRepositoryImpl implements UserRepository {
       throw new RepositoryError({
         entity: 'User',
         operation: 'find',
-        error,
+        originalError: error,
       });
     }
 
@@ -181,7 +181,7 @@ export class UserRepositoryImpl implements UserRepository {
       throw new RepositoryError({
         entity: 'User',
         operation: 'count',
-        error,
+        originalError: error,
       });
     }
   }
@@ -195,7 +195,7 @@ export class UserRepositoryImpl implements UserRepository {
       throw new RepositoryError({
         entity: 'User',
         operation: 'delete',
-        error,
+        originalError: error,
       });
     }
   }

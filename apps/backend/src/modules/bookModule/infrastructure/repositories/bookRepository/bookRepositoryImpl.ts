@@ -92,7 +92,7 @@ export class BookRepositoryImpl implements BookRepository {
       throw new RepositoryError({
         entity: 'Book',
         operation: 'create',
-        error,
+        originalError: error,
       });
     }
 
@@ -160,7 +160,7 @@ export class BookRepositoryImpl implements BookRepository {
       throw new RepositoryError({
         entity: 'Book',
         operation: 'update',
-        error,
+        originalError: error,
       });
     }
 
@@ -206,7 +206,7 @@ export class BookRepositoryImpl implements BookRepository {
       throw new RepositoryError({
         entity: 'Book',
         operation: 'find',
-        error,
+        originalError: error,
       });
     }
 
@@ -299,7 +299,7 @@ export class BookRepositoryImpl implements BookRepository {
       throw new RepositoryError({
         entity: 'Book',
         operation: 'find',
-        error,
+        originalError: error,
       });
     }
 
@@ -315,7 +315,7 @@ export class BookRepositoryImpl implements BookRepository {
       throw new RepositoryError({
         entity: 'Book',
         operation: 'delete',
-        error,
+        originalError: error,
       });
     }
   }
@@ -382,7 +382,7 @@ export class BookRepositoryImpl implements BookRepository {
       throw new RepositoryError({
         entity: 'Book',
         operation: 'count',
-        error,
+        originalError: error,
       });
     }
   }

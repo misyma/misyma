@@ -4,7 +4,7 @@ import { expect, describe, it, beforeEach, afterEach } from 'vitest';
 
 import { S3Service } from './s3Service.js';
 import { Generator } from '../../../../../tests/generator.js';
-import { ConfigFactory } from '../../../../core/config.js';
+import { createConfig } from '../../../../core/config.js';
 import { S3ClientFactory } from '../../factories/s3ClientFactory/s3ClientFactory.js';
 import { S3TestUtils } from '../../tests/utils/s3TestUtils.js';
 
@@ -20,7 +20,7 @@ describe('S3Service', () => {
   const bucketName = 'misyma-images';
 
   beforeEach(async () => {
-    const config = ConfigFactory.create();
+    const config = createConfig();
 
     const s3Client = S3ClientFactory.create({
       accessKeyId: config.aws.accessKeyId,

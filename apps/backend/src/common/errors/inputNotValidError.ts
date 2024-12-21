@@ -1,9 +1,8 @@
-import { BaseError } from './baseError.js';
+import { BaseError, type BaseErrorContext } from './baseError.js';
 
-interface Context {
+interface Context extends BaseErrorContext {
   readonly reason: string;
   readonly value: unknown;
-  readonly [key: string]: unknown;
 }
 
 export class InputNotValidError extends BaseError<Context> {

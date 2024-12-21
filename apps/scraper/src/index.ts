@@ -11,8 +11,8 @@ import {
   ScrapeOpenLibraryAction,
   type ScrapeOpenLibraryActionPayload,
 } from './actions/scrapeOpenLibraryAction/scrapeOpenLibraryAction.js';
-import { ConfigFactory } from './config.js';
-import { BaseError } from './errors/baseError.js';
+import { createConfig } from './config.js';
+import { serializeError } from './errors/serializeError.js';
 import { EIsbnClientFactory } from './infrastructure/clients/eIsbnClient.js';
 import { AuthorRepository } from './infrastructure/repositories/authorRepository/authorRepository.js';
 import { BookRepository } from './infrastructure/repositories/bookRepository/bookRepository.js';
@@ -20,25 +20,13 @@ import { DatabaseClientFactory } from './libs/database/databaseClientFactory.js'
 import { LoggerServiceFactory } from './libs/logger/loggerServiceFactory.js';
 import { UuidService } from './libs/uuid/uuidService.js';
 
-const finalErrorHandler = async (error: unknown): Promise<void> => {
-  let errorContext;
+export const finalErrorHandler = async (error: unknown): Promise<void> => {
+  const serializedError = serializeError(error);
 
-  if (error instanceof Error) {
-    errorContext = {
-      name: error.name,
-      message: error.message,
-      ...(error instanceof BaseError ? { ...error.context } : undefined),
-    };
-  } else {
-    errorContext = error;
-  }
-
-  console.error(
-    JSON.stringify({
-      message: 'Application error.',
-      context: errorContext,
-    }),
-  );
+  console.error({
+    message: 'Application error.',
+    context: serializedError,
+  });
 
   process.exit(1);
 };
@@ -52,7 +40,7 @@ process.on('SIGINT', finalErrorHandler);
 process.on('SIGTERM', finalErrorHandler);
 
 try {
-  const config = ConfigFactory.create();
+  const config = createConfig();
 
   const logger = LoggerServiceFactory.create(config);
 

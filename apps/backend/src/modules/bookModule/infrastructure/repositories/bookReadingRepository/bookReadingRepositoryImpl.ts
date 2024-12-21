@@ -35,7 +35,7 @@ export class BookReadingRepositoryImpl implements BookReadingRepository {
       throw new RepositoryError({
         entity: 'BookReading',
         operation: 'find',
-        error,
+        originalError: error,
       });
     }
 
@@ -66,7 +66,7 @@ export class BookReadingRepositoryImpl implements BookReadingRepository {
       throw new RepositoryError({
         entity: 'BookReading',
         operation: 'find',
-        error,
+        originalError: error,
       });
     }
 
@@ -96,7 +96,7 @@ export class BookReadingRepositoryImpl implements BookReadingRepository {
       throw new RepositoryError({
         entity: 'BookReading',
         operation: 'create',
-        error,
+        originalError: error,
       });
     }
 
@@ -118,7 +118,7 @@ export class BookReadingRepositoryImpl implements BookReadingRepository {
       throw new RepositoryError({
         entity: 'BookReading',
         operation: 'update',
-        error,
+        originalError: error,
       });
     }
 
@@ -144,7 +144,7 @@ export class BookReadingRepositoryImpl implements BookReadingRepository {
       throw new RepositoryError({
         entity: 'BookReading',
         operation: 'delete',
-        error,
+        originalError: error,
       });
     }
   }
@@ -177,7 +177,7 @@ export class BookReadingRepositoryImpl implements BookReadingRepository {
       throw new RepositoryError({
         entity: 'BookReading',
         operation: 'count',
-        error,
+        originalError: error,
       });
     }
   }

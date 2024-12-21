@@ -36,7 +36,7 @@ export class BlacklistTokenRepositoryImpl implements BlacklistTokenRepository {
       throw new RepositoryError({
         entity: 'BlacklistToken',
         operation: 'create',
-        error,
+        originalError: error,
       });
     }
 
@@ -59,7 +59,7 @@ export class BlacklistTokenRepositoryImpl implements BlacklistTokenRepository {
       throw new RepositoryError({
         entity: 'BlacklistToken',
         operation: 'find',
-        error,
+        originalError: error,
       });
     }
 
