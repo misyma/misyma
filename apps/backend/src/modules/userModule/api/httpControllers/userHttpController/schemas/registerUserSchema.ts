@@ -7,21 +7,12 @@ import type * as contracts from '@common/contracts';
 
 import { InputNotValidError } from '../../../../../../common/errors/inputNotValidError.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
-import { userDtoSchema } from '../../common/userDto.js';
+import { emailSchema, passwordSchema, userDtoSchema, userNameSchema } from '../../common/userDto.js';
 
 export const registerUserRequestBodyDtoSchema = Type.Object({
-  email: Type.String({
-    format: 'email',
-    maxLength: 254,
-  }),
-  password: Type.String({
-    minLength: 8,
-    maxLength: 64,
-  }),
-  name: Type.String({
-    minLength: 1,
-    maxLength: 64,
-  }),
+  email: emailSchema,
+  password: passwordSchema,
+  name: userNameSchema,
 });
 
 export type RegisterUserRequestBodyDto = TypeExtends<

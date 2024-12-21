@@ -3,12 +3,10 @@ import { type Static, Type } from '@sinclair/typebox';
 import type * as contracts from '@common/contracts';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
+import { passwordSchema } from '../../common/userDto.js';
 
 export const changeUserPasswordBodyDtoSchema = Type.Object({
-  password: Type.String({
-    minLength: 8,
-    maxLength: 64,
-  }),
+  password: passwordSchema,
   token: Type.Optional(Type.String({ minLength: 1 })),
 });
 
