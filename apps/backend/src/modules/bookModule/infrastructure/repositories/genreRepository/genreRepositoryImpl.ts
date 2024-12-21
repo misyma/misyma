@@ -51,7 +51,7 @@ export class GenreRepositoryImpl implements GenreRepository {
       throw new RepositoryError({
         entity: 'Genre',
         operation: 'find',
-        error,
+        originalError: error,
       });
     }
 
@@ -82,7 +82,7 @@ export class GenreRepositoryImpl implements GenreRepository {
       throw new RepositoryError({
         entity: 'Genre',
         operation: 'find',
-        error,
+        originalError: error,
       });
     }
 
@@ -117,7 +117,7 @@ export class GenreRepositoryImpl implements GenreRepository {
       throw new RepositoryError({
         entity: 'Genre',
         operation: 'create',
-        error,
+        originalError: error,
       });
     }
 
@@ -140,7 +140,7 @@ export class GenreRepositoryImpl implements GenreRepository {
       throw new RepositoryError({
         entity: 'Genre',
         operation: 'update',
-        error,
+        originalError: error,
       });
     }
 
@@ -158,7 +158,7 @@ export class GenreRepositoryImpl implements GenreRepository {
       throw new RepositoryError({
         entity: 'Genre',
         operation: 'delete',
-        error,
+        originalError: error,
       });
     }
   }
@@ -194,7 +194,7 @@ export class GenreRepositoryImpl implements GenreRepository {
       throw new RepositoryError({
         entity: 'Genre',
         operation: 'count',
-        error,
+        originalError: error,
       });
     }
   }

@@ -9,17 +9,16 @@ import { fastifySwaggerUi } from '@fastify/swagger-ui';
 import { type TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import { fastify, type FastifyInstance } from 'fastify';
 import { type FastifySchemaValidationError } from 'fastify/types/schema.js';
-import { type Server } from 'http';
 
 import { type ApplicationHttpController } from './api/httpControllers/applicationHttpController/applicationHttpController.js';
 import { type Config } from './config.js';
 import { HttpRouter } from './httpRouter.js';
 import { coreSymbols, symbols } from './symbols.js';
-import { BaseError } from '../common/errors/baseError.js';
 import { InputNotValidError } from '../common/errors/inputNotValidError.js';
 import { OperationNotValidError } from '../common/errors/operationNotValidError.js';
 import { ResourceAlreadyExistsError } from '../common/errors/resourceAlreadyExistsError.js';
 import { ResourceNotFoundError } from '../common/errors/resourceNotFoundError.js';
+import { serializeError } from '../common/errors/serializeError.js';
 import { type HttpController } from '../common/types/http/httpController.js';
 import { HttpStatusCode } from '../common/types/http/httpStatusCode.js';
 import { SecurityMode } from '../common/types/http/securityMode.js';
@@ -160,8 +159,12 @@ export class HttpServer {
     });
   }
 
-  public getInternalServerInstance(): Server {
-    return this.fastifyServer.server;
+  public async stop(): Promise<void> {
+    await this.fastifyServer.close();
+
+    this.loggerService.info({
+      message: 'HTTP Server stopped.',
+    });
   }
 
   private setupErrorHandler(): void {
@@ -175,28 +178,22 @@ export class HttpServer {
     });
 
     this.fastifyServer.setErrorHandler((error, request, reply) => {
-      const errorContext = {
-        ...(error instanceof Error
-          ? {
-              name: error.name,
-              message: error.message,
-              stack: error.stack,
-              cause: error.cause,
-              context: error instanceof BaseError ? error.context : undefined,
-            }
-          : { error }),
-      };
+      const serializedError = serializeError(error);
 
       this.loggerService.error({
         message: 'Caught an error in the HTTP server.',
         endpoint: `${request.method} ${request.url}`,
-        error: errorContext,
+        error: serializedError,
       });
 
       const responseError = {
-        ...errorContext,
+        ...serializedError,
         stack: undefined,
         cause: undefined,
+        context: {
+          ...(serializedError['context'] ? (serializedError['context'] as Record<string, unknown>) : {}),
+          originalError: undefined,
+        },
       };
 
       if (error instanceof InputNotValidError) {

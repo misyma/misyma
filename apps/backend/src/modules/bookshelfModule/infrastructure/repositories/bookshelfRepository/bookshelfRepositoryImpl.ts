@@ -53,7 +53,7 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
       throw new RepositoryError({
         entity: 'Bookshelf',
         operation: 'find',
-        error,
+        originalError: error,
       });
     }
 
@@ -105,7 +105,7 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
       throw new RepositoryError({
         entity: 'Bookshelf',
         operation: 'find',
-        error,
+        originalError: error,
       });
     }
 
@@ -144,7 +144,7 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
       throw new RepositoryError({
         entity: 'Bookshelf',
         operation: 'create',
-        error,
+        originalError: error,
       });
     }
 
@@ -166,7 +166,7 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
       throw new RepositoryError({
         entity: 'Bookshelf',
         operation: 'update',
-        error,
+        originalError: error,
       });
     }
 
@@ -182,7 +182,7 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
       throw new RepositoryError({
         entity: 'Bookshelf',
         operation: 'delete',
-        error,
+        originalError: error,
       });
     }
   }
@@ -218,7 +218,7 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
       throw new RepositoryError({
         entity: 'Bookshelf',
         operation: 'count',
-        error,
+        originalError: error,
       });
     }
   }

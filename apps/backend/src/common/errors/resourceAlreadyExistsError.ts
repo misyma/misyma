@@ -1,8 +1,7 @@
-import { BaseError } from './baseError.js';
+import { BaseError, type BaseErrorContext } from './baseError.js';
 
-interface Context {
+interface Context extends BaseErrorContext {
   readonly resource: string;
-  readonly [key: string]: unknown;
 }
 
 export class ResourceAlreadyExistsError extends BaseError<Context> {

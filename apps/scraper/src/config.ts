@@ -25,16 +25,14 @@ const configSchema = Type.Object({
 
 export type Config = Static<typeof configSchema>;
 
-export class ConfigFactory {
-  public static create(): Config {
-    try {
-      return Value.Decode(configSchema, config);
-    } catch (error) {
-      if (error instanceof TransformDecodeCheckError) {
-        throw new ConfigurationError({ ...error.error });
-      }
-
-      throw error;
+export function createConfig(): Config {
+  try {
+    return Value.Decode(configSchema, config);
+  } catch (error) {
+    if (error instanceof TransformDecodeCheckError) {
+      throw new ConfigurationError({ originalError: error });
     }
+
+    throw error;
   }
 }

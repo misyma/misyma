@@ -98,7 +98,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       throw new RepositoryError({
         entity: 'UserBook',
         operation: 'create',
-        error,
+        originalError: error,
       });
     }
 
@@ -207,7 +207,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       throw new RepositoryError({
         entity: 'UserBook',
         operation: 'update',
-        error,
+        originalError: error,
       });
     }
 
@@ -233,7 +233,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       throw new RepositoryError({
         entity: 'UserBook',
         operation: 'save',
-        error,
+        originalError: error,
       });
     }
   }
@@ -354,7 +354,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       throw new RepositoryError({
         entity: 'UserBook',
         operation: 'find',
-        error,
+        originalError: error,
       });
     }
 
@@ -546,7 +546,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       throw new RepositoryError({
         entity: 'Book',
         operation: 'find',
-        error,
+        originalError: error,
       });
     }
 
@@ -574,7 +574,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       throw new RepositoryError({
         entity: 'Book',
         operation: 'findOwner',
-        error,
+        originalError: error,
       });
     }
   }
@@ -588,7 +588,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       throw new RepositoryError({
         entity: 'UserBook',
         operation: 'delete',
-        error,
+        originalError: error,
       });
     }
   }
@@ -694,7 +694,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       throw new RepositoryError({
         entity: 'UserBook',
         operation: 'count',
-        error,
+        originalError: error,
       });
     }
   }

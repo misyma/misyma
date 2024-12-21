@@ -57,7 +57,7 @@ const configSchema = Type.Object({
     accessKeyId: Type.String({ minLength: 1 }),
     secretAccessKey: Type.String({ minLength: 1 }),
     region: Type.Enum(AwsRegion),
-    endpoint: Type.Union([Type.String({ minLength: 1 }), Type.Null()]),
+    endpoint: Type.Optional(Type.String({ minLength: 1 })),
     bucketName: Type.String({ minLength: 1 }),
     cloudfrontUrl: Type.String({ minLength: 1 }),
   }),
@@ -66,16 +66,14 @@ const configSchema = Type.Object({
 
 export type Config = Static<typeof configSchema>;
 
-export class ConfigFactory {
-  public static create(): Config {
-    try {
-      return Value.Decode(configSchema, config);
-    } catch (error) {
-      if (error instanceof TransformDecodeCheckError) {
-        throw new ConfigurationError({ ...error.error });
-      }
-
-      throw error;
+export function createConfig(): Config {
+  try {
+    return Value.Decode(configSchema, config);
+  } catch (error) {
+    if (error instanceof TransformDecodeCheckError) {
+      throw new ConfigurationError({ originalError: error });
     }
+
+    throw error;
   }
 }

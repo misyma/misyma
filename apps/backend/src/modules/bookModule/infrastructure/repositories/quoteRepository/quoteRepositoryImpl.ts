@@ -36,7 +36,7 @@ export class QuoteRepositoryImpl implements QuoteRepository {
       throw new RepositoryError({
         entity: 'Quote',
         operation: 'find',
-        error,
+        originalError: error,
       });
     }
 
@@ -67,7 +67,7 @@ export class QuoteRepositoryImpl implements QuoteRepository {
       throw new RepositoryError({
         entity: 'Quote',
         operation: 'find',
-        error,
+        originalError: error,
       });
     }
 
@@ -97,7 +97,7 @@ export class QuoteRepositoryImpl implements QuoteRepository {
       throw new RepositoryError({
         entity: 'Quote',
         operation: 'create',
-        error,
+        originalError: error,
       });
     }
 
@@ -119,7 +119,7 @@ export class QuoteRepositoryImpl implements QuoteRepository {
       throw new RepositoryError({
         entity: 'Quote',
         operation: 'update',
-        error,
+        originalError: error,
       });
     }
 
@@ -145,7 +145,7 @@ export class QuoteRepositoryImpl implements QuoteRepository {
       throw new RepositoryError({
         entity: 'Quote',
         operation: 'delete',
-        error,
+        originalError: error,
       });
     }
   }
@@ -175,7 +175,7 @@ export class QuoteRepositoryImpl implements QuoteRepository {
       throw new RepositoryError({
         entity: 'Quote',
         operation: 'count',
-        error,
+        originalError: error,
       });
     }
   }

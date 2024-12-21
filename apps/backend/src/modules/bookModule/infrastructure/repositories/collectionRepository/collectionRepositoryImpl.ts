@@ -54,7 +54,7 @@ export class CollectionRepositoryImpl implements CollectionRepository {
       throw new RepositoryError({
         entity: 'Collection',
         operation: 'find',
-        error,
+        originalError: error,
       });
     }
 
@@ -93,7 +93,7 @@ export class CollectionRepositoryImpl implements CollectionRepository {
       throw new RepositoryError({
         entity: 'Collection',
         operation: 'find',
-        error,
+        originalError: error,
       });
     }
 
@@ -130,7 +130,7 @@ export class CollectionRepositoryImpl implements CollectionRepository {
       throw new RepositoryError({
         entity: 'Collection',
         operation: 'create',
-        error,
+        originalError: error,
       });
     }
 
@@ -153,7 +153,7 @@ export class CollectionRepositoryImpl implements CollectionRepository {
       throw new RepositoryError({
         entity: 'Collection',
         operation: 'update',
-        error,
+        originalError: error,
       });
     }
 
@@ -171,7 +171,7 @@ export class CollectionRepositoryImpl implements CollectionRepository {
       throw new RepositoryError({
         entity: 'Collection',
         operation: 'delete',
-        error,
+        originalError: error,
       });
     }
   }
@@ -211,7 +211,7 @@ export class CollectionRepositoryImpl implements CollectionRepository {
       throw new RepositoryError({
         entity: 'Collection',
         operation: 'count',
-        error,
+        originalError: error,
       });
     }
   }

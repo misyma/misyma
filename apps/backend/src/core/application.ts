@@ -1,7 +1,7 @@
 import { BookshelfType, UserRole } from '@common/contracts';
 
 import { ApplicationHttpController } from './api/httpControllers/applicationHttpController/applicationHttpController.js';
-import { type Config, ConfigFactory } from './config.js';
+import { type Config, createConfig } from './config.js';
 import { HttpServer } from './httpServer.js';
 import { QueueRouter } from './queueRouter.js';
 import { coreSymbols, symbols } from './symbols.js';
@@ -38,6 +38,102 @@ import { userSymbols } from '../modules/userModule/symbols.js';
 import { UserModule } from '../modules/userModule/userModule.js';
 
 export class Application {
+  private static container: DependencyInjectionContainer | undefined;
+  private static server: HttpServer | undefined;
+
+  public static async start(): Promise<void> {
+    Application.container = Application.createContainer();
+
+    const loggerService = Application.container.get<LoggerService>(coreSymbols.loggerService);
+
+    await this.setupDatabase(Application.container);
+
+    await this.createAdminUser(Application.container);
+
+    await this.createGenres(Application.container);
+
+    loggerService.info({ message: 'Migrations executed.' });
+
+    Application.server = new HttpServer(Application.container);
+
+    const queueRouter = new QueueRouter(Application.container);
+
+    await Application.server.start();
+
+    await queueRouter.start();
+  }
+
+  public static async stop(): Promise<void> {
+    await Application.server?.stop();
+
+    const dbClient = Application.container?.get<DatabaseClient>(coreSymbols.databaseClient);
+
+    await dbClient?.destroy();
+  }
+
+  public static createContainer(): DependencyInjectionContainer {
+    const modules: DependencyInjectionModule[] = [
+      new UserModule(),
+      new AuthModule(),
+      new BookModule(),
+      new BookshelfModule(),
+    ];
+
+    const container = DependencyInjectionContainerFactory.create({ modules });
+
+    const config = createConfig();
+
+    container.bind<LoggerService>(symbols.loggerService, () =>
+      LoggerServiceFactory.create({ logLevel: config.logLevel }),
+    );
+
+    container.bind<HttpService>(symbols.httpService, () =>
+      new HttpServiceFactory(container.get<LoggerService>(symbols.loggerService)).create(),
+    );
+
+    container.bind<UuidService>(symbols.uuidService, () => new UuidServiceImpl());
+
+    container.bind<Config>(symbols.config, () => config);
+
+    container.bind<DatabaseClient>(symbols.databaseClient, () =>
+      DatabaseClientFactory.create({
+        host: config.database.host,
+        port: config.database.port,
+        databaseName: config.database.name,
+        user: config.database.username,
+        password: config.database.password,
+        useNullAsDefault: true,
+        minPoolConnections: 1,
+        maxPoolConnections: 10,
+      }),
+    );
+
+    container.bind<ApplicationHttpController>(
+      symbols.applicationHttpController,
+      () => new ApplicationHttpController(container.get<DatabaseClient>(coreSymbols.databaseClient)),
+    );
+
+    container.bind<SendGridService>(symbols.sendGridService, () =>
+      new SendGridServiceFactory(container.get<HttpService>(coreSymbols.httpService)).create({
+        apiKey: config.sendGrid.apiKey,
+        senderEmail: config.sendGrid.senderEmail,
+      }),
+    );
+
+    const s3Config: S3Config = {
+      accessKeyId: config.aws.accessKeyId,
+      secretAccessKey: config.aws.secretAccessKey,
+      region: config.aws.region,
+      endpoint: config.aws.endpoint ?? undefined,
+    };
+
+    container.bind<S3Client>(symbols.s3Client, () => S3ClientFactory.create(s3Config));
+
+    container.bind<S3Service>(symbols.s3Service, () => new S3Service(container.get<S3Client>(coreSymbols.s3Client)));
+
+    return container;
+  }
+
   private static async setupDatabase(container: DependencyInjectionContainer): Promise<void> {
     const coreDatabaseManagers = [UserDatabaseManager, BookshelfDatabaseManager, BookDatabaseManager];
 
@@ -130,90 +226,5 @@ export class Application {
     );
 
     loggerService.debug({ message: 'Genres created.' });
-  }
-
-  public static createContainer(): DependencyInjectionContainer {
-    const modules: DependencyInjectionModule[] = [
-      new UserModule(),
-      new AuthModule(),
-      new BookModule(),
-      new BookshelfModule(),
-    ];
-
-    const container = DependencyInjectionContainerFactory.create({ modules });
-
-    const config = ConfigFactory.create();
-
-    container.bind<LoggerService>(symbols.loggerService, () =>
-      LoggerServiceFactory.create({ logLevel: config.logLevel }),
-    );
-
-    container.bind<HttpService>(symbols.httpService, () =>
-      new HttpServiceFactory(container.get<LoggerService>(symbols.loggerService)).create(),
-    );
-
-    container.bind<UuidService>(symbols.uuidService, () => new UuidServiceImpl());
-
-    container.bind<Config>(symbols.config, () => config);
-
-    container.bind<DatabaseClient>(symbols.databaseClient, () =>
-      DatabaseClientFactory.create({
-        host: config.database.host,
-        port: config.database.port,
-        databaseName: config.database.name,
-        user: config.database.username,
-        password: config.database.password,
-        useNullAsDefault: true,
-        minPoolConnections: 1,
-        maxPoolConnections: 10,
-      }),
-    );
-
-    container.bind<ApplicationHttpController>(
-      symbols.applicationHttpController,
-      () => new ApplicationHttpController(container.get<DatabaseClient>(coreSymbols.databaseClient)),
-    );
-
-    container.bind<SendGridService>(symbols.sendGridService, () =>
-      new SendGridServiceFactory(container.get<HttpService>(coreSymbols.httpService)).create({
-        apiKey: config.sendGrid.apiKey,
-        senderEmail: config.sendGrid.senderEmail,
-      }),
-    );
-
-    const s3Config: S3Config = {
-      accessKeyId: config.aws.accessKeyId,
-      secretAccessKey: config.aws.secretAccessKey,
-      region: config.aws.region,
-      endpoint: config.aws.endpoint ?? undefined,
-    };
-
-    container.bind<S3Client>(symbols.s3Client, () => S3ClientFactory.create(s3Config));
-
-    container.bind<S3Service>(symbols.s3Service, () => new S3Service(container.get<S3Client>(coreSymbols.s3Client)));
-
-    return container;
-  }
-
-  public static async start(): Promise<void> {
-    const container = Application.createContainer();
-
-    const loggerService = container.get<LoggerService>(coreSymbols.loggerService);
-
-    await this.setupDatabase(container);
-
-    await this.createAdminUser(container);
-
-    await this.createGenres(container);
-
-    loggerService.info({ message: 'Migrations executed.' });
-
-    const server = new HttpServer(container);
-
-    const queueRouter = new QueueRouter(container);
-
-    await server.start();
-
-    await queueRouter.start();
   }
 }
