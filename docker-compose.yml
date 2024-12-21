@@ -1,6 +1,7 @@
 services:
   localstack:
     image: localstack/localstack
+    container_name: misyma-localstack
     ports:
       - '4566:4566'
     environment:
