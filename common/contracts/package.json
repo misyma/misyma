@@ -13,6 +13,8 @@
   ],
   "scripts": {
     "build": "tsc --build tsconfig.json",
-    "build:dev": "tsc --build tsconfig.json"
+    "build:dev": "tsc --build tsconfig.json",
+    "lint": "eslint . --ext .ts --cache --max-warnings 0",
+    "lint:fix": "npm run lint -- --fix"
   }
 }
