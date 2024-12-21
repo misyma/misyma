@@ -142,7 +142,7 @@ export class BookReadingHttpController implements HttpController {
     request: HttpRequest<null, FindBookReadingsQueryParamsDto, FindBookReadingsPathParamsDto>,
   ): Promise<HttpOkResponse<FindBookReadingsResponseBodyDto>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
     });
 
     const { userBookId } = request.pathParams;
@@ -174,7 +174,7 @@ export class BookReadingHttpController implements HttpController {
     request: HttpRequest<CreateBookReadingBodyDto, null, CreateBookReadingPathParamsDto>,
   ): Promise<HttpCreatedResponse<CreateBookReadingResponseBodyDto>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
     });
 
     const { userBookId } = request.pathParams;
@@ -200,7 +200,7 @@ export class BookReadingHttpController implements HttpController {
     request: HttpRequest<UpdateBookReadingBodyDto, null, UpdateBookReadingPathParamsDto>,
   ): Promise<HttpOkResponse<UpdateBookReadingResponseBodyDto>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
     });
 
     const { readingId } = request.pathParams;
@@ -226,7 +226,7 @@ export class BookReadingHttpController implements HttpController {
     request: HttpRequest<null, null, DeleteBookReadingPathParamsDto>,
   ): Promise<HttpNoContentResponse<DeleteBookReadingResponseBodyDto>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
     });
 
     const { readingId } = request.pathParams;

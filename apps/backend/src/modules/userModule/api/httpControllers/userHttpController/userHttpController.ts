@@ -390,7 +390,7 @@ export class UserHttpController implements HttpController {
 
     try {
       const result = await this.accessControlService.verifyBearerToken({
-        authorizationHeader: request.headers['authorization'],
+        requestHeaders: request.headers,
       });
 
       userId = result.userId;
@@ -429,7 +429,7 @@ export class UserHttpController implements HttpController {
     const { userId } = request.pathParams;
 
     await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
       expectedUserId: userId,
     });
 
@@ -443,7 +443,7 @@ export class UserHttpController implements HttpController {
 
   private async findMyUser(request: HttpRequest): Promise<HttpOkResponse<FindUserResponseBodyDto>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
     });
 
     const { user } = await this.findUserQueryHandler.execute({ userId });
@@ -460,7 +460,7 @@ export class UserHttpController implements HttpController {
     const { userId } = request.pathParams;
 
     await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
       expectedUserId: userId,
     });
 
@@ -480,7 +480,7 @@ export class UserHttpController implements HttpController {
     const { name } = request.body;
 
     await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
       expectedUserId: userId,
     });
 
@@ -531,7 +531,7 @@ export class UserHttpController implements HttpController {
     const { refreshToken, accessToken } = request.body;
 
     await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
       expectedUserId: userId,
     });
 

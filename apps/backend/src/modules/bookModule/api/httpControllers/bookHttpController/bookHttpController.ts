@@ -104,7 +104,7 @@ export class BookHttpController implements HttpController {
     const { authorIds, ...bookData } = request.body;
 
     await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
     });
 
     const { book } = await this.createBookCommandHandler.execute({
@@ -125,7 +125,7 @@ export class BookHttpController implements HttpController {
     const { bookId } = request.pathParams;
 
     await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
     });
 
     const { book } = await this.findBookQueryHandler.execute({ bookId });
@@ -140,7 +140,7 @@ export class BookHttpController implements HttpController {
     request: HttpRequest<undefined, FindBooksQueryParamsDto, undefined>,
   ): Promise<HttpOkResponse<FindBooksResponseBodyDto>> {
     await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
     });
 
     const { isbn, title, page = 1, pageSize = 10, sortDate } = request.queryParams;

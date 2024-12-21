@@ -189,7 +189,7 @@ export class UserBookHttpController implements HttpController {
     request: HttpRequest<UpdateUserBookBodyDto, undefined, UpdateUserBookPathParamsDto>,
   ): Promise<HttpOkResponse<UpdateUserBookResponseBodyDto>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
     });
 
     const { userBookId } = request.pathParams;
@@ -217,7 +217,7 @@ export class UserBookHttpController implements HttpController {
     request: HttpRequest<undefined, undefined, UploadUserBookImagePathParamsDto>,
   ): Promise<HttpOkResponse<UploadUserBookImageResponseBodyDtoSchema>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
     });
 
     const { userBookId } = request.pathParams;
@@ -247,7 +247,7 @@ export class UserBookHttpController implements HttpController {
     const { bookId, bookshelfId, status, imageUrl, isFavorite, collectionIds, genreIds } = request.body;
 
     const { userId } = await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
     });
 
     const { userBook } = await this.createUserBookCommandHandler.execute({
@@ -273,7 +273,7 @@ export class UserBookHttpController implements HttpController {
     const { userBookId } = request.pathParams;
 
     const { userId } = await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
     });
 
     const { userBook } = await this.findUserBookQueryHandler.execute({
@@ -291,7 +291,7 @@ export class UserBookHttpController implements HttpController {
     request: HttpRequest<undefined, FindUserBooksQueryParamsDto, undefined>,
   ): Promise<HttpOkResponse<FindUserBooksResponseBodyDto>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
     });
 
     const {
@@ -346,7 +346,7 @@ export class UserBookHttpController implements HttpController {
     const { userBookId } = request.pathParams;
 
     const { userId } = await this.accessControlService.verifyBearerToken({
-      authorizationHeader: request.headers['authorization'],
+      requestHeaders: request.headers,
     });
 
     await this.deleteUserBookCommandHandler.execute({
