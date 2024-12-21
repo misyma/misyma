@@ -171,7 +171,7 @@ describe('GenreRepositoryImpl', () => {
         expect((error as RepositoryError).context).toEqual({
           entity: 'Genre',
           operation: 'create',
-          error: expect.any(Error),
+          originalError: expect.any(Error),
         });
 
         return;
@@ -222,7 +222,7 @@ describe('GenreRepositoryImpl', () => {
         expect((error as RepositoryError).context).toEqual({
           entity: 'Genre',
           operation: 'update',
-          error: expect.any(Error),
+          originalError: expect.any(Error),
         });
 
         return;

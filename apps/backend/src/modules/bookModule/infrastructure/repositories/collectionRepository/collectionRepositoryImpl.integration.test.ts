@@ -213,7 +213,7 @@ describe('CollectionRepositoryImpl', () => {
         expect((error as RepositoryError).context).toEqual({
           entity: 'Collection',
           operation: 'create',
-          error: expect.any(Error),
+          originalError: expect.any(Error),
         });
 
         return;
@@ -270,7 +270,7 @@ describe('CollectionRepositoryImpl', () => {
         expect((error as RepositoryError).context).toEqual({
           entity: 'Collection',
           operation: 'update',
-          error: expect.any(Error),
+          originalError: expect.any(Error),
         });
 
         return;
