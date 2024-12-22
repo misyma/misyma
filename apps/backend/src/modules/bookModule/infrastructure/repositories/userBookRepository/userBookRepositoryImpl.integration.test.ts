@@ -1162,6 +1162,70 @@ describe('UserBookRepositoryImpl', () => {
         expect(userBook.getId()).toEqual(userBook3.id);
       });
     });
+
+    it('returns UserBooks by genre id', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const genre1 = await genreTestUtils.createAndPersist();
+
+      const genre2 = await genreTestUtils.createAndPersist();
+
+      const bookshelf = await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+        },
+      });
+
+      const author = await authorTestUtils.createAndPersist();
+
+      const book1 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+        },
+      });
+
+      const book2 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+        },
+      });
+
+      const userBook = await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book1.id,
+          bookshelfId: bookshelf.id,
+        },
+        genreIds: [genre1.id],
+      });
+
+      await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book1.id,
+          bookshelfId: bookshelf.id,
+        },
+        genreIds: [genre2.id],
+      });
+
+      await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book2.id,
+          bookshelfId: bookshelf.id,
+        },
+        genreIds: [genre2.id],
+      });
+
+      const userBooks = await userBookRepository.findUserBooks({
+        userId: user.id,
+        genreId: genre1.id,
+        page: 1,
+        pageSize: 10,
+        expandFields: [],
+      });
+
+      expect(userBooks.length).toEqual(1);
+
+      expect(userBooks[0]?.getId()).toEqual(userBook.id);
+    });
   });
 
   describe('countUserBooks', () => {
@@ -1340,6 +1404,65 @@ describe('UserBookRepositoryImpl', () => {
       const count = await userBookRepository.countUserBooks({
         userId: user.id,
         authorId: author1.id,
+      });
+
+      expect(count).toEqual(2);
+    });
+
+    it('returns number of UserBooks by genre id', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const genre1 = await genreTestUtils.createAndPersist();
+
+      const genre2 = await genreTestUtils.createAndPersist();
+
+      const bookshelf = await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+        },
+      });
+
+      const author = await authorTestUtils.createAndPersist();
+
+      const book1 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+        },
+      });
+
+      const book2 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+        },
+      });
+
+      await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book1.id,
+          bookshelfId: bookshelf.id,
+        },
+        genreIds: [genre1.id],
+      });
+
+      await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book1.id,
+          bookshelfId: bookshelf.id,
+        },
+        genreIds: [genre2.id],
+      });
+
+      await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book2.id,
+          bookshelfId: bookshelf.id,
+        },
+        genreIds: [genre2.id],
+      });
+
+      const count = await userBookRepository.countUserBooks({
+        userId: user.id,
+        genreId: genre2.id,
       });
 
       expect(count).toEqual(2);

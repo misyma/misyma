@@ -372,6 +372,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       userId,
       bookId,
       authorId,
+      genreId,
       page,
       pageSize,
       isbn,
@@ -381,6 +382,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       sortDate,
       language,
       releaseYearAfter,
+      releaseYearBefore,
       expandFields,
     } = payload;
 
@@ -457,7 +459,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           join.on(`${bookTable}.id`, `=`, `${userBookTable}.bookId`);
         });
 
-      if (expandFields.includes(UserBookExpandField.genres)) {
+      if (expandFields.includes(UserBookExpandField.genres) || genreId) {
         query
           .leftJoin(userBookGenreTable, (join) => {
             join.on(`${userBookGenreTable}.userBookId`, '=', `${userBookTable}.id`);
@@ -527,12 +529,20 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         query.where(`${bookshelfTable}.userId`, userId);
       }
 
+      if (genreId) {
+        query.where(`${genreTable}.id`, genreId);
+      }
+
       if (pageSize && page) {
         query.limit(pageSize).offset(pageSize * (page - 1));
       }
 
       if (releaseYearAfter !== undefined) {
         query.where(`${bookTable}.releaseYear`, '>=', releaseYearAfter);
+      }
+
+      if (releaseYearBefore !== undefined) {
+        query.where(`${bookTable}.releaseYear`, '<=', releaseYearBefore);
       }
 
       if (language) {
@@ -600,12 +610,14 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       userId,
       authorId,
       bookId,
+      genreId,
       isbn,
       title,
       status,
       isFavorite,
       language,
       releaseYearAfter,
+      releaseYearBefore,
     } = payload;
 
     try {
@@ -619,7 +631,15 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           .where(`${bookAuthorTable}.authorId`, authorId);
       }
 
-      if (isbn || title || releaseYearAfter !== undefined || language) {
+      if (genreId) {
+        query
+          .join(userBookGenreTable, (join) => {
+            join.on(`${userBookGenreTable}.userBookId`, '=', `${userBookTable}.id`);
+          })
+          .where(`${userBookGenreTable}.genreId`, genreId);
+      }
+
+      if (isbn || title || releaseYearAfter !== undefined || releaseYearBefore !== undefined || language) {
         query.join(bookTable, (join) => {
           join.on(`${bookTable}.id`, '=', `${userBookTable}.bookId`);
         });
@@ -635,6 +655,10 @@ export class UserBookRepositoryImpl implements UserBookRepository {
 
       if (releaseYearAfter !== undefined) {
         query.where(`${bookTable}.releaseYear`, '>=', releaseYearAfter);
+      }
+
+      if (releaseYearBefore !== undefined) {
+        query.where(`${bookTable}.releaseYear`, '<=', releaseYearBefore);
       }
 
       if (language) {
