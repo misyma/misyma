@@ -300,6 +300,7 @@ export class UserBookHttpController implements HttpController {
       bookshelfId,
       collectionId,
       authorId,
+      genreId,
       isbn,
       title,
       isFavorite,
@@ -307,6 +308,7 @@ export class UserBookHttpController implements HttpController {
       sortDate,
       language,
       releaseYearAfter,
+      releaseYearBefore,
       expandFields,
     } = request.queryParams;
 
@@ -315,6 +317,7 @@ export class UserBookHttpController implements HttpController {
       collectionId,
       authorId,
       userId,
+      genreId,
       isbn,
       title,
       isFavorite,
@@ -324,6 +327,7 @@ export class UserBookHttpController implements HttpController {
       sortDate,
       language,
       releaseYearAfter,
+      releaseYearBefore,
       expandFields: (expandFields?.split(',') as UserBookExpandField[]) || [],
     });
 

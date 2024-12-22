@@ -14,10 +14,12 @@ export interface FindUserBooksQueryParams {
   readonly bookshelfId?: string;
   readonly collectionId?: string;
   readonly authorId?: string;
+  readonly genreId?: string;
   readonly isbn?: string;
   readonly title?: string;
   readonly status?: ReadingStatus;
   readonly isFavorite?: boolean;
+  readonly releaseYearBefore?: number;
   readonly releaseYearAfter?: number;
   readonly language?: Language;
   readonly page?: number;

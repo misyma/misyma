@@ -12,16 +12,18 @@ export const findUserBooksQueryParamsDtoSchema = Type.Object({
   bookshelfId: Type.Optional(Type.String({ format: 'uuid' })),
   collectionId: Type.Optional(Type.String({ format: 'uuid' })),
   authorId: Type.Optional(Type.String({ format: 'uuid' })),
+  genreId: Type.Optional(Type.String({ format: 'uuid' })),
   isbn: Type.Optional(bookIsbnSchema),
   title: Type.Optional(bookTitleSchema),
   status: Type.Optional(Type.Enum(contracts.ReadingStatus)),
+  language: Type.Optional(Type.Enum(contracts.Language)),
   isFavorite: Type.Optional(Type.Boolean()),
+  releaseYearBefore: Type.Optional(Type.Integer({ minimum: 1 })),
+  releaseYearAfter: Type.Optional(Type.Integer({ minimum: 1 })),
   page: Type.Optional(Type.Integer({ minimum: 1 })),
   pageSize: Type.Optional(Type.Integer({ minimum: 1 })),
   sortDate: Type.Optional(Type.Enum(contracts.SortingType)),
   expandFields: Type.Optional(Type.String({ pattern: expandFieldPattern })),
-  releaseYearAfter: Type.Optional(Type.Integer({ minimum: 1 })),
-  language: Type.Optional(Type.Enum(contracts.Language)),
 });
 
 export type FindUserBooksQueryParamsDto = TypeExtends<
