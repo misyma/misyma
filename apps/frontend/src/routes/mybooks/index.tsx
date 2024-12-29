@@ -342,8 +342,11 @@ const BookPageFiltersBar = () => {
           label: 'Wydana między',
         }}
         onRemoveFilter={() => {
-          onClearFilter('releaseYearAfter');
-          onClearFilter('releaseYearBefore');
+          setFilters({
+            ...filters,
+            releaseYearBefore: undefined,
+            releaseYearAfter: undefined,
+          });
         }}
         setFilterAction={(val) => {
           setFilters({
@@ -526,7 +529,7 @@ const TitleSearchField = () => {
   }, [debouncedSearchedName, navigate]);
 
   const removeFiler = () => {
-    setSearchedName('');
+    setSearchedName(undefined);
     navigate({
       to: '',
       // Purposeful :)
@@ -541,7 +544,7 @@ const TitleSearchField = () => {
         onChange={(e) => {
           setSearchedName(e.target.value);
         }}
-        value={searchedName}
+        value={searchedName ?? ''}
         className=""
         placeholder="Wyszukaj po tytule..."
       />
