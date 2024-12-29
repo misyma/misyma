@@ -342,8 +342,11 @@ const BookPageFiltersBar = () => {
           label: 'Wydana między',
         }}
         onRemoveFilter={() => {
-          onClearFilter('releaseYearAfter');
-          onClearFilter('releaseYearBefore');
+          setFilters({
+            ...filters,
+            releaseYearBefore: undefined,
+            releaseYearAfter: undefined,
+          });
         }}
         setFilterAction={(val) => {
           setFilters({

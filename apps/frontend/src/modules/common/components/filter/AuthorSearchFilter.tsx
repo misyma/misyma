@@ -1,4 +1,4 @@
-import { FC, useCallback, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { FilterComponentProps } from '../../types/filter';
 import { useFindAuthorsQuery } from '../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
 import { FilterContainer } from './filterContainer';
@@ -44,11 +44,17 @@ export const AuthorSearchFilter: FC<FilterComponentProps> = ({
   }, [currentAuthor, selectedAuthorName]);
 
   const onRemoveFilterInternal = () => {
-    if(onRemoveFilter) {
+    if (onRemoveFilter) {
       onRemoveFilter();
     }
     setSelectedAuthorName('');
-  }
+  };
+
+  useEffect(() => {
+    if (!initialValue && selectedAuthorName) {
+      setSelectedAuthorName('');
+    }
+  }, [initialValue, selectedAuthorName]);
 
   return (
     <FilterContainer
