@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { AuthenticatedLayout } from '../../modules/auth/layouts/authenticated/authenticatedLayout.js';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { RequireAuthComponent } from '../../modules/core/components/requireAuth/requireAuthComponent.js';
@@ -69,6 +69,7 @@ const GenreSelectFilter: FC<FilterComponentProps> = ({
   return (
     <FilterContainer
       filter={filter}
+      hasValue={!!initialValue}
       slot={
         <Select
           key={initialValue}
@@ -118,6 +119,7 @@ const MyBooksStatusFilter: FC<FilterComponentProps> = ({
     <FilterContainer
       filter={filter}
       onRemoveFilter={onRemoveFilter}
+      hasValue={!!initialValue}
       slot={
         <Select
           key={initialValue}
@@ -214,6 +216,16 @@ const BookPageFiltersBar = () => {
     });
   };
 
+  const onClearFilter = useCallback(
+    (filterKey: keyof typeof filters) => {
+      setFilters({
+        ...filters,
+        [filterKey]: undefined,
+      });
+    },
+    [filters]
+  );
+
   // TODO: think about it
   useEffect(() => {
     if (search.language !== language) {
@@ -237,23 +249,6 @@ const BookPageFiltersBar = () => {
       className="grid grid-cols-3"
       onApplyFilters={onApplyFilters}
       onClearAll={onClearAll}
-      onRemoveFilter={(key) => {
-        switch (key) {
-          case 'language':
-            setFilters({
-              ...filters,
-              language: undefined,
-            });
-            break;
-
-          case 'releaseYearAfter':
-            setFilters({
-              ...filters,
-              releaseYearAfter: undefined,
-            });
-            break;
-        }
-      }}
     >
       <AuthorSearchFilter
         setFilterAction={(val) => {
@@ -262,6 +257,7 @@ const BookPageFiltersBar = () => {
             authorId: val,
           });
         }}
+        onRemoveFilter={() => onClearFilter('authorId')}
         initialValue={filters['authorId']}
         filter={{
           id: 'author-ids-filter',
@@ -278,6 +274,7 @@ const BookPageFiltersBar = () => {
       />
       <SearchLanguageSelect
         key={filters.language}
+        onRemoveFilter={() => onClearFilter('language')}
         initialValue={filters.language}
         setFilterAction={(val) => {
           setFilters({
@@ -290,7 +287,6 @@ const BookPageFiltersBar = () => {
           key: 'language',
           label: 'Język',
           type: 'text',
-          customSlot: SearchLanguageSelect,
           setFilterAction: (val) => {
             setFilters({
               ...filters,
@@ -301,6 +297,7 @@ const BookPageFiltersBar = () => {
       />
       <YearFilter
         initialValue={filters.releaseYearAfter as unknown as string}
+        onRemoveFilter={() => onClearFilter('releaseYearAfter')}
         setFilterAction={(val) => {
           setFilters({
             ...filters,
@@ -325,6 +322,7 @@ const BookPageFiltersBar = () => {
       />
       <GenreSelectFilter
         initialValue={filters.genre}
+        onRemoveFilter={() => onClearFilter('genre')}
         setFilterAction={(val) => {
           setFilters({
             ...filters,
@@ -346,6 +344,7 @@ const BookPageFiltersBar = () => {
       />
       <MyBooksStatusFilter
         initialValue={filters.status}
+        onRemoveFilter={() => onClearFilter('status')}
         setFilterAction={(val) => {
           setFilters({
             ...filters,
@@ -361,6 +360,7 @@ const BookPageFiltersBar = () => {
       />
       <ThreeStateCheckboxFilter
         initialValue={filters?.isFavorite}
+        onRemoveFilter={() => onClearFilter('isFavorite')}
         setFilterAction={(val) => {
           setFilters({
             ...filters,
@@ -436,6 +436,19 @@ const BooksFiltersVisibilityButton = () => {
   );
   const dispatch = useDispatch();
 
+  const search = Route.useSearch();
+
+  const filtersApplied = useMemo(() => {
+    return (
+      Object.entries(search)
+        .filter(([key]) => !['page', 'pageSize'].includes(key))
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        .filter(([_, value]) => {
+          return value !== undefined || value !== '';
+        }).length > 0
+    );
+  }, [search]);
+
   return (
     <TooltipProvider delayDuration={300}>
       <Tooltip>
@@ -446,7 +459,14 @@ const BooksFiltersVisibilityButton = () => {
               dispatch(setFilterVisible(!isFilterVisible));
             }}
           >
-            <HiOutlineFilter className="w-8 h-8"></HiOutlineFilter>
+            <div className="relative w-full">
+              <div className="flex w-full items-center justify-center">
+                <HiOutlineFilter className="w-8 h-8"></HiOutlineFilter>
+              </div>
+              {filtersApplied && (
+                <div className="absolute h-4 w-4 top-[-10px] right-[-8px] rounded-full bg-green-500"></div>
+              )}
+            </div>
           </Button>
         </TooltipTrigger>
         <TooltipContent>

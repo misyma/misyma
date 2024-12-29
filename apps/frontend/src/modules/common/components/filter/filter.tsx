@@ -105,6 +105,7 @@ export const SelectFilter: FC<SelectFilterProps> = ({
         </Select>
       }
       filter={filter}
+      hasValue={!!initialValue}
       onRemoveFilter={onRemoveFilter}
     />
   );
@@ -138,7 +139,7 @@ export const ThreeStateCheckboxFilter: FC<FilterComponentProps> = ({
     ['false']: 'indeterminate',
     ['']: 'unchecked',
   };
-  const value = stateMap[initialValue as keyof typeof stateMap ?? ''];
+  const value = stateMap[(initialValue as keyof typeof stateMap) ?? ''];
 
   const handleChange = (value: string | boolean) => {
     switch (value) {
@@ -158,7 +159,7 @@ export const ThreeStateCheckboxFilter: FC<FilterComponentProps> = ({
 
   return (
     <FilterContainer
-      filterContainerClassName=''
+      filterContainerClassName=""
       slot={
         <ThreeStateCheckbox
           value={value as ThreeStateCheckboxStates}
@@ -274,6 +275,7 @@ export const YearFilter: FC<DateFilterComponentProps> = ({
 
   return (
     <FilterContainer
+      hasValue={!!initialValue}
       slot={
         <YearPicker
           value={initialValue as unknown as number}

@@ -19,6 +19,7 @@ export const SearchLanguageSelect: FC<FilterComponentProps> = ({
   return (
     <FilterContainer
       filter={filter}
+      hasValue={!!value}
       slot={
         <LanguageSelect
           key={initialValue}

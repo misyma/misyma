@@ -62,7 +62,7 @@ export interface FilterComponentProps {
 	filter: FilterOpts;
 	className?: string;
 	dialog?: boolean;
-	onRemoveFilter?: (name: string) => void;
+	onRemoveFilter?: () => void;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	setFilterAction: (value: any) => void;
 	initialValue?: string;

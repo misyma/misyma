@@ -13,6 +13,7 @@ export const AuthorSearchFilter: FC<FilterComponentProps> = ({
   filter,
   initialValue,
   setFilterAction,
+  onRemoveFilter,
 }) => {
   const [selectedAuthorName, setSelectedAuthorName] = useState('');
 
@@ -42,9 +43,18 @@ export const AuthorSearchFilter: FC<FilterComponentProps> = ({
     return 'Wyszukaj autora';
   }, [currentAuthor, selectedAuthorName]);
 
+  const onRemoveFilterInternal = () => {
+    if(onRemoveFilter) {
+      onRemoveFilter();
+    }
+    setSelectedAuthorName('');
+  }
+
   return (
     <FilterContainer
       filter={filter}
+      hasValue={!!selectedAuthorName}
+      onRemoveFilter={onRemoveFilter ? onRemoveFilterInternal : undefined}
       slot={
         <Popover>
           <PopoverTrigger asChild>

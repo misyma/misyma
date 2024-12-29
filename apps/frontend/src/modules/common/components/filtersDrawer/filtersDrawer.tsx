@@ -11,7 +11,6 @@ interface FiltersDrawerProps {
   omitApplyButton?: boolean;
   onApplyFilters: (vals: DynamicFilterValues) => void;
   onClearAll?: () => void;
-  onRemoveFilter?: (filterKey: string) => void;
 }
 
 export const FiltersDrawer: FC<

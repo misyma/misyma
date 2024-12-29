@@ -81,6 +81,7 @@ export const BooksAdminPage: FC = () => {
       to: '',
       search: () => ({}),
     });
+    setFilterApplied(false);
   };
 
   return (
