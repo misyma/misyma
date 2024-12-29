@@ -239,6 +239,11 @@ export const YearRangeFilter: FC<
     (currentPage + 1) * yearsPerPage
   );
 
+  useEffect(() => {
+    setStartYear(initialValue[0]);
+    setEndYear(initialValue[1]);
+  }, [initialValue])
+
   const handleYearClick = (year: number) => {
     if (isSelectingStart) {
       setStartYear(year);

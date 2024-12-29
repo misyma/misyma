@@ -24,8 +24,8 @@ import {
   setIsFavorite,
   setLanguage,
   setReleaseYearAfter,
+  setReleaseYearBefore,
   setStatus,
-  setTitle,
 } from '../../modules/core/store/states/myBooksFilterState/myBooksFilterStateSlice.js';
 import { HiPlus } from 'react-icons/hi2';
 import { Input } from '../../modules/common/components/input/input.js';
@@ -49,6 +49,7 @@ import {
 } from '../../modules/common/components/filter/filter.js';
 import useDebounce from '../../modules/common/hooks/useDebounce.js';
 import { AuthorSearchFilter } from '../../modules/common/components/filter/AuthorSearchFilter.js';
+import { X } from 'lucide-react';
 
 const GenreSelectFilter: FC<FilterComponentProps> = ({
   filter,
@@ -181,13 +182,13 @@ const BookPageFiltersBar = () => {
   const onClearAll = () => {
     dispatch(setLanguage(''));
     dispatch(setReleaseYearAfter(undefined));
-    dispatch(setTitle(''));
+    dispatch(setReleaseYearBefore(undefined));
     dispatch(setGenreId(''));
     dispatch(setStatus(''));
     setFilters({});
     navigate({
       to: '',
-      search: {},
+      search: ({ title }) => ({ title }),
     });
   };
 
@@ -524,15 +525,36 @@ const TitleSearchField = () => {
     });
   }, [debouncedSearchedName, navigate]);
 
+  const removeFiler = () => {
+    setSearchedName('');
+    navigate({
+      to: '',
+      // Purposeful :)
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      search: ({ title, ...rest }) => rest,
+    });
+  };
+
   return (
-    <div className="pl-4 flex flex-col gap-2">
+    <div className="relative pl-4 flex flex-col gap-2">
       <Input
         onChange={(e) => {
           setSearchedName(e.target.value);
         }}
+        value={searchedName}
         className=""
         placeholder="Wyszukaj po tytule..."
       />
+      {debouncedSearchedName && (
+        <Button
+          variant="ghost"
+          size="icon"
+          className="w-6 absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer hover:bg-transparent p-0 h-auto"
+          onClick={removeFiler}
+        >
+          <X className="h-6 w-6" />
+        </Button>
+      )}
     </div>
   );
 };
@@ -575,7 +597,7 @@ const myBooksSearchParamsSchema = z
     if (
       args.releaseYearAfter &&
       args.releaseYearBefore &&
-      args.releaseYearAfter < args.releaseYearBefore
+      args.releaseYearAfter > args.releaseYearBefore
     ) {
       ctx.addIssue({
         code: 'custom',

@@ -4,6 +4,7 @@ import { MyBooksFilterState } from './myBooksFilterState';
 const initialState: MyBooksFilterState = {
 	language: '',
 	releaseYearAfter: undefined,
+	releaseYearBefore: undefined,
 	title: '',
 	filterVisible: false,
 	genreId: '',
@@ -24,6 +25,9 @@ export const myBooksFilterStateSlice = createSlice({
 		},
 		setReleaseYearAfter: (state, action: PayloadAction<number | undefined>) => {
 			state.releaseYearAfter = action.payload;
+		},
+		setReleaseYearBefore: (state, action: PayloadAction<number | undefined>) => {
+			state.releaseYearBefore = action.payload;
 		},
 		setFilterVisible: (state, action: PayloadAction<boolean>) => {
 			state.filterVisible = action.payload;
@@ -65,6 +69,7 @@ export const {
 	setFilterVisible,
 	setLanguage,
 	setReleaseYearAfter,
+	setReleaseYearBefore,
 	setTitle,
 	setGenreId,
 	setStatus,
