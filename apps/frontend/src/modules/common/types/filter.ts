@@ -58,12 +58,12 @@ export type FilterOpts =
 	| CheckboxFilterOpts
 	| ThreeStateCheckboxFilterOpts;
 
-export interface FilterComponentProps {
+export interface FilterComponentProps<V = string> {
 	filter: FilterOpts;
 	className?: string;
 	dialog?: boolean;
 	onRemoveFilter?: () => void;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	setFilterAction: (value: any) => void;
-	initialValue?: string;
+	initialValue?: V;
 }

@@ -1,4 +1,11 @@
-import { ChangeEvent, FC, useEffect, useMemo, useState } from 'react';
+import {
+  ChangeEvent,
+  FC,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import {
   DateFilterOpts,
   FilterComponentProps,
@@ -19,6 +26,9 @@ import { YearPicker } from '../yearPicker/yearPicker';
 import ThreeStateCheckbox, {
   ThreeStateCheckboxStates,
 } from '../threeStatesCheckbox/ThreeStatesCheckbox';
+import { Popover, PopoverContent, PopoverTrigger } from '../popover/popover';
+import { Button } from '../button/button';
+import { CalendarIcon } from 'lucide-react';
 
 // Adjust in admin books filtering
 
@@ -173,98 +183,6 @@ export const ThreeStateCheckboxFilter: FC<FilterComponentProps> = ({
 interface DateFilterComponentProps extends FilterComponentProps {
   filter: DateFilterOpts;
 }
-// export const DateFilter: FC<DateFilterComponentProps> = ({
-//   filter,
-//   setFilterAction,
-// }) => {
-//   const handleChange = (value: string | boolean | Date | undefined) => {
-//     updateFilterValue(filter.key, value);
-//     if (setFilterAction) {
-//       setFilterAction(value);
-//     }
-//   };
-
-//   const filterValue = filterValues[filter.key as string];
-//   const siblingFilterValue = filterValues[filter.dateRangeSiblingId];
-
-//   const [calendarVisible, onOpenChange] = useState(false);
-
-//   const siblingValue = useMemo(() => {
-//     if (!siblingFilterValue) {
-//       return null;
-//     }
-
-//     return siblingFilterValue;
-//   }, [siblingFilterValue]);
-
-//   const isSiblingBefore = useCallback(() => {
-//     if (siblingValue === null || filter.isBeforeFilter) {
-//       return false;
-//     }
-
-//     return true;
-//   }, [siblingValue, filter.isBeforeFilter]);
-
-//   const isSiblingAfter = useCallback(() => {
-//     if (siblingValue === null || filter.isAfterFilter) {
-//       return false;
-//     }
-
-//     return true;
-//   }, [siblingValue, filter.isAfterFilter]);
-
-//   const getDisabledValues = useCallback(
-//     (date: Date) =>
-//       date > new Date() ||
-//       date < new Date('1900-01-01') ||
-//       (isSiblingAfter() && date < (siblingValue as Date)) ||
-//       (isSiblingBefore() && date > (siblingValue as Date)),
-//     [isSiblingAfter, isSiblingBefore, siblingValue]
-//   );
-
-//   return (
-//     <FilterContainer
-//       slot={
-//         <Popover
-//           modal={true}
-//           open={calendarVisible}
-//           onOpenChange={onOpenChange}
-//         >
-//           <PopoverTrigger asChild>
-//             <Button
-//               variant={'outline'}
-//               type="button"
-//               size="custom"
-//               className={'w-full truncate h-10 pl-3 text-left font-normal'}
-//             >
-//               {filterValue ? (
-//                 formatDate(filterValue as Date, 'PPP', {
-//                   locale: pl,
-//                 })
-//               ) : (
-//                 <>DD-MM-RRRR</>
-//               )}
-//               {!filterValue && (
-//                 <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-//               )}
-//             </Button>
-//           </PopoverTrigger>
-//           <PopoverContent className="w-auto p-0" align="start">
-//             <Calendar
-//               mode="single"
-//               selected={filterValue as Date}
-//               onSelect={handleChange}
-//               disabled={getDisabledValues}
-//               initialFocus
-//             />
-//           </PopoverContent>
-//         </Popover>
-//       }
-//       filter={filter}
-//     ></FilterContainer>
-//   );
-// };
-
 export const YearFilter: FC<DateFilterComponentProps> = ({
   filter,
   initialValue,
@@ -287,6 +205,164 @@ export const YearFilter: FC<DateFilterComponentProps> = ({
       filter={filter}
       onRemoveFilter={onRemoveFilter}
     ></FilterContainer>
+  );
+};
+
+export const YearRangeFilter: FC<
+  FilterComponentProps<[number, number] | [number, null] | [null, null]>
+> = ({
+  filter,
+  initialValue = [null, null],
+  onRemoveFilter,
+  setFilterAction,
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [startYear, setStartYear] = useState<number | null>(initialValue[0]);
+  const [endYear, setEndYear] = useState<number | null>(initialValue[1]);
+  const [hoverYear, setHoverYear] = useState<number | null>(null);
+  const [isSelectingStart, setIsSelectingStart] = useState(true);
+
+  const currentYear = new Date().getFullYear();
+  const yearsPerPage = 15;
+  const totalYears = 125;
+  const years = Array.from(
+    { length: totalYears },
+    (_, i) => currentYear - i
+  ).reverse();
+
+  const [currentPage, setCurrentPage] = useState(
+    Math.ceil(years.length / yearsPerPage) - 1
+  );
+
+  const paginatedYears = years.slice(
+    currentPage * yearsPerPage,
+    (currentPage + 1) * yearsPerPage
+  );
+
+  const handleYearClick = (year: number) => {
+    if (isSelectingStart) {
+      setStartYear(year);
+      setEndYear(null);
+      setIsSelectingStart(false);
+      setFilterAction([year, null]);
+    } else {
+      if (year < (startYear ?? 0)) {
+        setEndYear(startYear);
+        setStartYear(year);
+      } else {
+        setEndYear(year);
+      }
+      setIsSelectingStart(true);
+      setIsOpen(false);
+      setFilterAction([startYear, year]);
+    }
+  };
+
+  const handleYearHover = (year: number) => {
+    if (!isSelectingStart && startYear !== null) {
+      setHoverYear(year);
+    }
+  };
+
+  const handlePageChange = useCallback(
+    (direction: 'prev' | 'next') => {
+      if (direction === 'prev' && currentPage > 0) {
+        setCurrentPage(currentPage - 1);
+      } else if (
+        direction === 'next' &&
+        (currentPage + 1) * yearsPerPage < years.length
+      ) {
+        setCurrentPage(currentPage + 1);
+      }
+    },
+    [currentPage, years.length]
+  );
+
+  const renderPlaceholder = useCallback(() => {
+    if (!startYear && !endYear) {
+      return `Wybierz zakres lat`;
+    }
+    if (startYear && !endYear) {
+      return `${startYear} - ...`;
+    }
+    return `${startYear} - ${endYear}`;
+  }, [startYear, endYear]);
+
+  const onRemoveFilterInternal = useCallback(() => {
+    setStartYear(null);
+    setEndYear(null);
+    if (onRemoveFilter) {
+      onRemoveFilter();
+    }
+  }, [onRemoveFilter]);
+
+  return (
+    <FilterContainer
+      filter={filter}
+      onRemoveFilter={onRemoveFilter ? onRemoveFilterInternal : undefined}
+      hasValue={!!(startYear || endYear)}
+      slot={
+        <Popover open={isOpen} onOpenChange={setIsOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              size="xl"
+              variant="secondary"
+              className="w-full flex items-start text-left border text-gray-500"
+            >
+              <CalendarIcon className="mr-2 h-4 w-4 text-gray-500" />
+              <span className="text-black">{renderPlaceholder()}</span>
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-96">
+            <div className="flex justify-between items-center mb-2">
+              <button
+                onClick={() => handlePageChange('prev')}
+                disabled={currentPage === 0}
+                className="text-gray-500 hover:text-gray-700 disabled:text-gray-300"
+              >
+                ←
+              </button>
+              <span className="text-sm text-gray-500 font-medium">
+                {paginatedYears[0]} -{' '}
+                {paginatedYears[paginatedYears.length - 1]}
+              </span>
+              <button
+                onClick={() => handlePageChange('next')}
+                disabled={(currentPage + 1) * yearsPerPage >= years.length}
+                className="text-gray-500 hover:text-gray-700 disabled:text-gray-300"
+              >
+                →
+              </button>
+            </div>
+            <div className="grid grid-cols-3 gap-2">
+              {paginatedYears.map((year) => {
+                const isInRange =
+                  startYear !== null &&
+                  hoverYear !== null &&
+                  ((year >= startYear && year <= hoverYear) ||
+                    (year <= startYear && year >= hoverYear));
+                return (
+                  <button
+                    key={year}
+                    onClick={() => handleYearClick(year)}
+                    onMouseEnter={() => handleYearHover(year)}
+                    className={`px-2 py-1 rounded text-center ${
+                      isInRange ? 'bg-blue-200' : ''
+                    } ${
+                      startYear === year || endYear === year
+                        ? 'bg-blue-500 text-white'
+                        : ''
+                    } hover:bg-blue-300`}
+                  >
+                    {year}
+                  </button>
+                );
+              })}
+            </div>
+          </PopoverContent>
+        </Popover>
+      }
+    />
   );
 };
 

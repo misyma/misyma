@@ -45,7 +45,7 @@ import { userStateSelectors } from '../../modules/core/store/states/userState/us
 import { ReadingStatus as TranslatedReadingStatus } from '../../modules/common/constants/readingStatus.js';
 import {
   ThreeStateCheckboxFilter,
-  YearFilter,
+  YearRangeFilter,
 } from '../../modules/common/components/filter/filter.js';
 import useDebounce from '../../modules/common/hooks/useDebounce.js';
 import { AuthorSearchFilter } from '../../modules/common/components/filter/AuthorSearchFilter.js';
@@ -295,31 +295,6 @@ const BookPageFiltersBar = () => {
           },
         }}
       />
-      <YearFilter
-        initialValue={filters.releaseYearAfter as unknown as string}
-        onRemoveFilter={() => onClearFilter('releaseYearAfter')}
-        setFilterAction={(val) => {
-          setFilters({
-            ...filters,
-            releaseYearAfter: val,
-          });
-        }}
-        filter={{
-          id: 'release-year-after-filter',
-          key: 'releaseYearAfter',
-          label: 'Wydana po',
-          type: 'date',
-          dateRangeSiblingId: 'release-year-before-filter',
-          isAfterFilter: true,
-          isBeforeFilter: false,
-          setFilterAction: (val) => {
-            setFilters({
-              ...filters,
-              releaseYearAfter: val,
-            });
-          },
-        }}
-      />
       <GenreSelectFilter
         initialValue={filters.genre}
         onRemoveFilter={() => onClearFilter('genre')}
@@ -358,6 +333,30 @@ const BookPageFiltersBar = () => {
           key: 'statusFilter',
         }}
       />
+      <YearRangeFilter
+        filter={{
+          id: 'year-range-filter',
+          key: 'yearRangeFilter',
+          type: 'text',
+          label: 'Wydana między',
+        }}
+        onRemoveFilter={() => {
+          onClearFilter('releaseYearAfter');
+          onClearFilter('releaseYearBefore');
+        }}
+        setFilterAction={(val) => {
+          setFilters({
+            ...filters,
+            releaseYearAfter: val[0],
+            releaseYearBefore: val[1],
+          });
+        }}
+        initialValue={
+          filters.releaseYearAfter
+            ? [filters.releaseYearAfter, filters.releaseYearBefore ?? null]
+            : [null, null]
+        }
+      />
       <ThreeStateCheckboxFilter
         initialValue={filters?.isFavorite}
         onRemoveFilter={() => onClearFilter('isFavorite')}
@@ -389,6 +388,7 @@ const MyBooksVirtualizedBooksList = () => {
     genre: genreId,
     language,
     releaseYearAfter,
+    releaseYearBefore,
     status,
     title,
     authorId,
@@ -401,6 +401,7 @@ const MyBooksVirtualizedBooksList = () => {
         language,
         title,
         releaseYearAfter,
+        releaseYearBefore,
         status,
         genreId,
         authorId,
@@ -553,21 +554,36 @@ const View: FC = () => {
   );
 };
 
-const myBooksSearchParamsSchema = z.object({
-  title: z.string().min(3).catch('').optional(),
-  language: z
-    .nativeEnum(Language)
-    .optional()
-    .catch('' as Language),
-  genre: z.string().optional().catch(''),
-  status: z
-    .nativeEnum(ReadingStatus)
-    .optional()
-    .catch('' as ReadingStatus),
-  releaseYearAfter: z.number().int().min(1900).optional().catch(undefined),
-  authorId: z.string().uuid().optional().catch(''),
-  isFavorite: z.enum(['true', 'false', '']).optional().catch(''),
-});
+const myBooksSearchParamsSchema = z
+  .object({
+    title: z.string().min(3).catch('').optional(),
+    language: z
+      .nativeEnum(Language)
+      .optional()
+      .catch('' as Language),
+    genre: z.string().optional().catch(''),
+    status: z
+      .nativeEnum(ReadingStatus)
+      .optional()
+      .catch('' as ReadingStatus),
+    releaseYearBefore: z.number().int().min(1900).optional().catch(undefined),
+    releaseYearAfter: z.number().int().min(1900).optional().catch(undefined),
+    authorId: z.string().uuid().optional().catch(''),
+    isFavorite: z.enum(['true', 'false', '']).optional().catch(''),
+  })
+  .superRefine((args, ctx) => {
+    if (
+      args.releaseYearAfter &&
+      args.releaseYearBefore &&
+      args.releaseYearAfter < args.releaseYearBefore
+    ) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'Lata wydania są niepoprawne',
+        path: ['releaseYearAfter'],
+      });
+    }
+  });
 
 export const Route = createFileRoute('/mybooks/')({
   component: () => {
