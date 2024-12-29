@@ -6,15 +6,19 @@ import { FC } from 'react';
 interface BooksTableAdditionalColumnProps {
   searchParams: FindAdminBooksQueryParams;
   onApplyFilters: (val: DynamicFilterValues) => Promise<void>;
+  onClearAll: () => void;
 }
-export const BooksTableFilters: FC<
-  BooksTableAdditionalColumnProps
-> = ({ onApplyFilters, searchParams }) => {
+export const BooksTableFilters: FC<BooksTableAdditionalColumnProps> = ({
+  onApplyFilters,
+  onClearAll,
+  searchParams,
+}) => {
   return (
     <div className="px-2">
       <AdminBookSearchFilter
         initialValues={searchParams as DynamicFilterValues}
         onApplyFilters={onApplyFilters}
+        onClearAll={onClearAll}
       />
     </div>
   );

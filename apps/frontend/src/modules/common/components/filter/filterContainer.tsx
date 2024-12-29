@@ -1,40 +1,42 @@
-import { FC, ReactNode, useMemo } from 'react';
-import { RemoveFilterButton } from './removeFilterButton';
+import { FC, ReactNode } from 'react';
 import { FilterComponentProps } from '../../types/filter';
-import { useDynamicFilterContext } from '../../contexts/dynamicFilterContext';
+import { cn } from '../../lib/utils';
+import { Button } from '../button/button';
+import { X } from 'lucide-react';
 
-interface FilterContainerProps extends FilterComponentProps {
+interface FilterContainerProps
+  extends Omit<FilterComponentProps, 'setFilterAction'> {
   slot: ReactNode;
+  filterContainerClassName?: string;
+  onRemoveFilter?: () => void;
+  hasValue?: boolean;
 }
 export const FilterContainer: FC<FilterContainerProps> = ({
   filter,
   slot,
+  filterContainerClassName,
+  hasValue,
   onRemoveFilter,
 }) => {
-  const { filterValues } = useDynamicFilterContext();
-
-  const correspondingFilterValue = filterValues[filter.key as string];
-
-  const correspondingFilterValueExists = useMemo(() => {
-    if (correspondingFilterValue == null) {
-      return false;
-    }
-    if (correspondingFilterValue === '') {
-      return false;
-    }
-    return true;
-  }, [correspondingFilterValue]);
-
   return (
-    <div className="flex flex-col items-start w-full justify-between gap-1 px-1 overflow-hidden">
-      <label>{filter.label}</label>
-      <div className="flex gap-2 items-center justify-start w-full overflow-hidden truncate">
+    <div className="flex flex-col items-start w-full justify-between gap-1 overflow-hidden">
+      <label className="px-2">{filter.label}</label>
+      <div
+        className={cn(
+          'relative flex gap-2 items-center justify-start w-full overflow-hidden truncate p-2',
+          filterContainerClassName
+        )}
+      >
         {slot}
-        {correspondingFilterValueExists && (
-          <RemoveFilterButton
-            onRemoveFilter={onRemoveFilter}
-            filterKey={filter.key}
-          />
+        {hasValue && onRemoveFilter && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute right-2 top-1/2 -translate-y-1/2 hover:bg-transparent p-0 h-auto"
+            onClick={onRemoveFilter}
+          >
+            <X className="h-6 w-6" />
+          </Button>
         )}
       </div>
     </div>

@@ -1,13 +1,14 @@
 import { FC } from 'react';
-import { z } from 'zod';
 
 export type BaseFilterOpts = {
 	id: string;
+	initialValue?: string;
 	type: FilterTypes;
 	label: string;
 	key: PropertyKey;
 	customSlot?: FC<FilterComponentProps>;
-	schema?: z.Schema;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	setFilterAction?: (value: any) => void;
 };
 
 export type FilterTypes =
@@ -57,9 +58,12 @@ export type FilterOpts =
 	| CheckboxFilterOpts
 	| ThreeStateCheckboxFilterOpts;
 
-export interface FilterComponentProps {
+export interface FilterComponentProps<V = string> {
 	filter: FilterOpts;
 	className?: string;
 	dialog?: boolean;
-	onRemoveFilter?: (name: string) => void;
+	onRemoveFilter?: () => void;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	setFilterAction: (value: any) => void;
+	initialValue?: V;
 }

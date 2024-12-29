@@ -6,13 +6,11 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { useDynamicFilterContext } from '../../contexts/dynamicFilterContext';
 import {
   DateFilterOpts,
   FilterComponentProps,
   SelectFilterOpts,
 } from '../../types/filter';
-import { Button } from '../button/button';
 import { Input } from '../input/input';
 import {
   Select,
@@ -23,49 +21,34 @@ import {
   SelectValue,
 } from '../select/select';
 import { Checkbox } from '../checkbox/checkbox';
-import { Popover, PopoverContent, PopoverTrigger } from '../popover/popover';
-import { pl } from 'date-fns/locale';
-import { formatDate } from 'date-fns';
-import { CalendarIcon } from 'lucide-react';
-import { Calendar } from '../calendar/calendar';
 import { FilterContainer } from './filterContainer';
 import { YearPicker } from '../yearPicker/yearPicker';
 import ThreeStateCheckbox, {
   ThreeStateCheckboxStates,
-} from '../threeStatesCheckbox/threeStatesCheckbox';
+} from '../threeStatesCheckbox/ThreeStatesCheckbox';
+import { Popover, PopoverContent, PopoverTrigger } from '../popover/popover';
+import { Button } from '../button/button';
+import { CalendarIcon } from 'lucide-react';
 
-const TextFilter: FC<FilterComponentProps> = ({ filter, onRemoveFilter }) => {
-  const { updateFilterValue, filterValues, removeFilter } =
-    useDynamicFilterContext();
-  const [value, setValue] = useState(
-    (filterValues[filter.key as string] as string) ?? ''
-  );
+// Adjust in admin books filtering
 
-  const handleChange = (value: string) => {
-    updateFilterValue(filter.key, value);
-  };
+export const TextFilter: FC<
+  FilterComponentProps & { skipValidation?: boolean }
+> = ({ filter, initialValue, onRemoveFilter, setFilterAction }) => {
+  const [value, setValue] = useState(initialValue ?? '');
+
   useEffect(() => {
-    if (filterValues[filter.key as string] === '') {
+    if (initialValue === undefined) {
       setValue('');
+    } else {
+      setValue(initialValue);
     }
-    if (value === '') {
-      removeFilter(filter.key);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterValues[filter.key as string], filter.key]);
+  }, [initialValue]);
 
   const onValueChanged = (e: ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.value);
-
-    if (filter.schema) {
-      const res = filter.schema.safeParse(e.target.value);
-
-      if (res.error && e.target.value !== '') {
-        return;
-      }
-    }
-
-    handleChange(e.target.value);
+    const newValue = e.target.value;
+    setValue(newValue);
+    setFilterAction(newValue);
   };
 
   return (
@@ -83,7 +66,7 @@ const TextFilter: FC<FilterComponentProps> = ({ filter, onRemoveFilter }) => {
       }
       filter={filter}
       onRemoveFilter={onRemoveFilter}
-    ></FilterContainer>
+    />
   );
 };
 
@@ -91,19 +74,15 @@ interface SelectFilterProps extends FilterComponentProps {
   filter: SelectFilterOpts;
 }
 
-const SelectFilter: FC<SelectFilterProps> = ({
+export const SelectFilter: FC<SelectFilterProps> = ({
   filter,
+  initialValue,
   onRemoveFilter,
+  setFilterAction,
   dialog = false,
 }) => {
-  const { updateFilterValue, filterValues } = useDynamicFilterContext();
-
-  const handleChange = (value: string) => {
-    updateFilterValue(filter.key, value);
-  };
-
-  const filterItems = useMemo(() => {
-    return (
+  const filterItems = useMemo(
+    () => (
       <>
         {filter.options?.map((option) => (
           <SelectItem className="w-full sm:w-full" key={option} value={option}>
@@ -111,260 +90,338 @@ const SelectFilter: FC<SelectFilterProps> = ({
           </SelectItem>
         ))}
       </>
-    );
-  }, [filter?.options]);
+    ),
+    [filter?.options]
+  );
 
   return (
     <FilterContainer
       slot={
         <Select
           className="w-96"
-          value={(filterValues[filter.key as string] as string) || ''}
-          onValueChange={handleChange}
+          value={initialValue ?? ''}
+          onValueChange={setFilterAction}
         >
           <SelectTrigger className="w-full sm:w-full">
-            <SelectValue className="w-full sm:w-full"></SelectValue>
+            <SelectValue className="w-full sm:w-full" />
           </SelectTrigger>
-          {dialog && (
+          {dialog ? (
             <SelectContent className="w-full sm:w-full">
               {filterItems}
             </SelectContent>
-          )}
-          {!dialog && (
+          ) : (
             <SelectContentNoPortal>{filterItems}</SelectContentNoPortal>
           )}
         </Select>
       }
       filter={filter}
+      hasValue={!!initialValue}
       onRemoveFilter={onRemoveFilter}
-    ></FilterContainer>
+    />
   );
 };
 
 export const CheckboxFilter: FC<FilterComponentProps> = ({
   filter,
+  initialValue,
   onRemoveFilter,
-}) => {
-  const { updateFilterValue, filterValues } = useDynamicFilterContext();
-
-  const handleChange = (value: string | boolean) => {
-    if (value === true) {
-      updateFilterValue(filter.key, value);
-      return;
+  setFilterAction,
+}) => (
+  <FilterContainer
+    slot={
+      <Checkbox
+        size="xxl"
+        checked={!!initialValue}
+        onCheckedChange={setFilterAction}
+      />
     }
-
-    updateFilterValue(filter.key, undefined);
-  };
-
-  const filterValue = filterValues[filter.key as string];
-
-  return (
-    <FilterContainer
-      slot={
-        <Checkbox
-          size="xxl"
-          checked={!!filterValue}
-          onCheckedChange={handleChange}
-        />
-      }
-      filter={filter}
-      onRemoveFilter={onRemoveFilter}
-    ></FilterContainer>
-  );
-};
-
+    filter={filter}
+    onRemoveFilter={onRemoveFilter}
+  />
+);
 export const ThreeStateCheckboxFilter: FC<FilterComponentProps> = ({
   filter,
+  initialValue,
+  setFilterAction,
 }) => {
-  const { updateFilterValue, filterValues } = useDynamicFilterContext();
+  const stateMap = {
+    ['true']: 'checked',
+    ['false']: 'indeterminate',
+    ['']: 'unchecked',
+  };
+  const value = stateMap[(initialValue as keyof typeof stateMap) ?? ''];
 
-  const [internalValue, setInternalValue] = useState('unchecked');
-
-  useEffect(() => {
-    const filterValue = filterValues[filter.key as string];
-    if (filterValue === true) {
-      setInternalValue('checked');
-    } else if (filterValue === false) {
-      setInternalValue('indeterminate');
-    } else {
-      setInternalValue('unchecked');
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterValues, filter.key, filterValues[filter.key as string]]);
   const handleChange = (value: string | boolean) => {
-    if (value === 'checked') {
-      updateFilterValue(filter.key, true);
-      return;
-    } else if (value === 'indeterminate') {
-      updateFilterValue(filter.key, false);
-      return;
-    }
+    switch (value) {
+      case 'checked':
+        setFilterAction(true);
+        break;
 
-    updateFilterValue(filter.key, undefined);
+      case 'indeterminate':
+        setFilterAction(false);
+        break;
+
+      default:
+        setFilterAction(undefined);
+        break;
+    }
   };
 
   return (
     <FilterContainer
+      filterContainerClassName=""
       slot={
         <ThreeStateCheckbox
-          value={internalValue as ThreeStateCheckboxStates}
+          value={value as ThreeStateCheckboxStates}
           onValueChanged={(val) => handleChange(val as string)}
         />
       }
       filter={filter}
-    ></FilterContainer>
+    />
   );
 };
-
 interface DateFilterComponentProps extends FilterComponentProps {
   filter: DateFilterOpts;
 }
-export const DateFilter: FC<DateFilterComponentProps> = ({ filter }) => {
-  const { updateFilterValue, filterValues } = useDynamicFilterContext();
-
-  const handleChange = (value: string | boolean | Date | undefined) => {
-    updateFilterValue(filter.key, value);
-  };
-
-  const filterValue = filterValues[filter.key as string];
-  const siblingFilterValue = filterValues[filter.dateRangeSiblingId];
-
-  const [calendarVisible, onOpenChange] = useState(false);
-
-  const siblingValue = useMemo(() => {
-    if (!siblingFilterValue) {
-      return null;
-    }
-
-    return siblingFilterValue;
-  }, [siblingFilterValue]);
-
-  const isSiblingBefore = useCallback(() => {
-    if (siblingValue === null || filter.isBeforeFilter) {
-      return false;
-    }
-
-    return true;
-  }, [siblingValue, filter.isBeforeFilter]);
-
-  const isSiblingAfter = useCallback(() => {
-    if (siblingValue === null || filter.isAfterFilter) {
-      return false;
-    }
-
-    return true;
-  }, [siblingValue, filter.isAfterFilter]);
-
-  const getDisabledValues = useCallback(
-    (date: Date) =>
-      date > new Date() ||
-      date < new Date('1900-01-01') ||
-      (isSiblingAfter() && date < (siblingValue as Date)) ||
-      (isSiblingBefore() && date > (siblingValue as Date)),
-    [isSiblingAfter, isSiblingBefore, siblingValue]
-  );
-
-  return (
-    <FilterContainer
-      slot={
-        <Popover
-          modal={true}
-          open={calendarVisible}
-          onOpenChange={onOpenChange}
-        >
-          <PopoverTrigger asChild>
-            <Button
-              variant={'outline'}
-              type="button"
-              size="custom"
-              className={'w-full truncate h-10 pl-3 text-left font-normal'}
-            >
-              {filterValue ? (
-                formatDate(filterValue as Date, 'PPP', {
-                  locale: pl,
-                })
-              ) : (
-                <>DD-MM-RRRR</>
-              )}
-              {!filterValue && (
-                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-              )}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="start">
-            <Calendar
-              mode="single"
-              selected={filterValue as Date}
-              onSelect={handleChange}
-              disabled={getDisabledValues}
-              initialFocus
-            />
-          </PopoverContent>
-        </Popover>
-      }
-      filter={filter}
-    ></FilterContainer>
-  );
-};
-
 export const YearFilter: FC<DateFilterComponentProps> = ({
   filter,
+  initialValue,
   onRemoveFilter,
+  setFilterAction,
 }) => {
-  const { updateFilterValue, filterValues } = useDynamicFilterContext();
-
-  const handleChange = (
-    value: string | boolean | Date | number | undefined
-  ) => {
-    updateFilterValue(filter.key, value);
-  };
-
-  const filterValue = filterValues[filter.key as string];
-
   const [calendarVisible, onOpenChange] = useState(false);
 
   return (
     <FilterContainer
+      hasValue={!!initialValue}
       slot={
         <YearPicker
-          value={filterValue as unknown as number}
+          value={initialValue as unknown as number}
           open={calendarVisible}
           onOpenChange={onOpenChange}
-          onValueChange={handleChange}
+          onValueChange={setFilterAction}
         />
       }
       filter={filter}
       onRemoveFilter={onRemoveFilter}
     ></FilterContainer>
+  );
+};
+
+export const YearRangeFilter: FC<
+  FilterComponentProps<[number, number] | [number, null] | [null, null]>
+> = ({
+  filter,
+  initialValue = [null, null],
+  onRemoveFilter,
+  setFilterAction,
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [startYear, setStartYear] = useState<number | null>(initialValue[0]);
+  const [endYear, setEndYear] = useState<number | null>(initialValue[1]);
+  const [hoverYear, setHoverYear] = useState<number | null>(null);
+  const [isSelectingStart, setIsSelectingStart] = useState(true);
+
+  const currentYear = new Date().getFullYear();
+  const yearsPerPage = 15;
+  const totalYears = 125;
+  const years = Array.from(
+    { length: totalYears },
+    (_, i) => currentYear - i
+  ).reverse();
+
+  const [currentPage, setCurrentPage] = useState(
+    Math.ceil(years.length / yearsPerPage) - 1
+  );
+
+  const paginatedYears = years.slice(
+    currentPage * yearsPerPage,
+    (currentPage + 1) * yearsPerPage
+  );
+
+  const handleYearClick = (year: number) => {
+    if (isSelectingStart) {
+      setStartYear(year);
+      setEndYear(null);
+      setIsSelectingStart(false);
+      setFilterAction([year, null]);
+    } else {
+      if (year < (startYear ?? 0)) {
+        setEndYear(startYear);
+        setStartYear(year);
+      } else {
+        setEndYear(year);
+      }
+      setIsSelectingStart(true);
+      setIsOpen(false);
+      setFilterAction([startYear, year]);
+    }
+  };
+
+  const handleYearHover = (year: number) => {
+    if (!isSelectingStart && startYear !== null) {
+      setHoverYear(year);
+    }
+  };
+
+  const handlePageChange = useCallback(
+    (direction: 'prev' | 'next') => {
+      if (direction === 'prev' && currentPage > 0) {
+        setCurrentPage(currentPage - 1);
+      } else if (
+        direction === 'next' &&
+        (currentPage + 1) * yearsPerPage < years.length
+      ) {
+        setCurrentPage(currentPage + 1);
+      }
+    },
+    [currentPage, years.length]
+  );
+
+  const renderPlaceholder = useCallback(() => {
+    if (!startYear && !endYear) {
+      return `Wybierz zakres lat`;
+    }
+    if (startYear && !endYear) {
+      return `${startYear} - ...`;
+    }
+    return `${startYear} - ${endYear}`;
+  }, [startYear, endYear]);
+
+  const onRemoveFilterInternal = useCallback(() => {
+    setStartYear(null);
+    setEndYear(null);
+    if (onRemoveFilter) {
+      onRemoveFilter();
+    }
+  }, [onRemoveFilter]);
+
+  return (
+    <FilterContainer
+      filter={filter}
+      onRemoveFilter={onRemoveFilter ? onRemoveFilterInternal : undefined}
+      hasValue={!!(startYear || endYear)}
+      slot={
+        <Popover open={isOpen} onOpenChange={setIsOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              size="xl"
+              variant="secondary"
+              className="w-full flex items-start text-left border text-gray-500"
+            >
+              <CalendarIcon className="mr-2 h-4 w-4 text-gray-500" />
+              <span className="text-black">{renderPlaceholder()}</span>
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-96">
+            <div className="flex justify-between items-center mb-2">
+              <button
+                onClick={() => handlePageChange('prev')}
+                disabled={currentPage === 0}
+                className="text-gray-500 hover:text-gray-700 disabled:text-gray-300"
+              >
+                ←
+              </button>
+              <span className="text-sm text-gray-500 font-medium">
+                {paginatedYears[0]} -{' '}
+                {paginatedYears[paginatedYears.length - 1]}
+              </span>
+              <button
+                onClick={() => handlePageChange('next')}
+                disabled={(currentPage + 1) * yearsPerPage >= years.length}
+                className="text-gray-500 hover:text-gray-700 disabled:text-gray-300"
+              >
+                →
+              </button>
+            </div>
+            <div className="grid grid-cols-3 gap-2">
+              {paginatedYears.map((year) => {
+                const isInRange =
+                  startYear !== null &&
+                  hoverYear !== null &&
+                  ((year >= startYear && year <= hoverYear) ||
+                    (year <= startYear && year >= hoverYear));
+                return (
+                  <button
+                    key={year}
+                    onClick={() => handleYearClick(year)}
+                    onMouseEnter={() => handleYearHover(year)}
+                    className={`px-2 py-1 rounded text-center ${
+                      isInRange ? 'bg-blue-200' : ''
+                    } ${
+                      startYear === year || endYear === year
+                        ? 'bg-blue-500 text-white'
+                        : ''
+                    } hover:bg-blue-300`}
+                  >
+                    {year}
+                  </button>
+                );
+              })}
+            </div>
+          </PopoverContent>
+        </Popover>
+      }
+    />
   );
 };
 
 export const FilterComponent: FC<FilterComponentProps> = ({
   filter,
   onRemoveFilter,
+  setFilterAction,
 }) => {
   if (filter.customSlot) {
     return (
-      <filter.customSlot onRemoveFilter={onRemoveFilter} filter={filter} />
+      <filter.customSlot
+        setFilterAction={setFilterAction}
+        onRemoveFilter={onRemoveFilter}
+        filter={filter}
+      />
     );
   }
 
   switch (filter.type) {
     case 'text':
-      return <TextFilter onRemoveFilter={onRemoveFilter} filter={filter} />;
+      return (
+        <TextFilter
+          setFilterAction={setFilterAction}
+          onRemoveFilter={onRemoveFilter}
+          filter={filter}
+        />
+      );
     case 'select':
-      return <SelectFilter onRemoveFilter={onRemoveFilter} filter={filter} />;
+      return (
+        <SelectFilter
+          setFilterAction={setFilterAction}
+          onRemoveFilter={onRemoveFilter}
+          filter={filter}
+        />
+      );
     case 'checkbox':
-      return <CheckboxFilter onRemoveFilter={onRemoveFilter} filter={filter} />;
+      return (
+        <CheckboxFilter
+          setFilterAction={setFilterAction}
+          onRemoveFilter={onRemoveFilter}
+          filter={filter}
+        />
+      );
 
     case 'three-state-checkbox':
-      return <ThreeStateCheckboxFilter filter={filter} />;
-    case 'date':
-      return <DateFilter onRemoveFilter={onRemoveFilter} filter={filter} />;
+      return (
+        <ThreeStateCheckboxFilter
+          filter={filter}
+          setFilterAction={setFilterAction}
+        />
+      );
     case 'year':
       return (
-        // eslint-disable-next-line
-        <YearFilter onRemoveFilter={onRemoveFilter} filter={filter as any} />
+        <YearFilter
+          setFilterAction={setFilterAction}
+          onRemoveFilter={onRemoveFilter}
+          // eslint-disable-next-line
+          filter={filter as any}
+        />
       );
     default:
       return null;

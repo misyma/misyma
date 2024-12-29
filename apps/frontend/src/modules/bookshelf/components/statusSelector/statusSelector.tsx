@@ -13,12 +13,12 @@ type RendererProps = {
   children: FC;
 };
 
-interface GenreSelector {
+interface StatusSelector {
   renderer: (props: RendererProps) => ReactNode;
   onValueChange: (val: string) => void;
   defaultValue: ContractReadingStatus | undefined;
 }
-export const GenreSelector: FC<GenreSelector> = ({
+export const StatusSelector: FC<StatusSelector> = ({
   renderer,
   onValueChange,
   defaultValue

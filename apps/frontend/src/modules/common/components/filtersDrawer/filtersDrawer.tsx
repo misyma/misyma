@@ -1,68 +1,36 @@
-import { FC, useMemo } from 'react';
-import { FilterComponent } from '../filter/filter';
+import { FC, PropsWithChildren } from 'react';
 import {
   DynamicFilterValues,
-  useDynamicFilterContext,
 } from '../../contexts/dynamicFilterContext';
-import { FilterOpts } from '../../types/filter';
 import { cn } from '../../lib/utils';
 import { Button } from '../button/button';
 
-export const FiltersDrawer: FC<{
+interface FiltersDrawerProps {
   className?: string;
   actionButtonClassName?: string;
+  omitApplyButton?: boolean;
   onApplyFilters: (vals: DynamicFilterValues) => void;
   onClearAll?: () => void;
-  onRemoveFilter?: (filterKey: string) => void;
-}> = ({
+}
+
+export const FiltersDrawer: FC<
+  PropsWithChildren<
+    Omit<FiltersDrawerProps, 'onApplyFilters'> & { onApplyFilters: () => void }
+  >
+> = ({
   className,
   actionButtonClassName,
+  omitApplyButton = false,
+  children,
   onClearAll,
   onApplyFilters,
-  onRemoveFilter,
 }) => {
-  const { filters, filterOptions, filterValues, removeAllFilters } =
-    useDynamicFilterContext();
-
-  const constructedFilters = useMemo((): Array<FilterOpts> => {
-    return filterOptions.map(
-      (filterOption) =>
-        ({
-          ...filterOption,
-          id:
-            filterOption.id ||
-            `filter-${filters.length + 1}-${String(filterOption.key)}`,
-          key: filterOption.key,
-          label: filterOption.label,
-          type: filterOption.type,
-          customSlot: filterOption.customSlot,
-        }) as FilterOpts
-    );
-  }, [filters, filterOptions]);
-
-  const onRemoveAll = () => {
-    removeAllFilters();
-    onApplyFilters({});
-    if (onClearAll) {
-      onClearAll();
-    }
-  };
-
   return (
-    <div className="flex flex-col gap-2">
-      <div className={cn('space-y-4 w-full', className)}>
-        {constructedFilters.map((filter) => (
-          <div
-            key={`container-${filter.id}`}
-            className="flex items-end justify-center"
-          >
-            <FilterComponent
-              onRemoveFilter={onRemoveFilter}
-              key={filter.id}
-              filter={filter}
-            />
-          </div>
-        ))}
+    <div className="flex flex-col gap-2 p-2">
+      <div className={cn('gap-4 w-full', className)}>
+        {
+          children
+        }
       </div>
       <div
         className={cn(
@@ -75,11 +43,11 @@ export const FiltersDrawer: FC<{
         <Button
           variant="none"
           className={cn('text-primary', actionButtonClassName)}
-          onClick={onRemoveAll}
+          onClick={onClearAll}
         >
           Wyczyść wszystkie filtry
         </Button>
-        <Button onClick={() => onApplyFilters(filterValues)}>Aplikuj</Button>
+        {!omitApplyButton && <Button onClick={onApplyFilters}>Aplikuj</Button>}
       </div>
     </div>
   );

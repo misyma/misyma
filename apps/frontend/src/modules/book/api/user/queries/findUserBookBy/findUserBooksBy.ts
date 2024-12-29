@@ -19,43 +19,25 @@ export const findUserBooksBy = async (
 
 	const queryParams: Record<string, string> = {};
 
-	const {
-		bookshelfId,
-		isbn,
-		page,
-		title,
-		pageSize,
-		releaseYearAfter,
-		language,
-	} = payload;
-
-	if (bookshelfId) {
-		queryParams['bookshelfId'] = bookshelfId;
-	}
-
-	if (isbn) {
-		queryParams['isbn'] = isbn;
-	}
-
-	if (page) {
-		queryParams['page'] = `${page}`;
-	}
-
-	if (pageSize) {
-		queryParams['pageSize'] = `${pageSize}`;
-	}
-
-	if (language) {
-		queryParams['language'] = language;
-	}
-
-	if (releaseYearAfter) {
-		queryParams['releaseYearAfter'] = `${releaseYearAfter}`;
-	}
-
-	if (title) {
-		queryParams['title'] = title;
-	}
+	const keys: Array<keyof FindUserBooksByPayload> = [
+		'bookshelfId',
+		'isbn',
+		'page',
+		'title',
+		'pageSize',
+		'releaseYearAfter',
+		'language',
+		'status',
+		'genreId',
+		'isFavorite',
+		'authorId',
+	];
+	
+	keys.forEach(key => {
+		if (payload[key] !== '' && payload[key] !== undefined) {
+			queryParams[key] = `${payload[key]}`;
+		}
+	});
 
 	const response = await HttpService.get<FindUserBooksResponseBody>({
 		url: `/user-books`,
