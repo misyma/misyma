@@ -24,6 +24,7 @@ import {
   setIsFavorite,
   setLanguage,
   setReleaseYearAfter,
+  setReleaseYearBefore,
   setStatus,
   setTitle,
 } from '../../modules/core/store/states/myBooksFilterState/myBooksFilterStateSlice.js';
@@ -181,6 +182,7 @@ const BookPageFiltersBar = () => {
   const onClearAll = () => {
     dispatch(setLanguage(''));
     dispatch(setReleaseYearAfter(undefined));
+    dispatch(setReleaseYearBefore(undefined))
     dispatch(setTitle(''));
     dispatch(setGenreId(''));
     dispatch(setStatus(''));
@@ -575,7 +577,7 @@ const myBooksSearchParamsSchema = z
     if (
       args.releaseYearAfter &&
       args.releaseYearBefore &&
-      args.releaseYearAfter < args.releaseYearBefore
+      args.releaseYearAfter > args.releaseYearBefore
     ) {
       ctx.addIssue({
         code: 'custom',
