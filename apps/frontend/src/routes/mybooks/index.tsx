@@ -526,7 +526,7 @@ const TitleSearchField = () => {
   }, [debouncedSearchedName, navigate]);
 
   const removeFiler = () => {
-    setSearchedName('');
+    setSearchedName(undefined);
     navigate({
       to: '',
       // Purposeful :)
@@ -541,7 +541,7 @@ const TitleSearchField = () => {
         onChange={(e) => {
           setSearchedName(e.target.value);
         }}
-        value={searchedName}
+        value={searchedName ?? ''}
         className=""
         placeholder="Wyszukaj po tytule..."
       />
