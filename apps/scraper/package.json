@@ -26,11 +26,7 @@
     "@types/config": "3.3.5",
     "@types/yargs": "17.0.33"
   },
-  "volta": {
-    "node": "22.11.0",
-    "npm": "10.9.0"
-  },
   "engines": {
-    "node": "22.11.0"
+    "node": "22.12.0"
   }
 }

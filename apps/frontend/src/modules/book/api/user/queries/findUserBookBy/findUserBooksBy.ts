@@ -31,9 +31,10 @@ export const findUserBooksBy = async (
 		'genreId',
 		'isFavorite',
 		'authorId',
+		'sortDate',
 	];
-	
-	keys.forEach(key => {
+
+	keys.forEach((key) => {
 		if (payload[key] !== '' && payload[key] !== undefined) {
 			queryParams[key] = `${payload[key]}`;
 		}

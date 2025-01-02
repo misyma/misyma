@@ -43,6 +43,7 @@ export const FindUserBooksByInfiniteQueryOptions = ({
 			rest.status,
 			rest.authorId,
 			rest.isFavorite,
+			rest.sortDate,
 		],
 		initialPageParam: page,
 		queryFn: ({ pageParam }) =>
