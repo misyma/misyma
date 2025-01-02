@@ -19,6 +19,8 @@ export const findUserBooksBy = async (
 
 	const queryParams: Record<string, string> = {};
 
+	console.log({ payload });
+
 	const keys: Array<keyof FindUserBooksByPayload> = [
 		'bookshelfId',
 		'isbn',
@@ -31,9 +33,10 @@ export const findUserBooksBy = async (
 		'genreId',
 		'isFavorite',
 		'authorId',
+		'sortDate',
 	];
-	
-	keys.forEach(key => {
+
+	keys.forEach((key) => {
 		if (payload[key] !== '' && payload[key] !== undefined) {
 			queryParams[key] = `${payload[key]}`;
 		}
