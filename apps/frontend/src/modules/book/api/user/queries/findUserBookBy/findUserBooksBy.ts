@@ -19,8 +19,6 @@ export const findUserBooksBy = async (
 
 	const queryParams: Record<string, string> = {};
 
-	console.log({ payload });
-
 	const keys: Array<keyof FindUserBooksByPayload> = [
 		'bookshelfId',
 		'isbn',
