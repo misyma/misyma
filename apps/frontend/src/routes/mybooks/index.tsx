@@ -1,17 +1,10 @@
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { AuthenticatedLayout } from '../../modules/auth/layouts/authenticated/authenticatedLayout.js';
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { RequireAuthComponent } from '../../modules/core/components/requireAuth/requireAuthComponent.js';
 import { Button } from '../../modules/common/components/button/button.js';
 import { motion } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from '../../modules/common/components/tooltip/tooltip.js';
-import { HiOutlineFilter } from 'react-icons/hi';
 import { FilterComponentProps } from '../../modules/common/types/filter.js';
 import { z } from 'zod';
 import { FiltersDrawer } from '../../modules/common/components/filtersDrawer/filtersDrawer.js';
@@ -19,7 +12,6 @@ import { VirtualizedBooksList } from '../../modules/bookshelf/components/virtual
 import {
 	myBooksStateSelectors,
 	setAuthorId,
-	setFilterVisible,
 	setGenreId,
 	setIsFavorite,
 	setLanguage,
@@ -27,7 +19,6 @@ import {
 	setReleaseYearBefore,
 	setStatus,
 } from '../../modules/core/store/states/myBooksFilterState/myBooksFilterStateSlice.js';
-import { HiPlus } from 'react-icons/hi2';
 import { Input } from '../../modules/common/components/input/input.js';
 import { Language, ReadingStatus, SortingType } from '@common/contracts';
 import { SearchLanguageSelect } from '../../modules/common/components/searchLanguageSelect/SearchLanguageSelect.js';
@@ -50,7 +41,7 @@ import {
 import useDebounce from '../../modules/common/hooks/useDebounce.js';
 import { AuthorSearchFilter } from '../../modules/common/components/filter/AuthorSearchFilter.js';
 import { X } from 'lucide-react';
-import { BooksSortButton } from '../../modules/common/components/booksSortButton/booksSortButton.js';
+import { BooksPageTopBar } from '../../modules/book/components/booksPageTopBar/booksPageTopBar.js';
 
 const GenreSelectFilter: FC<FilterComponentProps> = ({
 	filter,
@@ -448,83 +439,6 @@ const BooksPage: FC = () => {
 	);
 };
 
-const BooksFiltersVisibilityButton = () => {
-	const isFilterVisible = useSelector(
-		myBooksStateSelectors.getFilterVisibility
-	);
-	const dispatch = useDispatch();
-
-	const search = Route.useSearch();
-
-	const filtersApplied = useMemo(() => {
-		return (
-			Object.entries(search)
-				.filter(([key]) => !['page', 'pageSize', 'sort'].includes(key))
-				// eslint-disable-next-line @typescript-eslint/no-unused-vars
-				.filter(([_, value]) => {
-					return value !== undefined || value !== '';
-				}).length > 0
-		);
-	}, [search]);
-
-	return (
-		<TooltipProvider delayDuration={300}>
-			<Tooltip>
-				<TooltipTrigger asChild>
-					<Button
-						size="big-icon"
-						onClick={() => {
-							dispatch(setFilterVisible(!isFilterVisible));
-						}}
-					>
-						<div className="relative w-full">
-							<div className="flex w-full items-center justify-center">
-								<HiOutlineFilter className="w-8 h-8"></HiOutlineFilter>
-							</div>
-							{filtersApplied && (
-								<div className="absolute h-4 w-4 top-[-10px] right-[-8px] rounded-full bg-green-500"></div>
-							)}
-						</div>
-					</Button>
-				</TooltipTrigger>
-				<TooltipContent>
-					<p>Filtruj</p>
-				</TooltipContent>
-			</Tooltip>
-		</TooltipProvider>
-	);
-};
-
-const CreateBookButton = () => {
-	const navigate = useNavigate();
-
-	return (
-		<TooltipProvider delayDuration={300}>
-			<Tooltip>
-				<TooltipTrigger asChild>
-					<Button
-						size="big-icon"
-						onClick={() => {
-							navigate({
-								to: `/shelves/bookshelf/search`,
-								search: {
-									type: 'isbn',
-									next: 0,
-								},
-							});
-						}}
-					>
-						<HiPlus className="w-8 h-8" />
-					</Button>
-				</TooltipTrigger>
-				<TooltipContent>
-					<p>Stwórz książkę</p>
-				</TooltipContent>
-			</Tooltip>
-		</TooltipProvider>
-	);
-};
-
 const TitleSearchField = () => {
 	const search = Route.useSearch();
 	const navigate = Route.useNavigate();
@@ -581,11 +495,7 @@ const View: FC = () => {
 			<div className="flex flex-col items-center justify-center w-100% px-8 py-1 sm:py-2">
 				<div className="w-full px-8 flex justify-between items-center gap-4 pb-4">
 					<TitleSearchField />
-					<div className="flex items-center gap-4">
-						<CreateBookButton />
-						<BooksFiltersVisibilityButton />
-						<BooksSortButton navigationPath="/mybooks" />
-					</div>
+					<BooksPageTopBar />
 				</div>
 				<BooksPage />
 			</div>
