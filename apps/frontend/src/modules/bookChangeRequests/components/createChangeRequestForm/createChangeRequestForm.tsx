@@ -301,7 +301,7 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
     try {
       await createBookChangeRequest({
         ...payload,
-        pages: payload.pages !== undefined ? null : payload.pages,
+        pages: payload.pages === undefined ? null : payload.pages,
         authorIds: Array.isArray(payload.authorIds) ? payload.authorIds : payload.authorIds?.split(','),
       } as CreateBookChangeRequestPayload);
 

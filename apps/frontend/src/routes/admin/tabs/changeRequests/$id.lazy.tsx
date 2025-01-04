@@ -219,6 +219,16 @@ export const ChangeRequestView: FC = () => {
       bookChangeRequestId: changeRequestData?.data?.id as string,
     });
 
+    await Promise.all([
+      queryClient.invalidateQueries({
+        predicate: ({ queryKey }) => queryKey[0] === BookChangeRequestApiAdminQueryKeys.findBookChangeRequests,
+      }),
+      queryClient.invalidateQueries({
+        predicate: ({ queryKey }) =>
+          queryKey[0] === BookChangeRequestApiAdminQueryKeys.findBookChangeRequestById && queryKey[1] === id,
+      }),
+    ]);
+
     navigate({
       to: '/admin/tabs/changeRequests',
     });
