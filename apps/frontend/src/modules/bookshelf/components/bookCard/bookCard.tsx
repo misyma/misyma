@@ -35,7 +35,7 @@ const BorrowedSinceText: FC<{ userBookId: string }> = ({ userBookId }) => {
 
     return Math.ceil(
       (Date.now() -
-        new Date(bookBorrowing?.data[0]?.startedAt ?? '').getTime()) /
+        new Date(bookBorrowing?.data?.[0]?.startedAt ?? '').getTime()) /
         millisecondsInDay
     );
   }, [bookBorrowing?.data]);
