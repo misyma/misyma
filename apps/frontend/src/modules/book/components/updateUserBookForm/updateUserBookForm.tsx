@@ -1,8 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQueryClient } from '@tanstack/react-query';
 import { type FC, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { z } from 'zod';
+
+import { type UserBook } from '@common/contracts';
 
 import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
 import { getGenresQueryOptions } from '../../../../modules/genres/api/queries/getGenresQuery/getGenresQueryOptions';
@@ -16,7 +19,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../../../common/components/select/select';
+import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
+import { useUpdateUserBookMutation } from '../../api/user/mutations/updateUserBookMutation/updateUserBookMutation';
+import { useUploadBookImageMutation } from '../../api/user/mutations/uploadBookImageMutation/uploadBookImageMutation';
+import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
 
 const changeUserBookDataSchema = z.object({
   image: z.optional(
@@ -36,12 +43,16 @@ const changeUserBookDataSchema = z.object({
 });
 
 interface Props {
-  onSubmit: (values: z.infer<typeof changeUserBookDataSchema>) => Promise<void>;
+  bookId: string;
+  userBook: UserBook | undefined;
+  onSubmit: () => void;
   onCancel: () => void;
 }
 
-export const UpdateUserBookForm: FC<Props> = ({ onSubmit, onCancel }) => {
+export const UpdateUserBookForm: FC<Props> = ({ bookId, userBook, onSubmit, onCancel }) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
+
+  const queryClient = useQueryClient();
 
   const [file, setFile] = useState<File | undefined>();
 
@@ -58,6 +69,39 @@ export const UpdateUserBookForm: FC<Props> = ({ onSubmit, onCancel }) => {
       }
     }
   }, [file]);
+
+  const { mutateAsync: updateUserBook, isPending: isUpdatePending } = useUpdateUserBookMutation({});
+  const { mutateAsync: uploadBookImageMutation, isPending: isImageUploadPending } = useUploadBookImageMutation({});
+
+  const eitherMutationPending = isUpdatePending || isImageUploadPending;
+
+  const onSubmitChangeMyBookDataForm = async (values: z.infer<typeof changeUserBookDataSchema>) => {
+    if (values.image) {
+      await uploadBookImageMutation({
+        bookId,
+        file: values.image as unknown as File,
+        accessToken: accessToken as string,
+      });
+    }
+
+    if (values.genre) {
+      await updateUserBook({
+        userBookId: bookId,
+        genreIds: [values.genre],
+        accessToken: accessToken as string,
+      });
+    }
+
+    await Promise.all([
+      queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey[0] === BookApiQueryKeys.findUserBookById && query.queryKey[1] === bookId,
+      }),
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId && query.queryKey[1] === userBook?.bookshelfId,
+      }),
+    ]);
+  };
 
   const changeUserBookDataForm = useForm<z.infer<typeof changeUserBookDataSchema>>({
     resolver: zodResolver(changeUserBookDataSchema),
@@ -78,10 +122,11 @@ export const UpdateUserBookForm: FC<Props> = ({ onSubmit, onCancel }) => {
       <form
         className="flex flex-col space-y-4 items-center"
         onSubmit={changeUserBookDataForm.handleSubmit(async (data) => {
-          await onSubmit({
+          await onSubmitChangeMyBookDataForm({
             ...data,
             image: file,
           });
+          onSubmit();
         })}
       >
         <FormField
@@ -148,8 +193,10 @@ export const UpdateUserBookForm: FC<Props> = ({ onSubmit, onCancel }) => {
           <Button
             className="w-40"
             type="submit"
+            disabled={!changeUserBookDataForm.formState.isDirty || eitherMutationPending}
           >
-            Zapisz
+            {!eitherMutationPending && 'Zapisz'}
+            {eitherMutationPending && <LoadingSpinner size={24} />}
           </Button>
         </div>
       </form>
