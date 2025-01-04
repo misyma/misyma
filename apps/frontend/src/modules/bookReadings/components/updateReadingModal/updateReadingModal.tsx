@@ -311,7 +311,7 @@ const UpdateBookReadingForm: FC<UpdateBookReadingFormProps> = ({ bookReading, se
           </Button>
           <Button
             type="submit"
-            disabled={!form.formState.isValid || isUpdatingBookReading}
+            disabled={!form.formState.isValid || !form.formState.isDirty || isUpdatingBookReading}
             className="bg-primary w-32 sm:w-40"
           >
             {isUpdatingBookReading && <LoadingSpinner size={40} />}

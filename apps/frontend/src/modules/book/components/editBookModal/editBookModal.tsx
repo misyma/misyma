@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQueryClient } from '@tanstack/react-query';
 import { type FC, forwardRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import { useForm } from 'react-hook-form';
 import { HiPencil } from 'react-icons/hi';
 import { useSelector } from 'react-redux';
@@ -10,17 +10,14 @@ import { CreateChangeRequestForm } from '../../../bookChangeRequests/components/
 import { Button } from '../../../common/components/button/button';
 import { Dialog, DialogContent, DialogHeader, DialogTrigger } from '../../../common/components/dialog/dialog';
 import { RadioGroup, RadioGroupItem } from '../../../common/components/radioGroup/radio-group';
+import { useToast } from '../../../common/components/toast/use-toast';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../common/components/tooltip/tooltip';
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
-import { useUpdateUserBookMutation } from '../../api/user/mutations/updateUserBookMutation/updateUserBookMutation';
-import { useUploadBookImageMutation } from '../../api/user/mutations/uploadBookImageMutation/uploadBookImageMutation';
-import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
 import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 import { BookDetailsChangeRequestProvider } from '../../context/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
 import { UpdateUserBookForm } from '../updateUserBookForm/updateUserBookForm';
-
 interface Props {
   bookId: string;
 }
@@ -62,15 +59,11 @@ const EditBookIcon = forwardRef<HTMLButtonElement, EditBookIconProps>(({ onClick
 });
 
 export const EditBookModal: FC<Props> = ({ bookId }) => {
+  const { toast } = useToast();
+
   const [bookEditType, setBookEditType] = useState<BookEditType | undefined>('myBookChange');
-
   const [actionChosen, setActionChosen] = useState<boolean>(false);
-
   const [isOpen, setIsOpen] = useState<boolean>(false);
-
-  const queryClient = useQueryClient();
-
-  const { mutateAsync: updateUserBook } = useUpdateUserBookMutation({});
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
@@ -86,7 +79,6 @@ export const EditBookModal: FC<Props> = ({ bookId }) => {
 
   const resetModalState = () => {
     setIsOpen(false);
-
     setActionChosen(false);
   };
 
@@ -98,37 +90,17 @@ export const EditBookModal: FC<Props> = ({ bookId }) => {
     },
   });
 
-  const { mutateAsync: uploadBookImageMutation } = useUploadBookImageMutation({});
+  const onSubmitChangeMyBookDataForm = async () => {
+    flushSync(() => {
+      resetModalState();
 
-  const onSubmitChangeMyBookDataForm = async (values: z.infer<typeof changeMyBookDataSchema>) => {
-    if (values.image) {
-      await uploadBookImageMutation({
-        bookId,
-        file: values.image as unknown as File,
-        accessToken: accessToken as string,
+      changeMyBookDataForm.reset();
+
+      toast({
+        title: 'Zaaktualizowano książkę',
+        variant: 'success',
       });
-    }
-
-    if (values.genre) {
-      await updateUserBook({
-        userBookId: bookId,
-        genreIds: [values.genre],
-        accessToken: accessToken as string,
-      });
-    }
-
-    queryClient.invalidateQueries({
-      predicate: (query) => query.queryKey[0] === BookApiQueryKeys.findUserBookById && query.queryKey[1] === bookId,
     });
-
-    queryClient.invalidateQueries({
-      predicate: (query) =>
-        query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId && query.queryKey[1] === data?.bookshelfId,
-    });
-
-    resetModalState();
-
-    changeMyBookDataForm.reset();
   };
 
   const renderContents = () => {
@@ -139,6 +111,8 @@ export const EditBookModal: FC<Props> = ({ bookId }) => {
             Zmiana danych dla mojej książki
           </DialogHeader>
           <UpdateUserBookForm
+            bookId={bookId}
+            userBook={data}
             onCancel={() => {
               setActionChosen(false);
 
@@ -161,6 +135,10 @@ export const EditBookModal: FC<Props> = ({ bookId }) => {
             }}
             onSubmit={() => {
               resetModalState();
+              toast({
+                variant: 'success',
+                title: 'Stworzono prośbę o zmianę danych',
+              });
             }}
           />
         </>

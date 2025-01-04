@@ -181,7 +181,7 @@ const WrappedModal = ({ quote }: Props): ReactNode => {
           omitCloseButton={true}
         >
           <DialogHeader className="font-semibold text-center flex justify-center items-center">
-            Dodaj cytat
+            Zaaktualizuj cytat
           </DialogHeader>
           <DialogDescription className="flex flex-col gap-4 justify-center items-center">
             <p className={error ? 'text-red-500' : 'hidden'}>{error}</p>
@@ -242,7 +242,7 @@ const WrappedModal = ({ quote }: Props): ReactNode => {
                   <Button
                     type="submit"
                     variant={isUpdating ? 'ghost' : 'default'}
-                    disabled={!form.formState.isValid || isUpdating}
+                    disabled={!form.formState.isValid || !form.formState.isDirty || isUpdating}
                     className="bg-primary w-32 sm:w-40"
                   >
                     {isUpdating && <LoadingSpinner size={40} />}
