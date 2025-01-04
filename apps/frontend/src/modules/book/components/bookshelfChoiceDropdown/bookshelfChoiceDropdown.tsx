@@ -62,7 +62,7 @@ export const BookshelfChoiceDropdown: FC<Props> = ({
 
 	const { data: bookshelfData, isLoading } = useFindUserBookshelfsQuery({
 		userId: userData?.id as string,
-		pageSize: 50,
+		pageSize: 150,
 		name: searchedName,
 	});
 
@@ -132,7 +132,7 @@ export const BookshelfChoiceDropdown: FC<Props> = ({
 		if (previousBookshelfName === 'Wypożyczalnia') {
 			await updateBorrowing({
 				accessToken: accessToken as string,
-				borrowingId: bookBorrowing?.data[0].id as string,
+				borrowingId: bookBorrowing?.data?.[0].id as string,
 				userBookId: bookId,
 				endedAt: new Date().toISOString(),
 			});
@@ -278,6 +278,10 @@ export const BookshelfChoiceDropdown: FC<Props> = ({
 					onMutated={async () => {
 						setUsingBorrowFlow(false);
 
+						const borrowingBookshelf = bookshelfData?.data.find(
+							(data) => data.name === 'Wypożyczalnia'
+						);
+
 						await Promise.all([
 							queryClient.invalidateQueries({
 								predicate: ({ queryKey }) =>
@@ -298,6 +302,20 @@ export const BookshelfChoiceDropdown: FC<Props> = ({
 										BookApiQueryKeys.findBooksByBookshelfId &&
 									query.queryKey[1] === selectedBookshelfId,
 							}),
+							queryClient.invalidateQueries({
+								predicate: (query) =>
+									query.queryKey[0] === BookApiQueryKeys.findUserBooksBy &&
+									(query.queryKey[1] === currentBookshelfId ||
+										query.queryKey[2] === currentBookshelfId), // todo - might need to adjust this.
+							}),
+							borrowingBookshelf
+								? queryClient.invalidateQueries({
+										predicate: (query) =>
+											query.queryKey[0] === BookApiQueryKeys.findUserBooksBy &&
+											(query.queryKey[1] === borrowingBookshelf.id ||
+												query.queryKey[2] === borrowingBookshelf.id), // todo - might need to adjust this.
+									})
+								: Promise.resolve(),
 						]);
 					}}
 					onClosed={() => {
