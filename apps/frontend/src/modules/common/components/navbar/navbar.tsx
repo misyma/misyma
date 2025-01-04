@@ -1,7 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate, useRouter } from '@tanstack/react-router';
 import { type FC, Fragment, useMemo } from 'react';
-import { IoIosLogOut } from 'react-icons/io';
 
 import { UserRole, type User } from '@common/contracts';
 
@@ -19,6 +18,7 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from '../breadcrumb/breadcrumb';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../tooltip/tooltip';
 
 const NavbarBreadcrumbs = () => {
   const breadcrumbKeys = useBreadcrumbKeysContext();
@@ -181,6 +181,8 @@ const TextLogo: FC = () => (
 );
 
 const NavbarList: FC<{ user?: User; handleLogout: () => void }> = ({ user, handleLogout }) => {
+  const navigate = useNavigate();
+
   const linkClasses =
     '[&.active]:font-extrabold hover:text-primary [&.active]:text-primary underline-offset-8 decoration-[3px] text-nowrap';
 
@@ -216,14 +218,39 @@ const NavbarList: FC<{ user?: User; handleLogout: () => void }> = ({ user, handl
         <Link
           to={'/profile'}
           className={linkClasses}
+          onClick={(e) => {
+            e.preventDefault();
+          }}
         >
-          Profil
+          <TooltipProvider delayDuration={300}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span>Profil</span>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">
+                <ul className="font-normal text-start">
+                  <li
+                    onClick={() => {
+                      navigate({
+                        to: '/profile',
+                      });
+                    }}
+                    className="pt-2 hover:text-primary"
+                  >
+                    Ustawienia
+                  </li>
+                  <li
+                    onClick={handleLogout}
+                    className="py-2 hover:text-primary"
+                  >
+                    Wyloguj
+                  </li>
+                </ul>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </Link>
       </li>
-      <IoIosLogOut
-        onClick={handleLogout}
-        className="cursor-pointer text-xl sm:text-4xl text-primary"
-      />
     </ul>
   );
 };
