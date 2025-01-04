@@ -85,6 +85,8 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
     }),
   );
 
+  const borrowingBookshelfId = bookshelfData?.data.find((bksh) => bksh.name === 'Wypożyczalnia')?.id;
+
   const [previousBookshelfName, setPreviousBookshelfName] = useState<string | null>(booksBookshelf?.name ?? null);
 
   const [currentBookshelf, setCurrentBookshelf] = useState('');
@@ -157,6 +159,26 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
             queryKey,
           ),
       }),
+      queryClient.invalidateQueries({
+        predicate: ({ queryKey }) =>
+          invalidateFindUserBooksByQuery(
+            {
+              bookshelfId: currentBookshelfId,
+            },
+            queryKey,
+          ),
+      }),
+      borrowingBookshelfId
+        ? queryClient.invalidateQueries({
+            predicate: ({ queryKey }) =>
+              invalidateFindUserBooksByQuery(
+                {
+                  bookshelfId: id,
+                },
+                queryKey,
+              ),
+          })
+        : Promise.resolve(),
     ]);
   };
 
