@@ -5,12 +5,14 @@ import { HiOutlineFilter } from 'react-icons/hi';
 import { HiPlus } from 'react-icons/hi2';
 import { useSelector, useDispatch } from 'react-redux';
 
+import { useFindUserBookshelfsQuery } from '../../../bookshelf/api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 import { BooksSortButton } from '../../../common/components/booksSortButton/booksSortButton';
 import { Button } from '../../../common/components/button/button';
 import {
   myBooksStateSelectors,
   setFilterVisible,
 } from '../../../core/store/states/myBooksFilterState/myBooksFilterStateSlice';
+import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 
 export const BooksPageTopBar: FC = () => {
   return (
@@ -25,13 +27,27 @@ export const BooksPageTopBar: FC = () => {
 const CreateBookButton = () => {
   const navigate = useNavigate();
 
+  const { data: userData } = useFindUserQuery();
+  const { data: bookshelvesData, isLoading } = useFindUserBookshelfsQuery({
+    userId: userData?.id ?? '',
+  });
+
+  const usableBookshelves = bookshelvesData?.data.filter((b) => !['Wypożyczalnia', 'Archiwum'].includes(b.name));
+
+  const cannotCreateBook = isLoading || usableBookshelves?.length === 0;
+
   return (
     <TooltipProvider delayDuration={300}>
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
             size="big-icon"
+            className="!cursor-default disabled:!pointer-events-auto"
+            disabled={cannotCreateBook}
             onClick={() => {
+              if (cannotCreateBook) {
+                return;
+              }
               navigate({
                 to: `/shelves/bookshelf/search`,
                 search: {
@@ -45,7 +61,8 @@ const CreateBookButton = () => {
           </Button>
         </TooltipTrigger>
         <TooltipContent>
-          <p>Stwórz książkę</p>
+          {!cannotCreateBook && <p>Stwórz książkę</p>}
+          {cannotCreateBook && <p>Stwórz półkę aby stworzyć książkę</p>}
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

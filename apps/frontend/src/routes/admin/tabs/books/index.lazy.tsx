@@ -1,6 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { createLazyFileRoute } from '@tanstack/react-router';
-import { type FC, useState } from 'react';
+import { type FC, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { type FindAdminBooksQueryParams } from '@common/contracts';
@@ -11,13 +11,42 @@ import { BooksTable } from '../../../../modules/admin/components/booksTable';
 import { BooksTableFilters } from '../../../../modules/admin/components/booksTableFilters';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { BookApiQueryKeys } from '../../../../modules/book/api/user/queries/bookApiQueryKeys';
+import { Input } from '../../../../modules/common/components/input/input';
 import { type DynamicFilterValues } from '../../../../modules/common/contexts/dynamicFilterContext';
+import useDebounce from '../../../../modules/common/hooks/useDebounce';
 import { AdminTabLayout } from '../../../../modules/common/layouts/adminTabLayout';
 import { RequireAdmin } from '../../../../modules/core/components/requireAdmin/requireAdmin';
 import {
   adminBookFilterStateActions,
   adminBookFilterStateSelectors,
 } from '../../../../modules/core/store/states/adminBookFilterState/adminBookFilterStateSlice';
+
+const TitleInputFilter = () => {
+  const navigate = Route.useNavigate();
+  const [searchedTitle, setSearchedTitle] = useState(Route.useSearch().title ?? '');
+
+  const debouncedTitle = useDebounce(searchedTitle, 300);
+
+  useEffect(() => {
+    navigate({
+      to: '',
+      search: (prev) => ({
+        ...prev,
+        title: debouncedTitle,
+      }),
+    });
+  }, [debouncedTitle, navigate]);
+
+  return (
+    <Input
+      onChange={(e) => {
+        setSearchedTitle(e.target.value);
+      }}
+      placeholder="Tytuł"
+      value={searchedTitle}
+    />
+  );
+};
 
 export const BooksAdminPage: FC = () => {
   const [filterApplied, setFilterApplied] = useState(false);
@@ -58,7 +87,8 @@ export const BooksAdminPage: FC = () => {
 
     navigate({
       to: '',
-      search: () => ({
+      search: (prev) => ({
+        ...prev,
         ...val,
         isApproved: acceptedFilterValue,
         page: 1,
@@ -79,7 +109,10 @@ export const BooksAdminPage: FC = () => {
   const onClearAll = () => {
     navigate({
       to: '',
-      search: () => ({}),
+      search: (prev) => ({
+        page: 1,
+        title: prev.title,
+      }),
     });
 
     setFilterApplied(false);
@@ -89,11 +122,15 @@ export const BooksAdminPage: FC = () => {
     <AuthenticatedLayout>
       <AdminTabLayout
         TabsSlot={<AdminTabs currentlySelected="books" />}
+        additionalActionsPlacement="beneathTabsSlot"
         AdditionalActionsSlot={
-          <BooksTabActions
-            filterApplied={filterApplied}
-            toggleFilterVisibility={toggleFilterVisibility}
-          />
+          <div className="flex justify-between items-center w-full col-span-6">
+            <TitleInputFilter />
+            <BooksTabActions
+              filterApplied={filterApplied}
+              toggleFilterVisibility={toggleFilterVisibility}
+            />
+          </div>
         }
         TableSlot={
           <BooksTable

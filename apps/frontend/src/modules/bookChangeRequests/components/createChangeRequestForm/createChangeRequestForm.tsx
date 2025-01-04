@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
-import { type FC, useState } from 'react';
+import { type FC, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { z } from 'zod';
@@ -115,11 +115,9 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
   const [currentStep, setCurrentStep] = useState<number>(1);
 
   const context = useBookDetailsChangeRequestContext();
-
   const dispatch = useBookDetailsChangeRequestDispatch();
 
   const { data: userData } = useFindUserQuery();
-
   const { data: userBookData } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
@@ -127,7 +125,6 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
       accessToken: accessToken as string,
     }),
   );
-
   const { data: bookData } = useErrorHandledQuery(
     FindBookByIdQueryOptions({
       accessToken: accessToken as string,
@@ -135,7 +132,8 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
     }),
   );
 
-  const { mutateAsync: createBookChangeRequest } = useCreateBookChangeRequestMutation({});
+  const { mutateAsync: createBookChangeRequest, isPending: isCreatingBookChangeRequest } =
+    useCreateBookChangeRequestMutation({});
 
   const stepTwoForm = useForm({
     resolver: zodResolver(stepTwoSchema),
@@ -150,7 +148,7 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
   });
 
   // eslint-disable-next-line
-	const onProceedToNextStep = (vals: any) => {
+  const onProceedToNextStep = (vals: any) => {
     dispatch({
       type: BookDetailsChangeRequestAction.setValues,
       values: {
@@ -162,6 +160,74 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
   };
 
   const { mutateAsync: createAuthorDraft, isPending: isCreateAuthorPending } = useCreateAuthorDraftMutation({});
+
+  const payload = useMemo(
+    () => ({
+      ...context,
+      ...(context?.authorIds
+        ? {
+            authorIds: [context.authorIds],
+          }
+        : {}),
+      ...stepTwoForm.getValues(),
+      accessToken: accessToken as string,
+      bookId: bookData?.id as string,
+    }),
+    [context, stepTwoForm, accessToken, bookData?.id],
+  );
+
+  const updatePayload = useMemo(() => {
+    const innerPayload = { ...payload };
+
+    if (context.authorName) {
+      payload.authorIds = [''];
+    }
+
+    // Todo: refactor
+    Object.entries(payload).forEach(([key, value]) => {
+      const bookDataKey = key as keyof typeof bookData;
+
+      if (!bookData) {
+        return;
+      }
+
+      if (bookData[bookDataKey] === value) {
+        delete innerPayload[bookDataKey];
+
+        return;
+      }
+
+      if (Array.isArray(bookData[bookDataKey]) && bookData[bookDataKey]?.[0] === value) {
+        delete innerPayload[bookDataKey];
+
+        return;
+      }
+
+      if (bookData?.authors && Array.isArray(value) && key === 'authorIds' && bookData.authors[0]?.id === value[0]) {
+        delete innerPayload['authorIds'];
+
+        return;
+      }
+
+      if (key === 'pages' && value === '' && bookData.pages !== 0) {
+        innerPayload[key] = null as unknown as number;
+
+        return;
+      }
+
+      if (key === 'translator' && value === '' && bookData.translator !== '') {
+        innerPayload[key] = null as unknown as string;
+
+        return;
+      }
+
+      if (!value) {
+        delete innerPayload[bookDataKey];
+      }
+    });
+
+    return innerPayload;
+  }, [bookData, payload, context.authorName]);
 
   const onUpdate = async (values: z.infer<typeof stepTwoSchema>) => {
     const payload = {
@@ -235,7 +301,7 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
     try {
       await createBookChangeRequest({
         ...payload,
-        pages: payload.pages !== undefined ? null : payload.pages,
+        pages: payload.pages === undefined ? null : payload.pages,
         authorIds: Array.isArray(payload.authorIds) ? payload.authorIds : payload.authorIds?.split(','),
       } as CreateBookChangeRequestPayload);
 
@@ -279,7 +345,7 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
           <form
             onSubmit={stepTwoForm.handleSubmit(
               //   eslint-disable-next-line
-							async (data) => await onUpdate(data as any)
+              async (data) => await onUpdate(data as any),
             )}
             className="space-y-4"
           >
@@ -366,10 +432,16 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
               </Button>
               <Button
                 size="lg"
-                disabled={!stepTwoForm.formState.isValid || isCreateAuthorPending}
+                disabled={
+                  !stepTwoForm.formState.isValid ||
+                  (!stepTwoForm.formState.isDirty && Object.entries(updatePayload).length <= 2) ||
+                  isCreateAuthorPending ||
+                  isCreatingBookChangeRequest
+                }
                 type="submit"
               >
-                Prześlij prośbę
+                {!isCreatingBookChangeRequest && 'Prześlij prośbę'}
+                {isCreatingBookChangeRequest && <LoadingSpinner size={24} />}
               </Button>
             </div>
           </form>

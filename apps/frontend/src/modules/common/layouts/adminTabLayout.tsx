@@ -13,6 +13,7 @@ interface AdminTabLayoutProps {
   tableWrapperClassName?: string;
   additionalColumnClassName?: string;
   mainWrapperClassName?: string;
+  additionalActionsPlacement?: 'tabsSlotNeighbor' | 'beneathTabsSlot';
 }
 
 export const AdminTabLayout: FC<AdminTabLayoutProps> = ({
@@ -26,6 +27,7 @@ export const AdminTabLayout: FC<AdminTabLayoutProps> = ({
   tableWrapperClassName,
   additionalColumnClassName,
   mainWrapperClassName,
+  additionalActionsPlacement = 'tabsSlotNeighbor',
 }) => {
   return (
     <div className={cn('flex w-full justify-center items-start w-100% px-8 py-2', mainWrapperClassName)}>
@@ -37,8 +39,11 @@ export const AdminTabLayout: FC<AdminTabLayoutProps> = ({
       >
         <div className={cn('flex justify-between gap-4 col-span-full', tabsSlotClassName)}>
           {TabsSlot}
-          <div className="flex w-full justify-end">{AdditionalActionsSlot}</div>
+          {additionalActionsPlacement === 'tabsSlotNeighbor' && (
+            <div className="flex w-full justify-end">{AdditionalActionsSlot}</div>
+          )}
         </div>
+        {additionalActionsPlacement === 'beneathTabsSlot' && <>{AdditionalActionsSlot}</>}
         {AdditionalColumn && <div className={cn('w-full', additionalColumnClassName)}>{AdditionalColumn}</div>}
         <div className={cn('flex flex-col px-4 w-[100%] col-span-full', tableContainerClassName)}>
           <div className={cn('flex items-center justify-center w-100% px-8 py-1 sm:py-4', tableWrapperClassName)}>
