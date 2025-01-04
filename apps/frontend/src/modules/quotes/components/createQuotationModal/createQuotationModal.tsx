@@ -41,17 +41,16 @@ const createQuotationSchema = z
       .max(256, 'Strona może mieć maksymalnie 256 znaków.'),
   })
   .superRefine((value, ctx) => {
-    const pageRegex = /^\d+-\d+$/;
-
-    // Usage with Zod:
     if (!value.page) {
       return;
     }
 
+    const pageRegex = /^\d+(-\d+)?$/;
+
     if (!pageRegex.test(value.page)) {
       ctx.addIssue({
         code: z.ZodIssueCode.invalid_string,
-        message: 'Zły format. Pożądany format liczba-liczba',
+        message: 'Zły format. Pożądany format liczba albo liczba-liczba.',
         validation: 'regex',
         path: ['page'],
       });
