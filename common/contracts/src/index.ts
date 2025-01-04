@@ -60,6 +60,8 @@ export * from './schemas/book/findBook.js';
 
 export * from './schemas/book/findBooks.js';
 
+export * from './schemas/book/findBooksSortField.js';
+
 export * from './schemas/book/findAdminBooks.js';
 
 export * from './schemas/book/createBook.js';
@@ -126,7 +128,7 @@ export * from './schemas/quote/findQuotes.js';
 
 export * from './schemas/quote/updateQuote.js';
 
-export * from './schemas/sortingType.js';
+export * from './schemas/sortOrder.js';
 
 export * from './schemas/collection/collection.js';
 

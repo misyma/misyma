@@ -1,4 +1,4 @@
-import { type SortingType } from '@common/contracts';
+import { type SortOrder } from '@common/contracts';
 
 import { type QueryHandler } from '../../../../../common/types/queryHandler.js';
 import { type Author } from '../../../domain/entities/author/author.js';
@@ -10,7 +10,7 @@ export interface ExecutePayload {
   readonly bookshelfId?: string | undefined;
   readonly page: number;
   readonly pageSize: number;
-  readonly sortDate?: SortingType | undefined;
+  readonly sortDate?: SortOrder | undefined;
 }
 
 export interface ExecuteResult {

@@ -1,4 +1,4 @@
-import { type SortingType } from '@common/contracts';
+import { type SortOrder } from '@common/contracts';
 
 import { type QueryHandler } from '../../../../../common/types/queryHandler.js';
 import { type Collection } from '../../../domain/entities/collection/collection.js';
@@ -7,7 +7,7 @@ export interface FindCollectionsQueryHandlerPayload {
   readonly userId: string;
   readonly page: number;
   readonly pageSize: number;
-  readonly sortDate?: SortingType | undefined;
+  readonly sortDate?: SortOrder | undefined;
 }
 
 export interface FindCollectionsQueryHandlerResult {

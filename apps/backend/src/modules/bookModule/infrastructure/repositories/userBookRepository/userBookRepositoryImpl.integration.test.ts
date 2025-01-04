@@ -1527,6 +1527,211 @@ describe('UserBookRepositoryImpl', () => {
 
       expect(count).toEqual(2);
     });
+
+    it('sorts UserBooks by default order', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const bookshelf = await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+        },
+      });
+
+      const author = await authorTestUtils.createAndPersist();
+
+      const book1 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+        },
+      });
+
+      const book2 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+        },
+      });
+
+      const genre = await genreTestUtils.createAndPersist();
+
+      const userBook1 = await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book1.id,
+          bookshelfId: bookshelf.id,
+          genreId: genre.id,
+        },
+      });
+
+      const userBook2 = await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book2.id,
+          bookshelfId: bookshelf.id,
+          genreId: genre.id,
+        },
+      });
+
+      const userBooks = await userBookRepository.findUserBooks({
+        userId: user.id,
+        page: 1,
+        pageSize: 10,
+        expandFields: [],
+      });
+
+      expect(userBooks.length).toEqual(2);
+
+      expect(userBooks[0]?.getId()).toEqual(userBook2.id);
+
+      expect(userBooks[1]?.getId()).toEqual(userBook1.id);
+    });
+
+    it('sorts UserBooks by createdAt', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const bookshelf = await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+        },
+      });
+
+      const author = await authorTestUtils.createAndPersist();
+
+      const book1 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+        },
+      });
+
+      const book2 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+        },
+      });
+
+      const genre = await genreTestUtils.createAndPersist();
+
+      const userBook1 = await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book1.id,
+          bookshelfId: bookshelf.id,
+          genreId: genre.id,
+        },
+      });
+
+      const userBook2 = await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book2.id,
+          bookshelfId: bookshelf.id,
+          genreId: genre.id,
+        },
+      });
+
+      const userBooks1 = await userBookRepository.findUserBooks({
+        userId: user.id,
+        page: 1,
+        pageSize: 10,
+        expandFields: [],
+        sortField: 'createdAt',
+        sortOrder: 'desc',
+      });
+
+      expect(userBooks1.length).toEqual(2);
+
+      expect(userBooks1[0]?.getId()).toEqual(userBook2.id);
+
+      expect(userBooks1[1]?.getId()).toEqual(userBook1.id);
+
+      const userBooks2 = await userBookRepository.findUserBooks({
+        userId: user.id,
+        page: 1,
+        pageSize: 10,
+        expandFields: [],
+        sortField: 'createdAt',
+        sortOrder: 'asc',
+      });
+
+      expect(userBooks2.length).toEqual(2);
+
+      expect(userBooks2[0]?.getId()).toEqual(userBook1.id);
+
+      expect(userBooks2[1]?.getId()).toEqual(userBook2.id);
+    });
+
+    it('sorts UserBooks by releaseYear', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const bookshelf = await bookshelfTestUtils.createAndPersist({
+        input: {
+          userId: user.id,
+        },
+      });
+
+      const author = await authorTestUtils.createAndPersist();
+
+      const book1 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+          book: {
+            releaseYear: 2000,
+          },
+        },
+      });
+
+      const book2 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+          book: {
+            releaseYear: 2005,
+          },
+        },
+      });
+
+      const genre = await genreTestUtils.createAndPersist();
+
+      const userBook1 = await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book1.id,
+          bookshelfId: bookshelf.id,
+          genreId: genre.id,
+        },
+      });
+
+      const userBook2 = await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book2.id,
+          bookshelfId: bookshelf.id,
+          genreId: genre.id,
+        },
+      });
+
+      const userBooks1 = await userBookRepository.findUserBooks({
+        userId: user.id,
+        page: 1,
+        pageSize: 10,
+        expandFields: [],
+        sortField: 'releaseYear',
+        sortOrder: 'desc',
+      });
+
+      expect(userBooks1.length).toEqual(2);
+
+      expect(userBooks1[0]?.getId()).toEqual(userBook2.id);
+
+      expect(userBooks1[1]?.getId()).toEqual(userBook1.id);
+
+      const userBooks2 = await userBookRepository.findUserBooks({
+        userId: user.id,
+        page: 1,
+        pageSize: 10,
+        expandFields: [],
+        sortField: 'releaseYear',
+        sortOrder: 'asc',
+      });
+
+      expect(userBooks2.length).toEqual(2);
+
+      expect(userBooks2[0]?.getId()).toEqual(userBook1.id);
+
+      expect(userBooks2[1]?.getId()).toEqual(userBook2.id);
+    });
   });
 
   describe('findUserBookOwner', () => {

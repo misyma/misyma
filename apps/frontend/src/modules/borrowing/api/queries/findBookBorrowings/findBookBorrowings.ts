@@ -2,7 +2,7 @@ import {
   type FindBorrowingsPathParams,
   type FindBorrowingsQueryParams,
   type FindBorrowingsResponseBody,
-  type SortingType,
+  type SortOrder,
 } from '@common/contracts';
 
 import { BookApiError } from '../../../../book/errors/bookApiError';
@@ -10,7 +10,7 @@ import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMappe
 import { HttpService } from '../../../../core/services/httpService/httpService';
 
 export interface FindBookBorrowingsPayload extends FindBorrowingsPathParams, FindBorrowingsQueryParams {
-  sortDate: SortingType;
+  sortDate: SortOrder;
   accessToken: string;
 }
 

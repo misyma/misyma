@@ -2,11 +2,16 @@ import { type ReadingStatus } from './readingStatus.js';
 import { type UserBook } from './userBook.js';
 import { type Language } from '../book/language.js';
 import { type Metadata } from '../metadata.js';
-import { type SortingType } from '../sortingType.js';
+import { type SortOrder } from '../sortOrder.js';
 
 export enum UserBookExpandField {
   collections = 'collections',
   readings = 'readings',
+}
+
+export enum FindUserBooksSortField {
+  releaseYear = 'releaseYear',
+  createdAt = 'createdAt',
 }
 
 export interface FindUserBooksQueryParams {
@@ -23,7 +28,8 @@ export interface FindUserBooksQueryParams {
   readonly language?: Language;
   readonly page?: number;
   readonly pageSize?: number;
-  readonly sortDate?: SortingType;
+  readonly sortField?: FindUserBooksSortField;
+  readonly sortOrder?: SortOrder;
   // comma separated list of fields to expand, e.g. collections,readings
   readonly expandFields?: string;
 }

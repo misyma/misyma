@@ -9,7 +9,7 @@ export const findCollectionsQueryParamsDtoSchema = Type.Object({
   userId: Type.String({ format: 'uuid' }),
   page: Type.Optional(Type.Integer({ minimum: 1 })),
   pageSize: Type.Optional(Type.Integer({ minimum: 1 })),
-  sortDate: Type.Optional(Type.Enum(contracts.SortingType)),
+  sortDate: Type.Optional(Type.Enum(contracts.SortOrder)),
 });
 
 export type FindCollectionsQueryParamsDto = TypeExtends<

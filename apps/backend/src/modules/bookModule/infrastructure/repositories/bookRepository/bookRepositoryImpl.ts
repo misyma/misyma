@@ -228,7 +228,8 @@ export class BookRepositoryImpl implements BookRepository {
       authorIds,
       page,
       pageSize,
-      sortDate,
+      sortField,
+      sortOrder,
     } = payload;
 
     let rawEntities: BookWithJoinsRawEntity[];
@@ -292,7 +293,11 @@ export class BookRepositoryImpl implements BookRepository {
         .limit(pageSize)
         .offset(pageSize * (page - 1));
 
-      query.orderBy('id', sortDate ?? 'desc');
+      if (sortField === 'releaseYear') {
+        query.orderBy(`${bookTable}.releaseYear`, sortOrder ?? 'desc');
+      } else {
+        query.orderBy('id', sortOrder ?? 'desc');
+      }
 
       rawEntities = await query;
     } catch (error) {

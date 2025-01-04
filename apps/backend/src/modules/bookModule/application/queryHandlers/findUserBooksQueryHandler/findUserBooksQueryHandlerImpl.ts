@@ -31,7 +31,8 @@ export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler 
       language,
       releaseYearAfter,
       releaseYearBefore,
-      sortDate,
+      sortField,
+      sortOrder,
       expandFields,
     } = payload;
 
@@ -65,8 +66,9 @@ export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler 
         releaseYearBefore,
         page,
         pageSize,
-        sortDate,
         expandFields: expandFields ?? [],
+        sortField,
+        sortOrder,
       }),
       await this.userBookRepository.countUserBooks({
         bookshelfId,

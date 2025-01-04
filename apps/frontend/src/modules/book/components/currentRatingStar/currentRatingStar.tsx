@@ -2,7 +2,7 @@ import { type FC } from 'react';
 import { IoMdStar } from 'react-icons/io';
 import { useSelector } from 'react-redux';
 
-import { SortingType } from '@common/contracts';
+import { SortOrder } from '@common/contracts';
 
 import { FindBookReadingsQueryOptions } from '../../../bookReadings/api/queries/findBookReadings/findBookReadingsQueryOptions';
 import { Skeleton } from '../../../common/components/skeleton/skeleton';
@@ -21,7 +21,7 @@ export const CurrentRatingStar: FC<Props> = ({ userBookId }) => {
       accessToken: accessToken as string,
       userBookId,
       pageSize: 1,
-      sortDate: SortingType.desc,
+      sortDate: SortOrder.desc,
     }),
   );
 

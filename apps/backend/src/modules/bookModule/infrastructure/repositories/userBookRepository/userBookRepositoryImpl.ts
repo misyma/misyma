@@ -331,7 +331,8 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       title,
       status,
       isFavorite,
-      sortDate,
+      sortField,
+      sortOrder,
       language,
       releaseYearAfter,
       releaseYearBefore,
@@ -492,7 +493,11 @@ export class UserBookRepositoryImpl implements UserBookRepository {
 
       query.groupBy([`${userBookTable}.id`, `${bookTable}.id`, `${genreTable}.name`]);
 
-      query.orderBy('id', sortDate ?? 'desc');
+      if (sortField === 'releaseYear') {
+        query.orderBy(`${bookTable}.releaseYear`, sortOrder ?? 'desc');
+      } else {
+        query.orderBy('id', sortOrder ?? 'desc');
+      }
 
       rawEntities = await query;
     } catch (error) {

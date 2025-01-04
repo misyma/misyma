@@ -1,13 +1,15 @@
 import { type Book } from './book.js';
 import { type Metadata } from '../metadata.js';
-import { type SortingType } from '../sortingType.js';
+import { type SortOrder } from '../sortOrder.js';
+import { type FindBooksSortField } from './findBooksSortField.js';
 
 export interface FindBooksQueryParams {
   readonly isbn?: string;
   readonly title?: string;
   readonly page?: number;
   readonly pageSize?: number;
-  readonly sortDate?: SortingType;
+  readonly sortField?: FindBooksSortField;
+  readonly sortOrder?: SortOrder;
 }
 
 export interface FindBooksResponseBody {
