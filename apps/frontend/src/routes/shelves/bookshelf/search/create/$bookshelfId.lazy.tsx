@@ -46,8 +46,6 @@ export const SearchCreatePage: FC = () => {
     }
   }, [navigate, params.bookshelfId, searchBookContext.title, searchBookContext.bookId, searchBookContext.step]);
 
-  //   return <ManualStep bookshelfId={searchParams.bookshelfId}></ManualStep>;
-
   return (
     <AuthenticatedLayout>
       <div className="w-full flex items-center justify-center">
