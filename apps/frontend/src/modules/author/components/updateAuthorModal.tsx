@@ -153,7 +153,7 @@ const UpdateAuthorForm: FC<FormProps> = ({ authorId, setError, setIsOpen, author
           )}
         />
         <Button
-          disabled={!form.formState.isValid}
+          disabled={!form.formState.isValid || !form.formState.isDirty}
           type="submit"
         >
           Aktualizuj

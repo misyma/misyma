@@ -183,6 +183,7 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
       payload.authorIds = [''];
     }
 
+    // Todo: refactor
     Object.entries(payload).forEach(([key, value]) => {
       const bookDataKey = key as keyof typeof bookData;
 
@@ -433,7 +434,7 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
                 size="lg"
                 disabled={
                   !stepTwoForm.formState.isValid ||
-                  (!stepTwoForm.formState.isDirty && Object.entries(updatePayload).length === 2) ||
+                  (!stepTwoForm.formState.isDirty && Object.entries(updatePayload).length <= 2) ||
                   isCreateAuthorPending ||
                   isCreatingBookChangeRequest
                 }

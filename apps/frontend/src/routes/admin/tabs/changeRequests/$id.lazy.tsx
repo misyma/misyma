@@ -8,7 +8,10 @@ import { z } from 'zod';
 
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { useFindAuthorsQuery } from '../../../../modules/author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
+import { BookApiQueryKeys } from '../../../../modules/book/api/user/queries/bookApiQueryKeys';
 import { FindBookByIdQueryOptions } from '../../../../modules/book/api/user/queries/findBookById/findBookByIdQueryOptions';
+import { invalidateBooksByBookshelfIdQuery } from '../../../../modules/book/api/user/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
+import { invalidateFindUserBooksByQuery } from '../../../../modules/book/api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
 import { useApplyBookChangeRequestMutation } from '../../../../modules/bookChangeRequests/api/admin/mutations/applyBookChangeRequest/applyBookChangeRequest';
 import { useDeleteBookChangeRequestMutation } from '../../../../modules/bookChangeRequests/api/admin/mutations/deleteBookChangeRequest/deleteBookChangeRequest';
 import { BookChangeRequestApiAdminQueryKeys } from '../../../../modules/bookChangeRequests/api/admin/queries/bookChangeRequestApiAdminQueryKeys';
@@ -193,6 +196,15 @@ export const ChangeRequestView: FC = () => {
       queryClient.invalidateQueries({
         predicate: ({ queryKey }) =>
           queryKey[0] === BookChangeRequestApiAdminQueryKeys.findBookChangeRequestById && queryKey[1] === id,
+      }),
+      queryClient.invalidateQueries({
+        predicate: ({ queryKey }) => queryKey[0] === BookApiQueryKeys.findUserBookById,
+      }),
+      queryClient.invalidateQueries({
+        predicate: ({ queryKey }) => invalidateBooksByBookshelfIdQuery({}, queryKey),
+      }),
+      queryClient.invalidateQueries({
+        predicate: ({ queryKey }) => invalidateFindUserBooksByQuery({}, queryKey),
       }),
     ]);
 

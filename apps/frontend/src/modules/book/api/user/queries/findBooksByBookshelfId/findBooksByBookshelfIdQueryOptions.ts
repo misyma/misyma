@@ -46,7 +46,7 @@ export const invalidateBooksByBookshelfIdQuery = (
     predicates.push((queryKey) => queryKey[4] === vals.pageSize);
   }
 
-  let res = false;
+  let res = true;
 
   predicates.forEach((predicate) => {
     res = predicate(queryKey);
