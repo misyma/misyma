@@ -7,6 +7,7 @@ import { type FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import { useFindUserBookshelfsQuery } from '../../../bookshelf/api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 import { useCreateBorrowingMutation } from '../../../borrowing/api/mutations/createBorrowingMutation/createBorrowingMutation';
 import { BorrowingApiQueryKeys } from '../../../borrowing/api/queries/borrowingApiQueryKeys';
 import { Button } from '../../../common/components/button/button';
@@ -25,7 +26,10 @@ import { useToast } from '../../../common/components/toast/use-toast';
 import { cn } from '../../../common/lib/utils';
 import { useStoreSelector } from '../../../core/store/hooks/useStoreSelector';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
+import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
+import { invalidateBooksByBookshelfIdQuery } from '../../api/user/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
+import { invalidateFindUserBooksByQuery } from '../../api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
 
 interface Props {
   bookId: string;
@@ -58,14 +62,18 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, currentBookshelfId, op
   const accessToken = useStoreSelector(userStateSelectors.selectAccessToken);
 
   const [isOpen, setIsOpen] = useState<boolean>(open);
-
   const [error, setError] = useState('');
+  const [calendarVisible, setCalendarVisible] = useState(false);
+
+  const { data: userData } = useFindUserQuery();
+  const { data: bookshelvesData } = useFindUserBookshelfsQuery({
+    userId: userData?.id ?? '',
+    pageSize: 150,
+  });
 
   const queryClient = useQueryClient();
 
   const { toast } = useToast();
-
-  const [calendarVisible, setCalendarVisible] = useState(false);
 
   const form = useForm<z.infer<typeof createBorrowingSchema>>({
     resolver: zodResolver(createBorrowingSchema),
@@ -108,6 +116,8 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, currentBookshelfId, op
         variant: 'success',
       });
 
+      const borrowingBookshelfId = bookshelvesData?.data.find((bksh) => bksh.name === 'Wypożyczalnia')?.id;
+
       await Promise.all([
         queryClient.invalidateQueries({
           predicate: ({ queryKey }) =>
@@ -121,6 +131,24 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, currentBookshelfId, op
         }),
         queryClient.invalidateQueries({
           predicate: ({ queryKey }) => queryKey[0] === BookApiQueryKeys.findUserBookById && queryKey[1] === bookId,
+        }),
+        queryClient.invalidateQueries({
+          predicate: ({ queryKey }) =>
+            invalidateFindUserBooksByQuery(
+              {
+                bookshelfId: borrowingBookshelfId,
+              },
+              queryKey,
+            ),
+        }),
+        queryClient.invalidateQueries({
+          predicate: ({ queryKey }) =>
+            invalidateBooksByBookshelfIdQuery(
+              {
+                bookshelfId: borrowingBookshelfId,
+              },
+              queryKey,
+            ),
         }),
       ]);
     } catch (error) {

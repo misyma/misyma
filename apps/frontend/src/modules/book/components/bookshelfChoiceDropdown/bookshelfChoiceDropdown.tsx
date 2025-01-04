@@ -28,6 +28,7 @@ import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUs
 import { useUpdateUserBookMutation } from '../../api/user/mutations/updateUserBookMutation/updateUserBookMutation';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
 import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
+import { invalidateFindUserBooksByQuery } from '../../api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
 import { CreateBorrowingModal } from '../createBorrowingModal/createBorrowingModal';
 
 interface Props {
@@ -144,8 +145,7 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
       }),
       queryClient.invalidateQueries({
         predicate: (query) =>
-          query.queryKey[0] === BookApiQueryKeys.findUserBooksBy &&
-          (query.queryKey[1] === currentBookshelfId || query.queryKey[2] === currentBookshelfId), // todo - might need to adjust this.
+          query.queryKey[0] === BookApiQueryKeys.findUserBooksBy && query.queryKey[1] === currentBookshelfId,
       }),
     ]);
   };
@@ -262,14 +262,17 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
               }),
               queryClient.invalidateQueries({
                 predicate: (query) =>
-                  query.queryKey[0] === BookApiQueryKeys.findUserBooksBy &&
-                  (query.queryKey[1] === currentBookshelfId || query.queryKey[2] === currentBookshelfId), // todo - might need to adjust this.
+                  query.queryKey[0] === BookApiQueryKeys.findUserBooksBy && query.queryKey[1] === currentBookshelfId,
               }),
               borrowingBookshelf
                 ? queryClient.invalidateQueries({
-                    predicate: (query) =>
-                      query.queryKey[0] === BookApiQueryKeys.findUserBooksBy &&
-                      (query.queryKey[1] === borrowingBookshelf.id || query.queryKey[2] === borrowingBookshelf.id), // todo - might need to adjust this.
+                    predicate: ({ queryKey }) =>
+                      invalidateFindUserBooksByQuery(
+                        {
+                          bookshelfId: borrowingBookshelf.id,
+                        },
+                        queryKey,
+                      ),
                   })
                 : Promise.resolve(),
             ]);
