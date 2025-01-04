@@ -1,11 +1,12 @@
 import { Link, createLazyFileRoute, useNavigate } from '@tanstack/react-router';
-import { FC, useState } from 'react';
-import { RegisterUserForm } from '../../modules/auth/components/registerUserForm/registerUserForm';
-import { RequireNonAuthComponent } from '../../modules/core/components/requireNonAuth/requireNonAuthComponent';
-import { Button } from '../../modules/common/components/button/button';
-import { DefaultFormLayout } from '../../modules/core/layouts/default/defaultFormLayout';
+import { type FC, useState } from 'react';
+
 import { useSendVerificationEmailMutation } from '../../modules/auth/api/sendVerificationEmailMutation/sendVerificationEmailMutation';
+import { RegisterUserForm } from '../../modules/auth/components/registerUserForm/registerUserForm';
+import { Button } from '../../modules/common/components/button/button';
 import { useToast } from '../../modules/common/components/toast/use-toast';
+import { RequireNonAuthComponent } from '../../modules/core/components/requireNonAuth/requireNonAuthComponent';
+import { DefaultFormLayout } from '../../modules/core/layouts/default/defaultFormLayout';
 
 export const RegisterPage: FC = () => {
   const [isSuccess, setIsSuccess] = useState<boolean>(false);

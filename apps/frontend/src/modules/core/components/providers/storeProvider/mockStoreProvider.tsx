@@ -1,8 +1,10 @@
+import { type ReactNode } from '@tanstack/react-router';
 import { Provider } from 'react-redux';
-import { store } from '../../../store/store';
-import { ReactNode } from '@tanstack/react-router';
-import { userStateActions } from '../../../store/states/userState/userStateSlice';
+
 import { UserRole } from '@common/contracts';
+
+import { userStateActions } from '../../../store/states/userState/userStateSlice';
+import { store } from '../../../store/store';
 
 interface Props {
   children: ReactNode;

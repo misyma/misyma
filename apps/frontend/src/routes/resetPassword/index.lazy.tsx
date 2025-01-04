@@ -1,8 +1,9 @@
 import { Link, createLazyFileRoute, useNavigate } from '@tanstack/react-router';
-import { FC, useState } from 'react';
+import { type FC, useState } from 'react';
+
 import { SendResetPasswordEmailForm } from '../../modules/auth/components/sendResetPasswordEmailForm/sendResetPasswordEmailForm';
-import { RequireNonAuthComponent } from '../../modules/core/components/requireNonAuth/requireNonAuthComponent';
 import { Button } from '../../modules/common/components/button/button';
+import { RequireNonAuthComponent } from '../../modules/core/components/requireNonAuth/requireNonAuthComponent';
 import { DefaultFormLayout } from '../../modules/core/layouts/default/defaultFormLayout';
 
 export const SendResetPasswordEmailPage: FC = () => {
@@ -50,7 +51,7 @@ export const SendResetPasswordEmailPage: FC = () => {
             </p>
             <p className="py-8 w-[100%]">
               <Button
-                size='xl'
+                size="xl"
                 onClick={() =>
                   navigate({
                     to: '/login',

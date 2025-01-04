@@ -1,7 +1,8 @@
-import { Meta, StoryObj } from '@storybook/react';
-import { Input, InputProps, FileInput, FileInputProps } from './input';
-import * as HiIcons from 'react-icons/hi';
 import { useArgs } from '@storybook/preview-api';
+import { type Meta, type StoryObj } from '@storybook/react';
+import * as HiIcons from 'react-icons/hi';
+
+import { Input, type InputProps, FileInput, type FileInputProps } from './input';
 
 const meta: Meta<typeof Input> = {
   component: Input,

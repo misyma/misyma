@@ -1,7 +1,8 @@
-import { DeleteUserBookPathParams } from '@common/contracts';
-import { BookApiError } from '../../../../errors/bookApiError';
-import { HttpService } from '../../../../../core/services/httpService/httpService';
+import { type DeleteUserBookPathParams } from '@common/contracts';
+
 import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
+import { HttpService } from '../../../../../core/services/httpService/httpService';
+import { BookApiError } from '../../../../errors/bookApiError';
 
 export type DeleteUserBookPayload = DeleteUserBookPathParams & {
   accessToken: string;

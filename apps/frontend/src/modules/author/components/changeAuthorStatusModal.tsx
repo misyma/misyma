@@ -1,11 +1,10 @@
-import { FC, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { useQueryClient } from '@tanstack/react-query';
 import { DialogTitle } from '@radix-ui/react-dialog';
+import { useQueryClient } from '@tanstack/react-query';
+import { type FC, useMemo, useState } from 'react';
 import { HiCheckCircle, HiXCircle } from 'react-icons/hi2';
-import { userStateSelectors } from '../../core/store/states/userState/userStateSlice';
-import { useToast } from '../../common/components/toast/use-toast';
-import { useUpdateAuthorMutation } from '../api/admin/mutations/updateAuthorMutation/updateAuthorMutation';
+import { useSelector } from 'react-redux';
+
+import { Button } from '../../common/components/button/button';
 import {
   Dialog,
   DialogContent,
@@ -13,13 +12,10 @@ import {
   DialogHeader,
   DialogTrigger,
 } from '../../common/components/dialog/dialog';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '../../common/components/tooltip/tooltip';
-import { Button } from '../../common/components/button/button';
+import { useToast } from '../../common/components/toast/use-toast';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../common/components/tooltip/tooltip';
+import { userStateSelectors } from '../../core/store/states/userState/userStateSlice';
+import { useUpdateAuthorMutation } from '../api/admin/mutations/updateAuthorMutation/updateAuthorMutation';
 import { AuthorsApiQueryKeys } from '../api/user/queries/authorsApiQueryKeys';
 
 interface Props {
@@ -29,15 +25,13 @@ interface Props {
   page: number;
 }
 
-export const ChangeAuthorStatusModal: FC<Props> = ({
-  authorId,
-  authorName,
-  status,
-}: Props) => {
+export const ChangeAuthorStatusModal: FC<Props> = ({ authorId, authorName, status }: Props) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const { toast } = useToast();
+
   const queryClient = useQueryClient();
+
   const { mutateAsync: updateAuthor } = useUpdateAuthorMutation({});
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -45,7 +39,7 @@ export const ChangeAuthorStatusModal: FC<Props> = ({
   const onCreate = async () => {
     await updateAuthor({
       accessToken,
-      authorId: authorId,
+      authorId,
       isApproved: !status,
     });
 
@@ -57,8 +51,7 @@ export const ChangeAuthorStatusModal: FC<Props> = ({
     });
 
     await queryClient.invalidateQueries({
-      predicate: ({ queryKey }) =>
-        queryKey[0] === AuthorsApiQueryKeys.findAuthorsQuery,
+      predicate: ({ queryKey }) => queryKey[0] === AuthorsApiQueryKeys.findAuthorsQuery,
     });
   };
 
@@ -66,6 +59,7 @@ export const ChangeAuthorStatusModal: FC<Props> = ({
     if (status) {
       return <HiCheckCircle className="h-6 w-6 text-green-500" />;
     }
+
     return <HiXCircle className="h-6 w-6 text-red-500" />;
   }, [status]);
 
@@ -102,12 +96,8 @@ export const ChangeAuthorStatusModal: FC<Props> = ({
         className="max-w-xl py-16"
         omitCloseButton={true}
       >
-        <DialogDescription className="hidden">
-        Author status change dialog
-        </DialogDescription>
-        <DialogTitle className="hidden">
-          Czy na pewno chcesz zmienić status widoczności autora?
-        </DialogTitle>
+        <DialogDescription className="hidden">Author status change dialog</DialogDescription>
+        <DialogTitle className="hidden">Czy na pewno chcesz zmienić status widoczności autora?</DialogTitle>
         <DialogHeader
           aria-label="Change book visibility status."
           className="font-semibold text-center flex justify-center items-center"
@@ -120,10 +110,16 @@ export const ChangeAuthorStatusModal: FC<Props> = ({
             : 'Czy na pewno chcesz ujawnić tego autora? Użytkownicy będą mogli go wyszukać i użyć do dodania książek na półkę.'}
         </div>
         <div className="flex items-center justify-center gap-2">
-          <Button variant="secondary" type="button">
+          <Button
+            variant="secondary"
+            type="button"
+          >
             Anuluj
           </Button>
-          <Button onClick={onCreate} type="button">
+          <Button
+            onClick={onCreate}
+            type="button"
+          >
             {status ? 'Ukryj' : 'Pokazuj'}
           </Button>
         </div>

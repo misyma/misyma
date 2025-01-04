@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router';
-import { FC } from 'react';
+import { type FC } from 'react';
+
 import { cn } from '../../common/lib/utils';
 
 interface AdminTabsProps {
@@ -12,16 +13,9 @@ interface AdminTabLinkProps {
   label: string;
 }
 
-const AdminTabLink: FC<AdminTabLinkProps> = ({
-  currentlySelected,
-  label,
-  to,
-}) => (
+const AdminTabLink: FC<AdminTabLinkProps> = ({ currentlySelected, label, to }) => (
   <Link
-    className={cn(
-      'font-bold',
-      currentlySelected && 'text-primary cursor-default pointer-events-none'
-    )}
+    className={cn('font-bold', currentlySelected && 'text-primary cursor-default pointer-events-none')}
     to={to}
   >
     {label}

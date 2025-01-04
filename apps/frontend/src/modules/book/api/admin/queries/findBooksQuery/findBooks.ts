@@ -1,62 +1,63 @@
-import {
-	FindAdminBooksQueryParams,
-	FindBooksResponseBody,
-} from '@common/contracts';
+import { type FindAdminBooksQueryParams, type FindBooksResponseBody } from '@common/contracts';
+
 import { HttpService } from '../../../../../core/services/httpService/httpService';
 
 type Payload = FindAdminBooksQueryParams & {
-	accessToken: string;
-	signal: AbortSignal;
+  accessToken: string;
+  signal: AbortSignal;
 };
 
 export const adminFindBooks = async (values: Payload) => {
-	const { title, page, pageSize, accessToken, signal, ...remaining } = values;
+  const { title, page, pageSize, accessToken, signal, ...remaining } = values;
 
-	const query: Record<PropertyKey, string> = {};
+  const query: Record<PropertyKey, string> = {};
 
-	if (title) {
-		query.title = title;
-	}
+  if (title) {
+    query.title = title;
+  }
 
-	if (page) {
-		query.page = `${page}`;
-	}
+  if (page) {
+    query.page = `${page}`;
+  }
 
-	if (pageSize) {
-		query.pageSize = `${pageSize}`;
-	}
+  if (pageSize) {
+    query.pageSize = `${pageSize}`;
+  }
 
-	Object.entries(remaining).forEach(([key, val]) => {
-		if (val === undefined || val === '') {
-			return;
-		}
-		if (val === 0) {
-			return;
-		}
-		if (Array.isArray(val)) {
-			return (query[key] = val.join(','));
-		}
-		// eslint-disable-next-line
+  Object.entries(remaining).forEach(([key, val]) => {
+    if (val === undefined || val === '') {
+      return;
+    }
+
+    if (val === 0) {
+      return;
+    }
+
+    if (Array.isArray(val)) {
+      return (query[key] = val.join(','));
+    }
+    // eslint-disable-next-line
 		if ((val as any) instanceof Date) {
-			query[key] = (val as unknown as Date).getFullYear().toString();
-			return;
-		}
+      query[key] = (val as unknown as Date).getFullYear().toString();
 
-		query[key] = `${val}`;
-	});
+      return;
+    }
 
-	const response = await HttpService.get<FindBooksResponseBody>({
-		url: '/admin/books',
-		queryParams: query,
-		headers: {
-			Authorization: `Bearer ${accessToken}`,
-		},
-		signal,
-	});
+    query[key] = `${val}`;
+  });
 
-	if (!response.success) {
-		throw new Error('Error');
-	}
+  const response = await HttpService.get<FindBooksResponseBody>({
+    url: '/admin/books',
+    queryParams: query,
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    signal,
+  });
 
-	return response.body;
+  if (!response.success) {
+    throw new Error('Error');
+  }
+
+  return response.body;
 };

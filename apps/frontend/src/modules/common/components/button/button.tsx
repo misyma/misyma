@@ -1,8 +1,8 @@
-import * as React from 'react';
 import { Slot } from '@radix-ui/react-slot';
-import { cn } from '../../lib/utils';
+import * as React from 'react';
 
 import styles from './index.module.css';
+import { cn } from '../../lib/utils';
 
 export const buttonVariantsStylesMap = {
   default: styles['default-button'],
@@ -21,7 +21,7 @@ export const buttonSizesStylesMap = {
   xl: styles['xl-size'],
   icon: styles['icon-size'],
   ['big-icon' as const]: styles['big-icon'],
-  custom: ''
+  custom: '',
 } as const;
 
 const getVariantStyles = (variant: ButtonVariant): string => {
@@ -63,6 +63,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const Comp = asChild ? Slot : 'button';
 
     const variantStyles = getVariantStyles(variant);
+
     const sizeStyles = getSizeStyles(size);
 
     if (label && !asChild) {
@@ -86,6 +87,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     );
   },
 );
+
 Button.displayName = 'Button';
 
 export { Button };

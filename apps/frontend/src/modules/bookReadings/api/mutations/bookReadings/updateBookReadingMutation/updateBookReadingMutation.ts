@@ -1,15 +1,17 @@
-import { UseMutationOptions } from '@tanstack/react-query';
-import {
-  BookReading,
-  CreateBookReadingResponseBody,
-  UpdateBookReadingRequestBody,
-  UpdateBookReadingPathParams,
-} from '@common/contracts';
-import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';
+import { type UseMutationOptions } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
-import { HttpService } from '../../../../../core/services/httpService/httpService';
+
+import {
+  type BookReading,
+  type CreateBookReadingResponseBody,
+  type UpdateBookReadingRequestBody,
+  type UpdateBookReadingPathParams,
+} from '@common/contracts';
+
 import { BookApiError } from '../../../../../book/errors/bookApiError';
 import { useErrorHandledMutation } from '../../../../../common/hooks/useErrorHandledMutation';
+import { HttpService } from '../../../../../core/services/httpService/httpService';
+import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';
 
 type UpdateBookReadingMutationPayload = UpdateBookReadingRequestBody & UpdateBookReadingPathParams;
 

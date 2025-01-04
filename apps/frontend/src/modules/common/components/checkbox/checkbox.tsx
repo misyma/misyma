@@ -1,9 +1,9 @@
-import * as React from 'react';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import { Check } from 'lucide-react';
-import { cn } from '../../lib/utils';
+import * as React from 'react';
 
 import styles from './index.module.css';
+import { cn } from '../../lib/utils';
 
 type CheckboxSize = 'base' | 'lg' | 'xl' | 'xxl' | 'xxxl';
 
@@ -50,6 +50,7 @@ const Checkbox = React.forwardRef<React.ElementRef<typeof CheckboxPrimitive.Root
     );
   },
 );
+
 Checkbox.displayName = CheckboxPrimitive.Root.displayName;
 
 export { Checkbox };

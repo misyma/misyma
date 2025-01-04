@@ -1,10 +1,11 @@
 import { createLazyFileRoute } from '@tanstack/react-router';
-import { FC } from 'react';
-import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
-import { RequireAdmin } from '../../../../modules/core/components/requireAdmin/requireAdmin';
-import { AdminTabLayout } from '../../../../modules/common/layouts/adminTabLayout';
+import { type FC } from 'react';
+
 import { AdminTabs } from '../../../../modules/admin/components/adminTabs';
 import { AdminChangeRequestsTable } from '../../../../modules/admin/components/changeRequestsTable';
+import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
+import { AdminTabLayout } from '../../../../modules/common/layouts/adminTabLayout';
+import { RequireAdmin } from '../../../../modules/core/components/requireAdmin/requireAdmin';
 
 export const ChangeRequestsAdminPage: FC = () => {
   return (

@@ -1,4 +1,9 @@
-import { UpdateQuotePathParams, UpdateQuoteRequestBody, UpdateQuoteResponseBody } from '@common/contracts';
+import {
+  type UpdateQuotePathParams,
+  type UpdateQuoteRequestBody,
+  type UpdateQuoteResponseBody,
+} from '@common/contracts';
+
 import { HttpService } from '../../../../core/services/httpService/httpService';
 
 export interface UpdateQuotePayload extends UpdateQuotePathParams, UpdateQuoteRequestBody {

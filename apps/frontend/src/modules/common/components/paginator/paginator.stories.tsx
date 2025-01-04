@@ -1,7 +1,8 @@
-import { Meta, StoryObj } from '@storybook/react';
-import { Paginator, PaginatorProps } from './paginator';
 import { useArgs } from '@storybook/preview-api';
+import { type Meta, type StoryObj } from '@storybook/react';
 import { useState } from 'react';
+
+import { Paginator, type PaginatorProps } from './paginator';
 
 const meta: Meta<typeof Paginator> = {
   component: Paginator,

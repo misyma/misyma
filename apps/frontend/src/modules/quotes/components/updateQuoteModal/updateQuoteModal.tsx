@@ -1,7 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ReactNode, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { type ReactNode, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { HiPencil } from 'react-icons/hi';
+import { useSelector } from 'react-redux';
 import { z } from 'zod';
+
+import { type Quote } from '@common/contracts';
+
+import { Button } from '../../../common/components/button/button';
 import {
   Dialog,
   DialogContent,
@@ -9,32 +16,15 @@ import {
   DialogHeader,
   DialogTrigger,
 } from '../../../common/components/dialog/dialog';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '../../../common/components/form/form';
-import { Textarea } from '../../../common/components/textArea/textarea';
-import { Button } from '../../../common/components/button/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/form/form';
 import { Input } from '../../../common/components/input/input';
-import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
-import { useQueryClient } from '@tanstack/react-query';
+import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
+import { Textarea } from '../../../common/components/textArea/textarea';
 import { useToast } from '../../../common/components/toast/use-toast';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../common/components/tooltip/tooltip';
+import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useUpdateQuoteMutation } from '../../api/mutations/updateQuoteMutation/updateQuoteMutation';
 import { QuotesApiQueryKeys } from '../../api/queries/quotesApiQueryKeys';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '../../../common/components/tooltip/tooltip';
-import { HiPencil } from 'react-icons/hi';
-import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
-import { Quote } from '@common/contracts';
 
 const editQuoteSchema = z
   .object({
@@ -103,9 +93,7 @@ const WrappedModal = ({ quote }: Props): ReactNode => {
 
   const { mutateAsync, isPending: isUpdating } = useUpdateQuoteMutation({});
 
-  const onSubmit = async (
-    values: z.infer<typeof editQuoteSchema>
-  ): Promise<void> => {
+  const onSubmit = async (values: z.infer<typeof editQuoteSchema>): Promise<void> => {
     if (values.content === quote.content && values.page === quote.page) {
       setIsOpen(false);
 
@@ -137,8 +125,7 @@ const WrappedModal = ({ quote }: Props): ReactNode => {
       });
 
       await queryClient.invalidateQueries({
-        predicate: ({ queryKey }) =>
-          queryKey[0] === QuotesApiQueryKeys.findQuotes,
+        predicate: ({ queryKey }) => queryKey[0] === QuotesApiQueryKeys.findQuotes,
       });
 
       setIsOpen(false);

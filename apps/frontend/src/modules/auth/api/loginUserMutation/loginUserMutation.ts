@@ -1,9 +1,11 @@
-import { UseMutationOptions } from '@tanstack/react-query';
+import { type UseMutationOptions } from '@tanstack/react-query';
+
 import { type LoginUserResponseBody } from '@common/contracts';
+
 import { HttpService } from '../../../../modules/core/services/httpService/httpService';
-import { AuthApiError } from '../../errors/authApiError/authApiError';
 import { ErrorCodeMessageMapper } from '../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
 import { useErrorHandledMutation } from '../../../common/hooks/useErrorHandledMutation';
+import { AuthApiError } from '../../errors/authApiError/authApiError';
 
 export const useLoginUserMutation = (
   options: UseMutationOptions<LoginUserResponseBody, AuthApiError, { email: string; password: string }>,
@@ -39,4 +41,3 @@ export const useLoginUserMutation = (
     ...options,
   });
 };
-

@@ -1,4 +1,5 @@
-import { UseMutationOptions, useMutation } from '@tanstack/react-query';
+import { type UseMutationOptions, useMutation } from '@tanstack/react-query';
+
 import { HttpService } from '../../../../modules/core/services/httpService/httpService';
 import { AuthApiError } from '../../errors/authApiError/authApiError';
 

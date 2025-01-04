@@ -1,16 +1,17 @@
-import { FC, useCallback } from 'react';
+import { type FC, useCallback } from 'react';
+
+import { ManualStepOneForm } from './steps/stepOne/manualStepOneForm';
+import { ManualStepThreeForm } from './steps/stepThree/manualStepThreeForm';
+import { ManualStepTwoForm } from './steps/stepTwo/manualStepTwoForm';
 import {
   BookCreationActionType,
-  BookCreationNonIsbnState,
+  type BookCreationNonIsbnState,
   NonIsbnCreationPathStep,
   useBookCreation,
   useBookCreationDispatch,
 } from '../../../bookshelf/context/bookCreationContext/bookCreationContext';
-import { ManualStepOneForm } from './steps/stepOne/manualStepOneForm';
-import { ManualStepTwoForm } from './steps/stepTwo/manualStepTwoForm';
-import { ManualStepThreeForm } from './steps/stepThree/manualStepThreeForm';
-import { cn } from '../../../common/lib/utils';
 import { Breadcrumbs, NumericBreadcrumb } from '../../../common/components/ui/breadcrumbs';
+import { cn } from '../../../common/lib/utils';
 
 interface CreateBookProps {
   bookshelfId: string;
@@ -30,6 +31,7 @@ export const CreateBookForm: FC<CreateBookProps> = ({ bookshelfId }) => {
   const renderStep = useCallback(() => {
     if (!bookCreation.isbnPath && bookCreation.step > 0) {
       const Component = steps[bookCreation.step as NonIsbnCreationPathStep];
+
       return <Component bookshelfId={bookshelfId} />;
     } else {
       return null;
@@ -49,10 +51,7 @@ export const CreateBookForm: FC<CreateBookProps> = ({ bookshelfId }) => {
   }, [bookCreation.stepOneDetails]);
 
   const canNavigateToThird = useCallback(() => {
-    return (
-      bookCreation.stepTwoDetails?.format &&
-      bookCreation.stepTwoDetails?.language
-    );
+    return bookCreation.stepTwoDetails?.format && bookCreation.stepTwoDetails?.language;
   }, [bookCreation.stepTwoDetails]);
 
   const navigateToStep = (step: number) => {

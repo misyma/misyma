@@ -1,11 +1,11 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-import { User, UserState } from './userState';
+import { type User, type UserState } from './userState';
 
 const initialState: UserState = {
   currentUser: null,
-  refreshToken: "",
-  accessToken: "",
+  refreshToken: '',
+  accessToken: '',
 };
 
 interface SetCurrentUserActionPayload {
@@ -26,23 +26,26 @@ export const userStateSlice = createSlice({
     },
     setCurrentUserTokens: (state, action: PayloadAction<SetCurrentUserTokensPayload>) => {
       state.accessToken = action.payload.accessToken;
+
       state.refreshToken = action.payload.refreshToken;
     },
     setCurrentUserAccessToken: (state, action: PayloadAction<string>) => {
       state.accessToken = action.payload;
     },
     removeUserState: (state) => {
-      state.accessToken = "";
-      state.refreshToken = "";
+      state.accessToken = '';
+
+      state.refreshToken = '';
+
       state.currentUser = null;
-    }
+    },
   },
   selectors: {
     selectAccessToken: (state) => state.accessToken,
     selectRefreshToken: (state) => state.refreshToken,
     selectCurrentUserId: (state) => state.currentUser?.id,
     selectUserState: (state) => state,
-  }
+  },
 });
 
 export const userStateActions = userStateSlice.actions;

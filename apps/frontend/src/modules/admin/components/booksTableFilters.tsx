@@ -1,7 +1,9 @@
-import { FindAdminBooksQueryParams } from '@common/contracts';
+import { type FC } from 'react';
+
+import { type FindAdminBooksQueryParams } from '@common/contracts';
+
 import { AdminBookSearchFilter } from '../../book/components/adminBookSearchFilters/adminBookSearchFilters';
-import { DynamicFilterValues } from '../../common/contexts/dynamicFilterContext';
-import { FC } from 'react';
+import { type DynamicFilterValues } from '../../common/contexts/dynamicFilterContext';
 
 interface BooksTableAdditionalColumnProps {
   searchParams: FindAdminBooksQueryParams;

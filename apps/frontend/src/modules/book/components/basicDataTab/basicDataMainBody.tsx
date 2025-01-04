@@ -1,17 +1,18 @@
-import { FC, useMemo } from 'react';
-import { CurrentRatingStar } from '../currentRatingStar/currentRatingStar';
-import { Separator } from '../../../common/components/separator/separator';
-import { BookshelfChoiceDropdown } from '../bookshelfChoiceDropdown/bookshelfChoiceDropdown';
-import { StatusChooserCards } from '../statusChooser/statusChooserCards';
-import { StarRating } from '../../../bookReadings/components/starRating/starRating';
-import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
+import { type FC, useMemo } from 'react';
 import { useSelector } from 'react-redux';
+
+import { StarRating } from '../../../bookReadings/components/starRating/starRating';
+import { Separator } from '../../../common/components/separator/separator';
+import { Skeleton } from '../../../common/components/skeleton/skeleton';
+import { BookFormat } from '../../../common/constants/bookFormat';
+import { ReversedLanguages } from '../../../common/constants/languages';
+import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
-import { ReversedLanguages } from '../../../common/constants/languages';
-import { BookFormat } from '../../../common/constants/bookFormat';
-import { Skeleton } from '../../../common/components/skeleton/skeleton';
-import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
+import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
+import { BookshelfChoiceDropdown } from '../bookshelfChoiceDropdown/bookshelfChoiceDropdown';
+import { CurrentRatingStar } from '../currentRatingStar/currentRatingStar';
+import { StatusChooserCards } from '../statusChooser/statusChooserCards';
 
 interface BasicDataMainBodyProps {
   bookId: string;
@@ -28,16 +29,14 @@ export const BasicDataMainBody: FC<BasicDataMainBodyProps> = ({ bookId }) => {
         userId: userData?.id ?? '',
         accessToken: accessToken as string,
       }),
-    [bookId, userData?.id, accessToken]
+    [bookId, userData?.id, accessToken],
   );
 
   const { data, isFetching } = useErrorHandledQuery(queryOptions);
 
   const bookDetails = useMemo(
     () => ({
-      language: data?.book.language
-        ? ReversedLanguages[data?.book.language]?.toLowerCase()
-        : '',
+      language: data?.book.language ? ReversedLanguages[data?.book.language]?.toLowerCase() : '',
       format: data?.book.format ? BookFormat[data?.book.format] : '',
       title: data?.book.title,
       releaseYear: data?.book.releaseYear,
@@ -55,16 +54,13 @@ export const BasicDataMainBody: FC<BasicDataMainBodyProps> = ({ bookId }) => {
       data?.book.authors,
       data?.genres,
       data?.book.translator,
-    ]
+    ],
   );
+
   return (
     <>
       <div className="flex flex-shrink-0 justify-between">
-        {!isFetching && (
-          <p className="font-semibold text-3xl w-1/2 block truncate">
-            {bookDetails.title}
-          </p>
-        )}
+        {!isFetching && <p className="font-semibold text-3xl w-1/2 block truncate">{bookDetails.title}</p>}
         {isFetching && <Skeleton className="h-9 w-40" />}
         <CurrentRatingStar userBookId={bookId} />
       </div>
@@ -73,16 +69,12 @@ export const BasicDataMainBody: FC<BasicDataMainBodyProps> = ({ bookId }) => {
         <div className="flex flex-shrink-0 flex-col gap-2">
           <p className="text-lg pb-6">{bookDetails.authors[0]?.name}</p>
           {data?.book.isbn && <p>ISBN: {data?.book.isbn}</p>}
-          {data?.book.releaseYear && (
-            <p>Rok wydania: {bookDetails.releaseYear}</p>
-          )}
+          {data?.book.releaseYear && <p>Rok wydania: {bookDetails.releaseYear}</p>}
           <p>Język: {bookDetails.language}</p>
           {data?.book.translator && <p>Przekład: {bookDetails.translator}</p>}
           <p>Format: {bookDetails.format}</p>
           {data?.book.pages && <p>Liczba stron: {bookDetails.pages}</p>}
-          {data?.genres[0]?.name && (
-            <p>Kategoria: {bookDetails.genres[0]?.name}</p>
-          )}
+          {data?.genres[0]?.name && <p>Kategoria: {bookDetails.genres[0]?.name}</p>}
         </div>
         <div className="flex flex-shrink-0 gap-12 flex-col items-end justify-start">
           <BookshelfChoiceDropdown

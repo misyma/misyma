@@ -1,4 +1,5 @@
-import { FindBookChangeRequestsQueryParams, FindBookChangeRequestsResponseBody } from '@common/contracts';
+import { type FindBookChangeRequestsQueryParams, type FindBookChangeRequestsResponseBody } from '@common/contracts';
+
 import { HttpService } from '../../../../../core/services/httpService/httpService';
 
 export interface FindBookChangeRequestsPayload extends FindBookChangeRequestsQueryParams {

@@ -1,5 +1,7 @@
 import { type ColumnDef } from '@tanstack/react-table';
-import { Quote } from '@common/contracts';
+
+import { type Quote } from '@common/contracts';
+
 import { FavoriteQuotationButton } from '../../../book/components/favoriteQuotationButton/favoriteQuotationButton';
 import { QuotationText } from '../../../book/components/quotationText/quotationText';
 import { DeleteQuoteModal } from '../deleteQuoteModal/deleteQuoteModal';
@@ -10,9 +12,7 @@ export const quotationTableColumns: ColumnDef<Quote>[] = [
     header: () => <></>,
     accessorKey: 'updatedAt',
     cell: ({ row, table }): JSX.Element => {
-      const foundRow = table
-        .getRowModel()
-        .rows.find((row) => row.index === row.index);
+      const foundRow = table.getRowModel().rows.find((row) => row.index === row.index);
 
       return (
         <div className="flex flex-wrap flex-col py-4 gap-4">
@@ -21,10 +21,7 @@ export const quotationTableColumns: ColumnDef<Quote>[] = [
               <FavoriteQuotationButton quote={row.original} />
               <QuotationText
                 content={row?.original.content as string}
-                pageIndex={
-                  table.getState().pagination.pageIndex *
-                  table.getState().pagination.pageSize
-                }
+                pageIndex={table.getState().pagination.pageIndex * table.getState().pagination.pageSize}
                 index={row.index}
               />
             </div>

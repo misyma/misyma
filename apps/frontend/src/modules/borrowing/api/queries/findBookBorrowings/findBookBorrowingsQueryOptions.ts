@@ -1,5 +1,6 @@
 import { queryOptions } from '@tanstack/react-query';
-import { FindBookBorrowingsPayload, findBookBorrowings } from './findBookBorrowings';
+
+import { type FindBookBorrowingsPayload, findBookBorrowings } from './findBookBorrowings';
 import { BorrowingApiQueryKeys } from '../borrowingApiQueryKeys';
 
 export const FindBookBorrowingsQueryOptions = ({

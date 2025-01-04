@@ -1,5 +1,6 @@
 import { keepPreviousData, queryOptions } from '@tanstack/react-query';
-import { FindBooksByBookshelfIdPayload, findBooksByBookshelfId } from './findBooksByBookshelfId.js';
+
+import { type FindBooksByBookshelfIdPayload, findBooksByBookshelfId } from './findBooksByBookshelfId.js';
 import { BookApiQueryKeys } from '../bookApiQueryKeys.js';
 
 export const FindBooksByBookshelfIdQueryOptions = ({

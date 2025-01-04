@@ -1,5 +1,6 @@
-import React, { FC } from 'react';
 import { Link } from '@tanstack/react-router';
+import React, { type FC } from 'react';
+
 import { Toaster } from '../../../common/components/toast/toaster';
 import { cn } from '../../../common/lib/utils';
 

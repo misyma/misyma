@@ -1,8 +1,8 @@
-import { useEffect } from 'react';
-import { useRef, FC } from 'react';
-import { Input, InputProps } from '../input/input';
+import { useEffect, useRef, type FC } from 'react';
 
-export const AutoselectedInput: FC<InputProps> = ((props: InputProps) => {
+import { Input, type InputProps } from '../input/input';
+
+export const AutoselectedInput: FC<InputProps> = (props: InputProps) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
@@ -13,5 +13,10 @@ export const AutoselectedInput: FC<InputProps> = ((props: InputProps) => {
     }
   }, []);
 
-  return <Input {...props} ref={inputRef} />;
-});
+  return (
+    <Input
+      {...props}
+      ref={inputRef}
+    />
+  );
+};

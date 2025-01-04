@@ -1,4 +1,5 @@
-import { FindQuotesResponseBody } from '@common/contracts';
+import { type FindQuotesResponseBody } from '@common/contracts';
+
 import { HttpService } from '../../../../core/services/httpService/httpService';
 
 export interface GetQuotesPayload {

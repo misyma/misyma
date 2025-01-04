@@ -1,18 +1,16 @@
-import { FC } from 'react';
-import { FavoriteBookButton } from '../../../../../../modules/book/components/favoriteBookButton/favoriteBookButton';
 import { Separator } from '@radix-ui/react-select';
-import { Button } from '../../../../../../modules/common/components/button/button';
+import { Navigate, createLazyFileRoute } from '@tanstack/react-router';
+import { type FC } from 'react';
+
 import { AuthenticatedLayout } from '../../../../../../modules/auth/layouts/authenticated/authenticatedLayout';
-import {
-  Navigate,
-  createLazyFileRoute,
-} from '@tanstack/react-router';
-import { CreateQuotationModal } from '../../../../../../modules/quotes/components/createQuotationModal/createQuotationModal';
-import { BookTabLayout } from '../../../../../../modules/book/layouts/bookTabLayout';
-import { QuotationTabTitleBar } from '../../../../../../modules/quotes/components/quotationTabTitleBar/quotationTabTitleBar';
 import { BookTabNavigation } from '../../../../../../modules/book/components/bookTabNavigation/bookTabNavigation';
-import { QuotationTabTable } from '../../../../../../modules/quotes/components/quotationTabTable/quotationTabTable';
+import { FavoriteBookButton } from '../../../../../../modules/book/components/favoriteBookButton/favoriteBookButton';
 import { useBookBreadcrumbs } from '../../../../../../modules/book/hooks/useBookBreadcrumbs';
+import { BookTabLayout } from '../../../../../../modules/book/layouts/bookTabLayout';
+import { Button } from '../../../../../../modules/common/components/button/button';
+import { CreateQuotationModal } from '../../../../../../modules/quotes/components/createQuotationModal/createQuotationModal';
+import { QuotationTabTable } from '../../../../../../modules/quotes/components/quotationTabTable/quotationTabTable';
+import { QuotationTabTitleBar } from '../../../../../../modules/quotes/components/quotationTabTitleBar/quotationTabTitleBar';
 
 export const QuotesPage: FC = () => {
   const { bookId } = Route.useParams();
@@ -24,7 +22,10 @@ export const QuotesPage: FC = () => {
       {bookId === '' ? <Navigate to={'/login'} /> : null}
       <BookTabLayout
         NavigationSlot={
-          <BookTabNavigation bookId={bookId} currentTab="quotations" />
+          <BookTabNavigation
+            bookId={bookId}
+            currentTab="quotations"
+          />
         }
         ActionsSlot={
           <CreateQuotationModal

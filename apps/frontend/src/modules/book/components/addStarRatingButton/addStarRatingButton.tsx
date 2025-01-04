@@ -1,27 +1,20 @@
-import { FC, useState } from 'react';
-import {
-  RadioGroup,
-  RadioGroupItem,
-} from '../../../common/components/radioGroup/radio-group';
+import { type FC, useState } from 'react';
 import { HiStar } from 'react-icons/hi';
+
 import { CreateBookReadingModal } from '../../../bookReadings/components/createBookReadingModal/createBookReadingModal';
+import { RadioGroup, RadioGroupItem } from '../../../common/components/radioGroup/radio-group';
 
 interface Props {
   userBookId: string;
   onCreated: () => Promise<void>;
 }
 
-export const AddStarRatingButton: FC<Props> = ({
-  userBookId,
-  onCreated,
-}: Props) => {
+export const AddStarRatingButton: FC<Props> = ({ userBookId, onCreated }: Props) => {
   const [hoveredValue, setHoveredValue] = useState<number | undefined>();
 
   return (
     <div className="flex gap-2">
-      <div className="animate-wiggle text-primary font-bold ">
-        {hoveredValue}
-      </div>
+      <div className="animate-wiggle text-primary font-bold ">{hoveredValue}</div>
       <RadioGroup className="flex flex-row gap-0">
         <>
           {Array.from({ length: 10 }).map((_, index) => {

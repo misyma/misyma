@@ -1,17 +1,16 @@
-import { FC } from 'react';
-import { DeleteUserBookModal } from '../deleteUserBookModal/deleteUserBookModal';
-import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
-import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
+import { type FC } from 'react';
 import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
+
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
+import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
+import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
+import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
+import { DeleteUserBookModal } from '../deleteUserBookModal/deleteUserBookModal';
 
 interface DeleteUserBookButtonProps {
   bookId: string;
 }
-export const DeleteUserBookButton: FC<DeleteUserBookButtonProps> = ({
-  bookId,
-}) => {
+export const DeleteUserBookButton: FC<DeleteUserBookButtonProps> = ({ bookId }) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const { data: userData } = useFindUserQuery();
@@ -21,7 +20,7 @@ export const DeleteUserBookButton: FC<DeleteUserBookButtonProps> = ({
       userBookId: bookId,
       userId: userData?.id ?? '',
       accessToken: accessToken as string,
-    })
+    }),
   );
 
   return (

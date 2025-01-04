@@ -1,35 +1,28 @@
-import { FC, useState } from 'react';
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogTrigger,
-} from '../../../common/components/dialog/dialog';
-import { Button } from '../../../common/components/button/button';
-import { BookDetailsChangeRequestProvider } from '../../context/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
+import { useQueryClient } from '@tanstack/react-query';
+import { type FC, useState } from 'react';
+import { HiPlus } from 'react-icons/hi2';
+
 import {
   BookCreationActionType,
   useBookCreationDispatch,
 } from '../../../bookshelf/context/bookCreationContext/bookCreationContext';
-import { AdminCreateBookForm } from '../adminCreateBookForm/adminCreateBookForm';
-import { HiPlus } from 'react-icons/hi2';
-import { useQueryClient } from '@tanstack/react-query';
+import { Button } from '../../../common/components/button/button';
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '../../../common/components/dialog/dialog';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../common/components/tooltip/tooltip';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '../../../common/components/tooltip/tooltip';
+import { BookDetailsChangeRequestProvider } from '../../context/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
+import { AdminCreateBookForm } from '../adminCreateBookForm/adminCreateBookForm';
 
 export const CreateBookModal: FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+
   const queryClient = useQueryClient();
 
   const dispatch = useBookCreationDispatch();
 
   const resetModalState = () => {
     setIsOpen(false);
+
     dispatch({
       type: BookCreationActionType.WipeData,
       wipe: true,
@@ -60,7 +53,10 @@ export const CreateBookModal: FC = () => {
           <TooltipProvider delayDuration={300}>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button onClick={() => setIsOpen(true)} size="big-icon">
+                <Button
+                  onClick={() => setIsOpen(true)}
+                  size="big-icon"
+                >
                   <HiPlus className="w-8 h-8"></HiPlus>
                 </Button>
               </TooltipTrigger>

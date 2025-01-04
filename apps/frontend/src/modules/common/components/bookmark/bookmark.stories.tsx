@@ -1,6 +1,7 @@
-import { Meta } from '@storybook/react';
+import { type Meta } from '@storybook/react';
+import { type ReactNode } from 'react';
+
 import { Bookmark } from './bookmark';
-import { ReactNode } from 'react';
 
 const meta: Meta<typeof Bookmark> = {
   component: Bookmark,
@@ -9,7 +10,7 @@ const meta: Meta<typeof Bookmark> = {
 export default meta;
 
 export const Default = (): ReactNode => (
-    <div className='h-10'>
-        <Bookmark></Bookmark>
-    </div>
+  <div className="h-10">
+    <Bookmark></Bookmark>
+  </div>
 );

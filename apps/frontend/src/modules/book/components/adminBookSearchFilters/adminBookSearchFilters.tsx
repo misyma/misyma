@@ -1,17 +1,14 @@
-import { FC, useCallback, useState } from 'react';
-import { cn } from '../../../common/lib/utils';
-import { FiltersDrawer } from '../../../common/components/filtersDrawer/filtersDrawer';
-import { isbnSchema } from '../../../common/schemas/isbnSchema';
-import { SearchLanguageSelect } from '../../../common/components/searchLanguageSelect/SearchLanguageSelect';
-import {
-  SelectFilter,
-  TextFilter,
-  YearFilter,
-} from '../../../common/components/filter/filter';
+import { type FC, useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { adminBookFilterStateSelectors } from '../../../core/store/states/adminBookFilterState/adminBookFilterStateSlice';
-import { DynamicFilterValues } from '../../../common/contexts/dynamicFilterContext';
+
 import { AuthorSearchFilter } from '../../../common/components/filter/AuthorSearchFilter';
+import { SelectFilter, TextFilter, YearFilter } from '../../../common/components/filter/filter';
+import { FiltersDrawer } from '../../../common/components/filtersDrawer/filtersDrawer';
+import { SearchLanguageSelect } from '../../../common/components/searchLanguageSelect/SearchLanguageSelect';
+import { type DynamicFilterValues } from '../../../common/contexts/dynamicFilterContext';
+import { cn } from '../../../common/lib/utils';
+import { isbnSchema } from '../../../common/schemas/isbnSchema';
+import { adminBookFilterStateSelectors } from '../../../core/store/states/adminBookFilterState/adminBookFilterStateSlice';
 
 interface AdminBookSearchFilterProps {
   onApplyFilters: (filterValues: DynamicFilterValues) => void;
@@ -26,14 +23,14 @@ export const AdminBookSearchFilter: FC<AdminBookSearchFilterProps> = ({
 }) => {
   const [filters, setFilters] = useState(initialValues);
 
-  const isFilterVisible = useSelector(
-    adminBookFilterStateSelectors.getFilterVisible
-  );
+  const isFilterVisible = useSelector(adminBookFilterStateSelectors.getFilterVisible);
 
   const onApplyFiltersInternal = () => {
     const endFilters = filters;
+
     if (endFilters['isbn']) {
       const validationResult = isbnSchema.safeParse(endFilters['isbn']);
+
       if (validationResult.error) {
         delete endFilters['isbn'];
       }
@@ -44,6 +41,7 @@ export const AdminBookSearchFilter: FC<AdminBookSearchFilterProps> = ({
 
   const onClearAllInternal = () => {
     onClearAll();
+
     setFilters({});
   };
 
@@ -54,17 +52,14 @@ export const AdminBookSearchFilter: FC<AdminBookSearchFilterProps> = ({
         [filterKey]: undefined,
       });
     },
-    [filters]
+    [filters],
   );
 
   return (
     <FiltersDrawer
       onApplyFilters={onApplyFiltersInternal}
       onClearAll={onClearAllInternal}
-      className={cn(
-        'sm:col-span-4 md:col-span-5 lg:col-span-6 grid grid-cols-3 px-2',
-        isFilterVisible ? '' : 'hidden'
-      )}
+      className={cn('sm:col-span-4 md:col-span-5 lg:col-span-6 grid grid-cols-3 px-2', isFilterVisible ? '' : 'hidden')}
       actionButtonClassName={isFilterVisible ? '' : 'hidden'}
     >
       <TextFilter

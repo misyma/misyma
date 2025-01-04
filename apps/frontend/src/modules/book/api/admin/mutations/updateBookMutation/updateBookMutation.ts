@@ -1,17 +1,21 @@
-import { UpdateBookPathParams, UpdateBookRequestBody, UpdateBookResponseBody } from '@common/contracts';
-import { UseMutationOptions } from '@tanstack/react-query';
-import { ApiError } from '../../../../../common/errors/apiError';
-import { HttpService } from '../../../../../core/services/httpService/httpService';
+import { type UseMutationOptions } from '@tanstack/react-query';
+
+import { type UpdateBookPathParams, type UpdateBookRequestBody, type UpdateBookResponseBody } from '@common/contracts';
+
 import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
-import { BookApiError } from '../../../../errors/bookApiError';
+import { type ApiError } from '../../../../../common/errors/apiError';
 import { useErrorHandledMutation } from '../../../../../common/hooks/useErrorHandledMutation';
+import { HttpService } from '../../../../../core/services/httpService/httpService';
+import { BookApiError } from '../../../../errors/bookApiError';
 
 export interface UpdateBookPayload extends UpdateBookPathParams, UpdateBookRequestBody {
   accessToken: string | undefined;
   isApproved?: boolean;
 }
 
-export const useUpdateBookMutation = (options: UseMutationOptions<UpdateBookResponseBody, ApiError, UpdateBookPayload>) => {
+export const useUpdateBookMutation = (
+  options: UseMutationOptions<UpdateBookResponseBody, ApiError, UpdateBookPayload>,
+) => {
   const mapper = new ErrorCodeMessageMapper({
     403: `Brak pozwolenia na zaaktualizowanie książki.`,
   });

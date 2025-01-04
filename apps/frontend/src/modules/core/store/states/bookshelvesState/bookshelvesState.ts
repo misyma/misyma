@@ -1,4 +1,4 @@
 export interface BookshelfState {
-	editMap: Record<number, boolean>;
-	creatingNew: boolean;
+  editMap: Record<number, boolean>;
+  creatingNew: boolean;
 }

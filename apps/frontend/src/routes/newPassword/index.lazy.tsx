@@ -1,7 +1,8 @@
 import { Navigate, createFileRoute, useNavigate } from '@tanstack/react-router';
-import { FC } from 'react';
-import { SetNewPasswordForm } from '../../modules/auth/components/setNewPasswordForm/setNewPasswordForm';
+import { type FC } from 'react';
 import { z } from 'zod';
+
+import { SetNewPasswordForm } from '../../modules/auth/components/setNewPasswordForm/setNewPasswordForm';
 import { RequireNonAuthComponent } from '../../modules/core/components/requireNonAuth/requireNonAuthComponent';
 import { DefaultFormLayout } from '../../modules/core/layouts/default/defaultFormLayout';
 

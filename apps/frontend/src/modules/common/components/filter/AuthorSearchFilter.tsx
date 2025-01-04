@@ -1,13 +1,14 @@
-import { FC, useCallback, useEffect, useState } from 'react';
-import { FilterComponentProps } from '../../types/filter';
-import { useFindAuthorsQuery } from '../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
-import { FilterContainer } from './filterContainer';
-import { Popover, PopoverTrigger } from '../popover/popover';
-import { Button } from '../button/button';
-import { cn } from '../../lib/utils';
-import { LoadingSpinner } from '../spinner/loading-spinner';
 import { ChevronsUpDown } from 'lucide-react';
+import { type FC, useCallback, useEffect, useState } from 'react';
+
+import { FilterContainer } from './filterContainer';
 import { AuthorSearchSelector } from '../../../auth/components/authorSearchSelector/authorSearchSelector';
+import { useFindAuthorsQuery } from '../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
+import { cn } from '../../lib/utils';
+import { type FilterComponentProps } from '../../types/filter';
+import { Button } from '../button/button';
+import { Popover, PopoverTrigger } from '../popover/popover';
+import { LoadingSpinner } from '../spinner/loading-spinner';
 
 export const AuthorSearchFilter: FC<FilterComponentProps> = ({
   filter,
@@ -17,19 +18,17 @@ export const AuthorSearchFilter: FC<FilterComponentProps> = ({
 }) => {
   const [selectedAuthorName, setSelectedAuthorName] = useState('');
 
-  const handleChange = (
-    value: string | boolean | Date | undefined,
-    authorName: string
-  ) => {
+  const handleChange = (value: string | boolean | Date | undefined, authorName: string) => {
     setSelectedAuthorName(authorName);
+
     setFilterAction(value);
   };
+
   const [open, setOpen] = useState(false);
 
-  const { data: currentAuthor, isFetching: isFetchingCurrentAuthor } =
-    useFindAuthorsQuery({
-      ids: initialValue ? [initialValue as string] : [],
-    });
+  const { data: currentAuthor, isFetching: isFetchingCurrentAuthor } = useFindAuthorsQuery({
+    ids: initialValue ? [initialValue as string] : [],
+  });
 
   const getAuthorName = useCallback(() => {
     if (currentAuthor) {
@@ -47,6 +46,7 @@ export const AuthorSearchFilter: FC<FilterComponentProps> = ({
     if (onRemoveFilter) {
       onRemoveFilter();
     }
+
     setSelectedAuthorName('');
   };
 
@@ -72,26 +72,20 @@ export const AuthorSearchFilter: FC<FilterComponentProps> = ({
                 'justify-between bg-[#D1D5DB]/20',
                 !initialValue && 'text-muted-foreground',
                 'border h-12',
-                'w-96 truncate'
+                'w-96 truncate',
               )}
             >
               <div className="flex-1 min-w-0 max-w-full">
                 {' '}
                 <div className="flex items-center w-full overflow-hidden">
-                  {!initialValue && (
-                    <span className="px-2 text-muted-foreground text-sm">
-                      Wyszukaj autora
-                    </span>
-                  )}
+                  {!initialValue && <span className="px-2 text-muted-foreground text-sm">Wyszukaj autora</span>}
                   {initialValue && isFetchingCurrentAuthor && (
                     <div className="px-2">
                       <LoadingSpinner size={20} />
                     </div>
                   )}
                   {initialValue && !isFetchingCurrentAuthor && (
-                    <span className="block truncate px-2 text-sm">
-                      {getAuthorName()}
-                    </span>
+                    <span className="block truncate px-2 text-sm">{getAuthorName()}</span>
                   )}
                 </div>
               </div>{' '}

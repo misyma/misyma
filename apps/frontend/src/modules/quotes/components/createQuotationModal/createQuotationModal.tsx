@@ -1,7 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ReactNode, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { type ReactNode, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 import { z } from 'zod';
+
+import { Button } from '../../../common/components/button/button';
 import {
   Dialog,
   DialogContent,
@@ -9,25 +13,15 @@ import {
   DialogHeader,
   DialogTrigger,
 } from '../../../common/components/dialog/dialog';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '../../../common/components/form/form';
-import { Textarea } from '../../../common/components/textArea/textarea';
-import { Button } from '../../../common/components/button/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/form/form';
 import { Input } from '../../../common/components/input/input';
-import { useSelector } from 'react-redux';
+import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
+import { Textarea } from '../../../common/components/textArea/textarea';
+import { useToast } from '../../../common/components/toast/use-toast';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
-import { useQueryClient } from '@tanstack/react-query';
-import { useToast } from '../../../common/components/toast/use-toast';
 import { useCreateQuoteMutation } from '../../api/mutations/createQuoteMutation/createQuoteMutation';
 import { getQuotesOptionsQueryKey } from '../../api/queries/getQuotes/getQuotesOptions';
-import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
 
 const createQuotationSchema = z
   .object({
@@ -70,11 +64,7 @@ interface Props {
   onMutated: () => void | Promise<void>;
 }
 
-export const CreateQuotationModal = ({
-  userBookId,
-  onMutated,
-  trigger,
-}: Props): ReactNode => {
+export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props): ReactNode => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const { toast } = useToast();
@@ -99,9 +89,7 @@ export const CreateQuotationModal = ({
 
   const { mutateAsync, isPending: isCreating } = useCreateQuoteMutation({});
 
-  const onSubmit = async (
-    values: z.infer<typeof createQuotationSchema>
-  ): Promise<void> => {
+  const onSubmit = async (values: z.infer<typeof createQuotationSchema>): Promise<void> => {
     const payload: {
       content: string;
       page: string | undefined;
@@ -169,9 +157,7 @@ export const CreateQuotationModal = ({
         className="max-w-xl py-16"
         omitCloseButton={true}
       >
-        <DialogHeader className="font-semibold text-center flex justify-center items-center">
-          Dodaj cytat
-        </DialogHeader>
+        <DialogHeader className="font-semibold text-center flex justify-center items-center">Dodaj cytat</DialogHeader>
         <DialogDescription className="flex flex-col gap-4 justify-center items-center">
           <p className={error ? 'text-red-500' : 'hidden'}>{error}</p>
           <Form {...form}>

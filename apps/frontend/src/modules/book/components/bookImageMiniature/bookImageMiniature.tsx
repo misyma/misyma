@@ -1,7 +1,9 @@
-import { UserBook } from '@common/contracts';
-import { FC, useEffect, useState } from 'react';
-import { cn } from '../../../common/lib/utils';
+import { type FC, useEffect, useState } from 'react';
+
+import { type UserBook } from '@common/contracts';
+
 import { Skeleton } from '../../../common/components/skeleton/skeleton';
+import { cn } from '../../../common/lib/utils';
 
 const DEFAULT_BOOK_SRC = '/book.jpg';
 
@@ -21,14 +23,12 @@ export const BookImageMiniature: FC<BookImageProps> = ({
   imageClassName,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
+
   const [imageSrc, setImageSrc] = useState('');
 
   useEffect(() => {
-    const src =
-      userBook?.imageUrl ||
-      userBook?.book.imageUrl ||
-      bookImageSrc ||
-      DEFAULT_BOOK_SRC;
+    const src = userBook?.imageUrl || userBook?.book.imageUrl || bookImageSrc || DEFAULT_BOOK_SRC;
+
     setImageSrc(src);
   }, [userBook, bookImageSrc]);
 
@@ -43,11 +43,7 @@ export const BookImageMiniature: FC<BookImageProps> = ({
         onClick={onClick}
         src={imageSrc}
         onLoad={handleImageLoad}
-        className={cn(
-          'object-contain w-full h-full',
-          isLoading ? 'hidden' : 'visible',
-          imageClassName
-        )}
+        className={cn('object-contain w-full h-full', isLoading ? 'hidden' : 'visible', imageClassName)}
         alt="Book cover"
       />
     </div>

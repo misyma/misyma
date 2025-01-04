@@ -1,24 +1,14 @@
-import { FC, useState } from 'react';
-import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { type FC, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
-import {
-  SetNewPasswordFormSchemaValues,
-  setNewPasswordFormSchema,
-} from './schema/setNewPasswordFormSchema';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '../../../common/components/form/form';
-import { Input } from '../../../common/components/input/input';
+import { type SetNewPasswordFormSchemaValues, setNewPasswordFormSchema } from './schema/setNewPasswordFormSchema';
 import { Button } from '../../../common/components/button/button';
-import { useSetNewPasswordMutation } from '../../api/setNewPasswordMutation/setNewPasswordMutation';
-import { UserApiError } from '../../../user/errors/userApiError';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/form/form';
 import { PasswordEyeIcon } from '../../../common/components/icons/passwordEyeIcon/passwordEyeIcon';
+import { Input } from '../../../common/components/input/input';
+import { type UserApiError } from '../../../user/errors/userApiError';
+import { useSetNewPasswordMutation } from '../../api/setNewPasswordMutation/setNewPasswordMutation';
 
 interface SetNewPasswordFormProps {
   onSuccess: () => void;
@@ -39,16 +29,12 @@ export const SetNewPasswordForm: FC<SetNewPasswordFormProps> = ({
     },
     mode: 'onTouched',
   });
-  const [passwordInputType, setPasswordInputType] = useState<
-    'text' | 'password'
-  >('password');
-  const [repeatPasswordInputType, setRepeatPasswordInputType] = useState<
-    'text' | 'password'
-  >('password');
 
-  const [responseErrorMessage, setResponseErrorMessage] = useState<
-    string | null
-  >(null);
+  const [passwordInputType, setPasswordInputType] = useState<'text' | 'password'>('password');
+
+  const [repeatPasswordInputType, setRepeatPasswordInputType] = useState<'text' | 'password'>('password');
+
+  const [responseErrorMessage, setResponseErrorMessage] = useState<string | null>(null);
 
   const setNewPasswordMutation = useSetNewPasswordMutation({});
 
@@ -67,13 +53,16 @@ export const SetNewPasswordForm: FC<SetNewPasswordFormProps> = ({
             onError(error);
           }
         },
-      }
+      },
     );
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-4"
+      >
         <FormField
           control={form.control}
           name="password"
@@ -89,11 +78,7 @@ export const SetNewPasswordForm: FC<SetNewPasswordFormProps> = ({
                   {...field}
                   otherIcon={
                     <PasswordEyeIcon
-                      onClick={() =>
-                        setPasswordInputType(
-                          passwordInputType === 'password' ? 'text' : 'password'
-                        )
-                      }
+                      onClick={() => setPasswordInputType(passwordInputType === 'password' ? 'text' : 'password')}
                       passwordType={passwordInputType}
                     />
                   }
@@ -118,9 +103,7 @@ export const SetNewPasswordForm: FC<SetNewPasswordFormProps> = ({
                   otherIcon={
                     <PasswordEyeIcon
                       onClick={() =>
-                        setRepeatPasswordInputType(
-                          repeatPasswordInputType === 'password' ? 'text' : 'password'
-                        )
+                        setRepeatPasswordInputType(repeatPasswordInputType === 'password' ? 'text' : 'password')
                       }
                       passwordType={repeatPasswordInputType}
                     />
@@ -132,12 +115,14 @@ export const SetNewPasswordForm: FC<SetNewPasswordFormProps> = ({
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={!form.formState.isValid} size="xl">
+        <Button
+          type="submit"
+          disabled={!form.formState.isValid}
+          size="xl"
+        >
           Ustaw nowe hasło
         </Button>
-        {responseErrorMessage && (
-          <FormMessage>{responseErrorMessage}</FormMessage>
-        )}
+        {responseErrorMessage && <FormMessage>{responseErrorMessage}</FormMessage>}
       </form>
     </Form>
   );

@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router';
-import { FC } from 'react';
+import { type FC } from 'react';
+
 import { cn } from '../../../common/lib/utils';
 
 interface BookTabLinkProps {
@@ -7,19 +8,10 @@ interface BookTabLinkProps {
   label: string;
   selected: boolean;
 }
-export const BookTabLink: FC<BookTabLinkProps> = ({
-  label,
-  link,
-  selected,
-}) => {
+export const BookTabLink: FC<BookTabLinkProps> = ({ label, link, selected }) => {
   return (
     <Link
-      className={cn(
-        'cursor-pointer',
-        selected
-          ? 'cursor-default pointer-events-none text-primary font-bold'
-          : ''
-      )}
+      className={cn('cursor-pointer', selected ? 'cursor-default pointer-events-none text-primary font-bold' : '')}
       to={link}
     >
       {label}
@@ -31,10 +23,7 @@ interface BookTabNavigationProps {
   bookId: string;
   currentTab: 'basicData' | 'quotations' | 'grades';
 }
-export const BookTabNavigation: FC<BookTabNavigationProps> = ({
-  bookId,
-  currentTab,
-}) => {
+export const BookTabNavigation: FC<BookTabNavigationProps> = ({ bookId, currentTab }) => {
   return (
     <ul className="flex justify-between gap-8 text-sm sm:text-lg font-semibold">
       <li>

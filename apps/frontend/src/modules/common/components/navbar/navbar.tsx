@@ -1,16 +1,17 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate, useRouter } from '@tanstack/react-router';
-import { FC, Fragment, useMemo } from 'react';
+import { type FC, Fragment, useMemo } from 'react';
 import { IoIosLogOut } from 'react-icons/io';
-import { useStoreSelector } from '../../../core/store/hooks/useStoreSelector';
-import {
-  userStateActions,
-  userStateSelectors,
-} from '../../../core/store/states/userState/userStateSlice';
-import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
-import { useStoreDispatch } from '../../../core/store/hooks/useStoreDispatch';
-import { CookieService } from '../../../core/services/cookieService/cookieService';
+
+import { UserRole, type User } from '@common/contracts';
+
 import { useLogoutUserMutation } from '../../../auth/api/logoutUserMutation/logoutUserMutation';
-import { UserRole } from '@common/contracts';
+import { CookieService } from '../../../core/services/cookieService/cookieService';
+import { useStoreDispatch } from '../../../core/store/hooks/useStoreDispatch';
+import { useStoreSelector } from '../../../core/store/hooks/useStoreSelector';
+import { userStateActions, userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
+import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
+import { useBreadcrumbKeysContext } from '../../contexts/breadcrumbKeysContext';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -18,9 +19,6 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from '../breadcrumb/breadcrumb';
-import { useBreadcrumbKeysContext } from '../../contexts/breadcrumbKeysContext';
-import { User } from '@common/contracts';
-import { useQueryClient } from '@tanstack/react-query';
 
 const NavbarBreadcrumbs = () => {
   const breadcrumbKeys = useBreadcrumbKeysContext();
@@ -29,8 +27,8 @@ const NavbarBreadcrumbs = () => {
 
   const context = router.state.matches;
 
-  const filteredPaths =
-    context.filter((route) => route.id !== '__root__') ?? [];
+  const filteredPaths = context.filter((route) => route.id !== '__root__') ?? [];
+
   const allDollarKeys = filteredPaths[0]?.staticData.routeDisplayableNameParts
     ?.map((val) => {
       const dollarValues = [];
@@ -54,9 +52,11 @@ const NavbarBreadcrumbs = () => {
 
   const replaceHrefPlaceholderWithValue = (href: string): string => {
     const regex = /\$[^/]*\/?$/g;
+
     const hrefPlaceholderKeys = href.match(regex);
 
     let finalHref = href;
+
     hrefPlaceholderKeys?.forEach((matchedKey) => {
       finalHref = href.replace(matchedKey, breadcrumbKeys[matchedKey]);
     });
@@ -81,23 +81,21 @@ const NavbarBreadcrumbs = () => {
   const breadcrumbItems = useMemo(() => {
     {
       return (
-        filteredPaths[0]?.staticData.routeDisplayableNameParts?.map(
-          (val, index) => (
-            <BreadcrumbItem key={`${index}-${val}-breadcrumb`}>
-              <BreadcrumbLink asChild>
-                <Link
-                  key={`${index}-${val}-breadcrumb-link`}
-                  className="max-w-80 truncate inline-block flex-shrink-0"
-                  to={replaceHrefPlaceholderWithValue(val.href)}
-                >
-                  {val?.readableName?.includes('$')
-                    ? truncateText(breadcrumbKeys[val?.readableName], 4)
-                    : val.readableName}
-                </Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-          )
-        ) ?? []
+        filteredPaths[0]?.staticData.routeDisplayableNameParts?.map((val, index) => (
+          <BreadcrumbItem key={`${index}-${val}-breadcrumb`}>
+            <BreadcrumbLink asChild>
+              <Link
+                key={`${index}-${val}-breadcrumb-link`}
+                className="max-w-80 truncate inline-block flex-shrink-0"
+                to={replaceHrefPlaceholderWithValue(val.href)}
+              >
+                {val?.readableName?.includes('$')
+                  ? truncateText(breadcrumbKeys[val?.readableName], 4)
+                  : val.readableName}
+              </Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+        )) ?? []
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -110,9 +108,7 @@ const NavbarBreadcrumbs = () => {
           breadcrumbItems.map((item, index) => (
             <Fragment key={`breadcrumb-fragment-${index}`}>
               {item}
-              {index !== breadcrumbItems.length - 1 && (
-                <BreadcrumbSeparator></BreadcrumbSeparator>
-              )}
+              {index !== breadcrumbItems.length - 1 && <BreadcrumbSeparator></BreadcrumbSeparator>}
             </Fragment>
           ))}
       </BreadcrumbList>
@@ -122,9 +118,11 @@ const NavbarBreadcrumbs = () => {
 
 const useUserState = () => {
   const { mutate: logoutUserMutation } = useLogoutUserMutation({});
+
   const navigate = useNavigate();
 
   const accessToken = useStoreSelector(userStateSelectors.selectAccessToken);
+
   const refreshToken = useStoreSelector(userStateSelectors.selectRefreshToken);
 
   const queryClient = useQueryClient();
@@ -147,6 +145,7 @@ const useUserState = () => {
       {
         onSuccess: () => {
           CookieService.removeUserDataCookie();
+
           CookieService.removeUserTokensCookie();
 
           dispatch(userStateActions.removeUserState());
@@ -160,11 +159,12 @@ const useUserState = () => {
         onError: () => {
           // TODO: Think through error handling
           CookieService.removeUserDataCookie();
+
           CookieService.removeUserTokensCookie();
 
           dispatch(userStateActions.removeUserState());
         },
-      }
+      },
     );
   };
 
@@ -180,10 +180,7 @@ const TextLogo: FC = () => (
   </div>
 );
 
-const NavbarList: FC<{ user?: User; handleLogout: () => void }> = ({
-  user,
-  handleLogout,
-}) => {
+const NavbarList: FC<{ user?: User; handleLogout: () => void }> = ({ user, handleLogout }) => {
   const linkClasses =
     '[&.active]:font-extrabold hover:text-primary [&.active]:text-primary underline-offset-8 decoration-[3px] text-nowrap';
 
@@ -191,23 +188,35 @@ const NavbarList: FC<{ user?: User; handleLogout: () => void }> = ({
     <ul className="hidden sm:flex sm:flex-1 md:gap-4 lg:gap-6 sm:justify-end w-full items-center align-middle">
       {user?.role === UserRole.admin && (
         <li className="text-black text-md text-center font-semibold">
-          <Link to={'/admin/tabs/'} className={linkClasses}>
+          <Link
+            to={'/admin/tabs/'}
+            className={linkClasses}
+          >
             Panel administratora
           </Link>
         </li>
       )}
       <li className="text-black text-md text-center font-semibold">
-        <Link to={'/mybooks'} className={linkClasses}>
+        <Link
+          to={'/mybooks'}
+          className={linkClasses}
+        >
           Moje książki
         </Link>
       </li>
       <li className="text-black text-md text-center font-semibold">
-        <Link to={'/shelves'} className={linkClasses}>
+        <Link
+          to={'/shelves'}
+          className={linkClasses}
+        >
           Półki
         </Link>
       </li>
       <li className="text-black text-md text-center font-semibold">
-        <Link to={'/profile'} className={linkClasses}>
+        <Link
+          to={'/profile'}
+          className={linkClasses}
+        >
           Profil
         </Link>
       </li>
@@ -226,13 +235,19 @@ export const Navbar: FC = () => {
     <div className="flex pt-6 px-6 flex-col bg-white w-full sticky">
       <div className="bg-white flex justify-end w-full items-center">
         <TextLogo />
-        <input type="checkbox" className="md:hidden burger-input"></input>
+        <input
+          type="checkbox"
+          className="md:hidden burger-input"
+        ></input>
         <div className="md:hidden">
           <span className="burger-span"></span>
           <span className="burger-span"></span>
           <span className="burger-span"></span>
         </div>
-        <NavbarList handleLogout={handleLogout} user={res.data} />
+        <NavbarList
+          handleLogout={handleLogout}
+          user={res.data}
+        />
       </div>
       <NavbarBreadcrumbs />
     </div>

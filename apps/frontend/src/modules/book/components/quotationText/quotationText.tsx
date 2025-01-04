@@ -1,5 +1,6 @@
-import { FC, useMemo, useRef, useState } from 'react';
+import { type FC, useMemo, useRef, useState } from 'react';
 import { FaAngleDown, FaAngleUp } from 'react-icons/fa6';
+
 import { useIsTruncated } from '../../../common/hooks/useIsTruncated';
 
 interface QuotationTextProps {
@@ -8,17 +9,15 @@ interface QuotationTextProps {
   pageIndex: number;
 }
 
-export const QuotationText: FC<QuotationTextProps> = ({
-  content,
-  index,
-  pageIndex,
-}) => {
+export const QuotationText: FC<QuotationTextProps> = ({ content, index, pageIndex }) => {
   const parentRef = useRef<HTMLParagraphElement>(null);
+
   const [showMore, setShowMore] = useState(false);
+
   const { isTruncated } = useIsTruncated({
     parentRef,
-    text: content
-  })
+    text: content,
+  });
 
   const elementId = useMemo(() => {
     return `element${index}-${pageIndex}`;
@@ -26,6 +25,7 @@ export const QuotationText: FC<QuotationTextProps> = ({
 
   const onShowMore = (showMore: boolean) => {
     const element = document.querySelector(`#${elementId}`);
+
     setShowMore(showMore);
 
     element?.classList.add('truncate', 'text-wrap');
@@ -64,7 +64,7 @@ export const QuotationText: FC<QuotationTextProps> = ({
           )}
         </div>
       )}
-      {!isTruncated && <div className='show-more-placeholder h-5'> </div>}
+      {!isTruncated && <div className="show-more-placeholder h-5"> </div>}
     </div>
   );
 };

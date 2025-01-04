@@ -1,7 +1,7 @@
-import { Meta } from '@storybook/react';
+import { type Meta } from '@storybook/react';
+import { type ReactNode } from 'react';
 
 import { AutoselectedInput } from './autoselectedInput.js';
-import { ReactNode } from 'react';
 
 const meta: Meta<typeof AutoselectedInput> = {
   component: AutoselectedInput,
@@ -9,4 +9,4 @@ const meta: Meta<typeof AutoselectedInput> = {
 
 export default meta;
 
-export const Default = (): ReactNode => <AutoselectedInput></AutoselectedInput>
+export const Default = (): ReactNode => <AutoselectedInput></AutoselectedInput>;

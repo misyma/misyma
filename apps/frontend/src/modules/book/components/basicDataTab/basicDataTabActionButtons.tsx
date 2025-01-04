@@ -1,19 +1,18 @@
-import { FC } from 'react';
-import { BorrowBookButton } from './borrowBookButton';
-import { EditBookModal } from '../editBookModal/editBookModal';
-import { DeleteUserBookButton } from './deleteUserBookButton';
+import { useQuery } from '@tanstack/react-query';
+import { type FC } from 'react';
 import { useSelector } from 'react-redux';
+
+import { BorrowBookButton } from './borrowBookButton';
+import { DeleteUserBookButton } from './deleteUserBookButton';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
-import { useQuery } from '@tanstack/react-query';
 import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
+import { EditBookModal } from '../editBookModal/editBookModal';
 
 interface BasicDataTabActionButtonsProps {
   bookId: string;
 }
-export const BasicDataTabActionButtons: FC<BasicDataTabActionButtonsProps> = ({
-  bookId,
-}) => {
+export const BasicDataTabActionButtons: FC<BasicDataTabActionButtonsProps> = ({ bookId }) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const { data } = useFindUserQuery();
@@ -23,7 +22,7 @@ export const BasicDataTabActionButtons: FC<BasicDataTabActionButtonsProps> = ({
       accessToken,
       userBookId: bookId,
       userId: data?.id as string,
-    })
+    }),
   );
 
   return (

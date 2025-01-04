@@ -1,9 +1,10 @@
 import { createLazyFileRoute, useNavigate } from '@tanstack/react-router';
-import { FC, useEffect } from 'react';
-import { RequireNonAuthComponent } from '../../modules/core/components/requireNonAuth/requireNonAuthComponent';
-import { useToast } from '../../modules/common/components/toast/use-toast';
-import { Logo } from '../../modules/common/components/logo/logo';
+import { type FC, useEffect } from 'react';
+
 import { useVerifyUserEmailMutation } from '../../modules/auth/api/verifyUserEmailMutation/verifyUserEmailMutation';
+import { Logo } from '../../modules/common/components/logo/logo';
+import { useToast } from '../../modules/common/components/toast/use-toast';
+import { RequireNonAuthComponent } from '../../modules/core/components/requireNonAuth/requireNonAuthComponent';
 import { DefaultLayout } from '../../modules/core/layouts/default/defaultLayout';
 
 export const VerifyEmailPage: FC = () => {
@@ -64,4 +65,4 @@ export const Route = createLazyFileRoute('/verifyEmail/')({
       </RequireNonAuthComponent>
     );
   },
-})
+});

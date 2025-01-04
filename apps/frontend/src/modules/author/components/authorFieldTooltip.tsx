@@ -1,18 +1,12 @@
+import { type FC } from 'react';
 import { HiOutlineInformationCircle } from 'react-icons/hi2';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '../../common/components/tooltip/tooltip';
-import { FC } from 'react';
+
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../common/components/tooltip/tooltip';
 
 interface AuthorFieldTooltipProps {
   side?: 'bottom' | 'left' | 'right' | 'top';
 }
-export const AuthorFieldTooltip: FC<AuthorFieldTooltipProps> = ({
-  side = 'top',
-}) => {
+export const AuthorFieldTooltip: FC<AuthorFieldTooltipProps> = ({ side = 'top' }) => {
   return (
     <TooltipProvider delayDuration={0}>
       <Tooltip>

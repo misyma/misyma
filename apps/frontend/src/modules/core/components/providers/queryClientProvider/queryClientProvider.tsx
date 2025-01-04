@@ -1,20 +1,21 @@
 import { QueryCache, QueryClient, QueryClientProvider as NativeQueryClientProvider } from '@tanstack/react-query';
-import React, {  useState } from 'react';
+import React, { useState } from 'react';
+
+import { type RefreshUserTokensResponseBody } from '@common/contracts';
+
 import { ApiError } from '../../../../common/errors/apiError';
+import { UserApiError } from '../../../../user/errors/userApiError';
+import { CookieService } from '../../../services/cookieService/cookieService';
+import { HttpService } from '../../../services/httpService/httpService';
+import { useStoreDispatch } from '../../../store/hooks/useStoreDispatch';
 import { useStoreSelector } from '../../../store/hooks/useStoreSelector';
 import { userStateActions, userStateSelectors } from '../../../store/states/userState/userStateSlice';
-import { type RefreshUserTokensResponseBody } from '@common/contracts';
-import { useStoreDispatch } from '../../../store/hooks/useStoreDispatch';
-import { HttpService } from '../../../services/httpService/httpService';
-import { CookieService } from '../../../services/cookieService/cookieService';
-import { UserApiError } from '../../../../user/errors/userApiError';
 
 interface ProviderProps {
   children: React.ReactNode;
 }
 
 export const QueryClientProvider = ({ children }: ProviderProps) => {
-
   const storeDispatch = useStoreDispatch();
 
   const refreshToken = useStoreSelector(userStateSelectors.selectRefreshToken);

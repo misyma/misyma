@@ -1,4 +1,7 @@
-import { FC, useState } from 'react';
+import { type FC, useState } from 'react';
+import { HiPencil } from 'react-icons/hi2';
+
+import { Button } from '../../../common/components/button/button';
 import {
   Dialog,
   DialogContent,
@@ -6,20 +9,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '../../../common/components/dialog/dialog';
-import { Button } from '../../../common/components/button/button';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '../../../common/components/tooltip/tooltip';
-import { AdminEditBookForm } from '../adminEditBookForm/adminEditBookForm';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../common/components/tooltip/tooltip';
 import {
   AdminEditBookAction,
   AdminEditBookProvider,
   useAdminEditBookDispatch,
 } from '../../context/adminEditBookContext/adminEditBookContext';
-import { HiPencil } from 'react-icons/hi2';
+import { AdminEditBookForm } from '../adminEditBookForm/adminEditBookForm';
 
 interface Props {
   bookId: string;
@@ -35,10 +31,12 @@ export const AdminEditBookModal: FC<Props> = ({ bookId }) => {
 
 const InnerContainer: FC<Props> = ({ bookId }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+
   const dispatch = useAdminEditBookDispatch();
 
   const resetModalState = () => {
     setIsOpen(false);
+
     dispatch({
       type: AdminEditBookAction.resetContext,
     });
@@ -64,7 +62,10 @@ const InnerContainer: FC<Props> = ({ bookId }) => {
                 variant="ghost"
                 size="icon"
               >
-                <Button size="custom" variant="none">
+                <Button
+                  size="custom"
+                  variant="none"
+                >
                   <HiPencil className="cursor-pointer text-primary h-8 w-8" />
                 </Button>
               </Button>

@@ -152,7 +152,7 @@ input[type='number'] {
   transform-origin: 0% 100%;
 }
 
-/* 
+/*
  * Transform all the slices of hamburger
  * into a crossmark.
  */
@@ -198,8 +198,8 @@ input[type='number'] {
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .no-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 /*
  * But let's hide the middle one.

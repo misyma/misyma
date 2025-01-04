@@ -1,6 +1,7 @@
-import { Meta, StoryObj } from '@storybook/react';
-import { ISVGProps, LoadingSpinner } from './loading-spinner';
 import { useArgs } from '@storybook/preview-api';
+import { type Meta, type StoryObj } from '@storybook/react';
+
+import { type ISVGProps, LoadingSpinner } from './loading-spinner';
 
 const meta: Meta<typeof LoadingSpinner> = {
   component: LoadingSpinner,

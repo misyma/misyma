@@ -1,12 +1,14 @@
-import { FC, useEffect, useMemo, useState } from 'react';
+import { type FC, useEffect, useMemo, useState } from 'react';
+
+import { type Author } from '@common/contracts';
+
 import { useFindAuthorsQuery } from '../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
 import { authorTableColumns } from '../../author/components/authorTableColumns';
+import { DataSkeletonTable } from '../../common/components/dataTable/dataSkeletonTable';
 import { DataTable } from '../../common/components/dataTable/dataTable';
-import { Author } from '@common/contracts';
 import { Input } from '../../common/components/input/input';
 import useDebounce from '../../common/hooks/useDebounce';
 import { useInitialFetch } from '../../common/hooks/useInitialFetch';
-import { DataSkeletonTable } from '../../common/components/dataTable/dataSkeletonTable';
 
 interface AdminAuthorsTableProps {
   page: number;
@@ -14,19 +16,18 @@ interface AdminAuthorsTableProps {
   authorName: string;
   setAuthorName: (val: string) => void;
 }
-export const AuthorsTable: FC<AdminAuthorsTableProps> = ({
-  page,
-  setPage,
-  setAuthorName,
-  authorName,
-}) => {
+export const AuthorsTable: FC<AdminAuthorsTableProps> = ({ page, setPage, setAuthorName, authorName }) => {
   const [searchAuthorName, setSearchAuthorName] = useState(authorName);
+
   const [pageSize] = useState(10);
+
   const [totalPages, setTotalPages] = useState(0);
+
   const debouncedSearchValue = useDebounce(searchAuthorName, 250);
 
   const onSetSearchAuthorName = (val: string) => {
     setPage(1);
+
     setSearchAuthorName(val);
   };
 
@@ -52,16 +53,11 @@ export const AuthorsTable: FC<AdminAuthorsTableProps> = ({
 
   useEffect(() => {
     if (isFetched) {
-      setTotalPages(
-        Math.ceil(Number(authorsData?.metadata.total) / Number(pageSize)) || 1
-      );
+      setTotalPages(Math.ceil(Number(authorsData?.metadata.total) / Number(pageSize)) || 1);
     }
   }, [isFetched, authorsData, pageSize]);
 
-  const itemsCount = useMemo(
-    () => Number(authorsData?.metadata.total ?? 0),
-    [authorsData?.metadata.total]
-  );
+  const itemsCount = useMemo(() => Number(authorsData?.metadata.total ?? 0), [authorsData?.metadata.total]);
 
   return (
     <div className="flex flex-col w-full">

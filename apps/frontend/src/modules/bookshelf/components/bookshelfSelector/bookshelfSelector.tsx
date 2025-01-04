@@ -1,19 +1,13 @@
-import { FC, Fragment, KeyboardEvent, useMemo } from 'react';
-import {
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../../../common/components/select/select';
+import { type FC, Fragment, type KeyboardEvent, useMemo } from 'react';
+
+import { SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../common/components/select/select';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { useFindUserBookshelfsQuery } from '../../api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 
 interface BookshelfSelectorProps {
   onKeyDown: (event: KeyboardEvent<HTMLDivElement>) => void;
 }
-export const BookshelfSelector: FC<BookshelfSelectorProps> = ({
-  onKeyDown,
-}) => {
+export const BookshelfSelector: FC<BookshelfSelectorProps> = ({ onKeyDown }) => {
   const { data: user } = useFindUserQuery();
 
   const { data: bookshelvesData } = useFindUserBookshelfsQuery({
@@ -22,11 +16,8 @@ export const BookshelfSelector: FC<BookshelfSelectorProps> = ({
   });
 
   const bookshelves = useMemo(
-    () =>
-      bookshelvesData?.data.filter(
-        (b) => b.name !== 'Wypożyczalnia' && b.name !== 'Archiwum'
-      ) ?? [],
-    [bookshelvesData]
+    () => bookshelvesData?.data.filter((b) => b.name !== 'Wypożyczalnia' && b.name !== 'Archiwum') ?? [],
+    [bookshelvesData],
   );
 
   return (

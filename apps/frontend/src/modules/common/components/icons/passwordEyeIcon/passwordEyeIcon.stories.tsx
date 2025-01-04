@@ -1,6 +1,7 @@
-import { Meta } from '@storybook/react';
+import { type Meta } from '@storybook/react';
+import { type ReactNode, useState } from 'react';
+
 import { PasswordEyeIcon } from './passwordEyeIcon';
-import { ReactNode, useState } from 'react';
 
 const meta: Meta<typeof PasswordEyeIcon> = {
   component: PasswordEyeIcon,

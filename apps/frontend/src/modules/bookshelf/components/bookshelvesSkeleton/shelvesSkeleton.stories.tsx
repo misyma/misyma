@@ -1,5 +1,6 @@
-import { Meta, StoryObj } from '@storybook/react';
-import { ShelvesSkeleton, ShelvesSkeletonProps } from './shelvesSkeleton';
+import { type Meta, type StoryObj } from '@storybook/react';
+
+import { ShelvesSkeleton, type ShelvesSkeletonProps } from './shelvesSkeleton';
 
 const meta: Meta<typeof ShelvesSkeleton> = {
   component: ShelvesSkeleton,

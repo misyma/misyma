@@ -1,10 +1,10 @@
-import { Meta, StoryObj } from '@storybook/react';
-import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbSeparator } from './breadcrumb';
-import { ReactNode } from 'react';
-
+import { useArgs } from '@storybook/preview-api';
+import { type Meta, type StoryObj } from '@storybook/react';
+import { type ReactNode } from 'react';
 import * as HiIcons from 'react-icons/hi';
 import * as HiIcons2 from 'react-icons/hi2';
-import { useArgs } from '@storybook/preview-api';
+
+import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbSeparator } from './breadcrumb';
 
 const meta: Meta<typeof Breadcrumb> = {
   component: Breadcrumb,

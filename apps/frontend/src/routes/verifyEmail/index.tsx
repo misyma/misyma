@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { z } from 'zod';
 
 const searchSchema = z.object({
@@ -10,4 +10,4 @@ export const Route = createFileRoute('/verifyEmail/')({
   onError: () => {
     return <Link to={'/login'} />;
   },
-})
+});

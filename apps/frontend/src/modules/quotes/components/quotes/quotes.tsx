@@ -1,7 +1,7 @@
-import { FC } from 'react';
+import { type FC } from 'react';
 
 type Quote = {
-    text: string;
+  text: string;
 };
 
 interface Props {
@@ -12,7 +12,8 @@ export const Quotes: FC<Props> = ({ quotes }: Props) => {
   return (
     <ul>
       {quotes.length > 0 ? (
-        quotes.map((quote, index) => { //todo book name or something
+        quotes.map((quote, index) => {
+          //todo book name or something
           return <li key={`${index}-${quote.text}`}>{quote.text}</li>;
         })
       ) : (

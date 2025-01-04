@@ -1,9 +1,12 @@
-import { FC, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { useQueryClient } from '@tanstack/react-query';
 import { DialogTitle } from '@radix-ui/react-dialog';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
-import { useToast } from '../../../common/components/toast/use-toast';
+import { useQueryClient } from '@tanstack/react-query';
+import { type FC, useMemo, useState } from 'react';
+import { HiCheckCircle, HiXCircle } from 'react-icons/hi2';
+import { useSelector } from 'react-redux';
+
+import { type Book } from '@common/contracts';
+
+import { Button } from '../../../common/components/button/button';
 import {
   Dialog,
   DialogContent,
@@ -11,17 +14,11 @@ import {
   DialogHeader,
   DialogTrigger,
 } from '../../../common/components/dialog/dialog';
-import { Button } from '../../../common/components/button/button';
-import { Book } from '@common/contracts';
-import { HiCheckCircle, HiXCircle } from 'react-icons/hi2';
+import { useToast } from '../../../common/components/toast/use-toast';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../common/components/tooltip/tooltip';
+import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useUpdateBookMutation } from '../../api/admin/mutations/updateBookMutation/updateBookMutation';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '../../../common/components/tooltip/tooltip';
 
 interface Props {
   book: Book;
@@ -32,7 +29,9 @@ export const ChangeBookStatusModal: FC<Props> = ({ book }: Props) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const { toast } = useToast();
+
   const queryClient = useQueryClient();
+
   const { mutateAsync: updateBook } = useUpdateBookMutation({});
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -52,8 +51,7 @@ export const ChangeBookStatusModal: FC<Props> = ({ book }: Props) => {
     });
 
     await queryClient.invalidateQueries({
-      predicate: ({ queryKey }) =>
-        queryKey[0] === BookApiQueryKeys.findBooksAdmin,
+      predicate: ({ queryKey }) => queryKey[0] === BookApiQueryKeys.findBooksAdmin,
     });
   };
 
@@ -61,6 +59,7 @@ export const ChangeBookStatusModal: FC<Props> = ({ book }: Props) => {
     if (book.isApproved) {
       return <HiCheckCircle className="h-6 w-6 text-green-500" />;
     }
+
     return <HiXCircle className="h-6 w-6 text-red-500" />;
   }, [book.isApproved]);
 
@@ -97,12 +96,8 @@ export const ChangeBookStatusModal: FC<Props> = ({ book }: Props) => {
         className="max-w-xl py-16"
         omitCloseButton={true}
       >
-        <DialogDescription className="hidden">
-          Author creation dialog
-        </DialogDescription>
-        <DialogTitle className="hidden">
-          Czy na pewno chcesz zmienić status widoczności książki?
-        </DialogTitle>
+        <DialogDescription className="hidden">Author creation dialog</DialogDescription>
+        <DialogTitle className="hidden">Czy na pewno chcesz zmienić status widoczności książki?</DialogTitle>
         <DialogHeader
           aria-label="Change book visibility status."
           className="font-semibold text-center flex justify-center items-center"
@@ -115,10 +110,16 @@ export const ChangeBookStatusModal: FC<Props> = ({ book }: Props) => {
             : 'Czy na pewno chcesz ujawnić te książkę? Użytkownicy będą mogli ją wyszukać i użyć do dodania książek na półkę.'}
         </div>
         <div className="flex items-center justify-center gap-2">
-          <Button variant="secondary" type="button">
+          <Button
+            variant="secondary"
+            type="button"
+          >
             Anuluj
           </Button>
-          <Button onClick={onCreate} type="button">
+          <Button
+            onClick={onCreate}
+            type="button"
+          >
             {book.isApproved ? 'Ukryj' : 'Pokazuj'}
           </Button>
         </div>

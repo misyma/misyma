@@ -1,9 +1,11 @@
-import { UseMutationOptions } from '@tanstack/react-query';
-import { UploadUserBookImageResponseBody } from '@common/contracts';
-import { HttpService } from '../../../../../core/services/httpService/httpService.js';
+import { type UseMutationOptions } from '@tanstack/react-query';
+
+import { type UploadUserBookImageResponseBody } from '@common/contracts';
+
 import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper.js';
-import { BookApiError } from '../../../../errors/bookApiError.js';
 import { useErrorHandledMutation } from '../../../../../common/hooks/useErrorHandledMutation.js';
+import { HttpService } from '../../../../../core/services/httpService/httpService.js';
+import { BookApiError } from '../../../../errors/bookApiError.js';
 
 export interface UploadBookImageMutationPayload {
   bookId: string;

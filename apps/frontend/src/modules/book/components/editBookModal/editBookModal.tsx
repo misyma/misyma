@@ -1,37 +1,25 @@
-import { FC, forwardRef, useState } from 'react';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTrigger,
-} from '../../../common/components/dialog/dialog';
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
-import { useUploadBookImageMutation } from '../../api/user/mutations/uploadBookImageMutation/uploadBookImageMutation';
 import { useQueryClient } from '@tanstack/react-query';
-import { useUpdateUserBookMutation } from '../../api/user/mutations/updateUserBookMutation/updateUserBookMutation';
-import { UpdateUserBookForm } from '../updateUserBookForm/updateUserBookForm';
-import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
-import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
-import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
+import { type FC, forwardRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { HiPencil } from 'react-icons/hi';
+import { useSelector } from 'react-redux';
+import { z } from 'zod';
+
 import { CreateChangeRequestForm } from '../../../bookChangeRequests/components/createChangeRequestForm/createChangeRequestForm';
-import {
-  RadioGroup,
-  RadioGroupItem,
-} from '../../../common/components/radioGroup/radio-group';
 import { Button } from '../../../common/components/button/button';
-import { BookDetailsChangeRequestProvider } from '../../context/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '../../../common/components/tooltip/tooltip';
+import { Dialog, DialogContent, DialogHeader, DialogTrigger } from '../../../common/components/dialog/dialog';
+import { RadioGroup, RadioGroupItem } from '../../../common/components/radioGroup/radio-group';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../common/components/tooltip/tooltip';
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
+import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
+import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
+import { useUpdateUserBookMutation } from '../../api/user/mutations/updateUserBookMutation/updateUserBookMutation';
+import { useUploadBookImageMutation } from '../../api/user/mutations/uploadBookImageMutation/uploadBookImageMutation';
+import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
+import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
+import { BookDetailsChangeRequestProvider } from '../../context/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
+import { UpdateUserBookForm } from '../updateUserBookForm/updateUserBookForm';
 
 interface Props {
   bookId: string;
@@ -45,8 +33,8 @@ const changeMyBookDataSchema = z.object({
       {},
       {
         required_error: 'Wymagany.',
-      }
-    )
+      },
+    ),
   ),
   genre: z
     .string()
@@ -60,39 +48,45 @@ interface EditBookIconProps {
   onClick: () => void;
 }
 
-const EditBookIcon = forwardRef<HTMLButtonElement, EditBookIconProps>(
-  ({ onClick }, ref) => {
-    return (
-      <Button ref={ref} onClick={onClick} variant="ghost" size="icon">
-        <HiPencil className="cursor-pointer text-primary h-8 w-8" />
-      </Button>
-    );
-  }
-);
+const EditBookIcon = forwardRef<HTMLButtonElement, EditBookIconProps>(({ onClick }, ref) => {
+  return (
+    <Button
+      ref={ref}
+      onClick={onClick}
+      variant="ghost"
+      size="icon"
+    >
+      <HiPencil className="cursor-pointer text-primary h-8 w-8" />
+    </Button>
+  );
+});
 
 export const EditBookModal: FC<Props> = ({ bookId }) => {
-  const [bookEditType, setBookEditType] = useState<BookEditType | undefined>(
-    'myBookChange'
-  );
+  const [bookEditType, setBookEditType] = useState<BookEditType | undefined>('myBookChange');
+
   const [actionChosen, setActionChosen] = useState<boolean>(false);
+
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const queryClient = useQueryClient();
+
   const { mutateAsync: updateUserBook } = useUpdateUserBookMutation({});
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const { data: userData } = useFindUserQuery();
+
   const { data } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
       userId: userData?.id ?? '',
       accessToken: accessToken as string,
-    })
+    }),
   );
 
   const resetModalState = () => {
     setIsOpen(false);
+
     setActionChosen(false);
   };
 
@@ -104,16 +98,12 @@ export const EditBookModal: FC<Props> = ({ bookId }) => {
     },
   });
 
-  const { mutateAsync: uploadBookImageMutation } = useUploadBookImageMutation(
-    {}
-  );
+  const { mutateAsync: uploadBookImageMutation } = useUploadBookImageMutation({});
 
-  const onSubmitChangeMyBookDataForm = async (
-    values: z.infer<typeof changeMyBookDataSchema>
-  ) => {
+  const onSubmitChangeMyBookDataForm = async (values: z.infer<typeof changeMyBookDataSchema>) => {
     if (values.image) {
       await uploadBookImageMutation({
-        bookId: bookId,
+        bookId,
         file: values.image as unknown as File,
         accessToken: accessToken as string,
       });
@@ -128,15 +118,12 @@ export const EditBookModal: FC<Props> = ({ bookId }) => {
     }
 
     queryClient.invalidateQueries({
-      predicate: (query) =>
-        query.queryKey[0] === BookApiQueryKeys.findUserBookById &&
-        query.queryKey[1] === bookId,
+      predicate: (query) => query.queryKey[0] === BookApiQueryKeys.findUserBookById && query.queryKey[1] === bookId,
     });
 
     queryClient.invalidateQueries({
       predicate: (query) =>
-        query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId &&
-        query.queryKey[1] === data?.bookshelfId,
+        query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId && query.queryKey[1] === data?.bookshelfId,
     });
 
     resetModalState();
@@ -190,7 +177,10 @@ export const EditBookModal: FC<Props> = ({ bookId }) => {
           onValueChange={(val) => setBookEditType(val as BookEditType)}
         >
           <div className="flex gap-4">
-            <RadioGroupItem type="button" value="myBookChange"></RadioGroupItem>
+            <RadioGroupItem
+              type="button"
+              value="myBookChange"
+            ></RadioGroupItem>
             <p>zmiana danych dla mojej książki</p>
           </div>
           <div className="flex gap-4">
@@ -202,7 +192,10 @@ export const EditBookModal: FC<Props> = ({ bookId }) => {
           </div>
         </RadioGroup>
         <div className="flex gap-4">
-          <Button variant="outline" onClick={() => resetModalState()}>
+          <Button
+            variant="outline"
+            onClick={() => resetModalState()}
+          >
             Wróć
           </Button>
           <Button

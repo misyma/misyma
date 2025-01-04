@@ -1,8 +1,10 @@
-import { LogoutUserPathParams, LogoutUserRequestBody } from '@common/contracts';
-import { UseMutationOptions, useMutation } from '@tanstack/react-query';
+import { type UseMutationOptions, useMutation } from '@tanstack/react-query';
+
+import { type LogoutUserPathParams, type LogoutUserRequestBody } from '@common/contracts';
+
 import { HttpService } from '../../../../modules/core/services/httpService/httpService';
-import { AuthApiError } from '../../errors/authApiError/authApiError';
 import { ErrorCodeMessageMapper } from '../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
+import { AuthApiError } from '../../errors/authApiError/authApiError';
 
 type Payload = LogoutUserPathParams & LogoutUserRequestBody;
 

@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { type FC } from 'react';
+
 import { Button } from '../modules/common/components/button/button';
-import { FC } from 'react';
 import { Logo } from '../modules/common/components/logo/logo';
 
 export const LandingPage: FC = () => {

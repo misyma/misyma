@@ -7,24 +7,14 @@ import {
   getSortedRowModel,
 } from '@tanstack/react-table';
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '../../../common/components/table/table';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../common/components/table/table';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-export function ChangeRequestTable<TData, TValue>({
-  columns,
-  data,
-}: DataTableProps<TData, TValue>): JSX.Element {
+export function ChangeRequestTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>): JSX.Element {
   const table = useReactTable({
     data,
     columns,
@@ -46,12 +36,7 @@ export function ChangeRequestTable<TData, TValue>({
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={`${header.id}-${header.index}`}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                     </TableHead>
                   );
                 })}
@@ -66,12 +51,7 @@ export function ChangeRequestTable<TData, TValue>({
                   data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
+                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                   ))}
                 </TableRow>
               ))

@@ -1,7 +1,8 @@
-import { FC, useState } from 'react';
-import { FilterComponentProps } from '../../types/filter';
-import { FilterContainer } from '../filter/filterContainer';
+import { type FC, useState } from 'react';
+
 import LanguageSelect from '../../../book/components/languageSelect/languageSelect';
+import { type FilterComponentProps } from '../../types/filter';
+import { FilterContainer } from '../filter/filterContainer';
 
 export const SearchLanguageSelect: FC<FilterComponentProps> = ({
   filter,
@@ -13,6 +14,7 @@ export const SearchLanguageSelect: FC<FilterComponentProps> = ({
 
   const handleChange = (value: string) => {
     setValue(value);
+
     setFilterAction(value);
   };
 

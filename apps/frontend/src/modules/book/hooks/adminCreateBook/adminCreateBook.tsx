@@ -1,16 +1,18 @@
-import {
-  CreateAuthorRequestBody,
-  CreateAuthorResponseBody,
-  FindAuthorsResponseBody,
-} from '@common/contracts';
-import { UseCreateBookMutationPayload } from '../../api/user/mutations/createBookMutation/createBookMutation';
-import { useToast } from '../../../common/components/toast/use-toast';
 import { useQueryClient } from '@tanstack/react-query';
+
+import {
+  type CreateAuthorRequestBody,
+  type CreateAuthorResponseBody,
+  type FindAuthorsResponseBody,
+} from '@common/contracts';
+
 import { useCreateAuthorDraftMutation } from '../../../author/api/user/mutations/createAuthorDraftMutation/createAuthorDraftMutation';
-import { BookApiError } from '../../errors/bookApiError';
-import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
+import { useToast } from '../../../common/components/toast/use-toast';
 import { stripFalsyObjectKeys } from '../../../common/utils/stripFalsyObjectKeys';
 import { useCreateAdminBookMutation } from '../../api/admin/mutations/createAdminBookMutation/createAdminBookMutation';
+import { type UseCreateBookMutationPayload } from '../../api/user/mutations/createBookMutation/createBookMutation';
+import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
+import { BookApiError } from '../../errors/bookApiError';
 
 interface CreatePayload {
   authorPayload?: Partial<CreateAuthorRequestBody> & {
@@ -37,10 +39,9 @@ export const useAdminCreateBook = ({
 
   const queryClient = useQueryClient();
 
-  const { mutateAsync: createBookMutation, isPending: isCreateBookPending } =
-    useCreateAdminBookMutation({});
-  const { mutateAsync: createAuthorDraft, isPending: isCreateAuthorPending } =
-    useCreateAuthorDraftMutation({});
+  const { mutateAsync: createBookMutation, isPending: isCreateBookPending } = useCreateAdminBookMutation({});
+
+  const { mutateAsync: createAuthorDraft, isPending: isCreateAuthorPending } = useCreateAuthorDraftMutation({});
 
   const create = async ({ authorPayload, bookPayload }: CreatePayload) => {
     try {
@@ -79,6 +80,7 @@ export const useAdminCreateBook = ({
 
       if (bookPayload) {
         const bookPayloadNoNil = stripFalsyObjectKeys(bookPayload);
+
         await createBookMutation({
           ...bookPayloadNoNil,
           authorIds: [authorId],
@@ -91,12 +93,10 @@ export const useAdminCreateBook = ({
 
       await Promise.all([
         queryClient.invalidateQueries({
-          predicate: ({ queryKey }) =>
-            queryKey[0] === BookApiQueryKeys.findBooks,
+          predicate: ({ queryKey }) => queryKey[0] === BookApiQueryKeys.findBooks,
         }),
         queryClient.invalidateQueries({
-          predicate: ({ queryKey }) =>
-            queryKey[0] === BookApiQueryKeys.findBooksAdmin,
+          predicate: ({ queryKey }) => queryKey[0] === BookApiQueryKeys.findBooksAdmin,
         }),
       ]);
 

@@ -1,4 +1,7 @@
-import { FC, ReactNode, useState } from 'react';
+import { type FC, type ReactNode, useState } from 'react';
+
+import { type ReadingStatus as ContractReadingStatus } from '@common/contracts';
+
 import {
   Select,
   SelectContent,
@@ -7,7 +10,6 @@ import {
   SelectValue,
 } from '../../../common/components/select/select';
 import { ReadingStatus } from '../../../common/constants/readingStatus';
-import { ReadingStatus as ContractReadingStatus } from '@common/contracts';
 
 type RendererProps = {
   children: FC;
@@ -18,17 +20,16 @@ interface StatusSelector {
   onValueChange: (val: string) => void;
   defaultValue: ContractReadingStatus | undefined;
 }
-export const StatusSelector: FC<StatusSelector> = ({
-  renderer,
-  onValueChange,
-  defaultValue
-}) => {
+export const StatusSelector: FC<StatusSelector> = ({ renderer, onValueChange, defaultValue }) => {
   const [statusSelectOpen, setStatusSelectOpen] = useState(false);
 
   const children = () => {
     return (
       <SelectTrigger>
-        <SelectValue placeholder="Status" className="bg-red-500" />
+        <SelectValue
+          placeholder="Status"
+          className="bg-red-500"
+        />
         <SelectContent>
           {Object.entries(ReadingStatus).map(([key, status]) => (
             <SelectItem

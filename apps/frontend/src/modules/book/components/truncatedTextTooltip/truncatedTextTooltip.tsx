@@ -1,19 +1,15 @@
 import React, {
   cloneElement,
-  FC,
+  type FC,
   Fragment,
   isValidElement,
-  PropsWithChildren,
-  RefObject,
+  type PropsWithChildren,
+  type RefObject,
   useRef,
 } from 'react';
+
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../common/components/tooltip/tooltip';
 import { useIsTruncated } from '../../../common/hooks/useIsTruncated';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '../../../common/components/tooltip/tooltip';
 
 export const TruncatedTextTooltip: FC<
   PropsWithChildren<{

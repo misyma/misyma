@@ -11,17 +11,11 @@ import {
   getFilteredRowModel,
   type TableState,
 } from '@tanstack/react-table';
-import { ReactNode, useMemo, useState } from 'react';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '../table/table';
-import { Paginator } from '../paginator/paginator';
+import { type ReactNode, useMemo, useState } from 'react';
+
 import { cn } from '../../lib/utils';
+import { Paginator } from '../paginator/paginator';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../table/table';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -35,7 +29,7 @@ interface DataTableProps<TData, TValue> {
   includeColumnsSelector?: boolean;
   hideHeaders?: boolean;
   PaginationSlot?: ReactNode;
-  tableContainerClassName?: string
+  tableContainerClassName?: string;
 }
 
 export function DataTable<TData extends object, TValue>({
@@ -51,8 +45,11 @@ export function DataTable<TData extends object, TValue>({
   tableContainerClassName,
 }: DataTableProps<TData, TValue>): JSX.Element {
   const [sorting, setSorting] = useState<SortingState>([]);
+
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+
   const state: Partial<TableState> = {
     sorting,
     columnFilters,
@@ -96,7 +93,7 @@ export function DataTable<TData extends object, TValue>({
 
   return (
     <div className="w-full md:max-w-screen-xl">
-      <div className={cn("w-full min-h-[40rem]", tableContainerClassName)}>
+      <div className={cn('w-full min-h-[40rem]', tableContainerClassName)}>
         <Table>
           {!hideHeaders && (
             <TableHeader>
@@ -111,12 +108,7 @@ export function DataTable<TData extends object, TValue>({
                         className="py-4 m-0 h-14"
                         key={header.id}
                       >
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
+                        {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                       </TableHead>
                     );
                   })}
@@ -132,12 +124,7 @@ export function DataTable<TData extends object, TValue>({
                   data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
+                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                   ))}
                 </TableRow>
               ))

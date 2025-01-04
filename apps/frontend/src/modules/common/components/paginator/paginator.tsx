@@ -1,4 +1,5 @@
-import React, { FC, ReactNode, useMemo, useState } from 'react';
+import React, { type FC, type ReactNode, useMemo, useState } from 'react';
+
 import {
   Pagination,
   PaginationContent,
@@ -94,18 +95,10 @@ const V1Paginator: FC<PaginatorProps> = ({
         ) : includePageNumber ? (
           <>
             <PaginationItem
-              className={
-                previousPage === undefined
-                  ? 'pointer-events-none hover:text-none hover:bg-none'
-                  : ''
-              }
+              className={previousPage === undefined ? 'pointer-events-none hover:text-none hover:bg-none' : ''}
             >
               <PaginationLink
-                className={
-                  previousPage === undefined
-                    ? 'pointer-events-none hover:text-none hover:bg-[unset]'
-                    : ''
-                }
+                className={previousPage === undefined ? 'pointer-events-none hover:text-none hover:bg-[unset]' : ''}
                 onClick={async () => {
                   if (previousPage === undefined) {
                     return;
@@ -137,9 +130,7 @@ const V1Paginator: FC<PaginatorProps> = ({
                 }}
                 isActive={previousPage === undefined}
               >
-                {previousPage !== undefined &&
-                currentPage === pagesCount &&
-                pagesCount > 2
+                {previousPage !== undefined && currentPage === pagesCount && pagesCount > 2
                   ? currentPage - 2
                   : previousPage !== undefined
                     ? previousPage
@@ -149,8 +140,7 @@ const V1Paginator: FC<PaginatorProps> = ({
             <PaginationItem>
               <PaginationLink
                 isActive={
-                  (currentPage !== 1 && currentPage !== pagesCount) ||
-                  (pagesCount === 2 && currentPage === pagesCount)
+                  (currentPage !== 1 && currentPage !== pagesCount) || (pagesCount === 2 && currentPage === pagesCount)
                 }
                 onClick={async () => {
                   if (currentPage === 1) {
@@ -174,20 +164,12 @@ const V1Paginator: FC<PaginatorProps> = ({
             {pagesCount > 2 ? (
               <PaginationItem>
                 <PaginationLink
-                  isActive={
-                    nextPage === undefined &&
-                    currentPage !== 1 &&
-                    currentPage === pagesCount &&
-                    pagesCount > 2
-                  }
-                  className={
-                    nextPage === undefined
-                      ? 'pointer-events-none hover:text-none hover:bg-none'
-                      : ''
-                  }
+                  isActive={nextPage === undefined && currentPage !== 1 && currentPage === pagesCount && pagesCount > 2}
+                  className={nextPage === undefined ? 'pointer-events-none hover:text-none hover:bg-none' : ''}
                   onClick={async () => {
                     if (nextPage) {
                       onPageChange(nextPage);
+
                       setCurrentPage(nextPage);
                     }
                   }}
@@ -203,20 +185,10 @@ const V1Paginator: FC<PaginatorProps> = ({
           <></>
         )}
         {includeArrows ? (
-          <PaginationItem
-            className={
-              nextPage === undefined
-                ? 'pointer-events-none hover:text-none hover:bg-none'
-                : ''
-            }
-          >
+          <PaginationItem className={nextPage === undefined ? 'pointer-events-none hover:text-none hover:bg-none' : ''}>
             <PaginationNext
               hasNext={currentPage !== pagesCount}
-              className={
-                nextPage === undefined
-                  ? 'pointer-events-none hover:text-none hover:bg-[unset]'
-                  : ''
-              }
+              className={nextPage === undefined ? 'pointer-events-none hover:text-none hover:bg-[unset]' : ''}
               onClick={goToNextPage}
             />
           </PaginationItem>
@@ -288,7 +260,7 @@ const V2Paginator: FC<PaginatorProps> = ({
 
   const toItemNum = useMemo(
     () => (pageIndex * perPage > (itemsCount ?? 0) ? itemsCount : pageIndex * perPage),
-    [pageIndex, perPage, itemsCount]
+    [pageIndex, perPage, itemsCount],
   );
 
   return (
@@ -310,20 +282,10 @@ const V2Paginator: FC<PaginatorProps> = ({
           </p>
         }
         {includeArrows ? (
-          <PaginationItem
-            className={
-              nextPage === undefined
-                ? 'pointer-events-none hover:text-none hover:bg-none'
-                : ''
-            }
-          >
+          <PaginationItem className={nextPage === undefined ? 'pointer-events-none hover:text-none hover:bg-none' : ''}>
             <PaginationNext
               hasNext={currentPage !== pagesCount}
-              className={
-                nextPage === undefined
-                  ? 'pointer-events-none hover:text-none hover:bg-[unset]'
-                  : ''
-              }
+              className={nextPage === undefined ? 'pointer-events-none hover:text-none hover:bg-[unset]' : ''}
               onClick={goToNextPage}
             />
           </PaginationItem>

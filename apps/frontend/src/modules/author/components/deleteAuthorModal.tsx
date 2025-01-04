@@ -1,4 +1,10 @@
-import { FC, useState } from 'react';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
+import { useQueryClient } from '@tanstack/react-query';
+import { type FC, useState } from 'react';
+import { HiTrash } from 'react-icons/hi';
+import { useSelector } from 'react-redux';
+
+import { Button } from '../../common/components/button/button';
 import {
   Dialog,
   DialogContent,
@@ -7,33 +13,28 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '../../common/components/dialog/dialog';
-import { HiTrash } from 'react-icons/hi';
-import { cn } from '../../common/lib/utils';
-import { useQueryClient } from '@tanstack/react-query';
-import { ApiError } from '../../common/errors/apiError';
-import { useDeleteAuthorMutation } from '../api/admin/mutations/deleteAuthorMutation/deleteAuthorMutation';
-import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../core/store/states/userState/userStateSlice';
-import { AuthorsApiQueryKeys } from '../api/user/queries/authorsApiQueryKeys';
-import { Button } from '../../common/components/button/button';
 import { useToast } from '../../common/components/toast/use-toast';
-import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
+import { ApiError } from '../../common/errors/apiError';
+import { cn } from '../../common/lib/utils';
+import { userStateSelectors } from '../../core/store/states/userState/userStateSlice';
+import { useDeleteAuthorMutation } from '../api/admin/mutations/deleteAuthorMutation/deleteAuthorMutation';
+import { AuthorsApiQueryKeys } from '../api/user/queries/authorsApiQueryKeys';
+
 interface Props {
   authorId: string;
   authorName: string;
   className?: string;
 }
 
-export const DeleteAuthorModal: FC<Props> = ({
-  authorId,
-  authorName,
-  className,
-}: Props) => {
+export const DeleteAuthorModal: FC<Props> = ({ authorId, authorName, className }: Props) => {
   const queryClient = useQueryClient();
+
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
+
   const { toast } = useToast();
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
+
   const [error, setError] = useState('');
 
   const { mutateAsync: deleteAuthor } = useDeleteAuthorMutation({});
@@ -48,8 +49,7 @@ export const DeleteAuthorModal: FC<Props> = ({
       setIsOpen(false);
 
       await queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey[0] === AuthorsApiQueryKeys.findAuthorsQuery,
+        predicate: (query) => query.queryKey[0] === AuthorsApiQueryKeys.findAuthorsQuery,
       });
 
       toast({
@@ -79,10 +79,11 @@ export const DeleteAuthorModal: FC<Props> = ({
       }}
     >
       <DialogTrigger asChild>
-        <Button size="custom" variant="none">
-          <HiTrash
-            className={cn('text-primary h-8 w-8 cursor-pointer', className)}
-          />
+        <Button
+          size="custom"
+          variant="none"
+        >
+          <HiTrash className={cn('text-primary h-8 w-8 cursor-pointer', className)} />
         </Button>
       </DialogTrigger>
       <DialogContent
@@ -96,26 +97,26 @@ export const DeleteAuthorModal: FC<Props> = ({
           <VisuallyHidden>
             <DialogTitle>Usuń autora</DialogTitle>
           </VisuallyHidden>
-          <DialogHeader className="font-bold">
-            Usunięcia autora jest nieodwracalne!
-          </DialogHeader>
+          <DialogHeader className="font-bold">Usunięcia autora jest nieodwracalne!</DialogHeader>
           <VisuallyHidden>
-            <DialogDescription>
-              This dialog allows you to delete an author.
-            </DialogDescription>
+            <DialogDescription>This dialog allows you to delete an author.</DialogDescription>
           </VisuallyHidden>
           <div>Czy jesteś tego pewien?</div>
           <div className="flex w-full pt-4 gap-4 justify-center">
-            <Button className="w-40" onClick={() => setIsOpen(false)}>
+            <Button
+              className="w-40"
+              onClick={() => setIsOpen(false)}
+            >
               Nie
             </Button>
-            <Button className="w-40" onClick={onDelete}>
+            <Button
+              className="w-40"
+              onClick={onDelete}
+            >
               Tak
             </Button>
           </div>
-          {error && (
-            <p className="text-sm font-medium text-destructive">error</p>
-          )}
+          {error && <p className="text-sm font-medium text-destructive">error</p>}
         </div>
       </DialogContent>
     </Dialog>

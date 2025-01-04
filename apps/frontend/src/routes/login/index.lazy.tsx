@@ -1,12 +1,14 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { type FC } from 'react';
+
+import { type LoginUserResponseBody } from '@common/contracts';
+
 import { LoginUserForm } from '../../modules/auth/components/loginUserForm/loginUserForm';
-import { useStoreDispatch } from '../../modules/core/store/hooks/useStoreDispatch';
-import { LoginUserResponseBody } from '@common/contracts';
-import { userStateActions } from '../../modules/core/store/states/userState/userStateSlice';
-import { FC } from 'react';
 import { RequireNonAuthComponent } from '../../modules/core/components/requireNonAuth/requireNonAuthComponent';
-import { CookieService } from '../../modules/core/services/cookieService/cookieService';
 import { DefaultFormLayout } from '../../modules/core/layouts/default/defaultFormLayout';
+import { CookieService } from '../../modules/core/services/cookieService/cookieService';
+import { useStoreDispatch } from '../../modules/core/store/hooks/useStoreDispatch';
+import { userStateActions } from '../../modules/core/store/states/userState/userStateSlice';
 
 export const LoginPage: FC = () => {
   const storeDispatch = useStoreDispatch();
@@ -49,4 +51,4 @@ export const Route = createFileRoute('/login/')({
       </RequireNonAuthComponent>
     );
   },
-})
+});

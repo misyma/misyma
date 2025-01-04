@@ -1,7 +1,9 @@
-import { UseQueryOptions, keepPreviousData, queryOptions } from '@tanstack/react-query';
-import { findBookChangeRequests, FindBookChangeRequestsPayload } from './findBookChangeRequests';
+import { type UseQueryOptions, keepPreviousData, queryOptions } from '@tanstack/react-query';
+
+import { type FindBookChangeRequestsResponseBody } from '@common/contracts';
+
+import { findBookChangeRequests, type FindBookChangeRequestsPayload } from './findBookChangeRequests';
 import { BookChangeRequestApiAdminQueryKeys } from '../bookChangeRequestApiAdminQueryKeys';
-import { FindBookChangeRequestsResponseBody } from '@common/contracts';
 
 export const FindBookChangeRequestsQueryOptions = (
   payload: FindBookChangeRequestsPayload,

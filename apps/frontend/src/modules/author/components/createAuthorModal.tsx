@@ -1,15 +1,13 @@
-import { FC, ReactNode, useState } from 'react';
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useSelector } from 'react-redux';
-import { useQueryClient } from '@tanstack/react-query';
 import { DialogTitle } from '@radix-ui/react-dialog';
-import { userStateSelectors } from '../../core/store/states/userState/userStateSlice';
-import { useToast } from '../../common/components/toast/use-toast';
-import { useCreateAuthorMutation } from '../api/admin/mutations/createAuthorMutation/createAuthorMutation';
-import { AuthorsApiQueryKeys } from '../api/user/queries/authorsApiQueryKeys';
-import { ApiError } from '../../common/errors/apiError';
+import { useQueryClient } from '@tanstack/react-query';
+import { type FC, type ReactNode, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useSelector } from 'react-redux';
+import { z } from 'zod';
+
+import { AuthorFieldTooltip } from './authorFieldTooltip';
+import { Button } from '../../common/components/button/button';
 import {
   Dialog,
   DialogContent,
@@ -17,17 +15,13 @@ import {
   DialogHeader,
   DialogTrigger,
 } from '../../common/components/dialog/dialog';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '../../common/components/form/form';
-import { AuthorFieldTooltip } from './authorFieldTooltip';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../common/components/form/form';
 import { Input } from '../../common/components/input/input';
-import { Button } from '../../common/components/button/button';
+import { useToast } from '../../common/components/toast/use-toast';
+import { ApiError } from '../../common/errors/apiError';
+import { userStateSelectors } from '../../core/store/states/userState/userStateSlice';
+import { useCreateAuthorMutation } from '../api/admin/mutations/createAuthorMutation/createAuthorMutation';
+import { AuthorsApiQueryKeys } from '../api/user/queries/authorsApiQueryKeys';
 
 interface Props {
   className?: string;
@@ -52,7 +46,7 @@ const createAuthorSchema = z.object({
       },
       {
         message: 'Imię nie może być puste.',
-      }
+      },
     ),
 });
 
@@ -64,6 +58,7 @@ export const CreateAuthorModal: FC<Props> = ({ trigger, onMutated }: Props) => {
   const queryClient = useQueryClient();
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
+
   const [error, setError] = useState('');
 
   const { mutateAsync: createAuthor } = useCreateAuthorMutation({});
@@ -85,8 +80,7 @@ export const CreateAuthorModal: FC<Props> = ({ trigger, onMutated }: Props) => {
       });
 
       await queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey[0] === AuthorsApiQueryKeys.findAuthorsQuery,
+        predicate: (query) => query.queryKey[0] === AuthorsApiQueryKeys.findAuthorsQuery,
       });
 
       toast({
@@ -113,6 +107,7 @@ export const CreateAuthorModal: FC<Props> = ({ trigger, onMutated }: Props) => {
         setIsOpen(val);
 
         setError('');
+
         form.reset();
       }}
     >
@@ -125,9 +120,7 @@ export const CreateAuthorModal: FC<Props> = ({ trigger, onMutated }: Props) => {
         className="max-w-xl py-16"
         omitCloseButton={false}
       >
-        <DialogDescription className="hidden">
-          Author creation dialog
-        </DialogDescription>
+        <DialogDescription className="hidden">Author creation dialog</DialogDescription>
         <DialogTitle className="hidden">Stwórz autora</DialogTitle>
         <DialogHeader
           aria-label="Create author modal header"
@@ -151,13 +144,21 @@ export const CreateAuthorModal: FC<Props> = ({ trigger, onMutated }: Props) => {
                       <AuthorFieldTooltip side="bottom" />
                     </div>
                     <FormControl>
-                      <Input min={1} max={128} type="text" {...field} />
+                      <Input
+                        min={1}
+                        max={128}
+                        type="text"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage></FormMessage>
                   </FormItem>
                 )}
               />
-              <Button disabled={!form.formState.isValid} type="submit">
+              <Button
+                disabled={!form.formState.isValid}
+                type="submit"
+              >
                 Stwórz
               </Button>
             </form>

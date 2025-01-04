@@ -50,6 +50,6 @@ export const Small = {
 export const Test = {
   args: {
     primary: false,
-    label: "Button"
-  }
+    label: 'Button',
+  },
 };

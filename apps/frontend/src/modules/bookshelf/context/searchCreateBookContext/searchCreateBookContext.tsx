@@ -1,4 +1,4 @@
-import { Dispatch, ReactNode, createContext, useContext, useReducer } from 'react';
+import { type Dispatch, type ReactNode, createContext, useContext, useReducer } from 'react';
 
 const initialState = {
   step: 1,

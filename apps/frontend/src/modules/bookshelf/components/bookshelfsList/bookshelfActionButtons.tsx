@@ -1,10 +1,11 @@
-import { FC } from 'react';
-import { useToast } from '../../../common/components/toast/use-toast';
 import { useQueryClient } from '@tanstack/react-query';
+import { type FC } from 'react';
+import { HiOutlineX } from 'react-icons/hi';
 import { HiCheck, HiPencil } from 'react-icons/hi2';
+
+import { useToast } from '../../../common/components/toast/use-toast';
 import { cn } from '../../../common/lib/utils';
 import { DeleteBookshelfModal } from '../deleteBookshelfModal/deleteBookshelfModal';
-import { HiOutlineX } from 'react-icons/hi';
 
 interface BookshelfActionButtonsProps {
   editMap: Record<number, boolean>;
@@ -25,6 +26,7 @@ export const BookshelfActionButtons: FC<BookshelfActionButtonsProps> = ({
   onCancelEdit,
 }) => {
   const { toast } = useToast();
+
   const queryClient = useQueryClient();
 
   return (
@@ -34,7 +36,7 @@ export const BookshelfActionButtons: FC<BookshelfActionButtonsProps> = ({
           <HiPencil
             className={cn(
               'text-primary pointer-events-auto h-8 w-8 cursor-pointer',
-              name === 'Archiwum' || name === 'Wypożyczalnia' ? 'hidden' : ''
+              name === 'Archiwum' || name === 'Wypożyczalnia' ? 'hidden' : '',
             )}
             onClick={() => onStartEdit(index)}
           />
@@ -49,16 +51,10 @@ export const BookshelfActionButtons: FC<BookshelfActionButtonsProps> = ({
               });
 
               await queryClient.invalidateQueries({
-                predicate: (query) =>
-                  query.queryKey[0] === 'findUserBookshelfs',
+                predicate: (query) => query.queryKey[0] === 'findUserBookshelfs',
               });
             }}
-            className={cn(
-              name === 'Archiwum' || name === 'Wypożyczalnia'
-                ? 'invisible'
-                : '',
-              'pointer-events-auto'
-            )}
+            className={cn(name === 'Archiwum' || name === 'Wypożyczalnia' ? 'invisible' : '', 'pointer-events-auto')}
           />
         </>
       ) : (

@@ -1,43 +1,46 @@
-import { FC, useEffect, useState } from 'react';
-import { Button } from '../button/button.js';
-import { HiCheck } from 'react-icons/hi2';
+import { type FC, useEffect, useState } from 'react';
 import { HiX } from 'react-icons/hi';
+import { HiCheck } from 'react-icons/hi2';
 
-export type ThreeStateCheckboxStates =
-  | 'unchecked'
-  | 'checked'
-  | 'indeterminate';
+import { Button } from '../button/button.js';
+
+export type ThreeStateCheckboxStates = 'unchecked' | 'checked' | 'indeterminate';
 
 interface ThreeStateCheckboxProps {
   value: ThreeStateCheckboxStates;
   onValueChanged: (value: ThreeStateCheckboxStates) => void;
 }
 
-const ThreeStateCheckbox: FC<ThreeStateCheckboxProps> = ({
-  onValueChanged,
-  value,
-}) => {
+const ThreeStateCheckbox: FC<ThreeStateCheckboxProps> = ({ onValueChanged, value }) => {
   const [state, setState] = useState(value);
+
   useEffect(() => {
     if (value !== state) {
       setState(value);
     }
   }, [value, state]);
+
   const handleClick = () => {
     const getNextState = (currentState: ThreeStateCheckboxStates): ThreeStateCheckboxStates => {
       switch (currentState) {
         case 'unchecked':
           return 'checked';
+
         case 'checked':
           return 'indeterminate';
+
         case 'indeterminate':
           return 'unchecked';
+
         default:
           return 'checked';
       }
     };
+
     const nextState = getNextState(state);
+
     setState(nextState);
+
     onValueChanged(nextState);
   };
 

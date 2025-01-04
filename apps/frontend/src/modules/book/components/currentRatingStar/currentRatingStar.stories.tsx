@@ -1,9 +1,11 @@
-import { Meta, StoryObj } from '@storybook/react';
-import { CurrentRatingStar } from './currentRatingStar';
+import { type Meta, type StoryObj } from '@storybook/react';
 import { http, HttpResponse } from 'msw';
-import { BookReading } from '@common/contracts';
-import { MockStoreProvider } from '../../../core/components/providers/storeProvider/mockStoreProvider';
+
+import { type BookReading } from '@common/contracts';
+
+import { CurrentRatingStar } from './currentRatingStar';
 import { QueryClientProvider } from '../../../core/components/providers/queryClientProvider/queryClientProvider';
+import { MockStoreProvider } from '../../../core/components/providers/storeProvider/mockStoreProvider';
 
 const meta: Meta<typeof CurrentRatingStar> = {
   component: CurrentRatingStar,
@@ -71,18 +73,18 @@ export const DummyTen: Story = {
 };
 
 export const NoRatings: Story = {
-    args: {
-        userBookId: '123',
-      },
-      parameters: {
-        msw: {
-          handlers: [
-            http.get('https://api.misyma.com/api/*', () => {
-              return HttpResponse.json({
-                data: [],
-              });
-            }),
-          ],
-        },
-      },
-}
+  args: {
+    userBookId: '123',
+  },
+  parameters: {
+    msw: {
+      handlers: [
+        http.get('https://api.misyma.com/api/*', () => {
+          return HttpResponse.json({
+            data: [],
+          });
+        }),
+      ],
+    },
+  },
+};

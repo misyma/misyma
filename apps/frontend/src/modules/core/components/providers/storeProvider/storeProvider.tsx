@@ -1,14 +1,14 @@
+import { type ReactNode } from '@tanstack/react-router';
 import { Provider } from 'react-redux';
-import { store } from '../../../store/store';
-import { ReactNode } from '@tanstack/react-router';
-import { userStateActions } from '../../../store/states/userState/userStateSlice';
+
 import { CookieService } from '../../../services/cookieService/cookieService';
+import { userStateActions } from '../../../store/states/userState/userStateSlice';
+import { store } from '../../../store/store';
 
 interface Props {
   children: ReactNode;
 }
 
- 
 export const StoreProvider = ({ children }: Props): JSX.Element => {
   const userData = CookieService.getUserDataCookie();
 
