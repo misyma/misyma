@@ -35,7 +35,7 @@ const BorrowedSinceText: FC<{ userBookId: string }> = ({ userBookId }) => {
 
     return Math.ceil(
       (Date.now() -
-        new Date(bookBorrowing?.data[0]?.startedAt ?? '').getTime()) /
+        new Date(bookBorrowing?.data?.[0]?.startedAt ?? '').getTime()) /
         millisecondsInDay
     );
   }, [bookBorrowing?.data]);
@@ -44,7 +44,7 @@ const BorrowedSinceText: FC<{ userBookId: string }> = ({ userBookId }) => {
     <div className="grid grid-cols-1">
       <div className="flex gap-2 items-center">
         <HiEnvelope className="w-4 h-4 text-primary" />
-        <p className="text-sm">{bookBorrowing?.data[0].borrower}</p>
+        <p className="text-sm">{bookBorrowing?.data?.[0].borrower}</p>
       </div>
       <span className="flex gap-2 text-sm">
         dni: {totalDaysSinceBorrowing} <HiClock className="h-5 w-5" />{' '}
