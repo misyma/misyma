@@ -168,7 +168,11 @@ const CreateBookReadingForm: FC<CreateBookReadingFormProps> = ({ bookId, rating,
           name="comment"
           render={({ field }) => (
             <FormItem className="flex flex-col gap-2">
-              <FormLabel>Komentarz</FormLabel>
+              <FormLabel>
+                <span>Komentarz </span>
+                <span className="text-gray-500">(opcjonalne)</span>
+              </FormLabel>
+
               <FormControl>
                 <Textarea
                   placeholder="Komentarz"

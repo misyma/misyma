@@ -248,7 +248,10 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
           name="image"
           render={({ field: { value, onChange, ...fieldProps } }) => (
             <FormItem>
-              <FormLabel>Obrazek</FormLabel>
+              <FormLabel>
+                <span>Obrazek</span>
+                <span className="text-gray-500"> (opcjonalne)</span>
+              </FormLabel>
               <FormControl>
                 <FileInput
                   {...fieldProps}
