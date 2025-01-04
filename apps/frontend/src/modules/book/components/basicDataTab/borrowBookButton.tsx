@@ -12,7 +12,9 @@ import { cn } from '../../../common/lib/utils';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
+import { invalidateBooksByBookshelfIdQuery } from '../../api/user/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
 import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
+import { invalidateFindUserBooksByQuery } from '../../api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
 import { CreateBorrowingModal } from '../createBorrowingModal/createBorrowingModal';
 
 interface BorrowBookIconProps {
@@ -86,26 +88,38 @@ export const BorrowBookButton: FC<BorrowBookButtonProps> = ({ bookId, currentBoo
           bookId={bookId}
           open={createBookBorrowingModalOpen}
           onMutated={async () => {
-            queryClient.invalidateQueries({
-              predicate: (query) =>
-                query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId &&
-                query.queryKey[1] === bookshelfResponse?.id,
-            });
-
-            queryClient.invalidateQueries({
-              predicate: (query) =>
-                query.queryKey[0] === BookApiQueryKeys.findUserBookById && query.queryKey[1] === bookId,
-            });
-
-            queryClient.invalidateQueries({
-              predicate: (query) => query.queryKey[0] === BookshelvesApiQueryKeys.findUserBookshelfs,
-            });
-
-            queryClient.invalidateQueries({
-              predicate: (query) =>
-                query.queryKey[0] === BookApiQueryKeys.findUserBooksBy &&
-                (query.queryKey[1] === currentBookshelfId || query.queryKey[2] === currentBookshelfId), // todo - might need to adjust this.
-            });
+            await Promise.all([
+              queryClient.invalidateQueries({
+                predicate: (query) =>
+                  query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId &&
+                  query.queryKey[1] === bookshelfResponse?.id,
+              }),
+              queryClient.invalidateQueries({
+                predicate: (query) =>
+                  query.queryKey[0] === BookApiQueryKeys.findUserBookById && query.queryKey[1] === bookId,
+              }),
+              queryClient.invalidateQueries({
+                predicate: (query) => query.queryKey[0] === BookshelvesApiQueryKeys.findUserBookshelfs,
+              }),
+              queryClient.invalidateQueries({
+                predicate: ({ queryKey }) =>
+                  invalidateFindUserBooksByQuery(
+                    {
+                      bookshelfId: currentBookshelfId,
+                    },
+                    queryKey,
+                  ),
+              }),
+              queryClient.invalidateQueries({
+                predicate: ({ queryKey }) =>
+                  invalidateBooksByBookshelfIdQuery(
+                    {
+                      bookshelfId: currentBookshelfId,
+                    },
+                    queryKey,
+                  ),
+              }),
+            ]);
 
             setCreateBookBorrowingModalOpen(false);
           }}

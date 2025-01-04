@@ -66,3 +66,27 @@ export const FindUserBooksByInfiniteQueryOptions = ({ accessToken, page = 1, ...
     },
     enabled: !!accessToken,
   });
+
+export const invalidateFindUserBooksByQuery = (
+  vals: Partial<Omit<FindUserBooksByPayload, 'accessToken'>>,
+  queryKey: Readonly<Array<unknown>>,
+  infiniteQuery?: boolean,
+) => {
+  const predicates: Array<(queryKey: Readonly<Array<unknown>>) => boolean> = [];
+
+  if (infiniteQuery) {
+    predicates.push((queryKey) => queryKey.includes('infinite-query'));
+  }
+
+  if (vals.bookshelfId) {
+    predicates.push((queryKey) => queryKey[1] === vals.bookshelfId);
+  }
+
+  let res = false;
+
+  predicates.forEach((predicate) => {
+    res = predicate(queryKey);
+  });
+
+  return res;
+};

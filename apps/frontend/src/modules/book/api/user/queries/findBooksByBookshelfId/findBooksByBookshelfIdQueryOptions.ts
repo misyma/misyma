@@ -23,3 +23,34 @@ export const FindBooksByBookshelfIdQueryOptions = ({
     placeholderData: keepPreviousData,
     enabled: !!accessToken && !!bookshelfId,
   });
+
+export const invalidateBooksByBookshelfIdQuery = (
+  vals: Partial<Omit<FindBooksByBookshelfIdPayload, 'accessToken'>>,
+  queryKey: Readonly<Array<unknown>>,
+) => {
+  const predicates: Array<(queryKey: Readonly<Array<unknown>>) => boolean> = [];
+
+  if (vals.bookshelfId) {
+    predicates.push((queryKey) => queryKey[1] === vals.bookshelfId);
+  }
+
+  if (vals.userId) {
+    predicates.push((queryKey) => queryKey[2] === vals.userId);
+  }
+
+  if (vals.page) {
+    predicates.push((queryKey) => queryKey[3] === vals.page);
+  }
+
+  if (vals.pageSize) {
+    predicates.push((queryKey) => queryKey[4] === vals.pageSize);
+  }
+
+  let res = false;
+
+  predicates.forEach((predicate) => {
+    res = predicate(queryKey);
+  });
+
+  return res;
+};
