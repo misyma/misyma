@@ -711,7 +711,7 @@ describe('BookRepositoryImpl', () => {
       expect(foundBooks[0]?.getId()).toEqual(book1.id);
     });
 
-    it('finds books sorted by id ascending', async () => {
+    it('finds books sorted by createdAt', async () => {
       const author = await authorTestUtils.createAndPersist();
 
       const book1 = await bookTestUtils.createAndPersist({
@@ -726,45 +726,79 @@ describe('BookRepositoryImpl', () => {
         },
       });
 
-      const foundBooks = await bookRepository.findBooks({
+      const foundBooks1 = await bookRepository.findBooks({
         page: 1,
         pageSize: 10,
-        sortDate: 'asc',
+        sortField: 'createdAt',
+        sortOrder: 'asc',
       });
 
-      expect(foundBooks.length).toEqual(2);
+      expect(foundBooks1.length).toEqual(2);
 
-      expect(foundBooks[0]?.getId()).toEqual(book1.id);
+      expect(foundBooks1[0]?.getId()).toEqual(book1.id);
 
-      expect(foundBooks[1]?.getId()).toEqual(book2.id);
+      expect(foundBooks1[1]?.getId()).toEqual(book2.id);
+
+      const foundBooks2 = await bookRepository.findBooks({
+        page: 1,
+        pageSize: 10,
+        sortField: 'createdAt',
+        sortOrder: 'desc',
+      });
+
+      expect(foundBooks2.length).toEqual(2);
+
+      expect(foundBooks2[0]?.getId()).toEqual(book2.id);
+
+      expect(foundBooks2[1]?.getId()).toEqual(book1.id);
     });
 
-    it('finds books sorted by ids descending', async () => {
+    it('finds books sorted by releaseYear', async () => {
       const author = await authorTestUtils.createAndPersist();
 
       const book1 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author.id],
+          book: {
+            releaseYear: 1995,
+          },
         },
       });
 
       const book2 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author.id],
+          book: {
+            releaseYear: 2019,
+          },
         },
       });
 
-      const foundBooks = await bookRepository.findBooks({
+      const foundBooks1 = await bookRepository.findBooks({
         page: 1,
         pageSize: 10,
-        sortDate: 'desc',
+        sortField: 'releaseYear',
+        sortOrder: 'asc',
       });
 
-      expect(foundBooks.length).toEqual(2);
+      expect(foundBooks1.length).toEqual(2);
 
-      expect(foundBooks[0]?.getId()).toEqual(book2.id);
+      expect(foundBooks1[0]?.getId()).toEqual(book1.id);
 
-      expect(foundBooks[1]?.getId()).toEqual(book1.id);
+      expect(foundBooks1[1]?.getId()).toEqual(book2.id);
+
+      const foundBooks2 = await bookRepository.findBooks({
+        page: 1,
+        pageSize: 10,
+        sortField: 'releaseYear',
+        sortOrder: 'desc',
+      });
+
+      expect(foundBooks2.length).toEqual(2);
+
+      expect(foundBooks2[0]?.getId()).toEqual(book2.id);
+
+      expect(foundBooks2[1]?.getId()).toEqual(book1.id);
     });
   });
 

@@ -1,4 +1,4 @@
-import { type FindAuthorsQueryParams, type FindAuthorsResponseBody, SortingType } from '@common/contracts';
+import { type FindAuthorsQueryParams, type FindAuthorsResponseBody, SortOrder } from '@common/contracts';
 
 import { HttpService } from '../../../../../core/services/httpService/httpService';
 
@@ -10,7 +10,7 @@ export const findAuthors = async (values: Payload) => {
   const { name, page, pageSize, ids, accessToken } = values;
 
   const query: Record<string, string> = {
-    sortDate: SortingType.desc,
+    sortDate: SortOrder.desc,
   };
 
   if (name) {

@@ -5,7 +5,7 @@ import { type FC, useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { z } from 'zod';
 
-import { Language, ReadingStatus, SortingType } from '@common/contracts';
+import { FindUserBooksSortField, Language, ReadingStatus, SortOrder } from '@common/contracts';
 
 import { AuthenticatedLayout } from '../../modules/auth/layouts/authenticated/authenticatedLayout.js';
 import { BooksPageTopBar } from '../../modules/book/components/booksPageTopBar/booksPageTopBar.js';
@@ -165,7 +165,7 @@ const BookPageFiltersBar = () => {
 
     navigate({
       to: '',
-      search: ({ title, sort }) => ({ title, sort }),
+      search: ({ title, sortField, sortOrder }) => ({ title, sortField, sortOrder }),
     });
   };
 
@@ -198,7 +198,8 @@ const BookPageFiltersBar = () => {
       to: '',
       search: {
         ...filters,
-        sort: search.sort,
+        sortField: search.sortField,
+        sortOrder: search.sortOrder,
       },
     });
   };
@@ -376,9 +377,15 @@ const MyBooksVirtualizedBooksList = () => {
     '': undefined,
   };
 
-  const sortDateMap = {
-    'created-at-asc': SortingType.asc,
-    'created-at-desc': SortingType.desc,
+  const sortFieldMap = {
+    createdAt: FindUserBooksSortField.createdAt,
+    releaseYear: FindUserBooksSortField.releaseYear,
+    '': undefined,
+  };
+
+  const sortOrderMap = {
+    asc: SortOrder.asc,
+    desc: SortOrder.desc,
     '': undefined,
   };
 
@@ -391,7 +398,8 @@ const MyBooksVirtualizedBooksList = () => {
     title,
     authorId,
     isFavorite,
-    sort,
+    sortField,
+    sortOrder,
   } = Route.useSearch();
 
   return (
@@ -405,7 +413,8 @@ const MyBooksVirtualizedBooksList = () => {
         genreId,
         authorId,
         isFavorite: isFavoriteStateMap[isFavorite ?? ''],
-        sortDate: sortDateMap[sort ?? ''],
+        sortField: sortFieldMap[sortField ?? ''],
+        sortOrder: sortOrderMap[sortOrder ?? ''],
       }}
     />
   );
@@ -510,7 +519,8 @@ const myBooksSearchParamsSchema = z
     releaseYearAfter: z.number().int().min(1900).optional().catch(undefined),
     authorId: z.string().uuid().optional().catch(''),
     isFavorite: z.enum(['true', 'false', '']).optional().catch(''),
-    sort: z.enum(['created-at-asc', 'created-at-desc', '']).optional().catch(''),
+    sortField: z.enum(['createdAt', 'releaseYear', '']).optional().catch(''),
+    sortOrder: z.enum(['asc', 'desc', '']).optional().catch(''),
   })
   .superRefine((args, ctx) => {
     if (args.releaseYearAfter && args.releaseYearBefore && args.releaseYearAfter > args.releaseYearBefore) {

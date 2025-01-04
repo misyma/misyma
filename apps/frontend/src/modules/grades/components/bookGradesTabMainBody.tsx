@@ -2,7 +2,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { type FC, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { SortingType } from '@common/contracts';
+import { SortOrder } from '@common/contracts';
 
 import { FindUserBookByIdQueryOptions } from '../../book/api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 import { CurrentRatingStar } from '../../book/components/currentRatingStar/currentRatingStar';
@@ -36,7 +36,7 @@ export const BookGradesTabMainBody: FC<BookGradesTabMainBodyProps> = ({ bookId }
       userBookId: bookId,
       page,
       pageSize,
-      sortDate: SortingType.desc,
+      sortDate: SortOrder.desc,
     }),
   );
 

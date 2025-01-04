@@ -12,11 +12,13 @@ export class FindBooksQueryHandlerImpl implements FindBooksQueryHandler {
   public constructor(private readonly bookRepository: BookRepository) {}
 
   public async execute(payload: FindBooksQueryHandlerPayload): Promise<FindBooksQueryHandlerResult> {
-    const { page, pageSize, ...rest } = payload;
+    const { page, pageSize, sortField, sortOrder, ...rest } = payload;
 
     let findBooksPayload: FindBooksPayload = {
       page,
       pageSize,
+      sortField,
+      sortOrder,
     };
 
     Object.entries(rest).forEach(([key, val]) => {

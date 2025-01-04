@@ -27,7 +27,8 @@ export const findUserBooksBy = async (payload: FindUserBooksByPayload): Promise<
     'genreId',
     'isFavorite',
     'authorId',
-    'sortDate',
+    'sortField',
+    'sortOrder',
   ];
 
   keys.forEach((key) => {

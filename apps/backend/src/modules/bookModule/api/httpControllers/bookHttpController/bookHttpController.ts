@@ -142,7 +142,7 @@ export class BookHttpController implements HttpController {
       requestHeaders: request.headers,
     });
 
-    const { isbn, title, page = 1, pageSize = 10, sortDate } = request.queryParams;
+    const { isbn, title, page = 1, pageSize = 10, sortField, sortOrder } = request.queryParams;
 
     const { books, total } = await this.findBooksQueryHandler.execute({
       isbn,
@@ -150,7 +150,8 @@ export class BookHttpController implements HttpController {
       page,
       pageSize,
       isApproved: true,
-      sortDate,
+      sortField,
+      sortOrder,
     });
 
     return {

@@ -1,7 +1,12 @@
 import { type UseQueryOptions, keepPreviousData, useQuery } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 
-import { type FindBooksResponseBody, type FindAdminBooksQueryParams, SortingType } from '@common/contracts';
+import {
+  type FindBooksResponseBody,
+  type FindAdminBooksQueryParams,
+  SortOrder,
+  FindBooksSortField,
+} from '@common/contracts';
 
 import { adminFindBooks } from './findBooks';
 import { type ApiError } from '../../../../../common/errors/apiError';
@@ -23,7 +28,8 @@ export const useAdminFindBooksQuery = ({
   releaseYearBefore,
   releaseYearAfter,
   isbn,
-  sortDate = SortingType.desc,
+  sortField = FindBooksSortField.createdAt,
+  sortOrder = SortOrder.desc,
   ...options
 }: Payload) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
@@ -39,7 +45,8 @@ export const useAdminFindBooksQuery = ({
       isApproved,
       releaseYearBefore,
       releaseYearAfter,
-      sortDate,
+      sortField,
+      sortOrder,
     ],
     queryFn: ({ signal }) =>
       adminFindBooks({
@@ -53,7 +60,8 @@ export const useAdminFindBooksQuery = ({
         language,
         releaseYearAfter,
         releaseYearBefore,
-        sortDate,
+        sortField,
+        sortOrder,
         signal,
       }),
     enabled: !!accessToken && (!!title || all),

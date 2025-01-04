@@ -4,7 +4,7 @@ import { CommandLoading } from 'cmdk';
 import { type FC, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { SortingType } from '@common/contracts';
+import { SortOrder } from '@common/contracts';
 
 import { useFindUserBookshelfsQuery } from '../../../bookshelf/api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 import { useUpdateBorrowingMutation } from '../../../borrowing/api/mutations/updateBorrowingMutation/updateBorrowingMutation';
@@ -80,7 +80,7 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
       userBookId: bookId,
       page: 1,
       pageSize: 1,
-      sortDate: SortingType.desc,
+      sortDate: SortOrder.desc,
       isOpen: true,
     }),
   );

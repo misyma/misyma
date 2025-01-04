@@ -20,7 +20,8 @@ export interface FindBooksPayload {
   readonly releaseYearAfter?: number;
   readonly page: number;
   readonly pageSize: number;
-  readonly sortDate?: 'asc' | 'desc';
+  readonly sortField?: 'createdAt' | 'releaseYear' | undefined;
+  readonly sortOrder?: 'asc' | 'desc' | undefined;
 }
 
 export interface CountBooksPayload {

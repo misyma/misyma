@@ -3,7 +3,7 @@ import { HiClock, HiDotsCircleHorizontal } from 'react-icons/hi';
 import { HiCheckCircle, HiEnvelope, HiQuestionMarkCircle } from 'react-icons/hi2';
 import { useSelector } from 'react-redux';
 
-import { ReadingStatus, SortingType, type UserBook } from '@common/contracts';
+import { ReadingStatus, SortOrder, type UserBook } from '@common/contracts';
 
 import { useNavigateToBook } from '../../../book/api/hooks/useNavigateToBook';
 import { BookImageMiniature } from '../../../book/components/bookImageMiniature/bookImageMiniature';
@@ -23,7 +23,7 @@ const BorrowedSinceText: FC<{ userBookId: string }> = ({ userBookId }) => {
       userBookId,
       page: 1,
       pageSize: 1,
-      sortDate: SortingType.desc,
+      sortDate: SortOrder.desc,
       isOpen: true,
     }),
   );

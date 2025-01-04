@@ -20,13 +20,14 @@ export const BooksSortButton = ({ navigationPath }: BooksSortButtonProps) => {
 
   const search = useSearch({ strict: false });
 
-  const handleSort = (sortValue: 'created-at-asc' | 'created-at-desc' | '') => {
+  const handleSort = (sortField: string, sortOrder: string) => {
     setPopoverOpen(false);
 
     navigate({
       search: {
         ...search,
-        sort: sortValue,
+        sortField,
+        sortOrder,
         page: 1,
       },
     });
@@ -55,18 +56,34 @@ export const BooksSortButton = ({ navigationPath }: BooksSortButtonProps) => {
             <Command>
               <CommandList>
                 <CommandItem
-                  onSelect={() => handleSort('created-at-desc')}
+                  onSelect={() => handleSort('createdAt', 'desc')}
                   className="cursor-pointer flex justify-between"
                 >
                   <span>Data dodania: najnowsze</span>
-                  {search.sort === 'created-at-desc' && selectedSortCheckmark}
+                  {(!search.sortField && !search.sortOrder && selectedSortCheckmark) ||
+                    (search.sortField === 'createdAt' && search.sortOrder === 'desc' && selectedSortCheckmark)}
                 </CommandItem>
                 <CommandItem
-                  onSelect={() => handleSort('created-at-asc')}
+                  onSelect={() => handleSort('createdAt', 'asc')}
                   className="cursor-pointer flex justify-between"
                 >
                   <span>Data dodania: najstarsze</span>
-                  {search.sort === 'created-at-asc' && selectedSortCheckmark}
+                  {search.sortField === 'createdAt' && search.sortOrder === 'asc' && selectedSortCheckmark}
+                </CommandItem>
+
+                <CommandItem
+                  onSelect={() => handleSort('releaseYear', 'desc')}
+                  className="cursor-pointer flex justify-between"
+                >
+                  <span>Rok wydania: najnowsze</span>
+                  {search.sortField === 'releaseYear' && search.sortOrder === 'desc' && selectedSortCheckmark}
+                </CommandItem>
+                <CommandItem
+                  onSelect={() => handleSort('releaseYear', 'asc')}
+                  className="cursor-pointer flex justify-between"
+                >
+                  <span>Rok wydania: najstarsze</span>
+                  {search.sortField === 'releaseYear' && search.sortOrder === 'asc' && selectedSortCheckmark}
                 </CommandItem>
               </CommandList>
             </Command>
