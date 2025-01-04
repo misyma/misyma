@@ -27,6 +27,7 @@ export const BooksSortButton = ({ navigationPath }: BooksSortButtonProps) => {
 			search: {
 				...search,
 				sort: sortValue,
+				page: 1,
 			},
 		});
 	};
