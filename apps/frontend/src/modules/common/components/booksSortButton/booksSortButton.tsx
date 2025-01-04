@@ -20,7 +20,7 @@ export const BooksSortButton = ({ navigationPath }: BooksSortButtonProps) => {
 
   const search = useSearch({ strict: false });
 
-  const handleSort = (sortValue: 'date-asc' | 'date-desc' | '') => {
+  const handleSort = (sortValue: 'created-at-asc' | 'created-at-desc' | '') => {
     setPopoverOpen(false);
 
     navigate({
@@ -55,18 +55,18 @@ export const BooksSortButton = ({ navigationPath }: BooksSortButtonProps) => {
             <Command>
               <CommandList>
                 <CommandItem
-                  onSelect={() => handleSort('date-desc')}
+                  onSelect={() => handleSort('created-at-desc')}
                   className="cursor-pointer flex justify-between"
                 >
                   <span>Data dodania: najnowsze</span>
-                  {search.sort === 'date-desc' && selectedSortCheckmark}
+                  {search.sort === 'created-at-desc' && selectedSortCheckmark}
                 </CommandItem>
                 <CommandItem
-                  onSelect={() => handleSort('date-asc')}
+                  onSelect={() => handleSort('created-at-asc')}
                   className="cursor-pointer flex justify-between"
                 >
                   <span>Data dodania: najstarsze</span>
-                  {search.sort === 'date-asc' && selectedSortCheckmark}
+                  {search.sort === 'created-at-asc' && selectedSortCheckmark}
                 </CommandItem>
               </CommandList>
             </Command>

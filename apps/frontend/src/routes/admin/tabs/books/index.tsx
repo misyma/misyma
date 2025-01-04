@@ -12,7 +12,7 @@ const RouteSearchSchema = z.object({
       coerce: true,
     })
     .catch(10),
-  sort: z.enum(['date-asc', 'date-desc', '']).catch(''),
+  sort: z.enum(['created-at-asc', 'created-at-desc', '']).catch(''),
   title: z.string().catch(''),
   authorIds: z.string().catch(''),
   isbn: z.string().catch(''),

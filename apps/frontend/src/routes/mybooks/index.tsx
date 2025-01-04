@@ -377,8 +377,8 @@ const MyBooksVirtualizedBooksList = () => {
   };
 
   const sortDateMap = {
-    'date-asc': SortingType.asc,
-    'date-desc': SortingType.desc,
+    'created-at-asc': SortingType.asc,
+    'created-at-desc': SortingType.desc,
     '': undefined,
   };
 
@@ -510,7 +510,7 @@ const myBooksSearchParamsSchema = z
     releaseYearAfter: z.number().int().min(1900).optional().catch(undefined),
     authorId: z.string().uuid().optional().catch(''),
     isFavorite: z.enum(['true', 'false', '']).optional().catch(''),
-    sort: z.enum(['date-asc', 'date-desc', '']).optional().catch(''),
+    sort: z.enum(['created-at-asc', 'created-at-desc', '']).optional().catch(''),
   })
   .superRefine((args, ctx) => {
     if (args.releaseYearAfter && args.releaseYearBefore && args.releaseYearAfter > args.releaseYearBefore) {
