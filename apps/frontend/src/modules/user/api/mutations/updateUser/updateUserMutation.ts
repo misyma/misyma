@@ -1,9 +1,11 @@
-import { UseMutationOptions } from '@tanstack/react-query';
-import { UserApiError } from '../../../errors/userApiError';
-import { useErrorHandledMutation } from '../../../../common/hooks/useErrorHandledMutation';
+import { type UseMutationOptions } from '@tanstack/react-query';
+
+import { type UpdateUserRequestBody, type UpdateUserResponseBody } from '@common/contracts';
+
 import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
+import { useErrorHandledMutation } from '../../../../common/hooks/useErrorHandledMutation';
 import { HttpService } from '../../../../core/services/httpService/httpService';
-import { UpdateUserRequestBody, UpdateUserResponseBody } from '@common/contracts';
+import { UserApiError } from '../../../errors/userApiError';
 
 export interface UseUpdateUserMutationPayload extends UpdateUserRequestBody {
   accessToken: string;

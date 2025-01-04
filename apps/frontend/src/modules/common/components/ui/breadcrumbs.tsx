@@ -1,5 +1,6 @@
-import { ComponentPropsWithoutRef, ReactNode } from 'react';
+import { type ComponentPropsWithoutRef, type ReactNode } from 'react';
 import { RxDotsHorizontal } from 'react-icons/rx';
+
 import { cn } from '../../lib/utils';
 
 export interface BreadcrumbsProps {

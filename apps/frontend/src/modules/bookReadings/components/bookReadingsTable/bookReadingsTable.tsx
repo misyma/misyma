@@ -13,14 +13,10 @@ import {
 } from '@tanstack/react-table';
 import { useMemo, useState } from 'react';
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-} from '../../../common/components/table/table';
+import { type BookReading } from '@common/contracts';
+
 import { Paginator } from '../../../common/components/paginator/paginator';
-import { BookReading } from '@common/contracts';
+import { Table, TableBody, TableCell, TableRow } from '../../../common/components/table/table';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -93,12 +89,7 @@ export function BookReadingsTable<TValue>({
                   data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
+                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                   ))}
                 </TableRow>
               ))

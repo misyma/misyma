@@ -1,6 +1,7 @@
-import { FC } from 'react';
-import { Button } from '../button/button';
+import { type FC } from 'react';
+
 import { AuthenticatedLayout } from '../../../auth/layouts/authenticated/authenticatedLayout';
+import { Button } from '../button/button';
 
 export const NotFoundPage: FC = () => {
   return (

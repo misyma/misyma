@@ -1,26 +1,17 @@
-import { FC, useState } from 'react';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTrigger,
-} from '../../../common/components/dialog/dialog';
-import { HiTrash } from 'react-icons/hi';
 import { useQueryClient } from '@tanstack/react-query';
-import { ApiError } from '../../../common/errors/apiError';
+import { type FC, useState } from 'react';
+import { HiTrash } from 'react-icons/hi';
 import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
+
 import { Button } from '../../../common/components/button/button';
-import { useToast } from '../../../common/components/toast/use-toast';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '../../../common/components/tooltip/tooltip';
+import { Dialog, DialogContent, DialogHeader, DialogTrigger } from '../../../common/components/dialog/dialog';
 import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
-import { BookReadingsApiQueryKeys } from '../../api/queries/bookReadingsApiQueryKeys';
+import { useToast } from '../../../common/components/toast/use-toast';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../common/components/tooltip/tooltip';
+import { ApiError } from '../../../common/errors/apiError';
+import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useDeleteBookReadingMutation } from '../../api/mutations/bookReadings/deleteBookReadingMutation/deleteBookReadingMutation';
+import { BookReadingsApiQueryKeys } from '../../api/queries/bookReadingsApiQueryKeys';
 
 interface Props {
   readingId: string;
@@ -28,10 +19,7 @@ interface Props {
   className?: string;
 }
 
-export const DeleteBookReadingModal: FC<Props> = ({
-  readingId,
-  userBookId,
-}: Props) => {
+export const DeleteBookReadingModal: FC<Props> = ({ readingId, userBookId }: Props) => {
   const queryClient = useQueryClient();
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
@@ -42,8 +30,7 @@ export const DeleteBookReadingModal: FC<Props> = ({
 
   const [error, setError] = useState('');
 
-  const { mutateAsync: deleteBookReading, isPending: isDeleting } =
-    useDeleteBookReadingMutation({});
+  const { mutateAsync: deleteBookReading, isPending: isDeleting } = useDeleteBookReadingMutation({});
 
   const onDelete = async (): Promise<void> => {
     try {
@@ -56,8 +43,7 @@ export const DeleteBookReadingModal: FC<Props> = ({
       setIsOpen(false);
 
       await queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey[0] === BookReadingsApiQueryKeys.findBookReadings,
+        predicate: (query) => query.queryKey[0] === BookReadingsApiQueryKeys.findBookReadings,
       });
 
       toast({
@@ -111,9 +97,7 @@ export const DeleteBookReadingModal: FC<Props> = ({
           omitCloseButton={true}
         >
           <div className="flex flex-col items-center gap-8">
-            <DialogHeader className="font-bold">
-              Czy na pewno chcesz usunąć ocenę?
-            </DialogHeader>
+            <DialogHeader className="font-bold">Czy na pewno chcesz usunąć ocenę?</DialogHeader>
             <div>Ta akcja jest nieodwracalna.</div>
             <div className="flex w-full pt-4 gap-4 justify-center">
               <Button
@@ -133,9 +117,7 @@ export const DeleteBookReadingModal: FC<Props> = ({
                 {!isDeleting && <p>Potwierdź</p>}
               </Button>
             </div>
-            {error && (
-              <p className="text-sm font-medium text-destructive">error</p>
-            )}
+            {error && <p className="text-sm font-medium text-destructive">error</p>}
           </div>
         </DialogContent>
       </Dialog>

@@ -1,5 +1,9 @@
-import { FC, memo, useState } from 'react';
-import { ControllerRenderProps } from 'react-hook-form';
+import { type FC, memo, useState } from 'react';
+import { type ControllerRenderProps } from 'react-hook-form';
+
+import { type Genre } from '@common/contracts';
+
+import { FormControl } from '../../../common/components/form/form';
 import {
   Select,
   SelectContent,
@@ -8,8 +12,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../../../common/components/select/select';
-import { FormControl } from '../../../common/components/form/form';
-import { Genre } from '@common/contracts';
 
 interface GenreSelectProps extends ControllerRenderProps {
   onValueChange: (val: string) => void;
@@ -17,12 +19,7 @@ interface GenreSelectProps extends ControllerRenderProps {
   dialog?: boolean;
 }
 
-const GenreSelect: FC<GenreSelectProps> = ({
-  onValueChange,
-  genres,
-  dialog = false,
-  ...field
-}) => {
+const GenreSelect: FC<GenreSelectProps> = ({ onValueChange, genres, dialog = false, ...field }) => {
   const [genreSelectOpen, setGenreSelectOpen] = useState(false);
 
   return (
@@ -38,11 +35,7 @@ const GenreSelect: FC<GenreSelectProps> = ({
     >
       <FormControl>
         <SelectTrigger>
-          <SelectValue
-            placeholder={
-              <span className="text-muted-foreground">Kategoria</span>
-            }
-          />
+          <SelectValue placeholder={<span className="text-muted-foreground">Kategoria</span>} />
           {dialog && (
             <SelectContentNoPortal>
               {Object.values(genres ?? []).map((genre) => (

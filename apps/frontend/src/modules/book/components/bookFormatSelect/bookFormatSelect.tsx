@@ -1,6 +1,9 @@
-import { FC, memo, useCallback, useState } from 'react';
-import { ControllerRenderProps } from 'react-hook-form';
-import { BookFormat } from '../../../common/constants/bookFormat';
+import { type FC, memo, useCallback, useState } from 'react';
+import { type ControllerRenderProps } from 'react-hook-form';
+
+import { type BookFormat as ContractBookFormat } from '@common/contracts';
+
+import { FormControl } from '../../../common/components/form/form';
 import {
   Select,
   SelectContent,
@@ -9,19 +12,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../../../common/components/select/select';
-import { BookFormat as ContractBookFormat } from '@common/contracts';
-import { FormControl } from '../../../common/components/form/form';
+import { BookFormat } from '../../../common/constants/bookFormat';
 
 interface BookFormatSelectProps extends ControllerRenderProps {
   onValueChange: (val: ContractBookFormat) => void;
   dialog?: boolean;
 }
 
-const BookFormatSelect: FC<BookFormatSelectProps> = ({
-  onValueChange,
-  dialog = false,
-  ...field
-}) => {
+const BookFormatSelect: FC<BookFormatSelectProps> = ({ onValueChange, dialog = false, ...field }) => {
   const [formatSelectOpen, setFormatSelectOpen] = useState(false);
 
   const renderBookFormatSelectItems = useCallback(
@@ -39,7 +37,7 @@ const BookFormatSelect: FC<BookFormatSelectProps> = ({
           {name}
         </SelectItem>
       )),
-    []
+    [],
   );
 
   return (
@@ -55,17 +53,9 @@ const BookFormatSelect: FC<BookFormatSelectProps> = ({
     >
       <FormControl>
         <SelectTrigger>
-          <SelectValue
-            placeholder={<span className="text-muted-foreground">Format</span>}
-          />
-          {dialog && (
-            <SelectContentNoPortal>
-              {renderBookFormatSelectItems()}
-            </SelectContentNoPortal>
-          )}
-          {!dialog && (
-            <SelectContent>{renderBookFormatSelectItems()}</SelectContent>
-          )}
+          <SelectValue placeholder={<span className="text-muted-foreground">Format</span>} />
+          {dialog && <SelectContentNoPortal>{renderBookFormatSelectItems()}</SelectContentNoPortal>}
+          {!dialog && <SelectContent>{renderBookFormatSelectItems()}</SelectContent>}
         </SelectTrigger>
       </FormControl>
     </Select>

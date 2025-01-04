@@ -1,5 +1,4 @@
-
 export interface BaseApiError {
-    message: string;
-    context: Record<string, unknown>;
+  message: string;
+  context: Record<string, unknown>;
 }

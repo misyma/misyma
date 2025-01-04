@@ -1,6 +1,8 @@
-import { FindQuotesResponseBody } from '@common/contracts';
-import { UseQueryOptions, keepPreviousData, queryOptions } from '@tanstack/react-query';
-import { GetQuotesPayload, getQuotes } from './getQuotes';
+import { type UseQueryOptions, keepPreviousData, queryOptions } from '@tanstack/react-query';
+
+import { type FindQuotesResponseBody } from '@common/contracts';
+
+import { type GetQuotesPayload, getQuotes } from './getQuotes';
 import { QuotesApiQueryKeys } from '../quotesApiQueryKeys';
 
 export const getQuotesOptions = (

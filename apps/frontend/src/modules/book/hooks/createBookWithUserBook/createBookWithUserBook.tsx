@@ -1,25 +1,27 @@
+import { useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
+import { useSelector } from 'react-redux';
+
 import {
-  CreateAuthorRequestBody,
-  CreateAuthorResponseBody,
-  CreateUserBookResponseBody,
-  FindAuthorsResponseBody,
+  type CreateAuthorRequestBody,
+  type CreateAuthorResponseBody,
+  type CreateUserBookResponseBody,
+  type FindAuthorsResponseBody,
 } from '@common/contracts';
+
+import { useCreateAuthorDraftMutation } from '../../../author/api/user/mutations/createAuthorDraftMutation/createAuthorDraftMutation';
+import { useToast } from '../../../common/components/toast/use-toast';
+import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import {
   useCreateBookMutation,
-  UseCreateBookMutationPayload,
+  type UseCreateBookMutationPayload,
 } from '../../api/user/mutations/createBookMutation/createBookMutation';
 import {
-  CreateUserBookMutationPayload,
+  type CreateUserBookMutationPayload,
   useCreateUserBookMutation,
 } from '../../api/user/mutations/createUserBookMutation/createUserBookMutation';
 import { useUploadBookImageMutation } from '../../api/user/mutations/uploadBookImageMutation/uploadBookImageMutation';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
-import { useToast } from '../../../common/components/toast/use-toast';
-import { useQueryClient } from '@tanstack/react-query';
-import { useCreateAuthorDraftMutation } from '../../../author/api/user/mutations/createAuthorDraftMutation/createAuthorDraftMutation';
-import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
-import { useNavigate } from '@tanstack/react-router';
 import { BookApiError } from '../../errors/bookApiError';
 
 interface CreatePayload {
@@ -51,29 +53,19 @@ export const useCreateBookWithUserBook = ({
 
   const queryClient = useQueryClient();
 
-  const { mutateAsync: createBookMutation, isPending: isCreateBookPending } =
-    useCreateBookMutation({});
-  const {
-    mutateAsync: createUserBookMutation,
-    isPending: isCreateUserBookPending,
-  } = useCreateUserBookMutation({});
-  const {
-    mutateAsync: uploadBookImageMutation,
-    isPending: isUploadImagePending,
-  } = useUploadBookImageMutation({});
-  const { mutateAsync: createAuthorDraft, isPending: isCreateAuthorPending } =
-    useCreateAuthorDraftMutation({});
+  const { mutateAsync: createBookMutation, isPending: isCreateBookPending } = useCreateBookMutation({});
+
+  const { mutateAsync: createUserBookMutation, isPending: isCreateUserBookPending } = useCreateUserBookMutation({});
+
+  const { mutateAsync: uploadBookImageMutation, isPending: isUploadImagePending } = useUploadBookImageMutation({});
+
+  const { mutateAsync: createAuthorDraft, isPending: isCreateAuthorPending } = useCreateAuthorDraftMutation({});
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const navigate = useNavigate();
 
-  const create = async ({
-    authorPayload,
-    bookPayload,
-    userBookPayload,
-    image,
-  }: CreatePayload) => {
+  const create = async ({ authorPayload, bookPayload, userBookPayload, image }: CreatePayload) => {
     if (!bookPayload && !userBookPayload.bookId) {
       throw new Error(`BookId prop is required if book is not being created.`);
     }
@@ -198,10 +190,6 @@ export const useCreateBookWithUserBook = ({
 
   return {
     create,
-    isProcessing:
-      isCreateBookPending ||
-      isCreateUserBookPending ||
-      isUploadImagePending ||
-      isCreateAuthorPending,
+    isProcessing: isCreateBookPending || isCreateUserBookPending || isUploadImagePending || isCreateAuthorPending,
   };
 };

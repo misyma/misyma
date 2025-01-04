@@ -1,5 +1,6 @@
 import { queryOptions } from '@tanstack/react-query';
-import { findBooks, FindBooksPayload } from './findBooks';
+
+import { findBooks, type FindBooksPayload } from './findBooks';
 import { BookApiQueryKeys } from '../bookApiQueryKeys';
 
 export const FindBooksQueryOptions = ({ accessToken, isbn, title, page, pageSize }: FindBooksPayload) =>

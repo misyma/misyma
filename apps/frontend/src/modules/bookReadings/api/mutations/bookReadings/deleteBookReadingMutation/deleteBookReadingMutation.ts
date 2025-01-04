@@ -1,10 +1,12 @@
-import { DeleteBookReadingPathParams } from '@common/contracts';
-import { UseMutationOptions } from '@tanstack/react-query';
-import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
-import { HttpService } from '../../../../../core/services/httpService/httpService';
+import { type UseMutationOptions } from '@tanstack/react-query';
+
+import { type DeleteBookReadingPathParams } from '@common/contracts';
+
 import { BookApiError } from '../../../../../book/errors/bookApiError';
+import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
+import { type ApiError } from '../../../../../common/errors/apiError';
 import { useErrorHandledMutation } from '../../../../../common/hooks/useErrorHandledMutation';
-import { ApiError } from '../../../../../common/errors/apiError';
+import { HttpService } from '../../../../../core/services/httpService/httpService';
 
 interface Payload extends DeleteBookReadingPathParams {
   accessToken: string | undefined;

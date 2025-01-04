@@ -1,69 +1,63 @@
-import { FC } from 'react';
+import { type FC } from 'react';
 
 export type BaseFilterOpts = {
-	id: string;
-	initialValue?: string;
-	type: FilterTypes;
-	label: string;
-	key: PropertyKey;
-	customSlot?: FC<FilterComponentProps>;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	setFilterAction?: (value: any) => void;
+  id: string;
+  initialValue?: string;
+  type: FilterTypes;
+  label: string;
+  key: PropertyKey;
+  customSlot?: FC<FilterComponentProps>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setFilterAction?: (value: any) => void;
 };
 
-export type FilterTypes =
-	| 'text'
-	| 'select'
-	| 'checkbox'
-	| 'three-state-checkbox'
-	| 'date'
-	| 'year';
+export type FilterTypes = 'text' | 'select' | 'checkbox' | 'three-state-checkbox' | 'date' | 'year';
 
 export type TextFilterOpts = BaseFilterOpts & {
-	type: 'text';
+  type: 'text';
 };
 
 export type YearFilerOpts = BaseFilterOpts & {
-	type: 'year';
-	dateRangeSiblingId: string;
-	isAfterFilter: boolean;
-	isBeforeFilter: boolean;
+  type: 'year';
+  dateRangeSiblingId: string;
+  isAfterFilter: boolean;
+  isBeforeFilter: boolean;
 };
 
 export type CheckboxFilterOpts = BaseFilterOpts & {
-	type: 'checkbox';
+  type: 'checkbox';
 };
 
 export type ThreeStateCheckboxFilterOpts = BaseFilterOpts & {
-	type: 'three-state-checkbox';
+  type: 'three-state-checkbox';
 };
 
 export type DateFilterOpts = BaseFilterOpts & {
-	type: 'date';
-	dateRangeSiblingId: string;
-	isAfterFilter: boolean;
-	isBeforeFilter: boolean;
+  type: 'date';
+  dateRangeSiblingId: string;
+  isAfterFilter: boolean;
+  isBeforeFilter: boolean;
 };
 
 export type SelectFilterOpts = BaseFilterOpts & {
-	type: 'select';
-	options: string[];
+  type: 'select';
+  options: string[];
 };
 
 export type FilterOpts =
-	| YearFilerOpts
-	| TextFilterOpts
-	| DateFilterOpts
-	| SelectFilterOpts
-	| CheckboxFilterOpts
-	| ThreeStateCheckboxFilterOpts;
+  | YearFilerOpts
+  | TextFilterOpts
+  | DateFilterOpts
+  | SelectFilterOpts
+  | CheckboxFilterOpts
+  | ThreeStateCheckboxFilterOpts;
 
 export interface FilterComponentProps<V = string> {
-	filter: FilterOpts;
-	className?: string;
-	dialog?: boolean;
-	onRemoveFilter?: () => void;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	setFilterAction: (value: any) => void;
-	initialValue?: V;
+  filter: FilterOpts;
+  className?: string;
+  dialog?: boolean;
+  onRemoveFilter?: () => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setFilterAction: (value: any) => void;
+  initialValue?: V;
 }

@@ -1,6 +1,8 @@
-import { UpdateQuoteResponseBody } from '@common/contracts';
-import { UseMutationOptions } from '@tanstack/react-query';
-import { UpdateQuotePayload, updateQuote } from './updateQuote';
+import { type UseMutationOptions } from '@tanstack/react-query';
+
+import { type UpdateQuoteResponseBody } from '@common/contracts';
+
+import { type UpdateQuotePayload, updateQuote } from './updateQuote';
 import { useErrorHandledMutation } from '../../../../common/hooks/useErrorHandledMutation';
 
 export const useUpdateQuoteMutation = (

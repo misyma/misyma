@@ -1,9 +1,11 @@
 import { type ColumnDef } from '@tanstack/react-table';
-import { BookReading } from '@common/contracts';
-import { Separator } from '../../../common/components/separator/separator';
 import { HiStar } from 'react-icons/hi';
-import { UpdateBookReadingModal } from '../updateReadingModal/updateReadingModal';
+
+import { type BookReading } from '@common/contracts';
+
+import { Separator } from '../../../common/components/separator/separator';
 import { DeleteBookReadingModal } from '../deleteBookReadingModal/deleteBookReadingModal';
+import { UpdateBookReadingModal } from '../updateReadingModal/updateReadingModal';
 
 export const bookReadingsTableColumns: ColumnDef<BookReading>[] = [
   {

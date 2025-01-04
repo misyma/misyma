@@ -1,10 +1,16 @@
-import { FindBorrowingsPathParams, FindBorrowingsQueryParams, FindBorrowingsResponseBody, SortingType } from '@common/contracts';
-import { HttpService } from '../../../../core/services/httpService/httpService';
-import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
+import {
+  type FindBorrowingsPathParams,
+  type FindBorrowingsQueryParams,
+  type FindBorrowingsResponseBody,
+  type SortingType,
+} from '@common/contracts';
+
 import { BookApiError } from '../../../../book/errors/bookApiError';
+import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
+import { HttpService } from '../../../../core/services/httpService/httpService';
 
 export interface FindBookBorrowingsPayload extends FindBorrowingsPathParams, FindBorrowingsQueryParams {
-  sortDate: SortingType
+  sortDate: SortingType;
   accessToken: string;
 }
 
@@ -28,7 +34,7 @@ export const findBookBorrowings = async (payload: FindBookBorrowingsPayload) => 
   }
 
   if (query.isOpen !== undefined) {
-    queryParams.isOpen = `${query.isOpen}`
+    queryParams.isOpen = `${query.isOpen}`;
   }
 
   const response = await HttpService.get<FindBorrowingsResponseBody>({

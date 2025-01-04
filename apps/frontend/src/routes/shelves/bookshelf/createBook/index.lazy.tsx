@@ -1,11 +1,10 @@
-import {
-  createLazyFileRoute,
-} from '@tanstack/react-router';
-import { FC } from 'react';
+import { createLazyFileRoute } from '@tanstack/react-router';
+import { type FC } from 'react';
+
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { CreateBookForm } from '../../../../modules/book/components/createBookForm/createBookForm';
-import { RequireAuthComponent } from '../../../../modules/core/components/requireAuth/requireAuthComponent';
 import { BookCreationProvider } from '../../../../modules/bookshelf/context/bookCreationContext/bookCreationContext';
+import { RequireAuthComponent } from '../../../../modules/core/components/requireAuth/requireAuthComponent';
 
 export const CreateBook: FC = () => {
   const { id } = Route.useSearch();

@@ -1,10 +1,9 @@
-import { ControllerRenderProps } from 'react-hook-form';
-import { FC, memo, useState } from 'react';
-import {
-  Languages,
-  LanguagesValues,
-  ReversedLanguages,
-} from '../../../common/constants/languages';
+import { type FC, memo, useState } from 'react';
+import { type ControllerRenderProps } from 'react-hook-form';
+
+import { Language } from '@common/contracts';
+
+import { FormControl } from '../../../common/components/form/form';
 import {
   Select,
   SelectContent,
@@ -13,8 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../../../common/components/select/select';
-import { FormControl } from '../../../common/components/form/form';
-import { Language } from '@common/contracts';
+import { Languages, LanguagesValues, ReversedLanguages } from '../../../common/constants/languages';
 
 interface Props {
   setLanguageSelectOpen: (bool: boolean) => void | undefined;
@@ -32,9 +30,7 @@ const LanguagesList: FC<Props> = ({ setLanguageSelectOpen }) => {
     [LanguagesValues.Rosyjski, Languages.Russian],
   ];
 
-  const sortedLanguages = Object.entries(Languages).filter(
-    ([key]) => !customSortOrder.find(([lang]) => key === lang)
-  );
+  const sortedLanguages = Object.entries(Languages).filter(([key]) => !customSortOrder.find(([lang]) => key === lang));
 
   return [...customSortOrder, ...sortedLanguages].map(([key, language]) => (
     <SelectItem
@@ -61,9 +57,7 @@ interface BaseLanguageSelectProps {
   className?: string;
 }
 
-interface FormLanguageSelectProps
-  extends ControllerRenderProps,
-    BaseLanguageSelectProps {
+interface FormLanguageSelectProps extends ControllerRenderProps, BaseLanguageSelectProps {
   type: 'form';
 }
 
@@ -89,23 +83,18 @@ const LanguageSelect: FC<LanguageSelectProps> = ({
       {!selectorValue && !(field as ControllerRenderProps)?.value && (
         <span className="text-muted-foreground">Język</span>
       )}
-      <SelectValue asChild className={className}></SelectValue>
+      <SelectValue
+        asChild
+        className={className}
+      ></SelectValue>
       {!dialog && (
         <SelectContent className={className}>
-          {
-            <MemoizedLanguagesList
-              setLanguageSelectOpen={setLanguageSelectOpen}
-            />
-          }
+          {<MemoizedLanguagesList setLanguageSelectOpen={setLanguageSelectOpen} />}
         </SelectContent>
       )}
       {dialog && (
         <SelectContentNoPortal>
-          {
-            <MemoizedLanguagesList
-              setLanguageSelectOpen={setLanguageSelectOpen}
-            />
-          }
+          {<MemoizedLanguagesList setLanguageSelectOpen={setLanguageSelectOpen} />}
         </SelectContentNoPortal>
       )}
     </SelectTrigger>
@@ -124,22 +113,10 @@ const LanguageSelect: FC<LanguageSelectProps> = ({
           field.onChange(val);
         }
       }}
-      defaultValue={
-        type === 'form'
-          ? (field as ControllerRenderProps)?.value
-          : selectorValue
-      }
-      value={
-        type === 'form'
-          ? (field as ControllerRenderProps)?.value
-          : selectorValue
-      }
+      defaultValue={type === 'form' ? (field as ControllerRenderProps)?.value : selectorValue}
+      value={type === 'form' ? (field as ControllerRenderProps)?.value : selectorValue}
     >
-      {type === 'form' ? (
-        <FormControl>{selectContent}</FormControl>
-      ) : (
-        selectContent
-      )}
+      {type === 'form' ? <FormControl>{selectContent}</FormControl> : selectContent}
     </Select>
   );
 };

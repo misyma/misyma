@@ -1,6 +1,8 @@
-import { UseQueryOptions, keepPreviousData, queryOptions } from '@tanstack/react-query';
-import { FindBookReadingsPayload, findBookReadings } from './findBookReadings';
-import { FindBookReadingsResponseBody } from '@common/contracts';
+import { type UseQueryOptions, keepPreviousData, queryOptions } from '@tanstack/react-query';
+
+import { type FindBookReadingsResponseBody } from '@common/contracts';
+
+import { type FindBookReadingsPayload, findBookReadings } from './findBookReadings';
 import { BookReadingsApiQueryKeys } from '../bookReadingsApiQueryKeys';
 
 export const FindBookReadingsQueryOptions = (

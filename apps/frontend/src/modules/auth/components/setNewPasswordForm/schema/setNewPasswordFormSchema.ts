@@ -2,10 +2,13 @@ import { z } from 'zod';
 
 export const setNewPasswordFormSchema = z
   .object({
-    password: z.string({
-      required_error: 'Wymagane.',
-      invalid_type_error: 'Niewłaściwy typ.',
-    }).min(8, 'Hasło jest za krótkie.').max(64, 'Hasło jest za długie.'),
+    password: z
+      .string({
+        required_error: 'Wymagane.',
+        invalid_type_error: 'Niewłaściwy typ.',
+      })
+      .min(8, 'Hasło jest za krótkie.')
+      .max(64, 'Hasło jest za długie.'),
     repeatedPassword: z.string({
       required_error: 'Wymagane.',
       invalid_type_error: 'Niewłaściwy typ.',

@@ -1,11 +1,6 @@
+import { type Dispatch, type ReactNode, createContext, useContext, useReducer } from 'react';
+
 import { BookFormat, Language } from '@common/contracts';
-import {
-  Dispatch,
-  ReactNode,
-  createContext,
-  useContext,
-  useReducer,
-} from 'react';
 
 export interface AdminEditBookState {
   isbn: string;
@@ -55,25 +50,14 @@ const defaultValues: AdminEditBookState = {
 
 const AdminEditBookContext = createContext<AdminEditBookState>(defaultValues);
 
-const AdminEditBookDispatchContext = createContext(
-  null as unknown as Dispatch<Actions>
-);
+const AdminEditBookDispatchContext = createContext(null as unknown as Dispatch<Actions>);
 
-export function AdminEditBookProvider({
-  children,
-}: {
-  children: ReactNode;
-}): JSX.Element {
-  const [bookDetailsChangeRequest, dispatch] = useReducer(
-    adminEditBookReducer,
-    defaultValues
-  );
+export function AdminEditBookProvider({ children }: { children: ReactNode }): JSX.Element {
+  const [bookDetailsChangeRequest, dispatch] = useReducer(adminEditBookReducer, defaultValues);
 
   return (
     <AdminEditBookContext.Provider value={bookDetailsChangeRequest}>
-      <AdminEditBookDispatchContext.Provider value={dispatch}>
-        {children}
-      </AdminEditBookDispatchContext.Provider>
+      <AdminEditBookDispatchContext.Provider value={dispatch}>{children}</AdminEditBookDispatchContext.Provider>
     </AdminEditBookContext.Provider>
   );
 }

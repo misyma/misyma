@@ -1,8 +1,9 @@
-import * as React from 'react';
 import { MoreHorizontal } from 'lucide-react';
+import * as React from 'react';
 import { FaArrowLeftLong, FaArrowRightLong } from 'react-icons/fa6';
+
 import { cn } from '../../lib/utils';
-import { ButtonProps, buttonSizesStylesMap } from '../button/button';
+import { type ButtonProps, buttonSizesStylesMap } from '../button/button';
 
 const Pagination = ({ className, ...props }: React.ComponentProps<'nav'>) => (
   <nav
@@ -12,6 +13,7 @@ const Pagination = ({ className, ...props }: React.ComponentProps<'nav'>) => (
     {...props}
   />
 );
+
 Pagination.displayName = 'Pagination';
 
 const PaginationContent = React.forwardRef<HTMLUListElement, React.ComponentProps<'ul'>>(
@@ -23,6 +25,7 @@ const PaginationContent = React.forwardRef<HTMLUListElement, React.ComponentProp
     />
   ),
 );
+
 PaginationContent.displayName = 'PaginationContent';
 
 const PaginationItem = React.forwardRef<HTMLLIElement, React.ComponentProps<'li'>>(({ className, ...props }, ref) => (
@@ -32,6 +35,7 @@ const PaginationItem = React.forwardRef<HTMLLIElement, React.ComponentProps<'li'
     {...props}
   />
 ));
+
 PaginationItem.displayName = 'PaginationItem';
 
 type PaginationLinkProps = {
@@ -40,14 +44,7 @@ type PaginationLinkProps = {
 } & Pick<ButtonProps, 'size'> &
   React.ComponentProps<'a'>;
 
-const PaginationLink = ({
-  className,
-  isActive,
-  hasPrevious = true,
-  size = 'icon',
-  ...props
-}: PaginationLinkProps) => {
-
+const PaginationLink = ({ className, isActive, hasPrevious = true, size = 'icon', ...props }: PaginationLinkProps) => {
   return (
     <a
       aria-current={isActive ? 'page' : undefined}
@@ -62,6 +59,7 @@ const PaginationLink = ({
     />
   );
 };
+
 PaginationLink.displayName = 'PaginationLink';
 
 const PaginationPrevious = ({
@@ -89,6 +87,7 @@ const PaginationPrevious = ({
     </PaginationLink>
   );
 };
+
 PaginationPrevious.displayName = 'PaginationPrevious';
 
 const PaginationNext = ({
@@ -113,6 +112,7 @@ const PaginationNext = ({
     />
   </PaginationLink>
 );
+
 PaginationNext.displayName = 'PaginationNext';
 
 const PaginationEllipsis = ({ className, ...props }: React.ComponentProps<'span'>) => (
@@ -125,6 +125,7 @@ const PaginationEllipsis = ({ className, ...props }: React.ComponentProps<'span'
     <span className="sr-only">More pages</span>
   </span>
 );
+
 PaginationEllipsis.displayName = 'PaginationEllipsis';
 
 export {

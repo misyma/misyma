@@ -1,4 +1,4 @@
-import { createFileRoute, Navigate } from '@tanstack/react-router'
+import { createFileRoute, Navigate } from '@tanstack/react-router';
 import { z } from 'zod';
 
 const changeRequestSearchSchema = z.object({
@@ -10,4 +10,4 @@ export const Route = createFileRoute('/admin/tabs/changeRequests/$id')({
   onError: () => {
     return <Navigate to={'/admin/tabs/changeRequests'} />;
   },
-})
+});

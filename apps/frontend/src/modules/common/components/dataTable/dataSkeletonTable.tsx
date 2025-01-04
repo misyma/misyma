@@ -11,18 +11,12 @@ import {
   getFilteredRowModel,
   type TableState,
 } from '@tanstack/react-table';
-import { ReactNode, useMemo, useState } from 'react';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '../table/table';
-import { Skeleton } from '../skeleton/skeleton';
-import { Paginator } from '../paginator/paginator';
+import { type ReactNode, useMemo, useState } from 'react';
+
 import { cn } from '../../lib/utils';
+import { Paginator } from '../paginator/paginator';
+import { Skeleton } from '../skeleton/skeleton';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../table/table';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -52,7 +46,9 @@ export function DataSkeletonTable<TData extends object, TValue>({
   onSetPage,
 }: DataTableProps<TData, TValue>): JSX.Element {
   const [sorting, setSorting] = useState<SortingState>([]);
+
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
   const state: Partial<TableState> = {
@@ -76,18 +72,16 @@ export function DataSkeletonTable<TData extends object, TValue>({
             if ('accessorKey' in column) {
               acc[column.accessorKey as string] = '';
             }
+
             return acc;
           },
-          {} as Record<string, string>
-        )
+          {} as Record<string, string>,
+        ),
       ) as TData[],
-    [columns, pageSize]
+    [columns, pageSize],
   );
 
-  const rowCount = useMemo(
-    () => (pageCount ?? 0) * pageSize,
-    [pageCount, pageSize]
-  );
+  const rowCount = useMemo(() => (pageCount ?? 0) * pageSize, [pageCount, pageSize]);
 
   const table = useReactTable({
     data,
@@ -109,7 +103,7 @@ export function DataSkeletonTable<TData extends object, TValue>({
   return (
     <div className="w-full md:max-w-screen-xl">
       <div className="w-full min-h-[40rem]">
-      <Table>
+        <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -121,12 +115,7 @@ export function DataSkeletonTable<TData extends object, TValue>({
                     className="py-4 m-0 h-14"
                     key={header.id}
                   >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                   </TableHead>
                 ))}
               </TableRow>

@@ -1,5 +1,7 @@
-import { UserBook } from '@common/contracts';
-import { FC } from 'react';
+import { type FC } from 'react';
+
+import { type UserBook } from '@common/contracts';
+
 import { BookCard } from '../bookCard/bookCard';
 
 export const BookCardRow: FC<{

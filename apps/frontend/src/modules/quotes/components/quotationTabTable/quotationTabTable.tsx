@@ -1,20 +1,23 @@
-import { FindUserBookByIdQueryOptions } from '../../../book/api/user/queries/findUserBook/findUserBookByIdQueryOptions';
-import { FC, useMemo, useState } from 'react';
-import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
+import { type FC, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { quotationTableColumns } from '../quotationsTable/quotationsTableColumns';
-import { getQuotesOptions } from '../../api/queries/getQuotes/getQuotesOptions';
+
+import { FindUserBookByIdQueryOptions } from '../../../book/api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 import { DataTable } from '../../../common/components/dataTable/dataTable';
 import { Skeleton } from '../../../common/components/skeleton/skeleton';
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
+import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
+import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
+import { getQuotesOptions } from '../../api/queries/getQuotes/getQuotesOptions';
+import { quotationTableColumns } from '../quotationsTable/quotationsTableColumns';
 
 interface QuotationTabTableProps {
   bookId: string;
 }
 export const QuotationTabTable: FC<QuotationTabTableProps> = ({ bookId }) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
+
   const [page, setPage] = useState(1);
+
   const [pageSize] = useState(4);
 
   const { data: userData } = useFindUserQuery();
@@ -30,18 +33,16 @@ export const QuotationTabTable: FC<QuotationTabTableProps> = ({ bookId }) => {
       userBookId: bookId,
       userId: userData?.id ?? '',
       accessToken: accessToken as string,
-    })
+    }),
   );
 
-  const {
-    data: quotationsData,
-  } = useErrorHandledQuery(
+  const { data: quotationsData } = useErrorHandledQuery(
     getQuotesOptions({
       accessToken: accessToken as string,
       userBookId: bookId,
       page,
       pageSize,
-    })
+    }),
   );
 
   const pageCount = useMemo(() => {
@@ -58,19 +59,14 @@ export const QuotationTabTable: FC<QuotationTabTableProps> = ({ bookId }) => {
 
   return (
     <div className="flex flex-col w-full">
-      {!isFetching && (
-        <p className="text-lg pb-6">
-          {' '}
-          {userBookData?.book?.authors[0]?.name ?? ''}{' '}
-        </p>
-      )}
+      {!isFetching && <p className="text-lg pb-6"> {userBookData?.book?.authors[0]?.name ?? ''} </p>}
       {isFetching && (
         <div className="pb-6">
           <Skeleton className="h-7 w-40" />
         </div>
       )}
       <DataTable
-        tableContainerClassName='min-h-[32rem]'
+        tableContainerClassName="min-h-[32rem]"
         hideHeaders={true}
         columns={quotationTableColumns}
         data={[...data]}

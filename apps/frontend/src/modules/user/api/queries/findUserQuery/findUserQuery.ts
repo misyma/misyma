@@ -1,8 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
 import { useSelector } from 'react-redux';
+
 import { type FindUserResponseBody } from '@common/contracts';
+
 import { HttpService } from '../../../../core/services/httpService/httpService';
+import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
 import { UserApiError } from '../../../errors/userApiError';
 import { UserApiQueryKeys } from '../userApiQueryKeys';
 
@@ -52,12 +54,16 @@ const mapStatusCodeToErrorMessage = (statusCode: number) => {
   switch (statusCode) {
     case 401:
       return 'Unauthorized';
+
     case 403:
       return 'Forbidden';
+
     case 404:
       return 'Not found';
+
     case 500:
       return 'Internal server error';
+
     default:
       return 'Unknown error';
   }

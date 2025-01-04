@@ -1,16 +1,22 @@
-import { UseMutationOptions } from '@tanstack/react-query';
-import { CreateUserBookRequestBody, CreateUserBookResponseBody } from '@common/contracts';
-import { BookApiError } from '../../../../errors/bookApiError';
+import { type UseMutationOptions } from '@tanstack/react-query';
+
+import { type CreateUserBookRequestBody, type CreateUserBookResponseBody } from '@common/contracts';
+
 import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
+import { type ExtendedTPayload, useErrorHandledMutation } from '../../../../../common/hooks/useErrorHandledMutation';
 import { HttpService } from '../../../../../core/services/httpService/httpService';
-import { ExtendedTPayload, useErrorHandledMutation } from '../../../../../common/hooks/useErrorHandledMutation';
+import { BookApiError } from '../../../../errors/bookApiError';
 
 export interface CreateUserBookMutationPayload extends CreateUserBookRequestBody {
   accessToken: string;
 }
 
 export const useCreateUserBookMutation = (
-  options: UseMutationOptions<CreateUserBookResponseBody, BookApiError, ExtendedTPayload<CreateUserBookMutationPayload>>,
+  options: UseMutationOptions<
+    CreateUserBookResponseBody,
+    BookApiError,
+    ExtendedTPayload<CreateUserBookMutationPayload>
+  >,
 ) => {
   const mapper = new ErrorCodeMessageMapper({
     400: 'Podano błędne dane.',

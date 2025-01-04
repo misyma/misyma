@@ -1,13 +1,19 @@
-import { ControllerRenderProps, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { type FC, useCallback, useState } from 'react';
+import { type ControllerRenderProps, useForm } from 'react-hook-form';
+import { z } from 'zod';
+
+import { BookFormat as ContractBookFormat, Language } from '@common/contracts';
+
 import {
   BookCreationActionType,
-  BookCreationNonIsbnState,
+  type BookCreationNonIsbnState,
   NonIsbnCreationPathStep,
   useBookCreation,
   useBookCreationDispatch,
 } from '../../../../../bookshelf/context/bookCreationContext/bookCreationContext';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '../../../../../common/components/button/button';
+import { Checkbox } from '../../../../../common/components/checkbox/checkbox';
 import {
   Form,
   FormControl,
@@ -17,7 +23,6 @@ import {
   FormMessage,
 } from '../../../../../common/components/form/form';
 import { Input } from '../../../../../common/components/input/input';
-import { Button } from '../../../../../common/components/button/button';
 import {
   Select,
   SelectContent,
@@ -25,13 +30,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../../../../../common/components/select/select';
-import { BookFormat as ContractBookFormat } from '@common/contracts';
 import { BookFormat } from '../../../../../common/constants/bookFormat';
-import { Language } from '@common/contracts';
-import { FC, useCallback, useState } from 'react';
-import { Checkbox } from '../../../../../common/components/checkbox/checkbox';
+import { type Languages } from '../../../../../common/constants/languages';
 import LanguageSelect from '../../../languageSelect/languageSelect';
-import { Languages } from '../../../../../common/constants/languages';
 
 const stepTwoSchema = z.object({
   language: z.enum(Object.values(Language) as unknown as [string, ...string[]]),
@@ -82,7 +83,7 @@ const BookFormatSelect: FC<ControllerRenderProps> = (field) => {
           {language}
         </SelectItem>
       )),
-    []
+    [],
   );
 
   return (
@@ -101,9 +102,7 @@ const BookFormatSelect: FC<ControllerRenderProps> = (field) => {
     >
       <FormControl>
         <SelectTrigger>
-          <SelectValue
-            placeholder={<span className="text-muted-foreground">Format</span>}
-          />
+          <SelectValue placeholder={<span className="text-muted-foreground">Format</span>} />
           <SelectContent>{renderBookFormatSelectItems()}</SelectContent>
         </SelectTrigger>
       </FormControl>
@@ -116,9 +115,7 @@ export const ManualStepTwoForm = (): JSX.Element => {
 
   const dispatch = useBookCreationDispatch();
 
-  const [isOriginalLanguage, setIsOriginalLanguage] = useState(
-    bookCreation.isOriginal
-  );
+  const [isOriginalLanguage, setIsOriginalLanguage] = useState(bookCreation.isOriginal);
 
   const form = useForm({
     resolver: zodResolver(stepTwoSchema),
@@ -146,7 +143,10 @@ export const ManualStepTwoForm = (): JSX.Element => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-4"
+      >
         <FormField
           control={form.control}
           name="form"
@@ -164,8 +164,7 @@ export const ManualStepTwoForm = (): JSX.Element => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>
-                <span>Ilość stron</span>{' '}
-                <span className='text-gray-500'>(opcjonalne)</span>
+                <span>Ilość stron</span> <span className="text-gray-500">(opcjonalne)</span>
               </FormLabel>
               <FormControl>
                 <Input
@@ -207,8 +206,7 @@ export const ManualStepTwoForm = (): JSX.Element => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  <span>Przekład</span>{' '}
-                  <span className='text-gray-500'>(opcjonalne)</span>
+                  <span>Przekład</span> <span className="text-gray-500">(opcjonalne)</span>
                 </FormLabel>
                 <FormControl>
                   <Input
@@ -236,6 +234,7 @@ export const ManualStepTwoForm = (): JSX.Element => {
             checked={isOriginalLanguage}
             onClick={() => {
               setIsOriginalLanguage(!isOriginalLanguage);
+
               dispatch({
                 type: BookCreationActionType.setIsOriginal,
                 isOriginal: !isOriginalLanguage,

@@ -1,4 +1,5 @@
 import { Navigate } from '@tanstack/react-router';
+
 import { useStoreSelector } from '../../store/hooks/useStoreSelector';
 import { userStateSelectors } from '../../store/states/userState/userStateSlice';
 
@@ -11,9 +12,5 @@ export function RequireNonAuthComponent({ children }: Props): React.ReactNode {
 
   const refreshToken = useStoreSelector(userStateSelectors.selectRefreshToken);
 
-  return !accessToken && !refreshToken ? (
-    <>{children}</>
-  ) : (
-    <Navigate to="/mybooks" />
-  );
+  return !accessToken && !refreshToken ? <>{children}</> : <Navigate to="/mybooks" />;
 }

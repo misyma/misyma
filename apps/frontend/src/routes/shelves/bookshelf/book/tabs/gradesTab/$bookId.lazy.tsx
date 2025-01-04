@@ -1,16 +1,17 @@
-import { FC } from 'react';
-import { useFindUserQuery } from '../../../../../../modules/user/api/queries/findUserQuery/findUserQuery.js';
 import { useQueryClient } from '@tanstack/react-query';
-import { FavoriteBookButton } from '../../../../../../modules/book/components/favoriteBookButton/favoriteBookButton.js';
-import { BookReadingsApiQueryKeys } from '../../../../../../modules/bookReadings/api/queries/bookReadingsApiQueryKeys.js';
-import { AddStarRatingButton } from '../../../../../../modules/book/components/addStarRatingButton/addStarRatingButton.js';
-import { AuthenticatedLayout } from '../../../../../../modules/auth/layouts/authenticated/authenticatedLayout.js';
 import { Navigate, createLazyFileRoute } from '@tanstack/react-router';
-import { BookTabLayout } from '../../../../../../modules/book/layouts/bookTabLayout.js';
-import { BookTabNavigation } from '../../../../../../modules/book/components/bookTabNavigation/bookTabNavigation.js';
-import { useBookBreadcrumbs } from '../../../../../../modules/book/hooks/useBookBreadcrumbs.js';
-import { BookGradesTabMainBody } from '../../../../../../modules/grades/components/bookGradesTabMainBody.js';
+import { type FC } from 'react';
+
+import { AuthenticatedLayout } from '../../../../../../modules/auth/layouts/authenticated/authenticatedLayout.js';
 import { BookApiQueryKeys } from '../../../../../../modules/book/api/user/queries/bookApiQueryKeys.js';
+import { AddStarRatingButton } from '../../../../../../modules/book/components/addStarRatingButton/addStarRatingButton.js';
+import { BookTabNavigation } from '../../../../../../modules/book/components/bookTabNavigation/bookTabNavigation.js';
+import { FavoriteBookButton } from '../../../../../../modules/book/components/favoriteBookButton/favoriteBookButton.js';
+import { useBookBreadcrumbs } from '../../../../../../modules/book/hooks/useBookBreadcrumbs.js';
+import { BookTabLayout } from '../../../../../../modules/book/layouts/bookTabLayout.js';
+import { BookReadingsApiQueryKeys } from '../../../../../../modules/bookReadings/api/queries/bookReadingsApiQueryKeys.js';
+import { BookGradesTabMainBody } from '../../../../../../modules/grades/components/bookGradesTabMainBody.js';
+import { useFindUserQuery } from '../../../../../../modules/user/api/queries/findUserQuery/findUserQuery.js';
 
 export const GradesPage: FC = () => {
   const { bookId } = Route.useParams();
@@ -18,6 +19,7 @@ export const GradesPage: FC = () => {
   useBookBreadcrumbs({ bookId });
 
   const queryClient = useQueryClient();
+
   const { data: userData } = useFindUserQuery();
 
   const invalidateReadingsFetch = () => {
@@ -30,8 +32,7 @@ export const GradesPage: FC = () => {
       }),
       queryClient.invalidateQueries({
         predicate: (query) =>
-          query.queryKey[0] === BookApiQueryKeys.findUserBooksBy &&
-          query.queryKey.includes('infinite-query'),
+          query.queryKey[0] === BookApiQueryKeys.findUserBooksBy && query.queryKey.includes('infinite-query'),
       }),
     ]);
   };
@@ -41,7 +42,10 @@ export const GradesPage: FC = () => {
       <BookTabLayout
         bookId={bookId}
         NavigationSlot={
-          <BookTabNavigation bookId={bookId} currentTab="grades" />
+          <BookTabNavigation
+            bookId={bookId}
+            currentTab="grades"
+          />
         }
         ActionsSlot={
           <div className="flex justify-center items-end flex-col">
@@ -60,8 +64,6 @@ export const GradesPage: FC = () => {
   );
 };
 
-export const Route = createLazyFileRoute(
-  '/shelves/bookshelf/book/tabs/gradesTab/$bookId'
-)({
+export const Route = createLazyFileRoute('/shelves/bookshelf/book/tabs/gradesTab/$bookId')({
   component: GradesPage,
 });

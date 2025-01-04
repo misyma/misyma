@@ -1,4 +1,5 @@
-import { FC } from 'react';
+import { type FC } from 'react';
+
 import { cn } from '../../lib/utils';
 
 interface TableHeaderProps {

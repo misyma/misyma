@@ -1,4 +1,9 @@
-import { CreateQuotePathParams, CreateQuoteRequestBody, CreateQuoteResponseBody } from '@common/contracts';
+import {
+  type CreateQuotePathParams,
+  type CreateQuoteRequestBody,
+  type CreateQuoteResponseBody,
+} from '@common/contracts';
+
 import { HttpService } from '../../../../core/services/httpService/httpService';
 
 export interface CreateQuoteMutationPayload extends CreateQuotePathParams, CreateQuoteRequestBody {

@@ -1,15 +1,16 @@
-import { FC, useCallback } from 'react';
+import { type FC, useCallback } from 'react';
+
+import { ManualStepOneForm } from './steps/stepOne/manualStepOneForm';
+import { ManualStepTwoForm } from './steps/stepTwo/manualStepTwoForm';
 import {
   BookCreationActionType,
-  BookCreationNonIsbnState,
+  type BookCreationNonIsbnState,
   NonIsbnCreationPathStep,
   useBookCreation,
   useBookCreationDispatch,
 } from '../../../bookshelf/context/bookCreationContext/bookCreationContext';
-import { ManualStepOneForm } from './steps/stepOne/manualStepOneForm';
-import { ManualStepTwoForm } from './steps/stepTwo/manualStepTwoForm';
-import { cn } from '../../../common/lib/utils';
 import { Breadcrumbs, NumericBreadcrumb } from '../../../common/components/ui/breadcrumbs';
+import { cn } from '../../../common/lib/utils';
 
 interface Props {
   onSubmit: () => void;
@@ -22,11 +23,13 @@ export const AdminCreateBookForm: FC<Props> = (props) => {
   };
 
   const bookCreation = useBookCreation<false>() as BookCreationNonIsbnState;
+
   const dispatch = useBookCreationDispatch();
 
   const renderStep = useCallback(() => {
     if (!bookCreation.isbnPath && bookCreation.step > 0) {
       const Component = steps[bookCreation.step as 1 | 2];
+
       return <Component {...props} />;
     } else {
       return null;

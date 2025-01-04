@@ -1,13 +1,14 @@
-import { FC, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { RegisterUserFormSchemaValues, registerUserFormSchema } from './schema/registerUserFormSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/form/form';
-import { Input } from '../../../common/components/input/input';
+import { type FC, useState } from 'react';
+import { useForm } from 'react-hook-form';
+
+import { type RegisterUserFormSchemaValues, registerUserFormSchema } from './schema/registerUserFormSchema';
 import { Button } from '../../../common/components/button/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/form/form';
 import { PasswordEyeIcon } from '../../../common/components/icons/passwordEyeIcon/passwordEyeIcon';
+import { Input } from '../../../common/components/input/input';
+import { type UserApiError } from '../../../user/errors/userApiError';
 import { useRegisterUserMutation } from '../../api/registerUserMutation/registerUserMutation';
-import { UserApiError } from '../../../user/errors/userApiError';
 
 interface RegisterUserFormProps {
   onSuccess: (result: { email: string; success: boolean }) => void;

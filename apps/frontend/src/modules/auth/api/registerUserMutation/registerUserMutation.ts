@@ -1,4 +1,5 @@
-import { UseMutationOptions, useMutation } from '@tanstack/react-query';
+import { type UseMutationOptions, useMutation } from '@tanstack/react-query';
+
 import { HttpService } from '../../../../modules/core/services/httpService/httpService';
 import { UserApiError } from '../../../user/errors/userApiError';
 
@@ -39,10 +40,13 @@ const mapStatusCodeToErrorMessage = (statusCode: number) => {
   switch (statusCode) {
     case 400:
       return 'Email lub hasło niepoprawne.';
+
     case 409:
       return 'Użytkownik z tym adresem email już istnieje.';
+
     case 500:
       return 'Internal server error';
+
     default:
       return 'Unknown error';
   }

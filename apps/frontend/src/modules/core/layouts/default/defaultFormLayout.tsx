@@ -1,4 +1,5 @@
-import { FC } from 'react';
+import { type FC } from 'react';
+
 import { DefaultLayout } from './defaultLayout';
 import { Logo } from '../../../common/components/logo/logo';
 

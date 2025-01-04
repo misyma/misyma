@@ -1,31 +1,30 @@
 import { Navigate, createFileRoute, useNavigate } from '@tanstack/react-router';
-import { FC, useEffect } from 'react';
-import { z } from 'zod';
-import {
-  FindBookshelfResponseBody,
-  FindUserBooksResponseBody,
-} from '@common/contracts';
-import { useFindBookshelfByIdQuery } from '../../../modules/bookshelf/api/queries/findBookshelfByIdQuery/findBookshelfByIdQuery';
-import {
-  useBreadcrumbKeysContext,
-  useBreadcrumbKeysDispatch,
-} from '../../../modules/common/contexts/breadcrumbKeysContext';
-import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../modules/core/store/states/userState/userStateSlice';
-import { useErrorHandledQuery } from '../../../modules/common/hooks/useErrorHandledQuery';
-import { Button } from '../../../modules/common/components/button/button';
-import { useFindUserQuery } from '../../../modules/user/api/queries/findUserQuery/findUserQuery';
-import { FindBooksByBookshelfIdQueryOptions } from '../../../modules/book/api/user/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
-import { AuthenticatedLayout } from '../../../modules/auth/layouts/authenticated/authenticatedLayout';
-import { RequireAuthComponent } from '../../../modules/core/components/requireAuth/requireAuthComponent';
-import { VirtualizedBooksList } from '../../../modules/bookshelf/components/virtualizedBooksList/virtualizedBooksList';
+import { type FC, useEffect } from 'react';
 import { HiPlus } from 'react-icons/hi2';
+import { useSelector } from 'react-redux';
+import { z } from 'zod';
+
+import { type FindBookshelfResponseBody, type FindUserBooksResponseBody } from '@common/contracts';
+
+import { AuthenticatedLayout } from '../../../modules/auth/layouts/authenticated/authenticatedLayout';
+import { FindBooksByBookshelfIdQueryOptions } from '../../../modules/book/api/user/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
+import { useFindBookshelfByIdQuery } from '../../../modules/bookshelf/api/queries/findBookshelfByIdQuery/findBookshelfByIdQuery';
+import { VirtualizedBooksList } from '../../../modules/bookshelf/components/virtualizedBooksList/virtualizedBooksList';
+import { Button } from '../../../modules/common/components/button/button';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '../../../modules/common/components/tooltip/tooltip';
+import {
+  useBreadcrumbKeysContext,
+  useBreadcrumbKeysDispatch,
+} from '../../../modules/common/contexts/breadcrumbKeysContext';
+import { useErrorHandledQuery } from '../../../modules/common/hooks/useErrorHandledQuery';
+import { RequireAuthComponent } from '../../../modules/core/components/requireAuth/requireAuthComponent';
+import { userStateSelectors } from '../../../modules/core/store/states/userState/userStateSlice';
+import { useFindUserQuery } from '../../../modules/user/api/queries/findUserQuery/findUserQuery';
 
 const bookshelfSearchSchema = z.object({
   bookshelfId: z.string().uuid().catch(''),
@@ -37,7 +36,9 @@ const getCountNoun = (len: number): string => {
       return 'książka';
 
     case 2:
+
     case 3:
+
     case 4:
       return 'książki';
 
@@ -91,11 +92,7 @@ interface BookshelfTopBarProps {
   bookshelfBooksResponse: FindUserBooksResponseBody | undefined;
   bookshelfId: string;
 }
-const BookshelfTopBar: FC<BookshelfTopBarProps> = ({
-  bookshelfResponse,
-  bookshelfBooksResponse,
-  bookshelfId,
-}) => {
+const BookshelfTopBar: FC<BookshelfTopBarProps> = ({ bookshelfResponse, bookshelfBooksResponse, bookshelfId }) => {
   const navigate = useNavigate();
 
   return (
@@ -105,8 +102,7 @@ const BookshelfTopBar: FC<BookshelfTopBarProps> = ({
           {bookshelfResponse?.name ?? ' '}
         </p>
         <p>
-          {bookshelfBooksResponse?.metadata.total ?? 0}{' '}
-          {getCountNoun(bookshelfBooksResponse?.metadata.total ?? 0)}
+          {bookshelfBooksResponse?.metadata.total ?? 0} {getCountNoun(bookshelfBooksResponse?.metadata.total ?? 0)}
         </p>
       </div>
       <TooltipProvider delayDuration={300}>
@@ -149,7 +145,7 @@ export const BorrowingBookshelf: FC = () => {
       accessToken: accessToken as string,
       bookshelfId,
       userId: user?.id as string,
-    })
+    }),
   );
 
   const { data: bookshelfResponse } = useFindBookshelfByIdQuery(bookshelfId);
@@ -185,7 +181,7 @@ export const Bookshelf: FC = () => {
       accessToken: accessToken as string,
       bookshelfId,
       userId: user?.id as string,
-    })
+    }),
   );
 
   const { data: bookshelfResponse } = useFindBookshelfByIdQuery(bookshelfId);

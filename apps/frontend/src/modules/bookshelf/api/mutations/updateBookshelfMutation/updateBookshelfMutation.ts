@@ -1,10 +1,16 @@
-import { UpdateBookshelfPathParams, UpdateBookshelfRequestBody, UpdateBookshelfResponseBody } from '@common/contracts';
-import { UseMutationOptions } from '@tanstack/react-query';
-import { ShelfApiError } from '../../errors/shelfApiError';
+import { type UseMutationOptions } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
-import { HttpService } from '../../../../core/services/httpService/httpService';
+
+import {
+  type UpdateBookshelfPathParams,
+  type UpdateBookshelfRequestBody,
+  type UpdateBookshelfResponseBody,
+} from '@common/contracts';
+
 import { useErrorHandledMutation } from '../../../../common/hooks/useErrorHandledMutation';
+import { HttpService } from '../../../../core/services/httpService/httpService';
+import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
+import { ShelfApiError } from '../../errors/shelfApiError';
 
 type Payload = UpdateBookshelfRequestBody & UpdateBookshelfPathParams;
 

@@ -1,37 +1,32 @@
-import { BookFormat as ContractBookFormat, Language } from '@common/contracts';
-import { FC, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '../../../common/components/form/form';
-import { Input } from '../../../common/components/input/input';
-import { Button } from '../../../common/components/button/button';
 import { useQueryClient } from '@tanstack/react-query';
+import { type FC, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
+import { z } from 'zod';
+
+import { BookFormat as ContractBookFormat, Language } from '@common/contracts';
+
 import { StepOneForm } from './stepOneForm/stepOneForm';
-import { FindBookByIdQueryOptions } from '../../api/user/queries/findBookById/findBookByIdQueryOptions';
-import { useToast } from '../../../common/components/toast/use-toast';
-import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
-import { BookApiError } from '../../errors/bookApiError';
 import { useCreateAuthorDraftMutation } from '../../../author/api/user/mutations/createAuthorDraftMutation/createAuthorDraftMutation';
-import LanguageSelect from '../languageSelect/languageSelect';
-import BookFormatSelect from '../bookFormatSelect/bookFormatSelect';
+import { Button } from '../../../common/components/button/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/form/form';
+import { Input } from '../../../common/components/input/input';
+import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
+import { useToast } from '../../../common/components/toast/use-toast';
+import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
+import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useUpdateBookMutation } from '../../api/admin/mutations/updateBookMutation/updateBookMutation';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
+import { FindBookByIdQueryOptions } from '../../api/user/queries/findBookById/findBookByIdQueryOptions';
 import {
   AdminEditBookAction,
   useAdminEditBookContext,
   useAdminEditBookDispatch,
 } from '../../context/adminEditBookContext/adminEditBookContext';
-import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
+import { BookApiError } from '../../errors/bookApiError';
+import BookFormatSelect from '../bookFormatSelect/bookFormatSelect';
+import LanguageSelect from '../languageSelect/languageSelect';
 
 interface Props {
   bookId: string;
@@ -78,18 +73,14 @@ const stepTwoSchema = z.object({
     .or(z.literal('')),
 });
 
-export const AdminEditBookForm: FC<Props> = ({
-  onCancel,
-  bookId,
-  onSubmit,
-}) => {
+export const AdminEditBookForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const { isFetched: isBookDataFetched } = useErrorHandledQuery(
     FindBookByIdQueryOptions({
       accessToken: accessToken as string,
-      bookId: bookId,
-    })
+      bookId,
+    }),
   );
 
   if (!isBookDataFetched) {
@@ -97,7 +88,11 @@ export const AdminEditBookForm: FC<Props> = ({
   }
 
   return (
-    <UnderlyingForm bookId={bookId} onCancel={onCancel} onSubmit={onSubmit} />
+    <UnderlyingForm
+      bookId={bookId}
+      onCancel={onCancel}
+      onSubmit={onSubmit}
+    />
   );
 };
 
@@ -111,13 +106,14 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
   const [currentStep, setCurrentStep] = useState<number>(1);
 
   const context = useAdminEditBookContext();
+
   const dispatch = useAdminEditBookDispatch();
 
   const { data: bookData } = useErrorHandledQuery(
     FindBookByIdQueryOptions({
       accessToken: accessToken as string,
       bookId: bookId as string,
-    })
+    }),
   );
 
   const { mutateAsync: createBookChangeRequest } = useUpdateBookMutation({});
@@ -147,8 +143,7 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
     setCurrentStep(2);
   };
 
-  const { mutateAsync: createAuthorDraft, isPending: isCreateAuthorPending } =
-    useCreateAuthorDraftMutation({});
+  const { mutateAsync: createAuthorDraft, isPending: isCreateAuthorPending } = useCreateAuthorDraftMutation({});
 
   const onUpdate = async (values: z.infer<typeof stepTwoSchema>) => {
     const payload = {
@@ -212,9 +207,7 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
     try {
       await createBookChangeRequest({
         ...payload,
-        authorIds: Array.isArray(payload.authorIds)
-          ? payload.authorIds
-          : payload.authorIds?.split(','),
+        authorIds: Array.isArray(payload.authorIds) ? payload.authorIds : payload.authorIds?.split(','),
       });
 
       toast({
@@ -223,8 +216,7 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
       });
 
       await queryClient.invalidateQueries({
-        predicate: ({ queryKey }) =>
-          queryKey[0] === BookApiQueryKeys.findBooksAdmin,
+        predicate: ({ queryKey }) => queryKey[0] === BookApiQueryKeys.findBooksAdmin,
       });
     } catch (error) {
       if (error instanceof BookApiError) {
@@ -358,9 +350,7 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
               </Button>
               <Button
                 size="lg"
-                disabled={
-                  !stepTwoForm.formState.isValid || isCreateAuthorPending
-                }
+                disabled={!stepTwoForm.formState.isValid || isCreateAuthorPending}
                 type="submit"
               >
                 Aktualizuj

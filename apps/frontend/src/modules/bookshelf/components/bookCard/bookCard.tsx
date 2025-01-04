@@ -1,19 +1,17 @@
-import { ReadingStatus, SortingType, UserBook } from '@common/contracts';
-import { FC, useMemo } from 'react';
-import { BookImageMiniature } from '../../../book/components/bookImageMiniature/bookImageMiniature';
-import { TruncatedTextTooltip } from '../../../book/components/truncatedTextTooltip/truncatedTextTooltip';
-import {
-  HiCheckCircle,
-  HiEnvelope,
-  HiQuestionMarkCircle,
-} from 'react-icons/hi2';
+import { type FC, useMemo } from 'react';
 import { HiClock, HiDotsCircleHorizontal } from 'react-icons/hi';
-import { cn } from '../../../common/lib/utils';
-import { AltFavoriteBookButton } from '../../../book/components/favoriteBookButton/altFavoriteBookButton';
+import { HiCheckCircle, HiEnvelope, HiQuestionMarkCircle } from 'react-icons/hi2';
+import { useSelector } from 'react-redux';
+
+import { ReadingStatus, SortingType, type UserBook } from '@common/contracts';
+
 import { useNavigateToBook } from '../../../book/api/hooks/useNavigateToBook';
+import { BookImageMiniature } from '../../../book/components/bookImageMiniature/bookImageMiniature';
+import { AltFavoriteBookButton } from '../../../book/components/favoriteBookButton/altFavoriteBookButton';
+import { TruncatedTextTooltip } from '../../../book/components/truncatedTextTooltip/truncatedTextTooltip';
 import { FindBookBorrowingsQueryOptions } from '../../../borrowing/api/queries/findBookBorrowings/findBookBorrowingsQueryOptions';
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
-import { useSelector } from 'react-redux';
+import { cn } from '../../../common/lib/utils';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 
 const BorrowedSinceText: FC<{ userBookId: string }> = ({ userBookId }) => {
@@ -27,17 +25,13 @@ const BorrowedSinceText: FC<{ userBookId: string }> = ({ userBookId }) => {
       pageSize: 1,
       sortDate: SortingType.desc,
       isOpen: true,
-    })
+    }),
   );
 
   const totalDaysSinceBorrowing = useMemo(() => {
     const millisecondsInDay = 86400000;
 
-    return Math.ceil(
-      (Date.now() -
-        new Date(bookBorrowing?.data?.[0]?.startedAt ?? '').getTime()) /
-        millisecondsInDay
-    );
+    return Math.ceil((Date.now() - new Date(bookBorrowing?.data?.[0]?.startedAt ?? '').getTime()) / millisecondsInDay);
   }, [bookBorrowing?.data]);
 
   return (
@@ -59,10 +53,7 @@ export const BookCard: FC<{
   isBorrowed: boolean;
   pageNumber: number;
 }> = ({ book, pageNumber, isBorrowed = false }) => {
-  const authors = useMemo(
-    () => book.book.authors.map((a) => a.name).join(', '),
-    [book]
-  );
+  const authors = useMemo(() => book.book.authors.map((a) => a.name).join(', '), [book]);
 
   const { navigateToBook } = useNavigateToBook({
     bookId: book.id,
@@ -86,15 +77,21 @@ export const BookCard: FC<{
         color: 'text-slate-500',
       },
     }),
-    []
+    [],
   );
 
   const statusInfo = readingStatusMap[book.status];
 
   return (
-    <div className="relative h-full cursor-pointer" onClick={navigateToBook}>
+    <div
+      className="relative h-full cursor-pointer"
+      onClick={navigateToBook}
+    >
       <div className="absolute right-2 top-2 z-40">
-        <AltFavoriteBookButton pageNumber={pageNumber} book={book} />
+        <AltFavoriteBookButton
+          pageNumber={pageNumber}
+          book={book}
+        />
       </div>
       <div className="flex flex-col h-full max-h-[344px] rounded-[20px] border shadow-sm shadow-gray-400 transition-transform duration-300 ease-in-out">
         <div className="pt-4 pb-2 px-4 aspect-[2/1] rounded-[4px] flex-shrink-0">
@@ -106,24 +103,14 @@ export const BookCard: FC<{
         </div>
         <div className="p-4 flex flex-col flex-grow">
           <TruncatedTextTooltip text={book.book.title}>
-            <h3 className="font-bold text-lg line-clamp-2 min-h-[3.5rem]">
-              {book.book.title}
-            </h3>
+            <h3 className="font-bold text-lg line-clamp-2 min-h-[3.5rem]">{book.book.title}</h3>
           </TruncatedTextTooltip>
           <TruncatedTextTooltip text={authors}>
             <p className="line-clamp-1 text-gray-600 mb-2">{authors}</p>
           </TruncatedTextTooltip>
           <div className="flex items-center mt-auto">
-            {!isBorrowed && (
-              <statusInfo.Icon
-                className={cn('h-5 w-5 mr-2', statusInfo.color)}
-              />
-            )}
-            {!isBorrowed && (
-              <span className={cn('text-sm font-medium', statusInfo.color)}>
-                {statusInfo.label}
-              </span>
-            )}
+            {!isBorrowed && <statusInfo.Icon className={cn('h-5 w-5 mr-2', statusInfo.color)} />}
+            {!isBorrowed && <span className={cn('text-sm font-medium', statusInfo.color)}>{statusInfo.label}</span>}
             {isBorrowed && <BorrowedSinceText userBookId={book.id} />}
           </div>
         </div>

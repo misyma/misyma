@@ -1,4 +1,5 @@
 import { type ColumnDef } from '@tanstack/react-table';
+
 import { TableHeader } from '../../../common/components/tableHeader/tableHeader';
 
 export interface BookChangeRequestRow {
@@ -6,6 +7,7 @@ export interface BookChangeRequestRow {
   currentValue: string;
   proposedValue: string;
 }
+
 export const changeRequestColumns: ColumnDef<BookChangeRequestRow>[] = [
   {
     header: () => <TableHeader label="Element" />,

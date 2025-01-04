@@ -1,4 +1,5 @@
-import { UseMutationOptions, useMutation } from '@tanstack/react-query';
+import { type UseMutationOptions, useMutation } from '@tanstack/react-query';
+
 import { type LoginUserResponseBody } from '@common/contracts';
 
 import { HttpService } from '../../../../modules/core/services/httpService/httpService';
@@ -37,9 +38,11 @@ const mapStatusCodeToErrorMessage = (statusCode: number) => {
   switch (statusCode) {
     case 400:
       // return 'Failed to send the email.';
-      return 'Nie udało się wysłać wiadomości. Spróbuj ponownie.'
+      return 'Nie udało się wysłać wiadomości. Spróbuj ponownie.';
+
     case 500:
       return 'Internal server error';
+
     default:
       return 'Unknown error';
   }

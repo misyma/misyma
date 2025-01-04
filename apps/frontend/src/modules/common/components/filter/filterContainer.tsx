@@ -1,11 +1,11 @@
-import { FC, ReactNode } from 'react';
-import { FilterComponentProps } from '../../types/filter';
-import { cn } from '../../lib/utils';
-import { Button } from '../button/button';
 import { X } from 'lucide-react';
+import { type FC, type ReactNode } from 'react';
 
-interface FilterContainerProps
-  extends Omit<FilterComponentProps, 'setFilterAction'> {
+import { cn } from '../../lib/utils';
+import { type FilterComponentProps } from '../../types/filter';
+import { Button } from '../button/button';
+
+interface FilterContainerProps extends Omit<FilterComponentProps, 'setFilterAction'> {
   slot: ReactNode;
   filterContainerClassName?: string;
   onRemoveFilter?: () => void;
@@ -24,7 +24,7 @@ export const FilterContainer: FC<FilterContainerProps> = ({
       <div
         className={cn(
           'relative flex gap-2 items-center justify-start w-full overflow-hidden truncate p-2',
-          filterContainerClassName
+          filterContainerClassName,
         )}
       >
         {slot}

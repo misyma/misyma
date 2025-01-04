@@ -1,8 +1,9 @@
 import {
-  FindBookReadingsPathParams,
-  FindBookReadingsQueryParams,
-  FindBookReadingsResponseBody,
+  type FindBookReadingsPathParams,
+  type FindBookReadingsQueryParams,
+  type FindBookReadingsResponseBody,
 } from '@common/contracts';
+
 import { HttpService } from '../../../../core/services/httpService/httpService';
 
 export type FindBookReadingsPayload = FindBookReadingsPathParams &
@@ -32,7 +33,7 @@ export const findBookReadings = async (values: FindBookReadingsPayload): Promise
     queryParams,
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
   });
 

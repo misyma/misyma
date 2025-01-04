@@ -1,4 +1,5 @@
-import { FC, ReactNode } from 'react';
+import { type FC, type ReactNode } from 'react';
+
 import { BookImageLoader } from '../components/bookImageLoader/bookImageLoader';
 
 interface BookTabLayoutProps {

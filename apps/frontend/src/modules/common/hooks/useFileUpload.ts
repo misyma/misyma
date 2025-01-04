@@ -1,25 +1,27 @@
-import { MutableRefObject, useEffect, useState } from 'react';
+import { type MutableRefObject, useEffect, useState } from 'react';
 
 interface UseFileUploadProps {
-	fileInputRef: MutableRefObject<HTMLInputElement | null>;
+  fileInputRef: MutableRefObject<HTMLInputElement | null>;
 }
 export const useFileUpload = ({ fileInputRef }: UseFileUploadProps) => {
-	const [file, setFile] = useState<File | undefined>();
+  const [file, setFile] = useState<File | undefined>();
 
-	useEffect(() => {
-        let dataTransfer: DataTransfer;
-		if (file) {
-			dataTransfer = new DataTransfer();
-			dataTransfer.items.add(file);
+  useEffect(() => {
+    let dataTransfer: DataTransfer;
 
-			if (fileInputRef.current) {
-				fileInputRef.current.files = dataTransfer.files;
-			}
-		}
-	}, [file, fileInputRef]);
+    if (file) {
+      dataTransfer = new DataTransfer();
 
-	return {
-        file,
-		setFile,
-	};
+      dataTransfer.items.add(file);
+
+      if (fileInputRef.current) {
+        fileInputRef.current.files = dataTransfer.files;
+      }
+    }
+  }, [file, fileInputRef]);
+
+  return {
+    file,
+    setFile,
+  };
 };

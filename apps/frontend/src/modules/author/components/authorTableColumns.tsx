@@ -1,19 +1,16 @@
-import { CellContext, type ColumnDef } from '@tanstack/react-table';
-import { Author } from '@common/contracts';
+import { useNavigate } from '@tanstack/react-router';
+import { type CellContext, type ColumnDef } from '@tanstack/react-table';
+import { type FC } from 'react';
+import { HiBookOpen, HiPencil } from 'react-icons/hi2';
+
+import { type Author } from '@common/contracts';
+
+import { ChangeAuthorStatusModal } from './changeAuthorStatusModal';
 import { DeleteAuthorModal } from './deleteAuthorModal';
 import { UpdateAuthorModal } from './updateAuthorModal';
-import { TableHeader } from '../../common/components/tableHeader/tableHeader';
-import { HiBookOpen, HiPencil } from 'react-icons/hi2';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '../../common/components/tooltip/tooltip';
 import { Button } from '../../common/components/button/button';
-import { FC } from 'react';
-import { useNavigate } from '@tanstack/react-router';
-import { ChangeAuthorStatusModal } from './changeAuthorStatusModal';
+import { TableHeader } from '../../common/components/tableHeader/tableHeader';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../common/components/tooltip/tooltip';
 
 const ActionsCell: FC<CellContext<Author, unknown>> = ({ row }) => {
   const navigate = useNavigate();

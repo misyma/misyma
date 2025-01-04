@@ -1,12 +1,14 @@
-import { FC, MouseEvent, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { type FC, type MouseEvent, useState } from 'react';
 import { HiHeart, HiOutlineHeart } from 'react-icons/hi';
-import { cn } from '../../../common/lib/utils.js';
 import { useSelector } from 'react-redux';
+
+import { type UserBook } from '@common/contracts';
+
+import { cn } from '../../../common/lib/utils.js';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice.js';
 import { useUpdateUserBookMutation } from '../../api/user/mutations/updateUserBookMutation/updateUserBookMutation.js';
-import { useQueryClient } from '@tanstack/react-query';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys.js';
-import { UserBook } from '@common/contracts';
 
 interface Props {
   book: UserBook;
@@ -14,47 +16,44 @@ interface Props {
   pageNumber: number;
 }
 
-export const AltFavoriteBookButton: FC<Props> = ({
-  book,
-  className,
-  pageNumber,
-}) => {
+export const AltFavoriteBookButton: FC<Props> = ({ book, className, pageNumber }) => {
   const [isAnimating, setIsAnimating] = useState(false);
+
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const queryClient = useQueryClient();
 
   const [isFavorite, setIsFavorite] = useState(book?.isFavorite);
-  const { mutateAsync: updateUserBook, isPending } = useUpdateUserBookMutation(
-    {}
-  );
 
-  const onIsFavoriteChange = async (
-    e: MouseEvent<HTMLOrSVGElement>
-  ): Promise<void> => {
+  const { mutateAsync: updateUserBook, isPending } = useUpdateUserBookMutation({});
+
+  const onIsFavoriteChange = async (e: MouseEvent<HTMLOrSVGElement>): Promise<void> => {
     e.stopPropagation();
+
     if (isPending) {
       return;
     }
+
     if (book) {
       setIsAnimating(true);
+
       try {
         await updateUserBook({
           userBookId: book?.id,
           isFavorite: !isFavorite,
           accessToken: accessToken as string,
         });
+
         setIsFavorite(!isFavorite);
+
         await Promise.all([
           queryClient.invalidateQueries({
             predicate: (query) =>
-              query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId &&
-              query.queryKey[1] === book?.bookshelfId,
+              query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId && query.queryKey[1] === book?.bookshelfId,
           }),
           queryClient.invalidateQueries({
             predicate: (query) =>
-              query.queryKey[0] === BookApiQueryKeys.findUserBookById &&
-              query.queryKey[1] === book?.id,
+              query.queryKey[0] === BookApiQueryKeys.findUserBookById && query.queryKey[1] === book?.id,
           }),
           queryClient.invalidateQueries({
             predicate: (query) =>
@@ -73,11 +72,7 @@ export const AltFavoriteBookButton: FC<Props> = ({
     <div className="h-8 w-8">
       <div className="relative">
         <HiOutlineHeart
-          className={cn(
-            'h-8 w-8 cursor-pointer text-primary absolute',
-            className,
-            { 'animate-pulse': isAnimating }
-          )}
+          className={cn('h-8 w-8 cursor-pointer text-primary absolute', className, { 'animate-pulse': isAnimating })}
           onClick={onIsFavoriteChange}
         />
         <HiHeart
@@ -88,7 +83,7 @@ export const AltFavoriteBookButton: FC<Props> = ({
               'opacity-100': isFavorite && !isAnimating,
               'opacity-0': !isFavorite || isAnimating,
             },
-            isPending ? 'cursor-default' : ''
+            isPending ? 'cursor-default' : '',
           )}
           onClick={onIsFavoriteChange}
         />

@@ -1,30 +1,27 @@
-import { ScrollArea } from '../../../common/components/scrollArea/scroll-area';
-import { cn } from '../../../common/lib/utils';
-import styles from './index.module.css';
-import { FC, useLayoutEffect } from 'react';
-import { useNavigate } from '@tanstack/react-router';
 import { useQueryClient } from '@tanstack/react-query';
-import { useToast } from '../../../common/components/toast/use-toast';
-import { ShelfApiError } from '../../api/errors/shelfApiError';
+import { useNavigate } from '@tanstack/react-router';
+import { type FC, useLayoutEffect } from 'react';
+import { useDispatch } from 'react-redux';
+
 import { BookshelfActionButtons } from './bookshelfActionButtons';
 import { BookshelfName } from './bookshelfName';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../../core/store/store';
-import {
-  setCreatingNew,
-  setEditMap,
-} from '../../../core/store/states/bookshelvesState/bookshelfStateSlice';
-import { BookshelvesApiQueryKeys } from '../../api/queries/bookshelvesApiQueryKeys';
-import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { useBookshelves } from './hooks/useBookshelves';
+import styles from './index.module.css';
+import { ScrollArea } from '../../../common/components/scrollArea/scroll-area';
+import { useToast } from '../../../common/components/toast/use-toast';
+import { cn } from '../../../common/lib/utils';
+import { setCreatingNew, setEditMap } from '../../../core/store/states/bookshelvesState/bookshelfStateSlice';
+import { type AppDispatch } from '../../../core/store/store';
+import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
+import { ShelfApiError } from '../../api/errors/shelfApiError';
+import { BookshelvesApiQueryKeys } from '../../api/queries/bookshelvesApiQueryKeys';
 
 interface BookshelfNavigationAreaProps {
   bookshelfId: string;
 }
-const BookshelfNavigationArea: FC<BookshelfNavigationAreaProps> = ({
-  bookshelfId,
-}) => {
+const BookshelfNavigationArea: FC<BookshelfNavigationAreaProps> = ({ bookshelfId }) => {
   const navigate = useNavigate();
+
   return (
     <div
       onClick={() => {
@@ -49,17 +46,13 @@ interface Props {
   name: string | undefined;
   onCancelEdit: (index: number) => void;
 }
-export const BookshelfsList: FC<Props> = ({
-  page,
-  perPage,
-  name,
-  onCancelEdit,
-}) => {
+export const BookshelfsList: FC<Props> = ({ page, perPage, name, onCancelEdit }) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const queryClient = useQueryClient();
 
   const { data: user } = useFindUserQuery();
+
   const {
     creatingNew,
     bookshelves,
@@ -80,10 +73,13 @@ export const BookshelfsList: FC<Props> = ({
   useLayoutEffect(() => {
     if (creatingNew === true) {
       setBookshelves([createBookshelfDraft(), ...bookshelves]);
+
       return;
     }
+
     if (creatingNew === false && bookshelves[0]?.id === '') {
       setBookshelves([...bookshelves.slice(1)]);
+
       return;
     }
     // Add 'bookshelves' and watch your browser burn due to an infinite loop
@@ -92,11 +88,12 @@ export const BookshelfsList: FC<Props> = ({
 
   const onCancelEditInternal = (index: number): void => {
     onCancelEdit(index);
+
     dispatch(
       setEditMap({
         ...editMap,
         [index]: false,
-      })
+      }),
     );
 
     if (!bookshelves || bookshelves.length === 0) {
@@ -104,6 +101,7 @@ export const BookshelfsList: FC<Props> = ({
     }
 
     const element = bookshelves[index];
+
     if (element.id === '') {
       const updatedBookshelves = bookshelves.slice(1);
 
@@ -114,13 +112,12 @@ export const BookshelfsList: FC<Props> = ({
   };
 
   const getBookshelfInputByQuerySelector = (index: number) => {
-    return document.querySelector(`[id="${index}-bookshelf"]`) as
-      | HTMLInputElement
-      | undefined;
+    return document.querySelector(`[id="${index}-bookshelf"]`) as HTMLInputElement | undefined;
   };
 
   const onCreateNew = async (index: number): Promise<void> => {
     const input = getBookshelfInputByQuerySelector(index);
+
     if (!input) {
       toast({
         title: `Wystąpił błąd.`,
@@ -148,9 +145,7 @@ export const BookshelfsList: FC<Props> = ({
             variant: `destructive`,
           });
 
-          setBookshelves(
-            bookshelves?.filter((bookshelf) => bookshelf.id !== '')
-          );
+          setBookshelves(bookshelves?.filter((bookshelf) => bookshelf.id !== ''));
 
           return;
         }
@@ -166,6 +161,7 @@ export const BookshelfsList: FC<Props> = ({
 
   const onSaveEdit = async (index: number): Promise<void> => {
     const input = getBookshelfInputByQuerySelector(index);
+
     if (!input) {
       toast({
         title: `Wystąpił błąd.`,
@@ -177,16 +173,10 @@ export const BookshelfsList: FC<Props> = ({
     }
 
     try {
-      await onUpdateBookshelfName(
-        index,
-        bookshelves[index]?.id as string,
-        input?.value,
-        bookshelves[index]?.name
-      );
+      await onUpdateBookshelfName(index, bookshelves[index]?.id as string, input?.value, bookshelves[index]?.name);
 
       await queryClient.invalidateQueries({
-        predicate: ({ queryKey }) =>
-          queryKey[0] === BookshelvesApiQueryKeys.findUserBookshelfs,
+        predicate: ({ queryKey }) => queryKey[0] === BookshelvesApiQueryKeys.findUserBookshelfs,
       });
     } catch (error) {
       toast({
@@ -205,7 +195,10 @@ export const BookshelfsList: FC<Props> = ({
             className={cn(index > perPage - 1 ? 'hidden' : '')}
             key={`${bookshelf.id ?? 'temporary' + '-' + index}-container`}
           >
-            <div key={`${bookshelf.id}`} className={styles['shelf']}>
+            <div
+              key={`${bookshelf.id}`}
+              className={styles['shelf']}
+            >
               <BookshelfNavigationArea bookshelfId={bookshelf.id} />
               <div className="flex flex-col w-full">
                 <div className="flex items-center h-full border-t-primary border-t-2 rounded-sm justify-between w-full top-0 pointer-events-none">
@@ -218,6 +211,7 @@ export const BookshelfsList: FC<Props> = ({
                       if (bookshelves && bookshelves[index]?.id === '') {
                         return onCreateNew(index);
                       }
+
                       onSaveEdit(index);
                     }}
                   />

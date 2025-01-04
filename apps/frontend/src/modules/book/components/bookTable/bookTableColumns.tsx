@@ -1,12 +1,14 @@
-import { CellContext, type ColumnDef } from '@tanstack/react-table';
-import { Book } from '@common/contracts';
-import { ReversedLanguages } from '../../../common/constants/languages';
-import { BookFormat } from '../../../common/constants/bookFormat';
-import { DeleteBookModal } from '../deleteBookModal/deleteBookModal';
+import { type CellContext, type ColumnDef } from '@tanstack/react-table';
+import { type FC } from 'react';
+
+import { type Book } from '@common/contracts';
+
 import { TableHeader } from '../../../common/components/tableHeader/tableHeader';
+import { BookFormat } from '../../../common/constants/bookFormat';
+import { ReversedLanguages } from '../../../common/constants/languages';
 import { AdminEditBookModal } from '../adminEditBookModal/adminEditBookModal';
-import { FC } from 'react';
 import { ChangeBookStatusModal } from '../changeBookStatusModal/changeBookStatusModal';
+import { DeleteBookModal } from '../deleteBookModal/deleteBookModal';
 import { TruncatedTextTooltip } from '../truncatedTextTooltip/truncatedTextTooltip';
 
 type CellProps = CellContext<Book, unknown>;
@@ -43,9 +45,7 @@ const LanguageCell: FC<CellProps> = ({ row, column }) => {
     >
       <div className="flex items-center gap-1">
         <p className="text-base truncate">
-          {row.original.language
-            ? ReversedLanguages[row.original.language]?.toLowerCase()
-            : '-'}
+          {row.original.language ? ReversedLanguages[row.original.language]?.toLowerCase() : '-'}
         </p>
       </div>
     </div>
@@ -113,7 +113,10 @@ const ActionsCell: FC<CellProps> = ({ row }) => {
   return (
     <div className="flex items-center gap-2">
       <AdminEditBookModal bookId={book.id} />
-      <DeleteBookModal bookId={book.id} bookName={book.title} />
+      <DeleteBookModal
+        bookId={book.id}
+        bookName={book.title}
+      />
     </div>
   );
 };
@@ -142,17 +145,16 @@ export const bookTableColumns: ColumnDef<Book>[] = [
     size: 175,
     maxSize: 200,
     cell: ({ row }): JSX.Element => {
-      return (
-        <AuthorCell
-          label={
-            row.original.authors.map((author) => author.name).join(', ') ?? ''
-          }
-        />
-      );
+      return <AuthorCell label={row.original.authors.map((author) => author.name).join(', ') ?? ''} />;
     },
   },
   {
-    header: () => <TableHeader className="w-[125px]" label="ISBN" />,
+    header: () => (
+      <TableHeader
+        className="w-[125px]"
+        label="ISBN"
+      />
+    ),
     minSize: 125,
     size: 150,
     maxSize: 175,
@@ -160,7 +162,12 @@ export const bookTableColumns: ColumnDef<Book>[] = [
     cell: IsbnCell,
   },
   {
-    header: () => <TableHeader className="w-[125px]" label="Format" />,
+    header: () => (
+      <TableHeader
+        className="w-[125px]"
+        label="Format"
+      />
+    ),
     minSize: 100,
     size: 100,
     maxSize: 150,

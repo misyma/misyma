@@ -1,4 +1,12 @@
-import { FC, useMemo, useState } from 'react';
+import { SelectContent } from '@radix-ui/react-select';
+import { useQueryClient } from '@tanstack/react-query';
+import { type FC, useMemo, useState } from 'react';
+import { HiTrash } from 'react-icons/hi';
+import { useSelector } from 'react-redux';
+
+import { FindBooksByBookshelfIdQueryOptions } from '../../../book/api/user/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
+import { BookApiError } from '../../../book/errors/bookApiError';
+import { Button } from '../../../common/components/button/button';
 import {
   Dialog,
   DialogContent,
@@ -7,28 +15,16 @@ import {
   DialogHeader,
   DialogTrigger,
 } from '../../../common/components/dialog/dialog';
-import { Button } from '../../../common/components/button/button';
-import { HiTrash } from 'react-icons/hi';
-import { useDeleteBookshelfMutation } from '../../api/mutations/deleteBookshelfMutation/deleteBookshelfMutation';
-import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
-import { FindBooksByBookshelfIdQueryOptions } from '../../../book/api/user/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
-import {
-  Select,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../../../common/components/select/select';
-import { SelectContent } from '@radix-ui/react-select';
-import { cn } from '../../../common/lib/utils';
-import { useQueryClient } from '@tanstack/react-query';
-import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
-import { useFindUserBookshelfsQuery } from '../../api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
-import { ShelfApiError } from '../../api/errors/shelfApiError';
-import { BookApiError } from '../../../book/errors/bookApiError';
+import { Select, SelectItem, SelectTrigger, SelectValue } from '../../../common/components/select/select';
 import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
-import { BookshelvesApiQueryKeys } from '../../api/queries/bookshelvesApiQueryKeys';
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
+import { cn } from '../../../common/lib/utils';
+import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
+import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
+import { ShelfApiError } from '../../api/errors/shelfApiError';
+import { useDeleteBookshelfMutation } from '../../api/mutations/deleteBookshelfMutation/deleteBookshelfMutation';
+import { BookshelvesApiQueryKeys } from '../../api/queries/bookshelvesApiQueryKeys';
+import { useFindUserBookshelfsQuery } from '../../api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 
 interface DialogContentPreConfirmationProps {
   bookshelfId: string;
@@ -46,24 +42,27 @@ const DialogContentPreConfirmation: FC<DialogContentPreConfirmationProps> = ({
   error,
 }) => {
   const { data: user } = useFindUserQuery();
+
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
+
   const { data: bookshelfBooksResponse } = useErrorHandledQuery(
     FindBooksByBookshelfIdQueryOptions({
       bookshelfId,
       userId: user?.id as string,
       accessToken: accessToken as string,
-    })
+    }),
   );
+
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleInitialConfirmation = async (): Promise<void> => {
-    if (
-      bookshelfBooksResponse?.data &&
-      bookshelfBooksResponse?.data?.length === 0
-    ) {
+    if (bookshelfBooksResponse?.data && bookshelfBooksResponse?.data?.length === 0) {
       setIsDeleting(true);
+
       await onDelete(true);
+
       setIsDeleting(false);
+
       return;
     }
 
@@ -84,7 +83,10 @@ const DialogContentPreConfirmation: FC<DialogContentPreConfirmationProps> = ({
         </div>
       </div>
       <DialogFooter className="pt-8 flex sm:justify-center justify-center sm:items-center items-center">
-        <Button className="bg-primary w-32 sm:w-40" onClick={onCancel}>
+        <Button
+          className="bg-primary w-32 sm:w-40"
+          onClick={onCancel}
+        >
           Anuluj
         </Button>
         <Button
@@ -133,14 +135,12 @@ const DialogContentPostConfirmation: FC<DialogContentPostConfirmationProps> = ({
 
   const onMoveAndDelete = async (): Promise<void> => {
     try {
-      const fallbackBookshelfId =
-        moveBookshelfId.length > 0 ? moveBookshelfId : defaultBookshelf?.id;
+      const fallbackBookshelfId = moveBookshelfId.length > 0 ? moveBookshelfId : defaultBookshelf?.id;
 
       await deleteBookshelf({ bookshelfId, fallbackBookshelfId });
 
       await queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey[0] === BookshelvesApiQueryKeys.findUserBookshelfs,
+        predicate: (query) => query.queryKey[0] === BookshelvesApiQueryKeys.findUserBookshelfs,
       });
 
       onFinished();
@@ -148,8 +148,7 @@ const DialogContentPostConfirmation: FC<DialogContentPostConfirmationProps> = ({
       await deletedHandler();
 
       await queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey[0] === BookshelvesApiQueryKeys.findUserBookshelfs,
+        predicate: (query) => query.queryKey[0] === BookshelvesApiQueryKeys.findUserBookshelfs,
       });
     } catch (error) {
       if (error instanceof BookApiError) {
@@ -165,15 +164,11 @@ const DialogContentPostConfirmation: FC<DialogContentPostConfirmationProps> = ({
   };
 
   const filteredBookshelves = useMemo(() => {
-    return bookshelvesData?.data.filter(
-      (val) => val.id !== bookshelfId && val.name !== 'Wypożyczalnia'
-    );
+    return bookshelvesData?.data.filter((val) => val.id !== bookshelfId && val.name !== 'Wypożyczalnia');
   }, [bookshelvesData?.data, bookshelfId]);
 
   const defaultBookshelf = useMemo(() => {
-    return bookshelvesData?.data.find(
-      (bookshelf) => bookshelf.name === 'Archiwum'
-    );
+    return bookshelvesData?.data.find((bookshelf) => bookshelf.name === 'Archiwum');
   }, [bookshelvesData?.data]);
 
   return (
@@ -203,7 +198,10 @@ const DialogContentPostConfirmation: FC<DialogContentPostConfirmationProps> = ({
                 }}
               >
                 {filteredBookshelves?.map((bookshelf) => (
-                  <SelectItem className="bg-popover" value={bookshelf.id}>
+                  <SelectItem
+                    className="bg-popover"
+                    value={bookshelf.id}
+                  >
                     {bookshelf.name}
                   </SelectItem>
                 ))}
@@ -214,10 +212,16 @@ const DialogContentPostConfirmation: FC<DialogContentPostConfirmationProps> = ({
         <p className={error ? 'text-red-500' : 'hidden'}>{error}</p>
       </DialogDescription>
       <DialogFooter className="pt-8 flex sm:justify-center justify-center sm:items-center items-center">
-        <Button className="w-32 sm:w-40" onClick={onDelete}>
+        <Button
+          className="w-32 sm:w-40"
+          onClick={onDelete}
+        >
           Usuń książki
         </Button>
-        <Button className="bg-primary w-32 sm:w-40" onClick={onMoveAndDelete}>
+        <Button
+          className="bg-primary w-32 sm:w-40"
+          onClick={onMoveAndDelete}
+        >
           Przenieś na półkę
         </Button>
       </DialogFooter>
@@ -232,16 +236,13 @@ interface Props {
   className?: string;
 }
 
-export const DeleteBookshelfModal: FC<Props> = ({
-  bookshelfId,
-  bookshelfName,
-  className,
-  deletedHandler,
-}: Props) => {
+export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, className, deletedHandler }: Props) => {
   const queryClient = useQueryClient();
 
   const [deletionConfirmed, setDeletionConfirmed] = useState<boolean>(false);
+
   const [isOpen, setIsOpen] = useState<boolean>(false);
+
   const [error, setError] = useState('');
 
   const { mutateAsync: deleteBookshelf } = useDeleteBookshelfMutation({});
@@ -255,8 +256,7 @@ export const DeleteBookshelfModal: FC<Props> = ({
       await deletedHandler();
 
       await queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey[0] === BookshelvesApiQueryKeys.findUserBookshelfs,
+        predicate: (query) => query.queryKey[0] === BookshelvesApiQueryKeys.findUserBookshelfs,
       });
     } catch (error) {
       if (error instanceof ShelfApiError) {
@@ -283,10 +283,11 @@ export const DeleteBookshelfModal: FC<Props> = ({
       }}
     >
       <DialogTrigger asChild>
-        <Button size="custom" variant="none">
-          <HiTrash
-            className={cn('text-primary h-8 w-8 cursor-pointer', className)}
-          />
+        <Button
+          size="custom"
+          variant="none"
+        >
+          <HiTrash className={cn('text-primary h-8 w-8 cursor-pointer', className)} />
         </Button>
       </DialogTrigger>
       <DialogContent

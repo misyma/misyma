@@ -1,4 +1,8 @@
-import { FindAdminBookChangeRequestByIdResponseBody, FindBookChangeRequestByIdPathParams } from '@common/contracts';
+import {
+  type FindAdminBookChangeRequestByIdResponseBody,
+  type FindBookChangeRequestByIdPathParams,
+} from '@common/contracts';
+
 import { HttpService } from '../../../../../core/services/httpService/httpService';
 
 export interface FindBookChangeRequestByIdPayload extends FindBookChangeRequestByIdPathParams {

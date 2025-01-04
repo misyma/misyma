@@ -1,7 +1,8 @@
-import { FindBooksQueryParams, FindBooksResponseBody } from '@common/contracts';
-import { BookApiError } from '../../../../errors/bookApiError';
+import { type FindBooksQueryParams, type FindBooksResponseBody } from '@common/contracts';
+
 import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
 import { HttpService } from '../../../../../core/services/httpService/httpService';
+import { BookApiError } from '../../../../errors/bookApiError';
 
 export interface FindBooksPayload extends FindBooksQueryParams {
   accessToken: string;

@@ -1,4 +1,4 @@
-import { createContext, Dispatch, ReactNode, useContext, useReducer } from 'react';
+import { createContext, type Dispatch, type ReactNode, useContext, useReducer } from 'react';
 
 const defaultValues: Record<string, string> = {};
 

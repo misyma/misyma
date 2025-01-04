@@ -1,4 +1,4 @@
-import { ReactElement } from 'react';
+import { type ReactElement } from 'react';
 import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
 
 interface Props {

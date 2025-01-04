@@ -1,36 +1,35 @@
 import { createLazyFileRoute, useNavigate } from '@tanstack/react-router';
-
-import { useBreadcrumbKeysDispatch } from '../../modules/common/contexts/breadcrumbKeysContext';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../modules/core/store/store';
-import { FC, Fragment, useEffect, useMemo, useState } from 'react';
-import { useFindUserQuery } from '../../modules/user/api/queries/findUserQuery/findUserQuery';
-import { useFindUserBookshelfsQuery } from '../../modules/bookshelf/api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
-import {
-  bookshelfSelectors,
-  setCreatingNew,
-  setEditMap,
-} from '../../modules/core/store/states/bookshelvesState/bookshelfStateSlice';
 import { motion } from 'framer-motion';
-import { Input } from '../../modules/common/components/input/input';
+import { type FC, Fragment, useEffect, useMemo, useState } from 'react';
 import { HiMagnifyingGlass, HiPlus } from 'react-icons/hi2';
-import { Button } from '../../modules/common/components/button/button';
-import { BookshelfsList } from '../../modules/bookshelf/components/bookshelfsList/bookshelfsList';
-import { Paginator } from '../../modules/common/components/paginator/paginator';
+import { useDispatch, useSelector } from 'react-redux';
+
 import { AuthenticatedLayout } from '../../modules/auth/layouts/authenticated/authenticatedLayout';
+import { useFindUserBookshelfsQuery } from '../../modules/bookshelf/api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
+import { BookshelfsList } from '../../modules/bookshelf/components/bookshelfsList/bookshelfsList';
+import { Button } from '../../modules/common/components/button/button';
+import { Input } from '../../modules/common/components/input/input';
+import { Paginator } from '../../modules/common/components/paginator/paginator';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '../../modules/common/components/tooltip/tooltip';
+import { useBreadcrumbKeysDispatch } from '../../modules/common/contexts/breadcrumbKeysContext';
 import useDebounce from '../../modules/common/hooks/useDebounce';
+import {
+  bookshelfSelectors,
+  setCreatingNew,
+  setEditMap,
+} from '../../modules/core/store/states/bookshelvesState/bookshelfStateSlice';
+import { type AppDispatch, type RootState } from '../../modules/core/store/store';
+import { useFindUserQuery } from '../../modules/user/api/queries/findUserQuery/findUserQuery';
 
 const CreateBookshelfButton: FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const editMap = useSelector<RootState, Record<number, boolean>>(
-    (state) => state.bookshelves.editMap
-  );
+
+  const editMap = useSelector<RootState, Record<number, boolean>>((state) => state.bookshelves.editMap);
 
   const isCreatingNew = useSelector(bookshelfSelectors.selectIsCreatingNew);
 
@@ -39,8 +38,9 @@ const CreateBookshelfButton: FC = () => {
       setEditMap({
         ...editMap,
         [0]: true,
-      })
+      }),
     );
+
     dispatch(setCreatingNew(true));
   };
 
@@ -66,6 +66,7 @@ const CreateBookshelfButton: FC = () => {
 
 const SearchBookshelfField = () => {
   const navigate = useNavigate();
+
   const [searchedName, setSearchedName] = useState('');
 
   const debouncedSearchedName = useDebounce(searchedName, 300);
@@ -101,9 +102,11 @@ const SearchBookshelfField = () => {
 
 const BookshelvesPaginator: FC = () => {
   const navigate = Route.useNavigate();
+
   const { page, perPage, name } = Route.useSearch();
 
   const { data: user } = useFindUserQuery();
+
   const { data: bookshelvesData } = useFindUserBookshelfsQuery({
     userId: user?.id as string,
     pageSize: perPage,
@@ -164,13 +167,9 @@ export const ShelvesPage: FC = () => {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
         transition={{ duration: 0.3 }}
-        className={
-          'flex flex-col w-[80vw] sm:w-[90vw] sm:px-48 items-center justify-center gap-4'
-        }
+        className={'flex flex-col w-[80vw] sm:w-[90vw] sm:px-48 items-center justify-center gap-4'}
       >
-        <div
-          className={'w-full flex items-end justify-between max-w-screen-2xl'}
-        >
+        <div className={'w-full flex items-end justify-between max-w-screen-2xl'}>
           <SearchBookshelfField />
           <CreateBookshelfButton />
         </div>

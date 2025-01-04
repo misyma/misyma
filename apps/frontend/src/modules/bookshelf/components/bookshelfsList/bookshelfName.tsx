@@ -1,5 +1,6 @@
 import { useNavigate } from '@tanstack/react-router';
-import { FC } from 'react';
+import { type FC } from 'react';
+
 import { AutoselectedInput } from '../../../common/components/autoselectedInput/autoselectedInput';
 
 interface BookshelfNameProps {
@@ -9,13 +10,7 @@ interface BookshelfNameProps {
   bookshelfId: string;
   onSave: (index: number) => void;
 }
-export const BookshelfName: FC<BookshelfNameProps> = ({
-  editMap,
-  index,
-  name,
-  bookshelfId,
-  onSave,
-}) => {
+export const BookshelfName: FC<BookshelfNameProps> = ({ editMap, index, name, bookshelfId, onSave }) => {
   const navigate = useNavigate();
 
   return (
@@ -25,6 +20,7 @@ export const BookshelfName: FC<BookshelfNameProps> = ({
         if (editMap[index] === true) {
           return;
         }
+
         navigate({
           to: `/bookshelf/${bookshelfId}`,
         });

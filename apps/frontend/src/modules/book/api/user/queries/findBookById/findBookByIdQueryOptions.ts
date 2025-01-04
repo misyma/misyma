@@ -1,6 +1,8 @@
-import { UseQueryOptions, queryOptions } from '@tanstack/react-query';
-import { FindBookByIdPayload, findBookById } from './findBookById';
-import { FindBookResponseBody } from '@common/contracts';
+import { type UseQueryOptions, queryOptions } from '@tanstack/react-query';
+
+import { type FindBookResponseBody } from '@common/contracts';
+
+import { type FindBookByIdPayload, findBookById } from './findBookById';
 import { BookApiQueryKeys } from '../bookApiQueryKeys';
 
 export const FindBookByIdQueryOptions = (

@@ -1,8 +1,9 @@
-import { FC, useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
+import { type FC, useState } from 'react';
+
 import { Button } from '../../../common/components/button/button.js';
-import { RadioGroup, RadioGroupItem } from '../../../common/components/radioGroup/radio-group.js';
 import { Label } from '../../../common/components/label/label.js';
+import { RadioGroup, RadioGroupItem } from '../../../common/components/radioGroup/radio-group.js';
 
 interface Props {
   initialValue: 'isbn' | 'title';
@@ -62,7 +63,7 @@ export const SearchBookMethodChoice: FC<Props> = ({ initialValue = 'isbn', books
         </RadioGroup>
         <div>
           <Button
-            size='xl'
+            size="xl"
             onClick={onProceed}
           >
             Przejdź dalej

@@ -1,4 +1,14 @@
-import { FC, ReactNode, useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useQueryClient } from '@tanstack/react-query';
+import { type FC, type ReactNode, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useSelector } from 'react-redux';
+import { type Writeable, z } from 'zod';
+
+import { type UpdateAuthorRequestBody } from '@common/contracts';
+
+import { Button } from '../../common/components/button/button';
+import { Checkbox } from '../../common/components/checkbox/checkbox';
 import {
   Dialog,
   DialogContent,
@@ -6,27 +16,12 @@ import {
   DialogHeader,
   DialogTrigger,
 } from '../../common/components/dialog/dialog';
-import { Writeable, z } from 'zod';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '../../common/components/form/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../common/components/form/form';
 import { Input } from '../../common/components/input/input';
-import { Button } from '../../common/components/button/button';
-import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../core/store/states/userState/userStateSlice';
 import { ApiError } from '../../common/errors/apiError';
-import { useQueryClient } from '@tanstack/react-query';
-import { AuthorsApiQueryKeys } from '../api/user/queries/authorsApiQueryKeys';
+import { userStateSelectors } from '../../core/store/states/userState/userStateSlice';
 import { useUpdateAuthorMutation } from '../api/admin/mutations/updateAuthorMutation/updateAuthorMutation';
-import { Checkbox } from '../../common/components/checkbox/checkbox';
-import { UpdateAuthorRequestBody } from '@common/contracts';
+import { AuthorsApiQueryKeys } from '../api/user/queries/authorsApiQueryKeys';
 
 interface Props {
   className?: string;
@@ -61,14 +56,7 @@ interface FormProps {
   onMutated: () => void | Promise<void>;
 }
 
-const UpdateAuthorForm: FC<FormProps> = ({
-  authorId,
-  setError,
-  setIsOpen,
-  authorName,
-  isApproved,
-  onMutated,
-}) => {
+const UpdateAuthorForm: FC<FormProps> = ({ authorId, setError, setIsOpen, authorName, isApproved, onMutated }) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const queryClient = useQueryClient();
@@ -112,8 +100,7 @@ const UpdateAuthorForm: FC<FormProps> = ({
       await onMutated();
 
       await queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey[0] === AuthorsApiQueryKeys.findAuthorsQuery,
+        predicate: (query) => query.queryKey[0] === AuthorsApiQueryKeys.findAuthorsQuery,
       });
     } catch (error) {
       if (error instanceof ApiError) {
@@ -138,7 +125,12 @@ const UpdateAuthorForm: FC<FormProps> = ({
             <FormItem>
               <FormLabel>Imię i nazwisko</FormLabel>
               <FormControl>
-                <Input min={1} max={128} type="text" {...field} />
+                <Input
+                  min={1}
+                  max={128}
+                  type="text"
+                  {...field}
+                />
               </FormControl>
               <FormMessage></FormMessage>
             </FormItem>
@@ -160,7 +152,10 @@ const UpdateAuthorForm: FC<FormProps> = ({
             </FormItem>
           )}
         />
-        <Button disabled={!form.formState.isValid} type="submit">
+        <Button
+          disabled={!form.formState.isValid}
+          type="submit"
+        >
           Aktualizuj
         </Button>
       </form>
@@ -168,13 +163,7 @@ const UpdateAuthorForm: FC<FormProps> = ({
   );
 };
 
-export const UpdateAuthorModal: FC<Props> = ({
-  trigger,
-  authorId,
-  authorName,
-  isApproved,
-  onMutated,
-}: Props) => {
+export const UpdateAuthorModal: FC<Props> = ({ trigger, authorId, authorName, isApproved, onMutated }: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const [error, setError] = useState('');

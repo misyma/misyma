@@ -1,6 +1,7 @@
-import React from 'react';
-import { useStoreSelector } from '../../store/hooks/useStoreSelector.js';
 import { Navigate } from '@tanstack/react-router';
+import React from 'react';
+
+import { useStoreSelector } from '../../store/hooks/useStoreSelector.js';
 import { userStateSelectors } from '../../store/states/userState/userStateSlice.js';
 
 interface RequireAuthComponentProps {

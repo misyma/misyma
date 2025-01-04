@@ -1,4 +1,5 @@
-import { UseMutationOptions, useMutation } from '@tanstack/react-query';
+import { type UseMutationOptions, useMutation } from '@tanstack/react-query';
+
 import { type LoginUserResponseBody } from '@common/contracts';
 
 import { HttpService } from '../../../../modules/core/services/httpService/httpService';
@@ -37,9 +38,11 @@ const mapStatusCodeToErrorMessage = (statusCode: number) => {
   switch (statusCode) {
     case 400:
       // return 'Failed to set the new password.';
-      return 'Nie udało się ustawić nowego hasła. Spróbuj ponownie.'
+      return 'Nie udało się ustawić nowego hasła. Spróbuj ponownie.';
+
     case 500:
       return 'Internal server error';
+
     default:
       return 'Unknown error';
   }

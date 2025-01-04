@@ -1,8 +1,9 @@
-import { Meta } from '@storybook/react';
-import { Navbar } from './navbar';
-import { MockStoreProvider } from '../../../core/components/providers/storeProvider/mockStoreProvider';
-import { QueryClientProvider } from '../../../core/components/providers/queryClientProvider/queryClientProvider';
+import { type Meta } from '@storybook/react';
 import { createRootRoute, createRouter, Outlet, RouterProvider } from '@tanstack/react-router';
+
+import { Navbar } from './navbar';
+import { QueryClientProvider } from '../../../core/components/providers/queryClientProvider/queryClientProvider';
+import { MockStoreProvider } from '../../../core/components/providers/storeProvider/mockStoreProvider';
 
 const Route = createRootRoute({
   component: () => <Outlet></Outlet>,

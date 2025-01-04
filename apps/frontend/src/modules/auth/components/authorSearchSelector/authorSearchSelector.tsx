@@ -1,4 +1,13 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { CommandLoading } from 'cmdk';
+import { Check } from 'lucide-react';
+import { type FC, Fragment, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { type z } from 'zod';
+
+import { useFindAuthorsQuery } from '../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
+import { AuthorFieldTooltip } from '../../../author/components/authorFieldTooltip';
+import { createAuthorDraftSchema } from '../../../author/schemas/createAuthorDraftSchema';
 import { Button } from '../../../common/components/button/button';
 import {
   Command,
@@ -14,29 +23,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '../../../common/components/dialog/dialog';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '../../../common/components/form/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/form/form';
 import { Input } from '../../../common/components/input/input';
-import {
-  DialogPopoverContent,
-  PopoverContent,
-} from '../../../common/components/popover/popover';
-import { FC, Fragment, useState } from 'react';
-import { Check } from 'lucide-react';
-import { cn } from '../../../common/lib/utils';
-import { useFindAuthorsQuery } from '../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { createAuthorDraftSchema } from '../../../author/schemas/createAuthorDraftSchema';
-import { AuthorFieldTooltip } from '../../../author/components/authorFieldTooltip';
+import { DialogPopoverContent, PopoverContent } from '../../../common/components/popover/popover';
 import useDebounce from '../../../common/hooks/useDebounce';
+import { cn } from '../../../common/lib/utils';
 
 interface AuthorSearchSelectorProps {
   onSelect: (authorId: string, authorName: string) => void;
@@ -44,25 +35,18 @@ interface AuthorSearchSelectorProps {
   currentlySelectedAuthorId?: string;
   createAuthorDialogVisible: boolean;
   setAuthorSelectOpen: (val: boolean) => void;
-  onCreateAuthorDraft: (
-    payload: z.infer<typeof createAuthorDraftSchema>
-  ) => void;
+  onCreateAuthorDraft: (payload: z.infer<typeof createAuthorDraftSchema>) => void;
   includeAuthorCreation: boolean;
   searchedName?: string;
   dialog?: boolean;
 }
 
 interface CreateAuthorDraftFormProps {
-  onCreateAuthorDraft: (
-    payload: z.infer<typeof createAuthorDraftSchema>
-  ) => void;
+  onCreateAuthorDraft: (payload: z.infer<typeof createAuthorDraftSchema>) => void;
   initialName?: string;
 }
 
-const CreateAuthorDraftForm: FC<CreateAuthorDraftFormProps> = ({
-  onCreateAuthorDraft,
-  initialName,
-}) => {
+const CreateAuthorDraftForm: FC<CreateAuthorDraftFormProps> = ({ onCreateAuthorDraft, initialName }) => {
   const createAuthorDraftForm = useForm({
     resolver: zodResolver(createAuthorDraftSchema),
     values: {
@@ -87,7 +71,12 @@ const CreateAuthorDraftForm: FC<CreateAuthorDraftFormProps> = ({
                 <AuthorFieldTooltip side="bottom" />
               </div>
               <FormControl>
-                <Input min={1} max={128} type="text" {...field} />
+                <Input
+                  min={1}
+                  max={128}
+                  type="text"
+                  {...field}
+                />
               </FormControl>
               <FormMessage></FormMessage>
             </FormItem>
@@ -116,9 +105,7 @@ export const AuthorSearchSelector: FC<AuthorSearchSelectorProps> = ({
   searchedName: propSearchedName,
   dialog = false,
 }) => {
-  const [searchedName, setSearchedName] = useState<string | undefined>(
-    propSearchedName
-  );
+  const [searchedName, setSearchedName] = useState<string | undefined>(propSearchedName);
 
   const debouncedSearchedName = useDebounce(searchedName, 300);
 
@@ -153,9 +140,7 @@ export const AuthorSearchSelector: FC<AuthorSearchSelectorProps> = ({
       <CommandList>
         {isFetched && authors?.data.length === 0 && (
           <CommandEmpty className="flex flex-col px-4 py-4 gap-4">
-            {!includeAuthorCreation && (
-              <p>Nie znaleziono autora - {searchedName} </p>
-            )}
+            {!includeAuthorCreation && <p>Nie znaleziono autora - {searchedName} </p>}
             {includeAuthorCreation && (
               <>
                 <Dialog
@@ -167,9 +152,7 @@ export const AuthorSearchSelector: FC<AuthorSearchSelectorProps> = ({
                   }}
                 >
                   <DialogTrigger asChild>
-                    <Button className="bg-slate-100 text-black hover:bg-slate-300">
-                      Dodaj
-                    </Button>
+                    <Button className="bg-slate-100 text-black hover:bg-slate-300">Dodaj</Button>
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-md">
                     <DialogHeader>
@@ -186,7 +169,7 @@ export const AuthorSearchSelector: FC<AuthorSearchSelectorProps> = ({
           </CommandEmpty>
         )}
         {loading && (
-          <CommandLoading className='p-2'>
+          <CommandLoading className="p-2">
             <span>Wyszukuję autorów</span>
           </CommandLoading>
         )}
@@ -197,12 +180,7 @@ export const AuthorSearchSelector: FC<AuthorSearchSelectorProps> = ({
             onSelect={() => onSelect(author.id, author.name)}
           >
             <Check
-              className={cn(
-                'mr-2 h-4 w-4',
-                author.id === currentlySelectedAuthorId
-                  ? 'opacity-100'
-                  : 'opacity-0'
-              )}
+              className={cn('mr-2 h-4 w-4', author.id === currentlySelectedAuthorId ? 'opacity-100' : 'opacity-0')}
             />
             {author.name}
           </CommandItem>
@@ -213,16 +191,8 @@ export const AuthorSearchSelector: FC<AuthorSearchSelectorProps> = ({
 
   return (
     <Fragment>
-      {!dialog && (
-        <PopoverContent className={cn('w-60 sm:w-96 p-0', className)}>
-          {render()}
-        </PopoverContent>
-      )}
-      {dialog && (
-        <DialogPopoverContent className={cn('w-60 sm:w-96 p-0', className)}>
-          {render()}
-        </DialogPopoverContent>
-      )}
+      {!dialog && <PopoverContent className={cn('w-60 sm:w-96 p-0', className)}>{render()}</PopoverContent>}
+      {dialog && <DialogPopoverContent className={cn('w-60 sm:w-96 p-0', className)}>{render()}</DialogPopoverContent>}
     </Fragment>
   );
 };

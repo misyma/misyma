@@ -1,166 +1,159 @@
 import { useEffect, useState } from 'react';
-import { useFindUserBookshelfsQuery } from '../../../api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
-import { useFindUserQuery } from '../../../../user/api/queries/findUserQuery/findUserQuery';
-import { useUpdateBookshelfMutation } from '../../../api/mutations/updateBookshelfMutation/updateBookshelfMutation';
-import { BookshelfType } from '@common/contracts';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../../../core/store/store';
-import {
-	bookshelfSelectors,
-	setCreatingNew,
-	setEditMap,
-} from '../../../../core/store/states/bookshelvesState/bookshelfStateSlice';
-import { useToast } from '../../../../common/components/toast/use-toast';
 import { z } from 'zod';
+
+import { BookshelfType } from '@common/contracts';
+
+import { useToast } from '../../../../common/components/toast/use-toast';
+import {
+  bookshelfSelectors,
+  setCreatingNew,
+  setEditMap,
+} from '../../../../core/store/states/bookshelvesState/bookshelfStateSlice';
+import { type AppDispatch, type RootState } from '../../../../core/store/store';
+import { useFindUserQuery } from '../../../../user/api/queries/findUserQuery/findUserQuery';
 import { useCreateBookshelfMutation } from '../../../api/mutations/createBookshelfMutation/createBookshelfMutation';
+import { useUpdateBookshelfMutation } from '../../../api/mutations/updateBookshelfMutation/updateBookshelfMutation';
+import { useFindUserBookshelfsQuery } from '../../../api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 
 const bookshelfNameSchema = z
-	.string()
-	.min(1, {
-		message: `Nazwa jest zbyt krotka.`,
-	})
-	.max(64, {
-		message: `Nazwa jest zbyt długa.`,
-	});
+  .string()
+  .min(1, {
+    message: `Nazwa jest zbyt krotka.`,
+  })
+  .max(64, {
+    message: `Nazwa jest zbyt długa.`,
+  });
 
 interface UseBookshelvesProps {
-	pageSize: number;
-	page: number;
-	name: string | undefined;
+  pageSize: number;
+  page: number;
+  name: string | undefined;
 }
-export const useBookshelves = ({
-	name,
-	page,
-	pageSize,
-}: UseBookshelvesProps) => {
-	const dispatch = useDispatch<AppDispatch>();
-	const { toast } = useToast();
+export const useBookshelves = ({ name, page, pageSize }: UseBookshelvesProps) => {
+  const dispatch = useDispatch<AppDispatch>();
 
-	const creatingNew = useSelector(bookshelfSelectors.selectIsCreatingNew);
-	const editMap = useSelector<RootState, Record<number, boolean>>(
-		(state) => state.bookshelves.editMap
-	);
+  const { toast } = useToast();
 
-	const { data: user } = useFindUserQuery();
+  const creatingNew = useSelector(bookshelfSelectors.selectIsCreatingNew);
 
-	const { data: bookshelvesData } = useFindUserBookshelfsQuery({
-		userId: user?.id as string,
-		pageSize,
-		page,
-		name,
-	});
-	const [bookshelves, setBookshelves] = useState(bookshelvesData?.data ?? []);
+  const editMap = useSelector<RootState, Record<number, boolean>>((state) => state.bookshelves.editMap);
 
-	const { mutateAsync: updateBookshelf } = useUpdateBookshelfMutation({});
-	const { mutateAsync: createBookshelfMutation } = useCreateBookshelfMutation(
-		{}
-	);
+  const { data: user } = useFindUserQuery();
 
-	useEffect(() => {
-		if (bookshelvesData?.data) {
-			setBookshelves(bookshelvesData.data);
-		}
-	}, [bookshelvesData?.data]);
+  const { data: bookshelvesData } = useFindUserBookshelfsQuery({
+    userId: user?.id as string,
+    pageSize,
+    page,
+    name,
+  });
 
-	const startEdit = (index: number): void => {
-		dispatch(
-			setEditMap({
-				...editMap,
-				[index]: true,
-			})
-		);
-	};
+  const [bookshelves, setBookshelves] = useState(bookshelvesData?.data ?? []);
 
-	const createBookshelfDraft = () => {
-		return {
-			id: '',
-			createdAt: new Date().toISOString(),
-			name: '',
-			type: BookshelfType.standard,
-			userId: user?.id as string,
-		};
-	};
+  const { mutateAsync: updateBookshelf } = useUpdateBookshelfMutation({});
 
-	const onCreateBookshelf = async (index: number, bookshelfName: string) => {
-		const validatedBookshelfName = bookshelfNameSchema.safeParse(bookshelfName);
+  const { mutateAsync: createBookshelfMutation } = useCreateBookshelfMutation({});
 
-		if (!validatedBookshelfName.success) {
-			toast({
-				title: 'Niepoprawna nazwa.',
-				description: validatedBookshelfName.error.errors[0].message,
-				variant: 'destructive',
-			});
+  useEffect(() => {
+    if (bookshelvesData?.data) {
+      setBookshelves(bookshelvesData.data);
+    }
+  }, [bookshelvesData?.data]);
 
-			return;
-		}
+  const startEdit = (index: number): void => {
+    dispatch(
+      setEditMap({
+        ...editMap,
+        [index]: true,
+      }),
+    );
+  };
 
-		dispatch(
-			setEditMap({
-				...editMap,
-				[index]: false,
-			})
-		);
+  const createBookshelfDraft = () => {
+    return {
+      id: '',
+      createdAt: new Date().toISOString(),
+      name: '',
+      type: BookshelfType.standard,
+      userId: user?.id as string,
+    };
+  };
 
-		dispatch(setCreatingNew(false));
+  const onCreateBookshelf = async (index: number, bookshelfName: string) => {
+    const validatedBookshelfName = bookshelfNameSchema.safeParse(bookshelfName);
 
-		await createBookshelfMutation({
-			name: bookshelfName,
-		});
+    if (!validatedBookshelfName.success) {
+      toast({
+        title: 'Niepoprawna nazwa.',
+        description: validatedBookshelfName.error.errors[0].message,
+        variant: 'destructive',
+      });
 
-		toast({
-			title: `Półka została stworzona.`,
-			description: `Stworzono półkę o nazwie: ${bookshelfName}`,
-			variant: 'success',
-		});
-	};
+      return;
+    }
 
-	const onUpdateBookshelfName = async (
-		index: number,
-		id: string,
-		newName: string,
-		oldName: string
-	): Promise<void> => {
-		const validatedNewName = bookshelfNameSchema.safeParse(newName);
+    dispatch(
+      setEditMap({
+        ...editMap,
+        [index]: false,
+      }),
+    );
 
-		if (!validatedNewName.success) {
-			toast({
-				title: 'Niepoprawna nazwa.',
-				description: validatedNewName.error.errors[0].message,
-				variant: 'destructive',
-			});
+    dispatch(setCreatingNew(false));
 
-			return;
-		}
+    await createBookshelfMutation({
+      name: bookshelfName,
+    });
 
-		dispatch(
-			setEditMap({
-				...editMap,
-				[index]: false,
-			})
-		);
+    toast({
+      title: `Półka została stworzona.`,
+      description: `Stworzono półkę o nazwie: ${bookshelfName}`,
+      variant: 'success',
+    });
+  };
 
-		await updateBookshelf({
-			bookshelfId: id,
-			name: newName,
-		});
+  const onUpdateBookshelfName = async (index: number, id: string, newName: string, oldName: string): Promise<void> => {
+    const validatedNewName = bookshelfNameSchema.safeParse(newName);
 
-		toast({
-			title: `Nazwa półki zmieniona.`,
-			description: `Półka ${oldName} to teraz ${newName}`,
-			variant: 'success',
-		});
+    if (!validatedNewName.success) {
+      toast({
+        title: 'Niepoprawna nazwa.',
+        description: validatedNewName.error.errors[0].message,
+        variant: 'destructive',
+      });
 
-		return;
-	};
+      return;
+    }
 
-	return {
-		bookshelves,
-		creatingNew,
-		editMap,
-		setBookshelves,
-		startEdit,
-		createBookshelfDraft,
-		onUpdateBookshelfName,
-		onCreateBookshelf,
-	};
+    dispatch(
+      setEditMap({
+        ...editMap,
+        [index]: false,
+      }),
+    );
+
+    await updateBookshelf({
+      bookshelfId: id,
+      name: newName,
+    });
+
+    toast({
+      title: `Nazwa półki zmieniona.`,
+      description: `Półka ${oldName} to teraz ${newName}`,
+      variant: 'success',
+    });
+
+    return;
+  };
+
+  return {
+    bookshelves,
+    creatingNew,
+    editMap,
+    setBookshelves,
+    startEdit,
+    createBookshelfDraft,
+    onUpdateBookshelfName,
+    onCreateBookshelf,
+  };
 };

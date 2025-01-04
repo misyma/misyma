@@ -1,11 +1,13 @@
-import { FC } from 'react';
-import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
+import { type FC } from 'react';
 import { IoMdStar } from 'react-icons/io';
-import { FindBookReadingsQueryOptions } from '../../../bookReadings/api/queries/findBookReadings/findBookReadingsQueryOptions';
+import { useSelector } from 'react-redux';
+
 import { SortingType } from '@common/contracts';
+
+import { FindBookReadingsQueryOptions } from '../../../bookReadings/api/queries/findBookReadings/findBookReadingsQueryOptions';
 import { Skeleton } from '../../../common/components/skeleton/skeleton';
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
+import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 
 interface Props {
   userBookId: string;
@@ -24,7 +26,7 @@ export const CurrentRatingStar: FC<Props> = ({ userBookId }) => {
   );
 
   if (isLoading) {
-    return <Skeleton className='h-7 w-7'/>
+    return <Skeleton className="h-7 w-7" />;
   }
 
   return bookReadings?.data[0] ? (

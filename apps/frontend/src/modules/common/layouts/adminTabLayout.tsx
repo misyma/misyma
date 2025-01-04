@@ -1,4 +1,5 @@
-import { FC, ReactNode } from 'react';
+import { type FC, type ReactNode } from 'react';
+
 import { cn } from '../lib/utils';
 
 interface AdminTabLayoutProps {
@@ -27,44 +28,20 @@ export const AdminTabLayout: FC<AdminTabLayoutProps> = ({
   mainWrapperClassName,
 }) => {
   return (
-    <div
-      className={cn(
-        'flex w-full justify-center items-start w-100% px-8 py-2',
-        mainWrapperClassName
-      )}
-    >
+    <div className={cn('flex w-full justify-center items-start w-100% px-8 py-2', mainWrapperClassName)}>
       <div
         className={cn(
           'grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 w-full gap-y-4 gap-x-4 sm:max-w-screen-2xl',
-          columnsClassName
+          columnsClassName,
         )}
       >
-        <div
-          className={cn(
-            'flex justify-between gap-4 col-span-full',
-            tabsSlotClassName
-          )}
-        >
+        <div className={cn('flex justify-between gap-4 col-span-full', tabsSlotClassName)}>
           {TabsSlot}
           <div className="flex w-full justify-end">{AdditionalActionsSlot}</div>
         </div>
-        {AdditionalColumn && (
-          <div className={cn( 'w-full', additionalColumnClassName)}>
-            {AdditionalColumn}
-          </div>
-        )}
-        <div
-          className={cn(
-            'flex flex-col px-4 w-[100%] col-span-full',
-            tableContainerClassName
-          )}
-        >
-          <div
-            className={cn(
-              'flex items-center justify-center w-100% px-8 py-1 sm:py-4',
-              tableWrapperClassName
-            )}
-          >
+        {AdditionalColumn && <div className={cn('w-full', additionalColumnClassName)}>{AdditionalColumn}</div>}
+        <div className={cn('flex flex-col px-4 w-[100%] col-span-full', tableContainerClassName)}>
+          <div className={cn('flex items-center justify-center w-100% px-8 py-1 sm:py-4', tableWrapperClassName)}>
             {TableSlot}
           </div>
         </div>

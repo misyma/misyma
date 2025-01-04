@@ -1,16 +1,19 @@
 import { useEffect, useMemo, useState } from 'react';
-import { changeRequestsColumns } from '../../bookChangeRequests/components/changeRequestsTable/changeRequestsTableColumns';
-import { FindBookChangeRequestsQueryOptions } from '../../bookChangeRequests/api/admin/queries/findBookChangeRequests/findBookChangeRequestsQueryOptions';
 import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../core/store/states/userState/userStateSlice';
-import { DataTable } from '../../common/components/dataTable/dataTable';
+
+import { FindBookChangeRequestsQueryOptions } from '../../bookChangeRequests/api/admin/queries/findBookChangeRequests/findBookChangeRequestsQueryOptions';
+import { changeRequestsColumns } from '../../bookChangeRequests/components/changeRequestsTable/changeRequestsTableColumns';
 import { DataSkeletonTable } from '../../common/components/dataTable/dataSkeletonTable';
-import { useInitialFetch } from '../../common/hooks/useInitialFetch';
+import { DataTable } from '../../common/components/dataTable/dataTable';
 import { useErrorHandledQuery } from '../../common/hooks/useErrorHandledQuery';
+import { useInitialFetch } from '../../common/hooks/useInitialFetch';
+import { userStateSelectors } from '../../core/store/states/userState/userStateSlice';
 
 export const AdminChangeRequestsTable = () => {
   const [page, setPage] = useState(1);
+
   const [pageSize] = useState(10);
+
   const [totalPages, setTotalPages] = useState(0);
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
@@ -24,15 +27,13 @@ export const AdminChangeRequestsTable = () => {
       accessToken: accessToken as string,
       page,
       pageSize,
-    })
+    }),
   );
 
   const { isLoading } = useInitialFetch({ isFetching });
 
   const pageCount = useMemo(() => {
-    return (
-      Math.ceil((changeRequestsData?.metadata?.total ?? 0) / pageSize) || 1
-    );
+    return Math.ceil((changeRequestsData?.metadata?.total ?? 0) / pageSize) || 1;
   }, [changeRequestsData?.metadata.total, pageSize]);
 
   const data = useMemo(() => {
@@ -41,11 +42,7 @@ export const AdminChangeRequestsTable = () => {
 
   useEffect(() => {
     if (isFetched) {
-      setTotalPages(
-        Math.ceil(
-          Number(changeRequestsData?.metadata.total) / Number(pageSize)
-        ) || 0
-      );
+      setTotalPages(Math.ceil(Number(changeRequestsData?.metadata.total) / Number(pageSize)) || 0);
     }
   }, [isFetched, changeRequestsData, pageSize]);
 

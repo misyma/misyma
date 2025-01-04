@@ -1,14 +1,12 @@
-import {
-  Book,
-  FindAdminBooksQueryParams,
-  SortingType,
-} from '@common/contracts';
-import { FC, useEffect, useMemo, useState } from 'react';
-import { bookTableColumns } from '../../book/components/bookTable/bookTableColumns';
-import { cn } from '../../common/lib/utils';
+import { type FC, useEffect, useMemo, useState } from 'react';
+
+import { type Book, type FindAdminBooksQueryParams, SortingType } from '@common/contracts';
+
 import { useAdminFindBooksQuery } from '../../book/api/admin/queries/findBooksQuery/findBooksQueryOptions';
-import { DataTable } from '../../common/components/dataTable/dataTable';
+import { bookTableColumns } from '../../book/components/bookTable/bookTableColumns';
 import { DataSkeletonTable } from '../../common/components/dataTable/dataSkeletonTable';
+import { DataTable } from '../../common/components/dataTable/dataTable';
+import { cn } from '../../common/lib/utils';
 
 const TableSizing = {
   visible: `sm:col-span-4 md:col-span-5`,
@@ -21,11 +19,7 @@ interface BooksTableProps {
   onSetPage: (val: number) => void;
 }
 
-export const BooksTable: FC<BooksTableProps> = ({
-  onSetPage,
-  params,
-  isFilterVisible,
-}) => {
+export const BooksTable: FC<BooksTableProps> = ({ onSetPage, params, isFilterVisible }) => {
   const {
     data: booksData,
     isFetching,
@@ -38,15 +32,13 @@ export const BooksTable: FC<BooksTableProps> = ({
         ? SortingType.desc
         : params.sort === 'date-asc'
           ? SortingType.asc
-          : '' as SortingType,
+          : ('' as SortingType),
   });
+
   const [totalPages, setTotalPages] = useState(0);
 
   const pageCount = useMemo(() => {
-    return (
-      Math.ceil((booksData?.metadata?.total ?? 0) / Number(params.pageSize)) ||
-      1
-    );
+    return Math.ceil((booksData?.metadata?.total ?? 0) / Number(params.pageSize)) || 1;
   }, [booksData?.metadata.total, params.pageSize]);
 
   const data = useMemo<Book[]>(() => {
@@ -89,11 +81,7 @@ export const BooksTable: FC<BooksTableProps> = ({
 
   useEffect(() => {
     if (isFetched) {
-      setTotalPages(
-        Math.ceil(
-          Number(booksData?.metadata.total) / Number(params.pageSize)
-        ) || 1
-      );
+      setTotalPages(Math.ceil(Number(booksData?.metadata.total) / Number(params.pageSize)) || 1);
     }
   }, [isFetched, booksData, params.pageSize]);
 
@@ -101,7 +89,7 @@ export const BooksTable: FC<BooksTableProps> = ({
     <div
       className={cn(
         `flex flex-col justify-start w-[100%] col-span-full`,
-        TableSizing[isFilterVisible ? 'visible' : 'invisible']
+        TableSizing[isFilterVisible ? 'visible' : 'invisible'],
       )}
     >
       {isFetching && (

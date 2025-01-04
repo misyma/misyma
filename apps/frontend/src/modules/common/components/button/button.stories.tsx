@@ -1,7 +1,8 @@
-import { Meta, StoryObj } from '@storybook/react';
 import { useArgs } from '@storybook/preview-api';
-import { Button, ButtonProps, ButtonSize, ButtonVariant } from './button';
-import { FC, ReactNode } from 'react';
+import { type Meta, type StoryObj } from '@storybook/react';
+import { type FC, type ReactNode } from 'react';
+
+import { Button, type ButtonProps, type ButtonSize, type ButtonVariant } from './button';
 import { cn } from '../../lib/utils';
 const meta: Meta<typeof Button> = {
   component: Button,
@@ -19,7 +20,7 @@ export const Playground: StoryObj<
     bold: boolean;
     borderWidth: number;
     borderColor: string;
-    textColor: string
+    textColor: string;
   }
 > = {
   args: {

@@ -1,40 +1,41 @@
 import { createLazyFileRoute, Navigate } from '@tanstack/react-router';
+import { type FC, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { FC, useEffect, useMemo, useRef, useState } from 'react';
-import { Book } from '@common/contracts';
-import { useSearchBookContextDispatch } from '../../../../../modules/bookshelf/context/searchCreateBookContext/searchCreateBookContext';
-import { userStateSelectors } from '../../../../../modules/core/store/states/userState/userStateSlice';
-import { useErrorHandledQuery } from '../../../../../modules/common/hooks/useErrorHandledQuery';
+
+import { type Book } from '@common/contracts';
+
+import { AuthenticatedLayout } from '../../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { FindBooksQueryOptions } from '../../../../../modules/book/api/user/queries/findBooks/findBooksQueryOptions';
 import { FindUserBooksByQueryOptions } from '../../../../../modules/book/api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
-import { Button } from '../../../../../modules/common/components/button/button';
-import {
-  Breadcrumbs,
-  NumericBreadcrumb,
-} from '../../../../../modules/common/components/ui/breadcrumbs';
+import { useSearchBookContextDispatch } from '../../../../../modules/bookshelf/context/searchCreateBookContext/searchCreateBookContext';
 import { AutoselectedInput } from '../../../../../modules/common/components/autoselectedInput/autoselectedInput';
+import { Button } from '../../../../../modules/common/components/button/button';
 import { Paginator } from '../../../../../modules/common/components/paginator/paginator';
-import { ReversedLanguages } from '../../../../../modules/common/constants/languages';
-import { BookFormat } from '../../../../../modules/common/constants/bookFormat';
+import { LoadingSpinner } from '../../../../../modules/common/components/spinner/loading-spinner';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '../../../../../modules/common/components/tooltip/tooltip';
-import { AuthenticatedLayout } from '../../../../../modules/auth/layouts/authenticated/authenticatedLayout';
-import { LoadingSpinner } from '../../../../../modules/common/components/spinner/loading-spinner';
+import { Breadcrumbs, NumericBreadcrumb } from '../../../../../modules/common/components/ui/breadcrumbs';
+import { BookFormat } from '../../../../../modules/common/constants/bookFormat';
+import { ReversedLanguages } from '../../../../../modules/common/constants/languages';
+import { useErrorHandledQuery } from '../../../../../modules/common/hooks/useErrorHandledQuery';
 import { RequireAuthComponent } from '../../../../../modules/core/components/requireAuth/requireAuthComponent';
+import { userStateSelectors } from '../../../../../modules/core/store/states/userState/userStateSlice';
 
 export const SearchResultPage: FC = () => {
   const searchParams = Route.useSearch();
+
   const navigate = Route.useNavigate();
 
-  const [manualPageNumberInputOpen, setManualPageNumberInputOpen] =
-    useState(false);
+  const [manualPageNumberInputOpen, setManualPageNumberInputOpen] = useState(false);
+
   const searchCreationDispatch = useSearchBookContextDispatch();
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
+
   const inputValue = useRef(0);
 
   useEffect(() => {
@@ -49,13 +50,7 @@ export const SearchResultPage: FC = () => {
         },
       });
     }
-  }, [
-    searchParams.searchBy,
-    searchParams.bookshelfId,
-    searchParams.isbn,
-    searchParams.title,
-    navigate,
-  ]);
+  }, [searchParams.searchBy, searchParams.bookshelfId, searchParams.isbn, searchParams.title, navigate]);
 
   const { data: foundBooks, isFetching } = useErrorHandledQuery(
     FindBooksQueryOptions({
@@ -69,13 +64,10 @@ export const SearchResultPage: FC = () => {
       accessToken: accessToken as string,
       page: searchParams.page,
       pageSize: 1,
-    })
+    }),
   );
 
-  const totalBooks = useMemo(
-    () => foundBooks?.metadata.total ?? 0,
-    [foundBooks?.metadata.total]
-  );
+  const totalBooks = useMemo(() => foundBooks?.metadata.total ?? 0, [foundBooks?.metadata.total]);
 
   const {
     data: userBookWithIsbn,
@@ -85,7 +77,7 @@ export const SearchResultPage: FC = () => {
     FindUserBooksByQueryOptions({
       accessToken: accessToken as string,
       isbn: searchParams.isbn,
-    })
+    }),
   );
 
   const bookExistsOnUserAccount = useMemo(() => {
@@ -122,9 +114,11 @@ export const SearchResultPage: FC = () => {
     searchCreationDispatch({
       bookId: book.id,
     });
+
     searchCreationDispatch({
       title: book.title,
     });
+
     searchCreationDispatch({
       step: 3,
     });
@@ -143,7 +137,10 @@ export const SearchResultPage: FC = () => {
               Nie możemy znaleźć danych dla podanego przez Ciebie tytułu
             </span>
             <div className="flex flex-col gap-4">
-              <Button size="xl" onClick={onCreateManually}>
+              <Button
+                size="xl"
+                onClick={onCreateManually}
+              >
                 Wprowadź dane
               </Button>
               <p>
@@ -193,9 +190,7 @@ export const SearchResultPage: FC = () => {
                 ),
                 [2]: (
                   <NumericBreadcrumb
-                    className={
-                      'font-semibold bg-primary text-white border-primary'
-                    }
+                    className={'font-semibold bg-primary text-white border-primary'}
                     index={2}
                   >
                     2
@@ -220,10 +215,7 @@ export const SearchResultPage: FC = () => {
                     includeQuill={false}
                     type="number"
                     onChange={(val) => {
-                      if (
-                        val.currentTarget.value &&
-                        !Number.isNaN(Number(val.currentTarget.value))
-                      ) {
+                      if (val.currentTarget.value && !Number.isNaN(Number(val.currentTarget.value))) {
                         inputValue.current = Number(val.currentTarget.value);
                       }
                     }}
@@ -267,9 +259,7 @@ export const SearchResultPage: FC = () => {
                 }}
                 pagesCount={totalBooks}
                 pageNumberSlot={
-                  <span className="text-left text-ellipsis w-full line-clamp-2">
-                    {foundBooks?.data[0].title}
-                  </span>
+                  <span className="text-left text-ellipsis w-full line-clamp-2">{foundBooks?.data[0].title}</span>
                 }
                 includeArrows={true}
                 contentClassName="w-full"
@@ -277,56 +267,34 @@ export const SearchResultPage: FC = () => {
               />
             ) : (
               // className="font-bold text-2xl text-primary"
-              <span className="text-3xl text-left text-ellipsis w-full line-clamp-2">
-                {foundBooks?.data[0].title}
-              </span>
+              <span className="text-3xl text-left text-ellipsis w-full line-clamp-2">{foundBooks?.data[0].title}</span>
             )}
-            <p className="pl-1">
-              {foundBooks?.data[0]?.authors[0]?.name ?? ''}
-            </p>
+            <p className="pl-1">{foundBooks?.data[0]?.authors[0]?.name ?? ''}</p>
           </div>
           <div className="border border-gray-400 w-full lg:translate-x-[-2rem] px-4"></div>
           <div className="flex flex-col gap-4 w-full">
-            {foundBooks?.data[0].isbn && (
-              <p>ISBN: {foundBooks?.data[0].isbn}</p>
-            )}
-            {foundBooks?.data[0].releaseYear && (
-              <p>Rok wydania: {foundBooks?.data[0].releaseYear}</p>
-            )}
+            {foundBooks?.data[0].isbn && <p>ISBN: {foundBooks?.data[0].isbn}</p>}
+            {foundBooks?.data[0].releaseYear && <p>Rok wydania: {foundBooks?.data[0].releaseYear}</p>}
             {foundBooks?.data[0].language && (
-              <p>
-                Język:{' '}
-                {ReversedLanguages[foundBooks?.data[0].language]?.toLowerCase()}
-              </p>
+              <p>Język: {ReversedLanguages[foundBooks?.data[0].language]?.toLowerCase()}</p>
             )}
-            {foundBooks?.data[0].publisher && (
-              <p>Wydawnictwo: {foundBooks?.data[0].publisher}</p>
-            )}
-            {foundBooks?.data[0].translator && (
-              <p>Przekład: {foundBooks?.data[0].translator}</p>
-            )}
-            {foundBooks?.data[0].format && (
-              <p>Format: {BookFormat[foundBooks?.data[0].format]}</p>
-            )}
-            {foundBooks?.data[0]?.pages && (
-              <p>Liczba stron: {foundBooks?.data[0].pages}</p>
-            )}
+            {foundBooks?.data[0].publisher && <p>Wydawnictwo: {foundBooks?.data[0].publisher}</p>}
+            {foundBooks?.data[0].translator && <p>Przekład: {foundBooks?.data[0].translator}</p>}
+            {foundBooks?.data[0].format && <p>Format: {BookFormat[foundBooks?.data[0].format]}</p>}
+            {foundBooks?.data[0]?.pages && <p>Liczba stron: {foundBooks?.data[0].pages}</p>}
           </div>
           <div className="flex flex-col gap-4">
-            {checkingForIsbn ||
-            checkForIsbnInProgress ||
-            bookExistsOnUserAccount ? (
+            {checkingForIsbn || checkForIsbnInProgress || bookExistsOnUserAccount ? (
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger asChild className="flex">
+                  <TooltipTrigger
+                    asChild
+                    className="flex"
+                  >
                     <Button
                       onClick={onAddBook}
                       size="xl"
-                      disabled={
-                        checkingForIsbn ||
-                        checkForIsbnInProgress ||
-                        bookExistsOnUserAccount
-                      }
+                      disabled={checkingForIsbn || checkForIsbnInProgress || bookExistsOnUserAccount}
                     >
                       Kontynuuj
                     </Button>
@@ -337,7 +305,10 @@ export const SearchResultPage: FC = () => {
                 </Tooltip>
               </TooltipProvider>
             ) : (
-              <Button onClick={onAddBook} size="xl">
+              <Button
+                onClick={onAddBook}
+                size="xl"
+              >
                 Kontynuuj
               </Button>
             )}
@@ -390,6 +361,7 @@ export const SearchResultPage: FC = () => {
     searchParams.isbn !== (foundBooks?.data[0].isbn ?? '')
   ) {
     const isbn = foundBooks?.data[0].isbn;
+
     return <Navigate search={(prev) => ({ ...prev, isbn })}></Navigate>;
   }
 

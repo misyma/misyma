@@ -1,9 +1,11 @@
-import { UseMutationOptions } from '@tanstack/react-query';
-import { UserApiError } from '../../../errors/userApiError';
-import { useErrorHandledMutation } from '../../../../common/hooks/useErrorHandledMutation';
+import { type UseMutationOptions } from '@tanstack/react-query';
+
+import { type ChangeUserPasswordRequestBody, type UpdateUserResponseBody } from '@common/contracts';
+
 import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
+import { useErrorHandledMutation } from '../../../../common/hooks/useErrorHandledMutation';
 import { HttpService } from '../../../../core/services/httpService/httpService';
-import { ChangeUserPasswordRequestBody, UpdateUserResponseBody } from '@common/contracts';
+import { UserApiError } from '../../../errors/userApiError';
 
 export interface UserChangeUserPasswordMutationPayload extends ChangeUserPasswordRequestBody {
   accessToken: string;
@@ -26,7 +28,7 @@ export const useChangeUserPasswordMutation = (
       url: `/users/change-password`,
       body: {
         ...body,
-        token: accessToken
+        token: accessToken,
       } as unknown as Record<string, unknown>,
       headers: {
         Authorization: `Bearer ${accessToken}`,

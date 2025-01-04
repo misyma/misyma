@@ -1,25 +1,27 @@
-import { createFileRoute } from '@tanstack/react-router';
-import { RequireAuthComponent } from '../../modules/core/components/requireAuth/requireAuthComponent';
-import { AuthenticatedLayout } from '../../modules/auth/layouts/authenticated/authenticatedLayout';
-import { useFindUserQuery } from '../../modules/user/api/queries/findUserQuery/findUserQuery';
-import { LoadingSpinner } from '../../modules/common/components/spinner/loading-spinner';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQueryClient } from '@tanstack/react-query';
+import { createFileRoute } from '@tanstack/react-router';
+import { useMemo, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useSelector } from 'react-redux';
+import { z } from 'zod';
+
+import { type FindUserResponseBody } from '@common/contracts';
+
+import { AuthenticatedLayout } from '../../modules/auth/layouts/authenticated/authenticatedLayout';
+import { Button } from '../../modules/common/components/button/button';
 import { Form, FormField, FormItem, FormMessage } from '../../modules/common/components/form/form';
+import { PasswordEyeIcon } from '../../modules/common/components/icons/passwordEyeIcon/passwordEyeIcon';
 import { Input } from '../../modules/common/components/input/input';
 import { Label } from '../../modules/common/components/label/label';
-import { FindUserResponseBody } from '@common/contracts';
-import { PasswordEyeIcon } from '../../modules/common/components/icons/passwordEyeIcon/passwordEyeIcon';
-import { useMemo, useState } from 'react';
-import { Button } from '../../modules/common/components/button/button';
-import { useUpdateUserMutation } from '../../modules/user/api/mutations/updateUser/updateUserMutation';
-import { useSelector } from 'react-redux';
-import { userStateSelectors } from '../../modules/core/store/states/userState/userStateSlice';
-import { useQueryClient } from '@tanstack/react-query';
-import { UserApiQueryKeys } from '../../modules/user/api/queries/userApiQueryKeys';
-import { useChangeUserPasswordMutation } from '../../modules/user/api/mutations/changeUserPassword/changeUserPasswordMutation';
+import { LoadingSpinner } from '../../modules/common/components/spinner/loading-spinner';
 import { useToast } from '../../modules/common/components/toast/use-toast';
+import { RequireAuthComponent } from '../../modules/core/components/requireAuth/requireAuthComponent';
+import { userStateSelectors } from '../../modules/core/store/states/userState/userStateSlice';
+import { useChangeUserPasswordMutation } from '../../modules/user/api/mutations/changeUserPassword/changeUserPasswordMutation';
+import { useUpdateUserMutation } from '../../modules/user/api/mutations/updateUser/updateUserMutation';
+import { useFindUserQuery } from '../../modules/user/api/queries/findUserQuery/findUserQuery';
+import { UserApiQueryKeys } from '../../modules/user/api/queries/userApiQueryKeys';
 
 const changeUserDataFormSchema = z
   .object({
@@ -165,7 +167,9 @@ const ChangeUserDataForm = ({ userData }: FormProps) => {
                 {...field}
               />
               <FormMessage>
-              {!parseResult.success ? parseResult.error.errors.find((error) => error.path.includes("name"))?.message : null}
+                {!parseResult.success
+                  ? parseResult.error.errors.find((error) => error.path.includes('name'))?.message
+                  : null}
               </FormMessage>
             </FormItem>
           )}
@@ -188,13 +192,15 @@ const ChangeUserDataForm = ({ userData }: FormProps) => {
                 }
                 {...field}
               />
-              <FormMessage>{!parseResult.success ? parseResult.error.errors.find((error) => error.path.includes("password"))?.message : null}</FormMessage>
+              <FormMessage>
+                {!parseResult.success
+                  ? parseResult.error.errors.find((error) => error.path.includes('password'))?.message
+                  : null}
+              </FormMessage>
             </FormItem>
           )}
         />
-        <Button
-          disabled={!changeUserDataForm.formState.isDirty || isUserUpdatePending || isChangeUserPasswordPending}
-        >
+        <Button disabled={!changeUserDataForm.formState.isDirty || isUserUpdatePending || isChangeUserPasswordPending}>
           {!isUserUpdatePending && !isChangeUserPasswordPending && <>Zapisz</>}
           {(isUserUpdatePending || isChangeUserPasswordPending) && <LoadingSpinner size={40} />}
         </Button>

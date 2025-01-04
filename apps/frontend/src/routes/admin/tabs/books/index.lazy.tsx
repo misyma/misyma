@@ -1,17 +1,19 @@
-import { createLazyFileRoute } from '@tanstack/react-router';
-import { FC, useState } from 'react';
-import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
-import { RequireAdmin } from '../../../../modules/core/components/requireAdmin/requireAdmin';
 import { useQueryClient } from '@tanstack/react-query';
-import { BookApiQueryKeys } from '../../../../modules/book/api/user/queries/bookApiQueryKeys';
-import { FindAdminBooksQueryParams } from '@common/contracts';
-import { DynamicFilterValues } from '../../../../modules/common/contexts/dynamicFilterContext';
-import { AdminTabLayout } from '../../../../modules/common/layouts/adminTabLayout';
-import { AdminTabs } from '../../../../modules/admin/components/adminTabs';
-import { BooksTable } from '../../../../modules/admin/components/booksTable';
-import { BooksTabActions } from '../../../../modules/admin/components/booksTabActions';
-import { BooksTableFilters } from '../../../../modules/admin/components/booksTableFilters';
+import { createLazyFileRoute } from '@tanstack/react-router';
+import { type FC, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
+import { type FindAdminBooksQueryParams } from '@common/contracts';
+
+import { AdminTabs } from '../../../../modules/admin/components/adminTabs';
+import { BooksTabActions } from '../../../../modules/admin/components/booksTabActions';
+import { BooksTable } from '../../../../modules/admin/components/booksTable';
+import { BooksTableFilters } from '../../../../modules/admin/components/booksTableFilters';
+import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
+import { BookApiQueryKeys } from '../../../../modules/book/api/user/queries/bookApiQueryKeys';
+import { type DynamicFilterValues } from '../../../../modules/common/contexts/dynamicFilterContext';
+import { AdminTabLayout } from '../../../../modules/common/layouts/adminTabLayout';
+import { RequireAdmin } from '../../../../modules/core/components/requireAdmin/requireAdmin';
 import {
   adminBookFilterStateActions,
   adminBookFilterStateSelectors,
@@ -19,9 +21,9 @@ import {
 
 export const BooksAdminPage: FC = () => {
   const [filterApplied, setFilterApplied] = useState(false);
-  const isFilterVisible = useSelector(
-    adminBookFilterStateSelectors.getFilterVisible
-  );
+
+  const isFilterVisible = useSelector(adminBookFilterStateSelectors.getFilterVisible);
+
   const dispatch = useDispatch();
 
   const toggleFilterVisibility = () => {
@@ -31,6 +33,7 @@ export const BooksAdminPage: FC = () => {
   const queryClient = useQueryClient();
 
   const searchParams = Route.useSearch();
+
   const navigate = Route.useNavigate();
 
   const onSetPage = (page: number): void => {
@@ -49,12 +52,9 @@ export const BooksAdminPage: FC = () => {
       '': undefined,
     };
 
-    const acceptedFilter = val[
-      'isApproved'
-    ] as keyof typeof acceptedFilterValueMap;
-    const acceptedFilterValue = acceptedFilter
-      ? acceptedFilterValueMap[acceptedFilter]
-      : undefined;
+    const acceptedFilter = val['isApproved'] as keyof typeof acceptedFilterValueMap;
+
+    const acceptedFilterValue = acceptedFilter ? acceptedFilterValueMap[acceptedFilter] : undefined;
 
     navigate({
       to: '',
@@ -69,9 +69,9 @@ export const BooksAdminPage: FC = () => {
 
     if (newSig === '') {
       setFilterApplied(false);
+
       await queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey[0] === BookApiQueryKeys.findBooksAdmin,
+        predicate: (query) => query.queryKey[0] === BookApiQueryKeys.findBooksAdmin,
       });
     }
   };
@@ -81,6 +81,7 @@ export const BooksAdminPage: FC = () => {
       to: '',
       search: () => ({}),
     });
+
     setFilterApplied(false);
   };
 

@@ -1,12 +1,13 @@
 import { createFileRoute, useSearch } from '@tanstack/react-router';
-import { FC } from 'react';
+import { type FC } from 'react';
+
+import { AdminTabs } from '../../../../modules/admin/components/adminTabs';
+import { AuthorsTable } from '../../../../modules/admin/components/authorsTable';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { CreateAuthorModal } from '../../../../modules/author/components/createAuthorModal';
 import { Button } from '../../../../modules/common/components/button/button';
-import { RequireAdmin } from '../../../../modules/core/components/requireAdmin/requireAdmin';
 import { AdminTabLayout } from '../../../../modules/common/layouts/adminTabLayout';
-import { AdminTabs } from '../../../../modules/admin/components/adminTabs';
-import { AuthorsTable } from '../../../../modules/admin/components/authorsTable';
+import { RequireAdmin } from '../../../../modules/core/components/requireAdmin/requireAdmin';
 
 export const AuthorsAdminPage: FC = () => {
   const navigate = Route.useNavigate();

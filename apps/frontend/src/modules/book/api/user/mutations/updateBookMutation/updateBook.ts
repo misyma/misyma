@@ -1,7 +1,8 @@
-import { UpdateBookPathParams, UpdateBookRequestBody } from '@common/contracts';
-import { BookApiError } from '../../../../errors/bookApiError';
+import { type UpdateBookPathParams, type UpdateBookRequestBody } from '@common/contracts';
+
 import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
 import { HttpService } from '../../../../../core/services/httpService/httpService';
+import { BookApiError } from '../../../../errors/bookApiError';
 
 export interface UpdateBookPayload extends UpdateBookPathParams, UpdateBookRequestBody {
   accessToken: string;

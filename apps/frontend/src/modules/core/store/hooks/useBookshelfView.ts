@@ -1,19 +1,21 @@
-import { useStoreSelector } from './useStoreSelector';
-import { setBookshelfView } from '../states/preferencesState/preferencesStateSlice';
 import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../store';
-import { BookshelfView } from '../states/preferencesState/preferencesState';
+
+import { useStoreSelector } from './useStoreSelector';
+import { type BookshelfView } from '../states/preferencesState/preferencesState';
+import { setBookshelfView } from '../states/preferencesState/preferencesStateSlice';
+import { type AppDispatch } from '../store';
 
 export const useBookshelfView = () => {
-	const dispatch = useDispatch<AppDispatch>();
-	const view = useStoreSelector((state) => state.preferences.bookshelfView);
+  const dispatch = useDispatch<AppDispatch>();
 
-	const updateBookshelfView = (view: BookshelfView) => {
-		dispatch(setBookshelfView(view));
-	};
+  const view = useStoreSelector((state) => state.preferences.bookshelfView);
 
-	return {
-		view,
-		updateBookshelfView,
-	};
+  const updateBookshelfView = (view: BookshelfView) => {
+    dispatch(setBookshelfView(view));
+  };
+
+  return {
+    view,
+    updateBookshelfView,
+  };
 };
