@@ -29,7 +29,7 @@ export const CurrentRatingStar: FC<Props> = ({ userBookId }) => {
     return <Skeleton className="h-7 w-7" />;
   }
 
-  return bookReadings?.data[0] ? (
+  return bookReadings?.data?.[0] ? (
     <div className="flex flex-shrink-0 items-center">
       <div>
         <p className="text-2xl">{bookReadings.data[0].rating}</p>
