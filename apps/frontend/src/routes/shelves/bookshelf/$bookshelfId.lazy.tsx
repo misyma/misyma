@@ -95,6 +95,9 @@ interface BookshelfTopBarProps {
 const BookshelfTopBar: FC<BookshelfTopBarProps> = ({ bookshelfResponse, bookshelfBooksResponse, bookshelfId }) => {
   const navigate = useNavigate();
 
+  const isArchiveOrBorrowingBookshelf =
+    bookshelfResponse?.name === 'Archiwum' || bookshelfResponse?.name === 'Wypożyczalnia';
+
   return (
     <div className="flex justify-between w-full sm:max-w-7xl">
       <div>
@@ -105,30 +108,33 @@ const BookshelfTopBar: FC<BookshelfTopBarProps> = ({ bookshelfResponse, bookshel
           {bookshelfBooksResponse?.metadata.total ?? 0} {getCountNoun(bookshelfBooksResponse?.metadata.total ?? 0)}
         </p>
       </div>
-      <TooltipProvider delayDuration={300}>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              size="big-icon"
-              onClick={() => {
-                navigate({
-                  to: `/shelves/bookshelf/search`,
-                  search: {
-                    type: 'isbn',
-                    next: 0,
-                    bookshelfId,
-                  },
-                });
-              }}
-            >
-              <HiPlus className="w-8 h-8" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Stwórz książkę</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      {!isArchiveOrBorrowingBookshelf ||
+        (!bookshelfResponse && (
+          <TooltipProvider delayDuration={300}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  size="big-icon"
+                  onClick={() => {
+                    navigate({
+                      to: `/shelves/bookshelf/search`,
+                      search: {
+                        type: 'isbn',
+                        next: 0,
+                        bookshelfId,
+                      },
+                    });
+                  }}
+                >
+                  <HiPlus className="w-8 h-8" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Stwórz książkę</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        ))}
     </div>
   );
 };
