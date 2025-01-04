@@ -28,9 +28,9 @@ export const BooksTable: FC<BooksTableProps> = ({ onSetPage, params, isFilterVis
     all: true,
     ...params,
     sortDate:
-      params.sort === 'date-desc'
+      params.sort === 'created-at-desc'
         ? SortingType.desc
-        : params.sort === 'date-asc'
+        : params.sort === 'created-at-asc'
           ? SortingType.asc
           : ('' as SortingType),
   });

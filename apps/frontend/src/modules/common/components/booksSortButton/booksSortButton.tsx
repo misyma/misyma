@@ -1,5 +1,6 @@
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { Command } from 'cmdk';
+import { Check } from 'lucide-react';
 import { useState } from 'react';
 import { HiBarsArrowDown } from 'react-icons/hi2';
 
@@ -19,7 +20,7 @@ export const BooksSortButton = ({ navigationPath }: BooksSortButtonProps) => {
 
   const search = useSearch({ strict: false });
 
-  const handleSort = (sortValue: 'date-asc' | 'date-desc' | '') => {
+  const handleSort = (sortValue: 'created-at-asc' | 'created-at-desc' | '') => {
     setPopoverOpen(false);
 
     navigate({
@@ -30,6 +31,8 @@ export const BooksSortButton = ({ navigationPath }: BooksSortButtonProps) => {
       },
     });
   };
+
+  const selectedSortCheckmark = <Check className="h-4 w-4" />;
 
   return (
     <TooltipProvider delayDuration={300}>
@@ -46,22 +49,24 @@ export const BooksSortButton = ({ navigationPath }: BooksSortButtonProps) => {
             </TooltipTrigger>
           </PopoverTrigger>
           <PopoverContent
-            className="w-48 p-0"
+            className="w-40 p-0"
             align="start"
           >
             <Command>
               <CommandList>
                 <CommandItem
-                  onSelect={() => handleSort('date-asc')}
-                  className="cursor-pointer"
+                  onSelect={() => handleSort('created-at-desc')}
+                  className="cursor-pointer flex justify-between"
                 >
-                  <span>Data rosnąco</span>
+                  <span>Data dodania: najnowsze</span>
+                  {search.sort === 'created-at-desc' && selectedSortCheckmark}
                 </CommandItem>
                 <CommandItem
-                  onSelect={() => handleSort('date-desc')}
-                  className="cursor-pointer"
+                  onSelect={() => handleSort('created-at-asc')}
+                  className="cursor-pointer flex justify-between"
                 >
-                  <span>Data malejąco</span>
+                  <span>Data dodania: najstarsze</span>
+                  {search.sort === 'created-at-asc' && selectedSortCheckmark}
                 </CommandItem>
               </CommandList>
             </Command>
