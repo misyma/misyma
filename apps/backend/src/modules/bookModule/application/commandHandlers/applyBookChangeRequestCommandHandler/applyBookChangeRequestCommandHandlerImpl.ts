@@ -92,23 +92,21 @@ export class ApplyBookChangeRequestCommandHandlerImpl implements ApplyBookChange
       book.setIsbn({ isbn: isbn ?? null });
     }
 
-    if (authorIds !== undefined) {
-      if (authorIds.length) {
-        const authors = await this.authorRepository.findAuthors({
-          ids: authorIds,
-          page: 1,
-          pageSize: authorIds.length,
+    if (authorIds?.length) {
+      const authors = await this.authorRepository.findAuthors({
+        ids: authorIds,
+        page: 1,
+        pageSize: authorIds.length,
+      });
+
+      if (authors.length !== authorIds.length) {
+        throw new OperationNotValidError({
+          reason: 'Some authors do not exist.',
+          authorIds,
         });
-
-        if (authors.length !== authorIds.length) {
-          throw new OperationNotValidError({
-            reason: 'Some authors do not exist.',
-            authorIds,
-          });
-        }
-
-        book.setAuthors(authors);
       }
+
+      book.setAuthors(authors);
     }
 
     await this.bookRepository.saveBook({ book });

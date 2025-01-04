@@ -24,7 +24,7 @@ export const createBookBodyDtoSchema = Type.Object({
   format: Type.Enum(contracts.BookFormat),
   pages: Type.Optional(bookPagesSchema),
   imageUrl: Type.Optional(bookImageUrlSchema),
-  authorIds: Type.Array(Type.String({ format: 'uuid' })),
+  authorIds: Type.Array(Type.String({ format: 'uuid' }), { minItems: 1 }),
 });
 
 export type CreateBookBodyDto = TypeExtends<Static<typeof createBookBodyDtoSchema>, contracts.CreateBookRequestBody>;

@@ -60,7 +60,7 @@ export class UpdateBookCommandHandlerImpl implements UpdateBookCommandHandler {
       book.setTitle({ title });
     }
 
-    if (authorIds) {
+    if (authorIds?.length) {
       const authors = await this.authorRepository.findAuthors({
         ids: authorIds,
         page: 1,

@@ -34,7 +34,7 @@ export const updateBookBodyDtoSchema = Type.Object({
   pages: Type.Optional(bookPagesSchema),
   imageUrl: Type.Optional(bookImageUrlSchema),
   isApproved: Type.Optional(Type.Boolean()),
-  authorIds: Type.Optional(Type.Array(Type.String({ format: 'uuid' }))),
+  authorIds: Type.Optional(Type.Array(Type.String({ format: 'uuid' }), { minItems: 1 })),
 });
 
 export type UpdateBookBodyDto = TypeExtends<Static<typeof updateBookBodyDtoSchema>, contracts.UpdateBookRequestBody>;
