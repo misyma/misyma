@@ -11,6 +11,7 @@ import { useStoreSelector } from '../../../core/store/hooks/useStoreSelector';
 import { userStateActions, userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { useBreadcrumbKeysContext } from '../../contexts/breadcrumbKeysContext';
+import { cn } from '../../lib/utils';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -18,7 +19,14 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from '../breadcrumb/breadcrumb';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../tooltip/tooltip';
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarSeparator,
+  MenubarTrigger,
+} from '../menubar/menubar';
 
 const NavbarBreadcrumbs = () => {
   const breadcrumbKeys = useBreadcrumbKeysContext();
@@ -215,41 +223,43 @@ const NavbarList: FC<{ user?: User; handleLogout: () => void }> = ({ user, handl
         </Link>
       </li>
       <li className="text-black text-md text-center font-semibold">
-        <Link
-          to={'/profile'}
-          className={linkClasses}
-          onClick={(e) => {
-            e.preventDefault();
-          }}
-        >
-          <TooltipProvider delayDuration={300}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span>Profil</span>
-              </TooltipTrigger>
-              <TooltipContent side="bottom">
-                <ul className="font-normal text-start">
-                  <li
-                    onClick={() => {
-                      navigate({
-                        to: '/profile',
-                      });
-                    }}
-                    className="pt-2 hover:text-primary"
-                  >
-                    Ustawienia
-                  </li>
-                  <li
-                    onClick={handleLogout}
-                    className="py-2 hover:text-primary"
-                  >
-                    Wyloguj
-                  </li>
-                </ul>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </Link>
+        <Menubar className="rounded-none space-x-0 border-none data-[state=open]:!bg-none">
+          <MenubarMenu>
+            <MenubarTrigger
+              omitOpenBg
+              className={cn(linkClasses, 'text-black font-semibold text-md p-0')}
+            >
+              <Link
+                to={'/profile'}
+                className={linkClasses}
+                onClick={(e) => {
+                  e.preventDefault();
+                }}
+              >
+                Profil
+              </Link>
+            </MenubarTrigger>
+            <MenubarContent>
+              <MenubarItem
+                onClick={() => {
+                  navigate({
+                    to: '/profile',
+                  });
+                }}
+                className="pt-2 hover:text-primary"
+              >
+                Ustawienia
+              </MenubarItem>
+              <MenubarSeparator />
+              <MenubarItem
+                onClick={handleLogout}
+                className="py-2 hover:text-primary"
+              >
+                Wyloguj
+              </MenubarItem>
+            </MenubarContent>
+          </MenubarMenu>
+        </Menubar>
       </li>
     </ul>
   );
