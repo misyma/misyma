@@ -58,7 +58,7 @@ export class UserBookMapperImpl implements UserBookMapper {
           title,
           isbn: isbn ?? undefined,
           publisher: publisher ?? undefined,
-          releaseYear: releaseYear ?? undefined,
+          releaseYear,
           language,
           translator: translator ?? undefined,
           format,

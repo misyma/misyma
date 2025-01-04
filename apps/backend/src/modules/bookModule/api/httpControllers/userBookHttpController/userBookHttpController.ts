@@ -381,6 +381,7 @@ export class UserBookHttpController implements HttpController {
         isApproved: book?.isApproved as boolean,
         format: book?.format as BookFormat,
         createdAt: book?.createdAt.toISOString() as string,
+        releaseYear: book?.releaseYear as number,
         authors:
           book?.authors.map((author) => ({
             id: author.getId(),
@@ -434,10 +435,6 @@ export class UserBookHttpController implements HttpController {
 
     if (book?.publisher) {
       userBookDto.book.publisher = book.publisher;
-    }
-
-    if (book?.releaseYear) {
-      userBookDto.book.releaseYear = book.releaseYear;
     }
 
     if (book?.translator) {

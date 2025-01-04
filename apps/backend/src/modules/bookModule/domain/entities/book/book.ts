@@ -8,7 +8,7 @@ export interface BookDraft {
   readonly title: string;
   readonly isbn?: string | undefined | null;
   readonly publisher?: string | undefined | null;
-  readonly releaseYear?: number | undefined | null;
+  readonly releaseYear: number;
   readonly language: Language;
   readonly translator?: string | undefined | null;
   readonly format: BookFormat;
@@ -23,7 +23,7 @@ export interface BookState {
   title: string;
   isbn?: string | undefined | null;
   publisher?: string | undefined | null;
-  releaseYear?: number | undefined | null;
+  releaseYear: number;
   language: Language;
   translator?: string | undefined | null;
   format: BookFormat;
@@ -47,7 +47,7 @@ export interface SetPublisherPayload {
 }
 
 export interface SetReleaseYearPayload {
-  readonly releaseYear: number | null;
+  readonly releaseYear: number;
 }
 
 export interface SetLanguagePayload {
@@ -108,6 +108,7 @@ export class Book {
       authors,
       isApproved,
       createdAt,
+      releaseYear,
     };
 
     if (isbn) {
@@ -116,10 +117,6 @@ export class Book {
 
     if (publisher) {
       this.state.publisher = publisher;
-    }
-
-    if (releaseYear !== undefined) {
-      this.state.releaseYear = releaseYear;
     }
 
     if (translator) {
@@ -155,7 +152,7 @@ export class Book {
     return this.state.publisher;
   }
 
-  public getReleaseYear(): number | undefined | null {
+  public getReleaseYear(): number {
     return this.state.releaseYear;
   }
 

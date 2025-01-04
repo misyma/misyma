@@ -68,16 +68,16 @@ export class ApplyBookChangeRequestCommandHandlerImpl implements ApplyBookChange
       book.setFormat({ format });
     }
 
+    if (releaseYear) {
+      book.setReleaseYear({ releaseYear });
+    }
+
     if (pages || changedFields.includes('pages')) {
       book.setPages({ pages: pages ?? null });
     }
 
     if (publisher || changedFields.includes('publisher')) {
       book.setPublisher({ publisher: publisher ?? null });
-    }
-
-    if (releaseYear || changedFields.includes('releaseYear')) {
-      book.setReleaseYear({ releaseYear: releaseYear ?? null });
     }
 
     if (translator || changedFields.includes('translator')) {

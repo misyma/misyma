@@ -7,7 +7,7 @@ export interface CreateBookCommandHandlerPayload {
   readonly title: string;
   readonly isbn?: string | undefined;
   readonly publisher?: string | undefined;
-  readonly releaseYear?: number | undefined;
+  readonly releaseYear: number;
   readonly language: Language;
   readonly translator?: string | undefined;
   readonly format: BookFormat;
