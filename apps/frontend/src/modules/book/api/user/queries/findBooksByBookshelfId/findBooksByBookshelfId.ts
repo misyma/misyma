@@ -16,7 +16,7 @@ export const findBooksByBookshelfId = async (values: FindBooksByBookshelfIdPaylo
 
   const queryParams: Record<string, string> = {
     sortDate: 'desc',
-    expandFields: 'genres,readings',
+    expandFields: 'readings',
   };
 
   if (page) {
