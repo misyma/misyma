@@ -15,6 +15,7 @@ import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestU
 import { Borrowing } from '../../../domain/entities/borrowing/borrowing.js';
 import { symbols } from '../../../symbols.js';
 import { type BorrowingTestUtils } from '../../../tests/utils/borrowingTestUtils/borrowingTestUtils.js';
+import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 
 describe('UpdateBorrowingCommandHandlerImpl', () => {
   let commandHandler: UpdateBorrowingCommandHandler;
@@ -24,6 +25,8 @@ describe('UpdateBorrowingCommandHandlerImpl', () => {
   let borrowingTestUtils: BorrowingTestUtils;
 
   let bookTestUtils: BookTestUtils;
+
+  let genreTestUtils: GenreTestUtils;
 
   let bookshelfTestUtils: BookshelfTestUtils;
 
@@ -50,7 +53,16 @@ describe('UpdateBorrowingCommandHandlerImpl', () => {
 
     userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
 
-    testUtils = [bookTestUtils, bookshelfTestUtils, userTestUtils, borrowingTestUtils, userBookTestUtils];
+    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+
+    testUtils = [
+      genreTestUtils,
+      bookTestUtils,
+      bookshelfTestUtils,
+      userTestUtils,
+      borrowingTestUtils,
+      userBookTestUtils,
+    ];
 
     for (const testUtil of testUtils) {
       await testUtil.truncate();
@@ -96,10 +108,13 @@ describe('UpdateBorrowingCommandHandlerImpl', () => {
 
     const book = await bookTestUtils.createAndPersist();
 
+    const genre = await genreTestUtils.createAndPersist();
+
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookshelfId: bookshelf.id,
         bookId: book.id,
+        genreId: genre.id,
       },
     });
 

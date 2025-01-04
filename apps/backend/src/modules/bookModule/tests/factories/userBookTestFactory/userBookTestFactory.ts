@@ -12,7 +12,7 @@ export class UserBookTestFactory {
       bookshelfId: Generator.uuid(),
       createdAt: Generator.pastDate(),
       bookId: Generator.uuid(),
-      genres: [],
+      genreId: Generator.uuid(),
       readings: [],
       collections: [],
       ...input,
@@ -28,6 +28,7 @@ export class UserBookTestFactory {
       bookshelfId: Generator.uuid(),
       createdAt: Generator.pastDate(),
       bookId: Generator.uuid(),
+      genreId: Generator.uuid(),
       ...input,
     };
   }

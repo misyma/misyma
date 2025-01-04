@@ -5,7 +5,7 @@ import { bookReadingTable } from '../../../infrastructure/databases/bookDatabase
 import { BookReadingTestFactory } from '../../factories/bookReadingTestFactory/bookReadingTestFactory.js';
 
 interface CreateAndPersistPayload {
-  readonly input?: Partial<BookReadingRawEntity>;
+  readonly input?: Partial<BookReadingRawEntity> & { readonly userBookId: string };
 }
 
 interface FindByIdPayload {
@@ -19,7 +19,7 @@ export class BookReadingTestUtils extends TestUtils {
 
   private readonly bookReadingTestFactory = new BookReadingTestFactory();
 
-  public async createAndPersist(payload: CreateAndPersistPayload = { input: {} }): Promise<BookReadingRawEntity> {
+  public async createAndPersist(payload: CreateAndPersistPayload): Promise<BookReadingRawEntity> {
     const { input } = payload;
 
     const bookReading = this.bookReadingTestFactory.create(input);

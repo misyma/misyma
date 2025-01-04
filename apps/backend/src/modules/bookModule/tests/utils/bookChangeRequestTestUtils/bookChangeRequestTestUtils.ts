@@ -5,7 +5,7 @@ import { bookChangeRequestTable } from '../../../infrastructure/databases/bookDa
 import { BookChangeRequestTestFactory } from '../../factories/bookChangeRequestTestFactory/bookChangeRequestTestFactory.js';
 
 interface CreateAndPersistPayload {
-  readonly input?: Partial<BookChangeRequestRawEntity>;
+  readonly input?: Partial<BookChangeRequestRawEntity> & { readonly bookId: string };
 }
 
 interface FindByIdPayload {
@@ -19,7 +19,7 @@ export class BookChangeRequestTestUtils extends TestUtils {
 
   private readonly bookChangeRequestTestFactory = new BookChangeRequestTestFactory();
 
-  public async createAndPersist(payload: CreateAndPersistPayload = { input: {} }): Promise<BookChangeRequestRawEntity> {
+  public async createAndPersist(payload: CreateAndPersistPayload): Promise<BookChangeRequestRawEntity> {
     const { input } = payload;
 
     const bookChangeRequest = this.bookChangeRequestTestFactory.createRaw(input);

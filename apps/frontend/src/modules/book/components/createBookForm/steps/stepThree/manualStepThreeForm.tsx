@@ -136,7 +136,7 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
         bookshelfId: bookCreation.stepThreeDetails?.bookshelfId || bookshelfId,
         status: bookCreation.stepThreeDetails?.status || (values.status as ContractReadingStatus),
         isFavorite: false,
-        genreIds: [bookCreation.stepThreeDetails?.genre as string],
+        genreId: bookCreation.stepThreeDetails?.genre as string,
         accessToken: accessToken as string,
       },
       image: file,

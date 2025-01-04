@@ -7,6 +7,8 @@ export interface UserBookWithJoinsRawEntity {
   readonly isFavorite: boolean;
   readonly bookshelfId: string;
   readonly createdAt: Date;
+  readonly genreId: string;
+  readonly genreName: string;
 
   readonly bookId: string;
   readonly title: string;
@@ -25,9 +27,6 @@ export interface UserBookWithJoinsRawEntity {
   readonly authorNames?: (string | null)[];
   readonly authorApprovals?: (boolean | null)[];
   readonly authorCreatedAtDates?: (Date | null)[];
-
-  readonly genreIds?: (string | null)[];
-  readonly genreNames?: (string | null)[];
 
   readonly collectionIds?: (string | null)[];
   readonly collectionNames?: (string | null)[];

@@ -194,7 +194,7 @@ export class UserBookHttpController implements HttpController {
 
     const { userBookId } = request.pathParams;
 
-    const { status, bookshelfId, imageUrl, isFavorite, genreIds, collectionIds } = request.body;
+    const { status, bookshelfId, imageUrl, isFavorite, genreId, collectionIds } = request.body;
 
     const { userBook } = await this.updateUserBookCommandHandler.execute({
       userId,
@@ -203,7 +203,7 @@ export class UserBookHttpController implements HttpController {
       isFavorite,
       bookshelfId,
       imageUrl,
-      genreIds,
+      genreId,
       collectionIds,
     });
 
@@ -244,7 +244,7 @@ export class UserBookHttpController implements HttpController {
   private async createUserBook(
     request: HttpRequest<CreateUserBookBodyDto>,
   ): Promise<HttpCreatedResponse<CreateUserBookResponseBodyDto>> {
-    const { bookId, bookshelfId, status, imageUrl, isFavorite, collectionIds, genreIds } = request.body;
+    const { bookId, bookshelfId, status, imageUrl, isFavorite, collectionIds, genreId } = request.body;
 
     const { userId } = await this.accessControlService.verifyBearerToken({
       requestHeaders: request.headers,
@@ -258,7 +258,7 @@ export class UserBookHttpController implements HttpController {
       imageUrl,
       isFavorite,
       collectionIds,
-      genreIds,
+      genreId,
     });
 
     return {
@@ -365,8 +365,19 @@ export class UserBookHttpController implements HttpController {
   }
 
   private mapUserBookToUserBookDto(userBook: UserBook): UserBookDto {
-    const { status, isFavorite, bookshelfId, imageUrl, bookId, genres, book, readings, collections, createdAt } =
-      userBook.getState();
+    const {
+      status,
+      isFavorite,
+      bookshelfId,
+      imageUrl,
+      bookId,
+      genre,
+      genreId,
+      book,
+      readings,
+      collections,
+      createdAt,
+    } = userBook.getState();
 
     const userBookDto: UserBookDto = {
       id: userBook.getId(),
@@ -390,11 +401,8 @@ export class UserBookHttpController implements HttpController {
             createdAt: author.getCreatedAt().toISOString(),
           })) || [],
       },
-      genres:
-        genres.map((genre) => ({
-          id: genre.getId(),
-          name: genre.getName(),
-        })) || [],
+      genreId,
+      genreName: genre?.getName() || '',
       collections:
         collections.map((collection) => ({
           id: collection.getId(),

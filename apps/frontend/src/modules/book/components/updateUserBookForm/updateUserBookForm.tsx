@@ -87,7 +87,7 @@ export const UpdateUserBookForm: FC<Props> = ({ bookId, userBook, onSubmit, onCa
     if (values.genre) {
       await updateUserBook({
         userBookId: bookId,
-        genreIds: [values.genre],
+        genreId: values.genre,
         accessToken: accessToken as string,
       });
     }

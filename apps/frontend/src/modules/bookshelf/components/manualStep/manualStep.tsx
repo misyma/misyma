@@ -141,6 +141,7 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
           bookId: searchBookContext.bookId,
           bookshelfId: (values.bookshelfId || bookshelfId) ?? '',
           status: values.status as ContractReadingStatus,
+          genreId: values.genre as string,
           isFavorite: false,
           accessToken: accessToken as string,
         },

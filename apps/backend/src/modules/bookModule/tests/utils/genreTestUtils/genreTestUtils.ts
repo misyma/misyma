@@ -1,16 +1,16 @@
-import { Generator } from '../../../../../../tests/generator.js';
 import { TestUtils } from '../../../../../../tests/testUtils.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type GenreRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/genreTable/genreRawEntity.js';
 import { genreTable } from '../../../infrastructure/databases/bookDatabase/tables/genreTable/genreTable.js';
+import { GenreTestFactory } from '../../factories/genreTestFactory/genreTestFactory.js';
 
 interface CreateAndPersistPayload {
-  readonly input?: {
-    readonly genre?: Partial<GenreRawEntity>;
-  };
+  readonly input?: Partial<GenreRawEntity>;
 }
 
 export class GenreTestUtils extends TestUtils {
+  private readonly genreTestFactory = new GenreTestFactory();
+
   public constructor(databaseClient: DatabaseClient) {
     super(databaseClient, genreTable);
   }
@@ -18,24 +18,13 @@ export class GenreTestUtils extends TestUtils {
   public async createAndPersist(payload: CreateAndPersistPayload = {}): Promise<GenreRawEntity> {
     const { input } = payload;
 
-    let genre: GenreRawEntity;
+    const data = this.genreTestFactory.createRaw(input);
 
-    if (input?.genre?.name) {
-      genre = {
-        id: Generator.uuid(),
-        name: input.genre.name,
-      };
-    } else {
-      genre = {
-        id: Generator.uuid(),
-        name: await this.getNonClashingName(),
-        ...input?.genre,
-      };
-    }
+    const rawEntities = await this.databaseClient<GenreRawEntity>(genreTable).insert(data, '*');
 
-    await this.databaseClient<GenreRawEntity>(genreTable).insert(genre);
+    const rawEntity = rawEntities[0] as GenreRawEntity;
 
-    return genre;
+    return rawEntity;
   }
 
   public async findByName(name: string): Promise<GenreRawEntity | null> {
@@ -48,17 +37,5 @@ export class GenreTestUtils extends TestUtils {
     const genre = await this.databaseClient<GenreRawEntity>(genreTable).where({ id }).first();
 
     return genre || null;
-  }
-
-  private async getNonClashingName(): Promise<string> {
-    const name = Generator.word();
-
-    const genre = await this.findByName(name);
-
-    if (genre) {
-      return await this.getNonClashingName();
-    }
-
-    return name;
   }
 }

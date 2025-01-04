@@ -42,7 +42,7 @@ export const BasicDataMainBody: FC<BasicDataMainBodyProps> = ({ bookId }) => {
       releaseYear: data?.book.releaseYear,
       pages: data?.book.pages,
       authors: data?.book.authors ?? [],
-      genres: data?.genres ?? [],
+      genre: data?.genreName,
       translator: data?.book.translator,
     }),
     [
@@ -52,7 +52,7 @@ export const BasicDataMainBody: FC<BasicDataMainBodyProps> = ({ bookId }) => {
       data?.book.releaseYear,
       data?.book.pages,
       data?.book.authors,
-      data?.genres,
+      data?.genreName,
       data?.book.translator,
     ],
   );
@@ -74,7 +74,7 @@ export const BasicDataMainBody: FC<BasicDataMainBodyProps> = ({ bookId }) => {
           {data?.book.translator && <p>Przekład: {bookDetails.translator}</p>}
           <p>Format: {bookDetails.format}</p>
           {data?.book.pages && <p>Liczba stron: {bookDetails.pages}</p>}
-          {data?.genres[0]?.name && <p>Kategoria: {bookDetails.genres[0]?.name}</p>}
+          {data?.genreName && <p>Kategoria: {bookDetails.genre}</p>}
         </div>
         <div className="flex flex-shrink-0 gap-12 flex-col items-end justify-start">
           <BookshelfChoiceDropdown

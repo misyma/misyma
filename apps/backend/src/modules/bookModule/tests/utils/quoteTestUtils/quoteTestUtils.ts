@@ -5,7 +5,7 @@ import { quoteTable } from '../../../infrastructure/databases/bookDatabase/table
 import { QuoteTestFactory } from '../../factories/quoteTestFactory/quoteTestFactory.js';
 
 interface CreateAndPersistPayload {
-  readonly input?: Partial<QuoteRawEntity>;
+  readonly input?: Partial<QuoteRawEntity> & { readonly userBookId: string };
 }
 
 interface FindByIdPayload {
@@ -19,7 +19,7 @@ export class QuoteTestUtils extends TestUtils {
 
   private readonly quoteTestFactory = new QuoteTestFactory();
 
-  public async createAndPersist(payload: CreateAndPersistPayload = { input: {} }): Promise<QuoteRawEntity> {
+  public async createAndPersist(payload: CreateAndPersistPayload): Promise<QuoteRawEntity> {
     const { input } = payload;
 
     const quote = this.quoteTestFactory.create(input);

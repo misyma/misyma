@@ -14,6 +14,7 @@ import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { symbols } from '../../../symbols.js';
 import { type BorrowingTestUtils } from '../../../tests/utils/borrowingTestUtils/borrowingTestUtils.js';
+import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 
 describe('DeleteBorrowingCommandHandlerImpl', () => {
   let commandHandler: DeleteBorrowingCommandHandler;
@@ -29,6 +30,8 @@ describe('DeleteBorrowingCommandHandlerImpl', () => {
   let userTestUtils: UserTestUtils;
 
   let userBookTestUtils: UserBookTestUtils;
+
+  let genreTestUtils: GenreTestUtils;
 
   let testUtils: TestUtils[];
 
@@ -49,7 +52,16 @@ describe('DeleteBorrowingCommandHandlerImpl', () => {
 
     userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
 
-    testUtils = [bookTestUtils, bookshelfTestUtils, userTestUtils, borrowingTestUtils, userBookTestUtils];
+    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+
+    testUtils = [
+      genreTestUtils,
+      bookTestUtils,
+      bookshelfTestUtils,
+      userTestUtils,
+      borrowingTestUtils,
+      userBookTestUtils,
+    ];
 
     for (const testUtil of testUtils) {
       await testUtil.truncate();
@@ -95,10 +107,13 @@ describe('DeleteBorrowingCommandHandlerImpl', () => {
 
     const book = await bookTestUtils.createAndPersist();
 
+    const genre = await genreTestUtils.createAndPersist();
+
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookshelfId: bookshelf.id,
         bookId: book.id,
+        genreId: genre.id,
       },
     });
 
