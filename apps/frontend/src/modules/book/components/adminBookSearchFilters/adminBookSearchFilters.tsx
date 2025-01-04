@@ -62,28 +62,6 @@ export const AdminBookSearchFilter: FC<AdminBookSearchFilterProps> = ({
       className={cn('sm:col-span-4 md:col-span-5 lg:col-span-6 grid grid-cols-3 px-2', isFilterVisible ? '' : 'hidden')}
       actionButtonClassName={isFilterVisible ? '' : 'hidden'}
     >
-      <TextFilter
-        setFilterAction={(val) => {
-          setFilters({
-            ...filters,
-            title: val,
-          });
-        }}
-        onRemoveFilter={() => onClearFilter('title')}
-        initialValue={filters['title'] as string}
-        filter={{
-          id: 'title-filter',
-          key: 'title',
-          label: 'Tytuł',
-          type: 'text',
-          setFilterAction: (val) => {
-            setFilters({
-              ...filters,
-              title: val,
-            });
-          },
-        }}
-      />
       <AuthorSearchFilter
         setFilterAction={(val) => {
           setFilters({
