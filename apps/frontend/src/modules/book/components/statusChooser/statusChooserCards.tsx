@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { HiCheckCircle, HiDotsCircleHorizontal } from 'react-icons/hi';
 import { HiQuestionMarkCircle } from 'react-icons/hi';
@@ -14,123 +14,129 @@ import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
 
 interface Props {
-  bookId: string;
-  bookshelfId: string;
+	bookId: string;
+	bookshelfId: string;
 }
 
 export const StatusChooserCards: FC<Props> = ({ bookId, bookshelfId }) => {
-  const queryClient = useQueryClient();
+	const queryClient = useQueryClient();
 
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
+	const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
-  const { data: userData } = useFindUserQuery();
+	const { data: userData } = useFindUserQuery();
 
-  const { data, isFetching, isFetched, isRefetching } = useErrorHandledQuery(
-    FindUserBookByIdQueryOptions({
-      userBookId: bookId,
-      userId: userData?.id ?? '',
-      accessToken: accessToken as string,
-    })
-  );
+	const { data, isFetching, isFetched, isRefetching } = useErrorHandledQuery(
+		FindUserBookByIdQueryOptions({
+			userBookId: bookId,
+			userId: userData?.id ?? '',
+			accessToken: accessToken as string,
+		})
+	);
 
-  const [readingStatus, setReadingStatus] = useState(data?.status);
+	const [readingStatus, setReadingStatus] = useState(data?.status);
 
-  const baseBoxClass =
-    'sm:w-40 bg-slate-100 flex flex-col items-center gap-2 p-4 border-2 border-gray-200 cursor-pointer';
+	useEffect(() => {
+		if (readingStatus !== data?.status) {
+			setReadingStatus(data?.status);
+		}
+	}, [data?.status, readingStatus]);
 
-  const { mutateAsync: updateUserBook } = useUpdateUserBookMutation({});
+	const baseBoxClass =
+		'sm:w-40 bg-slate-100 flex flex-col items-center gap-2 p-4 border-2 border-gray-200 cursor-pointer';
 
-  const onChangeStatus = async (chosenStatus: ReadingStatus) => {
-    if (chosenStatus === readingStatus) {
-      return;
-    }
+	const { mutateAsync: updateUserBook } = useUpdateUserBookMutation({});
 
-    await updateUserBook({
-      userBookId: data?.id as string,
-      status: chosenStatus,
-      accessToken: accessToken as string,
-    });
+	const onChangeStatus = async (chosenStatus: ReadingStatus) => {
+		if (chosenStatus === readingStatus) {
+			return;
+		}
 
-    await Promise.all([
-      queryClient.invalidateQueries({
-        queryKey: [BookApiQueryKeys.findUserBookById, bookId, userData?.id],
-      }),
-      queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId &&
-          query.queryKey[1] === bookshelfId,
-      }),
-      queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey[0] === BookApiQueryKeys.findUserBooksBy &&
-          query.queryKey.includes('infinite-query'),
-      }),
-    ]);
+		await updateUserBook({
+			userBookId: data?.id as string,
+			status: chosenStatus,
+			accessToken: accessToken as string,
+		});
 
-    setReadingStatus(chosenStatus);
-  };
+		await Promise.all([
+			queryClient.invalidateQueries({
+				queryKey: [BookApiQueryKeys.findUserBookById, bookId, userData?.id],
+			}),
+			queryClient.invalidateQueries({
+				predicate: (query) =>
+					query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId &&
+					query.queryKey[1] === bookshelfId,
+			}),
+			queryClient.invalidateQueries({
+				predicate: (query) =>
+					query.queryKey[0] === BookApiQueryKeys.findUserBooksBy &&
+					query.queryKey.includes('infinite-query'),
+			}),
+		]);
 
-  return (
-    <>
-      {isFetching && !isRefetching && (
-        <div className="flex gap-2 justify-end text-gray-400">
-          <div className="sm:w-40 flex flex-col items-center gap-2 p-4">
-            <Skeleton className="h-12 w-12"></Skeleton>
-            <Skeleton className="w-full h-4"></Skeleton>
-          </div>
-          <div className="sm:w-40 flex flex-col items-center gap-2 p-4">
-            <Skeleton className="h-12 w-12"></Skeleton>
-            <Skeleton className="w-full h-4"></Skeleton>
-          </div>
-          <div className="sm:w-40 flex flex-col items-center gap-2 p-4">
-            <Skeleton className="h-12 w-12"></Skeleton>
-            <Skeleton className="w-full h-4"></Skeleton>
-          </div>
-        </div>
-      )}
-      {isFetched && (!isRefetching || (isFetching && isRefetching)) && (
-        <div className="flex gap-2 justify-end text-gray-400">
-          <div
-            className={cn(
-              baseBoxClass,
-              readingStatus === ReadingStatus.finished
-                ? 'text-green-400 border-green-500 cursor-default pointer-events-none'
-                : '',
-              'hover:text-green-400 hover:border-green-500'
-            )}
-            onClick={async () => await onChangeStatus(ReadingStatus.finished)}
-          >
-            <HiCheckCircle className="h-12 w-12"></HiCheckCircle>
-            <p className="font-semibold text-xs">Przeczytana</p>
-          </div>
-          <div
-            className={cn(
-              baseBoxClass,
-              readingStatus === ReadingStatus.inProgress
-                ? 'text-blue-300 border-blue-400 cursor-default pointer-events-none'
-                : '',
-              'hover:text-blue-300 hover:border-blue-400'
-            )}
-            onClick={async () => await onChangeStatus(ReadingStatus.inProgress)}
-          >
-            <HiDotsCircleHorizontal className="h-12 w-12"></HiDotsCircleHorizontal>
-            <p className="font-semibold text-xs">W trakcie</p>
-          </div>
-          <div
-            className={cn(
-              baseBoxClass,
-              readingStatus === ReadingStatus.toRead
-                ? 'text-slate-500 border-slate-700 cursor-default pointer-events-none'
-                : '',
-              'hover:text-slate-500 hover:border-slate-700'
-            )}
-            onClick={async () => await onChangeStatus(ReadingStatus.toRead)}
-          >
-            <HiQuestionMarkCircle className="h-12 w-12"></HiQuestionMarkCircle>
-            <p className="font-semibold text-xs">Do przeczytania</p>
-          </div>
-        </div>
-      )}
-    </>
-  );
+		setReadingStatus(chosenStatus);
+	};
+
+	return (
+		<>
+			{isFetching && !isRefetching && (
+				<div className="flex gap-2 justify-end text-gray-400">
+					<div className="sm:w-40 flex flex-col items-center gap-2 p-4">
+						<Skeleton className="h-12 w-12"></Skeleton>
+						<Skeleton className="w-full h-4"></Skeleton>
+					</div>
+					<div className="sm:w-40 flex flex-col items-center gap-2 p-4">
+						<Skeleton className="h-12 w-12"></Skeleton>
+						<Skeleton className="w-full h-4"></Skeleton>
+					</div>
+					<div className="sm:w-40 flex flex-col items-center gap-2 p-4">
+						<Skeleton className="h-12 w-12"></Skeleton>
+						<Skeleton className="w-full h-4"></Skeleton>
+					</div>
+				</div>
+			)}
+			{isFetched && (!isRefetching || (isFetching && isRefetching)) && (
+				<div className="flex gap-2 justify-end text-gray-400">
+					<div
+						className={cn(
+							baseBoxClass,
+							readingStatus === ReadingStatus.finished
+								? 'text-green-400 border-green-500 cursor-default pointer-events-none'
+								: '',
+							'hover:text-green-400 hover:border-green-500'
+						)}
+						onClick={async () => await onChangeStatus(ReadingStatus.finished)}
+					>
+						<HiCheckCircle className="h-12 w-12"></HiCheckCircle>
+						<p className="font-semibold text-xs">Przeczytana</p>
+					</div>
+					<div
+						className={cn(
+							baseBoxClass,
+							readingStatus === ReadingStatus.inProgress
+								? 'text-blue-300 border-blue-400 cursor-default pointer-events-none'
+								: '',
+							'hover:text-blue-300 hover:border-blue-400'
+						)}
+						onClick={async () => await onChangeStatus(ReadingStatus.inProgress)}
+					>
+						<HiDotsCircleHorizontal className="h-12 w-12"></HiDotsCircleHorizontal>
+						<p className="font-semibold text-xs">W trakcie</p>
+					</div>
+					<div
+						className={cn(
+							baseBoxClass,
+							readingStatus === ReadingStatus.toRead
+								? 'text-slate-500 border-slate-700 cursor-default pointer-events-none'
+								: '',
+							'hover:text-slate-500 hover:border-slate-700'
+						)}
+						onClick={async () => await onChangeStatus(ReadingStatus.toRead)}
+					>
+						<HiQuestionMarkCircle className="h-12 w-12"></HiQuestionMarkCircle>
+						<p className="font-semibold text-xs">Do przeczytania</p>
+					</div>
+				</div>
+			)}
+		</>
+	);
 };
