@@ -13,7 +13,7 @@ export interface UserBook {
     readonly title: string;
     readonly isbn?: string;
     readonly publisher?: string;
-    readonly releaseYear?: number;
+    readonly releaseYear: number;
     readonly language: Language;
     readonly translator?: string;
     readonly format: BookFormat;

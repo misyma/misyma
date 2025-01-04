@@ -64,7 +64,7 @@ export class BookMapperImpl implements BookMapper {
         title,
         isbn: isbn ?? undefined,
         publisher: publisher ?? undefined,
-        releaseYear: releaseYear ?? undefined,
+        releaseYear,
         language,
         translator: translator ?? undefined,
         format,

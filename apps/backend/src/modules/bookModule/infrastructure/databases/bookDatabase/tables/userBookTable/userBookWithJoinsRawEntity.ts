@@ -12,7 +12,7 @@ export interface UserBookWithJoinsRawEntity {
   readonly title: string;
   readonly isbn: string | null;
   readonly publisher: string | null;
-  readonly releaseYear: number | null;
+  readonly releaseYear: number;
   readonly language: Language;
   readonly translator: string | null;
   readonly format: BookFormat;

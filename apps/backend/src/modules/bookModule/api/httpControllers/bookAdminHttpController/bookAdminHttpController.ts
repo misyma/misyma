@@ -42,8 +42,7 @@ import { type CreateBookCommandHandler } from '../../../application/commandHandl
 import { type DeleteBookCommandHandler } from '../../../application/commandHandlers/deleteBookCommandHandler/deleteBookCommandHandler.js';
 import { type UpdateBookCommandHandler } from '../../../application/commandHandlers/updateBookCommandHandler/updateBookCommandHandler.js';
 import { type FindBooksQueryHandler } from '../../../application/queryHandlers/findBooksQueryHandler/findBooksQueryHandler.js';
-import { type Book } from '../../../domain/entities/book/book.js';
-import { type BookDto } from '../common/bookDto.js';
+import { mapBookToDto } from '../common/mappers/bookDtoMapper.js';
 
 export class BookAdminHttpController implements HttpController {
   public readonly basePath = '/admin/books';
@@ -150,7 +149,7 @@ export class BookAdminHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.created,
-      body: this.mapBookToBookDto(book),
+      body: mapBookToDto(book),
     };
   }
 
@@ -213,7 +212,7 @@ export class BookAdminHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.ok,
-      body: this.mapBookToBookDto(book),
+      body: mapBookToDto(book),
     };
   }
 
@@ -253,7 +252,7 @@ export class BookAdminHttpController implements HttpController {
 
     return {
       body: {
-        data: books.map((book) => this.mapBookToBookDto(book)),
+        data: books.map((book) => mapBookToDto(book)),
         metadata: {
           page,
           pageSize,
@@ -262,62 +261,5 @@ export class BookAdminHttpController implements HttpController {
       },
       statusCode: HttpStatusCode.ok,
     };
-  }
-
-  private mapBookToBookDto(book: Book): BookDto {
-    const {
-      title,
-      language,
-      format,
-      isApproved,
-      imageUrl,
-      isbn,
-      publisher,
-      releaseYear,
-      translator,
-      pages,
-      createdAt,
-    } = book.getState();
-
-    const bookDto: BookDto = {
-      id: book.getId(),
-      title,
-      language,
-      format,
-      isApproved,
-      createdAt: createdAt.toISOString(),
-      authors: book.getAuthors().map((author) => ({
-        id: author.getId(),
-        name: author.getName(),
-        isApproved: author.getIsApproved(),
-        createdAt: author.getCreatedAt().toISOString(),
-      })),
-    };
-
-    if (isbn) {
-      bookDto.isbn = isbn;
-    }
-
-    if (publisher) {
-      bookDto.publisher = publisher;
-    }
-
-    if (releaseYear) {
-      bookDto.releaseYear = releaseYear;
-    }
-
-    if (translator) {
-      bookDto.translator = translator;
-    }
-
-    if (pages) {
-      bookDto.pages = pages;
-    }
-
-    if (imageUrl) {
-      bookDto.imageUrl = imageUrl;
-    }
-
-    return bookDto;
   }
 }

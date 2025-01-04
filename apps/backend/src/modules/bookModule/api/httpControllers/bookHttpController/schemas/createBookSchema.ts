@@ -18,7 +18,7 @@ export const createBookBodyDtoSchema = Type.Object({
   title: bookTitleSchema,
   isbn: Type.Optional(bookIsbnSchema),
   publisher: Type.Optional(bookPublisherSchema),
-  releaseYear: Type.Optional(bookReleaseYearSchema),
+  releaseYear: bookReleaseYearSchema,
   language: Type.Enum(contracts.Language),
   translator: Type.Optional(bookTranslatorSchema),
   format: Type.Enum(contracts.BookFormat),

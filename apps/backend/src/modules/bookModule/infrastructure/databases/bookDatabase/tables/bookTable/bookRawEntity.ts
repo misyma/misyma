@@ -5,7 +5,7 @@ export interface BookRawEntity {
   readonly title: string;
   readonly isbn?: string | undefined | null;
   readonly publisher?: string | undefined | null;
-  readonly releaseYear?: number | undefined | null;
+  readonly releaseYear: number;
   readonly language: Language;
   readonly translator?: string | undefined | null;
   readonly format: BookFormat;

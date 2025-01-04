@@ -45,7 +45,7 @@ describe('BookMapperImpl', () => {
         title: book.title,
         isbn: book.isbn as string,
         publisher: book.publisher as string,
-        releaseYear: book.releaseYear as number,
+        releaseYear: book.releaseYear,
         language: book.language,
         translator: book.translator as string,
         format: book.format,
