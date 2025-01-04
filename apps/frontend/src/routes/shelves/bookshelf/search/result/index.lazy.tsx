@@ -207,7 +207,7 @@ const BookRow: FC<BookRowProps> = ({ book, onSelect, isSelected }) => {
   );
 };
 
-const ManyFoundBooksView: FC<FoundBookViewProps> = ({}) => {
+const ManyFoundBooksView: FC<FoundBookViewProps> = ({ onCreateManually, onAddBook }) => {
   const searchParams = Route.useSearch();
   const [selectedRowIndex, setSelectedRowIndex] = useState<number | undefined>(undefined);
 
@@ -253,67 +253,83 @@ const ManyFoundBooksView: FC<FoundBookViewProps> = ({}) => {
   }, [hasNextPage, fetchNextPage, allItems, isFetchingNextPage, rowVirtualizer.getVirtualItems()]);
 
   return (
-    <div
-      ref={parentRef}
-      className="w-full h-[700px] 4xl:h-[1068px] overflow-auto no-scrollbar"
-    >
+    <div>
       <div
-        style={{
-          height: `${rowVirtualizer.getTotalSize()}px`,
-          width: '100%',
-          position: 'relative',
-        }}
+        ref={parentRef}
+        className="w-full h-[700px] 4xl:h-[1068px] overflow-auto no-scrollbar"
       >
-        <div className="sticky w-full top-0 z-10 bg-background pb-4">
-          <div className="grid grid-cols-9 gap-x-2">
-            Obrazek
-            <div className="col-span-2 line-clamp-3">Tytuł</div>
-            <div className="line-clamp-2">Autorzy</div>
-            <div>Format</div>
-            <div>Rok wydania</div>
-            <div className="line-clamp-2">Wydawnictwo</div>
-            <div>Język</div>
-            <div className="line-clamp-2">Przekład</div>
-          </div>
-        </div>
-        {rowVirtualizer.getVirtualItems().map((virtualItem) => {
-          const isLoaderRow = virtualItem.index >= (allItems?.length ?? 0);
-
-          const isFirstLoaderAttempt = isLoading && isLoaderRow;
-
-          const isSubsequentLoader = !isLoading && isLoaderRow && hasNextPage;
-
-          return (
-            <div
-              key={virtualItem.index}
-              style={{
-                height: `${virtualItem.size}px`,
-                width: '100%',
-                position: 'absolute',
-                top: '40px',
-                left: 0,
-                transform: `translateY(${virtualItem.start}px)`,
-              }}
-            >
-              {isFirstLoaderAttempt && <Skeleton className="w-40 h-40" />}
-              {isSubsequentLoader && <Skeleton className="w-40 h-40" />}
-              {!isSubsequentLoader && allItems && (
-                <BookRow
-                  book={allItems[virtualItem.index]}
-                  key={allItems[virtualItem.index].id}
-                  onSelect={() => {
-                    if (selectedRowIndex === virtualItem.index) {
-                      setSelectedRowIndex(undefined);
-                    } else {
-                      setSelectedRowIndex(virtualItem.index);
-                    }
-                  }}
-                  isSelected={virtualItem.index === selectedRowIndex}
-                />
-              )}
+        <div
+          style={{
+            height: `${rowVirtualizer.getTotalSize()}px`,
+            width: '100%',
+            position: 'relative',
+          }}
+        >
+          <div className="sticky w-full top-0 z-10 bg-background pb-4">
+            <div className="grid grid-cols-9 gap-x-2">
+              Obrazek
+              <div className="col-span-2 line-clamp-3">Tytuł</div>
+              <div className="line-clamp-2">Autorzy</div>
+              <div>Format</div>
+              <div>Rok wydania</div>
+              <div className="line-clamp-2">Wydawnictwo</div>
+              <div>Język</div>
+              <div className="line-clamp-2">Przekład</div>
             </div>
-          );
-        })}
+          </div>
+          {rowVirtualizer.getVirtualItems().map((virtualItem) => {
+            const isLoaderRow = virtualItem.index >= (allItems?.length ?? 0);
+
+            const isFirstLoaderAttempt = isLoading && isLoaderRow;
+
+            const isSubsequentLoader = !isLoading && isLoaderRow && hasNextPage;
+
+            return (
+              <div
+                key={virtualItem.index}
+                style={{
+                  height: `${virtualItem.size}px`,
+                  width: '100%',
+                  position: 'absolute',
+                  top: '40px',
+                  left: 0,
+                  transform: `translateY(${virtualItem.start}px)`,
+                }}
+              >
+                {isFirstLoaderAttempt && <Skeleton className="w-40 h-40" />}
+                {isSubsequentLoader && <Skeleton className="w-40 h-40" />}
+                {!isSubsequentLoader && allItems && (
+                  <BookRow
+                    book={allItems[virtualItem.index]}
+                    key={allItems[virtualItem.index].id}
+                    onSelect={() => {
+                      if (selectedRowIndex === virtualItem.index) {
+                        setSelectedRowIndex(undefined);
+                      } else {
+                        setSelectedRowIndex(virtualItem.index);
+                      }
+                    }}
+                    isSelected={virtualItem.index === selectedRowIndex}
+                  />
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <div className="w-full pt-4 flex gap-4 justify-center items-center">
+        <Button
+          variant="secondary"
+          onClick={onCreateManually}
+        >
+          Wprowadź inne dane
+        </Button>
+        <Button
+          onClick={() => onAddBook((allItems && (allItems[selectedRowIndex as number].id as string)) ?? '')}
+          disabled={!selectedRowIndex}
+        >
+          Kontynuuj
+        </Button>
       </div>
     </div>
   );
