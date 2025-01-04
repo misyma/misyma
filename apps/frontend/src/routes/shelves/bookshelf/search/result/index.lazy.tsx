@@ -1,4 +1,4 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { createLazyFileRoute, Navigate } from '@tanstack/react-router';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { type FC, useEffect, useMemo, useRef, useState } from 'react';
@@ -32,7 +32,7 @@ import { RequireAuthComponent } from '../../../../../modules/core/components/req
 import { userStateSelectors } from '../../../../../modules/core/store/states/userState/userStateSlice';
 
 interface FoundBookViewProps {
-  onAddBook: (bookId: string) => Promise<void>;
+  onAddBook: (book?: Book) => Promise<void>;
   onCreateManually: () => void;
 }
 const SingleFoundBookView: FC<FoundBookViewProps> = ({ onAddBook, onCreateManually }) => {
@@ -135,7 +135,7 @@ const SingleFoundBookView: FC<FoundBookViewProps> = ({ onAddBook, onCreateManual
                   className="flex"
                 >
                   <Button
-                    onClick={() => onAddBook(foundBooks?.data?.[0].id ?? '')}
+                    onClick={() => onAddBook(foundBooks?.data?.[0])}
                     size="xl"
                     disabled={checkingForIsbn || checkForIsbnInProgress || bookExistsOnUserAccount}
                   >
@@ -149,7 +149,7 @@ const SingleFoundBookView: FC<FoundBookViewProps> = ({ onAddBook, onCreateManual
             </TooltipProvider>
           ) : (
             <Button
-              onClick={() => onAddBook(foundBooks?.data?.[0].id ?? '')}
+              onClick={() => onAddBook(foundBooks?.data?.[0])}
               size="xl"
             >
               Kontynuuj
@@ -183,13 +183,30 @@ interface BookRowProps {
   isSelected: boolean;
 }
 const BookRow: FC<BookRowProps> = ({ book, onSelect, isSelected }) => {
+  const accessToken = useSelector(userStateSelectors.selectAccessToken);
+
+  const { data, isLoading } = useQuery(
+    FindUserBooksByQueryOptions({
+      accessToken,
+      isbn: book.isbn as string,
+    }),
+  );
+
+  const isSelectable =
+    (!isLoading && !!data?.metadata.total && data?.metadata.total === 0) || (!data?.metadata.total && !isLoading);
+
   return (
     <div
       className={cn(
         'grid grid-cols-9 gap-x-4 p-4 rounded-lg transition-colors duration-200 cursor-pointer',
-        isSelected ? 'bg-primary/10 shadow-md' : 'hover:bg-secondary/50',
+        isSelected ? 'bg-primary/10 shadow-md' : isSelectable && 'hover:bg-secondary/50',
+        !isSelectable && 'bg-slate-500',
       )}
-      onClick={() => onSelect()}
+      onClick={() => {
+        if (isSelectable) {
+          onSelect();
+        }
+      }}
     >
       <BookImageMiniature
         bookImageSrc={book.imageUrl ?? ''}
@@ -235,7 +252,7 @@ const ManyFoundBooksView: FC<FoundBookViewProps> = ({ onCreateManually, onAddBoo
   const rowVirtualizer = useVirtualizer({
     count: data?.pages?.[0]?.metadata?.total ?? 0,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 144,
+    estimateSize: () => 146,
     overscan: 5,
   });
 
@@ -325,7 +342,9 @@ const ManyFoundBooksView: FC<FoundBookViewProps> = ({ onCreateManually, onAddBoo
           Wprowadź inne dane
         </Button>
         <Button
-          onClick={() => onAddBook((allItems && (allItems[selectedRowIndex as number].id as string)) ?? '')}
+          onClick={() => {
+            onAddBook(allItems && allItems[selectedRowIndex as number]);
+          }}
           disabled={!selectedRowIndex}
         >
           Kontynuuj
@@ -399,8 +418,8 @@ export const SearchResultPage: FC = () => {
     });
   };
 
-  const onAddBook = async (): Promise<void> => {
-    const book = foundBooks?.data[0] as Book;
+  const onAddBook = async (optBook?: Book): Promise<void> => {
+    const book = optBook ?? (foundBooks?.data[0] as Book);
 
     searchCreationDispatch({
       bookId: book.id,
