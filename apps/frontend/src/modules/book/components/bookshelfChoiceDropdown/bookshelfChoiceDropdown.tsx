@@ -27,6 +27,7 @@ import { userStateSelectors } from '../../../core/store/states/userState/userSta
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { useUpdateUserBookMutation } from '../../api/user/mutations/updateUserBookMutation/updateUserBookMutation';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
+import { invalidateBooksByBookshelfIdQuery } from '../../api/user/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
 import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 import { invalidateFindUserBooksByQuery } from '../../api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
 import { CreateBorrowingModal } from '../createBorrowingModal/createBorrowingModal';
@@ -146,6 +147,15 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
       queryClient.invalidateQueries({
         predicate: (query) =>
           query.queryKey[0] === BookApiQueryKeys.findUserBooksBy && query.queryKey[1] === currentBookshelfId,
+      }),
+      queryClient.invalidateQueries({
+        predicate: ({ queryKey }) =>
+          invalidateBooksByBookshelfIdQuery(
+            {
+              bookshelfId: currentBookshelfId,
+            },
+            queryKey,
+          ),
       }),
     ]);
   };
