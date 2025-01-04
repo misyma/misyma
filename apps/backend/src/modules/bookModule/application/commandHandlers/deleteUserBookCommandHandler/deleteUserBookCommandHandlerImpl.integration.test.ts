@@ -14,6 +14,7 @@ import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestU
 import { symbols } from '../../../symbols.js';
 import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
+import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
 
 describe('DeleteUserBookCommandHandler', () => {
@@ -30,6 +31,8 @@ describe('DeleteUserBookCommandHandler', () => {
   let bookshelfTestUtils: BookshelfTestUtils;
 
   let userBookTestUtils: UserBookTestUtils;
+
+  let genreTestUtils: GenreTestUtils;
 
   let testUtils: TestUtils[];
 
@@ -50,7 +53,9 @@ describe('DeleteUserBookCommandHandler', () => {
 
     userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
 
-    testUtils = [authorTestUtils, bookTestUtils, bookshelfTestUtils, userTestUtils, userBookTestUtils];
+    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+
+    testUtils = [genreTestUtils, authorTestUtils, bookTestUtils, bookshelfTestUtils, userTestUtils, userBookTestUtils];
 
     for (const testUtil of testUtils) {
       await testUtil.truncate();
@@ -78,10 +83,13 @@ describe('DeleteUserBookCommandHandler', () => {
       },
     });
 
+    const genre = await genreTestUtils.createAndPersist();
+
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookId: book.id,
         bookshelfId: bookshelf.id,
+        genreId: genre.id,
       },
     });
 
@@ -134,10 +142,13 @@ describe('DeleteUserBookCommandHandler', () => {
       },
     });
 
+    const genre = await genreTestUtils.createAndPersist();
+
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookId: book.id,
         bookshelfId: bookshelf.id,
+        genreId: genre.id,
       },
     });
 

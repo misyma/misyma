@@ -14,7 +14,8 @@ export interface UserBookDraft {
   readonly createdAt: Date;
   readonly bookId: string;
   readonly book?: BookDraft | undefined;
-  readonly genres: Genre[];
+  readonly genreId: string;
+  readonly genre?: Genre;
   readonly collections: Collection[];
   readonly readings: BookReading[];
 }
@@ -27,7 +28,8 @@ export interface UserBookState {
   readonly createdAt: Date;
   readonly bookId: string;
   readonly book?: BookDraft | undefined;
-  genres: Genre[];
+  genreId: string;
+  genre?: Genre;
   collections: Collection[];
   readonly readings: BookReading[];
 }
@@ -48,8 +50,8 @@ export interface SetBookshelfIdPayload {
   readonly bookshelfId: string;
 }
 
-export interface SetGenresPayload {
-  readonly genres: Genre[];
+export interface SetGenrePayload {
+  readonly genre: Genre;
 }
 
 export interface SetCollectionsPayload {
@@ -61,8 +63,20 @@ export class UserBook {
   private readonly state: UserBookState;
 
   public constructor(draft: UserBookDraft) {
-    const { id, imageUrl, status, isFavorite, bookshelfId, createdAt, bookId, book, genres, readings, collections } =
-      draft;
+    const {
+      id,
+      imageUrl,
+      status,
+      isFavorite,
+      bookshelfId,
+      createdAt,
+      bookId,
+      book,
+      genreId,
+      genre,
+      readings,
+      collections,
+    } = draft;
 
     this.id = id;
 
@@ -72,7 +86,7 @@ export class UserBook {
       bookshelfId,
       createdAt,
       bookId,
-      genres,
+      genreId,
       readings,
       collections,
     };
@@ -85,6 +99,13 @@ export class UserBook {
       state = {
         ...state,
         book,
+      };
+    }
+
+    if (genre) {
+      state = {
+        ...state,
+        genre,
       };
     }
 
@@ -127,8 +148,12 @@ export class UserBook {
     return this.state.bookId;
   }
 
-  public getGenres(): Genre[] {
-    return this.state.genres;
+  public getGenreId(): string {
+    return this.state.genreId;
+  }
+
+  public getGenre(): Genre | undefined {
+    return this.state.genre;
   }
 
   public getCollections(): Collection[] {
@@ -163,10 +188,12 @@ export class UserBook {
     this.state.bookshelfId = bookshelfId;
   }
 
-  public setGenres(payload: SetGenresPayload): void {
-    const { genres } = payload;
+  public setGenre(payload: SetGenrePayload): void {
+    const { genre } = payload;
 
-    this.state.genres = genres;
+    this.state.genre = genre;
+
+    this.state.genreId = genre.getId();
   }
 
   public setCollections(payload: SetCollectionsPayload): void {

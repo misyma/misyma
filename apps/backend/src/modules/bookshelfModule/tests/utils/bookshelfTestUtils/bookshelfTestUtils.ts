@@ -5,7 +5,7 @@ import { bookshelfTable } from '../../../infrastructure/databases/bookshelvesDat
 import { BookshelfTestFactory } from '../../factories/bookshelfTestFactory/bookshelfTestFactory.js';
 
 interface CreateAndPersistPayload {
-  readonly input?: Partial<BookshelfRawEntity>;
+  readonly input?: Partial<BookshelfRawEntity> & { readonly userId: string };
 }
 
 interface FindByIdPayload {
@@ -23,7 +23,7 @@ export class BookshelfTestUtils extends TestUtils {
 
   private readonly bookshelfTestFactory = new BookshelfTestFactory();
 
-  public async createAndPersist(payload: CreateAndPersistPayload = { input: {} }): Promise<BookshelfRawEntity> {
+  public async createAndPersist(payload: CreateAndPersistPayload): Promise<BookshelfRawEntity> {
     const { input } = payload;
 
     const bookshelf = this.bookshelfTestFactory.create(input);

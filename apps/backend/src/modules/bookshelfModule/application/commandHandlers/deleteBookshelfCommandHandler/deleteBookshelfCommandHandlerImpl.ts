@@ -77,7 +77,7 @@ export class DeleteBookshelfCommandHandlerImpl implements DeleteBookshelfCommand
   public async moveUserBooksToOtherBookshelf(bookshelfId: string, otherBookshelfId: string): Promise<void> {
     const userBooks = await this.userBookRepository.findUserBooks({
       bookshelfId,
-      expandFields: [UserBookExpandField.collections, UserBookExpandField.genres, UserBookExpandField.readings],
+      expandFields: [UserBookExpandField.collections, UserBookExpandField.readings],
     });
 
     if (!userBooks.length) {

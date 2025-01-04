@@ -112,7 +112,7 @@ export const EditBookModal: FC<Props> = ({ bookId }) => {
     if (values.genre) {
       await updateUserBook({
         userBookId: bookId,
-        genreIds: [values.genre],
+        genreId: values.genre,
         accessToken: accessToken as string,
       });
     }

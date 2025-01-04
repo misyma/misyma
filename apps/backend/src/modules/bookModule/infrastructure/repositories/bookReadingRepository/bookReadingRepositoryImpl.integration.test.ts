@@ -14,6 +14,7 @@ import { symbols } from '../../../symbols.js';
 import { BookReadingTestFactory } from '../../../tests/factories/bookReadingTestFactory/bookReadingTestFactory.js';
 import { type BookReadingTestUtils } from '../../../tests/utils/bookReadingTestUtils/bookReadingTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
+import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
 
 describe('BookReadingRepositoryImpl', () => {
@@ -30,6 +31,8 @@ describe('BookReadingRepositoryImpl', () => {
   let userTestUtils: UserTestUtils;
 
   let userBookTestUtils: UserBookTestUtils;
+
+  let genreTestUtils: GenreTestUtils;
 
   const bookReadingTestFactory = new BookReadingTestFactory();
 
@@ -52,7 +55,16 @@ describe('BookReadingRepositoryImpl', () => {
 
     userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
 
-    testUtils = [bookTestUtils, bookshelfTestUtils, userTestUtils, bookReadingTestUtils, userBookTestUtils];
+    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+
+    testUtils = [
+      genreTestUtils,
+      bookTestUtils,
+      bookshelfTestUtils,
+      userTestUtils,
+      bookReadingTestUtils,
+      userBookTestUtils,
+    ];
 
     for (const testUtil of testUtils) {
       await testUtil.truncate();
@@ -85,10 +97,13 @@ describe('BookReadingRepositoryImpl', () => {
 
       const book = await bookTestUtils.createAndPersist();
 
+      const genre = await genreTestUtils.createAndPersist();
+
       const userBook = await userBookTestUtils.createAndPersist({
         input: {
           bookshelfId: bookshelf.id,
           bookId: book.id,
+          genreId: genre.id,
         },
       });
 
@@ -134,10 +149,13 @@ describe('BookReadingRepositoryImpl', () => {
 
       const book = await bookTestUtils.createAndPersist();
 
+      const genre = await genreTestUtils.createAndPersist();
+
       const userBook = await userBookTestUtils.createAndPersist({
         input: {
           bookshelfId: bookshelf.id,
           bookId: book.id,
+          genreId: genre.id,
         },
       });
 
@@ -177,10 +195,13 @@ describe('BookReadingRepositoryImpl', () => {
 
       const book = await bookTestUtils.createAndPersist();
 
+      const genre = await genreTestUtils.createAndPersist();
+
       const userBook = await userBookTestUtils.createAndPersist({
         input: {
           bookshelfId: bookshelf.id,
           bookId: book.id,
+          genreId: genre.id,
         },
       });
 
@@ -214,10 +235,13 @@ describe('BookReadingRepositoryImpl', () => {
 
       const book = await bookTestUtils.createAndPersist();
 
+      const genre = await genreTestUtils.createAndPersist();
+
       const userBook = await userBookTestUtils.createAndPersist({
         input: {
           bookshelfId: bookshelf.id,
           bookId: book.id,
+          genreId: genre.id,
         },
       });
 
@@ -256,10 +280,13 @@ describe('BookReadingRepositoryImpl', () => {
 
       const book = await bookTestUtils.createAndPersist();
 
+      const genre = await genreTestUtils.createAndPersist();
+
       const userBook = await userBookTestUtils.createAndPersist({
         input: {
           bookshelfId: bookshelf.id,
           bookId: book.id,
+          genreId: genre.id,
         },
       });
 
@@ -300,10 +327,13 @@ describe('BookReadingRepositoryImpl', () => {
 
       const book = await bookTestUtils.createAndPersist();
 
+      const genre = await genreTestUtils.createAndPersist();
+
       const userBook = await userBookTestUtils.createAndPersist({
         input: {
           bookshelfId: bookshelf.id,
           bookId: book.id,
+          genreId: genre.id,
         },
       });
 
@@ -331,10 +361,13 @@ describe('BookReadingRepositoryImpl', () => {
 
       const book = await bookTestUtils.createAndPersist();
 
+      const genre = await genreTestUtils.createAndPersist();
+
       const userBook = await userBookTestUtils.createAndPersist({
         input: {
           bookshelfId: bookshelf.id,
           bookId: book.id,
+          genreId: genre.id,
         },
       });
 
@@ -398,10 +431,13 @@ describe('BookReadingRepositoryImpl', () => {
 
       const book = await bookTestUtils.createAndPersist();
 
+      const genre = await genreTestUtils.createAndPersist();
+
       const userBook = await userBookTestUtils.createAndPersist({
         input: {
           bookshelfId: bookshelf.id,
           bookId: book.id,
+          genreId: genre.id,
         },
       });
 

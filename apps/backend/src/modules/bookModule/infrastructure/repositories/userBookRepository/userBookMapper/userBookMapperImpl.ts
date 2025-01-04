@@ -32,8 +32,8 @@ export class UserBookMapperImpl implements UserBookMapper {
         authorNames,
         authorApprovals,
         authorCreatedAtDates,
-        genreIds,
-        genreNames,
+        genreId,
+        genreName,
         collectionIds,
         collectionNames,
         collectionUserIds,
@@ -80,17 +80,11 @@ export class UserBookMapperImpl implements UserBookMapper {
               : [],
           imageUrl: bookImageUrl ?? undefined,
         },
-        genres:
-          genreIds && genreNames
-            ? genreIds
-                .filter((genreId) => genreId !== null)
-                .map((genreId, index) => {
-                  return new Genre({
-                    id: genreId,
-                    name: genreNames[index] as string,
-                  });
-                })
-            : [],
+        genreId,
+        genre: new Genre({
+          id: genreId,
+          name: genreName,
+        }),
         readings:
           readingIds && readingStartedAtDates && readingEndedAtDates && readingRatings && readingComments
             ? readingIds

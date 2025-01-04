@@ -13,6 +13,7 @@ import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestU
 import { symbols } from '../../../symbols.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
 import { type BorrowingTestUtils } from '../../../tests/utils/borrowingTestUtils/borrowingTestUtils.js';
+import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
 
 describe('FindBorrowingsQueryHandlerImpl', () => {
@@ -27,6 +28,8 @@ describe('FindBorrowingsQueryHandlerImpl', () => {
   let bookshelfTestUtils: BookshelfTestUtils;
 
   let userTestUtils: UserTestUtils;
+
+  let genreTestUtils: GenreTestUtils;
 
   let userBookTestUtils: UserBookTestUtils;
 
@@ -49,7 +52,16 @@ describe('FindBorrowingsQueryHandlerImpl', () => {
 
     userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
 
-    testUtils = [bookTestUtils, bookshelfTestUtils, userTestUtils, borrowingTestUtils, userBookTestUtils];
+    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+
+    testUtils = [
+      genreTestUtils,
+      bookTestUtils,
+      bookshelfTestUtils,
+      userTestUtils,
+      borrowingTestUtils,
+      userBookTestUtils,
+    ];
 
     for (const testUtil of testUtils) {
       await testUtil.truncate();
@@ -97,10 +109,13 @@ describe('FindBorrowingsQueryHandlerImpl', () => {
 
     const book = await bookTestUtils.createAndPersist();
 
+    const genre = await genreTestUtils.createAndPersist();
+
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookId: book.id,
         bookshelfId: bookshelf.id,
+        genreId: genre.id,
       },
     });
 
@@ -123,10 +138,13 @@ describe('FindBorrowingsQueryHandlerImpl', () => {
 
     const book = await bookTestUtils.createAndPersist();
 
+    const genre = await genreTestUtils.createAndPersist();
+
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookId: book.id,
         bookshelfId: bookshelf.id,
+        genreId: genre.id,
       },
     });
 

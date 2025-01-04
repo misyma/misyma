@@ -4,7 +4,6 @@ import { type BookFormat } from '../book/bookFormat.js';
 import { type Language } from '../book/language.js';
 import { type BookReading } from '../bookReading/bookReading.js';
 import { type Collection } from '../collection/collection.js';
-import { type Genre } from '../genre/genre.js';
 
 export interface UserBook {
   readonly id: string;
@@ -28,7 +27,8 @@ export interface UserBook {
   readonly isFavorite: boolean;
   readonly bookshelfId: string;
   readonly createdAt: string;
-  readonly genres: Genre[];
+  readonly genreId: string;
+  readonly genreName: string;
   readonly collections: Collection[];
   readonly readings: BookReading[];
 }

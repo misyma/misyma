@@ -14,6 +14,7 @@ import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { symbols } from '../../../symbols.js';
 import { type BookReadingTestUtils } from '../../../tests/utils/bookReadingTestUtils/bookReadingTestUtils.js';
+import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 
 describe('DeleteBookReadingCommandHandlerImpl', () => {
   let commandHandler: DeleteBookReadingCommandHandler;
@@ -27,6 +28,8 @@ describe('DeleteBookReadingCommandHandlerImpl', () => {
   let bookshelfTestUtils: BookshelfTestUtils;
 
   let userTestUtils: UserTestUtils;
+
+  let genreTestUtils: GenreTestUtils;
 
   let userBookTestUtils: UserBookTestUtils;
 
@@ -49,7 +52,16 @@ describe('DeleteBookReadingCommandHandlerImpl', () => {
 
     userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
 
-    testUtils = [bookTestUtils, bookshelfTestUtils, userTestUtils, bookReadingTestUtils, userBookTestUtils];
+    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+
+    testUtils = [
+      genreTestUtils,
+      bookTestUtils,
+      bookshelfTestUtils,
+      userTestUtils,
+      bookReadingTestUtils,
+      userBookTestUtils,
+    ];
 
     for (const testUtil of testUtils) {
       await testUtil.truncate();
@@ -95,10 +107,13 @@ describe('DeleteBookReadingCommandHandlerImpl', () => {
 
     const book = await bookTestUtils.createAndPersist();
 
+    const genre = await genreTestUtils.createAndPersist();
+
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookshelfId: bookshelf.id,
         bookId: book.id,
+        genreId: genre.id,
       },
     });
 

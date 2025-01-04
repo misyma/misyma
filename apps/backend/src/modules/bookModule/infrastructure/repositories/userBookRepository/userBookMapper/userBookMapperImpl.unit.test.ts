@@ -1,11 +1,15 @@
 import { beforeEach, expect, describe, it } from 'vitest';
 
 import { UserBookMapperImpl } from './userBookMapperImpl.js';
+import { Genre } from '../../../../domain/entities/genre/genre.js';
 import { BookTestFactory } from '../../../../tests/factories/bookTestFactory/bookTestFactory.js';
+import { GenreTestFactory } from '../../../../tests/factories/genreTestFactory/genreTestFactory.js';
 import { UserBookTestFactory } from '../../../../tests/factories/userBookTestFactory/userBookTestFactory.js';
 
 describe('UserBookMapperImpl', () => {
   let userBookMapperImpl: UserBookMapperImpl;
+
+  const genreTestFactory = new GenreTestFactory();
 
   const bookTestFactory = new BookTestFactory();
 
@@ -16,9 +20,14 @@ describe('UserBookMapperImpl', () => {
   });
 
   it('maps from UserBookRawEntity to UserBook', () => {
+    const genre = genreTestFactory.createRaw();
+
     const book = bookTestFactory.createRaw();
 
-    const userBook = userBookTestFactory.createRaw({ bookId: book.id });
+    const userBook = userBookTestFactory.createRaw({
+      bookId: book.id,
+      genreId: genre.id,
+    });
 
     const userBooks = userBookMapperImpl.mapRawWithJoinsToDomain([
       {
@@ -40,12 +49,12 @@ describe('UserBookMapperImpl', () => {
         isFavorite: userBook.isFavorite,
         bookshelfId: userBook.bookshelfId,
         createdAt: userBook.createdAt,
+        genreId: genre.id,
+        genreName: genre.name,
         authorIds: [],
         authorNames: [],
         authorApprovals: [],
         authorCreatedAtDates: [],
-        genreIds: [],
-        genreNames: [],
         collectionIds: [],
         collectionNames: [],
         collectionUserIds: [],
@@ -68,6 +77,11 @@ describe('UserBookMapperImpl', () => {
           bookshelfId: userBook.bookshelfId,
           createdAt: userBook.createdAt,
           bookId: userBook.bookId,
+          genreId: genre.id,
+          genre: new Genre({
+            id: genre.id,
+            name: genre.name,
+          }),
           book: {
             id: book.id,
             title: book.title,
@@ -83,7 +97,6 @@ describe('UserBookMapperImpl', () => {
             createdAt: book.createdAt,
             authors: [],
           },
-          genres: [],
           readings: [],
           collections: [],
         },

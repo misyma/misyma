@@ -8,7 +8,6 @@ import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourc
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type BookshelfRepository } from '../../../../bookshelfModule/domain/repositories/bookshelfRepository/bookshelfRepository.js';
 import { type Collection } from '../../../domain/entities/collection/collection.js';
-import { type Genre } from '../../../domain/entities/genre/genre.js';
 import { type BookRepository } from '../../../domain/repositories/bookRepository/bookRepository.js';
 import { type CollectionRepository } from '../../../domain/repositories/collectionRepository/collectionRepository.js';
 import { type GenreRepository } from '../../../domain/repositories/genreRepository/genreRepository.js';
@@ -25,7 +24,7 @@ export class CreateUserBookCommandHandlerImpl implements CreateUserBookCommandHa
   ) {}
 
   public async execute(payload: CreateUserBookCommandHandlerPayload): Promise<CreateUserBookCommandHandlerResult> {
-    const { userId, bookshelfId, bookId, status, imageUrl, genreIds, collectionIds, isFavorite } = payload;
+    const { userId, bookshelfId, bookId, status, imageUrl, genreId, collectionIds, isFavorite } = payload;
 
     this.loggerService.debug({
       message: 'Creating UserBook...',
@@ -34,7 +33,7 @@ export class CreateUserBookCommandHandlerImpl implements CreateUserBookCommandHa
       bookId,
       status,
       imageUrl,
-      genreIds,
+      genreId,
       isFavorite,
       collectionIds,
     });
@@ -82,21 +81,13 @@ export class CreateUserBookCommandHandlerImpl implements CreateUserBookCommandHa
       });
     }
 
-    let genres: Genre[] = [];
+    const existingGenre = await this.genreRepository.findGenre({ id: genreId });
 
-    if (genreIds && genreIds.length) {
-      genres = await this.genreRepository.findGenres({
-        ids: genreIds,
-        page: 1,
-        pageSize: genreIds.length,
+    if (!existingGenre) {
+      throw new OperationNotValidError({
+        reason: 'Genre does not exist.',
+        id: genreId,
       });
-
-      if (genres.length !== genreIds.length) {
-        throw new OperationNotValidError({
-          reason: 'Some genres do not exist.',
-          ids: genreIds,
-        });
-      }
     }
 
     let collections: Collection[] = [];
@@ -124,7 +115,7 @@ export class CreateUserBookCommandHandlerImpl implements CreateUserBookCommandHa
         isFavorite,
         createdAt: new Date(),
         imageUrl,
-        genres,
+        genreId,
         collections,
         readings: [],
       },

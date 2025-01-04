@@ -6,7 +6,6 @@ import { type SortingType } from '../sortingType.js';
 
 export enum UserBookExpandField {
   collections = 'collections',
-  genres = 'genres',
   readings = 'readings',
 }
 
@@ -25,7 +24,7 @@ export interface FindUserBooksQueryParams {
   readonly page?: number;
   readonly pageSize?: number;
   readonly sortDate?: SortingType;
-  // comma separated list of fields to expand, e.g. collections,genres,readings
+  // comma separated list of fields to expand, e.g. collections,readings
   readonly expandFields?: string;
 }
 

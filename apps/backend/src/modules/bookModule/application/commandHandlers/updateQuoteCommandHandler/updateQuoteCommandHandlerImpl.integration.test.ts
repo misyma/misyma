@@ -14,6 +14,7 @@ import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { Quote } from '../../../domain/entities/quote/quote.js';
 import { symbols } from '../../../symbols.js';
+import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 import { type QuoteTestUtils } from '../../../tests/utils/quoteTestUtils/quoteTestUtils.js';
 
 describe('UpdateQuoteCommandHandlerImpl', () => {
@@ -24,6 +25,8 @@ describe('UpdateQuoteCommandHandlerImpl', () => {
   let quoteTestUtils: QuoteTestUtils;
 
   let bookTestUtils: BookTestUtils;
+
+  let genreTestUtils: GenreTestUtils;
 
   let bookshelfTestUtils: BookshelfTestUtils;
 
@@ -50,7 +53,9 @@ describe('UpdateQuoteCommandHandlerImpl', () => {
 
     userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
 
-    testUtils = [bookTestUtils, bookshelfTestUtils, userTestUtils, quoteTestUtils, userBookTestUtils];
+    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+
+    testUtils = [genreTestUtils, bookTestUtils, bookshelfTestUtils, userTestUtils, quoteTestUtils, userBookTestUtils];
 
     for (const testUtil of testUtils) {
       await testUtil.truncate();
@@ -96,10 +101,13 @@ describe('UpdateQuoteCommandHandlerImpl', () => {
 
     const book = await bookTestUtils.createAndPersist();
 
+    const genre = await genreTestUtils.createAndPersist();
+
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookshelfId: bookshelf.id,
         bookId: book.id,
+        genreId: genre.id,
       },
     });
 

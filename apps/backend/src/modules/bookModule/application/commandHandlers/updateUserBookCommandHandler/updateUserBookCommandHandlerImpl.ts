@@ -24,7 +24,7 @@ export class UpdateUserBookCommandHandlerImpl implements UpdateUserBookCommandHa
   ) {}
 
   public async execute(payload: UpdateUserBookPayload): Promise<UpdateUserBookResult> {
-    const { userId, userBookId, bookshelfId, imageUrl, status, isFavorite, genreIds, collectionIds } = payload;
+    const { userId, userBookId, bookshelfId, imageUrl, status, isFavorite, genreId, collectionIds } = payload;
 
     this.loggerService.debug({
       message: 'Updating UserBook...',
@@ -34,7 +34,7 @@ export class UpdateUserBookCommandHandlerImpl implements UpdateUserBookCommandHa
       imageUrl,
       status,
       isFavorite,
-      genreIds,
+      genreId,
       collectionIds,
     });
 
@@ -98,21 +98,17 @@ export class UpdateUserBookCommandHandlerImpl implements UpdateUserBookCommandHa
       userBook.setBookshelfId({ bookshelfId });
     }
 
-    if (genreIds !== undefined) {
-      const genres = await this.genreRepository.findGenres({
-        ids: genreIds,
-        page: 1,
-        pageSize: genreIds.length,
-      });
+    if (genreId) {
+      const genre = await this.genreRepository.findGenre({ id: genreId });
 
-      if (genres.length !== genreIds.length) {
+      if (!genre) {
         throw new OperationNotValidError({
-          reason: 'Some genres do not exist.',
-          ids: genreIds,
+          reason: 'Genre does not exist.',
+          id: genreId,
         });
       }
 
-      userBook.setGenres({ genres });
+      userBook.setGenre({ genre });
     }
 
     if (collectionIds !== undefined) {

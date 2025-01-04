@@ -13,6 +13,7 @@ import { type QuoteRepository } from '../../../domain/repositories/quoteReposito
 import { symbols } from '../../../symbols.js';
 import { QuoteTestFactory } from '../../../tests/factories/quoteTestFactory/quoteTestFactory.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
+import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 import { type QuoteTestUtils } from '../../../tests/utils/quoteTestUtils/quoteTestUtils.js';
 import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
 
@@ -30,6 +31,8 @@ describe('QuoteRepositoryImpl', () => {
   let userTestUtils: UserTestUtils;
 
   let userBookTestUtils: UserBookTestUtils;
+
+  let genreTestUtils: GenreTestUtils;
 
   const quoteTestFactory = new QuoteTestFactory();
 
@@ -52,7 +55,9 @@ describe('QuoteRepositoryImpl', () => {
 
     userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
 
-    testUtils = [bookTestUtils, bookshelfTestUtils, userTestUtils, quoteTestUtils, userBookTestUtils];
+    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+
+    testUtils = [genreTestUtils, bookTestUtils, bookshelfTestUtils, userTestUtils, quoteTestUtils, userBookTestUtils];
 
     for (const testUtil of testUtils) {
       await testUtil.truncate();
@@ -85,10 +90,13 @@ describe('QuoteRepositoryImpl', () => {
 
       const book = await bookTestUtils.createAndPersist();
 
+      const genre = await genreTestUtils.createAndPersist();
+
       const userBook = await userBookTestUtils.createAndPersist({
         input: {
           bookshelfId: bookshelf.id,
           bookId: book.id,
+          genreId: genre.id,
         },
       });
 
@@ -134,10 +142,13 @@ describe('QuoteRepositoryImpl', () => {
 
       const book = await bookTestUtils.createAndPersist();
 
+      const genre = await genreTestUtils.createAndPersist();
+
       const userBook = await userBookTestUtils.createAndPersist({
         input: {
           bookshelfId: bookshelf.id,
           bookId: book.id,
+          genreId: genre.id,
         },
       });
 
@@ -179,10 +190,13 @@ describe('QuoteRepositoryImpl', () => {
 
       const book = await bookTestUtils.createAndPersist();
 
+      const genre = await genreTestUtils.createAndPersist();
+
       const userBook = await userBookTestUtils.createAndPersist({
         input: {
           bookshelfId: bookshelf.id,
           bookId: book.id,
+          genreId: genre.id,
         },
       });
 
@@ -212,10 +226,13 @@ describe('QuoteRepositoryImpl', () => {
 
       const book = await bookTestUtils.createAndPersist();
 
+      const genre = await genreTestUtils.createAndPersist();
+
       const userBook = await userBookTestUtils.createAndPersist({
         input: {
           bookshelfId: bookshelf.id,
           bookId: book.id,
+          genreId: genre.id,
         },
       });
 
@@ -265,10 +282,13 @@ describe('QuoteRepositoryImpl', () => {
 
       const book = await bookTestUtils.createAndPersist();
 
+      const genre = await genreTestUtils.createAndPersist();
+
       const userBook = await userBookTestUtils.createAndPersist({
         input: {
           bookshelfId: bookshelf.id,
           bookId: book.id,
+          genreId: genre.id,
         },
       });
 

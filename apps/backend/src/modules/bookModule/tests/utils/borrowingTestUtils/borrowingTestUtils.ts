@@ -5,7 +5,7 @@ import { borrowingTable } from '../../../infrastructure/databases/bookDatabase/t
 import { BorrowingTestFactory } from '../../factories/borrowingTestFactory/borrowingTestFactory.js';
 
 interface CreateAndPersistPayload {
-  readonly input?: Partial<BorrowingRawEntity>;
+  readonly input?: Partial<BorrowingRawEntity> & { readonly userBookId: string };
 }
 
 interface FindByIdPayload {
@@ -19,7 +19,7 @@ export class BorrowingTestUtils extends TestUtils {
 
   private readonly borrowingTestFactory = new BorrowingTestFactory();
 
-  public async createAndPersist(payload: CreateAndPersistPayload = { input: {} }): Promise<BorrowingRawEntity> {
+  public async createAndPersist(payload: CreateAndPersistPayload): Promise<BorrowingRawEntity> {
     const { input } = payload;
 
     const borrowing = this.borrowingTestFactory.create(input);

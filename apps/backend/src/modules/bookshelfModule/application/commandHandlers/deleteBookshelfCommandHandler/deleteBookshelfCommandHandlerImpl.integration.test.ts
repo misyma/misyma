@@ -10,6 +10,7 @@ import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotF
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type BookTestUtils } from '../../../../bookModule/tests/utils/bookTestUtils/bookTestUtils.js';
+import { type GenreTestUtils } from '../../../../bookModule/tests/utils/genreTestUtils/genreTestUtils.js';
 import { type UserBookTestUtils } from '../../../../bookModule/tests/utils/userBookTestUtils/userBookTestUtils.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { symbols } from '../../../symbols.js';
@@ -25,6 +26,8 @@ describe('DeleteBookshelfCommandHandlerImpl', () => {
   let bookshelfTestUtils: BookshelfTestUtils;
 
   let bookTestUtils: BookTestUtils;
+
+  let genreTestUtils: GenreTestUtils;
 
   let userBookTestUtils: UserBookTestUtils;
 
@@ -49,9 +52,9 @@ describe('DeleteBookshelfCommandHandlerImpl', () => {
 
     userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
 
-    testUtils = [bookTestUtils, bookshelfTestUtils, userTestUtils, userBookTestUtils];
+    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
 
-    testUtils = [userTestUtils, bookshelfTestUtils];
+    testUtils = [genreTestUtils, bookTestUtils, bookshelfTestUtils, userTestUtils, userBookTestUtils];
 
     for (const testUtil of testUtils) {
       await testUtil.truncate();
@@ -160,10 +163,13 @@ describe('DeleteBookshelfCommandHandlerImpl', () => {
 
     const book = await bookTestUtils.createAndPersist();
 
+    const genre = await genreTestUtils.createAndPersist();
+
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookId: book.id,
         bookshelfId: bookshelf1.id,
+        genreId: genre.id,
       },
     });
 

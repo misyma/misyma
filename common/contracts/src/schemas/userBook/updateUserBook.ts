@@ -10,7 +10,7 @@ export interface UpdateUserBookRequestBody {
   readonly status?: ReadingStatus;
   readonly isFavorite?: boolean;
   readonly bookshelfId?: string;
-  readonly genreIds?: string[];
+  readonly genreId?: string;
   readonly collectionIds?: string[];
 }
 
