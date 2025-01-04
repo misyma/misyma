@@ -1,4 +1,4 @@
-import { FC, MouseEvent, useEffect, useState } from 'react';
+import { FC, MouseEvent, useState } from 'react';
 import { HiHeart, HiOutlineHeart } from 'react-icons/hi';
 import { cn } from '../../../common/lib/utils.js';
 import { useSelector } from 'react-redux';
@@ -7,16 +7,18 @@ import { useUpdateUserBookMutation } from '../../api/user/mutations/updateUserBo
 import { useQueryClient } from '@tanstack/react-query';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys.js';
 import { UserBook } from '@common/contracts';
-import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery.js';
-import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions.js';
-import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery.js';
 
 interface Props {
   book: UserBook;
   className?: string;
+  pageNumber: number;
 }
 
-export const AltFavoriteBookButton: FC<Props> = ({ book, className }) => {
+export const AltFavoriteBookButton: FC<Props> = ({
+  book,
+  className,
+  pageNumber,
+}) => {
   const [isAnimating, setIsAnimating] = useState(false);
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
@@ -25,16 +27,6 @@ export const AltFavoriteBookButton: FC<Props> = ({ book, className }) => {
   const [isFavorite, setIsFavorite] = useState(book?.isFavorite);
   const { mutateAsync: updateUserBook, isPending } = useUpdateUserBookMutation(
     {}
-  );
-
-  const { data } = useFindUserQuery();
-
-  const { data: userBookData } = useErrorHandledQuery(
-    FindUserBookByIdQueryOptions({
-      userBookId: book.id,
-      userId: data?.id ?? '',
-      accessToken: accessToken as string,
-    })
   );
 
   const onIsFavoriteChange = async (
@@ -64,24 +56,18 @@ export const AltFavoriteBookButton: FC<Props> = ({ book, className }) => {
               query.queryKey[0] === BookApiQueryKeys.findUserBookById &&
               query.queryKey[1] === book?.id,
           }),
+          queryClient.invalidateQueries({
+            predicate: (query) =>
+              query.queryKey[0] === BookApiQueryKeys.findUserBooksBy &&
+              query.queryKey.includes('infinite-query') &&
+              query.queryKey[3] === pageNumber,
+          }),
         ]);
       } finally {
-        setTimeout(() => setIsAnimating(false), 300); // Match this with your CSS animation duration
+        setTimeout(() => setIsAnimating(false), 300);
       }
     }
   };
-
-  useEffect(() => {
-    if (userBookData?.isFavorite === book.isFavorite) {
-      setIsFavorite(book.isFavorite);
-    }
-    if (!userBookData?.isFavorite) {
-      setIsFavorite(book.isFavorite);
-    }
-    if (userBookData && userBookData?.isFavorite !== book.isFavorite) {
-      setIsFavorite(userBookData.isFavorite);
-    }
-  }, [book, userBookData]);
 
   return (
     <div className="h-8 w-8">
