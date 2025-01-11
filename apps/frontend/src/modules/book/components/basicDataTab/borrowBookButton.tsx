@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { type FC, forwardRef, useMemo, useState } from 'react';
+import { type FC, useMemo, useState } from 'react';
 import { HiArrowsRightLeft } from 'react-icons/hi2';
 import { useSelector } from 'react-redux';
 
@@ -16,31 +16,6 @@ import { invalidateBooksByBookshelfIdQuery } from '../../api/user/queries/findBo
 import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 import { invalidateFindUserBooksByQuery } from '../../api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
 import { CreateBorrowingModal } from '../createBorrowingModal/createBorrowingModal';
-
-interface BorrowBookIconProps {
-  isBorrowingBookshelf: boolean;
-  onClick: () => void;
-}
-
-const BorrowBookIcon = forwardRef<HTMLButtonElement, BorrowBookIconProps>(({ isBorrowingBookshelf, onClick }, ref) => {
-  return (
-    <Button
-      disabled={isBorrowingBookshelf}
-      onClick={onClick}
-      variant="ghost"
-      size="icon"
-      style={{
-        background: 'none',
-      }}
-      ref={ref}
-    >
-      <HiArrowsRightLeft
-        className={cn('cursor-pointer text-primary h-8 w-8', isBorrowingBookshelf ? 'text-disabled' : '')}
-        onClick={onClick}
-      ></HiArrowsRightLeft>
-    </Button>
-  );
-});
 
 interface BorrowBookButtonProps {
   bookId: string;
@@ -72,10 +47,20 @@ export const BorrowBookButton: FC<BorrowBookButtonProps> = ({ bookId, currentBoo
       <TooltipProvider delayDuration={0}>
         <Tooltip>
           <TooltipTrigger asChild>
-            <BorrowBookIcon
-              isBorrowingBookshelf={isBorrowingBookshelf}
+            <Button
+              disabled={isBorrowingBookshelf}
               onClick={() => setCreateBookBorrowingModalOpen(true)}
-            />
+              variant="ghost"
+              size="icon"
+              style={{
+                background: 'none',
+              }}
+            >
+              <HiArrowsRightLeft
+                className={cn('cursor-pointer text-primary h-8 w-8', isBorrowingBookshelf ? 'text-disabled' : '')}
+                onClick={() => setCreateBookBorrowingModalOpen(true)}
+              ></HiArrowsRightLeft>
+            </Button>
           </TooltipTrigger>
           <TooltipContent>
             <p>Wypożycz książkę</p>

@@ -24,6 +24,7 @@ import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery
 import { useUpdateUserBookMutation } from '../../api/user/mutations/updateUserBookMutation/updateUserBookMutation';
 import { useUploadBookImageMutation } from '../../api/user/mutations/uploadBookImageMutation/uploadBookImageMutation';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
+import { invalidateFindUserBooksByQuery } from '../../api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
 
 const changeUserBookDataSchema = z.object({
   image: z.optional(
@@ -99,6 +100,19 @@ export const UpdateUserBookForm: FC<Props> = ({ bookId, userBook, onSubmit, onCa
       queryClient.invalidateQueries({
         predicate: (query) =>
           query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId && query.queryKey[1] === userBook?.bookshelfId,
+      }),
+      queryClient.invalidateQueries({
+        predicate: ({ queryKey }) => invalidateFindUserBooksByQuery({}, queryKey, true),
+      }),
+      queryClient.invalidateQueries({
+        predicate: ({ queryKey }) =>
+          invalidateFindUserBooksByQuery(
+            {
+              bookshelfId: userBook?.bookshelfId,
+            },
+            queryKey,
+            false,
+          ),
       }),
     ]);
   };

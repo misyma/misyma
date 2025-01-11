@@ -1,4 +1,3 @@
-import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@radix-ui/react-tooltip';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { type FC, useMemo } from 'react';
 import { HiOutlineFilter } from 'react-icons/hi';
@@ -8,6 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useFindUserBookshelfsQuery } from '../../../bookshelf/api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 import { BooksSortButton } from '../../../common/components/booksSortButton/booksSortButton';
 import { Button } from '../../../common/components/button/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../common/components/tooltip/tooltip';
 import {
   myBooksStateSelectors,
   setFilterVisible,
