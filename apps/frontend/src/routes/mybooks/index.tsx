@@ -125,6 +125,8 @@ const BookPageFiltersBar = () => {
   const navigate = Route.useNavigate();
   const search = Route.useSearch();
 
+  const isFilterVisible = useSelector(myBooksStateSelectors.getFilterVisibility);
+
   const updateSearch = (updates: Partial<typeof search>) => {
     navigate({
       to: '',
@@ -154,6 +156,7 @@ const BookPageFiltersBar = () => {
       showClearButton={hasAnyFilter}
       className="grid grid-cols-3"
       onClearAll={onClearAll}
+      open={isFilterVisible}
       onApplyFilters={() => {}}
     >
       <AuthorSearchFilter
@@ -203,9 +206,6 @@ const BookPageFiltersBar = () => {
       />
       <YearRangeFilter
         filter={{
-          id: 'year-range-filter',
-          key: 'yearRangeFilter',
-          type: 'text',
           label: 'Wydana między',
         }}
         onRemoveFilter={() =>
@@ -216,8 +216,8 @@ const BookPageFiltersBar = () => {
         }
         setFilterAction={([after, before]) =>
           updateSearch({
-            releaseYearAfter: after,
-            releaseYearBefore: before,
+            releaseYearAfter: after ?? undefined,
+            releaseYearBefore: before ?? undefined,
           })
         }
         initialValue={
@@ -291,8 +291,6 @@ const MyBooksVirtualizedBooksList = () => {
 };
 
 const BooksPage: FC = () => {
-  const isFilterVisible = useSelector(myBooksStateSelectors.getFilterVisibility);
-
   return (
     <motion.div
       key={'books-view'}
@@ -302,7 +300,7 @@ const BooksPage: FC = () => {
       transition={{ duration: 0.3 }}
       className="w-full px-8"
     >
-      {isFilterVisible && <BookPageFiltersBar />}
+      <BookPageFiltersBar />
       <MyBooksVirtualizedBooksList />
     </motion.div>
   );

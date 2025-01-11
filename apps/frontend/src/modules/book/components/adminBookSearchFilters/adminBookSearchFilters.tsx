@@ -61,6 +61,7 @@ export const AdminBookSearchFilter: FC<AdminBookSearchFilterProps> = ({
       onClearAll={onClearAllInternal}
       className={cn('sm:col-span-4 md:col-span-5 lg:col-span-6 grid grid-cols-3 px-2', isFilterVisible ? '' : 'hidden')}
       actionButtonClassName={isFilterVisible ? '' : 'hidden'}
+      open={!!isFilterVisible}
     >
       <AuthorSearchFilter
         setFilterAction={(val) => {
