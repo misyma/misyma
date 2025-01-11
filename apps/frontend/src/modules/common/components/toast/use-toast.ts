@@ -6,7 +6,7 @@ const TOAST_LIMIT = 1;
 
 const TOAST_REMOVE_DELAY = 300;
 
-const DEFAULT_TOAST_DURATION = 2000 * 40; // Default duration in milliseconds
+const DEFAULT_TOAST_DURATION = 2000; // Default duration in milliseconds
 
 type ToasterToast = ToastProps & {
   id: string;
