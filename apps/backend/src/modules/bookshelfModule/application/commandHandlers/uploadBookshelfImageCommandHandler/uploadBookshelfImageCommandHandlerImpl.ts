@@ -1,19 +1,17 @@
 import {
-  type UploadUserBookImageCommandHandlerResult,
-  type UploadUserBookImageCommandHandler,
-  type UploadUserBookImageCommandHandlerPayload,
-} from './uploadUserBookImageCommandHandler.js';
+  type UploadBookshelfImageCommandHandlerResult,
+  type UploadBookshelfImageCommandHandler,
+  type UploadBookshelfImageCommandHandlerPayload,
+} from './uploadBookshelfImageCommandHandler.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type Config } from '../../../../../core/config.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type S3Service } from '../../../../../libs/s3/services/s3Service/s3Service.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
-import { type BookshelfRepository } from '../../../../bookshelfModule/domain/repositories/bookshelfRepository/bookshelfRepository.js';
-import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
+import { type BookshelfRepository } from '../../../domain/repositories/bookshelfRepository/bookshelfRepository.js';
 
-export class UploadUserBookImageCommandHandlerImpl implements UploadUserBookImageCommandHandler {
+export class UploadBookshelfImageCommandHandlerImpl implements UploadBookshelfImageCommandHandler {
   public constructor(
-    private readonly userBookRepository: UserBookRepository,
     private readonly bookshelfRepository: BookshelfRepository,
     private readonly s3Service: S3Service,
     private readonly loggerService: LoggerService,
@@ -22,44 +20,35 @@ export class UploadUserBookImageCommandHandlerImpl implements UploadUserBookImag
   ) {}
 
   public async execute(
-    payload: UploadUserBookImageCommandHandlerPayload,
-  ): Promise<UploadUserBookImageCommandHandlerResult> {
-    const { userId, userBookId, contentType, data } = payload;
-
-    const existingUserBook = await this.userBookRepository.findUserBook({ id: userBookId });
-
-    if (!existingUserBook) {
-      throw new OperationNotValidError({
-        reason: 'UserBook does not exist.',
-        id: userBookId,
-      });
-    }
+    payload: UploadBookshelfImageCommandHandlerPayload,
+  ): Promise<UploadBookshelfImageCommandHandlerResult> {
+    const { userId, bookshelfId, contentType, data } = payload;
 
     const existingBookshelf = await this.bookshelfRepository.findBookshelf({
-      where: { id: existingUserBook.getBookshelfId() },
+      where: { id: bookshelfId },
     });
 
     if (!existingBookshelf) {
       throw new OperationNotValidError({
         reason: 'Bookshelf does not exist.',
-        id: existingUserBook.getBookshelfId(),
+        id: bookshelfId,
       });
     }
 
     if (existingBookshelf.getUserId() !== userId) {
       throw new OperationNotValidError({
-        reason: 'User does not own this UserBook.',
+        reason: 'User does not own this Bookshelf.',
         userId,
-        userBookId,
+        bookshelfId,
       });
     }
 
     const { bucketName } = this.config.aws;
 
     this.loggerService.debug({
-      message: 'Uploading UserBook image...',
+      message: 'Uploading Bookshelf image...',
       bucketName,
-      userBookId,
+      bookshelfId,
       contentType,
     });
 
@@ -75,39 +64,39 @@ export class UploadUserBookImageCommandHandlerImpl implements UploadUserBookImag
     const imageUrl = `${this.config.aws.cloudfrontUrl}/${imageId}`;
 
     this.loggerService.debug({
-      message: 'UserBook image uploaded.',
+      message: 'Bookshelf image uploaded.',
       bucketName,
-      userBookId,
+      bookshelfId,
       imageUrl,
       contentType,
     });
 
-    const previousImageUrl = existingUserBook.getImageUrl();
+    const previousImageUrl = existingBookshelf.getImageUrl();
 
-    existingUserBook.setImageUrl({ imageUrl });
+    existingBookshelf.setImageUrl({ imageUrl });
 
-    await this.userBookRepository.saveUserBook({ userBook: existingUserBook });
+    await this.bookshelfRepository.saveBookshelf({ bookshelf: existingBookshelf });
 
     if (previousImageUrl) {
       await this.deletePreviousImage({
-        userBookId,
+        bookshelfId,
         previousImageUrl,
       });
     }
 
     this.loggerService.debug({
-      message: 'UserBook saved.',
-      userBookId,
+      message: 'Bookshelf saved.',
+      bookshelfId,
     });
 
-    return { userBook: existingUserBook };
+    return { bookshelf: existingBookshelf };
   }
 
   private async deletePreviousImage({
-    userBookId,
+    bookshelfId,
     previousImageUrl,
   }: {
-    readonly userBookId: string;
+    readonly bookshelfId: string;
     readonly previousImageUrl: string;
   }): Promise<void> {
     const previousImageId = previousImageUrl.split('/').slice(-1)[0];
@@ -119,9 +108,9 @@ export class UploadUserBookImageCommandHandlerImpl implements UploadUserBookImag
     const { bucketName } = this.config.aws;
 
     this.loggerService.debug({
-      message: 'Deleting previous UserBook image...',
+      message: 'Deleting previous Bookshelf image...',
       bucketName,
-      userBookId,
+      bookshelfId,
       previousImageId,
     });
 
@@ -132,9 +121,9 @@ export class UploadUserBookImageCommandHandlerImpl implements UploadUserBookImag
       });
     } catch (error) {
       this.loggerService.error({
-        message: 'Error deleting previous UserBook image.',
+        message: 'Error deleting previous Bookshelf image.',
         bucketName,
-        userBookId,
+        bookshelfId,
         previousImageId,
         error,
       });
@@ -143,9 +132,9 @@ export class UploadUserBookImageCommandHandlerImpl implements UploadUserBookImag
     }
 
     this.loggerService.debug({
-      message: 'Previous UserBook image deleted.',
+      message: 'Previous Bookshelf image deleted.',
       bucketName,
-      userBookId,
+      bookshelfId,
       previousImageId,
     });
   }

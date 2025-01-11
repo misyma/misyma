@@ -12,6 +12,7 @@ export class BookshelfTestFactory {
       userId: Generator.uuid(),
       type: BookshelfType.standard,
       createdAt: Generator.pastDate(),
+      imageUrl: Generator.imageUrl(),
       ...input,
     });
   }
@@ -23,6 +24,7 @@ export class BookshelfTestFactory {
       userId: Generator.uuid(),
       type: BookshelfType.standard,
       createdAt: Generator.pastDate(),
+      imageUrl: Generator.imageUrl(),
       ...input,
     };
   }

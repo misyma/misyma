@@ -5,6 +5,7 @@ export const symbols = {
   findBookshelvesByUserIdQueryHandler: Symbol('findBookshelvesByUserIdQueryHandler'),
   createBookshelfCommandHandler: Symbol('createBookshelfCommandHandler'),
   updateBookshelfCommandHandler: Symbol('updateBookshelfCommandHandler'),
+  uploadBookshelfImageCommandHandler: Symbol('uploadBookshelfImageCommandHandler'),
   deleteBookshelfCommandHandler: Symbol('deleteBookshelfCommandHandler'),
   bookshelfHttpController: Symbol('bookshelfHttpController'),
 };

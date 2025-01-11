@@ -33,6 +33,13 @@ import {
   updateBookshelfPathParamsDtoSchema,
   updateBookshelfResponseBodyDtoSchema,
 } from './schemas/updateBookshelfSchema.js';
+import {
+  uploadBookshelfImagePathParamsDtoSchema,
+  uploadBookshelfImageResponseBodyDtoSchema,
+  type UploadBookshelfImagePathParamsDto,
+  type UploadBookshelfImageResponseBodyDtoSchema,
+} from './schemas/uploadBookshelfImageSchema.js';
+import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
@@ -48,13 +55,10 @@ import { type AccessControlService } from '../../../../authModule/application/se
 import { type CreateBookshelfCommandHandler } from '../../../application/commandHandlers/createBookshelfCommandHandler/createBookshelfCommandHandler.js';
 import { type DeleteBookshelfCommandHandler } from '../../../application/commandHandlers/deleteBookshelfCommandHandler/deleteBookshelfCommandHandler.js';
 import { type UpdateBookshelfCommandHandler } from '../../../application/commandHandlers/updateBookshelfCommandHandler/updateBookshelfCommandHandler.js';
+import { type UploadBookshelfImageCommandHandler } from '../../../application/commandHandlers/uploadBookshelfImageCommandHandler/uploadBookshelfImageCommandHandler.js';
 import { type FindBookshelfByIdQueryHandler } from '../../../application/queryHandlers/findBookshelfByIdQueryHandler/findBookshelfByIdQueryHandler.js';
 import { type FindBookshelvesQueryHandler } from '../../../application/queryHandlers/findBookshelvesQueryHandler/findBookshelvesQueryHandler.js';
 import { type Bookshelf } from '../../../domain/entities/bookshelf/bookshelf.js';
-
-interface MapBookshelfToBookshelfDtoPayload {
-  readonly bookshelf: Bookshelf;
-}
 
 export class BookshelfHttpController implements HttpController {
   public readonly basePath = '/bookshelves';
@@ -65,6 +69,7 @@ export class BookshelfHttpController implements HttpController {
     private readonly findBookshelfByIdQueryHandler: FindBookshelfByIdQueryHandler,
     private readonly createBookshelfCommandHandler: CreateBookshelfCommandHandler,
     private readonly updateBookshelfCommandHandler: UpdateBookshelfCommandHandler,
+    private readonly uploadBookshelfImageCommandHandler: UploadBookshelfImageCommandHandler,
     private readonly deleteBookshelfCommandHandler: DeleteBookshelfCommandHandler,
     private readonly accessControlService: AccessControlService,
   ) {}
@@ -143,6 +148,23 @@ export class BookshelfHttpController implements HttpController {
         securityMode: SecurityMode.bearerToken,
       }),
       new HttpRoute({
+        method: HttpMethodName.patch,
+        path: ':bookshelfId/images',
+        description: "Upload bookshelf's image",
+        handler: this.uploadBookshelfImage.bind(this),
+        schema: {
+          request: {
+            pathParams: uploadBookshelfImagePathParamsDtoSchema,
+          },
+          response: {
+            [HttpStatusCode.ok]: {
+              description: "Bookshelf's image uploaded",
+              schema: uploadBookshelfImageResponseBodyDtoSchema,
+            },
+          },
+        },
+      }),
+      new HttpRoute({
         method: HttpMethodName.delete,
         path: '/:bookshelfId',
         handler: this.deleteBookshelf.bind(this),
@@ -184,7 +206,7 @@ export class BookshelfHttpController implements HttpController {
     return {
       statusCode: HttpStatusCode.ok,
       body: {
-        data: bookshelves.map((bookshelf) => this.mapBookshelfToBookshelfDto({ bookshelf })),
+        data: bookshelves.map((bookshelf) => this.mapBookshelfToDto(bookshelf)),
         metadata: {
           page,
           pageSize,
@@ -210,14 +232,14 @@ export class BookshelfHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.ok,
-      body: this.mapBookshelfToBookshelfDto({ bookshelf }),
+      body: this.mapBookshelfToDto(bookshelf),
     };
   }
 
   private async createBookshelf(
     request: HttpRequest<CreateBookshelfBodyDto>,
   ): Promise<HttpCreatedResponse<CreateBookshelfResponseBodyDto>> {
-    const { name } = request.body;
+    const { name, imageUrl } = request.body;
 
     const { userId } = await this.accessControlService.verifyBearerToken({
       requestHeaders: request.headers,
@@ -225,12 +247,13 @@ export class BookshelfHttpController implements HttpController {
 
     const { bookshelf } = await this.createBookshelfCommandHandler.execute({
       name,
+      imageUrl,
       userId,
     });
 
     return {
       statusCode: HttpStatusCode.created,
-      body: this.mapBookshelfToBookshelfDto({ bookshelf }),
+      body: this.mapBookshelfToDto(bookshelf),
     };
   }
 
@@ -243,17 +266,46 @@ export class BookshelfHttpController implements HttpController {
 
     const { bookshelfId } = request.pathParams;
 
-    const { name } = request.body;
+    const { name, imageUrl } = request.body;
 
     const { bookshelf } = await this.updateBookshelfCommandHandler.execute({
       bookshelfId,
-      name,
       userId,
+      name,
+      imageUrl,
     });
 
     return {
       statusCode: HttpStatusCode.ok,
-      body: this.mapBookshelfToBookshelfDto({ bookshelf }),
+      body: this.mapBookshelfToDto(bookshelf),
+    };
+  }
+
+  private async uploadBookshelfImage(
+    request: HttpRequest<undefined, undefined, UploadBookshelfImagePathParamsDto>,
+  ): Promise<HttpOkResponse<UploadBookshelfImageResponseBodyDtoSchema>> {
+    const { userId } = await this.accessControlService.verifyBearerToken({
+      requestHeaders: request.headers,
+    });
+
+    const { bookshelfId } = request.pathParams;
+
+    if (!request.file) {
+      throw new OperationNotValidError({
+        reason: 'No file attached',
+      });
+    }
+
+    const { bookshelf } = await this.uploadBookshelfImageCommandHandler.execute({
+      userId,
+      bookshelfId,
+      data: request.file.data,
+      contentType: request.file.type,
+    });
+
+    return {
+      statusCode: HttpStatusCode.ok,
+      body: this.mapBookshelfToDto(bookshelf),
     };
   }
 
@@ -280,15 +332,21 @@ export class BookshelfHttpController implements HttpController {
     };
   }
 
-  private mapBookshelfToBookshelfDto(payload: MapBookshelfToBookshelfDtoPayload): BookshelfDto {
-    const { bookshelf } = payload;
-
-    return {
+  private mapBookshelfToDto(bookshelf: Bookshelf): BookshelfDto {
+    const bookshelfDto: BookshelfDto = {
       id: bookshelf.getId(),
       name: bookshelf.getName(),
       userId: bookshelf.getUserId(),
       type: bookshelf.getType(),
       createdAt: bookshelf.getCreatedAt().toISOString(),
     };
+
+    const imageUrl = bookshelf.getImageUrl();
+
+    if (imageUrl) {
+      bookshelfDto.imageUrl = imageUrl;
+    }
+
+    return bookshelfDto;
   }
 }

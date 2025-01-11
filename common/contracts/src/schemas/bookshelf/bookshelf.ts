@@ -6,4 +6,5 @@ export interface Bookshelf {
   readonly userId: string;
   readonly type: BookshelfType;
   readonly createdAt: string;
+  readonly imageUrl?: string;
 }

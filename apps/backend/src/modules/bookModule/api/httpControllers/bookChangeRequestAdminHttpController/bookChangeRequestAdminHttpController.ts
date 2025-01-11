@@ -35,8 +35,7 @@ import { type AccessControlService } from '../../../../authModule/application/se
 import { type ApplyBookChangeRequestCommandHandler } from '../../../application/commandHandlers/applyBookChangeRequestCommandHandler/applyBookChangeRequestCommandHandler.js';
 import { type DeleteBookChangeRequestCommandHandler } from '../../../application/commandHandlers/deleteBookChangeRequestCommandHandler/deleteBookChangeRequestCommandHandler.js';
 import { type FindBookChangeRequestsQueryHandler } from '../../../application/queryHandlers/findBookChangeRequestsQueryHandler/findBookChangeRequestsQueryHandler.js';
-import { type BookChangeRequest } from '../../../domain/entities/bookChangeRequest/bookChangeRequest.js';
-import { type BookChangeRequestDto } from '../common/bookChangeRequestDto.js';
+import { mapBookChangeRequestToDto } from '../common/mappers/bookChangeRequestDtoMapper.js';
 
 export class BookChangeRequestAdminHttpController implements HttpController {
   public readonly basePath = '/admin/book-change-requests';
@@ -177,9 +176,7 @@ export class BookChangeRequestAdminHttpController implements HttpController {
 
     return {
       body: {
-        data: bookChangeRequests.map((bookChangeRequest) =>
-          this.mapBookChangeRequestToBookChangeRequestDto(bookChangeRequest),
-        ),
+        data: bookChangeRequests.map((bookChangeRequest) => mapBookChangeRequestToDto(bookChangeRequest)),
         metadata: {
           page,
           pageSize,
@@ -208,82 +205,9 @@ export class BookChangeRequestAdminHttpController implements HttpController {
 
     return {
       body: {
-        data: bookChangeRequests[0]
-          ? this.mapBookChangeRequestToBookChangeRequestDto(bookChangeRequests[0])
-          : undefined,
+        data: bookChangeRequests[0] ? mapBookChangeRequestToDto(bookChangeRequests[0]) : undefined,
       },
       statusCode: HttpStatusCode.ok,
     };
-  }
-
-  private mapBookChangeRequestToBookChangeRequestDto(bookChangeRequest: BookChangeRequest): BookChangeRequestDto {
-    const {
-      title,
-      language,
-      format,
-      imageUrl,
-      isbn,
-      publisher,
-      releaseYear,
-      translator,
-      pages,
-      bookId,
-      createdAt,
-      userEmail,
-      authorIds,
-      bookTitle,
-      changedFields,
-    } = bookChangeRequest.getState();
-
-    const bookChangeRequestDto: BookChangeRequestDto = {
-      id: bookChangeRequest.getId(),
-      bookId,
-      userEmail,
-      createdAt: createdAt.toISOString(),
-      bookTitle: bookTitle as string,
-      changedFields,
-    };
-
-    if (authorIds) {
-      bookChangeRequestDto.authorIds = authorIds;
-    }
-
-    if (isbn) {
-      bookChangeRequestDto.isbn = isbn;
-    }
-
-    if (publisher) {
-      bookChangeRequestDto.publisher = publisher;
-    }
-
-    if (releaseYear) {
-      bookChangeRequestDto.releaseYear = releaseYear;
-    }
-
-    if (translator) {
-      bookChangeRequestDto.translator = translator;
-    }
-
-    if (pages) {
-      bookChangeRequestDto.pages = pages;
-    }
-
-    if (imageUrl) {
-      bookChangeRequestDto.imageUrl = imageUrl;
-    }
-
-    if (title) {
-      bookChangeRequestDto.title = title;
-    }
-
-    if (language) {
-      bookChangeRequestDto.language = language;
-    }
-
-    if (format) {
-      bookChangeRequestDto.format = format;
-    }
-
-    return bookChangeRequestDto;
   }
 }

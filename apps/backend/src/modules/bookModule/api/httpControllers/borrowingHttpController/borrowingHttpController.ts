@@ -47,10 +47,6 @@ import { type UpdateBorrowingCommandHandler } from '../../../application/command
 import { type FindBorrowingsQueryHandler } from '../../../application/queryHandlers/findBorrowingsQueryHandler/findBorrowingsQueryHandler.js';
 import { type Borrowing } from '../../../domain/entities/borrowing/borrowing.js';
 
-interface MapBorrowingToBorrowingDtoPayload {
-  readonly borrowing: Borrowing;
-}
-
 export class BorrowingHttpController implements HttpController {
   public readonly basePath = '/user-books/:userBookId/borrowings';
   public readonly tags = ['Borrowing'];
@@ -161,7 +157,7 @@ export class BorrowingHttpController implements HttpController {
     return {
       statusCode: HttpStatusCode.ok,
       body: {
-        data: borrowings.map((borrowing) => this.mapBorrowingToBorrowingDto({ borrowing })),
+        data: borrowings.map((borrowing) => this.mapBorrowingToDto(borrowing)),
         metadata: {
           page,
           pageSize,
@@ -192,7 +188,7 @@ export class BorrowingHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.created,
-      body: this.mapBorrowingToBorrowingDto({ borrowing }),
+      body: this.mapBorrowingToDto(borrowing),
     };
   }
 
@@ -217,7 +213,7 @@ export class BorrowingHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.ok,
-      body: this.mapBorrowingToBorrowingDto({ borrowing }),
+      body: this.mapBorrowingToDto(borrowing),
     };
   }
 
@@ -241,9 +237,7 @@ export class BorrowingHttpController implements HttpController {
     };
   }
 
-  private mapBorrowingToBorrowingDto(payload: MapBorrowingToBorrowingDtoPayload): BorrowingDto {
-    const { borrowing } = payload;
-
+  private mapBorrowingToDto(borrowing: Borrowing): BorrowingDto {
     const dto: BorrowingDto = {
       id: borrowing.getId(),
       userBookId: borrowing.getUserBookId(),

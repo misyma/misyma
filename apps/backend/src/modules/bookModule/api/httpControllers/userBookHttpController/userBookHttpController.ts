@@ -209,7 +209,7 @@ export class UserBookHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.ok,
-      body: this.mapUserBookToUserBookDto(userBook),
+      body: this.mapUserBookToDto(userBook),
     };
   }
 
@@ -237,7 +237,7 @@ export class UserBookHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.ok,
-      body: this.mapUserBookToUserBookDto(userBook),
+      body: this.mapUserBookToDto(userBook),
     };
   }
 
@@ -263,7 +263,7 @@ export class UserBookHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.created,
-      body: this.mapUserBookToUserBookDto(userBook),
+      body: this.mapUserBookToDto(userBook),
     };
   }
 
@@ -283,7 +283,7 @@ export class UserBookHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.ok,
-      body: this.mapUserBookToUserBookDto(userBook),
+      body: this.mapUserBookToDto(userBook),
     };
   }
 
@@ -335,7 +335,7 @@ export class UserBookHttpController implements HttpController {
 
     return {
       body: {
-        data: userBooks.map((userBook) => this.mapUserBookToUserBookDto(userBook)),
+        data: userBooks.map((userBook) => this.mapUserBookToDto(userBook)),
         metadata: {
           page,
           pageSize,
@@ -366,7 +366,7 @@ export class UserBookHttpController implements HttpController {
     };
   }
 
-  private mapUserBookToUserBookDto(userBook: UserBook): UserBookDto {
+  private mapUserBookToDto(userBook: UserBook): UserBookDto {
     const {
       status,
       isFavorite,

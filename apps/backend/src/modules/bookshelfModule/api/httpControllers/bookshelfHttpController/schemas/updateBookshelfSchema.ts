@@ -2,7 +2,7 @@ import { type Static, Type } from '@sinclair/typebox';
 
 import type * as contracts from '@common/contracts';
 
-import { bookshelfDtoSchema } from './bookshelfDto.js';
+import { bookshelfDtoSchema, bookshelfImageUrlSchema, bookshelfNameSchema } from './bookshelfDto.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const updateBookshelfPathParamsDtoSchema = Type.Object({
@@ -15,10 +15,8 @@ export type UpdateBookshelfPathParamsDto = TypeExtends<
 >;
 
 export const updateBookshelfBodyDtoSchema = Type.Object({
-  name: Type.String({
-    minLength: 1,
-    maxLength: 64,
-  }),
+  name: bookshelfNameSchema,
+  imageUrl: Type.Optional(Type.Union([bookshelfImageUrlSchema, Type.Null()])),
 });
 
 export type UpdateBookshelfBodyDto = TypeExtends<

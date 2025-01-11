@@ -35,8 +35,7 @@ import { type AccessControlService } from '../../../../authModule/application/se
 import { type CreateGenreCommandHandler } from '../../../application/commandHandlers/createGenreCommandHandler/createGenreCommandHandler.js';
 import { type DeleteGenreCommandHandler } from '../../../application/commandHandlers/deleteGenreCommandHandler/deleteGenreCommandHandler.js';
 import { type UpdateGenreCommandHandler } from '../../../application/commandHandlers/updateGenreCommandHandler/updateGenreCommandHandler.js';
-import { type Genre } from '../../../domain/entities/genre/genre.js';
-import { type GenreDto } from '../common/genreDto.js';
+import { mapGenreToDto } from '../common/mappers/genreDtoMapper.js';
 
 export class GenreAdminHttpController implements HttpController {
   public readonly basePath = '/admin/genres';
@@ -121,7 +120,7 @@ export class GenreAdminHttpController implements HttpController {
     const { genre } = await this.createGenreCommandHandler.execute({ name });
 
     return {
-      body: this.mapGenreToDto(genre),
+      body: mapGenreToDto(genre),
       statusCode: HttpStatusCode.created,
     };
   }
@@ -144,7 +143,7 @@ export class GenreAdminHttpController implements HttpController {
     });
 
     return {
-      body: this.mapGenreToDto(genre),
+      body: mapGenreToDto(genre),
       statusCode: HttpStatusCode.ok,
     };
   }
@@ -164,13 +163,6 @@ export class GenreAdminHttpController implements HttpController {
     return {
       statusCode: HttpStatusCode.noContent,
       body: null,
-    };
-  }
-
-  private mapGenreToDto(genre: Genre): GenreDto {
-    return {
-      id: genre.getId(),
-      name: genre.getName(),
     };
   }
 }

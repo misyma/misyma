@@ -14,6 +14,8 @@ export * from './schemas/bookshelf/findBookshelves.js';
 
 export * from './schemas/bookshelf/updateBookshelf.js';
 
+export * from './schemas/bookshelf/uploadBookshelfImage.js';
+
 export * from './schemas/bookshelf/deleteBookshelf.js';
 
 export * from './schemas/bookshelf/bookshelfType.js';

@@ -2,7 +2,7 @@ import { createReadStream } from 'node:fs';
 import path from 'node:path';
 import { expect, describe, it, beforeEach, afterEach } from 'vitest';
 
-import { type UploadUserBookImageCommandHandler } from './uploadUserBookImageCommandHandler.js';
+import { type UploadBookshelfImageCommandHandler } from './uploadBookshelfImageCommandHandler.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
@@ -14,16 +14,12 @@ import { type DatabaseClient } from '../../../../../libs/database/clients/databa
 import { type DependencyInjectionContainer } from '../../../../../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type S3TestUtils } from '../../../../../libs/s3/tests/utils/s3TestUtils.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
-import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { symbols } from '../../../symbols.js';
-import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
-import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
-import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
-import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
+import { type BookshelfTestUtils } from '../../../tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 
-describe('UploadUserBookImageCommandHandlerImpl', () => {
-  let commandHandler: UploadUserBookImageCommandHandler;
+describe('UploadBookshelfImageCommandHandlerImpl', () => {
+  let commandHandler: UploadBookshelfImageCommandHandler;
 
   let s3TestUtils: S3TestUtils;
 
@@ -31,15 +27,7 @@ describe('UploadUserBookImageCommandHandlerImpl', () => {
 
   let userTestUtils: UserTestUtils;
 
-  let bookTestUtils: BookTestUtils;
-
   let bookshelfTestUtils: BookshelfTestUtils;
-
-  let authorTestUtils: AuthorTestUtils;
-
-  let userBookTestUtils: UserBookTestUtils;
-
-  let genreTestUtils: GenreTestUtils;
 
   let databaseClient: DatabaseClient;
 
@@ -64,7 +52,7 @@ describe('UploadUserBookImageCommandHandlerImpl', () => {
       generateUuid: (): string => imageId,
     }));
 
-    commandHandler = container.get<UploadUserBookImageCommandHandler>(symbols.uploadUserBookImageCommandHandler);
+    commandHandler = container.get<UploadBookshelfImageCommandHandler>(symbols.uploadBookshelfImageCommandHandler);
 
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
 
@@ -72,19 +60,11 @@ describe('UploadUserBookImageCommandHandlerImpl', () => {
 
     databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
 
-    bookTestUtils = container.get<BookTestUtils>(testSymbols.bookTestUtils);
-
     bookshelfTestUtils = container.get<BookshelfTestUtils>(testSymbols.bookshelfTestUtils);
-
-    authorTestUtils = container.get<AuthorTestUtils>(testSymbols.authorTestUtils);
-
-    userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
-
-    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
 
     config = container.get<Config>(coreSymbols.config);
 
-    testUtils = [genreTestUtils, authorTestUtils, bookTestUtils, bookshelfTestUtils, userTestUtils, userBookTestUtils];
+    testUtils = [bookshelfTestUtils, userTestUtils];
 
     for (const testUtil of testUtils) {
       await testUtil.truncate();
@@ -103,15 +83,15 @@ describe('UploadUserBookImageCommandHandlerImpl', () => {
     await s3TestUtils.deleteBucket(bucketName);
   });
 
-  it('throws an error - when UserBook does not exist', async () => {
+  it('throws an error - when Bookshelf does not exist', async () => {
     const user = await userTestUtils.createAndPersist();
 
-    const userBookId = Generator.uuid();
+    const bookshelfId = Generator.uuid();
 
     try {
       await commandHandler.execute({
         userId: user.id,
-        userBookId,
+        bookshelfId,
         contentType: 'image/jpg',
         data: createReadStream(filePath),
       });
@@ -127,27 +107,9 @@ describe('UploadUserBookImageCommandHandlerImpl', () => {
   it('uploads an image', async () => {
     const user = await userTestUtils.createAndPersist();
 
-    const author = await authorTestUtils.createAndPersist();
-
     const bookshelf = await bookshelfTestUtils.createAndPersist({
       input: {
         userId: user.id,
-      },
-    });
-
-    const book = await bookTestUtils.createAndPersist({
-      input: {
-        authorIds: [author.id],
-      },
-    });
-
-    const genre = await genreTestUtils.createAndPersist();
-
-    const userBook = await userBookTestUtils.createAndPersist({
-      input: {
-        bookId: book.id,
-        bookshelfId: bookshelf.id,
-        genreId: genre.id,
       },
     });
 
@@ -155,55 +117,37 @@ describe('UploadUserBookImageCommandHandlerImpl', () => {
 
     expect(existsBefore).toBe(false);
 
-    const { userBook: updatedUserBook } = await commandHandler.execute({
+    const { bookshelf: updatedBookshelf } = await commandHandler.execute({
       userId: user.id,
-      userBookId: userBook.id,
+      bookshelfId: bookshelf.id,
       data: createReadStream(filePath),
       contentType: 'image/jpg',
     });
 
-    expect(updatedUserBook.getImageUrl()).toEqual(`${config.aws.cloudfrontUrl}/${imageId}`);
+    expect(updatedBookshelf.getImageUrl()).toEqual(`${config.aws.cloudfrontUrl}/${imageId}`);
 
-    const foundUserBook = await userBookTestUtils.findById({ id: userBook.id });
+    const foundBookshelf = await bookshelfTestUtils.findById({ id: bookshelf.id });
 
-    expect(foundUserBook?.imageUrl).toEqual(`${config.aws.cloudfrontUrl}/${imageId}`);
+    expect(foundBookshelf?.imageUrl).toEqual(`${config.aws.cloudfrontUrl}/${imageId}`);
 
     const existsAfter = await s3TestUtils.objectExists(bucketName, imageId);
 
     expect(existsAfter).toBe(true);
   });
 
-  it('uploads an image when UserBook already has some image', async () => {
+  it('uploads an image when Bookshelf already has some image', async () => {
     const user = await userTestUtils.createAndPersist();
 
-    const author = await authorTestUtils.createAndPersist();
+    const existingImageId = Generator.uuid();
 
     const bookshelf = await bookshelfTestUtils.createAndPersist({
       input: {
         userId: user.id,
+        imageUrl: `${config.aws.cloudfrontUrl}/${existingImageId}`,
       },
     });
-
-    const book = await bookTestUtils.createAndPersist({
-      input: {
-        authorIds: [author.id],
-      },
-    });
-
-    const existingImageId = Generator.uuid();
 
     await s3TestUtils.uploadObject(bucketName, existingImageId, filePath);
-
-    const genre = await genreTestUtils.createAndPersist();
-
-    const userBook = await userBookTestUtils.createAndPersist({
-      input: {
-        bookId: book.id,
-        bookshelfId: bookshelf.id,
-        imageUrl: `${config.aws.cloudfrontUrl}/${existingImageId}`,
-        genreId: genre.id,
-      },
-    });
 
     const oldImageExistsBefore = await s3TestUtils.objectExists(bucketName, existingImageId);
 
@@ -213,18 +157,18 @@ describe('UploadUserBookImageCommandHandlerImpl', () => {
 
     expect(newImageExistsBefore).toBe(false);
 
-    const { userBook: updatedUserBook } = await commandHandler.execute({
+    const { bookshelf: updatedBookshelf } = await commandHandler.execute({
       userId: user.id,
-      userBookId: userBook.id,
+      bookshelfId: bookshelf.id,
       data: createReadStream(filePath),
       contentType: 'image/jpg',
     });
 
-    expect(updatedUserBook.getImageUrl()).toEqual(`${config.aws.cloudfrontUrl}/${imageId}`);
+    expect(updatedBookshelf.getImageUrl()).toEqual(`${config.aws.cloudfrontUrl}/${imageId}`);
 
-    const foundUserBook = await userBookTestUtils.findById({ id: userBook.id });
+    const foundBookshelf = await bookshelfTestUtils.findById({ id: bookshelf.id });
 
-    expect(foundUserBook?.imageUrl).toEqual(`${config.aws.cloudfrontUrl}/${imageId}`);
+    expect(foundBookshelf?.imageUrl).toEqual(`${config.aws.cloudfrontUrl}/${imageId}`);
 
     const newImageExistsAfter = await s3TestUtils.objectExists(bucketName, imageId);
 
@@ -235,12 +179,10 @@ describe('UploadUserBookImageCommandHandlerImpl', () => {
     expect(oldImageExistsAfter).toBe(false);
   });
 
-  it('throws an error - when User does not own the book', async () => {
+  it('throws an error - when User does not own the Bookshelf', async () => {
     const user1 = await userTestUtils.createAndPersist();
 
     const user2 = await userTestUtils.createAndPersist();
-
-    const author = await authorTestUtils.createAndPersist();
 
     const bookshelf = await bookshelfTestUtils.createAndPersist({
       input: {
@@ -248,26 +190,10 @@ describe('UploadUserBookImageCommandHandlerImpl', () => {
       },
     });
 
-    const book = await bookTestUtils.createAndPersist({
-      input: {
-        authorIds: [author.id],
-      },
-    });
-
-    const genre = await genreTestUtils.createAndPersist();
-
-    const userBook = await userBookTestUtils.createAndPersist({
-      input: {
-        bookId: book.id,
-        bookshelfId: bookshelf.id,
-        genreId: genre.id,
-      },
-    });
-
     try {
       await commandHandler.execute({
         userId: user2.id,
-        userBookId: userBook.id,
+        bookshelfId: bookshelf.id,
         data: createReadStream(filePath),
         contentType: 'image/jpg',
       });

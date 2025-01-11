@@ -35,6 +35,7 @@ export class BookshelfTestUtils extends TestUtils {
         userId: bookshelf.getUserId(),
         type: bookshelf.getType(),
         createdAt: bookshelf.getCreatedAt(),
+        imageUrl: bookshelf.getImageUrl(),
       },
       '*',
     );
