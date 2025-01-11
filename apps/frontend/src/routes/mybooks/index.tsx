@@ -1,8 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
 import { X } from 'lucide-react';
-import { type FC, useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { type FC, useEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { z } from 'zod';
 
 import { FindUserBooksSortField, Language, ReadingStatus, SortOrder } from '@common/contracts';
@@ -12,7 +12,7 @@ import { BooksPageTopBar } from '../../modules/book/components/booksPageTopBar/b
 import { VirtualizedBooksList } from '../../modules/bookshelf/components/virtualizedBooksList/virtualizedBooksList.js';
 import { Button } from '../../modules/common/components/button/button.js';
 import { AuthorSearchFilter } from '../../modules/common/components/filter/AuthorSearchFilter.js';
-import { ThreeStateCheckboxFilter, YearRangeFilter } from '../../modules/common/components/filter/filter.js';
+import { CheckboxFilter, YearRangeFilter } from '../../modules/common/components/filter/filter.js';
 import { FilterContainer } from '../../modules/common/components/filter/filterContainer.js';
 import { FiltersDrawer } from '../../modules/common/components/filtersDrawer/filtersDrawer.js';
 import { Input } from '../../modules/common/components/input/input.js';
@@ -29,16 +29,7 @@ import useDebounce from '../../modules/common/hooks/useDebounce.js';
 import { useErrorHandledQuery } from '../../modules/common/hooks/useErrorHandledQuery.js';
 import { type FilterComponentProps } from '../../modules/common/types/filter.js';
 import { RequireAuthComponent } from '../../modules/core/components/requireAuth/requireAuthComponent.js';
-import {
-  myBooksStateSelectors,
-  setAuthorId,
-  setGenreId,
-  setIsFavorite,
-  setLanguage,
-  setReleaseYearAfter,
-  setReleaseYearBefore,
-  setStatus,
-} from '../../modules/core/store/states/myBooksFilterState/myBooksFilterStateSlice.js';
+import { myBooksStateSelectors } from '../../modules/core/store/states/myBooksFilterState/myBooksFilterStateSlice.js';
 import { userStateSelectors } from '../../modules/core/store/states/userState/userStateSlice.js';
 import { getGenresQueryOptions } from '../../modules/genres/api/queries/getGenresQuery/getGenresQueryOptions.js';
 
@@ -131,192 +122,81 @@ const MyBooksStatusFilter: FC<FilterComponentProps> = ({ filter, initialValue, o
 };
 
 const BookPageFiltersBar = () => {
-  const dispatch = useDispatch();
-
   const navigate = Route.useNavigate();
-
   const search = Route.useSearch();
 
-  const [filters, setFilters] = useState<z.infer<typeof myBooksSearchParamsSchema>>({
-    genre: search.genre,
-    language: search.language,
-    releaseYearAfter: search.releaseYearAfter,
-    status: search.status,
-    authorId: search.authorId,
-    isFavorite: search.isFavorite,
-  });
+  const isFilterVisible = useSelector(myBooksStateSelectors.getFilterVisibility);
 
-  const language = useSelector(myBooksStateSelectors.getLanguage);
-
-  const releaseYearAfter = useSelector(myBooksStateSelectors.getReleaseYearAfter);
+  const updateSearch = (updates: Partial<typeof search>) => {
+    navigate({
+      to: '',
+      search: (current) => ({
+        ...current,
+        ...updates,
+      }),
+    });
+  };
 
   const onClearAll = () => {
-    dispatch(setLanguage(''));
-
-    dispatch(setReleaseYearAfter(undefined));
-
-    dispatch(setReleaseYearBefore(undefined));
-
-    dispatch(setGenreId(''));
-
-    dispatch(setStatus(''));
-
-    setFilters({});
-
     navigate({
       to: '',
-      search: ({ title, sortField, sortOrder }) => ({ title, sortField, sortOrder }),
+      search: ({ title, sortField, sortOrder }) => ({
+        title,
+        sortField,
+        sortOrder,
+      }),
     });
   };
 
-  const onApplyFilters = () => {
-    if (search.language !== filters.language) {
-      dispatch(setLanguage(filters.language));
-    }
-
-    if (search.releaseYearAfter !== filters.releaseYearAfter) {
-      dispatch(setReleaseYearAfter(filters.releaseYearAfter));
-    }
-
-    if (search.genre !== filters.genre) {
-      dispatch(setGenreId(filters.genre as string));
-    }
-
-    if (search.status !== filters.status) {
-      dispatch(setStatus(filters.status as string));
-    }
-
-    if (search.isFavorite !== filters.isFavorite) {
-      dispatch(setIsFavorite(filters.isFavorite));
-    }
-
-    if (search.authorId !== filters.authorId) {
-      dispatch(setAuthorId(filters.authorId));
-    }
-
-    navigate({
-      to: '',
-      search: {
-        ...filters,
-        sortField: search.sortField,
-        sortOrder: search.sortOrder,
-      },
-    });
-  };
-
-  const onClearFilter = useCallback(
-    (filterKey: keyof typeof filters) => {
-      setFilters({
-        ...filters,
-        [filterKey]: undefined,
-      });
-    },
-    [filters],
-  );
-
-  // TODO: think about it
-  useEffect(() => {
-    if (search.language !== language) {
-      dispatch(setLanguage(language));
-    }
-
-    if (search.releaseYearAfter !== releaseYearAfter) {
-      dispatch(setReleaseYearAfter(releaseYearAfter));
-    }
-
-    if (search.genre !== filters.genre) {
-      dispatch(setGenreId(filters.genre as string));
-    }
-
-    if (search.status !== filters.status) {
-      dispatch(setStatus(filters.status as string));
-    }
-    // purposeful - only sync redux with search params on first render
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const hasAnyFilter = useMemo(() => Object.values(search).filter((val) => val !== undefined).length > 0, [search]);
 
   return (
     <FiltersDrawer
+      omitApplyButton
+      showClearButton={hasAnyFilter}
       className="grid grid-cols-3"
-      onApplyFilters={onApplyFilters}
       onClearAll={onClearAll}
+      open={isFilterVisible}
+      onApplyFilters={() => {}}
     >
       <AuthorSearchFilter
-        setFilterAction={(val) => {
-          setFilters({
-            ...filters,
-            authorId: val,
-          });
-        }}
-        onRemoveFilter={() => onClearFilter('authorId')}
-        initialValue={filters['authorId']}
+        setFilterAction={(val) => updateSearch({ authorId: val })}
+        onRemoveFilter={() => updateSearch({ authorId: undefined })}
+        initialValue={search.authorId}
         filter={{
           id: 'author-ids-filter',
           key: 'authorIds',
           label: 'Autor',
           type: 'text',
-          setFilterAction: (val) => {
-            setFilters({
-              ...filters,
-              authorId: val,
-            });
-          },
         }}
       />
       <SearchLanguageSelect
-        key={filters.language}
-        onRemoveFilter={() => onClearFilter('language')}
-        initialValue={filters.language}
-        setFilterAction={(val) => {
-          setFilters({
-            ...filters,
-            language: val,
-          });
-        }}
+        key={search.language}
+        onRemoveFilter={() => updateSearch({ language: undefined })}
+        initialValue={search.language}
+        setFilterAction={(val) => updateSearch({ language: val })}
         filter={{
           id: 'language-filter',
           key: 'language',
           label: 'Język',
           type: 'text',
-          setFilterAction: (val) => {
-            setFilters({
-              ...filters,
-              language: val,
-            });
-          },
         }}
       />
       <GenreSelectFilter
-        initialValue={filters.genre}
-        onRemoveFilter={() => onClearFilter('genre')}
-        setFilterAction={(val) => {
-          setFilters({
-            ...filters,
-            genre: val,
-          });
-        }}
+        initialValue={search.genre}
+        onRemoveFilter={() => updateSearch({ genre: undefined })}
+        setFilterAction={(val) => updateSearch({ genre: val })}
         filter={{
           id: 'category-filter',
           key: 'categoryFilter',
           label: 'Kategoria',
           type: 'text',
-          setFilterAction: (val) => {
-            setFilters({
-              ...filters,
-              releaseYearAfter: val,
-            });
-          },
         }}
       />
       <MyBooksStatusFilter
-        initialValue={filters.status}
-        onRemoveFilter={() => onClearFilter('status')}
-        setFilterAction={(val) => {
-          setFilters({
-            ...filters,
-            status: val,
-          });
-        }}
+        initialValue={search.status}
+        onRemoveFilter={() => updateSearch({ status: undefined })}
+        setFilterAction={(val) => updateSearch({ status: val })}
         filter={{
           id: 'status-filter',
           type: 'text',
@@ -326,44 +206,33 @@ const BookPageFiltersBar = () => {
       />
       <YearRangeFilter
         filter={{
-          id: 'year-range-filter',
-          key: 'yearRangeFilter',
-          type: 'text',
           label: 'Wydana między',
         }}
-        onRemoveFilter={() => {
-          setFilters({
-            ...filters,
+        onRemoveFilter={() =>
+          updateSearch({
             releaseYearBefore: undefined,
             releaseYearAfter: undefined,
-          });
-        }}
-        setFilterAction={(val) => {
-          setFilters({
-            ...filters,
-            releaseYearAfter: val[0],
-            releaseYearBefore: val[1],
-          });
-        }}
+          })
+        }
+        setFilterAction={([after, before]) =>
+          updateSearch({
+            releaseYearAfter: after ?? undefined,
+            releaseYearBefore: before ?? undefined,
+          })
+        }
         initialValue={
-          filters.releaseYearAfter ? [filters.releaseYearAfter, filters.releaseYearBefore ?? null] : [null, null]
+          search.releaseYearAfter ? [search.releaseYearAfter, search.releaseYearBefore ?? null] : [null, null]
         }
       />
-      <ThreeStateCheckboxFilter
-        initialValue={filters?.isFavorite}
-        onRemoveFilter={() => onClearFilter('isFavorite')}
-        setFilterAction={(val) => {
-          setFilters({
-            ...filters,
-            isFavorite: `${val}` as '' | 'true' | 'false' | undefined,
-          });
-        }}
+      <CheckboxFilter
+        initialValue={search.isFavorite === '' ? false : search.isFavorite}
+        onRemoveFilter={() => updateSearch({ isFavorite: undefined })}
+        setFilterAction={(val) => updateSearch({ isFavorite: val })}
         filter={{
           id: 'is-favorite-filter',
           key: 'isFavorite',
           label: 'Ulubiona',
           type: 'three-state-checkbox',
-          initialValue: filters?.isFavorite,
         }}
       />
     </FiltersDrawer>
@@ -371,12 +240,6 @@ const BookPageFiltersBar = () => {
 };
 
 const MyBooksVirtualizedBooksList = () => {
-  const isFavoriteStateMap = {
-    true: true,
-    false: false,
-    '': undefined,
-  };
-
   const sortFieldMap = {
     createdAt: FindUserBooksSortField.createdAt,
     releaseYear: FindUserBooksSortField.releaseYear,
@@ -412,7 +275,7 @@ const MyBooksVirtualizedBooksList = () => {
         status,
         genreId,
         authorId,
-        isFavorite: isFavoriteStateMap[isFavorite ?? ''],
+        isFavorite: isFavorite !== '' ? (isFavorite ?? undefined) : undefined,
         sortField: sortFieldMap[sortField ?? ''],
         sortOrder: sortOrderMap[sortOrder ?? ''],
       }}
@@ -421,8 +284,6 @@ const MyBooksVirtualizedBooksList = () => {
 };
 
 const BooksPage: FC = () => {
-  const isFilterVisible = useSelector(myBooksStateSelectors.getFilterVisibility);
-
   return (
     <motion.div
       key={'books-view'}
@@ -432,7 +293,7 @@ const BooksPage: FC = () => {
       transition={{ duration: 0.3 }}
       className="w-full px-8"
     >
-      {isFilterVisible && <BookPageFiltersBar />}
+      <BookPageFiltersBar />
       <MyBooksVirtualizedBooksList />
     </motion.div>
   );
@@ -518,7 +379,7 @@ const myBooksSearchParamsSchema = z
     releaseYearBefore: z.number().int().min(1900).optional().catch(undefined),
     releaseYearAfter: z.number().int().min(1900).optional().catch(undefined),
     authorId: z.string().uuid().optional().catch(''),
-    isFavorite: z.enum(['true', 'false', '']).optional().catch(''),
+    isFavorite: z.boolean().or(z.literal('')).optional().catch(''),
     sortField: z.enum(['createdAt', 'releaseYear', '']).optional().catch(''),
     sortOrder: z.enum(['asc', 'desc', '']).optional().catch(''),
   })

@@ -7,8 +7,6 @@ export type BaseFilterOpts = {
   label: string;
   key: PropertyKey;
   customSlot?: FC<FilterComponentProps>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setFilterAction?: (value: any) => void;
 };
 
 export type FilterTypes = 'text' | 'select' | 'checkbox' | 'three-state-checkbox' | 'date' | 'year';

@@ -61,6 +61,7 @@ export const AdminBookSearchFilter: FC<AdminBookSearchFilterProps> = ({
       onClearAll={onClearAllInternal}
       className={cn('sm:col-span-4 md:col-span-5 lg:col-span-6 grid grid-cols-3 px-2', isFilterVisible ? '' : 'hidden')}
       actionButtonClassName={isFilterVisible ? '' : 'hidden'}
+      open={!!isFilterVisible}
     >
       <AuthorSearchFilter
         setFilterAction={(val) => {
@@ -76,12 +77,6 @@ export const AdminBookSearchFilter: FC<AdminBookSearchFilterProps> = ({
           key: 'authorIds',
           label: 'Autor',
           type: 'text',
-          setFilterAction: (val) => {
-            setFilters({
-              ...filters,
-              authorIds: val,
-            });
-          },
         }}
       />
       <TextFilter
@@ -99,12 +94,6 @@ export const AdminBookSearchFilter: FC<AdminBookSearchFilterProps> = ({
           key: 'isbn',
           label: 'Isbn',
           type: 'text',
-          setFilterAction: (val) => {
-            setFilters({
-              ...filters,
-              isbn: val,
-            });
-          },
         }}
       />
       <SearchLanguageSelect
@@ -122,12 +111,6 @@ export const AdminBookSearchFilter: FC<AdminBookSearchFilterProps> = ({
           key: 'language',
           label: 'Język',
           type: 'text',
-          setFilterAction: (val) => {
-            setFilters({
-              ...filters,
-              language: val,
-            });
-          },
         }}
       />
       <YearFilter
@@ -147,12 +130,6 @@ export const AdminBookSearchFilter: FC<AdminBookSearchFilterProps> = ({
           dateRangeSiblingId: 'release-year-before-filter',
           isAfterFilter: true,
           isBeforeFilter: false,
-          setFilterAction: (val) => {
-            setFilters({
-              ...filters,
-              releaseYearAfter: val,
-            });
-          },
         }}
       />
       <SelectFilter
@@ -170,12 +147,6 @@ export const AdminBookSearchFilter: FC<AdminBookSearchFilterProps> = ({
           label: 'Zaakceptowana',
           type: 'select',
           options: ['Zaakceptowana', 'Niezaakceptowana'],
-          setFilterAction: (val) => {
-            setFilters({
-              ...filters,
-              isApproved: val,
-            });
-          },
         }}
       />
     </FiltersDrawer>
