@@ -200,7 +200,7 @@ const BookRow: FC<BookRowProps> = ({ book, onSelect, isSelected }) => {
       className={cn(
         'grid grid-cols-9 gap-x-4 p-4 rounded-lg transition-colors duration-200 cursor-pointer',
         isSelected ? 'bg-primary/10 shadow-md' : isSelectable && 'hover:bg-secondary/50',
-        !isSelectable && 'bg-slate-500',
+        !isSelectable && 'bg-gray-500/30 cursor-default',
       )}
       onClick={() => {
         if (isSelectable) {
@@ -313,8 +313,8 @@ const ManyFoundBooksView: FC<FoundBookViewProps> = ({ onCreateManually, onAddBoo
                   transform: `translateY(${virtualItem.start}px)`,
                 }}
               >
-                {isFirstLoaderAttempt && <Skeleton className="w-40 h-40" />}
-                {isSubsequentLoader && <Skeleton className="w-40 h-40" />}
+                {isFirstLoaderAttempt && <Skeleton className="w-40 h-[144px]" />}
+                {isSubsequentLoader && <Skeleton className="w-full h-[144px]" />}
                 {!isSubsequentLoader && allItems && (
                   <BookRow
                     book={allItems[virtualItem.index]}
@@ -337,17 +337,19 @@ const ManyFoundBooksView: FC<FoundBookViewProps> = ({ onCreateManually, onAddBoo
       <div className="w-full pt-4 flex gap-4 justify-center items-center">
         <Button
           variant="secondary"
+          size="xl"
           onClick={onCreateManually}
         >
-          Wprowadź inne dane
+          <span className="text-lg">Wprowadź inne dane</span>
         </Button>
         <Button
+          size="xl"
           onClick={() => {
             onAddBook(allItems && allItems[selectedRowIndex as number]);
           }}
           disabled={!selectedRowIndex}
         >
-          Kontynuuj
+          <span className="text-lg">Kontynuuj</span>
         </Button>
       </div>
     </div>

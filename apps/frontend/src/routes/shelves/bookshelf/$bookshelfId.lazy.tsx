@@ -108,33 +108,32 @@ const BookshelfTopBar: FC<BookshelfTopBarProps> = ({ bookshelfResponse, bookshel
           {bookshelfBooksResponse?.metadata.total ?? 0} {getCountNoun(bookshelfBooksResponse?.metadata.total ?? 0)}
         </p>
       </div>
-      {!isArchiveOrBorrowingBookshelf ||
-        (!bookshelfResponse && (
-          <TooltipProvider delayDuration={300}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  size="big-icon"
-                  onClick={() => {
-                    navigate({
-                      to: `/shelves/bookshelf/search`,
-                      search: {
-                        type: 'isbn',
-                        next: 0,
-                        bookshelfId,
-                      },
-                    });
-                  }}
-                >
-                  <HiPlus className="w-8 h-8" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Stwórz książkę</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        ))}
+      {(!isArchiveOrBorrowingBookshelf || !bookshelfResponse) && (
+        <TooltipProvider delayDuration={300}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                size="big-icon"
+                onClick={() => {
+                  navigate({
+                    to: `/shelves/bookshelf/search`,
+                    search: {
+                      type: 'isbn',
+                      next: 0,
+                      bookshelfId,
+                    },
+                  });
+                }}
+              >
+                <HiPlus className="w-8 h-8" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Stwórz książkę</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      )}
     </div>
   );
 };
