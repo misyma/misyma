@@ -139,6 +139,7 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
         genreId: bookCreation.stepThreeDetails?.genre as string,
         accessToken: accessToken as string,
       },
+      bookTitle: bookCreation.stepOneDetails?.title ?? '',
       image: file,
     });
   };

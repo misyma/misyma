@@ -33,6 +33,7 @@ interface CreatePayload {
     bookId?: string | undefined;
   };
   image?: File;
+  bookTitle: string;
 }
 
 interface UseCreateBookWithUserBookResult {
@@ -65,7 +66,7 @@ export const useCreateBookWithUserBook = ({
 
   const navigate = useNavigate();
 
-  const create = async ({ authorPayload, bookPayload, userBookPayload, image }: CreatePayload) => {
+  const create = async ({ authorPayload, bookPayload, userBookPayload, image, bookTitle }: CreatePayload) => {
     if (!bookPayload && !userBookPayload.bookId) {
       throw new Error(`BookId prop is required if book is not being created.`);
     }
@@ -170,7 +171,7 @@ export const useCreateBookWithUserBook = ({
 
       toast({
         title: 'Książka została położona na półce 😄',
-        description: `Książka ${bookPayload?.title} została położona na półce 😄`,
+        description: `Książka ${bookTitle} została położona na półce 😄`,
         variant: 'success',
       });
 

@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -7,6 +8,7 @@ import { z } from 'zod';
 
 import { ReadingStatus as ContractReadingStatus } from '@common/contracts';
 
+import { FindBookByIdQueryOptions } from '../../../book/api/user/queries/findBookById/findBookByIdQueryOptions';
 import { BookApiError } from '../../../book/errors/bookApiError';
 import { useCreateBookWithUserBook } from '../../../book/hooks/createBookWithUserBook/createBookWithUserBook';
 import { Button } from '../../../common/components/button/button';
@@ -57,17 +59,12 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
   const searchBookContext = useSearchBookContext();
 
   const [submissionError, setSubmissionError] = useState<string | null>(null);
-
-  const { data: user } = useFindUserQuery();
-
   const [file, setFile] = useState<File | undefined>();
-
-  const [genreSelectOpen, setGenreSelectOpen] = useState(false);
-
   const [bookshelfSelectOpen, setBookshelfSelectOpen] = useState(false);
-
+  const [genreSelectOpen, setGenreSelectOpen] = useState(false);
   const [statusSelectOpen, setStatusSelectOpen] = useState(false);
 
+  const { data: user } = useFindUserQuery();
   const { data: bookshelvesData } = useFindUserBookshelfsQuery({
     userId: user?.id as string,
     pageSize: 50,
@@ -90,6 +87,12 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
   const { data: genresData } = useErrorHandledQuery(
     getGenresQueryOptions({
       accessToken: accessToken as string,
+    }),
+  );
+  const { data: bookResponse } = useQuery(
+    FindBookByIdQueryOptions({
+      accessToken: accessToken as string,
+      bookId: searchBookContext.bookId,
     }),
   );
 
@@ -145,6 +148,7 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
           isFavorite: false,
           accessToken: accessToken as string,
         },
+        bookTitle: bookResponse?.title ?? '',
         image: file,
       });
     } catch (error) {
