@@ -92,6 +92,7 @@ describe('FindBookshelfByIdQueryHandler', () => {
       userId: bookshelf.getUserId(),
       type: bookshelf.getType(),
       createdAt: expect.any(Date),
+      imageUrl: bookshelf.getImageUrl(),
     });
   });
 });

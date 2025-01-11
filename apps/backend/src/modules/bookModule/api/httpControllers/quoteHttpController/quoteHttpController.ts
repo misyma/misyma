@@ -47,10 +47,6 @@ import { type UpdateQuoteCommandHandler } from '../../../application/commandHand
 import { type FindQuotesQueryHandler } from '../../../application/queryHandlers/findQuotesQueryHandler/findQuotesQueryHandler.js';
 import { type Quote } from '../../../domain/entities/quote/quote.js';
 
-interface MapQuoteToQuoteDtoPayload {
-  readonly quote: Quote;
-}
-
 export class QuoteHttpController implements HttpController {
   public readonly basePath = '/user-books/:userBookId/quotes';
   public readonly tags = ['Quote'];
@@ -161,7 +157,7 @@ export class QuoteHttpController implements HttpController {
     return {
       statusCode: HttpStatusCode.ok,
       body: {
-        data: quotes.map((quote) => this.mapQuoteToQuoteDto({ quote })),
+        data: quotes.map((quote) => this.mapQuoteToDto(quote)),
         metadata: {
           page,
           pageSize,
@@ -193,7 +189,7 @@ export class QuoteHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.created,
-      body: this.mapQuoteToQuoteDto({ quote }),
+      body: this.mapQuoteToDto(quote),
     };
   }
 
@@ -218,7 +214,7 @@ export class QuoteHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.ok,
-      body: this.mapQuoteToQuoteDto({ quote }),
+      body: this.mapQuoteToDto(quote),
     };
   }
 
@@ -242,9 +238,7 @@ export class QuoteHttpController implements HttpController {
     };
   }
 
-  private mapQuoteToQuoteDto(payload: MapQuoteToQuoteDtoPayload): QuoteDto {
-    const { quote } = payload;
-
+  private mapQuoteToDto(quote: Quote): QuoteDto {
     let quoteDto: QuoteDto = {
       id: quote.getId(),
       userBookId: quote.getUserBookId(),

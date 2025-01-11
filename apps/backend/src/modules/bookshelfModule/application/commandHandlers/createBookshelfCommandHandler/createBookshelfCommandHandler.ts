@@ -7,6 +7,7 @@ export interface CreateBookshelfPayload {
   readonly userId: string;
   readonly name: string;
   readonly type?: BookshelfType | undefined;
+  readonly imageUrl?: string | undefined;
 }
 
 export interface CreateBookshelfResult {

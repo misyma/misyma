@@ -1,7 +1,8 @@
 import { type Bookshelf } from './bookshelf.js';
 
 export interface UpdateBookshelfRequestBody {
-  readonly name: string;
+  readonly name?: string;
+  readonly imageUrl?: string | null;
 }
 
 export interface UpdateBookshelfPathParams {

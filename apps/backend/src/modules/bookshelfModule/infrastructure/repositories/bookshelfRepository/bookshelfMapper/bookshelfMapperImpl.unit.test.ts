@@ -24,6 +24,7 @@ describe('BookshelfMapperImpl', () => {
         userId: bookshelfRawEntity.userId,
         type: bookshelfRawEntity.type,
         createdAt: bookshelfRawEntity.createdAt,
+        imageUrl: bookshelfRawEntity.imageUrl,
       },
     });
   });

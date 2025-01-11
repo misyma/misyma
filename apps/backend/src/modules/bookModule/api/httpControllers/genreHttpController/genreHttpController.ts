@@ -13,8 +13,7 @@ import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.
 import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
 import { type FindGenresQueryHandler } from '../../../application/queryHandlers/findGenresQueryHandler/findGenresQueryHandler.js';
-import { type Genre } from '../../../domain/entities/genre/genre.js';
-import { type GenreDto } from '../common/genreDto.js';
+import { mapGenreToDto } from '../common/mappers/genreDtoMapper.js';
 
 export class GenreHttpController implements HttpController {
   public basePath = '/genres';
@@ -63,7 +62,7 @@ export class GenreHttpController implements HttpController {
 
     return {
       body: {
-        data: genres.map(this.mapGenreToDto),
+        data: genres.map(mapGenreToDto),
         metadata: {
           page,
           pageSize,
@@ -71,13 +70,6 @@ export class GenreHttpController implements HttpController {
         },
       },
       statusCode: HttpStatusCode.ok,
-    };
-  }
-
-  private mapGenreToDto(genre: Genre): GenreDto {
-    return {
-      id: genre.getId(),
-      name: genre.getName(),
     };
   }
 }

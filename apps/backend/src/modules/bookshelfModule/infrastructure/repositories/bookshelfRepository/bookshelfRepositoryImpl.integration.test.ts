@@ -87,6 +87,7 @@ describe('BookshelfRepositoryImpl', () => {
         userId: bookshelf.userId,
         type: bookshelf.type,
         createdAt: bookshelf.createdAt,
+        imageUrl: bookshelf.imageUrl,
       });
     });
 
@@ -111,6 +112,7 @@ describe('BookshelfRepositoryImpl', () => {
         userId: bookshelf.userId,
         type: bookshelf.type,
         createdAt: bookshelf.createdAt,
+        imageUrl: bookshelf.imageUrl,
       });
     });
   });
@@ -159,6 +161,7 @@ describe('BookshelfRepositoryImpl', () => {
           userId: bookshelf.userId,
           type: bookshelf.type,
           createdAt: bookshelf.createdAt,
+          imageUrl: bookshelf.imageUrl,
         });
       });
     });
@@ -194,6 +197,7 @@ describe('BookshelfRepositoryImpl', () => {
         userId: bookshelf1.userId,
         type: bookshelf1.type,
         createdAt: bookshelf1.createdAt,
+        imageUrl: bookshelf1.imageUrl,
       });
     });
 
@@ -235,6 +239,7 @@ describe('BookshelfRepositoryImpl', () => {
         userId: bookshelf1.userId,
         type: bookshelf1.type,
         createdAt: bookshelf1.createdAt,
+        imageUrl: bookshelf1.imageUrl,
       });
     });
 
@@ -315,6 +320,7 @@ describe('BookshelfRepositoryImpl', () => {
         userId: bookshelfDraft.getUserId(),
         type: bookshelfDraft.getType(),
         createdAt: bookshelfDraft.getCreatedAt(),
+        imageUrl: bookshelfDraft.getImageUrl(),
       });
     });
 

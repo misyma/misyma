@@ -96,7 +96,7 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
     }
 
     if (sortDate) {
-      query.orderBy('createdAt', sortDate);
+      query.orderBy('id', sortDate);
     }
 
     try {
@@ -135,6 +135,7 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
           userId: bookshelf.userId,
           type: bookshelf.type,
           createdAt: bookshelf.createdAt,
+          imageUrl: bookshelf.imageUrl,
         },
         '*',
       );

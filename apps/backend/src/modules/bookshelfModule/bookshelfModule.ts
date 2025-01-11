@@ -14,6 +14,7 @@ import { type BookshelfMapper } from './infrastructure/repositories/bookshelfRep
 import { BookshelfMapperImpl } from './infrastructure/repositories/bookshelfRepository/bookshelfMapper/bookshelfMapperImpl.js';
 import { BookshelfRepositoryImpl } from './infrastructure/repositories/bookshelfRepository/bookshelfRepositoryImpl.js';
 import { symbols } from './symbols.js';
+import { type Config } from '../../core/config.js';
 import { coreSymbols } from '../../core/symbols.js';
 import { type DatabaseClient } from '../../libs/database/clients/databaseClient/databaseClient.js';
 import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
@@ -22,10 +23,13 @@ import { type LoggerService } from '../../libs/logger/services/loggerService/log
 import { type UuidService } from '../../libs/uuid/services/uuidService/uuidService.js';
 import { type AccessControlService } from '../authModule/application/services/accessControlService/accessControlService.js';
 import { authSymbols } from '../authModule/symbols.js';
-import { type UserBookRepository } from '../bookModule/domain/repositories/userBookRepository/userBookRepository.js';
-import { bookSymbols } from '../bookModule/symbols.js';
 import { type UserRepository } from '../userModule/domain/repositories/userRepository/userRepository.js';
 import { userSymbols } from '../userModule/symbols.js';
+import { type UploadBookshelfImageCommandHandler } from './application/commandHandlers/uploadBookshelfImageCommandHandler/uploadBookshelfImageCommandHandler.js';
+import { UploadBookshelfImageCommandHandlerImpl } from './application/commandHandlers/uploadBookshelfImageCommandHandler/uploadBookshelfImageCommandHandlerImpl.js';
+import { type S3Service } from '../../libs/s3/services/s3Service/s3Service.js';
+import { type UserBookRepository } from '../bookModule/domain/repositories/userBookRepository/userBookRepository.js';
+import { bookSymbols } from '../bookModule/symbols.js';
 
 export class BookshelfModule implements DependencyInjectionModule {
   public declareBindings(container: DependencyInjectionContainer): void {
@@ -45,6 +49,7 @@ export class BookshelfModule implements DependencyInjectionModule {
           container.get<FindBookshelfByIdQueryHandler>(symbols.findBookshelfByIdQueryHandler),
           container.get<CreateBookshelfCommandHandler>(symbols.createBookshelfCommandHandler),
           container.get<UpdateBookshelfCommandHandler>(symbols.updateBookshelfCommandHandler),
+          container.get<UploadBookshelfImageCommandHandler>(symbols.uploadBookshelfImageCommandHandler),
           container.get<DeleteBookshelfCommandHandler>(symbols.deleteBookshelfCommandHandler),
           container.get<AccessControlService>(authSymbols.accessControlService),
         ),
@@ -96,6 +101,18 @@ export class BookshelfModule implements DependencyInjectionModule {
         new UpdateBookshelfCommandHandlerImpl(
           container.get<BookshelfRepository>(symbols.bookshelfRepository),
           container.get<LoggerService>(coreSymbols.loggerService),
+        ),
+    );
+
+    container.bind<UploadBookshelfImageCommandHandler>(
+      symbols.uploadBookshelfImageCommandHandler,
+      () =>
+        new UploadBookshelfImageCommandHandlerImpl(
+          container.get<BookshelfRepository>(symbols.bookshelfRepository),
+          container.get<S3Service>(coreSymbols.s3Service),
+          container.get<LoggerService>(coreSymbols.loggerService),
+          container.get<Config>(coreSymbols.config),
+          container.get<UuidService>(coreSymbols.uuidService),
         ),
     );
 

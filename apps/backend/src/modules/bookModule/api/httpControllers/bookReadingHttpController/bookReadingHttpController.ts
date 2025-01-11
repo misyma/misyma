@@ -47,10 +47,6 @@ import { type UpdateBookReadingCommandHandler } from '../../../application/comma
 import { type FindBookReadingsQueryHandler } from '../../../application/queryHandlers/findBookReadingsQueryHandler/findBookReadingsQueryHandler.js';
 import { type BookReading } from '../../../domain/entities/bookReading/bookReading.js';
 
-interface MapBookReadingToBookReadingDtoPayload {
-  readonly bookReading: BookReading;
-}
-
 export class BookReadingHttpController implements HttpController {
   public readonly basePath = '/user-books/:userBookId/readings';
   public readonly tags = ['BookReading'];
@@ -160,7 +156,7 @@ export class BookReadingHttpController implements HttpController {
     return {
       statusCode: HttpStatusCode.ok,
       body: {
-        data: bookReadings.map((bookReading) => this.mapBookReadingToBookReadingDto({ bookReading })),
+        data: bookReadings.map((bookReading) => this.mapBookReadingToDto(bookReading)),
         metadata: {
           page,
           pageSize,
@@ -192,7 +188,7 @@ export class BookReadingHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.created,
-      body: this.mapBookReadingToBookReadingDto({ bookReading }),
+      body: this.mapBookReadingToDto(bookReading),
     };
   }
 
@@ -218,7 +214,7 @@ export class BookReadingHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.ok,
-      body: this.mapBookReadingToBookReadingDto({ bookReading }),
+      body: this.mapBookReadingToDto(bookReading),
     };
   }
 
@@ -242,9 +238,7 @@ export class BookReadingHttpController implements HttpController {
     };
   }
 
-  private mapBookReadingToBookReadingDto(payload: MapBookReadingToBookReadingDtoPayload): BookReadingDto {
-    const { bookReading } = payload;
-
+  private mapBookReadingToDto(bookReading: BookReading): BookReadingDto {
     const dto: BookReadingDto = {
       id: bookReading.getId(),
       userBookId: bookReading.getUserBookId(),

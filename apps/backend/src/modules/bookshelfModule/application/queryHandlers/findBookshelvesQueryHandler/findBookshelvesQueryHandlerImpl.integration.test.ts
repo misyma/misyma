@@ -12,7 +12,7 @@ import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestU
 import { symbols } from '../../../symbols.js';
 import { type BookshelfTestUtils } from '../../../tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 
-describe('FindBookshelvesByUserIdQueryHandlerImpl', () => {
+describe('FindBookshelvesQueryHandlerImpl', () => {
   let queryHandler: FindBookshelvesQueryHandler;
 
   let databaseClient: DatabaseClient;
@@ -113,6 +113,7 @@ describe('FindBookshelvesByUserIdQueryHandlerImpl', () => {
       userId: bookshelf1.userId,
       type: bookshelf1.type,
       createdAt: expect.any(Date),
+      imageUrl: bookshelf1.imageUrl,
     });
 
     expect(bookshelves.find((bookshelf) => bookshelf.getId() === bookshelf2.id)?.getState()).toEqual({
@@ -120,6 +121,7 @@ describe('FindBookshelvesByUserIdQueryHandlerImpl', () => {
       userId: bookshelf2.userId,
       type: bookshelf2.type,
       createdAt: expect.any(Date),
+      imageUrl: bookshelf2.imageUrl,
     });
 
     expect(total).toEqual(2);

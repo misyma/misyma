@@ -84,7 +84,7 @@ export class CollectionRepositoryImpl implements CollectionRepository {
     }
 
     if (sortDate) {
-      query.orderBy('createdAt', sortDate);
+      query.orderBy('id', sortDate);
     }
 
     try {

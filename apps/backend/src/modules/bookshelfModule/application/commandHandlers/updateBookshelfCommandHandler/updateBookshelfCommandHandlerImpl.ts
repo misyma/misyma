@@ -15,13 +15,22 @@ export class UpdateBookshelfCommandHandlerImpl implements UpdateBookshelfCommand
   ) {}
 
   public async execute(payload: UpdateBookshelfPayload): Promise<UpdateBookshelfResult> {
-    const { bookshelfId, name, userId } = payload;
+    const { bookshelfId, userId, name, imageUrl } = payload;
+
+    if (name === undefined && imageUrl === undefined) {
+      throw new OperationNotValidError({
+        reason: 'At least one of the following fields must be provided: name, imageUrl.',
+        bookshelfId,
+        userId,
+      });
+    }
 
     this.loggerService.debug({
       message: 'Updating Bookshelf...',
       bookshelfId,
-      name,
       userId,
+      name,
+      imageUrl,
     });
 
     const existingBookshelf = await this.bookshelfRepository.findBookshelf({ where: { id: bookshelfId } });
@@ -43,30 +52,37 @@ export class UpdateBookshelfCommandHandlerImpl implements UpdateBookshelfCommand
       });
     }
 
-    const bookshelfWithSameName = await this.bookshelfRepository.findBookshelf({
-      where: {
-        userId,
-        name,
-      },
-    });
-
-    if (bookshelfWithSameName && bookshelfWithSameName.getId() !== bookshelfId) {
-      throw new ResourceAlreadyExistsError({
-        resource: 'Bookshelf',
-        name,
-        userId,
+    if (name !== undefined) {
+      const bookshelfWithSameName = await this.bookshelfRepository.findBookshelf({
+        where: {
+          userId,
+          name,
+        },
       });
+
+      if (bookshelfWithSameName && bookshelfWithSameName.getId() !== bookshelfId) {
+        throw new ResourceAlreadyExistsError({
+          resource: 'Bookshelf',
+          name,
+          userId,
+        });
+      }
+
+      existingBookshelf.setName({ name });
     }
 
-    existingBookshelf.setName({ name });
+    if (imageUrl !== undefined) {
+      existingBookshelf.setImageUrl({ imageUrl });
+    }
 
     const updatedBookshelf = await this.bookshelfRepository.saveBookshelf({ bookshelf: existingBookshelf });
 
     this.loggerService.debug({
       message: 'Bookshelf updated.',
       bookshelfId,
-      name,
       userId,
+      name,
+      imageUrl,
     });
 
     return {

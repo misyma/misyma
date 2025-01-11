@@ -6,4 +6,5 @@ export interface BookshelfRawEntity {
   readonly userId: string;
   readonly type: BookshelfType;
   readonly createdAt: Date;
+  readonly imageUrl?: string | undefined | null;
 }

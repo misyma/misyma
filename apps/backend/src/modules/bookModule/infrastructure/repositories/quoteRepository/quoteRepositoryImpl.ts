@@ -59,7 +59,7 @@ export class QuoteRepositoryImpl implements QuoteRepository {
         .offset(pageSize * (page - 1));
 
       if (sortDate) {
-        query.orderBy('createdAt', sortDate);
+        query.orderBy('id', sortDate);
       }
 
       rawEntities = await query;
