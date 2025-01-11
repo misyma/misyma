@@ -96,7 +96,7 @@ const ToastTitle = React.forwardRef<
   <ToastPrimitives.Title
     aria-labelledby="toastTitle"
     ref={ref}
-    className={cn('text-sm truncate break-words max-w-96 font-semibold', className)}
+    className={cn('text-sm truncate line-clamp-2 break-words max-w-96 font-semibold', className)}
     {...props}
   />
 ));
@@ -109,7 +109,7 @@ const ToastDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ToastPrimitives.Description
     ref={ref}
-    className={cn('text-sm truncate break-words max-w-96 opacity-90', className)}
+    className={cn('text-sm break-words line-clamp-2 max-w-96 opacity-90', className)}
     {...props}
   />
 ));
