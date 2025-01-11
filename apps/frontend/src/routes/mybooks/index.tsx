@@ -12,7 +12,7 @@ import { BooksPageTopBar } from '../../modules/book/components/booksPageTopBar/b
 import { VirtualizedBooksList } from '../../modules/bookshelf/components/virtualizedBooksList/virtualizedBooksList.js';
 import { Button } from '../../modules/common/components/button/button.js';
 import { AuthorSearchFilter } from '../../modules/common/components/filter/AuthorSearchFilter.js';
-import { ThreeStateCheckboxFilter, YearRangeFilter } from '../../modules/common/components/filter/filter.js';
+import { CheckboxFilter, YearRangeFilter } from '../../modules/common/components/filter/filter.js';
 import { FilterContainer } from '../../modules/common/components/filter/filterContainer.js';
 import { FiltersDrawer } from '../../modules/common/components/filtersDrawer/filtersDrawer.js';
 import { Input } from '../../modules/common/components/input/input.js';
@@ -224,8 +224,8 @@ const BookPageFiltersBar = () => {
           search.releaseYearAfter ? [search.releaseYearAfter, search.releaseYearBefore ?? null] : [null, null]
         }
       />
-      <ThreeStateCheckboxFilter
-        initialValue={search.isFavorite}
+      <CheckboxFilter
+        initialValue={search.isFavorite === '' ? false : search.isFavorite}
         onRemoveFilter={() => updateSearch({ isFavorite: undefined })}
         setFilterAction={(val) => updateSearch({ isFavorite: val })}
         filter={{
@@ -233,7 +233,6 @@ const BookPageFiltersBar = () => {
           key: 'isFavorite',
           label: 'Ulubiona',
           type: 'three-state-checkbox',
-          initialValue: search.isFavorite,
         }}
       />
     </FiltersDrawer>
@@ -241,12 +240,6 @@ const BookPageFiltersBar = () => {
 };
 
 const MyBooksVirtualizedBooksList = () => {
-  const isFavoriteStateMap = {
-    true: true,
-    false: false,
-    '': undefined,
-  };
-
   const sortFieldMap = {
     createdAt: FindUserBooksSortField.createdAt,
     releaseYear: FindUserBooksSortField.releaseYear,
@@ -282,7 +275,7 @@ const MyBooksVirtualizedBooksList = () => {
         status,
         genreId,
         authorId,
-        isFavorite: isFavoriteStateMap[isFavorite ?? ''],
+        isFavorite: isFavorite !== '' ? (isFavorite ?? undefined) : undefined,
         sortField: sortFieldMap[sortField ?? ''],
         sortOrder: sortOrderMap[sortOrder ?? ''],
       }}
@@ -386,7 +379,7 @@ const myBooksSearchParamsSchema = z
     releaseYearBefore: z.number().int().min(1900).optional().catch(undefined),
     releaseYearAfter: z.number().int().min(1900).optional().catch(undefined),
     authorId: z.string().uuid().optional().catch(''),
-    isFavorite: z.enum(['true', 'false', '']).optional().catch(''),
+    isFavorite: z.boolean().or(z.literal('')).optional().catch(''),
     sortField: z.enum(['createdAt', 'releaseYear', '']).optional().catch(''),
     sortOrder: z.enum(['asc', 'desc', '']).optional().catch(''),
   })

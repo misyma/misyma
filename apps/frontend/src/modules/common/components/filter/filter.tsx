@@ -1,3 +1,4 @@
+import { type CheckedState } from '@radix-ui/react-checkbox';
 import { CalendarIcon, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { type ChangeEvent, type FC, useCallback, useEffect, useMemo, useState, memo } from 'react';
 
@@ -5,6 +6,7 @@ import { FilterContainer } from './filterContainer';
 import { cn } from '../../lib/utils';
 import { type FilterComponentProps, type SelectFilterOpts } from '../../types/filter';
 import { Button } from '../button/button';
+import { Checkbox } from '../checkbox/checkbox';
 import { Input } from '../input/input';
 import { Popover, PopoverContent, PopoverTrigger } from '../popover/popover';
 import { Select, SelectContent, SelectContentNoPortal, SelectItem, SelectTrigger, SelectValue } from '../select/select';
@@ -194,6 +196,45 @@ const YearPickerContent = memo(
 );
 
 YearPickerContent.displayName = 'YearPickerContent';
+
+export const CheckboxFilter: FC<FilterComponentProps<boolean>> = memo(
+  ({ filter, initialValue, onRemoveFilter, setFilterAction }) => {
+    const [checked, setChecked] = useState<boolean | undefined>(!!initialValue);
+
+    const handleChange = useCallback(
+      (checked: CheckedState) => {
+        const isChecked = checked ? true : undefined;
+        setChecked(isChecked);
+        setFilterAction(isChecked);
+      },
+      [setFilterAction],
+    );
+
+    useEffect(() => {
+      setChecked(!!initialValue);
+    }, [initialValue]);
+
+    return (
+      <FilterContainer
+        hasValue={checked}
+        slot={
+          <div className="flex items-center gap-2 space-x-2">
+            <Checkbox
+              id={`checkbox-${filter.id}`}
+              size="xxl"
+              checked={checked}
+              onCheckedChange={handleChange}
+            />
+          </div>
+        }
+        filter={filter}
+        onRemoveFilter={onRemoveFilter}
+      />
+    );
+  },
+);
+
+CheckboxFilter.displayName = 'CheckboxFilter';
 
 interface YearRangeFilterProps {
   filter: { label: string };
