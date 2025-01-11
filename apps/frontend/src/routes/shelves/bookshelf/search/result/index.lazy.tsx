@@ -347,7 +347,7 @@ const ManyFoundBooksView: FC<FoundBookViewProps> = ({ onCreateManually, onAddBoo
           onClick={() => {
             onAddBook(allItems && allItems[selectedRowIndex as number]);
           }}
-          disabled={!selectedRowIndex}
+          disabled={selectedRowIndex === undefined}
         >
           <span className="text-lg">Kontynuuj</span>
         </Button>
