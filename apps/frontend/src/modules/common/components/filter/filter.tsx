@@ -221,7 +221,7 @@ export const CheckboxFilter: FC<FilterComponentProps<boolean>> = memo(
           <div className="flex items-center gap-2 space-x-2">
             <Checkbox
               id={`checkbox-${filter.id}`}
-              size="xxl"
+              size="xxxl"
               checked={checked}
               onCheckedChange={handleChange}
             />
