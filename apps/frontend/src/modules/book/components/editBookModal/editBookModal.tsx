@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { type FC, forwardRef, useState } from 'react';
+import { type FC, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { useForm } from 'react-hook-form';
 import { HiPencil } from 'react-icons/hi';
@@ -40,23 +40,6 @@ const changeMyBookDataSchema = z.object({
       message: 'Niewłaściwa wartość',
     })
     .or(z.literal('')),
-});
-
-interface EditBookIconProps {
-  onClick: () => void;
-}
-
-const EditBookIcon = forwardRef<HTMLButtonElement, EditBookIconProps>(({ onClick }, ref) => {
-  return (
-    <Button
-      ref={ref}
-      onClick={onClick}
-      variant="ghost"
-      size="icon"
-    >
-      <HiPencil className="cursor-pointer text-primary h-8 w-8" />
-    </Button>
-  );
 });
 
 export const EditBookModal: FC<Props> = ({ bookId }) => {
@@ -191,39 +174,45 @@ export const EditBookModal: FC<Props> = ({ bookId }) => {
   };
 
   return (
-    <TooltipProvider delayDuration={0}>
-      <BookDetailsChangeRequestProvider>
-        <Dialog
-          open={isOpen}
-          onOpenChange={(val) => {
-            if (val === false) {
-              resetModalState();
-            }
+    <BookDetailsChangeRequestProvider>
+      <Dialog
+        open={isOpen}
+        onOpenChange={(val) => {
+          if (val === false) {
+            resetModalState();
+          }
 
-            setIsOpen(val);
-          }}
-        >
+          setIsOpen(val);
+        }}
+      >
+        <TooltipProvider delayDuration={0}>
           <Tooltip>
             <TooltipTrigger asChild>
               <DialogTrigger asChild>
-                <EditBookIcon onClick={() => setIsOpen(true)} />
+                <Button
+                  onClick={() => setIsOpen(true)}
+                  variant="ghost"
+                  size="icon"
+                >
+                  <HiPencil className="cursor-pointer text-primary h-8 w-8" />
+                </Button>
               </DialogTrigger>
             </TooltipTrigger>
             <TooltipContent>
               <p>Edytuj książkę</p>
             </TooltipContent>
           </Tooltip>
-          <DialogContent
-            style={{
-              borderRadius: '40px',
-            }}
-            className="max-w-sm sm:max-w-xl py-16 flex flex-col items-center gap-8"
-            omitCloseButton={true}
-          >
-            {renderContents()}
-          </DialogContent>
-        </Dialog>
-      </BookDetailsChangeRequestProvider>
-    </TooltipProvider>
+        </TooltipProvider>
+        <DialogContent
+          style={{
+            borderRadius: '40px',
+          }}
+          className="max-w-sm sm:max-w-xl py-16 flex flex-col items-center gap-8"
+          omitCloseButton={true}
+        >
+          {renderContents()}
+        </DialogContent>
+      </Dialog>
+    </BookDetailsChangeRequestProvider>
   );
 };

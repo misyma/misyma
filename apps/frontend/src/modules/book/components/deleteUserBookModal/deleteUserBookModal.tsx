@@ -1,6 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { type FC, forwardRef, useState } from 'react';
+import { type FC, useState } from 'react';
 import { HiTrash } from 'react-icons/hi';
 import { useSelector } from 'react-redux';
 
@@ -12,19 +12,6 @@ import { ApiError } from '../../../common/errors/apiError';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useDeleteUserBookMutation } from '../../api/user/mutations/deleteUserBookMutation/deleteUserBookMutation';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
-
-const DeleteUserBookIcon = forwardRef<HTMLButtonElement, { onClick: () => void }>(({ onClick }, ref) => {
-  return (
-    <Button
-      ref={ref}
-      onClick={onClick}
-      variant="ghost"
-      size="icon"
-    >
-      <HiTrash className="w-full h-full text-primary" />
-    </Button>
-  );
-});
 
 interface Props {
   bookId: string;
@@ -109,7 +96,13 @@ export const DeleteUserBookModal: FC<Props> = ({ bookId, bookshelfId, bookName }
         <Tooltip>
           <TooltipTrigger asChild>
             <DialogTrigger asChild>
-              <DeleteUserBookIcon onClick={() => setIsOpen(true)} />
+              <Button
+                onClick={() => setIsOpen(true)}
+                variant="ghost"
+                size="icon"
+              >
+                <HiTrash className="w-full h-full text-primary" />
+              </Button>
             </DialogTrigger>
           </TooltipTrigger>
           <TooltipContent>
