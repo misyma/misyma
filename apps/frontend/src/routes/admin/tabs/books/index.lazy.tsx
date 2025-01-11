@@ -32,6 +32,7 @@ const TitleInputFilter = () => {
       to: '',
       search: (prev) => ({
         ...prev,
+        page: 1,
         title: debouncedTitle,
       }),
     });
