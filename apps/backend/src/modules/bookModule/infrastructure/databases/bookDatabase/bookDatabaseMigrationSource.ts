@@ -2,6 +2,8 @@ import { M10CreateUserBookCollectionTableMigration } from './migrations/m10Creat
 import { M11CreateBookChangeRequestTableMigration } from './migrations/m11CreateBookChangeRequestTableMigration.js';
 import { M12SetReleaseYearAsRequiredInBookTableMigration } from './migrations/m12SetReleaseYearAsRequiredInBookTableMigration.js';
 import { M13DeleteUserBookGenreTableMigration } from './migrations/m13DeleteUserBookGenreTableMigration.js';
+import { M14AddIndexesToBookTableMigration } from './migrations/m14AddIndexesToBookTableMigration.js';
+import { M15AddIndexesToUserBookTableMigration } from './migrations/m15AddIndexesToUserBookTableMigration.js';
 import { M1CreateAuthorTableMigration } from './migrations/m1CreateAuthorTableMigration.js';
 import { M2CreateBookTableMigration } from './migrations/m2CreateBookTableMigration.js';
 import { M3CreateGenreTableMigration } from './migrations/m3CreateGenreMigration.js';
@@ -30,6 +32,8 @@ export class BookDatabaseMigrationSource implements MigrationSource {
       new M11CreateBookChangeRequestTableMigration(),
       new M12SetReleaseYearAsRequiredInBookTableMigration(),
       new M13DeleteUserBookGenreTableMigration(),
+      new M14AddIndexesToBookTableMigration(),
+      new M15AddIndexesToUserBookTableMigration(),
     ];
   }
 
