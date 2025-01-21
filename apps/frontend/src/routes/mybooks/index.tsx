@@ -12,114 +12,18 @@ import { BooksPageTopBar } from '../../modules/book/components/booksPageTopBar/b
 import { VirtualizedBooksList } from '../../modules/bookshelf/components/virtualizedBooksList/virtualizedBooksList.js';
 import { Button } from '../../modules/common/components/button/button.js';
 import { AuthorSearchFilter } from '../../modules/common/components/filter/AuthorSearchFilter.js';
-import { CheckboxFilter, YearRangeFilter } from '../../modules/common/components/filter/filter.js';
-import { FilterContainer } from '../../modules/common/components/filter/filterContainer.js';
+import {
+  CheckboxFilter,
+  GenreSelectFilter,
+  MyBooksStatusFilter,
+  YearRangeFilter,
+} from '../../modules/common/components/filter/filter.js';
 import { FiltersDrawer } from '../../modules/common/components/filtersDrawer/filtersDrawer.js';
 import { Input } from '../../modules/common/components/input/input.js';
 import { SearchLanguageSelect } from '../../modules/common/components/searchLanguageSelect/SearchLanguageSelect.js';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../../modules/common/components/select/select.js';
-import { ReadingStatus as TranslatedReadingStatus } from '../../modules/common/constants/readingStatus.js';
 import useDebounce from '../../modules/common/hooks/useDebounce.js';
-import { useErrorHandledQuery } from '../../modules/common/hooks/useErrorHandledQuery.js';
-import { type FilterComponentProps } from '../../modules/common/types/filter.js';
 import { RequireAuthComponent } from '../../modules/core/components/requireAuth/requireAuthComponent.js';
 import { myBooksStateSelectors } from '../../modules/core/store/states/myBooksFilterState/myBooksFilterStateSlice.js';
-import { userStateSelectors } from '../../modules/core/store/states/userState/userStateSlice.js';
-import { getGenresQueryOptions } from '../../modules/genres/api/queries/getGenresQuery/getGenresQueryOptions.js';
-
-const GenreSelectFilter: FC<FilterComponentProps> = ({ filter, initialValue, onRemoveFilter, setFilterAction }) => {
-  const [genreSelectOpen, setGenreSelectOpen] = useState(false);
-
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
-  const { data: genres } = useErrorHandledQuery(
-    getGenresQueryOptions({
-      accessToken: accessToken as string,
-    }),
-  );
-
-  return (
-    <FilterContainer
-      filter={filter}
-      hasValue={!!initialValue}
-      slot={
-        <Select
-          key={initialValue}
-          value={initialValue}
-          open={genreSelectOpen}
-          onOpenChange={setGenreSelectOpen}
-          onValueChange={setFilterAction}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder={<span className="text-muted-foreground">Kategoria</span>} />
-            <SelectContent>
-              {Object.values(genres?.data ?? []).map((genre) => (
-                <SelectItem
-                  key={genre.id}
-                  onKeyDown={(event) => {
-                    if (event.key === 'Enter') {
-                      setGenreSelectOpen(false);
-                    }
-                  }}
-                  value={genre.id}
-                >
-                  {genre.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </SelectTrigger>
-        </Select>
-      }
-      onRemoveFilter={onRemoveFilter}
-    />
-  );
-};
-
-const MyBooksStatusFilter: FC<FilterComponentProps> = ({ filter, initialValue, onRemoveFilter, setFilterAction }) => {
-  const [statusSelectOpen, setStatusSelectOpen] = useState(false);
-
-  return (
-    <FilterContainer
-      filter={filter}
-      onRemoveFilter={onRemoveFilter}
-      hasValue={!!initialValue}
-      slot={
-        <Select
-          key={initialValue}
-          value={initialValue}
-          open={statusSelectOpen}
-          onOpenChange={setStatusSelectOpen}
-          onValueChange={setFilterAction}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder={<span className="text-muted-foreground">Status</span>} />
-            <SelectContent>
-              {Object.entries(TranslatedReadingStatus).map(([key, status]) => (
-                <SelectItem
-                  key={key + status}
-                  onKeyDown={(event) => {
-                    if (event.key === 'Enter') {
-                      setStatusSelectOpen(false);
-                    }
-                  }}
-                  value={key}
-                >
-                  {status}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </SelectTrigger>
-        </Select>
-      }
-    />
-  );
-};
 
 const BookPageFiltersBar = () => {
   const navigate = Route.useNavigate();

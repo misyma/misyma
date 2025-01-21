@@ -1,8 +1,13 @@
 import { type CheckedState } from '@radix-ui/react-checkbox';
 import { CalendarIcon, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { type ChangeEvent, type FC, useCallback, useEffect, useMemo, useState, memo } from 'react';
+import { useSelector } from 'react-redux';
 
 import { FilterContainer } from './filterContainer';
+import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
+import { getGenresQueryOptions } from '../../../genres/api/queries/getGenresQuery/getGenresQueryOptions';
+import { ReadingStatus } from '../../constants/readingStatus';
+import { useErrorHandledQuery } from '../../hooks/useErrorHandledQuery';
 import { cn } from '../../lib/utils';
 import { type FilterComponentProps, type SelectFilterOpts } from '../../types/filter';
 import { Button } from '../button/button';
@@ -429,5 +434,103 @@ export const YearFilter: FC<FilterComponentProps> = ({ filter, initialValue, onR
       filter={filter}
       onRemoveFilter={onRemoveFilter}
     ></FilterContainer>
+  );
+};
+
+export const GenreSelectFilter: FC<FilterComponentProps> = ({
+  filter,
+  initialValue,
+  onRemoveFilter,
+  setFilterAction,
+}) => {
+  const [genreSelectOpen, setGenreSelectOpen] = useState(false);
+
+  const accessToken = useSelector(userStateSelectors.selectAccessToken);
+
+  const { data: genres } = useErrorHandledQuery(
+    getGenresQueryOptions({
+      accessToken: accessToken as string,
+    }),
+  );
+
+  return (
+    <FilterContainer
+      filter={filter}
+      hasValue={!!initialValue}
+      slot={
+        <Select
+          key={initialValue}
+          value={initialValue}
+          open={genreSelectOpen}
+          onOpenChange={setGenreSelectOpen}
+          onValueChange={setFilterAction}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder={<span className="text-muted-foreground">Kategoria</span>} />
+            <SelectContent>
+              {Object.values(genres?.data ?? []).map((genre) => (
+                <SelectItem
+                  key={genre.id}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter') {
+                      setGenreSelectOpen(false);
+                    }
+                  }}
+                  value={genre.id}
+                >
+                  {genre.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </SelectTrigger>
+        </Select>
+      }
+      onRemoveFilter={onRemoveFilter}
+    />
+  );
+};
+
+export const MyBooksStatusFilter: FC<FilterComponentProps> = ({
+  filter,
+  initialValue,
+  onRemoveFilter,
+  setFilterAction,
+}) => {
+  const [statusSelectOpen, setStatusSelectOpen] = useState(false);
+
+  return (
+    <FilterContainer
+      filter={filter}
+      onRemoveFilter={onRemoveFilter}
+      hasValue={!!initialValue}
+      slot={
+        <Select
+          key={initialValue}
+          value={initialValue}
+          open={statusSelectOpen}
+          onOpenChange={setStatusSelectOpen}
+          onValueChange={setFilterAction}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder={<span className="text-muted-foreground">Status</span>} />
+            <SelectContent>
+              {Object.entries(ReadingStatus).map(([key, status]) => (
+                <SelectItem
+                  key={key + status}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter') {
+                      setStatusSelectOpen(false);
+                    }
+                  }}
+                  value={key}
+                >
+                  {status}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </SelectTrigger>
+        </Select>
+      }
+    />
   );
 };
