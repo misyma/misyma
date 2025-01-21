@@ -4,6 +4,7 @@ import { M12SetReleaseYearAsRequiredInBookTableMigration } from './migrations/m1
 import { M13DeleteUserBookGenreTableMigration } from './migrations/m13DeleteUserBookGenreTableMigration.js';
 import { M14AddIndexesToBookTableMigration } from './migrations/m14AddIndexesToBookTableMigration.js';
 import { M15AddIndexesToUserBookTableMigration } from './migrations/m15AddIndexesToUserBookTableMigration.js';
+import { M16AddIndexToAuthorTableMigration } from './migrations/m16AddIndexToAuthorTableMigration.js';
 import { M1CreateAuthorTableMigration } from './migrations/m1CreateAuthorTableMigration.js';
 import { M2CreateBookTableMigration } from './migrations/m2CreateBookTableMigration.js';
 import { M3CreateGenreTableMigration } from './migrations/m3CreateGenreMigration.js';
@@ -34,6 +35,7 @@ export class BookDatabaseMigrationSource implements MigrationSource {
       new M13DeleteUserBookGenreTableMigration(),
       new M14AddIndexesToBookTableMigration(),
       new M15AddIndexesToUserBookTableMigration(),
+      new M16AddIndexToAuthorTableMigration(),
     ];
   }
 
