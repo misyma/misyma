@@ -10,7 +10,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '../popover/popover';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../tooltip/tooltip';
 
 interface BooksSortButtonProps {
-  readonly navigationPath: '/admin/tabs/books' | '/mybooks';
+  readonly navigationPath: '/admin/tabs/books' | '/mybooks' | `/shelves/bookshelf/${string}`;
 }
 
 export const BooksSortButton = ({ navigationPath }: BooksSortButtonProps) => {

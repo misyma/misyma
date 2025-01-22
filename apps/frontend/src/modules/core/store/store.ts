@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 
 import { adminBookFilterStateSlice } from './states/adminBookFilterState/adminBookFilterStateSlice';
+import { bookshelfBooksFilterStateSlice } from './states/bookshelfBooksFilterState/bookshelfBooksFilterStateSlice';
 import { bookshelfStateSlice } from './states/bookshelvesState/bookshelfStateSlice';
 import { myBooksFilterStateSlice } from './states/myBooksFilterState/myBooksFilterStateSlice';
 import { preferencesStateSlice } from './states/preferencesState/preferencesStateSlice';
@@ -12,6 +13,7 @@ export const store = configureStore({
     user: userStateSlice.reducer,
     bookshelves: bookshelfStateSlice.reducer,
     myBooksFilter: myBooksFilterStateSlice.reducer,
+    bookshelfBooksFilter: bookshelfBooksFilterStateSlice.reducer,
     adminBookFilter: adminBookFilterStateSlice.reducer,
   },
 });
