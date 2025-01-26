@@ -109,7 +109,6 @@ export const FindUserBookshelvesInfiniteQueryOptions = ({
         name,
       }),
     getNextPageParam: (lastPage) => {
-      console.log('XD');
       if (!lastPage?.metadata) return undefined;
 
       const { page: currentPage, total, pageSize } = lastPage.metadata;

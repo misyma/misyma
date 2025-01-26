@@ -12,6 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { FileInput, Input } from '../../../common/components/input/input';
 import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
 import { useToast } from '../../../common/components/toast/use-toast';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../common/components/tooltip/tooltip';
 import useDebounce from '../../../common/hooks/useDebounce';
 import { useFileUpload } from '../../../common/hooks/useFileUpload';
 import { cn } from '../../../common/lib/utils';
@@ -107,9 +108,21 @@ export const CreateBookshelfModal: FC = () => {
       }}
     >
       <DialogTrigger asChild>
-        <Button size="big-icon">
-          <HiPlus className={cn('h-8 w-8 cursor-pointer')} />
-        </Button>
+        <TooltipProvider delayDuration={200}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={() => setIsOpen(true)}
+                size="big-icon"
+              >
+                <HiPlus className={cn('h-8 w-8 cursor-pointer')} />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Stwórz półkę</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </DialogTrigger>
       <DialogContent
         style={{
