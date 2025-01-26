@@ -1,68 +1,17 @@
 import { createLazyFileRoute, useNavigate } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
 import { type FC, Fragment, useEffect, useMemo, useState } from 'react';
-import { HiMagnifyingGlass, HiPlus } from 'react-icons/hi2';
-import { useDispatch, useSelector } from 'react-redux';
+import { HiMagnifyingGlass } from 'react-icons/hi2';
 
 import { AuthenticatedLayout } from '../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { useFindUserBookshelfsQuery } from '../../modules/bookshelf/api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 import { BookshelfsList } from '../../modules/bookshelf/components/bookshelfsList/bookshelfsList';
-import { Button } from '../../modules/common/components/button/button';
+import { CreateBookshelfModal } from '../../modules/bookshelf/components/createBookshelfModal/createBookshelfModal';
 import { Input } from '../../modules/common/components/input/input';
 import { Paginator } from '../../modules/common/components/paginator/paginator';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '../../modules/common/components/tooltip/tooltip';
 import { useBreadcrumbKeysDispatch } from '../../modules/common/contexts/breadcrumbKeysContext';
 import useDebounce from '../../modules/common/hooks/useDebounce';
-import {
-  bookshelfSelectors,
-  setCreatingNew,
-  setEditMap,
-} from '../../modules/core/store/states/bookshelvesState/bookshelfStateSlice';
-import { type AppDispatch, type RootState } from '../../modules/core/store/store';
 import { useFindUserQuery } from '../../modules/user/api/queries/findUserQuery/findUserQuery';
-
-const CreateBookshelfButton: FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-
-  const editMap = useSelector<RootState, Record<number, boolean>>((state) => state.bookshelves.editMap);
-
-  const isCreatingNew = useSelector(bookshelfSelectors.selectIsCreatingNew);
-
-  const onAddNewBookshelf = (): void => {
-    dispatch(
-      setEditMap({
-        ...editMap,
-        [0]: true,
-      }),
-    );
-
-    dispatch(setCreatingNew(true));
-  };
-
-  return (
-    <TooltipProvider delayDuration={300}>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            size="big-icon"
-            onClick={() => onAddNewBookshelf()}
-            disabled={isCreatingNew}
-          >
-            <HiPlus className="w-8 h-8"></HiPlus>
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p>Stwórz półkę</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
-  );
-};
 
 const SearchBookshelfField = () => {
   const navigate = useNavigate();
@@ -155,10 +104,6 @@ export const ShelvesPage: FC = () => {
     // eslint-disable-next-line
   }, []);
 
-  const onCancelEdit = (): void => {
-    setCreatingNew(false);
-  };
-
   return (
     <div className="flex flex-col items-center justify-center w-100% px-8 py-1 sm:py-2">
       <motion.div
@@ -171,10 +116,9 @@ export const ShelvesPage: FC = () => {
       >
         <div className={'w-full flex items-end justify-between max-w-screen-2xl'}>
           <SearchBookshelfField />
-          <CreateBookshelfButton />
+          <CreateBookshelfModal />
         </div>
         <BookshelfsList
-          onCancelEdit={onCancelEdit}
           page={page}
           perPage={perPage}
           name={name}
