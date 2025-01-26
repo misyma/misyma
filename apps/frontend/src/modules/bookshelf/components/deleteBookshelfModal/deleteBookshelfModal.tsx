@@ -1,7 +1,6 @@
 import { SelectContent } from '@radix-ui/react-select';
 import { useQueryClient } from '@tanstack/react-query';
 import { type FC, useMemo, useState } from 'react';
-import { HiTrash } from 'react-icons/hi';
 import { useSelector } from 'react-redux';
 
 import { FindBooksByBookshelfIdQueryOptions } from '../../../book/api/user/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
@@ -13,12 +12,10 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTrigger,
 } from '../../../common/components/dialog/dialog';
 import { Select, SelectItem, SelectTrigger, SelectValue } from '../../../common/components/select/select';
 import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
-import { cn } from '../../../common/lib/utils';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { ShelfApiError } from '../../api/errors/shelfApiError';
@@ -91,7 +88,10 @@ const DialogContentPreConfirmation: FC<DialogContentPreConfirmationProps> = ({
         </Button>
         <Button
           className="bg-primary w-32 sm:w-40"
-          onClick={handleInitialConfirmation}
+          onClick={(e) => {
+            handleInitialConfirmation();
+            e.stopPropagation();
+          }}
           disabled={isDeleting}
         >
           Potwierdź
@@ -234,15 +234,20 @@ interface Props {
   bookshelfName: string;
   deletedHandler: () => Promise<void>;
   className?: string;
+  open: boolean;
+  onCloseModal: () => void;
 }
 
-export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, className, deletedHandler }: Props) => {
+export const DeleteBookshelfModal: FC<Props> = ({
+  bookshelfId,
+  bookshelfName,
+  open,
+  deletedHandler,
+  onCloseModal,
+}: Props) => {
   const queryClient = useQueryClient();
 
   const [deletionConfirmed, setDeletionConfirmed] = useState<boolean>(false);
-
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-
   const [error, setError] = useState('');
 
   const { mutateAsync: deleteBookshelf } = useDeleteBookshelfMutation({});
@@ -251,7 +256,7 @@ export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, cl
     try {
       await deleteBookshelf({ bookshelfId });
 
-      setIsOpen(false);
+      onCloseModal();
 
       await deletedHandler();
 
@@ -273,23 +278,15 @@ export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, cl
 
   return (
     <Dialog
-      open={isOpen}
-      onOpenChange={(val) => {
-        setIsOpen(val);
+      open={open}
+      onOpenChange={() => {
+        onCloseModal();
 
         setDeletionConfirmed(false);
 
         setError('');
       }}
     >
-      <DialogTrigger asChild>
-        <Button
-          size="custom"
-          variant="none"
-        >
-          <HiTrash className={cn('text-primary h-8 w-8 cursor-pointer', className)} />
-        </Button>
-      </DialogTrigger>
       <DialogContent
         style={{
           borderRadius: '40px',
@@ -307,12 +304,12 @@ export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, cl
                 if (val === true) {
                   await onDelete();
 
-                  setIsOpen(false);
+                  onCloseModal();
                 } else {
                   setDeletionConfirmed(true);
                 }
               }}
-              onCancel={() => setIsOpen(false)}
+              onCancel={() => onCloseModal()}
             />
           </>
         ) : (
@@ -321,7 +318,7 @@ export const DeleteBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, cl
               bookshelfId={bookshelfId}
               deletedHandler={deletedHandler}
               onDelete={onDelete}
-              onFinished={() => setIsOpen(false)}
+              onFinished={() => onCloseModal()}
             />
           </>
         )}

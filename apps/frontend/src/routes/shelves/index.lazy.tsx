@@ -1,17 +1,14 @@
 import { createLazyFileRoute, useNavigate } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
-import { type FC, Fragment, useEffect, useMemo, useState } from 'react';
+import { type FC, useEffect, useState } from 'react';
 import { HiMagnifyingGlass } from 'react-icons/hi2';
 
 import { AuthenticatedLayout } from '../../modules/auth/layouts/authenticated/authenticatedLayout';
-import { useFindUserBookshelfsQuery } from '../../modules/bookshelf/api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
-import { BookshelfsList } from '../../modules/bookshelf/components/bookshelfsList/bookshelfsList';
+import { VirtualizedBookshelvesList } from '../../modules/bookshelf/components/bookshelfsList/virtualizedBookshelfList';
 import { CreateBookshelfModal } from '../../modules/bookshelf/components/createBookshelfModal/createBookshelfModal';
 import { Input } from '../../modules/common/components/input/input';
-import { Paginator } from '../../modules/common/components/paginator/paginator';
 import { useBreadcrumbKeysDispatch } from '../../modules/common/contexts/breadcrumbKeysContext';
 import useDebounce from '../../modules/common/hooks/useDebounce';
-import { useFindUserQuery } from '../../modules/user/api/queries/findUserQuery/findUserQuery';
 
 const SearchBookshelfField = () => {
   const navigate = useNavigate();
@@ -49,53 +46,8 @@ const SearchBookshelfField = () => {
   );
 };
 
-const BookshelvesPaginator: FC = () => {
-  const navigate = Route.useNavigate();
-
-  const { page, perPage, name } = Route.useSearch();
-
-  const { data: user } = useFindUserQuery();
-
-  const { data: bookshelvesData } = useFindUserBookshelfsQuery({
-    userId: user?.id as string,
-    pageSize: perPage,
-    page,
-    name,
-  });
-
-  const pagesCount = useMemo(() => {
-    const bookshelvesCount = bookshelvesData?.metadata?.total ?? 0;
-
-    return Math.ceil(bookshelvesCount / perPage);
-  }, [bookshelvesData?.metadata?.total, perPage]);
-
-  const setCurrentPage = (value: number) => {
-    navigate({
-      to: '',
-      search: (prev) => ({ ...prev, page: value }),
-    });
-  };
-
-  return (
-    <Fragment>
-      {(bookshelvesData?.metadata?.total ?? 0) > perPage && (
-        <Paginator
-          pagesCount={pagesCount}
-          perPage={perPage}
-          onPageChange={setCurrentPage}
-          pageIndex={page}
-          includeArrows={true}
-          itemsCount={bookshelvesData?.metadata.total}
-        />
-      )}
-    </Fragment>
-  );
-};
-
 export const ShelvesPage: FC = () => {
   const breadcrumbKeysDispatch = useBreadcrumbKeysDispatch();
-
-  const { page, perPage, name } = Route.useSearch();
 
   useEffect(() => {
     breadcrumbKeysDispatch({
@@ -118,12 +70,7 @@ export const ShelvesPage: FC = () => {
           <SearchBookshelfField />
           <CreateBookshelfModal />
         </div>
-        <BookshelfsList
-          page={page}
-          perPage={perPage}
-          name={name}
-        />
-        <BookshelvesPaginator />
+        <VirtualizedBookshelvesList />
       </motion.div>
     </div>
   );
