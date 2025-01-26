@@ -3,7 +3,7 @@
 }
 
 .shelves-container {
-	@apply py-4 grid gap-x-16 gap-y-2 grid-cols-1 w-full min-h-16;
+	@apply py-4 grid sm:grid-cols-4 gap-x-16 gap-y-2 grid-cols-1 w-full min-h-16;
 }
 
 .shelf {
