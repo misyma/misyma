@@ -4,7 +4,7 @@ import { type FC, useMemo, useState } from 'react';
 import { HiDotsVertical, HiBookOpen } from 'react-icons/hi';
 import { useSelector } from 'react-redux';
 
-import type { BookshelfType } from '@common/contracts';
+import { BookshelfType } from '@common/contracts';
 
 import { FindBooksByBookshelfIdQueryOptions } from '../../../book/api/user/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
 import { TruncatedTextTooltip } from '../../../book/components/truncatedTextTooltip/truncatedTextTooltip';
@@ -22,6 +22,7 @@ import { userStateSelectors } from '../../../core/store/states/userState/userSta
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { DeleteBookshelfModal } from '../deleteBookshelfModal/deleteBookshelfModal';
 import { UpdateBookshelfModal } from '../updateBookshelfModal/updateBookshelfModal';
+import { UpdateNonStandardBookshelfModal } from '../updateNonStandardBookshelfModal/updateNonStandardBookshelfModal';
 
 interface BookshelfCardProps {
   bookshelf: {
@@ -38,9 +39,10 @@ interface BookshelfCardProps {
 interface BookshelfCardMenuBarProps {
   onDeleteClick: () => void;
   onEditClick: () => void;
+  bookshelfType: BookshelfType;
 }
 
-export const BookshelfCardMenuBar: FC<BookshelfCardMenuBarProps> = ({ onDeleteClick, onEditClick }) => {
+export const BookshelfCardMenuBar: FC<BookshelfCardMenuBarProps> = ({ onDeleteClick, onEditClick, bookshelfType }) => {
   return (
     <Menubar className="absolute top-2 right-2 p-0 rounded-none space-x-0 border-none data-[state=open]:!bg-none">
       <MenubarMenu>
@@ -69,16 +71,20 @@ export const BookshelfCardMenuBar: FC<BookshelfCardMenuBarProps> = ({ onDeleteCl
           >
             Edytuj
           </MenubarItem>
-          <MenubarSeparator />
-          <MenubarItem
-            onClick={(e) => {
-              onDeleteClick();
-              e.stopPropagation();
-            }}
-            className="py-2 hover:text-primary"
-          >
-            Usuń
-          </MenubarItem>
+          {bookshelfType === BookshelfType.standard && (
+            <>
+              <MenubarSeparator />
+              <MenubarItem
+                onClick={(e) => {
+                  onDeleteClick();
+                  e.stopPropagation();
+                }}
+                className="py-2 hover:text-primary"
+              >
+                Usuń
+              </MenubarItem>
+            </>
+          )}
         </MenubarContent>
       </MenubarMenu>
     </Menubar>
@@ -118,9 +124,12 @@ export const BookshelfCard: FC<BookshelfCardProps> = ({ bookshelf, onClick }) =>
     onClick?.() || navigate({ to: `/shelves/bookshelf/${bookshelf.id}` });
   };
 
+  const UpdateBookshelfComponent =
+    bookshelf.type === BookshelfType.standard ? UpdateBookshelfModal : UpdateNonStandardBookshelfModal;
+
   return (
     <>
-      <UpdateBookshelfModal
+      <UpdateBookshelfComponent
         bookshelfId={bookshelf.id}
         bookshelfName={bookshelf.name}
         open={editModalOpen}
@@ -158,6 +167,7 @@ export const BookshelfCard: FC<BookshelfCardProps> = ({ bookshelf, onClick }) =>
             )}
             <div className="absolute inset-0 bg-black bg-opacity-20 transition-opacity duration-300 opacity-0 group-hover:opacity-100" />
             <BookshelfCardMenuBar
+              bookshelfType={bookshelf.type}
               onEditClick={() => {
                 setEditModalOpen(true);
               }}
