@@ -80,7 +80,7 @@ const UpdateBookReadingForm: FC<UpdateBookReadingFormProps> = ({ bookReading, se
 
   const { mutateAsync, isPending: isUpdatingBookReading } = useUpdateBookReadingMutation({});
 
-  const onCreateBookReading = async (values: z.infer<typeof updateBookReadingSchema>) => {
+  const onUpdateBookReading = async (values: z.infer<typeof updateBookReadingSchema>) => {
     if (
       values.comment === bookReading.comment &&
       new Date(values.endedAt).getTime() === new Date(bookReading.endedAt).getTime() &&
@@ -128,7 +128,7 @@ const UpdateBookReadingForm: FC<UpdateBookReadingFormProps> = ({ bookReading, se
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onCreateBookReading)}
+        onSubmit={form.handleSubmit(onUpdateBookReading)}
         className="space-y-4 min-w-96"
       >
         <FormField

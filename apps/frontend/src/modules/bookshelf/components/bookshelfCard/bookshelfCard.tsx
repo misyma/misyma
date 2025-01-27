@@ -21,6 +21,7 @@ import { useToast } from '../../../common/components/toast/use-toast';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { DeleteBookshelfModal } from '../deleteBookshelfModal/deleteBookshelfModal';
+import { UpdateBookshelfModal } from '../updateBookshelfModal/updateBookshelfModal';
 
 interface BookshelfCardProps {
   bookshelf: {
@@ -102,6 +103,7 @@ export const BookshelfCard: FC<BookshelfCardProps> = ({ bookshelf, onClick }) =>
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
   const { data: user } = useFindUserQuery();
+  const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const { data: booksQuery, isLoading } = useQuery(
@@ -118,6 +120,12 @@ export const BookshelfCard: FC<BookshelfCardProps> = ({ bookshelf, onClick }) =>
 
   return (
     <>
+      <UpdateBookshelfModal
+        bookshelfId={bookshelf.id}
+        bookshelfName={bookshelf.name}
+        open={editModalOpen}
+        onCloseModal={() => setEditModalOpen(false)}
+      />
       <DeleteBookshelfModal
         bookshelfId={bookshelf.id}
         bookshelfName={bookshelf.name}
@@ -151,10 +159,9 @@ export const BookshelfCard: FC<BookshelfCardProps> = ({ bookshelf, onClick }) =>
             <div className="absolute inset-0 bg-black bg-opacity-20 transition-opacity duration-300 opacity-0 group-hover:opacity-100" />
             <BookshelfCardMenuBar
               onEditClick={() => {
-                console.log('EDIT!');
+                setEditModalOpen(true);
               }}
               onDeleteClick={() => {
-                console.log('DELETE');
                 setDeleteModalOpen(true);
               }}
             />
