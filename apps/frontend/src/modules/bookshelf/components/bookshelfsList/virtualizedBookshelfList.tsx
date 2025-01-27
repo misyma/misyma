@@ -18,13 +18,13 @@ export const VirtualizedBookshelvesList: FC<VirtualizedBookshelvesListProps> = (
 
   const { data, fetchNextPage, isLoading, isFetchingNextPage, hasNextPage } = useFindUserBookshelfsInfiniteQuery({
     accessToken,
-    pageSize: 1,
+    pageSize: 2,
   });
 
   const allBookshelves = useMemo(() => data?.pages.flatMap((page) => page.data) || [], [data]);
 
   const rowVirtualizer = useVirtualizer({
-    count: hasNextPage ? allBookshelves.length + 1 : allBookshelves.length,
+    count: hasNextPage ? Math.ceil(allBookshelves.length / 2) + 1 : Math.ceil(allBookshelves.length / 2),
     getScrollElement: () => parentRef.current,
     estimateSize: () => 340, // Adjusted for card height
     overscan: 3,
@@ -32,7 +32,7 @@ export const VirtualizedBookshelvesList: FC<VirtualizedBookshelvesListProps> = (
 
   useEffect(() => {
     const [lastItem] = [...rowVirtualizer.getVirtualItems()].reverse();
-    if (lastItem?.index >= allBookshelves.length - 1 && hasNextPage && !isFetchingNextPage) {
+    if (lastItem?.index >= Math.ceil(allBookshelves.length / 2) - 1 && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -55,8 +55,10 @@ export const VirtualizedBookshelvesList: FC<VirtualizedBookshelvesListProps> = (
         }}
       >
         {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-          const isLoaderRow = virtualRow.index >= allBookshelves.length;
-          const bookshelf = allBookshelves[virtualRow.index];
+          const isLoaderRow = virtualRow.index >= Math.ceil(allBookshelves.length / 2);
+          const startIndex = virtualRow.index * 2;
+          const bookshelf1 = allBookshelves[startIndex];
+          const bookshelf2 = allBookshelves[startIndex + 1];
 
           return (
             <div
@@ -73,10 +75,20 @@ export const VirtualizedBookshelvesList: FC<VirtualizedBookshelvesListProps> = (
               {isLoaderRow ? (
                 <div className="animate-pulse rounded-[20px] border shadow-sm shadow-gray-400 h-full bg-gray-100" />
               ) : (
-                <BookshelfCard
-                  bookshelf={bookshelf}
-                  onClick={() => navigate({ to: `/shelves/bookshelf/${bookshelf.id}` })}
-                />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {bookshelf1 && (
+                    <BookshelfCard
+                      bookshelf={bookshelf1}
+                      onClick={() => navigate({ to: `/shelves/bookshelf/${bookshelf1.id}` })}
+                    />
+                  )}
+                  {bookshelf2 && (
+                    <BookshelfCard
+                      bookshelf={bookshelf2}
+                      onClick={() => navigate({ to: `/shelves/bookshelf/${bookshelf2.id}` })}
+                    />
+                  )}
+                </div>
               )}
             </div>
           );
