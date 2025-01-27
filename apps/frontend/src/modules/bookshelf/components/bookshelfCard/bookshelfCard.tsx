@@ -1,6 +1,5 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { format } from 'date-fns';
 import { type FC, useMemo, useState } from 'react';
 import { HiDotsVertical, HiBookOpen } from 'react-icons/hi';
 import { useSelector } from 'react-redux';
@@ -91,7 +90,15 @@ export const BookshelfCard: FC<BookshelfCardProps> = ({ bookshelf, onClick }) =>
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const formattedDate = useMemo(() => format(new Date(bookshelf.createdAt), 'dd MMM yyyy'), [bookshelf.createdAt]);
+  const formattedDate = useMemo(
+    () =>
+      new Date(bookshelf.createdAt).toLocaleDateString('pl-PL', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      }),
+    [bookshelf.createdAt],
+  );
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
   const { data: user } = useFindUserQuery();
