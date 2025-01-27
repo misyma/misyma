@@ -1,38 +1,36 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
-import { useRef, useState, type FC } from 'react';
+import { useRef, type FC } from 'react';
 import { useForm } from 'react-hook-form';
-import { HiPlus } from 'react-icons/hi2';
 import { useSelector } from 'react-redux';
 import { z } from 'zod';
 
 import { Button } from '../../../common/components/button/button';
-import { Dialog, DialogContent, DialogTrigger } from '../../../common/components/dialog/dialog';
+import { Dialog, DialogContent } from '../../../common/components/dialog/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/form/form';
 import { FileInput, Input } from '../../../common/components/input/input';
 import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
 import { useToast } from '../../../common/components/toast/use-toast';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../common/components/tooltip/tooltip';
 import useDebounce from '../../../common/hooks/useDebounce';
 import { useFileUpload } from '../../../common/hooks/useFileUpload';
-import { cn } from '../../../common/lib/utils';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
-import { useCreateBookshelfMutation } from '../../api/mutations/createBookshelfMutation/createBookshelfMutation';
+import { useUpdateBookshelfMutation } from '../../api/mutations/updateBookshelfMutation/updateBookshelfMutation';
 import { useUploadBookshelfImageMutation } from '../../api/mutations/uploadBookshelfImageMutation/uploadBookshelfImageMutation';
 import { BookshelvesApiQueryKeys } from '../../api/queries/bookshelvesApiQueryKeys';
 
-const createBookshelfFormSchema = z.object({
+const updateBookshelfFormSchema = z.object({
   image: z.object({}).or(z.undefined()),
-  name: z
-    .string({
-      required_error: 'Nazwa jest wymagana',
-    })
-    .min(1, 'Nazwa jest za krótka.')
-    .max(64, 'Nazwa jest zbyt długa.'),
+  name: z.string().max(64, 'Nazwa jest zbyt długa.').optional(),
 });
 
-export const CreateBookshelfModal: FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
+interface Props {
+  bookshelfId: string;
+  bookshelfName: string;
+  onCloseModal: () => void;
+  open: boolean;
+}
+
+export const UpdateBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, open, onCloseModal }: Props) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const queryClient = useQueryClient();
@@ -43,7 +41,7 @@ export const CreateBookshelfModal: FC = () => {
   });
 
   const form = useForm({
-    resolver: zodResolver(createBookshelfFormSchema),
+    resolver: zodResolver(updateBookshelfFormSchema),
     defaultValues: {
       image: file,
       name: '',
@@ -52,26 +50,27 @@ export const CreateBookshelfModal: FC = () => {
     mode: 'onTouched',
   });
 
-  const { mutateAsync: createBookshelf, isPending: isCreationPending } = useCreateBookshelfMutation({});
+  const { mutateAsync: updateBookshelf, isPending: isUpdatePending } = useUpdateBookshelfMutation({});
   const { mutateAsync: uploadBookshelfImage, isPending: isImagePending } = useUploadBookshelfImageMutation({});
 
-  const isProcessingBase = isCreationPending || isImagePending;
+  const isProcessingBase = isUpdatePending || isImagePending;
   const isProcessing = useDebounce(isProcessingBase, 300);
 
   const { toast } = useToast();
 
-  const onSubmit = async (props: z.infer<typeof createBookshelfFormSchema>) => {
-    let bookshelfId = '';
-    try {
-      const res = await createBookshelf({
-        name: props.name,
-      });
-      bookshelfId = res.id;
-    } catch (error) {
-      return;
+  const onSubmit = async (props: z.infer<typeof updateBookshelfFormSchema>) => {
+    if (props.name && props.name.length > 0) {
+      try {
+        await updateBookshelf({
+          name: props.name,
+          bookshelfId,
+        });
+      } catch (error) {
+        return;
+      }
     }
 
-    if (file && bookshelfId) {
+    if (file) {
       try {
         await uploadBookshelfImage({
           bookshelfId,
@@ -90,40 +89,23 @@ export const CreateBookshelfModal: FC = () => {
       predicate: ({ queryKey }) => queryKey[0] === BookshelvesApiQueryKeys.findUserBookshelfs,
     });
 
-    setIsOpen(false);
+    onCloseModal();
 
     toast({
-      title: `Półka: ${props.name} została stworzona :)`,
+      title: `Półka: ${props.name || bookshelfName} została zaktualizowana :)`,
       variant: 'success',
     });
   };
 
   return (
     <Dialog
-      open={isOpen}
-      onOpenChange={(val) => {
-        setIsOpen(val);
+      open={open}
+      onOpenChange={() => {
+        onCloseModal();
         setFile(undefined);
         form.reset();
       }}
     >
-      <DialogTrigger asChild>
-        <TooltipProvider delayDuration={200}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                onClick={() => setIsOpen(true)}
-                size="big-icon"
-              >
-                <HiPlus className={cn('h-8 w-8 cursor-pointer')} />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Stwórz półkę</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </DialogTrigger>
       <DialogContent
         style={{
           borderRadius: '40px',
@@ -131,7 +113,7 @@ export const CreateBookshelfModal: FC = () => {
         className="max-w-sm sm:max-w-xl py-16 flex flex-col items-center gap-8"
         omitCloseButton={true}
       >
-        <p className="font-bold text-lg">Stwórz półkę</p>
+        <p className="font-bold text-lg">Edytuj półkę</p>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
@@ -159,7 +141,7 @@ export const CreateBookshelfModal: FC = () => {
               render={({ field: { value, onChange, ...fieldProps } }) => (
                 <FormItem>
                   <FormLabel>
-                    <span>Obrazek</span> <span className="text-gray-500">(opcjonalne)</span>
+                    <span>Obrazek</span>
                   </FormLabel>
                   <FormControl>
                     <FileInput
@@ -183,11 +165,11 @@ export const CreateBookshelfModal: FC = () => {
               <Button
                 size="lg"
                 variant={isProcessing ? 'ghost' : 'default'}
-                disabled={!form.formState.isValid || isProcessing}
+                disabled={!form.formState.isValid || isProcessing || !form.formState.isDirty}
                 type="submit"
               >
                 {isProcessing && <LoadingSpinner size={40} />}
-                {!isProcessing && <>Dodaj półkę</>}
+                {!isProcessing && <>Edytuj półkę</>}
               </Button>
             </div>
           </form>

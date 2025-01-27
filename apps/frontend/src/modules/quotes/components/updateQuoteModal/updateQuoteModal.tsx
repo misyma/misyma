@@ -33,7 +33,7 @@ const editQuoteSchema = z
         required_error: 'Strona jest wymagana.',
       })
       .max(16, {
-        message: 'Strona może mieć maksylamnie 16 znaków.',
+        message: 'Strona może mieć maksymalnie 16 znaków.',
       })
       .optional()
       .or(z.literal('')),
