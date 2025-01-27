@@ -159,7 +159,6 @@ export const BookshelfCard: FC<BookshelfCardProps> = ({ bookshelf, onClick }) =>
             <div className="absolute inset-0 bg-black bg-opacity-20 transition-opacity duration-300 opacity-0 group-hover:opacity-100" />
             <BookshelfCardMenuBar
               onEditClick={() => {
-                console.log('edit');
                 setEditModalOpen(true);
               }}
               onDeleteClick={() => {

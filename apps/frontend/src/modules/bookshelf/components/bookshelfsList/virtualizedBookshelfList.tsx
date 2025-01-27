@@ -45,7 +45,7 @@ export const VirtualizedBookshelvesList: FC<VirtualizedBookshelvesListProps> = (
   return (
     <div
       ref={parentRef}
-      className="w-full h-[750px] overflow-auto no-scrollbar px-2"
+      className="w-full h-[725px] overflow-auto no-scrollbar px-2"
     >
       <div
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
