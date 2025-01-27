@@ -13,7 +13,7 @@ import useDebounce from '../../modules/common/hooks/useDebounce';
 const SearchBookshelfField = () => {
   const navigate = useNavigate();
 
-  const [searchedName, setSearchedName] = useState('');
+  const [searchedName, setSearchedName] = useState(Route.useSearch().name);
 
   const debouncedSearchedName = useDebounce(searchedName, 300);
 
@@ -34,6 +34,7 @@ const SearchBookshelfField = () => {
   return (
     <Input
       iSize="lg"
+      value={searchedName}
       placeholder="Wyszukaj półkę..."
       onChange={(e) => {
         setSearchedName(e.currentTarget.value);
@@ -70,7 +71,7 @@ export const ShelvesPage: FC = () => {
           <SearchBookshelfField />
           <CreateBookshelfModal />
         </div>
-        <VirtualizedBookshelvesList />
+        <VirtualizedBookshelvesList route="/shelves/" />
       </motion.div>
     </div>
   );

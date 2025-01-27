@@ -1,4 +1,4 @@
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { type FC, useEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
@@ -8,23 +8,32 @@ import { useFindUserBookshelfsInfiniteQuery } from '../../api/queries/findUserBo
 import { BookshelfCard } from '../bookshelfCard/bookshelfCard';
 
 interface VirtualizedBookshelvesListProps {
-  name?: string;
+  route: '/shelves/';
 }
 
-export const VirtualizedBookshelvesList: FC<VirtualizedBookshelvesListProps> = () => {
+export const VirtualizedBookshelvesList: FC<VirtualizedBookshelvesListProps> = ({ route }) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
   const parentRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
+  // Something's wrong with those and it does not pick up the schema correctly
+  const searchParams = useSearch({
+    strict: true,
+    from: route,
+  }) as { name?: string };
+
   const { data, fetchNextPage, isLoading, isFetchingNextPage, hasNextPage } = useFindUserBookshelfsInfiniteQuery({
     accessToken,
     pageSize: 2,
+    name: searchParams?.name,
   });
 
   const allBookshelves = useMemo(() => data?.pages.flatMap((page) => page.data) || [], [data]);
 
+  const rowsCount = hasNextPage ? Math.ceil(allBookshelves.length / 2) + 1 : Math.ceil(allBookshelves.length / 2);
+
   const rowVirtualizer = useVirtualizer({
-    count: hasNextPage ? Math.ceil(allBookshelves.length / 2) + 1 : Math.ceil(allBookshelves.length / 2),
+    count: isLoading ? 4 : rowsCount,
     getScrollElement: () => parentRef.current,
     estimateSize: () => 340, // Adjusted for card height
     overscan: 3,
@@ -39,7 +48,7 @@ export const VirtualizedBookshelvesList: FC<VirtualizedBookshelvesListProps> = (
   }, [rowVirtualizer.getVirtualItems(), hasNextPage, fetchNextPage, isFetchingNextPage, allBookshelves.length]);
 
   if (!isLoading && !allBookshelves.length) {
-    return <div className="w-full text-center py-8 text-gray-500">No bookshelves found</div>;
+    return <div className="w-full text-center py-8 text-gray-500">Nie znaleziono półek</div>;
   }
 
   return (
@@ -73,7 +82,7 @@ export const VirtualizedBookshelvesList: FC<VirtualizedBookshelvesListProps> = (
               }}
             >
               {isLoaderRow ? (
-                <div className="animate-pulse rounded-[20px] border shadow-sm shadow-gray-400 h-full bg-gray-100" />
+                <div className="animate-pulse rounded-[20px] border shadow-sm h-80 shadow-gray-400 bg-gray-100" />
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {bookshelf1 && (
