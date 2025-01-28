@@ -16,7 +16,11 @@ import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
-import { BookDetailsChangeRequestProvider } from '../../context/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
+import {
+  BookDetailsChangeRequestAction,
+  BookDetailsChangeRequestProvider,
+  useBookDetailsChangeRequestDispatch,
+} from '../../context/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
 import { UpdateUserBookForm } from '../updateUserBookForm/updateUserBookForm';
 
 interface Props {
@@ -42,7 +46,7 @@ const changeMyBookDataSchema = z.object({
     .or(z.literal('')),
 });
 
-export const EditBookModal: FC<Props> = ({ bookId }) => {
+const InnerModal: FC<Props> = ({ bookId }) => {
   const { toast } = useToast();
 
   const [bookEditType, setBookEditType] = useState<BookEditType | undefined>('myBookChange');
@@ -50,6 +54,8 @@ export const EditBookModal: FC<Props> = ({ bookId }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
+
+  const dispatch = useBookDetailsChangeRequestDispatch();
 
   const { data: userData } = useFindUserQuery();
 
@@ -174,45 +180,55 @@ export const EditBookModal: FC<Props> = ({ bookId }) => {
   };
 
   return (
-    <BookDetailsChangeRequestProvider>
-      <Dialog
-        open={isOpen}
-        onOpenChange={(val) => {
-          if (val === false) {
-            resetModalState();
-          }
+    <Dialog
+      open={isOpen}
+      onOpenChange={(val) => {
+        if (val === false) {
+          dispatch({
+            type: BookDetailsChangeRequestAction.resetContext,
+          });
 
-          setIsOpen(val);
+          resetModalState();
+        }
+
+        setIsOpen(val);
+      }}
+    >
+      <TooltipProvider delayDuration={0}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <DialogTrigger asChild>
+              <Button
+                onClick={() => setIsOpen(true)}
+                variant="ghost"
+                size="icon"
+              >
+                <HiPencil className="cursor-pointer text-primary h-8 w-8" />
+              </Button>
+            </DialogTrigger>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Edytuj książkę</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+      <DialogContent
+        style={{
+          borderRadius: '40px',
         }}
+        className="max-w-sm sm:max-w-xl py-16 flex flex-col items-center gap-8"
+        omitCloseButton={true}
       >
-        <TooltipProvider delayDuration={0}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <DialogTrigger asChild>
-                <Button
-                  onClick={() => setIsOpen(true)}
-                  variant="ghost"
-                  size="icon"
-                >
-                  <HiPencil className="cursor-pointer text-primary h-8 w-8" />
-                </Button>
-              </DialogTrigger>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Edytuj książkę</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-        <DialogContent
-          style={{
-            borderRadius: '40px',
-          }}
-          className="max-w-sm sm:max-w-xl py-16 flex flex-col items-center gap-8"
-          omitCloseButton={true}
-        >
-          {renderContents()}
-        </DialogContent>
-      </Dialog>
+        {renderContents()}
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+export const EditBookModal: FC<Props> = ({ bookId }) => {
+  return (
+    <BookDetailsChangeRequestProvider>
+      <InnerModal bookId={bookId} />
     </BookDetailsChangeRequestProvider>
   );
 };

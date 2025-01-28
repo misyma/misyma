@@ -112,7 +112,7 @@ export const StepOneForm: FC<Props> = ({ bookId, onCancel, onSubmit }) => {
 const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
-  const { authorIds, authorName: dAuthorName } = useBookDetailsChangeRequestContext();
+  const context = useBookDetailsChangeRequestContext();
 
   const { data: userData } = useFindUserQuery();
 
@@ -131,10 +131,8 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
     }),
   );
 
-  const [currentAuthorId, setCurrentAuthorId] = useState(authorIds ?? bookData?.authors[0].id ?? '');
-
-  const [draftAuthorName, setDraftAuthorName] = useState(dAuthorName ?? '');
-
+  const [currentAuthorId, setCurrentAuthorId] = useState(context.authorIds ?? bookData?.authors[0].id ?? '');
+  const [draftAuthorName, setDraftAuthorName] = useState(context.authorName ?? '');
   const [createAuthorDialogVisible, setCreateAuthorDialogVisible] = useState(false);
 
   const onOpenChange = (bool: boolean) => setCreateAuthorDialogVisible(bool);
@@ -143,10 +141,10 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
     setDraftAuthorName(payload.name);
 
     // eslint-disable-next-line
-		stepOneForm.setValue('authorIds', undefined as any);
+    stepOneForm.setValue('authorIds', undefined as any);
 
     // eslint-disable-next-line
-		stepOneForm.setValue('authorName', payload.name as any, {
+    stepOneForm.setValue('authorName', payload.name as any, {
       shouldValidate: true,
     });
 
@@ -156,12 +154,12 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
   const stepOneForm = useForm({
     resolver: zodResolver(stepOneSchema),
     defaultValues: {
-      isbn: bookData?.isbn ?? '',
-      title: bookData?.title ?? '',
-      authorIds: !draftAuthorName ? (authorIds ?? bookData?.authors[0].id ?? '') : '',
+      isbn: (context.isbn || bookData?.isbn) ?? '',
+      title: (context.title || bookData?.title) ?? '',
+      authorIds: !draftAuthorName ? (context.authorIds ?? bookData?.authors[0].id ?? '') : '',
       authorName: draftAuthorName ?? '',
-      publisher: bookData?.publisher ?? '',
-      releaseYear: bookData?.releaseYear ?? ('' as const),
+      publisher: (context.publisher || bookData?.publisher) ?? '',
+      releaseYear: (context.releaseYear || bookData?.releaseYear) ?? ('' as const),
     },
     reValidateMode: 'onChange',
     mode: 'onTouched',
@@ -329,7 +327,10 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
           <Button
             size="lg"
             variant="outline"
-            onClick={onCancel}
+            onClick={() => {
+              stepOneForm.reset();
+              onCancel();
+            }}
             className="border border-primary w-full bg-transparent text-primary"
           >
             Wróć

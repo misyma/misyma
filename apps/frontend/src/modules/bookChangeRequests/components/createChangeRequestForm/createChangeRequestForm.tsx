@@ -138,10 +138,10 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
   const stepTwoForm = useForm({
     resolver: zodResolver(stepTwoSchema),
     defaultValues: {
-      language: bookData?.language,
-      translator: bookData?.translator,
-      format: bookData?.format,
-      pages: bookData?.pages,
+      language: context?.language || bookData?.language,
+      translator: (context?.translator || bookData?.translator) ?? '',
+      format: (context?.format || bookData?.format) ?? '',
+      pages: (context?.pages || bookData?.pages) ?? '',
     },
     reValidateMode: 'onChange',
     mode: 'onTouched',
@@ -170,10 +170,9 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
           }
         : {}),
       ...stepTwoForm.getValues(),
-      accessToken: accessToken as string,
-      bookId: bookData?.id as string,
     }),
-    [context, stepTwoForm, accessToken, bookData?.id],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [context, stepTwoForm, stepTwoForm.getValues()],
   );
 
   const updatePayload = useMemo(() => {
@@ -193,31 +192,26 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
 
       if (bookData[bookDataKey] === value) {
         delete innerPayload[bookDataKey];
-
         return;
       }
 
       if (Array.isArray(bookData[bookDataKey]) && bookData[bookDataKey]?.[0] === value) {
         delete innerPayload[bookDataKey];
-
         return;
       }
 
       if (bookData?.authors && Array.isArray(value) && key === 'authorIds' && bookData.authors[0]?.id === value[0]) {
         delete innerPayload['authorIds'];
-
         return;
       }
 
-      if (key === 'pages' && value === '' && bookData.pages !== 0) {
+      if (key === 'pages' && value === '' && bookData.pages !== undefined) {
         innerPayload[key] = null as unknown as number;
-
         return;
       }
 
-      if (key === 'translator' && value === '' && bookData.translator !== '') {
+      if (key === 'translator' && value === '' && bookData.translator !== undefined) {
         innerPayload[key] = null as unknown as string;
-
         return;
       }
 
@@ -332,11 +326,18 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
     }
   };
 
+  const onCancelInternal = () => {
+    dispatch({
+      type: BookDetailsChangeRequestAction.resetContext,
+    });
+    onCancel();
+  };
+
   return (
     <>
       {currentStep === 1 ? (
         <StepOneForm
-          onCancel={onCancel}
+          onCancel={onCancelInternal}
           bookId={bookId}
           onSubmit={onProceedToNextStep}
         />
@@ -434,7 +435,7 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
                 size="lg"
                 disabled={
                   !stepTwoForm.formState.isValid ||
-                  (!stepTwoForm.formState.isDirty && Object.entries(updatePayload).length <= 2) ||
+                  (!stepTwoForm.formState.isDirty && Object.entries(updatePayload).length <= 1) ||
                   isCreateAuthorPending ||
                   isCreatingBookChangeRequest
                 }
