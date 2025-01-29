@@ -1,63 +1,55 @@
-import { type FC, useCallback, useState } from 'react';
+import { useSearch, useNavigate } from '@tanstack/react-router';
+import { type FC } from 'react';
 import { useSelector } from 'react-redux';
+import { type z } from 'zod';
 
+import { type AdminRouteSearchSchema } from '../../../../routes/admin/tabs/books';
 import { AuthorSearchFilter } from '../../../common/components/filter/AuthorSearchFilter';
 import { SelectFilter, TextFilter, YearFilter } from '../../../common/components/filter/filter';
 import { FiltersDrawer } from '../../../common/components/filtersDrawer/filtersDrawer';
 import { SearchLanguageSelect } from '../../../common/components/searchLanguageSelect/SearchLanguageSelect';
 import { type DynamicFilterValues } from '../../../common/contexts/dynamicFilterContext';
 import { cn } from '../../../common/lib/utils';
-import { isbnSchema } from '../../../common/schemas/isbnSchema';
 import { adminBookFilterStateSelectors } from '../../../core/store/states/adminBookFilterState/adminBookFilterStateSlice';
 
 interface AdminBookSearchFilterProps {
   onApplyFilters: (filterValues: DynamicFilterValues) => void;
   onClearAll: () => void;
-  initialValues: DynamicFilterValues;
 }
 
-export const AdminBookSearchFilter: FC<AdminBookSearchFilterProps> = ({
-  initialValues,
-  onClearAll,
-  onApplyFilters,
-}) => {
-  const [filters, setFilters] = useState(initialValues);
+export const AdminBookSearchFilter: FC<AdminBookSearchFilterProps> = ({ onClearAll }) => {
+  const navigate = useNavigate({ from: '/admin/tabs/books/' });
 
   const isFilterVisible = useSelector(adminBookFilterStateSelectors.getFilterVisible);
 
-  const onApplyFiltersInternal = () => {
-    const endFilters = filters;
+  const search = useSearch({ from: '/admin/tabs/books/' }) as z.infer<typeof AdminRouteSearchSchema>;
 
-    if (endFilters['isbn']) {
-      const validationResult = isbnSchema.safeParse(endFilters['isbn']);
-
-      if (validationResult.error) {
-        delete endFilters['isbn'];
-      }
-    }
-
-    onApplyFilters(filters);
+  const updateSearch = (updates: Partial<typeof search>) => {
+    navigate({
+      to: '',
+      search: (current) => ({
+        ...current,
+        ...updates,
+        page: 1,
+      }),
+    });
   };
 
   const onClearAllInternal = () => {
     onClearAll();
-
-    setFilters({});
   };
 
-  const onClearFilter = useCallback(
-    (filterKey: keyof typeof filters) => {
-      setFilters({
-        ...filters,
-        [filterKey]: undefined,
-      });
-    },
-    [filters],
-  );
+  const onClearFilter = (key: string) => {
+    updateSearch({
+      [key]: undefined,
+      page: 1,
+    });
+  };
 
   return (
     <FiltersDrawer
-      onApplyFilters={onApplyFiltersInternal}
+      omitApplyButton
+      onApplyFilters={() => {}}
       onClearAll={onClearAllInternal}
       className={cn('sm:col-span-4 md:col-span-5 lg:col-span-6 grid grid-cols-3 px-2', isFilterVisible ? '' : 'hidden')}
       actionButtonClassName={isFilterVisible ? '' : 'hidden'}
@@ -65,13 +57,12 @@ export const AdminBookSearchFilter: FC<AdminBookSearchFilterProps> = ({
     >
       <AuthorSearchFilter
         setFilterAction={(val) => {
-          setFilters({
-            ...filters,
+          updateSearch({
             authorIds: val,
           });
         }}
         onRemoveFilter={() => onClearFilter('authorIds')}
-        initialValue={filters['authorIds'] as string}
+        initialValue={search.authorIds as string}
         filter={{
           id: 'author-ids-filter',
           key: 'authorIds',
@@ -81,14 +72,13 @@ export const AdminBookSearchFilter: FC<AdminBookSearchFilterProps> = ({
       />
       <TextFilter
         setFilterAction={(val) => {
-          setFilters({
-            ...filters,
+          updateSearch({
             isbn: val,
           });
         }}
         onRemoveFilter={() => onClearFilter('isbn')}
         skipValidation={true}
-        initialValue={filters['isbn'] as string}
+        initialValue={search.isbn as string}
         filter={{
           id: 'isbn-filter',
           key: 'isbn',
@@ -97,14 +87,13 @@ export const AdminBookSearchFilter: FC<AdminBookSearchFilterProps> = ({
         }}
       />
       <SearchLanguageSelect
-        key={`${filters['language']}`}
+        key={`${search.language}`}
         setFilterAction={(val) => {
-          setFilters({
-            ...filters,
+          updateSearch({
             language: val,
           });
         }}
-        initialValue={filters['language'] as string}
+        initialValue={search.language as string}
         onRemoveFilter={() => onClearFilter('language')}
         filter={{
           id: 'language-filter',
@@ -115,13 +104,12 @@ export const AdminBookSearchFilter: FC<AdminBookSearchFilterProps> = ({
       />
       <YearFilter
         setFilterAction={(val) => {
-          setFilters({
-            ...filters,
+          updateSearch({
             releaseYearAfter: val,
           });
         }}
         onRemoveFilter={() => onClearFilter('releaseYearAfter')}
-        initialValue={filters['releaseYearAfter'] as string}
+        initialValue={`${search?.releaseYearAfter}` as string}
         filter={{
           id: 'release-year-after-filter',
           key: 'releaseYearAfter',
@@ -134,13 +122,14 @@ export const AdminBookSearchFilter: FC<AdminBookSearchFilterProps> = ({
       />
       <SelectFilter
         setFilterAction={(val) => {
-          setFilters({
-            ...filters,
-            isApproved: val,
+          updateSearch({
+            isApproved: val === 'Zaakceptowana' ? true : val === 'Niezaakceptowana' ? false : undefined,
           });
         }}
         onRemoveFilter={() => onClearFilter('isApproved')}
-        initialValue={filters['isApproved'] as string}
+        initialValue={
+          search.isApproved === true ? 'Zaakceptowana' : search.isApproved === false ? 'Niezaakceptowana' : ''
+        }
         filter={{
           id: 'is-approved-filter',
           key: 'isApproved',

@@ -1,24 +1,16 @@
 import { type FC } from 'react';
 
-import { type FindAdminBooksQueryParams } from '@common/contracts';
-
 import { AdminBookSearchFilter } from '../../book/components/adminBookSearchFilters/adminBookSearchFilters';
 import { type DynamicFilterValues } from '../../common/contexts/dynamicFilterContext';
 
 interface BooksTableAdditionalColumnProps {
-  searchParams: FindAdminBooksQueryParams;
   onApplyFilters: (val: DynamicFilterValues) => Promise<void>;
   onClearAll: () => void;
 }
-export const BooksTableFilters: FC<BooksTableAdditionalColumnProps> = ({
-  onApplyFilters,
-  onClearAll,
-  searchParams,
-}) => {
+export const BooksTableFilters: FC<BooksTableAdditionalColumnProps> = ({ onApplyFilters, onClearAll }) => {
   return (
     <div className="px-2">
       <AdminBookSearchFilter
-        initialValues={searchParams as DynamicFilterValues}
         onApplyFilters={onApplyFilters}
         onClearAll={onClearAll}
       />

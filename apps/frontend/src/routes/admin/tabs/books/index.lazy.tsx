@@ -148,11 +148,6 @@ export const BooksAdminPage: FC = () => {
           <BooksTableFilters
             onApplyFilters={onApplyFilters}
             onClearAll={onClearAll}
-            searchParams={
-              searchParams as unknown as FindAdminBooksQueryParams & {
-                sort: string;
-              }
-            }
           />
         }
         columnsClassName="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-y-4 gap-x-4"
