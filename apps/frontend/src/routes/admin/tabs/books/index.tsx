@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { z } from 'zod';
 
-const RouteSearchSchema = z.object({
+export const AdminRouteSearchSchema = z.object({
   page: z
     .number({
       coerce: true,
@@ -46,5 +46,5 @@ export const Route = createFileRoute('/admin/tabs/books/')({
       },
     ],
   },
-  validateSearch: (s) => RouteSearchSchema.parse(s),
+  validateSearch: (s) => AdminRouteSearchSchema.parse(s),
 });
