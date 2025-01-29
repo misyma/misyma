@@ -38,42 +38,41 @@ export const BooksTable: FC<BooksTableProps> = ({ onSetPage, params, isFilterVis
   }, [booksData?.metadata.total, params.pageSize]);
 
   const data = useMemo<Book[]>(() => {
-    return (
-      booksData?.data ??
-      ([
-        {
-          authors: [],
-        },
-        {
-          authors: [],
-        },
-        {
-          authors: [],
-        },
-        {
-          authors: [],
-        },
-        {
-          authors: [],
-        },
-        {
-          authors: [],
-        },
-        {
-          authors: [],
-        },
-        {
-          authors: [],
-        },
-        {
-          authors: [],
-        },
-        {
-          authors: [],
-        },
-      ] as unknown as Book[])
-    );
-  }, [booksData?.data]);
+    return booksData?.data && !isFetched
+      ? ([
+          {
+            authors: [],
+          },
+          {
+            authors: [],
+          },
+          {
+            authors: [],
+          },
+          {
+            authors: [],
+          },
+          {
+            authors: [],
+          },
+          {
+            authors: [],
+          },
+          {
+            authors: [],
+          },
+          {
+            authors: [],
+          },
+          {
+            authors: [],
+          },
+          {
+            authors: [],
+          },
+        ] as unknown as Book[])
+      : [];
+  }, [booksData?.data, isFetched]);
 
   useEffect(() => {
     if (isFetched) {

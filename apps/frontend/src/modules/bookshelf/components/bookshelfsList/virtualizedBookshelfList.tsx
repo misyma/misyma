@@ -82,7 +82,10 @@ export const VirtualizedBookshelvesList: FC<VirtualizedBookshelvesListProps> = (
               }}
             >
               {isLoaderRow ? (
-                <div className="animate-pulse rounded-[20px] border shadow-sm h-80 shadow-gray-400 bg-gray-100" />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="animate-pulse rounded-[20px] border shadow-sm h-80 shadow-gray-400 bg-gray-100" />
+                  <div className="animate-pulse rounded-[20px] border shadow-sm h-80 shadow-gray-400 bg-gray-100" />
+                </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {bookshelf1 && (
