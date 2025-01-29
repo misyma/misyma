@@ -91,8 +91,6 @@ export function DataTable<TData extends object, TValue>({
     },
   });
 
-  console.log(data);
-
   return (
     <div className="w-full md:max-w-screen-xl">
       <div className={cn('w-full min-h-[40rem]', tableContainerClassName)}>
