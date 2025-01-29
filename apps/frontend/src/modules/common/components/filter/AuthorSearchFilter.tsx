@@ -85,7 +85,7 @@ export const AuthorSearchFilter: FC<FilterComponentProps> = ({
                     </div>
                   )}
                   {initialValue && !isFetchingCurrentAuthor && (
-                    <span className="block truncate px-2 text-sm">{getAuthorName()}</span>
+                    <span className="block truncate px-2 text-sm font-normal text-foreground">{getAuthorName()}</span>
                   )}
                 </div>
               </div>{' '}

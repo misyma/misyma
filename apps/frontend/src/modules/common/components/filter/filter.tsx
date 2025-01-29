@@ -341,7 +341,7 @@ export const YearRangeFilter = memo(
                 variant="none"
                 size="custom"
                 className={cn(
-                  'border !flex !justify-start pl-3 text-sm bg-[#D1D5DB]/20 text-black w-60 sm:w-96 h-12',
+                  'border !flex !justify-start pl-3 text-sm bg-[#D1D5DB]/20 !font-normal text-foreground w-60 sm:w-96 h-12',
                   !startYear && !endYear && 'text-muted-foreground',
                 )}
               >
@@ -363,7 +363,7 @@ export const YearRangeFilter = memo(
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
-                <span className="text-sm font-medium">
+                <span className="text-sm font-normal">
                   {paginatedYears[0]} - {paginatedYears[paginatedYears.length - 1]}
                 </span>
                 <Button
