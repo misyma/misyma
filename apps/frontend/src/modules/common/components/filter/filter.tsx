@@ -50,6 +50,7 @@ export const TextFilter: FC<FilterComponentProps & { skipValidation?: boolean }>
         }
         filter={filter}
         onRemoveFilter={onRemoveFilter}
+        hasValue={!!value}
       />
     );
   },
