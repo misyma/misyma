@@ -8,6 +8,10 @@ import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
+import { type AuthorTestUtils } from '../../../../bookModule/tests/utils/authorTestUtils/authorTestUtils.js';
+import { type BookTestUtils } from '../../../../bookModule/tests/utils/bookTestUtils/bookTestUtils.js';
+import { type GenreTestUtils } from '../../../../bookModule/tests/utils/genreTestUtils/genreTestUtils.js';
+import { type UserBookTestUtils } from '../../../../bookModule/tests/utils/userBookTestUtils/userBookTestUtils.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { Bookshelf } from '../../../domain/entities/bookshelf/bookshelf.js';
 import { type BookshelfRepository } from '../../../domain/repositories/bookshelfRepository/bookshelfRepository.js';
@@ -18,9 +22,17 @@ import { type BookshelfTestUtils } from '../../../tests/utils/bookshelfTestUtils
 describe('BookshelfRepositoryImpl', () => {
   let repository: BookshelfRepository;
 
+  let bookTestUtils: BookTestUtils;
+
+  let authorTestUtils: AuthorTestUtils;
+
+  let genreTestUtils: GenreTestUtils;
+
   let bookshelfTestUtils: BookshelfTestUtils;
 
   let userTestUtils: UserTestUtils;
+
+  let userBookTestUtils: UserBookTestUtils;
 
   let databaseClient: DatabaseClient;
 
@@ -35,11 +47,19 @@ describe('BookshelfRepositoryImpl', () => {
 
     repository = container.get<BookshelfRepository>(symbols.bookshelfRepository);
 
+    bookTestUtils = container.get<BookTestUtils>(testSymbols.bookTestUtils);
+
+    authorTestUtils = container.get<AuthorTestUtils>(testSymbols.authorTestUtils);
+
+    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+
+    userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
+
     bookshelfTestUtils = container.get<BookshelfTestUtils>(testSymbols.bookshelfTestUtils);
 
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
 
-    testUtils = [userTestUtils, bookshelfTestUtils];
+    testUtils = [authorTestUtils, bookTestUtils, genreTestUtils, userTestUtils, bookshelfTestUtils, userBookTestUtils];
 
     for (const testUtil of testUtils) {
       await testUtil.truncate();
@@ -76,6 +96,38 @@ describe('BookshelfRepositoryImpl', () => {
         },
       });
 
+      const author = await authorTestUtils.createAndPersist();
+
+      const book1 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+        },
+      });
+
+      const book2 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+        },
+      });
+
+      const genre = await genreTestUtils.createAndPersist();
+
+      await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book1.id,
+          bookshelfId: bookshelf.id,
+          genreId: genre.id,
+        },
+      });
+
+      await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book2.id,
+          bookshelfId: bookshelf.id,
+          genreId: genre.id,
+        },
+      });
+
       const result = await repository.findBookshelf({
         where: {
           id: bookshelf.id,
@@ -88,6 +140,7 @@ describe('BookshelfRepositoryImpl', () => {
         type: bookshelf.type,
         createdAt: bookshelf.createdAt,
         imageUrl: bookshelf.imageUrl,
+        bookCount: 2,
       });
     });
 
@@ -97,6 +150,24 @@ describe('BookshelfRepositoryImpl', () => {
       const bookshelf = await bookshelfTestUtils.createAndPersist({
         input: {
           userId: user.id,
+        },
+      });
+
+      const author = await authorTestUtils.createAndPersist();
+
+      const book = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+        },
+      });
+
+      const genre = await genreTestUtils.createAndPersist();
+
+      await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book.id,
+          bookshelfId: bookshelf.id,
+          genreId: genre.id,
         },
       });
 
@@ -113,6 +184,7 @@ describe('BookshelfRepositoryImpl', () => {
         type: bookshelf.type,
         createdAt: bookshelf.createdAt,
         imageUrl: bookshelf.imageUrl,
+        bookCount: 1,
       });
     });
   });
@@ -145,6 +217,52 @@ describe('BookshelfRepositoryImpl', () => {
         },
       });
 
+      const author = await authorTestUtils.createAndPersist();
+
+      const book1 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+        },
+      });
+
+      const book2 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+        },
+      });
+
+      const book3 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+        },
+      });
+
+      const genre = await genreTestUtils.createAndPersist();
+
+      await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book1.id,
+          bookshelfId: bookshelf1.id,
+          genreId: genre.id,
+        },
+      });
+
+      await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book2.id,
+          bookshelfId: bookshelf1.id,
+          genreId: genre.id,
+        },
+      });
+
+      await userBookTestUtils.createAndPersist({
+        input: {
+          bookId: book3.id,
+          bookshelfId: bookshelf2.id,
+          genreId: genre.id,
+        },
+      });
+
       const bookshelves = await repository.findBookshelves({
         userId: user.id,
         page: 1,
@@ -162,6 +280,7 @@ describe('BookshelfRepositoryImpl', () => {
           type: bookshelf.type,
           createdAt: bookshelf.createdAt,
           imageUrl: bookshelf.imageUrl,
+          bookCount: bookshelf.id === bookshelf1.id ? 2 : 1,
         });
       });
     });
@@ -198,6 +317,7 @@ describe('BookshelfRepositoryImpl', () => {
         type: bookshelf1.type,
         createdAt: bookshelf1.createdAt,
         imageUrl: bookshelf1.imageUrl,
+        bookCount: 0,
       });
     });
 
@@ -240,6 +360,7 @@ describe('BookshelfRepositoryImpl', () => {
         type: bookshelf1.type,
         createdAt: bookshelf1.createdAt,
         imageUrl: bookshelf1.imageUrl,
+        bookCount: 0,
       });
     });
 

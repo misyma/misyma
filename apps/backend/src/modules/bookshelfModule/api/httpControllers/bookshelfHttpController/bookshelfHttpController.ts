@@ -339,6 +339,7 @@ export class BookshelfHttpController implements HttpController {
       userId: bookshelf.getUserId(),
       type: bookshelf.getType(),
       createdAt: bookshelf.getCreatedAt().toISOString(),
+      bookCount: bookshelf.getBookCount() || 0,
     };
 
     const imageUrl = bookshelf.getImageUrl();

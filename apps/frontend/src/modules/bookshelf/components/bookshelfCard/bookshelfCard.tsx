@@ -1,12 +1,10 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { type FC, useMemo, useState } from 'react';
 import { HiDotsVertical, HiBookOpen } from 'react-icons/hi';
-import { useSelector } from 'react-redux';
 
 import { BookshelfType } from '@common/contracts';
 
-import { FindBooksByBookshelfIdQueryOptions } from '../../../book/api/user/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
 import { TruncatedTextTooltip } from '../../../book/components/truncatedTextTooltip/truncatedTextTooltip';
 import {
   Menubar,
@@ -16,10 +14,7 @@ import {
   MenubarSeparator,
   MenubarTrigger,
 } from '../../../common/components/menubar/menubar';
-import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
 import { useToast } from '../../../common/components/toast/use-toast';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
-import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { DeleteBookshelfModal } from '../deleteBookshelfModal/deleteBookshelfModal';
 import { UpdateBookshelfModal } from '../updateBookshelfModal/updateBookshelfModal';
 import { UpdateNonStandardBookshelfModal } from '../updateNonStandardBookshelfModal/updateNonStandardBookshelfModal';
@@ -31,7 +26,7 @@ interface BookshelfCardProps {
     type: BookshelfType;
     createdAt: string;
     imageUrl?: string;
-    bookCount?: number;
+    bookCount: number;
   };
   onClick?: () => void;
 }
@@ -107,18 +102,8 @@ export const BookshelfCard: FC<BookshelfCardProps> = ({ bookshelf, onClick }) =>
     [bookshelf.createdAt],
   );
 
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-  const { data: user } = useFindUserQuery();
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-
-  const { data: booksQuery, isLoading } = useQuery(
-    FindBooksByBookshelfIdQueryOptions({
-      accessToken: accessToken as string,
-      bookshelfId: bookshelf.id,
-      userId: user?.id as string,
-    }),
-  );
 
   const handleClick = () => {
     onClick?.() || navigate({ to: `/shelves/bookshelf/${bookshelf.id}` });
@@ -183,8 +168,7 @@ export const BookshelfCard: FC<BookshelfCardProps> = ({ bookshelf, onClick }) =>
             <div className="mt-auto flex justify-between items-center text-sm text-gray-600">
               <span className="flex items-center">
                 <HiBookOpen className="w-4 h-4 mr-1" />
-                {!isLoading ? booksQuery?.metadata.total || 0 : ''}
-                {isLoading && <LoadingSpinner size={12} />}
+                {bookshelf.bookCount}
               </span>
               <span>{formattedDate}</span>
             </div>

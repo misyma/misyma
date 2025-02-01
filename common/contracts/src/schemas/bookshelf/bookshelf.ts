@@ -7,4 +7,5 @@ export interface Bookshelf {
   readonly type: BookshelfType;
   readonly createdAt: string;
   readonly imageUrl?: string;
+  readonly bookCount: number;
 }

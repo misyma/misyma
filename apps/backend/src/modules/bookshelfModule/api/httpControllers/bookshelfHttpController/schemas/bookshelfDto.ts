@@ -19,6 +19,7 @@ export const bookshelfDtoSchema = Type.Object({
   type: Type.Enum(BookshelfType),
   createdAt: Type.String({ format: 'date-time' }),
   imageUrl: Type.Optional(bookshelfImageUrlSchema),
+  bookCount: Type.Integer(),
 });
 
 export type BookshelfDto = Static<typeof bookshelfDtoSchema>;

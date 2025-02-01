@@ -114,6 +114,7 @@ describe('FindBookshelvesQueryHandlerImpl', () => {
       type: bookshelf1.type,
       createdAt: expect.any(Date),
       imageUrl: bookshelf1.imageUrl,
+      bookCount: 0,
     });
 
     expect(bookshelves.find((bookshelf) => bookshelf.getId() === bookshelf2.id)?.getState()).toEqual({
@@ -122,6 +123,7 @@ describe('FindBookshelvesQueryHandlerImpl', () => {
       type: bookshelf2.type,
       createdAt: expect.any(Date),
       imageUrl: bookshelf2.imageUrl,
+      bookCount: 0,
     });
 
     expect(total).toEqual(2);
