@@ -1,4 +1,4 @@
-import { type Language, type ReadingStatus, type UserBookExpandField } from '@common/contracts';
+import { type Language, type ReadingStatus } from '@common/contracts';
 
 import { type UserBook, type UserBookState } from '../../entities/userBook/userBook.js';
 
@@ -44,7 +44,6 @@ export interface FindUserBooksPayload {
   readonly pageSize?: number;
   readonly sortField?: 'releaseYear' | 'createdAt' | undefined;
   readonly sortOrder?: 'asc' | 'desc' | undefined;
-  readonly expandFields: UserBookExpandField[];
 }
 
 export interface CountUserBooksPayload {

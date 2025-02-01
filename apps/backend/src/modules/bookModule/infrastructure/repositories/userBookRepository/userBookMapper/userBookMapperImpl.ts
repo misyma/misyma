@@ -43,6 +43,7 @@ export class UserBookMapperImpl implements UserBookMapper {
         readingEndedAtDates,
         readingRatings,
         readingComments,
+        latestRating,
       } = entity;
 
       const userBookDraft: UserBookDraft = {
@@ -113,6 +114,7 @@ export class UserBookMapperImpl implements UserBookMapper {
                   });
                 })
             : [],
+        latestRating: latestRating ?? undefined,
       };
 
       return new UserBook(userBookDraft);

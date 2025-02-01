@@ -1,5 +1,3 @@
-import { UserBookExpandField } from '@common/contracts';
-
 import { type UserBookMapper } from './userBookMapper/userBookMapper.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
@@ -19,6 +17,7 @@ import {
 } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
 import { authorTable } from '../../databases/bookDatabase/tables/authorTable/authorTable.js';
 import { bookAuthorTable } from '../../databases/bookDatabase/tables/bookAuthorTable/bookAuthorTable.js';
+import { type BookReadingRawEntity } from '../../databases/bookDatabase/tables/bookReadingTable/bookReadingRawEntity.js';
 import { bookReadingTable } from '../../databases/bookDatabase/tables/bookReadingTable/bookReadingTable.js';
 import { bookTable } from '../../databases/bookDatabase/tables/bookTable/bookTable.js';
 import { collectionTable } from '../../databases/bookDatabase/tables/collectionTable/collectionTable.js';
@@ -73,7 +72,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           '*',
         );
 
-        if (collections.length) {
+        if (collections?.length) {
           await transaction.batchInsert<UserBookCollectionRawEntity>(
             userBookCollectionTable,
             collections.map((collection) => ({
@@ -123,16 +122,16 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           })
           .where({ id: userBook.getId() });
 
-        const existingCollections = existingUserBook.getCollections();
+        const existingCollections = existingUserBook.getCollections() || [];
 
-        const addedCollections = updatedCollections.filter(
+        const addedCollections = (updatedCollections ?? []).filter(
           (collection) =>
             !existingCollections.some((currentCollection) => currentCollection.getId() === collection.getId()),
         );
 
         const removedCollections = existingCollections.filter(
           (collection) =>
-            !updatedCollections.some((currentCollection) => currentCollection.getId() === collection.getId()),
+            !(updatedCollections ?? []).some((currentCollection) => currentCollection.getId() === collection.getId()),
         );
 
         if (addedCollections.length > 0) {
@@ -336,7 +335,6 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       language,
       releaseYearAfter,
       releaseYearBefore,
-      expandFields,
     } = payload;
 
     let rawEntities: UserBookWithJoinsRawEntity[];
@@ -376,30 +374,16 @@ export class UserBookRepositoryImpl implements UserBookRepository {
 
       const genresSelect = [`${genreTable}.name as genreName`];
 
-      const collectionsSelect = [
-        this.databaseClient.raw(`array_agg("${collectionTable}"."id") as "collectionIds"`),
-        this.databaseClient.raw(`array_agg("${collectionTable}"."name") as "collectionNames"`),
-        this.databaseClient.raw(`array_agg("${collectionTable}"."createdAt") as "collectionCreatedAtDates"`),
-        this.databaseClient.raw(`array_agg("${collectionTable}"."userId") as "collectionUserIds"`),
-      ];
+      const latestRatingSelect = ['rating as "latestRating"'];
 
-      const readingsSelect = [
-        this.databaseClient.raw(`array_agg("${bookReadingTable}"."id") as "readingIds"`),
-        this.databaseClient.raw(`array_agg("${bookReadingTable}"."startedAt") as "readingStartedAtDates"`),
-        this.databaseClient.raw(`array_agg("${bookReadingTable}"."endedAt") as "readingEndedAtDates"`),
-        this.databaseClient.raw(`array_agg("${bookReadingTable}"."rating") as "readingRatings"`),
-        this.databaseClient.raw(`array_agg("${bookReadingTable}"."comment") as "readingComments"`),
-      ];
+      const latestRatingSubquery = this.databaseClient<BookReadingRawEntity>(bookReadingTable)
+        .select('userBookId', 'rating')
+        .groupBy('userBookId')
+        .orderBy('startedAt', 'desc')
+        .as('latestRatingSubquery');
 
       const query = this.databaseClient<UserBookRawEntity>(userBookTable)
-        .select([
-          ...userBookSelect,
-          ...bookSelect,
-          ...authorsSelect,
-          ...genresSelect,
-          ...(expandFields.includes(UserBookExpandField.collections) ? collectionsSelect : []),
-          ...(expandFields.includes(UserBookExpandField.readings) ? readingsSelect : []),
-        ])
+        .select([...userBookSelect, ...bookSelect, ...authorsSelect, ...genresSelect, ...latestRatingSelect])
         .leftJoin(bookAuthorTable, (join) => {
           join.on(`${bookAuthorTable}.bookId`, '=', `${userBookTable}.bookId`);
         })
@@ -411,15 +395,12 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         })
         .leftJoin(genreTable, (join) => {
           join.on(`${genreTable}.id`, `=`, `${userBookTable}.genreId`);
+        })
+        .leftJoin(latestRatingSubquery, (join) => {
+          join.on(`${latestRatingSubquery}.userBookId`, '=', `${userBookTable}.id`);
         });
 
-      if (expandFields.includes(UserBookExpandField.readings)) {
-        query.leftJoin(bookReadingTable, (join) => {
-          join.on(`${bookReadingTable}.userBookId`, '=', `${userBookTable}.id`);
-        });
-      }
-
-      if (expandFields.includes(UserBookExpandField.collections) || collectionId) {
+      if (collectionId) {
         query
           .leftJoin(userBookCollectionTable, (join) => {
             join.on(`${userBookCollectionTable}.userBookId`, '=', `${userBookTable}.id`);

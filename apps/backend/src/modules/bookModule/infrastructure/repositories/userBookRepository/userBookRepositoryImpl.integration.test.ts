@@ -714,7 +714,6 @@ describe('UserBookRepositoryImpl', () => {
         bookshelfId: bookshelf2.id,
         page: 1,
         pageSize: 10,
-        expandFields: [],
       });
 
       expect(userBooks.length).toEqual(2);
@@ -793,7 +792,6 @@ describe('UserBookRepositoryImpl', () => {
         collectionId: collection1.id,
         page: 1,
         pageSize: 10,
-        expandFields: [],
       });
 
       expect(userBooks.length).toEqual(1);
@@ -848,7 +846,6 @@ describe('UserBookRepositoryImpl', () => {
         isbn: book2.isbn as string,
         page: 1,
         pageSize: 10,
-        expandFields: [],
       });
 
       expect(userBooks.length).toEqual(1);
@@ -919,7 +916,6 @@ describe('UserBookRepositoryImpl', () => {
         userId: user2.id,
         page: 1,
         pageSize: 10,
-        expandFields: [],
       });
 
       expect(userBooks.length).toEqual(2);
@@ -989,7 +985,6 @@ describe('UserBookRepositoryImpl', () => {
         bookId: book2.id,
         page: 1,
         pageSize: 10,
-        expandFields: [],
       });
 
       expect(userBooks.length).toEqual(1);
@@ -1058,7 +1053,6 @@ describe('UserBookRepositoryImpl', () => {
         isbn: book2.isbn as string,
         page: 1,
         pageSize: 10,
-        expandFields: [],
       });
 
       expect(userBooks.length).toEqual(1);
@@ -1134,7 +1128,6 @@ describe('UserBookRepositoryImpl', () => {
         title: 'lord',
         page: 1,
         pageSize: 10,
-        expandFields: [],
       });
 
       expect(userBooks.length).toEqual(1);
@@ -1198,7 +1191,6 @@ describe('UserBookRepositoryImpl', () => {
         authorId: author2.id,
         page: 1,
         pageSize: 10,
-        expandFields: [],
       });
 
       expect(userBooks.length).toEqual(1);
@@ -1264,7 +1256,6 @@ describe('UserBookRepositoryImpl', () => {
         genreId: genre1.id,
         page: 1,
         pageSize: 10,
-        expandFields: [],
       });
 
       expect(userBooks.length).toEqual(1);
@@ -1573,7 +1564,6 @@ describe('UserBookRepositoryImpl', () => {
         userId: user.id,
         page: 1,
         pageSize: 10,
-        expandFields: [],
       });
 
       expect(userBooks.length).toEqual(2);
@@ -1628,7 +1618,6 @@ describe('UserBookRepositoryImpl', () => {
         userId: user.id,
         page: 1,
         pageSize: 10,
-        expandFields: [],
         sortField: 'createdAt',
         sortOrder: 'desc',
       });
@@ -1643,7 +1632,6 @@ describe('UserBookRepositoryImpl', () => {
         userId: user.id,
         page: 1,
         pageSize: 10,
-        expandFields: [],
         sortField: 'createdAt',
         sortOrder: 'asc',
       });
@@ -1706,7 +1694,6 @@ describe('UserBookRepositoryImpl', () => {
         userId: user.id,
         page: 1,
         pageSize: 10,
-        expandFields: [],
         sortField: 'releaseYear',
         sortOrder: 'desc',
       });
@@ -1721,7 +1708,6 @@ describe('UserBookRepositoryImpl', () => {
         userId: user.id,
         page: 1,
         pageSize: 10,
-        expandFields: [],
         sortField: 'releaseYear',
         sortOrder: 'asc',
       });

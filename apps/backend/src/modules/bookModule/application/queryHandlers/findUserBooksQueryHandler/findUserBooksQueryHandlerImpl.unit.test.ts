@@ -57,7 +57,6 @@ describe('FindUserBooksQueryHandlerImpl', () => {
         bookshelfId: nonExistentBookshelfId,
         page: 1,
         pageSize: 10,
-        expandFields: [],
       });
     } catch (error) {
       expect(error).toBeInstanceOf(ResourceNotFoundError);
@@ -86,7 +85,6 @@ describe('FindUserBooksQueryHandlerImpl', () => {
         userId: nonMatchingUserId,
         page: 1,
         pageSize: 10,
-        expandFields: [],
       });
     } catch (error) {
       expect(error).toBeInstanceOf(ResourceNotFoundError);
@@ -118,7 +116,6 @@ describe('FindUserBooksQueryHandlerImpl', () => {
       bookshelfId: bookshelf.getId(),
       page: 1,
       pageSize: 10,
-      expandFields: [],
     });
 
     expect(userBooks).toEqual([userBook]);
@@ -142,7 +139,6 @@ describe('FindUserBooksQueryHandlerImpl', () => {
       userId: collection.getUserId(),
       page: 1,
       pageSize: 10,
-      expandFields: [],
     });
 
     expect(userBooks).toEqual([userBook]);
@@ -161,7 +157,6 @@ describe('FindUserBooksQueryHandlerImpl', () => {
         collectionId: nonExistentCollectionId,
         page: 1,
         pageSize: 10,
-        expandFields: [],
       });
     } catch (error) {
       expect(error).toBeInstanceOf(ResourceNotFoundError);

@@ -6,8 +6,6 @@ import { userBookDtoSchema } from './userBookDto.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 import { bookIsbnSchema, bookTitleSchema } from '../../common/bookDto.js';
 
-const expandFieldPattern = `^(${Object.values(contracts.UserBookExpandField).join('|')})(,(${Object.values(contracts.UserBookExpandField).join('|')}))*$`;
-
 export const findUserBooksQueryParamsDtoSchema = Type.Object({
   bookshelfId: Type.Optional(Type.String({ format: 'uuid' })),
   collectionId: Type.Optional(Type.String({ format: 'uuid' })),
@@ -24,7 +22,6 @@ export const findUserBooksQueryParamsDtoSchema = Type.Object({
   pageSize: Type.Optional(Type.Integer({ minimum: 1 })),
   sortField: Type.Optional(Type.Enum(contracts.FindUserBooksSortField)),
   sortOrder: Type.Optional(Type.Enum(contracts.SortOrder)),
-  expandFields: Type.Optional(Type.String({ pattern: expandFieldPattern })),
 });
 
 export type FindUserBooksQueryParamsDto = TypeExtends<
