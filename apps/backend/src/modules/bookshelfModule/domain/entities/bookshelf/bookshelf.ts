@@ -7,6 +7,7 @@ export interface BookshelfDraft {
   readonly type: BookshelfType;
   readonly createdAt: Date;
   readonly imageUrl?: string | undefined | null;
+  readonly bookCount?: number | undefined;
 }
 
 export interface BookshelfState {
@@ -15,6 +16,7 @@ export interface BookshelfState {
   readonly type: BookshelfType;
   readonly createdAt: Date;
   imageUrl?: string | undefined | null;
+  readonly bookCount?: number | undefined;
 }
 
 export interface SetNamePayload {
@@ -30,15 +32,26 @@ export class Bookshelf {
   private readonly state: BookshelfState;
 
   public constructor(draft: BookshelfDraft) {
+    const { name, userId, type, createdAt, imageUrl, bookCount } = draft;
+
     this.id = draft.id;
 
-    this.state = {
-      name: draft.name,
-      userId: draft.userId,
-      type: draft.type,
-      createdAt: draft.createdAt,
-      imageUrl: draft.imageUrl,
+    let state: BookshelfState = {
+      name,
+      userId,
+      type,
+      createdAt,
+      imageUrl,
     };
+
+    if (bookCount !== undefined) {
+      state = {
+        ...state,
+        bookCount,
+      };
+    }
+
+    this.state = state;
   }
 
   public getState(): BookshelfState {
@@ -79,5 +92,9 @@ export class Bookshelf {
 
   public getImageUrl(): string | undefined | null {
     return this.state.imageUrl;
+  }
+
+  public getBookCount(): number | undefined {
+    return this.state.bookCount;
   }
 }

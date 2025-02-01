@@ -11,11 +11,9 @@ import {
   ReadingStatus,
   SortOrder,
   type FindBookshelfResponseBody,
-  type FindUserBooksResponseBody,
 } from '@common/contracts';
 
 import { AuthenticatedLayout } from '../../../modules/auth/layouts/authenticated/authenticatedLayout';
-import { FindBooksByBookshelfIdQueryOptions } from '../../../modules/book/api/user/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
 import { useFindBookshelfByIdQuery } from '../../../modules/bookshelf/api/queries/findBookshelfByIdQuery/findBookshelfByIdQuery';
 import { VirtualizedBooksList } from '../../../modules/bookshelf/components/virtualizedBooksList/virtualizedBooksList';
 import { BooksSortButton } from '../../../modules/common/components/booksSortButton/booksSortButton';
@@ -39,31 +37,11 @@ import {
   useBreadcrumbKeysContext,
   useBreadcrumbKeysDispatch,
 } from '../../../modules/common/contexts/breadcrumbKeysContext';
-import { useErrorHandledQuery } from '../../../modules/common/hooks/useErrorHandledQuery';
 import { RequireAuthComponent } from '../../../modules/core/components/requireAuth/requireAuthComponent';
 import {
   bookshelfBooksFilterStateSelectors,
   setFilterVisible,
 } from '../../../modules/core/store/states/bookshelfBooksFilterState/bookshelfBooksFilterStateSlice';
-import { userStateSelectors } from '../../../modules/core/store/states/userState/userStateSlice';
-import { useFindUserQuery } from '../../../modules/user/api/queries/findUserQuery/findUserQuery';
-
-const getCountNoun = (len: number): string => {
-  switch (len) {
-    case 1:
-      return 'książka';
-
-    case 2:
-
-    case 3:
-
-    case 4:
-      return 'książki';
-
-    default:
-      return 'książek';
-  }
-};
 
 export const View: FC = () => {
   const { bookshelfId } = Route.useParams();
@@ -107,11 +85,10 @@ export const View: FC = () => {
 
 interface BookshelfTopBarProps {
   bookshelfResponse: FindBookshelfResponseBody | undefined;
-  bookshelfBooksResponse: FindUserBooksResponseBody | undefined;
   bookshelfId: string;
 }
 
-const BookshelfTopBar: FC<BookshelfTopBarProps> = ({ bookshelfResponse, bookshelfBooksResponse, bookshelfId }) => {
+const BookshelfTopBar: FC<BookshelfTopBarProps> = ({ bookshelfResponse, bookshelfId }) => {
   const navigate = useNavigate();
 
   const isArchiveOrBorrowingBookshelf =
@@ -122,9 +99,6 @@ const BookshelfTopBar: FC<BookshelfTopBarProps> = ({ bookshelfResponse, bookshel
       <div>
         <p className="text-xl min-h-[1.75rem] sm:min-h-[2.25rem] max-w-[40rem] truncate sm:text-3xl">
           {bookshelfResponse?.name ?? ' '}
-        </p>
-        <p>
-          {bookshelfBooksResponse?.metadata.total ?? 0} {getCountNoun(bookshelfBooksResponse?.metadata.total ?? 0)}
         </p>
       </div>
       <div className="flex items-center gap-4">
@@ -380,25 +354,12 @@ const BookshelfBooksVirtualizedBooksList = ({
 export const BorrowingBookshelf: FC = () => {
   const { bookshelfId } = Route.useParams();
 
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
-  const { data: user } = useFindUserQuery();
-
-  const { data: bookshelfBooksResponse } = useErrorHandledQuery(
-    FindBooksByBookshelfIdQueryOptions({
-      accessToken: accessToken as string,
-      bookshelfId,
-      userId: user?.id as string,
-    }),
-  );
-
   const { data: bookshelfResponse } = useFindBookshelfByIdQuery(bookshelfId);
 
   return (
     <AuthenticatedLayout>
       <div className="px-8 flex flex-col justify-center w-full items-center">
         <BookshelfTopBar
-          bookshelfBooksResponse={bookshelfBooksResponse}
           bookshelfId={bookshelfId}
           bookshelfResponse={bookshelfResponse}
         />
@@ -417,25 +378,12 @@ export const BorrowingBookshelf: FC = () => {
 export const Bookshelf: FC = () => {
   const { bookshelfId } = Route.useParams();
 
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
-  const { data: user } = useFindUserQuery();
-
-  const { data: bookshelfBooksResponse } = useErrorHandledQuery(
-    FindBooksByBookshelfIdQueryOptions({
-      accessToken: accessToken as string,
-      bookshelfId,
-      userId: user?.id as string,
-    }),
-  );
-
   const { data: bookshelfResponse } = useFindBookshelfByIdQuery(bookshelfId);
 
   return (
     <AuthenticatedLayout>
       <div className="px-8 flex flex-col justify-center w-full items-center">
         <BookshelfTopBar
-          bookshelfBooksResponse={bookshelfBooksResponse}
           bookshelfId={bookshelfId}
           bookshelfResponse={bookshelfResponse}
         />
