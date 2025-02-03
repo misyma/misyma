@@ -9,6 +9,8 @@ import { type DatabaseClient } from '../../../../../libs/database/clients/databa
 import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { Author } from '../../../domain/entities/author/author.js';
+import { BookReading } from '../../../domain/entities/bookReading/bookReading.js';
+import { Collection } from '../../../domain/entities/collection/collection.js';
 import { Genre } from '../../../domain/entities/genre/genre.js';
 import { UserBook } from '../../../domain/entities/userBook/userBook.js';
 import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
@@ -588,34 +590,9 @@ describe('UserBookRepositoryImpl', () => {
         imageUrl: userBook.getImageUrl(),
         createdAt: userBook.getCreatedAt(),
         genreId: userBook.getGenreId(),
-        genre: {
-          id: genre.id,
-          state: {
-            name: genre.name,
-          },
-        },
-        collections: [
-          {
-            id: collection.id,
-            state: {
-              name: collection.name,
-              userId: collection.userId,
-              createdAt: collection.createdAt,
-            },
-          },
-        ],
-        readings: [
-          {
-            id: bookReading.id,
-            state: {
-              userBookId: bookReading.userBookId,
-              startedAt: bookReading.startedAt,
-              endedAt: bookReading.endedAt,
-              rating: bookReading.rating,
-              comment: bookReading.comment,
-            },
-          },
-        ],
+        genre: new Genre(genre),
+        collections: [new Collection(collection)],
+        readings: [new BookReading(bookReading)],
         book: {
           id: book.id,
           title: book.title,
@@ -629,17 +606,9 @@ describe('UserBookRepositoryImpl', () => {
           isApproved: book.isApproved,
           imageUrl: book.imageUrl,
           createdAt: book.createdAt,
-          authors: [
-            {
-              id: author.id,
-              state: {
-                name: author.name,
-                isApproved: author.isApproved,
-                createdAt: author.createdAt,
-              },
-            },
-          ],
+          authors: [new Author(author)],
         },
+        latestRating: bookReading.rating,
       });
     });
 
@@ -710,6 +679,34 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
+      const bookReading1 = await bookReadingTestUtils.createAndPersist({
+        input: {
+          userBookId: userBook2.id,
+          startedAt: new Date('2023-01-01'),
+        },
+      });
+
+      await bookReadingTestUtils.createAndPersist({
+        input: {
+          userBookId: userBook2.id,
+          startedAt: new Date('2022-01-01'),
+        },
+      });
+
+      const bookReading2 = await bookReadingTestUtils.createAndPersist({
+        input: {
+          userBookId: userBook3.id,
+          startedAt: new Date('2025-01-22'),
+        },
+      });
+
+      await bookReadingTestUtils.createAndPersist({
+        input: {
+          userBookId: userBook3.id,
+          startedAt: new Date('2025-01-21'),
+        },
+      });
+
       const userBooks = await userBookRepository.findUserBooks({
         bookshelfId: bookshelf2.id,
         page: 1,
@@ -720,6 +717,10 @@ describe('UserBookRepositoryImpl', () => {
 
       userBooks.forEach((userBook) => {
         expect(userBook.getId()).oneOf([userBook2.id, userBook3.id]);
+
+        expect(userBook.getLatestRating()).toEqual(
+          userBook.getId() === userBook2.id ? bookReading1.rating : bookReading2.rating,
+        );
       });
     });
 
