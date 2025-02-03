@@ -429,7 +429,7 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
       collectionIds: [collection1.id, collection2.id, collection3.id],
     });
 
-    result.userBook.getCollections().forEach((collection) => {
+    result.userBook.getCollections()?.forEach((collection) => {
       expect(collection.getId()).oneOf([collection1.id, collection2.id, collection3.id]);
     });
   });

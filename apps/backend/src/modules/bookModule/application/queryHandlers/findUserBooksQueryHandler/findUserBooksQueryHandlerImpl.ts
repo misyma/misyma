@@ -33,7 +33,6 @@ export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler 
       releaseYearBefore,
       sortField,
       sortOrder,
-      expandFields,
     } = payload;
 
     if (bookshelfId) {
@@ -66,7 +65,6 @@ export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler 
         releaseYearBefore,
         page,
         pageSize,
-        expandFields: expandFields ?? [],
         sortField,
         sortOrder,
       }),

@@ -31,4 +31,5 @@ export interface UserBook {
   readonly genreName: string;
   readonly collections: Collection[];
   readonly readings: BookReading[];
+  readonly latestRating?: number;
 }

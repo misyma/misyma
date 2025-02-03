@@ -70,7 +70,6 @@ export class CreateUserBookCommandHandlerImpl implements CreateUserBookCommandHa
       isbn: book.getIsbn() ?? undefined,
       page: 1,
       pageSize: 1,
-      expandFields: [],
     });
 
     if (existingUserBooksWithSameBook.length > 0) {

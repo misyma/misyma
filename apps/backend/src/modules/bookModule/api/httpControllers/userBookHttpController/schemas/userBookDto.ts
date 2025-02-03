@@ -42,6 +42,7 @@ export const userBookDtoSchema = Type.Object({
     createdAt: Type.String({ format: 'date-time' }),
     authors: Type.Array(authorDtoSchema),
   }),
+  latestRating: Type.Optional(Type.Number()),
 });
 
 export type UserBookDto = Static<typeof userBookDtoSchema>;

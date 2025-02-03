@@ -38,4 +38,6 @@ export interface UserBookWithJoinsRawEntity {
   readonly readingEndedAtDates?: (Date | null)[];
   readonly readingRatings?: (number | null)[];
   readonly readingComments?: (string | null)[];
+
+  readonly latestRating?: number | null;
 }

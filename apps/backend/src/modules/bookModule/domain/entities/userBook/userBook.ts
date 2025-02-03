@@ -16,8 +16,9 @@ export interface UserBookDraft {
   readonly book?: BookDraft | undefined;
   readonly genreId: string;
   readonly genre?: Genre;
-  readonly collections: Collection[];
-  readonly readings: BookReading[];
+  readonly collections?: Collection[] | undefined;
+  readonly readings?: BookReading[] | undefined;
+  readonly latestRating?: number | undefined;
 }
 
 export interface UserBookState {
@@ -30,8 +31,9 @@ export interface UserBookState {
   readonly book?: BookDraft | undefined;
   genreId: string;
   genre?: Genre;
-  collections: Collection[];
-  readonly readings: BookReading[];
+  collections?: Collection[] | undefined;
+  readonly readings?: BookReading[] | undefined;
+  readonly latestRating?: number | undefined;
 }
 
 export interface SetImageUrlPayload {
@@ -76,6 +78,7 @@ export class UserBook {
       genre,
       readings,
       collections,
+      latestRating,
     } = draft;
 
     this.id = id;
@@ -87,8 +90,6 @@ export class UserBook {
       createdAt,
       bookId,
       genreId,
-      readings,
-      collections,
     };
 
     if (imageUrl) {
@@ -106,6 +107,27 @@ export class UserBook {
       state = {
         ...state,
         genre,
+      };
+    }
+
+    if (readings !== undefined) {
+      state = {
+        ...state,
+        readings,
+      };
+    }
+
+    if (collections !== undefined) {
+      state = {
+        ...state,
+        collections,
+      };
+    }
+
+    if (latestRating !== undefined) {
+      state = {
+        ...state,
+        latestRating,
       };
     }
 
@@ -156,12 +178,16 @@ export class UserBook {
     return this.state.genre;
   }
 
-  public getCollections(): Collection[] {
+  public getCollections(): Collection[] | undefined {
     return this.state.collections;
   }
 
-  public getReadings(): BookReading[] {
+  public getReadings(): BookReading[] | undefined {
     return this.state.readings;
+  }
+
+  public getLatestRating(): number | undefined {
+    return this.state.latestRating;
   }
 
   public setImageUrl(payload: SetImageUrlPayload): void {

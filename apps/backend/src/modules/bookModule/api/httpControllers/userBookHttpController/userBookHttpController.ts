@@ -1,4 +1,4 @@
-import { type Language, type BookFormat, type UserBookExpandField } from '@common/contracts';
+import { type Language, type BookFormat } from '@common/contracts';
 
 import {
   createUserBookBodyDtoSchema,
@@ -308,7 +308,6 @@ export class UserBookHttpController implements HttpController {
       language,
       releaseYearAfter,
       releaseYearBefore,
-      expandFields,
       sortField,
       sortOrder,
     } = request.queryParams;
@@ -330,7 +329,6 @@ export class UserBookHttpController implements HttpController {
       language,
       releaseYearAfter,
       releaseYearBefore,
-      expandFields: (expandFields?.split(',') as UserBookExpandField[]) || [],
     });
 
     return {
@@ -379,6 +377,7 @@ export class UserBookHttpController implements HttpController {
       readings,
       collections,
       createdAt,
+      latestRating,
     } = userBook.getState();
 
     const userBookDto: UserBookDto = {
@@ -406,14 +405,14 @@ export class UserBookHttpController implements HttpController {
       genreId,
       genreName: genre?.getName() || '',
       collections:
-        collections.map((collection) => ({
+        collections?.map((collection) => ({
           id: collection.getId(),
           name: collection.getName(),
           userId: collection.getUserId(),
           createdAt: collection.getCreatedAt().toISOString(),
         })) || [],
       readings:
-        readings.map((reading) => {
+        readings?.map((reading) => {
           const { userBookId, comment, rating, startedAt, endedAt } = reading.getState();
 
           let readingDto: BookReadingDto = {
@@ -457,6 +456,10 @@ export class UserBookHttpController implements HttpController {
 
     if (book?.imageUrl) {
       userBookDto.book.imageUrl = book.imageUrl;
+    }
+
+    if (latestRating) {
+      userBookDto.latestRating = latestRating;
     }
 
     return userBookDto;

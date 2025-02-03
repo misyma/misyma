@@ -1,5 +1,3 @@
-import { UserBookExpandField } from '@common/contracts';
-
 import { type UserBookMapper } from './userBookMapper/userBookMapper.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
@@ -73,7 +71,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           '*',
         );
 
-        if (collections.length) {
+        if (collections?.length) {
           await transaction.batchInsert<UserBookCollectionRawEntity>(
             userBookCollectionTable,
             collections.map((collection) => ({
@@ -123,16 +121,16 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           })
           .where({ id: userBook.getId() });
 
-        const existingCollections = existingUserBook.getCollections();
+        const existingCollections = existingUserBook.getCollections() || [];
 
-        const addedCollections = updatedCollections.filter(
+        const addedCollections = (updatedCollections ?? []).filter(
           (collection) =>
             !existingCollections.some((currentCollection) => currentCollection.getId() === collection.getId()),
         );
 
         const removedCollections = existingCollections.filter(
           (collection) =>
-            !updatedCollections.some((currentCollection) => currentCollection.getId() === collection.getId()),
+            !(updatedCollections ?? []).some((currentCollection) => currentCollection.getId() === collection.getId()),
         );
 
         if (addedCollections.length > 0) {
@@ -250,6 +248,14 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         this.databaseClient.raw(`array_agg("${bookReadingTable}"."comment") as "readingComments"`),
       ];
 
+      const latestRatingSelect = this.databaseClient.raw(`(
+        SELECT br.rating
+        FROM "${bookReadingTable}" br
+        WHERE br."userBookId" = "${userBookTable}".id
+        ORDER BY br."startedAt" DESC
+        LIMIT 1
+      ) as "latestRating"`);
+
       rawEntities = await this.databaseClient<UserBookRawEntity>(userBookTable)
         .select([
           ...userBookSelect,
@@ -258,6 +264,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           ...genresSelect,
           ...collectionsSelect,
           ...readingsSelect,
+          latestRatingSelect,
         ])
         .leftJoin(bookAuthorTable, (join) => {
           join.on(`${bookAuthorTable}.bookId`, '=', `${userBookTable}.bookId`);
@@ -336,7 +343,6 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       language,
       releaseYearAfter,
       releaseYearBefore,
-      expandFields,
     } = payload;
 
     let rawEntities: UserBookWithJoinsRawEntity[];
@@ -376,30 +382,16 @@ export class UserBookRepositoryImpl implements UserBookRepository {
 
       const genresSelect = [`${genreTable}.name as genreName`];
 
-      const collectionsSelect = [
-        this.databaseClient.raw(`array_agg("${collectionTable}"."id") as "collectionIds"`),
-        this.databaseClient.raw(`array_agg("${collectionTable}"."name") as "collectionNames"`),
-        this.databaseClient.raw(`array_agg("${collectionTable}"."createdAt") as "collectionCreatedAtDates"`),
-        this.databaseClient.raw(`array_agg("${collectionTable}"."userId") as "collectionUserIds"`),
-      ];
-
-      const readingsSelect = [
-        this.databaseClient.raw(`array_agg("${bookReadingTable}"."id") as "readingIds"`),
-        this.databaseClient.raw(`array_agg("${bookReadingTable}"."startedAt") as "readingStartedAtDates"`),
-        this.databaseClient.raw(`array_agg("${bookReadingTable}"."endedAt") as "readingEndedAtDates"`),
-        this.databaseClient.raw(`array_agg("${bookReadingTable}"."rating") as "readingRatings"`),
-        this.databaseClient.raw(`array_agg("${bookReadingTable}"."comment") as "readingComments"`),
-      ];
+      const latestRatingSelect = this.databaseClient.raw(`(
+        SELECT br.rating
+        FROM "${bookReadingTable}" br
+        WHERE br."userBookId" = "${userBookTable}".id
+        ORDER BY br."startedAt" DESC
+        LIMIT 1
+      ) as "latestRating"`);
 
       const query = this.databaseClient<UserBookRawEntity>(userBookTable)
-        .select([
-          ...userBookSelect,
-          ...bookSelect,
-          ...authorsSelect,
-          ...genresSelect,
-          ...(expandFields.includes(UserBookExpandField.collections) ? collectionsSelect : []),
-          ...(expandFields.includes(UserBookExpandField.readings) ? readingsSelect : []),
-        ])
+        .select([...userBookSelect, ...bookSelect, ...authorsSelect, ...genresSelect, latestRatingSelect])
         .leftJoin(bookAuthorTable, (join) => {
           join.on(`${bookAuthorTable}.bookId`, '=', `${userBookTable}.bookId`);
         })
@@ -413,13 +405,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           join.on(`${genreTable}.id`, `=`, `${userBookTable}.genreId`);
         });
 
-      if (expandFields.includes(UserBookExpandField.readings)) {
-        query.leftJoin(bookReadingTable, (join) => {
-          join.on(`${bookReadingTable}.userBookId`, '=', `${userBookTable}.id`);
-        });
-      }
-
-      if (expandFields.includes(UserBookExpandField.collections) || collectionId) {
+      if (collectionId) {
         query
           .leftJoin(userBookCollectionTable, (join) => {
             join.on(`${userBookCollectionTable}.userBookId`, '=', `${userBookTable}.id`);

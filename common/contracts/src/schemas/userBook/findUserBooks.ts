@@ -4,11 +4,6 @@ import { type Language } from '../book/language.js';
 import { type Metadata } from '../metadata.js';
 import { type SortOrder } from '../sortOrder.js';
 
-export enum UserBookExpandField {
-  collections = 'collections',
-  readings = 'readings',
-}
-
 export enum FindUserBooksSortField {
   releaseYear = 'releaseYear',
   createdAt = 'createdAt',
@@ -30,8 +25,6 @@ export interface FindUserBooksQueryParams {
   readonly pageSize?: number;
   readonly sortField?: FindUserBooksSortField;
   readonly sortOrder?: SortOrder;
-  // comma separated list of fields to expand, e.g. collections,readings
-  readonly expandFields?: string;
 }
 
 export interface FindUserBooksResponseBody {

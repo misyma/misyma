@@ -1,6 +1,7 @@
 import { beforeEach, expect, describe, it } from 'vitest';
 
 import { UserBookMapperImpl } from './userBookMapperImpl.js';
+import { Generator } from '../../../../../../../tests/generator.js';
 import { Genre } from '../../../../domain/entities/genre/genre.js';
 import { BookTestFactory } from '../../../../tests/factories/bookTestFactory/bookTestFactory.js';
 import { GenreTestFactory } from '../../../../tests/factories/genreTestFactory/genreTestFactory.js';
@@ -28,6 +29,8 @@ describe('UserBookMapperImpl', () => {
       bookId: book.id,
       genreId: genre.id,
     });
+
+    const latestRating = Generator.number(1, 10);
 
     const userBooks = userBookMapperImpl.mapRawWithJoinsToDomain([
       {
@@ -64,6 +67,7 @@ describe('UserBookMapperImpl', () => {
         readingEndedAtDates: [],
         readingRatings: [],
         readingComments: [],
+        latestRating,
       },
     ]);
 
@@ -99,6 +103,7 @@ describe('UserBookMapperImpl', () => {
           },
           readings: [],
           collections: [],
+          latestRating,
         },
       },
     ]);
