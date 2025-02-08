@@ -9,7 +9,7 @@ interface Props {
   book: UserBook;
 }
 
-export const AltFavoriteBookButton: FC<Props> = ({ book }) => {
+export const BookmarkButton: FC<Props> = ({ book }) => {
   return (
     <div className="h-9 w-9 relative">
       <FaBookmark className={cn('h-9 w-9 text-primary')} />
