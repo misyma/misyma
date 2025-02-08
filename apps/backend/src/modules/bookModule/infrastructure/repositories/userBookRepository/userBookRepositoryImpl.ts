@@ -481,6 +481,8 @@ export class UserBookRepositoryImpl implements UserBookRepository {
 
       if (sortField === 'releaseYear') {
         query.orderBy(`${bookTable}.releaseYear`, sortOrder ?? 'desc');
+      } else if (sortField === 'rating') {
+        query.orderBy('latestRating', sortOrder ?? 'desc', 'last');
       } else {
         query.orderBy('id', sortOrder ?? 'desc');
       }

@@ -7,7 +7,7 @@ import { ReadingStatus, SortOrder, type UserBook } from '@common/contracts';
 
 import { useNavigateToBook } from '../../../book/api/hooks/useNavigateToBook';
 import { BookImageMiniature } from '../../../book/components/bookImageMiniature/bookImageMiniature';
-import { AltFavoriteBookButton } from '../../../book/components/favoriteBookButton/altFavoriteBookButton';
+import { BookmarkButton } from '../../../book/components/bookmarkButton/bookmarkButton';
 import { TruncatedTextTooltip } from '../../../book/components/truncatedTextTooltip/truncatedTextTooltip';
 import { FindBookBorrowingsQueryOptions } from '../../../borrowing/api/queries/findBookBorrowings/findBookBorrowingsQueryOptions';
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
@@ -88,7 +88,7 @@ export const BookCard: FC<{
       onClick={navigateToBook}
     >
       <div className="absolute right-0 top-0 z-40">
-        <AltFavoriteBookButton book={book} />
+        <BookmarkButton book={book} />
       </div>
       <div className="flex flex-col h-full max-h-[344px] rounded-[20px] border shadow-sm shadow-gray-400 transition-transform duration-300 ease-in-out">
         <div className="pt-4 pb-2 px-4 aspect-[2/1] rounded-[4px] flex-shrink-0">

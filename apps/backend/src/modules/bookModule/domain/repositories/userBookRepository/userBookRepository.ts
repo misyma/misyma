@@ -42,7 +42,7 @@ export interface FindUserBooksPayload {
   readonly releaseYearBefore?: number | undefined;
   readonly page?: number;
   readonly pageSize?: number;
-  readonly sortField?: 'releaseYear' | 'createdAt' | undefined;
+  readonly sortField?: 'releaseYear' | 'createdAt' | 'rating' | undefined;
   readonly sortOrder?: 'asc' | 'desc' | undefined;
 }
 
