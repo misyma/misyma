@@ -4,19 +4,15 @@ import { Check } from 'lucide-react';
 import { useState } from 'react';
 import { HiBarsArrowDown } from 'react-icons/hi2';
 
-import { Button } from '../button/button';
-import { CommandItem, CommandList } from '../command/command';
-import { Popover, PopoverContent, PopoverTrigger } from '../popover/popover';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../tooltip/tooltip';
+import { Button } from '../../common/components/button/button';
+import { CommandItem, CommandList } from '../../common/components/command/command';
+import { Popover, PopoverContent, PopoverTrigger } from '../../common/components/popover/popover';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../common/components/tooltip/tooltip';
 
-interface BooksSortButtonProps {
-  readonly navigationPath: '/mybooks' | `/shelves/bookshelf/${string}`;
-}
-
-export const BooksSortButton = ({ navigationPath }: BooksSortButtonProps) => {
+export const AdminBooksSortButton = () => {
   const [popoverOpen, setPopoverOpen] = useState(false);
 
-  const navigate = useNavigate({ from: navigationPath });
+  const navigate = useNavigate({ from: '/admin/tabs/books' });
 
   const search = useSearch({ strict: false });
 
@@ -84,21 +80,6 @@ export const BooksSortButton = ({ navigationPath }: BooksSortButtonProps) => {
                 >
                   <span>Rok wydania: najstarsze</span>
                   {search.sortField === 'releaseYear' && search.sortOrder === 'asc' && selectedSortCheckmark}
-                </CommandItem>
-
-                <CommandItem
-                  onSelect={() => handleSort('rating', 'desc')}
-                  className="cursor-pointer flex justify-between"
-                >
-                  <span>Oceny: najwyższe</span>
-                  {search.sortField === 'rating' && search.sortOrder === 'desc' && selectedSortCheckmark}
-                </CommandItem>
-                <CommandItem
-                  onSelect={() => handleSort('rating', 'asc')}
-                  className="cursor-pointer flex justify-between"
-                >
-                  <span>Oceny: najniższe</span>
-                  {search.sortField === 'rating' && search.sortOrder === 'asc' && selectedSortCheckmark}
                 </CommandItem>
               </CommandList>
             </Command>

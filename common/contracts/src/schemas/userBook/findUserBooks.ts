@@ -7,6 +7,7 @@ import { type SortOrder } from '../sortOrder.js';
 export enum FindUserBooksSortField {
   releaseYear = 'releaseYear',
   createdAt = 'createdAt',
+  rating = 'rating',
 }
 
 export interface FindUserBooksQueryParams {
