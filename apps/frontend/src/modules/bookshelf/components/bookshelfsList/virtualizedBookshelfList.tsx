@@ -48,13 +48,11 @@ export const VirtualizedBookshelvesList: FC<VirtualizedBookshelvesListProps> = (
     if (!parent) return;
 
     const observer = new ResizeObserver(() => {
-      // Update lane count based on the new width
       if (parent.offsetWidth < 1000) {
         setVirtualizerLanes(1);
       } else {
         setVirtualizerLanes(2);
       }
-      // Force a re-measure after lane change
       rowVirtualizer.measure();
     });
 

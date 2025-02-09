@@ -1,36 +1,44 @@
-import { type RefObject, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface UseIsTruncatedProps {
-  parentRef: RefObject<HTMLElement>;
+  parentRef: HTMLElement | null;
   text: string;
 }
 export const useIsTruncated = ({ parentRef, text }: UseIsTruncatedProps) => {
   const [isTruncated, setIsTruncated] = useState(false);
 
   useEffect(() => {
-    if (!parentRef.current) {
+    const parent = parentRef;
+    if (!parent) {
       return;
     }
 
-    const clone = parentRef.current.cloneNode(true) as HTMLParagraphElement;
+    const checkSize = () => {
+      const clone = parent.cloneNode(true) as HTMLParagraphElement;
+      clone.id = '';
 
-    clone.id = '';
+      clone.classList.remove('custom-truncate');
+      clone.classList.add('custom-inline');
 
-    clone.classList.remove('custom-truncate');
+      document?.body?.append(clone);
 
-    clone.classList.add('custom-inline');
+      const originalWidth = parent.getBoundingClientRect().width;
+      const cloneWidth = clone.getBoundingClientRect().width;
+      console.log('Orig: ', originalWidth, '\nClone w: ', cloneWidth);
+      setIsTruncated(originalWidth < cloneWidth);
 
-    const root = document.querySelector('body');
+      clone.remove();
+    };
 
-    root?.append(clone);
+    const observer = new ResizeObserver(() => {
+      checkSize();
+    });
 
-    const originalWidth = parentRef.current.getBoundingClientRect().width;
+    observer.observe(parent);
 
-    const cloneWidth = clone.getBoundingClientRect().width;
+    checkSize();
 
-    setIsTruncated(originalWidth < cloneWidth);
-
-    clone.remove();
+    return () => observer.disconnect();
   }, [text, parentRef]);
 
   return {

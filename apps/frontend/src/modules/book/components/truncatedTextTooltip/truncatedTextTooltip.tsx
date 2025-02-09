@@ -1,12 +1,4 @@
-import React, {
-  cloneElement,
-  type FC,
-  Fragment,
-  isValidElement,
-  type PropsWithChildren,
-  type RefObject,
-  useRef,
-} from 'react';
+import React, { cloneElement, type FC, Fragment, type PropsWithChildren, useCallback, useState } from 'react';
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../common/components/tooltip/tooltip';
 import { useIsTruncated } from '../../../common/hooks/useIsTruncated';
@@ -19,24 +11,19 @@ export const TruncatedTextTooltip: FC<
     tooltipClassName?: string;
   }>
 > = ({ text, children, className, tooltipClassName }) => {
-  const parentRef = useRef<HTMLElement>(null);
+  const [node, setNode] = useState<HTMLElement | null>(null);
 
-  const { isTruncated } = useIsTruncated({
-    parentRef,
-    text,
-  });
+  const setRef = useCallback((element: HTMLElement | null) => {
+    setNode(element);
+  }, []);
 
   const childElement = React.Children.only(children);
+  const elementWithRef = cloneElement(childElement as React.ReactElement, { ref: setRef });
 
-  if (!isValidElement(childElement)) {
-    return childElement;
-  }
-
-  const elementWithRef = cloneElement(childElement, {
-    ...childElement.props,
-    ref: parentRef as RefObject<HTMLElement>,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } as React.DetailedReactHTMLElement<any, HTMLElement>);
+  const { isTruncated } = useIsTruncated({
+    parentRef: node,
+    text,
+  });
 
   return (
     <Fragment>
