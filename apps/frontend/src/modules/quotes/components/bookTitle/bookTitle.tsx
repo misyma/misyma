@@ -9,7 +9,7 @@ export const BookTitle: FC<{ title: string }> = ({ title }) => {
       tooltipClassName="sm:max-w-80"
       text={title ?? ''}
     >
-      <p className="font-semibold text-3xl min-w-0 sm:max-w-80 lg:max-w-[40rem] flex-shrink w-full block truncate">
+      <p className="font-semibold text-3xl min-w-0 sm:max-w-80 md:max-w-[25rem] lg:max-w-[60rem] flex-shrink w-full block truncate">
         {title}
       </p>
     </TruncatedTextTooltip>
