@@ -15,7 +15,7 @@ export const QuotationText: FC<QuotationTextProps> = ({ content, index, pageInde
   const [showMore, setShowMore] = useState(false);
 
   const { isTruncated } = useIsTruncated({
-    parentRef,
+    parentRef: parentRef.current,
     text: content,
   });
 

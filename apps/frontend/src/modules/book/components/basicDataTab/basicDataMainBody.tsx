@@ -8,6 +8,7 @@ import { BookFormat } from '../../../common/constants/bookFormat';
 import { ReversedLanguages } from '../../../common/constants/languages';
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
+import { BookTitle } from '../../../quotes/components/bookTitle/bookTitle';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 import { BookshelfChoiceDropdown } from '../bookshelfChoiceDropdown/bookshelfChoiceDropdown';
@@ -60,7 +61,7 @@ export const BasicDataMainBody: FC<BasicDataMainBodyProps> = ({ bookId }) => {
   return (
     <>
       <div className="flex flex-shrink-0 justify-between">
-        {!isFetching && <p className="font-semibold text-3xl w-1/2 block truncate">{bookDetails.title}</p>}
+        {!isFetching && <BookTitle title={bookDetails.title ?? ''} />}
         {isFetching && <Skeleton className="h-9 w-40" />}
         <CurrentRatingStar userBookId={bookId} />
       </div>
