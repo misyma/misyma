@@ -243,6 +243,17 @@ const NavbarList: FC<{ user?: User; handleLogout: () => void }> = ({ user, handl
               <MenubarItem
                 onClick={() => {
                   navigate({
+                    to: '/profile/statistics',
+                  });
+                }}
+                className="pt-2 hover:text-primary"
+              >
+                Statystyki
+              </MenubarItem>
+              <MenubarSeparator />
+              <MenubarItem
+                onClick={() => {
+                  navigate({
                     to: '/profile',
                   });
                 }}
