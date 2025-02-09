@@ -48,11 +48,12 @@ const BorrowedSinceText: FC<{ userBookId: string }> = ({ userBookId }) => {
 };
 
 export const BookCard: FC<{
+  className?: string;
   book: UserBook;
   key: string;
   isBorrowed: boolean;
   pageNumber: number;
-}> = ({ book, isBorrowed = false }) => {
+}> = ({ className, book, isBorrowed = false }) => {
   const authors = useMemo(() => book.book.authors.map((a) => a.name).join(', '), [book]);
 
   const { navigateToBook } = useNavigateToBook({
@@ -84,7 +85,7 @@ export const BookCard: FC<{
 
   return (
     <div
-      className="relative h-full cursor-pointer"
+      className={cn('relative h-full cursor-pointer', className)}
       onClick={navigateToBook}
     >
       <div className="absolute right-0 top-0 z-40">

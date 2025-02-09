@@ -17,6 +17,7 @@ import { Route as IndexImport } from './routes/index'
 import { Route as VerifyEmailIndexImport } from './routes/verifyEmail/index'
 import { Route as ShelvesIndexImport } from './routes/shelves/index'
 import { Route as MybooksIndexImport } from './routes/mybooks/index'
+import { Route as ProfileStatisticsIndexImport } from './routes/profile/statistics/index'
 import { Route as AdminTabsIndexImport } from './routes/admin/tabs/index'
 import { Route as ShelvesBookshelfBookshelfIdImport } from './routes/shelves/bookshelf/$bookshelfId'
 import { Route as ShelvesBookshelfCreateBookIndexImport } from './routes/shelves/bookshelf/createBook/index'
@@ -99,6 +100,13 @@ const MybooksIndexRoute = MybooksIndexImport.update({
   path: '/mybooks/',
   getParentRoute: () => rootRoute,
 } as any)
+
+const ProfileStatisticsIndexRoute = ProfileStatisticsIndexImport.update({
+  path: '/profile/statistics/',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/profile/statistics/index.lazy').then((d) => d.Route),
+)
 
 const AdminTabsIndexRoute = AdminTabsIndexImport.update({
   path: '/admin/tabs/',
@@ -277,6 +285,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminTabsIndexImport
       parentRoute: typeof rootRoute
     }
+    '/profile/statistics/': {
+      preLoaderRoute: typeof ProfileStatisticsIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/admin/tabs/changeRequests/$id': {
       preLoaderRoute: typeof AdminTabsChangeRequestsIdImport
       parentRoute: typeof rootRoute
@@ -346,6 +358,7 @@ export const routeTree = rootRoute.addChildren([
   ResetPasswordIndexLazyRoute,
   ShelvesBookshelfBookshelfIdRoute,
   AdminTabsIndexRoute,
+  ProfileStatisticsIndexRoute,
   AdminTabsChangeRequestsIdRoute,
   AdminTabsAuthorsIndexRoute,
   AdminTabsBooksIndexRoute,

@@ -223,9 +223,11 @@ export const ProfilePage = () => {
   return (
     <AuthenticatedLayout>
       <div className="flex items-center justify-center w-full px-8 gap-4">
-        <div className="flex flex-col px-8 gap-4">
-          <div className="font-bold text-primary">Dane profilu</div>
-          <ChangeUserDataForm userData={userData as FindUserResponseBody} />
+        <div className="grid gap-4 items-center justify-items-center w-full">
+          <div className="flex flex-col px-8 gap-4">
+            <div className="font-bold text-primary">Dane profilu</div>
+            <ChangeUserDataForm userData={userData as FindUserResponseBody} />
+          </div>
         </div>
       </div>
     </AuthenticatedLayout>
