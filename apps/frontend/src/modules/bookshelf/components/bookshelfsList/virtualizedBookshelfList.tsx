@@ -1,8 +1,9 @@
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { type FC, useEffect, useMemo, useRef } from 'react';
+import { type FC, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { Skeleton } from '../../../common/components/skeleton/skeleton';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useFindUserBookshelfsInfiniteQuery } from '../../api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 import { BookshelfCard } from '../bookshelfCard/bookshelfCard';
@@ -30,14 +31,36 @@ export const VirtualizedBookshelvesList: FC<VirtualizedBookshelvesListProps> = (
 
   const allBookshelves = useMemo(() => data?.pages.flatMap((page) => page.data) || [], [data]);
 
-  const rowsCount = hasNextPage ? Math.ceil(allBookshelves.length / 2) + 1 : Math.ceil(allBookshelves.length / 2);
+  const rowsCount = hasNextPage ? allBookshelves.length + 1 : allBookshelves.length;
+
+  const [virtualizerLanes, setVirtualizerLanes] = useState(2);
 
   const rowVirtualizer = useVirtualizer({
     count: isLoading ? 4 : rowsCount,
     getScrollElement: () => parentRef.current,
     estimateSize: () => 340, // Adjusted for card height
-    overscan: 3,
+    overscan: 6,
+    lanes: virtualizerLanes,
   });
+
+  useEffect(() => {
+    const parent = parentRef.current;
+    if (!parent) return;
+
+    const observer = new ResizeObserver(() => {
+      // Update lane count based on the new width
+      if (parent.offsetWidth < 1000) {
+        setVirtualizerLanes(1);
+      } else {
+        setVirtualizerLanes(2);
+      }
+      // Force a re-measure after lane change
+      rowVirtualizer.measure();
+    });
+
+    observer.observe(parent);
+    return () => observer.disconnect();
+  }, [parentRef, rowVirtualizer]);
 
   useEffect(() => {
     const [lastItem] = [...rowVirtualizer.getVirtualItems()].reverse();
@@ -54,7 +77,8 @@ export const VirtualizedBookshelvesList: FC<VirtualizedBookshelvesListProps> = (
   return (
     <div
       ref={parentRef}
-      className="w-full h-[725px] overflow-auto no-scrollbar px-2"
+      // for mobile: calculating screen height and dynamically assigning via {style}
+      className="w-full max-w-screen-2xl h-[650px] sm:h-[900px] overflow-auto no-scrollbar px-2"
     >
       <div
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
@@ -64,10 +88,11 @@ export const VirtualizedBookshelvesList: FC<VirtualizedBookshelvesListProps> = (
         }}
       >
         {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-          const isLoaderRow = virtualRow.index >= Math.ceil(allBookshelves.length / 2);
-          const startIndex = virtualRow.index * 2;
+          const laneIndex = virtualRow.index % virtualizerLanes;
+          const columnWidth = (parentRef.current?.offsetWidth ?? 0) / virtualizerLanes;
+          const isLoaderRow = virtualRow.index >= Math.ceil(allBookshelves.length);
+          const startIndex = virtualRow.index;
           const bookshelf1 = allBookshelves[startIndex];
-          const bookshelf2 = allBookshelves[startIndex + 1];
 
           return (
             <div
@@ -76,28 +101,33 @@ export const VirtualizedBookshelvesList: FC<VirtualizedBookshelvesListProps> = (
                 position: 'absolute',
                 top: 0,
                 left: 0,
-                width: '100%',
+                width: `${columnWidth}`,
                 height: `${virtualRow.size}px`,
                 transform: `translateY(${virtualRow.start}px)`,
               }}
             >
               {isLoaderRow ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="animate-pulse rounded-[20px] border shadow-sm h-80 shadow-gray-400 bg-gray-100" />
-                  <div className="animate-pulse rounded-[20px] border shadow-sm h-80 shadow-gray-400 bg-gray-100" />
+                <div className="gap-4">
+                  <Skeleton
+                    className="h-80"
+                    style={{
+                      position: 'absolute',
+                      width: `${columnWidth - 10}px`,
+                      left: `${laneIndex * columnWidth}px`,
+                    }}
+                  />
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="gap-4">
                   {bookshelf1 && (
                     <BookshelfCard
+                      style={{
+                        position: 'absolute',
+                        left: `${laneIndex * columnWidth}px`,
+                        width: `${columnWidth - 10}px`,
+                      }}
                       bookshelf={bookshelf1}
                       onClick={() => navigate({ to: `/shelves/bookshelf/${bookshelf1.id}` })}
-                    />
-                  )}
-                  {bookshelf2 && (
-                    <BookshelfCard
-                      bookshelf={bookshelf2}
-                      onClick={() => navigate({ to: `/shelves/bookshelf/${bookshelf2.id}` })}
                     />
                   )}
                 </div>
