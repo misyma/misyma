@@ -24,6 +24,7 @@ export const SearchLanguageSelect: FC<FilterComponentProps> = ({
       hasValue={!!value}
       slot={
         <LanguageSelect
+          fullWidthAll
           key={initialValue}
           type="free"
           selectorValue={value}

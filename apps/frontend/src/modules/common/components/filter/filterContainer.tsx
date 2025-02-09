@@ -10,12 +10,14 @@ interface FilterContainerProps extends Omit<FilterComponentProps, 'setFilterActi
   filterContainerClassName?: string;
   onRemoveFilter?: () => void;
   hasValue?: boolean;
+  disableXButton?: boolean;
 }
 export const FilterContainer: FC<FilterContainerProps> = ({
   filter,
   slot,
   filterContainerClassName,
   hasValue,
+  disableXButton,
   onRemoveFilter,
 }) => {
   return (
@@ -28,16 +30,17 @@ export const FilterContainer: FC<FilterContainerProps> = ({
         )}
       >
         {slot}
-        {hasValue && onRemoveFilter && (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute right-2 top-1/2 -translate-y-1/2 hover:bg-transparent p-0 h-auto"
-            onClick={onRemoveFilter}
-          >
-            <X className="h-6 w-6" />
-          </Button>
-        )}
+        <Button
+          variant="ghost"
+          size="icon"
+          className={cn(
+            'hover:bg-transparent h-auto invisible',
+            hasValue && onRemoveFilter && !disableXButton && 'visible',
+          )}
+          onClick={onRemoveFilter}
+        >
+          <X className="h-6 w-6" />
+        </Button>
       </div>
     </div>
   );

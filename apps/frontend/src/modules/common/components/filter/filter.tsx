@@ -92,7 +92,7 @@ export const SelectFilter: FC<SelectFilterProps> = memo(
       <FilterContainer
         slot={
           <Select
-            className="w-96"
+            className="w-full sm:w-full"
             value={initialValue ?? ''}
             onValueChange={handleValueChange}
           >
@@ -222,6 +222,7 @@ export const CheckboxFilter: FC<FilterComponentProps<boolean>> = memo(
 
     return (
       <FilterContainer
+        disableXButton
         hasValue={checked}
         slot={
           <div className="flex items-center gap-2 space-x-2">
@@ -342,7 +343,7 @@ export const YearRangeFilter = memo(
                 variant="none"
                 size="custom"
                 className={cn(
-                  'border !flex !justify-start pl-3 text-sm bg-[#D1D5DB]/20 !font-normal text-foreground w-60 sm:w-96 h-12',
+                  'border !flex !justify-start pl-3 text-sm bg-[#D1D5DB]/20 !font-normal text-foreground w-full h-12',
                   !startYear && !endYear && 'text-muted-foreground',
                 )}
               >
@@ -399,17 +400,15 @@ export const YearRangeFilter = memo(
               </div>
             </PopoverContent>
           </Popover>
-          {onRemoveFilter && (startYear || endYear) && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onRemoveFilter}
-              className="h-8 w-8 p-0"
-            >
-              <span className="sr-only">Clear year range</span>
-              <X className="h-4 w-4" />
-            </Button>
-          )}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onRemoveFilter}
+            className={cn('h-6 w-6 p-0', onRemoveFilter && (startYear || endYear) ? 'visible' : 'invisible')}
+          >
+            <span className="sr-only">Clear year range</span>
+            <X className="h-6 w-6" />
+          </Button>
         </div>
       </div>
     );
@@ -460,13 +459,14 @@ export const GenreSelectFilter: FC<FilterComponentProps> = ({
       hasValue={!!initialValue}
       slot={
         <Select
+          className="w-full sm:w-full"
           key={initialValue}
           value={initialValue}
           open={genreSelectOpen}
           onOpenChange={setGenreSelectOpen}
           onValueChange={setFilterAction}
         >
-          <SelectTrigger>
+          <SelectTrigger className="w-full sm:w-full">
             <SelectValue placeholder={<span className="text-muted-foreground">Kategoria</span>} />
             <SelectContent>
               {Object.values(genres?.data ?? []).map((genre) => (
@@ -508,13 +508,14 @@ export const MyBooksStatusFilter: FC<FilterComponentProps> = ({
         <Select
           key={initialValue}
           value={initialValue}
+          className="w-full sm:w-full"
           open={statusSelectOpen}
           onOpenChange={setStatusSelectOpen}
           onValueChange={setFilterAction}
         >
-          <SelectTrigger>
-            <SelectValue placeholder={<span className="text-muted-foreground">Status</span>} />
-            <SelectContent>
+          <SelectTrigger className="w-full sm:w-full">
+            <SelectValue placeholder={<span className="w-full sm:w-full text-muted-foreground">Status</span>} />
+            <SelectContent className="w-full sm:w-full">
               {Object.entries(ReadingStatus).map(([key, status]) => (
                 <SelectItem
                   key={key + status}
