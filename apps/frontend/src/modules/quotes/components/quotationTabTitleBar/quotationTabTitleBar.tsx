@@ -7,6 +7,7 @@ import { Skeleton } from '../../../common/components/skeleton/skeleton';
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
+import { BookTitle } from '../bookTitle/bookTitle';
 
 interface QuotationTabTitleBarProps {
   bookId: string;
@@ -25,8 +26,8 @@ export const QuotationTabTitleBar: FC<QuotationTabTitleBarProps> = ({ bookId }) 
   );
 
   return (
-    <div className="flex justify-between w-full">
-      {!isFetching && <p className="font-semibold text-3xl w-1/2 block truncate">{userBookData?.book.title}</p>}
+    <div className="flex justify-between gap-4 w-full">
+      {!isFetching && <BookTitle title={userBookData?.book.title ?? ''} />}
       {isFetching && <Skeleton className="h-9 w-40" />}
       {!isFetching && <CurrentRatingStar userBookId={bookId} />}
       {isFetching && <Skeleton className="h-7 w-7" />}

@@ -14,6 +14,7 @@ import { Separator } from '../../common/components/separator/separator';
 import { Skeleton } from '../../common/components/skeleton/skeleton';
 import { useErrorHandledQuery } from '../../common/hooks/useErrorHandledQuery';
 import { userStateSelectors } from '../../core/store/states/userState/userStateSlice';
+import { BookTitle } from '../../quotes/components/bookTitle/bookTitle';
 import { useFindUserQuery } from '../../user/api/queries/findUserQuery/findUserQuery';
 
 interface BookGradesTabMainBodyProps {
@@ -71,7 +72,7 @@ export const BookGradesTabMainBody: FC<BookGradesTabMainBodyProps> = ({ bookId }
       <div className="flex justify-between w-full">
         {isFetching && <Skeleton className="h-9 w-40" />}
         {isFetching && <Skeleton className="h-7 w-7" />}
-        {!isFetching && <p className="font-semibold text-3xl w-1/2 block truncate">{userBookData?.book.title}</p>}
+        {!isFetching && <BookTitle title={userBookData?.book.title ?? ''} />}
         {!isFetching && <CurrentRatingStar userBookId={bookId} />}
       </div>
       <Separator className="h-[1px] bg-primary" />
