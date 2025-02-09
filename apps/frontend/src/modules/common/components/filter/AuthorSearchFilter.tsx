@@ -1,4 +1,4 @@
-import { ChevronsUpDown } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { type FC, useCallback, useEffect, useState } from 'react';
 
 import { FilterContainer } from './filterContainer';
@@ -19,6 +19,7 @@ export const AuthorSearchFilter: FC<FilterComponentProps> = ({
   const [selectedAuthorName, setSelectedAuthorName] = useState('');
 
   const handleChange = (value: string | boolean | Date | undefined, authorName: string) => {
+    console.log(value);
     setSelectedAuthorName(authorName);
 
     setFilterAction(value);
@@ -32,6 +33,9 @@ export const AuthorSearchFilter: FC<FilterComponentProps> = ({
 
   const getAuthorName = useCallback(() => {
     if (currentAuthor) {
+      if (selectedAuthorName === '') {
+        setSelectedAuthorName(currentAuthor.data[0].name);
+      }
       return currentAuthor.data[0].name;
     }
 
@@ -72,24 +76,26 @@ export const AuthorSearchFilter: FC<FilterComponentProps> = ({
                 'justify-between bg-[#D1D5DB]/20',
                 !initialValue && 'text-muted-foreground',
                 'border h-12',
-                'w-96 truncate',
+                'w-full sm:w-full truncate',
               )}
             >
               <div className="flex-1 min-w-0 max-w-full">
                 {' '}
                 <div className="flex items-center w-full overflow-hidden">
-                  {!initialValue && <span className="px-2 text-muted-foreground text-sm">Wyszukaj autora</span>}
+                  {!initialValue && <span className="px-3 text-muted-foreground text-sm">Wyszukaj autora</span>}
                   {initialValue && isFetchingCurrentAuthor && (
                     <div className="px-2">
                       <LoadingSpinner size={20} />
                     </div>
                   )}
                   {initialValue && !isFetchingCurrentAuthor && (
-                    <span className="block truncate px-2 text-sm font-normal text-foreground">{getAuthorName()}</span>
+                    <span className="block truncate px-3 text-sm font-normal text-foreground">{getAuthorName()}</span>
                   )}
                 </div>
               </div>{' '}
-              <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
+              <div className="pr-3">
+                <ChevronDown className="h-8 w-8 text-primary" />
+              </div>
             </Button>
           </PopoverTrigger>
           <AuthorSearchSelector

@@ -24,7 +24,6 @@ export const useIsTruncated = ({ parentRef, text }: UseIsTruncatedProps) => {
 
       const originalWidth = parent.getBoundingClientRect().width;
       const cloneWidth = clone.getBoundingClientRect().width;
-      console.log('Orig: ', originalWidth, '\nClone w: ', cloneWidth);
       setIsTruncated(originalWidth < cloneWidth);
 
       clone.remove();

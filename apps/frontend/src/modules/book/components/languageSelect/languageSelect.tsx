@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from '../../../common/components/select/select';
 import { Languages, LanguagesValues, ReversedLanguages } from '../../../common/constants/languages';
+import { cn } from '../../../common/lib/utils';
 
 interface Props {
   setLanguageSelectOpen: (bool: boolean) => void | undefined;
@@ -55,6 +56,7 @@ interface BaseLanguageSelectProps {
   selectorValue?: string;
   type?: 'form' | 'free';
   className?: string;
+  fullWidthAll?: boolean;
 }
 
 interface FormLanguageSelectProps extends ControllerRenderProps, BaseLanguageSelectProps {
@@ -69,12 +71,14 @@ const LanguageSelect: FC<LanguageSelectProps> = ({
   type = 'form',
   selectorValue,
   className,
+  fullWidthAll,
+
   ...field
 }) => {
   const [languageSelectOpen, setLanguageSelectOpen] = useState(false);
 
   const selectContent = (
-    <SelectTrigger className={className}>
+    <SelectTrigger className={cn(className, fullWidthAll ? 'w-full sm:w-full' : '')}>
       {ReversedLanguages[selectorValue as keyof typeof ReversedLanguages] ||
         ReversedLanguages[
           // eslint-disable-next-line
@@ -102,6 +106,7 @@ const LanguageSelect: FC<LanguageSelectProps> = ({
 
   return (
     <Select
+      className={fullWidthAll ? 'w-full sm:w-full' : ''}
       open={languageSelectOpen}
       onOpenChange={setLanguageSelectOpen}
       onValueChange={(val) => {
