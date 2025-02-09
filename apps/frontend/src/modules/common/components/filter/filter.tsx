@@ -459,13 +459,14 @@ export const GenreSelectFilter: FC<FilterComponentProps> = ({
       hasValue={!!initialValue}
       slot={
         <Select
+          className="w-full sm:w-full"
           key={initialValue}
           value={initialValue}
           open={genreSelectOpen}
           onOpenChange={setGenreSelectOpen}
           onValueChange={setFilterAction}
         >
-          <SelectTrigger>
+          <SelectTrigger className="w-full sm:w-full">
             <SelectValue placeholder={<span className="text-muted-foreground">Kategoria</span>} />
             <SelectContent>
               {Object.values(genres?.data ?? []).map((genre) => (
