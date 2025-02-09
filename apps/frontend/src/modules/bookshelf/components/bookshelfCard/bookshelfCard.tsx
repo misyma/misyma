@@ -1,6 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { type FC, useMemo, useState } from 'react';
+import { type FC, type HTMLAttributes, useMemo, useState } from 'react';
 import { HiDotsVertical, HiBookOpen } from 'react-icons/hi';
 
 import { BookshelfType } from '@common/contracts';
@@ -28,6 +28,8 @@ interface BookshelfCardProps {
     imageUrl?: string;
     bookCount: number;
   };
+  className?: string;
+  style?: HTMLAttributes<HTMLDivElement>['style'];
   onClick?: () => void;
 }
 
@@ -86,7 +88,7 @@ export const BookshelfCardMenuBar: FC<BookshelfCardMenuBarProps> = ({ onDeleteCl
   );
 };
 
-export const BookshelfCard: FC<BookshelfCardProps> = ({ bookshelf, onClick }) => {
+export const BookshelfCard: FC<BookshelfCardProps> = ({ bookshelf, style, onClick }) => {
   const navigate = useNavigate();
 
   const { toast } = useToast();
@@ -139,6 +141,7 @@ export const BookshelfCard: FC<BookshelfCardProps> = ({ bookshelf, onClick }) =>
       />
       <div
         className="group cursor-pointer transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg"
+        style={style}
         onClick={handleClick}
       >
         <div className="bg-white rounded-lg shadow-md overflow-hidden h-80 flex flex-col">
