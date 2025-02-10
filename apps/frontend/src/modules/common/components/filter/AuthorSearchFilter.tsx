@@ -19,7 +19,6 @@ export const AuthorSearchFilter: FC<FilterComponentProps> = ({
   const [selectedAuthorName, setSelectedAuthorName] = useState('');
 
   const handleChange = (value: string | boolean | Date | undefined, authorName: string) => {
-    console.log(value);
     setSelectedAuthorName(authorName);
 
     setFilterAction(value);

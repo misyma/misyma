@@ -3,6 +3,7 @@ import { z } from 'zod';
 
 const bookshelfSearchSchema = z.object({
   bookshelfId: z.string().uuid().catch(''),
+  title: z.string().catch(''),
 });
 
 export const Route = createFileRoute('/shelves/bookshelf/$bookshelfId')({
