@@ -5,17 +5,20 @@ import { useSelector } from 'react-redux';
 
 import { type FindUserBooksByPayload } from '../../../book/api/user/queries/findUserBookBy/findUserBooksBy';
 import { FindUserBooksByInfiniteQueryOptions } from '../../../book/api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
+import { cn } from '../../../common/lib/utils';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { BookCardRow } from '../bookCardRow/bookCardRow';
 import { BookCardRowSkeleton } from '../bookCardRow/bookCardRowSkeleton';
 
 interface VirtualizedBooksListProps {
+  className?: string;
   bookshelfId?: string;
   borrowedBooks?: boolean;
   filtersToInclude?: Record<string, boolean>;
   booksQueryArgs?: Omit<FindUserBooksByPayload, 'accessToken'>;
 }
 export const VirtualizedBooksList: FC<VirtualizedBooksListProps> = ({
+  className,
   bookshelfId,
   borrowedBooks = false,
   booksQueryArgs,
@@ -88,7 +91,7 @@ export const VirtualizedBooksList: FC<VirtualizedBooksListProps> = ({
 
   return (
     <div
-      className="w-full px-2 h-[800px] 4xl:h-[1068px] overflow-auto no-scrollbar"
+      className={cn('w-full px-2 h-[800px] 4xl:h-[1068px] overflow-auto no-scrollbar', className)}
       ref={parentRef}
     >
       <div

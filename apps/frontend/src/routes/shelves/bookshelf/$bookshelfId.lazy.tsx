@@ -1,6 +1,7 @@
 import { Navigate, createFileRoute, useNavigate, useSearch } from '@tanstack/react-router';
-import { type FC, useEffect, useMemo } from 'react';
-import { HiOutlineFilter } from 'react-icons/hi';
+import { AnimatePresence, motion } from 'framer-motion';
+import { type FC, useEffect, useMemo, useState } from 'react';
+import { HiOutlineFilter, HiSearchCircle } from 'react-icons/hi';
 import { HiPlus } from 'react-icons/hi2';
 import { useDispatch, useSelector } from 'react-redux';
 import { z } from 'zod';
@@ -26,6 +27,7 @@ import {
   YearRangeFilter,
 } from '../../../modules/common/components/filter/filter';
 import FiltersDrawer from '../../../modules/common/components/filtersDrawer/filtersDrawer';
+import { Input } from '../../../modules/common/components/input/input';
 import { SearchLanguageSelect } from '../../../modules/common/components/searchLanguageSelect/SearchLanguageSelect';
 import {
   Tooltip,
@@ -37,6 +39,7 @@ import {
   useBreadcrumbKeysContext,
   useBreadcrumbKeysDispatch,
 } from '../../../modules/common/contexts/breadcrumbKeysContext';
+import useDebounce from '../../../modules/common/hooks/useDebounce';
 import { RequireAuthComponent } from '../../../modules/core/components/requireAuth/requireAuthComponent';
 import {
   bookshelfBooksFilterStateSelectors,
@@ -88,6 +91,65 @@ interface BookshelfTopBarProps {
   bookshelfId: string;
 }
 
+const SearchButtonInput = () => {
+  const { title } = Route.useSearch();
+  const [isInputVisible, setIsInputVisible] = useState(false);
+  const [value, setValue] = useState(title);
+
+  const navigate = useNavigate();
+
+  const debouncedValue = useDebounce(value, 300);
+
+  useEffect(() => {
+    navigate({
+      to: '',
+      search: {
+        title: debouncedValue,
+      },
+    });
+  }, [debouncedValue, navigate]);
+
+  return (
+    <div className="flex items-center justify-center">
+      <AnimatePresence mode="wait">
+        {isInputVisible ? (
+          <motion.div
+            initial={{ width: 40 }}
+            animate={{ width: '100%' }}
+            exit={{ width: 40 }}
+            className="relative"
+          >
+            <Input
+              containerClassName="p-0 h-10"
+              autoFocus
+              iSize="lg"
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              onBlur={() => setIsInputVisible(false)}
+              className="w-full h-10"
+            />
+          </motion.div>
+        ) : (
+          <motion.div
+            initial={{ width: '100%' }}
+            animate={{ width: 40 }}
+            exit={{ width: '100%' }}
+            className="h-10 relative"
+          >
+            {value !== '' && <div className="absolute h-4 w-4 top-[-6px] right-[-6px] rounded-full bg-green-500"></div>}
+            <Button
+              size="big-icon"
+              onClick={() => setIsInputVisible(true)}
+            >
+              <HiSearchCircle className="w-8 h-8" />
+            </Button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
 const BookshelfTopBar: FC<BookshelfTopBarProps> = ({ bookshelfResponse, bookshelfId }) => {
   const navigate = useNavigate();
 
@@ -95,13 +157,16 @@ const BookshelfTopBar: FC<BookshelfTopBarProps> = ({ bookshelfResponse, bookshel
     bookshelfResponse?.name === 'Archiwum' || bookshelfResponse?.name === 'Wypożyczalnia';
 
   return (
-    <div className="flex justify-between w-full sm:max-w-7xl">
+    <div className="flex justify-between w-full sm:max-w-7xl pb-4">
       <div>
         <p className="text-xl min-h-[1.75rem] sm:min-h-[2.25rem] max-w-[40rem] truncate sm:text-3xl">
           {bookshelfResponse?.name ?? ' '}
         </p>
       </div>
       <div className="flex items-center gap-4">
+        <SearchButtonInput />
+        <BooksFiltersVisibilityButton />
+        <BooksSortButton navigationPath={`/shelves/bookshelf/${bookshelfId}`} />
         {(!isArchiveOrBorrowingBookshelf || !bookshelfResponse) && (
           <TooltipProvider delayDuration={300}>
             <Tooltip>
@@ -128,8 +193,6 @@ const BookshelfTopBar: FC<BookshelfTopBarProps> = ({ bookshelfResponse, bookshel
             </Tooltip>
           </TooltipProvider>
         )}
-        <BooksFiltersVisibilityButton />
-        <BooksSortButton navigationPath={`/shelves/bookshelf/${bookshelfId}`} />
       </div>
     </div>
   );
@@ -336,6 +399,7 @@ const BookshelfBooksVirtualizedBooksList = ({
     <VirtualizedBooksList
       bookshelfId={bookshelfId}
       borrowedBooks={borrowedBooks}
+      className="h-[700px]"
       booksQueryArgs={{
         language,
         title,
