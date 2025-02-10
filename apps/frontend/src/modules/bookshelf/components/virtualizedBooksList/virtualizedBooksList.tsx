@@ -101,41 +101,45 @@ export const VirtualizedBooksList: FC<VirtualizedBooksListProps> = ({
           position: 'relative',
         }}
       >
-        {rowVirtualizer.getVirtualItems().map((virtualRow, idx) => {
-          const isLoaderRow = virtualRow.index >= allBookChunks.length;
+        {allBooks.length > 1 || isLoading ? (
+          rowVirtualizer.getVirtualItems().map((virtualRow, idx) => {
+            const isLoaderRow = virtualRow.index >= allBookChunks.length;
 
-          const booksChunk = isLoaderRow ? undefined : allBookChunks[virtualRow.index];
+            const booksChunk = isLoaderRow ? undefined : allBookChunks[virtualRow.index];
 
-          const isFirstLoaderAttempt = isLoading && isLoaderRow;
+            const isFirstLoaderAttempt = isLoading && isLoaderRow;
 
-          const isSubsequentLoader = !isLoading && isLoaderRow && hasNextPage;
+            const isSubsequentLoader = !isLoading && isLoaderRow && hasNextPage;
 
-          const page = Math.ceil(idx / 3) > 0 ? Math.ceil(idx / 3) : 1;
+            const page = Math.ceil(idx / 3) > 0 ? Math.ceil(idx / 3) : 1;
 
-          return (
-            <div
-              key={virtualRow.index}
-              style={{
-                height: `${virtualRow.size}px`,
-                width: '100%',
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                transform: `translateY(${virtualRow.start}px)`,
-              }}
-            >
-              {isFirstLoaderAttempt && <BookCardRowSkeleton />}
-              {isSubsequentLoader && <BookCardRowSkeleton />}
-              {!isSubsequentLoader && booksChunk && (
-                <BookCardRow
-                  pageNumber={page}
-                  borrowedBooks={borrowedBooks}
-                  books={booksChunk}
-                />
-              )}
-            </div>
-          );
-        })}
+            return (
+              <div
+                key={virtualRow.index}
+                style={{
+                  height: `${virtualRow.size}px`,
+                  width: '100%',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  transform: `translateY(${virtualRow.start}px)`,
+                }}
+              >
+                {isFirstLoaderAttempt && <BookCardRowSkeleton />}
+                {isSubsequentLoader && <BookCardRowSkeleton />}
+                {!isSubsequentLoader && booksChunk && (
+                  <BookCardRow
+                    pageNumber={page}
+                    borrowedBooks={borrowedBooks}
+                    books={booksChunk}
+                  />
+                )}
+              </div>
+            );
+          })
+        ) : (
+          <div className="w-full text-center py-8">Brak wyników</div>
+        )}
       </div>
     </div>
   );
