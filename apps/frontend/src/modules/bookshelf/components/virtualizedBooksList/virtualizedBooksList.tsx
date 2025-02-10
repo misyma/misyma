@@ -101,7 +101,7 @@ export const VirtualizedBooksList: FC<VirtualizedBooksListProps> = ({
           position: 'relative',
         }}
       >
-        {allBooks.length > 1 || isLoading ? (
+        {allBooks.length > 0 || isLoading ? (
           rowVirtualizer.getVirtualItems().map((virtualRow, idx) => {
             const isLoaderRow = virtualRow.index >= allBookChunks.length;
 
