@@ -21,6 +21,7 @@ export const findUserBooksBy = async (payload: FindUserBooksByPayload): Promise<
     'page',
     'title',
     'pageSize',
+    'releaseYearBefore',
     'releaseYearAfter',
     'language',
     'status',
