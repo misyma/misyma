@@ -174,7 +174,7 @@ const BookshelfTopBar: FC<BookshelfTopBarProps> = ({ bookshelfResponse, bookshel
     bookshelfResponse?.name === 'Archiwum' || bookshelfResponse?.name === 'Wypożyczalnia';
 
   return (
-    <div className="flex justify-between w-full sm:max-w-7xl pb-4">
+    <div className="mt-10 flex justify-between w-full sm:max-w-7xl pb-4">
       <div>
         <p className="text-xl min-h-[1.75rem] sm:min-h-[2.25rem] max-w-[40rem] truncate sm:text-3xl">
           {bookshelfResponse?.name ?? ' '}
