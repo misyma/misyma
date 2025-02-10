@@ -138,7 +138,7 @@ export const VirtualizedBooksList: FC<VirtualizedBooksListProps> = ({
             );
           })
         ) : (
-          <div className="w-full text-center py-8 text-gray-500">Brak wyników</div>
+          <div className="w-full text-center py-8">Brak wyników</div>
         )}
       </div>
     </div>
