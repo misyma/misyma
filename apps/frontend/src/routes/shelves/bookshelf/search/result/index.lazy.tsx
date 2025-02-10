@@ -477,7 +477,7 @@ export const SearchResultPage: FC = () => {
       );
     }
 
-    if (foundBooks?.data && foundBooks?.metadata?.total === 1) {
+    if (foundBooks?.data && foundBooks?.metadata?.total === 1 && searchParams.searchBy !== 'title') {
       return (
         <SingleFoundBookView
           onAddBook={onAddBook}
