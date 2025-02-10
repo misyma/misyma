@@ -40,6 +40,7 @@ import {
   useBreadcrumbKeysDispatch,
 } from '../../../modules/common/contexts/breadcrumbKeysContext';
 import useDebounce from '../../../modules/common/hooks/useDebounce';
+import { cn } from '../../../modules/common/lib/utils';
 import { RequireAuthComponent } from '../../../modules/core/components/requireAuth/requireAuthComponent';
 import {
   bookshelfBooksFilterStateSelectors,
@@ -110,7 +111,15 @@ const SearchButtonInput = () => {
   }, [debouncedValue, navigate]);
 
   return (
-    <div className="flex items-center justify-center">
+    <div className="flex items-center justify-center relative">
+      {value !== '' && value !== undefined && (
+        <div
+          className={cn(
+            'absolute z-10 h-4 w-4 top-[-6px] right-[-6px] rounded-full bg-green-500',
+            isInputVisible ? 'invisible' : '',
+          )}
+        ></div>
+      )}
       <AnimatePresence mode="wait">
         {isInputVisible ? (
           <motion.div
@@ -136,13 +145,21 @@ const SearchButtonInput = () => {
             exit={{ width: '100%' }}
             className="h-10 relative"
           >
-            {value !== '' && <div className="absolute h-4 w-4 top-[-6px] right-[-6px] rounded-full bg-green-500"></div>}
-            <Button
-              size="big-icon"
-              onClick={() => setIsInputVisible(true)}
-            >
-              <HiSearchCircle className="w-8 h-8" />
-            </Button>
+            <TooltipProvider delayDuration={300}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    size="big-icon"
+                    onClick={() => setIsInputVisible(true)}
+                  >
+                    <HiSearchCircle className="w-8 h-8" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Wyszukaj</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </motion.div>
         )}
       </AnimatePresence>
