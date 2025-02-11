@@ -110,7 +110,6 @@ const SearchButtonInput = () => {
   return (
     <Input
       containerClassName="p-0 h-10"
-      autoFocus
       iSize="lg"
       value={value}
       onChange={(e) => setValue(e.target.value)}
