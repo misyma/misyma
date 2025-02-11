@@ -111,6 +111,7 @@ const SearchButtonInput = () => {
     <Input
       containerClassName="p-0 h-10"
       iSize="lg"
+      placeholder="Wyszukaj książkę"
       value={value}
       onChange={(e) => setValue(e.target.value)}
       className="w-full h-10"
