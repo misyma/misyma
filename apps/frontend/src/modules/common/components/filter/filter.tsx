@@ -39,11 +39,11 @@ export const TextFilter: FC<FilterComponentProps & { skipValidation?: boolean }>
       <FilterContainer
         slot={
           <Input
-            containerClassName="sm:w-96"
+            containerClassName="sm:w-full"
             placeholder={`Podaj ${filter.label.toLowerCase()}`}
             value={value}
             iSize="custom"
-            className="sm:w-96"
+            className="sm:w-full"
             type="text"
             onChange={onValueChanged}
           />
