@@ -38,12 +38,13 @@ function YearPicker({
 
   return (
     <Select
+      className="w-full sm:w-full"
       value={value?.toString() || ''}
       open={open}
       onOpenChange={onOpenChange}
       onValueChange={onValueChange}
     >
-      <SelectTrigger className={cn(className)}>
+      <SelectTrigger className={cn(className, 'w-full sm:w-full')}>
         {!value && 'RRRR'}
         <SelectValue className={cn(className)}></SelectValue>
       </SelectTrigger>
