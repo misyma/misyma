@@ -1,7 +1,6 @@
 import { Navigate, createFileRoute, useNavigate, useSearch } from '@tanstack/react-router';
-import { AnimatePresence, motion } from 'framer-motion';
 import { type FC, useEffect, useMemo, useState } from 'react';
-import { HiOutlineFilter, HiSearchCircle } from 'react-icons/hi';
+import { HiOutlineFilter } from 'react-icons/hi';
 import { HiPlus } from 'react-icons/hi2';
 import { useDispatch, useSelector } from 'react-redux';
 import { z } from 'zod';
@@ -40,7 +39,6 @@ import {
   useBreadcrumbKeysDispatch,
 } from '../../../modules/common/contexts/breadcrumbKeysContext';
 import useDebounce from '../../../modules/common/hooks/useDebounce';
-import { cn } from '../../../modules/common/lib/utils';
 import { RequireAuthComponent } from '../../../modules/core/components/requireAuth/requireAuthComponent';
 import {
   bookshelfBooksFilterStateSelectors,
@@ -94,7 +92,6 @@ interface BookshelfTopBarProps {
 
 const SearchButtonInput = () => {
   const { title } = Route.useSearch();
-  const [isInputVisible, setIsInputVisible] = useState(false);
   const [value, setValue] = useState(title);
 
   const navigate = useNavigate();
@@ -111,59 +108,14 @@ const SearchButtonInput = () => {
   }, [debouncedValue, navigate]);
 
   return (
-    <div className="flex items-center justify-center relative">
-      {value !== '' && value !== undefined && (
-        <div
-          className={cn(
-            'absolute z-10 h-4 w-4 top-[-6px] right-[-6px] rounded-full bg-green-500',
-            isInputVisible ? 'invisible' : '',
-          )}
-        ></div>
-      )}
-      <AnimatePresence mode="wait">
-        {isInputVisible ? (
-          <motion.div
-            initial={{ width: 40 }}
-            animate={{ width: '100%' }}
-            exit={{ width: 40 }}
-            className="relative"
-          >
-            <Input
-              containerClassName="p-0 h-10"
-              autoFocus
-              iSize="lg"
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-              onBlur={() => setIsInputVisible(false)}
-              className="w-full h-10"
-            />
-          </motion.div>
-        ) : (
-          <motion.div
-            initial={{ width: '100%' }}
-            animate={{ width: 40 }}
-            exit={{ width: '100%' }}
-            className="h-10 relative"
-          >
-            <TooltipProvider delayDuration={300}>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    size="big-icon"
-                    onClick={() => setIsInputVisible(true)}
-                  >
-                    <HiSearchCircle className="w-8 h-8" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Wyszukaj</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+    <Input
+      containerClassName="p-0 h-10"
+      autoFocus
+      iSize="lg"
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+      className="w-full h-10"
+    />
   );
 };
 
