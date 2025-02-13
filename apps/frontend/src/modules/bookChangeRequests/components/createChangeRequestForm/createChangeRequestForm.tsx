@@ -182,7 +182,7 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
       payload.authorIds = [''];
     }
 
-    // Todo: refactor
+    // Todo: refactor - merge with below repetition
     Object.entries(payload).forEach(([key, value]) => {
       const bookDataKey = key as keyof typeof bookData;
 
@@ -253,31 +253,26 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
 
       if (bookData[bookDataKey] === value) {
         delete payload[bookDataKey];
-
         return;
       }
 
       if (Array.isArray(bookData[bookDataKey]) && bookData[bookDataKey]?.[0] === value) {
         delete payload[bookDataKey];
-
         return;
       }
 
       if (bookData?.authors && Array.isArray(value) && key === 'authorIds' && bookData.authors[0]?.id === value[0]) {
         delete payload['authorIds'];
-
         return;
       }
 
-      if (key === 'pages' && value === '' && bookData.pages !== 0) {
+      if (key === 'pages' && value === '' && bookData.pages !== undefined) {
         payload[key] = null as unknown as number;
-
         return;
       }
 
-      if (key === 'translator' && value === '' && bookData.translator !== '') {
+      if (key === 'translator' && value === '' && bookData.translator !== undefined) {
         payload[key] = null as unknown as string;
-
         return;
       }
 
@@ -286,16 +281,9 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
       }
     });
 
-    if (Object.entries(payload).length === 2) {
-      onSubmit();
-
-      return;
-    }
-
     try {
       await createBookChangeRequest({
         ...payload,
-        pages: payload.pages === undefined ? null : payload.pages,
         authorIds: Array.isArray(payload.authorIds) ? payload.authorIds : payload.authorIds?.split(','),
       } as CreateBookChangeRequestPayload);
 
@@ -309,6 +297,10 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
           predicate: ({ queryKey }) => queryKey[0] === BookChangeRequestApiAdminQueryKeys.findBookChangeRequests,
         }),
       ]);
+
+      dispatch({
+        type: BookDetailsChangeRequestAction.resetContext,
+      });
     } catch (error) {
       if (error instanceof BookApiError) {
         return toast({
@@ -322,6 +314,7 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
         variant: 'destructive',
       });
     } finally {
+      stepTwoForm.reset();
       onSubmit();
     }
   };

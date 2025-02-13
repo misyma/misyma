@@ -36,7 +36,7 @@ const defaultValues: BookDetailsChangeRequestState = {
   authorName: undefined,
   format: BookFormat.paperback,
   isbn: '',
-  language: Language.English,
+  language: '' as Language,
   pages: undefined,
   publisher: '',
   title: '',
