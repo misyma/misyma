@@ -118,7 +118,6 @@ const WrappedModal = ({ quote }: Props): ReactNode => {
         ...payload,
         accessToken: accessToken as string,
         quoteId: quote.id,
-        userBookId: quote.userBookId,
         errorHandling: {
           title: 'Błąd podczas aktualizowania cytatu.',
         },

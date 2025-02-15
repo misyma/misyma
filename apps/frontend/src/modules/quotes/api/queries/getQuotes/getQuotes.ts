@@ -10,7 +10,9 @@ export interface GetQuotesPayload {
 }
 
 export const getQuotes = async (payload: GetQuotesPayload) => {
-  const queryParams: Record<string, string> = {};
+  const queryParams: Record<string, string> = {
+    userBookId: payload.userBookId,
+  };
 
   if (payload.page || payload.page === 0) {
     queryParams.page = `${payload.page}`;
@@ -23,7 +25,7 @@ export const getQuotes = async (payload: GetQuotesPayload) => {
   queryParams.sortDate = 'desc';
 
   const response = await HttpService.get<FindQuotesResponseBody>({
-    url: `/user-books/${payload.userBookId}/quotes`,
+    url: '/quotes',
     headers: {
       Authorization: `Bearer ${payload.accessToken}`,
     },

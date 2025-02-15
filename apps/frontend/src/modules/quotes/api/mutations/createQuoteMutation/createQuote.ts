@@ -1,21 +1,17 @@
-import {
-  type CreateQuotePathParams,
-  type CreateQuoteRequestBody,
-  type CreateQuoteResponseBody,
-} from '@common/contracts';
+import { type CreateQuoteRequestBody, type CreateQuoteResponseBody } from '@common/contracts';
 
 import { HttpService } from '../../../../core/services/httpService/httpService';
 
-export interface CreateQuoteMutationPayload extends CreateQuotePathParams, CreateQuoteRequestBody {
+export interface CreateQuoteMutationPayload extends CreateQuoteRequestBody {
   accessToken: string;
   userId: string;
 }
 
 export const createQuote = async (payload: CreateQuoteMutationPayload): Promise<CreateQuoteResponseBody> => {
-  const { accessToken, userBookId, ...body } = payload;
+  const { accessToken, ...body } = payload;
 
   const response = await HttpService.post<CreateQuoteResponseBody>({
-    url: `/user-books/${userBookId}/quotes`,
+    url: `/quotes`,
     body,
     headers: {
       Authorization: `Bearer ${accessToken}`,

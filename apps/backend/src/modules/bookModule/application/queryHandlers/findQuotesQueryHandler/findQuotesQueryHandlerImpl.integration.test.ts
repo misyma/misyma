@@ -1,11 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { type FindQuotesQueryHandler } from './findQuotesQueryHandler.js';
-import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { type TestUtils } from '../../../../../../tests/testUtils.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
@@ -67,32 +65,6 @@ describe('FindQuotesQueryHandlerImpl', () => {
     }
 
     await databaseClient.destroy();
-  });
-
-  it('throws an error - when UserBook was not found', async () => {
-    const user = await userTestUtils.createAndPersist();
-
-    const nonExistentUserBookId = Generator.uuid();
-
-    try {
-      await queryHandler.execute({
-        userId: user.id,
-        userBookId: nonExistentUserBookId,
-        page: 1,
-        pageSize: 10,
-      });
-    } catch (error) {
-      expect(error).toBeInstanceOf(ResourceNotFoundError);
-
-      expect((error as ResourceNotFoundError).context).toMatchObject({
-        resource: 'UserBook',
-        id: nonExistentUserBookId,
-      });
-
-      return;
-    }
-
-    expect.fail();
   });
 
   it('returns an empty array - when UserBook has no Quotes', async () => {

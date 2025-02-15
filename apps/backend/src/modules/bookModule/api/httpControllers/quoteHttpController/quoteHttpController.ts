@@ -3,8 +3,6 @@ import {
   type CreateQuoteResponseBodyDto,
   createQuoteBodyDtoSchema,
   createQuoteResponseBodyDtoSchema,
-  createQuotePathParamsDtoSchema,
-  type CreateQuotePathParamsDto,
 } from './schemas/createQuoteSchema.js';
 import {
   type DeleteQuoteResponseBodyDto,
@@ -15,8 +13,6 @@ import {
 import {
   type FindQuotesResponseBodyDto,
   findQuotesResponseBodyDtoSchema,
-  findQuotesPathParamsDtoSchema,
-  type FindQuotesPathParamsDto,
   type FindQuotesQueryParamsDto,
   findQuotesQueryParamsDtoSchema,
 } from './schemas/findQuotesSchema.js';
@@ -48,7 +44,7 @@ import { type FindQuotesQueryHandler } from '../../../application/queryHandlers/
 import { type Quote } from '../../../domain/entities/quote/quote.js';
 
 export class QuoteHttpController implements HttpController {
-  public readonly basePath = '/user-books/:userBookId/quotes';
+  public readonly basePath = '/quotes';
   public readonly tags = ['Quote'];
 
   public constructor(
@@ -67,7 +63,6 @@ export class QuoteHttpController implements HttpController {
         description: 'Find Quotes',
         schema: {
           request: {
-            pathParams: findQuotesPathParamsDtoSchema,
             queryParams: findQuotesQueryParamsDtoSchema,
           },
           response: {
@@ -85,7 +80,6 @@ export class QuoteHttpController implements HttpController {
         description: 'Create a Quote',
         schema: {
           request: {
-            pathParams: createQuotePathParamsDtoSchema,
             body: createQuoteBodyDtoSchema,
           },
           response: {
@@ -136,19 +130,19 @@ export class QuoteHttpController implements HttpController {
   }
 
   private async findQuotes(
-    request: HttpRequest<null, FindQuotesQueryParamsDto, FindQuotesPathParamsDto>,
+    request: HttpRequest<null, FindQuotesQueryParamsDto, null>,
   ): Promise<HttpOkResponse<FindQuotesResponseBodyDto>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
       requestHeaders: request.headers,
     });
 
-    const { userBookId } = request.pathParams;
-
-    const { page = 1, pageSize = 10, sortDate } = request.queryParams;
+    const { page = 1, pageSize = 10, sortDate, userBookId, authorId, isFavorite } = request.queryParams;
 
     const { quotes, total } = await this.findQuotesQueryHandler.execute({
       userId,
       userBookId,
+      authorId,
+      isFavorite,
       page,
       pageSize,
       sortDate,
@@ -168,15 +162,13 @@ export class QuoteHttpController implements HttpController {
   }
 
   private async createQuote(
-    request: HttpRequest<CreateQuoteBodyDto, null, CreateQuotePathParamsDto>,
+    request: HttpRequest<CreateQuoteBodyDto, null, null>,
   ): Promise<HttpCreatedResponse<CreateQuoteResponseBodyDto>> {
     const { userId } = await this.accessControlService.verifyBearerToken({
       requestHeaders: request.headers,
     });
 
-    const { userBookId } = request.pathParams;
-
-    const { content, createdAt, isFavorite, page } = request.body;
+    const { userBookId, content, createdAt, isFavorite, page } = request.body;
 
     const { quote } = await this.createQuoteCommandHandler.execute({
       userId,

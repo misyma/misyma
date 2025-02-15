@@ -15,11 +15,10 @@ import { QuotesApiQueryKeys } from '../../api/queries/quotesApiQueryKeys';
 
 interface Props {
   quoteId: string;
-  userBookId: string;
   className?: string;
 }
 
-export const DeleteQuoteModal: FC<Props> = ({ quoteId, userBookId }: Props) => {
+export const DeleteQuoteModal: FC<Props> = ({ quoteId }: Props) => {
   const queryClient = useQueryClient();
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
@@ -36,7 +35,6 @@ export const DeleteQuoteModal: FC<Props> = ({ quoteId, userBookId }: Props) => {
     try {
       await deleteQuote({
         quoteId,
-        userBookId,
         accessToken: accessToken ?? '',
       });
 

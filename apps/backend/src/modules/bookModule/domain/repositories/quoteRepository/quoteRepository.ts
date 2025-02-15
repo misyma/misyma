@@ -5,14 +5,20 @@ export interface FindQuotePayload {
 }
 
 export interface FindQuotesPayload {
-  readonly userBookId: string;
+  readonly userId: string;
+  readonly userBookId?: string;
+  readonly authorId?: string;
+  readonly isFavorite?: boolean;
   readonly page: number;
   readonly pageSize: number;
   readonly sortDate?: 'asc' | 'desc';
 }
 
 export interface CountQuotesPayload {
-  readonly userBookId: string;
+  readonly userId: string;
+  readonly userBookId?: string;
+  readonly authorId?: string;
+  readonly isFavorite?: boolean;
 }
 
 export interface SavePayload {

@@ -19,7 +19,7 @@ export const useDeleteQuoteMutation = (options: UseMutationOptions<void, ApiErro
 
   const deleteQuote = async (payload: Payload) => {
     const response = await HttpService.delete({
-      url: `/user-books/${payload.userBookId}/quotes/${payload.quoteId}`,
+      url: `/quotes/${payload.quoteId}`,
       headers: {
         Authorization: `Bearer ${payload.accessToken}`,
       },

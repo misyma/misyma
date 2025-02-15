@@ -5,16 +5,8 @@ import type * as contracts from '@common/contracts';
 import { quoteContentSchema, quoteDtoSchema, quotePageSchema } from './quoteDto.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
-export const createQuotePathParamsDtoSchema = Type.Object({
-  userBookId: Type.String({ format: 'uuid' }),
-});
-
-export type CreateQuotePathParamsDto = TypeExtends<
-  Static<typeof createQuotePathParamsDtoSchema>,
-  contracts.CreateQuotePathParams
->;
-
 export const createQuoteBodyDtoSchema = Type.Object({
+  userBookId: Type.String({ format: 'uuid' }),
   content: Type.String(quoteContentSchema),
   isFavorite: Type.Boolean(),
   createdAt: Type.String({ format: 'date-time' }),
