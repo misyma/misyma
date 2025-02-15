@@ -11,7 +11,7 @@ export const ProfilePage = () => {
 
   return (
     <AuthenticatedLayout>
-      <div className="flex flex-col items-center justify-center w-full px-8 gap-10">
+      <div className="flex flex-col items-center justify-center w-full px-8 gap-10 my-8">
         <div className="grid gap-4 items-center justify-items-center w-full">
           <div className="w-[64rem]">
             <RecentlyReadBooksSection />
