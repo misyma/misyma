@@ -148,6 +148,7 @@ const MyBooksVirtualizedBooksList = () => {
     createdAt: FindUserBooksSortField.createdAt,
     releaseYear: FindUserBooksSortField.releaseYear,
     rating: FindUserBooksSortField.rating,
+    readingDate: FindUserBooksSortField.readingDate,
     '': undefined,
   };
 
@@ -285,7 +286,7 @@ const myBooksSearchParamsSchema = z
     releaseYearAfter: z.number().int().min(1900).optional().catch(undefined),
     authorId: z.string().uuid().optional().catch(''),
     isFavorite: z.boolean().or(z.literal('')).optional().catch(''),
-    sortField: z.enum(['createdAt', 'releaseYear', 'rating', '']).optional().catch(''),
+    sortField: z.enum(['createdAt', 'releaseYear', 'rating', 'readingDate', '']).optional().catch(''),
     sortOrder: z.enum(['asc', 'desc', '']).optional().catch(''),
   })
   .superRefine((args, ctx) => {

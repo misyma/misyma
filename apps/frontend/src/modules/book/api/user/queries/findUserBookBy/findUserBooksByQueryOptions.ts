@@ -5,7 +5,15 @@ import { findUserBooksBy, type FindUserBooksByPayload } from './findUserBooksBy.
 
 export const FindUserBooksByQueryOptions = ({ accessToken, ...rest }: FindUserBooksByPayload) =>
   queryOptions({
-    queryKey: [BookApiQueryKeys.findUserBooksBy, rest.isbn, rest.bookshelfId, rest.page, rest.pageSize],
+    queryKey: [
+      BookApiQueryKeys.findUserBooksBy,
+      rest.isbn,
+      rest.bookshelfId,
+      rest.page,
+      rest.pageSize,
+      rest.sortField,
+      rest.sortOrder,
+    ],
     queryFn: () =>
       findUserBooksBy({
         accessToken,

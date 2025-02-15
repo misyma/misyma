@@ -50,7 +50,7 @@ export const BooksSortButton = ({ navigationPath }: BooksSortButtonProps) => {
             </TooltipTrigger>
           </PopoverTrigger>
           <PopoverContent
-            className="w-40 p-0"
+            className="w-45 p-0"
             align="start"
           >
             <Command>
@@ -99,6 +99,21 @@ export const BooksSortButton = ({ navigationPath }: BooksSortButtonProps) => {
                 >
                   <span>Oceny: najniższe</span>
                   {search.sortField === 'rating' && search.sortOrder === 'asc' && selectedSortCheckmark}
+                </CommandItem>
+
+                <CommandItem
+                  onSelect={() => handleSort('readingDate', 'desc')}
+                  className="cursor-pointer flex justify-between"
+                >
+                  <span>Data przeczytania: najnowsze</span>
+                  {search.sortField === 'readingDate' && search.sortOrder === 'desc' && selectedSortCheckmark}
+                </CommandItem>
+                <CommandItem
+                  onSelect={() => handleSort('readingDate', 'asc')}
+                  className="cursor-pointer flex justify-between"
+                >
+                  <span>Data przeczytania: najstarsze</span>
+                  {search.sortField === 'readingDate' && search.sortOrder === 'asc' && selectedSortCheckmark}
                 </CommandItem>
               </CommandList>
             </Command>

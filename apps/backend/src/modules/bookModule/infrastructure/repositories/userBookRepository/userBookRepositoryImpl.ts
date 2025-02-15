@@ -252,7 +252,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         SELECT br.rating
         FROM "${bookReadingTable}" br
         WHERE br."userBookId" = "${userBookTable}".id
-        ORDER BY br."startedAt" DESC
+        ORDER BY br."endedAt" DESC
         LIMIT 1
       ) as "latestRating"`);
 
@@ -386,12 +386,27 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         SELECT br.rating
         FROM "${bookReadingTable}" br
         WHERE br."userBookId" = "${userBookTable}".id
-        ORDER BY br."startedAt" DESC
+        ORDER BY br."endedAt" DESC
         LIMIT 1
       ) as "latestRating"`);
 
+      const latestReadingDateSelect = this.databaseClient.raw(`(
+        SELECT br."endedAt"
+        FROM "${bookReadingTable}" br
+        WHERE br."userBookId" = "${userBookTable}".id
+        ORDER BY br."endedAt" DESC
+        LIMIT 1
+      ) as "latestReadingDate"`);
+
       const query = this.databaseClient<UserBookRawEntity>(userBookTable)
-        .select([...userBookSelect, ...bookSelect, ...authorsSelect, ...genresSelect, latestRatingSelect])
+        .select([
+          ...userBookSelect,
+          ...bookSelect,
+          ...authorsSelect,
+          ...genresSelect,
+          latestRatingSelect,
+          ...(sortField === 'readingDate' ? [latestReadingDateSelect] : []),
+        ])
         .leftJoin(bookAuthorTable, (join) => {
           join.on(`${bookAuthorTable}.bookId`, '=', `${userBookTable}.bookId`);
         })
@@ -483,6 +498,8 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         query.orderBy(`${bookTable}.releaseYear`, sortOrder ?? 'desc');
       } else if (sortField === 'rating') {
         query.orderBy('latestRating', sortOrder ?? 'desc', 'last');
+      } else if (sortField === 'readingDate') {
+        query.orderBy('latestReadingDate', sortOrder ?? 'desc', 'last');
       } else {
         query.orderBy('id', sortOrder ?? 'desc');
       }
