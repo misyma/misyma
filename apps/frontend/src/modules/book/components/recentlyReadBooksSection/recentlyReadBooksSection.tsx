@@ -3,25 +3,25 @@ import { useSelector } from 'react-redux';
 
 import { FindUserBooksSortField } from '@common/contracts';
 
-import { BookCard } from '../../../bookshelf/components/bookCard/bookCard';
-import { Skeleton } from '../../../common/components/skeleton/skeleton';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
-import { FindUserBooksByQueryOptions } from '../../api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
+import { BookCard } from '../../../bookshelf/components/bookCard/bookCard.js';
+import { Skeleton } from '../../../common/components/skeleton/skeleton.js';
+import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice.js';
+import { FindUserBooksByQueryOptions } from '../../api/user/queries/findUserBookBy/findUserBooksByQueryOptions.js';
 
-export const TopBooksSection = () => {
+export const RecentlyReadBooksSection = () => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const { data, isLoading } = useQuery(
     FindUserBooksByQueryOptions({
       accessToken,
       pageSize: 5,
-      sortField: FindUserBooksSortField.rating,
+      sortField: FindUserBooksSortField.readingDate,
     }),
   );
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Najwyżej ocenione książki</h1>
+      <h1 className="text-2xl font-bold mb-4">Ostatnio przeczytane książki</h1>
       <div className="grid gap-4 grid-cols-5">
         {isLoading &&
           Array.from({ length: 5 }).map((_, i) => (
@@ -36,7 +36,7 @@ export const TopBooksSection = () => {
             book={ub}
             pageNumber={1}
             isBorrowed={false}
-            key={`top-book-${index}`}
+            key={`recently-read-book-${index}`}
           />
         ))}
       </div>

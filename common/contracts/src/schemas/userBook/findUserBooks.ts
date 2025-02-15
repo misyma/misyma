@@ -8,6 +8,7 @@ export enum FindUserBooksSortField {
   releaseYear = 'releaseYear',
   createdAt = 'createdAt',
   rating = 'rating',
+  readingDate = 'readingDate',
 }
 
 export interface FindUserBooksQueryParams {
