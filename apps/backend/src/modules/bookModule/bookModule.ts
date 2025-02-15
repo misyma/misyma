@@ -615,11 +615,7 @@ export class BookModule implements DependencyInjectionModule {
 
     container.bind<FindQuotesQueryHandler>(
       symbols.findQuotesQueryHandler,
-      () =>
-        new FindQuotesQueryHandlerImpl(
-          container.get<QuoteRepository>(symbols.quoteRepository),
-          container.get<UserBookRepository>(bookSymbols.userBookRepository),
-        ),
+      () => new FindQuotesQueryHandlerImpl(container.get<QuoteRepository>(symbols.quoteRepository)),
     );
 
     container.bind<FindBookChangeRequestsQueryHandler>(

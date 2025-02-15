@@ -7,7 +7,6 @@ import { type TypeExtends } from '../../../../../../common/types/schemaExtends.j
 
 export const updateQuotePathParamsDtoSchema = Type.Object({
   quoteId: Type.String({ format: 'uuid' }),
-  userBookId: Type.String({ format: 'uuid' }),
 });
 
 export type UpdateQuotePathParamsDto = TypeExtends<

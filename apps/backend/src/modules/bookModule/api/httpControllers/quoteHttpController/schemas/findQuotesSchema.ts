@@ -5,19 +5,13 @@ import * as contracts from '@common/contracts';
 import { quoteDtoSchema } from './quoteDto.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
-export const findQuotesPathParamsDtoSchema = Type.Object({
-  userBookId: Type.String({ format: 'uuid' }),
-});
-
-export type FindQuotesPathParamsDto = TypeExtends<
-  Static<typeof findQuotesPathParamsDtoSchema>,
-  contracts.FindQuotesPathParams
->;
-
 export const findQuotesQueryParamsDtoSchema = Type.Object({
   page: Type.Optional(Type.Integer({ minimum: 1 })),
   pageSize: Type.Optional(Type.Integer({ minimum: 1 })),
   sortDate: Type.Optional(Type.Enum(contracts.SortOrder)),
+  authorId: Type.Optional(Type.String({ format: 'uuid' })),
+  userBookId: Type.Optional(Type.String({ format: 'uuid' })),
+  isFavorite: Type.Optional(Type.Boolean()),
 });
 
 export type FindQuotesQueryParamsDto = TypeExtends<

@@ -32,7 +32,6 @@ export const FavoriteQuotationButton: FC<Props> = ({ quote }) => {
         await updateQuotation({
           accessToken: accessToken as string,
           quoteId: quote.id,
-          userBookId: quote.userBookId,
           isFavorite: !isFavorite,
         });
 

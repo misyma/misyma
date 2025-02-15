@@ -2,6 +2,7 @@ import { type QuoteMapper } from './quoteMapper/quoteMapper.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
+import { bookshelfTable } from '../../../../bookshelfModule/infrastructure/databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfTable.js';
 import { Quote, type QuoteState } from '../../../domain/entities/quote/quote.js';
 import {
   type QuoteRepository,
@@ -11,8 +12,11 @@ import {
   type SavePayload,
   type CountQuotesPayload,
 } from '../../../domain/repositories/quoteRepository/quoteRepository.js';
+import { authorTable } from '../../databases/bookDatabase/tables/authorTable/authorTable.js';
+import { bookAuthorTable } from '../../databases/bookDatabase/tables/bookAuthorTable/bookAuthorTable.js';
 import { type QuoteRawEntity } from '../../databases/bookDatabase/tables/quoteTable/quoteRawEntity.js';
 import { quoteTable } from '../../databases/bookDatabase/tables/quoteTable/quoteTable.js';
+import { userBookTable } from '../../databases/bookDatabase/tables/userBookTable/userBookTable.js';
 
 type CreateQuotePayload = { quote: QuoteState };
 
@@ -48,21 +52,46 @@ export class QuoteRepositoryImpl implements QuoteRepository {
   }
 
   public async findQuotes(payload: FindQuotesPayload): Promise<Quote[]> {
-    const { userBookId, page, pageSize, sortDate } = payload;
+    const { userId, userBookId, authorId, isFavorite, page, pageSize, sortDate } = payload;
 
     let rawEntities: QuoteRawEntity[];
 
     try {
       const query = this.databaseClient<QuoteRawEntity>(quoteTable)
-        .where({ userBookId })
-        .limit(pageSize)
-        .offset(pageSize * (page - 1));
+        .select(`${quoteTable}.*`)
+        .leftJoin(userBookTable, (join) => {
+          join.on(`${userBookTable}.id`, `=`, `${quoteTable}.userBookId`);
+        })
+        .leftJoin(bookshelfTable, (join) => {
+          join.on(`${bookshelfTable}.id`, `=`, `${userBookTable}.bookshelfId`);
+        });
+
+      if (authorId) {
+        query
+          .leftJoin(bookAuthorTable, (join) => {
+            join.on(`${bookAuthorTable}.bookId`, `=`, `${userBookTable}.bookId`);
+          })
+          .leftJoin(authorTable, (join) => {
+            join.on(`${authorTable}.id`, `=`, `${bookAuthorTable}.authorId`);
+          })
+          .where(`${authorTable}.id`, authorId);
+      }
+
+      query.where(`${bookshelfTable}.userId`, userId);
+
+      if (userBookId) {
+        query.where(`${quoteTable}.userBookId`, userBookId);
+      }
+
+      if (isFavorite !== undefined) {
+        query.where(`${quoteTable}.isFavorite`, isFavorite);
+      }
 
       if (sortDate) {
         query.orderBy('id', sortDate);
       }
 
-      rawEntities = await query;
+      rawEntities = await query.limit(pageSize).offset(pageSize * (page - 1));
     } catch (error) {
       throw new RepositoryError({
         entity: 'Quote',
@@ -151,10 +180,39 @@ export class QuoteRepositoryImpl implements QuoteRepository {
   }
 
   public async countQuotes(payload: CountQuotesPayload): Promise<number> {
-    const { userBookId } = payload;
+    const { userId, userBookId, authorId, isFavorite } = payload;
 
     try {
-      const countResult = await this.databaseClient<QuoteRawEntity>(quoteTable).where({ userBookId }).count().first();
+      const query = this.databaseClient<QuoteRawEntity>(quoteTable)
+        .leftJoin(userBookTable, (join) => {
+          join.on(`${userBookTable}.id`, `=`, `${quoteTable}.userBookId`);
+        })
+        .leftJoin(bookshelfTable, (join) => {
+          join.on(`${bookshelfTable}.id`, `=`, `${userBookTable}.bookshelfId`);
+        });
+
+      if (authorId) {
+        query
+          .leftJoin(bookAuthorTable, (join) => {
+            join.on(`${bookAuthorTable}.bookId`, `=`, `${userBookTable}.bookId`);
+          })
+          .leftJoin(authorTable, (join) => {
+            join.on(`${authorTable}.id`, `=`, `${bookAuthorTable}.authorId`);
+          })
+          .where(`${authorTable}.id`, authorId);
+      }
+
+      query.where(`${bookshelfTable}.userId`, userId);
+
+      if (userBookId) {
+        query.where(`${quoteTable}.userBookId`, userBookId);
+      }
+
+      if (isFavorite !== undefined) {
+        query.where(`${quoteTable}.isFavorite`, isFavorite);
+      }
+
+      const countResult = await query.count().first();
 
       const count = countResult?.['count'];
 

@@ -12,6 +12,7 @@ import { Quote } from '../../../domain/entities/quote/quote.js';
 import { type QuoteRepository } from '../../../domain/repositories/quoteRepository/quoteRepository.js';
 import { symbols } from '../../../symbols.js';
 import { QuoteTestFactory } from '../../../tests/factories/quoteTestFactory/quoteTestFactory.js';
+import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
 import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 import { type QuoteTestUtils } from '../../../tests/utils/quoteTestUtils/quoteTestUtils.js';
@@ -23,6 +24,8 @@ describe('QuoteRepositoryImpl', () => {
   let databaseClient: DatabaseClient;
 
   let quoteTestUtils: QuoteTestUtils;
+
+  let authorTestUtils: AuthorTestUtils;
 
   let bookTestUtils: BookTestUtils;
 
@@ -51,13 +54,23 @@ describe('QuoteRepositoryImpl', () => {
 
     bookTestUtils = container.get<BookTestUtils>(testSymbols.bookTestUtils);
 
+    authorTestUtils = container.get<AuthorTestUtils>(testSymbols.authorTestUtils);
+
     bookshelfTestUtils = container.get<BookshelfTestUtils>(testSymbols.bookshelfTestUtils);
 
     userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
 
     genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
 
-    testUtils = [genreTestUtils, bookTestUtils, bookshelfTestUtils, userTestUtils, quoteTestUtils, userBookTestUtils];
+    testUtils = [
+      authorTestUtils,
+      genreTestUtils,
+      bookTestUtils,
+      bookshelfTestUtils,
+      userTestUtils,
+      quoteTestUtils,
+      userBookTestUtils,
+    ];
 
     for (const testUtil of testUtils) {
       await testUtil.truncate();
@@ -124,10 +137,10 @@ describe('QuoteRepositoryImpl', () => {
 
   describe('findQuotes', () => {
     it('returns an empty array - when Quotes were not found', async () => {
-      const userBookId = Generator.uuid();
+      const user = await userTestUtils.createAndPersist();
 
       const result = await repository.findQuotes({
-        userBookId,
+        userId: user.id,
         page: 1,
         pageSize: 10,
       });
@@ -135,7 +148,185 @@ describe('QuoteRepositoryImpl', () => {
       expect(result).toHaveLength(0);
     });
 
-    it('returns an array of Quotes', async () => {
+    it('returns an array of Quotes by UserBook', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+
+      const book = await bookTestUtils.createAndPersist();
+
+      const genre = await genreTestUtils.createAndPersist();
+
+      const userBook1 = await userBookTestUtils.createAndPersist({
+        input: {
+          bookshelfId: bookshelf.id,
+          bookId: book.id,
+          genreId: genre.id,
+        },
+      });
+
+      const userBook2 = await userBookTestUtils.createAndPersist({
+        input: {
+          bookshelfId: bookshelf.id,
+          bookId: book.id,
+          genreId: genre.id,
+        },
+      });
+
+      const quote1 = await quoteTestUtils.createAndPersist({
+        input: {
+          userBookId: userBook1.id,
+        },
+      });
+
+      const quote2 = await quoteTestUtils.createAndPersist({
+        input: {
+          userBookId: userBook1.id,
+        },
+      });
+
+      await quoteTestUtils.createAndPersist({
+        input: {
+          userBookId: userBook2.id,
+        },
+      });
+
+      const result = await repository.findQuotes({
+        userId: user.id,
+        userBookId: userBook1.id,
+        page: 1,
+        pageSize: 10,
+      });
+
+      expect(result).toHaveLength(2);
+
+      result.forEach((quote) => {
+        expect(quote).toBeInstanceOf(Quote);
+
+        expect(quote.getId()).oneOf([quote1.id, quote2.id]);
+
+        expect(quote.getUserBookId()).toEqual(userBook1.id);
+      });
+    });
+
+    it('returns an array of Quotes by User', async () => {
+      const user1 = await userTestUtils.createAndPersist();
+
+      const user2 = await userTestUtils.createAndPersist();
+
+      const bookshelf1 = await bookshelfTestUtils.createAndPersist({ input: { userId: user1.id } });
+
+      const bookshelf2 = await bookshelfTestUtils.createAndPersist({ input: { userId: user2.id } });
+
+      const book1 = await bookTestUtils.createAndPersist();
+
+      const book2 = await bookTestUtils.createAndPersist();
+
+      const genre1 = await genreTestUtils.createAndPersist();
+
+      const genre2 = await genreTestUtils.createAndPersist();
+
+      const userBook1 = await userBookTestUtils.createAndPersist({
+        input: {
+          bookshelfId: bookshelf1.id,
+          bookId: book1.id,
+          genreId: genre1.id,
+        },
+      });
+
+      const userBook2 = await userBookTestUtils.createAndPersist({
+        input: {
+          bookshelfId: bookshelf2.id,
+          bookId: book2.id,
+          genreId: genre2.id,
+        },
+      });
+
+      const quote1 = await quoteTestUtils.createAndPersist({
+        input: {
+          userBookId: userBook1.id,
+        },
+      });
+
+      await quoteTestUtils.createAndPersist({
+        input: {
+          userBookId: userBook2.id,
+        },
+      });
+
+      const result = await repository.findQuotes({
+        userId: user1.id,
+        page: 1,
+        pageSize: 10,
+      });
+
+      expect(result).toHaveLength(1);
+
+      expect(result[0]?.getId()).toEqual(quote1.id);
+    });
+
+    it('returns an array of Quotes by Author', async () => {
+      const user = await userTestUtils.createAndPersist();
+
+      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+
+      const author1 = await authorTestUtils.createAndPersist();
+
+      const author2 = await authorTestUtils.createAndPersist();
+
+      const book1 = await bookTestUtils.createAndPersist({ input: { authorIds: [author1.id] } });
+
+      const book2 = await bookTestUtils.createAndPersist({ input: { authorIds: [author2.id] } });
+
+      const genre = await genreTestUtils.createAndPersist();
+
+      const userBook1 = await userBookTestUtils.createAndPersist({
+        input: {
+          bookshelfId: bookshelf.id,
+          bookId: book1.id,
+          genreId: genre.id,
+        },
+      });
+
+      const userBook2 = await userBookTestUtils.createAndPersist({
+        input: {
+          bookshelfId: bookshelf.id,
+          bookId: book2.id,
+          genreId: genre.id,
+        },
+      });
+
+      const quote = await quoteTestUtils.createAndPersist({
+        input: {
+          userBookId: userBook1.id,
+        },
+      });
+
+      await quoteTestUtils.createAndPersist({
+        input: {
+          userBookId: userBook2.id,
+        },
+      });
+
+      await quoteTestUtils.createAndPersist({
+        input: {
+          userBookId: userBook2.id,
+        },
+      });
+
+      const result = await repository.findQuotes({
+        userId: user.id,
+        authorId: author1.id,
+        page: 1,
+        pageSize: 10,
+      });
+
+      expect(result).toHaveLength(1);
+
+      expect(result[0]?.getId()).toEqual(quote.id);
+    });
+
+    it('returns an array of Quotes by Favorite', async () => {
       const user = await userTestUtils.createAndPersist();
 
       const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
@@ -155,30 +346,34 @@ describe('QuoteRepositoryImpl', () => {
       const quote1 = await quoteTestUtils.createAndPersist({
         input: {
           userBookId: userBook.id,
+          isFavorite: true,
         },
       });
 
-      const quote2 = await quoteTestUtils.createAndPersist({
+      await quoteTestUtils.createAndPersist({
         input: {
           userBookId: userBook.id,
+          isFavorite: false,
+        },
+      });
+
+      await quoteTestUtils.createAndPersist({
+        input: {
+          userBookId: userBook.id,
+          isFavorite: false,
         },
       });
 
       const result = await repository.findQuotes({
-        userBookId: userBook.id,
+        userId: user.id,
+        isFavorite: true,
         page: 1,
         pageSize: 10,
       });
 
-      expect(result).toHaveLength(2);
+      expect(result).toHaveLength(1);
 
-      result.forEach((quote) => {
-        expect(quote).toBeInstanceOf(Quote);
-
-        expect(quote.getId()).oneOf([quote1.id, quote2.id]);
-
-        expect(quote.getUserBookId()).toEqual(userBook.id);
-      });
+      expect(result[0]?.getId()).toEqual(quote1.id);
     });
   });
 

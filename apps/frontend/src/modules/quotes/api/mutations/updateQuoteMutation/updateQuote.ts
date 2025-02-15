@@ -11,10 +11,10 @@ export interface UpdateQuotePayload extends UpdateQuotePathParams, UpdateQuoteRe
 }
 
 export const updateQuote = async (payload: UpdateQuotePayload): Promise<UpdateQuoteResponseBody> => {
-  const { accessToken, userBookId, quoteId, ...body } = payload;
+  const { accessToken, quoteId, ...body } = payload;
 
   const response = await HttpService.patch<UpdateQuoteResponseBody>({
-    url: `/user-books/${userBookId}/quotes/${quoteId}`,
+    url: `/quotes/${quoteId}`,
     body,
     headers: {
       Authorization: `Bearer ${accessToken}`,

@@ -27,10 +27,7 @@ export const quotationTableColumns: ColumnDef<Quote>[] = [
             </div>
             <div className="flex gap-2">
               <UpdateQuoteModal quote={{ ...row.original }} />
-              <DeleteQuoteModal
-                quoteId={foundRow?.original.id as string}
-                userBookId={foundRow?.original.userBookId as string}
-              />
+              <DeleteQuoteModal quoteId={foundRow?.original.id as string} />
             </div>
           </div>
           <div className="font-light ml-4 inline-flex items-center gap-2">
