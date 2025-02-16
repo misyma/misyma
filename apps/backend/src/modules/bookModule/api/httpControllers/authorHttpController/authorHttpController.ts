@@ -1,3 +1,5 @@
+import { FindAuthorsSortField } from '@common/contracts';
+
 import {
   createAuthorBodyDtoSchema,
   type CreateAuthorBodyDto,
@@ -18,10 +20,9 @@ import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
 import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.js';
 import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
-import { type AuthorDto } from '../../../../bookModule/api/httpControllers/common/authorDto.js';
 import { type CreateAuthorCommandHandler } from '../../../application/commandHandlers/createAuthorCommandHandler/createAuthorCommandHandler.js';
 import { type FindAuthorsQueryHandler } from '../../../application/queryHandlers/findAuthorsQueryHandler/findAuthorsQueryHandler.js';
-import { type Author } from '../../../domain/entities/author/author.js';
+import { mapAuthorToDto } from '../common/mappers/authorDtoMapper.js';
 
 export class AuthorHttpController implements HttpController {
   public readonly basePath = '/authors';
@@ -88,7 +89,7 @@ export class AuthorHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.created,
-      body: this.mapAuthorToDto(author),
+      body: mapAuthorToDto(author),
     };
   }
 
@@ -102,6 +103,13 @@ export class AuthorHttpController implements HttpController {
       expectedUserId: userId,
     });
 
+    const sortFields = sortDate
+      ? {
+          sortField: FindAuthorsSortField.createdAt,
+          sortOrder: sortDate,
+        }
+      : {};
+
     const { authors, total } = await this.findAuthorsQueryHandler.execute({
       ids,
       name,
@@ -109,28 +117,19 @@ export class AuthorHttpController implements HttpController {
       bookshelfId,
       page,
       pageSize,
-      sortDate,
+      ...sortFields,
     });
 
     return {
       statusCode: HttpStatusCode.ok,
       body: {
-        data: authors.map(this.mapAuthorToDto),
+        data: authors.map(mapAuthorToDto),
         metadata: {
           page,
           pageSize,
           total,
         },
       },
-    };
-  }
-
-  private mapAuthorToDto(author: Author): AuthorDto {
-    return {
-      id: author.getId(),
-      name: author.getName(),
-      isApproved: author.getIsApproved(),
-      createdAt: author.getCreatedAt().toISOString(),
     };
   }
 }

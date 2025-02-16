@@ -13,6 +13,12 @@ import {
   type DeleteAuthorResponseBodyDto,
 } from './schemas/deleteAuthorSchema.js';
 import {
+  findAdminAuthorsQueryParamsDtoSchema,
+  findAdminAuthorsResponseBodyDtoSchema,
+  type FindAdminAuthorsQueryParamsDto,
+  type FindAdminAuthorsResponseBodyDto,
+} from './schemas/findAdminAuthorsSchema.js';
+import {
   updateAuthorPathParamsDtoSchema,
   updateAuthorBodyDtoSchema,
   updateAuthorResponseBodyDtoSchema,
@@ -32,11 +38,11 @@ import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
 import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.js';
 import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
-import { type AuthorDto } from '../../../../bookModule/api/httpControllers/common/authorDto.js';
 import { type CreateAuthorCommandHandler } from '../../../application/commandHandlers/createAuthorCommandHandler/createAuthorCommandHandler.js';
 import { type DeleteAuthorCommandHandler } from '../../../application/commandHandlers/deleteAuthorCommandHandler/deleteAuthorCommandHandler.js';
 import { type UpdateAuthorCommandHandler } from '../../../application/commandHandlers/updateAuthorCommandHandler/updateAuthorCommandHandler.js';
-import { type Author } from '../../../domain/entities/author/author.js';
+import { type FindAuthorsQueryHandler } from '../../../application/queryHandlers/findAuthorsQueryHandler/findAuthorsQueryHandler.js';
+import { mapAuthorToDto } from '../common/mappers/authorDtoMapper.js';
 
 export class AuthorAdminHttpController implements HttpController {
   public readonly basePath = '/admin/authors';
@@ -46,6 +52,7 @@ export class AuthorAdminHttpController implements HttpController {
     private readonly createAuthorCommandHandler: CreateAuthorCommandHandler,
     private readonly updateAuthorCommandHandler: UpdateAuthorCommandHandler,
     private readonly deleteAuthorCommandHandler: DeleteAuthorCommandHandler,
+    private readonly findAuthorsQueryHandler: FindAuthorsQueryHandler,
     private readonly accessControlService: AccessControlService,
   ) {}
 
@@ -67,6 +74,23 @@ export class AuthorAdminHttpController implements HttpController {
         },
         securityMode: SecurityMode.bearerToken,
         description: 'Create author',
+      }),
+      new HttpRoute({
+        method: HttpMethodName.get,
+        handler: this.findAuthors.bind(this),
+        schema: {
+          request: {
+            queryParams: findAdminAuthorsQueryParamsDtoSchema,
+          },
+          response: {
+            [HttpStatusCode.ok]: {
+              schema: findAdminAuthorsResponseBodyDtoSchema,
+              description: 'Authors found',
+            },
+          },
+        },
+        securityMode: SecurityMode.bearerToken,
+        description: 'Find authors',
       }),
       new HttpRoute({
         description: 'Update Author',
@@ -125,7 +149,40 @@ export class AuthorAdminHttpController implements HttpController {
 
     return {
       statusCode: HttpStatusCode.created,
-      body: this.mapAuthorToDto(author),
+      body: mapAuthorToDto(author),
+    };
+  }
+
+  private async findAuthors(
+    request: HttpRequest<undefined, FindAdminAuthorsQueryParamsDto, undefined>,
+  ): Promise<HttpOkResponse<FindAdminAuthorsResponseBodyDto>> {
+    const { name, ids, page = 1, pageSize = 10, sortField, sortOrder, isApproved } = request.queryParams;
+
+    await this.accessControlService.verifyBearerToken({
+      requestHeaders: request.headers,
+      expectedRole: UserRole.admin,
+    });
+
+    const { authors, total } = await this.findAuthorsQueryHandler.execute({
+      name,
+      ids,
+      isApproved,
+      page,
+      pageSize,
+      sortField,
+      sortOrder,
+    });
+
+    return {
+      statusCode: HttpStatusCode.ok,
+      body: {
+        data: authors.map(mapAuthorToDto),
+        metadata: {
+          page,
+          pageSize,
+          total,
+        },
+      },
     };
   }
 
@@ -148,7 +205,7 @@ export class AuthorAdminHttpController implements HttpController {
     });
 
     return {
-      body: this.mapAuthorToDto(author),
+      body: mapAuthorToDto(author),
       statusCode: HttpStatusCode.ok,
     };
   }
@@ -168,15 +225,6 @@ export class AuthorAdminHttpController implements HttpController {
     return {
       statusCode: HttpStatusCode.noContent,
       body: null,
-    };
-  }
-
-  private mapAuthorToDto(author: Author): AuthorDto {
-    return {
-      id: author.getId(),
-      name: author.getName(),
-      isApproved: author.getIsApproved(),
-      createdAt: author.getCreatedAt().toISOString(),
     };
   }
 }

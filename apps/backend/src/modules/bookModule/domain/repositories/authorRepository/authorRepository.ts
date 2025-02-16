@@ -17,7 +17,8 @@ export interface FindAuthorsPayload {
   readonly isApproved?: boolean;
   readonly page: number;
   readonly pageSize: number;
-  readonly sortDate?: 'asc' | 'desc';
+  readonly sortField?: 'createdAt' | 'name' | undefined;
+  readonly sortOrder?: 'asc' | 'desc' | undefined;
 }
 
 export interface CountAuthorsPayload {

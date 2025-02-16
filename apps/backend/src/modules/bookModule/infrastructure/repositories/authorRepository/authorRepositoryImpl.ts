@@ -127,7 +127,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
   }
 
   public async findAuthors(payload: FindAuthorsPayload): Promise<Author[]> {
-    const { ids, name, isApproved, userId, bookshelfId, page, pageSize, sortDate } = payload;
+    const { ids, name, isApproved, userId, bookshelfId, page, pageSize, sortField, sortOrder } = payload;
 
     let rawEntities: AuthorRawEntity[];
 
@@ -169,7 +169,11 @@ export class AuthorRepositoryImpl implements AuthorRepository {
         query.where({ isApproved });
       }
 
-      query.orderBy('id', sortDate ?? 'desc');
+      if (sortField === 'name') {
+        query.orderBy('name', sortOrder ?? 'asc');
+      } else {
+        query.orderBy('id', sortOrder ?? 'desc');
+      }
 
       rawEntities = await query.limit(pageSize).offset((page - 1) * pageSize);
     } catch (error) {

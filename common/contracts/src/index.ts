@@ -52,6 +52,8 @@ export * from './schemas/user/changeUserPassword.js';
 
 export * from './schemas/author/findAuthors.js';
 
+export * from './schemas/author/findAdminAuthors.js';
+
 export * from './schemas/author/updateAuthor.js';
 
 export * from './schemas/author/createAuthor.js';
