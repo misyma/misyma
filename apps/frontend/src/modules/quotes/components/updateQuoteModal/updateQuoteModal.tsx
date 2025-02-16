@@ -42,7 +42,7 @@ const editQuoteSchema = z
         required_error: 'Cytat jest wymagany.',
       })
       .min(1, 'Cytat musi mieć minimum 1 znak.')
-      .max(256, 'Strona może mieć maksymalnie 256 znaków.')
+      .max(1000, 'Cytat może mieć maksymalnie 1000 znaków.')
       .optional(),
   })
   .superRefine((value, ctx) => {

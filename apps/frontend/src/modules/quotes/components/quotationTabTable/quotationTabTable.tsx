@@ -22,13 +22,7 @@ export const QuotationTabTable: FC<QuotationTabTableProps> = ({ bookId }) => {
 
   const { data: userData } = useFindUserQuery();
 
-  const {
-    data: userBookData,
-    isFetching,
-    // isFetched: isUserBookFetched,
-    // isFetching: isUserBookFetching,
-    // isRefetching: isUserBookRefetching,
-  } = useErrorHandledQuery(
+  const { data: userBookData, isFetching } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
       userId: userData?.id ?? '',

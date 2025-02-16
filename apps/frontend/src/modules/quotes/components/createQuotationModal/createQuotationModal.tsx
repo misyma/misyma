@@ -38,7 +38,7 @@ const createQuotationSchema = z
         required_error: 'Cytat jest wymagany.',
       })
       .min(1, 'Cytat musi mieć minimum 1 znak.')
-      .max(256, 'Strona może mieć maksymalnie 256 znaków.'),
+      .max(1000, 'Cytat może mieć maksymalnie 1000 znaków.'),
   })
   .superRefine((value, ctx) => {
     if (!value.page) {
@@ -192,7 +192,7 @@ export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props):
                     <FormControl>
                       <Textarea
                         placeholder="Komentarz"
-                        maxLength={256}
+                        maxLength={1000}
                         className="resize-none h-44"
                         {...field}
                       />
