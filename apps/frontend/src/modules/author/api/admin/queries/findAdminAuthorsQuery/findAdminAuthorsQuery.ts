@@ -1,7 +1,7 @@
 import { type UseQueryOptions, keepPreviousData, useQuery } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 
-import { type FindAuthorsResponseBody } from '@common/contracts';
+import { type FindAuthorsSortField, type SortOrder, type FindAuthorsResponseBody } from '@common/contracts';
 
 import { findAdminAuthors } from './findAdminAuthors.js';
 import { type ApiError } from '../../../../../common/errors/apiError.js';
@@ -14,9 +14,20 @@ type Payload = {
   ids?: string[];
   page?: number;
   pageSize?: number;
+  sortField?: FindAuthorsSortField | undefined;
+  sortOrder?: SortOrder | undefined;
 } & Partial<Omit<UseQueryOptions<FindAuthorsResponseBody, ApiError>, 'queryFn'>>;
 
-export const useFindAdminAuthorsQuery = ({ name, all = false, page, pageSize, ids, ...options }: Payload) => {
+export const useFindAdminAuthorsQuery = ({
+  name,
+  all = false,
+  page,
+  pageSize,
+  ids,
+  sortField,
+  sortOrder,
+  ...options
+}: Payload) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const isEnabled = () => {
@@ -36,7 +47,14 @@ export const useFindAdminAuthorsQuery = ({ name, all = false, page, pageSize, id
   };
 
   return useQuery({
-    queryKey: [AdminAuthorsApiQueryKeys.findAdminAuthorsQuery, name, `${page}`, `${ids?.join(',')}`],
+    queryKey: [
+      AdminAuthorsApiQueryKeys.findAdminAuthorsQuery,
+      name,
+      `${page}`,
+      `${ids?.join(',')}`,
+      sortField,
+      sortOrder,
+    ],
     queryFn: () =>
       findAdminAuthors({
         accessToken: accessToken as string,
@@ -44,6 +62,8 @@ export const useFindAdminAuthorsQuery = ({ name, all = false, page, pageSize, id
         page,
         ids,
         pageSize,
+        sortField,
+        sortOrder,
       }),
     enabled: !!accessToken && isEnabled(),
     ...options,
