@@ -64,8 +64,6 @@ export * from './schemas/book/findBook.js';
 
 export * from './schemas/book/findBooks.js';
 
-export * from './schemas/book/findBooksSortField.js';
-
 export * from './schemas/book/findAdminBooks.js';
 
 export * from './schemas/book/createBook.js';

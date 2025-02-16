@@ -1,4 +1,4 @@
-import { type SortOrder, type Language, type FindBooksSortField } from '@common/contracts';
+import { type SortOrder, type Language } from '@common/contracts';
 
 import { type QueryHandler } from '../../../../../common/types/queryHandler.js';
 import { type Book } from '../../../domain/entities/book/book.js';
@@ -13,7 +13,7 @@ export interface FindBooksQueryHandlerPayload {
   readonly isApproved?: boolean | undefined;
   readonly page: number;
   readonly pageSize: number;
-  readonly sortField?: FindBooksSortField | undefined;
+  readonly sortField?: 'createdAt' | 'releaseYear' | 'title' | undefined;
   readonly sortOrder?: SortOrder | undefined;
 }
 

@@ -5,7 +5,7 @@ import {
   type FindBooksResponseBody,
   type FindAdminBooksQueryParams,
   SortOrder,
-  FindBooksSortField,
+  FindAdminBooksSortField,
 } from '@common/contracts';
 
 import { adminFindBooks } from './findBooks';
@@ -28,7 +28,7 @@ export const useAdminFindBooksQuery = ({
   releaseYearBefore,
   releaseYearAfter,
   isbn,
-  sortField = FindBooksSortField.createdAt,
+  sortField = FindAdminBooksSortField.createdAt,
   sortOrder = SortOrder.desc,
   ...options
 }: Payload) => {

@@ -2,7 +2,12 @@ import { type Book } from './book.js';
 import { type Language } from './language.js';
 import { type Metadata } from '../metadata.js';
 import { type SortOrder } from '../sortOrder.js';
-import { type FindBooksSortField } from './findBooksSortField.js';
+
+export enum FindAdminBooksSortField {
+  releaseYear = 'releaseYear',
+  createdAt = 'createdAt',
+  title = 'title',
+}
 
 export interface FindAdminBooksQueryParams {
   readonly isbn?: string;
@@ -14,7 +19,7 @@ export interface FindAdminBooksQueryParams {
   readonly releaseYearAfter?: number;
   readonly page?: number;
   readonly pageSize?: number;
-  readonly sortField?: FindBooksSortField;
+  readonly sortField?: FindAdminBooksSortField;
   readonly sortOrder?: SortOrder;
 }
 
