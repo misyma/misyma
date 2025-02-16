@@ -2,7 +2,7 @@ import { type Static, Type } from '@sinclair/typebox';
 
 export const quoteContentSchema = Type.String({
   minLength: 1,
-  maxLength: 256,
+  maxLength: 1000,
 });
 
 export const quotePageSchema = Type.String({
