@@ -20,7 +20,7 @@ export interface FindBooksPayload {
   readonly releaseYearAfter?: number;
   readonly page: number;
   readonly pageSize: number;
-  readonly sortField?: 'createdAt' | 'releaseYear' | undefined;
+  readonly sortField?: 'createdAt' | 'releaseYear' | 'title' | undefined;
   readonly sortOrder?: 'asc' | 'desc' | undefined;
 }
 

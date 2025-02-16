@@ -12,7 +12,7 @@ export const AdminRouteSearchSchema = z.object({
       coerce: true,
     })
     .catch(10),
-  sortField: z.enum(['createdAt', 'releaseYear', '']).optional().catch(''),
+  sortField: z.enum(['createdAt', 'releaseYear', 'title', '']).optional().catch(''),
   sortOrder: z.enum(['asc', 'desc', '']).optional().catch(''),
   title: z.string().catch(''),
   authorIds: z.string().catch(''),

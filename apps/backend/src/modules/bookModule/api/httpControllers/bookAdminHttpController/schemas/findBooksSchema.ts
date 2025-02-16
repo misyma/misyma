@@ -15,7 +15,7 @@ export const findAdminBooksQueryParamsDtoSchema = Type.Object({
   releaseYearAfter: Type.Optional(bookReleaseYearSchema),
   page: Type.Optional(Type.Integer({ minimum: 1 })),
   pageSize: Type.Optional(Type.Integer({ minimum: 1 })),
-  sortField: Type.Optional(Type.Enum(contracts.FindBooksSortField)),
+  sortField: Type.Optional(Type.Enum(contracts.FindAdminBooksSortField)),
   sortOrder: Type.Optional(Type.Enum(contracts.SortOrder)),
 });
 

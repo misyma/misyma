@@ -800,6 +800,54 @@ describe('BookRepositoryImpl', () => {
 
       expect(foundBooks2[1]?.getId()).toEqual(book1.id);
     });
+
+    it('finds books sorted by title', async () => {
+      const author = await authorTestUtils.createAndPersist();
+
+      const book1 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+          book: {
+            title: 'Harry Potter',
+          },
+        },
+      });
+
+      const book2 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+          book: {
+            title: 'Alice in Wonderland',
+          },
+        },
+      });
+
+      const foundBooks1 = await bookRepository.findBooks({
+        page: 1,
+        pageSize: 10,
+        sortField: 'title',
+        sortOrder: 'asc',
+      });
+
+      expect(foundBooks1.length).toEqual(2);
+
+      expect(foundBooks1[0]?.getId()).toEqual(book2.id);
+
+      expect(foundBooks1[1]?.getId()).toEqual(book1.id);
+
+      const foundBooks2 = await bookRepository.findBooks({
+        page: 1,
+        pageSize: 10,
+        sortField: 'title',
+        sortOrder: 'desc',
+      });
+
+      expect(foundBooks2.length).toEqual(2);
+
+      expect(foundBooks2[0]?.getId()).toEqual(book1.id);
+
+      expect(foundBooks2[1]?.getId()).toEqual(book2.id);
+    });
   });
 
   describe('count', () => {

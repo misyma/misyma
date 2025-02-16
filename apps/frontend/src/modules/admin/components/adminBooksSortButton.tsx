@@ -81,6 +81,21 @@ export const AdminBooksSortButton = () => {
                   <span>Rok wydania: najstarsze</span>
                   {search.sortField === 'releaseYear' && search.sortOrder === 'asc' && selectedSortCheckmark}
                 </CommandItem>
+
+                <CommandItem
+                  onSelect={() => handleSort('title', 'asc')}
+                  className="cursor-pointer flex justify-between"
+                >
+                  <span>Tytuł: od A do Z</span>
+                  {search.sortField === 'title' && search.sortOrder === 'asc' && selectedSortCheckmark}
+                </CommandItem>
+                <CommandItem
+                  onSelect={() => handleSort('title', 'desc')}
+                  className="cursor-pointer flex justify-between"
+                >
+                  <span>Tytuł: od Z do A</span>
+                  {search.sortField === 'title' && search.sortOrder === 'desc' && selectedSortCheckmark}
+                </CommandItem>
               </CommandList>
             </Command>
           </PopoverContent>

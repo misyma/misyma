@@ -295,6 +295,8 @@ export class BookRepositoryImpl implements BookRepository {
 
       if (sortField === 'releaseYear') {
         query.orderBy(`${bookTable}.releaseYear`, sortOrder ?? 'desc');
+      } else if (sortField === 'title') {
+        query.orderBy(`${bookTable}.title`, sortOrder ?? 'asc');
       } else {
         query.orderBy('id', sortOrder ?? 'desc');
       }

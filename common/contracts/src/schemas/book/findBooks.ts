@@ -1,7 +1,11 @@
 import { type Book } from './book.js';
 import { type Metadata } from '../metadata.js';
 import { type SortOrder } from '../sortOrder.js';
-import { type FindBooksSortField } from './findBooksSortField.js';
+
+export enum FindBooksSortField {
+  releaseYear = 'releaseYear',
+  createdAt = 'createdAt',
+}
 
 export interface FindBooksQueryParams {
   readonly isbn?: string;
