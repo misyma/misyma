@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { z } from 'zod';
 
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
-import { useFindAuthorsQuery } from '../../../../modules/author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
+import { useFindAdminAuthorsQuery } from '../../../../modules/author/api/admin/queries/findAdminAuthorsQuery/findAdminAuthorsQuery';
 import { BookApiQueryKeys } from '../../../../modules/book/api/user/queries/bookApiQueryKeys';
 import { FindBookByIdQueryOptions } from '../../../../modules/book/api/user/queries/findBookById/findBookByIdQueryOptions';
 import { invalidateBooksByBookshelfIdQuery } from '../../../../modules/book/api/user/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
@@ -74,7 +74,7 @@ export const ChangeRequestView: FC = () => {
     }),
   );
 
-  const { data: authorsResponse, isFetching: isFetchingAuthors } = useFindAuthorsQuery({
+  const { data: authorsResponse, isFetching: isFetchingAuthors } = useFindAdminAuthorsQuery({
     ids: [...(bookData?.authors.map((author) => author.id) ?? []), ...(changeRequestData?.data?.authorIds ?? [])],
   });
 
@@ -111,7 +111,7 @@ export const ChangeRequestView: FC = () => {
       format: 'Format',
       isbn: 'Numer isbn',
       language: 'Język',
-      releaseYear: 'Data wydania',
+      releaseYear: 'Rok wydania',
       title: 'Tytuł',
       translator: 'Przekład',
       pages: 'Liczba stron',

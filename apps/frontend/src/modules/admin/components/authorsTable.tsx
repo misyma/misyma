@@ -2,7 +2,7 @@ import { type FC, useEffect, useMemo, useState } from 'react';
 
 import { type Author } from '@common/contracts';
 
-import { useFindAuthorsQuery } from '../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
+import { useFindAdminAuthorsQuery } from '../../author/api/admin/queries/findAdminAuthorsQuery/findAdminAuthorsQuery';
 import { authorTableColumns } from '../../author/components/authorTableColumns';
 import { DataSkeletonTable } from '../../common/components/dataTable/dataSkeletonTable';
 import { DataTable } from '../../common/components/dataTable/dataTable';
@@ -39,7 +39,7 @@ export const AuthorsTable: FC<AdminAuthorsTableProps> = ({ page, setPage, setAut
     data: authorsData,
     isFetching,
     isFetched,
-  } = useFindAuthorsQuery({
+  } = useFindAdminAuthorsQuery({
     all: true,
     page,
     name: debouncedSearchValue,

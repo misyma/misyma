@@ -11,7 +11,7 @@ import { type FindBookResponseBody, Language, type UpdateBookRequestBody } from 
 
 import { Route } from './$id';
 import { AuthenticatedLayout } from '../../../../../modules/auth/layouts/authenticated/authenticatedLayout';
-import { useFindAuthorsQuery } from '../../../../../modules/author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
+import { useFindAdminAuthorsQuery } from '../../../../../modules/author/api/admin/queries/findAdminAuthorsQuery/findAdminAuthorsQuery';
 import { AuthorFieldTooltip } from '../../../../../modules/author/components/authorFieldTooltip';
 import { createAuthorDraftSchema } from '../../../../../modules/author/schemas/createAuthorDraftSchema';
 import { useUpdateBookMutation } from '../../../../../modules/book/api/admin/mutations/updateBookMutation/updateBookMutation';
@@ -179,7 +179,7 @@ const BookEditForm: FC<FormProps> = ({ data }) => {
     data: authors,
     isFetched,
     isLoading: loading,
-  } = useFindAuthorsQuery({
+  } = useFindAdminAuthorsQuery({
     name: searchedName,
   });
 
