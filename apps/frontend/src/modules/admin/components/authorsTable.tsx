@@ -1,9 +1,11 @@
 import { type FC, useEffect, useMemo, useState } from 'react';
 
-import { type Author } from '@common/contracts';
+import { type FindAuthorsSortField, type Author, type SortOrder } from '@common/contracts';
 
+import { AdminAuthorsSortButton } from './adminAuthorsSortButton';
 import { useFindAdminAuthorsQuery } from '../../author/api/admin/queries/findAdminAuthorsQuery/findAdminAuthorsQuery';
 import { authorTableColumns } from '../../author/components/authorTableColumns';
+import { CreateAuthorModal } from '../../author/components/createAuthorModal';
 import { DataSkeletonTable } from '../../common/components/dataTable/dataSkeletonTable';
 import { DataTable } from '../../common/components/dataTable/dataTable';
 import { Input } from '../../common/components/input/input';
@@ -12,11 +14,21 @@ import { useInitialFetch } from '../../common/hooks/useInitialFetch';
 
 interface AdminAuthorsTableProps {
   page: number;
+  sortField?: FindAuthorsSortField;
+  sortOrder?: SortOrder;
   setPage: (val: number) => void;
   authorName: string;
   setAuthorName: (val: string) => void;
 }
-export const AuthorsTable: FC<AdminAuthorsTableProps> = ({ page, setPage, setAuthorName, authorName }) => {
+
+export const AuthorsTable: FC<AdminAuthorsTableProps> = ({
+  page,
+  setPage,
+  setAuthorName,
+  authorName,
+  sortField,
+  sortOrder,
+}) => {
   const [searchAuthorName, setSearchAuthorName] = useState(authorName);
 
   const [pageSize] = useState(10);
@@ -43,6 +55,8 @@ export const AuthorsTable: FC<AdminAuthorsTableProps> = ({ page, setPage, setAut
     all: true,
     page,
     name: debouncedSearchValue,
+    sortField,
+    sortOrder,
   });
 
   const { isLoading } = useInitialFetch({ isFetching });
@@ -61,12 +75,19 @@ export const AuthorsTable: FC<AdminAuthorsTableProps> = ({ page, setPage, setAut
 
   return (
     <div className="flex flex-col w-full">
-      <Input
-        placeholder="Wyszukaj autora..."
-        value={searchAuthorName ?? ''}
-        onChange={(event) => onSetSearchAuthorName(event.target.value)}
-        className="max-w-sm"
-      />
+      <div className="flex justify-between items-center mb-5">
+        <Input
+          placeholder="Wyszukaj autora..."
+          value={searchAuthorName ?? ''}
+          onChange={(event) => onSetSearchAuthorName(event.target.value)}
+          className="max-w-sm"
+        />
+        <div className="flex gap-2 items-center">
+          <CreateAuthorModal onMutated={() => {}}></CreateAuthorModal>
+          <AdminAuthorsSortButton />
+        </div>
+      </div>
+
       {!isLoading && (
         <DataTable<Author, unknown>
           data={data}

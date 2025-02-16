@@ -1,23 +1,23 @@
 import { createFileRoute, useSearch } from '@tanstack/react-router';
 import { type FC } from 'react';
 
+import { type FindAuthorsSortField, type SortOrder } from '@common/contracts';
+
 import { AdminTabs } from '../../../../modules/admin/components/adminTabs';
 import { AuthorsTable } from '../../../../modules/admin/components/authorsTable';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
-import { CreateAuthorModal } from '../../../../modules/author/components/createAuthorModal';
-import { Button } from '../../../../modules/common/components/button/button';
 import { AdminTabLayout } from '../../../../modules/common/layouts/adminTabLayout';
 import { RequireAdmin } from '../../../../modules/core/components/requireAdmin/requireAdmin';
 
 export const AuthorsAdminPage: FC = () => {
   const navigate = Route.useNavigate();
 
-  // TODO: What the heck is wrong with this library to throw errors on
-  // export being differently named then `Route` :)
   const searchParams = useSearch({ from: Route.fullPath }) as {
     page: number;
     pageSize: number;
     name: string;
+    sortField?: FindAuthorsSortField;
+    sortOrder?: SortOrder;
   };
 
   const setPage = (page: number) => {
@@ -40,18 +40,15 @@ export const AuthorsAdminPage: FC = () => {
         TabsSlot={<AdminTabs currentlySelected="authors" />}
         TableSlot={
           <AuthorsTable
+            sortField={searchParams?.sortField}
+            sortOrder={searchParams?.sortOrder}
             authorName={searchParams?.name}
             page={searchParams?.page}
             setPage={setPage}
             setAuthorName={setSearchAuthorName}
           />
         }
-        AdditionalActionsSlot={
-          <CreateAuthorModal
-            onMutated={() => {}}
-            trigger={<Button>Stwórz autora</Button>}
-          ></CreateAuthorModal>
-        }
+        AdditionalActionsSlot={<></>}
       />
     </AuthenticatedLayout>
   );

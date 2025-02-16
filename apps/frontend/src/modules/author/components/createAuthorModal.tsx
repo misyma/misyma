@@ -1,8 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { DialogTitle } from '@radix-ui/react-dialog';
 import { useQueryClient } from '@tanstack/react-query';
-import { type FC, type ReactNode, useState } from 'react';
+import { type FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { HiPlus } from 'react-icons/hi2';
 import { useSelector } from 'react-redux';
 import { z } from 'zod';
 
@@ -18,6 +19,7 @@ import {
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../common/components/form/form';
 import { Input } from '../../common/components/input/input';
 import { useToast } from '../../common/components/toast/use-toast';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../common/components/tooltip/tooltip';
 import { ApiError } from '../../common/errors/apiError';
 import { userStateSelectors } from '../../core/store/states/userState/userStateSlice';
 import { useCreateAuthorMutation } from '../api/admin/mutations/createAuthorMutation/createAuthorMutation';
@@ -25,7 +27,6 @@ import { AuthorsApiQueryKeys } from '../api/user/queries/authorsApiQueryKeys';
 
 interface Props {
   className?: string;
-  trigger: ReactNode;
   onMutated: () => void | Promise<void>;
 }
 
@@ -45,12 +46,12 @@ const createAuthorSchema = z.object({
         return value.trim().length > 3;
       },
       {
-        message: 'Imię nie może być puste.',
+        message: 'Imię nie może być puste.',
       },
     ),
 });
 
-export const CreateAuthorModal: FC<Props> = ({ trigger, onMutated }: Props) => {
+export const CreateAuthorModal: FC<Props> = ({ onMutated }: Props) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const { toast } = useToast();
@@ -111,7 +112,25 @@ export const CreateAuthorModal: FC<Props> = ({ trigger, onMutated }: Props) => {
         form.reset();
       }}
     >
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      <DialogTrigger asChild>
+        <DialogTrigger asChild>
+          <TooltipProvider delayDuration={300}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  onClick={() => setIsOpen(true)}
+                  size="big-icon"
+                >
+                  <HiPlus className="w-8 h-8"></HiPlus>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Stwórz autora</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </DialogTrigger>
+      </DialogTrigger>
       <DialogContent
         aria-describedby="Author creation dialog"
         style={{

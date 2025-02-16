@@ -1,4 +1,9 @@
-import { type FindAdminAuthorsQueryParams, type FindAuthorsResponseBody, SortOrder } from '@common/contracts';
+import {
+  type FindAdminAuthorsQueryParams,
+  type FindAuthorsResponseBody,
+  FindAuthorsSortField,
+  SortOrder,
+} from '@common/contracts';
 
 import { HttpService } from '../../../../../core/services/httpService/httpService.js';
 
@@ -7,11 +12,11 @@ type Payload = FindAdminAuthorsQueryParams & {
 };
 
 export const findAdminAuthors = async (values: Payload) => {
-  const { name, page, pageSize, ids, accessToken } = values;
+  const { name, page, pageSize, ids, accessToken, sortField, sortOrder } = values;
 
   const query: Record<string, string> = {
-    sortField: 'createdAt',
-    sortOrder: SortOrder.desc,
+    sortField: sortField || FindAuthorsSortField.createdAt,
+    sortOrder: sortOrder || SortOrder.desc,
   };
 
   if (name) {
