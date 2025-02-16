@@ -26,12 +26,7 @@ afterEach(() => {
 it('correctly renders Trigger', async () => {
   const onMutated = () => {};
 
-  customRender(
-    <CreateAuthorModal
-      onMutated={onMutated}
-      trigger={<button aria-label="BasicButtonLabel">The most basic button ever</button>}
-    />,
-  );
+  customRender(<CreateAuthorModal onMutated={onMutated} />);
 
   const button = await screen.findByLabelText('BasicButtonLabel');
 
@@ -41,12 +36,7 @@ it('correctly renders Trigger', async () => {
 it('correctly renders Modal', async () => {
   const onMutated = () => {};
 
-  customRender(
-    <CreateAuthorModal
-      onMutated={onMutated}
-      trigger={<button aria-label="BasicButtonLabel">The most basic button ever</button>}
-    />,
-  );
+  customRender(<CreateAuthorModal onMutated={onMutated} />);
 
   const button = await screen.findByLabelText('BasicButtonLabel');
 
@@ -62,12 +52,7 @@ it('correctly renders Modal', async () => {
 it('validates form input', async () => {
   const onMutated = vi.fn();
 
-  customRender(
-    <CreateAuthorModal
-      onMutated={onMutated}
-      trigger={<button>Open Modal</button>}
-    />,
-  );
+  customRender(<CreateAuthorModal onMutated={onMutated} />);
 
   await userEvent.click(screen.getByText('Open Modal'));
 
@@ -93,12 +78,7 @@ it('validates form input', async () => {
 it('submits form successfully', async () => {
   const onMutated = vi.fn();
 
-  customRender(
-    <CreateAuthorModal
-      onMutated={onMutated}
-      trigger={<button>Open Modal</button>}
-    />,
-  );
+  customRender(<CreateAuthorModal onMutated={onMutated} />);
 
   await userEvent.click(screen.getByText('Open Modal'));
 
@@ -131,12 +111,7 @@ it('handles API error', async () => {
 
   const onMutated = vi.fn();
 
-  customRender(
-    <CreateAuthorModal
-      onMutated={onMutated}
-      trigger={<button>Open Modal</button>}
-    />,
-  );
+  customRender(<CreateAuthorModal onMutated={onMutated} />);
 
   await userEvent.click(screen.getByText('Open Modal'));
 
@@ -156,12 +131,7 @@ it('handles API error', async () => {
 it('closes modal on successful submission', async () => {
   const onMutated = vi.fn();
 
-  customRender(
-    <CreateAuthorModal
-      onMutated={onMutated}
-      trigger={<button>Open Modal</button>}
-    />,
-  );
+  customRender(<CreateAuthorModal onMutated={onMutated} />);
 
   await userEvent.click(screen.getByText('Open Modal'));
 
@@ -181,12 +151,7 @@ it('closes modal on successful submission', async () => {
 it('resets form on modal close', async () => {
   const onMutated = vi.fn();
 
-  customRender(
-    <CreateAuthorModal
-      onMutated={onMutated}
-      trigger={<button>Open Modal</button>}
-    />,
-  );
+  customRender(<CreateAuthorModal onMutated={onMutated} />);
 
   await userEvent.click(screen.getByText('Open Modal'));
 

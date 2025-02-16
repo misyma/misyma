@@ -4,8 +4,6 @@ import { type FC } from 'react';
 import { AdminTabs } from '../../../../modules/admin/components/adminTabs';
 import { AuthorsTable } from '../../../../modules/admin/components/authorsTable';
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
-import { CreateAuthorModal } from '../../../../modules/author/components/createAuthorModal';
-import { Button } from '../../../../modules/common/components/button/button';
 import { AdminTabLayout } from '../../../../modules/common/layouts/adminTabLayout';
 import { RequireAdmin } from '../../../../modules/core/components/requireAdmin/requireAdmin';
 
@@ -46,12 +44,7 @@ export const AuthorsAdminPage: FC = () => {
             setAuthorName={setSearchAuthorName}
           />
         }
-        AdditionalActionsSlot={
-          <CreateAuthorModal
-            onMutated={() => {}}
-            trigger={<Button>Stwórz autora</Button>}
-          ></CreateAuthorModal>
-        }
+        AdditionalActionsSlot={<></>}
       />
     </AuthenticatedLayout>
   );

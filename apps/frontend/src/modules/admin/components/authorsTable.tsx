@@ -4,6 +4,7 @@ import { type Author } from '@common/contracts';
 
 import { useFindAdminAuthorsQuery } from '../../author/api/admin/queries/findAdminAuthorsQuery/findAdminAuthorsQuery';
 import { authorTableColumns } from '../../author/components/authorTableColumns';
+import { CreateAuthorModal } from '../../author/components/createAuthorModal';
 import { DataSkeletonTable } from '../../common/components/dataTable/dataSkeletonTable';
 import { DataTable } from '../../common/components/dataTable/dataTable';
 import { Input } from '../../common/components/input/input';
@@ -61,12 +62,16 @@ export const AuthorsTable: FC<AdminAuthorsTableProps> = ({ page, setPage, setAut
 
   return (
     <div className="flex flex-col w-full">
-      <Input
-        placeholder="Wyszukaj autora..."
-        value={searchAuthorName ?? ''}
-        onChange={(event) => onSetSearchAuthorName(event.target.value)}
-        className="max-w-sm"
-      />
+      <div className="flex justify-between items-center mb-5">
+        <Input
+          placeholder="Wyszukaj autora..."
+          value={searchAuthorName ?? ''}
+          onChange={(event) => onSetSearchAuthorName(event.target.value)}
+          className="max-w-sm"
+        />
+        <CreateAuthorModal onMutated={() => {}}></CreateAuthorModal>
+      </div>
+
       {!isLoading && (
         <DataTable<Author, unknown>
           data={data}
