@@ -1,5 +1,3 @@
-'use client';
-
 import { Quote } from 'lucide-react';
 import type React from 'react';
 
