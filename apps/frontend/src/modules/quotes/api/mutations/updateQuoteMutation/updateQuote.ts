@@ -13,6 +13,10 @@ export interface UpdateQuotePayload extends UpdateQuotePathParams, UpdateQuoteRe
 export const updateQuote = async (payload: UpdateQuotePayload): Promise<UpdateQuoteResponseBody> => {
   const { accessToken, quoteId, ...body } = payload;
 
+  if (body.content === '') {
+    delete body.content;
+  }
+
   const response = await HttpService.patch<UpdateQuoteResponseBody>({
     url: `/quotes/${quoteId}`,
     body,
