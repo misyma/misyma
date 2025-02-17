@@ -16,6 +16,7 @@ import { LoadingSpinner } from '../../../common/components/spinner/loading-spinn
 import { Textarea } from '../../../common/components/textArea/textarea';
 import { useToast } from '../../../common/components/toast/use-toast';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../common/components/tooltip/tooltip';
+import useDebounce from '../../../common/hooks/useDebounce';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useUpdateQuoteMutation } from '../../api/mutations/updateQuoteMutation/updateQuoteMutation';
 import { QuotesApiQueryKeys } from '../../api/queries/quotesApiQueryKeys';
@@ -63,6 +64,8 @@ interface Props {
 export const UpdateQuoteButton = ({ quote }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
+  const debouncedOpen = useDebounce(isOpen, 100);
+
   return (
     <>
       <TooltipProvider delayDuration={300}>
@@ -81,8 +84,9 @@ export const UpdateQuoteButton = ({ quote }: Props) => {
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
-      {isOpen && (
+      {debouncedOpen && (
         <UpdateQuoteModal
+          open={isOpen}
           quote={quote}
           onClose={() => setIsOpen(false)}
         />
@@ -91,7 +95,7 @@ export const UpdateQuoteButton = ({ quote }: Props) => {
   );
 };
 
-const UpdateQuoteModal = ({ quote, onClose }: Props & { onClose: () => void }) => {
+const UpdateQuoteModal = ({ quote, open, onClose }: Props & { onClose: () => void; open: boolean }) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -138,7 +142,7 @@ const UpdateQuoteModal = ({ quote, onClose }: Props & { onClose: () => void }) =
 
   return (
     <Dialog
-      open={true}
+      open={open}
       onOpenChange={onClose}
     >
       <DialogContent
