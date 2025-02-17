@@ -17,7 +17,6 @@ export const FavoriteQuotationButton: FC<Props> = ({ quote }) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const [isFavorite, setIsFavorite] = useState(quote?.isFavorite);
-
   const [isAnimating, setIsAnimating] = useState(false);
 
   const queryClient = useQueryClient();
@@ -47,15 +46,15 @@ export const FavoriteQuotationButton: FC<Props> = ({ quote }) => {
   };
 
   return (
-    <div className="inline-block h-6 w-6 relative">
+    <div className="inline-block h-7 w-7 relative">
       <HiOutlineHeart
-        className={cn('h-6 w-6 cursor-pointer text-primary', {
+        className={cn('h-7 w-7 cursor-pointer text-primary', {
           'animate-pulse': isAnimating,
         })}
         onClick={onIsFavoriteChange}
       />
       <HiHeart
-        className={cn('h-6 w-6 cursor-pointer text-primary absolute inset-0 transition-opacity duration-300', {
+        className={cn('h-7 w-7 cursor-pointer text-primary absolute inset-0 transition-opacity duration-300', {
           'opacity-100': isFavorite && !isAnimating,
           'opacity-0': !isFavorite || isAnimating,
         })}
