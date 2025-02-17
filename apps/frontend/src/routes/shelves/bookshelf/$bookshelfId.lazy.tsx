@@ -126,7 +126,7 @@ const BookshelfTopBar: FC<BookshelfTopBarProps> = ({ bookshelfResponse, bookshel
     bookshelfResponse?.name === 'Archiwum' || bookshelfResponse?.name === 'Wypożyczalnia';
 
   return (
-    <div className="mt-10 flex justify-between w-full sm:max-w-7xl pb-4">
+    <div className="mt-4 flex justify-between w-full sm:max-w-7xl pb-4">
       <div>
         <p className="text-xl min-h-[1.75rem] sm:min-h-[2.25rem] max-w-[40rem] truncate sm:text-3xl">
           {bookshelfResponse?.name ?? ' '}
@@ -177,7 +177,7 @@ const BooksFiltersVisibilityButton = () => {
   const filtersApplied = useMemo(() => {
     return (
       Object.entries(search)
-        .filter(([key]) => !['page', 'pageSize', 'sortField', 'sortOrder'].includes(key))
+        .filter(([key]) => !['page', 'pageSize', 'sortField', 'sortOrder', 'title'].includes(key))
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         .filter(([_, value]) => {
           return value !== undefined || value !== '';
@@ -398,7 +398,7 @@ export const BorrowingBookshelf: FC = () => {
           bookshelfId={bookshelfId}
           bookshelfResponse={bookshelfResponse}
         />
-        <div className="flex flex-col justify-center gap-8 pt-8 w-full sm:max-w-7xl">
+        <div className="flex flex-col justify-center gap-8 w-full sm:max-w-7xl">
           <BookshelfBooksPageFiltersBar />
           <BookshelfBooksVirtualizedBooksList
             bookshelfId={bookshelfId}
