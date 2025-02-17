@@ -1,6 +1,6 @@
 import { type Dispatch, type ReactNode, createContext, useContext, useReducer } from 'react';
 
-import { BookFormat, Language } from '@common/contracts';
+import { type BookFormat, type Language } from '@common/contracts';
 
 export interface BookDetailsChangeRequestState {
   isbn: string;
@@ -34,7 +34,7 @@ type Actions = ResetContextValues | SetContextValuesAction;
 const defaultValues: BookDetailsChangeRequestState = {
   authorIds: undefined,
   authorName: undefined,
-  format: BookFormat.paperback,
+  format: '' as BookFormat,
   isbn: '',
   language: '' as Language,
   pages: undefined,
@@ -73,9 +73,9 @@ function bookDetailsChangeRequestReducer(state: BookDetailsChangeRequestState, a
     return {
       authorIds: undefined,
       authorName: undefined,
-      format: BookFormat.paperback,
+      format: '' as BookFormat,
       isbn: '',
-      language: Language.English,
+      language: '' as Language,
       pages: undefined,
       publisher: '',
       title: '',
