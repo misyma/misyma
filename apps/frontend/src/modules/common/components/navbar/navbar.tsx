@@ -280,7 +280,7 @@ export const Navbar: FC = () => {
   const { res, handleLogout } = useUserState();
 
   return (
-    <div className="flex pt-6 px-6 flex-col bg-white w-full sticky">
+    <div className="flex pt-6 px-6 flex-col bg-white w-full sticky top-0 z-50">
       <div className="bg-white flex justify-end w-full items-center">
         <TextLogo />
         <input
