@@ -1,6 +1,9 @@
 import { type FC, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { type SortOrder } from '@common/contracts';
+
+import { QuotationsTabSortingButton } from './quotationsTabSortingButton';
 import { FindUserBookByIdQueryOptions } from '../../../book/api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 import { DataTable } from '../../../common/components/dataTable/dataTable';
 import { Skeleton } from '../../../common/components/skeleton/skeleton';
@@ -12,8 +15,9 @@ import { quotationTableColumns } from '../quotationsTable/quotationsTableColumns
 
 interface QuotationTabTableProps {
   bookId: string;
+  sortDate?: SortOrder;
 }
-export const QuotationTabTable: FC<QuotationTabTableProps> = ({ bookId }) => {
+export const QuotationTabTable: FC<QuotationTabTableProps> = ({ bookId, sortDate }) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const [page, setPage] = useState(1);
@@ -36,6 +40,7 @@ export const QuotationTabTable: FC<QuotationTabTableProps> = ({ bookId }) => {
       userBookId: bookId,
       page,
       pageSize,
+      sortDate,
     }),
   );
 
@@ -53,7 +58,12 @@ export const QuotationTabTable: FC<QuotationTabTableProps> = ({ bookId }) => {
 
   return (
     <div className="flex flex-col w-full">
-      {!isFetching && <p className="text-lg pb-6"> {userBookData?.book?.authors[0]?.name ?? ''} </p>}
+      {!isFetching && (
+        <div className="flex justify-between">
+          <p className="text-lg pb-6"> {userBookData?.book?.authors[0]?.name ?? ''} </p>
+          {(quotationsData?.data.length ?? 0) > 1 && <QuotationsTabSortingButton />}
+        </div>
+      )}
       {isFetching && (
         <div className="pb-6">
           <Skeleton className="h-7 w-40" />

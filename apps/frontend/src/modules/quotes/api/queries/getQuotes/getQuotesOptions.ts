@@ -1,21 +1,24 @@
 import { type UseQueryOptions, keepPreviousData, queryOptions } from '@tanstack/react-query';
 
-import { type FindQuotesResponseBody } from '@common/contracts';
+import { type FindQuotesQueryParams, type FindQuotesResponseBody } from '@common/contracts';
 
-import { type GetQuotesPayload, getQuotes } from './getQuotes';
+import { getQuotes } from './getQuotes';
 import { QuotesApiQueryKeys } from '../quotesApiQueryKeys';
 
 export const getQuotesOptions = (
-  payload: GetQuotesPayload,
+  payload: FindQuotesQueryParams & { accessToken: string },
 ): UseQueryOptions<FindQuotesResponseBody, Error, FindQuotesResponseBody, string[]> =>
   queryOptions({
-    queryKey: [...getQuotesOptionsQueryKey(payload), `${payload.page}`, `${payload.pageSize}`],
+    queryKey: [...getQuotesOptionsQueryKey(payload), `${payload.page}`, `${payload.pageSize}`, `${payload.sortDate}`],
     queryFn: () => getQuotes(payload),
     enabled: !!payload.accessToken,
     placeholderData: keepPreviousData,
   });
 
-export const getQuotesOptionsQueryKey = (payload: Pick<GetQuotesPayload, 'userBookId'>): string[] => [
+export const getQuotesOptionsQueryKey = (payload: FindQuotesQueryParams): string[] => [
   QuotesApiQueryKeys.findQuotes,
-  payload.userBookId,
+  payload?.userBookId ?? '',
+  payload.authorId ?? '',
+  `${payload.isFavorite}`,
+  `${payload.sortDate}`,
 ];

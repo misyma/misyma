@@ -14,6 +14,7 @@ import { QuotationTabTitleBar } from '../../../../../../modules/quotes/component
 
 export const QuotesPage: FC = () => {
   const { bookId } = Route.useParams();
+  const { sortDate } = Route.useSearch();
 
   useBookBreadcrumbs({ bookId });
 
@@ -39,7 +40,10 @@ export const QuotesPage: FC = () => {
           <>
             <QuotationTabTitleBar bookId={bookId} />
             <Separator className="h-[1px] bg-primary"></Separator>
-            <QuotationTabTable bookId={bookId} />
+            <QuotationTabTable
+              bookId={bookId}
+              sortDate={sortDate}
+            />
           </>
         }
         bookId={bookId}
