@@ -255,6 +255,9 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
 
                           setSelectedBookshelfId(value);
 
+                          setPreviousBookshelfName(booksBookshelf?.name ?? '');
+                          setPreviousBookshelfId(booksBookshelf?.id ?? '');
+
                           setCurrentBookshelf(bookshelf.name);
 
                           setOpen(false);
