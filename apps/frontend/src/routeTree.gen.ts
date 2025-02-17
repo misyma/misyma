@@ -16,6 +16,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
 import { Route as VerifyEmailIndexImport } from './routes/verifyEmail/index'
 import { Route as ShelvesIndexImport } from './routes/shelves/index'
+import { Route as QuotesIndexImport } from './routes/quotes/index'
 import { Route as MybooksIndexImport } from './routes/mybooks/index'
 import { Route as ProfileStatisticsIndexImport } from './routes/profile/statistics/index'
 import { Route as AdminTabsIndexImport } from './routes/admin/tabs/index'
@@ -95,6 +96,11 @@ const ShelvesIndexRoute = ShelvesIndexImport.update({
   path: '/shelves/',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/shelves/index.lazy').then((d) => d.Route))
+
+const QuotesIndexRoute = QuotesIndexImport.update({
+  path: '/quotes/',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/quotes/index.lazy').then((d) => d.Route))
 
 const MybooksIndexRoute = MybooksIndexImport.update({
   path: '/mybooks/',
@@ -249,6 +255,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MybooksIndexImport
       parentRoute: typeof rootRoute
     }
+    '/quotes/': {
+      preLoaderRoute: typeof QuotesIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/shelves/': {
       preLoaderRoute: typeof ShelvesIndexImport
       parentRoute: typeof rootRoute
@@ -349,6 +359,7 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren([
   IndexRoute,
   MybooksIndexRoute,
+  QuotesIndexRoute,
   ShelvesIndexRoute,
   VerifyEmailIndexRoute,
   LoginIndexLazyRoute,
