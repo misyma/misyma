@@ -10,7 +10,7 @@ export interface Props {
 export const AuthenticatedLayout: FC<Props> = ({ children }) => {
   return (
     <RequireAuthComponent>
-      <div className="grid grid-cols-1 min-h-screen">
+      <div className="flex flex-col min-h-screen">
         <Navbar />
         <div className="w-full md:max-w-screen-2xl mx-auto flex-grow">{children}</div>
         <Toaster />
