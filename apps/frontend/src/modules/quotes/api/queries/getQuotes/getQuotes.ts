@@ -1,18 +1,13 @@
-import { type FindQuotesResponseBody } from '@common/contracts';
+import { type FindQuotesQueryParams, type FindQuotesResponseBody } from '@common/contracts';
 
 import { HttpService } from '../../../../core/services/httpService/httpService';
 
-export interface GetQuotesPayload {
-  userBookId: string;
-  accessToken: string;
-  page?: number;
-  pageSize?: number;
-}
+export const getQuotes = async (payload: FindQuotesQueryParams & { accessToken: string }) => {
+  const queryParams: Record<string, string> = {};
 
-export const getQuotes = async (payload: GetQuotesPayload) => {
-  const queryParams: Record<string, string> = {
-    userBookId: payload.userBookId,
-  };
+  if (payload.userBookId) {
+    queryParams.userBookId = payload.userBookId;
+  }
 
   if (payload.page || payload.page === 0) {
     queryParams.page = `${payload.page}`;
@@ -22,7 +17,11 @@ export const getQuotes = async (payload: GetQuotesPayload) => {
     queryParams.pageSize = `${payload.pageSize}`;
   }
 
-  queryParams.sortDate = 'desc';
+  if (payload.sortDate) {
+    queryParams.sortDate = payload.sortDate;
+  } else {
+    queryParams.sortDate = 'desc';
+  }
 
   const response = await HttpService.get<FindQuotesResponseBody>({
     url: '/quotes',

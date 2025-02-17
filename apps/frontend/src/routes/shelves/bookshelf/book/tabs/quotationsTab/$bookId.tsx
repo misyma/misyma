@@ -1,8 +1,15 @@
 import { createFileRoute, Navigate } from '@tanstack/react-router';
 import { z } from 'zod';
 
+import { SortOrder } from '@common/contracts';
+
 const bookPathParamsSchema = z.object({
   bookId: z.string().uuid().catch(''),
+  sortDate: z.nativeEnum(SortOrder).optional(),
+});
+
+const bookQueryParamsSchema = z.object({
+  sortDate: z.nativeEnum(SortOrder).catch(SortOrder.desc),
 });
 
 export const Route = createFileRoute('/shelves/bookshelf/book/tabs/quotationsTab/$bookId')({
@@ -12,6 +19,7 @@ export const Route = createFileRoute('/shelves/bookshelf/book/tabs/quotationsTab
   parseParams: (params) => {
     return bookPathParamsSchema.parse(params);
   },
+  validateSearch: bookQueryParamsSchema,
   staticData: {
     routeDisplayableNameParts: [
       {
