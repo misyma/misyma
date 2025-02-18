@@ -5,6 +5,8 @@ export interface QuoteDraft {
   readonly isFavorite: boolean;
   readonly createdAt: Date;
   readonly page?: string | undefined;
+  readonly bookTitle?: string | undefined;
+  readonly authors?: string[] | undefined;
 }
 
 export interface QuoteState {
@@ -13,6 +15,8 @@ export interface QuoteState {
   content: string;
   page?: string | undefined;
   readonly createdAt: Date;
+  readonly bookTitle?: string | undefined;
+  readonly authors?: string[] | undefined;
 }
 
 export interface SetContentPayload {
@@ -32,18 +36,36 @@ export class Quote {
   private readonly state: QuoteState;
 
   public constructor(draft: QuoteDraft) {
-    this.id = draft.id;
+    const { id, content, userBookId, isFavorite, page, createdAt, authors, bookTitle } = draft;
 
-    this.state = {
-      userBookId: draft.userBookId,
-      content: draft.content,
-      isFavorite: draft.isFavorite,
-      createdAt: draft.createdAt,
+    this.id = id;
+
+    let state: QuoteState = {
+      userBookId,
+      content,
+      isFavorite,
+      createdAt,
     };
 
-    if (draft.page !== undefined) {
-      this.state.page = draft.page;
+    if (page !== undefined) {
+      state.page = page;
     }
+
+    if (authors !== undefined) {
+      state = {
+        ...state,
+        authors,
+      };
+    }
+
+    if (bookTitle) {
+      state = {
+        ...state,
+        bookTitle,
+      };
+    }
+
+    this.state = state;
   }
 
   public setContent(payload: SetContentPayload): void {
@@ -86,6 +108,14 @@ export class Quote {
 
   public getPage(): string | undefined {
     return this.state.page;
+  }
+
+  public getAuthors(): string[] | undefined {
+    return this.state.authors;
+  }
+
+  public getBookTitle(): string | undefined {
+    return this.state.bookTitle;
   }
 
   public getState(): QuoteState {

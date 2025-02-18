@@ -218,9 +218,19 @@ describe('QuoteRepositoryImpl', () => {
 
       const bookshelf2 = await bookshelfTestUtils.createAndPersist({ input: { userId: user2.id } });
 
-      const book1 = await bookTestUtils.createAndPersist();
+      const author = await authorTestUtils.createAndPersist();
 
-      const book2 = await bookTestUtils.createAndPersist();
+      const book1 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+        },
+      });
+
+      const book2 = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+        },
+      });
 
       const genre1 = await genreTestUtils.createAndPersist();
 
@@ -242,7 +252,7 @@ describe('QuoteRepositoryImpl', () => {
         },
       });
 
-      const quote1 = await quoteTestUtils.createAndPersist({
+      const quote = await quoteTestUtils.createAndPersist({
         input: {
           userBookId: userBook1.id,
         },
@@ -262,7 +272,17 @@ describe('QuoteRepositoryImpl', () => {
 
       expect(result).toHaveLength(1);
 
-      expect(result[0]?.getId()).toEqual(quote1.id);
+      expect(result[0]?.getId()).toEqual(quote.id);
+
+      expect(result[0]?.getState()).toEqual({
+        userBookId: userBook1.id,
+        content: quote.content,
+        isFavorite: quote.isFavorite,
+        page: quote.page,
+        createdAt: quote.createdAt,
+        bookTitle: book1.title,
+        authors: [author.name],
+      });
     });
 
     it('returns an array of Quotes by Author', async () => {
@@ -331,7 +351,13 @@ describe('QuoteRepositoryImpl', () => {
 
       const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
 
-      const book = await bookTestUtils.createAndPersist();
+      const author = await authorTestUtils.createAndPersist();
+
+      const book = await bookTestUtils.createAndPersist({
+        input: {
+          authorIds: [author.id],
+        },
+      });
 
       const genre = await genreTestUtils.createAndPersist();
 

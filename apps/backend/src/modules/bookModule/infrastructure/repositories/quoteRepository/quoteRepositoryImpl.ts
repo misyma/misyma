@@ -14,8 +14,10 @@ import {
 } from '../../../domain/repositories/quoteRepository/quoteRepository.js';
 import { authorTable } from '../../databases/bookDatabase/tables/authorTable/authorTable.js';
 import { bookAuthorTable } from '../../databases/bookDatabase/tables/bookAuthorTable/bookAuthorTable.js';
+import { bookTable } from '../../databases/bookDatabase/tables/bookTable/bookTable.js';
 import { type QuoteRawEntity } from '../../databases/bookDatabase/tables/quoteTable/quoteRawEntity.js';
 import { quoteTable } from '../../databases/bookDatabase/tables/quoteTable/quoteTable.js';
+import { type QuoteWithJoinsRawEntity } from '../../databases/bookDatabase/tables/quoteTable/quoteWithJoinsRawEntity.js';
 import { userBookTable } from '../../databases/bookDatabase/tables/userBookTable/userBookTable.js';
 
 type CreateQuotePayload = { quote: QuoteState };
@@ -54,27 +56,33 @@ export class QuoteRepositoryImpl implements QuoteRepository {
   public async findQuotes(payload: FindQuotesPayload): Promise<Quote[]> {
     const { userId, userBookId, authorId, isFavorite, page, pageSize, sortDate } = payload;
 
-    let rawEntities: QuoteRawEntity[];
+    let rawEntities: QuoteWithJoinsRawEntity[];
 
     try {
-      const query = this.databaseClient<QuoteRawEntity>(quoteTable)
-        .select(`${quoteTable}.*`)
+      const query = this.databaseClient<QuoteWithJoinsRawEntity>(quoteTable)
+        .select([
+          `${quoteTable}.*`,
+          this.databaseClient.raw(`array_agg(DISTINCT "${authorTable}"."name") as "authors"`),
+          `${bookTable}.title as bookTitle`,
+        ])
         .leftJoin(userBookTable, (join) => {
           join.on(`${userBookTable}.id`, `=`, `${quoteTable}.userBookId`);
+        })
+        .leftJoin(bookAuthorTable, (join) => {
+          join.on(`${bookAuthorTable}.bookId`, '=', `${userBookTable}.bookId`);
+        })
+        .leftJoin(authorTable, (join) => {
+          join.on(`${authorTable}.id`, '=', `${bookAuthorTable}.authorId`);
+        })
+        .leftJoin(bookTable, (join) => {
+          join.on(`${bookTable}.id`, `=`, `${userBookTable}.bookId`);
         })
         .leftJoin(bookshelfTable, (join) => {
           join.on(`${bookshelfTable}.id`, `=`, `${userBookTable}.bookshelfId`);
         });
 
       if (authorId) {
-        query
-          .leftJoin(bookAuthorTable, (join) => {
-            join.on(`${bookAuthorTable}.bookId`, `=`, `${userBookTable}.bookId`);
-          })
-          .leftJoin(authorTable, (join) => {
-            join.on(`${authorTable}.id`, `=`, `${bookAuthorTable}.authorId`);
-          })
-          .where(`${authorTable}.id`, authorId);
+        query.where(`${authorTable}.id`, authorId);
       }
 
       query.where(`${bookshelfTable}.userId`, userId);
@@ -87,9 +95,9 @@ export class QuoteRepositoryImpl implements QuoteRepository {
         query.where(`${quoteTable}.isFavorite`, isFavorite);
       }
 
-      if (sortDate) {
-        query.orderBy('id', sortDate);
-      }
+      query.groupBy([`${quoteTable}.id`, `${bookTable}.id`]);
+
+      query.orderBy('id', sortDate ?? 'desc');
 
       rawEntities = await query.limit(pageSize).offset(pageSize * (page - 1));
     } catch (error) {
@@ -100,7 +108,7 @@ export class QuoteRepositoryImpl implements QuoteRepository {
       });
     }
 
-    return rawEntities.map((rawEntity) => this.quoteMapper.mapToDomain(rawEntity));
+    return rawEntities.map((rawEntity) => this.quoteMapper.mapRawEntityWithJoinsToDomain(rawEntity));
   }
 
   private async create(entity: CreateQuotePayload): Promise<Quote> {

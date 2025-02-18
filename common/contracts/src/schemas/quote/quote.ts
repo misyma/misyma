@@ -5,4 +5,6 @@ export interface Quote {
   readonly isFavorite: boolean;
   readonly createdAt: string;
   readonly page?: string;
+  readonly bookTitle?: string;
+  readonly authors?: string[];
 }

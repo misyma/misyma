@@ -248,6 +248,24 @@ export class QuoteHttpController implements HttpController {
       };
     }
 
+    const bookTitle = quote.getBookTitle();
+
+    if (bookTitle !== undefined) {
+      quoteDto = {
+        ...quoteDto,
+        bookTitle,
+      };
+    }
+
+    const authors = quote.getAuthors();
+
+    if (authors !== undefined) {
+      quoteDto = {
+        ...quoteDto,
+        authors,
+      };
+    }
+
     return quoteDto;
   }
 }
