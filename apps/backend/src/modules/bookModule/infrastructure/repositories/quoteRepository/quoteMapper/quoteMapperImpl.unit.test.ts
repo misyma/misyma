@@ -1,6 +1,7 @@
 import { beforeEach, expect, describe, it } from 'vitest';
 
 import { QuoteMapperImpl } from './quoteMapperImpl.js';
+import { Generator } from '../../../../../../../tests/generator.js';
 import { QuoteTestFactory } from '../../../../tests/factories/quoteTestFactory/quoteTestFactory.js';
 
 describe('QuoteMapperImpl', () => {
@@ -25,6 +26,33 @@ describe('QuoteMapperImpl', () => {
         isFavorite: quoteEntity.isFavorite,
         createdAt: quoteEntity.createdAt,
         page: quoteEntity.page,
+      },
+    });
+  });
+
+  it('maps from quote raw entity with joins to domain quote', async () => {
+    const quoteEntity = quoteTestFactory.createRaw();
+
+    const bookTitle = Generator.title();
+
+    const authors = [Generator.author()];
+
+    const quote = quoteMapperImpl.mapRawEntityWithJoinsToDomain({
+      ...quoteEntity,
+      bookTitle,
+      authors,
+    });
+
+    expect(quote).toEqual({
+      id: quoteEntity.id,
+      state: {
+        userBookId: quoteEntity.userBookId,
+        content: quoteEntity.content,
+        isFavorite: quoteEntity.isFavorite,
+        createdAt: quoteEntity.createdAt,
+        page: quoteEntity.page,
+        authors,
+        bookTitle,
       },
     });
   });

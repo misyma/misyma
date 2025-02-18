@@ -9,6 +9,7 @@ import { type DatabaseClient } from '../../../../../libs/database/clients/databa
 import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { symbols } from '../../../symbols.js';
+import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
 import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 import { type QuoteTestUtils } from '../../../tests/utils/quoteTestUtils/quoteTestUtils.js';
@@ -20,6 +21,8 @@ describe('FindQuotesQueryHandlerImpl', () => {
   let databaseClient: DatabaseClient;
 
   let quoteTestUtils: QuoteTestUtils;
+
+  let authorTestUtils: AuthorTestUtils;
 
   let bookTestUtils: BookTestUtils;
 
@@ -46,13 +49,23 @@ describe('FindQuotesQueryHandlerImpl', () => {
 
     bookTestUtils = container.get<BookTestUtils>(testSymbols.bookTestUtils);
 
+    authorTestUtils = container.get<AuthorTestUtils>(testSymbols.authorTestUtils);
+
     bookshelfTestUtils = container.get<BookshelfTestUtils>(testSymbols.bookshelfTestUtils);
 
     userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
 
     genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
 
-    testUtils = [genreTestUtils, bookTestUtils, bookshelfTestUtils, userTestUtils, quoteTestUtils, userBookTestUtils];
+    testUtils = [
+      authorTestUtils,
+      genreTestUtils,
+      bookTestUtils,
+      bookshelfTestUtils,
+      userTestUtils,
+      quoteTestUtils,
+      userBookTestUtils,
+    ];
 
     for (const testUtil of testUtils) {
       await testUtil.truncate();
@@ -72,7 +85,13 @@ describe('FindQuotesQueryHandlerImpl', () => {
 
     const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
 
-    const book = await bookTestUtils.createAndPersist();
+    const author = await authorTestUtils.createAndPersist();
+
+    const book = await bookTestUtils.createAndPersist({
+      input: {
+        authorIds: [author.id],
+      },
+    });
 
     const genre = await genreTestUtils.createAndPersist();
 
@@ -101,7 +120,13 @@ describe('FindQuotesQueryHandlerImpl', () => {
 
     const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
 
-    const book = await bookTestUtils.createAndPersist();
+    const author = await authorTestUtils.createAndPersist();
+
+    const book = await bookTestUtils.createAndPersist({
+      input: {
+        authorIds: [author.id],
+      },
+    });
 
     const genre = await genreTestUtils.createAndPersist();
 
@@ -136,18 +161,22 @@ describe('FindQuotesQueryHandlerImpl', () => {
 
     expect(quotes[0]?.getState()).toEqual({
       userBookId: userBook.id,
-      content: quote1.content,
-      createdAt: quote1.createdAt,
-      isFavorite: quote1.isFavorite,
-      page: quote1.page,
-    });
-
-    expect(quotes[1]?.getState()).toEqual({
-      userBookId: userBook.id,
       content: quote2.content,
       createdAt: quote2.createdAt,
       isFavorite: quote2.isFavorite,
       page: quote2.page,
+      authors: [author.name],
+      bookTitle: book.title,
+    });
+
+    expect(quotes[1]?.getState()).toEqual({
+      userBookId: userBook.id,
+      content: quote1.content,
+      createdAt: quote1.createdAt,
+      isFavorite: quote1.isFavorite,
+      page: quote1.page,
+      authors: [author.name],
+      bookTitle: book.title,
     });
 
     expect(total).toEqual(2);

@@ -196,7 +196,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
   public async findUserBook(payload: FindUserBookPayload): Promise<UserBook | null> {
     const { id, title, bookshelfId, bookId, authorIds } = payload;
 
-    let rawEntities: UserBookWithJoinsRawEntity[];
+    let rawEntity: UserBookWithJoinsRawEntity;
 
     try {
       const userBookSelect = [
@@ -225,27 +225,27 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       ];
 
       const authorsSelect = [
-        this.databaseClient.raw(`array_agg("${authorTable}"."id") as "authorIds"`),
-        this.databaseClient.raw(`array_agg("${authorTable}"."name") as "authorNames"`),
-        this.databaseClient.raw(`array_agg("${authorTable}"."isApproved") as "authorApprovals"`),
-        this.databaseClient.raw(`array_agg("${authorTable}"."createdAt") as "authorCreatedAtDates"`),
+        this.databaseClient.raw(`array_agg(DISTINCT "${authorTable}"."id") as "authorIds"`),
+        this.databaseClient.raw(`array_agg(DISTINCT "${authorTable}"."name") as "authorNames"`),
+        this.databaseClient.raw(`array_agg(DISTINCT "${authorTable}"."isApproved") as "authorApprovals"`),
+        this.databaseClient.raw(`array_agg(DISTINCT "${authorTable}"."createdAt") as "authorCreatedAtDates"`),
       ];
 
       const genresSelect = [`${genreTable}.name as genreName`];
 
       const collectionsSelect = [
-        this.databaseClient.raw(`array_agg("${collectionTable}"."id") as "collectionIds"`),
-        this.databaseClient.raw(`array_agg("${collectionTable}"."name") as "collectionNames"`),
-        this.databaseClient.raw(`array_agg("${collectionTable}"."createdAt") as "collectionCreatedAtDates"`),
-        this.databaseClient.raw(`array_agg("${collectionTable}"."userId") as "collectionUserIds"`),
+        this.databaseClient.raw(`array_agg(DISTINCT "${collectionTable}"."id") as "collectionIds"`),
+        this.databaseClient.raw(`array_agg(DISTINCT "${collectionTable}"."name") as "collectionNames"`),
+        this.databaseClient.raw(`array_agg(DISTINCT "${collectionTable}"."createdAt") as "collectionCreatedAtDates"`),
+        this.databaseClient.raw(`array_agg(DISTINCT "${collectionTable}"."userId") as "collectionUserIds"`),
       ];
 
       const readingsSelect = [
-        this.databaseClient.raw(`array_agg("${bookReadingTable}"."id") as "readingIds"`),
-        this.databaseClient.raw(`array_agg("${bookReadingTable}"."startedAt") as "readingStartedAtDates"`),
-        this.databaseClient.raw(`array_agg("${bookReadingTable}"."endedAt") as "readingEndedAtDates"`),
-        this.databaseClient.raw(`array_agg("${bookReadingTable}"."rating") as "readingRatings"`),
-        this.databaseClient.raw(`array_agg("${bookReadingTable}"."comment") as "readingComments"`),
+        this.databaseClient.raw(`array_agg(DISTINCT "${bookReadingTable}"."id") as "readingIds"`),
+        this.databaseClient.raw(`array_agg(DISTINCT "${bookReadingTable}"."startedAt") as "readingStartedAtDates"`),
+        this.databaseClient.raw(`array_agg(DISTINCT "${bookReadingTable}"."endedAt") as "readingEndedAtDates"`),
+        this.databaseClient.raw(`array_agg(DISTINCT "${bookReadingTable}"."rating") as "readingRatings"`),
+        this.databaseClient.raw(`array_agg(DISTINCT "${bookReadingTable}"."comment") as "readingComments"`),
       ];
 
       const latestRatingSelect = this.databaseClient.raw(`(
@@ -256,7 +256,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         LIMIT 1
       ) as "latestRating"`);
 
-      rawEntities = await this.databaseClient<UserBookRawEntity>(userBookTable)
+      rawEntity = await this.databaseClient<UserBookRawEntity>(userBookTable)
         .select([
           ...userBookSelect,
           ...bookSelect,
@@ -308,7 +308,8 @@ export class UserBookRepositoryImpl implements UserBookRepository {
             builder.whereIn(`${authorTable}.id`, authorIds);
           }
         })
-        .groupBy([`${userBookTable}.id`, `${bookTable}.id`, `${genreTable}.name`]);
+        .groupBy([`${userBookTable}.id`, `${bookTable}.id`, `${genreTable}.name`])
+        .first();
     } catch (error) {
       throw new RepositoryError({
         entity: 'UserBook',
@@ -317,11 +318,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       });
     }
 
-    if (!rawEntities.length) {
-      return null;
-    }
-
-    return this.userBookMapper.mapRawWithJoinsToDomain(rawEntities)[0] as UserBook;
+    return this.userBookMapper.mapRawWithJoinsToDomain(rawEntity);
   }
 
   public async findUserBooks(payload: FindUserBooksPayload): Promise<UserBook[]> {
@@ -374,10 +371,10 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       ];
 
       const authorsSelect = [
-        this.databaseClient.raw(`array_agg("${authorTable}"."id") as "authorIds"`),
-        this.databaseClient.raw(`array_agg("${authorTable}"."name") as "authorNames"`),
-        this.databaseClient.raw(`array_agg("${authorTable}"."isApproved") as "authorApprovals"`),
-        this.databaseClient.raw(`array_agg("${authorTable}"."createdAt") as "authorCreatedAtDates"`),
+        this.databaseClient.raw(`array_agg(DISTINCT "${authorTable}"."id") as "authorIds"`),
+        this.databaseClient.raw(`array_agg(DISTINCT "${authorTable}"."name") as "authorNames"`),
+        this.databaseClient.raw(`array_agg(DISTINCT "${authorTable}"."isApproved") as "authorApprovals"`),
+        this.databaseClient.raw(`array_agg(DISTINCT "${authorTable}"."createdAt") as "authorCreatedAtDates"`),
       ];
 
       const genresSelect = [`${genreTable}.name as genreName`];
@@ -513,7 +510,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       });
     }
 
-    return this.userBookMapper.mapRawWithJoinsToDomain(rawEntities);
+    return rawEntities.map(this.userBookMapper.mapRawWithJoinsToDomain);
   }
 
   public async findUserBookOwner(payload: FindUserBookOwnerPayload): Promise<FindUserBookOwnerResult> {
