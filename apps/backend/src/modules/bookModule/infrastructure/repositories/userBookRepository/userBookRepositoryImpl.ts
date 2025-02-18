@@ -318,6 +318,10 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       });
     }
 
+    if (!rawEntity) {
+      return null;
+    }
+
     return this.userBookMapper.mapRawWithJoinsToDomain(rawEntity);
   }
 
