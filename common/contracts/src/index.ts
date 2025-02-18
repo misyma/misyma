@@ -2,7 +2,7 @@ export * from './schemas/author/author.js';
 
 export * from './schemas/bookshelf/bookshelf.js';
 
-export * from './schemas/bookChangeRequest/findAdminBookChangeRequestById.js';
+export * from './schemas/bookChangeRequest/findAdminBookChangeRequest.js';
 
 export * from './schemas/book/book.js';
 

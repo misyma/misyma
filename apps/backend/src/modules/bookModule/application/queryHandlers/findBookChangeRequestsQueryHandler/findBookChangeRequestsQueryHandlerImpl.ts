@@ -19,11 +19,12 @@ export class FindBookChangeRequestsQueryHandlerImpl implements FindBookChangeReq
   public async execute(
     payload: FindBookChangeRequestsQueryHandlerPayload,
   ): Promise<FindBookChangeRequestsQueryHandlerResult> {
-    const { page, pageSize, userId, id } = payload;
+    const { userId, id, page, pageSize, sortDate } = payload;
 
     let findBookChangeRequestsPayload: FindBookChangeRequestsPayload = {
       page,
       pageSize,
+      sortDate,
     };
 
     if (userId) {

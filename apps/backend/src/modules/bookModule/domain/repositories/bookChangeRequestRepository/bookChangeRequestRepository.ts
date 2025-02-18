@@ -16,6 +16,7 @@ export interface FindBookChangeRequestsPayload {
   readonly id?: string;
   readonly page: number;
   readonly pageSize: number;
+  readonly sortDate?: 'asc' | 'desc' | undefined;
 }
 
 export interface DeleteBookChangeRequestPayload {
