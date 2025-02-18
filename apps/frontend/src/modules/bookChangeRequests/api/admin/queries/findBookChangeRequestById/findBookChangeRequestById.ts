@@ -1,19 +1,16 @@
-import {
-  type FindAdminBookChangeRequestByIdResponseBody,
-  type FindBookChangeRequestByIdPathParams,
-} from '@common/contracts';
+import { type FindAdminBookChangeRequestResponseBody, type FindBookChangeRequestPathParams } from '@common/contracts';
 
 import { HttpService } from '../../../../../core/services/httpService/httpService';
 
-export interface FindBookChangeRequestByIdPayload extends FindBookChangeRequestByIdPathParams {
+export interface FindBookChangeRequestByIdPayload extends FindBookChangeRequestPathParams {
   accessToken: string;
 }
 
 export const findBookChangeRequests = async (payload: FindBookChangeRequestByIdPayload) => {
-  const { accessToken, id } = payload;
+  const { accessToken, bookChangeRequestId } = payload;
 
-  const response = await HttpService.get<FindAdminBookChangeRequestByIdResponseBody>({
-    url: `/admin/book-change-requests/${id}`,
+  const response = await HttpService.get<FindAdminBookChangeRequestResponseBody>({
+    url: `/admin/book-change-requests/${bookChangeRequestId}`,
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },

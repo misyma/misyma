@@ -127,7 +127,7 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
   }
 
   public async findBookChangeRequests(payload: FindBookChangeRequestsPayload): Promise<BookChangeRequest[]> {
-    const { page, pageSize, userEmail, id } = payload;
+    const { userEmail, id, page, pageSize, sortDate } = payload;
 
     let rawEntities: BookChangeRequestWithJoinsRawEntity[];
 
@@ -169,6 +169,7 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
             builder.where(`${bookChangeRequestTable}.userEmail`, userEmail);
           }
         })
+        .orderBy('id', sortDate ?? 'desc')
         .limit(pageSize)
         .offset(pageSize * (page - 1));
     } catch (error) {

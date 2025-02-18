@@ -13,11 +13,11 @@ import {
   type DeleteBookChangeRequestResponseBodyDto,
 } from './schemas/deleteBookChangeRequestSchema.js';
 import {
-  type FindAdminBookChangeRequestByIdResponseBodyDto,
-  findAdminBookChangeRequestByIdResponseBodyDtoSchema,
-  findBookChangeRequestByIdPathParamsDtoSchema,
-  type FindBookChangeRequestByIdPathParamsDto,
-} from './schemas/findBookChangeRequestByIdSchema.js';
+  type FindAdminBookChangeRequestResponseBodyDto,
+  findAdminBookChangeRequestResponseBodyDtoSchema,
+  findBookChangeRequestPathParamsDtoSchema,
+  type FindBookChangeRequestPathParamsDto,
+} from './schemas/findBookChangeRequestSchema.js';
 import {
   type FindAdminBookChangeRequestsQueryParamsDto,
   type FindAdminBookChangeRequestsResponseBodyDto,
@@ -104,16 +104,16 @@ export class BookChangeRequestAdminHttpController implements HttpController {
       }),
       new HttpRoute({
         method: HttpMethodName.get,
-        path: ':id',
-        handler: this.findBookChangeRequestsById.bind(this),
+        path: ':bookChangeRequestId',
+        handler: this.findBookChangeRequest.bind(this),
         description: 'Find bookChangeRequest by id',
         schema: {
           request: {
-            pathParams: findBookChangeRequestByIdPathParamsDtoSchema,
+            pathParams: findBookChangeRequestPathParamsDtoSchema,
           },
           response: {
             [HttpStatusCode.ok]: {
-              schema: findAdminBookChangeRequestByIdResponseBodyDtoSchema,
+              schema: findAdminBookChangeRequestResponseBodyDtoSchema,
               description: 'BookChangeRequest found',
             },
           },
@@ -167,11 +167,12 @@ export class BookChangeRequestAdminHttpController implements HttpController {
       expectedRole: UserRole.admin,
     });
 
-    const { page = 1, pageSize = 10 } = request.queryParams;
+    const { page = 1, pageSize = 10, sortDate } = request.queryParams;
 
     const { bookChangeRequests, total } = await this.findBookChangeRequestsQueryHandler.execute({
       page,
       pageSize,
+      sortDate,
     });
 
     return {
@@ -187,20 +188,20 @@ export class BookChangeRequestAdminHttpController implements HttpController {
     };
   }
 
-  private async findBookChangeRequestsById(
-    request: HttpRequest<undefined, undefined, FindBookChangeRequestByIdPathParamsDto>,
-  ): Promise<HttpOkResponse<FindAdminBookChangeRequestByIdResponseBodyDto>> {
+  private async findBookChangeRequest(
+    request: HttpRequest<undefined, undefined, FindBookChangeRequestPathParamsDto>,
+  ): Promise<HttpOkResponse<FindAdminBookChangeRequestResponseBodyDto>> {
     await this.accessControlService.verifyBearerToken({
       requestHeaders: request.headers,
       expectedRole: UserRole.admin,
     });
 
-    const { id } = request.pathParams;
+    const { bookChangeRequestId } = request.pathParams;
 
     const { bookChangeRequests } = await this.findBookChangeRequestsQueryHandler.execute({
       page: 1,
       pageSize: 1,
-      id,
+      id: bookChangeRequestId,
     });
 
     return {
