@@ -11,7 +11,9 @@ interface FilterContainerProps extends Omit<FilterComponentProps, 'setFilterActi
   onRemoveFilter?: () => void;
   hasValue?: boolean;
   disableXButton?: boolean;
+  horizontalLayout?: boolean;
 }
+
 export const FilterContainer: FC<FilterContainerProps> = ({
   filter,
   slot,
@@ -19,13 +21,16 @@ export const FilterContainer: FC<FilterContainerProps> = ({
   hasValue,
   disableXButton,
   onRemoveFilter,
+  horizontalLayout,
 }) => {
   return (
-    <div className="flex flex-col items-start w-full justify-between gap-1 overflow-hidden">
-      <label className="px-2">{filter.label}</label>
+    <div
+      className={`flex ${horizontalLayout === true ? 'flex-row items-center' : 'flex-col items-start'} w-full justify-between gap-1 overflow-hidden`}
+    >
+      <label className={`px-2 ${horizontalLayout === true ? 'flex-grow whitespace-nowrap' : ''}`}>{filter.label}</label>
       <div
         className={cn(
-          'relative flex gap-2 items-center justify-start w-full overflow-hidden truncate p-2',
+          `relative flex gap-2 items-center justify-start w-full overflow-hidden truncate p-2`,
           filterContainerClassName,
         )}
       >

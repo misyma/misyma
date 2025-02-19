@@ -18,6 +18,7 @@ export const AuthorsAdminPage: FC = () => {
     name: string;
     sortField?: FindAuthorsSortField;
     sortOrder?: SortOrder;
+    toApprove?: boolean;
   };
 
   const setPage = (page: number) => {
@@ -34,6 +35,13 @@ export const AuthorsAdminPage: FC = () => {
     });
   };
 
+  const setSearchToApprove = (val: boolean | undefined) => {
+    navigate({
+      to: '',
+      search: (values) => ({ ...values, toApprove: val }),
+    });
+  };
+
   return (
     <AuthenticatedLayout>
       <AdminTabLayout
@@ -46,6 +54,8 @@ export const AuthorsAdminPage: FC = () => {
             page={searchParams?.page}
             setPage={setPage}
             setAuthorName={setSearchAuthorName}
+            toApprove={searchParams?.toApprove}
+            setToApprove={setSearchToApprove}
           />
         }
         AdditionalActionsSlot={<></>}

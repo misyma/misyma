@@ -58,4 +58,5 @@ export interface FilterComponentProps<V = string> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setFilterAction: (value: any) => void;
   initialValue?: V;
+  size?: string;
 }
