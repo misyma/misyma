@@ -5,7 +5,7 @@ import * as React from 'react';
 import styles from './index.module.css';
 import { cn } from '../../lib/utils';
 
-type CheckboxSize = 'base' | 'lg' | 'xl' | 'xxl' | 'xxxl';
+export type CheckboxSize = 'base' | 'lg' | 'xl' | 'xxl' | 'xxxl';
 
 const getSizeClass = (size: CheckboxSize): string => {
   const sizeMap = {

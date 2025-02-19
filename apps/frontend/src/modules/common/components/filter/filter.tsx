@@ -11,7 +11,7 @@ import { useErrorHandledQuery } from '../../hooks/useErrorHandledQuery';
 import { cn } from '../../lib/utils';
 import { type FilterComponentProps, type SelectFilterOpts } from '../../types/filter';
 import { Button } from '../button/button';
-import { Checkbox } from '../checkbox/checkbox';
+import { Checkbox, type CheckboxSize } from '../checkbox/checkbox';
 import { Input } from '../input/input';
 import { Popover, PopoverContent, PopoverTrigger } from '../popover/popover';
 import { Select, SelectContent, SelectContentNoPortal, SelectItem, SelectTrigger, SelectValue } from '../select/select';
@@ -203,8 +203,13 @@ const YearPickerContent = memo(
 
 YearPickerContent.displayName = 'YearPickerContent';
 
-export const CheckboxFilter: FC<FilterComponentProps<boolean>> = memo(
-  ({ filter, initialValue, onRemoveFilter, setFilterAction }) => {
+interface CheckboxFilterProps extends FilterComponentProps<boolean> {
+  size?: CheckboxSize;
+  horizontalLayout?: boolean;
+}
+
+export const CheckboxFilter: FC<CheckboxFilterProps> = memo(
+  ({ filter, initialValue, onRemoveFilter, setFilterAction, size, horizontalLayout }) => {
     const [checked, setChecked] = useState<boolean | undefined>(!!initialValue);
 
     const handleChange = useCallback(
@@ -224,11 +229,12 @@ export const CheckboxFilter: FC<FilterComponentProps<boolean>> = memo(
       <FilterContainer
         disableXButton
         hasValue={checked}
+        horizontalLayout={horizontalLayout}
         slot={
           <div className="flex items-center gap-2 space-x-2">
             <Checkbox
               id={`checkbox-${filter.id}`}
-              size="xxxl"
+              size={size || 'xxxl'}
               checked={checked}
               onCheckedChange={handleChange}
             />

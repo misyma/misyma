@@ -10,6 +10,7 @@ import { AdminAuthorsApiQueryKeys } from '../adminAuthorsApiQueryKeys.js';
 
 type Payload = {
   name?: string;
+  isApproved?: boolean;
   all?: boolean;
   ids?: string[];
   page?: number;
@@ -20,6 +21,7 @@ type Payload = {
 
 export const useFindAdminAuthorsQuery = ({
   name,
+  isApproved,
   all = false,
   page,
   pageSize,
@@ -54,6 +56,7 @@ export const useFindAdminAuthorsQuery = ({
       `${ids?.join(',')}`,
       sortField,
       sortOrder,
+      isApproved,
     ],
     queryFn: () =>
       findAdminAuthors({
@@ -64,6 +67,7 @@ export const useFindAdminAuthorsQuery = ({
         pageSize,
         sortField,
         sortOrder,
+        isApproved,
       }),
     enabled: !!accessToken && isEnabled(),
     ...options,

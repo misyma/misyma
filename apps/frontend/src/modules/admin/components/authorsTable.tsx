@@ -8,6 +8,7 @@ import { authorTableColumns } from '../../author/components/authorTableColumns';
 import { CreateAuthorModal } from '../../author/components/createAuthorModal';
 import { DataSkeletonTable } from '../../common/components/dataTable/dataSkeletonTable';
 import { DataTable } from '../../common/components/dataTable/dataTable';
+import { CheckboxFilter } from '../../common/components/filter/filter';
 import { Input } from '../../common/components/input/input';
 import useDebounce from '../../common/hooks/useDebounce';
 import { useInitialFetch } from '../../common/hooks/useInitialFetch';
@@ -19,6 +20,8 @@ interface AdminAuthorsTableProps {
   setPage: (val: number) => void;
   authorName: string;
   setAuthorName: (val: string) => void;
+  toApprove: boolean | undefined;
+  setToApprove: (val: boolean | undefined) => void;
 }
 
 export const AuthorsTable: FC<AdminAuthorsTableProps> = ({
@@ -28,6 +31,8 @@ export const AuthorsTable: FC<AdminAuthorsTableProps> = ({
   authorName,
   sortField,
   sortOrder,
+  toApprove,
+  setToApprove,
 }) => {
   const [searchAuthorName, setSearchAuthorName] = useState(authorName);
 
@@ -57,6 +62,7 @@ export const AuthorsTable: FC<AdminAuthorsTableProps> = ({
     name: debouncedSearchValue,
     sortField,
     sortOrder,
+    isApproved: toApprove === true ? false : undefined,
   });
 
   const { isLoading } = useInitialFetch({ isFetching });
@@ -76,12 +82,27 @@ export const AuthorsTable: FC<AdminAuthorsTableProps> = ({
   return (
     <div className="flex flex-col w-full">
       <div className="flex justify-between items-center mb-5">
-        <Input
-          placeholder="Wyszukaj autora..."
-          value={searchAuthorName ?? ''}
-          onChange={(event) => onSetSearchAuthorName(event.target.value)}
-          className="max-w-sm"
-        />
+        <div className="flex gap-4 items-center">
+          <Input
+            placeholder="Wyszukaj autora..."
+            value={searchAuthorName ?? ''}
+            onChange={(event) => onSetSearchAuthorName(event.target.value)}
+            className="max-w-sm"
+          />
+          <CheckboxFilter
+            initialValue={toApprove}
+            onRemoveFilter={() => setToApprove(undefined)}
+            setFilterAction={() => setToApprove(!toApprove)}
+            filter={{
+              id: 'to-approve-filter',
+              key: 'toApprove',
+              label: 'Do zaakceptowania',
+              type: 'checkbox',
+            }}
+            size="xxl"
+            horizontalLayout
+          />
+        </div>
         <div className="flex gap-2 items-center">
           <CreateAuthorModal onMutated={() => {}}></CreateAuthorModal>
           <AdminAuthorsSortButton />

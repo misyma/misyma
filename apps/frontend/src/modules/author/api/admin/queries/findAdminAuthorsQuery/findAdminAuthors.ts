@@ -12,7 +12,7 @@ type Payload = FindAdminAuthorsQueryParams & {
 };
 
 export const findAdminAuthors = async (values: Payload) => {
-  const { name, page, pageSize, ids, accessToken, sortField, sortOrder } = values;
+  const { name, page, pageSize, ids, accessToken, sortField, sortOrder, isApproved } = values;
 
   const query: Record<string, string> = {
     sortField: sortField || FindAuthorsSortField.createdAt,
@@ -21,6 +21,10 @@ export const findAdminAuthors = async (values: Payload) => {
 
   if (name) {
     query.name = name;
+  }
+
+  if (isApproved !== undefined) {
+    query.isApproved = `${isApproved}`;
   }
 
   if (page) {
