@@ -101,6 +101,7 @@ export const VirtualizedQuotesList: FC<VirtualizedQuotesListProps> = ({ queryArg
                     <Blockquote
                       page={quote.page}
                       date="2025-01-01"
+                      author={quote.authors?.join(', ')}
                       rightButtons={
                         <>
                           <UpdateQuoteButton

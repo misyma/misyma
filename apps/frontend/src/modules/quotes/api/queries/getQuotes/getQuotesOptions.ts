@@ -20,7 +20,13 @@ export const getQuotesByInfiniteQueryOptions = ({
   ...payload
 }: FindQuotesQueryParams & { accessToken: string }) =>
   infiniteQueryOptions({
-    queryKey: [...getQuotesOptionsQueryKey(payload), `${page}`, `${payload.pageSize}`, `${payload.sortDate}`],
+    queryKey: [
+      'infinite-query',
+      ...getQuotesOptionsQueryKey(payload),
+      `${page}`,
+      `${payload.pageSize}`,
+      `${payload.sortDate}`,
+    ],
     initialPageParam: page,
     queryFn: ({ pageParam }) =>
       getQuotes({

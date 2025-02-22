@@ -1,6 +1,7 @@
 import { Quote } from 'lucide-react';
 import type React from 'react';
 
+import { TruncatedTextTooltip } from '../../../book/components/truncatedTextTooltip/truncatedTextTooltip';
 import { cn } from '../../../common/lib/utils';
 
 type BlockquoteProps = {
@@ -13,7 +14,15 @@ type BlockquoteProps = {
   rightButtons?: React.ReactNode;
 };
 
-const Blockquote = ({ date, page, children, className, author, variant = 'paper', rightButtons }: BlockquoteProps) => {
+const Blockquote = ({
+  date,
+  page,
+  children,
+  className,
+  author,
+  variant = 'minimalist',
+  rightButtons,
+}: BlockquoteProps) => {
   const variants = {
     modern:
       'relative rounded-lg border-l-4 border-primary bg-primary-background py-4 pl-6 pr-4 font-sans italic leading-relaxed text-secondary-foreground',
@@ -27,7 +36,7 @@ const Blockquote = ({ date, page, children, className, author, variant = 'paper'
     <div className={cn(variants[variant], 'mb-6', 'w-full', className)}>
       {variant === 'modern' && <Quote className="absolute left-1 top-0 h-6 w-6 text-primary opacity-20" />}
       {variant === 'minimalist' && (
-        <Quote className="absolute -top-3 -left-3 h-6 w-6 text-primary bg-white dark:bg-gray-900 p-1" />
+        <Quote className="absolute -top-1 -left-3 h-6 w-6 text-primary bg-white dark:bg-gray-900 p-1" />
       )}
       {variant === 'paper' && (
         <div className="absolute -top-2 -right-2 h-0 w-0 border-t-[20px] border-r-[20px] border-t-primary/20 border-r-white dark:border-r-gray-800"></div>
@@ -38,7 +47,18 @@ const Blockquote = ({ date, page, children, className, author, variant = 'paper'
         {new Date(date).toLocaleDateString('pl-PL')}
         {page ? `, strona: ${page}` : ''}
       </div>
-      {author && <p className={cn('mt-4 font-bold not-italic text-primary text-right pr-4')}>— {author}</p>}
+      {author && (
+        <div className="w-full flex justify-end">
+          <TruncatedTextTooltip
+            className="w-full"
+            text={author}
+          >
+            <p className={cn('mt-4 truncate max-w-3xl font-bold not-italic text-primary text-right pr-4')}>
+              — {author}
+            </p>
+          </TruncatedTextTooltip>
+        </div>
+      )}
     </div>
   );
 };

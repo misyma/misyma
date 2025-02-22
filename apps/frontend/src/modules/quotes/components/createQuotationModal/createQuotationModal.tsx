@@ -22,6 +22,7 @@ import { userStateSelectors } from '../../../core/store/states/userState/userSta
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { useCreateQuoteMutation } from '../../api/mutations/createQuoteMutation/createQuoteMutation';
 import { getQuotesOptionsQueryKey } from '../../api/queries/getQuotes/getQuotesOptions';
+import { QuotesApiQueryKeys } from '../../api/queries/quotesApiQueryKeys';
 
 const createQuotationSchema = z
   .object({
@@ -116,11 +117,17 @@ export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props):
 
       setIsOpen(false);
 
-      await queryClient.invalidateQueries({
-        queryKey: getQuotesOptionsQueryKey({
-          userBookId,
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: getQuotesOptionsQueryKey({
+            userBookId,
+          }),
         }),
-      });
+        queryClient.invalidateQueries({
+          predicate: ({ queryKey }) =>
+            queryKey[0] === 'infinite-query' && queryKey[1] === QuotesApiQueryKeys.findQuotes,
+        }),
+      ]);
 
       toast({
         title: 'Cytat został dodany 😄',
