@@ -1,4 +1,5 @@
 import { type VariantProps } from 'class-variance-authority';
+import { XCircle } from 'lucide-react';
 import { type FC, type PropsWithChildren } from 'react';
 
 import { multiSelectVariants } from './authorMultiComboboxVariants';
@@ -7,12 +8,14 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../
 import { cn } from '../../../common/lib/utils';
 
 interface TruncatedAuthorsTooltip extends VariantProps<typeof multiSelectVariants> {
-  values: string[];
+  values: { label: string; value: string }[];
+  onRemoveValue: (val: { label: string; value: string }) => void;
 }
 export const TruncatedAuthorsTooltip: FC<PropsWithChildren<TruncatedAuthorsTooltip>> = ({
   values,
   variant,
   children,
+  onRemoveValue,
 }) => {
   return (
     <TooltipProvider>
@@ -25,13 +28,20 @@ export const TruncatedAuthorsTooltip: FC<PropsWithChildren<TruncatedAuthorsToolt
         >
           {values.map((val) => (
             <Badge
-              key={val}
+              key={val.value}
               className={cn(
                 'bg-transparent text-foreground border-foreground/1 hover:bg-transparent font-normal text-xs',
                 multiSelectVariants({ variant }),
               )}
             >
-              {val}
+              {val.label}
+              <XCircle
+                className="ml-2 h-4 w-4 cursor-pointer"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onRemoveValue(val);
+                }}
+              />
             </Badge>
           ))}
         </TooltipContent>

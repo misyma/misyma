@@ -143,7 +143,7 @@ export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>
             size="custom"
             onClick={handleTogglePopover}
             className={cn(
-              'flex w-60 sm:w-96 p-1 bg-[#D1D5DB]/20 rounded-md border min-h-10 h-auto items-center justify-between hover:bg-inherit [&_svg]:pointer-events-auto px-3 py-2',
+              'flex w-60 sm:w-96 p-1 bg-[#D1D5DB]/20 rounded-md border min-h-10 h-auto items-center justify-between hover:bg-inherit [&_svg]:pointer-events-auto py-2',
               className,
             )}
           >
@@ -183,7 +183,8 @@ export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>
                       style={{ animationDuration: `${animation}s` }}
                     >
                       <TruncatedAuthorsTooltip
-                        values={selectedValues.slice(maxCount).map((x) => x.label)}
+                        values={selectedValues.slice(maxCount)}
+                        onRemoveValue={toggleOption}
                         variant={variant}
                       >
                         <p>{`+ ${selectedValues.length - maxCount} więcej`}</p>
