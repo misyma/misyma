@@ -3,9 +3,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { HiOutlineInformationCircle } from 'react-icons/hi';
 import { useSelector } from 'react-redux';
-import { z } from 'zod';
 
-import { useFindAuthorsQuery } from '../../../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
 import { AuthorMultiSelect } from '../../../../../author/components/authorMultiCombobox/authorMultiCombobox';
 import {
   BookCreationActionType,
@@ -32,56 +30,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '../../../../../common/components/tooltip/tooltip';
-import { isbnSchema } from '../../../../../common/schemas/isbnSchema';
 import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';
 import { findUserBooksBy } from '../../../../api/user/queries/findUserBookBy/findUserBooksBy';
 import { BookApiError } from '../../../../errors/bookApiError';
-
-const stepOneSchema = z.object({
-  isbn: isbnSchema.or(z.literal('')),
-  title: z
-    .string()
-    .min(1, {
-      message: 'Tytuł musi mieć co najmniej jeden znak.',
-    })
-    .max(256, {
-      message: 'Tytuł może mieć maksymalnie 256 znaków.',
-    }),
-  authorIds: z
-    .array(
-      z
-        .string({
-          required_error: 'Wymagany',
-        })
-        .uuid({
-          message: 'Brak wybranego autora.',
-        }),
-    )
-    .min(1, {
-      message: 'Wymagany jest co najmniej jeden autor.',
-    }),
-  publisher: z
-    .string()
-    .min(1, {
-      message: 'Nazwa wydawnictwa powinna mieć co namniej 1 znak.',
-    })
-    .max(128, {
-      message: 'Nazwa wydawnictwa powinna mieć co najwyżej 128 znaków.',
-    })
-    .or(z.literal('')),
-  releaseYear: z
-    .number({
-      invalid_type_error: 'Rok wydania musi być liczbą.',
-      required_error: 'Rok wyadania musi być liczbą.',
-      coerce: true,
-    })
-    .min(1, {
-      message: 'Rok wydania musi być wcześniejszy niż 1',
-    })
-    .max(2100, {
-      message: 'Rok wydania nie może być późniejszy niż 2100',
-    }),
-});
+import { type CreateBookStepOne, createBookStepOneSchema } from '../../../../schemas/createBookSchemas';
 
 export const ManualStepOneForm = (): JSX.Element => {
   const bookCreation = useBookCreation<false>() as BookCreationNonIsbnState;
@@ -96,7 +48,7 @@ export const ManualStepOneForm = (): JSX.Element => {
   const dispatch = useBookCreationDispatch();
 
   const form = useForm({
-    resolver: zodResolver(stepOneSchema),
+    resolver: zodResolver(createBookStepOneSchema),
     defaultValues: {
       isbn: bookCreation.stepOneDetails?.isbn ?? '',
       title: bookCreation.stepOneDetails?.title ?? '',
@@ -111,11 +63,11 @@ export const ManualStepOneForm = (): JSX.Element => {
   const onOpenChange = (bool: boolean) => setCreateAuthorDialogVisible(bool);
 
   const onSubmit = async (
-    values: Partial<z.infer<typeof stepOneSchema>> & {
+    values: Partial<CreateBookStepOne> & {
       releaseYear: number | string;
     },
   ) => {
-    const vals = values as z.infer<typeof stepOneSchema>;
+    const vals = values as CreateBookStepOne;
 
     if (vals.isbn) {
       try {

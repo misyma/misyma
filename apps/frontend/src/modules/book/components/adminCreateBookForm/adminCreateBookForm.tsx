@@ -43,7 +43,8 @@ export const AdminCreateBookForm: FC<Props> = (props) => {
 
   const canNavigateToSecond = useCallback(() => {
     return (
-      (bookCreation.stepOneDetails?.authorIds || bookCreation.stepOneDetails?.authorName) &&
+      bookCreation.stepOneDetails?.authorIds &&
+      bookCreation.stepOneDetails.releaseYear &&
       bookCreation.stepOneDetails?.title
     );
   }, [bookCreation.stepOneDetails]);
