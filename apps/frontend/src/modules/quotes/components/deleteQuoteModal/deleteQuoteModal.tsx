@@ -40,9 +40,15 @@ export const DeleteQuoteModal: FC<Props> = ({ quoteId }: Props) => {
 
       setIsOpen(false);
 
-      await queryClient.invalidateQueries({
-        predicate: (query) => query.queryKey[0] === QuotesApiQueryKeys.findQuotes,
-      });
+      await Promise.all([
+        queryClient.invalidateQueries({
+          predicate: (query) => query.queryKey[0] === QuotesApiQueryKeys.findQuotes,
+        }),
+        queryClient.invalidateQueries({
+          predicate: ({ queryKey }) =>
+            queryKey[0] === 'infinite-query' && queryKey[1] === QuotesApiQueryKeys.findQuotes,
+        }),
+      ]);
 
       toast({
         variant: 'success',
