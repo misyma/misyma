@@ -223,6 +223,14 @@ const NavbarList: FC<{ user?: User; handleLogout: () => void }> = ({ user, handl
         </Link>
       </li>
       <li className="text-black text-md text-center font-semibold">
+        <Link
+          to={'/quotes'}
+          className={linkClasses}
+        >
+          Cytaty
+        </Link>
+      </li>
+      <li className="text-black text-md text-center font-semibold">
         <Menubar className="rounded-none space-x-0 border-none data-[state=open]:!bg-none">
           <MenubarMenu>
             <MenubarTrigger
