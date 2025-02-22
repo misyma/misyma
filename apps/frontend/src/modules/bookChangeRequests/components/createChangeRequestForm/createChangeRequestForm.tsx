@@ -8,7 +8,6 @@ import { z } from 'zod';
 import { BookFormat as ContractBookFormat, Language } from '@common/contracts';
 
 import { StepOneForm } from './stepOneForm/stepOneForm';
-import { useCreateAuthorDraftMutation } from '../../../author/api/user/mutations/createAuthorDraftMutation/createAuthorDraftMutation';
 import { FindBookByIdQueryOptions } from '../../../book/api/user/queries/findBookById/findBookByIdQueryOptions';
 import { FindUserBookByIdQueryOptions } from '../../../book/api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 import BookFormatSelect from '../../../book/components/bookFormatSelect/bookFormatSelect';
@@ -164,8 +163,6 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
     setCurrentStep(2);
   };
 
-  const { mutateAsync: createAuthorDraft, isPending: isCreateAuthorPending } = useCreateAuthorDraftMutation({});
-
   const preparePayload = useCallback(
     (object: Writeable<CreateBookChangeRequestPayload>, objectToUpdate: Writeable<CreateBookChangeRequestPayload>) => {
       Object.entries(object).forEach(([key, value]) => {
@@ -182,6 +179,11 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
 
         if (Array.isArray(bookData[bookDataKey]) && bookData[bookDataKey]?.[0] === value) {
           delete objectToUpdate[bookDataKey];
+          return;
+        }
+
+        if (bookData?.authors && Array.isArray(value) && key === 'authorIds' && value.length === 0) {
+          delete objectToUpdate['authorIds'];
           return;
         }
 
@@ -225,24 +227,20 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
   const updatePayload = useMemo(() => {
     const innerPayload = { ...payload };
 
-    if (context.authorName) {
-      payload.authorIds = [''];
-    }
-
     preparePayload(
       payload as unknown as CreateBookChangeRequestPayload,
       innerPayload as unknown as CreateBookChangeRequestPayload,
     );
 
     return innerPayload;
-  }, [payload, context.authorName, preparePayload]);
+  }, [payload, preparePayload]);
 
   const onUpdate = async (values: z.infer<typeof stepTwoSchema>) => {
     const payload = {
       ...context,
       ...(context?.authorIds
         ? {
-            authorIds: [context.authorIds],
+            authorIds: context.authorIds,
           }
         : {}),
       ...values,
@@ -250,20 +248,12 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
       bookId: bookData?.id as string,
     };
 
-    if (context.authorName) {
-      const createdAuthor = await createAuthorDraft({
-        name: context.authorName,
-      });
-
-      payload.authorIds = [createdAuthor.id];
-    }
-
     preparePayload(payload as CreateBookChangeRequestPayload, payload as CreateBookChangeRequestPayload);
 
     try {
       await createBookChangeRequest({
         ...payload,
-        authorIds: Array.isArray(payload.authorIds) ? payload.authorIds : payload.authorIds?.split(','),
+        authorIds: payload.authorIds,
       } as CreateBookChangeRequestPayload);
 
       toast({
@@ -408,7 +398,6 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
                 disabled={
                   !stepTwoForm.formState.isValid ||
                   Object.entries(updatePayload).length === 0 ||
-                  isCreateAuthorPending ||
                   isCreatingBookChangeRequest
                 }
                 type="submit"

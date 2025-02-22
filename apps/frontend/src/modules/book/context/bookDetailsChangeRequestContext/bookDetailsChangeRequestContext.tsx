@@ -5,8 +5,7 @@ import { type BookFormat, type Language } from '@common/contracts';
 export interface BookDetailsChangeRequestState {
   isbn: string;
   title: string;
-  authorIds: string | undefined;
-  authorName: string | undefined;
+  authorIds: string[];
   releaseYear: undefined;
   publisher: string;
   language: Language;
@@ -32,8 +31,7 @@ type SetContextValuesAction = {
 type Actions = ResetContextValues | SetContextValuesAction;
 
 const defaultValues: BookDetailsChangeRequestState = {
-  authorIds: undefined,
-  authorName: undefined,
+  authorIds: [],
   format: '' as BookFormat,
   isbn: '',
   language: '' as Language,
@@ -71,7 +69,7 @@ export function useBookDetailsChangeRequestDispatch() {
 function bookDetailsChangeRequestReducer(state: BookDetailsChangeRequestState, action: Actions) {
   if (action.type === BookDetailsChangeRequestAction.resetContext) {
     return {
-      authorIds: undefined,
+      authorIds: [],
       authorName: undefined,
       format: '' as BookFormat,
       isbn: '',

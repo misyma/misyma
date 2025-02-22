@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { HiOutlineInformationCircle } from 'react-icons/hi';
 import { useSelector } from 'react-redux';
 
-import { AuthorMultiSelect } from '../../../../../author/components/authorMultiCombobox/authorMultiCombobox';
+import { AuthorMultiCombobox } from '../../../../../author/components/authorMultiCombobox/authorMultiCombobox';
 import {
   BookCreationActionType,
   type BookCreationNonIsbnState,
@@ -197,7 +197,7 @@ export const ManualStepOneForm = (): JSX.Element => {
                 >
                   <PopoverTrigger asChild>
                     <FormControl>
-                      <AuthorMultiSelect
+                      <AuthorMultiCombobox
                         createAuthorDialogVisible={createAuthorDialogVisible}
                         setAuthorSelectOpen={onOpenChange}
                         placeholder="Wybierz autorów"
