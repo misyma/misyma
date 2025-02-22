@@ -7,16 +7,10 @@ import { useSelector } from 'react-redux';
 import { TruncatedTextTooltip } from '../../book/components/truncatedTextTooltip/truncatedTextTooltip';
 import { Badge } from '../../common/components/badge';
 import { Button } from '../../common/components/button/button';
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from '../../common/components/command/command';
+import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from '../../common/components/command/command';
 import { Popover, PopoverContent, PopoverTrigger } from '../../common/components/popover/popover';
 import { Separator } from '../../common/components/separator/separator';
+import useDebounce from '../../common/hooks/useDebounce';
 import { cn } from '../../common/lib/utils';
 import { userStateSelectors } from '../../core/store/states/userState/userStateSlice';
 import { useFindAuthorsInfiniteQuery } from '../api/user/queries/findAuthorsQuery/findAuthorsQuery';
@@ -35,17 +29,15 @@ const multiSelectVariants = cva('m-1 transition ease-in-out delay-150 duration-3
   },
 });
 
-interface MultiSelectProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof multiSelectVariants> {
+interface MultiSelectProps extends VariantProps<typeof multiSelectVariants> {
   /**
    * Callback function triggered when the selected values change.
    * Receives an array of the new selected values.
    */
-  onValueChange: (value: string[]) => void;
+  onValueChange: (value: { label: string; value: string }[]) => void;
 
   /** The default selected values when the component mounts. */
-  defaultValue?: string[];
+  defaultValue?: { label: string; value: string }[];
 
   /**
    * Placeholder text to be displayed when no values are selected.
@@ -101,28 +93,13 @@ export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>
     },
     ref,
   ) => {
-    const accessToken = useSelector(userStateSelectors.selectAccessToken);
+    const [searchedName, setSearchedName] = useState('');
 
-    const [selectedValues, setSelectedValues] = useState<string[]>(defaultValue);
+    const debouncedSearchedName = useDebounce(searchedName, 300);
+
+    const [selectedValues, setSelectedValues] = useState<{ label: string; value: string }[]>(defaultValue);
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
     const [isAnimating, setIsAnimating] = useState(false);
-
-    const { data: authors } = useFindAuthorsInfiniteQuery({
-      pageSize: 50,
-      all: true,
-      accessToken,
-    });
-
-    const options = useMemo(() => {
-      return (
-        authors?.pages.flatMap((p) =>
-          p.data.map((a) => ({
-            label: a.name,
-            value: a.id,
-          })),
-        ) ?? []
-      );
-    }, [authors?.pages]);
 
     const handleInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
       if (event.key === 'Enter') {
@@ -135,9 +112,9 @@ export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>
       }
     };
 
-    const toggleOption = (option: string) => {
+    const toggleOption = (option: { label: string; value: string }) => {
       const newSelectedValues = selectedValues.includes(option)
-        ? selectedValues.filter((value) => value !== option)
+        ? selectedValues.filter((value) => value.value !== option.value)
         : [...selectedValues, option];
       setSelectedValues(newSelectedValues);
       onValueChange(newSelectedValues);
@@ -149,7 +126,7 @@ export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>
     };
 
     const handleTogglePopover = () => {
-      setIsPopoverOpen((prev) => !prev);
+      setIsPopoverOpen(!isPopoverOpen);
     };
 
     const clearExtraOptions = () => {
@@ -180,18 +157,17 @@ export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>
               <div className="flex justify-between items-center w-full">
                 <div className="flex items-center">
                   {selectedValues.slice(0, maxCount).map((value) => {
-                    const option = options.find((o) => o.value === value);
                     return (
                       <Badge
-                        key={value}
+                        key={value.value}
                         className={cn(isAnimating ? 'animate-bounce' : '', multiSelectVariants({ variant }))}
                         style={{ animationDuration: `${animation}s` }}
                       >
                         <TruncatedTextTooltip
                           tooltipClassName="font-normal"
-                          text={option?.label ?? ''}
+                          text={value?.label ?? ''}
                         >
-                          <p className="truncate max-w-32 text-xs font-normal">{option?.label}</p>
+                          <p className="truncate max-w-32 text-xs font-normal">{value?.label}</p>
                         </TruncatedTextTooltip>
                         <XCircle
                           className="ml-2 h-4 w-4 cursor-pointer"
@@ -251,14 +227,16 @@ export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>
           align="start"
           onEscapeKeyDown={() => setIsPopoverOpen(false)}
         >
-          <Command>
+          <Command shouldFilter={false}>
             <CommandInput
               placeholder="Search..."
               onKeyDown={handleInputKeyDown}
+              onValueChange={(val) => setSearchedName(val)}
             />
             <CommandList>
               <CommandEmpty>Brak wyników.</CommandEmpty>
               <AuthorMultiSelectCommandGroup
+                searchedName={debouncedSearchedName}
                 selectedValues={selectedValues}
                 toggleOption={toggleOption}
               />
@@ -282,9 +260,11 @@ export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>
 const AuthorMultiSelectCommandGroup = ({
   selectedValues,
   toggleOption,
+  searchedName,
 }: {
-  selectedValues: string[];
-  toggleOption: (option: string) => void;
+  selectedValues: { label: string; value: string }[];
+  searchedName: string;
+  toggleOption: (option: { label: string; value: string }) => void;
 }) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
@@ -300,6 +280,7 @@ const AuthorMultiSelectCommandGroup = ({
     pageSize: 50,
     all: true,
     accessToken,
+    name: searchedName,
   });
 
   const options = useMemo(() => {
@@ -339,7 +320,7 @@ const AuthorMultiSelectCommandGroup = ({
   }, [rowVirtualizer]);
 
   return (
-    <CommandGroup
+    <div
       ref={parentRef}
       className="h-[300px] overflow-auto"
     >
@@ -355,7 +336,7 @@ const AuthorMultiSelectCommandGroup = ({
             //   const isLoaderRow = virtualRow.index >= options.length;
             const startIndex = virtualRow.index;
             const author = options[startIndex];
-            const isSelected = selectedValues.includes(author?.value);
+            const isSelected = selectedValues.includes(author);
 
             return (
               <CommandItem
@@ -368,7 +349,7 @@ const AuthorMultiSelectCommandGroup = ({
                   transform: `translateY(${virtualRow.start}px)`,
                 }}
                 key={author?.value}
-                onSelect={() => toggleOption(author?.value)}
+                onSelect={() => toggleOption(author)}
                 className="cursor-pointer"
               >
                 <div
@@ -384,7 +365,7 @@ const AuthorMultiSelectCommandGroup = ({
             );
           })}
       </div>
-    </CommandGroup>
+    </div>
   );
 };
 

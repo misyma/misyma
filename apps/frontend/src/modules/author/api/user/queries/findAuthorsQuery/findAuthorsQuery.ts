@@ -110,7 +110,7 @@ const getAuthorsInfiniteQueryOptions = ({ accessToken, name, page, ids, pageSize
 
       return undefined;
     },
-    enabled: !!accessToken,
+    enabled: !!accessToken && (!name || name.length > 3),
   });
 
 export const useFindAuthorsInfiniteQuery = (payload: InfinitePayload) => {
