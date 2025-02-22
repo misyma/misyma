@@ -1,33 +1,27 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { cva, type VariantProps } from 'class-variance-authority';
+import { type VariantProps } from 'class-variance-authority';
 import { CheckIcon, XCircle, ChevronDown, XIcon, WandSparkles } from 'lucide-react';
 import { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { TruncatedTextTooltip } from '../../book/components/truncatedTextTooltip/truncatedTextTooltip';
-import { Badge } from '../../common/components/badge';
-import { Button } from '../../common/components/button/button';
-import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from '../../common/components/command/command';
-import { Popover, PopoverContent, PopoverTrigger } from '../../common/components/popover/popover';
-import { Separator } from '../../common/components/separator/separator';
-import useDebounce from '../../common/hooks/useDebounce';
-import { cn } from '../../common/lib/utils';
-import { userStateSelectors } from '../../core/store/states/userState/userStateSlice';
-import { useFindAuthorsInfiniteQuery } from '../api/user/queries/findAuthorsQuery/findAuthorsQuery';
-
-const multiSelectVariants = cva('m-1 transition ease-in-out delay-150 duration-300', {
-  variants: {
-    variant: {
-      default: 'border-foreground/10 text-foreground bg-card hover:bg-card/80',
-      secondary: 'border-foreground/10 bg-secondary text-secondary-foreground hover:bg-secondary/80',
-      destructive: 'border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80',
-      inverted: 'inverted',
-    },
-  },
-  defaultVariants: {
-    variant: 'default',
-  },
-});
+import { multiSelectVariants } from './authorMultiComboboxVariants';
+import { TruncatedAuthorsTooltip } from './truncatedAuthorsTooltip';
+import { TruncatedTextTooltip } from '../../../book/components/truncatedTextTooltip/truncatedTextTooltip';
+import { Badge } from '../../../common/components/badge';
+import { Button } from '../../../common/components/button/button';
+import {
+  Command,
+  CommandEmpty,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '../../../common/components/command/command';
+import { Popover, PopoverContent, PopoverTrigger } from '../../../common/components/popover/popover';
+import { Separator } from '../../../common/components/separator/separator';
+import useDebounce from '../../../common/hooks/useDebounce';
+import { cn } from '../../../common/lib/utils';
+import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
+import { useFindAuthorsInfiniteQuery } from '../../api/user/queries/findAuthorsQuery/findAuthorsQuery';
 
 interface MultiSelectProps extends VariantProps<typeof multiSelectVariants> {
   /**
@@ -188,7 +182,13 @@ export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>
                       )}
                       style={{ animationDuration: `${animation}s` }}
                     >
-                      {`+ ${selectedValues.length - maxCount} więcej`}
+                      <TruncatedAuthorsTooltip
+                        values={selectedValues.slice(maxCount).map((x) => x.label)}
+                        variant={variant}
+                      >
+                        <p>{`+ ${selectedValues.length - maxCount} więcej`}</p>
+                      </TruncatedAuthorsTooltip>
+
                       <XCircle
                         className="ml-2 h-4 w-4 cursor-pointer"
                         onClick={(event) => {

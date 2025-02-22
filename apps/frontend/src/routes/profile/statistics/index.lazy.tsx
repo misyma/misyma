@@ -1,7 +1,6 @@
 import { createLazyFileRoute, useNavigate } from '@tanstack/react-router';
 
 import { AuthenticatedLayout } from '../../../modules/auth/layouts/authenticated/authenticatedLayout';
-import { AuthorMultiSelect } from '../../../modules/author/components/authorMultiCombobox';
 import { RecentlyReadBooksSection } from '../../../modules/book/components/recentlyReadBooksSection/recentlyReadBooksSection';
 import { TopBooksSection } from '../../../modules/book/components/topBooksSection/topBooksSection';
 import { Button } from '../../../modules/common/components/button/button';
@@ -13,7 +12,6 @@ export const ProfilePage = () => {
   return (
     <AuthenticatedLayout>
       <div className="flex flex-col items-center justify-center w-full px-8 gap-10 my-8">
-        <AuthorMultiSelect onValueChange={() => {}} />
         <div className="grid gap-4 items-center justify-items-center w-full">
           <div className="w-[64rem]">
             <RecentlyReadBooksSection />
