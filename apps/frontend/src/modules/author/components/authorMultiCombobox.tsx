@@ -14,7 +14,6 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-  CommandSeparator,
 } from '../../common/components/command/command';
 import { Popover, PopoverContent, PopoverTrigger } from '../../common/components/popover/popover';
 import { Separator } from '../../common/components/separator/separator';
@@ -159,16 +158,6 @@ export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>
       onValueChange(newSelectedValues);
     };
 
-    // const toggleAll = () => {
-    //   if (selectedValues.length === options.length) {
-    //     handleClear();
-    //   } else {
-    //     const allValues = options.map((option) => option.value);
-    //     setSelectedValues(allValues);
-    //     onValueChange(allValues);
-    //   }
-    // };
-
     return (
       <Popover
         open={isPopoverOpen}
@@ -202,7 +191,7 @@ export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>
                           tooltipClassName="font-normal"
                           text={option?.label ?? ''}
                         >
-                          <p className="truncate max-w-52 text-sm font-normal">{option?.label}</p>
+                          <p className="truncate max-w-32 text-xs font-normal">{option?.label}</p>
                         </TruncatedTextTooltip>
                         <XCircle
                           className="ml-2 h-4 w-4 cursor-pointer"
@@ -217,7 +206,7 @@ export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>
                   {selectedValues.length > maxCount && (
                     <Badge
                       className={cn(
-                        'bg-transparent text-foreground border-foreground/1 hover:bg-transparent font-normal text-sm',
+                        'bg-transparent text-foreground border-foreground/1 hover:bg-transparent font-normal text-xs',
                         isAnimating ? 'animate-bounce' : '',
                         multiSelectVariants({ variant }),
                       )}
@@ -273,31 +262,6 @@ export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>
                 selectedValues={selectedValues}
                 toggleOption={toggleOption}
               />
-              <CommandSeparator />
-              <CommandGroup>
-                <div className="flex items-center justify-between">
-                  {selectedValues.length > 0 && (
-                    <>
-                      <CommandItem
-                        onSelect={handleClear}
-                        className="flex-1 justify-center cursor-pointer"
-                      >
-                        Wyczyść
-                      </CommandItem>
-                      <Separator
-                        orientation="vertical"
-                        className="flex min-h-6 h-full"
-                      />
-                    </>
-                  )}
-                  <CommandItem
-                    onSelect={() => setIsPopoverOpen(false)}
-                    className="flex-1 justify-center cursor-pointer max-w-full"
-                  >
-                    Zamknij
-                  </CommandItem>
-                </div>
-              </CommandGroup>
             </CommandList>
           </Command>
         </PopoverContent>
@@ -350,7 +314,7 @@ const AuthorMultiSelectCommandGroup = ({
   }, [authors?.pages]);
 
   const rowVirtualizer = useVirtualizer({
-    count: isLoading ? 100 : 200,
+    count: hasNextPage ? options.length + 1 : options.length,
     getScrollElement: () => parentRef.current,
     estimateSize: () => 40, // Adjusted for card height
     overscan: 2,
@@ -358,70 +322,68 @@ const AuthorMultiSelectCommandGroup = ({
 
   useEffect(() => {
     const [lastItem] = [...rowVirtualizer.getVirtualItems()].reverse();
-    if (lastItem?.index >= options.length - 1 && hasNextPage && !isFetchingNextPage) {
+
+    if (!lastItem) {
+      return;
+    }
+
+    if (lastItem.index >= options.length - 1 && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rowVirtualizer.getVirtualItems(), hasNextPage, fetchNextPage, isFetchingNextPage, options.length]);
+    // oh shush
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasNextPage, fetchNextPage, options.length, isFetchingNextPage, rowVirtualizer.getVirtualItems()]);
+
+  useEffect(() => {
+    rowVirtualizer.scrollToIndex(0, { align: 'start' });
+  }, [rowVirtualizer]);
 
   return (
     <CommandGroup
       ref={parentRef}
-      style={{
-        height: `${rowVirtualizer.getTotalSize()}px`,
-        position: 'relative',
-      }}
+      className="h-[300px] overflow-auto"
     >
-      {/* <CommandItem
-          key="all"
-          onSelect={toggleAll}
-          className="cursor-pointer"
-        >
-          <div
-            className={cn(
-              'mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary',
-              selectedValues.length === options.length
-                ? 'bg-primary text-primary-foreground'
-                : 'opacity-50 [&_svg]:invisible',
-            )}
-          >
-            <CheckIcon className="h-4 w-4" />
-          </div>
-          <span>(Wybierz wszystkich)</span>
-        </CommandItem> */}
-      {!isLoading &&
-        rowVirtualizer.getVirtualItems().map((virtualRow) => {
-          //   const isLoaderRow = virtualRow.index >= options.length;
-          const startIndex = virtualRow.index;
-          const author = options[startIndex];
-          const isSelected = selectedValues.includes(author?.value);
+      <div
+        className="w-full"
+        style={{
+          height: `${rowVirtualizer.getTotalSize()}px`,
+          position: 'relative',
+        }}
+      >
+        {!isLoading &&
+          rowVirtualizer.getVirtualItems().map((virtualRow) => {
+            //   const isLoaderRow = virtualRow.index >= options.length;
+            const startIndex = virtualRow.index;
+            const author = options[startIndex];
+            const isSelected = selectedValues.includes(author?.value);
 
-          return (
-            <CommandItem
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                height: `${virtualRow.size}px`,
-                width: '100%',
-                transform: `translateY(${virtualRow.start}px)`,
-              }}
-              key={author?.value}
-              onSelect={() => toggleOption(author?.value)}
-              className="cursor-pointer"
-            >
-              <div
-                className={cn(
-                  'mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary',
-                  isSelected ? 'bg-primary text-primary-foreground' : 'opacity-50 [&_svg]:invisible',
-                )}
+            return (
+              <CommandItem
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  height: `${virtualRow.size}px`,
+                  width: '100%',
+                  transform: `translateY(${virtualRow.start}px)`,
+                }}
+                key={author?.value}
+                onSelect={() => toggleOption(author?.value)}
+                className="cursor-pointer"
               >
-                <CheckIcon className="h-4 w-4" />
-              </div>
-              <span>{author?.label}</span>
-            </CommandItem>
-          );
-        })}
+                <div
+                  className={cn(
+                    'mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary',
+                    isSelected ? 'bg-primary text-primary-foreground' : 'opacity-50 [&_svg]:invisible',
+                  )}
+                >
+                  <CheckIcon className="h-4 w-4" />
+                </div>
+                <span>{author?.label}</span>
+              </CommandItem>
+            );
+          })}
+      </div>
     </CommandGroup>
   );
 };

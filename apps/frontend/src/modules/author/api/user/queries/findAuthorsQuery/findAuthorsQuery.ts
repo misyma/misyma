@@ -68,7 +68,14 @@ type InfinitePayload = {
 
 const getAuthorsInfiniteQueryOptions = ({ accessToken, name, page, ids, pageSize }: InfinitePayload) =>
   infiniteQueryOptions({
-    queryKey: [AuthorsApiQueryKeys.findAuthorsQuery, 'infinite-query', name, `${page}`, `${ids?.join(',')}`],
+    queryKey: [
+      AuthorsApiQueryKeys.findAuthorsQuery,
+      'infinite-query',
+      name,
+      `${page}`,
+      `${pageSize}`,
+      `${ids?.join(',')}`,
+    ],
     queryFn: ({ pageParam }) =>
       findAuthors({
         accessToken: accessToken as string,
