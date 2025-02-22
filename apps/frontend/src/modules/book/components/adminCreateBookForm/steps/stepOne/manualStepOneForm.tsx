@@ -6,7 +6,7 @@ import { HiOutlineInformationCircle } from 'react-icons/hi';
 import { useSelector } from 'react-redux';
 import { z } from 'zod';
 
-import { AuthorSearchSelector } from '../../../../../auth/components/authorSearchSelector/authorSearchSelector';
+import { AuthorSearchSelector } from '../../../../../author/components/authorSearchSelector/authorSearchSelector';
 import { useFindAuthorsQuery } from '../../../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
 import { type createAuthorDraftSchema } from '../../../../../author/schemas/createAuthorDraftSchema';
 import {

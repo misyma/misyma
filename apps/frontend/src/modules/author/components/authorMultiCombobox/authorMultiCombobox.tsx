@@ -17,13 +17,22 @@ import {
   CommandItem,
   CommandList,
 } from '../../../common/components/command/command';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '../../../common/components/dialog/dialog';
 import { Popover, PopoverContent, PopoverTrigger } from '../../../common/components/popover/popover';
 import { Separator } from '../../../common/components/separator/separator';
 import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
 import useDebounce from '../../../common/hooks/useDebounce';
 import { cn } from '../../../common/lib/utils';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
+import { useCreateAuthorDraftMutation } from '../../api/user/mutations/createAuthorDraftMutation/createAuthorDraftMutation';
 import { useFindAuthorsInfiniteQuery } from '../../api/user/queries/findAuthorsQuery/findAuthorsQuery';
+import { CreateAuthorDraftForm } from '../createAuthorDraftForm';
 
 interface MultiSelectProps extends VariantProps<typeof multiSelectVariants> {
   /**
@@ -71,6 +80,8 @@ interface MultiSelectProps extends VariantProps<typeof multiSelectVariants> {
    * Optional, can be used to add custom styles.
    */
   className?: string;
+  createAuthorDialogVisible: boolean;
+  setAuthorSelectOpen: (val: boolean) => void;
 }
 
 export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>(
@@ -85,6 +96,8 @@ export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>
       modalPopover = false,
       asChild = false,
       className,
+      createAuthorDialogVisible,
+      setAuthorSelectOpen,
       ...props
     },
     ref,
@@ -92,12 +105,11 @@ export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>
     const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
     const [searchedName, setSearchedName] = useState('');
-
-    const debouncedSearchedName = useDebounce(searchedName, 300);
-
     const [selectedValues, setSelectedValues] = useState<AuthorMultiComboboxOption[]>(defaultValue);
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
     const [isAnimating, setIsAnimating] = useState(false);
+
+    const debouncedSearchedName = useDebounce(searchedName, 300);
 
     const handleInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
       if (event.key === 'Enter') {
@@ -243,6 +255,8 @@ export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>
               <AuthorMultiSelectCommandGroup
                 searchedName={debouncedSearchedName}
                 selectedValues={selectedValues}
+                createAuthorDialogVisible={createAuthorDialogVisible}
+                setAuthorSelectOpen={setAuthorSelectOpen}
                 toggleOption={toggleOption}
               />
             </CommandList>
@@ -264,12 +278,16 @@ export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>
 
 const AuthorMultiSelectCommandGroup = ({
   selectedValues,
-  toggleOption,
   searchedName,
+  createAuthorDialogVisible,
+  setAuthorSelectOpen,
+  toggleOption,
 }: {
   selectedValues: AuthorMultiComboboxOption[];
   searchedName: string;
   toggleOption: (option: AuthorMultiComboboxOption) => void;
+  createAuthorDialogVisible: boolean;
+  setAuthorSelectOpen: (val: boolean) => void;
 }) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
@@ -282,11 +300,13 @@ const AuthorMultiSelectCommandGroup = ({
     isFetchingNextPage,
     fetchNextPage,
   } = useFindAuthorsInfiniteQuery({
-    pageSize: 50,
+    pageSize: 25,
     all: true,
     accessToken,
     name: searchedName,
   });
+
+  const { mutateAsync } = useCreateAuthorDraftMutation({});
 
   const options = useMemo(() => {
     return (
@@ -324,6 +344,19 @@ const AuthorMultiSelectCommandGroup = ({
     rowVirtualizer.scrollToIndex(0, { align: 'start' });
   }, [rowVirtualizer]);
 
+  const onCreateAuthorDraft = async (payload: { name: string }) => {
+    const result = await mutateAsync({
+      name: payload.name,
+    });
+
+    toggleOption({
+      label: result.name,
+      value: result.id,
+    });
+
+    setAuthorSelectOpen(false);
+  };
+
   return (
     <Fragment>
       {isLoading && (
@@ -331,7 +364,29 @@ const AuthorMultiSelectCommandGroup = ({
           <LoadingSpinner size={36} />
         </div>
       )}
-      {(!isLoading && options.length === 0) ?? <CommandEmpty>Brak wyników.</CommandEmpty>}
+      {!isLoading && options.length === 0 && (
+        <CommandEmpty>
+          <Dialog
+            open={createAuthorDialogVisible}
+            onOpenChange={(val) => {
+              setAuthorSelectOpen(val);
+            }}
+          >
+            <DialogTrigger asChild>
+              <Button className="bg-slate-100 text-black hover:bg-slate-300">Dodaj</Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>Stwórz autora</DialogTitle>
+              </DialogHeader>
+              <CreateAuthorDraftForm
+                onCreateAuthorDraft={onCreateAuthorDraft}
+                initialName={searchedName}
+              />
+            </DialogContent>
+          </Dialog>
+        </CommandEmpty>
+      )}
       {!isLoading && options.length > 0 && (
         <div
           ref={parentRef}

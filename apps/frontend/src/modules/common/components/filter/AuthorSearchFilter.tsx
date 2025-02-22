@@ -2,7 +2,7 @@ import { ChevronDown } from 'lucide-react';
 import { type FC, useCallback, useEffect, useState } from 'react';
 
 import { FilterContainer } from './filterContainer';
-import { AuthorSearchSelector } from '../../../auth/components/authorSearchSelector/authorSearchSelector';
+import { AuthorSearchSelector } from '../../../author/components/authorSearchSelector/authorSearchSelector';
 import { useFindAuthorsQuery } from '../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
 import { cn } from '../../lib/utils';
 import { type FilterComponentProps } from '../../types/filter';

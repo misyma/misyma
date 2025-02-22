@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { z } from 'zod';
 
-import { AuthorSearchSelector } from '../../../../auth/components/authorSearchSelector/authorSearchSelector';
+import { AuthorSearchSelector } from '../../../../author/components/authorSearchSelector/authorSearchSelector';
 import { useFindAuthorsQuery } from '../../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
 import { AuthorFieldTooltip } from '../../../../author/components/authorFieldTooltip';
 import { type createAuthorDraftSchema } from '../../../../author/schemas/createAuthorDraftSchema';

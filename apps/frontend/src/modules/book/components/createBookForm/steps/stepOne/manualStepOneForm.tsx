@@ -87,7 +87,7 @@ export const ManualStepOneForm = (): JSX.Element => {
 
   const [submitError, setSubmitError] = useState('');
 
-  // const [createAuthorDialogVisible, setCreateAuthorDialogVisible] = useState(false);
+  const [createAuthorDialogVisible, setCreateAuthorDialogVisible] = useState(false);
   const [authorSelectOpen, setAuthorSelectOpen] = useState(false);
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
@@ -107,13 +107,7 @@ export const ManualStepOneForm = (): JSX.Element => {
     mode: 'onTouched',
   });
 
-  // const onCreateAuthorDraft = (/* payload: z.infer<typeof createAuthorDraftSchema> */): void => {
-  //   // On successful creation, set form value (append to selected values somehow);
-
-  //   setCreateAuthorDialogVisible(false);
-  // };
-
-  // const onOpenChange = (bool: boolean) => setCreateAuthorDialogVisible(bool);
+  const onOpenChange = (bool: boolean) => setCreateAuthorDialogVisible(bool);
 
   const onSubmit = async (
     values: Partial<z.infer<typeof stepOneSchema>> & {
@@ -158,8 +152,6 @@ export const ManualStepOneForm = (): JSX.Element => {
       step: NonIsbnCreationPathStep.inputSecondDetails,
     });
   };
-
-  console.log(stepOneSchema.safeParse(form.getValues()));
 
   return (
     <Form {...form}>
@@ -253,6 +245,8 @@ export const ManualStepOneForm = (): JSX.Element => {
                   <PopoverTrigger asChild>
                     <FormControl>
                       <AuthorMultiSelect
+                        createAuthorDialogVisible={createAuthorDialogVisible}
+                        setAuthorSelectOpen={onOpenChange}
                         placeholder="Wybierz autorów"
                         onValueChange={(v) => {
                           form.setValue(
