@@ -76,7 +76,7 @@ export const BasicDataMainBody: FC<BasicDataMainBodyProps> = ({ bookId }) => {
                 {index < Math.min(bookDetails.authors.length, 3) - 1 && ', '}
               </span>
             ))}
-            {bookDetails.authors.length > 3 && ` and ${bookDetails.authors.length - 3} more`}
+            {bookDetails.authors.length > 3 && ` i ${bookDetails.authors.length - 3} więcej`}
           </p>{' '}
           {data?.book.isbn && <p>ISBN: {data.book.isbn}</p>}
           {data?.book.releaseYear && <p>Rok wydania: {bookDetails.releaseYear}</p>}
