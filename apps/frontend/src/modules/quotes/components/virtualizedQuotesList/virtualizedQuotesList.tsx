@@ -39,7 +39,7 @@ export const VirtualizedQuotesList: FC<VirtualizedQuotesListProps> = ({ queryArg
   const rowVirtualizer = useVirtualizer({
     count: isLoading ? 4 : rowsCount,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 160, // Adjusted for card height
+    estimateSize: () => 200, // Adjusted for card height
     overscan: 6,
   });
 
