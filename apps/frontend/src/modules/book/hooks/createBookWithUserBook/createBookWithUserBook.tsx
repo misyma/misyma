@@ -4,12 +4,10 @@ import { useSelector } from 'react-redux';
 
 import {
   type CreateAuthorRequestBody,
-  type CreateAuthorResponseBody,
   type CreateUserBookResponseBody,
   type FindAuthorsResponseBody,
 } from '@common/contracts';
 
-import { useCreateAuthorDraftMutation } from '../../../author/api/user/mutations/createAuthorDraftMutation/createAuthorDraftMutation';
 import { useToast } from '../../../common/components/toast/use-toast';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import {
@@ -25,8 +23,8 @@ import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
 import { BookApiError } from '../../errors/bookApiError';
 
 interface CreatePayload {
-  authorPayload?: Partial<CreateAuthorRequestBody> & {
-    authorId?: string;
+  authorPayload: Partial<CreateAuthorRequestBody> & {
+    authorIds: string[];
   };
   bookPayload?: Omit<UseCreateBookMutationPayload, 'authorIds'>;
   userBookPayload: Omit<CreateUserBookMutationPayload, 'bookId'> & {
@@ -47,7 +45,6 @@ interface UseCreateBookWithUserBookProps {
 }
 
 export const useCreateBookWithUserBook = ({
-  onAuthorCreationError,
   onOperationError,
 }: UseCreateBookWithUserBookProps): UseCreateBookWithUserBookResult => {
   const { toast } = useToast();
@@ -60,8 +57,6 @@ export const useCreateBookWithUserBook = ({
 
   const { mutateAsync: uploadBookImageMutation, isPending: isUploadImagePending } = useUploadBookImageMutation({});
 
-  const { mutateAsync: createAuthorDraft, isPending: isCreateAuthorPending } = useCreateAuthorDraftMutation({});
-
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const navigate = useNavigate();
@@ -72,38 +67,7 @@ export const useCreateBookWithUserBook = ({
     }
 
     try {
-      let authorDraftResponse: CreateAuthorResponseBody | undefined = undefined;
-
-      let authorId = authorPayload?.authorId as string;
-
-      if (authorPayload?.name) {
-        try {
-          authorDraftResponse = await createAuthorDraft({
-            name: authorPayload.name,
-            errorHandling: {
-              title: 'Nie udało się stworzyć autora.',
-            },
-          });
-
-          authorId = authorId || (authorDraftResponse?.id as string);
-        } catch (error) {
-          if (error instanceof Error) {
-            if (error.name === 'ResourceAlreadyExistsError') {
-              if (onAuthorCreationError) {
-                const response = await onAuthorCreationError();
-
-                if (!response?.data[0]) {
-                  return;
-                }
-
-                authorId = response?.data[0].id as string;
-              }
-
-              return;
-            }
-          }
-        }
-      }
+      const authorIds = authorPayload?.authorIds;
 
       let bookId = userBookPayload.bookId as string;
 
@@ -111,7 +75,7 @@ export const useCreateBookWithUserBook = ({
         try {
           const bookCreationResponse = await createBookMutation({
             ...bookPayload,
-            authorIds: [authorId],
+            authorIds,
             errorHandling: {
               title: 'Nie udało się stworzyć książki.',
               description: '',
@@ -191,6 +155,6 @@ export const useCreateBookWithUserBook = ({
 
   return {
     create,
-    isProcessing: isCreateBookPending || isCreateUserBookPending || isUploadImagePending || isCreateAuthorPending,
+    isProcessing: isCreateBookPending || isCreateUserBookPending || isUploadImagePending,
   };
 };

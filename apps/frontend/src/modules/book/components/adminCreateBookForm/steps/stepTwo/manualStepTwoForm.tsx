@@ -124,7 +124,7 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
   const onSubmit = async (values: z.infer<typeof stepTwoSchema>): Promise<void> => {
     await create({
       authorPayload: {
-        authorId: bookCreation.stepOneDetails?.author,
+        authorId: bookCreation.stepOneDetails?.authorIds,
         name: bookCreation.stepOneDetails?.authorName,
       },
       bookPayload: {

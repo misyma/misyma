@@ -1,14 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ChevronsUpDown } from 'lucide-react';
-import { useCallback as useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { HiOutlineInformationCircle } from 'react-icons/hi';
 import { useSelector } from 'react-redux';
 import { z } from 'zod';
 
-import { AuthorSearchSelector } from '../../../../../auth/components/authorSearchSelector/authorSearchSelector';
-import { useFindAuthorsQuery } from '../../../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
-import { type createAuthorDraftSchema } from '../../../../../author/schemas/createAuthorDraftSchema';
+import { AuthorMultiSelect } from '../../../../../author/components/authorMultiCombobox/authorMultiCombobox';
 import {
   BookCreationActionType,
   type BookCreationNonIsbnState,
@@ -27,7 +24,6 @@ import {
 } from '../../../../../common/components/form/form';
 import { Input } from '../../../../../common/components/input/input';
 import { Popover, PopoverTrigger } from '../../../../../common/components/popover/popover';
-import { LoadingSpinner } from '../../../../../common/components/spinner/loading-spinner';
 import { toast } from '../../../../../common/components/toast/use-toast';
 import {
   Tooltip,
@@ -35,74 +31,63 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '../../../../../common/components/tooltip/tooltip';
-import { cn } from '../../../../../common/lib/utils';
 import { isbnSchema } from '../../../../../common/schemas/isbnSchema';
 import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';
 import { findUserBooksBy } from '../../../../api/user/queries/findUserBookBy/findUserBooksBy';
 import { BookApiError } from '../../../../errors/bookApiError';
 
-const stepOneSchema = z
-  .object({
-    isbn: isbnSchema.or(z.literal('')),
-    title: z
-      .string()
-      .min(1, {
-        message: 'Tytuł musi mieć co najmniej jeden znak.',
-      })
-      .max(256, {
-        message: 'Tytuł może mieć maksymalnie 256 znaków.',
-      }),
-    author: z
-      .string({
-        required_error: 'Wymagany',
-      })
-      .uuid({
-        message: 'Brak wybranego autora.',
-      })
-      .or(
-        z.literal('', {
+const stepOneSchema = z.object({
+  isbn: isbnSchema.or(z.literal('')),
+  title: z
+    .string()
+    .min(1, {
+      message: 'Tytuł musi mieć co najmniej jeden znak.',
+    })
+    .max(256, {
+      message: 'Tytuł może mieć maksymalnie 256 znaków.',
+    }),
+  authorIds: z
+    .array(
+      z
+        .string({
           required_error: 'Wymagany',
+        })
+        .uuid({
+          message: 'Brak wybranego autora.',
         }),
-      ),
-    authorName: z
-      .string({
-        required_error: 'Wymagany',
-      })
-      .or(z.literal('')),
-    publisher: z
-      .string()
-      .min(1, {
-        message: 'Nazwa wydawnictwa powinna mieć co namniej 1 znak.',
-      })
-      .max(128, {
-        message: 'Nazwa wydawnictwa powinna mieć co najwyżej 128 znaków.',
-      })
-      .or(z.literal('')),
-    releaseYear: z
-      .number({
-        invalid_type_error: 'Rok wydania musi być liczbą.',
-        required_error: 'Rok wyadania musi być liczbą.',
-        coerce: true,
-      })
-      .min(1, {
-        message: 'Rok wydania musi być wcześniejszy niż 1',
-      })
-      .max(2100, {
-        message: 'Rok wydania nie może być późniejszy niż 2100',
-      })
-      .or(z.literal('')),
-  })
-  .refine((data) => !!data.author || data.authorName, 'Autor jest wymagany.');
+    )
+    .min(1, {
+      message: 'Wymagany jest co najmniej jeden autor.',
+    }),
+  publisher: z
+    .string()
+    .min(1, {
+      message: 'Nazwa wydawnictwa powinna mieć co namniej 1 znak.',
+    })
+    .max(128, {
+      message: 'Nazwa wydawnictwa powinna mieć co najwyżej 128 znaków.',
+    })
+    .or(z.literal('')),
+  releaseYear: z
+    .number({
+      invalid_type_error: 'Rok wydania musi być liczbą.',
+      required_error: 'Rok wyadania musi być liczbą.',
+      coerce: true,
+    })
+    .min(1, {
+      message: 'Rok wydania musi być wcześniejszy niż 1',
+    })
+    .max(2100, {
+      message: 'Rok wydania nie może być późniejszy niż 2100',
+    }),
+});
 
 export const ManualStepOneForm = (): JSX.Element => {
   const bookCreation = useBookCreation<false>() as BookCreationNonIsbnState;
 
   const [submitError, setSubmitError] = useState('');
 
-  const [createAuthorDialogVisible, setCreateAuthorDialogVisible] = useState(false);
-
-  const [draftAuthorName, setDraftAuthorName] = useState(bookCreation.stepOneDetails?.authorName);
-
+  // const [createAuthorDialogVisible, setCreateAuthorDialogVisible] = useState(false);
   const [authorSelectOpen, setAuthorSelectOpen] = useState(false);
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
@@ -114,8 +99,7 @@ export const ManualStepOneForm = (): JSX.Element => {
     defaultValues: {
       isbn: bookCreation.stepOneDetails?.isbn ?? '',
       title: bookCreation.stepOneDetails?.title ?? '',
-      author: bookCreation.stepOneDetails?.author ?? '',
-      authorName: bookCreation.stepOneDetails?.authorName ?? undefined,
+      authorIds: bookCreation.stepOneDetails?.authorIds ?? '',
       publisher: bookCreation.stepOneDetails?.publisher ?? '',
       releaseYear: bookCreation.stepOneDetails?.releaseYear,
     },
@@ -123,32 +107,13 @@ export const ManualStepOneForm = (): JSX.Element => {
     mode: 'onTouched',
   });
 
-  const onCreateAuthorDraft = (payload: z.infer<typeof createAuthorDraftSchema>): void => {
-    setDraftAuthorName(payload.name);
+  // const onCreateAuthorDraft = (/* payload: z.infer<typeof createAuthorDraftSchema> */): void => {
+  //   // On successful creation, set form value (append to selected values somehow);
 
-    dispatch({
-      type: BookCreationActionType.setAuthorName,
-      authorName: payload.name,
-    });
+  //   setCreateAuthorDialogVisible(false);
+  // };
 
-    form.setValue('author', '', {
-      shouldValidate: false,
-    });
-
-    form.setValue('authorName', payload.name, {
-      shouldValidate: false,
-      shouldDirty: true,
-      shouldTouch: true,
-    });
-
-    if (form.formState.touchedFields.title) {
-      form.trigger('authorName', {});
-    }
-
-    setCreateAuthorDialogVisible(false);
-  };
-
-  const onOpenChange = (bool: boolean) => setCreateAuthorDialogVisible(bool);
+  // const onOpenChange = (bool: boolean) => setCreateAuthorDialogVisible(bool);
 
   const onSubmit = async (
     values: Partial<z.infer<typeof stepOneSchema>> & {
@@ -181,8 +146,7 @@ export const ManualStepOneForm = (): JSX.Element => {
 
     dispatch({
       type: BookCreationActionType.nonIsbnStepOneDetails,
-      author: vals.author as string,
-      authorName: bookCreation.stepOneDetails?.authorName || vals?.authorName,
+      authorIds: vals.authorIds,
       isbn: vals.isbn,
       publisher: vals.publisher,
       title: vals.title,
@@ -195,21 +159,7 @@ export const ManualStepOneForm = (): JSX.Element => {
     });
   };
 
-  const { data: currentAuthor, isFetching: isFetchingCurrentAuthor } = useFindAuthorsQuery({
-    ids: bookCreation.stepOneDetails?.author ? [bookCreation.stepOneDetails?.author] : [],
-  });
-
-  const authorName = useMemo(() => {
-    if (currentAuthor) {
-      return currentAuthor.data[0].name;
-    }
-
-    if (!draftAuthorName) {
-      return 'Wyszukaj autora';
-    }
-
-    return draftAuthorName;
-  }, [currentAuthor, draftAuthorName]);
+  console.log(stepOneSchema.safeParse(form.getValues()));
 
   return (
     <Form {...form}>
@@ -217,7 +167,7 @@ export const ManualStepOneForm = (): JSX.Element => {
         onSubmit={form.handleSubmit((values) =>
           onSubmit(
             // eslint-disable-next-line
-						values as any
+            values as any,
           ),
         )}
         className="space-y-4"
@@ -274,8 +224,8 @@ export const ManualStepOneForm = (): JSX.Element => {
         />
         <FormField
           control={form.control}
-          name="author"
-          render={({ field }) => (
+          name="authorIds"
+          render={({}) => (
             <FormItem className="flex flex-col">
               <div className="flex gap-2 items-center">
                 <FormLabel>Autor</FormLabel>
@@ -302,58 +252,19 @@ export const ManualStepOneForm = (): JSX.Element => {
                 >
                   <PopoverTrigger asChild>
                     <FormControl>
-                      <Button
-                        variant="link"
-                        role="combobox"
-                        size="xl"
-                        className={cn(
-                          'justify-between bg-[#D1D5DB]/20',
-                          !field.value && 'text-muted-foreground',
-                          draftAuthorName && 'text-black',
-                          'border h-12',
-                        )}
-                        style={{
-                          height: '3rem',
+                      <AuthorMultiSelect
+                        placeholder="Wybierz autorów"
+                        onValueChange={(v) => {
+                          form.setValue(
+                            'authorIds',
+                            v.map((v) => v.value),
+                          );
+
+                          form.trigger('authorIds');
                         }}
-                      >
-                        <p
-                          className={cn(
-                            !field.value && 'text-muted-foreground',
-                            draftAuthorName && 'text-black font-normal',
-                            authorName() && 'text-black font-normal',
-                            'w-full text-start px-3 py-2',
-                          )}
-                        >
-                          {field.value && isFetchingCurrentAuthor && <LoadingSpinner size={20} />}
-                          {draftAuthorName}
-                          {!field.value && !draftAuthorName && !isFetchingCurrentAuthor && 'Wyszukaj autora'}
-                          {field.value && !isFetchingCurrentAuthor ? authorName() : ''}
-                        </p>
-                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                      </Button>
+                      />
                     </FormControl>
                   </PopoverTrigger>
-                  <AuthorSearchSelector
-                    createAuthorDialogVisible={createAuthorDialogVisible}
-                    setAuthorSelectOpen={onOpenChange}
-                    currentlySelectedAuthorId={field.value}
-                    onCreateAuthorDraft={onCreateAuthorDraft}
-                    onSelect={(authorId) => {
-                      form.setValue('author', authorId);
-
-                      form.setValue('authorName', '');
-
-                      setDraftAuthorName('');
-
-                      dispatch({
-                        type: BookCreationActionType.setAuthor,
-                        author: authorId,
-                      });
-
-                      form.trigger('author');
-                    }}
-                    includeAuthorCreation={true}
-                  />
                 </Popover>
               </FormControl>
               <FormMessage />

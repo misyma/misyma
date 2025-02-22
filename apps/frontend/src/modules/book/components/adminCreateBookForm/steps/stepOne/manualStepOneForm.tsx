@@ -113,7 +113,7 @@ export const ManualStepOneForm = (): JSX.Element => {
     defaultValues: {
       isbn: bookCreation.stepOneDetails?.isbn ?? '',
       title: bookCreation.stepOneDetails?.title ?? '',
-      author: bookCreation.stepOneDetails?.author ?? '',
+      author: bookCreation.stepOneDetails?.authorIds ?? '',
       authorName: bookCreation.stepOneDetails?.authorName ?? '',
       publisher: bookCreation.stepOneDetails?.publisher ?? '',
       releaseYear: bookCreation.stepOneDetails?.releaseYear,
@@ -180,7 +180,7 @@ export const ManualStepOneForm = (): JSX.Element => {
 
     dispatch({
       type: BookCreationActionType.nonIsbnStepOneDetails,
-      author: vals.author as string,
+      authorIds: vals.author as string,
       authorName: bookCreation.stepOneDetails?.authorName || vals?.authorName,
       isbn: vals.isbn,
       publisher: vals.publisher,
@@ -195,7 +195,7 @@ export const ManualStepOneForm = (): JSX.Element => {
   };
 
   const { data: currentAuthor, isFetching: isFetchingCurrentAuthor } = useFindAuthorsQuery({
-    ids: bookCreation.stepOneDetails?.author ? [bookCreation.stepOneDetails?.author] : [],
+    ids: bookCreation.stepOneDetails?.authorIds ? [bookCreation.stepOneDetails?.authorIds] : [],
   });
 
   const getAuthorName = useCallback(() => {
@@ -341,7 +341,7 @@ export const ManualStepOneForm = (): JSX.Element => {
 
                       dispatch({
                         type: BookCreationActionType.setAuthor,
-                        author: authorId,
+                        authorIds: authorId,
                       });
 
                       form.trigger('author');
