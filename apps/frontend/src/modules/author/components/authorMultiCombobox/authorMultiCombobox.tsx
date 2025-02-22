@@ -31,7 +31,10 @@ import useDebounce from '../../../common/hooks/useDebounce';
 import { cn } from '../../../common/lib/utils';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useCreateAuthorDraftMutation } from '../../api/user/mutations/createAuthorDraftMutation/createAuthorDraftMutation';
-import { useFindAuthorsInfiniteQuery } from '../../api/user/queries/findAuthorsQuery/findAuthorsQuery';
+import {
+  useFindAuthorsInfiniteQuery,
+  useFindAuthorsQuery,
+} from '../../api/user/queries/findAuthorsQuery/findAuthorsQuery';
 import { CreateAuthorDraftForm } from '../createAuthorDraftForm';
 
 interface MultiSelectProps extends VariantProps<typeof multiSelectVariants> {
@@ -42,7 +45,7 @@ interface MultiSelectProps extends VariantProps<typeof multiSelectVariants> {
   onValueChange: (value: AuthorMultiComboboxOption[]) => void;
 
   /** The default selected values when the component mounts. */
-  defaultValue?: AuthorMultiComboboxOption[];
+  defaultValue?: string[];
 
   /**
    * Placeholder text to be displayed when no values are selected.
@@ -104,12 +107,33 @@ export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>
   ) => {
     const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
+    const { data: initialAuthors, isLoading: isLoadingInitialAuthors } = useFindAuthorsQuery({
+      ids: defaultValue ?? [],
+    });
+
     const [searchedName, setSearchedName] = useState('');
-    const [selectedValues, setSelectedValues] = useState<AuthorMultiComboboxOption[]>(defaultValue);
+    const [selectedValues, setSelectedValues] = useState<AuthorMultiComboboxOption[]>(
+      initialAuthors?.data.map((x) => ({
+        label: x.name,
+        value: x.id,
+      })) ?? [],
+    );
+
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
     const [isAnimating, setIsAnimating] = useState(false);
 
     const debouncedSearchedName = useDebounce(searchedName, 300);
+
+    useEffect(() => {
+      if (initialAuthors?.data && initialAuthors?.data.length > 0) {
+        setSelectedValues(
+          initialAuthors.data.map((x) => ({
+            label: x.name,
+            value: x.id,
+          })),
+        );
+      }
+    }, [initialAuthors]);
 
     const handleInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
       if (event.key === 'Enter') {
@@ -165,11 +189,15 @@ export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>
             variant="none"
             size="custom"
             onClick={handleTogglePopover}
+            disabled={isLoadingInitialAuthors && defaultValue.length > 0}
             className={cn(
               'flex w-60 sm:w-96 p-1 bg-[#D1D5DB]/20 rounded-md border min-h-10 h-auto items-center justify-between hover:bg-inherit [&_svg]:pointer-events-auto py-2',
               className,
             )}
           >
+            {selectedValues.length === 0 && defaultValue.length > 0 && isLoadingInitialAuthors && (
+              <LoadingSpinner size={24} />
+            )}
             {selectedValues.length > 0 ? (
               <div className="flex justify-between items-center w-full">
                 <div className="flex items-center">

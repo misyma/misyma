@@ -5,6 +5,7 @@ import { HiOutlineInformationCircle } from 'react-icons/hi';
 import { useSelector } from 'react-redux';
 import { z } from 'zod';
 
+import { useFindAuthorsQuery } from '../../../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
 import { AuthorMultiSelect } from '../../../../../author/components/authorMultiCombobox/authorMultiCombobox';
 import {
   BookCreationActionType,
@@ -256,6 +257,7 @@ export const ManualStepOneForm = (): JSX.Element => {
 
                           form.trigger('authorIds');
                         }}
+                        defaultValue={bookCreation.stepOneDetails?.authorIds ?? []}
                       />
                     </FormControl>
                   </PopoverTrigger>
