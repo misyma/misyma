@@ -4,9 +4,10 @@ import { CheckIcon, XCircle, ChevronDown, XIcon, WandSparkles } from 'lucide-rea
 import { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { AuthorBadge } from './authorBadge';
+import { type AuthorMultiComboboxOption } from './authorMultiComboboxOption';
 import { multiSelectVariants } from './authorMultiComboboxVariants';
 import { TruncatedAuthorsTooltip } from './truncatedAuthorsTooltip';
-import { TruncatedTextTooltip } from '../../../book/components/truncatedTextTooltip/truncatedTextTooltip';
 import { Badge } from '../../../common/components/badge';
 import { Button } from '../../../common/components/button/button';
 import {
@@ -28,10 +29,10 @@ interface MultiSelectProps extends VariantProps<typeof multiSelectVariants> {
    * Callback function triggered when the selected values change.
    * Receives an array of the new selected values.
    */
-  onValueChange: (value: { label: string; value: string }[]) => void;
+  onValueChange: (value: AuthorMultiComboboxOption[]) => void;
 
   /** The default selected values when the component mounts. */
-  defaultValue?: { label: string; value: string }[];
+  defaultValue?: AuthorMultiComboboxOption[];
 
   /**
    * Placeholder text to be displayed when no values are selected.
@@ -91,7 +92,7 @@ export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>
 
     const debouncedSearchedName = useDebounce(searchedName, 300);
 
-    const [selectedValues, setSelectedValues] = useState<{ label: string; value: string }[]>(defaultValue);
+    const [selectedValues, setSelectedValues] = useState<AuthorMultiComboboxOption[]>(defaultValue);
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
     const [isAnimating, setIsAnimating] = useState(false);
 
@@ -106,7 +107,7 @@ export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>
       }
     };
 
-    const toggleOption = (option: { label: string; value: string }) => {
+    const toggleOption = (option: AuthorMultiComboboxOption) => {
       const newSelectedValues = selectedValues.includes(option)
         ? selectedValues.filter((value) => value.value !== option.value)
         : [...selectedValues, option];
@@ -150,29 +151,14 @@ export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>
             {selectedValues.length > 0 ? (
               <div className="flex justify-between items-center w-full">
                 <div className="flex items-center">
-                  {selectedValues.slice(0, maxCount).map((value) => {
-                    return (
-                      <Badge
-                        key={value.value}
-                        className={cn(isAnimating ? 'animate-bounce' : '', multiSelectVariants({ variant }))}
-                        style={{ animationDuration: `${animation}s` }}
-                      >
-                        <TruncatedTextTooltip
-                          tooltipClassName="font-normal"
-                          text={value?.label ?? ''}
-                        >
-                          <p className="truncate max-w-32 text-xs font-normal">{value?.label}</p>
-                        </TruncatedTextTooltip>
-                        <XCircle
-                          className="ml-2 h-4 w-4 cursor-pointer"
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            toggleOption(value);
-                          }}
-                        />
-                      </Badge>
-                    );
-                  })}
+                  {selectedValues.slice(0, maxCount).map((value) => (
+                    <AuthorBadge
+                      animation={animation}
+                      isAnimating={isAnimating}
+                      toggleOption={toggleOption}
+                      value={value}
+                    />
+                  ))}
                   {selectedValues.length > maxCount && (
                     <Badge
                       className={cn(
@@ -183,13 +169,14 @@ export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>
                       style={{ animationDuration: `${animation}s` }}
                     >
                       <TruncatedAuthorsTooltip
+                        animation={animation}
+                        isAnimating={isAnimating}
                         values={selectedValues.slice(maxCount)}
                         onRemoveValue={toggleOption}
                         variant={variant}
                       >
                         <p>{`+ ${selectedValues.length - maxCount} więcej`}</p>
                       </TruncatedAuthorsTooltip>
-
                       <XCircle
                         className="ml-2 h-4 w-4 cursor-pointer"
                         onClick={(event) => {
@@ -263,9 +250,9 @@ const AuthorMultiSelectCommandGroup = ({
   toggleOption,
   searchedName,
 }: {
-  selectedValues: { label: string; value: string }[];
+  selectedValues: AuthorMultiComboboxOption[];
   searchedName: string;
-  toggleOption: (option: { label: string; value: string }) => void;
+  toggleOption: (option: AuthorMultiComboboxOption) => void;
 }) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
