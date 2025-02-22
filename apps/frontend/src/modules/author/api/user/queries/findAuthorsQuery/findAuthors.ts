@@ -33,6 +33,8 @@ export const findAuthors = async (values: Payload) => {
     }
   }
 
+  await new Promise((res) => setTimeout(res, 2 * 1000));
+
   const response = await HttpService.get<FindAuthorsResponseBody>({
     url: '/authors',
     queryParams: query,

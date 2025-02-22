@@ -1,7 +1,7 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { type VariantProps } from 'class-variance-authority';
 import { CheckIcon, XCircle, ChevronDown, XIcon, WandSparkles } from 'lucide-react';
-import { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
+import { forwardRef, Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { AuthorBadge } from './authorBadge';
@@ -19,6 +19,7 @@ import {
 } from '../../../common/components/command/command';
 import { Popover, PopoverContent, PopoverTrigger } from '../../../common/components/popover/popover';
 import { Separator } from '../../../common/components/separator/separator';
+import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
 import useDebounce from '../../../common/hooks/useDebounce';
 import { cn } from '../../../common/lib/utils';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
@@ -88,6 +89,8 @@ export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>
     },
     ref,
   ) => {
+    const accessToken = useSelector(userStateSelectors.selectAccessToken);
+
     const [searchedName, setSearchedName] = useState('');
 
     const debouncedSearchedName = useDebounce(searchedName, 300);
@@ -129,6 +132,13 @@ export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>
       setSelectedValues(newSelectedValues);
       onValueChange(newSelectedValues);
     };
+
+    const { isFetching } = useFindAuthorsInfiniteQuery({
+      pageSize: 50,
+      all: true,
+      accessToken,
+      name: searchedName,
+    });
 
     return (
       <Popover
@@ -216,13 +226,20 @@ export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>
           onEscapeKeyDown={() => setIsPopoverOpen(false)}
         >
           <Command shouldFilter={false}>
-            <CommandInput
-              placeholder="Search..."
-              onKeyDown={handleInputKeyDown}
-              onValueChange={(val) => setSearchedName(val)}
-            />
+            <div className="relative w-full">
+              <CommandInput
+                placeholder="Search..."
+                onKeyDown={handleInputKeyDown}
+                onValueChange={(val) => setSearchedName(val)}
+              />
+              {isFetching && searchedName.length > 3 && (
+                <LoadingSpinner
+                  className="absolute top-2 right-2"
+                  size={24}
+                />
+              )}
+            </div>
             <CommandList>
-              <CommandEmpty>Brak wyników.</CommandEmpty>
               <AuthorMultiSelectCommandGroup
                 searchedName={debouncedSearchedName}
                 selectedValues={selectedValues}
@@ -308,52 +325,62 @@ const AuthorMultiSelectCommandGroup = ({
   }, [rowVirtualizer]);
 
   return (
-    <div
-      ref={parentRef}
-      className="h-[300px] overflow-auto"
-    >
-      <div
-        className="w-full"
-        style={{
-          height: `${rowVirtualizer.getTotalSize()}px`,
-          position: 'relative',
-        }}
-      >
-        {!isLoading &&
-          rowVirtualizer.getVirtualItems().map((virtualRow) => {
-            //   const isLoaderRow = virtualRow.index >= options.length;
-            const startIndex = virtualRow.index;
-            const author = options[startIndex];
-            const isSelected = selectedValues.includes(author);
+    <Fragment>
+      {isLoading && (
+        <div className="w-full py-4 flex items-center justify-center">
+          <LoadingSpinner size={36} />
+        </div>
+      )}
+      {(!isLoading && options.length === 0) ?? <CommandEmpty>Brak wyników.</CommandEmpty>}
+      {!isLoading && options.length > 0 && (
+        <div
+          ref={parentRef}
+          className="h-[300px] overflow-auto"
+        >
+          <div
+            className="w-full"
+            style={{
+              height: `${rowVirtualizer.getTotalSize()}px`,
+              position: 'relative',
+            }}
+          >
+            {!isLoading &&
+              rowVirtualizer.getVirtualItems().map((virtualRow) => {
+                //   const isLoaderRow = virtualRow.index >= options.length;
+                const startIndex = virtualRow.index;
+                const author = options[startIndex];
+                const isSelected = selectedValues.includes(author);
 
-            return (
-              <CommandItem
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  height: `${virtualRow.size}px`,
-                  width: '100%',
-                  transform: `translateY(${virtualRow.start}px)`,
-                }}
-                key={author?.value}
-                onSelect={() => toggleOption(author)}
-                className="cursor-pointer"
-              >
-                <div
-                  className={cn(
-                    'mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary',
-                    isSelected ? 'bg-primary text-primary-foreground' : 'opacity-50 [&_svg]:invisible',
-                  )}
-                >
-                  <CheckIcon className="h-4 w-4" />
-                </div>
-                <span>{author?.label}</span>
-              </CommandItem>
-            );
-          })}
-      </div>
-    </div>
+                return (
+                  <CommandItem
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      height: `${virtualRow.size}px`,
+                      width: '100%',
+                      transform: `translateY(${virtualRow.start}px)`,
+                    }}
+                    key={author?.value}
+                    onSelect={() => toggleOption(author)}
+                    className="cursor-pointer"
+                  >
+                    <div
+                      className={cn(
+                        'mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary',
+                        isSelected ? 'bg-primary text-primary-foreground' : 'opacity-50 [&_svg]:invisible',
+                      )}
+                    >
+                      <CheckIcon className="h-4 w-4" />
+                    </div>
+                    <span>{author?.label}</span>
+                  </CommandItem>
+                );
+              })}
+          </div>
+        </div>
+      )}
+    </Fragment>
   );
 };
 
