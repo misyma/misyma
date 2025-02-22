@@ -87,13 +87,13 @@ interface MultiSelectProps extends VariantProps<typeof multiSelectVariants> {
   setAuthorSelectOpen: (val: boolean) => void;
 }
 
-export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>(
+export const AuthorMultiCombobox = forwardRef<HTMLButtonElement, MultiSelectProps>(
   (
     {
       onValueChange,
       variant,
       defaultValue = [],
-      placeholder = 'Select options',
+      placeholder = 'Wybierz autorów',
       animation = 0,
       maxCount = 1,
       modalPopover = false,
@@ -467,4 +467,4 @@ const AuthorMultiSelectCommandGroup = ({
   );
 };
 
-AuthorMultiSelect.displayName = 'AuthorMultiSelect';
+AuthorMultiCombobox.displayName = 'AuthorMultiCombobox';
