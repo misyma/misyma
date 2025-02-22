@@ -23,7 +23,7 @@ import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
 import { BookApiError } from '../../errors/bookApiError';
 
 interface CreatePayload {
-  authorPayload: Partial<CreateAuthorRequestBody> & {
+  authorPayload?: Partial<CreateAuthorRequestBody> & {
     authorIds: string[];
   };
   bookPayload?: Omit<UseCreateBookMutationPayload, 'authorIds'>;
@@ -67,7 +67,7 @@ export const useCreateBookWithUserBook = ({
     }
 
     try {
-      const authorIds = authorPayload?.authorIds;
+      const authorIds = authorPayload?.authorIds ?? [];
 
       let bookId = userBookPayload.bookId as string;
 
