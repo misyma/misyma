@@ -5,9 +5,6 @@ import { type FC, Fragment, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { type z } from 'zod';
 
-import { useFindAuthorsQuery } from '../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
-import { AuthorFieldTooltip } from '../../../author/components/authorFieldTooltip';
-import { createAuthorDraftSchema } from '../../../author/schemas/createAuthorDraftSchema';
 import { Button } from '../../../common/components/button/button';
 import {
   Command,
@@ -23,11 +20,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '../../../common/components/dialog/dialog';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/form/form';
-import { Input } from '../../../common/components/input/input';
 import { DialogPopoverContent, PopoverContent } from '../../../common/components/popover/popover';
 import useDebounce from '../../../common/hooks/useDebounce';
 import { cn } from '../../../common/lib/utils';
+import { useFindAuthorsQuery } from '../../api/user/queries/findAuthorsQuery/findAuthorsQuery';
+import { createAuthorDraftSchema } from '../../schemas/createAuthorDraftSchema';
+import { CreateAuthorDraftForm } from '../createAuthorDraftForm';
 
 interface AuthorSearchSelectorProps {
   onSelect: (authorId: string, authorName: string) => void;
@@ -40,59 +38,6 @@ interface AuthorSearchSelectorProps {
   searchedName?: string;
   dialog?: boolean;
 }
-
-interface CreateAuthorDraftFormProps {
-  onCreateAuthorDraft: (payload: z.infer<typeof createAuthorDraftSchema>) => void;
-  initialName?: string;
-}
-
-const CreateAuthorDraftForm: FC<CreateAuthorDraftFormProps> = ({ onCreateAuthorDraft, initialName }) => {
-  const createAuthorDraftForm = useForm({
-    resolver: zodResolver(createAuthorDraftSchema),
-    values: {
-      name: initialName || '',
-    },
-    reValidateMode: 'onChange',
-    mode: 'onTouched',
-  });
-
-  return (
-    <Form {...createAuthorDraftForm}>
-      <form
-        className="flex flex-col gap-8 py-4"
-        onSubmit={createAuthorDraftForm.handleSubmit(onCreateAuthorDraft)}
-      >
-        <FormField
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <div className="flex gap-2 items-center pb-1">
-                <FormLabel>Imię i nazwisko</FormLabel>
-                <AuthorFieldTooltip side="bottom" />
-              </div>
-              <FormControl>
-                <Input
-                  min={1}
-                  max={128}
-                  type="text"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage></FormMessage>
-            </FormItem>
-          )}
-        />
-        <Button
-          disabled={!createAuthorDraftForm.formState.isValid}
-          type="button"
-          onClick={() => onCreateAuthorDraft(createAuthorDraftForm.getValues())}
-        >
-          Stwórz
-        </Button>
-      </form>
-    </Form>
-  );
-};
 
 export const AuthorSearchSelector: FC<AuthorSearchSelectorProps> = ({
   className,

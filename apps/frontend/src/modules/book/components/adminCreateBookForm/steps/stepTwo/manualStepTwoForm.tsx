@@ -2,11 +2,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { type FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
-import { z } from 'zod';
 
-import { BookFormat as ContractBookFormat, Language } from '@common/contracts';
+import { type BookFormat as ContractBookFormat } from '@common/contracts';
 
-import { useFindAuthorsQuery } from '../../../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
 import {
   BookCreationActionType,
   type BookCreationNonIsbnState,
@@ -29,47 +27,9 @@ import { LoadingSpinner } from '../../../../../common/components/spinner/loading
 import { type Languages } from '../../../../../common/constants/languages';
 import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';
 import { useAdminCreateBook } from '../../../../hooks/adminCreateBook/adminCreateBook';
+import { type CreateBookStepTwo, createBookStepTwoSchema } from '../../../../schemas/createBookSchemas';
 import BookFormatSelect from '../../../bookFormatSelect/bookFormatSelect';
 import LanguageSelect from '../../../languageSelect/languageSelect';
-
-const stepTwoSchema = z.object({
-  language: z.enum(Object.values(Language) as unknown as [string, ...string[]]),
-  translator: z
-    .string({
-      required_error: 'Przekład jest wymagany.',
-    })
-    .min(1, {
-      message: 'Przekład jest zbyt krótki.',
-    })
-    .max(64, {
-      message: 'Przekład może mieć maksymalnie 64 znaki.',
-    })
-    .or(z.literal('')),
-  form: z.nativeEnum(ContractBookFormat),
-  pagesCount: z
-    .number({
-      required_error: 'Ilość stron jest wymagana.',
-      coerce: true,
-    })
-    .int({
-      message: 'Ilość stron musi być wartością całkowitą.',
-    })
-    .min(1, {
-      message: 'Książka nie może mieć mniej niż jedną stronę.',
-    })
-    .max(5000, {
-      message: 'Za dużo stron. Maksymalnie 5000 jest dopuszczalnych.',
-    })
-    .or(z.literal('')),
-  imageUrl: z
-    .string({
-      message: 'Niepoprawna wartość.',
-    })
-    .url({
-      message: 'Podana wartość nie jest prawidłowym linkiem.',
-    })
-    .or(z.literal('')),
-});
 
 interface Props {
   onSubmit: () => void;
@@ -87,7 +47,7 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
   const [isOriginalLanguage, setIsOriginalLanguage] = useState(bookCreation.isOriginal);
 
   const form = useForm({
-    resolver: zodResolver(stepTwoSchema),
+    resolver: zodResolver(createBookStepTwoSchema),
     defaultValues: {
       language: bookCreation.stepTwoDetails?.language ?? '',
       translator: bookCreation.stepTwoDetails?.translator ?? '',
@@ -100,17 +60,7 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
     mode: 'onChange',
   });
 
-  const { refetch } = useFindAuthorsQuery({
-    name: bookCreation.stepOneDetails?.authorName,
-    enabled: false,
-  });
-
   const { create, isProcessing } = useAdminCreateBook({
-    onAuthorCreationError: async () => {
-      const result = await refetch();
-
-      return result.data;
-    },
     onOperationError: setSubmissionError,
   });
 
@@ -121,11 +71,10 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
     });
   };
 
-  const onSubmit = async (values: z.infer<typeof stepTwoSchema>): Promise<void> => {
+  const onSubmit = async (values: CreateBookStepTwo): Promise<void> => {
     await create({
       authorPayload: {
-        authorId: bookCreation.stepOneDetails?.author,
-        name: bookCreation.stepOneDetails?.authorName,
+        authorIds: bookCreation.stepOneDetails?.authorIds,
       },
       bookPayload: {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

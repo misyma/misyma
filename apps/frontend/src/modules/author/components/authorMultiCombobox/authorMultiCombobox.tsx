@@ -1,12 +1,13 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { type VariantProps } from 'class-variance-authority';
 import { CheckIcon, XCircle, ChevronDown, XIcon, WandSparkles } from 'lucide-react';
-import { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
+import { forwardRef, Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { AuthorBadge } from './authorBadge';
+import { type AuthorMultiComboboxOption } from './authorMultiComboboxOption';
 import { multiSelectVariants } from './authorMultiComboboxVariants';
 import { TruncatedAuthorsTooltip } from './truncatedAuthorsTooltip';
-import { TruncatedTextTooltip } from '../../../book/components/truncatedTextTooltip/truncatedTextTooltip';
 import { Badge } from '../../../common/components/badge';
 import { Button } from '../../../common/components/button/button';
 import {
@@ -16,22 +17,35 @@ import {
   CommandItem,
   CommandList,
 } from '../../../common/components/command/command';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '../../../common/components/dialog/dialog';
 import { Popover, PopoverContent, PopoverTrigger } from '../../../common/components/popover/popover';
 import { Separator } from '../../../common/components/separator/separator';
+import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
 import useDebounce from '../../../common/hooks/useDebounce';
 import { cn } from '../../../common/lib/utils';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
-import { useFindAuthorsInfiniteQuery } from '../../api/user/queries/findAuthorsQuery/findAuthorsQuery';
+import { useCreateAuthorDraftMutation } from '../../api/user/mutations/createAuthorDraftMutation/createAuthorDraftMutation';
+import {
+  useFindAuthorsInfiniteQuery,
+  useFindAuthorsQuery,
+} from '../../api/user/queries/findAuthorsQuery/findAuthorsQuery';
+import { CreateAuthorDraftForm } from '../createAuthorDraftForm';
 
 interface MultiSelectProps extends VariantProps<typeof multiSelectVariants> {
   /**
    * Callback function triggered when the selected values change.
    * Receives an array of the new selected values.
    */
-  onValueChange: (value: { label: string; value: string }[]) => void;
+  onValueChange: (value: AuthorMultiComboboxOption[]) => void;
 
   /** The default selected values when the component mounts. */
-  defaultValue?: { label: string; value: string }[];
+  defaultValue?: string[];
 
   /**
    * Placeholder text to be displayed when no values are selected.
@@ -69,6 +83,8 @@ interface MultiSelectProps extends VariantProps<typeof multiSelectVariants> {
    * Optional, can be used to add custom styles.
    */
   className?: string;
+  createAuthorDialogVisible: boolean;
+  setAuthorSelectOpen: (val: boolean) => void;
 }
 
 export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>(
@@ -83,17 +99,41 @@ export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>
       modalPopover = false,
       asChild = false,
       className,
+      createAuthorDialogVisible,
+      setAuthorSelectOpen,
       ...props
     },
     ref,
   ) => {
+    const accessToken = useSelector(userStateSelectors.selectAccessToken);
+
+    const { data: initialAuthors, isLoading: isLoadingInitialAuthors } = useFindAuthorsQuery({
+      ids: defaultValue ?? [],
+    });
+
     const [searchedName, setSearchedName] = useState('');
+    const [selectedValues, setSelectedValues] = useState<AuthorMultiComboboxOption[]>(
+      initialAuthors?.data.map((x) => ({
+        label: x.name,
+        value: x.id,
+      })) ?? [],
+    );
+
+    const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+    const [isAnimating, setIsAnimating] = useState(false);
 
     const debouncedSearchedName = useDebounce(searchedName, 300);
 
-    const [selectedValues, setSelectedValues] = useState<{ label: string; value: string }[]>(defaultValue);
-    const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-    const [isAnimating, setIsAnimating] = useState(false);
+    useEffect(() => {
+      if (initialAuthors?.data && initialAuthors?.data.length > 0) {
+        setSelectedValues(
+          initialAuthors.data.map((x) => ({
+            label: x.name,
+            value: x.id,
+          })),
+        );
+      }
+    }, [initialAuthors]);
 
     const handleInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
       if (event.key === 'Enter') {
@@ -106,7 +146,7 @@ export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>
       }
     };
 
-    const toggleOption = (option: { label: string; value: string }) => {
+    const toggleOption = (option: AuthorMultiComboboxOption) => {
       const newSelectedValues = selectedValues.includes(option)
         ? selectedValues.filter((value) => value.value !== option.value)
         : [...selectedValues, option];
@@ -129,6 +169,13 @@ export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>
       onValueChange(newSelectedValues);
     };
 
+    const { isFetching } = useFindAuthorsInfiniteQuery({
+      pageSize: 50,
+      all: true,
+      accessToken,
+      name: searchedName,
+    });
+
     return (
       <Popover
         open={isPopoverOpen}
@@ -142,37 +189,26 @@ export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>
             variant="none"
             size="custom"
             onClick={handleTogglePopover}
+            disabled={isLoadingInitialAuthors && defaultValue.length > 0}
             className={cn(
-              'flex w-60 sm:w-96 p-1 bg-[#D1D5DB]/20 rounded-md border min-h-14 h-auto items-center justify-between hover:bg-inherit [&_svg]:pointer-events-auto px-3 py-2',
+              'flex w-60 sm:w-96 p-1 bg-[#D1D5DB]/20 rounded-md border min-h-10 h-auto items-center justify-between hover:bg-inherit [&_svg]:pointer-events-auto py-2',
               className,
             )}
           >
+            {selectedValues.length === 0 && defaultValue.length > 0 && isLoadingInitialAuthors && (
+              <LoadingSpinner size={24} />
+            )}
             {selectedValues.length > 0 ? (
               <div className="flex justify-between items-center w-full">
                 <div className="flex items-center">
-                  {selectedValues.slice(0, maxCount).map((value) => {
-                    return (
-                      <Badge
-                        key={value.value}
-                        className={cn(isAnimating ? 'animate-bounce' : '', multiSelectVariants({ variant }))}
-                        style={{ animationDuration: `${animation}s` }}
-                      >
-                        <TruncatedTextTooltip
-                          tooltipClassName="font-normal"
-                          text={value?.label ?? ''}
-                        >
-                          <p className="truncate max-w-32 text-xs font-normal">{value?.label}</p>
-                        </TruncatedTextTooltip>
-                        <XCircle
-                          className="ml-2 h-4 w-4 cursor-pointer"
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            toggleOption(value);
-                          }}
-                        />
-                      </Badge>
-                    );
-                  })}
+                  {selectedValues.slice(0, maxCount).map((value) => (
+                    <AuthorBadge
+                      animation={animation}
+                      isAnimating={isAnimating}
+                      toggleOption={toggleOption}
+                      value={value}
+                    />
+                  ))}
                   {selectedValues.length > maxCount && (
                     <Badge
                       className={cn(
@@ -183,12 +219,14 @@ export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>
                       style={{ animationDuration: `${animation}s` }}
                     >
                       <TruncatedAuthorsTooltip
-                        values={selectedValues.slice(maxCount).map((x) => x.label)}
+                        animation={animation}
+                        isAnimating={isAnimating}
+                        values={selectedValues.slice(maxCount)}
+                        onRemoveValue={toggleOption}
                         variant={variant}
                       >
                         <p>{`+ ${selectedValues.length - maxCount} więcej`}</p>
                       </TruncatedAuthorsTooltip>
-
                       <XCircle
                         className="ml-2 h-4 w-4 cursor-pointer"
                         onClick={(event) => {
@@ -228,16 +266,25 @@ export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>
           onEscapeKeyDown={() => setIsPopoverOpen(false)}
         >
           <Command shouldFilter={false}>
-            <CommandInput
-              placeholder="Search..."
-              onKeyDown={handleInputKeyDown}
-              onValueChange={(val) => setSearchedName(val)}
-            />
+            <div className="relative w-full">
+              <CommandInput
+                placeholder="Search..."
+                onKeyDown={handleInputKeyDown}
+                onValueChange={(val) => setSearchedName(val)}
+              />
+              {isFetching && searchedName.length > 3 && (
+                <LoadingSpinner
+                  className="absolute top-2 right-2"
+                  size={24}
+                />
+              )}
+            </div>
             <CommandList>
-              <CommandEmpty>Brak wyników.</CommandEmpty>
               <AuthorMultiSelectCommandGroup
                 searchedName={debouncedSearchedName}
                 selectedValues={selectedValues}
+                createAuthorDialogVisible={createAuthorDialogVisible}
+                setAuthorSelectOpen={setAuthorSelectOpen}
                 toggleOption={toggleOption}
               />
             </CommandList>
@@ -259,12 +306,16 @@ export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>
 
 const AuthorMultiSelectCommandGroup = ({
   selectedValues,
-  toggleOption,
   searchedName,
+  createAuthorDialogVisible,
+  setAuthorSelectOpen,
+  toggleOption,
 }: {
-  selectedValues: { label: string; value: string }[];
+  selectedValues: AuthorMultiComboboxOption[];
   searchedName: string;
-  toggleOption: (option: { label: string; value: string }) => void;
+  toggleOption: (option: AuthorMultiComboboxOption) => void;
+  createAuthorDialogVisible: boolean;
+  setAuthorSelectOpen: (val: boolean) => void;
 }) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
@@ -277,11 +328,13 @@ const AuthorMultiSelectCommandGroup = ({
     isFetchingNextPage,
     fetchNextPage,
   } = useFindAuthorsInfiniteQuery({
-    pageSize: 50,
+    pageSize: 25,
     all: true,
     accessToken,
     name: searchedName,
   });
+
+  const { mutateAsync } = useCreateAuthorDraftMutation({});
 
   const options = useMemo(() => {
     return (
@@ -319,53 +372,98 @@ const AuthorMultiSelectCommandGroup = ({
     rowVirtualizer.scrollToIndex(0, { align: 'start' });
   }, [rowVirtualizer]);
 
-  return (
-    <div
-      ref={parentRef}
-      className="h-[300px] overflow-auto"
-    >
-      <div
-        className="w-full"
-        style={{
-          height: `${rowVirtualizer.getTotalSize()}px`,
-          position: 'relative',
-        }}
-      >
-        {!isLoading &&
-          rowVirtualizer.getVirtualItems().map((virtualRow) => {
-            //   const isLoaderRow = virtualRow.index >= options.length;
-            const startIndex = virtualRow.index;
-            const author = options[startIndex];
-            const isSelected = selectedValues.includes(author);
+  const onCreateAuthorDraft = async (payload: { name: string }) => {
+    const result = await mutateAsync({
+      name: payload.name,
+    });
 
-            return (
-              <CommandItem
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  height: `${virtualRow.size}px`,
-                  width: '100%',
-                  transform: `translateY(${virtualRow.start}px)`,
-                }}
-                key={author?.value}
-                onSelect={() => toggleOption(author)}
-                className="cursor-pointer"
-              >
-                <div
-                  className={cn(
-                    'mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary',
-                    isSelected ? 'bg-primary text-primary-foreground' : 'opacity-50 [&_svg]:invisible',
-                  )}
-                >
-                  <CheckIcon className="h-4 w-4" />
-                </div>
-                <span>{author?.label}</span>
-              </CommandItem>
-            );
-          })}
-      </div>
-    </div>
+    toggleOption({
+      label: result.name,
+      value: result.id,
+    });
+
+    setAuthorSelectOpen(false);
+  };
+
+  return (
+    <Fragment>
+      {isLoading && (
+        <div className="w-full py-4 flex items-center justify-center">
+          <LoadingSpinner size={36} />
+        </div>
+      )}
+      {!isLoading && options.length === 0 && (
+        <CommandEmpty>
+          <Dialog
+            open={createAuthorDialogVisible}
+            onOpenChange={(val) => {
+              setAuthorSelectOpen(val);
+            }}
+          >
+            <DialogTrigger asChild>
+              <Button className="bg-slate-100 text-black hover:bg-slate-300">Dodaj</Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>Stwórz autora</DialogTitle>
+              </DialogHeader>
+              <CreateAuthorDraftForm
+                onCreateAuthorDraft={onCreateAuthorDraft}
+                initialName={searchedName}
+              />
+            </DialogContent>
+          </Dialog>
+        </CommandEmpty>
+      )}
+      {!isLoading && options.length > 0 && (
+        <div
+          ref={parentRef}
+          className="h-[300px] overflow-auto"
+        >
+          <div
+            className="w-full"
+            style={{
+              height: `${rowVirtualizer.getTotalSize()}px`,
+              position: 'relative',
+            }}
+          >
+            {!isLoading &&
+              rowVirtualizer.getVirtualItems().map((virtualRow) => {
+                //   const isLoaderRow = virtualRow.index >= options.length;
+                const startIndex = virtualRow.index;
+                const author = options[startIndex];
+                const isSelected = selectedValues.includes(author);
+
+                return (
+                  <CommandItem
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      height: `${virtualRow.size}px`,
+                      width: '100%',
+                      transform: `translateY(${virtualRow.start}px)`,
+                    }}
+                    key={author?.value}
+                    onSelect={() => toggleOption(author)}
+                    className="cursor-pointer"
+                  >
+                    <div
+                      className={cn(
+                        'mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary',
+                        isSelected ? 'bg-primary text-primary-foreground' : 'opacity-50 [&_svg]:invisible',
+                      )}
+                    >
+                      <CheckIcon className="h-4 w-4" />
+                    </div>
+                    <span>{author?.label}</span>
+                  </CommandItem>
+                );
+              })}
+          </div>
+        </div>
+      )}
+    </Fragment>
   );
 };
 

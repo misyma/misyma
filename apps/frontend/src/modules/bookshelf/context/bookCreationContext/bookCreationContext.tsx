@@ -34,7 +34,6 @@ export enum BookCreationActionType {
   setImage = 16,
   setStep = 17,
   setBookshelfId = 18,
-  setAuthorName = 19,
   setIsOriginal = 20,
   WipeData = 21,
 }
@@ -58,8 +57,7 @@ type SetNonIsbnStepOneDetails = {
   type: BookCreationActionType.nonIsbnStepOneDetails;
   isbn: string;
   title: string;
-  author: string;
-  authorName?: string;
+  authorIds: string[];
   publisher: string;
   releaseYear: number;
 };
@@ -69,14 +67,9 @@ type SetTitle = {
   title: string;
 };
 
-type SetAuthorName = {
-  type: BookCreationActionType.setAuthorName;
-  authorName: string;
-};
-
 type SetAuthor = {
   type: BookCreationActionType.setAuthor;
-  author: string;
+  authorIds: string[];
 };
 
 type SetPublisher = {
@@ -168,7 +161,6 @@ export type BookCreationAction =
   | SetImage
   | SetStep
   | SetBookshelfId
-  | SetAuthorName
   | SetIsOriginal
   | WipeData;
 
@@ -179,8 +171,7 @@ export interface BookCreationNonIsbnState<T extends boolean = false> {
   stepOneDetails?: {
     isbn: string;
     title: string;
-    author: string;
-    authorName?: string;
+    authorIds: string[];
     publisher?: string;
     releaseYear: number;
   };
@@ -238,7 +229,7 @@ function bookCreationReducer<T extends boolean = true>(
         stepOneDetails: {
           ...state.stepOneDetails,
           isbn: action.isbn,
-          author: action.author,
+          authorIds: action.authorIds,
           publisher: action.publisher,
           title: action.title,
           releaseYear: action.releaseYear,
@@ -250,7 +241,7 @@ function bookCreationReducer<T extends boolean = true>(
         ...state,
         stepOneDetails: {
           ...(state as BookCreationNonIsbnState).stepOneDetails,
-          author: action.author,
+          authorIds: action.authorIds,
         } as BookCreationNonIsbnState['stepOneDetails'],
       };
 
@@ -398,15 +389,6 @@ function bookCreationReducer<T extends boolean = true>(
           ...(state as BookCreationNonIsbnState).stepThreeDetails,
           bookshelfId: action.bookshelfId,
         } as Omit<SetNonIsbnStepThreeDetails, 'type'>,
-      };
-
-    case BookCreationActionType.setAuthorName:
-      return {
-        ...state,
-        stepOneDetails: {
-          ...state.stepOneDetails,
-          authorName: action.authorName,
-        } as Omit<SetNonIsbnStepOneDetails, 'type'>,
       };
 
     case BookCreationActionType.setIsOriginal:

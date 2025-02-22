@@ -45,14 +45,16 @@ export const CreateBookForm: FC<CreateBookProps> = ({ bookshelfId }) => {
 
   const canNavigateToSecond = useCallback(() => {
     return (
-      (bookCreation.stepOneDetails?.author || bookCreation.stepOneDetails?.authorName) &&
-      bookCreation.stepOneDetails?.title
+      bookCreation?.stepOneDetails?.authorIds &&
+      bookCreation?.stepOneDetails?.authorIds?.length > 0 &&
+      bookCreation.stepOneDetails?.title &&
+      bookCreation?.stepOneDetails?.releaseYear
     );
   }, [bookCreation.stepOneDetails]);
 
   const canNavigateToThird = useCallback(() => {
-    return bookCreation.stepTwoDetails?.format && bookCreation.stepTwoDetails?.language;
-  }, [bookCreation.stepTwoDetails]);
+    return canNavigateToSecond() && bookCreation.stepTwoDetails?.format && bookCreation.stepTwoDetails?.language;
+  }, [canNavigateToSecond, bookCreation.stepTwoDetails]);
 
   const navigateToStep = (step: number) => {
     switch (step) {

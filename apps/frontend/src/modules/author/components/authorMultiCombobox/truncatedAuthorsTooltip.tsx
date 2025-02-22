@@ -1,18 +1,25 @@
 import { type VariantProps } from 'class-variance-authority';
 import { type FC, type PropsWithChildren } from 'react';
 
-import { multiSelectVariants } from './authorMultiComboboxVariants';
-import { Badge } from '../../../common/components/badge';
+import { AuthorBadge } from './authorBadge';
+import { type AuthorMultiComboboxOption } from './authorMultiComboboxOption';
+import { type multiSelectVariants } from './authorMultiComboboxVariants';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../common/components/tooltip/tooltip';
 import { cn } from '../../../common/lib/utils';
 
 interface TruncatedAuthorsTooltip extends VariantProps<typeof multiSelectVariants> {
-  values: string[];
+  values: AuthorMultiComboboxOption[];
+  onRemoveValue: (val: AuthorMultiComboboxOption) => void;
+  animation: number;
+  isAnimating: boolean;
 }
 export const TruncatedAuthorsTooltip: FC<PropsWithChildren<TruncatedAuthorsTooltip>> = ({
   values,
   variant,
   children,
+  animation,
+  isAnimating,
+  onRemoveValue,
 }) => {
   return (
     <TooltipProvider>
@@ -24,15 +31,13 @@ export const TruncatedAuthorsTooltip: FC<PropsWithChildren<TruncatedAuthorsToolt
           className={cn('flex flex-wrap gap-1 max-w-xs p-2 z-[1000]')}
         >
           {values.map((val) => (
-            <Badge
-              key={val}
-              className={cn(
-                'bg-transparent text-foreground border-foreground/1 hover:bg-transparent font-normal text-xs',
-                multiSelectVariants({ variant }),
-              )}
-            >
-              {val}
-            </Badge>
+            <AuthorBadge
+              animation={animation}
+              isAnimating={isAnimating}
+              toggleOption={onRemoveValue}
+              value={val}
+              variant={variant}
+            />
           ))}
         </TooltipContent>
       </Tooltip>

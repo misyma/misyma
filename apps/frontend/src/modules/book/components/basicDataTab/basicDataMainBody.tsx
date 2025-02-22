@@ -18,9 +18,9 @@ import { StatusChooserCards } from '../statusChooser/statusChooserCards';
 interface BasicDataMainBodyProps {
   bookId: string;
 }
+
 export const BasicDataMainBody: FC<BasicDataMainBodyProps> = ({ bookId }) => {
   const { data: userData } = useFindUserQuery();
-
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const queryOptions = useMemo(
@@ -37,8 +37,8 @@ export const BasicDataMainBody: FC<BasicDataMainBodyProps> = ({ bookId }) => {
 
   const bookDetails = useMemo(
     () => ({
-      language: data?.book.language ? ReversedLanguages[data?.book.language]?.toLowerCase() : '',
-      format: data?.book.format ? BookFormat[data?.book.format] : '',
+      language: data?.book.language ? ReversedLanguages[data.book.language]?.toLowerCase() : '',
+      format: data?.book.format ? BookFormat[data.book.format] : '',
       title: data?.book.title,
       releaseYear: data?.book.releaseYear,
       pages: data?.book.pages,
@@ -65,11 +65,20 @@ export const BasicDataMainBody: FC<BasicDataMainBodyProps> = ({ bookId }) => {
         {isFetching && <Skeleton className="h-9 w-40" />}
         <CurrentRatingStar userBookId={bookId} />
       </div>
-      <Separator className="h-[1px] bg-primary"></Separator>
+      <Separator className="h-[1px] bg-primary" />
       <div className="flex flex-shrink-0 w-full justify-between">
         <div className="flex flex-shrink-0 flex-col gap-2">
-          <p className="text-lg pb-6">{bookDetails.authors[0]?.name}</p>
-          {data?.book.isbn && <p>ISBN: {data?.book.isbn}</p>}
+          <p className="text-lg pb-6">
+            {!isFetching && (bookDetails.authors.length > 1 ? <p>Autorzy: </p> : <p>Autor: </p>)}
+            {bookDetails.authors.slice(0, 3).map((author, index) => (
+              <span key={index}>
+                {author.name}
+                {index < Math.min(bookDetails.authors.length, 3) - 1 && ', '}
+              </span>
+            ))}
+            {bookDetails.authors.length > 3 && ` i ${bookDetails.authors.length - 3} więcej`}
+          </p>{' '}
+          {data?.book.isbn && <p>ISBN: {data.book.isbn}</p>}
           {data?.book.releaseYear && <p>Rok wydania: {bookDetails.releaseYear}</p>}
           <p>Język: {bookDetails.language}</p>
           {data?.book.translator && <p>Przekład: {bookDetails.translator}</p>}
@@ -87,11 +96,11 @@ export const BasicDataMainBody: FC<BasicDataMainBodyProps> = ({ bookId }) => {
             <StatusChooserCards
               bookshelfId={data?.bookshelfId ?? ''}
               bookId={data?.id ?? ''}
-            ></StatusChooserCards>
+            />
           </div>
           <div className="flex flex-col items-end gap-2">
             <p>Dodaj ocenę</p>
-            <StarRating bookId={bookId}></StarRating>
+            <StarRating bookId={bookId} />
           </div>
         </div>
       </div>

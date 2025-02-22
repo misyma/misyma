@@ -1,12 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query';
 
-import {
-  type CreateAuthorRequestBody,
-  type CreateAuthorResponseBody,
-  type FindAuthorsResponseBody,
-} from '@common/contracts';
+import { type CreateAuthorRequestBody, type FindAuthorsResponseBody } from '@common/contracts';
 
-import { useCreateAuthorDraftMutation } from '../../../author/api/user/mutations/createAuthorDraftMutation/createAuthorDraftMutation';
 import { useToast } from '../../../common/components/toast/use-toast';
 import { stripFalsyObjectKeys } from '../../../common/utils/stripFalsyObjectKeys';
 import { useCreateAdminBookMutation } from '../../api/admin/mutations/createAdminBookMutation/createAdminBookMutation';
@@ -16,7 +11,7 @@ import { BookApiError } from '../../errors/bookApiError';
 
 interface CreatePayload {
   authorPayload?: Partial<CreateAuthorRequestBody> & {
-    authorId?: string;
+    authorIds?: string[];
   };
   bookPayload: Omit<UseCreateBookMutationPayload, 'authorIds'>;
 }
@@ -31,59 +26,23 @@ interface UseAdminCreateBookProps {
   onOperationError: (message: string) => void;
 }
 
-export const useAdminCreateBook = ({
-  onAuthorCreationError,
-  onOperationError,
-}: UseAdminCreateBookProps): UseAdminCreateBookResult => {
+export const useAdminCreateBook = ({ onOperationError }: UseAdminCreateBookProps): UseAdminCreateBookResult => {
   const { toast } = useToast();
 
   const queryClient = useQueryClient();
 
   const { mutateAsync: createBookMutation, isPending: isCreateBookPending } = useCreateAdminBookMutation({});
 
-  const { mutateAsync: createAuthorDraft, isPending: isCreateAuthorPending } = useCreateAuthorDraftMutation({});
-
   const create = async ({ authorPayload, bookPayload }: CreatePayload) => {
     try {
-      let authorDraftResponse: CreateAuthorResponseBody | undefined = undefined;
-
-      let authorId = authorPayload?.authorId as string;
-
-      if (authorPayload?.name) {
-        try {
-          authorDraftResponse = await createAuthorDraft({
-            name: authorPayload.name,
-            errorHandling: {
-              title: 'Nie udało się stworzyć autora.',
-            },
-          });
-
-          authorId = authorId || (authorDraftResponse?.id as string);
-        } catch (error) {
-          if (error instanceof Error) {
-            if (error.name === 'ResourceAlreadyExistsError') {
-              if (onAuthorCreationError) {
-                const response = await onAuthorCreationError();
-
-                if (!response?.data[0]) {
-                  return;
-                }
-
-                authorId = response?.data[0].id as string;
-              }
-
-              return;
-            }
-          }
-        }
-      }
+      const authorIds = authorPayload?.authorIds ?? [];
 
       if (bookPayload) {
         const bookPayloadNoNil = stripFalsyObjectKeys(bookPayload);
 
         await createBookMutation({
           ...bookPayloadNoNil,
-          authorIds: [authorId],
+          authorIds,
           errorHandling: {
             title: 'Nie udało się stworzyć książki.',
             description: '',
@@ -118,6 +77,6 @@ export const useAdminCreateBook = ({
 
   return {
     create,
-    isProcessing: isCreateBookPending || isCreateAuthorPending,
+    isProcessing: isCreateBookPending,
   };
 };

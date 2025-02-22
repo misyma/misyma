@@ -6,7 +6,6 @@ import { z } from 'zod';
 
 import { ReadingStatus as ContractReadingStatus } from '@common/contracts';
 
-import { useFindAuthorsQuery } from '../../../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
 import { BookshelfSelector } from '../../../../../bookshelf/components/bookshelfSelector/bookshelfSelector';
 import { StatusSelector } from '../../../../../bookshelf/components/statusSelector/statusSelector';
 import {
@@ -84,11 +83,6 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
     }),
   );
 
-  const { refetch } = useFindAuthorsQuery({
-    name: bookCreation.stepOneDetails?.authorName,
-    enabled: false,
-  });
-
   const form = useForm({
     resolver: zodResolver(stepThreeFormSchema),
     defaultValues: {
@@ -102,19 +96,13 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
   });
 
   const { create, isProcessing } = useCreateBookWithUserBook({
-    onAuthorCreationError: async () => {
-      const result = await refetch();
-
-      return result.data;
-    },
     onOperationError: setSubmissionError,
   });
 
   const onSubmit = async (values: Partial<z.infer<typeof stepThreeFormSchema>>) => {
     await create({
       authorPayload: {
-        authorId: bookCreation.stepOneDetails?.author,
-        name: bookCreation.stepOneDetails?.authorName,
+        authorIds: bookCreation.stepOneDetails?.authorIds ?? [],
       },
       bookPayload: {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
