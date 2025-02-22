@@ -1,14 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
-import { type FC, useMemo, useState } from 'react';
+import { type FC, useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { z } from 'zod';
 
-import { BookFormat as ContractBookFormat, Language } from '@common/contracts';
+import { BookFormat as ContractBookFormat, Language, type UpdateBookRequestBody } from '@common/contracts';
 
 import { StepOneForm } from './stepOneForm/stepOneForm';
-import { useCreateAuthorDraftMutation } from '../../../author/api/user/mutations/createAuthorDraftMutation/createAuthorDraftMutation';
 import { Button } from '../../../common/components/button/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/form/form';
 import { Input } from '../../../common/components/input/input';
@@ -33,6 +32,10 @@ interface Props {
   onSubmit: () => void;
   onCancel: () => void;
 }
+
+type Writeable<T> = {
+  -readonly [P in keyof T]: T[P];
+};
 
 const stepTwoSchema = z.object({
   language: z.nativeEnum(Language).optional(),
@@ -116,7 +119,7 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
     }),
   );
 
-  const { mutateAsync: createBookChangeRequest } = useUpdateBookMutation({});
+  const { mutateAsync: updateBook, isPending: isUpdatingBook } = useUpdateBookMutation({});
 
   const stepTwoForm = useForm({
     resolver: zodResolver(stepTwoSchema),
@@ -143,14 +146,12 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
     setCurrentStep(2);
   };
 
-  const { mutateAsync: createAuthorDraft, isPending: isCreateAuthorPending } = useCreateAuthorDraftMutation({});
-
   const payload = useMemo(
     () => ({
       ...context,
       ...(context?.authorIds
         ? {
-            authorIds: [context.authorIds],
+            authorIds: context.authorIds,
           }
         : {}),
       ...stepTwoForm.getValues(),
@@ -160,47 +161,55 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
     [stepTwoForm, accessToken, bookData?.id, context],
   );
 
+  const preparePayload = useCallback(
+    (object: Writeable<UpdateBookRequestBody>, objectToUpdate: Writeable<UpdateBookRequestBody>) => {
+      Object.entries(object).forEach(([key, value]) => {
+        const bookDataKey = key as keyof typeof bookData;
+
+        if (!bookData) {
+          return;
+        }
+
+        if (bookData[bookDataKey] === value) {
+          delete objectToUpdate[bookDataKey];
+          return;
+        }
+
+        if (Array.isArray(bookData[bookDataKey]) && bookData[bookDataKey]?.[0] === value) {
+          delete objectToUpdate[bookDataKey];
+          return;
+        }
+
+        if (bookData?.authors && Array.isArray(value) && key === 'authorIds' && value.length === 0) {
+          delete objectToUpdate['authorIds'];
+          return;
+        }
+
+        if (key === 'pages' && value === '' && bookData.pages !== undefined) {
+          objectToUpdate[key] = null as unknown as number;
+          return;
+        }
+
+        if (key === 'translator' && value === '' && bookData.translator !== undefined) {
+          objectToUpdate[key] = null as unknown as string;
+          return;
+        }
+
+        if (!value) {
+          delete objectToUpdate[bookDataKey];
+        }
+      });
+    },
+    [bookData],
+  );
+
   const updatePayload = useMemo(() => {
     const innerPayload = { ...payload };
 
-    if (context.authorName) {
-      innerPayload.authorIds = [''];
-    }
-
-    Object.entries(payload).forEach(([key, value]) => {
-      const bookDataKey = key as keyof typeof bookData;
-
-      if (bookData && bookData[bookDataKey] === value) {
-        delete innerPayload[key as keyof typeof payload];
-      }
-
-      if (
-        bookData &&
-        bookData[bookDataKey] &&
-        Array.isArray(bookData[bookDataKey]) &&
-        bookData[bookDataKey][0] === value
-      ) {
-        delete innerPayload[key as keyof typeof payload];
-      }
-
-      if (
-        bookData &&
-        bookData['authors'] &&
-        Array.isArray(bookData['authors']) &&
-        key === 'authorIds' &&
-        Array.isArray(value) &&
-        bookData['authors'][0]?.id === value[0]
-      ) {
-        delete innerPayload['authorIds'];
-      }
-
-      if (!value) {
-        delete innerPayload[key as keyof typeof payload];
-      }
-    });
+    preparePayload(payload as unknown as UpdateBookRequestBody, innerPayload as unknown as UpdateBookRequestBody);
 
     return innerPayload;
-  }, [payload, bookData, context.authorName]);
+  }, [payload, preparePayload]);
 
   const onUpdate = async (values: z.infer<typeof stepTwoSchema>) => {
     const payload = {
@@ -208,57 +217,12 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
       ...values,
     };
 
-    if (context.authorName) {
-      const createdAuthor = await createAuthorDraft({
-        name: context.authorName,
-      });
-
-      payload.authorIds = [createdAuthor.id];
-    }
-
-    // Todo: refactor
-    Object.entries(payload).forEach(([key, value]) => {
-      const bookDataKey = key as keyof typeof bookData;
-
-      if (bookData && bookData[bookDataKey] === value) {
-        delete payload[key as keyof typeof payload];
-      }
-
-      if (
-        bookData &&
-        bookData[bookDataKey] &&
-        Array.isArray(bookData[bookDataKey]) &&
-        bookData[bookDataKey][0] === value
-      ) {
-        delete payload[key as keyof typeof payload];
-      }
-
-      if (
-        bookData &&
-        bookData['authors'] &&
-        Array.isArray(bookData['authors']) &&
-        key === 'authorIds' &&
-        Array.isArray(value) &&
-        bookData['authors'][0]?.id === value[0]
-      ) {
-        delete payload['authorIds'];
-      }
-
-      if (!value) {
-        delete payload[key as keyof typeof payload];
-      }
-    });
-
-    if (Object.entries(payload).length === 2) {
-      onSubmit();
-
-      return;
-    }
+    preparePayload(payload as unknown as UpdateBookRequestBody, payload as unknown as UpdateBookRequestBody);
 
     try {
-      await createBookChangeRequest({
+      await updateBook({
         ...payload,
-        authorIds: Array.isArray(payload.authorIds) ? payload.authorIds : payload.authorIds?.split(','),
+        authorIds: payload.authorIds,
       });
 
       toast({
@@ -402,9 +366,7 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
               <Button
                 size="lg"
                 disabled={
-                  !stepTwoForm.formState.isValid ||
-                  (!stepTwoForm.formState.isDirty && Object.entries(updatePayload).length <= 2) ||
-                  isCreateAuthorPending
+                  !stepTwoForm.formState.isValid || Object.entries(updatePayload).length === 0 || isUpdatingBook
                 }
                 type="submit"
               >

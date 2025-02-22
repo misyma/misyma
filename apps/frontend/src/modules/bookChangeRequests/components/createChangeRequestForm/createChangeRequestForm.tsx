@@ -187,11 +187,6 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
           return;
         }
 
-        if (bookData?.authors && Array.isArray(value) && key === 'authorIds' && bookData.authors[0]?.id === value[0]) {
-          delete objectToUpdate['authorIds'];
-          return;
-        }
-
         if (key === 'pages' && value === '' && bookData.pages !== undefined) {
           objectToUpdate[key] = null as unknown as number;
           return;

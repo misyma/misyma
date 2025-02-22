@@ -1,14 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ChevronsUpDown } from 'lucide-react';
-import { type FC, useMemo, useState } from 'react';
+import { type FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { HiOutlineInformationCircle } from 'react-icons/hi';
 import { useSelector } from 'react-redux';
 import { z } from 'zod';
 
-import { useFindAuthorsQuery } from '../../../../author/api/user/queries/findAuthorsQuery/findAuthorsQuery';
-import { AuthorSearchSelector } from '../../../../author/components/authorSearchSelector/authorSearchSelector';
-import { type createAuthorDraftSchema } from '../../../../author/schemas/createAuthorDraftSchema';
+import { AuthorMultiCombobox } from '../../../../author/components/authorMultiCombobox/authorMultiCombobox';
 import { FindBookByIdQueryOptions } from '../../../../book/api/user/queries/findBookById/findBookByIdQueryOptions';
 import { Button } from '../../../../common/components/button/button';
 import {
@@ -29,7 +26,6 @@ import {
   TooltipTrigger,
 } from '../../../../common/components/tooltip/tooltip';
 import { useErrorHandledQuery } from '../../../../common/hooks/useErrorHandledQuery';
-import { cn } from '../../../../common/lib/utils';
 import { isbnSchema } from '../../../../common/schemas/isbnSchema';
 import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
 import { useAdminEditBookContext } from '../../../context/adminEditBookContext/adminEditBookContext';
@@ -46,11 +42,18 @@ const stepOneSchema = z.object({
     })
     .or(z.literal('')),
   authorIds: z
-    .string()
-    .uuid({
-      message: 'Brak wybranego autora.',
-    })
-    .or(z.literal('')),
+    .array(
+      z
+        .string({
+          required_error: 'Wymagany',
+        })
+        .uuid({
+          message: 'Brak wybranego autora.',
+        }),
+    )
+    .min(1, {
+      message: 'Wymagany jest co najmniej jeden autor.',
+    }),
   authorName: z.string().min(1).max(64).optional(),
   releaseYear: z
     .number({
@@ -106,7 +109,7 @@ export const StepOneForm: FC<Props> = ({ bookId, onCancel, onSubmit }) => {
 const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
-  const { authorIds, authorName: dAuthorName } = useAdminEditBookContext();
+  const { authorIds } = useAdminEditBookContext();
 
   const { data: bookData } = useErrorHandledQuery(
     FindBookByIdQueryOptions({
@@ -115,57 +118,20 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
     }),
   );
 
-  const [currentAuthorId, setCurrentAuthorId] = useState(authorIds ?? bookData?.authors[0].id ?? '');
-
-  const [draftAuthorName, setDraftAuthorName] = useState(dAuthorName ?? '');
-
   const [createAuthorDialogVisible, setCreateAuthorDialogVisible] = useState(false);
-
-  const onOpenChange = (bool: boolean) => setCreateAuthorDialogVisible(bool);
-
-  const onCreateAuthorDraft = (payload: z.infer<typeof createAuthorDraftSchema>): void => {
-    setDraftAuthorName(payload.name);
-
-    // eslint-disable-next-line
-		stepOneForm.setValue('authorIds', undefined as any);
-
-    // eslint-disable-next-line
-		stepOneForm.setValue('authorName', payload.name as any, {
-      shouldValidate: true,
-    });
-
-    setCreateAuthorDialogVisible(false);
-  };
 
   const stepOneForm = useForm({
     resolver: zodResolver(stepOneSchema),
     defaultValues: {
       isbn: bookData?.isbn ?? '',
       title: bookData?.title ?? '',
-      authorIds: !draftAuthorName ? (authorIds ?? bookData?.authors[0].id ?? '') : '',
-      authorName: draftAuthorName ?? '',
+      authorIds: authorIds ?? bookData?.authors[0].id ?? '',
       publisher: bookData?.publisher ?? '',
       releaseYear: bookData?.releaseYear,
     },
     reValidateMode: 'onChange',
     mode: 'onTouched',
   });
-
-  const { data: currentAuthor, isFetching: isFetchingCurrentAuthor } = useFindAuthorsQuery({
-    ids: currentAuthorId ? [currentAuthorId] : [],
-  });
-
-  const authorName = useMemo(() => {
-    if (draftAuthorName) {
-      return draftAuthorName;
-    }
-
-    if (currentAuthor) {
-      return currentAuthor.data[0].name;
-    }
-
-    return 'Wyszukaj autora';
-  }, [currentAuthor, draftAuthorName]);
 
   return (
     <Form {...stepOneForm}>
@@ -211,7 +177,7 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
         <FormField
           name="authorIds"
           control={stepOneForm.control}
-          render={({ field }) => (
+          render={({}) => (
             <FormItem className="flex flex-col">
               <div className="flex gap-2 items-center">
                 <FormLabel>Autor</FormLabel>
@@ -234,51 +200,23 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
                 <Popover modal={false}>
                   <PopoverTrigger asChild>
                     <FormControl>
-                      <Button
-                        variant="link"
-                        role="combobox"
-                        size="xl"
-                        className={cn(
-                          'justify-between bg-[#D1D5DB]/20',
-                          !field.value && 'text-muted-foreground',
-                          draftAuthorName && 'text-black',
-                          'border',
-                        )}
-                        style={{
-                          height: '3rem',
+                      <AuthorMultiCombobox
+                        createAuthorDialogVisible={createAuthorDialogVisible}
+                        onValueChange={(v) => {
+                          stepOneForm.setValue(
+                            'authorIds',
+                            v.map((v) => v.value),
+                          );
+
+                          stepOneForm.trigger('authorIds');
+
+                          setCreateAuthorDialogVisible(false);
                         }}
-                      >
-                        <p
-                          className={cn(
-                            !field.value && 'text-muted-foreground',
-                            draftAuthorName && 'text-black',
-                            'w-full text-start px-3',
-                          )}
-                        >
-                          {field.value && isFetchingCurrentAuthor && <LoadingSpinner size={20} />}
-                          {field.value && !isFetchingCurrentAuthor ? authorName : ''}
-                        </p>
-                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                      </Button>
+                        defaultValue={bookData?.authors.map((a) => a.id)}
+                        setAuthorSelectOpen={setCreateAuthorDialogVisible}
+                      />
                     </FormControl>
                   </PopoverTrigger>
-                  <AuthorSearchSelector
-                    dialog={true}
-                    createAuthorDialogVisible={createAuthorDialogVisible}
-                    setAuthorSelectOpen={onOpenChange}
-                    currentlySelectedAuthorId={field.value}
-                    onCreateAuthorDraft={onCreateAuthorDraft}
-                    onSelect={(authorId) => {
-                      stepOneForm.setValue('authorIds', authorId);
-
-                      stepOneForm.setValue('authorName', '');
-
-                      setCurrentAuthorId(authorId);
-
-                      setDraftAuthorName('');
-                    }}
-                    includeAuthorCreation={true}
-                  />
                 </Popover>
               </FormControl>
               <FormMessage />

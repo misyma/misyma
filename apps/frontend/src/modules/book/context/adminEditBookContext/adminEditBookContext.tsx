@@ -5,8 +5,7 @@ import { BookFormat, Language } from '@common/contracts';
 export interface AdminEditBookState {
   isbn: string;
   title: string;
-  authorIds: string | undefined;
-  authorName: string | undefined;
+  authorIds: string[];
   releaseYear: undefined;
   publisher: string;
   language: Language;
@@ -34,8 +33,7 @@ type SetContextValuesAction = {
 type Actions = ResetContextValues | SetContextValuesAction;
 
 const defaultValues: AdminEditBookState = {
-  authorIds: undefined,
-  authorName: undefined,
+  authorIds: [],
   format: BookFormat.paperback,
   isbn: '',
   language: Language.English,
@@ -73,8 +71,7 @@ export function useAdminEditBookDispatch() {
 function adminEditBookReducer(state: AdminEditBookState, action: Actions) {
   if (action.type === AdminEditBookAction.resetContext) {
     return {
-      authorIds: undefined,
-      authorName: undefined,
+      authorIds: [],
       format: BookFormat.paperback,
       isbn: '',
       language: Language.English,
