@@ -467,4 +467,4 @@ const AuthorMultiSelectCommandGroup = ({
   );
 };
 
-AuthorMultiCombobox.displayName = 'AuthorMultiSelect';
+AuthorMultiCombobox.displayName = 'AuthorMultiCombobox';
