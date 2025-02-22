@@ -1,6 +1,7 @@
+import { useVirtualizer } from '@tanstack/react-virtual';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { CheckIcon, XCircle, ChevronDown, XIcon, WandSparkles } from 'lucide-react';
-import * as React from 'react';
+import { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { TruncatedTextTooltip } from '../../book/components/truncatedTextTooltip/truncatedTextTooltip';
@@ -85,7 +86,7 @@ interface MultiSelectProps
   className?: string;
 }
 
-export const AuthorMultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>(
+export const AuthorMultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>(
   (
     {
       onValueChange,
@@ -103,9 +104,9 @@ export const AuthorMultiSelect = React.forwardRef<HTMLButtonElement, MultiSelect
   ) => {
     const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
-    const [selectedValues, setSelectedValues] = React.useState<string[]>(defaultValue);
-    const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
-    const [isAnimating, setIsAnimating] = React.useState(false);
+    const [selectedValues, setSelectedValues] = useState<string[]>(defaultValue);
+    const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+    const [isAnimating, setIsAnimating] = useState(false);
 
     const { data: authors } = useFindAuthorsInfiniteQuery({
       pageSize: 50,
@@ -113,7 +114,7 @@ export const AuthorMultiSelect = React.forwardRef<HTMLButtonElement, MultiSelect
       accessToken,
     });
 
-    const options = React.useMemo(() => {
+    const options = useMemo(() => {
       return (
         authors?.pages.flatMap((p) =>
           p.data.map((a) => ({
@@ -158,15 +159,15 @@ export const AuthorMultiSelect = React.forwardRef<HTMLButtonElement, MultiSelect
       onValueChange(newSelectedValues);
     };
 
-    const toggleAll = () => {
-      if (selectedValues.length === options.length) {
-        handleClear();
-      } else {
-        const allValues = options.map((option) => option.value);
-        setSelectedValues(allValues);
-        onValueChange(allValues);
-      }
-    };
+    // const toggleAll = () => {
+    //   if (selectedValues.length === options.length) {
+    //     handleClear();
+    //   } else {
+    //     const allValues = options.map((option) => option.value);
+    //     setSelectedValues(allValues);
+    //     onValueChange(allValues);
+    //   }
+    // };
 
     return (
       <Popover
@@ -268,46 +269,10 @@ export const AuthorMultiSelect = React.forwardRef<HTMLButtonElement, MultiSelect
             />
             <CommandList>
               <CommandEmpty>Brak wyników.</CommandEmpty>
-              <CommandGroup>
-                <CommandItem
-                  key="all"
-                  onSelect={toggleAll}
-                  className="cursor-pointer"
-                >
-                  <div
-                    className={cn(
-                      'mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary',
-                      selectedValues.length === options.length
-                        ? 'bg-primary text-primary-foreground'
-                        : 'opacity-50 [&_svg]:invisible',
-                    )}
-                  >
-                    <CheckIcon className="h-4 w-4" />
-                  </div>
-                  <span>(Wybierz wszystkich)</span>
-                </CommandItem>
-                {/* Todo: virtualize this... ugh */}
-                {options.map((option) => {
-                  const isSelected = selectedValues.includes(option.value);
-                  return (
-                    <CommandItem
-                      key={option.value}
-                      onSelect={() => toggleOption(option.value)}
-                      className="cursor-pointer"
-                    >
-                      <div
-                        className={cn(
-                          'mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary',
-                          isSelected ? 'bg-primary text-primary-foreground' : 'opacity-50 [&_svg]:invisible',
-                        )}
-                      >
-                        <CheckIcon className="h-4 w-4" />
-                      </div>
-                      <span>{option.label}</span>
-                    </CommandItem>
-                  );
-                })}
-              </CommandGroup>
+              <AuthorMultiSelectCommandGroup
+                selectedValues={selectedValues}
+                toggleOption={toggleOption}
+              />
               <CommandSeparator />
               <CommandGroup>
                 <div className="flex items-center justify-between">
@@ -317,7 +282,7 @@ export const AuthorMultiSelect = React.forwardRef<HTMLButtonElement, MultiSelect
                         onSelect={handleClear}
                         className="flex-1 justify-center cursor-pointer"
                       >
-                        Clear
+                        Wyczyść
                       </CommandItem>
                       <Separator
                         orientation="vertical"
@@ -329,7 +294,7 @@ export const AuthorMultiSelect = React.forwardRef<HTMLButtonElement, MultiSelect
                     onSelect={() => setIsPopoverOpen(false)}
                     className="flex-1 justify-center cursor-pointer max-w-full"
                   >
-                    Close
+                    Zamknij
                   </CommandItem>
                 </div>
               </CommandGroup>
@@ -349,5 +314,116 @@ export const AuthorMultiSelect = React.forwardRef<HTMLButtonElement, MultiSelect
     );
   },
 );
+
+const AuthorMultiSelectCommandGroup = ({
+  selectedValues,
+  toggleOption,
+}: {
+  selectedValues: string[];
+  toggleOption: (option: string) => void;
+}) => {
+  const accessToken = useSelector(userStateSelectors.selectAccessToken);
+
+  const parentRef = useRef<HTMLDivElement>(null);
+
+  const {
+    data: authors,
+    isLoading,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  } = useFindAuthorsInfiniteQuery({
+    pageSize: 50,
+    all: true,
+    accessToken,
+  });
+
+  const options = useMemo(() => {
+    return (
+      authors?.pages.flatMap((p) =>
+        p.data.map((a) => ({
+          label: a.name,
+          value: a.id,
+        })),
+      ) ?? []
+    );
+  }, [authors?.pages]);
+
+  const rowVirtualizer = useVirtualizer({
+    count: isLoading ? 100 : 200,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 40, // Adjusted for card height
+    overscan: 2,
+  });
+
+  useEffect(() => {
+    const [lastItem] = [...rowVirtualizer.getVirtualItems()].reverse();
+    if (lastItem?.index >= options.length - 1 && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rowVirtualizer.getVirtualItems(), hasNextPage, fetchNextPage, isFetchingNextPage, options.length]);
+
+  return (
+    <CommandGroup
+      ref={parentRef}
+      style={{
+        height: `${rowVirtualizer.getTotalSize()}px`,
+        position: 'relative',
+      }}
+    >
+      {/* <CommandItem
+          key="all"
+          onSelect={toggleAll}
+          className="cursor-pointer"
+        >
+          <div
+            className={cn(
+              'mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary',
+              selectedValues.length === options.length
+                ? 'bg-primary text-primary-foreground'
+                : 'opacity-50 [&_svg]:invisible',
+            )}
+          >
+            <CheckIcon className="h-4 w-4" />
+          </div>
+          <span>(Wybierz wszystkich)</span>
+        </CommandItem> */}
+      {!isLoading &&
+        rowVirtualizer.getVirtualItems().map((virtualRow) => {
+          //   const isLoaderRow = virtualRow.index >= options.length;
+          const startIndex = virtualRow.index;
+          const author = options[startIndex];
+          const isSelected = selectedValues.includes(author?.value);
+
+          return (
+            <CommandItem
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                height: `${virtualRow.size}px`,
+                width: '100%',
+                transform: `translateY(${virtualRow.start}px)`,
+              }}
+              key={author?.value}
+              onSelect={() => toggleOption(author?.value)}
+              className="cursor-pointer"
+            >
+              <div
+                className={cn(
+                  'mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary',
+                  isSelected ? 'bg-primary text-primary-foreground' : 'opacity-50 [&_svg]:invisible',
+                )}
+              >
+                <CheckIcon className="h-4 w-4" />
+              </div>
+              <span>{author?.label}</span>
+            </CommandItem>
+          );
+        })}
+    </CommandGroup>
+  );
+};
 
 AuthorMultiSelect.displayName = 'AuthorMultiSelect';
