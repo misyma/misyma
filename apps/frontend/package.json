@@ -41,6 +41,7 @@
     "@tanstack/react-table": "^8.20.5",
     "@tanstack/react-virtual": "^3.11.0",
     "@tanstack/router-zod-adapter": "^1.77.8",
+    "axios": "^1.8.1",
     "class-variance-authority": "0.7.0",
     "clsx": "2.1.1",
     "cmdk": "^1.0.0",

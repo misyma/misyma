@@ -1,70 +1,32 @@
 import { useQuery } from '@tanstack/react-query';
-import { useSelector } from 'react-redux';
 
 import { type FindUserResponseBody } from '@common/contracts';
 
-import { HttpService } from '../../../../core/services/httpService/httpService';
-import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
+import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
+import { api } from '../../../../core/apiClient/apiClient';
+import { ApiPaths } from '../../../../core/apiClient/apiPaths';
 import { UserApiError } from '../../../errors/userApiError';
 import { UserApiQueryKeys } from '../userApiQueryKeys';
 
-interface FindUserPayload {
-  accessToken: string;
-  refreshToken: string;
-}
+export const findUser = async () => {
+  const mapper = new ErrorCodeMessageMapper({});
 
-export const useFindUserQuery = (opt?: FindUserPayload) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
+  const findUserResponse = await api.get<FindUserResponseBody>(ApiPaths.users.me.path);
 
-  const refreshToken = useSelector(userStateSelectors.selectRefreshToken);
-
-  const findUser = async (values: FindUserPayload) => {
-    const { accessToken } = values;
-
-    const findUserResponse = await HttpService.get<FindUserResponseBody>({
-      url: '/users/me',
-      headers: {
-        Authorization: `Bearer ${accessToken || opt?.accessToken}`,
-      },
+  if (api.isErrorResponse(findUserResponse)) {
+    throw new UserApiError({
+      message: mapper.map(findUserResponse.status),
+      apiResponseError: findUserResponse.data.context,
+      statusCode: findUserResponse.status,
     });
+  }
 
-    if (findUserResponse.success === false) {
-      throw new UserApiError({
-        message: mapStatusCodeToErrorMessage(findUserResponse.statusCode),
-        apiResponseError: findUserResponse.body.context,
-        statusCode: findUserResponse.statusCode,
-      });
-    }
-
-    return findUserResponse.body;
-  };
-
-  return useQuery<FindUserResponseBody>({
-    queryKey: [UserApiQueryKeys.findUser],
-    queryFn: () =>
-      findUser({
-        accessToken: (accessToken || opt?.accessToken) as string,
-        refreshToken: (refreshToken || opt?.refreshToken) as string,
-      }),
-    enabled: !!accessToken || !!opt?.accessToken,
-  });
+  return findUserResponse.data;
 };
 
-const mapStatusCodeToErrorMessage = (statusCode: number) => {
-  switch (statusCode) {
-    case 401:
-      return 'Unauthorized';
-
-    case 403:
-      return 'Forbidden';
-
-    case 404:
-      return 'Not found';
-
-    case 500:
-      return 'Internal server error';
-
-    default:
-      return 'Unknown error';
-  }
+export const useFindUserQuery = () => {
+  return useQuery<FindUserResponseBody>({
+    queryKey: [UserApiQueryKeys.findUser],
+    queryFn: findUser,
+  });
 };

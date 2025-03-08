@@ -73,7 +73,6 @@ export const FindUserBooksByInfiniteQueryOptions = ({ accessToken, page = 1, ...
 
       return undefined;
     },
-    enabled: !!accessToken,
   });
 
 export const invalidateFindUserBooksByQuery = (
