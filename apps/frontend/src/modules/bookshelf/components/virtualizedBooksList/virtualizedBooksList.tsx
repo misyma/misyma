@@ -36,8 +36,6 @@ export const VirtualizedBooksList: FC<VirtualizedBooksListProps> = ({
     }),
   );
 
-  console.log(data);
-
   const allBooks = data ? data.pages.flatMap((d) => d.data) : [];
 
   const allBookChunks = Array.from({ length: Math.ceil(allBooks.length / 6) }, (_, i) =>

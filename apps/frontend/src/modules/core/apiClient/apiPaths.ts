@@ -17,4 +17,7 @@ export const ApiPaths = {
       path: '/users/change-password',
     },
   },
+  quotes: {
+    path: '/quotes',
+  },
 };

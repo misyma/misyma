@@ -9,6 +9,7 @@ type BlockquoteProps = {
   className?: string;
   author?: string;
   date: string;
+  title?: string;
   page?: string;
   variant?: 'modern' | 'minimalist' | 'paper';
   rightButtons?: React.ReactNode;
@@ -19,6 +20,7 @@ const Blockquote = ({
   page,
   children,
   className,
+  title,
   author,
   variant = 'minimalist',
   rightButtons,
@@ -51,10 +53,10 @@ const Blockquote = ({
         <div className="w-full flex justify-end">
           <TruncatedTextTooltip
             className="w-full"
-            text={author}
+            text={title + ' - ' + author}
           >
             <p className={cn('mt-4 truncate max-w-3xl font-bold not-italic text-primary text-right pr-4')}>
-              — {author}
+              {title} — {author}
             </p>
           </TruncatedTextTooltip>
         </div>

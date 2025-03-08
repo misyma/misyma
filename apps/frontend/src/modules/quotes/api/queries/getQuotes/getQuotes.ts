@@ -1,6 +1,16 @@
+import {
+  type QueryKey,
+  type UseQueryOptions,
+  infiniteQueryOptions,
+  keepPreviousData,
+  queryOptions,
+} from '@tanstack/react-query';
+
 import { type FindQuotesQueryParams, type FindQuotesResponseBody } from '@common/contracts';
 
-import { HttpService } from '../../../../core/services/httpService/httpService';
+import { api } from '../../../../core/apiClient/apiClient.js';
+import { ApiPaths } from '../../../../core/apiClient/apiPaths.js';
+import { QuotesApiQueryKeys } from '../quotesApiQueryKeys.js';
 
 export const getQuotes = async (payload: FindQuotesQueryParams & { accessToken: string }) => {
   const queryParams: Record<string, string> = {};
@@ -23,17 +33,60 @@ export const getQuotes = async (payload: FindQuotesQueryParams & { accessToken: 
     queryParams.sortDate = 'desc';
   }
 
-  const response = await HttpService.get<FindQuotesResponseBody>({
-    url: '/quotes',
-    headers: {
-      Authorization: `Bearer ${payload.accessToken}`,
-    },
-    queryParams,
+  const response = await api.get<FindQuotesResponseBody>(ApiPaths.quotes.path, {
+    params: queryParams,
   });
 
-  if (!response.success) {
+  if (api.isErrorResponse(response)) {
     throw new Error(); //todo: change to dedicated api error
   }
 
-  return response.body;
+  return response.data;
 };
+
+export const getQuotesOptions = (
+  payload: FindQuotesQueryParams & { accessToken: string },
+): UseQueryOptions<FindQuotesResponseBody, Error, FindQuotesResponseBody, string[]> =>
+  queryOptions({
+    queryKey: [...getQuotesOptionsQueryKey(payload), `${payload.page}`, `${payload.pageSize}`, `${payload.sortDate}`],
+    queryFn: () => getQuotes(payload),
+    placeholderData: keepPreviousData,
+  });
+
+export const getQuotesByInfiniteQueryOptions = ({
+  page = 1,
+  ...payload
+}: FindQuotesQueryParams & { accessToken: string }) =>
+  infiniteQueryOptions({
+    queryKey: [
+      'infinite-query',
+      ...getQuotesOptionsQueryKey(payload),
+      `${page}`,
+      `${payload.pageSize}`,
+      `${payload.sortDate}`,
+    ],
+    initialPageParam: page,
+    queryFn: ({ pageParam }) =>
+      getQuotes({
+        ...payload,
+        page: pageParam,
+      }),
+    getNextPageParam: api.getNextPageParam,
+    getPreviousPageParam: api.getPreviousPageParam,
+  });
+
+export const invalidateQuotesPredicate = (queryKey: QueryKey, userBookId: string) => {
+  return queryKey[0] === QuotesApiQueryKeys.findQuotes, queryKey[1] === userBookId;
+};
+
+export const invalidateInfiniteQuotesPredicate = (queryKey: QueryKey) => {
+  return queryKey[0] === 'infinite-query' && queryKey[1] === QuotesApiQueryKeys.findQuotes;
+};
+
+export const getQuotesOptionsQueryKey = (payload: FindQuotesQueryParams): string[] => [
+  QuotesApiQueryKeys.findQuotes,
+  payload?.userBookId ?? '',
+  payload.authorId ?? '',
+  `${payload.isFavorite}`,
+  `${payload.sortDate}`,
+];

@@ -19,6 +19,7 @@ export const quotationTableColumns: ColumnDef<Quote>[] = [
           <div className="flex gap-2 items-center justify-between">
             <div className="flex gap-3 justify-start items-between w-full">
               <Blockquote
+                key={row.original.id}
                 variant="minimalist"
                 date={row.original.createdAt}
                 page={row.original.page}

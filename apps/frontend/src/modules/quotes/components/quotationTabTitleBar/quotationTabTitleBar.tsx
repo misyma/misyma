@@ -17,7 +17,7 @@ export const QuotationTabTitleBar: FC<QuotationTabTitleBarProps> = ({ bookId }) 
 
   const { data: userData } = useFindUserQuery();
 
-  const { data: userBookData, isFetching } = useErrorHandledQuery(
+  const { data: userBookData, isLoading } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
       userId: userData?.id ?? '',
@@ -27,10 +27,10 @@ export const QuotationTabTitleBar: FC<QuotationTabTitleBarProps> = ({ bookId }) 
 
   return (
     <div className="flex justify-between gap-4 w-full">
-      {!isFetching && <BookTitle title={userBookData?.book.title ?? ''} />}
-      {isFetching && <Skeleton className="h-9 w-40" />}
-      {!isFetching && <CurrentRatingStar userBookId={bookId} />}
-      {isFetching && <Skeleton className="h-7 w-7" />}
+      {!isLoading && <BookTitle title={userBookData?.book.title ?? ''} />}
+      {isLoading && <Skeleton className="h-9 w-40" />}
+      {!isLoading && <CurrentRatingStar userBookId={bookId} />}
+      {isLoading && <Skeleton className="h-7 w-7" />}
     </div>
   );
 };

@@ -1,7 +1,11 @@
 import Axios, { type AxiosResponse, type AxiosInstance } from 'axios';
 
+import { type Metadata } from '@common/contracts';
+
 type ExtendedAxiosInstance = AxiosInstance & {
   isErrorResponse: (response: MaybeSuccessResponse) => response is MisymaApiErrorResponse;
+  getNextPageParam: (response: PaginatedApiResponse) => number | undefined;
+  getPreviousPageParam: (response: PaginatedApiResponse) => number | undefined;
 };
 
 export type MisymaApiErrorResponse = AxiosResponse<{
@@ -10,6 +14,11 @@ export type MisymaApiErrorResponse = AxiosResponse<{
     [key: string]: unknown;
   };
 }>;
+
+export type PaginatedApiResponse = {
+  data: unknown[];
+  metadata: Metadata;
+};
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type MaybeSuccessResponse<T = any> = AxiosResponse<T> | MisymaApiErrorResponse;
@@ -20,3 +29,29 @@ export const api = Axios.create({
 
 api.isErrorResponse = (response): response is MisymaApiErrorResponse =>
   !(response.status >= 200 && response.status <= 299);
+
+api.getNextPageParam = (response) => {
+  if (!response) {
+    return undefined;
+  }
+
+  if (response.metadata.total === 0) {
+    return undefined;
+  }
+
+  const totalPages = Math.ceil(response.metadata.total / response.metadata.pageSize);
+
+  if (response.metadata.page === totalPages) {
+    return undefined;
+  }
+
+  return response.metadata.page + 1;
+};
+
+api.getPreviousPageParam = (response) => {
+  if (response.metadata.page > 1) {
+    return response.metadata.page - 1;
+  }
+
+  return undefined;
+};

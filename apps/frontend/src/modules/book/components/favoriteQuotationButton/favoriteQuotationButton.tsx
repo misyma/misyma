@@ -8,6 +8,10 @@ import { type Quote } from '@common/contracts';
 import { cn } from '../../../common/lib/utils.js';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice.js';
 import { useUpdateQuoteMutation } from '../../../quotes/api/mutations/updateQuoteMutation/updateQuoteMutation.js';
+import {
+  invalidateInfiniteQuotesPredicate,
+  invalidateQuotesPredicate,
+} from '../../../quotes/api/queries/getQuotes/getQuotes.js';
 
 interface Props {
   quote: Quote;
@@ -37,7 +41,8 @@ export const FavoriteQuotationButton: FC<Props> = ({ quote }) => {
         setIsFavorite(!isFavorite);
 
         await queryClient.invalidateQueries({
-          predicate: (query) => query.queryKey[0] === `findQuotes` && query.queryKey[1] === quote.userBookId,
+          predicate: ({ queryKey }) =>
+            invalidateQuotesPredicate(queryKey, quote.userBookId) || invalidateInfiniteQuotesPredicate(queryKey),
         });
       } finally {
         setTimeout(() => setIsAnimating(false), 300);

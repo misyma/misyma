@@ -8,7 +8,7 @@ import { type FindQuotesQueryParams } from '@common/contracts';
 import { FavoriteQuotationButton } from '../../../book/components/favoriteQuotationButton/favoriteQuotationButton';
 import { Skeleton } from '../../../common/components/skeleton/skeleton';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
-import { getQuotesByInfiniteQueryOptions } from '../../api/queries/getQuotes/getQuotesOptions';
+import { getQuotesByInfiniteQueryOptions } from '../../api/queries/getQuotes/getQuotes';
 import { Blockquote } from '../blockQuote/blockQuote';
 import { DeleteQuoteModal } from '../deleteQuoteModal/deleteQuoteModal';
 import { UpdateQuoteButton } from '../updateQuoteModal/updateQuoteModal';
@@ -101,6 +101,7 @@ export const VirtualizedQuotesList: FC<VirtualizedQuotesListProps> = ({ queryArg
                     <Blockquote
                       page={quote.page}
                       date="2025-01-01"
+                      title={quote.bookTitle}
                       author={quote.authors?.join(', ')}
                       rightButtons={
                         <>
