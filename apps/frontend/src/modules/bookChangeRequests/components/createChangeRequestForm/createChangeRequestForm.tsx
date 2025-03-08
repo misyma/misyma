@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQueryClient } from '@tanstack/react-query';
 import { type FC, useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
@@ -26,7 +25,6 @@ import { useToast } from '../../../common/components/toast/use-toast';
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
-import { BookChangeRequestApiAdminQueryKeys } from '../../api/admin/queries/bookChangeRequestApiAdminQueryKeys';
 import {
   type CreateBookChangeRequestPayload,
   useCreateBookChangeRequestMutation,
@@ -110,8 +108,6 @@ export const CreateChangeRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit 
 
 //todo: refactor
 const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
-  const queryClient = useQueryClient();
-
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const { toast } = useToast();
@@ -255,12 +251,6 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
         title: 'Prośba o zmianę została wysłana.',
         variant: 'success',
       });
-
-      await Promise.all([
-        queryClient.invalidateQueries({
-          predicate: ({ queryKey }) => queryKey[0] === BookChangeRequestApiAdminQueryKeys.findBookChangeRequests,
-        }),
-      ]);
 
       dispatch({
         type: BookDetailsChangeRequestAction.resetContext,
