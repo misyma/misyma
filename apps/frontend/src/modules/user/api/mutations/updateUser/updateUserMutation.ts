@@ -4,46 +4,41 @@ import { type UpdateUserRequestBody, type UpdateUserResponseBody } from '@common
 
 import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
 import { useErrorHandledMutation } from '../../../../common/hooks/useErrorHandledMutation';
-import { HttpService } from '../../../../core/services/httpService/httpService';
+import { api } from '../../../../core/apiClient/apiClient';
+import { ApiPaths } from '../../../../core/apiClient/apiPaths';
 import { UserApiError } from '../../../errors/userApiError';
 
 export interface UseUpdateUserMutationPayload extends UpdateUserRequestBody {
-  accessToken: string;
   userId: string;
 }
+
+const mapper = new ErrorCodeMessageMapper({
+  400: 'Podano błędne dane.',
+  403: 'Brak pozwolenia na zaaktualizowanie danych.',
+  409: 'Dane zostały już nadpisane. Odśwież stronę i spróbuj jeszcze raz',
+  500: 'Wewnętrzny błąd serwera.',
+});
+
+const updateUser = async (payload: UseUpdateUserMutationPayload) => {
+  const { userId, ...body } = payload;
+
+  const path = ApiPaths.users.$userId.path;
+  const resolvedPath = path.replace(ApiPaths.users.$userId.pathParam.userId, userId);
+  const response = await api.patch<UpdateUserResponseBody>(resolvedPath, body);
+
+  if (api.isErrorResponse(response)) {
+    throw new UserApiError({
+      apiResponseError: response.data.context,
+      message: mapper.map(response.status),
+      statusCode: response.status,
+    });
+  }
+  return response.data;
+};
 
 export const useUpdateUserMutation = (
   options: UseMutationOptions<UpdateUserResponseBody, UserApiError, UseUpdateUserMutationPayload>,
 ) => {
-  const updateUser = async (payload: UseUpdateUserMutationPayload) => {
-    const { accessToken, userId, ...body } = payload;
-
-    const mapper = new ErrorCodeMessageMapper({
-      400: 'Podano błędne dane.',
-      403: 'Brak pozwolenia na zaaktualizowanie danych.',
-      409: 'Dane zostały już nadpisane. Odśwież stronę i spróbuj jeszcze raz',
-      500: 'Wewnętrzny błąd serwera.',
-    });
-
-    const response = await HttpService.patch<UpdateUserResponseBody>({
-      url: `/users/${userId}`,
-      body: body as unknown as Record<string, unknown>,
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    if (!response.success) {
-      throw new UserApiError({
-        apiResponseError: response.body.context,
-        message: mapper.map(response.statusCode),
-        statusCode: response.statusCode,
-      });
-    }
-
-    return response.body;
-  };
-
   return useErrorHandledMutation({
     mutationFn: updateUser,
     ...options,

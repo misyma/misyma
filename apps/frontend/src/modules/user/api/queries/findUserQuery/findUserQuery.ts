@@ -8,9 +8,9 @@ import { ApiPaths } from '../../../../core/apiClient/apiPaths';
 import { UserApiError } from '../../../errors/userApiError';
 import { UserApiQueryKeys } from '../userApiQueryKeys';
 
-export const findUser = async () => {
-  const mapper = new ErrorCodeMessageMapper({});
+const mapper = new ErrorCodeMessageMapper({});
 
+const findUser = async () => {
   const findUserResponse = await api.get<FindUserResponseBody>(ApiPaths.users.me.path);
 
   if (api.isErrorResponse(findUserResponse)) {

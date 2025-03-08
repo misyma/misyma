@@ -4,48 +4,33 @@ import { type ChangeUserPasswordRequestBody, type UpdateUserResponseBody } from 
 
 import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
 import { useErrorHandledMutation } from '../../../../common/hooks/useErrorHandledMutation';
-import { HttpService } from '../../../../core/services/httpService/httpService';
+import { api } from '../../../../core/apiClient/apiClient';
 import { UserApiError } from '../../../errors/userApiError';
 
-export interface UserChangeUserPasswordMutationPayload extends ChangeUserPasswordRequestBody {
-  accessToken: string;
-}
+const mapper = new ErrorCodeMessageMapper({
+  400: 'Podano błędne dane.',
+  403: 'Brak pozwolenia na zaaktualizowanie danych.',
+  409: 'Dane zostały już nadpisane. Odśwież stronę i spróbuj jeszcze raz',
+  500: 'Wewnętrzny błąd serwera.',
+});
+
+const changePassword = async (payload: ChangeUserPasswordRequestBody) => {
+  const response = await api.post<UpdateUserResponseBody>(`/users/change-password`, payload);
+
+  if (api.isErrorResponse(response)) {
+    throw new UserApiError({
+      apiResponseError: response.data.context,
+      message: mapper.map(response.status),
+      statusCode: response.status,
+    });
+  }
+
+  return response.data;
+};
 
 export const useChangeUserPasswordMutation = (
-  options: UseMutationOptions<UpdateUserResponseBody, UserApiError, UserChangeUserPasswordMutationPayload>,
+  options: UseMutationOptions<UpdateUserResponseBody, UserApiError, ChangeUserPasswordRequestBody>,
 ) => {
-  const changePassword = async (payload: UserChangeUserPasswordMutationPayload) => {
-    const { accessToken, ...body } = payload;
-
-    const mapper = new ErrorCodeMessageMapper({
-      400: 'Podano błędne dane.',
-      403: 'Brak pozwolenia na zaaktualizowanie danych.',
-      409: 'Dane zostały już nadpisane. Odśwież stronę i spróbuj jeszcze raz',
-      500: 'Wewnętrzny błąd serwera.',
-    });
-
-    const response = await HttpService.post<UpdateUserResponseBody>({
-      url: `/users/change-password`,
-      body: {
-        ...body,
-        token: accessToken,
-      } as unknown as Record<string, unknown>,
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    if (!response.success) {
-      throw new UserApiError({
-        apiResponseError: response.body.context,
-        message: mapper.map(response.statusCode),
-        statusCode: response.statusCode,
-      });
-    }
-
-    return response.body;
-  };
-
   return useErrorHandledMutation({
     mutationFn: changePassword,
     ...options,
