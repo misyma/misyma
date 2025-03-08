@@ -2,7 +2,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { type FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { HiOutlineInformationCircle } from 'react-icons/hi';
-import { useSelector } from 'react-redux';
 import { z } from 'zod';
 
 import { AuthorMultiCombobox } from '../../../../author/components/authorMultiCombobox/authorMultiCombobox';
@@ -27,7 +26,6 @@ import {
 } from '../../../../common/components/tooltip/tooltip';
 import { useErrorHandledQuery } from '../../../../common/hooks/useErrorHandledQuery';
 import { isbnSchema } from '../../../../common/schemas/isbnSchema';
-import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
 import { useAdminEditBookContext } from '../../../context/adminEditBookContext/adminEditBookContext';
 
 const stepOneSchema = z.object({
@@ -84,11 +82,8 @@ interface Props {
 }
 
 export const StepOneForm: FC<Props> = ({ bookId, onCancel, onSubmit }) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const { isFetched: isBookDataFetched } = useErrorHandledQuery(
     FindBookByIdQueryOptions({
-      accessToken: accessToken as string,
       bookId,
     }),
   );
@@ -107,13 +102,10 @@ export const StepOneForm: FC<Props> = ({ bookId, onCancel, onSubmit }) => {
 };
 
 const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const { authorIds } = useAdminEditBookContext();
 
   const { data: bookData } = useErrorHandledQuery(
     FindBookByIdQueryOptions({
-      accessToken: accessToken as string,
       bookId,
     }),
   );

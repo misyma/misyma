@@ -9,7 +9,6 @@ import { DataTable } from '../../../common/components/dataTable/dataTable';
 import { Skeleton } from '../../../common/components/skeleton/skeleton';
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
-import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { getQuotesOptions } from '../../api/queries/getQuotes/getQuotes';
 import { quotationTableColumns } from '../quotationsTable/quotationsTableColumns';
 
@@ -23,13 +22,9 @@ export const QuotationTabTable: FC<QuotationTabTableProps> = ({ bookId, sortDate
   const [page, setPage] = useState(1);
   const [pageSize] = useState(4);
 
-  const { data: userData } = useFindUserQuery();
-
   const { data: userBookData, isLoading } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
-      userId: userData?.id ?? '',
-      accessToken: accessToken as string,
     }),
   );
 

@@ -1,7 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { type FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 import { z } from 'zod';
 
 import { AuthorFieldTooltip } from '../../../../author/components/authorFieldTooltip';
@@ -23,8 +22,6 @@ import { Popover, PopoverTrigger } from '../../../../common/components/popover/p
 import { LoadingSpinner } from '../../../../common/components/spinner/loading-spinner';
 import { useErrorHandledQuery } from '../../../../common/hooks/useErrorHandledQuery';
 import { isbnSchema } from '../../../../common/schemas/isbnSchema';
-import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
-import { useFindUserQuery } from '../../../../user/api/queries/findUserQuery/findUserQuery';
 
 const stepOneSchema = z.object({
   isbn: isbnSchema.optional().or(z.literal('')),
@@ -79,26 +76,19 @@ interface Props {
 }
 
 export const StepOneForm: FC<Props> = ({ bookId, onCancel, onSubmit }) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
-  const { data: userData, isFetched: isUserDataFetched } = useFindUserQuery();
-
   const { data: userBookData, isFetched: isUserBookDataFetched } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
-      userId: userData?.id ?? '',
-      accessToken: accessToken as string,
     }),
   );
 
   const { isFetched: isBookDataFetched } = useErrorHandledQuery(
     FindBookByIdQueryOptions({
-      accessToken: accessToken as string,
       bookId: userBookData?.bookId as string,
     }),
   );
 
-  if (!isUserDataFetched || !isBookDataFetched || !isUserBookDataFetched) {
+  if (!isBookDataFetched || !isUserBookDataFetched) {
     return <LoadingSpinner />;
   }
 
@@ -112,23 +102,16 @@ export const StepOneForm: FC<Props> = ({ bookId, onCancel, onSubmit }) => {
 };
 
 const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const context = useBookDetailsChangeRequestContext();
-
-  const { data: userData } = useFindUserQuery();
 
   const { data: userBookData } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
-      userId: userData?.id ?? '',
-      accessToken: accessToken as string,
     }),
   );
 
   const { data: bookData } = useErrorHandledQuery(
     FindBookByIdQueryOptions({
-      accessToken: accessToken as string,
       bookId: userBookData?.bookId as string,
     }),
   );

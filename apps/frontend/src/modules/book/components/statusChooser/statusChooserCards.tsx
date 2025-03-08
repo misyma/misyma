@@ -29,8 +29,6 @@ export const StatusChooserCards: FC<Props> = ({ bookId, bookshelfId }) => {
   const { data, isFetching, isFetched, isRefetching } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
-      userId: userData?.id ?? '',
-      accessToken: accessToken as string,
     }),
   );
 

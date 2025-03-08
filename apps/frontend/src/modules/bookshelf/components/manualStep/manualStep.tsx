@@ -84,7 +84,6 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
   const { data: genresData } = useErrorHandledQuery(getGenresQueryOptions({}));
   const { data: bookResponse } = useQuery(
     FindBookByIdQueryOptions({
-      accessToken: accessToken as string,
       bookId: searchBookContext.bookId,
     }),
   );

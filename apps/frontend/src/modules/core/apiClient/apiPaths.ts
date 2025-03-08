@@ -59,4 +59,7 @@ export const ApiPaths = {
       },
     },
   },
+  books: {
+    path: '/books',
+  },
 };

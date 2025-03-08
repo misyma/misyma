@@ -1,9 +1,56 @@
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 
-import { BookApiQueryKeys } from '../bookApiQueryKeys.js';
-import { findUserBooksBy, type FindUserBooksByPayload } from './findUserBooksBy.js';
+import { type FindUserBooksQueryParams, type FindUserBooksResponseBody } from '@common/contracts';
 
-export const FindUserBooksByQueryOptions = ({ accessToken, ...rest }: FindUserBooksByPayload) =>
+import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper.js';
+import { api } from '../../../../../core/apiClient/apiClient.js';
+import { BookApiError } from '../../../../errors/bookApiError.js';
+import { BookApiQueryKeys } from '../bookApiQueryKeys.js';
+
+const mapper = new ErrorCodeMessageMapper({});
+
+export const findUserBooksBy = async (payload: FindUserBooksQueryParams): Promise<FindUserBooksResponseBody> => {
+  const queryParams: Record<string, string> = {};
+  const keys: Array<keyof FindUserBooksQueryParams> = [
+    'bookshelfId',
+    'isbn',
+    'page',
+    'title',
+    'pageSize',
+    'releaseYearBefore',
+    'releaseYearAfter',
+    'language',
+    'status',
+    'genreId',
+    'isFavorite',
+    'authorId',
+    'sortField',
+    'sortOrder',
+  ];
+
+  keys.forEach((key) => {
+    if (payload[key] !== '' && payload[key] !== undefined) {
+      queryParams[key] = `${payload[key]}`;
+    }
+  });
+
+  const res = await api.get<FindUserBooksResponseBody>('/user-books', {
+    params: queryParams,
+    validateStatus: () => true,
+  });
+
+  if (api.isErrorResponse(res)) {
+    throw new BookApiError({
+      apiResponseError: res.data.context,
+      statusCode: res.status,
+      message: mapper.map(res.status),
+    });
+  }
+
+  return res.data;
+};
+
+export const FindUserBooksByQueryOptions = ({ ...rest }: FindUserBooksQueryParams) =>
   queryOptions({
     queryKey: [
       BookApiQueryKeys.findUserBooksBy,
@@ -16,13 +63,11 @@ export const FindUserBooksByQueryOptions = ({ accessToken, ...rest }: FindUserBo
     ],
     queryFn: () =>
       findUserBooksBy({
-        accessToken,
         ...rest,
       }),
-    enabled: !!accessToken,
   });
 
-export const FindUserBooksByInfiniteQueryOptions = ({ accessToken, page = 1, ...rest }: FindUserBooksByPayload) =>
+export const FindUserBooksByInfiniteQueryOptions = ({ page = 1, ...rest }: FindUserBooksQueryParams) =>
   infiniteQueryOptions({
     queryKey: [
       BookApiQueryKeys.findUserBooksBy,
@@ -45,38 +90,15 @@ export const FindUserBooksByInfiniteQueryOptions = ({ accessToken, page = 1, ...
     initialPageParam: page,
     queryFn: ({ pageParam }) =>
       findUserBooksBy({
-        accessToken,
         page: pageParam,
         ...rest,
       }),
-    getNextPageParam: (lastPage) => {
-      if (!lastPage) {
-        return undefined;
-      }
-
-      if (lastPage.metadata.total === 0) {
-        return undefined;
-      }
-
-      const totalPages = Math.ceil(lastPage.metadata.total / lastPage.metadata.pageSize);
-
-      if (lastPage.metadata.page === totalPages) {
-        return undefined;
-      }
-
-      return lastPage.metadata.page + 1;
-    },
-    getPreviousPageParam: (lastPage) => {
-      if (lastPage.metadata.page > 1) {
-        return lastPage.metadata.page - 1;
-      }
-
-      return undefined;
-    },
+    getNextPageParam: api.getNextPageParam,
+    getPreviousPageParam: api.getPreviousPageParam,
   });
 
 export const invalidateFindUserBooksByQuery = (
-  vals: Partial<Omit<FindUserBooksByPayload, 'accessToken'>>,
+  vals: FindUserBooksQueryParams,
   queryKey: Readonly<Array<unknown>>,
   infiniteQuery?: boolean,
 ) => {

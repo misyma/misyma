@@ -543,15 +543,12 @@ const BookEditForm: FC<FormProps> = ({ data }) => {
 const BooksEdit: FC = () => {
   const { id } = Route.useParams();
 
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const dispatch = useBreadcrumbKeysDispatch();
 
   const breadcrumbKeys = useBreadcrumbKeysContext();
 
   const { data, isFetching, isRefetching } = useErrorHandledQuery(
     FindBookByIdQueryOptions({
-      accessToken: accessToken as string,
       bookId: id,
     }),
   );

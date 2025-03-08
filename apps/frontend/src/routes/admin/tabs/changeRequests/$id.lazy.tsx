@@ -2,7 +2,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { createLazyFileRoute, Navigate, useNavigate } from '@tanstack/react-router';
 import { type FC, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 import { z } from 'zod';
 
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
@@ -23,7 +22,6 @@ import { BookFormat } from '../../../../modules/common/constants/bookFormat';
 import { ReversedLanguages } from '../../../../modules/common/constants/languages';
 import { useErrorHandledQuery } from '../../../../modules/common/hooks/useErrorHandledQuery';
 import { RequireAdmin } from '../../../../modules/core/components/requireAdmin/requireAdmin';
-import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
 
 type ChangeKeys =
   | 'format'
@@ -51,8 +49,6 @@ const schema = z.object({
 export const ChangeRequestView: FC = () => {
   const { id } = Route.useParams();
 
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const { data: changeRequestData, isFetched: isChangeRequestFetched } = useErrorHandledQuery(
     FindBookChangeRequestByIdQueryOptions({
       bookChangeRequestId: id,
@@ -61,7 +57,6 @@ export const ChangeRequestView: FC = () => {
 
   const { data: bookData, isFetched: isBookDataFetched } = useErrorHandledQuery(
     FindBookByIdQueryOptions({
-      accessToken: accessToken as string,
       bookId: changeRequestData?.data?.bookId ?? '',
     }),
   );

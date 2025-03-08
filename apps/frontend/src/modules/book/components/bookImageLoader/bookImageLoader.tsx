@@ -1,9 +1,6 @@
 import { type FC, memo, useMemo } from 'react';
-import { useSelector } from 'react-redux';
 
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
-import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 import { BookImageMiniature } from '../bookImageMiniature/bookImageMiniature';
 
@@ -12,10 +9,6 @@ interface BookImageLoaderProps {
 }
 
 const BookImageLoaderComponent: FC<BookImageLoaderProps> = ({ bookId }) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
-  const { data: userData, isLoading: isUserLoading } = useFindUserQuery();
-
   const {
     data: userBookData,
     isLoading: isBookLoading,
@@ -23,8 +16,6 @@ const BookImageLoaderComponent: FC<BookImageLoaderProps> = ({ bookId }) => {
   } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
-      userId: userData?.id ?? '',
-      accessToken: accessToken as string,
     }),
   );
 
@@ -32,11 +23,10 @@ const BookImageLoaderComponent: FC<BookImageLoaderProps> = ({ bookId }) => {
     return userBookData?.imageUrl || userBookData?.book.imageUrl || '';
   }, [userBookData?.imageUrl, userBookData?.book.imageUrl]);
 
-  if (isUserLoading || isBookLoading) {
+  if (isBookLoading) {
     return <div className="w-80 bg-gray-200 animate-pulse rounded-md" />;
   }
 
-  // Show error state
   if (isError) {
     return (
       <div className="w-80 bg-gray-100 flex items-center justify-center rounded-md">

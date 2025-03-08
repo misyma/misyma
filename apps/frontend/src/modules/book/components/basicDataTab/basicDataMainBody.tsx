@@ -1,5 +1,4 @@
 import { type FC, useMemo } from 'react';
-import { useSelector } from 'react-redux';
 
 import { StarRating } from '../../../bookReadings/components/starRating/starRating';
 import { Separator } from '../../../common/components/separator/separator';
@@ -7,9 +6,7 @@ import { Skeleton } from '../../../common/components/skeleton/skeleton';
 import { BookFormat } from '../../../common/constants/bookFormat';
 import { ReversedLanguages } from '../../../common/constants/languages';
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { BookTitle } from '../../../quotes/components/bookTitle/bookTitle';
-import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 import { BookshelfChoiceDropdown } from '../bookshelfChoiceDropdown/bookshelfChoiceDropdown';
 import { CurrentRatingStar } from '../currentRatingStar/currentRatingStar';
@@ -20,17 +17,12 @@ interface BasicDataMainBodyProps {
 }
 
 export const BasicDataMainBody: FC<BasicDataMainBodyProps> = ({ bookId }) => {
-  const { data: userData } = useFindUserQuery();
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const queryOptions = useMemo(
     () =>
       FindUserBookByIdQueryOptions({
         userBookId: bookId,
-        userId: userData?.id ?? '',
-        accessToken: accessToken as string,
       }),
-    [bookId, userData?.id, accessToken],
+    [bookId],
   );
 
   const { data, isFetching } = useErrorHandledQuery(queryOptions);

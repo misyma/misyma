@@ -47,8 +47,6 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
   const { data, isFetching, isFetched, isRefetching } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
-      userId: userData?.id ?? '',
-      accessToken: accessToken as string,
     }),
   );
 

@@ -1,19 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
-import { useSelector } from 'react-redux';
 
 import { FindUserBooksSortField } from '@common/contracts';
 
 import { BookCard } from '../../../bookshelf/components/bookCard/bookCard.js';
 import { Skeleton } from '../../../common/components/skeleton/skeleton.js';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice.js';
 import { FindUserBooksByQueryOptions } from '../../api/user/queries/findUserBookBy/findUserBooksByQueryOptions.js';
 
 export const RecentlyReadBooksSection = () => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const { data, isLoading } = useQuery(
     FindUserBooksByQueryOptions({
-      accessToken,
       pageSize: 5,
       sortField: FindUserBooksSortField.readingDate,
     }),

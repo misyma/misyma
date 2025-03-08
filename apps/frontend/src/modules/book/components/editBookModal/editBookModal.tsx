@@ -3,7 +3,6 @@ import { type FC, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { useForm } from 'react-hook-form';
 import { HiPencil } from 'react-icons/hi';
-import { useSelector } from 'react-redux';
 import { z } from 'zod';
 
 import { CreateChangeRequestForm } from '../../../bookChangeRequests/components/createChangeRequestForm/createChangeRequestForm';
@@ -13,8 +12,6 @@ import { RadioGroup, RadioGroupItem } from '../../../common/components/radioGrou
 import { useToast } from '../../../common/components/toast/use-toast';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../common/components/tooltip/tooltip';
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
-import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 import {
   BookDetailsChangeRequestAction,
@@ -53,17 +50,11 @@ const InnerModal: FC<Props> = ({ bookId }) => {
   const [actionChosen, setActionChosen] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const dispatch = useBookDetailsChangeRequestDispatch();
-
-  const { data: userData } = useFindUserQuery();
 
   const { data } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
-      userId: userData?.id ?? '',
-      accessToken: accessToken as string,
     }),
   );
 

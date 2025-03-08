@@ -24,7 +24,6 @@ import { LoadingSpinner } from '../../../common/components/spinner/loading-spinn
 import { useToast } from '../../../common/components/toast/use-toast';
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
-import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import {
   type CreateBookChangeRequestPayload,
   useCreateBookChangeRequestMutation,
@@ -74,26 +73,19 @@ const stepTwoSchema = z.object({
 });
 
 export const CreateChangeRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
-  const { data: userData, isFetched: isUserDataFetched } = useFindUserQuery();
-
   const { data: userBookData, isFetched: isUserBookDataFetched } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
-      userId: userData?.id ?? '',
-      accessToken: accessToken as string,
     }),
   );
 
   const { isFetched: isBookDataFetched } = useErrorHandledQuery(
     FindBookByIdQueryOptions({
-      accessToken: accessToken as string,
       bookId: userBookData?.bookId as string,
     }),
   );
 
-  if (!isUserDataFetched || !isUserBookDataFetched || !isBookDataFetched) {
+  if (!isUserBookDataFetched || !isBookDataFetched) {
     return <LoadingSpinner />;
   }
 
@@ -117,17 +109,13 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
   const context = useBookDetailsChangeRequestContext();
   const dispatch = useBookDetailsChangeRequestDispatch();
 
-  const { data: userData } = useFindUserQuery();
   const { data: userBookData } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
-      userId: userData?.id ?? '',
-      accessToken: accessToken as string,
     }),
   );
   const { data: bookData } = useErrorHandledQuery(
     FindBookByIdQueryOptions({
-      accessToken: accessToken as string,
       bookId: userBookData?.bookId as string,
     }),
   );

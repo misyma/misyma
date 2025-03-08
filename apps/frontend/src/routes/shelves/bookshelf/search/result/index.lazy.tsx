@@ -2,7 +2,6 @@ import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { createLazyFileRoute, Navigate } from '@tanstack/react-router';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { type FC, useEffect, useMemo, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
 
 import { type Book } from '@common/contracts';
 
@@ -29,7 +28,6 @@ import { ReversedLanguages } from '../../../../../modules/common/constants/langu
 import { useErrorHandledQuery } from '../../../../../modules/common/hooks/useErrorHandledQuery';
 import { cn } from '../../../../../modules/common/lib/utils';
 import { RequireAuthComponent } from '../../../../../modules/core/components/requireAuth/requireAuthComponent';
-import { userStateSelectors } from '../../../../../modules/core/store/states/userState/userStateSlice';
 
 interface FoundBookViewProps {
   onAddBook: (book?: Book) => Promise<void>;
@@ -38,8 +36,6 @@ interface FoundBookViewProps {
 const SingleFoundBookView: FC<FoundBookViewProps> = ({ onAddBook, onCreateManually }) => {
   const searchParams = Route.useSearch();
   const navigate = Route.useNavigate();
-
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const { data: foundBooks } = useErrorHandledQuery(
     FindBooksQueryOptions({
@@ -50,7 +46,6 @@ const SingleFoundBookView: FC<FoundBookViewProps> = ({ onAddBook, onCreateManual
         : {
             isbn: searchParams.isbn,
           }),
-      accessToken: accessToken as string,
       page: searchParams.page,
       pageSize: 1,
     }),
@@ -62,7 +57,6 @@ const SingleFoundBookView: FC<FoundBookViewProps> = ({ onAddBook, onCreateManual
     isRefetching: checkForIsbnInProgress,
   } = useErrorHandledQuery(
     FindUserBooksByQueryOptions({
-      accessToken: accessToken as string,
       isbn: searchParams.isbn,
     }),
   );
@@ -183,11 +177,8 @@ interface BookRowProps {
   isSelected: boolean;
 }
 const BookRow: FC<BookRowProps> = ({ book, onSelect, isSelected }) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const { data, isLoading } = useQuery(
     FindUserBooksByQueryOptions({
-      accessToken,
       isbn: book.isbn as string,
     }),
   );
@@ -230,11 +221,8 @@ const ManyFoundBooksView: FC<FoundBookViewProps> = ({ onCreateManually, onAddBoo
 
   const parentRef = useRef<HTMLDivElement>(null);
 
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const { data, fetchNextPage, isFetchingNextPage, isLoading, hasNextPage } = useInfiniteQuery(
     FindBooksInfiniteQueryOptions({
-      accessToken,
       title: searchParams.title,
       pageSize: 20,
     }),
@@ -362,8 +350,6 @@ export const SearchResultPage: FC = () => {
 
   const searchCreationDispatch = useSearchBookContextDispatch();
 
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   useEffect(() => {
     if (searchParams.isbn === '' && searchParams.title === '') {
       navigate({
@@ -387,7 +373,6 @@ export const SearchResultPage: FC = () => {
         : {
             isbn: searchParams.isbn,
           }),
-      accessToken: accessToken as string,
       page: searchParams.page,
       pageSize: 1,
     }),
@@ -395,7 +380,6 @@ export const SearchResultPage: FC = () => {
 
   const { isFetching: checkingForIsbn } = useErrorHandledQuery(
     FindUserBooksByQueryOptions({
-      accessToken: accessToken as string,
       isbn: searchParams.isbn,
     }),
   );
