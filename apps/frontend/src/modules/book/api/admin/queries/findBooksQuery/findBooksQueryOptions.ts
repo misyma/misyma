@@ -1,5 +1,4 @@
 import { type UseQueryOptions, keepPreviousData, useQuery } from '@tanstack/react-query';
-import { useSelector } from 'react-redux';
 
 import {
   type FindBooksResponseBody,
@@ -8,14 +7,66 @@ import {
   FindAdminBooksSortField,
 } from '@common/contracts';
 
-import { adminFindBooks } from './findBooks';
 import { type ApiError } from '../../../../../common/errors/apiError';
-import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';
+import { api } from '../../../../../core/apiClient/apiClient';
+import { ApiPaths } from '../../../../../core/apiClient/apiPaths';
 import { BookApiQueryKeys } from '../../../user/queries/bookApiQueryKeys';
 
 type Payload = FindAdminBooksQueryParams & {
   all: boolean;
 } & Partial<Omit<UseQueryOptions<FindBooksResponseBody, ApiError>, 'queryFn'>>;
+
+type RequestPayload = FindAdminBooksQueryParams & {
+  signal: AbortSignal;
+};
+
+export const adminFindBooks = async (values: RequestPayload) => {
+  const { title, page, pageSize, signal, ...remaining } = values;
+
+  const query: Record<PropertyKey, string> = {};
+  if (title) {
+    query.title = title;
+  }
+  if (page) {
+    query.page = `${page}`;
+  }
+  if (pageSize) {
+    query.pageSize = `${pageSize}`;
+  }
+
+  Object.entries(remaining).forEach(([key, val]) => {
+    if (val === undefined || val === '') {
+      return;
+    }
+
+    if (val === 0) {
+      return;
+    }
+
+    if (Array.isArray(val)) {
+      return (query[key] = val.join(','));
+    }
+    // eslint-disable-next-line
+    if ((val as any) instanceof Date) {
+      query[key] = (val as unknown as Date).getFullYear().toString();
+
+      return;
+    }
+
+    query[key] = `${val}`;
+  });
+
+  const response = await api.get<FindBooksResponseBody>(ApiPaths.admin.books.path, {
+    params: query,
+    signal,
+  });
+
+  if (api.isErrorResponse(response)) {
+    throw new Error('Error'); //todo: dedicated error
+  }
+
+  return response.data;
+};
 
 export const useAdminFindBooksQuery = ({
   title,
@@ -32,8 +83,6 @@ export const useAdminFindBooksQuery = ({
   sortOrder = SortOrder.desc,
   ...options
 }: Payload) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   return useQuery({
     queryKey: [
       BookApiQueryKeys.findBooksAdmin,
@@ -50,7 +99,6 @@ export const useAdminFindBooksQuery = ({
     ],
     queryFn: ({ signal }) =>
       adminFindBooks({
-        accessToken: accessToken as string,
         title,
         page,
         pageSize,
@@ -64,7 +112,7 @@ export const useAdminFindBooksQuery = ({
         sortOrder,
         signal,
       }),
-    enabled: !!accessToken && (!!title || all),
+    enabled: !!title || all,
     ...options,
     placeholderData: keepPreviousData,
   });

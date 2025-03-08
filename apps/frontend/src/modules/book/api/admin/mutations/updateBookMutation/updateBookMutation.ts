@@ -1,49 +1,56 @@
-import { type UseMutationOptions } from '@tanstack/react-query';
+import { useQueryClient, type UseMutationOptions } from '@tanstack/react-query';
 
 import { type UpdateBookPathParams, type UpdateBookRequestBody, type UpdateBookResponseBody } from '@common/contracts';
 
 import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
 import { type ApiError } from '../../../../../common/errors/apiError';
 import { useErrorHandledMutation } from '../../../../../common/hooks/useErrorHandledMutation';
-import { HttpService } from '../../../../../core/services/httpService/httpService';
+import { api } from '../../../../../core/apiClient/apiClient';
 import { BookApiError } from '../../../../errors/bookApiError';
+import { BookApiQueryKeys } from '../../../user/queries/bookApiQueryKeys';
 
 export interface UpdateBookPayload extends UpdateBookPathParams, UpdateBookRequestBody {
-  accessToken: string | undefined;
   isApproved?: boolean;
 }
+
+const mapper = new ErrorCodeMessageMapper({
+  403: `Brak pozwolenia na zaaktualizowanie książki.`,
+});
+
+const deleteBook = async (payload: UpdateBookPayload) => {
+  const response = await api.patch<UpdateBookResponseBody>(`/admin/books/${payload.bookId}`, payload);
+
+  if (api.isErrorResponse(response)) {
+    throw new BookApiError({
+      apiResponseError: response.data.context,
+      message: mapper.map(response.status),
+      statusCode: response.status,
+    });
+  }
+
+  return response.data;
+};
 
 export const useUpdateBookMutation = (
   options: UseMutationOptions<UpdateBookResponseBody, ApiError, UpdateBookPayload>,
 ) => {
-  const mapper = new ErrorCodeMessageMapper({
-    403: `Brak pozwolenia na zaaktualizowanie książki.`,
-  });
-
-  const deleteBook = async (payload: UpdateBookPayload) => {
-    const { accessToken, ...body } = payload;
-
-    const response = await HttpService.patch<UpdateBookResponseBody>({
-      url: `/admin/books/${payload.bookId}`,
-      body: body as unknown as Record<string, unknown>,
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    if (!response.success) {
-      throw new BookApiError({
-        apiResponseError: response.body.context,
-        message: mapper.map(response.statusCode),
-        statusCode: response.statusCode,
-      });
-    }
-
-    return response.body;
-  };
-
+  const queryClient = useQueryClient();
   return useErrorHandledMutation({
     mutationFn: deleteBook,
     ...options,
+    onSuccess: async () => {
+      //todo: refactor
+      await Promise.all([
+        queryClient.invalidateQueries({
+          predicate: ({ queryKey }) => queryKey[0] === BookApiQueryKeys.findBooks,
+        }),
+        queryClient.invalidateQueries({
+          predicate: ({ queryKey }) => queryKey[0] === BookApiQueryKeys.findBooksAdmin,
+        }),
+        queryClient.invalidateQueries({
+          predicate: ({ queryKey }) => queryKey.includes(BookApiQueryKeys.findUserBookById),
+        }),
+      ]);
+    },
   });
 };

@@ -2,7 +2,6 @@ import { DialogTitle } from '@radix-ui/react-dialog';
 import { useQueryClient } from '@tanstack/react-query';
 import { type FC, useMemo, useState } from 'react';
 import { HiCheckCircle, HiXCircle } from 'react-icons/hi2';
-import { useSelector } from 'react-redux';
 
 import { type Book } from '@common/contracts';
 
@@ -16,7 +15,6 @@ import {
 } from '../../../common/components/dialog/dialog';
 import { useToast } from '../../../common/components/toast/use-toast';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../common/components/tooltip/tooltip';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useUpdateBookMutation } from '../../api/admin/mutations/updateBookMutation/updateBookMutation';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
 
@@ -26,8 +24,6 @@ interface Props {
 }
 
 export const ChangeBookStatusModal: FC<Props> = ({ book }: Props) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const { toast } = useToast();
 
   const queryClient = useQueryClient();
@@ -38,7 +34,6 @@ export const ChangeBookStatusModal: FC<Props> = ({ book }: Props) => {
 
   const onCreate = async () => {
     await updateBook({
-      accessToken: accessToken as string,
       bookId: book.id,
       isApproved: !book.isApproved,
     });

@@ -1,4 +1,4 @@
-import { type UseMutationOptions } from '@tanstack/react-query';
+import { useQueryClient, type UseMutationOptions } from '@tanstack/react-query';
 
 import { type CreateBookRequestBody, type CreateBookResponseBody } from '@common/contracts';
 
@@ -7,6 +7,7 @@ import { useErrorHandledMutation } from '../../../../../common/hooks/useErrorHan
 import { api } from '../../../../../core/apiClient/apiClient';
 import { ApiPaths } from '../../../../../core/apiClient/apiPaths';
 import { BookApiError } from '../../../../errors/bookApiError';
+import { BookApiQueryKeys } from '../../../user/queries/bookApiQueryKeys';
 
 const mapper = new ErrorCodeMessageMapper({
   400: 'Podano błędne dane.',
@@ -37,8 +38,23 @@ const createBook = async (payload: CreateBookRequestBody) => {
 export const useCreateAdminBookMutation = (
   options: UseMutationOptions<CreateBookResponseBody, BookApiError, CreateBookRequestBody>,
 ) => {
+  const queryClient = useQueryClient();
   return useErrorHandledMutation({
     mutationFn: createBook,
     ...options,
+    onSuccess: async (...args) => {
+      if (options.onSuccess) {
+        await options.onSuccess(...args);
+      }
+
+      await Promise.all([
+        queryClient.invalidateQueries({
+          predicate: ({ queryKey }) => queryKey[0] === BookApiQueryKeys.findBooks,
+        }),
+        queryClient.invalidateQueries({
+          predicate: ({ queryKey }) => queryKey[0] === BookApiQueryKeys.findBooksAdmin,
+        }),
+      ]);
+    },
   });
 };

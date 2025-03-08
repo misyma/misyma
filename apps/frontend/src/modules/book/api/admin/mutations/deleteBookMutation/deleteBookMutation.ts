@@ -1,44 +1,54 @@
-import { type UseMutationOptions } from '@tanstack/react-query';
+import { useQueryClient, type UseMutationOptions } from '@tanstack/react-query';
 
 import { type DeleteBookPathParams } from '@common/contracts';
 
 import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
 import { type ApiError } from '../../../../../common/errors/apiError';
 import { useErrorHandledMutation } from '../../../../../common/hooks/useErrorHandledMutation';
-import { HttpService } from '../../../../../core/services/httpService/httpService';
+import { api } from '../../../../../core/apiClient/apiClient';
 import { BookApiError } from '../../../../errors/bookApiError';
+import { BookApiQueryKeys } from '../../../user/queries/bookApiQueryKeys';
 
-interface Payload extends DeleteBookPathParams {
-  accessToken: string | undefined;
-}
+const mapper = new ErrorCodeMessageMapper({
+  403: `Brak pozwolenia na usunięcie książki.`,
+});
 
-export const useDeleteBookMutation = (options: UseMutationOptions<void, ApiError, Payload>) => {
-  const mapper = new ErrorCodeMessageMapper({
-    403: `Brak pozwolenia na usunięcie książki.`,
-  });
+const deleteBook = async (payload: DeleteBookPathParams) => {
+  const response = await api.delete(`/admin/books/${payload.bookId}`);
 
-  const deleteBook = async (payload: Payload) => {
-    const response = await HttpService.delete({
-      url: `/admin/books/${payload.bookId}`,
-      body: payload as unknown as Record<string, unknown>,
-      headers: {
-        Authorization: `Bearer ${payload.accessToken}`,
-      },
+  if (api.isErrorResponse(response)) {
+    throw new BookApiError({
+      apiResponseError: response.data.context,
+      message: mapper.map(response.status),
+      statusCode: response.status,
     });
+  }
 
-    if (!response.success) {
-      throw new BookApiError({
-        apiResponseError: response.body.context,
-        message: mapper.map(response.statusCode),
-        statusCode: response.statusCode,
-      });
-    }
+  return;
+};
 
-    return;
-  };
-
+export const useDeleteBookMutation = (options: UseMutationOptions<void, ApiError, DeleteBookPathParams>) => {
+  const queryClient = useQueryClient();
   return useErrorHandledMutation({
     mutationFn: deleteBook,
     ...options,
+    onSuccess: async (...args) => {
+      if (options.onSuccess) {
+        await options.onSuccess(...args);
+      }
+      // todo: refactor
+      await Promise.all([
+        queryClient.invalidateQueries({
+          predicate: (query) =>
+            query.queryKey[0] === BookApiQueryKeys.findBookById && query.queryKey[1] === args[1].bookId,
+        }),
+        queryClient.invalidateQueries({
+          predicate: (query) => query.queryKey[0] === BookApiQueryKeys.findBooksAdmin,
+        }),
+        queryClient.invalidateQueries({
+          predicate: (query) => query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId,
+        }),
+      ]);
+    },
   });
 };
