@@ -29,7 +29,10 @@ export const quotationTableColumns: ColumnDef<Quote>[] = [
                       key={row.original.id}
                       quote={row.original}
                     />
-                    <DeleteQuoteModal quoteId={foundRow?.original.id as string} />
+                    <DeleteQuoteModal
+                      userBookId={foundRow?.original.userBookId as string}
+                      quoteId={foundRow?.original.id as string}
+                    />
                     <FavoriteQuotationButton quote={row.original} />
                   </>
                 }

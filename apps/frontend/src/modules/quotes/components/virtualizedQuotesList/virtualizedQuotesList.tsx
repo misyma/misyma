@@ -110,7 +110,10 @@ export const VirtualizedQuotesList: FC<VirtualizedQuotesListProps> = ({ queryArg
                             key={quote.id}
                             quote={quote}
                           />
-                          <DeleteQuoteModal quoteId={quote.id as string} />
+                          <DeleteQuoteModal
+                            userBookId={quote.userBookId}
+                            quoteId={quote.id as string}
+                          />
                           <FavoriteQuotationButton quote={quote} />
                         </>
                       }
