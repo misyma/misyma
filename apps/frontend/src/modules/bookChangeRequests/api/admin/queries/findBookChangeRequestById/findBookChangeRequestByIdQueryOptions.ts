@@ -1,16 +1,33 @@
-import { type UseQueryOptions, keepPreviousData, queryOptions } from '@tanstack/react-query';
+import { type QueryKey, type UseQueryOptions, keepPreviousData, queryOptions } from '@tanstack/react-query';
 
-import { type FindAdminBookChangeRequestResponseBody } from '@common/contracts';
+import { type FindBookChangeRequestPathParams, type FindAdminBookChangeRequestResponseBody } from '@common/contracts';
 
-import { findBookChangeRequests, type FindBookChangeRequestByIdPayload } from './findBookChangeRequestById.js';
+import { api } from '../../../../../core/apiClient/apiClient.js';
 import { BookChangeRequestApiAdminQueryKeys } from '../bookChangeRequestApiAdminQueryKeys.js';
 
+const findBookChangeRequests = async (payload: FindBookChangeRequestPathParams) => {
+  const { bookChangeRequestId } = payload;
+
+  const response = await api.get<FindAdminBookChangeRequestResponseBody>(
+    `/admin/book-change-requests/${bookChangeRequestId}`,
+  );
+
+  if (api.isErrorResponse(response)) {
+    throw new Error('Error'); // todo: dedicated error
+  }
+
+  return response.data;
+};
+
 export const FindBookChangeRequestByIdQueryOptions = (
-  payload: FindBookChangeRequestByIdPayload,
+  payload: FindBookChangeRequestPathParams,
 ): UseQueryOptions<FindAdminBookChangeRequestResponseBody, Error, FindAdminBookChangeRequestResponseBody, string[]> =>
   queryOptions({
     queryKey: [BookChangeRequestApiAdminQueryKeys.findBookChangeRequests, `${payload.bookChangeRequestId}`],
     queryFn: () => findBookChangeRequests(payload),
-    enabled: !!payload.accessToken,
     placeholderData: keepPreviousData,
   });
+
+export const invalidateBookChangeRequestByIdQueryPredicate = (queryKey: QueryKey, bookChangeRequestId: string) =>
+  queryKey.includes(BookChangeRequestApiAdminQueryKeys.findBookChangeRequestById) &&
+  queryKey.includes(bookChangeRequestId);

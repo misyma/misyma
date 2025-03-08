@@ -62,7 +62,6 @@ export const ChangeRequestView: FC = () => {
 
   const { data: changeRequestData, isFetched: isChangeRequestFetched } = useErrorHandledQuery(
     FindBookChangeRequestByIdQueryOptions({
-      accessToken: accessToken as string,
       bookChangeRequestId: id,
     }),
   );
