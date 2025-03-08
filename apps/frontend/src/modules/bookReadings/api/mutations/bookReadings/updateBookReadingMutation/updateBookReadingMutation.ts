@@ -7,6 +7,7 @@ import {
   type UpdateBookReadingPathParams,
 } from '@common/contracts';
 
+import { BookApiQueryKeys } from '../../../../../book/api/user/queries/bookApiQueryKeys';
 import { BookApiError } from '../../../../../book/errors/bookApiError';
 import { useErrorHandledMutation } from '../../../../../common/hooks/useErrorHandledMutation';
 import { api } from '../../../../../core/apiClient/apiClient';
@@ -47,7 +48,9 @@ export const useUpdateBookReadingMutation = (
       }
 
       await queryClient.invalidateQueries({
-        predicate: ({ queryKey }) => invalidateBookReadingsQueryPredicate(queryKey, variables.userBookId),
+        predicate: ({ queryKey }) =>
+          invalidateBookReadingsQueryPredicate(queryKey, variables.userBookId) ||
+          queryKey.includes(BookApiQueryKeys.findUserBooksBy),
       });
     },
   });

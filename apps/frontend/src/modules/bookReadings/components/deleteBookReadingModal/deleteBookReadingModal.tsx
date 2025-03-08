@@ -1,7 +1,5 @@
-import { useQueryClient } from '@tanstack/react-query';
 import { type FC, useState } from 'react';
 import { HiTrash } from 'react-icons/hi';
-import { useSelector } from 'react-redux';
 
 import { Button } from '../../../common/components/button/button';
 import { Dialog, DialogContent, DialogHeader, DialogTrigger } from '../../../common/components/dialog/dialog';
@@ -9,9 +7,7 @@ import { LoadingSpinner } from '../../../common/components/spinner/loading-spinn
 import { useToast } from '../../../common/components/toast/use-toast';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../common/components/tooltip/tooltip';
 import { ApiError } from '../../../common/errors/apiError';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useDeleteBookReadingMutation } from '../../api/mutations/bookReadings/deleteBookReadingMutation/deleteBookReadingMutation';
-import { BookReadingsApiQueryKeys } from '../../api/queries/bookReadingsApiQueryKeys';
 
 interface Props {
   readingId: string;
@@ -20,30 +16,20 @@ interface Props {
 }
 
 export const DeleteBookReadingModal: FC<Props> = ({ readingId, userBookId }: Props) => {
-  const queryClient = useQueryClient();
-
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const { toast } = useToast();
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
-
   const [error, setError] = useState('');
 
-  const { mutateAsync: deleteBookReading, isPending: isDeleting } = useDeleteBookReadingMutation({});
+  const { mutateAsync: deleteBookReading, isPending: isDeleting } = useDeleteBookReadingMutation({
+    onSuccess: () => setIsOpen(false),
+  });
 
   const onDelete = async (): Promise<void> => {
     try {
       await deleteBookReading({
         readingId,
         userBookId,
-        accessToken: accessToken ?? '',
-      });
-
-      setIsOpen(false);
-
-      await queryClient.invalidateQueries({
-        predicate: (query) => query.queryKey[0] === BookReadingsApiQueryKeys.findBookReadings,
       });
 
       toast({
@@ -51,11 +37,7 @@ export const DeleteBookReadingModal: FC<Props> = ({ readingId, userBookId }: Pro
         title: `Ocena została usunięta.`,
       });
     } catch (error) {
-      if (error instanceof ApiError) {
-        return setError(error.message);
-      }
-
-      if (error instanceof Error) {
+      if (error instanceof ApiError || error instanceof Error) {
         return setError(error.message);
       }
 
