@@ -42,9 +42,11 @@ export const useDeleteBookshelfMutation = (options: UseMutationOptions<void, She
   return useErrorHandledMutation({
     mutationFn: deleteBookshelf,
     ...options,
-    onSuccess: (data, payload, context) => {
-      options.onSuccess ? options.onSuccess(data, payload, context) : null;
-      queryClient.invalidateQueries({
+    onSuccess: async (data, payload, context) => {
+      if (options.onSuccess) {
+        await options.onSuccess(data, payload, context);
+      }
+      await queryClient.invalidateQueries({
         predicate: ({ queryKey }) => invalidateBookshelvesQueriesPredicate(queryKey),
       });
     },

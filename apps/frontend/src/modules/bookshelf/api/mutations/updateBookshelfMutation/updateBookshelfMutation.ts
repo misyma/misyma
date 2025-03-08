@@ -38,7 +38,10 @@ export const useUpdateBookshelfMutation = (
   return useErrorHandledMutation({
     mutationFn: updateBookshelf,
     ...options,
-    onSuccess: async () => {
+    onSuccess: async (data, variables, context) => {
+      if (options.onSuccess) {
+        await options.onSuccess(data, variables, context);
+      }
       await queryClient.invalidateQueries({
         predicate: ({ queryKey }) => invalidateBookshelvesQueriesPredicate(queryKey),
       });

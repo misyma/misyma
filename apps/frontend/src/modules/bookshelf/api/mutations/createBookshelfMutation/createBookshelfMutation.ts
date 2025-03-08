@@ -1,42 +1,44 @@
-import { type UseMutationOptions } from '@tanstack/react-query';
-import { useSelector } from 'react-redux';
+import { useQueryClient, type UseMutationOptions } from '@tanstack/react-query';
 
 import { type CreateBookshelfRequestBody, type CreateBookshelfResponseBody } from '@common/contracts';
 
 import { useErrorHandledMutation } from '../../../../common/hooks/useErrorHandledMutation';
-import { HttpService } from '../../../../core/services/httpService/httpService';
-import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
+import { api } from '../../../../core/apiClient/apiClient';
+import { ApiPaths } from '../../../../core/apiClient/apiPaths';
 import { ShelfApiError } from '../../errors/shelfApiError';
+import { invalidateBookshelvesQueriesPredicate } from '../../queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 
 type CreateBookshelfPayload = CreateBookshelfRequestBody;
+
+const createBookshelf = async (payload: CreateBookshelfPayload) => {
+  const response = await api.post<CreateBookshelfResponseBody>(ApiPaths.bookshelves.path, payload);
+
+  if (api.isErrorResponse(response)) {
+    throw new ShelfApiError({
+      apiResponseError: response.data.context,
+      message: response.data.message,
+      statusCode: response.status,
+    });
+  }
+
+  return response.data;
+};
 
 export const useCreateBookshelfMutation = (
   options: UseMutationOptions<CreateBookshelfResponseBody, ShelfApiError, CreateBookshelfPayload>,
 ) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
-  const createBookshelf = async (payload: CreateBookshelfPayload) => {
-    const response = await HttpService.post<CreateBookshelfResponseBody>({
-      url: `/bookshelves`,
-      body: payload as unknown as Record<string, unknown>,
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    if (!response.success) {
-      throw new ShelfApiError({
-        apiResponseError: response.body.context,
-        message: response.body.message,
-        statusCode: response.statusCode,
-      });
-    }
-
-    return response.body;
-  };
-
+  const queryClient = useQueryClient();
   return useErrorHandledMutation({
     mutationFn: createBookshelf,
     ...options,
+    onSuccess: async (data, variables, context) => {
+      if (options.onSuccess) {
+        await options.onSuccess(data, variables, context);
+      }
+
+      await queryClient.invalidateQueries({
+        predicate: ({ queryKey }) => invalidateBookshelvesQueriesPredicate(queryKey),
+      });
+    },
   });
 };
