@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQueryClient } from '@tanstack/react-query';
 import { formatDate } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { CalendarIcon } from 'lucide-react';
@@ -22,7 +21,6 @@ import { useToast } from '../../../common/components/toast/use-toast';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../common/components/tooltip/tooltip';
 import { cn } from '../../../common/lib/utils';
 import { useUpdateBookReadingMutation } from '../../api/mutations/bookReadings/updateBookReadingMutation/updateBookReadingMutation';
-import { BookReadingsApiQueryKeys } from '../../api/queries/bookReadingsApiQueryKeys';
 
 interface Props {
   bookReading: BookReading;
@@ -61,8 +59,6 @@ interface UpdateBookReadingFormProps {
 }
 
 const UpdateBookReadingForm: FC<UpdateBookReadingFormProps> = ({ bookReading, setIsOpen, setError }) => {
-  const queryClient = useQueryClient();
-
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof updateBookReadingSchema>>({
@@ -78,7 +74,9 @@ const UpdateBookReadingForm: FC<UpdateBookReadingFormProps> = ({ bookReading, se
 
   const [hoveredValue, setHoveredValue] = useState<number | undefined>();
 
-  const { mutateAsync, isPending: isUpdatingBookReading } = useUpdateBookReadingMutation({});
+  const { mutateAsync, isPending: isUpdatingBookReading } = useUpdateBookReadingMutation({
+    onSuccess: () => setIsOpen(false),
+  });
 
   const onUpdateBookReading = async (values: z.infer<typeof updateBookReadingSchema>) => {
     if (
@@ -104,13 +102,6 @@ const UpdateBookReadingForm: FC<UpdateBookReadingFormProps> = ({ bookReading, se
       });
 
       form.reset();
-
-      setIsOpen(false);
-
-      await queryClient.invalidateQueries({
-        predicate: ({ queryKey }) =>
-          queryKey[0] === BookReadingsApiQueryKeys.findBookReadings && queryKey[1] === bookReading.userBookId,
-      });
 
       toast({
         variant: 'success',

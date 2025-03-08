@@ -1,24 +1,19 @@
 import { type FC } from 'react';
 import { IoMdStar } from 'react-icons/io';
-import { useSelector } from 'react-redux';
 
 import { SortOrder } from '@common/contracts';
 
 import { FindBookReadingsQueryOptions } from '../../../bookReadings/api/queries/findBookReadings/findBookReadingsQueryOptions';
 import { Skeleton } from '../../../common/components/skeleton/skeleton';
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 
 interface Props {
   userBookId: string;
 }
 
 export const CurrentRatingStar: FC<Props> = ({ userBookId }) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const { data: bookReadings, isLoading } = useErrorHandledQuery(
     FindBookReadingsQueryOptions({
-      accessToken: accessToken as string,
       userBookId,
       pageSize: 1,
       sortDate: SortOrder.desc,

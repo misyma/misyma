@@ -1,5 +1,4 @@
-import { type UseMutationOptions } from '@tanstack/react-query';
-import { useSelector } from 'react-redux';
+import { useQueryClient, type UseMutationOptions } from '@tanstack/react-query';
 
 import {
   type BookReading,
@@ -10,40 +9,46 @@ import {
 
 import { BookApiError } from '../../../../../book/errors/bookApiError';
 import { useErrorHandledMutation } from '../../../../../common/hooks/useErrorHandledMutation';
-import { HttpService } from '../../../../../core/services/httpService/httpService';
-import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';
+import { api } from '../../../../../core/apiClient/apiClient';
+import { ApiPaths } from '../../../../../core/apiClient/apiPaths';
+import { invalidateBookReadingsQueryPredicate } from '../../../queries/findBookReadings/findBookReadingsQueryOptions';
 
 type UpdateBookReadingMutationPayload = UpdateBookReadingRequestBody & UpdateBookReadingPathParams;
+
+const updateBookReading = async (payload: UpdateBookReadingMutationPayload) => {
+  const { userBookId, readingId, ...body } = payload;
+
+  let path = ApiPaths.userBooks.$userBookId.readings.$readingId.path;
+  path = path.replace(ApiPaths.userBooks.$userBookId.params.userBookId, userBookId);
+  path = path.replace(ApiPaths.userBooks.$userBookId.readings.$readingId.params.readingId, readingId);
+
+  const response = await api.patch<CreateBookReadingResponseBody>(path, body);
+  if (api.isErrorResponse(response)) {
+    throw new BookApiError({
+      apiResponseError: response.data.context,
+      message: response.data.message,
+      statusCode: response.status,
+    });
+  }
+
+  return response.data;
+};
 
 export const useUpdateBookReadingMutation = (
   options?: UseMutationOptions<BookReading, BookApiError, UpdateBookReadingMutationPayload, unknown>,
 ) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
-  const updateBookReading = async (payload: UpdateBookReadingMutationPayload) => {
-    const { userBookId, readingId, ...body } = payload;
-
-    const response = await HttpService.patch<CreateBookReadingResponseBody>({
-      url: `/user-books/${userBookId}/readings/${readingId}`,
-      body: body as unknown as Record<string, unknown>,
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    if (response.success === false) {
-      throw new BookApiError({
-        apiResponseError: response.body.context,
-        message: response.body.message,
-        statusCode: response.statusCode,
-      });
-    }
-
-    return response.body;
-  };
-
+  const queryClient = useQueryClient();
   return useErrorHandledMutation({
     mutationFn: updateBookReading,
     ...options,
+    onSuccess: async (data, variables, context) => {
+      if (options?.onSuccess) {
+        await options.onSuccess(data, variables, context);
+      }
+
+      await queryClient.invalidateQueries({
+        predicate: ({ queryKey }) => invalidateBookReadingsQueryPredicate(queryKey, variables.userBookId),
+      });
+    },
   });
 };

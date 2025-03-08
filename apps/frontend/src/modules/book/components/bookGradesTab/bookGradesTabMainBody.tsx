@@ -22,7 +22,6 @@ interface BookGradesTabMainBodyProps {
 }
 export const BookGradesTabMainBody: FC<BookGradesTabMainBodyProps> = ({ bookId }) => {
   const [pageSize] = useState(4);
-
   const [page, setPage] = useState(1);
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
@@ -33,7 +32,6 @@ export const BookGradesTabMainBody: FC<BookGradesTabMainBodyProps> = ({ bookId }
 
   const { data: bookReadings } = useErrorHandledQuery(
     FindBookReadingsQueryOptions({
-      accessToken,
       userBookId: bookId,
       page,
       pageSize,

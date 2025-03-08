@@ -41,4 +41,22 @@ export const ApiPaths = {
       },
     },
   },
+  userBooks: {
+    path: '/user-books',
+    ['$userBookId']: {
+      path: '/user-books/{{userBookId}}',
+      params: {
+        userBookId: '{{userBookId}}',
+      },
+      readings: {
+        path: '/user-books/{{userBookId}}/readings',
+        ['$readingId']: {
+          path: '/user-books/{{userBookId}}/readings/{{readingId}}',
+          params: {
+            readingId: '{{readingId}}',
+          },
+        },
+      },
+    },
+  },
 };
