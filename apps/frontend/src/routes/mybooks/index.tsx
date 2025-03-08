@@ -1,12 +1,9 @@
-import { useQueryClient } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
 import { type FC } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { FindUserBooksSortField, SortOrder } from '@common/contracts';
 
-import { BookApiQueryKeys } from '../../modules/book/api/user/queries/bookApiQueryKeys.js';
 import {
   BookPageFiltersBar,
   myBooksSearchParamsSchema,
@@ -14,11 +11,8 @@ import {
 import { BooksPageTopBar } from '../../modules/book/components/booksPageTopBar/booksPageTopBar.js';
 import { TitleSearchField } from '../../modules/book/components/bookTitleSearchField/bookTitleSearchField.js';
 import { VirtualizedBooksList } from '../../modules/bookshelf/components/virtualizedBooksList/virtualizedBooksList.js';
-import { Button } from '../../modules/common/components/button/button.js';
-import { api } from '../../modules/core/apiClient/apiClient.js';
 import { RequireAuthComponent } from '../../modules/core/components/requireAuth/requireAuthComponent.js';
 import { ContentLayout } from '../../modules/core/layouts/content/contentLayout.js';
-import { userStateActions } from '../../modules/core/store/states/userState/userStateSlice.js';
 
 const MyBooksVirtualizedBooksList = () => {
   const sortFieldMap = {
@@ -67,15 +61,6 @@ const MyBooksVirtualizedBooksList = () => {
 };
 
 const BooksPage: FC = () => {
-  const dispatch = useDispatch();
-  const queryClient = useQueryClient();
-  const onClick = async () => {
-    dispatch(userStateActions.setCurrentUserAccessToken('asd'));
-    api.defaults.headers.common.Authorization = 'Bearer ';
-    await queryClient.invalidateQueries({
-      predicate: ({ queryKey }) => queryKey[0] === BookApiQueryKeys.findUserBooksBy,
-    });
-  };
   return (
     <motion.div
       key={'books-view'}
@@ -85,7 +70,6 @@ const BooksPage: FC = () => {
       transition={{ duration: 0.3 }}
       className="w-full px-8"
     >
-      <Button onClick={onClick}>Reset</Button>
       <BookPageFiltersBar />
       <MyBooksVirtualizedBooksList />
     </motion.div>
