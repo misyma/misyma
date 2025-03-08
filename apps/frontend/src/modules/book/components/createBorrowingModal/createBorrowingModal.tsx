@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQueryClient } from '@tanstack/react-query';
 import { formatDate } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { CalendarIcon } from 'lucide-react';
@@ -9,7 +8,6 @@ import { z } from 'zod';
 
 import { useFindUserBookshelfsQuery } from '../../../bookshelf/api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 import { useCreateBorrowingMutation } from '../../../borrowing/api/mutations/createBorrowingMutation/createBorrowingMutation';
-import { BorrowingApiQueryKeys } from '../../../borrowing/api/queries/borrowingApiQueryKeys';
 import { Button } from '../../../common/components/button/button';
 import { Calendar } from '../../../common/components/calendar/calendar';
 import {
@@ -24,11 +22,6 @@ import { Input } from '../../../common/components/input/input';
 import { Popover, PopoverContent, PopoverTrigger } from '../../../common/components/popover/popover';
 import { useToast } from '../../../common/components/toast/use-toast';
 import { cn } from '../../../common/lib/utils';
-import { useStoreSelector } from '../../../core/store/hooks/useStoreSelector';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
-import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
-import { invalidateBooksByBookshelfIdQuery } from '../../api/user/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
-import { invalidateFindUserBooksByQuery } from '../../api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
 
 interface Props {
   bookId: string;
@@ -58,8 +51,6 @@ const createBorrowingSchema = z.object({
 });
 
 export const CreateBorrowingModal: FC<Props> = ({ bookId, currentBookshelfId, open, onClosed, onMutated }: Props) => {
-  const accessToken = useStoreSelector(userStateSelectors.selectAccessToken);
-
   const [isOpen, setIsOpen] = useState<boolean>(open);
   const [error, setError] = useState('');
   const [calendarVisible, setCalendarVisible] = useState(false);
@@ -67,8 +58,6 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, currentBookshelfId, op
   const { data: bookshelvesData } = useFindUserBookshelfsQuery({
     pageSize: 150,
   });
-
-  const queryClient = useQueryClient();
 
   const { toast } = useToast();
 
@@ -88,11 +77,14 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, currentBookshelfId, op
 
   const onCreateBorrowing = async (values: z.infer<typeof createBorrowingSchema>) => {
     try {
+      const borrowingBookshelfId = bookshelvesData?.data.find((bksh) => bksh.name === 'Wypożyczalnia')?.id;
+
       await mutateAsync({
         ...values,
         startedAt: values.startedAt.toISOString(),
-        accessToken: accessToken as string,
         userBookId: bookId,
+        borrowingBookshelfId: borrowingBookshelfId ?? '',
+        currentBookshelfId,
       });
 
       if (onMutated) {
@@ -112,42 +104,6 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, currentBookshelfId, op
         )}`,
         variant: 'success',
       });
-
-      const borrowingBookshelfId = bookshelvesData?.data.find((bksh) => bksh.name === 'Wypożyczalnia')?.id;
-
-      await Promise.all([
-        queryClient.invalidateQueries({
-          predicate: ({ queryKey }) =>
-            queryKey[0] === BorrowingApiQueryKeys.findBookBorrowingsQuery && queryKey[1] === bookId,
-        }),
-        queryClient.invalidateQueries({
-          predicate: ({ queryKey }) =>
-            queryKey.includes('infinite-query') &&
-            queryKey[0] === BookApiQueryKeys.findUserBooksBy &&
-            queryKey[1] === currentBookshelfId,
-        }),
-        queryClient.invalidateQueries({
-          predicate: ({ queryKey }) => queryKey[0] === BookApiQueryKeys.findUserBookById && queryKey[1] === bookId,
-        }),
-        queryClient.invalidateQueries({
-          predicate: ({ queryKey }) =>
-            invalidateFindUserBooksByQuery(
-              {
-                bookshelfId: borrowingBookshelfId,
-              },
-              queryKey,
-            ),
-        }),
-        queryClient.invalidateQueries({
-          predicate: ({ queryKey }) =>
-            invalidateBooksByBookshelfIdQuery(
-              {
-                bookshelfId: borrowingBookshelfId,
-              },
-              queryKey,
-            ),
-        }),
-      ]);
     } catch (error) {
       if (error instanceof Error) {
         return setError(error.message);
