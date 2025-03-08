@@ -35,12 +35,11 @@ export const useUploadBookshelfImageMutation = (
   options: UseMutationOptions<void, ShelfApiError, UploadBookshelfImagePayload>,
 ) => {
   const queryClient = useQueryClient();
-
   return useErrorHandledMutation({
     mutationFn: uploadBookshelfImage,
     ...options,
-    onSuccess: () => {
-      queryClient.invalidateQueries({
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
         predicate: ({ queryKey }) => invalidateBookshelvesQueriesPredicate(queryKey),
       });
     },

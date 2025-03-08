@@ -1,5 +1,4 @@
-import { type UseMutationOptions } from '@tanstack/react-query';
-import { useSelector } from 'react-redux';
+import { useQueryClient, type UseMutationOptions } from '@tanstack/react-query';
 
 import {
   type UpdateBookshelfPathParams,
@@ -8,39 +7,41 @@ import {
 } from '@common/contracts';
 
 import { useErrorHandledMutation } from '../../../../common/hooks/useErrorHandledMutation';
-import { HttpService } from '../../../../core/services/httpService/httpService';
-import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
+import { api } from '../../../../core/apiClient/apiClient';
+import { ApiPaths } from '../../../../core/apiClient/apiPaths';
 import { ShelfApiError } from '../../errors/shelfApiError';
+import { invalidateBookshelvesQueriesPredicate } from '../../queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 
 type Payload = UpdateBookshelfRequestBody & UpdateBookshelfPathParams;
+
+const updateBookshelf = async (payload: Payload) => {
+  const path = ApiPaths.bookshelves.$bookshelfId.path;
+  const resolvedPath = path.replace(ApiPaths.bookshelves.$bookshelfId.params.bookshelfId, payload.bookshelfId);
+
+  const response = await api.patch<UpdateBookshelfResponseBody>(resolvedPath, payload);
+
+  if (api.isErrorResponse(response)) {
+    throw new ShelfApiError({
+      apiResponseError: response.data.context,
+      message: response.data.message,
+      statusCode: response.status,
+    });
+  }
+
+  return response.data;
+};
 
 export const useUpdateBookshelfMutation = (
   options: UseMutationOptions<UpdateBookshelfResponseBody, ShelfApiError, Payload>,
 ) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
-  const updateBookshelf = async (payload: Payload) => {
-    const response = await HttpService.patch<UpdateBookshelfResponseBody>({
-      url: `/bookshelves/${payload.bookshelfId}`,
-      body: payload as unknown as Record<string, string>,
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    if (!response.success) {
-      throw new ShelfApiError({
-        apiResponseError: response.body.context,
-        message: response.body.message,
-        statusCode: response.statusCode,
-      });
-    }
-
-    return response.body;
-  };
-
+  const queryClient = useQueryClient();
   return useErrorHandledMutation({
     mutationFn: updateBookshelf,
     ...options,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        predicate: ({ queryKey }) => invalidateBookshelvesQueriesPredicate(queryKey),
+      });
+    },
   });
 };

@@ -64,8 +64,8 @@ export const useCreateQuoteMutation = (
   return useMutation({
     mutationFn: createQuote,
     ...options,
-    onSuccess: () => {
-      queryClient.invalidateQueries({
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
         predicate: ({ queryKey }) => invalidateInfiniteQuotesPredicate(queryKey),
       });
     },

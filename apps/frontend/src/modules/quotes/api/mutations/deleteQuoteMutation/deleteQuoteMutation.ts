@@ -38,8 +38,8 @@ export const useDeleteQuoteMutation = (options: UseMutationOptions<void, ApiErro
   return useErrorHandledMutation({
     mutationFn: deleteQuote,
     ...options,
-    onSuccess: (_, vars) => {
-      queryClient.invalidateQueries({
+    onSuccess: async (_, vars) => {
+      await queryClient.invalidateQueries({
         predicate: ({ queryKey }) => invalidateQuotesQueries(queryKey, vars.userBookId),
       });
     },

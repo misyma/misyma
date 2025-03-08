@@ -77,8 +77,8 @@ export const useUpdateQuoteMutation = (
   return useErrorHandledMutation({
     mutationFn: updateQuote,
     ...options,
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({
+    onSuccess: async (data) => {
+      await queryClient.invalidateQueries({
         predicate: ({ queryKey }) => invalidateQuotesQueries(queryKey, data.userBookId),
       });
     },
