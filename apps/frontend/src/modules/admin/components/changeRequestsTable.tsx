@@ -23,6 +23,8 @@ export const AdminChangeRequestsTable = () => {
     }),
   );
 
+  console.log('Fetching data: ', isFetching);
+
   const { isLoading } = useInitialFetch({ isFetching });
 
   const pageCount = useMemo(() => {

@@ -62,4 +62,10 @@ export const ApiPaths = {
   books: {
     path: '/books',
   },
+  admin: {
+    path: '/admin',
+    bookChangeRequest: {
+      path: '/admin/book-change-requests',
+    },
+  },
 };

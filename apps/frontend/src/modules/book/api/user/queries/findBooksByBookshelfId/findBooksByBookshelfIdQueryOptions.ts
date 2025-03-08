@@ -64,11 +64,9 @@ export const invalidateBooksByBookshelfIdQuery = (
   if (vals.bookshelfId) {
     predicates.push((queryKey) => queryKey[1] === vals.bookshelfId);
   }
-
   if (vals.page) {
     predicates.push((queryKey) => queryKey[3] === vals.page);
   }
-
   if (vals.pageSize) {
     predicates.push((queryKey) => queryKey[4] === vals.pageSize);
   }

@@ -1,13 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQueryClient } from '@tanstack/react-query';
 import { type FC, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 import { z } from 'zod';
 
 import { type UserBook } from '@common/contracts';
 
-import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
 import { getGenresQueryOptions } from '../../../../modules/genres/api/queries/getGenresQuery/getGenresQueryOptions';
 import { Button } from '../../../common/components/button/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/form/form';
@@ -23,8 +20,6 @@ import { LoadingSpinner } from '../../../common/components/spinner/loading-spinn
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
 import { useUpdateUserBookMutation } from '../../api/user/mutations/updateUserBookMutation/updateUserBookMutation';
 import { useUploadBookImageMutation } from '../../api/user/mutations/uploadBookImageMutation/uploadBookImageMutation';
-import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
-import { invalidateFindUserBooksByQuery } from '../../api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
 
 const changeUserBookDataSchema = z.object({
   image: z.optional(
@@ -50,11 +45,7 @@ interface Props {
   onCancel: () => void;
 }
 
-export const UpdateUserBookForm: FC<Props> = ({ bookId, userBook, onSubmit, onCancel }) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
-  const queryClient = useQueryClient();
-
+export const UpdateUserBookForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
   const [file, setFile] = useState<File | undefined>();
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -81,7 +72,6 @@ export const UpdateUserBookForm: FC<Props> = ({ bookId, userBook, onSubmit, onCa
       await uploadBookImageMutation({
         bookId,
         file: values.image as unknown as File,
-        accessToken: accessToken as string,
       });
     }
 
@@ -89,32 +79,8 @@ export const UpdateUserBookForm: FC<Props> = ({ bookId, userBook, onSubmit, onCa
       await updateUserBook({
         userBookId: bookId,
         genreId: values.genre,
-        accessToken: accessToken as string,
       });
     }
-
-    await Promise.all([
-      queryClient.invalidateQueries({
-        predicate: (query) => query.queryKey[0] === BookApiQueryKeys.findUserBookById && query.queryKey[1] === bookId,
-      }),
-      queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId && query.queryKey[1] === userBook?.bookshelfId,
-      }),
-      queryClient.invalidateQueries({
-        predicate: ({ queryKey }) => invalidateFindUserBooksByQuery({}, queryKey, true),
-      }),
-      queryClient.invalidateQueries({
-        predicate: ({ queryKey }) =>
-          invalidateFindUserBooksByQuery(
-            {
-              bookshelfId: userBook?.bookshelfId,
-            },
-            queryKey,
-            false,
-          ),
-      }),
-    ]);
   };
 
   const changeUserBookDataForm = useForm<z.infer<typeof changeUserBookDataSchema>>({

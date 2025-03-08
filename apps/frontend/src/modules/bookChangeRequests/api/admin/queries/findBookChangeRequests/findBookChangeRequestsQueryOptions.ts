@@ -3,6 +3,7 @@ import { type QueryKey, type UseQueryOptions, keepPreviousData, queryOptions } f
 import { type FindBookChangeRequestsQueryParams, type FindBookChangeRequestsResponseBody } from '@common/contracts';
 
 import { api } from '../../../../../core/apiClient/apiClient';
+import { ApiPaths } from '../../../../../core/apiClient/apiPaths';
 import { BookChangeRequestApiAdminQueryKeys } from '../bookChangeRequestApiAdminQueryKeys';
 
 export const findBookChangeRequests = async (payload: FindBookChangeRequestsQueryParams) => {
@@ -16,7 +17,7 @@ export const findBookChangeRequests = async (payload: FindBookChangeRequestsQuer
     query.page = `${page}`;
   }
 
-  const response = await api.get<FindBookChangeRequestsResponseBody>('/admin/book-change-requests', {
+  const response = await api.get<FindBookChangeRequestsResponseBody>(ApiPaths.admin.bookChangeRequest.path, {
     params: query,
   });
 
@@ -37,4 +38,4 @@ export const FindBookChangeRequestsQueryOptions = (
   });
 
 export const invalidateBookChangeRequestsQueryPredicate = (queryKey: QueryKey) =>
-  queryKey.includes(BookChangeRequestApiAdminQueryKeys);
+  queryKey.includes(BookChangeRequestApiAdminQueryKeys.findBookChangeRequests);

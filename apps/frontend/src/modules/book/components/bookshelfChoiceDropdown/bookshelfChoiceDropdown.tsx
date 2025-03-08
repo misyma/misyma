@@ -109,7 +109,6 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
     await updateUserBook({
       userBookId: bookId,
       bookshelfId: id,
-      accessToken: accessToken as string,
     });
 
     if (previousBookshelfName === 'Wypożyczalnia') {

@@ -123,7 +123,6 @@ export const useCreateBookWithUserBook = ({
           await uploadBookImageMutation({
             bookId: userBook.id,
             file: image,
-            accessToken: accessToken as string,
             errorHandling: {
               title: 'Nie udało się przesłać obrazka.',
             },
