@@ -1,19 +1,15 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { useSelector } from 'react-redux';
 
 import {
+  type CreateBookRequestBody,
   type CreateAuthorRequestBody,
   type CreateUserBookResponseBody,
   type FindAuthorsResponseBody,
 } from '@common/contracts';
 
 import { useToast } from '../../../common/components/toast/use-toast';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
-import {
-  useCreateBookMutation,
-  type UseCreateBookMutationPayload,
-} from '../../api/user/mutations/createBookMutation/createBookMutation';
+import { useCreateBookMutation } from '../../api/user/mutations/createBookMutation/createBookMutation';
 import {
   type CreateUserBookMutationPayload,
   useCreateUserBookMutation,
@@ -26,7 +22,7 @@ interface CreatePayload {
   authorPayload?: Partial<CreateAuthorRequestBody> & {
     authorIds: string[];
   };
-  bookPayload?: Omit<UseCreateBookMutationPayload, 'authorIds'>;
+  bookPayload?: Omit<CreateBookRequestBody, 'authorIds'>;
   userBookPayload: Omit<CreateUserBookMutationPayload, 'bookId'> & {
     bookId?: string | undefined;
   };
@@ -56,8 +52,6 @@ export const useCreateBookWithUserBook = ({
   const { mutateAsync: createUserBookMutation, isPending: isCreateUserBookPending } = useCreateUserBookMutation({});
 
   const { mutateAsync: uploadBookImageMutation, isPending: isUploadImagePending } = useUploadBookImageMutation({});
-
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const navigate = useNavigate();
 
@@ -95,7 +89,6 @@ export const useCreateBookWithUserBook = ({
           ...userBookPayload,
           bookId,
           isFavorite: false,
-          accessToken: accessToken as string,
           errorHandling: {
             title: '',
           },

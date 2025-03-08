@@ -67,5 +67,11 @@ export const ApiPaths = {
     bookChangeRequest: {
       path: '/admin/book-change-requests',
     },
+    books: {
+      path: '/admin/books',
+      bookId: {
+        path: '/admin/books/{{bookId}}',
+      },
+    },
   },
 };

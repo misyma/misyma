@@ -1,11 +1,14 @@
 import { useQueryClient } from '@tanstack/react-query';
 
-import { type CreateAuthorRequestBody, type FindAuthorsResponseBody } from '@common/contracts';
+import {
+  type CreateBookRequestBody,
+  type CreateAuthorRequestBody,
+  type FindAuthorsResponseBody,
+} from '@common/contracts';
 
 import { useToast } from '../../../common/components/toast/use-toast';
 import { stripFalsyObjectKeys } from '../../../common/utils/stripFalsyObjectKeys';
 import { useCreateAdminBookMutation } from '../../api/admin/mutations/createAdminBookMutation/createAdminBookMutation';
-import { type UseCreateBookMutationPayload } from '../../api/user/mutations/createBookMutation/createBookMutation';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
 import { BookApiError } from '../../errors/bookApiError';
 
@@ -13,7 +16,7 @@ interface CreatePayload {
   authorPayload?: Partial<CreateAuthorRequestBody> & {
     authorIds?: string[];
   };
-  bookPayload: Omit<UseCreateBookMutationPayload, 'authorIds'>;
+  bookPayload: Omit<CreateBookRequestBody, 'authorIds'>;
 }
 
 interface UseAdminCreateBookResult {

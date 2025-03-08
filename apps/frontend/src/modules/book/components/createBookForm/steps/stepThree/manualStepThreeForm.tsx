@@ -113,7 +113,6 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
         ...(bookCreation.stepOneDetails as Required<BookCreationNonIsbnState['stepOneDetails']>),
         isbn: bookCreation.stepOneDetails?.isbn === '' ? undefined : bookCreation.stepOneDetails?.isbn,
         releaseYear: bookCreation.stepOneDetails?.releaseYear as number,
-        accessToken: accessToken as string,
         publisher: bookCreation.stepOneDetails?.publisher === '' ? undefined : bookCreation.stepOneDetails?.publisher,
       },
       userBookPayload: {

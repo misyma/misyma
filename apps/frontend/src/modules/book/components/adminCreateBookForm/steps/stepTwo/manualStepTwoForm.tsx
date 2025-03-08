@@ -1,7 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { type FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 
 import { type BookFormat as ContractBookFormat } from '@common/contracts';
 
@@ -25,7 +24,6 @@ import {
 import { Input } from '../../../../../common/components/input/input';
 import { LoadingSpinner } from '../../../../../common/components/spinner/loading-spinner';
 import { type Languages } from '../../../../../common/constants/languages';
-import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';
 import { useAdminCreateBook } from '../../../../hooks/adminCreateBook/adminCreateBook';
 import { type CreateBookStepTwo, createBookStepTwoSchema } from '../../../../schemas/createBookSchemas';
 import BookFormatSelect from '../../../bookFormatSelect/bookFormatSelect';
@@ -37,8 +35,6 @@ interface Props {
 
 export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
   const bookCreation = useBookCreation<false>() as BookCreationNonIsbnState;
-
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const [submissionError, setSubmissionError] = useState<string | null>(null);
 
@@ -88,7 +84,6 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
         ...(bookCreation.stepOneDetails as Required<BookCreationNonIsbnState['stepOneDetails']>),
         isbn: bookCreation.stepOneDetails?.isbn === '' ? undefined : bookCreation.stepOneDetails?.isbn,
         releaseYear: bookCreation.stepOneDetails?.releaseYear as number,
-        accessToken: accessToken as string,
         publisher: bookCreation.stepOneDetails?.publisher === '' ? undefined : bookCreation.stepOneDetails?.publisher,
         imageUrl: values.imageUrl,
       },
