@@ -5,13 +5,12 @@ import {
   useInfiniteQuery,
   useQuery,
 } from '@tanstack/react-query';
-import { useSelector } from 'react-redux';
 
-import { type FindAuthorsResponseBody } from '@common/contracts';
+import { type FindAuthorsQueryParams, SortOrder, type FindAuthorsResponseBody } from '@common/contracts';
 
-import { findAuthors } from './findAuthors';
 import { type ApiError } from '../../../../../common/errors/apiError';
-import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';
+import { api } from '../../../../../core/apiClient/apiClient';
+import { ApiPaths } from '../../../../../core/apiClient/apiPaths';
 import { AuthorsApiQueryKeys } from '../authorsApiQueryKeys';
 
 type Payload = {
@@ -22,9 +21,51 @@ type Payload = {
   pageSize?: number;
 } & Partial<Omit<UseQueryOptions<FindAuthorsResponseBody, ApiError>, 'queryFn'>>;
 
-export const useFindAuthorsQuery = ({ name, all = false, page, pageSize, ids, ...options }: Payload) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
+export const findAuthors = async (values: FindAuthorsQueryParams) => {
+  const { name, page, pageSize, ids } = values;
 
+  const query: Record<string, string> = {
+    sortDate: SortOrder.desc,
+  };
+  if (name) {
+    query.name = name;
+  }
+  if (page) {
+    query.page = `${page}`;
+  }
+  if (pageSize) {
+    query.pageSize = `${pageSize}`;
+  }
+
+  const customQueryAppend: Array<[string, string]> = [];
+
+  if (ids && !name) {
+    for (const id of ids) {
+      customQueryAppend.push([`ids`, id]);
+    }
+  }
+
+  const response = await api.get<FindAuthorsResponseBody>(ApiPaths.authors.path, {
+    params: query,
+    paramsSerializer: (params) => {
+      const queryString = new URLSearchParams(params);
+      if (ids) {
+        for (const id of ids) {
+          queryString.append('ids', id);
+        }
+      }
+      return queryString.toString();
+    },
+  });
+
+  if (api.isErrorResponse(response)) {
+    throw new Error('Error'); // todo: dedicated error
+  }
+
+  return response.data;
+};
+
+export const useFindAuthorsQuery = ({ name, all = false, page, pageSize, ids, ...options }: Payload) => {
   const isEnabled = () => {
     if (all) {
       return true;
@@ -45,20 +86,18 @@ export const useFindAuthorsQuery = ({ name, all = false, page, pageSize, ids, ..
     queryKey: [AuthorsApiQueryKeys.findAuthorsQuery, name, `${page}`, `${ids?.join(',')}`],
     queryFn: () =>
       findAuthors({
-        accessToken: accessToken as string,
         name,
         page,
         ids,
         pageSize,
       }),
-    enabled: !!accessToken && isEnabled(),
+    enabled: isEnabled(),
     ...options,
     placeholderData: keepPreviousData,
   });
 };
 
 type InfinitePayload = {
-  accessToken: string;
   name?: string;
   all?: boolean;
   ids?: string[];
@@ -66,7 +105,7 @@ type InfinitePayload = {
   pageSize?: number;
 };
 
-const getAuthorsInfiniteQueryOptions = ({ accessToken, name, page, ids, pageSize }: InfinitePayload) =>
+const getAuthorsInfiniteQueryOptions = ({ name, page, ids, pageSize }: InfinitePayload) =>
   infiniteQueryOptions({
     queryKey: [
       AuthorsApiQueryKeys.findAuthorsQuery,
@@ -78,7 +117,6 @@ const getAuthorsInfiniteQueryOptions = ({ accessToken, name, page, ids, pageSize
     ],
     queryFn: ({ pageParam }) =>
       findAuthors({
-        accessToken: accessToken as string,
         name,
         page: pageParam as number,
         ids,
@@ -86,31 +124,9 @@ const getAuthorsInfiniteQueryOptions = ({ accessToken, name, page, ids, pageSize
       }),
     initialPageParam: page,
     placeholderData: keepPreviousData,
-    getNextPageParam: (lastPage) => {
-      if (!lastPage) {
-        return undefined;
-      }
-
-      if (lastPage.metadata.total === 0) {
-        return undefined;
-      }
-
-      const totalPages = Math.ceil(lastPage.metadata.total / lastPage.metadata.pageSize);
-
-      if (lastPage.metadata.page === totalPages) {
-        return undefined;
-      }
-
-      return lastPage.metadata.page + 1;
-    },
-    getPreviousPageParam: (lastPage) => {
-      if (lastPage.metadata.page > 1) {
-        return lastPage.metadata.page - 1;
-      }
-
-      return undefined;
-    },
-    enabled: !!accessToken && (!name || name.length > 3),
+    getNextPageParam: api.getNextPageParam,
+    getPreviousPageParam: api.getPreviousPageParam,
+    enabled: !name || name.length > 3,
   });
 
 export const useFindAuthorsInfiniteQuery = (payload: InfinitePayload) => {

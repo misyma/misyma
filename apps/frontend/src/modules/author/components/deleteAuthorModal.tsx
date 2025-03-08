@@ -1,8 +1,6 @@
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
-import { useQueryClient } from '@tanstack/react-query';
 import { type FC, useState } from 'react';
 import { HiTrash } from 'react-icons/hi';
-import { useSelector } from 'react-redux';
 
 import { Button } from '../../common/components/button/button';
 import {
@@ -16,9 +14,7 @@ import {
 import { useToast } from '../../common/components/toast/use-toast';
 import { ApiError } from '../../common/errors/apiError';
 import { cn } from '../../common/lib/utils';
-import { userStateSelectors } from '../../core/store/states/userState/userStateSlice';
 import { useDeleteAuthorMutation } from '../api/admin/mutations/deleteAuthorMutation/deleteAuthorMutation';
-import { AuthorsApiQueryKeys } from '../api/user/queries/authorsApiQueryKeys';
 
 interface Props {
   authorId: string;
@@ -27,29 +23,19 @@ interface Props {
 }
 
 export const DeleteAuthorModal: FC<Props> = ({ authorId, authorName, className }: Props) => {
-  const queryClient = useQueryClient();
-
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const { toast } = useToast();
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
-
   const [error, setError] = useState('');
 
-  const { mutateAsync: deleteAuthor } = useDeleteAuthorMutation({});
+  const { mutateAsync: deleteAuthor } = useDeleteAuthorMutation({
+    onSuccess: () => setIsOpen(false),
+  });
 
   const onDelete = async (): Promise<void> => {
     try {
       await deleteAuthor({
         authorId,
-        accessToken: accessToken ?? '',
-      });
-
-      setIsOpen(false);
-
-      await queryClient.invalidateQueries({
-        predicate: (query) => query.queryKey[0] === AuthorsApiQueryKeys.findAuthorsQuery,
       });
 
       toast({
@@ -57,11 +43,7 @@ export const DeleteAuthorModal: FC<Props> = ({ authorId, authorName, className }
         title: `Autor: ${authorName} został usunięty.`,
       });
     } catch (error) {
-      if (error instanceof ApiError) {
-        return setError(error.message);
-      }
-
-      if (error instanceof Error) {
+      if (error instanceof ApiError || error instanceof Error) {
         return setError(error.message);
       }
 

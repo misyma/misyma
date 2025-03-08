@@ -2,7 +2,6 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import { type VariantProps } from 'class-variance-authority';
 import { CheckIcon, XCircle, ChevronDown, XIcon, WandSparkles } from 'lucide-react';
 import { forwardRef, Fragment, useEffect, useMemo, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
 
 import { AuthorBadge } from './authorBadge';
 import { type AuthorMultiComboboxOption } from './authorMultiComboboxOption';
@@ -29,7 +28,6 @@ import { Separator } from '../../../common/components/separator/separator';
 import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
 import useDebounce from '../../../common/hooks/useDebounce';
 import { cn } from '../../../common/lib/utils';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useCreateAuthorDraftMutation } from '../../api/user/mutations/createAuthorDraftMutation/createAuthorDraftMutation';
 import {
   useFindAuthorsInfiniteQuery,
@@ -105,8 +103,6 @@ export const AuthorMultiCombobox = forwardRef<HTMLButtonElement, MultiSelectProp
     },
     ref,
   ) => {
-    const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
     const { data: initialAuthors, isLoading: isLoadingInitialAuthors } = useFindAuthorsQuery({
       ids: defaultValue ?? [],
     });
@@ -172,7 +168,6 @@ export const AuthorMultiCombobox = forwardRef<HTMLButtonElement, MultiSelectProp
     const { isFetching } = useFindAuthorsInfiniteQuery({
       pageSize: 50,
       all: true,
-      accessToken,
       name: searchedName,
     });
 
@@ -317,8 +312,6 @@ const AuthorMultiSelectCommandGroup = ({
   createAuthorDialogVisible: boolean;
   setAuthorSelectOpen: (val: boolean) => void;
 }) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const parentRef = useRef<HTMLDivElement>(null);
 
   const {
@@ -330,7 +323,6 @@ const AuthorMultiSelectCommandGroup = ({
   } = useFindAuthorsInfiniteQuery({
     pageSize: 25,
     all: true,
-    accessToken,
     name: searchedName,
   });
 

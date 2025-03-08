@@ -1,11 +1,15 @@
 import { type UseQueryOptions, keepPreviousData, useQuery } from '@tanstack/react-query';
-import { useSelector } from 'react-redux';
 
-import { type FindAuthorsSortField, type SortOrder, type FindAuthorsResponseBody } from '@common/contracts';
+import {
+  type FindAdminAuthorsQueryParams,
+  FindAuthorsSortField,
+  SortOrder,
+  type FindAuthorsResponseBody,
+} from '@common/contracts';
 
-import { findAdminAuthors } from './findAdminAuthors.js';
 import { type ApiError } from '../../../../../common/errors/apiError.js';
-import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice.js';
+import { api } from '../../../../../core/apiClient/apiClient.js';
+import { ApiPaths } from '../../../../../core/apiClient/apiPaths.js';
 import { AdminAuthorsApiQueryKeys } from '../adminAuthorsApiQueryKeys.js';
 
 type Payload = {
@@ -19,6 +23,58 @@ type Payload = {
   sortOrder?: SortOrder | undefined;
 } & Partial<Omit<UseQueryOptions<FindAuthorsResponseBody, ApiError>, 'queryFn'>>;
 
+export const findAdminAuthors = async (values: FindAdminAuthorsQueryParams) => {
+  const { name, page, pageSize, ids, sortField, sortOrder, isApproved } = values;
+
+  const query: Record<string, string> = {
+    sortField: sortField || FindAuthorsSortField.createdAt,
+    sortOrder: sortOrder || SortOrder.desc,
+  };
+
+  if (name) {
+    query.name = name;
+  }
+
+  if (isApproved !== undefined) {
+    query.isApproved = `${isApproved}`;
+  }
+
+  if (page) {
+    query.page = `${page}`;
+  }
+
+  if (pageSize) {
+    query.pageSize = `${pageSize}`;
+  }
+
+  const customQueryAppend: Array<[string, string]> = [];
+
+  if (ids && !name) {
+    for (const id of ids) {
+      customQueryAppend.push([`ids`, id]);
+    }
+  }
+
+  const response = await api.get<FindAuthorsResponseBody>(ApiPaths.admin.authors.path, {
+    params: query,
+    paramsSerializer: (params) => {
+      const queryString = new URLSearchParams(params);
+      if (ids) {
+        for (const id of ids) {
+          queryString.append('ids', id);
+        }
+      }
+      return queryString.toString();
+    },
+  });
+
+  if (api.isErrorResponse(response)) {
+    throw new Error('Error'); // todo: dedicated error
+  }
+
+  return response.data;
+};
+
 export const useFindAdminAuthorsQuery = ({
   name,
   isApproved,
@@ -30,8 +86,6 @@ export const useFindAdminAuthorsQuery = ({
   sortOrder,
   ...options
 }: Payload) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const isEnabled = () => {
     if (all) {
       return true;
@@ -60,7 +114,6 @@ export const useFindAdminAuthorsQuery = ({
     ],
     queryFn: () =>
       findAdminAuthors({
-        accessToken: accessToken as string,
         name,
         page,
         ids,
@@ -69,7 +122,7 @@ export const useFindAdminAuthorsQuery = ({
         sortOrder,
         isApproved,
       }),
-    enabled: !!accessToken && isEnabled(),
+    enabled: isEnabled(),
     ...options,
     placeholderData: keepPreviousData,
   });

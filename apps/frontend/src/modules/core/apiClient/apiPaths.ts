@@ -73,5 +73,11 @@ export const ApiPaths = {
         path: '/admin/books/{{bookId}}',
       },
     },
+    authors: {
+      path: '/admin/authors',
+    },
+  },
+  authors: {
+    path: '/authors',
   },
 };
