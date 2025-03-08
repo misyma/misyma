@@ -1,9 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQueryClient } from '@tanstack/react-query';
 import { type ReactNode, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useSelector } from 'react-redux';
-import { z } from 'zod';
 
 import { Button } from '../../../common/components/button/button';
 import {
@@ -18,44 +15,12 @@ import { Input } from '../../../common/components/input/input';
 import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
 import { Textarea } from '../../../common/components/textArea/textarea';
 import { useToast } from '../../../common/components/toast/use-toast';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
-import { useCreateQuoteMutation } from '../../api/mutations/createQuoteMutation/createQuoteMutation';
-import { invalidateInfiniteQuotesPredicate, invalidateQuotesPredicate } from '../../api/queries/getQuotes/getQuotes';
-
-const createQuotationSchema = z
-  .object({
-    page: z
-      .string({
-        required_error: 'Strona jest wymagana.',
-      })
-      .max(16, {
-        message: 'Strona może mieć maksylamnie 16 znaków.',
-      })
-      .or(z.literal('')),
-    content: z
-      .string({
-        required_error: 'Cytat jest wymagany.',
-      })
-      .min(1, 'Cytat musi mieć minimum 1 znak.')
-      .max(1000, 'Cytat może mieć maksymalnie 1000 znaków.'),
-  })
-  .superRefine((value, ctx) => {
-    if (!value.page) {
-      return;
-    }
-
-    const pageRegex = /^\d+(-\d+)?$/;
-
-    if (!pageRegex.test(value.page)) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.invalid_string,
-        message: 'Zły format. Pożądany format liczba albo liczba-liczba.',
-        validation: 'regex',
-        path: ['page'],
-      });
-    }
-  });
+import {
+  type CreateQuote,
+  createQuoteSchema,
+  useCreateQuoteMutation,
+} from '../../api/mutations/createQuoteMutation/createQuoteMutation';
 
 interface Props {
   userBookId: string;
@@ -64,20 +29,15 @@ interface Props {
 }
 
 export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props): ReactNode => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const { toast } = useToast();
-
-  const queryClient = useQueryClient();
 
   const { data: userData } = useFindUserQuery();
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
-
   const [error, setError] = useState('');
 
-  const form = useForm<z.infer<typeof createQuotationSchema>>({
-    resolver: zodResolver(createQuotationSchema),
+  const form = useForm<CreateQuote>({
+    resolver: zodResolver(createQuoteSchema),
     defaultValues: {
       page: '',
       content: '',
@@ -88,7 +48,7 @@ export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props):
 
   const { mutateAsync, isPending: isCreating } = useCreateQuoteMutation({});
 
-  const onSubmit = async (values: z.infer<typeof createQuotationSchema>): Promise<void> => {
+  const onSubmit = async (values: CreateQuote): Promise<void> => {
     const payload: {
       content: string;
       page: string | undefined;
@@ -105,7 +65,6 @@ export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props):
       await mutateAsync({
         ...values,
         ...payload,
-        accessToken: accessToken as string,
         createdAt: new Date().toISOString(),
         userBookId,
         userId: userData?.id as string,
@@ -115,13 +74,6 @@ export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props):
       onMutated();
 
       setIsOpen(false);
-
-      await Promise.all([
-        queryClient.invalidateQueries({
-          predicate: ({ queryKey }) =>
-            invalidateQuotesPredicate(queryKey, userBookId) || invalidateInfiniteQuotesPredicate(queryKey),
-        }),
-      ]);
 
       toast({
         title: 'Cytat został dodany 😄',

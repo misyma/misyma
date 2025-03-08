@@ -90,3 +90,6 @@ export const getQuotesOptionsQueryKey = (payload: FindQuotesQueryParams): string
   `${payload.isFavorite}`,
   `${payload.sortDate}`,
 ];
+
+export const invalidateQuotesQueries = (queryKey: QueryKey, userBookId: string) =>
+  invalidateQuotesPredicate(queryKey, userBookId) || invalidateInfiniteQuotesPredicate(queryKey);
