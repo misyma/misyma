@@ -118,8 +118,6 @@ const DialogContentPostConfirmation: FC<DialogContentPostConfirmationProps> = ({
 
   const queryClient = useQueryClient();
 
-  const { data: user } = useFindUserQuery();
-
   const [error, setError] = useState('');
 
   const { mutateAsync: deleteBookshelf } = useDeleteBookshelfMutation({});
@@ -129,7 +127,6 @@ const DialogContentPostConfirmation: FC<DialogContentPostConfirmationProps> = ({
     isFetching: isFetchingBookshelves,
     isRefetching: isRetchingBookshelves,
   } = useFindUserBookshelfsQuery({
-    userId: user?.id as string,
     pageSize: 50,
   });
 

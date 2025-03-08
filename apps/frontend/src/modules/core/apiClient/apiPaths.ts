@@ -26,4 +26,19 @@ export const ApiPaths = {
       },
     },
   },
+  genres: {
+    path: '/genres',
+  },
+  bookshelves: {
+    path: '/bookshelves',
+    ['$bookshelfId']: {
+      path: '/bookshelves/{{bookshelfId}}',
+      params: {
+        bookshelfId: '{{bookshelfId}}',
+      },
+      images: {
+        path: '/bookshelves/{{bookshelfId}}/images',
+      },
+    },
+  },
 };

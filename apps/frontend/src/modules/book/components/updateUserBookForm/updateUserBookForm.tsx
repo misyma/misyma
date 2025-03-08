@@ -125,11 +125,7 @@ export const UpdateUserBookForm: FC<Props> = ({ bookId, userBook, onSubmit, onCa
     },
   });
 
-  const { data: genresData } = useErrorHandledQuery(
-    getGenresQueryOptions({
-      accessToken: accessToken as string,
-    }),
-  );
+  const { data: genresData } = useErrorHandledQuery(getGenresQueryOptions({}));
 
   return (
     <Form {...changeUserBookDataForm}>

@@ -26,7 +26,6 @@ import { useToast } from '../../../common/components/toast/use-toast';
 import { cn } from '../../../common/lib/utils';
 import { useStoreSelector } from '../../../core/store/hooks/useStoreSelector';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
-import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
 import { invalidateBooksByBookshelfIdQuery } from '../../api/user/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
 import { invalidateFindUserBooksByQuery } from '../../api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
@@ -65,9 +64,7 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, currentBookshelfId, op
   const [error, setError] = useState('');
   const [calendarVisible, setCalendarVisible] = useState(false);
 
-  const { data: userData } = useFindUserQuery();
   const { data: bookshelvesData } = useFindUserBookshelfsQuery({
-    userId: userData?.id ?? '',
     pageSize: 150,
   });
 

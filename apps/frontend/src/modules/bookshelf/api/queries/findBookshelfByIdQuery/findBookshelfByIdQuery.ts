@@ -1,35 +1,30 @@
-import { useQuery } from '@tanstack/react-query';
-import { useSelector } from 'react-redux';
+import { type QueryKey, useQuery } from '@tanstack/react-query';
 
 import { type FindBookshelfParams, type FindBookshelfResponseBody } from '@common/contracts';
 
-import { HttpService } from '../../../../core/services/httpService/httpService';
-import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
+import { api } from '../../../../core/apiClient/apiClient';
+import { ApiPaths } from '../../../../core/apiClient/apiPaths';
 import { BookshelvesApiQueryKeys } from '../bookshelvesApiQueryKeys';
 
+const findBookshelfById = async (values: FindBookshelfParams) => {
+  const path = ApiPaths.bookshelves.$bookshelfId.path;
+  const resolvedPath = path.replace(ApiPaths.bookshelves.$bookshelfId.params.bookshelfId, values.bookshelfId);
+  const response = await api.get<FindBookshelfResponseBody>(resolvedPath);
+
+  if (api.isErrorResponse(response)) {
+    throw new Error('Error'); // todo: dedicated error
+  }
+
+  return response.data;
+};
+
 export const useFindBookshelfByIdQuery = (bookshelfId: string) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
-  const findBookshelfById = async (values: FindBookshelfParams) => {
-    const { bookshelfId } = values;
-
-    const response = await HttpService.get<FindBookshelfResponseBody>({
-      url: `/bookshelves/${bookshelfId}`,
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    if (response.success === false) {
-      throw new Error('Error');
-    }
-
-    return response.body;
-  };
-
   return useQuery<FindBookshelfResponseBody>({
     queryKey: [BookshelvesApiQueryKeys.findBookshelfById, bookshelfId],
     queryFn: () => findBookshelfById({ bookshelfId }),
-    enabled: !!accessToken && !!bookshelfId,
+    enabled: !!bookshelfId,
   });
 };
+
+export const invalidateFindBookshelfByIdQueryPredicate = (queryKey: QueryKey, bookshelfId: string) =>
+  queryKey.includes(BookshelvesApiQueryKeys.findBookshelfById) && queryKey.includes(bookshelfId);

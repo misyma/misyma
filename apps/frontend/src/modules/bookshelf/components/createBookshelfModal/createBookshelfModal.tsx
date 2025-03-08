@@ -3,7 +3,6 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useRef, useState, type FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { HiPlus } from 'react-icons/hi2';
-import { useSelector } from 'react-redux';
 import { z } from 'zod';
 
 import { Button } from '../../../common/components/button/button';
@@ -16,7 +15,6 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../
 import useDebounce from '../../../common/hooks/useDebounce';
 import { useFileUpload } from '../../../common/hooks/useFileUpload';
 import { cn } from '../../../common/lib/utils';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useCreateBookshelfMutation } from '../../api/mutations/createBookshelfMutation/createBookshelfMutation';
 import { useUploadBookshelfImageMutation } from '../../api/mutations/uploadBookshelfImageMutation/uploadBookshelfImageMutation';
 import { BookshelvesApiQueryKeys } from '../../api/queries/bookshelvesApiQueryKeys';
@@ -33,7 +31,6 @@ const createBookshelfFormSchema = z.object({
 
 export const CreateBookshelfModal: FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const queryClient = useQueryClient();
 
@@ -76,7 +73,6 @@ export const CreateBookshelfModal: FC = () => {
         await uploadBookshelfImage({
           bookshelfId,
           file,
-          accessToken,
           errorHandling: {
             title: 'Coś poszło nie tak z wysyłaniem obrazka półki.',
           },

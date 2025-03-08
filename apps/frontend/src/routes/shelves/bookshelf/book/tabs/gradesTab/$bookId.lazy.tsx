@@ -10,7 +10,7 @@ import { FavoriteBookButton } from '../../../../../../modules/book/components/fa
 import { useBookBreadcrumbs } from '../../../../../../modules/book/hooks/useBookBreadcrumbs.js';
 import { BookTabLayout } from '../../../../../../modules/book/layouts/bookTabLayout.js';
 import { BookReadingsApiQueryKeys } from '../../../../../../modules/bookReadings/api/queries/bookReadingsApiQueryKeys.js';
-import { BookGradesTabMainBody } from '../../../../../../modules/grades/components/bookGradesTabMainBody.js';
+import { BookGradesTabMainBody } from '../../../../../../modules/book/components/bookGradesTab/bookGradesTabMainBody.js';
 import { useFindUserQuery } from '../../../../../../modules/user/api/queries/findUserQuery/findUserQuery.js';
 
 export const GradesPage: FC = () => {

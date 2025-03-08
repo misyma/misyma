@@ -2,7 +2,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
 import { useRef, type FC } from 'react';
 import { useForm } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 import { z } from 'zod';
 
 import { Button } from '../../../common/components/button/button.js';
@@ -20,7 +19,6 @@ import { LoadingSpinner } from '../../../common/components/spinner/loading-spinn
 import { useToast } from '../../../common/components/toast/use-toast.js';
 import useDebounce from '../../../common/hooks/useDebounce.js';
 import { useFileUpload } from '../../../common/hooks/useFileUpload.js';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice.js';
 import { useUploadBookshelfImageMutation } from '../../api/mutations/uploadBookshelfImageMutation/uploadBookshelfImageMutation.js';
 import { BookshelvesApiQueryKeys } from '../../api/queries/bookshelvesApiQueryKeys.js';
 
@@ -41,8 +39,6 @@ export const UpdateNonStandardBookshelfModal: FC<Props> = ({
   open,
   onCloseModal,
 }: Props) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const queryClient = useQueryClient();
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -71,7 +67,6 @@ export const UpdateNonStandardBookshelfModal: FC<Props> = ({
         await uploadBookshelfImage({
           bookshelfId,
           file,
-          accessToken,
           errorHandling: {
             title: 'Coś poszło nie tak z wysyłaniem obrazka półki.',
           },

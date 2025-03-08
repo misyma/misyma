@@ -57,7 +57,6 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
   const [searchedName, setSearchedName] = useState<string | undefined>(undefined);
 
   const { data: bookshelfData, isLoading } = useFindUserBookshelfsQuery({
-    userId: userData?.id as string,
     pageSize: 150,
     name: searchedName,
   });

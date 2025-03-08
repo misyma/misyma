@@ -77,11 +77,7 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
 
   const dispatch = useBookCreationDispatch();
 
-  const { data: genres } = useErrorHandledQuery(
-    getGenresQueryOptions({
-      accessToken: accessToken as string,
-    }),
-  );
+  const { data: genres } = useErrorHandledQuery(getGenresQueryOptions({}));
 
   const form = useForm({
     resolver: zodResolver(stepThreeFormSchema),

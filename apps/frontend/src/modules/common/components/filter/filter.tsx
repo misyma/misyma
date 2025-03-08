@@ -1,10 +1,8 @@
 import { type CheckedState } from '@radix-ui/react-checkbox';
 import { CalendarIcon, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { type ChangeEvent, type FC, useCallback, useEffect, useMemo, useState, memo } from 'react';
-import { useSelector } from 'react-redux';
 
 import { FilterContainer } from './filterContainer';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { getGenresQueryOptions } from '../../../genres/api/queries/getGenresQuery/getGenresQueryOptions';
 import { ReadingStatus } from '../../constants/readingStatus';
 import { useErrorHandledQuery } from '../../hooks/useErrorHandledQuery';
@@ -451,13 +449,7 @@ export const GenreSelectFilter: FC<FilterComponentProps> = ({
 }) => {
   const [genreSelectOpen, setGenreSelectOpen] = useState(false);
 
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
-  const { data: genres } = useErrorHandledQuery(
-    getGenresQueryOptions({
-      accessToken: accessToken as string,
-    }),
-  );
+  const { data: genres } = useErrorHandledQuery(getGenresQueryOptions({}));
 
   return (
     <FilterContainer

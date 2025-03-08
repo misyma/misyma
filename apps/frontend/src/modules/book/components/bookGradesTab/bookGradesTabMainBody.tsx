@@ -4,18 +4,18 @@ import { useSelector } from 'react-redux';
 
 import { SortOrder } from '@common/contracts';
 
-import { FindUserBookByIdQueryOptions } from '../../book/api/user/queries/findUserBook/findUserBookByIdQueryOptions';
-import { CurrentRatingStar } from '../../book/components/currentRatingStar/currentRatingStar';
-import { BookReadingsApiQueryKeys } from '../../bookReadings/api/queries/bookReadingsApiQueryKeys';
-import { FindBookReadingsQueryOptions } from '../../bookReadings/api/queries/findBookReadings/findBookReadingsQueryOptions';
-import { bookReadingsTableColumns } from '../../bookReadings/components/bookReadingsTable/bookReadingsTableColumns';
-import { DataTable } from '../../common/components/dataTable/dataTable';
-import { Separator } from '../../common/components/separator/separator';
-import { Skeleton } from '../../common/components/skeleton/skeleton';
-import { useErrorHandledQuery } from '../../common/hooks/useErrorHandledQuery';
-import { userStateSelectors } from '../../core/store/states/userState/userStateSlice';
-import { BookTitle } from '../../quotes/components/bookTitle/bookTitle';
-import { useFindUserQuery } from '../../user/api/queries/findUserQuery/findUserQuery';
+import { BookReadingsApiQueryKeys } from '../../../bookReadings/api/queries/bookReadingsApiQueryKeys';
+import { FindBookReadingsQueryOptions } from '../../../bookReadings/api/queries/findBookReadings/findBookReadingsQueryOptions';
+import { bookReadingsTableColumns } from '../../../bookReadings/components/bookReadingsTable/bookReadingsTableColumns';
+import { DataTable } from '../../../common/components/dataTable/dataTable';
+import { Separator } from '../../../common/components/separator/separator';
+import { Skeleton } from '../../../common/components/skeleton/skeleton';
+import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
+import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
+import { BookTitle } from '../../../quotes/components/bookTitle/bookTitle';
+import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
+import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
+import { CurrentRatingStar } from '../currentRatingStar/currentRatingStar';
 
 interface BookGradesTabMainBodyProps {
   bookId: string;

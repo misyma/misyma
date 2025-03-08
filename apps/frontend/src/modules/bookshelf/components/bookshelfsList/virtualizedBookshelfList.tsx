@@ -1,10 +1,8 @@
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { type FC, useEffect, useMemo, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
 
 import { Skeleton } from '../../../common/components/skeleton/skeleton';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useFindUserBookshelfsInfiniteQuery } from '../../api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 import { BookshelfCard } from '../bookshelfCard/bookshelfCard';
 
@@ -13,7 +11,6 @@ interface VirtualizedBookshelvesListProps {
 }
 
 export const VirtualizedBookshelvesList: FC<VirtualizedBookshelvesListProps> = ({ route }) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
   const parentRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
@@ -24,7 +21,6 @@ export const VirtualizedBookshelvesList: FC<VirtualizedBookshelvesListProps> = (
   }) as { name?: string };
 
   const { data, fetchNextPage, isLoading, isFetchingNextPage, hasNextPage } = useFindUserBookshelfsInfiniteQuery({
-    accessToken,
     pageSize: 2,
     name: searchParams?.name,
   });

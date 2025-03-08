@@ -26,7 +26,6 @@ import { ReadingStatus } from '../../../common/constants/readingStatus';
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { getGenresQueryOptions } from '../../../genres/api/queries/getGenresQuery/getGenresQueryOptions';
-import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { useFindUserBookshelfsQuery } from '../../api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 import { useSearchBookContext } from '../../context/searchCreateBookContext/searchCreateBookContext';
 
@@ -64,10 +63,8 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
   const [genreSelectOpen, setGenreSelectOpen] = useState(false);
   const [statusSelectOpen, setStatusSelectOpen] = useState(false);
 
-  const { data: user } = useFindUserQuery();
   const { data: bookshelvesData } = useFindUserBookshelfsQuery({
-    userId: user?.id as string,
-    pageSize: 50,
+    pageSize: 200,
   });
 
   const form = useForm({
@@ -84,11 +81,7 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
-  const { data: genresData } = useErrorHandledQuery(
-    getGenresQueryOptions({
-      accessToken: accessToken as string,
-    }),
-  );
+  const { data: genresData } = useErrorHandledQuery(getGenresQueryOptions({}));
   const { data: bookResponse } = useQuery(
     FindBookByIdQueryOptions({
       accessToken: accessToken as string,
