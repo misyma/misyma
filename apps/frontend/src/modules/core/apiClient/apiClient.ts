@@ -9,6 +9,7 @@ type ExtendedAxiosInstance = AxiosInstance & {
 };
 
 export type MisymaApiErrorResponse = AxiosResponse<{
+  message: string;
   context: {
     originalError: string;
     [key: string]: unknown;

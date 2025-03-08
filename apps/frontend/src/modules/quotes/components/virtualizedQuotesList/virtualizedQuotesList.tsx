@@ -99,6 +99,7 @@ export const VirtualizedQuotesList: FC<VirtualizedQuotesListProps> = ({ queryArg
                 <div className="gap-4">
                   {quote && (
                     <Blockquote
+                      key={quote.id + quote.content}
                       page={quote.page}
                       date="2025-01-01"
                       title={quote.bookTitle}

@@ -19,5 +19,11 @@ export const ApiPaths = {
   },
   quotes: {
     path: '/quotes',
+    ['$quoteId']: {
+      path: '/quotes/{{quoteId}}',
+      params: {
+        quoteId: '{{quoteId}}',
+      },
+    },
   },
 };
