@@ -17,13 +17,7 @@ const mapper = new ErrorCodeMessageMapper({
 const changePassword = async (payload: ChangeUserPasswordRequestBody) => {
   const response = await api.post<UpdateUserResponseBody>(`/users/change-password`, payload);
 
-  if (api.isErrorResponse(response)) {
-    throw new UserApiError({
-      apiResponseError: response.data.context,
-      message: mapper.map(response.status),
-      statusCode: response.status,
-    });
-  }
+  api.validateResponse(response, UserApiError, mapper);
 
   return response.data;
 };

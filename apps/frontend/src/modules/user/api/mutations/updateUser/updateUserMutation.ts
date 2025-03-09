@@ -26,13 +26,8 @@ const updateUser = async (payload: UseUpdateUserMutationPayload) => {
   const resolvedPath = path.replace(ApiPaths.users.$userId.pathParam.userId, userId);
   const response = await api.patch<UpdateUserResponseBody>(resolvedPath, body);
 
-  if (api.isErrorResponse(response)) {
-    throw new UserApiError({
-      apiResponseError: response.data.context,
-      message: mapper.map(response.status),
-      statusCode: response.status,
-    });
-  }
+  api.validateResponse(response, UserApiError, mapper);
+
   return response.data;
 };
 

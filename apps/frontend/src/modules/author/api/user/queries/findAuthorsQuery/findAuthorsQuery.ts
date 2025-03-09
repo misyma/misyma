@@ -8,9 +8,11 @@ import {
 
 import { type FindAuthorsQueryParams, SortOrder, type FindAuthorsResponseBody } from '@common/contracts';
 
+import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
 import { type ApiError } from '../../../../../common/errors/apiError';
 import { api } from '../../../../../core/apiClient/apiClient';
 import { ApiPaths } from '../../../../../core/apiClient/apiPaths';
+import { AuthorApiError } from '../../../../errors/authorApiError';
 import { AuthorsApiQueryKeys } from '../authorsApiQueryKeys';
 
 type Payload = {
@@ -20,6 +22,8 @@ type Payload = {
   page?: number;
   pageSize?: number;
 } & Partial<Omit<UseQueryOptions<FindAuthorsResponseBody, ApiError>, 'queryFn'>>;
+
+const mapper = new ErrorCodeMessageMapper({});
 
 export const findAuthors = async (values: FindAuthorsQueryParams) => {
   const { name, page, pageSize, ids } = values;
@@ -58,9 +62,7 @@ export const findAuthors = async (values: FindAuthorsQueryParams) => {
     },
   });
 
-  if (api.isErrorResponse(response)) {
-    throw new Error('Error'); // todo: dedicated error
-  }
+  api.validateResponse(response, AuthorApiError, mapper);
 
   return response.data;
 };
