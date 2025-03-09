@@ -16,14 +16,7 @@ const setNewPassword = async (values: { password: string; token: string }) => {
     password: values.password,
     token: values.token,
   });
-
-  if (api.isErrorResponse(setNewPasswordResponse)) {
-    throw new UserApiError({
-      message: mapper.map(setNewPasswordResponse.status),
-      apiResponseError: setNewPasswordResponse.data.context,
-      statusCode: setNewPasswordResponse.status,
-    });
-  }
+  api.validateResponse(setNewPasswordResponse, UserApiError, mapper);
 
   return setNewPasswordResponse.data;
 };

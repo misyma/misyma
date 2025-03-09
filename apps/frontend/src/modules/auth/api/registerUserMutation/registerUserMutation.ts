@@ -17,13 +17,7 @@ const registerUser = async (values: { email: string; password: string; name: str
     name: values.name,
   });
 
-  if (api.isErrorResponse(registerUserResponse)) {
-    throw new UserApiError({
-      message: mapper.map(registerUserResponse.status),
-      apiResponseError: registerUserResponse.data.context,
-      statusCode: registerUserResponse.status,
-    });
-  }
+  api.validateResponse(registerUserResponse, UserApiError, mapper);
 
   return true;
 };

@@ -2,10 +2,18 @@ import Axios, { type AxiosResponse, type AxiosInstance } from 'axios';
 
 import { type Metadata } from '@common/contracts';
 
+import { type ErrorCodeMessageMapper } from '../../common/errorCodeMessageMapper/errorCodeMessageMapper';
+import { type ApiErrorContext, type ApiError } from '../../common/errors/apiError';
+
 type ExtendedAxiosInstance = AxiosInstance & {
   isErrorResponse: (response: MaybeSuccessResponse) => response is MisymaApiErrorResponse;
   getNextPageParam: (response: PaginatedApiResponse) => number | undefined;
   getPreviousPageParam: (response: PaginatedApiResponse) => number | undefined;
+  validateResponse: (
+    response: MaybeSuccessResponse,
+    errorCtor: new (context: ApiErrorContext) => ApiError,
+    mapper: ErrorCodeMessageMapper,
+  ) => void;
 };
 
 export type MisymaApiErrorResponse = AxiosResponse<{
@@ -55,4 +63,14 @@ api.getPreviousPageParam = (response) => {
   }
 
   return undefined;
+};
+
+api.validateResponse = (response, ctor, mapper) => {
+  if (!api.isErrorResponse(response)) {
+    throw new ctor({
+      message: mapper.map(response.status),
+      apiResponseError: response.data.context,
+      statusCode: response.status,
+    });
+  }
 };

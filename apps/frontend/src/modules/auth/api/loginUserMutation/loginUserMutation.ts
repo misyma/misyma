@@ -20,13 +20,7 @@ const loginUser = async (values: { email: string; password: string }) => {
     password: values.password,
   });
 
-  if (api.isErrorResponse(loginUserResponse)) {
-    throw new AuthApiError({
-      message: mapper.map(loginUserResponse.status),
-      apiResponseError: loginUserResponse.data.context,
-      statusCode: loginUserResponse.status,
-    });
-  }
+  api.validateResponse(loginUserResponse, AuthApiError, mapper);
 
   return loginUserResponse.data;
 };

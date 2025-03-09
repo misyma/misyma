@@ -1,5 +1,6 @@
 import { type UseMutationOptions, useMutation } from '@tanstack/react-query';
 
+import { ErrorCodeMessageMapper } from '../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
 import { api } from '../../../core/apiClient/apiClient';
 import { ApiPaths } from '../../../core/apiClient/apiPaths';
 import { UserApiError } from '../../../user/errors/userApiError';
@@ -8,6 +9,8 @@ type SendVerificationEmailPayload = {
   email: string;
 };
 
+const mapper = new ErrorCodeMessageMapper({});
+
 const sendVerificationEmail = async (values: SendVerificationEmailPayload) => {
   const { email } = values;
 
@@ -15,15 +18,7 @@ const sendVerificationEmail = async (values: SendVerificationEmailPayload) => {
     email,
   });
 
-  if (api.isErrorResponse(sendVerificationEmailResponse)) {
-    throw new UserApiError({
-      message: sendVerificationEmailResponse.data.message,
-      apiResponseError: sendVerificationEmailResponse.data.context,
-      statusCode: sendVerificationEmailResponse.status,
-    });
-  }
-
-  return;
+  api.validateResponse(sendVerificationEmailResponse, UserApiError, mapper);
 };
 
 export const useSendVerificationEmailMutation = (

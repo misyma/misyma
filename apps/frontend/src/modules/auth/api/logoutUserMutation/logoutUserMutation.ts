@@ -24,15 +24,7 @@ const logoutUser = async (values: Payload) => {
     accessToken,
   });
 
-  if (api.isErrorResponse(logoutUserResponse)) {
-    throw new AuthApiError({
-      message: mapper.map(logoutUserResponse.status),
-      apiResponseError: logoutUserResponse.data.context,
-      statusCode: logoutUserResponse.status,
-    });
-  }
-
-  return;
+  api.validateResponse(logoutUserResponse, AuthApiError, mapper);
 };
 
 export const useLogoutUserMutation = (options: UseMutationOptions<void, AuthApiError, Payload>) => {

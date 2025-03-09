@@ -1,5 +1,6 @@
 import { type UseMutationOptions, useMutation } from '@tanstack/react-query';
 
+import { ErrorCodeMessageMapper } from '../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
 import { api } from '../../../core/apiClient/apiClient';
 import { ApiPaths } from '../../../core/apiClient/apiPaths';
 import { AuthApiError } from '../../errors/authApiError/authApiError';
@@ -8,6 +9,8 @@ type VerifyUserEmailPayload = {
   token: string;
 };
 
+const mapper = new ErrorCodeMessageMapper({});
+
 const verifyUserEmail = async (values: VerifyUserEmailPayload) => {
   const { token } = values;
 
@@ -15,13 +18,7 @@ const verifyUserEmail = async (values: VerifyUserEmailPayload) => {
     token,
   });
 
-  if (api.isErrorResponse(verifyEmailResponse)) {
-    throw new AuthApiError({
-      message: verifyEmailResponse.data.message,
-      apiResponseError: verifyEmailResponse.data.context,
-      statusCode: verifyEmailResponse.status,
-    });
-  }
+  api.validateResponse(verifyEmailResponse, AuthApiError, mapper);
 
   return true;
 };

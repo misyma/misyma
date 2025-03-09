@@ -20,13 +20,7 @@ const sendResetPasswordEmail = async (values: SendResetPasswordEmailPayload) => 
     email: values.email,
   });
 
-  if (api.isErrorResponse(sendResetPasswordEmailResponse)) {
-    throw new UserApiError({
-      message: mapper.map(sendResetPasswordEmailResponse.status),
-      apiResponseError: sendResetPasswordEmailResponse.data.context,
-      statusCode: sendResetPasswordEmailResponse.status,
-    });
-  }
+  api.validateResponse(sendResetPasswordEmailResponse, UserApiError, mapper);
 
   return sendResetPasswordEmailResponse.data;
 };
