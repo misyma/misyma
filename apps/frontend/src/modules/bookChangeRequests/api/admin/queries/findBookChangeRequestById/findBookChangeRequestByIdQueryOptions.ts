@@ -2,8 +2,12 @@ import { type QueryKey, type UseQueryOptions, keepPreviousData, queryOptions } f
 
 import { type FindBookChangeRequestPathParams, type FindAdminBookChangeRequestResponseBody } from '@common/contracts';
 
+import { BookApiError } from '../../../../../book/errors/bookApiError.js';
+import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper.js';
 import { api } from '../../../../../core/apiClient/apiClient.js';
 import { BookChangeRequestApiAdminQueryKeys } from '../bookChangeRequestApiAdminQueryKeys.js';
+
+const mapper = new ErrorCodeMessageMapper({});
 
 const findBookChangeRequests = async (payload: FindBookChangeRequestPathParams) => {
   const { bookChangeRequestId } = payload;
@@ -12,16 +16,19 @@ const findBookChangeRequests = async (payload: FindBookChangeRequestPathParams) 
     `/admin/book-change-requests/${bookChangeRequestId}`,
   );
 
-  if (api.isErrorResponse(response)) {
-    throw new Error('Error'); // todo: dedicated error
-  }
+  api.validateResponse(response, BookApiError, mapper);
 
   return response.data;
 };
 
 export const FindBookChangeRequestByIdQueryOptions = (
   payload: FindBookChangeRequestPathParams,
-): UseQueryOptions<FindAdminBookChangeRequestResponseBody, Error, FindAdminBookChangeRequestResponseBody, string[]> =>
+): UseQueryOptions<
+  FindAdminBookChangeRequestResponseBody,
+  BookApiError,
+  FindAdminBookChangeRequestResponseBody,
+  string[]
+> =>
   queryOptions({
     queryKey: [BookChangeRequestApiAdminQueryKeys.findBookChangeRequests, `${payload.bookChangeRequestId}`],
     queryFn: () => findBookChangeRequests(payload),

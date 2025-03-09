@@ -20,15 +20,7 @@ const mapper = new ErrorCodeMessageMapper({
 const applyBookChangeRequest = async (payload: ApplyBookChangeRequestPathParams) => {
   const response = await api.post(`/admin/book-change-requests/${payload.bookChangeRequestId}/apply`, payload);
 
-  if (api.isErrorResponse(response)) {
-    throw new BookApiError({
-      apiResponseError: response.data.context,
-      message: mapper.map(response.status),
-      statusCode: response.status,
-    });
-  }
-
-  return;
+  api.validateResponse(response, BookApiError, mapper);
 };
 
 export const useApplyBookChangeRequestMutation = (
