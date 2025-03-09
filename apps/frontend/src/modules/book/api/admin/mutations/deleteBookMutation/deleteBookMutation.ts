@@ -40,6 +40,12 @@ export const useDeleteBookMutation = (options: UseMutationOptions<void, ApiError
         queryClient.invalidateQueries({
           predicate: (query) => query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId,
         }),
+        queryClient.invalidateQueries({
+          predicate: (query) => query.queryKey.includes(BookApiQueryKeys.findUserBooksBy),
+        }),
+        queryClient.invalidateQueries({
+          predicate: (query) => query.queryKey.includes(BookApiQueryKeys.findUserBookById),
+        }),
       ]);
     },
   });
