@@ -31,5 +31,8 @@ export const useLoginUserMutation = (
   return useErrorHandledMutation({
     mutationFn: loginUser,
     ...options,
+    onSuccess: (data) => {
+      api.defaults.headers.common.Authorization = `Bearer ${data.accessToken}`;
+    },
   });
 };
