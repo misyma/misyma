@@ -51,6 +51,9 @@ export const useCreateUserBookMutation = (
             query.queryKey.includes('infinite-query') &&
             query.queryKey[1] === args[1].bookshelfId,
         }),
+        queryClient.invalidateQueries({
+          predicate: ({ queryKey }) => queryKey.includes(BookApiQueryKeys.findBooksAdmin),
+        }),
       ]);
     },
   });
