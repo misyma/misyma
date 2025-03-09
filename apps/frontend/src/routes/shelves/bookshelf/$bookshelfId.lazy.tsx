@@ -4,7 +4,6 @@ import { z } from 'zod';
 
 import { FindUserBooksSortField, SortOrder } from '@common/contracts';
 
-import { AuthenticatedLayout } from '../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { useFindBookshelfByIdQuery } from '../../../modules/bookshelf/api/queries/findBookshelfByIdQuery/findBookshelfByIdQuery';
 import {
   BookshelfBooksPageFiltersBar,
@@ -119,21 +118,19 @@ export const BorrowingBookshelf: FC = () => {
   const { data: bookshelfResponse } = useFindBookshelfByIdQuery(bookshelfId);
 
   return (
-    <AuthenticatedLayout>
-      <div className="px-8 flex flex-col justify-center w-full items-center">
-        <BookshelfTopBar
+    <div className="px-8 flex flex-col justify-center w-full items-center">
+      <BookshelfTopBar
+        bookshelfId={bookshelfId}
+        bookshelfResponse={bookshelfResponse}
+      />
+      <div className="flex flex-col justify-center gap-8 w-full sm:max-w-7xl">
+        <BookshelfBooksPageFiltersBar />
+        <BookshelfBooksVirtualizedBooksList
           bookshelfId={bookshelfId}
-          bookshelfResponse={bookshelfResponse}
+          borrowedBooks={true}
         />
-        <div className="flex flex-col justify-center gap-8 w-full sm:max-w-7xl">
-          <BookshelfBooksPageFiltersBar />
-          <BookshelfBooksVirtualizedBooksList
-            bookshelfId={bookshelfId}
-            borrowedBooks={true}
-          />
-        </div>
       </div>
-    </AuthenticatedLayout>
+    </div>
   );
 };
 

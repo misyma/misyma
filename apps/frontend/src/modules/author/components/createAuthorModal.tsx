@@ -17,6 +17,7 @@ import {
 } from '../../common/components/dialog/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../common/components/form/form';
 import { Input } from '../../common/components/input/input';
+import { LoadingSpinner } from '../../common/components/spinner/loading-spinner';
 import { useToast } from '../../common/components/toast/use-toast';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../common/components/tooltip/tooltip';
 import { ApiError } from '../../common/errors/apiError';
@@ -57,7 +58,7 @@ export const CreateAuthorModal: FC<Props> = ({ onMutated }: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [error, setError] = useState('');
 
-  const { mutateAsync: createAuthor } = useCreateAuthorMutation({});
+  const { mutateAsync: createAuthor, isPending } = useCreateAuthorMutation({});
 
   const form = useForm({
     resolver: zodResolver(createAuthorSchema),
@@ -169,10 +170,10 @@ export const CreateAuthorModal: FC<Props> = ({ onMutated }: Props) => {
                 )}
               />
               <Button
-                disabled={!form.formState.isValid}
+                disabled={isPending || !form.formState.isValid}
                 type="submit"
               >
-                Stwórz
+                {isPending ? <LoadingSpinner size={24} /> : 'Stwórz'}
               </Button>
             </form>
           </Form>

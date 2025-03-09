@@ -19,7 +19,7 @@ type UpdateBookReadingMutationPayload = UpdateBookReadingRequestBody & UpdateBoo
 const updateBookReading = async (payload: UpdateBookReadingMutationPayload) => {
   const { userBookId, readingId, ...body } = payload;
 
-  let path = ApiPaths.userBooks.$userBookId.readings.$readingId.path;
+  let path: string = ApiPaths.userBooks.$userBookId.readings.$readingId.path;
   path = path.replace(ApiPaths.userBooks.$userBookId.params.userBookId, userBookId);
   path = path.replace(ApiPaths.userBooks.$userBookId.readings.$readingId.params.readingId, readingId);
 

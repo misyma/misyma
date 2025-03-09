@@ -326,7 +326,9 @@ const AuthorMultiSelectCommandGroup = ({
     name: searchedName,
   });
 
-  const { mutateAsync } = useCreateAuthorDraftMutation({});
+  const { mutateAsync } = useCreateAuthorDraftMutation({
+    onSuccess: () => setAuthorSelectOpen(false),
+  });
 
   const options = useMemo(() => {
     return (
@@ -373,8 +375,6 @@ const AuthorMultiSelectCommandGroup = ({
       label: result.name,
       value: result.id,
     });
-
-    setAuthorSelectOpen(false);
   };
 
   return (

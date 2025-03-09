@@ -7,6 +7,7 @@ import { ApiError } from '../../../../../common/errors/apiError';
 import { useErrorHandledMutation } from '../../../../../common/hooks/useErrorHandledMutation';
 import { api } from '../../../../../core/apiClient/apiClient';
 import { AuthorsApiQueryKeys } from '../../../user/queries/authorsApiQueryKeys';
+import { invalidateAdminAuthorsQueryPredicate } from '../../queries/findAdminAuthorsQuery/findAdminAuthorsQuery';
 
 const mapper = new ErrorCodeMessageMapper({
   403: `Brak pozwolenia na usunięcie autora.`,
@@ -36,7 +37,9 @@ export const useDeleteAuthorMutation = (options: UseMutationOptions<void, ApiErr
         await options.onSuccess(...args);
       }
       await queryClient.invalidateQueries({
-        predicate: (query) => query.queryKey[0] === AuthorsApiQueryKeys.findAuthorsQuery,
+        predicate: (query) =>
+          query.queryKey[0] === AuthorsApiQueryKeys.findAuthorsQuery ||
+          invalidateAdminAuthorsQueryPredicate(query.queryKey),
       });
     },
   });

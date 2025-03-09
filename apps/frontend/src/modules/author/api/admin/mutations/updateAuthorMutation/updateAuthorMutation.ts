@@ -11,6 +11,7 @@ import { ApiError } from '../../../../../common/errors/apiError';
 import { useErrorHandledMutation } from '../../../../../common/hooks/useErrorHandledMutation';
 import { api } from '../../../../../core/apiClient/apiClient';
 import { AuthorsApiQueryKeys } from '../../../user/queries/authorsApiQueryKeys';
+import { invalidateAdminAuthorsQueryPredicate } from '../../queries/findAdminAuthorsQuery/findAdminAuthorsQuery';
 
 interface Payload extends UpdateAuthorPathParams, UpdateAuthorRequestBody {}
 
@@ -45,7 +46,8 @@ export const useUpdateAuthorMutation = (options: UseMutationOptions<UpdateAuthor
       }
       // todo: refactor
       await queryClient.invalidateQueries({
-        predicate: ({ queryKey }) => queryKey[0] === AuthorsApiQueryKeys.findAuthorsQuery,
+        predicate: ({ queryKey }) =>
+          queryKey[0] === AuthorsApiQueryKeys.findAuthorsQuery || invalidateAdminAuthorsQueryPredicate(queryKey),
       });
     },
   });

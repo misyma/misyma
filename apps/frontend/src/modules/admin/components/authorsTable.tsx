@@ -35,16 +35,13 @@ export const AuthorsTable: FC<AdminAuthorsTableProps> = ({
   setToApprove,
 }) => {
   const [searchAuthorName, setSearchAuthorName] = useState(authorName);
-
   const [pageSize] = useState(10);
-
   const [totalPages, setTotalPages] = useState(0);
 
   const debouncedSearchValue = useDebounce(searchAuthorName, 250);
 
   const onSetSearchAuthorName = (val: string) => {
     setPage(1);
-
     setSearchAuthorName(val);
   };
 

@@ -1,4 +1,4 @@
-import { type UseQueryOptions, keepPreviousData, useQuery } from '@tanstack/react-query';
+import { type QueryKey, type UseQueryOptions, keepPreviousData, useQuery } from '@tanstack/react-query';
 
 import {
   type FindAdminAuthorsQueryParams,
@@ -34,15 +34,12 @@ export const findAdminAuthors = async (values: FindAdminAuthorsQueryParams) => {
   if (name) {
     query.name = name;
   }
-
   if (isApproved !== undefined) {
     query.isApproved = `${isApproved}`;
   }
-
   if (page) {
     query.page = `${page}`;
   }
-
   if (pageSize) {
     query.pageSize = `${pageSize}`;
   }
@@ -127,3 +124,6 @@ export const useFindAdminAuthorsQuery = ({
     placeholderData: keepPreviousData,
   });
 };
+
+export const invalidateAdminAuthorsQueryPredicate = (queryKey: QueryKey) =>
+  queryKey.includes(AdminAuthorsApiQueryKeys.findAdminAuthorsQuery);

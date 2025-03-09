@@ -7,6 +7,7 @@ import { ApiError } from '../../../../../common/errors/apiError';
 import { useErrorHandledMutation } from '../../../../../common/hooks/useErrorHandledMutation';
 import { api } from '../../../../../core/apiClient/apiClient';
 import { AuthorsApiQueryKeys } from '../../../user/queries/authorsApiQueryKeys';
+import { invalidateAdminAuthorsQueryPredicate } from '../../queries/findAdminAuthorsQuery/findAdminAuthorsQuery';
 
 const mapper = new ErrorCodeMessageMapper({
   403: `Brak pozwolenia na stworzenie autora.`,
@@ -40,7 +41,9 @@ export const useCreateAuthorMutation = (
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         // todo: refactor
-        predicate: (query) => query.queryKey[0] === AuthorsApiQueryKeys.findAuthorsQuery,
+        predicate: (query) =>
+          query.queryKey[0] === AuthorsApiQueryKeys.findAuthorsQuery ||
+          invalidateAdminAuthorsQueryPredicate(query.queryKey),
       });
     },
   });

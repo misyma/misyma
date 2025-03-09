@@ -25,7 +25,7 @@ export const BasicDataMainBody: FC<BasicDataMainBodyProps> = ({ bookId }) => {
     [bookId],
   );
 
-  const { data, isFetching } = useErrorHandledQuery(queryOptions);
+  const { data, isLoading } = useErrorHandledQuery(queryOptions);
 
   const bookDetails = useMemo(
     () => ({
@@ -53,15 +53,15 @@ export const BasicDataMainBody: FC<BasicDataMainBodyProps> = ({ bookId }) => {
   return (
     <>
       <div className="flex flex-shrink-0 justify-between">
-        {!isFetching && <BookTitle title={bookDetails.title ?? ''} />}
-        {isFetching && <Skeleton className="h-9 w-40" />}
+        {!isLoading && <BookTitle title={bookDetails.title ?? ''} />}
+        {isLoading && <Skeleton className="h-9 w-40" />}
         <CurrentRatingStar userBookId={bookId} />
       </div>
       <Separator className="h-[1px] bg-primary" />
       <div className="flex flex-shrink-0 w-full justify-between">
         <div className="flex flex-shrink-0 flex-col gap-2">
           <p className="text-lg pb-6">
-            {!isFetching && (bookDetails.authors.length > 1 ? <p>Autorzy: </p> : <p>Autor: </p>)}
+            {!isLoading && (bookDetails.authors.length > 1 ? <p>Autorzy: </p> : <p>Autor: </p>)}
             {bookDetails.authors.slice(0, 3).map((author, index) => (
               <span key={index}>
                 {author.name}
