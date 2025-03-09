@@ -7,9 +7,11 @@ import {
   FindAdminBooksSortField,
 } from '@common/contracts';
 
+import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
 import { type ApiError } from '../../../../../common/errors/apiError';
 import { api } from '../../../../../core/apiClient/apiClient';
 import { ApiPaths } from '../../../../../core/apiClient/apiPaths';
+import { BookApiError } from '../../../../errors/bookApiError';
 import { BookApiQueryKeys } from '../../../user/queries/bookApiQueryKeys';
 
 type Payload = FindAdminBooksQueryParams & {
@@ -19,6 +21,8 @@ type Payload = FindAdminBooksQueryParams & {
 type RequestPayload = FindAdminBooksQueryParams & {
   signal: AbortSignal;
 };
+
+const mapper = new ErrorCodeMessageMapper({});
 
 export const adminFindBooks = async (values: RequestPayload) => {
   const { title, page, pageSize, signal, ...remaining } = values;
@@ -61,9 +65,7 @@ export const adminFindBooks = async (values: RequestPayload) => {
     signal,
   });
 
-  if (api.isErrorResponse(response)) {
-    throw new Error('Error'); //todo: dedicated error
-  }
+  api.validateResponse(response, BookApiError, mapper);
 
   return response.data;
 };

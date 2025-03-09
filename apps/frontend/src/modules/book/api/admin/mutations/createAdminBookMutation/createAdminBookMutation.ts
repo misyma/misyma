@@ -24,13 +24,7 @@ const createBook = async (payload: CreateBookRequestBody) => {
     isApproved: true,
   });
 
-  if (api.isErrorResponse(response)) {
-    throw new BookApiError({
-      apiResponseError: response.data.context,
-      message: mapper.map(response.status),
-      statusCode: response.status,
-    });
-  }
+  api.validateResponse(response, BookApiError, mapper);
 
   return response.data;
 };

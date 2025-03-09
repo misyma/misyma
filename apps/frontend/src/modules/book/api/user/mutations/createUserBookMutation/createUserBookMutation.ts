@@ -23,13 +23,7 @@ const mapper = new ErrorCodeMessageMapper({
 const createUserBook = async (payload: CreateUserBookRequestBody) => {
   const response = await api.post<CreateUserBookResponseBody>(ApiPaths.userBooks.path, payload);
 
-  if (api.isErrorResponse(response)) {
-    throw new BookApiError({
-      apiResponseError: response.data.context,
-      message: mapper.map(response.status),
-      statusCode: response.status,
-    });
-  }
+  api.validateResponse(response, BookApiError, mapper);
 
   return response.data;
 };

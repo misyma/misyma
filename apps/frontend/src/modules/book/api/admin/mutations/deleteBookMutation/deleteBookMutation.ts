@@ -16,15 +16,7 @@ const mapper = new ErrorCodeMessageMapper({
 const deleteBook = async (payload: DeleteBookPathParams) => {
   const response = await api.delete(`/admin/books/${payload.bookId}`);
 
-  if (api.isErrorResponse(response)) {
-    throw new BookApiError({
-      apiResponseError: response.data.context,
-      message: mapper.map(response.status),
-      statusCode: response.status,
-    });
-  }
-
-  return;
+  api.validateResponse(response, BookApiError, mapper);
 };
 
 export const useDeleteBookMutation = (options: UseMutationOptions<void, ApiError, DeleteBookPathParams>) => {

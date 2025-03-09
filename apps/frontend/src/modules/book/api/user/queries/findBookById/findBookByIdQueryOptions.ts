@@ -14,13 +14,7 @@ const mapper = new ErrorCodeMessageMapper({
 export const findBookById = async (payload: FindBookPathParams): Promise<FindBookResponseBody> => {
   const response = await api.get<FindBookResponseBody>(`/books/${payload.bookId}`);
 
-  if (api.isErrorResponse(response)) {
-    throw new BookApiError({
-      apiResponseError: response.data.context,
-      message: mapper.map(response.status),
-      statusCode: response.status,
-    });
-  }
+  api.validateResponse(response, BookApiError, mapper);
 
   return response.data;
 };

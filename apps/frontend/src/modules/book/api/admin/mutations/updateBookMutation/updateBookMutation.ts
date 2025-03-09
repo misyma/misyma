@@ -20,13 +20,7 @@ const mapper = new ErrorCodeMessageMapper({
 const deleteBook = async (payload: UpdateBookPayload) => {
   const response = await api.patch<UpdateBookResponseBody>(`/admin/books/${payload.bookId}`, payload);
 
-  if (api.isErrorResponse(response)) {
-    throw new BookApiError({
-      apiResponseError: response.data.context,
-      message: mapper.map(response.status),
-      statusCode: response.status,
-    });
-  }
+  api.validateResponse(response, BookApiError, mapper);
 
   return response.data;
 };

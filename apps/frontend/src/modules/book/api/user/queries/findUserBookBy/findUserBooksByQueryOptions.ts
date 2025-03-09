@@ -34,20 +34,14 @@ export const findUserBooksBy = async (payload: FindUserBooksQueryParams): Promis
     }
   });
 
-  const res = await api.get<FindUserBooksResponseBody>('/user-books', {
+  const response = await api.get<FindUserBooksResponseBody>('/user-books', {
     params: queryParams,
     validateStatus: () => true,
   });
 
-  if (api.isErrorResponse(res)) {
-    throw new BookApiError({
-      apiResponseError: res.data.context,
-      statusCode: res.status,
-      message: mapper.map(res.status),
-    });
-  }
+  api.validateResponse(response, BookApiError, mapper);
 
-  return res.data;
+  return response.data;
 };
 
 export const FindUserBooksByQueryOptions = ({ ...rest }: FindUserBooksQueryParams) =>

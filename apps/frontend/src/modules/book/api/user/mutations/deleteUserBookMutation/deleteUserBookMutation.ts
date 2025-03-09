@@ -20,15 +20,7 @@ export const deleteUserBook = async (payload: Payload) => {
 
   const response = await api.delete(`/user-books/${userBookId}`);
 
-  if (api.isErrorResponse(response)) {
-    throw new BookApiError({
-      apiResponseError: response.data.context,
-      message: mapper.map(response.status),
-      statusCode: response.status,
-    });
-  }
-
-  return;
+  api.validateResponse(response, BookApiError, mapper);
 };
 
 export const useDeleteUserBookMutation = (options: UseMutationOptions<void, Error, Payload>) => {
