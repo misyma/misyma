@@ -1,41 +1,34 @@
 import { type UseMutationOptions, useMutation } from '@tanstack/react-query';
 
-import { HttpService } from '../../../../modules/core/services/httpService/httpService';
+import { api } from '../../../core/apiClient/apiClient';
+import { ApiPaths } from '../../../core/apiClient/apiPaths';
 import { AuthApiError } from '../../errors/authApiError/authApiError';
 
-export const useVerifyUserEmailMutation = (
-  options: UseMutationOptions<
-    boolean,
-    AuthApiError,
-    {
-      token: string;
-    }
-  >,
-) => {
-  const verifyUserEmail = async (values: { token: string }) => {
-    const { token } = values;
+type VerifyUserEmailPayload = {
+  token: string;
+};
 
-    const verifyEmailResponse = await HttpService.post({
-      url: '/users/verify-email',
-      body: {
-        token,
-      },
-      headers: {
-        'Content-Type': 'application/json',
-      },
+const verifyUserEmail = async (values: VerifyUserEmailPayload) => {
+  const { token } = values;
+
+  const verifyEmailResponse = await api.post(ApiPaths.users.verifyEmail.path, {
+    token,
+  });
+
+  if (api.isErrorResponse(verifyEmailResponse)) {
+    throw new AuthApiError({
+      message: verifyEmailResponse.data.message,
+      apiResponseError: verifyEmailResponse.data.context,
+      statusCode: verifyEmailResponse.status,
     });
+  }
 
-    if (verifyEmailResponse.success === false) {
-      throw new AuthApiError({
-        message: verifyEmailResponse.body.message,
-        apiResponseError: verifyEmailResponse.body.context,
-        statusCode: verifyEmailResponse.statusCode,
-      });
-    }
+  return true;
+};
 
-    return true;
-  };
-
+export const useVerifyUserEmailMutation = (
+  options: UseMutationOptions<boolean, AuthApiError, VerifyUserEmailPayload>,
+) => {
   return useMutation({
     mutationFn: verifyUserEmail,
     ...options,

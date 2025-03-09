@@ -50,6 +50,10 @@ export const useCreateBorrowingMutation = (
     mutationFn: createBorrowing,
     ...options,
     onSuccess: async (...args) => {
+      if (options.onSuccess) {
+        await options.onSuccess(...args);
+      }
+
       //todo: refactor
       await Promise.all([
         queryClient.invalidateQueries({

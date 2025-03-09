@@ -2,44 +2,40 @@ import { type UseMutationOptions, useMutation } from '@tanstack/react-query';
 
 import { type LogoutUserPathParams, type LogoutUserRequestBody } from '@common/contracts';
 
-import { HttpService } from '../../../../modules/core/services/httpService/httpService';
 import { ErrorCodeMessageMapper } from '../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
+import { api } from '../../../core/apiClient/apiClient';
+import { ApiPaths } from '../../../core/apiClient/apiPaths';
 import { AuthApiError } from '../../errors/authApiError/authApiError';
 
 type Payload = LogoutUserPathParams & LogoutUserRequestBody;
 
-export const useLogoutUserMutation = (options: UseMutationOptions<void, AuthApiError, Payload>) => {
-  const mapper = new ErrorCodeMessageMapper({
-    400: 'Niepoprawne dane',
-    401: 'Niepoprawne dane',
+const mapper = new ErrorCodeMessageMapper({
+  400: 'Niepoprawne dane',
+  401: 'Niepoprawne dane',
+});
+
+const logoutUser = async (values: Payload) => {
+  const { accessToken, userId, refreshToken } = values;
+
+  let path: string = ApiPaths.users.$userId.logout.path;
+  path = path.replace('{{userId}}', userId);
+  const logoutUserResponse = await api.post<void>(path, {
+    refreshToken,
+    accessToken,
   });
 
-  const logoutUser = async (values: Payload) => {
-    const { accessToken, userId, refreshToken } = values;
-
-    const logoutUserResponse = await HttpService.post<void>({
-      url: `/users/${userId}/logout`,
-      body: {
-        refreshToken,
-        accessToken,
-      },
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
+  if (api.isErrorResponse(logoutUserResponse)) {
+    throw new AuthApiError({
+      message: mapper.map(logoutUserResponse.status),
+      apiResponseError: logoutUserResponse.data.context,
+      statusCode: logoutUserResponse.status,
     });
+  }
 
-    if (logoutUserResponse.success === false) {
-      throw new AuthApiError({
-        message: mapper.map(logoutUserResponse.statusCode),
-        apiResponseError: logoutUserResponse.body.context,
-        statusCode: logoutUserResponse.statusCode,
-      });
-    }
+  return;
+};
 
-    return;
-  };
-
+export const useLogoutUserMutation = (options: UseMutationOptions<void, AuthApiError, Payload>) => {
   return useMutation({
     mutationFn: logoutUser,
     ...options,

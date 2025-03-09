@@ -115,6 +115,9 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
       variant: 'success',
     });
 
+    // moving this to `updateBorrowing` is kinda pointless.
+    // best to leave it as is for the time being
+    // in case of future refactoring of this component, we might want to split
     await Promise.all([
       queryClient.invalidateQueries({
         queryKey: [BookApiQueryKeys.findUserBookById, bookId, userData?.id],

@@ -2,48 +2,37 @@ import { type UseMutationOptions, useMutation } from '@tanstack/react-query';
 
 import { type LoginUserResponseBody } from '@common/contracts';
 
-import { HttpService } from '../../../../modules/core/services/httpService/httpService';
+import { ErrorCodeMessageMapper } from '../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
+import { api } from '../../../core/apiClient/apiClient';
+import { ApiPaths } from '../../../core/apiClient/apiPaths';
 import { UserApiError } from '../../../user/errors/userApiError';
+
+const mapper = new ErrorCodeMessageMapper({
+  400: 'Nie udało się ustawić nowego hasła. Spróbuj ponownie.',
+});
+
+const setNewPassword = async (values: { password: string; token: string }) => {
+  const setNewPasswordResponse = await api.post<LoginUserResponseBody>(ApiPaths.users.changePassword.path, {
+    password: values.password,
+    token: values.token,
+  });
+
+  if (api.isErrorResponse(setNewPasswordResponse)) {
+    throw new UserApiError({
+      message: mapper.map(setNewPasswordResponse.status),
+      apiResponseError: setNewPasswordResponse.data.context,
+      statusCode: setNewPasswordResponse.status,
+    });
+  }
+
+  return setNewPasswordResponse.data;
+};
 
 export const useSetNewPasswordMutation = (
   options: UseMutationOptions<LoginUserResponseBody, UserApiError, { token: string; password: string }>,
 ) => {
-  const setNewPassword = async (values: { password: string; token: string }) => {
-    const setNewPasswordResponse = await HttpService.post<LoginUserResponseBody>({
-      url: '/users/change-password',
-      body: {
-        password: values.password,
-        token: values.token,
-      },
-    });
-
-    if (setNewPasswordResponse.success === false) {
-      throw new UserApiError({
-        message: mapStatusCodeToErrorMessage(setNewPasswordResponse.statusCode),
-        apiResponseError: setNewPasswordResponse.body.context,
-        statusCode: setNewPasswordResponse.statusCode,
-      });
-    }
-
-    return setNewPasswordResponse.body;
-  };
-
   return useMutation({
     mutationFn: setNewPassword,
     ...options,
   });
-};
-
-const mapStatusCodeToErrorMessage = (statusCode: number) => {
-  switch (statusCode) {
-    case 400:
-      // return 'Failed to set the new password.';
-      return 'Nie udało się ustawić nowego hasła. Spróbuj ponownie.';
-
-    case 500:
-      return 'Internal server error';
-
-    default:
-      return 'Unknown error';
-  }
 };

@@ -1,41 +1,34 @@
 import { type UseMutationOptions, useMutation } from '@tanstack/react-query';
 
-import { HttpService } from '../../../../modules/core/services/httpService/httpService';
+import { api } from '../../../core/apiClient/apiClient';
+import { ApiPaths } from '../../../core/apiClient/apiPaths';
 import { UserApiError } from '../../../user/errors/userApiError';
 
-export const useSendVerificationEmailMutation = (
-  options: UseMutationOptions<
-    void,
-    UserApiError,
-    {
-      email: string;
-    }
-  >,
-) => {
-  const sendVerificationEmail = async (values: { email: string }) => {
-    const { email } = values;
+type SendVerificationEmailPayload = {
+  email: string;
+};
 
-    const sendVerificationEmailResponse = await HttpService.post({
-      url: '/users/send-verification-email',
-      body: {
-        email,
-      },
-      headers: {
-        'Content-Type': 'application/json',
-      },
+const sendVerificationEmail = async (values: SendVerificationEmailPayload) => {
+  const { email } = values;
+
+  const sendVerificationEmailResponse = await api.post(ApiPaths.users.sendVerificationEmail.path, {
+    email,
+  });
+
+  if (api.isErrorResponse(sendVerificationEmailResponse)) {
+    throw new UserApiError({
+      message: sendVerificationEmailResponse.data.message,
+      apiResponseError: sendVerificationEmailResponse.data.context,
+      statusCode: sendVerificationEmailResponse.status,
     });
+  }
 
-    if (sendVerificationEmailResponse.success === false) {
-      throw new UserApiError({
-        message: sendVerificationEmailResponse.body.message,
-        apiResponseError: sendVerificationEmailResponse.body.context,
-        statusCode: sendVerificationEmailResponse.statusCode,
-      });
-    }
+  return;
+};
 
-    return;
-  };
-
+export const useSendVerificationEmailMutation = (
+  options: UseMutationOptions<void, UserApiError, SendVerificationEmailPayload>,
+) => {
   return useMutation({
     mutationFn: sendVerificationEmail,
     ...options,

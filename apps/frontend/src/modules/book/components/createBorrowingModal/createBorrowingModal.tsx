@@ -69,7 +69,9 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, currentBookshelfId, op
     },
   });
 
-  const { mutateAsync } = useCreateBorrowingMutation({});
+  const { mutateAsync } = useCreateBorrowingMutation({
+    onSuccess: () => setIsOpen(false),
+  });
 
   const onOpenChange = (val: boolean) => {
     setCalendarVisible(val);
@@ -90,8 +92,6 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, currentBookshelfId, op
       if (onMutated) {
         onMutated();
       }
-
-      setIsOpen(false);
 
       toast({
         title: 'Książka została wypożyczona.',

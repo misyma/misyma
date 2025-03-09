@@ -2,48 +2,40 @@ import { type UseMutationOptions, useMutation } from '@tanstack/react-query';
 
 import { type LoginUserResponseBody } from '@common/contracts';
 
-import { HttpService } from '../../../../modules/core/services/httpService/httpService';
+import { ErrorCodeMessageMapper } from '../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
+import { api } from '../../../core/apiClient/apiClient';
+import { ApiPaths } from '../../../core/apiClient/apiPaths';
 import { UserApiError } from '../../../user/errors/userApiError';
 
-// TODO: add body type
-export const useSendResetPasswordEmailMutation = (
-  options: UseMutationOptions<LoginUserResponseBody, UserApiError, { email: string }>,
-) => {
-  const sendResetPasswordEmail = async (values: { email: string }) => {
-    const sendResetPasswordEmailResponse = await HttpService.post<LoginUserResponseBody>({
-      url: '/users/reset-password',
-      body: {
-        email: values.email,
-      },
+type SendResetPasswordEmailPayload = {
+  email: string;
+};
+
+const mapper = new ErrorCodeMessageMapper({
+  400: 'Nie udało się wysłać wiadomości. Spróbuj ponownie.',
+});
+
+const sendResetPasswordEmail = async (values: SendResetPasswordEmailPayload) => {
+  const sendResetPasswordEmailResponse = await api.post<LoginUserResponseBody>(ApiPaths.users.resetPassword.path, {
+    email: values.email,
+  });
+
+  if (api.isErrorResponse(sendResetPasswordEmailResponse)) {
+    throw new UserApiError({
+      message: mapper.map(sendResetPasswordEmailResponse.status),
+      apiResponseError: sendResetPasswordEmailResponse.data.context,
+      statusCode: sendResetPasswordEmailResponse.status,
     });
+  }
 
-    if (sendResetPasswordEmailResponse.success === false) {
-      throw new UserApiError({
-        message: mapStatusCodeToErrorMessage(sendResetPasswordEmailResponse.statusCode),
-        apiResponseError: sendResetPasswordEmailResponse.body.context,
-        statusCode: sendResetPasswordEmailResponse.statusCode,
-      });
-    }
+  return sendResetPasswordEmailResponse.data;
+};
 
-    return sendResetPasswordEmailResponse.body;
-  };
-
+export const useSendResetPasswordEmailMutation = (
+  options: UseMutationOptions<LoginUserResponseBody, UserApiError, SendResetPasswordEmailPayload>,
+) => {
   return useMutation({
     mutationFn: sendResetPasswordEmail,
     ...options,
   });
-};
-
-const mapStatusCodeToErrorMessage = (statusCode: number) => {
-  switch (statusCode) {
-    case 400:
-      // return 'Failed to send the email.';
-      return 'Nie udało się wysłać wiadomości. Spróbuj ponownie.';
-
-    case 500:
-      return 'Internal server error';
-
-    default:
-      return 'Unknown error';
-  }
 };

@@ -6,6 +6,9 @@ export const ApiPaths = {
       pathParam: {
         userId: '{{userId}}',
       },
+      logout: {
+        path: '/users/{{userId}}/logout' as const,
+      },
     },
     token: {
       path: '/users/token' as const,
@@ -15,6 +18,21 @@ export const ApiPaths = {
     },
     changePassword: {
       path: '/users/change-password' as const,
+    },
+    login: {
+      path: '/users/login' as const,
+    },
+    register: {
+      path: '/users/register' as const,
+    },
+    resetPassword: {
+      path: '/users/reset-password' as const,
+    },
+    sendVerificationEmail: {
+      path: '/users/send-verification-email' as const,
+    },
+    verifyEmail: {
+      path: '/users/verify-email',
     },
   },
   quotes: {
