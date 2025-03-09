@@ -1,6 +1,7 @@
 import { type ReactNode } from '@tanstack/react-router';
 import { Provider } from 'react-redux';
 
+import { api } from '../../../apiClient/apiClient';
 import { CookieService } from '../../../services/cookieService/cookieService';
 import { userStateActions } from '../../../store/states/userState/userStateSlice';
 import { store } from '../../../store/store';
@@ -24,6 +25,7 @@ export const StoreProvider = ({ children }: Props): JSX.Element => {
     const tokens = JSON.parse(userTokens);
 
     store.dispatch(userStateActions.setCurrentUserTokens(tokens));
+    api.defaults.headers.common.Authorization = `Bearer ${tokens.accessToken}`;
   }
 
   return <Provider store={store}>{children}</Provider>;

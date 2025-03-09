@@ -1,8 +1,6 @@
 import { DialogTitle } from '@radix-ui/react-dialog';
-import { useQueryClient } from '@tanstack/react-query';
 import { type FC, useMemo, useState } from 'react';
 import { HiCheckCircle, HiXCircle } from 'react-icons/hi2';
-import { useSelector } from 'react-redux';
 
 import { Button } from '../../common/components/button/button';
 import {
@@ -14,9 +12,7 @@ import {
 } from '../../common/components/dialog/dialog';
 import { useToast } from '../../common/components/toast/use-toast';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../common/components/tooltip/tooltip';
-import { userStateSelectors } from '../../core/store/states/userState/userStateSlice';
 import { useUpdateAuthorMutation } from '../api/admin/mutations/updateAuthorMutation/updateAuthorMutation';
-import { AuthorsApiQueryKeys } from '../api/user/queries/authorsApiQueryKeys';
 
 interface Props {
   authorId: string;
@@ -26,32 +22,23 @@ interface Props {
 }
 
 export const ChangeAuthorStatusModal: FC<Props> = ({ authorId, authorName, status }: Props) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const { toast } = useToast();
 
-  const queryClient = useQueryClient();
-
-  const { mutateAsync: updateAuthor } = useUpdateAuthorMutation({});
+  const { mutateAsync: updateAuthor } = useUpdateAuthorMutation({
+    onSuccess: () => setIsOpen(false),
+  });
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const onCreate = async () => {
     await updateAuthor({
-      accessToken,
       authorId,
       isApproved: !status,
     });
 
-    setIsOpen(false);
-
     toast({
       variant: 'success',
       title: 'Status autora: ' + authorName + ' został zmieniony.',
-    });
-
-    await queryClient.invalidateQueries({
-      predicate: ({ queryKey }) => queryKey[0] === AuthorsApiQueryKeys.findAuthorsQuery,
     });
   };
 

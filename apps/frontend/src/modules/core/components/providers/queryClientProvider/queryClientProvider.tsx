@@ -5,8 +5,9 @@ import { type RefreshUserTokensResponseBody } from '@common/contracts';
 
 import { ApiError } from '../../../../common/errors/apiError';
 import { UserApiError } from '../../../../user/errors/userApiError';
+import { api } from '../../../apiClient/apiClient';
+import { ApiPaths } from '../../../apiClient/apiPaths';
 import { CookieService } from '../../../services/cookieService/cookieService';
-import { HttpService } from '../../../services/httpService/httpService';
 import { useStoreDispatch } from '../../../store/hooks/useStoreDispatch';
 import { useStoreSelector } from '../../../store/hooks/useStoreSelector';
 import { userStateActions, userStateSelectors } from '../../../store/states/userState/userStateSlice';
@@ -19,33 +20,41 @@ export const QueryClientProvider = ({ children }: ProviderProps) => {
   const storeDispatch = useStoreDispatch();
 
   const refreshToken = useStoreSelector(userStateSelectors.selectRefreshToken);
-
   const [refreshingToken, setRefreshingToken] = useState<boolean>(false);
 
   const refreshTokens = async (): Promise<RefreshUserTokensResponseBody | void> => {
     if (refreshingToken) {
       return;
     }
-
-    const refreshUserTokensResponse = await HttpService.post<RefreshUserTokensResponseBody>({
-      url: '/users/token',
-      body: {
+    const response = await api(ApiPaths.users.token.path, {
+      method: 'POST',
+      data: {
         refreshToken,
       },
       headers: {
         'Content-Type': 'application/json',
       },
+      validateStatus: () => true,
     });
 
-    if (refreshUserTokensResponse.success === false) {
+    if (response.status !== 200) {
       throw new UserApiError({
         message: 'Failed to refresh user tokens.',
-        apiResponseError: refreshUserTokensResponse.body.context,
-        statusCode: refreshUserTokensResponse.statusCode,
+        apiResponseError: response.data.context,
+        statusCode: response.status,
       });
     }
 
-    return refreshUserTokensResponse.body;
+    api.defaults.headers.common.Authorization = `Bearer ${response.data.accessToken}`;
+
+    return response.data;
+  };
+
+  const cleanupUser = () => {
+    storeDispatch(userStateActions.removeUserState());
+
+    CookieService.removeUserTokensCookie();
+    CookieService.removeUserDataCookie();
   };
 
   const queryClient = new QueryClient({
@@ -55,8 +64,28 @@ export const QueryClientProvider = ({ children }: ProviderProps) => {
         staleTime: 120 * 1000,
         gcTime: 120 * 1000,
         retry: (failureCount, error) => {
-          if (error instanceof ApiError && (error.context.statusCode === 401 || error.context.statusCode === 400)) {
+          if (error instanceof ApiError && error.context.statusCode === 400) {
             return false;
+          }
+          if (error instanceof ApiError && error.context.statusCode === 401) {
+            refreshTokens()
+              .then((res) => {
+                if (!res) {
+                  cleanupUser();
+                  return false;
+                }
+                storeDispatch(userStateActions.setCurrentUserTokens(res));
+
+                CookieService.setUserTokensCookie({
+                  accessToken: res.accessToken,
+                  refreshToken: res.refreshToken,
+                  expiresIn: res.expiresIn,
+                });
+              })
+              .catch(() => {
+                cleanupUser();
+                setRefreshingToken(false);
+              });
           }
 
           return failureCount < 3;
@@ -65,10 +94,10 @@ export const QueryClientProvider = ({ children }: ProviderProps) => {
     },
     queryCache: new QueryCache({
       onError: async (error) => {
+        console.log('On error...');
         if (error instanceof ApiError && error.context.statusCode === 401) {
           try {
             setRefreshingToken(true);
-
             const res = await refreshTokens();
 
             if (res) {
@@ -81,11 +110,7 @@ export const QueryClientProvider = ({ children }: ProviderProps) => {
               });
             }
           } catch (error) {
-            storeDispatch(userStateActions.removeUserState());
-
-            CookieService.removeUserTokensCookie();
-
-            CookieService.removeUserDataCookie();
+            cleanupUser();
           } finally {
             setRefreshingToken(false);
           }

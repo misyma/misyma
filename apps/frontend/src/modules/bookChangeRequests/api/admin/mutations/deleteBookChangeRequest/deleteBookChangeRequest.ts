@@ -1,4 +1,4 @@
-import { type UseMutationOptions } from '@tanstack/react-query';
+import { useQueryClient, type UseMutationOptions } from '@tanstack/react-query';
 
 import { type DeleteBookChangeRequestPathParams } from '@common/contracts';
 
@@ -6,39 +6,36 @@ import { BookApiError } from '../../../../../book/errors/bookApiError';
 import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
 import { type ApiError } from '../../../../../common/errors/apiError';
 import { useErrorHandledMutation } from '../../../../../common/hooks/useErrorHandledMutation';
-import { HttpService } from '../../../../../core/services/httpService/httpService';
+import { api } from '../../../../../core/apiClient/apiClient';
+import { invalidateBookChangeRequestByIdQueryPredicate } from '../../queries/findBookChangeRequestById/findBookChangeRequestByIdQueryOptions';
+import { invalidateBookChangeRequestsQueryPredicate } from '../../queries/findBookChangeRequests/findBookChangeRequestsQueryOptions';
 
-interface Payload extends DeleteBookChangeRequestPathParams {
-  accessToken: string | undefined;
-}
+const mapper = new ErrorCodeMessageMapper({
+  403: `Brak pozwolenia na usunięcie prośby zmiany.`,
+});
 
-export const useDeleteBookChangeRequestMutation = (options: UseMutationOptions<void, ApiError, Payload>) => {
-  const mapper = new ErrorCodeMessageMapper({
-    403: `Brak pozwolenia na usunięcie prośby zmiany.`,
-  });
+const deleteBookChangeRequest = async (payload: DeleteBookChangeRequestPathParams) => {
+  const response = await api.delete(`/admin/book-change-requests/${payload.bookChangeRequestId}`);
 
-  const deleteBook = async (payload: Payload) => {
-    const response = await HttpService.delete({
-      url: `/admin/book-change-requests/${payload.bookChangeRequestId}`,
-      body: payload as unknown as Record<string, unknown>,
-      headers: {
-        Authorization: `Bearer ${payload.accessToken}`,
-      },
-    });
+  api.validateResponse(response, BookApiError, mapper);
+};
 
-    if (!response.success) {
-      throw new BookApiError({
-        apiResponseError: response.body.context,
-        message: mapper.map(response.statusCode),
-        statusCode: response.statusCode,
-      });
-    }
-
-    return;
-  };
-
+export const useDeleteBookChangeRequestMutation = (
+  options: UseMutationOptions<void, ApiError, DeleteBookChangeRequestPathParams>,
+) => {
+  const queryClient = useQueryClient();
   return useErrorHandledMutation({
-    mutationFn: deleteBook,
+    mutationFn: deleteBookChangeRequest,
     ...options,
+    onSuccess: async (...args) => {
+      if (options.onSuccess) {
+        await options.onSuccess(...args);
+      }
+      await queryClient.invalidateQueries({
+        predicate: ({ queryKey }) =>
+          invalidateBookChangeRequestsQueryPredicate(queryKey) ||
+          invalidateBookChangeRequestByIdQueryPredicate(queryKey, args[1].bookChangeRequestId),
+      });
+    },
   });
 };

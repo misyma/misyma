@@ -1,46 +1,44 @@
-import { type UseMutationOptions } from '@tanstack/react-query';
+import { useQueryClient, type UseMutationOptions } from '@tanstack/react-query';
 
 import { type CreateAuthorRequestBody, type CreateAuthorResponseBody } from '@common/contracts';
 
 import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
-import { ApiError } from '../../../../../common/errors/apiError';
 import { useErrorHandledMutation } from '../../../../../common/hooks/useErrorHandledMutation';
-import { HttpService } from '../../../../../core/services/httpService/httpService';
+import { api } from '../../../../../core/apiClient/apiClient';
+import { AuthorApiError } from '../../../../errors/authorApiError';
+import { AuthorsApiQueryKeys } from '../../../user/queries/authorsApiQueryKeys';
+import { invalidateAdminAuthorsQueryPredicate } from '../../queries/findAdminAuthorsQuery/findAdminAuthorsQuery';
 
-interface Payload extends CreateAuthorRequestBody {
-  accessToken: string | undefined;
-}
+const mapper = new ErrorCodeMessageMapper({
+  403: `Brak pozwolenia na stworzenie autora.`,
+  409: `Autor już istnieje.`,
+});
 
-export const useCreateAuthorMutation = (options: UseMutationOptions<CreateAuthorResponseBody, ApiError, Payload>) => {
-  const mapper = new ErrorCodeMessageMapper({
-    403: `Brak pozwolenia na stworzenie autora.`,
-    409: `Autor już istnieje.`,
-  });
+const createAuthor = async (payload: CreateAuthorRequestBody) => {
+  const { name } = payload;
 
-  const createAuthor = async (payload: Payload) => {
-    const { accessToken, name } = payload;
+  const response = await api.post<CreateAuthorResponseBody>('/admin/authors', { name });
 
-    const response = await HttpService.post<CreateAuthorResponseBody>({
-      url: '/admin/authors',
-      body: { name } as unknown as Record<string, unknown>,
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+  api.validateResponse(response, AuthorApiError, mapper);
 
-    if (!response.success) {
-      throw new ApiError('Author api error.', {
-        apiResponseError: response.body.context,
-        message: mapper.map(response.statusCode),
-        statusCode: response.statusCode,
-      });
-    }
+  return response.data;
+};
 
-    return response.body;
-  };
+export const useCreateAuthorMutation = (
+  options: UseMutationOptions<CreateAuthorResponseBody, AuthorApiError, CreateAuthorRequestBody>,
+) => {
+  const queryClient = useQueryClient();
 
   return useErrorHandledMutation({
     mutationFn: createAuthor,
     ...options,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        // todo: refactor
+        predicate: (query) =>
+          query.queryKey[0] === AuthorsApiQueryKeys.findAuthorsQuery ||
+          invalidateAdminAuthorsQueryPredicate(query.queryKey),
+      });
+    },
   });
 };

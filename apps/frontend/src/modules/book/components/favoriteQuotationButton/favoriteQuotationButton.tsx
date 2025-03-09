@@ -1,12 +1,9 @@
-import { useQueryClient } from '@tanstack/react-query';
 import { type FC, useState } from 'react';
 import { HiHeart, HiOutlineHeart } from 'react-icons/hi';
-import { useSelector } from 'react-redux';
 
 import { type Quote } from '@common/contracts';
 
 import { cn } from '../../../common/lib/utils.js';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice.js';
 import { useUpdateQuoteMutation } from '../../../quotes/api/mutations/updateQuoteMutation/updateQuoteMutation.js';
 
 interface Props {
@@ -14,12 +11,8 @@ interface Props {
 }
 
 export const FavoriteQuotationButton: FC<Props> = ({ quote }) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const [isFavorite, setIsFavorite] = useState(quote?.isFavorite);
   const [isAnimating, setIsAnimating] = useState(false);
-
-  const queryClient = useQueryClient();
 
   const { mutateAsync: updateQuotation } = useUpdateQuoteMutation({});
 
@@ -29,16 +22,11 @@ export const FavoriteQuotationButton: FC<Props> = ({ quote }) => {
 
       try {
         await updateQuotation({
-          accessToken: accessToken as string,
           quoteId: quote.id,
           isFavorite: !isFavorite,
         });
 
         setIsFavorite(!isFavorite);
-
-        await queryClient.invalidateQueries({
-          predicate: (query) => query.queryKey[0] === `findQuotes` && query.queryKey[1] === quote.userBookId,
-        });
       } finally {
         setTimeout(() => setIsAnimating(false), 300);
       }

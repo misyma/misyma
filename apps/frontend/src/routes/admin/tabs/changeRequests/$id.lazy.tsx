@@ -1,20 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQueryClient } from '@tanstack/react-query';
 import { createLazyFileRoute, Navigate, useNavigate } from '@tanstack/react-router';
 import { type FC, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 import { z } from 'zod';
 
 import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { useFindAdminAuthorsQuery } from '../../../../modules/author/api/admin/queries/findAdminAuthorsQuery/findAdminAuthorsQuery';
-import { BookApiQueryKeys } from '../../../../modules/book/api/user/queries/bookApiQueryKeys';
 import { FindBookByIdQueryOptions } from '../../../../modules/book/api/user/queries/findBookById/findBookByIdQueryOptions';
-import { invalidateBooksByBookshelfIdQuery } from '../../../../modules/book/api/user/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
-import { invalidateFindUserBooksByQuery } from '../../../../modules/book/api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
 import { useApplyBookChangeRequestMutation } from '../../../../modules/bookChangeRequests/api/admin/mutations/applyBookChangeRequest/applyBookChangeRequest';
 import { useDeleteBookChangeRequestMutation } from '../../../../modules/bookChangeRequests/api/admin/mutations/deleteBookChangeRequest/deleteBookChangeRequest';
-import { BookChangeRequestApiAdminQueryKeys } from '../../../../modules/bookChangeRequests/api/admin/queries/bookChangeRequestApiAdminQueryKeys';
 import { FindBookChangeRequestByIdQueryOptions } from '../../../../modules/bookChangeRequests/api/admin/queries/findBookChangeRequestById/findBookChangeRequestByIdQueryOptions';
 import { ChangeRequestTable } from '../../../../modules/bookChangeRequests/components/changeRequestTable/changeRequestTable';
 import {
@@ -28,7 +22,6 @@ import { BookFormat } from '../../../../modules/common/constants/bookFormat';
 import { ReversedLanguages } from '../../../../modules/common/constants/languages';
 import { useErrorHandledQuery } from '../../../../modules/common/hooks/useErrorHandledQuery';
 import { RequireAdmin } from '../../../../modules/core/components/requireAdmin/requireAdmin';
-import { userStateSelectors } from '../../../../modules/core/store/states/userState/userStateSlice';
 
 type ChangeKeys =
   | 'format'
@@ -56,20 +49,14 @@ const schema = z.object({
 export const ChangeRequestView: FC = () => {
   const { id } = Route.useParams();
 
-  const queryClient = useQueryClient();
-
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const { data: changeRequestData, isFetched: isChangeRequestFetched } = useErrorHandledQuery(
     FindBookChangeRequestByIdQueryOptions({
-      accessToken: accessToken as string,
       bookChangeRequestId: id,
     }),
   );
 
   const { data: bookData, isFetched: isBookDataFetched } = useErrorHandledQuery(
     FindBookByIdQueryOptions({
-      accessToken: accessToken as string,
       bookId: changeRequestData?.data?.bookId ?? '',
     }),
   );
@@ -186,27 +173,7 @@ export const ChangeRequestView: FC = () => {
   const onSubmit = async () => {
     await applyBookChangeRequest({
       bookChangeRequestId: changeRequestData?.data?.id as string,
-      accessToken: accessToken as string,
     });
-
-    await Promise.all([
-      queryClient.invalidateQueries({
-        predicate: ({ queryKey }) => queryKey[0] === BookChangeRequestApiAdminQueryKeys.findBookChangeRequests,
-      }),
-      queryClient.invalidateQueries({
-        predicate: ({ queryKey }) =>
-          queryKey[0] === BookChangeRequestApiAdminQueryKeys.findBookChangeRequestById && queryKey[1] === id,
-      }),
-      queryClient.invalidateQueries({
-        predicate: ({ queryKey }) => queryKey[0] === BookApiQueryKeys.findUserBookById,
-      }),
-      queryClient.invalidateQueries({
-        predicate: ({ queryKey }) => invalidateBooksByBookshelfIdQuery({}, queryKey),
-      }),
-      queryClient.invalidateQueries({
-        predicate: ({ queryKey }) => invalidateFindUserBooksByQuery({}, queryKey),
-      }),
-    ]);
 
     navigate({
       to: '/admin/tabs/changeRequests',
@@ -215,19 +182,8 @@ export const ChangeRequestView: FC = () => {
 
   const onDecline = async () => {
     await deleteBookChangeRequest({
-      accessToken: accessToken as string,
       bookChangeRequestId: changeRequestData?.data?.id as string,
     });
-
-    await Promise.all([
-      queryClient.invalidateQueries({
-        predicate: ({ queryKey }) => queryKey[0] === BookChangeRequestApiAdminQueryKeys.findBookChangeRequests,
-      }),
-      queryClient.invalidateQueries({
-        predicate: ({ queryKey }) =>
-          queryKey[0] === BookChangeRequestApiAdminQueryKeys.findBookChangeRequestById && queryKey[1] === id,
-      }),
-    ]);
 
     navigate({
       to: '/admin/tabs/changeRequests',

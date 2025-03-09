@@ -1,4 +1,4 @@
-import { type UseMutationOptions } from '@tanstack/react-query';
+import { useQueryClient, type UseMutationOptions } from '@tanstack/react-query';
 
 import {
   type UpdateAuthorPathParams,
@@ -7,44 +7,45 @@ import {
 } from '@common/contracts';
 
 import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
-import { ApiError } from '../../../../../common/errors/apiError';
 import { useErrorHandledMutation } from '../../../../../common/hooks/useErrorHandledMutation';
-import { HttpService } from '../../../../../core/services/httpService/httpService';
+import { api } from '../../../../../core/apiClient/apiClient';
+import { AuthorApiError } from '../../../../errors/authorApiError';
+import { AuthorsApiQueryKeys } from '../../../user/queries/authorsApiQueryKeys';
+import { invalidateAdminAuthorsQueryPredicate } from '../../queries/findAdminAuthorsQuery/findAdminAuthorsQuery';
 
-interface Payload extends UpdateAuthorPathParams, UpdateAuthorRequestBody {
-  accessToken: string | undefined;
-}
+interface Payload extends UpdateAuthorPathParams, UpdateAuthorRequestBody {}
 
-export const useUpdateAuthorMutation = (options: UseMutationOptions<UpdateAuthorResponseBody, ApiError, Payload>) => {
-  const mapper = new ErrorCodeMessageMapper({
-    403: `Brak pozwolenia na zmianę danych autora.`,
-    409: `Autor o podanym imieniu i nazwisku już istnieje.`,
-  });
+const mapper = new ErrorCodeMessageMapper({
+  403: `Brak pozwolenia na zmianę danych autora.`,
+  409: `Autor o podanym imieniu i nazwisku już istnieje.`,
+});
 
-  const updateAuthor = async (payload: Payload) => {
-    const { accessToken, authorId, ...rest } = payload;
+const updateAuthor = async (payload: Payload) => {
+  const { authorId, ...rest } = payload;
 
-    const response = await HttpService.patch<UpdateAuthorResponseBody>({
-      url: `/admin/authors/${authorId}`,
-      body: rest as unknown as Record<string, unknown>,
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+  const response = await api.patch<UpdateAuthorResponseBody>(`/admin/authors/${authorId}`, rest);
 
-    if (!response.success) {
-      throw new ApiError('Author api error.', {
-        apiResponseError: response.body.context,
-        message: mapper.map(response.statusCode),
-        statusCode: response.statusCode,
-      });
-    }
+  api.validateResponse(response, AuthorApiError, mapper);
 
-    return response.body;
-  };
+  return response.data;
+};
 
+export const useUpdateAuthorMutation = (
+  options: UseMutationOptions<UpdateAuthorResponseBody, AuthorApiError, Payload>,
+) => {
+  const queryClient = useQueryClient();
   return useErrorHandledMutation({
     mutationFn: updateAuthor,
     ...options,
+    onSuccess: async (...args) => {
+      if (options.onSuccess) {
+        await options.onSuccess(...args);
+      }
+      // todo: refactor
+      await queryClient.invalidateQueries({
+        predicate: ({ queryKey }) =>
+          queryKey[0] === AuthorsApiQueryKeys.findAuthorsQuery || invalidateAdminAuthorsQueryPredicate(queryKey),
+      });
+    },
   });
 };

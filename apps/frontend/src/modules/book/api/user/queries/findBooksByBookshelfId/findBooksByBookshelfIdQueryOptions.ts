@@ -1,31 +1,56 @@
 import { keepPreviousData, queryOptions } from '@tanstack/react-query';
 
-import { type FindBooksByBookshelfIdPayload, findBooksByBookshelfId } from './findBooksByBookshelfId.js';
+import { type FindUserBooksQueryParams, type FindUserBooksResponseBody } from '@common/contracts';
+
+import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper.js';
+import { api } from '../../../../../core/apiClient/apiClient.js';
+import { BookApiError } from '../../../../errors/bookApiError.js';
 import { BookApiQueryKeys } from '../bookApiQueryKeys.js';
 
-export const FindBooksByBookshelfIdQueryOptions = ({
-  accessToken,
-  bookshelfId,
-  userId,
-  page,
-  pageSize,
-}: FindBooksByBookshelfIdPayload) =>
+const mapper = new ErrorCodeMessageMapper({});
+
+export const findBooksByBookshelfId = async (values: FindUserBooksQueryParams) => {
+  const { bookshelfId, page, pageSize } = values;
+
+  const queryParams: Record<string, string> = {
+    sortDate: 'desc',
+  };
+
+  if (page) {
+    queryParams['page'] = `${page}`;
+  }
+
+  if (pageSize) {
+    queryParams['pageSize'] = `${pageSize}`;
+  }
+
+  if (bookshelfId) {
+    queryParams['bookshelfId'] = bookshelfId;
+  }
+
+  const response = await api.get<FindUserBooksResponseBody>(`/user-books`, {
+    params: queryParams,
+  });
+
+  api.validateResponse(response, BookApiError, mapper);
+
+  return response.data;
+};
+
+export const FindBooksByBookshelfIdQueryOptions = ({ bookshelfId, page, pageSize }: FindUserBooksQueryParams) =>
   queryOptions({
-    queryKey: [BookApiQueryKeys.findBooksByBookshelfId, bookshelfId, userId, page, pageSize],
+    queryKey: [BookApiQueryKeys.findBooksByBookshelfId, bookshelfId, page, pageSize],
     queryFn: () =>
       findBooksByBookshelfId({
         bookshelfId,
-        accessToken: accessToken as string,
-        userId,
         page,
         pageSize,
       }),
     placeholderData: keepPreviousData,
-    enabled: !!accessToken && !!bookshelfId,
   });
 
 export const invalidateBooksByBookshelfIdQuery = (
-  vals: Partial<Omit<FindBooksByBookshelfIdPayload, 'accessToken'>>,
+  vals: FindUserBooksQueryParams,
   queryKey: Readonly<Array<unknown>>,
 ) => {
   const predicates: Array<(queryKey: Readonly<Array<unknown>>) => boolean> = [];
@@ -33,15 +58,9 @@ export const invalidateBooksByBookshelfIdQuery = (
   if (vals.bookshelfId) {
     predicates.push((queryKey) => queryKey[1] === vals.bookshelfId);
   }
-
-  if (vals.userId) {
-    predicates.push((queryKey) => queryKey[2] === vals.userId);
-  }
-
   if (vals.page) {
     predicates.push((queryKey) => queryKey[3] === vals.page);
   }
-
   if (vals.pageSize) {
     predicates.push((queryKey) => queryKey[4] === vals.pageSize);
   }

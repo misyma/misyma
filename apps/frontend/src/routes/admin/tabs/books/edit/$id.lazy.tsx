@@ -4,7 +4,6 @@ import { CommandLoading } from 'cmdk';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import { type FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 import { z } from 'zod';
 
 import { type FindBookResponseBody, Language, type UpdateBookRequestBody } from '@common/contracts';
@@ -54,7 +53,6 @@ import { useErrorHandledQuery } from '../../../../../modules/common/hooks/useErr
 import { cn } from '../../../../../modules/common/lib/utils';
 import { isbnSchema } from '../../../../../modules/common/schemas/isbnSchema';
 import { RequireAdmin } from '../../../../../modules/core/components/requireAdmin/requireAdmin';
-import { userStateSelectors } from '../../../../../modules/core/store/states/userState/userStateSlice';
 
 type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
@@ -152,8 +150,6 @@ const BookEditForm: FC<FormProps> = ({ data }) => {
 
   const { id } = Route.useParams();
 
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const [searchedName, setSearchedName] = useState<string | undefined>(undefined);
 
   const onOpenChange = (bool: boolean) => setCreateAuthorDialogVisible(bool);
@@ -219,7 +215,6 @@ const BookEditForm: FC<FormProps> = ({ data }) => {
 
       await updateBook({
         ...payload,
-        accessToken: accessToken as string,
         bookId: id,
       });
 
@@ -543,15 +538,12 @@ const BookEditForm: FC<FormProps> = ({ data }) => {
 const BooksEdit: FC = () => {
   const { id } = Route.useParams();
 
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const dispatch = useBreadcrumbKeysDispatch();
 
   const breadcrumbKeys = useBreadcrumbKeysContext();
 
   const { data, isFetching, isRefetching } = useErrorHandledQuery(
     FindBookByIdQueryOptions({
-      accessToken: accessToken as string,
       bookId: id,
     }),
   );

@@ -77,11 +77,8 @@ const stepTwoSchema = z.object({
 });
 
 export const AdminEditBookForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const { isFetched: isBookDataFetched } = useErrorHandledQuery(
     FindBookByIdQueryOptions({
-      accessToken: accessToken as string,
       bookId,
     }),
   );
@@ -114,7 +111,6 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
 
   const { data: bookData } = useErrorHandledQuery(
     FindBookByIdQueryOptions({
-      accessToken: accessToken as string,
       bookId: bookId as string,
     }),
   );

@@ -1,9 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQueryClient } from '@tanstack/react-query';
 import { useRef, useState, type FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { HiPlus } from 'react-icons/hi2';
-import { useSelector } from 'react-redux';
 import { z } from 'zod';
 
 import { Button } from '../../../common/components/button/button';
@@ -16,10 +14,8 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../
 import useDebounce from '../../../common/hooks/useDebounce';
 import { useFileUpload } from '../../../common/hooks/useFileUpload';
 import { cn } from '../../../common/lib/utils';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useCreateBookshelfMutation } from '../../api/mutations/createBookshelfMutation/createBookshelfMutation';
 import { useUploadBookshelfImageMutation } from '../../api/mutations/uploadBookshelfImageMutation/uploadBookshelfImageMutation';
-import { BookshelvesApiQueryKeys } from '../../api/queries/bookshelvesApiQueryKeys';
 
 const createBookshelfFormSchema = z.object({
   image: z.object({}).or(z.undefined()),
@@ -33,9 +29,6 @@ const createBookshelfFormSchema = z.object({
 
 export const CreateBookshelfModal: FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
-  const queryClient = useQueryClient();
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { file, setFile } = useFileUpload({
@@ -52,8 +45,13 @@ export const CreateBookshelfModal: FC = () => {
     mode: 'onTouched',
   });
 
-  const { mutateAsync: createBookshelf, isPending: isCreationPending } = useCreateBookshelfMutation({});
-  const { mutateAsync: uploadBookshelfImage, isPending: isImagePending } = useUploadBookshelfImageMutation({});
+  const { mutateAsync: createBookshelf, isPending: isCreationPending } = useCreateBookshelfMutation({
+    onSuccess: () => setIsOpen(false),
+  });
+
+  const { mutateAsync: uploadBookshelfImage, isPending: isImagePending } = useUploadBookshelfImageMutation({
+    onSuccess: () => setIsOpen(false),
+  });
 
   const isProcessingBase = isCreationPending || isImagePending;
   const isProcessing = useDebounce(isProcessingBase, 300);
@@ -76,7 +74,6 @@ export const CreateBookshelfModal: FC = () => {
         await uploadBookshelfImage({
           bookshelfId,
           file,
-          accessToken,
           errorHandling: {
             title: 'Coś poszło nie tak z wysyłaniem obrazka półki.',
           },
@@ -85,10 +82,6 @@ export const CreateBookshelfModal: FC = () => {
         return;
       }
     }
-
-    await queryClient.invalidateQueries({
-      predicate: ({ queryKey }) => queryKey[0] === BookshelvesApiQueryKeys.findUserBookshelfs,
-    });
 
     setIsOpen(false);
 

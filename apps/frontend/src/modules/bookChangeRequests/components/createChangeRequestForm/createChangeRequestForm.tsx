@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQueryClient } from '@tanstack/react-query';
 import { type FC, useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
@@ -25,8 +24,6 @@ import { LoadingSpinner } from '../../../common/components/spinner/loading-spinn
 import { useToast } from '../../../common/components/toast/use-toast';
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
-import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
-import { BookChangeRequestApiAdminQueryKeys } from '../../api/admin/queries/bookChangeRequestApiAdminQueryKeys';
 import {
   type CreateBookChangeRequestPayload,
   useCreateBookChangeRequestMutation,
@@ -76,26 +73,19 @@ const stepTwoSchema = z.object({
 });
 
 export const CreateChangeRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
-  const { data: userData, isFetched: isUserDataFetched } = useFindUserQuery();
-
   const { data: userBookData, isFetched: isUserBookDataFetched } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
-      userId: userData?.id ?? '',
-      accessToken: accessToken as string,
     }),
   );
 
   const { isFetched: isBookDataFetched } = useErrorHandledQuery(
     FindBookByIdQueryOptions({
-      accessToken: accessToken as string,
       bookId: userBookData?.bookId as string,
     }),
   );
 
-  if (!isUserDataFetched || !isUserBookDataFetched || !isBookDataFetched) {
+  if (!isUserBookDataFetched || !isBookDataFetched) {
     return <LoadingSpinner />;
   }
 
@@ -110,8 +100,6 @@ export const CreateChangeRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit 
 
 //todo: refactor
 const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
-  const queryClient = useQueryClient();
-
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const { toast } = useToast();
@@ -121,17 +109,13 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
   const context = useBookDetailsChangeRequestContext();
   const dispatch = useBookDetailsChangeRequestDispatch();
 
-  const { data: userData } = useFindUserQuery();
   const { data: userBookData } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
-      userId: userData?.id ?? '',
-      accessToken: accessToken as string,
     }),
   );
   const { data: bookData } = useErrorHandledQuery(
     FindBookByIdQueryOptions({
-      accessToken: accessToken as string,
       bookId: userBookData?.bookId as string,
     }),
   );
@@ -255,12 +239,6 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
         title: 'Prośba o zmianę została wysłana.',
         variant: 'success',
       });
-
-      await Promise.all([
-        queryClient.invalidateQueries({
-          predicate: ({ queryKey }) => queryKey[0] === BookChangeRequestApiAdminQueryKeys.findBookChangeRequests,
-        }),
-      ]);
 
       dispatch({
         type: BookDetailsChangeRequestAction.resetContext,

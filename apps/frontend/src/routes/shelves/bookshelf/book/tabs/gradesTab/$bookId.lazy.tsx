@@ -5,12 +5,12 @@ import { type FC } from 'react';
 import { AuthenticatedLayout } from '../../../../../../modules/auth/layouts/authenticated/authenticatedLayout.js';
 import { BookApiQueryKeys } from '../../../../../../modules/book/api/user/queries/bookApiQueryKeys.js';
 import { AddStarRatingButton } from '../../../../../../modules/book/components/addStarRatingButton/addStarRatingButton.js';
+import { BookGradesTabMainBody } from '../../../../../../modules/book/components/bookGradesTab/bookGradesTabMainBody.js';
 import { BookTabNavigation } from '../../../../../../modules/book/components/bookTabNavigation/bookTabNavigation.js';
 import { FavoriteBookButton } from '../../../../../../modules/book/components/favoriteBookButton/favoriteBookButton.js';
 import { useBookBreadcrumbs } from '../../../../../../modules/book/hooks/useBookBreadcrumbs.js';
 import { BookTabLayout } from '../../../../../../modules/book/layouts/bookTabLayout.js';
 import { BookReadingsApiQueryKeys } from '../../../../../../modules/bookReadings/api/queries/bookReadingsApiQueryKeys.js';
-import { BookGradesTabMainBody } from '../../../../../../modules/grades/components/bookGradesTabMainBody.js';
 import { useFindUserQuery } from '../../../../../../modules/user/api/queries/findUserQuery/findUserQuery.js';
 
 export const GradesPage: FC = () => {

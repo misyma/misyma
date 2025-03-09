@@ -1,67 +1,32 @@
-import { keepPreviousData, useQuery, infiniteQueryOptions, useInfiniteQuery } from '@tanstack/react-query';
-import { useSelector } from 'react-redux';
+import {
+  keepPreviousData,
+  useQuery,
+  infiniteQueryOptions,
+  useInfiniteQuery,
+  type QueryKey,
+} from '@tanstack/react-query';
 
 import { type FindBookshelvesQueryParams, type FindBookshelvesResponseBody } from '@common/contracts';
 
-import { HttpService } from '../../../../core/services/httpService/httpService';
-import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
+import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
+import { api } from '../../../../core/apiClient/apiClient';
+import { ApiPaths } from '../../../../core/apiClient/apiPaths';
+import { ShelfApiError } from '../../errors/shelfApiError';
 import { BookshelvesApiQueryKeys } from '../bookshelvesApiQueryKeys';
 
-type Payload = FindBookshelvesQueryParams & {
-  userId: string;
-};
+type Payload = FindBookshelvesQueryParams;
 
 export const useFindUserBookshelfsQuery = (payload: Payload) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
-  const findUserBookshelfs = async () => {
-    const { page, pageSize, name } = payload;
-
-    const queryParams: Record<string, string> = {
-      sortDate: 'desc',
-    };
-
-    if (page) {
-      queryParams['page'] = `${page}`;
-    }
-
-    if (pageSize) {
-      queryParams['pageSize'] = `${pageSize}`;
-    }
-
-    if (name) {
-      queryParams['name'] = name;
-    }
-
-    const response = await HttpService.get<FindBookshelvesResponseBody>({
-      url: '/bookshelves',
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      queryParams,
-    });
-
-    if (response.success === false) {
-      throw new Error('Error');
-    }
-
-    return response.body;
-  };
-
   return useQuery<FindBookshelvesResponseBody>({
     queryKey: [BookshelvesApiQueryKeys.findUserBookshelfs, payload.page, payload.pageSize, payload.name],
-    queryFn: () => findUserBookshelfs(),
-    enabled: !!accessToken && !!payload.userId,
+    queryFn: () => findUserBookshelves(payload),
     placeholderData: keepPreviousData,
   });
 };
 
-export const findUserBookshelves = async (payload: {
-  accessToken: string;
-  page?: number;
-  pageSize?: number;
-  name?: string;
-}) => {
+const mapper = new ErrorCodeMessageMapper({});
+
+export const findUserBookshelves = async (payload: Payload) => {
   const { page, pageSize, name } = payload;
 
   const queryParams: Record<string, string> = {
@@ -72,69 +37,56 @@ export const findUserBookshelves = async (payload: {
   if (pageSize) queryParams['pageSize'] = `${pageSize}`;
   if (name) queryParams['name'] = name;
 
-  const response = await HttpService.get<FindBookshelvesResponseBody>({
-    url: '/bookshelves',
-    headers: { Authorization: `Bearer ${payload.accessToken}` },
-    queryParams,
+  const response = await api.get<FindBookshelvesResponseBody>(ApiPaths.bookshelves.path, {
+    params: queryParams,
   });
 
-  if (!response.success) throw new Error('Failed to fetch bookshelves');
-  return response.body;
+  api.validateResponse(response, ShelfApiError, mapper);
+
+  return response.data;
 };
 
 export const FindUserBookshelvesInfiniteQueryOptions = ({
-  accessToken,
   page = 1,
   pageSize,
   name,
 }: {
-  accessToken: string;
   page?: number;
   pageSize?: number;
   name?: string;
 }) =>
   infiniteQueryOptions({
-    queryKey: [
-      BookshelvesApiQueryKeys.findUserBookshelfs,
-      name,
-      pageSize,
-      'infinite-query', // Identifier for infinite queries
-    ],
+    queryKey: [BookshelvesApiQueryKeys.findUserBookshelfs, name, pageSize, 'infinite-query'],
     initialPageParam: page,
     queryFn: ({ pageParam }) =>
       findUserBookshelves({
-        accessToken,
         page: pageParam,
         pageSize,
         name,
       }),
-    getNextPageParam: (lastPage) => {
-      if (!lastPage?.metadata) return undefined;
-
-      const { page: currentPage, total, pageSize } = lastPage.metadata;
-      const totalPages = Math.ceil(total / pageSize);
-
-      return currentPage < totalPages ? currentPage + 1 : undefined;
-    },
-    enabled: !!accessToken,
+    getNextPageParam: api.getNextPageParam,
+    getPreviousPageParam: api.getPreviousPageParam,
   });
 
 type InfiniteQueryPayload = {
   pageSize?: number;
   name?: string;
-  accessToken: string;
 };
 
 export const useFindUserBookshelfsInfiniteQuery = (payload: InfiniteQueryPayload) => {
   return useInfiniteQuery(
     FindUserBookshelvesInfiniteQueryOptions({
-      accessToken: payload.accessToken,
       pageSize: payload.pageSize,
       name: payload.name,
     }),
   );
 };
 
-export const invalidateBookshelvesInfiniteQuery = (queryKey: Readonly<Array<unknown>>) => {
-  return queryKey.includes('infinite-query') && queryKey.includes(BookshelvesApiQueryKeys.findUserBookshelfs);
-};
+export const invalidateBookshelvesInfiniteQueryPredicate = (queryKey: QueryKey) =>
+  queryKey.includes('infinite-query') && queryKey.includes(BookshelvesApiQueryKeys.findUserBookshelfs);
+
+export const invalidateBookshelvesQueryPredicate = (queryKey: QueryKey) =>
+  queryKey.includes(BookshelvesApiQueryKeys.findUserBookshelfs);
+
+export const invalidateBookshelvesQueriesPredicate = (queryKey: QueryKey) =>
+  invalidateBookshelvesInfiniteQueryPredicate(queryKey) || invalidateBookshelvesQueryPredicate(queryKey);

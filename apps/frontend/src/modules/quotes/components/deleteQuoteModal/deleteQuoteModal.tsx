@@ -1,7 +1,5 @@
-import { useQueryClient } from '@tanstack/react-query';
 import { type FC, useState } from 'react';
 import { HiTrash } from 'react-icons/hi';
-import { useSelector } from 'react-redux';
 
 import { Button } from '../../../common/components/button/button';
 import { Dialog, DialogContent, DialogHeader, DialogTrigger } from '../../../common/components/dialog/dialog';
@@ -9,20 +7,15 @@ import { LoadingSpinner } from '../../../common/components/spinner/loading-spinn
 import { useToast } from '../../../common/components/toast/use-toast';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../common/components/tooltip/tooltip';
 import { ApiError } from '../../../common/errors/apiError';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useDeleteQuoteMutation } from '../../api/mutations/deleteQuoteMutation/deleteQuoteMutation';
-import { QuotesApiQueryKeys } from '../../api/queries/quotesApiQueryKeys';
 
 interface Props {
   quoteId: string;
+  userBookId: string;
   className?: string;
 }
 
-export const DeleteQuoteModal: FC<Props> = ({ quoteId }: Props) => {
-  const queryClient = useQueryClient();
-
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
+export const DeleteQuoteModal: FC<Props> = ({ quoteId, userBookId }: Props) => {
   const { toast } = useToast();
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -35,20 +28,10 @@ export const DeleteQuoteModal: FC<Props> = ({ quoteId }: Props) => {
     try {
       await deleteQuote({
         quoteId,
-        accessToken: accessToken ?? '',
+        userBookId,
       });
 
       setIsOpen(false);
-
-      await Promise.all([
-        queryClient.invalidateQueries({
-          predicate: (query) => query.queryKey[0] === QuotesApiQueryKeys.findQuotes,
-        }),
-        queryClient.invalidateQueries({
-          predicate: ({ queryKey }) =>
-            queryKey[0] === 'infinite-query' && queryKey[1] === QuotesApiQueryKeys.findQuotes,
-        }),
-      ]);
 
       toast({
         variant: 'success',

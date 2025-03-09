@@ -9,8 +9,7 @@ import { DataTable } from '../../../common/components/dataTable/dataTable';
 import { Skeleton } from '../../../common/components/skeleton/skeleton';
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
 import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
-import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
-import { getQuotesOptions } from '../../api/queries/getQuotes/getQuotesOptions';
+import { getQuotesOptions } from '../../api/queries/getQuotes/getQuotes';
 import { quotationTableColumns } from '../quotationsTable/quotationsTableColumns';
 
 interface QuotationTabTableProps {
@@ -21,16 +20,11 @@ export const QuotationTabTable: FC<QuotationTabTableProps> = ({ bookId, sortDate
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const [page, setPage] = useState(1);
-
   const [pageSize] = useState(4);
 
-  const { data: userData } = useFindUserQuery();
-
-  const { data: userBookData, isFetching } = useErrorHandledQuery(
+  const { data: userBookData, isLoading } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
-      userId: userData?.id ?? '',
-      accessToken: accessToken as string,
     }),
   );
 
@@ -58,13 +52,13 @@ export const QuotationTabTable: FC<QuotationTabTableProps> = ({ bookId, sortDate
 
   return (
     <div className="flex flex-col w-full">
-      {!isFetching && (
+      {!isLoading && (
         <div className="flex justify-between">
           <p className="text-lg pb-6"> {userBookData?.book?.authors[0]?.name ?? ''} </p>
           {(quotationsData?.data.length ?? 0) > 1 && <QuotationsTabSortingButton />}
         </div>
       )}
-      {isFetching && (
+      {isLoading && (
         <div className="pb-6">
           <Skeleton className="h-7 w-40" />
         </div>

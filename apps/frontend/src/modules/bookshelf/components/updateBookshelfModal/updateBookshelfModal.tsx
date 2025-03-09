@@ -1,8 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQueryClient } from '@tanstack/react-query';
 import { useRef, type FC } from 'react';
 import { useForm } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 import { z } from 'zod';
 
 import { Button } from '../../../common/components/button/button';
@@ -13,10 +11,8 @@ import { LoadingSpinner } from '../../../common/components/spinner/loading-spinn
 import { useToast } from '../../../common/components/toast/use-toast';
 import useDebounce from '../../../common/hooks/useDebounce';
 import { useFileUpload } from '../../../common/hooks/useFileUpload';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useUpdateBookshelfMutation } from '../../api/mutations/updateBookshelfMutation/updateBookshelfMutation';
 import { useUploadBookshelfImageMutation } from '../../api/mutations/uploadBookshelfImageMutation/uploadBookshelfImageMutation';
-import { BookshelvesApiQueryKeys } from '../../api/queries/bookshelvesApiQueryKeys';
 
 const updateBookshelfFormSchema = z.object({
   image: z.object({}).or(z.undefined()),
@@ -31,10 +27,6 @@ interface Props {
 }
 
 export const UpdateBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, open, onCloseModal }: Props) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
-  const queryClient = useQueryClient();
-
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { file, setFile } = useFileUpload({
     fileInputRef,
@@ -75,7 +67,6 @@ export const UpdateBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, op
         await uploadBookshelfImage({
           bookshelfId,
           file,
-          accessToken,
           errorHandling: {
             title: 'Coś poszło nie tak z wysyłaniem obrazka półki.',
           },
@@ -84,10 +75,6 @@ export const UpdateBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, op
         return;
       }
     }
-
-    await queryClient.invalidateQueries({
-      predicate: ({ queryKey }) => queryKey[0] === BookshelvesApiQueryKeys.findUserBookshelfs,
-    });
 
     onCloseModal();
 

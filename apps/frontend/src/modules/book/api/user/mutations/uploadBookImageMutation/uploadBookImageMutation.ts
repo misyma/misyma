@@ -1,55 +1,63 @@
-import { type UseMutationOptions } from '@tanstack/react-query';
+import { useQueryClient, type UseMutationOptions } from '@tanstack/react-query';
 
 import { type UploadUserBookImageResponseBody } from '@common/contracts';
 
 import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper.js';
 import { useErrorHandledMutation } from '../../../../../common/hooks/useErrorHandledMutation.js';
-import { HttpService } from '../../../../../core/services/httpService/httpService.js';
+import { api } from '../../../../../core/apiClient/apiClient.js';
 import { BookApiError } from '../../../../errors/bookApiError.js';
+import { invalidateBooksByBookshelfIdQuery } from '../../queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions.js';
+import { invalidateFindUserBookByIdQueryPredicate } from '../../queries/findUserBook/findUserBookByIdQueryOptions.js';
+import { invalidateFindUserBooksByQuery } from '../../queries/findUserBookBy/findUserBooksByQueryOptions.js';
 
 export interface UploadBookImageMutationPayload {
   bookId: string;
   file: File;
-  accessToken: string;
 }
+
+const mapper = new ErrorCodeMessageMapper({
+  403: `Brak pozwolenia na dodania obrazka do książki`,
+});
+
+const uploadImage = async (payload: UploadBookImageMutationPayload) => {
+  const { bookId, file } = payload;
+
+  const formData = new FormData();
+  formData.append('attachedFiles', file, file.name);
+
+  const response = await api.patch<UploadUserBookImageResponseBody>(`/user-books/${bookId}/images`, formData);
+
+  api.validateResponse(response, BookApiError, mapper);
+
+  return response.data;
+};
 
 export const useUploadBookImageMutation = (
   options: UseMutationOptions<UploadUserBookImageResponseBody, BookApiError, UploadBookImageMutationPayload>,
 ) => {
-  const mapper = new ErrorCodeMessageMapper({
-    403: `Brak pozwolenia na dodania obrazka do książki`,
-  });
-
-  const uploadImage = async (payload: UploadBookImageMutationPayload) => {
-    const { accessToken, bookId, file } = payload;
-
-    const formData = new FormData();
-
-    formData.append('attachedFiles', file, file.name);
-
-    const response = await HttpService.patch<UploadUserBookImageResponseBody>({
-      url: `/user-books/${bookId}/images`,
-      // eslint-disable-next-line
-      body: formData as any,
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        ['Content-Type']: `multipart/form-data`,
-      },
-    });
-
-    if (!response.success) {
-      throw new BookApiError({
-        apiResponseError: response.body.context,
-        message: mapper.map(response.statusCode),
-        statusCode: response.statusCode,
-      });
-    }
-
-    return response.body;
-  };
-
+  const queryClient = useQueryClient();
   return useErrorHandledMutation({
     mutationFn: uploadImage,
     ...options,
+    onSuccess: async (...args) => {
+      if (options.onSuccess) {
+        await options.onSuccess(...args);
+      }
+      await queryClient.invalidateQueries({
+        predicate: ({ queryKey }) => {
+          return (
+            invalidateFindUserBooksByQuery({}, queryKey, true) ||
+            invalidateFindUserBooksByQuery({ bookshelfId: args[0].bookshelfId }, queryKey, false) ||
+            invalidateBooksByBookshelfIdQuery(
+              {
+                bookshelfId: args[0].bookshelfId,
+              },
+              queryKey,
+            ) ||
+            invalidateFindUserBookByIdQueryPredicate(queryKey, args[1].bookId)
+          );
+        },
+      });
+    },
   });
 };

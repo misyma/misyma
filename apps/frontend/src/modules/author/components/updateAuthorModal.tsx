@@ -1,8 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQueryClient } from '@tanstack/react-query';
 import { type FC, type ReactNode, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 import { type Writeable, z } from 'zod';
 
 import { type UpdateAuthorRequestBody } from '@common/contracts';
@@ -19,9 +17,7 @@ import {
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../common/components/form/form';
 import { Input } from '../../common/components/input/input';
 import { ApiError } from '../../common/errors/apiError';
-import { userStateSelectors } from '../../core/store/states/userState/userStateSlice';
 import { useUpdateAuthorMutation } from '../api/admin/mutations/updateAuthorMutation/updateAuthorMutation';
-import { AuthorsApiQueryKeys } from '../api/user/queries/authorsApiQueryKeys';
 
 interface Props {
   className?: string;
@@ -57,10 +53,6 @@ interface FormProps {
 }
 
 const UpdateAuthorForm: FC<FormProps> = ({ authorId, setError, setIsOpen, authorName, isApproved, onMutated }) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
-  const queryClient = useQueryClient();
-
   const { mutateAsync: updateAuthor } = useUpdateAuthorMutation({});
 
   const form = useForm({
@@ -92,16 +84,11 @@ const UpdateAuthorForm: FC<FormProps> = ({ authorId, setError, setIsOpen, author
       }
 
       await updateAuthor({
-        accessToken: accessToken ?? '',
         authorId,
         ...update,
       });
 
       await onMutated();
-
-      await queryClient.invalidateQueries({
-        predicate: (query) => query.queryKey[0] === AuthorsApiQueryKeys.findAuthorsQuery,
-      });
     } catch (error) {
       if (error instanceof ApiError) {
         setError(error.message);

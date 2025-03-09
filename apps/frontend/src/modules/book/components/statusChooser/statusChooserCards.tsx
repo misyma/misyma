@@ -1,14 +1,12 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { type FC, useEffect, useState } from 'react';
 import { HiCheckCircle, HiDotsCircleHorizontal, HiQuestionMarkCircle } from 'react-icons/hi';
-import { useSelector } from 'react-redux';
 
 import { ReadingStatus } from '@common/contracts';
 
 import { Skeleton } from '../../../common/components/skeleton/skeleton';
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
 import { cn } from '../../../common/lib/utils';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { useUpdateUserBookMutation } from '../../api/user/mutations/updateUserBookMutation/updateUserBookMutation';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
@@ -22,15 +20,11 @@ interface Props {
 export const StatusChooserCards: FC<Props> = ({ bookId, bookshelfId }) => {
   const queryClient = useQueryClient();
 
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const { data: userData } = useFindUserQuery();
 
   const { data, isFetching, isFetched, isRefetching } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
-      userId: userData?.id ?? '',
-      accessToken: accessToken as string,
     }),
   );
 
@@ -55,7 +49,6 @@ export const StatusChooserCards: FC<Props> = ({ bookId, bookshelfId }) => {
     await updateUserBook({
       userBookId: data?.id as string,
       status: chosenStatus,
-      accessToken: accessToken as string,
     });
 
     await Promise.all([

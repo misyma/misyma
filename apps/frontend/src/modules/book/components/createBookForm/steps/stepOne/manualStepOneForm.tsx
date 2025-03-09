@@ -2,7 +2,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { HiOutlineInformationCircle } from 'react-icons/hi';
-import { useSelector } from 'react-redux';
 
 import { AuthorMultiCombobox } from '../../../../../author/components/authorMultiCombobox/authorMultiCombobox';
 import {
@@ -30,8 +29,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '../../../../../common/components/tooltip/tooltip';
-import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';
-import { findUserBooksBy } from '../../../../api/user/queries/findUserBookBy/findUserBooksBy';
+import { findUserBooksBy } from '../../../../api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
 import { BookApiError } from '../../../../errors/bookApiError';
 import { type CreateBookStepOne, createBookStepOneSchema } from '../../../../schemas/createBookSchemas';
 
@@ -42,8 +40,6 @@ export const ManualStepOneForm = (): JSX.Element => {
 
   const [createAuthorDialogVisible, setCreateAuthorDialogVisible] = useState(false);
   const [authorSelectOpen, setAuthorSelectOpen] = useState(false);
-
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const dispatch = useBookCreationDispatch();
 
@@ -72,7 +68,6 @@ export const ManualStepOneForm = (): JSX.Element => {
     if (vals.isbn) {
       try {
         const exists = await findUserBooksBy({
-          accessToken: accessToken as string,
           isbn: vals.isbn,
         });
 

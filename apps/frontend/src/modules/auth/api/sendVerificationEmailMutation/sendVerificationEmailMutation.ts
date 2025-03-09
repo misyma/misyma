@@ -1,41 +1,29 @@
 import { type UseMutationOptions, useMutation } from '@tanstack/react-query';
 
-import { HttpService } from '../../../../modules/core/services/httpService/httpService';
+import { ErrorCodeMessageMapper } from '../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
+import { api } from '../../../core/apiClient/apiClient';
+import { ApiPaths } from '../../../core/apiClient/apiPaths';
 import { UserApiError } from '../../../user/errors/userApiError';
 
+type SendVerificationEmailPayload = {
+  email: string;
+};
+
+const mapper = new ErrorCodeMessageMapper({});
+
+const sendVerificationEmail = async (values: SendVerificationEmailPayload) => {
+  const { email } = values;
+
+  const sendVerificationEmailResponse = await api.post(ApiPaths.users.sendVerificationEmail.path, {
+    email,
+  });
+
+  api.validateResponse(sendVerificationEmailResponse, UserApiError, mapper);
+};
+
 export const useSendVerificationEmailMutation = (
-  options: UseMutationOptions<
-    void,
-    UserApiError,
-    {
-      email: string;
-    }
-  >,
+  options: UseMutationOptions<void, UserApiError, SendVerificationEmailPayload>,
 ) => {
-  const sendVerificationEmail = async (values: { email: string }) => {
-    const { email } = values;
-
-    const sendVerificationEmailResponse = await HttpService.post({
-      url: '/users/send-verification-email',
-      body: {
-        email,
-      },
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (sendVerificationEmailResponse.success === false) {
-      throw new UserApiError({
-        message: sendVerificationEmailResponse.body.message,
-        apiResponseError: sendVerificationEmailResponse.body.context,
-        statusCode: sendVerificationEmailResponse.statusCode,
-      });
-    }
-
-    return;
-  };
-
   return useMutation({
     mutationFn: sendVerificationEmail,
     ...options,

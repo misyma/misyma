@@ -1,31 +1,26 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { type FC, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
 
 import { SortOrder } from '@common/contracts';
 
-import { FindUserBookByIdQueryOptions } from '../../book/api/user/queries/findUserBook/findUserBookByIdQueryOptions';
-import { CurrentRatingStar } from '../../book/components/currentRatingStar/currentRatingStar';
-import { BookReadingsApiQueryKeys } from '../../bookReadings/api/queries/bookReadingsApiQueryKeys';
-import { FindBookReadingsQueryOptions } from '../../bookReadings/api/queries/findBookReadings/findBookReadingsQueryOptions';
-import { bookReadingsTableColumns } from '../../bookReadings/components/bookReadingsTable/bookReadingsTableColumns';
-import { DataTable } from '../../common/components/dataTable/dataTable';
-import { Separator } from '../../common/components/separator/separator';
-import { Skeleton } from '../../common/components/skeleton/skeleton';
-import { useErrorHandledQuery } from '../../common/hooks/useErrorHandledQuery';
-import { userStateSelectors } from '../../core/store/states/userState/userStateSlice';
-import { BookTitle } from '../../quotes/components/bookTitle/bookTitle';
-import { useFindUserQuery } from '../../user/api/queries/findUserQuery/findUserQuery';
+import { BookReadingsApiQueryKeys } from '../../../bookReadings/api/queries/bookReadingsApiQueryKeys';
+import { FindBookReadingsQueryOptions } from '../../../bookReadings/api/queries/findBookReadings/findBookReadingsQueryOptions';
+import { bookReadingsTableColumns } from '../../../bookReadings/components/bookReadingsTable/bookReadingsTableColumns';
+import { DataTable } from '../../../common/components/dataTable/dataTable';
+import { Separator } from '../../../common/components/separator/separator';
+import { Skeleton } from '../../../common/components/skeleton/skeleton';
+import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
+import { BookTitle } from '../../../quotes/components/bookTitle/bookTitle';
+import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
+import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
+import { CurrentRatingStar } from '../currentRatingStar/currentRatingStar';
 
 interface BookGradesTabMainBodyProps {
   bookId: string;
 }
 export const BookGradesTabMainBody: FC<BookGradesTabMainBodyProps> = ({ bookId }) => {
   const [pageSize] = useState(4);
-
   const [page, setPage] = useState(1);
-
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const queryClient = useQueryClient();
 
@@ -33,7 +28,6 @@ export const BookGradesTabMainBody: FC<BookGradesTabMainBodyProps> = ({ bookId }
 
   const { data: bookReadings } = useErrorHandledQuery(
     FindBookReadingsQueryOptions({
-      accessToken,
       userBookId: bookId,
       page,
       pageSize,
@@ -44,8 +38,6 @@ export const BookGradesTabMainBody: FC<BookGradesTabMainBodyProps> = ({ bookId }
   const { data: userBookData, isFetching } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
-      userId: userData?.id ?? '',
-      accessToken,
     }),
   );
 

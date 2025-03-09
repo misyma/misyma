@@ -1,35 +1,32 @@
-import { useQuery } from '@tanstack/react-query';
-import { useSelector } from 'react-redux';
+import { type QueryKey, useQuery } from '@tanstack/react-query';
 
 import { type FindBookshelfParams, type FindBookshelfResponseBody } from '@common/contracts';
 
-import { HttpService } from '../../../../core/services/httpService/httpService';
-import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
+import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
+import { api } from '../../../../core/apiClient/apiClient';
+import { ApiPaths } from '../../../../core/apiClient/apiPaths';
+import { ShelfApiError } from '../../errors/shelfApiError';
 import { BookshelvesApiQueryKeys } from '../bookshelvesApiQueryKeys';
 
+const mapper = new ErrorCodeMessageMapper({});
+
+const findBookshelfById = async (values: FindBookshelfParams) => {
+  const path = ApiPaths.bookshelves.$bookshelfId.path;
+  const resolvedPath = path.replace('{{bookshelfId}}', values.bookshelfId);
+  const response = await api.get<FindBookshelfResponseBody>(resolvedPath);
+
+  api.validateResponse(response, ShelfApiError, mapper);
+
+  return response.data;
+};
+
 export const useFindBookshelfByIdQuery = (bookshelfId: string) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
-  const findBookshelfById = async (values: FindBookshelfParams) => {
-    const { bookshelfId } = values;
-
-    const response = await HttpService.get<FindBookshelfResponseBody>({
-      url: `/bookshelves/${bookshelfId}`,
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    if (response.success === false) {
-      throw new Error('Error');
-    }
-
-    return response.body;
-  };
-
   return useQuery<FindBookshelfResponseBody>({
     queryKey: [BookshelvesApiQueryKeys.findBookshelfById, bookshelfId],
     queryFn: () => findBookshelfById({ bookshelfId }),
-    enabled: !!accessToken && !!bookshelfId,
+    enabled: !!bookshelfId,
   });
 };
+
+export const invalidateFindBookshelfByIdQueryPredicate = (queryKey: QueryKey, bookshelfId: string) =>
+  queryKey.includes(BookshelvesApiQueryKeys.findBookshelfById) && queryKey.includes(bookshelfId);

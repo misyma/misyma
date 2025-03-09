@@ -1,56 +1,64 @@
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 
-import { findBooks, type FindBooksPayload } from './findBooks';
+import { type FindBooksQueryParams, type FindBooksResponseBody } from '@common/contracts';
+
+import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
+import { api } from '../../../../../core/apiClient/apiClient';
+import { ApiPaths } from '../../../../../core/apiClient/apiPaths';
+import { BookApiError } from '../../../../errors/bookApiError';
 import { BookApiQueryKeys } from '../bookApiQueryKeys';
 
-export const FindBooksQueryOptions = ({ accessToken, isbn, title, page, pageSize }: FindBooksPayload) =>
+const mapper = new ErrorCodeMessageMapper({});
+
+export const findBooks = async (values: FindBooksQueryParams) => {
+  const { isbn, title, page, pageSize } = values;
+
+  const queryParams: Record<string, string> = {};
+
+  if (title) {
+    queryParams['title'] = title;
+  }
+  if (isbn) {
+    queryParams['isbn'] = isbn;
+  }
+  if (page) {
+    queryParams['page'] = `${page}`;
+  }
+  if (pageSize) {
+    queryParams['pageSize'] = `${pageSize}`;
+  }
+
+  const response = await api.get<FindBooksResponseBody>(ApiPaths.books.path, {
+    params: queryParams,
+  });
+
+  api.validateResponse(response, BookApiError, mapper);
+
+  return response.data;
+};
+
+export const FindBooksQueryOptions = ({ isbn, title, page, pageSize }: FindBooksQueryParams) =>
   queryOptions({
     queryKey: [BookApiQueryKeys.findBooks, isbn, title, page, pageSize],
     queryFn: () =>
       findBooks({
-        accessToken: accessToken as string,
         isbn,
         title,
         page,
         pageSize,
       }),
-    enabled: !!accessToken,
   });
 
-export const FindBooksInfiniteQueryOptions = ({ accessToken, isbn, page = 1, pageSize, title }: FindBooksPayload) =>
+export const FindBooksInfiniteQueryOptions = ({ isbn, page = 1, pageSize, title }: FindBooksQueryParams) =>
   infiniteQueryOptions({
     queryKey: [BookApiQueryKeys.findBooks, isbn, title, page, pageSize],
     initialPageParam: page,
     queryFn: ({ pageParam }) =>
       findBooks({
-        accessToken,
         page: pageParam,
         title,
         pageSize,
       }),
-    getNextPageParam: (lastPage) => {
-      if (!lastPage) {
-        return undefined;
-      }
-
-      if (lastPage.metadata.total === 0) {
-        return undefined;
-      }
-
-      const totalPages = Math.ceil(lastPage.metadata.total / lastPage.metadata.pageSize);
-
-      if (lastPage.metadata.page === totalPages) {
-        return undefined;
-      }
-
-      return lastPage.metadata.page + 1;
-    },
-    getPreviousPageParam: (lastPage) => {
-      if (lastPage.metadata.page > 1) {
-        return lastPage.metadata.page - 1;
-      }
-
-      return undefined;
-    },
-    enabled: !!accessToken,
+    getNextPageParam: api.getNextPageParam,
+    getPreviousPageParam: api.getPreviousPageParam,
   });

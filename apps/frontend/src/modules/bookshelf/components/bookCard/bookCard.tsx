@@ -1,7 +1,6 @@
 import { type FC, useMemo } from 'react';
 import { HiClock, HiDotsCircleHorizontal } from 'react-icons/hi';
 import { HiCheckCircle, HiEnvelope, HiQuestionMarkCircle } from 'react-icons/hi2';
-import { useSelector } from 'react-redux';
 
 import { ReadingStatus, SortOrder, type UserBook } from '@common/contracts';
 
@@ -12,14 +11,10 @@ import { TruncatedTextTooltip } from '../../../book/components/truncatedTextTool
 import { FindBookBorrowingsQueryOptions } from '../../../borrowing/api/queries/findBookBorrowings/findBookBorrowingsQueryOptions';
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
 import { cn } from '../../../common/lib/utils';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 
 const BorrowedSinceText: FC<{ userBookId: string }> = ({ userBookId }) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const { data: bookBorrowing } = useErrorHandledQuery(
     FindBookBorrowingsQueryOptions({
-      accessToken: accessToken as string,
       userBookId,
       page: 1,
       pageSize: 1,

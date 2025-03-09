@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
 
 import { FindBookChangeRequestsQueryOptions } from '../../bookChangeRequests/api/admin/queries/findBookChangeRequests/findBookChangeRequestsQueryOptions';
 import { changeRequestsColumns } from '../../bookChangeRequests/components/changeRequestsTable/changeRequestsTableColumns';
@@ -7,16 +6,11 @@ import { DataSkeletonTable } from '../../common/components/dataTable/dataSkeleto
 import { DataTable } from '../../common/components/dataTable/dataTable';
 import { useErrorHandledQuery } from '../../common/hooks/useErrorHandledQuery';
 import { useInitialFetch } from '../../common/hooks/useInitialFetch';
-import { userStateSelectors } from '../../core/store/states/userState/userStateSlice';
 
 export const AdminChangeRequestsTable = () => {
   const [page, setPage] = useState(1);
-
   const [pageSize] = useState(10);
-
   const [totalPages, setTotalPages] = useState(0);
-
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
   const {
     data: changeRequestsData,
@@ -24,7 +18,6 @@ export const AdminChangeRequestsTable = () => {
     isFetched,
   } = useErrorHandledQuery(
     FindBookChangeRequestsQueryOptions({
-      accessToken: accessToken as string,
       page,
       pageSize,
     }),

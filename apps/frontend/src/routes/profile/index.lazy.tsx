@@ -3,7 +3,6 @@ import { useQueryClient } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 import { z } from 'zod';
 
 import { type FindUserResponseBody } from '@common/contracts';
@@ -17,7 +16,6 @@ import { Label } from '../../modules/common/components/label/label';
 import { LoadingSpinner } from '../../modules/common/components/spinner/loading-spinner';
 import { useToast } from '../../modules/common/components/toast/use-toast';
 import { RequireAuthComponent } from '../../modules/core/components/requireAuth/requireAuthComponent';
-import { userStateSelectors } from '../../modules/core/store/states/userState/userStateSlice';
 import { useChangeUserPasswordMutation } from '../../modules/user/api/mutations/changeUserPassword/changeUserPasswordMutation';
 import { useUpdateUserMutation } from '../../modules/user/api/mutations/updateUser/updateUserMutation';
 import { useFindUserQuery } from '../../modules/user/api/queries/findUserQuery/findUserQuery';
@@ -72,8 +70,6 @@ interface FormProps {
 }
 
 const ChangeUserDataForm = ({ userData }: FormProps) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const queryClient = useQueryClient();
 
   const { toast } = useToast();
@@ -96,7 +92,6 @@ const ChangeUserDataForm = ({ userData }: FormProps) => {
   const onSubmit = async (values: z.infer<typeof changeUserDataFormSchema>): Promise<void> => {
     if (values.name) {
       await updateUser({
-        accessToken: accessToken as string,
         name: values.name,
         userId: userData.id,
       });
@@ -119,7 +114,6 @@ const ChangeUserDataForm = ({ userData }: FormProps) => {
 
     if (values.password) {
       await changePassword({
-        accessToken: accessToken as string,
         password: values.password,
       });
 

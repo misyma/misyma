@@ -1,4 +1,4 @@
-interface ApiErrorContext {
+export interface ApiErrorContext {
   apiResponseError: Record<string, unknown>;
   statusCode: number;
   message: string;
@@ -12,7 +12,6 @@ export class ApiError extends Error {
     super(message);
 
     this.message = message;
-
     this.context = context;
   }
 }

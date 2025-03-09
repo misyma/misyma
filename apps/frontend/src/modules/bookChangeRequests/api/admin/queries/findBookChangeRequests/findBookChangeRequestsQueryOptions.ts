@@ -1,16 +1,43 @@
-import { type UseQueryOptions, keepPreviousData, queryOptions } from '@tanstack/react-query';
+import { type QueryKey, type UseQueryOptions, keepPreviousData, queryOptions } from '@tanstack/react-query';
 
-import { type FindBookChangeRequestsResponseBody } from '@common/contracts';
+import { type FindBookChangeRequestsQueryParams, type FindBookChangeRequestsResponseBody } from '@common/contracts';
 
-import { findBookChangeRequests, type FindBookChangeRequestsPayload } from './findBookChangeRequests';
+import { BookApiError } from '../../../../../book/errors/bookApiError';
+import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
+import { api } from '../../../../../core/apiClient/apiClient';
+import { ApiPaths } from '../../../../../core/apiClient/apiPaths';
 import { BookChangeRequestApiAdminQueryKeys } from '../bookChangeRequestApiAdminQueryKeys';
 
+const mapper = new ErrorCodeMessageMapper({});
+
+export const findBookChangeRequests = async (payload: FindBookChangeRequestsQueryParams) => {
+  const { page, pageSize } = payload;
+
+  const query: Record<string, string> = {};
+  if (pageSize) {
+    query.pageSize = `${pageSize}`;
+  }
+  if (page) {
+    query.page = `${page}`;
+  }
+
+  const response = await api.get<FindBookChangeRequestsResponseBody>(ApiPaths.admin.bookChangeRequest.path, {
+    params: query,
+  });
+
+  api.validateResponse(response, BookApiError, mapper);
+
+  return response.data;
+};
+
 export const FindBookChangeRequestsQueryOptions = (
-  payload: FindBookChangeRequestsPayload,
-): UseQueryOptions<FindBookChangeRequestsResponseBody, Error, FindBookChangeRequestsResponseBody, string[]> =>
+  payload: FindBookChangeRequestsQueryParams,
+): UseQueryOptions<FindBookChangeRequestsResponseBody, BookApiError, FindBookChangeRequestsResponseBody, string[]> =>
   queryOptions({
     queryKey: [BookChangeRequestApiAdminQueryKeys.findBookChangeRequests, `${payload.page}`, `${payload.pageSize}`],
     queryFn: () => findBookChangeRequests(payload),
-    enabled: !!payload.accessToken,
     placeholderData: keepPreviousData,
   });
+
+export const invalidateBookChangeRequestsQueryPredicate = (queryKey: QueryKey) =>
+  queryKey.includes(BookChangeRequestApiAdminQueryKeys.findBookChangeRequests);

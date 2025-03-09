@@ -1,7 +1,5 @@
 import { SelectContent } from '@radix-ui/react-select';
-import { useQueryClient } from '@tanstack/react-query';
 import { type FC, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
 
 import { FindBooksByBookshelfIdQueryOptions } from '../../../book/api/user/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
 import { BookApiError } from '../../../book/errors/bookApiError';
@@ -16,11 +14,8 @@ import {
 import { Select, SelectItem, SelectTrigger, SelectValue } from '../../../common/components/select/select';
 import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
-import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { ShelfApiError } from '../../api/errors/shelfApiError';
 import { useDeleteBookshelfMutation } from '../../api/mutations/deleteBookshelfMutation/deleteBookshelfMutation';
-import { BookshelvesApiQueryKeys } from '../../api/queries/bookshelvesApiQueryKeys';
 import { useFindUserBookshelfsQuery } from '../../api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 
 interface DialogContentPreConfirmationProps {
@@ -38,15 +33,9 @@ const DialogContentPreConfirmation: FC<DialogContentPreConfirmationProps> = ({
   onCancel,
   error,
 }) => {
-  const { data: user } = useFindUserQuery();
-
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const { data: bookshelfBooksResponse } = useErrorHandledQuery(
     FindBooksByBookshelfIdQueryOptions({
       bookshelfId,
-      userId: user?.id as string,
-      accessToken: accessToken as string,
     }),
   );
 
@@ -116,10 +105,6 @@ const DialogContentPostConfirmation: FC<DialogContentPostConfirmationProps> = ({
 }) => {
   const [moveBookshelfId, setMoveBookshelfId] = useState('');
 
-  const queryClient = useQueryClient();
-
-  const { data: user } = useFindUserQuery();
-
   const [error, setError] = useState('');
 
   const { mutateAsync: deleteBookshelf } = useDeleteBookshelfMutation({});
@@ -129,7 +114,6 @@ const DialogContentPostConfirmation: FC<DialogContentPostConfirmationProps> = ({
     isFetching: isFetchingBookshelves,
     isRefetching: isRetchingBookshelves,
   } = useFindUserBookshelfsQuery({
-    userId: user?.id as string,
     pageSize: 50,
   });
 
@@ -139,17 +123,9 @@ const DialogContentPostConfirmation: FC<DialogContentPostConfirmationProps> = ({
 
       await deleteBookshelf({ bookshelfId, fallbackBookshelfId });
 
-      await queryClient.invalidateQueries({
-        predicate: (query) => query.queryKey[0] === BookshelvesApiQueryKeys.findUserBookshelfs,
-      });
-
       onFinished();
 
       await deletedHandler();
-
-      await queryClient.invalidateQueries({
-        predicate: (query) => query.queryKey[0] === BookshelvesApiQueryKeys.findUserBookshelfs,
-      });
     } catch (error) {
       if (error instanceof BookApiError) {
         return setError(error.message);
@@ -245,24 +221,19 @@ export const DeleteBookshelfModal: FC<Props> = ({
   deletedHandler,
   onCloseModal,
 }: Props) => {
-  const queryClient = useQueryClient();
-
   const [deletionConfirmed, setDeletionConfirmed] = useState<boolean>(false);
   const [error, setError] = useState('');
 
-  const { mutateAsync: deleteBookshelf } = useDeleteBookshelfMutation({});
+  const { mutateAsync: deleteBookshelf } = useDeleteBookshelfMutation({
+    onSuccess: () => {
+      onCloseModal();
+    },
+  });
 
   const onDelete = async (): Promise<void> => {
     try {
       await deleteBookshelf({ bookshelfId });
-
-      onCloseModal();
-
       await deletedHandler();
-
-      await queryClient.invalidateQueries({
-        predicate: (query) => query.queryKey[0] === BookshelvesApiQueryKeys.findUserBookshelfs,
-      });
     } catch (error) {
       if (error instanceof ShelfApiError) {
         return setError(error.message);

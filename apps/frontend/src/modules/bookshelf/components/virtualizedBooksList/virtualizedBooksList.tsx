@@ -1,12 +1,11 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { type FC, useEffect, useMemo, useRef } from 'react';
-import { useSelector } from 'react-redux';
 
-import { type FindUserBooksByPayload } from '../../../book/api/user/queries/findUserBookBy/findUserBooksBy';
+import { type FindUserBooksQueryParams } from '@common/contracts';
+
 import { FindUserBooksByInfiniteQueryOptions } from '../../../book/api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
 import { cn } from '../../../common/lib/utils';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { BookCardRow } from '../bookCardRow/bookCardRow';
 import { BookCardRowSkeleton } from '../bookCardRow/bookCardRowSkeleton';
 
@@ -15,7 +14,7 @@ interface VirtualizedBooksListProps {
   bookshelfId?: string;
   borrowedBooks?: boolean;
   filtersToInclude?: Record<string, boolean>;
-  booksQueryArgs?: Omit<FindUserBooksByPayload, 'accessToken'>;
+  booksQueryArgs?: FindUserBooksQueryParams;
 }
 export const VirtualizedBooksList: FC<VirtualizedBooksListProps> = ({
   className,
@@ -23,13 +22,10 @@ export const VirtualizedBooksList: FC<VirtualizedBooksListProps> = ({
   borrowedBooks = false,
   booksQueryArgs,
 }) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const parentRef = useRef<HTMLDivElement>(null);
 
   const { data, fetchNextPage, isLoading, isFetchingNextPage, hasNextPage } = useInfiniteQuery(
     FindUserBooksByInfiniteQueryOptions({
-      accessToken,
       bookshelfId,
       pageSize: 18,
       ...booksQueryArgs,

@@ -1,12 +1,9 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { type FC, useEffect, useState } from 'react';
 import { HiHeart, HiOutlineHeart } from 'react-icons/hi';
-import { useSelector } from 'react-redux';
 
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery.js';
 import { cn } from '../../../common/lib/utils.js';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice.js';
-import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery.js';
 import { useUpdateUserBookMutation } from '../../api/user/mutations/updateUserBookMutation/updateUserBookMutation.js';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys.js';
 import { FindUserBookByIdQueryOptions } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions.js';
@@ -19,15 +16,9 @@ interface Props {
 export const FavoriteBookButton: FC<Props> = ({ bookId, className }) => {
   const [isAnimating, setIsAnimating] = useState(false);
 
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
-  const { data: userData } = useFindUserQuery();
-
   const { data: userBookData } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
-      userId: userData?.id ?? '',
-      accessToken: accessToken as string,
     }),
   );
 
@@ -45,7 +36,6 @@ export const FavoriteBookButton: FC<Props> = ({ bookId, className }) => {
         await updateUserBook({
           userBookId: userBookData?.id,
           isFavorite: !isFavorite,
-          accessToken: accessToken as string,
         });
 
         setIsFavorite(!isFavorite);

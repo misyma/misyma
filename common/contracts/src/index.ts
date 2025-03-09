@@ -153,3 +153,5 @@ export * from './schemas/bookChangeRequest/findAdminBookChangeRequests.js';
 export * from './schemas/bookChangeRequest/deleteBookChangeRequest.js';
 
 export * from './schemas/bookChangeRequest/applyBookChangeRequest.js';
+
+export * from './schemas/metadata.js';

@@ -1,19 +1,19 @@
-import { useQueryClient } from '@tanstack/react-query';
-
-import { type CreateAuthorRequestBody, type FindAuthorsResponseBody } from '@common/contracts';
+import {
+  type CreateBookRequestBody,
+  type CreateAuthorRequestBody,
+  type FindAuthorsResponseBody,
+} from '@common/contracts';
 
 import { useToast } from '../../../common/components/toast/use-toast';
 import { stripFalsyObjectKeys } from '../../../common/utils/stripFalsyObjectKeys';
 import { useCreateAdminBookMutation } from '../../api/admin/mutations/createAdminBookMutation/createAdminBookMutation';
-import { type UseCreateBookMutationPayload } from '../../api/user/mutations/createBookMutation/createBookMutation';
-import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
 import { BookApiError } from '../../errors/bookApiError';
 
 interface CreatePayload {
   authorPayload?: Partial<CreateAuthorRequestBody> & {
     authorIds?: string[];
   };
-  bookPayload: Omit<UseCreateBookMutationPayload, 'authorIds'>;
+  bookPayload: Omit<CreateBookRequestBody, 'authorIds'>;
 }
 
 interface UseAdminCreateBookResult {
@@ -28,8 +28,6 @@ interface UseAdminCreateBookProps {
 
 export const useAdminCreateBook = ({ onOperationError }: UseAdminCreateBookProps): UseAdminCreateBookResult => {
   const { toast } = useToast();
-
-  const queryClient = useQueryClient();
 
   const { mutateAsync: createBookMutation, isPending: isCreateBookPending } = useCreateAdminBookMutation({});
 
@@ -49,15 +47,6 @@ export const useAdminCreateBook = ({ onOperationError }: UseAdminCreateBookProps
           },
         });
       }
-
-      await Promise.all([
-        queryClient.invalidateQueries({
-          predicate: ({ queryKey }) => queryKey[0] === BookApiQueryKeys.findBooks,
-        }),
-        queryClient.invalidateQueries({
-          predicate: ({ queryKey }) => queryKey[0] === BookApiQueryKeys.findBooksAdmin,
-        }),
-      ]);
 
       toast({
         title: 'Książka została stworzona.',

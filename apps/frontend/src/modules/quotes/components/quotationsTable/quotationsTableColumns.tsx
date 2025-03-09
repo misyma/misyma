@@ -19,6 +19,7 @@ export const quotationTableColumns: ColumnDef<Quote>[] = [
           <div className="flex gap-2 items-center justify-between">
             <div className="flex gap-3 justify-start items-between w-full">
               <Blockquote
+                key={row.original.id}
                 variant="minimalist"
                 date={row.original.createdAt}
                 page={row.original.page}
@@ -28,7 +29,10 @@ export const quotationTableColumns: ColumnDef<Quote>[] = [
                       key={row.original.id}
                       quote={row.original}
                     />
-                    <DeleteQuoteModal quoteId={foundRow?.original.id as string} />
+                    <DeleteQuoteModal
+                      userBookId={foundRow?.original.userBookId as string}
+                      quoteId={foundRow?.original.id as string}
+                    />
                     <FavoriteQuotationButton quote={row.original} />
                   </>
                 }

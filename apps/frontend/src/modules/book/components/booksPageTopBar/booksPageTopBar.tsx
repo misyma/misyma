@@ -12,7 +12,6 @@ import {
   myBooksStateSelectors,
   setFilterVisible,
 } from '../../../core/store/states/myBooksFilterState/myBooksFilterStateSlice';
-import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 
 export const BooksPageTopBar: FC = () => {
   return (
@@ -27,10 +26,7 @@ export const BooksPageTopBar: FC = () => {
 const CreateBookButton = () => {
   const navigate = useNavigate();
 
-  const { data: userData } = useFindUserQuery();
-  const { data: bookshelvesData, isLoading } = useFindUserBookshelfsQuery({
-    userId: userData?.id ?? '',
-  });
+  const { data: bookshelvesData, isLoading } = useFindUserBookshelfsQuery({});
 
   const usableBookshelves = bookshelvesData?.data.filter((b) => !['Wypożyczalnia', 'Archiwum'].includes(b.name));
 

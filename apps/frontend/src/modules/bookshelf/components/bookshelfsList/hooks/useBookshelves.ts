@@ -14,7 +14,6 @@ export const useBookshelves = ({ name, page, pageSize }: UseBookshelvesProps) =>
   const { data: user } = useFindUserQuery();
 
   const { data: bookshelvesData } = useFindUserBookshelfsQuery({
-    userId: user?.id as string,
     pageSize,
     page,
     name,

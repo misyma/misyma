@@ -1,17 +1,13 @@
-import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { type FC, useState } from 'react';
 import { HiTrash } from 'react-icons/hi';
-import { useSelector } from 'react-redux';
 
 import { Button } from '../../../common/components/button/button';
 import { Dialog, DialogContent, DialogHeader, DialogTrigger } from '../../../common/components/dialog/dialog';
 import { useToast } from '../../../common/components/toast/use-toast';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../common/components/tooltip/tooltip';
 import { ApiError } from '../../../common/errors/apiError';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useDeleteUserBookMutation } from '../../api/user/mutations/deleteUserBookMutation/deleteUserBookMutation';
-import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
 
 interface Props {
   bookId: string;
@@ -20,47 +16,23 @@ interface Props {
   className?: string;
 }
 export const DeleteUserBookModal: FC<Props> = ({ bookId, bookshelfId, bookName }: Props) => {
-  const queryClient = useQueryClient();
-
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const navigate = useNavigate();
 
   const { toast } = useToast();
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
-
   const [error, setError] = useState('');
 
-  const { mutateAsync: deleteBook } = useDeleteUserBookMutation({});
+  const { mutateAsync: deleteBook } = useDeleteUserBookMutation({
+    onSuccess: () => setIsOpen(false),
+  });
 
   const onDelete = async (): Promise<void> => {
     try {
       await deleteBook({
         userBookId: bookId,
-        accessToken: accessToken ?? '',
+        bookshelfId,
       });
-
-      setIsOpen(false);
-
-      await Promise.all([
-        queryClient.invalidateQueries({
-          predicate: (query) => query.queryKey[0] === BookApiQueryKeys.findBookById && query.queryKey[1] === bookId,
-        }),
-        queryClient.invalidateQueries({
-          predicate: (query) => query.queryKey[0] === BookApiQueryKeys.findBooksAdmin,
-        }),
-        queryClient.invalidateQueries({
-          predicate: (query) =>
-            query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId && query.queryKey[1] === bookshelfId,
-        }),
-        queryClient.invalidateQueries({
-          predicate: (query) =>
-            query.queryKey[0] === BookApiQueryKeys.findUserBooksBy &&
-            query.queryKey[1] === bookshelfId &&
-            query.queryKey.includes('infinite-query'),
-        }),
-      ]);
 
       toast({
         variant: 'success',
@@ -71,11 +43,7 @@ export const DeleteUserBookModal: FC<Props> = ({ bookId, bookshelfId, bookName }
         to: `/shelves/bookshelf/${bookshelfId}`,
       });
     } catch (error) {
-      if (error instanceof ApiError) {
-        return setError(error.message);
-      }
-
-      if (error instanceof Error) {
+      if (error instanceof ApiError || error instanceof Error) {
         return setError(error.message);
       }
 

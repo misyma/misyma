@@ -1,10 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { HiPencil } from 'react-icons/hi';
-import { useSelector } from 'react-redux';
-import { z } from 'zod';
 
 import { type Quote } from '@common/contracts';
 
@@ -17,45 +14,11 @@ import { Textarea } from '../../../common/components/textArea/textarea';
 import { useToast } from '../../../common/components/toast/use-toast';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../common/components/tooltip/tooltip';
 import useDebounce from '../../../common/hooks/useDebounce';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
-import { useUpdateQuoteMutation } from '../../api/mutations/updateQuoteMutation/updateQuoteMutation';
-import { QuotesApiQueryKeys } from '../../api/queries/quotesApiQueryKeys';
-
-const editQuoteSchema = z
-  .object({
-    page: z
-      .string({
-        required_error: 'Strona jest wymagana.',
-      })
-      .max(16, {
-        message: 'Strona może mieć maksymalnie 16 znaków.',
-      })
-      .optional()
-      .or(z.literal('')),
-    content: z
-      .string({
-        required_error: 'Cytat jest wymagany.',
-      })
-      .min(1, 'Cytat musi mieć minimum 1 znak.')
-      .max(1000, 'Cytat może mieć maksymalnie 1000 znaków.')
-      .optional(),
-  })
-  .superRefine((value, ctx) => {
-    if (!value.page) {
-      return;
-    }
-
-    const match = value.page.match(/[0-9-]+/g);
-
-    if (match?.[0]?.length !== value.page.length) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.invalid_string,
-        message: 'Strona powinna zawierać cyfry lub znak `-`',
-        validation: 'regex',
-        path: ['page'],
-      });
-    }
-  });
+import {
+  type EditQuote,
+  editQuoteSchema,
+  useUpdateQuoteMutation,
+} from '../../api/mutations/updateQuoteMutation/updateQuoteMutation';
 
 interface Props {
   quote: Quote;
@@ -96,11 +59,9 @@ export const UpdateQuoteButton = ({ quote }: Props) => {
 };
 
 const UpdateQuoteModal = ({ quote, open, onClose }: Props & { onClose: () => void; open: boolean }) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
   const { toast } = useToast();
-  const queryClient = useQueryClient();
 
-  const form = useForm<z.infer<typeof editQuoteSchema>>({
+  const form = useForm<EditQuote>({
     resolver: zodResolver(editQuoteSchema),
     defaultValues: {
       page: quote.page ?? '',
@@ -112,7 +73,7 @@ const UpdateQuoteModal = ({ quote, open, onClose }: Props & { onClose: () => voi
 
   const { mutateAsync, isPending: isUpdating } = useUpdateQuoteMutation({});
 
-  const onSubmit = async (values: z.infer<typeof editQuoteSchema>) => {
+  const onSubmit = async (values: EditQuote) => {
     if (values.content === quote.content && values.page === quote.page) {
       onClose();
       return;
@@ -121,13 +82,8 @@ const UpdateQuoteModal = ({ quote, open, onClose }: Props & { onClose: () => voi
     try {
       await mutateAsync({
         ...values,
-        accessToken: accessToken as string,
         quoteId: quote.id,
         errorHandling: { title: 'Błąd podczas aktualizowania cytatu.' },
-      });
-
-      await queryClient.invalidateQueries({
-        predicate: ({ queryKey }) => queryKey[0] === QuotesApiQueryKeys.findQuotes,
       });
 
       toast({ title: 'Cytat został zaaktualizowany 😄', variant: 'success' });

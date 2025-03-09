@@ -158,7 +158,9 @@ const useUserState = () => {
 
           dispatch(userStateActions.removeUserState());
 
-          queryClient.invalidateQueries({});
+          queryClient.invalidateQueries({
+            predicate: () => true,
+          });
 
           navigate({
             to: '/login',

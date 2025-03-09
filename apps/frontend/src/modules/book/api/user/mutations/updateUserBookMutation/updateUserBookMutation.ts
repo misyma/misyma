@@ -1,4 +1,4 @@
-import { type UseMutationOptions } from '@tanstack/react-query';
+import { useQueryClient, type UseMutationOptions } from '@tanstack/react-query';
 
 import {
   type UpdateUserBookPathParams,
@@ -9,45 +9,52 @@ import {
 
 import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
 import { useErrorHandledMutation } from '../../../../../common/hooks/useErrorHandledMutation';
-import { HttpService } from '../../../../../core/services/httpService/httpService';
+import { api } from '../../../../../core/apiClient/apiClient';
 import { BookApiError } from '../../../../errors/bookApiError';
+import { invalidateBooksByBookshelfIdQuery } from '../../queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
+import { invalidateFindUserBookByIdQueryPredicate } from '../../queries/findUserBook/findUserBookByIdQueryOptions';
+import { invalidateFindUserBooksByQuery } from '../../queries/findUserBookBy/findUserBooksByQueryOptions';
 
-export interface UpdateUserBookPayload extends UpdateUserBookPathParams, UpdateUserBookRequestBody {
-  accessToken: string;
-}
+export interface UpdateUserBookPayload extends UpdateUserBookPathParams, UpdateUserBookRequestBody {}
+
+const mapper = new ErrorCodeMessageMapper({
+  403: 'Brak pozwolenia na zaaktualizowanie danych książki',
+});
+
+const updateBook = async (payload: UpdateUserBookPayload) => {
+  const { userBookId, ...rest } = payload;
+
+  const response = await api.patch<UploadUserBookImageResponseBody>(`/user-books/${userBookId}`, rest);
+
+  api.validateResponse(response, BookApiError, mapper);
+
+  return response.data;
+};
 
 export const useUpdateUserBookMutation = (
   options: UseMutationOptions<UpdateUserBookResponseBody, BookApiError, UpdateUserBookPayload>,
 ) => {
-  const mapper = new ErrorCodeMessageMapper({
-    403: 'Brak pozwolenia na zaaktualizowanie danych książki',
-  });
-
-  const uploadImage = async (payload: UpdateUserBookPayload) => {
-    const { accessToken, userBookId, ...rest } = payload;
-
-    const response = await HttpService.patch<UploadUserBookImageResponseBody>({
-      url: `/user-books/${userBookId}`,
-      // eslint-disable-next-line
-			body: rest as any,
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    if (!response.success) {
-      throw new BookApiError({
-        apiResponseError: response.body.context,
-        message: mapper.map(response.statusCode),
-        statusCode: response.statusCode,
-      });
-    }
-
-    return response.body;
-  };
+  const queryClient = useQueryClient();
 
   return useErrorHandledMutation({
-    mutationFn: uploadImage,
+    mutationFn: updateBook,
     ...options,
+    onSuccess: async (...args) => {
+      await queryClient.invalidateQueries({
+        predicate: ({ queryKey }) => {
+          return (
+            invalidateFindUserBooksByQuery({}, queryKey, true) ||
+            invalidateFindUserBooksByQuery({ bookshelfId: args[0].bookshelfId }, queryKey, false) ||
+            invalidateBooksByBookshelfIdQuery(
+              {
+                bookshelfId: args[0].bookshelfId,
+              },
+              queryKey,
+            ) ||
+            invalidateFindUserBookByIdQueryPredicate(queryKey, args[1].userBookId)
+          );
+        },
+      });
+    },
   });
 };

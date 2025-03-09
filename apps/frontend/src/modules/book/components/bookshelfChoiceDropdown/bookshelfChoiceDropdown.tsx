@@ -2,7 +2,6 @@ import { PopoverTrigger } from '@radix-ui/react-popover';
 import { useQueryClient } from '@tanstack/react-query';
 import { CommandLoading } from 'cmdk';
 import { type FC, useEffect, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
 
 import { SortOrder } from '@common/contracts';
 
@@ -23,7 +22,6 @@ import { Popover, PopoverContent } from '../../../common/components/popover/popo
 import { Skeleton } from '../../../common/components/skeleton/skeleton';
 import { useToast } from '../../../common/components/toast/use-toast';
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { useUpdateUserBookMutation } from '../../api/user/mutations/updateUserBookMutation/updateUserBookMutation';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
@@ -40,35 +38,25 @@ interface Props {
 export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId }) => {
   const queryClient = useQueryClient();
 
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const { data: userData } = useFindUserQuery();
-
   const { data, isFetching, isFetched, isRefetching } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
-      userId: userData?.id ?? '',
-      accessToken: accessToken as string,
     }),
   );
 
   const { toast } = useToast();
 
   const [searchedName, setSearchedName] = useState<string | undefined>(undefined);
+  const [open, setOpen] = useState(false);
+  const [usingBorrowFlow, setUsingBorrowFlow] = useState(false);
+  const [selectedBookshelfId, setSelectedBookshelfId] = useState(data?.bookshelfId ?? '');
+  const [previousBookshelfId, setPreviousBookshelfId] = useState<string | null>(null);
 
   const { data: bookshelfData, isLoading } = useFindUserBookshelfsQuery({
-    userId: userData?.id as string,
     pageSize: 150,
     name: searchedName,
   });
-
-  const [open, setOpen] = useState(false);
-
-  const [usingBorrowFlow, setUsingBorrowFlow] = useState(false);
-
-  const [selectedBookshelfId, setSelectedBookshelfId] = useState(data?.bookshelfId ?? '');
-
-  const [previousBookshelfId, setPreviousBookshelfId] = useState<string | null>(null);
 
   const booksBookshelf = useMemo(() => {
     return bookshelfData?.data.find((bookshelf) => data?.bookshelfId === bookshelf.id);
@@ -76,7 +64,6 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
 
   const { data: bookBorrowing, isFetching: isFetchingBookBorrowing } = useErrorHandledQuery(
     FindBookBorrowingsQueryOptions({
-      accessToken: accessToken as string,
       userBookId: bookId,
       page: 1,
       pageSize: 1,
@@ -112,20 +99,13 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
     await updateUserBook({
       userBookId: bookId,
       bookshelfId: id,
-      accessToken: accessToken as string,
     });
 
     if (previousBookshelfName === 'Wypożyczalnia') {
       await updateBorrowing({
-        accessToken: accessToken as string,
         borrowingId: bookBorrowing?.data?.[0].id as string,
         userBookId: bookId,
         endedAt: new Date().toISOString(),
-      });
-
-      await queryClient.invalidateQueries({
-        predicate: ({ queryKey }) =>
-          queryKey[0] === BorrowingApiQueryKeys.findBookBorrowingsQuery && queryKey[1] === bookId,
       });
     }
 
@@ -135,6 +115,9 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
       variant: 'success',
     });
 
+    // moving this to `updateBorrowing` is kinda pointless.
+    // best to leave it as is for the time being
+    // in case of future refactoring of this component, we might want to split
     await Promise.all([
       queryClient.invalidateQueries({
         queryKey: [BookApiQueryKeys.findUserBookById, bookId, userData?.id],
