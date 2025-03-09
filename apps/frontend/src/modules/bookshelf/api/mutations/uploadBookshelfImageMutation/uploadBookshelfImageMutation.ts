@@ -1,5 +1,6 @@
 import { useQueryClient, type UseMutationOptions } from '@tanstack/react-query';
 
+import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMapper/errorCodeMessageMapper.js';
 import { useErrorHandledMutation } from '../../../../common/hooks/useErrorHandledMutation.js';
 import { api } from '../../../../core/apiClient/apiClient.js';
 import { ApiPaths } from '../../../../core/apiClient/apiPaths.js';
@@ -11,24 +12,19 @@ type UploadBookshelfImagePayload = {
   bookshelfId: string;
 };
 
+const mapper = new ErrorCodeMessageMapper({});
+
 const uploadBookshelfImage = async (payload: UploadBookshelfImagePayload) => {
   const formData = new FormData();
 
   formData.append('attachedFiles', payload.file, payload.file.name);
 
   const path = ApiPaths.bookshelves.$bookshelfId.images.path;
-  const resolvedPath = path.replace(ApiPaths.bookshelves.$bookshelfId.params.bookshelfId, payload.bookshelfId);
+  const resolvedPath = path.replace('{{bookshelfId}}', payload.bookshelfId);
 
   const response = await api.patch(resolvedPath, formData);
-  if (api.isErrorResponse(response)) {
-    throw new ShelfApiError({
-      apiResponseError: response.data.context,
-      message: response.data.message,
-      statusCode: response.status,
-    });
-  }
 
-  return;
+  api.validateResponse(response, ShelfApiError, mapper);
 };
 
 export const useUploadBookshelfImageMutation = (

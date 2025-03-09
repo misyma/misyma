@@ -2,6 +2,7 @@ import { useQueryClient, type UseMutationOptions } from '@tanstack/react-query';
 
 import { type CreateBookshelfRequestBody, type CreateBookshelfResponseBody } from '@common/contracts';
 
+import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
 import { useErrorHandledMutation } from '../../../../common/hooks/useErrorHandledMutation';
 import { api } from '../../../../core/apiClient/apiClient';
 import { ApiPaths } from '../../../../core/apiClient/apiPaths';
@@ -10,16 +11,12 @@ import { invalidateBookshelvesQueriesPredicate } from '../../queries/findUserBoo
 
 type CreateBookshelfPayload = CreateBookshelfRequestBody;
 
+const mapper = new ErrorCodeMessageMapper({});
+
 const createBookshelf = async (payload: CreateBookshelfPayload) => {
   const response = await api.post<CreateBookshelfResponseBody>(ApiPaths.bookshelves.path, payload);
 
-  if (api.isErrorResponse(response)) {
-    throw new ShelfApiError({
-      apiResponseError: response.data.context,
-      message: response.data.message,
-      statusCode: response.status,
-    });
-  }
+  api.validateResponse(response, ShelfApiError, mapper);
 
   return response.data;
 };

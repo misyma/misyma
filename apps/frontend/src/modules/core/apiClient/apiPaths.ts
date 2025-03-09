@@ -70,9 +70,6 @@ export const ApiPaths = {
     path: '/bookshelves' as const,
     ['$bookshelfId']: {
       path: '/bookshelves/{{bookshelfId}}' as const,
-      params: {
-        bookshelfId: '{{bookshelfId}}',
-      },
       images: {
         path: '/bookshelves/{{bookshelfId}}/images' as const,
       },

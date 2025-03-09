@@ -6,6 +6,7 @@ import {
   type UpdateBookshelfResponseBody,
 } from '@common/contracts';
 
+import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
 import { useErrorHandledMutation } from '../../../../common/hooks/useErrorHandledMutation';
 import { api } from '../../../../core/apiClient/apiClient';
 import { ApiPaths } from '../../../../core/apiClient/apiPaths';
@@ -14,19 +15,15 @@ import { invalidateBookshelvesQueriesPredicate } from '../../queries/findUserBoo
 
 type Payload = UpdateBookshelfRequestBody & UpdateBookshelfPathParams;
 
+const mapper = new ErrorCodeMessageMapper({});
+
 const updateBookshelf = async (payload: Payload) => {
   const path = ApiPaths.bookshelves.$bookshelfId.path;
-  const resolvedPath = path.replace(ApiPaths.bookshelves.$bookshelfId.params.bookshelfId, payload.bookshelfId);
+  const resolvedPath = path.replace('{{bookshelfId}}', payload.bookshelfId);
 
   const response = await api.patch<UpdateBookshelfResponseBody>(resolvedPath, payload);
 
-  if (api.isErrorResponse(response)) {
-    throw new ShelfApiError({
-      apiResponseError: response.data.context,
-      message: response.data.message,
-      statusCode: response.status,
-    });
-  }
+  api.validateResponse(response, ShelfApiError, mapper);
 
   return response.data;
 };

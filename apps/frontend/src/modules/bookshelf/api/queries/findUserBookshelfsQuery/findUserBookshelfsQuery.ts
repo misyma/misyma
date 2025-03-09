@@ -8,8 +8,10 @@ import {
 
 import { type FindBookshelvesQueryParams, type FindBookshelvesResponseBody } from '@common/contracts';
 
+import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
 import { api } from '../../../../core/apiClient/apiClient';
 import { ApiPaths } from '../../../../core/apiClient/apiPaths';
+import { ShelfApiError } from '../../errors/shelfApiError';
 import { BookshelvesApiQueryKeys } from '../bookshelvesApiQueryKeys';
 
 type Payload = FindBookshelvesQueryParams;
@@ -21,6 +23,8 @@ export const useFindUserBookshelfsQuery = (payload: Payload) => {
     placeholderData: keepPreviousData,
   });
 };
+
+const mapper = new ErrorCodeMessageMapper({});
 
 export const findUserBookshelves = async (payload: Payload) => {
   const { page, pageSize, name } = payload;
@@ -37,9 +41,8 @@ export const findUserBookshelves = async (payload: Payload) => {
     params: queryParams,
   });
 
-  if (api.isErrorResponse(response)) {
-    throw new Error('Failed to fetch bookshelves'); // todo: dedicated error
-  }
+  api.validateResponse(response, ShelfApiError, mapper);
+
   return response.data;
 };
 
