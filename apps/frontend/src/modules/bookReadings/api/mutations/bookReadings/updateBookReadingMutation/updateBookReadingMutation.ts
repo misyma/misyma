@@ -9,6 +9,7 @@ import {
 
 import { BookApiQueryKeys } from '../../../../../book/api/user/queries/bookApiQueryKeys';
 import { BookApiError } from '../../../../../book/errors/bookApiError';
+import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
 import { useErrorHandledMutation } from '../../../../../common/hooks/useErrorHandledMutation';
 import { api } from '../../../../../core/apiClient/apiClient';
 import { ApiPaths } from '../../../../../core/apiClient/apiPaths';
@@ -16,21 +17,18 @@ import { invalidateBookReadingsQueryPredicate } from '../../../queries/findBookR
 
 type UpdateBookReadingMutationPayload = UpdateBookReadingRequestBody & UpdateBookReadingPathParams;
 
+const mapper = new ErrorCodeMessageMapper({});
+
 const updateBookReading = async (payload: UpdateBookReadingMutationPayload) => {
   const { userBookId, readingId, ...body } = payload;
 
   let path: string = ApiPaths.userBooks.$userBookId.readings.$readingId.path;
-  path = path.replace(ApiPaths.userBooks.$userBookId.params.userBookId, userBookId);
-  path = path.replace(ApiPaths.userBooks.$userBookId.readings.$readingId.params.readingId, readingId);
+  path = path.replace('{{userBookId}', userBookId);
+  path = path.replace('{{readingId}}', readingId);
 
   const response = await api.patch<CreateBookReadingResponseBody>(path, body);
-  if (api.isErrorResponse(response)) {
-    throw new BookApiError({
-      apiResponseError: response.data.context,
-      message: response.data.message,
-      statusCode: response.status,
-    });
-  }
+
+  api.validateResponse(response, BookApiError, mapper);
 
   return response.data;
 };

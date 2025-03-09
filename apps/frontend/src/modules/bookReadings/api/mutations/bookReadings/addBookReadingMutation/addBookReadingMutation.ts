@@ -9,24 +9,21 @@ import {
 
 import { BookApiQueryKeys } from '../../../../../book/api/user/queries/bookApiQueryKeys';
 import { BookApiError } from '../../../../../book/errors/bookApiError';
+import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
 import { useErrorHandledMutation } from '../../../../../common/hooks/useErrorHandledMutation';
 import { api } from '../../../../../core/apiClient/apiClient';
 import { invalidateBookReadingsQueryPredicate } from '../../../queries/findBookReadings/findBookReadingsQueryOptions';
 
 type AddBookReadingMutationPayload = CreateBookReadingRequestBody & CreateBookReadingPathParams;
 
+const mapper = new ErrorCodeMessageMapper({});
+
 const addBookReading = async (payload: AddBookReadingMutationPayload) => {
   const { userBookId, ...body } = payload;
 
   const response = await api.post<CreateBookReadingResponseBody>(`/user-books/${userBookId}/readings`, body);
 
-  if (api.isErrorResponse(response)) {
-    throw new BookApiError({
-      apiResponseError: response.data.context,
-      message: response.data.message,
-      statusCode: response.status,
-    });
-  }
+  api.validateResponse(response, BookApiError, mapper);
 
   return response.data;
 };

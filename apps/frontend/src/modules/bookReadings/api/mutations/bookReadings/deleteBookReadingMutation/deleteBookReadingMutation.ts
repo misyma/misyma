@@ -8,6 +8,7 @@ import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMa
 import { type ApiError } from '../../../../../common/errors/apiError';
 import { useErrorHandledMutation } from '../../../../../common/hooks/useErrorHandledMutation';
 import { api } from '../../../../../core/apiClient/apiClient';
+import { ApiPaths } from '../../../../../core/apiClient/apiPaths';
 import { invalidateBookReadingsQueryPredicate } from '../../../queries/findBookReadings/findBookReadingsQueryOptions';
 
 const mapper = new ErrorCodeMessageMapper({
@@ -15,16 +16,12 @@ const mapper = new ErrorCodeMessageMapper({
 });
 
 const deleteBookReading = async (payload: DeleteBookReadingPathParams) => {
-  const response = await api.delete(`/user-books/${payload.userBookId}/readings/${payload.readingId}`);
+  let path: string = ApiPaths.userBooks.$userBookId.readings.$readingId.path;
+  path = path.replace('{{userBookId}}', payload.userBookId);
+  path = path.replace('{{readingId}}', payload.readingId);
+  const response = await api.delete(path);
 
-  if (api.isErrorResponse(response)) {
-    throw new BookApiError({
-      apiResponseError: response.data.context,
-      message: mapper.map(response.status),
-      statusCode: response.status,
-    });
-  }
-  return;
+  api.validateResponse(response, BookApiError, mapper);
 };
 
 export const useDeleteBookReadingMutation = (

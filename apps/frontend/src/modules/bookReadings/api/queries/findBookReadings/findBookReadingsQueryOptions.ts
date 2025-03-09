@@ -6,11 +6,15 @@ import {
   type FindBookReadingsQueryParams,
 } from '@common/contracts';
 
+import { BookApiError } from '../../../../book/errors/bookApiError';
+import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
 import { api } from '../../../../core/apiClient/apiClient';
 import { ApiPaths } from '../../../../core/apiClient/apiPaths';
 import { BookReadingsApiQueryKeys } from '../bookReadingsApiQueryKeys';
 
 export type FindBookReadingsPayload = FindBookReadingsPathParams & FindBookReadingsQueryParams;
+
+const mapper = new ErrorCodeMessageMapper({});
 
 export const findBookReadings = async (values: FindBookReadingsPayload): Promise<FindBookReadingsResponseBody> => {
   const { userBookId, page, pageSize, sortDate } = values;
@@ -27,14 +31,12 @@ export const findBookReadings = async (values: FindBookReadingsPayload): Promise
   }
 
   const path = ApiPaths.userBooks.$userBookId.readings.path;
-  const resolvedPath = path.replace(ApiPaths.userBooks.$userBookId.params.userBookId, userBookId);
+  const resolvedPath = path.replace('{{userBookId}}', userBookId);
   const response = await api.get<FindBookReadingsResponseBody>(resolvedPath, {
     params: queryParams,
   });
 
-  if (api.isErrorResponse(response)) {
-    throw new Error(`Error`); // todo: dedicated error
-  }
+  api.validateResponse(response, BookApiError, mapper);
 
   return response.data;
 };
