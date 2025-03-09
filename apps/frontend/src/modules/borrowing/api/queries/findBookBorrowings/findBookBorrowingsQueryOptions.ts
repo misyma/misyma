@@ -37,13 +37,7 @@ export const findBookBorrowings = async (payload: FindBookBorrowingsPayload) => 
     params: queryParams,
   });
 
-  if (api.isErrorResponse(response)) {
-    throw new BookApiError({
-      apiResponseError: response.data.context,
-      message: mapper.map(response.status),
-      statusCode: response.status,
-    });
-  }
+  api.validateResponse(response, BookApiError, mapper);
 
   return response.data;
 };

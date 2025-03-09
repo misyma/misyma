@@ -2,9 +2,13 @@ import { type UseQueryOptions, queryOptions } from '@tanstack/react-query';
 
 import { type FindGenresQueryParams, type FindGenresResponseBody } from '@common/contracts';
 
+import { BookApiError } from '../../../../book/errors/bookApiError.js';
+import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMapper/errorCodeMessageMapper.js';
 import { api } from '../../../../core/apiClient/apiClient.js';
 import { ApiPaths } from '../../../../core/apiClient/apiPaths.js';
 import { GenresApiQueryKeys } from '../genresApiQueryKeys.js';
+
+const mapper = new ErrorCodeMessageMapper({});
 
 const getGenres = async (payload: FindGenresQueryParams) => {
   const { page, pageSize = 200 } = payload;
@@ -23,9 +27,7 @@ const getGenres = async (payload: FindGenresQueryParams) => {
     params: queryParams,
   });
 
-  if (api.isErrorResponse(response)) {
-    throw new Error(); // todo: dedicated error
-  }
+  api.validateResponse(response, BookApiError, mapper);
 
   return response.data;
 };

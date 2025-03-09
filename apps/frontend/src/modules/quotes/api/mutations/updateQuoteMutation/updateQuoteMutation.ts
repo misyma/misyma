@@ -7,9 +7,11 @@ import {
   type UpdateQuoteResponseBody,
 } from '@common/contracts';
 
+import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
 import { useErrorHandledMutation } from '../../../../common/hooks/useErrorHandledMutation';
 import { api } from '../../../../core/apiClient/apiClient';
 import { ApiPaths } from '../../../../core/apiClient/apiPaths';
+import { QuoteApiError } from '../../errors/quoteApiError';
 import { invalidateQuotesQueries } from '../../queries/getQuotes/getQuotes';
 
 export const editQuoteSchema = z
@@ -49,6 +51,8 @@ export const editQuoteSchema = z
     }
   });
 
+const mapper = new ErrorCodeMessageMapper({});
+
 export type EditQuote = z.infer<typeof editQuoteSchema>;
 
 export interface UpdateQuotePayload extends UpdateQuotePathParams, UpdateQuoteRequestBody {}
@@ -63,15 +67,13 @@ export const updateQuote = async (payload: UpdateQuotePayload) => {
   const resolvedPath = path.replace(ApiPaths.quotes.$quoteId.params.quoteId, quoteId);
   const response = await api.patch<UpdateQuoteResponseBody>(resolvedPath, body);
 
-  if (api.isErrorResponse(response)) {
-    throw new Error(response.data.message); //todo: dedicated errors
-  }
+  api.validateResponse(response, QuoteApiError, mapper);
 
   return response.data;
 };
 
 export const useUpdateQuoteMutation = (
-  options: UseMutationOptions<UpdateQuoteResponseBody, Error, UpdateQuotePayload>,
+  options: UseMutationOptions<UpdateQuoteResponseBody, QuoteApiError, UpdateQuotePayload>,
 ) => {
   const queryClient = useQueryClient();
   return useErrorHandledMutation({

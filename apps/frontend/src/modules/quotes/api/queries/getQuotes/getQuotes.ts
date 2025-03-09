@@ -8,9 +8,13 @@ import {
 
 import { type FindQuotesQueryParams, type FindQuotesResponseBody } from '@common/contracts';
 
+import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMapper/errorCodeMessageMapper.js';
 import { api } from '../../../../core/apiClient/apiClient.js';
 import { ApiPaths } from '../../../../core/apiClient/apiPaths.js';
+import { QuoteApiError } from '../../errors/quoteApiError.js';
 import { QuotesApiQueryKeys } from '../quotesApiQueryKeys.js';
+
+const mapper = new ErrorCodeMessageMapper({});
 
 export const getQuotes = async (payload: FindQuotesQueryParams & { accessToken: string }) => {
   const queryParams: Record<string, string> = {};
@@ -37,16 +41,14 @@ export const getQuotes = async (payload: FindQuotesQueryParams & { accessToken: 
     params: queryParams,
   });
 
-  if (api.isErrorResponse(response)) {
-    throw new Error(); //todo: change to dedicated api error
-  }
+  api.validateResponse(response, QuoteApiError, mapper);
 
   return response.data;
 };
 
 export const getQuotesOptions = (
   payload: FindQuotesQueryParams & { accessToken: string },
-): UseQueryOptions<FindQuotesResponseBody, Error, FindQuotesResponseBody, string[]> =>
+): UseQueryOptions<FindQuotesResponseBody, QuoteApiError, FindQuotesResponseBody, string[]> =>
   queryOptions({
     queryKey: [...getQuotesOptionsQueryKey(payload), `${payload.page}`, `${payload.pageSize}`, `${payload.sortDate}`],
     queryFn: () => getQuotes(payload),

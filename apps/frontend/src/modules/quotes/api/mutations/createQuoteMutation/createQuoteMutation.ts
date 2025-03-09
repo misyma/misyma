@@ -3,8 +3,10 @@ import { z } from 'zod';
 
 import { type CreateQuoteRequestBody, type CreateQuoteResponseBody } from '@common/contracts';
 
+import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
 import { api } from '../../../../core/apiClient/apiClient';
 import { ApiPaths } from '../../../../core/apiClient/apiPaths';
+import { QuoteApiError } from '../../errors/quoteApiError';
 import { invalidateInfiniteQuotesPredicate } from '../../queries/getQuotes/getQuotes';
 
 export interface CreateQuoteMutationPayload extends CreateQuoteRequestBody {
@@ -44,20 +46,20 @@ export const createQuoteSchema = z
     }
   });
 
+const mapper = new ErrorCodeMessageMapper({});
+
 export type CreateQuote = z.infer<typeof createQuoteSchema>;
 
 const createQuote = async (payload: CreateQuoteMutationPayload): Promise<CreateQuoteResponseBody> => {
   const response = await api.post<CreateQuoteResponseBody>(ApiPaths.quotes.path, payload);
 
-  if (api.isErrorResponse(response)) {
-    throw new Error(response.data.message); // todo: dedicated api error
-  }
+  api.validateResponse(response, QuoteApiError, mapper);
 
   return response.data;
 };
 
 export const useCreateQuoteMutation = (
-  options: UseMutationOptions<CreateQuoteResponseBody, Error, CreateQuoteMutationPayload>,
+  options: UseMutationOptions<CreateQuoteResponseBody, QuoteApiError, CreateQuoteMutationPayload>,
 ) => {
   const queryClient = useQueryClient();
 

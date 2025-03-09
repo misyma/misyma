@@ -31,13 +31,7 @@ const createBorrowing = async (payload: UseCreateBorrowingMutationPayload) => {
 
   const response = await api.post<CreateBorrowingResponseBody>(`/user-books/${userBookId}/borrowings`, rest);
 
-  if (api.isErrorResponse(response)) {
-    throw new BookApiError({
-      apiResponseError: response.data.context,
-      message: mapper.map(response.status),
-      statusCode: response.status,
-    });
-  }
+  api.validateResponse(response, BookApiError, mapper);
 
   return response.data;
 };
