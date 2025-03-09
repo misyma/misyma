@@ -3,9 +3,9 @@ import { useQueryClient, type UseMutationOptions } from '@tanstack/react-query';
 import { type DeleteAuthorPathParams } from '@common/contracts';
 
 import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
-import { ApiError } from '../../../../../common/errors/apiError';
 import { useErrorHandledMutation } from '../../../../../common/hooks/useErrorHandledMutation';
 import { api } from '../../../../../core/apiClient/apiClient';
+import { AuthorApiError } from '../../../../errors/authorApiError';
 import { AuthorsApiQueryKeys } from '../../../user/queries/authorsApiQueryKeys';
 import { invalidateAdminAuthorsQueryPredicate } from '../../queries/findAdminAuthorsQuery/findAdminAuthorsQuery';
 
@@ -16,18 +16,12 @@ const mapper = new ErrorCodeMessageMapper({
 const deleteAuthor = async (payload: DeleteAuthorPathParams) => {
   const response = await api.delete(`/admin/authors/${payload.authorId}`);
 
-  if (api.isErrorResponse(response)) {
-    throw new ApiError('Author api error.', {
-      apiResponseError: response.data.context,
-      message: mapper.map(response.status),
-      statusCode: response.status,
-    });
-  }
+  api.validateResponse(response, AuthorApiError, mapper);
 
   return;
 };
 
-export const useDeleteAuthorMutation = (options: UseMutationOptions<void, ApiError, DeleteAuthorPathParams>) => {
+export const useDeleteAuthorMutation = (options: UseMutationOptions<void, AuthorApiError, DeleteAuthorPathParams>) => {
   const queryClient = useQueryClient();
   return useErrorHandledMutation({
     mutationFn: deleteAuthor,

@@ -66,7 +66,7 @@ api.getPreviousPageParam = (response) => {
 };
 
 api.validateResponse = (response, ctor, mapper) => {
-  if (!api.isErrorResponse(response)) {
+  if (api.isErrorResponse(response)) {
     throw new ctor({
       message: mapper.map(response.status),
       apiResponseError: response.data.context,

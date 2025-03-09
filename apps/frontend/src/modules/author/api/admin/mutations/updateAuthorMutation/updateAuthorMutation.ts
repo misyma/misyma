@@ -7,9 +7,9 @@ import {
 } from '@common/contracts';
 
 import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
-import { ApiError } from '../../../../../common/errors/apiError';
 import { useErrorHandledMutation } from '../../../../../common/hooks/useErrorHandledMutation';
 import { api } from '../../../../../core/apiClient/apiClient';
+import { AuthorApiError } from '../../../../errors/authorApiError';
 import { AuthorsApiQueryKeys } from '../../../user/queries/authorsApiQueryKeys';
 import { invalidateAdminAuthorsQueryPredicate } from '../../queries/findAdminAuthorsQuery/findAdminAuthorsQuery';
 
@@ -24,18 +24,15 @@ const updateAuthor = async (payload: Payload) => {
   const { authorId, ...rest } = payload;
 
   const response = await api.patch<UpdateAuthorResponseBody>(`/admin/authors/${authorId}`, rest);
-  if (api.isErrorResponse(response)) {
-    throw new ApiError('Author api error.', {
-      apiResponseError: response.data.context,
-      message: mapper.map(response.status),
-      statusCode: response.status,
-    });
-  }
+
+  api.validateResponse(response, AuthorApiError, mapper);
 
   return response.data;
 };
 
-export const useUpdateAuthorMutation = (options: UseMutationOptions<UpdateAuthorResponseBody, ApiError, Payload>) => {
+export const useUpdateAuthorMutation = (
+  options: UseMutationOptions<UpdateAuthorResponseBody, AuthorApiError, Payload>,
+) => {
   const queryClient = useQueryClient();
   return useErrorHandledMutation({
     mutationFn: updateAuthor,

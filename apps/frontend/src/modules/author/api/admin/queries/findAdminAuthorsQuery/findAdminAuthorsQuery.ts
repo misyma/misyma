@@ -7,9 +7,11 @@ import {
   type FindAuthorsResponseBody,
 } from '@common/contracts';
 
+import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper.js';
 import { type ApiError } from '../../../../../common/errors/apiError.js';
 import { api } from '../../../../../core/apiClient/apiClient.js';
 import { ApiPaths } from '../../../../../core/apiClient/apiPaths.js';
+import { AuthorApiError } from '../../../../errors/authorApiError.js';
 import { AdminAuthorsApiQueryKeys } from '../adminAuthorsApiQueryKeys.js';
 
 type Payload = {
@@ -22,6 +24,8 @@ type Payload = {
   sortField?: FindAuthorsSortField | undefined;
   sortOrder?: SortOrder | undefined;
 } & Partial<Omit<UseQueryOptions<FindAuthorsResponseBody, ApiError>, 'queryFn'>>;
+
+const mapper = new ErrorCodeMessageMapper({});
 
 export const findAdminAuthors = async (values: FindAdminAuthorsQueryParams) => {
   const { name, page, pageSize, ids, sortField, sortOrder, isApproved } = values;
@@ -65,9 +69,7 @@ export const findAdminAuthors = async (values: FindAdminAuthorsQueryParams) => {
     },
   });
 
-  if (api.isErrorResponse(response)) {
-    throw new Error('Error'); // todo: dedicated error
-  }
+  api.validateResponse(response, AuthorApiError, mapper);
 
   return response.data;
 };

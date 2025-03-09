@@ -3,9 +3,9 @@ import { useQueryClient, type UseMutationOptions } from '@tanstack/react-query';
 import { type CreateAuthorRequestBody, type CreateAuthorResponseBody } from '@common/contracts';
 
 import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
-import { ApiError } from '../../../../../common/errors/apiError';
 import { useErrorHandledMutation } from '../../../../../common/hooks/useErrorHandledMutation';
 import { api } from '../../../../../core/apiClient/apiClient';
+import { AuthorApiError } from '../../../../errors/authorApiError';
 import { AuthorsApiQueryKeys } from '../../../user/queries/authorsApiQueryKeys';
 import { invalidateAdminAuthorsQueryPredicate } from '../../queries/findAdminAuthorsQuery/findAdminAuthorsQuery';
 
@@ -19,19 +19,13 @@ const createAuthor = async (payload: CreateAuthorRequestBody) => {
 
   const response = await api.post<CreateAuthorResponseBody>('/admin/authors', { name });
 
-  if (api.isErrorResponse(response)) {
-    throw new ApiError('Author api error.', {
-      apiResponseError: response.data.context,
-      message: mapper.map(response.status),
-      statusCode: response.status,
-    });
-  }
+  api.validateResponse(response, AuthorApiError, mapper);
 
   return response.data;
 };
 
 export const useCreateAuthorMutation = (
-  options: UseMutationOptions<CreateAuthorResponseBody, ApiError, CreateAuthorRequestBody>,
+  options: UseMutationOptions<CreateAuthorResponseBody, AuthorApiError, CreateAuthorRequestBody>,
 ) => {
   const queryClient = useQueryClient();
 
