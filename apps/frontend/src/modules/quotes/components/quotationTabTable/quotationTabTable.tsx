@@ -1,5 +1,4 @@
 import { type FC, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
 
 import { type SortOrder } from '@common/contracts';
 
@@ -8,7 +7,6 @@ import { FindUserBookByIdQueryOptions } from '../../../book/api/user/queries/fin
 import { DataTable } from '../../../common/components/dataTable/dataTable';
 import { Skeleton } from '../../../common/components/skeleton/skeleton';
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { getQuotesOptions } from '../../api/queries/getQuotes/getQuotes';
 import { quotationTableColumns } from '../quotationsTable/quotationsTableColumns';
 
@@ -17,8 +15,6 @@ interface QuotationTabTableProps {
   sortDate?: SortOrder;
 }
 export const QuotationTabTable: FC<QuotationTabTableProps> = ({ bookId, sortDate }) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const [page, setPage] = useState(1);
   const [pageSize] = useState(4);
 
@@ -30,7 +26,6 @@ export const QuotationTabTable: FC<QuotationTabTableProps> = ({ bookId, sortDate
 
   const { data: quotationsData } = useErrorHandledQuery(
     getQuotesOptions({
-      accessToken: accessToken as string,
       userBookId: bookId,
       page,
       pageSize,
@@ -55,7 +50,9 @@ export const QuotationTabTable: FC<QuotationTabTableProps> = ({ bookId, sortDate
       {!isLoading && (
         <div className="flex justify-between">
           <p className="text-lg pb-6"> {userBookData?.book?.authors[0]?.name ?? ''} </p>
-          {(quotationsData?.data.length ?? 0) > 1 && <QuotationsTabSortingButton />}
+          {(quotationsData?.data.length ?? 0) > 1 && (
+            <QuotationsTabSortingButton from="/shelves/bookshelf/book/tabs/quotationsTab/" />
+          )}
         </div>
       )}
       {isLoading && (

@@ -48,6 +48,7 @@ export const AdminBooksSortButton = () => {
           <PopoverContent
             className="w-40 p-0"
             align="start"
+            onCloseAutoFocus={(e) => e.preventDefault()}
           >
             <Command>
               <CommandList>
