@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 
 import { type QuotePageSearch } from '../../../../routes/quotes';
 import { AuthorSearchFilter } from '../../../common/components/filter/AuthorSearchFilter';
+import { CheckboxFilter } from '../../../common/components/filter/filter';
 import FiltersDrawer from '../../../common/components/filtersDrawer/filtersDrawer';
 import { quoteStateSelectors } from '../../../core/store/states/quotesFilterState/quoteFilterStateSlice';
 
@@ -55,6 +56,17 @@ export const QuotesPageFilterBar = () => {
           key: 'authorIds',
           label: 'Autor',
           type: 'text',
+        }}
+      />
+      <CheckboxFilter
+        initialValue={(search.isFavorite as unknown as string) === '' ? false : search.isFavorite}
+        onRemoveFilter={() => updateSearch({ isFavorite: undefined })}
+        setFilterAction={(val) => updateSearch({ isFavorite: val })}
+        filter={{
+          id: 'is-favorite-filter',
+          key: 'isFavorite',
+          label: 'Ulubiona',
+          type: 'three-state-checkbox',
         }}
       />
     </FiltersDrawer>
