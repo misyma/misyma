@@ -83,7 +83,7 @@ export const VirtualizedQuotesList: FC<VirtualizedQuotesListProps> = ({ queryArg
               {isLoaderRow ? (
                 <div className="gap-4">
                   <Skeleton
-                    className="h-80"
+                    className="h-[180px] w-full"
                     style={{
                       position: 'absolute',
                     }}
