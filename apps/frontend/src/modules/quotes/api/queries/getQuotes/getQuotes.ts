@@ -31,6 +31,10 @@ export const getQuotes = async (payload: FindQuotesQueryParams) => {
     queryParams.pageSize = `${payload.pageSize}`;
   }
 
+  if (payload.authorId) {
+    queryParams.authorId = payload.authorId;
+  }
+
   if (payload.sortDate) {
     queryParams.sortDate = payload.sortDate;
   } else {
