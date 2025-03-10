@@ -42,7 +42,7 @@ export const UpdateQuoteButton = ({ quote }: Props) => {
               <HiPencil className="cursor-pointer text-primary h-8 w-8" />
             </Button>
           </TooltipTrigger>
-          <TooltipContent>
+          <TooltipContent className="z-50">
             <p>Zaaktualizuj cytat</p>
           </TooltipContent>
         </Tooltip>

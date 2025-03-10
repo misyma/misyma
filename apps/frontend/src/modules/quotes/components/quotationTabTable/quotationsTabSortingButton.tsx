@@ -1,6 +1,6 @@
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { Check } from 'lucide-react';
-import { useState } from 'react';
+import { type FC, useState } from 'react';
 import { HiBarsArrowDown } from 'react-icons/hi2';
 
 import { SortOrder } from '@common/contracts';
@@ -10,10 +10,14 @@ import { Command, CommandItem, CommandList } from '../../../common/components/co
 import { Popover, PopoverContent, PopoverTrigger } from '../../../common/components/popover/popover';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../common/components/tooltip/tooltip';
 
-export const QuotationsTabSortingButton = () => {
+interface Props {
+  from: '/shelves/bookshelf/book/tabs/quotationsTab/' | '/quotes';
+}
+export const QuotationsTabSortingButton: FC<Props> = ({ from }) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
+  const [tooltipOpen, setTooltipOpen] = useState(false);
 
-  const navigate = useNavigate({ from: '/shelves/bookshelf/book/tabs/quotationsTab/' });
+  const navigate = useNavigate({ from });
 
   const search = useSearch({ strict: false });
 
@@ -26,13 +30,19 @@ export const QuotationsTabSortingButton = () => {
         [sortField]: sortOrder,
       },
     });
+    setTimeout(() => {
+      setTooltipOpen(false);
+    }, 100);
   };
 
   const selectedSortCheckmark = <Check className="h-4 w-4" />;
 
   return (
     <TooltipProvider delayDuration={300}>
-      <Tooltip>
+      <Tooltip
+        open={tooltipOpen}
+        onOpenChange={setTooltipOpen}
+      >
         <Popover
           open={popoverOpen}
           onOpenChange={setPopoverOpen}
@@ -47,6 +57,7 @@ export const QuotationsTabSortingButton = () => {
           <PopoverContent
             className="w-45 p-0"
             align="start"
+            onCloseAutoFocus={(e) => e.preventDefault()}
           >
             <Command>
               <CommandList>

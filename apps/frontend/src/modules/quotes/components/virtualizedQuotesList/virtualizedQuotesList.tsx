@@ -1,13 +1,11 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { useEffect, useMemo, useRef, type FC } from 'react';
-import { useSelector } from 'react-redux';
 
 import { type FindQuotesQueryParams } from '@common/contracts';
 
 import { FavoriteQuotationButton } from '../../../book/components/favoriteQuotationButton/favoriteQuotationButton';
 import { Skeleton } from '../../../common/components/skeleton/skeleton';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
 import { getQuotesByInfiniteQueryOptions } from '../../api/queries/getQuotes/getQuotes';
 import { Blockquote } from '../blockQuote/blockQuote';
 import { DeleteQuoteModal } from '../deleteQuoteModal/deleteQuoteModal';
@@ -15,18 +13,14 @@ import { UpdateQuoteButton } from '../updateQuoteModal/updateQuoteModal';
 
 interface VirtualizedQuotesListProps {
   className?: string;
-  filtersToInclude?: Record<string, boolean>;
   queryArgs?: Omit<FindQuotesQueryParams, 'accessToken'>;
 }
 
 export const VirtualizedQuotesList: FC<VirtualizedQuotesListProps> = ({ queryArgs }) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const parentRef = useRef<HTMLDivElement>(null);
 
   const { data, fetchNextPage, isLoading, isFetchingNextPage, hasNextPage } = useInfiniteQuery(
     getQuotesByInfiniteQueryOptions({
-      accessToken,
       pageSize: 6,
       ...queryArgs,
     }),
@@ -59,7 +53,7 @@ export const VirtualizedQuotesList: FC<VirtualizedQuotesListProps> = ({ queryArg
     <div
       ref={parentRef}
       // for mobile: calculating screen height and dynamically assigning via {style}
-      className="w-full max-w-screen-2xl h-[650px] sm:h-[800px] overflow-auto no-scrollbar px-2"
+      className="w-full max-w-screen-2xl h-[650px] sm:h-[800px] overflow-auto no-scrollbar px-2 py-8"
     >
       <div
         className="grid w-full grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
@@ -103,6 +97,7 @@ export const VirtualizedQuotesList: FC<VirtualizedQuotesListProps> = ({ queryArg
                       page={quote.page}
                       date="2025-01-01"
                       title={quote.bookTitle}
+                      className="h-[180px]"
                       author={quote.authors?.join(', ')}
                       rightButtons={
                         <>

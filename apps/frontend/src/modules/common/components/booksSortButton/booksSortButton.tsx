@@ -52,6 +52,7 @@ export const BooksSortButton = ({ navigationPath }: BooksSortButtonProps) => {
           <PopoverContent
             className="w-45 p-0"
             align="start"
+            onCloseAutoFocus={(e) => e.preventDefault()}
           >
             <Command>
               <CommandList>

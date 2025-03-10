@@ -35,7 +35,7 @@ const Blockquote = ({
   };
 
   return (
-    <div className={cn(variants[variant], 'mb-6', 'w-full', className)}>
+    <div className={cn(variants[variant], 'mb-6', 'w-full h-[180px] relative', className)}>
       {variant === 'modern' && <Quote className="absolute left-1 top-0 h-6 w-6 text-primary opacity-20" />}
       {variant === 'minimalist' && (
         <Quote className="absolute -top-1 -left-3 h-6 w-6 text-primary bg-white dark:bg-gray-900 p-1" />
@@ -50,7 +50,7 @@ const Blockquote = ({
         {page ? `, strona: ${page}` : ''}
       </div>
       {author && (
-        <div className="w-full flex justify-end">
+        <div className="absolute bottom-3 left-0 w-full flex justify-end">
           <TruncatedTextTooltip
             className="w-full"
             text={title + ' - ' + author}

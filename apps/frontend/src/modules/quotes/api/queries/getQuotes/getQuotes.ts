@@ -16,7 +16,7 @@ import { QuotesApiQueryKeys } from '../quotesApiQueryKeys.js';
 
 const mapper = new ErrorCodeMessageMapper({});
 
-export const getQuotes = async (payload: FindQuotesQueryParams & { accessToken: string }) => {
+export const getQuotes = async (payload: FindQuotesQueryParams) => {
   const queryParams: Record<string, string> = {};
 
   if (payload.userBookId) {
@@ -47,7 +47,7 @@ export const getQuotes = async (payload: FindQuotesQueryParams & { accessToken: 
 };
 
 export const getQuotesOptions = (
-  payload: FindQuotesQueryParams & { accessToken: string },
+  payload: FindQuotesQueryParams,
 ): UseQueryOptions<FindQuotesResponseBody, QuoteApiError, FindQuotesResponseBody, string[]> =>
   queryOptions({
     queryKey: [...getQuotesOptionsQueryKey(payload), `${payload.page}`, `${payload.pageSize}`, `${payload.sortDate}`],
@@ -55,10 +55,7 @@ export const getQuotesOptions = (
     placeholderData: keepPreviousData,
   });
 
-export const getQuotesByInfiniteQueryOptions = ({
-  page = 1,
-  ...payload
-}: FindQuotesQueryParams & { accessToken: string }) =>
+export const getQuotesByInfiniteQueryOptions = ({ page = 1, ...payload }: FindQuotesQueryParams) =>
   infiniteQueryOptions({
     queryKey: [
       'infinite-query',
