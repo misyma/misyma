@@ -159,6 +159,7 @@ const BookCommandGroup = ({
                     }}
                     key={book?.value}
                     className="cursor-pointer"
+                    value={book.value}
                   >
                     <span>{book?.label}</span>
                   </CommandItem>

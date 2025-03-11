@@ -77,12 +77,12 @@ export const BookSearchFilter: FC<FilterComponentProps> = ({
                 {' '}
                 <div className="flex items-center w-full overflow-hidden">
                   {!initialValue && <span className="px-3 text-muted-foreground text-sm">Wyszukaj książkę</span>}
-                  {initialValue && isFetchingCurrentBook && (
+                  {initialValue && isFetchingCurrentBook && !selectedBookName && (
                     <div className="px-2">
                       <LoadingSpinner size={20} />
                     </div>
                   )}
-                  {initialValue && !isFetchingCurrentBook && (
+                  {initialValue && (!isFetchingCurrentBook || selectedBookName) && (
                     <span className="block truncate px-3 text-sm font-normal text-foreground">{displayedBookName}</span>
                   )}
                 </div>
