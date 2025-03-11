@@ -18,14 +18,12 @@ import { FindUserBooksByInfiniteQueryOptions } from '../../api/user/queries/find
 interface BookSearchSelectorProps {
   onSelect: (bookId: string, bookTitle: string) => void;
   className?: string;
-  currentlySelectedBookId?: string;
   searchedName?: string;
   dialog?: boolean;
 }
 
 export const BookSearchSelector: FC<BookSearchSelectorProps> = ({
   className,
-  //   currentlySelectedBookId,
   searchedName: propSearchedName,
   dialog = false,
   onSelect,

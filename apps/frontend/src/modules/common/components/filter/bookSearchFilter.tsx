@@ -93,10 +93,7 @@ export const BookSearchFilter: FC<FilterComponentProps> = ({
             </Button>
           </PopoverTrigger>
 
-          <BookSearchSelector
-            currentlySelectedBookId={selectedBookId}
-            onSelect={onChange}
-          />
+          <BookSearchSelector onSelect={onChange} />
         </Popover>
       }
     ></FilterContainer>
