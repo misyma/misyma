@@ -78,6 +78,7 @@ export const QuotesPageFilterBar = () => {
           label: 'Książka',
           type: 'text',
         }}
+        onRemoveFilter={() => updateSearch({ userBookId: undefined })}
         setFilterAction={(val) => updateSearch({ userBookId: val })}
       />
     </FiltersDrawer>

@@ -26,6 +26,7 @@ export const BookSearchFilter: FC<FilterComponentProps> = ({
     }
 
     setSelectedBookName('');
+    setSelectedBookId('');
   };
 
   useEffect(() => {
@@ -56,7 +57,7 @@ export const BookSearchFilter: FC<FilterComponentProps> = ({
   return (
     <FilterContainer
       filter={filter}
-      hasValue={!!selectedBookName}
+      hasValue={!!selectedBookId}
       onRemoveFilter={onRemoveFilter ? onRemoveFilterInternal : undefined}
       slot={
         <Popover>
