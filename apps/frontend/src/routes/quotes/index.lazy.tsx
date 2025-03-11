@@ -52,7 +52,7 @@ const BooksFiltersVisibilityButton = () => {
                 <HiOutlineFilter className="w-8 h-8"></HiOutlineFilter>
               </div>
               {filtersApplied && (
-                <div className="absolute h-4 w-4 top-[-10px] right-[-8px] rounded-full bg-green-500"></div>
+                <div className="absolute h-4 w-4 top-[-10px] right-[-8px] rounded-full z-50 bg-green-500"></div>
               )}
             </div>
           </Button>
