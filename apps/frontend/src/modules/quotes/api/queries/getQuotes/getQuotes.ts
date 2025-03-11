@@ -35,6 +35,10 @@ export const getQuotes = async (payload: FindQuotesQueryParams) => {
     queryParams.authorId = payload.authorId;
   }
 
+  if (payload.userBookId) {
+    queryParams.userBookId = payload.userBookId;
+  }
+
   if (payload.isFavorite) {
     queryParams.isFavorite = 'true';
   }

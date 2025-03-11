@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 
 import { type QuotePageSearch } from '../../../../routes/quotes';
 import { AuthorSearchFilter } from '../../../common/components/filter/AuthorSearchFilter';
+import { BookSearchFilter } from '../../../common/components/filter/bookSearchFilter';
 import { CheckboxFilter } from '../../../common/components/filter/filter';
 import FiltersDrawer from '../../../common/components/filtersDrawer/filtersDrawer';
 import { quoteStateSelectors } from '../../../core/store/states/quotesFilterState/quoteFilterStateSlice';
@@ -68,6 +69,16 @@ export const QuotesPageFilterBar = () => {
           label: 'Ulubiona',
           type: 'three-state-checkbox',
         }}
+      />
+      <BookSearchFilter
+        initialValue={search.userBookId}
+        filter={{
+          id: 'book-id-filter',
+          key: 'bookId',
+          label: 'Książka',
+          type: 'text',
+        }}
+        setFilterAction={(val) => updateSearch({ userBookId: val })}
       />
     </FiltersDrawer>
   );
