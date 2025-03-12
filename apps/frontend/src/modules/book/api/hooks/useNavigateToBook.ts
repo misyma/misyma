@@ -1,16 +1,24 @@
 import { useNavigate } from '@tanstack/react-router';
 
+import { BookNavigationFromEnum, type BookNavigationFrom } from '../../constants';
+
 interface UseNavigateToBookProps {
   bookId: string;
+  from: BookNavigationFrom;
 }
-export const useNavigateToBook = ({ bookId }: UseNavigateToBookProps) => {
+export const useNavigateToBook = ({ bookId, from }: UseNavigateToBookProps) => {
   const navigate = useNavigate();
+
+  const url = from === BookNavigationFromEnum.shelves ? '/shelves/bookshelf/book/$bookId' : '/mybooks/book/$bookId';
 
   const navigateToBook = () => {
     navigate({
-      to: '/shelves/bookshelf/book/tabs/basicDataTab/$bookId',
+      to: url,
       params: {
         bookId,
+      },
+      search: {
+        view: 'basicData',
       },
     });
   };

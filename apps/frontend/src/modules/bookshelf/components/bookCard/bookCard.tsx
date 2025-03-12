@@ -1,3 +1,4 @@
+import { useRouter } from '@tanstack/react-router';
 import { type FC, useMemo } from 'react';
 import { HiClock, HiDotsCircleHorizontal } from 'react-icons/hi';
 import { HiCheckCircle, HiEnvelope, HiQuestionMarkCircle } from 'react-icons/hi2';
@@ -8,6 +9,7 @@ import { useNavigateToBook } from '../../../book/api/hooks/useNavigateToBook';
 import { BookImageMiniature } from '../../../book/components/bookImageMiniature/bookImageMiniature';
 import { BookmarkButton } from '../../../book/components/bookmarkButton/bookmarkButton';
 import { TruncatedTextTooltip } from '../../../book/components/truncatedTextTooltip/truncatedTextTooltip';
+import { BookNavigationFromEnum } from '../../../book/constants';
 import { FindBookBorrowingsQueryOptions } from '../../../borrowing/api/queries/findBookBorrowings/findBookBorrowingsQueryOptions';
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
 import { cn } from '../../../common/lib/utils';
@@ -51,8 +53,14 @@ export const BookCard: FC<{
 }> = ({ className, book, isBorrowed = false }) => {
   const authors = useMemo(() => book.book.authors.map((a) => a.name).join(', '), [book]);
 
+  const router = useRouter();
+
+  const from =
+    router.latestLocation.href === '/mybooks' ? BookNavigationFromEnum.books : BookNavigationFromEnum.shelves;
+
   const { navigateToBook } = useNavigateToBook({
     bookId: book.id,
+    from,
   });
 
   const readingStatusMap = useMemo(

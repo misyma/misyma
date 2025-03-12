@@ -66,7 +66,10 @@ export const SearchCreatePage: FC = () => {
               }}
             />
             {}
-            <ManualStep bookshelfId={params.bookshelfId} />
+            <ManualStep
+              navigateTo="shelves"
+              bookshelfId={params.bookshelfId}
+            />
           </div>
           <div className="flex items-center justify-center">
             <div className="relative w-full flex justify-center items-center h-[500px] md:h-[300px]">
