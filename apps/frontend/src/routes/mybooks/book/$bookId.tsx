@@ -5,7 +5,7 @@ const bookPathParamsSchema = z.object({
   bookId: z.string().uuid().catch(''),
 });
 
-export const Route = createFileRoute('/shelves/bookshelf/book/tabs/gradesTab/$bookId')({
+export const Route = createFileRoute('/mybooks/book/$bookId')({
   onError: () => {
     return <Navigate to={'/login'} />;
   },
@@ -19,16 +19,8 @@ export const Route = createFileRoute('/shelves/bookshelf/book/tabs/gradesTab/$bo
         href: '/shelves/',
       },
       {
-        readableName: '$bookshelfName',
-        href: '/shelves/bookshelf/$bookshelfId',
-      },
-      {
         readableName: '$bookName',
-        href: '/shelves/bookshelf/book/tabs/basicDataTab/$bookId',
-      },
-      {
-        readableName: 'Oceny',
-        href: '/shelves/bookshelf/book/tabs/gradesTab/$bookId',
+        href: '/shelves/bookshelf/book/$bookId',
       },
     ],
   },

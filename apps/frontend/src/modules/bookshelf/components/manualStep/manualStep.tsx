@@ -52,9 +52,10 @@ const stepThreeFormSchema = z.object({
 
 interface Props {
   bookshelfId?: string;
+  navigateTo: 'shelves' | 'books';
 }
 
-export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
+export const ManualStep = ({ bookshelfId, navigateTo }: Props): JSX.Element => {
   const searchBookContext = useSearchBookContext();
 
   const [submissionError, setSubmissionError] = useState<string | null>(null);
@@ -127,6 +128,7 @@ export const ManualStep = ({ bookshelfId }: Props): JSX.Element => {
 
   const { create, isProcessing } = useCreateBookWithUserBook({
     onOperationError: setSubmissionError,
+    navigateTo,
   });
 
   const onSubmit = async (values: Partial<z.infer<typeof stepThreeFormSchema>>) => {

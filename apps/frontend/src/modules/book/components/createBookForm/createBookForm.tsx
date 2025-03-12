@@ -15,9 +15,10 @@ import { cn } from '../../../common/lib/utils';
 
 interface CreateBookProps {
   bookshelfId: string;
+  navigateTo: 'shelves' | 'books';
 }
 
-export const CreateBookForm: FC<CreateBookProps> = ({ bookshelfId }) => {
+export const CreateBookForm: FC<CreateBookProps> = ({ bookshelfId, navigateTo }) => {
   const steps = {
     [NonIsbnCreationPathStep.inputFirstDetails]: ManualStepOneForm,
     [NonIsbnCreationPathStep.inputSecondDetails]: ManualStepTwoForm,
@@ -32,7 +33,12 @@ export const CreateBookForm: FC<CreateBookProps> = ({ bookshelfId }) => {
     if (!bookCreation.isbnPath && bookCreation.step > 0) {
       const Component = steps[bookCreation.step as NonIsbnCreationPathStep];
 
-      return <Component bookshelfId={bookshelfId} />;
+      return (
+        <Component
+          bookshelfId={bookshelfId}
+          navigateTo={navigateTo}
+        />
+      );
     } else {
       return null;
     }

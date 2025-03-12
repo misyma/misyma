@@ -22,28 +22,31 @@ export const BookTabLink: FC<BookTabLinkProps> = ({ label, link, selected }) => 
 interface BookTabNavigationProps {
   bookId: string;
   currentTab: 'basicData' | 'quotations' | 'grades';
+  from: 'shelves' | 'books';
 }
-export const BookTabNavigation: FC<BookTabNavigationProps> = ({ bookId, currentTab }) => {
+export const BookTabNavigation: FC<BookTabNavigationProps> = ({ from, bookId, currentTab }) => {
+  const baseUrl = from === 'shelves' ? '/shelves/bookshelf/book/' + bookId : '/mybooks/book/' + bookId;
+
   return (
     <ul className="flex justify-between gap-8 text-sm sm:text-lg font-semibold">
       <li>
         <BookTabLink
           label="Dane podstawowe"
-          link={`/shelves/bookshelf/book/tabs/basicDataTab/${bookId}`}
+          link={`${baseUrl}?view=basicData`}
           selected={currentTab === 'basicData'}
         />
       </li>
       <li>
         <BookTabLink
           label="Cytaty"
-          link={`/shelves/bookshelf/book/tabs/quotationsTab/${bookId}`}
+          link={`${baseUrl}?view=quotations`}
           selected={currentTab === 'quotations'}
         />
       </li>
       <li>
         <BookTabLink
           label="Oceny"
-          link={`/shelves/bookshelf/book/tabs/gradesTab/${bookId}`}
+          link={`${baseUrl}?view=grades`}
           selected={currentTab === 'grades'}
         />
       </li>

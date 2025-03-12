@@ -58,9 +58,10 @@ const stepThreeFormSchema = z.object({
 
 interface Props {
   bookshelfId: string;
+  navigateTo: 'shelves' | 'books';
 }
 
-export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
+export const ManualStepThreeForm = ({ bookshelfId, navigateTo }: Props): JSX.Element => {
   const bookCreation = useBookCreation<false>() as BookCreationNonIsbnState;
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
@@ -93,6 +94,7 @@ export const ManualStepThreeForm = ({ bookshelfId }: Props): JSX.Element => {
 
   const { create, isProcessing } = useCreateBookWithUserBook({
     onOperationError: setSubmissionError,
+    navigateTo,
   });
 
   const onSubmit = async (values: Partial<z.infer<typeof stepThreeFormSchema>>) => {

@@ -1,10 +1,10 @@
 import { createLazyFileRoute } from '@tanstack/react-router';
 import { type FC } from 'react';
 
-import { AuthenticatedLayout } from '../../../../modules/auth/layouts/authenticated/authenticatedLayout';
-import { CreateBookForm } from '../../../../modules/book/components/createBookForm/createBookForm';
-import { BookCreationProvider } from '../../../../modules/bookshelf/context/bookCreationContext/bookCreationContext';
-import { RequireAuthComponent } from '../../../../modules/core/components/requireAuth/requireAuthComponent';
+import { AuthenticatedLayout } from '../../../modules/auth/layouts/authenticated/authenticatedLayout';
+import { CreateBookForm } from '../../../modules/book/components/createBookForm/createBookForm';
+import { BookCreationProvider } from '../../../modules/bookshelf/context/bookCreationContext/bookCreationContext';
+import { RequireAuthComponent } from '../../../modules/core/components/requireAuth/requireAuthComponent';
 
 export const CreateBook: FC = () => {
   const { id } = Route.useSearch();
@@ -13,7 +13,7 @@ export const CreateBook: FC = () => {
     <AuthenticatedLayout>
       <div className="flex items-center justify-center align-middle">
         <CreateBookForm
-          navigateTo="shelves"
+          navigateTo="books"
           bookshelfId={id}
         ></CreateBookForm>
       </div>
@@ -21,7 +21,7 @@ export const CreateBook: FC = () => {
   );
 };
 
-export const Route = createLazyFileRoute('/shelves/bookshelf/createBook/')({
+export const Route = createLazyFileRoute('/mybooks/createBook/')({
   component: () => {
     return (
       <RequireAuthComponent>

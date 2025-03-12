@@ -38,10 +38,12 @@ interface UseCreateBookWithUserBookResult {
 interface UseCreateBookWithUserBookProps {
   onAuthorCreationError?: () => Promise<FindAuthorsResponseBody | undefined>;
   onOperationError: (message: string) => void;
+  navigateTo: 'shelves' | 'books';
 }
 
 export const useCreateBookWithUserBook = ({
   onOperationError,
+  navigateTo,
 }: UseCreateBookWithUserBookProps): UseCreateBookWithUserBookResult => {
   const { toast } = useToast();
 
@@ -131,9 +133,11 @@ export const useCreateBookWithUserBook = ({
         variant: 'success',
       });
 
-      await navigate({
-        to: `/shelves/bookshelf/${userBookPayload.bookshelfId}`,
-      });
+      if (navigateTo == 'shelves') {
+        await navigate({
+          to: `/shelves/bookshelf/${userBookPayload.bookshelfId}`,
+        });
+      }
     } catch (error) {
       if (error instanceof BookApiError) {
         onOperationError(error.context.message);

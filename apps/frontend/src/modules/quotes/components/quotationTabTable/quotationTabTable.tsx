@@ -51,7 +51,7 @@ export const QuotationTabTable: FC<QuotationTabTableProps> = ({ bookId, sortDate
         <div className="flex justify-between">
           <p className="text-lg pb-6"> {userBookData?.book?.authors[0]?.name ?? ''} </p>
           {(quotationsData?.data.length ?? 0) > 1 && (
-            <QuotationsTabSortingButton from="/shelves/bookshelf/book/tabs/quotationsTab/" />
+            <QuotationsTabSortingButton from="/shelves/bookshelf/book/$bookId" />
           )}
         </div>
       )}

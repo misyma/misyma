@@ -1,3 +1,4 @@
+import { useRouter } from '@tanstack/react-router';
 import { type FC, useMemo } from 'react';
 import { HiClock, HiDotsCircleHorizontal } from 'react-icons/hi';
 import { HiCheckCircle, HiEnvelope, HiQuestionMarkCircle } from 'react-icons/hi2';
@@ -51,8 +52,13 @@ export const BookCard: FC<{
 }> = ({ className, book, isBorrowed = false }) => {
   const authors = useMemo(() => book.book.authors.map((a) => a.name).join(', '), [book]);
 
+  const router = useRouter();
+
+  const from = router.latestLocation.href === '/mybooks' ? 'books' : 'shelves';
+
   const { navigateToBook } = useNavigateToBook({
     bookId: book.id,
+    from,
   });
 
   const readingStatusMap = useMemo(

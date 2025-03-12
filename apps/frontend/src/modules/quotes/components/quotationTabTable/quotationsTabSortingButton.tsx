@@ -11,7 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '../../../common/compone
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../common/components/tooltip/tooltip';
 
 interface Props {
-  from: '/shelves/bookshelf/book/tabs/quotationsTab/' | '/quotes';
+  from: '/shelves/bookshelf/book/$bookId' | '/quotes';
 }
 export const QuotationsTabSortingButton: FC<Props> = ({ from }) => {
   const [popoverOpen, setPopoverOpen] = useState(false);

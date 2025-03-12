@@ -2,15 +2,21 @@ import { useNavigate } from '@tanstack/react-router';
 
 interface UseNavigateToBookProps {
   bookId: string;
+  from: 'shelves' | 'books';
 }
-export const useNavigateToBook = ({ bookId }: UseNavigateToBookProps) => {
+export const useNavigateToBook = ({ bookId, from }: UseNavigateToBookProps) => {
   const navigate = useNavigate();
+
+  const url = from === 'shelves' ? '/shelves/bookshelf/book/$bookId' : '/mybooks/book/$bookId';
 
   const navigateToBook = () => {
     navigate({
-      to: '/shelves/bookshelf/book/tabs/basicDataTab/$bookId',
+      to: url,
       params: {
         bookId,
+      },
+      search: {
+        view: 'basicData',
       },
     });
   };
