@@ -24,6 +24,7 @@ import { Route as ShelvesBookshelfBookshelfIdImport } from './routes/shelves/boo
 import { Route as MybooksBookBookIdImport } from './routes/mybooks/book/$bookId'
 import { Route as ShelvesBookshelfCreateBookIndexImport } from './routes/shelves/bookshelf/createBook/index'
 import { Route as MybooksSearchResultIndexImport } from './routes/mybooks/search/result/index'
+import { Route as MybooksSearchCreateBookIndexImport } from './routes/mybooks/search/createBook/index'
 import { Route as MybooksSearchCreateIndexImport } from './routes/mybooks/search/create/index'
 import { Route as AdminTabsChangeRequestsIndexImport } from './routes/admin/tabs/changeRequests/index'
 import { Route as AdminTabsBooksIndexImport } from './routes/admin/tabs/books/index'
@@ -170,6 +171,16 @@ const MybooksSearchResultIndexRoute = MybooksSearchResultIndexImport.update({
 } as any).lazy(() =>
   import('./routes/mybooks/search/result/index.lazy').then((d) => d.Route),
 )
+
+const MybooksSearchCreateBookIndexRoute =
+  MybooksSearchCreateBookIndexImport.update({
+    path: '/mybooks/search/createBook/',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/mybooks/search/createBook/index.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 
 const MybooksSearchCreateIndexRoute = MybooksSearchCreateIndexImport.update({
   path: '/mybooks/search/create/',
@@ -357,6 +368,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MybooksSearchCreateIndexImport
       parentRoute: typeof rootRoute
     }
+    '/mybooks/search/createBook/': {
+      preLoaderRoute: typeof MybooksSearchCreateBookIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/mybooks/search/result/': {
       preLoaderRoute: typeof MybooksSearchResultIndexImport
       parentRoute: typeof rootRoute
@@ -413,6 +428,7 @@ export const routeTree = rootRoute.addChildren([
   AdminTabsBooksIndexRoute,
   AdminTabsChangeRequestsIndexRoute,
   MybooksSearchCreateIndexRoute,
+  MybooksSearchCreateBookIndexRoute,
   MybooksSearchResultIndexRoute,
   ShelvesBookshelfCreateBookIndexRoute,
   ShelvesBookshelfSearchIndexLazyRoute,

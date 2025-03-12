@@ -94,7 +94,6 @@ export const QueryClientProvider = ({ children }: ProviderProps) => {
     },
     queryCache: new QueryCache({
       onError: async (error) => {
-        console.log('On error...');
         if (error instanceof ApiError && error.context.statusCode === 401) {
           try {
             setRefreshingToken(true);

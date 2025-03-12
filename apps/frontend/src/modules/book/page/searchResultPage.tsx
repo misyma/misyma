@@ -360,7 +360,7 @@ export const SearchResultPage: FC = () => {
 
   const searchUrl = from === BookNavigationFromEnum.shelves ? '/shelves/bookshelf/search' : '/mybooks/search';
   const createManuallyUrl =
-    from === BookNavigationFromEnum.shelves ? '/shelves/bookshelf/search/create' : '/mybooks/search/create';
+    from === BookNavigationFromEnum.shelves ? '/shelves/bookshelf/createBook/' : '/mybooks/search/createBook';
   const addBookUrl =
     from === BookNavigationFromEnum.shelves
       ? `/shelves/bookshelf/search/create/${searchParams.bookshelfId}`

@@ -11,7 +11,7 @@ export const CreateBookPage: FC<{ from: string }> = ({ from }) => {
     <AuthenticatedLayout>
       <div className="flex items-center justify-center align-middle">
         <CreateBookForm
-          navigateTo="shelves"
+          navigateTo="books"
           bookshelfId={id}
         ></CreateBookForm>
       </div>

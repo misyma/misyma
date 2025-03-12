@@ -53,8 +53,6 @@ export const BookPage: FC<{ from: BookNavigationFrom }> = ({ from }) => {
       }),
     ]);
   };
-  console.log(view);
-
   const renderMainBody = () => {
     switch (view) {
       case 'basicData':
