@@ -12,10 +12,11 @@ import {
 } from '../../../bookshelf/context/bookCreationContext/bookCreationContext';
 import { Breadcrumbs, NumericBreadcrumb } from '../../../common/components/ui/breadcrumbs';
 import { cn } from '../../../common/lib/utils';
+import { type BookNavigationFrom } from '../../constants';
 
 interface CreateBookProps {
   bookshelfId: string;
-  navigateTo: 'shelves' | 'books';
+  navigateTo: BookNavigationFrom;
 }
 
 export const CreateBookForm: FC<CreateBookProps> = ({ bookshelfId, navigateTo }) => {

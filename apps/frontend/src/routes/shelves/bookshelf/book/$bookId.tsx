@@ -15,8 +15,12 @@ export const Route = createFileRoute('/shelves/bookshelf/book/$bookId')({
   staticData: {
     routeDisplayableNameParts: [
       {
-        readableName: 'Moje książki',
-        href: '/mybooks/',
+        readableName: 'Półki',
+        href: '/shelves/',
+      },
+      {
+        readableName: '$bookshelfName',
+        href: '/shelves/bookshelf/$bookshelfId',
       },
       {
         readableName: '$bookName',

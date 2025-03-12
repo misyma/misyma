@@ -19,11 +19,12 @@ import { BasicDataTabActionButtons } from '../components/basicDataTab/basicDataT
 import { BookGradesTabMainBody } from '../components/bookGradesTab/bookGradesTabMainBody';
 import { BookTabNavigation } from '../components/bookTabNavigation/bookTabNavigation';
 import { FavoriteBookButton } from '../components/favoriteBookButton/favoriteBookButton';
+import { BookNavigationFromEnum, type BookNavigationFrom } from '../constants';
 import { useBookBreadcrumbs } from '../hooks/useBookBreadcrumbs';
 import { BookTabLayout } from '../layouts/bookTabLayout';
 
-export const BookPage: FC<{ from: 'shelves' | 'books' }> = ({ from }) => {
-  const fromUrl = from === 'shelves' ? '/shelves/bookshelf/book/$bookId' : '/mybooks/book/$bookId';
+export const BookPage: FC<{ from: BookNavigationFrom }> = ({ from }) => {
+  const fromUrl = from === BookNavigationFromEnum.shelves ? '/shelves/bookshelf/book/$bookId' : '/mybooks/book/$bookId';
   const { bookId } = useParams({ from: fromUrl }) as {
     bookId: string;
   };

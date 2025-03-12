@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { type FC } from 'react';
 
 import { cn } from '../../../common/lib/utils';
+import { BookNavigationFromEnum, type BookNavigationFrom } from '../../constants';
 
 interface BookTabLinkProps {
   link: string;
@@ -22,10 +23,11 @@ export const BookTabLink: FC<BookTabLinkProps> = ({ label, link, selected }) => 
 interface BookTabNavigationProps {
   bookId: string;
   currentTab: 'basicData' | 'quotations' | 'grades';
-  from: 'shelves' | 'books';
+  from: BookNavigationFrom;
 }
 export const BookTabNavigation: FC<BookTabNavigationProps> = ({ from, bookId, currentTab }) => {
-  const baseUrl = from === 'shelves' ? '/shelves/bookshelf/book/' + bookId : '/mybooks/book/' + bookId;
+  const baseUrl =
+    from === BookNavigationFromEnum.shelves ? '/shelves/bookshelf/book/' + bookId : '/mybooks/book/' + bookId;
 
   return (
     <ul className="flex justify-between gap-8 text-sm sm:text-lg font-semibold">

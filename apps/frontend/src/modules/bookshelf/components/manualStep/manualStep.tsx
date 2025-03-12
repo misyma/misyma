@@ -9,6 +9,7 @@ import { z } from 'zod';
 import { ReadingStatus as ContractReadingStatus } from '@common/contracts';
 
 import { FindBookByIdQueryOptions } from '../../../book/api/user/queries/findBookById/findBookByIdQueryOptions';
+import { type BookNavigationFrom } from '../../../book/constants';
 import { BookApiError } from '../../../book/errors/bookApiError';
 import { useCreateBookWithUserBook } from '../../../book/hooks/createBookWithUserBook/createBookWithUserBook';
 import { Button } from '../../../common/components/button/button';
@@ -52,7 +53,7 @@ const stepThreeFormSchema = z.object({
 
 interface Props {
   bookshelfId?: string;
-  navigateTo: 'shelves' | 'books';
+  navigateTo: BookNavigationFrom;
 }
 
 export const ManualStep = ({ bookshelfId, navigateTo }: Props): JSX.Element => {

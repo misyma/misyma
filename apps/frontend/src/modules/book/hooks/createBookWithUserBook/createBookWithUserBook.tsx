@@ -16,6 +16,7 @@ import {
 } from '../../api/user/mutations/createUserBookMutation/createUserBookMutation';
 import { useUploadBookImageMutation } from '../../api/user/mutations/uploadBookImageMutation/uploadBookImageMutation';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
+import { BookNavigationFromEnum, type BookNavigationFrom } from '../../constants';
 import { BookApiError } from '../../errors/bookApiError';
 
 interface CreatePayload {
@@ -38,7 +39,7 @@ interface UseCreateBookWithUserBookResult {
 interface UseCreateBookWithUserBookProps {
   onAuthorCreationError?: () => Promise<FindAuthorsResponseBody | undefined>;
   onOperationError: (message: string) => void;
-  navigateTo: 'shelves' | 'books';
+  navigateTo: BookNavigationFrom;
 }
 
 export const useCreateBookWithUserBook = ({
@@ -133,11 +134,15 @@ export const useCreateBookWithUserBook = ({
         variant: 'success',
       });
 
-      if (navigateTo == 'shelves') {
+      if (navigateTo == BookNavigationFromEnum.shelves) {
         await navigate({
           to: `/shelves/bookshelf/${userBookPayload.bookshelfId}`,
         });
+        return;
       }
+      await navigate({
+        to: `/mybooks/`,
+      });
     } catch (error) {
       if (error instanceof BookApiError) {
         onOperationError(error.context.message);

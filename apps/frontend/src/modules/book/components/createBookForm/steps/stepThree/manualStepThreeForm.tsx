@@ -31,6 +31,7 @@ import { useErrorHandledQuery } from '../../../../../common/hooks/useErrorHandle
 import { useFileUpload } from '../../../../../common/hooks/useFileUpload';
 import { userStateSelectors } from '../../../../../core/store/states/userState/userStateSlice';
 import { getGenresQueryOptions } from '../../../../../genres/api/queries/getGenresQuery/getGenresQueryOptions';
+import { type BookNavigationFrom } from '../../../../constants';
 import { useCreateBookWithUserBook } from '../../../../hooks/createBookWithUserBook/createBookWithUserBook';
 import GenreSelect from '../../../genreSelect/genreSelect';
 
@@ -58,7 +59,7 @@ const stepThreeFormSchema = z.object({
 
 interface Props {
   bookshelfId: string;
-  navigateTo: 'shelves' | 'books';
+  navigateTo: BookNavigationFrom;
 }
 
 export const ManualStepThreeForm = ({ bookshelfId, navigateTo }: Props): JSX.Element => {

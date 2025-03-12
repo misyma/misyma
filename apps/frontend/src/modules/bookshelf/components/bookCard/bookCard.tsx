@@ -9,6 +9,7 @@ import { useNavigateToBook } from '../../../book/api/hooks/useNavigateToBook';
 import { BookImageMiniature } from '../../../book/components/bookImageMiniature/bookImageMiniature';
 import { BookmarkButton } from '../../../book/components/bookmarkButton/bookmarkButton';
 import { TruncatedTextTooltip } from '../../../book/components/truncatedTextTooltip/truncatedTextTooltip';
+import { BookNavigationFromEnum } from '../../../book/constants';
 import { FindBookBorrowingsQueryOptions } from '../../../borrowing/api/queries/findBookBorrowings/findBookBorrowingsQueryOptions';
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
 import { cn } from '../../../common/lib/utils';
@@ -54,7 +55,8 @@ export const BookCard: FC<{
 
   const router = useRouter();
 
-  const from = router.latestLocation.href === '/mybooks' ? 'books' : 'shelves';
+  const from =
+    router.latestLocation.href === '/mybooks' ? BookNavigationFromEnum.books : BookNavigationFromEnum.shelves;
 
   const { navigateToBook } = useNavigateToBook({
     bookId: book.id,
