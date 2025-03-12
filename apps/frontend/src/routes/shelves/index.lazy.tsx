@@ -20,14 +20,14 @@ const SearchBookshelfField = () => {
   useEffect(() => {
     navigate({
       to: '',
-      search: (prev) => ({ ...prev, name: debouncedSearchedName }),
+      search: (prev: Record<string, string>) => ({ ...prev, name: debouncedSearchedName }),
     });
   }, [debouncedSearchedName, navigate]);
 
   const setCurrentPage = (value: number) => {
     navigate({
       to: '',
-      search: (prev) => ({ ...prev, page: value }),
+      search: (prev: Record<string, string>) => ({ ...prev, page: value }),
     });
   };
 

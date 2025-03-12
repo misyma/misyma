@@ -1,6 +1,7 @@
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, useRouter } from '@tanstack/react-router';
 import { type FC, useState } from 'react';
 
+import { BookNavigationFromEnum } from '../../../book/constants/index.js';
 import { Button } from '../../../common/components/button/button.js';
 import { Label } from '../../../common/components/label/label.js';
 import { RadioGroup, RadioGroupItem } from '../../../common/components/radioGroup/radio-group.js';
@@ -11,13 +12,20 @@ interface Props {
 }
 
 export const SearchBookMethodChoice: FC<Props> = ({ initialValue = 'isbn', bookshelfId }: Props) => {
+  const router = useRouter();
+
+  const from = router.latestLocation.href.includes('/mybooks')
+    ? BookNavigationFromEnum.books
+    : BookNavigationFromEnum.shelves;
+  const searchUrl = from === BookNavigationFromEnum.shelves ? '/shelves/bookshelf/search' : '/mybooks/search';
+
   const [chosenSearch, setChosenSearch] = useState<'isbn' | 'title'>(initialValue);
 
   const navigate = useNavigate();
 
   const onProceed = () => {
     navigate({
-      to: '/shelves/bookshelf/search',
+      to: searchUrl,
       search: {
         type: chosenSearch,
         next: 1,

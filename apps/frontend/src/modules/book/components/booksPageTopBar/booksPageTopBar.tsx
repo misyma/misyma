@@ -1,4 +1,4 @@
-import { useNavigate, useSearch } from '@tanstack/react-router';
+import { useNavigate, useRouter, useSearch } from '@tanstack/react-router';
 import { type FC, useMemo } from 'react';
 import { HiOutlineFilter } from 'react-icons/hi';
 import { HiPlus } from 'react-icons/hi2';
@@ -12,6 +12,7 @@ import {
   myBooksStateSelectors,
   setFilterVisible,
 } from '../../../core/store/states/myBooksFilterState/myBooksFilterStateSlice';
+import { BookNavigationFromEnum } from '../../constants';
 
 export const BooksPageTopBar: FC = () => {
   return (
@@ -27,6 +28,14 @@ const CreateBookButton = () => {
   const navigate = useNavigate();
 
   const { data: bookshelvesData, isLoading } = useFindUserBookshelfsQuery({});
+
+  const router = useRouter();
+
+  const from = router.latestLocation.href.includes('/mybooks')
+    ? BookNavigationFromEnum.books
+    : BookNavigationFromEnum.shelves;
+
+  const url = from === BookNavigationFromEnum.shelves ? '/shelves/bookshelf/search' : '/mybooks/search';
 
   const usableBookshelves = bookshelvesData?.data.filter((b) => !['Wypożyczalnia', 'Archiwum'].includes(b.name));
 
@@ -45,7 +54,7 @@ const CreateBookButton = () => {
                 return;
               }
               navigate({
-                to: `/shelves/bookshelf/search`,
+                to: url,
                 search: {
                   type: 'isbn',
                   next: 0,

@@ -58,7 +58,7 @@ export const BookPageFiltersBar = () => {
   const updateSearch = (updates: Partial<typeof search>) => {
     navigate({
       to: '',
-      search: (current) => ({
+      search: (current: Record<string, string>) => ({
         ...current,
         ...updates,
       }),
@@ -68,7 +68,7 @@ export const BookPageFiltersBar = () => {
   const onClearAll = () => {
     navigate({
       to: '',
-      search: ({ title, sortField, sortOrder }) => ({
+      search: ({ title, sortField, sortOrder }: Record<string, string>) => ({
         title,
         sortField,
         sortOrder,
