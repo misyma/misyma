@@ -27,7 +27,7 @@ export const AdminBookSearchFilter: FC<AdminBookSearchFilterProps> = ({ onClearA
   const updateSearch = (updates: Partial<typeof search>) => {
     navigate({
       to: '',
-      search: (current) => ({
+      search: (current: Record<string, string>) => ({
         ...current,
         ...updates,
         page: 1,

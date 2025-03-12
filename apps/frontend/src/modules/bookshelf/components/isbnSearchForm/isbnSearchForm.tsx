@@ -1,10 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, useRouter } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
 import { IoMdCheckmarkCircle } from 'react-icons/io';
 import { MdOutlineCancel } from 'react-icons/md';
 import { z } from 'zod';
 
+import { BookNavigationFromEnum } from '../../../book/constants';
 import { Button } from '../../../common/components/button/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/form/form';
 import { Input } from '../../../common/components/input/input';
@@ -33,6 +34,14 @@ export const IsbnSearchForm = ({ bookshelfId }: Props): JSX.Element => {
 
   const navigate = useNavigate();
 
+  const router = useRouter();
+
+  const from = router.latestLocation.href.includes('/mybooks')
+    ? BookNavigationFromEnum.books
+    : BookNavigationFromEnum.shelves;
+
+  const url = from === BookNavigationFromEnum.shelves ? '/shelves/bookshelf/search/result' : '/mybooks/search/result';
+
   const onFormSubmit = (values: Partial<z.infer<typeof stepOneIsbnSchema>>) => {
     if (!values.isbn) {
       return;
@@ -43,7 +52,7 @@ export const IsbnSearchForm = ({ bookshelfId }: Props): JSX.Element => {
     });
 
     navigate({
-      to: '/shelves/bookshelf/search/result',
+      to: url,
       search: {
         isbn: values.isbn,
         bookshelfId,

@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import { Navigate, useNavigate, useSearch } from '@tanstack/react-router';
+import { Navigate, useNavigate, useRouter, useSearch } from '@tanstack/react-router';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { useEffect, useMemo, useRef, useState, type FC } from 'react';
 
@@ -23,14 +23,22 @@ import {
 } from '../api/user/queries/findBooks/findBooksQueryOptions';
 import { FindUserBooksByQueryOptions } from '../api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
 import { BookImageMiniature } from '../components/bookImageMiniature/bookImageMiniature';
+import { BookNavigationFromEnum } from '../constants';
 
 interface FoundBookViewProps {
   onAddBook: (book?: Book) => Promise<void>;
   onCreateManually: () => void;
-  from: string;
 }
-const SingleFoundBookView: FC<FoundBookViewProps> = ({ onAddBook, onCreateManually, from }) => {
-  const searchParams = useSearch({ from }) as SearchResultSearch;
+const SingleFoundBookView: FC<FoundBookViewProps> = ({ onAddBook, onCreateManually }) => {
+  const router = useRouter();
+
+  const from = router.latestLocation.href.includes('/mybooks')
+    ? BookNavigationFromEnum.books
+    : BookNavigationFromEnum.shelves;
+
+  const searchUrl = from === BookNavigationFromEnum.shelves ? '/shelves/bookshelf/search' : '/mybooks/search';
+
+  const searchParams = useSearch({ strict: false }) as SearchResultSearch;
   const navigate = useNavigate();
 
   const { data: foundBooks } = useErrorHandledQuery(
@@ -76,7 +84,7 @@ const SingleFoundBookView: FC<FoundBookViewProps> = ({ onAddBook, onCreateManual
                 <NumericBreadcrumb
                   onClick={() =>
                     navigate({
-                      to: '/shelves/bookshelf/search',
+                      to: searchUrl,
                       search: {
                         bookshelfId: searchParams.bookshelfId,
                       },
@@ -211,8 +219,8 @@ const BookRow: FC<BookRowProps> = ({ book, onSelect, isSelected }) => {
   );
 };
 
-const ManyFoundBooksView: FC<FoundBookViewProps> = ({ from, onCreateManually, onAddBook }) => {
-  const searchParams = useSearch({ from }) as SearchResultSearch;
+const ManyFoundBooksView: FC<FoundBookViewProps> = ({ onCreateManually, onAddBook }) => {
+  const searchParams = useSearch({ strict: false }) as SearchResultSearch;
   const [selectedRowIndex, setSelectedRowIndex] = useState<number | undefined>(undefined);
 
   const parentRef = useRef<HTMLDivElement>(null);
@@ -340,16 +348,30 @@ const ManyFoundBooksView: FC<FoundBookViewProps> = ({ from, onCreateManually, on
   );
 };
 
-export const SearchResultPage: FC<{ from: string }> = ({ from }) => {
-  const searchParams = useSearch({ from }) as SearchResultSearch;
+export const SearchResultPage: FC = () => {
+  const router = useRouter();
+
+  const from = router.latestLocation.href.includes('/mybooks')
+    ? BookNavigationFromEnum.books
+    : BookNavigationFromEnum.shelves;
+
+  const searchParams = useSearch({ strict: false }) as SearchResultSearch;
   const navigate = useNavigate();
+
+  const searchUrl = from === BookNavigationFromEnum.shelves ? '/shelves/bookshelf/search' : '/mybooks/search';
+  const createManuallyUrl =
+    from === BookNavigationFromEnum.shelves ? '/shelves/bookshelf/search/create' : '/mybooks/search/create';
+  const addBookUrl =
+    from === BookNavigationFromEnum.shelves
+      ? `/shelves/bookshelf/search/create/${searchParams.bookshelfId}`
+      : `/shelves/createBook/${searchParams.bookshelfId}`;
 
   const searchCreationDispatch = useSearchBookContextDispatch();
 
   useEffect(() => {
     if (searchParams.isbn === '' && searchParams.title === '') {
       navigate({
-        to: '/shelves/bookshelf/search',
+        to: searchUrl,
         search: {
           bookshelfId: searchParams.bookshelfId,
           type: 'title',
@@ -358,7 +380,7 @@ export const SearchResultPage: FC<{ from: string }> = ({ from }) => {
         },
       });
     }
-  }, [searchParams.searchBy, searchParams.bookshelfId, searchParams.isbn, searchParams.title, navigate]);
+  }, [searchUrl, searchParams.searchBy, searchParams.bookshelfId, searchParams.isbn, searchParams.title, navigate]);
 
   const { data: foundBooks, isFetching } = useErrorHandledQuery(
     FindBooksQueryOptions({
@@ -382,7 +404,7 @@ export const SearchResultPage: FC<{ from: string }> = ({ from }) => {
 
   const onTryAgain = () => {
     navigate({
-      to: '/shelves/bookshelf/search',
+      to: searchUrl,
       search: {
         bookshelfId: searchParams.bookshelfId,
         type: 'title',
@@ -393,7 +415,7 @@ export const SearchResultPage: FC<{ from: string }> = ({ from }) => {
 
   const onCreateManually = () => {
     navigate({
-      to: `/shelves/bookshelf/createBook`,
+      to: createManuallyUrl,
       search: {
         bookshelfId: searchParams.bookshelfId,
       },
@@ -416,7 +438,7 @@ export const SearchResultPage: FC<{ from: string }> = ({ from }) => {
     });
 
     navigate({
-      to: `/shelves/bookshelf/search/create/${searchParams.bookshelfId}`,
+      to: addBookUrl,
     });
   };
 
@@ -462,7 +484,6 @@ export const SearchResultPage: FC<{ from: string }> = ({ from }) => {
         <SingleFoundBookView
           onAddBook={onAddBook}
           onCreateManually={onCreateManually}
-          from={from}
         />
       );
     }
@@ -471,7 +492,6 @@ export const SearchResultPage: FC<{ from: string }> = ({ from }) => {
       <ManyFoundBooksView
         onAddBook={onAddBook}
         onCreateManually={onCreateManually}
-        from={from}
       />
     );
   };

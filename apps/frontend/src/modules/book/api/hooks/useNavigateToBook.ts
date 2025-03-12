@@ -10,8 +10,9 @@ export const useNavigateToBook = ({ bookId }: UseNavigateToBookProps) => {
 
   const router = useRouter();
 
-  const from =
-    router.latestLocation.href === '/mybooks' ? BookNavigationFromEnum.books : BookNavigationFromEnum.shelves;
+  const from = router.latestLocation.href.includes('/mybooks')
+    ? BookNavigationFromEnum.books
+    : BookNavigationFromEnum.shelves;
 
   const url = from === BookNavigationFromEnum.shelves ? '/shelves/bookshelf/book/$bookId' : '/mybooks/book/$bookId';
 

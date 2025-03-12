@@ -7,7 +7,7 @@ export const Route = createLazyFileRoute('/shelves/bookshelf/search/result/')({
   component: () => {
     return (
       <RequireAuthComponent>
-        <SearchResultPage from="/shelves/bookshelf/search/result/" />
+        <SearchResultPage />
       </RequireAuthComponent>
     );
   },
