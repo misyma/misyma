@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import axios, { type AxiosInstance } from 'axios';
 import axiosRetry from 'axios-retry';
 

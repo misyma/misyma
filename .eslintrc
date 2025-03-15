@@ -63,6 +63,21 @@
         }
       }
     ],
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        "selector": "default",
+        "format": ["camelCase"],
+        "filter": {
+          "regex": "^(ID)$",
+          "match": false
+        }
+      },
+      {
+        "selector": "typeLike",
+        "format": ["PascalCase"]
+      }
+    ],
     "import/no-unresolved": 0,
     "@typescript-eslint/no-empty-function": 0,
     "lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }],
