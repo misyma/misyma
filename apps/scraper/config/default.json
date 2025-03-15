@@ -9,6 +9,5 @@
   },
   "eisbn": {
     "baseUrl": "https://e-isbn.pl"
-  },
-  "openLibraryPath": null
+  }
 }

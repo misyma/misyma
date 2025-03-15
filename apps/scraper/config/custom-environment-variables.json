@@ -3,6 +3,5 @@
   "database": {
     "username": "DATABASE_USERNAME",
     "password": "DATABASE_PASSWORD"
-  },
-  "openLibraryPath": "OPEN_LIBRARY_PATH"
+  }
 }
