@@ -20,7 +20,6 @@ const configSchema = Type.Object({
   eisbn: Type.Object({
     baseUrl: Type.String({ minLength: 1 }),
   }),
-  openLibraryPath: Type.String({ minLength: 1 }),
 });
 
 export type Config = Static<typeof configSchema>;

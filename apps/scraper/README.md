@@ -6,8 +6,8 @@
 npm run start -- scrape eisbn --from 1673848
 ```
 
-## Scrape Open Library
+## Scrape Biblioteka Narodowa
 
 ```bash
-npm run start -- scrape open-library
+npm run start -- scrape bn
 ```
