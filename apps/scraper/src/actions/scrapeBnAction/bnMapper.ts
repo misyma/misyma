@@ -34,7 +34,7 @@ export class BnMapper {
       }
     }
 
-    if (!authorRaw || !titleRaw || !pages) {
+    if (!authorRaw || !titleRaw || !pages || !isbn) {
       return undefined;
     }
 
