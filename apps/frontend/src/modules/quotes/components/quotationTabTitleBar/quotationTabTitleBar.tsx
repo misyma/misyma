@@ -1,7 +1,7 @@
 import { type FC } from 'react';
 
 import { FindUserBookByIdQueryOptions } from '../../../book/api/user/queries/findUserBook/findUserBookByIdQueryOptions';
-import { CurrentRatingStar } from '../../../book/components/currentRatingStar/currentRatingStar';
+import { CurrentRatingStar } from '../../../book/components/molecules/currentRatingStar/currentRatingStar';
 import { Skeleton } from '../../../common/components/skeleton/skeleton';
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
 import { BookTitle } from '../bookTitle/bookTitle';

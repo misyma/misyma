@@ -1,6 +1,6 @@
 import { type FC } from 'react';
 
-import { TruncatedTextTooltip } from '../../../book/components/truncatedTextTooltip/truncatedTextTooltip';
+import { TruncatedTextTooltip } from '../../../common/components/truncatedTextTooltip/truncatedTextTooltip';
 
 export const BookTitle: FC<{ title: string }> = ({ title }) => {
   return (

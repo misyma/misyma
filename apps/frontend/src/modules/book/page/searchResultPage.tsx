@@ -22,7 +22,7 @@ import {
   FindBooksQueryOptions,
 } from '../api/user/queries/findBooks/findBooksQueryOptions';
 import { FindUserBooksByQueryOptions } from '../api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
-import { BookImageMiniature } from '../components/bookImageMiniature/bookImageMiniature';
+import { BookImageMiniature } from '../components/molecules/bookImageMiniature/bookImageMiniature';
 import { BookNavigationFromEnum } from '../constants';
 
 interface FoundBookViewProps {

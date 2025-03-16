@@ -1,7 +1,7 @@
 import { Quote } from 'lucide-react';
 import type React from 'react';
 
-import { TruncatedTextTooltip } from '../../../book/components/truncatedTextTooltip/truncatedTextTooltip';
+import { TruncatedTextTooltip } from '../../../common/components/truncatedTextTooltip/truncatedTextTooltip';
 import { cn } from '../../../common/lib/utils';
 
 type BlockquoteProps = {

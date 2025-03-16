@@ -2,7 +2,7 @@ import { type ColumnDef } from '@tanstack/react-table';
 
 import { type Quote } from '@common/contracts';
 
-import { FavoriteQuotationButton } from '../../../book/components/favoriteQuotationButton/favoriteQuotationButton';
+import { FavoriteQuotationButton } from '../../../book/components/molecules/favoriteQuotationButton/favoriteQuotationButton';
 import { Blockquote } from '../blockQuote/blockQuote';
 import { DeleteQuoteModal } from '../deleteQuoteModal/deleteQuoteModal';
 import { UpdateQuoteButton } from '../updateQuoteModal/updateQuoteModal';

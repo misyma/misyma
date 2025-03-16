@@ -1,6 +1,6 @@
 import { type FC, useState } from 'react';
 
-import LanguageSelect from '../../../book/components/languageSelect/languageSelect';
+import LanguageSelect from '../../../book/components/molecules/languageSelect/languageSelect';
 import { type FilterComponentProps } from '../../types/filter';
 import { FilterContainer } from '../filter/filterContainer';
 

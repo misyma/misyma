@@ -9,8 +9,8 @@ import { BookFormat as ContractBookFormat, Language } from '@common/contracts';
 import { StepOneForm } from './stepOneForm/stepOneForm';
 import { FindBookByIdQueryOptions } from '../../../book/api/user/queries/findBookById/findBookByIdQueryOptions';
 import { FindUserBookByIdQueryOptions } from '../../../book/api/user/queries/findUserBook/findUserBookByIdQueryOptions';
-import BookFormatSelect from '../../../book/components/bookFormatSelect/bookFormatSelect';
-import LanguageSelect from '../../../book/components/languageSelect/languageSelect';
+import BookFormatSelect from '../../../book/components/organisms/bookFormatSelect/bookFormatSelect';
+import LanguageSelect from '../../../book/components/molecules/languageSelect/languageSelect';
 import {
   BookDetailsChangeRequestAction,
   useBookDetailsChangeRequestContext,

@@ -2,7 +2,6 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { CheckIcon, XCircle, ChevronDown, XIcon, WandSparkles } from 'lucide-react';
 import * as React from 'react';
 
-import { TruncatedTextTooltip } from '../../../book/components/truncatedTextTooltip/truncatedTextTooltip';
 import { cn } from '../../lib/utils';
 import { Badge } from '../badge';
 import { Button } from '../button/button';
@@ -17,6 +16,7 @@ import {
 } from '../command/command';
 import { Popover, PopoverContent, PopoverTrigger } from '../popover/popover';
 import { Separator } from '../separator/separator';
+import { TruncatedTextTooltip } from '../truncatedTextTooltip/truncatedTextTooltip';
 
 const multiSelectVariants = cva('m-1 transition ease-in-out delay-150 duration-300', {
   variants: {

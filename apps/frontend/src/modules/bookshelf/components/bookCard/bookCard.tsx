@@ -5,10 +5,10 @@ import { HiCheckCircle, HiEnvelope, HiQuestionMarkCircle } from 'react-icons/hi2
 import { ReadingStatus, SortOrder, type UserBook } from '@common/contracts';
 
 import { useNavigateToBook } from '../../../book/api/hooks/useNavigateToBook';
-import { BookImageMiniature } from '../../../book/components/bookImageMiniature/bookImageMiniature';
-import { BookmarkButton } from '../../../book/components/bookmarkButton/bookmarkButton';
-import { TruncatedTextTooltip } from '../../../book/components/truncatedTextTooltip/truncatedTextTooltip';
+import { BookmarkButton } from '../../../book/components/atoms/bookmarkButton/bookmarkButton';
+import { BookImageMiniature } from '../../../book/components/molecules/bookImageMiniature/bookImageMiniature';
 import { FindBookBorrowingsQueryOptions } from '../../../borrowing/api/queries/findBookBorrowings/findBookBorrowingsQueryOptions';
+import { TruncatedTextTooltip } from '../../../common/components/truncatedTextTooltip/truncatedTextTooltip';
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
 import { cn } from '../../../common/lib/utils';
 

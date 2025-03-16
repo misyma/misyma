@@ -1,8 +1,8 @@
 import { createLazyFileRoute, useNavigate } from '@tanstack/react-router';
 
 import { AuthenticatedLayout } from '../../../modules/auth/layouts/authenticated/authenticatedLayout';
-import { RecentlyReadBooksSection } from '../../../modules/book/components/recentlyReadBooksSection/recentlyReadBooksSection';
-import { TopBooksSection } from '../../../modules/book/components/topBooksSection/topBooksSection';
+import { RecentlyReadBooksGallery } from '../../../modules/book/components/organisms/recentlyReadBooksGallery/recentlyReadBooksGallery';
+import { TopBooksSection } from '../../../modules/book/components/organisms/topBooksSection/topBooksSection';
 import { Button } from '../../../modules/common/components/button/button';
 import { RequireAuthComponent } from '../../../modules/core/components/requireAuth/requireAuthComponent';
 
@@ -14,7 +14,7 @@ export const ProfilePage = () => {
       <div className="flex flex-col items-center justify-center w-full px-8 gap-10 my-8">
         <div className="grid gap-4 items-center justify-items-center w-full">
           <div className="w-[64rem]">
-            <RecentlyReadBooksSection />
+            <RecentlyReadBooksGallery />
           </div>
           <Button
             onClick={() => {

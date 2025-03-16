@@ -2,7 +2,7 @@ import { useSearch } from '@tanstack/react-router';
 import { type FC } from 'react';
 
 import { AuthenticatedLayout } from '../../auth/layouts/authenticated/authenticatedLayout';
-import { CreateBookForm } from '../components/createBookForm/createBookForm';
+import { CreateBookForm } from '../components/organisms/createBookForm/createBookForm';
 
 export const CreateBookPage: FC<{ from: string }> = ({ from }) => {
   const { id } = useSearch({ from }) as { id: string };

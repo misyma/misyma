@@ -3,7 +3,7 @@ import { type FC, useEffect, useMemo, useState } from 'react';
 import { type Book, type FindAdminBooksQueryParams } from '@common/contracts';
 
 import { useAdminFindBooksQuery } from '../../book/api/admin/queries/findBooksQuery/findBooksQueryOptions';
-import { bookTableColumns } from '../../book/components/bookTable/bookTableColumns';
+import { bookTableColumns } from '../../book/components/organisms/bookTable/bookTableColumns';
 import { DataSkeletonTable } from '../../common/components/dataTable/dataSkeletonTable';
 import { DataTable } from '../../common/components/dataTable/dataTable';
 import { cn } from '../../common/lib/utils';

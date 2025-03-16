@@ -3,8 +3,8 @@ import { XCircle } from 'lucide-react';
 import { type FC } from 'react';
 
 import { multiSelectVariants } from './authorMultiComboboxVariants';
-import { TruncatedTextTooltip } from '../../../book/components/truncatedTextTooltip/truncatedTextTooltip';
 import { Badge } from '../../../common/components/badge';
+import { TruncatedTextTooltip } from '../../../common/components/truncatedTextTooltip/truncatedTextTooltip';
 import { cn } from '../../../common/lib/utils';
 
 interface AuthorBadgeProps extends VariantProps<typeof multiSelectVariants> {

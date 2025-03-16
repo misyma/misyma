@@ -13,12 +13,12 @@ import { QuotationTabTable } from '../../quotes/components/quotationTabTable/quo
 import { QuotationTabTitleBar } from '../../quotes/components/quotationTabTitleBar/quotationTabTitleBar';
 import { useFindUserQuery } from '../../user/api/queries/findUserQuery/findUserQuery';
 import { BookApiQueryKeys } from '../api/user/queries/bookApiQueryKeys';
-import { AddStarRatingButton } from '../components/addStarRatingButton/addStarRatingButton';
-import { BasicDataMainBody } from '../components/basicDataTab/basicDataMainBody';
-import { BasicDataTabActionButtons } from '../components/basicDataTab/basicDataTabActionButtons';
-import { BookGradesTabMainBody } from '../components/bookGradesTab/bookGradesTabMainBody';
-import { BookTabNavigation } from '../components/bookTabNavigation/bookTabNavigation';
-import { FavoriteBookButton } from '../components/favoriteBookButton/favoriteBookButton';
+import { AddStarRatingButton } from '../components/atoms/addStarRatingButton/addStarRatingButton';
+import { FavoriteBookButton } from '../components/molecules/favoriteBookButton/favoriteBookButton';
+import { BasicDataMainBody } from '../components/organisms/basicDataTab/basicDataMainBody';
+import { BasicDataTabActionButtons } from '../components/organisms/basicDataTab/basicDataTabActionButtons';
+import { BookGradesTabMainBody } from '../components/organisms/bookGradesTab/bookGradesTabMainBody';
+import { BookTabNavigation } from '../components/organisms/bookTabNavigation/bookTabNavigation';
 import { BookNavigationFromEnum, type BookNavigationFrom } from '../constants';
 import { useBookBreadcrumbs } from '../hooks/useBookBreadcrumbs';
 import { BookTabLayout } from '../layouts/bookTabLayout';

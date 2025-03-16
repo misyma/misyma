@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, type FC } from 'react';
 
 import { type FindQuotesQueryParams } from '@common/contracts';
 
-import { FavoriteQuotationButton } from '../../../book/components/favoriteQuotationButton/favoriteQuotationButton';
+import { FavoriteQuotationButton } from '../../../book/components/molecules/favoriteQuotationButton/favoriteQuotationButton';
 import { Skeleton } from '../../../common/components/skeleton/skeleton';
 import { getQuotesByInfiniteQueryOptions } from '../../api/queries/getQuotes/getQuotes';
 import { Blockquote } from '../blockQuote/blockQuote';
