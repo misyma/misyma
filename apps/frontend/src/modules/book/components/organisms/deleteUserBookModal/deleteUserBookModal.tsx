@@ -5,7 +5,12 @@ import { HiTrash } from 'react-icons/hi';
 import { Button } from '../../../../common/components/button/button';
 import { Dialog, DialogContent, DialogHeader, DialogTrigger } from '../../../../common/components/dialog/dialog';
 import { useToast } from '../../../../common/components/toast/use-toast';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../../common/components/tooltip/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../../../../common/components/tooltip/tooltip';
 import { ApiError } from '../../../../common/errors/apiError';
 import { useDeleteUserBookMutation } from '../../../api/user/mutations/deleteUserBookMutation/deleteUserBookMutation';
 

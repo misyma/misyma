@@ -14,7 +14,12 @@ import {
   DialogTrigger,
 } from '../../../../common/components/dialog/dialog';
 import { useToast } from '../../../../common/components/toast/use-toast';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../../common/components/tooltip/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../../../../common/components/tooltip/tooltip';
 import { useUpdateBookMutation } from '../../../api/admin/mutations/updateBookMutation/updateBookMutation';
 import { BookApiQueryKeys } from '../../../api/user/queries/bookApiQueryKeys';
 

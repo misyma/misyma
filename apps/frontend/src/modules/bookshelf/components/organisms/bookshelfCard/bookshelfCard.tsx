@@ -15,9 +15,9 @@ import {
 } from '../../../../common/components/menubar/menubar';
 import { useToast } from '../../../../common/components/toast/use-toast';
 import { TruncatedTextTooltip } from '../../../../common/components/truncatedTextTooltip/truncatedTextTooltip';
-import { UpdateNonStandardBookshelfModal } from '../updateNonStandardBookshelfModal/updateNonStandardBookshelfModal';
 import { DeleteBookshelfModal } from '../deleteBookshelfModal/deleteBookshelfModal';
 import { UpdateBookshelfModal } from '../updateBookshelfModal/updateBookshelfModal';
+import { UpdateNonStandardBookshelfModal } from '../updateNonStandardBookshelfModal/updateNonStandardBookshelfModal';
 
 interface BookshelfCardProps {
   bookshelf: {

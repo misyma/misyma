@@ -9,7 +9,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '../../../../common/components/dialog/dialog';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../../common/components/tooltip/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../../../../common/components/tooltip/tooltip';
 import {
   AdminEditBookAction,
   AdminEditBookProvider,

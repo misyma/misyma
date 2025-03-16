@@ -5,7 +5,12 @@ import { Button } from '../../../../common/components/button/button';
 import { Dialog, DialogContent, DialogHeader, DialogTrigger } from '../../../../common/components/dialog/dialog';
 import { LoadingSpinner } from '../../../../common/components/spinner/loading-spinner';
 import { useToast } from '../../../../common/components/toast/use-toast';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../../common/components/tooltip/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../../../../common/components/tooltip/tooltip';
 import { ApiError } from '../../../../common/errors/apiError';
 import { useDeleteBookReadingMutation } from '../../../api/mutations/bookReadings/deleteBookReadingMutation/deleteBookReadingMutation';
 
