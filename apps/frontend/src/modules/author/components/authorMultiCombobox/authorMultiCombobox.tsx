@@ -186,7 +186,7 @@ export const AuthorMultiCombobox = forwardRef<HTMLButtonElement, MultiSelectProp
             onClick={handleTogglePopover}
             disabled={isLoadingInitialAuthors && defaultValue.length > 0}
             className={cn(
-              'flex w-60 sm:w-96 p-1 bg-[#D1D5DB]/20 rounded-md border min-h-10 h-auto items-center justify-between hover:bg-inherit [&_svg]:pointer-events-auto py-2',
+              'flex w-60 sm:w-96 p-1 bg-[#D1D5DB]/20 rounded-md border min-h-10 h-auto items-center justify-between [&_svg]:pointer-events-auto py-2',
               className,
             )}
           >
