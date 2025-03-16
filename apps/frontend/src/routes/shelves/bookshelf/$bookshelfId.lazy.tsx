@@ -4,13 +4,13 @@ import { z } from 'zod';
 
 import { FindUserBooksSortField, SortOrder } from '@common/contracts';
 
+import { VirtualizedBooksList } from '../../../modules/book/components/organisms/virtualizedBooksList/virtualizedBooksList';
 import { useFindBookshelfByIdQuery } from '../../../modules/bookshelf/api/queries/findBookshelfByIdQuery/findBookshelfByIdQuery';
 import {
   BookshelfBooksPageFiltersBar,
   bookshelfBooksSearchParamsSchema,
-} from '../../../modules/bookshelf/components/bookshelfBooksFiltersBar/bookshelfBooksFiltersBar';
-import { BookshelfTopBar } from '../../../modules/bookshelf/components/bookshelfTopBar/bookshelfTopBar';
-import { VirtualizedBooksList } from '../../../modules/book/components/organisms/virtualizedBooksList/virtualizedBooksList';
+} from '../../../modules/bookshelf/components/organisms/bookshelfBooksFiltersBar/bookshelfBooksFiltersBar';
+import { BookshelfTopBar } from '../../../modules/bookshelf/components/organisms/bookshelfTopBar/bookshelfTopBar';
 import {
   useBreadcrumbKeysContext,
   useBreadcrumbKeysDispatch,

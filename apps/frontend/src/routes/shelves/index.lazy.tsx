@@ -3,8 +3,8 @@ import { motion } from 'framer-motion';
 import { type FC, useEffect, useState } from 'react';
 import { HiMagnifyingGlass } from 'react-icons/hi2';
 
-import { VirtualizedBookshelvesList } from '../../modules/bookshelf/components/bookshelfsList/virtualizedBookshelfList';
-import { CreateBookshelfModal } from '../../modules/bookshelf/components/createBookshelfModal/createBookshelfModal';
+import { VirtualizedBookshelvesList } from '../../modules/bookshelf/components/organisms/bookshelfsList/virtualizedBookshelfList';
+import { CreateBookshelfModal } from '../../modules/bookshelf/components/organisms/createBookshelfModal/createBookshelfModal';
 import { Input } from '../../modules/common/components/input/input';
 import { useBreadcrumbKeysDispatch } from '../../modules/common/contexts/breadcrumbKeysContext';
 import useDebounce from '../../modules/common/hooks/useDebounce';

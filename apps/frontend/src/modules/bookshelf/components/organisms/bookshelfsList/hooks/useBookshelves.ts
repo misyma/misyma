@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 
 import { BookshelfType } from '@common/contracts';
 
-import { useFindUserQuery } from '../../../../user/api/queries/findUserQuery/findUserQuery';
-import { useFindUserBookshelfsQuery } from '../../../api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
+import { useFindUserQuery } from '../../../../../user/api/queries/findUserQuery/findUserQuery';
+import { useFindUserBookshelfsQuery } from '../../../../api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 
 interface UseBookshelvesProps {
   pageSize: number;

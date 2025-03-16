@@ -8,8 +8,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../../../common/components/select/select';
-import { ReadingStatus } from '../../../common/constants/readingStatus';
+} from '../../../../common/components/select/select';
+import { ReadingStatus } from '../../../../common/constants/readingStatus';
 
 type RendererProps = {
   children: FC;

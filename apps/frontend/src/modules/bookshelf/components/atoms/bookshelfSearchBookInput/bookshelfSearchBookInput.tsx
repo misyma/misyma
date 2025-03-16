@@ -1,9 +1,9 @@
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
-import { Input } from '../../../common/components/input/input';
-import useDebounce from '../../../common/hooks/useDebounce';
-import { type BookshelfBooksSearchParams } from '../bookshelfBooksFiltersBar/bookshelfBooksFiltersBar';
+import { Input } from '../../../../common/components/input/input';
+import useDebounce from '../../../../common/hooks/useDebounce';
+import { type BookshelfBooksSearchParams } from '../../organisms/bookshelfBooksFiltersBar/bookshelfBooksFiltersBar';
 
 export const BookshelfSearchButtonInput = () => {
   const { title } = useSearch({ from: '/shelves/bookshelf/$bookshelfId' }) as BookshelfBooksSearchParams;

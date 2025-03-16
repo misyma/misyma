@@ -1,7 +1,7 @@
 import { type FC, Fragment, type KeyboardEvent, useMemo } from 'react';
 
-import { SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../common/components/select/select';
-import { useFindUserBookshelfsQuery } from '../../api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
+import { SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../../../common/components/select/select';
+import { useFindUserBookshelfsQuery } from '../../../../api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 
 interface BookshelfSelectorProps {
   onKeyDown: (event: KeyboardEvent<HTMLDivElement>) => void;

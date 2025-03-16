@@ -5,16 +5,16 @@ import { z } from 'zod';
 
 import { Language, ReadingStatus } from '@common/contracts';
 
-import { AuthorSearchFilter } from '../../../common/components/filter/AuthorSearchFilter';
+import { AuthorSearchFilter } from '../../../../common/components/filter/AuthorSearchFilter';
 import {
   CheckboxFilter,
   GenreSelectFilter,
   MyBooksStatusFilter,
   YearRangeFilter,
-} from '../../../common/components/filter/filter';
-import FiltersDrawer from '../../../common/components/filtersDrawer/filtersDrawer';
-import { SearchLanguageSelect } from '../../../common/components/searchLanguageSelect/SearchLanguageSelect';
-import { bookshelfBooksFilterStateSelectors } from '../../../core/store/states/bookshelfBooksFilterState/bookshelfBooksFilterStateSlice';
+} from '../../../../common/components/filter/filter';
+import FiltersDrawer from '../../../../common/components/filtersDrawer/filtersDrawer';
+import { SearchLanguageSelect } from '../../../../common/components/searchLanguageSelect/SearchLanguageSelect';
+import { bookshelfBooksFilterStateSelectors } from '../../../../core/store/states/bookshelfBooksFilterState/bookshelfBooksFilterStateSlice';
 
 export const bookshelfBooksSearchParamsSchema = z
   .object({

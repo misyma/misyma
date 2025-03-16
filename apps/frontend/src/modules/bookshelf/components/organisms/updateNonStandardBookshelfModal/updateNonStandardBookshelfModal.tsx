@@ -4,8 +4,8 @@ import { useRef, type FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { Button } from '../../../common/components/button/button.js';
-import { Dialog, DialogContent } from '../../../common/components/dialog/dialog.js';
+import { Button } from '../../../../common/components/button/button.js';
+import { Dialog, DialogContent } from '../../../../common/components/dialog/dialog.js';
 import {
   Form,
   FormControl,
@@ -13,14 +13,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../../../common/components/form/form.js';
-import { FileInput } from '../../../common/components/input/input.js';
-import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner.js';
-import { useToast } from '../../../common/components/toast/use-toast.js';
-import useDebounce from '../../../common/hooks/useDebounce.js';
-import { useFileUpload } from '../../../common/hooks/useFileUpload.js';
-import { useUploadBookshelfImageMutation } from '../../api/mutations/uploadBookshelfImageMutation/uploadBookshelfImageMutation.js';
-import { BookshelvesApiQueryKeys } from '../../api/queries/bookshelvesApiQueryKeys.js';
+} from '../../../../common/components/form/form.js';
+import { FileInput } from '../../../../common/components/input/input.js';
+import { LoadingSpinner } from '../../../../common/components/spinner/loading-spinner.js';
+import { useToast } from '../../../../common/components/toast/use-toast.js';
+import useDebounce from '../../../../common/hooks/useDebounce.js';
+import { useFileUpload } from '../../../../common/hooks/useFileUpload.js';
+import { useUploadBookshelfImageMutation } from '../../../api/mutations/uploadBookshelfImageMutation/uploadBookshelfImageMutation.js';
+import { BookshelvesApiQueryKeys } from '../../../api/queries/bookshelvesApiQueryKeys.js';
 
 const updateNonStandardBookshelfFormSchema = z.object({
   image: z.object({}).or(z.undefined()),

@@ -8,27 +8,34 @@ import { z } from 'zod';
 
 import { ReadingStatus as ContractReadingStatus } from '@common/contracts';
 
-import { FindBookByIdQueryOptions } from '../../../book/api/user/queries/findBookById/findBookByIdQueryOptions';
-import { type BookNavigationFrom } from '../../../book/constants';
-import { BookApiError } from '../../../book/errors/bookApiError';
-import { useCreateBookWithUserBook } from '../../../book/hooks/createBookWithUserBook/createBookWithUserBook';
-import { Button } from '../../../common/components/button/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../common/components/form/form';
-import { FileInput } from '../../../common/components/input/input';
+import { useFindUserBookshelfsQuery } from '../../../../bookshelf/api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
+import { useSearchBookContext } from '../../../../bookshelf/context/searchCreateBookContext/searchCreateBookContext';
+import { Button } from '../../../../common/components/button/button';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../../../../common/components/form/form';
+import { FileInput } from '../../../../common/components/input/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../../../common/components/select/select';
-import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
-import { ReadingStatus } from '../../../common/constants/readingStatus';
-import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
-import { userStateSelectors } from '../../../core/store/states/userState/userStateSlice';
-import { getGenresQueryOptions } from '../../../genres/api/queries/getGenresQuery/getGenresQueryOptions';
-import { useFindUserBookshelfsQuery } from '../../api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
-import { useSearchBookContext } from '../../context/searchCreateBookContext/searchCreateBookContext';
+} from '../../../../common/components/select/select';
+import { LoadingSpinner } from '../../../../common/components/spinner/loading-spinner';
+import { ReadingStatus } from '../../../../common/constants/readingStatus';
+import { useErrorHandledQuery } from '../../../../common/hooks/useErrorHandledQuery';
+import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
+import { getGenresQueryOptions } from '../../../../genres/api/queries/getGenresQuery/getGenresQueryOptions';
+import { FindBookByIdQueryOptions } from '../../../api/user/queries/findBookById/findBookByIdQueryOptions';
+import { type BookNavigationFrom } from '../../../constants';
+import { BookApiError } from '../../../errors/bookApiError';
+import { useCreateBookWithUserBook } from '../../../hooks/createBookWithUserBook/createBookWithUserBook';
 
 const stepThreeFormSchema = z.object({
   status: z.nativeEnum(ContractReadingStatus, {

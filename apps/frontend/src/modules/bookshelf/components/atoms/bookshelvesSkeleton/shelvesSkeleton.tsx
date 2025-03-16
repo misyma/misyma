@@ -1,8 +1,8 @@
 import { type FC } from 'react';
 
-import styles from '../../../../routes/mybooks/index.module.css';
-import { Skeleton } from '../../../common/components/skeleton/skeleton';
-import { cn } from '../../../common/lib/utils';
+import styles from '../../../../../routes/mybooks/index.module.css';
+import { Skeleton } from '../../../../common/components/skeleton/skeleton';
+import { cn } from '../../../../common/lib/utils';
 
 export interface ShelvesSkeletonProps {
   skeletonColor?: string;

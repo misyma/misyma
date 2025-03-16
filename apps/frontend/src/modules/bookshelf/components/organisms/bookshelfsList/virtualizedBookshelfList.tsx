@@ -2,8 +2,8 @@ import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { type FC, useEffect, useMemo, useRef, useState } from 'react';
 
-import { Skeleton } from '../../../common/components/skeleton/skeleton';
-import { useFindUserBookshelfsInfiniteQuery } from '../../api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
+import { Skeleton } from '../../../../common/components/skeleton/skeleton';
+import { useFindUserBookshelfsInfiniteQuery } from '../../../api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 import { BookshelfCard } from '../bookshelfCard/bookshelfCard';
 
 interface VirtualizedBookshelvesListProps {

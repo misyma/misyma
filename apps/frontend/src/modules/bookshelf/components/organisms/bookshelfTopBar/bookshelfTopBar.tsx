@@ -6,14 +6,19 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { type FindBookshelfResponseBody } from '@common/contracts';
 
-import { BooksSortButton } from '../../../common/components/booksSortButton/booksSortButton';
-import { Button } from '../../../common/components/button/button';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../common/components/tooltip/tooltip';
+import { BooksSortButton } from '../../../../common/components/booksSortButton/booksSortButton';
+import { Button } from '../../../../common/components/button/button';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../../../../common/components/tooltip/tooltip';
 import {
   bookshelfBooksFilterStateSelectors,
   setFilterVisible,
-} from '../../../core/store/states/bookshelfBooksFilterState/bookshelfBooksFilterStateSlice';
-import { BookshelfSearchButtonInput } from '../bookshelfSearchBookInput/bookshelfSearchBookInput';
+} from '../../../../core/store/states/bookshelfBooksFilterState/bookshelfBooksFilterStateSlice';
+import { BookshelfSearchButtonInput } from '../../atoms/bookshelfSearchBookInput/bookshelfSearchBookInput';
 
 const BooksFiltersVisibilityButton = () => {
   const isFilterVisible = useSelector(bookshelfBooksFilterStateSelectors.getFilterVisibility);

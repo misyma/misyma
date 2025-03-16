@@ -6,8 +6,8 @@ import { z } from 'zod';
 
 import { ReadingStatus as ContractReadingStatus } from '@common/contracts';
 
-import { BookshelfSelector } from '../../../../../../bookshelf/components/bookshelfSelector/bookshelfSelector';
-import { StatusSelector } from '../../../../../../bookshelf/components/statusSelector/statusSelector';
+import { BookshelfSelector } from '../../../../../../bookshelf/components/atoms/bookshelfSearchBookInput/bookshelfSelector/bookshelfSelector';
+import { StatusSelector } from '../../../../../../bookshelf/components/atoms/statusSelector/statusSelector';
 import {
   BookCreationActionType,
   type BookCreationNonIsbnState,

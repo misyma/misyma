@@ -2,7 +2,7 @@ import { createLazyFileRoute, useNavigate } from '@tanstack/react-router';
 import { type FC, useEffect } from 'react';
 
 import { AuthenticatedLayout } from '../../../../../modules/auth/layouts/authenticated/authenticatedLayout';
-import { ManualStep } from '../../../../../modules/bookshelf/components/manualStep/manualStep';
+import { ManualStep } from '../../../../../modules/book/components/organisms/manualStep/manualStep';
 import { useSearchBookContext } from '../../../../../modules/bookshelf/context/searchCreateBookContext/searchCreateBookContext';
 import { Breadcrumbs, NumericBreadcrumb } from '../../../../../modules/common/components/ui/breadcrumbs';
 import { RequireAuthComponent } from '../../../../../modules/core/components/requireAuth/requireAuthComponent';
