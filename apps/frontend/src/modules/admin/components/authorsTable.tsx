@@ -4,8 +4,8 @@ import { type FindAuthorsSortField, type Author, type SortOrder } from '@common/
 
 import { AdminAuthorsSortButton } from './adminAuthorsSortButton';
 import { useFindAdminAuthorsQuery } from '../../author/api/admin/queries/findAdminAuthorsQuery/findAdminAuthorsQuery';
-import { authorTableColumns } from '../../author/components/authorTableColumns';
-import { CreateAuthorModal } from '../../author/components/createAuthorModal';
+import { authorTableColumns } from '../../author/components/organisms/authorTableColumns';
+import { CreateAuthorModal } from '../../author/components/organisms/createAuthorModal';
 import { DataSkeletonTable } from '../../common/components/dataTable/dataSkeletonTable';
 import { DataTable } from '../../common/components/dataTable/dataTable';
 import { CheckboxFilter } from '../../common/components/filter/filter';

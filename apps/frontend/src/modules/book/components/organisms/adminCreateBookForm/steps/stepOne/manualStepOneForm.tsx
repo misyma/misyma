@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { HiOutlineInformationCircle } from 'react-icons/hi';
 
-import { AuthorMultiCombobox } from '../../../../../../author/components/authorMultiCombobox/authorMultiCombobox';
+import { AuthorMultiCombobox } from '../../../../../../author/components/organisms/authorMultiCombobox/authorMultiCombobox';
 import {
   BookCreationActionType,
   type BookCreationNonIsbnState,

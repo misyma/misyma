@@ -5,7 +5,7 @@ import { SortOrder } from '@common/contracts';
 
 import { BookReadingsApiQueryKeys } from '../../../../bookReadings/api/queries/bookReadingsApiQueryKeys';
 import { FindBookReadingsQueryOptions } from '../../../../bookReadings/api/queries/findBookReadings/findBookReadingsQueryOptions';
-import { bookReadingsTableColumns } from '../../../../bookReadings/components/bookReadingsTable/bookReadingsTableColumns';
+import { bookReadingsTableColumns } from '../../../../bookReadings/components/organisms/bookReadingsTable/bookReadingsTableColumns';
 import { DataTable } from '../../../../common/components/dataTable/dataTable';
 import { Separator } from '../../../../common/components/separator/separator';
 import { Skeleton } from '../../../../common/components/skeleton/skeleton';

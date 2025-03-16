@@ -1,7 +1,7 @@
 import { type FC, useState } from 'react';
 import { HiStar } from 'react-icons/hi';
 
-import { CreateBookReadingModal } from '../../../../bookReadings/components/createBookReadingModal/createBookReadingModal';
+import { CreateBookReadingModal } from '../../../../bookReadings/components/organisms/createBookReadingModal/createBookReadingModal';
 import { RadioGroup, RadioGroupItem } from '../../../../common/components/radioGroup/radio-group';
 
 interface Props {

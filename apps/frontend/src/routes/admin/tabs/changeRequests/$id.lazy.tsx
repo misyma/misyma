@@ -10,11 +10,11 @@ import { FindBookByIdQueryOptions } from '../../../../modules/book/api/user/quer
 import { useApplyBookChangeRequestMutation } from '../../../../modules/bookChangeRequests/api/admin/mutations/applyBookChangeRequest/applyBookChangeRequest';
 import { useDeleteBookChangeRequestMutation } from '../../../../modules/bookChangeRequests/api/admin/mutations/deleteBookChangeRequest/deleteBookChangeRequest';
 import { FindBookChangeRequestByIdQueryOptions } from '../../../../modules/bookChangeRequests/api/admin/queries/findBookChangeRequestById/findBookChangeRequestByIdQueryOptions';
-import { ChangeRequestTable } from '../../../../modules/bookChangeRequests/components/changeRequestTable/changeRequestTable';
+import { ChangeRequestTable } from '../../../../modules/bookChangeRequests/components/organisms/changeRequestTable/changeRequestTable';
 import {
   type BookChangeRequestRow,
   changeRequestColumns,
-} from '../../../../modules/bookChangeRequests/components/changeRequestTable/changeRequestTableColumns';
+} from '../../../../modules/bookChangeRequests/components/organisms/changeRequestTable/changeRequestTableColumns';
 import { Button } from '../../../../modules/common/components/button/button';
 import { Form } from '../../../../modules/common/components/form/form';
 import { LoadingSpinner } from '../../../../modules/common/components/spinner/loading-spinner';

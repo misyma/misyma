@@ -1,11 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { type FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { HiOutlineInformationCircle } from 'react-icons/hi';
 import { z } from 'zod';
 
+import { AuthorFieldTooltip } from '../../../../../author/components/organisms/authorFieldTooltip';
 import { AuthorMultiCombobox } from '../../../../../author/components/organisms/authorMultiCombobox/authorMultiCombobox';
 import { FindBookByIdQueryOptions } from '../../../../../book/api/user/queries/findBookById/findBookByIdQueryOptions';
+import { FindUserBookByIdQueryOptions } from '../../../../../book/api/user/queries/findUserBook/findUserBookByIdQueryOptions';
+import { useBookDetailsChangeRequestContext } from '../../../../../book/context/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
 import { Button } from '../../../../../common/components/button/button';
 import {
   Form,
@@ -18,15 +20,8 @@ import {
 import { Input } from '../../../../../common/components/input/input';
 import { Popover, PopoverTrigger } from '../../../../../common/components/popover/popover';
 import { LoadingSpinner } from '../../../../../common/components/spinner/loading-spinner';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '../../../../../common/components/tooltip/tooltip';
 import { useErrorHandledQuery } from '../../../../../common/hooks/useErrorHandledQuery';
 import { isbnSchema } from '../../../../../common/schemas/isbnSchema';
-import { useAdminEditBookContext } from '../../../../context/adminEditBookContext/adminEditBookContext';
 
 const stepOneSchema = z.object({
   isbn: isbnSchema.optional().or(z.literal('')),
@@ -52,7 +47,6 @@ const stepOneSchema = z.object({
     .min(1, {
       message: 'Wymagany jest co najmniej jeden autor.',
     }),
-  authorName: z.string().min(1).max(64).optional(),
   releaseYear: z
     .number({
       coerce: true,
@@ -63,7 +57,7 @@ const stepOneSchema = z.object({
     .max(2100, {
       message: 'Rok wydania nie może być późniejszy niż 2100',
     })
-    .or(z.undefined()),
+    .or(z.literal('')),
   publisher: z
     .string()
     .min(1, {
@@ -82,13 +76,19 @@ interface Props {
 }
 
 export const StepOneForm: FC<Props> = ({ bookId, onCancel, onSubmit }) => {
-  const { isFetched: isBookDataFetched } = useErrorHandledQuery(
-    FindBookByIdQueryOptions({
-      bookId,
+  const { data: userBookData, isFetched: isUserBookDataFetched } = useErrorHandledQuery(
+    FindUserBookByIdQueryOptions({
+      userBookId: bookId,
     }),
   );
 
-  if (!isBookDataFetched) {
+  const { isFetched: isBookDataFetched } = useErrorHandledQuery(
+    FindBookByIdQueryOptions({
+      bookId: userBookData?.bookId as string,
+    }),
+  );
+
+  if (!isBookDataFetched || !isUserBookDataFetched) {
     return <LoadingSpinner />;
   }
 
@@ -102,11 +102,17 @@ export const StepOneForm: FC<Props> = ({ bookId, onCancel, onSubmit }) => {
 };
 
 const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
-  const { authorIds } = useAdminEditBookContext();
+  const context = useBookDetailsChangeRequestContext();
+
+  const { data: userBookData } = useErrorHandledQuery(
+    FindUserBookByIdQueryOptions({
+      userBookId: bookId,
+    }),
+  );
 
   const { data: bookData } = useErrorHandledQuery(
     FindBookByIdQueryOptions({
-      bookId,
+      bookId: userBookData?.bookId as string,
     }),
   );
 
@@ -115,11 +121,11 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
   const stepOneForm = useForm({
     resolver: zodResolver(stepOneSchema),
     defaultValues: {
-      isbn: bookData?.isbn ?? '',
-      title: bookData?.title ?? '',
-      authorIds: authorIds ?? bookData?.authors[0].id ?? '',
-      publisher: bookData?.publisher ?? '',
-      releaseYear: bookData?.releaseYear,
+      isbn: (context.isbn || bookData?.isbn) ?? '',
+      title: (context.title || bookData?.title) ?? '',
+      authorIds: context.authorIds.length === 0 ? (bookData?.authors.map((a) => a.id) ?? []) : context.authorIds,
+      publisher: (context.publisher || bookData?.publisher) ?? '',
+      releaseYear: (context.releaseYear || bookData?.releaseYear) ?? ('' as const),
     },
     reValidateMode: 'onChange',
     mode: 'onTouched',
@@ -173,20 +179,7 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
             <FormItem className="flex flex-col">
               <div className="flex gap-2 items-center">
                 <FormLabel>Autor</FormLabel>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div>
-                        <HiOutlineInformationCircle className="h-5 w-5" />
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>
-                        Prosimy, podaj nazwisko i imię autora w<br></br> następującym formacie: "Rowling, J. K."
-                      </p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+                <AuthorFieldTooltip />
               </div>
               <FormControl>
                 <Popover modal={false}>
@@ -256,7 +249,10 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
           <Button
             size="lg"
             variant="outline"
-            onClick={onCancel}
+            onClick={() => {
+              stepOneForm.reset();
+              onCancel();
+            }}
             className="border border-primary w-full bg-transparent text-primary"
           >
             Wróć
@@ -265,6 +261,7 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
             type="submit"
             size="lg"
             className="border border-primary w-full"
+            disabled={!stepOneForm.formState.isValid}
             onClick={() => {
               onSubmit(stepOneForm.getValues());
             }}

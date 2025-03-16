@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import { FindBookChangeRequestsQueryOptions } from '../../bookChangeRequests/api/admin/queries/findBookChangeRequests/findBookChangeRequestsQueryOptions';
-import { changeRequestsColumns } from '../../bookChangeRequests/components/changeRequestsTable/changeRequestsTableColumns';
+import { changeRequestsColumns } from '../../bookChangeRequests/components/organisms/changeRequestsTable/changeRequestsTableColumns';
 import { DataSkeletonTable } from '../../common/components/dataTable/dataSkeletonTable';
 import { DataTable } from '../../common/components/dataTable/dataTable';
 import { useErrorHandledQuery } from '../../common/hooks/useErrorHandledQuery';

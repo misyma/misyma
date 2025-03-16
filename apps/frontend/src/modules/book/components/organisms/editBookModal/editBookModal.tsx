@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { HiPencil } from 'react-icons/hi';
 import { z } from 'zod';
 
-import { CreateChangeRequestForm } from '../../../../bookChangeRequests/components/createChangeRequestForm/createChangeRequestForm';
+import { CreateChangeRequestForm } from '../../../../bookChangeRequests/components/organisms/createChangeRequestForm/createChangeRequestForm';
 import { Button } from '../../../../common/components/button/button';
 import { Dialog, DialogContent, DialogHeader, DialogTrigger } from '../../../../common/components/dialog/dialog';
 import { RadioGroup, RadioGroupItem } from '../../../../common/components/radioGroup/radio-group';

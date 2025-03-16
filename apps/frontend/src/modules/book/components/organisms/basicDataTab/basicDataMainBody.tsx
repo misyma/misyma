@@ -1,6 +1,6 @@
 import { type FC, useMemo } from 'react';
 
-import { StarRating } from '../../../../bookReadings/components/starRating/starRating';
+import { StarRating } from '../../../../bookReadings/components/atoms/starRating/starRating';
 import { Separator } from '../../../../common/components/separator/separator';
 import { Skeleton } from '../../../../common/components/skeleton/skeleton';
 import { BookFormat } from '../../../../common/constants/bookFormat';
