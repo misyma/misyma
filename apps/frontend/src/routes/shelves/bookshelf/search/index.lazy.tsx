@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { z } from 'zod';
 
-import { SearchBookPage } from '../../../../modules/book/page/searchBookPage';
+import { SearchBookPage } from '../../../../modules/book/components/pages/searchBookPage';
 import { RequireAuthComponent } from '../../../../modules/core/components/requireAuth/requireAuthComponent';
 
 const searchSchema = z.object({

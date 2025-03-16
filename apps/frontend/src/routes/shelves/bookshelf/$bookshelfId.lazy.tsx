@@ -10,7 +10,7 @@ import {
   bookshelfBooksSearchParamsSchema,
 } from '../../../modules/bookshelf/components/bookshelfBooksFiltersBar/bookshelfBooksFiltersBar';
 import { BookshelfTopBar } from '../../../modules/bookshelf/components/bookshelfTopBar/bookshelfTopBar';
-import { VirtualizedBooksList } from '../../../modules/bookshelf/components/virtualizedBooksList/virtualizedBooksList';
+import { VirtualizedBooksList } from '../../../modules/book/components/organisms/virtualizedBooksList/virtualizedBooksList';
 import {
   useBreadcrumbKeysContext,
   useBreadcrumbKeysDispatch,

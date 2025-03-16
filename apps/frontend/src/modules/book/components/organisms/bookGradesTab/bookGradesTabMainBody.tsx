@@ -10,7 +10,7 @@ import { DataTable } from '../../../../common/components/dataTable/dataTable';
 import { Separator } from '../../../../common/components/separator/separator';
 import { Skeleton } from '../../../../common/components/skeleton/skeleton';
 import { useErrorHandledQuery } from '../../../../common/hooks/useErrorHandledQuery';
-import { BookTitle } from '../../../../quotes/components/bookTitle/bookTitle';
+import { BookTitle } from '../../../../quotes/components/atoms/bookTitle/bookTitle';
 import { useFindUserQuery } from '../../../../user/api/queries/findUserQuery/findUserQuery';
 import { FindUserBookByIdQueryOptions } from '../../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 import { CurrentRatingStar } from '../../molecules/currentRatingStar/currentRatingStar';

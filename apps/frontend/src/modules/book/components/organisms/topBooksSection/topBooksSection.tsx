@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { FindUserBooksSortField } from '@common/contracts';
 
-import { BookCard } from '../../../../bookshelf/components/bookCard/bookCard';
+import { BookCard } from '../../atoms/bookCard/bookCard';
 import { Skeleton } from '../../../../common/components/skeleton/skeleton';
 import { FindUserBooksByQueryOptions } from '../../../api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
 

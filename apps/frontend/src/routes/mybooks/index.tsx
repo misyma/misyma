@@ -10,7 +10,7 @@ import {
   myBooksSearchParamsSchema,
 } from '../../modules/book/components/organisms/bookPageFiltersBar/bookPageFiltersBar.js';
 import { BooksPageTopBar } from '../../modules/book/components/organisms/booksPageTopBar/booksPageTopBar.js';
-import { VirtualizedBooksList } from '../../modules/bookshelf/components/virtualizedBooksList/virtualizedBooksList.js';
+import { VirtualizedBooksList } from '../../modules/book/components/organisms/virtualizedBooksList/virtualizedBooksList.js';
 import { RequireAuthComponent } from '../../modules/core/components/requireAuth/requireAuthComponent.js';
 import { ContentLayout } from '../../modules/core/layouts/content/contentLayout.js';
 

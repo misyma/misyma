@@ -6,7 +6,7 @@ import { Skeleton } from '../../../../common/components/skeleton/skeleton';
 import { BookFormat } from '../../../../common/constants/bookFormat';
 import { ReversedLanguages } from '../../../../common/constants/languages';
 import { useErrorHandledQuery } from '../../../../common/hooks/useErrorHandledQuery';
-import { BookTitle } from '../../../../quotes/components/bookTitle/bookTitle';
+import { BookTitle } from '../../../../quotes/components/atoms/bookTitle/bookTitle';
 import { FindUserBookByIdQueryOptions } from '../../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 import { BookshelfChoiceDropdown } from '../../molecules/bookshelfChoiceDropdown/bookshelfChoiceDropdown';
 import { CurrentRatingStar } from '../../molecules/currentRatingStar/currentRatingStar';

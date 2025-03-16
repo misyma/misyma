@@ -15,9 +15,9 @@ import {
   quoteStateSelectors,
   setFilterVisible,
 } from '../../modules/core/store/states/quotesFilterState/quoteFilterStateSlice';
-import { QuotationsTabSortingButton } from '../../modules/quotes/components/quotationTabTable/quotationsTabSortingButton';
-import { QuotesPageFilterBar } from '../../modules/quotes/components/quotesPageFilterBar/quotesPageFilterBar';
-import { VirtualizedQuotesList } from '../../modules/quotes/components/virtualizedQuotesList/virtualizedQuotesList';
+import { QuotationsTabSortingButton } from '../../modules/quotes/components/organisms/quotationTabTable/quotationsTabSortingButton';
+import { QuotesPageFilterBar } from '../../modules/quotes/components/organisms/quotesPageFilterBar/quotesPageFilterBar';
+import { VirtualizedQuotesList } from '../../modules/quotes/components/organisms/virtualizedQuotesList/virtualizedQuotesList';
 
 const BooksFiltersVisibilityButton = () => {
   const isFilterVisible = useSelector(quoteStateSelectors.getFilterVisibility);
