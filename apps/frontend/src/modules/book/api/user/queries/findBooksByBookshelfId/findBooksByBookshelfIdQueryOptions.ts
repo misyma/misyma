@@ -53,7 +53,9 @@ export const invalidateBooksByBookshelfIdQuery = (
   vals: FindUserBooksQueryParams,
   queryKey: Readonly<Array<unknown>>,
 ) => {
-  const predicates: Array<(queryKey: Readonly<Array<unknown>>) => boolean> = [];
+  const predicates: Array<(queryKey: Readonly<Array<unknown>>) => boolean> = [
+    (query) => query.includes(BookApiQueryKeys.findBooksByBookshelfId),
+  ];
 
   if (vals.bookshelfId) {
     predicates.push((queryKey) => queryKey[1] === vals.bookshelfId);

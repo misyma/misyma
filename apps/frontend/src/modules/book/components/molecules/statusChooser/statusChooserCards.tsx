@@ -1,4 +1,3 @@
-import { useQueryClient } from '@tanstack/react-query';
 import { type FC, useEffect, useState } from 'react';
 import { HiCheckCircle, HiDotsCircleHorizontal, HiQuestionMarkCircle } from 'react-icons/hi';
 
@@ -7,10 +6,8 @@ import { ReadingStatus } from '@common/contracts';
 import { Skeleton } from '../../../../common/components/skeleton/skeleton';
 import { useErrorHandledQuery } from '../../../../common/hooks/useErrorHandledQuery';
 import { cn } from '../../../../common/lib/utils';
-import { useFindUserQuery } from '../../../../user/api/queries/findUserQuery/findUserQuery';
-import { useUpdateUserBookMutation } from '../../../api/user/mutations/updateUserBookMutation/updateUserBookMutation';
-import { BookApiQueryKeys } from '../../../api/user/queries/bookApiQueryKeys';
 import { FindUserBookByIdQueryOptions } from '../../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
+import { useUpdateUserBook } from '../../../hooks/updateUserBook/updateUserBook';
 
 interface Props {
   bookId: string;
@@ -18,15 +15,13 @@ interface Props {
 }
 
 export const StatusChooserCards: FC<Props> = ({ bookId, bookshelfId }) => {
-  const queryClient = useQueryClient();
-
-  const { data: userData } = useFindUserQuery();
-
   const { data, isFetching, isFetched, isRefetching } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
     }),
   );
+
+  const { updateBookStatus } = useUpdateUserBook(bookId);
 
   const [readingStatus, setReadingStatus] = useState(data?.status);
 
@@ -34,38 +29,21 @@ export const StatusChooserCards: FC<Props> = ({ bookId, bookshelfId }) => {
     if (readingStatus !== data?.status) {
       setReadingStatus(data?.status);
     }
-  }, [data?.status, readingStatus]);
+    // Nein, if present, causes flicker.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data?.status]);
 
   const baseBoxClass =
     'sm:w-40 bg-slate-100 flex flex-col items-center gap-2 p-4 border-2 border-gray-200 cursor-pointer';
 
-  const { mutateAsync: updateUserBook } = useUpdateUserBookMutation({});
-
   const onChangeStatus = async (chosenStatus: ReadingStatus) => {
-    if (chosenStatus === readingStatus) {
-      return;
-    }
-
-    await updateUserBook({
-      userBookId: data?.id as string,
-      status: chosenStatus,
-    });
-
-    await Promise.all([
-      queryClient.invalidateQueries({
-        queryKey: [BookApiQueryKeys.findUserBookById, bookId, userData?.id],
-      }),
-      queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId && query.queryKey[1] === bookshelfId,
-      }),
-      queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey[0] === BookApiQueryKeys.findUserBooksBy && query.queryKey.includes('infinite-query'),
-      }),
-    ]);
-
     setReadingStatus(chosenStatus);
+
+    await updateBookStatus({
+      current: readingStatus,
+      updated: chosenStatus,
+      bookshelfId,
+    });
   };
 
   return (
