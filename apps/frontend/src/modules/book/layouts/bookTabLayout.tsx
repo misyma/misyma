@@ -1,6 +1,6 @@
 import { type FC, type ReactNode } from 'react';
 
-import { BookImageLoader } from '../components/bookImageLoader/bookImageLoader';
+import { BookImageLoader } from '../components/molecules/bookImageLoader/bookImageLoader';
 
 interface BookTabLayoutProps {
   MainBodySlot: ReactNode;

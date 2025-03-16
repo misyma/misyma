@@ -11,11 +11,11 @@ import { type FindBookResponseBody, Language, type UpdateBookRequestBody } from 
 import { Route } from './$id';
 import { AuthenticatedLayout } from '../../../../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { useFindAdminAuthorsQuery } from '../../../../../modules/author/api/admin/queries/findAdminAuthorsQuery/findAdminAuthorsQuery';
-import { AuthorFieldTooltip } from '../../../../../modules/author/components/authorFieldTooltip';
+import { AuthorFieldTooltip } from '../../../../../modules/author/components/organisms/authorFieldTooltip';
 import { createAuthorDraftSchema } from '../../../../../modules/author/schemas/createAuthorDraftSchema';
 import { useUpdateBookMutation } from '../../../../../modules/book/api/admin/mutations/updateBookMutation/updateBookMutation';
 import { FindBookByIdQueryOptions } from '../../../../../modules/book/api/user/queries/findBookById/findBookByIdQueryOptions';
-import LanguageSelect from '../../../../../modules/book/components/languageSelect/languageSelect';
+import LanguageSelect from '../../../../../modules/book/components/molecules/languageSelect/languageSelect';
 import { BookApiError } from '../../../../../modules/book/errors/bookApiError';
 import { Button } from '../../../../../modules/common/components/button/button';
 import { Checkbox } from '../../../../../modules/common/components/checkbox/checkbox';

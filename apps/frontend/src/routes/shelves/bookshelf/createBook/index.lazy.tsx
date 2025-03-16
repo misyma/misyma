@@ -1,6 +1,6 @@
 import { createLazyFileRoute } from '@tanstack/react-router';
 
-import { CreateBookPage } from '../../../../modules/book/page/createBookPage';
+import { CreateBookPage } from '../../../../modules/book/components/pages/createBookPage';
 import { BookCreationProvider } from '../../../../modules/bookshelf/context/bookCreationContext/bookCreationContext';
 import { RequireAuthComponent } from '../../../../modules/core/components/requireAuth/requireAuthComponent';
 

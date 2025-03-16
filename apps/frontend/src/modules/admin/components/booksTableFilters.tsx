@@ -1,6 +1,6 @@
 import { type FC } from 'react';
 
-import { AdminBookSearchFilter } from '../../book/components/adminBookSearchFilters/adminBookSearchFilters';
+import { AdminBookSearchFilter } from '../../book/components/organisms/adminBookSearchFilters/adminBookSearchFilters';
 import { type DynamicFilterValues } from '../../common/contexts/dynamicFilterContext';
 
 interface BooksTableAdditionalColumnProps {

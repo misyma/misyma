@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 
-import { searchResultSchema } from '../../../../modules/book/page/schemas/searchResultPageSchema';
+import { searchResultSchema } from '../../../../modules/book/components/pages/schemas/searchResultPageSchema';
 
 export const Route = createFileRoute('/mybooks/search/result/')({
   validateSearch: (search) => searchResultSchema.parse(search),

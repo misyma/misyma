@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState, type FC } from 'react';
 
 import { FilterContainer } from './filterContainer';
 import { FindUserBookByIdQueryOptions } from '../../../book/api/user/queries/findUserBook/findUserBookByIdQueryOptions';
-import { BookSearchSelector } from '../../../book/components/bookSearchSelector/bookSearchSelector';
+import { BookSearchSelector } from '../../../book/components/molecules/bookSearchSelector/bookSearchSelector';
 import { cn } from '../../lib/utils';
 import { type FilterComponentProps } from '../../types/filter';
 import { Button } from '../button/button';

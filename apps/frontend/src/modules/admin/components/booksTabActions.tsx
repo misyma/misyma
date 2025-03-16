@@ -2,7 +2,7 @@ import { type FC } from 'react';
 import { HiOutlineFilter } from 'react-icons/hi';
 
 import { AdminBooksSortButton } from './adminBooksSortButton';
-import { CreateBookModal } from '../../book/components/createBookModal/createBookModal';
+import { CreateBookModal } from '../../book/components/organisms/createBookModal/createBookModal';
 import { BookCreationProvider } from '../../bookshelf/context/bookCreationContext/bookCreationContext';
 import { Button } from '../../common/components/button/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../common/components/tooltip/tooltip';

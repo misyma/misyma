@@ -4,13 +4,13 @@ import { type FC } from 'react';
 
 import { FindUserBooksSortField, SortOrder } from '@common/contracts';
 
+import { TitleSearchField } from '../../modules/book/components/molecules/bookTitleSearchField/bookTitleSearchField.js';
 import {
   BookPageFiltersBar,
   myBooksSearchParamsSchema,
-} from '../../modules/book/components/bookPageFiltersBar/bookPageFiltersBar.js';
-import { BooksPageTopBar } from '../../modules/book/components/booksPageTopBar/booksPageTopBar.js';
-import { TitleSearchField } from '../../modules/book/components/bookTitleSearchField/bookTitleSearchField.js';
-import { VirtualizedBooksList } from '../../modules/bookshelf/components/virtualizedBooksList/virtualizedBooksList.js';
+} from '../../modules/book/components/organisms/bookPageFiltersBar/bookPageFiltersBar.js';
+import { BooksPageTopBar } from '../../modules/book/components/organisms/booksPageTopBar/booksPageTopBar.js';
+import { VirtualizedBooksList } from '../../modules/book/components/organisms/virtualizedBooksList/virtualizedBooksList.js';
 import { RequireAuthComponent } from '../../modules/core/components/requireAuth/requireAuthComponent.js';
 import { ContentLayout } from '../../modules/core/layouts/content/contentLayout.js';
 
