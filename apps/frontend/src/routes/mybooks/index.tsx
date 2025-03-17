@@ -4,7 +4,7 @@ import { type FC } from 'react';
 
 import { FindUserBooksSortField, SortOrder } from '@common/contracts';
 
-import { TitleSearchField } from '../../modules/book/components/molecules/bookTitleSearchField/bookTitleSearchField.js';
+import { TitleSearchField } from '../../modules/book/components/atoms/bookTitleSearchField/bookTitleSearchField.js';
 import {
   BookPageFiltersBar,
   myBooksSearchParamsSchema,

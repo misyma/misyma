@@ -17,7 +17,7 @@ import { BookNavigationFromEnum, type BookNavigationFrom } from '../../constants
 import { useBookBreadcrumbs } from '../../hooks/useBookBreadcrumbs';
 import { BookTabLayout } from '../../layouts/bookTabLayout';
 import { AddStarRatingButton } from '../atoms/addStarRatingButton/addStarRatingButton';
-import { FavoriteBookButton } from '../molecules/favoriteBookButton/favoriteBookButton';
+import { FavoriteBookButton } from '../atoms/favoriteBookButton/favoriteBookButton';
 import { BasicDataMainBody } from '../organisms/basicDataTab/basicDataMainBody';
 import { BasicDataTabActionButtons } from '../organisms/basicDataTab/basicDataTabActionButtons';
 import { BookGradesTabMainBody } from '../organisms/bookGradesTab/bookGradesTabMainBody';

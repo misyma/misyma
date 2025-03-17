@@ -99,7 +99,7 @@ interface Props {
 }
 
 export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId }) => {
-  const { data, isFetching, isFetched, isRefetching } = useErrorHandledQuery(
+  const { data, isLoading: isLoadingBook } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
     }),
@@ -183,11 +183,7 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
     setOpen(false);
   };
 
-  if (previousBookshelfName === 'Wypożyczalnia' && isLoadingBorrowing) {
-    return <Skeleton className="w-60 sm:w-92 h-12"></Skeleton>;
-  }
-
-  if (isFetching && !isRefetching) {
+  if ((previousBookshelfName === 'Wypożyczalnia' && isLoadingBorrowing) || isLoadingBook) {
     return <Skeleton className="w-60 sm:w-92 h-12"></Skeleton>;
   }
 
@@ -220,7 +216,7 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
             <CommandList>
               {
                 <>
-                  {isFetched && bookshelfData?.data.length === 0 && (
+                  {isLoadingBook && bookshelfData?.data.length === 0 && (
                     <CommandEmpty>Nie znaleziono półki...</CommandEmpty>
                   )}
                   {isLoading && <CommandLoading>Wyszukuję półki</CommandLoading>}
