@@ -7,6 +7,7 @@ import { FindBookBorrowingsQueryOptions } from '../../../borrowing/api/queries/f
 import { toast } from '../../../common/components/toast/use-toast';
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
 import { useUpdateUserBookMutation } from '../../api/user/mutations/updateUserBookMutation/updateUserBookMutation';
+import { useUploadBookImageMutation } from '../../api/user/mutations/uploadBookImageMutation/uploadBookImageMutation';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
 import { invalidateBooksByBookshelfIdQuery } from '../../api/user/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
 import { invalidateFindUserBooksByQuery } from '../../api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
@@ -25,11 +26,17 @@ interface UpdateBookBookshelfPayload {
   bookshelfName: string;
 }
 
+interface UpdatePayload {
+  image?: File;
+  genre?: string;
+}
+
 export const useUpdateUserBook = (id: string) => {
   const queryClient = useQueryClient();
 
-  const { mutateAsync: updateUserBook } = useUpdateUserBookMutation({});
+  const { mutateAsync: updateUserBook, isPending: isUpdatePending } = useUpdateUserBookMutation({});
   const { mutateAsync: updateBorrowing } = useUpdateBorrowingMutation({});
+  const { mutateAsync: uploadBookImageMutation, isPending: isImageUploadPending } = useUploadBookImageMutation({});
 
   const { data: bookBorrowing, isLoading: isLoadingBorrowing } = useErrorHandledQuery(
     FindBookBorrowingsQueryOptions({
@@ -137,9 +144,36 @@ export const useUpdateUserBook = (id: string) => {
     await Promise.all([...invalidateBooksByBookshelfQueries(), ...invalidateBooksByXQueries()]);
   };
 
+  const setFavorite = async (favorite: boolean) => {
+    await updateUserBook({
+      userBookId: id,
+      isFavorite: favorite,
+    });
+  };
+
+  const update = async (payload: UpdatePayload) => {
+    if (payload.image) {
+      await uploadBookImageMutation({
+        bookId: id,
+        file: payload.image as unknown as File,
+      });
+    }
+
+    if (payload.genre) {
+      await updateUserBook({
+        userBookId: id,
+        genreId: payload.genre,
+      });
+    }
+  };
+
   return {
+    update,
     updateBookStatus,
     updateBookBookshelf,
+    setFavorite,
     isLoadingBorrowing,
+    isUpdatePending,
+    isImageUploadPending,
   };
 };

@@ -25,8 +25,7 @@ import {
 } from '../../../../common/components/select/select';
 import { LoadingSpinner } from '../../../../common/components/spinner/loading-spinner';
 import { useErrorHandledQuery } from '../../../../common/hooks/useErrorHandledQuery';
-import { useUpdateUserBookMutation } from '../../../api/user/mutations/updateUserBookMutation/updateUserBookMutation';
-import { useUploadBookImageMutation } from '../../../api/user/mutations/uploadBookImageMutation/uploadBookImageMutation';
+import { useUpdateUserBook } from '../../../hooks/updateUserBook/updateUserBook';
 
 const changeUserBookDataSchema = z.object({
   image: z.optional(
@@ -69,25 +68,15 @@ export const UpdateUserBookForm: FC<Props> = ({ bookId, onSubmit, onCancel }) =>
     }
   }, [file]);
 
-  const { mutateAsync: updateUserBook, isPending: isUpdatePending } = useUpdateUserBookMutation({});
-  const { mutateAsync: uploadBookImageMutation, isPending: isImageUploadPending } = useUploadBookImageMutation({});
+  const { update, isUpdatePending, isImageUploadPending } = useUpdateUserBook(bookId);
 
   const eitherMutationPending = isUpdatePending || isImageUploadPending;
 
   const onSubmitChangeMyBookDataForm = async (values: z.infer<typeof changeUserBookDataSchema>) => {
-    if (values.image) {
-      await uploadBookImageMutation({
-        bookId,
-        file: values.image as unknown as File,
-      });
-    }
-
-    if (values.genre) {
-      await updateUserBook({
-        userBookId: bookId,
-        genreId: values.genre,
-      });
-    }
+    await update({
+      genre: values.genre,
+      image: values.image as unknown as File,
+    });
   };
 
   const changeUserBookDataForm = useForm<z.infer<typeof changeUserBookDataSchema>>({

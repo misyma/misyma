@@ -1,12 +1,10 @@
-import { useQueryClient } from '@tanstack/react-query';
 import { type FC, useEffect, useState } from 'react';
 import { HiHeart, HiOutlineHeart } from 'react-icons/hi';
 
 import { useErrorHandledQuery } from '../../../../common/hooks/useErrorHandledQuery';
 import { cn } from '../../../../common/lib/utils';
-import { useUpdateUserBookMutation } from '../../../api/user/mutations/updateUserBookMutation/updateUserBookMutation';
-import { BookApiQueryKeys } from '../../../api/user/queries/bookApiQueryKeys';
 import { FindUserBookByIdQueryOptions } from '../../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
+import { useUpdateUserBook } from '../../../hooks/updateUserBook/updateUserBook';
 
 interface Props {
   bookId: string;
@@ -22,37 +20,19 @@ export const FavoriteBookButton: FC<Props> = ({ bookId, className }) => {
     }),
   );
 
-  const queryClient = useQueryClient();
-
   const [isFavorite, setIsFavorite] = useState(userBookData?.isFavorite);
 
-  const { mutateAsync: updateUserBook } = useUpdateUserBookMutation({});
+  const { setFavorite } = useUpdateUserBook(bookId);
 
   const onIsFavoriteChange = async (): Promise<void> => {
     if (userBookData) {
       setIsAnimating(true);
 
       try {
-        await updateUserBook({
-          userBookId: userBookData?.id,
-          isFavorite: !isFavorite,
-        });
-
+        setFavorite(!isFavorite);
         setIsFavorite(!isFavorite);
-
-        await Promise.all([
-          queryClient.invalidateQueries({
-            predicate: (query) =>
-              query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId &&
-              query.queryKey[1] === userBookData?.bookshelfId,
-          }),
-          queryClient.invalidateQueries({
-            predicate: (query) =>
-              query.queryKey[0] === BookApiQueryKeys.findUserBookById && query.queryKey[1] === userBookData?.id,
-          }),
-        ]);
       } finally {
-        setTimeout(() => setIsAnimating(false), 300); // Match this with your CSS animation duration
+        setTimeout(() => setIsAnimating(false), 300);
       }
     }
   };
