@@ -11,6 +11,7 @@ import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMa
 import { useErrorHandledMutation } from '../../../../../common/hooks/useErrorHandledMutation';
 import { api } from '../../../../../core/apiClient/apiClient';
 import { BookApiError } from '../../../../errors/bookApiError';
+import { BookApiQueryKeys } from '../../queries/bookApiQueryKeys';
 import { invalidateBooksByBookshelfIdQuery } from '../../queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
 import { invalidateFindUserBookByIdQueryPredicate } from '../../queries/findUserBook/findUserBookByIdQueryOptions';
 import { invalidateFindUserBooksByQuery } from '../../queries/findUserBookBy/findUserBooksByQueryOptions';
@@ -51,7 +52,8 @@ export const useUpdateUserBookMutation = (
               },
               queryKey,
             ) ||
-            invalidateFindUserBookByIdQueryPredicate(queryKey, args[1].userBookId)
+            invalidateFindUserBookByIdQueryPredicate(queryKey, args[1].userBookId) ||
+            (queryKey[0] === BookApiQueryKeys.findUserBookById && queryKey[1] === args[0].bookshelfId)
           );
         },
       });

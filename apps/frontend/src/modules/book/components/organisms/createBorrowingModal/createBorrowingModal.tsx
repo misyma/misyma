@@ -27,6 +27,7 @@ import {
 } from '../../../../common/components/form/form';
 import { Input } from '../../../../common/components/input/input';
 import { Popover, PopoverContent, PopoverTrigger } from '../../../../common/components/popover/popover';
+import { LoadingSpinner } from '../../../../common/components/spinner/loading-spinner';
 import { useToast } from '../../../../common/components/toast/use-toast';
 import { cn } from '../../../../common/lib/utils';
 
@@ -76,7 +77,7 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, currentBookshelfId, op
     },
   });
 
-  const { mutateAsync } = useCreateBorrowingMutation({
+  const { mutateAsync, isPending } = useCreateBorrowingMutation({
     onSuccess: () => setIsOpen(false),
   });
 
@@ -234,12 +235,13 @@ export const CreateBorrowingModal: FC<Props> = ({ bookId, currentBookshelfId, op
                   Wróć
                 </Button>
                 <Button
-                  variant={'default'}
                   size={'lg'}
                   type="submit"
-                  disabled={!form.formState.isValid}
+                  variant={isPending ? 'ghost' : 'default'}
+                  disabled={!form.formState.isValid && !isPending}
                 >
-                  Potwierdź
+                  {isPending && <LoadingSpinner size={24} />}
+                  {!isPending && 'Potwierdź'}
                 </Button>
               </div>
             </form>

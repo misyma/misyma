@@ -4,9 +4,9 @@ import { useEffect, useMemo, useRef, type FC } from 'react';
 
 import { type FindQuotesQueryParams } from '@common/contracts';
 
-import { FavoriteQuotationButton } from '../../../../book/components/molecules/favoriteQuotationButton/favoriteQuotationButton';
 import { Skeleton } from '../../../../common/components/skeleton/skeleton';
 import { getQuotesByInfiniteQueryOptions } from '../../../api/queries/getQuotes/getQuotes';
+import { FavoriteQuoteButton } from '../../atoms/favoriteQuotationButton/favoriteQuoteButton';
 import { Blockquote } from '../../molecules/blockQuote/blockQuote';
 import { DeleteQuoteModal } from '../deleteQuoteModal/deleteQuoteModal';
 import { UpdateQuoteButton } from '../updateQuoteModal/updateQuoteModal';
@@ -46,7 +46,7 @@ export const VirtualizedQuotesList: FC<VirtualizedQuotesListProps> = ({ queryArg
   }, [rowVirtualizer.getVirtualItems(), hasNextPage, fetchNextPage, isFetchingNextPage, allQuotes.length]);
 
   if (!isLoading && !allQuotes.length) {
-    return <div className="w-full text-center py-8 text-gray-500">Nie znaleziono półek</div>;
+    return <div className="w-full text-center py-8 text-gray-500">Nie znaleziono cytatów</div>;
   }
 
   return (
@@ -109,7 +109,7 @@ export const VirtualizedQuotesList: FC<VirtualizedQuotesListProps> = ({ queryArg
                             userBookId={quote.userBookId}
                             quoteId={quote.id as string}
                           />
-                          <FavoriteQuotationButton quote={quote} />
+                          <FavoriteQuoteButton quote={quote} />
                         </>
                       }
                     >

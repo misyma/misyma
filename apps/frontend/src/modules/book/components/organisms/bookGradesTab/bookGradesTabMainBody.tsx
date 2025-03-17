@@ -13,7 +13,7 @@ import { useErrorHandledQuery } from '../../../../common/hooks/useErrorHandledQu
 import { BookTitle } from '../../../../quotes/components/atoms/bookTitle/bookTitle';
 import { useFindUserQuery } from '../../../../user/api/queries/findUserQuery/findUserQuery';
 import { FindUserBookByIdQueryOptions } from '../../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
-import { CurrentRatingStar } from '../../molecules/currentRatingStar/currentRatingStar';
+import { CurrentRatingStar } from '../../atoms/currentRatingStar/currentRatingStar';
 
 interface BookGradesTabMainBodyProps {
   bookId: string;

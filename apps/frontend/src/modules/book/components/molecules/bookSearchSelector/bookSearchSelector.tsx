@@ -2,13 +2,8 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { type FC, Fragment, useEffect, useMemo, useRef, useState } from 'react';
 
-import {
-  Command,
-  CommandEmpty,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from '../../../../common/components/command/command';
+import { BookSearchItem } from './bookSearchItem';
+import { Command, CommandEmpty, CommandInput, CommandList } from '../../../../common/components/command/command';
 import { DialogPopoverContent, PopoverContent } from '../../../../common/components/popover/popover';
 import { LoadingSpinner } from '../../../../common/components/spinner/loading-spinner';
 import useDebounce from '../../../../common/hooks/useDebounce';
@@ -143,24 +138,12 @@ const BookCommandGroup = ({
                 const book = options[startIndex];
 
                 return (
-                  <CommandItem
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      height: `${virtualRow.size}px`,
-                      width: '100%',
-                      transform: `translateY(${virtualRow.start}px)`,
-                    }}
-                    onSelect={() => {
-                      onSelect(book.value, book.label);
-                    }}
-                    key={book?.value}
-                    className="cursor-pointer"
-                    value={book.value}
-                  >
-                    <span>{book?.label}</span>
-                  </CommandItem>
+                  <BookSearchItem
+                    book={book}
+                    onSelect={onSelect}
+                    size={virtualRow.size}
+                    transform={virtualRow.start}
+                  />
                 );
               })}
           </div>

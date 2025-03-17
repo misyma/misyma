@@ -8,8 +8,8 @@ import { ReversedLanguages } from '../../../../common/constants/languages';
 import { useErrorHandledQuery } from '../../../../common/hooks/useErrorHandledQuery';
 import { BookTitle } from '../../../../quotes/components/atoms/bookTitle/bookTitle';
 import { FindUserBookByIdQueryOptions } from '../../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
+import { CurrentRatingStar } from '../../atoms/currentRatingStar/currentRatingStar';
 import { BookshelfChoiceDropdown } from '../../molecules/bookshelfChoiceDropdown/bookshelfChoiceDropdown';
-import { CurrentRatingStar } from '../../molecules/currentRatingStar/currentRatingStar';
 import { StatusChooserCards } from '../../molecules/statusChooser/statusChooserCards';
 
 interface BasicDataMainBodyProps {
@@ -84,7 +84,6 @@ export const BasicDataMainBody: FC<BasicDataMainBodyProps> = ({ bookId }) => {
             bookId={bookId}
           />
           <div className="flex flex-shrink-0 flex-col text-lg items-end gap-2">
-            <p>Status</p>
             <StatusChooserCards
               bookshelfId={data?.bookshelfId ?? ''}
               bookId={data?.id ?? ''}

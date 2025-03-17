@@ -4,13 +4,13 @@ import { HiHeart, HiOutlineHeart } from 'react-icons/hi';
 import { type Quote } from '@common/contracts';
 
 import { cn } from '../../../../common/lib/utils.js';
-import { useUpdateQuoteMutation } from '../../../../quotes/api/mutations/updateQuoteMutation/updateQuoteMutation.js';
+import { useUpdateQuoteMutation } from '../../../api/mutations/updateQuoteMutation/updateQuoteMutation.js';
 
 interface Props {
   quote: Quote;
 }
 
-export const FavoriteQuotationButton: FC<Props> = ({ quote }) => {
+export const FavoriteQuoteButton: FC<Props> = ({ quote }) => {
   const [isFavorite, setIsFavorite] = useState(quote?.isFavorite);
   const [isAnimating, setIsAnimating] = useState(false);
 

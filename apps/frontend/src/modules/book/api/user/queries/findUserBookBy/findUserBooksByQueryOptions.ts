@@ -96,7 +96,9 @@ export const invalidateFindUserBooksByQuery = (
   queryKey: Readonly<Array<unknown>>,
   infiniteQuery?: boolean,
 ) => {
-  const predicates: Array<(queryKey: Readonly<Array<unknown>>) => boolean> = [];
+  const predicates: Array<(queryKey: Readonly<Array<unknown>>) => boolean> = [
+    (queryKey) => queryKey[0] === BookApiQueryKeys.findUserBooksBy,
+  ];
 
   if (infiniteQuery) {
     predicates.push((queryKey) => queryKey.includes('infinite-query'));
