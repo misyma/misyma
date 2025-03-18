@@ -29,7 +29,7 @@ const BooksFiltersVisibilityButton = () => {
   const filtersApplied = useMemo(() => {
     return (
       Object.entries(search)
-        .filter(([key]) => !['page', 'pageSize', 'sortField', 'sortOrder', 'title'].includes(key))
+        .filter(([key]) => !['page', 'pageSize', 'sortField', 'sortOrder', 'sortDate', 'title'].includes(key))
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         .filter(([_, value]) => {
           return value !== undefined || value !== '';

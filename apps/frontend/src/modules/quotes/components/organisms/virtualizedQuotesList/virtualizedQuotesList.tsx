@@ -95,7 +95,7 @@ export const VirtualizedQuotesList: FC<VirtualizedQuotesListProps> = ({ queryArg
                     <Blockquote
                       key={quote.id + quote.content}
                       page={quote.page}
-                      date="2025-01-01"
+                      date={quote.createdAt}
                       title={quote.bookTitle}
                       className="h-[180px]"
                       author={quote.authors?.join(', ')}

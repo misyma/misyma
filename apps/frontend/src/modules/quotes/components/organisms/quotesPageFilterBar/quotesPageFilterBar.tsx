@@ -37,7 +37,10 @@ export const QuotesPageFilterBar = () => {
     });
   };
 
-  const hasAnyFilter = useMemo(() => Object.values(search).filter((val) => val !== undefined).length > 0, [search]);
+  const hasAnyFilter = useMemo(
+    () => Object.entries(search).filter(([key, val]) => val !== undefined && key !== 'sortDate').length > 0,
+    [search],
+  );
 
   return (
     <FiltersDrawer
@@ -59,17 +62,6 @@ export const QuotesPageFilterBar = () => {
           type: 'text',
         }}
       />
-      <CheckboxFilter
-        initialValue={(search.isFavorite as unknown as string) === '' ? false : search.isFavorite}
-        onRemoveFilter={() => updateSearch({ isFavorite: undefined })}
-        setFilterAction={(val) => updateSearch({ isFavorite: val })}
-        filter={{
-          id: 'is-favorite-filter',
-          key: 'isFavorite',
-          label: 'Ulubiona',
-          type: 'three-state-checkbox',
-        }}
-      />
       <BookSearchFilter
         initialValue={search.userBookId}
         filter={{
@@ -80,6 +72,17 @@ export const QuotesPageFilterBar = () => {
         }}
         onRemoveFilter={() => updateSearch({ userBookId: undefined })}
         setFilterAction={(val) => updateSearch({ userBookId: val })}
+      />
+      <CheckboxFilter
+        initialValue={(search.isFavorite as unknown as string) === '' ? false : search.isFavorite}
+        onRemoveFilter={() => updateSearch({ isFavorite: undefined })}
+        setFilterAction={(val) => updateSearch({ isFavorite: val })}
+        filter={{
+          id: 'is-favorite-filter',
+          key: 'isFavorite',
+          label: 'Ulubiona',
+          type: 'three-state-checkbox',
+        }}
       />
     </FiltersDrawer>
   );
