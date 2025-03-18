@@ -116,6 +116,13 @@ export const useCreateBookWithUserBook = ({
           predicate: ({ queryKey }) =>
             queryKey.includes('infinite-query') && queryKey.includes(BookApiQueryKeys.findUserBooksBy),
         }),
+        queryClient.invalidateQueries({
+          predicate: ({ queryKey }) => queryKey.includes(BookApiQueryKeys.findBooks),
+        }),
+        queryClient.invalidateQueries({
+          predicate: ({ queryKey }) =>
+            queryKey.includes(BookApiQueryKeys.findUserBooksBy) && queryKey.includes(userBook.book.isbn),
+        }),
       ]);
 
       if (image) {
