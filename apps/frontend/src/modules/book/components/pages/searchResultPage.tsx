@@ -364,7 +364,7 @@ export const SearchResultPage: FC = () => {
   const addBookUrl =
     from === BookNavigationFromEnum.shelves
       ? `/shelves/bookshelf/search/create/${searchParams.bookshelfId}`
-      : `/shelves/createBook/${searchParams.bookshelfId}`;
+      : `/mybooks/search/create/${searchParams.bookshelfId}`;
 
   const searchCreationDispatch = useSearchBookContextDispatch();
 
