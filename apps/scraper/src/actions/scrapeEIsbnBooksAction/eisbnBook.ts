@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-export interface EIsbnResponseBody {
+export interface EisbnResponseBody {
   readonly ONIXMessage?: {
-    readonly Product?: EIsbnBook | EIsbnBook[];
+    readonly Product?: EisbnBook | EisbnBook[];
     readonly 'eisbn:nextPage'?: string;
   };
 }
 
-export interface EIsbnBook {
+export interface EisbnBook {
   readonly ProductIdentifier: EIsbnProductID | EIsbnProductID[];
   readonly DescriptiveDetail: {
     readonly ProductForm?: string;

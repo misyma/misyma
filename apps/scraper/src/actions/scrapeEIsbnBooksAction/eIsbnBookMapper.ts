@@ -2,11 +2,11 @@ import { Value } from '@sinclair/typebox/value';
 
 import { BookFormat, Language } from '@common/contracts';
 
-import { type EIsbnProductID, type EIsbnBook } from './eisbnBook.js';
+import { type EIsbnProductID, type EisbnBook } from './eisbnBook.js';
 import { bookDraftSchema, type BookDraft } from '../../infrastructure/entities/book/book.js';
 
-export class EIsbnMapper {
-  public mapBook(eisbnBook: EIsbnBook): BookDraft | undefined {
+export class EisbnBookMapper {
+  public mapBook(eisbnBook: EisbnBook): BookDraft | undefined {
     try {
       const format = this.mapFormat(eisbnBook.DescriptiveDetail.ProductForm);
 

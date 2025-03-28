@@ -1,14 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { Value } from '@sinclair/typebox/value';
 
 import { BookFormat, Language } from '@common/contracts';
 
-import { type BnBook } from './bnBook.js';
+import { type NationalLibraryBook } from '../../common/nationalLibraryBook.js';
 import { bookDraftSchema, type BookDraft } from '../../infrastructure/entities/book/book.js';
 
-export class BnMapper {
-  public mapBook(bnBook: BnBook): BookDraft | undefined {
-    const marcFields = bnBook.marc.fields;
+export class NationalLibraryBookMapper {
+  public mapBook(nationalLibraryBook: NationalLibraryBook): BookDraft | undefined {
+    const marcFields = nationalLibraryBook.marc.fields;
 
     const getField = (tag: string): any => marcFields.find((f: any) => f[tag]);
 
@@ -17,7 +18,7 @@ export class BnMapper {
       return field ? field[tag].subfields.find((sf: any) => sf[code])?.[code] : undefined;
     };
 
-    const titleRaw = bnBook.title;
+    const titleRaw = nationalLibraryBook.title;
     const authorRaw = getSubfield('100', 'a');
     const translatorRaw = getSubfield('700', 'a');
     const publisherRaw = getSubfield('260', 'b');
@@ -102,7 +103,7 @@ export class BnMapper {
       console.error(
         JSON.stringify({
           message: 'Book mapping error.',
-          bnBook,
+          bnBook: nationalLibraryBook,
           error,
         }),
       );
