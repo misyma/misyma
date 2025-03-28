@@ -1,29 +1,29 @@
 import { type AxiosResponse } from 'axios';
 import { type XMLParser } from 'fast-xml-parser';
 
-import { type EIsbnResponseBody } from './eisbnBook.js';
-import { type EIsbnMapper } from './eIsbnMapper.js';
-import { type EIsbnClient } from '../../infrastructure/clients/eIsbnClient.js';
+import { type EisbnResponseBody } from './eisbnBook.js';
+import { type EisbnBookMapper } from './eIsbnBookMapper.js';
+import { type EisbnClient } from '../../infrastructure/clients/eisbnClient.js';
 import { type BookDraft } from '../../infrastructure/entities/book/book.js';
 import { type AuthorRepository } from '../../infrastructure/repositories/authorRepository/authorRepository.js';
 import { type BookRepository } from '../../infrastructure/repositories/bookRepository/bookRepository.js';
 import { type LoggerService } from '../../libs/logger/loggerService.js';
 
-export interface ScrapeEIsbnActionPayload {
+export interface ScrapeEisbnBooksActionPayload {
   readonly from: number | undefined;
 }
 
-export class ScrapeEIsbnAction {
+export class ScrapeEisbnBooksAction {
   public constructor(
     private readonly authorRepository: AuthorRepository,
     private readonly bookRepository: BookRepository,
-    private readonly eIsbnMapper: EIsbnMapper,
-    private readonly eisbnClient: EIsbnClient,
+    private readonly eIsbnMapper: EisbnBookMapper,
+    private readonly eisbnClient: EisbnClient,
     private readonly logger: LoggerService,
     private readonly xmlParser: XMLParser,
   ) {}
 
-  public async execute(payload: ScrapeEIsbnActionPayload): Promise<void> {
+  public async execute(payload: ScrapeEisbnBooksActionPayload): Promise<void> {
     const { from: initialFrom } = payload;
 
     this.logger.info({
@@ -40,7 +40,7 @@ export class ScrapeEIsbnAction {
     while (idFrom) {
       const response = await this.fetchEIsbnBooks(idFrom);
 
-      const parsedResponseBody = this.xmlParser.parse(response.data) as EIsbnResponseBody;
+      const parsedResponseBody = this.xmlParser.parse(response.data) as EisbnResponseBody;
 
       const eisbnBooks = parsedResponseBody?.ONIXMessage?.Product;
 

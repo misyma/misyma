@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-export interface BnResponseBody {
+export interface NationalLibraryResponseBody {
   nextPage: string;
-  bibs: BnBook[];
+  bibs: NationalLibraryBook[];
 }
 
-export interface BnBook {
+export interface NationalLibraryBook {
   title: string;
+  genre?: string;
   marc: Marc;
 }
 

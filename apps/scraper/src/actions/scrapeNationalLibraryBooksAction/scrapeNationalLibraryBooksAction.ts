@@ -1,29 +1,29 @@
-import { type BnResponseBody } from './bnBook.js';
-import { type BnMapper } from './bnMapper.js';
-import { type BnClient } from '../../infrastructure/clients/bnClient.js';
+import { type NationalLibraryBookMapper } from './nationalLibraryBookMapper.js';
+import { type NationalLibraryResponseBody } from '../../common/nationalLibraryBook.js';
+import { type NationalLibraryClient } from '../../infrastructure/clients/nationalLibraryClient.js';
 import { type BookDraft } from '../../infrastructure/entities/book/book.js';
 import { type AuthorRepository } from '../../infrastructure/repositories/authorRepository/authorRepository.js';
 import { type BookRepository } from '../../infrastructure/repositories/bookRepository/bookRepository.js';
 import { type LoggerService } from '../../libs/logger/loggerService.js';
 
-export interface ScrapeBnActionPayload {
+export interface ScrapeNationalLibraryBooksActionPayload {
   readonly from: number | undefined;
 }
 
-export class ScrapeBnAction {
+export class ScrapeNationalLibraryBooksAction {
   public constructor(
     private readonly authorRepository: AuthorRepository,
     private readonly bookRepository: BookRepository,
-    private readonly bnMapper: BnMapper,
-    private readonly bnClient: BnClient,
+    private readonly bnMapper: NationalLibraryBookMapper,
+    private readonly bnClient: NationalLibraryClient,
     private readonly logger: LoggerService,
   ) {}
 
-  public async execute(payload: ScrapeBnActionPayload): Promise<void> {
+  public async execute(payload: ScrapeNationalLibraryBooksActionPayload): Promise<void> {
     const { from: initialFrom } = payload;
 
     this.logger.info({
-      message: 'Scraping BN...',
+      message: 'Scraping books from National Library API...',
       from: initialFrom,
     });
 
@@ -38,7 +38,7 @@ export class ScrapeBnAction {
     }
 
     while (url) {
-      const response = await this.bnClient.get<BnResponseBody>(url);
+      const response = await this.bnClient.get<NationalLibraryResponseBody>(url);
 
       const bookDrafts = response.data.bibs
         .map((book) => this.bnMapper.mapBook(book))
@@ -61,7 +61,7 @@ export class ScrapeBnAction {
       url = response.data.nextPage;
     }
 
-    this.logger.info({ message: 'Scraping BN completed.' });
+    this.logger.info({ message: 'Scraping books National Library API completed.' });
   }
 
   private async saveBook(bookDraft: BookDraft): Promise<void> {
