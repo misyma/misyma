@@ -4,6 +4,7 @@ import { type ApplyBookChangeRequestPathParams } from '@common/contracts';
 
 import { BookApiQueryKeys } from '../../../../../book/api/user/queries/bookApiQueryKeys';
 import { invalidateBooksByBookshelfIdQuery } from '../../../../../book/api/user/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
+import { invalidateAllFindUserBookByIdQueryPredicate } from '../../../../../book/api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 import { invalidateFindUserBooksByQuery } from '../../../../../book/api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
 import { BookApiError } from '../../../../../book/errors/bookApiError';
 import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
@@ -42,7 +43,9 @@ export const useApplyBookChangeRequestMutation = (
           invalidateBookChangeRequestByIdQueryPredicate(queryKey, args[1].bookChangeRequestId) ||
           queryKey[0] === BookApiQueryKeys.findUserBookById ||
           invalidateBooksByBookshelfIdQuery({}, queryKey) ||
-          invalidateFindUserBooksByQuery({}, queryKey),
+          invalidateFindUserBooksByQuery({}, queryKey) ||
+          invalidateAllFindUserBookByIdQueryPredicate(queryKey) ||
+          invalidateFindUserBooksByQuery({}, queryKey, true),
       });
     },
   });

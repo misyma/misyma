@@ -1,4 +1,4 @@
-import { type UseQueryOptions, queryOptions } from '@tanstack/react-query';
+import { type QueryKey, type UseQueryOptions, queryOptions } from '@tanstack/react-query';
 
 import { type FindBookPathParams, type FindBookResponseBody } from '@common/contracts';
 
@@ -27,3 +27,6 @@ export const FindBookByIdQueryOptions = (
     queryFn: () => findBookById(payload),
     enabled: !!payload.bookId,
   });
+
+export const invalidateFindBookByIdQueryPredicate = (queryKey: QueryKey, id: string) =>
+  queryKey.includes(BookApiQueryKeys.findBookById) && queryKey.includes(id);

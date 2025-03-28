@@ -29,3 +29,6 @@ export const FindUserBookByIdQueryOptions = ({ userBookId }: FindUserBookPathPar
 
 export const invalidateFindUserBookByIdQueryPredicate = (queryKey: QueryKey, userBookId: string) =>
   queryKey.includes(BookApiQueryKeys.findUserBookById) && queryKey.includes(userBookId);
+
+export const invalidateAllFindUserBookByIdQueryPredicate = (queryKey: QueryKey) =>
+  queryKey.includes(BookApiQueryKeys.findUserBookById);

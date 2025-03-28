@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { type FC, useCallback, useMemo, useState } from 'react';
+import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { z } from 'zod';
@@ -141,6 +141,20 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
     reValidateMode: 'onChange',
     mode: 'onTouched',
   });
+
+  useEffect(() => {
+    if (stepTwoForm.formState.isDirty) {
+      return;
+    }
+    if (!bookData) {
+      return;
+    }
+    stepTwoForm.setValue('format', bookData.format);
+    stepTwoForm.setValue('language', bookData.language);
+    stepTwoForm.setValue('pages', bookData.pages ?? '');
+    stepTwoForm.setValue('translator', bookData.translator ?? '');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bookData]);
 
   // eslint-disable-next-line
   const onProceedToNextStep = (vals: any) => {

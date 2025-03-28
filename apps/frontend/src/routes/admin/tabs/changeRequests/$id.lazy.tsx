@@ -54,19 +54,16 @@ export const ChangeRequestView: FC = () => {
       bookChangeRequestId: id,
     }),
   );
-
   const { data: bookData, isFetched: isBookDataFetched } = useErrorHandledQuery(
     FindBookByIdQueryOptions({
       bookId: changeRequestData?.data?.bookId ?? '',
     }),
   );
-
   const { data: authorsResponse, isFetching: isFetchingAuthors } = useFindAdminAuthorsQuery({
     ids: [...(bookData?.authors.map((author) => author.id) ?? []), ...(changeRequestData?.data?.authorIds ?? [])],
   });
 
   const { mutateAsync: deleteBookChangeRequest, isPending: isDeletePending } = useDeleteBookChangeRequestMutation({});
-
   const { mutateAsync: applyBookChangeRequest, isPending: isApplyPending } = useApplyBookChangeRequestMutation({});
 
   const navigate = useNavigate();
