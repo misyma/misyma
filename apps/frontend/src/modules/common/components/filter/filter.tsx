@@ -426,7 +426,8 @@ export const YearFilter: FC<FilterComponentProps> = ({ filter, initialValue, onR
 
   return (
     <FilterContainer
-      hasValue={!!initialValue}
+      // No clue why it got parsed like this. Will need to investigate
+      hasValue={initialValue !== 'undefined' && initialValue !== ''}
       slot={
         <YearPicker
           value={initialValue as unknown as number}

@@ -13,8 +13,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '../../../../common/components/tooltip/tooltip';
-import { setFilterVisible } from '../../../../core/store/states/bookshelfBooksFilterState/bookshelfBooksFilterStateSlice';
-import { myBooksStateSelectors } from '../../../../core/store/states/myBooksFilterState/myBooksFilterStateSlice';
+import {
+  myBooksStateSelectors,
+  setFilterVisible,
+} from '../../../../core/store/states/myBooksFilterState/myBooksFilterStateSlice';
 import { BookNavigationFromEnum } from '../../../constants';
 
 export const BooksPageTopBar: FC = () => {
