@@ -71,7 +71,7 @@ export const UpdateNonStandardBookshelfModal: FC<Props> = ({
             title: 'Coś poszło nie tak z wysyłaniem obrazka półki.',
           },
         });
-      } catch (error) {
+      } catch {
         return;
       }
     }

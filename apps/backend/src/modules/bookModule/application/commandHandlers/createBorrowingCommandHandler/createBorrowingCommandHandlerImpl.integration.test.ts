@@ -1,8 +1,6 @@
+import { BookshelfType } from '@common/contracts';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { BookshelfType } from '@common/contracts';
-
-import { type CreateBorrowingCommandHandler } from './createBorrowingCommandHandler.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
@@ -19,6 +17,8 @@ import { symbols } from '../../../symbols.js';
 import { BorrowingTestFactory } from '../../../tests/factories/borrowingTestFactory/borrowingTestFactory.js';
 import { type BorrowingTestUtils } from '../../../tests/utils/borrowingTestUtils/borrowingTestUtils.js';
 import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
+
+import { type CreateBorrowingCommandHandler } from './createBorrowingCommandHandler.js';
 
 describe('CreateBorrowingCommandHandlerImpl', () => {
   let commandHandler: CreateBorrowingCommandHandler;

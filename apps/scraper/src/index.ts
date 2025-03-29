@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { XMLParser } from 'fast-xml-parser';
 import yargs, { type Argv } from 'yargs';
 import { hideBin } from 'yargs/helpers';
@@ -96,8 +94,14 @@ try {
     logger,
   );
 
-  yargs(hideBin(process.argv))
-    .command(
+  interface ScrapeArgs {
+    source: 'eisbn' | 'nationallibrary';
+    resource: 'book' | 'genre';
+    from?: number;
+  }
+
+  await yargs(hideBin(process.argv))
+    .command<ScrapeArgs>(
       'scrape <source> <resource>',
       'Scrape resources',
       (builder: Argv) => {
@@ -119,7 +123,7 @@ try {
           })
           .usage('Usage: scraper scrape <source> <resource> [-f num]');
       },
-      async (argv: any) => {
+      async (argv) => {
         switch (argv.source) {
           case 'eisbn':
             if (argv.resource !== 'book') {
@@ -127,16 +131,16 @@ try {
               break;
             }
 
-            await scrapeEisbnAction.execute(argv);
+            await scrapeEisbnAction.execute({ from: argv.from });
 
             break;
           case 'nationallibrary':
             if (argv.resource === 'genre') {
-              await scrapeNationalLibraryGenresAction.execute(argv);
+              await scrapeNationalLibraryGenresAction.execute({ from: argv.from });
               break;
             }
 
-            await scrapeNationalLibraryBooksAction.execute(argv);
+            await scrapeNationalLibraryBooksAction.execute({ from: argv.from });
             break;
           default:
             console.error('Unknown source');

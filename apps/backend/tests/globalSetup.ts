@@ -1,7 +1,8 @@
-import { TestContainer } from './testContainer.js';
 import { BookDatabaseManager } from '../src/modules/bookModule/infrastructure/databases/bookDatabase/bookDatabaseManager.js';
 import { BookshelfDatabaseManager } from '../src/modules/bookshelfModule/infrastructure/databases/bookshelvesDatabase/bookshelfDatabaseManager.js';
 import { UserDatabaseManager } from '../src/modules/userModule/infrastructure/databases/userDatabase/userDatabaseManager.js';
+
+import { TestContainer } from './testContainer.js';
 
 export async function setup(): Promise<void> {
   try {

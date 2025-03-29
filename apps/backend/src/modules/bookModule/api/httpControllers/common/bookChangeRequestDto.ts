@@ -1,6 +1,5 @@
-import { type Static, Type } from '@sinclair/typebox';
-
 import * as contracts from '@common/contracts';
+import { type Static, Type } from '@sinclair/typebox';
 
 import {
   bookTitleSchema,

@@ -1,6 +1,7 @@
-import { type UserMapper } from './userMapper.js';
 import { User } from '../../../../domain/entities/user/user.js';
 import { type UserRawEntity } from '../../../databases/userDatabase/tables/userTable/userRawEntity.js';
+
+import { type UserMapper } from './userMapper.js';
 
 export class UserMapperImpl implements UserMapper {
   public mapToDomain(entity: UserRawEntity): User {

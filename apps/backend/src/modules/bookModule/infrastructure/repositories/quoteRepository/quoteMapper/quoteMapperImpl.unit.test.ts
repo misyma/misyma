@@ -1,8 +1,9 @@
 import { beforeEach, expect, describe, it } from 'vitest';
 
-import { QuoteMapperImpl } from './quoteMapperImpl.js';
 import { Generator } from '../../../../../../../tests/generator.js';
 import { QuoteTestFactory } from '../../../../tests/factories/quoteTestFactory/quoteTestFactory.js';
+
+import { QuoteMapperImpl } from './quoteMapperImpl.js';
 
 describe('QuoteMapperImpl', () => {
   let quoteMapperImpl: QuoteMapperImpl;

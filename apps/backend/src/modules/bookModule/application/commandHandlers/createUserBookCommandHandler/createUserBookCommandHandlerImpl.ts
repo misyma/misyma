@@ -1,8 +1,3 @@
-import {
-  type CreateUserBookCommandHandler,
-  type CreateUserBookCommandHandlerPayload,
-  type CreateUserBookCommandHandlerResult,
-} from './createUserBookCommandHandler.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
@@ -12,6 +7,12 @@ import { type BookRepository } from '../../../domain/repositories/bookRepository
 import { type CollectionRepository } from '../../../domain/repositories/collectionRepository/collectionRepository.js';
 import { type GenreRepository } from '../../../domain/repositories/genreRepository/genreRepository.js';
 import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
+
+import {
+  type CreateUserBookCommandHandler,
+  type CreateUserBookCommandHandlerPayload,
+  type CreateUserBookCommandHandlerResult,
+} from './createUserBookCommandHandler.js';
 
 export class CreateUserBookCommandHandlerImpl implements CreateUserBookCommandHandler {
   public constructor(

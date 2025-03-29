@@ -134,7 +134,7 @@ export class EmailQueueController implements QueueController {
               toEmail: emailEvent.getRecipientEmail(),
               template: {
                 name: 'resetPassword',
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                 
                 data: emailEvent.getPayload() as any,
               },
             });

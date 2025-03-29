@@ -1,9 +1,9 @@
+import type * as contracts from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
-import type * as contracts from '@common/contracts';
+import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 import { quoteContentSchema, quoteDtoSchema, quotePageSchema } from './quoteDto.js';
-import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const updateQuotePathParamsDtoSchema = Type.Object({
   quoteId: Type.String({ format: 'uuid' }),

@@ -1,14 +1,15 @@
-import {
-  type CreateBookChangeRequestCommandHandler,
-  type CreateBookChangeRequestCommandHandlerPayload,
-  type CreateBookChangeRequestCommandHandlerResult,
-} from './createBookChangeRequestCommandHandler.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type UserRepository } from '../../../../userModule/domain/repositories/userRepository/userRepository.js';
 import { type AuthorRepository } from '../../../domain/repositories/authorRepository/authorRepository.js';
 import { type BookChangeRequestRepository } from '../../../domain/repositories/bookChangeRequestRepository/bookChangeRequestRepository.js';
 import { type BookRepository } from '../../../domain/repositories/bookRepository/bookRepository.js';
+
+import {
+  type CreateBookChangeRequestCommandHandler,
+  type CreateBookChangeRequestCommandHandlerPayload,
+  type CreateBookChangeRequestCommandHandlerResult,
+} from './createBookChangeRequestCommandHandler.js';
 
 export class CreateBookChangeRequestCommandHandlerImpl implements CreateBookChangeRequestCommandHandler {
   public constructor(

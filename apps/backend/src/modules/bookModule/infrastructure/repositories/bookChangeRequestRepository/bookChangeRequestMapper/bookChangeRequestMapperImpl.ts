@@ -1,6 +1,7 @@
-import { type BookChangeRequestMapper } from './bookChangeRequestMapper.js';
 import { BookChangeRequest } from '../../../../domain/entities/bookChangeRequest/bookChangeRequest.js';
 import { type BookChangeRequestWithJoinsRawEntity } from '../../../databases/bookDatabase/tables/bookChangeRequestTable/bookChangeRequestWithJoinsRawEntity.js';
+
+import { type BookChangeRequestMapper } from './bookChangeRequestMapper.js';
 
 export class BookChangeRequestMapperImpl implements BookChangeRequestMapper {
   public mapRawWithJoinsToDomain(entities: BookChangeRequestWithJoinsRawEntity[]): BookChangeRequest[] {

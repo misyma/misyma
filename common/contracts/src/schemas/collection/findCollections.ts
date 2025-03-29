@@ -1,6 +1,7 @@
-import { type Collection } from './collection.js';
 import { type Metadata } from '../metadata.js';
 import { type SortOrder } from '../sortOrder.js';
+
+import { type Collection } from './collection.js';
 
 export interface FindCollectionsQueryParams {
   readonly userId: string;

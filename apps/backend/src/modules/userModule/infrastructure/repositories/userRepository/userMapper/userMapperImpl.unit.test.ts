@@ -1,7 +1,8 @@
 import { beforeEach, expect, describe, it } from 'vitest';
 
-import { UserMapperImpl } from './userMapperImpl.js';
 import { UserTestFactory } from '../../../../tests/factories/userTestFactory/userTestFactory.js';
+
+import { UserMapperImpl } from './userMapperImpl.js';
 
 describe('UserMapperImpl', () => {
   let userMapperImpl: UserMapperImpl;

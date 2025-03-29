@@ -1,8 +1,6 @@
+import { BookshelfType, UserRole } from '@common/contracts';
 import { beforeEach, afterEach, expect, it, describe } from 'vitest';
 
-import { BookshelfType, UserRole } from '@common/contracts';
-
-import { type RegisterUserCommandHandler } from './registerUserCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
@@ -13,6 +11,8 @@ import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils
 import { symbols } from '../../../symbols.js';
 import { UserTestFactory } from '../../../tests/factories/userTestFactory/userTestFactory.js';
 import { type UserTestUtils } from '../../../tests/utils/userTestUtils/userTestUtils.js';
+
+import { type RegisterUserCommandHandler } from './registerUserCommandHandler.js';
 
 describe('RegisterUserCommandHandler', () => {
   let registerUserCommandHandler: RegisterUserCommandHandler;

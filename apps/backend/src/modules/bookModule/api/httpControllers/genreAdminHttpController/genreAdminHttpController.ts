@@ -1,5 +1,22 @@
 import { UserRole } from '@common/contracts';
 
+import { type HttpController } from '../../../../../common/types/http/httpController.js';
+import { httpMethodNames } from '../../../../../common/types/http/httpMethodName.js';
+import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
+import {
+  type HttpOkResponse,
+  type HttpCreatedResponse,
+  type HttpNoContentResponse,
+} from '../../../../../common/types/http/httpResponse.js';
+import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
+import { httpStatusCodes } from '../../../../../common/types/http/httpStatusCode.js';
+import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
+import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
+import { type CreateGenreCommandHandler } from '../../../application/commandHandlers/createGenreCommandHandler/createGenreCommandHandler.js';
+import { type DeleteGenreCommandHandler } from '../../../application/commandHandlers/deleteGenreCommandHandler/deleteGenreCommandHandler.js';
+import { type UpdateGenreCommandHandler } from '../../../application/commandHandlers/updateGenreCommandHandler/updateGenreCommandHandler.js';
+import { mapGenreToDto } from '../common/mappers/genreDtoMapper.js';
+
 import {
   type CreateGenreBodyDto,
   type CreateGenreResponseBodyDto,
@@ -20,22 +37,6 @@ import {
   updateGenreResponseBodyDtoSchema,
   updateGenrePathParamsDtoSchema,
 } from './schema/updateGenreSchema.js';
-import { type HttpController } from '../../../../../common/types/http/httpController.js';
-import { httpMethodNames } from '../../../../../common/types/http/httpMethodName.js';
-import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
-import {
-  type HttpOkResponse,
-  type HttpCreatedResponse,
-  type HttpNoContentResponse,
-} from '../../../../../common/types/http/httpResponse.js';
-import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
-import { httpStatusCodes } from '../../../../../common/types/http/httpStatusCode.js';
-import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
-import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
-import { type CreateGenreCommandHandler } from '../../../application/commandHandlers/createGenreCommandHandler/createGenreCommandHandler.js';
-import { type DeleteGenreCommandHandler } from '../../../application/commandHandlers/deleteGenreCommandHandler/deleteGenreCommandHandler.js';
-import { type UpdateGenreCommandHandler } from '../../../application/commandHandlers/updateGenreCommandHandler/updateGenreCommandHandler.js';
-import { mapGenreToDto } from '../common/mappers/genreDtoMapper.js';
 
 export class GenreAdminHttpController implements HttpController {
   public readonly basePath = '/admin/genres';

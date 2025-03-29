@@ -1,6 +1,5 @@
 import { beforeEach, afterEach, expect, it, describe } from 'vitest';
 
-import { type CreateBookChangeRequestCommandHandler } from './createBookChangeRequestCommandHandler.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
@@ -14,6 +13,8 @@ import { BookChangeRequestTestFactory } from '../../../tests/factories/bookChang
 import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookChangeRequestTestUtils } from '../../../tests/utils/bookChangeRequestTestUtils/bookChangeRequestTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
+
+import { type CreateBookChangeRequestCommandHandler } from './createBookChangeRequestCommandHandler.js';
 
 describe('CreateBookChangeRequestCommandHandler', () => {
   let createBookChangeRequestCommandHandler: CreateBookChangeRequestCommandHandler;

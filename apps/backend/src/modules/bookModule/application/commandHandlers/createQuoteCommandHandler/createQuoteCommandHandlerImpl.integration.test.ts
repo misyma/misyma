@@ -1,6 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { type CreateQuoteCommandHandler } from './createQuoteCommandHandler.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
@@ -17,6 +16,8 @@ import { symbols } from '../../../symbols.js';
 import { QuoteTestFactory } from '../../../tests/factories/quoteTestFactory/quoteTestFactory.js';
 import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 import { type QuoteTestUtils } from '../../../tests/utils/quoteTestUtils/quoteTestUtils.js';
+
+import { type CreateQuoteCommandHandler } from './createQuoteCommandHandler.js';
 
 describe('CreateQuoteCommandHandlerImpl', () => {
   let commandHandler: CreateQuoteCommandHandler;

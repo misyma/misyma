@@ -165,7 +165,7 @@ export const ManualStepOneForm = (): JSX.Element => {
         <FormField
           control={form.control}
           name="authorIds"
-          render={({}) => (
+          render={() => (
             <FormItem className="flex flex-col">
               <div className="flex gap-2 items-center">
                 <FormLabel>Autor</FormLabel>

@@ -1,11 +1,12 @@
+import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
+import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
+import { type AuthorRepository } from '../../../domain/repositories/authorRepository/authorRepository.js';
+
 import {
   type CreateAuthorCommandHandler,
   type CreateAuthorCommandHandlerPayload,
   type CreateAuthorCommandHandlerResult,
 } from './createAuthorCommandHandler.js';
-import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
-import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
-import { type AuthorRepository } from '../../../domain/repositories/authorRepository/authorRepository.js';
 
 export class CreateAuthorCommandHandlerImpl implements CreateAuthorCommandHandler {
   public constructor(

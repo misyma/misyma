@@ -1,4 +1,3 @@
-import { type CollectionMapper } from './collectionMapper/collectionMapper.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
@@ -13,6 +12,8 @@ import {
 } from '../../../domain/repositories/collectionRepository/collectionRepository.js';
 import { type CollectionRawEntity } from '../../databases/bookDatabase/tables/collectionTable/collectionRawEntity.js';
 import { collectionTable } from '../../databases/bookDatabase/tables/collectionTable/collectionTable.js';
+
+import { type CollectionMapper } from './collectionMapper/collectionMapper.js';
 
 type CreateCollectionPayload = { collection: CollectionState };
 

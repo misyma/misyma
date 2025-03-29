@@ -1,6 +1,7 @@
+import { type Author } from '../author/author.js';
+
 import { type BookFormat } from './bookFormat.js';
 import { type Language } from './language.js';
-import { type Author } from '../author/author.js';
 
 export interface Book {
   readonly id: string;

@@ -1,12 +1,13 @@
-/* eslint-disable @typescript-eslint/naming-convention */
+ 
 
-import type { EmailService, SendEmailPayload } from './emailService.ts';
 import { type EmailType } from '../../common/types/emailType.js';
 import { httpHeaders } from '../../common/types/http/httpHeader.js';
 import { httpMediaTypes } from '../../common/types/http/httpMediaType.js';
 import { httpMethodNames } from '../../common/types/http/httpMethodName.js';
 import type { Config } from '../../core/config.ts';
 import type { HttpService } from '../httpService/httpService.ts';
+
+import type { EmailService, SendEmailPayload } from './emailService.ts';
 
 const sendGridTemplateIds: Record<EmailType, string> = {
   resetPassword: 'd-c5d3e0729e544bc08892a236b3a63c82',

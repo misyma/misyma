@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/naming-convention */
+ 
 export interface NationalLibraryResponseBody {
   nextPage: string;
   bibs: NationalLibraryBook[];

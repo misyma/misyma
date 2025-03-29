@@ -1,6 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { type CreateBookshelfCommandHandler } from './createBookshelfCommandHandler.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
@@ -12,6 +11,8 @@ import { type DatabaseClient } from '../../../../../libs/database/clients/databa
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { symbols } from '../../../symbols.js';
 import { type BookshelfTestUtils } from '../../../tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
+
+import { type CreateBookshelfCommandHandler } from './createBookshelfCommandHandler.js';
 
 describe('CreateBookshelfCommandHandlerImpl', () => {
   let commandHandler: CreateBookshelfCommandHandler;

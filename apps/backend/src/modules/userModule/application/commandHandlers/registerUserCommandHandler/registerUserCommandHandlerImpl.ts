@@ -1,10 +1,5 @@
 import { BookshelfType, UserRole } from '@common/contracts';
 
-import {
-  type RegisterUserCommandHandler,
-  type RegisterUserCommandHandlerPayload,
-  type RegisterUserCommandHandlerResult,
-} from './registerUserCommandHandler.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type CreateBookshelfCommandHandler } from '../../../../bookshelfModule/application/commandHandlers/createBookshelfCommandHandler/createBookshelfCommandHandler.js';
@@ -12,6 +7,12 @@ import { type UserRepository } from '../../../domain/repositories/userRepository
 import { type HashService } from '../../services/hashService/hashService.js';
 import { type PasswordValidationService } from '../../services/passwordValidationService/passwordValidationService.js';
 import { type SendVerificationEmailCommandHandler } from '../sendVerificationEmailCommandHandler/sendVerificationEmailCommandHandler.js';
+
+import {
+  type RegisterUserCommandHandler,
+  type RegisterUserCommandHandlerPayload,
+  type RegisterUserCommandHandlerResult,
+} from './registerUserCommandHandler.js';
 
 export class RegisterUserCommandHandlerImpl implements RegisterUserCommandHandler {
   public constructor(

@@ -1,3 +1,24 @@
+import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
+import { type HttpController } from '../../../../../common/types/http/httpController.js';
+import { httpMethodNames } from '../../../../../common/types/http/httpMethodName.js';
+import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
+import {
+  type HttpNoContentResponse,
+  type HttpCreatedResponse,
+  type HttpOkResponse,
+} from '../../../../../common/types/http/httpResponse.js';
+import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
+import { httpStatusCodes } from '../../../../../common/types/http/httpStatusCode.js';
+import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
+import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
+import { type CreateBookshelfCommandHandler } from '../../../application/commandHandlers/createBookshelfCommandHandler/createBookshelfCommandHandler.js';
+import { type DeleteBookshelfCommandHandler } from '../../../application/commandHandlers/deleteBookshelfCommandHandler/deleteBookshelfCommandHandler.js';
+import { type UpdateBookshelfCommandHandler } from '../../../application/commandHandlers/updateBookshelfCommandHandler/updateBookshelfCommandHandler.js';
+import { type UploadBookshelfImageCommandHandler } from '../../../application/commandHandlers/uploadBookshelfImageCommandHandler/uploadBookshelfImageCommandHandler.js';
+import { type FindBookshelfByIdQueryHandler } from '../../../application/queryHandlers/findBookshelfByIdQueryHandler/findBookshelfByIdQueryHandler.js';
+import { type FindBookshelvesQueryHandler } from '../../../application/queryHandlers/findBookshelvesQueryHandler/findBookshelvesQueryHandler.js';
+import { type Bookshelf } from '../../../domain/entities/bookshelf/bookshelf.js';
+
 import { type BookshelfDto } from './schemas/bookshelfDto.js';
 import {
   type CreateBookshelfBodyDto,
@@ -39,26 +60,6 @@ import {
   type UploadBookshelfImagePathParamsDto,
   type UploadBookshelfImageResponseBodyDtoSchema,
 } from './schemas/uploadBookshelfImageSchema.js';
-import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
-import { type HttpController } from '../../../../../common/types/http/httpController.js';
-import { httpMethodNames } from '../../../../../common/types/http/httpMethodName.js';
-import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
-import {
-  type HttpNoContentResponse,
-  type HttpCreatedResponse,
-  type HttpOkResponse,
-} from '../../../../../common/types/http/httpResponse.js';
-import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
-import { httpStatusCodes } from '../../../../../common/types/http/httpStatusCode.js';
-import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
-import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
-import { type CreateBookshelfCommandHandler } from '../../../application/commandHandlers/createBookshelfCommandHandler/createBookshelfCommandHandler.js';
-import { type DeleteBookshelfCommandHandler } from '../../../application/commandHandlers/deleteBookshelfCommandHandler/deleteBookshelfCommandHandler.js';
-import { type UpdateBookshelfCommandHandler } from '../../../application/commandHandlers/updateBookshelfCommandHandler/updateBookshelfCommandHandler.js';
-import { type UploadBookshelfImageCommandHandler } from '../../../application/commandHandlers/uploadBookshelfImageCommandHandler/uploadBookshelfImageCommandHandler.js';
-import { type FindBookshelfByIdQueryHandler } from '../../../application/queryHandlers/findBookshelfByIdQueryHandler/findBookshelfByIdQueryHandler.js';
-import { type FindBookshelvesQueryHandler } from '../../../application/queryHandlers/findBookshelvesQueryHandler/findBookshelvesQueryHandler.js';
-import { type Bookshelf } from '../../../domain/entities/bookshelf/bookshelf.js';
 
 export class BookshelfHttpController implements HttpController {
   public readonly basePath = '/bookshelves';

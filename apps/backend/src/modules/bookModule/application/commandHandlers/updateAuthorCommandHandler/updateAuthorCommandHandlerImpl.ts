@@ -1,12 +1,13 @@
+import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
+import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
+import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
+import { type AuthorRepository } from '../../../domain/repositories/authorRepository/authorRepository.js';
+
 import {
   type UpdateAuthorCommandHandler,
   type UpdateAuthorPayload,
   type UpdateAuthorResult,
 } from './updateAuthorCommandHandler.js';
-import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
-import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
-import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
-import { type AuthorRepository } from '../../../domain/repositories/authorRepository/authorRepository.js';
 
 export class UpdateAuthorCommandHandlerImpl implements UpdateAuthorCommandHandler {
   public constructor(

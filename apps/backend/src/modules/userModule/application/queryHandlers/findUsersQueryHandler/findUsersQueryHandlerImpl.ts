@@ -1,5 +1,6 @@
-import { type FindUsersQueryHandler, type ExecutePayload, type ExecuteResult } from './findUsersQueryHandler.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
+
+import { type FindUsersQueryHandler, type ExecutePayload, type ExecuteResult } from './findUsersQueryHandler.js';
 
 export class FindUsersQueryHandlerImpl implements FindUsersQueryHandler {
   public constructor(private readonly userRepository: UserRepository) {}

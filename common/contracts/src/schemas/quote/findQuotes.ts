@@ -1,6 +1,7 @@
-import { type Quote } from './quote.js';
 import { type Metadata } from '../metadata.js';
 import { type SortOrder } from '../sortOrder.js';
+
+import { type Quote } from './quote.js';
 
 export interface FindQuotesQueryParams {
   readonly authorId?: string;

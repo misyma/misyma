@@ -1,6 +1,5 @@
-import { type Static, Type } from '@sinclair/typebox';
-
 import { BookFormat, Language } from '@common/contracts';
+import { type Static, Type } from '@sinclair/typebox';
 
 export interface Book {
   readonly id: string;

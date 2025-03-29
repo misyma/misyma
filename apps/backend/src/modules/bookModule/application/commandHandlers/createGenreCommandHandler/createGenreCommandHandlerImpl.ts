@@ -1,11 +1,12 @@
+import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
+import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
+import { type GenreRepository } from '../../../domain/repositories/genreRepository/genreRepository.js';
+
 import {
   type CreateGenreCommandHandler,
   type CreateGenrePayload,
   type CreateGenreResult,
 } from './createGenreCommandHandler.js';
-import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
-import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
-import { type GenreRepository } from '../../../domain/repositories/genreRepository/genreRepository.js';
 
 export class CreateGenreCommandHandlerImpl implements CreateGenreCommandHandler {
   public constructor(

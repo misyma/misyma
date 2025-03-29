@@ -1,12 +1,13 @@
+import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
+import { type BookshelfRepository } from '../../../../bookshelfModule/domain/repositories/bookshelfRepository/bookshelfRepository.js';
+import { type CollectionRepository } from '../../../domain/repositories/collectionRepository/collectionRepository.js';
+import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
+
 import {
   type FindUserBooksQueryHandlerPayload,
   type FindUserBooksQueryHandler,
   type FindUserBooksQueryHandlerResult,
 } from './findUserBooksQueryHandler.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
-import { type BookshelfRepository } from '../../../../bookshelfModule/domain/repositories/bookshelfRepository/bookshelfRepository.js';
-import { type CollectionRepository } from '../../../domain/repositories/collectionRepository/collectionRepository.js';
-import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
 
 export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler {
   public constructor(

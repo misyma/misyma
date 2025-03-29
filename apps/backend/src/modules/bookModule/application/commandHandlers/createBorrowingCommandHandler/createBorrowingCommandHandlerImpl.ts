@@ -1,15 +1,16 @@
 import { BookshelfType } from '@common/contracts';
 
-import {
-  type CreateBorrowingCommandHandler,
-  type CreateBorrowingPayload,
-  type CreateBorrowingResult,
-} from './createBorrowingCommandHandler.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type UserBookRepository } from '../../../../bookModule/domain/repositories/userBookRepository/userBookRepository.js';
 import { type BookshelfRepository } from '../../../../bookshelfModule/domain/repositories/bookshelfRepository/bookshelfRepository.js';
 import { type BorrowingRepository } from '../../../domain/repositories/borrowingRepository/borrowingRepository.js';
+
+import {
+  type CreateBorrowingCommandHandler,
+  type CreateBorrowingPayload,
+  type CreateBorrowingResult,
+} from './createBorrowingCommandHandler.js';
 
 export class CreateBorrowingCommandHandlerImpl implements CreateBorrowingCommandHandler {
   public constructor(

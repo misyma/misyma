@@ -45,7 +45,7 @@ describe('EmailEventRepositoryImpl', () => {
 
       const amountOfEmailEvents = Generator.number(10, 50);
 
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+       
       const emailEvents = Array.from({ length: amountOfEmailEvents }).map((_, index) => {
         return emailEventTestFactory.create({
           createdAt: new Date(startingDate.getTime() + (index + 1) * 1000),
@@ -74,7 +74,7 @@ describe('EmailEventRepositoryImpl', () => {
     it('returns all pending EmailEvents', async () => {
       const amountOfEmailEvents = Generator.number(10, 50);
 
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+       
       const emailEvents = Array.from({ length: amountOfEmailEvents }).map(() => {
         return emailEventTestFactory.create({
           status: EmailEventStatus.pending,
@@ -120,7 +120,7 @@ describe('EmailEventRepositoryImpl', () => {
     it('deletes all processed EmailEvents', async () => {
       const amountOfEmailEvents = Generator.number(10, 50);
 
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+       
       const emailEvents = Array.from({ length: amountOfEmailEvents }).map(() => {
         return emailEventTestFactory.create({
           status: EmailEventStatus.processed,

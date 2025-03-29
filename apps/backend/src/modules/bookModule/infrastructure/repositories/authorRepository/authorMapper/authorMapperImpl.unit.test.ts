@@ -1,7 +1,8 @@
 import { beforeEach, expect, describe, it } from 'vitest';
 
-import { AuthorMapperImpl } from './authorMapperImpl.js';
 import { AuthorTestFactory } from '../../../../tests/factories/authorTestFactory/authorTestFactory.js';
+
+import { AuthorMapperImpl } from './authorMapperImpl.js';
 
 describe('AuthorMapperImpl', () => {
   let authorMapperImpl: AuthorMapperImpl;

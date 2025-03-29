@@ -1,4 +1,3 @@
-import { type BorrowingMapper } from './borrowingMapper/borrowingMapper.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
@@ -12,6 +11,8 @@ import {
 } from '../../../domain/repositories/borrowingRepository/borrowingRepository.js';
 import { type BorrowingRawEntity } from '../../databases/bookDatabase/tables/borrowingTable/borrowingRawEntity.js';
 import { borrowingTable } from '../../databases/bookDatabase/tables/borrowingTable/borrowingTable.js';
+
+import { type BorrowingMapper } from './borrowingMapper/borrowingMapper.js';
 
 type CreateBorrowingPayload = { borrowing: BorrowingState };
 

@@ -77,7 +77,7 @@ export const CreateBookshelfModal: FC = () => {
         name: props.name,
       });
       bookshelfId = res.id;
-    } catch (error) {
+    } catch {
       return;
     }
 
@@ -90,7 +90,7 @@ export const CreateBookshelfModal: FC = () => {
             title: 'Coś poszło nie tak z wysyłaniem obrazka półki.',
           },
         });
-      } catch (error) {
+      } catch {
         return;
       }
     }

@@ -1,4 +1,3 @@
-import { type UserBookMapper } from './userBookMapper/userBookMapper.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
@@ -26,6 +25,8 @@ import { userBookCollectionTable } from '../../databases/bookDatabase/tables/use
 import { type UserBookRawEntity } from '../../databases/bookDatabase/tables/userBookTable/userBookRawEntity.js';
 import { userBookTable } from '../../databases/bookDatabase/tables/userBookTable/userBookTable.js';
 import { type UserBookWithJoinsRawEntity } from '../../databases/bookDatabase/tables/userBookTable/userBookWithJoinsRawEntity.js';
+
+import { type UserBookMapper } from './userBookMapper/userBookMapper.js';
 
 type CreateUserBookPayload = { userBook: UserBookState };
 
@@ -196,7 +197,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
   public async findUserBook(payload: FindUserBookPayload): Promise<UserBook | null> {
     const { id, title, bookshelfId, bookId, authorIds } = payload;
 
-    let rawEntity: UserBookWithJoinsRawEntity;
+    let rawEntity: UserBookWithJoinsRawEntity | undefined;
 
     try {
       const userBookSelect = [
@@ -514,7 +515,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       });
     }
 
-    return rawEntities.map(this.userBookMapper.mapRawWithJoinsToDomain);
+    return rawEntities.map((rawEntity) => this.userBookMapper.mapRawWithJoinsToDomain(rawEntity));
   }
 
   public async findUserBookOwner(payload: FindUserBookOwnerPayload): Promise<FindUserBookOwnerResult> {
@@ -533,6 +534,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         return { userId: undefined };
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       return { userId: result.userId };
     } catch (error) {
       throw new RepositoryError({

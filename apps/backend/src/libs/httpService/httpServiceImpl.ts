@@ -1,8 +1,9 @@
 import { stringify } from 'querystring';
 
-import { type HttpService, type SendRequestPayload, type HttpResponse } from './httpService.js';
 import { ExternalServiceError } from '../../common/errors/externalServiceError.js';
 import { type HttpStatusCode } from '../../common/types/http/httpStatusCode.js';
+
+import { type HttpService, type SendRequestPayload, type HttpResponse } from './httpService.js';
 
 export class HttpServiceImpl implements HttpService {
   public async sendRequest<ResponseBody>(payload: SendRequestPayload): Promise<HttpResponse<ResponseBody>> {

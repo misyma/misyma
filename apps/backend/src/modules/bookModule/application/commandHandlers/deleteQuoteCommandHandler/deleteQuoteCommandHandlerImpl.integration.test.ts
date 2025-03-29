@@ -1,6 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { type DeleteQuoteCommandHandler } from './deleteQuoteCommandHandler.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
@@ -15,6 +14,8 @@ import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestU
 import { symbols } from '../../../symbols.js';
 import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 import { type QuoteTestUtils } from '../../../tests/utils/quoteTestUtils/quoteTestUtils.js';
+
+import { type DeleteQuoteCommandHandler } from './deleteQuoteCommandHandler.js';
 
 describe('DeleteQuoteCommandHandlerImpl', () => {
   let commandHandler: DeleteQuoteCommandHandler;

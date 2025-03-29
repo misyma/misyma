@@ -1,6 +1,5 @@
-import { beforeEach, afterEach, expect, describe, it } from 'vitest';
-
 import { BookFormat, Language } from '@common/contracts';
+import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 
 import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
@@ -205,11 +204,15 @@ describe('BookRepositoryImpl', () => {
         id: book.getId(),
       });
 
-      [author1.id, author2.id, author3.id].every((authorId) => {
-        expect(updatedBook.getAuthors().some((author) => author.getId() === authorId)).toBeTruthy();
-
-        expect(foundBook?.getAuthors().some((author) => author.getId() === authorId)).toBeTruthy();
+      const allAuthorsMatch = [author1.id, author2.id, author3.id].every((authorId) => {
+        const updatedBookHasAuthor = updatedBook.getAuthors().some((author) => author.getId() === authorId);
+        const foundBookHasAuthor = foundBook?.getAuthors().some((author) => author.getId() === authorId);
+        expect(updatedBookHasAuthor).toBeTruthy();
+        expect(foundBookHasAuthor).toBeTruthy();
+        return updatedBookHasAuthor && foundBookHasAuthor;
       });
+
+      expect(allAuthorsMatch).toBeTruthy();
 
       const updatedBookAuthors = await bookTestUtils.findBookAuthors({
         bookId: book.getId(),
@@ -235,7 +238,7 @@ describe('BookRepositoryImpl', () => {
 
       const newPublisher = Generator.word();
 
-      const newReleaseYear = (bookRawEntity.releaseYear as number) + 1;
+      const newReleaseYear = bookRawEntity.releaseYear + 1;
 
       const newLanguage = Generator.language();
 
@@ -372,9 +375,8 @@ describe('BookRepositoryImpl', () => {
 
       expect(foundBooks.length).toEqual(2);
 
-      [book1.id, book2.id].every((bookId) => {
-        expect(foundBooks.some((book) => book.getId() === bookId)).toBeTruthy();
-      });
+      const allBooksFound = [book1.id, book2.id].every((bookId) => foundBooks.some((book) => book.getId() === bookId));
+      expect(allBooksFound).toBeTruthy();
 
       expect(foundBooks.every((book) => book.getAuthors()[0]?.getId() === author.id)).toBeTruthy();
     });
@@ -577,9 +579,8 @@ describe('BookRepositoryImpl', () => {
 
       expect(foundBooks.length).toEqual(2);
 
-      [book1.id, book2.id].every((bookId) => {
-        expect(foundBooks.some((book) => book.getId() === bookId)).toBeTruthy();
-      });
+      const allBooksFound = [book1.id, book2.id].every((bookId) => foundBooks.some((book) => book.getId() === bookId));
+      expect(allBooksFound).toBeTruthy();
     });
 
     it('finds books by language', async () => {

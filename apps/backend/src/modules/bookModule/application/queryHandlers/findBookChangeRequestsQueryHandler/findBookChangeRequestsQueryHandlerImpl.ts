@@ -1,14 +1,15 @@
-import {
-  type FindBookChangeRequestsQueryHandlerPayload,
-  type FindBookChangeRequestsQueryHandler,
-  type FindBookChangeRequestsQueryHandlerResult,
-} from './findBookChangeRequestsQueryHandler.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type UserRepository } from '../../../../userModule/domain/repositories/userRepository/userRepository.js';
 import {
   type FindBookChangeRequestsPayload,
   type BookChangeRequestRepository,
 } from '../../../domain/repositories/bookChangeRequestRepository/bookChangeRequestRepository.js';
+
+import {
+  type FindBookChangeRequestsQueryHandlerPayload,
+  type FindBookChangeRequestsQueryHandler,
+  type FindBookChangeRequestsQueryHandlerResult,
+} from './findBookChangeRequestsQueryHandler.js';
 
 export class FindBookChangeRequestsQueryHandlerImpl implements FindBookChangeRequestsQueryHandler {
   public constructor(

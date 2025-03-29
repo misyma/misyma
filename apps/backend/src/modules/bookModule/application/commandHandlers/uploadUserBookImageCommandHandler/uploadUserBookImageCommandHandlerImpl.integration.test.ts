@@ -2,7 +2,6 @@ import { createReadStream } from 'node:fs';
 import path from 'node:path';
 import { expect, describe, it, beforeEach, afterEach } from 'vitest';
 
-import { type UploadUserBookImageCommandHandler } from './uploadUserBookImageCommandHandler.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
@@ -21,6 +20,8 @@ import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/autho
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
 import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
+
+import { type UploadUserBookImageCommandHandler } from './uploadUserBookImageCommandHandler.js';
 
 describe('UploadUserBookImageCommandHandlerImpl', () => {
   let commandHandler: UploadUserBookImageCommandHandler;

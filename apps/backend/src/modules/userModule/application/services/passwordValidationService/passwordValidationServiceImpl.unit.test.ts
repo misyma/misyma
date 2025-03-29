@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import { PasswordValidationServiceImpl } from './passwordValidationServiceImpl.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
+
+import { PasswordValidationServiceImpl } from './passwordValidationServiceImpl.js';
 
 describe('PasswordValidationServiceImpl', () => {
   let passwordValidationService: PasswordValidationServiceImpl;
@@ -13,7 +14,7 @@ describe('PasswordValidationServiceImpl', () => {
   it('should not throw an error if the password is valid', async () => {
     const password = 'Password123';
 
-    expect(() => passwordValidationService.validate({ password })).not.toThrow();
+    expect(() => { passwordValidationService.validate({ password }); }).not.toThrow();
   });
 
   it('should throw an error if the password is less than 8 characters long', async () => {

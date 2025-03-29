@@ -1,6 +1,7 @@
-/* eslint-disable import/no-named-as-default-member */
-
 import jwt from 'jsonwebtoken';
+
+import { type Config } from '../../../../../core/config.js';
+import { UnauthorizedAccessError } from '../../errors/unathorizedAccessError.js';
 
 import {
   type CreateTokenPayload,
@@ -9,8 +10,6 @@ import {
   type DecodeTokenPayload,
   type DecodeTokenResult,
 } from './tokenService.js';
-import { type Config } from '../../../../../core/config.js';
-import { UnauthorizedAccessError } from '../../errors/unathorizedAccessError.js';
 
 export class TokenServiceImpl implements TokenService {
   public constructor(private readonly config: Config) {}
@@ -46,9 +45,9 @@ export class TokenServiceImpl implements TokenService {
       });
     }
 
-    const tokenPayload = decodedToken.payload as jwt.JwtPayload;
+    const tokenPayload = decodedToken.payload;
 
-    if (!tokenPayload) {
+    if (typeof tokenPayload === 'string') {
       throw new UnauthorizedAccessError({
         reason: 'Token payload is not valid.',
         token,

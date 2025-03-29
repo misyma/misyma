@@ -1,6 +1,7 @@
-import { type BookReading } from './bookReading.js';
 import { type Metadata } from '../metadata.js';
 import { type SortOrder } from '../sortOrder.js';
+
+import { type BookReading } from './bookReading.js';
 
 export interface FindBookReadingsPathParams {
   readonly userBookId: string;

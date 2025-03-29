@@ -1,6 +1,5 @@
 import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 
-import { type DeleteUserCommandHandler } from './deleteUserCommandHandler.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
@@ -8,6 +7,8 @@ import { type DatabaseClient } from '../../../../../libs/database/clients/databa
 import { symbols } from '../../../symbols.js';
 import { UserTestFactory } from '../../../tests/factories/userTestFactory/userTestFactory.js';
 import { UserTestUtils } from '../../../tests/utils/userTestUtils/userTestUtils.js';
+
+import { type DeleteUserCommandHandler } from './deleteUserCommandHandler.js';
 
 describe('DeleteUserCommandHandler', () => {
   let deleteUserCommandHandler: DeleteUserCommandHandler;

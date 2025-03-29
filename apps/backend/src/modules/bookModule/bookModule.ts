@@ -1,3 +1,18 @@
+import { type Config } from '../../core/config.js';
+import { coreSymbols } from '../../core/symbols.js';
+import { type DatabaseClient } from '../../libs/database/clients/databaseClient/databaseClient.js';
+import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
+import { type DependencyInjectionModule } from '../../libs/dependencyInjection/dependencyInjectionModule.js';
+import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
+import { type S3Service } from '../../libs/s3/services/s3Service/s3Service.js';
+import { type UuidService } from '../../libs/uuid/services/uuidService/uuidService.js';
+import { type AccessControlService } from '../authModule/application/services/accessControlService/accessControlService.js';
+import { authSymbols } from '../authModule/symbols.js';
+import { type BookshelfRepository } from '../bookshelfModule/domain/repositories/bookshelfRepository/bookshelfRepository.js';
+import { bookshelfSymbols } from '../bookshelfModule/symbols.js';
+import { type UserRepository } from '../userModule/domain/repositories/userRepository/userRepository.js';
+import { userSymbols } from '../userModule/symbols.js';
+
 import { AuthorAdminHttpController } from './api/httpControllers/authorAdminHttpController/authorAdminHttpController.js';
 import { AuthorHttpController } from './api/httpControllers/authorHttpController/authorHttpController.js';
 import { BookAdminHttpController } from './api/httpControllers/bookAdminHttpController/bookAdminHttpController.js';
@@ -47,6 +62,8 @@ import { type DeleteGenreCommandHandler } from './application/commandHandlers/de
 import { DeleteGenreCommandHandlerImpl } from './application/commandHandlers/deleteGenreCommandHandler/deleteGenreCommandHandlerImpl.js';
 import { type DeleteQuoteCommandHandler } from './application/commandHandlers/deleteQuoteCommandHandler/deleteQuoteCommandHandler.js';
 import { DeleteQuoteCommandHandlerImpl } from './application/commandHandlers/deleteQuoteCommandHandler/deleteQuoteCommandHandlerImpl.js';
+import { type DeleteUserBookCommandHandler } from './application/commandHandlers/deleteUserBookCommandHandler/deleteUserBookCommandHandler.js';
+import { DeleteUserBookCommandHandlerImpl } from './application/commandHandlers/deleteUserBookCommandHandler/deleteUserBookCommandHandlerImpl.js';
 import { type UpdateAuthorCommandHandler } from './application/commandHandlers/updateAuthorCommandHandler/updateAuthorCommandHandler.js';
 import { UpdateAuthorCommandHandlerImpl } from './application/commandHandlers/updateAuthorCommandHandler/updateAuthorCommandHandlerImpl.js';
 import { type UpdateBookCommandHandler } from './application/commandHandlers/updateBookCommandHandler/updateBookCommandHandler.js';
@@ -124,22 +141,6 @@ import { type UserBookMapper } from './infrastructure/repositories/userBookRepos
 import { UserBookMapperImpl } from './infrastructure/repositories/userBookRepository/userBookMapper/userBookMapperImpl.js';
 import { UserBookRepositoryImpl } from './infrastructure/repositories/userBookRepository/userBookRepositoryImpl.js';
 import { bookSymbols, symbols } from './symbols.js';
-import { type Config } from '../../core/config.js';
-import { coreSymbols } from '../../core/symbols.js';
-import { type DatabaseClient } from '../../libs/database/clients/databaseClient/databaseClient.js';
-import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
-import { type DependencyInjectionModule } from '../../libs/dependencyInjection/dependencyInjectionModule.js';
-import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
-import { type S3Service } from '../../libs/s3/services/s3Service/s3Service.js';
-import { type UuidService } from '../../libs/uuid/services/uuidService/uuidService.js';
-import { type AccessControlService } from '../authModule/application/services/accessControlService/accessControlService.js';
-import { authSymbols } from '../authModule/symbols.js';
-import { type BookshelfRepository } from '../bookshelfModule/domain/repositories/bookshelfRepository/bookshelfRepository.js';
-import { bookshelfSymbols } from '../bookshelfModule/symbols.js';
-import { type UserRepository } from '../userModule/domain/repositories/userRepository/userRepository.js';
-import { userSymbols } from '../userModule/symbols.js';
-import { type DeleteUserBookCommandHandler } from './application/commandHandlers/deleteUserBookCommandHandler/deleteUserBookCommandHandler.js';
-import { DeleteUserBookCommandHandlerImpl } from './application/commandHandlers/deleteUserBookCommandHandler/deleteUserBookCommandHandlerImpl.js';
 
 export class BookModule implements DependencyInjectionModule {
   public declareBindings(container: DependencyInjectionContainer): void {

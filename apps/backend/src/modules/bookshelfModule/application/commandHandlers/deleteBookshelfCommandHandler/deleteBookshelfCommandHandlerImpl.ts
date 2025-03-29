@@ -1,9 +1,10 @@
-import { type DeleteBookshelfCommandHandler, type DeleteBookshelfPayload } from './deleteBookshelfCommandHandler.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type UserBookRepository } from '../../../../bookModule/domain/repositories/userBookRepository/userBookRepository.js';
 import { type BookshelfRepository } from '../../../domain/repositories/bookshelfRepository/bookshelfRepository.js';
+
+import { type DeleteBookshelfCommandHandler, type DeleteBookshelfPayload } from './deleteBookshelfCommandHandler.js';
 
 export class DeleteBookshelfCommandHandlerImpl implements DeleteBookshelfCommandHandler {
   public constructor(

@@ -1,12 +1,13 @@
+import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
+import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
+import { type UserBookRepository } from '../../../../bookModule/domain/repositories/userBookRepository/userBookRepository.js';
+import { type QuoteRepository } from '../../../domain/repositories/quoteRepository/quoteRepository.js';
+
 import {
   type CreateQuoteCommandHandler,
   type CreateQuotePayload,
   type CreateQuoteResult,
 } from './createQuoteCommandHandler.js';
-import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
-import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
-import { type UserBookRepository } from '../../../../bookModule/domain/repositories/userBookRepository/userBookRepository.js';
-import { type QuoteRepository } from '../../../domain/repositories/quoteRepository/quoteRepository.js';
 
 export class CreateQuoteCommandHandlerImpl implements CreateQuoteCommandHandler {
   public constructor(

@@ -1,7 +1,3 @@
-import {
-  type ExecutePayload,
-  type SendResetPasswordEmailCommandHandler,
-} from './sendResetPasswordEmailCommandHandler.js';
 import { emailTypes } from '../../../../../common/types/emailType.js';
 import { TokenType } from '../../../../../common/types/tokenType.js';
 import { type Config } from '../../../../../core/config.js';
@@ -10,6 +6,11 @@ import { type TokenService } from '../../../../authModule/application/services/t
 import { EmailEventDraft } from '../../../domain/entities/emailEvent/emailEvent.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
 import { type EmailMessageBus } from '../../messageBuses/emailMessageBus/emailMessageBus.js';
+
+import {
+  type ExecutePayload,
+  type SendResetPasswordEmailCommandHandler,
+} from './sendResetPasswordEmailCommandHandler.js';
 
 export class SendResetPasswordEmailCommandHandlerImpl implements SendResetPasswordEmailCommandHandler {
   public constructor(

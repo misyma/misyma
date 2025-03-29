@@ -1,8 +1,9 @@
 import { beforeEach, expect, describe, it } from 'vitest';
 
-import { BookChangeRequestMapperImpl } from './bookChangeRequestMapperImpl.js';
 import { BookChangeRequestTestFactory } from '../../../../tests/factories/bookChangeRequestTestFactory/bookChangeRequestTestFactory.js';
 import { BookTestFactory } from '../../../../tests/factories/bookTestFactory/bookTestFactory.js';
+
+import { BookChangeRequestMapperImpl } from './bookChangeRequestMapperImpl.js';
 
 describe('BookChangeRequestMapperImpl', () => {
   let mapper: BookChangeRequestMapperImpl;

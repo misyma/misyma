@@ -1,6 +1,5 @@
-import { type Static, Type } from '@sinclair/typebox';
-
 import { UserRole } from '@common/contracts';
+import { type Static, Type } from '@sinclair/typebox';
 
 export const emailSchema = Type.String({
   format: 'email',

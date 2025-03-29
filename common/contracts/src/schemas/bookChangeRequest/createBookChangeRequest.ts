@@ -1,6 +1,7 @@
-import { type BookChangeRequest } from './bookChangeRequest.js';
 import { type BookFormat } from '../book/bookFormat.js';
 import { type Language } from '../book/language.js';
+
+import { type BookChangeRequest } from './bookChangeRequest.js';
 
 export interface CreateBookChangeRequestRequestBody {
   readonly bookId: string;

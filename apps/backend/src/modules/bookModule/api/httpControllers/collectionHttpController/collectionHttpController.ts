@@ -1,3 +1,22 @@
+import { type HttpController } from '../../../../../common/types/http/httpController.js';
+import { httpMethodNames } from '../../../../../common/types/http/httpMethodName.js';
+import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
+import {
+  type HttpCreatedResponse,
+  type HttpNoContentResponse,
+  type HttpOkResponse,
+} from '../../../../../common/types/http/httpResponse.js';
+import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
+import { httpStatusCodes } from '../../../../../common/types/http/httpStatusCode.js';
+import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
+import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
+import { type CreateCollectionCommandHandler } from '../../../application/commandHandlers/createCollectionCommandHandler/createCollectionCommandHandler.js';
+import { type DeleteCollectionCommandHandler } from '../../../application/commandHandlers/deleteCollectionCommandHandler/deleteCollectionCommandHandler.js';
+import { type UpdateCollectionCommandHandler } from '../../../application/commandHandlers/updateCollectionCommandHandler/updateCollectionCommandHandler.js';
+import { type FindCollectionsQueryHandler } from '../../../application/queryHandlers/findCollectionsQueryHandler/findCollectionsQueryHandler.js';
+import { type Collection } from '../../../domain/entities/collection/collection.js';
+import { type CollectionDto } from '../common/collectionDto.js';
+
 import {
   createCollectionBodyDtoSchema,
   createCollectionResponseBodyDtoSchema,
@@ -24,24 +43,6 @@ import {
   type UpdateCollectionPathParamsDto,
   type UpdateCollectionResponseBodyDto,
 } from './schemas/updateCollectionSchema.js';
-import { type HttpController } from '../../../../../common/types/http/httpController.js';
-import { httpMethodNames } from '../../../../../common/types/http/httpMethodName.js';
-import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
-import {
-  type HttpCreatedResponse,
-  type HttpNoContentResponse,
-  type HttpOkResponse,
-} from '../../../../../common/types/http/httpResponse.js';
-import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
-import { httpStatusCodes } from '../../../../../common/types/http/httpStatusCode.js';
-import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
-import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
-import { type CreateCollectionCommandHandler } from '../../../application/commandHandlers/createCollectionCommandHandler/createCollectionCommandHandler.js';
-import { type DeleteCollectionCommandHandler } from '../../../application/commandHandlers/deleteCollectionCommandHandler/deleteCollectionCommandHandler.js';
-import { type UpdateCollectionCommandHandler } from '../../../application/commandHandlers/updateCollectionCommandHandler/updateCollectionCommandHandler.js';
-import { type FindCollectionsQueryHandler } from '../../../application/queryHandlers/findCollectionsQueryHandler/findCollectionsQueryHandler.js';
-import { type Collection } from '../../../domain/entities/collection/collection.js';
-import { type CollectionDto } from '../common/collectionDto.js';
 
 export class CollectionHttpController implements HttpController {
   public basePath = '/collections';
@@ -149,7 +150,7 @@ export class CollectionHttpController implements HttpController {
 
     return {
       body: {
-        data: collections.map(this.mapCollectionToDto),
+        data: collections.map((collection) => this.mapCollectionToDto(collection)),
         metadata: {
           page,
           pageSize,

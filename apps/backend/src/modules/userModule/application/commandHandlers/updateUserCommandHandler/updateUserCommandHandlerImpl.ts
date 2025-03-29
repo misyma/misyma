@@ -1,11 +1,12 @@
+import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
+import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
+import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
+
 import {
   type UpdateUserCommandHandlerResult,
   type UpdateUserCommandHandler,
   type UpdateUserCommandHandlerPayload,
 } from './updateUserCommandHandler.js';
-import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
-import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
-import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
 
 export class UpdateUserCommandHandlerImpl implements UpdateUserCommandHandler {
   public constructor(

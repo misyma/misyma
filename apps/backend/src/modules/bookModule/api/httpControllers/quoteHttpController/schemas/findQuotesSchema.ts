@@ -1,9 +1,9 @@
+import * as contracts from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
-import * as contracts from '@common/contracts';
+import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 import { quoteDtoSchema } from './quoteDto.js';
-import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const findQuotesQueryParamsDtoSchema = Type.Object({
   page: Type.Optional(Type.Integer({ minimum: 1 })),

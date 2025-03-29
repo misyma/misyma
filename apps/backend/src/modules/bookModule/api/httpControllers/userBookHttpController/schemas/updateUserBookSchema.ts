@@ -1,10 +1,10 @@
+import * as contracts from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
-import * as contracts from '@common/contracts';
-
-import { userBookDtoSchema } from './userBookDto.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 import { bookImageUrlSchema } from '../../common/bookDto.js';
+
+import { userBookDtoSchema } from './userBookDto.js';
 
 export const updateUserBookPathParamsDtoSchema = Type.Object({
   userBookId: Type.String({ format: 'uuid' }),

@@ -108,6 +108,7 @@ export const BookshelfCard: FC<BookshelfCardProps> = ({ bookshelf, style, onClic
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const handleClick = () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     onClick?.() || navigate({ to: `/shelves/bookshelf/${bookshelf.id}` });
   };
 

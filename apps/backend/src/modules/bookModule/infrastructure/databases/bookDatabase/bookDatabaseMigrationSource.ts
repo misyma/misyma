@@ -1,11 +1,6 @@
-import { M10CreateUserBookCollectionTableMigration } from './migrations/m10CreateUserBookCollectionTableMigration.js';
-import { M11CreateBookChangeRequestTableMigration } from './migrations/m11CreateBookChangeRequestTableMigration.js';
-import { M12SetReleaseYearAsRequiredInBookTableMigration } from './migrations/m12SetReleaseYearAsRequiredInBookTableMigration.js';
-import { M13DeleteUserBookGenreTableMigration } from './migrations/m13DeleteUserBookGenreTableMigration.js';
-import { M14AddIndexesToBookTableMigration } from './migrations/m14AddIndexesToBookTableMigration.js';
-import { M15AddIndexesToUserBookTableMigration } from './migrations/m15AddIndexesToUserBookTableMigration.js';
-import { M16AddIndexToAuthorTableMigration } from './migrations/m16AddIndexToAuthorTableMigration.js';
-import { M17AddIndexesToBookReadingTableMigration } from './migrations/m17AddIndexesToBookReadingTableMigration.js';
+import { type Migration } from '../../../../../libs/database/types/migration.js';
+import { type MigrationSource } from '../../../../../libs/database/types/migrationSource.js';
+
 import { M1CreateAuthorTableMigration } from './migrations/m1CreateAuthorTableMigration.js';
 import { M2CreateBookTableMigration } from './migrations/m2CreateBookTableMigration.js';
 import { M3CreateGenreTableMigration } from './migrations/m3CreateGenreMigration.js';
@@ -15,8 +10,14 @@ import { M6CreateBookReadingTableMigration } from './migrations/m6CreateBookRead
 import { M7CreateQuoteTableMigration } from './migrations/m7CreateQuoteTableMigration.js';
 import { M8CreateBorrowingTableMigration } from './migrations/m8CreateBorrowingTableMigration.js';
 import { M9CreateCollectionTableMigration } from './migrations/m9CreateCollectionMigration.js';
-import { type Migration } from '../../../../../libs/database/types/migration.js';
-import { type MigrationSource } from '../../../../../libs/database/types/migrationSource.js';
+import { M10CreateUserBookCollectionTableMigration } from './migrations/m10CreateUserBookCollectionTableMigration.js';
+import { M11CreateBookChangeRequestTableMigration } from './migrations/m11CreateBookChangeRequestTableMigration.js';
+import { M12SetReleaseYearAsRequiredInBookTableMigration } from './migrations/m12SetReleaseYearAsRequiredInBookTableMigration.js';
+import { M13DeleteUserBookGenreTableMigration } from './migrations/m13DeleteUserBookGenreTableMigration.js';
+import { M14AddIndexesToBookTableMigration } from './migrations/m14AddIndexesToBookTableMigration.js';
+import { M15AddIndexesToUserBookTableMigration } from './migrations/m15AddIndexesToUserBookTableMigration.js';
+import { M16AddIndexToAuthorTableMigration } from './migrations/m16AddIndexToAuthorTableMigration.js';
+import { M17AddIndexesToBookReadingTableMigration } from './migrations/m17AddIndexesToBookReadingTableMigration.js';
 
 export class BookDatabaseMigrationSource implements MigrationSource {
   public async getMigrations(): Promise<Migration[]> {

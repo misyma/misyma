@@ -128,7 +128,7 @@ const BookshelfChoiceDropdownTrigger: FC<BookshelfChoiceDropdownTriggerProps> = 
 
   useEffect(() => {
     setCurrentBookshelf(bookshelfData?.data.find((bookshelf) => bookshelf.id === selectedBookshelfId)?.name ?? '');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [bookshelfData, selectedBookshelfId]);
 
   useEffect(() => {

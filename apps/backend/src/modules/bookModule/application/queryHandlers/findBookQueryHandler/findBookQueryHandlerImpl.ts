@@ -1,10 +1,11 @@
+import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
+import { type BookRepository } from '../../../domain/repositories/bookRepository/bookRepository.js';
+
 import {
   type FindBookQueryHandler,
   type FindBookQueryHandlerPayload,
   type FindBookQueryHandlerResult,
 } from './findBookQueryHandler.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
-import { type BookRepository } from '../../../domain/repositories/bookRepository/bookRepository.js';
 
 export class FindBookQueryHandlerImpl implements FindBookQueryHandler {
   public constructor(private readonly bookRepository: BookRepository) {}

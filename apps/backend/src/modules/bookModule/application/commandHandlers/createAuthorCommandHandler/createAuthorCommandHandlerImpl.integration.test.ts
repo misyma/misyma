@@ -1,6 +1,5 @@
 import { beforeEach, afterEach, expect, it, describe } from 'vitest';
 
-import { type CreateAuthorCommandHandler } from './createAuthorCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
@@ -9,6 +8,8 @@ import { type DatabaseClient } from '../../../../../libs/database/clients/databa
 import { symbols } from '../../../symbols.js';
 import { AuthorTestFactory } from '../../../tests/factories/authorTestFactory/authorTestFactory.js';
 import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
+
+import { type CreateAuthorCommandHandler } from './createAuthorCommandHandler.js';
 
 describe('CreateAuthorCommandHandler', () => {
   let createAuthorCommandHandler: CreateAuthorCommandHandler;

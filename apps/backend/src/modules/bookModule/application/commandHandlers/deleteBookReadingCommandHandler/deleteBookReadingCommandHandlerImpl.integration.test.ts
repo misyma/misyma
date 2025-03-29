@@ -1,6 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { type DeleteBookReadingCommandHandler } from './deleteBookReadingCommandHandler.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
@@ -15,6 +14,8 @@ import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestU
 import { symbols } from '../../../symbols.js';
 import { type BookReadingTestUtils } from '../../../tests/utils/bookReadingTestUtils/bookReadingTestUtils.js';
 import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
+
+import { type DeleteBookReadingCommandHandler } from './deleteBookReadingCommandHandler.js';
 
 describe('DeleteBookReadingCommandHandlerImpl', () => {
   let commandHandler: DeleteBookReadingCommandHandler;

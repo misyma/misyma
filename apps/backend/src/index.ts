@@ -9,7 +9,7 @@ export const finalErrorHandler = async (error: unknown): Promise<void> => {
     context: serializedError,
   });
 
-  Application?.stop();
+  await Application.stop();
 
   process.exit(1);
 };

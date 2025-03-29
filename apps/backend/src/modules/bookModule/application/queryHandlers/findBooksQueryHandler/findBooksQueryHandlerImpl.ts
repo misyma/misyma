@@ -1,12 +1,13 @@
 import {
+  type FindBooksPayload,
+  type BookRepository,
+} from '../../../domain/repositories/bookRepository/bookRepository.js';
+
+import {
   type FindBooksQueryHandlerPayload,
   type FindBooksQueryHandler,
   type FindBooksQueryHandlerResult,
 } from './findBooksQueryHandler.js';
-import {
-  type FindBooksPayload,
-  type BookRepository,
-} from '../../../domain/repositories/bookRepository/bookRepository.js';
 
 export class FindBooksQueryHandlerImpl implements FindBooksQueryHandler {
   public constructor(private readonly bookRepository: BookRepository) {}

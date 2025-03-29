@@ -1,7 +1,8 @@
 import { beforeEach, expect, describe, it } from 'vitest';
 
-import { BookReadingMapperImpl } from './bookReadingMapperImpl.js';
 import { BookReadingTestFactory } from '../../../../tests/factories/bookReadingTestFactory/bookReadingTestFactory.js';
+
+import { BookReadingMapperImpl } from './bookReadingMapperImpl.js';
 
 describe('BookReadingMapperImpl', () => {
   let bookReadingMapperImpl: BookReadingMapperImpl;

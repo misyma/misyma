@@ -1,5 +1,23 @@
 import { UserRole } from '@common/contracts';
 
+import { type HttpController } from '../../../../../common/types/http/httpController.js';
+import { httpMethodNames } from '../../../../../common/types/http/httpMethodName.js';
+import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
+import {
+  type HttpOkResponse,
+  type HttpCreatedResponse,
+  type HttpNoContentResponse,
+} from '../../../../../common/types/http/httpResponse.js';
+import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
+import { httpStatusCodes } from '../../../../../common/types/http/httpStatusCode.js';
+import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
+import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
+import { type CreateAuthorCommandHandler } from '../../../application/commandHandlers/createAuthorCommandHandler/createAuthorCommandHandler.js';
+import { type DeleteAuthorCommandHandler } from '../../../application/commandHandlers/deleteAuthorCommandHandler/deleteAuthorCommandHandler.js';
+import { type UpdateAuthorCommandHandler } from '../../../application/commandHandlers/updateAuthorCommandHandler/updateAuthorCommandHandler.js';
+import { type FindAuthorsQueryHandler } from '../../../application/queryHandlers/findAuthorsQueryHandler/findAuthorsQueryHandler.js';
+import { mapAuthorToDto } from '../common/mappers/authorDtoMapper.js';
+
 import {
   createAuthorBodyDtoSchema,
   type CreateAuthorBodyDto,
@@ -26,23 +44,6 @@ import {
   type UpdateAuthorPathParamsDto,
   type UpdateAuthorResponseBodyDto,
 } from './schemas/updateAuthorSchema.js';
-import { type HttpController } from '../../../../../common/types/http/httpController.js';
-import { httpMethodNames } from '../../../../../common/types/http/httpMethodName.js';
-import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
-import {
-  type HttpOkResponse,
-  type HttpCreatedResponse,
-  type HttpNoContentResponse,
-} from '../../../../../common/types/http/httpResponse.js';
-import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
-import { httpStatusCodes } from '../../../../../common/types/http/httpStatusCode.js';
-import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
-import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
-import { type CreateAuthorCommandHandler } from '../../../application/commandHandlers/createAuthorCommandHandler/createAuthorCommandHandler.js';
-import { type DeleteAuthorCommandHandler } from '../../../application/commandHandlers/deleteAuthorCommandHandler/deleteAuthorCommandHandler.js';
-import { type UpdateAuthorCommandHandler } from '../../../application/commandHandlers/updateAuthorCommandHandler/updateAuthorCommandHandler.js';
-import { type FindAuthorsQueryHandler } from '../../../application/queryHandlers/findAuthorsQueryHandler/findAuthorsQueryHandler.js';
-import { mapAuthorToDto } from '../common/mappers/authorDtoMapper.js';
 
 export class AuthorAdminHttpController implements HttpController {
   public readonly basePath = '/admin/authors';

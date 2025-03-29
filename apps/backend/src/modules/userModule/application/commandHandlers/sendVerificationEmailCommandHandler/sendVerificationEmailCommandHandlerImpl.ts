@@ -1,7 +1,3 @@
-import {
-  type ExecutePayload,
-  type SendVerificationEmailCommandHandler,
-} from './sendVerificationEmailCommandHandler.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { emailTypes } from '../../../../../common/types/emailType.js';
 import { TokenType } from '../../../../../common/types/tokenType.js';
@@ -11,6 +7,11 @@ import { type TokenService } from '../../../../authModule/application/services/t
 import { EmailEventDraft } from '../../../domain/entities/emailEvent/emailEvent.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
 import { type EmailMessageBus } from '../../messageBuses/emailMessageBus/emailMessageBus.js';
+
+import {
+  type ExecutePayload,
+  type SendVerificationEmailCommandHandler,
+} from './sendVerificationEmailCommandHandler.js';
 
 export class SendVerificationEmailCommandHandlerImpl implements SendVerificationEmailCommandHandler {
   public constructor(

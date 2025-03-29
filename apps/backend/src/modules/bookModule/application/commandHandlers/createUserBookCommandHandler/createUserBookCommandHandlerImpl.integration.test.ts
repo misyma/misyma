@@ -1,6 +1,5 @@
 import { beforeEach, afterEach, expect, it, describe } from 'vitest';
 
-import { type CreateUserBookCommandHandler } from './createUserBookCommandHandler.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
@@ -16,6 +15,8 @@ import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/autho
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
 import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
+
+import { type CreateUserBookCommandHandler } from './createUserBookCommandHandler.js';
 
 describe('CreateUserBookCommandHandler', () => {
   let createUserBookCommandHandler: CreateUserBookCommandHandler;

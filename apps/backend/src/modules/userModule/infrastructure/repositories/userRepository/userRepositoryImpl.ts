@@ -1,4 +1,3 @@
-import { type UserMapper } from './userMapper/userMapper.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
@@ -13,6 +12,8 @@ import {
 } from '../../../domain/repositories/userRepository/userRepository.js';
 import { type UserRawEntity } from '../../databases/userDatabase/tables/userTable/userRawEntity.js';
 import { userTable } from '../../databases/userDatabase/tables/userTable/userTable.js';
+
+import { type UserMapper } from './userMapper/userMapper.js';
 
 type CreateUserPayload = { user: UserState };
 

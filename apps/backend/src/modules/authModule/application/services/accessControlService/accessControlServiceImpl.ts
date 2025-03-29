@@ -1,13 +1,14 @@
 import { UserRole } from '@common/contracts';
 
+import { ForbiddenAccessError } from '../../errors/forbiddenAccessError.js';
+import { UnauthorizedAccessError } from '../../errors/unathorizedAccessError.js';
+import { type TokenService } from '../tokenService/tokenService.js';
+
 import {
   type VerifyBearerTokenPayload,
   type AccessControlService,
   type VerifyBearerTokenResult,
 } from './accessControlService.js';
-import { ForbiddenAccessError } from '../../errors/forbiddenAccessError.js';
-import { UnauthorizedAccessError } from '../../errors/unathorizedAccessError.js';
-import { type TokenService } from '../tokenService/tokenService.js';
 
 export class AccessControlServiceImpl implements AccessControlService {
   public constructor(private readonly tokenService: TokenService) {}

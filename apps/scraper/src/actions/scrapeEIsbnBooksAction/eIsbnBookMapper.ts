@@ -1,9 +1,9 @@
+import { BookFormat, Language } from '@common/contracts';
 import { Value } from '@sinclair/typebox/value';
 
-import { BookFormat, Language } from '@common/contracts';
+import { bookDraftSchema, type BookDraft } from '../../infrastructure/entities/book/book.js';
 
 import { type EIsbnProductID, type EisbnBook } from './eisbnBook.js';
-import { bookDraftSchema, type BookDraft } from '../../infrastructure/entities/book/book.js';
 
 export class EisbnBookMapper {
   public mapBook(eisbnBook: EisbnBook): BookDraft | undefined {
@@ -38,7 +38,9 @@ export class EisbnBookMapper {
         authorNames = eisbnBook.DescriptiveDetail.Contributor.filter(
           (contributor) => contributor.ContributorRole === 'A01' && contributor.PersonNameInverted !== undefined,
         )
-          .map((contributor) => this.mapAuthorName(contributor.PersonNameInverted!))
+          .map((contributor) =>
+            contributor.PersonNameInverted ? this.mapAuthorName(contributor.PersonNameInverted) : undefined,
+          )
           .filter((authorName) => authorName !== undefined);
 
         const foundTranslator = eisbnBook.DescriptiveDetail.Contributor.find(

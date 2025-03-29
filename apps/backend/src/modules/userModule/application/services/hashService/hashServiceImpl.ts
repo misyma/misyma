@@ -1,7 +1,8 @@
 import { compare, genSalt, hash } from 'bcrypt';
 
-import { type ComparePayload, type HashPayload, type HashService } from './hashService.js';
 import { type Config } from '../../../../../core/config.js';
+
+import { type ComparePayload, type HashPayload, type HashService } from './hashService.js';
 
 export class HashServiceImpl implements HashService {
   public constructor(private readonly config: Config) {}

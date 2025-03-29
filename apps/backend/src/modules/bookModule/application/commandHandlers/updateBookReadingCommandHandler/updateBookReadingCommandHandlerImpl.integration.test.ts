@@ -1,6 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { type UpdateBookReadingCommandHandler } from './updateBookReadingCommandHandler.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
@@ -16,6 +15,8 @@ import { BookReading } from '../../../domain/entities/bookReading/bookReading.js
 import { symbols } from '../../../symbols.js';
 import { type BookReadingTestUtils } from '../../../tests/utils/bookReadingTestUtils/bookReadingTestUtils.js';
 import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
+
+import { type UpdateBookReadingCommandHandler } from './updateBookReadingCommandHandler.js';
 
 describe('UpdateBookReadingCommandHandlerImpl', () => {
   let commandHandler: UpdateBookReadingCommandHandler;

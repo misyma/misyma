@@ -1,6 +1,7 @@
-import { type Borrowing } from './borrowing.js';
 import { type Metadata } from '../metadata.js';
 import { type SortOrder } from '../sortOrder.js';
+
+import { type Borrowing } from './borrowing.js';
 
 export interface FindBorrowingsPathParams {
   readonly userBookId: string;

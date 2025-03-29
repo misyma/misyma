@@ -1,6 +1,5 @@
-import { type Static, Type } from '@sinclair/typebox';
-
 import { BookshelfType } from '@common/contracts';
+import { type Static, Type } from '@sinclair/typebox';
 
 export const bookshelfNameSchema = Type.String({
   minLength: 1,

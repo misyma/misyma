@@ -1,8 +1,12 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/restrict-plus-operands */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Value } from '@sinclair/typebox/value';
-
 import { BookFormat, Language } from '@common/contracts';
+import { Value } from '@sinclair/typebox/value';
 
 import { type NationalLibraryBook } from '../../common/nationalLibraryBook.js';
 import { bookDraftSchema, type BookDraft } from '../../infrastructure/entities/book/book.js';
@@ -57,7 +61,7 @@ export class NationalLibraryBookMapper {
       language: Language.Polish,
       format: BookFormat.paperback,
       authorNames: [authorName],
-      pages: pages as number,
+      pages,
     };
 
     try {

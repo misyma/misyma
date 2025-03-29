@@ -1,4 +1,3 @@
-import { type AuthorMapper } from './authorMapper/authorMapper.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
@@ -16,6 +15,8 @@ import { type AuthorRawEntity } from '../../databases/bookDatabase/tables/author
 import { authorTable } from '../../databases/bookDatabase/tables/authorTable/authorTable.js';
 import { bookAuthorTable } from '../../databases/bookDatabase/tables/bookAuthorTable/bookAuthorTable.js';
 import { userBookTable } from '../../databases/bookDatabase/tables/userBookTable/userBookTable.js';
+
+import { type AuthorMapper } from './authorMapper/authorMapper.js';
 
 type CreateAuthorPayload = { author: AuthorState };
 

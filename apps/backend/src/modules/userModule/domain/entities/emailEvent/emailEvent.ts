@@ -1,6 +1,7 @@
+import { type EmailType } from '../../../../../common/types/emailType.js';
+
 import { type BaseEmailPayload } from './types/baseEmailPayload.js';
 import { type EmailEventStatus } from './types/emailEventStatus.js';
-import { type EmailType } from '../../../../../common/types/emailType.js';
 
 export interface EmailEventDraftState {
   payload: BaseEmailPayload;

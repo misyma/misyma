@@ -1,6 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { type SendVerificationEmailCommandHandler } from './sendVerificationEmailCommandHandler.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
@@ -12,6 +11,8 @@ import { EmailEventDraft } from '../../../domain/entities/emailEvent/emailEvent.
 import { symbols } from '../../../symbols.js';
 import { type UserTestUtils } from '../../../tests/utils/userTestUtils/userTestUtils.js';
 import { type EmailMessageBus } from '../../messageBuses/emailMessageBus/emailMessageBus.js';
+
+import { type SendVerificationEmailCommandHandler } from './sendVerificationEmailCommandHandler.js';
 
 describe('SendVerificationEmailCommandHandler', () => {
   let commandHandler: SendVerificationEmailCommandHandler;

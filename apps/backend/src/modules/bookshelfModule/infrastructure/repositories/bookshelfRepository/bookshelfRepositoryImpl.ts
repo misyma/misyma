@@ -1,4 +1,3 @@
-import { type BookshelfMapper } from './bookshelfMapper/bookshelfMapper.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
@@ -15,6 +14,8 @@ import {
 import { type BookshelfRawEntity } from '../../databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfRawEntity.js';
 import { bookshelfTable } from '../../databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfTable.js';
 import { type BookshelfWithJoinsRawEntity } from '../../databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfWithJoinsRawEntity.js';
+
+import { type BookshelfMapper } from './bookshelfMapper/bookshelfMapper.js';
 
 type CreateBookshelfPayload = { bookshelf: BookshelfState };
 

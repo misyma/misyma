@@ -1,10 +1,10 @@
+import * as contracts from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
-import * as contracts from '@common/contracts';
-
-import { userBookDtoSchema } from './userBookDto.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 import { bookIsbnSchema, bookTitleSchema } from '../../common/bookDto.js';
+
+import { userBookDtoSchema } from './userBookDto.js';
 
 export const findUserBooksQueryParamsDtoSchema = Type.Object({
   bookshelfId: Type.Optional(Type.String({ format: 'uuid' })),

@@ -1,6 +1,5 @@
 import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 
-import { type DeleteAuthorCommandHandler } from './deleteAuthorCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
@@ -9,6 +8,8 @@ import { type DatabaseClient } from '../../../../../libs/database/clients/databa
 import { symbols } from '../../../symbols.js';
 import { AuthorTestFactory } from '../../../tests/factories/authorTestFactory/authorTestFactory.js';
 import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
+
+import { type DeleteAuthorCommandHandler } from './deleteAuthorCommandHandler.js';
 
 describe('DeleteAuthorCommandHandler', () => {
   let deleteAuthorCommandHandler: DeleteAuthorCommandHandler;

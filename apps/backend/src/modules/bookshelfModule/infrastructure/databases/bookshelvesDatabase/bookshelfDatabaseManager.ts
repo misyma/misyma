@@ -1,7 +1,8 @@
-import { BookshelfDatabaseMigrationSource } from './bookshelfDatabaseMigrationSource.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type DependencyInjectionContainer } from '../../../../../libs/dependencyInjection/dependencyInjectionContainer.js';
+
+import { BookshelfDatabaseMigrationSource } from './bookshelfDatabaseMigrationSource.js';
 
 export class BookshelfDatabaseManager {
   public static async bootstrapDatabase(container: DependencyInjectionContainer): Promise<void> {

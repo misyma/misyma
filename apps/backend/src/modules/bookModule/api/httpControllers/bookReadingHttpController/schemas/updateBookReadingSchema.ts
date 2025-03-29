@@ -1,9 +1,9 @@
+import type * as contracts from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
-import type * as contracts from '@common/contracts';
+import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 import { bookReadingCommentSchema, bookReadingDtoSchema, bookReadingRatingSchema } from './bookReadingDto.js';
-import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const updateBookReadingPathParamsDtoSchema = Type.Object({
   readingId: Type.String({ format: 'uuid' }),
