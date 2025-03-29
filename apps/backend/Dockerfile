@@ -38,7 +38,6 @@ COPY package*.json ./
 COPY --from=installer /app/apps/backend/dist ./apps/backend
 COPY --from=installer /app/apps/backend/config ./apps/backend/config
 COPY --from=installer /app/apps/backend/package.json ./apps/backend/package.json
-COPY --from=installer /app/apps/backend/src/modules/userModule/application/emails/templates ./apps/backend/src/modules/userModule/application/emails/templates
 
 COPY --from=installer /app/common/ ./common/.temp
 
