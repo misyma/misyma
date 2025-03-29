@@ -29,8 +29,7 @@
     "npm": "11.1.0"
   },
   "engines": {
-    "node": ">=23",
-    "npm": ">=11"
+    "node": ">=23"
   },
   "workspaces": [
     "apps/*",
