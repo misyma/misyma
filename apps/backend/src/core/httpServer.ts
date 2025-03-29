@@ -20,7 +20,7 @@ import { ResourceAlreadyExistsError } from '../common/errors/resourceAlreadyExis
 import { ResourceNotFoundError } from '../common/errors/resourceNotFoundError.js';
 import { serializeError } from '../common/errors/serializeError.js';
 import { type HttpController } from '../common/types/http/httpController.js';
-import { HttpStatusCode } from '../common/types/http/httpStatusCode.js';
+import { httpStatusCodes } from '../common/types/http/httpStatusCode.js';
 import { SecurityMode } from '../common/types/http/securityMode.js';
 import { type DependencyInjectionContainer } from '../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type LoggerService } from '../libs/logger/services/loggerService/loggerService.js';
@@ -197,30 +197,30 @@ export class HttpServer {
       };
 
       if (error instanceof InputNotValidError) {
-        return reply.status(HttpStatusCode.badRequest).send(responseError);
+        return reply.status(httpStatusCodes.badRequest).send(responseError);
       }
 
       if (error instanceof ResourceNotFoundError) {
-        return reply.status(HttpStatusCode.notFound).send(responseError);
+        return reply.status(httpStatusCodes.notFound).send(responseError);
       }
 
       if (error instanceof OperationNotValidError) {
-        return reply.status(HttpStatusCode.badRequest).send(responseError);
+        return reply.status(httpStatusCodes.badRequest).send(responseError);
       }
 
       if (error instanceof ResourceAlreadyExistsError) {
-        return reply.status(HttpStatusCode.conflict).send(responseError);
+        return reply.status(httpStatusCodes.conflict).send(responseError);
       }
 
       if (error instanceof UnauthorizedAccessError) {
-        return reply.status(HttpStatusCode.unauthorized).send(responseError);
+        return reply.status(httpStatusCodes.unauthorized).send(responseError);
       }
 
       if (error instanceof ForbiddenAccessError) {
-        return reply.status(HttpStatusCode.forbidden).send(responseError);
+        return reply.status(httpStatusCodes.forbidden).send(responseError);
       }
 
-      return reply.status(HttpStatusCode.internalServerError).send({
+      return reply.status(httpStatusCodes.internalServerError).send({
         name: 'InternalServerError',
         message: 'Internal server error',
       });

@@ -19,7 +19,7 @@ describe('DeleteUserCommandHandler', () => {
   const userTestFactory = new UserTestFactory();
 
   beforeEach(async () => {
-    const container = TestContainer.create();
+    const container = await TestContainer.create();
 
     deleteUserCommandHandler = container.get<DeleteUserCommandHandler>(symbols.deleteUserCommandHandler);
 

@@ -20,7 +20,7 @@ describe('CreateAuthorCommandHandler', () => {
   const authorTestFactory = new AuthorTestFactory();
 
   beforeEach(async () => {
-    const container = TestContainer.create();
+    const container = await TestContainer.create();
 
     createAuthorCommandHandler = container.get<CreateAuthorCommandHandler>(symbols.createAuthorCommandHandler);
 

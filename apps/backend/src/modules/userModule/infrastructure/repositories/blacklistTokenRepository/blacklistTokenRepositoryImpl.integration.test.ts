@@ -19,7 +19,7 @@ describe('BlacklistTokenRepositoryImpl', () => {
   const blacklistTokenTestFactory = new BlacklistTokenTestFactory();
 
   beforeEach(async () => {
-    const container = TestContainer.create();
+    const container = await TestContainer.create();
 
     blacklistTokenRepository = container.get<BlacklistTokenRepository>(symbols.blacklistTokenRepository);
 

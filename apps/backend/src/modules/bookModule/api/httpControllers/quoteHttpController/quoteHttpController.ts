@@ -26,7 +26,7 @@ import {
   updateQuoteResponseBodyDtoSchema,
 } from './schemas/updateQuoteSchema.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
-import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
+import { httpMethodNames } from '../../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
 import {
   type HttpNoContentResponse,
@@ -34,7 +34,7 @@ import {
   type HttpOkResponse,
 } from '../../../../../common/types/http/httpResponse.js';
 import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
-import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.js';
+import { httpStatusCodes } from '../../../../../common/types/http/httpStatusCode.js';
 import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
 import { type CreateQuoteCommandHandler } from '../../../application/commandHandlers/createQuoteCommandHandler/createQuoteCommandHandler.js';
@@ -58,7 +58,7 @@ export class QuoteHttpController implements HttpController {
   public getHttpRoutes(): HttpRoute[] {
     return [
       new HttpRoute({
-        method: HttpMethodName.get,
+        method: httpMethodNames.get,
         handler: this.findQuotes.bind(this),
         description: 'Find Quotes',
         schema: {
@@ -66,7 +66,7 @@ export class QuoteHttpController implements HttpController {
             queryParams: findQuotesQueryParamsDtoSchema,
           },
           response: {
-            [HttpStatusCode.ok]: {
+            [httpStatusCodes.ok]: {
               schema: findQuotesResponseBodyDtoSchema,
               description: 'Found Quotes',
             },
@@ -75,7 +75,7 @@ export class QuoteHttpController implements HttpController {
         securityMode: SecurityMode.bearerToken,
       }),
       new HttpRoute({
-        method: HttpMethodName.post,
+        method: httpMethodNames.post,
         handler: this.createQuote.bind(this),
         description: 'Create a Quote',
         schema: {
@@ -83,7 +83,7 @@ export class QuoteHttpController implements HttpController {
             body: createQuoteBodyDtoSchema,
           },
           response: {
-            [HttpStatusCode.created]: {
+            [httpStatusCodes.created]: {
               description: 'Quote created',
               schema: createQuoteResponseBodyDtoSchema,
             },
@@ -92,7 +92,7 @@ export class QuoteHttpController implements HttpController {
         securityMode: SecurityMode.bearerToken,
       }),
       new HttpRoute({
-        method: HttpMethodName.patch,
+        method: httpMethodNames.patch,
         path: ':quoteId',
         handler: this.updateQuote.bind(this),
         description: 'Update Quote',
@@ -102,7 +102,7 @@ export class QuoteHttpController implements HttpController {
             pathParams: updateQuotePathParamsDtoSchema,
           },
           response: {
-            [HttpStatusCode.ok]: {
+            [httpStatusCodes.ok]: {
               description: 'Quote updated',
               schema: updateQuoteResponseBodyDtoSchema,
             },
@@ -110,7 +110,7 @@ export class QuoteHttpController implements HttpController {
         },
       }),
       new HttpRoute({
-        method: HttpMethodName.delete,
+        method: httpMethodNames.delete,
         path: ':quoteId',
         handler: this.deleteQuote.bind(this),
         description: 'Delete Quote',
@@ -119,7 +119,7 @@ export class QuoteHttpController implements HttpController {
             pathParams: deleteQuotePathParamsDtoSchema,
           },
           response: {
-            [HttpStatusCode.noContent]: {
+            [httpStatusCodes.noContent]: {
               description: 'Quote deleted',
               schema: deleteQuoteResponseBodyDtoSchema,
             },
@@ -149,7 +149,7 @@ export class QuoteHttpController implements HttpController {
     });
 
     return {
-      statusCode: HttpStatusCode.ok,
+      statusCode: httpStatusCodes.ok,
       body: {
         data: quotes.map((quote) => this.mapQuoteToDto(quote)),
         metadata: {
@@ -180,7 +180,7 @@ export class QuoteHttpController implements HttpController {
     });
 
     return {
-      statusCode: HttpStatusCode.created,
+      statusCode: httpStatusCodes.created,
       body: this.mapQuoteToDto(quote),
     };
   }
@@ -205,7 +205,7 @@ export class QuoteHttpController implements HttpController {
     });
 
     return {
-      statusCode: HttpStatusCode.ok,
+      statusCode: httpStatusCodes.ok,
       body: this.mapQuoteToDto(quote),
     };
   }
@@ -225,7 +225,7 @@ export class QuoteHttpController implements HttpController {
     });
 
     return {
-      statusCode: HttpStatusCode.noContent,
+      statusCode: httpStatusCodes.noContent,
       body: null,
     };
   }

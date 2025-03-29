@@ -5,7 +5,7 @@ import { UserDatabaseManager } from '../src/modules/userModule/infrastructure/da
 
 export async function setup(): Promise<void> {
   try {
-    const container = TestContainer.create();
+    const container = await TestContainer.create();
 
     const databaseManagers = [UserDatabaseManager, BookshelfDatabaseManager, BookDatabaseManager];
 

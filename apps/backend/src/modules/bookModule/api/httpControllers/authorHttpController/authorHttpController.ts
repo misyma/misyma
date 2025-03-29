@@ -13,11 +13,11 @@ import {
   findAuthorsResponseBodyDtoSchema,
 } from './schemas/findAuthorsSchema.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
-import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
+import { httpMethodNames } from '../../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
 import { type HttpCreatedResponse, type HttpOkResponse } from '../../../../../common/types/http/httpResponse.js';
 import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
-import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.js';
+import { httpStatusCodes } from '../../../../../common/types/http/httpStatusCode.js';
 import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
 import { type CreateAuthorCommandHandler } from '../../../application/commandHandlers/createAuthorCommandHandler/createAuthorCommandHandler.js';
@@ -37,14 +37,14 @@ export class AuthorHttpController implements HttpController {
   public getHttpRoutes(): HttpRoute[] {
     return [
       new HttpRoute({
-        method: HttpMethodName.post,
+        method: httpMethodNames.post,
         handler: this.createAuthor.bind(this),
         schema: {
           request: {
             body: createAuthorBodyDtoSchema,
           },
           response: {
-            [HttpStatusCode.created]: {
+            [httpStatusCodes.created]: {
               schema: createAuthorResponseBodyDtoSchema,
               description: 'Author created',
             },
@@ -54,14 +54,14 @@ export class AuthorHttpController implements HttpController {
         description: 'Create author',
       }),
       new HttpRoute({
-        method: HttpMethodName.get,
+        method: httpMethodNames.get,
         handler: this.findAuthors.bind(this),
         schema: {
           request: {
             queryParams: findAuthorsQueryParamsDtoSchema,
           },
           response: {
-            [HttpStatusCode.ok]: {
+            [httpStatusCodes.ok]: {
               schema: findAuthorsResponseBodyDtoSchema,
               description: 'Authors found',
             },
@@ -88,7 +88,7 @@ export class AuthorHttpController implements HttpController {
     });
 
     return {
-      statusCode: HttpStatusCode.created,
+      statusCode: httpStatusCodes.created,
       body: mapAuthorToDto(author),
     };
   }
@@ -121,7 +121,7 @@ export class AuthorHttpController implements HttpController {
     });
 
     return {
-      statusCode: HttpStatusCode.ok,
+      statusCode: httpStatusCodes.ok,
       body: {
         data: authors.map(mapAuthorToDto),
         metadata: {

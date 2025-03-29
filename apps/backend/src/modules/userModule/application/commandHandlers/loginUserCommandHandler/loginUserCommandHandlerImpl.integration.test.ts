@@ -31,7 +31,7 @@ describe('LoginUserCommandHandler', () => {
   const userTestFactory = new UserTestFactory();
 
   beforeEach(async () => {
-    const container = TestContainer.create();
+    const container = await TestContainer.create();
 
     loginUserCommandHandler = container.get<LoginUserCommandHandler>(symbols.loginUserCommandHandler);
 

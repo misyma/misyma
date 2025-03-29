@@ -2,8 +2,7 @@ import { type EmailEventMapper } from './mappers/emailEventMapper/emailEventMapp
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
-import { type EmailEvent } from '../../../domain/entities/emailEvent/emailEvent.js';
-import { type EmailEventDraft } from '../../../domain/entities/emailEvent/emailEventDraft.ts/emailEventDraft.js';
+import { type EmailEventDraft, type EmailEvent } from '../../../domain/entities/emailEvent/emailEvent.js';
 import { EmailEventStatus } from '../../../domain/entities/emailEvent/types/emailEventStatus.js';
 import {
   type UpdateStatusPayload,

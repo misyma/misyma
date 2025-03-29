@@ -19,7 +19,7 @@ describe('FindUserQueryHandler', () => {
   const userTestFactory = new UserTestFactory();
 
   beforeEach(async () => {
-    const container = TestContainer.create();
+    const container = await TestContainer.create();
 
     findUserQueryHandler = container.get<FindUserQueryHandler>(symbols.findUserQueryHandler);
 

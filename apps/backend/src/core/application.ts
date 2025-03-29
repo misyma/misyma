@@ -10,15 +10,15 @@ import { DatabaseClientFactory } from '../libs/database/factories/databaseClient
 import { type DependencyInjectionContainer } from '../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { DependencyInjectionContainerFactory } from '../libs/dependencyInjection/dependencyInjectionContainerFactory.js';
 import { type DependencyInjectionModule } from '../libs/dependencyInjection/dependencyInjectionModule.js';
-import { HttpServiceFactory } from '../libs/httpService/factories/httpServiceFactory/httpServiceFactory.js';
-import { type HttpService } from '../libs/httpService/services/httpService/httpService.js';
+import { type EmailService } from '../libs/emailService/emailService.js';
+import { EmailServiceImpl } from '../libs/emailService/emailServiceImpl.js';
+import { type HttpService } from '../libs/httpService/httpService.js';
+import { HttpServiceImpl } from '../libs/httpService/httpServiceImpl.js';
 import { LoggerServiceFactory } from '../libs/logger/factories/loggerServiceFactory/loggerServiceFactory.js';
 import { type LoggerService } from '../libs/logger/services/loggerService/loggerService.js';
 import { type S3Client } from '../libs/s3/clients/s3Client/s3Client.js';
 import { S3ClientFactory, type S3Config } from '../libs/s3/factories/s3ClientFactory/s3ClientFactory.js';
 import { S3Service } from '../libs/s3/services/s3Service/s3Service.js';
-import { SendGridServiceFactory } from '../libs/sendGrid/factories/sendGridServiceFactory/sendGridServiceFactory.js';
-import { type SendGridService } from '../libs/sendGrid/services/sendGridService/sendGridService.js';
 import { type UuidService } from '../libs/uuid/services/uuidService/uuidService.js';
 import { UuidServiceImpl } from '../libs/uuid/services/uuidService/uuidServiceImpl.js';
 import { AuthModule } from '../modules/authModule/authModule.js';
@@ -87,9 +87,7 @@ export class Application {
       LoggerServiceFactory.create({ logLevel: config.logLevel }),
     );
 
-    container.bind<HttpService>(symbols.httpService, () =>
-      new HttpServiceFactory(container.get<LoggerService>(symbols.loggerService)).create(),
-    );
+    container.bind<HttpService>(symbols.httpService, () => new HttpServiceImpl());
 
     container.bind<UuidService>(symbols.uuidService, () => new UuidServiceImpl());
 
@@ -113,11 +111,9 @@ export class Application {
       () => new ApplicationHttpController(container.get<DatabaseClient>(coreSymbols.databaseClient)),
     );
 
-    container.bind<SendGridService>(symbols.sendGridService, () =>
-      new SendGridServiceFactory(container.get<HttpService>(coreSymbols.httpService)).create({
-        apiKey: config.sendGrid.apiKey,
-        senderEmail: config.sendGrid.senderEmail,
-      }),
+    container.bind<EmailService>(
+      symbols.emailService,
+      () => new EmailServiceImpl(container.get<HttpService>(coreSymbols.httpService), config),
     );
 
     const s3Config: S3Config = {

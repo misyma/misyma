@@ -1,4 +1,4 @@
-import { Container, type interfaces } from 'inversify';
+import { Container, type DynamicValueBuilder } from 'inversify';
 
 export interface FactoryLike<T> {
   create(): T;
@@ -9,27 +9,22 @@ export class DependencyInjectionContainer {
 
   public constructor() {
     this.instance = new Container({
-      autoBindInjectable: false,
       defaultScope: 'Singleton',
     });
   }
 
-  public bindToValue<T>(symbol: symbol, value: T): DependencyInjectionContainer {
+  public bindToValue<T>(symbol: symbol, value: T): void {
     this.instance.bind(symbol).toConstantValue(value);
-
-    return this;
   }
 
-  public bind<T>(symbol: symbol, dynamicValue: interfaces.DynamicValue<T>): DependencyInjectionContainer {
-    this.instance.bind(symbol).toDynamicValue(dynamicValue);
-
-    return this;
+  public bind<T>(symbol: symbol, dynamicValueBuilder: DynamicValueBuilder<T>): void {
+    this.instance.bind(symbol).toDynamicValue(dynamicValueBuilder);
   }
 
-  public overrideBinding<T>(symbol: symbol, dynamicValue: interfaces.DynamicValue<T>): DependencyInjectionContainer {
-    this.instance.rebind(symbol).toDynamicValue(dynamicValue);
+  public async overrideBinding<T>(symbol: symbol, dynamicValueBuilder: DynamicValueBuilder<T>): Promise<void> {
+    await this.instance.unbind(symbol);
 
-    return this;
+    this.instance.bind(symbol).toDynamicValue(dynamicValueBuilder);
   }
 
   public get<T>(symbol: symbol): T {

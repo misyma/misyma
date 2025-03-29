@@ -10,7 +10,7 @@ describe('AuthModule', () => {
   let container: DependencyInjectionContainer;
 
   beforeEach(async () => {
-    container = TestContainer.create();
+    container = await TestContainer.create();
   });
 
   it('declares bindings', async () => {

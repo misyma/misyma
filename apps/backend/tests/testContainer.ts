@@ -5,8 +5,9 @@ import { Application } from '../src/core/application.js';
 import { coreSymbols } from '../src/core/symbols.js';
 import { type DatabaseClient } from '../src/libs/database/clients/databaseClient/databaseClient.js';
 import { type DependencyInjectionContainer } from '../src/libs/dependencyInjection/dependencyInjectionContainer.js';
+import { type EmailService } from '../src/libs/emailService/emailService.js';
+import { type LoggerService } from '../src/libs/logger/services/loggerService/loggerService.js';
 import { S3TestUtils } from '../src/libs/s3/tests/utils/s3TestUtils.js';
-import { type SendGridService } from '../src/libs/sendGrid/services/sendGridService/sendGridService.js';
 import { AuthorTestUtils } from '../src/modules/bookModule/tests/utils/authorTestUtils/authorTestUtils.js';
 import { BookChangeRequestTestUtils } from '../src/modules/bookModule/tests/utils/bookChangeRequestTestUtils/bookChangeRequestTestUtils.js';
 import { BookReadingTestUtils } from '../src/modules/bookModule/tests/utils/bookReadingTestUtils/bookReadingTestUtils.js';
@@ -24,7 +25,7 @@ import { EmailEventTestUtils } from '../src/modules/userModule/tests/utils/email
 import { UserTestUtils } from '../src/modules/userModule/tests/utils/userTestUtils/userTestUtils.js';
 
 export class TestContainer {
-  public static create(): DependencyInjectionContainer {
+  public static async create(): Promise<DependencyInjectionContainer> {
     const container = Application.createContainer();
 
     container.bind<BookTestUtils>(
@@ -87,11 +88,18 @@ export class TestContainer {
       () => new CollectionTestUtils(container.get<DatabaseClient>(coreSymbols.databaseClient)),
     );
 
-    container.overrideBinding<SendGridService>(coreSymbols.sendGridService, () => ({
+    await container.overrideBinding<LoggerService>(coreSymbols.loggerService, () => ({
+      debug: (): void => {},
+      info: (): void => {},
+      warn: (): void => {},
+      error: (): void => {},
+    }));
+
+    await container.overrideBinding<EmailService>(coreSymbols.emailService, () => ({
       sendEmail: async (): Promise<void> => {},
     }));
 
-    container.overrideBinding<EmailMessageBus>(userSymbols.emailMessageBus, () => ({
+    await container.overrideBinding<EmailMessageBus>(userSymbols.emailMessageBus, () => ({
       sendEvent: async (): Promise<void> => {},
     }));
 

@@ -58,9 +58,9 @@ describe('UploadUserBookImageCommandHandlerImpl', () => {
   const imageId = Generator.uuid();
 
   beforeEach(async () => {
-    container = TestContainer.create();
+    container = await TestContainer.create();
 
-    container.overrideBinding<UuidService>(coreSymbols.uuidService, () => ({
+    await container.overrideBinding<UuidService>(coreSymbols.uuidService, () => ({
       generateUuid: (): string => imageId,
     }));
 

@@ -22,7 +22,7 @@ describe('FindCollectionsQueryHandlerImpl', () => {
   let testUtils: TestUtils[];
 
   beforeEach(async () => {
-    const container = TestContainer.create();
+    const container = await TestContainer.create();
 
     queryHandler = container.get<FindCollectionsQueryHandler>(symbols.findCollectionsQueryHandler);
 

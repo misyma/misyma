@@ -24,7 +24,7 @@ describe('CreateCollectionCommandHandlerImpl', () => {
   let testUtils: TestUtils[];
 
   beforeEach(async () => {
-    const container = TestContainer.create();
+    const container = await TestContainer.create();
 
     commandHandler = container.get<CreateCollectionCommandHandler>(symbols.createCollectionCommandHandler);
 

@@ -1,6 +1,6 @@
+import { type EmailType } from '../../../../../../../common/types/emailType.js';
 import { EmailEvent } from '../../../../../domain/entities/emailEvent/emailEvent.js';
 import { type EmailEventStatus } from '../../../../../domain/entities/emailEvent/types/emailEventStatus.js';
-import { type EmailEventType } from '../../../../../domain/entities/emailEvent/types/emailEventType.js';
 import { type EmailEventRawEntity } from '../../../../databases/userDatabase/tables/emailEventTable/emailEventRawEntity.js';
 
 export class EmailEventMapper {
@@ -12,7 +12,7 @@ export class EmailEventMapper {
       id,
       payload: JSON.parse(payload),
       status: status as EmailEventStatus,
-      eventName: eventName as EmailEventType,
+      eventName: eventName as EmailType,
     });
   }
 }

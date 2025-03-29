@@ -18,7 +18,7 @@ describe('DeleteGenreCommandHandler', () => {
   let genreTestUtils: GenreTestUtils;
 
   beforeEach(async () => {
-    const container = TestContainer.create();
+    const container = await TestContainer.create();
 
     commandHandler = container.get<DeleteGenreCommandHandler>(symbols.deleteGenreCommandHandler);
 

@@ -41,7 +41,7 @@ import {
 } from './schemas/uploadBookshelfImageSchema.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
-import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
+import { httpMethodNames } from '../../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
 import {
   type HttpNoContentResponse,
@@ -49,7 +49,7 @@ import {
   type HttpOkResponse,
 } from '../../../../../common/types/http/httpResponse.js';
 import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
-import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.js';
+import { httpStatusCodes } from '../../../../../common/types/http/httpStatusCode.js';
 import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
 import { type CreateBookshelfCommandHandler } from '../../../application/commandHandlers/createBookshelfCommandHandler/createBookshelfCommandHandler.js';
@@ -77,7 +77,7 @@ export class BookshelfHttpController implements HttpController {
   public getHttpRoutes(): HttpRoute[] {
     return [
       new HttpRoute({
-        method: HttpMethodName.get,
+        method: httpMethodNames.get,
         handler: this.getBookshelves.bind(this),
         description: 'Get user bookshelves',
         schema: {
@@ -85,7 +85,7 @@ export class BookshelfHttpController implements HttpController {
             queryParams: findBookshelvesQueryParamsDtoSchema,
           },
           response: {
-            [HttpStatusCode.ok]: {
+            [httpStatusCodes.ok]: {
               schema: findBookshelvesResponseBodyDtoSchema,
               description: 'Found user bookshelves',
             },
@@ -94,7 +94,7 @@ export class BookshelfHttpController implements HttpController {
         securityMode: SecurityMode.bearerToken,
       }),
       new HttpRoute({
-        method: HttpMethodName.get,
+        method: httpMethodNames.get,
         path: ':bookshelfId',
         handler: this.getBookshelf.bind(this),
         schema: {
@@ -102,7 +102,7 @@ export class BookshelfHttpController implements HttpController {
             pathParams: findBookshelfPathParamsDtoSchema,
           },
           response: {
-            [HttpStatusCode.ok]: {
+            [httpStatusCodes.ok]: {
               schema: findBookshelfResponseBodyDtoSchema,
               description: 'Found bookshelf',
             },
@@ -112,7 +112,7 @@ export class BookshelfHttpController implements HttpController {
         securityMode: SecurityMode.bearerToken,
       }),
       new HttpRoute({
-        method: HttpMethodName.post,
+        method: httpMethodNames.post,
         handler: this.createBookshelf.bind(this),
         description: 'Create a bookshelf',
         schema: {
@@ -120,7 +120,7 @@ export class BookshelfHttpController implements HttpController {
             body: createBookshelfBodyDtoSchema,
           },
           response: {
-            [HttpStatusCode.created]: {
+            [httpStatusCodes.created]: {
               description: 'Bookshelf created',
               schema: createBookshelfResponseBodyDtoSchema,
             },
@@ -129,7 +129,7 @@ export class BookshelfHttpController implements HttpController {
         securityMode: SecurityMode.bearerToken,
       }),
       new HttpRoute({
-        method: HttpMethodName.patch,
+        method: httpMethodNames.patch,
         path: '/:bookshelfId',
         handler: this.updateBookshelf.bind(this),
         description: 'Update bookshelf',
@@ -139,7 +139,7 @@ export class BookshelfHttpController implements HttpController {
             pathParams: updateBookshelfPathParamsDtoSchema,
           },
           response: {
-            [HttpStatusCode.ok]: {
+            [httpStatusCodes.ok]: {
               description: 'Bookshelf updated',
               schema: updateBookshelfResponseBodyDtoSchema,
             },
@@ -148,7 +148,7 @@ export class BookshelfHttpController implements HttpController {
         securityMode: SecurityMode.bearerToken,
       }),
       new HttpRoute({
-        method: HttpMethodName.patch,
+        method: httpMethodNames.patch,
         path: ':bookshelfId/images',
         description: "Upload bookshelf's image",
         handler: this.uploadBookshelfImage.bind(this),
@@ -157,7 +157,7 @@ export class BookshelfHttpController implements HttpController {
             pathParams: uploadBookshelfImagePathParamsDtoSchema,
           },
           response: {
-            [HttpStatusCode.ok]: {
+            [httpStatusCodes.ok]: {
               description: "Bookshelf's image uploaded",
               schema: uploadBookshelfImageResponseBodyDtoSchema,
             },
@@ -165,7 +165,7 @@ export class BookshelfHttpController implements HttpController {
         },
       }),
       new HttpRoute({
-        method: HttpMethodName.delete,
+        method: httpMethodNames.delete,
         path: '/:bookshelfId',
         handler: this.deleteBookshelf.bind(this),
         description: 'Delete bookshelf',
@@ -175,7 +175,7 @@ export class BookshelfHttpController implements HttpController {
             queryParams: deleteBookshelfQueryParamsDtoSchema,
           },
           response: {
-            [HttpStatusCode.noContent]: {
+            [httpStatusCodes.noContent]: {
               description: 'Bookshelf deleted',
               schema: deleteBookshelfResponseBodyDtoSchema,
             },
@@ -204,7 +204,7 @@ export class BookshelfHttpController implements HttpController {
     });
 
     return {
-      statusCode: HttpStatusCode.ok,
+      statusCode: httpStatusCodes.ok,
       body: {
         data: bookshelves.map((bookshelf) => this.mapBookshelfToDto(bookshelf)),
         metadata: {
@@ -231,7 +231,7 @@ export class BookshelfHttpController implements HttpController {
     });
 
     return {
-      statusCode: HttpStatusCode.ok,
+      statusCode: httpStatusCodes.ok,
       body: this.mapBookshelfToDto(bookshelf),
     };
   }
@@ -252,7 +252,7 @@ export class BookshelfHttpController implements HttpController {
     });
 
     return {
-      statusCode: HttpStatusCode.created,
+      statusCode: httpStatusCodes.created,
       body: this.mapBookshelfToDto(bookshelf),
     };
   }
@@ -276,7 +276,7 @@ export class BookshelfHttpController implements HttpController {
     });
 
     return {
-      statusCode: HttpStatusCode.ok,
+      statusCode: httpStatusCodes.ok,
       body: this.mapBookshelfToDto(bookshelf),
     };
   }
@@ -304,7 +304,7 @@ export class BookshelfHttpController implements HttpController {
     });
 
     return {
-      statusCode: HttpStatusCode.ok,
+      statusCode: httpStatusCodes.ok,
       body: this.mapBookshelfToDto(bookshelf),
     };
   }
@@ -327,7 +327,7 @@ export class BookshelfHttpController implements HttpController {
     });
 
     return {
-      statusCode: HttpStatusCode.noContent,
+      statusCode: httpStatusCodes.noContent,
       body: null,
     };
   }

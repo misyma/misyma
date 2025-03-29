@@ -5,7 +5,7 @@ export const symbols = {
   uuidService: Symbol('uuidService'),
   databaseClient: Symbol('databaseClient'),
   applicationHttpController: Symbol('applicationHttpController'),
-  sendGridService: Symbol('sendGridService'),
+  emailService: Symbol('emailService'),
   s3Client: Symbol('s3Client'),
   s3Service: Symbol('s3Service'),
 };
@@ -16,7 +16,7 @@ export const coreSymbols = {
   httpService: symbols.httpService,
   uuidService: symbols.uuidService,
   databaseClient: symbols.databaseClient,
-  sendGridService: symbols.sendGridService,
+  emailService: symbols.emailService,
   s3Client: symbols.s3Client,
   s3Service: symbols.s3Service,
 };

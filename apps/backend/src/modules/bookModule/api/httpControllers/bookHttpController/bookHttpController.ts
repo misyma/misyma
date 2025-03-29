@@ -17,11 +17,11 @@ import {
   type FindBooksQueryParamsDto,
 } from './schemas/findBooksSchema.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
-import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
+import { httpMethodNames } from '../../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
 import { type HttpCreatedResponse, type HttpOkResponse } from '../../../../../common/types/http/httpResponse.js';
 import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
-import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.js';
+import { httpStatusCodes } from '../../../../../common/types/http/httpStatusCode.js';
 import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
 import { type CreateBookCommandHandler } from '../../../application/commandHandlers/createBookCommandHandler/createBookCommandHandler.js';
@@ -43,14 +43,14 @@ export class BookHttpController implements HttpController {
   public getHttpRoutes(): HttpRoute[] {
     return [
       new HttpRoute({
-        method: HttpMethodName.post,
+        method: httpMethodNames.post,
         handler: this.createBook.bind(this),
         schema: {
           request: {
             body: createBookBodyDtoSchema,
           },
           response: {
-            [HttpStatusCode.created]: {
+            [httpStatusCodes.created]: {
               schema: createBookResponseBodyDtoSchema,
               description: 'Draft book created',
             },
@@ -60,7 +60,7 @@ export class BookHttpController implements HttpController {
         description: 'Create draft book',
       }),
       new HttpRoute({
-        method: HttpMethodName.get,
+        method: httpMethodNames.get,
         path: ':bookId',
         handler: this.findBook.bind(this),
         schema: {
@@ -68,7 +68,7 @@ export class BookHttpController implements HttpController {
             pathParams: findBookPathParamsDtoSchema,
           },
           response: {
-            [HttpStatusCode.ok]: {
+            [httpStatusCodes.ok]: {
               schema: findBookResponseBodyDtoSchema,
               description: 'Book found',
             },
@@ -78,7 +78,7 @@ export class BookHttpController implements HttpController {
         description: 'Find book by id',
       }),
       new HttpRoute({
-        method: HttpMethodName.get,
+        method: httpMethodNames.get,
         handler: this.findBooks.bind(this),
         description: 'Find books',
         schema: {
@@ -86,7 +86,7 @@ export class BookHttpController implements HttpController {
             queryParams: findBooksQueryParamsDtoSchema,
           },
           response: {
-            [HttpStatusCode.ok]: {
+            [httpStatusCodes.ok]: {
               schema: findBooksResponseBodyDtoSchema,
               description: 'Books found',
             },
@@ -113,7 +113,7 @@ export class BookHttpController implements HttpController {
     });
 
     return {
-      statusCode: HttpStatusCode.created,
+      statusCode: httpStatusCodes.created,
       body: mapBookToDto(book),
     };
   }
@@ -130,7 +130,7 @@ export class BookHttpController implements HttpController {
     const { book } = await this.findBookQueryHandler.execute({ bookId });
 
     return {
-      statusCode: HttpStatusCode.ok,
+      statusCode: httpStatusCodes.ok,
       body: mapBookToDto(book),
     };
   }
@@ -163,7 +163,7 @@ export class BookHttpController implements HttpController {
           total,
         },
       },
-      statusCode: HttpStatusCode.ok,
+      statusCode: httpStatusCodes.ok,
     };
   }
 }

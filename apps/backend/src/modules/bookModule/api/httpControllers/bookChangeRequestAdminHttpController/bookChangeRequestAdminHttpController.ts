@@ -25,11 +25,11 @@ import {
   findAdminBookChangeRequestsResponseBodyDtoSchema,
 } from './schemas/findBookChangeRequestsSchema.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
-import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
+import { httpMethodNames } from '../../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
 import { type HttpOkResponse, type HttpNoContentResponse } from '../../../../../common/types/http/httpResponse.js';
 import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
-import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.js';
+import { httpStatusCodes } from '../../../../../common/types/http/httpStatusCode.js';
 import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
 import { type ApplyBookChangeRequestCommandHandler } from '../../../application/commandHandlers/applyBookChangeRequestCommandHandler/applyBookChangeRequestCommandHandler.js';
@@ -51,7 +51,7 @@ export class BookChangeRequestAdminHttpController implements HttpController {
   public getHttpRoutes(): HttpRoute[] {
     return [
       new HttpRoute({
-        method: HttpMethodName.delete,
+        method: httpMethodNames.delete,
         path: ':bookChangeRequestId',
         handler: this.deleteBookChangeRequest.bind(this),
         schema: {
@@ -59,7 +59,7 @@ export class BookChangeRequestAdminHttpController implements HttpController {
             pathParams: deleteBookChangeRequestPathParamsDtoSchema,
           },
           response: {
-            [HttpStatusCode.noContent]: {
+            [httpStatusCodes.noContent]: {
               schema: deleteBookChangeRequestResponseBodyDtoSchema,
               description: 'BookChangeRequest deleted',
             },
@@ -69,7 +69,7 @@ export class BookChangeRequestAdminHttpController implements HttpController {
         description: 'Delete bookChangeRequest',
       }),
       new HttpRoute({
-        method: HttpMethodName.post,
+        method: httpMethodNames.post,
         path: ':bookChangeRequestId/apply',
         description: 'Apply a BookChangeRequest to the Book',
         handler: this.updateBookChangeRequest.bind(this),
@@ -78,7 +78,7 @@ export class BookChangeRequestAdminHttpController implements HttpController {
             pathParams: applyBookChangeRequestPathParamsDtoSchema,
           },
           response: {
-            [HttpStatusCode.ok]: {
+            [httpStatusCodes.ok]: {
               description: 'BookChangeRequest applied to the Book',
               schema: applyBookChangeRequestResponseBodyDtoSchema,
             },
@@ -86,7 +86,7 @@ export class BookChangeRequestAdminHttpController implements HttpController {
         },
       }),
       new HttpRoute({
-        method: HttpMethodName.get,
+        method: httpMethodNames.get,
         handler: this.findBookChangeRequests.bind(this),
         description: 'Find bookChangeRequests',
         schema: {
@@ -94,7 +94,7 @@ export class BookChangeRequestAdminHttpController implements HttpController {
             queryParams: findAdminBookChangeRequestsQueryParamsDtoSchema,
           },
           response: {
-            [HttpStatusCode.ok]: {
+            [httpStatusCodes.ok]: {
               schema: findAdminBookChangeRequestsResponseBodyDtoSchema,
               description: 'BookChangeRequests found',
             },
@@ -103,7 +103,7 @@ export class BookChangeRequestAdminHttpController implements HttpController {
         securityMode: SecurityMode.bearerToken,
       }),
       new HttpRoute({
-        method: HttpMethodName.get,
+        method: httpMethodNames.get,
         path: ':bookChangeRequestId',
         handler: this.findBookChangeRequest.bind(this),
         description: 'Find bookChangeRequest by id',
@@ -112,7 +112,7 @@ export class BookChangeRequestAdminHttpController implements HttpController {
             pathParams: findBookChangeRequestPathParamsDtoSchema,
           },
           response: {
-            [HttpStatusCode.ok]: {
+            [httpStatusCodes.ok]: {
               schema: findAdminBookChangeRequestResponseBodyDtoSchema,
               description: 'BookChangeRequest found',
             },
@@ -136,7 +136,7 @@ export class BookChangeRequestAdminHttpController implements HttpController {
     await this.deleteBookChangeRequestCommandHandler.execute({ bookChangeRequestId });
 
     return {
-      statusCode: HttpStatusCode.noContent,
+      statusCode: httpStatusCodes.noContent,
       body: null,
     };
   }
@@ -154,7 +154,7 @@ export class BookChangeRequestAdminHttpController implements HttpController {
     await this.applyBookChangeRequestCommandHandler.execute({ bookChangeRequestId });
 
     return {
-      statusCode: HttpStatusCode.ok,
+      statusCode: httpStatusCodes.ok,
       body: null,
     };
   }
@@ -184,7 +184,7 @@ export class BookChangeRequestAdminHttpController implements HttpController {
           total,
         },
       },
-      statusCode: HttpStatusCode.ok,
+      statusCode: httpStatusCodes.ok,
     };
   }
 
@@ -208,7 +208,7 @@ export class BookChangeRequestAdminHttpController implements HttpController {
       body: {
         data: bookChangeRequests[0] ? mapBookChangeRequestToDto(bookChangeRequests[0]) : undefined,
       },
-      statusCode: HttpStatusCode.ok,
+      statusCode: httpStatusCodes.ok,
     };
   }
 }

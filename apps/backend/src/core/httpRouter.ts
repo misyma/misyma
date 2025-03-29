@@ -4,8 +4,8 @@
 import { type FastifyInstance, type FastifyReply, type FastifyRequest, type FastifySchema } from 'fastify';
 
 import { type HttpController } from '../common/types/http/httpController.js';
-import { HttpHeader } from '../common/types/http/httpHeader.js';
-import { HttpMediaType } from '../common/types/http/httpMediaType.js';
+import { httpHeaders } from '../common/types/http/httpHeader.js';
+import { httpMediaTypes } from '../common/types/http/httpMediaType.js';
 import { type AttachedFile } from '../common/types/http/httpRequest.js';
 import { type HttpRouteSchema, type HttpRoute } from '../common/types/http/httpRoute.js';
 
@@ -78,7 +78,7 @@ export class HttpRouter {
         fastifyReply.status(statusCode);
 
         if (responseBody) {
-          fastifyReply.header(HttpHeader.contentType, HttpMediaType.applicationJson).send(responseBody);
+          fastifyReply.header(httpHeaders.contentType, httpMediaTypes.applicationJson).send(responseBody);
         } else {
           fastifyReply.send();
         }

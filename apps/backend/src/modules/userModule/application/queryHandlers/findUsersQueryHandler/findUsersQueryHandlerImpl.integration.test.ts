@@ -16,7 +16,7 @@ describe('FindUsersQueryHandlerImpl', () => {
   let userTestUtils: UserTestUtils;
 
   beforeEach(async () => {
-    const container = TestContainer.create();
+    const container = await TestContainer.create();
 
     queryHandler = container.get<FindUsersQueryHandler>(symbols.findUsersQueryHandler);
 

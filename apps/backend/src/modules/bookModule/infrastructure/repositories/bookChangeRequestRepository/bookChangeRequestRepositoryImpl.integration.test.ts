@@ -30,7 +30,7 @@ describe('BookChangeRequestRepositoryImpl', () => {
   let testUtils: TestUtils[];
 
   beforeEach(async () => {
-    const container = TestContainer.create();
+    const container = await TestContainer.create();
 
     bookChangeRequestRepository = container.get<BookChangeRequestRepository>(symbols.bookChangeRequestRepository);
 

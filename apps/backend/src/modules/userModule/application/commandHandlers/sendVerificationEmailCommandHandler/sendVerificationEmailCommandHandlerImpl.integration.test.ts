@@ -5,10 +5,10 @@ import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
+import { emailTypes } from '../../../../../common/types/emailType.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
-import { EmailEventDraft } from '../../../domain/entities/emailEvent/emailEventDraft.ts/emailEventDraft.js';
-import { EmailEventType } from '../../../domain/entities/emailEvent/types/emailEventType.js';
+import { EmailEventDraft } from '../../../domain/entities/emailEvent/emailEvent.js';
 import { symbols } from '../../../symbols.js';
 import { type UserTestUtils } from '../../../tests/utils/userTestUtils/userTestUtils.js';
 import { type EmailMessageBus } from '../../messageBuses/emailMessageBus/emailMessageBus.js';
@@ -23,7 +23,7 @@ describe('SendVerificationEmailCommandHandler', () => {
   let userTestUtils: UserTestUtils;
 
   beforeEach(async () => {
-    const container = TestContainer.create();
+    const container = await TestContainer.create();
 
     commandHandler = container.get<SendVerificationEmailCommandHandler>(symbols.sendVerificationEmailCommandHandler);
 
@@ -55,7 +55,7 @@ describe('SendVerificationEmailCommandHandler', () => {
 
     expect(sendEmailSpy).toHaveBeenCalledWith(
       new EmailEventDraft({
-        eventName: EmailEventType.verifyEmail,
+        eventName: emailTypes.verifyEmail,
         payload: {
           recipientEmail: user.email,
           emailVerificationLink: expect.any(String),

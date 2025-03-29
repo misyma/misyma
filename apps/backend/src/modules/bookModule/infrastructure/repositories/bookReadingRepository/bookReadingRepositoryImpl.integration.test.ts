@@ -39,7 +39,7 @@ describe('BookReadingRepositoryImpl', () => {
   let testUtils: TestUtils[];
 
   beforeEach(async () => {
-    const container = TestContainer.create();
+    const container = await TestContainer.create();
 
     repository = container.get<BookReadingRepository>(symbols.bookReadingRepository);
 

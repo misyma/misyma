@@ -25,7 +25,7 @@ import {
   type UpdateCollectionResponseBodyDto,
 } from './schemas/updateCollectionSchema.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
-import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
+import { httpMethodNames } from '../../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
 import {
   type HttpCreatedResponse,
@@ -33,7 +33,7 @@ import {
   type HttpOkResponse,
 } from '../../../../../common/types/http/httpResponse.js';
 import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
-import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.js';
+import { httpStatusCodes } from '../../../../../common/types/http/httpStatusCode.js';
 import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
 import { type CreateCollectionCommandHandler } from '../../../application/commandHandlers/createCollectionCommandHandler/createCollectionCommandHandler.js';
@@ -60,13 +60,13 @@ export class CollectionHttpController implements HttpController {
       new HttpRoute({
         description: 'Find collections',
         handler: this.findCollections.bind(this),
-        method: HttpMethodName.get,
+        method: httpMethodNames.get,
         schema: {
           request: {
             queryParams: findCollectionsQueryParamsDtoSchema,
           },
           response: {
-            [HttpStatusCode.ok]: {
+            [httpStatusCodes.ok]: {
               description: 'Collections found',
               schema: findCollectionsResponseBodyDtoSchema,
             },
@@ -77,13 +77,13 @@ export class CollectionHttpController implements HttpController {
       new HttpRoute({
         description: 'Create collection',
         handler: this.createCollection.bind(this),
-        method: HttpMethodName.post,
+        method: httpMethodNames.post,
         schema: {
           request: {
             body: createCollectionBodyDtoSchema,
           },
           response: {
-            [HttpStatusCode.created]: {
+            [httpStatusCodes.created]: {
               description: 'Collection created',
               schema: createCollectionResponseBodyDtoSchema,
             },
@@ -94,14 +94,14 @@ export class CollectionHttpController implements HttpController {
       new HttpRoute({
         description: 'Update Collection',
         handler: this.updateCollection.bind(this),
-        method: HttpMethodName.patch,
+        method: httpMethodNames.patch,
         schema: {
           request: {
             pathParams: updateCollectionPathParamsDtoSchema,
             body: updateCollectionBodyDtoSchema,
           },
           response: {
-            [HttpStatusCode.ok]: {
+            [httpStatusCodes.ok]: {
               description: 'Collection updated',
               schema: updateCollectionResponseBodyDtoSchema,
             },
@@ -113,13 +113,13 @@ export class CollectionHttpController implements HttpController {
       new HttpRoute({
         description: 'Delete collection',
         handler: this.deleteCollection.bind(this),
-        method: HttpMethodName.delete,
+        method: httpMethodNames.delete,
         schema: {
           request: {
             pathParams: deleteCollectionPathParamsDtoSchema,
           },
           response: {
-            [HttpStatusCode.noContent]: {
+            [httpStatusCodes.noContent]: {
               description: 'Collection deleted',
               schema: deleteCollectionResponseBodyDtoSchema,
             },
@@ -156,7 +156,7 @@ export class CollectionHttpController implements HttpController {
           total,
         },
       },
-      statusCode: HttpStatusCode.ok,
+      statusCode: httpStatusCodes.ok,
     };
   }
 
@@ -177,7 +177,7 @@ export class CollectionHttpController implements HttpController {
 
     return {
       body: this.mapCollectionToDto(collection),
-      statusCode: HttpStatusCode.created,
+      statusCode: httpStatusCodes.created,
     };
   }
 
@@ -199,7 +199,7 @@ export class CollectionHttpController implements HttpController {
 
     return {
       body: this.mapCollectionToDto(collection),
-      statusCode: HttpStatusCode.ok,
+      statusCode: httpStatusCodes.ok,
     };
   }
 
@@ -215,7 +215,7 @@ export class CollectionHttpController implements HttpController {
     await this.deleteCollectionCommandHandler.execute({ id: collectionId });
 
     return {
-      statusCode: HttpStatusCode.noContent,
+      statusCode: httpStatusCodes.noContent,
       body: null,
     };
   }

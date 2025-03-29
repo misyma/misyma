@@ -7,11 +7,11 @@ import {
   findUsersResponseBodyDtoSchema,
 } from './schemas/findUsersSchema.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
-import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
+import { httpMethodNames } from '../../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
 import { type HttpOkResponse } from '../../../../../common/types/http/httpResponse.js';
 import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
-import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.js';
+import { httpStatusCodes } from '../../../../../common/types/http/httpStatusCode.js';
 import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
 import { type FindUsersQueryHandler } from '../../../application/queryHandlers/findUsersQueryHandler/findUsersQueryHandler.js';
@@ -30,14 +30,14 @@ export class UserAdminHttpController implements HttpController {
   public getHttpRoutes(): HttpRoute[] {
     return [
       new HttpRoute({
-        method: HttpMethodName.get,
+        method: httpMethodNames.get,
         handler: this.findUsers.bind(this),
         schema: {
           request: {
             queryParams: findUsersQueryParamsDtoSchema,
           },
           response: {
-            [HttpStatusCode.ok]: {
+            [httpStatusCodes.ok]: {
               schema: findUsersResponseBodyDtoSchema,
               description: 'Users found',
             },
@@ -65,7 +65,7 @@ export class UserAdminHttpController implements HttpController {
     });
 
     return {
-      statusCode: HttpStatusCode.ok,
+      statusCode: httpStatusCodes.ok,
       body: {
         data: users.map(this.mapUserToUserDto),
         metadata: {

@@ -1,9 +1,9 @@
 import { checkHealthResponseBodySchema, type CheckHealthResponseBody } from './schemas/checkHealthSchema.js';
 import { type HttpController } from '../../../../common/types/http/httpController.js';
-import { HttpMethodName } from '../../../../common/types/http/httpMethodName.js';
+import { httpMethodNames } from '../../../../common/types/http/httpMethodName.js';
 import { type HttpOkResponse } from '../../../../common/types/http/httpResponse.js';
 import { HttpRoute } from '../../../../common/types/http/httpRoute.js';
-import { HttpStatusCode } from '../../../../common/types/http/httpStatusCode.js';
+import { httpStatusCodes } from '../../../../common/types/http/httpStatusCode.js';
 import { type DatabaseClient } from '../../../../libs/database/clients/databaseClient/databaseClient.js';
 
 export class ApplicationHttpController implements HttpController {
@@ -15,12 +15,12 @@ export class ApplicationHttpController implements HttpController {
   public getHttpRoutes(): HttpRoute[] {
     return [
       new HttpRoute({
-        method: HttpMethodName.get,
+        method: httpMethodNames.get,
         handler: this.checkHealth.bind(this),
         schema: {
           request: {},
           response: {
-            [HttpStatusCode.ok]: {
+            [httpStatusCodes.ok]: {
               schema: checkHealthResponseBodySchema,
               description: 'Application is healthy',
             },
@@ -37,7 +37,7 @@ export class ApplicationHttpController implements HttpController {
     const isApplicationHealthy = isDatabaseHealthy;
 
     return {
-      statusCode: HttpStatusCode.ok,
+      statusCode: httpStatusCodes.ok,
       body: {
         healthy: isApplicationHealthy,
         checks: [

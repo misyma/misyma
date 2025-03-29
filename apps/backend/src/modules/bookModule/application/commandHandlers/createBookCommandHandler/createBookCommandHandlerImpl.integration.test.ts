@@ -29,7 +29,7 @@ describe('CreateBookCommandHandler', () => {
   let testUtils: TestUtils[];
 
   beforeEach(async () => {
-    const container = TestContainer.create();
+    const container = await TestContainer.create();
 
     createBookCommandHandler = container.get<CreateBookCommandHandler>(symbols.createBookCommandHandler);
 

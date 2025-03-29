@@ -1,8 +1,5 @@
-export enum HttpMediaType {
-  applicationJson = 'application/json',
-  formUrlEncoded = 'application/x-www-form-urlencoded',
-  textXml = 'text/xml',
-  textCsv = 'text/csv',
-  textPlain = 'text/plain',
-  textHtml = 'text/html',
-}
+export const httpMediaTypes = {
+  applicationJson: 'application/json',
+} as const;
+
+export type HttpMediaType = (typeof httpMediaTypes)[keyof typeof httpMediaTypes];

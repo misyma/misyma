@@ -22,7 +22,7 @@ describe('EmailEventRepositoryImpl', () => {
   const emailEventTestFactory = new EmailEventTestFactory();
 
   beforeEach(async () => {
-    const container = TestContainer.create();
+    const container = await TestContainer.create();
 
     emailEventRepository = container.get<EmailEventRepository>(symbols.emailEventRepository);
 
