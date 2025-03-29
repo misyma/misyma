@@ -1,12 +1,13 @@
 import { beforeEach, describe, expect, it, afterEach } from 'vitest';
 
-import { type FindUsersQueryHandler } from './findUsersQueryHandler.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { symbols } from '../../../symbols.js';
 import { type UserTestUtils } from '../../../tests/utils/userTestUtils/userTestUtils.js';
+
+import { type FindUsersQueryHandler } from './findUsersQueryHandler.js';
 
 describe('FindUsersQueryHandlerImpl', () => {
   let queryHandler: FindUsersQueryHandler;

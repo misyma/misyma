@@ -1,6 +1,5 @@
 import { beforeEach, afterEach, expect, it, describe } from 'vitest';
 
-import { type FindBookChangeRequestsQueryHandler } from './findBookChangeRequestsQueryHandler.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { type TestUtils } from '../../../../../../tests/testUtils.js';
@@ -10,6 +9,8 @@ import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestU
 import { symbols } from '../../../symbols.js';
 import { type BookChangeRequestTestUtils } from '../../../tests/utils/bookChangeRequestTestUtils/bookChangeRequestTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
+
+import { type FindBookChangeRequestsQueryHandler } from './findBookChangeRequestsQueryHandler.js';
 
 describe('FindBookChangeRequestsQueryHandler', () => {
   let findBookChangeRequestsQueryHandler: FindBookChangeRequestsQueryHandler;

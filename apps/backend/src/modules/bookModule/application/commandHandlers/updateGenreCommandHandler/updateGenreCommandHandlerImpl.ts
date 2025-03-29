@@ -1,12 +1,13 @@
+import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
+import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
+import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
+import { type GenreRepository } from '../../../domain/repositories/genreRepository/genreRepository.js';
+
 import {
   type UpdateGenreCommandHandler,
   type UpdateGenrePayload,
   type UpdateGenreResult,
 } from './updateGenreCommandHandler.js';
-import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
-import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
-import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
-import { type GenreRepository } from '../../../domain/repositories/genreRepository/genreRepository.js';
 
 export class UpdateGenreCommandHandlerImpl implements UpdateGenreCommandHandler {
   public constructor(

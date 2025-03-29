@@ -1,7 +1,8 @@
-import { UserDatabaseMigrationSource } from './userDatabaseMigrationSource.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type DependencyInjectionContainer } from '../../../../../libs/dependencyInjection/dependencyInjectionContainer.js';
+
+import { UserDatabaseMigrationSource } from './userDatabaseMigrationSource.js';
 
 export class UserDatabaseManager {
   public static async bootstrapDatabase(container: DependencyInjectionContainer): Promise<void> {

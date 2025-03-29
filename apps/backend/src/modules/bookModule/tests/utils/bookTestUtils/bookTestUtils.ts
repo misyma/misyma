@@ -63,7 +63,7 @@ export class BookTestUtils extends TestUtils {
   public async findBookAuthors(payload: FindBookAuthorsPayload): Promise<BookAuthorRawEntity[]> {
     const { bookId } = payload;
 
-    const rawEntities = await this.databaseClient(bookAuthorTable).select('*').where({
+    const rawEntities = await this.databaseClient<BookAuthorRawEntity>(bookAuthorTable).select('*').where({
       bookId,
     });
 
@@ -112,6 +112,6 @@ export class BookTestUtils extends TestUtils {
       return undefined;
     }
 
-    return rawEntity;
+    return rawEntity as BookRawEntity;
   }
 }

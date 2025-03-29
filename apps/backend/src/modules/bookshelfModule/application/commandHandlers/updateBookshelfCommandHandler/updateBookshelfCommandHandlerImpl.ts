@@ -1,12 +1,13 @@
+import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
+import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
+import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
+import { type BookshelfRepository } from '../../../domain/repositories/bookshelfRepository/bookshelfRepository.js';
+
 import {
   type UpdateBookshelfCommandHandler,
   type UpdateBookshelfPayload,
   type UpdateBookshelfResult,
 } from './updateBookshelfCommandHandler.js';
-import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
-import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
-import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
-import { type BookshelfRepository } from '../../../domain/repositories/bookshelfRepository/bookshelfRepository.js';
 
 export class UpdateBookshelfCommandHandlerImpl implements UpdateBookshelfCommandHandler {
   public constructor(

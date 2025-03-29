@@ -1,6 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { type FindCollectionsQueryHandler } from './findCollectionsQueryHandler.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { type TestUtils } from '../../../../../../tests/testUtils.js';
@@ -9,6 +8,8 @@ import { type DatabaseClient } from '../../../../../libs/database/clients/databa
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { symbols } from '../../../symbols.js';
 import { type CollectionTestUtils } from '../../../tests/utils/collectionTestUtils/collectionTestUtils.js';
+
+import { type FindCollectionsQueryHandler } from './findCollectionsQueryHandler.js';
 
 describe('FindCollectionsQueryHandlerImpl', () => {
   let queryHandler: FindCollectionsQueryHandler;

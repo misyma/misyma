@@ -27,7 +27,7 @@ export class ScrapeNationalLibraryGenresAction {
     let url = 'https://data.bn.org.pl/api/institutions/bibs.json?language=polski&limit=100&formOfWork=Książki';
 
     if (initialFrom) {
-      url += `&sinceId=${initialFrom}`;
+      url += `&sinceId=${String(initialFrom)}`;
     }
 
     while (url) {
@@ -44,7 +44,7 @@ export class ScrapeNationalLibraryGenresAction {
       i += 1;
 
       this.logger.info({
-        message: `Processed ${i * 100} books.`,
+        message: `Processed ${(i * 100).toString()} books.`,
         url,
       });
 

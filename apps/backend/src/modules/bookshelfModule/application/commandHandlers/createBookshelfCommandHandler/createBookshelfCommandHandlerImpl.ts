@@ -1,15 +1,16 @@
 import { BookshelfType } from '@common/contracts';
 
-import {
-  type CreateBookshelfCommandHandler,
-  type CreateBookshelfPayload,
-  type CreateBookshelfResult,
-} from './createBookshelfCommandHandler.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type UserRepository } from '../../../../userModule/domain/repositories/userRepository/userRepository.js';
 import { type BookshelfRepository } from '../../../domain/repositories/bookshelfRepository/bookshelfRepository.js';
+
+import {
+  type CreateBookshelfCommandHandler,
+  type CreateBookshelfPayload,
+  type CreateBookshelfResult,
+} from './createBookshelfCommandHandler.js';
 
 export class CreateBookshelfCommandHandlerImpl implements CreateBookshelfCommandHandler {
   public constructor(

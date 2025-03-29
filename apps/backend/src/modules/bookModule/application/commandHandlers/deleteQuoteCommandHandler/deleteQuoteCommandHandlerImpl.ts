@@ -1,9 +1,10 @@
-import { type DeleteQuoteCommandHandler, type DeleteQuotePayload } from './deleteQuoteCommandHandler.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type QuoteRepository } from '../../../domain/repositories/quoteRepository/quoteRepository.js';
 import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
+
+import { type DeleteQuoteCommandHandler, type DeleteQuotePayload } from './deleteQuoteCommandHandler.js';
 
 export class DeleteQuoteCommandHandlerImpl implements DeleteQuoteCommandHandler {
   public constructor(

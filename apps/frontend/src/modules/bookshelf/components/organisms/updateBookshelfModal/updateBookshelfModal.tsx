@@ -64,7 +64,7 @@ export const UpdateBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, op
           name: props.name,
           bookshelfId,
         });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -78,7 +78,7 @@ export const UpdateBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, op
             title: 'Coś poszło nie tak z wysyłaniem obrazka półki.',
           },
         });
-      } catch (error) {
+      } catch {
         return;
       }
     }

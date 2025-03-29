@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { FindUserBooksQueryHandlerImpl } from './findUserBooksQueryHandlerImpl.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type BookshelfRepository } from '../../../../bookshelfModule/domain/repositories/bookshelfRepository/bookshelfRepository.js';
@@ -9,6 +8,8 @@ import { type CollectionRepository } from '../../../domain/repositories/collecti
 import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
 import { CollectionTestFactory } from '../../../tests/factories/collectionTestFactory/collectionTestFactory.js';
 import { UserBookTestFactory } from '../../../tests/factories/userBookTestFactory/userBookTestFactory.js';
+
+import { FindUserBooksQueryHandlerImpl } from './findUserBooksQueryHandlerImpl.js';
 
 describe('FindUserBooksQueryHandlerImpl', () => {
   const bookshelfTestFactory = new BookshelfTestFactory();

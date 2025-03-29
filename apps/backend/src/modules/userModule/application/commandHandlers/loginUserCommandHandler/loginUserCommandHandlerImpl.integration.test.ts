@@ -1,6 +1,5 @@
 import { beforeEach, afterEach, expect, it, describe } from 'vitest';
 
-import { type LoginUserCommandHandler } from './loginUserCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { type Config } from '../../../../../core/config.js';
@@ -14,6 +13,8 @@ import { symbols } from '../../../symbols.js';
 import { UserTestFactory } from '../../../tests/factories/userTestFactory/userTestFactory.js';
 import { type UserTestUtils } from '../../../tests/utils/userTestUtils/userTestUtils.js';
 import { type HashService } from '../../services/hashService/hashService.js';
+
+import { type LoginUserCommandHandler } from './loginUserCommandHandler.js';
 
 describe('LoginUserCommandHandler', () => {
   let loginUserCommandHandler: LoginUserCommandHandler;

@@ -1,6 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { type UpdateBookCommandHandler } from './updateBookCommandHandler.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
@@ -11,6 +10,8 @@ import { type DatabaseClient } from '../../../../../libs/database/clients/databa
 import { symbols } from '../../../symbols.js';
 import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
+
+import { type UpdateBookCommandHandler } from './updateBookCommandHandler.js';
 
 describe('UpdateBookCommandHandlerImpl', () => {
   let commandHandler: UpdateBookCommandHandler;
@@ -148,6 +149,6 @@ describe('UpdateBookCommandHandlerImpl', () => {
 
     expect(updatedBook.getAuthors()).toHaveLength(1);
 
-    expect(updatedBook.getAuthors()?.[0]?.getId()).toBe(updatedAuthor.id);
+    expect(updatedBook.getAuthors()[0]?.getId()).toBe(updatedAuthor.id);
   });
 });

@@ -1,5 +1,17 @@
 import { FindAuthorsSortField } from '@common/contracts';
 
+import { type HttpController } from '../../../../../common/types/http/httpController.js';
+import { httpMethodNames } from '../../../../../common/types/http/httpMethodName.js';
+import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
+import { type HttpCreatedResponse, type HttpOkResponse } from '../../../../../common/types/http/httpResponse.js';
+import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
+import { httpStatusCodes } from '../../../../../common/types/http/httpStatusCode.js';
+import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
+import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
+import { type CreateAuthorCommandHandler } from '../../../application/commandHandlers/createAuthorCommandHandler/createAuthorCommandHandler.js';
+import { type FindAuthorsQueryHandler } from '../../../application/queryHandlers/findAuthorsQueryHandler/findAuthorsQueryHandler.js';
+import { mapAuthorToDto } from '../common/mappers/authorDtoMapper.js';
+
 import {
   createAuthorBodyDtoSchema,
   type CreateAuthorBodyDto,
@@ -12,17 +24,6 @@ import {
   findAuthorsQueryParamsDtoSchema,
   findAuthorsResponseBodyDtoSchema,
 } from './schemas/findAuthorsSchema.js';
-import { type HttpController } from '../../../../../common/types/http/httpController.js';
-import { httpMethodNames } from '../../../../../common/types/http/httpMethodName.js';
-import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
-import { type HttpCreatedResponse, type HttpOkResponse } from '../../../../../common/types/http/httpResponse.js';
-import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
-import { httpStatusCodes } from '../../../../../common/types/http/httpStatusCode.js';
-import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
-import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
-import { type CreateAuthorCommandHandler } from '../../../application/commandHandlers/createAuthorCommandHandler/createAuthorCommandHandler.js';
-import { type FindAuthorsQueryHandler } from '../../../application/queryHandlers/findAuthorsQueryHandler/findAuthorsQueryHandler.js';
-import { mapAuthorToDto } from '../common/mappers/authorDtoMapper.js';
 
 export class AuthorHttpController implements HttpController {
   public readonly basePath = '/authors';

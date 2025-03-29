@@ -1,7 +1,8 @@
-import { type DeleteUserCommandHandler, type DeleteUserCommandHandlerPayload } from './deleteUserCommandHandler.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
+
+import { type DeleteUserCommandHandler, type DeleteUserCommandHandlerPayload } from './deleteUserCommandHandler.js';
 
 export class DeleteUserCommandHandlerImpl implements DeleteUserCommandHandler {
   public constructor(

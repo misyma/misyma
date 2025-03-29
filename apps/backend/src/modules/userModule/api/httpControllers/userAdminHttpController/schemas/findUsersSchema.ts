@@ -1,6 +1,5 @@
-import { type Static, Type } from '@sinclair/typebox';
-
 import type * as contracts from '@common/contracts';
+import { type Static, Type } from '@sinclair/typebox';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 import { userDtoSchema } from '../../common/userDto.js';

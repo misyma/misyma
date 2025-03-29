@@ -1,6 +1,7 @@
-import { type AuthorMapper } from './authorMapper.js';
 import { Author } from '../../../../../bookModule/domain/entities/author/author.js';
 import { type AuthorRawEntity } from '../../../databases/bookDatabase/tables/authorTable/authorRawEntity.js';
+
+import { type AuthorMapper } from './authorMapper.js';
 
 export class AuthorMapperImpl implements AuthorMapper {
   public mapToDomain(entity: AuthorRawEntity): Author {

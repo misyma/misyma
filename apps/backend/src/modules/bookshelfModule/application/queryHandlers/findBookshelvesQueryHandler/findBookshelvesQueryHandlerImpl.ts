@@ -1,8 +1,3 @@
-import {
-  type FindBookshelvesQueryHandlerPayload,
-  type FindBookshelvesQueryHandler,
-  type FindBookshelvesQueryHandlerResult,
-} from './findBookshelvesQueryHandler.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type UserRepository } from '../../../../userModule/domain/repositories/userRepository/userRepository.js';
 import {
@@ -10,6 +5,12 @@ import {
   type BookshelfRepository,
   type CountBookshelvesPayload,
 } from '../../../domain/repositories/bookshelfRepository/bookshelfRepository.js';
+
+import {
+  type FindBookshelvesQueryHandlerPayload,
+  type FindBookshelvesQueryHandler,
+  type FindBookshelvesQueryHandlerResult,
+} from './findBookshelvesQueryHandler.js';
 
 export class FindBookshelvesQueryHandlerImpl implements FindBookshelvesQueryHandler {
   public constructor(

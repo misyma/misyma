@@ -1,13 +1,14 @@
 import { type AxiosResponse } from 'axios';
 import { type XMLParser } from 'fast-xml-parser';
 
-import { type EisbnResponseBody } from './eisbnBook.js';
-import { type EisbnBookMapper } from './eIsbnBookMapper.js';
 import { type EisbnClient } from '../../infrastructure/clients/eisbnClient.js';
 import { type BookDraft } from '../../infrastructure/entities/book/book.js';
 import { type AuthorRepository } from '../../infrastructure/repositories/authorRepository/authorRepository.js';
 import { type BookRepository } from '../../infrastructure/repositories/bookRepository/bookRepository.js';
 import { type LoggerService } from '../../libs/logger/loggerService.js';
+
+import { type EisbnResponseBody } from './eisbnBook.js';
+import { type EisbnBookMapper } from './eIsbnBookMapper.js';
 
 export interface ScrapeEisbnBooksActionPayload {
   readonly from: number | undefined;
@@ -40,9 +41,13 @@ export class ScrapeEisbnBooksAction {
     while (idFrom) {
       const response = await this.fetchEIsbnBooks(idFrom);
 
+      if (typeof response.data !== 'string') {
+        throw new Error('Invalid response data type, expected a string.');
+      }
+
       const parsedResponseBody = this.xmlParser.parse(response.data) as EisbnResponseBody;
 
-      const eisbnBooks = parsedResponseBody?.ONIXMessage?.Product;
+      const eisbnBooks = parsedResponseBody.ONIXMessage?.Product;
 
       if (!Array.isArray(eisbnBooks)) {
         this.logger.error({
@@ -55,7 +60,7 @@ export class ScrapeEisbnBooksAction {
 
       const bookDrafts = eisbnBooks.map((book) => this.eIsbnMapper.mapBook(book)).filter((book) => book !== undefined);
 
-      for await (const bookDraft of bookDrafts) {
+      for (const bookDraft of bookDrafts) {
         await this.saveBook(bookDraft);
       }
 
@@ -64,7 +69,7 @@ export class ScrapeEisbnBooksAction {
       i += 1;
 
       this.logger.info({
-        message: `Processed ${i * 100} books.`,
+        message: `Processed ${(i * 100).toString()} books.`,
         idFrom,
         savedBooks: savedBooksCount,
       });
@@ -114,7 +119,7 @@ export class ScrapeEisbnBooksAction {
 
     const authorIds: string[] = [];
 
-    for await (const authorName of bookDraft.authorNames) {
+    for (const authorName of bookDraft.authorNames) {
       let author = await this.authorRepository.findAuthor({ name: authorName });
 
       if (!author) {

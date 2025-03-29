@@ -175,7 +175,7 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
         <FormField
           name="authorIds"
           control={stepOneForm.control}
-          render={({}) => (
+          render={() => (
             <FormItem className="flex flex-col">
               <div className="flex gap-2 items-center">
                 <FormLabel>Autor</FormLabel>

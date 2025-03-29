@@ -1,7 +1,8 @@
 import { beforeEach, expect, describe, it } from 'vitest';
 
-import { BorrowingMapperImpl } from './borrowingMapperImpl.js';
 import { BorrowingTestFactory } from '../../../../tests/factories/borrowingTestFactory/borrowingTestFactory.js';
+
+import { BorrowingMapperImpl } from './borrowingMapperImpl.js';
 
 describe('BorrowingMapperImpl', () => {
   let borrowingMapperImpl: BorrowingMapperImpl;

@@ -1,8 +1,3 @@
-import {
-  type FindBorrowingsQueryHandlerPayload,
-  type FindBorrowingsQueryHandler,
-  type FindBorrowingsQueryHandlerResult,
-} from './findBorrowingsQueryHandler.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import {
@@ -10,6 +5,12 @@ import {
   type BorrowingRepository,
 } from '../../../domain/repositories/borrowingRepository/borrowingRepository.js';
 import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
+
+import {
+  type FindBorrowingsQueryHandlerPayload,
+  type FindBorrowingsQueryHandler,
+  type FindBorrowingsQueryHandlerResult,
+} from './findBorrowingsQueryHandler.js';
 
 export class FindBorrowingsQueryHandlerImpl implements FindBorrowingsQueryHandler {
   public constructor(

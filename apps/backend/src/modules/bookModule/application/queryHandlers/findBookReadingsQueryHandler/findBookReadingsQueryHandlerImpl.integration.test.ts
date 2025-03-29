@@ -1,6 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { type FindBookReadingsQueryHandler } from './findBookReadingsQueryHandler.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
@@ -15,6 +14,8 @@ import { type BookReadingTestUtils } from '../../../tests/utils/bookReadingTestU
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
 import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
+
+import { type FindBookReadingsQueryHandler } from './findBookReadingsQueryHandler.js';
 
 describe('FindBookReadingsQueryHandlerImpl', () => {
   let queryHandler: FindBookReadingsQueryHandler;

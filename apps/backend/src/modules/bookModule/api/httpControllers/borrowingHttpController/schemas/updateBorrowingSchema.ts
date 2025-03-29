@@ -1,9 +1,9 @@
+import type * as contracts from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
-import type * as contracts from '@common/contracts';
+import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 import { borrowingBorrowerSchema, borrowingDtoSchema } from './borrowingDto.js';
-import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const updateBorrowingPathParamsDtoSchema = Type.Object({
   borrowingId: Type.String({ format: 'uuid' }),

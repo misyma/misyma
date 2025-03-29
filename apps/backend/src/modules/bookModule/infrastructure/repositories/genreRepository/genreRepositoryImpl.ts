@@ -1,4 +1,3 @@
-import { type GenreMapper } from './genreMapper/genreMapper.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
@@ -12,6 +11,8 @@ import {
 } from '../../../domain/repositories/genreRepository/genreRepository.js';
 import { type GenreRawEntity } from '../../databases/bookDatabase/tables/genreTable/genreRawEntity.js';
 import { genreTable } from '../../databases/bookDatabase/tables/genreTable/genreTable.js';
+
+import { type GenreMapper } from './genreMapper/genreMapper.js';
 
 type CreateGenrePayload = { genre: GenreState };
 

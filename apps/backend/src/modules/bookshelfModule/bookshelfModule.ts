@@ -1,3 +1,18 @@
+import { type Config } from '../../core/config.js';
+import { coreSymbols } from '../../core/symbols.js';
+import { type DatabaseClient } from '../../libs/database/clients/databaseClient/databaseClient.js';
+import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
+import { type DependencyInjectionModule } from '../../libs/dependencyInjection/dependencyInjectionModule.js';
+import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
+import { type S3Service } from '../../libs/s3/services/s3Service/s3Service.js';
+import { type UuidService } from '../../libs/uuid/services/uuidService/uuidService.js';
+import { type AccessControlService } from '../authModule/application/services/accessControlService/accessControlService.js';
+import { authSymbols } from '../authModule/symbols.js';
+import { type UserBookRepository } from '../bookModule/domain/repositories/userBookRepository/userBookRepository.js';
+import { bookSymbols } from '../bookModule/symbols.js';
+import { type UserRepository } from '../userModule/domain/repositories/userRepository/userRepository.js';
+import { userSymbols } from '../userModule/symbols.js';
+
 import { BookshelfHttpController } from './api/httpControllers/bookshelfHttpController/bookshelfHttpController.js';
 import { type CreateBookshelfCommandHandler } from './application/commandHandlers/createBookshelfCommandHandler/createBookshelfCommandHandler.js';
 import { CreateBookshelfCommandHandlerImpl } from './application/commandHandlers/createBookshelfCommandHandler/createBookshelfCommandHandlerImpl.js';
@@ -5,6 +20,8 @@ import { type DeleteBookshelfCommandHandler } from './application/commandHandler
 import { DeleteBookshelfCommandHandlerImpl } from './application/commandHandlers/deleteBookshelfCommandHandler/deleteBookshelfCommandHandlerImpl.js';
 import { type UpdateBookshelfCommandHandler } from './application/commandHandlers/updateBookshelfCommandHandler/updateBookshelfCommandHandler.js';
 import { UpdateBookshelfCommandHandlerImpl } from './application/commandHandlers/updateBookshelfCommandHandler/updateBookshelfCommandHandlerImpl.js';
+import { type UploadBookshelfImageCommandHandler } from './application/commandHandlers/uploadBookshelfImageCommandHandler/uploadBookshelfImageCommandHandler.js';
+import { UploadBookshelfImageCommandHandlerImpl } from './application/commandHandlers/uploadBookshelfImageCommandHandler/uploadBookshelfImageCommandHandlerImpl.js';
 import { type FindBookshelfByIdQueryHandler } from './application/queryHandlers/findBookshelfByIdQueryHandler/findBookshelfByIdQueryHandler.js';
 import { FindBookshelfByIdQueryHandlerImpl } from './application/queryHandlers/findBookshelfByIdQueryHandler/findBookshelfByIdQueryHandlerImpl.js';
 import { type FindBookshelvesQueryHandler } from './application/queryHandlers/findBookshelvesQueryHandler/findBookshelvesQueryHandler.js';
@@ -14,22 +31,6 @@ import { type BookshelfMapper } from './infrastructure/repositories/bookshelfRep
 import { BookshelfMapperImpl } from './infrastructure/repositories/bookshelfRepository/bookshelfMapper/bookshelfMapperImpl.js';
 import { BookshelfRepositoryImpl } from './infrastructure/repositories/bookshelfRepository/bookshelfRepositoryImpl.js';
 import { symbols } from './symbols.js';
-import { type Config } from '../../core/config.js';
-import { coreSymbols } from '../../core/symbols.js';
-import { type DatabaseClient } from '../../libs/database/clients/databaseClient/databaseClient.js';
-import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
-import { type DependencyInjectionModule } from '../../libs/dependencyInjection/dependencyInjectionModule.js';
-import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
-import { type UuidService } from '../../libs/uuid/services/uuidService/uuidService.js';
-import { type AccessControlService } from '../authModule/application/services/accessControlService/accessControlService.js';
-import { authSymbols } from '../authModule/symbols.js';
-import { type UserRepository } from '../userModule/domain/repositories/userRepository/userRepository.js';
-import { userSymbols } from '../userModule/symbols.js';
-import { type UploadBookshelfImageCommandHandler } from './application/commandHandlers/uploadBookshelfImageCommandHandler/uploadBookshelfImageCommandHandler.js';
-import { UploadBookshelfImageCommandHandlerImpl } from './application/commandHandlers/uploadBookshelfImageCommandHandler/uploadBookshelfImageCommandHandlerImpl.js';
-import { type S3Service } from '../../libs/s3/services/s3Service/s3Service.js';
-import { type UserBookRepository } from '../bookModule/domain/repositories/userBookRepository/userBookRepository.js';
-import { bookSymbols } from '../bookModule/symbols.js';
 
 export class BookshelfModule implements DependencyInjectionModule {
   public declareBindings(container: DependencyInjectionContainer): void {

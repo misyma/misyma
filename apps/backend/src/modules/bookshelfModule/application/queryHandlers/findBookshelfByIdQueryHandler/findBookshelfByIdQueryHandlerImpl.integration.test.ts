@@ -1,6 +1,5 @@
 import { describe, it, beforeEach, expect, afterEach } from 'vitest';
 
-import { type FindBookshelfByIdQueryHandler } from './findBookshelfByIdQueryHandler.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
@@ -12,6 +11,8 @@ import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestU
 import { Bookshelf } from '../../../domain/entities/bookshelf/bookshelf.js';
 import { symbols } from '../../../symbols.js';
 import { type BookshelfTestUtils } from '../../../tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
+
+import { type FindBookshelfByIdQueryHandler } from './findBookshelfByIdQueryHandler.js';
 
 describe('FindBookshelfByIdQueryHandler', () => {
   let queryHandler: FindBookshelfByIdQueryHandler;

@@ -1,7 +1,8 @@
 import { beforeEach, expect, describe, it } from 'vitest';
 
-import { CollectionMapperImpl } from './collectionMapperImpl.js';
 import { CollectionTestFactory } from '../../../../tests/factories/collectionTestFactory/collectionTestFactory.js';
+
+import { CollectionMapperImpl } from './collectionMapperImpl.js';
 
 describe('CollectionMapperImpl', () => {
   let collectionMapperImpl: CollectionMapperImpl;

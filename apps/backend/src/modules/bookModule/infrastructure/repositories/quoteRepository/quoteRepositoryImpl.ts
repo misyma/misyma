@@ -1,4 +1,3 @@
-import { type QuoteMapper } from './quoteMapper/quoteMapper.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
@@ -19,6 +18,8 @@ import { type QuoteRawEntity } from '../../databases/bookDatabase/tables/quoteTa
 import { quoteTable } from '../../databases/bookDatabase/tables/quoteTable/quoteTable.js';
 import { type QuoteWithJoinsRawEntity } from '../../databases/bookDatabase/tables/quoteTable/quoteWithJoinsRawEntity.js';
 import { userBookTable } from '../../databases/bookDatabase/tables/userBookTable/userBookTable.js';
+
+import { type QuoteMapper } from './quoteMapper/quoteMapper.js';
 
 type CreateQuotePayload = { quote: QuoteState };
 

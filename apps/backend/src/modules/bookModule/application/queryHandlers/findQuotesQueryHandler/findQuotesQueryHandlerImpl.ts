@@ -1,12 +1,13 @@
 import {
+  type FindQuotesPayload,
+  type QuoteRepository,
+} from '../../../domain/repositories/quoteRepository/quoteRepository.js';
+
+import {
   type FindQuotesQueryHandlerPayload,
   type FindQuotesQueryHandler,
   type FindQuotesQueryHandlerResult,
 } from './findQuotesQueryHandler.js';
-import {
-  type FindQuotesPayload,
-  type QuoteRepository,
-} from '../../../domain/repositories/quoteRepository/quoteRepository.js';
 
 export class FindQuotesQueryHandlerImpl implements FindQuotesQueryHandler {
   public constructor(private readonly quoteRepository: QuoteRepository) {}

@@ -1,11 +1,12 @@
 import { beforeEach, expect, describe, it } from 'vitest';
 
-import { UserBookMapperImpl } from './userBookMapperImpl.js';
 import { Generator } from '../../../../../../../tests/generator.js';
 import { Genre } from '../../../../domain/entities/genre/genre.js';
 import { BookTestFactory } from '../../../../tests/factories/bookTestFactory/bookTestFactory.js';
 import { GenreTestFactory } from '../../../../tests/factories/genreTestFactory/genreTestFactory.js';
 import { UserBookTestFactory } from '../../../../tests/factories/userBookTestFactory/userBookTestFactory.js';
+
+import { UserBookMapperImpl } from './userBookMapperImpl.js';
 
 describe('UserBookMapperImpl', () => {
   let userBookMapperImpl: UserBookMapperImpl;

@@ -1,9 +1,10 @@
+import { type GenreRepository } from '../../../domain/repositories/genreRepository/genreRepository.js';
+
 import {
   type FindGenresResult,
   type FindGenresQueryHandler,
   type FindGenresPayload,
 } from './findGenresQueryHandler.js';
-import { type GenreRepository } from '../../../domain/repositories/genreRepository/genreRepository.js';
 
 export class FindGenresQueryHandlerImpl implements FindGenresQueryHandler {
   public constructor(private readonly genreRepository: GenreRepository) {}

@@ -1,6 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { type DeleteCollectionCommandHandler } from './deleteCollectionCommandHandler.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
@@ -11,6 +10,8 @@ import { type DatabaseClient } from '../../../../../libs/database/clients/databa
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { symbols } from '../../../symbols.js';
 import { type CollectionTestUtils } from '../../../tests/utils/collectionTestUtils/collectionTestUtils.js';
+
+import { type DeleteCollectionCommandHandler } from './deleteCollectionCommandHandler.js';
 
 describe('DeleteCollectionCommandHandler', () => {
   let commandHandler: DeleteCollectionCommandHandler;

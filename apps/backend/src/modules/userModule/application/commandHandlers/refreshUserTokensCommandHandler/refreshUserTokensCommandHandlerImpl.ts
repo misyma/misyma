@@ -1,8 +1,3 @@
-import {
-  type RefreshUserTokensCommandHandler,
-  type RefreshUserTokensCommandHandlerPayload,
-  type RefreshUserTokensCommandHandlerResult,
-} from './refreshUserTokensCommandHandler.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { TokenType } from '../../../../../common/types/tokenType.js';
 import { type Config } from '../../../../../core/config.js';
@@ -10,6 +5,12 @@ import { type LoggerService } from '../../../../../libs/logger/services/loggerSe
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { type BlacklistTokenRepository } from '../../../domain/repositories/blacklistTokenRepository/blacklistTokenRepository.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
+
+import {
+  type RefreshUserTokensCommandHandler,
+  type RefreshUserTokensCommandHandlerPayload,
+  type RefreshUserTokensCommandHandlerResult,
+} from './refreshUserTokensCommandHandler.js';
 
 export class RefreshUserTokensCommandHandlerImpl implements RefreshUserTokensCommandHandler {
   public constructor(

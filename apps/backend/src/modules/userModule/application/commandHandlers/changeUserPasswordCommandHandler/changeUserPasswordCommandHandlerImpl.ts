@@ -1,7 +1,3 @@
-import {
-  type ChangeUserPasswordCommandHandler,
-  type ChangeUserPasswordCommandHandlerPayload,
-} from './changeUserPasswordCommandHandler.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { TokenType } from '../../../../../common/types/tokenType.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
@@ -10,6 +6,11 @@ import { type BlacklistTokenRepository } from '../../../domain/repositories/blac
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
 import { type HashService } from '../../services/hashService/hashService.js';
 import { type PasswordValidationService } from '../../services/passwordValidationService/passwordValidationService.js';
+
+import {
+  type ChangeUserPasswordCommandHandler,
+  type ChangeUserPasswordCommandHandlerPayload,
+} from './changeUserPasswordCommandHandler.js';
 
 export class ChangeUserPasswordCommandHandlerImpl implements ChangeUserPasswordCommandHandler {
   public constructor(

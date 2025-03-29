@@ -1,3 +1,21 @@
+import { type HttpController } from '../../../../../common/types/http/httpController.js';
+import { httpMethodNames } from '../../../../../common/types/http/httpMethodName.js';
+import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
+import {
+  type HttpNoContentResponse,
+  type HttpCreatedResponse,
+  type HttpOkResponse,
+} from '../../../../../common/types/http/httpResponse.js';
+import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
+import { httpStatusCodes } from '../../../../../common/types/http/httpStatusCode.js';
+import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
+import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
+import { type CreateBookReadingCommandHandler } from '../../../application/commandHandlers/createBookReadingCommandHandler/createBookReadingCommandHandler.js';
+import { type DeleteBookReadingCommandHandler } from '../../../application/commandHandlers/deleteBookReadingCommandHandler/deleteBookReadingCommandHandler.js';
+import { type UpdateBookReadingCommandHandler } from '../../../application/commandHandlers/updateBookReadingCommandHandler/updateBookReadingCommandHandler.js';
+import { type FindBookReadingsQueryHandler } from '../../../application/queryHandlers/findBookReadingsQueryHandler/findBookReadingsQueryHandler.js';
+import { type BookReading } from '../../../domain/entities/bookReading/bookReading.js';
+
 import { type BookReadingDto } from './schemas/bookReadingDto.js';
 import {
   type CreateBookReadingBodyDto,
@@ -29,23 +47,6 @@ import {
   type UpdateBookReadingResponseBodyDto,
   updateBookReadingResponseBodyDtoSchema,
 } from './schemas/updateBookReadingSchema.js';
-import { type HttpController } from '../../../../../common/types/http/httpController.js';
-import { httpMethodNames } from '../../../../../common/types/http/httpMethodName.js';
-import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
-import {
-  type HttpNoContentResponse,
-  type HttpCreatedResponse,
-  type HttpOkResponse,
-} from '../../../../../common/types/http/httpResponse.js';
-import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
-import { httpStatusCodes } from '../../../../../common/types/http/httpStatusCode.js';
-import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
-import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
-import { type CreateBookReadingCommandHandler } from '../../../application/commandHandlers/createBookReadingCommandHandler/createBookReadingCommandHandler.js';
-import { type DeleteBookReadingCommandHandler } from '../../../application/commandHandlers/deleteBookReadingCommandHandler/deleteBookReadingCommandHandler.js';
-import { type UpdateBookReadingCommandHandler } from '../../../application/commandHandlers/updateBookReadingCommandHandler/updateBookReadingCommandHandler.js';
-import { type FindBookReadingsQueryHandler } from '../../../application/queryHandlers/findBookReadingsQueryHandler/findBookReadingsQueryHandler.js';
-import { type BookReading } from '../../../domain/entities/bookReading/bookReading.js';
 
 export class BookReadingHttpController implements HttpController {
   public readonly basePath = '/user-books/:userBookId/readings';

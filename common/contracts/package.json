@@ -14,7 +14,7 @@
   "scripts": {
     "build": "tsc --build tsconfig.json",
     "build:dev": "tsc --build tsconfig.json",
-    "lint": "eslint . --ext .ts --max-warnings 0",
+    "lint": "eslint .",
     "lint:fix": "npm run lint -- --fix"
   }
 }

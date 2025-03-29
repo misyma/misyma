@@ -1,11 +1,5 @@
 import { UserRole } from '@common/contracts';
 
-import {
-  type FindUsersQueryParamsDto,
-  type FindUsersResponseBodyDto,
-  findUsersQueryParamsDtoSchema,
-  findUsersResponseBodyDtoSchema,
-} from './schemas/findUsersSchema.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { httpMethodNames } from '../../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
@@ -17,6 +11,13 @@ import { type AccessControlService } from '../../../../authModule/application/se
 import { type FindUsersQueryHandler } from '../../../application/queryHandlers/findUsersQueryHandler/findUsersQueryHandler.js';
 import { type User } from '../../../domain/entities/user/user.js';
 import { type UserDto } from '../common/userDto.js';
+
+import {
+  type FindUsersQueryParamsDto,
+  type FindUsersResponseBodyDto,
+  findUsersQueryParamsDtoSchema,
+  findUsersResponseBodyDtoSchema,
+} from './schemas/findUsersSchema.js';
 
 export class UserAdminHttpController implements HttpController {
   public readonly basePath = '/admin/users';
@@ -77,7 +78,7 @@ export class UserAdminHttpController implements HttpController {
     };
   }
 
-  private mapUserToUserDto(user: User): UserDto {
+  private mapUserToUserDto = (user: User): UserDto => {
     return {
       id: user.getId(),
       email: user.getEmail(),
@@ -85,5 +86,5 @@ export class UserAdminHttpController implements HttpController {
       isEmailVerified: user.getIsEmailVerified(),
       role: user.getRole(),
     };
-  }
+  };
 }

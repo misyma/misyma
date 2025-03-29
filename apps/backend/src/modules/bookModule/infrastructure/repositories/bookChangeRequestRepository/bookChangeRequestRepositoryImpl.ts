@@ -1,4 +1,3 @@
-import { type BookChangeRequestMapper } from './bookChangeRequestMapper/bookChangeRequestMapper.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
@@ -16,6 +15,8 @@ import { type BookChangeRequestRawEntity } from '../../databases/bookDatabase/ta
 import { bookChangeRequestTable } from '../../databases/bookDatabase/tables/bookChangeRequestTable/bookChangeRequestTable.js';
 import { type BookChangeRequestWithJoinsRawEntity } from '../../databases/bookDatabase/tables/bookChangeRequestTable/bookChangeRequestWithJoinsRawEntity.js';
 import { bookTable } from '../../databases/bookDatabase/tables/bookTable/bookTable.js';
+
+import { type BookChangeRequestMapper } from './bookChangeRequestMapper/bookChangeRequestMapper.js';
 
 export class BookChangeRequestRepositoryImpl implements BookChangeRequestRepository {
   public constructor(
@@ -117,7 +118,7 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
       });
     }
 
-    const bookChangeRequest = this.bookChangeRequestMapper.mapRawWithJoinsToDomain(rawEntities)[0] as BookChangeRequest;
+    const bookChangeRequest = this.bookChangeRequestMapper.mapRawWithJoinsToDomain(rawEntities)[0];
 
     if (!bookChangeRequest) {
       return null;

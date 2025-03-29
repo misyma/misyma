@@ -1,8 +1,3 @@
-import {
-  type LoginUserCommandHandler,
-  type LoginUserCommandHandlerPayload,
-  type LoginUserCommandHandlerResult,
-} from './loginUserCommandHandler.js';
 import { TokenType } from '../../../../../common/types/tokenType.js';
 import { type Config } from '../../../../../core/config.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
@@ -11,6 +6,12 @@ import { UnauthorizedAccessError } from '../../../../authModule/application/erro
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
 import { type HashService } from '../../services/hashService/hashService.js';
+
+import {
+  type LoginUserCommandHandler,
+  type LoginUserCommandHandlerPayload,
+  type LoginUserCommandHandlerResult,
+} from './loginUserCommandHandler.js';
 
 export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
   public constructor(

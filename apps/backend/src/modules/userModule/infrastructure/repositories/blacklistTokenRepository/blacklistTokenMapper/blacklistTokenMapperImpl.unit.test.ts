@@ -1,8 +1,9 @@
 import { beforeEach, expect, describe, it } from 'vitest';
 
-import { BlacklistTokenMapperImpl } from './blacklistTokenMapperImpl.js';
 import { Generator } from '../../../../../../../tests/generator.js';
 import { type BlacklistTokenRawEntity } from '../../../databases/userDatabase/tables/blacklistTokenTable/blacklistTokenRawEntity.js';
+
+import { BlacklistTokenMapperImpl } from './blacklistTokenMapperImpl.js';
 
 describe('BlacklistTokenMapperImpl', () => {
   let blacklistTokenMapperImpl: BlacklistTokenMapperImpl;

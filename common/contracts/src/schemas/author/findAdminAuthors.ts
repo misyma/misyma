@@ -1,6 +1,7 @@
-import { type Author } from './author.js';
 import { type Metadata } from '../metadata.js';
 import { type SortOrder } from '../sortOrder.js';
+
+import { type Author } from './author.js';
 
 export enum FindAuthorsSortField {
   createdAt = 'createdAt',

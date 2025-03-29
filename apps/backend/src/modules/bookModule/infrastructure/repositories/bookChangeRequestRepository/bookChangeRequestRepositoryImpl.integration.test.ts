@@ -206,13 +206,13 @@ describe('BookChangeRequestRepositoryImpl', () => {
 
       expect(foundBookChangeRequests.length).toEqual(2);
 
-      [bookChangeRequest1.id, bookChangeRequest2.id].every((bookChangeRequestId) => {
-        expect(
-          foundBookChangeRequests.some(
-            (foundBookChangeRequest) => foundBookChangeRequest.getId() === bookChangeRequestId,
-          ),
-        ).toBeTruthy();
-      });
+      const allRequestsFound = [bookChangeRequest1.id, bookChangeRequest2.id].every((bookChangeRequestId) =>
+        foundBookChangeRequests.some(
+          (foundBookChangeRequest) => foundBookChangeRequest.getId() === bookChangeRequestId,
+        ),
+      );
+
+      expect(allRequestsFound).toBeTruthy();
     });
 
     it('returns empty array if there are no book change requests', async () => {

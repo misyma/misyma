@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { fastifyCors } from '@fastify/cors';
@@ -10,10 +9,6 @@ import { type TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import { fastify, type FastifyInstance } from 'fastify';
 import { type FastifySchemaValidationError } from 'fastify/types/schema.js';
 
-import { type ApplicationHttpController } from './api/httpControllers/applicationHttpController/applicationHttpController.js';
-import { type Config } from './config.js';
-import { HttpRouter } from './httpRouter.js';
-import { coreSymbols, symbols } from './symbols.js';
 import { InputNotValidError } from '../common/errors/inputNotValidError.js';
 import { OperationNotValidError } from '../common/errors/operationNotValidError.js';
 import { ResourceAlreadyExistsError } from '../common/errors/resourceAlreadyExistsError.js';
@@ -45,6 +40,11 @@ import { bookshelfSymbols } from '../modules/bookshelfModule/symbols.js';
 import { type UserAdminHttpController } from '../modules/userModule/api/httpControllers/userAdminHttpController/userAdminHttpController.js';
 import { type UserHttpController } from '../modules/userModule/api/httpControllers/userHttpController/userHttpController.js';
 import { userSymbols } from '../modules/userModule/symbols.js';
+
+import { type ApplicationHttpController } from './api/httpControllers/applicationHttpController/applicationHttpController.js';
+import { type Config } from './config.js';
+import { HttpRouter } from './httpRouter.js';
+import { coreSymbols, symbols } from './symbols.js';
 
 export class HttpServer {
   public readonly fastifyServer: FastifyInstance;
@@ -109,7 +109,8 @@ export class HttpServer {
         request.url.includes(`${this.httpRouter.rootPath}/docs`) ||
         request.url.includes(`${this.httpRouter.rootPath}/health`)
       ) {
-        return done();
+        done();
+        return;
       }
 
       this.loggerService.info({
@@ -125,7 +126,8 @@ export class HttpServer {
         request.url.includes(`${this.httpRouter.rootPath}/docs`) ||
         request.url.includes(`${this.httpRouter.rootPath}/health`)
       ) {
-        return done();
+        done();
+        return;
       }
 
       this.loggerService.info({
@@ -172,7 +174,7 @@ export class HttpServer {
       const { instancePath, message } = errors[0] as FastifySchemaValidationError;
 
       return new InputNotValidError({
-        reason: `${dataVar}${instancePath} ${message}`,
+        reason: `${dataVar}${instancePath} ${message || ''}`,
         value: undefined,
       });
     });
@@ -257,7 +259,6 @@ export class HttpServer {
   }
 
   private addRequestPreprocessing(): void {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     this.fastifyServer.addHook('preValidation', (request, _reply, next) => {
       const body = request.body as Record<string, unknown>;
 
@@ -272,7 +273,9 @@ export class HttpServer {
       if (typeof obj[key] === 'string') {
         obj[key] = obj[key].trim();
       } else if (typeof obj[key] === 'object' && obj[key] !== null) {
-        this.trimStringProperties(obj[key]);
+        if (typeof obj[key] === 'object' && obj[key] !== null) {
+          this.trimStringProperties(obj[key] as Record<string, any>);
+        }
       }
     }
   }

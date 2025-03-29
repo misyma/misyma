@@ -1,5 +1,8 @@
 import { beforeEach, expect, describe, it } from 'vitest';
 
+import { TestContainer } from '../../../tests/testContainer.js';
+import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
+
 import { AuthorAdminHttpController } from './api/httpControllers/authorAdminHttpController/authorAdminHttpController.js';
 import { AuthorHttpController } from './api/httpControllers/authorHttpController/authorHttpController.js';
 import { BookAdminHttpController } from './api/httpControllers/bookAdminHttpController/bookAdminHttpController.js';
@@ -14,8 +17,6 @@ import { GenreHttpController } from './api/httpControllers/genreHttpController/g
 import { QuoteHttpController } from './api/httpControllers/quoteHttpController/quoteHttpController.js';
 import { UserBookHttpController } from './api/httpControllers/userBookHttpController/userBookHttpController.js';
 import { bookSymbols } from './symbols.js';
-import { TestContainer } from '../../../tests/testContainer.js';
-import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
 
 describe('BookModule', () => {
   let container: DependencyInjectionContainer;

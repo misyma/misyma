@@ -1,4 +1,3 @@
-import { type BookMapper } from './bookMapper/bookMapper.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
@@ -16,6 +15,8 @@ import { bookAuthorTable } from '../../databases/bookDatabase/tables/bookAuthorT
 import { type BookRawEntity } from '../../databases/bookDatabase/tables/bookTable/bookRawEntity.js';
 import { bookTable } from '../../databases/bookDatabase/tables/bookTable/bookTable.js';
 import { type BookWithJoinsRawEntity } from '../../databases/bookDatabase/tables/bookTable/bookWithJoinsRawEntity.js';
+
+import { type BookMapper } from './bookMapper/bookMapper.js';
 
 type CreateBookPayload = { book: BookState };
 
@@ -100,7 +101,7 @@ export class BookRepositoryImpl implements BookRepository {
 
     const createdBook = this.bookMapper.mapRawToDomain(rawEntity);
 
-    authors.forEach((author) => createdBook.addAuthor(author));
+    authors.forEach((author) => { createdBook.addAuthor(author); });
 
     return createdBook;
   }
@@ -310,7 +311,7 @@ export class BookRepositoryImpl implements BookRepository {
       });
     }
 
-    return this.bookMapper.mapRawWithJoinsToDomain(rawEntities) as Book[];
+    return this.bookMapper.mapRawWithJoinsToDomain(rawEntities);
   }
 
   public async deleteBook(payload: DeleteBookPayload): Promise<void> {

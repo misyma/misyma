@@ -1,12 +1,13 @@
+import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
+import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
+import { type AuthorRepository } from '../../../domain/repositories/authorRepository/authorRepository.js';
+import { type BookRepository } from '../../../domain/repositories/bookRepository/bookRepository.js';
+
 import {
   type UpdateBookCommandHandler,
   type UpdateBookPayload,
   type UpdateBookResult,
 } from './updateBookCommandHandler.js';
-import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
-import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
-import { type AuthorRepository } from '../../../domain/repositories/authorRepository/authorRepository.js';
-import { type BookRepository } from '../../../domain/repositories/bookRepository/bookRepository.js';
 
 export class UpdateBookCommandHandlerImpl implements UpdateBookCommandHandler {
   public constructor(

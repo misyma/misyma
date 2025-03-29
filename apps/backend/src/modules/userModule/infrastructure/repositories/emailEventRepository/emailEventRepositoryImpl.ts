@@ -1,4 +1,3 @@
-import { type EmailEventMapper } from './mappers/emailEventMapper/emailEventMapper.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
@@ -11,6 +10,8 @@ import {
 } from '../../../domain/repositories/emailEventRepository/emailEventRepository.js';
 import { type EmailEventRawEntity } from '../../databases/userDatabase/tables/emailEventTable/emailEventRawEntity.js';
 import { emailEventTable } from '../../databases/userDatabase/tables/emailEventTable/emailEventTable.js';
+
+import { type EmailEventMapper } from './mappers/emailEventMapper/emailEventMapper.js';
 
 export class EmailEventRepositoryImpl implements EmailEventRepository {
   public constructor(

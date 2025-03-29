@@ -1,8 +1,9 @@
-import { type ExecutePayload, type ExecuteResult, type FindAuthorsQueryHandler } from './findAuthorsQueryHandler.js';
 import {
   type AuthorRepository,
   type FindAuthorsPayload,
 } from '../../../domain/repositories/authorRepository/authorRepository.js';
+
+import { type ExecutePayload, type ExecuteResult, type FindAuthorsQueryHandler } from './findAuthorsQueryHandler.js';
 
 export class FindAuthorsQueryHandlerImpl implements FindAuthorsQueryHandler {
   public constructor(private readonly authorRepository: AuthorRepository) {}

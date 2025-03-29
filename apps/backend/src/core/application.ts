@@ -1,10 +1,5 @@
 import { BookshelfType, UserRole } from '@common/contracts';
 
-import { ApplicationHttpController } from './api/httpControllers/applicationHttpController/applicationHttpController.js';
-import { type Config, createConfig } from './config.js';
-import { HttpServer } from './httpServer.js';
-import { QueueRouter } from './queueRouter.js';
-import { coreSymbols, symbols } from './symbols.js';
 import { type DatabaseClient } from '../libs/database/clients/databaseClient/databaseClient.js';
 import { DatabaseClientFactory } from '../libs/database/factories/databaseClientFactory/databaseClientFactory.js';
 import { type DependencyInjectionContainer } from '../libs/dependencyInjection/dependencyInjectionContainer.js';
@@ -36,6 +31,12 @@ import { userTable } from '../modules/userModule/infrastructure/databases/userDa
 import { UserDatabaseManager } from '../modules/userModule/infrastructure/databases/userDatabase/userDatabaseManager.js';
 import { userSymbols } from '../modules/userModule/symbols.js';
 import { UserModule } from '../modules/userModule/userModule.js';
+
+import { ApplicationHttpController } from './api/httpControllers/applicationHttpController/applicationHttpController.js';
+import { type Config, createConfig } from './config.js';
+import { HttpServer } from './httpServer.js';
+import { QueueRouter } from './queueRouter.js';
+import { coreSymbols, symbols } from './symbols.js';
 
 export class Application {
   private static container: DependencyInjectionContainer | undefined;
@@ -133,7 +134,7 @@ export class Application {
   private static async setupDatabase(container: DependencyInjectionContainer): Promise<void> {
     const coreDatabaseManagers = [UserDatabaseManager, BookshelfDatabaseManager, BookDatabaseManager];
 
-    for await (const databaseManager of coreDatabaseManagers) {
+    for (const databaseManager of coreDatabaseManagers) {
       await databaseManager.bootstrapDatabase(container);
     }
   }

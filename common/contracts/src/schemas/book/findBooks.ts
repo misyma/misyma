@@ -1,6 +1,7 @@
-import { type Book } from './book.js';
 import { type Metadata } from '../metadata.js';
 import { type SortOrder } from '../sortOrder.js';
+
+import { type Book } from './book.js';
 
 export enum FindBooksSortField {
   releaseYear = 'releaseYear',

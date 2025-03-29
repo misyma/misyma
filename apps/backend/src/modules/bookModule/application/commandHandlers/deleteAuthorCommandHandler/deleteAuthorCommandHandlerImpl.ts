@@ -1,10 +1,11 @@
+import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
+import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
+import { type AuthorRepository } from '../../../domain/repositories/authorRepository/authorRepository.js';
+
 import {
   type DeleteAuthorCommandHandler,
   type DeleteAuthorCommandHandlerPayload,
 } from './deleteAuthorCommandHandler.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
-import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
-import { type AuthorRepository } from '../../../domain/repositories/authorRepository/authorRepository.js';
 
 export class DeleteAuthorCommandHandlerImpl implements DeleteAuthorCommandHandler {
   public constructor(

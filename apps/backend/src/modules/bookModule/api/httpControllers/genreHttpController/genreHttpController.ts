@@ -1,9 +1,3 @@
-import {
-  type FindGenresResponseBodyDto,
-  findGenresResponseBodyDtoSchema,
-  type FindGenresQueryParamsDto,
-  findGenresQueryParamsDtoSchema,
-} from './schemas/findGenresSchema.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { httpMethodNames } from '../../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
@@ -14,6 +8,13 @@ import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
 import { type FindGenresQueryHandler } from '../../../application/queryHandlers/findGenresQueryHandler/findGenresQueryHandler.js';
 import { mapGenreToDto } from '../common/mappers/genreDtoMapper.js';
+
+import {
+  type FindGenresResponseBodyDto,
+  findGenresResponseBodyDtoSchema,
+  type FindGenresQueryParamsDto,
+  findGenresQueryParamsDtoSchema,
+} from './schemas/findGenresSchema.js';
 
 export class GenreHttpController implements HttpController {
   public basePath = '/genres';

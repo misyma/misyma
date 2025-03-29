@@ -28,8 +28,11 @@ type UseErrorHandledMutation<TResponseBody, TError, TPayload> = Override<
   }
 >;
 
-export interface UseErrorHandledMutationOptions<TResponseBody, TError, TPayload>
-  extends UseMutationOptions<TResponseBody, TError, ExtendedTPayload<TPayload>> {}
+export type UseErrorHandledMutationOptions<TResponseBody, TError, TPayload> = UseMutationOptions<
+  TResponseBody,
+  TError,
+  ExtendedTPayload<TPayload>
+>;
 
 export function useErrorHandledMutation<TResponseBody, TError, TPayload>(
   options: UseErrorHandledMutationOptions<TResponseBody, TError, ExtendedTPayload<TPayload>>,

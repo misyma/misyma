@@ -1,10 +1,5 @@
 import { BookshelfType } from '@common/contracts';
 
-import {
-  type UpdateUserBookCommandHandler,
-  type UpdateUserBookPayload,
-  type UpdateUserBookResult,
-} from './updateUserBookCommandHandler.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type BookshelfRepository } from '../../../../bookshelfModule/domain/repositories/bookshelfRepository/bookshelfRepository.js';
@@ -12,6 +7,12 @@ import { type BorrowingRepository } from '../../../domain/repositories/borrowing
 import { type CollectionRepository } from '../../../domain/repositories/collectionRepository/collectionRepository.js';
 import { type GenreRepository } from '../../../domain/repositories/genreRepository/genreRepository.js';
 import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
+
+import {
+  type UpdateUserBookCommandHandler,
+  type UpdateUserBookPayload,
+  type UpdateUserBookResult,
+} from './updateUserBookCommandHandler.js';
 
 export class UpdateUserBookCommandHandlerImpl implements UpdateUserBookCommandHandler {
   public constructor(

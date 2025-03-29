@@ -1,8 +1,6 @@
+import { BookshelfType } from '@common/contracts';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { BookshelfType } from '@common/contracts';
-
-import { type UpdateUserBookCommandHandler } from './updateUserBookCommandHandler.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
@@ -19,6 +17,8 @@ import { type BorrowingTestUtils } from '../../../tests/utils/borrowingTestUtils
 import { type CollectionTestUtils } from '../../../tests/utils/collectionTestUtils/collectionTestUtils.js';
 import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
+
+import { type UpdateUserBookCommandHandler } from './updateUserBookCommandHandler.js';
 
 describe('UpdateUserBookCommandHandlerImpl', () => {
   let commandHandler: UpdateUserBookCommandHandler;

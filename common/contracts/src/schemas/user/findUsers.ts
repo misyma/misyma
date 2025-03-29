@@ -1,5 +1,6 @@
-import { type User } from './user.js';
 import { type Metadata } from '../metadata.js';
+
+import { type User } from './user.js';
 
 export interface FindUsersQueryParams {
   readonly page?: number;

@@ -1,6 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { type UpdateBorrowingCommandHandler } from './updateBorrowingCommandHandler.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
@@ -16,6 +15,8 @@ import { Borrowing } from '../../../domain/entities/borrowing/borrowing.js';
 import { symbols } from '../../../symbols.js';
 import { type BorrowingTestUtils } from '../../../tests/utils/borrowingTestUtils/borrowingTestUtils.js';
 import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
+
+import { type UpdateBorrowingCommandHandler } from './updateBorrowingCommandHandler.js';
 
 describe('UpdateBorrowingCommandHandlerImpl', () => {
   let commandHandler: UpdateBorrowingCommandHandler;

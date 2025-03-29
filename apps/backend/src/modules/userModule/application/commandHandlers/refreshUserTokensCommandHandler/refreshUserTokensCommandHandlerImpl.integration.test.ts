@@ -1,6 +1,5 @@
 import { beforeEach, expect, it, describe, afterEach } from 'vitest';
 
-import { type RefreshUserTokensCommandHandler } from './refreshUserTokensCommandHandler.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
@@ -14,6 +13,8 @@ import { authSymbols } from '../../../../authModule/symbols.js';
 import { symbols } from '../../../symbols.js';
 import { type BlacklistTokenTestUtils } from '../../../tests/utils/blacklistTokenTestUtils/blacklistTokenTestUtils.js';
 import { type UserTestUtils } from '../../../tests/utils/userTestUtils/userTestUtils.js';
+
+import { type RefreshUserTokensCommandHandler } from './refreshUserTokensCommandHandler.js';
 
 describe('RefreshUserTokensCommandHandler', () => {
   let refreshUserTokensCommandHandler: RefreshUserTokensCommandHandler;

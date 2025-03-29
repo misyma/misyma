@@ -1,8 +1,3 @@
-import {
-  type UploadUserBookImageCommandHandlerResult,
-  type UploadUserBookImageCommandHandler,
-  type UploadUserBookImageCommandHandlerPayload,
-} from './uploadUserBookImageCommandHandler.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type Config } from '../../../../../core/config.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
@@ -10,6 +5,12 @@ import { type S3Service } from '../../../../../libs/s3/services/s3Service/s3Serv
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
 import { type BookshelfRepository } from '../../../../bookshelfModule/domain/repositories/bookshelfRepository/bookshelfRepository.js';
 import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
+
+import {
+  type UploadUserBookImageCommandHandlerResult,
+  type UploadUserBookImageCommandHandler,
+  type UploadUserBookImageCommandHandlerPayload,
+} from './uploadUserBookImageCommandHandler.js';
 
 export class UploadUserBookImageCommandHandlerImpl implements UploadUserBookImageCommandHandler {
   public constructor(

@@ -1,6 +1,7 @@
-import { type Bookshelf } from './bookshelf.js';
 import { type Metadata } from '../metadata.js';
 import { type SortOrder } from '../sortOrder.js';
+
+import { type Bookshelf } from './bookshelf.js';
 
 export interface FindBookshelvesQueryParams {
   readonly name?: string;

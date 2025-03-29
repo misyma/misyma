@@ -1,5 +1,6 @@
-import { type ValidatePayload, type PasswordValidationService } from './passwordValidationService.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
+
+import { type ValidatePayload, type PasswordValidationService } from './passwordValidationService.js';
 
 export class PasswordValidationServiceImpl implements PasswordValidationService {
   public validate(payload: ValidatePayload): void {

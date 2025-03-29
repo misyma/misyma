@@ -2,11 +2,12 @@ import { createReadStream } from 'node:fs';
 import path from 'path';
 import { expect, describe, it, beforeEach, afterEach } from 'vitest';
 
-import { S3Service } from './s3Service.js';
 import { Generator } from '../../../../../tests/generator.js';
 import { createConfig } from '../../../../core/config.js';
 import { S3ClientFactory } from '../../factories/s3ClientFactory/s3ClientFactory.js';
 import { S3TestUtils } from '../../tests/utils/s3TestUtils.js';
+
+import { S3Service } from './s3Service.js';
 
 describe('S3Service', () => {
   let s3Service: S3Service;

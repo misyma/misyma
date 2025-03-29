@@ -1,11 +1,12 @@
+import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
+import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
+import { type CollectionRepository } from '../../../domain/repositories/collectionRepository/collectionRepository.js';
+
 import {
   type CreateCollectionCommandHandler,
   type CreateCollectionPayload,
   type CreateCollectionResult,
 } from './createCollectionCommandHandler.js';
-import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
-import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
-import { type CollectionRepository } from '../../../domain/repositories/collectionRepository/collectionRepository.js';
 
 export class CreateCollectionCommandHandlerImpl implements CreateCollectionCommandHandler {
   public constructor(

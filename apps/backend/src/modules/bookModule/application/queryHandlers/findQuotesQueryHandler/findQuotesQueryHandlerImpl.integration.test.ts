@@ -1,6 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { type FindQuotesQueryHandler } from './findQuotesQueryHandler.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { type TestUtils } from '../../../../../../tests/testUtils.js';
@@ -14,6 +13,8 @@ import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestU
 import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 import { type QuoteTestUtils } from '../../../tests/utils/quoteTestUtils/quoteTestUtils.js';
 import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
+
+import { type FindQuotesQueryHandler } from './findQuotesQueryHandler.js';
 
 describe('FindQuotesQueryHandlerImpl', () => {
   let queryHandler: FindQuotesQueryHandler;

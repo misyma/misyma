@@ -1,6 +1,5 @@
 import { type S3Client } from '@aws-sdk/client-s3';
 
-import { testSymbols } from './symbols.js';
 import { Application } from '../src/core/application.js';
 import { coreSymbols } from '../src/core/symbols.js';
 import { type DatabaseClient } from '../src/libs/database/clients/databaseClient/databaseClient.js';
@@ -23,6 +22,8 @@ import { symbols as userSymbols } from '../src/modules/userModule/symbols.js';
 import { BlacklistTokenTestUtils } from '../src/modules/userModule/tests/utils/blacklistTokenTestUtils/blacklistTokenTestUtils.js';
 import { EmailEventTestUtils } from '../src/modules/userModule/tests/utils/emailEventTestUtils/emailEventTestUtils.js';
 import { UserTestUtils } from '../src/modules/userModule/tests/utils/userTestUtils/userTestUtils.js';
+
+import { testSymbols } from './symbols.js';
 
 export class TestContainer {
   public static async create(): Promise<DependencyInjectionContainer> {

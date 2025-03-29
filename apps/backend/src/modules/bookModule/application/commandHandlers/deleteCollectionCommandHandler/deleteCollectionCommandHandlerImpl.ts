@@ -1,7 +1,8 @@
-import { type DeleteCollectionCommandHandler, type DeleteCollectionPayload } from './deleteCollectionCommandHandler.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type CollectionRepository } from '../../../domain/repositories/collectionRepository/collectionRepository.js';
+
+import { type DeleteCollectionCommandHandler, type DeleteCollectionPayload } from './deleteCollectionCommandHandler.js';
 
 export class DeleteCollectionCommandHandlerImpl implements DeleteCollectionCommandHandler {
   public constructor(

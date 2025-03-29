@@ -108,7 +108,7 @@ export const QueryClientProvider = ({ children }: ProviderProps) => {
                 expiresIn: res.expiresIn,
               });
             }
-          } catch (error) {
+          } catch {
             cleanupUser();
           } finally {
             setRefreshingToken(false);

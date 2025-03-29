@@ -1,6 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { type SendResetPasswordEmailCommandHandler } from './sendResetPasswordEmailCommandHandler.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { emailTypes } from '../../../../../common/types/emailType.js';
@@ -11,6 +10,8 @@ import { symbols } from '../../../symbols.js';
 import { UserTestFactory } from '../../../tests/factories/userTestFactory/userTestFactory.js';
 import { type UserTestUtils } from '../../../tests/utils/userTestUtils/userTestUtils.js';
 import { type EmailMessageBus } from '../../messageBuses/emailMessageBus/emailMessageBus.js';
+
+import { type SendResetPasswordEmailCommandHandler } from './sendResetPasswordEmailCommandHandler.js';
 
 describe('SendResetPasswordEmailCommandHandler', () => {
   let commandHandler: SendResetPasswordEmailCommandHandler;

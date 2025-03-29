@@ -1,11 +1,12 @@
+import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
+import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
+import { type BookshelfRepository } from '../../../domain/repositories/bookshelfRepository/bookshelfRepository.js';
+
 import {
   type FindBookshelfByIdPayload,
   type FindBookshelfByIdQueryHandler,
   type FindBookshelfByIdResult,
 } from './findBookshelfByIdQueryHandler.js';
-import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
-import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
-import { type BookshelfRepository } from '../../../domain/repositories/bookshelfRepository/bookshelfRepository.js';
 
 export class FindBookshelfByIdQueryHandlerImpl implements FindBookshelfByIdQueryHandler {
   public constructor(private readonly bookshelfRepository: BookshelfRepository) {}

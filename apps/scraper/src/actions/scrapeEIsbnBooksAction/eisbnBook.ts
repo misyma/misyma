@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/naming-convention */
+ 
 
 export interface EisbnResponseBody {
   readonly ONIXMessage?: {

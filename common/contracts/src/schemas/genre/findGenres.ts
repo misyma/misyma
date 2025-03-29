@@ -1,5 +1,6 @@
-import { type Genre } from './genre.js';
 import { type Metadata } from '../metadata.js';
+
+import { type Genre } from './genre.js';
 
 export interface FindGenresQueryParams {
   readonly page?: number;

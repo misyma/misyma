@@ -80,7 +80,7 @@ export const useCreateBookWithUserBook = ({
           });
 
           bookId = bookCreationResponse.id;
-        } catch (error) {
+        } catch {
           return;
         }
       }
@@ -96,7 +96,7 @@ export const useCreateBookWithUserBook = ({
             title: '',
           },
         });
-      } catch (error) {
+      } catch {
         return;
       }
 
@@ -134,7 +134,7 @@ export const useCreateBookWithUserBook = ({
               title: 'Nie udało się przesłać obrazka.',
             },
           });
-        } catch (error) {
+        } catch {
           return;
         }
       }

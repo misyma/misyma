@@ -1,6 +1,7 @@
-import { type BookChangeRequest } from './bookChangeRequest.js';
 import { type Metadata } from '../metadata.js';
 import { type SortOrder } from '../sortOrder.js';
+
+import { type BookChangeRequest } from './bookChangeRequest.js';
 
 export interface FindAdminBookChangeRequestsQueryParams {
   readonly page?: number;

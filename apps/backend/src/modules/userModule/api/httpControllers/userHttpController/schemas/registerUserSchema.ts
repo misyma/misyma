@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-
-import { type Static, Type } from '@sinclair/typebox';
-import { type FastifyRequest } from 'fastify';
+ 
 
 import type * as contracts from '@common/contracts';
+import { type Static, Type } from '@sinclair/typebox';
+import { type FastifyRequest } from 'fastify';
 
 import { InputNotValidError } from '../../../../../../common/errors/inputNotValidError.js';
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';

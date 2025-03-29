@@ -1,8 +1,9 @@
-import { type ReadingStatus } from './readingStatus.js';
-import { type UserBook } from './userBook.js';
 import { type Language } from '../book/language.js';
 import { type Metadata } from '../metadata.js';
 import { type SortOrder } from '../sortOrder.js';
+
+import { type ReadingStatus } from './readingStatus.js';
+import { type UserBook } from './userBook.js';
 
 export enum FindUserBooksSortField {
   releaseYear = 'releaseYear',

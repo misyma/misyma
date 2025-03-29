@@ -83,7 +83,7 @@ export class BookReading {
   public setStartedAtDate(payload: SetStartedAtDatePayload): void {
     const { startedAt } = payload;
 
-    if (this.state.endedAt && startedAt > this.state.endedAt) {
+    if (startedAt > this.state.endedAt) {
       throw new OperationNotValidError({
         reason: 'StartedAt date cannot be after ended date.',
       });

@@ -1,6 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { type ApplyBookChangeRequestCommandHandler } from './applyBookChangeRequestCommandHandler.js';
 import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
@@ -13,6 +12,8 @@ import { symbols } from '../../../symbols.js';
 import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookChangeRequestTestUtils } from '../../../tests/utils/bookChangeRequestTestUtils/bookChangeRequestTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
+
+import { type ApplyBookChangeRequestCommandHandler } from './applyBookChangeRequestCommandHandler.js';
 
 describe('ApplyBookChangeRequestCommandHandlerImpl', () => {
   let commandHandler: ApplyBookChangeRequestCommandHandler;

@@ -1,5 +1,6 @@
-import { type BookChangeRequest } from './bookChangeRequest.js';
 import { type Metadata } from '../metadata.js';
+
+import { type BookChangeRequest } from './bookChangeRequest.js';
 
 export interface FindBookChangeRequestsQueryParams {
   readonly page?: number;

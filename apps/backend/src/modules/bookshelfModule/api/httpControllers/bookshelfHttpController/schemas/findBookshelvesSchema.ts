@@ -1,9 +1,9 @@
+import * as contracts from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
-import * as contracts from '@common/contracts';
+import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 import { bookshelfDtoSchema } from './bookshelfDto.js';
-import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
 
 export const findBookshelvesQueryParamsDtoSchema = Type.Object({
   name: Type.Optional(

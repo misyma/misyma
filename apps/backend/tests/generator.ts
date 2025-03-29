@@ -1,7 +1,6 @@
+import { BookFormat, BookshelfType, Language, ReadingStatus, UserRole } from '@common/contracts';
 import { faker } from '@faker-js/faker';
 import { v7 as uuidv7 } from 'uuid';
-
-import { BookFormat, BookshelfType, Language, ReadingStatus, UserRole } from '@common/contracts';
 
 export class Generator {
   public static email(): string {

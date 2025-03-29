@@ -1,10 +1,11 @@
-import { type NationalLibraryBookMapper } from './nationalLibraryBookMapper.js';
 import { type NationalLibraryResponseBody } from '../../common/nationalLibraryBook.js';
 import { type NationalLibraryClient } from '../../infrastructure/clients/nationalLibraryClient.js';
 import { type BookDraft } from '../../infrastructure/entities/book/book.js';
 import { type AuthorRepository } from '../../infrastructure/repositories/authorRepository/authorRepository.js';
 import { type BookRepository } from '../../infrastructure/repositories/bookRepository/bookRepository.js';
 import { type LoggerService } from '../../libs/logger/loggerService.js';
+
+import { type NationalLibraryBookMapper } from './nationalLibraryBookMapper.js';
 
 export interface ScrapeNationalLibraryBooksActionPayload {
   readonly from: number | undefined;
@@ -34,7 +35,7 @@ export class ScrapeNationalLibraryBooksAction {
     let url = 'https://data.bn.org.pl/api/institutions/bibs.json?language=polski&limit=100&formOfWork=Książki';
 
     if (initialFrom) {
-      url += `&sinceId=${initialFrom}`;
+      url += `&sinceId=${initialFrom.toString()}`;
     }
 
     while (url) {
@@ -44,7 +45,7 @@ export class ScrapeNationalLibraryBooksAction {
         .map((book) => this.bnMapper.mapBook(book))
         .filter((book) => book !== undefined);
 
-      for await (const bookDraft of bookDrafts) {
+      for (const bookDraft of bookDrafts) {
         await this.saveBook(bookDraft);
       }
 
@@ -53,7 +54,7 @@ export class ScrapeNationalLibraryBooksAction {
       i += 1;
 
       this.logger.info({
-        message: `Processed ${i * 100} books.`,
+        message: `Processed ${(i * 100).toString()} books.`,
         url,
         savedBooks: savedBooksCount,
       });
@@ -73,7 +74,7 @@ export class ScrapeNationalLibraryBooksAction {
 
     const authorIds: string[] = [];
 
-    for await (const authorName of bookDraft.authorNames) {
+    for (const authorName of bookDraft.authorNames) {
       let author = await this.authorRepository.findAuthor({ name: authorName });
 
       if (!author) {
