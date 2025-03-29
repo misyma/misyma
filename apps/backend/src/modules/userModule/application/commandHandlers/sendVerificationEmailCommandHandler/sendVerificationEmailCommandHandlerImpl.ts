@@ -3,13 +3,13 @@ import {
   type SendVerificationEmailCommandHandler,
 } from './sendVerificationEmailCommandHandler.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
+import { emailTypes } from '../../../../../common/types/emailType.js';
+import { TokenType } from '../../../../../common/types/tokenType.js';
 import { type Config } from '../../../../../core/config.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
-import { EmailEventDraft } from '../../../domain/entities/emailEvent/emailEventDraft.ts/emailEventDraft.js';
-import { EmailEventType } from '../../../domain/entities/emailEvent/types/emailEventType.js';
+import { EmailEventDraft } from '../../../domain/entities/emailEvent/emailEvent.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
-import { TokenType } from '../../../domain/types/tokenType.js';
 import { type EmailMessageBus } from '../../messageBuses/emailMessageBus/emailMessageBus.js';
 
 export class SendVerificationEmailCommandHandlerImpl implements SendVerificationEmailCommandHandler {
@@ -60,7 +60,7 @@ export class SendVerificationEmailCommandHandlerImpl implements SendVerification
 
     await this.emailMessageBus.sendEvent(
       new EmailEventDraft({
-        eventName: EmailEventType.verifyEmail,
+        eventName: emailTypes.verifyEmail,
         payload: {
           name: user.getName(),
           recipientEmail: user.getEmail(),

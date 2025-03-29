@@ -2,13 +2,13 @@ import {
   type ExecutePayload,
   type SendResetPasswordEmailCommandHandler,
 } from './sendResetPasswordEmailCommandHandler.js';
+import { emailTypes } from '../../../../../common/types/emailType.js';
+import { TokenType } from '../../../../../common/types/tokenType.js';
 import { type Config } from '../../../../../core/config.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
-import { EmailEventDraft } from '../../../domain/entities/emailEvent/emailEventDraft.ts/emailEventDraft.js';
-import { EmailEventType } from '../../../domain/entities/emailEvent/types/emailEventType.js';
+import { EmailEventDraft } from '../../../domain/entities/emailEvent/emailEvent.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
-import { TokenType } from '../../../domain/types/tokenType.js';
 import { type EmailMessageBus } from '../../messageBuses/emailMessageBus/emailMessageBus.js';
 
 export class SendResetPasswordEmailCommandHandlerImpl implements SendResetPasswordEmailCommandHandler {
@@ -54,7 +54,7 @@ export class SendResetPasswordEmailCommandHandlerImpl implements SendResetPasswo
 
     await this.emailMessageBus.sendEvent(
       new EmailEventDraft({
-        eventName: EmailEventType.resetPassword,
+        eventName: emailTypes.resetPassword,
         payload: {
           name: user.getName(),
           recipientEmail: user.getEmail(),

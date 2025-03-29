@@ -16,7 +16,7 @@ describe('FindAuthorsQueryHandlerImpl', () => {
   let authorTestUtils: AuthorTestUtils;
 
   beforeEach(async () => {
-    const container = TestContainer.create();
+    const container = await TestContainer.create();
 
     queryHandler = container.get<FindAuthorsQueryHandler>(symbols.findAuthorsQueryHandler);
 

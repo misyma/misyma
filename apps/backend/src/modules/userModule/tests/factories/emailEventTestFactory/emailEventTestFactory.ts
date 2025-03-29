@@ -1,22 +1,23 @@
 import { Generator } from '../../../../../../tests/generator.js';
-import { EmailEvent, type EmailEventState } from '../../../domain/entities/emailEvent/emailEvent.js';
+import { emailTypes, type EmailType } from '../../../../../common/types/emailType.js';
 import {
+  EmailEvent,
   EmailEventDraft,
   type EmailEventDraftState,
-} from '../../../domain/entities/emailEvent/emailEventDraft.ts/emailEventDraft.js';
+  type EmailEventState,
+} from '../../../domain/entities/emailEvent/emailEvent.js';
 import { EmailEventStatus } from '../../../domain/entities/emailEvent/types/emailEventStatus.js';
-import { EmailEventType } from '../../../domain/entities/emailEvent/types/emailEventType.js';
 
 export class EmailEventTestFactory {
   public createDraft(overrides: Partial<EmailEventDraftState> = {}): EmailEventDraft {
     return new EmailEventDraft({
       payload: {
         recipientEmail: Generator.email(),
-        emailEventType: Generator.arrayElement<EmailEventType>(Object.keys(EmailEventType) as EmailEventType[]),
+        emailEventType: Generator.arrayElement<EmailType>(Object.keys(emailTypes) as EmailType[]),
         name: Generator.fullName(),
         ...overrides.payload,
       },
-      eventName: Generator.arrayElement<EmailEventType>(Object.keys(EmailEventType) as EmailEventType[]),
+      eventName: Generator.arrayElement<EmailType>(Object.keys(emailTypes) as EmailType[]),
     });
   }
 
@@ -24,12 +25,12 @@ export class EmailEventTestFactory {
     return new EmailEvent({
       createdAt: Generator.pastDate(),
       id: Generator.uuid(),
-      eventName: Generator.arrayElement<EmailEventType>(Object.keys(EmailEventType) as EmailEventType[]),
+      eventName: Generator.arrayElement<EmailType>(Object.keys(emailTypes) as EmailType[]),
       status: EmailEventStatus.pending,
       ...overrides,
       payload: {
         recipientEmail: Generator.email(),
-        emailEventType: Generator.arrayElement<EmailEventType>(Object.keys(EmailEventType) as EmailEventType[]),
+        emailEventType: Generator.arrayElement<EmailType>(Object.keys(emailTypes) as EmailType[]),
         name: Generator.fullName(),
         ...overrides.payload,
       },

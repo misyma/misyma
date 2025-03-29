@@ -1,3 +1,5 @@
+import { authSymbols } from '../authModule/symbols.js';
+import { bookshelfSymbols } from '../bookshelfModule/symbols.js';
 import { UserAdminHttpController } from './api/httpControllers/userAdminHttpController/userAdminHttpController.js';
 import { UserHttpController } from './api/httpControllers/userHttpController/userHttpController.js';
 import { EmailQueueController } from './api/queueControllers/emailQueueController/emailQueueController.js';
@@ -38,6 +40,10 @@ import { type BlacklistTokenMapper } from './infrastructure/repositories/blackli
 import { BlacklistTokenMapperImpl } from './infrastructure/repositories/blacklistTokenRepository/blacklistTokenMapper/blacklistTokenMapperImpl.js';
 import { BlacklistTokenRepositoryImpl } from './infrastructure/repositories/blacklistTokenRepository/blacklistTokenRepositoryImpl.js';
 import { EmailEventRepositoryImpl } from './infrastructure/repositories/emailEventRepository/emailEventRepositoryImpl.js';
+import { type EmailService } from '../../libs/emailService/emailService.js';
+import { type UuidService } from '../../libs/uuid/services/uuidService/uuidService.js';
+import { type AccessControlService } from '../authModule/application/services/accessControlService/accessControlService.js';
+import { type TokenService } from '../authModule/application/services/tokenService/tokenService.js';
 import { EmailEventMapper } from './infrastructure/repositories/emailEventRepository/mappers/emailEventMapper/emailEventMapper.js';
 import { type UserMapper } from './infrastructure/repositories/userRepository/userMapper/userMapper.js';
 import { UserMapperImpl } from './infrastructure/repositories/userRepository/userMapper/userMapperImpl.js';
@@ -49,13 +55,7 @@ import { type DatabaseClient } from '../../libs/database/clients/databaseClient/
 import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type DependencyInjectionModule } from '../../libs/dependencyInjection/dependencyInjectionModule.js';
 import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
-import { type SendGridService } from '../../libs/sendGrid/services/sendGridService/sendGridService.js';
-import { type UuidService } from '../../libs/uuid/services/uuidService/uuidService.js';
-import { type AccessControlService } from '../authModule/application/services/accessControlService/accessControlService.js';
-import { type TokenService } from '../authModule/application/services/tokenService/tokenService.js';
-import { authSymbols } from '../authModule/symbols.js';
 import { type CreateBookshelfCommandHandler } from '../bookshelfModule/application/commandHandlers/createBookshelfCommandHandler/createBookshelfCommandHandler.js';
-import { bookshelfSymbols } from '../bookshelfModule/symbols.js';
 
 export class UserModule implements DependencyInjectionModule {
   public declareBindings(container: DependencyInjectionContainer): void {
@@ -266,7 +266,7 @@ export class UserModule implements DependencyInjectionModule {
       () =>
         new EmailQueueController(
           container.get<EmailEventRepository>(symbols.emailEventRepository),
-          container.get<SendGridService>(coreSymbols.sendGridService),
+          container.get<EmailService>(coreSymbols.emailService),
           container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );

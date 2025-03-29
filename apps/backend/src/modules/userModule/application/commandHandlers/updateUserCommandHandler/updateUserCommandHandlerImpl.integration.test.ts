@@ -18,7 +18,7 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
   let userTestUtils: UserTestUtils;
 
   beforeEach(async () => {
-    const container = TestContainer.create();
+    const container = await TestContainer.create();
 
     commandHandler = container.get<UpdateUserCommandHandler>(symbols.updateUserCommandHandler);
 

@@ -27,7 +27,7 @@ import {
   type UpdateBookResponseBodyDto,
 } from './schemas/updateBookSchema.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
-import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
+import { httpMethodNames } from '../../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
 import {
   type HttpOkResponse,
@@ -35,7 +35,7 @@ import {
   type HttpNoContentResponse,
 } from '../../../../../common/types/http/httpResponse.js';
 import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
-import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.js';
+import { httpStatusCodes } from '../../../../../common/types/http/httpStatusCode.js';
 import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
 import { type CreateBookCommandHandler } from '../../../application/commandHandlers/createBookCommandHandler/createBookCommandHandler.js';
@@ -59,14 +59,14 @@ export class BookAdminHttpController implements HttpController {
   public getHttpRoutes(): HttpRoute[] {
     return [
       new HttpRoute({
-        method: HttpMethodName.post,
+        method: httpMethodNames.post,
         handler: this.createBook.bind(this),
         schema: {
           request: {
             body: createBookBodyDtoSchema,
           },
           response: {
-            [HttpStatusCode.created]: {
+            [httpStatusCodes.created]: {
               schema: createBookResponseBodyDtoSchema,
               description: 'Book created',
             },
@@ -76,7 +76,7 @@ export class BookAdminHttpController implements HttpController {
         description: 'Create book',
       }),
       new HttpRoute({
-        method: HttpMethodName.delete,
+        method: httpMethodNames.delete,
         path: ':bookId',
         handler: this.deleteBook.bind(this),
         schema: {
@@ -84,7 +84,7 @@ export class BookAdminHttpController implements HttpController {
             pathParams: deleteBookPathParamsDtoSchema,
           },
           response: {
-            [HttpStatusCode.noContent]: {
+            [httpStatusCodes.noContent]: {
               schema: deleteBookResponseBodyDtoSchema,
               description: 'Book deleted',
             },
@@ -94,7 +94,7 @@ export class BookAdminHttpController implements HttpController {
         description: 'Delete book',
       }),
       new HttpRoute({
-        method: HttpMethodName.patch,
+        method: httpMethodNames.patch,
         path: ':bookId',
         description: 'Update a book',
         handler: this.updateBook.bind(this),
@@ -104,7 +104,7 @@ export class BookAdminHttpController implements HttpController {
             body: updateBookBodyDtoSchema,
           },
           response: {
-            [HttpStatusCode.ok]: {
+            [httpStatusCodes.ok]: {
               description: 'Book updated',
               schema: updateBookResponseBodyDtoSchema,
             },
@@ -112,7 +112,7 @@ export class BookAdminHttpController implements HttpController {
         },
       }),
       new HttpRoute({
-        method: HttpMethodName.get,
+        method: httpMethodNames.get,
         handler: this.findBooks.bind(this),
         description: 'Find books',
         schema: {
@@ -120,7 +120,7 @@ export class BookAdminHttpController implements HttpController {
             queryParams: findAdminBooksQueryParamsDtoSchema,
           },
           response: {
-            [HttpStatusCode.ok]: {
+            [httpStatusCodes.ok]: {
               schema: findAdminBooksResponseBodyDtoSchema,
               description: 'Books found',
             },
@@ -148,7 +148,7 @@ export class BookAdminHttpController implements HttpController {
     });
 
     return {
-      statusCode: HttpStatusCode.created,
+      statusCode: httpStatusCodes.created,
       body: mapBookToDto(book),
     };
   }
@@ -166,7 +166,7 @@ export class BookAdminHttpController implements HttpController {
     await this.deleteBookCommandHandler.execute({ bookId });
 
     return {
-      statusCode: HttpStatusCode.noContent,
+      statusCode: httpStatusCodes.noContent,
       body: null,
     };
   }
@@ -211,7 +211,7 @@ export class BookAdminHttpController implements HttpController {
     });
 
     return {
-      statusCode: HttpStatusCode.ok,
+      statusCode: httpStatusCodes.ok,
       body: mapBookToDto(book),
     };
   }
@@ -261,7 +261,7 @@ export class BookAdminHttpController implements HttpController {
           total,
         },
       },
-      statusCode: HttpStatusCode.ok,
+      statusCode: httpStatusCodes.ok,
     };
   }
 }

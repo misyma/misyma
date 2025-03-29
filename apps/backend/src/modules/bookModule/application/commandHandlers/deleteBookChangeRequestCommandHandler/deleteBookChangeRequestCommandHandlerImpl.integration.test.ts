@@ -27,7 +27,7 @@ describe('DeleteBookChangeRequestCommandHandler', () => {
   let testUtils: TestUtils[];
 
   beforeEach(async () => {
-    const container = TestContainer.create();
+    const container = await TestContainer.create();
 
     deleteBookChangeRequestCommandHandler = container.get<DeleteBookChangeRequestCommandHandler>(
       symbols.deleteBookChangeRequestCommandHandler,

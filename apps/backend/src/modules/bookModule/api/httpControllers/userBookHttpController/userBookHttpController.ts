@@ -41,7 +41,7 @@ import {
 import { type UserBookDto } from './schemas/userBookDto.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
-import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
+import { httpMethodNames } from '../../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
 import {
   type HttpCreatedResponse,
@@ -49,7 +49,7 @@ import {
   type HttpNoContentResponse,
 } from '../../../../../common/types/http/httpResponse.js';
 import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
-import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.js';
+import { httpStatusCodes } from '../../../../../common/types/http/httpStatusCode.js';
 import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
 import { type CreateUserBookCommandHandler } from '../../../application/commandHandlers/createUserBookCommandHandler/createUserBookCommandHandler.js';
@@ -78,14 +78,14 @@ export class UserBookHttpController implements HttpController {
   public getHttpRoutes(): HttpRoute[] {
     return [
       new HttpRoute({
-        method: HttpMethodName.post,
+        method: httpMethodNames.post,
         handler: this.createUserBook.bind(this),
         schema: {
           request: {
             body: createUserBookBodyDtoSchema,
           },
           response: {
-            [HttpStatusCode.created]: {
+            [httpStatusCodes.created]: {
               schema: createUserBookResponseBodyDtoSchema,
               description: "User's book created",
             },
@@ -95,7 +95,7 @@ export class UserBookHttpController implements HttpController {
         description: "Create user's book",
       }),
       new HttpRoute({
-        method: HttpMethodName.get,
+        method: httpMethodNames.get,
         path: ':userBookId',
         handler: this.findUserBook.bind(this),
         schema: {
@@ -103,7 +103,7 @@ export class UserBookHttpController implements HttpController {
             pathParams: findUserBookPathParamsDtoSchema,
           },
           response: {
-            [HttpStatusCode.ok]: {
+            [httpStatusCodes.ok]: {
               schema: findUserBookResponseBodyDtoSchema,
               description: "User's book found",
             },
@@ -113,7 +113,7 @@ export class UserBookHttpController implements HttpController {
         description: "Find user's book by id",
       }),
       new HttpRoute({
-        method: HttpMethodName.get,
+        method: httpMethodNames.get,
         handler: this.findUserBooks.bind(this),
         description: "Find user's books",
         schema: {
@@ -121,7 +121,7 @@ export class UserBookHttpController implements HttpController {
             queryParams: findUserBooksQueryParamsDtoSchema,
           },
           response: {
-            [HttpStatusCode.ok]: {
+            [httpStatusCodes.ok]: {
               schema: findUserBooksResponseBodyDtoSchema,
               description: "User's books found",
             },
@@ -130,7 +130,7 @@ export class UserBookHttpController implements HttpController {
         securityMode: SecurityMode.bearerToken,
       }),
       new HttpRoute({
-        method: HttpMethodName.delete,
+        method: httpMethodNames.delete,
         path: ':userBookId',
         handler: this.deleteUserBook.bind(this),
         schema: {
@@ -138,7 +138,7 @@ export class UserBookHttpController implements HttpController {
             pathParams: deleteUserBookPathParamsDtoSchema,
           },
           response: {
-            [HttpStatusCode.noContent]: {
+            [httpStatusCodes.noContent]: {
               schema: deleteUserBookResponseBodyDtoSchema,
               description: "User's book deleted",
             },
@@ -148,7 +148,7 @@ export class UserBookHttpController implements HttpController {
         description: "Delete user's book",
       }),
       new HttpRoute({
-        method: HttpMethodName.patch,
+        method: httpMethodNames.patch,
         path: ':userBookId',
         description: "Update user's book",
         handler: this.updateUserBook.bind(this),
@@ -158,7 +158,7 @@ export class UserBookHttpController implements HttpController {
             body: updateUserBookBodyDtoSchema,
           },
           response: {
-            [HttpStatusCode.ok]: {
+            [httpStatusCodes.ok]: {
               description: "User's book updated",
               schema: updateUserBookResponseBodyDtoSchema,
             },
@@ -166,7 +166,7 @@ export class UserBookHttpController implements HttpController {
         },
       }),
       new HttpRoute({
-        method: HttpMethodName.patch,
+        method: httpMethodNames.patch,
         path: ':userBookId/images',
         description: "Upload user book's image",
         handler: this.uploadUserBookImage.bind(this),
@@ -175,7 +175,7 @@ export class UserBookHttpController implements HttpController {
             pathParams: uploadUserBookImagePathParamsDtoSchema,
           },
           response: {
-            [HttpStatusCode.ok]: {
+            [httpStatusCodes.ok]: {
               description: "User book's image uploaded",
               schema: uploadUserBookImageResponseBodyDtoSchema,
             },
@@ -208,7 +208,7 @@ export class UserBookHttpController implements HttpController {
     });
 
     return {
-      statusCode: HttpStatusCode.ok,
+      statusCode: httpStatusCodes.ok,
       body: this.mapUserBookToDto(userBook),
     };
   }
@@ -236,7 +236,7 @@ export class UserBookHttpController implements HttpController {
     });
 
     return {
-      statusCode: HttpStatusCode.ok,
+      statusCode: httpStatusCodes.ok,
       body: this.mapUserBookToDto(userBook),
     };
   }
@@ -262,7 +262,7 @@ export class UserBookHttpController implements HttpController {
     });
 
     return {
-      statusCode: HttpStatusCode.created,
+      statusCode: httpStatusCodes.created,
       body: this.mapUserBookToDto(userBook),
     };
   }
@@ -282,7 +282,7 @@ export class UserBookHttpController implements HttpController {
     });
 
     return {
-      statusCode: HttpStatusCode.ok,
+      statusCode: httpStatusCodes.ok,
       body: this.mapUserBookToDto(userBook),
     };
   }
@@ -340,7 +340,7 @@ export class UserBookHttpController implements HttpController {
           total,
         },
       },
-      statusCode: HttpStatusCode.ok,
+      statusCode: httpStatusCodes.ok,
     };
   }
 
@@ -359,7 +359,7 @@ export class UserBookHttpController implements HttpController {
     });
 
     return {
-      statusCode: HttpStatusCode.noContent,
+      statusCode: httpStatusCodes.noContent,
       body: null,
     };
   }

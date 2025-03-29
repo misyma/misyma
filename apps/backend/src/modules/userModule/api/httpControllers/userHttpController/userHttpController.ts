@@ -72,7 +72,7 @@ import {
 } from './schemas/verifyUserSchema.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
-import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
+import { httpMethodNames } from '../../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
 import {
   type HttpCreatedResponse,
@@ -80,7 +80,7 @@ import {
   type HttpNoContentResponse,
 } from '../../../../../common/types/http/httpResponse.js';
 import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
-import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.js';
+import { httpStatusCodes } from '../../../../../common/types/http/httpStatusCode.js';
 import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
 import { type ChangeUserPasswordCommandHandler } from '../../../application/commandHandlers/changeUserPasswordCommandHandler/changeUserPasswordCommandHandler.js';
@@ -119,7 +119,7 @@ export class UserHttpController implements HttpController {
   public getHttpRoutes(): HttpRoute[] {
     return [
       new HttpRoute({
-        method: HttpMethodName.post,
+        method: httpMethodNames.post,
         path: 'register',
         handler: this.registerUser.bind(this),
         schema: {
@@ -127,7 +127,7 @@ export class UserHttpController implements HttpController {
             body: registerUserRequestBodyDtoSchema,
           },
           response: {
-            [HttpStatusCode.created]: {
+            [httpStatusCodes.created]: {
               schema: registerUserResponseBodyDtoSchema,
               description: 'User registered',
             },
@@ -137,7 +137,7 @@ export class UserHttpController implements HttpController {
         description: 'Register user',
       }),
       new HttpRoute({
-        method: HttpMethodName.post,
+        method: httpMethodNames.post,
         path: 'login',
         handler: this.loginUser.bind(this),
         schema: {
@@ -145,7 +145,7 @@ export class UserHttpController implements HttpController {
             body: loginUserBodyDtoSchema,
           },
           response: {
-            [HttpStatusCode.ok]: {
+            [httpStatusCodes.ok]: {
               schema: loginUserResponseBodyDtoSchema,
               description: 'User logged in',
             },
@@ -154,7 +154,7 @@ export class UserHttpController implements HttpController {
         description: 'Login user',
       }),
       new HttpRoute({
-        method: HttpMethodName.post,
+        method: httpMethodNames.post,
         path: 'reset-password',
         handler: this.resetUserPassword.bind(this),
         description: 'Reset user password',
@@ -163,7 +163,7 @@ export class UserHttpController implements HttpController {
             body: resetUserPasswordBodyDtoSchema,
           },
           response: {
-            [HttpStatusCode.ok]: {
+            [httpStatusCodes.ok]: {
               schema: resetUserPasswordResponseBodyDtoSchema,
               description: 'User password reset',
             },
@@ -171,7 +171,7 @@ export class UserHttpController implements HttpController {
         },
       }),
       new HttpRoute({
-        method: HttpMethodName.post,
+        method: httpMethodNames.post,
         path: 'change-password',
         description: 'Change user password',
         handler: this.changeUserPassword.bind(this),
@@ -180,7 +180,7 @@ export class UserHttpController implements HttpController {
             body: changeUserPasswordBodyDtoSchema,
           },
           response: {
-            [HttpStatusCode.ok]: {
+            [httpStatusCodes.ok]: {
               schema: changeUserPasswordResponseBodyDtoSchema,
               description: 'User password changed',
             },
@@ -188,7 +188,7 @@ export class UserHttpController implements HttpController {
         },
       }),
       new HttpRoute({
-        method: HttpMethodName.get,
+        method: httpMethodNames.get,
         path: ':userId',
         handler: this.findUser.bind(this),
         schema: {
@@ -196,7 +196,7 @@ export class UserHttpController implements HttpController {
             pathParams: findUserPathParamsDtoSchema,
           },
           response: {
-            [HttpStatusCode.ok]: {
+            [httpStatusCodes.ok]: {
               schema: findUserResponseBodyDtoSchema,
               description: 'User found',
             },
@@ -206,13 +206,13 @@ export class UserHttpController implements HttpController {
         description: 'Find user by id',
       }),
       new HttpRoute({
-        method: HttpMethodName.get,
+        method: httpMethodNames.get,
         path: 'me',
         handler: this.findMyUser.bind(this),
         schema: {
           request: {},
           response: {
-            [HttpStatusCode.ok]: {
+            [httpStatusCodes.ok]: {
               schema: findMyUserResponseBodyDtoSchema,
               description: 'User found',
             },
@@ -222,7 +222,7 @@ export class UserHttpController implements HttpController {
         description: 'Find user by token',
       }),
       new HttpRoute({
-        method: HttpMethodName.delete,
+        method: httpMethodNames.delete,
         path: ':userId',
         handler: this.deleteUser.bind(this),
         schema: {
@@ -230,7 +230,7 @@ export class UserHttpController implements HttpController {
             pathParams: deleteUserPathParamsDtoSchema,
           },
           response: {
-            [HttpStatusCode.noContent]: {
+            [httpStatusCodes.noContent]: {
               schema: deleteUserResponseBodyDtoSchema,
               description: 'User deleted',
             },
@@ -240,7 +240,7 @@ export class UserHttpController implements HttpController {
         description: 'Delete user',
       }),
       new HttpRoute({
-        method: HttpMethodName.post,
+        method: httpMethodNames.post,
         path: 'send-verification-email',
         handler: this.sendVerificationEmail.bind(this),
         schema: {
@@ -248,7 +248,7 @@ export class UserHttpController implements HttpController {
             body: sendVerificationEmailBodyDtoSchema,
           },
           response: {
-            [HttpStatusCode.ok]: {
+            [httpStatusCodes.ok]: {
               schema: sendVerificationEmailResponseBodyDtoSchema,
               description: 'Verification email sent',
             },
@@ -257,7 +257,7 @@ export class UserHttpController implements HttpController {
         description: 'Send verification email',
       }),
       new HttpRoute({
-        method: HttpMethodName.post,
+        method: httpMethodNames.post,
         path: 'verify-email',
         handler: this.verifyUserEmail.bind(this),
         schema: {
@@ -265,7 +265,7 @@ export class UserHttpController implements HttpController {
             body: verifyUserBodyDtoSchema,
           },
           response: {
-            [HttpStatusCode.ok]: {
+            [httpStatusCodes.ok]: {
               schema: verifyUserResponseBodyDtoSchema,
               description: "User's email verified",
             },
@@ -274,7 +274,7 @@ export class UserHttpController implements HttpController {
         description: 'Verify user email',
       }),
       new HttpRoute({
-        method: HttpMethodName.post,
+        method: httpMethodNames.post,
         path: ':userId/logout',
         handler: this.logoutUser.bind(this),
         schema: {
@@ -283,7 +283,7 @@ export class UserHttpController implements HttpController {
             body: logoutUserBodyDtoSchema,
           },
           response: {
-            [HttpStatusCode.ok]: {
+            [httpStatusCodes.ok]: {
               schema: logoutUserResponseBodyDtoSchema,
               description: 'User logged out',
             },
@@ -293,7 +293,7 @@ export class UserHttpController implements HttpController {
         description: 'Logout user',
       }),
       new HttpRoute({
-        method: HttpMethodName.patch,
+        method: httpMethodNames.patch,
         path: ':userId',
         handler: this.updateUser.bind(this),
         schema: {
@@ -302,7 +302,7 @@ export class UserHttpController implements HttpController {
             body: updateUserRequestBodyDtoSchema,
           },
           response: {
-            [HttpStatusCode.ok]: {
+            [httpStatusCodes.ok]: {
               schema: updateUserResponseBodyDtoSchema,
               description: 'User updated',
             },
@@ -312,7 +312,7 @@ export class UserHttpController implements HttpController {
         description: 'Update user',
       }),
       new HttpRoute({
-        method: HttpMethodName.post,
+        method: httpMethodNames.post,
         path: 'token',
         handler: this.refreshUserTokens.bind(this),
         schema: {
@@ -320,7 +320,7 @@ export class UserHttpController implements HttpController {
             body: refreshUserTokensBodyDtoSchema,
           },
           response: {
-            [HttpStatusCode.ok]: {
+            [httpStatusCodes.ok]: {
               schema: refreshUserTokensResponseBodyDtoSchema,
               description: 'User tokens refreshed',
             },
@@ -343,7 +343,7 @@ export class UserHttpController implements HttpController {
     });
 
     return {
-      statusCode: HttpStatusCode.created,
+      statusCode: httpStatusCodes.created,
       body: this.mapUserToUserDto(user),
     };
   }
@@ -357,7 +357,7 @@ export class UserHttpController implements HttpController {
     });
 
     return {
-      statusCode: HttpStatusCode.ok,
+      statusCode: httpStatusCodes.ok,
       body: {
         accessToken,
         refreshToken,
@@ -376,7 +376,7 @@ export class UserHttpController implements HttpController {
     });
 
     return {
-      statusCode: HttpStatusCode.ok,
+      statusCode: httpStatusCodes.ok,
       body: null,
     };
   }
@@ -418,7 +418,7 @@ export class UserHttpController implements HttpController {
     });
 
     return {
-      statusCode: HttpStatusCode.ok,
+      statusCode: httpStatusCodes.ok,
       body: null,
     };
   }
@@ -436,7 +436,7 @@ export class UserHttpController implements HttpController {
     const { user } = await this.findUserQueryHandler.execute({ userId });
 
     return {
-      statusCode: HttpStatusCode.ok,
+      statusCode: httpStatusCodes.ok,
       body: this.mapUserToUserDto(user),
     };
   }
@@ -449,7 +449,7 @@ export class UserHttpController implements HttpController {
     const { user } = await this.findUserQueryHandler.execute({ userId });
 
     return {
-      statusCode: HttpStatusCode.ok,
+      statusCode: httpStatusCodes.ok,
       body: this.mapUserToUserDto(user),
     };
   }
@@ -467,7 +467,7 @@ export class UserHttpController implements HttpController {
     await this.deleteUserCommandHandler.execute({ userId });
 
     return {
-      statusCode: HttpStatusCode.noContent,
+      statusCode: httpStatusCodes.noContent,
       body: null,
     };
   }
@@ -490,7 +490,7 @@ export class UserHttpController implements HttpController {
     });
 
     return {
-      statusCode: HttpStatusCode.ok,
+      statusCode: httpStatusCodes.ok,
       body: this.mapUserToUserDto(user),
     };
   }
@@ -503,7 +503,7 @@ export class UserHttpController implements HttpController {
     await this.verifyUserEmailCommandHandler.execute({ emailVerificationToken: token });
 
     return {
-      statusCode: HttpStatusCode.ok,
+      statusCode: httpStatusCodes.ok,
       body: null,
     };
   }
@@ -518,7 +518,7 @@ export class UserHttpController implements HttpController {
     });
 
     return {
-      statusCode: HttpStatusCode.ok,
+      statusCode: httpStatusCodes.ok,
       body: null,
     };
   }
@@ -542,7 +542,7 @@ export class UserHttpController implements HttpController {
     });
 
     return {
-      statusCode: HttpStatusCode.ok,
+      statusCode: httpStatusCodes.ok,
       body: null,
     };
   }
@@ -557,7 +557,7 @@ export class UserHttpController implements HttpController {
     });
 
     return {
-      statusCode: HttpStatusCode.ok,
+      statusCode: httpStatusCodes.ok,
       body: {
         accessToken,
         refreshToken,

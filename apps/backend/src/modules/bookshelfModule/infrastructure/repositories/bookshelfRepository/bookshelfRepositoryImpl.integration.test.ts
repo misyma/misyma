@@ -41,7 +41,7 @@ describe('BookshelfRepositoryImpl', () => {
   let testUtils: TestUtils[];
 
   beforeEach(async () => {
-    const container = TestContainer.create();
+    const container = await TestContainer.create();
 
     databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
 

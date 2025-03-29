@@ -1,5 +1,4 @@
-import { type EmailEvent } from '../../entities/emailEvent/emailEvent.js';
-import { type EmailEventDraft } from '../../entities/emailEvent/emailEventDraft.ts/emailEventDraft.js';
+import { type EmailEventDraft, type EmailEvent } from '../../entities/emailEvent/emailEvent.js';
 
 export interface FindAllCreatedAfterPayload {
   readonly after: Date;

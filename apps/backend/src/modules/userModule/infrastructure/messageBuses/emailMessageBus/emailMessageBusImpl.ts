@@ -1,5 +1,5 @@
 import { type EmailMessageBus } from '../../../application/messageBuses/emailMessageBus/emailMessageBus.js';
-import { type EmailEventDraft } from '../../../domain/entities/emailEvent/emailEventDraft.ts/emailEventDraft.js';
+import { type EmailEventDraft } from '../../../domain/entities/emailEvent/emailEvent.js';
 import { type EmailEventRepository } from '../../../domain/repositories/emailEventRepository/emailEventRepository.js';
 
 export class EmailMessageBusImpl implements EmailMessageBus {

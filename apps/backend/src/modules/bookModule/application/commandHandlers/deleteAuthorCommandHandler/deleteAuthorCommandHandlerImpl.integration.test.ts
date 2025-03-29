@@ -20,7 +20,7 @@ describe('DeleteAuthorCommandHandler', () => {
   const authorTestFactory = new AuthorTestFactory();
 
   beforeEach(async () => {
-    const container = TestContainer.create();
+    const container = await TestContainer.create();
 
     deleteAuthorCommandHandler = container.get<DeleteAuthorCommandHandler>(symbols.deleteAuthorCommandHandler);
 

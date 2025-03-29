@@ -1,4 +1,4 @@
-import { type HttpStatusCode } from './httpStatusCode.js';
+import { type httpStatusCodes, type HttpStatusCode } from './httpStatusCode.js';
 
 export interface HttpResponse<Body = unknown> {
   readonly statusCode: HttpStatusCode;
@@ -6,13 +6,13 @@ export interface HttpResponse<Body = unknown> {
 }
 
 export interface HttpOkResponse<Body = unknown> extends HttpResponse<Body> {
-  readonly statusCode: typeof HttpStatusCode.ok;
+  readonly statusCode: typeof httpStatusCodes.ok;
 }
 
 export interface HttpCreatedResponse<Body = unknown> extends HttpResponse<Body> {
-  readonly statusCode: typeof HttpStatusCode.created;
+  readonly statusCode: typeof httpStatusCodes.created;
 }
 
 export interface HttpNoContentResponse<Body = unknown> extends HttpResponse<Body> {
-  readonly statusCode: typeof HttpStatusCode.noContent;
+  readonly statusCode: typeof httpStatusCodes.noContent;
 }

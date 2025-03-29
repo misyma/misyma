@@ -25,7 +25,7 @@ describe('UpdateBookshelfCommandHandlerImpl', () => {
   let testUtils: TestUtils[];
 
   beforeEach(async () => {
-    const container = TestContainer.create();
+    const container = await TestContainer.create();
 
     commandHandler = container.get<UpdateBookshelfCommandHandler>(symbols.updateBookshelfCommandHandler);
 

@@ -49,7 +49,7 @@ describe('UserBookRepositoryImpl', () => {
   let testUtils: TestUtils[];
 
   beforeEach(async () => {
-    const container = TestContainer.create();
+    const container = await TestContainer.create();
 
     userBookRepository = container.get<UserBookRepository>(symbols.userBookRepository);
 

@@ -1,11 +1,38 @@
 import { type BaseEmailPayload } from './types/baseEmailPayload.js';
 import { type EmailEventStatus } from './types/emailEventStatus.js';
-import { type EmailEventType } from './types/emailEventType.js';
+import { type EmailType } from '../../../../../common/types/emailType.js';
+
+export interface EmailEventDraftState {
+  payload: BaseEmailPayload;
+  eventName: EmailType;
+}
+
+export class EmailEventDraft {
+  private payload: BaseEmailPayload;
+
+  private eventName: EmailType;
+
+  public constructor(draft: EmailEventDraftState) {
+    const { payload, eventName } = draft;
+
+    this.payload = payload;
+
+    this.eventName = eventName;
+  }
+
+  public getPayload(): BaseEmailPayload {
+    return this.payload;
+  }
+
+  public getEmailEventName(): EmailType {
+    return this.eventName;
+  }
+}
 
 export interface EmailEventState {
   id: string;
   status: EmailEventStatus;
-  eventName: EmailEventType;
+  eventName: EmailType;
   payload: BaseEmailPayload;
   createdAt: Date;
 }
@@ -19,7 +46,7 @@ export class EmailEvent {
 
   private createdAt: Date;
 
-  private eventName: EmailEventType;
+  private eventName: EmailType;
 
   public constructor(draft: EmailEventState) {
     const { id, status, payload, createdAt, eventName } = draft;
@@ -47,7 +74,7 @@ export class EmailEvent {
     return this.payload;
   }
 
-  public getEmailEventName(): EmailEventType {
+  public getEmailEventName(): EmailType {
     return this.eventName;
   }
 

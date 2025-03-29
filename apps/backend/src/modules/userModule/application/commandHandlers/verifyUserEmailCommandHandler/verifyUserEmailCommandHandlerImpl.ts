@@ -1,9 +1,9 @@
 import { type VerifyUserEmailCommandHandler, type ExecutePayload } from './verifyUserEmailCommandHandler.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
+import { TokenType } from '../../../../../common/types/tokenType.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
-import { TokenType } from '../../../domain/types/tokenType.js';
 
 export class VerifyUserEmailCommandHandlerImpl implements VerifyUserEmailCommandHandler {
   public constructor(
