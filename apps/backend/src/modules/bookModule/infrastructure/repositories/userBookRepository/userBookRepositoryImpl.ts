@@ -197,7 +197,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
   public async findUserBook(payload: FindUserBookPayload): Promise<UserBook | null> {
     const { id, title, bookshelfId, bookId, authorIds } = payload;
 
-    let rawEntity: UserBookWithJoinsRawEntity;
+    let rawEntity: UserBookWithJoinsRawEntity | undefined;
 
     try {
       const userBookSelect = [
@@ -317,6 +317,10 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         operation: 'find',
         originalError: error,
       });
+    }
+
+    if (!rawEntity) {
+      return null;
     }
 
     return this.userBookMapper.mapRawWithJoinsToDomain(rawEntity);
