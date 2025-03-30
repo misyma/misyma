@@ -110,13 +110,10 @@ describe('FindBorrowingsQueryHandlerImpl', () => {
 
     const book = await bookTestUtils.createAndPersist();
 
-    const genre = await genreTestUtils.createAndPersist();
-
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookId: book.id,
         bookshelfId: bookshelf.id,
-        genreId: genre.id,
       },
     });
 
@@ -139,13 +136,10 @@ describe('FindBorrowingsQueryHandlerImpl', () => {
 
     const book = await bookTestUtils.createAndPersist();
 
-    const genre = await genreTestUtils.createAndPersist();
-
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookId: book.id,
         bookshelfId: bookshelf.id,
-        genreId: genre.id,
       },
     });
 

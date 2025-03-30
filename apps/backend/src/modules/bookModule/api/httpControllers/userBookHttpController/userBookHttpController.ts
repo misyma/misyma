@@ -379,7 +379,7 @@ export class UserBookHttpController implements HttpController {
     } = userBook.getState();
 
     const userBookDto: UserBookDto = {
-      id: userBook.getId(),
+      id: userBook.id,
       status,
       isFavorite,
       bookshelfId,

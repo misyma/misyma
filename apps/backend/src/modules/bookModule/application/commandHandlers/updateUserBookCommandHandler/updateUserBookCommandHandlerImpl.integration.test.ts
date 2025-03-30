@@ -248,7 +248,7 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
       isFavorite: updatedIsFavorite,
     });
 
-    expect(updatedUserBook.getId()).toBe(userBook.id);
+    expect(updatedUserBook.id).toBe(userBook.id);
 
     expect(updatedUserBook.getBookshelfId()).toBe(bookshelf2.id);
 

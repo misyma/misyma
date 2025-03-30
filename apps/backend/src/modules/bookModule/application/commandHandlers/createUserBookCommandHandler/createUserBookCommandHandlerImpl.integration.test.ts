@@ -100,7 +100,7 @@ describe('CreateUserBookCommandHandler', () => {
     });
 
     const foundUserBook = await userBookTestUtils.findById({
-      id: userBook.getId(),
+      id: userBook.id,
     });
 
     expect(foundUserBook?.bookId).toEqual(book.id);

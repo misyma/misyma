@@ -94,13 +94,10 @@ describe('FindQuotesQueryHandlerImpl', () => {
       },
     });
 
-    const genre = await genreTestUtils.createAndPersist();
-
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookId: book.id,
         bookshelfId: bookshelf.id,
-        genreId: genre.id,
       },
     });
 
@@ -129,13 +126,10 @@ describe('FindQuotesQueryHandlerImpl', () => {
       },
     });
 
-    const genre = await genreTestUtils.createAndPersist();
-
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookId: book.id,
         bookshelfId: bookshelf.id,
-        genreId: genre.id,
       },
     });
 

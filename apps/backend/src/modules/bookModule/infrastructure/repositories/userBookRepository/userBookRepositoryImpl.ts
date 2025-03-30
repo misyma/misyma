@@ -94,7 +94,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
   private async updateUserBook(payload: UpdateUserBookPayload): Promise<UserBook> {
     const { userBook } = payload;
 
-    const existingUserBook = await this.findUserBook({ id: userBook.getId() });
+    const existingUserBook = await this.findUserBook({ id: userBook.id });
 
     if (!existingUserBook) {
       throw new RepositoryError({
@@ -117,7 +117,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
             isFavorite,
             imageUrl,
           })
-          .where({ id: userBook.getId() });
+          .where({ id: userBook.id });
 
         const existingCollections = existingUserBook.getCollections() || [];
 
@@ -135,7 +135,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           await transaction<UserBookCollectionRawEntity>(userBookCollectionTable)
             .insert(
               addedCollections.map((collection) => ({
-                userBookId: userBook.getId(),
+                userBookId: userBook.id,
                 collectionId: collection.getId(),
               })),
             )
@@ -151,7 +151,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
               removedCollections.map((collection) => collection.getId()),
             )
             .andWhere({
-              userBookId: userBook.getId(),
+              userBookId: userBook.id,
             });
         }
       });
@@ -163,14 +163,14 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       });
     }
 
-    return (await this.findUserBook({ id: userBook.getId() })) as UserBook;
+    return (await this.findUserBook({ id: userBook.id })) as UserBook;
   }
 
   public async saveUserBooks(payload: SaveUserBooksPayload): Promise<void> {
     const { userBooks } = payload;
 
     const payloads: Partial<UserBookRawEntity>[] = userBooks.map((userBook) => ({
-      id: userBook.getId(),
+      id: userBook.id,
       imageUrl: userBook.getImageUrl(),
       status: userBook.getStatus(),
       isFavorite: userBook.getIsFavorite(),

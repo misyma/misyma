@@ -142,13 +142,10 @@ describe('UploadUserBookImageCommandHandlerImpl', () => {
       },
     });
 
-    const genre = await genreTestUtils.createAndPersist();
-
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookId: book.id,
         bookshelfId: bookshelf.id,
-        genreId: genre.id,
       },
     });
 
@@ -195,14 +192,11 @@ describe('UploadUserBookImageCommandHandlerImpl', () => {
 
     await s3TestUtils.uploadObject(bucketName, existingImageId, filePath);
 
-    const genre = await genreTestUtils.createAndPersist();
-
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookId: book.id,
         bookshelfId: bookshelf.id,
         imageUrl: `${config.aws.cloudfrontUrl}/${existingImageId}`,
-        genreId: genre.id,
       },
     });
 
@@ -255,13 +249,10 @@ describe('UploadUserBookImageCommandHandlerImpl', () => {
       },
     });
 
-    const genre = await genreTestUtils.createAndPersist();
-
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookId: book.id,
         bookshelfId: bookshelf.id,
-        genreId: genre.id,
       },
     });
 

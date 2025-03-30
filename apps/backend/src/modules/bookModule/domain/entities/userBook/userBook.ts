@@ -57,7 +57,7 @@ export interface SetCollectionsPayload {
 }
 
 export class UserBook {
-  private readonly id: string;
+  private readonly _id: string;
   private readonly state: UserBookState;
 
   public constructor(draft: UserBookDraft) {
@@ -75,7 +75,7 @@ export class UserBook {
       latestRating,
     } = draft;
 
-    this.id = id;
+    this._id = id;
 
     let state: UserBookState = {
       status,
@@ -124,8 +124,8 @@ export class UserBook {
     return this.state;
   }
 
-  public getId(): string {
-    return this.id;
+  public get id(): string {
+    return this._id;
   }
 
   public getBook(): BookDraft | undefined {

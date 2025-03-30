@@ -127,7 +127,7 @@ describe('UserBookRepositoryImpl', () => {
       });
 
       const foundUserBook = await userBookTestUtils.findById({
-        id: userBook.getId(),
+        id: userBook.id,
       });
 
       expect(userBook.getState()).toEqual({
@@ -166,7 +166,7 @@ describe('UserBookRepositoryImpl', () => {
       });
 
       expect(foundUserBook).toEqual({
-        id: userBook.getId(),
+        id: userBook.id,
         bookId: userBookRawEntity.bookId,
         bookshelfId: userBookRawEntity.bookshelfId,
         createdAt: userBookRawEntity.createdAt,
@@ -207,7 +207,7 @@ describe('UserBookRepositoryImpl', () => {
       const updatedUserBook = await userBookRepository.saveUserBook({ userBook });
 
       const foundUserBook = await userBookTestUtils.findById({
-        id: userBook.getId(),
+        id: userBook.id,
       });
 
       expect(updatedUserBook.getState()).toEqual({
@@ -237,7 +237,7 @@ describe('UserBookRepositoryImpl', () => {
       });
 
       expect(foundUserBook).toEqual({
-        id: userBook.getId(),
+        id: userBook.id,
         bookId: userBook.getBookId(),
         bookshelfId: newBookshelfId,
         status: userBook.getStatus(),
@@ -278,7 +278,7 @@ describe('UserBookRepositoryImpl', () => {
       });
 
       const foundUserBook = await userBookTestUtils.findById({
-        id: userBook.getId(),
+        id: userBook.id,
       });
 
       expect(updatedUserBook.getStatus()).toEqual(newStatus);
@@ -317,7 +317,7 @@ describe('UserBookRepositoryImpl', () => {
       });
 
       const foundUserBook = await userBookTestUtils.findById({
-        id: userBook.getId(),
+        id: userBook.id,
       });
 
       expect(updatedUserBook.getImageUrl()).toEqual(newImageUrl);
@@ -356,7 +356,7 @@ describe('UserBookRepositoryImpl', () => {
       });
 
       const foundUserBook = await userBookTestUtils.findById({
-        id: userBook.getId(),
+        id: userBook.id,
       });
 
       expect(updatedUserBook.getImageUrl()).toBeUndefined();
@@ -395,7 +395,7 @@ describe('UserBookRepositoryImpl', () => {
       });
 
       const foundUserBook = await userBookTestUtils.findById({
-        id: userBook.getId(),
+        id: userBook.id,
       });
 
       expect(updatedUserBook.getIsFavorite()).toEqual(newIsFavorite);
@@ -460,7 +460,7 @@ describe('UserBookRepositoryImpl', () => {
         userBooks: [userBook1, userBook2],
       });
 
-      const foundUserBooks = await userBookTestUtils.findByIds({ ids: [userBook1.getId(), userBook2.getId()] });
+      const foundUserBooks = await userBookTestUtils.findByIds({ ids: [userBook1.id, userBook2.id] });
 
       expect(foundUserBooks.length).toEqual(2);
 
@@ -498,13 +498,13 @@ describe('UserBookRepositoryImpl', () => {
 
       const bookReading = await bookReadingTestUtils.createAndPersist({
         input: {
-          userBookId: userBook.getId(),
+          userBookId: userBook.id,
         },
       });
 
-      const foundUserBook = await userBookRepository.findUserBook({ id: userBook.getId() });
+      const foundUserBook = await userBookRepository.findUserBook({ id: userBook.id });
 
-      expect(foundUserBook?.getId()).toEqual(userBook.getId());
+      expect(foundUserBook?.id).toEqual(userBook.id);
 
       expect(foundUserBook?.getState()).toEqual({
         bookId: userBook.getBookId(),
@@ -633,10 +633,10 @@ describe('UserBookRepositoryImpl', () => {
       expect(userBooks.length).toEqual(2);
 
       userBooks.forEach((userBook) => {
-        expect(userBook.getId()).oneOf([userBook2.id, userBook3.id]);
+        expect(userBook.id).oneOf([userBook2.id, userBook3.id]);
 
         expect(userBook.getLatestRating()).toEqual(
-          userBook.getId() === userBook2.id ? bookReading1.rating : bookReading2.rating,
+          userBook.id === userBook2.id ? bookReading1.rating : bookReading2.rating,
         );
       });
     });
@@ -709,7 +709,7 @@ describe('UserBookRepositoryImpl', () => {
 
       expect(userBooks.length).toEqual(1);
 
-      expect(userBooks[0]?.getId()).toEqual(userBook2.id);
+      expect(userBooks[0]?.id).toEqual(userBook2.id);
     });
 
     it('returns UserBooks by ISBN', async () => {
@@ -759,7 +759,7 @@ describe('UserBookRepositoryImpl', () => {
 
       expect(userBooks.length).toEqual(1);
 
-      expect(userBooks[0]?.getId()).toEqual(userBook2.id);
+      expect(userBooks[0]?.id).toEqual(userBook2.id);
     });
 
     it('returns UserBooks by User', async () => {
@@ -825,7 +825,7 @@ describe('UserBookRepositoryImpl', () => {
       expect(userBooks.length).toEqual(2);
 
       userBooks.forEach((userBook) => {
-        expect(userBook.getId()).oneOf([userBook2.id, userBook3.id]);
+        expect(userBook.id).oneOf([userBook2.id, userBook3.id]);
       });
     });
 
@@ -888,7 +888,7 @@ describe('UserBookRepositoryImpl', () => {
 
       expect(userBooks.length).toEqual(1);
 
-      expect(userBooks[0]?.getId()).toEqual(userBook.id);
+      expect(userBooks[0]?.id).toEqual(userBook.id);
     });
 
     it('returns UserBooks by User and ISBN', async () => {
@@ -951,7 +951,7 @@ describe('UserBookRepositoryImpl', () => {
 
       expect(userBooks.length).toEqual(1);
 
-      expect(userBooks[0]?.getId()).toEqual(userBook.id);
+      expect(userBooks[0]?.id).toEqual(userBook.id);
     });
 
     it('returns UserBooks by User and title', async () => {
@@ -1021,7 +1021,7 @@ describe('UserBookRepositoryImpl', () => {
 
       expect(userBooks.length).toEqual(1);
 
-      expect(userBooks[0]?.getId()).toEqual(userBook.id);
+      expect(userBooks[0]?.id).toEqual(userBook.id);
     });
 
     it('returns UserBooks by author id', async () => {
@@ -1080,7 +1080,7 @@ describe('UserBookRepositoryImpl', () => {
       expect(userBooks.length).toEqual(1);
 
       userBooks.forEach((userBook) => {
-        expect(userBook.getId()).toEqual(userBook3.id);
+        expect(userBook.id).toEqual(userBook3.id);
       });
     });
   });
@@ -1311,9 +1311,9 @@ describe('UserBookRepositoryImpl', () => {
 
       expect(userBooks.length).toEqual(2);
 
-      expect(userBooks[0]?.getId()).toEqual(userBook2.id);
+      expect(userBooks[0]?.id).toEqual(userBook2.id);
 
-      expect(userBooks[1]?.getId()).toEqual(userBook1.id);
+      expect(userBooks[1]?.id).toEqual(userBook1.id);
     });
 
     it('sorts UserBooks by createdAt', async () => {
@@ -1363,9 +1363,9 @@ describe('UserBookRepositoryImpl', () => {
 
       expect(userBooks1.length).toEqual(2);
 
-      expect(userBooks1[0]?.getId()).toEqual(userBook2.id);
+      expect(userBooks1[0]?.id).toEqual(userBook2.id);
 
-      expect(userBooks1[1]?.getId()).toEqual(userBook1.id);
+      expect(userBooks1[1]?.id).toEqual(userBook1.id);
 
       const userBooks2 = await userBookRepository.findUserBooks({
         userId: user.id,
@@ -1377,9 +1377,9 @@ describe('UserBookRepositoryImpl', () => {
 
       expect(userBooks2.length).toEqual(2);
 
-      expect(userBooks2[0]?.getId()).toEqual(userBook1.id);
+      expect(userBooks2[0]?.id).toEqual(userBook1.id);
 
-      expect(userBooks2[1]?.getId()).toEqual(userBook2.id);
+      expect(userBooks2[1]?.id).toEqual(userBook2.id);
     });
 
     it('sorts UserBooks by releaseYear', async () => {
@@ -1435,9 +1435,9 @@ describe('UserBookRepositoryImpl', () => {
 
       expect(userBooks1.length).toEqual(2);
 
-      expect(userBooks1[0]?.getId()).toEqual(userBook2.id);
+      expect(userBooks1[0]?.id).toEqual(userBook2.id);
 
-      expect(userBooks1[1]?.getId()).toEqual(userBook1.id);
+      expect(userBooks1[1]?.id).toEqual(userBook1.id);
 
       const userBooks2 = await userBookRepository.findUserBooks({
         userId: user.id,
@@ -1449,9 +1449,9 @@ describe('UserBookRepositoryImpl', () => {
 
       expect(userBooks2.length).toEqual(2);
 
-      expect(userBooks2[0]?.getId()).toEqual(userBook1.id);
+      expect(userBooks2[0]?.id).toEqual(userBook1.id);
 
-      expect(userBooks2[1]?.getId()).toEqual(userBook2.id);
+      expect(userBooks2[1]?.id).toEqual(userBook2.id);
     });
 
     it('sorts UserBooks by latest reading date', async () => {
@@ -1523,9 +1523,9 @@ describe('UserBookRepositoryImpl', () => {
 
       expect(userBooks.length).toEqual(2);
 
-      expect(userBooks[0]?.getId()).toEqual(userBook2.id);
+      expect(userBooks[0]?.id).toEqual(userBook2.id);
 
-      expect(userBooks[1]?.getId()).toEqual(userBook1.id);
+      expect(userBooks[1]?.id).toEqual(userBook1.id);
 
       const userBooks2 = await userBookRepository.findUserBooks({
         userId: user.id,
@@ -1537,9 +1537,9 @@ describe('UserBookRepositoryImpl', () => {
 
       expect(userBooks2.length).toEqual(2);
 
-      expect(userBooks2[0]?.getId()).toEqual(userBook1.id);
+      expect(userBooks2[0]?.id).toEqual(userBook1.id);
 
-      expect(userBooks2[1]?.getId()).toEqual(userBook2.id);
+      expect(userBooks2[1]?.id).toEqual(userBook2.id);
     });
 
     it('sorts UserBooks by latest rating', async () => {
@@ -1621,11 +1621,11 @@ describe('UserBookRepositoryImpl', () => {
 
       expect(userBooks1.length).toEqual(2);
 
-      expect(userBooks1[0]?.getId()).toEqual(userBook1.id);
+      expect(userBooks1[0]?.id).toEqual(userBook1.id);
 
       expect(userBooks1[0]?.getLatestRating()).toEqual(7);
 
-      expect(userBooks1[1]?.getId()).toEqual(userBook2.id);
+      expect(userBooks1[1]?.id).toEqual(userBook2.id);
 
       expect(userBooks1[1]?.getLatestRating()).toEqual(2);
 
@@ -1639,11 +1639,11 @@ describe('UserBookRepositoryImpl', () => {
 
       expect(userBooks2.length).toEqual(2);
 
-      expect(userBooks2[0]?.getId()).toEqual(userBook2.id);
+      expect(userBooks2[0]?.id).toEqual(userBook2.id);
 
       expect(userBooks2[0]?.getLatestRating()).toEqual(2);
 
-      expect(userBooks2[1]?.getId()).toEqual(userBook1.id);
+      expect(userBooks2[1]?.id).toEqual(userBook1.id);
 
       expect(userBooks2[1]?.getLatestRating()).toEqual(7);
     });

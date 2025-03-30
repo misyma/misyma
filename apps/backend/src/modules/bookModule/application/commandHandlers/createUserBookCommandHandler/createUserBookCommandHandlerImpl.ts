@@ -110,7 +110,7 @@ export class CreateUserBookCommandHandlerImpl implements CreateUserBookCommandHa
 
     this.loggerService.debug({
       message: 'UserBook created.',
-      id: userBook.getId(),
+      id: userBook.id,
       bookshelfId,
       bookId,
     });

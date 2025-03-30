@@ -115,13 +115,10 @@ describe('CreateBookReadingCommandHandlerImpl', () => {
 
     const book = await bookTestUtils.createAndPersist();
 
-    const genre = await genreTestUtils.createAndPersist();
-
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookshelfId: bookshelf.id,
         bookId: book.id,
-        genreId: genre.id,
       },
     });
 
@@ -156,13 +153,10 @@ describe('CreateBookReadingCommandHandlerImpl', () => {
 
     const book = await bookTestUtils.createAndPersist();
 
-    const genre = await genreTestUtils.createAndPersist();
-
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookshelfId: bookshelf.id,
         bookId: book.id,
-        genreId: genre.id,
       },
     });
 

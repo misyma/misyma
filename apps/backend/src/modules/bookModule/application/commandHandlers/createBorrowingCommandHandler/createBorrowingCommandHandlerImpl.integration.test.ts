@@ -123,13 +123,10 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
 
     const book = await bookTestUtils.createAndPersist();
 
-    const genre = await genreTestUtils.createAndPersist();
-
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookshelfId: bookshelf.id,
         bookId: book.id,
-        genreId: genre.id,
       },
     });
 
@@ -176,12 +173,9 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
 
     const book = await bookTestUtils.createAndPersist();
 
-    const genre = await genreTestUtils.createAndPersist();
-
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookshelfId: bookshelf.id,
-        genreId: genre.id,
         bookId: book.id,
       },
     });
@@ -228,12 +222,9 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
 
     const book = await bookTestUtils.createAndPersist();
 
-    const genre = await genreTestUtils.createAndPersist();
-
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookshelfId: bookshelf.id,
-        genreId: genre.id,
         bookId: book.id,
       },
     });
@@ -275,13 +266,10 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
 
     const book = await bookTestUtils.createAndPersist();
 
-    const genre = await genreTestUtils.createAndPersist();
-
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookshelfId: bookshelf.id,
         bookId: book.id,
-        genreId: genre.id,
       },
     });
 
