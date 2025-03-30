@@ -13,4 +13,6 @@ export const testSymbols = {
   s3TestUtils: Symbol('s3TestService'),
   collectionTestUtils: Symbol('collectionTestUtils'),
   bookChangeRequestTestUtils: Symbol('bookChangeRequestTestUtils'),
+
+  testDataOrchestrator: Symbol('testDataOrchestrator'),
 };

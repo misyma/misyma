@@ -9,11 +9,11 @@ import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
-import { type UserBookRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/userBookTable/userBookRawEntity.js';
 import { symbols } from '../../../symbols.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
 import { type BorrowingTestUtils } from '../../../tests/utils/borrowingTestUtils/borrowingTestUtils.js';
 import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
+import { type TestDataOrchestrator } from '../../../tests/utils/testDataOrchestrator/testDataOrchestrator.js';
 import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
 
 import { type FindBorrowingsQueryHandler } from './findBorrowingsQueryHandler.js';
@@ -25,15 +25,9 @@ describe('FindBorrowingsQueryHandlerImpl', () => {
 
   let borrowingTestUtils: BorrowingTestUtils;
 
-  let bookTestUtils: BookTestUtils;
-
-  let bookshelfTestUtils: BookshelfTestUtils;
-
   let userTestUtils: UserTestUtils;
 
-  let genreTestUtils: GenreTestUtils;
-
-  let userBookTestUtils: UserBookTestUtils;
+  let orchestrator: TestDataOrchestrator;
 
   let testUtils: TestUtils[];
 
@@ -50,32 +44,23 @@ describe('FindBorrowingsQueryHandlerImpl', () => {
 
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
 
-    bookTestUtils = container.get<BookTestUtils>(testSymbols.bookTestUtils);
+    orchestrator = container.get<TestDataOrchestrator>(testSymbols.testDataOrchestrator);
 
-    bookshelfTestUtils = container.get<BookshelfTestUtils>(testSymbols.bookshelfTestUtils);
-
-    userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
-
-    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
-
-    testUtils = [
-      genreTestUtils,
-      bookTestUtils,
-      bookshelfTestUtils,
-      userTestUtils,
-      borrowingTestUtils,
-      userBookTestUtils,
-    ];
+    testUtils = [userTestUtils, borrowingTestUtils];
 
     for (const testUtil of testUtils) {
       await testUtil.truncate();
     }
+
+    await orchestrator.cleanup();
 
     await userTestUtils.createAndPersist({
       input: {
         id: testUserId,
       },
     });
+
+    orchestrator.setUserId(testUserId);
   });
 
   afterEach(async () => {
@@ -85,27 +70,6 @@ describe('FindBorrowingsQueryHandlerImpl', () => {
 
     await databaseClient.destroy();
   });
-
-  async function createUserBook(): Promise<UserBookRawEntity > {
-    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: testUserId } });
-
-    const genre = await genreTestUtils.createAndPersist();
-
-    const book = await bookTestUtils.createAndPersist({
-      input: {
-        book: {
-          genreId: genre.id,
-        },
-      },
-    });
-
-    return await userBookTestUtils.createAndPersist({
-      input: {
-        bookId: book.id,
-        bookshelfId: bookshelf.id,
-      },
-    });
-  }
 
   it('throws an error - when UserBook was not found', async () => {
     const user = await userTestUtils.createAndPersist();
@@ -134,7 +98,7 @@ describe('FindBorrowingsQueryHandlerImpl', () => {
   });
 
   it('returns an empty array - when UserBook has no Borrowings', async () => {
-    const userBook = await createUserBook();
+    const userBook = await orchestrator.createUserBook();
 
     const { borrowings, total } = await queryHandler.execute({
       userId: testUserId,
@@ -149,7 +113,7 @@ describe('FindBorrowingsQueryHandlerImpl', () => {
   });
 
   it('returns Book Borrowings', async () => {
-    const userBook = await createUserBook();
+    const userBook = await orchestrator.createUserBook();
 
     const borrowing1 = await borrowingTestUtils.createAndPersist({
       input: {

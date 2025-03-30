@@ -7,15 +7,12 @@ import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
-import { type BookTestUtils } from '../../../../bookModule/tests/utils/bookTestUtils/bookTestUtils.js';
-import { type UserBookTestUtils } from '../../../../bookModule/tests/utils/userBookTestUtils/userBookTestUtils.js';
-import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { BookReading } from '../../../domain/entities/bookReading/bookReading.js';
 import { symbols } from '../../../symbols.js';
 import { BookReadingTestFactory } from '../../../tests/factories/bookReadingTestFactory/bookReadingTestFactory.js';
 import { type BookReadingTestUtils } from '../../../tests/utils/bookReadingTestUtils/bookReadingTestUtils.js';
-import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
+import { type TestDataOrchestrator } from '../../../tests/utils/testDataOrchestrator/testDataOrchestrator.js';
 
 import { type CreateBookReadingCommandHandler } from './createBookReadingCommandHandler.js';
 
@@ -26,15 +23,11 @@ describe('CreateBookReadingCommandHandlerImpl', () => {
 
   let bookReadingTestUtils: BookReadingTestUtils;
 
-  let bookTestUtils: BookTestUtils;
-
-  let bookshelfTestUtils: BookshelfTestUtils;
-
   let userTestUtils: UserTestUtils;
 
-  let genreTestUtils: GenreTestUtils;
+  let testDataOrchestrator: TestDataOrchestrator;
 
-  let userBookTestUtils: UserBookTestUtils;
+  const testUserId = Generator.uuid();
 
   const bookReadingTestFactory = new BookReadingTestFactory();
 
@@ -51,26 +44,23 @@ describe('CreateBookReadingCommandHandlerImpl', () => {
 
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
 
-    bookTestUtils = container.get<BookTestUtils>(testSymbols.bookTestUtils);
+    testDataOrchestrator = container.get<TestDataOrchestrator>(testSymbols.testDataOrchestrator);
 
-    bookshelfTestUtils = container.get<BookshelfTestUtils>(testSymbols.bookshelfTestUtils);
-
-    userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
-
-    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
-
-    testUtils = [
-      genreTestUtils,
-      bookTestUtils,
-      bookshelfTestUtils,
-      userTestUtils,
-      bookReadingTestUtils,
-      userBookTestUtils,
-    ];
+    testUtils = [userTestUtils, bookReadingTestUtils];
 
     for (const testUtil of testUtils) {
       await testUtil.truncate();
     }
+
+    await testDataOrchestrator.cleanup();
+
+    await userTestUtils.createAndPersist({
+      input: {
+        id: testUserId,
+      },
+    });
+
+    testDataOrchestrator.setUserId(testUserId);
   });
 
   afterEach(async () => {
@@ -82,8 +72,6 @@ describe('CreateBookReadingCommandHandlerImpl', () => {
   });
 
   it('throws an error - when UserBook does not exist', async () => {
-    const user = await userTestUtils.createAndPersist();
-
     const nonExistentUserBookId = Generator.uuid();
 
     const bookReading = bookReadingTestFactory.create();
@@ -92,7 +80,7 @@ describe('CreateBookReadingCommandHandlerImpl', () => {
       await commandHandler.execute({
         ...bookReading.getState(),
         userBookId: nonExistentUserBookId,
-        userId: user.id,
+        userId: testUserId,
       });
     } catch (error) {
       expect(error).toBeInstanceOf(OperationNotValidError);
@@ -109,18 +97,7 @@ describe('CreateBookReadingCommandHandlerImpl', () => {
   });
 
   it('throws an error - when startDate is later then endDate', async () => {
-    const user = await userTestUtils.createAndPersist();
-
-    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-    const book = await bookTestUtils.createAndPersist();
-
-    const userBook = await userBookTestUtils.createAndPersist({
-      input: {
-        bookshelfId: bookshelf.id,
-        bookId: book.id,
-      },
-    });
+    const userBook = await testDataOrchestrator.createUserBook();
 
     const bookReadingDraft = bookReadingTestFactory.create({
       userBookId: userBook.id,
@@ -131,7 +108,7 @@ describe('CreateBookReadingCommandHandlerImpl', () => {
     try {
       await commandHandler.execute({
         ...bookReadingDraft.getState(),
-        userId: user.id,
+        userId: testUserId,
       });
     } catch (error) {
       expect(error).toBeInstanceOf(OperationNotValidError);
@@ -147,18 +124,7 @@ describe('CreateBookReadingCommandHandlerImpl', () => {
   });
 
   it('returns a BookReading', async () => {
-    const user = await userTestUtils.createAndPersist();
-
-    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-    const book = await bookTestUtils.createAndPersist();
-
-    const userBook = await userBookTestUtils.createAndPersist({
-      input: {
-        bookshelfId: bookshelf.id,
-        bookId: book.id,
-      },
-    });
+    const userBook = await testDataOrchestrator.createUserBook();
 
     const bookReadingDraft = bookReadingTestFactory.create({
       userBookId: userBook.id,
@@ -166,7 +132,7 @@ describe('CreateBookReadingCommandHandlerImpl', () => {
 
     const { bookReading } = await commandHandler.execute({
       ...bookReadingDraft.getState(),
-      userId: user.id,
+      userId: testUserId,
     });
 
     expect(bookReading).toBeInstanceOf(BookReading);
