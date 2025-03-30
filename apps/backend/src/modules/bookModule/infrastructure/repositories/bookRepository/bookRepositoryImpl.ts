@@ -15,6 +15,7 @@ import { bookAuthorTable } from '../../databases/bookDatabase/tables/bookAuthorT
 import { type BookRawEntity } from '../../databases/bookDatabase/tables/bookTable/bookRawEntity.js';
 import { bookTable } from '../../databases/bookDatabase/tables/bookTable/bookTable.js';
 import { type BookWithJoinsRawEntity } from '../../databases/bookDatabase/tables/bookTable/bookWithJoinsRawEntity.js';
+import { genreTable } from '../../databases/bookDatabase/tables/genreTable/genreTable.js';
 
 import { type BookMapper } from './bookMapper/bookMapper.js';
 
@@ -44,6 +45,7 @@ export class BookRepositoryImpl implements BookRepository {
       book: {
         title,
         isbn,
+        genreId,
         publisher,
         releaseYear,
         language,
@@ -68,6 +70,7 @@ export class BookRepositoryImpl implements BookRepository {
             id,
             title,
             isbn,
+            genreId,
             publisher,
             releaseYear,
             language,
@@ -177,6 +180,8 @@ export class BookRepositoryImpl implements BookRepository {
       rawEntities = await this.databaseClient<BookRawEntity>(bookTable)
         .select([
           `${bookTable}.id`,
+          `${bookTable}.genreId`,
+          `${genreTable}.name as "genreName"`,
           `${bookTable}.title`,
           `${bookTable}.isbn`,
           `${bookTable}.publisher`,
@@ -198,6 +203,9 @@ export class BookRepositoryImpl implements BookRepository {
         })
         .leftJoin(authorTable, (join) => {
           join.on(`${authorTable}.id`, '=', `${bookAuthorTable}.authorId`);
+        })
+        .leftJoin(genreTable, (join) => {
+          join.on(`${genreTable}.id`, '=', `${bookTable}.genreId`)
         })
         .where((builder) => {
           builder.where(`${bookTable}.id`, id);

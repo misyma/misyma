@@ -2,10 +2,12 @@ import { type Language, type BookFormat } from '@common/contracts';
 
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type Author } from '../author/author.js';
+import { type Genre } from '../genre/genre.js';
 
 export interface BookDraft {
   readonly id: string;
   readonly genreId: string;
+  readonly genre: Genre;
   readonly title: string;
   readonly isbn?: string | undefined | null;
   readonly publisher?: string | undefined | null;

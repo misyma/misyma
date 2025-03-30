@@ -4,6 +4,7 @@ export interface BookWithJoinsRawEntity {
   readonly id: string;
   readonly title: string;
   readonly genreId: string;
+  readonly genreName: string;
   readonly isbn: string | null;
   readonly publisher: string | null;
   readonly releaseYear: number;

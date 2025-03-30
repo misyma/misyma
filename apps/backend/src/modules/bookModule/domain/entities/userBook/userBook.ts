@@ -132,10 +132,6 @@ export class UserBook {
     throw new Error("Cannot change UserBook id!");
   }
 
-  public getBook(): BookDraft | undefined {
-    return this.state.book;
-  }
-
   public get imageUrl(): string | undefined | null {
     return this.state.imageUrl;
   }

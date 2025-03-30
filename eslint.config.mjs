@@ -53,6 +53,7 @@ export default tseslint.config(
           },
         },
       ],
+      "@typescript-eslint/related-getter-setter-pairs": "off",
       '@typescript-eslint/explicit-module-boundary-types': ['off'],
       '@typescript-eslint/interface-name-prefix': ['off'],
       '@typescript-eslint/no-empty-function': 0,
