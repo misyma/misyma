@@ -5,6 +5,7 @@ import { type Author } from '../author/author.js';
 
 export interface BookDraft {
   readonly id: string;
+  readonly genreId: string;
   readonly title: string;
   readonly isbn?: string | undefined | null;
   readonly publisher?: string | undefined | null;
@@ -31,6 +32,7 @@ export interface BookState {
   isApproved: boolean;
   imageUrl?: string | undefined | null;
   authors: Author[];
+  genreId: string;
   readonly createdAt: Date;
 }
 
@@ -78,6 +80,11 @@ export interface SetImageUrlPayload {
   readonly imageUrl: string | null;
 }
 
+
+export interface SetGenrePayload {
+  readonly genreId: string;
+}
+
 export class Book {
   private readonly id: string;
   private readonly state: BookState;
@@ -85,6 +92,7 @@ export class Book {
   public constructor(draft: BookDraft) {
     const {
       id,
+      genreId,
       title,
       isbn,
       publisher,
@@ -102,6 +110,7 @@ export class Book {
     this.id = id;
 
     this.state = {
+      genreId,
       title,
       language,
       format,

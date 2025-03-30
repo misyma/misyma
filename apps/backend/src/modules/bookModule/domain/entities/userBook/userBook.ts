@@ -128,6 +128,10 @@ export class UserBook {
     return this._id;
   }
 
+  public set id(_) {
+    throw new Error("Cannot change UserBook id!");
+  }
+
   public getBook(): BookDraft | undefined {
     return this.state.book;
   }

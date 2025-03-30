@@ -1,8 +1,8 @@
 import { type DatabaseClient } from '../../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type Migration } from '../../../../../../libs/database/types/migration.js';
 
-export class M3CreateGenreTableMigration implements Migration {
-  public readonly name = 'M3CreateGenresTableMigration';
+export class M2CreateGenreTableMigration implements Migration {
+  public readonly name = 'M2CreateGenresTableMigration';
 
   private readonly tableName = 'genres';
 

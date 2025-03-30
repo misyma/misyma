@@ -3,6 +3,7 @@ import { type Language, type BookFormat } from '@common/contracts';
 export interface BookWithJoinsRawEntity {
   readonly id: string;
   readonly title: string;
+  readonly genreId: string;
   readonly isbn: string | null;
   readonly publisher: string | null;
   readonly releaseYear: number;
