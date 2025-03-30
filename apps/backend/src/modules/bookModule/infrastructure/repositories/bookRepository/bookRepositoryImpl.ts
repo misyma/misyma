@@ -210,7 +210,7 @@ export class BookRepositoryImpl implements BookRepository {
         .where((builder) => {
           builder.where(`${bookTable}.id`, id);
         })
-        .groupBy(`${bookTable}.id`);
+        .groupBy(`${bookTable}.id`, `${genreTable}.name`);
     } catch (error) {
       throw new RepositoryError({
         entity: 'Book',
