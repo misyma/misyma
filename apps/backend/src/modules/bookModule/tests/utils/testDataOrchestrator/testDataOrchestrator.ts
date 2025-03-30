@@ -1,4 +1,7 @@
-import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
+import {
+  type CreateAndPersistBookshelfPayload,
+  type BookshelfTestUtils,
+} from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 import { type UserBookRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/userBookTable/userBookRawEntity.js';
 import { type BookTestUtils } from '../bookTestUtils/bookTestUtils.js';
 import { type GenreTestUtils } from '../genreTestUtils/genreTestUtils.js';
@@ -11,6 +14,9 @@ interface CreateUserBookPayload {
   userBook?: {
     input?: Partial<CreateAndPersistUserBookPayload['input']>;
     collectionIds?: CreateAndPersistUserBookPayload['collectionIds'];
+  };
+  bookshelf?: {
+    input?: Partial<CreateAndPersistBookshelfPayload['input']>;
   };
 }
 
@@ -27,6 +33,7 @@ export class TestDataOrchestrator {
     const bookshelf = await this.bookshelfTestUtils.createAndPersist({
       input: {
         userId: this.userId,
+        ...payload.bookshelf?.input,
       },
     });
 

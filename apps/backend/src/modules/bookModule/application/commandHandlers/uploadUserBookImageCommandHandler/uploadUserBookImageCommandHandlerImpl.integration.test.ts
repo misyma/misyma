@@ -13,12 +13,8 @@ import { type DatabaseClient } from '../../../../../libs/database/clients/databa
 import { type DependencyInjectionContainer } from '../../../../../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type S3TestUtils } from '../../../../../libs/s3/tests/utils/s3TestUtils.js';
 import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
-import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { symbols } from '../../../symbols.js';
-import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
-import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
-import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 import { type TestDataOrchestrator } from '../../../tests/utils/testDataOrchestrator/testDataOrchestrator.js';
 import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
 
@@ -33,15 +29,7 @@ describe('UploadUserBookImageCommandHandlerImpl', () => {
 
   let userTestUtils: UserTestUtils;
 
-  let bookTestUtils: BookTestUtils;
-
-  let bookshelfTestUtils: BookshelfTestUtils;
-
-  let authorTestUtils: AuthorTestUtils;
-
   let userBookTestUtils: UserBookTestUtils;
-
-  let genreTestUtils: GenreTestUtils;
 
   let databaseClient: DatabaseClient;
 
@@ -78,21 +66,13 @@ describe('UploadUserBookImageCommandHandlerImpl', () => {
 
     databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
 
-    bookTestUtils = container.get<BookTestUtils>(testSymbols.bookTestUtils);
-
-    bookshelfTestUtils = container.get<BookshelfTestUtils>(testSymbols.bookshelfTestUtils);
-
-    authorTestUtils = container.get<AuthorTestUtils>(testSymbols.authorTestUtils);
-
     userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
-
-    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
 
     config = container.get<Config>(coreSymbols.config);
 
     testDataOrchestrator = container.get<TestDataOrchestrator>(testSymbols.testDataOrchestrator);
 
-    testUtils = [genreTestUtils, authorTestUtils, bookTestUtils, bookshelfTestUtils, userTestUtils, userBookTestUtils];
+    testUtils = [userTestUtils, userBookTestUtils];
 
     for (const testUtil of testUtils) {
       await testUtil.truncate();
@@ -209,30 +189,9 @@ describe('UploadUserBookImageCommandHandlerImpl', () => {
   });
 
   it('throws an error - when User does not own the book', async () => {
-    const user1 = await userTestUtils.createAndPersist();
-
     const user2 = await userTestUtils.createAndPersist();
 
-    const author = await authorTestUtils.createAndPersist();
-
-    const bookshelf = await bookshelfTestUtils.createAndPersist({
-      input: {
-        userId: user1.id,
-      },
-    });
-
-    const book = await bookTestUtils.createAndPersist({
-      input: {
-        authorIds: [author.id],
-      },
-    });
-
-    const userBook = await userBookTestUtils.createAndPersist({
-      input: {
-        bookId: book.id,
-        bookshelfId: bookshelf.id,
-      },
-    });
+    const userBook = await testDataOrchestrator.createUserBook();
 
     try {
       await commandHandler.execute({

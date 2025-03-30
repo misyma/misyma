@@ -17,6 +17,7 @@ import { symbols } from '../../../symbols.js';
 import { BorrowingTestFactory } from '../../../tests/factories/borrowingTestFactory/borrowingTestFactory.js';
 import { type BorrowingTestUtils } from '../../../tests/utils/borrowingTestUtils/borrowingTestUtils.js';
 import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
+import { type TestDataOrchestrator } from '../../../tests/utils/testDataOrchestrator/testDataOrchestrator.js';
 
 import { type CreateBorrowingCommandHandler } from './createBorrowingCommandHandler.js';
 
@@ -39,6 +40,10 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
 
   const borrowingTestFactory = new BorrowingTestFactory();
 
+  const testUserId = Generator.uuid();
+
+  let testDataOrchestrator: TestDataOrchestrator;
+
   let testUtils: TestUtils[];
 
   beforeEach(async () => {
@@ -60,6 +65,8 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
 
     genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
 
+    testDataOrchestrator = container.get<TestDataOrchestrator>(testSymbols.testDataOrchestrator);
+
     testUtils = [
       genreTestUtils,
       bookTestUtils,
@@ -72,6 +79,16 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
     for (const testUtil of testUtils) {
       await testUtil.truncate();
     }
+
+    await testDataOrchestrator.cleanup();
+
+    await userTestUtils.createAndPersist({
+      input: {
+        id: testUserId,
+      },
+    });
+
+    testDataOrchestrator.setUserId(testUserId);
   });
 
   afterEach(async () => {
@@ -83,8 +100,6 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
   });
 
   it('throws an error - when UserBook does not exist', async () => {
-    const user = await userTestUtils.createAndPersist();
-
     const nonExistentUserBookId = Generator.uuid();
 
     const borrowing = borrowingTestFactory.create();
@@ -93,7 +108,7 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
       await commandHandler.execute({
         ...borrowing.getState(),
         userBookId: nonExistentUserBookId,
-        userId: user.id,
+        userId: testUserId,
       });
     } catch (error) {
       expect(error).toBeInstanceOf(OperationNotValidError);
@@ -110,23 +125,11 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
   });
 
   it('throws an error - when startedAt is greater than endedAt', async () => {
-    const user = await userTestUtils.createAndPersist();
-
-    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-    await bookshelfTestUtils.createAndPersist({
-      input: {
-        userId: user.id,
-        type: BookshelfType.borrowing,
-      },
-    });
-
-    const book = await bookTestUtils.createAndPersist();
-
-    const userBook = await userBookTestUtils.createAndPersist({
-      input: {
-        bookshelfId: bookshelf.id,
-        bookId: book.id,
+    const userBook = await testDataOrchestrator.createUserBook({
+      bookshelf: {
+        input: {
+          type: BookshelfType.borrowing,
+        },
       },
     });
 
@@ -142,7 +145,7 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
         userBookId: userBook.id,
         startedAt,
         endedAt,
-        userId: user.id,
+        userId: testUserId,
       });
     } catch (error) {
       expect(error).toBeInstanceOf(OperationNotValidError);
@@ -160,23 +163,11 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
   });
 
   it('creates a Borrowing and moves a UserBook to Borrowing Bookshelf', async () => {
-    const user = await userTestUtils.createAndPersist();
-
-    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-    const borrowingBookshelf = await bookshelfTestUtils.createAndPersist({
-      input: {
-        userId: user.id,
-        type: BookshelfType.borrowing,
-      },
-    });
-
-    const book = await bookTestUtils.createAndPersist();
-
-    const userBook = await userBookTestUtils.createAndPersist({
-      input: {
-        bookshelfId: bookshelf.id,
-        bookId: book.id,
+    const userBook = await testDataOrchestrator.createUserBook({
+      bookshelf: {
+        input: {
+          type: BookshelfType.borrowing,
+        },
       },
     });
 
@@ -186,7 +177,7 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
 
     const { borrowing } = await commandHandler.execute({
       ...borrowingDraft.getState(),
-      userId: user.id,
+      userId: testUserId,
     });
 
     expect(borrowing).toBeInstanceOf(Borrowing);
@@ -212,22 +203,11 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
 
     const persistedUserBook = await userBookTestUtils.findById({ id: userBook.id });
 
-    expect(persistedUserBook?.bookshelfId).toBe(borrowingBookshelf.id);
+    expect(persistedUserBook?.bookshelfId).toBe(userBook.bookshelfId);
   });
 
   it('throws an error - when Borrowing Bookshelf does not exist', async () => {
-    const user = await userTestUtils.createAndPersist();
-
-    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-    const book = await bookTestUtils.createAndPersist();
-
-    const userBook = await userBookTestUtils.createAndPersist({
-      input: {
-        bookshelfId: bookshelf.id,
-        bookId: book.id,
-      },
-    });
+    const userBook = await testDataOrchestrator.createUserBook({});
 
     const borrowingDraft = borrowingTestFactory.create({
       userBookId: userBook.id,
@@ -236,14 +216,14 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
     try {
       await commandHandler.execute({
         ...borrowingDraft.getState(),
-        userId: user.id,
+        userId: testUserId,
       });
     } catch (error) {
       expect(error).toBeInstanceOf(OperationNotValidError);
 
       expect((error as OperationNotValidError).context).toMatchObject({
         reason: 'Borrowing Bookshelf does not exist.',
-        userId: user.id,
+        userId: testUserId,
       });
 
       return;
@@ -253,23 +233,11 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
   });
 
   it('throws an error - when Bookshelf does not belong to the user', async () => {
-    const user = await userTestUtils.createAndPersist();
-
-    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-    await bookshelfTestUtils.createAndPersist({
-      input: {
-        userId: user.id,
-        type: BookshelfType.borrowing,
-      },
-    });
-
-    const book = await bookTestUtils.createAndPersist();
-
-    const userBook = await userBookTestUtils.createAndPersist({
-      input: {
-        bookshelfId: bookshelf.id,
-        bookId: book.id,
+    const userBook = await testDataOrchestrator.createUserBook({
+      bookshelf: {
+        input: {
+          type: BookshelfType.borrowing,
+        },
       },
     });
 
@@ -289,7 +257,7 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
 
       expect((error as OperationNotValidError).context).toMatchObject({
         reason: 'Bookshelf does not belong to the user.',
-        bookshelfUserId: bookshelf.userId,
+        bookshelfUserId: testUserId,
         userId: otherUser.id,
       });
 
