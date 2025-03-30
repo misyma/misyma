@@ -432,27 +432,41 @@ describe('AuthorRepositoryImpl', () => {
 
       const author4 = await authorTestUtils.createAndPersist();
 
+      const genre = await genreTestUtils.createAndPersist();
+
       const book1 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author1.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
       const book2 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author2.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
       const book3 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author3.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
       const book4 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author3.id, author4.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
@@ -535,27 +549,41 @@ describe('AuthorRepositoryImpl', () => {
 
       const author4 = await authorTestUtils.createAndPersist();
 
+      const genre = await genreTestUtils.createAndPersist();
+
       const book1 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author1.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
       const book2 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author2.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
       const book3 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author3.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
       const book4 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author3.id, author4.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
@@ -636,27 +664,41 @@ describe('AuthorRepositoryImpl', () => {
 
       const author4 = await authorTestUtils.createAndPersist();
 
+      const genre = await genreTestUtils.createAndPersist();
+
       const book1 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author1.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
       const book2 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author2.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
       const book3 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author3.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
       const book4 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author3.id, author4.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
@@ -855,27 +897,41 @@ describe('AuthorRepositoryImpl', () => {
 
       const author4 = await authorTestUtils.createAndPersist();
 
+      const genre = await genreTestUtils.createAndPersist();
+
       const book1 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author1.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
       const book2 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author2.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
       const book3 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author3.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
       const book4 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author3.id, author4.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
@@ -952,27 +1008,41 @@ describe('AuthorRepositoryImpl', () => {
 
       const author4 = await authorTestUtils.createAndPersist();
 
+      const genre = await genreTestUtils.createAndPersist();
+
       const book1 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author1.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
       const book2 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author2.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
       const book3 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author3.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
       const book4 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author3.id, author4.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
