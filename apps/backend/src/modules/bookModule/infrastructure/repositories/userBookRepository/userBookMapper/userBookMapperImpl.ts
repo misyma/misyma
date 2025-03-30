@@ -1,7 +1,6 @@
 import { Author } from '../../../../domain/entities/author/author.js';
 import { BookReading } from '../../../../domain/entities/bookReading/bookReading.js';
 import { Collection } from '../../../../domain/entities/collection/collection.js';
-import { Genre } from '../../../../domain/entities/genre/genre.js';
 import { UserBook, type UserBookDraft } from '../../../../domain/entities/userBook/userBook.js';
 import { type UserBookWithJoinsRawEntity } from '../../../databases/bookDatabase/tables/userBookTable/userBookWithJoinsRawEntity.js';
 
@@ -32,8 +31,6 @@ export class UserBookMapperImpl implements UserBookMapper {
       authorNames,
       authorApprovals,
       authorCreatedAtDates,
-      genreId,
-      genreName,
       collectionIds,
       collectionNames,
       collectionUserIds,
@@ -81,11 +78,6 @@ export class UserBookMapperImpl implements UserBookMapper {
             : [],
         imageUrl: bookImageUrl ?? undefined,
       },
-      genreId,
-      genre: new Genre({
-        id: genreId,
-        name: genreName,
-      }),
       readings:
         readingIds && readingStartedAtDates && readingEndedAtDates && readingRatings && readingComments
           ? readingIds

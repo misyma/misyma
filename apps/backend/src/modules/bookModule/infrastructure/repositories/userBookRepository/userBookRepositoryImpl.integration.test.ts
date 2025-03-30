@@ -11,7 +11,6 @@ import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestU
 import { Author } from '../../../domain/entities/author/author.js';
 import { BookReading } from '../../../domain/entities/bookReading/bookReading.js';
 import { Collection } from '../../../domain/entities/collection/collection.js';
-import { Genre } from '../../../domain/entities/genre/genre.js';
 import { UserBook } from '../../../domain/entities/userBook/userBook.js';
 import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
 import { symbols } from '../../../symbols.js';
@@ -103,8 +102,6 @@ describe('UserBookRepositoryImpl', () => {
 
       const author = await authorTestUtils.createAndPersist();
 
-      const genreRawEntity = await genreTestUtils.createAndPersist();
-
       const book = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author.id],
@@ -140,8 +137,6 @@ describe('UserBookRepositoryImpl', () => {
         imageUrl: userBookRawEntity.imageUrl,
         isFavorite: userBookRawEntity.isFavorite,
         createdAt: userBookRawEntity.createdAt,
-        genreId: genreRawEntity.id,
-        genre: new Genre(genreRawEntity),
         readings: [],
         collections: [],
         book: {
@@ -196,8 +191,6 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const genre = await genreTestUtils.createAndPersist();
-
       const userBookRawEntity = await userBookTestUtils.createAndPersist({
         input: {
           bookId: book.id,
@@ -224,7 +217,6 @@ describe('UserBookRepositoryImpl', () => {
         isFavorite: userBook.getIsFavorite(),
         imageUrl: userBook.getImageUrl(),
         createdAt: userBook.getCreatedAt(),
-        genre: new Genre(genre),
         readings: [],
         collections: [],
         book: {
@@ -488,8 +480,6 @@ describe('UserBookRepositoryImpl', () => {
 
       const author = await authorTestUtils.createAndPersist();
 
-      const genre = await genreTestUtils.createAndPersist();
-
       const book = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author.id],
@@ -523,7 +513,6 @@ describe('UserBookRepositoryImpl', () => {
         isFavorite: userBook.getIsFavorite(),
         imageUrl: userBook.getImageUrl(),
         createdAt: userBook.getCreatedAt(),
-        genre: new Genre(genre),
         collections: [new Collection(collection)],
         readings: [new BookReading(bookReading)],
         book: {
@@ -1277,57 +1266,6 @@ describe('UserBookRepositoryImpl', () => {
       expect(count).toEqual(2);
     });
 
-    it('returns number of UserBooks by genre id', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({
-        input: {
-          userId: user.id,
-        },
-      });
-
-      const author = await authorTestUtils.createAndPersist();
-
-      const book1 = await bookTestUtils.createAndPersist({
-        input: {
-          authorIds: [author.id],
-        },
-      });
-
-      const book2 = await bookTestUtils.createAndPersist({
-        input: {
-          authorIds: [author.id],
-        },
-      });
-
-      await userBookTestUtils.createAndPersist({
-        input: {
-          bookId: book1.id,
-          bookshelfId: bookshelf.id,
-        },
-      });
-
-      await userBookTestUtils.createAndPersist({
-        input: {
-          bookId: book1.id,
-          bookshelfId: bookshelf.id,
-        },
-      });
-
-      await userBookTestUtils.createAndPersist({
-        input: {
-          bookId: book2.id,
-          bookshelfId: bookshelf.id,
-        },
-      });
-
-      const count = await userBookRepository.countUserBooks({
-        userId: user.id,
-      });
-
-      expect(count).toEqual(2);
-    });
-
     it('sorts UserBooks by default order', async () => {
       const user = await userTestUtils.createAndPersist();
 
@@ -1566,6 +1504,14 @@ describe('UserBookRepositoryImpl', () => {
           endedAt: new Date('2025-01-22'),
         },
       });
+
+      await userBookRepository.findUserBooks({
+        userId: user.id,
+        page: 1,
+        pageSize: 10,
+        sortField: 'readingDate',
+        sortOrder: 'desc',
+      })
 
       const userBooks = await userBookRepository.findUserBooks({
         userId: user.id,
