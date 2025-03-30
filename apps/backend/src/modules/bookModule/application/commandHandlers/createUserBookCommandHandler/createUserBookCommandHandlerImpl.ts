@@ -5,7 +5,6 @@ import { type BookshelfRepository } from '../../../../bookshelfModule/domain/rep
 import { type Collection } from '../../../domain/entities/collection/collection.js';
 import { type BookRepository } from '../../../domain/repositories/bookRepository/bookRepository.js';
 import { type CollectionRepository } from '../../../domain/repositories/collectionRepository/collectionRepository.js';
-import { type GenreRepository } from '../../../domain/repositories/genreRepository/genreRepository.js';
 import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
 
 import {
@@ -20,12 +19,11 @@ export class CreateUserBookCommandHandlerImpl implements CreateUserBookCommandHa
     private readonly bookshelfRepository: BookshelfRepository,
     private readonly userBookRepository: UserBookRepository,
     private readonly loggerService: LoggerService,
-    private readonly genreRepository: GenreRepository,
     private readonly collectionRepository: CollectionRepository,
   ) {}
 
   public async execute(payload: CreateUserBookCommandHandlerPayload): Promise<CreateUserBookCommandHandlerResult> {
-    const { userId, bookshelfId, bookId, status, imageUrl, genreId, collectionIds, isFavorite } = payload;
+    const { userId, bookshelfId, bookId, status, imageUrl, collectionIds, isFavorite } = payload;
 
     this.loggerService.debug({
       message: 'Creating UserBook...',
@@ -34,7 +32,6 @@ export class CreateUserBookCommandHandlerImpl implements CreateUserBookCommandHa
       bookId,
       status,
       imageUrl,
-      genreId,
       isFavorite,
       collectionIds,
     });
@@ -81,15 +78,6 @@ export class CreateUserBookCommandHandlerImpl implements CreateUserBookCommandHa
       });
     }
 
-    const existingGenre = await this.genreRepository.findGenre({ id: genreId });
-
-    if (!existingGenre) {
-      throw new OperationNotValidError({
-        reason: 'Genre does not exist.',
-        id: genreId,
-      });
-    }
-
     let collections: Collection[] = [];
 
     if (collectionIds && collectionIds.length) {
@@ -115,7 +103,6 @@ export class CreateUserBookCommandHandlerImpl implements CreateUserBookCommandHa
         isFavorite,
         createdAt: new Date(),
         imageUrl,
-        genreId,
         collections,
         readings: [],
       },

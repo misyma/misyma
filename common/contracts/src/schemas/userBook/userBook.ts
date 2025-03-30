@@ -28,8 +28,6 @@ export interface UserBook {
   readonly isFavorite: boolean;
   readonly bookshelfId: string;
   readonly createdAt: string;
-  readonly genreId: string;
-  readonly genreName: string;
   readonly collections: Collection[];
   readonly readings: BookReading[];
   readonly latestRating?: number;

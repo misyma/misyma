@@ -84,8 +84,6 @@ describe('CreateUserBookCommandHandler', () => {
       },
     });
 
-    const genre = await genreTestUtils.createAndPersist();
-
     const status = Generator.readingStatus();
 
     const imageUrl = Generator.imageUrl();
@@ -99,7 +97,6 @@ describe('CreateUserBookCommandHandler', () => {
       isFavorite,
       bookshelfId: bookshelf.id,
       bookId: book.id,
-      genreId: genre.id,
     });
 
     const foundUserBook = await userBookTestUtils.findById({
@@ -136,8 +133,6 @@ describe('CreateUserBookCommandHandler', () => {
 
     const isFavorite = Generator.boolean();
 
-    const genre = await genreTestUtils.createAndPersist();
-
     try {
       await createUserBookCommandHandler.execute({
         userId,
@@ -146,7 +141,6 @@ describe('CreateUserBookCommandHandler', () => {
         isFavorite,
         bookshelfId,
         bookId: book.id,
-        genreId: genre.id,
       });
     } catch (error) {
       expect(error).toBeInstanceOf(OperationNotValidError);
@@ -167,8 +161,6 @@ describe('CreateUserBookCommandHandler', () => {
 
     const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
 
-    const genre = await genreTestUtils.createAndPersist();
-
     const status = Generator.readingStatus();
 
     const imageUrl = Generator.imageUrl();
@@ -185,7 +177,6 @@ describe('CreateUserBookCommandHandler', () => {
         isFavorite,
         bookshelfId: bookshelf.id,
         bookId,
-        genreId: genre.id,
       });
     } catch (error) {
       expect(error).toBeInstanceOf(OperationNotValidError);
@@ -208,8 +199,6 @@ describe('CreateUserBookCommandHandler', () => {
 
     const author = await authorTestUtils.createAndPersist();
 
-    const genre = await genreTestUtils.createAndPersist();
-
     const book = await bookTestUtils.createAndPersist({
       input: {
         authorIds: [author.id],
@@ -226,7 +215,6 @@ describe('CreateUserBookCommandHandler', () => {
       input: {
         bookId: book.id,
         bookshelfId: bookshelf.id,
-        genreId: genre.id,
       },
     });
 
@@ -238,7 +226,6 @@ describe('CreateUserBookCommandHandler', () => {
         isFavorite,
         bookshelfId: bookshelf.id,
         bookId: book.id,
-        genreId: genre.id,
       });
     } catch (error) {
       expect(error).toBeInstanceOf(ResourceAlreadyExistsError);
@@ -270,8 +257,6 @@ describe('CreateUserBookCommandHandler', () => {
       },
     });
 
-    const genre = await genreTestUtils.createAndPersist();
-
     const status = Generator.readingStatus();
 
     const imageUrl = Generator.imageUrl();
@@ -286,7 +271,6 @@ describe('CreateUserBookCommandHandler', () => {
         isFavorite,
         bookshelfId: bookshelf.id,
         bookId: book.id,
-        genreId: genre.id,
       });
     } catch (error) {
       expect(error).toBeInstanceOf(OperationNotValidError);
@@ -324,13 +308,10 @@ describe('CreateUserBookCommandHandler', () => {
 
     const isFavorite = Generator.boolean();
 
-    const genre = await genreTestUtils.createAndPersist();
-
     await userBookTestUtils.createAndPersist({
       input: {
         bookId: book.id,
         bookshelfId: bookshelf1.id,
-        genreId: genre.id,
       },
     });
 
@@ -342,7 +323,6 @@ describe('CreateUserBookCommandHandler', () => {
         isFavorite,
         bookshelfId: bookshelf2.id,
         bookId: book.id,
-        genreId: genre.id,
       });
     } catch (error) {
       expect(error).toBeInstanceOf(ResourceAlreadyExistsError);

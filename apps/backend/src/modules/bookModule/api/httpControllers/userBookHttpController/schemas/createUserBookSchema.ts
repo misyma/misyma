@@ -12,7 +12,6 @@ export const createUserBookBodyDtoSchema = Type.Object({
   isFavorite: Type.Boolean(),
   bookshelfId: Type.String({ format: 'uuid' }),
   bookId: Type.String({ format: 'uuid' }),
-  genreId: Type.String({ format: 'uuid' }),
   collectionIds: Type.Optional(Type.Array(Type.String({ format: 'uuid' }))),
 });
 

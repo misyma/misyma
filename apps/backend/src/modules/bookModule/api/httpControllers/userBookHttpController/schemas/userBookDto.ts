@@ -13,7 +13,6 @@ import {
   bookTranslatorSchema,
 } from '../../common/bookDto.js';
 import { collectionDtoSchema } from '../../common/collectionDto.js';
-import { genreNameSchema } from '../../common/genreDto.js';
 
 export const userBookDtoSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
@@ -22,8 +21,6 @@ export const userBookDtoSchema = Type.Object({
   isFavorite: Type.Boolean(),
   bookshelfId: Type.String({ format: 'uuid' }),
   createdAt: Type.String({ format: 'date-time' }),
-  genreId: Type.String({ format: 'uuid' }),
-  genreName: Type.String(genreNameSchema),
   collections: Type.Array(collectionDtoSchema),
   readings: Type.Array(bookReadingDtoSchema),
   bookId: Type.String({ format: 'uuid' }),

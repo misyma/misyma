@@ -125,13 +125,10 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
 
     const book = await bookTestUtils.createAndPersist();
 
-    const genre = await genreTestUtils.createAndPersist();
-
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookId: book.id,
         bookshelfId: bookshelf.id,
-        genreId: genre.id,
       },
     });
 
@@ -176,12 +173,9 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
 
     const book = await bookTestUtils.createAndPersist();
 
-    const genre = await genreTestUtils.createAndPersist();
-
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookId: book.id,
-        genreId: genre.id,
         bookshelfId: borrowingBookshelf.id,
       },
     });
@@ -232,12 +226,9 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
       },
     });
 
-    const genre = await genreTestUtils.createAndPersist();
-
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookId: book.id,
-        genreId: genre.id,
         bookshelfId: bookshelf1.id,
       },
     });
@@ -268,85 +259,6 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
     expect(updatedUserBook.getIsFavorite()).toBe(updatedIsFavorite);
   });
 
-  it('throws an error - when Genre does not exist', async () => {
-    const user = await userTestUtils.createAndPersist();
-
-    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-    const author = await authorTestUtils.createAndPersist();
-
-    const book = await bookTestUtils.createAndPersist({
-      input: {
-        authorIds: [author.id],
-      },
-    });
-
-    const genre = await genreTestUtils.createAndPersist();
-
-    const userBook = await userBookTestUtils.createAndPersist({
-      input: {
-        bookId: book.id,
-        genreId: genre.id,
-        bookshelfId: bookshelf.id,
-      },
-    });
-
-    const invalidGenreId = Generator.uuid();
-
-    try {
-      await commandHandler.execute({
-        userId: user.id,
-        userBookId: userBook.id,
-        genreId: invalidGenreId,
-      });
-    } catch (error) {
-      expect(error).toBeInstanceOf(OperationNotValidError);
-
-      expect((error as OperationNotValidError).context).toMatchObject({
-        reason: 'Genre does not exist.',
-        id: invalidGenreId,
-      });
-
-      return;
-    }
-
-    expect.fail();
-  });
-
-  it('updates UserBook Genres', async () => {
-    const user = await userTestUtils.createAndPersist();
-
-    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-    const author = await authorTestUtils.createAndPersist();
-
-    const book = await bookTestUtils.createAndPersist({
-      input: {
-        authorIds: [author.id],
-      },
-    });
-
-    const genre = await genreTestUtils.createAndPersist();
-
-    const userBook = await userBookTestUtils.createAndPersist({
-      input: {
-        bookId: book.id,
-        genreId: genre.id,
-        bookshelfId: bookshelf.id,
-      },
-    });
-
-    const result = await commandHandler.execute({
-      userId: user.id,
-      userBookId: userBook.id,
-      genreId: genre.id,
-    });
-
-    expect(result.userBook.getGenre()?.getId()).toBe(genre.id);
-
-    expect(result.userBook.getGenreId()).toBe(genre.id);
-  });
-
   it('throws an error - when one of the Collections does not exist', async () => {
     const user = await userTestUtils.createAndPersist();
 
@@ -360,13 +272,10 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
       },
     });
 
-    const genre = await genreTestUtils.createAndPersist();
-
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookId: book.id,
         bookshelfId: bookshelf.id,
-        genreId: genre.id,
       },
     });
 
@@ -407,12 +316,9 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
       },
     });
 
-    const genre = await genreTestUtils.createAndPersist();
-
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookId: book.id,
-        genreId: genre.id,
         bookshelfId: bookshelf.id,
       },
     });
@@ -449,12 +355,9 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
       },
     });
 
-    const genre = await genreTestUtils.createAndPersist();
-
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookId: book.id,
-        genreId: genre.id,
         bookshelfId: bookshelf.id,
       },
     });
