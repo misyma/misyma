@@ -4,6 +4,7 @@ import { type Language } from './language.js';
 
 export interface CreateBookRequestBody {
   readonly title: string;
+  readonly genreId: string;
   readonly isbn?: string | undefined;
   readonly publisher?: string | undefined;
   readonly releaseYear: number;

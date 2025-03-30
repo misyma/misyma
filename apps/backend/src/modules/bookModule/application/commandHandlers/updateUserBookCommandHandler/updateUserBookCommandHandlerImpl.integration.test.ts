@@ -123,7 +123,15 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
       },
     });
 
-    const book = await bookTestUtils.createAndPersist();
+    const genre = await genreTestUtils.createAndPersist();
+
+    const book = await bookTestUtils.createAndPersist({
+      input: {
+        book: {
+          genreId: genre.id,
+        },
+      },
+    });
 
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
@@ -171,7 +179,15 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
       },
     });
 
-    const book = await bookTestUtils.createAndPersist();
+    const genre = await genreTestUtils.createAndPersist();
+
+    const book = await bookTestUtils.createAndPersist({
+      input: {
+        book: {
+          genreId: genre.id,
+        },
+      },
+    });
 
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
@@ -220,9 +236,14 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
       },
     });
 
+    const genre = await genreTestUtils.createAndPersist();
+
     const book = await bookTestUtils.createAndPersist({
       input: {
         authorIds: [author.id],
+        book: {
+          genreId: genre.id,
+        },
       },
     });
 
@@ -266,9 +287,14 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
 
     const author = await authorTestUtils.createAndPersist();
 
+    const genre = await genreTestUtils.createAndPersist();
+
     const book = await bookTestUtils.createAndPersist({
       input: {
         authorIds: [author.id],
+        book: {
+          genreId: genre.id,
+        },
       },
     });
 
@@ -310,9 +336,14 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
 
     const author = await authorTestUtils.createAndPersist();
 
+    const genre = await genreTestUtils.createAndPersist();
+
     const book = await bookTestUtils.createAndPersist({
       input: {
         authorIds: [author.id],
+        book: {
+          genreId: genre.id,
+        },
       },
     });
 
@@ -349,9 +380,14 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
 
     const author = await authorTestUtils.createAndPersist();
 
+    const genre = await genreTestUtils.createAndPersist();
+
     const book = await bookTestUtils.createAndPersist({
       input: {
         authorIds: [author.id],
+        book: {
+          genreId: genre.id,
+        },
       },
     });
 
