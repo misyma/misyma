@@ -254,7 +254,7 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
 
     expect(updatedUserBook.getImageUrl()).toBe(updatedImageUrl);
 
-    expect(updatedUserBook.getStatus()).toBe(updatedStatus);
+    expect(updatedUserBook.status).toBe(updatedStatus);
 
     expect(updatedUserBook.getIsFavorite()).toBe(updatedIsFavorite);
   });

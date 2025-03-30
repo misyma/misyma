@@ -136,7 +136,7 @@ export class UserBook {
     return this.state.imageUrl;
   }
 
-  public getStatus(): ReadingStatus {
+  public get status(): ReadingStatus {
     return this.state.status;
   }
 

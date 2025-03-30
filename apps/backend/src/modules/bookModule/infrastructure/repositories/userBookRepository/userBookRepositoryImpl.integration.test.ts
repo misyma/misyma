@@ -213,7 +213,7 @@ describe('UserBookRepositoryImpl', () => {
       expect(updatedUserBook.getState()).toEqual({
         bookId: userBook.getBookId(),
         bookshelfId: newBookshelfId,
-        status: userBook.getStatus(),
+        status: userBook.status,
         isFavorite: userBook.getIsFavorite(),
         imageUrl: userBook.getImageUrl(),
         createdAt: userBook.getCreatedAt(),
@@ -240,7 +240,7 @@ describe('UserBookRepositoryImpl', () => {
         id: userBook.id,
         bookId: userBook.getBookId(),
         bookshelfId: newBookshelfId,
-        status: userBook.getStatus(),
+        status: userBook.status,
         isFavorite: userBook.getIsFavorite(),
         imageUrl: userBook.getImageUrl(),
         createdAt: userBook.getCreatedAt(),
@@ -281,7 +281,7 @@ describe('UserBookRepositoryImpl', () => {
         id: userBook.id,
       });
 
-      expect(updatedUserBook.getStatus()).toEqual(newStatus);
+      expect(updatedUserBook.status).toEqual(newStatus);
 
       expect(foundUserBook?.status).toEqual(newStatus);
     });
@@ -509,7 +509,7 @@ describe('UserBookRepositoryImpl', () => {
       expect(foundUserBook?.getState()).toEqual({
         bookId: userBook.getBookId(),
         bookshelfId: userBook.getBookshelfId(),
-        status: userBook.getStatus(),
+        status: userBook.status,
         isFavorite: userBook.getIsFavorite(),
         imageUrl: userBook.getImageUrl(),
         createdAt: userBook.getCreatedAt(),

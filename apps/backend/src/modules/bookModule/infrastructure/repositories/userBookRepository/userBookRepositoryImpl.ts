@@ -172,7 +172,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
     const payloads: Partial<UserBookRawEntity>[] = userBooks.map((userBook) => ({
       id: userBook.id,
       imageUrl: userBook.getImageUrl(),
-      status: userBook.getStatus(),
+      status: userBook.status,
       isFavorite: userBook.getIsFavorite(),
       bookshelfId: userBook.getBookshelfId(),
       bookId: userBook.getBookId(),
