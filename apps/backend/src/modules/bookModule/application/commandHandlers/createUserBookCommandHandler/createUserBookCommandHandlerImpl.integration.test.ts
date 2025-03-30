@@ -11,9 +11,8 @@ import { type DatabaseClient } from '../../../../../libs/database/clients/databa
 import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { symbols } from '../../../symbols.js';
-import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
-import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
 import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
+import { type TestDataOrchestrator } from '../../../tests/utils/testDataOrchestrator/testDataOrchestrator.js';
 import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
 
 import { type CreateUserBookCommandHandler } from './createUserBookCommandHandler.js';
@@ -23,10 +22,6 @@ describe('CreateUserBookCommandHandler', () => {
 
   let databaseClient: DatabaseClient;
 
-  let authorTestUtils: AuthorTestUtils;
-
-  let bookTestUtils: BookTestUtils;
-
   let userTestUtils: UserTestUtils;
 
   let genreTestUtils: GenreTestUtils;
@@ -34,6 +29,10 @@ describe('CreateUserBookCommandHandler', () => {
   let bookshelfTestUtils: BookshelfTestUtils;
 
   let userBookTestUtils: UserBookTestUtils;
+
+  let testDataOrchestrator: TestDataOrchestrator;
+
+  const testUserId = Generator.uuid();
 
   let testUtils: TestUtils[];
 
@@ -46,21 +45,29 @@ describe('CreateUserBookCommandHandler', () => {
 
     genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
 
-    authorTestUtils = container.get<AuthorTestUtils>(testSymbols.authorTestUtils);
-
-    bookTestUtils = container.get<BookTestUtils>(testSymbols.bookTestUtils);
-
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
 
     bookshelfTestUtils = container.get<BookshelfTestUtils>(testSymbols.bookshelfTestUtils);
 
     userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
 
-    testUtils = [genreTestUtils, authorTestUtils, bookTestUtils, bookshelfTestUtils, userTestUtils, userBookTestUtils];
+    testDataOrchestrator = container.get<TestDataOrchestrator>(testSymbols.testDataOrchestrator);
+
+    testUtils = [genreTestUtils, bookshelfTestUtils, userTestUtils, userBookTestUtils];
 
     for (const testUtil of testUtils) {
       await testUtil.truncate();
     }
+
+    await testDataOrchestrator.cleanup();
+
+    await userTestUtils.createAndPersist({
+      input: {
+        id: testUserId,
+      },
+    });
+
+    testDataOrchestrator.userId = testUserId;
   });
 
   afterEach(async () => {
@@ -72,17 +79,9 @@ describe('CreateUserBookCommandHandler', () => {
   });
 
   it('creates UserBook', async () => {
-    const user = await userTestUtils.createAndPersist();
+    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: testUserId } });
 
-    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-    const author = await authorTestUtils.createAndPersist();
-
-    const book = await bookTestUtils.createAndPersist({
-      input: {
-        authorIds: [author.id],
-      },
-    });
+    const book = await testDataOrchestrator.createBook();
 
     const status = Generator.readingStatus();
 
@@ -91,7 +90,7 @@ describe('CreateUserBookCommandHandler', () => {
     const isFavorite = Generator.boolean();
 
     const { userBook } = await createUserBookCommandHandler.execute({
-      userId: user.id,
+      userId: testUserId,
       imageUrl,
       status,
       isFavorite,
@@ -115,13 +114,7 @@ describe('CreateUserBookCommandHandler', () => {
   });
 
   it('throws an error - when provided Bookshelf does not exist', async () => {
-    const author = await authorTestUtils.createAndPersist();
-
-    const book = await bookTestUtils.createAndPersist({
-      input: {
-        authorIds: [author.id],
-      },
-    });
+    const book = await testDataOrchestrator.createBook();
 
     const status = Generator.readingStatus();
 
@@ -157,9 +150,7 @@ describe('CreateUserBookCommandHandler', () => {
   });
 
   it('throws an error - when provided Book does not exist', async () => {
-    const user = await userTestUtils.createAndPersist();
-
-    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: testUserId } });
 
     const status = Generator.readingStatus();
 
@@ -171,7 +162,7 @@ describe('CreateUserBookCommandHandler', () => {
 
     try {
       await createUserBookCommandHandler.execute({
-        userId: user.id,
+        userId: testUserId,
         imageUrl,
         status,
         isFavorite,
@@ -193,17 +184,9 @@ describe('CreateUserBookCommandHandler', () => {
   });
 
   it('throws an error - when UserBook already exists on same bookshelf', async () => {
-    const user = await userTestUtils.createAndPersist();
+    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: testUserId } });
 
-    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-    const author = await authorTestUtils.createAndPersist();
-
-    const book = await bookTestUtils.createAndPersist({
-      input: {
-        authorIds: [author.id],
-      },
-    });
+    const book = await testDataOrchestrator.createBook();
 
     const status = Generator.readingStatus();
 
@@ -220,7 +203,7 @@ describe('CreateUserBookCommandHandler', () => {
 
     try {
       await createUserBookCommandHandler.execute({
-        userId: user.id,
+        userId: testUserId,
         imageUrl,
         status,
         isFavorite,
@@ -243,19 +226,11 @@ describe('CreateUserBookCommandHandler', () => {
   });
 
   it('throws an error - when Bookshelf does not belong to the User', async () => {
-    const user1 = await userTestUtils.createAndPersist();
-
     const user2 = await userTestUtils.createAndPersist();
 
-    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user1.id } });
+    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: testUserId } });
 
-    const author = await authorTestUtils.createAndPersist();
-
-    const book = await bookTestUtils.createAndPersist({
-      input: {
-        authorIds: [author.id],
-      },
-    });
+    const book = await testDataOrchestrator.createBook();
 
     const status = Generator.readingStatus();
 
@@ -288,19 +263,11 @@ describe('CreateUserBookCommandHandler', () => {
   });
 
   it('throws an error - when User already have that book on some bookshelf', async () => {
-    const user = await userTestUtils.createAndPersist();
+    const bookshelf1 = await bookshelfTestUtils.createAndPersist({ input: { userId: testUserId } });
 
-    const bookshelf1 = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+    const bookshelf2 = await bookshelfTestUtils.createAndPersist({ input: { userId: testUserId } });
 
-    const bookshelf2 = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-    const author = await authorTestUtils.createAndPersist();
-
-    const book = await bookTestUtils.createAndPersist({
-      input: {
-        authorIds: [author.id],
-      },
-    });
+    const book = await testDataOrchestrator.createBook();
 
     const status = Generator.readingStatus();
 
@@ -317,7 +284,7 @@ describe('CreateUserBookCommandHandler', () => {
 
     try {
       await createUserBookCommandHandler.execute({
-        userId: user.id,
+        userId: testUserId,
         imageUrl,
         status,
         isFavorite,

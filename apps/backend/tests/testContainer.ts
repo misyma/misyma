@@ -96,6 +96,7 @@ export class TestContainer {
         new TestDataOrchestrator(
           container.get<GenreTestUtils>(testSymbols.genreTestUtils),
           container.get<BookshelfTestUtils>(testSymbols.bookshelfTestUtils),
+          container.get<AuthorTestUtils>(testSymbols.authorTestUtils),
           container.get<BookTestUtils>(testSymbols.bookTestUtils),
           container.get<UserBookTestUtils>(testSymbols.userBookTestUtils),
         ),

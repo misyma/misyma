@@ -8,15 +8,12 @@ import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
-import { type BookTestUtils } from '../../../../bookModule/tests/utils/bookTestUtils/bookTestUtils.js';
 import { type UserBookTestUtils } from '../../../../bookModule/tests/utils/userBookTestUtils/userBookTestUtils.js';
-import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { Borrowing } from '../../../domain/entities/borrowing/borrowing.js';
 import { symbols } from '../../../symbols.js';
 import { BorrowingTestFactory } from '../../../tests/factories/borrowingTestFactory/borrowingTestFactory.js';
 import { type BorrowingTestUtils } from '../../../tests/utils/borrowingTestUtils/borrowingTestUtils.js';
-import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 import { type TestDataOrchestrator } from '../../../tests/utils/testDataOrchestrator/testDataOrchestrator.js';
 
 import { type CreateBorrowingCommandHandler } from './createBorrowingCommandHandler.js';
@@ -28,13 +25,7 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
 
   let borrowingTestUtils: BorrowingTestUtils;
 
-  let bookTestUtils: BookTestUtils;
-
-  let bookshelfTestUtils: BookshelfTestUtils;
-
   let userTestUtils: UserTestUtils;
-
-  let genreTestUtils: GenreTestUtils;
 
   let userBookTestUtils: UserBookTestUtils;
 
@@ -57,20 +48,11 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
 
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
 
-    bookTestUtils = container.get<BookTestUtils>(testSymbols.bookTestUtils);
-
-    bookshelfTestUtils = container.get<BookshelfTestUtils>(testSymbols.bookshelfTestUtils);
-
     userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
-
-    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
 
     testDataOrchestrator = container.get<TestDataOrchestrator>(testSymbols.testDataOrchestrator);
 
     testUtils = [
-      genreTestUtils,
-      bookTestUtils,
-      bookshelfTestUtils,
       userTestUtils,
       borrowingTestUtils,
       userBookTestUtils,

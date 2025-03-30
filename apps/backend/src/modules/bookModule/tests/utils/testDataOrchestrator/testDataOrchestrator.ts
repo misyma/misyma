@@ -2,7 +2,9 @@ import {
   type CreateAndPersistBookshelfPayload,
   type BookshelfTestUtils,
 } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
+import { type BookRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/bookTable/bookRawEntity.js';
 import { type UserBookRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/userBookTable/userBookRawEntity.js';
+import { type AuthorTestUtils } from '../authorTestUtils/authorTestUtils.js';
 import { type BookTestUtils } from '../bookTestUtils/bookTestUtils.js';
 import { type GenreTestUtils } from '../genreTestUtils/genreTestUtils.js';
 import {
@@ -25,6 +27,7 @@ export class TestDataOrchestrator {
   public constructor(
     private readonly genreTestUtils: GenreTestUtils,
     private readonly bookshelfTestUtils: BookshelfTestUtils,
+    private readonly authorTestUtils: AuthorTestUtils,
     private readonly bookTestUtils: BookTestUtils,
     private readonly userBookTestUtils: UserBookTestUtils,
   ) {}
@@ -54,6 +57,21 @@ export class TestDataOrchestrator {
         ...payload.userBook?.input,
       },
       collectionIds: payload.userBook?.collectionIds ? payload.userBook.collectionIds : [],
+    });
+  }
+
+  public async createBook(): Promise<BookRawEntity> {
+    const author1 = await this.authorTestUtils.createAndPersist();
+
+    const genre = await this.genreTestUtils.createAndPersist();
+
+    return await this.bookTestUtils.createAndPersist({
+      input: {
+        authorIds: [author1.id],
+        book: {
+          genreId: genre.id,
+        },
+      },
     });
   }
 
