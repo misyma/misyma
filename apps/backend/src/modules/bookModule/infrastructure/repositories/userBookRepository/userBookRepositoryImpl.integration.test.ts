@@ -114,10 +114,7 @@ describe('UserBookRepositoryImpl', () => {
       const userBookRawEntity = userBookTestFactory.createRaw({
         bookId: book.id,
         bookshelfId: bookshelf.id,
-        genreId: genreRawEntity.id,
       });
-
-      const genre = new Genre(genreRawEntity);
 
       const userBook = await userBookRepository.saveUserBook({
         userBook: {
@@ -127,8 +124,6 @@ describe('UserBookRepositoryImpl', () => {
           isFavorite: userBookRawEntity.isFavorite,
           imageUrl: userBookRawEntity.imageUrl as string,
           createdAt: userBookRawEntity.createdAt,
-          genreId: userBookRawEntity.genreId,
-          genre,
           readings: [],
           collections: [],
         },
@@ -183,7 +178,6 @@ describe('UserBookRepositoryImpl', () => {
         status: userBookRawEntity.status,
         isFavorite: userBookRawEntity.isFavorite,
         imageUrl: userBookRawEntity.imageUrl,
-        genreId: userBookRawEntity.genreId,
       });
     });
 
@@ -208,7 +202,6 @@ describe('UserBookRepositoryImpl', () => {
         input: {
           bookId: book.id,
           bookshelfId: bookshelf1.id,
-          genreId: genre.id,
         },
       });
 
@@ -231,7 +224,6 @@ describe('UserBookRepositoryImpl', () => {
         isFavorite: userBook.getIsFavorite(),
         imageUrl: userBook.getImageUrl(),
         createdAt: userBook.getCreatedAt(),
-        genreId: userBook.getGenreId(),
         genre: new Genre(genre),
         readings: [],
         collections: [],
@@ -260,7 +252,6 @@ describe('UserBookRepositoryImpl', () => {
         isFavorite: userBook.getIsFavorite(),
         imageUrl: userBook.getImageUrl(),
         createdAt: userBook.getCreatedAt(),
-        genreId: userBook.getGenreId(),
       });
     });
 
@@ -277,13 +268,10 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const genre = await genreTestUtils.createAndPersist();
-
       const userBookRawEntity = await userBookTestUtils.createAndPersist({
         input: {
           bookId: book.id,
           bookshelfId: bookshelf.id,
-          genreId: genre.id,
         },
       });
 
@@ -319,13 +307,10 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const genre = await genreTestUtils.createAndPersist();
-
       const userBookRawEntity = await userBookTestUtils.createAndPersist({
         input: {
           bookId: book.id,
           bookshelfId: bookshelf.id,
-          genreId: genre.id,
         },
       });
 
@@ -361,13 +346,10 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const genre = await genreTestUtils.createAndPersist();
-
       const userBookRawEntity = await userBookTestUtils.createAndPersist({
         input: {
           bookId: book.id,
           bookshelfId: bookshelf.id,
-          genreId: genre.id,
         },
       });
 
@@ -403,13 +385,10 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const genre = await genreTestUtils.createAndPersist();
-
       const userBookRawEntity = await userBookTestUtils.createAndPersist({
         input: {
           bookId: book.id,
           bookshelfId: bookshelf.id,
-          genreId: genre.id,
         },
       });
 
@@ -430,46 +409,6 @@ describe('UserBookRepositoryImpl', () => {
       expect(updatedUserBook.getIsFavorite()).toEqual(newIsFavorite);
 
       expect(foundUserBook?.isFavorite).toEqual(newIsFavorite);
-    });
-
-    it('sets UserBook Genre', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-      const author = await authorTestUtils.createAndPersist();
-
-      const book = await bookTestUtils.createAndPersist({
-        input: {
-          authorIds: [author.id],
-        },
-      });
-
-      const genre1 = await genreTestUtils.createAndPersist();
-
-      const genre2 = await genreTestUtils.createAndPersist();
-
-      const userBookRawEntity = await userBookTestUtils.createAndPersist({
-        input: {
-          bookId: book.id,
-          bookshelfId: bookshelf.id,
-          genreId: genre1.id,
-        },
-      });
-
-      const userBook = userBookTestFactory.create(userBookRawEntity);
-
-      userBook.setGenre({ genre: new Genre(genre2) });
-
-      const updatedUserBook = await userBookRepository.saveUserBook({
-        userBook,
-      });
-
-      expect(updatedUserBook.getGenre()?.getId()).toEqual(genre2.id);
-
-      expect(updatedUserBook.getGenre()?.getName()).toEqual(genre2.name);
-
-      expect(updatedUserBook.getGenreId()).toEqual(genre2.id);
     });
   });
 
@@ -495,13 +434,10 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const genre = await genreTestUtils.createAndPersist();
-
       const userBookRawEntity1 = await userBookTestUtils.createAndPersist({
         input: {
           bookId: book1.id,
           bookshelfId: bookshelf1.id,
-          genreId: genre.id,
         },
       });
 
@@ -509,7 +445,6 @@ describe('UserBookRepositoryImpl', () => {
         input: {
           bookId: book2.id,
           bookshelfId: bookshelf1.id,
-          genreId: genre.id,
         },
       });
 
@@ -564,7 +499,6 @@ describe('UserBookRepositoryImpl', () => {
       const userBookRawEntity = await userBookTestUtils.createAndPersist({
         input: {
           bookId: book.id,
-          genreId: genre.id,
           bookshelfId: bookshelf.id,
         },
         collectionIds: [collection.id],
@@ -589,7 +523,6 @@ describe('UserBookRepositoryImpl', () => {
         isFavorite: userBook.getIsFavorite(),
         imageUrl: userBook.getImageUrl(),
         createdAt: userBook.getCreatedAt(),
-        genreId: userBook.getGenreId(),
         genre: new Genre(genre),
         collections: [new Collection(collection)],
         readings: [new BookReading(bookReading)],
@@ -653,13 +586,10 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const genre = await genreTestUtils.createAndPersist();
-
       await userBookTestUtils.createAndPersist({
         input: {
           bookId: book1.id,
           bookshelfId: bookshelf1.id,
-          genreId: genre.id,
         },
       });
 
@@ -667,7 +597,6 @@ describe('UserBookRepositoryImpl', () => {
         input: {
           bookId: book1.id,
           bookshelfId: bookshelf2.id,
-          genreId: genre.id,
         },
       });
 
@@ -675,7 +604,6 @@ describe('UserBookRepositoryImpl', () => {
         input: {
           bookId: book2.id,
           bookshelfId: bookshelf2.id,
-          genreId: genre.id,
         },
       });
 
@@ -761,13 +689,10 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const genre = await genreTestUtils.createAndPersist();
-
       await userBookTestUtils.createAndPersist({
         input: {
           bookId: book1.id,
           bookshelfId: bookshelf.id,
-          genreId: genre.id,
         },
       });
 
@@ -775,7 +700,6 @@ describe('UserBookRepositoryImpl', () => {
         input: {
           bookId: book1.id,
           bookshelfId: bookshelf.id,
-          genreId: genre.id,
         },
         collectionIds: [collection1.id],
       });
@@ -784,7 +708,6 @@ describe('UserBookRepositoryImpl', () => {
         input: {
           bookId: book2.id,
           bookshelfId: bookshelf.id,
-          genreId: genre.id,
         },
         collectionIds: [collection2.id],
       });
@@ -825,13 +748,10 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const genre = await genreTestUtils.createAndPersist();
-
       await userBookTestUtils.createAndPersist({
         input: {
           bookId: book1.id,
           bookshelfId: bookshelf.id,
-          genreId: genre.id,
         },
       });
 
@@ -839,7 +759,6 @@ describe('UserBookRepositoryImpl', () => {
         input: {
           bookId: book2.id,
           bookshelfId: bookshelf.id,
-          genreId: genre.id,
         },
       });
 
@@ -887,13 +806,10 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const genre = await genreTestUtils.createAndPersist();
-
       await userBookTestUtils.createAndPersist({
         input: {
           bookId: book1.id,
           bookshelfId: bookshelf1.id,
-          genreId: genre.id,
         },
       });
 
@@ -901,7 +817,6 @@ describe('UserBookRepositoryImpl', () => {
         input: {
           bookId: book1.id,
           bookshelfId: bookshelf2.id,
-          genreId: genre.id,
         },
       });
 
@@ -909,7 +824,6 @@ describe('UserBookRepositoryImpl', () => {
         input: {
           bookId: book2.id,
           bookshelfId: bookshelf2.id,
-          genreId: genre.id,
         },
       });
 
@@ -955,13 +869,10 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const genre = await genreTestUtils.createAndPersist();
-
       await userBookTestUtils.createAndPersist({
         input: {
           bookId: book1.id,
           bookshelfId: bookshelf1.id,
-          genreId: genre.id,
         },
       });
 
@@ -969,7 +880,6 @@ describe('UserBookRepositoryImpl', () => {
         input: {
           bookId: book1.id,
           bookshelfId: bookshelf2.id,
-          genreId: genre.id,
         },
       });
 
@@ -977,7 +887,6 @@ describe('UserBookRepositoryImpl', () => {
         input: {
           bookId: book2.id,
           bookshelfId: bookshelf2.id,
-          genreId: genre.id,
         },
       });
 
@@ -1022,13 +931,10 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const genre = await genreTestUtils.createAndPersist();
-
       await userBookTestUtils.createAndPersist({
         input: {
           bookId: book1.id,
           bookshelfId: bookshelf1.id,
-          genreId: genre.id,
         },
       });
 
@@ -1036,7 +942,6 @@ describe('UserBookRepositoryImpl', () => {
         input: {
           bookId: book1.id,
           bookshelfId: bookshelf2.id,
-          genreId: genre.id,
         },
       });
 
@@ -1044,7 +949,6 @@ describe('UserBookRepositoryImpl', () => {
         input: {
           bookId: book2.id,
           bookshelfId: bookshelf2.id,
-          genreId: genre.id,
         },
       });
 
@@ -1098,13 +1002,10 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const genre = await genreTestUtils.createAndPersist();
-
       const userBook = await userBookTestUtils.createAndPersist({
         input: {
           bookId: book1.id,
           bookshelfId: bookshelf1.id,
-          genreId: genre.id,
         },
       });
 
@@ -1112,7 +1013,6 @@ describe('UserBookRepositoryImpl', () => {
         input: {
           bookId: book1.id,
           bookshelfId: bookshelf2.id,
-          genreId: genre.id,
         },
       });
 
@@ -1120,7 +1020,6 @@ describe('UserBookRepositoryImpl', () => {
         input: {
           bookId: book2.id,
           bookshelfId: bookshelf2.id,
-          genreId: genre.id,
         },
       });
 
@@ -1161,13 +1060,10 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const genre = await genreTestUtils.createAndPersist();
-
       await userBookTestUtils.createAndPersist({
         input: {
           bookId: book1.id,
           bookshelfId: bookshelf.id,
-          genreId: genre.id,
         },
       });
 
@@ -1175,7 +1071,6 @@ describe('UserBookRepositoryImpl', () => {
         input: {
           bookId: book1.id,
           bookshelfId: bookshelf.id,
-          genreId: genre.id,
         },
       });
 
@@ -1183,7 +1078,6 @@ describe('UserBookRepositoryImpl', () => {
         input: {
           bookId: book2.id,
           bookshelfId: bookshelf.id,
-          genreId: genre.id,
         },
       });
 
@@ -1199,69 +1093,6 @@ describe('UserBookRepositoryImpl', () => {
       userBooks.forEach((userBook) => {
         expect(userBook.getId()).toEqual(userBook3.id);
       });
-    });
-
-    it('returns UserBooks by genre id', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const genre1 = await genreTestUtils.createAndPersist();
-
-      const genre2 = await genreTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({
-        input: {
-          userId: user.id,
-        },
-      });
-
-      const author = await authorTestUtils.createAndPersist();
-
-      const book1 = await bookTestUtils.createAndPersist({
-        input: {
-          authorIds: [author.id],
-        },
-      });
-
-      const book2 = await bookTestUtils.createAndPersist({
-        input: {
-          authorIds: [author.id],
-        },
-      });
-
-      const userBook = await userBookTestUtils.createAndPersist({
-        input: {
-          bookId: book1.id,
-          bookshelfId: bookshelf.id,
-          genreId: genre1.id,
-        },
-      });
-
-      await userBookTestUtils.createAndPersist({
-        input: {
-          bookId: book1.id,
-          bookshelfId: bookshelf.id,
-          genreId: genre2.id,
-        },
-      });
-
-      await userBookTestUtils.createAndPersist({
-        input: {
-          bookId: book2.id,
-          bookshelfId: bookshelf.id,
-          genreId: genre2.id,
-        },
-      });
-
-      const userBooks = await userBookRepository.findUserBooks({
-        userId: user.id,
-        genreId: genre1.id,
-        page: 1,
-        pageSize: 10,
-      });
-
-      expect(userBooks.length).toEqual(1);
-
-      expect(userBooks[0]?.getId()).toEqual(userBook.id);
     });
   });
 
@@ -1297,13 +1128,10 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const genre = await genreTestUtils.createAndPersist();
-
       await userBookTestUtils.createAndPersist({
         input: {
           bookId: book1.id,
           bookshelfId: bookshelf1.id,
-          genreId: genre.id,
         },
       });
 
@@ -1311,7 +1139,6 @@ describe('UserBookRepositoryImpl', () => {
         input: {
           bookId: book1.id,
           bookshelfId: bookshelf2.id,
-          genreId: genre.id,
         },
       });
 
@@ -1319,7 +1146,6 @@ describe('UserBookRepositoryImpl', () => {
         input: {
           bookId: book2.id,
           bookshelfId: bookshelf2.id,
-          genreId: genre.id,
         },
       });
 
@@ -1367,13 +1193,10 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const genre = await genreTestUtils.createAndPersist();
-
       await userBookTestUtils.createAndPersist({
         input: {
           bookId: book1.id,
           bookshelfId: bookshelf.id,
-          genreId: genre.id,
         },
       });
 
@@ -1381,7 +1204,6 @@ describe('UserBookRepositoryImpl', () => {
         input: {
           bookId: book1.id,
           bookshelfId: bookshelf.id,
-          genreId: genre.id,
         },
         collectionIds: [collection1.id],
       });
@@ -1390,7 +1212,6 @@ describe('UserBookRepositoryImpl', () => {
         input: {
           bookId: book2.id,
           bookshelfId: bookshelf.id,
-          genreId: genre.id,
         },
         collectionIds: [collection2.id],
       });
@@ -1427,13 +1248,10 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const genre = await genreTestUtils.createAndPersist();
-
       await userBookTestUtils.createAndPersist({
         input: {
           bookId: book1.id,
           bookshelfId: bookshelf.id,
-          genreId: genre.id,
         },
       });
 
@@ -1441,7 +1259,6 @@ describe('UserBookRepositoryImpl', () => {
         input: {
           bookId: book1.id,
           bookshelfId: bookshelf.id,
-          genreId: genre.id,
         },
       });
 
@@ -1449,7 +1266,6 @@ describe('UserBookRepositoryImpl', () => {
         input: {
           bookId: book2.id,
           bookshelfId: bookshelf.id,
-          genreId: genre.id,
         },
       });
 
@@ -1463,10 +1279,6 @@ describe('UserBookRepositoryImpl', () => {
 
     it('returns number of UserBooks by genre id', async () => {
       const user = await userTestUtils.createAndPersist();
-
-      const genre1 = await genreTestUtils.createAndPersist();
-
-      const genre2 = await genreTestUtils.createAndPersist();
 
       const bookshelf = await bookshelfTestUtils.createAndPersist({
         input: {
@@ -1492,7 +1304,6 @@ describe('UserBookRepositoryImpl', () => {
         input: {
           bookId: book1.id,
           bookshelfId: bookshelf.id,
-          genreId: genre1.id,
         },
       });
 
@@ -1500,7 +1311,6 @@ describe('UserBookRepositoryImpl', () => {
         input: {
           bookId: book1.id,
           bookshelfId: bookshelf.id,
-          genreId: genre2.id,
         },
       });
 
@@ -1508,13 +1318,11 @@ describe('UserBookRepositoryImpl', () => {
         input: {
           bookId: book2.id,
           bookshelfId: bookshelf.id,
-          genreId: genre2.id,
         },
       });
 
       const count = await userBookRepository.countUserBooks({
         userId: user.id,
-        genreId: genre2.id,
       });
 
       expect(count).toEqual(2);
@@ -1543,13 +1351,10 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const genre = await genreTestUtils.createAndPersist();
-
       const userBook1 = await userBookTestUtils.createAndPersist({
         input: {
           bookId: book1.id,
           bookshelfId: bookshelf.id,
-          genreId: genre.id,
         },
       });
 
@@ -1557,7 +1362,6 @@ describe('UserBookRepositoryImpl', () => {
         input: {
           bookId: book2.id,
           bookshelfId: bookshelf.id,
-          genreId: genre.id,
         },
       });
 
@@ -1597,13 +1401,10 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const genre = await genreTestUtils.createAndPersist();
-
       const userBook1 = await userBookTestUtils.createAndPersist({
         input: {
           bookId: book1.id,
           bookshelfId: bookshelf.id,
-          genreId: genre.id,
         },
       });
 
@@ -1611,7 +1412,6 @@ describe('UserBookRepositoryImpl', () => {
         input: {
           bookId: book2.id,
           bookshelfId: bookshelf.id,
-          genreId: genre.id,
         },
       });
 
@@ -1673,13 +1473,10 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const genre = await genreTestUtils.createAndPersist();
-
       const userBook1 = await userBookTestUtils.createAndPersist({
         input: {
           bookId: book1.id,
           bookshelfId: bookshelf.id,
-          genreId: genre.id,
         },
       });
 
@@ -1687,7 +1484,6 @@ describe('UserBookRepositoryImpl', () => {
         input: {
           bookId: book2.id,
           bookshelfId: bookshelf.id,
-          genreId: genre.id,
         },
       });
 
@@ -1743,13 +1539,10 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const genre = await genreTestUtils.createAndPersist();
-
       const userBook1 = await userBookTestUtils.createAndPersist({
         input: {
           bookId: book1.id,
           bookshelfId: bookshelf.id,
-          genreId: genre.id,
         },
       });
 
@@ -1757,7 +1550,6 @@ describe('UserBookRepositoryImpl', () => {
         input: {
           bookId: book2.id,
           bookshelfId: bookshelf.id,
-          genreId: genre.id,
         },
       });
 
@@ -1827,13 +1619,10 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const genre = await genreTestUtils.createAndPersist();
-
       const userBook1 = await userBookTestUtils.createAndPersist({
         input: {
           bookId: book1.id,
           bookshelfId: bookshelf.id,
-          genreId: genre.id,
         },
       });
 
@@ -1841,7 +1630,6 @@ describe('UserBookRepositoryImpl', () => {
         input: {
           bookId: book2.id,
           bookshelfId: bookshelf.id,
-          genreId: genre.id,
         },
       });
 
@@ -1933,13 +1721,10 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const genre = await genreTestUtils.createAndPersist();
-
       const userBook = await userBookTestUtils.createAndPersist({
         input: {
           bookId: book.id,
           bookshelfId: bookshelf.id,
-          genreId: genre.id,
         },
       });
 
@@ -1975,13 +1760,10 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const genre = await genreTestUtils.createAndPersist();
-
       const userBook = await userBookTestUtils.createAndPersist({
         input: {
           bookId: book.id,
           bookshelfId: bookshelf.id,
-          genreId: genre.id,
         },
       });
 

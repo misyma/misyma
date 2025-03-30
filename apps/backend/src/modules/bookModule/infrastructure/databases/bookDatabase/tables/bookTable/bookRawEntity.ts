@@ -2,6 +2,7 @@ import { type Language, type BookFormat } from '@common/contracts';
 
 export interface BookRawEntity {
   readonly id: string;
+  readonly genreId: string;
   readonly title: string;
   readonly isbn?: string | undefined | null;
   readonly publisher?: string | undefined | null;

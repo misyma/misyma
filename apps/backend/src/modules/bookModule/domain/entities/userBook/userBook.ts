@@ -14,8 +14,6 @@ export interface UserBookDraft {
   readonly createdAt: Date;
   readonly bookId: string;
   readonly book?: BookDraft | undefined;
-  readonly genreId: string;
-  readonly genre?: Genre;
   readonly collections?: Collection[] | undefined;
   readonly readings?: BookReading[] | undefined;
   readonly latestRating?: number | undefined;
@@ -29,8 +27,6 @@ export interface UserBookState {
   readonly createdAt: Date;
   readonly bookId: string;
   readonly book?: BookDraft | undefined;
-  genreId: string;
-  genre?: Genre;
   collections?: Collection[] | undefined;
   readonly readings?: BookReading[] | undefined;
   readonly latestRating?: number | undefined;
@@ -74,8 +70,6 @@ export class UserBook {
       createdAt,
       bookId,
       book,
-      genreId,
-      genre,
       readings,
       collections,
       latestRating,
@@ -89,7 +83,6 @@ export class UserBook {
       bookshelfId,
       createdAt,
       bookId,
-      genreId,
     };
 
     if (imageUrl) {
@@ -100,13 +93,6 @@ export class UserBook {
       state = {
         ...state,
         book,
-      };
-    }
-
-    if (genre) {
-      state = {
-        ...state,
-        genre,
       };
     }
 
@@ -170,14 +156,6 @@ export class UserBook {
     return this.state.bookId;
   }
 
-  public getGenreId(): string {
-    return this.state.genreId;
-  }
-
-  public getGenre(): Genre | undefined {
-    return this.state.genre;
-  }
-
   public getCollections(): Collection[] | undefined {
     return this.state.collections;
   }
@@ -212,14 +190,6 @@ export class UserBook {
     const { bookshelfId } = payload;
 
     this.state.bookshelfId = bookshelfId;
-  }
-
-  public setGenre(payload: SetGenrePayload): void {
-    const { genre } = payload;
-
-    this.state.genre = genre;
-
-    this.state.genreId = genre.getId();
   }
 
   public setCollections(payload: SetCollectionsPayload): void {

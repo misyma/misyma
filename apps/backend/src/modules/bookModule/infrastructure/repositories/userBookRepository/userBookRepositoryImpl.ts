@@ -51,7 +51,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
 
   private async createUserBook(payload: CreateUserBookPayload): Promise<UserBook> {
     const {
-      userBook: { imageUrl, status, isFavorite, bookshelfId, bookId, genreId, collections, createdAt },
+      userBook: { imageUrl, status, isFavorite, bookshelfId, bookId, collections, createdAt },
     } = payload;
 
     const id = this.uuidService.generateUuid();
@@ -67,7 +67,6 @@ export class UserBookRepositoryImpl implements UserBookRepository {
             bookshelfId,
             bookId,
             createdAt,
-            genreId,
           },
           '*',
         );
@@ -106,7 +105,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       });
     }
 
-    const { bookshelfId, status, imageUrl, isFavorite, genreId } = userBook.getState();
+    const { bookshelfId, status, imageUrl, isFavorite } = userBook.getState();
 
     try {
       await this.databaseClient.transaction(async (transaction) => {
@@ -118,7 +117,6 @@ export class UserBookRepositoryImpl implements UserBookRepository {
             status,
             isFavorite,
             imageUrl,
-            genreId,
           })
           .where({ id: userBook.getId() });
 
@@ -180,7 +178,6 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       bookshelfId: userBook.getBookshelfId(),
       bookId: userBook.getBookId(),
       createdAt: userBook.getCreatedAt(),
-      genreId: userBook.getGenreId(),
     }));
 
     try {
@@ -333,7 +330,6 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       userId,
       bookId,
       authorId,
-      genreId,
       page,
       pageSize,
       isbn,
@@ -474,10 +470,6 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         query.where(`${bookshelfTable}.userId`, userId);
       }
 
-      if (genreId) {
-        query.where(`${genreTable}.id`, genreId);
-      }
-
       if (pageSize && page) {
         query.limit(pageSize).offset(pageSize * (page - 1));
       }
@@ -566,7 +558,6 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       userId,
       authorId,
       bookId,
-      genreId,
       isbn,
       title,
       status,
@@ -585,10 +576,6 @@ export class UserBookRepositoryImpl implements UserBookRepository {
             join.on(`${bookAuthorTable}.bookId`, '=', `${userBookTable}.bookId`);
           })
           .where(`${bookAuthorTable}.authorId`, authorId);
-      }
-
-      if (genreId) {
-        query.where(`${userBookTable}.genreId`, genreId);
       }
 
       if (isbn || title || releaseYearAfter !== undefined || releaseYearBefore !== undefined || language) {

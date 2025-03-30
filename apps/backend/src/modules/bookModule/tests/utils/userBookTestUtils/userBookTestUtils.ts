@@ -8,7 +8,7 @@ import { userBookTable } from '../../../infrastructure/databases/bookDatabase/ta
 import { UserBookTestFactory } from '../../factories/userBookTestFactory/userBookTestFactory.js';
 
 interface CreateAndPersistPayload {
-  readonly input?: Partial<UserBookRawEntity> & Pick<UserBookRawEntity, 'bookId' | 'bookshelfId' | 'genreId'>;
+  readonly input?: Partial<UserBookRawEntity> & Pick<UserBookRawEntity, 'bookId' | 'bookshelfId'>;
   readonly collectionIds?: string[];
 }
 
