@@ -6,7 +6,6 @@ import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
-import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { Borrowing } from '../../../domain/entities/borrowing/borrowing.js';
 import { type BorrowingRepository } from '../../../domain/repositories/borrowingRepository/borrowingRepository.js';
@@ -14,7 +13,7 @@ import { symbols } from '../../../symbols.js';
 import { BorrowingTestFactory } from '../../../tests/factories/borrowingTestFactory/borrowingTestFactory.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
 import { type BorrowingTestUtils } from '../../../tests/utils/borrowingTestUtils/borrowingTestUtils.js';
-import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
+import { type TestDataOrchestrator } from '../../../tests/utils/testDataOrchestrator/testDataOrchestrator.js';
 import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
 
 describe('BorrowingRepositoryImpl', () => {
@@ -26,15 +25,15 @@ describe('BorrowingRepositoryImpl', () => {
 
   let bookTestUtils: BookTestUtils;
 
-  let bookshelfTestUtils: BookshelfTestUtils;
-
   let userTestUtils: UserTestUtils;
-
-  let genreTestUtils: GenreTestUtils;
 
   let userBookTestUtils: UserBookTestUtils;
 
   const borrowingTestFactory = new BorrowingTestFactory();
+
+  let testDataOrchestrator: TestDataOrchestrator;
+
+  const testUserId = Generator.uuid();
 
   let testUtils: TestUtils[];
 
@@ -51,16 +50,12 @@ describe('BorrowingRepositoryImpl', () => {
 
     bookTestUtils = container.get<BookTestUtils>(testSymbols.bookTestUtils);
 
-    bookshelfTestUtils = container.get<BookshelfTestUtils>(testSymbols.bookshelfTestUtils);
-
     userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
 
-    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+    testDataOrchestrator = container.get<TestDataOrchestrator>(testSymbols.testDataOrchestrator);
 
     testUtils = [
-      genreTestUtils,
       bookTestUtils,
-      bookshelfTestUtils,
       userTestUtils,
       borrowingTestUtils,
       userBookTestUtils,
@@ -69,6 +64,16 @@ describe('BorrowingRepositoryImpl', () => {
     for (const testUtil of testUtils) {
       await testUtil.truncate();
     }
+
+    await testDataOrchestrator.cleanup();
+
+    await userTestUtils.createAndPersist({
+      input: {
+        id: testUserId,
+      },
+    });
+
+    testDataOrchestrator.setUserId(testUserId);
   });
 
   afterEach(async () => {
@@ -91,18 +96,7 @@ describe('BorrowingRepositoryImpl', () => {
     });
 
     it('returns a Borrowing', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-      const book = await bookTestUtils.createAndPersist();
-
-      const userBook = await userBookTestUtils.createAndPersist({
-        input: {
-          bookshelfId: bookshelf.id,
-          bookId: book.id,
-        },
-      });
+      const userBook = await testDataOrchestrator.createUserBook();
 
       const borrowing = await borrowingTestUtils.createAndPersist({
         input: {
@@ -139,18 +133,7 @@ describe('BorrowingRepositoryImpl', () => {
     });
 
     it('returns an array of Borrowings', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-      const book = await bookTestUtils.createAndPersist();
-
-      const userBook = await userBookTestUtils.createAndPersist({
-        input: {
-          bookshelfId: bookshelf.id,
-          bookId: book.id,
-        },
-      });
+      const userBook = await testDataOrchestrator.createUserBook();
 
       const borrowing1 = await borrowingTestUtils.createAndPersist({
         input: {
@@ -182,18 +165,7 @@ describe('BorrowingRepositoryImpl', () => {
     });
 
     it('returns an array of Borrowings - with pagination', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-      const book = await bookTestUtils.createAndPersist();
-
-      const userBook = await userBookTestUtils.createAndPersist({
-        input: {
-          bookshelfId: bookshelf.id,
-          bookId: book.id,
-        },
-      });
+      const userBook = await testDataOrchestrator.createUserBook();
 
       const borrowing1 = await borrowingTestUtils.createAndPersist({
         input: {
@@ -219,18 +191,7 @@ describe('BorrowingRepositoryImpl', () => {
     });
 
     it('returns an array of Borrowings - sorted by startedAt date', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-      const book = await bookTestUtils.createAndPersist();
-
-      const userBook = await userBookTestUtils.createAndPersist({
-        input: {
-          bookshelfId: bookshelf.id,
-          bookId: book.id,
-        },
-      });
+      const userBook = await testDataOrchestrator.createUserBook();
 
       const borrowing1 = await borrowingTestUtils.createAndPersist({
         input: {
@@ -261,18 +222,7 @@ describe('BorrowingRepositoryImpl', () => {
     });
 
     it('returns an array of Borrowings - filtered by isOpen', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-      const book = await bookTestUtils.createAndPersist();
-
-      const userBook = await userBookTestUtils.createAndPersist({
-        input: {
-          bookshelfId: bookshelf.id,
-          bookId: book.id,
-        },
-      });
+      const userBook = await testDataOrchestrator.createUserBook();
 
       const borrowing1 = await borrowingTestUtils.createAndPersist({
         input: {
@@ -301,18 +251,7 @@ describe('BorrowingRepositoryImpl', () => {
     });
 
     it('returns an array of Borrowings - filtered by not isOpen', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-      const book = await bookTestUtils.createAndPersist();
-
-      const userBook = await userBookTestUtils.createAndPersist({
-        input: {
-          bookshelfId: bookshelf.id,
-          bookId: book.id,
-        },
-      });
+      const userBook = await testDataOrchestrator.createUserBook();
 
       await borrowingTestUtils.createAndPersist({
         input: {
@@ -343,18 +282,7 @@ describe('BorrowingRepositoryImpl', () => {
 
   describe('save', () => {
     it('creates a new Borrowing - given BorrowingDraft', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-      const book = await bookTestUtils.createAndPersist();
-
-      const userBook = await userBookTestUtils.createAndPersist({
-        input: {
-          bookshelfId: bookshelf.id,
-          bookId: book.id,
-        },
-      });
+      const userBook = await testDataOrchestrator.createUserBook();
 
       const borrowing = borrowingTestFactory.create({
         userBookId: userBook.id,
@@ -372,18 +300,7 @@ describe('BorrowingRepositoryImpl', () => {
     });
 
     it('updates a Borrowing - given a Borrowing', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-      const book = await bookTestUtils.createAndPersist();
-
-      const userBook = await userBookTestUtils.createAndPersist({
-        input: {
-          bookshelfId: bookshelf.id,
-          bookId: book.id,
-        },
-      });
+      const userBook = await testDataOrchestrator.createUserBook();
 
       const borrowingRawEntity = await borrowingTestUtils.createAndPersist({
         input: {
@@ -431,18 +348,7 @@ describe('BorrowingRepositoryImpl', () => {
 
   describe('delete', () => {
     it('deletes a Borrowing', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-      const book = await bookTestUtils.createAndPersist();
-
-      const userBook = await userBookTestUtils.createAndPersist({
-        input: {
-          bookshelfId: bookshelf.id,
-          bookId: book.id,
-        },
-      });
+      const userBook = await testDataOrchestrator.createUserBook();
 
       const borrowingRawEntity = await borrowingTestUtils.createAndPersist({
         input: {

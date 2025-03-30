@@ -13,6 +13,7 @@ import { symbols } from '../../../symbols.js';
 import { BookChangeRequestTestFactory } from '../../../tests/factories/bookChangeRequestTestFactory/bookChangeRequestTestFactory.js';
 import { type BookChangeRequestTestUtils } from '../../../tests/utils/bookChangeRequestTestUtils/bookChangeRequestTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
+import { type TestDataOrchestrator } from '../../../tests/utils/testDataOrchestrator/testDataOrchestrator.js';
 
 describe('BookChangeRequestRepositoryImpl', () => {
   let bookChangeRequestRepository: BookChangeRequestRepository;
@@ -26,6 +27,10 @@ describe('BookChangeRequestRepositoryImpl', () => {
   let userTestUtils: UserTestUtils;
 
   const bookChangeRequestTestFactory = new BookChangeRequestTestFactory();
+
+  const testUserId = Generator.uuid();
+
+  let testDataOrchestrator: TestDataOrchestrator;
 
   let testUtils: TestUtils[];
 
@@ -42,11 +47,23 @@ describe('BookChangeRequestRepositoryImpl', () => {
 
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
 
+    testDataOrchestrator = container.get<TestDataOrchestrator>(testSymbols.testDataOrchestrator);
+
     testUtils = [bookTestUtils, userTestUtils, bookChangeRequestTestUtils];
 
     for (const testUtil of testUtils) {
       await testUtil.truncate();
     }
+
+    await testDataOrchestrator.cleanup();
+
+    await userTestUtils.createAndPersist({
+      input: {
+        id: testUserId,
+      },
+    });
+
+    testDataOrchestrator.setUserId(testUserId);
   });
 
   afterEach(async () => {
@@ -61,7 +78,7 @@ describe('BookChangeRequestRepositoryImpl', () => {
     it('creates a book change request', async () => {
       const { email } = await userTestUtils.createAndPersist();
 
-      const book = await bookTestUtils.createAndPersist();
+      const book = await testDataOrchestrator.createBook();
 
       const createdBookChangeRequest = bookChangeRequestTestFactory.create({
         bookId: book.id,
@@ -133,7 +150,7 @@ describe('BookChangeRequestRepositoryImpl', () => {
     it('finds a book change request by id', async () => {
       const { email } = await userTestUtils.createAndPersist();
 
-      const book = await bookTestUtils.createAndPersist();
+      const book = await testDataOrchestrator.createBook();
 
       const bookChangeRequest = await bookChangeRequestTestUtils.createAndPersist({
         input: {
@@ -183,7 +200,7 @@ describe('BookChangeRequestRepositoryImpl', () => {
 
       const user2 = await userTestUtils.createAndPersist();
 
-      const book = await bookTestUtils.createAndPersist();
+      const book = await testDataOrchestrator.createBook();
 
       const bookChangeRequest1 = await bookChangeRequestTestUtils.createAndPersist({
         input: {
@@ -229,7 +246,7 @@ describe('BookChangeRequestRepositoryImpl', () => {
 
       const user2 = await userTestUtils.createAndPersist();
 
-      const book = await bookTestUtils.createAndPersist();
+      const book = await testDataOrchestrator.createBook();
 
       const bookChangeRequest1 = await bookChangeRequestTestUtils.createAndPersist({
         input: {
@@ -259,7 +276,7 @@ describe('BookChangeRequestRepositoryImpl', () => {
     it('finds book change request by id', async () => {
       const user1 = await userTestUtils.createAndPersist();
 
-      const book = await bookTestUtils.createAndPersist();
+      const book = await testDataOrchestrator.createBook();
 
       const bookChangeRequest1 = await bookChangeRequestTestUtils.createAndPersist({
         input: {
@@ -284,7 +301,7 @@ describe('BookChangeRequestRepositoryImpl', () => {
     it('deletes a book change request', async () => {
       const user = await userTestUtils.createAndPersist();
 
-      const book = await bookTestUtils.createAndPersist();
+      const book = await testDataOrchestrator.createBook();
 
       const bookChangeRequest = await bookChangeRequestTestUtils.createAndPersist({
         input: {
