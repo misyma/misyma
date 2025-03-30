@@ -10,7 +10,7 @@ import { BookTestFactory } from '../../factories/bookTestFactory/bookTestFactory
 interface CreateAndPersistPayload {
   readonly input?: {
     readonly book?: Partial<BookRawEntity>;
-    readonly authorIds?: string[];
+    readonly authorIds?: string[] | undefined;
   };
 }
 
