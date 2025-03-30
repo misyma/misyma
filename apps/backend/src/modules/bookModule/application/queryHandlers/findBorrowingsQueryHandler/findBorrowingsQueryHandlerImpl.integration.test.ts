@@ -9,6 +9,7 @@ import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
+import { type UserBookRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/userBookTable/userBookRawEntity.js';
 import { symbols } from '../../../symbols.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
 import { type BorrowingTestUtils } from '../../../tests/utils/borrowingTestUtils/borrowingTestUtils.js';
@@ -35,6 +36,8 @@ describe('FindBorrowingsQueryHandlerImpl', () => {
   let userBookTestUtils: UserBookTestUtils;
 
   let testUtils: TestUtils[];
+
+  const testUserId = Generator.uuid();
 
   beforeEach(async () => {
     const container = await TestContainer.create();
@@ -67,6 +70,12 @@ describe('FindBorrowingsQueryHandlerImpl', () => {
     for (const testUtil of testUtils) {
       await testUtil.truncate();
     }
+
+    await userTestUtils.createAndPersist({
+      input: {
+        id: testUserId,
+      },
+    });
   });
 
   afterEach(async () => {
@@ -76,6 +85,27 @@ describe('FindBorrowingsQueryHandlerImpl', () => {
 
     await databaseClient.destroy();
   });
+
+  async function createUserBook(): Promise<UserBookRawEntity > {
+    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: testUserId } });
+
+    const genre = await genreTestUtils.createAndPersist();
+
+    const book = await bookTestUtils.createAndPersist({
+      input: {
+        book: {
+          genreId: genre.id,
+        },
+      },
+    });
+
+    return await userBookTestUtils.createAndPersist({
+      input: {
+        bookId: book.id,
+        bookshelfId: bookshelf.id,
+      },
+    });
+  }
 
   it('throws an error - when UserBook was not found', async () => {
     const user = await userTestUtils.createAndPersist();
@@ -104,21 +134,10 @@ describe('FindBorrowingsQueryHandlerImpl', () => {
   });
 
   it('returns an empty array - when UserBook has no Borrowings', async () => {
-    const user = await userTestUtils.createAndPersist();
-
-    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-    const book = await bookTestUtils.createAndPersist();
-
-    const userBook = await userBookTestUtils.createAndPersist({
-      input: {
-        bookId: book.id,
-        bookshelfId: bookshelf.id,
-      },
-    });
+    const userBook = await createUserBook();
 
     const { borrowings, total } = await queryHandler.execute({
-      userId: user.id,
+      userId: testUserId,
       userBookId: userBook.id,
       page: 1,
       pageSize: 10,
@@ -130,18 +149,7 @@ describe('FindBorrowingsQueryHandlerImpl', () => {
   });
 
   it('returns Book Borrowings', async () => {
-    const user = await userTestUtils.createAndPersist();
-
-    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-    const book = await bookTestUtils.createAndPersist();
-
-    const userBook = await userBookTestUtils.createAndPersist({
-      input: {
-        bookId: book.id,
-        bookshelfId: bookshelf.id,
-      },
-    });
+    const userBook = await createUserBook();
 
     const borrowing1 = await borrowingTestUtils.createAndPersist({
       input: {
@@ -156,7 +164,7 @@ describe('FindBorrowingsQueryHandlerImpl', () => {
     });
 
     const { borrowings, total } = await queryHandler.execute({
-      userId: user.id,
+      userId: testUserId,
       userBookId: userBook.id,
       page: 1,
       pageSize: 10,

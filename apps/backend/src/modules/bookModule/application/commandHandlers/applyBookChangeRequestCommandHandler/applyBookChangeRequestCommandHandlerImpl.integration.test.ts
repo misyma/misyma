@@ -12,6 +12,7 @@ import { symbols } from '../../../symbols.js';
 import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookChangeRequestTestUtils } from '../../../tests/utils/bookChangeRequestTestUtils/bookChangeRequestTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
+import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 
 import { type ApplyBookChangeRequestCommandHandler } from './applyBookChangeRequestCommandHandler.js';
 
@@ -25,6 +26,8 @@ describe('ApplyBookChangeRequestCommandHandlerImpl', () => {
   let userTestUtils: UserTestUtils;
 
   let authorTestUtils: AuthorTestUtils;
+
+  let genreTestUtils: GenreTestUtils;
 
   let databaseClient: DatabaseClient;
 
@@ -45,7 +48,9 @@ describe('ApplyBookChangeRequestCommandHandlerImpl', () => {
 
     authorTestUtils = container.get<AuthorTestUtils>(testSymbols.authorTestUtils);
 
-    testUtils = [bookTestUtils, userTestUtils, bookChangeRequestTestUtils];
+    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+
+    testUtils = [bookTestUtils, userTestUtils, bookChangeRequestTestUtils, genreTestUtils];
 
     for (const testUtil of testUtils) {
       await testUtil.truncate();
@@ -79,7 +84,15 @@ describe('ApplyBookChangeRequestCommandHandlerImpl', () => {
   it('applies a BookChangeRequest to the Book', async () => {
     const user = await userTestUtils.createAndPersist();
 
-    const book = await bookTestUtils.createAndPersist();
+    const genre = await genreTestUtils.createAndPersist();
+
+    const book = await bookTestUtils.createAndPersist({
+      input: {
+        book: {
+          genreId: genre.id
+        }
+      },
+    });
 
     const author = await authorTestUtils.createAndPersist();
 
@@ -97,6 +110,7 @@ describe('ApplyBookChangeRequestCommandHandlerImpl', () => {
 
     expect(updatedBook).toEqual({
       id: book.id,
+      genreId: genre.id,
       title: bookChangeRequest.title,
       publisher: bookChangeRequest.publisher,
       releaseYear: bookChangeRequest.releaseYear,
@@ -127,7 +141,15 @@ describe('ApplyBookChangeRequestCommandHandlerImpl', () => {
   it('throws an error - when some of the authors do not exist', async () => {
     const user = await userTestUtils.createAndPersist();
 
-    const book = await bookTestUtils.createAndPersist();
+    const genre = await genreTestUtils.createAndPersist();
+
+    const book = await bookTestUtils.createAndPersist({
+      input: {
+        book: {
+          genreId: genre.id
+        }
+      },
+    });
 
     const authorIds = [Generator.uuid(), Generator.uuid()];
 

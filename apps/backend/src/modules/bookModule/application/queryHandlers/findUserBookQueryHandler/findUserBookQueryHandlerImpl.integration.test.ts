@@ -78,9 +78,14 @@ describe('FindUserBookQueryHandler', () => {
 
     const author = await authorTestUtils.createAndPersist();
 
+    const genre = await genreTestUtils.createAndPersist();
+
     const book = await bookTestUtils.createAndPersist({
       input: {
         authorIds: [author.id],
+        book: {
+          genreId: genre.id
+        }
       },
     });
 
@@ -127,9 +132,14 @@ describe('FindUserBookQueryHandler', () => {
 
     const author = await authorTestUtils.createAndPersist();
 
+    const genre = await genreTestUtils.createAndPersist();
+
     const book = await bookTestUtils.createAndPersist({
       input: {
         authorIds: [author.id],
+        book: {
+          genreId: genre.id
+        }
       },
     });
 
