@@ -96,7 +96,7 @@ export class DeleteBookshelfCommandHandlerImpl implements DeleteBookshelfCommand
     });
 
     userBooks.forEach((userBook) => {
-      userBook.setBookshelfId({ bookshelfId: otherBookshelfId });
+      userBook.bookshelfId = { bookshelfId: otherBookshelfId };
     });
 
     await this.userBookRepository.saveUserBooks({ userBooks });

@@ -202,7 +202,7 @@ describe('UserBookRepositoryImpl', () => {
 
       const newBookshelfId = bookshelf2.id;
 
-      userBook.setBookshelfId({ bookshelfId: newBookshelfId });
+      userBook.bookshelfId = { bookshelfId: newBookshelfId };
 
       const updatedUserBook = await userBookRepository.saveUserBook({ userBook });
 
@@ -211,12 +211,12 @@ describe('UserBookRepositoryImpl', () => {
       });
 
       expect(updatedUserBook.getState()).toEqual({
-        bookId: userBook.getBookId(),
+        bookId: userBook.bookId,
         bookshelfId: newBookshelfId,
         status: userBook.status,
-        isFavorite: userBook.getIsFavorite(),
-        imageUrl: userBook.getImageUrl(),
-        createdAt: userBook.getCreatedAt(),
+        isFavorite: userBook.isFavorite,
+        imageUrl: userBook.imageUrl,
+        createdAt: userBook.createdAt,
         readings: [],
         collections: [],
         book: {
@@ -238,12 +238,12 @@ describe('UserBookRepositoryImpl', () => {
 
       expect(foundUserBook).toEqual({
         id: userBook.id,
-        bookId: userBook.getBookId(),
+        bookId: userBook.bookId,
         bookshelfId: newBookshelfId,
         status: userBook.status,
-        isFavorite: userBook.getIsFavorite(),
-        imageUrl: userBook.getImageUrl(),
-        createdAt: userBook.getCreatedAt(),
+        isFavorite: userBook.isFavorite,
+        imageUrl: userBook.imageUrl,
+        createdAt: userBook.createdAt,
       });
     });
 
@@ -271,7 +271,7 @@ describe('UserBookRepositoryImpl', () => {
 
       const newStatus = Generator.readingStatus();
 
-      userBook.setStatus({ status: newStatus });
+      userBook.status = { status: newStatus };
 
       const updatedUserBook = await userBookRepository.saveUserBook({
         userBook,
@@ -310,7 +310,7 @@ describe('UserBookRepositoryImpl', () => {
 
       const newImageUrl = Generator.imageUrl();
 
-      userBook.setImageUrl({ imageUrl: newImageUrl });
+      userBook.imageUrl = { imageUrl: newImageUrl };
 
       const updatedUserBook = await userBookRepository.saveUserBook({
         userBook,
@@ -320,7 +320,7 @@ describe('UserBookRepositoryImpl', () => {
         id: userBook.id,
       });
 
-      expect(updatedUserBook.getImageUrl()).toEqual(newImageUrl);
+      expect(updatedUserBook.imageUrl).toEqual(newImageUrl);
 
       expect(foundUserBook?.imageUrl).toEqual(newImageUrl);
     });
@@ -349,7 +349,7 @@ describe('UserBookRepositoryImpl', () => {
 
       const newImageUrl = null;
 
-      userBook.setImageUrl({ imageUrl: newImageUrl });
+      userBook.imageUrl = { imageUrl: newImageUrl };
 
       const updatedUserBook = await userBookRepository.saveUserBook({
         userBook,
@@ -359,7 +359,7 @@ describe('UserBookRepositoryImpl', () => {
         id: userBook.id,
       });
 
-      expect(updatedUserBook.getImageUrl()).toBeUndefined();
+      expect(updatedUserBook.imageUrl).toBeUndefined();
 
       expect(foundUserBook?.imageUrl).toBeNull();
     });
@@ -388,7 +388,7 @@ describe('UserBookRepositoryImpl', () => {
 
       const newIsFavorite = Generator.boolean();
 
-      userBook.setIsFavorite({ isFavorite: newIsFavorite });
+      userBook.isFavorite = { isFavorite: newIsFavorite };
 
       const updatedUserBook = await userBookRepository.saveUserBook({
         userBook,
@@ -398,7 +398,7 @@ describe('UserBookRepositoryImpl', () => {
         id: userBook.id,
       });
 
-      expect(updatedUserBook.getIsFavorite()).toEqual(newIsFavorite);
+      expect(updatedUserBook.isFavorite).toEqual(newIsFavorite);
 
       expect(foundUserBook?.isFavorite).toEqual(newIsFavorite);
     });
@@ -452,9 +452,9 @@ describe('UserBookRepositoryImpl', () => {
         collections: [],
       });
 
-      userBook1.setBookshelfId({ bookshelfId: bookshelf2.id });
+      userBook1.bookshelfId ={ bookshelfId: bookshelf2.id };
 
-      userBook2.setBookshelfId({ bookshelfId: bookshelf2.id });
+      userBook2.bookshelfId = { bookshelfId: bookshelf2.id };
 
       await userBookRepository.saveUserBooks({
         userBooks: [userBook1, userBook2],
@@ -507,12 +507,12 @@ describe('UserBookRepositoryImpl', () => {
       expect(foundUserBook?.id).toEqual(userBook.id);
 
       expect(foundUserBook?.getState()).toEqual({
-        bookId: userBook.getBookId(),
-        bookshelfId: userBook.getBookshelfId(),
+        bookId: userBook.bookId,
+        bookshelfId: userBook.bookshelfId,
         status: userBook.status,
-        isFavorite: userBook.getIsFavorite(),
-        imageUrl: userBook.getImageUrl(),
-        createdAt: userBook.getCreatedAt(),
+        isFavorite: userBook.isFavorite,
+        imageUrl: userBook.imageUrl,
+        createdAt: userBook.createdAt,
         collections: [new Collection(collection)],
         readings: [new BookReading(bookReading)],
         book: {
@@ -635,7 +635,7 @@ describe('UserBookRepositoryImpl', () => {
       userBooks.forEach((userBook) => {
         expect(userBook.id).oneOf([userBook2.id, userBook3.id]);
 
-        expect(userBook.getLatestRating()).toEqual(
+        expect(userBook.latestReading).toEqual(
           userBook.id === userBook2.id ? bookReading1.rating : bookReading2.rating,
         );
       });
@@ -1623,11 +1623,11 @@ describe('UserBookRepositoryImpl', () => {
 
       expect(userBooks1[0]?.id).toEqual(userBook1.id);
 
-      expect(userBooks1[0]?.getLatestRating()).toEqual(7);
+      expect(userBooks1[0]?.latestReading).toEqual(7);
 
       expect(userBooks1[1]?.id).toEqual(userBook2.id);
 
-      expect(userBooks1[1]?.getLatestRating()).toEqual(2);
+      expect(userBooks1[1]?.latestReading).toEqual(2);
 
       const userBooks2 = await userBookRepository.findUserBooks({
         userId: user.id,
@@ -1641,11 +1641,11 @@ describe('UserBookRepositoryImpl', () => {
 
       expect(userBooks2[0]?.id).toEqual(userBook2.id);
 
-      expect(userBooks2[0]?.getLatestRating()).toEqual(2);
+      expect(userBooks2[0]?.latestReading).toEqual(2);
 
       expect(userBooks2[1]?.id).toEqual(userBook1.id);
 
-      expect(userBooks2[1]?.getLatestRating()).toEqual(7);
+      expect(userBooks2[1]?.latestReading).toEqual(7);
     });
   });
 

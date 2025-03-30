@@ -37,13 +37,13 @@ export class UploadUserBookImageCommandHandlerImpl implements UploadUserBookImag
     }
 
     const existingBookshelf = await this.bookshelfRepository.findBookshelf({
-      where: { id: existingUserBook.getBookshelfId() },
+      where: { id: existingUserBook.bookshelfId },
     });
 
     if (!existingBookshelf) {
       throw new OperationNotValidError({
         reason: 'Bookshelf does not exist.',
-        id: existingUserBook.getBookshelfId(),
+        id: existingUserBook.bookshelfId,
       });
     }
 
@@ -83,9 +83,9 @@ export class UploadUserBookImageCommandHandlerImpl implements UploadUserBookImag
       contentType,
     });
 
-    const previousImageUrl = existingUserBook.getImageUrl();
+    const previousImageUrl = existingUserBook.imageUrl;
 
-    existingUserBook.setImageUrl({ imageUrl });
+    existingUserBook.imageUrl = { imageUrl };
 
     await this.userBookRepository.saveUserBook({ userBook: existingUserBook });
 

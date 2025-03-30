@@ -132,7 +132,7 @@ export class UserBook {
     return this.state.book;
   }
 
-  public getImageUrl(): string | undefined | null {
+  public get imageUrl(): string | undefined | null {
     return this.state.imageUrl;
   }
 
@@ -140,59 +140,59 @@ export class UserBook {
     return this.state.status;
   }
 
-  public getIsFavorite(): boolean {
+  public get isFavorite(): boolean {
     return this.state.isFavorite;
   }
 
-  public getBookshelfId(): string {
+  public get bookshelfId(): string {
     return this.state.bookshelfId;
   }
 
-  public getCreatedAt(): Date {
+  public get createdAt(): Date {
     return this.state.createdAt;
   }
 
-  public getBookId(): string {
+  public get bookId(): string {
     return this.state.bookId;
   }
 
-  public getCollections(): Collection[] | undefined {
-    return this.state.collections;
+  public get collections(): Collection[] | undefined {
+    return this.state.collections ?  [...this.state.collections] : undefined;
   }
 
-  public getReadings(): BookReading[] | undefined {
-    return this.state.readings;
+  public get readings(): BookReading[] | undefined {
+    return this.state.readings ? [...this.state.readings] : undefined;
   }
 
-  public getLatestRating(): number | undefined {
+  public get latestReading(): number | undefined {
     return this.state.latestRating;
   }
 
-  public setImageUrl(payload: SetImageUrlPayload): void {
+  public set imageUrl(payload: SetImageUrlPayload) {
     const { imageUrl } = payload;
 
     this.state.imageUrl = imageUrl;
   }
 
-  public setStatus(payload: SetStatusPayload): void {
+  public set status(payload: SetStatusPayload) {
     const { status } = payload;
 
     this.state.status = status;
   }
 
-  public setIsFavorite(payload: SetIsFavoritePayload): void {
+  public set isFavorite(payload: SetIsFavoritePayload) {
     const { isFavorite } = payload;
 
     this.state.isFavorite = isFavorite;
   }
 
-  public setBookshelfId(payload: SetBookshelfIdPayload): void {
+  public set bookshelfId(payload: SetBookshelfIdPayload) {
     const { bookshelfId } = payload;
 
     this.state.bookshelfId = bookshelfId;
   }
 
-  public setCollections(payload: SetCollectionsPayload): void {
+  public set collections(payload: SetCollectionsPayload) {
     const { collections } = payload;
 
     this.state.collections = collections;

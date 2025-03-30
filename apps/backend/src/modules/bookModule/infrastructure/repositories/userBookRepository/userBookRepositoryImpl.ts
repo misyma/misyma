@@ -119,7 +119,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           })
           .where({ id: userBook.id });
 
-        const existingCollections = existingUserBook.getCollections() || [];
+        const existingCollections = existingUserBook.collections || [];
 
         const addedCollections = (updatedCollections ?? []).filter(
           (collection) =>
@@ -171,12 +171,12 @@ export class UserBookRepositoryImpl implements UserBookRepository {
 
     const payloads: Partial<UserBookRawEntity>[] = userBooks.map((userBook) => ({
       id: userBook.id,
-      imageUrl: userBook.getImageUrl(),
+      imageUrl: userBook.imageUrl,
       status: userBook.status,
-      isFavorite: userBook.getIsFavorite(),
-      bookshelfId: userBook.getBookshelfId(),
-      bookId: userBook.getBookId(),
-      createdAt: userBook.getCreatedAt(),
+      isFavorite: userBook.isFavorite,
+      bookshelfId: userBook.bookshelfId,
+      bookId: userBook.bookId,
+      createdAt: userBook.createdAt,
     }));
 
     try {

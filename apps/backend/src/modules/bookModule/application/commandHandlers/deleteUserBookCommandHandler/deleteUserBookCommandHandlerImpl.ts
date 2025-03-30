@@ -37,13 +37,13 @@ export class DeleteUserBookCommandHandlerImpl implements DeleteUserBookCommandHa
     }
 
     const existingBookshelf = await this.bookshelfRepository.findBookshelf({
-      where: { id: existingUserBook.getBookshelfId() },
+      where: { id: existingUserBook.bookshelfId },
     });
 
     if (!existingBookshelf) {
       throw new ResourceNotFoundError({
         resource: 'Bookshelf',
-        id: existingUserBook.getBookshelfId(),
+        id: existingUserBook.bookshelfId,
       });
     }
 

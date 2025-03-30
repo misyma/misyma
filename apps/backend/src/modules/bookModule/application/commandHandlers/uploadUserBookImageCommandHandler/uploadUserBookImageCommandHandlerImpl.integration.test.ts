@@ -160,7 +160,7 @@ describe('UploadUserBookImageCommandHandlerImpl', () => {
       contentType: 'image/jpg',
     });
 
-    expect(updatedUserBook.getImageUrl()).toEqual(`${config.aws.cloudfrontUrl}/${imageId}`);
+    expect(updatedUserBook.imageUrl).toEqual(`${config.aws.cloudfrontUrl}/${imageId}`);
 
     const foundUserBook = await userBookTestUtils.findById({ id: userBook.id });
 
@@ -215,7 +215,7 @@ describe('UploadUserBookImageCommandHandlerImpl', () => {
       contentType: 'image/jpg',
     });
 
-    expect(updatedUserBook.getImageUrl()).toEqual(`${config.aws.cloudfrontUrl}/${imageId}`);
+    expect(updatedUserBook.imageUrl).toEqual(`${config.aws.cloudfrontUrl}/${imageId}`);
 
     const foundUserBook = await userBookTestUtils.findById({ id: userBook.id });
 

@@ -250,13 +250,13 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
 
     expect(updatedUserBook.id).toBe(userBook.id);
 
-    expect(updatedUserBook.getBookshelfId()).toBe(bookshelf2.id);
+    expect(updatedUserBook.bookshelfId).toBe(bookshelf2.id);
 
-    expect(updatedUserBook.getImageUrl()).toBe(updatedImageUrl);
+    expect(updatedUserBook.imageUrl).toBe(updatedImageUrl);
 
     expect(updatedUserBook.status).toBe(updatedStatus);
 
-    expect(updatedUserBook.getIsFavorite()).toBe(updatedIsFavorite);
+    expect(updatedUserBook.isFavorite).toBe(updatedIsFavorite);
   });
 
   it('throws an error - when one of the Collections does not exist', async () => {
@@ -335,7 +335,7 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
       collectionIds: [collection1.id, collection2.id, collection3.id],
     });
 
-    result.userBook.getCollections()?.forEach((collection) => {
+    result.userBook.collections?.forEach((collection) => {
       expect(collection.getId()).oneOf([collection1.id, collection2.id, collection3.id]);
     });
   });

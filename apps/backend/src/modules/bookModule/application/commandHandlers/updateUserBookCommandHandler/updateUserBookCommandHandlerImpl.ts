@@ -47,13 +47,13 @@ export class UpdateUserBookCommandHandlerImpl implements UpdateUserBookCommandHa
     }
 
     const currentBookshelf = await this.bookshelfRepository.findBookshelf({
-      where: { id: userBook.getBookshelfId() },
+      where: { id: userBook.bookshelfId },
     });
 
     if (!currentBookshelf) {
       throw new OperationNotValidError({
         reason: 'Bookshelf does not exist.',
-        id: userBook.getBookshelfId(),
+        id: userBook.bookshelfId,
       });
     }
 
@@ -94,7 +94,7 @@ export class UpdateUserBookCommandHandlerImpl implements UpdateUserBookCommandHa
         }
       }
 
-      userBook.setBookshelfId({ bookshelfId });
+      userBook.bookshelfId = { bookshelfId };
     }
 
     if (collectionIds !== undefined) {
@@ -111,19 +111,19 @@ export class UpdateUserBookCommandHandlerImpl implements UpdateUserBookCommandHa
         });
       }
 
-      userBook.setCollections({ collections });
+      userBook.collections = { collections };
     }
 
     if (imageUrl !== undefined) {
-      userBook.setImageUrl({ imageUrl });
+      userBook.imageUrl = { imageUrl };
     }
 
     if (status) {
-      userBook.setStatus({ status });
+      userBook.status = { status };
     }
 
     if (isFavorite !== undefined) {
-      userBook.setIsFavorite({ isFavorite });
+      userBook.isFavorite = { isFavorite };
     }
 
     await this.userBookRepository.saveUserBook({ userBook });

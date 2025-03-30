@@ -44,13 +44,13 @@ export class CreateBorrowingCommandHandlerImpl implements CreateBorrowingCommand
     }
 
     const existingBookshelf = await this.bookshelfRepository.findBookshelf({
-      where: { id: existingUserBook.getBookshelfId() },
+      where: { id: existingUserBook.bookshelfId },
     });
 
     if (!existingBookshelf) {
       throw new OperationNotValidError({
         reason: 'Bookshelf does not exist.',
-        id: existingUserBook.getBookshelfId(),
+        id: existingUserBook.bookshelfId,
       });
     }
 
@@ -97,7 +97,7 @@ export class CreateBorrowingCommandHandlerImpl implements CreateBorrowingCommand
       },
     });
 
-    existingUserBook.setBookshelfId({ bookshelfId: borrowingBookshelf.getId() });
+    existingUserBook.bookshelfId = { bookshelfId: borrowingBookshelf.getId() };
 
     await this.userBookRepository.saveUserBook({ userBook: existingUserBook });
 
