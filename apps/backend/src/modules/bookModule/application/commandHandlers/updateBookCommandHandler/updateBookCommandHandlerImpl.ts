@@ -19,6 +19,7 @@ export class UpdateBookCommandHandlerImpl implements UpdateBookCommandHandler {
   public async execute(payload: UpdateBookPayload): Promise<UpdateBookResult> {
     const {
       bookId,
+      genreId,
       authorIds,
       format,
       imageUrl,

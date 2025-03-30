@@ -13,6 +13,7 @@ import { symbols } from '../../../symbols.js';
 import { BookTestFactory } from '../../../tests/factories/bookTestFactory/bookTestFactory.js';
 import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
+import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 
 import { type CreateBookCommandHandler } from './createBookCommandHandler.js';
 
@@ -24,6 +25,8 @@ describe('CreateBookCommandHandler', () => {
   let authorTestUtils: AuthorTestUtils;
 
   let bookTestUtils: BookTestUtils;
+
+  let genreTestUtils: GenreTestUtils;
 
   const bookTestFactory = new BookTestFactory();
 
@@ -40,7 +43,9 @@ describe('CreateBookCommandHandler', () => {
 
     bookTestUtils = container.get<BookTestUtils>(testSymbols.bookTestUtils);
 
-    testUtils = [authorTestUtils, bookTestUtils];
+    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+    
+    testUtils = [authorTestUtils, bookTestUtils, genreTestUtils];
 
     for (const testUtil of testUtils) {
       await testUtil.truncate();
@@ -69,6 +74,8 @@ describe('CreateBookCommandHandler', () => {
       ],
     });
 
+    const genre = await genreTestUtils.createAndPersist();
+
     const { book } = await createBookCommandHandler.execute({
       title: createdBook.getTitle(),
       isbn: createdBook.getIsbn() as string,
@@ -81,6 +88,7 @@ describe('CreateBookCommandHandler', () => {
       isApproved: createdBook.getIsApproved(),
       imageUrl: createdBook.getImageUrl() as string,
       authorIds: [author.id],
+      genreId: genre.id
     });
 
     const foundBook = await bookTestUtils.findByTitleAndAuthor({
@@ -98,6 +106,8 @@ describe('CreateBookCommandHandler', () => {
 
     const createdBook = bookTestFactory.create();
 
+    const genre = await genreTestUtils.createAndPersist();
+
     try {
       await createBookCommandHandler.execute({
         title: createdBook.getTitle(),
@@ -111,6 +121,7 @@ describe('CreateBookCommandHandler', () => {
         isApproved: createdBook.getIsApproved(),
         imageUrl: createdBook.getImageUrl() as string,
         authorIds: [authorId],
+        genreId: genre.id,
       });
     } catch (error) {
       expect(error).toBeInstanceOf(OperationNotValidError);
@@ -129,6 +140,8 @@ describe('CreateBookCommandHandler', () => {
   it('throws an error - when Authors are not provided', async () => {
     const createdBook = bookTestFactory.create();
 
+    const genre = await genreTestUtils.createAndPersist();
+
     try {
       await createBookCommandHandler.execute({
         title: createdBook.getTitle(),
@@ -142,6 +155,7 @@ describe('CreateBookCommandHandler', () => {
         isApproved: createdBook.getIsApproved(),
         imageUrl: createdBook.getImageUrl() as string,
         authorIds: [],
+        genreId: genre.id,
       });
     } catch (error) {
       expect(error).toBeInstanceOf(OperationNotValidError);
@@ -161,11 +175,14 @@ describe('CreateBookCommandHandler', () => {
 
     const isbn = Generator.isbn();
 
+    const genre = await genreTestUtils.createAndPersist();
+
     const existingBook = await bookTestUtils.createAndPersist({
       input: {
         book: {
           isbn,
           isApproved: true,
+          genreId: genre.id,
         },
       },
     });
@@ -183,6 +200,7 @@ describe('CreateBookCommandHandler', () => {
         isApproved: existingBook.isApproved,
         imageUrl: existingBook.imageUrl as string,
         authorIds: [author.id],
+        genreId: genre.id,
       });
     } catch (error) {
       expect(error).toBeInstanceOf(ResourceAlreadyExistsError);
