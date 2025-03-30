@@ -7,7 +7,7 @@ import { type BookRawEntity } from '../../../infrastructure/databases/bookDataba
 import { bookTable } from '../../../infrastructure/databases/bookDatabase/tables/bookTable/bookTable.js';
 import { BookTestFactory } from '../../factories/bookTestFactory/bookTestFactory.js';
 
-interface CreateAndPersistPayload {
+export interface CreateAndPersistBookPayload {
   readonly input?: {
     readonly book?: Partial<BookRawEntity>;
     readonly authorIds?: string[] | undefined;
@@ -34,7 +34,7 @@ export class BookTestUtils extends TestUtils {
     super(databaseClient, bookTable);
   }
 
-  public async createAndPersist(payload: CreateAndPersistPayload = {}): Promise<BookRawEntity> {
+  public async createAndPersist(payload: CreateAndPersistBookPayload = {}): Promise<BookRawEntity> {
     const { input } = payload;
 
     const book = this.bookTestFactory.createRaw(input?.book);
