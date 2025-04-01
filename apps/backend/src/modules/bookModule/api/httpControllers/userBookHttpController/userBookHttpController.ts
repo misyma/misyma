@@ -387,6 +387,8 @@ export class UserBookHttpController implements HttpController {
       bookId,
       book: {
         title: book?.title as string,
+        genreId: book?.genreId as string,
+        genreName: book?.genre.getName() ?? "",
         language: book?.language as Language,
         isApproved: book?.isApproved as boolean,
         format: book?.format as BookFormat,

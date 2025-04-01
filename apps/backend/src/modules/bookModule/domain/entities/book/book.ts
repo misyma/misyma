@@ -35,6 +35,7 @@ export interface BookState {
   imageUrl?: string | undefined | null;
   authors: Author[];
   genreId: string;
+  genreName?: string;
   readonly createdAt: Date;
 }
 
@@ -82,7 +83,6 @@ export interface SetImageUrlPayload {
   readonly imageUrl: string | null;
 }
 
-
 export interface SetGenrePayload {
   readonly genreId: string;
 }
@@ -95,6 +95,7 @@ export class Book {
     const {
       id,
       genreId,
+      genre,
       title,
       isbn,
       publisher,
@@ -113,6 +114,7 @@ export class Book {
 
     this.state = {
       genreId,
+      genreName: genre.getName(),
       title,
       language,
       format,
@@ -199,6 +201,14 @@ export class Book {
     return this.state.createdAt;
   }
 
+  public getGenreId(): string {
+    return this.state.genreId;
+  }
+
+  public getGenreName(): string {
+    return this.state.genreName ?? ('' as const);
+  }
+
   public setTitle(payload: SetTitlePayload): void {
     const { title } = payload;
 
@@ -215,6 +225,10 @@ export class Book {
     const { publisher } = payload;
 
     this.state.publisher = publisher;
+  }
+
+  public setGenre(genreId: string): void {
+    this.state.genreId = genreId;
   }
 
   public setReleaseYear(payload: SetReleaseYearPayload): void {

@@ -28,6 +28,9 @@ import { useAdminCreateBook } from '../../../../../hooks/adminCreateBook/adminCr
 import { type CreateBookStepTwo, createBookStepTwoSchema } from '../../../../../schemas/createBookSchemas';
 import LanguageSelect from '../../../../molecules/languageSelect/languageSelect';
 import BookFormatSelect from '../../../../organisms/bookFormatSelect/bookFormatSelect';
+import GenreSelect from '../../../../molecules/genreSelect/genreSelect';
+import { useErrorHandledQuery } from '../../../../../../common/hooks/useErrorHandledQuery';
+import { getGenresQueryOptions } from '../../../../../../genres/api/queries/getGenresQuery/getGenresQueryOptions';
 
 interface Props {
   onSubmit: () => void;
@@ -52,6 +55,7 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
         ? ''
         : (bookCreation.stepTwoDetails?.pagesCount ?? ''),
       imageUrl: '',
+      genreId: '',
     },
     mode: 'onChange',
   });
@@ -66,6 +70,8 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
       language: val as Languages,
     });
   };
+
+  const { data: genres } = useErrorHandledQuery(getGenresQueryOptions({}));
 
   const onSubmit = async (values: CreateBookStepTwo): Promise<void> => {
     await create({
@@ -86,6 +92,7 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
         releaseYear: bookCreation.stepOneDetails?.releaseYear as number,
         publisher: bookCreation.stepOneDetails?.publisher === '' ? undefined : bookCreation.stepOneDetails?.publisher,
         imageUrl: values.imageUrl,
+        genreId: values.genreId,
       },
     });
 
@@ -212,6 +219,26 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
                   {...field}
                 />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="genreId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Kategoria</FormLabel>
+              <GenreSelect
+                genres={genres?.data ?? []}
+                onValueChange={(val) => {
+                  dispatch({
+                    type: BookCreationActionType.setGenre,
+                    genre: val,
+                  });
+                }}
+                {...field}
+              />
               <FormMessage />
             </FormItem>
           )}

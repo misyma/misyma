@@ -11,6 +11,8 @@ export interface UserBook {
   readonly bookId: string;
   readonly book: {
     readonly title: string;
+    readonly genreId: string;
+    readonly genreName?: string;
     readonly isbn?: string;
     readonly publisher?: string;
     readonly releaseYear: number;

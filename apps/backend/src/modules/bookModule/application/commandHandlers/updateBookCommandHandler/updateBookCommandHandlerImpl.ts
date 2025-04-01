@@ -79,6 +79,10 @@ export class UpdateBookCommandHandlerImpl implements UpdateBookCommandHandler {
       book.setAuthors(authors);
     }
 
+    if (genreId) {
+      book.setGenre(genreId);
+    }
+
     if (language) {
       book.setLanguage({ language });
     }

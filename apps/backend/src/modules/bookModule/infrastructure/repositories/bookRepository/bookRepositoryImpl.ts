@@ -104,7 +104,9 @@ export class BookRepositoryImpl implements BookRepository {
 
     const createdBook = this.bookMapper.mapRawToDomain(rawEntity);
 
-    authors.forEach((author) => { createdBook.addAuthor(author); });
+    authors.forEach((author) => {
+      createdBook.addAuthor(author);
+    });
 
     return createdBook;
   }
@@ -181,7 +183,7 @@ export class BookRepositoryImpl implements BookRepository {
         .select([
           `${bookTable}.id`,
           `${bookTable}.genreId`,
-          `${genreTable}.name as "genreName"`,
+          `${genreTable}.name as genreName`,
           `${bookTable}.title`,
           `${bookTable}.isbn`,
           `${bookTable}.publisher`,
@@ -205,7 +207,7 @@ export class BookRepositoryImpl implements BookRepository {
           join.on(`${authorTable}.id`, '=', `${bookAuthorTable}.authorId`);
         })
         .leftJoin(genreTable, (join) => {
-          join.on(`${genreTable}.id`, '=', `${bookTable}.genreId`)
+          join.on(`${genreTable}.id`, '=', `${bookTable}.genreId`);
         })
         .where((builder) => {
           builder.where(`${bookTable}.id`, id);
@@ -248,6 +250,8 @@ export class BookRepositoryImpl implements BookRepository {
         .select([
           `${bookTable}.id`,
           `${bookTable}.title`,
+          `${bookTable}.genreId`,
+          `${genreTable}.name as genreName`,
           `${bookTable}.isbn`,
           `${bookTable}.publisher`,
           `${bookTable}.releaseYear`,
@@ -268,6 +272,9 @@ export class BookRepositoryImpl implements BookRepository {
         })
         .leftJoin(authorTable, (join) => {
           join.on(`${authorTable}.id`, '=', `${bookAuthorTable}.authorId`);
+        })
+        .leftJoin(genreTable, (join) => {
+          join.on(`${bookTable}.genreId`, '=', `${genreTable}.id`);
         })
         .where((builder) => {
           if (isbn) {
@@ -298,7 +305,7 @@ export class BookRepositoryImpl implements BookRepository {
             builder.whereIn(`${authorTable}.id`, authorIds);
           }
         })
-        .groupBy(`${bookTable}.id`)
+        .groupBy(`${bookTable}.id`, `${genreTable}.name`)
         .limit(pageSize)
         .offset(pageSize * (page - 1));
 

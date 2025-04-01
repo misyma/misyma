@@ -19,6 +19,7 @@ import { bookAuthorTable } from '../../databases/bookDatabase/tables/bookAuthorT
 import { bookReadingTable } from '../../databases/bookDatabase/tables/bookReadingTable/bookReadingTable.js';
 import { bookTable } from '../../databases/bookDatabase/tables/bookTable/bookTable.js';
 import { collectionTable } from '../../databases/bookDatabase/tables/collectionTable/collectionTable.js';
+import { genreTable } from '../../databases/bookDatabase/tables/genreTable/genreTable.js';
 import { type UserBookCollectionRawEntity } from '../../databases/bookDatabase/tables/userBookCollectionsTable/userBookCollectionsRawEntity.js';
 import { userBookCollectionTable } from '../../databases/bookDatabase/tables/userBookCollectionsTable/userBookCollectionsTable.js';
 import { type UserBookRawEntity } from '../../databases/bookDatabase/tables/userBookTable/userBookRawEntity.js';
@@ -220,6 +221,8 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         `${bookTable}.createdAt as bookCreatedAt`,
       ];
 
+      const genreSelect = [`${genreTable}.name as genreName`];
+
       const authorsSelect = [
         this.databaseClient.raw(`array_agg(DISTINCT "${authorTable}"."id") as "authorIds"`),
         this.databaseClient.raw(`array_agg(DISTINCT "${authorTable}"."name") as "authorNames"`),
@@ -257,6 +260,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           ...authorsSelect,
           ...collectionsSelect,
           ...readingsSelect,
+          ...genreSelect,
           latestRatingSelect,
         ])
         .leftJoin(bookAuthorTable, (join) => {
@@ -276,6 +280,9 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         })
         .leftJoin(collectionTable, (join) => {
           join.on(`${collectionTable}.id`, '=', `${userBookCollectionTable}.collectionId`);
+        })
+        .join(genreTable, (join) => {
+          join.on(`${bookTable}.genreId`, '=', `${genreTable}.id`);
         })
         .where((builder) => {
           if (id) {
@@ -298,7 +305,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
             builder.whereIn(`${authorTable}.id`, authorIds);
           }
         })
-        .groupBy([`${userBookTable}.id`, `${bookTable}.id`])
+        .groupBy([`${userBookTable}.id`, `${bookTable}.id`, `${genreTable}.name`])
         .first();
     } catch (error) {
       throw new RepositoryError({

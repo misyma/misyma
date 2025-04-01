@@ -36,6 +36,8 @@ export class FindBooksQueryHandlerImpl implements FindBooksQueryHandler {
       this.bookRepository.countBooks(findBooksPayload),
     ]);
 
+    console.dir(books, { depth: 4 });
+
     return {
       books,
       total,

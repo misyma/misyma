@@ -35,6 +35,8 @@ import {
   type CreateBookChangeRequestPayload,
   useCreateBookChangeRequestMutation,
 } from '../../../api/user/mutations/createBookChangeRequestMutation/createBookChangeRequestMutation';
+import GenreSelect from '../../../../book/components/molecules/genreSelect/genreSelect';
+import { getGenresQueryOptions } from '../../../../genres/api/queries/getGenresQuery/getGenresQueryOptions';
 
 interface Props {
   bookId: string;
@@ -77,6 +79,7 @@ const stepTwoSchema = z.object({
     })
     .or(z.literal(''))
     .optional(),
+  genreId: z.string().optional(),
 });
 
 export const CreateChangeRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
@@ -127,6 +130,8 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
     }),
   );
 
+  const { data: genres } = useErrorHandledQuery(getGenresQueryOptions({}));
+
   const { mutateAsync: createBookChangeRequest, isPending: isCreatingBookChangeRequest } =
     useCreateBookChangeRequestMutation({});
 
@@ -137,6 +142,7 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
       translator: (context?.translator || bookData?.translator) ?? '',
       format: (context?.format || bookData?.format) ?? '',
       pages: (context?.pages || bookData?.pages) ?? '',
+      genreId: (context?.genreId || bookData?.genreId) ?? '',
     },
     reValidateMode: 'onChange',
     mode: 'onTouched',
@@ -153,6 +159,7 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
     stepTwoForm.setValue('language', bookData.language);
     stepTwoForm.setValue('pages', bookData.pages ?? '');
     stepTwoForm.setValue('translator', bookData.translator ?? '');
+    stepTwoForm.setValue('genreId', bookData.genreId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bookData]);
 
@@ -375,6 +382,23 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
                       }}
                     />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={stepTwoForm.control}
+              name="genreId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Kategoria</FormLabel>
+                  <GenreSelect
+                    genres={genres?.data ?? []}
+                    onValueChange={(val) => {
+                      field.onChange(val);
+                    }}
+                    {...field}
+                  />
                   <FormMessage />
                 </FormItem>
               )}
