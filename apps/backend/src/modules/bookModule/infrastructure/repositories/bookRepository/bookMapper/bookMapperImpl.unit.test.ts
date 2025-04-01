@@ -29,6 +29,7 @@ describe('BookMapperImpl', () => {
         language: bookRawEntity.language,
         translator: bookRawEntity.translator,
         format: bookRawEntity.format,
+        genreName: "",
         pages: bookRawEntity.pages,
         isApproved: bookRawEntity.isApproved,
         imageUrl: bookRawEntity.imageUrl,
@@ -60,7 +61,7 @@ describe('BookMapperImpl', () => {
         authorNames: [],
         authorApprovals: [],
         authorCreatedAtDates: [],
-        genreName: "XD",
+        genreName: 'XD',
       },
     ]);
 
@@ -70,6 +71,7 @@ describe('BookMapperImpl', () => {
         state: {
           genreId: book.genreId,
           title: book.title,
+          genreName: 'XD',
           isbn: book.isbn,
           publisher: book.publisher,
           releaseYear: book.releaseYear,

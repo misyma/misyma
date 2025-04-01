@@ -106,6 +106,7 @@ describe('BookRepositoryImpl', () => {
         imageUrl: createdBook.getImageUrl(),
         createdAt: createdBook.getCreatedAt(),
         genreId: genre.id,
+        genreName: '',
         authors: [
           {
             id: author.id,
@@ -316,6 +317,7 @@ describe('BookRepositoryImpl', () => {
         format: newFormat,
         pages: newPages,
         isApproved: newIsApproved,
+        genreName: book.getGenreName(),
         imageUrl: newImageUrl,
         createdAt: book.getCreatedAt(),
         authors: [],

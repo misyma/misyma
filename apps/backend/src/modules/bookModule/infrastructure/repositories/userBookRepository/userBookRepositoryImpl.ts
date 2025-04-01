@@ -209,6 +209,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       const bookSelect = [
         `${bookTable}.id as bookId`,
         `${bookTable}.title as title`,
+        `${bookTable}.genreId as genreId`,
         `${bookTable}.isbn as isbn`,
         `${bookTable}.publisher as publisher`,
         `${bookTable}.releaseYear as releaseYear`,

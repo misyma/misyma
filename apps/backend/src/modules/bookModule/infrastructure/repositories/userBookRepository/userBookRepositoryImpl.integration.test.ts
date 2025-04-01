@@ -11,6 +11,7 @@ import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestU
 import { Author } from '../../../domain/entities/author/author.js';
 import { BookReading } from '../../../domain/entities/bookReading/bookReading.js';
 import { Collection } from '../../../domain/entities/collection/collection.js';
+import { Genre } from '../../../domain/entities/genre/genre.js';
 import { UserBook } from '../../../domain/entities/userBook/userBook.js';
 import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
 import { symbols } from '../../../symbols.js';
@@ -163,6 +164,11 @@ describe('UserBookRepositoryImpl', () => {
           isApproved: book.isApproved,
           imageUrl: book.imageUrl,
           createdAt: book.createdAt,
+          genreId: expect.any(String),
+          genre: new Genre({
+            id: expect.any(String),
+            name: expect.any(String),
+          }),
           authors: [
             {
               id: author.id,
@@ -228,6 +234,11 @@ describe('UserBookRepositoryImpl', () => {
           id: book.id,
           title: book.title,
           isbn: book.isbn,
+          genre: new Genre({
+            id: expect.any(String),
+            name: expect.any(String),
+          }),
+          genreId: expect.any(String),
           publisher: book.publisher,
           releaseYear: book.releaseYear,
           language: book.language,
@@ -484,6 +495,11 @@ describe('UserBookRepositoryImpl', () => {
           id: book.id,
           title: book.title,
           isbn: book.isbn,
+          genre: new Genre({
+            id: expect.any(String),
+            name: expect.any(String),
+          }),
+          genreId: expect.any(String),
           publisher: book.publisher,
           releaseYear: book.releaseYear,
           language: book.language,
@@ -1072,16 +1088,16 @@ describe('UserBookRepositoryImpl', () => {
         book: {
           book: {
             releaseYear: 2000,
-          }
-        }
+          },
+        },
       });
 
       const userBook2 = await testDataOrchestrator.createUserBook({
         book: {
           book: {
             releaseYear: 2005,
-          }
-        }
+          },
+        },
       });
 
       const userBooks1 = await userBookRepository.findUserBooks({
