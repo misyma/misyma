@@ -3,7 +3,12 @@ import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { BookFormat as ContractBookFormat, CreateBookChangeRequestRequestBody, Language } from '@common/contracts';
+import {
+  BookFormat,
+  BookFormat as ContractBookFormat,
+  CreateBookChangeRequestRequestBody,
+  Language,
+} from '@common/contracts';
 
 import { StepOneForm } from './stepOneForm/stepOneForm';
 import { FindBookByIdQueryOptions } from '../../../../book/api/user/queries/findBookById/findBookByIdQueryOptions';
@@ -148,7 +153,7 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
     if (!bookData) {
       return;
     }
-    stepTwoForm.setValue('format', bookData.format);
+    stepTwoForm.setValue('format', bookData?.format as BookFormat);
     stepTwoForm.setValue('language', bookData.language);
     stepTwoForm.setValue('pages', bookData.pages ?? '');
     stepTwoForm.setValue('translator', bookData.translator ?? '');

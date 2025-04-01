@@ -38,7 +38,7 @@ const Blockquote = ({
     <div className={cn(variants[variant], 'mb-6', 'w-full h-[180px] relative', className)}>
       {variant === 'modern' && <Quote className="absolute left-1 top-0 h-6 w-6 text-primary opacity-20" />}
       {variant === 'minimalist' && (
-        <Quote className="absolute -top-1 -left-3 h-6 w-6 text-primary bg-white dark:bg-gray-900 p-1" />
+        <Quote className="absolute -top-1 -left-3 h-6 w-6 text-primary dark:bg-gray-900 p-1" />
       )}
       {variant === 'paper' && (
         <div className="absolute -top-2 -right-2 h-0 w-0 border-t-[20px] border-r-[20px] border-t-primary/20 border-r-white dark:border-r-gray-800"></div>

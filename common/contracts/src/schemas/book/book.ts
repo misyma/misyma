@@ -13,7 +13,7 @@ export interface Book {
   readonly releaseYear: number;
   readonly language: Language;
   readonly translator?: string;
-  readonly format: BookFormat;
+  readonly format?: BookFormat | undefined;
   readonly pages?: number;
   readonly isApproved: boolean;
   readonly imageUrl?: string;

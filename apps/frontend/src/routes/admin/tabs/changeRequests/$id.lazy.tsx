@@ -123,7 +123,7 @@ export const ChangeRequestView: FC = () => {
         });
       }
 
-      if (key === 'format') {
+      if (key === 'format' && bookData && bookData[key]) {
         return rows.push({
           key: changeTranslatedKey,
           currentValue: bookData ? `${BookFormat[bookData[key]]}` : '',

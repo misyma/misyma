@@ -11,7 +11,7 @@ export interface CreateBookCommandHandlerPayload {
   readonly releaseYear: number;
   readonly language: Language;
   readonly translator?: string | undefined;
-  readonly format: BookFormat;
+  readonly format?: BookFormat | undefined;
   readonly pages?: number | undefined;
   readonly authorIds: string[];
   readonly isApproved: boolean;

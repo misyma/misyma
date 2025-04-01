@@ -21,7 +21,7 @@ export const createBookBodyDtoSchema = Type.Object({
   releaseYear: bookReleaseYearSchema,
   language: Type.Enum(contracts.Language),
   translator: Type.Optional(bookTranslatorSchema),
-  format: Type.Enum(contracts.BookFormat),
+  format: Type.Optional(Type.Enum(contracts.BookFormat)),
   pages: Type.Optional(bookPagesSchema),
   imageUrl: Type.Optional(bookImageUrlSchema),
   authorIds: Type.Array(Type.String({ format: 'uuid' }), { minItems: 1 }),

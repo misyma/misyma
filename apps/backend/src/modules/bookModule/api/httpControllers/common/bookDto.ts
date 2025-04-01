@@ -47,7 +47,7 @@ export const bookDtoSchema = Type.Object({
   releaseYear: bookReleaseYearSchema,
   language: Type.Enum(contracts.Language),
   translator: Type.Optional(bookTranslatorSchema),
-  format: Type.Enum(contracts.BookFormat),
+  format: Type.Optional(Type.Union([Type.Enum(contracts.BookFormat), Type.Undefined()])),
   pages: Type.Optional(bookPagesSchema),
   isApproved: Type.Boolean(),
   imageUrl: Type.Optional(bookImageUrlSchema),

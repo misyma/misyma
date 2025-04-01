@@ -9,7 +9,7 @@ export interface BookRawEntity {
   readonly releaseYear: number;
   readonly language: Language;
   readonly translator?: string | undefined | null;
-  readonly format: BookFormat;
+  readonly format?: BookFormat | undefined | null;
   readonly pages?: number | undefined | null;
   readonly isApproved: boolean;
   readonly imageUrl?: string | undefined | null;

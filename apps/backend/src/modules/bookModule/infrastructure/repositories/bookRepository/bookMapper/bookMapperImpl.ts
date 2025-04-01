@@ -32,7 +32,7 @@ export class BookMapperImpl implements BookMapper {
       publisher,
       language,
       translator,
-      format,
+      format: format ?? undefined,
       pages,
       authors: [],
       isApproved,

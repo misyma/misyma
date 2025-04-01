@@ -14,7 +14,7 @@ export interface BookDraft {
   readonly releaseYear: number;
   readonly language: Language;
   readonly translator?: string | undefined | null;
-  readonly format: BookFormat;
+  readonly format?: BookFormat | undefined;
   readonly pages?: number | undefined | null;
   readonly authors: Author[];
   readonly isApproved: boolean;
@@ -29,7 +29,7 @@ export interface BookState {
   releaseYear: number;
   language: Language;
   translator?: string | undefined | null;
-  format: BookFormat;
+  format?: BookFormat | undefined;
   pages?: number | undefined | null;
   isApproved: boolean;
   imageUrl?: string | undefined | null;
@@ -177,7 +177,7 @@ export class Book {
     return this.state.translator;
   }
 
-  public getFormat(): BookFormat {
+  public getFormat(): BookFormat | undefined {
     return this.state.format;
   }
 

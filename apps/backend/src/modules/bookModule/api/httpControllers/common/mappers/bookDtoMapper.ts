@@ -9,7 +9,7 @@ export function mapBookToDto(book: Book): BookDto {
     id: book.getId(),
     title,
     language,
-    format,
+    format: format ?? undefined,
     isApproved,
     releaseYear,
     genreId: book.getGenreId(),

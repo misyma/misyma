@@ -60,7 +60,7 @@ export const CreateBookForm: FC<CreateBookProps> = ({ bookshelfId, navigateTo })
   }, [bookCreation.stepOneDetails]);
 
   const canNavigateToThird = useCallback(() => {
-    return canNavigateToSecond() && bookCreation.stepTwoDetails?.format && bookCreation.stepTwoDetails?.language;
+    return canNavigateToSecond() && bookCreation.stepTwoDetails?.language;
   }, [canNavigateToSecond, bookCreation.stepTwoDetails]);
 
   const navigateToStep = (step: number) => {

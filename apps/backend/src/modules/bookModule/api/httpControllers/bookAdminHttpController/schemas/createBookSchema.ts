@@ -15,13 +15,13 @@ import {
 
 export const createBookBodyDtoSchema = Type.Object({
   title: bookTitleSchema,
-  genreId: Type.String({ format: "uuid"}),
+  genreId: Type.String({ format: 'uuid' }),
   isbn: Type.Optional(bookIsbnSchema),
   publisher: Type.Optional(bookPublisherSchema),
   releaseYear: bookReleaseYearSchema,
   language: Type.Enum(contracts.Language),
   translator: Type.Optional(bookTranslatorSchema),
-  format: Type.Enum(contracts.BookFormat),
+  format: Type.Optional(Type.Enum(contracts.BookFormat)),
   pages: Type.Optional(bookPagesSchema),
   isApproved: Type.Boolean(),
   imageUrl: Type.Optional(bookImageUrlSchema),

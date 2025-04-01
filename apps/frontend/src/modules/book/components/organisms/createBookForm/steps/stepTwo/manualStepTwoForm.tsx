@@ -47,7 +47,7 @@ const stepTwoSchema = z.object({
       message: 'Przekład może mieć maksymalnie 64 znaki.',
     })
     .or(z.literal('')),
-  form: z.nativeEnum(ContractBookFormat),
+  form: z.nativeEnum(ContractBookFormat).optional(),
   pagesCount: z
     .number({
       coerce: true,
@@ -122,7 +122,7 @@ export const ManualStepTwoForm = (): JSX.Element => {
     defaultValues: {
       language: bookCreation.stepTwoDetails?.language ?? '',
       translator: bookCreation.stepTwoDetails?.translator ?? '',
-      form: bookCreation.stepTwoDetails?.format ?? '',
+      form: bookCreation.stepTwoDetails?.format,
       pagesCount: bookCreation.stepTwoDetails?.pagesCount ?? '',
     },
   });
@@ -152,7 +152,9 @@ export const ManualStepTwoForm = (): JSX.Element => {
           name="form"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Format</FormLabel>
+              <FormLabel>
+                <span>Format</span> <span className="text-gray-500">(opcjonalne)</span>
+              </FormLabel>
               <BookFormatSelect {...field} />
               <FormMessage />
             </FormItem>
