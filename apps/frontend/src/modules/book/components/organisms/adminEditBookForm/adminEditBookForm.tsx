@@ -2,7 +2,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
 import { type FC, useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 import { z } from 'zod';
 
 import { BookFormat as ContractBookFormat, Language, type UpdateBookRequestBody } from '@common/contracts';
@@ -21,7 +20,6 @@ import { Input } from '../../../../common/components/input/input';
 import { LoadingSpinner } from '../../../../common/components/spinner/loading-spinner';
 import { useToast } from '../../../../common/components/toast/use-toast';
 import { useErrorHandledQuery } from '../../../../common/hooks/useErrorHandledQuery';
-import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
 import { useUpdateBookMutation } from '../../../api/admin/mutations/updateBookMutation/updateBookMutation';
 import { BookApiQueryKeys } from '../../../api/user/queries/bookApiQueryKeys';
 import { FindBookByIdQueryOptions } from '../../../api/user/queries/findBookById/findBookByIdQueryOptions';
@@ -33,6 +31,8 @@ import {
 import { BookApiError } from '../../../errors/bookApiError';
 import LanguageSelect from '../../molecules/languageSelect/languageSelect';
 import BookFormatSelect from '../../organisms/bookFormatSelect/bookFormatSelect';
+import GenreSelect from '../../molecules/genreSelect/genreSelect';
+import { getGenresQueryOptions } from '../../../../genres/api/queries/getGenresQuery/getGenresQueryOptions';
 
 interface Props {
   bookId: string;
@@ -105,8 +105,6 @@ export const AdminEditBookForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => 
 };
 
 const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const queryClient = useQueryClient();
 
   const { toast } = useToast();
@@ -122,6 +120,8 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
       bookId: bookId as string,
     }),
   );
+
+  const { data: genres } = useErrorHandledQuery(getGenresQueryOptions({}));
 
   const { mutateAsync: updateBook, isPending: isUpdatingBook } = useUpdateBookMutation({});
 
@@ -160,10 +160,9 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
           }
         : {}),
       ...stepTwoForm.getValues(),
-      accessToken: accessToken as string,
-      bookId: bookData?.id as string,
     }),
-    [stepTwoForm, accessToken, bookData?.id, context],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [stepTwoForm, stepTwoForm.getValues(), context],
   );
 
   const preparePayload = useCallback(
@@ -186,6 +185,16 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
         }
 
         if (bookData?.authors && Array.isArray(value) && key === 'authorIds' && value.length === 0) {
+          delete objectToUpdate['authorIds'];
+          return;
+        }
+
+        if (
+          bookData?.authors &&
+          Array.isArray(value) &&
+          key === 'authorIds' &&
+          bookData.authors.every((x) => value.includes(x.id))
+        ) {
           delete objectToUpdate['authorIds'];
           return;
         }
@@ -227,7 +236,7 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
     try {
       await updateBook({
         ...payload,
-        authorIds: payload.authorIds,
+        bookId,
       });
 
       toast({
@@ -356,6 +365,23 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
                       {...field}
                     />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={stepTwoForm.control}
+              name="genreId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Kategoria</FormLabel>
+                  <GenreSelect
+                    genres={genres?.data ?? []}
+                    onValueChange={(val) => {
+                      field.onChange(val);
+                    }}
+                    {...field}
+                  />
                   <FormMessage />
                 </FormItem>
               )}

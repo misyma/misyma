@@ -126,7 +126,7 @@ export class BookRepositoryImpl implements BookRepository {
 
     try {
       await this.databaseClient.transaction(async (transaction) => {
-        const { authors: updatedAuthors, ...bookFields } = book.getState();
+        const { authors: updatedAuthors, genreName: _, ...bookFields } = book.getState();
 
         await transaction(bookTable).update(bookFields, '*').where({ id: book.getId() });
 
