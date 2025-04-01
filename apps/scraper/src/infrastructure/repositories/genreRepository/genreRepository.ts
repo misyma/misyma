@@ -1,6 +1,7 @@
 import { RepositoryError } from '../../../errors/repositoryError.js';
 import { type DatabaseClient } from '../../../libs/database/databaseClient.js';
 import { type UuidService } from '../../../libs/uuid/uuidService.js';
+import { type Genre } from '../../entities/genre/genre.js';
 
 export interface CreateGenresPayload {
   readonly names: string[];
@@ -28,6 +29,20 @@ export class GenreRepository {
       throw new RepositoryError({
         entity: 'Genre',
         operation: 'create',
+        originalError: error,
+      });
+    }
+  }
+
+  public async findGenres(): Promise<Genre[]> {
+    try {
+      const genres = await this.databaseClient<Genre>(this.genresTable).select('*');
+
+      return genres;
+    } catch (error) {
+      throw new RepositoryError({
+        entity: 'Genre',
+        operation: 'findMany',
         originalError: error,
       });
     }

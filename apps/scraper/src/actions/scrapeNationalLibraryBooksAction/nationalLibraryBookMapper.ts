@@ -5,13 +5,19 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { BookFormat, Language } from '@common/contracts';
+import { Language } from '@common/contracts';
 import { Value } from '@sinclair/typebox/value';
 
 import { type NationalLibraryBook } from '../../common/nationalLibraryBook.js';
 import { bookDraftSchema, type BookDraft } from '../../infrastructure/entities/book/book.js';
 
 export class NationalLibraryBookMapper {
+  private readonly genreNamesToIds: Record<string, string>;
+
+  public constructor(genreNamesToIds: Record<string, string>) {
+    this.genreNamesToIds = genreNamesToIds;
+  }
+
   public mapBook(nationalLibraryBook: NationalLibraryBook): BookDraft | undefined {
     const marcFields = nationalLibraryBook.marc.fields;
 
@@ -23,14 +29,15 @@ export class NationalLibraryBookMapper {
     };
 
     const titleRaw = nationalLibraryBook.title;
+    const genreRaw = nationalLibraryBook.genre;
     const authorRaw = getSubfield('100', 'a');
     const translatorRaw = getSubfield('700', 'a');
     const publisherRaw = getSubfield('260', 'b');
     const releaseYearRaw = getSubfield('260', 'c');
     const isbn = getSubfield('020', 'a');
     const pagesRaw = getSubfield('300', 'a');
-    let pages;
 
+    let pages;
     if (pagesRaw) {
       const pagesMatch = pagesRaw.match(/\d+/);
 
@@ -39,7 +46,7 @@ export class NationalLibraryBookMapper {
       }
     }
 
-    if (!authorRaw || !titleRaw || !pages || !isbn) {
+    if (!authorRaw || !titleRaw || !pages || !isbn || !genreRaw) {
       return undefined;
     }
 
@@ -55,13 +62,15 @@ export class NationalLibraryBookMapper {
 
     const title = titleRaw.split(' /')[0]?.trim();
 
+    const genreId = this.getGenreId(genreRaw);
+
     const bookDraftInput: Partial<BookDraft> = {
       title: title as string,
       isApproved: true,
       language: Language.Polish,
-      format: BookFormat.paperback,
       authorNames: [authorName],
       pages,
+      genreId,
     };
 
     try {
@@ -115,4 +124,110 @@ export class NationalLibraryBookMapper {
       throw error;
     }
   }
+
+  private getGenreId(rawGenre: string): string {
+    const cleaned = rawGenre.toLowerCase().replace(/[^\w\s]/g, '');
+
+    for (const [genreName, keywords] of Object.entries(this.genresKeywords)) {
+      for (const keyword of keywords) {
+        if (cleaned.includes(keyword)) {
+          return this.genreNamesToIds[genreName] as string;
+        }
+      }
+    }
+
+    return this.genreNamesToIds['inne'] as string;
+  }
+
+  private readonly genresKeywords: Record<string, string[]> = {
+    'fantastyka i science fiction': ['fantasy', 'fantastyka', 'science fiction', 'dystopia'],
+    'poezja i dramat': [
+      'poezja',
+      'wiersze',
+      'poetycka',
+      'poemat',
+      'fraszka',
+      'liryka',
+      'dramat',
+      'sztuka teatralna',
+      'komedia',
+      'tragedia',
+      'scenariusz',
+      'monodram',
+      'pieśń',
+      'sonet',
+    ],
+    'horror i literatura grozy': ['horror', 'groza', 'grozy'],
+    'literatura młodzieżowa (young adult)': ['młodzież'],
+    'literatura dziecięca': ['dziecięca', 'bajki', 'bajka', 'baśni', 'baśń', 'legendy', 'legenda', 'dzieci'],
+    'kryminał i thriller': ['kryminał', 'thriller', 'sensacja', 'kryminalna', 'sensacyjna'],
+    'literatura faktu i reportaż': [
+      'literatura faktu',
+      'reportaż',
+      'dokument',
+      'sprawozdanie',
+      'list',
+      'relacja',
+      'relacje',
+    ],
+    'literatura podróżnicza i turystyka': ['podróżnicza', 'podróż', 'ekspedycja', 'turysty', 'przewodnik'],
+    'biografia, autobiografia i wspomnienia': [
+      'biografia',
+      'autobiografia',
+      'wspomnienia',
+      'pamiętnik',
+      'dziennik',
+      'wywiad',
+    ],
+    'powieść historyczna': ['powieść historyczna', 'historyczna', 'wojna'],
+    'powieść przygodowa': ['powieść przygodowa', 'przygodow', 'przygoda'],
+    'literatura piękna': ['beletrystyka', 'proza', 'literatura współczesna', 'opowiadanie', 'nowele', 'antologia'],
+    powieść: ['powieść'],
+    'literatura popularnonaukowa': ['popularno'],
+    'kuchnia i kulinaria': ['kuchnia', 'kucharsk', 'przepisy', 'poradnik kulinarny', 'dieta', 'ciasta', 'obiady'],
+    'poradniki i rozwój osobisty': ['poradnik'],
+    'albumy i sztuka (fotografia, malarstwo, architektura)': [
+      'album',
+      'fotografia',
+      'malarstwo',
+      'architektura',
+      'sztuka',
+      'katalog wystawy',
+      'grafika',
+    ],
+    'komiksy i powieści graficzne': ['komiks', 'manga', 'powieść graficzna'],
+    'literatura obyczajowa i romans': ['obyczajowa', 'romans', 'miłosna', 'erotyk', 'erotyczn', 'miłość'],
+    'duchowość i religia': [
+      'religia',
+      'religijn',
+      'duchowy',
+      'duchowość',
+      'biblia',
+      'sennik',
+      'horoskop',
+      'katolick',
+      'chrześcijańs',
+      'modlitwa',
+      'biblijne',
+      'papieski',
+    ],
+    'encyklopedie i słowniki': ['encyklopedia', 'słownik'],
+    'publicystyka literacka i eseje': ['esej', 'publicystyka', 'felieton', 'kronika'],
+    'informatyka i matematyka': ['informatyka', 'komputer', 'programowanie', 'matematyka', 'statystyka'],
+    'nauki przyrodnicze (fizyka, chemia, biologia, astronomia)': [
+      'fizyka',
+      'chemia',
+      'biologia',
+      'przyroda',
+      'geografia',
+    ],
+    'nauki społeczne (psychologia, socjologia, polityka)': ['psychologia', 'polityka', 'pedagogika'],
+    'nauki humanistyczne (filozofia, historia, językoznawstwo)': [
+      'filozofia',
+      'historia',
+      'językoznawstwo',
+      'literaturoznawstwo',
+    ],
+    'zdrowie i medycyna': ['zdrowie', 'medycyna', 'choroby', 'leczenie', 'terapia'],
+  };
 }
