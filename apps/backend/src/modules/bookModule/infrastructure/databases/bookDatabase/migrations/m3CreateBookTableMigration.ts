@@ -22,7 +22,7 @@ export class M3CreateBookTableMigration implements Migration {
 
       table.text('translator');
 
-      table.text('format').notNullable();
+      table.text('format');
 
       table.integer('pages');
 
