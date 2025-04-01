@@ -70,7 +70,6 @@ export const BookGradesTabMainBody: FC<BookGradesTabMainBodyProps> = ({ bookId }
           </div>
           <Separator className="h-[2px] bg-primary/20" />
           <div className="flex flex-col md:flex-row gap-8 w-full justify-between">
-            {!isLoading && <p className="text-lg pb-6"> {userBookData?.book?.authors[0]?.name ?? ''} </p>}
             {isLoading && (
               <div className="pb-6">
                 <Skeleton className="h-7 w-40" />
