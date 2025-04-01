@@ -9,8 +9,6 @@ import {
   type FindBookChangeRequestsPayload,
   type FindBookChangeRequestPayload,
 } from '../../../domain/repositories/bookChangeRequestRepository/bookChangeRequestRepository.js';
-import { authorTable } from '../../databases/bookDatabase/tables/authorTable/authorTable.js';
-import { bookAuthorTable } from '../../databases/bookDatabase/tables/bookAuthorTable/bookAuthorTable.js';
 import { type BookChangeRequestRawEntity } from '../../databases/bookDatabase/tables/bookChangeRequestTable/bookChangeRequestRawEntity.js';
 import { bookChangeRequestTable } from '../../databases/bookDatabase/tables/bookChangeRequestTable/bookChangeRequestTable.js';
 import { type BookChangeRequestWithJoinsRawEntity } from '../../databases/bookDatabase/tables/bookChangeRequestTable/bookChangeRequestWithJoinsRawEntity.js';
@@ -152,12 +150,6 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
           `${bookChangeRequestTable}.changedFields`,
           `${bookTable}.title as bookTitle`,
         ])
-        .leftJoin(bookAuthorTable, (join) => {
-          join.on(`${bookAuthorTable}.bookId`, '=', `${bookChangeRequestTable}.bookId`);
-        })
-        .leftJoin(authorTable, (join) => {
-          join.on(`${authorTable}.id`, '=', `${bookAuthorTable}.authorId`);
-        })
         .leftJoin(bookTable, (join) => {
           join.on(`${bookTable}.id`, `=`, `${bookChangeRequestTable}.bookId`);
         })
