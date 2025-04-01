@@ -9,11 +9,12 @@ export interface Book {
   readonly releaseYear?: number | undefined;
   readonly language: Language;
   readonly translator?: string | undefined;
-  readonly format: BookFormat;
+  readonly format?: BookFormat | undefined;
   readonly pages?: number | undefined;
   readonly isApproved: boolean;
   readonly imageUrl?: string | undefined;
   readonly createdAt: Date;
+  readonly genreId: string;
 }
 
 export const bookTitleSchema = Type.String({
@@ -62,11 +63,12 @@ export const bookDraftSchema = Type.Object({
   releaseYear: bookReleaseYearSchema,
   language: Type.Enum(Language),
   translator: Type.Optional(bookTranslatorSchema),
-  format: Type.Enum(BookFormat),
+  format: Type.Optional(Type.Enum(BookFormat)),
   pages: bookPagesSchema,
   isApproved: Type.Boolean(),
   imageUrl: Type.Optional(bookImageUrlSchema),
   authorNames: Type.Array(authorNameSchema, { minItems: 1 }),
+  genreId: Type.String({ minLength: 1 }),
 });
 
 export type BookDraft = Static<typeof bookDraftSchema>;

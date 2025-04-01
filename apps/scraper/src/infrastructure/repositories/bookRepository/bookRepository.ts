@@ -12,24 +12,12 @@ export interface CreateBookPayload {
   readonly releaseYear?: number | undefined;
   readonly language: Language;
   readonly translator?: string | undefined;
-  readonly format: BookFormat;
+  readonly format?: BookFormat | undefined;
   readonly pages?: number | undefined;
   readonly isApproved: boolean;
   readonly imageUrl?: string | undefined;
   readonly authorIds: string[];
-}
-
-export interface UpdateBookPayload {
-  readonly id: string;
-  readonly title?: string | undefined;
-  readonly isbn?: string | undefined;
-  readonly publisher?: string | undefined;
-  readonly releaseYear?: number | undefined;
-  readonly language?: Language | undefined;
-  readonly translator?: string | undefined;
-  readonly format?: BookFormat | undefined;
-  readonly pages?: number | undefined;
-  readonly imageUrl?: string | undefined;
+  readonly genreId: string;
 }
 
 export interface FindBookPayload {
@@ -59,6 +47,7 @@ export class BookRepository {
       isApproved,
       imageUrl,
       authorIds,
+      genreId,
     } = payload;
 
     const id = this.uuidService.generateUuid();
@@ -77,6 +66,7 @@ export class BookRepository {
           pages,
           isApproved,
           imageUrl,
+          genreId,
           createdAt: new Date(),
         });
 

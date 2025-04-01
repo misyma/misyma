@@ -78,7 +78,15 @@ try {
 
   const nationalLibraryClient = NationalLibraryClientFactory.create();
 
-  const nationalLibraryBookMapper = new NationalLibraryBookMapper();
+  const allGenres = await genreRepository.findGenres();
+
+  const genreNamesToIds = allGenres.reduce<Record<string, string>>((acc, genre) => {
+    acc[genre.name] = genre.id;
+
+    return acc;
+  }, {});
+
+  const nationalLibraryBookMapper = new NationalLibraryBookMapper(genreNamesToIds);
 
   const scrapeNationalLibraryBooksAction = new ScrapeNationalLibraryBooksAction(
     authorRepository,

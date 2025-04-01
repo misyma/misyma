@@ -88,7 +88,6 @@ export class ScrapeNationalLibraryBooksAction {
       title: bookDraft.title,
       isbn: bookDraft.isbn,
       publisher: bookDraft.publisher,
-      format: bookDraft.format,
       isApproved: true,
       language: bookDraft.language,
       imageUrl: bookDraft.imageUrl,
@@ -96,6 +95,7 @@ export class ScrapeNationalLibraryBooksAction {
       translator: bookDraft.translator,
       pages: bookDraft.pages,
       authorIds,
+      genreId: bookDraft.genreId,
     });
   }
 }

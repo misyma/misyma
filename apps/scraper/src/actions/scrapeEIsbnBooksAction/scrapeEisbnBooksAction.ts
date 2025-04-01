@@ -141,6 +141,8 @@ export class ScrapeEisbnBooksAction {
       translator: bookDraft.translator,
       pages: bookDraft.pages,
       authorIds,
+      // TODO: Add genreId to the book draft
+      genreId: '',
     });
   }
 }
