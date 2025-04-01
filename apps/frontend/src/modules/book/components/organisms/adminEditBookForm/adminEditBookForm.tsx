@@ -81,6 +81,7 @@ const stepTwoSchema = z.object({
       message: 'Podana wartość nie jest prawidłowym linkiem.',
     })
     .or(z.literal('')),
+  genreId: z.string().optional(),
 });
 
 export const AdminEditBookForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
@@ -132,6 +133,7 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
       format: bookData?.format,
       pages: bookData?.pages,
       imageUrl: bookData?.imageUrl ?? '',
+      genreId: bookData?.genreId ?? '',
     },
     reValidateMode: 'onChange',
     mode: 'onTouched',

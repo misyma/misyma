@@ -1,10 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 import { z } from 'zod';
 
-import { BookFormat as ContractBookFormat, Language } from '@common/contracts';
+import { BookFormat as ContractBookFormat, CreateBookChangeRequestRequestBody, Language } from '@common/contracts';
 
 import { StepOneForm } from './stepOneForm/stepOneForm';
 import { FindBookByIdQueryOptions } from '../../../../book/api/user/queries/findBookById/findBookByIdQueryOptions';
@@ -30,11 +29,7 @@ import { Input } from '../../../../common/components/input/input';
 import { LoadingSpinner } from '../../../../common/components/spinner/loading-spinner';
 import { useToast } from '../../../../common/components/toast/use-toast';
 import { useErrorHandledQuery } from '../../../../common/hooks/useErrorHandledQuery';
-import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
-import {
-  type CreateBookChangeRequestPayload,
-  useCreateBookChangeRequestMutation,
-} from '../../../api/user/mutations/createBookChangeRequestMutation/createBookChangeRequestMutation';
+import { useCreateBookChangeRequestMutation } from '../../../api/user/mutations/createBookChangeRequestMutation/createBookChangeRequestMutation';
 import GenreSelect from '../../../../book/components/molecules/genreSelect/genreSelect';
 import { getGenresQueryOptions } from '../../../../genres/api/queries/getGenresQuery/getGenresQueryOptions';
 
@@ -110,8 +105,6 @@ export const CreateChangeRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit 
 
 //todo: refactor
 const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
-  const accessToken = useSelector(userStateSelectors.selectAccessToken);
-
   const { toast } = useToast();
 
   const [currentStep, setCurrentStep] = useState<number>(1);
@@ -176,7 +169,10 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
   };
 
   const preparePayload = useCallback(
-    (object: Writeable<CreateBookChangeRequestPayload>, objectToUpdate: Writeable<CreateBookChangeRequestPayload>) => {
+    (
+      object: Writeable<CreateBookChangeRequestRequestBody>,
+      objectToUpdate: Writeable<CreateBookChangeRequestRequestBody>,
+    ) => {
       Object.entries(object).forEach(([key, value]) => {
         const bookDataKey = key as keyof typeof bookData;
 
@@ -195,6 +191,16 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
         }
 
         if (bookData?.authors && Array.isArray(value) && key === 'authorIds' && value.length === 0) {
+          delete objectToUpdate['authorIds'];
+          return;
+        }
+
+        if (
+          bookData?.authors &&
+          Array.isArray(value) &&
+          key === 'authorIds' &&
+          bookData.authors.every((x) => value.includes(x.id))
+        ) {
           delete objectToUpdate['authorIds'];
           return;
         }
@@ -222,7 +228,7 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
       ...context,
       ...(context?.authorIds
         ? {
-            authorIds: [context.authorIds],
+            authorIds: context.authorIds,
           }
         : {}),
       ...stepTwoForm.getValues(),
@@ -235,8 +241,8 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
     const innerPayload = { ...payload };
 
     preparePayload(
-      payload as unknown as CreateBookChangeRequestPayload,
-      innerPayload as unknown as CreateBookChangeRequestPayload,
+      payload as unknown as CreateBookChangeRequestRequestBody,
+      innerPayload as unknown as CreateBookChangeRequestRequestBody,
     );
 
     return innerPayload;
@@ -251,17 +257,15 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
           }
         : {}),
       ...values,
-      accessToken: accessToken as string,
       bookId: bookData?.id as string,
     };
 
-    preparePayload(payload as CreateBookChangeRequestPayload, payload as CreateBookChangeRequestPayload);
+    preparePayload(payload as CreateBookChangeRequestRequestBody, payload as CreateBookChangeRequestRequestBody);
 
     try {
       await createBookChangeRequest({
         ...payload,
-        authorIds: payload.authorIds,
-      } as CreateBookChangeRequestPayload);
+      } as CreateBookChangeRequestRequestBody);
 
       toast({
         title: 'Prośba o zmianę została wysłana.',

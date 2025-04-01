@@ -8,10 +8,6 @@ import { useErrorHandledMutation } from '../../../../../common/hooks/useErrorHan
 import { api } from '../../../../../core/apiClient/apiClient';
 import { invalidateBookChangeRequestsQueryPredicate } from '../../../admin/queries/findBookChangeRequests/findBookChangeRequestsQueryOptions';
 
-export interface CreateBookChangeRequestPayload extends CreateBookChangeRequestRequestBody {
-  accessToken: string;
-}
-
 const mapper = new ErrorCodeMessageMapper({});
 
 const createBookChangeRequest = async (payload: CreateBookChangeRequestRequestBody) => {
@@ -36,7 +32,7 @@ const createBookChangeRequest = async (payload: CreateBookChangeRequestRequestBo
 };
 
 export const useCreateBookChangeRequestMutation = (
-  options: UseMutationOptions<CreateBookshelfResponseBody, BookApiError, CreateBookChangeRequestPayload>,
+  options: UseMutationOptions<CreateBookshelfResponseBody, BookApiError, CreateBookChangeRequestRequestBody>,
 ) => {
   const queryClient = useQueryClient();
   return useErrorHandledMutation({
