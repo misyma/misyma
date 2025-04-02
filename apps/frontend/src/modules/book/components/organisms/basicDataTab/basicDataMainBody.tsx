@@ -60,7 +60,6 @@ export const BasicDataMainBody: FC<BasicDataMainBodyProps> = ({ bookId }) => {
           <div className="flex flex-shrink-0 justify-between items-center">
             {!isLoading ? <BookTitle title={bookDetails.title ?? ''} /> : <Skeleton className="h-9 w-40" />}
             <CurrentRatingStar userBookId={bookId} />
-
           </div>
 
           <Separator className="h-[2px] bg-primary/20" />
@@ -165,12 +164,10 @@ export const BasicDataMainBody: FC<BasicDataMainBodyProps> = ({ bookId }) => {
             </div>
 
             <div className="flex flex-shrink-0 flex-col gap-8 md:items-end md:min-w-[240px]">
-              <div className="p-4 bg-muted/50 rounded-lg border border-border/50">
-                <BookshelfChoiceDropdown
-                  currentBookshelfId={data?.bookshelfId ?? ''}
-                  bookId={bookId}
-                />
-              </div>
+              <BookshelfChoiceDropdown
+                currentBookshelfId={data?.bookshelfId ?? ''}
+                bookId={bookId}
+              />
 
               <div className="flex flex-col gap-3">
                 <h3 className="text-lg font-medium text-foreground/80 md:text-right">Status czytania</h3>

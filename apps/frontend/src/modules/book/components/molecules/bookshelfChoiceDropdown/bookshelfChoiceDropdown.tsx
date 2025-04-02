@@ -128,7 +128,6 @@ const BookshelfChoiceDropdownTrigger: FC<BookshelfChoiceDropdownTriggerProps> = 
 
   useEffect(() => {
     setCurrentBookshelf(bookshelfData?.data.find((bookshelf) => bookshelf.id === selectedBookshelfId)?.name ?? '');
-     
   }, [bookshelfData, selectedBookshelfId]);
 
   useEffect(() => {
@@ -139,18 +138,20 @@ const BookshelfChoiceDropdownTrigger: FC<BookshelfChoiceDropdownTriggerProps> = 
   }, [bookshelfData, data]);
 
   return (
-    <Button
-      size="custom"
-      variant="outline"
-      className="border-none text-lg w-60 !hover:bg-inherit"
-      style={{
-        justifyContent: 'end',
-        padding: 0,
-        height: 'auto',
-      }}
-    >
-      <p className="truncate">{override !== '' ? override : currentBookshelf}</p>
-    </Button>
+    <div className="bg-muted/50 rounded-lg border border-border/50">
+      <Button
+        size="custom"
+        variant="outline"
+        className="!bg:inherit border-none text-lg w-60 !hover:bg-inherit"
+        style={{
+          justifyContent: 'end',
+          padding: 0,
+          height: 'auto',
+        }}
+      >
+        <p className="p-2 runcate">{override !== '' ? override : currentBookshelf}</p>
+      </Button>
+    </div>
   );
 };
 
@@ -307,6 +308,10 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
             setUsingBorrowFlow(false);
 
             setSelectedBookshelfId(previousBookshelfId as string);
+
+            setCurrentBookshelf(
+              bookshelfData?.data.find((i) => i.id === previousBookshelfId)?.name ?? currentBookshelf,
+            );
           }}
           onDone={() => setUsingBorrowFlow(false)}
           open={usingBorrowFlow}
