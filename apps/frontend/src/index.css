@@ -13,21 +13,21 @@
     --popover: 240 25% 98%;
     --popover-foreground: 240 10% 3.9%;
 
-    --primary: 231 83% 60%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 231 40% 45%;
+    --primary-foreground: 220 20% 95%;
 
-    --secondary: 38 92% 50%;
-    --secondary-foreground: 240 5.9% 10%;
+    --secondary: 38 60% 45%;
+    --secondary-foreground: 240 10% 15%;
 
-    --accent: 120 10% 70%;
-    --accent-foreground: 240 5.9% 10%;
+    --accent: 120 15% 50%;
+    --accent-foreground: 240 10% 15%;
 
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
+    --muted: 240 10% 90%;
+    --muted-foreground: 240 6% 35%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-
+    --destructive: 0 50% 50%;
+    --destructive-foreground: 0 0% 95%;
+    
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
     --ring: 231 83% 60%;
@@ -36,32 +36,29 @@
   }
 
   .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
+    --background: 240 15% 7%;
+    --foreground: 0 0% 95%;
 
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
+    --card: 240 15% 9%;
+    --card-foreground: 0 0% 95%;
 
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 240 15% 9%;
+    --popover-foreground: 0 0% 95%;
 
-    /* Periwinkle as primary (slightly adjusted for dark mode) */
-    --primary: 231 83% 65%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 231 50% 60%;
+    --primary-foreground: 0 0% 95%;
 
-    /* Amber as secondary (adjusted for dark mode) */
-    --secondary: 38 92% 45%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 38 50% 40%;
+    --secondary-foreground: 0 0% 95%;
 
-    /* Sage as accent (adjusted for dark mode) */
-    --accent: 120 10% 30%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 120 15% 35%;
+    --accent-foreground: 0 0% 95%;
 
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
+    --muted: 240 10% 20%;
+    --muted-foreground: 240 8% 60%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 0 50% 35%;
+    --destructive-foreground: 0 0% 95%;
 
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;

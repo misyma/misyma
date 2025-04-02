@@ -187,14 +187,16 @@ const BookRow: FC<BookRowProps> = ({ book, onSelect, isSelected }) => {
     }),
   );
 
-  const isSelectable =
-    (!isLoading && !!data?.metadata.total && data?.metadata.total === 0) || (!data?.metadata.total && !isLoading);
+  const loadingPredicate =
+    (!isLoading && !!data?.metadata.total && data?.metadata.total === 0) || data?.data[0]?.book?.isbn === undefined;
+
+  const isSelectable = loadingPredicate;
 
   return (
     <div
       className={cn(
         'grid grid-cols-9 gap-x-4 p-4 rounded-lg transition-colors duration-200 cursor-pointer',
-        isSelected ? 'bg-primary/10 shadow-md' : isSelectable && 'hover:bg-secondary/50',
+        isSelected ? 'bg-secondary/40 shadow-md' : isSelectable && 'hover:bg-secondary/20',
         !isSelectable && 'bg-gray-500/30 cursor-default',
       )}
       onClick={() => {
