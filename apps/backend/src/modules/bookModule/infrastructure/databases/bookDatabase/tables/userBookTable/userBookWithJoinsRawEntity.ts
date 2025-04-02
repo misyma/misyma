@@ -17,7 +17,7 @@ export interface UserBookWithJoinsRawEntity {
   readonly releaseYear: number;
   readonly language: Language;
   readonly translator: string | null;
-  readonly format: BookFormat;
+  readonly format?: BookFormat | null | undefined;
   readonly pages: number | null;
   readonly isApproved: boolean;
   readonly bookImageUrl: string | null;

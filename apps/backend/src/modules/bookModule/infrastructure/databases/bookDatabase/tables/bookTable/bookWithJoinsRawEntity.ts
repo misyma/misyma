@@ -10,7 +10,7 @@ export interface BookWithJoinsRawEntity {
   readonly releaseYear: number;
   readonly language: Language;
   readonly translator: string | null;
-  readonly format: BookFormat;
+  readonly format?: BookFormat | undefined | null;
   readonly pages: number | null;
   readonly isApproved: boolean;
   readonly imageUrl: string | null;

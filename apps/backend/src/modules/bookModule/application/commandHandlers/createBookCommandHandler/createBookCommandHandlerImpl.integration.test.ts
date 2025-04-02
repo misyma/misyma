@@ -1,3 +1,4 @@
+import { type BookFormat } from '@common/contracts';
 import { beforeEach, afterEach, expect, it, describe } from 'vitest';
 
 import { Generator } from '../../../../../../tests/generator.js';
@@ -195,7 +196,7 @@ describe('CreateBookCommandHandler', () => {
         releaseYear: existingBook.releaseYear,
         language: existingBook.language,
         translator: existingBook.translator as string,
-        format: existingBook.format,
+        format: existingBook.format as BookFormat,
         pages: existingBook.pages as number,
         isApproved: existingBook.isApproved,
         imageUrl: existingBook.imageUrl as string,

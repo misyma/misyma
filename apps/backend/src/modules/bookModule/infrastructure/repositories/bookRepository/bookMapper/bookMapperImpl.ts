@@ -82,7 +82,7 @@ export class BookMapperImpl implements BookMapper {
         releaseYear,
         language,
         translator: translator ?? undefined,
-        format,
+        format: format ?? undefined,
         pages: pages ?? undefined,
         isApproved,
         createdAt,

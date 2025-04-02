@@ -155,6 +155,7 @@ describe('BookRepositoryImpl', () => {
 
       const book = bookTestFactory.create({
         ...bookRawEntity,
+        format: bookRawEntity.format as BookFormat,
         authors: [new Author(author1), new Author(author2), new Author(author3)],
         genreId: genre.id,
         genre: new Genre({
@@ -210,6 +211,7 @@ describe('BookRepositoryImpl', () => {
 
       const book = bookTestFactory.create({
         ...bookRawEntity,
+        format: bookRawEntity.format as BookFormat,
         authors: [new Author(author1)],
       });
 
@@ -256,7 +258,10 @@ describe('BookRepositoryImpl', () => {
         },
       });
 
-      const book = bookTestFactory.create(bookRawEntity);
+      const book = bookTestFactory.create({
+        ...bookRawEntity,
+        format: bookRawEntity.format as BookFormat
+      });
 
       const newTitle = Generator.alphaString(20);
 

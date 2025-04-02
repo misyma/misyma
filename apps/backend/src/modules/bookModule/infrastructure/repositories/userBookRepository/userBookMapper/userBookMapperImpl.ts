@@ -1,3 +1,5 @@
+import { type BookFormat } from '@common/contracts';
+
 import { Author } from '../../../../domain/entities/author/author.js';
 import { BookReading } from '../../../../domain/entities/bookReading/bookReading.js';
 import { Collection } from '../../../../domain/entities/collection/collection.js';
@@ -62,7 +64,7 @@ export class UserBookMapperImpl implements UserBookMapper {
         releaseYear,
         language,
         translator: translator ?? undefined,
-        format,
+        format: format as BookFormat,
         pages: pages ?? undefined,
         isApproved,
         genre: new Genre({
