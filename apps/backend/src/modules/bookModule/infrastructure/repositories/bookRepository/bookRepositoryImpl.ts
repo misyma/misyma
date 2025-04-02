@@ -15,6 +15,7 @@ import { bookAuthorTable } from '../../databases/bookDatabase/tables/bookAuthorT
 import { type BookRawEntity } from '../../databases/bookDatabase/tables/bookTable/bookRawEntity.js';
 import { bookTable } from '../../databases/bookDatabase/tables/bookTable/bookTable.js';
 import { type BookWithJoinsRawEntity } from '../../databases/bookDatabase/tables/bookTable/bookWithJoinsRawEntity.js';
+import { genreTable } from '../../databases/bookDatabase/tables/genreTable/genreTable.js';
 
 import { type BookMapper } from './bookMapper/bookMapper.js';
 
@@ -44,6 +45,7 @@ export class BookRepositoryImpl implements BookRepository {
       book: {
         title,
         isbn,
+        genreId,
         publisher,
         releaseYear,
         language,
@@ -68,6 +70,7 @@ export class BookRepositoryImpl implements BookRepository {
             id,
             title,
             isbn,
+            genreId,
             publisher,
             releaseYear,
             language,
@@ -101,7 +104,9 @@ export class BookRepositoryImpl implements BookRepository {
 
     const createdBook = this.bookMapper.mapRawToDomain(rawEntity);
 
-    authors.forEach((author) => { createdBook.addAuthor(author); });
+    authors.forEach((author) => {
+      createdBook.addAuthor(author);
+    });
 
     return createdBook;
   }
@@ -121,7 +126,7 @@ export class BookRepositoryImpl implements BookRepository {
 
     try {
       await this.databaseClient.transaction(async (transaction) => {
-        const { authors: updatedAuthors, ...bookFields } = book.getState();
+        const { authors: updatedAuthors, genreName: _, ...bookFields } = book.getState();
 
         await transaction(bookTable).update(bookFields, '*').where({ id: book.getId() });
 
@@ -177,6 +182,8 @@ export class BookRepositoryImpl implements BookRepository {
       rawEntities = await this.databaseClient<BookRawEntity>(bookTable)
         .select([
           `${bookTable}.id`,
+          `${bookTable}.genreId`,
+          `${genreTable}.name as genreName`,
           `${bookTable}.title`,
           `${bookTable}.isbn`,
           `${bookTable}.publisher`,
@@ -199,10 +206,13 @@ export class BookRepositoryImpl implements BookRepository {
         .leftJoin(authorTable, (join) => {
           join.on(`${authorTable}.id`, '=', `${bookAuthorTable}.authorId`);
         })
+        .leftJoin(genreTable, (join) => {
+          join.on(`${genreTable}.id`, '=', `${bookTable}.genreId`);
+        })
         .where((builder) => {
           builder.where(`${bookTable}.id`, id);
         })
-        .groupBy(`${bookTable}.id`);
+        .groupBy(`${bookTable}.id`, `${genreTable}.name`);
     } catch (error) {
       throw new RepositoryError({
         entity: 'Book',
@@ -240,6 +250,8 @@ export class BookRepositoryImpl implements BookRepository {
         .select([
           `${bookTable}.id`,
           `${bookTable}.title`,
+          `${bookTable}.genreId`,
+          `${genreTable}.name as genreName`,
           `${bookTable}.isbn`,
           `${bookTable}.publisher`,
           `${bookTable}.releaseYear`,
@@ -260,6 +272,9 @@ export class BookRepositoryImpl implements BookRepository {
         })
         .leftJoin(authorTable, (join) => {
           join.on(`${authorTable}.id`, '=', `${bookAuthorTable}.authorId`);
+        })
+        .leftJoin(genreTable, (join) => {
+          join.on(`${bookTable}.genreId`, '=', `${genreTable}.id`);
         })
         .where((builder) => {
           if (isbn) {
@@ -290,7 +305,7 @@ export class BookRepositoryImpl implements BookRepository {
             builder.whereIn(`${authorTable}.id`, authorIds);
           }
         })
-        .groupBy(`${bookTable}.id`)
+        .groupBy(`${bookTable}.id`, `${genreTable}.name`)
         .limit(pageSize)
         .offset(pageSize * (page - 1));
 

@@ -2,8 +2,8 @@ import { type Migration } from '../../../../../libs/database/types/migration.js'
 import { type MigrationSource } from '../../../../../libs/database/types/migrationSource.js';
 
 import { M1CreateAuthorTableMigration } from './migrations/m1CreateAuthorTableMigration.js';
-import { M2CreateBookTableMigration } from './migrations/m2CreateBookTableMigration.js';
-import { M3CreateGenreTableMigration } from './migrations/m3CreateGenreMigration.js';
+import { M2CreateGenreTableMigration } from './migrations/m2CreateGenreMigration.js';
+import { M3CreateBookTableMigration } from './migrations/m3CreateBookTableMigration.js';
 import { M4CreateUserBookTableMigration } from './migrations/m4CreateUserBookTableMigration.js';
 import { M5CreateUserBookGenreTableMigration } from './migrations/m5CreateUserBookGenreTableMigration.js';
 import { M6CreateBookReadingTableMigration } from './migrations/m6CreateBookReadingTableMigration.js';
@@ -23,8 +23,8 @@ export class BookDatabaseMigrationSource implements MigrationSource {
   public async getMigrations(): Promise<Migration[]> {
     return [
       new M1CreateAuthorTableMigration(),
-      new M2CreateBookTableMigration(),
-      new M3CreateGenreTableMigration(),
+      new M2CreateGenreTableMigration(),
+      new M3CreateBookTableMigration(),
       new M4CreateUserBookTableMigration(),
       new M5CreateUserBookGenreTableMigration(),
       new M6CreateBookReadingTableMigration(),

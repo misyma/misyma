@@ -25,6 +25,7 @@ export type UpdateBookPathParamsDto = TypeExtends<
 export const updateBookBodyDtoSchema = Type.Object({
   title: Type.Optional(bookTitleSchema),
   isbn: Type.Optional(bookIsbnSchema),
+  genreId: Type.Optional(Type.String({ format: 'uuid' })),
   publisher: Type.Optional(bookPublisherSchema),
   releaseYear: Type.Optional(bookReleaseYearSchema),
   language: Type.Optional(Type.Enum(contracts.Language)),

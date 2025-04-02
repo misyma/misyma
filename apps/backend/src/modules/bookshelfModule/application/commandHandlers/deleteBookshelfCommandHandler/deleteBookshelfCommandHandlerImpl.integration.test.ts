@@ -162,15 +162,20 @@ describe('DeleteBookshelfCommandHandlerImpl', () => {
       },
     });
 
-    const book = await bookTestUtils.createAndPersist();
-
     const genre = await genreTestUtils.createAndPersist();
+
+    const book = await bookTestUtils.createAndPersist({
+      input: {
+        book: {
+          genreId: genre.id,
+        },
+      },
+    });
 
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookId: book.id,
         bookshelfId: bookshelf1.id,
-        genreId: genre.id,
       },
     });
 

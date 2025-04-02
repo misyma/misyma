@@ -117,12 +117,12 @@ export const ManualStepThreeForm = ({ bookshelfId, navigateTo }: Props): JSX.Ele
         isbn: bookCreation.stepOneDetails?.isbn === '' ? undefined : bookCreation.stepOneDetails?.isbn,
         releaseYear: bookCreation.stepOneDetails?.releaseYear as number,
         publisher: bookCreation.stepOneDetails?.publisher === '' ? undefined : bookCreation.stepOneDetails?.publisher,
+        genreId: bookCreation.stepThreeDetails?.genre as string,
       },
       userBookPayload: {
         bookshelfId: bookCreation.stepThreeDetails?.bookshelfId || bookshelfId,
         status: bookCreation.stepThreeDetails?.status || (values.status as ContractReadingStatus),
         isFavorite: false,
-        genreId: bookCreation.stepThreeDetails?.genre as string,
         accessToken: accessToken as string,
       },
       bookTitle: bookCreation.stepOneDetails?.title ?? '',

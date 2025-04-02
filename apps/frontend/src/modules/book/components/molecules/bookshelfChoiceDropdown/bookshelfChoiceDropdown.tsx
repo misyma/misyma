@@ -142,7 +142,7 @@ const BookshelfChoiceDropdownTrigger: FC<BookshelfChoiceDropdownTriggerProps> = 
     <Button
       size="custom"
       variant="outline"
-      className="border-none text-lg w-60"
+      className="border-none text-lg w-60 !hover:bg-inherit"
       style={{
         justifyContent: 'end',
         padding: 0,

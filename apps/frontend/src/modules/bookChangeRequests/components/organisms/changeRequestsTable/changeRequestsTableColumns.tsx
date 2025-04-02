@@ -94,6 +94,7 @@ export const changeRequestsColumns: ColumnDef<BookChangeRequest>[] = [
         ['authors']: 'autorzy',
         ['releaseYear']: 'data wydania',
         ['authorIds']: 'autorzy',
+        ['genreId']: 'gatunek',
       } as const;
 
       return (

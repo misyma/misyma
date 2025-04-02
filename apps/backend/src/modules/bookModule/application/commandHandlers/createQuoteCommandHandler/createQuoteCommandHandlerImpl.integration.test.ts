@@ -109,15 +109,20 @@ describe('CreateQuoteCommandHandlerImpl', () => {
 
     const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
 
-    const book = await bookTestUtils.createAndPersist();
-
     const genre = await genreTestUtils.createAndPersist();
+
+    const book = await bookTestUtils.createAndPersist({
+      input: {
+        book: {
+          genreId: genre.id
+        }
+      },
+    });
 
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookshelfId: bookshelf.id,
         bookId: book.id,
-        genreId: genre.id,
       },
     });
 

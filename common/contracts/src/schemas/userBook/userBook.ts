@@ -11,6 +11,8 @@ export interface UserBook {
   readonly bookId: string;
   readonly book: {
     readonly title: string;
+    readonly genreId: string;
+    readonly genreName?: string;
     readonly isbn?: string;
     readonly publisher?: string;
     readonly releaseYear: number;
@@ -28,8 +30,6 @@ export interface UserBook {
   readonly isFavorite: boolean;
   readonly bookshelfId: string;
   readonly createdAt: string;
-  readonly genreId: string;
-  readonly genreName: string;
   readonly collections: Collection[];
   readonly readings: BookReading[];
   readonly latestRating?: number;

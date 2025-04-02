@@ -29,9 +29,7 @@ import {
 } from '../../../../common/components/select/select';
 import { LoadingSpinner } from '../../../../common/components/spinner/loading-spinner';
 import { ReadingStatus } from '../../../../common/constants/readingStatus';
-import { useErrorHandledQuery } from '../../../../common/hooks/useErrorHandledQuery';
 import { userStateSelectors } from '../../../../core/store/states/userState/userStateSlice';
-import { getGenresQueryOptions } from '../../../../genres/api/queries/getGenresQuery/getGenresQueryOptions';
 import { FindBookByIdQueryOptions } from '../../../api/user/queries/findBookById/findBookByIdQueryOptions';
 import { type BookNavigationFrom } from '../../../constants';
 import { BookApiError } from '../../../errors/bookApiError';
@@ -53,9 +51,6 @@ const stepThreeFormSchema = z.object({
   bookshelfId: z.string().uuid({
     message: 'Niewłaściwy format',
   }),
-  genre: z.string().min(1, {
-    message: 'Niewłaściwa wartość',
-  }),
 });
 
 interface Props {
@@ -69,7 +64,6 @@ export const ManualStep = ({ bookshelfId, navigateTo }: Props): JSX.Element => {
   const [submissionError, setSubmissionError] = useState<string | null>(null);
   const [file, setFile] = useState<File | undefined>();
   const [bookshelfSelectOpen, setBookshelfSelectOpen] = useState(false);
-  const [genreSelectOpen, setGenreSelectOpen] = useState(false);
   const [statusSelectOpen, setStatusSelectOpen] = useState(false);
 
   const { data: bookshelvesData } = useFindUserBookshelfsQuery({
@@ -82,7 +76,6 @@ export const ManualStep = ({ bookshelfId, navigateTo }: Props): JSX.Element => {
       status: '',
       image: undefined,
       bookshelfId,
-      genre: '',
     },
     reValidateMode: 'onChange',
     mode: 'onTouched',
@@ -90,7 +83,6 @@ export const ManualStep = ({ bookshelfId, navigateTo }: Props): JSX.Element => {
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
-  const { data: genresData } = useErrorHandledQuery(getGenresQueryOptions({}));
   const { data: bookResponse } = useQuery(
     FindBookByIdQueryOptions({
       bookId: searchBookContext.bookId,
@@ -146,7 +138,6 @@ export const ManualStep = ({ bookshelfId, navigateTo }: Props): JSX.Element => {
           bookId: searchBookContext.bookId,
           bookshelfId: (values.bookshelfId || bookshelfId) ?? '',
           status: values.status as ContractReadingStatus,
-          genreId: values.genre as string,
           isFavorite: false,
           accessToken: accessToken as string,
         },
@@ -272,44 +263,6 @@ export const ManualStep = ({ bookshelfId, navigateTo }: Props): JSX.Element => {
                   }}
                 />
               </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="genre"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Kategoria</FormLabel>
-              <Select
-                open={genreSelectOpen}
-                onOpenChange={setGenreSelectOpen}
-                onValueChange={(val) => {
-                  field.onChange(val);
-                }}
-                defaultValue={field.value}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder={<span className="text-muted-foreground">Kategoria</span>} />
-                    <SelectContent>
-                      {Object.values(genresData?.data ?? []).map((genre) => (
-                        <SelectItem
-                          onKeyDown={(event) => {
-                            if (event.key === 'Enter') {
-                              setGenreSelectOpen(false);
-                            }
-                          }}
-                          value={genre.id}
-                        >
-                          {genre.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </SelectTrigger>
-                </FormControl>
-              </Select>
               <FormMessage />
             </FormItem>
           )}

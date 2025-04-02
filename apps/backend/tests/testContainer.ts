@@ -15,6 +15,7 @@ import { BorrowingTestUtils } from '../src/modules/bookModule/tests/utils/borrow
 import { CollectionTestUtils } from '../src/modules/bookModule/tests/utils/collectionTestUtils/collectionTestUtils.js';
 import { GenreTestUtils } from '../src/modules/bookModule/tests/utils/genreTestUtils/genreTestUtils.js';
 import { QuoteTestUtils } from '../src/modules/bookModule/tests/utils/quoteTestUtils/quoteTestUtils.js';
+import { TestDataOrchestrator } from '../src/modules/bookModule/tests/utils/testDataOrchestrator/testDataOrchestrator.js';
 import { UserBookTestUtils } from '../src/modules/bookModule/tests/utils/userBookTestUtils/userBookTestUtils.js';
 import { BookshelfTestUtils } from '../src/modules/bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 import { type EmailMessageBus } from '../src/modules/userModule/application/messageBuses/emailMessageBus/emailMessageBus.js';
@@ -87,6 +88,18 @@ export class TestContainer {
     container.bind<CollectionTestUtils>(
       testSymbols.collectionTestUtils,
       () => new CollectionTestUtils(container.get<DatabaseClient>(coreSymbols.databaseClient)),
+    );
+
+    container.bind<TestDataOrchestrator>(
+      testSymbols.testDataOrchestrator,
+      () =>
+        new TestDataOrchestrator(
+          container.get<GenreTestUtils>(testSymbols.genreTestUtils),
+          container.get<BookshelfTestUtils>(testSymbols.bookshelfTestUtils),
+          container.get<AuthorTestUtils>(testSymbols.authorTestUtils),
+          container.get<BookTestUtils>(testSymbols.bookTestUtils),
+          container.get<UserBookTestUtils>(testSymbols.userBookTestUtils),
+        ),
     );
 
     await container.overrideBinding<LoggerService>(coreSymbols.loggerService, () => ({

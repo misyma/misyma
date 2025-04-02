@@ -21,6 +21,7 @@ describe('BookMapperImpl', () => {
     expect(book).toEqual({
       id: bookRawEntity.id,
       state: {
+        genreId: bookRawEntity.genreId,
         title: bookRawEntity.title,
         isbn: bookRawEntity.isbn,
         publisher: bookRawEntity.publisher,
@@ -28,6 +29,7 @@ describe('BookMapperImpl', () => {
         language: bookRawEntity.language,
         translator: bookRawEntity.translator,
         format: bookRawEntity.format,
+        genreName: "",
         pages: bookRawEntity.pages,
         isApproved: bookRawEntity.isApproved,
         imageUrl: bookRawEntity.imageUrl,
@@ -43,6 +45,7 @@ describe('BookMapperImpl', () => {
     const books = bookMapperImpl.mapRawWithJoinsToDomain([
       {
         id: book.id,
+        genreId: book.genreId,
         title: book.title,
         isbn: book.isbn as string,
         publisher: book.publisher as string,
@@ -58,6 +61,7 @@ describe('BookMapperImpl', () => {
         authorNames: [],
         authorApprovals: [],
         authorCreatedAtDates: [],
+        genreName: 'XD',
       },
     ]);
 
@@ -65,7 +69,9 @@ describe('BookMapperImpl', () => {
       {
         id: book.id,
         state: {
+          genreId: book.genreId,
           title: book.title,
+          genreName: 'XD',
           isbn: book.isbn,
           publisher: book.publisher,
           releaseYear: book.releaseYear,

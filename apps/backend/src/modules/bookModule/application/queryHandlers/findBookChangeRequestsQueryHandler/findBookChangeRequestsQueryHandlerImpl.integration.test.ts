@@ -9,6 +9,7 @@ import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestU
 import { symbols } from '../../../symbols.js';
 import { type BookChangeRequestTestUtils } from '../../../tests/utils/bookChangeRequestTestUtils/bookChangeRequestTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
+import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 
 import { type FindBookChangeRequestsQueryHandler } from './findBookChangeRequestsQueryHandler.js';
 
@@ -22,6 +23,8 @@ describe('FindBookChangeRequestsQueryHandler', () => {
   let bookChangeRequestTestUtils: BookChangeRequestTestUtils;
 
   let userTestUtils: UserTestUtils;
+
+  let genreTestUtils: GenreTestUtils;
 
   let testUtils: TestUtils[];
 
@@ -40,7 +43,9 @@ describe('FindBookChangeRequestsQueryHandler', () => {
 
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
 
-    testUtils = [bookTestUtils, userTestUtils, bookChangeRequestTestUtils];
+    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+
+    testUtils = [bookTestUtils, userTestUtils, bookChangeRequestTestUtils, genreTestUtils];
 
     for (const testUtil of testUtils) {
       await testUtil.truncate();
@@ -58,7 +63,15 @@ describe('FindBookChangeRequestsQueryHandler', () => {
   it('finds bookChangeRequests', async () => {
     const user = await userTestUtils.createAndPersist();
 
-    const book = await bookTestUtils.createAndPersist();
+    const genre = await genreTestUtils.createAndPersist();
+
+    const book = await bookTestUtils.createAndPersist({
+      input: {
+        book: {
+          genreId: genre.id,
+        },
+      },
+    });
 
     const bookChangeRequest = await bookChangeRequestTestUtils.createAndPersist({
       input: {
@@ -82,7 +95,15 @@ describe('FindBookChangeRequestsQueryHandler', () => {
   it('finds bookChangeRequests by user', async () => {
     const user = await userTestUtils.createAndPersist();
 
-    const book = await bookTestUtils.createAndPersist();
+    const genre = await genreTestUtils.createAndPersist();
+
+    const book = await bookTestUtils.createAndPersist({
+      input: {
+        book: {
+          genreId: genre.id,
+        },
+      },
+    });
 
     const bookChangeRequest = await bookChangeRequestTestUtils.createAndPersist({
       input: {

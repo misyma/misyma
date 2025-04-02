@@ -14,6 +14,7 @@ import { BookTitle } from '../../../../quotes/components/atoms/bookTitle/bookTit
 import { useFindUserQuery } from '../../../../user/api/queries/findUserQuery/findUserQuery';
 import { FindUserBookByIdQueryOptions } from '../../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 import { CurrentRatingStar } from '../../atoms/currentRatingStar/currentRatingStar';
+import { Card } from '../../../../common/components/card';
 
 interface BookGradesTabMainBodyProps {
   bookId: string;
@@ -35,7 +36,7 @@ export const BookGradesTabMainBody: FC<BookGradesTabMainBodyProps> = ({ bookId }
     }),
   );
 
-  const { data: userBookData, isFetching } = useErrorHandledQuery(
+  const { data: userBookData, isLoading } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: bookId,
     }),
@@ -61,33 +62,34 @@ export const BookGradesTabMainBody: FC<BookGradesTabMainBodyProps> = ({ bookId }
 
   return (
     <>
-      <div className="flex justify-between w-full">
-        {isFetching && <Skeleton className="h-9 w-40" />}
-        {isFetching && <Skeleton className="h-7 w-7" />}
-        {!isFetching && <BookTitle title={userBookData?.book.title ?? ''} />}
-        {!isFetching && <CurrentRatingStar userBookId={bookId} />}
-      </div>
-      <Separator className="h-[1px] bg-primary" />
-      <div className="flex flex-col w-full">
-        {!isFetching && <p className="text-lg pb-6"> {userBookData?.book?.authors[0]?.name ?? ''} </p>}
-        {isFetching && (
-          <div className="pb-6">
-            <Skeleton className="h-7 w-40" />
+      <Card className="p-6 bg-background border-primary/10 shadow-md">
+        <div className="flex flex-col gap-6">
+          <div className="flex flex-shrink-0 justify-between items-center">
+            {!isLoading ? <BookTitle title={userBookData?.book.title ?? ''} /> : <Skeleton className="h-9 w-40" />}
+            <CurrentRatingStar userBookId={bookId} />
           </div>
-        )}
-        <DataTable
-          tableContainerClassName="min-h-[32rem]"
-          hideHeaders={true}
-          columns={bookReadingsTableColumns}
-          data={bookReadings?.data ?? []}
-          onSetPage={onSetPage}
-          pageCount={pageCount}
-          pageIndex={page}
-          pageSize={pageSize}
-          itemsCount={bookReadings?.metadata.total}
-          PaginationSlot={pageCount <= 1 ? <></> : null}
-        />
-      </div>
+          <Separator className="h-[2px] bg-primary/20" />
+          <div className="flex flex-col md:flex-row gap-8 w-full justify-between">
+            {isLoading && (
+              <div className="pb-6">
+                <Skeleton className="h-7 w-40" />
+              </div>
+            )}
+            <DataTable
+              tableContainerClassName="min-h-[32rem]"
+              hideHeaders={true}
+              columns={bookReadingsTableColumns}
+              data={bookReadings?.data ?? []}
+              onSetPage={onSetPage}
+              pageCount={pageCount}
+              pageIndex={page}
+              pageSize={pageSize}
+              itemsCount={bookReadings?.metadata.total}
+              PaginationSlot={pageCount <= 1 ? <></> : null}
+            />
+          </div>
+        </div>
+      </Card>
     </>
   );
 };

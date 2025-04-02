@@ -10,6 +10,7 @@ import { type DatabaseClient } from '../../../../../libs/database/clients/databa
 import { symbols } from '../../../symbols.js';
 import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
+import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 
 import { type DeleteBookCommandHandler } from './deleteBookCommandHandler.js';
 
@@ -21,6 +22,8 @@ describe('DeleteBookCommandHandler', () => {
   let authorTestUtils: AuthorTestUtils;
 
   let bookTestUtils: BookTestUtils;
+
+  let genreTestUtils: GenreTestUtils;
 
   let testUtils: TestUtils[];
 
@@ -35,7 +38,9 @@ describe('DeleteBookCommandHandler', () => {
 
     bookTestUtils = container.get<BookTestUtils>(testSymbols.bookTestUtils);
 
-    testUtils = [authorTestUtils, bookTestUtils];
+    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+
+    testUtils = [authorTestUtils, bookTestUtils, genreTestUtils];
 
     for (const testUtil of testUtils) {
       await testUtil.truncate();
@@ -51,11 +56,16 @@ describe('DeleteBookCommandHandler', () => {
   });
 
   it('deletes book', async () => {
+    const genre = await genreTestUtils.createAndPersist();
+
     const author = await authorTestUtils.createAndPersist();
 
     const book = await bookTestUtils.createAndPersist({
       input: {
         authorIds: [author.id],
+        book: {
+          genreId: genre.id
+        }
       },
     });
 

@@ -1,3 +1,5 @@
+import { type BookFormat } from '@common/contracts';
+
 import { Author } from '../../../../domain/entities/author/author.js';
 import { BookReading } from '../../../../domain/entities/bookReading/bookReading.js';
 import { Collection } from '../../../../domain/entities/collection/collection.js';
@@ -17,6 +19,8 @@ export class UserBookMapperImpl implements UserBookMapper {
       bookshelfId,
       createdAt,
       bookId,
+      genreId,
+      genreName,
       title,
       isbn,
       publisher,
@@ -32,8 +36,6 @@ export class UserBookMapperImpl implements UserBookMapper {
       authorNames,
       authorApprovals,
       authorCreatedAtDates,
-      genreId,
-      genreName,
       collectionIds,
       collectionNames,
       collectionUserIds,
@@ -62,9 +64,14 @@ export class UserBookMapperImpl implements UserBookMapper {
         releaseYear,
         language,
         translator: translator ?? undefined,
-        format,
+        format: format as BookFormat,
         pages: pages ?? undefined,
         isApproved,
+        genre: new Genre({
+          id: genreId,
+          name: genreName ?? "",
+        }),
+        genreId,
         createdAt: bookCreatedAt,
         authors:
           authorIds && authorNames && authorApprovals && authorCreatedAtDates
@@ -81,11 +88,6 @@ export class UserBookMapperImpl implements UserBookMapper {
             : [],
         imageUrl: bookImageUrl ?? undefined,
       },
-      genreId,
-      genre: new Genre({
-        id: genreId,
-        name: genreName,
-      }),
       readings:
         readingIds && readingStartedAtDates && readingEndedAtDates && readingRatings && readingComments
           ? readingIds

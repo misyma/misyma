@@ -1,12 +1,14 @@
 import { type DatabaseClient } from '../../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type Migration } from '../../../../../../libs/database/types/migration.js';
 
-export class M2CreateBookTableMigration implements Migration {
-  public readonly name = 'M2CreateBookTableMigration';
+export class M3CreateBookTableMigration implements Migration {
+  public readonly name = 'M3CreateBookTableMigration';
 
   public async up(databaseClient: DatabaseClient): Promise<void> {
     await databaseClient.schema.createTable('books', (table) => {
       table.text('id');
+
+      table.text('genreId').notNullable();
 
       table.text('title').notNullable();
 
@@ -20,7 +22,7 @@ export class M2CreateBookTableMigration implements Migration {
 
       table.text('translator');
 
-      table.text('format').notNullable();
+      table.text('format');
 
       table.integer('pages');
 
@@ -35,6 +37,8 @@ export class M2CreateBookTableMigration implements Migration {
       table.index(['title']);
 
       table.index(['isbn']);
+
+      table.foreign('genreId').references('id').inTable('genres').onDelete('CASCADE');
     });
 
     await databaseClient.schema.createTable('booksAuthors', (table) => {

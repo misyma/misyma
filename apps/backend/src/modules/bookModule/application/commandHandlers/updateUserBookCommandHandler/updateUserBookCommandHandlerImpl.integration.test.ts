@@ -123,15 +123,20 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
       },
     });
 
-    const book = await bookTestUtils.createAndPersist();
-
     const genre = await genreTestUtils.createAndPersist();
+
+    const book = await bookTestUtils.createAndPersist({
+      input: {
+        book: {
+          genreId: genre.id,
+        },
+      },
+    });
 
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookId: book.id,
         bookshelfId: bookshelf.id,
-        genreId: genre.id,
       },
     });
 
@@ -174,14 +179,19 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
       },
     });
 
-    const book = await bookTestUtils.createAndPersist();
-
     const genre = await genreTestUtils.createAndPersist();
+
+    const book = await bookTestUtils.createAndPersist({
+      input: {
+        book: {
+          genreId: genre.id,
+        },
+      },
+    });
 
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookId: book.id,
-        genreId: genre.id,
         bookshelfId: borrowingBookshelf.id,
       },
     });
@@ -226,18 +236,20 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
       },
     });
 
+    const genre = await genreTestUtils.createAndPersist();
+
     const book = await bookTestUtils.createAndPersist({
       input: {
         authorIds: [author.id],
+        book: {
+          genreId: genre.id,
+        },
       },
     });
-
-    const genre = await genreTestUtils.createAndPersist();
 
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookId: book.id,
-        genreId: genre.id,
         bookshelfId: bookshelf1.id,
       },
     });
@@ -257,94 +269,15 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
       isFavorite: updatedIsFavorite,
     });
 
-    expect(updatedUserBook.getId()).toBe(userBook.id);
+    expect(updatedUserBook.id).toBe(userBook.id);
 
-    expect(updatedUserBook.getBookshelfId()).toBe(bookshelf2.id);
+    expect(updatedUserBook.bookshelfId).toBe(bookshelf2.id);
 
-    expect(updatedUserBook.getImageUrl()).toBe(updatedImageUrl);
+    expect(updatedUserBook.imageUrl).toBe(updatedImageUrl);
 
-    expect(updatedUserBook.getStatus()).toBe(updatedStatus);
+    expect(updatedUserBook.status).toBe(updatedStatus);
 
-    expect(updatedUserBook.getIsFavorite()).toBe(updatedIsFavorite);
-  });
-
-  it('throws an error - when Genre does not exist', async () => {
-    const user = await userTestUtils.createAndPersist();
-
-    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-    const author = await authorTestUtils.createAndPersist();
-
-    const book = await bookTestUtils.createAndPersist({
-      input: {
-        authorIds: [author.id],
-      },
-    });
-
-    const genre = await genreTestUtils.createAndPersist();
-
-    const userBook = await userBookTestUtils.createAndPersist({
-      input: {
-        bookId: book.id,
-        genreId: genre.id,
-        bookshelfId: bookshelf.id,
-      },
-    });
-
-    const invalidGenreId = Generator.uuid();
-
-    try {
-      await commandHandler.execute({
-        userId: user.id,
-        userBookId: userBook.id,
-        genreId: invalidGenreId,
-      });
-    } catch (error) {
-      expect(error).toBeInstanceOf(OperationNotValidError);
-
-      expect((error as OperationNotValidError).context).toMatchObject({
-        reason: 'Genre does not exist.',
-        id: invalidGenreId,
-      });
-
-      return;
-    }
-
-    expect.fail();
-  });
-
-  it('updates UserBook Genres', async () => {
-    const user = await userTestUtils.createAndPersist();
-
-    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-    const author = await authorTestUtils.createAndPersist();
-
-    const book = await bookTestUtils.createAndPersist({
-      input: {
-        authorIds: [author.id],
-      },
-    });
-
-    const genre = await genreTestUtils.createAndPersist();
-
-    const userBook = await userBookTestUtils.createAndPersist({
-      input: {
-        bookId: book.id,
-        genreId: genre.id,
-        bookshelfId: bookshelf.id,
-      },
-    });
-
-    const result = await commandHandler.execute({
-      userId: user.id,
-      userBookId: userBook.id,
-      genreId: genre.id,
-    });
-
-    expect(result.userBook.getGenre()?.getId()).toBe(genre.id);
-
-    expect(result.userBook.getGenreId()).toBe(genre.id);
+    expect(updatedUserBook.isFavorite).toBe(updatedIsFavorite);
   });
 
   it('throws an error - when one of the Collections does not exist', async () => {
@@ -354,19 +287,21 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
 
     const author = await authorTestUtils.createAndPersist();
 
+    const genre = await genreTestUtils.createAndPersist();
+
     const book = await bookTestUtils.createAndPersist({
       input: {
         authorIds: [author.id],
+        book: {
+          genreId: genre.id,
+        },
       },
     });
-
-    const genre = await genreTestUtils.createAndPersist();
 
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookId: book.id,
         bookshelfId: bookshelf.id,
-        genreId: genre.id,
       },
     });
 
@@ -401,18 +336,20 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
 
     const author = await authorTestUtils.createAndPersist();
 
+    const genre = await genreTestUtils.createAndPersist();
+
     const book = await bookTestUtils.createAndPersist({
       input: {
         authorIds: [author.id],
+        book: {
+          genreId: genre.id,
+        },
       },
     });
-
-    const genre = await genreTestUtils.createAndPersist();
 
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookId: book.id,
-        genreId: genre.id,
         bookshelfId: bookshelf.id,
       },
     });
@@ -429,7 +366,7 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
       collectionIds: [collection1.id, collection2.id, collection3.id],
     });
 
-    result.userBook.getCollections()?.forEach((collection) => {
+    result.userBook.collections?.forEach((collection) => {
       expect(collection.getId()).oneOf([collection1.id, collection2.id, collection3.id]);
     });
   });
@@ -443,18 +380,20 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
 
     const author = await authorTestUtils.createAndPersist();
 
+    const genre = await genreTestUtils.createAndPersist();
+
     const book = await bookTestUtils.createAndPersist({
       input: {
         authorIds: [author.id],
+        book: {
+          genreId: genre.id,
+        },
       },
     });
-
-    const genre = await genreTestUtils.createAndPersist();
 
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookId: book.id,
-        genreId: genre.id,
         bookshelfId: bookshelf.id,
       },
     });

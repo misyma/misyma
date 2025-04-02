@@ -30,13 +30,13 @@ export class FindUserBookQueryHandlerImpl implements FindUserBookQueryHandler {
     }
 
     const bookshelf = await this.bookshelfRepository.findBookshelf({
-      where: { id: userBook.getBookshelfId() },
+      where: { id: userBook.bookshelfId },
     });
 
     if (!bookshelf) {
       throw new ResourceNotFoundError({
         resource: 'Bookshelf',
-        id: userBook.getBookshelfId(),
+        id: userBook.bookshelfId,
       });
     }
 

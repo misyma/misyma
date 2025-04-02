@@ -5,13 +5,15 @@ import { type Language } from './language.js';
 
 export interface Book {
   readonly id: string;
+  readonly genreId: string;
+  readonly genreName: string;
   readonly title: string;
   readonly isbn?: string;
   readonly publisher?: string;
   readonly releaseYear: number;
   readonly language: Language;
   readonly translator?: string;
-  readonly format: BookFormat;
+  readonly format?: BookFormat | undefined;
   readonly pages?: number;
   readonly isApproved: boolean;
   readonly imageUrl?: string;

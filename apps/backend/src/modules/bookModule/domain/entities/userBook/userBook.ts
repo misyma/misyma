@@ -14,8 +14,6 @@ export interface UserBookDraft {
   readonly createdAt: Date;
   readonly bookId: string;
   readonly book?: BookDraft | undefined;
-  readonly genreId: string;
-  readonly genre?: Genre;
   readonly collections?: Collection[] | undefined;
   readonly readings?: BookReading[] | undefined;
   readonly latestRating?: number | undefined;
@@ -29,8 +27,6 @@ export interface UserBookState {
   readonly createdAt: Date;
   readonly bookId: string;
   readonly book?: BookDraft | undefined;
-  genreId: string;
-  genre?: Genre;
   collections?: Collection[] | undefined;
   readonly readings?: BookReading[] | undefined;
   readonly latestRating?: number | undefined;
@@ -61,7 +57,7 @@ export interface SetCollectionsPayload {
 }
 
 export class UserBook {
-  private readonly id: string;
+  private readonly _id: string;
   private readonly state: UserBookState;
 
   public constructor(draft: UserBookDraft) {
@@ -74,14 +70,12 @@ export class UserBook {
       createdAt,
       bookId,
       book,
-      genreId,
-      genre,
       readings,
       collections,
       latestRating,
     } = draft;
 
-    this.id = id;
+    this._id = id;
 
     let state: UserBookState = {
       status,
@@ -89,7 +83,6 @@ export class UserBook {
       bookshelfId,
       createdAt,
       bookId,
-      genreId,
     };
 
     if (imageUrl) {
@@ -100,13 +93,6 @@ export class UserBook {
       state = {
         ...state,
         book,
-      };
-    }
-
-    if (genre) {
-      state = {
-        ...state,
-        genre,
       };
     }
 
@@ -138,91 +124,75 @@ export class UserBook {
     return this.state;
   }
 
-  public getId(): string {
-    return this.id;
+  public get id(): string {
+    return this._id;
   }
 
-  public getBook(): BookDraft | undefined {
-    return this.state.book;
+  public set id(_) {
+    throw new Error("Cannot change UserBook id!");
   }
 
-  public getImageUrl(): string | undefined | null {
+  public get imageUrl(): string | undefined | null {
     return this.state.imageUrl;
   }
 
-  public getStatus(): ReadingStatus {
+  public get status(): ReadingStatus {
     return this.state.status;
   }
 
-  public getIsFavorite(): boolean {
+  public get isFavorite(): boolean {
     return this.state.isFavorite;
   }
 
-  public getBookshelfId(): string {
+  public get bookshelfId(): string {
     return this.state.bookshelfId;
   }
 
-  public getCreatedAt(): Date {
+  public get createdAt(): Date {
     return this.state.createdAt;
   }
 
-  public getBookId(): string {
+  public get bookId(): string {
     return this.state.bookId;
   }
 
-  public getGenreId(): string {
-    return this.state.genreId;
+  public get collections(): Collection[] | undefined {
+    return this.state.collections ?  [...this.state.collections] : undefined;
   }
 
-  public getGenre(): Genre | undefined {
-    return this.state.genre;
+  public get readings(): BookReading[] | undefined {
+    return this.state.readings ? [...this.state.readings] : undefined;
   }
 
-  public getCollections(): Collection[] | undefined {
-    return this.state.collections;
-  }
-
-  public getReadings(): BookReading[] | undefined {
-    return this.state.readings;
-  }
-
-  public getLatestRating(): number | undefined {
+  public get latestReading(): number | undefined {
     return this.state.latestRating;
   }
 
-  public setImageUrl(payload: SetImageUrlPayload): void {
+  public set imageUrl(payload: SetImageUrlPayload) {
     const { imageUrl } = payload;
 
     this.state.imageUrl = imageUrl;
   }
 
-  public setStatus(payload: SetStatusPayload): void {
+  public set status(payload: SetStatusPayload) {
     const { status } = payload;
 
     this.state.status = status;
   }
 
-  public setIsFavorite(payload: SetIsFavoritePayload): void {
+  public set isFavorite(payload: SetIsFavoritePayload) {
     const { isFavorite } = payload;
 
     this.state.isFavorite = isFavorite;
   }
 
-  public setBookshelfId(payload: SetBookshelfIdPayload): void {
+  public set bookshelfId(payload: SetBookshelfIdPayload) {
     const { bookshelfId } = payload;
 
     this.state.bookshelfId = bookshelfId;
   }
 
-  public setGenre(payload: SetGenrePayload): void {
-    const { genre } = payload;
-
-    this.state.genre = genre;
-
-    this.state.genreId = genre.getId();
-  }
-
-  public setCollections(payload: SetCollectionsPayload): void {
+  public set collections(payload: SetCollectionsPayload) {
     const { collections } = payload;
 
     this.state.collections = collections;

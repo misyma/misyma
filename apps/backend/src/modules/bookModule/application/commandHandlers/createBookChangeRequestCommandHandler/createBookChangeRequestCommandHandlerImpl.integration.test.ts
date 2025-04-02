@@ -12,7 +12,7 @@ import { symbols } from '../../../symbols.js';
 import { BookChangeRequestTestFactory } from '../../../tests/factories/bookChangeRequestTestFactory/bookChangeRequestTestFactory.js';
 import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookChangeRequestTestUtils } from '../../../tests/utils/bookChangeRequestTestUtils/bookChangeRequestTestUtils.js';
-import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
+import { type TestDataOrchestrator } from '../../../tests/utils/testDataOrchestrator/testDataOrchestrator.js';
 
 import { type CreateBookChangeRequestCommandHandler } from './createBookChangeRequestCommandHandler.js';
 
@@ -21,13 +21,15 @@ describe('CreateBookChangeRequestCommandHandler', () => {
 
   let databaseClient: DatabaseClient;
 
-  let bookTestUtils: BookTestUtils;
-
   let bookChangeRequestTestUtils: BookChangeRequestTestUtils;
 
   let userTestUtils: UserTestUtils;
 
   let authorTestUtils: AuthorTestUtils;
+
+  const testUserId = Generator.uuid();
+
+  let testDataOrchestrator: TestDataOrchestrator;
 
   const bookChangeRequestTestFactory = new BookChangeRequestTestFactory();
 
@@ -42,19 +44,29 @@ describe('CreateBookChangeRequestCommandHandler', () => {
 
     databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
 
-    bookTestUtils = container.get<BookTestUtils>(testSymbols.bookTestUtils);
-
     authorTestUtils = container.get<AuthorTestUtils>(testSymbols.authorTestUtils);
 
     bookChangeRequestTestUtils = container.get<BookChangeRequestTestUtils>(testSymbols.bookChangeRequestTestUtils);
 
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
 
-    testUtils = [bookTestUtils, userTestUtils, bookChangeRequestTestUtils];
+    testDataOrchestrator = container.get<TestDataOrchestrator>(testSymbols.testDataOrchestrator);
+
+    testUtils = [userTestUtils, bookChangeRequestTestUtils];
 
     for (const testUtil of testUtils) {
       await testUtil.truncate();
     }
+
+    await testDataOrchestrator.cleanup();
+
+    await userTestUtils.createAndPersist({
+      input: {
+        id: testUserId,
+      },
+    });
+
+    testDataOrchestrator.setUserId(testUserId);
   });
 
   afterEach(async () => {
@@ -68,9 +80,7 @@ describe('CreateBookChangeRequestCommandHandler', () => {
   it('creates a BookChangeRequest', async () => {
     const user = await userTestUtils.createAndPersist();
 
-    const author1 = await authorTestUtils.createAndPersist();
-
-    const book = await bookTestUtils.createAndPersist({ input: { authorIds: [author1.id] } });
+    const book = await testDataOrchestrator.createBook();
 
     const author2 = await authorTestUtils.createAndPersist();
 
@@ -142,9 +152,7 @@ describe('CreateBookChangeRequestCommandHandler', () => {
   });
 
   it('throws an error - when some of the authors do not exist', async () => {
-    const user = await userTestUtils.createAndPersist();
-
-    const book = await bookTestUtils.createAndPersist();
+    const book = await testDataOrchestrator.createBook();
 
     const authorIds = [Generator.uuid(), Generator.uuid()];
 
@@ -152,7 +160,7 @@ describe('CreateBookChangeRequestCommandHandler', () => {
       await createBookChangeRequestCommandHandler.execute({
         authorIds,
         bookId: book.id,
-        userId: user.id,
+        userId: testUserId,
       });
     } catch (error) {
       expect(error).toBeInstanceOf(OperationNotValidError);
@@ -204,7 +212,7 @@ describe('CreateBookChangeRequestCommandHandler', () => {
   it('throws an error - when provided Book does not exist', async () => {
     const userId = Generator.uuid();
 
-    const book = await bookTestUtils.createAndPersist();
+    const book = await testDataOrchestrator.createBook();
 
     const createdBookChangeRequest = bookChangeRequestTestFactory.create({
       bookId: book.id,
@@ -239,14 +247,12 @@ describe('CreateBookChangeRequestCommandHandler', () => {
   });
 
   it('throws an error - when no book data provided', async () => {
-    const user = await userTestUtils.createAndPersist();
-
-    const book = await bookTestUtils.createAndPersist();
+    const book = await testDataOrchestrator.createBook();
 
     try {
       await createBookChangeRequestCommandHandler.execute({
         bookId: book.id,
-        userId: user.id,
+        userId: testUserId,
       });
     } catch (error) {
       expect(error).toBeInstanceOf(OperationNotValidError);
@@ -254,7 +260,7 @@ describe('CreateBookChangeRequestCommandHandler', () => {
       expect((error as OperationNotValidError).context).toEqual({
         reason: 'No book data provided to create a change request.',
         bookId: book.id,
-        userId: user.id,
+        userId: testUserId,
       });
 
       return;

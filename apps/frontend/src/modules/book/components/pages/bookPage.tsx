@@ -22,6 +22,7 @@ import { BasicDataMainBody } from '../organisms/basicDataTab/basicDataMainBody';
 import { BasicDataTabActionButtons } from '../organisms/basicDataTab/basicDataTabActionButtons';
 import { BookGradesTabMainBody } from '../organisms/bookGradesTab/bookGradesTabMainBody';
 import { BookTabNavigation } from '../organisms/bookTabNavigation/bookTabNavigation';
+import { Card } from '../../../common/components/card';
 
 export const BookPage: FC<{ from: BookNavigationFrom }> = ({ from }) => {
   const fromUrl = from === BookNavigationFromEnum.shelves ? '/shelves/bookshelf/book/$bookId' : '/mybooks/book/$bookId';
@@ -62,12 +63,16 @@ export const BookPage: FC<{ from: BookNavigationFrom }> = ({ from }) => {
       case 'quotations':
         return (
           <>
-            <QuotationTabTitleBar bookId={bookId} />
-            <Separator className="h-[1px] bg-primary"></Separator>
-            <QuotationTabTable
-              bookId={bookId}
-              sortDate={sortDate}
-            />
+            <Card className="p-6 bg-background border-primary/10 shadow-md">
+              <div className="flex flex-col gap-6">
+                <QuotationTabTitleBar bookId={bookId} />
+                <Separator className="h-[2px] bg-primary/20" />
+                <QuotationTabTable
+                  bookId={bookId}
+                  sortDate={sortDate}
+                />
+              </div>
+            </Card>
           </>
         );
     }

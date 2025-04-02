@@ -6,6 +6,7 @@ import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
+import { type BookshelfRawEntity } from '../../../../bookshelfModule/infrastructure/databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfRawEntity.js';
 import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { Quote } from '../../../domain/entities/quote/quote.js';
@@ -17,6 +18,8 @@ import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestU
 import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 import { type QuoteTestUtils } from '../../../tests/utils/quoteTestUtils/quoteTestUtils.js';
 import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
+import { type BookRawEntity } from '../../databases/bookDatabase/tables/bookTable/bookRawEntity.js';
+import { type UserBookRawEntity } from '../../databases/bookDatabase/tables/userBookTable/userBookRawEntity.js';
 
 describe('QuoteRepositoryImpl', () => {
   let repository: QuoteRepository;
@@ -38,6 +41,8 @@ describe('QuoteRepositoryImpl', () => {
   let genreTestUtils: GenreTestUtils;
 
   const quoteTestFactory = new QuoteTestFactory();
+
+  const testUserId = Generator.uuid();
 
   let testUtils: TestUtils[];
 
@@ -75,6 +80,12 @@ describe('QuoteRepositoryImpl', () => {
     for (const testUtil of testUtils) {
       await testUtil.truncate();
     }
+
+    await userTestUtils.createAndPersist({
+      input: {
+        id: testUserId,
+      },
+    });
   });
 
   afterEach(async () => {
@@ -84,6 +95,44 @@ describe('QuoteRepositoryImpl', () => {
 
     await databaseClient.destroy();
   });
+
+  async function createBookshelf(userId?: string): Promise<BookshelfRawEntity> {
+    let id = testUserId;
+    if (userId) {
+      await userTestUtils.createAndPersist({
+        input: {
+          id: userId,
+        },
+      });
+
+      id = userId;
+    }
+
+    return await bookshelfTestUtils.createAndPersist({ input: { userId: id } });
+  }
+
+  async function createBook(authorIds?: string[]): Promise<BookRawEntity> {
+    const genre = await genreTestUtils.createAndPersist();
+
+    return await bookTestUtils.createAndPersist({
+      input: {
+        authorIds,
+        book: {
+          genreId: genre.id,
+        },
+      },
+    });
+  }
+
+  async function createUserBook(userId?: string): Promise<UserBookRawEntity> {
+    const [bookshelf, book] = await Promise.all([createBookshelf(userId), createBook()]);
+    return await userBookTestUtils.createAndPersist({
+      input: {
+        bookshelfId: bookshelf.id,
+        bookId: book.id,
+      },
+    });
+  }
 
   describe('findById', () => {
     it('returns null - when Quote was not found', async () => {
@@ -97,21 +146,7 @@ describe('QuoteRepositoryImpl', () => {
     });
 
     it('returns a Quote', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-      const book = await bookTestUtils.createAndPersist();
-
-      const genre = await genreTestUtils.createAndPersist();
-
-      const userBook = await userBookTestUtils.createAndPersist({
-        input: {
-          bookshelfId: bookshelf.id,
-          bookId: book.id,
-          genreId: genre.id,
-        },
-      });
+      const userBook = await createUserBook();
 
       const quote = await quoteTestUtils.createAndPersist({
         input: {
@@ -137,10 +172,8 @@ describe('QuoteRepositoryImpl', () => {
 
   describe('findQuotes', () => {
     it('returns an empty array - when Quotes were not found', async () => {
-      const user = await userTestUtils.createAndPersist();
-
       const result = await repository.findQuotes({
-        userId: user.id,
+        userId: testUserId,
         page: 1,
         pageSize: 10,
       });
@@ -149,29 +182,9 @@ describe('QuoteRepositoryImpl', () => {
     });
 
     it('returns an array of Quotes by UserBook', async () => {
-      const user = await userTestUtils.createAndPersist();
+      const userBook1 = await createUserBook();
 
-      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-      const book = await bookTestUtils.createAndPersist();
-
-      const genre = await genreTestUtils.createAndPersist();
-
-      const userBook1 = await userBookTestUtils.createAndPersist({
-        input: {
-          bookshelfId: bookshelf.id,
-          bookId: book.id,
-          genreId: genre.id,
-        },
-      });
-
-      const userBook2 = await userBookTestUtils.createAndPersist({
-        input: {
-          bookshelfId: bookshelf.id,
-          bookId: book.id,
-          genreId: genre.id,
-        },
-      });
+      const userBook2 = await createUserBook();
 
       const quote1 = await quoteTestUtils.createAndPersist({
         input: {
@@ -192,7 +205,7 @@ describe('QuoteRepositoryImpl', () => {
       });
 
       const result = await repository.findQuotes({
-        userId: user.id,
+        userId: testUserId,
         userBookId: userBook1.id,
         page: 1,
         pageSize: 10,
@@ -210,47 +223,20 @@ describe('QuoteRepositoryImpl', () => {
     });
 
     it('returns an array of Quotes by User', async () => {
-      const user1 = await userTestUtils.createAndPersist();
-
-      const user2 = await userTestUtils.createAndPersist();
-
-      const bookshelf1 = await bookshelfTestUtils.createAndPersist({ input: { userId: user1.id } });
-
-      const bookshelf2 = await bookshelfTestUtils.createAndPersist({ input: { userId: user2.id } });
+      const bookshelf1 = await createBookshelf();
 
       const author = await authorTestUtils.createAndPersist();
 
-      const book1 = await bookTestUtils.createAndPersist({
-        input: {
-          authorIds: [author.id],
-        },
-      });
-
-      const book2 = await bookTestUtils.createAndPersist({
-        input: {
-          authorIds: [author.id],
-        },
-      });
-
-      const genre1 = await genreTestUtils.createAndPersist();
-
-      const genre2 = await genreTestUtils.createAndPersist();
+      const book1 = await createBook([author.id]);
 
       const userBook1 = await userBookTestUtils.createAndPersist({
         input: {
           bookshelfId: bookshelf1.id,
           bookId: book1.id,
-          genreId: genre1.id,
         },
       });
 
-      const userBook2 = await userBookTestUtils.createAndPersist({
-        input: {
-          bookshelfId: bookshelf2.id,
-          bookId: book2.id,
-          genreId: genre2.id,
-        },
-      });
+      const userBook2 = await createUserBook(Generator.uuid());
 
       const quote = await quoteTestUtils.createAndPersist({
         input: {
@@ -265,7 +251,7 @@ describe('QuoteRepositoryImpl', () => {
       });
 
       const result = await repository.findQuotes({
-        userId: user1.id,
+        userId: testUserId,
         page: 1,
         pageSize: 10,
       });
@@ -286,25 +272,20 @@ describe('QuoteRepositoryImpl', () => {
     });
 
     it('returns an array of Quotes by Author', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+      const bookshelf = await createBookshelf();
 
       const author1 = await authorTestUtils.createAndPersist();
 
       const author2 = await authorTestUtils.createAndPersist();
 
-      const book1 = await bookTestUtils.createAndPersist({ input: { authorIds: [author1.id] } });
+      const book1 = await createBook([author1.id]);
 
-      const book2 = await bookTestUtils.createAndPersist({ input: { authorIds: [author2.id] } });
-
-      const genre = await genreTestUtils.createAndPersist();
+      const book2 = await createBook([author2.id]);
 
       const userBook1 = await userBookTestUtils.createAndPersist({
         input: {
           bookshelfId: bookshelf.id,
           bookId: book1.id,
-          genreId: genre.id,
         },
       });
 
@@ -312,7 +293,6 @@ describe('QuoteRepositoryImpl', () => {
         input: {
           bookshelfId: bookshelf.id,
           bookId: book2.id,
-          genreId: genre.id,
         },
       });
 
@@ -335,7 +315,7 @@ describe('QuoteRepositoryImpl', () => {
       });
 
       const result = await repository.findQuotes({
-        userId: user.id,
+        userId: testUserId,
         authorId: author1.id,
         page: 1,
         pageSize: 10,
@@ -347,27 +327,7 @@ describe('QuoteRepositoryImpl', () => {
     });
 
     it('returns an array of Quotes by Favorite', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-      const author = await authorTestUtils.createAndPersist();
-
-      const book = await bookTestUtils.createAndPersist({
-        input: {
-          authorIds: [author.id],
-        },
-      });
-
-      const genre = await genreTestUtils.createAndPersist();
-
-      const userBook = await userBookTestUtils.createAndPersist({
-        input: {
-          bookshelfId: bookshelf.id,
-          bookId: book.id,
-          genreId: genre.id,
-        },
-      });
+      const userBook = await createUserBook();
 
       const quote1 = await quoteTestUtils.createAndPersist({
         input: {
@@ -391,7 +351,7 @@ describe('QuoteRepositoryImpl', () => {
       });
 
       const result = await repository.findQuotes({
-        userId: user.id,
+        userId: testUserId,
         isFavorite: true,
         page: 1,
         pageSize: 10,
@@ -405,21 +365,7 @@ describe('QuoteRepositoryImpl', () => {
 
   describe('save', () => {
     it('creates a new Quote - given QuoteDraft', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-      const book = await bookTestUtils.createAndPersist();
-
-      const genre = await genreTestUtils.createAndPersist();
-
-      const userBook = await userBookTestUtils.createAndPersist({
-        input: {
-          bookshelfId: bookshelf.id,
-          bookId: book.id,
-          genreId: genre.id,
-        },
-      });
+      const userBook = await createUserBook();
 
       const quote = quoteTestFactory.create({
         userBookId: userBook.id,
@@ -441,21 +387,7 @@ describe('QuoteRepositoryImpl', () => {
     });
 
     it('updates a Quote - given a Quote', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-      const book = await bookTestUtils.createAndPersist();
-
-      const genre = await genreTestUtils.createAndPersist();
-
-      const userBook = await userBookTestUtils.createAndPersist({
-        input: {
-          bookshelfId: bookshelf.id,
-          bookId: book.id,
-          genreId: genre.id,
-        },
-      });
+      const userBook = await createUserBook();
 
       const quoteRawEntity = await quoteTestUtils.createAndPersist({
         input: {
@@ -497,21 +429,7 @@ describe('QuoteRepositoryImpl', () => {
 
   describe('delete', () => {
     it('deletes a Quote', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-      const book = await bookTestUtils.createAndPersist();
-
-      const genre = await genreTestUtils.createAndPersist();
-
-      const userBook = await userBookTestUtils.createAndPersist({
-        input: {
-          bookshelfId: bookshelf.id,
-          bookId: book.id,
-          genreId: genre.id,
-        },
-      });
+      const userBook = await createUserBook();
 
       const quote = await quoteTestUtils.createAndPersist({
         input: {

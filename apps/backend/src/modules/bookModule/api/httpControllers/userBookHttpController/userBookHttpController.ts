@@ -245,7 +245,7 @@ export class UserBookHttpController implements HttpController {
   private async createUserBook(
     request: HttpRequest<CreateUserBookBodyDto>,
   ): Promise<HttpCreatedResponse<CreateUserBookResponseBodyDto>> {
-    const { bookId, bookshelfId, status, imageUrl, isFavorite, collectionIds, genreId } = request.body;
+    const { bookId, bookshelfId, status, imageUrl, isFavorite, collectionIds } = request.body;
 
     const { userId } = await this.accessControlService.verifyBearerToken({
       requestHeaders: request.headers,
@@ -259,7 +259,6 @@ export class UserBookHttpController implements HttpController {
       imageUrl,
       isFavorite,
       collectionIds,
-      genreId,
     });
 
     return {
@@ -372,8 +371,6 @@ export class UserBookHttpController implements HttpController {
       bookshelfId,
       imageUrl,
       bookId,
-      genre,
-      genreId,
       book,
       readings,
       collections,
@@ -382,7 +379,7 @@ export class UserBookHttpController implements HttpController {
     } = userBook.getState();
 
     const userBookDto: UserBookDto = {
-      id: userBook.getId(),
+      id: userBook.id,
       status,
       isFavorite,
       bookshelfId,
@@ -390,6 +387,8 @@ export class UserBookHttpController implements HttpController {
       bookId,
       book: {
         title: book?.title as string,
+        genreId: book?.genreId as string,
+        genreName: book?.genre.getName() ?? "",
         language: book?.language as Language,
         isApproved: book?.isApproved as boolean,
         format: book?.format as BookFormat,
@@ -403,8 +402,6 @@ export class UserBookHttpController implements HttpController {
             createdAt: author.getCreatedAt().toISOString(),
           })) || [],
       },
-      genreId,
-      genreName: genre?.getName() || '',
       collections:
         collections?.map((collection) => ({
           id: collection.getId(),

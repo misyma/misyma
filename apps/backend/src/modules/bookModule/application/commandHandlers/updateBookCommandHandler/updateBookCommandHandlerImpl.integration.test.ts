@@ -10,6 +10,7 @@ import { type DatabaseClient } from '../../../../../libs/database/clients/databa
 import { symbols } from '../../../symbols.js';
 import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
+import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 
 import { type UpdateBookCommandHandler } from './updateBookCommandHandler.js';
 
@@ -19,6 +20,8 @@ describe('UpdateBookCommandHandlerImpl', () => {
   let bookTestUtils: BookTestUtils;
 
   let authorTestUtils: AuthorTestUtils;
+
+  let genreTestUtils: GenreTestUtils;
 
   let databaseClient: DatabaseClient;
 
@@ -35,7 +38,9 @@ describe('UpdateBookCommandHandlerImpl', () => {
 
     authorTestUtils = container.get<AuthorTestUtils>(testSymbols.authorTestUtils);
 
-    testUtils = [authorTestUtils, bookTestUtils];
+    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+
+    testUtils = [authorTestUtils, bookTestUtils, genreTestUtils];
 
     for (const testUtil of testUtils) {
       await testUtil.truncate();
@@ -67,7 +72,15 @@ describe('UpdateBookCommandHandlerImpl', () => {
   });
 
   it('throws an error - when updated Author does not exist', async () => {
-    const book = await bookTestUtils.createAndPersist();
+    const genre = await genreTestUtils.createAndPersist();
+
+    const book = await bookTestUtils.createAndPersist({
+      input: {
+        book: {
+          genreId: genre.id,
+        },
+      },
+    });
 
     const invalidAuthorId = Generator.uuid();
 
@@ -86,7 +99,17 @@ describe('UpdateBookCommandHandlerImpl', () => {
   });
 
   it('updates a Book', async () => {
-    const book = await bookTestUtils.createAndPersist();
+    const genre1 = await genreTestUtils.createAndPersist();
+
+    const genre2 = await genreTestUtils.createAndPersist();
+
+    const book = await bookTestUtils.createAndPersist({
+      input: {
+        book: {
+          genreId: genre1.id,
+        },
+      },
+    });
 
     const updatedImageUrl = Generator.imageUrl();
 
@@ -112,6 +135,7 @@ describe('UpdateBookCommandHandlerImpl', () => {
 
     const { book: updatedBook } = await commandHandler.execute({
       bookId: book.id,
+      genreId: genre2.id,
       authorIds: [updatedAuthor.id],
       format: updatedFormat,
       imageUrl: updatedImageUrl,

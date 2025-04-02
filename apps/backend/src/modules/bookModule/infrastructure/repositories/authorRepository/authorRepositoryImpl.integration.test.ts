@@ -432,27 +432,41 @@ describe('AuthorRepositoryImpl', () => {
 
       const author4 = await authorTestUtils.createAndPersist();
 
+      const genre = await genreTestUtils.createAndPersist();
+
       const book1 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author1.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
       const book2 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author2.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
       const book3 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author3.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
       const book4 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author3.id, author4.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
@@ -474,13 +488,10 @@ describe('AuthorRepositoryImpl', () => {
         },
       });
 
-      const genre = await genreTestUtils.createAndPersist();
-
       await userBookTestUtils.createAndPersist({
         input: {
           bookshelfId: bookshelf1.id,
           bookId: book1.id,
-          genreId: genre.id,
         },
       });
 
@@ -488,7 +499,6 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           bookshelfId: bookshelf1.id,
           bookId: book2.id,
-          genreId: genre.id,
         },
       });
 
@@ -496,7 +506,6 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           bookshelfId: bookshelf2.id,
           bookId: book2.id,
-          genreId: genre.id,
         },
       });
 
@@ -504,7 +513,6 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           bookshelfId: bookshelf3.id,
           bookId: book3.id,
-          genreId: genre.id,
         },
       });
 
@@ -512,7 +520,6 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           bookshelfId: bookshelf3.id,
           bookId: book4.id,
-          genreId: genre.id,
         },
       });
 
@@ -542,27 +549,41 @@ describe('AuthorRepositoryImpl', () => {
 
       const author4 = await authorTestUtils.createAndPersist();
 
+      const genre = await genreTestUtils.createAndPersist();
+
       const book1 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author1.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
       const book2 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author2.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
       const book3 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author3.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
       const book4 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author3.id, author4.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
@@ -584,13 +605,10 @@ describe('AuthorRepositoryImpl', () => {
         },
       });
 
-      const genre = await genreTestUtils.createAndPersist();
-
       await userBookTestUtils.createAndPersist({
         input: {
           bookshelfId: bookshelf1.id,
           bookId: book1.id,
-          genreId: genre.id,
         },
       });
 
@@ -598,7 +616,6 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           bookshelfId: bookshelf1.id,
           bookId: book2.id,
-          genreId: genre.id,
         },
       });
 
@@ -606,7 +623,6 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           bookshelfId: bookshelf2.id,
           bookId: book2.id,
-          genreId: genre.id,
         },
       });
 
@@ -614,7 +630,6 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           bookshelfId: bookshelf3.id,
           bookId: book3.id,
-          genreId: genre.id,
         },
       });
 
@@ -622,7 +637,6 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           bookshelfId: bookshelf3.id,
           bookId: book4.id,
-          genreId: genre.id,
         },
       });
 
@@ -650,27 +664,41 @@ describe('AuthorRepositoryImpl', () => {
 
       const author4 = await authorTestUtils.createAndPersist();
 
+      const genre = await genreTestUtils.createAndPersist();
+
       const book1 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author1.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
       const book2 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author2.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
       const book3 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author3.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
       const book4 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author3.id, author4.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
@@ -692,13 +720,10 @@ describe('AuthorRepositoryImpl', () => {
         },
       });
 
-      const genre = await genreTestUtils.createAndPersist();
-
       await userBookTestUtils.createAndPersist({
         input: {
           bookshelfId: bookshelf1.id,
           bookId: book1.id,
-          genreId: genre.id,
         },
       });
 
@@ -706,7 +731,6 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           bookshelfId: bookshelf1.id,
           bookId: book2.id,
-          genreId: genre.id,
         },
       });
 
@@ -714,7 +738,6 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           bookshelfId: bookshelf2.id,
           bookId: book2.id,
-          genreId: genre.id,
         },
       });
 
@@ -722,7 +745,6 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           bookshelfId: bookshelf3.id,
           bookId: book3.id,
-          genreId: genre.id,
         },
       });
 
@@ -730,7 +752,6 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           bookshelfId: bookshelf3.id,
           bookId: book4.id,
-          genreId: genre.id,
         },
       });
 
@@ -876,27 +897,41 @@ describe('AuthorRepositoryImpl', () => {
 
       const author4 = await authorTestUtils.createAndPersist();
 
+      const genre = await genreTestUtils.createAndPersist();
+
       const book1 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author1.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
       const book2 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author2.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
       const book3 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author3.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
       const book4 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author3.id, author4.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
@@ -918,13 +953,10 @@ describe('AuthorRepositoryImpl', () => {
         },
       });
 
-      const genre = await genreTestUtils.createAndPersist();
-
       await userBookTestUtils.createAndPersist({
         input: {
           bookshelfId: bookshelf1.id,
           bookId: book1.id,
-          genreId: genre.id,
         },
       });
 
@@ -932,7 +964,6 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           bookshelfId: bookshelf1.id,
           bookId: book2.id,
-          genreId: genre.id,
         },
       });
 
@@ -940,7 +971,6 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           bookshelfId: bookshelf2.id,
           bookId: book2.id,
-          genreId: genre.id,
         },
       });
 
@@ -948,7 +978,6 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           bookshelfId: bookshelf3.id,
           bookId: book3.id,
-          genreId: genre.id,
         },
       });
 
@@ -956,7 +985,6 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           bookshelfId: bookshelf3.id,
           bookId: book4.id,
-          genreId: genre.id,
         },
       });
 
@@ -980,27 +1008,41 @@ describe('AuthorRepositoryImpl', () => {
 
       const author4 = await authorTestUtils.createAndPersist();
 
+      const genre = await genreTestUtils.createAndPersist();
+
       const book1 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author1.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
       const book2 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author2.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
       const book3 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author3.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
       const book4 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author3.id, author4.id],
+          book: {
+            genreId: genre.id,
+          },
         },
       });
 
@@ -1022,13 +1064,10 @@ describe('AuthorRepositoryImpl', () => {
         },
       });
 
-      const genre = await genreTestUtils.createAndPersist();
-
       await userBookTestUtils.createAndPersist({
         input: {
           bookshelfId: bookshelf1.id,
           bookId: book1.id,
-          genreId: genre.id,
         },
       });
 
@@ -1036,7 +1075,6 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           bookshelfId: bookshelf1.id,
           bookId: book2.id,
-          genreId: genre.id,
         },
       });
 
@@ -1044,7 +1082,6 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           bookshelfId: bookshelf2.id,
           bookId: book2.id,
-          genreId: genre.id,
         },
       });
 
@@ -1052,7 +1089,6 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           bookshelfId: bookshelf3.id,
           bookId: book3.id,
-          genreId: genre.id,
         },
       });
 
@@ -1060,7 +1096,6 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           bookshelfId: bookshelf3.id,
           bookId: book4.id,
-          genreId: genre.id,
         },
       });
 

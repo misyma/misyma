@@ -15,6 +15,7 @@ import { BookReadingTestFactory } from '../../../tests/factories/bookReadingTest
 import { type BookReadingTestUtils } from '../../../tests/utils/bookReadingTestUtils/bookReadingTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
 import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
+import { type TestDataOrchestrator } from '../../../tests/utils/testDataOrchestrator/testDataOrchestrator.js';
 import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
 
 describe('BookReadingRepositoryImpl', () => {
@@ -35,6 +36,10 @@ describe('BookReadingRepositoryImpl', () => {
   let genreTestUtils: GenreTestUtils;
 
   const bookReadingTestFactory = new BookReadingTestFactory();
+
+  const testUserId = Generator.uuid();
+
+  let testDataOrchestrator: TestDataOrchestrator;
 
   let testUtils: TestUtils[];
 
@@ -57,6 +62,8 @@ describe('BookReadingRepositoryImpl', () => {
 
     genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
 
+    testDataOrchestrator = container.get<TestDataOrchestrator>(testSymbols.testDataOrchestrator);
+
     testUtils = [
       genreTestUtils,
       bookTestUtils,
@@ -69,6 +76,16 @@ describe('BookReadingRepositoryImpl', () => {
     for (const testUtil of testUtils) {
       await testUtil.truncate();
     }
+
+    await testDataOrchestrator.cleanup();
+
+    await userTestUtils.createAndPersist({
+      input: {
+        id: testUserId,
+      },
+    });
+
+    testDataOrchestrator.setUserId(testUserId);
   });
 
   afterEach(async () => {
@@ -91,21 +108,7 @@ describe('BookReadingRepositoryImpl', () => {
     });
 
     it('returns a BookReading', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-      const book = await bookTestUtils.createAndPersist();
-
-      const genre = await genreTestUtils.createAndPersist();
-
-      const userBook = await userBookTestUtils.createAndPersist({
-        input: {
-          bookshelfId: bookshelf.id,
-          bookId: book.id,
-          genreId: genre.id,
-        },
-      });
+      const userBook = await testDataOrchestrator.createUserBook();
 
       const bookReading = await bookReadingTestUtils.createAndPersist({
         input: {
@@ -143,21 +146,7 @@ describe('BookReadingRepositoryImpl', () => {
     });
 
     it('returns an array of BookReadings', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-      const book = await bookTestUtils.createAndPersist();
-
-      const genre = await genreTestUtils.createAndPersist();
-
-      const userBook = await userBookTestUtils.createAndPersist({
-        input: {
-          bookshelfId: bookshelf.id,
-          bookId: book.id,
-          genreId: genre.id,
-        },
-      });
+      const userBook = await testDataOrchestrator.createUserBook();
 
       const bookReading1 = await bookReadingTestUtils.createAndPersist({
         input: {
@@ -189,21 +178,7 @@ describe('BookReadingRepositoryImpl', () => {
     });
 
     it('returns an array of BookReadings - with pagination', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-      const book = await bookTestUtils.createAndPersist();
-
-      const genre = await genreTestUtils.createAndPersist();
-
-      const userBook = await userBookTestUtils.createAndPersist({
-        input: {
-          bookshelfId: bookshelf.id,
-          bookId: book.id,
-          genreId: genre.id,
-        },
-      });
+      const userBook = await testDataOrchestrator.createUserBook();
 
       const bookReading1 = await bookReadingTestUtils.createAndPersist({
         input: {
@@ -229,21 +204,7 @@ describe('BookReadingRepositoryImpl', () => {
     });
 
     it('returns an array of BookReadings - with sorting by descending date', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-      const book = await bookTestUtils.createAndPersist();
-
-      const genre = await genreTestUtils.createAndPersist();
-
-      const userBook = await userBookTestUtils.createAndPersist({
-        input: {
-          bookshelfId: bookshelf.id,
-          bookId: book.id,
-          genreId: genre.id,
-        },
-      });
+      const userBook = await testDataOrchestrator.createUserBook();
 
       const bookReading1 = await bookReadingTestUtils.createAndPersist({
         input: {
@@ -274,21 +235,7 @@ describe('BookReadingRepositoryImpl', () => {
     });
 
     it('returns an array of BookReadings - with sorting by ascending date', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-      const book = await bookTestUtils.createAndPersist();
-
-      const genre = await genreTestUtils.createAndPersist();
-
-      const userBook = await userBookTestUtils.createAndPersist({
-        input: {
-          bookshelfId: bookshelf.id,
-          bookId: book.id,
-          genreId: genre.id,
-        },
-      });
+      const userBook = await testDataOrchestrator.createUserBook();
 
       const bookReading1 = await bookReadingTestUtils.createAndPersist({
         input: {
@@ -321,21 +268,7 @@ describe('BookReadingRepositoryImpl', () => {
 
   describe('save', () => {
     it('creates a new BookReading - given BookReadingDraft', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-      const book = await bookTestUtils.createAndPersist();
-
-      const genre = await genreTestUtils.createAndPersist();
-
-      const userBook = await userBookTestUtils.createAndPersist({
-        input: {
-          bookshelfId: bookshelf.id,
-          bookId: book.id,
-          genreId: genre.id,
-        },
-      });
+      const userBook = await testDataOrchestrator.createUserBook();
 
       const bookReading = bookReadingTestFactory.create({
         userBookId: userBook.id,
@@ -355,21 +288,7 @@ describe('BookReadingRepositoryImpl', () => {
     });
 
     it('updates a BookReading - given a BookReading', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-      const book = await bookTestUtils.createAndPersist();
-
-      const genre = await genreTestUtils.createAndPersist();
-
-      const userBook = await userBookTestUtils.createAndPersist({
-        input: {
-          bookshelfId: bookshelf.id,
-          bookId: book.id,
-          genreId: genre.id,
-        },
-      });
+      const userBook = await testDataOrchestrator.createUserBook();
 
       const bookReadingRawEntity = await bookReadingTestUtils.createAndPersist({
         input: {
@@ -425,21 +344,7 @@ describe('BookReadingRepositoryImpl', () => {
 
   describe('delete', () => {
     it('deletes a BookReading', async () => {
-      const user = await userTestUtils.createAndPersist();
-
-      const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-      const book = await bookTestUtils.createAndPersist();
-
-      const genre = await genreTestUtils.createAndPersist();
-
-      const userBook = await userBookTestUtils.createAndPersist({
-        input: {
-          bookshelfId: bookshelf.id,
-          bookId: book.id,
-          genreId: genre.id,
-        },
-      });
+      const userBook = await testDataOrchestrator.createUserBook();
 
       const bookReadingRawEntity = await bookReadingTestUtils.createAndPersist({
         input: {

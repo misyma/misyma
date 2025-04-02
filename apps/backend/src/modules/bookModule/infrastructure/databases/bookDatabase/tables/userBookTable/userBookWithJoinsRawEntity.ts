@@ -7,9 +7,9 @@ export interface UserBookWithJoinsRawEntity {
   readonly isFavorite: boolean;
   readonly bookshelfId: string;
   readonly createdAt: Date;
-  readonly genreId: string;
-  readonly genreName: string;
 
+  readonly genreId: string;
+  readonly genreName?: string;
   readonly bookId: string;
   readonly title: string;
   readonly isbn: string | null;
@@ -17,7 +17,7 @@ export interface UserBookWithJoinsRawEntity {
   readonly releaseYear: number;
   readonly language: Language;
   readonly translator: string | null;
-  readonly format: BookFormat;
+  readonly format?: BookFormat | null | undefined;
   readonly pages: number | null;
   readonly isApproved: boolean;
   readonly bookImageUrl: string | null;

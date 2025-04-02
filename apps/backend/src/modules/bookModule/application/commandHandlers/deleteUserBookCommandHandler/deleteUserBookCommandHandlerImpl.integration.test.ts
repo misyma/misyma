@@ -78,19 +78,21 @@ describe('DeleteUserBookCommandHandler', () => {
 
     const author = await authorTestUtils.createAndPersist();
 
+    const genre = await genreTestUtils.createAndPersist();
+
     const book = await bookTestUtils.createAndPersist({
       input: {
         authorIds: [author.id],
+        book: {
+          genreId: genre.id
+        }
       },
     });
-
-    const genre = await genreTestUtils.createAndPersist();
 
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookId: book.id,
         bookshelfId: bookshelf.id,
-        genreId: genre.id,
       },
     });
 
@@ -137,19 +139,21 @@ describe('DeleteUserBookCommandHandler', () => {
 
     const author = await authorTestUtils.createAndPersist();
 
+    const genre = await genreTestUtils.createAndPersist();
+
     const book = await bookTestUtils.createAndPersist({
       input: {
         authorIds: [author.id],
+        book: {
+          genreId: genre.id
+        }
       },
     });
-
-    const genre = await genreTestUtils.createAndPersist();
 
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
         bookId: book.id,
         bookshelfId: bookshelf.id,
-        genreId: genre.id,
       },
     });
 

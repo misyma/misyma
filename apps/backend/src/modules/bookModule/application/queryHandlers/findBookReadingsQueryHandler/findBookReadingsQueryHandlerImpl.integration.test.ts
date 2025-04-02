@@ -9,6 +9,7 @@ import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
+import { type UserBookRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/userBookTable/userBookRawEntity.js';
 import { symbols } from '../../../symbols.js';
 import { type BookReadingTestUtils } from '../../../tests/utils/bookReadingTestUtils/bookReadingTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
@@ -35,6 +36,8 @@ describe('FindBookReadingsQueryHandlerImpl', () => {
   let userBookTestUtils: UserBookTestUtils;
 
   let testUtils: TestUtils[];
+
+  const testUserId = Generator.uuid();
 
   beforeEach(async () => {
     const container = await TestContainer.create();
@@ -67,6 +70,12 @@ describe('FindBookReadingsQueryHandlerImpl', () => {
     for (const testUtil of testUtils) {
       await testUtil.truncate();
     }
+
+    await userTestUtils.createAndPersist({
+      input: {
+        id: testUserId,
+      },
+    });
   });
 
   afterEach(async () => {
@@ -76,6 +85,27 @@ describe('FindBookReadingsQueryHandlerImpl', () => {
 
     await databaseClient.destroy();
   });
+
+  async function createUserBook(): Promise<UserBookRawEntity> {
+    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: testUserId } });
+
+    const genre = await genreTestUtils.createAndPersist();
+
+    const book = await bookTestUtils.createAndPersist({
+      input: {
+        book: {
+          genreId: genre.id,
+        },
+      },
+    });
+
+    return await userBookTestUtils.createAndPersist({
+      input: {
+        bookId: book.id,
+        bookshelfId: bookshelf.id,
+      },
+    });
+  }
 
   it('throws an error - when UserBook was not found', async () => {
     const user = await userTestUtils.createAndPersist();
@@ -104,24 +134,10 @@ describe('FindBookReadingsQueryHandlerImpl', () => {
   });
 
   it('returns an empty array - when UserBook has no BookReadings', async () => {
-    const user = await userTestUtils.createAndPersist();
-
-    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-    const book = await bookTestUtils.createAndPersist();
-
-    const genre = await genreTestUtils.createAndPersist();
-
-    const userBook = await userBookTestUtils.createAndPersist({
-      input: {
-        bookId: book.id,
-        bookshelfId: bookshelf.id,
-        genreId: genre.id,
-      },
-    });
+    const userBook = await createUserBook();
 
     const { bookReadings, total } = await queryHandler.execute({
-      userId: user.id,
+      userId: testUserId,
       userBookId: userBook.id,
       page: 1,
       pageSize: 10,
@@ -133,21 +149,7 @@ describe('FindBookReadingsQueryHandlerImpl', () => {
   });
 
   it('returns Book BookReadings', async () => {
-    const user = await userTestUtils.createAndPersist();
-
-    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
-
-    const book = await bookTestUtils.createAndPersist();
-
-    const genre = await genreTestUtils.createAndPersist();
-
-    const userBook = await userBookTestUtils.createAndPersist({
-      input: {
-        bookId: book.id,
-        bookshelfId: bookshelf.id,
-        genreId: genre.id,
-      },
-    });
+    const userBook = await createUserBook();
 
     const bookReading1 = await bookReadingTestUtils.createAndPersist({
       input: {
@@ -162,7 +164,7 @@ describe('FindBookReadingsQueryHandlerImpl', () => {
     });
 
     const { bookReadings, total } = await queryHandler.execute({
-      userId: user.id,
+      userId: testUserId,
       userBookId: userBook.id,
       page: 1,
       pageSize: 10,

@@ -2,16 +2,19 @@ import { type Language, type BookFormat } from '@common/contracts';
 
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type Author } from '../author/author.js';
+import { type Genre } from '../genre/genre.js';
 
 export interface BookDraft {
   readonly id: string;
+  readonly genreId: string;
+  readonly genre: Genre;
   readonly title: string;
   readonly isbn?: string | undefined | null;
   readonly publisher?: string | undefined | null;
   readonly releaseYear: number;
   readonly language: Language;
   readonly translator?: string | undefined | null;
-  readonly format: BookFormat;
+  readonly format?: BookFormat | undefined;
   readonly pages?: number | undefined | null;
   readonly authors: Author[];
   readonly isApproved: boolean;
@@ -26,11 +29,13 @@ export interface BookState {
   releaseYear: number;
   language: Language;
   translator?: string | undefined | null;
-  format: BookFormat;
+  format?: BookFormat | undefined;
   pages?: number | undefined | null;
   isApproved: boolean;
   imageUrl?: string | undefined | null;
   authors: Author[];
+  genreId: string;
+  genreName?: string;
   readonly createdAt: Date;
 }
 
@@ -78,6 +83,10 @@ export interface SetImageUrlPayload {
   readonly imageUrl: string | null;
 }
 
+export interface SetGenrePayload {
+  readonly genreId: string;
+}
+
 export class Book {
   private readonly id: string;
   private readonly state: BookState;
@@ -85,6 +94,8 @@ export class Book {
   public constructor(draft: BookDraft) {
     const {
       id,
+      genreId,
+      genre,
       title,
       isbn,
       publisher,
@@ -102,6 +113,8 @@ export class Book {
     this.id = id;
 
     this.state = {
+      genreId,
+      genreName: genre.getName(),
       title,
       language,
       format,
@@ -164,7 +177,7 @@ export class Book {
     return this.state.translator;
   }
 
-  public getFormat(): BookFormat {
+  public getFormat(): BookFormat | undefined {
     return this.state.format;
   }
 
@@ -188,6 +201,14 @@ export class Book {
     return this.state.createdAt;
   }
 
+  public getGenreId(): string {
+    return this.state.genreId;
+  }
+
+  public getGenreName(): string {
+    return this.state.genreName ?? ('' as const);
+  }
+
   public setTitle(payload: SetTitlePayload): void {
     const { title } = payload;
 
@@ -204,6 +225,10 @@ export class Book {
     const { publisher } = payload;
 
     this.state.publisher = publisher;
+  }
+
+  public setGenre(genreId: string): void {
+    this.state.genreId = genreId;
   }
 
   public setReleaseYear(payload: SetReleaseYearPayload): void {

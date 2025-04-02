@@ -7,8 +7,8 @@ import { type UserBookRawEntity } from '../../../infrastructure/databases/bookDa
 import { userBookTable } from '../../../infrastructure/databases/bookDatabase/tables/userBookTable/userBookTable.js';
 import { UserBookTestFactory } from '../../factories/userBookTestFactory/userBookTestFactory.js';
 
-interface CreateAndPersistPayload {
-  readonly input?: Partial<UserBookRawEntity> & Pick<UserBookRawEntity, 'bookId' | 'bookshelfId' | 'genreId'>;
+export interface CreateAndPersistUserBookPayload {
+  readonly input?: Partial<UserBookRawEntity> & Pick<UserBookRawEntity, 'bookId' | 'bookshelfId'>;
   readonly collectionIds?: string[];
 }
 
@@ -27,7 +27,7 @@ export class UserBookTestUtils extends TestUtils {
     super(databaseClient, userBookTable);
   }
 
-  public async createAndPersist(payload: CreateAndPersistPayload = {}): Promise<UserBookRawEntity> {
+  public async createAndPersist(payload: CreateAndPersistUserBookPayload = {}): Promise<UserBookRawEntity> {
     const { input, collectionIds } = payload;
 
     const userBook = this.userBookTestFactory.createRaw(input);

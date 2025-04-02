@@ -5,7 +5,6 @@ import { type LoggerService } from '../../../../../libs/logger/services/loggerSe
 import { type BookshelfRepository } from '../../../../bookshelfModule/domain/repositories/bookshelfRepository/bookshelfRepository.js';
 import { type BorrowingRepository } from '../../../domain/repositories/borrowingRepository/borrowingRepository.js';
 import { type CollectionRepository } from '../../../domain/repositories/collectionRepository/collectionRepository.js';
-import { type GenreRepository } from '../../../domain/repositories/genreRepository/genreRepository.js';
 import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
 
 import {
@@ -18,7 +17,6 @@ export class UpdateUserBookCommandHandlerImpl implements UpdateUserBookCommandHa
   public constructor(
     private readonly userBookRepository: UserBookRepository,
     private readonly bookshelfRepository: BookshelfRepository,
-    private readonly genreRepository: GenreRepository,
     private readonly collectionRepository: CollectionRepository,
     private readonly borrowingRepository: BorrowingRepository,
     private readonly loggerService: LoggerService,
@@ -49,13 +47,13 @@ export class UpdateUserBookCommandHandlerImpl implements UpdateUserBookCommandHa
     }
 
     const currentBookshelf = await this.bookshelfRepository.findBookshelf({
-      where: { id: userBook.getBookshelfId() },
+      where: { id: userBook.bookshelfId },
     });
 
     if (!currentBookshelf) {
       throw new OperationNotValidError({
         reason: 'Bookshelf does not exist.',
-        id: userBook.getBookshelfId(),
+        id: userBook.bookshelfId,
       });
     }
 
@@ -96,20 +94,7 @@ export class UpdateUserBookCommandHandlerImpl implements UpdateUserBookCommandHa
         }
       }
 
-      userBook.setBookshelfId({ bookshelfId });
-    }
-
-    if (genreId) {
-      const genre = await this.genreRepository.findGenre({ id: genreId });
-
-      if (!genre) {
-        throw new OperationNotValidError({
-          reason: 'Genre does not exist.',
-          id: genreId,
-        });
-      }
-
-      userBook.setGenre({ genre });
+      userBook.bookshelfId = { bookshelfId };
     }
 
     if (collectionIds !== undefined) {
@@ -126,19 +111,19 @@ export class UpdateUserBookCommandHandlerImpl implements UpdateUserBookCommandHa
         });
       }
 
-      userBook.setCollections({ collections });
+      userBook.collections = { collections };
     }
 
     if (imageUrl !== undefined) {
-      userBook.setImageUrl({ imageUrl });
+      userBook.imageUrl = { imageUrl };
     }
 
     if (status) {
-      userBook.setStatus({ status });
+      userBook.status = { status };
     }
 
     if (isFavorite !== undefined) {
-      userBook.setIsFavorite({ isFavorite });
+      userBook.isFavorite = { isFavorite };
     }
 
     await this.userBookRepository.saveUserBook({ userBook });

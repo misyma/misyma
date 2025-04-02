@@ -4,13 +4,14 @@ import { type CommandHandler } from '../../../../../common/types/commandHandler.
 import { type Book } from '../../../domain/entities/book/book.js';
 
 export interface CreateBookCommandHandlerPayload {
+  readonly genreId: string;
   readonly title: string;
   readonly isbn?: string | undefined;
   readonly publisher?: string | undefined;
   readonly releaseYear: number;
   readonly language: Language;
   readonly translator?: string | undefined;
-  readonly format: BookFormat;
+  readonly format?: BookFormat | undefined;
   readonly pages?: number | undefined;
   readonly authorIds: string[];
   readonly isApproved: boolean;

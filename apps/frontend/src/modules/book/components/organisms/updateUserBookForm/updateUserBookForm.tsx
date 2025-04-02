@@ -5,7 +5,6 @@ import { z } from 'zod';
 
 import { type UserBook } from '@common/contracts';
 
-import { getGenresQueryOptions } from '../../../../../modules/genres/api/queries/getGenresQuery/getGenresQueryOptions';
 import { Button } from '../../../../common/components/button/button';
 import {
   Form,
@@ -16,15 +15,7 @@ import {
   FormMessage,
 } from '../../../../common/components/form/form';
 import { FileInput } from '../../../../common/components/input/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../../../../common/components/select/select';
 import { LoadingSpinner } from '../../../../common/components/spinner/loading-spinner';
-import { useErrorHandledQuery } from '../../../../common/hooks/useErrorHandledQuery';
 import { useUpdateUserBook } from '../../../hooks/updateUserBook/updateUserBook';
 
 const changeUserBookDataSchema = z.object({
@@ -36,12 +27,6 @@ const changeUserBookDataSchema = z.object({
       },
     ),
   ),
-  genre: z
-    .string()
-    .min(1, {
-      message: 'Niewłaściwa wartość',
-    })
-    .or(z.literal('')),
 });
 
 interface Props {
@@ -74,7 +59,6 @@ export const UpdateUserBookForm: FC<Props> = ({ bookId, onSubmit, onCancel }) =>
 
   const onSubmitChangeMyBookDataForm = async (values: z.infer<typeof changeUserBookDataSchema>) => {
     await update({
-      genre: values.genre,
       image: values.image as unknown as File,
     });
   };
@@ -83,11 +67,8 @@ export const UpdateUserBookForm: FC<Props> = ({ bookId, onSubmit, onCancel }) =>
     resolver: zodResolver(changeUserBookDataSchema),
     defaultValues: {
       image: undefined,
-      genre: '',
     },
   });
-
-  const { data: genresData } = useErrorHandledQuery(getGenresQueryOptions({}));
 
   return (
     <Form {...changeUserBookDataForm}>
@@ -121,36 +102,6 @@ export const UpdateUserBookForm: FC<Props> = ({ bookId, onSubmit, onCancel }) =>
                   ref={fileInputRef}
                 />
               </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          name="genre"
-          control={changeUserBookDataForm.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Kategoria</FormLabel>
-              <Select
-                onValueChange={(val) => {
-                  field.onChange(val);
-                }}
-                defaultValue={field.value}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue
-                      className="w-40"
-                      placeholder={<span className="text-muted-foreground">Kategoria</span>}
-                    />
-                    <SelectContent>
-                      {Object.values(genresData?.data ?? []).map((genre) => (
-                        <SelectItem value={genre.id}>{genre.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </SelectTrigger>
-                </FormControl>
-              </Select>
               <FormMessage />
             </FormItem>
           )}
