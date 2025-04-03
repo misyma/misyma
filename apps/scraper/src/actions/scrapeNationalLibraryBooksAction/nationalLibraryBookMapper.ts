@@ -7,6 +7,7 @@
 
 import { Language } from '@common/contracts';
 import { Value } from '@sinclair/typebox/value';
+import { appendFileSync } from 'node:fs';
 
 import { type NationalLibraryBook } from '../../common/nationalLibraryBook.js';
 import { bookDraftSchema, type BookDraft } from '../../infrastructure/entities/book/book.js';
@@ -131,12 +132,20 @@ export class NationalLibraryBookMapper {
     for (const [genreName, keywords] of Object.entries(this.genresKeywords)) {
       for (const keyword of keywords) {
         if (cleaned.includes(keyword)) {
+          this.logGenreMapping(cleaned, genreName);
           return this.genreNamesToIds[genreName] as string;
         }
       }
     }
 
+    this.logGenreMapping(cleaned, 'inne');
     return this.genreNamesToIds['inne'] as string;
+  }
+
+  private logGenreMapping(rawGenre: string, genre: string): void {
+    const filePath = 'genre-mapping.csv';
+    const csvRow = `"${rawGenre.replace(/"/g, '""')}","${genre.replace(/"/g, '""')}"\n`;
+    appendFileSync(filePath, csvRow, 'utf8');
   }
 
   private readonly genresKeywords: Record<string, string[]> = {

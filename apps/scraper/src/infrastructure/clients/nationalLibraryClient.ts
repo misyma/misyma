@@ -1,4 +1,3 @@
- 
 import axios, { type AxiosInstance } from 'axios';
 import axiosRetry from 'axios-retry';
 
@@ -10,10 +9,10 @@ export class NationalLibraryClientFactory {
       headers: {
         Accept: 'application/json',
       },
-      timeout: 10000,
+      timeout: 30000,
     });
 
-    axiosRetry(httpClient, { retries: 3 });
+    axiosRetry(httpClient, { retries: 5 });
 
     return httpClient;
   }
