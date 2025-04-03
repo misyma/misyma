@@ -7,6 +7,7 @@
 
 import { Language } from '@common/contracts';
 import { Value } from '@sinclair/typebox/value';
+import { appendFileSync } from 'node:fs';
 
 import { type NationalLibraryBook } from '../../common/nationalLibraryBook.js';
 import { bookDraftSchema, type BookDraft } from '../../infrastructure/entities/book/book.js';
@@ -126,17 +127,25 @@ export class NationalLibraryBookMapper {
   }
 
   private getGenreId(rawGenre: string): string {
-    const cleaned = rawGenre.toLowerCase().replace(/[^\w\s]/g, '');
+    const cleaned = rawGenre.toLowerCase();
 
     for (const [genreName, keywords] of Object.entries(this.genresKeywords)) {
       for (const keyword of keywords) {
         if (cleaned.includes(keyword)) {
+          this.logGenreMapping(cleaned, genreName);
           return this.genreNamesToIds[genreName] as string;
         }
       }
     }
 
+    this.logGenreMapping(cleaned, 'inne');
     return this.genreNamesToIds['inne'] as string;
+  }
+
+  private logGenreMapping(rawGenre: string, genre: string): void {
+    const filePath = 'genre-mapping.csv';
+    const csvRow = `"${rawGenre.replace(/"/g, '""')}","${genre.replace(/"/g, '""')}"\n`;
+    appendFileSync(filePath, csvRow, 'utf8');
   }
 
   private readonly genresKeywords: Record<string, string[]> = {
@@ -172,8 +181,8 @@ export class NationalLibraryBookMapper {
     ],
     'literatura podróżnicza i turystyka': ['podróżnicza', 'podróż', 'ekspedycja', 'turysty', 'przewodnik'],
     'biografia, autobiografia i wspomnienia': [
-      'biografia',
-      'autobiografia',
+      'biograf',
+      'autobiograf',
       'wspomnienia',
       'pamiętnik',
       'dziennik',
@@ -181,8 +190,6 @@ export class NationalLibraryBookMapper {
     ],
     'powieść historyczna': ['powieść historyczna', 'historyczna', 'wojna'],
     'powieść przygodowa': ['powieść przygodowa', 'przygodow', 'przygoda'],
-    'literatura piękna': ['beletrystyka', 'proza', 'literatura współczesna', 'opowiadanie', 'nowele', 'antologia'],
-    powieść: ['powieść'],
     'literatura popularnonaukowa': ['popularno'],
     'kuchnia i kulinaria': ['kuchnia', 'kucharsk', 'przepisy', 'poradnik kulinarny', 'dieta', 'ciasta', 'obiady'],
     'poradniki i rozwój osobisty': ['poradnik'],
@@ -210,9 +217,10 @@ export class NationalLibraryBookMapper {
       'modlitwa',
       'biblijne',
       'papieski',
+      'kazania',
     ],
     'encyklopedie i słowniki': ['encyklopedia', 'słownik'],
-    'publicystyka literacka i eseje': ['esej', 'publicystyka', 'felieton', 'kronika'],
+    'publicystyka literacka i eseje': ['esej', 'publicystyka', 'felieton', 'kronika', 'satyra'],
     'informatyka i matematyka': ['informatyka', 'komputer', 'programowanie', 'matematyka', 'statystyka'],
     'nauki przyrodnicze (fizyka, chemia, biologia, astronomia)': [
       'fizyka',
@@ -229,5 +237,7 @@ export class NationalLibraryBookMapper {
       'literaturoznawstwo',
     ],
     'zdrowie i medycyna': ['zdrowie', 'medycyna', 'choroby', 'leczenie', 'terapia'],
+    'literatura piękna': ['beletrystyka', 'proza', 'literatura współczesna', 'opowiadanie', 'nowele', 'antologia'],
+    powieść: ['powieść'],
   };
 }
