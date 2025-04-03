@@ -126,7 +126,7 @@ export class NationalLibraryBookMapper {
   }
 
   private getGenreId(rawGenre: string): string {
-    const cleaned = rawGenre.toLowerCase().replace(/[^\w\s]/g, '');
+    const cleaned = rawGenre.toLowerCase();
 
     for (const [genreName, keywords] of Object.entries(this.genresKeywords)) {
       for (const keyword of keywords) {
@@ -172,8 +172,8 @@ export class NationalLibraryBookMapper {
     ],
     'literatura podróżnicza i turystyka': ['podróżnicza', 'podróż', 'ekspedycja', 'turysty', 'przewodnik'],
     'biografia, autobiografia i wspomnienia': [
-      'biografia',
-      'autobiografia',
+      'biograf',
+      'autobiograf',
       'wspomnienia',
       'pamiętnik',
       'dziennik',
@@ -181,8 +181,6 @@ export class NationalLibraryBookMapper {
     ],
     'powieść historyczna': ['powieść historyczna', 'historyczna', 'wojna'],
     'powieść przygodowa': ['powieść przygodowa', 'przygodow', 'przygoda'],
-    'literatura piękna': ['beletrystyka', 'proza', 'literatura współczesna', 'opowiadanie', 'nowele', 'antologia'],
-    powieść: ['powieść'],
     'literatura popularnonaukowa': ['popularno'],
     'kuchnia i kulinaria': ['kuchnia', 'kucharsk', 'przepisy', 'poradnik kulinarny', 'dieta', 'ciasta', 'obiady'],
     'poradniki i rozwój osobisty': ['poradnik'],
@@ -210,9 +208,10 @@ export class NationalLibraryBookMapper {
       'modlitwa',
       'biblijne',
       'papieski',
+      'kazania',
     ],
     'encyklopedie i słowniki': ['encyklopedia', 'słownik'],
-    'publicystyka literacka i eseje': ['esej', 'publicystyka', 'felieton', 'kronika'],
+    'publicystyka literacka i eseje': ['esej', 'publicystyka', 'felieton', 'kronika', 'satyra'],
     'informatyka i matematyka': ['informatyka', 'komputer', 'programowanie', 'matematyka', 'statystyka'],
     'nauki przyrodnicze (fizyka, chemia, biologia, astronomia)': [
       'fizyka',
@@ -229,5 +228,7 @@ export class NationalLibraryBookMapper {
       'literaturoznawstwo',
     ],
     'zdrowie i medycyna': ['zdrowie', 'medycyna', 'choroby', 'leczenie', 'terapia'],
+    'literatura piękna': ['beletrystyka', 'proza', 'literatura współczesna', 'opowiadanie', 'nowele', 'antologia'],
+    powieść: ['powieść'],
   };
 }
