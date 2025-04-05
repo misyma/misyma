@@ -4,14 +4,12 @@ import { Language } from '@common/contracts';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { BookApiError } from '../../errors/bookApiError';
+import { createMutationMock } from '../../../../tests/mocks/mutationMock';
 
-const mockMutation = vi.fn();
+const mutationMock = createMutationMock();
 
 vi.mock('../../api/admin/mutations/createAdminBookMutation/createAdminBookMutation', () => ({
-  useCreateAdminBookMutation: vi.fn().mockImplementation(() => ({
-    mutateAsync: mockMutation,
-    isPending: true,
-  })),
+  useCreateAdminBookMutation: vi.fn().mockImplementation(() => mutationMock),
 }));
 
 const toastMock = vi.fn();
@@ -51,7 +49,7 @@ const renderAndWaitForClick = async () => {
 
   await userEvent.click((await screen.findAllByText('Button'))[0], {});
 
-  await waitFor(() => expect(mockMutation).toHaveBeenCalledTimes(1), {
+  await waitFor(() => expect(mutationMock.mutateAsync).toHaveBeenCalledTimes(1), {
     timeout: 500,
   });
 };
@@ -66,7 +64,7 @@ it('Sends toast with success', async () => {
 
 it('Invokes onOperationError with Api error message', async () => {
   const expectedErrorMessage = 'Ich war ein böser Junge';
-  mockMutation.mockRejectedValueOnce(
+  mutationMock.mutateAsync.mockRejectedValueOnce(
     new BookApiError({
       apiResponseError: {},
       message: expectedErrorMessage,

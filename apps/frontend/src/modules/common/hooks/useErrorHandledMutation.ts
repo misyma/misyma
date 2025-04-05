@@ -20,7 +20,7 @@ export type ExtendedTPayload<TPayload> = TPayload & IErrorHandlingPayload;
 
 type Override<T1, T2> = Omit<T1, keyof T2> & T2;
 
-type UseErrorHandledMutation<TResponseBody, TError, TPayload> = Override<
+export type UseErrorHandledMutation<TResponseBody, TError, TPayload> = Override<
   UseMutationResult<TResponseBody, TError, ExtendedTPayload<TPayload>>,
   {
     mutate: UseMutateFunction<TResponseBody, TError, ExtendedTPayload<TPayload>, unknown>;

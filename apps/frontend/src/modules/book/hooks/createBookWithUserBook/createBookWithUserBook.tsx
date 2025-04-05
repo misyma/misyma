@@ -19,7 +19,7 @@ import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
 import { BookNavigationFromEnum, type BookNavigationFrom } from '../../constants';
 import { BookApiError } from '../../errors/bookApiError';
 
-interface CreatePayload {
+export interface CreatePayload {
   authorPayload?: Partial<CreateAuthorRequestBody> & {
     authorIds: string[];
   };
@@ -146,19 +146,16 @@ export const useCreateBookWithUserBook = ({
       });
 
       if (navigateTo == BookNavigationFromEnum.shelves) {
-        await navigate({
+        return await navigate({
           to: `/shelves/bookshelf/${userBookPayload.bookshelfId}`,
         });
-        return;
       }
-      await navigate({
+      return await navigate({
         to: `/mybooks/`,
       });
     } catch (error) {
       if (error instanceof BookApiError) {
-        onOperationError(error.context.message);
-
-        return;
+        return onOperationError(error.context.message);
       }
 
       onOperationError('Coś poszło nie tak. Spróbuj ponownie.');
