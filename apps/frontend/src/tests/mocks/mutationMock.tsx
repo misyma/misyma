@@ -20,5 +20,9 @@ const mutationMock: MockedObject<UseErrorHandledMutation<unknown, unknown, unkno
   variables: {},
 };
 
-export const createMutationMock = () => ({ ...mutationMock });
-
+export const createMutationMock = () => ({
+  ...mutationMock,
+  mutate: vi.fn(),
+  mutateAsync: vi.fn(),
+  reset: vi.fn(),
+});
