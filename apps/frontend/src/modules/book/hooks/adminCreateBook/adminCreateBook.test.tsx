@@ -1,6 +1,6 @@
 import { beforeEach, expect, it, vi } from 'vitest';
 import { useAdminCreateBook } from './adminCreateBook';
-import { Language } from '@common/contracts';
+import { languages } from '@common/contracts';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { BookApiError } from '../../errors/bookApiError';
@@ -32,7 +32,7 @@ const CreateSuccess = () => {
         create({
           bookPayload: {
             genreId: '1',
-            language: Language.Abkhazian,
+            language: languages.Abkhazian,
             releaseYear: 1999,
             title: 'Title',
           },
