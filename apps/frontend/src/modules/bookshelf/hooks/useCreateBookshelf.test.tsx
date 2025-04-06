@@ -65,6 +65,10 @@ it('Stops processing - on bookshelf creation error', async () => {
 it('Stops processing - on image upload error', async () => {
   const { create } = renderTestedHook();
 
+  createBookshelfMock.mutateAsync.mockResolvedValueOnce({
+    id: 'MeinId',
+  });
+
   uploadBookshelfImageMock.mutateAsync.mockRejectedValueOnce(new Error('Oh noes'));
 
   await create({
@@ -72,14 +76,14 @@ it('Stops processing - on image upload error', async () => {
     image: new File([], 'No'),
   });
 
-  expect(useToastMock.toast).not.toHaveBeenCalled();
+  expect(onSuccessStub).not.toHaveBeenCalled();
 });
 
 it('Invokes onSuccess', async () => {
   const { create } = renderTestedHook();
 
   createBookshelfMock.mutateAsync.mockResolvedValueOnce({
-    bookshelfId: 'MeinId',
+    id: 'MeinId',
   });
 
   await create({
@@ -94,7 +98,7 @@ it('Adds success toast', async () => {
   const { create } = renderTestedHook();
 
   createBookshelfMock.mutateAsync.mockResolvedValueOnce({
-    bookshelfId: 'MeinId',
+    id: 'MeinId',
   });
 
   await create({
