@@ -24,7 +24,7 @@ const registerUser = async (values: { email: string; password: string; name: str
     },
   );
 
-  return false;
+  return true;
 };
 
 export const useRegisterUserMutation = (
