@@ -9,6 +9,7 @@ import { PasswordEyeIcon } from '../../../common/components/icons/passwordEyeIco
 import { Input } from '../../../common/components/input/input';
 import { type UserApiError } from '../../../user/errors/userApiError';
 import { useRegisterUserMutation } from '../../api/registerUserMutation/registerUserMutation';
+import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
 
 interface RegisterUserFormProps {
   onSuccess: (result: { email: string; success: boolean }) => void;
@@ -36,27 +37,24 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ onSuccess, onError
   const [repeatedPasswordType, setRepeatedPasswordType] = useState<'text' | 'password'>('password');
 
   const onSubmit = async (values: RegisterUserFormSchemaValues) => {
-    registerUserMutation.mutate(
-      {
+    try {
+      const result = await registerUserMutation.mutateAsync({
         email: values.email,
         password: values.password,
         name: values.firstName,
-      },
-      {
-        onSuccess: (result) =>
-          onSuccess({
-            email: values.email,
-            success: result,
-          }),
-        onError: (error) => {
-          setResponseErrorMessage(error.context?.message);
+      });
 
-          if (onError) {
-            onError(error);
-          }
-        },
-      },
-    );
+      onSuccess({
+        email: values.email,
+        success: result,
+      });
+    } catch (error) {
+      setResponseErrorMessage((error as UserApiError)?.context?.message);
+
+      if (onError) {
+        onError(error as UserApiError);
+      }
+    }
   };
 
   return (
@@ -153,9 +151,10 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ onSuccess, onError
           <Button
             type="submit"
             size="xl"
-            disabled={!form.formState.isValid}
+            disabled={!form.formState.isValid || registerUserMutation.isPending}
           >
-            Zarejestruj się
+            {registerUserMutation.isPending && <LoadingSpinner size={24} />}
+            {!registerUserMutation.isPending && 'Zarejestruj się'}
           </Button>
           {responseErrorMessage && <FormMessage>{responseErrorMessage}</FormMessage>}
         </form>

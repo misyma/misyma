@@ -1,4 +1,4 @@
-import Axios, { type AxiosResponse, type AxiosInstance } from 'axios';
+import Axios, { type AxiosResponse, type AxiosInstance, AxiosError, AxiosRequestConfig } from 'axios';
 
 import { type Metadata } from '@common/contracts';
 
@@ -14,6 +14,12 @@ type ExtendedAxiosInstance = AxiosInstance & {
     errorCtor: new (context: ApiErrorContext) => ApiError,
     mapper: ErrorCodeMessageMapper,
   ) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  post: <T = any, R = AxiosResponse<T, any>, D = any>(
+    url: string,
+    data?: D,
+    config?: ExtendedAxiosRequestConfig,
+  ) => Promise<R>;
 };
 
 export type MisymaApiErrorResponse = AxiosResponse<{
@@ -35,6 +41,33 @@ export type MaybeSuccessResponse<T = any> = AxiosResponse<T> | MisymaApiErrorRes
 export const api = Axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'https://api.misyma.com/api',
 }) as ExtendedAxiosInstance;
+
+const originalPost = api.post;
+
+type ExtendedAxiosRequestConfig = AxiosRequestConfig & {
+  mapper: ErrorCodeMessageMapper;
+  errorCtor: new (context: ApiErrorContext) => ApiError;
+};
+
+api.post = async (url, data, config?: ExtendedAxiosRequestConfig) => {
+  try {
+    const response = await originalPost(url, data, config);
+    if (config) {
+      api.validateResponse(response, config.errorCtor, config.mapper);
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return Promise.resolve(response) as Promise<any>;
+  } catch (error) {
+    if (error instanceof AxiosError && error.response && config) {
+      api.validateResponse(error.response, config.errorCtor, config.mapper);
+
+      throw error;
+    }
+
+    throw error;
+  }
+};
 
 api.isErrorResponse = (response): response is MisymaApiErrorResponse =>
   !(response.status >= 200 && response.status <= 299);
@@ -68,7 +101,7 @@ api.getPreviousPageParam = (response) => {
 api.validateResponse = (response, ctor, mapper) => {
   if (api.isErrorResponse(response)) {
     throw new ctor({
-      message: mapper.map(response.status),
+      message: mapper.map(response.data as unknown as ApiError, response.status),
       apiResponseError: response.data.context,
       statusCode: response.status,
     });

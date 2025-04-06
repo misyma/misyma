@@ -87,7 +87,7 @@ export const CreateAuthorModal: FC<Props> = ({ onMutated }: Props) => {
       await onMutated();
     } catch (error) {
       if (error instanceof ApiError) {
-        setError(error.message);
+        return setError(error.message);
       } else {
         throw error;
       }
@@ -143,7 +143,6 @@ export const CreateAuthorModal: FC<Props> = ({ onMutated }: Props) => {
           Stwórz autora
         </DialogHeader>
         <div className="flex items-center justify-center">
-          <p className={error ? 'text-red-500' : 'hidden'}>{error}</p>
           <Form {...form}>
             <form
               className="flex flex-col gap-8 py-4"
@@ -166,6 +165,7 @@ export const CreateAuthorModal: FC<Props> = ({ onMutated }: Props) => {
                       />
                     </FormControl>
                     <FormMessage></FormMessage>
+                    <p className={error ? 'text-red-500' : 'hidden'}>{error}</p>
                   </FormItem>
                 )}
               />

@@ -51,9 +51,10 @@ const mapper = new ErrorCodeMessageMapper({});
 export type CreateQuote = z.infer<typeof createQuoteSchema>;
 
 const createQuote = async (payload: CreateQuoteMutationPayload): Promise<CreateQuoteResponseBody> => {
-  const response = await api.post<CreateQuoteResponseBody>(ApiPaths.quotes.path, payload);
-
-  api.validateResponse(response, QuoteApiError, mapper);
+  const response = await api.post<CreateQuoteResponseBody>(ApiPaths.quotes.path, payload, {
+    errorCtor: QuoteApiError,
+    mapper,
+  });
 
   return response.data;
 };

@@ -14,11 +14,16 @@ const mapper = new ErrorCodeMessageMapper({});
 const verifyUserEmail = async (values: VerifyUserEmailPayload) => {
   const { token } = values;
 
-  const verifyEmailResponse = await api.post(ApiPaths.users.verifyEmail.path, {
-    token,
-  });
-
-  api.validateResponse(verifyEmailResponse, AuthApiError, mapper);
+  await api.post(
+    ApiPaths.users.verifyEmail.path,
+    {
+      token,
+    },
+    {
+      errorCtor: AuthApiError,
+      mapper,
+    },
+  );
 
   return true;
 };

@@ -1,27 +1,35 @@
+import { ApiError } from '../errors/apiError';
+
+type CustomErrorMessageProvider = (error: ApiError) => string;
+
 export class ErrorCodeMessageMapper {
-  private readonly defaults: Record<number, string> = {
+  private readonly defaults: Record<number, string | CustomErrorMessageProvider> = {
     400: 'Błędne dane.',
     401: 'Brak dostępu.',
     403: 'Niedozwolona akcja',
     500: 'Wewnętrzny błąd serwera',
   };
 
-  private errorMap: Record<number, string>;
+  private errorMap: Record<number, string | CustomErrorMessageProvider>;
 
-  public constructor(errorMap: Record<number, string>) {
+  public constructor(errorMap: Record<number, string | CustomErrorMessageProvider>) {
     this.errorMap = {
       ...this.defaults,
       ...errorMap,
     };
   }
 
-  public map(code: number): string {
-    const message = this.errorMap[code];
+  public map(error: ApiError, code: number): string {
+    const mappedValue = this.errorMap[code];
 
-    if (!message) {
+    if (!mappedValue) {
       return `Nieznany błąd.`;
     }
 
-    return message;
+    if (typeof mappedValue === 'string') {
+      return mappedValue;
+    }
+
+    return mappedValue(error);
   }
 }

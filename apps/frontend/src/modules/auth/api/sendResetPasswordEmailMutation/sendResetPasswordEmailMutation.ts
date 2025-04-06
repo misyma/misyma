@@ -16,11 +16,16 @@ const mapper = new ErrorCodeMessageMapper({
 });
 
 const sendResetPasswordEmail = async (values: SendResetPasswordEmailPayload) => {
-  const sendResetPasswordEmailResponse = await api.post<LoginUserResponseBody>(ApiPaths.users.resetPassword.path, {
-    email: values.email,
-  });
-
-  api.validateResponse(sendResetPasswordEmailResponse, UserApiError, mapper);
+  const sendResetPasswordEmailResponse = await api.post<LoginUserResponseBody>(
+    ApiPaths.users.resetPassword.path,
+    {
+      email: values.email,
+    },
+    {
+      errorCtor: UserApiError,
+      mapper,
+    },
+  );
 
   return sendResetPasswordEmailResponse.data;
 };

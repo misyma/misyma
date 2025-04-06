@@ -66,7 +66,7 @@ export const createBookStepTwoSchema = z.object({
       message: 'Przekład może mieć maksymalnie 64 znaki.',
     })
     .or(z.literal('')),
-  form: z.nativeEnum(bookFormats),
+  form: z.nativeEnum(bookFormats).optional(),
   pagesCount: z
     .number({
       required_error: 'Ilość stron jest wymagana.',

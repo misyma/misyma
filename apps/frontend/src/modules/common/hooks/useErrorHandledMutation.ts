@@ -59,7 +59,7 @@ export function useErrorHandledMutation<TResponseBody, TError, TPayload>(
 
     if (error instanceof ApiError) {
       toast({
-        title: errorHandling?.title || 'Wystąpił bład.',
+        title: errorHandling?.title || 'Wystąpił błąd.',
         description: descriptionValue,
         variant: 'destructive',
       });
@@ -69,7 +69,7 @@ export function useErrorHandledMutation<TResponseBody, TError, TPayload>(
 
     if (error instanceof Error) {
       toast({
-        title: errorHandling?.title || 'Wystąpił bład.',
+        title: errorHandling?.title || 'Wystąpił błąd.',
         description: descriptionValue,
         variant: 'destructive',
       });
