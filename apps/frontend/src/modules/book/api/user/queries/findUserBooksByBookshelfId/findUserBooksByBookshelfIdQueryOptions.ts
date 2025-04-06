@@ -9,7 +9,7 @@ import { BookApiQueryKeys } from '../bookApiQueryKeys.js';
 
 const mapper = new ErrorCodeMessageMapper({});
 
-export const findBooksByBookshelfId = async (values: FindUserBooksQueryParams) => {
+export const findUserBooksByBookshelfId = async (values: FindUserBooksQueryParams) => {
   const { bookshelfId, page, pageSize } = values;
 
   const queryParams: Record<string, string> = {
@@ -37,11 +37,11 @@ export const findBooksByBookshelfId = async (values: FindUserBooksQueryParams) =
   return response.data;
 };
 
-export const FindBooksByBookshelfIdQueryOptions = ({ bookshelfId, page, pageSize }: FindUserBooksQueryParams) =>
+export const FindUserBooksByBookshelfIdQueryOptions = ({ bookshelfId, page, pageSize }: FindUserBooksQueryParams) =>
   queryOptions({
     queryKey: [BookApiQueryKeys.findBooksByBookshelfId, bookshelfId, page, pageSize],
     queryFn: () =>
-      findBooksByBookshelfId({
+      findUserBooksByBookshelfId({
         bookshelfId,
         page,
         pageSize,
@@ -49,7 +49,7 @@ export const FindBooksByBookshelfIdQueryOptions = ({ bookshelfId, page, pageSize
     placeholderData: keepPreviousData,
   });
 
-export const invalidateBooksByBookshelfIdQuery = (
+export const invalidateUserBooksByBookshelfIdQuery = (
   vals: FindUserBooksQueryParams,
   queryKey: Readonly<Array<unknown>>,
 ) => {

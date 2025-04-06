@@ -15,16 +15,10 @@ import {
 } from '../../../../common/components/form/form';
 import { FileInput, Input } from '../../../../common/components/input/input';
 import { LoadingSpinner } from '../../../../common/components/spinner/loading-spinner';
-import { useToast } from '../../../../common/components/toast/use-toast';
 import useDebounce from '../../../../common/hooks/useDebounce';
 import { useFileUpload } from '../../../../common/hooks/useFileUpload';
-import { useUpdateBookshelfMutation } from '../../../api/mutations/updateBookshelfMutation/updateBookshelfMutation';
-import { useUploadBookshelfImageMutation } from '../../../api/mutations/uploadBookshelfImageMutation/uploadBookshelfImageMutation';
-
-const updateBookshelfFormSchema = z.object({
-  image: z.object({}).or(z.undefined()),
-  name: z.string().max(64, 'Nazwa jest zbyt długa.').optional(),
-});
+import { updateBookshelfSchema } from '../../../api/mutations/updateBookshelfMutation/updateBookshelfMutation';
+import { useUpdateBookshelf } from '../../../hooks/useUpdateBookshelf';
 
 interface Props {
   bookshelfId: string;
@@ -40,7 +34,7 @@ export const UpdateBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, op
   });
 
   const form = useForm({
-    resolver: zodResolver(updateBookshelfFormSchema),
+    resolver: zodResolver(updateBookshelfSchema),
     defaultValues: {
       image: file,
       name: '',
@@ -49,45 +43,18 @@ export const UpdateBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, op
     mode: 'onTouched',
   });
 
-  const { mutateAsync: updateBookshelf, isPending: isUpdatePending } = useUpdateBookshelfMutation({});
-  const { mutateAsync: uploadBookshelfImage, isPending: isImagePending } = useUploadBookshelfImageMutation({});
+  const { update, isProcessing: isProcessingBase } = useUpdateBookshelf({
+    bookshelfName,
+    onSuccess: () => onCloseModal(),
+  });
 
-  const isProcessingBase = isUpdatePending || isImagePending;
   const isProcessing = useDebounce(isProcessingBase, 300);
 
-  const { toast } = useToast();
-
-  const onSubmit = async (props: z.infer<typeof updateBookshelfFormSchema>) => {
-    if (props.name && props.name.length > 0) {
-      try {
-        await updateBookshelf({
-          name: props.name,
-          bookshelfId,
-        });
-      } catch {
-        return;
-      }
-    }
-
-    if (file) {
-      try {
-        await uploadBookshelfImage({
-          bookshelfId,
-          file,
-          errorHandling: {
-            title: 'Coś poszło nie tak z wysyłaniem obrazka półki.',
-          },
-        });
-      } catch {
-        return;
-      }
-    }
-
-    onCloseModal();
-
-    toast({
-      title: `Półka: ${props.name || bookshelfName} została zaktualizowana :)`,
-      variant: 'success',
+  const onSubmit = async (props: z.infer<typeof updateBookshelfSchema>) => {
+    await update({
+      ...props,
+      bookshelfId,
+      image: file,
     });
   };
 

@@ -8,12 +8,24 @@ import { api } from '../../../../core/apiClient/apiClient';
 import { ApiPaths } from '../../../../core/apiClient/apiPaths';
 import { ShelfApiError } from '../../errors/shelfApiError';
 import { invalidateBookshelvesQueriesPredicate } from '../../queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
+import { z } from 'zod';
 
-type CreateBookshelfPayload = CreateBookshelfRequestBody;
+export const createBookshelfSchema = z.object({
+  name: z
+    .string({
+      required_error: 'Nazwa jest wymagana',
+    })
+    .min(1, 'Nazwa jest za krótka.')
+    .max(64, 'Nazwa jest zbyt długa.'),
+});
+
+export type CreateBookshelfSchema = z.infer<typeof createBookshelfSchema>;
 
 const mapper = new ErrorCodeMessageMapper({});
 
-const createBookshelf = async (payload: CreateBookshelfPayload) => {
+const createBookshelf = async (payload: CreateBookshelfSchema) => {
+  payload satisfies CreateBookshelfRequestBody;
+
   const response = await api.post<CreateBookshelfResponseBody>(ApiPaths.bookshelves.path, payload);
 
   api.validateResponse(response, ShelfApiError, mapper);
@@ -22,7 +34,7 @@ const createBookshelf = async (payload: CreateBookshelfPayload) => {
 };
 
 export const useCreateBookshelfMutation = (
-  options: UseMutationOptions<CreateBookshelfResponseBody, ShelfApiError, CreateBookshelfPayload>,
+  options: UseMutationOptions<CreateBookshelfResponseBody, ShelfApiError, CreateBookshelfSchema>,
 ) => {
   const queryClient = useQueryClient();
   return useErrorHandledMutation({

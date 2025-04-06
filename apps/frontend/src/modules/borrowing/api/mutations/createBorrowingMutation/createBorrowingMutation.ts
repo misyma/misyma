@@ -7,7 +7,7 @@ import {
 } from '@common/contracts';
 
 import { BookApiQueryKeys } from '../../../../book/api/user/queries/bookApiQueryKeys';
-import { invalidateBooksByBookshelfIdQuery } from '../../../../book/api/user/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
+import { invalidateUserBooksByBookshelfIdQuery } from '../../../../book/api/user/queries/findUserBooksByBookshelfId/findUserBooksByBookshelfIdQueryOptions';
 import { invalidateFindUserBooksByQuery } from '../../../../book/api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
 import { BookApiError } from '../../../../book/errors/bookApiError';
 import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
@@ -75,7 +75,7 @@ export const useCreateBorrowingMutation = (
         }),
         queryClient.invalidateQueries({
           predicate: ({ queryKey }) =>
-            invalidateBooksByBookshelfIdQuery(
+            invalidateUserBooksByBookshelfIdQuery(
               {
                 bookshelfId: args[1].borrowingBookshelfId,
               },
