@@ -21,9 +21,10 @@ const mapper = new ErrorCodeMessageMapper({
 });
 
 const createUserBook = async (payload: CreateUserBookRequestBody) => {
-  const response = await api.post<CreateUserBookResponseBody>(ApiPaths.userBooks.path, payload);
-
-  api.validateResponse(response, BookApiError, mapper);
+  const response = await api.post<CreateUserBookResponseBody>(ApiPaths.userBooks.path, payload, {
+    errorCtor: BookApiError,
+    mapper,
+  });
 
   return response.data;
 };

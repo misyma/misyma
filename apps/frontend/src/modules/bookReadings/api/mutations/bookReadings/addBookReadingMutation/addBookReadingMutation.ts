@@ -21,9 +21,10 @@ const mapper = new ErrorCodeMessageMapper({});
 const addBookReading = async (payload: AddBookReadingMutationPayload) => {
   const { userBookId, ...body } = payload;
 
-  const response = await api.post<CreateBookReadingResponseBody>(`/user-books/${userBookId}/readings`, body);
-
-  api.validateResponse(response, BookApiError, mapper);
+  const response = await api.post<CreateBookReadingResponseBody>(`/user-books/${userBookId}/readings`, body, {
+    errorCtor: BookApiError,
+    mapper,
+  });
 
   return response.data;
 };

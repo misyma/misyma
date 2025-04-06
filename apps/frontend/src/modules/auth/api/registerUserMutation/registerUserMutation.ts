@@ -11,13 +11,18 @@ const mapper = new ErrorCodeMessageMapper({
 });
 
 const registerUser = async (values: { email: string; password: string; name: string }) => {
-  const registerUserResponse = await api.post(ApiPaths.users.register.path, {
-    email: values.email,
-    password: values.password,
-    name: values.name,
-  });
-
-  api.validateResponse(registerUserResponse, UserApiError, mapper);
+  await api.post(
+    ApiPaths.users.register.path,
+    {
+      email: values.email,
+      password: values.password,
+      name: values.name,
+    },
+    {
+      errorCtor: UserApiError,
+      mapper,
+    },
+  );
 
   return true;
 };

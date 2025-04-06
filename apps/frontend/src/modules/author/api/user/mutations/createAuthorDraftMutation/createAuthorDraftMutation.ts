@@ -15,9 +15,10 @@ const mapper = new ErrorCodeMessageMapper({
 });
 
 const createAuthor = async (payload: CreateAuthorRequestBody) => {
-  const response = await api.post<CreateAuthorResponseBody>(ApiPaths.authors.path, payload);
-
-  api.validateResponse(response, AuthorApiError, mapper);
+  const response = await api.post<CreateAuthorResponseBody>(ApiPaths.authors.path, payload, {
+    errorCtor: AuthorApiError,
+    mapper,
+  });
 
   return response.data;
 };

@@ -29,9 +29,10 @@ const mapper = new ErrorCodeMessageMapper({
 const createBorrowing = async (payload: UseCreateBorrowingMutationPayload) => {
   const { userBookId, ...rest } = payload;
 
-  const response = await api.post<CreateBorrowingResponseBody>(`/user-books/${userBookId}/borrowings`, rest);
-
-  api.validateResponse(response, BookApiError, mapper);
+  const response = await api.post<CreateBorrowingResponseBody>(`/user-books/${userBookId}/borrowings`, rest, {
+    errorCtor: BookApiError,
+    mapper,
+  });
 
   return response.data;
 };

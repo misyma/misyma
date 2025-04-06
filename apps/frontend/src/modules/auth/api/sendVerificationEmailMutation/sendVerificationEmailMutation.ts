@@ -14,11 +14,16 @@ const mapper = new ErrorCodeMessageMapper({});
 const sendVerificationEmail = async (values: SendVerificationEmailPayload) => {
   const { email } = values;
 
-  const sendVerificationEmailResponse = await api.post(ApiPaths.users.sendVerificationEmail.path, {
-    email,
-  });
-
-  api.validateResponse(sendVerificationEmailResponse, UserApiError, mapper);
+  await api.post(
+    ApiPaths.users.sendVerificationEmail.path,
+    {
+      email,
+    },
+    {
+      errorCtor: UserApiError,
+      mapper,
+    },
+  );
 };
 
 export const useSendVerificationEmailMutation = (

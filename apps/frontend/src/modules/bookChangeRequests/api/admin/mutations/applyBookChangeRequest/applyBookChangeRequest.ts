@@ -19,9 +19,10 @@ const mapper = new ErrorCodeMessageMapper({
 });
 
 const applyBookChangeRequest = async (payload: ApplyBookChangeRequestPathParams) => {
-  const response = await api.post(`/admin/book-change-requests/${payload.bookChangeRequestId}/apply`, payload);
-
-  api.validateResponse(response, BookApiError, mapper);
+  await api.post(`/admin/book-change-requests/${payload.bookChangeRequestId}/apply`, payload, {
+    errorCtor: BookApiError,
+    mapper,
+  });
 };
 
 export const useApplyBookChangeRequestMutation = (

@@ -21,14 +21,17 @@ export const createBookshelfSchema = z.object({
 
 export type CreateBookshelfSchema = z.infer<typeof createBookshelfSchema>;
 
-const mapper = new ErrorCodeMessageMapper({});
+const mapper = new ErrorCodeMessageMapper({
+  409: 'Posiadasz już półkę o tej nazwie.',
+});
 
 const createBookshelf = async (payload: CreateBookshelfSchema) => {
   payload satisfies CreateBookshelfRequestBody;
 
-  const response = await api.post<CreateBookshelfResponseBody>(ApiPaths.bookshelves.path, payload);
-
-  api.validateResponse(response, ShelfApiError, mapper);
+  const response = await api.post<CreateBookshelfResponseBody>(ApiPaths.bookshelves.path, payload, {
+    errorCtor: ShelfApiError,
+    mapper,
+  });
 
   return response.data;
 };
