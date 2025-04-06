@@ -11,8 +11,6 @@ import { invalidateBookshelvesQueriesPredicate } from '../../queries/findUserBoo
 import { z } from 'zod';
 
 export const createBookshelfSchema = z.object({
-  // todo: Add some Zod type for Files
-  image: z.object({}).or(z.undefined()),
   name: z
     .string({
       required_error: 'Nazwa jest wymagana',

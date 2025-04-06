@@ -2,19 +2,19 @@ import { beforeEach, expect, it, vi } from 'vitest';
 import { useToastMock } from '../../common/components/toast/__mocks__/use-toast.mocks';
 import { createMutationMock } from '../../../tests/mocks/mutationMock';
 import { renderHook } from '@testing-library/react';
-import { useCreateBookshelf } from './useCreateBookshelf';
+import { useUpdateBookshelf } from './useUpdateBookshelf';
 
 vi.mock('../../common/components/toast/use-toast', () => ({
   useToast: vi.fn().mockImplementation(() => useToastMock),
 }));
 
-const createBookshelfMock = createMutationMock();
+const updateBookshelfMock = createMutationMock();
 
-vi.mock(import('../api/mutations/createBookshelfMutation/createBookshelfMutation'), async (original) => {
+vi.mock(import('../api/mutations/updateBookshelfMutation/updateBookshelfMutation'), async (original) => {
   const actual = await original();
   return {
-    createBookshelfSchema: actual.createBookshelfSchema,
-    useCreateBookshelfMutation: vi.fn().mockImplementation(() => createBookshelfMock),
+    updateBookshelfSchema: actual.updateBookshelfSchema,
+    useUpdateBookshelfMutation: vi.fn().mockImplementation(() => updateBookshelfMock),
   };
 });
 
@@ -29,12 +29,13 @@ const onSuccessStub = vi.fn();
 const renderTestedHook = () => {
   const {
     result: {
-      current: { create, isProcessing },
+      current: { update, isProcessing },
     },
     rerender,
     unmount,
   } = renderHook(() =>
-    useCreateBookshelf({
+    useUpdateBookshelf({
+      bookshelfName: 'XD',
       onSuccess: onSuccessStub,
     }),
   );
@@ -42,68 +43,61 @@ const renderTestedHook = () => {
   return {
     rerender,
     unmount,
-    create,
+    update,
     isProcessing,
   };
 };
 
 beforeEach(() => vi.clearAllMocks());
 
-it('Stops processing - on bookshelf creation error', async () => {
-  const { create } = renderTestedHook();
+it('Stops processing - on bookshelf name update error', async () => {
+  const { update } = renderTestedHook();
 
-  createBookshelfMock.mutateAsync.mockRejectedValueOnce(new Error('Oh noes'));
+  updateBookshelfMock.mutateAsync.mockRejectedValueOnce(new Error('Oh noes'));
 
-  await create({
+  await update({
+    bookshelfId: 'yolo',
     name: 'Mein name',
-    image: new File([], 'No'),
   });
 
   expect(useToastMock.toast).not.toHaveBeenCalled();
 });
 
 it('Stops processing - on image upload error', async () => {
-  const { create } = renderTestedHook();
+  const { update } = renderTestedHook();
 
   uploadBookshelfImageMock.mutateAsync.mockRejectedValueOnce(new Error('Oh noes'));
 
-  await create({
+  await update({
     name: 'Mein name',
-    image: new File([], 'No'),
+    bookshelfId: 'yolo',
+    image: new File([], 'Image'),
   });
 
   expect(useToastMock.toast).not.toHaveBeenCalled();
 });
 
 it('Invokes onSuccess', async () => {
-  const { create } = renderTestedHook();
+  const { update } = renderTestedHook();
 
-  createBookshelfMock.mutateAsync.mockResolvedValueOnce({
-    bookshelfId: 'MeinId',
-  });
-
-  await create({
+  await update({
     name: 'Mein name',
-    image: new File([], 'No'),
+    bookshelfId: 'yolo',
   });
 
   expect(onSuccessStub).toHaveBeenCalled();
 });
 
 it('Adds success toast', async () => {
-  const { create } = renderTestedHook();
+  const { update } = renderTestedHook();
 
-  createBookshelfMock.mutateAsync.mockResolvedValueOnce({
-    bookshelfId: 'MeinId',
-  });
-
-  await create({
-    name: 'Mein name',
-    image: new File([], 'No'),
+  await update({
+    name: 'Mein AAA',
+    bookshelfId: 'yolo',
   });
 
   expect(useToastMock.toast).toHaveBeenCalledWith({
-    title: 'Półka: Mein name została stworzona :)',
+    title: 'Półka: Mein AAA została zaktualizowana :)',
     variant: 'success',
   });
 });

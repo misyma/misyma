@@ -1,9 +1,17 @@
+import { z } from 'zod';
 import { useToast } from '../../common/components/toast/use-toast';
 import {
-  CreateBookshelfSchema,
+  createBookshelfSchema,
   useCreateBookshelfMutation,
 } from '../api/mutations/createBookshelfMutation/createBookshelfMutation';
 import { useUploadBookshelfImageMutation } from '../api/mutations/uploadBookshelfImageMutation/uploadBookshelfImageMutation';
+
+export const createBookshelfWithImageSchema = createBookshelfSchema.extend({
+  // todo: Add some Zod type for Files
+  image: z.object({}).or(z.undefined()),
+});
+
+export type CreateBookshelfWithImageSchema = z.infer<typeof createBookshelfWithImageSchema>;
 
 interface CreateBookshelfProps {
   onSuccess: () => void;
@@ -17,7 +25,7 @@ export const useCreateBookshelf = ({ onSuccess }: CreateBookshelfProps) => {
 
   const isProcessing = isCreationPending || isImagePending;
 
-  const create = async (props: CreateBookshelfSchema) => {
+  const create = async (props: CreateBookshelfWithImageSchema) => {
     let bookshelfId = '';
     try {
       const res = await createBookshelf({

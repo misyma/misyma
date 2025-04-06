@@ -24,11 +24,7 @@ import {
 import useDebounce from '../../../../common/hooks/useDebounce';
 import { useFileUpload } from '../../../../common/hooks/useFileUpload';
 import { cn } from '../../../../common/lib/utils';
-import {
-  CreateBookshelfSchema,
-  createBookshelfSchema,
-} from '../../../api/mutations/createBookshelfMutation/createBookshelfMutation';
-import { useCreateBookshelf } from '../../../hooks/useCreateBookshelf';
+import { CreateBookshelfWithImageSchema, createBookshelfWithImageSchema, useCreateBookshelf } from '../../../hooks/useCreateBookshelf';
 
 export const CreateBookshelfModal: FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -39,7 +35,7 @@ export const CreateBookshelfModal: FC = () => {
   });
 
   const form = useForm({
-    resolver: zodResolver(createBookshelfSchema),
+    resolver: zodResolver(createBookshelfWithImageSchema),
     defaultValues: {
       image: file,
       name: '',
@@ -57,7 +53,7 @@ export const CreateBookshelfModal: FC = () => {
 
   const isProcessing = useDebounce(isProcessingBase, 300);
 
-  const onSubmit = async (props: CreateBookshelfSchema) => {
+  const onSubmit = async (props: CreateBookshelfWithImageSchema) => {
     await create({
       ...props,
       image: file,
