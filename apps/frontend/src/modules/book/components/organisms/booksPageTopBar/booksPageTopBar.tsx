@@ -72,7 +72,7 @@ const CreateBookButton = () => {
         </TooltipTrigger>
         <TooltipContent>
           {!cannotCreateBook && <p>Stwórz książkę</p>}
-          {cannotCreateBook && <p>Stwórz półkę aby stworzyć książkę</p>}
+          {cannotCreateBook && <p>Stwórz półkę, aby dodać książkę</p>}
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
