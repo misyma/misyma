@@ -8,7 +8,7 @@ import {
 } from '../../../../../common/types/http/httpResponse.js';
 import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
 import { httpStatusCodes } from '../../../../../common/types/http/httpStatusCode.js';
-import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
+import { securityModes } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
 import { type CreateQuoteCommandHandler } from '../../../application/commandHandlers/createQuoteCommandHandler/createQuoteCommandHandler.js';
 import { type DeleteQuoteCommandHandler } from '../../../application/commandHandlers/deleteQuoteCommandHandler/deleteQuoteCommandHandler.js';
@@ -73,7 +73,7 @@ export class QuoteHttpController implements HttpController {
             },
           },
         },
-        securityMode: SecurityMode.bearerToken,
+        securityMode: securityModes.bearerToken,
       }),
       new HttpRoute({
         method: httpMethodNames.post,
@@ -90,7 +90,7 @@ export class QuoteHttpController implements HttpController {
             },
           },
         },
-        securityMode: SecurityMode.bearerToken,
+        securityMode: securityModes.bearerToken,
       }),
       new HttpRoute({
         method: httpMethodNames.patch,

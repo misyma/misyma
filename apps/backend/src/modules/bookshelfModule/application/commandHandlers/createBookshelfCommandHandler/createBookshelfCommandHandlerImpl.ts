@@ -1,4 +1,4 @@
-import { BookshelfType } from '@common/contracts';
+import { bookshelfTypes } from '@common/contracts';
 
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
@@ -59,7 +59,7 @@ export class CreateBookshelfCommandHandlerImpl implements CreateBookshelfCommand
       bookshelf: {
         name,
         userId,
-        type: type ?? BookshelfType.standard,
+        type: type ?? bookshelfTypes.standard,
         createdAt: new Date(),
         imageUrl,
       },

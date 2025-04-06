@@ -5,13 +5,6 @@ import { type SortOrder } from '../sortOrder.js';
 import { type ReadingStatus } from './readingStatus.js';
 import { type UserBook } from './userBook.js';
 
-export enum FindUserBooksSortField {
-  releaseYear = 'releaseYear',
-  createdAt = 'createdAt',
-  rating = 'rating',
-  readingDate = 'readingDate',
-}
-
 export interface FindUserBooksQueryParams {
   readonly bookshelfId?: string;
   readonly collectionId?: string;
@@ -26,7 +19,7 @@ export interface FindUserBooksQueryParams {
   readonly language?: Language;
   readonly page?: number;
   readonly pageSize?: number;
-  readonly sortField?: FindUserBooksSortField;
+  readonly sortField?: 'releaseYear' | 'createdAt' | 'rating' | 'readingDate';
   readonly sortOrder?: SortOrder;
 }
 

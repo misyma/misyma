@@ -1,4 +1,4 @@
-import { type FindAuthorsSortField, type SortOrder } from '@common/contracts';
+import { type SortOrder } from '@common/contracts';
 
 import { type QueryHandler } from '../../../../../common/types/queryHandler.js';
 import { type Author } from '../../../domain/entities/author/author.js';
@@ -11,7 +11,7 @@ export interface ExecutePayload {
   readonly bookshelfId?: string | undefined;
   readonly page: number;
   readonly pageSize: number;
-  readonly sortField?: FindAuthorsSortField | undefined;
+  readonly sortField?: 'createdAt' | 'name' | undefined;
   readonly sortOrder?: SortOrder | undefined;
 }
 

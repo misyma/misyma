@@ -1,4 +1,4 @@
-import { type NationalLibraryResponseBody } from '../../common/nationalLibraryBook.js';
+import { type NationalLibraryResponseBody } from './nationalLibraryBook.js';
 import { type NationalLibraryClient } from '../../infrastructure/clients/nationalLibraryClient.js';
 import { type Author } from '../../infrastructure/entities/author/author.js';
 import { type BookDraft } from '../../infrastructure/entities/book/book.js';

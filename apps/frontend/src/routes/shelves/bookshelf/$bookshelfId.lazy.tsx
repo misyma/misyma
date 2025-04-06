@@ -2,7 +2,7 @@ import { Navigate, createFileRoute } from '@tanstack/react-router';
 import { type FC, useEffect } from 'react';
 import { z } from 'zod';
 
-import { FindUserBooksSortField, SortOrder } from '@common/contracts';
+import { FindUserBooksQueryParams, sortOrders } from '@common/contracts';
 
 import { VirtualizedBooksList } from '../../../modules/book/components/organisms/virtualizedBooksList/virtualizedBooksList';
 import { useFindBookshelfByIdQuery } from '../../../modules/bookshelf/api/queries/findBookshelfByIdQuery/findBookshelfByIdQuery';
@@ -64,17 +64,17 @@ const BookshelfBooksVirtualizedBooksList = ({
   bookshelfId: string;
   borrowedBooks?: boolean;
 }) => {
-  const sortFieldMap = {
-    createdAt: FindUserBooksSortField.createdAt,
-    releaseYear: FindUserBooksSortField.releaseYear,
-    rating: FindUserBooksSortField.rating,
-    readingDate: FindUserBooksSortField.readingDate,
+  const sortFieldMap: Record<string, FindUserBooksQueryParams['sortField']> = {
+    createdAt: 'createdAt',
+    releaseYear: 'releaseYear',
+    rating: 'rating',
+    readingDate: 'readingDate',
     '': undefined,
   };
 
   const sortOrderMap = {
-    asc: SortOrder.asc,
-    desc: SortOrder.desc,
+    asc: sortOrders.asc,
+    desc: sortOrders.desc,
     '': undefined,
   };
 

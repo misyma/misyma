@@ -6,7 +6,7 @@ import {
   useQuery,
 } from '@tanstack/react-query';
 
-import { type FindAuthorsQueryParams, SortOrder, type FindAuthorsResponseBody } from '@common/contracts';
+import { type FindAuthorsQueryParams, sortOrders, type FindAuthorsResponseBody } from '@common/contracts';
 
 import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
 import { type ApiError } from '../../../../../common/errors/apiError';
@@ -29,7 +29,7 @@ export const findAuthors = async (values: FindAuthorsQueryParams) => {
   const { name, page, pageSize, ids } = values;
 
   const query: Record<string, string> = {
-    sortDate: SortOrder.desc,
+    sortDate: sortOrders.desc,
   };
   if (name) {
     query.name = name;

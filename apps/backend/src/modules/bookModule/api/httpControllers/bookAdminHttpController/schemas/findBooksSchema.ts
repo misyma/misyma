@@ -1,4 +1,9 @@
-import * as contracts from '@common/contracts';
+import {
+  type FindAdminBooksQueryParams,
+  type FindAdminBooksResponseBody,
+  languages,
+  sortOrders,
+} from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
@@ -8,19 +13,19 @@ export const findAdminBooksQueryParamsDtoSchema = Type.Object({
   isbn: Type.Optional(bookIsbnSchema),
   title: Type.Optional(bookTitleSchema),
   authorIds: Type.Optional(Type.Array(Type.String({ format: 'uuid' }))),
-  language: Type.Optional(Type.Enum(contracts.Language)),
+  language: Type.Optional(Type.Union(Object.values(languages).map((language) => Type.Literal(language)))),
   isApproved: Type.Optional(Type.Boolean()),
   releaseYearBefore: Type.Optional(bookReleaseYearSchema),
   releaseYearAfter: Type.Optional(bookReleaseYearSchema),
   page: Type.Optional(Type.Integer({ minimum: 1 })),
   pageSize: Type.Optional(Type.Integer({ minimum: 1 })),
-  sortField: Type.Optional(Type.Enum(contracts.FindAdminBooksSortField)),
-  sortOrder: Type.Optional(Type.Enum(contracts.SortOrder)),
+  sortField: Type.Optional(Type.Union([Type.Literal('releaseYear'), Type.Literal('createdAt'), Type.Literal('title')])),
+  sortOrder: Type.Optional(Type.Union(Object.values(sortOrders).map((sortOrder) => Type.Literal(sortOrder)))),
 });
 
 export type FindAdminBooksQueryParamsDto = TypeExtends<
   Static<typeof findAdminBooksQueryParamsDtoSchema>,
-  contracts.FindAdminBooksQueryParams
+  FindAdminBooksQueryParams
 >;
 
 export const findAdminBooksResponseBodyDtoSchema = Type.Object({
@@ -33,6 +38,6 @@ export const findAdminBooksResponseBodyDtoSchema = Type.Object({
 });
 
 export type FindAdminBooksResponseBodyDto = TypeExtends<
-  contracts.FindAdminBooksResponseBody,
+  FindAdminBooksResponseBody,
   Static<typeof findAdminBooksResponseBodyDtoSchema>
 >;

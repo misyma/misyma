@@ -1,4 +1,8 @@
-import type * as contracts from '@common/contracts';
+import {
+  type UpdateCollectionPathParams,
+  type UpdateCollectionRequestBody,
+  type UpdateCollectionResponseBody,
+} from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
@@ -9,7 +13,7 @@ export const updateCollectionPathParamsDtoSchema = Type.Object({
 });
 
 export type UpdateCollectionPathParamsDto = TypeExtends<
-  contracts.UpdateCollectionPathParams,
+  UpdateCollectionPathParams,
   Static<typeof updateCollectionPathParamsDtoSchema>
 >;
 
@@ -18,13 +22,13 @@ export const updateCollectionBodyDtoSchema = Type.Object({
 });
 
 export type UpdateCollectionBodyDto = TypeExtends<
-  contracts.UpdateCollectionRequestBody,
+  UpdateCollectionRequestBody,
   Static<typeof updateCollectionBodyDtoSchema>
 >;
 
 export const updateCollectionResponseBodyDtoSchema = collectionDtoSchema;
 
 export type UpdateCollectionResponseBodyDto = TypeExtends<
-  contracts.UpdateCollectionResponseBody,
+  UpdateCollectionResponseBody,
   Static<typeof updateCollectionResponseBodyDtoSchema>
 >;

@@ -1,4 +1,4 @@
-import type * as contracts from '@common/contracts';
+import { type FindUsersQueryParams, type FindUsersResponseBody } from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
@@ -9,10 +9,7 @@ export const findUsersQueryParamsDtoSchema = Type.Object({
   pageSize: Type.Optional(Type.Integer({ minimum: 1 })),
 });
 
-export type FindUsersQueryParamsDto = TypeExtends<
-  Static<typeof findUsersQueryParamsDtoSchema>,
-  contracts.FindUsersQueryParams
->;
+export type FindUsersQueryParamsDto = TypeExtends<Static<typeof findUsersQueryParamsDtoSchema>, FindUsersQueryParams>;
 
 export const findUsersResponseBodyDtoSchema = Type.Object({
   data: Type.Array(userDtoSchema),
@@ -25,5 +22,5 @@ export const findUsersResponseBodyDtoSchema = Type.Object({
 
 export type FindUsersResponseBodyDto = TypeExtends<
   Static<typeof findUsersResponseBodyDtoSchema>,
-  contracts.FindUsersResponseBody
+  FindUsersResponseBody
 >;

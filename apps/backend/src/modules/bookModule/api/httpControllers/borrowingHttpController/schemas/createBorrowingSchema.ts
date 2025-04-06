@@ -1,4 +1,8 @@
-import type * as contracts from '@common/contracts';
+import {
+  type CreateBorrowingPathParams,
+  type CreateBorrowingRequestBody,
+  type CreateBorrowingResponseBody,
+} from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
@@ -11,7 +15,7 @@ export const createBorrowingPathParamsDtoSchema = Type.Object({
 
 export type CreateBorrowingPathParamsDto = TypeExtends<
   Static<typeof createBorrowingPathParamsDtoSchema>,
-  contracts.CreateBorrowingPathParams
+  CreateBorrowingPathParams
 >;
 
 export const createBorrowingBodyDtoSchema = Type.Object({
@@ -22,12 +26,12 @@ export const createBorrowingBodyDtoSchema = Type.Object({
 
 export type CreateBorrowingBodyDto = TypeExtends<
   Static<typeof createBorrowingBodyDtoSchema>,
-  contracts.CreateBorrowingRequestBody
+  CreateBorrowingRequestBody
 >;
 
 export const createBorrowingResponseBodyDtoSchema = borrowingDtoSchema;
 
 export type CreateBorrowingResponseBodyDto = TypeExtends<
   Static<typeof createBorrowingResponseBodyDtoSchema>,
-  contracts.CreateBorrowingResponseBody
+  CreateBorrowingResponseBody
 >;

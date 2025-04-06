@@ -1,4 +1,4 @@
-import { BookshelfType } from '@common/contracts';
+import { bookshelfTypes } from '@common/contracts';
 
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
@@ -77,7 +77,7 @@ export class UpdateUserBookCommandHandlerImpl implements UpdateUserBookCommandHa
 
       // TODO: add transaction
 
-      if (currentBookshelf.getType() === BookshelfType.borrowing) {
+      if (currentBookshelf.getType() === bookshelfTypes.borrowing) {
         const openBorrowings = await this.borrowingRepository.findBorrowings({
           userBookId,
           page: 1,

@@ -1,4 +1,4 @@
-import { BookshelfType, UserRole } from '@common/contracts';
+import { bookshelfTypes, UserRole } from '@common/contracts';
 
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
@@ -71,13 +71,13 @@ export class RegisterUserCommandHandlerImpl implements RegisterUserCommandHandle
     const { bookshelf: archiveBookshelf } = await this.createBookshelfCommandHandler.execute({
       userId: user.getId(),
       name: 'Archiwum',
-      type: BookshelfType.archive,
+      type: bookshelfTypes.archive,
     });
 
     const { bookshelf: borrowingBookshelf } = await this.createBookshelfCommandHandler.execute({
       userId: user.getId(),
       name: 'Wypożyczalnia',
-      type: BookshelfType.borrowing,
+      type: bookshelfTypes.borrowing,
     });
 
     this.loggerService.debug({

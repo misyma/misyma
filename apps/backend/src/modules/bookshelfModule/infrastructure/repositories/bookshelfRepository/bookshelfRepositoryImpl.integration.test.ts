@@ -1,4 +1,4 @@
-import { BookshelfType } from '@common/contracts';
+import { bookshelfTypes } from '@common/contracts';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { Generator } from '../../../../../../tests/generator.js';
@@ -200,7 +200,7 @@ describe('BookshelfRepositoryImpl', () => {
 
       await createUserBook(bookshelf1.id);
 
-      await createUserBook(bookshelf1.id)
+      await createUserBook(bookshelf1.id);
 
       await createUserBook(bookshelf2.id);
 
@@ -264,27 +264,27 @@ describe('BookshelfRepositoryImpl', () => {
       const bookshelf1 = await bookshelfTestUtils.createAndPersist({
         input: {
           userId: testUserId,
-          type: BookshelfType.borrowing,
+          type: bookshelfTypes.borrowing,
         },
       });
 
       await bookshelfTestUtils.createAndPersist({
         input: {
           userId: testUserId,
-          type: BookshelfType.standard,
+          type: bookshelfTypes.standard,
         },
       });
 
       await bookshelfTestUtils.createAndPersist({
         input: {
           userId: testUserId,
-          type: BookshelfType.archive,
+          type: bookshelfTypes.archive,
         },
       });
 
       const result = await repository.findBookshelves({
         userId: testUserId,
-        type: BookshelfType.borrowing,
+        type: bookshelfTypes.borrowing,
         page: 1,
         pageSize: 10,
       });

@@ -1,4 +1,4 @@
-import type * as contracts from '@common/contracts';
+import { type FindGenresQueryParams, type FindGenresResponseBody } from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
@@ -11,7 +11,7 @@ export const findGenresQueryParamsDtoSchema = Type.Object({
 
 export type FindGenresQueryParamsDto = TypeExtends<
   Static<typeof findGenresQueryParamsDtoSchema>,
-  contracts.FindGenresQueryParams
+  FindGenresQueryParams
 >;
 
 export const findGenresResponseBodyDtoSchema = Type.Object({
@@ -25,5 +25,5 @@ export const findGenresResponseBodyDtoSchema = Type.Object({
 
 export type FindGenresResponseBodyDto = TypeExtends<
   Static<typeof findGenresResponseBodyDtoSchema>,
-  contracts.FindGenresResponseBody
+  FindGenresResponseBody
 >;

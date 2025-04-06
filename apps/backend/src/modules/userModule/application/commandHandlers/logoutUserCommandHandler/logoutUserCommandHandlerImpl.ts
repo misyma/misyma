@@ -1,5 +1,5 @@
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
-import { TokenType } from '../../../../../common/types/tokenType.js';
+import { tokenTypes } from '../../../../../common/types/tokenType.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { type BlacklistTokenRepository } from '../../../domain/repositories/blacklistTokenRepository/blacklistTokenRepository.js';
@@ -71,13 +71,13 @@ export class LogoutUserCommandHandlerImpl implements LogoutUserCommandHandler {
       return;
     }
 
-    if (refreshTokenPayload['type'] !== TokenType.refreshToken) {
+    if (refreshTokenPayload['type'] !== tokenTypes.refreshToken) {
       throw new OperationNotValidError({
         reason: 'Invalid refresh token.',
       });
     }
 
-    if (accessTokenPayload['type'] !== TokenType.accessToken) {
+    if (accessTokenPayload['type'] !== tokenTypes.accessToken) {
       throw new OperationNotValidError({
         reason: 'Invalid access token.',
       });

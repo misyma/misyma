@@ -1,4 +1,4 @@
-import { BookFormat, Language } from '@common/contracts';
+import { type BookFormat, bookFormats, type Language, languages } from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
 export interface Book {
@@ -61,9 +61,9 @@ export const bookDraftSchema = Type.Object({
   isbn: Type.Optional(bookIsbnSchema),
   publisher: Type.Optional(bookPublisherSchema),
   releaseYear: bookReleaseYearSchema,
-  language: Type.Enum(Language),
+  language: Type.Union(Object.values(languages).map((language) => Type.Literal(language))),
   translator: Type.Optional(bookTranslatorSchema),
-  format: Type.Optional(Type.Enum(BookFormat)),
+  format: Type.Union(Object.values(bookFormats).map((bookFormat) => Type.Literal(bookFormat))),
   pages: bookPagesSchema,
   isApproved: Type.Boolean(),
   imageUrl: Type.Optional(bookImageUrlSchema),

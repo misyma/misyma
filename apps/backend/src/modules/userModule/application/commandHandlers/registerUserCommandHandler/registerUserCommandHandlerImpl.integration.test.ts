@@ -1,4 +1,4 @@
-import { BookshelfType, UserRole } from '@common/contracts';
+import { bookshelfTypes, UserRole } from '@common/contracts';
 import { beforeEach, afterEach, expect, it, describe } from 'vitest';
 
 import { testSymbols } from '../../../../../../tests/symbols.js';
@@ -72,11 +72,11 @@ describe('RegisterUserCommandHandler', () => {
 
     expect(bookshelves).toHaveLength(2);
 
-    const archiveBookshelf = bookshelves.find((bookshelf) => bookshelf.type === BookshelfType.archive);
+    const archiveBookshelf = bookshelves.find((bookshelf) => bookshelf.type === bookshelfTypes.archive);
 
     expect(archiveBookshelf?.name).toEqual('Archiwum');
 
-    const borrowingBookshelf = bookshelves.find((bookshelf) => bookshelf.type === BookshelfType.borrowing);
+    const borrowingBookshelf = bookshelves.find((bookshelf) => bookshelf.type === bookshelfTypes.borrowing);
 
     expect(borrowingBookshelf?.name).toEqual('Wypożyczalnia');
   });

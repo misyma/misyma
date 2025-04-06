@@ -1,4 +1,4 @@
-import * as contracts from '@common/contracts';
+import { type FindBooksQueryParams, type FindBooksResponseBody, sortOrders } from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
@@ -9,14 +9,11 @@ export const findBooksQueryParamsDtoSchema = Type.Object({
   title: Type.Optional(bookTitleSchema),
   page: Type.Optional(Type.Integer({ minimum: 1 })),
   pageSize: Type.Optional(Type.Integer({ minimum: 1 })),
-  sortField: Type.Optional(Type.Enum(contracts.FindBooksSortField)),
-  sortOrder: Type.Optional(Type.Enum(contracts.SortOrder)),
+  sortField: Type.Optional(Type.Union([Type.Literal('releaseYear'), Type.Literal('createdAt')])),
+  sortOrder: Type.Optional(Type.Union(Object.values(sortOrders).map((sortOrder) => Type.Literal(sortOrder)))),
 });
 
-export type FindBooksQueryParamsDto = TypeExtends<
-  Static<typeof findBooksQueryParamsDtoSchema>,
-  contracts.FindBooksQueryParams
->;
+export type FindBooksQueryParamsDto = TypeExtends<Static<typeof findBooksQueryParamsDtoSchema>, FindBooksQueryParams>;
 
 export const findBooksResponseBodyDtoSchema = Type.Object({
   data: Type.Array(bookDtoSchema),
@@ -28,6 +25,6 @@ export const findBooksResponseBodyDtoSchema = Type.Object({
 });
 
 export type FindBooksResponseBodyDto = TypeExtends<
-  contracts.FindBooksResponseBody,
+  FindBooksResponseBody,
   Static<typeof findBooksResponseBodyDtoSchema>
 >;

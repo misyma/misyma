@@ -1,4 +1,4 @@
-import type * as contracts from '@common/contracts';
+import { type CreateQuoteRequestBody, type CreateQuoteResponseBody } from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
@@ -13,11 +13,11 @@ export const createQuoteBodyDtoSchema = Type.Object({
   page: Type.Optional(quotePageSchema),
 });
 
-export type CreateQuoteBodyDto = TypeExtends<Static<typeof createQuoteBodyDtoSchema>, contracts.CreateQuoteRequestBody>;
+export type CreateQuoteBodyDto = TypeExtends<Static<typeof createQuoteBodyDtoSchema>, CreateQuoteRequestBody>;
 
 export const createQuoteResponseBodyDtoSchema = quoteDtoSchema;
 
 export type CreateQuoteResponseBodyDto = TypeExtends<
   Static<typeof createQuoteResponseBodyDtoSchema>,
-  contracts.CreateQuoteResponseBody
+  CreateQuoteResponseBody
 >;

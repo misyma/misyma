@@ -1,6 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query';
 
-import { SortOrder, type ReadingStatus } from '@common/contracts';
+import { sortOrders, type ReadingStatus } from '@common/contracts';
 
 import { useUpdateBorrowingMutation } from '../../../borrowing/api/mutations/updateBorrowingMutation/updateBorrowingMutation';
 import { FindBookBorrowingsQueryOptions } from '../../../borrowing/api/queries/findBookBorrowings/findBookBorrowingsQueryOptions';
@@ -43,7 +43,7 @@ export const useUpdateUserBook = (id: string) => {
       userBookId: id,
       page: 1,
       pageSize: 1,
-      sortDate: SortOrder.desc,
+      sortDate: sortOrders.desc,
       isOpen: true,
     }),
   );

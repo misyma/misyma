@@ -1,4 +1,4 @@
-import { type Language, type BookFormat } from '@common/contracts';
+import { type Language } from '@common/contracts';
 
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
@@ -11,7 +11,7 @@ import {
 } from '../../../../../common/types/http/httpResponse.js';
 import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
 import { httpStatusCodes } from '../../../../../common/types/http/httpStatusCode.js';
-import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
+import { securityModes } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
 import { type CreateUserBookCommandHandler } from '../../../application/commandHandlers/createUserBookCommandHandler/createUserBookCommandHandler.js';
 import { type DeleteUserBookCommandHandler } from '../../../application/commandHandlers/deleteUserBookCommandHandler/deleteUserBookCommandHandler.js';
@@ -92,7 +92,7 @@ export class UserBookHttpController implements HttpController {
             },
           },
         },
-        securityMode: SecurityMode.bearerToken,
+        securityMode: securityModes.bearerToken,
         description: "Create user's book",
       }),
       new HttpRoute({
@@ -110,7 +110,7 @@ export class UserBookHttpController implements HttpController {
             },
           },
         },
-        securityMode: SecurityMode.bearerToken,
+        securityMode: securityModes.bearerToken,
         description: "Find user's book by id",
       }),
       new HttpRoute({
@@ -128,7 +128,7 @@ export class UserBookHttpController implements HttpController {
             },
           },
         },
-        securityMode: SecurityMode.bearerToken,
+        securityMode: securityModes.bearerToken,
       }),
       new HttpRoute({
         method: httpMethodNames.delete,
@@ -145,7 +145,7 @@ export class UserBookHttpController implements HttpController {
             },
           },
         },
-        securityMode: SecurityMode.bearerToken,
+        securityMode: securityModes.bearerToken,
         description: "Delete user's book",
       }),
       new HttpRoute({
@@ -365,18 +365,8 @@ export class UserBookHttpController implements HttpController {
   }
 
   private mapUserBookToDto(userBook: UserBook): UserBookDto {
-    const {
-      status,
-      isFavorite,
-      bookshelfId,
-      imageUrl,
-      bookId,
-      book,
-      readings,
-      collections,
-      createdAt,
-      latestRating,
-    } = userBook.getState();
+    const { status, isFavorite, bookshelfId, imageUrl, bookId, book, readings, collections, createdAt, latestRating } =
+      userBook.getState();
 
     const userBookDto: UserBookDto = {
       id: userBook.id,
@@ -388,10 +378,9 @@ export class UserBookHttpController implements HttpController {
       book: {
         title: book?.title as string,
         genreId: book?.genreId as string,
-        genreName: book?.genre.getName() ?? "",
+        genreName: book?.genre.getName() ?? '',
         language: book?.language as Language,
         isApproved: book?.isApproved as boolean,
-        format: book?.format as BookFormat,
         createdAt: book?.createdAt.toISOString() as string,
         releaseYear: book?.releaseYear as number,
         authors:
@@ -454,6 +443,10 @@ export class UserBookHttpController implements HttpController {
 
     if (book?.imageUrl) {
       userBookDto.book.imageUrl = book.imageUrl;
+    }
+
+    if (book?.format) {
+      userBookDto.book.format = book.format;
     }
 
     if (latestRating) {

@@ -1,7 +1,7 @@
 import { createFileRoute, useSearch } from '@tanstack/react-router';
 import { type FC } from 'react';
 
-import { type FindAuthorsSortField, type SortOrder } from '@common/contracts';
+import { FindAdminAuthorsQueryParams, type SortOrder } from '@common/contracts';
 
 import { AdminTabs } from '../../../../modules/admin/components/adminTabs';
 import { AuthorsTable } from '../../../../modules/admin/components/authorsTable';
@@ -16,7 +16,7 @@ export const AuthorsAdminPage: FC = () => {
     page: number;
     pageSize: number;
     name: string;
-    sortField?: FindAuthorsSortField;
+    sortField?: FindAdminAuthorsQueryParams['sortField'];
     sortOrder?: SortOrder;
     toApprove?: boolean;
   };

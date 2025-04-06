@@ -6,8 +6,5 @@
     "username": null,
     "password": null,
     "name": "postgres"
-  },
-  "eisbn": {
-    "baseUrl": "https://e-isbn.pl"
   }
 }

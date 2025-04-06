@@ -1,8 +1,8 @@
 import { pino } from 'pino';
 
+import { type LogLevel } from '../../../../common/types/logLevel.js';
 import { type LoggerService } from '../../services/loggerService/loggerService.js';
 import { LoggerServiceImpl } from '../../services/loggerService/loggerServiceImpl.js';
-import { type LogLevel } from '../../types/logLevel.js';
 
 export interface LoggerConfig {
   readonly logLevel: LogLevel;

@@ -3,7 +3,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { type FC, type HTMLAttributes, useMemo, useState } from 'react';
 import { HiDotsVertical, HiBookOpen } from 'react-icons/hi';
 
-import { BookshelfType } from '@common/contracts';
+import { BookshelfType, bookshelfTypes } from '@common/contracts';
 
 import {
   Menubar,
@@ -68,7 +68,7 @@ export const BookshelfCardMenuBar: FC<BookshelfCardMenuBarProps> = ({ onDeleteCl
           >
             Edytuj
           </MenubarItem>
-          {bookshelfType === BookshelfType.standard && (
+          {bookshelfType === bookshelfTypes.standard && (
             <>
               <MenubarSeparator />
               <MenubarItem
@@ -113,7 +113,7 @@ export const BookshelfCard: FC<BookshelfCardProps> = ({ bookshelf, style, onClic
   };
 
   const UpdateBookshelfComponent =
-    bookshelf.type === BookshelfType.standard ? UpdateBookshelfModal : UpdateNonStandardBookshelfModal;
+    bookshelf.type === bookshelfTypes.standard ? UpdateBookshelfModal : UpdateNonStandardBookshelfModal;
 
   return (
     <>

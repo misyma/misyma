@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { BookshelfType } from '@common/contracts';
+import { bookshelfTypes } from '@common/contracts';
 
 import { useFindUserQuery } from '../../../../../user/api/queries/findUserQuery/findUserQuery';
 import { useFindUserBookshelfsQuery } from '../../../../api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
@@ -10,6 +10,7 @@ interface UseBookshelvesProps {
   page: number;
   name: string | undefined;
 }
+
 export const useBookshelves = ({ name, page, pageSize }: UseBookshelvesProps) => {
   const { data: user } = useFindUserQuery();
 
@@ -32,7 +33,7 @@ export const useBookshelves = ({ name, page, pageSize }: UseBookshelvesProps) =>
       id: '',
       createdAt: new Date().toISOString(),
       name: '',
-      type: BookshelfType.standard,
+      type: bookshelfTypes.standard,
       userId: user?.id as string,
     };
   };

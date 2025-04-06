@@ -1,11 +1,6 @@
 import { type UseQueryOptions, keepPreviousData, useQuery } from '@tanstack/react-query';
 
-import {
-  type FindBooksResponseBody,
-  type FindAdminBooksQueryParams,
-  SortOrder,
-  FindAdminBooksSortField,
-} from '@common/contracts';
+import { type FindBooksResponseBody, type FindAdminBooksQueryParams, sortOrders } from '@common/contracts';
 
 import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper';
 import { type ApiError } from '../../../../../common/errors/apiError';
@@ -81,8 +76,8 @@ export const useAdminFindBooksQuery = ({
   releaseYearBefore,
   releaseYearAfter,
   isbn,
-  sortField = FindAdminBooksSortField.createdAt,
-  sortOrder = SortOrder.desc,
+  sortField = 'createdAt',
+  sortOrder = sortOrders.desc,
   ...options
 }: Payload) => {
   return useQuery({

@@ -1,4 +1,4 @@
-import type * as contracts from '@common/contracts';
+import { type UploadBookshelfImagePathParams, type UploadBookshelfImageResponseBody } from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
@@ -11,12 +11,12 @@ export const uploadBookshelfImagePathParamsDtoSchema = Type.Object({
 
 export type UploadBookshelfImagePathParamsDto = TypeExtends<
   Static<typeof uploadBookshelfImagePathParamsDtoSchema>,
-  contracts.UploadBookshelfImagePathParams
+  UploadBookshelfImagePathParams
 >;
 
 export const uploadBookshelfImageResponseBodyDtoSchema = bookshelfDtoSchema;
 
 export type UploadBookshelfImageResponseBodyDtoSchema = TypeExtends<
   Static<typeof uploadBookshelfImageResponseBodyDtoSchema>,
-  contracts.UploadBookshelfImageResponseBody
+  UploadBookshelfImageResponseBody
 >;

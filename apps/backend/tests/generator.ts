@@ -1,4 +1,13 @@
-import { BookFormat, BookshelfType, Language, ReadingStatus, UserRole } from '@common/contracts';
+import {
+  type BookFormat,
+  bookshelfTypes,
+  type BookshelfType,
+  type Language,
+  languages,
+  ReadingStatus,
+  UserRole,
+  bookFormats,
+} from '@common/contracts';
 import { faker } from '@faker-js/faker';
 import { v7 as uuidv7 } from 'uuid';
 
@@ -114,11 +123,11 @@ export class Generator {
   }
 
   public static language(): Language {
-    return faker.helpers.arrayElement([Language.English, Language.Polish, Language.German, Language.French]);
+    return faker.helpers.arrayElement([languages.English, languages.Polish]);
   }
 
   public static bookFormat(): BookFormat {
-    return faker.helpers.arrayElement([BookFormat.paperback, BookFormat.hardcover, BookFormat.ebook]);
+    return faker.helpers.arrayElement([bookFormats.paperback, bookFormats.hardcover, bookFormats.ebook]);
   }
 
   public static readingStatus(): ReadingStatus {
@@ -130,6 +139,6 @@ export class Generator {
   }
 
   public static bookshelfType(): BookshelfType {
-    return faker.helpers.arrayElement([BookshelfType.standard, BookshelfType.archive, BookshelfType.borrowing]);
+    return faker.helpers.arrayElement([bookshelfTypes.standard, bookshelfTypes.archive, bookshelfTypes.borrowing]);
   }
 }

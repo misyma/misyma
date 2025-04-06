@@ -9,7 +9,7 @@ import { QueuePath } from '../../../../../common/types/queue/queuePath.js';
 import { type EmailService } from '../../../../../libs/emailService/emailService.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type EmailEvent } from '../../../domain/entities/emailEvent/emailEvent.js';
-import { EmailEventStatus } from '../../../domain/entities/emailEvent/types/emailEventStatus.js';
+import { emailEventStatuses } from '../../../domain/entities/emailEvent/types/emailEventStatus.js';
 import { type EmailEventRepository } from '../../../domain/repositories/emailEventRepository/emailEventRepository.js';
 
 interface ProcessEmailEventPayload {
@@ -67,7 +67,7 @@ export class EmailQueueController implements QueueController {
       case emailTypes.verifyEmail:
         await this.emailEventRepository.updateStatus({
           id: emailEvent.getId(),
-          status: EmailEventStatus.processing,
+          status: emailEventStatuses.processing,
         });
 
         retryListener = this.retryPolicy.onFailure((reason) => {
@@ -97,7 +97,7 @@ export class EmailQueueController implements QueueController {
         } catch (error) {
           await this.emailEventRepository.updateStatus({
             id: emailEvent.getId(),
-            status: EmailEventStatus.failed,
+            status: emailEventStatuses.failed,
           });
 
           retryListener.dispose();
@@ -109,7 +109,7 @@ export class EmailQueueController implements QueueController {
 
         await this.emailEventRepository.updateStatus({
           id: emailEvent.getId(),
-          status: EmailEventStatus.processed,
+          status: emailEventStatuses.processed,
         });
 
         break;
@@ -125,7 +125,7 @@ export class EmailQueueController implements QueueController {
 
         await this.emailEventRepository.updateStatus({
           id: emailEvent.getId(),
-          status: EmailEventStatus.processing,
+          status: emailEventStatuses.processing,
         });
 
         try {
@@ -134,7 +134,7 @@ export class EmailQueueController implements QueueController {
               toEmail: emailEvent.getRecipientEmail(),
               template: {
                 name: 'resetPassword',
-                 
+
                 data: emailEvent.getPayload() as any,
               },
             });
@@ -148,7 +148,7 @@ export class EmailQueueController implements QueueController {
         } catch (error) {
           await this.emailEventRepository.updateStatus({
             id: emailEvent.getId(),
-            status: EmailEventStatus.failed,
+            status: emailEventStatuses.failed,
           });
 
           retryListener.dispose();
@@ -160,7 +160,7 @@ export class EmailQueueController implements QueueController {
 
         await this.emailEventRepository.updateStatus({
           id: emailEvent.getId(),
-          status: EmailEventStatus.processed,
+          status: emailEventStatuses.processed,
         });
 
         break;

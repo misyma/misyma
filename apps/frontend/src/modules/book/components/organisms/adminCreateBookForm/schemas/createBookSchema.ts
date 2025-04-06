@@ -1,11 +1,11 @@
 import { z } from 'zod';
 
-import { BookFormat, ReadingStatus } from '@common/contracts';
+import { bookFormats, ReadingStatus } from '@common/contracts';
 
 export const createBookSchema = z.object({
   authorIds: z.array(z.string().uuid()),
   bookshelfId: z.string().uuid(),
-  format: z.nativeEnum(BookFormat),
+  format: z.nativeEnum(bookFormats),
   language: z.string().min(1),
   status: z.nativeEnum(ReadingStatus),
   title: z.string().min(1),

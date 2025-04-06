@@ -25,7 +25,7 @@
       "dependsOn": [],
       "cache": false
     },
-    "start:dev": {
+    "dev": {
       "dependsOn": [],
       "cache": false
     }

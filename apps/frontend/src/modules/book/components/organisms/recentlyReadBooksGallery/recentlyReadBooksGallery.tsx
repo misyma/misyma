@@ -1,7 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { FindUserBooksSortField } from '@common/contracts';
-
 import { Skeleton } from '../../../../common/components/skeleton/skeleton.js';
 import { FindUserBooksByQueryOptions } from '../../../api/user/queries/findUserBookBy/findUserBooksByQueryOptions.js';
 import { BookCard } from '../../atoms/bookCard/bookCard.js';
@@ -10,7 +8,7 @@ export const RecentlyReadBooksGallery = () => {
   const { data, isLoading } = useQuery(
     FindUserBooksByQueryOptions({
       pageSize: 5,
-      sortField: FindUserBooksSortField.readingDate,
+      sortField: 'readingDate',
     }),
   );
 

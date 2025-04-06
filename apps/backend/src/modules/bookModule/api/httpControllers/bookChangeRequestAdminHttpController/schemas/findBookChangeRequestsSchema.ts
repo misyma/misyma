@@ -1,4 +1,8 @@
-import * as contracts from '@common/contracts';
+import {
+  type FindAdminBookChangeRequestsQueryParams,
+  type FindAdminBookChangeRequestsResponseBody,
+  sortOrders,
+} from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
@@ -7,12 +11,12 @@ import { bookChangeRequestDtoSchema } from '../../common/bookChangeRequestDto.js
 export const findAdminBookChangeRequestsQueryParamsDtoSchema = Type.Object({
   page: Type.Optional(Type.Integer({ minimum: 1 })),
   pageSize: Type.Optional(Type.Integer({ minimum: 1 })),
-  sortDate: Type.Optional(Type.Enum(contracts.SortOrder)),
+  sortDate: Type.Optional(Type.Union(Object.values(sortOrders).map((sortOrder) => Type.Literal(sortOrder)))),
 });
 
 export type FindAdminBookChangeRequestsQueryParamsDto = TypeExtends<
   Static<typeof findAdminBookChangeRequestsQueryParamsDtoSchema>,
-  contracts.FindAdminBookChangeRequestsQueryParams
+  FindAdminBookChangeRequestsQueryParams
 >;
 
 export const findAdminBookChangeRequestsResponseBodyDtoSchema = Type.Object({
@@ -25,6 +29,6 @@ export const findAdminBookChangeRequestsResponseBodyDtoSchema = Type.Object({
 });
 
 export type FindAdminBookChangeRequestsResponseBodyDto = TypeExtends<
-  contracts.FindAdminBookChangeRequestsResponseBody,
+  FindAdminBookChangeRequestsResponseBody,
   Static<typeof findAdminBookChangeRequestsResponseBodyDtoSchema>
 >;

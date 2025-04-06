@@ -2,7 +2,7 @@ import { type FC, useMemo } from 'react';
 import { HiClock, HiDotsCircleHorizontal } from 'react-icons/hi';
 import { HiCheckCircle, HiEnvelope, HiQuestionMarkCircle } from 'react-icons/hi2';
 
-import { ReadingStatus, SortOrder, type UserBook } from '@common/contracts';
+import { ReadingStatus, sortOrders, type UserBook } from '@common/contracts';
 
 import { FindBookBorrowingsQueryOptions } from '../../../../borrowing/api/queries/findBookBorrowings/findBookBorrowingsQueryOptions';
 import { TruncatedTextTooltip } from '../../../../common/components/truncatedTextTooltip/truncatedTextTooltip';
@@ -18,7 +18,7 @@ const BorrowedSinceText: FC<{ userBookId: string }> = ({ userBookId }) => {
       userBookId,
       page: 1,
       pageSize: 1,
-      sortDate: SortOrder.desc,
+      sortDate: sortOrders.desc,
       isOpen: true,
     }),
   );

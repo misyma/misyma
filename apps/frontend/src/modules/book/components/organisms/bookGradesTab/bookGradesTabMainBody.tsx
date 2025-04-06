@@ -1,7 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { type FC, useMemo, useState } from 'react';
 
-import { SortOrder } from '@common/contracts';
+import { sortOrders } from '@common/contracts';
 
 import { BookReadingsApiQueryKeys } from '../../../../bookReadings/api/queries/bookReadingsApiQueryKeys';
 import { FindBookReadingsQueryOptions } from '../../../../bookReadings/api/queries/findBookReadings/findBookReadingsQueryOptions';
@@ -32,7 +32,7 @@ export const BookGradesTabMainBody: FC<BookGradesTabMainBodyProps> = ({ bookId }
       userBookId: bookId,
       page,
       pageSize,
-      sortDate: SortOrder.desc,
+      sortDate: sortOrders.desc,
     }),
   );
 

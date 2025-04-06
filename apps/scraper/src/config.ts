@@ -17,9 +17,6 @@ const configSchema = Type.Object({
     password: Type.String({ minLength: 1 }),
     name: Type.String({ minLength: 1 }),
   }),
-  eisbn: Type.Object({
-    baseUrl: Type.String({ minLength: 1 }),
-  }),
 });
 
 export type Config = Static<typeof configSchema>;

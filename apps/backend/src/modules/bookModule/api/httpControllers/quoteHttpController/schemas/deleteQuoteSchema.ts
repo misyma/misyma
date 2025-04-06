@@ -1,4 +1,4 @@
-import type * as contracts from '@common/contracts';
+import { type DeleteQuotePathParams } from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
@@ -9,7 +9,7 @@ export const deleteQuotePathParamsDtoSchema = Type.Object({
 
 export type DeleteQuotePathParamsDto = TypeExtends<
   Static<typeof deleteQuotePathParamsDtoSchema>,
-  contracts.DeleteQuotePathParams
+  DeleteQuotePathParams
 >;
 
 export const deleteQuoteResponseBodyDtoSchema = Type.Null();

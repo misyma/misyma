@@ -8,7 +8,7 @@ import {
 } from '../../../../../common/types/http/httpResponse.js';
 import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
 import { httpStatusCodes } from '../../../../../common/types/http/httpStatusCode.js';
-import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
+import { securityModes } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
 import { type CreateCollectionCommandHandler } from '../../../application/commandHandlers/createCollectionCommandHandler/createCollectionCommandHandler.js';
 import { type DeleteCollectionCommandHandler } from '../../../application/commandHandlers/deleteCollectionCommandHandler/deleteCollectionCommandHandler.js';
@@ -73,7 +73,7 @@ export class CollectionHttpController implements HttpController {
             },
           },
         },
-        securityMode: SecurityMode.bearerToken,
+        securityMode: securityModes.bearerToken,
       }),
       new HttpRoute({
         description: 'Create collection',
@@ -90,7 +90,7 @@ export class CollectionHttpController implements HttpController {
             },
           },
         },
-        securityMode: SecurityMode.bearerToken,
+        securityMode: securityModes.bearerToken,
       }),
       new HttpRoute({
         description: 'Update Collection',
@@ -108,7 +108,7 @@ export class CollectionHttpController implements HttpController {
             },
           },
         },
-        securityMode: SecurityMode.bearerToken,
+        securityMode: securityModes.bearerToken,
         path: ':collectionId',
       }),
       new HttpRoute({
@@ -127,7 +127,7 @@ export class CollectionHttpController implements HttpController {
           },
         },
         path: ':collectionId',
-        securityMode: SecurityMode.bearerToken,
+        securityMode: securityModes.bearerToken,
       }),
     ];
   }

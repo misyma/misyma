@@ -1,4 +1,4 @@
-import { BookshelfType } from '@common/contracts';
+import { bookshelfTypes } from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
 export const bookshelfNameSchema = Type.String({
@@ -15,7 +15,7 @@ export const bookshelfDtoSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
   userId: Type.String({ format: 'uuid' }),
   name: bookshelfNameSchema,
-  type: Type.Enum(BookshelfType),
+  type: Type.Union(Object.values(bookshelfTypes).map((bookshelfType) => Type.Literal(bookshelfType))),
   createdAt: Type.String({ format: 'date-time' }),
   imageUrl: Type.Optional(bookshelfImageUrlSchema),
   bookCount: Type.Integer(),
