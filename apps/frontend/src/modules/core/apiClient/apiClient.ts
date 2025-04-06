@@ -101,7 +101,7 @@ api.getPreviousPageParam = (response) => {
 api.validateResponse = (response, ctor, mapper) => {
   if (api.isErrorResponse(response)) {
     throw new ctor({
-      message: mapper.map(response.status),
+      message: mapper.map(response.data as unknown as ApiError, response.status),
       apiResponseError: response.data.context,
       statusCode: response.status,
     });

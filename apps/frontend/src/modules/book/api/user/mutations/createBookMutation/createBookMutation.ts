@@ -11,7 +11,14 @@ import { BookApiError } from '../../../../errors/bookApiError';
 const mapper = new ErrorCodeMessageMapper({
   400: 'Podano błędne dane.',
   403: 'Brak pozwolenia na stworzenie książki.',
-  409: 'Książka już istnieje.',
+  409: (error) => {
+    console.log(error);
+    if ('isbn' in error.context) {
+      return 'Książka o podanym numerze isbn już istnieje.';
+    }
+
+    return 'Książka już istnieje.';
+  },
   500: 'Wewnętrzny błąd serwera.',
 });
 

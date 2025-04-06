@@ -50,7 +50,7 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
     defaultValues: {
       language: bookCreation.stepTwoDetails?.language ?? '',
       translator: bookCreation.stepTwoDetails?.translator ?? '',
-      form: bookCreation.stepTwoDetails?.format ?? '',
+      form: bookCreation.stepTwoDetails?.format,
       pagesCount: Number.isNaN(bookCreation.stepTwoDetails?.pagesCount)
         ? ''
         : (bookCreation.stepTwoDetails?.pagesCount ?? ''),
@@ -112,7 +112,7 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
           name="form"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Format</FormLabel>
+              <span>Format</span> <span className="text-gray-500">(opcjonalne)</span>
               <BookFormatSelect
                 dialog={true}
                 onValueChange={(val) => {
