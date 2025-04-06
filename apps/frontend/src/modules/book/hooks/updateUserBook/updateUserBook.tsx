@@ -4,13 +4,14 @@ import { SortOrder, type ReadingStatus } from '@common/contracts';
 
 import { useUpdateBorrowingMutation } from '../../../borrowing/api/mutations/updateBorrowingMutation/updateBorrowingMutation';
 import { FindBookBorrowingsQueryOptions } from '../../../borrowing/api/queries/findBookBorrowings/findBookBorrowingsQueryOptions';
-import { toast } from '../../../common/components/toast/use-toast';
+import { useToast } from '../../../common/components/toast/use-toast';
 import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
 import { useUpdateUserBookMutation } from '../../api/user/mutations/updateUserBookMutation/updateUserBookMutation';
 import { useUploadBookImageMutation } from '../../api/user/mutations/uploadBookImageMutation/uploadBookImageMutation';
-import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
-import { invalidateBooksByBookshelfIdQuery } from '../../api/user/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
+import { invalidateUserBooksByBookshelfIdQuery } from '../../api/user/queries/findUserBooksByBookshelfId/findUserBooksByBookshelfIdQueryOptions';
 import { invalidateFindUserBooksByQuery } from '../../api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
+import { invalidateFindUserBookByIdQueryPredicate } from '../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
+import { useRef } from 'react';
 
 interface UpdateBookStatusPayload {
   current?: ReadingStatus;
@@ -27,16 +28,18 @@ interface UpdateBookBookshelfPayload {
 }
 
 interface UpdatePayload {
-  image?: File;
-  genre?: string;
+  image: File;
 }
 
 export const useUpdateUserBook = (id: string) => {
   const queryClient = useQueryClient();
 
+  const { toast } = useToast();
+
   const { mutateAsync: updateUserBook, isPending: isUpdatePending } = useUpdateUserBookMutation({});
   const { mutateAsync: updateBorrowing } = useUpdateBorrowingMutation({});
   const { mutateAsync: uploadBookImageMutation, isPending: isImageUploadPending } = useUploadBookImageMutation({});
+  const retries = useRef(0);
 
   const { data: bookBorrowing, isLoading: isLoadingBorrowing } = useErrorHandledQuery(
     FindBookBorrowingsQueryOptions({
@@ -61,15 +64,19 @@ export const useUpdateUserBook = (id: string) => {
 
     await Promise.all([
       queryClient.invalidateQueries({
-        queryKey: [BookApiQueryKeys.findUserBookById, id],
+        predicate: ({ queryKey }) => invalidateFindUserBookByIdQueryPredicate(queryKey, id),
       }),
       queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId && query.queryKey[1] === bookshelfId,
+        predicate: ({ queryKey }) =>
+          invalidateUserBooksByBookshelfIdQuery(
+            {
+              bookshelfId,
+            },
+            queryKey,
+          ),
       }),
       queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey[0] === BookApiQueryKeys.findUserBooksBy && query.queryKey.includes('infinite-query'),
+        predicate: ({ queryKey }) => invalidateFindUserBooksByQuery({}, queryKey, true),
       }),
     ]);
   };
@@ -79,7 +86,7 @@ export const useUpdateUserBook = (id: string) => {
       return [
         queryClient.invalidateQueries({
           predicate: (query) =>
-            invalidateBooksByBookshelfIdQuery(
+            invalidateUserBooksByBookshelfIdQuery(
               {
                 bookshelfId: id,
               },
@@ -88,7 +95,7 @@ export const useUpdateUserBook = (id: string) => {
         }),
         queryClient.invalidateQueries({
           predicate: ({ queryKey }) =>
-            invalidateBooksByBookshelfIdQuery(
+            invalidateUserBooksByBookshelfIdQuery(
               {
                 bookshelfId: currentBookshelfId,
               },
@@ -100,8 +107,13 @@ export const useUpdateUserBook = (id: string) => {
     const invalidateBooksByXQueries = () => {
       return [
         queryClient.invalidateQueries({
-          predicate: (query) =>
-            query.queryKey[0] === BookApiQueryKeys.findUserBooksBy && query.queryKey[1] === currentBookshelfId,
+          predicate: ({ queryKey }) =>
+            invalidateFindUserBooksByQuery(
+              {
+                bookshelfId: currentBookshelfId,
+              },
+              queryKey,
+            ),
         }),
         borrowingBookshelfId
           ? queryClient.invalidateQueries({
@@ -117,10 +129,29 @@ export const useUpdateUserBook = (id: string) => {
       ];
     };
 
-    if (isLoadingBorrowing) {
+    const { currentBookshelfId, bookshelfId, borrowingBookshelfId, previousBookshelfName, bookshelfName } = payload;
+
+    if (isLoadingBorrowing && retries.current < 2 && previousBookshelfName === 'Wypożyczalnia') {
+      retries.current += 1;
+
+      return await new Promise<void>((res) =>
+        setTimeout(() => {
+          updateBookBookshelf(payload).then(() => {
+            res();
+            retries.current = 0;
+          });
+        }, 100),
+      );
+    }
+
+    if (isLoadingBorrowing && retries.current >= 2 && previousBookshelfName === 'Wypożyczalnia') {
+      toast({
+        title: 'Nie udało się zmienić półki.',
+        description: 'Spróbuj ponownie.',
+        variant: 'destructive',
+      });
       return;
     }
-    const { currentBookshelfId, bookshelfId, borrowingBookshelfId, previousBookshelfName, bookshelfName } = payload;
 
     await updateUserBook({
       userBookId: id,
@@ -152,19 +183,10 @@ export const useUpdateUserBook = (id: string) => {
   };
 
   const update = async (payload: UpdatePayload) => {
-    if (payload.image) {
-      await uploadBookImageMutation({
-        bookId: id,
-        file: payload.image as unknown as File,
-      });
-    }
-
-    if (payload.genre) {
-      await updateUserBook({
-        userBookId: id,
-        genreId: payload.genre,
-      });
-    }
+    await uploadBookImageMutation({
+      bookId: id,
+      file: payload.image as unknown as File,
+    });
   };
 
   return {

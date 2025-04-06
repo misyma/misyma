@@ -28,7 +28,7 @@ export function useErrorHandledQuery<
   const { toast } = useToast();
 
   // todo: improve later
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   const defaultRetry = useQueryClient().getDefaultOptions().queries?.retry as any;
 
   const result = useQuery({

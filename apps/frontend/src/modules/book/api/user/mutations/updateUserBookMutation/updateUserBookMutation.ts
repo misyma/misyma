@@ -12,7 +12,7 @@ import { useErrorHandledMutation } from '../../../../../common/hooks/useErrorHan
 import { api } from '../../../../../core/apiClient/apiClient';
 import { BookApiError } from '../../../../errors/bookApiError';
 import { BookApiQueryKeys } from '../../queries/bookApiQueryKeys';
-import { invalidateBooksByBookshelfIdQuery } from '../../queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
+import { invalidateUserBooksByBookshelfIdQuery } from '../../queries/findUserBooksByBookshelfId/findUserBooksByBookshelfIdQueryOptions';
 import { invalidateFindUserBookByIdQueryPredicate } from '../../queries/findUserBook/findUserBookByIdQueryOptions';
 import { invalidateFindUserBooksByQuery } from '../../queries/findUserBookBy/findUserBooksByQueryOptions';
 
@@ -46,7 +46,7 @@ export const useUpdateUserBookMutation = (
           return (
             invalidateFindUserBooksByQuery({}, queryKey, true) ||
             invalidateFindUserBooksByQuery({ bookshelfId: args[0].bookshelfId }, queryKey, false) ||
-            invalidateBooksByBookshelfIdQuery(
+            invalidateUserBooksByBookshelfIdQuery(
               {
                 bookshelfId: args[0].bookshelfId,
               },
