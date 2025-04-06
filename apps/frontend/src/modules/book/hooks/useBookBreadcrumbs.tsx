@@ -50,4 +50,8 @@ export const useBookBreadcrumbs = ({ bookId }: UseBookBreadcrumbsProps) => {
       });
     }
   }, [userBookData, breadcrumbKeys, dispatch, bookId]);
+
+  return {
+    breadcrumbKeys,
+  };
 };
