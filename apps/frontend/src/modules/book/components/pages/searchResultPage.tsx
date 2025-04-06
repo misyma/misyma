@@ -196,7 +196,7 @@ const BookRow: FC<BookRowProps> = ({ book, onSelect, isSelected }) => {
     <div
       className={cn(
         'grid grid-cols-9 gap-x-4 p-4 rounded-lg transition-colors duration-200 cursor-pointer',
-        isSelected ? 'bg-secondary/40 shadow-md' : isSelectable && 'hover:bg-secondary/20',
+        isSelected ? 'bg-secondary/60 shadow-md' : isSelectable && 'hover:bg-secondary/40',
         !isSelectable && 'bg-gray-500/30 cursor-default',
       )}
       onClick={() => {

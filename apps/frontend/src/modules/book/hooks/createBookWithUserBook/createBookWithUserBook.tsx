@@ -6,6 +6,7 @@ import {
   type CreateAuthorRequestBody,
   type CreateUserBookResponseBody,
   type FindAuthorsResponseBody,
+  UserBook,
 } from '@common/contracts';
 
 import { useToast } from '../../../common/components/toast/use-toast';
@@ -19,7 +20,7 @@ import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
 import { BookNavigationFromEnum, type BookNavigationFrom } from '../../constants';
 import { BookApiError } from '../../errors/bookApiError';
 
-interface CreatePayload {
+export interface CreatePayload {
   authorPayload?: Partial<CreateAuthorRequestBody> & {
     authorIds: string[];
   };
@@ -58,6 +59,33 @@ export const useCreateBookWithUserBook = ({
 
   const navigate = useNavigate();
 
+  const clearCache = async (userBookPayload: CreatePayload['userBookPayload'], userBook: UserBook) => {
+    await Promise.all([
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId &&
+          query.queryKey[1] === userBookPayload?.bookshelfId,
+      }),
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          query.queryKey[0] === BookApiQueryKeys.findUserBooksBy &&
+          query.queryKey.includes('infinite-query') &&
+          query.queryKey[1] === userBookPayload?.bookshelfId,
+      }),
+      queryClient.invalidateQueries({
+        predicate: ({ queryKey }) =>
+          queryKey.includes('infinite-query') && queryKey.includes(BookApiQueryKeys.findUserBooksBy),
+      }),
+      queryClient.invalidateQueries({
+        predicate: ({ queryKey }) => queryKey.includes(BookApiQueryKeys.findBooks),
+      }),
+      queryClient.invalidateQueries({
+        predicate: ({ queryKey }) =>
+          queryKey.includes(BookApiQueryKeys.findUserBooksBy) && queryKey.includes(userBook.book.isbn),
+      }),
+    ]);
+  };
+
   const create = async ({ authorPayload, bookPayload, userBookPayload, image, bookTitle }: CreatePayload) => {
     if (!bookPayload && !userBookPayload.bookId) {
       throw new Error(`BookId prop is required if book is not being created.`);
@@ -68,7 +96,7 @@ export const useCreateBookWithUserBook = ({
 
       let bookId = userBookPayload.bookId as string;
 
-      if (bookPayload) {
+      if (bookPayload && !bookId) {
         try {
           const bookCreationResponse = await createBookMutation({
             ...bookPayload,
@@ -93,37 +121,14 @@ export const useCreateBookWithUserBook = ({
           bookId,
           isFavorite: false,
           errorHandling: {
-            title: '',
+            title: 'Nie udało się stworzyć książki. Spróbuj ponownie.',
           },
         });
       } catch {
         return;
       }
 
-      await Promise.all([
-        queryClient.invalidateQueries({
-          predicate: (query) =>
-            query.queryKey[0] === BookApiQueryKeys.findBooksByBookshelfId &&
-            query.queryKey[1] === userBookPayload?.bookshelfId,
-        }),
-        queryClient.invalidateQueries({
-          predicate: (query) =>
-            query.queryKey[0] === BookApiQueryKeys.findUserBooksBy &&
-            query.queryKey.includes('infinite-query') &&
-            query.queryKey[1] === userBookPayload?.bookshelfId,
-        }),
-        queryClient.invalidateQueries({
-          predicate: ({ queryKey }) =>
-            queryKey.includes('infinite-query') && queryKey.includes(BookApiQueryKeys.findUserBooksBy),
-        }),
-        queryClient.invalidateQueries({
-          predicate: ({ queryKey }) => queryKey.includes(BookApiQueryKeys.findBooks),
-        }),
-        queryClient.invalidateQueries({
-          predicate: ({ queryKey }) =>
-            queryKey.includes(BookApiQueryKeys.findUserBooksBy) && queryKey.includes(userBook.book.isbn),
-        }),
-      ]);
+      await clearCache(userBookPayload, userBook);
 
       if (image) {
         try {
@@ -146,19 +151,16 @@ export const useCreateBookWithUserBook = ({
       });
 
       if (navigateTo == BookNavigationFromEnum.shelves) {
-        await navigate({
+        return await navigate({
           to: `/shelves/bookshelf/${userBookPayload.bookshelfId}`,
         });
-        return;
       }
-      await navigate({
+      return await navigate({
         to: `/mybooks/`,
       });
     } catch (error) {
       if (error instanceof BookApiError) {
-        onOperationError(error.context.message);
-
-        return;
+        return onOperationError(error.context.message);
       }
 
       onOperationError('Coś poszło nie tak. Spróbuj ponownie.');

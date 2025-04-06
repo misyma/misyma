@@ -1,7 +1,7 @@
 import { SelectContent } from '@radix-ui/react-select';
 import { type FC, useMemo, useState } from 'react';
 
-import { FindBooksByBookshelfIdQueryOptions } from '../../../../book/api/user/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
+import { FindUserBooksByBookshelfIdQueryOptions } from '../../../../book/api/user/queries/findUserBooksByBookshelfId/findUserBooksByBookshelfIdQueryOptions';
 import { BookApiError } from '../../../../book/errors/bookApiError';
 import { Button } from '../../../../common/components/button/button';
 import {
@@ -34,7 +34,7 @@ const DialogContentPreConfirmation: FC<DialogContentPreConfirmationProps> = ({
   error,
 }) => {
   const { data: bookshelfBooksResponse } = useErrorHandledQuery(
-    FindBooksByBookshelfIdQueryOptions({
+    FindUserBooksByBookshelfIdQueryOptions({
       bookshelfId,
     }),
   );

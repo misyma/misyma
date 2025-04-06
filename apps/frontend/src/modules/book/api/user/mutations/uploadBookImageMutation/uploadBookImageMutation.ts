@@ -6,7 +6,7 @@ import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMa
 import { useErrorHandledMutation } from '../../../../../common/hooks/useErrorHandledMutation.js';
 import { api } from '../../../../../core/apiClient/apiClient.js';
 import { BookApiError } from '../../../../errors/bookApiError.js';
-import { invalidateBooksByBookshelfIdQuery } from '../../queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions.js';
+import { invalidateUserBooksByBookshelfIdQuery } from '../../queries/findUserBooksByBookshelfId/findUserBooksByBookshelfIdQueryOptions.js';
 import { invalidateFindUserBookByIdQueryPredicate } from '../../queries/findUserBook/findUserBookByIdQueryOptions.js';
 import { invalidateFindUserBooksByQuery } from '../../queries/findUserBookBy/findUserBooksByQueryOptions.js';
 
@@ -48,7 +48,7 @@ export const useUploadBookImageMutation = (
           return (
             invalidateFindUserBooksByQuery({}, queryKey, true) ||
             invalidateFindUserBooksByQuery({ bookshelfId: args[0].bookshelfId }, queryKey, false) ||
-            invalidateBooksByBookshelfIdQuery(
+            invalidateUserBooksByBookshelfIdQuery(
               {
                 bookshelfId: args[0].bookshelfId,
               },

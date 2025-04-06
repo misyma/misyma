@@ -12,12 +12,21 @@ import { api } from '../../../../core/apiClient/apiClient';
 import { ApiPaths } from '../../../../core/apiClient/apiPaths';
 import { ShelfApiError } from '../../errors/shelfApiError';
 import { invalidateBookshelvesQueriesPredicate } from '../../queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
+import { z } from 'zod';
 
-type Payload = UpdateBookshelfRequestBody & UpdateBookshelfPathParams;
+export const updateBookshelfSchema = z.object({
+  name: z.string().max(64, 'Nazwa jest zbyt długa.').optional(),
+});
+
+export type UpdateBookshelfSchema = z.infer<typeof updateBookshelfSchema>;
+
+type Payload = UpdateBookshelfSchema & UpdateBookshelfPathParams;
 
 const mapper = new ErrorCodeMessageMapper({});
 
 const updateBookshelf = async (payload: Payload) => {
+  payload satisfies UpdateBookshelfRequestBody;
+
   const path = ApiPaths.bookshelves.$bookshelfId.path;
   const resolvedPath = path.replace('{{bookshelfId}}', payload.bookshelfId);
 

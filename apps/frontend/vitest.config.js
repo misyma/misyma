@@ -10,6 +10,10 @@ export default mergeConfig(
     test: {
       environment: 'jsdom',
       setupFiles: './tests/setup.js',
+      coverage: {
+        include: ['src/**'],
+        exclude: ['**/*.stories.js', '**/*.stories.tsx'],
+      },
     },
     define: {
       APPLICATION_VERSION: JSON.stringify('1.0.0'),

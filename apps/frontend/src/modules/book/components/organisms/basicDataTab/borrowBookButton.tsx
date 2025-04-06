@@ -14,7 +14,7 @@ import {
 import { useErrorHandledQuery } from '../../../../common/hooks/useErrorHandledQuery';
 import { cn } from '../../../../common/lib/utils';
 import { BookApiQueryKeys } from '../../../api/user/queries/bookApiQueryKeys';
-import { invalidateBooksByBookshelfIdQuery } from '../../../api/user/queries/findBooksByBookshelfId/findBooksByBookshelfIdQueryOptions';
+import { invalidateUserBooksByBookshelfIdQuery } from '../../../api/user/queries/findUserBooksByBookshelfId/findUserBooksByBookshelfIdQueryOptions';
 import { FindUserBookByIdQueryOptions } from '../../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 import { invalidateFindUserBooksByQuery } from '../../../api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
 import { CreateBorrowingModal } from '../../organisms/createBorrowingModal/createBorrowingModal';
@@ -93,7 +93,7 @@ export const BorrowBookButton: FC<BorrowBookButtonProps> = ({ bookId, currentBoo
               }),
               queryClient.invalidateQueries({
                 predicate: ({ queryKey }) =>
-                  invalidateBooksByBookshelfIdQuery(
+                  invalidateUserBooksByBookshelfIdQuery(
                     {
                       bookshelfId: currentBookshelfId,
                     },

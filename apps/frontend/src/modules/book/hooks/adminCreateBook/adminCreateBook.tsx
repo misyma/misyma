@@ -56,7 +56,6 @@ export const useAdminCreateBook = ({ onOperationError }: UseAdminCreateBookProps
     } catch (error) {
       if (error instanceof BookApiError) {
         onOperationError(error.context.message);
-
         return;
       }
 
