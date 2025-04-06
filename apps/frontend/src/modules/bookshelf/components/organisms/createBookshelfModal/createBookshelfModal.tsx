@@ -2,7 +2,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRef, useState, type FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { HiPlus } from 'react-icons/hi2';
-import { z } from 'zod';
 
 import { Button } from '../../../../common/components/button/button';
 import { Dialog, DialogContent, DialogTrigger } from '../../../../common/components/dialog/dialog';
@@ -16,7 +15,6 @@ import {
 } from '../../../../common/components/form/form';
 import { FileInput, Input } from '../../../../common/components/input/input';
 import { LoadingSpinner } from '../../../../common/components/spinner/loading-spinner';
-import { useToast } from '../../../../common/components/toast/use-toast';
 import {
   Tooltip,
   TooltipContent,
@@ -26,18 +24,11 @@ import {
 import useDebounce from '../../../../common/hooks/useDebounce';
 import { useFileUpload } from '../../../../common/hooks/useFileUpload';
 import { cn } from '../../../../common/lib/utils';
-import { useCreateBookshelfMutation } from '../../../api/mutations/createBookshelfMutation/createBookshelfMutation';
-import { useUploadBookshelfImageMutation } from '../../../api/mutations/uploadBookshelfImageMutation/uploadBookshelfImageMutation';
-
-const createBookshelfFormSchema = z.object({
-  image: z.object({}).or(z.undefined()),
-  name: z
-    .string({
-      required_error: 'Nazwa jest wymagana',
-    })
-    .min(1, 'Nazwa jest za krótka.')
-    .max(64, 'Nazwa jest zbyt długa.'),
-});
+import {
+  CreateBookshelfSchema,
+  createBookshelfSchema,
+} from '../../../api/mutations/createBookshelfMutation/createBookshelfMutation';
+import { useCreateBookshelf } from '../../../hooks/useCreateBookshelf';
 
 export const CreateBookshelfModal: FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -48,7 +39,7 @@ export const CreateBookshelfModal: FC = () => {
   });
 
   const form = useForm({
-    resolver: zodResolver(createBookshelfFormSchema),
+    resolver: zodResolver(createBookshelfSchema),
     defaultValues: {
       image: file,
       name: '',
@@ -57,49 +48,19 @@ export const CreateBookshelfModal: FC = () => {
     mode: 'onTouched',
   });
 
-  const { mutateAsync: createBookshelf, isPending: isCreationPending } = useCreateBookshelfMutation({
-    onSuccess: () => setIsOpen(false),
+  const { create, isProcessing: isProcessingBase } = useCreateBookshelf({
+    onSuccess: () => {
+      setIsOpen(false);
+      form.reset();
+    },
   });
 
-  const { mutateAsync: uploadBookshelfImage, isPending: isImagePending } = useUploadBookshelfImageMutation({
-    onSuccess: () => setIsOpen(false),
-  });
-
-  const isProcessingBase = isCreationPending || isImagePending;
   const isProcessing = useDebounce(isProcessingBase, 300);
 
-  const { toast } = useToast();
-
-  const onSubmit = async (props: z.infer<typeof createBookshelfFormSchema>) => {
-    let bookshelfId = '';
-    try {
-      const res = await createBookshelf({
-        name: props.name,
-      });
-      bookshelfId = res.id;
-    } catch {
-      return;
-    }
-
-    if (file && bookshelfId) {
-      try {
-        await uploadBookshelfImage({
-          bookshelfId,
-          file,
-          errorHandling: {
-            title: 'Coś poszło nie tak z wysyłaniem obrazka półki.',
-          },
-        });
-      } catch {
-        return;
-      }
-    }
-
-    setIsOpen(false);
-
-    toast({
-      title: `Półka: ${props.name} została stworzona :)`,
-      variant: 'success',
+  const onSubmit = async (props: CreateBookshelfSchema) => {
+    await create({
+      ...props,
+      image: file,
     });
   };
 
