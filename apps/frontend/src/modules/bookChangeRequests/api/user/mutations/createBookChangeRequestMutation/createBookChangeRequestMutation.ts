@@ -24,9 +24,10 @@ const createBookChangeRequest = async (payload: CreateBookChangeRequestRequestBo
     {} as Record<string, unknown>,
   );
 
-  const response = await api.post<CreateBookshelfResponseBody>('/book-change-requests', requestBody);
-
-  api.validateResponse(response, BookApiError, mapper);
+  const response = await api.post<CreateBookshelfResponseBody>('/book-change-requests', requestBody, {
+    errorCtor: BookApiError,
+    mapper,
+  });
 
   return response.data;
 };

@@ -15,9 +15,10 @@ const mapper = new ErrorCodeMessageMapper({
 });
 
 const changePassword = async (payload: ChangeUserPasswordRequestBody) => {
-  const response = await api.post<UpdateUserResponseBody>(`/users/change-password`, payload);
-
-  api.validateResponse(response, UserApiError, mapper);
+  const response = await api.post<UpdateUserResponseBody>(`/users/change-password`, payload, {
+    errorCtor: UserApiError,
+    mapper,
+  });
 
   return response.data;
 };

@@ -15,12 +15,17 @@ const mapper = new ErrorCodeMessageMapper({
 });
 
 const loginUser = async (values: { email: string; password: string }) => {
-  const loginUserResponse = await api.post<LoginUserResponseBody>(ApiPaths.users.login.path, {
-    email: values.email,
-    password: values.password,
-  });
-
-  api.validateResponse(loginUserResponse, AuthApiError, mapper);
+  const loginUserResponse = await api.post<LoginUserResponseBody>(
+    ApiPaths.users.login.path,
+    {
+      email: values.email,
+      password: values.password,
+    },
+    {
+      errorCtor: AuthApiError,
+      mapper,
+    },
+  );
 
   return loginUserResponse.data;
 };

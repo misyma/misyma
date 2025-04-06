@@ -12,11 +12,17 @@ const mapper = new ErrorCodeMessageMapper({
 });
 
 const setNewPassword = async (values: { password: string; token: string }) => {
-  const setNewPasswordResponse = await api.post<LoginUserResponseBody>(ApiPaths.users.changePassword.path, {
-    password: values.password,
-    token: values.token,
-  });
-  api.validateResponse(setNewPasswordResponse, UserApiError, mapper);
+  const setNewPasswordResponse = await api.post<LoginUserResponseBody>(
+    ApiPaths.users.changePassword.path,
+    {
+      password: values.password,
+      token: values.token,
+    },
+    {
+      errorCtor: UserApiError,
+      mapper,
+    },
+  );
 
   return setNewPasswordResponse.data;
 };

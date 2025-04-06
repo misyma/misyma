@@ -26,9 +26,10 @@ const mapper = new ErrorCodeMessageMapper({});
 const createBookshelf = async (payload: CreateBookshelfSchema) => {
   payload satisfies CreateBookshelfRequestBody;
 
-  const response = await api.post<CreateBookshelfResponseBody>(ApiPaths.bookshelves.path, payload);
-
-  api.validateResponse(response, ShelfApiError, mapper);
+  const response = await api.post<CreateBookshelfResponseBody>(ApiPaths.bookshelves.path, payload, {
+    errorCtor: ShelfApiError,
+    mapper,
+  });
 
   return response.data;
 };

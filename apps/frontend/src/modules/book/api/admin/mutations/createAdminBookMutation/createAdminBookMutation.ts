@@ -19,12 +19,17 @@ const mapper = new ErrorCodeMessageMapper({
 const createBook = async (payload: CreateBookRequestBody) => {
   const { ...body } = payload;
 
-  const response = await api.post<CreateBookResponseBody>(ApiPaths.admin.books.path, {
-    ...body,
-    isApproved: true,
-  });
-
-  api.validateResponse(response, BookApiError, mapper);
+  const response = await api.post<CreateBookResponseBody>(
+    ApiPaths.admin.books.path,
+    {
+      ...body,
+      isApproved: true,
+    },
+    {
+      errorCtor: BookApiError,
+      mapper,
+    },
+  );
 
   return response.data;
 };
