@@ -27,9 +27,14 @@ import {
   MenubarSeparator,
   MenubarTrigger,
 } from '../menubar/menubar';
+import { useLocation } from '@tanstack/react-router';
 
 const NavbarBreadcrumbs = () => {
   const breadcrumbKeys = useBreadcrumbKeysContext();
+
+  const location = useLocation();
+
+  const navigate = useNavigate();
 
   const router = useRouter();
 
@@ -89,21 +94,36 @@ const NavbarBreadcrumbs = () => {
   const breadcrumbItems = useMemo(() => {
     {
       return (
-        filteredPaths[0]?.staticData.routeDisplayableNameParts?.map((val, index) => (
-          <BreadcrumbItem key={`${index}-${val}-breadcrumb`}>
-            <BreadcrumbLink asChild>
-              <Link
-                key={`${index}-${val}-breadcrumb-link`}
-                className="max-w-80 truncate inline-block flex-shrink-0"
-                to={replaceHrefPlaceholderWithValue(val.href)}
-              >
-                {val?.readableName?.includes('$')
-                  ? truncateText(breadcrumbKeys[val?.readableName], 4)
-                  : val.readableName}
-              </Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-        )) ?? []
+        filteredPaths[0]?.staticData.routeDisplayableNameParts?.map((val, index) => {
+          const isCurrentPath = replaceHrefPlaceholderWithValue(val.href) === location.pathname;
+
+          return (
+            <BreadcrumbItem key={`${index}-${val}-breadcrumb`}>
+              <BreadcrumbLink asChild>
+                <Link
+                  key={`${index}-${val}-breadcrumb-link`}
+                  disabled={isCurrentPath}
+                  className={cn("max-w-80 truncate inline-block flex-shrink-0")}
+                  onClick={(e) => {
+                    const href = replaceHrefPlaceholderWithValue(val.href);
+
+                    if (isCurrentPath) {
+                      e.preventDefault();
+                      return;
+                    }
+                    navigate({
+                      to: href,
+                    });
+                  }}
+                >
+                  {val?.readableName?.includes('$')
+                    ? truncateText(breadcrumbKeys[val?.readableName], 4)
+                    : val.readableName}
+                </Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+          );
+        }) ?? []
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
