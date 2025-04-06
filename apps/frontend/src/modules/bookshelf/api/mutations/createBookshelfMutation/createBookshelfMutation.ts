@@ -21,7 +21,9 @@ export const createBookshelfSchema = z.object({
 
 export type CreateBookshelfSchema = z.infer<typeof createBookshelfSchema>;
 
-const mapper = new ErrorCodeMessageMapper({});
+const mapper = new ErrorCodeMessageMapper({
+  409: 'Posiadasz już półkę o tej nazwie.',
+});
 
 const createBookshelf = async (payload: CreateBookshelfSchema) => {
   payload satisfies CreateBookshelfRequestBody;
