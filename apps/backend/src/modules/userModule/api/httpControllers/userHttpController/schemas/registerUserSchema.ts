@@ -1,6 +1,4 @@
- 
-
-import type * as contracts from '@common/contracts';
+import { type RegisterUserRequestBody, type RegisterUserResponseBody } from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 import { type FastifyRequest } from 'fastify';
 
@@ -16,14 +14,14 @@ export const registerUserRequestBodyDtoSchema = Type.Object({
 
 export type RegisterUserRequestBodyDto = TypeExtends<
   Static<typeof registerUserRequestBodyDtoSchema>,
-  contracts.RegisterUserRequestBody
+  RegisterUserRequestBody
 >;
 
 export const registerUserResponseBodyDtoSchema = userDtoSchema;
 
 export type RegisterUserResponseBodyDto = TypeExtends<
   Static<typeof registerUserResponseBodyDtoSchema>,
-  contracts.RegisterUserResponseBody
+  RegisterUserResponseBody
 >;
 
 export const registerUserBodyPreValidationHook = (

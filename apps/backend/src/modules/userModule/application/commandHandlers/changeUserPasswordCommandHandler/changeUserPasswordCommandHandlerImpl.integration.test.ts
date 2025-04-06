@@ -4,7 +4,7 @@ import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
-import { TokenType } from '../../../../../common/types/tokenType.js';
+import { tokenTypes } from '../../../../../common/types/tokenType.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
@@ -55,7 +55,7 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
       const resetPasswordToken = tokenService.createToken({
         data: {
           userId: user.id,
-          type: TokenType.passwordReset,
+          type: tokenTypes.passwordReset,
         },
         expiresIn: Generator.number(10000, 100000),
       });
@@ -89,7 +89,7 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
       const resetPasswordToken = tokenService.createToken({
         data: {
           userId,
-          type: TokenType.passwordReset,
+          type: tokenTypes.passwordReset,
         },
         expiresIn: Generator.number(10000, 100000),
       });
@@ -121,7 +121,7 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
       const resetPasswordToken = tokenService.createToken({
         data: {
           userId: user.id,
-          type: TokenType.passwordReset,
+          type: tokenTypes.passwordReset,
         },
         expiresIn: Generator.number(10000, 100000),
       });
@@ -176,7 +176,7 @@ describe('ChangeUserPasswordCommandHandlerImpl', () => {
       const resetPasswordToken = tokenService.createToken({
         data: {
           userId: user.id,
-          type: TokenType.refreshToken,
+          type: tokenTypes.refreshToken,
         },
         expiresIn: Generator.number(10000, 100000),
       });

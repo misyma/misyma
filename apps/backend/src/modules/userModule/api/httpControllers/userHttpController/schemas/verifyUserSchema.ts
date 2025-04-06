@@ -1,4 +1,4 @@
-import type * as contracts from '@common/contracts';
+import { type VerifyUserRequestBody } from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
@@ -7,7 +7,7 @@ export const verifyUserBodyDtoSchema = Type.Object({
   token: Type.String({ minLength: 1 }),
 });
 
-export type VerifyUserBodyDto = TypeExtends<Static<typeof verifyUserBodyDtoSchema>, contracts.VerifyUserRequestBody>;
+export type VerifyUserBodyDto = TypeExtends<Static<typeof verifyUserBodyDtoSchema>, VerifyUserRequestBody>;
 
 export const verifyUserResponseBodyDtoSchema = Type.Null();
 

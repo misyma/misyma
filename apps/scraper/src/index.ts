@@ -1,15 +1,10 @@
-import { XMLParser } from 'fast-xml-parser';
 import yargs, { type Argv } from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
-import { EisbnBookMapper } from './actions/scrapeEIsbnBooksAction/eIsbnBookMapper.js';
-import { ScrapeEisbnBooksAction } from './actions/scrapeEIsbnBooksAction/scrapeEisbnBooksAction.js';
 import { NationalLibraryBookMapper } from './actions/scrapeNationalLibraryBooksAction/nationalLibraryBookMapper.js';
 import { ScrapeNationalLibraryBooksAction } from './actions/scrapeNationalLibraryBooksAction/scrapeNationalLibraryBooksAction.js';
-import { ScrapeNationalLibraryGenresAction } from './actions/scrapeNationalLibraryGenresAction/scrapeNationalLibraryGenresAction.js';
 import { createConfig } from './config.js';
 import { serializeError } from './errors/serializeError.js';
-import { EisbnClientFactory } from './infrastructure/clients/eisbnClient.js';
 import { NationalLibraryClientFactory } from './infrastructure/clients/nationalLibraryClient.js';
 import { AuthorRepository } from './infrastructure/repositories/authorRepository/authorRepository.js';
 import { BookRepository } from './infrastructure/repositories/bookRepository/bookRepository.js';
@@ -61,21 +56,6 @@ try {
 
   const genreRepository = new GenreRepository(dbClient, uuidService);
 
-  const eisbnClient = EisbnClientFactory.create(config);
-
-  const eIsbnMapper = new EisbnBookMapper();
-
-  const parser = new XMLParser();
-
-  const scrapeEisbnAction = new ScrapeEisbnBooksAction(
-    authorRepository,
-    bookRepository,
-    eIsbnMapper,
-    eisbnClient,
-    logger,
-    parser,
-  );
-
   const nationalLibraryClient = NationalLibraryClientFactory.create();
 
   const allGenres = await genreRepository.findGenres();
@@ -96,15 +76,9 @@ try {
     logger,
   );
 
-  const scrapeNationalLibraryGenresAction = new ScrapeNationalLibraryGenresAction(
-    genreRepository,
-    nationalLibraryClient,
-    logger,
-  );
-
   interface ScrapeArgs {
-    source: 'eisbn' | 'nationallibrary';
-    resource: 'book' | 'genre';
+    source: 'nationallibrary';
+    resource: 'book';
     from?: number;
   }
 
@@ -116,13 +90,13 @@ try {
         return builder
           .positional('source', {
             type: 'string',
-            describe: 'Source to scrape from (eisbn | nationallibrary)',
-            choices: ['eisbn', 'nationallibrary'],
+            describe: 'Source to scrape from [nationallibrary]',
+            choices: ['nationallibrary'],
           })
           .positional('resource', {
             type: 'string',
             describe: 'Resource to scrape (book | genre)',
-            choices: ['book', 'genre'],
+            choices: ['book'],
           })
           .option('from', {
             alias: 'f',
@@ -132,28 +106,8 @@ try {
           .usage('Usage: scraper scrape <source> <resource> [-f num]');
       },
       async (argv) => {
-        switch (argv.source) {
-          case 'eisbn':
-            if (argv.resource !== 'book') {
-              console.error('Resource not supported');
-              break;
-            }
+        await scrapeNationalLibraryBooksAction.execute({ from: argv.from });
 
-            await scrapeEisbnAction.execute({ from: argv.from });
-
-            break;
-          case 'nationallibrary':
-            if (argv.resource === 'genre') {
-              await scrapeNationalLibraryGenresAction.execute({ from: argv.from });
-              break;
-            }
-
-            await scrapeNationalLibraryBooksAction.execute({ from: argv.from });
-            break;
-          default:
-            console.error('Unknown source');
-            break;
-        }
         process.exit(0);
       },
     )

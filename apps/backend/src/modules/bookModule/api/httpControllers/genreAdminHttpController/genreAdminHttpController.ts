@@ -10,7 +10,7 @@ import {
 } from '../../../../../common/types/http/httpResponse.js';
 import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
 import { httpStatusCodes } from '../../../../../common/types/http/httpStatusCode.js';
-import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
+import { securityModes } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
 import { type CreateGenreCommandHandler } from '../../../application/commandHandlers/createGenreCommandHandler/createGenreCommandHandler.js';
 import { type DeleteGenreCommandHandler } from '../../../application/commandHandlers/deleteGenreCommandHandler/deleteGenreCommandHandler.js';
@@ -66,7 +66,7 @@ export class GenreAdminHttpController implements HttpController {
             },
           },
         },
-        securityMode: SecurityMode.bearerToken,
+        securityMode: securityModes.bearerToken,
       }),
       new HttpRoute({
         description: 'Update Genre',
@@ -84,7 +84,7 @@ export class GenreAdminHttpController implements HttpController {
             },
           },
         },
-        securityMode: SecurityMode.bearerToken,
+        securityMode: securityModes.bearerToken,
         path: ':genreId',
       }),
       new HttpRoute({
@@ -103,7 +103,7 @@ export class GenreAdminHttpController implements HttpController {
           },
         },
         path: ':genreId',
-        securityMode: SecurityMode.bearerToken,
+        securityMode: securityModes.bearerToken,
       }),
     ];
   }

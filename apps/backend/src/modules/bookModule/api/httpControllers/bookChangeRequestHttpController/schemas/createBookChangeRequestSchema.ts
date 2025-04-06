@@ -1,4 +1,9 @@
-import * as contracts from '@common/contracts';
+import {
+  bookFormats,
+  type CreateBookChangeRequestRequestBody,
+  type CreateBookChangeRequestResponseBody,
+  languages,
+} from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
@@ -19,9 +24,9 @@ export const createBookChangeRequestBodyDtoSchema = Type.Object({
   isbn: Type.Optional(Type.Union([bookIsbnSchema, Type.Null()])),
   publisher: Type.Optional(Type.Union([bookPublisherSchema, Type.Null()])),
   releaseYear: Type.Optional(Type.Union([bookReleaseYearSchema, Type.Null()])),
-  language: Type.Optional(Type.Enum(contracts.Language)),
+  language: Type.Optional(Type.Union(Object.values(languages).map((language) => Type.Literal(language)))),
   translator: Type.Optional(Type.Union([bookTranslatorSchema, Type.Null()])),
-  format: Type.Optional(Type.Enum(contracts.BookFormat)),
+  format: Type.Optional(Type.Union(Object.values(bookFormats).map((bookFormat) => Type.Literal(bookFormat)))),
   pages: Type.Optional(Type.Union([bookPagesSchema, Type.Null()])),
   imageUrl: Type.Optional(Type.Union([bookImageUrlSchema, Type.Null()])),
   authorIds: Type.Optional(
@@ -36,12 +41,12 @@ export const createBookChangeRequestBodyDtoSchema = Type.Object({
 
 export type CreateBookChangeRequestBodyDto = TypeExtends<
   Static<typeof createBookChangeRequestBodyDtoSchema>,
-  contracts.CreateBookChangeRequestRequestBody
+  CreateBookChangeRequestRequestBody
 >;
 
 export const createBookChangeRequestResponseBodyDtoSchema = bookChangeRequestDtoSchema;
 
 export type CreateBookChangeRequestResponseBodyDto = TypeExtends<
   Static<typeof createBookChangeRequestResponseBodyDtoSchema>,
-  contracts.CreateBookChangeRequestResponseBody
+  CreateBookChangeRequestResponseBody
 >;

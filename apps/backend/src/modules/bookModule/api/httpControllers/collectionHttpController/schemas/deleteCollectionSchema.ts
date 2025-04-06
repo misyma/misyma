@@ -1,4 +1,4 @@
-import type * as contracts from '@common/contracts';
+import { type DeleteCollectionPathParams } from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
@@ -8,7 +8,7 @@ export const deleteCollectionPathParamsDtoSchema = Type.Object({
 });
 
 export type DeleteCollectionPathParamsDto = TypeExtends<
-  contracts.DeleteCollectionPathParams,
+  DeleteCollectionPathParams,
   Static<typeof deleteCollectionPathParamsDtoSchema>
 >;
 

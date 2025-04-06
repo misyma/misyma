@@ -10,7 +10,7 @@ import {
 } from '../../../../../common/types/http/httpResponse.js';
 import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
 import { httpStatusCodes } from '../../../../../common/types/http/httpStatusCode.js';
-import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
+import { securityModes } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
 import { type CreateAuthorCommandHandler } from '../../../application/commandHandlers/createAuthorCommandHandler/createAuthorCommandHandler.js';
 import { type DeleteAuthorCommandHandler } from '../../../application/commandHandlers/deleteAuthorCommandHandler/deleteAuthorCommandHandler.js';
@@ -73,7 +73,7 @@ export class AuthorAdminHttpController implements HttpController {
             },
           },
         },
-        securityMode: SecurityMode.bearerToken,
+        securityMode: securityModes.bearerToken,
         description: 'Create author',
       }),
       new HttpRoute({
@@ -90,7 +90,7 @@ export class AuthorAdminHttpController implements HttpController {
             },
           },
         },
-        securityMode: SecurityMode.bearerToken,
+        securityMode: securityModes.bearerToken,
         description: 'Find authors',
       }),
       new HttpRoute({
@@ -110,7 +110,7 @@ export class AuthorAdminHttpController implements HttpController {
             },
           },
         },
-        securityMode: SecurityMode.bearerToken,
+        securityMode: securityModes.bearerToken,
       }),
       new HttpRoute({
         method: httpMethodNames.delete,
@@ -127,7 +127,7 @@ export class AuthorAdminHttpController implements HttpController {
             },
           },
         },
-        securityMode: SecurityMode.bearerToken,
+        securityMode: securityModes.bearerToken,
         description: 'Delete author',
       }),
     ];

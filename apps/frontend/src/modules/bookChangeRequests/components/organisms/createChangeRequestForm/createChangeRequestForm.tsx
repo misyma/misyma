@@ -3,12 +3,7 @@ import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import {
-  BookFormat,
-  BookFormat as ContractBookFormat,
-  CreateBookChangeRequestRequestBody,
-  Language,
-} from '@common/contracts';
+import { BookFormat, bookFormats, CreateBookChangeRequestRequestBody, languages } from '@common/contracts';
 
 import { StepOneForm } from './stepOneForm/stepOneForm';
 import { FindBookByIdQueryOptions } from '../../../../book/api/user/queries/findBookById/findBookByIdQueryOptions';
@@ -49,7 +44,7 @@ type Writeable<T> = {
 };
 
 const stepTwoSchema = z.object({
-  language: z.nativeEnum(Language).optional(),
+  language: z.nativeEnum(languages).optional(),
   translator: z
     .string({
       required_error: 'Przekład jest wymagany.',
@@ -62,7 +57,7 @@ const stepTwoSchema = z.object({
     })
     .or(z.literal(''))
     .optional(),
-  format: z.nativeEnum(ContractBookFormat).optional(),
+  format: z.nativeEnum(bookFormats).optional(),
   pages: z
     .number({
       required_error: 'Ilość stron jest wymagana.',

@@ -1,4 +1,4 @@
-import { BookshelfType } from '@common/contracts';
+import { bookshelfTypes } from '@common/contracts';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { Generator } from '../../../../../../tests/generator.js';
@@ -168,14 +168,14 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
     const borrowingBookshelf = await bookshelfTestUtils.createAndPersist({
       input: {
         userId: user.id,
-        type: BookshelfType.borrowing,
+        type: bookshelfTypes.borrowing,
       },
     });
 
     const standardBookshelf = await bookshelfTestUtils.createAndPersist({
       input: {
         userId: user.id,
-        type: BookshelfType.standard,
+        type: bookshelfTypes.standard,
       },
     });
 

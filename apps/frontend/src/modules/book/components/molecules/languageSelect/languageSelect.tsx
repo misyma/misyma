@@ -1,7 +1,7 @@
 import { type FC, memo, useState } from 'react';
 import { type ControllerRenderProps } from 'react-hook-form';
 
-import { Language } from '@common/contracts';
+import { languages } from '@common/contracts';
 
 import { FormControl } from '../../../../common/components/form/form';
 import {
@@ -36,7 +36,7 @@ const LanguagesList: FC<Props> = ({ setLanguageSelectOpen }) => {
   return [...customSortOrder, ...sortedLanguages].map(([key, language]) => (
     <SelectItem
       key={`language-${key}-${language}`}
-      value={Language[key as keyof typeof Language]}
+      value={languages[key as keyof typeof languages]}
       onKeyDown={(event) => {
         if (event.key === 'Enter') {
           setLanguageSelectOpen(false);

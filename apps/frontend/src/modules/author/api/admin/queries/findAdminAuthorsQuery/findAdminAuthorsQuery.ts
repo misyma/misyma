@@ -2,9 +2,9 @@ import { type QueryKey, type UseQueryOptions, keepPreviousData, useQuery } from 
 
 import {
   type FindAdminAuthorsQueryParams,
-  FindAuthorsSortField,
   SortOrder,
-  type FindAuthorsResponseBody,
+  FindAdminAuthorsResponseBody,
+  sortOrders,
 } from '@common/contracts';
 
 import { ErrorCodeMessageMapper } from '../../../../../common/errorCodeMessageMapper/errorCodeMessageMapper.js';
@@ -21,9 +21,9 @@ type Payload = {
   ids?: string[];
   page?: number;
   pageSize?: number;
-  sortField?: FindAuthorsSortField | undefined;
+  sortField?: FindAdminAuthorsQueryParams['sortField'] | undefined;
   sortOrder?: SortOrder | undefined;
-} & Partial<Omit<UseQueryOptions<FindAuthorsResponseBody, ApiError>, 'queryFn'>>;
+} & Partial<Omit<UseQueryOptions<FindAdminAuthorsResponseBody, ApiError>, 'queryFn'>>;
 
 const mapper = new ErrorCodeMessageMapper({});
 
@@ -31,8 +31,8 @@ export const findAdminAuthors = async (values: FindAdminAuthorsQueryParams) => {
   const { name, page, pageSize, ids, sortField, sortOrder, isApproved } = values;
 
   const query: Record<string, string> = {
-    sortField: sortField || FindAuthorsSortField.createdAt,
-    sortOrder: sortOrder || SortOrder.desc,
+    sortField: sortField || 'createdAt',
+    sortOrder: sortOrder || sortOrders.desc,
   };
 
   if (name) {
@@ -56,7 +56,7 @@ export const findAdminAuthors = async (values: FindAdminAuthorsQueryParams) => {
     }
   }
 
-  const response = await api.get<FindAuthorsResponseBody>(ApiPaths.admin.authors.path, {
+  const response = await api.get<FindAdminAuthorsResponseBody>(ApiPaths.admin.authors.path, {
     params: query,
     paramsSerializer: (params) => {
       const queryString = new URLSearchParams(params);

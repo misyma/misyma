@@ -1,4 +1,4 @@
-import * as contracts from '@common/contracts';
+import { languages, bookFormats } from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
 import {
@@ -21,9 +21,9 @@ export const bookChangeRequestDtoSchema = Type.Object({
   isbn: Type.Optional(bookIsbnSchema),
   publisher: Type.Optional(bookPublisherSchema),
   releaseYear: Type.Optional(bookReleaseYearSchema),
-  language: Type.Optional(Type.Enum(contracts.Language)),
+  language: Type.Optional(Type.Union(Object.values(languages).map((language) => Type.Literal(language)))),
   translator: Type.Optional(bookTranslatorSchema),
-  format: Type.Optional(Type.Enum(contracts.BookFormat)),
+  format: Type.Optional(Type.Union(Object.values(bookFormats).map((bookFormat) => Type.Literal(bookFormat)))),
   pages: Type.Optional(bookPagesSchema),
   imageUrl: Type.Optional(bookImageUrlSchema),
   authorIds: Type.Optional(

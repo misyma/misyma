@@ -3,18 +3,13 @@ import { type SortOrder } from '../sortOrder.js';
 
 import { type Author } from './author.js';
 
-export enum FindAuthorsSortField {
-  createdAt = 'createdAt',
-  name = 'name',
-}
-
 export interface FindAdminAuthorsQueryParams {
   readonly name?: string;
   readonly ids?: string[];
   readonly isApproved?: boolean;
   readonly page?: number;
   readonly pageSize?: number;
-  readonly sortField?: FindAuthorsSortField;
+  readonly sortField?: 'createdAt' | 'name';
   readonly sortOrder?: SortOrder;
 }
 

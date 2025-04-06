@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { BookFormat, Language } from '@common/contracts';
+import { bookFormats, languages } from '@common/contracts';
 
 import { isbnSchema } from '../../common/schemas/isbnSchema';
 
@@ -53,7 +53,7 @@ export const createBookStepOneSchema = z.object({
 export type CreateBookStepOne = z.infer<typeof createBookStepOneSchema>;
 
 export const createBookStepTwoSchema = z.object({
-  language: z.enum(Object.values(Language) as unknown as [string, ...string[]]),
+  language: z.nativeEnum(languages),
   genreId: z.string().uuid(),
   translator: z
     .string({
@@ -66,7 +66,7 @@ export const createBookStepTwoSchema = z.object({
       message: 'Przekład może mieć maksymalnie 64 znaki.',
     })
     .or(z.literal('')),
-  form: z.nativeEnum(BookFormat).optional(),
+  form: z.nativeEnum(bookFormats).optional(),
   pagesCount: z
     .number({
       required_error: 'Ilość stron jest wymagana.',

@@ -1,4 +1,4 @@
-import { BookFormat, Language } from '@common/contracts';
+import { type BookFormat, bookFormats, languages } from '@common/contracts';
 import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 
 import { Generator } from '../../../../../../tests/generator.js';
@@ -260,7 +260,7 @@ describe('BookRepositoryImpl', () => {
 
       const book = bookTestFactory.create({
         ...bookRawEntity,
-        format: bookRawEntity.format as BookFormat
+        format: bookRawEntity.format as BookFormat,
       });
 
       const newTitle = Generator.alphaString(20);
@@ -275,7 +275,7 @@ describe('BookRepositoryImpl', () => {
 
       const newTranslator = Generator.fullName();
 
-      const newFormat = BookFormat.ebook;
+      const newFormat = bookFormats.ebook;
 
       const newPages = (bookRawEntity.pages as number) + 10;
 
@@ -675,7 +675,7 @@ describe('BookRepositoryImpl', () => {
         input: {
           authorIds: [author.id],
           book: {
-            language: Language.Polish,
+            language: languages.Polish,
             genreId: genre.id,
           },
         },
@@ -685,14 +685,14 @@ describe('BookRepositoryImpl', () => {
         input: {
           authorIds: [author.id],
           book: {
-            language: Language.English,
+            language: languages.English,
             genreId: genre.id,
           },
         },
       });
 
       const foundBooks = await bookRepository.findBooks({
-        language: Language.Polish,
+        language: languages.Polish,
         page: 1,
         pageSize: 10,
       });
@@ -1103,7 +1103,7 @@ describe('BookRepositoryImpl', () => {
         input: {
           authorIds: [author.id],
           book: {
-            language: Language.Polish,
+            language: languages.Polish,
             genreId: genre.id,
           },
         },
@@ -1113,7 +1113,7 @@ describe('BookRepositoryImpl', () => {
         input: {
           authorIds: [author.id],
           book: {
-            language: Language.English,
+            language: languages.English,
             genreId: genre.id,
           },
         },
@@ -1123,13 +1123,13 @@ describe('BookRepositoryImpl', () => {
         input: {
           authorIds: [author.id],
           book: {
-            language: Language.German,
+            language: languages.German,
             genreId: genre.id,
           },
         },
       });
 
-      const count = await bookRepository.countBooks({ language: Language.Polish });
+      const count = await bookRepository.countBooks({ language: languages.Polish });
 
       expect(count).toEqual(1);
     });

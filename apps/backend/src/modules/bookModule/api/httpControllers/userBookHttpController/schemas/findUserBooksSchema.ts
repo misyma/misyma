@@ -1,4 +1,10 @@
-import * as contracts from '@common/contracts';
+import {
+  ReadingStatus,
+  languages,
+  type FindUserBooksQueryParams,
+  type FindUserBooksResponseBody,
+  sortOrders,
+} from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
@@ -13,19 +19,26 @@ export const findUserBooksQueryParamsDtoSchema = Type.Object({
   genreId: Type.Optional(Type.String({ format: 'uuid' })),
   isbn: Type.Optional(bookIsbnSchema),
   title: Type.Optional(bookTitleSchema),
-  status: Type.Optional(Type.Enum(contracts.ReadingStatus)),
-  language: Type.Optional(Type.Enum(contracts.Language)),
+  status: Type.Optional(Type.Enum(ReadingStatus)),
+  language: Type.Optional(Type.Union(Object.values(languages).map((language) => Type.Literal(language)))),
   isFavorite: Type.Optional(Type.Boolean()),
   releaseYearBefore: Type.Optional(Type.Integer({ minimum: 1 })),
   releaseYearAfter: Type.Optional(Type.Integer({ minimum: 1 })),
   page: Type.Optional(Type.Integer({ minimum: 1 })),
   pageSize: Type.Optional(Type.Integer({ minimum: 1 })),
-  sortField: Type.Optional(Type.Enum(contracts.FindUserBooksSortField)),
-  sortOrder: Type.Optional(Type.Enum(contracts.SortOrder)),
+  sortField: Type.Optional(
+    Type.Union([
+      Type.Literal('releaseYear'),
+      Type.Literal('createdAt'),
+      Type.Literal('rating'),
+      Type.Literal('readingDate'),
+    ]),
+  ),
+  sortOrder: Type.Optional(Type.Union(Object.values(sortOrders).map((sortOrder) => Type.Literal(sortOrder)))),
 });
 
 export type FindUserBooksQueryParamsDto = TypeExtends<
-  contracts.FindUserBooksQueryParams,
+  FindUserBooksQueryParams,
   Static<typeof findUserBooksQueryParamsDtoSchema>
 >;
 
@@ -39,6 +52,6 @@ export const findUserBooksResponseBodyDtoSchema = Type.Object({
 });
 
 export type FindUserBooksResponseBodyDto = TypeExtends<
-  contracts.FindUserBooksResponseBody,
+  FindUserBooksResponseBody,
   Static<typeof findUserBooksResponseBodyDtoSchema>
 >;

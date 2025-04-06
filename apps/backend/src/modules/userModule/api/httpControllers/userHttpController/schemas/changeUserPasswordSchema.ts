@@ -1,4 +1,4 @@
-import type * as contracts from '@common/contracts';
+import { type ChangeUserPasswordRequestBody } from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
@@ -11,7 +11,7 @@ export const changeUserPasswordBodyDtoSchema = Type.Object({
 
 export type ChangeUserPasswordBodyDto = TypeExtends<
   Static<typeof changeUserPasswordBodyDtoSchema>,
-  contracts.ChangeUserPasswordRequestBody
+  ChangeUserPasswordRequestBody
 >;
 
 export const changeUserPasswordResponseBodyDtoSchema = Type.Null();

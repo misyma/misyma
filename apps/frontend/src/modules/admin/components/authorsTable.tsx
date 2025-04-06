@@ -1,6 +1,6 @@
 import { type FC, useEffect, useMemo, useState } from 'react';
 
-import { type FindAuthorsSortField, type Author, type SortOrder } from '@common/contracts';
+import { type FindAdminAuthorsQueryParams, type Author, type SortOrder } from '@common/contracts';
 
 import { AdminAuthorsSortButton } from './adminAuthorsSortButton';
 import { useFindAdminAuthorsQuery } from '../../author/api/admin/queries/findAdminAuthorsQuery/findAdminAuthorsQuery';
@@ -15,7 +15,7 @@ import { useInitialFetch } from '../../common/hooks/useInitialFetch';
 
 interface AdminAuthorsTableProps {
   page: number;
-  sortField?: FindAuthorsSortField;
+  sortField?: FindAdminAuthorsQueryParams['sortField'];
   sortOrder?: SortOrder;
   setPage: (val: number) => void;
   authorName: string;

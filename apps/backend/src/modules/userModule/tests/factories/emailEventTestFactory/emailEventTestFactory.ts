@@ -6,7 +6,7 @@ import {
   type EmailEventDraftState,
   type EmailEventState,
 } from '../../../domain/entities/emailEvent/emailEvent.js';
-import { EmailEventStatus } from '../../../domain/entities/emailEvent/types/emailEventStatus.js';
+import { emailEventStatuses } from '../../../domain/entities/emailEvent/types/emailEventStatus.js';
 
 export class EmailEventTestFactory {
   public createDraft(overrides: Partial<EmailEventDraftState> = {}): EmailEventDraft {
@@ -26,7 +26,7 @@ export class EmailEventTestFactory {
       createdAt: Generator.pastDate(),
       id: Generator.uuid(),
       eventName: Generator.arrayElement<EmailType>(Object.keys(emailTypes) as EmailType[]),
-      status: EmailEventStatus.pending,
+      status: emailEventStatuses.pending,
       ...overrides,
       payload: {
         recipientEmail: Generator.email(),

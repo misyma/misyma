@@ -1,4 +1,4 @@
-import type * as contracts from '@common/contracts';
+import { type FindBookshelfParams, type FindBookshelfResponseBody } from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
@@ -11,12 +11,12 @@ export const findBookshelfPathParamsDtoSchema = Type.Object({
 
 export type FindBookshelfPathParamsDto = TypeExtends<
   Static<typeof findBookshelfPathParamsDtoSchema>,
-  contracts.FindBookshelfParams
+  FindBookshelfParams
 >;
 
 export const findBookshelfResponseBodyDtoSchema = bookshelfDtoSchema;
 
 export type FindBookshelfResponseBodyDto = TypeExtends<
   Static<typeof findBookshelfResponseBodyDtoSchema>,
-  contracts.FindBookshelfResponseBody
+  FindBookshelfResponseBody
 >;

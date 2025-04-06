@@ -9,7 +9,6 @@ export function mapBookToDto(book: Book): BookDto {
     id: book.getId(),
     title,
     language,
-    format: format ?? undefined,
     isApproved,
     releaseYear,
     genreId: book.getGenreId(),
@@ -41,6 +40,10 @@ export function mapBookToDto(book: Book): BookDto {
 
   if (imageUrl) {
     bookDto.imageUrl = imageUrl;
+  }
+
+  if (format) {
+    bookDto.format = format;
   }
 
   return bookDto;

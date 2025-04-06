@@ -1,5 +1,5 @@
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
-import { TokenType } from '../../../../../common/types/tokenType.js';
+import { tokenTypes } from '../../../../../common/types/tokenType.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { type BlacklistTokenRepository } from '../../../domain/repositories/blacklistTokenRepository/blacklistTokenRepository.js';
@@ -96,7 +96,7 @@ export class ChangeUserPasswordCommandHandlerImpl implements ChangeUserPasswordC
 
     const { userId, type } = tokenPayload;
 
-    if (!userId || type !== TokenType.passwordReset) {
+    if (!userId || type !== tokenTypes.passwordReset) {
       throw new OperationNotValidError({
         reason: 'Invalid reset password token.',
         resetPasswordToken,

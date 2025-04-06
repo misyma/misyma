@@ -4,7 +4,7 @@ import { type FC, useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { BookFormat as ContractBookFormat, Language, type UpdateBookRequestBody } from '@common/contracts';
+import { bookFormats, languages, type UpdateBookRequestBody } from '@common/contracts';
 
 import { StepOneForm } from './stepOneForm/stepOneForm';
 import { Button } from '../../../../common/components/button/button';
@@ -45,7 +45,7 @@ type Writeable<T> = {
 };
 
 const stepTwoSchema = z.object({
-  language: z.nativeEnum(Language).optional(),
+  language: z.nativeEnum(languages).optional(),
   translator: z
     .string({
       required_error: 'Przekład jest wymagany.',
@@ -57,7 +57,7 @@ const stepTwoSchema = z.object({
       message: 'Przekład może mieć maksymalnie 64 znaki.',
     })
     .optional(),
-  format: z.nativeEnum(ContractBookFormat).optional(),
+  format: z.nativeEnum(bookFormats).optional(),
   pages: z
     .number({
       required_error: 'Ilość stron jest wymagana.',

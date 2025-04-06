@@ -1,4 +1,4 @@
-import * as contracts from '@common/contracts';
+import { sortOrders, type FindBookshelvesQueryParams, type FindBookshelvesResponseBody } from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
@@ -14,12 +14,12 @@ export const findBookshelvesQueryParamsDtoSchema = Type.Object({
   ),
   page: Type.Optional(Type.Integer({ minimum: 1 })),
   pageSize: Type.Optional(Type.Integer({ minimum: 1 })),
-  sortDate: Type.Optional(Type.Enum(contracts.SortOrder)),
+  sortDate: Type.Optional(Type.Union(Object.values(sortOrders).map((sortOrder) => Type.Literal(sortOrder)))),
 });
 
 export type FindBookshelvesQueryParamsDto = TypeExtends<
   Static<typeof findBookshelvesQueryParamsDtoSchema>,
-  contracts.FindBookshelvesQueryParams
+  FindBookshelvesQueryParams
 >;
 
 export const findBookshelvesResponseBodyDtoSchema = Type.Object({
@@ -33,5 +33,5 @@ export const findBookshelvesResponseBodyDtoSchema = Type.Object({
 
 export type FindBookshelvesResponseBodyDto = TypeExtends<
   Static<typeof findBookshelvesResponseBodyDtoSchema>,
-  contracts.FindBookshelvesResponseBody
+  FindBookshelvesResponseBody
 >;

@@ -1,4 +1,4 @@
-import * as contracts from '@common/contracts';
+import { type FindCollectionsQueryParams, type FindCollectionsResponseBody, sortOrders } from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
@@ -8,12 +8,12 @@ export const findCollectionsQueryParamsDtoSchema = Type.Object({
   userId: Type.String({ format: 'uuid' }),
   page: Type.Optional(Type.Integer({ minimum: 1 })),
   pageSize: Type.Optional(Type.Integer({ minimum: 1 })),
-  sortDate: Type.Optional(Type.Enum(contracts.SortOrder)),
+  sortDate: Type.Optional(Type.Union(Object.values(sortOrders).map((sortOrder) => Type.Literal(sortOrder)))),
 });
 
 export type FindCollectionsQueryParamsDto = TypeExtends<
   Static<typeof findCollectionsQueryParamsDtoSchema>,
-  contracts.FindCollectionsQueryParams
+  FindCollectionsQueryParams
 >;
 
 export const findCollectionsResponseBodyDtoSchema = Type.Object({
@@ -27,5 +27,5 @@ export const findCollectionsResponseBodyDtoSchema = Type.Object({
 
 export type FindCollectionsResponseBodyDto = TypeExtends<
   Static<typeof findCollectionsResponseBodyDtoSchema>,
-  contracts.FindCollectionsResponseBody
+  FindCollectionsResponseBody
 >;

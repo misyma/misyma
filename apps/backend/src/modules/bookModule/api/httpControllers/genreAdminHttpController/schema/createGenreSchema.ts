@@ -1,4 +1,4 @@
-import type * as contracts from '@common/contracts';
+import { type CreateGenreRequestBody, type CreateGenreResponseBody } from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
@@ -8,11 +8,11 @@ export const createGenreBodyDtoSchema = Type.Object({
   name: genreNameSchema,
 });
 
-export type CreateGenreBodyDto = TypeExtends<contracts.CreateGenreRequestBody, Static<typeof createGenreBodyDtoSchema>>;
+export type CreateGenreBodyDto = TypeExtends<CreateGenreRequestBody, Static<typeof createGenreBodyDtoSchema>>;
 
 export const createGenreResponseBodyDtoSchema = genreDtoSchema;
 
 export type CreateGenreResponseBodyDto = TypeExtends<
-  contracts.CreateGenreResponseBody,
+  CreateGenreResponseBody,
   Static<typeof createGenreResponseBodyDtoSchema>
 >;

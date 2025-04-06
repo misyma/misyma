@@ -1,4 +1,3 @@
-import { type NationalLibraryResponseBody } from '../../common/nationalLibraryBook.js';
 import { type NationalLibraryClient } from '../../infrastructure/clients/nationalLibraryClient.js';
 import { type Author } from '../../infrastructure/entities/author/author.js';
 import { type BookDraft } from '../../infrastructure/entities/book/book.js';
@@ -6,6 +5,7 @@ import { type AuthorRepository } from '../../infrastructure/repositories/authorR
 import { type BookRepository } from '../../infrastructure/repositories/bookRepository/bookRepository.js';
 import { type LoggerService } from '../../libs/logger/loggerService.js';
 
+import { type NationalLibraryResponseBody } from './nationalLibraryBook.js';
 import { type NationalLibraryBookMapper } from './nationalLibraryBookMapper.js';
 
 export interface ScrapeNationalLibraryBooksActionPayload {

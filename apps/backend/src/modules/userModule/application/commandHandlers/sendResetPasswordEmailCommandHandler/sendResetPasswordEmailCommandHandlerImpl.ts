@@ -1,5 +1,5 @@
 import { emailTypes } from '../../../../../common/types/emailType.js';
-import { TokenType } from '../../../../../common/types/tokenType.js';
+import { tokenTypes } from '../../../../../common/types/tokenType.js';
 import { type Config } from '../../../../../core/config.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
@@ -46,7 +46,7 @@ export class SendResetPasswordEmailCommandHandlerImpl implements SendResetPasswo
     const resetPasswordToken = this.tokenService.createToken({
       data: {
         userId: user.getId(),
-        type: TokenType.passwordReset,
+        type: tokenTypes.passwordReset,
       },
       expiresIn: this.config.token.resetPassword.expiresIn,
     });

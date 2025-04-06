@@ -1,4 +1,4 @@
-import { BookshelfType, UserRole } from '@common/contracts';
+import { bookshelfTypes, UserRole } from '@common/contracts';
 
 import { type DatabaseClient } from '../libs/database/clients/databaseClient/databaseClient.js';
 import { DatabaseClientFactory } from '../libs/database/factories/databaseClientFactory/databaseClientFactory.js';
@@ -178,7 +178,7 @@ export class Application {
       id: uuidService.generateUuid(),
       name: 'Archiwum',
       userId,
-      type: BookshelfType.archive,
+      type: bookshelfTypes.archive,
       createdAt: new Date(),
     });
 
@@ -186,7 +186,7 @@ export class Application {
       id: uuidService.generateUuid(),
       name: 'Wypożyczalnia',
       userId,
-      type: BookshelfType.borrowing,
+      type: bookshelfTypes.borrowing,
       createdAt: new Date(),
     });
 

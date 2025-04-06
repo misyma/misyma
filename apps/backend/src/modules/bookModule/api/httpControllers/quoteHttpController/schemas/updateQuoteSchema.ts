@@ -1,4 +1,8 @@
-import type * as contracts from '@common/contracts';
+import {
+  type UpdateQuotePathParams,
+  type UpdateQuoteRequestBody,
+  type UpdateQuoteResponseBody,
+} from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
@@ -11,7 +15,7 @@ export const updateQuotePathParamsDtoSchema = Type.Object({
 
 export type UpdateQuotePathParamsDto = TypeExtends<
   Static<typeof updateQuotePathParamsDtoSchema>,
-  contracts.UpdateQuotePathParams
+  UpdateQuotePathParams
 >;
 
 export const updateQuoteBodyDtoSchema = Type.Object({
@@ -20,11 +24,11 @@ export const updateQuoteBodyDtoSchema = Type.Object({
   page: Type.Optional(quotePageSchema),
 });
 
-export type UpdateQuoteBodyDto = TypeExtends<Static<typeof updateQuoteBodyDtoSchema>, contracts.UpdateQuoteRequestBody>;
+export type UpdateQuoteBodyDto = TypeExtends<Static<typeof updateQuoteBodyDtoSchema>, UpdateQuoteRequestBody>;
 
 export const updateQuoteResponseBodyDtoSchema = quoteDtoSchema;
 
 export type UpdateQuoteResponseBodyDto = TypeExtends<
   Static<typeof updateQuoteResponseBodyDtoSchema>,
-  contracts.UpdateQuoteResponseBody
+  UpdateQuoteResponseBody
 >;

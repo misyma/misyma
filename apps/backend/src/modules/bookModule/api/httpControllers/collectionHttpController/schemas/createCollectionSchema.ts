@@ -1,4 +1,4 @@
-import type * as contracts from '@common/contracts';
+import { type CreateCollectionRequestBody, type CreateCollectionResponseBody } from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
@@ -10,13 +10,13 @@ export const createCollectionBodyDtoSchema = Type.Object({
 });
 
 export type CreateCollectionBodyDto = TypeExtends<
-  contracts.CreateCollectionRequestBody,
+  CreateCollectionRequestBody,
   Static<typeof createCollectionBodyDtoSchema>
 >;
 
 export const createCollectionResponseBodyDtoSchema = collectionDtoSchema;
 
 export type CreateCollectionResponseBodyDto = TypeExtends<
-  contracts.CreateCollectionResponseBody,
+  CreateCollectionResponseBody,
   Static<typeof createCollectionResponseBodyDtoSchema>
 >;

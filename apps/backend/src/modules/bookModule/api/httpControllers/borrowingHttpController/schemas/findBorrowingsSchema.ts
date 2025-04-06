@@ -1,4 +1,9 @@
-import * as contracts from '@common/contracts';
+import {
+  type FindBorrowingsPathParams,
+  sortOrders,
+  type FindBorrowingsQueryParams,
+  type FindBorrowingsResponseBody,
+} from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
@@ -11,19 +16,19 @@ export const findBorrowingsPathParamsDtoSchema = Type.Object({
 
 export type FindBorrowingsPathParamsDto = TypeExtends<
   Static<typeof findBorrowingsPathParamsDtoSchema>,
-  contracts.FindBorrowingsPathParams
+  FindBorrowingsPathParams
 >;
 
 export const findBorrowingsQueryParamsDtoSchema = Type.Object({
   page: Type.Optional(Type.Integer({ minimum: 1 })),
   pageSize: Type.Optional(Type.Integer({ minimum: 1 })),
-  sortDate: Type.Optional(Type.Enum(contracts.SortOrder)),
+  sortDate: Type.Optional(Type.Union(Object.values(sortOrders).map((sortOrder) => Type.Literal(sortOrder)))),
   isOpen: Type.Optional(Type.Boolean()),
 });
 
 export type FindBorrowingsQueryParamsDto = TypeExtends<
   Static<typeof findBorrowingsQueryParamsDtoSchema>,
-  contracts.FindBorrowingsQueryParams
+  FindBorrowingsQueryParams
 >;
 
 export const findBorrowingsResponseBodyDtoSchema = Type.Object({
@@ -37,5 +42,5 @@ export const findBorrowingsResponseBodyDtoSchema = Type.Object({
 
 export type FindBorrowingsResponseBodyDto = TypeExtends<
   Static<typeof findBorrowingsResponseBodyDtoSchema>,
-  contracts.FindBorrowingsResponseBody
+  FindBorrowingsResponseBody
 >;

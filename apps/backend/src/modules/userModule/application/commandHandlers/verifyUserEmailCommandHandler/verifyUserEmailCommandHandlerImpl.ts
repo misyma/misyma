@@ -1,5 +1,5 @@
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
-import { TokenType } from '../../../../../common/types/tokenType.js';
+import { tokenTypes } from '../../../../../common/types/tokenType.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
@@ -35,7 +35,7 @@ export class VerifyUserEmailCommandHandlerImpl implements VerifyUserEmailCommand
       });
     }
 
-    if (tokenPayload['type'] !== TokenType.emailVerification) {
+    if (tokenPayload['type'] !== tokenTypes.emailVerification) {
       throw new OperationNotValidError({
         reason: 'Token type is not email verification token.',
       });

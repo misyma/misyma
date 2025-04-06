@@ -1,7 +1,7 @@
 import { type FC } from 'react';
 import { IoMdStar } from 'react-icons/io';
 
-import { SortOrder } from '@common/contracts';
+import { sortOrders } from '@common/contracts';
 
 import { FindBookReadingsQueryOptions } from '../../../../bookReadings/api/queries/findBookReadings/findBookReadingsQueryOptions';
 import { Skeleton } from '../../../../common/components/skeleton/skeleton';
@@ -16,7 +16,7 @@ export const CurrentRatingStar: FC<Props> = ({ userBookId }) => {
     FindBookReadingsQueryOptions({
       userBookId,
       pageSize: 1,
-      sortDate: SortOrder.desc,
+      sortDate: sortOrders.desc,
     }),
   );
 

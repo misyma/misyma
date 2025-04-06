@@ -6,7 +6,7 @@ import { type FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { type FindBookResponseBody, Language, type UpdateBookRequestBody } from '@common/contracts';
+import { type FindBookResponseBody, languages, type UpdateBookRequestBody } from '@common/contracts';
 
 import { Route } from './$id';
 import { AuthenticatedLayout } from '../../../../../modules/auth/layouts/authenticated/authenticatedLayout';
@@ -108,7 +108,7 @@ const editBookFormSchema = z.object({
     .max(2100, {
       message: 'Rok wydania nie może być późniejszy niż 2100',
     }),
-  language: z.enum(Object.values(Language) as unknown as [string, ...string[]]),
+  language: z.nativeEnum(languages),
   translator: z
     .string({
       required_error: 'Przekład jest wymagany.',

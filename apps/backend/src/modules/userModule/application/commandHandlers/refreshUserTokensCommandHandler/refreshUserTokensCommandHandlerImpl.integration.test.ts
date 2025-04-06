@@ -4,7 +4,7 @@ import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
-import { TokenType } from '../../../../../common/types/tokenType.js';
+import { tokenTypes } from '../../../../../common/types/tokenType.js';
 import { type Config } from '../../../../../core/config.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
@@ -65,7 +65,7 @@ describe('RefreshUserTokensCommandHandler', () => {
     const refreshToken = tokenService.createToken({
       data: {
         userId: user.id,
-        type: TokenType.refreshToken,
+        type: tokenTypes.refreshToken,
       },
       expiresIn: Generator.number(10000, 100000),
     });
@@ -93,7 +93,7 @@ describe('RefreshUserTokensCommandHandler', () => {
     const refreshToken = tokenService.createToken({
       data: {
         userId,
-        type: TokenType.refreshToken,
+        type: tokenTypes.refreshToken,
       },
       expiresIn: Generator.number(10000, 100000),
     });
@@ -122,7 +122,7 @@ describe('RefreshUserTokensCommandHandler', () => {
     const refreshToken = tokenService.createToken({
       data: {
         userId: user.id,
-        type: TokenType.passwordReset,
+        type: tokenTypes.passwordReset,
       },
       expiresIn: Generator.number(10000, 100000),
     });
@@ -147,7 +147,7 @@ describe('RefreshUserTokensCommandHandler', () => {
   it('throws an error if refresh token does not contain userId', async () => {
     const refreshToken = tokenService.createToken({
       data: {
-        type: TokenType.refreshToken,
+        type: tokenTypes.refreshToken,
       },
       expiresIn: Generator.number(10000, 100000),
     });

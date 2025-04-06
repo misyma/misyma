@@ -3,7 +3,7 @@ import { Check } from 'lucide-react';
 import { type FC, useState } from 'react';
 import { HiBarsArrowDown } from 'react-icons/hi2';
 
-import { SortOrder } from '@common/contracts';
+import { sortOrders } from '@common/contracts';
 
 import { Button } from '../../../../common/components/button/button';
 import { Command, CommandItem, CommandList } from '../../../../common/components/command/command';
@@ -67,18 +67,18 @@ export const QuotationsTabSortingButton: FC<Props> = ({ from }) => {
             <Command>
               <CommandList>
                 <CommandItem
-                  onSelect={() => handleSort('sortDate', SortOrder.desc)}
+                  onSelect={() => handleSort('sortDate', sortOrders.desc)}
                   className="cursor-pointer flex justify-between"
                 >
                   <span>Data dodania: najnowsze</span>
-                  {search.sortDate === SortOrder.desc && selectedSortCheckmark}
+                  {search.sortDate === sortOrders.desc && selectedSortCheckmark}
                 </CommandItem>
                 <CommandItem
-                  onSelect={() => handleSort('sortDate', SortOrder.asc)}
+                  onSelect={() => handleSort('sortDate', sortOrders.asc)}
                   className="cursor-pointer flex justify-between"
                 >
                   <span>Data dodania: najstarsze</span>
-                  {search.sortDate === SortOrder.asc && selectedSortCheckmark}
+                  {search.sortDate === sortOrders.asc && selectedSortCheckmark}
                 </CommandItem>
               </CommandList>
             </Command>

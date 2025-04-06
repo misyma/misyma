@@ -6,7 +6,7 @@ import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { coreSymbols } from '../../../../../core/symbols.js';
 import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { EmailEvent } from '../../../domain/entities/emailEvent/emailEvent.js';
-import { EmailEventStatus } from '../../../domain/entities/emailEvent/types/emailEventStatus.js';
+import { emailEventStatuses } from '../../../domain/entities/emailEvent/types/emailEventStatus.js';
 import { type EmailEventRepository } from '../../../domain/repositories/emailEventRepository/emailEventRepository.js';
 import { symbols } from '../../../symbols.js';
 import { EmailEventTestFactory } from '../../../tests/factories/emailEventTestFactory/emailEventTestFactory.js';
@@ -45,12 +45,11 @@ describe('EmailEventRepositoryImpl', () => {
 
       const amountOfEmailEvents = Generator.number(10, 50);
 
-       
       const emailEvents = Array.from({ length: amountOfEmailEvents }).map((_, index) => {
         return emailEventTestFactory.create({
           createdAt: new Date(startingDate.getTime() + (index + 1) * 1000),
           id: Generator.uuid(),
-          status: EmailEventStatus.pending,
+          status: emailEventStatuses.pending,
         });
       });
 
@@ -74,10 +73,9 @@ describe('EmailEventRepositoryImpl', () => {
     it('returns all pending EmailEvents', async () => {
       const amountOfEmailEvents = Generator.number(10, 50);
 
-       
       const emailEvents = Array.from({ length: amountOfEmailEvents }).map(() => {
         return emailEventTestFactory.create({
-          status: EmailEventStatus.pending,
+          status: emailEventStatuses.pending,
         });
       });
 
@@ -90,7 +88,7 @@ describe('EmailEventRepositoryImpl', () => {
       foundEmailEvents.forEach((foundEmailEvent) => {
         expect(foundEmailEvent).toBeInstanceOf(EmailEvent);
 
-        expect(foundEmailEvent.getStatus()).toEqual(EmailEventStatus.pending);
+        expect(foundEmailEvent.getStatus()).toEqual(emailEventStatuses.pending);
       });
     });
   });
@@ -98,21 +96,21 @@ describe('EmailEventRepositoryImpl', () => {
   describe('updateStatus', () => {
     it('updates the status of the EmailEvent', async () => {
       const emailEvent = emailEventTestFactory.create({
-        status: EmailEventStatus.pending,
+        status: emailEventStatuses.pending,
       });
 
       await emailEventTestUtils.create(emailEvent);
 
       await emailEventRepository.updateStatus({
         id: emailEvent.getId(),
-        status: EmailEventStatus.processing,
+        status: emailEventStatuses.processing,
       });
 
       const foundEmailEvent = await emailEventTestUtils.findById(emailEvent.getId());
 
       expect(foundEmailEvent).not.toBeNull();
 
-      expect(foundEmailEvent?.status).toEqual(EmailEventStatus.processing);
+      expect(foundEmailEvent?.status).toEqual(emailEventStatuses.processing);
     });
   });
 
@@ -120,16 +118,15 @@ describe('EmailEventRepositoryImpl', () => {
     it('deletes all processed EmailEvents', async () => {
       const amountOfEmailEvents = Generator.number(10, 50);
 
-       
       const emailEvents = Array.from({ length: amountOfEmailEvents }).map(() => {
         return emailEventTestFactory.create({
-          status: EmailEventStatus.processed,
+          status: emailEventStatuses.processed,
         });
       });
 
       const pendingEmailEvents = Array.from({ length: amountOfEmailEvents }).map(() => {
         return emailEventTestFactory.create({
-          status: EmailEventStatus.pending,
+          status: emailEventStatuses.pending,
         });
       });
 

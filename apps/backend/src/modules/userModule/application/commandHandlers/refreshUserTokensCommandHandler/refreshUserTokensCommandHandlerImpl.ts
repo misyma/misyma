@@ -1,5 +1,5 @@
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
-import { TokenType } from '../../../../../common/types/tokenType.js';
+import { tokenTypes } from '../../../../../common/types/tokenType.js';
 import { type Config } from '../../../../../core/config.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
@@ -52,7 +52,7 @@ export class RefreshUserTokensCommandHandlerImpl implements RefreshUserTokensCom
       });
     }
 
-    if (tokenPayload['type'] !== TokenType.refreshToken) {
+    if (tokenPayload['type'] !== tokenTypes.refreshToken) {
       throw new OperationNotValidError({
         reason: 'Token type is not refresh token.',
       });
@@ -80,7 +80,7 @@ export class RefreshUserTokensCommandHandlerImpl implements RefreshUserTokensCom
     const accessToken = this.tokenService.createToken({
       data: {
         userId,
-        type: TokenType.accessToken,
+        type: tokenTypes.accessToken,
         role: user.getRole(),
       },
       expiresIn: accessTokenExpiresIn,

@@ -1,6 +1,6 @@
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { emailTypes } from '../../../../../common/types/emailType.js';
-import { TokenType } from '../../../../../common/types/tokenType.js';
+import { tokenTypes } from '../../../../../common/types/tokenType.js';
 import { type Config } from '../../../../../core/config.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
@@ -52,7 +52,7 @@ export class SendVerificationEmailCommandHandlerImpl implements SendVerification
     const emailVerificationToken = this.tokenService.createToken({
       data: {
         userId: user.getId(),
-        type: TokenType.emailVerification,
+        type: tokenTypes.emailVerification,
       },
       expiresIn: this.config.token.emailVerification.expiresIn,
     });

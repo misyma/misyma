@@ -1,4 +1,4 @@
-import { TokenType } from '../../../../../common/types/tokenType.js';
+import { tokenTypes } from '../../../../../common/types/tokenType.js';
 import { type Config } from '../../../../../core/config.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { ForbiddenAccessError } from '../../../../authModule/application/errors/forbiddenAccessError.js';
@@ -65,7 +65,7 @@ export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
     const accessToken = this.tokenService.createToken({
       data: {
         userId: user.getId(),
-        type: TokenType.accessToken,
+        type: tokenTypes.accessToken,
         role: user.getRole(),
       },
       expiresIn: accessTokenExpiresIn,
@@ -76,7 +76,7 @@ export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
     const refreshToken = this.tokenService.createToken({
       data: {
         userId: user.getId(),
-        type: TokenType.refreshToken,
+        type: tokenTypes.refreshToken,
       },
       expiresIn: refreshTokenExpiresIn,
     });

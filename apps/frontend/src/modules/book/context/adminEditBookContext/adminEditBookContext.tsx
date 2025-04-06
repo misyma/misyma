@@ -1,6 +1,6 @@
 import { type Dispatch, type ReactNode, createContext, useContext, useReducer } from 'react';
 
-import { BookFormat, Language } from '@common/contracts';
+import { BookFormat, bookFormats, Language, languages } from '@common/contracts';
 
 export interface AdminEditBookState {
   isbn: string;
@@ -34,9 +34,9 @@ type Actions = ResetContextValues | SetContextValuesAction;
 
 const defaultValues: AdminEditBookState = {
   authorIds: [],
-  format: BookFormat.paperback,
+  format: bookFormats.paperback,
   isbn: '',
-  language: Language.English,
+  language: languages.English,
   pages: undefined,
   publisher: '',
   title: '',
@@ -72,9 +72,9 @@ function adminEditBookReducer(state: AdminEditBookState, action: Actions) {
   if (action.type === AdminEditBookAction.resetContext) {
     return {
       authorIds: [],
-      format: BookFormat.paperback,
+      format: bookFormats.paperback,
       isbn: '',
-      language: Language.English,
+      language: languages.English,
       pages: undefined,
       publisher: '',
       title: '',

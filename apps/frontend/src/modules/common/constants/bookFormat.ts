@@ -1,7 +1,7 @@
-import { BookFormat as ContractBookFormat } from '@common/contracts';
+import { bookFormats } from '@common/contracts';
 
 export const BookFormat = {
-  [ContractBookFormat.ebook]: 'ebook',
-  [ContractBookFormat.hardcover]: 'twarda oprawa',
-  [ContractBookFormat.paperback]: 'oprawa miękka',
+  [bookFormats.ebook]: 'ebook',
+  [bookFormats.hardcover]: 'okładka twarda',
+  [bookFormats.paperback]: 'okładka miękka',
 } as const;

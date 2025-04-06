@@ -1,4 +1,4 @@
-import { BookshelfType } from '@common/contracts';
+import { bookshelfTypes } from '@common/contracts';
 
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
@@ -64,7 +64,7 @@ export class CreateBorrowingCommandHandlerImpl implements CreateBorrowingCommand
 
     const borrowingBookshelves = await this.bookshelfRepository.findBookshelves({
       userId: existingBookshelf.getUserId(),
-      type: BookshelfType.borrowing,
+      type: bookshelfTypes.borrowing,
       page: 1,
       pageSize: 1,
     });

@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
 import { type FC } from 'react';
 
-import { FindUserBooksSortField, SortOrder } from '@common/contracts';
+import { FindUserBooksQueryParams, SortOrder, sortOrders } from '@common/contracts';
 
 import { TitleSearchField } from '../../modules/book/components/atoms/bookTitleSearchField/bookTitleSearchField.js';
 import {
@@ -15,17 +15,17 @@ import { RequireAuthComponent } from '../../modules/core/components/requireAuth/
 import { ContentLayout } from '../../modules/core/layouts/content/contentLayout.js';
 
 const MyBooksVirtualizedBooksList = () => {
-  const sortFieldMap = {
-    createdAt: FindUserBooksSortField.createdAt,
-    releaseYear: FindUserBooksSortField.releaseYear,
-    rating: FindUserBooksSortField.rating,
-    readingDate: FindUserBooksSortField.readingDate,
+  const sortFieldMap: Record<string, FindUserBooksQueryParams['sortField']> = {
+    createdAt: 'createdAt',
+    releaseYear: 'releaseYear',
+    rating: 'rating',
+    readingDate: 'readingDate',
     '': undefined,
   };
 
-  const sortOrderMap = {
-    asc: SortOrder.asc,
-    desc: SortOrder.desc,
+  const sortOrderMap: Record<string, SortOrder | undefined> = {
+    asc: sortOrders.asc,
+    desc: sortOrders.desc,
     '': undefined,
   };
 

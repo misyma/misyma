@@ -1,4 +1,4 @@
-import * as contracts from '@common/contracts';
+import { ReadingStatus, languages, bookFormats } from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
 import { bookReadingDtoSchema } from '../../bookReadingHttpController/schemas/bookReadingDto.js';
@@ -17,7 +17,7 @@ import { collectionDtoSchema } from '../../common/collectionDto.js';
 export const userBookDtoSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
   imageUrl: Type.Optional(bookImageUrlSchema),
-  status: Type.Enum(contracts.ReadingStatus),
+  status: Type.Enum(ReadingStatus),
   isFavorite: Type.Boolean(),
   bookshelfId: Type.String({ format: 'uuid' }),
   createdAt: Type.String({ format: 'date-time' }),
@@ -31,9 +31,9 @@ export const userBookDtoSchema = Type.Object({
     isbn: Type.Optional(bookIsbnSchema),
     publisher: Type.Optional(bookPublisherSchema),
     releaseYear: bookReleaseYearSchema,
-    language: Type.Enum(contracts.Language),
+    language: Type.Union(Object.values(languages).map((language) => Type.Literal(language))),
     translator: Type.Optional(bookTranslatorSchema),
-    format: Type.Enum(contracts.BookFormat),
+    format: Type.Optional(Type.Union(Object.values(bookFormats).map((bookFormat) => Type.Literal(bookFormat)))),
     pages: Type.Optional(bookPagesSchema),
     isApproved: Type.Boolean(),
     imageUrl: Type.Optional(bookImageUrlSchema),

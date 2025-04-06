@@ -1,4 +1,4 @@
-import type * as contracts from '@common/contracts';
+import { type DeleteBookshelfParams, type DeleteBookshelfQueryParams } from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
@@ -9,7 +9,7 @@ export const deleteBookshelfPathParamsDtoSchema = Type.Object({
 
 export type DeleteBookshelfPathParamsDto = TypeExtends<
   Static<typeof deleteBookshelfPathParamsDtoSchema>,
-  contracts.DeleteBookshelfParams
+  DeleteBookshelfParams
 >;
 
 export const deleteBookshelfQueryParamsDtoSchema = Type.Object({
@@ -18,7 +18,7 @@ export const deleteBookshelfQueryParamsDtoSchema = Type.Object({
 
 export type DeleteBookshelfQueryParamsDto = TypeExtends<
   Static<typeof deleteBookshelfQueryParamsDtoSchema>,
-  contracts.DeleteBookshelfQueryParams
+  DeleteBookshelfQueryParams
 >;
 
 export const deleteBookshelfResponseBodyDtoSchema = Type.Null();

@@ -3,7 +3,7 @@
   "type": "module",
   "scripts": {
     "start": "node src/index.js",
-    "start:dev": "node --watch --inspect --no-warnings=ExperimentalWarning --experimental-specifier-resolution=node --loader ts-node/esm/transpile-only src/index.ts",
+    "dev": "node --watch --inspect --no-warnings=ExperimentalWarning --experimental-specifier-resolution=node --loader ts-node/esm/transpile-only src/index.ts",
     "build": "tsc --build tsconfig.prod.json",
     "build:dev": "tsc --build tsconfig.dev.json",
     "test:unit": "vitest .unit.test.ts --config vitest.unit.config.js",

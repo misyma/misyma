@@ -1,4 +1,4 @@
-import { BookshelfType } from '@common/contracts';
+import { bookshelfTypes } from '@common/contracts';
 
 import { Generator } from '../../../../../../tests/generator.js';
 import { Bookshelf, type BookshelfState } from '../../../domain/entities/bookshelf/bookshelf.js';
@@ -10,7 +10,7 @@ export class BookshelfTestFactory {
       id: Generator.uuid(),
       name: Generator.words(3),
       userId: Generator.uuid(),
-      type: BookshelfType.standard,
+      type: bookshelfTypes.standard,
       createdAt: Generator.pastDate(),
       imageUrl: Generator.imageUrl(),
       ...input,
@@ -22,7 +22,7 @@ export class BookshelfTestFactory {
       id: Generator.uuid(),
       name: Generator.words(3),
       userId: Generator.uuid(),
-      type: BookshelfType.standard,
+      type: bookshelfTypes.standard,
       createdAt: Generator.pastDate(),
       imageUrl: Generator.imageUrl(),
       ...input,

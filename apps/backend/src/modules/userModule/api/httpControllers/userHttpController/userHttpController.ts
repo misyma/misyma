@@ -9,7 +9,7 @@ import {
 } from '../../../../../common/types/http/httpResponse.js';
 import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
 import { httpStatusCodes } from '../../../../../common/types/http/httpStatusCode.js';
-import { SecurityMode } from '../../../../../common/types/http/securityMode.js';
+import { securityModes } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
 import { type ChangeUserPasswordCommandHandler } from '../../../application/commandHandlers/changeUserPasswordCommandHandler/changeUserPasswordCommandHandler.js';
 import { type DeleteUserCommandHandler } from '../../../application/commandHandlers/deleteUserCommandHandler/deleteUserCommandHandler.js';
@@ -203,7 +203,7 @@ export class UserHttpController implements HttpController {
             },
           },
         },
-        securityMode: SecurityMode.bearerToken,
+        securityMode: securityModes.bearerToken,
         description: 'Find user by id',
       }),
       new HttpRoute({
@@ -219,7 +219,7 @@ export class UserHttpController implements HttpController {
             },
           },
         },
-        securityMode: SecurityMode.bearerToken,
+        securityMode: securityModes.bearerToken,
         description: 'Find user by token',
       }),
       new HttpRoute({
@@ -237,7 +237,7 @@ export class UserHttpController implements HttpController {
             },
           },
         },
-        securityMode: SecurityMode.bearerToken,
+        securityMode: securityModes.bearerToken,
         description: 'Delete user',
       }),
       new HttpRoute({
@@ -290,7 +290,7 @@ export class UserHttpController implements HttpController {
             },
           },
         },
-        securityMode: SecurityMode.bearerToken,
+        securityMode: securityModes.bearerToken,
         description: 'Logout user',
       }),
       new HttpRoute({
@@ -309,7 +309,7 @@ export class UserHttpController implements HttpController {
             },
           },
         },
-        securityMode: SecurityMode.bearerToken,
+        securityMode: securityModes.bearerToken,
         description: 'Update user',
       }),
       new HttpRoute({

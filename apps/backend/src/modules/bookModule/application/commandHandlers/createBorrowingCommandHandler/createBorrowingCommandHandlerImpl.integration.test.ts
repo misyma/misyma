@@ -1,4 +1,4 @@
-import { BookshelfType } from '@common/contracts';
+import { bookshelfTypes } from '@common/contracts';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { Generator } from '../../../../../../tests/generator.js';
@@ -52,11 +52,7 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
 
     testDataOrchestrator = container.get<TestDataOrchestrator>(testSymbols.testDataOrchestrator);
 
-    testUtils = [
-      userTestUtils,
-      borrowingTestUtils,
-      userBookTestUtils,
-    ];
+    testUtils = [userTestUtils, borrowingTestUtils, userBookTestUtils];
 
     for (const testUtil of testUtils) {
       await testUtil.truncate();
@@ -110,7 +106,7 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
     const userBook = await testDataOrchestrator.createUserBook({
       bookshelf: {
         input: {
-          type: BookshelfType.borrowing,
+          type: bookshelfTypes.borrowing,
         },
       },
     });
@@ -148,7 +144,7 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
     const userBook = await testDataOrchestrator.createUserBook({
       bookshelf: {
         input: {
-          type: BookshelfType.borrowing,
+          type: bookshelfTypes.borrowing,
         },
       },
     });
@@ -218,7 +214,7 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
     const userBook = await testDataOrchestrator.createUserBook({
       bookshelf: {
         input: {
-          type: BookshelfType.borrowing,
+          type: bookshelfTypes.borrowing,
         },
       },
     });

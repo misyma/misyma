@@ -1,4 +1,4 @@
-import type * as contracts from '@common/contracts';
+import { type LoginUserRequestBody, type LoginUserResponseBody } from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
@@ -9,7 +9,7 @@ export const loginUserBodyDtoSchema = Type.Object({
   password: passwordSchema,
 });
 
-export type LoginUserBodyDto = TypeExtends<Static<typeof loginUserBodyDtoSchema>, contracts.LoginUserRequestBody>;
+export type LoginUserBodyDto = TypeExtends<Static<typeof loginUserBodyDtoSchema>, LoginUserRequestBody>;
 
 export const loginUserResponseBodyDtoSchema = Type.Object({
   accessToken: Type.String(),
@@ -19,5 +19,5 @@ export const loginUserResponseBodyDtoSchema = Type.Object({
 
 export type LoginUserResponseBodyDto = TypeExtends<
   Static<typeof loginUserResponseBodyDtoSchema>,
-  contracts.LoginUserResponseBody
+  LoginUserResponseBody
 >;

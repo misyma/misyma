@@ -3,8 +3,8 @@ import { TransformDecodeCheckError, Value } from '@sinclair/typebox/value';
 import config from 'config';
 
 import { ConfigurationError } from '../common/errors/configurationError.js';
-import { AwsRegion } from '../common/types/awsRegion.js';
-import { LogLevel } from '../libs/logger/types/logLevel.js';
+import { awsRegions } from '../common/types/awsRegion.js';
+import { logLevels } from '../common/types/logLevel.js';
 
 const configSchema = Type.Object({
   server: Type.Object({
@@ -18,7 +18,7 @@ const configSchema = Type.Object({
     email: Type.String({ minLength: 1 }),
     password: Type.String({ minLength: 1 }),
   }),
-  logLevel: Type.Enum(LogLevel),
+  logLevel: Type.Union(Object.values(logLevels).map((logLevel) => Type.Literal(logLevel))),
   database: Type.Object({
     host: Type.String({ minLength: 1 }),
     port: Type.Number({
@@ -56,7 +56,7 @@ const configSchema = Type.Object({
   aws: Type.Object({
     accessKeyId: Type.String({ minLength: 1 }),
     secretAccessKey: Type.String({ minLength: 1 }),
-    region: Type.Enum(AwsRegion),
+    region: Type.Union(Object.values(awsRegions).map((region) => Type.Literal(region))),
     endpoint: Type.Optional(Type.String({ minLength: 1 })),
     bucketName: Type.String({ minLength: 1 }),
     cloudfrontUrl: Type.String({ minLength: 1 }),

@@ -1,7 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { FindUserBooksSortField } from '@common/contracts';
-
 import { Skeleton } from '../../../../common/components/skeleton/skeleton';
 import { FindUserBooksByQueryOptions } from '../../../api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
 import { BookCard } from '../../atoms/bookCard/bookCard';
@@ -10,7 +8,7 @@ export const TopBooksSection = () => {
   const { data, isLoading } = useQuery(
     FindUserBooksByQueryOptions({
       pageSize: 5,
-      sortField: FindUserBooksSortField.rating,
+      sortField: 'rating',
     }),
   );
 
