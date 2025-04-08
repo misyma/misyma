@@ -103,7 +103,7 @@ const NavbarBreadcrumbs = () => {
                 <Link
                   key={`${index}-${val}-breadcrumb-link`}
                   disabled={isCurrentPath}
-                  className={cn("max-w-80 truncate inline-block flex-shrink-0")}
+                  className={cn('max-w-80 truncate inline-block flex-shrink-0')}
                   onClick={(e) => {
                     const href = replaceHrefPlaceholderWithValue(val.href);
 
@@ -130,8 +130,8 @@ const NavbarBreadcrumbs = () => {
   }, [filteredPaths[0], breadcrumbKeys]);
 
   return (
-    <Breadcrumb className="pt-4 flex-shrink-0">
-      <BreadcrumbList className="flex-shrink-0 min-h-[1.25rem]">
+    <Breadcrumb className="flex-shrink-0">
+      <BreadcrumbList className="pt-4 flex-shrink-0 min-h-[1.25rem]">
         {allCorrespondingValuesPresent &&
           breadcrumbItems.map((item, index) => (
             <Fragment key={`breadcrumb-fragment-${index}`}>
@@ -205,7 +205,7 @@ const useUserState = () => {
 };
 
 const TextLogo: FC = () => (
-  <div className="w-[100%] text-3xl md:text-5xl lg:text-5xl font-logo-bold">
+  <div className="w-[100%] text-3xl font-bold">
     <Link to="/mybooks">MISYMA</Link>
   </div>
 );
@@ -217,9 +217,9 @@ const NavbarList: FC<{ user?: User; handleLogout: () => void }> = ({ user, handl
     '[&.active]:font-extrabold hover:text-primary [&.active]:text-primary underline-offset-8 decoration-[3px] text-nowrap';
 
   return (
-    <ul className="hidden sm:flex sm:flex-1 md:gap-4 lg:gap-6 sm:justify-end w-full items-center align-middle">
+    <ul className="hidden sm:flex sm:flex-1 md:gap-4 lg:gap-12 sm:justify-end w-full items-center align-middle">
       {user?.role === UserRole.admin && (
-        <li className="text-black text-md text-center font-semibold">
+        <li className="text-gray-700 text-md text-center font-semibold">
           <Link
             to={'/admin/tabs/'}
             className={linkClasses}
@@ -228,7 +228,7 @@ const NavbarList: FC<{ user?: User; handleLogout: () => void }> = ({ user, handl
           </Link>
         </li>
       )}
-      <li className="text-black text-md text-center font-semibold">
+      <li className="text-gray-700 text-md text-center font-semibold">
         <Link
           to={'/mybooks'}
           className={linkClasses}
@@ -236,7 +236,7 @@ const NavbarList: FC<{ user?: User; handleLogout: () => void }> = ({ user, handl
           Moje książki
         </Link>
       </li>
-      <li className="text-black text-md text-center font-semibold">
+      <li className="text-gray-700 text-md text-center font-semibold">
         <Link
           to={'/shelves'}
           className={linkClasses}
@@ -244,7 +244,7 @@ const NavbarList: FC<{ user?: User; handleLogout: () => void }> = ({ user, handl
           Półki
         </Link>
       </li>
-      <li className="text-black text-md text-center font-semibold">
+      <li className="text-gray-700 text-md text-center font-semibold">
         <Link
           to={'/quotes'}
           className={linkClasses}
@@ -252,12 +252,12 @@ const NavbarList: FC<{ user?: User; handleLogout: () => void }> = ({ user, handl
           Cytaty
         </Link>
       </li>
-      <li className="text-black text-md text-center font-semibold">
+      <li className="text-gray-700 text-md text-center font-semibold">
         <Menubar className="rounded-none space-x-0 border-none data-[state=open]:!bg-none">
           <MenubarMenu>
             <MenubarTrigger
               omitOpenBg
-              className={cn(linkClasses, 'text-black font-semibold text-md p-0')}
+              className={cn(linkClasses, 'text-gray-700 font-semibold text-md p-0')}
             >
               <Link
                 to={'/profile'}
@@ -310,7 +310,7 @@ export const Navbar: FC = () => {
   const { res, handleLogout } = useUserState();
 
   return (
-    <div className="flex pt-6 px-6 flex-col bg-background w-full sticky top-0 z-50">
+    <div className="flex pt-3 px-6 flex-col bg-background w-full sticky top-0 z-50">
       <div className="bg-background flex justify-end w-full items-center">
         <TextLogo />
         <input

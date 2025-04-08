@@ -12,7 +12,7 @@ export interface Props {
 export const DefaultLayout: FC<Props> = ({ children, innerContainerClassName }) => {
   return (
     <div>
-      <div className="p-8 top-0 left-0 absolute w-[100%] text-3xl sm:text-5xl font-logo-bold">
+      <div className="p-3 top-0 left-0 absolute w-[100%] text-3xl font-bold">
         <Link to="/">MISYMA</Link>
       </div>
       <div className="flex items-center justify-center h-screen pt-[24rem] sm:pt-[5rem]">
