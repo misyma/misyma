@@ -150,7 +150,7 @@ export const BooksAdminPage: FC = () => {
             onClearAll={onClearAll}
           />
         }
-        columnsClassName="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-y-4 gap-x-4"
+        columnsClassName="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-y-2 gap-x-2"
         tabsSlotClassName="flex justify-between gap-4 col-span-6"
         additionalColumnClassName="col-span-6"
       />

@@ -92,7 +92,7 @@ export function DataTable<TData extends object, TValue>({
   });
 
   return (
-    <div className="w-full md:max-w-screen-xl">
+    <div className="w-full md:max-w-screen-2xl">
       <div className={cn('w-full min-h-[40rem]', tableContainerClassName)}>
         <Table>
           {!hideHeaders && (
@@ -105,7 +105,7 @@ export function DataTable<TData extends object, TValue>({
                         style={{
                           width: `${header.getSize()}px`,
                         }}
-                        className="py-4 m-0 h-14"
+                        className="m-0 h-14"
                         key={header.id}
                       >
                         {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}

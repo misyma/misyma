@@ -46,7 +46,7 @@ export const AdminTabLayout: FC<AdminTabLayoutProps> = ({
         {additionalActionsPlacement === 'beneathTabsSlot' && <>{AdditionalActionsSlot}</>}
         {AdditionalColumn && <div className={cn('w-full', additionalColumnClassName)}>{AdditionalColumn}</div>}
         <div className={cn('flex flex-col px-4 w-[100%] col-span-full', tableContainerClassName)}>
-          <div className={cn('flex items-center justify-center w-100% px-8 py-1 sm:py-4', tableWrapperClassName)}>
+          <div className={cn('flex items-center justify-center w-100% py-1 sm:py-4', tableWrapperClassName)}>
             {TableSlot}
           </div>
         </div>
