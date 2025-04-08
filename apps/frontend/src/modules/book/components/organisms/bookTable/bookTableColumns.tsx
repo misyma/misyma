@@ -5,7 +5,6 @@ import { type Book } from '@common/contracts';
 
 import { TableHeader } from '../../../../common/components/tableHeader/tableHeader';
 import { TruncatedTextTooltip } from '../../../../common/components/truncatedTextTooltip/truncatedTextTooltip';
-import { BookFormat } from '../../../../common/constants/bookFormat';
 import { ReversedLanguages } from '../../../../common/constants/languages';
 import { AdminEditBookModal } from '../adminEditBookModal/adminEditBookModal';
 import { ChangeBookStatusModal } from '../changeBookStatusModal/changeBookStatusModal';
@@ -100,28 +99,6 @@ const StatusCell: FC<CellProps> = ({ row, table }) => {
   );
 };
 
-const FormatCell: FC<CellProps> = ({ row, column }) => {
-  return (
-    <div
-      style={{
-        width: `${column.getSize()}px`,
-      }}
-      className="flex flex-col py-4 gap-2"
-    >
-      <div className="flex items-center gap-1">
-        <p
-          style={{
-            width: `${column.getSize()}px`,
-          }}
-          className="text-base whitespace-nowrap"
-        >
-          {row.original?.format ? BookFormat[row.original?.format] : '-'}
-        </p>
-      </div>
-    </div>
-  );
-};
-
 const ActionsCell: FC<CellProps> = ({ row }) => {
   const book = row.original;
 
@@ -141,24 +118,24 @@ export const bookTableColumns: ColumnDef<Book>[] = [
     header: () => <TableHeader label="Tytuł" />,
     accessorKey: 'title',
     minSize: 150,
-    size: 450,
-    maxSize: 450,
+    size: 400,
+    maxSize: 400,
     cell: TitleCell,
   },
   {
     header: () => <TableHeader label="Gatunek" />,
     accessorKey: 'genre',
     minSize: 100,
-    size: 100,
-    maxSize: 150,
+    size: 150,
+    maxSize: 200,
     cell: GenreCell,
   },
   {
     header: () => <TableHeader label="Język" />,
     accessorKey: 'language',
-    minSize: 100,
-    size: 100,
-    maxSize: 150,
+    minSize: 70,
+    size: 70,
+    maxSize: 100,
     cell: LanguageCell,
   },
   {
@@ -179,29 +156,16 @@ export const bookTableColumns: ColumnDef<Book>[] = [
       />
     ),
     minSize: 125,
-    size: 150,
-    maxSize: 175,
+    size: 125,
+    maxSize: 150,
     accessorKey: 'isbn',
     cell: IsbnCell,
   },
   {
-    header: () => (
-      <TableHeader
-        className="w-[125px]"
-        label="Format"
-      />
-    ),
-    minSize: 100,
-    size: 100,
-    maxSize: 150,
-    accessorKey: 'format',
-    cell: FormatCell,
-  },
-  {
     header: () => <TableHeader label="Status" />,
-    minSize: 125,
-    size: 125,
-    maxSize: 150,
+    minSize: 60,
+    size: 60,
+    maxSize: 100,
     accessorKey: 'isApproved',
     cell: StatusCell,
   },
