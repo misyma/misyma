@@ -52,7 +52,7 @@ const CreateBookButton = () => {
         <TooltipTrigger asChild>
           <Button
             size="big-icon"
-            className="!cursor-default disabled:!pointer-events-auto"
+            className="disabled:!pointer-events-auto cursor-pointer"
             disabled={cannotCreateBook}
             onClick={() => {
               if (cannotCreateBook) {
