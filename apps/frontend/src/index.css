@@ -14,6 +14,7 @@
     --popover-foreground: 222.2 84% 4.9%;
 
     --primary: 245, 58%, 51%;
+    --primary-border: 245, 58%, 51%, 0.2;
     --primary-foreground: 210 40% 98%;
 
     --primary-background: 245, 58%, 51%, 0.03;
