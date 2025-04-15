@@ -4,9 +4,11 @@ import {
   type BookshelfType,
   type Language,
   languages,
-  ReadingStatus,
-  UserRole,
+  type ReadingStatus,
+  type UserRole,
   bookFormats,
+  userRoles,
+  readingStatuses,
 } from '@common/contracts';
 import { faker } from '@faker-js/faker';
 import { v7 as uuidv7 } from 'uuid';
@@ -131,11 +133,11 @@ export class Generator {
   }
 
   public static readingStatus(): ReadingStatus {
-    return faker.helpers.arrayElement([ReadingStatus.toRead, ReadingStatus.inProgress, ReadingStatus.finished]);
+    return faker.helpers.arrayElement([readingStatuses.toRead, readingStatuses.inProgress, readingStatuses.finished]);
   }
 
   public static userRole(): UserRole {
-    return faker.helpers.arrayElement([UserRole.admin, UserRole.user]);
+    return faker.helpers.arrayElement([userRoles.admin, userRoles.user]);
   }
 
   public static bookshelfType(): BookshelfType {

@@ -2,7 +2,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate, useRouter } from '@tanstack/react-router';
 import { type FC, Fragment, useMemo } from 'react';
 
-import { UserRole, type User } from '@common/contracts';
+import { userRoles, type User } from '@common/contracts';
 
 import { useLogoutUserMutation } from '../../../auth/api/logoutUserMutation/logoutUserMutation';
 import { CookieService } from '../../../core/services/cookieService/cookieService';
@@ -218,7 +218,7 @@ const NavbarList: FC<{ user?: User; handleLogout: () => void }> = ({ user, handl
 
   return (
     <ul className="hidden sm:flex sm:flex-1 md:gap-4 lg:gap-12 sm:justify-end w-full items-center align-middle">
-      {user?.role === UserRole.admin && (
+      {user?.role === userRoles.admin && (
         <li className="text-gray-700 text-md text-center font-semibold">
           <Link
             to={'/admin/tabs/'}

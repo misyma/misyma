@@ -1,7 +1,7 @@
 import { Navigate } from '@tanstack/react-router';
 import React, { useLayoutEffect } from 'react';
 
-import { UserRole } from '@common/contracts';
+import { userRoles } from '@common/contracts';
 
 import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner.js';
 import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery.js';
@@ -35,7 +35,7 @@ export function RequireAdmin({ children }: RequireAuthComponentProps): React.Rea
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [res]);
 
-  if (accessToken && refreshToken && user.currentUser !== null && user.currentUser?.role === UserRole.admin) {
+  if (accessToken && refreshToken && user.currentUser !== null && user.currentUser?.role === userRoles.admin) {
     return <>{children}</>;
   }
 

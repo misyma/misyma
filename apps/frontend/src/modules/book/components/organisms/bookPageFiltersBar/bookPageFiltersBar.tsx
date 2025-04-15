@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { z } from 'zod';
 
-import { Language, languages, ReadingStatus } from '@common/contracts';
+import { Language, languages, ReadingStatus, readingStatuses } from '@common/contracts';
 
 import { AuthorSearchFilter } from '../../../../common/components/filter/AuthorSearchFilter';
 import {
@@ -25,7 +25,7 @@ export const myBooksSearchParamsSchema = z
       .catch('' as Language),
     genre: z.string().optional().catch(''),
     status: z
-      .nativeEnum(ReadingStatus)
+      .nativeEnum(readingStatuses)
       .optional()
       .catch('' as ReadingStatus),
     releaseYearBefore: z.number().int().min(1900).optional().catch(undefined),

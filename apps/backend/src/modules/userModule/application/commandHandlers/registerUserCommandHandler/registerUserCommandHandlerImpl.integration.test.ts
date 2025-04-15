@@ -1,4 +1,4 @@
-import { bookshelfTypes, UserRole } from '@common/contracts';
+import { bookshelfTypes, userRoles } from '@common/contracts';
 import { beforeEach, afterEach, expect, it, describe } from 'vitest';
 
 import { testSymbols } from '../../../../../../tests/symbols.js';
@@ -66,7 +66,7 @@ describe('RegisterUserCommandHandler', () => {
 
     expect(foundUser?.email).toEqual(user.getEmail());
 
-    expect(foundUser?.role).toEqual(UserRole.user);
+    expect(foundUser?.role).toEqual(userRoles.user);
 
     const bookshelves = await bookshelfTestUtils.findByUserId({ userId: createdUser.getId() });
 

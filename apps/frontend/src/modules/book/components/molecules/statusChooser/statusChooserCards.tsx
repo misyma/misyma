@@ -1,7 +1,7 @@
 import { CheckCircle, Circle, HelpCircle, LoaderCircle } from 'lucide-react';
 import { type FC, useEffect, useState } from 'react';
 
-import { ReadingStatus } from '@common/contracts';
+import { ReadingStatus, readingStatuses } from '@common/contracts';
 
 import { useErrorHandledQuery } from '../../../../common/hooks/useErrorHandledQuery';
 import { cn } from '../../../../common/lib/utils';
@@ -110,36 +110,36 @@ export const StatusChooserCards: FC<Props> = ({ bookId, bookshelfId }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full">
       <StatusCard
-        icon={<CheckCircle className={cn("h-8 w-8 stroke-[1.5]")} />}
+        icon={<CheckCircle className={cn('h-8 w-8 stroke-[1.5]')} />}
         label="Przeczytana"
-        isActive={readingStatus === ReadingStatus.finished}
+        isActive={readingStatus === readingStatuses.finished}
         activeColor="border-green-500 text-green-500 bg-green-50"
         hoverColor="hover:text-green-400"
         hoverBorder="hover:border-green-300"
-        onClick={() => onChangeStatus(ReadingStatus.finished)}
-        isLoading={updatingStatus === ReadingStatus.finished}
+        onClick={() => onChangeStatus(readingStatuses.finished)}
+        isLoading={updatingStatus === readingStatuses.finished}
       />
 
       <StatusCard
         icon={<Circle className="h-8 w-8 stroke-[1.5]" />}
         label="W trakcie"
-        isActive={readingStatus === ReadingStatus.inProgress}
+        isActive={readingStatus === readingStatuses.inProgress}
         activeColor="border-blue-500 text-blue-500 bg-blue-50"
         hoverColor="hover:text-blue-400"
         hoverBorder="hover:border-blue-300"
-        onClick={() => onChangeStatus(ReadingStatus.inProgress)}
-        isLoading={updatingStatus === ReadingStatus.inProgress}
+        onClick={() => onChangeStatus(readingStatuses.inProgress)}
+        isLoading={updatingStatus === readingStatuses.inProgress}
       />
 
       <StatusCard
         icon={<HelpCircle className="h-8 w-8 stroke-[1.5]" />}
         label="Na później"
-        isActive={readingStatus === ReadingStatus.toRead}
+        isActive={readingStatus === readingStatuses.toRead}
         activeColor="border-slate-700 text-slate-700 bg-slate-50"
         hoverColor="hover:text-slate-500"
         hoverBorder="hover:border-slate-400"
-        onClick={() => onChangeStatus(ReadingStatus.toRead)}
-        isLoading={updatingStatus === ReadingStatus.toRead}
+        onClick={() => onChangeStatus(readingStatuses.toRead)}
+        isLoading={updatingStatus === readingStatuses.toRead}
       />
     </div>
   );

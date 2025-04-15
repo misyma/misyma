@@ -2,7 +2,7 @@ import { beforeEach, expect, it, vi } from 'vitest';
 import { createMutationMock } from '../../../../tests/mocks/mutationMock';
 import { renderHook } from '@testing-library/react';
 import { CreatePayload, useCreateBookWithUserBook } from './createBookWithUserBook';
-import { languages, ReadingStatus } from '@common/contracts';
+import { languages, readingStatuses } from '@common/contracts';
 import { useToastMock } from '../../../common/components/toast/__mocks__/use-toast.mocks';
 import { queryClientMock } from '../../../../tests/mocks/queryClientMock';
 
@@ -70,7 +70,7 @@ const dummyPayload = {
     accessToken: '123',
     bookshelfId: '123',
     isFavorite: false,
-    status: ReadingStatus.inProgress,
+    status: readingStatuses.inProgress,
   },
 };
 const createDummyPayload = (): CreatePayload => ({

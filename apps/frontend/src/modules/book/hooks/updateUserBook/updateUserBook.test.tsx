@@ -4,7 +4,7 @@ import { renderHook } from '@testing-library/react';
 import { useUpdateUserBook } from './updateUserBook';
 import { queryClientMock } from '../../../../tests/mocks/queryClientMock';
 import { useToastMock } from '../../../common/components/toast/__mocks__/use-toast.mocks';
-import { ReadingStatus } from '@common/contracts';
+import { readingStatuses } from '@common/contracts';
 
 const updateUserBookMock = createMutationMock();
 const updateBorrowingMock = createMutationMock();
@@ -152,8 +152,8 @@ describe('updateBookStatus', () => {
 
     await updateBookStatus({
       bookshelfId: 'id',
-      updated: ReadingStatus.finished,
-      current: ReadingStatus.finished,
+      updated: readingStatuses.finished,
+      current: readingStatuses.finished,
     });
 
     expect(updateUserBookMock.mutateAsync).not.toHaveBeenCalled();
@@ -162,12 +162,12 @@ describe('updateBookStatus', () => {
   it('updates book status', async () => {
     const { updateBookStatus } = renderTestedHook();
 
-    const updated = ReadingStatus.toRead;
+    const updated = readingStatuses.toRead;
 
     await updateBookStatus({
       bookshelfId: 'id',
       updated,
-      current: ReadingStatus.finished,
+      current: readingStatuses.finished,
     });
 
     expect(updateUserBookMock.mutateAsync).toHaveBeenCalledWith({
@@ -179,12 +179,12 @@ describe('updateBookStatus', () => {
   it('invalidates cache', async () => {
     const { updateBookStatus } = renderTestedHook();
 
-    const updated = ReadingStatus.toRead;
+    const updated = readingStatuses.toRead;
 
     await updateBookStatus({
       bookshelfId: 'id',
       updated,
-      current: ReadingStatus.finished,
+      current: readingStatuses.finished,
     });
 
     expect(queryClientMock.invalidateQueries).toHaveBeenCalled();

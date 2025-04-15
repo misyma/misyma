@@ -1,4 +1,4 @@
-import { UserRole } from '@common/contracts';
+import { userRoles } from '@common/contracts';
 
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { httpMethodNames } from '../../../../../common/types/http/httpMethodName.js';
@@ -139,7 +139,7 @@ export class BookAdminHttpController implements HttpController {
 
     await this.accessControlService.verifyBearerToken({
       requestHeaders: request.headers,
-      expectedRole: UserRole.admin,
+      expectedRole: userRoles.admin,
     });
 
     const { book } = await this.createBookCommandHandler.execute({
@@ -161,7 +161,7 @@ export class BookAdminHttpController implements HttpController {
 
     await this.accessControlService.verifyBearerToken({
       requestHeaders: request.headers,
-      expectedRole: UserRole.admin,
+      expectedRole: userRoles.admin,
     });
 
     await this.deleteBookCommandHandler.execute({ bookId });
@@ -177,7 +177,7 @@ export class BookAdminHttpController implements HttpController {
   ): Promise<HttpOkResponse<UpdateBookResponseBodyDto>> {
     await this.accessControlService.verifyBearerToken({
       requestHeaders: request.headers,
-      expectedRole: UserRole.admin,
+      expectedRole: userRoles.admin,
     });
 
     const { bookId } = request.pathParams;
@@ -224,7 +224,7 @@ export class BookAdminHttpController implements HttpController {
   ): Promise<HttpOkResponse<FindAdminBooksResponseBodyDto>> {
     await this.accessControlService.verifyBearerToken({
       requestHeaders: request.headers,
-      expectedRole: UserRole.admin,
+      expectedRole: userRoles.admin,
     });
 
     const {

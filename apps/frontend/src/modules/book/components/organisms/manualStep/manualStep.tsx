@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { z } from 'zod';
 
-import { ReadingStatus as ContractReadingStatus } from '@common/contracts';
+import { ReadingStatus as ContractReadingStatus, readingStatuses } from '@common/contracts';
 
 import { useFindUserBookshelfsQuery } from '../../../../bookshelf/api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 import { useSearchBookContext } from '../../../../bookshelf/context/searchCreateBookContext/searchCreateBookContext';
@@ -36,7 +36,7 @@ import { BookApiError } from '../../../errors/bookApiError';
 import { useCreateBookWithUserBook } from '../../../hooks/createBookWithUserBook/createBookWithUserBook';
 
 const stepThreeFormSchema = z.object({
-  status: z.nativeEnum(ContractReadingStatus, {
+  status: z.nativeEnum(readingStatuses, {
     invalid_type_error: 'Niepoprawny typ',
     required_error: 'Wartość jest wymagana.',
   }),

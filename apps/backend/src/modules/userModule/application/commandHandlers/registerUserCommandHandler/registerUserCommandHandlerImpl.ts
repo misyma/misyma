@@ -1,4 +1,4 @@
-import { bookshelfTypes, UserRole } from '@common/contracts';
+import { bookshelfTypes, userRoles } from '@common/contracts';
 
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
@@ -54,7 +54,7 @@ export class RegisterUserCommandHandlerImpl implements RegisterUserCommandHandle
         password: hashedPassword,
         name,
         isEmailVerified: false,
-        role: UserRole.user,
+        role: userRoles.user,
       },
     });
 

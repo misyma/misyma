@@ -1,4 +1,4 @@
-import { UserRole } from '@common/contracts';
+import { userRoles } from '@common/contracts';
 
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { httpMethodNames } from '../../../../../common/types/http/httpMethodName.js';
@@ -113,7 +113,7 @@ export class GenreAdminHttpController implements HttpController {
   ): Promise<HttpCreatedResponse<CreateGenreResponseBodyDto>> {
     await this.accessControlService.verifyBearerToken({
       requestHeaders: request.headers,
-      expectedRole: UserRole.admin,
+      expectedRole: userRoles.admin,
     });
 
     const { name } = request.body;
@@ -131,7 +131,7 @@ export class GenreAdminHttpController implements HttpController {
   ): Promise<HttpOkResponse<UpdateGenreResponseBodyDto>> {
     await this.accessControlService.verifyBearerToken({
       requestHeaders: request.headers,
-      expectedRole: UserRole.admin,
+      expectedRole: userRoles.admin,
     });
 
     const { genreId } = request.pathParams;
@@ -154,7 +154,7 @@ export class GenreAdminHttpController implements HttpController {
   ): Promise<HttpNoContentResponse<DeleteGenreResponseBodyDto>> {
     await this.accessControlService.verifyBearerToken({
       requestHeaders: request.headers,
-      expectedRole: UserRole.admin,
+      expectedRole: userRoles.admin,
     });
 
     const { genreId } = request.pathParams;

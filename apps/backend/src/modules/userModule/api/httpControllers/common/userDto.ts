@@ -1,4 +1,4 @@
-import { UserRole } from '@common/contracts';
+import { userRoles } from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
 export const emailSchema = Type.String({
@@ -21,7 +21,7 @@ export const userDtoSchema = Type.Object({
   email: emailSchema,
   name: userNameSchema,
   isEmailVerified: Type.Boolean(),
-  role: Type.Enum(UserRole),
+  role: Type.Union(Object.values(userRoles).map((userRole) => Type.Literal(userRole))),
 });
 
 export type UserDto = Static<typeof userDtoSchema>;
