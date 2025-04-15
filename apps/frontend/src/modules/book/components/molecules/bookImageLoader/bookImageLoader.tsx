@@ -2,11 +2,12 @@ import { type FC, memo, useMemo } from 'react';
 
 import { useErrorHandledQuery } from '../../../../common/hooks/useErrorHandledQuery';
 import { FindUserBookByIdQueryOptions } from '../../../api/user/queries/findUserBook/findUserBookByIdQueryOptions';
-import { BookImageMiniature } from '../bookImageMiniature/bookImageMiniature';
 
 interface BookImageLoaderProps {
   bookId: string;
 }
+
+const DEFAULT_BOOK_SRC = '/book.jpg';
 
 const BookImageLoaderComponent: FC<BookImageLoaderProps> = ({ bookId }) => {
   const {
@@ -20,7 +21,7 @@ const BookImageLoaderComponent: FC<BookImageLoaderProps> = ({ bookId }) => {
   );
 
   const imageUrl = useMemo(() => {
-    return userBookData?.imageUrl || userBookData?.book.imageUrl || '';
+    return userBookData?.imageUrl || userBookData?.book.imageUrl || DEFAULT_BOOK_SRC;
   }, [userBookData?.imageUrl, userBookData?.book.imageUrl]);
 
   if (isBookLoading) {
@@ -36,10 +37,13 @@ const BookImageLoaderComponent: FC<BookImageLoaderProps> = ({ bookId }) => {
   }
 
   return (
-    <BookImageMiniature
-      className="object-cover w-80"
-      bookImageSrc={imageUrl}
-    />
+    <div className='w-full min-w-[320px]'>
+      <img
+        src={imageUrl}
+        className={'object-contain w-full h-full'}
+        alt="Book cover"
+      />
+    </div>
   );
 };
 

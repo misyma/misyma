@@ -22,6 +22,8 @@ import { FindUserBookByIdQueryOptions } from '../../../api/user/queries/findUser
 import { invalidateFindUserBooksByQuery } from '../../../api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
 import { useUpdateUserBook } from '../../../hooks/updateUserBook/updateUserBook';
 import { CreateBorrowingModal } from '../../organisms/createBorrowingModal/createBorrowingModal';
+import { Library } from 'lucide-react';
+import { TruncatedTextTooltip } from '../../../../common/components/truncatedTextTooltip/truncatedTextTooltip';
 
 interface WrappedCreateBorrowingModalProps {
   open: boolean;
@@ -138,18 +140,23 @@ const BookshelfChoiceDropdownTrigger: FC<BookshelfChoiceDropdownTriggerProps> = 
   }, [bookshelfData, data]);
 
   return (
-    <div className="bg-muted/50 rounded-lg border border-border/50">
+    <div className="bg-muted/50 rounded-lg">
       <Button
         size="custom"
         variant="outline"
         className="!bg:inherit border-none text-lg w-60 !hover:bg-inherit"
         style={{
-          justifyContent: 'end',
+          justifyContent: 'space-around',
           padding: 0,
+          paddingRight: '4px',
+          paddingLeft: '4px',
           height: 'auto',
         }}
       >
-        <p className="p-2 runcate">{override !== '' ? override : currentBookshelf}</p>
+        <Library className="w-6 h-6" />
+        <span>
+          <p className="p-2 truncate w-52 text-end">{override !== '' ? override : currentBookshelf}</p>
+        </span>
       </Button>
     </div>
   );
@@ -186,7 +193,11 @@ const BookshelfItemList: FC<BookshelfItemListProps> = ({ name, bookId, onSelectB
                 value={bookshelf.id}
                 onSelect={async (value) => await onSelectBookshelf(value, bookshelf.name)}
               >
-                {bookshelf.name}
+                <span>
+                  <TruncatedTextTooltip text={bookshelf.name}>
+                    <p className="truncate w-52">{bookshelf.name}</p>
+                  </TruncatedTextTooltip>
+                </span>
               </CommandItem>
             ))}
           </CommandGroup>

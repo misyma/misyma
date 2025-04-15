@@ -1,6 +1,5 @@
 import { type FC, useMemo } from 'react';
 
-import { StarRating } from '../../../../bookReadings/components/atoms/starRating/starRating';
 import { Separator } from '../../../../common/components/separator/separator';
 import { Skeleton } from '../../../../common/components/skeleton/skeleton';
 import { BookFormat } from '../../../../common/constants/bookFormat';
@@ -175,13 +174,6 @@ export const BasicDataMainBody: FC<BasicDataMainBodyProps> = ({ bookId }) => {
                   bookshelfId={data?.bookshelfId ?? ''}
                   bookId={data?.id ?? ''}
                 />
-              </div>
-
-              <div className="flex flex-col gap-3">
-                <h3 className="text-lg font-medium text-foreground/80 md:text-right">Dodaj ocenę</h3>
-                <div className="flex md:justify-end">
-                  <StarRating bookId={bookId} />
-                </div>
               </div>
             </div>
           </div>
