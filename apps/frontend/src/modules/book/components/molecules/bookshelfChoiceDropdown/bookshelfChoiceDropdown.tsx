@@ -22,8 +22,9 @@ import { FindUserBookByIdQueryOptions } from '../../../api/user/queries/findUser
 import { invalidateFindUserBooksByQuery } from '../../../api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
 import { useUpdateUserBook } from '../../../hooks/updateUserBook/updateUserBook';
 import { CreateBorrowingModal } from '../../organisms/createBorrowingModal/createBorrowingModal';
-import { Library } from 'lucide-react';
+import { ChevronDown, Library } from 'lucide-react';
 import { TruncatedTextTooltip } from '../../../../common/components/truncatedTextTooltip/truncatedTextTooltip';
+import { cn } from '../../../../common/lib/utils';
 
 interface WrappedCreateBorrowingModalProps {
   open: boolean;
@@ -100,6 +101,7 @@ interface BookshelfChoiceDropdownTriggerProps {
   selectedBookshelfId?: string;
   bookId: string;
   override: string;
+  isOpen: boolean;
 }
 
 const BookshelfChoiceDropdownTrigger: FC<BookshelfChoiceDropdownTriggerProps> = ({
@@ -107,6 +109,7 @@ const BookshelfChoiceDropdownTrigger: FC<BookshelfChoiceDropdownTriggerProps> = 
   searchedName,
   selectedBookshelfId,
   override,
+  isOpen,
 }) => {
   const [currentBookshelf, setCurrentBookshelf] = useState('');
 
@@ -155,8 +158,9 @@ const BookshelfChoiceDropdownTrigger: FC<BookshelfChoiceDropdownTriggerProps> = 
       >
         <Library className="w-6 h-6" />
         <span>
-          <p className="p-2 truncate w-52 text-end">{override !== '' ? override : currentBookshelf}</p>
+          <p className="p-2 truncate w-48 text-end">{override !== '' ? override : currentBookshelf}</p>
         </span>
+        <ChevronDown className={cn('h-8 w-8 text-primary transition-all duration-300', isOpen && 'rotate-180')} />
       </Button>
     </div>
   );
@@ -295,6 +299,7 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
             bookId={bookId}
             searchedName={searchedName}
             selectedBookshelfId={selectedBookshelfId}
+            isOpen={open}
           />
         </PopoverTrigger>
         <PopoverContent>
