@@ -1,4 +1,4 @@
-import { UserRole } from '@common/contracts';
+import { userRoles } from '@common/contracts';
 
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { httpMethodNames } from '../../../../../common/types/http/httpMethodName.js';
@@ -140,7 +140,7 @@ export class AuthorAdminHttpController implements HttpController {
 
     await this.accessControlService.verifyBearerToken({
       requestHeaders: request.headers,
-      expectedRole: UserRole.admin,
+      expectedRole: userRoles.admin,
     });
 
     const { author } = await this.createAuthorCommandHandler.execute({
@@ -161,7 +161,7 @@ export class AuthorAdminHttpController implements HttpController {
 
     await this.accessControlService.verifyBearerToken({
       requestHeaders: request.headers,
-      expectedRole: UserRole.admin,
+      expectedRole: userRoles.admin,
     });
 
     const { authors, total } = await this.findAuthorsQueryHandler.execute({
@@ -192,7 +192,7 @@ export class AuthorAdminHttpController implements HttpController {
   ): Promise<HttpOkResponse<UpdateAuthorResponseBodyDto>> {
     await this.accessControlService.verifyBearerToken({
       requestHeaders: request.headers,
-      expectedRole: UserRole.admin,
+      expectedRole: userRoles.admin,
     });
 
     const { authorId } = request.pathParams;
@@ -218,7 +218,7 @@ export class AuthorAdminHttpController implements HttpController {
 
     await this.accessControlService.verifyBearerToken({
       requestHeaders: request.headers,
-      expectedRole: UserRole.admin,
+      expectedRole: userRoles.admin,
     });
 
     await this.deleteAuthorCommandHandler.execute({ authorId });

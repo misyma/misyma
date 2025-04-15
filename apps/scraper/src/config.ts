@@ -3,10 +3,10 @@ import { TransformDecodeCheckError, Value } from '@sinclair/typebox/value';
 import config from 'config';
 
 import { ConfigurationError } from './errors/configurationError.js';
-import { LogLevel } from './libs/logger/logLevel.js';
+import { logLevels } from './libs/logger/logLevel.js';
 
 const configSchema = Type.Object({
-  logLevel: Type.Enum(LogLevel),
+  logLevel: Type.Union(Object.values(logLevels).map((logLevel) => Type.Literal(logLevel))),
   database: Type.Object({
     host: Type.String({ minLength: 1 }),
     port: Type.Number({

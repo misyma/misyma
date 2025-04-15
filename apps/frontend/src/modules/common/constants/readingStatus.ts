@@ -1,7 +1,7 @@
-import { ReadingStatus as ContractReadingStatus } from '@common/contracts';
+import { readingStatuses } from '@common/contracts';
 
 export const ReadingStatus = {
-  [ContractReadingStatus.finished]: 'przeczytana',
-  [ContractReadingStatus.inProgress]: 'czytana',
-  [ContractReadingStatus.toRead]: 'do przeczytania',
+  [readingStatuses.finished]: 'przeczytana',
+  [readingStatuses.inProgress]: 'czytana',
+  [readingStatuses.toRead]: 'do przeczytania',
 } as const;

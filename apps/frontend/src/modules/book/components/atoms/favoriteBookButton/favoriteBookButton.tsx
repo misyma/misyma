@@ -9,7 +9,7 @@ import { useUpdateUserBook } from '../../../hooks/updateUserBook/updateUserBook'
 interface Props {
   bookId: string;
   className?: string;
-  containerClassName?: string
+  containerClassName?: string;
 }
 
 export const FavoriteBookButton: FC<Props> = ({ bookId, className, containerClassName }) => {
@@ -43,7 +43,7 @@ export const FavoriteBookButton: FC<Props> = ({ bookId, className, containerClas
   }, [userBookData]);
 
   return (
-    <div className={cn("h-8 w-8", containerClassName)}>
+    <div className={cn('h-8 w-8', containerClassName)}>
       <div className="relative">
         <HiOutlineHeart
           className={cn('h-8 w-8 cursor-pointer text-primary absolute', className, { 'animate-pulse': isAnimating })}

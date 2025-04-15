@@ -1,4 +1,4 @@
-import { UserRole } from '@common/contracts';
+import { userRoles } from '@common/contracts';
 
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { httpMethodNames } from '../../../../../common/types/http/httpMethodName.js';
@@ -57,7 +57,7 @@ export class UserAdminHttpController implements HttpController {
 
     await this.accessControlService.verifyBearerToken({
       requestHeaders: request.headers,
-      expectedRole: UserRole.admin,
+      expectedRole: userRoles.admin,
     });
 
     const { users, total } = await this.findUsersQueryHandler.execute({

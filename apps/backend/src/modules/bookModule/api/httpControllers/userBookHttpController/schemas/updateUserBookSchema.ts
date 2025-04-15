@@ -1,8 +1,8 @@
 import {
   type UpdateUserBookPathParams,
-  ReadingStatus,
   type UpdateUserBookRequestBody,
   type UpdateUserBookResponseBody,
+  readingStatuses,
 } from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
@@ -21,7 +21,7 @@ export type UpdateUserBookPathParamsDto = TypeExtends<
 >;
 
 export const updateUserBookBodyDtoSchema = Type.Object({
-  status: Type.Optional(Type.Enum(ReadingStatus)),
+  status: Type.Optional(Type.Union(Object.values(readingStatuses).map((status) => Type.Literal(status)))),
   isFavorite: Type.Optional(Type.Boolean()),
   bookshelfId: Type.Optional(Type.String({ format: 'uuid' })),
   imageUrl: Type.Optional(Type.Union([bookImageUrlSchema, Type.Null()])),

@@ -2,7 +2,7 @@ import { type FC, useMemo } from 'react';
 import { HiClock, HiDotsCircleHorizontal } from 'react-icons/hi';
 import { HiCheckCircle, HiEnvelope, HiQuestionMarkCircle } from 'react-icons/hi2';
 
-import { ReadingStatus, sortOrders, type UserBook } from '@common/contracts';
+import { readingStatuses, sortOrders, type UserBook } from '@common/contracts';
 
 import { FindBookBorrowingsQueryOptions } from '../../../../borrowing/api/queries/findBookBorrowings/findBookBorrowingsQueryOptions';
 import { TruncatedTextTooltip } from '../../../../common/components/truncatedTextTooltip/truncatedTextTooltip';
@@ -57,17 +57,17 @@ export const BookCard: FC<{
 
   const readingStatusMap = useMemo(
     () => ({
-      [ReadingStatus.finished]: {
+      [readingStatuses.finished]: {
         Icon: HiCheckCircle,
         label: 'Przeczytana',
         color: 'text-green-400',
       },
-      [ReadingStatus.inProgress]: {
+      [readingStatuses.inProgress]: {
         Icon: HiDotsCircleHorizontal,
         label: 'Czytana',
         color: 'text-blue-300',
       },
-      [ReadingStatus.toRead]: {
+      [readingStatuses.toRead]: {
         Icon: HiQuestionMarkCircle,
         label: 'Do przeczytania',
         color: 'text-slate-500',

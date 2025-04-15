@@ -1,9 +1,9 @@
 import {
-  ReadingStatus,
   languages,
   type FindUserBooksQueryParams,
   type FindUserBooksResponseBody,
   sortOrders,
+  readingStatuses,
 } from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
@@ -19,7 +19,7 @@ export const findUserBooksQueryParamsDtoSchema = Type.Object({
   genreId: Type.Optional(Type.String({ format: 'uuid' })),
   isbn: Type.Optional(bookIsbnSchema),
   title: Type.Optional(bookTitleSchema),
-  status: Type.Optional(Type.Enum(ReadingStatus)),
+  status: Type.Optional(Type.Union(Object.values(readingStatuses).map((status) => Type.Literal(status)))),
   language: Type.Optional(Type.Union(Object.values(languages).map((language) => Type.Literal(language)))),
   isFavorite: Type.Optional(Type.Boolean()),
   releaseYearBefore: Type.Optional(Type.Integer({ minimum: 1 })),

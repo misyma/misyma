@@ -1,4 +1,4 @@
-import { UserRole } from '@common/contracts';
+import { userRoles } from '@common/contracts';
 
 import { ForbiddenAccessError } from '../../errors/forbiddenAccessError.js';
 import { UnauthorizedAccessError } from '../../errors/unathorizedAccessError.js';
@@ -43,7 +43,7 @@ export class AccessControlServiceImpl implements AccessControlService {
       });
     }
 
-    if (tokenPayload.role === UserRole.admin) {
+    if (tokenPayload.role === userRoles.admin) {
       return tokenPayload;
     }
 

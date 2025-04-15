@@ -1,4 +1,4 @@
-import { bookshelfTypes, UserRole } from '@common/contracts';
+import { bookshelfTypes, userRoles } from '@common/contracts';
 
 import { type DatabaseClient } from '../libs/database/clients/databaseClient/databaseClient.js';
 import { DatabaseClientFactory } from '../libs/database/factories/databaseClientFactory/databaseClientFactory.js';
@@ -171,7 +171,7 @@ export class Application {
       email,
       password: hashedPassword,
       isEmailVerified: true,
-      role: UserRole.admin,
+      role: userRoles.admin,
     });
 
     await databaseClient<BookshelfRawEntity>(bookshelfTable).insert({

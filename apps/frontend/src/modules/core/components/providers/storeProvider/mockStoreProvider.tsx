@@ -1,7 +1,7 @@
 import { type ReactNode } from '@tanstack/react-router';
 import { Provider } from 'react-redux';
 
-import { UserRole } from '@common/contracts';
+import { userRoles } from '@common/contracts';
 
 import { userStateActions } from '../../../store/states/userState/userStateSlice';
 import { store } from '../../../store/store';
@@ -24,7 +24,7 @@ export const MockStoreProvider = ({ children }: Props): JSX.Element => {
         email: 'test@misyma.com',
         id: '1',
         name: 'Steve Testowy',
-        role: UserRole.user,
+        role: userRoles.user,
       },
     }),
   );

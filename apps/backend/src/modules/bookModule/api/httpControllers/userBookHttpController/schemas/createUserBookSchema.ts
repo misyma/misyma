@@ -1,4 +1,4 @@
-import { ReadingStatus, type CreateUserBookRequestBody, type CreateUserBookResponseBody } from '@common/contracts';
+import { readingStatuses, type CreateUserBookRequestBody, type CreateUserBookResponseBody } from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
@@ -8,7 +8,7 @@ import { userBookDtoSchema } from './userBookDto.js';
 
 export const createUserBookBodyDtoSchema = Type.Object({
   imageUrl: Type.Optional(bookImageUrlSchema),
-  status: Type.Enum(ReadingStatus),
+  status: Type.Union(Object.values(readingStatuses).map((status) => Type.Literal(status))),
   isFavorite: Type.Boolean(),
   bookshelfId: Type.String({ format: 'uuid' }),
   bookId: Type.String({ format: 'uuid' }),

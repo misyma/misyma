@@ -1,4 +1,4 @@
-import { UserRole } from '@common/contracts';
+import { userRoles } from '@common/contracts';
 
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { httpMethodNames } from '../../../../../common/types/http/httpMethodName.js';
@@ -131,7 +131,7 @@ export class BookChangeRequestAdminHttpController implements HttpController {
 
     await this.accessControlService.verifyBearerToken({
       requestHeaders: request.headers,
-      expectedRole: UserRole.admin,
+      expectedRole: userRoles.admin,
     });
 
     await this.deleteBookChangeRequestCommandHandler.execute({ bookChangeRequestId });
@@ -147,7 +147,7 @@ export class BookChangeRequestAdminHttpController implements HttpController {
   ): Promise<HttpOkResponse<ApplyBookChangeRequestResponseBodyDto>> {
     await this.accessControlService.verifyBearerToken({
       requestHeaders: request.headers,
-      expectedRole: UserRole.admin,
+      expectedRole: userRoles.admin,
     });
 
     const { bookChangeRequestId } = request.pathParams;
@@ -165,7 +165,7 @@ export class BookChangeRequestAdminHttpController implements HttpController {
   ): Promise<HttpOkResponse<FindAdminBookChangeRequestsResponseBodyDto>> {
     await this.accessControlService.verifyBearerToken({
       requestHeaders: request.headers,
-      expectedRole: UserRole.admin,
+      expectedRole: userRoles.admin,
     });
 
     const { page = 1, pageSize = 10, sortDate } = request.queryParams;
@@ -194,7 +194,7 @@ export class BookChangeRequestAdminHttpController implements HttpController {
   ): Promise<HttpOkResponse<FindAdminBookChangeRequestResponseBodyDto>> {
     await this.accessControlService.verifyBearerToken({
       requestHeaders: request.headers,
-      expectedRole: UserRole.admin,
+      expectedRole: userRoles.admin,
     });
 
     const { bookChangeRequestId } = request.pathParams;

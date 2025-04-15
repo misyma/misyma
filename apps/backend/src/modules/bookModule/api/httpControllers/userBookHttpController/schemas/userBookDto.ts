@@ -1,4 +1,4 @@
-import { ReadingStatus, languages, bookFormats } from '@common/contracts';
+import { languages, bookFormats, readingStatuses } from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
 import { bookReadingDtoSchema } from '../../bookReadingHttpController/schemas/bookReadingDto.js';
@@ -17,7 +17,7 @@ import { collectionDtoSchema } from '../../common/collectionDto.js';
 export const userBookDtoSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
   imageUrl: Type.Optional(bookImageUrlSchema),
-  status: Type.Enum(ReadingStatus),
+  status: Type.Union(Object.values(readingStatuses).map((status) => Type.Literal(status))),
   isFavorite: Type.Boolean(),
   bookshelfId: Type.String({ format: 'uuid' }),
   createdAt: Type.String({ format: 'date-time' }),
