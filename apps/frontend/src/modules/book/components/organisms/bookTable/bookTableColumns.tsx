@@ -123,7 +123,7 @@ export const bookTableColumns: ColumnDef<Book>[] = [
     cell: TitleCell,
   },
   {
-    header: () => <TableHeader label="Gatunek" />,
+    header: () => <TableHeader label="Kategoria" />,
     accessorKey: 'genre',
     minSize: 100,
     size: 150,
