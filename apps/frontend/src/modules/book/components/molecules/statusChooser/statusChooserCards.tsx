@@ -14,6 +14,7 @@ interface StatusCardProps {
   isActive: boolean;
   activeColor: string;
   hoverColor: string;
+  hoverBorder: string;
   onClick: () => Promise<void>;
   isLoading?: boolean;
 }
@@ -24,6 +25,7 @@ const StatusCard: FC<StatusCardProps> = ({
   isActive,
   activeColor,
   hoverColor,
+  hoverBorder,
   onClick,
   isLoading = false,
 }) => {
@@ -32,7 +34,7 @@ const StatusCard: FC<StatusCardProps> = ({
       className={cn(
         'relative w-full sm:w-32 flex flex-col items-center justify-center gap-2 p-4 rounded-lg border-2 transition-all duration-200',
         'bg-white shadow-sm hover:shadow-md',
-        isActive ? `${activeColor} cursor-default` : `border-gray-200 text-gray-400 hover:${hoverColor}`,
+        isActive ? `${activeColor} cursor-default` : `border-gray-200 text-gray-400 ${hoverColor} ${hoverBorder}`,
         isLoading && 'opacity-80 cursor-wait',
       )}
       onClick={onClick}
@@ -108,11 +110,12 @@ export const StatusChooserCards: FC<Props> = ({ bookId, bookshelfId }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full">
       <StatusCard
-        icon={<CheckCircle className="h-8 w-8 stroke-[1.5]" />}
+        icon={<CheckCircle className={cn("h-8 w-8 stroke-[1.5]")} />}
         label="Przeczytana"
         isActive={readingStatus === ReadingStatus.finished}
         activeColor="border-green-500 text-green-500 bg-green-50"
-        hoverColor="border-green-300 text-green-400"
+        hoverColor="hover:text-green-400"
+        hoverBorder="hover:border-green-300"
         onClick={() => onChangeStatus(ReadingStatus.finished)}
         isLoading={updatingStatus === ReadingStatus.finished}
       />
@@ -122,7 +125,8 @@ export const StatusChooserCards: FC<Props> = ({ bookId, bookshelfId }) => {
         label="W trakcie"
         isActive={readingStatus === ReadingStatus.inProgress}
         activeColor="border-blue-500 text-blue-500 bg-blue-50"
-        hoverColor="border-blue-300 text-blue-400"
+        hoverColor="hover:text-blue-400"
+        hoverBorder="hover:border-blue-300"
         onClick={() => onChangeStatus(ReadingStatus.inProgress)}
         isLoading={updatingStatus === ReadingStatus.inProgress}
       />
@@ -132,7 +136,8 @@ export const StatusChooserCards: FC<Props> = ({ bookId, bookshelfId }) => {
         label="Na później"
         isActive={readingStatus === ReadingStatus.toRead}
         activeColor="border-slate-700 text-slate-700 bg-slate-50"
-        hoverColor="border-slate-500 text-slate-500"
+        hoverColor="hover:text-slate-500"
+        hoverBorder="hover:border-slate-400"
         onClick={() => onChangeStatus(ReadingStatus.toRead)}
         isLoading={updatingStatus === ReadingStatus.toRead}
       />

@@ -22,6 +22,9 @@ import { FindUserBookByIdQueryOptions } from '../../../api/user/queries/findUser
 import { invalidateFindUserBooksByQuery } from '../../../api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
 import { useUpdateUserBook } from '../../../hooks/updateUserBook/updateUserBook';
 import { CreateBorrowingModal } from '../../organisms/createBorrowingModal/createBorrowingModal';
+import { ChevronDown, Library } from 'lucide-react';
+import { TruncatedTextTooltip } from '../../../../common/components/truncatedTextTooltip/truncatedTextTooltip';
+import { cn } from '../../../../common/lib/utils';
 
 interface WrappedCreateBorrowingModalProps {
   open: boolean;
@@ -98,6 +101,7 @@ interface BookshelfChoiceDropdownTriggerProps {
   selectedBookshelfId?: string;
   bookId: string;
   override: string;
+  isOpen: boolean;
 }
 
 const BookshelfChoiceDropdownTrigger: FC<BookshelfChoiceDropdownTriggerProps> = ({
@@ -105,6 +109,7 @@ const BookshelfChoiceDropdownTrigger: FC<BookshelfChoiceDropdownTriggerProps> = 
   searchedName,
   selectedBookshelfId,
   override,
+  isOpen,
 }) => {
   const [currentBookshelf, setCurrentBookshelf] = useState('');
 
@@ -138,20 +143,24 @@ const BookshelfChoiceDropdownTrigger: FC<BookshelfChoiceDropdownTriggerProps> = 
   }, [bookshelfData, data]);
 
   return (
-    <div className="bg-muted/50 rounded-lg border border-border/50">
-      <Button
-        size="custom"
-        variant="outline"
-        className="!bg:inherit border-none text-lg w-60 !hover:bg-inherit"
-        style={{
-          justifyContent: 'end',
-          padding: 0,
-          height: 'auto',
-        }}
-      >
-        <p className="p-2 runcate">{override !== '' ? override : currentBookshelf}</p>
-      </Button>
-    </div>
+    <Button
+      size="custom"
+      variant="outline"
+      className="!bg:inherit border-none text-lg w-60 !hover:bg-inherit"
+      style={{
+        justifyContent: 'space-around',
+        padding: 0,
+        paddingRight: '4px',
+        paddingLeft: '4px',
+        height: 'auto',
+      }}
+    >
+      <Library className="w-6 h-6" />
+      <span>
+        <p className="p-2 truncate w-48 text-end">{override !== '' ? override : currentBookshelf}</p>
+      </span>
+      <ChevronDown className={cn('h-8 w-8 text-primary transition-all duration-300', isOpen && 'rotate-180')} />
+    </Button>
   );
 };
 
@@ -186,7 +195,11 @@ const BookshelfItemList: FC<BookshelfItemListProps> = ({ name, bookId, onSelectB
                 value={bookshelf.id}
                 onSelect={async (value) => await onSelectBookshelf(value, bookshelf.name)}
               >
-                {bookshelf.name}
+                <span>
+                  <TruncatedTextTooltip text={bookshelf.name}>
+                    <p className="truncate w-52">{bookshelf.name}</p>
+                  </TruncatedTextTooltip>
+                </span>
               </CommandItem>
             ))}
           </CommandGroup>
@@ -284,6 +297,7 @@ export const BookshelfChoiceDropdown: FC<Props> = ({ bookId, currentBookshelfId 
             bookId={bookId}
             searchedName={searchedName}
             selectedBookshelfId={selectedBookshelfId}
+            isOpen={open}
           />
         </PopoverTrigger>
         <PopoverContent>

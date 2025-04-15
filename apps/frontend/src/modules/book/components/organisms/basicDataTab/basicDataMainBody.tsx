@@ -1,6 +1,5 @@
 import { type FC, useMemo } from 'react';
 
-import { StarRating } from '../../../../bookReadings/components/atoms/starRating/starRating';
 import { Separator } from '../../../../common/components/separator/separator';
 import { Skeleton } from '../../../../common/components/skeleton/skeleton';
 import { BookFormat } from '../../../../common/constants/bookFormat';
@@ -13,7 +12,6 @@ import { BookshelfChoiceDropdown } from '../../molecules/bookshelfChoiceDropdown
 import { StatusChooserCards } from '../../molecules/statusChooser/statusChooserCards';
 import { Bookmark, BookOpen, Calendar, FileText, Globe, Hash, User } from 'lucide-react';
 import { Card } from '../../../../common/components/card';
-import { Badge } from '../../../../common/components/badge';
 
 interface BasicDataMainBodyProps {
   bookId: string;
@@ -55,7 +53,7 @@ export const BasicDataMainBody: FC<BasicDataMainBodyProps> = ({ bookId }) => {
 
   return (
     <>
-      <Card className="p-6 bg-background border-primary/10 shadow-md">
+      <Card className="p-6 bg-background shadow-md">
         <div className="flex flex-col gap-6">
           <div className="flex flex-shrink-0 justify-between items-center">
             {!isLoading ? <BookTitle title={bookDetails.title ?? ''} /> : <Skeleton className="h-9 w-40" />}
@@ -152,12 +150,7 @@ export const BasicDataMainBody: FC<BasicDataMainBodyProps> = ({ bookId }) => {
                   <Bookmark className="h-5 w-5 text-primary mt-0.5" />
                   <div>
                     <span className="font-medium">Kategoria: </span>
-                    <Badge
-                      variant="outline"
-                      className="bg-accent/30 text-foreground/80"
-                    >
-                      {bookDetails.genre}
-                    </Badge>
+                    <span className="text-foreground/80">{bookDetails.genre}</span>
                   </div>
                 </div>
               )}
@@ -175,13 +168,6 @@ export const BasicDataMainBody: FC<BasicDataMainBodyProps> = ({ bookId }) => {
                   bookshelfId={data?.bookshelfId ?? ''}
                   bookId={data?.id ?? ''}
                 />
-              </div>
-
-              <div className="flex flex-col gap-3">
-                <h3 className="text-lg font-medium text-foreground/80 md:text-right">Dodaj ocenę</h3>
-                <div className="flex md:justify-end">
-                  <StarRating bookId={bookId} />
-                </div>
               </div>
             </div>
           </div>

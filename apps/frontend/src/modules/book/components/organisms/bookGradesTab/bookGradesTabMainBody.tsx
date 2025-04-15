@@ -62,7 +62,7 @@ export const BookGradesTabMainBody: FC<BookGradesTabMainBodyProps> = ({ bookId }
 
   return (
     <>
-      <Card className="p-6 bg-background border-primary/10 shadow-md">
+      <Card className="p-6 bg-background shadow-md">
         <div className="flex flex-col gap-6">
           <div className="flex flex-shrink-0 justify-between items-center">
             {!isLoading ? <BookTitle title={userBookData?.book.title ?? ''} /> : <Skeleton className="h-9 w-40" />}

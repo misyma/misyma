@@ -63,7 +63,7 @@ export const BookPage: FC<{ from: BookNavigationFrom }> = ({ from }) => {
       case 'quotations':
         return (
           <>
-            <Card className="p-6 bg-background border-primary/10 shadow-md">
+            <Card className="p-6 bg-background shadow-md">
               <div className="flex flex-col gap-6">
                 <QuotationTabTitleBar bookId={bookId} />
                 <Separator className="h-[2px] bg-primary/20" />

@@ -9,9 +9,10 @@ import { useUpdateUserBook } from '../../../hooks/updateUserBook/updateUserBook'
 interface Props {
   bookId: string;
   className?: string;
+  containerClassName?: string
 }
 
-export const FavoriteBookButton: FC<Props> = ({ bookId, className }) => {
+export const FavoriteBookButton: FC<Props> = ({ bookId, className, containerClassName }) => {
   const [isAnimating, setIsAnimating] = useState(false);
 
   const { data: userBookData } = useErrorHandledQuery(
@@ -42,7 +43,7 @@ export const FavoriteBookButton: FC<Props> = ({ bookId, className }) => {
   }, [userBookData]);
 
   return (
-    <div className="h-8 w-8">
+    <div className={cn("h-8 w-8", containerClassName)}>
       <div className="relative">
         <HiOutlineHeart
           className={cn('h-8 w-8 cursor-pointer text-primary absolute', className, { 'animate-pulse': isAnimating })}
