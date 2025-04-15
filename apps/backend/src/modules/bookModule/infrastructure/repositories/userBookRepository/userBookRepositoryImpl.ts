@@ -239,11 +239,11 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       ];
 
       const readingsSelect = [
-        this.databaseClient.raw(`array_agg(DISTINCT "${bookReadingTable}"."id") as "readingIds"`),
-        this.databaseClient.raw(`array_agg(DISTINCT "${bookReadingTable}"."startedAt") as "readingStartedAtDates"`),
-        this.databaseClient.raw(`array_agg(DISTINCT "${bookReadingTable}"."endedAt") as "readingEndedAtDates"`),
-        this.databaseClient.raw(`array_agg(DISTINCT "${bookReadingTable}"."rating") as "readingRatings"`),
-        this.databaseClient.raw(`array_agg(DISTINCT "${bookReadingTable}"."comment") as "readingComments"`),
+        this.databaseClient.raw(`array_agg("${bookReadingTable}"."id") as "readingIds"`),
+        this.databaseClient.raw(`array_agg("${bookReadingTable}"."startedAt") as "readingStartedAtDates"`),
+        this.databaseClient.raw(`array_agg("${bookReadingTable}"."endedAt") as "readingEndedAtDates"`),
+        this.databaseClient.raw(`array_agg("${bookReadingTable}"."rating") as "readingRatings"`),
+        this.databaseClient.raw(`array_agg("${bookReadingTable}"."comment") as "readingComments"`),
       ];
 
       const latestRatingSelect = this.databaseClient.raw(`(
