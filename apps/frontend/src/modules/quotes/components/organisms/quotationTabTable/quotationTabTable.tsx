@@ -2,7 +2,6 @@ import { type FC, useMemo, useState } from 'react';
 
 import { type SortOrder } from '@common/contracts';
 
-import { QuotationsTabSortingButton } from './quotationsTabSortingButton';
 import { DataTable } from '../../../../common/components/dataTable/dataTable';
 import { useErrorHandledQuery } from '../../../../common/hooks/useErrorHandledQuery';
 import { getQuotesOptions } from '../../../api/queries/getQuotes/getQuotes';
@@ -39,11 +38,6 @@ export const QuotationTabTable: FC<QuotationTabTableProps> = ({ bookId, sortDate
 
   return (
     <div className="flex flex-col w-full">
-        <div className="flex justify-between">
-          {(quotationsData?.data.length ?? 0) > 1 && (
-            <QuotationsTabSortingButton from="/shelves/bookshelf/book/$bookId" />
-          )}
-        </div>
       <DataTable
         tableContainerClassName="min-h-[32rem]"
         hideHeaders={true}
