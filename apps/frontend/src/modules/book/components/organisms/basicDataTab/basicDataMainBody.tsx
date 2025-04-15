@@ -12,7 +12,6 @@ import { BookshelfChoiceDropdown } from '../../molecules/bookshelfChoiceDropdown
 import { StatusChooserCards } from '../../molecules/statusChooser/statusChooserCards';
 import { Bookmark, BookOpen, Calendar, FileText, Globe, Hash, User } from 'lucide-react';
 import { Card } from '../../../../common/components/card';
-import { Badge } from '../../../../common/components/badge';
 
 interface BasicDataMainBodyProps {
   bookId: string;
@@ -151,12 +150,7 @@ export const BasicDataMainBody: FC<BasicDataMainBodyProps> = ({ bookId }) => {
                   <Bookmark className="h-5 w-5 text-primary mt-0.5" />
                   <div>
                     <span className="font-medium">Kategoria: </span>
-                    <Badge
-                      variant="outline"
-                      className="bg-accent/30 text-foreground/80"
-                    >
-                      {bookDetails.genre}
-                    </Badge>
+                    <span className="text-foreground/80">{bookDetails.genre}</span>
                   </div>
                 </div>
               )}
