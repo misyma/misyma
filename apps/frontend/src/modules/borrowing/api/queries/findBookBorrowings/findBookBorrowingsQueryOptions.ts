@@ -59,4 +59,5 @@ export const FindBookBorrowingsQueryOptions = ({
         sortDate,
         isOpen,
       }),
+    enabled: !!userBookId,
   });
