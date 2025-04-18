@@ -79,6 +79,7 @@ export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler 
         language,
         releaseYearAfter,
         releaseYearBefore,
+        sortField,
       }),
     ]);
 

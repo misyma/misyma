@@ -393,6 +393,13 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         LIMIT 1
       ) as "latestReadingDate"`);
 
+      const readingsCountSubquery = this.databaseClient
+        .select('userBookId')
+        .count('* as count')
+        .from(bookReadingTable)
+        .groupBy('userBookId')
+        .as('readingsCounts');
+
       const query = this.databaseClient<UserBookRawEntity>(userBookTable)
         .select([
           ...userBookSelect,
@@ -410,6 +417,10 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         .leftJoin(bookTable, (join) => {
           join.on(`${bookTable}.id`, `=`, `${userBookTable}.bookId`);
         });
+
+      if (sortField === 'readingDate' || sortField === 'rating') {
+        query.leftJoin(readingsCountSubquery, 'readingsCounts.userBookId', `${userBookTable}.id`);
+      }
 
       if (collectionId) {
         query
@@ -463,10 +474,6 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         query.where(`${bookshelfTable}.userId`, userId);
       }
 
-      if (pageSize && page) {
-        query.limit(pageSize).offset(pageSize * (page - 1));
-      }
-
       if (releaseYearAfter !== undefined) {
         query.where(`${bookTable}.releaseYear`, '>=', releaseYearAfter);
       }
@@ -484,11 +491,17 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       if (sortField === 'releaseYear') {
         query.orderBy(`${bookTable}.releaseYear`, sortOrder ?? 'desc');
       } else if (sortField === 'rating') {
+        query.where('readingsCounts.count', '>', 0);
         query.orderBy('latestRating', sortOrder ?? 'desc', 'last');
       } else if (sortField === 'readingDate') {
+        query.where('readingsCounts.count', '>', 0);
         query.orderBy('latestReadingDate', sortOrder ?? 'desc', 'last');
       } else {
         query.orderBy('id', sortOrder ?? 'desc');
+      }
+
+      if (pageSize && page) {
+        query.limit(pageSize).offset(pageSize * (page - 1));
       }
 
       rawEntities = await query;
@@ -558,9 +571,17 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       language,
       releaseYearAfter,
       releaseYearBefore,
+      sortField,
     } = payload;
 
     try {
+      const readingsCountSubquery = this.databaseClient
+        .select('userBookId')
+        .count('* as count')
+        .from(bookReadingTable)
+        .groupBy('userBookId')
+        .as('readingsCounts');
+
       const query = this.databaseClient<UserBookRawEntity>(userBookTable);
 
       if (authorId) {
@@ -569,6 +590,11 @@ export class UserBookRepositoryImpl implements UserBookRepository {
             join.on(`${bookAuthorTable}.bookId`, '=', `${userBookTable}.bookId`);
           })
           .where(`${bookAuthorTable}.authorId`, authorId);
+      }
+
+      if (sortField === 'readingDate' || sortField === 'rating') {
+        query.leftJoin(readingsCountSubquery, 'readingsCounts.userBookId', `${userBookTable}.id`);
+        query.where('readingsCounts.count', '>', 0);
       }
 
       if (isbn || title || releaseYearAfter !== undefined || releaseYearBefore !== undefined || language) {
