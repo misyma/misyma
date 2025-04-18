@@ -210,7 +210,7 @@ export const CreateBookPageRevamp = () => {
   const searchCreationDispatch = useSearchBookContextDispatch();
 
   const [selectedBook, setSelectedBook] = useState<Book | undefined>(undefined);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState(searchParams.title ?? searchParams.isbn);
   const [hasSearched, setHasSearched] = useState(false);
 
   const debouncedSearch = useDebounce(search, 300);
