@@ -5,16 +5,20 @@ import { Loader2 } from 'lucide-react';
 import { motion, AnimatePresence, Variant } from 'framer-motion';
 import { Skeleton } from '../../../common/components/skeleton/skeleton';
 import { Book } from '@common/contracts';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { FindUserBooksByQueryOptions } from '../../api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
 import { BookImageMiniature } from '../molecules/bookImageMiniature/bookImageMiniature';
 import { ReversedLanguages } from '../../../common/constants/languages';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { SearchResultSearch } from './schemas/searchResultPageSchema';
-import { FindBooksInfiniteQueryOptions } from '../../api/user/queries/findBooks/findBooksQueryOptions';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { cn } from '../../../common/lib/utils';
 import useDebounce from '../../../common/hooks/useDebounce';
+import { useBookNavigationSource } from '../../hooks/useBookNavigationSource/useBookNavigationSource';
+import { determineSearchBy } from '../../utils/determineSearchBy';
+import { useInfiniteBookSearch } from '../../hooks/useInfiniteBookSearch/useInfiniteBookSearch';
+import { BookNavigationFromEnum } from '../../constants';
+import { useSearchBookContextDispatch } from '../../../bookshelf/context/searchCreateBookContext/searchCreateBookContext';
 
 interface BookRowProps {
   book: Book;
@@ -62,27 +66,20 @@ const BookRow: FC<BookRowProps> = ({ book, onSelect, isSelected }) => {
   );
 };
 
-interface FoundBookViewProps {
-  onAddBook: (book?: Book) => Promise<void>;
-  onCreateManually: () => void;
+interface FoundBooksListProps {
+  onBookSelect: (book: Book | undefined) => void;
 }
 
-const ManyFoundBooksView: FC<FoundBookViewProps> = ({ onCreateManually, onAddBook }) => {
-  // todo: search value stored in queryParam
-  // searchValueType stored in queryParam
-  // eh
+const FoundBooksList: FC<FoundBooksListProps> = ({ onBookSelect }) => {
   const searchParams = useSearch({ strict: false }) as SearchResultSearch;
   const [selectedRowIndex, setSelectedRowIndex] = useState<number | undefined>(undefined);
 
   const parentRef = useRef<HTMLDivElement>(null);
 
-  const { data, fetchNextPage, isFetchingNextPage, isLoading, hasNextPage } = useInfiniteQuery(
-    FindBooksInfiniteQueryOptions({
-      title: searchParams.title ? searchParams.title : undefined,
-      isbn: searchParams.isbn ? searchParams.isbn : undefined,
-      pageSize: 20,
-    }),
-  );
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteBookSearch({
+    search: searchParams.title !== '' ? searchParams.title : searchParams.isbn,
+    searchBy: searchParams.searchBy,
+  });
 
   const allItems = useMemo(
     () =>
@@ -99,6 +96,10 @@ const ManyFoundBooksView: FC<FoundBookViewProps> = ({ onCreateManually, onAddBoo
     estimateSize: () => 146,
     overscan: 5,
   });
+
+  useEffect(() => {
+    setSelectedRowIndex(undefined);
+  }, [searchParams]);
 
   useEffect(() => {
     const [lastItem] = [...rowVirtualizer.getVirtualItems()].reverse();
@@ -165,8 +166,10 @@ const ManyFoundBooksView: FC<FoundBookViewProps> = ({ onCreateManually, onAddBoo
                     key={allItems[virtualItem.index].id}
                     onSelect={() => {
                       if (selectedRowIndex === virtualItem.index) {
+                        onBookSelect(undefined);
                         setSelectedRowIndex(undefined);
                       } else {
+                        onBookSelect(allItems[virtualItem.index]);
                         setSelectedRowIndex(virtualItem.index);
                       }
                     }}
@@ -178,53 +181,50 @@ const ManyFoundBooksView: FC<FoundBookViewProps> = ({ onCreateManually, onAddBoo
           })}
         </div>
       </div>
-      <div className="w-full pt-4 flex gap-4 justify-center items-center">
-        <Button
-          variant="secondary"
-          size="xl"
-          onClick={onCreateManually}
-        >
-          <span className="text-lg">Wprowadź inne dane</span>
-        </Button>
-        <Button
-          size="xl"
-          onClick={() => {
-            onAddBook(allItems && allItems[selectedRowIndex as number]);
-          }}
-          disabled={selectedRowIndex === undefined}
-        >
-          <span className="text-lg">Kontynuuj</span>
-        </Button>
-      </div>
     </div>
   );
 };
 
 export const CreateBookPageRevamp = () => {
-  const navigate = useNavigate();
+  const searchParams = useSearch({ strict: false }) as SearchResultSearch;
 
-  const [search, setSearch] = useState('/mybooks/search');
+  const { from, url } = useBookNavigationSource({
+    urlMapping: {
+      books: '/mybooks/search',
+      shelves: '/shelves/bookshelf/search',
+    } as const,
+  });
+
+  const addBookUrl =
+    from === BookNavigationFromEnum.shelves
+      ? `/shelves/bookshelf/search/create/${searchParams.bookshelfId}`
+      : `/mybooks/search/create/${searchParams.bookshelfId}`;
+
+  const createManuallyUrl =
+    from === BookNavigationFromEnum.shelves ? '/shelves/bookshelf/createBook/' : '/mybooks/search/createBook';
+
+  const navigate = useNavigate({
+    from: url,
+  });
+
+  const searchCreationDispatch = useSearchBookContextDispatch();
+
+  const [selectedBook, setSelectedBook] = useState<Book | undefined>(undefined);
+  const [search, setSearch] = useState('');
   const [hasSearched, setHasSearched] = useState(false);
 
   const debouncedSearch = useDebounce(search, 300);
 
   useEffect(() => {
-    const trimmedSearch = debouncedSearch.trim();
-
-    const cleanedSearch = trimmedSearch.replace(/[-\s]/g, '').replace(/^ISBN/i, '');
-
-    const isIsbn10 = /^\d{9}[\dX]$/.test(cleanedSearch);
-    const isIsbn13 = /^\d{13}$/.test(cleanedSearch);
+    const searchBy = determineSearchBy(debouncedSearch);
+    setSelectedBook(undefined);
 
     navigate({
-      // todo: figure out all those dumb type behaviors with navigation
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       search: (prev) => ({
         ...prev,
-        searchBy: isIsbn10 || isIsbn13 ? 'isbn' : 'title',
-        title: isIsbn10 || isIsbn13 ? '' : debouncedSearch,
-        isbn: isIsbn10 || isIsbn13 ? debouncedSearch : '',
+        searchBy: searchBy,
+        title: searchBy === 'title' ? debouncedSearch : '',
+        isbn: searchBy === 'isbn' ? debouncedSearch : '',
       }),
     });
   }, [debouncedSearch, navigate]);
@@ -270,24 +270,57 @@ export const CreateBookPageRevamp = () => {
     },
   };
 
-  //   const listItemVariants = {
-  //     hidden: { opacity: 0, y: 10 },
-  //     visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-  //   };
+  const { data, isLoading } = useInfiniteBookSearch({
+    search: debouncedSearch,
+    searchBy: searchParams.searchBy,
+  });
+
+  const atLeastOneBookFound = data?.pages && data?.pages.flatMap((x) => x.data).length > 0;
+
+  const onAddBook = async (book?: Book): Promise<void> => {
+    if (!book) {
+      return;
+    }
+
+    searchCreationDispatch({
+      bookId: book.id,
+    });
+
+    searchCreationDispatch({
+      title: book.title,
+    });
+
+    searchCreationDispatch({
+      step: 3,
+    });
+
+    navigate({
+      to: addBookUrl,
+    });
+  };
+
+  const onCreateManually = () => {
+    navigate({
+      to: createManuallyUrl,
+      search: {
+        bookshelfId: searchParams.bookshelfId,
+      },
+    });
+  };
 
   return (
     <div className="flex flex-col w-full min-h-[calc(100vh-72px)]">
       <motion.div
         className="flex flex-col gap-8 w-full"
         initial="centered"
-        animate={hasSearched ? 'top' : 'centered'}
+        animate={hasSearched && !isLoading && atLeastOneBookFound ? 'top' : 'centered'}
         variants={containerVariants}
         transition={{ duration: 0.7, ease: 'easeInOut' }}
       >
         <motion.div
           className="flex items-center justify-center"
           initial="large"
-          animate={hasSearched ? 'hidden' : 'large'}
+          animate={hasSearched && !isLoading && atLeastOneBookFound ? 'hidden' : 'large'}
           variants={imageContainerVariants}
           transition={{ duration: 0.5, ease: 'easeInOut' }}
         >
@@ -296,7 +329,7 @@ export const CreateBookPageRevamp = () => {
             alt="Books image"
             className="object-contain"
             initial="large"
-            animate={hasSearched ? 'hidden' : 'large'}
+            animate={hasSearched && !isLoading && atLeastOneBookFound ? 'hidden' : 'large'}
             variants={imageVariants}
             transition={{ duration: 0.5 }}
           />
@@ -310,7 +343,7 @@ export const CreateBookPageRevamp = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             iSize="custom"
-            otherIcon={<Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />}
+            otherIcon={isLoading && <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />}
             iconNonAbsolute
             placeholder="Wpisz numer isbn albo tytuł"
             className="w-[26.75rem] justify-items-start"
@@ -319,7 +352,7 @@ export const CreateBookPageRevamp = () => {
         </motion.div>
 
         <AnimatePresence>
-          {hasSearched && (
+          {hasSearched && !isLoading && (
             <motion.div
               className="w-full mt-4 overflow-y-auto"
               initial={{ opacity: 0 }}
@@ -328,27 +361,8 @@ export const CreateBookPageRevamp = () => {
               transition={{ duration: 0.3 }}
             >
               <ul className="space-y-2">
-                <ManyFoundBooksView
-                  onAddBook={() => Promise.resolve()}
-                  onCreateManually={() => {}}
-                />
-                {/* {searchResults.map((book, index) => (
-                  <motion.li
-                    key={book.id}
-                    className="p-4 border rounded-md bg-card shadow-sm hover:shadow-md transition-all cursor-pointer"
-                    variants={listItemVariants}
-                    initial="hidden"
-                    animate="visible"
-                    transition={{ delay: index * 0.1 }}
-                  >
-                    <div className="flex flex-col">
-                      <span className="font-medium">{book.title}</span>
-                      <span className="text-sm text-muted-foreground">{book.author}</span>
-                      <span className="text-xs text-muted-foreground">ISBN: {book.isbn}</span>
-                    </div>
-                  </motion.li>
-                ))} */}
-                {/* {!atLeastOneBookFound && (
+                {atLeastOneBookFound && <FoundBooksList onBookSelect={setSelectedBook} />}
+                {!atLeastOneBookFound && (
                   <motion.li
                     className="p-4 text-center text-muted-foreground"
                     initial={{ opacity: 0 }}
@@ -357,31 +371,29 @@ export const CreateBookPageRevamp = () => {
                   >
                     Nie znaleziono książek pasujących do zapytania
                   </motion.li>
-                )} */}
+                )}
               </ul>
             </motion.div>
           )}
         </AnimatePresence>
       </motion.div>
 
-      <AnimatePresence>
-        {hasSearched && (
-          <motion.div
-            className="fixed bottom-0 left-0 right-0 p-4 bg-background border-t flex justify-end"
-            initial={{ y: 100 }}
-            animate={{ y: 0 }}
-            exit={{ y: 100 }}
-            transition={{ duration: 0.3 }}
-          >
-            <Button
-              variant="default"
-              className="opacity-50 pointer-events-none"
-            >
-              Kontynuuj
-            </Button>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <div className="flex gap-4 fixed bottom-0 -left-80 right-0 p-4 bg-background border-t justify-end">
+        <Button
+          variant="secondary"
+          onClick={onCreateManually}
+        >
+          Wprowadź inne dane
+        </Button>
+        <Button
+          variant="default"
+          disabled={!selectedBook}
+          onClick={() => onAddBook(selectedBook)}
+        >
+          Kontynuuj
+        </Button>
+
+      </div>
     </div>
   );
 };
