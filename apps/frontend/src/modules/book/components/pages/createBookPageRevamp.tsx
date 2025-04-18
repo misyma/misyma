@@ -2,7 +2,7 @@ import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { Input } from '../../../common/components/input/input';
 import { Button } from '../../../common/components/button/button';
 import { Loader2 } from 'lucide-react';
-import { motion, AnimatePresence, Variant } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Skeleton } from '../../../common/components/skeleton/skeleton';
 import { Book } from '@common/contracts';
 import { useQuery } from '@tanstack/react-query';
@@ -249,27 +249,38 @@ export const CreateBookPageRevamp = () => {
   };
 
   const imageContainerVariants = {
-    large: { width: '100%', maxWidth: '20rem', marginBottom: '0.5rem' },
-    small: { width: '6rem', height: '6rem', marginBottom: '0.25rem' },
+    large: {
+      width: '100%',
+      height: 'auto',
+      opacity: 1,
+      maxWidth: '20rem',
+      marginTop: '0.5rem',
+      marginBottom: '0.5rem',
+      transition: { type: 'spring', stiffness: 100, damping: 20 },
+    },
     hidden: {
-      width: '0%',
-      height: '0px',
-      marginBottom: '0rem',
+      width: 0,
+      height: 0,
       opacity: 0,
-      scale: 0.8,
+      marginBottom: 0,
+      transition: { duration: 0.4, ease: 'easeInOut' },
     },
   };
-
-  const imageVariants: Record<string, Variant> = {
-    large: { maxWidth: '20rem' },
-    small: { maxWidth: '6rem' },
+  
+  const imageVariants = {
+    large: {
+      opacity: 1,
+      scale: 1,
+      maxWidth: '20rem',
+      transition: { type: 'spring', stiffness: 100, damping: 20 },
+    },
     hidden: {
       opacity: 0,
-      scale: 0.8,
-      pointerEvents: 'none',
+      scale: 0.95,
+      transition: { duration: 0.4, ease: 'easeInOut' },
     },
   };
-
+  
   const { data, isLoading } = useInfiniteBookSearch({
     search: debouncedSearch,
     searchBy: searchParams.searchBy,
@@ -323,16 +334,16 @@ export const CreateBookPageRevamp = () => {
       >
         <motion.div
           className="flex items-center justify-center"
-          initial="large"
+          initial={search === '' ? 'large' : 'hidden'}
           animate={hasSearched && !isLoading && atLeastOneBookFound ? 'hidden' : 'large'}
           variants={imageContainerVariants}
-          transition={{ duration: 0.5, ease: 'easeInOut' }}
+          transition={{ duration: 0.5, ease: 'backIn' }}
         >
           <motion.img
             src="/books.png"
             alt="Books image"
             className="object-contain"
-            initial="large"
+            initial={search === '' ? 'large' : 'hidden'}
             animate={hasSearched && !isLoading && atLeastOneBookFound ? 'hidden' : 'large'}
             variants={imageVariants}
             transition={{ duration: 0.5 }}

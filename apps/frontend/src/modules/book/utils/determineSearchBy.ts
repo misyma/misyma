@@ -1,5 +1,5 @@
 export const determineSearchBy = (search: string): 'isbn' | 'title' => {
-  const trimmedSearch = search.trim();
+  const trimmedSearch = search?.trim() ?? "";
 
   const cleanedSearch = trimmedSearch.replace(/[-\s]/g, '').replace(/^ISBN/i, '');
 
