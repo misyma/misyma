@@ -1,48 +1,239 @@
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { Input } from '../../../common/components/input/input';
 import { Button } from '../../../common/components/button/button';
 import { Loader2 } from 'lucide-react';
 import { motion, AnimatePresence, Variant } from 'framer-motion';
+import { Skeleton } from '../../../common/components/skeleton/skeleton';
+import { Book } from '@common/contracts';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { FindUserBooksByQueryOptions } from '../../api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
+import { BookImageMiniature } from '../molecules/bookImageMiniature/bookImageMiniature';
+import { ReversedLanguages } from '../../../common/constants/languages';
+import { useNavigate, useSearch } from '@tanstack/react-router';
+import { SearchResultSearch } from './schemas/searchResultPageSchema';
+import { FindBooksInfiniteQueryOptions } from '../../api/user/queries/findBooks/findBooksQueryOptions';
+import { useVirtualizer } from '@tanstack/react-virtual';
+import { cn } from '../../../common/lib/utils';
+import useDebounce from '../../../common/hooks/useDebounce';
 
-const mockBooks = [
-  { id: 1, title: 'Harry Potter i Kamień Filozoficzny', author: 'J.K. Rowling', isbn: '9788380082113' },
-  { id: 2, title: 'Władca Pierścieni', author: 'J.R.R. Tolkien', isbn: '9788324404322' },
-  { id: 3, title: 'Zbrodnia i kara', author: 'Fiodor Dostojewski', isbn: '9788375068825' },
-  { id: 4, title: 'Duma i uprzedzenie', author: 'Jane Austen', isbn: '9788375068771' },
-  { id: 5, title: 'Mały Książę', author: 'Antoine de Saint-Exupéry', isbn: '9788372271532' },
-  { id: 6, title: 'Mały Książę', author: 'Antoine de Saint-Exupéry', isbn: '9788372271532' },
-  { id: 7, title: 'Mały Książę', author: 'Antoine de Saint-Exupéry', isbn: '9788372271532' },
-  { id: 8, title: 'Mały Książę', author: 'Antoine de Saint-Exupéry', isbn: '9788372271532' },
-  { id: 9, title: 'Mały Książę', author: 'Antoine de Saint-Exupéry', isbn: '9788372271532' },
-  { id: 10, title: 'Mały Książę', author: 'Antoine de Saint-Exupéry', isbn: '9788372271532' },
-];
+interface BookRowProps {
+  book: Book;
+  onSelect: () => void;
+  isSelected: boolean;
+}
+const BookRow: FC<BookRowProps> = ({ book, onSelect, isSelected }) => {
+  const { data, isLoading } = useQuery(
+    FindUserBooksByQueryOptions({
+      isbn: book.isbn as string,
+    }),
+  );
 
-export const CreateBookPageRevamp = () => {
-  const [search, setSearch] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [searchResults, setSearchResults] = useState<typeof mockBooks | null>(null);
-  const [hasSearched, setHasSearched] = useState(false);
+  const loadingPredicate =
+    (!isLoading && !!data?.metadata.total && data?.metadata.total === 0) || data?.data[0]?.book?.isbn === undefined;
+
+  const isSelectable = loadingPredicate;
+
+  return (
+    <div
+      className={cn(
+        'grid grid-cols-9 gap-x-4 p-4 rounded-lg transition-colors duration-200 cursor-pointer',
+        isSelected ? 'bg-secondary/60 shadow-md' : isSelectable && 'hover:bg-secondary/40',
+        !isSelectable && 'bg-gray-500/30 cursor-default',
+      )}
+      onClick={() => {
+        if (isSelectable) {
+          onSelect();
+        }
+      }}
+    >
+      <BookImageMiniature
+        bookImageSrc={book.imageUrl ?? ''}
+        key={`${book.id}-image`}
+        className="w-20 h-28 object-cover rounded shadow-sm"
+      />
+      <div className="col-span-2 font-medium line-clamp-3">{book.title}</div>
+      <div className="line-clamp-2 text-muted-foreground">{book.authors?.[0]?.name}</div>
+      <div className="text-sm">{book.format}</div>
+      <div className="text-sm">{book.releaseYear}</div>
+      <div className="line-clamp-2 text-sm text-muted-foreground">{book.publisher}</div>
+      <div className="text-sm capitalize">{ReversedLanguages[book.language].toLowerCase()}</div>
+      <div className="line-clamp-2 text-sm text-muted-foreground">{book.translator ?? '‐'}</div>
+    </div>
+  );
+};
+
+interface FoundBookViewProps {
+  onAddBook: (book?: Book) => Promise<void>;
+  onCreateManually: () => void;
+}
+
+const ManyFoundBooksView: FC<FoundBookViewProps> = ({ onCreateManually, onAddBook }) => {
+  // todo: search value stored in queryParam
+  // searchValueType stored in queryParam
+  // eh
+  const searchParams = useSearch({ strict: false }) as SearchResultSearch;
+  const [selectedRowIndex, setSelectedRowIndex] = useState<number | undefined>(undefined);
+
+  const parentRef = useRef<HTMLDivElement>(null);
+
+  const { data, fetchNextPage, isFetchingNextPage, isLoading, hasNextPage } = useInfiniteQuery(
+    FindBooksInfiniteQueryOptions({
+      title: searchParams.title ? searchParams.title : undefined,
+      isbn: searchParams.isbn ? searchParams.isbn : undefined,
+      pageSize: 20,
+    }),
+  );
+
+  const allItems = useMemo(
+    () =>
+      data?.pages
+        ?.flat(1)
+        .map((page) => page.data)
+        .flat(1),
+    [data],
+  );
+
+  const rowVirtualizer = useVirtualizer({
+    count: data?.pages?.[0]?.metadata?.total ?? 0,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 146,
+    overscan: 5,
+  });
 
   useEffect(() => {
-    if (search.trim().length > 0) {
-      const debounceTimeout = setTimeout(() => {
-        setIsLoading(true);
+    const [lastItem] = [...rowVirtualizer.getVirtualItems()].reverse();
 
-        setTimeout(() => {
-          const filteredBooks = mockBooks.filter(
-            (book) => book.title.toLowerCase().includes(search.toLowerCase()) || book.isbn.includes(search),
-          );
-          setSearchResults(filteredBooks.length > 0 ? filteredBooks : []);
-          setIsLoading(false);
-          setHasSearched(true);
-        }, 1500);
-      }, 500);
-
-      return () => clearTimeout(debounceTimeout);
-    } else {
-      setSearchResults(null);
-      setHasSearched(false);
+    if (!lastItem) {
+      return;
     }
+
+    if (lastItem.index >= (allItems?.length ?? 1) - 1 && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasNextPage, fetchNextPage, allItems, isFetchingNextPage, rowVirtualizer.getVirtualItems()]);
+
+  return (
+    <div>
+      <div
+        ref={parentRef}
+        className="w-full h-[700px] 4xl:h-[1068px] overflow-auto no-scrollbar"
+      >
+        <div
+          style={{
+            height: `${rowVirtualizer.getTotalSize()}px`,
+            width: '100%',
+            position: 'relative',
+          }}
+        >
+          <div className="sticky w-full top-0 z-10 bg-background pb-4">
+            <div className="grid grid-cols-9 gap-x-2">
+              Obrazek
+              <div className="col-span-2 line-clamp-3">Tytuł</div>
+              <div className="line-clamp-2">Autorzy</div>
+              <div>Format</div>
+              <div>Rok wydania</div>
+              <div className="line-clamp-2">Wydawnictwo</div>
+              <div>Język</div>
+              <div className="line-clamp-2">Przekład</div>
+            </div>
+          </div>
+          {rowVirtualizer.getVirtualItems().map((virtualItem) => {
+            const isLoaderRow = virtualItem.index >= (allItems?.length ?? 0);
+
+            const isFirstLoaderAttempt = isLoading && isLoaderRow;
+
+            const isSubsequentLoader = !isLoading && isLoaderRow && hasNextPage;
+
+            return (
+              <div
+                key={virtualItem.index}
+                style={{
+                  height: `${virtualItem.size}px`,
+                  width: '100%',
+                  position: 'absolute',
+                  top: '40px',
+                  left: 0,
+                  transform: `translateY(${virtualItem.start}px)`,
+                }}
+              >
+                {isFirstLoaderAttempt && <Skeleton className="w-40 h-[144px]" />}
+                {isSubsequentLoader && <Skeleton className="w-full h-[144px]" />}
+                {!isSubsequentLoader && allItems && (
+                  <BookRow
+                    book={allItems[virtualItem.index]}
+                    key={allItems[virtualItem.index].id}
+                    onSelect={() => {
+                      if (selectedRowIndex === virtualItem.index) {
+                        setSelectedRowIndex(undefined);
+                      } else {
+                        setSelectedRowIndex(virtualItem.index);
+                      }
+                    }}
+                    isSelected={virtualItem.index === selectedRowIndex}
+                  />
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <div className="w-full pt-4 flex gap-4 justify-center items-center">
+        <Button
+          variant="secondary"
+          size="xl"
+          onClick={onCreateManually}
+        >
+          <span className="text-lg">Wprowadź inne dane</span>
+        </Button>
+        <Button
+          size="xl"
+          onClick={() => {
+            onAddBook(allItems && allItems[selectedRowIndex as number]);
+          }}
+          disabled={selectedRowIndex === undefined}
+        >
+          <span className="text-lg">Kontynuuj</span>
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+export const CreateBookPageRevamp = () => {
+  const navigate = useNavigate();
+
+  const [search, setSearch] = useState('/mybooks/search');
+  const [hasSearched, setHasSearched] = useState(false);
+
+  const debouncedSearch = useDebounce(search, 300);
+
+  useEffect(() => {
+    const trimmedSearch = debouncedSearch.trim();
+
+    const cleanedSearch = trimmedSearch.replace(/[-\s]/g, '').replace(/^ISBN/i, '');
+
+    const isIsbn10 = /^\d{9}[\dX]$/.test(cleanedSearch);
+    const isIsbn13 = /^\d{13}$/.test(cleanedSearch);
+
+    navigate({
+      // todo: figure out all those dumb type behaviors with navigation
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      search: (prev) => ({
+        ...prev,
+        searchBy: isIsbn10 || isIsbn13 ? 'isbn' : 'title',
+        title: isIsbn10 || isIsbn13 ? '' : debouncedSearch,
+        isbn: isIsbn10 || isIsbn13 ? debouncedSearch : '',
+      }),
+    });
+  }, [debouncedSearch, navigate]);
+
+  useEffect(() => {
+    if (search.length > 0) {
+      return setHasSearched(true);
+    }
+    setHasSearched(false);
   }, [search]);
 
   const containerVariants = {
@@ -79,24 +270,24 @@ export const CreateBookPageRevamp = () => {
     },
   };
 
-  const listItemVariants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-  };
+  //   const listItemVariants = {
+  //     hidden: { opacity: 0, y: 10 },
+  //     visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+  //   };
 
   return (
     <div className="flex flex-col w-full min-h-[calc(100vh-72px)]">
       <motion.div
         className="flex flex-col gap-8 w-full"
         initial="centered"
-        animate={hasSearched && searchResults && searchResults.length > 0 ? 'top' : 'centered'}
+        animate={hasSearched ? 'top' : 'centered'}
         variants={containerVariants}
         transition={{ duration: 0.7, ease: 'easeInOut' }}
       >
         <motion.div
           className="flex items-center justify-center"
           initial="large"
-          animate={hasSearched && searchResults && searchResults.length > 0 ? 'hidden' : 'large'}
+          animate={hasSearched ? 'hidden' : 'large'}
           variants={imageContainerVariants}
           transition={{ duration: 0.5, ease: 'easeInOut' }}
         >
@@ -105,7 +296,7 @@ export const CreateBookPageRevamp = () => {
             alt="Books image"
             className="object-contain"
             initial="large"
-            animate={hasSearched && searchResults && searchResults.length > 0 ? 'hidden' : 'large'}
+            animate={hasSearched ? 'hidden' : 'large'}
             variants={imageVariants}
             transition={{ duration: 0.5 }}
           />
@@ -119,7 +310,7 @@ export const CreateBookPageRevamp = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             iSize="custom"
-            otherIcon={isLoading && <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />}
+            otherIcon={<Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />}
             iconNonAbsolute
             placeholder="Wpisz numer isbn albo tytuł"
             className="w-[26.75rem] justify-items-start"
@@ -128,16 +319,20 @@ export const CreateBookPageRevamp = () => {
         </motion.div>
 
         <AnimatePresence>
-          {hasSearched && searchResults && (
+          {hasSearched && (
             <motion.div
-              className="w-full max-w-xl mt-4 overflow-y-auto"
+              className="w-full mt-4 overflow-y-auto"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
               <ul className="space-y-2">
-                {searchResults.map((book, index) => (
+                <ManyFoundBooksView
+                  onAddBook={() => Promise.resolve()}
+                  onCreateManually={() => {}}
+                />
+                {/* {searchResults.map((book, index) => (
                   <motion.li
                     key={book.id}
                     className="p-4 border rounded-md bg-card shadow-sm hover:shadow-md transition-all cursor-pointer"
@@ -152,8 +347,8 @@ export const CreateBookPageRevamp = () => {
                       <span className="text-xs text-muted-foreground">ISBN: {book.isbn}</span>
                     </div>
                   </motion.li>
-                ))}
-                {searchResults.length === 0 && (
+                ))} */}
+                {/* {!atLeastOneBookFound && (
                   <motion.li
                     className="p-4 text-center text-muted-foreground"
                     initial={{ opacity: 0 }}
@@ -162,7 +357,7 @@ export const CreateBookPageRevamp = () => {
                   >
                     Nie znaleziono książek pasujących do zapytania
                   </motion.li>
-                )}
+                )} */}
               </ul>
             </motion.div>
           )}
@@ -170,7 +365,7 @@ export const CreateBookPageRevamp = () => {
       </motion.div>
 
       <AnimatePresence>
-        {hasSearched && searchResults && (
+        {hasSearched && (
           <motion.div
             className="fixed bottom-0 left-0 right-0 p-4 bg-background border-t flex justify-end"
             initial={{ y: 100 }}
