@@ -7,7 +7,7 @@
 }
 
 .icon-container {
-  @apply absolute h-12 pointer-events-none flex items-center justify-end px-2;
+  @apply h-12 pointer-events-none flex items-center justify-end px-2;
 }
 
 .input-icon {

@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
@@ -34,6 +34,7 @@ import { FindBookByIdQueryOptions } from '../../../api/user/queries/findBookById
 import { type BookNavigationFrom } from '../../../constants';
 import { BookApiError } from '../../../errors/bookApiError';
 import { useCreateBookWithUserBook } from '../../../hooks/createBookWithUserBook/createBookWithUserBook';
+import { useBookNavigationSource } from '../../../hooks/useBookNavigationSource/useBookNavigationSource';
 
 const stepThreeFormSchema = z.object({
   status: z.nativeEnum(readingStatuses, {
@@ -59,6 +60,15 @@ interface Props {
 }
 
 export const ManualStep = ({ bookshelfId, navigateTo }: Props): JSX.Element => {
+  const searchParams = useSearch({ strict: false });
+
+  const { url } = useBookNavigationSource({
+    urlMapping: {
+      books: '/mybooks/search',
+      shelves: '/shelves/bookshelf/search',
+    } as const,
+  });
+
   const searchBookContext = useSearchBookContext();
 
   const [submissionError, setSubmissionError] = useState<string | null>(null);
@@ -92,34 +102,10 @@ export const ManualStep = ({ bookshelfId, navigateTo }: Props): JSX.Element => {
   const navigate = useNavigate();
 
   const onGoBack = () => {
-    const search: {
-      isbn: string;
-      title: string;
-      bookshelfId: string;
-      searchBy: 'title' | 'isbn';
-    } = {
-      bookshelfId: bookshelfId ?? '',
-      isbn: '',
-      title: '',
-      searchBy: 'title',
-    };
-
-    if (searchBookContext.searchQuery) {
-      search['title'] = searchBookContext.searchQuery;
-
-      search['searchBy'] = 'title';
-    } else if (searchBookContext.isbn) {
-      search['isbn'] = searchBookContext.isbn;
-
-      search['searchBy'] = 'isbn';
-    } else {
-      return navigate({
-        to: '/mybooks',
-      });
-    }
+    const search = searchParams;
 
     navigate({
-      to: '/shelves/bookshelf/search/result',
+      to: url,
       search: {
         ...search,
       },

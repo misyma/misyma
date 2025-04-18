@@ -57,6 +57,7 @@ export const FindBooksInfiniteQueryOptions = ({ isbn, page = 1, pageSize, title 
       findBooks({
         page: pageParam,
         title,
+        isbn,
         pageSize,
       }),
     getNextPageParam: api.getNextPageParam,

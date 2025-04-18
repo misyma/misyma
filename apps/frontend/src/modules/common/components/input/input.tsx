@@ -66,10 +66,23 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   includeQuill?: boolean;
   otherIcon?: React.ReactNode;
   iSize?: InputSize;
+  iconNonAbsolute?: boolean;
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, iSize = 'xl', containerClassName, type, includeQuill = false, otherIcon, ...props }, ref) => {
+  (
+    {
+      className,
+      iSize = 'xl',
+      containerClassName,
+      type,
+      includeQuill = false,
+      otherIcon,
+      iconNonAbsolute = false,
+      ...props
+    },
+    ref,
+  ) => {
     const sizeClass = getInputSizeClass(iSize);
 
     const innerSizeClass = getInnerSizeClass(iSize);
@@ -77,7 +90,13 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const iconSizeClass = getIconSizeClass(iSize);
 
     return (
-      <div className={cn(styles['input-container'], containerClassName, sizeClass)}>
+      <div
+        className={cn(
+          'flex bg-[#D1D5DB]/20 flex-row has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-ring has-[input:focus-visible]:ring-offset-4 rounded-md border ring-offset-background',
+          containerClassName,
+          sizeClass,
+        )}
+      >
         <input
           type={type}
           className={cn(styles['input'], 'h-12 px-3 py-2', innerSizeClass, className)}
@@ -89,7 +108,11 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             <ImQuill className={cn(styles['input-icon'], iconSizeClass)} />
           </div>
         )}
-        {otherIcon && <div className={cn(styles['icon-container'], sizeClass)}>{otherIcon}</div>}
+        {otherIcon && (
+          <div className={cn(iconNonAbsolute ? 'sticky' : 'absolute', styles['icon-container'], sizeClass)}>
+            {otherIcon}
+          </div>
+        )}
       </div>
     );
   },
