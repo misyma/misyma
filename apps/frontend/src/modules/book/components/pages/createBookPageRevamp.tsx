@@ -296,6 +296,9 @@ export const CreateBookPageRevamp = () => {
 
     navigate({
       to: addBookUrl,
+      search: {
+        ...searchParams,
+      },
     });
   };
 
@@ -303,6 +306,7 @@ export const CreateBookPageRevamp = () => {
     navigate({
       to: createManuallyUrl,
       search: {
+        ...searchParams,
         bookshelfId: searchParams.bookshelfId,
       },
     });
@@ -383,7 +387,7 @@ export const CreateBookPageRevamp = () => {
           variant="secondary"
           onClick={onCreateManually}
         >
-          Wprowadź inne dane
+          Dodaj ręcznie
         </Button>
         <Button
           variant="default"
@@ -392,7 +396,6 @@ export const CreateBookPageRevamp = () => {
         >
           Kontynuuj
         </Button>
-
       </div>
     </div>
   );

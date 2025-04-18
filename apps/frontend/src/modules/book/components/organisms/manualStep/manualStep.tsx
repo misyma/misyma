@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
-import { useNavigate } from '@tanstack/react-router';
+import { useRouter } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
@@ -59,6 +59,8 @@ interface Props {
 }
 
 export const ManualStep = ({ bookshelfId, navigateTo }: Props): JSX.Element => {
+  const router = useRouter();
+  
   const searchBookContext = useSearchBookContext();
 
   const [submissionError, setSubmissionError] = useState<string | null>(null);
@@ -89,41 +91,8 @@ export const ManualStep = ({ bookshelfId, navigateTo }: Props): JSX.Element => {
     }),
   );
 
-  const navigate = useNavigate();
-
   const onGoBack = () => {
-    const search: {
-      isbn: string;
-      title: string;
-      bookshelfId: string;
-      searchBy: 'title' | 'isbn';
-    } = {
-      bookshelfId: bookshelfId ?? '',
-      isbn: '',
-      title: '',
-      searchBy: 'title',
-    };
-
-    if (searchBookContext.searchQuery) {
-      search['title'] = searchBookContext.searchQuery;
-
-      search['searchBy'] = 'title';
-    } else if (searchBookContext.isbn) {
-      search['isbn'] = searchBookContext.isbn;
-
-      search['searchBy'] = 'isbn';
-    } else {
-      return navigate({
-        to: '/mybooks',
-      });
-    }
-
-    navigate({
-      to: '/shelves/bookshelf/search/result',
-      search: {
-        ...search,
-      },
-    });
+    router.history.back();
   };
 
   const { create, isProcessing } = useCreateBookWithUserBook({
