@@ -6,7 +6,7 @@ export class GenreTestFactory {
   public createRaw(overrides: Partial<GenreRawEntity> = {}): GenreRawEntity {
     return {
       id: Generator.uuid(),
-      name: Generator.genre().toLowerCase() + Generator.numericString(2),
+      name: Generator.genre().toLowerCase() + Generator.numericString(3),
       ...overrides,
     };
   }
@@ -14,7 +14,7 @@ export class GenreTestFactory {
   public create(overrides: Partial<GenreState> = {}): Genre {
     return new Genre({
       id: Generator.uuid(),
-      name: Generator.genre().toLowerCase() + Generator.numericString(2),
+      name: Generator.genre().toLowerCase() + Generator.numericString(3),
       ...overrides,
     });
   }
