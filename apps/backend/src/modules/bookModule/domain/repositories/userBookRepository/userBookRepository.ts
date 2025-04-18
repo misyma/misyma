@@ -58,6 +58,7 @@ export interface CountUserBooksPayload {
   readonly language?: Language | undefined;
   readonly releaseYearAfter?: number | undefined;
   readonly releaseYearBefore?: number | undefined;
+  readonly sortField?: 'releaseYear' | 'createdAt' | 'rating' | 'readingDate' | undefined;
 }
 
 export interface DeleteUserBooksPayload {
