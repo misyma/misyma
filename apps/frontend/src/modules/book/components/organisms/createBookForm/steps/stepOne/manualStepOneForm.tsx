@@ -32,11 +32,24 @@ import {
 import { findUserBooksBy } from '../../../../../api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
 import { BookApiError } from '../../../../../errors/bookApiError';
 import { type CreateBookStepOne, createBookStepOneSchema } from '../../../../../schemas/createBookSchemas';
+import { useBookNavigationSource } from '../../../../../hooks/useBookNavigationSource/useBookNavigationSource';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 
 export const ManualStepOneForm = (): JSX.Element => {
   const bookCreation = useBookCreation<false>() as BookCreationNonIsbnState;
 
   const [submitError, setSubmitError] = useState('');
+
+  const navigate = useNavigate();
+
+  const searchParams = useSearch({ strict: false });
+
+  const { url } = useBookNavigationSource({
+    urlMapping: {
+      books: '/mybooks/search',
+      shelves: '/shelves/bookshelf/search',
+    } as const,
+  });
 
   const [createAuthorDialogVisible, setCreateAuthorDialogVisible] = useState(false);
   const [authorSelectOpen, setAuthorSelectOpen] = useState(false);
@@ -98,6 +111,17 @@ export const ManualStepOneForm = (): JSX.Element => {
     dispatch({
       type: BookCreationActionType.setStep,
       step: NonIsbnCreationPathStep.inputSecondDetails,
+    });
+  };
+
+  const onGoBack = () => {
+    const search = searchParams;
+
+    navigate({
+      to: url,
+      search: {
+        ...search,
+      },
     });
   };
 
@@ -266,9 +290,17 @@ export const ManualStepOneForm = (): JSX.Element => {
             </FormItem>
           )}
         />
-        <div className="flex flex-col w-full justify-between gap-4">
+        <div className="flex w-full justify-between gap-4">
           <Button
-            size="xl"
+            className="border border-primary w-full"
+            onClick={onGoBack}
+            size="lg"
+            variant={'outline'}
+          >
+            Wróć
+          </Button>
+          <Button
+            size="lg"
             className="border border-primary w-full"
             disabled={!form.formState.isValid}
             type="submit"

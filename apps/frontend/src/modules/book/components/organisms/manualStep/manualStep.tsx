@@ -253,7 +253,7 @@ export const ManualStep = ({ bookshelfId, navigateTo }: Props): JSX.Element => {
             </FormItem>
           )}
         />
-        <div className="flex w-full gap-4">
+        <div className="flex w-full justify-between gap-4">
           <Button
             className="border border-primary w-full"
             onClick={onGoBack}
