@@ -1,6 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
-import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
@@ -34,7 +33,7 @@ import { FindBookByIdQueryOptions } from '../../../api/user/queries/findBookById
 import { type BookNavigationFrom } from '../../../constants';
 import { BookApiError } from '../../../errors/bookApiError';
 import { useCreateBookWithUserBook } from '../../../hooks/createBookWithUserBook/createBookWithUserBook';
-import { useBookNavigationSource } from '../../../hooks/useBookNavigationSource/useBookNavigationSource';
+import { useReturnToBookSearch } from '../../../hooks/useReturnToBookSearch/useReturnToBookSearch';
 
 const stepThreeFormSchema = z.object({
   status: z.nativeEnum(readingStatuses, {
@@ -60,14 +59,7 @@ interface Props {
 }
 
 export const ManualStep = ({ bookshelfId, navigateTo }: Props): JSX.Element => {
-  const searchParams = useSearch({ strict: false });
-
-  const { url } = useBookNavigationSource({
-    urlMapping: {
-      books: '/mybooks/search',
-      shelves: '/shelves/bookshelf/search',
-    } as const,
-  });
+  const { onReturnToBookSearch } = useReturnToBookSearch();
 
   const searchBookContext = useSearchBookContext();
 
@@ -98,19 +90,6 @@ export const ManualStep = ({ bookshelfId, navigateTo }: Props): JSX.Element => {
       bookId: searchBookContext.bookId,
     }),
   );
-
-  const navigate = useNavigate();
-
-  const onGoBack = () => {
-    const search = searchParams;
-
-    navigate({
-      to: url,
-      search: {
-        ...search,
-      },
-    });
-  };
 
   const { create, isProcessing } = useCreateBookWithUserBook({
     onOperationError: setSubmissionError,
@@ -253,10 +232,10 @@ export const ManualStep = ({ bookshelfId, navigateTo }: Props): JSX.Element => {
             </FormItem>
           )}
         />
-        <div className="flex w-full gap-4">
+        <div className="flex w-full justify-between gap-4">
           <Button
             className="border border-primary w-full"
-            onClick={onGoBack}
+            onClick={onReturnToBookSearch}
             size="lg"
             variant={isProcessing ? 'ghost' : 'outline'}
             disabled={isProcessing}

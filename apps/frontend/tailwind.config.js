@@ -39,6 +39,7 @@ const config = {
         secondary: {
           DEFAULT: 'hsl(var(--secondary))',
           foreground: 'hsl(var(--secondary-foreground))',
+          hover: 'hsl(var(--secondary-hover))',
         },
         accent: {
           DEFAULT: 'hsl(var(--accent))',

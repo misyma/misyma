@@ -2,7 +2,7 @@ import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { Input } from '../../../common/components/input/input';
 import { Button } from '../../../common/components/button/button';
 import { Loader2 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variant } from 'framer-motion';
 import { Skeleton } from '../../../common/components/skeleton/skeleton';
 import { Book } from '@common/contracts';
 import { useQuery } from '@tanstack/react-query';
@@ -266,8 +266,8 @@ export const CreateBookPageRevamp = () => {
       transition: { duration: 0.4, ease: 'easeInOut' },
     },
   };
-  
-  const imageVariants = {
+
+  const imageVariants: Record<string, Variant> = {
     large: {
       opacity: 1,
       scale: 1,
@@ -278,15 +278,16 @@ export const CreateBookPageRevamp = () => {
       opacity: 0,
       scale: 0.95,
       transition: { duration: 0.4, ease: 'easeInOut' },
+      pointerEvents: 'none',
     },
   };
-  
+
   const { data, isLoading } = useInfiniteBookSearch({
     search: debouncedSearch,
     searchBy: searchParams.searchBy,
   });
 
-  const atLeastOneBookFound = data?.pages && data?.pages.flatMap((x) => x.data).length > 0;
+  const atLeastOneBookFound = !isLoading && data?.pages && data?.pages.flatMap((x) => x.data).length > 0;
 
   const onAddBook = async (book?: Book): Promise<void> => {
     if (!book) {
@@ -377,7 +378,7 @@ export const CreateBookPageRevamp = () => {
             >
               <ul className="space-y-2">
                 {atLeastOneBookFound && <FoundBooksList onBookSelect={setSelectedBook} />}
-                {!atLeastOneBookFound && (
+                {!atLeastOneBookFound && debouncedSearch.length > 0 && (
                   <motion.li
                     className="p-4 text-center text-muted-foreground"
                     initial={{ opacity: 0 }}
