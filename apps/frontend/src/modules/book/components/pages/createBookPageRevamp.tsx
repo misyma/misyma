@@ -2,7 +2,7 @@ import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { Input } from '../../../common/components/input/input';
 import { Button } from '../../../common/components/button/button';
 import { Loader2 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variant } from 'framer-motion';
 import { Skeleton } from '../../../common/components/skeleton/skeleton';
 import { Book } from '@common/contracts';
 import { useQuery } from '@tanstack/react-query';
@@ -11,7 +11,7 @@ import { BookImageMiniature } from '../molecules/bookImageMiniature/bookImageMin
 import { ReversedLanguages } from '../../../common/constants/languages';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { SearchResultSearch } from './schemas/searchResultPageSchema';
-import {  useVirtualizer } from '@tanstack/react-virtual';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import { cn } from '../../../common/lib/utils';
 import useDebounce from '../../../common/hooks/useDebounce';
 import { useBookNavigationSource } from '../../hooks/useBookNavigationSource/useBookNavigationSource';
@@ -267,7 +267,7 @@ export const CreateBookPageRevamp = () => {
     },
   };
 
-  const imageVariants = {
+  const imageVariants: Record<string, Variant> = {
     large: {
       opacity: 1,
       scale: 1,
@@ -278,6 +278,7 @@ export const CreateBookPageRevamp = () => {
       opacity: 0,
       scale: 0.95,
       transition: { duration: 0.4, ease: 'easeInOut' },
+      pointerEvents: 'none',
     },
   };
 
