@@ -233,7 +233,6 @@ export const CreateBookPageRevamp = () => {
     if (search.length > 0) {
       return setHasSearched(true);
     }
-    setHasSearched(false);
   }, [search]);
 
   const containerVariants = {
@@ -329,14 +328,14 @@ export const CreateBookPageRevamp = () => {
       <motion.div
         className="flex flex-col gap-8 w-full"
         initial="centered"
-        animate={hasSearched && !isLoading && atLeastOneBookFound ? 'top' : 'centered'}
+        animate={hasSearched ? 'top' : 'centered'}
         variants={containerVariants}
         transition={{ duration: 0.7, ease: 'easeInOut' }}
       >
         <motion.div
           className="flex items-center justify-center"
           initial={search === '' ? 'large' : 'hidden'}
-          animate={hasSearched && !isLoading && atLeastOneBookFound ? 'hidden' : 'large'}
+          animate={hasSearched ? 'hidden' : 'large'}
           variants={imageContainerVariants}
           transition={{ duration: 0.5, ease: 'backIn' }}
         >
@@ -345,7 +344,7 @@ export const CreateBookPageRevamp = () => {
             alt="Books image"
             className="object-contain"
             initial={search === '' ? 'large' : 'hidden'}
-            animate={hasSearched && !isLoading && atLeastOneBookFound ? 'hidden' : 'large'}
+            animate={hasSearched ? 'hidden' : 'large'}
             variants={imageVariants}
             transition={{ duration: 0.5 }}
           />
