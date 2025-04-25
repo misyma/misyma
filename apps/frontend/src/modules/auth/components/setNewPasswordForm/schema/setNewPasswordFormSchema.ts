@@ -1,14 +1,9 @@
 import { z } from 'zod';
+import { passwordSchema, passwordSuperRefine } from '../../../schemas/authSchemas';
 
 export const setNewPasswordFormSchema = z
   .object({
-    password: z
-      .string({
-        required_error: 'Wymagane.',
-        invalid_type_error: 'Niewłaściwy typ.',
-      })
-      .min(8, 'Hasło jest za krótkie.')
-      .max(64, 'Hasło jest za długie.'),
+    password: passwordSchema,
     repeatedPassword: z.string({
       required_error: 'Wymagane.',
       invalid_type_error: 'Niewłaściwy typ.',
@@ -22,6 +17,7 @@ export const setNewPasswordFormSchema = z
         path: ['repeatedPassword'],
       });
     }
-  });
+  })
+  .superRefine(passwordSuperRefine);
 
 export type SetNewPasswordFormSchemaValues = z.infer<typeof setNewPasswordFormSchema>;
