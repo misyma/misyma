@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { passwordSchema, passwordSuperRefine } from '../../../schemas/authSchemas';
+import { passwordSchema, passwordSuperRefine } from '../../../../common/schemas/userSchemas';
 
 export const setNewPasswordFormSchema = z
   .object({

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { emailSchema } from '../../../schemas/authSchemas';
+import { emailSchema } from '../../../../common/schemas/userSchemas';
 
 export const sendResetPasswordEmailFormSchema = z.object({
   email: emailSchema,
