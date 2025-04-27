@@ -360,6 +360,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       const bookSelect = [
         `${bookTable}.id as bookId`,
         `${bookTable}.title as title`,
+        `${bookTable}.genreId as genreId`,
         `${bookTable}.isbn as isbn`,
         `${bookTable}.publisher as publisher`,
         `${bookTable}.releaseYear as releaseYear`,
@@ -378,6 +379,8 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         this.databaseClient.raw(`array_agg(DISTINCT "${authorTable}"."isApproved") as "authorApprovals"`),
         this.databaseClient.raw(`array_agg(DISTINCT "${authorTable}"."createdAt") as "authorCreatedAtDates"`),
       ];
+
+      const genreSelect = [`${genreTable}.name as genreName`];
 
       const latestRatingSelect = this.databaseClient.raw(`(
         SELECT br.rating
@@ -409,6 +412,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           ...authorsSelect,
           latestRatingSelect,
           ...(sortField === 'readingDate' ? [latestReadingDateSelect] : []),
+          ...genreSelect,
         ])
         .leftJoin(bookAuthorTable, (join) => {
           join.on(`${bookAuthorTable}.bookId`, '=', `${userBookTable}.bookId`);
@@ -418,6 +422,9 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         })
         .leftJoin(bookTable, (join) => {
           join.on(`${bookTable}.id`, `=`, `${userBookTable}.bookId`);
+        })
+        .join(genreTable, (join) => {
+          join.on(`${bookTable}.genreId`, '=', `${genreTable}.id`);
         });
 
       if (isRated) {
@@ -494,7 +501,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         query.where(`${bookTable}.language`, '=', language);
       }
 
-      query.groupBy([`${userBookTable}.id`, `${bookTable}.id`]);
+      query.groupBy([`${userBookTable}.id`, `${bookTable}.id`, `${genreTable}.name`]);
 
       if (sortField === 'releaseYear') {
         query.orderBy(`${bookTable}.releaseYear`, sortOrder ?? 'desc');
@@ -648,7 +655,11 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       }
 
       if (genreId) {
-        query.where(`${bookTable}.genreId`, genreId);
+        query
+          .leftJoin(bookTable, (join) => {
+            join.on(`${bookTable}.id`, `=`, `${userBookTable}.bookId`);
+          })
+          .where(`${bookTable}.genreId`, genreId);
       }
 
       if (collectionId) {
