@@ -7,8 +7,8 @@ import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
-import { coreSymbols } from '../../../../../core/symbols.js';
-import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
+import { databaseSymbols } from '../../../../databaseModule/symbols.js';
+import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { Author } from '../../../domain/entities/author/author.js';
 import { symbols } from '../../../symbols.js';
 import { BookTestFactory } from '../../../tests/factories/bookTestFactory/bookTestFactory.js';
@@ -38,14 +38,14 @@ describe('CreateBookCommandHandler', () => {
 
     createBookCommandHandler = container.get<CreateBookCommandHandler>(symbols.createBookCommandHandler);
 
-    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
+    databaseClient = container.get<DatabaseClient>(databaseSymbols.databaseClient);
 
     authorTestUtils = container.get<AuthorTestUtils>(testSymbols.authorTestUtils);
 
     bookTestUtils = container.get<BookTestUtils>(testSymbols.bookTestUtils);
 
     genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
-    
+
     testUtils = [authorTestUtils, bookTestUtils, genreTestUtils];
 
     for (const testUtil of testUtils) {
@@ -89,7 +89,7 @@ describe('CreateBookCommandHandler', () => {
       isApproved: createdBook.getIsApproved(),
       imageUrl: createdBook.getImageUrl() as string,
       authorIds: [author.id],
-      genreId: genre.id
+      genreId: genre.id,
     });
 
     const foundBook = await bookTestUtils.findByTitleAndAuthor({

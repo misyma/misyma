@@ -3,8 +3,8 @@ import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 import { Generator } from '../../../../../../tests/generator.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
-import { coreSymbols } from '../../../../../core/symbols.js';
-import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
+import { databaseSymbols } from '../../../../databaseModule/symbols.js';
+import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
 import { symbols } from '../../../symbols.js';
 import { UserTestFactory } from '../../../tests/factories/userTestFactory/userTestFactory.js';
@@ -24,7 +24,7 @@ describe('UserRepositoryImpl', () => {
 
     userRepository = container.get<UserRepository>(symbols.userRepository);
 
-    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
+    databaseClient = container.get<DatabaseClient>(databaseSymbols.databaseClient);
 
     userTestUtils = new UserTestUtils(databaseClient);
 

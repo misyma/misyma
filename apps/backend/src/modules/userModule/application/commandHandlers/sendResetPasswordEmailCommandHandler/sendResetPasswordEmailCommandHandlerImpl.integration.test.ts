@@ -3,8 +3,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { emailTypes } from '../../../../../common/types/emailType.js';
-import { coreSymbols } from '../../../../../core/symbols.js';
-import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
+import { databaseSymbols } from '../../../../databaseModule/symbols.js';
+import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { EmailEventDraft } from '../../../domain/entities/emailEvent/emailEvent.js';
 import { symbols } from '../../../symbols.js';
 import { UserTestFactory } from '../../../tests/factories/userTestFactory/userTestFactory.js';
@@ -29,7 +29,7 @@ describe('SendResetPasswordEmailCommandHandler', () => {
 
     commandHandler = container.get<SendResetPasswordEmailCommandHandler>(symbols.sendResetPasswordEmailCommandHandler);
 
-    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
+    databaseClient = container.get<DatabaseClient>(databaseSymbols.databaseClient);
 
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
 

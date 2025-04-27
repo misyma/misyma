@@ -1,16 +1,17 @@
 import { type Config } from '../../core/config.js';
 import { coreSymbols } from '../../core/symbols.js';
-import { type DatabaseClient } from '../../libs/database/clients/databaseClient/databaseClient.js';
 import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type DependencyInjectionModule } from '../../libs/dependencyInjection/dependencyInjectionModule.js';
 import { type EmailService } from '../../libs/emailService/emailService.js';
-import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
-import { type UuidService } from '../../libs/uuid/services/uuidService/uuidService.js';
+import { type LoggerService } from '../../libs/logger/loggerService.js';
+import { type UuidService } from '../../libs/uuid/uuidService.js';
 import { type AccessControlService } from '../authModule/application/services/accessControlService/accessControlService.js';
 import { type TokenService } from '../authModule/application/services/tokenService/tokenService.js';
 import { authSymbols } from '../authModule/symbols.js';
 import { type CreateBookshelfCommandHandler } from '../bookshelfModule/application/commandHandlers/createBookshelfCommandHandler/createBookshelfCommandHandler.js';
 import { bookshelfSymbols } from '../bookshelfModule/symbols.js';
+import { databaseSymbols } from '../databaseModule/symbols.js';
+import { type DatabaseClient } from '../databaseModule/types/databaseClient.js';
 
 import { UserAdminHttpController } from './api/httpControllers/userAdminHttpController/userAdminHttpController.js';
 import { UserHttpController } from './api/httpControllers/userHttpController/userHttpController.js';
@@ -66,7 +67,7 @@ export class UserModule implements DependencyInjectionModule {
       symbols.userRepository,
       () =>
         new UserRepositoryImpl(
-          container.get<DatabaseClient>(coreSymbols.databaseClient),
+          container.get<DatabaseClient>(databaseSymbols.databaseClient),
           container.get<UserMapper>(symbols.userMapper),
           container.get<UuidService>(coreSymbols.uuidService),
         ),
@@ -78,7 +79,7 @@ export class UserModule implements DependencyInjectionModule {
       symbols.blacklistTokenRepository,
       () =>
         new BlacklistTokenRepositoryImpl(
-          container.get<DatabaseClient>(coreSymbols.databaseClient),
+          container.get<DatabaseClient>(databaseSymbols.databaseClient),
           container.get<BlacklistTokenMapper>(symbols.blacklistTokenMapper),
           container.get<UuidService>(coreSymbols.uuidService),
         ),
@@ -251,7 +252,7 @@ export class UserModule implements DependencyInjectionModule {
       symbols.emailEventRepository,
       () =>
         new EmailEventRepositoryImpl(
-          container.get<DatabaseClient>(coreSymbols.databaseClient),
+          container.get<DatabaseClient>(databaseSymbols.databaseClient),
           container.get<UuidService>(coreSymbols.uuidService),
           container.get<EmailEventMapper>(symbols.emailEventMapper),
         ),

@@ -1,15 +1,16 @@
 import { type Config } from '../../core/config.js';
 import { coreSymbols } from '../../core/symbols.js';
-import { type DatabaseClient } from '../../libs/database/clients/databaseClient/databaseClient.js';
 import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type DependencyInjectionModule } from '../../libs/dependencyInjection/dependencyInjectionModule.js';
-import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
-import { type S3Service } from '../../libs/s3/services/s3Service/s3Service.js';
-import { type UuidService } from '../../libs/uuid/services/uuidService/uuidService.js';
+import { type LoggerService } from '../../libs/logger/loggerService.js';
+import { type S3Service } from '../../libs/s3/s3Service.js';
+import { type UuidService } from '../../libs/uuid/uuidService.js';
 import { type AccessControlService } from '../authModule/application/services/accessControlService/accessControlService.js';
 import { authSymbols } from '../authModule/symbols.js';
 import { type UserBookRepository } from '../bookModule/domain/repositories/userBookRepository/userBookRepository.js';
 import { bookSymbols } from '../bookModule/symbols.js';
+import { databaseSymbols } from '../databaseModule/symbols.js';
+import { type DatabaseClient } from '../databaseModule/types/databaseClient.js';
 import { type UserRepository } from '../userModule/domain/repositories/userRepository/userRepository.js';
 import { userSymbols } from '../userModule/symbols.js';
 
@@ -62,7 +63,7 @@ export class BookshelfModule implements DependencyInjectionModule {
       symbols.bookshelfRepository,
       () =>
         new BookshelfRepositoryImpl(
-          container.get<DatabaseClient>(coreSymbols.databaseClient),
+          container.get<DatabaseClient>(databaseSymbols.databaseClient),
           container.get<BookshelfMapper>(symbols.bookshelfMapper),
           container.get<UuidService>(coreSymbols.uuidService),
         ),

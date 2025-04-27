@@ -1,9 +1,9 @@
 import { Generator } from '../../../../../../tests/generator.js';
+import { type BookChangeRequestRawEntity } from '../../../../databaseModule/infrastructure/tables/bookChangeRequestTable/bookChangeRequestRawEntity.js';
 import {
   type BookChangeRequestDraft,
   BookChangeRequest,
 } from '../../../domain/entities/bookChangeRequest/bookChangeRequest.js';
-import { type BookChangeRequestRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/bookChangeRequestTable/bookChangeRequestRawEntity.js';
 
 export class BookChangeRequestTestFactory {
   public create(input: Partial<BookChangeRequestDraft> = {}): BookChangeRequest {

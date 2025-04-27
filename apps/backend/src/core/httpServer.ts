@@ -18,7 +18,7 @@ import { type HttpController } from '../common/types/http/httpController.js';
 import { httpStatusCodes } from '../common/types/http/httpStatusCode.js';
 import { securityModes } from '../common/types/http/securityMode.js';
 import { type DependencyInjectionContainer } from '../libs/dependencyInjection/dependencyInjectionContainer.js';
-import { type LoggerService } from '../libs/logger/services/loggerService/loggerService.js';
+import { type LoggerService } from '../libs/logger/loggerService.js';
 import { ForbiddenAccessError } from '../modules/authModule/application/errors/forbiddenAccessError.js';
 import { UnauthorizedAccessError } from '../modules/authModule/application/errors/unathorizedAccessError.js';
 import { type AuthorAdminHttpController } from '../modules/bookModule/api/httpControllers/authorAdminHttpController/authorAdminHttpController.js';

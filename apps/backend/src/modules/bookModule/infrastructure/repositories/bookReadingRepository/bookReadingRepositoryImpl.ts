@@ -1,6 +1,8 @@
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
-import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
-import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
+import { type UuidService } from '../../../../../libs/uuid/uuidService.js';
+import { type BookReadingRawEntity } from '../../../../databaseModule/infrastructure/tables/bookReadingTable/bookReadingRawEntity.js';
+import { bookReadingTable } from '../../../../databaseModule/infrastructure/tables/bookReadingTable/bookReadingTable.js';
+import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { BookReading, type BookReadingState } from '../../../domain/entities/bookReading/bookReading.js';
 import {
   type BookReadingRepository,
@@ -9,8 +11,6 @@ import {
   type FindBookReadingsPayload,
   type SavePayload,
 } from '../../../domain/repositories/bookReadingRepository/bookReadingRepository.js';
-import { type BookReadingRawEntity } from '../../databases/bookDatabase/tables/bookReadingTable/bookReadingRawEntity.js';
-import { bookReadingTable } from '../../databases/bookDatabase/tables/bookReadingTable/bookReadingTable.js';
 
 import { type BookReadingMapper } from './bookReadingMapper/bookReadingMapper.js';
 

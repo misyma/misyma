@@ -1,6 +1,6 @@
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
-import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
+import { type LoggerService } from '../../../../../libs/logger/loggerService.js';
 import { type BookReadingRepository } from '../../../domain/repositories/bookReadingRepository/bookReadingRepository.js';
 import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
 

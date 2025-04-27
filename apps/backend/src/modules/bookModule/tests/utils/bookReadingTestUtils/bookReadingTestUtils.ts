@@ -1,7 +1,7 @@
 import { TestUtils } from '../../../../../../tests/testUtils.js';
-import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
-import { type BookReadingRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/bookReadingTable/bookReadingRawEntity.js';
-import { bookReadingTable } from '../../../infrastructure/databases/bookDatabase/tables/bookReadingTable/bookReadingTable.js';
+import { type BookReadingRawEntity } from '../../../../databaseModule/infrastructure/tables/bookReadingTable/bookReadingRawEntity.js';
+import { bookReadingTable } from '../../../../databaseModule/infrastructure/tables/bookReadingTable/bookReadingTable.js';
+import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { BookReadingTestFactory } from '../../factories/bookReadingTestFactory/bookReadingTestFactory.js';
 
 interface CreateAndPersistPayload {

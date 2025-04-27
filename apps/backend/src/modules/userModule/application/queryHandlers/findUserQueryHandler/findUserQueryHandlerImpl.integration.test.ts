@@ -2,8 +2,8 @@ import { beforeEach, afterEach, expect, it, describe } from 'vitest';
 
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
-import { coreSymbols } from '../../../../../core/symbols.js';
-import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
+import { databaseSymbols } from '../../../../databaseModule/symbols.js';
+import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { symbols } from '../../../symbols.js';
 import { UserTestFactory } from '../../../tests/factories/userTestFactory/userTestFactory.js';
 import { UserTestUtils } from '../../../tests/utils/userTestUtils/userTestUtils.js';
@@ -24,7 +24,7 @@ describe('FindUserQueryHandler', () => {
 
     findUserQueryHandler = container.get<FindUserQueryHandler>(symbols.findUserQueryHandler);
 
-    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
+    databaseClient = container.get<DatabaseClient>(databaseSymbols.databaseClient);
 
     userTestUtils = new UserTestUtils(databaseClient);
 

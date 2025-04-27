@@ -1,7 +1,7 @@
 import { TestUtils } from '../../../../../../tests/testUtils.js';
-import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
-import { type BorrowingRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/borrowingTable/borrowingRawEntity.js';
-import { borrowingTable } from '../../../infrastructure/databases/bookDatabase/tables/borrowingTable/borrowingTable.js';
+import { type BorrowingRawEntity } from '../../../../databaseModule/infrastructure/tables/borrowingTable/borrowingRawEntity.js';
+import { borrowingTable } from '../../../../databaseModule/infrastructure/tables/borrowingTable/borrowingTable.js';
+import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { BorrowingTestFactory } from '../../factories/borrowingTestFactory/borrowingTestFactory.js';
 
 interface CreateAndPersistPayload {

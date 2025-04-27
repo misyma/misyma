@@ -1,7 +1,7 @@
 import { bookshelfTypes } from '@common/contracts';
 
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
-import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
+import { type LoggerService } from '../../../../../libs/logger/loggerService.js';
 import { type UserBookRepository } from '../../../../bookModule/domain/repositories/userBookRepository/userBookRepository.js';
 import { type BookshelfRepository } from '../../../../bookshelfModule/domain/repositories/bookshelfRepository/bookshelfRepository.js';
 import { type BorrowingRepository } from '../../../domain/repositories/borrowingRepository/borrowingRepository.js';

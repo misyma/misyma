@@ -5,8 +5,8 @@ import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { type TestUtils } from '../../../../../../tests/testUtils.js';
-import { coreSymbols } from '../../../../../core/symbols.js';
-import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
+import { databaseSymbols } from '../../../../databaseModule/symbols.js';
+import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { Author } from '../../../domain/entities/author/author.js';
 import { Book } from '../../../domain/entities/book/book.js';
 import { Genre } from '../../../domain/entities/genre/genre.js';
@@ -37,7 +37,7 @@ describe('BookRepositoryImpl', () => {
 
     bookRepository = container.get<BookRepository>(symbols.bookRepository);
 
-    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
+    databaseClient = container.get<DatabaseClient>(databaseSymbols.databaseClient);
 
     bookTestUtils = container.get<BookTestUtils>(testSymbols.bookTestUtils);
 

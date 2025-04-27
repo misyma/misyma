@@ -3,8 +3,8 @@ import { beforeEach, afterEach, expect, describe, it } from 'vitest';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
-import { coreSymbols } from '../../../../../core/symbols.js';
-import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
+import { databaseSymbols } from '../../../../databaseModule/symbols.js';
+import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { symbols } from '../../../symbols.js';
 import { AuthorTestFactory } from '../../../tests/factories/authorTestFactory/authorTestFactory.js';
 import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
@@ -25,7 +25,7 @@ describe('DeleteAuthorCommandHandler', () => {
 
     deleteAuthorCommandHandler = container.get<DeleteAuthorCommandHandler>(symbols.deleteAuthorCommandHandler);
 
-    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
+    databaseClient = container.get<DatabaseClient>(databaseSymbols.databaseClient);
 
     authorTestUtils = container.get<AuthorTestUtils>(testSymbols.authorTestUtils);
 

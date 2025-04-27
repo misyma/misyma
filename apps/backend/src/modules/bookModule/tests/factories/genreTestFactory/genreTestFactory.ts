@@ -1,6 +1,6 @@
 import { Generator } from '../../../../../../tests/generator.js';
+import { type GenreRawEntity } from '../../../../databaseModule/infrastructure/tables/genreTable/genreRawEntity.js';
 import { Genre, type GenreState } from '../../../domain/entities/genre/genre.js';
-import { type GenreRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/genreTable/genreRawEntity.js';
 
 export class GenreTestFactory {
   public createRaw(overrides: Partial<GenreRawEntity> = {}): GenreRawEntity {

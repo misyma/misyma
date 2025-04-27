@@ -1,7 +1,7 @@
 import { TestUtils } from '../../../../../../tests/testUtils.js';
-import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
-import { type UserRawEntity } from '../../../infrastructure/databases/userDatabase/tables/userTable/userRawEntity.js';
-import { userTable } from '../../../infrastructure/databases/userDatabase/tables/userTable/userTable.js';
+import { type UserRawEntity } from '../../../../databaseModule/infrastructure/tables/userTable/userRawEntity.js';
+import { userTable } from '../../../../databaseModule/infrastructure/tables/userTable/userTable.js';
+import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { UserTestFactory } from '../../factories/userTestFactory/userTestFactory.js';
 
 interface CreateAndPersistPayload {

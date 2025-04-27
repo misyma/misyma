@@ -1,7 +1,7 @@
 import { TestUtils } from '../../../../../../tests/testUtils.js';
-import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
-import { type BlacklistTokenRawEntity } from '../../../infrastructure/databases/userDatabase/tables/blacklistTokenTable/blacklistTokenRawEntity.js';
-import { blacklistTokenTable } from '../../../infrastructure/databases/userDatabase/tables/blacklistTokenTable/blacklistTokenTable.js';
+import { type BlacklistTokenRawEntity } from '../../../../databaseModule/infrastructure/tables/blacklistTokenTable/blacklistTokenRawEntity.js';
+import { blacklistTokenTable } from '../../../../databaseModule/infrastructure/tables/blacklistTokenTable/blacklistTokenTable.js';
+import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { BlacklistTokenTestFactory } from '../../factories/blacklistTokenTestFactory/blacklistTokenTestFactory.js';
 
 interface CreateAndPersistPayload {

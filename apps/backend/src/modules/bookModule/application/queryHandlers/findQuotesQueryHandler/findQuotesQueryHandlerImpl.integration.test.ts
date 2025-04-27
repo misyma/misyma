@@ -3,9 +3,9 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { type TestUtils } from '../../../../../../tests/testUtils.js';
-import { coreSymbols } from '../../../../../core/symbols.js';
-import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
+import { databaseSymbols } from '../../../../databaseModule/symbols.js';
+import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { symbols } from '../../../symbols.js';
 import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
@@ -42,7 +42,7 @@ describe('FindQuotesQueryHandlerImpl', () => {
 
     queryHandler = container.get<FindQuotesQueryHandler>(symbols.findQuotesQueryHandler);
 
-    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
+    databaseClient = container.get<DatabaseClient>(databaseSymbols.databaseClient);
 
     quoteTestUtils = container.get<QuoteTestUtils>(testSymbols.quoteTestUtils);
 
@@ -94,8 +94,8 @@ describe('FindQuotesQueryHandlerImpl', () => {
       input: {
         authorIds: [author.id],
         book: {
-          genreId: genre.id
-        }
+          genreId: genre.id,
+        },
       },
     });
 
@@ -131,8 +131,8 @@ describe('FindQuotesQueryHandlerImpl', () => {
       input: {
         authorIds: [author.id],
         book: {
-          genreId: genre.id
-        }
+          genreId: genre.id,
+        },
       },
     });
 

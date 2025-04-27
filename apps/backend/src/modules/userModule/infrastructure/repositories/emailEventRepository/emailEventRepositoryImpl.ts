@@ -1,6 +1,8 @@
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
-import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
-import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
+import { type UuidService } from '../../../../../libs/uuid/uuidService.js';
+import { type EmailEventRawEntity } from '../../../../databaseModule/infrastructure/tables/emailEventTable/emailEventRawEntity.js';
+import { emailEventTable } from '../../../../databaseModule/infrastructure/tables/emailEventTable/emailEventTable.js';
+import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { type EmailEventDraft, type EmailEvent } from '../../../domain/entities/emailEvent/emailEvent.js';
 import { emailEventStatuses } from '../../../domain/entities/emailEvent/types/emailEventStatus.js';
 import {
@@ -8,8 +10,6 @@ import {
   type EmailEventRepository,
   type FindAllCreatedAfterPayload,
 } from '../../../domain/repositories/emailEventRepository/emailEventRepository.js';
-import { type EmailEventRawEntity } from '../../databases/userDatabase/tables/emailEventTable/emailEventRawEntity.js';
-import { emailEventTable } from '../../databases/userDatabase/tables/emailEventTable/emailEventTable.js';
 
 import { type EmailEventMapper } from './mappers/emailEventMapper/emailEventMapper.js';
 

@@ -1,7 +1,7 @@
 import { TestUtils } from '../../../../../../tests/testUtils.js';
-import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
-import { type QuoteRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/quoteTable/quoteRawEntity.js';
-import { quoteTable } from '../../../infrastructure/databases/bookDatabase/tables/quoteTable/quoteTable.js';
+import { type QuoteRawEntity } from '../../../../databaseModule/infrastructure/tables/quoteTable/quoteRawEntity.js';
+import { quoteTable } from '../../../../databaseModule/infrastructure/tables/quoteTable/quoteTable.js';
+import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { QuoteTestFactory } from '../../factories/quoteTestFactory/quoteTestFactory.js';
 
 interface CreateAndPersistPayload {

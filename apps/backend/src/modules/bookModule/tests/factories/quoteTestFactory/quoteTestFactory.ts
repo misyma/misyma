@@ -1,6 +1,6 @@
 import { Generator } from '../../../../../../tests/generator.js';
+import { type QuoteRawEntity } from '../../../../databaseModule/infrastructure/tables/quoteTable/quoteRawEntity.js';
 import { type QuoteState, Quote } from '../../../domain/entities/quote/quote.js';
-import { type QuoteRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/quoteTable/quoteRawEntity.js';
 
 export class QuoteTestFactory {
   public create(input: Partial<QuoteState> = {}): Quote {

@@ -1,5 +1,5 @@
+import { type BlacklistTokenRawEntity } from '../../../../../databaseModule/infrastructure/tables/blacklistTokenTable/blacklistTokenRawEntity.js';
 import { BlacklistToken } from '../../../../domain/entities/blacklistToken/blacklistToken.js';
-import { type BlacklistTokenRawEntity } from '../../../databases/userDatabase/tables/blacklistTokenTable/blacklistTokenRawEntity.js';
 
 import { type BlacklistTokenMapper } from './blacklistTokenMapper.js';
 

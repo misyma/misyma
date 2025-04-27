@@ -3,7 +3,7 @@ import { httpMethodNames } from '../../../../common/types/http/httpMethodName.js
 import { type HttpOkResponse } from '../../../../common/types/http/httpResponse.js';
 import { HttpRoute } from '../../../../common/types/http/httpRoute.js';
 import { httpStatusCodes } from '../../../../common/types/http/httpStatusCode.js';
-import { type DatabaseClient } from '../../../../libs/database/clients/databaseClient/databaseClient.js';
+import { type DatabaseClient } from '../../../../modules/databaseModule/types/databaseClient.js';
 
 import { checkHealthResponseBodySchema, type CheckHealthResponseBody } from './schemas/checkHealthSchema.js';
 

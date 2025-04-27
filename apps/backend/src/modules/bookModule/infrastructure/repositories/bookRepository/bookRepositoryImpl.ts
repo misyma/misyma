@@ -1,6 +1,13 @@
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
-import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
-import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
+import { type UuidService } from '../../../../../libs/uuid/uuidService.js';
+import { authorTable } from '../../../../databaseModule/infrastructure/tables/authorTable/authorTable.js';
+import { type BookAuthorRawEntity } from '../../../../databaseModule/infrastructure/tables/bookAuthorTable/bookAuthorRawEntity.js';
+import { bookAuthorTable } from '../../../../databaseModule/infrastructure/tables/bookAuthorTable/bookAuthorTable.js';
+import { type BookRawEntity } from '../../../../databaseModule/infrastructure/tables/bookTable/bookRawEntity.js';
+import { bookTable } from '../../../../databaseModule/infrastructure/tables/bookTable/bookTable.js';
+import { type BookWithJoinsRawEntity } from '../../../../databaseModule/infrastructure/tables/bookTable/bookWithJoinsRawEntity.js';
+import { genreTable } from '../../../../databaseModule/infrastructure/tables/genreTable/genreTable.js';
+import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { type BookState, Book } from '../../../domain/entities/book/book.js';
 import {
   type BookRepository,
@@ -9,13 +16,6 @@ import {
   type SaveBookPayload,
   type FindBooksPayload,
 } from '../../../domain/repositories/bookRepository/bookRepository.js';
-import { authorTable } from '../../databases/bookDatabase/tables/authorTable/authorTable.js';
-import { type BookAuthorRawEntity } from '../../databases/bookDatabase/tables/bookAuthorTable/bookAuthorRawEntity.js';
-import { bookAuthorTable } from '../../databases/bookDatabase/tables/bookAuthorTable/bookAuthorTable.js';
-import { type BookRawEntity } from '../../databases/bookDatabase/tables/bookTable/bookRawEntity.js';
-import { bookTable } from '../../databases/bookDatabase/tables/bookTable/bookTable.js';
-import { type BookWithJoinsRawEntity } from '../../databases/bookDatabase/tables/bookTable/bookWithJoinsRawEntity.js';
-import { genreTable } from '../../databases/bookDatabase/tables/genreTable/genreTable.js';
 
 import { type BookMapper } from './bookMapper/bookMapper.js';
 

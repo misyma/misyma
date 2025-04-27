@@ -6,9 +6,9 @@ import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
-import { coreSymbols } from '../../../../../core/symbols.js';
-import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
+import { databaseSymbols } from '../../../../databaseModule/symbols.js';
+import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { symbols } from '../../../symbols.js';
 import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
@@ -42,7 +42,7 @@ describe('FindUserBookQueryHandler', () => {
 
     findUserBookQueryHandler = container.get<FindUserBookQueryHandler>(symbols.findUserBookQueryHandler);
 
-    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
+    databaseClient = container.get<DatabaseClient>(databaseSymbols.databaseClient);
 
     authorTestUtils = container.get<AuthorTestUtils>(testSymbols.authorTestUtils);
 
@@ -84,8 +84,8 @@ describe('FindUserBookQueryHandler', () => {
       input: {
         authorIds: [author.id],
         book: {
-          genreId: genre.id
-        }
+          genreId: genre.id,
+        },
       },
     });
 
@@ -138,8 +138,8 @@ describe('FindUserBookQueryHandler', () => {
       input: {
         authorIds: [author.id],
         book: {
-          genreId: genre.id
-        }
+          genreId: genre.id,
+        },
       },
     });
 

@@ -1,6 +1,6 @@
 import { Generator } from '../../../../../../tests/generator.js';
+import { type CollectionRawEntity } from '../../../../databaseModule/infrastructure/tables/collectionTable/collectionRawEntity.js';
 import { type CollectionState, Collection } from '../../../domain/entities/collection/collection.js';
-import { type CollectionRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/collectionTable/collectionRawEntity.js';
 
 export class CollectionTestFactory {
   public createRaw(overrides: Partial<CollectionRawEntity> = {}): CollectionRawEntity {

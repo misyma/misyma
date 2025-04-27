@@ -1,5 +1,5 @@
+import { type GenreRawEntity } from '../../../../../databaseModule/infrastructure/tables/genreTable/genreRawEntity.js';
 import { Genre } from '../../../../domain/entities/genre/genre.js';
-import { type GenreRawEntity } from '../../../databases/bookDatabase/tables/genreTable/genreRawEntity.js';
 
 import { type GenreMapper } from './genreMapper.js';
 

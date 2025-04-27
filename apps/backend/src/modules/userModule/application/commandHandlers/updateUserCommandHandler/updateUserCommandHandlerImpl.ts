@@ -1,5 +1,5 @@
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
-import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
+import { type LoggerService } from '../../../../../libs/logger/loggerService.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
 
 import {

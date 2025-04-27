@@ -1,15 +1,16 @@
 import { type Config } from '../../core/config.js';
 import { coreSymbols } from '../../core/symbols.js';
-import { type DatabaseClient } from '../../libs/database/clients/databaseClient/databaseClient.js';
 import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type DependencyInjectionModule } from '../../libs/dependencyInjection/dependencyInjectionModule.js';
-import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
-import { type S3Service } from '../../libs/s3/services/s3Service/s3Service.js';
-import { type UuidService } from '../../libs/uuid/services/uuidService/uuidService.js';
+import { type LoggerService } from '../../libs/logger/loggerService.js';
+import { type S3Service } from '../../libs/s3/s3Service.js';
+import { type UuidService } from '../../libs/uuid/uuidService.js';
 import { type AccessControlService } from '../authModule/application/services/accessControlService/accessControlService.js';
 import { authSymbols } from '../authModule/symbols.js';
 import { type BookshelfRepository } from '../bookshelfModule/domain/repositories/bookshelfRepository/bookshelfRepository.js';
 import { bookshelfSymbols } from '../bookshelfModule/symbols.js';
+import { databaseSymbols } from '../databaseModule/symbols.js';
+import { type DatabaseClient } from '../databaseModule/types/databaseClient.js';
 import { type UserRepository } from '../userModule/domain/repositories/userRepository/userRepository.js';
 import { userSymbols } from '../userModule/symbols.js';
 
@@ -180,7 +181,7 @@ export class BookModule implements DependencyInjectionModule {
       symbols.bookRepository,
       () =>
         new BookRepositoryImpl(
-          container.get<DatabaseClient>(coreSymbols.databaseClient),
+          container.get<DatabaseClient>(databaseSymbols.databaseClient),
           container.get<BookMapper>(symbols.bookMapper),
           container.get<UuidService>(coreSymbols.uuidService),
         ),
@@ -190,7 +191,7 @@ export class BookModule implements DependencyInjectionModule {
       symbols.genreRepository,
       () =>
         new GenreRepositoryImpl(
-          container.get<DatabaseClient>(coreSymbols.databaseClient),
+          container.get<DatabaseClient>(databaseSymbols.databaseClient),
           container.get<GenreMapper>(symbols.genreMapper),
           container.get<UuidService>(coreSymbols.uuidService),
         ),
@@ -200,7 +201,7 @@ export class BookModule implements DependencyInjectionModule {
       symbols.userBookRepository,
       () =>
         new UserBookRepositoryImpl(
-          container.get<DatabaseClient>(coreSymbols.databaseClient),
+          container.get<DatabaseClient>(databaseSymbols.databaseClient),
           container.get<UserBookMapper>(symbols.userBookMapper),
           container.get<UuidService>(coreSymbols.uuidService),
         ),
@@ -210,7 +211,7 @@ export class BookModule implements DependencyInjectionModule {
       symbols.authorRepository,
       () =>
         new AuthorRepositoryImpl(
-          container.get<DatabaseClient>(coreSymbols.databaseClient),
+          container.get<DatabaseClient>(databaseSymbols.databaseClient),
           container.get<AuthorMapper>(symbols.authorMapper),
           container.get<UuidService>(coreSymbols.uuidService),
         ),
@@ -220,7 +221,7 @@ export class BookModule implements DependencyInjectionModule {
       symbols.bookReadingRepository,
       () =>
         new BookReadingRepositoryImpl(
-          container.get<DatabaseClient>(coreSymbols.databaseClient),
+          container.get<DatabaseClient>(databaseSymbols.databaseClient),
           container.get<BookReadingMapper>(symbols.bookReadingMapper),
           container.get<UuidService>(coreSymbols.uuidService),
         ),
@@ -230,7 +231,7 @@ export class BookModule implements DependencyInjectionModule {
       symbols.borrowingRepository,
       () =>
         new BorrowingRepositoryImpl(
-          container.get<DatabaseClient>(coreSymbols.databaseClient),
+          container.get<DatabaseClient>(databaseSymbols.databaseClient),
           container.get<BorrowingMapper>(symbols.borrowingMapper),
           container.get<UuidService>(coreSymbols.uuidService),
         ),
@@ -240,7 +241,7 @@ export class BookModule implements DependencyInjectionModule {
       symbols.quoteRepository,
       () =>
         new QuoteRepositoryImpl(
-          container.get<DatabaseClient>(coreSymbols.databaseClient),
+          container.get<DatabaseClient>(databaseSymbols.databaseClient),
           container.get<QuoteMapper>(symbols.quoteMapper),
           container.get<UuidService>(coreSymbols.uuidService),
         ),
@@ -250,7 +251,7 @@ export class BookModule implements DependencyInjectionModule {
       symbols.collectionRepository,
       () =>
         new CollectionRepositoryImpl(
-          container.get<DatabaseClient>(coreSymbols.databaseClient),
+          container.get<DatabaseClient>(databaseSymbols.databaseClient),
           container.get<CollectionMapper>(symbols.collectionMapper),
           container.get<UuidService>(coreSymbols.uuidService),
         ),
@@ -260,7 +261,7 @@ export class BookModule implements DependencyInjectionModule {
       symbols.bookChangeRequestRepository,
       () =>
         new BookChangeRequestRepositoryImpl(
-          container.get<DatabaseClient>(coreSymbols.databaseClient),
+          container.get<DatabaseClient>(databaseSymbols.databaseClient),
           container.get<BookChangeRequestMapper>(symbols.bookChangeRequestMapper),
           container.get<UuidService>(coreSymbols.uuidService),
         ),

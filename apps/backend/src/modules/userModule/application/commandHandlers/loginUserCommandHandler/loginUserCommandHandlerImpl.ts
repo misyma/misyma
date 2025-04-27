@@ -1,6 +1,6 @@
 import { tokenTypes } from '../../../../../common/types/tokenType.js';
 import { type Config } from '../../../../../core/config.js';
-import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
+import { type LoggerService } from '../../../../../libs/logger/loggerService.js';
 import { ForbiddenAccessError } from '../../../../authModule/application/errors/forbiddenAccessError.js';
 import { UnauthorizedAccessError } from '../../../../authModule/application/errors/unathorizedAccessError.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';

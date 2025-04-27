@@ -5,9 +5,9 @@ import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
-import { coreSymbols } from '../../../../../core/symbols.js';
-import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
 import { type BookshelfTestUtils } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
+import { databaseSymbols } from '../../../../databaseModule/symbols.js';
+import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { type AuthorRepository } from '../../../domain/repositories/authorRepository/authorRepository.js';
 import { symbols } from '../../../symbols.js';
@@ -43,7 +43,7 @@ describe('AuthorRepositoryImpl', () => {
 
     authorRepository = container.get<AuthorRepository>(symbols.authorRepository);
 
-    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
+    databaseClient = container.get<DatabaseClient>(databaseSymbols.databaseClient);
 
     bookTestUtils = container.get<BookTestUtils>(testSymbols.bookTestUtils);
 

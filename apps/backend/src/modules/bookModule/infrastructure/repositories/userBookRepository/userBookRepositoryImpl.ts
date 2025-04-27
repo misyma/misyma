@@ -1,7 +1,18 @@
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
-import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
-import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
-import { bookshelfTable } from '../../../../bookshelfModule/infrastructure/databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfTable.js';
+import { type UuidService } from '../../../../../libs/uuid/uuidService.js';
+import { authorTable } from '../../../../databaseModule/infrastructure/tables/authorTable/authorTable.js';
+import { bookAuthorTable } from '../../../../databaseModule/infrastructure/tables/bookAuthorTable/bookAuthorTable.js';
+import { bookReadingTable } from '../../../../databaseModule/infrastructure/tables/bookReadingTable/bookReadingTable.js';
+import { bookshelfTable } from '../../../../databaseModule/infrastructure/tables/bookshelfTable/bookshelfTable.js';
+import { bookTable } from '../../../../databaseModule/infrastructure/tables/bookTable/bookTable.js';
+import { collectionTable } from '../../../../databaseModule/infrastructure/tables/collectionTable/collectionTable.js';
+import { genreTable } from '../../../../databaseModule/infrastructure/tables/genreTable/genreTable.js';
+import { type UserBookCollectionRawEntity } from '../../../../databaseModule/infrastructure/tables/userBookCollectionsTable/userBookCollectionsRawEntity.js';
+import { userBookCollectionTable } from '../../../../databaseModule/infrastructure/tables/userBookCollectionsTable/userBookCollectionsTable.js';
+import { type UserBookRawEntity } from '../../../../databaseModule/infrastructure/tables/userBookTable/userBookRawEntity.js';
+import { userBookTable } from '../../../../databaseModule/infrastructure/tables/userBookTable/userBookTable.js';
+import { type UserBookWithJoinsRawEntity } from '../../../../databaseModule/infrastructure/tables/userBookTable/userBookWithJoinsRawEntity.js';
+import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { UserBook, type UserBookState } from '../../../domain/entities/userBook/userBook.js';
 import {
   type SaveUserBooksPayload,
@@ -14,17 +25,6 @@ import {
   type FindUserBookOwnerPayload,
   type FindUserBookOwnerResult,
 } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
-import { authorTable } from '../../databases/bookDatabase/tables/authorTable/authorTable.js';
-import { bookAuthorTable } from '../../databases/bookDatabase/tables/bookAuthorTable/bookAuthorTable.js';
-import { bookReadingTable } from '../../databases/bookDatabase/tables/bookReadingTable/bookReadingTable.js';
-import { bookTable } from '../../databases/bookDatabase/tables/bookTable/bookTable.js';
-import { collectionTable } from '../../databases/bookDatabase/tables/collectionTable/collectionTable.js';
-import { genreTable } from '../../databases/bookDatabase/tables/genreTable/genreTable.js';
-import { type UserBookCollectionRawEntity } from '../../databases/bookDatabase/tables/userBookCollectionsTable/userBookCollectionsRawEntity.js';
-import { userBookCollectionTable } from '../../databases/bookDatabase/tables/userBookCollectionsTable/userBookCollectionsTable.js';
-import { type UserBookRawEntity } from '../../databases/bookDatabase/tables/userBookTable/userBookRawEntity.js';
-import { userBookTable } from '../../databases/bookDatabase/tables/userBookTable/userBookTable.js';
-import { type UserBookWithJoinsRawEntity } from '../../databases/bookDatabase/tables/userBookTable/userBookWithJoinsRawEntity.js';
 
 import { type UserBookMapper } from './userBookMapper/userBookMapper.js';
 

@@ -1,6 +1,10 @@
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
-import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
-import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
+import { type UuidService } from '../../../../../libs/uuid/uuidService.js';
+import { type BookChangeRequestRawEntity } from '../../../../databaseModule/infrastructure/tables/bookChangeRequestTable/bookChangeRequestRawEntity.js';
+import { bookChangeRequestTable } from '../../../../databaseModule/infrastructure/tables/bookChangeRequestTable/bookChangeRequestTable.js';
+import { type BookChangeRequestWithJoinsRawEntity } from '../../../../databaseModule/infrastructure/tables/bookChangeRequestTable/bookChangeRequestWithJoinsRawEntity.js';
+import { bookTable } from '../../../../databaseModule/infrastructure/tables/bookTable/bookTable.js';
+import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { type BookChangeRequest } from '../../../domain/entities/bookChangeRequest/bookChangeRequest.js';
 import {
   type BookChangeRequestRepository,
@@ -9,10 +13,6 @@ import {
   type FindBookChangeRequestsPayload,
   type FindBookChangeRequestPayload,
 } from '../../../domain/repositories/bookChangeRequestRepository/bookChangeRequestRepository.js';
-import { type BookChangeRequestRawEntity } from '../../databases/bookDatabase/tables/bookChangeRequestTable/bookChangeRequestRawEntity.js';
-import { bookChangeRequestTable } from '../../databases/bookDatabase/tables/bookChangeRequestTable/bookChangeRequestTable.js';
-import { type BookChangeRequestWithJoinsRawEntity } from '../../databases/bookDatabase/tables/bookChangeRequestTable/bookChangeRequestWithJoinsRawEntity.js';
-import { bookTable } from '../../databases/bookDatabase/tables/bookTable/bookTable.js';
 
 import { type BookChangeRequestMapper } from './bookChangeRequestMapper/bookChangeRequestMapper.js';
 

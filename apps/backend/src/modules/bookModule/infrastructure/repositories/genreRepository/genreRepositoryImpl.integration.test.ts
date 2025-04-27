@@ -4,14 +4,14 @@ import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
-import { coreSymbols } from '../../../../../core/symbols.js';
-import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
+import { type GenreRawEntity } from '../../../../databaseModule/infrastructure/tables/genreTable/genreRawEntity.js';
+import { databaseSymbols } from '../../../../databaseModule/symbols.js';
+import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { Genre } from '../../../domain/entities/genre/genre.js';
 import { type GenreRepository } from '../../../domain/repositories/genreRepository/genreRepository.js';
 import { symbols } from '../../../symbols.js';
 import { GenreTestFactory } from '../../../tests/factories/genreTestFactory/genreTestFactory.js';
 import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
-import { type GenreRawEntity } from '../../databases/bookDatabase/tables/genreTable/genreRawEntity.js';
 
 describe('GenreRepositoryImpl', () => {
   let genreRepository: GenreRepository;
@@ -27,7 +27,7 @@ describe('GenreRepositoryImpl', () => {
 
     genreRepository = container.get<GenreRepository>(symbols.genreRepository);
 
-    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
+    databaseClient = container.get<DatabaseClient>(databaseSymbols.databaseClient);
 
     genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
 

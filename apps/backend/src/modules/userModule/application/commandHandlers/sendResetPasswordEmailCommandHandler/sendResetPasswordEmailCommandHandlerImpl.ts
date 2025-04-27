@@ -1,7 +1,7 @@
 import { emailTypes } from '../../../../../common/types/emailType.js';
 import { tokenTypes } from '../../../../../common/types/tokenType.js';
 import { type Config } from '../../../../../core/config.js';
-import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
+import { type LoggerService } from '../../../../../libs/logger/loggerService.js';
 import { type TokenService } from '../../../../authModule/application/services/tokenService/tokenService.js';
 import { EmailEventDraft } from '../../../domain/entities/emailEvent/emailEvent.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';

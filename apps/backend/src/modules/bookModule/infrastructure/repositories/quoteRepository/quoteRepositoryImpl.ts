@@ -1,7 +1,14 @@
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
-import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
-import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
-import { bookshelfTable } from '../../../../bookshelfModule/infrastructure/databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfTable.js';
+import { type UuidService } from '../../../../../libs/uuid/uuidService.js';
+import { authorTable } from '../../../../databaseModule/infrastructure/tables/authorTable/authorTable.js';
+import { bookAuthorTable } from '../../../../databaseModule/infrastructure/tables/bookAuthorTable/bookAuthorTable.js';
+import { bookshelfTable } from '../../../../databaseModule/infrastructure/tables/bookshelfTable/bookshelfTable.js';
+import { bookTable } from '../../../../databaseModule/infrastructure/tables/bookTable/bookTable.js';
+import { type QuoteRawEntity } from '../../../../databaseModule/infrastructure/tables/quoteTable/quoteRawEntity.js';
+import { quoteTable } from '../../../../databaseModule/infrastructure/tables/quoteTable/quoteTable.js';
+import { type QuoteWithJoinsRawEntity } from '../../../../databaseModule/infrastructure/tables/quoteTable/quoteWithJoinsRawEntity.js';
+import { userBookTable } from '../../../../databaseModule/infrastructure/tables/userBookTable/userBookTable.js';
+import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { Quote, type QuoteState } from '../../../domain/entities/quote/quote.js';
 import {
   type QuoteRepository,
@@ -11,13 +18,6 @@ import {
   type SavePayload,
   type CountQuotesPayload,
 } from '../../../domain/repositories/quoteRepository/quoteRepository.js';
-import { authorTable } from '../../databases/bookDatabase/tables/authorTable/authorTable.js';
-import { bookAuthorTable } from '../../databases/bookDatabase/tables/bookAuthorTable/bookAuthorTable.js';
-import { bookTable } from '../../databases/bookDatabase/tables/bookTable/bookTable.js';
-import { type QuoteRawEntity } from '../../databases/bookDatabase/tables/quoteTable/quoteRawEntity.js';
-import { quoteTable } from '../../databases/bookDatabase/tables/quoteTable/quoteTable.js';
-import { type QuoteWithJoinsRawEntity } from '../../databases/bookDatabase/tables/quoteTable/quoteWithJoinsRawEntity.js';
-import { userBookTable } from '../../databases/bookDatabase/tables/userBookTable/userBookTable.js';
 
 import { type QuoteMapper } from './quoteMapper/quoteMapper.js';
 

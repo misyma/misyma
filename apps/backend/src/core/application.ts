@@ -1,7 +1,5 @@
 import { bookshelfTypes, userRoles } from '@common/contracts';
 
-import { type DatabaseClient } from '../libs/database/clients/databaseClient/databaseClient.js';
-import { DatabaseClientFactory } from '../libs/database/factories/databaseClientFactory/databaseClientFactory.js';
 import { type DependencyInjectionContainer } from '../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { DependencyInjectionContainerFactory } from '../libs/dependencyInjection/dependencyInjectionContainerFactory.js';
 import { type DependencyInjectionModule } from '../libs/dependencyInjection/dependencyInjectionModule.js';
@@ -9,26 +7,26 @@ import { type EmailService } from '../libs/emailService/emailService.js';
 import { EmailServiceImpl } from '../libs/emailService/emailServiceImpl.js';
 import { type HttpService } from '../libs/httpService/httpService.js';
 import { HttpServiceImpl } from '../libs/httpService/httpServiceImpl.js';
-import { LoggerServiceFactory } from '../libs/logger/factories/loggerServiceFactory/loggerServiceFactory.js';
-import { type LoggerService } from '../libs/logger/services/loggerService/loggerService.js';
-import { type S3Client } from '../libs/s3/clients/s3Client/s3Client.js';
-import { S3ClientFactory, type S3Config } from '../libs/s3/factories/s3ClientFactory/s3ClientFactory.js';
-import { S3Service } from '../libs/s3/services/s3Service/s3Service.js';
-import { type UuidService } from '../libs/uuid/services/uuidService/uuidService.js';
-import { UuidServiceImpl } from '../libs/uuid/services/uuidService/uuidServiceImpl.js';
+import { type LoggerService } from '../libs/logger/loggerService.js';
+import { LoggerServiceFactory } from '../libs/logger/loggerServiceFactory.js';
+import { type S3Client } from '../libs/s3/s3Client.js';
+import { S3ClientFactory, type S3Config } from '../libs/s3/s3ClientFactory.js';
+import { S3Service } from '../libs/s3/s3Service.js';
+import { UuidService } from '../libs/uuid/uuidService.js';
 import { AuthModule } from '../modules/authModule/authModule.js';
 import { BookModule } from '../modules/bookModule/bookModule.js';
-import { BookDatabaseManager } from '../modules/bookModule/infrastructure/databases/bookDatabase/bookDatabaseManager.js';
-import { type GenreRawEntity } from '../modules/bookModule/infrastructure/databases/bookDatabase/tables/genreTable/genreRawEntity.js';
-import { genreTable } from '../modules/bookModule/infrastructure/databases/bookDatabase/tables/genreTable/genreTable.js';
 import { BookshelfModule } from '../modules/bookshelfModule/bookshelfModule.js';
-import { BookshelfDatabaseManager } from '../modules/bookshelfModule/infrastructure/databases/bookshelvesDatabase/bookshelfDatabaseManager.js';
-import { type BookshelfRawEntity } from '../modules/bookshelfModule/infrastructure/databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfRawEntity.js';
-import { bookshelfTable } from '../modules/bookshelfModule/infrastructure/databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfTable.js';
+import { DatabaseModule } from '../modules/databaseModule/databaseModule.js';
+import { type DatabaseManager } from '../modules/databaseModule/infrastructure/databaseManager.js';
+import { type BookshelfRawEntity } from '../modules/databaseModule/infrastructure/tables/bookshelfTable/bookshelfRawEntity.js';
+import { bookshelfTable } from '../modules/databaseModule/infrastructure/tables/bookshelfTable/bookshelfTable.js';
+import { type GenreRawEntity } from '../modules/databaseModule/infrastructure/tables/genreTable/genreRawEntity.js';
+import { genreTable } from '../modules/databaseModule/infrastructure/tables/genreTable/genreTable.js';
+import { type UserRawEntity } from '../modules/databaseModule/infrastructure/tables/userTable/userRawEntity.js';
+import { userTable } from '../modules/databaseModule/infrastructure/tables/userTable/userTable.js';
+import { databaseSymbols } from '../modules/databaseModule/symbols.js';
+import { type DatabaseClient } from '../modules/databaseModule/types/databaseClient.js';
 import { type HashService } from '../modules/userModule/application/services/hashService/hashService.js';
-import { type UserRawEntity } from '../modules/userModule/infrastructure/databases/userDatabase/tables/userTable/userRawEntity.js';
-import { userTable } from '../modules/userModule/infrastructure/databases/userDatabase/tables/userTable/userTable.js';
-import { UserDatabaseManager } from '../modules/userModule/infrastructure/databases/userDatabase/userDatabaseManager.js';
 import { userSymbols } from '../modules/userModule/symbols.js';
 import { UserModule } from '../modules/userModule/userModule.js';
 
@@ -45,15 +43,7 @@ export class Application {
   public static async start(): Promise<void> {
     Application.container = Application.createContainer();
 
-    const loggerService = Application.container.get<LoggerService>(coreSymbols.loggerService);
-
     await this.setupDatabase(Application.container);
-
-    await this.createAdminUser(Application.container);
-
-    await this.createGenres(Application.container);
-
-    loggerService.info({ message: 'Migrations executed.' });
 
     Application.server = new HttpServer(Application.container);
 
@@ -67,13 +57,14 @@ export class Application {
   public static async stop(): Promise<void> {
     await Application.server?.stop();
 
-    const dbClient = Application.container?.get<DatabaseClient>(coreSymbols.databaseClient);
+    const dbClient = Application.container?.get<DatabaseClient>(databaseSymbols.databaseClient);
 
     await dbClient?.destroy();
   }
 
   public static createContainer(): DependencyInjectionContainer {
     const modules: DependencyInjectionModule[] = [
+      new DatabaseModule(),
       new UserModule(),
       new AuthModule(),
       new BookModule(),
@@ -90,26 +81,13 @@ export class Application {
 
     container.bind<HttpService>(symbols.httpService, () => new HttpServiceImpl());
 
-    container.bind<UuidService>(symbols.uuidService, () => new UuidServiceImpl());
+    container.bind<UuidService>(symbols.uuidService, () => new UuidService());
 
     container.bind<Config>(symbols.config, () => config);
 
-    container.bind<DatabaseClient>(symbols.databaseClient, () =>
-      DatabaseClientFactory.create({
-        host: config.database.host,
-        port: config.database.port,
-        databaseName: config.database.name,
-        user: config.database.username,
-        password: config.database.password,
-        useNullAsDefault: true,
-        minPoolConnections: 1,
-        maxPoolConnections: 10,
-      }),
-    );
-
     container.bind<ApplicationHttpController>(
       symbols.applicationHttpController,
-      () => new ApplicationHttpController(container.get<DatabaseClient>(coreSymbols.databaseClient)),
+      () => new ApplicationHttpController(container.get<DatabaseClient>(databaseSymbols.databaseClient)),
     );
 
     container.bind<EmailService>(
@@ -132,15 +110,17 @@ export class Application {
   }
 
   private static async setupDatabase(container: DependencyInjectionContainer): Promise<void> {
-    const coreDatabaseManagers = [UserDatabaseManager, BookshelfDatabaseManager, BookDatabaseManager];
+    const databaseManager = container.get<DatabaseManager>(databaseSymbols.databaseManager);
 
-    for (const databaseManager of coreDatabaseManagers) {
-      await databaseManager.bootstrapDatabase(container);
-    }
+    await databaseManager.setupDatabase();
+
+    await this.createAdminUser(container);
+
+    await this.createGenres(container);
   }
 
   private static async createAdminUser(container: DependencyInjectionContainer): Promise<void> {
-    const databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
+    const databaseClient = container.get<DatabaseClient>(databaseSymbols.databaseClient);
 
     const uuidService = container.get<UuidService>(coreSymbols.uuidService);
 
@@ -197,7 +177,7 @@ export class Application {
   }
 
   private static async createGenres(container: DependencyInjectionContainer): Promise<void> {
-    const databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
+    const databaseClient = container.get<DatabaseClient>(databaseSymbols.databaseClient);
 
     const config = container.get<Config>(coreSymbols.config);
 
