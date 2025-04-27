@@ -69,7 +69,7 @@ export class UserBookMapperImpl implements UserBookMapper {
         isApproved,
         genre: new Genre({
           id: genreId,
-          name: genreName ?? '',
+          name: genreName,
         }),
         genreId,
         createdAt: bookCreatedAt,
