@@ -24,6 +24,7 @@ export class VerifyUserEmailCommandHandlerImpl implements VerifyUserEmailCommand
       throw new OperationNotValidError({
         reason: 'Invalid email verification token.',
         token: emailVerificationToken,
+        originalError: error,
       });
     }
 

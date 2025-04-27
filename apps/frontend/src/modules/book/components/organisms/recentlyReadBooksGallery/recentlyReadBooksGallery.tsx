@@ -9,6 +9,8 @@ export const RecentlyReadBooksGallery = () => {
     FindUserBooksByQueryOptions({
       pageSize: 5,
       sortField: 'readingDate',
+      sortOrder: 'desc',
+      isRated: true,
     }),
   );
 

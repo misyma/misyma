@@ -26,6 +26,7 @@ export const findUserBooksBy = async (payload: FindUserBooksQueryParams): Promis
     'authorId',
     'sortField',
     'sortOrder',
+    'isRated',
   ];
 
   keys.forEach((key) => {
@@ -54,6 +55,7 @@ export const FindUserBooksByQueryOptions = ({ ...rest }: FindUserBooksQueryParam
       rest.pageSize,
       rest.sortField,
       rest.sortOrder,
+      rest.isRated,
     ],
     queryFn: () =>
       findUserBooksBy({
@@ -80,6 +82,7 @@ export const FindUserBooksByInfiniteQueryOptions = ({ page = 1, ...rest }: FindU
       rest.isFavorite,
       rest.sortField,
       rest.sortOrder,
+      rest.isRated,
     ],
     initialPageParam: page,
     queryFn: ({ pageParam }) =>

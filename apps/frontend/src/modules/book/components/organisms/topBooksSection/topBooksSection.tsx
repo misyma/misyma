@@ -9,6 +9,8 @@ export const TopBooksSection = () => {
     FindUserBooksByQueryOptions({
       pageSize: 5,
       sortField: 'rating',
+      sortOrder: 'desc',
+      isRated: true,
     }),
   );
 

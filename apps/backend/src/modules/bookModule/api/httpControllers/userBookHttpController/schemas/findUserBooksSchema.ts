@@ -35,6 +35,7 @@ export const findUserBooksQueryParamsDtoSchema = Type.Object({
     ]),
   ),
   sortOrder: Type.Optional(Type.Union(Object.values(sortOrders).map((sortOrder) => Type.Literal(sortOrder)))),
+  isRated: Type.Optional(Type.Boolean()),
 });
 
 export type FindUserBooksQueryParamsDto = TypeExtends<

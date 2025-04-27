@@ -21,6 +21,7 @@ export interface FindUserBooksQueryParams {
   readonly pageSize?: number;
   readonly sortField?: 'releaseYear' | 'createdAt' | 'rating' | 'readingDate';
   readonly sortOrder?: SortOrder;
+  readonly isRated?: boolean;
 }
 
 export interface FindUserBooksResponseBody {
