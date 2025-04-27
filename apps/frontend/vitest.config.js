@@ -10,6 +10,7 @@ export default mergeConfig(
     test: {
       environment: 'jsdom',
       setupFiles: './tests/setup.js',
+      include: ['./src/**/*.test.{ts,tsx}', './tests/**/*.test.{ts,tsx}'],
       coverage: {
         include: ['src/**'],
         exclude: ['**/*.stories.js', '**/*.stories.tsx'],
