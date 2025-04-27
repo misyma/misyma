@@ -1,5 +1,36 @@
 import { z } from 'zod';
 
+export const nameSchema = z
+  .string({
+    required_error: 'Wymagane.',
+  })
+  .min(1, 'Imię musi mieć minimum 1 znak.')
+  .max(64, 'Imię może mieć maksymalnie 64 znaki.')
+  .refine((name) => {
+    return !/[!@#$%^&*(),.?":{}|<>]/g.test(name);
+  }, 'Imię nie może zawierać znaków specjalnych')
+
+export const nameSuperRefine = (
+  {
+    name,
+  }: {
+    name: string;
+  },
+  ctx: z.RefinementCtx,
+) => {
+  const specialCharacterRegex = /[!@#$%^&*(),.?":{}|<>]/g;
+
+  const containsSpecialChars = specialCharacterRegex.test(name);
+
+  if (containsSpecialChars) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['firstName'],
+      message: 'Imię nie może zawierać znaków specjalnych',
+    });
+  }
+};
+
 export const emailSchema = z
   .string({
     required_error: 'Wymagane.',

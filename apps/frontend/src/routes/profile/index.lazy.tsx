@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -9,10 +9,16 @@ import { type FindUserResponseBody } from '@common/contracts';
 
 import { AuthenticatedLayout } from '../../modules/auth/layouts/authenticated/authenticatedLayout';
 import { Button } from '../../modules/common/components/button/button';
-import { Form, FormField, FormItem, FormMessage } from '../../modules/common/components/form/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../../modules/common/components/form/form';
 import { PasswordEyeIcon } from '../../modules/common/components/icons/passwordEyeIcon/passwordEyeIcon';
 import { Input } from '../../modules/common/components/input/input';
-import { Label } from '../../modules/common/components/label/label';
 import { LoadingSpinner } from '../../modules/common/components/spinner/loading-spinner';
 import { useToast } from '../../modules/common/components/toast/use-toast';
 import { RequireAuthComponent } from '../../modules/core/components/requireAuth/requireAuthComponent';
@@ -20,50 +26,24 @@ import { useChangeUserPasswordMutation } from '../../modules/user/api/mutations/
 import { useUpdateUserMutation } from '../../modules/user/api/mutations/updateUser/updateUserMutation';
 import { useFindUserQuery } from '../../modules/user/api/queries/findUserQuery/findUserQuery';
 import { UserApiQueryKeys } from '../../modules/user/api/queries/userApiQueryKeys';
+import {
+  nameSchema,
+  nameSuperRefine,
+  passwordSchema,
+  passwordSuperRefine,
+} from '../../modules/common/schemas/userSchemas';
 
 const changeUserDataFormSchema = z
   .object({
-    name: z.union([
-      z.string().min(2, 'Imię musi mieć minimum 2 znaki.').max(64, 'Imię może mieć maksymalnie 64 znaki.'),
-      z.literal(''),
-    ]),
-    password: z.union([
-      z
-        .string({
-          required_error: 'Wymagane.',
-        })
-        .min(8, 'Hasło musi mieć minimum 8 znaków.')
-        .max(64, 'Hasło może mieć maksymalnie 64 znaki.'),
-      z.literal(''),
-    ]),
+    name: z.union([nameSchema, z.literal('')]),
+    password: z.union([passwordSchema, z.literal('')]),
   })
-  .superRefine(({ password }, ctx) => {
-    if (password) {
-      if (!/[0-9]/.test(password)) {
-        ctx.addIssue({
-          code: 'custom',
-          message: 'Hasło musi mieć minimum jedną cyfrę',
-          path: ['password'],
-        });
-      }
+  .superRefine((args, ctx) => {
+    if (args.password === '') return;
 
-      if (!/[A-Z]/.test(password)) {
-        ctx.addIssue({
-          code: 'custom',
-          message: 'Hasło musi mieć minimum jedną dużą literę',
-          path: ['password'],
-        });
-      }
-
-      if (!/[a-z]/.test(password)) {
-        ctx.addIssue({
-          code: 'custom',
-          message: 'Hasło musi mieć minimum jedną małą literę',
-          path: ['password'],
-        });
-      }
-    }
-  });
+    passwordSuperRefine(args, ctx);
+  })
+  .superRefine(nameSuperRefine);
 
 interface FormProps {
   userData: FindUserResponseBody;
@@ -76,15 +56,15 @@ const ChangeUserDataForm = ({ userData }: FormProps) => {
 
   const changeUserDataForm = useForm<z.infer<typeof changeUserDataFormSchema>>({
     resolver: zodResolver(changeUserDataFormSchema),
-    values: {
+    defaultValues: {
       name: userData?.name,
       password: '',
     },
     reValidateMode: 'onChange',
+    mode: 'onTouched',
   });
 
   const { isPending: isUserUpdatePending, mutateAsync: updateUser } = useUpdateUserMutation({});
-
   const { isPending: isChangeUserPasswordPending, mutateAsync: changePassword } = useChangeUserPasswordMutation({});
 
   const [passwordInputType, setPasswordInputType] = useState<'text' | 'password'>('password');
@@ -137,12 +117,6 @@ const ChangeUserDataForm = ({ userData }: FormProps) => {
     }
   };
 
-  const parseResult = useMemo(
-    () => changeUserDataFormSchema.safeParse(changeUserDataForm.getValues()),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [changeUserDataForm.getValues()],
-  );
-
   return (
     <Form {...changeUserDataForm}>
       <form
@@ -151,50 +125,55 @@ const ChangeUserDataForm = ({ userData }: FormProps) => {
       >
         <FormField
           name="name"
+          control={changeUserDataForm.control}
           render={({ field }) => (
             <FormItem>
-              <Label>Imię</Label>
-              <Input
-                placeholder="Imię"
-                maxLength={64}
-                includeQuill={false}
-                {...field}
-              />
-              <FormMessage>
-                {!parseResult.success
-                  ? parseResult.error.errors.find((error) => error.path.includes('name'))?.message
-                  : null}
-              </FormMessage>
+              <FormLabel>Imię</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Imię"
+                  maxLength={64}
+                  includeQuill={false}
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
         <FormField
+          control={changeUserDataForm.control}
           name="password"
           render={({ field }) => (
             <FormItem>
-              <Label>Hasło</Label>
-              <Input
-                placeholder="Hasło"
-                maxLength={64}
-                type={passwordInputType}
-                includeQuill={false}
-                otherIcon={
-                  <PasswordEyeIcon
-                    onClick={() => setPasswordInputType(passwordInputType === 'password' ? 'text' : 'password')}
-                    passwordType={passwordInputType}
-                  />
-                }
-                {...field}
-              />
-              <FormMessage>
-                {!parseResult.success
-                  ? parseResult.error.errors.find((error) => error.path.includes('password'))?.message
-                  : null}
-              </FormMessage>
+              <FormLabel>Hasło</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Hasło"
+                  maxLength={64}
+                  type={passwordInputType}
+                  includeQuill={false}
+                  otherIcon={
+                    <PasswordEyeIcon
+                      onClick={() => setPasswordInputType(passwordInputType === 'password' ? 'text' : 'password')}
+                      passwordType={passwordInputType}
+                    />
+                  }
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
-        <Button disabled={!changeUserDataForm.formState.isDirty || isUserUpdatePending || isChangeUserPasswordPending}>
+        <Button
+          disabled={
+            !changeUserDataForm.formState.isDirty ||
+            !changeUserDataForm.formState.isValid ||
+            isUserUpdatePending ||
+            isChangeUserPasswordPending
+          }
+        >
           {!isUserUpdatePending && !isChangeUserPasswordPending && <>Zapisz</>}
           {(isUserUpdatePending || isChangeUserPasswordPending) && <LoadingSpinner size={40} />}
         </Button>
