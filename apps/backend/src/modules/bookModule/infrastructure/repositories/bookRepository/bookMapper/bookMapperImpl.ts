@@ -1,8 +1,8 @@
+import { type BookRawEntity } from '../../../../../databaseModule/infrastructure/tables/bookTable/bookRawEntity.js';
+import { type BookWithJoinsRawEntity } from '../../../../../databaseModule/infrastructure/tables/bookTable/bookWithJoinsRawEntity.js';
 import { Author } from '../../../../domain/entities/author/author.js';
 import { Book, type BookDraft } from '../../../../domain/entities/book/book.js';
 import { Genre } from '../../../../domain/entities/genre/genre.js';
-import { type BookRawEntity } from '../../../databases/bookDatabase/tables/bookTable/bookRawEntity.js';
-import { type BookWithJoinsRawEntity } from '../../../databases/bookDatabase/tables/bookTable/bookWithJoinsRawEntity.js';
 
 import { type BookMapper } from './bookMapper.js';
 
@@ -41,8 +41,8 @@ export class BookMapperImpl implements BookMapper {
       genreId,
       genre: new Genre({
         id: genreId,
-        name: ""
-      })
+        name: '',
+      }),
     });
   }
 
@@ -74,7 +74,7 @@ export class BookMapperImpl implements BookMapper {
         genreId,
         genre: new Genre({
           id: genreId,
-          name: genreName
+          name: genreName,
         }),
         title,
         isbn: isbn ?? undefined,

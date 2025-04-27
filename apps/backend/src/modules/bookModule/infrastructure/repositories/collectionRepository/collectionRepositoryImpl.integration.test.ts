@@ -5,15 +5,15 @@ import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
-import { coreSymbols } from '../../../../../core/symbols.js';
-import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
+import { type CollectionRawEntity } from '../../../../databaseModule/infrastructure/tables/collectionTable/collectionRawEntity.js';
+import { databaseSymbols } from '../../../../databaseModule/symbols.js';
+import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { Collection } from '../../../domain/entities/collection/collection.js';
 import { type CollectionRepository } from '../../../domain/repositories/collectionRepository/collectionRepository.js';
 import { symbols } from '../../../symbols.js';
 import { CollectionTestFactory } from '../../../tests/factories/collectionTestFactory/collectionTestFactory.js';
 import { type CollectionTestUtils } from '../../../tests/utils/collectionTestUtils/collectionTestUtils.js';
-import { type CollectionRawEntity } from '../../databases/bookDatabase/tables/collectionTable/collectionRawEntity.js';
 
 describe('CollectionRepositoryImpl', () => {
   let collectionRepository: CollectionRepository;
@@ -33,7 +33,7 @@ describe('CollectionRepositoryImpl', () => {
 
     collectionRepository = container.get<CollectionRepository>(symbols.collectionRepository);
 
-    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
+    databaseClient = container.get<DatabaseClient>(databaseSymbols.databaseClient);
 
     collectionTestUtils = container.get<CollectionTestUtils>(testSymbols.collectionTestUtils);
 

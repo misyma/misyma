@@ -1,6 +1,8 @@
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
-import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
-import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
+import { type UuidService } from '../../../../../libs/uuid/uuidService.js';
+import { type BorrowingRawEntity } from '../../../../databaseModule/infrastructure/tables/borrowingTable/borrowingRawEntity.js';
+import { borrowingTable } from '../../../../databaseModule/infrastructure/tables/borrowingTable/borrowingTable.js';
+import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { Borrowing, type BorrowingState } from '../../../domain/entities/borrowing/borrowing.js';
 import {
   type BorrowingRepository,
@@ -9,8 +11,6 @@ import {
   type FindBorrowingsPayload,
   type SavePayload,
 } from '../../../domain/repositories/borrowingRepository/borrowingRepository.js';
-import { type BorrowingRawEntity } from '../../databases/bookDatabase/tables/borrowingTable/borrowingRawEntity.js';
-import { borrowingTable } from '../../databases/bookDatabase/tables/borrowingTable/borrowingTable.js';
 
 import { type BorrowingMapper } from './borrowingMapper/borrowingMapper.js';
 

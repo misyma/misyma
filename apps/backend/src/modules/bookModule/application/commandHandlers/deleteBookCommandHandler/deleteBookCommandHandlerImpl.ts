@@ -1,5 +1,5 @@
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
-import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
+import { type LoggerService } from '../../../../../libs/logger/loggerService.js';
 import { type BookRepository } from '../../../domain/repositories/bookRepository/bookRepository.js';
 
 import { type DeleteBookCommandHandler, type DeleteBookCommandHandlerPayload } from './deleteBookCommandHandler.js';

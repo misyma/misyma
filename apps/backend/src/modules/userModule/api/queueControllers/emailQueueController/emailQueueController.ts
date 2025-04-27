@@ -7,7 +7,7 @@ import { type QueueController } from '../../../../../common/types/queue/queueCon
 import { type QueueHandler } from '../../../../../common/types/queue/queueHandler.js';
 import { QueuePath } from '../../../../../common/types/queue/queuePath.js';
 import { type EmailService } from '../../../../../libs/emailService/emailService.js';
-import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
+import { type LoggerService } from '../../../../../libs/logger/loggerService.js';
 import { type EmailEvent } from '../../../domain/entities/emailEvent/emailEvent.js';
 import { emailEventStatuses } from '../../../domain/entities/emailEvent/types/emailEventStatus.js';
 import { type EmailEventRepository } from '../../../domain/repositories/emailEventRepository/emailEventRepository.js';

@@ -1,10 +1,10 @@
 import { TestUtils } from '../../../../../../tests/testUtils.js';
-import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
-import { type Transaction } from '../../../../../libs/database/types/transaction.js';
-import { type BookAuthorRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/bookAuthorTable/bookAuthorRawEntity.js';
-import { bookAuthorTable } from '../../../infrastructure/databases/bookDatabase/tables/bookAuthorTable/bookAuthorTable.js';
-import { type BookRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/bookTable/bookRawEntity.js';
-import { bookTable } from '../../../infrastructure/databases/bookDatabase/tables/bookTable/bookTable.js';
+import { type BookAuthorRawEntity } from '../../../../databaseModule/infrastructure/tables/bookAuthorTable/bookAuthorRawEntity.js';
+import { bookAuthorTable } from '../../../../databaseModule/infrastructure/tables/bookAuthorTable/bookAuthorTable.js';
+import { type BookRawEntity } from '../../../../databaseModule/infrastructure/tables/bookTable/bookRawEntity.js';
+import { bookTable } from '../../../../databaseModule/infrastructure/tables/bookTable/bookTable.js';
+import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
+import { type Transaction } from '../../../../databaseModule/types/transaction.js';
 import { BookTestFactory } from '../../factories/bookTestFactory/bookTestFactory.js';
 
 export interface CreateAndPersistBookPayload {

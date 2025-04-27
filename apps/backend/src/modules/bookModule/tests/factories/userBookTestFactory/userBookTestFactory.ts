@@ -1,6 +1,6 @@
 import { Generator } from '../../../../../../tests/generator.js';
+import { type UserBookRawEntity } from '../../../../databaseModule/infrastructure/tables/userBookTable/userBookRawEntity.js';
 import { UserBook, type UserBookDraft } from '../../../domain/entities/userBook/userBook.js';
-import { type UserBookRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/userBookTable/userBookRawEntity.js';
 
 export class UserBookTestFactory {
   public create(input: Partial<UserBookDraft> = {}): UserBook {

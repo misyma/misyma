@@ -1,13 +1,13 @@
 import { Generator } from '../../../../../../tests/generator.js';
+import { type BookRawEntity } from '../../../../databaseModule/infrastructure/tables/bookTable/bookRawEntity.js';
 import { Book, type BookDraft } from '../../../domain/entities/book/book.js';
 import { Genre } from '../../../domain/entities/genre/genre.js';
-import { type BookRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/bookTable/bookRawEntity.js';
 
 export class BookTestFactory {
   public create(input: Partial<BookDraft> = {}): Book {
     const genre = new Genre({
       id: Generator.uuid(),
-      name: Generator.title()
+      name: Generator.title(),
     });
     return new Book({
       id: Generator.uuid(),

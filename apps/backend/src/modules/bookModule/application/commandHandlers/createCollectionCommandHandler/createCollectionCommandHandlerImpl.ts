@@ -1,5 +1,5 @@
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
-import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
+import { type LoggerService } from '../../../../../libs/logger/loggerService.js';
 import { type CollectionRepository } from '../../../domain/repositories/collectionRepository/collectionRepository.js';
 
 import {

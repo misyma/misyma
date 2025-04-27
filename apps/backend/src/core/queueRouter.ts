@@ -4,7 +4,7 @@ import { type QueueChannel } from '../common/types/queue/queueChannel.js';
 import { type QueueController } from '../common/types/queue/queueController.js';
 import { type QueueHandlerPayload, type QueueHandler } from '../common/types/queue/queueHandler.js';
 import { type DependencyInjectionContainer } from '../libs/dependencyInjection/dependencyInjectionContainer.js';
-import { type LoggerService } from '../libs/logger/services/loggerService/loggerService.js';
+import { type LoggerService } from '../libs/logger/loggerService.js';
 import { type EmailQueueController } from '../modules/userModule/api/queueControllers/emailQueueController/emailQueueController.js';
 import { userSymbols } from '../modules/userModule/symbols.js';
 

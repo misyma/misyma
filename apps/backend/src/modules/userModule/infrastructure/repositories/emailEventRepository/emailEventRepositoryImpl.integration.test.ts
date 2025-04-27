@@ -3,8 +3,8 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
-import { coreSymbols } from '../../../../../core/symbols.js';
-import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
+import { databaseSymbols } from '../../../../databaseModule/symbols.js';
+import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { EmailEvent } from '../../../domain/entities/emailEvent/emailEvent.js';
 import { emailEventStatuses } from '../../../domain/entities/emailEvent/types/emailEventStatus.js';
 import { type EmailEventRepository } from '../../../domain/repositories/emailEventRepository/emailEventRepository.js';
@@ -28,7 +28,7 @@ describe('EmailEventRepositoryImpl', () => {
 
     emailEventTestUtils = container.get<EmailEventTestUtils>(testSymbols.emailEventTestUtils);
 
-    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
+    databaseClient = container.get<DatabaseClient>(databaseSymbols.databaseClient);
 
     await emailEventTestUtils.truncate();
   });

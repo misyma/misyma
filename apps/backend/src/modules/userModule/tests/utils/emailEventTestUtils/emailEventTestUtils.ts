@@ -1,8 +1,8 @@
 import { TestUtils } from '../../../../../../tests/testUtils.js';
-import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
+import { type EmailEventRawEntity } from '../../../../databaseModule/infrastructure/tables/emailEventTable/emailEventRawEntity.js';
+import { emailEventTable } from '../../../../databaseModule/infrastructure/tables/emailEventTable/emailEventTable.js';
+import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { type EmailEvent } from '../../../domain/entities/emailEvent/emailEvent.js';
-import { type EmailEventRawEntity } from '../../../infrastructure/databases/userDatabase/tables/emailEventTable/emailEventRawEntity.js';
-import { emailEventTable } from '../../../infrastructure/databases/userDatabase/tables/emailEventTable/emailEventTable.js';
 
 export class EmailEventTestUtils extends TestUtils {
   public constructor(databaseClient: DatabaseClient) {

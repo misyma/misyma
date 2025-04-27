@@ -1,7 +1,7 @@
 import { TestUtils } from '../../../../../../tests/testUtils.js';
-import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
-import { type CollectionRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/collectionTable/collectionRawEntity.js';
-import { collectionTable } from '../../../infrastructure/databases/bookDatabase/tables/collectionTable/collectionTable.js';
+import { type CollectionRawEntity } from '../../../../databaseModule/infrastructure/tables/collectionTable/collectionRawEntity.js';
+import { collectionTable } from '../../../../databaseModule/infrastructure/tables/collectionTable/collectionTable.js';
+import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { CollectionTestFactory } from '../../factories/collectionTestFactory/collectionTestFactory.js';
 
 interface CreateAndPersistPayload {

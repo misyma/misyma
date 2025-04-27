@@ -1,11 +1,11 @@
 import { type BookFormat } from '@common/contracts';
 
+import { type UserBookWithJoinsRawEntity } from '../../../../../databaseModule/infrastructure/tables/userBookTable/userBookWithJoinsRawEntity.js';
 import { Author } from '../../../../domain/entities/author/author.js';
 import { BookReading } from '../../../../domain/entities/bookReading/bookReading.js';
 import { Collection } from '../../../../domain/entities/collection/collection.js';
 import { Genre } from '../../../../domain/entities/genre/genre.js';
 import { UserBook, type UserBookDraft } from '../../../../domain/entities/userBook/userBook.js';
-import { type UserBookWithJoinsRawEntity } from '../../../databases/bookDatabase/tables/userBookTable/userBookWithJoinsRawEntity.js';
 
 import { type UserBookMapper } from './userBookMapper.js';
 
@@ -69,7 +69,7 @@ export class UserBookMapperImpl implements UserBookMapper {
         isApproved,
         genre: new Genre({
           id: genreId,
-          name: genreName ?? "",
+          name: genreName ?? '',
         }),
         genreId,
         createdAt: bookCreatedAt,

@@ -5,14 +5,14 @@ import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { type TestUtils } from '../../../../../../tests/testUtils.js';
-import { coreSymbols } from '../../../../../core/symbols.js';
-import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
-import { type BookRawEntity } from '../../../../bookModule/infrastructure/databases/bookDatabase/tables/bookTable/bookRawEntity.js';
-import { type UserBookRawEntity } from '../../../../bookModule/infrastructure/databases/bookDatabase/tables/userBookTable/userBookRawEntity.js';
 import { type AuthorTestUtils } from '../../../../bookModule/tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookTestUtils } from '../../../../bookModule/tests/utils/bookTestUtils/bookTestUtils.js';
 import { type GenreTestUtils } from '../../../../bookModule/tests/utils/genreTestUtils/genreTestUtils.js';
 import { type UserBookTestUtils } from '../../../../bookModule/tests/utils/userBookTestUtils/userBookTestUtils.js';
+import { type BookRawEntity } from '../../../../databaseModule/infrastructure/tables/bookTable/bookRawEntity.js';
+import { type UserBookRawEntity } from '../../../../databaseModule/infrastructure/tables/userBookTable/userBookRawEntity.js';
+import { databaseSymbols } from '../../../../databaseModule/symbols.js';
+import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { Bookshelf } from '../../../domain/entities/bookshelf/bookshelf.js';
 import { type BookshelfRepository } from '../../../domain/repositories/bookshelfRepository/bookshelfRepository.js';
@@ -46,7 +46,7 @@ describe('BookshelfRepositoryImpl', () => {
   beforeEach(async () => {
     const container = await TestContainer.create();
 
-    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
+    databaseClient = container.get<DatabaseClient>(databaseSymbols.databaseClient);
 
     repository = container.get<BookshelfRepository>(symbols.bookshelfRepository);
 

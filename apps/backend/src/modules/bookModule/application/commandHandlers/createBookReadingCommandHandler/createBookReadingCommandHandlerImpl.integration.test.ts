@@ -5,8 +5,8 @@ import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
-import { coreSymbols } from '../../../../../core/symbols.js';
-import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
+import { databaseSymbols } from '../../../../databaseModule/symbols.js';
+import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { BookReading } from '../../../domain/entities/bookReading/bookReading.js';
 import { symbols } from '../../../symbols.js';
@@ -38,7 +38,7 @@ describe('CreateBookReadingCommandHandlerImpl', () => {
 
     commandHandler = container.get<CreateBookReadingCommandHandler>(symbols.createBookReadingCommandHandler);
 
-    databaseClient = container.get<DatabaseClient>(coreSymbols.databaseClient);
+    databaseClient = container.get<DatabaseClient>(databaseSymbols.databaseClient);
 
     bookReadingTestUtils = container.get<BookReadingTestUtils>(testSymbols.bookReadingTestUtils);
 

@@ -1,11 +1,11 @@
 import { Generator } from '../../../../../../tests/generator.js';
-import { type BookshelfRawEntity } from '../../../../bookshelfModule/infrastructure/databases/bookshelvesDatabase/tables/bookshelfTable/bookshelfRawEntity.js';
 import {
   type CreateAndPersistBookshelfPayload,
   type BookshelfTestUtils,
 } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
-import { type BookRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/bookTable/bookRawEntity.js';
-import { type UserBookRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/userBookTable/userBookRawEntity.js';
+import { type BookshelfRawEntity } from '../../../../databaseModule/infrastructure/tables/bookshelfTable/bookshelfRawEntity.js';
+import { type BookRawEntity } from '../../../../databaseModule/infrastructure/tables/bookTable/bookRawEntity.js';
+import { type UserBookRawEntity } from '../../../../databaseModule/infrastructure/tables/userBookTable/userBookRawEntity.js';
 import { type AuthorTestUtils } from '../authorTestUtils/authorTestUtils.js';
 import { type CreateAndPersistBookPayload, type BookTestUtils } from '../bookTestUtils/bookTestUtils.js';
 import { type GenreTestUtils } from '../genreTestUtils/genreTestUtils.js';

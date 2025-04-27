@@ -1,7 +1,9 @@
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
-import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
-import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
+import { type UuidService } from '../../../../../libs/uuid/uuidService.js';
+import { type UserRawEntity } from '../../../../databaseModule/infrastructure/tables/userTable/userRawEntity.js';
+import { userTable } from '../../../../databaseModule/infrastructure/tables/userTable/userTable.js';
+import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { User, type UserState } from '../../../domain/entities/user/user.js';
 import {
   type UserRepository,
@@ -10,8 +12,6 @@ import {
   type DeleteUserPayload,
   type FindUsersPayload,
 } from '../../../domain/repositories/userRepository/userRepository.js';
-import { type UserRawEntity } from '../../databases/userDatabase/tables/userTable/userRawEntity.js';
-import { userTable } from '../../databases/userDatabase/tables/userTable/userTable.js';
 
 import { type UserMapper } from './userMapper/userMapper.js';
 

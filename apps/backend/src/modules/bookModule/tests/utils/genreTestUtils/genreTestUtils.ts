@@ -1,7 +1,7 @@
 import { TestUtils } from '../../../../../../tests/testUtils.js';
-import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
-import { type GenreRawEntity } from '../../../infrastructure/databases/bookDatabase/tables/genreTable/genreRawEntity.js';
-import { genreTable } from '../../../infrastructure/databases/bookDatabase/tables/genreTable/genreTable.js';
+import { type GenreRawEntity } from '../../../../databaseModule/infrastructure/tables/genreTable/genreRawEntity.js';
+import { genreTable } from '../../../../databaseModule/infrastructure/tables/genreTable/genreTable.js';
+import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { GenreTestFactory } from '../../factories/genreTestFactory/genreTestFactory.js';
 
 interface CreateAndPersistPayload {

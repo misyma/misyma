@@ -1,6 +1,8 @@
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
-import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
-import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
+import { type UuidService } from '../../../../../libs/uuid/uuidService.js';
+import { type CollectionRawEntity } from '../../../../databaseModule/infrastructure/tables/collectionTable/collectionRawEntity.js';
+import { collectionTable } from '../../../../databaseModule/infrastructure/tables/collectionTable/collectionTable.js';
+import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { type CollectionState, Collection } from '../../../domain/entities/collection/collection.js';
 import {
   type CollectionRepository,
@@ -10,8 +12,6 @@ import {
   type DeleteCollectionPayload,
   type CountCollectionsPayload,
 } from '../../../domain/repositories/collectionRepository/collectionRepository.js';
-import { type CollectionRawEntity } from '../../databases/bookDatabase/tables/collectionTable/collectionRawEntity.js';
-import { collectionTable } from '../../databases/bookDatabase/tables/collectionTable/collectionTable.js';
 
 import { type CollectionMapper } from './collectionMapper/collectionMapper.js';
 

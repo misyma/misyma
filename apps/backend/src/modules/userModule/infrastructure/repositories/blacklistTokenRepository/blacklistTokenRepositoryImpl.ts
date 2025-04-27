@@ -1,14 +1,14 @@
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
-import { type DatabaseClient } from '../../../../../libs/database/clients/databaseClient/databaseClient.js';
-import { type UuidService } from '../../../../../libs/uuid/services/uuidService/uuidService.js';
+import { type UuidService } from '../../../../../libs/uuid/uuidService.js';
+import { type BlacklistTokenRawEntity } from '../../../../databaseModule/infrastructure/tables/blacklistTokenTable/blacklistTokenRawEntity.js';
+import { blacklistTokenTable } from '../../../../databaseModule/infrastructure/tables/blacklistTokenTable/blacklistTokenTable.js';
+import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { type BlacklistToken } from '../../../domain/entities/blacklistToken/blacklistToken.js';
 import {
   type BlacklistTokenRepository,
   type CreateBlacklistTokenPayload,
   type FindBlacklistTokenPayload,
 } from '../../../domain/repositories/blacklistTokenRepository/blacklistTokenRepository.js';
-import { type BlacklistTokenRawEntity } from '../../databases/userDatabase/tables/blacklistTokenTable/blacklistTokenRawEntity.js';
-import { blacklistTokenTable } from '../../databases/userDatabase/tables/blacklistTokenTable/blacklistTokenTable.js';
 
 import { type BlacklistTokenMapper } from './blacklistTokenMapper/blacklistTokenMapper.js';
 

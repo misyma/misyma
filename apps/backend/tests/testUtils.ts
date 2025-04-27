@@ -1,4 +1,4 @@
-import { type DatabaseClient } from '../src/libs/database/clients/databaseClient/databaseClient.js';
+import { type DatabaseClient } from '../src/modules/databaseModule/types/databaseClient.js';
 
 export class TestUtils {
   public constructor(

@@ -1,7 +1,7 @@
 import { bookshelfTypes, userRoles } from '@common/contracts';
 
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
-import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
+import { type LoggerService } from '../../../../../libs/logger/loggerService.js';
 import { type CreateBookshelfCommandHandler } from '../../../../bookshelfModule/application/commandHandlers/createBookshelfCommandHandler/createBookshelfCommandHandler.js';
 import { type UserRepository } from '../../../domain/repositories/userRepository/userRepository.js';
 import { type HashService } from '../../services/hashService/hashService.js';

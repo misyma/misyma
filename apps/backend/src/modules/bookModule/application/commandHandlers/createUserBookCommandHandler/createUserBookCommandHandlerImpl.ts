@@ -1,6 +1,6 @@
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
-import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
+import { type LoggerService } from '../../../../../libs/logger/loggerService.js';
 import { type BookshelfRepository } from '../../../../bookshelfModule/domain/repositories/bookshelfRepository/bookshelfRepository.js';
 import { type Collection } from '../../../domain/entities/collection/collection.js';
 import { type BookRepository } from '../../../domain/repositories/bookRepository/bookRepository.js';

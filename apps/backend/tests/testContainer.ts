@@ -2,11 +2,10 @@ import { type S3Client } from '@aws-sdk/client-s3';
 
 import { Application } from '../src/core/application.js';
 import { coreSymbols } from '../src/core/symbols.js';
-import { type DatabaseClient } from '../src/libs/database/clients/databaseClient/databaseClient.js';
 import { type DependencyInjectionContainer } from '../src/libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type EmailService } from '../src/libs/emailService/emailService.js';
-import { type LoggerService } from '../src/libs/logger/services/loggerService/loggerService.js';
-import { S3TestUtils } from '../src/libs/s3/tests/utils/s3TestUtils.js';
+import { type LoggerService } from '../src/libs/logger/loggerService.js';
+import { S3TestUtils } from '../src/libs/s3/tests/s3TestUtils.js';
 import { AuthorTestUtils } from '../src/modules/bookModule/tests/utils/authorTestUtils/authorTestUtils.js';
 import { BookChangeRequestTestUtils } from '../src/modules/bookModule/tests/utils/bookChangeRequestTestUtils/bookChangeRequestTestUtils.js';
 import { BookReadingTestUtils } from '../src/modules/bookModule/tests/utils/bookReadingTestUtils/bookReadingTestUtils.js';
@@ -18,6 +17,8 @@ import { QuoteTestUtils } from '../src/modules/bookModule/tests/utils/quoteTestU
 import { TestDataOrchestrator } from '../src/modules/bookModule/tests/utils/testDataOrchestrator/testDataOrchestrator.js';
 import { UserBookTestUtils } from '../src/modules/bookModule/tests/utils/userBookTestUtils/userBookTestUtils.js';
 import { BookshelfTestUtils } from '../src/modules/bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
+import { databaseSymbols } from '../src/modules/databaseModule/symbols.js';
+import { type DatabaseClient } from '../src/modules/databaseModule/types/databaseClient.js';
 import { type EmailMessageBus } from '../src/modules/userModule/application/messageBuses/emailMessageBus/emailMessageBus.js';
 import { symbols as userSymbols } from '../src/modules/userModule/symbols.js';
 import { BlacklistTokenTestUtils } from '../src/modules/userModule/tests/utils/blacklistTokenTestUtils/blacklistTokenTestUtils.js';
@@ -32,62 +33,62 @@ export class TestContainer {
 
     container.bind<BookTestUtils>(
       testSymbols.bookTestUtils,
-      () => new BookTestUtils(container.get<DatabaseClient>(coreSymbols.databaseClient)),
+      () => new BookTestUtils(container.get<DatabaseClient>(databaseSymbols.databaseClient)),
     );
 
     container.bind<UserBookTestUtils>(
       testSymbols.userBookTestUtils,
-      () => new UserBookTestUtils(container.get<DatabaseClient>(coreSymbols.databaseClient)),
+      () => new UserBookTestUtils(container.get<DatabaseClient>(databaseSymbols.databaseClient)),
     );
 
     container.bind<GenreTestUtils>(
       testSymbols.genreTestUtils,
-      () => new GenreTestUtils(container.get<DatabaseClient>(coreSymbols.databaseClient)),
+      () => new GenreTestUtils(container.get<DatabaseClient>(databaseSymbols.databaseClient)),
     );
 
     container.bind<UserTestUtils>(
       testSymbols.userTestUtils,
-      () => new UserTestUtils(container.get<DatabaseClient>(coreSymbols.databaseClient)),
+      () => new UserTestUtils(container.get<DatabaseClient>(databaseSymbols.databaseClient)),
     );
 
     container.bind<BlacklistTokenTestUtils>(
       testSymbols.blacklistTokenTestUtils,
-      () => new BlacklistTokenTestUtils(container.get<DatabaseClient>(coreSymbols.databaseClient)),
+      () => new BlacklistTokenTestUtils(container.get<DatabaseClient>(databaseSymbols.databaseClient)),
     );
 
     container.bind<AuthorTestUtils>(
       testSymbols.authorTestUtils,
-      () => new AuthorTestUtils(container.get<DatabaseClient>(coreSymbols.databaseClient)),
+      () => new AuthorTestUtils(container.get<DatabaseClient>(databaseSymbols.databaseClient)),
     );
 
     container.bind<EmailEventTestUtils>(
       testSymbols.emailEventTestUtils,
-      () => new EmailEventTestUtils(container.get<DatabaseClient>(coreSymbols.databaseClient)),
+      () => new EmailEventTestUtils(container.get<DatabaseClient>(databaseSymbols.databaseClient)),
     );
 
     container.bind<BookshelfTestUtils>(
       testSymbols.bookshelfTestUtils,
-      () => new BookshelfTestUtils(container.get<DatabaseClient>(coreSymbols.databaseClient)),
+      () => new BookshelfTestUtils(container.get<DatabaseClient>(databaseSymbols.databaseClient)),
     );
 
     container.bind<BookReadingTestUtils>(
       testSymbols.bookReadingTestUtils,
-      () => new BookReadingTestUtils(container.get<DatabaseClient>(coreSymbols.databaseClient)),
+      () => new BookReadingTestUtils(container.get<DatabaseClient>(databaseSymbols.databaseClient)),
     );
 
     container.bind<BorrowingTestUtils>(
       testSymbols.borrowingTestUtils,
-      () => new BorrowingTestUtils(container.get<DatabaseClient>(coreSymbols.databaseClient)),
+      () => new BorrowingTestUtils(container.get<DatabaseClient>(databaseSymbols.databaseClient)),
     );
 
     container.bind<QuoteTestUtils>(
       testSymbols.quoteTestUtils,
-      () => new QuoteTestUtils(container.get<DatabaseClient>(coreSymbols.databaseClient)),
+      () => new QuoteTestUtils(container.get<DatabaseClient>(databaseSymbols.databaseClient)),
     );
 
     container.bind<CollectionTestUtils>(
       testSymbols.collectionTestUtils,
-      () => new CollectionTestUtils(container.get<DatabaseClient>(coreSymbols.databaseClient)),
+      () => new CollectionTestUtils(container.get<DatabaseClient>(databaseSymbols.databaseClient)),
     );
 
     container.bind<TestDataOrchestrator>(
@@ -102,12 +103,16 @@ export class TestContainer {
         ),
     );
 
-    await container.overrideBinding<LoggerService>(coreSymbols.loggerService, () => ({
-      debug: (): void => {},
-      info: (): void => {},
-      warn: (): void => {},
-      error: (): void => {},
-    }));
+    await container.overrideBinding<LoggerService>(
+      coreSymbols.loggerService,
+      () =>
+        ({
+          info: (): void => {},
+          error: (): void => {},
+          debug: (): void => {},
+          warn: (): void => {},
+        }) as unknown as LoggerService,
+    );
 
     await container.overrideBinding<EmailService>(coreSymbols.emailService, () => ({
       sendEmail: async (): Promise<void> => {},
@@ -124,7 +129,7 @@ export class TestContainer {
 
     container.bind<BookChangeRequestTestUtils>(
       testSymbols.bookChangeRequestTestUtils,
-      () => new BookChangeRequestTestUtils(container.get<DatabaseClient>(coreSymbols.databaseClient)),
+      () => new BookChangeRequestTestUtils(container.get<DatabaseClient>(databaseSymbols.databaseClient)),
     );
 
     return container;

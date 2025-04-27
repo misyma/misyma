@@ -1,6 +1,5 @@
-import { BookDatabaseManager } from '../src/modules/bookModule/infrastructure/databases/bookDatabase/bookDatabaseManager.js';
-import { BookshelfDatabaseManager } from '../src/modules/bookshelfModule/infrastructure/databases/bookshelvesDatabase/bookshelfDatabaseManager.js';
-import { UserDatabaseManager } from '../src/modules/userModule/infrastructure/databases/userDatabase/userDatabaseManager.js';
+import { type DatabaseManager } from '../src/modules/databaseModule/infrastructure/databaseManager.js';
+import { databaseSymbols } from '../src/modules/databaseModule/symbols.js';
 
 import { TestContainer } from './testContainer.js';
 
@@ -8,11 +7,9 @@ export async function setup(): Promise<void> {
   try {
     const container = await TestContainer.create();
 
-    const databaseManagers = [UserDatabaseManager, BookshelfDatabaseManager, BookDatabaseManager];
+    const databaseManager = container.get<DatabaseManager>(databaseSymbols.databaseManager);
 
-    for (const databaseManager of databaseManagers) {
-      await databaseManager.bootstrapDatabase(container);
-    }
+    await databaseManager.setupDatabase();
 
     console.log('Database: migrations run succeed.');
   } catch (error) {
