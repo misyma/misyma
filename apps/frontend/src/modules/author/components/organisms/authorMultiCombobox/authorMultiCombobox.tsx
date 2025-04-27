@@ -256,6 +256,7 @@ export const AuthorMultiCombobox = forwardRef<HTMLButtonElement, MultiSelectProp
           </Button>
         </PopoverTrigger>
         <PopoverContent
+          onWheel={(e) => e.stopPropagation()}
           className="w-60 sm:w-96 p-0"
           align="start"
           onEscapeKeyDown={() => setIsPopoverOpen(false)}
