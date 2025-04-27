@@ -13,9 +13,10 @@ const mapper = new ErrorCodeMessageMapper({});
 const findBookshelfById = async (values: FindBookshelfParams) => {
   const path = ApiPaths.bookshelves.$bookshelfId.path;
   const resolvedPath = path.replace('{{bookshelfId}}', values.bookshelfId);
-  const response = await api.get<FindBookshelfResponseBody>(resolvedPath);
-
-  api.validateResponse(response, ShelfApiError, mapper);
+  const response = await api.get<FindBookshelfResponseBody>(resolvedPath, {
+    errorCtor: ShelfApiError,
+    mapper,
+  });
 
   return response.data;
 };

@@ -30,9 +30,9 @@ export const findUserBooksByBookshelfId = async (values: FindUserBooksQueryParam
 
   const response = await api.get<FindUserBooksResponseBody>(`/user-books`, {
     params: queryParams,
+    errorCtor: BookApiError,
+    mapper,
   });
-
-  api.validateResponse(response, BookApiError, mapper);
 
   return response.data;
 };

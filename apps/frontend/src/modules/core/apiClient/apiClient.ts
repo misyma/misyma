@@ -20,6 +20,20 @@ type ExtendedAxiosInstance = AxiosInstance & {
     data?: D,
     config?: ExtendedAxiosRequestConfig,
   ) => Promise<R>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  get: <T = any, R = AxiosResponse<T, any>>(url: string, config?: ExtendedAxiosRequestConfig) => Promise<R>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  patch: <T = any, R = AxiosResponse<T, any>, D = any>(
+    url: string,
+    data?: D,
+    config?: ExtendedAxiosRequestConfig,
+  ) => Promise<R>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  delete: <T = any, R = AxiosResponse<T, any>, D = any>(
+    url: string,
+    data?: D,
+    config?: ExtendedAxiosRequestConfig,
+  ) => Promise<R>;
 };
 
 export type MisymaApiErrorResponse = AxiosResponse<{
@@ -43,28 +57,82 @@ export const api = Axios.create({
 }) as ExtendedAxiosInstance;
 
 const originalPost = api.post;
+const originalGet = api.get;
+const originalPatch = api.patch;
+const originalDelete = api.delete;
 
 type ExtendedAxiosRequestConfig = AxiosRequestConfig & {
   mapper: ErrorCodeMessageMapper;
   errorCtor: new (context: ApiErrorContext) => ApiError;
 };
 
-api.post = async (url, data, config?: ExtendedAxiosRequestConfig) => {
+const handleError = (error: unknown, config?: ExtendedAxiosRequestConfig) => {
+  if (error instanceof AxiosError && error.response && config) {
+    api.validateResponse(error.response, config.errorCtor, config.mapper);
+    throw error;
+  }
+
+  throw error;
+};
+
+const validate = (response: AxiosResponse, config?: ExtendedAxiosRequestConfig) => {
+  if (config) {
+    api.validateResponse(response, config.errorCtor, config.mapper);
+  }
+};
+
+api.get = async (url: string, config?: ExtendedAxiosRequestConfig) => {
   try {
-    const response = await originalPost(url, data, config);
-    if (config) {
-      api.validateResponse(response, config.errorCtor, config.mapper);
-    }
+    const response = await originalGet(url, config);
+
+    validate(response, config);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return Promise.resolve(response) as Promise<any>;
   } catch (error) {
-    if (error instanceof AxiosError && error.response && config) {
-      api.validateResponse(error.response, config.errorCtor, config.mapper);
+    handleError(error, config);
+    throw error;
+  }
+};
 
-      throw error;
-    }
+api.post = async (url, data, config?: ExtendedAxiosRequestConfig) => {
+  try {
+    const response = await originalPost(url, data, config);
 
+    validate(response, config);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return Promise.resolve(response) as Promise<any>;
+  } catch (error) {
+    handleError(error, config);
+    throw error;
+  }
+};
+
+//eslint-disable-next-line @typescript-eslint/no-unused-vars
+api.patch = async <T, _, D>(url: string, data: D, config?: ExtendedAxiosRequestConfig): Promise<T> => {
+  try {
+    const response = await originalPatch(url, data, config);
+
+    validate(response, config);
+
+    return Promise.resolve(response) as Promise<T>;
+  } catch (error) {
+    handleError(error, config);
+    throw error;
+  }
+};
+
+//eslint-disable-next-line @typescript-eslint/no-unused-vars
+api.delete = async <T, _, D>(url: string, data: D, config?: ExtendedAxiosRequestConfig): Promise<T> => {
+  try {
+    const response = await originalDelete(url, data, config);
+
+    validate(response, config);
+
+    return Promise.resolve(response) as Promise<T>;
+  } catch (error) {
+    handleError(error, config);
     throw error;
   }
 };

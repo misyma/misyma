@@ -25,9 +25,10 @@ const mapper = new ErrorCodeMessageMapper({
 const updateBook = async (payload: UpdateUserBookPayload) => {
   const { userBookId, ...rest } = payload;
 
-  const response = await api.patch<UploadUserBookImageResponseBody>(`/user-books/${userBookId}`, rest);
-
-  api.validateResponse(response, BookApiError, mapper);
+  const response = await api.patch<UploadUserBookImageResponseBody>(`/user-books/${userBookId}`, rest, {
+    errorCtor: BookApiError,
+    mapper,
+  });
 
   return response.data;
 };

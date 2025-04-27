@@ -22,18 +22,11 @@ import { Popover, PopoverTrigger } from '../../../../../common/components/popove
 import { LoadingSpinner } from '../../../../../common/components/spinner/loading-spinner';
 import { useErrorHandledQuery } from '../../../../../common/hooks/useErrorHandledQuery';
 import { isbnSchema } from '../../../../../common/schemas/isbnSchema';
+import { bookTitleSchema, publisherSchema, releaseYearSchema } from '../../../../../book/schemas/bookSchemas';
 
 const stepOneSchema = z.object({
   isbn: isbnSchema.optional().or(z.literal('')),
-  title: z
-    .string()
-    .min(1, {
-      message: 'Tytuł musi mieć co najmniej jeden znak.',
-    })
-    .max(128, {
-      message: 'Tytuł może mieć maksymalnie 64 znaki.',
-    })
-    .or(z.literal('')),
+  title: bookTitleSchema.or(z.literal('')),
   authorIds: z
     .array(
       z
@@ -47,26 +40,8 @@ const stepOneSchema = z.object({
     .min(1, {
       message: 'Wymagany jest co najmniej jeden autor.',
     }),
-  releaseYear: z
-    .number({
-      coerce: true,
-    })
-    .min(1, {
-      message: 'Rok wydania musi być wcześniejszy niż 1',
-    })
-    .max(2100, {
-      message: 'Rok wydania nie może być późniejszy niż 2100',
-    })
-    .or(z.literal('')),
-  publisher: z
-    .string()
-    .min(1, {
-      message: 'Nazwa wydawnictwa powinna mieć co namniej 1 znak.',
-    })
-    .max(128, {
-      message: 'Nazwa wydawnictwa powinna mieć co najwyżej 128 znaków.',
-    })
-    .or(z.literal('')),
+  releaseYear: releaseYearSchema.or(z.literal('')),
+  publisher: publisherSchema.or(z.literal('')),
 });
 
 interface Props {

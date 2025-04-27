@@ -35,9 +35,9 @@ export const findBookBorrowings = async (payload: FindBookBorrowingsPayload) => 
 
   const response = await api.get<FindBorrowingsResponseBody>(`/user-books/${userBookId}/borrowings`, {
     params: queryParams,
+    errorCtor: BookApiError,
+    mapper,
   });
-
-  api.validateResponse(response, BookApiError, mapper);
 
   return response.data;
 };

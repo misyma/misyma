@@ -23,9 +23,9 @@ export const findBookChangeRequests = async (payload: FindBookChangeRequestsQuer
 
   const response = await api.get<FindBookChangeRequestsResponseBody>(ApiPaths.admin.bookChangeRequest.path, {
     params: query,
+    errorCtor: BookApiError,
+    mapper,
   });
-
-  api.validateResponse(response, BookApiError, mapper);
 
   return response.data;
 };

@@ -11,9 +11,10 @@ import { UserApiQueryKeys } from '../userApiQueryKeys';
 const mapper = new ErrorCodeMessageMapper({});
 
 const findUser = async () => {
-  const response = await api.get<FindUserResponseBody>(ApiPaths.users.me.path);
-
-  api.validateResponse(response, UserApiError, mapper);
+  const response = await api.get<FindUserResponseBody>(ApiPaths.users.me.path, {
+    errorCtor: UserApiError,
+    mapper,
+  });
 
   return response.data;
 };

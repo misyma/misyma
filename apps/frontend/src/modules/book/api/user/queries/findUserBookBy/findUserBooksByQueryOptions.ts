@@ -38,9 +38,9 @@ export const findUserBooksBy = async (payload: FindUserBooksQueryParams): Promis
   const response = await api.get<FindUserBooksResponseBody>('/user-books', {
     params: queryParams,
     validateStatus: () => true,
+    errorCtor: BookApiError,
+    mapper,
   });
-
-  api.validateResponse(response, BookApiError, mapper);
 
   return response.data;
 };

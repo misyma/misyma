@@ -65,9 +65,10 @@ export const updateQuote = async (payload: UpdateQuotePayload) => {
 
   const path = ApiPaths.quotes.$quoteId.path;
   const resolvedPath = path.replace(ApiPaths.quotes.$quoteId.params.quoteId, quoteId);
-  const response = await api.patch<UpdateQuoteResponseBody>(resolvedPath, body);
-
-  api.validateResponse(response, QuoteApiError, mapper);
+  const response = await api.patch<UpdateQuoteResponseBody>(resolvedPath, body, {
+    errorCtor: QuoteApiError,
+    mapper,
+  });
 
   return response.data;
 };

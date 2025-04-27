@@ -12,9 +12,10 @@ const mapper = new ErrorCodeMessageMapper({
 });
 
 export const findBookById = async (payload: FindBookPathParams): Promise<FindBookResponseBody> => {
-  const response = await api.get<FindBookResponseBody>(`/books/${payload.bookId}`);
-
-  api.validateResponse(response, BookApiError, mapper);
+  const response = await api.get<FindBookResponseBody>(`/books/${payload.bookId}`, {
+    errorCtor: BookApiError,
+    mapper,
+  });
 
   return response.data;
 };

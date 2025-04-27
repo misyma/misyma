@@ -1,7 +1,7 @@
 {
   "admin": {
     "email": "admin@misyma.com",
-    "password": "AdminPassword123"
+    "password": "AdminPassword123!"
   },
   "database": {
     "username": "postgres",

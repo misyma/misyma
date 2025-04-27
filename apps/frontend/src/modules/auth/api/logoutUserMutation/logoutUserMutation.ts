@@ -19,12 +19,18 @@ const logoutUser = async (values: Payload) => {
 
   let path: string = ApiPaths.users.$userId.logout.path;
   path = path.replace('{{userId}}', userId);
-  const logoutUserResponse = await api.post<void>(path, {
-    refreshToken,
-    accessToken,
-  });
 
-  api.validateResponse(logoutUserResponse, AuthApiError, mapper);
+  await api.post<void>(
+    path,
+    {
+      refreshToken,
+      accessToken,
+    },
+    {
+      errorCtor: AuthApiError,
+      mapper,
+    },
+  );
 };
 
 export const useLogoutUserMutation = (options: UseMutationOptions<void, AuthApiError, Payload>) => {

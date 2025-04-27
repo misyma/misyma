@@ -19,9 +19,10 @@ const deleteBookReading = async (payload: DeleteBookReadingPathParams) => {
   let path: string = ApiPaths.userBooks.$userBookId.readings.$readingId.path;
   path = path.replace('{{userBookId}}', payload.userBookId);
   path = path.replace('{{readingId}}', payload.readingId);
-  const response = await api.delete(path);
-
-  api.validateResponse(response, BookApiError, mapper);
+  await api.delete(path, {
+    errorCtor: BookApiError,
+    mapper,
+  });
 };
 
 export const useDeleteBookReadingMutation = (

@@ -14,9 +14,11 @@ const findBookChangeRequests = async (payload: FindBookChangeRequestPathParams) 
 
   const response = await api.get<FindAdminBookChangeRequestResponseBody>(
     `/admin/book-change-requests/${bookChangeRequestId}`,
+    {
+      errorCtor: BookApiError,
+      mapper,
+    },
   );
-
-  api.validateResponse(response, BookApiError, mapper);
 
   return response.data;
 };

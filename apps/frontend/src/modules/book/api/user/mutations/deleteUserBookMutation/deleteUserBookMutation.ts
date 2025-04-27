@@ -18,9 +18,10 @@ type Payload = DeleteUserBookPathParams & {
 export const deleteUserBook = async (payload: Payload) => {
   const { userBookId } = payload;
 
-  const response = await api.delete(`/user-books/${userBookId}`);
-
-  api.validateResponse(response, BookApiError, mapper);
+  await api.delete(`/user-books/${userBookId}`, {
+    errorCtor: BookApiError,
+    mapper,
+  });
 };
 
 export const useDeleteUserBookMutation = (options: UseMutationOptions<void, Error, Payload>) => {

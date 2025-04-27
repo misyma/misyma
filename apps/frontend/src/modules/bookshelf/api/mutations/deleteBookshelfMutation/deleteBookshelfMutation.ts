@@ -27,9 +27,10 @@ const deleteBookshelf = async (payload: Payload) => {
 
   const path = ApiPaths.bookshelves.$bookshelfId.path;
   const resolvedPath = path.replace('{{bookshelfId}}', payload.bookshelfId);
-  const response = await api.delete(resolvedPath, requestConfig);
-
-  api.validateResponse(response, ShelfApiError, mapper);
+  const response = await api.delete(resolvedPath, requestConfig, {
+    errorCtor: ShelfApiError,
+    mapper,
+  });
 
   return response.data;
 };

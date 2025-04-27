@@ -25,9 +25,9 @@ const getCategories = async (payload: FindCategoriesQueryParams) => {
 
   const response = await api.get<FindCategoriesResponseBody>(ApiPaths.categories.path, {
     params: queryParams,
+    errorCtor: BookApiError,
+    mapper,
   });
-
-  api.validateResponse(response, BookApiError, mapper);
 
   return response.data;
 };

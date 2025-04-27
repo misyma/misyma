@@ -25,9 +25,10 @@ const uploadImage = async (payload: UploadBookImageMutationPayload) => {
   const formData = new FormData();
   formData.append('attachedFiles', file, file.name);
 
-  const response = await api.patch<UploadUserBookImageResponseBody>(`/user-books/${bookId}/images`, formData);
-
-  api.validateResponse(response, BookApiError, mapper);
+  const response = await api.patch<UploadUserBookImageResponseBody>(`/user-books/${bookId}/images`, formData, {
+    errorCtor: BookApiError,
+    mapper,
+  });
 
   return response.data;
 };
