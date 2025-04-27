@@ -1,4 +1,4 @@
-import { type FC, useEffect, useState } from 'react';
+import { type FC, useRef, useState } from 'react';
 import { HiHeart, HiOutlineHeart } from 'react-icons/hi';
 
 import { useErrorHandledQuery } from '../../../../common/hooks/useErrorHandledQuery';
@@ -14,6 +14,7 @@ interface Props {
 
 export const FavoriteBookButton: FC<Props> = ({ bookId, className, containerClassName }) => {
   const [isAnimating, setIsAnimating] = useState(false);
+  const timerRef = useRef<number | undefined>();
 
   const { data: userBookData } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
@@ -33,14 +34,13 @@ export const FavoriteBookButton: FC<Props> = ({ bookId, className, containerClas
         setFavorite(!isFavorite);
         setIsFavorite(!isFavorite);
       } finally {
-        setTimeout(() => setIsAnimating(false), 300);
+        if (timerRef.current) {
+          clearTimeout(timerRef.current);
+        }
+        timerRef.current = setTimeout(() => setIsAnimating(false), 300) as unknown as number;
       }
     }
   };
-
-  useEffect(() => {
-    setIsFavorite(userBookData?.isFavorite);
-  }, [userBookData]);
 
   return (
     <div className={cn('h-8 w-8', containerClassName)}>
