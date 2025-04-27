@@ -30,6 +30,7 @@ export interface FindUserBooksPayload {
   readonly bookshelfId?: string | undefined;
   readonly collectionId?: string | undefined;
   readonly authorId?: string | undefined;
+  readonly genreId?: string | undefined;
   readonly userId?: string | undefined;
   readonly bookId?: string | undefined;
   readonly isbn?: string | undefined;
@@ -43,12 +44,14 @@ export interface FindUserBooksPayload {
   readonly pageSize?: number;
   readonly sortField?: 'releaseYear' | 'createdAt' | 'rating' | 'readingDate' | undefined;
   readonly sortOrder?: 'asc' | 'desc' | undefined;
+  readonly isRated?: boolean | undefined;
 }
 
 export interface CountUserBooksPayload {
   readonly bookshelfId?: string | undefined;
   readonly collectionId?: string | undefined;
   readonly authorId?: string | undefined;
+  readonly genreId?: string | undefined;
   readonly userId?: string | undefined;
   readonly bookId?: string | undefined;
   readonly isbn?: string | undefined;
@@ -58,7 +61,7 @@ export interface CountUserBooksPayload {
   readonly language?: Language | undefined;
   readonly releaseYearAfter?: number | undefined;
   readonly releaseYearBefore?: number | undefined;
-  readonly sortField?: 'releaseYear' | 'createdAt' | 'rating' | 'readingDate' | undefined;
+  readonly isRated?: boolean | undefined;
 }
 
 export interface DeleteUserBooksPayload {

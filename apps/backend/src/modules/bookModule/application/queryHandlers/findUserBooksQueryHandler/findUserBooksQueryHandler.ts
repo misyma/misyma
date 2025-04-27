@@ -20,6 +20,7 @@ export interface FindUserBooksQueryHandlerPayload {
   readonly pageSize: number;
   readonly sortField?: 'releaseYear' | 'createdAt' | 'rating' | 'readingDate' | undefined;
   readonly sortOrder?: SortOrder | undefined;
+  readonly isRated?: boolean | undefined;
 }
 
 export interface FindUserBooksQueryHandlerResult {

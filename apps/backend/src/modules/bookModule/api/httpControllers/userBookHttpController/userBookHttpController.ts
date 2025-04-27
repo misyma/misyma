@@ -310,6 +310,7 @@ export class UserBookHttpController implements HttpController {
       releaseYearBefore,
       sortField,
       sortOrder,
+      isRated,
     } = request.queryParams;
 
     const { userBooks, total } = await this.findUserBooksQueryHandler.execute({
@@ -329,6 +330,7 @@ export class UserBookHttpController implements HttpController {
       language,
       releaseYearAfter,
       releaseYearBefore,
+      isRated,
     });
 
     return {

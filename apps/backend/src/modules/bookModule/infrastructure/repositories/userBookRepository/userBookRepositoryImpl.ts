@@ -329,6 +329,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       collectionId,
       userId,
       bookId,
+      genreId,
       authorId,
       page,
       pageSize,
@@ -341,6 +342,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       language,
       releaseYearAfter,
       releaseYearBefore,
+      isRated,
     } = payload;
 
     let rawEntities: UserBookWithJoinsRawEntity[];
@@ -418,8 +420,10 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           join.on(`${bookTable}.id`, `=`, `${userBookTable}.bookId`);
         });
 
-      if (sortField === 'readingDate' || sortField === 'rating') {
-        query.leftJoin(readingsCountSubquery, 'readingsCounts.userBookId', `${userBookTable}.id`);
+      if (isRated) {
+        query
+          .leftJoin(readingsCountSubquery, 'readingsCounts.userBookId', `${userBookTable}.id`)
+          .where('readingsCounts.count', '>', 0);
       }
 
       if (collectionId) {
@@ -470,6 +474,10 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         query.where(`${collectionTable}.id`, collectionId);
       }
 
+      if (genreId) {
+        query.where(`${bookTable}.genreId`, genreId);
+      }
+
       if (userId) {
         query.where(`${bookshelfTable}.userId`, userId);
       }
@@ -491,10 +499,8 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       if (sortField === 'releaseYear') {
         query.orderBy(`${bookTable}.releaseYear`, sortOrder ?? 'desc');
       } else if (sortField === 'rating') {
-        query.where('readingsCounts.count', '>', 0);
         query.orderBy('latestRating', sortOrder ?? 'desc', 'last');
       } else if (sortField === 'readingDate') {
-        query.where('readingsCounts.count', '>', 0);
         query.orderBy('latestReadingDate', sortOrder ?? 'desc', 'last');
       } else {
         query.orderBy('id', sortOrder ?? 'desc');
@@ -564,6 +570,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       userId,
       authorId,
       bookId,
+      genreId,
       isbn,
       title,
       status,
@@ -571,7 +578,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       language,
       releaseYearAfter,
       releaseYearBefore,
-      sortField,
+      isRated,
     } = payload;
 
     try {
@@ -592,9 +599,10 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           .where(`${bookAuthorTable}.authorId`, authorId);
       }
 
-      if (sortField === 'readingDate' || sortField === 'rating') {
-        query.leftJoin(readingsCountSubquery, 'readingsCounts.userBookId', `${userBookTable}.id`);
-        query.where('readingsCounts.count', '>', 0);
+      if (isRated) {
+        query
+          .leftJoin(readingsCountSubquery, 'readingsCounts.userBookId', `${userBookTable}.id`)
+          .where('readingsCounts.count', '>', 0);
       }
 
       if (isbn || title || releaseYearAfter !== undefined || releaseYearBefore !== undefined || language) {
@@ -637,6 +645,10 @@ export class UserBookRepositoryImpl implements UserBookRepository {
 
       if (bookshelfId) {
         query.where(`${userBookTable}.bookshelfId`, bookshelfId);
+      }
+
+      if (genreId) {
+        query.where(`${bookTable}.genreId`, genreId);
       }
 
       if (collectionId) {
