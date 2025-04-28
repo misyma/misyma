@@ -143,24 +143,20 @@ const BookshelfChoiceDropdownTrigger: FC<BookshelfChoiceDropdownTriggerProps> = 
   }, [bookshelfData, data]);
 
   return (
-    <Button
-      size="custom"
-      variant="outline"
-      className="!bg:inherit border-none text-lg w-60 !hover:bg-inherit"
-      style={{
-        justifyContent: 'space-around',
-        padding: 0,
-        paddingRight: '4px',
-        paddingLeft: '4px',
-        height: 'auto',
-      }}
-    >
-      <Library className="w-6 h-6" />
-      <span>
-        <p className="p-2 truncate w-48 text-end">{override !== '' ? override : currentBookshelf}</p>
-      </span>
-      <ChevronDown className={cn('h-8 w-8 text-primary transition-all duration-300', isOpen && 'rotate-180')} />
-    </Button>
+    <div className="flex items-center gap-2">
+      <Library className="w-5 h-5 text-primary" />
+      <p className="font-medium">Półka:</p>
+      <Button
+        size="custom"
+        variant="outline"
+        className="!bg:inherit border-none text-lg !hover:bg-inherit"
+      >
+        <span>
+          <p className="p-1 truncate w-40 text-start text-base">{override !== '' ? override : currentBookshelf}</p>
+        </span>
+        <ChevronDown className={cn('h-5 w-5 text-primary transition-all duration-300', isOpen && 'rotate-180')} />
+      </Button>
+    </div>
   );
 };
 

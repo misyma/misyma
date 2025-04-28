@@ -1,4 +1,4 @@
-import { CheckCircle, Circle, HelpCircle, LoaderCircle } from 'lucide-react';
+import { BookmarkIcon, BookOpenIcon, CheckCircle, LoaderCircle } from 'lucide-react';
 import { type FC, useEffect, useState } from 'react';
 
 import { ReadingStatus, readingStatuses } from '@common/contracts';
@@ -121,7 +121,7 @@ export const StatusChooserCards: FC<Props> = ({ bookId, bookshelfId }) => {
       />
 
       <StatusCard
-        icon={<Circle className="h-8 w-8 stroke-[1.5]" />}
+        icon={<BookOpenIcon className="h-8 w-8 stroke-[1.5]" />}
         label="W trakcie"
         isActive={readingStatus === readingStatuses.inProgress}
         activeColor="border-blue-500 text-blue-500 bg-blue-50"
@@ -132,8 +132,8 @@ export const StatusChooserCards: FC<Props> = ({ bookId, bookshelfId }) => {
       />
 
       <StatusCard
-        icon={<HelpCircle className="h-8 w-8 stroke-[1.5]" />}
-        label="Na później"
+        icon={<BookmarkIcon className="h-8 w-8 stroke-[1.5]" />}
+        label="Do przeczytania"
         isActive={readingStatus === readingStatuses.toRead}
         activeColor="border-slate-700 text-slate-700 bg-slate-50"
         hoverColor="hover:text-slate-500"

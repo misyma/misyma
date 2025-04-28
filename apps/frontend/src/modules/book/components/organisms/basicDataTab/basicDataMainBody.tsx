@@ -64,8 +64,6 @@ export const BasicDataMainBody: FC<BasicDataMainBodyProps> = ({ bookId }) => {
 
           <div className="flex flex-col md:flex-row gap-8 w-full justify-between">
             <div className="flex flex-shrink-0 flex-col gap-4 flex-1">
-              <h3 className="text-lg font-medium text-foreground/80">Informacje o książce</h3>
-
               <div className="flex items-start gap-3">
                 <User className="h-5 w-5 text-primary mt-0.5" />
                 <div>
