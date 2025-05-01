@@ -1,6 +1,6 @@
 import { TestUtils } from '../../../../../../tests/testUtils.js';
 import { type QuoteRawEntity } from '../../../../databaseModule/infrastructure/tables/quoteTable/quoteRawEntity.js';
-import { quoteTable } from '../../../../databaseModule/infrastructure/tables/quoteTable/quoteTable.js';
+import { quotesTable } from '../../../../databaseModule/infrastructure/tables/quoteTable/quoteTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { QuoteTestFactory } from '../../factories/quoteTestFactory/quoteTestFactory.js';
 
@@ -14,7 +14,7 @@ interface FindByIdPayload {
 
 export class QuoteTestUtils extends TestUtils {
   public constructor(databaseClient: DatabaseClient) {
-    super(databaseClient, quoteTable);
+    super(databaseClient, quotesTable);
   }
 
   private readonly quoteTestFactory = new QuoteTestFactory();
@@ -24,7 +24,7 @@ export class QuoteTestUtils extends TestUtils {
 
     const quote = this.quoteTestFactory.create(input);
 
-    const rawEntities = await this.databaseClient<QuoteRawEntity>(quoteTable).insert(
+    const rawEntities = await this.databaseClient<QuoteRawEntity>(quotesTable).insert(
       {
         id: quote.getId(),
         userBookId: quote.getUserBookId(),
@@ -44,7 +44,7 @@ export class QuoteTestUtils extends TestUtils {
   public async findById(payload: FindByIdPayload): Promise<QuoteRawEntity | null> {
     const { id } = payload;
 
-    const rawEntity = await this.databaseClient<QuoteRawEntity>(quoteTable).where({ id }).first();
+    const rawEntity = await this.databaseClient<QuoteRawEntity>(quotesTable).where({ id }).first();
 
     if (!rawEntity) {
       return null;

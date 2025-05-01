@@ -1,1 +1,1 @@
-export const userBookTable = 'userBooks';
+export const usersBooksTable = 'users_books';

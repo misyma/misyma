@@ -6,7 +6,7 @@ import { booksAuthorsTable } from '../../../../databaseModule/infrastructure/tab
 import { type BookRawEntity } from '../../../../databaseModule/infrastructure/tables/bookTable/bookRawEntity.js';
 import { booksTable } from '../../../../databaseModule/infrastructure/tables/bookTable/bookTable.js';
 import { type BookWithJoinsRawEntity } from '../../../../databaseModule/infrastructure/tables/bookTable/bookWithJoinsRawEntity.js';
-import { categoryTable } from '../../../../databaseModule/infrastructure/tables/categoriesTable/categoriesTable.js';
+import { categoriesTable } from '../../../../databaseModule/infrastructure/tables/categoriesTable/categoriesTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { type BookState, Book } from '../../../domain/entities/book/book.js';
 import {
@@ -183,7 +183,7 @@ export class BookRepositoryImpl implements BookRepository {
         .select([
           `${booksTable}.id`,
           `${booksTable}.categoryId`,
-          `${categoryTable}.name as categoryName`,
+          `${categoriesTable}.name as categoryName`,
           `${booksTable}.title`,
           `${booksTable}.isbn`,
           `${booksTable}.publisher`,
@@ -206,13 +206,13 @@ export class BookRepositoryImpl implements BookRepository {
         .leftJoin(authorsTable, (join) => {
           join.on(`${authorsTable}.id`, '=', `${booksAuthorsTable}.authorId`);
         })
-        .leftJoin(categoryTable, (join) => {
-          join.on(`${categoryTable}.id`, '=', `${booksTable}.categoryId`);
+        .leftJoin(categoriesTable, (join) => {
+          join.on(`${categoriesTable}.id`, '=', `${booksTable}.categoryId`);
         })
         .where((builder) => {
           builder.where(`${booksTable}.id`, id);
         })
-        .groupBy(`${booksTable}.id`, `${categoryTable}.name`);
+        .groupBy(`${booksTable}.id`, `${categoriesTable}.name`);
     } catch (error) {
       throw new RepositoryError({
         entity: 'Book',
@@ -251,7 +251,7 @@ export class BookRepositoryImpl implements BookRepository {
           `${booksTable}.id`,
           `${booksTable}.title`,
           `${booksTable}.categoryId`,
-          `${categoryTable}.name as categoryName`,
+          `${categoriesTable}.name as categoryName`,
           `${booksTable}.isbn`,
           `${booksTable}.publisher`,
           `${booksTable}.releaseYear`,
@@ -273,8 +273,8 @@ export class BookRepositoryImpl implements BookRepository {
         .leftJoin(authorsTable, (join) => {
           join.on(`${authorsTable}.id`, '=', `${booksAuthorsTable}.authorId`);
         })
-        .leftJoin(categoryTable, (join) => {
-          join.on(`${booksTable}.categoryId`, '=', `${categoryTable}.id`);
+        .leftJoin(categoriesTable, (join) => {
+          join.on(`${booksTable}.categoryId`, '=', `${categoriesTable}.id`);
         })
         .where((builder) => {
           if (isbn) {
@@ -305,7 +305,7 @@ export class BookRepositoryImpl implements BookRepository {
             builder.whereIn(`${authorsTable}.id`, authorIds);
           }
         })
-        .groupBy(`${booksTable}.id`, `${categoryTable}.name`)
+        .groupBy(`${booksTable}.id`, `${categoriesTable}.name`)
         .limit(pageSize)
         .offset(pageSize * (page - 1));
 

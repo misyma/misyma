@@ -1,1 +1,1 @@
-export const borrowingTable = 'borrowings';
+export const borrowingsTable = 'borrowings';

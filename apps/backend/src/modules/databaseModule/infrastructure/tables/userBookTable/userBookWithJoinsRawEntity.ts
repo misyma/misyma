@@ -2,42 +2,35 @@ import { type Language, type BookFormat, type ReadingStatus } from '@common/cont
 
 export interface UserBookWithJoinsRawEntity {
   readonly id: string;
-  readonly imageUrl: string | null;
+  readonly image_url: string | null;
   readonly status: ReadingStatus;
-  readonly isFavorite: boolean;
-  readonly bookshelfId: string;
-  readonly createdAt: Date;
+  readonly is_favorite: boolean;
+  readonly bookshelf_id: string;
+  readonly created_at: Date;
 
-  readonly categoryId: string;
-  readonly categoryName: string;
-  readonly bookId: string;
+  readonly category_id: string;
+  readonly category_name: string;
+  readonly book_id: string;
   readonly title: string;
   readonly isbn: string | null;
   readonly publisher: string | null;
-  readonly releaseYear: number;
+  readonly release_year: number;
   readonly language: Language;
   readonly translator: string | null;
   readonly format?: BookFormat | null | undefined;
   readonly pages: number | null;
-  readonly isApproved: boolean;
-  readonly bookImageUrl: string | null;
-  readonly bookCreatedAt: Date;
+  readonly is_approved: boolean;
+  readonly book_image_url: string | null;
 
-  readonly authorIds?: (string | null)[];
-  readonly authorNames?: (string | null)[];
-  readonly authorApprovals?: (boolean | null)[];
-  readonly authorCreatedAtDates?: (Date | null)[];
+  readonly author_ids?: (string | null)[];
+  readonly author_names?: (string | null)[];
+  readonly author_approvals?: (boolean | null)[];
 
-  readonly collectionIds?: (string | null)[];
-  readonly collectionNames?: (string | null)[];
-  readonly collectionUserIds?: (string | null)[];
-  readonly collectionCreatedAtDates?: (Date | null)[];
+  readonly reading_ids?: (string | null)[];
+  readonly reading_started_at_dates?: (Date | null)[];
+  readonly reading_ended_at_dates?: (Date | null)[];
+  readonly reading_ratings?: (number | null)[];
+  readonly reading_comments?: (string | null)[];
 
-  readonly readingIds?: (string | null)[];
-  readonly readingStartedAtDates?: (Date | null)[];
-  readonly readingEndedAtDates?: (Date | null)[];
-  readonly readingRatings?: (number | null)[];
-  readonly readingComments?: (string | null)[];
-
-  readonly latestRating?: number | null;
+  readonly latest_rating?: number | null;
 }

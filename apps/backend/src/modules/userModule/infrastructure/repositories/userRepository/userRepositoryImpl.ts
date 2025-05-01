@@ -2,7 +2,7 @@ import { OperationNotValidError } from '../../../../../common/errors/operationNo
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type UuidService } from '../../../../../libs/uuid/uuidService.js';
 import { type UserRawEntity } from '../../../../databaseModule/infrastructure/tables/userTable/userRawEntity.js';
-import { userTable } from '../../../../databaseModule/infrastructure/tables/userTable/userTable.js';
+import { usersTable } from '../../../../databaseModule/infrastructure/tables/userTable/userTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { User, type UserState } from '../../../domain/entities/user/user.js';
 import {
@@ -46,7 +46,7 @@ export class UserRepositoryImpl implements UserRepository {
     const id = this.uuidService.generateUuid();
 
     try {
-      rawEntities = await this.databaseClient<UserRawEntity>(userTable).insert(
+      rawEntities = await this.databaseClient<UserRawEntity>(usersTable).insert(
         {
           id,
           email,
@@ -76,7 +76,7 @@ export class UserRepositoryImpl implements UserRepository {
     let rawEntities: UserRawEntity[] = [];
 
     try {
-      rawEntities = await this.databaseClient<UserRawEntity>(userTable)
+      rawEntities = await this.databaseClient<UserRawEntity>(usersTable)
         .update(user.getState(), '*')
         .where({ id: user.getId() });
     } catch (error) {
@@ -120,7 +120,7 @@ export class UserRepositoryImpl implements UserRepository {
     let rawEntity: UserRawEntity | undefined;
 
     try {
-      rawEntity = await this.databaseClient<UserRawEntity>(userTable).select('*').where(whereCondition).first();
+      rawEntity = await this.databaseClient<UserRawEntity>(usersTable).select('*').where(whereCondition).first();
     } catch (error) {
       throw new RepositoryError({
         entity: 'User',
@@ -142,7 +142,7 @@ export class UserRepositoryImpl implements UserRepository {
     let rawEntities: UserRawEntity[];
 
     try {
-      rawEntities = await this.databaseClient<UserRawEntity>(userTable)
+      rawEntities = await this.databaseClient<UserRawEntity>(usersTable)
         .select('*')
         .limit(pageSize)
         .offset((page - 1) * pageSize);
@@ -159,7 +159,7 @@ export class UserRepositoryImpl implements UserRepository {
 
   public async countUsers(): Promise<number> {
     try {
-      const query = this.databaseClient<UserRawEntity>(userTable);
+      const query = this.databaseClient<UserRawEntity>(usersTable);
 
       const countResult = await query.count().first();
 
@@ -191,7 +191,7 @@ export class UserRepositoryImpl implements UserRepository {
     const { id } = payload;
 
     try {
-      await this.databaseClient<UserRawEntity>(userTable).delete().where({ id });
+      await this.databaseClient<UserRawEntity>(usersTable).delete().where({ id });
     } catch (error) {
       throw new RepositoryError({
         entity: 'User',

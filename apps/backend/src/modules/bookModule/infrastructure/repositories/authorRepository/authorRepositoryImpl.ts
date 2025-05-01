@@ -5,7 +5,7 @@ import { type AuthorRawEntity } from '../../../../databaseModule/infrastructure/
 import { authorsTable } from '../../../../databaseModule/infrastructure/tables/authorTable/authorTable.js';
 import { booksAuthorsTable } from '../../../../databaseModule/infrastructure/tables/bookAuthorTable/bookAuthorTable.js';
 import { bookshelvesTable } from '../../../../databaseModule/infrastructure/tables/bookshelfTable/bookshelfTable.js';
-import { userBookTable } from '../../../../databaseModule/infrastructure/tables/userBookTable/userBookTable.js';
+import { usersBooksTable } from '../../../../databaseModule/infrastructure/tables/userBookTable/userBookTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import {
   type AuthorRepository,
@@ -147,11 +147,11 @@ export class AuthorRepositoryImpl implements AuthorRepository {
           .leftJoin(booksAuthorsTable, (join) => {
             join.on(`${booksAuthorsTable}.authorId`, '=', `${authorsTable}.id`);
           })
-          .leftJoin(userBookTable, (join) => {
-            join.on(`${userBookTable}.bookId`, '=', `${booksAuthorsTable}.bookId`);
+          .leftJoin(usersBooksTable, (join) => {
+            join.on(`${usersBooksTable}.bookId`, '=', `${booksAuthorsTable}.bookId`);
           })
           .leftJoin(bookshelvesTable, (join) => {
-            join.on(`${bookshelvesTable}.id`, '=', `${userBookTable}.bookshelfId`);
+            join.on(`${bookshelvesTable}.id`, '=', `${usersBooksTable}.bookshelfId`);
           });
 
         if (userId) {
@@ -218,11 +218,11 @@ export class AuthorRepositoryImpl implements AuthorRepository {
           .leftJoin(booksAuthorsTable, (join) => {
             join.on(`${booksAuthorsTable}.authorId`, '=', `${authorsTable}.id`);
           })
-          .leftJoin(userBookTable, (join) => {
-            join.on(`${userBookTable}.bookId`, '=', `${booksAuthorsTable}.bookId`);
+          .leftJoin(usersBooksTable, (join) => {
+            join.on(`${usersBooksTable}.bookId`, '=', `${booksAuthorsTable}.bookId`);
           })
           .leftJoin(bookshelvesTable, (join) => {
-            join.on(`${bookshelvesTable}.id`, '=', `${userBookTable}.bookshelfId`);
+            join.on(`${bookshelvesTable}.id`, '=', `${usersBooksTable}.bookshelfId`);
           });
 
         if (userId) {

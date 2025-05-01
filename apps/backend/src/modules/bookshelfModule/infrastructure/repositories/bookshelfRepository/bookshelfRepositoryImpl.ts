@@ -3,7 +3,7 @@ import { type UuidService } from '../../../../../libs/uuid/uuidService.js';
 import { type BookshelfRawEntity } from '../../../../databaseModule/infrastructure/tables/bookshelfTable/bookshelfRawEntity.js';
 import { bookshelvesTable } from '../../../../databaseModule/infrastructure/tables/bookshelfTable/bookshelfTable.js';
 import { type BookshelfWithJoinsRawEntity } from '../../../../databaseModule/infrastructure/tables/bookshelfTable/bookshelfWithJoinsRawEntity.js';
-import { userBookTable } from '../../../../databaseModule/infrastructure/tables/userBookTable/userBookTable.js';
+import { usersBooksTable } from '../../../../databaseModule/infrastructure/tables/userBookTable/userBookTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { Bookshelf, type BookshelfState } from '../../../domain/entities/bookshelf/bookshelf.js';
 import {
@@ -44,8 +44,8 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
           `${bookshelvesTable}.imageUrl`,
           this.databaseClient.raw(`COUNT("bookId") as "bookCount"`),
         ])
-        .leftJoin(userBookTable, (join) => {
-          join.on(`${userBookTable}.bookshelfId`, '=', `${bookshelvesTable}.id`);
+        .leftJoin(usersBooksTable, (join) => {
+          join.on(`${usersBooksTable}.bookshelfId`, '=', `${bookshelvesTable}.id`);
         })
         .groupBy(`${bookshelvesTable}.id`);
 
@@ -84,8 +84,8 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
         `${bookshelvesTable}.imageUrl`,
         this.databaseClient.raw(`COUNT("bookId") as "bookCount"`),
       ])
-      .leftJoin(userBookTable, (join) => {
-        join.on(`${userBookTable}.bookshelfId`, '=', `${bookshelvesTable}.id`);
+      .leftJoin(usersBooksTable, (join) => {
+        join.on(`${usersBooksTable}.bookshelfId`, '=', `${bookshelvesTable}.id`);
       })
       .groupBy(`${bookshelvesTable}.id`);
 

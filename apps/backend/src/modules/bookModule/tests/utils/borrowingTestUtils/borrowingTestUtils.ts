@@ -1,6 +1,6 @@
 import { TestUtils } from '../../../../../../tests/testUtils.js';
 import { type BorrowingRawEntity } from '../../../../databaseModule/infrastructure/tables/borrowingTable/borrowingRawEntity.js';
-import { borrowingTable } from '../../../../databaseModule/infrastructure/tables/borrowingTable/borrowingTable.js';
+import { borrowingsTable } from '../../../../databaseModule/infrastructure/tables/borrowingTable/borrowingTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { BorrowingTestFactory } from '../../factories/borrowingTestFactory/borrowingTestFactory.js';
 
@@ -14,7 +14,7 @@ interface FindByIdPayload {
 
 export class BorrowingTestUtils extends TestUtils {
   public constructor(databaseClient: DatabaseClient) {
-    super(databaseClient, borrowingTable);
+    super(databaseClient, borrowingsTable);
   }
 
   private readonly borrowingTestFactory = new BorrowingTestFactory();
@@ -24,7 +24,7 @@ export class BorrowingTestUtils extends TestUtils {
 
     const borrowing = this.borrowingTestFactory.create(input);
 
-    const rawEntities = await this.databaseClient<BorrowingRawEntity>(borrowingTable).insert(
+    const rawEntities = await this.databaseClient<BorrowingRawEntity>(borrowingsTable).insert(
       {
         id: borrowing.getId(),
         userBookId: borrowing.getUserBookId(),
@@ -43,7 +43,7 @@ export class BorrowingTestUtils extends TestUtils {
   public async findById(payload: FindByIdPayload): Promise<BorrowingRawEntity | null> {
     const { id } = payload;
 
-    const rawEntity = await this.databaseClient<BorrowingRawEntity>(borrowingTable).where({ id }).first();
+    const rawEntity = await this.databaseClient<BorrowingRawEntity>(borrowingsTable).where({ id }).first();
 
     if (!rawEntity) {
       return null;

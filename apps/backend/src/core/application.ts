@@ -20,10 +20,10 @@ import { DatabaseModule } from '../modules/databaseModule/databaseModule.js';
 import { type DatabaseManager } from '../modules/databaseModule/infrastructure/databaseManager.js';
 import { type BookshelfRawEntity } from '../modules/databaseModule/infrastructure/tables/bookshelfTable/bookshelfRawEntity.js';
 import { bookshelvesTable } from '../modules/databaseModule/infrastructure/tables/bookshelfTable/bookshelfTable.js';
-import { categoryTable } from '../modules/databaseModule/infrastructure/tables/categoriesTable/categoriesTable.js';
+import { categoriesTable } from '../modules/databaseModule/infrastructure/tables/categoriesTable/categoriesTable.js';
 import { type CategoryRawEntity } from '../modules/databaseModule/infrastructure/tables/categoriesTable/categoryRawEntity.js';
 import { type UserRawEntity } from '../modules/databaseModule/infrastructure/tables/userTable/userRawEntity.js';
-import { userTable } from '../modules/databaseModule/infrastructure/tables/userTable/userTable.js';
+import { usersTable } from '../modules/databaseModule/infrastructure/tables/userTable/userTable.js';
 import { databaseSymbols } from '../modules/databaseModule/symbols.js';
 import { type DatabaseClient } from '../modules/databaseModule/types/databaseClient.js';
 import { type HashService } from '../modules/userModule/application/services/hashService/hashService.js';
@@ -130,7 +130,7 @@ export class Application {
 
     const { email, password } = container.get<Config>(coreSymbols.config).admin;
 
-    const userExists = await databaseClient<UserRawEntity>(userTable).where({ email }).first();
+    const userExists = await databaseClient<UserRawEntity>(usersTable).where({ email }).first();
 
     if (userExists) {
       loggerService.debug({
@@ -145,7 +145,7 @@ export class Application {
 
     const userId = uuidService.generateUuid();
 
-    await databaseClient<UserRawEntity>(userTable).insert({
+    await databaseClient<UserRawEntity>(usersTable).insert({
       id: userId,
       name: 'Admin',
       email,
@@ -185,7 +185,7 @@ export class Application {
 
     const loggerService = container.get<LoggerService>(coreSymbols.loggerService);
 
-    const existingCategories = await databaseClient<CategoryRawEntity>(categoryTable).select('*');
+    const existingCategories = await databaseClient<CategoryRawEntity>(categoriesTable).select('*');
 
     if (existingCategories.length > 0) {
       loggerService.debug({ message: 'Categories already exist.' });
@@ -193,7 +193,7 @@ export class Application {
       return;
     }
 
-    await databaseClient<CategoryRawEntity>(categoryTable).insert(
+    await databaseClient<CategoryRawEntity>(categoriesTable).insert(
       config.categories.map((name) => ({
         id: uuidService.generateUuid(),
         name,

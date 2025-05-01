@@ -1,1 +1,1 @@
-export const categoryTable = 'categories';
+export const categoriesTable = 'categories';
