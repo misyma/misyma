@@ -23,10 +23,10 @@ describe('BookshelfMapperImpl', () => {
       id: bookshelfRawEntity.id,
       state: {
         name: bookshelfRawEntity.name,
-        userId: bookshelfRawEntity.userId,
+        userId: bookshelfRawEntity.user_id,
         type: bookshelfRawEntity.type,
-        createdAt: bookshelfRawEntity.createdAt,
-        imageUrl: bookshelfRawEntity.imageUrl,
+        createdAt: bookshelfRawEntity.created_at,
+        imageUrl: bookshelfRawEntity.image_url,
       },
     });
   });
@@ -39,7 +39,7 @@ describe('BookshelfMapperImpl', () => {
     const bookshelf = bookshelfMapperImpl.mapRawWithJoinsToDomain([
       {
         ...bookshelfRawEntity,
-        bookCount: bookCount.toString(),
+        book_count: bookCount.toString(),
       },
     ])[0];
 
@@ -47,10 +47,10 @@ describe('BookshelfMapperImpl', () => {
       id: bookshelfRawEntity.id,
       state: {
         name: bookshelfRawEntity.name,
-        userId: bookshelfRawEntity.userId,
+        userId: bookshelfRawEntity.user_id,
         type: bookshelfRawEntity.type,
-        createdAt: bookshelfRawEntity.createdAt,
-        imageUrl: bookshelfRawEntity.imageUrl,
+        createdAt: bookshelfRawEntity.created_at,
+        imageUrl: bookshelfRawEntity.image_url,
         bookCount,
       },
     });

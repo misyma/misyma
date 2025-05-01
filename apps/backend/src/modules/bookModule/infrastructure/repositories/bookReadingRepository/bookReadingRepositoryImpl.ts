@@ -54,7 +54,7 @@ export class BookReadingRepositoryImpl implements BookReadingRepository {
 
     try {
       const query = this.databaseClient<BookReadingRawEntity>(booksReadingsTable)
-        .where({ userBookId })
+        .where({ user_book_id: userBookId })
         .limit(pageSize)
         .offset(pageSize * (page - 1));
 
@@ -83,11 +83,11 @@ export class BookReadingRepositoryImpl implements BookReadingRepository {
       const result = await this.databaseClient<BookReadingRawEntity>(booksReadingsTable).insert(
         {
           id: this.uuidService.generateUuid(),
-          userBookId: bookReading.userBookId,
+          user_book_id: bookReading.userBookId,
           rating: bookReading.rating,
           comment: bookReading.comment,
-          startedAt: bookReading.startedAt,
-          endedAt: bookReading.endedAt,
+          started_at: bookReading.startedAt,
+          ended_at: bookReading.endedAt,
         },
         '*',
       );
@@ -110,9 +110,18 @@ export class BookReadingRepositoryImpl implements BookReadingRepository {
     let rawEntity: BookReadingRawEntity;
 
     try {
+      const { comment, rating, startedAt, endedAt } = bookReading.getState();
       const result = await this.databaseClient<BookReadingRawEntity>(booksReadingsTable)
         .where({ id: bookReading.getId() })
-        .update(bookReading.getState(), '*');
+        .update(
+          {
+            comment,
+            rating,
+            started_at: startedAt,
+            ended_at: endedAt,
+          },
+          '*',
+        );
 
       rawEntity = result[0] as BookReadingRawEntity;
     } catch (error) {
@@ -155,7 +164,7 @@ export class BookReadingRepositoryImpl implements BookReadingRepository {
 
     try {
       const countResult = await this.databaseClient<BookReadingRawEntity>(booksReadingsTable)
-        .where({ userBookId })
+        .where({ user_book_id: userBookId })
         .count()
         .first();
 

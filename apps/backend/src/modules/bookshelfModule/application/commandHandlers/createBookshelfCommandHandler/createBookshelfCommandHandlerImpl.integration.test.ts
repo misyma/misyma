@@ -83,7 +83,7 @@ describe('CreateBookshelfCommandHandlerImpl', () => {
     await bookshelfTestUtils.createAndPersist({
       input: {
         name,
-        userId: user.id,
+        user_id: user.id,
       },
     });
 

@@ -58,7 +58,7 @@ describe('BlacklistTokenRepositoryImpl', () => {
       expect(foundBlacklistToken).toEqual({
         id: blacklistToken.getId(),
         token,
-        expiresAt,
+        expires_at: expiresAt,
       });
     });
 
@@ -68,7 +68,7 @@ describe('BlacklistTokenRepositoryImpl', () => {
       try {
         await blacklistTokenRepository.createBlacklistToken({
           token: existingBlacklistToken.token,
-          expiresAt: existingBlacklistToken.expiresAt,
+          expiresAt: existingBlacklistToken.expires_at,
         });
       } catch (error) {
         expect(error).toBeInstanceOf(RepositoryError);

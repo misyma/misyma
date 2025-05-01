@@ -22,8 +22,7 @@ describe('AuthorMapperImpl', () => {
 
     expect(author.getState()).toEqual({
       name: authorRawEntity.name,
-      isApproved: authorRawEntity.isApproved,
-      createdAt: authorRawEntity.createdAt,
+      isApproved: authorRawEntity.is_approved,
     });
   });
 });

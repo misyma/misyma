@@ -81,7 +81,7 @@ describe('FindUserBookQueryHandler', () => {
   it('finds UserBook by id', async () => {
     const user = await userTestUtils.createAndPersist();
 
-    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { user_id: user.id } });
 
     const author = await authorTestUtils.createAndPersist();
 
@@ -91,15 +91,15 @@ describe('FindUserBookQueryHandler', () => {
       input: {
         authorIds: [author.id],
         book: {
-          categoryId: category.id,
+          category_id: category.id,
         },
       },
     });
 
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
-        bookId: book.id,
-        bookshelfId: bookshelf.id,
+        book_id: book.id,
+        bookshelf_id: bookshelf.id,
       },
     });
 
@@ -135,7 +135,7 @@ describe('FindUserBookQueryHandler', () => {
 
     const anotherUser = await userTestUtils.createAndPersist();
 
-    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: anotherUser.id } });
+    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { user_id: anotherUser.id } });
 
     const author = await authorTestUtils.createAndPersist();
 
@@ -145,15 +145,15 @@ describe('FindUserBookQueryHandler', () => {
       input: {
         authorIds: [author.id],
         book: {
-          categoryId: category.id,
+          category_id: category.id,
         },
       },
     });
 
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
-        bookId: book.id,
-        bookshelfId: bookshelf.id,
+        book_id: book.id,
+        bookshelf_id: bookshelf.id,
       },
     });
 

@@ -64,7 +64,7 @@ describe('CollectionRepositoryImpl', () => {
     it('returns Collection', async () => {
       const user = await userTestUtils.createAndPersist();
 
-      const createdCollection = await collectionTestUtils.createAndPersist({ input: { userId: user.id } });
+      const createdCollection = await collectionTestUtils.createAndPersist({ input: { user_id: user.id } });
 
       const collection = await collectionRepository.findCollection({ id: createdCollection.id });
 
@@ -90,13 +90,13 @@ describe('CollectionRepositoryImpl', () => {
     it('returns Collections by ids', async () => {
       const user = await userTestUtils.createAndPersist();
 
-      const collection1 = await collectionTestUtils.createAndPersist({ input: { userId: user.id } });
+      const collection1 = await collectionTestUtils.createAndPersist({ input: { user_id: user.id } });
 
-      const collection2 = await collectionTestUtils.createAndPersist({ input: { userId: user.id } });
+      const collection2 = await collectionTestUtils.createAndPersist({ input: { user_id: user.id } });
 
-      const collection3 = await collectionTestUtils.createAndPersist({ input: { userId: user.id } });
+      const collection3 = await collectionTestUtils.createAndPersist({ input: { user_id: user.id } });
 
-      const collection4 = await collectionTestUtils.createAndPersist({ input: { userId: user.id } });
+      const collection4 = await collectionTestUtils.createAndPersist({ input: { user_id: user.id } });
 
       const collections = await collectionRepository.findCollections({
         ids: [collection1.id, collection2.id, collection3.id, collection4.id],
@@ -113,7 +113,7 @@ describe('CollectionRepositoryImpl', () => {
       const createdCollections: CollectionRawEntity[] = [];
 
       for (let i = 0; i < 8; i++) {
-        const createdCollection = await collectionTestUtils.createAndPersist({ input: { userId: user.id } });
+        const createdCollection = await collectionTestUtils.createAndPersist({ input: { user_id: user.id } });
 
         createdCollections.push(createdCollection);
       }
@@ -142,18 +142,18 @@ describe('CollectionRepositoryImpl', () => {
     it('returns Collection', async () => {
       const user = await userTestUtils.createAndPersist();
 
-      const collection = await collectionTestUtils.createAndPersist({ input: { userId: user.id } });
+      const collection = await collectionTestUtils.createAndPersist({ input: { user_id: user.id } });
 
       const result = await collectionRepository.findCollection({
         name: collection.name,
-        userId: collection.userId,
+        userId: collection.user_id,
       });
 
       expect(result).toBeInstanceOf(Collection);
 
       expect(result?.getName()).toEqual(collection.name);
 
-      expect(result?.getUserId()).toEqual(collection.userId);
+      expect(result?.getUserId()).toEqual(collection.user_id);
     });
   });
 
@@ -181,7 +181,7 @@ describe('CollectionRepositoryImpl', () => {
 
       expect(createdCollection?.name).toBe(name);
 
-      expect(createdCollection?.userId).toBe(user.id);
+      expect(createdCollection?.user_id).toBe(user.id);
     });
 
     it('throws an error while creating - when Collection with the same name already exists', async () => {
@@ -225,7 +225,7 @@ describe('CollectionRepositoryImpl', () => {
     it('updates Collection', async () => {
       const user = await userTestUtils.createAndPersist();
 
-      const collectionRawEntity = await collectionTestUtils.createAndPersist({ input: { userId: user.id } });
+      const collectionRawEntity = await collectionTestUtils.createAndPersist({ input: { user_id: user.id } });
 
       const newName = Generator.words(2);
 
@@ -251,9 +251,9 @@ describe('CollectionRepositoryImpl', () => {
     it('throws an error while updating - when Collection with the same name already exists', async () => {
       const user = await userTestUtils.createAndPersist();
 
-      const createdCollection1 = await collectionTestUtils.createAndPersist({ input: { userId: user.id } });
+      const createdCollection1 = await collectionTestUtils.createAndPersist({ input: { user_id: user.id } });
 
-      const createdCollection2 = await collectionTestUtils.createAndPersist({ input: { userId: user.id } });
+      const createdCollection2 = await collectionTestUtils.createAndPersist({ input: { user_id: user.id } });
 
       try {
         await collectionRepository.saveCollection({
@@ -261,7 +261,7 @@ describe('CollectionRepositoryImpl', () => {
             id: createdCollection1.id,
             name: createdCollection2.name,
             userId: user.id,
-            createdAt: createdCollection1.createdAt,
+            createdAt: createdCollection1.created_at,
           }),
         });
       } catch (error) {
@@ -284,7 +284,7 @@ describe('CollectionRepositoryImpl', () => {
     it('deletes Collection', async () => {
       const user = await userTestUtils.createAndPersist();
 
-      const createdCollection = await collectionTestUtils.createAndPersist({ input: { userId: user.id } });
+      const createdCollection = await collectionTestUtils.createAndPersist({ input: { user_id: user.id } });
 
       await collectionRepository.deleteCollection({ id: createdCollection.id });
 

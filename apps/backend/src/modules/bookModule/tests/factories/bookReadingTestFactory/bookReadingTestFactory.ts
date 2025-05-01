@@ -18,11 +18,11 @@ export class BookReadingTestFactory {
   public createRaw(input: Partial<BookReadingRawEntity> = {}): BookReadingRawEntity {
     return {
       id: Generator.uuid(),
-      userBookId: Generator.uuid(),
+      user_book_id: Generator.uuid(),
       rating: Generator.number(1, 10),
       comment: Generator.words(),
-      startedAt: Generator.pastDate(),
-      endedAt: Generator.futureDate(),
+      started_at: Generator.pastDate(),
+      ended_at: Generator.futureDate(),
       ...input,
     };
   }

@@ -37,12 +37,12 @@ export class BookChangeRequestTestFactory {
       translator: Generator.fullName(),
       format: Generator.bookFormat(),
       pages: Generator.number(100, 1000),
-      releaseYear: Generator.number(1970, 2024),
-      imageUrl: Generator.imageUrl(),
-      bookId: Generator.uuid(),
-      userEmail: Generator.email(),
-      createdAt: Generator.pastDate(),
-      changedFields: Generator.words(5).split(' ').join(','),
+      release_year: Generator.number(1970, 2024),
+      image_url: Generator.imageUrl(),
+      book_id: Generator.uuid(),
+      user_email: Generator.email(),
+      created_at: Generator.pastDate(),
+      changed_fields: Generator.words(5).split(' ').join(','),
       ...input,
     };
   }

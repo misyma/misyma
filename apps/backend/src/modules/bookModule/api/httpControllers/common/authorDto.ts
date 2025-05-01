@@ -9,7 +9,6 @@ export const authorDtoSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
   name: authorNameSchema,
   isApproved: Type.Boolean(),
-  createdAt: Type.String({ format: 'date-time' }),
 });
 
 export type AuthorDto = Static<typeof authorDtoSchema>;

@@ -121,7 +121,7 @@ export class Generator {
   }
 
   public static category(): string {
-    return faker.book.category();
+    return faker.book.genre();
   }
 
   public static language(): Language {

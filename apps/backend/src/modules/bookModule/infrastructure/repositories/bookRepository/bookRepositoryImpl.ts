@@ -55,7 +55,6 @@ export class BookRepositoryImpl implements BookRepository {
         isApproved,
         imageUrl,
         authors,
-        createdAt,
       },
     } = payload;
 
@@ -70,25 +69,24 @@ export class BookRepositoryImpl implements BookRepository {
             id,
             title,
             isbn,
-            categoryId,
+            category_id: categoryId,
             publisher,
-            releaseYear,
+            release_year: releaseYear,
             language,
             translator,
             format,
             pages,
-            isApproved,
-            imageUrl,
-            createdAt,
+            is_approved: isApproved,
+            image_url: imageUrl,
           },
           '*',
         );
 
-        await transaction.batchInsert(
+        await transaction.batchInsert<BookAuthorRawEntity>(
           booksAuthorsTable,
           authors.map((author) => ({
-            bookId: id,
-            authorId: author.getId(),
+            book_id: id,
+            author_id: author.getId(),
           })),
         );
       });
@@ -126,9 +124,36 @@ export class BookRepositoryImpl implements BookRepository {
 
     try {
       await this.databaseClient.transaction(async (transaction) => {
-        const { authors: updatedAuthors, categoryName: _, ...bookFields } = book.getState();
+        const {
+          authors: updatedAuthors,
+          isApproved,
+          language,
+          releaseYear,
+          categoryId,
+          format,
+          imageUrl,
+          isbn,
+          pages,
+          publisher,
+          title,
+          translator,
+        } = book.getState();
 
-        await transaction(booksTable).update(bookFields, '*').where({ id: book.getId() });
+        await transaction<BookRawEntity>(booksTable)
+          .update({
+            is_approved: isApproved,
+            language,
+            release_year: releaseYear,
+            category_id: categoryId,
+            format,
+            image_url: imageUrl,
+            isbn,
+            pages,
+            publisher,
+            title,
+            translator,
+          })
+          .where({ id: book.getId() });
 
         const existingAuthors = existingBook.getAuthors();
 
@@ -144,8 +169,8 @@ export class BookRepositoryImpl implements BookRepository {
           await transaction.batchInsert<BookAuthorRawEntity>(
             booksAuthorsTable,
             addedAuthors.map((author) => ({
-              bookId: book.getId(),
-              authorId: author.getId(),
+              book_id: book.getId(),
+              author_id: author.getId(),
             })),
           );
         }
@@ -154,11 +179,11 @@ export class BookRepositoryImpl implements BookRepository {
           await transaction<BookAuthorRawEntity>(booksAuthorsTable)
             .delete()
             .whereIn(
-              'authorId',
+              'author_id',
               removedAuthors.map((author) => author.getId()),
             )
             .andWhere({
-              bookId: book.getId(),
+              book_id: book.getId(),
             });
         }
       });
@@ -182,32 +207,30 @@ export class BookRepositoryImpl implements BookRepository {
       rawEntities = await this.databaseClient<BookRawEntity>(booksTable)
         .select([
           `${booksTable}.id`,
-          `${booksTable}.categoryId`,
-          `${categoriesTable}.name as categoryName`,
+          `${booksTable}.category_id`,
+          `${categoriesTable}.name as category_name`,
           `${booksTable}.title`,
           `${booksTable}.isbn`,
           `${booksTable}.publisher`,
-          `${booksTable}.releaseYear`,
+          `${booksTable}.release_year`,
           `${booksTable}.language`,
           `${booksTable}.translator`,
           `${booksTable}.format`,
           `${booksTable}.pages`,
-          `${booksTable}.isApproved`,
-          `${booksTable}.imageUrl`,
-          `${booksTable}.createdAt`,
-          this.databaseClient.raw(`array_agg("authors"."id") as "authorIds"`),
-          this.databaseClient.raw(`array_agg("authors"."name") as "authorNames"`),
-          this.databaseClient.raw(`array_agg("authors"."isApproved") as "authorApprovals"`),
-          this.databaseClient.raw(`array_agg("authors"."createdAt") as "authorCreatedAtDates"`),
+          `${booksTable}.is_approved`,
+          `${booksTable}.image_url`,
+          this.databaseClient.raw(`array_agg("authors"."id") as "author_ids"`),
+          this.databaseClient.raw(`array_agg("authors"."name") as "author_names"`),
+          this.databaseClient.raw(`array_agg("authors"."is_approved") as "author_approvals"`),
         ])
         .leftJoin(booksAuthorsTable, (join) => {
-          join.on(`${booksAuthorsTable}.bookId`, '=', `${booksTable}.id`);
+          join.on(`${booksAuthorsTable}.book_id`, '=', `${booksTable}.id`);
         })
         .leftJoin(authorsTable, (join) => {
-          join.on(`${authorsTable}.id`, '=', `${booksAuthorsTable}.authorId`);
+          join.on(`${authorsTable}.id`, '=', `${booksAuthorsTable}.author_id`);
         })
         .leftJoin(categoriesTable, (join) => {
-          join.on(`${categoriesTable}.id`, '=', `${booksTable}.categoryId`);
+          join.on(`${categoriesTable}.id`, '=', `${booksTable}.category_id`);
         })
         .where((builder) => {
           builder.where(`${booksTable}.id`, id);
@@ -250,31 +273,29 @@ export class BookRepositoryImpl implements BookRepository {
         .select([
           `${booksTable}.id`,
           `${booksTable}.title`,
-          `${booksTable}.categoryId`,
-          `${categoriesTable}.name as categoryName`,
+          `${booksTable}.category_id`,
+          `${categoriesTable}.name as category_name`,
           `${booksTable}.isbn`,
           `${booksTable}.publisher`,
-          `${booksTable}.releaseYear`,
+          `${booksTable}.release_year`,
           `${booksTable}.language`,
           `${booksTable}.translator`,
           `${booksTable}.format`,
           `${booksTable}.pages`,
-          `${booksTable}.isApproved`,
-          `${booksTable}.imageUrl`,
-          `${booksTable}.createdAt`,
-          this.databaseClient.raw(`array_agg("authors"."id") as "authorIds"`),
-          this.databaseClient.raw(`array_agg("authors"."name") as "authorNames"`),
-          this.databaseClient.raw(`array_agg("authors"."isApproved") as "authorApprovals"`),
-          this.databaseClient.raw(`array_agg("authors"."createdAt") as "authorCreatedAtDates"`),
+          `${booksTable}.is_approved`,
+          `${booksTable}.image_url`,
+          this.databaseClient.raw(`array_agg("authors"."id") as "author_ids"`),
+          this.databaseClient.raw(`array_agg("authors"."name") as "author_names"`),
+          this.databaseClient.raw(`array_agg("authors"."is_approved") as "author_approvals"`),
         ])
         .leftJoin(booksAuthorsTable, (join) => {
-          join.on(`${booksAuthorsTable}.bookId`, '=', `${booksTable}.id`);
+          join.on(`${booksAuthorsTable}.book_id`, '=', `${booksTable}.id`);
         })
         .leftJoin(authorsTable, (join) => {
-          join.on(`${authorsTable}.id`, '=', `${booksAuthorsTable}.authorId`);
+          join.on(`${authorsTable}.id`, '=', `${booksAuthorsTable}.author_id`);
         })
         .leftJoin(categoriesTable, (join) => {
-          join.on(`${booksTable}.categoryId`, '=', `${categoriesTable}.id`);
+          join.on(`${booksTable}.category_id`, '=', `${categoriesTable}.id`);
         })
         .where((builder) => {
           if (isbn) {
@@ -282,7 +303,7 @@ export class BookRepositoryImpl implements BookRepository {
           }
 
           if (isApproved !== undefined) {
-            builder.where(`${booksTable}.isApproved`, isApproved);
+            builder.where(`${booksTable}.is_approved`, isApproved);
           }
 
           if (language) {
@@ -290,11 +311,11 @@ export class BookRepositoryImpl implements BookRepository {
           }
 
           if (releaseYearBefore) {
-            builder.where(`${booksTable}.releaseYear`, '<=', releaseYearBefore);
+            builder.where(`${booksTable}.release_year`, '<=', releaseYearBefore);
           }
 
           if (releaseYearAfter) {
-            builder.where(`${booksTable}.releaseYear`, '>=', releaseYearAfter);
+            builder.where(`${booksTable}.release_year`, '>=', releaseYearAfter);
           }
 
           if (title) {
@@ -310,7 +331,7 @@ export class BookRepositoryImpl implements BookRepository {
         .offset(pageSize * (page - 1));
 
       if (sortField === 'releaseYear') {
-        query.orderBy(`${booksTable}.releaseYear`, sortOrder ?? 'desc');
+        query.orderBy(`${booksTable}.release_year`, sortOrder ?? 'desc');
       } else if (sortField === 'title') {
         query.orderBy(`${booksTable}.title`, sortOrder ?? 'asc');
       } else {
@@ -350,10 +371,10 @@ export class BookRepositoryImpl implements BookRepository {
       const countResult = await this.databaseClient<BookRawEntity>(booksTable)
         .countDistinct({ count: `${booksTable}.id` })
         .leftJoin(booksAuthorsTable, (join) => {
-          join.on(`${booksAuthorsTable}.bookId`, '=', `${booksTable}.id`);
+          join.on(`${booksAuthorsTable}.book_id`, '=', `${booksTable}.id`);
         })
         .leftJoin(authorsTable, (join) => {
-          join.on(`${authorsTable}.id`, '=', `${booksAuthorsTable}.authorId`);
+          join.on(`${authorsTable}.id`, '=', `${booksAuthorsTable}.author_id`);
         })
         .where((builder) => {
           if (isbn) {
@@ -361,7 +382,7 @@ export class BookRepositoryImpl implements BookRepository {
           }
 
           if (isApproved !== undefined) {
-            builder.where(`${booksTable}.isApproved`, isApproved);
+            builder.where(`${booksTable}.is_approved`, isApproved);
           }
 
           if (language) {
@@ -369,11 +390,11 @@ export class BookRepositoryImpl implements BookRepository {
           }
 
           if (releaseYearBefore) {
-            builder.where(`${booksTable}.releaseYear`, '<=', releaseYearBefore);
+            builder.where(`${booksTable}.release_year`, '<=', releaseYearBefore);
           }
 
           if (releaseYearAfter) {
-            builder.where(`${booksTable}.releaseYear`, '>=', releaseYearAfter);
+            builder.where(`${booksTable}.release_year`, '>=', releaseYearAfter);
           }
 
           if (title) {

@@ -8,17 +8,8 @@ export class CollectionMapperImpl implements CollectionMapper {
     return new Collection({
       id: raw.id,
       name: raw.name,
-      userId: raw.userId,
-      createdAt: raw.createdAt,
+      userId: raw.user_id,
+      createdAt: raw.created_at,
     });
-  }
-
-  public mapToPersistence(domain: Collection): CollectionRawEntity {
-    return {
-      id: domain.getId(),
-      name: domain.getName(),
-      userId: domain.getUserId(),
-      createdAt: domain.getCreatedAt(),
-    };
   }
 }

@@ -5,13 +5,12 @@ import { type AuthorMapper } from './authorMapper.js';
 
 export class AuthorMapperImpl implements AuthorMapper {
   public mapToDomain(entity: AuthorRawEntity): Author {
-    const { id, name, isApproved, createdAt } = entity;
+    const { id, name, is_approved: isApproved } = entity;
 
     return new Author({
       id,
       name,
       isApproved,
-      createdAt,
     });
   }
 }

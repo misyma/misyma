@@ -5,7 +5,7 @@ import { type DatabaseClient } from '../../../../databaseModule/types/databaseCl
 import { BookChangeRequestTestFactory } from '../../factories/bookChangeRequestTestFactory/bookChangeRequestTestFactory.js';
 
 interface CreateAndPersistPayload {
-  readonly input?: Partial<BookChangeRequestRawEntity> & { readonly bookId: string };
+  readonly input?: Partial<BookChangeRequestRawEntity> & { readonly book_id: string };
 }
 
 interface FindByIdPayload {
@@ -30,17 +30,17 @@ export class BookChangeRequestTestUtils extends TestUtils {
         title: bookChangeRequest.title,
         isbn: bookChangeRequest.isbn,
         publisher: bookChangeRequest.publisher,
-        releaseYear: bookChangeRequest.releaseYear,
+        release_year: bookChangeRequest.release_year,
         language: bookChangeRequest.language,
         translator: bookChangeRequest.translator,
         format: bookChangeRequest.format,
         pages: bookChangeRequest.pages,
-        imageUrl: bookChangeRequest.imageUrl,
-        bookId: bookChangeRequest.bookId,
-        userEmail: bookChangeRequest.userEmail,
-        createdAt: bookChangeRequest.createdAt,
-        authorIds: bookChangeRequest.authorIds,
-        changedFields: bookChangeRequest.changedFields,
+        image_url: bookChangeRequest.image_url,
+        book_id: bookChangeRequest.book_id,
+        user_email: bookChangeRequest.user_email,
+        created_at: bookChangeRequest.created_at,
+        author_ids: bookChangeRequest.author_ids,
+        changed_fields: bookChangeRequest.changed_fields,
       },
       '*',
     );

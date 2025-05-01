@@ -4,7 +4,6 @@ import { type UserBookWithJoinsRawEntity } from '../../../../../databaseModule/i
 import { Author } from '../../../../domain/entities/author/author.js';
 import { BookReading } from '../../../../domain/entities/bookReading/bookReading.js';
 import { Category } from '../../../../domain/entities/category/category.js';
-import { Collection } from '../../../../domain/entities/collection/collection.js';
 import { UserBook, type UserBookDraft } from '../../../../domain/entities/userBook/userBook.js';
 
 import { type UserBookMapper } from './userBookMapper.js';
@@ -13,39 +12,33 @@ export class UserBookMapperImpl implements UserBookMapper {
   public mapRawWithJoinsToDomain(entity: UserBookWithJoinsRawEntity): UserBook {
     const {
       id,
-      imageUrl,
+      image_url: imageUrl,
       status,
-      isFavorite,
-      bookshelfId,
-      createdAt,
-      bookId,
-      categoryId,
-      categoryName,
+      is_favorite: isFavorite,
+      bookshelf_id: bookshelfId,
+      created_at: createdAt,
+      book_id: bookId,
+      category_id: categoryId,
+      category_name: categoryName,
       title,
       isbn,
       publisher,
-      releaseYear,
+      release_year: releaseYear,
       language,
       translator,
       format,
-      isApproved,
+      is_approved: isApproved,
       pages,
-      bookImageUrl,
-      bookCreatedAt,
-      authorIds,
-      authorNames,
-      authorApprovals,
-      authorCreatedAtDates,
-      collectionIds,
-      collectionNames,
-      collectionUserIds,
-      collectionCreatedAtDates,
-      readingIds,
-      readingStartedAtDates,
-      readingEndedAtDates,
-      readingRatings,
-      readingComments,
-      latestRating,
+      book_image_url: bookImageUrl,
+      author_ids: authorIds,
+      author_names: authorNames,
+      author_approvals: authorApprovals,
+      reading_ids: readingIds,
+      reading_started_at_dates: readingStartedAtDates,
+      reading_ended_at_dates: readingEndedAtDates,
+      reading_ratings: readingRatings,
+      reading_comments: readingComments,
+      latest_rating: latestRating,
     } = entity;
 
     const userBookDraft: UserBookDraft = {
@@ -72,9 +65,8 @@ export class UserBookMapperImpl implements UserBookMapper {
           name: categoryName,
         }),
         categoryId,
-        createdAt: bookCreatedAt,
         authors:
-          authorIds && authorNames && authorApprovals && authorCreatedAtDates
+          authorIds && authorNames && authorApprovals
             ? authorIds
                 .filter((authorId) => authorId !== null)
                 .map((authorId, index) => {
@@ -82,7 +74,6 @@ export class UserBookMapperImpl implements UserBookMapper {
                     id: authorId,
                     name: authorNames[index] as string,
                     isApproved: authorApprovals[index] as boolean,
-                    createdAt: authorCreatedAtDates[index] as Date,
                   });
                 })
             : [],
@@ -100,19 +91,6 @@ export class UserBookMapperImpl implements UserBookMapper {
                   rating: readingRatings[index] as number,
                   comment: readingComments[index] ?? undefined,
                   userBookId: id,
-                });
-              })
-          : [],
-      collections:
-        collectionIds && collectionNames && collectionCreatedAtDates && collectionUserIds
-          ? collectionIds
-              .filter((collectionId) => collectionId !== null)
-              .map((collectionId, index) => {
-                return new Collection({
-                  id: collectionId,
-                  name: collectionNames[index] as string,
-                  userId: collectionUserIds[index] as string,
-                  createdAt: collectionCreatedAtDates[index] as Date,
                 });
               })
           : [],

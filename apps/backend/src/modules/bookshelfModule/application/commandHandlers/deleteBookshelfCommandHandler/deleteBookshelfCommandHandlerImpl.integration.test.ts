@@ -102,7 +102,7 @@ describe('DeleteBookshelfCommandHandlerImpl', () => {
 
     const bookshelf = await bookshelfTestUtils.createAndPersist({
       input: {
-        userId: anotherUser.id,
+        user_id: anotherUser.id,
       },
     });
 
@@ -131,7 +131,7 @@ describe('DeleteBookshelfCommandHandlerImpl', () => {
 
     const bookshelf = await bookshelfTestUtils.createAndPersist({
       input: {
-        userId: user.id,
+        user_id: user.id,
       },
     });
 
@@ -152,13 +152,13 @@ describe('DeleteBookshelfCommandHandlerImpl', () => {
 
     const bookshelf1 = await bookshelfTestUtils.createAndPersist({
       input: {
-        userId: user.id,
+        user_id: user.id,
       },
     });
 
     const bookshelf2 = await bookshelfTestUtils.createAndPersist({
       input: {
-        userId: user.id,
+        user_id: user.id,
       },
     });
 
@@ -167,15 +167,15 @@ describe('DeleteBookshelfCommandHandlerImpl', () => {
     const book = await bookTestUtils.createAndPersist({
       input: {
         book: {
-          categoryId: category.id,
+          category_id: category.id,
         },
       },
     });
 
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
-        bookId: book.id,
-        bookshelfId: bookshelf1.id,
+        book_id: book.id,
+        bookshelf_id: bookshelf1.id,
       },
     });
 
@@ -187,7 +187,7 @@ describe('DeleteBookshelfCommandHandlerImpl', () => {
 
     const updatedUserBook = await userBookTestUtils.findById({ id: userBook.id });
 
-    expect(updatedUserBook?.bookshelfId).toBe(bookshelf2.id);
+    expect(updatedUserBook?.bookshelf_id).toBe(bookshelf2.id);
 
     const foundBookshelf = await bookshelfTestUtils.findById({
       id: bookshelf1.id,

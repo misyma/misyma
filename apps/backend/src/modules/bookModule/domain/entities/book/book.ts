@@ -19,7 +19,6 @@ export interface BookDraft {
   readonly authors: Author[];
   readonly isApproved: boolean;
   readonly imageUrl?: string | undefined | null;
-  readonly createdAt: Date;
 }
 
 export interface BookState {
@@ -36,7 +35,6 @@ export interface BookState {
   authors: Author[];
   categoryId: string;
   categoryName?: string;
-  readonly createdAt: Date;
 }
 
 export interface SetTitlePayload {
@@ -107,7 +105,6 @@ export class Book {
       authors,
       isApproved,
       imageUrl,
-      createdAt,
     } = draft;
 
     this.id = id;
@@ -120,7 +117,6 @@ export class Book {
       format,
       authors,
       isApproved,
-      createdAt,
       releaseYear,
     };
 
@@ -195,10 +191,6 @@ export class Book {
 
   public getImageUrl(): string | undefined | null {
     return this.state.imageUrl;
-  }
-
-  public getCreatedAt(): Date {
-    return this.state.createdAt;
   }
 
   public getCategoryId(): string {

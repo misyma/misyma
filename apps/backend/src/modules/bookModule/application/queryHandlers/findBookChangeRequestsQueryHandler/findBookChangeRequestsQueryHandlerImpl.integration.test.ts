@@ -68,15 +68,15 @@ describe('FindBookChangeRequestsQueryHandler', () => {
     const book = await bookTestUtils.createAndPersist({
       input: {
         book: {
-          categoryId: category.id,
+          category_id: category.id,
         },
       },
     });
 
     const bookChangeRequest = await bookChangeRequestTestUtils.createAndPersist({
       input: {
-        userEmail: user.email,
-        bookId: book.id,
+        user_email: user.email,
+        book_id: book.id,
       },
     });
 
@@ -100,15 +100,15 @@ describe('FindBookChangeRequestsQueryHandler', () => {
     const book = await bookTestUtils.createAndPersist({
       input: {
         book: {
-          categoryId: category.id,
+          category_id: category.id,
         },
       },
     });
 
     const bookChangeRequest = await bookChangeRequestTestUtils.createAndPersist({
       input: {
-        userEmail: user.email,
-        bookId: book.id,
+        user_email: user.email,
+        book_id: book.id,
       },
     });
 

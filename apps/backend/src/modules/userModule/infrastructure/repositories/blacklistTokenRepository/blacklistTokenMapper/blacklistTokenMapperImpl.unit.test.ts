@@ -16,7 +16,7 @@ describe('BlacklistTokenMapperImpl', () => {
     const blacklistTokenEntity: BlacklistTokenRawEntity = {
       id: Generator.uuid(),
       token: Generator.alphaString(32),
-      expiresAt: Generator.futureDate(),
+      expires_at: Generator.futureDate(),
     };
 
     const blacklistToken = blacklistTokenMapperImpl.mapToDomain(blacklistTokenEntity);
@@ -24,7 +24,7 @@ describe('BlacklistTokenMapperImpl', () => {
     expect(blacklistToken).toEqual({
       id: blacklistTokenEntity.id,
       token: blacklistTokenEntity.token,
-      expiresAt: blacklistTokenEntity.expiresAt,
+      expiresAt: blacklistTokenEntity.expires_at,
     });
   });
 });

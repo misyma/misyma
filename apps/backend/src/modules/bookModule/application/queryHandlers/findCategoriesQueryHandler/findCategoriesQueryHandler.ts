@@ -6,9 +6,9 @@ export interface FindCategoriesPayload {
   readonly pageSize: number;
 }
 
-export interface FindCategoriesriesResult {
+export interface FindCategoriesResult {
   readonly categories: Category[];
   readonly total: number;
 }
 
-export type FindCategoriesriesQueryHandler = QueryHandler<CategoriestegoriesPayloCategoriesndCategoriesResult>;
+export type FindCategoriesQueryHandler = QueryHandler<FindCategoriesPayload, FindCategoriesResult>;

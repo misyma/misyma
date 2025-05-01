@@ -11,7 +11,7 @@ import {
   type FindAllCreatedAfterPayload,
 } from '../../../domain/repositories/emailEventRepository/emailEventRepository.js';
 
-import { type EmailEventMapper } from './mappers/emailEventMapper/emailEventMapper.js';
+import { type EmailEventMapper } from './emailEventMapper/emailEventMapper.js';
 
 export class EmailEventRepositoryImpl implements EmailEventRepository {
   public constructor(
@@ -27,7 +27,7 @@ export class EmailEventRepositoryImpl implements EmailEventRepository {
 
     try {
       rawEntities = await this.databaseClient<EmailEventRawEntity>(emailEventsTable)
-        .where('createdAt', '>=', after)
+        .where('created_at', '>=', after)
         .select('*');
     } catch (error) {
       throw new RepositoryError({
@@ -77,11 +77,11 @@ export class EmailEventRepositoryImpl implements EmailEventRepository {
   public async create(entity: EmailEventDraft): Promise<void> {
     try {
       await this.databaseClient<EmailEventRawEntity>(emailEventsTable).insert({
-        createdAt: new Date(),
+        created_at: new Date(),
         id: this.uuidService.generateUuid(),
         payload: JSON.stringify(entity.getPayload()),
         status: emailEventStatuses.pending,
-        eventName: entity.getEmailEventName(),
+        event_name: entity.getEmailEventName(),
       });
     } catch (error) {
       throw new RepositoryError({

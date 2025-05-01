@@ -22,10 +22,10 @@ describe('QuoteMapperImpl', () => {
     expect(quote).toEqual({
       id: quoteEntity.id,
       state: {
-        userBookId: quoteEntity.userBookId,
+        userBookId: quoteEntity.user_book_id,
         content: quoteEntity.content,
-        isFavorite: quoteEntity.isFavorite,
-        createdAt: quoteEntity.createdAt,
+        isFavorite: quoteEntity.is_favorite,
+        createdAt: quoteEntity.created_at,
         page: quoteEntity.page,
       },
     });
@@ -40,17 +40,17 @@ describe('QuoteMapperImpl', () => {
 
     const quote = quoteMapperImpl.mapRawEntityWithJoinsToDomain({
       ...quoteEntity,
-      bookTitle,
+      book_title: bookTitle,
       authors,
     });
 
     expect(quote).toEqual({
       id: quoteEntity.id,
       state: {
-        userBookId: quoteEntity.userBookId,
+        userBookId: quoteEntity.user_book_id,
         content: quoteEntity.content,
-        isFavorite: quoteEntity.isFavorite,
-        createdAt: quoteEntity.createdAt,
+        isFavorite: quoteEntity.is_favorite,
+        createdAt: quoteEntity.created_at,
         page: quoteEntity.page,
         authors,
         bookTitle,

@@ -12,12 +12,12 @@ export class EmailEventTestUtils extends TestUtils {
   public async create(emailEvent: EmailEvent): Promise<EmailEventRawEntity> {
     const rawEntities = await this.databaseClient<EmailEventRawEntity>(emailEventsTable).insert(
       {
-        createdAt: emailEvent.getCreatedAt(),
+        created_at: emailEvent.getCreatedAt(),
         id: emailEvent.getId(),
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         payload: JSON.stringify(emailEvent.getPayload()) as any,
         status: emailEvent.getStatus(),
-        eventName: emailEvent.getEmailEventName(),
+        event_name: emailEvent.getEmailEventName(),
       },
       '*',
     );
@@ -28,12 +28,12 @@ export class EmailEventTestUtils extends TestUtils {
   public async createMany(emailEvents: EmailEvent[]): Promise<EmailEventRawEntity[]> {
     const rawEntities = await this.databaseClient<EmailEventRawEntity>(emailEventsTable).insert(
       emailEvents.map((emailEvent) => ({
-        createdAt: emailEvent.getCreatedAt(),
+        created_at: emailEvent.getCreatedAt(),
         id: emailEvent.getId(),
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         payload: JSON.stringify(emailEvent.getPayload()) as any,
         status: emailEvent.getStatus(),
-        eventName: emailEvent.getEmailEventName(),
+        event_name: emailEvent.getEmailEventName(),
       })),
       '*',
     );

@@ -113,13 +113,13 @@ describe('FindBorrowingsQueryHandlerImpl', () => {
 
     const borrowing1 = await borrowingTestUtils.createAndPersist({
       input: {
-        userBookId: userBook.id,
+        user_book_id: userBook.id,
       },
     });
 
     const borrowing2 = await borrowingTestUtils.createAndPersist({
       input: {
-        userBookId: userBook.id,
+        user_book_id: userBook.id,
       },
     });
 
@@ -133,17 +133,17 @@ describe('FindBorrowingsQueryHandlerImpl', () => {
     expect(borrowings.length).toEqual(2);
 
     expect(borrowings[0]?.getState()).toEqual({
-      userBookId: borrowing1.userBookId,
+      userBookId: borrowing1.user_book_id,
       borrower: borrowing1.borrower,
-      startedAt: borrowing1.startedAt,
-      endedAt: borrowing1.endedAt,
+      startedAt: borrowing1.started_at,
+      endedAt: borrowing1.ended_at,
     });
 
     expect(borrowings[1]?.getState()).toEqual({
-      userBookId: borrowing2.userBookId,
+      userBookId: borrowing2.user_book_id,
       borrower: borrowing2.borrower,
-      startedAt: borrowing2.startedAt,
-      endedAt: borrowing2.endedAt,
+      startedAt: borrowing2.started_at,
+      endedAt: borrowing2.ended_at,
     });
 
     expect(total).toEqual(2);

@@ -81,13 +81,12 @@ describe('AuthorRepositoryImpl', () => {
 
   describe('Create', () => {
     it('creates a author', async () => {
-      const { name, isApproved, createdAt } = authorTestFactory.createRaw();
+      const { name, is_approved } = authorTestFactory.createRaw();
 
       const author = await authorRepository.saveAuthor({
         author: {
           name,
-          isApproved,
-          createdAt,
+          isApproved: is_approved,
         },
       });
 
@@ -97,13 +96,11 @@ describe('AuthorRepositoryImpl', () => {
 
       expect(author.getName()).toEqual(name);
 
-      expect(author.getIsApproved()).toEqual(isApproved);
+      expect(author.getIsApproved()).toEqual(is_approved);
 
       expect(foundAuthor?.name).toEqual(name);
 
-      expect(foundAuthor?.isApproved).toEqual(isApproved);
-
-      expect(foundAuthor?.createdAt).toEqual(createdAt);
+      expect(foundAuthor?.is_approved).toEqual(is_approved);
     });
 
     it('throws an error when author with the same name already exists', async () => {
@@ -113,8 +110,7 @@ describe('AuthorRepositoryImpl', () => {
         await authorRepository.saveAuthor({
           author: {
             name: existingAuthor.name,
-            isApproved: existingAuthor.isApproved,
-            createdAt: existingAuthor.createdAt,
+            isApproved: existingAuthor.is_approved,
           },
         });
       } catch (error) {
@@ -326,56 +322,6 @@ describe('AuthorRepositoryImpl', () => {
       });
     });
 
-    it('finds authors sorted by id ascending', async () => {
-      const author1 = await authorTestUtils.createAndPersist({
-        input: {
-          createdAt: new Date('2021-01-01'),
-        },
-      });
-
-      const author2 = await authorTestUtils.createAndPersist({
-        input: {
-          createdAt: new Date('2021-01-02'),
-        },
-      });
-
-      const author3 = await authorTestUtils.createAndPersist({
-        input: {
-          createdAt: new Date('2021-01-03'),
-        },
-      });
-
-      const foundAuthorsAsc = await authorRepository.findAuthors({
-        page: 1,
-        pageSize: 10,
-        sortField: 'createdAt',
-        sortOrder: 'asc',
-      });
-
-      expect(foundAuthorsAsc).toHaveLength(3);
-
-      expect(foundAuthorsAsc[0]?.getId()).toEqual(author1.id);
-
-      expect(foundAuthorsAsc[1]?.getId()).toEqual(author2.id);
-
-      expect(foundAuthorsAsc[2]?.getId()).toEqual(author3.id);
-
-      const foundAuthorsDesc = await authorRepository.findAuthors({
-        page: 1,
-        pageSize: 10,
-        sortField: 'createdAt',
-        sortOrder: 'desc',
-      });
-
-      expect(foundAuthorsDesc).toHaveLength(3);
-
-      expect(foundAuthorsDesc[0]?.getId()).toEqual(author3.id);
-
-      expect(foundAuthorsDesc[1]?.getId()).toEqual(author2.id);
-
-      expect(foundAuthorsDesc[2]?.getId()).toEqual(author1.id);
-    });
-
     it('finds authors sorted by name', async () => {
       const author1 = await authorTestUtils.createAndPersist({
         input: {
@@ -445,7 +391,7 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           authorIds: [author1.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -454,7 +400,7 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           authorIds: [author2.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -463,7 +409,7 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           authorIds: [author3.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -472,7 +418,7 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           authorIds: [author3.id, author4.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -497,36 +443,36 @@ describe('AuthorRepositoryImpl', () => {
 
       await userBookTestUtils.createAndPersist({
         input: {
-          bookshelfId: bookshelf1.id,
-          bookId: book1.id,
+          bookshelf_id: bookshelf1.id,
+          book_id: book1.id,
         },
       });
 
       await userBookTestUtils.createAndPersist({
         input: {
-          bookshelfId: bookshelf1.id,
-          bookId: book2.id,
+          bookshelf_id: bookshelf1.id,
+          book_id: book2.id,
         },
       });
 
       await userBookTestUtils.createAndPersist({
         input: {
-          bookshelfId: bookshelf2.id,
-          bookId: book2.id,
+          bookshelf_id: bookshelf2.id,
+          book_id: book2.id,
         },
       });
 
       await userBookTestUtils.createAndPersist({
         input: {
-          bookshelfId: bookshelf3.id,
-          bookId: book3.id,
+          bookshelf_id: bookshelf3.id,
+          book_id: book3.id,
         },
       });
 
       await userBookTestUtils.createAndPersist({
         input: {
-          bookshelfId: bookshelf3.id,
-          bookId: book4.id,
+          bookshelf_id: bookshelf3.id,
+          book_id: book4.id,
         },
       });
 
@@ -562,7 +508,7 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           authorIds: [author1.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -571,7 +517,7 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           authorIds: [author2.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -580,7 +526,7 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           authorIds: [author3.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -589,7 +535,7 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           authorIds: [author3.id, author4.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -614,36 +560,36 @@ describe('AuthorRepositoryImpl', () => {
 
       await userBookTestUtils.createAndPersist({
         input: {
-          bookshelfId: bookshelf1.id,
-          bookId: book1.id,
+          bookshelf_id: bookshelf1.id,
+          book_id: book1.id,
         },
       });
 
       await userBookTestUtils.createAndPersist({
         input: {
-          bookshelfId: bookshelf1.id,
-          bookId: book2.id,
+          bookshelf_id: bookshelf1.id,
+          book_id: book2.id,
         },
       });
 
       await userBookTestUtils.createAndPersist({
         input: {
-          bookshelfId: bookshelf2.id,
-          bookId: book2.id,
+          bookshelf_id: bookshelf2.id,
+          book_id: book2.id,
         },
       });
 
       await userBookTestUtils.createAndPersist({
         input: {
-          bookshelfId: bookshelf3.id,
-          bookId: book3.id,
+          bookshelf_id: bookshelf3.id,
+          book_id: book3.id,
         },
       });
 
       await userBookTestUtils.createAndPersist({
         input: {
-          bookshelfId: bookshelf3.id,
-          bookId: book4.id,
+          bookshelf_id: bookshelf3.id,
+          book_id: book4.id,
         },
       });
 
@@ -677,7 +623,7 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           authorIds: [author1.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -686,7 +632,7 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           authorIds: [author2.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -695,7 +641,7 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           authorIds: [author3.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -704,7 +650,7 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           authorIds: [author3.id, author4.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -729,36 +675,36 @@ describe('AuthorRepositoryImpl', () => {
 
       await userBookTestUtils.createAndPersist({
         input: {
-          bookshelfId: bookshelf1.id,
-          bookId: book1.id,
+          bookshelf_id: bookshelf1.id,
+          book_id: book1.id,
         },
       });
 
       await userBookTestUtils.createAndPersist({
         input: {
-          bookshelfId: bookshelf1.id,
-          bookId: book2.id,
+          bookshelf_id: bookshelf1.id,
+          book_id: book2.id,
         },
       });
 
       await userBookTestUtils.createAndPersist({
         input: {
-          bookshelfId: bookshelf2.id,
-          bookId: book2.id,
+          bookshelf_id: bookshelf2.id,
+          book_id: book2.id,
         },
       });
 
       await userBookTestUtils.createAndPersist({
         input: {
-          bookshelfId: bookshelf3.id,
-          bookId: book3.id,
+          bookshelf_id: bookshelf3.id,
+          book_id: book3.id,
         },
       });
 
       await userBookTestUtils.createAndPersist({
         input: {
-          bookshelfId: bookshelf3.id,
-          bookId: book4.id,
+          bookshelf_id: bookshelf3.id,
+          book_id: book4.id,
         },
       });
 
@@ -790,19 +736,19 @@ describe('AuthorRepositoryImpl', () => {
     it('finds authors by isApproved', async () => {
       const author1 = await authorTestUtils.createAndPersist({
         input: {
-          isApproved: true,
+          is_approved: true,
         },
       });
 
       await authorTestUtils.createAndPersist({
         input: {
-          isApproved: false,
+          is_approved: false,
         },
       });
 
       const author3 = await authorTestUtils.createAndPersist({
         input: {
-          isApproved: true,
+          is_approved: true,
         },
       });
 
@@ -868,19 +814,19 @@ describe('AuthorRepositoryImpl', () => {
     it('returns the number of Authors found by isApproved', async () => {
       await authorTestUtils.createAndPersist({
         input: {
-          isApproved: true,
+          is_approved: true,
         },
       });
 
       await authorTestUtils.createAndPersist({
         input: {
-          isApproved: false,
+          is_approved: false,
         },
       });
 
       await authorTestUtils.createAndPersist({
         input: {
-          isApproved: true,
+          is_approved: true,
         },
       });
 
@@ -910,7 +856,7 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           authorIds: [author1.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -919,7 +865,7 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           authorIds: [author2.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -928,7 +874,7 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           authorIds: [author3.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -937,7 +883,7 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           authorIds: [author3.id, author4.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -962,36 +908,36 @@ describe('AuthorRepositoryImpl', () => {
 
       await userBookTestUtils.createAndPersist({
         input: {
-          bookshelfId: bookshelf1.id,
-          bookId: book1.id,
+          bookshelf_id: bookshelf1.id,
+          book_id: book1.id,
         },
       });
 
       await userBookTestUtils.createAndPersist({
         input: {
-          bookshelfId: bookshelf1.id,
-          bookId: book2.id,
+          bookshelf_id: bookshelf1.id,
+          book_id: book2.id,
         },
       });
 
       await userBookTestUtils.createAndPersist({
         input: {
-          bookshelfId: bookshelf2.id,
-          bookId: book2.id,
+          bookshelf_id: bookshelf2.id,
+          book_id: book2.id,
         },
       });
 
       await userBookTestUtils.createAndPersist({
         input: {
-          bookshelfId: bookshelf3.id,
-          bookId: book3.id,
+          bookshelf_id: bookshelf3.id,
+          book_id: book3.id,
         },
       });
 
       await userBookTestUtils.createAndPersist({
         input: {
-          bookshelfId: bookshelf3.id,
-          bookId: book4.id,
+          bookshelf_id: bookshelf3.id,
+          book_id: book4.id,
         },
       });
 
@@ -1021,7 +967,7 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           authorIds: [author1.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -1030,7 +976,7 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           authorIds: [author2.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -1039,7 +985,7 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           authorIds: [author3.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -1048,7 +994,7 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           authorIds: [author3.id, author4.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -1073,36 +1019,36 @@ describe('AuthorRepositoryImpl', () => {
 
       await userBookTestUtils.createAndPersist({
         input: {
-          bookshelfId: bookshelf1.id,
-          bookId: book1.id,
+          bookshelf_id: bookshelf1.id,
+          book_id: book1.id,
         },
       });
 
       await userBookTestUtils.createAndPersist({
         input: {
-          bookshelfId: bookshelf1.id,
-          bookId: book2.id,
+          bookshelf_id: bookshelf1.id,
+          book_id: book2.id,
         },
       });
 
       await userBookTestUtils.createAndPersist({
         input: {
-          bookshelfId: bookshelf2.id,
-          bookId: book2.id,
+          bookshelf_id: bookshelf2.id,
+          book_id: book2.id,
         },
       });
 
       await userBookTestUtils.createAndPersist({
         input: {
-          bookshelfId: bookshelf3.id,
-          bookId: book3.id,
+          bookshelf_id: bookshelf3.id,
+          book_id: book3.id,
         },
       });
 
       await userBookTestUtils.createAndPersist({
         input: {
-          bookshelfId: bookshelf3.id,
-          bookId: book4.id,
+          bookshelf_id: bookshelf3.id,
+          book_id: book4.id,
         },
       });
 

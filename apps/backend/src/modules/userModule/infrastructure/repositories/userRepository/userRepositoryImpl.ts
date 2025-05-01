@@ -52,7 +52,7 @@ export class UserRepositoryImpl implements UserRepository {
           email,
           password,
           name,
-          isEmailVerified,
+          is_email_verified: isEmailVerified,
           role,
         },
         '*',
@@ -76,8 +76,18 @@ export class UserRepositoryImpl implements UserRepository {
     let rawEntities: UserRawEntity[] = [];
 
     try {
+      const { name, email, password, isEmailVerified } = user.getState();
+
       rawEntities = await this.databaseClient<UserRawEntity>(usersTable)
-        .update(user.getState(), '*')
+        .update(
+          {
+            is_email_verified: isEmailVerified,
+            email,
+            password,
+            name,
+          },
+          '*',
+        )
         .where({ id: user.getId() });
     } catch (error) {
       throw new RepositoryError({

@@ -5,7 +5,14 @@ import { Quote } from '../../../../domain/entities/quote/quote.js';
 import { type QuoteMapper } from './quoteMapper.js';
 
 export class QuoteMapperImpl implements QuoteMapper {
-  public mapToDomain({ id, userBookId, content, isFavorite, createdAt, page }: QuoteRawEntity): Quote {
+  public mapToDomain({
+    id,
+    user_book_id: userBookId,
+    page,
+    content,
+    is_favorite: isFavorite,
+    created_at: createdAt,
+  }: QuoteRawEntity): Quote {
     return new Quote({
       id,
       userBookId,
@@ -18,13 +25,13 @@ export class QuoteMapperImpl implements QuoteMapper {
 
   public mapRawEntityWithJoinsToDomain({
     id,
-    userBookId,
+    user_book_id: userBookId,
     content,
-    isFavorite,
-    createdAt,
+    is_favorite: isFavorite,
+    created_at: createdAt,
     page,
     authors,
-    bookTitle,
+    book_title: bookTitle,
   }: QuoteWithJoinsRawEntity): Quote {
     return new Quote({
       id,

@@ -21,10 +21,10 @@ export class BookshelfTestFactory {
     return {
       id: Generator.uuid(),
       name: Generator.words(3),
-      userId: Generator.uuid(),
+      user_id: Generator.uuid(),
       type: bookshelfTypes.standard,
-      createdAt: Generator.pastDate(),
-      imageUrl: Generator.imageUrl(),
+      created_at: Generator.pastDate(),
+      image_url: Generator.imageUrl(),
       ...input,
     };
   }

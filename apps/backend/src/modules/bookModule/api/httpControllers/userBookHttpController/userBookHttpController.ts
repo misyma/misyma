@@ -383,14 +383,12 @@ export class UserBookHttpController implements HttpController {
         categoryName: book?.category.getName() ?? '',
         language: book?.language as Language,
         isApproved: book?.isApproved as boolean,
-        createdAt: book?.createdAt.toISOString() as string,
         releaseYear: book?.releaseYear as number,
         authors:
           book?.authors.map((author) => ({
             id: author.getId(),
             name: author.getName(),
             isApproved: author.getIsApproved(),
-            createdAt: author.getCreatedAt().toISOString(),
           })) || [],
       },
       collections:

@@ -10,18 +10,17 @@ export class BookMapperImpl implements BookMapper {
   public mapRawToDomain(entity: BookRawEntity): Book {
     const {
       id,
-      categoryId,
+      category_id: categoryId,
       title,
       isbn,
       publisher,
-      releaseYear,
+      release_year: releaseYear,
       language,
       translator,
       format,
       pages,
-      isApproved,
-      imageUrl,
-      createdAt,
+      is_approved: isApproved,
+      image_url: imageUrl,
     } = entity;
 
     return new Book({
@@ -37,7 +36,6 @@ export class BookMapperImpl implements BookMapper {
       authors: [],
       isApproved,
       imageUrl,
-      createdAt,
       categoryId,
       category: new Category({
         id: categoryId,
@@ -50,23 +48,21 @@ export class BookMapperImpl implements BookMapper {
     return entities.map((entity) => {
       const {
         id: bookId,
-        categoryId,
-        categoryName,
+        category_id: categoryId,
+        category_name: categoryName,
         title,
         isbn,
         publisher,
-        releaseYear,
+        release_year: releaseYear,
         language,
         translator,
         format,
         pages,
-        isApproved,
-        authorIds,
-        authorNames,
-        authorApprovals,
-        authorCreatedAtDates,
-        imageUrl,
-        createdAt,
+        is_approved: isApproved,
+        image_url: imageUrl,
+        author_ids: authorIds,
+        author_names: authorNames,
+        author_approvals: authorApprovals,
       } = entity;
 
       const bookDraft: BookDraft = {
@@ -85,9 +81,8 @@ export class BookMapperImpl implements BookMapper {
         format: format ?? undefined,
         pages: pages ?? undefined,
         isApproved,
-        createdAt,
         authors:
-          authorIds && authorNames && authorApprovals && authorCreatedAtDates
+          authorIds && authorNames && authorApprovals
             ? authorIds
                 .filter((authorId) => authorId !== null)
                 .map((authorId, index) => {
@@ -95,7 +90,6 @@ export class BookMapperImpl implements BookMapper {
                     id: authorId,
                     name: authorNames[index] as string,
                     isApproved: authorApprovals[index] as boolean,
-                    createdAt: authorCreatedAtDates[index] as Date,
                   });
                 })
             : [],

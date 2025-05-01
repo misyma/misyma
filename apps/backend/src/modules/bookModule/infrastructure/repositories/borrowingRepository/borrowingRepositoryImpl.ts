@@ -54,19 +54,19 @@ export class BorrowingRepositoryImpl implements BorrowingRepository {
 
     try {
       const query = this.databaseClient<BorrowingRawEntity>(borrowingsTable)
-        .where({ userBookId })
+        .where({ user_book_id: userBookId })
         .limit(pageSize)
         .offset(pageSize * (page - 1));
 
       if (sortDate) {
-        query.orderBy('startedAt', sortDate);
+        query.orderBy('started_at', sortDate);
       }
 
       if (isOpen !== undefined) {
         if (isOpen) {
-          query.whereNull('endedAt');
+          query.whereNull('ended_at');
         } else {
-          query.whereNotNull('endedAt');
+          query.whereNotNull('started_at');
         }
       }
 
@@ -91,10 +91,10 @@ export class BorrowingRepositoryImpl implements BorrowingRepository {
       const result = await this.databaseClient<BorrowingRawEntity>(borrowingsTable).insert(
         {
           id: this.uuidService.generateUuid(),
-          userBookId: borrowing.userBookId,
+          user_book_id: borrowing.userBookId,
           borrower: borrowing.borrower,
-          startedAt: borrowing.startedAt,
-          endedAt: borrowing.endedAt,
+          started_at: borrowing.startedAt,
+          ended_at: borrowing.endedAt,
         },
         '*',
       );
@@ -117,9 +117,10 @@ export class BorrowingRepositoryImpl implements BorrowingRepository {
     let rawEntity: BorrowingRawEntity;
 
     try {
+      const { borrower, startedAt, endedAt } = borrowing.getState();
       const result = await this.databaseClient<BorrowingRawEntity>(borrowingsTable)
         .where({ id: borrowing.getId() })
-        .update(borrowing.getState(), '*');
+        .update({ borrower, started_at: startedAt, ended_at: endedAt }, '*');
 
       rawEntity = result[0] as BorrowingRawEntity;
     } catch (error) {
@@ -162,7 +163,7 @@ export class BorrowingRepositoryImpl implements BorrowingRepository {
 
     try {
       const countResult = await this.databaseClient<BorrowingRawEntity>(borrowingsTable)
-        .where({ userBookId })
+        .where({ user_book_id: userBookId })
         .count()
         .first();
 

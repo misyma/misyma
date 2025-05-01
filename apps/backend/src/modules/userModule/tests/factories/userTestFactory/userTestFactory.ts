@@ -21,7 +21,7 @@ export class UserTestFactory {
       email: Generator.email(),
       password: Generator.password(),
       name: Generator.fullName(),
-      isEmailVerified: Generator.boolean(),
+      is_email_verified: Generator.boolean(),
       role: Generator.userRole(),
       ...input,
     };

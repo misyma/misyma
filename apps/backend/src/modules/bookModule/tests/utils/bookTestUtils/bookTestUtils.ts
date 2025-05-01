@@ -48,8 +48,8 @@ export class BookTestUtils extends TestUtils {
         await transaction.batchInsert<BookAuthorRawEntity>(
           booksAuthorsTable,
           input.authorIds.map((authorId) => ({
-            bookId: book.id,
-            authorId,
+            book_id: book.id,
+            author_id: authorId,
           })),
         );
       }
@@ -64,7 +64,7 @@ export class BookTestUtils extends TestUtils {
     const { bookId } = payload;
 
     const rawEntities = await this.databaseClient<BookAuthorRawEntity>(booksAuthorsTable).select('*').where({
-      bookId,
+      book_id: bookId,
     });
 
     return rawEntities;
@@ -91,18 +91,17 @@ export class BookTestUtils extends TestUtils {
         `${booksTable}.title`,
         `${booksTable}.isbn`,
         `${booksTable}.publisher`,
-        `${booksTable}.releaseYear`,
+        `${booksTable}.release_year`,
         `${booksTable}.language`,
         `${booksTable}.translator`,
         `${booksTable}.format`,
         `${booksTable}.pages`,
-        `${booksTable}.isApproved`,
-        `${booksTable}.imageUrl`,
-        `${booksTable}.createdAt`,
+        `${booksTable}.is_approved`,
+        `${booksTable}.image_url`,
       ])
       .join(booksAuthorsTable, (join) => {
         if (authorId) {
-          join.onIn(`${booksAuthorsTable}.authorId`, this.databaseClient.raw('?', [authorId]));
+          join.onIn(`${booksAuthorsTable}.author_id`, this.databaseClient.raw('?', [authorId]));
         }
       })
       .where({ title })

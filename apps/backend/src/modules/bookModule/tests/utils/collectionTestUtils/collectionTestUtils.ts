@@ -5,7 +5,7 @@ import { type DatabaseClient } from '../../../../databaseModule/types/databaseCl
 import { CollectionTestFactory } from '../../factories/collectionTestFactory/collectionTestFactory.js';
 
 interface CreateAndPersistPayload {
-  readonly input?: Partial<CollectionRawEntity>;
+  readonly input?: Partial<CollectionRawEntity> & { readonly user_id: string };
 }
 
 export class CollectionTestUtils extends TestUtils {

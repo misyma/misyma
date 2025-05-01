@@ -5,7 +5,7 @@ import { type DatabaseClient } from '../../../../databaseModule/types/databaseCl
 import { BorrowingTestFactory } from '../../factories/borrowingTestFactory/borrowingTestFactory.js';
 
 interface CreateAndPersistPayload {
-  readonly input?: Partial<BorrowingRawEntity> & { readonly userBookId: string };
+  readonly input?: Partial<BorrowingRawEntity> & { readonly user_book_id: string };
 }
 
 interface FindByIdPayload {
@@ -27,10 +27,10 @@ export class BorrowingTestUtils extends TestUtils {
     const rawEntities = await this.databaseClient<BorrowingRawEntity>(borrowingsTable).insert(
       {
         id: borrowing.getId(),
-        userBookId: borrowing.getUserBookId(),
+        user_book_id: borrowing.getUserBookId(),
         borrower: borrowing.getBorrower(),
-        startedAt: borrowing.getStartedAt(),
-        endedAt: borrowing.getEndedAt(),
+        started_at: borrowing.getStartedAt(),
+        ended_at: borrowing.getEndedAt(),
       },
       '*',
     );

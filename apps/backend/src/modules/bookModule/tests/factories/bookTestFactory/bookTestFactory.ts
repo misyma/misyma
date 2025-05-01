@@ -23,7 +23,6 @@ export class BookTestFactory {
       releaseYear: Generator.number(1970, 2024),
       isApproved: Generator.boolean(),
       imageUrl: Generator.imageUrl(),
-      createdAt: Generator.pastDate(),
       authors: [],
       ...input,
     });
@@ -32,7 +31,7 @@ export class BookTestFactory {
   public createRaw(input: Partial<BookRawEntity> = {}): BookRawEntity {
     return {
       id: Generator.uuid(),
-      categoryId: Generator.uuid(),
+      category_id: Generator.uuid(),
       title: Generator.title(),
       isbn: Generator.isbn(),
       publisher: Generator.publisher(),
@@ -40,10 +39,9 @@ export class BookTestFactory {
       translator: Generator.fullName(),
       format: Generator.bookFormat(),
       pages: Generator.number(100, 1000),
-      releaseYear: Generator.number(1970, 2024),
-      isApproved: Generator.boolean(),
-      imageUrl: Generator.imageUrl(),
-      createdAt: Generator.pastDate(),
+      release_year: Generator.number(1970, 2024),
+      is_approved: Generator.boolean(),
+      image_url: Generator.imageUrl(),
       ...input,
     };
   }

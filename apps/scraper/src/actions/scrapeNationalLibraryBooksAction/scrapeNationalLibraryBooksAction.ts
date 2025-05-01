@@ -48,7 +48,7 @@ export class ScrapeNationalLibraryBooksAction {
         .map((book) => this.bnMapper.mapBook(book))
         .filter((book) => book !== undefined);
 
-      const authorNames = bookDrafts.flatMap((bookDraft) => bookDraft.authorNames);
+      const authorNames = bookDrafts.flatMap((bookDraft) => bookDraft.author_names);
 
       const uniqueAuthorNames = Array.from(new Set(authorNames));
 
@@ -64,7 +64,7 @@ export class ScrapeNationalLibraryBooksAction {
 
       await Promise.all(
         bookDrafts.map(async (bookDraft) => {
-          const authorIds = bookDraft.authorNames.map((authorName) => {
+          const authorIds = bookDraft.author_names.map((authorName) => {
             const author = authorsMapping.get(authorName);
 
             if (!author) {
@@ -117,14 +117,14 @@ export class ScrapeNationalLibraryBooksAction {
       title: bookDraft.title,
       isbn: bookDraft.isbn,
       publisher: bookDraft.publisher,
-      isApproved: true,
+      is_approved: true,
       language: bookDraft.language,
-      imageUrl: bookDraft.imageUrl,
-      releaseYear: bookDraft.releaseYear,
+      image_url: bookDraft.image_url,
+      release_year: bookDraft.release_year,
       translator: bookDraft.translator,
       pages: bookDraft.pages,
-      authorIds,
-      categoryId: bookDraft.categoryId,
+      author_ids: authorIds,
+      category_id: bookDraft.category_id,
     });
   }
 }

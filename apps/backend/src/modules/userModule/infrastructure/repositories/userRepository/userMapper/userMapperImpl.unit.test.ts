@@ -24,7 +24,7 @@ describe('UserMapperImpl', () => {
       email: userEntity.email,
       password: userEntity.password,
       name: userEntity.name,
-      isEmailVerified: userEntity.isEmailVerified,
+      isEmailVerified: userEntity.is_email_verified,
       role: userEntity.role,
     });
   });

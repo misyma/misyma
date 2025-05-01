@@ -5,7 +5,7 @@ export interface NationalLibraryResponseBody {
 
 export interface NationalLibraryBook {
   title: string;
-  category?: string;
+  genre?: string;
   marc: Marc;
 }
 

@@ -51,7 +51,6 @@ export const bookDtoSchema = Type.Object({
   pages: Type.Optional(bookPagesSchema),
   isApproved: Type.Boolean(),
   imageUrl: Type.Optional(bookImageUrlSchema),
-  createdAt: Type.String({ format: 'date-time' }),
   authors: Type.Array(authorDtoSchema),
 });
 

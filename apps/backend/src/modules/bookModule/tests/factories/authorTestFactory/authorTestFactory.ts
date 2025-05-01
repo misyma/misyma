@@ -7,8 +7,7 @@ export class AuthorTestFactory {
     return {
       id: Generator.uuid(),
       name: Generator.author(),
-      isApproved: Generator.boolean(),
-      createdAt: Generator.pastDate(),
+      is_approved: Generator.boolean(),
       ...input,
     };
   }
@@ -18,7 +17,6 @@ export class AuthorTestFactory {
       id: Generator.uuid(),
       name: Generator.author(),
       isApproved: Generator.boolean(),
-      createdAt: Generator.pastDate(),
       ...input,
     });
   }

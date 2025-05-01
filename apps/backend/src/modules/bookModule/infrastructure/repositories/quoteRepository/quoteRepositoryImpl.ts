@@ -64,36 +64,36 @@ export class QuoteRepositoryImpl implements QuoteRepository {
         .select([
           `${quotesTable}.*`,
           this.databaseClient.raw(`array_agg(DISTINCT "${authorsTable}"."name") as "authors"`),
-          `${booksTable}.title as bookTitle`,
+          `${booksTable}.title as book_title`,
         ])
         .leftJoin(usersBooksTable, (join) => {
-          join.on(`${usersBooksTable}.id`, `=`, `${quotesTable}.userBookId`);
+          join.on(`${usersBooksTable}.id`, `=`, `${quotesTable}.user_book_id`);
         })
         .leftJoin(booksAuthorsTable, (join) => {
-          join.on(`${booksAuthorsTable}.bookId`, '=', `${usersBooksTable}.bookId`);
+          join.on(`${booksAuthorsTable}.book_id`, '=', `${usersBooksTable}.book_id`);
         })
         .leftJoin(authorsTable, (join) => {
-          join.on(`${authorsTable}.id`, '=', `${booksAuthorsTable}.authorId`);
+          join.on(`${authorsTable}.id`, '=', `${booksAuthorsTable}.author_id`);
         })
         .leftJoin(booksTable, (join) => {
-          join.on(`${booksTable}.id`, `=`, `${usersBooksTable}.bookId`);
+          join.on(`${booksTable}.id`, `=`, `${usersBooksTable}.book_id`);
         })
         .leftJoin(bookshelvesTable, (join) => {
-          join.on(`${bookshelvesTable}.id`, `=`, `${usersBooksTable}.bookshelfId`);
+          join.on(`${bookshelvesTable}.id`, `=`, `${usersBooksTable}.bookshelf_id`);
         });
 
       if (authorId) {
         query.where(`${authorsTable}.id`, authorId);
       }
 
-      query.where(`${bookshelvesTable}.userId`, userId);
+      query.where(`${bookshelvesTable}.user_id`, userId);
 
       if (userBookId) {
-        query.where(`${quotesTable}.userBookId`, userBookId);
+        query.where(`${quotesTable}.user_book_id`, userBookId);
       }
 
       if (isFavorite !== undefined) {
-        query.where(`${quotesTable}.isFavorite`, isFavorite);
+        query.where(`${quotesTable}.is_favorite`, isFavorite);
       }
 
       query.groupBy([`${quotesTable}.id`, `${booksTable}.id`]);
@@ -121,10 +121,10 @@ export class QuoteRepositoryImpl implements QuoteRepository {
       const result = await this.databaseClient<QuoteRawEntity>(quotesTable).insert(
         {
           id: this.uuidService.generateUuid(),
-          userBookId: quote.userBookId,
+          user_book_id: quote.userBookId,
           content: quote.content,
-          createdAt: quote.createdAt,
-          isFavorite: quote.isFavorite,
+          created_at: quote.createdAt,
+          is_favorite: quote.isFavorite,
           page: quote.page,
         },
         '*',
@@ -148,9 +148,10 @@ export class QuoteRepositoryImpl implements QuoteRepository {
     let rawEntity: QuoteRawEntity;
 
     try {
+      const { content, isFavorite, page } = quote.getState();
       const result = await this.databaseClient<QuoteRawEntity>(quotesTable)
         .where({ id: quote.getId() })
-        .update(quote.getState(), '*');
+        .update({ content, is_favorite: isFavorite, page }, '*');
 
       rawEntity = result[0] as QuoteRawEntity;
     } catch (error) {
@@ -194,31 +195,31 @@ export class QuoteRepositoryImpl implements QuoteRepository {
     try {
       const query = this.databaseClient<QuoteRawEntity>(quotesTable)
         .leftJoin(usersBooksTable, (join) => {
-          join.on(`${usersBooksTable}.id`, `=`, `${quotesTable}.userBookId`);
+          join.on(`${usersBooksTable}.id`, `=`, `${quotesTable}.user_book_id`);
         })
         .leftJoin(bookshelvesTable, (join) => {
-          join.on(`${bookshelvesTable}.id`, `=`, `${usersBooksTable}.bookshelfId`);
+          join.on(`${bookshelvesTable}.id`, `=`, `${usersBooksTable}.bookshelf_id`);
         });
 
       if (authorId) {
         query
           .leftJoin(booksAuthorsTable, (join) => {
-            join.on(`${booksAuthorsTable}.bookId`, `=`, `${usersBooksTable}.bookId`);
+            join.on(`${booksAuthorsTable}.book_id`, `=`, `${usersBooksTable}.book_id`);
           })
           .leftJoin(authorsTable, (join) => {
-            join.on(`${authorsTable}.id`, `=`, `${booksAuthorsTable}.authorId`);
+            join.on(`${authorsTable}.id`, `=`, `${booksAuthorsTable}.author_id`);
           })
           .where(`${authorsTable}.id`, authorId);
       }
 
-      query.where(`${bookshelvesTable}.userId`, userId);
+      query.where(`${bookshelvesTable}.user_id`, userId);
 
       if (userBookId) {
-        query.where(`${quotesTable}.userBookId`, userBookId);
+        query.where(`${quotesTable}.user_book_id`, userBookId);
       }
 
       if (isFavorite !== undefined) {
-        query.where(`${quotesTable}.isFavorite`, isFavorite);
+        query.where(`${quotesTable}.is_favorite`, isFavorite);
       }
 
       const countResult = await query.count().first();

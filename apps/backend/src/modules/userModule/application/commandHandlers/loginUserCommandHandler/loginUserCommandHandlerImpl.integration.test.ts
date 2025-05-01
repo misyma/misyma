@@ -67,7 +67,7 @@ describe('LoginUserCommandHandler', () => {
         email: createdUser.getEmail(),
         password: hashedPassword,
         name: createdUser.getName(),
-        isEmailVerified: createdUser.getIsEmailVerified(),
+        is_email_verified: createdUser.getIsEmailVerified(),
         role: createdUser.getRole(),
       },
     });
@@ -101,7 +101,7 @@ describe('LoginUserCommandHandler', () => {
         email: createdUser.getEmail(),
         password: hashedPassword,
         name: createdUser.getName(),
-        isEmailVerified: false,
+        is_email_verified: false,
         role: createdUser.getRole(),
       },
     });
@@ -148,7 +148,7 @@ describe('LoginUserCommandHandler', () => {
   });
 
   it(`throws an error if User's password does not match stored password`, async () => {
-    const { email, password } = await userTestUtils.createAndPersist({ input: { isEmailVerified: true } });
+    const { email, password } = await userTestUtils.createAndPersist({ input: { is_email_verified: true } });
 
     try {
       await loginUserCommandHandler.execute({

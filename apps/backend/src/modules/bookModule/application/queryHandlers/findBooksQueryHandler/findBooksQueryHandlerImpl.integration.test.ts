@@ -62,8 +62,8 @@ describe('FindBooksQueryHandler', () => {
       input: {
         authorIds: [author.id],
         book: {
-          isApproved: true,
-          categoryId: category.id,
+          is_approved: true,
+          category_id: category.id,
         },
       },
     });
@@ -89,8 +89,8 @@ describe('FindBooksQueryHandler', () => {
       input: {
         authorIds: [author.id],
         book: {
-          categoryId: category.id,
-          isApproved: true,
+          category_id: category.id,
+          is_approved: true,
         },
       },
     });
@@ -117,8 +117,8 @@ describe('FindBooksQueryHandler', () => {
       input: {
         authorIds: [author.id],
         book: {
-          isApproved: true,
-          categoryId: category.id,
+          is_approved: true,
+          category_id: category.id,
           title: 'Game of Thrones',
         },
       },
@@ -146,8 +146,8 @@ describe('FindBooksQueryHandler', () => {
       input: {
         authorIds: [author.id],
         book: {
-          categoryId: category.id,
-          isApproved: false,
+          category_id: category.id,
+          is_approved: false,
         },
       },
     });

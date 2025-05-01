@@ -49,8 +49,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
         {
           id: this.uuidService.generateUuid(),
           name: author.name,
-          isApproved: author.isApproved,
-          createdAt: author.createdAt,
+          is_approved: author.isApproved,
         },
         '*',
       );
@@ -73,9 +72,11 @@ export class AuthorRepositoryImpl implements AuthorRepository {
     let rawEntity: AuthorRawEntity;
 
     try {
+      const { name, isApproved } = author.getState();
+
       const result = await this.databaseClient<AuthorRawEntity>(authorsTable)
         .where({ id: author.getId() })
-        .update(author.getState(), '*');
+        .update({ name, is_approved: isApproved }, '*');
 
       rawEntity = result[0] as AuthorRawEntity;
     } catch (error) {
@@ -134,28 +135,23 @@ export class AuthorRepositoryImpl implements AuthorRepository {
 
     try {
       const query = this.databaseClient(authorsTable)
-        .select([
-          `${authorsTable}.id`,
-          `${authorsTable}.name`,
-          `${authorsTable}.isApproved`,
-          `${authorsTable}.createdAt`,
-        ])
+        .select([`${authorsTable}.id`, `${authorsTable}.name`, `${authorsTable}.is_approved`])
         .distinct();
 
       if (userId || bookshelfId) {
         query
           .leftJoin(booksAuthorsTable, (join) => {
-            join.on(`${booksAuthorsTable}.authorId`, '=', `${authorsTable}.id`);
+            join.on(`${booksAuthorsTable}.author_id`, '=', `${authorsTable}.id`);
           })
           .leftJoin(usersBooksTable, (join) => {
-            join.on(`${usersBooksTable}.bookId`, '=', `${booksAuthorsTable}.bookId`);
+            join.on(`${usersBooksTable}.book_id`, '=', `${booksAuthorsTable}.book_id`);
           })
           .leftJoin(bookshelvesTable, (join) => {
-            join.on(`${bookshelvesTable}.id`, '=', `${usersBooksTable}.bookshelfId`);
+            join.on(`${bookshelvesTable}.id`, '=', `${usersBooksTable}.bookshelf_id`);
           });
 
         if (userId) {
-          query.where(`${bookshelvesTable}.userId`, userId);
+          query.where(`${bookshelvesTable}.user_id`, userId);
         }
 
         if (bookshelfId) {
@@ -216,17 +212,17 @@ export class AuthorRepositoryImpl implements AuthorRepository {
       if (userId || bookshelfId) {
         query
           .leftJoin(booksAuthorsTable, (join) => {
-            join.on(`${booksAuthorsTable}.authorId`, '=', `${authorsTable}.id`);
+            join.on(`${booksAuthorsTable}.author_id`, '=', `${authorsTable}.id`);
           })
           .leftJoin(usersBooksTable, (join) => {
-            join.on(`${usersBooksTable}.bookId`, '=', `${booksAuthorsTable}.bookId`);
+            join.on(`${usersBooksTable}.book_id`, '=', `${booksAuthorsTable}.book_id`);
           })
           .leftJoin(bookshelvesTable, (join) => {
-            join.on(`${bookshelvesTable}.id`, '=', `${usersBooksTable}.bookshelfId`);
+            join.on(`${bookshelvesTable}.id`, '=', `${usersBooksTable}.bookshelf_id`);
           });
 
         if (userId) {
-          query.where(`${bookshelvesTable}.userId`, userId);
+          query.where(`${bookshelvesTable}.user_id`, userId);
         }
 
         if (bookshelfId) {
@@ -243,7 +239,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
       }
 
       if (isApproved !== undefined) {
-        query.where({ isApproved });
+        query.where({ is_approved: isApproved });
       }
 
       const countResult = (await query.countDistinct(`${authorsTable}.id as count`).first()) as

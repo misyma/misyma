@@ -52,8 +52,8 @@ import { EmailMessageBusImpl } from './infrastructure/messageBuses/emailMessageB
 import { type BlacklistTokenMapper } from './infrastructure/repositories/blacklistTokenRepository/blacklistTokenMapper/blacklistTokenMapper.js';
 import { BlacklistTokenMapperImpl } from './infrastructure/repositories/blacklistTokenRepository/blacklistTokenMapper/blacklistTokenMapperImpl.js';
 import { BlacklistTokenRepositoryImpl } from './infrastructure/repositories/blacklistTokenRepository/blacklistTokenRepositoryImpl.js';
+import { EmailEventMapper } from './infrastructure/repositories/emailEventRepository/emailEventMapper/emailEventMapper.js';
 import { EmailEventRepositoryImpl } from './infrastructure/repositories/emailEventRepository/emailEventRepositoryImpl.js';
-import { EmailEventMapper } from './infrastructure/repositories/emailEventRepository/mappers/emailEventMapper/emailEventMapper.js';
 import { type UserMapper } from './infrastructure/repositories/userRepository/userMapper/userMapper.js';
 import { UserMapperImpl } from './infrastructure/repositories/userRepository/userMapper/userMapperImpl.js';
 import { UserRepositoryImpl } from './infrastructure/repositories/userRepository/userRepositoryImpl.js';

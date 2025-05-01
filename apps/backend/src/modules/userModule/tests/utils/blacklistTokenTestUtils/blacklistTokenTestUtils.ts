@@ -32,7 +32,7 @@ export class BlacklistTokenTestUtils extends TestUtils {
       {
         id: blacklistToken.getId(),
         token: blacklistToken.getToken(),
-        expiresAt: blacklistToken.getExpiresAt(),
+        expires_at: blacklistToken.getExpiresAt(),
       },
       '*',
     );

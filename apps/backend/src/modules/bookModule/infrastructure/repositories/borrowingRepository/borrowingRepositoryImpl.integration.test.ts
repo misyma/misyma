@@ -95,7 +95,7 @@ describe('BorrowingRepositoryImpl', () => {
 
       const borrowing = await borrowingTestUtils.createAndPersist({
         input: {
-          userBookId: userBook.id,
+          user_book_id: userBook.id,
         },
       });
 
@@ -108,8 +108,8 @@ describe('BorrowingRepositoryImpl', () => {
       expect(result?.getState()).toEqual({
         userBookId: userBook.id,
         borrower: borrowing.borrower,
-        startedAt: borrowing.startedAt,
-        endedAt: borrowing.endedAt,
+        startedAt: borrowing.started_at,
+        endedAt: borrowing.ended_at,
       });
     });
   });
@@ -132,13 +132,13 @@ describe('BorrowingRepositoryImpl', () => {
 
       const borrowing1 = await borrowingTestUtils.createAndPersist({
         input: {
-          userBookId: userBook.id,
+          user_book_id: userBook.id,
         },
       });
 
       const borrowing2 = await borrowingTestUtils.createAndPersist({
         input: {
-          userBookId: userBook.id,
+          user_book_id: userBook.id,
         },
       });
 
@@ -164,13 +164,13 @@ describe('BorrowingRepositoryImpl', () => {
 
       const borrowing1 = await borrowingTestUtils.createAndPersist({
         input: {
-          userBookId: userBook.id,
+          user_book_id: userBook.id,
         },
       });
 
       await borrowingTestUtils.createAndPersist({
         input: {
-          userBookId: userBook.id,
+          user_book_id: userBook.id,
         },
       });
 
@@ -190,15 +190,15 @@ describe('BorrowingRepositoryImpl', () => {
 
       const borrowing1 = await borrowingTestUtils.createAndPersist({
         input: {
-          userBookId: userBook.id,
-          startedAt: new Date('2021-01-01'),
+          user_book_id: userBook.id,
+          started_at: new Date('2021-01-01'),
         },
       });
 
       const borrowing2 = await borrowingTestUtils.createAndPersist({
         input: {
-          userBookId: userBook.id,
-          startedAt: new Date('2021-01-02'),
+          user_book_id: userBook.id,
+          started_at: new Date('2021-01-02'),
         },
       });
 
@@ -221,15 +221,15 @@ describe('BorrowingRepositoryImpl', () => {
 
       const borrowing1 = await borrowingTestUtils.createAndPersist({
         input: {
-          userBookId: userBook.id,
-          endedAt: undefined,
+          user_book_id: userBook.id,
+          ended_at: undefined,
         },
       });
 
       await borrowingTestUtils.createAndPersist({
         input: {
-          userBookId: userBook.id,
-          endedAt: new Date(),
+          user_book_id: userBook.id,
+          ended_at: new Date(),
         },
       });
 
@@ -250,15 +250,15 @@ describe('BorrowingRepositoryImpl', () => {
 
       await borrowingTestUtils.createAndPersist({
         input: {
-          userBookId: userBook.id,
-          endedAt: undefined,
+          user_book_id: userBook.id,
+          ended_at: undefined,
         },
       });
 
       const borrowing1 = await borrowingTestUtils.createAndPersist({
         input: {
-          userBookId: userBook.id,
-          endedAt: new Date(),
+          user_book_id: userBook.id,
+          ended_at: new Date(),
         },
       });
 
@@ -299,11 +299,17 @@ describe('BorrowingRepositoryImpl', () => {
 
       const borrowingRawEntity = await borrowingTestUtils.createAndPersist({
         input: {
-          userBookId: userBook.id,
+          user_book_id: userBook.id,
         },
       });
 
-      const borrowing = new Borrowing(borrowingRawEntity);
+      const borrowing = new Borrowing({
+        id: borrowingRawEntity.id,
+        userBookId: userBook.id,
+        borrower: borrowingRawEntity.borrower,
+        startedAt: borrowingRawEntity.started_at,
+        endedAt: borrowingRawEntity.ended_at,
+      });
 
       const newBorrower = Generator.alphaString(20);
 
@@ -347,25 +353,13 @@ describe('BorrowingRepositoryImpl', () => {
 
       const borrowingRawEntity = await borrowingTestUtils.createAndPersist({
         input: {
-          userBookId: userBook.id,
+          user_book_id: userBook.id,
         },
       });
 
-      const borrowing = new Borrowing({
-        id: borrowingRawEntity.id,
-        userBookId: userBook.id,
-        borrower: borrowingRawEntity.borrower,
-        startedAt: borrowingRawEntity.startedAt,
-        endedAt: borrowingRawEntity.endedAt,
-      });
+      await repository.deleteBorrowing({ id: borrowingRawEntity.id });
 
-      await repository.deleteBorrowing({
-        id: borrowing.getId(),
-      });
-
-      const result = await repository.findBorrowing({
-        id: borrowing.getId(),
-      });
+      const result = await repository.findBorrowing({ id: borrowingRawEntity.id });
 
       expect(result).toBeNull();
     });

@@ -46,7 +46,7 @@ describe('SendVerificationEmailCommandHandler', () => {
   it('sends verification email', async () => {
     const user = await userTestUtils.createAndPersist({
       input: {
-        isEmailVerified: false,
+        is_email_verified: false,
       },
     });
 
@@ -88,7 +88,7 @@ describe('SendVerificationEmailCommandHandler', () => {
   it('throws an error - when user is already verified', async () => {
     const user = await userTestUtils.createAndPersist({
       input: {
-        isEmailVerified: true,
+        is_email_verified: true,
       },
     });
 

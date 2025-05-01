@@ -5,7 +5,7 @@ import { type DatabaseClient } from '../../../../databaseModule/types/databaseCl
 import { BookReadingTestFactory } from '../../factories/bookReadingTestFactory/bookReadingTestFactory.js';
 
 interface CreateAndPersistPayload {
-  readonly input?: Partial<BookReadingRawEntity> & { readonly userBookId: string };
+  readonly input?: Partial<BookReadingRawEntity> & { readonly user_book_id: string };
 }
 
 interface FindByIdPayload {
@@ -27,11 +27,11 @@ export class BookReadingTestUtils extends TestUtils {
     const rawEntities = await this.databaseClient<BookReadingRawEntity>(booksReadingsTable).insert(
       {
         id: bookReading.getId(),
-        userBookId: bookReading.getUserBookId(),
+        user_book_id: bookReading.getUserBookId(),
         rating: bookReading.getRating(),
         comment: bookReading.getComment(),
-        startedAt: bookReading.getStartedAt(),
-        endedAt: bookReading.getEndedAt(),
+        started_at: bookReading.getStartedAt(),
+        ended_at: bookReading.getEndedAt(),
       },
       '*',
     );

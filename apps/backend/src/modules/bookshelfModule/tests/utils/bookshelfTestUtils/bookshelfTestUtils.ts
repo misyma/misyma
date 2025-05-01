@@ -5,7 +5,7 @@ import { type DatabaseClient } from '../../../../databaseModule/types/databaseCl
 import { BookshelfTestFactory } from '../../factories/bookshelfTestFactory/bookshelfTestFactory.js';
 
 export interface CreateAndPersistBookshelfPayload {
-  readonly input?: Partial<BookshelfRawEntity> & { readonly userId: string };
+  readonly input?: Partial<BookshelfRawEntity> & { readonly user_id: string };
 }
 
 interface FindByIdPayload {
@@ -32,10 +32,10 @@ export class BookshelfTestUtils extends TestUtils {
       {
         id: bookshelf.getId(),
         name: bookshelf.getName(),
-        userId: bookshelf.getUserId(),
+        user_id: bookshelf.getUserId(),
         type: bookshelf.getType(),
-        createdAt: bookshelf.getCreatedAt(),
-        imageUrl: bookshelf.getImageUrl(),
+        created_at: bookshelf.getCreatedAt(),
+        image_url: bookshelf.getImageUrl(),
       },
       '*',
     );
@@ -60,7 +60,7 @@ export class BookshelfTestUtils extends TestUtils {
   public async findByUserId(payload: FindByUserIdPayload): Promise<BookshelfRawEntity[]> {
     const { userId } = payload;
 
-    const rawEntities = await this.databaseClient<BookshelfRawEntity>(bookshelvesTable).where({ userId });
+    const rawEntities = await this.databaseClient<BookshelfRawEntity>(bookshelvesTable).where({ user_id: userId });
 
     return rawEntities;
   }

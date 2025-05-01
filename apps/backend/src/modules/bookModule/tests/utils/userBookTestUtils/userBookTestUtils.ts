@@ -8,7 +8,7 @@ import { type Transaction } from '../../../../databaseModule/types/transaction.j
 import { UserBookTestFactory } from '../../factories/userBookTestFactory/userBookTestFactory.js';
 
 export interface CreateAndPersistUserBookPayload {
-  readonly input?: Partial<UserBookRawEntity> & Pick<UserBookRawEntity, 'bookId' | 'bookshelfId'>;
+  readonly input?: Partial<UserBookRawEntity> & Pick<UserBookRawEntity, 'book_id' | 'bookshelf_id'>;
   readonly collectionIds?: string[];
 }
 
@@ -41,8 +41,8 @@ export class UserBookTestUtils extends TestUtils {
         await transaction.batchInsert<UserBookCollectionRawEntity>(
           usersBooksCollectionsTable,
           collectionIds.map((collectionId) => ({
-            collectionId,
-            userBookId: userBook.id,
+            collection_id: collectionId,
+            user_book_id: userBook.id,
           })),
         );
       }

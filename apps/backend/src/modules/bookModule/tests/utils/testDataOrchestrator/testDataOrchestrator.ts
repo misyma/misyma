@@ -44,7 +44,7 @@ export class TestDataOrchestrator {
       input: {
         authorIds: payload.book?.authorIds,
         book: {
-          categoryId: category.id,
+          category_id: category.id,
           id: payload.book?.book?.id ?? Generator.uuid(),
           ...payload.book?.book,
         },
@@ -53,8 +53,8 @@ export class TestDataOrchestrator {
 
     return await this.userBookTestUtils.createAndPersist({
       input: {
-        bookId: book.id,
-        bookshelfId: bookshelf.id,
+        book_id: book.id,
+        bookshelf_id: bookshelf.id,
         ...payload.userBook?.input,
       },
       collectionIds: payload.userBook?.collectionIds ? payload.userBook.collectionIds : [],
@@ -76,7 +76,7 @@ export class TestDataOrchestrator {
       input: {
         authorIds: [authorId],
         book: {
-          categoryId: category.id,
+          category_id: category.id,
           title: title ?? Generator.title(),
         },
       },
@@ -98,7 +98,7 @@ export class TestDataOrchestrator {
     const createBookshelfCb = async (): Promise<BookshelfRawEntity> =>
       await this.bookshelfTestUtils.createAndPersist({
         input: {
-          userId: this.userId,
+          user_id: this.userId,
           ...vals?.input,
         },
       });

@@ -5,7 +5,7 @@ import { type DatabaseClient } from '../../../../databaseModule/types/databaseCl
 import { QuoteTestFactory } from '../../factories/quoteTestFactory/quoteTestFactory.js';
 
 interface CreateAndPersistPayload {
-  readonly input?: Partial<QuoteRawEntity> & { readonly userBookId: string };
+  readonly input?: Partial<QuoteRawEntity> & { readonly user_book_id: string };
 }
 
 interface FindByIdPayload {
@@ -27,10 +27,10 @@ export class QuoteTestUtils extends TestUtils {
     const rawEntities = await this.databaseClient<QuoteRawEntity>(quotesTable).insert(
       {
         id: quote.getId(),
-        userBookId: quote.getUserBookId(),
+        user_book_id: quote.getUserBookId(),
         content: quote.getContent(),
-        createdAt: quote.getCreatedAt(),
-        isFavorite: quote.getIsFavorite(),
+        created_at: quote.getCreatedAt(),
+        is_favorite: quote.getIsFavorite(),
         page: quote.getPage() as string,
       },
       '*',

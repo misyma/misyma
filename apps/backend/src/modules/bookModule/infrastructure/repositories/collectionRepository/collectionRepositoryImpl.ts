@@ -42,7 +42,7 @@ export class CollectionRepositoryImpl implements CollectionRepository {
       whereCondition = {
         ...whereCondition,
         name: payload.name,
-        userId: payload.userId,
+        user_id: payload.userId,
       };
     }
 
@@ -81,7 +81,7 @@ export class CollectionRepositoryImpl implements CollectionRepository {
     }
 
     if (userId) {
-      query.where({ userId });
+      query.where({ user_id: userId });
     }
 
     if (sortDate) {
@@ -123,8 +123,8 @@ export class CollectionRepositoryImpl implements CollectionRepository {
         .insert({
           id: this.uuidService.generateUuid(),
           name,
-          userId,
-          createdAt,
+          user_id: userId,
+          created_at: createdAt,
         })
         .returning('*');
     } catch (error) {
@@ -146,8 +146,9 @@ export class CollectionRepositoryImpl implements CollectionRepository {
     let rawEntities: CollectionRawEntity[];
 
     try {
+      const { name } = collection.getState();
       rawEntities = await this.databaseClient<CollectionRawEntity>(collectionsTable)
-        .update(collection.getState())
+        .update({ name })
         .where({ id: collection.getId() })
         .returning('*');
     } catch (error) {
@@ -188,7 +189,7 @@ export class CollectionRepositoryImpl implements CollectionRepository {
       }
 
       if (userId) {
-        query.where({ userId });
+        query.where({ user_id: userId });
       }
 
       const countResult = await query.count().first();

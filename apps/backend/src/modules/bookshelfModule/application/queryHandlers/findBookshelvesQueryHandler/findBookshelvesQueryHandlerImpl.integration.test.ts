@@ -91,13 +91,13 @@ describe('FindBookshelvesQueryHandlerImpl', () => {
 
     const bookshelf1 = await bookshelfTestUtils.createAndPersist({
       input: {
-        userId: user.id,
+        user_id: user.id,
       },
     });
 
     const bookshelf2 = await bookshelfTestUtils.createAndPersist({
       input: {
-        userId: user.id,
+        user_id: user.id,
       },
     });
 
@@ -111,19 +111,19 @@ describe('FindBookshelvesQueryHandlerImpl', () => {
 
     expect(bookshelves.find((bookshelf) => bookshelf.getId() === bookshelf1.id)?.getState()).toEqual({
       name: bookshelf1.name,
-      userId: bookshelf1.userId,
+      userId: bookshelf1.user_id,
       type: bookshelf1.type,
       createdAt: expect.any(Date),
-      imageUrl: bookshelf1.imageUrl,
+      imageUrl: bookshelf1.image_url,
       bookCount: 0,
     });
 
     expect(bookshelves.find((bookshelf) => bookshelf.getId() === bookshelf2.id)?.getState()).toEqual({
       name: bookshelf2.name,
-      userId: bookshelf2.userId,
+      userId: bookshelf2.user_id,
       type: bookshelf2.type,
       createdAt: expect.any(Date),
-      imageUrl: bookshelf2.imageUrl,
+      imageUrl: bookshelf2.image_url,
       bookCount: 0,
     });
 

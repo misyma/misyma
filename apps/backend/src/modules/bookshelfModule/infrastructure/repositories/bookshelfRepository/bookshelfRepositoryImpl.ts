@@ -38,21 +38,21 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
         .select([
           `${bookshelvesTable}.id`,
           `${bookshelvesTable}.name`,
-          `${bookshelvesTable}.userId`,
+          `${bookshelvesTable}.user_id`,
           `${bookshelvesTable}.type`,
-          `${bookshelvesTable}.createdAt`,
-          `${bookshelvesTable}.imageUrl`,
-          this.databaseClient.raw(`COUNT("bookId") as "bookCount"`),
+          `${bookshelvesTable}.created_at`,
+          `${bookshelvesTable}.image_url`,
+          this.databaseClient.raw(`COUNT("book_id") as "book_count"`),
         ])
         .leftJoin(usersBooksTable, (join) => {
-          join.on(`${usersBooksTable}.bookshelfId`, '=', `${bookshelvesTable}.id`);
+          join.on(`${usersBooksTable}.bookshelf_id`, '=', `${bookshelvesTable}.id`);
         })
         .groupBy(`${bookshelvesTable}.id`);
 
       if ('id' in where) {
         query.where(`${bookshelvesTable}.id`, where.id);
       } else {
-        query.where(`${bookshelvesTable}.userId`, where.userId).where(`${bookshelvesTable}.name`, where.name);
+        query.where(`${bookshelvesTable}.user_id`, where.userId).where(`${bookshelvesTable}.name`, where.name);
       }
 
       rawEntities = await query;
@@ -78,14 +78,14 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
       .select([
         `${bookshelvesTable}.id`,
         `${bookshelvesTable}.name`,
-        `${bookshelvesTable}.userId`,
+        `${bookshelvesTable}.user_id`,
         `${bookshelvesTable}.type`,
-        `${bookshelvesTable}.createdAt`,
-        `${bookshelvesTable}.imageUrl`,
-        this.databaseClient.raw(`COUNT("bookId") as "bookCount"`),
+        `${bookshelvesTable}.created_at`,
+        `${bookshelvesTable}.image_url`,
+        this.databaseClient.raw(`COUNT("book_id") as "book_count"`),
       ])
       .leftJoin(usersBooksTable, (join) => {
-        join.on(`${usersBooksTable}.bookshelfId`, '=', `${bookshelvesTable}.id`);
+        join.on(`${usersBooksTable}.bookshelf_id`, '=', `${bookshelvesTable}.id`);
       })
       .groupBy(`${bookshelvesTable}.id`);
 
@@ -94,7 +94,7 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
     }
 
     if (userId) {
-      query.where(`${bookshelvesTable}.userId`, userId);
+      query.where(`${bookshelvesTable}.user_id`, userId);
     }
 
     if (name) {
@@ -140,10 +140,10 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
         {
           id: this.uuidService.generateUuid(),
           name: bookshelf.name,
-          userId: bookshelf.userId,
+          user_id: bookshelf.userId,
           type: bookshelf.type,
-          createdAt: bookshelf.createdAt,
-          imageUrl: bookshelf.imageUrl,
+          created_at: bookshelf.createdAt,
+          image_url: bookshelf.imageUrl,
         },
         '*',
       );
@@ -173,7 +173,7 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
         .update(
           {
             name,
-            imageUrl,
+            image_url: imageUrl,
           },
           '*',
         );
@@ -208,7 +208,7 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
     const { userId, name } = payload;
 
     try {
-      const query = this.databaseClient<BookshelfRawEntity>(bookshelvesTable).where({ userId });
+      const query = this.databaseClient<BookshelfRawEntity>(bookshelvesTable).where({ user_id: userId });
 
       if (name) {
         query.whereRaw('name ILIKE ?', `%${name}%`);

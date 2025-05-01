@@ -100,7 +100,7 @@ describe('BookshelfRepositoryImpl', () => {
       input: {
         authorIds: [author.id],
         book: {
-          categoryId: category.id,
+          category_id: category.id,
         },
       },
     });
@@ -111,8 +111,8 @@ describe('BookshelfRepositoryImpl', () => {
 
     return await userBookTestUtils.createAndPersist({
       input: {
-        bookId: book.id,
-        bookshelfId,
+        book_id: book.id,
+        bookshelf_id: bookshelfId,
       },
     });
   }
@@ -133,7 +133,7 @@ describe('BookshelfRepositoryImpl', () => {
     it('finds by id', async () => {
       const bookshelf = await bookshelfTestUtils.createAndPersist({
         input: {
-          userId: testUserId,
+          user_id: testUserId,
         },
       });
 
@@ -149,10 +149,10 @@ describe('BookshelfRepositoryImpl', () => {
 
       expect(result?.getState()).toEqual({
         name: bookshelf.name,
-        userId: bookshelf.userId,
+        userId: bookshelf.user_id,
         type: bookshelf.type,
-        createdAt: bookshelf.createdAt,
-        imageUrl: bookshelf.imageUrl,
+        createdAt: bookshelf.created_at,
+        imageUrl: bookshelf.image_url,
         bookCount: 2,
       });
     });
@@ -160,7 +160,7 @@ describe('BookshelfRepositoryImpl', () => {
     it('finds by userId and name', async () => {
       const bookshelf = await bookshelfTestUtils.createAndPersist({
         input: {
-          userId: testUserId,
+          user_id: testUserId,
         },
       });
 
@@ -175,10 +175,10 @@ describe('BookshelfRepositoryImpl', () => {
 
       expect(result?.getState()).toEqual({
         name: bookshelf.name,
-        userId: bookshelf.userId,
+        userId: bookshelf.user_id,
         type: bookshelf.type,
-        createdAt: bookshelf.createdAt,
-        imageUrl: bookshelf.imageUrl,
+        createdAt: bookshelf.created_at,
+        imageUrl: bookshelf.image_url,
         bookCount: 1,
       });
     });
@@ -198,13 +198,13 @@ describe('BookshelfRepositoryImpl', () => {
     it(`finds all user's bookshelves`, async () => {
       const bookshelf1 = await bookshelfTestUtils.createAndPersist({
         input: {
-          userId: testUserId,
+          user_id: testUserId,
         },
       });
 
       const bookshelf2 = await bookshelfTestUtils.createAndPersist({
         input: {
-          userId: testUserId,
+          user_id: testUserId,
         },
       });
 
@@ -227,10 +227,10 @@ describe('BookshelfRepositoryImpl', () => {
 
         expect(foundBookshelf?.getState()).toEqual({
           name: bookshelf.name,
-          userId: bookshelf.userId,
+          userId: bookshelf.user_id,
           type: bookshelf.type,
-          createdAt: bookshelf.createdAt,
-          imageUrl: bookshelf.imageUrl,
+          createdAt: bookshelf.created_at,
+          imageUrl: bookshelf.image_url,
           bookCount: bookshelf.id === bookshelf1.id ? 2 : 1,
         });
       });
@@ -239,14 +239,14 @@ describe('BookshelfRepositoryImpl', () => {
     it(`finds all user's bookshelves by name`, async () => {
       const bookshelf1 = await bookshelfTestUtils.createAndPersist({
         input: {
-          userId: testUserId,
+          user_id: testUserId,
           name: 'Harry Potter',
         },
       });
 
       await bookshelfTestUtils.createAndPersist({
         input: {
-          userId: testUserId,
+          user_id: testUserId,
           name: 'Lord of the Rings',
         },
       });
@@ -262,10 +262,10 @@ describe('BookshelfRepositoryImpl', () => {
 
       expect(result[0]?.getState()).toEqual({
         name: bookshelf1.name,
-        userId: bookshelf1.userId,
+        userId: bookshelf1.user_id,
         type: bookshelf1.type,
-        createdAt: bookshelf1.createdAt,
-        imageUrl: bookshelf1.imageUrl,
+        createdAt: bookshelf1.created_at,
+        imageUrl: bookshelf1.image_url,
         bookCount: 0,
       });
     });
@@ -273,21 +273,21 @@ describe('BookshelfRepositoryImpl', () => {
     it(`finds all user's bookshelves by type`, async () => {
       const bookshelf1 = await bookshelfTestUtils.createAndPersist({
         input: {
-          userId: testUserId,
+          user_id: testUserId,
           type: bookshelfTypes.borrowing,
         },
       });
 
       await bookshelfTestUtils.createAndPersist({
         input: {
-          userId: testUserId,
+          user_id: testUserId,
           type: bookshelfTypes.standard,
         },
       });
 
       await bookshelfTestUtils.createAndPersist({
         input: {
-          userId: testUserId,
+          user_id: testUserId,
           type: bookshelfTypes.archive,
         },
       });
@@ -303,10 +303,10 @@ describe('BookshelfRepositoryImpl', () => {
 
       expect(result[0]?.getState()).toEqual({
         name: bookshelf1.name,
-        userId: bookshelf1.userId,
+        userId: bookshelf1.user_id,
         type: bookshelf1.type,
-        createdAt: bookshelf1.createdAt,
-        imageUrl: bookshelf1.imageUrl,
+        createdAt: bookshelf1.created_at,
+        imageUrl: bookshelf1.image_url,
         bookCount: 0,
       });
     });
@@ -314,13 +314,13 @@ describe('BookshelfRepositoryImpl', () => {
     it('paginates results', async () => {
       await bookshelfTestUtils.createAndPersist({
         input: {
-          userId: testUserId,
+          user_id: testUserId,
         },
       });
 
       await bookshelfTestUtils.createAndPersist({
         input: {
-          userId: testUserId,
+          user_id: testUserId,
         },
       });
 
@@ -336,15 +336,15 @@ describe('BookshelfRepositoryImpl', () => {
     it('sorts by date', async () => {
       const bookshelf1 = await bookshelfTestUtils.createAndPersist({
         input: {
-          userId: testUserId,
-          createdAt: new Date('2024-08-10'),
+          user_id: testUserId,
+          created_at: new Date('2024-08-10'),
         },
       });
 
       const bookshelf2 = await bookshelfTestUtils.createAndPersist({
         input: {
-          userId: testUserId,
-          createdAt: new Date('2024-09-02'),
+          user_id: testUserId,
+          created_at: new Date('2024-09-02'),
         },
       });
 
@@ -389,7 +389,7 @@ describe('BookshelfRepositoryImpl', () => {
     it('updates a Bookshelf - given a Bookshelf', async () => {
       const bookshelfRawEntity = await bookshelfTestUtils.createAndPersist({
         input: {
-          userId: testUserId,
+          user_id: testUserId,
         },
       });
 
@@ -417,17 +417,13 @@ describe('BookshelfRepositoryImpl', () => {
     it('deletes a Bookshelf', async () => {
       const bookshelf = await bookshelfTestUtils.createAndPersist({
         input: {
-          userId: testUserId,
+          user_id: testUserId,
         },
       });
 
-      await repository.deleteBookshelf({
-        id: bookshelf.id,
-      });
+      await repository.deleteBookshelf({ id: bookshelf.id });
 
-      const result = await bookshelfTestUtils.findById({
-        id: bookshelf.id,
-      });
+      const result = await bookshelfTestUtils.findById({ id: bookshelf.id });
 
       expect(result).toBeNull();
     });
@@ -445,13 +441,13 @@ describe('BookshelfRepositoryImpl', () => {
     it('returns the number of Bookshelves', async () => {
       await bookshelfTestUtils.createAndPersist({
         input: {
-          userId: testUserId,
+          user_id: testUserId,
         },
       });
 
       await bookshelfTestUtils.createAndPersist({
         input: {
-          userId: testUserId,
+          user_id: testUserId,
         },
       });
 

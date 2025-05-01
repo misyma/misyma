@@ -62,10 +62,15 @@ describe('BookRepositoryImpl', () => {
 
   describe('saveBook', () => {
     it('creates a book', async () => {
-      const author = await authorTestUtils.createAndPersist();
+      const authorRaw = await authorTestUtils.createAndPersist();
+      const author = new Author({
+        id: authorRaw.id,
+        name: authorRaw.name,
+        isApproved: authorRaw.is_approved,
+      });
 
       const createdBook = bookTestFactory.create({
-        authors: [new Author(author)],
+        authors: [author],
       });
 
       const category = await categoryTestUtils.createAndPersist();
@@ -82,15 +87,14 @@ describe('BookRepositoryImpl', () => {
           pages: createdBook.getPages(),
           isApproved: createdBook.getIsApproved(),
           imageUrl: createdBook.getImageUrl(),
-          createdAt: createdBook.getCreatedAt(),
-          authors: [new Author(author)],
+          authors: [author],
           categoryId: category.id,
         },
       });
 
       const foundBook = await bookTestUtils.findByTitleAndAuthor({
         title: createdBook.getTitle(),
-        authorId: author.id,
+        authorId: author.getId(),
       });
 
       expect(book.getState()).toEqual({
@@ -104,16 +108,14 @@ describe('BookRepositoryImpl', () => {
         pages: createdBook.getPages(),
         isApproved: createdBook.getIsApproved(),
         imageUrl: createdBook.getImageUrl(),
-        createdAt: createdBook.getCreatedAt(),
         categoryId: category.id,
         categoryName: '',
         authors: [
           {
-            id: author.id,
+            id: author.getId(),
             state: {
-              name: author.name,
-              isApproved: author.isApproved,
-              createdAt: author.createdAt,
+              name: author.getName(),
+              isApproved: author.getIsApproved(),
             },
           },
         ],
@@ -124,31 +126,43 @@ describe('BookRepositoryImpl', () => {
         title: createdBook.getTitle(),
         isbn: createdBook.getIsbn(),
         publisher: createdBook.getPublisher(),
-        releaseYear: createdBook.getReleaseYear(),
+        release_year: createdBook.getReleaseYear(),
         language: createdBook.getLanguage(),
         translator: createdBook.getTranslator(),
         format: createdBook.getFormat(),
         pages: createdBook.getPages(),
-        isApproved: createdBook.getIsApproved(),
-        imageUrl: createdBook.getImageUrl(),
-        createdAt: createdBook.getCreatedAt(),
+        is_approved: createdBook.getIsApproved(),
+        image_url: createdBook.getImageUrl(),
       });
     });
 
     it('removes book Authors', async () => {
-      const author1 = await authorTestUtils.createAndPersist();
-
-      const author2 = await authorTestUtils.createAndPersist();
-
-      const author3 = await authorTestUtils.createAndPersist();
+      const author1Raw = await authorTestUtils.createAndPersist();
+      const author1 = new Author({
+        id: author1Raw.id,
+        name: author1Raw.name,
+        isApproved: author1Raw.is_approved,
+      });
+      const author2Raw = await authorTestUtils.createAndPersist();
+      const author2 = new Author({
+        id: author2Raw.id,
+        name: author2Raw.name,
+        isApproved: author2Raw.is_approved,
+      });
+      const author3Raw = await authorTestUtils.createAndPersist();
+      const author3 = new Author({
+        id: author3Raw.id,
+        name: author3Raw.name,
+        isApproved: author3Raw.is_approved,
+      });
 
       const category = await categoryTestUtils.createAndPersist();
 
       const bookRawEntity = await bookTestUtils.createAndPersist({
         input: {
-          authorIds: [author1.id, author2.id, author3.id],
+          authorIds: [author1Raw.id, author2Raw.id, author3Raw.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -156,7 +170,7 @@ describe('BookRepositoryImpl', () => {
       const book = bookTestFactory.create({
         ...bookRawEntity,
         format: bookRawEntity.format as BookFormat,
-        authors: [new Author(author1), new Author(author2), new Author(author3)],
+        authors: [author1, author2, author3],
         categoryId: category.id,
         category: new Category({
           id: category.id,
@@ -164,9 +178,9 @@ describe('BookRepositoryImpl', () => {
         }),
       });
 
-      book.deleteAuthor(new Author(author1));
+      book.deleteAuthor(author1);
 
-      book.deleteAuthor(new Author(author2));
+      book.deleteAuthor(author2);
 
       const updatedBook = await bookRepository.saveBook({
         book,
@@ -180,9 +194,9 @@ describe('BookRepositoryImpl', () => {
 
       expect(foundBook?.getAuthors()).toHaveLength(1);
 
-      expect(updatedBook.getAuthors()[0]?.getId()).toEqual(author3.id);
+      expect(updatedBook.getAuthors()[0]?.getId()).toEqual(author3Raw.id);
 
-      expect(foundBook?.getAuthors()[0]?.getId()).toEqual(author3.id);
+      expect(foundBook?.getAuthors()[0]?.getId()).toEqual(author3Raw.id);
 
       const updatedBookAuthors = await bookTestUtils.findBookAuthors({
         bookId: book.getId(),
@@ -192,19 +206,32 @@ describe('BookRepositoryImpl', () => {
     });
 
     it('adds book Authors', async () => {
-      const author1 = await authorTestUtils.createAndPersist();
-
-      const author2 = await authorTestUtils.createAndPersist();
-
-      const author3 = await authorTestUtils.createAndPersist();
+      const author1Raw = await authorTestUtils.createAndPersist();
+      const author1 = new Author({
+        id: author1Raw.id,
+        name: author1Raw.name,
+        isApproved: author1Raw.is_approved,
+      });
+      const author2Raw = await authorTestUtils.createAndPersist();
+      const author2 = new Author({
+        id: author2Raw.id,
+        name: author2Raw.name,
+        isApproved: author2Raw.is_approved,
+      });
+      const author3Raw = await authorTestUtils.createAndPersist();
+      const author3 = new Author({
+        id: author3Raw.id,
+        name: author3Raw.name,
+        isApproved: author3Raw.is_approved,
+      });
 
       const category = await categoryTestUtils.createAndPersist();
 
       const bookRawEntity = await bookTestUtils.createAndPersist({
         input: {
-          authorIds: [author1.id, author2.id, author3.id],
+          authorIds: [author1Raw.id, author2Raw.id, author3Raw.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -212,12 +239,12 @@ describe('BookRepositoryImpl', () => {
       const book = bookTestFactory.create({
         ...bookRawEntity,
         format: bookRawEntity.format as BookFormat,
-        authors: [new Author(author1)],
+        authors: [author1],
       });
 
-      book.addAuthor(new Author(author2));
+      book.addAuthor(author2);
 
-      book.addAuthor(new Author(author3));
+      book.addAuthor(author3);
 
       const updatedBook = await bookRepository.saveBook({
         book,
@@ -227,7 +254,7 @@ describe('BookRepositoryImpl', () => {
         id: book.getId(),
       });
 
-      const allAuthorsMatch = [author1.id, author2.id, author3.id].every((authorId) => {
+      const allAuthorsMatch = [author1Raw.id, author2Raw.id, author3Raw.id].every((authorId) => {
         const updatedBookHasAuthor = updatedBook.getAuthors().some((author) => author.getId() === authorId);
         const foundBookHasAuthor = foundBook?.getAuthors().some((author) => author.getId() === authorId);
         expect(updatedBookHasAuthor).toBeTruthy();
@@ -253,7 +280,7 @@ describe('BookRepositoryImpl', () => {
         input: {
           authorIds: [author.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -269,7 +296,7 @@ describe('BookRepositoryImpl', () => {
 
       const newPublisher = Generator.word();
 
-      const newReleaseYear = bookRawEntity.releaseYear + 1;
+      const newReleaseYear = bookRawEntity.release_year + 1;
 
       const newLanguage = Generator.language();
 
@@ -279,7 +306,7 @@ describe('BookRepositoryImpl', () => {
 
       const newPages = (bookRawEntity.pages as number) + 10;
 
-      const newIsApproved = !bookRawEntity.isApproved;
+      const newIsApproved = !bookRawEntity.is_approved;
 
       const newImageUrl = Generator.imageUrl();
 
@@ -324,24 +351,22 @@ describe('BookRepositoryImpl', () => {
         isApproved: newIsApproved,
         categoryName: book.getCategoryName(),
         imageUrl: newImageUrl,
-        createdAt: book.getCreatedAt(),
         authors: [],
       });
 
       expect(foundBook).toEqual({
         id: book.getId(),
         title: newTitle,
-        categoryId: category.id,
+        category_id: category.id,
         isbn: newIsbn,
         publisher: newPublisher,
-        releaseYear: newReleaseYear,
+        release_year: newReleaseYear,
         language: newLanguage,
         translator: newTranslator,
         format: newFormat,
         pages: newPages,
-        isApproved: newIsApproved,
-        imageUrl: newImageUrl,
-        createdAt: book.getCreatedAt(),
+        is_approved: newIsApproved,
+        image_url: newImageUrl,
       });
     });
   });
@@ -356,7 +381,7 @@ describe('BookRepositoryImpl', () => {
         input: {
           authorIds: [author.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -375,7 +400,7 @@ describe('BookRepositoryImpl', () => {
         input: {
           authorIds: [],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -406,7 +431,7 @@ describe('BookRepositoryImpl', () => {
         input: {
           authorIds: [author.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -415,7 +440,7 @@ describe('BookRepositoryImpl', () => {
         input: {
           authorIds: [author.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -442,8 +467,8 @@ describe('BookRepositoryImpl', () => {
         input: {
           authorIds: [author.id],
           book: {
-            isApproved: true,
-            categoryId: category.id,
+            is_approved: true,
+            category_id: category.id,
           },
         },
       });
@@ -451,7 +476,7 @@ describe('BookRepositoryImpl', () => {
       await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author.id],
-          book: { isApproved: false, categoryId: category.id },
+          book: { is_approved: false, category_id: category.id },
         },
       });
 
@@ -469,8 +494,7 @@ describe('BookRepositoryImpl', () => {
         id: author.id,
         state: {
           name: author.name,
-          isApproved: author.isApproved,
-          createdAt: author.createdAt,
+          isApproved: author.is_approved,
         },
       });
     });
@@ -484,7 +508,7 @@ describe('BookRepositoryImpl', () => {
         input: {
           authorIds: [author.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -510,7 +534,7 @@ describe('BookRepositoryImpl', () => {
           authorIds: [author.id],
           book: {
             title: 'The Lord of the Rings',
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -520,7 +544,7 @@ describe('BookRepositoryImpl', () => {
           authorIds: [author.id],
           book: {
             title: "Harry Potter and the Philosopher's Stone",
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -530,7 +554,7 @@ describe('BookRepositoryImpl', () => {
           authorIds: [author.id],
           book: {
             title: 'War and Peace',
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -556,7 +580,7 @@ describe('BookRepositoryImpl', () => {
           authorIds: [author.id],
           book: {
             title: 'The Lord of the Rings',
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -566,7 +590,7 @@ describe('BookRepositoryImpl', () => {
           authorIds: [author.id],
           book: {
             title: "Harry Potter and the Philosopher's Stone",
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -576,7 +600,7 @@ describe('BookRepositoryImpl', () => {
           authorIds: [author.id],
           book: {
             title: 'Harry Potter and the Chamber of Secrets',
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -631,7 +655,7 @@ describe('BookRepositoryImpl', () => {
         input: {
           authorIds: [author1.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -640,7 +664,7 @@ describe('BookRepositoryImpl', () => {
         input: {
           authorIds: [author2.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -649,7 +673,7 @@ describe('BookRepositoryImpl', () => {
         input: {
           authorIds: [author3.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -676,7 +700,7 @@ describe('BookRepositoryImpl', () => {
           authorIds: [author.id],
           book: {
             language: languages.Polish,
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -686,7 +710,7 @@ describe('BookRepositoryImpl', () => {
           authorIds: [author.id],
           book: {
             language: languages.English,
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -711,8 +735,8 @@ describe('BookRepositoryImpl', () => {
         input: {
           authorIds: [author.id],
           book: {
-            categoryId: category.id,
-            releaseYear: 1995,
+            category_id: category.id,
+            release_year: 1995,
           },
         },
       });
@@ -721,8 +745,8 @@ describe('BookRepositoryImpl', () => {
         input: {
           authorIds: [author.id],
           book: {
-            categoryId: category.id,
-            releaseYear: 1997,
+            category_id: category.id,
+            release_year: 1997,
           },
         },
       });
@@ -747,8 +771,8 @@ describe('BookRepositoryImpl', () => {
         input: {
           authorIds: [author.id],
           book: {
-            releaseYear: 1995,
-            categoryId: category.id,
+            release_year: 1995,
+            category_id: category.id,
           },
         },
       });
@@ -757,8 +781,8 @@ describe('BookRepositoryImpl', () => {
         input: {
           authorIds: [author.id],
           book: {
-            releaseYear: 1997,
-            categoryId: category.id,
+            release_year: 1997,
+            category_id: category.id,
           },
         },
       });
@@ -783,8 +807,8 @@ describe('BookRepositoryImpl', () => {
         input: {
           authorIds: [author.id],
           book: {
-            releaseYear: 1995,
-            categoryId: category.id,
+            release_year: 1995,
+            category_id: category.id,
           },
         },
       });
@@ -793,8 +817,8 @@ describe('BookRepositoryImpl', () => {
         input: {
           authorIds: [author.id],
           book: {
-            releaseYear: 1997,
-            categoryId: category.id,
+            release_year: 1997,
+            category_id: category.id,
           },
         },
       });
@@ -820,7 +844,7 @@ describe('BookRepositoryImpl', () => {
         input: {
           authorIds: [author.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -829,7 +853,7 @@ describe('BookRepositoryImpl', () => {
         input: {
           authorIds: [author.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -870,8 +894,8 @@ describe('BookRepositoryImpl', () => {
         input: {
           authorIds: [author.id],
           book: {
-            releaseYear: 1995,
-            categoryId: category.id,
+            release_year: 1995,
+            category_id: category.id,
           },
         },
       });
@@ -880,8 +904,8 @@ describe('BookRepositoryImpl', () => {
         input: {
           authorIds: [author.id],
           book: {
-            releaseYear: 2019,
-            categoryId: category.id,
+            release_year: 2019,
+            category_id: category.id,
           },
         },
       });
@@ -923,7 +947,7 @@ describe('BookRepositoryImpl', () => {
           authorIds: [author.id],
           book: {
             title: 'Harry Potter',
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -933,7 +957,7 @@ describe('BookRepositoryImpl', () => {
           authorIds: [author.id],
           book: {
             title: 'Alice in Wonderland',
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -978,7 +1002,7 @@ describe('BookRepositoryImpl', () => {
         input: {
           authorIds: [author1.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -987,7 +1011,7 @@ describe('BookRepositoryImpl', () => {
         input: {
           authorIds: [author1.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -996,7 +1020,7 @@ describe('BookRepositoryImpl', () => {
         input: {
           authorIds: [author2.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -1005,7 +1029,7 @@ describe('BookRepositoryImpl', () => {
         input: {
           authorIds: [author1.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -1014,7 +1038,7 @@ describe('BookRepositoryImpl', () => {
         input: {
           authorIds: [author2.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -1032,21 +1056,21 @@ describe('BookRepositoryImpl', () => {
       await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author.id],
-          book: { isApproved: true, categoryId: category.id },
+          book: { is_approved: true, category_id: category.id },
         },
       });
 
       await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author.id],
-          book: { isApproved: true, categoryId: category.id },
+          book: { is_approved: true, category_id: category.id },
         },
       });
 
       await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author.id],
-          book: { isApproved: false, categoryId: category.id },
+          book: { is_approved: false, category_id: category.id },
         },
       });
 
@@ -1066,7 +1090,7 @@ describe('BookRepositoryImpl', () => {
         input: {
           authorIds: [author1.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -1075,7 +1099,7 @@ describe('BookRepositoryImpl', () => {
         input: {
           authorIds: [author2.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -1084,7 +1108,7 @@ describe('BookRepositoryImpl', () => {
         input: {
           authorIds: [author2.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -1104,7 +1128,7 @@ describe('BookRepositoryImpl', () => {
           authorIds: [author.id],
           book: {
             language: languages.Polish,
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -1114,7 +1138,7 @@ describe('BookRepositoryImpl', () => {
           authorIds: [author.id],
           book: {
             language: languages.English,
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -1124,7 +1148,7 @@ describe('BookRepositoryImpl', () => {
           authorIds: [author.id],
           book: {
             language: languages.German,
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });
@@ -1145,7 +1169,7 @@ describe('BookRepositoryImpl', () => {
         input: {
           authorIds: [author.id],
           book: {
-            categoryId: category.id,
+            category_id: category.id,
           },
         },
       });

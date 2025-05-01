@@ -38,7 +38,7 @@ export class UserTestUtils extends TestUtils {
         email: user.getEmail(),
         name: user.getName(),
         password: user.getPassword(),
-        isEmailVerified: user.getIsEmailVerified(),
+        is_email_verified: user.getIsEmailVerified(),
         role: user.getRole(),
       },
       '*',

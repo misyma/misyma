@@ -69,7 +69,7 @@ describe('UserRepositoryImpl', () => {
             email: existingUser.email,
             password: existingUser.password,
             name: existingUser.name,
-            isEmailVerified: existingUser.isEmailVerified,
+            isEmailVerified: existingUser.is_email_verified,
             role: existingUser.role,
           },
         });
@@ -122,7 +122,7 @@ describe('UserRepositoryImpl', () => {
         email,
         password,
         name,
-        isEmailVerified,
+        is_email_verified: isEmailVerified,
         role: userRawEntity.role,
       });
     });

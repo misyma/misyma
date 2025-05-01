@@ -29,7 +29,7 @@ export class BlacklistTokenRepositoryImpl implements BlacklistTokenRepository {
         {
           id: this.uuidService.generateUuid(),
           token,
-          expiresAt,
+          expires_at: expiresAt,
         },
         '*',
       );

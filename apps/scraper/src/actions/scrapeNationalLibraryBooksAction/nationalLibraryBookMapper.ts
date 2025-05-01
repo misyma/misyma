@@ -30,7 +30,7 @@ export class NationalLibraryBookMapper {
     };
 
     const titleRaw = nationalLibraryBook.title;
-    const categoryRaw = nationalLibraryBook.category;
+    const categoryRaw = nationalLibraryBook.genre;
     const authorRaw = getSubfield('100', 'a');
     const translatorRaw = getSubfield('700', 'a');
     const publisherRaw = getSubfield('260', 'b');
@@ -67,11 +67,11 @@ export class NationalLibraryBookMapper {
 
     const bookDraftInput: Partial<BookDraft> = {
       title: title as string,
-      isApproved: true,
+      is_approved: true,
       language: languages.Polish,
-      authorNames: [authorName],
+      author_names: [authorName],
       pages,
-      categoryId,
+      category_id: categoryId,
     };
 
     try {
@@ -90,7 +90,7 @@ export class NationalLibraryBookMapper {
         const releaseYearMatch = releaseYearRaw.match(/\d{4}/);
 
         if (releaseYearMatch) {
-          bookDraftInput.releaseYear = parseInt(releaseYearMatch[0], 10);
+          bookDraftInput.release_year = parseInt(releaseYearMatch[0], 10);
         }
       }
 

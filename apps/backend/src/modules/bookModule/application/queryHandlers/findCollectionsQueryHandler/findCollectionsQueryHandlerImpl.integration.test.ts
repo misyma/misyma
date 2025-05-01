@@ -67,13 +67,13 @@ describe('FindCollectionsQueryHandlerImpl', () => {
 
     const collection1 = await collectionTestUtils.createAndPersist({
       input: {
-        userId: user.id,
+        user_id: user.id,
       },
     });
 
     const collection2 = await collectionTestUtils.createAndPersist({
       input: {
-        userId: user.id,
+        user_id: user.id,
       },
     });
 

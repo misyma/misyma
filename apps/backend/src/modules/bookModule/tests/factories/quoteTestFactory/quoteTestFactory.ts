@@ -18,10 +18,10 @@ export class QuoteTestFactory {
   public createRaw(input: Partial<QuoteRawEntity> = {}): QuoteRawEntity {
     return {
       id: Generator.uuid(),
-      userBookId: Generator.uuid(),
+      user_book_id: Generator.uuid(),
       content: Generator.words(),
-      createdAt: Generator.pastDate(),
-      isFavorite: Generator.boolean(),
+      created_at: Generator.pastDate(),
+      is_favorite: Generator.boolean(),
       page: Generator.number(1, 1000).toString(),
       ...input,
     };
