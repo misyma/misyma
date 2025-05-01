@@ -25,23 +25,7 @@ export class BookChangeRequestTestUtils extends TestUtils {
     const bookChangeRequest = this.bookChangeRequestTestFactory.createRaw(input);
 
     const rawEntities = await this.databaseClient<BookChangeRequestRawEntity>(booksChangeRequestsTable).insert(
-      {
-        id: bookChangeRequest.id,
-        title: bookChangeRequest.title,
-        isbn: bookChangeRequest.isbn,
-        publisher: bookChangeRequest.publisher,
-        release_year: bookChangeRequest.release_year,
-        language: bookChangeRequest.language,
-        translator: bookChangeRequest.translator,
-        format: bookChangeRequest.format,
-        pages: bookChangeRequest.pages,
-        image_url: bookChangeRequest.image_url,
-        book_id: bookChangeRequest.book_id,
-        user_email: bookChangeRequest.user_email,
-        created_at: bookChangeRequest.created_at,
-        author_ids: bookChangeRequest.author_ids,
-        changed_fields: bookChangeRequest.changed_fields,
-      },
+      bookChangeRequest,
       '*',
     );
 

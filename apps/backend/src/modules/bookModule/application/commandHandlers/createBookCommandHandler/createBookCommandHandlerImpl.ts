@@ -87,8 +87,6 @@ export class CreateBookCommandHandlerImpl implements CreateBookCommandHandler {
       }
     }
 
-    const createdAt = new Date();
-
     const book = await this.bookRepository.saveBook({
       book: {
         categoryId,
@@ -103,7 +101,6 @@ export class CreateBookCommandHandlerImpl implements CreateBookCommandHandler {
         releaseYear,
         translator,
         authors,
-        createdAt,
       },
     });
 

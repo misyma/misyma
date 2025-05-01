@@ -104,28 +104,28 @@ describe('DeleteBookReadingCommandHandlerImpl', () => {
   it('deletes a BookReading', async () => {
     const user = await userTestUtils.createAndPersist();
 
-    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { user_id: user.id } });
 
     const category = await categoryTestUtils.createAndPersist();
 
     const book = await bookTestUtils.createAndPersist({
       input: {
         book: {
-          categoryId: category.id,
+          category_id: category.id,
         },
       },
     });
 
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
-        bookshelfId: bookshelf.id,
-        bookId: book.id,
+        bookshelf_id: bookshelf.id,
+        book_id: book.id,
       },
     });
 
     const bookReading = await bookReadingTestUtils.createAndPersist({
       input: {
-        userBookId: userBook.id,
+        user_book_id: userBook.id,
       },
     });
 

@@ -13,7 +13,7 @@ export class M6CreateQuotesTableMigration implements Migration {
       table.text('page');
       table.text('content').notNullable();
       table.boolean('is_favorite').notNullable();
-      table.timestamp('created_at').notNullable();
+      table.timestamp('created_at').notNullable().defaultTo(databaseClient.raw('CURRENT_TIMESTAMP'));
     });
   }
 

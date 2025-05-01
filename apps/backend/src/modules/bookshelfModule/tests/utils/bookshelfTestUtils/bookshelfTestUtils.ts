@@ -26,19 +26,9 @@ export class BookshelfTestUtils extends TestUtils {
   public async createAndPersist(payload: CreateAndPersistBookshelfPayload): Promise<BookshelfRawEntity> {
     const { input } = payload;
 
-    const bookshelf = this.bookshelfTestFactory.create(input);
+    const bookshelf = this.bookshelfTestFactory.createRaw(input);
 
-    const rawEntities = await this.databaseClient<BookshelfRawEntity>(bookshelvesTable).insert(
-      {
-        id: bookshelf.getId(),
-        name: bookshelf.getName(),
-        user_id: bookshelf.getUserId(),
-        type: bookshelf.getType(),
-        created_at: bookshelf.getCreatedAt(),
-        image_url: bookshelf.getImageUrl(),
-      },
-      '*',
-    );
+    const rawEntities = await this.databaseClient<BookshelfRawEntity>(bookshelvesTable).insert(bookshelf, '*');
 
     const rawEntity = rawEntities[0] as BookshelfRawEntity;
 

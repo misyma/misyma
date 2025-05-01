@@ -19,11 +19,11 @@ export class M3CreateBooksTableMigration implements Migration {
       table.text('format');
       table.integer('pages');
       table.boolean('is_approved').notNullable();
-      table.text('imageUrl');
+      table.text('image_url');
 
       table.index(['title']);
       table.index(['isbn']);
-      table.index(['releaseYear']);
+      table.index(['release_year']);
       table.index(['language']);
       table.index(['format']);
     });

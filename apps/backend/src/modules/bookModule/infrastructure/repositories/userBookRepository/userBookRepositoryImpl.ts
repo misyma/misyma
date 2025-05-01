@@ -206,7 +206,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       ];
 
       const bookSelect = [
-        `${booksTable}.id as bookId`,
+        `${booksTable}.id as book_id`,
         `${booksTable}.title as title`,
         `${booksTable}.category_id as category_id`,
         `${booksTable}.isbn as isbn`,
@@ -229,7 +229,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       ];
 
       const readingsSelect = [
-        this.databaseClient.raw(`array_agg("${booksReadingsTable}"."id") as "readingIds"`),
+        this.databaseClient.raw(`array_agg("${booksReadingsTable}"."id") as "reading_ids"`),
         this.databaseClient.raw(`array_agg("${booksReadingsTable}"."started_at") as "reading_started_at_dates"`),
         this.databaseClient.raw(`array_agg("${booksReadingsTable}"."ended_at") as "reading_ended_at_dates"`),
         this.databaseClient.raw(`array_agg("${booksReadingsTable}"."rating") as "reading_ratings"`),
@@ -343,7 +343,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       ];
 
       const bookSelect = [
-        `${booksTable}.id as bookId`,
+        `${booksTable}.id as book_id`,
         `${booksTable}.title as title`,
         `${booksTable}.category_id as category_id`,
         `${booksTable}.isbn as isbn`,

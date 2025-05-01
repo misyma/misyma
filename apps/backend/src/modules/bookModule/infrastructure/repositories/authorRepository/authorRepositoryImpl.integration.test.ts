@@ -425,19 +425,19 @@ describe('AuthorRepositoryImpl', () => {
 
       const bookshelf1 = await bookshelfTestUtils.createAndPersist({
         input: {
-          userId: user1.id,
+          user_id: user1.id,
         },
       });
 
       const bookshelf2 = await bookshelfTestUtils.createAndPersist({
         input: {
-          userId: user1.id,
+          user_id: user1.id,
         },
       });
 
       const bookshelf3 = await bookshelfTestUtils.createAndPersist({
         input: {
-          userId: user2.id,
+          user_id: user2.id,
         },
       });
 
@@ -542,19 +542,19 @@ describe('AuthorRepositoryImpl', () => {
 
       const bookshelf1 = await bookshelfTestUtils.createAndPersist({
         input: {
-          userId: user1.id,
+          user_id: user1.id,
         },
       });
 
       const bookshelf2 = await bookshelfTestUtils.createAndPersist({
         input: {
-          userId: user1.id,
+          user_id: user1.id,
         },
       });
 
       const bookshelf3 = await bookshelfTestUtils.createAndPersist({
         input: {
-          userId: user2.id,
+          user_id: user2.id,
         },
       });
 
@@ -657,19 +657,19 @@ describe('AuthorRepositoryImpl', () => {
 
       const bookshelf1 = await bookshelfTestUtils.createAndPersist({
         input: {
-          userId: user1.id,
+          user_id: user1.id,
         },
       });
 
       const bookshelf2 = await bookshelfTestUtils.createAndPersist({
         input: {
-          userId: user1.id,
+          user_id: user1.id,
         },
       });
 
       const bookshelf3 = await bookshelfTestUtils.createAndPersist({
         input: {
-          userId: user2.id,
+          user_id: user2.id,
         },
       });
 
@@ -890,19 +890,19 @@ describe('AuthorRepositoryImpl', () => {
 
       const bookshelf1 = await bookshelfTestUtils.createAndPersist({
         input: {
-          userId: user1.id,
+          user_id: user1.id,
         },
       });
 
       const bookshelf2 = await bookshelfTestUtils.createAndPersist({
         input: {
-          userId: user1.id,
+          user_id: user1.id,
         },
       });
 
       const bookshelf3 = await bookshelfTestUtils.createAndPersist({
         input: {
-          userId: user2.id,
+          user_id: user2.id,
         },
       });
 
@@ -1001,19 +1001,19 @@ describe('AuthorRepositoryImpl', () => {
 
       const bookshelf1 = await bookshelfTestUtils.createAndPersist({
         input: {
-          userId: user1.id,
+          user_id: user1.id,
         },
       });
 
       const bookshelf2 = await bookshelfTestUtils.createAndPersist({
         input: {
-          userId: user1.id,
+          user_id: user1.id,
         },
       });
 
       const bookshelf3 = await bookshelfTestUtils.createAndPersist({
         input: {
-          userId: user2.id,
+          user_id: user2.id,
         },
       });
 

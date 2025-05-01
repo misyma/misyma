@@ -22,19 +22,9 @@ export class BookReadingTestUtils extends TestUtils {
   public async createAndPersist(payload: CreateAndPersistPayload): Promise<BookReadingRawEntity> {
     const { input } = payload;
 
-    const bookReading = this.bookReadingTestFactory.create(input);
+    const bookReading = this.bookReadingTestFactory.createRaw(input);
 
-    const rawEntities = await this.databaseClient<BookReadingRawEntity>(booksReadingsTable).insert(
-      {
-        id: bookReading.getId(),
-        user_book_id: bookReading.getUserBookId(),
-        rating: bookReading.getRating(),
-        comment: bookReading.getComment(),
-        started_at: bookReading.getStartedAt(),
-        ended_at: bookReading.getEndedAt(),
-      },
-      '*',
-    );
+    const rawEntities = await this.databaseClient<BookReadingRawEntity>(booksReadingsTable).insert(bookReading, '*');
 
     const rawEntity = rawEntities[0] as BookReadingRawEntity;
 

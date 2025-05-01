@@ -13,7 +13,7 @@ export class M1CreateBookshelvesTableMigration implements Migration {
       table.text('name').notNullable();
       table.text('type').notNullable();
       table.text('image_url');
-      table.timestamp('created_at').notNullable();
+      table.timestamp('created_at').notNullable().defaultTo(databaseClient.raw('CURRENT_TIMESTAMP'));
 
       table.unique(['user_id', 'name']);
     });

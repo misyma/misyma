@@ -22,18 +22,9 @@ export class BorrowingTestUtils extends TestUtils {
   public async createAndPersist(payload: CreateAndPersistPayload): Promise<BorrowingRawEntity> {
     const { input } = payload;
 
-    const borrowing = this.borrowingTestFactory.create(input);
+    const borrowing = this.borrowingTestFactory.createRaw(input);
 
-    const rawEntities = await this.databaseClient<BorrowingRawEntity>(borrowingsTable).insert(
-      {
-        id: borrowing.getId(),
-        user_book_id: borrowing.getUserBookId(),
-        borrower: borrowing.getBorrower(),
-        started_at: borrowing.getStartedAt(),
-        ended_at: borrowing.getEndedAt(),
-      },
-      '*',
-    );
+    const rawEntities = await this.databaseClient<BorrowingRawEntity>(borrowingsTable).insert(borrowing, '*');
 
     const rawEntity = rawEntities[0] as BorrowingRawEntity;
 

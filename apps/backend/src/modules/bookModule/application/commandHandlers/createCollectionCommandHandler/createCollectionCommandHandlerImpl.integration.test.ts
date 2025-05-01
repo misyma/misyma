@@ -53,7 +53,7 @@ describe('CreateCollectionCommandHandlerImpl', () => {
   it('throws an error - when Collection already exists', async () => {
     const user = await userTestUtils.createAndPersist();
 
-    const collection = await collectionTestUtils.createAndPersist({ input: { userId: user.id } });
+    const collection = await collectionTestUtils.createAndPersist({ input: { user_id: user.id } });
 
     try {
       await commandHandler.execute({
@@ -97,6 +97,6 @@ describe('CreateCollectionCommandHandlerImpl', () => {
 
     expect(persistedCollection?.name).toEqual(collection.getName());
 
-    expect(persistedCollection?.userId).toEqual(collection.getUserId());
+    expect(persistedCollection?.user_id).toEqual(collection.getUserId());
   });
 });

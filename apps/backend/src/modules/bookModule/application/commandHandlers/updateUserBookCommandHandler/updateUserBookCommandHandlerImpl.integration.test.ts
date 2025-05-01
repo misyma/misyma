@@ -119,7 +119,7 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
 
     const bookshelf = await bookshelfTestUtils.createAndPersist({
       input: {
-        userId: user.id,
+        user_id: user.id,
       },
     });
 
@@ -128,15 +128,15 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
     const book = await bookTestUtils.createAndPersist({
       input: {
         book: {
-          categoryId: category.id,
+          category_id: category.id,
         },
       },
     });
 
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
-        bookId: book.id,
-        bookshelfId: bookshelf.id,
+        book_id: book.id,
+        bookshelf_id: bookshelf.id,
       },
     });
 
@@ -167,14 +167,14 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
 
     const borrowingBookshelf = await bookshelfTestUtils.createAndPersist({
       input: {
-        userId: user.id,
+        user_id: user.id,
         type: bookshelfTypes.borrowing,
       },
     });
 
     const standardBookshelf = await bookshelfTestUtils.createAndPersist({
       input: {
-        userId: user.id,
+        user_id: user.id,
         type: bookshelfTypes.standard,
       },
     });
@@ -184,23 +184,23 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
     const book = await bookTestUtils.createAndPersist({
       input: {
         book: {
-          categoryId: category.id,
+          category_id: category.id,
         },
       },
     });
 
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
-        bookId: book.id,
-        bookshelfId: borrowingBookshelf.id,
+        book_id: book.id,
+        bookshelf_id: borrowingBookshelf.id,
       },
     });
 
     const borrowing = await borrowingTestUtils.createAndPersist({
       input: {
-        userBookId: userBook.id,
-        startedAt: new Date(),
-        endedAt: undefined,
+        user_book_id: userBook.id,
+        started_at: new Date(),
+        ended_at: undefined,
       },
     });
 
@@ -212,11 +212,11 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
 
     const updatedUserBook = await userBookTestUtils.findById({ id: userBook.id });
 
-    expect(updatedUserBook?.bookshelfId).toBe(standardBookshelf.id);
+    expect(updatedUserBook?.bookshelf_id).toBe(standardBookshelf.id);
 
     const updatedBorrowing = await borrowingTestUtils.findById({ id: borrowing.id });
 
-    expect(updatedBorrowing?.endedAt).toBeDefined();
+    expect(updatedBorrowing?.ended_at).toBeDefined();
   });
 
   it('updates UserBook', async () => {
@@ -226,13 +226,13 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
 
     const bookshelf1 = await bookshelfTestUtils.createAndPersist({
       input: {
-        userId: user.id,
+        user_id: user.id,
       },
     });
 
     const bookshelf2 = await bookshelfTestUtils.createAndPersist({
       input: {
-        userId: user.id,
+        user_id: user.id,
       },
     });
 
@@ -242,15 +242,15 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
       input: {
         authorIds: [author.id],
         book: {
-          categoryId: category.id,
+          category_id: category.id,
         },
       },
     });
 
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
-        bookId: book.id,
-        bookshelfId: bookshelf1.id,
+        book_id: book.id,
+        bookshelf_id: bookshelf1.id,
       },
     });
 
@@ -283,7 +283,7 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
   it('throws an error - when one of the Collections does not exist', async () => {
     const user = await userTestUtils.createAndPersist();
 
-    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { user_id: user.id } });
 
     const author = await authorTestUtils.createAndPersist();
 
@@ -293,19 +293,19 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
       input: {
         authorIds: [author.id],
         book: {
-          categoryId: category.id,
+          category_id: category.id,
         },
       },
     });
 
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
-        bookId: book.id,
-        bookshelfId: bookshelf.id,
+        book_id: book.id,
+        bookshelf_id: bookshelf.id,
       },
     });
 
-    const collection1 = await collectionTestUtils.createAndPersist({ input: { userId: user.id } });
+    const collection1 = await collectionTestUtils.createAndPersist({ input: { user_id: user.id } });
 
     const invalidCollectionId = Generator.uuid();
 
@@ -332,7 +332,7 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
   it('updates UserBook Collections', async () => {
     const user = await userTestUtils.createAndPersist();
 
-    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { user_id: user.id } });
 
     const author = await authorTestUtils.createAndPersist();
 
@@ -342,23 +342,23 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
       input: {
         authorIds: [author.id],
         book: {
-          categoryId: category.id,
+          category_id: category.id,
         },
       },
     });
 
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
-        bookId: book.id,
-        bookshelfId: bookshelf.id,
+        book_id: book.id,
+        bookshelf_id: bookshelf.id,
       },
     });
 
-    const collection1 = await collectionTestUtils.createAndPersist({ input: { userId: user.id } });
+    const collection1 = await collectionTestUtils.createAndPersist({ input: { user_id: user.id } });
 
-    const collection2 = await collectionTestUtils.createAndPersist({ input: { userId: user.id } });
+    const collection2 = await collectionTestUtils.createAndPersist({ input: { user_id: user.id } });
 
-    const collection3 = await collectionTestUtils.createAndPersist({ input: { userId: user.id } });
+    const collection3 = await collectionTestUtils.createAndPersist({ input: { user_id: user.id } });
 
     const result = await commandHandler.execute({
       userId: user.id,
@@ -376,7 +376,7 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
 
     const user2 = await userTestUtils.createAndPersist();
 
-    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user1.id } });
+    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { user_id: user1.id } });
 
     const author = await authorTestUtils.createAndPersist();
 
@@ -386,15 +386,15 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
       input: {
         authorIds: [author.id],
         book: {
-          categoryId: category.id,
+          category_id: category.id,
         },
       },
     });
 
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
-        bookId: book.id,
-        bookshelfId: bookshelf.id,
+        book_id: book.id,
+        bookshelf_id: bookshelf.id,
       },
     });
 

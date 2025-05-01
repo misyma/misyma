@@ -14,7 +14,7 @@ export class M4CreateUsersBooksTableMigration implements Migration {
       table.text('status').notNullable();
       table.text('image_url');
       table.boolean('is_favorite').notNullable();
-      table.timestamp('created_at').notNullable();
+      table.timestamp('created_at').notNullable().defaultTo(databaseClient.raw('CURRENT_TIMESTAMP'));
 
       table.index(['status']);
     });

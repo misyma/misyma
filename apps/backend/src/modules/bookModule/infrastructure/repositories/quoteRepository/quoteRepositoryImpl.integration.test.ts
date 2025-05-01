@@ -108,7 +108,7 @@ describe('QuoteRepositoryImpl', () => {
       id = userId;
     }
 
-    return await bookshelfTestUtils.createAndPersist({ input: { userId: id } });
+    return await bookshelfTestUtils.createAndPersist({ input: { user_id: id } });
   }
 
   async function createBook(authorIds?: string[]): Promise<BookRawEntity> {

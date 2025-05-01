@@ -16,8 +16,8 @@ export class M5CreateBooksReadingsTableMigration implements Migration {
       table.timestamp('ended_at').notNullable();
 
       table.index(['rating']);
-      table.index(['startedAt']);
-      table.index(['endedAt']);
+      table.index(['started_at']);
+      table.index(['ended_at']);
     });
   }
 

@@ -23,7 +23,6 @@ export interface UserBook {
     readonly isApproved: boolean;
     readonly imageUrl?: string;
     readonly authors: Author[];
-    readonly createdAt: string;
   };
   readonly imageUrl?: string;
   readonly status: ReadingStatus;

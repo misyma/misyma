@@ -64,7 +64,7 @@ describe('DeleteBookCommandHandler', () => {
       input: {
         authorIds: [author.id],
         book: {
-          categoryId: category.id,
+          category_id: category.id,
         },
       },
     });

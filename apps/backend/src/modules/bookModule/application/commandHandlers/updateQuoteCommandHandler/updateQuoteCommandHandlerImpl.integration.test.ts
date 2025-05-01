@@ -105,28 +105,28 @@ describe('UpdateQuoteCommandHandlerImpl', () => {
   it('updates a Quote', async () => {
     const user = await userTestUtils.createAndPersist();
 
-    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { user_id: user.id } });
 
     const category = await categoryTestUtils.createAndPersist();
 
     const book = await bookTestUtils.createAndPersist({
       input: {
         book: {
-          categoryId: category.id,
+          category_id: category.id,
         },
       },
     });
 
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
-        bookshelfId: bookshelf.id,
-        bookId: book.id,
+        bookshelf_id: bookshelf.id,
+        book_id: book.id,
       },
     });
 
     const quote = await quoteTestUtils.createAndPersist({
       input: {
-        userBookId: userBook.id,
+        user_book_id: userBook.id,
       },
     });
 
@@ -150,7 +150,7 @@ describe('UpdateQuoteCommandHandlerImpl', () => {
       userBookId: userBook.id,
       content: newContent,
       isFavorite: newFavorite,
-      createdAt: quote.createdAt,
+      createdAt: quote.created_at,
       page: newPage,
     });
 
@@ -160,7 +160,7 @@ describe('UpdateQuoteCommandHandlerImpl', () => {
 
     expect(persistedUpdatedQuote?.content).toEqual(newContent);
 
-    expect(persistedUpdatedQuote?.isFavorite).toEqual(newFavorite);
+    expect(persistedUpdatedQuote?.is_favorite).toEqual(newFavorite);
 
     expect(persistedUpdatedQuote?.page).toEqual(newPage);
   });

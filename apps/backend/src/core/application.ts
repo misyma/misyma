@@ -150,24 +150,22 @@ export class Application {
       name: 'Admin',
       email,
       password: hashedPassword,
-      isEmailVerified: true,
+      is_email_verified: true,
       role: userRoles.admin,
     });
 
     await databaseClient<BookshelfRawEntity>(bookshelvesTable).insert({
       id: uuidService.generateUuid(),
       name: 'Archiwum',
-      userId,
+      user_id: userId,
       type: bookshelfTypes.archive,
-      createdAt: new Date(),
     });
 
     await databaseClient<BookshelfRawEntity>(bookshelvesTable).insert({
       id: uuidService.generateUuid(),
       name: 'Wypożyczalnia',
-      userId,
+      user_id: userId,
       type: bookshelfTypes.borrowing,
-      createdAt: new Date(),
     });
 
     loggerService.debug({

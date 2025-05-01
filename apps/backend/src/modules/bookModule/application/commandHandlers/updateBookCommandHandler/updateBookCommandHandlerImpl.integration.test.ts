@@ -77,7 +77,7 @@ describe('UpdateBookCommandHandlerImpl', () => {
     const book = await bookTestUtils.createAndPersist({
       input: {
         book: {
-          categoryId: category.id,
+          category_id: category.id,
         },
       },
     });
@@ -106,7 +106,7 @@ describe('UpdateBookCommandHandlerImpl', () => {
     const book = await bookTestUtils.createAndPersist({
       input: {
         book: {
-          categoryId: category1.id,
+          category_id: category1.id,
         },
       },
     });

@@ -139,7 +139,7 @@ describe('UploadUserBookImageCommandHandlerImpl', () => {
 
     const foundUserBook = await userBookTestUtils.findById({ id: userBook.id });
 
-    expect(foundUserBook?.imageUrl).toEqual(`${config.aws.cloudfrontUrl}/${imageId}`);
+    expect(foundUserBook?.image_url).toEqual(`${config.aws.cloudfrontUrl}/${imageId}`);
 
     const existsAfter = await s3TestUtils.objectExists(bucketName, imageId);
 
@@ -154,7 +154,7 @@ describe('UploadUserBookImageCommandHandlerImpl', () => {
     const userBook = await testDataOrchestrator.createUserBook({
       userBook: {
         input: {
-          imageUrl: `${config.aws.cloudfrontUrl}/${existingImageId}`,
+          image_url: `${config.aws.cloudfrontUrl}/${existingImageId}`,
         },
       },
     });
@@ -178,7 +178,7 @@ describe('UploadUserBookImageCommandHandlerImpl', () => {
 
     const foundUserBook = await userBookTestUtils.findById({ id: userBook.id });
 
-    expect(foundUserBook?.imageUrl).toEqual(`${config.aws.cloudfrontUrl}/${imageId}`);
+    expect(foundUserBook?.image_url).toEqual(`${config.aws.cloudfrontUrl}/${imageId}`);
 
     const newImageExistsAfter = await s3TestUtils.objectExists(bucketName, imageId);
 

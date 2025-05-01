@@ -22,19 +22,9 @@ export class QuoteTestUtils extends TestUtils {
   public async createAndPersist(payload: CreateAndPersistPayload): Promise<QuoteRawEntity> {
     const { input } = payload;
 
-    const quote = this.quoteTestFactory.create(input);
+    const quote = this.quoteTestFactory.createRaw(input);
 
-    const rawEntities = await this.databaseClient<QuoteRawEntity>(quotesTable).insert(
-      {
-        id: quote.getId(),
-        user_book_id: quote.getUserBookId(),
-        content: quote.getContent(),
-        created_at: quote.getCreatedAt(),
-        is_favorite: quote.getIsFavorite(),
-        page: quote.getPage() as string,
-      },
-      '*',
-    );
+    const rawEntities = await this.databaseClient<QuoteRawEntity>(quotesTable).insert(quote, '*');
 
     const rawEntity = rawEntities[0] as QuoteRawEntity;
 

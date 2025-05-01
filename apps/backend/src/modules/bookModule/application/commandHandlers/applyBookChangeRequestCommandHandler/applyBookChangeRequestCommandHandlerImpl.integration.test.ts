@@ -89,7 +89,7 @@ describe('ApplyBookChangeRequestCommandHandlerImpl', () => {
     const book = await bookTestUtils.createAndPersist({
       input: {
         book: {
-          categoryId: category.id,
+          category_id: category.id,
         },
       },
     });
@@ -98,9 +98,9 @@ describe('ApplyBookChangeRequestCommandHandlerImpl', () => {
 
     const bookChangeRequest = await bookChangeRequestTestUtils.createAndPersist({
       input: {
-        bookId: book.id,
-        userEmail: user.email,
-        authorIds: author.id,
+        book_id: book.id,
+        user_email: user.email,
+        author_ids: author.id,
       },
     });
 
@@ -110,18 +110,17 @@ describe('ApplyBookChangeRequestCommandHandlerImpl', () => {
 
     expect(updatedBook).toEqual({
       id: book.id,
-      categoryId: category.id,
+      category_id: category.id,
       title: bookChangeRequest.title,
       publisher: bookChangeRequest.publisher,
-      releaseYear: bookChangeRequest.releaseYear,
+      release_year: bookChangeRequest.release_year,
       isbn: bookChangeRequest.isbn,
       language: bookChangeRequest.language,
       translator: bookChangeRequest.translator,
       format: bookChangeRequest.format,
       pages: bookChangeRequest.pages,
-      imageUrl: bookChangeRequest.imageUrl,
-      isApproved: book.isApproved,
-      createdAt: book.createdAt,
+      image_url: bookChangeRequest.image_url,
+      is_approved: book.is_approved,
     });
 
     const bookAuthors = await bookTestUtils.findBookAuthors({ bookId: book.id });
@@ -146,7 +145,7 @@ describe('ApplyBookChangeRequestCommandHandlerImpl', () => {
     const book = await bookTestUtils.createAndPersist({
       input: {
         book: {
-          categoryId: category.id,
+          category_id: category.id,
         },
       },
     });
@@ -155,9 +154,9 @@ describe('ApplyBookChangeRequestCommandHandlerImpl', () => {
 
     const bookChangeRequest = await bookChangeRequestTestUtils.createAndPersist({
       input: {
-        bookId: book.id,
-        userEmail: user.email,
-        authorIds: authorIds.join(','),
+        book_id: book.id,
+        user_email: user.email,
+        author_ids: authorIds.join(','),
       },
     });
 

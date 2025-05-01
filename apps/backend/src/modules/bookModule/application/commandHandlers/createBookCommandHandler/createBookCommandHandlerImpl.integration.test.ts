@@ -62,15 +62,14 @@ describe('CreateBookCommandHandler', () => {
   });
 
   it('creates a Book', async () => {
-    const author = await authorTestUtils.createAndPersist({ input: { isApproved: true } });
+    const author = await authorTestUtils.createAndPersist({ input: { is_approved: true } });
 
     const createdBook = bookTestFactory.create({
       authors: [
         new Author({
           id: author.id,
           name: author.name,
-          isApproved: author.isApproved,
-          createdAt: author.createdAt,
+          isApproved: author.is_approved,
         }),
       ],
     });
@@ -172,7 +171,7 @@ describe('CreateBookCommandHandler', () => {
   });
 
   it('throws an error - when provided ISBN is already taken', async () => {
-    const author = await authorTestUtils.createAndPersist({ input: { isApproved: true } });
+    const author = await authorTestUtils.createAndPersist({ input: { is_approved: true } });
 
     const isbn = Generator.isbn();
 
@@ -182,8 +181,8 @@ describe('CreateBookCommandHandler', () => {
       input: {
         book: {
           isbn,
-          isApproved: true,
-          categoryId: category.id,
+          is_approved: true,
+          category_id: category.id,
         },
       },
     });
@@ -193,13 +192,13 @@ describe('CreateBookCommandHandler', () => {
         title: existingBook.title,
         isbn,
         publisher: existingBook.publisher as string,
-        releaseYear: existingBook.releaseYear,
+        releaseYear: existingBook.release_year,
         language: existingBook.language,
         translator: existingBook.translator as string,
         format: existingBook.format as BookFormat,
         pages: existingBook.pages as number,
-        isApproved: existingBook.isApproved,
-        imageUrl: existingBook.imageUrl as string,
+        isApproved: existingBook.is_approved,
+        imageUrl: existingBook.image_url as string,
         authorIds: [author.id],
         categoryId: category.id,
       });

@@ -159,15 +159,7 @@ describe('UserBookRepositoryImpl', () => {
             id: expect.any(String),
             name: expect.any(String),
           }),
-          authors: [
-            {
-              id: author.id,
-              state: {
-                name: author.name,
-                isApproved: author.is_approved,
-              },
-            },
-          ],
+          authors: [new Author({ id: author.id, name: author.name, isApproved: author.is_approved })],
         },
       });
 
@@ -198,7 +190,15 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const userBook = userBookTestFactory.create(userBookRawEntity);
+      const userBook = userBookTestFactory.create({
+        id: userBookRawEntity.id,
+        bookId: userBookRawEntity.book_id,
+        bookshelfId: userBookRawEntity.bookshelf_id,
+        createdAt: userBookRawEntity.created_at,
+        isFavorite: userBookRawEntity.is_favorite,
+        status: userBookRawEntity.status,
+        imageUrl: userBookRawEntity.image_url,
+      });
 
       const newBookshelfId = bookshelf2.id;
 
@@ -206,9 +206,7 @@ describe('UserBookRepositoryImpl', () => {
 
       const updatedUserBook = await userBookRepository.saveUserBook({ userBook });
 
-      const foundUserBook = await userBookTestUtils.findById({
-        id: userBook.id,
-      });
+      const foundUserBook = await userBookTestUtils.findById({ id: userBook.id });
 
       expect(updatedUserBook.getState()).toEqual({
         bookId: userBook.bookId,
@@ -270,7 +268,15 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const userBook = userBookTestFactory.create(userBookRawEntity);
+      const userBook = userBookTestFactory.create({
+        id: userBookRawEntity.id,
+        bookId: userBookRawEntity.book_id,
+        bookshelfId: userBookRawEntity.bookshelf_id,
+        createdAt: userBookRawEntity.created_at,
+        isFavorite: userBookRawEntity.is_favorite,
+        status: userBookRawEntity.status,
+        imageUrl: userBookRawEntity.image_url,
+      });
 
       const newStatus = Generator.readingStatus();
 
@@ -303,7 +309,15 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const userBook = userBookTestFactory.create(userBookRawEntity);
+      const userBook = userBookTestFactory.create({
+        id: userBookRawEntity.id,
+        bookId: userBookRawEntity.book_id,
+        bookshelfId: userBookRawEntity.bookshelf_id,
+        createdAt: userBookRawEntity.created_at,
+        isFavorite: userBookRawEntity.is_favorite,
+        status: userBookRawEntity.status,
+        imageUrl: userBookRawEntity.image_url,
+      });
 
       const newImageUrl = Generator.imageUrl();
 
@@ -336,7 +350,15 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const userBook = userBookTestFactory.create(userBookRawEntity);
+      const userBook = userBookTestFactory.create({
+        id: userBookRawEntity.id,
+        bookId: userBookRawEntity.book_id,
+        bookshelfId: userBookRawEntity.bookshelf_id,
+        createdAt: userBookRawEntity.created_at,
+        isFavorite: userBookRawEntity.is_favorite,
+        status: userBookRawEntity.status,
+        imageUrl: userBookRawEntity.image_url,
+      });
 
       const newImageUrl = null;
 
@@ -369,7 +391,15 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const userBook = userBookTestFactory.create(userBookRawEntity);
+      const userBook = userBookTestFactory.create({
+        id: userBookRawEntity.id,
+        bookId: userBookRawEntity.book_id,
+        bookshelfId: userBookRawEntity.bookshelf_id,
+        createdAt: userBookRawEntity.created_at,
+        isFavorite: userBookRawEntity.is_favorite,
+        status: userBookRawEntity.status,
+        imageUrl: userBookRawEntity.image_url,
+      });
 
       const newIsFavorite = Generator.boolean();
 
@@ -470,7 +500,15 @@ describe('UserBookRepositoryImpl', () => {
         },
       });
 
-      const userBook = userBookTestFactory.create(userBookRawEntity);
+      const userBook = userBookTestFactory.create({
+        id: userBookRawEntity.id,
+        bookId: userBookRawEntity.book_id,
+        bookshelfId: userBookRawEntity.bookshelf_id,
+        createdAt: userBookRawEntity.created_at,
+        isFavorite: userBookRawEntity.is_favorite,
+        status: userBookRawEntity.status,
+        imageUrl: userBookRawEntity.image_url,
+      });
 
       const bookReading = await bookReadingTestUtils.createAndPersist({
         input: {

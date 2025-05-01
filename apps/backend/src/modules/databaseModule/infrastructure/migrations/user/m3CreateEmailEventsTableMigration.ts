@@ -12,7 +12,7 @@ export class M3CreateEmailEventsTableMigration implements Migration {
       table.text('payload').notNullable();
       table.text('status').notNullable();
       table.text('event_name').notNullable();
-      table.dateTime('created_at').notNullable();
+      table.timestamp('created_at').notNullable().defaultTo(databaseClient.raw('CURRENT_TIMESTAMP'));
     });
   }
 

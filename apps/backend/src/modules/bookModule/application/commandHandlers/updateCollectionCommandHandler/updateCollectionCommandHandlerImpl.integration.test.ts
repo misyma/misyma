@@ -76,9 +76,9 @@ describe('UpdateCollectionNameCommandHandler', () => {
   it('throws an error - when Collection with given name already exists', async () => {
     const user = await userTestUtils.createAndPersist();
 
-    const preExistingCollection = await collectionTestUtils.createAndPersist({ input: { userId: user.id } });
+    const preExistingCollection = await collectionTestUtils.createAndPersist({ input: { user_id: user.id } });
 
-    const secondCollection = await collectionTestUtils.createAndPersist({ input: { userId: user.id } });
+    const secondCollection = await collectionTestUtils.createAndPersist({ input: { user_id: user.id } });
 
     try {
       await commandHandler.execute({
@@ -102,7 +102,7 @@ describe('UpdateCollectionNameCommandHandler', () => {
   it('updates the Collection name', async () => {
     const user = await userTestUtils.createAndPersist();
 
-    const collection = await collectionTestUtils.createAndPersist({ input: { userId: user.id } });
+    const collection = await collectionTestUtils.createAndPersist({ input: { user_id: user.id } });
 
     const newName = Generator.words(2);
 

@@ -22,7 +22,7 @@ export class M10CreateBooksChangeRequestsTableMigration implements Migration {
       table.integer('pages');
       table.text('image_url');
       table.text('author_ids');
-      table.timestamp('created_at').notNullable();
+      table.timestamp('created_at').notNullable().defaultTo(databaseClient.raw('CURRENT_TIMESTAMP'));
     });
   }
 

@@ -11,9 +11,9 @@ export class M8CreateCollectionsTableMigration implements Migration {
       table.uuid('id').primary();
       table.uuid('user_id').notNullable().references('id').inTable('users').onDelete('CASCADE');
       table.text('name').notNullable().unique();
-      table.timestamp('created_at').notNullable();
+      table.timestamp('created_at').notNullable().defaultTo(databaseClient.raw('CURRENT_TIMESTAMP'));
 
-      table.unique(['name', 'userId']);
+      table.unique(['name', 'user_id']);
     });
   }
 
