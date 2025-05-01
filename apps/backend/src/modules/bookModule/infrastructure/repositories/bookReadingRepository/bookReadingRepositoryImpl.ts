@@ -59,7 +59,7 @@ export class BookReadingRepositoryImpl implements BookReadingRepository {
         .offset(pageSize * (page - 1));
 
       if (sortDate) {
-        query.orderBy('startedAt', sortDate);
+        query.orderBy('started_at', sortDate);
       }
 
       rawEntities = await query;

@@ -42,7 +42,9 @@ describe('CategoryRepositoryImpl', () => {
 
   describe('findById', () => {
     it('returns null - when Category was not found', async () => {
-      const res = await categoryRepository.findCategory({ id: 'non-existing-id' });
+      const id = Generator.uuid();
+
+      const res = await categoryRepository.findCategory({ id });
 
       expect(res).toBeNull();
     });

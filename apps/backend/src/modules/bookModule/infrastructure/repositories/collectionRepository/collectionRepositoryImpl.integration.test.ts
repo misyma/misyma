@@ -56,7 +56,9 @@ describe('CollectionRepositoryImpl', () => {
 
   describe('findById', () => {
     it('returns null - when Collection was not found', async () => {
-      const res = await collectionRepository.findCollection({ id: 'non-existing-id' });
+      const id = Generator.uuid();
+
+      const res = await collectionRepository.findCollection({ id });
 
       expect(res).toBeNull();
     });

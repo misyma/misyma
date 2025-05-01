@@ -168,10 +168,19 @@ describe('BookRepositoryImpl', () => {
       });
 
       const book = bookTestFactory.create({
-        ...bookRawEntity,
-        format: bookRawEntity.format as BookFormat,
-        authors: [author1, author2, author3],
+        id: bookRawEntity.id,
+        title: bookRawEntity.title,
         categoryId: category.id,
+        format: bookRawEntity.format as BookFormat,
+        imageUrl: bookRawEntity.image_url,
+        isApproved: bookRawEntity.is_approved,
+        isbn: bookRawEntity.isbn,
+        language: bookRawEntity.language,
+        pages: bookRawEntity.pages,
+        publisher: bookRawEntity.publisher,
+        releaseYear: bookRawEntity.release_year,
+        translator: bookRawEntity.translator,
+        authors: [author1, author2, author3],
         category: new Category({
           id: category.id,
           name: category.name,
@@ -198,9 +207,7 @@ describe('BookRepositoryImpl', () => {
 
       expect(foundBook?.getAuthors()[0]?.getId()).toEqual(author3Raw.id);
 
-      const updatedBookAuthors = await bookTestUtils.findBookAuthors({
-        bookId: book.getId(),
-      });
+      const updatedBookAuthors = await bookTestUtils.findBookAuthors({ bookId: book.getId() });
 
       expect(updatedBookAuthors.length).toEqual(1);
     });
@@ -237,8 +244,18 @@ describe('BookRepositoryImpl', () => {
       });
 
       const book = bookTestFactory.create({
-        ...bookRawEntity,
+        id: bookRawEntity.id,
+        title: bookRawEntity.title,
+        categoryId: category.id,
         format: bookRawEntity.format as BookFormat,
+        imageUrl: bookRawEntity.image_url,
+        isApproved: bookRawEntity.is_approved,
+        isbn: bookRawEntity.isbn,
+        language: bookRawEntity.language,
+        pages: bookRawEntity.pages,
+        publisher: bookRawEntity.publisher,
+        releaseYear: bookRawEntity.release_year,
+        translator: bookRawEntity.translator,
         authors: [author1],
       });
 
@@ -246,13 +263,9 @@ describe('BookRepositoryImpl', () => {
 
       book.addAuthor(author3);
 
-      const updatedBook = await bookRepository.saveBook({
-        book,
-      });
+      const updatedBook = await bookRepository.saveBook({ book });
 
-      const foundBook = await bookRepository.findBook({
-        id: book.getId(),
-      });
+      const foundBook = await bookRepository.findBook({ id: book.getId() });
 
       const allAuthorsMatch = [author1Raw.id, author2Raw.id, author3Raw.id].every((authorId) => {
         const updatedBookHasAuthor = updatedBook.getAuthors().some((author) => author.getId() === authorId);
@@ -286,8 +299,18 @@ describe('BookRepositoryImpl', () => {
       });
 
       const book = bookTestFactory.create({
-        ...bookRawEntity,
+        id: bookRawEntity.id,
+        title: bookRawEntity.title,
+        categoryId: category.id,
         format: bookRawEntity.format as BookFormat,
+        imageUrl: bookRawEntity.image_url,
+        isApproved: bookRawEntity.is_approved,
+        isbn: bookRawEntity.isbn,
+        language: bookRawEntity.language,
+        pages: bookRawEntity.pages,
+        publisher: bookRawEntity.publisher,
+        releaseYear: bookRawEntity.release_year,
+        translator: bookRawEntity.translator,
       });
 
       const newTitle = Generator.alphaString(20);

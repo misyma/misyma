@@ -168,7 +168,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
       }
 
       if (isApproved !== undefined) {
-        query.where({ isApproved });
+        query.where({ is_approved: isApproved });
       }
 
       if (sortField === 'name') {

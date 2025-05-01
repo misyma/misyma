@@ -66,7 +66,7 @@ export class BorrowingRepositoryImpl implements BorrowingRepository {
         if (isOpen) {
           query.whereNull('ended_at');
         } else {
-          query.whereNotNull('started_at');
+          query.whereNotNull('ended_at');
         }
       }
 

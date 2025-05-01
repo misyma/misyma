@@ -52,6 +52,7 @@ export class CollectionRepositoryImpl implements CollectionRepository {
         .where(whereCondition)
         .first();
     } catch (error) {
+      console.log({ error });
       throw new RepositoryError({
         entity: 'Collection',
         operation: 'find',
