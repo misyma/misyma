@@ -1,7 +1,7 @@
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type UuidService } from '../../../../../libs/uuid/uuidService.js';
 import { type EmailEventRawEntity } from '../../../../databaseModule/infrastructure/tables/emailEventTable/emailEventRawEntity.js';
-import { emailEventTable } from '../../../../databaseModule/infrastructure/tables/emailEventTable/emailEventTable.js';
+import { emailEventsTable } from '../../../../databaseModule/infrastructure/tables/emailEventTable/emailEventTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { type EmailEventDraft, type EmailEvent } from '../../../domain/entities/emailEvent/emailEvent.js';
 import { emailEventStatuses } from '../../../domain/entities/emailEvent/types/emailEventStatus.js';
@@ -11,7 +11,7 @@ import {
   type FindAllCreatedAfterPayload,
 } from '../../../domain/repositories/emailEventRepository/emailEventRepository.js';
 
-import { type EmailEventMapper } from './mappers/emailEventMapper/emailEventMapper.js';
+import { type EmailEventMapper } from './emailEventMapper/emailEventMapper.js';
 
 export class EmailEventRepositoryImpl implements EmailEventRepository {
   public constructor(
@@ -26,8 +26,8 @@ export class EmailEventRepositoryImpl implements EmailEventRepository {
     let rawEntities: EmailEventRawEntity[];
 
     try {
-      rawEntities = await this.databaseClient<EmailEventRawEntity>(emailEventTable)
-        .where('createdAt', '>=', after)
+      rawEntities = await this.databaseClient<EmailEventRawEntity>(emailEventsTable)
+        .where('created_at', '>=', after)
         .select('*');
     } catch (error) {
       throw new RepositoryError({
@@ -44,7 +44,7 @@ export class EmailEventRepositoryImpl implements EmailEventRepository {
     let rawEntities: EmailEventRawEntity[];
 
     try {
-      rawEntities = await this.databaseClient<EmailEventRawEntity>(emailEventTable)
+      rawEntities = await this.databaseClient<EmailEventRawEntity>(emailEventsTable)
         .where({ status: emailEventStatuses.pending })
         .select('*');
     } catch (error) {
@@ -62,7 +62,7 @@ export class EmailEventRepositoryImpl implements EmailEventRepository {
     const { id, status } = payload;
 
     try {
-      await this.databaseClient<EmailEventRawEntity>(emailEventTable).where({ id }).update({
+      await this.databaseClient<EmailEventRawEntity>(emailEventsTable).where({ id }).update({
         status,
       });
     } catch (error) {
@@ -76,12 +76,12 @@ export class EmailEventRepositoryImpl implements EmailEventRepository {
 
   public async create(entity: EmailEventDraft): Promise<void> {
     try {
-      await this.databaseClient<EmailEventRawEntity>(emailEventTable).insert({
-        createdAt: new Date(),
+      await this.databaseClient<EmailEventRawEntity>(emailEventsTable).insert({
+        created_at: new Date(),
         id: this.uuidService.generateUuid(),
         payload: JSON.stringify(entity.getPayload()),
         status: emailEventStatuses.pending,
-        eventName: entity.getEmailEventName(),
+        event_name: entity.getEmailEventName(),
       });
     } catch (error) {
       throw new RepositoryError({
@@ -94,7 +94,7 @@ export class EmailEventRepositoryImpl implements EmailEventRepository {
 
   public async deleteProcessed(): Promise<void> {
     try {
-      await this.databaseClient<EmailEventRawEntity>(emailEventTable)
+      await this.databaseClient<EmailEventRawEntity>(emailEventsTable)
         .where({ status: emailEventStatuses.processed })
         .delete();
     } catch (error) {

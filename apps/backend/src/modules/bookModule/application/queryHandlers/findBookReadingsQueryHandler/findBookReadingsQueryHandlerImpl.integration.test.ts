@@ -13,7 +13,7 @@ import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestU
 import { symbols } from '../../../symbols.js';
 import { type BookReadingTestUtils } from '../../../tests/utils/bookReadingTestUtils/bookReadingTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
-import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
+import { type CategoryTestUtils } from '../../../tests/utils/categoryTestUtils/categoryTestUtils.js';
 import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
 
 import { type FindBookReadingsQueryHandler } from './findBookReadingsQueryHandler.js';
@@ -31,7 +31,7 @@ describe('FindBookReadingsQueryHandlerImpl', () => {
 
   let userTestUtils: UserTestUtils;
 
-  let genreTestUtils: GenreTestUtils;
+  let categoryTestUtils: CategoryTestUtils;
 
   let userBookTestUtils: UserBookTestUtils;
 
@@ -56,10 +56,10 @@ describe('FindBookReadingsQueryHandlerImpl', () => {
 
     userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
 
-    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+    categoryTestUtils = container.get<CategoryTestUtils>(testSymbols.categoryTestUtils);
 
     testUtils = [
-      genreTestUtils,
+      categoryTestUtils,
       bookTestUtils,
       bookshelfTestUtils,
       userTestUtils,
@@ -87,22 +87,22 @@ describe('FindBookReadingsQueryHandlerImpl', () => {
   });
 
   async function createUserBook(): Promise<UserBookRawEntity> {
-    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: testUserId } });
+    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { user_id: testUserId } });
 
-    const genre = await genreTestUtils.createAndPersist();
+    const category = await categoryTestUtils.createAndPersist();
 
     const book = await bookTestUtils.createAndPersist({
       input: {
         book: {
-          genreId: genre.id,
+          category_id: category.id,
         },
       },
     });
 
     return await userBookTestUtils.createAndPersist({
       input: {
-        bookId: book.id,
-        bookshelfId: bookshelf.id,
+        book_id: book.id,
+        bookshelf_id: bookshelf.id,
       },
     });
   }
@@ -153,13 +153,13 @@ describe('FindBookReadingsQueryHandlerImpl', () => {
 
     const bookReading1 = await bookReadingTestUtils.createAndPersist({
       input: {
-        userBookId: userBook.id,
+        user_book_id: userBook.id,
       },
     });
 
     const bookReading2 = await bookReadingTestUtils.createAndPersist({
       input: {
-        userBookId: userBook.id,
+        user_book_id: userBook.id,
       },
     });
 
@@ -173,19 +173,19 @@ describe('FindBookReadingsQueryHandlerImpl', () => {
     expect(bookReadings.length).toEqual(2);
 
     expect(bookReadings[0]?.getState()).toEqual({
-      userBookId: bookReading1.userBookId,
+      userBookId: bookReading1.user_book_id,
       rating: bookReading1.rating,
       comment: bookReading1.comment,
-      startedAt: bookReading1.startedAt,
-      endedAt: bookReading1.endedAt,
+      startedAt: bookReading1.started_at,
+      endedAt: bookReading1.ended_at,
     });
 
     expect(bookReadings[1]?.getState()).toEqual({
-      userBookId: bookReading2.userBookId,
+      userBookId: bookReading2.user_book_id,
       rating: bookReading2.rating,
       comment: bookReading2.comment,
-      startedAt: bookReading2.startedAt,
-      endedAt: bookReading2.endedAt,
+      startedAt: bookReading2.started_at,
+      endedAt: bookReading2.ended_at,
     });
 
     expect(total).toEqual(2);

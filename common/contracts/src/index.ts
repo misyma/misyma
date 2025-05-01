@@ -110,15 +110,15 @@ export * from './schemas/borrowing/findBorrowings.js';
 
 export * from './schemas/borrowing/updateBorrowing.js';
 
-export * from './schemas/genre/genre.js';
+export * from './schemas/category/category.js';
 
-export * from './schemas/genre/findGenres.js';
+export * from './schemas/category/findCategories.js';
 
-export * from './schemas/genre/createGenre.js';
+export * from './schemas/category/createCategory.js';
 
-export * from './schemas/genre/deleteGenre.js';
+export * from './schemas/category/deleteCategory.js';
 
-export * from './schemas/genre/updateGenre.js';
+export * from './schemas/category/updateCategory.js';
 
 export * from './schemas/quote/quote.js';
 

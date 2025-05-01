@@ -30,7 +30,7 @@ export interface FindUserBooksPayload {
   readonly bookshelfId?: string | undefined;
   readonly collectionId?: string | undefined;
   readonly authorId?: string | undefined;
-  readonly genreId?: string | undefined;
+  readonly categoryId?: string | undefined;
   readonly userId?: string | undefined;
   readonly bookId?: string | undefined;
   readonly isbn?: string | undefined;
@@ -51,7 +51,7 @@ export interface CountUserBooksPayload {
   readonly bookshelfId?: string | undefined;
   readonly collectionId?: string | undefined;
   readonly authorId?: string | undefined;
-  readonly genreId?: string | undefined;
+  readonly categoryId?: string | undefined;
   readonly userId?: string | undefined;
   readonly bookId?: string | undefined;
   readonly isbn?: string | undefined;

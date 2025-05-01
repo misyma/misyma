@@ -22,9 +22,9 @@ import { BookChangeRequestHttpController } from './api/httpControllers/bookChang
 import { BookHttpController } from './api/httpControllers/bookHttpController/bookHttpController.js';
 import { BookReadingHttpController } from './api/httpControllers/bookReadingHttpController/bookReadingHttpController.js';
 import { BorrowingHttpController } from './api/httpControllers/borrowingHttpController/borrowingHttpController.js';
+import { CategoryAdminHttpController } from './api/httpControllers/categoryAdminHttpController/categoryAdminHttpController.js';
+import { CategoryHttpController } from './api/httpControllers/categoryHttpController/categoryHttpController.js';
 import { CollectionHttpController } from './api/httpControllers/collectionHttpController/collectionHttpController.js';
-import { GenreAdminHttpController } from './api/httpControllers/genreAdminHttpController/genreAdminHttpController.js';
-import { GenreHttpController } from './api/httpControllers/genreHttpController/genreHttpController.js';
 import { QuoteHttpController } from './api/httpControllers/quoteHttpController/quoteHttpController.js';
 import { UserBookHttpController } from './api/httpControllers/userBookHttpController/userBookHttpController.js';
 import { type ApplyBookChangeRequestCommandHandler } from './application/commandHandlers/applyBookChangeRequestCommandHandler/applyBookChangeRequestCommandHandler.js';
@@ -39,10 +39,10 @@ import { type CreateBookReadingCommandHandler } from './application/commandHandl
 import { CreateBookReadingCommandHandlerImpl } from './application/commandHandlers/createBookReadingCommandHandler/createBookReadingCommandHandlerImpl.js';
 import { type CreateBorrowingCommandHandler } from './application/commandHandlers/createBorrowingCommandHandler/createBorrowingCommandHandler.js';
 import { CreateBorrowingCommandHandlerImpl } from './application/commandHandlers/createBorrowingCommandHandler/createBorrowingCommandHandlerImpl.js';
+import { type CreateCategoryCommandHandler } from './application/commandHandlers/createCategoryCommandHandler/createCategoryCommandHandler.js';
+import { CreateCategoryCommandHandlerImpl } from './application/commandHandlers/createCategoryCommandHandler/createCategoryCommandHandlerImpl.js';
 import { type CreateCollectionCommandHandler } from './application/commandHandlers/createCollectionCommandHandler/createCollectionCommandHandler.js';
 import { CreateCollectionCommandHandlerImpl } from './application/commandHandlers/createCollectionCommandHandler/createCollectionCommandHandlerImpl.js';
-import { type CreateGenreCommandHandler } from './application/commandHandlers/createGenreCommandHandler/createGenreCommandHandler.js';
-import { CreateGenreCommandHandlerImpl } from './application/commandHandlers/createGenreCommandHandler/createGenreCommandHandlerImpl.js';
 import { type CreateQuoteCommandHandler } from './application/commandHandlers/createQuoteCommandHandler/createQuoteCommandHandler.js';
 import { CreateQuoteCommandHandlerImpl } from './application/commandHandlers/createQuoteCommandHandler/createQuoteCommandHandlerImpl.js';
 import { type CreateUserBookCommandHandler } from './application/commandHandlers/createUserBookCommandHandler/createUserBookCommandHandler.js';
@@ -57,10 +57,10 @@ import { type DeleteBookReadingCommandHandler } from './application/commandHandl
 import { DeleteBookReadingCommandHandlerImpl } from './application/commandHandlers/deleteBookReadingCommandHandler/deleteBookReadingCommandHandlerImpl.js';
 import { type DeleteBorrowingCommandHandler } from './application/commandHandlers/deleteBorrowingCommandHandler/deleteBorrowingCommandHandler.js';
 import { DeleteBorrowingCommandHandlerImpl } from './application/commandHandlers/deleteBorrowingCommandHandler/deleteBorrowingCommandHandlerImpl.js';
+import { type DeleteCategoryCommandHandler } from './application/commandHandlers/deleteCategoryCommandHandler/deleteCategoryCommandHandler.js';
+import { DeleteCategoryCommandHandlerImpl } from './application/commandHandlers/deleteCategoryCommandHandler/deleteCategoryCommandHandlerImpl.js';
 import { type DeleteCollectionCommandHandler } from './application/commandHandlers/deleteCollectionCommandHandler/deleteCollectionCommandHandler.js';
 import { DeleteCollectionCommandHandlerImpl } from './application/commandHandlers/deleteCollectionCommandHandler/deleteCollectionCommandHandlerImpl.js';
-import { type DeleteGenreCommandHandler } from './application/commandHandlers/deleteGenreCommandHandler/deleteGenreCommandHandler.js';
-import { DeleteGenreCommandHandlerImpl } from './application/commandHandlers/deleteGenreCommandHandler/deleteGenreCommandHandlerImpl.js';
 import { type DeleteQuoteCommandHandler } from './application/commandHandlers/deleteQuoteCommandHandler/deleteQuoteCommandHandler.js';
 import { DeleteQuoteCommandHandlerImpl } from './application/commandHandlers/deleteQuoteCommandHandler/deleteQuoteCommandHandlerImpl.js';
 import { type DeleteUserBookCommandHandler } from './application/commandHandlers/deleteUserBookCommandHandler/deleteUserBookCommandHandler.js';
@@ -73,10 +73,10 @@ import { type UpdateBookReadingCommandHandler } from './application/commandHandl
 import { UpdateBookReadingCommandHandlerImpl } from './application/commandHandlers/updateBookReadingCommandHandler/updateBookReadingCommandHandlerImpl.js';
 import { type UpdateBorrowingCommandHandler } from './application/commandHandlers/updateBorrowingCommandHandler/updateBorrowingCommandHandler.js';
 import { UpdateBorrowingCommandHandlerImpl } from './application/commandHandlers/updateBorrowingCommandHandler/updateBorrowingCommandHandlerImpl.js';
+import { type UpdateCategoryCommandHandler } from './application/commandHandlers/updateCategoryCommandHandler/updateCategoryCommandHandler.js';
+import { UpdateCategoryCommandHandlerImpl } from './application/commandHandlers/updateCategoryCommandHandler/updateCategoryCommandHandlerImpl.js';
 import { type UpdateCollectionCommandHandler } from './application/commandHandlers/updateCollectionCommandHandler/updateCollectionCommandHandler.js';
 import { UpdateCollectionCommandHandlerImpl } from './application/commandHandlers/updateCollectionCommandHandler/updateCollectionCommandHandlerImpl.js';
-import { type UpdateGenreCommandHandler } from './application/commandHandlers/updateGenreCommandHandler/updateGenreCommandHandler.js';
-import { UpdateGenreCommandHandlerImpl } from './application/commandHandlers/updateGenreCommandHandler/updateGenreCommandHandlerImpl.js';
 import { type UpdateQuoteCommandHandler } from './application/commandHandlers/updateQuoteCommandHandler/updateQuoteCommandHandler.js';
 import { UpdateQuoteCommandHandlerImpl } from './application/commandHandlers/updateQuoteCommandHandler/updateQuoteCommandHandlerImpl.js';
 import { type UpdateUserBookCommandHandler } from './application/commandHandlers/updateUserBookCommandHandler/updateUserBookCommandHandler.js';
@@ -95,10 +95,10 @@ import { type FindBooksQueryHandler } from './application/queryHandlers/findBook
 import { FindBooksQueryHandlerImpl } from './application/queryHandlers/findBooksQueryHandler/findBooksQueryHandlerImpl.js';
 import { type FindBorrowingsQueryHandler } from './application/queryHandlers/findBorrowingsQueryHandler/findBorrowingsQueryHandler.js';
 import { FindBorrowingsQueryHandlerImpl } from './application/queryHandlers/findBorrowingsQueryHandler/findBorrowingsQueryHandlerImpl.js';
+import { type FindCategoriesQueryHandler } from './application/queryHandlers/findCategoriesQueryHandler/findCategoriesQueryHandler.js';
+import { FindCategoriesQueryHandlerImpl } from './application/queryHandlers/findCategoriesQueryHandler/findCategoriesQueryHandlerImpl.js';
 import { type FindCollectionsQueryHandler } from './application/queryHandlers/findCollectionsQueryHandler/findCollectionsQueryHandler.js';
 import { FindCollectionsQueryHandlerImpl } from './application/queryHandlers/findCollectionsQueryHandler/findCollectionsQueryHandlerImpl.js';
-import { type FindGenresQueryHandler } from './application/queryHandlers/findGenresQueryHandler/findGenresQueryHandler.js';
-import { FindGenresQueryHandlerImpl } from './application/queryHandlers/findGenresQueryHandler/findGenresQueryHandlerImpl.js';
 import { type FindQuotesQueryHandler } from './application/queryHandlers/findQuotesQueryHandler/findQuotesQueryHandler.js';
 import { FindQuotesQueryHandlerImpl } from './application/queryHandlers/findQuotesQueryHandler/findQuotesQueryHandlerImpl.js';
 import { type FindUserBookQueryHandler } from './application/queryHandlers/findUserBookQueryHandler/findUserBookQueryHandler.js';
@@ -110,8 +110,8 @@ import { type BookChangeRequestRepository } from './domain/repositories/bookChan
 import { type BookReadingRepository } from './domain/repositories/bookReadingRepository/bookReadingRepository.js';
 import { type BookRepository } from './domain/repositories/bookRepository/bookRepository.js';
 import { type BorrowingRepository } from './domain/repositories/borrowingRepository/borrowingRepository.js';
+import { type CategoryRepository } from './domain/repositories/categoryRepository/categoryRepository.js';
 import { type CollectionRepository } from './domain/repositories/collectionRepository/collectionRepository.js';
-import { type GenreRepository } from './domain/repositories/genreRepository/genreRepository.js';
 import { type QuoteRepository } from './domain/repositories/quoteRepository/quoteRepository.js';
 import { type UserBookRepository } from './domain/repositories/userBookRepository/userBookRepository.js';
 import { type AuthorMapper } from './infrastructure/repositories/authorRepository/authorMapper/authorMapper.js';
@@ -129,12 +129,12 @@ import { BookRepositoryImpl } from './infrastructure/repositories/bookRepository
 import { type BorrowingMapper } from './infrastructure/repositories/borrowingRepository/borrowingMapper/borrowingMapper.js';
 import { BorrowingMapperImpl } from './infrastructure/repositories/borrowingRepository/borrowingMapper/borrowingMapperImpl.js';
 import { BorrowingRepositoryImpl } from './infrastructure/repositories/borrowingRepository/borrowingRepositoryImpl.js';
+import { type CategoryMapper } from './infrastructure/repositories/categoryRepository/categoryMapper/categoryMapper.js';
+import { CategoryMapperImpl } from './infrastructure/repositories/categoryRepository/categoryMapper/categoryMapperImpl.js';
+import { CategoryRepositoryImpl } from './infrastructure/repositories/categoryRepository/categoryRepositoryImpl.js';
 import { type CollectionMapper } from './infrastructure/repositories/collectionRepository/collectionMapper/collectionMapper.js';
 import { CollectionMapperImpl } from './infrastructure/repositories/collectionRepository/collectionMapper/collectionMapperImpl.js';
 import { CollectionRepositoryImpl } from './infrastructure/repositories/collectionRepository/collectionRepositoryImpl.js';
-import { type GenreMapper } from './infrastructure/repositories/genreRepository/genreMapper/genreMapper.js';
-import { GenreMapperImpl } from './infrastructure/repositories/genreRepository/genreMapper/genreMapperImpl.js';
-import { GenreRepositoryImpl } from './infrastructure/repositories/genreRepository/genreRepositoryImpl.js';
 import { type QuoteMapper } from './infrastructure/repositories/quoteRepository/quoteMapper/quoteMapper.js';
 import { QuoteMapperImpl } from './infrastructure/repositories/quoteRepository/quoteMapper/quoteMapperImpl.js';
 import { QuoteRepositoryImpl } from './infrastructure/repositories/quoteRepository/quoteRepositoryImpl.js';
@@ -161,7 +161,7 @@ export class BookModule implements DependencyInjectionModule {
 
     container.bind<UserBookMapper>(symbols.userBookMapper, () => new UserBookMapperImpl());
 
-    container.bind<GenreMapper>(symbols.genreMapper, () => new GenreMapperImpl());
+    container.bind<CategoryMapper>(symbols.categoryMapper, () => new CategoryMapperImpl());
 
     container.bind<AuthorMapper>(symbols.authorMapper, () => new AuthorMapperImpl());
 
@@ -187,12 +187,12 @@ export class BookModule implements DependencyInjectionModule {
         ),
     );
 
-    container.bind<GenreRepository>(
-      symbols.genreRepository,
+    container.bind<CategoryRepository>(
+      symbols.categoryRepository,
       () =>
-        new GenreRepositoryImpl(
+        new CategoryRepositoryImpl(
           container.get<DatabaseClient>(databaseSymbols.databaseClient),
-          container.get<GenreMapper>(symbols.genreMapper),
+          container.get<CategoryMapper>(symbols.categoryMapper),
           container.get<UuidService>(coreSymbols.uuidService),
         ),
     );
@@ -298,29 +298,29 @@ export class BookModule implements DependencyInjectionModule {
         ),
     );
 
-    container.bind<CreateGenreCommandHandler>(
-      symbols.createGenreCommandHandler,
+    container.bind<CreateCategoryCommandHandler>(
+      symbols.createCategoryCommandHandler,
       () =>
-        new CreateGenreCommandHandlerImpl(
-          container.get<GenreRepository>(symbols.genreRepository),
+        new CreateCategoryCommandHandlerImpl(
+          container.get<CategoryRepository>(symbols.categoryRepository),
           container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );
 
-    container.bind<DeleteGenreCommandHandler>(
-      symbols.deleteGenreCommandHandler,
+    container.bind<DeleteCategoryCommandHandler>(
+      symbols.deleteCategoryCommandHandler,
       () =>
-        new DeleteGenreCommandHandlerImpl(
-          container.get<GenreRepository>(symbols.genreRepository),
+        new DeleteCategoryCommandHandlerImpl(
+          container.get<CategoryRepository>(symbols.categoryRepository),
           container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );
 
-    container.bind<UpdateGenreCommandHandler>(
-      symbols.updateGenreCommandHandler,
+    container.bind<UpdateCategoryCommandHandler>(
+      symbols.updateCategoryCommandHandler,
       () =>
-        new UpdateGenreCommandHandlerImpl(
-          container.get<GenreRepository>(symbols.genreRepository),
+        new UpdateCategoryCommandHandlerImpl(
+          container.get<CategoryRepository>(symbols.categoryRepository),
           container.get<LoggerService>(coreSymbols.loggerService),
         ),
     );
@@ -561,9 +561,9 @@ export class BookModule implements DependencyInjectionModule {
       () => new FindBooksQueryHandlerImpl(container.get<BookRepository>(symbols.bookRepository)),
     );
 
-    container.bind<FindGenresQueryHandler>(
-      symbols.findGenresQueryHandler,
-      () => new FindGenresQueryHandlerImpl(container.get<GenreRepository>(symbols.genreRepository)),
+    container.bind<FindCategoriesQueryHandler>(
+      symbols.findCategoriesQueryHandler,
+      () => new FindCategoriesQueryHandlerImpl(container.get<CategoryRepository>(symbols.categoryRepository)),
     );
 
     container.bind<FindCollectionsQueryHandler>(
@@ -652,22 +652,22 @@ export class BookModule implements DependencyInjectionModule {
         ),
     );
 
-    container.bind<GenreHttpController>(
-      symbols.genreHttpController,
+    container.bind<CategoryHttpController>(
+      symbols.categoryHttpController,
       () =>
-        new GenreHttpController(
-          container.get<FindGenresQueryHandler>(symbols.findGenresQueryHandler),
+        new CategoryHttpController(
+          container.get<FindCategoriesQueryHandler>(symbols.findCategoriesQueryHandler),
           container.get<AccessControlService>(authSymbols.accessControlService),
         ),
     );
 
-    container.bind<GenreAdminHttpController>(
-      symbols.genreAdminHttpController,
+    container.bind<CategoryAdminHttpController>(
+      symbols.categoryAdminHttpController,
       () =>
-        new GenreAdminHttpController(
-          container.get<CreateGenreCommandHandler>(symbols.createGenreCommandHandler),
-          container.get<UpdateGenreCommandHandler>(symbols.updateGenreCommandHandler),
-          container.get<DeleteGenreCommandHandler>(symbols.deleteGenreCommandHandler),
+        new CategoryAdminHttpController(
+          container.get<CreateCategoryCommandHandler>(symbols.createCategoryCommandHandler),
+          container.get<UpdateCategoryCommandHandler>(symbols.updateCategoryCommandHandler),
+          container.get<DeleteCategoryCommandHandler>(symbols.deleteCategoryCommandHandler),
           container.get<AccessControlService>(authSymbols.accessControlService),
         ),
     );

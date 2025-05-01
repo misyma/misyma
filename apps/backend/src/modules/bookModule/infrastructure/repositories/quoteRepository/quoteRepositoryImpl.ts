@@ -1,13 +1,13 @@
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type UuidService } from '../../../../../libs/uuid/uuidService.js';
-import { authorTable } from '../../../../databaseModule/infrastructure/tables/authorTable/authorTable.js';
-import { bookAuthorTable } from '../../../../databaseModule/infrastructure/tables/bookAuthorTable/bookAuthorTable.js';
-import { bookshelfTable } from '../../../../databaseModule/infrastructure/tables/bookshelfTable/bookshelfTable.js';
-import { bookTable } from '../../../../databaseModule/infrastructure/tables/bookTable/bookTable.js';
+import { authorsTable } from '../../../../databaseModule/infrastructure/tables/authorTable/authorTable.js';
+import { booksAuthorsTable } from '../../../../databaseModule/infrastructure/tables/bookAuthorTable/bookAuthorTable.js';
+import { bookshelvesTable } from '../../../../databaseModule/infrastructure/tables/bookshelfTable/bookshelfTable.js';
+import { booksTable } from '../../../../databaseModule/infrastructure/tables/bookTable/bookTable.js';
 import { type QuoteRawEntity } from '../../../../databaseModule/infrastructure/tables/quoteTable/quoteRawEntity.js';
-import { quoteTable } from '../../../../databaseModule/infrastructure/tables/quoteTable/quoteTable.js';
+import { quotesTable } from '../../../../databaseModule/infrastructure/tables/quoteTable/quoteTable.js';
 import { type QuoteWithJoinsRawEntity } from '../../../../databaseModule/infrastructure/tables/quoteTable/quoteWithJoinsRawEntity.js';
-import { userBookTable } from '../../../../databaseModule/infrastructure/tables/userBookTable/userBookTable.js';
+import { usersBooksTable } from '../../../../databaseModule/infrastructure/tables/userBookTable/userBookTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { Quote, type QuoteState } from '../../../domain/entities/quote/quote.js';
 import {
@@ -38,7 +38,7 @@ export class QuoteRepositoryImpl implements QuoteRepository {
     let rawEntity: QuoteRawEntity | undefined;
 
     try {
-      rawEntity = await this.databaseClient<QuoteRawEntity>(quoteTable).where({ id }).first();
+      rawEntity = await this.databaseClient<QuoteRawEntity>(quotesTable).where({ id }).first();
     } catch (error) {
       throw new RepositoryError({
         entity: 'Quote',
@@ -60,43 +60,43 @@ export class QuoteRepositoryImpl implements QuoteRepository {
     let rawEntities: QuoteWithJoinsRawEntity[];
 
     try {
-      const query = this.databaseClient<QuoteWithJoinsRawEntity>(quoteTable)
+      const query = this.databaseClient<QuoteWithJoinsRawEntity>(quotesTable)
         .select([
-          `${quoteTable}.*`,
-          this.databaseClient.raw(`array_agg(DISTINCT "${authorTable}"."name") as "authors"`),
-          `${bookTable}.title as bookTitle`,
+          `${quotesTable}.*`,
+          this.databaseClient.raw(`array_agg(DISTINCT "${authorsTable}"."name") as "authors"`),
+          `${booksTable}.title as book_title`,
         ])
-        .leftJoin(userBookTable, (join) => {
-          join.on(`${userBookTable}.id`, `=`, `${quoteTable}.userBookId`);
+        .leftJoin(usersBooksTable, (join) => {
+          join.on(`${usersBooksTable}.id`, `=`, `${quotesTable}.user_book_id`);
         })
-        .leftJoin(bookAuthorTable, (join) => {
-          join.on(`${bookAuthorTable}.bookId`, '=', `${userBookTable}.bookId`);
+        .leftJoin(booksAuthorsTable, (join) => {
+          join.on(`${booksAuthorsTable}.book_id`, '=', `${usersBooksTable}.book_id`);
         })
-        .leftJoin(authorTable, (join) => {
-          join.on(`${authorTable}.id`, '=', `${bookAuthorTable}.authorId`);
+        .leftJoin(authorsTable, (join) => {
+          join.on(`${authorsTable}.id`, '=', `${booksAuthorsTable}.author_id`);
         })
-        .leftJoin(bookTable, (join) => {
-          join.on(`${bookTable}.id`, `=`, `${userBookTable}.bookId`);
+        .leftJoin(booksTable, (join) => {
+          join.on(`${booksTable}.id`, `=`, `${usersBooksTable}.book_id`);
         })
-        .leftJoin(bookshelfTable, (join) => {
-          join.on(`${bookshelfTable}.id`, `=`, `${userBookTable}.bookshelfId`);
+        .leftJoin(bookshelvesTable, (join) => {
+          join.on(`${bookshelvesTable}.id`, `=`, `${usersBooksTable}.bookshelf_id`);
         });
 
       if (authorId) {
-        query.where(`${authorTable}.id`, authorId);
+        query.where(`${authorsTable}.id`, authorId);
       }
 
-      query.where(`${bookshelfTable}.userId`, userId);
+      query.where(`${bookshelvesTable}.user_id`, userId);
 
       if (userBookId) {
-        query.where(`${quoteTable}.userBookId`, userBookId);
+        query.where(`${quotesTable}.user_book_id`, userBookId);
       }
 
       if (isFavorite !== undefined) {
-        query.where(`${quoteTable}.isFavorite`, isFavorite);
+        query.where(`${quotesTable}.is_favorite`, isFavorite);
       }
 
-      query.groupBy([`${quoteTable}.id`, `${bookTable}.id`]);
+      query.groupBy([`${quotesTable}.id`, `${booksTable}.id`]);
 
       query.orderBy('id', sortDate ?? 'desc');
 
@@ -118,13 +118,13 @@ export class QuoteRepositoryImpl implements QuoteRepository {
     let rawEntity: QuoteRawEntity;
 
     try {
-      const result = await this.databaseClient<QuoteRawEntity>(quoteTable).insert(
+      const result = await this.databaseClient<QuoteRawEntity>(quotesTable).insert(
         {
           id: this.uuidService.generateUuid(),
-          userBookId: quote.userBookId,
+          user_book_id: quote.userBookId,
           content: quote.content,
-          createdAt: quote.createdAt,
-          isFavorite: quote.isFavorite,
+          created_at: quote.createdAt,
+          is_favorite: quote.isFavorite,
           page: quote.page,
         },
         '*',
@@ -148,9 +148,10 @@ export class QuoteRepositoryImpl implements QuoteRepository {
     let rawEntity: QuoteRawEntity;
 
     try {
-      const result = await this.databaseClient<QuoteRawEntity>(quoteTable)
+      const { content, isFavorite, page } = quote.getState();
+      const result = await this.databaseClient<QuoteRawEntity>(quotesTable)
         .where({ id: quote.getId() })
-        .update(quote.getState(), '*');
+        .update({ content, is_favorite: isFavorite, page }, '*');
 
       rawEntity = result[0] as QuoteRawEntity;
     } catch (error) {
@@ -178,7 +179,7 @@ export class QuoteRepositoryImpl implements QuoteRepository {
     const { id } = payload;
 
     try {
-      await this.databaseClient<QuoteRawEntity>(quoteTable).where({ id }).delete();
+      await this.databaseClient<QuoteRawEntity>(quotesTable).where({ id }).delete();
     } catch (error) {
       throw new RepositoryError({
         entity: 'Quote',
@@ -192,33 +193,33 @@ export class QuoteRepositoryImpl implements QuoteRepository {
     const { userId, userBookId, authorId, isFavorite } = payload;
 
     try {
-      const query = this.databaseClient<QuoteRawEntity>(quoteTable)
-        .leftJoin(userBookTable, (join) => {
-          join.on(`${userBookTable}.id`, `=`, `${quoteTable}.userBookId`);
+      const query = this.databaseClient<QuoteRawEntity>(quotesTable)
+        .leftJoin(usersBooksTable, (join) => {
+          join.on(`${usersBooksTable}.id`, `=`, `${quotesTable}.user_book_id`);
         })
-        .leftJoin(bookshelfTable, (join) => {
-          join.on(`${bookshelfTable}.id`, `=`, `${userBookTable}.bookshelfId`);
+        .leftJoin(bookshelvesTable, (join) => {
+          join.on(`${bookshelvesTable}.id`, `=`, `${usersBooksTable}.bookshelf_id`);
         });
 
       if (authorId) {
         query
-          .leftJoin(bookAuthorTable, (join) => {
-            join.on(`${bookAuthorTable}.bookId`, `=`, `${userBookTable}.bookId`);
+          .leftJoin(booksAuthorsTable, (join) => {
+            join.on(`${booksAuthorsTable}.book_id`, `=`, `${usersBooksTable}.book_id`);
           })
-          .leftJoin(authorTable, (join) => {
-            join.on(`${authorTable}.id`, `=`, `${bookAuthorTable}.authorId`);
+          .leftJoin(authorsTable, (join) => {
+            join.on(`${authorsTable}.id`, `=`, `${booksAuthorsTable}.author_id`);
           })
-          .where(`${authorTable}.id`, authorId);
+          .where(`${authorsTable}.id`, authorId);
       }
 
-      query.where(`${bookshelfTable}.userId`, userId);
+      query.where(`${bookshelvesTable}.user_id`, userId);
 
       if (userBookId) {
-        query.where(`${quoteTable}.userBookId`, userBookId);
+        query.where(`${quotesTable}.user_book_id`, userBookId);
       }
 
       if (isFavorite !== undefined) {
-        query.where(`${quoteTable}.isFavorite`, isFavorite);
+        query.where(`${quotesTable}.is_favorite`, isFavorite);
       }
 
       const countResult = await query.count().first();

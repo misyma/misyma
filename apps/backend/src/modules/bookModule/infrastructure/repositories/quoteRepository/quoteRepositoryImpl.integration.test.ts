@@ -17,7 +17,7 @@ import { symbols } from '../../../symbols.js';
 import { QuoteTestFactory } from '../../../tests/factories/quoteTestFactory/quoteTestFactory.js';
 import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
-import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
+import { type CategoryTestUtils } from '../../../tests/utils/categoryTestUtils/categoryTestUtils.js';
 import { type QuoteTestUtils } from '../../../tests/utils/quoteTestUtils/quoteTestUtils.js';
 import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
 
@@ -38,7 +38,7 @@ describe('QuoteRepositoryImpl', () => {
 
   let userBookTestUtils: UserBookTestUtils;
 
-  let genreTestUtils: GenreTestUtils;
+  let categoryTestUtils: CategoryTestUtils;
 
   const quoteTestFactory = new QuoteTestFactory();
 
@@ -65,11 +65,11 @@ describe('QuoteRepositoryImpl', () => {
 
     userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
 
-    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+    categoryTestUtils = container.get<CategoryTestUtils>(testSymbols.categoryTestUtils);
 
     testUtils = [
       authorTestUtils,
-      genreTestUtils,
+      categoryTestUtils,
       bookTestUtils,
       bookshelfTestUtils,
       userTestUtils,
@@ -108,17 +108,17 @@ describe('QuoteRepositoryImpl', () => {
       id = userId;
     }
 
-    return await bookshelfTestUtils.createAndPersist({ input: { userId: id } });
+    return await bookshelfTestUtils.createAndPersist({ input: { user_id: id } });
   }
 
   async function createBook(authorIds?: string[]): Promise<BookRawEntity> {
-    const genre = await genreTestUtils.createAndPersist();
+    const category = await categoryTestUtils.createAndPersist();
 
     return await bookTestUtils.createAndPersist({
       input: {
         authorIds,
         book: {
-          genreId: genre.id,
+          category_id: category.id,
         },
       },
     });
@@ -128,8 +128,8 @@ describe('QuoteRepositoryImpl', () => {
     const [bookshelf, book] = await Promise.all([createBookshelf(userId), createBook()]);
     return await userBookTestUtils.createAndPersist({
       input: {
-        bookshelfId: bookshelf.id,
-        bookId: book.id,
+        bookshelf_id: bookshelf.id,
+        book_id: book.id,
       },
     });
   }
@@ -150,7 +150,7 @@ describe('QuoteRepositoryImpl', () => {
 
       const quote = await quoteTestUtils.createAndPersist({
         input: {
-          userBookId: userBook.id,
+          user_book_id: userBook.id,
         },
       });
 
@@ -163,9 +163,9 @@ describe('QuoteRepositoryImpl', () => {
       expect(result?.getState()).toEqual({
         userBookId: userBook.id,
         content: quote.content,
-        isFavorite: quote.isFavorite,
+        isFavorite: quote.is_favorite,
         page: quote.page,
-        createdAt: quote.createdAt,
+        createdAt: quote.created_at,
       });
     });
   });
@@ -188,19 +188,19 @@ describe('QuoteRepositoryImpl', () => {
 
       const quote1 = await quoteTestUtils.createAndPersist({
         input: {
-          userBookId: userBook1.id,
+          user_book_id: userBook1.id,
         },
       });
 
       const quote2 = await quoteTestUtils.createAndPersist({
         input: {
-          userBookId: userBook1.id,
+          user_book_id: userBook1.id,
         },
       });
 
       await quoteTestUtils.createAndPersist({
         input: {
-          userBookId: userBook2.id,
+          user_book_id: userBook2.id,
         },
       });
 
@@ -231,8 +231,8 @@ describe('QuoteRepositoryImpl', () => {
 
       const userBook1 = await userBookTestUtils.createAndPersist({
         input: {
-          bookshelfId: bookshelf1.id,
-          bookId: book1.id,
+          bookshelf_id: bookshelf1.id,
+          book_id: book1.id,
         },
       });
 
@@ -240,13 +240,13 @@ describe('QuoteRepositoryImpl', () => {
 
       const quote = await quoteTestUtils.createAndPersist({
         input: {
-          userBookId: userBook1.id,
+          user_book_id: userBook1.id,
         },
       });
 
       await quoteTestUtils.createAndPersist({
         input: {
-          userBookId: userBook2.id,
+          user_book_id: userBook2.id,
         },
       });
 
@@ -263,9 +263,9 @@ describe('QuoteRepositoryImpl', () => {
       expect(result[0]?.getState()).toEqual({
         userBookId: userBook1.id,
         content: quote.content,
-        isFavorite: quote.isFavorite,
+        isFavorite: quote.is_favorite,
         page: quote.page,
-        createdAt: quote.createdAt,
+        createdAt: quote.created_at,
         bookTitle: book1.title,
         authors: [author.name],
       });
@@ -284,33 +284,33 @@ describe('QuoteRepositoryImpl', () => {
 
       const userBook1 = await userBookTestUtils.createAndPersist({
         input: {
-          bookshelfId: bookshelf.id,
-          bookId: book1.id,
+          bookshelf_id: bookshelf.id,
+          book_id: book1.id,
         },
       });
 
       const userBook2 = await userBookTestUtils.createAndPersist({
         input: {
-          bookshelfId: bookshelf.id,
-          bookId: book2.id,
+          bookshelf_id: bookshelf.id,
+          book_id: book2.id,
         },
       });
 
       const quote = await quoteTestUtils.createAndPersist({
         input: {
-          userBookId: userBook1.id,
+          user_book_id: userBook1.id,
         },
       });
 
       await quoteTestUtils.createAndPersist({
         input: {
-          userBookId: userBook2.id,
+          user_book_id: userBook2.id,
         },
       });
 
       await quoteTestUtils.createAndPersist({
         input: {
-          userBookId: userBook2.id,
+          user_book_id: userBook2.id,
         },
       });
 
@@ -331,22 +331,22 @@ describe('QuoteRepositoryImpl', () => {
 
       const quote1 = await quoteTestUtils.createAndPersist({
         input: {
-          userBookId: userBook.id,
-          isFavorite: true,
+          user_book_id: userBook.id,
+          is_favorite: true,
         },
       });
 
       await quoteTestUtils.createAndPersist({
         input: {
-          userBookId: userBook.id,
-          isFavorite: false,
+          user_book_id: userBook.id,
+          is_favorite: false,
         },
       });
 
       await quoteTestUtils.createAndPersist({
         input: {
-          userBookId: userBook.id,
-          isFavorite: false,
+          user_book_id: userBook.id,
+          is_favorite: false,
         },
       });
 
@@ -391,11 +391,18 @@ describe('QuoteRepositoryImpl', () => {
 
       const quoteRawEntity = await quoteTestUtils.createAndPersist({
         input: {
-          userBookId: userBook.id,
+          user_book_id: userBook.id,
         },
       });
 
-      const quote = new Quote(quoteRawEntity);
+      const quote = new Quote({
+        id: quoteRawEntity.id,
+        userBookId: quoteRawEntity.user_book_id,
+        content: quoteRawEntity.content,
+        createdAt: quoteRawEntity.created_at,
+        isFavorite: quoteRawEntity.is_favorite,
+        page: quoteRawEntity.page,
+      });
 
       const newContent = Generator.alphaString(20);
 
@@ -433,7 +440,7 @@ describe('QuoteRepositoryImpl', () => {
 
       const quote = await quoteTestUtils.createAndPersist({
         input: {
-          userBookId: userBook.id,
+          user_book_id: userBook.id,
         },
       });
 

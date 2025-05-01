@@ -1,1 +1,1 @@
-export const emailEventTable = 'emailEvents';
+export const emailEventsTable = 'email_events';

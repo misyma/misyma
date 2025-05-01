@@ -120,7 +120,7 @@ export class Generator {
     return faker.book.publisher();
   }
 
-  public static genre(): string {
+  public static category(): string {
     return faker.book.genre();
   }
 

@@ -33,7 +33,7 @@ export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler 
       releaseYearBefore,
       sortField,
       sortOrder,
-      genreId,
+      categoryId,
       isRated,
     } = payload;
 
@@ -68,7 +68,7 @@ export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler 
         pageSize,
         sortField,
         sortOrder,
-        genreId,
+        categoryId,
         isRated,
       }),
       await this.userBookRepository.countUserBooks({
@@ -83,7 +83,7 @@ export class FindUserBooksQueryHandlerImpl implements FindUserBooksQueryHandler 
         language,
         releaseYearAfter,
         releaseYearBefore,
-        genreId,
+        categoryId,
         isRated,
       }),
     ]);

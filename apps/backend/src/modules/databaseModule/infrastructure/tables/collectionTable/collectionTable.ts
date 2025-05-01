@@ -1,1 +1,1 @@
-export const collectionTable = 'collections';
+export const collectionsTable = 'collections';

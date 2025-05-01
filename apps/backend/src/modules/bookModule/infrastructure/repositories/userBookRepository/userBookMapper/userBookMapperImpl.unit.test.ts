@@ -1,7 +1,7 @@
 import { beforeEach, expect, describe, it } from 'vitest';
 
 import { Generator } from '../../../../../../../tests/generator.js';
-import { Genre } from '../../../../domain/entities/genre/genre.js';
+import { Category } from '../../../../domain/entities/category/category.js';
 import { BookTestFactory } from '../../../../tests/factories/bookTestFactory/bookTestFactory.js';
 import { UserBookTestFactory } from '../../../../tests/factories/userBookTestFactory/userBookTestFactory.js';
 
@@ -21,80 +21,70 @@ describe('UserBookMapperImpl', () => {
   it('maps from UserBookRawEntity to UserBook', () => {
     const book = bookTestFactory.createRaw();
 
-    const userBook = userBookTestFactory.createRaw({
-      bookId: book.id,
-    });
+    const userBook = userBookTestFactory.createRaw({ book_id: book.id });
 
     const latestRating = Generator.number(1, 10);
 
     const userBookDomain = userBookMapperImpl.mapRawWithJoinsToDomain({
       id: userBook.id,
-      bookId: book.id,
+      book_id: book.id,
       title: book.title,
       isbn: book.isbn as string,
       publisher: book.publisher as string,
-      releaseYear: book.releaseYear,
+      release_year: book.release_year,
       language: book.language,
       translator: book.translator as string,
       format: book.format,
       pages: book.pages as number,
-      isApproved: book.isApproved,
-      bookImageUrl: book.imageUrl as string,
-      bookCreatedAt: book.createdAt,
-      imageUrl: userBook.imageUrl as string,
+      is_approved: book.is_approved,
+      book_image_url: book.image_url as string,
+      image_url: userBook.image_url as string,
       status: userBook.status,
-      isFavorite: userBook.isFavorite,
-      bookshelfId: userBook.bookshelfId,
-      createdAt: userBook.createdAt,
-      authorIds: [],
-      authorNames: [],
-      genreId: '',
-      genreName: '',
-      authorApprovals: [],
-      authorCreatedAtDates: [],
-      collectionIds: [],
-      collectionNames: [],
-      collectionUserIds: [],
-      collectionCreatedAtDates: [],
-      readingIds: [],
-      readingStartedAtDates: [],
-      readingEndedAtDates: [],
-      readingRatings: [],
-      readingComments: [],
-      latestRating,
+      is_favorite: userBook.is_favorite,
+      bookshelf_id: userBook.bookshelf_id,
+      created_at: userBook.created_at,
+      author_ids: [],
+      author_names: [],
+      category_id: '',
+      category_name: '',
+      author_approvals: [],
+      reading_ids: [],
+      reading_started_at_dates: [],
+      reading_ended_at_dates: [],
+      reading_ratings: [],
+      reading_comments: [],
+      latest_rating: latestRating,
     });
 
     expect(userBookDomain).toEqual({
       _id: userBook.id,
       state: {
-        imageUrl: userBook.imageUrl,
+        imageUrl: userBook.image_url,
         status: userBook.status,
-        isFavorite: userBook.isFavorite,
-        bookshelfId: userBook.bookshelfId,
-        createdAt: userBook.createdAt,
-        bookId: userBook.bookId,
+        isFavorite: userBook.is_favorite,
+        bookshelfId: userBook.bookshelf_id,
+        createdAt: userBook.created_at,
+        bookId: userBook.book_id,
         book: {
           id: book.id,
           title: book.title,
-          genreId: '',
-          genre: new Genre({
+          categoryId: '',
+          category: new Category({
             id: '',
             name: '',
           }),
           isbn: book.isbn,
           publisher: book.publisher,
-          releaseYear: book.releaseYear,
+          releaseYear: book.release_year,
           language: book.language,
           translator: book.translator,
           format: book.format,
           pages: book.pages,
-          isApproved: book.isApproved,
-          imageUrl: book.imageUrl,
-          createdAt: book.createdAt,
+          isApproved: book.is_approved,
+          imageUrl: book.image_url,
           authors: [],
         },
         readings: [],
-        collections: [],
         latestRating,
       },
     });

@@ -2,10 +2,10 @@ import { type ReadingStatus } from '@common/contracts';
 
 export interface UserBookRawEntity {
   readonly id: string;
-  readonly imageUrl?: string | undefined | null;
+  readonly image_url?: string | undefined | null;
   readonly status: ReadingStatus;
-  readonly isFavorite: boolean;
-  readonly bookId: string;
-  readonly bookshelfId: string;
-  readonly createdAt: Date;
+  readonly is_favorite: boolean;
+  readonly book_id: string;
+  readonly bookshelf_id: string;
+  readonly created_at: Date;
 }

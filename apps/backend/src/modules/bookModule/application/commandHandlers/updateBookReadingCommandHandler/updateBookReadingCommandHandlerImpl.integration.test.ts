@@ -14,7 +14,7 @@ import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestU
 import { BookReading } from '../../../domain/entities/bookReading/bookReading.js';
 import { symbols } from '../../../symbols.js';
 import { type BookReadingTestUtils } from '../../../tests/utils/bookReadingTestUtils/bookReadingTestUtils.js';
-import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
+import { type CategoryTestUtils } from '../../../tests/utils/categoryTestUtils/categoryTestUtils.js';
 
 import { type UpdateBookReadingCommandHandler } from './updateBookReadingCommandHandler.js';
 
@@ -27,7 +27,7 @@ describe('UpdateBookReadingCommandHandlerImpl', () => {
 
   let bookTestUtils: BookTestUtils;
 
-  let genreTestUtils: GenreTestUtils;
+  let categoryTestUtils: CategoryTestUtils;
 
   let bookshelfTestUtils: BookshelfTestUtils;
 
@@ -54,10 +54,10 @@ describe('UpdateBookReadingCommandHandlerImpl', () => {
 
     userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
 
-    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+    categoryTestUtils = container.get<CategoryTestUtils>(testSymbols.categoryTestUtils);
 
     testUtils = [
-      genreTestUtils,
+      categoryTestUtils,
       bookTestUtils,
       bookshelfTestUtils,
       userTestUtils,
@@ -105,28 +105,28 @@ describe('UpdateBookReadingCommandHandlerImpl', () => {
   it('updates a BookReading', async () => {
     const user = await userTestUtils.createAndPersist();
 
-    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { user_id: user.id } });
 
-    const genre = await genreTestUtils.createAndPersist();
+    const category = await categoryTestUtils.createAndPersist();
 
     const book = await bookTestUtils.createAndPersist({
       input: {
         book: {
-          genreId: genre.id,
+          category_id: category.id,
         },
       },
     });
 
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
-        bookshelfId: bookshelf.id,
-        bookId: book.id,
+        bookshelf_id: bookshelf.id,
+        book_id: book.id,
       },
     });
 
     const bookReading = await bookReadingTestUtils.createAndPersist({
       input: {
-        userBookId: userBook.id,
+        user_book_id: userBook.id,
       },
     });
 
@@ -167,8 +167,8 @@ describe('UpdateBookReadingCommandHandlerImpl', () => {
 
     expect(persistedUpdatedBookReading?.rating).toEqual(newRating);
 
-    expect(persistedUpdatedBookReading?.startedAt).toEqual(newStartedAt);
+    expect(persistedUpdatedBookReading?.started_at).toEqual(newStartedAt);
 
-    expect(persistedUpdatedBookReading?.endedAt).toEqual(newEndedAt);
+    expect(persistedUpdatedBookReading?.ended_at).toEqual(newEndedAt);
   });
 });

@@ -30,10 +30,10 @@ import { LoadingSpinner } from '../../../../../../common/components/spinner/load
 import { useErrorHandledQuery } from '../../../../../../common/hooks/useErrorHandledQuery';
 import { useFileUpload } from '../../../../../../common/hooks/useFileUpload';
 import { userStateSelectors } from '../../../../../../core/store/states/userState/userStateSlice';
-import { getGenresQueryOptions } from '../../../../../../genres/api/queries/getGenresQuery/getGenresQueryOptions';
+import { getCategoriesQueryOptions } from '../../../../../../categories/api/queries/getCategoriesQuery/getCategoriesQueryOptions';
 import { type BookNavigationFrom } from '../../../../../constants';
 import { useCreateBookWithUserBook } from '../../../../../hooks/createBookWithUserBook/createBookWithUserBook';
-import GenreSelect from '../../../../molecules/genreSelect/genreSelect';
+import CategorySelect from '../../../../molecules/categorySelect/categorySelect';
 
 const stepThreeFormSchema = z.object({
   status: z.nativeEnum(readingStatuses, {
@@ -52,7 +52,7 @@ const stepThreeFormSchema = z.object({
   bookshelfId: z.string().uuid({
     message: 'Niewłaściwy format',
   }),
-  genre: z.string().min(1, {
+  category: z.string().min(1, {
     message: 'Niewłaściwa wartość',
   }),
 });
@@ -79,7 +79,7 @@ export const ManualStepThreeForm = ({ bookshelfId, navigateTo }: Props): JSX.Ele
 
   const dispatch = useBookCreationDispatch();
 
-  const { data: genres } = useErrorHandledQuery(getGenresQueryOptions({}));
+  const { data: categories } = useErrorHandledQuery(getCategoriesQueryOptions({}));
 
   const form = useForm({
     resolver: zodResolver(stepThreeFormSchema),
@@ -87,7 +87,7 @@ export const ManualStepThreeForm = ({ bookshelfId, navigateTo }: Props): JSX.Ele
       status: bookCreation.stepThreeDetails?.status,
       image: file,
       bookshelfId: bookCreation.stepThreeDetails?.bookshelfId ?? '',
-      genre: bookCreation.stepThreeDetails?.genre,
+      category: bookCreation.stepThreeDetails?.category,
     },
     reValidateMode: 'onChange',
     mode: 'onTouched',
@@ -117,7 +117,7 @@ export const ManualStepThreeForm = ({ bookshelfId, navigateTo }: Props): JSX.Ele
         isbn: bookCreation.stepOneDetails?.isbn === '' ? undefined : bookCreation.stepOneDetails?.isbn,
         releaseYear: bookCreation.stepOneDetails?.releaseYear as number,
         publisher: bookCreation.stepOneDetails?.publisher === '' ? undefined : bookCreation.stepOneDetails?.publisher,
-        genreId: bookCreation.stepThreeDetails?.genre as string,
+        categoryId: bookCreation.stepThreeDetails?.category as string,
       },
       userBookPayload: {
         bookshelfId: bookCreation.stepThreeDetails?.bookshelfId || bookshelfId,
@@ -220,16 +220,16 @@ export const ManualStepThreeForm = ({ bookshelfId, navigateTo }: Props): JSX.Ele
         />
         <FormField
           control={form.control}
-          name="genre"
+          name="category"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Kategoria</FormLabel>
-              <GenreSelect
-                genres={genres?.data ?? []}
+              <CategorySelect
+                categories={categories?.data ?? []}
                 onValueChange={(val) => {
                   dispatch({
-                    type: BookCreationActionType.setGenre,
-                    genre: val,
+                    type: BookCreationActionType.setCategory,
+                    category: val,
                   });
                 }}
                 {...field}

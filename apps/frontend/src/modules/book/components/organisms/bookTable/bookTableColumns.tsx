@@ -36,15 +36,15 @@ const TitleCell: FC<CellProps> = ({ row }) => {
   );
 };
 
-const GenreCell: FC<CellProps> = ({ row, column }) => {
+const CategoryCell: FC<CellProps> = ({ row, column }) => {
   return (
     <div
       style={{ width: `${column.getSize()}px` }}
       className="flex flex-col py-4 gap-2"
     >
       <div className="flex items-center gap-1">
-        <TruncatedTextTooltip text={row.original.genreName}>
-          <p className="text-base truncate">{row.original.genreName !== '' ? row.original.genreName : '-'}</p>
+        <TruncatedTextTooltip text={row.original.categoryName}>
+          <p className="text-base truncate">{row.original.categoryName !== '' ? row.original.categoryName : '-'}</p>
         </TruncatedTextTooltip>
       </div>
     </div>
@@ -124,11 +124,11 @@ export const bookTableColumns: ColumnDef<Book>[] = [
   },
   {
     header: () => <TableHeader label="Kategoria" />,
-    accessorKey: 'genre',
+    accessorKey: 'category',
     minSize: 100,
     size: 150,
     maxSize: 200,
-    cell: GenreCell,
+    cell: CategoryCell,
   },
   {
     header: () => <TableHeader label="Język" />,

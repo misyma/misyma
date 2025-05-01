@@ -31,7 +31,7 @@ const CreateSuccess = () => {
       onClick={() => {
         create({
           bookPayload: {
-            genreId: '1',
+            categoryId: '1',
             language: languages.Abkhazian,
             releaseYear: 1999,
             title: 'Title',

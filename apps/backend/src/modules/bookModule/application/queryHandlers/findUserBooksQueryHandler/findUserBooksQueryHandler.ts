@@ -8,7 +8,7 @@ export interface FindUserBooksQueryHandlerPayload {
   readonly bookshelfId?: string | undefined;
   readonly collectionId?: string | undefined;
   readonly authorId?: string | undefined;
-  readonly genreId?: string | undefined;
+  readonly categoryId?: string | undefined;
   readonly isbn?: string | undefined;
   readonly title?: string | undefined;
   readonly status?: ReadingStatus | undefined;

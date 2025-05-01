@@ -1,33 +1,34 @@
-export function serializeError(error: unknown): Record<string, unknown> {
-  const serializedError: Record<string, unknown> = {};
-
+export function serializeError(error: unknown, seen = new WeakSet<object>()): Record<string, unknown> {
   if (error instanceof Error) {
-    serializedError['message'] = error.message;
-
-    for (const key of Object.getOwnPropertyNames(error)) {
-      const value = Reflect.get(error, key);
-
-      serializedError[key] = value instanceof Error ? serializeError(value) : serializeValue(value);
+    if (seen.has(error)) {
+      return { message: 'Circular reference' };
     }
+    seen.add(error);
 
-    return serializedError;
-  } else {
-    return { error };
+    return {
+      name: error.name,
+      message: error.message,
+      stack: error.stack,
+      ...Object.fromEntries(
+        Object.getOwnPropertyNames(error).map((key) => [key, serializeValue(Reflect.get(error, key), seen)]),
+      ),
+    };
   }
+
+  return { error: serializeValue(error, seen) };
 }
 
-function serializeValue(value: unknown): unknown {
+function serializeValue(value: unknown, seen: WeakSet<object>): unknown {
   if (value instanceof Error) {
-    return serializeError(value);
+    return serializeError(value, seen);
   } else if (typeof value === 'object' && value !== null) {
-    const serializedObject: Record<string, unknown> = {};
-
-    for (const key of Object.keys(value)) {
-      serializedObject[key] = serializeValue((value as Record<string, unknown>)[key]);
+    if (seen.has(value)) {
+      return 'Circular reference';
     }
+    seen.add(value);
 
-    return serializedObject;
-  } else {
-    return value;
+    return Object.fromEntries(Object.entries(value).map(([key, val]) => [key, serializeValue(val, seen)]));
   }
+
+  return value;
 }

@@ -12,7 +12,7 @@ export interface AdminEditBookState {
   translator: string;
   format: BookFormat;
   pages: number | undefined;
-  genre?: string | undefined;
+  category?: string | undefined;
   imageUrl?: string | undefined;
 }
 
@@ -42,7 +42,7 @@ const defaultValues: AdminEditBookState = {
   title: '',
   translator: '',
   releaseYear: undefined,
-  genre: undefined,
+  category: undefined,
   imageUrl: undefined,
 };
 

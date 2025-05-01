@@ -1,1 +1,1 @@
-export const authorTable = 'authors';
+export const authorsTable = 'authors';

@@ -23,8 +23,8 @@ npm run start -- scrape eisbn book --from 1673848
 npm run start -- scrape nationallibrary book
 ```
 
-### Genres
+### Categories
 
 ```bash
-npm run start -- scrape nationallibrary genre
+npm run start -- scrape nationallibrary category
 ```

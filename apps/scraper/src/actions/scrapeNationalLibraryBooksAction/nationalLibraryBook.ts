@@ -1,4 +1,3 @@
- 
 export interface NationalLibraryResponseBody {
   nextPage: string;
   bibs: NationalLibraryBook[];

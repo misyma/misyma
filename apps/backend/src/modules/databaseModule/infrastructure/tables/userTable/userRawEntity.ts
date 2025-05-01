@@ -5,6 +5,6 @@ export interface UserRawEntity {
   readonly email: string;
   readonly password: string;
   readonly name: string;
-  readonly isEmailVerified: boolean;
+  readonly is_email_verified: boolean;
   readonly role: UserRole;
 }

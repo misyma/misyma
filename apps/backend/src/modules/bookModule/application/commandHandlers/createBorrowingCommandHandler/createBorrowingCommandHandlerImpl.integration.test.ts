@@ -173,15 +173,15 @@ describe('CreateBorrowingCommandHandlerImpl', () => {
 
     expect(persistedRawBorrowing).toMatchObject({
       id: borrowing.getId(),
-      userBookId: userBook.id,
+      user_book_id: userBook.id,
       borrower: borrowingDraft.getBorrower(),
-      startedAt: borrowingDraft.getStartedAt(),
-      endedAt: borrowingDraft.getEndedAt(),
+      started_at: borrowingDraft.getStartedAt(),
+      ended_at: borrowingDraft.getEndedAt(),
     });
 
     const persistedUserBook = await userBookTestUtils.findById({ id: userBook.id });
 
-    expect(persistedUserBook?.bookshelfId).toBe(userBook.bookshelfId);
+    expect(persistedUserBook?.bookshelf_id).toBe(userBook.bookshelf_id);
   });
 
   it('throws an error - when Borrowing Bookshelf does not exist', async () => {

@@ -14,7 +14,7 @@ import { symbols } from '../../../symbols.js';
 import { BookReadingTestFactory } from '../../../tests/factories/bookReadingTestFactory/bookReadingTestFactory.js';
 import { type BookReadingTestUtils } from '../../../tests/utils/bookReadingTestUtils/bookReadingTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
-import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
+import { type CategoryTestUtils } from '../../../tests/utils/categoryTestUtils/categoryTestUtils.js';
 import { type TestDataOrchestrator } from '../../../tests/utils/testDataOrchestrator/testDataOrchestrator.js';
 import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
 
@@ -33,7 +33,7 @@ describe('BookReadingRepositoryImpl', () => {
 
   let userBookTestUtils: UserBookTestUtils;
 
-  let genreTestUtils: GenreTestUtils;
+  let categoryTestUtils: CategoryTestUtils;
 
   const bookReadingTestFactory = new BookReadingTestFactory();
 
@@ -60,12 +60,12 @@ describe('BookReadingRepositoryImpl', () => {
 
     userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
 
-    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+    categoryTestUtils = container.get<CategoryTestUtils>(testSymbols.categoryTestUtils);
 
     testDataOrchestrator = container.get<TestDataOrchestrator>(testSymbols.testDataOrchestrator);
 
     testUtils = [
-      genreTestUtils,
+      categoryTestUtils,
       bookTestUtils,
       bookshelfTestUtils,
       userTestUtils,
@@ -112,7 +112,7 @@ describe('BookReadingRepositoryImpl', () => {
 
       const bookReading = await bookReadingTestUtils.createAndPersist({
         input: {
-          userBookId: userBook.id,
+          user_book_id: userBook.id,
         },
       });
 
@@ -126,8 +126,8 @@ describe('BookReadingRepositoryImpl', () => {
         userBookId: userBook.id,
         comment: bookReading.comment,
         rating: bookReading.rating,
-        startedAt: bookReading.startedAt,
-        endedAt: bookReading.endedAt,
+        startedAt: bookReading.started_at,
+        endedAt: bookReading.ended_at,
       });
     });
   });
@@ -150,13 +150,13 @@ describe('BookReadingRepositoryImpl', () => {
 
       const bookReading1 = await bookReadingTestUtils.createAndPersist({
         input: {
-          userBookId: userBook.id,
+          user_book_id: userBook.id,
         },
       });
 
       const bookReading2 = await bookReadingTestUtils.createAndPersist({
         input: {
-          userBookId: userBook.id,
+          user_book_id: userBook.id,
         },
       });
 
@@ -182,13 +182,13 @@ describe('BookReadingRepositoryImpl', () => {
 
       const bookReading1 = await bookReadingTestUtils.createAndPersist({
         input: {
-          userBookId: userBook.id,
+          user_book_id: userBook.id,
         },
       });
 
       await bookReadingTestUtils.createAndPersist({
         input: {
-          userBookId: userBook.id,
+          user_book_id: userBook.id,
         },
       });
 
@@ -208,15 +208,15 @@ describe('BookReadingRepositoryImpl', () => {
 
       const bookReading1 = await bookReadingTestUtils.createAndPersist({
         input: {
-          userBookId: userBook.id,
-          startedAt: Generator.pastDate(),
+          user_book_id: userBook.id,
+          started_at: Generator.pastDate(),
         },
       });
 
       const bookReading2 = await bookReadingTestUtils.createAndPersist({
         input: {
-          userBookId: userBook.id,
-          startedAt: new Date(),
+          user_book_id: userBook.id,
+          started_at: new Date(),
         },
       });
 
@@ -239,15 +239,15 @@ describe('BookReadingRepositoryImpl', () => {
 
       const bookReading1 = await bookReadingTestUtils.createAndPersist({
         input: {
-          userBookId: userBook.id,
-          startedAt: Generator.pastDate(),
+          user_book_id: userBook.id,
+          started_at: Generator.pastDate(),
         },
       });
 
       const bookReading2 = await bookReadingTestUtils.createAndPersist({
         input: {
-          userBookId: userBook.id,
-          startedAt: new Date(),
+          user_book_id: userBook.id,
+          started_at: new Date(),
         },
       });
 
@@ -292,11 +292,18 @@ describe('BookReadingRepositoryImpl', () => {
 
       const bookReadingRawEntity = await bookReadingTestUtils.createAndPersist({
         input: {
-          userBookId: userBook.id,
+          user_book_id: userBook.id,
         },
       });
 
-      const bookReading = new BookReading(bookReadingRawEntity);
+      const bookReading = new BookReading({
+        id: bookReadingRawEntity.id,
+        userBookId: userBook.id,
+        comment: bookReadingRawEntity.comment,
+        rating: bookReadingRawEntity.rating,
+        startedAt: bookReadingRawEntity.started_at,
+        endedAt: bookReadingRawEntity.ended_at,
+      });
 
       const newComment = Generator.alphaString(20);
 
@@ -348,7 +355,7 @@ describe('BookReadingRepositoryImpl', () => {
 
       const bookReadingRawEntity = await bookReadingTestUtils.createAndPersist({
         input: {
-          userBookId: userBook.id,
+          user_book_id: userBook.id,
         },
       });
 
@@ -357,8 +364,8 @@ describe('BookReadingRepositoryImpl', () => {
         userBookId: userBook.id,
         comment: bookReadingRawEntity.comment,
         rating: bookReadingRawEntity.rating,
-        startedAt: bookReadingRawEntity.startedAt,
-        endedAt: bookReadingRawEntity.endedAt,
+        startedAt: bookReadingRawEntity.started_at,
+        endedAt: bookReadingRawEntity.ended_at,
       });
 
       await repository.deleteBookReading({

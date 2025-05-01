@@ -1,7 +1,7 @@
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type UuidService } from '../../../../../libs/uuid/uuidService.js';
 import { type BorrowingRawEntity } from '../../../../databaseModule/infrastructure/tables/borrowingTable/borrowingRawEntity.js';
-import { borrowingTable } from '../../../../databaseModule/infrastructure/tables/borrowingTable/borrowingTable.js';
+import { borrowingsTable } from '../../../../databaseModule/infrastructure/tables/borrowingTable/borrowingTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { Borrowing, type BorrowingState } from '../../../domain/entities/borrowing/borrowing.js';
 import {
@@ -31,7 +31,7 @@ export class BorrowingRepositoryImpl implements BorrowingRepository {
     let rawEntity: BorrowingRawEntity | undefined;
 
     try {
-      rawEntity = await this.databaseClient<BorrowingRawEntity>(borrowingTable).where({ id }).first();
+      rawEntity = await this.databaseClient<BorrowingRawEntity>(borrowingsTable).where({ id }).first();
     } catch (error) {
       throw new RepositoryError({
         entity: 'Borrowing',
@@ -53,20 +53,20 @@ export class BorrowingRepositoryImpl implements BorrowingRepository {
     let rawEntities: BorrowingRawEntity[];
 
     try {
-      const query = this.databaseClient<BorrowingRawEntity>(borrowingTable)
-        .where({ userBookId })
+      const query = this.databaseClient<BorrowingRawEntity>(borrowingsTable)
+        .where({ user_book_id: userBookId })
         .limit(pageSize)
         .offset(pageSize * (page - 1));
 
       if (sortDate) {
-        query.orderBy('startedAt', sortDate);
+        query.orderBy('started_at', sortDate);
       }
 
       if (isOpen !== undefined) {
         if (isOpen) {
-          query.whereNull('endedAt');
+          query.whereNull('ended_at');
         } else {
-          query.whereNotNull('endedAt');
+          query.whereNotNull('ended_at');
         }
       }
 
@@ -88,13 +88,13 @@ export class BorrowingRepositoryImpl implements BorrowingRepository {
     let rawEntity: BorrowingRawEntity;
 
     try {
-      const result = await this.databaseClient<BorrowingRawEntity>(borrowingTable).insert(
+      const result = await this.databaseClient<BorrowingRawEntity>(borrowingsTable).insert(
         {
           id: this.uuidService.generateUuid(),
-          userBookId: borrowing.userBookId,
+          user_book_id: borrowing.userBookId,
           borrower: borrowing.borrower,
-          startedAt: borrowing.startedAt,
-          endedAt: borrowing.endedAt,
+          started_at: borrowing.startedAt,
+          ended_at: borrowing.endedAt,
         },
         '*',
       );
@@ -117,9 +117,10 @@ export class BorrowingRepositoryImpl implements BorrowingRepository {
     let rawEntity: BorrowingRawEntity;
 
     try {
-      const result = await this.databaseClient<BorrowingRawEntity>(borrowingTable)
+      const { borrower, startedAt, endedAt } = borrowing.getState();
+      const result = await this.databaseClient<BorrowingRawEntity>(borrowingsTable)
         .where({ id: borrowing.getId() })
-        .update(borrowing.getState(), '*');
+        .update({ borrower, started_at: startedAt, ended_at: endedAt }, '*');
 
       rawEntity = result[0] as BorrowingRawEntity;
     } catch (error) {
@@ -147,7 +148,7 @@ export class BorrowingRepositoryImpl implements BorrowingRepository {
     const { id } = payload;
 
     try {
-      await this.databaseClient<BorrowingRawEntity>(borrowingTable).where({ id }).delete();
+      await this.databaseClient<BorrowingRawEntity>(borrowingsTable).where({ id }).delete();
     } catch (error) {
       throw new RepositoryError({
         entity: 'Borrowing',
@@ -161,8 +162,8 @@ export class BorrowingRepositoryImpl implements BorrowingRepository {
     const { userBookId } = payload;
 
     try {
-      const countResult = await this.databaseClient<BorrowingRawEntity>(borrowingTable)
-        .where({ userBookId })
+      const countResult = await this.databaseClient<BorrowingRawEntity>(borrowingsTable)
+        .where({ user_book_id: userBookId })
         .count()
         .first();
 

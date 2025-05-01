@@ -79,7 +79,7 @@ const BookshelfBooksVirtualizedBooksList = ({
   };
 
   const {
-    genre: genreId,
+    category: categoryId,
     language,
     releaseYearAfter,
     releaseYearBefore,
@@ -102,7 +102,7 @@ const BookshelfBooksVirtualizedBooksList = ({
         releaseYearAfter,
         releaseYearBefore,
         status,
-        genreId,
+        categoryId,
         authorId,
         isFavorite: isFavorite !== '' ? (isFavorite ?? undefined) : undefined,
         sortField: sortFieldMap[sortField ?? ''],

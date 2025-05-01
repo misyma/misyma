@@ -33,13 +33,10 @@ export class CreateAuthorCommandHandlerImpl implements CreateAuthorCommandHandle
       });
     }
 
-    const createdAt = new Date();
-
     const author = await this.authorRepository.saveAuthor({
       author: {
         name,
         isApproved,
-        createdAt,
       },
     });
 

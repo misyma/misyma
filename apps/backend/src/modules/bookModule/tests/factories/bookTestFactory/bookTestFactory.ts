@@ -1,18 +1,18 @@
 import { Generator } from '../../../../../../tests/generator.js';
 import { type BookRawEntity } from '../../../../databaseModule/infrastructure/tables/bookTable/bookRawEntity.js';
 import { Book, type BookDraft } from '../../../domain/entities/book/book.js';
-import { Genre } from '../../../domain/entities/genre/genre.js';
+import { Category } from '../../../domain/entities/category/category.js';
 
 export class BookTestFactory {
   public create(input: Partial<BookDraft> = {}): Book {
-    const genre = new Genre({
+    const category = new Category({
       id: Generator.uuid(),
       name: Generator.title(),
     });
     return new Book({
       id: Generator.uuid(),
-      genreId: genre.getId(),
-      genre,
+      categoryId: category.getId(),
+      category,
       title: Generator.title(),
       isbn: Generator.isbn(),
       publisher: Generator.publisher(),
@@ -23,7 +23,6 @@ export class BookTestFactory {
       releaseYear: Generator.number(1970, 2024),
       isApproved: Generator.boolean(),
       imageUrl: Generator.imageUrl(),
-      createdAt: Generator.pastDate(),
       authors: [],
       ...input,
     });
@@ -32,7 +31,7 @@ export class BookTestFactory {
   public createRaw(input: Partial<BookRawEntity> = {}): BookRawEntity {
     return {
       id: Generator.uuid(),
-      genreId: Generator.uuid(),
+      category_id: Generator.uuid(),
       title: Generator.title(),
       isbn: Generator.isbn(),
       publisher: Generator.publisher(),
@@ -40,10 +39,9 @@ export class BookTestFactory {
       translator: Generator.fullName(),
       format: Generator.bookFormat(),
       pages: Generator.number(100, 1000),
-      releaseYear: Generator.number(1970, 2024),
-      isApproved: Generator.boolean(),
-      imageUrl: Generator.imageUrl(),
-      createdAt: Generator.pastDate(),
+      release_year: Generator.number(1970, 2024),
+      is_approved: Generator.boolean(),
+      image_url: Generator.imageUrl(),
       ...input,
     };
   }

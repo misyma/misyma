@@ -84,7 +84,7 @@ describe('UpdateBookshelfCommandHandlerImpl', () => {
 
     const bookshelf = await bookshelfTestUtils.createAndPersist({
       input: {
-        userId: anotherUser.id,
+        user_id: anotherUser.id,
       },
     });
 
@@ -112,13 +112,13 @@ describe('UpdateBookshelfCommandHandlerImpl', () => {
 
     const bookshelf = await bookshelfTestUtils.createAndPersist({
       input: {
-        userId: user.id,
+        user_id: user.id,
       },
     });
 
     const anotherBookshelf = await bookshelfTestUtils.createAndPersist({
       input: {
-        userId: user.id,
+        user_id: user.id,
       },
     });
 
@@ -142,7 +142,7 @@ describe('UpdateBookshelfCommandHandlerImpl', () => {
 
     const bookshelf = await bookshelfTestUtils.createAndPersist({
       input: {
-        userId: user.id,
+        user_id: user.id,
       },
     });
 
@@ -171,10 +171,10 @@ describe('UpdateBookshelfCommandHandlerImpl', () => {
     expect(persistedUpdatedBookshelf).toMatchObject({
       id: bookshelf.id,
       name: newName,
-      userId: user.id,
+      user_id: user.id,
       type: bookshelf.type,
-      createdAt: expect.any(Date),
-      imageUrl,
+      created_at: expect.any(Date),
+      image_url: imageUrl,
     });
   });
 });

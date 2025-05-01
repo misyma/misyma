@@ -1,4 +1,4 @@
 export interface BookAuthor {
-  readonly bookId: string;
-  readonly authorId: string;
+  readonly book_id: string;
+  readonly author_id: string;
 }

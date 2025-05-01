@@ -21,10 +21,10 @@ describe('BorrowingMapperImpl', () => {
     expect(borrowing).toEqual({
       id: borrowingEntity.id,
       state: {
-        userBookId: borrowingEntity.userBookId,
+        userBookId: borrowingEntity.user_book_id,
         borrower: borrowingEntity.borrower,
-        startedAt: borrowingEntity.startedAt,
-        endedAt: borrowingEntity.endedAt,
+        startedAt: borrowingEntity.started_at,
+        endedAt: borrowingEntity.ended_at,
       },
     });
   });

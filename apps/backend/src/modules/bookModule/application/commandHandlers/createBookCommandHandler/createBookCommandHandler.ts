@@ -4,7 +4,7 @@ import { type CommandHandler } from '../../../../../common/types/commandHandler.
 import { type Book } from '../../../domain/entities/book/book.js';
 
 export interface CreateBookCommandHandlerPayload {
-  readonly genreId: string;
+  readonly categoryId: string;
   readonly title: string;
   readonly isbn?: string | undefined;
   readonly publisher?: string | undefined;

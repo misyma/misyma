@@ -1,1 +1,1 @@
-export const userBookCollectionTable = 'userBookCollections';
+export const usersBooksCollectionsTable = 'users_books_collections';

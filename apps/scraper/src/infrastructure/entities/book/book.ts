@@ -6,15 +6,14 @@ export interface Book {
   readonly title: string;
   readonly isbn?: string | undefined;
   readonly publisher?: string | undefined;
-  readonly releaseYear?: number | undefined;
+  readonly release_year?: number | undefined;
   readonly language: Language;
   readonly translator?: string | undefined;
   readonly format?: BookFormat | undefined;
   readonly pages?: number | undefined;
-  readonly isApproved: boolean;
-  readonly imageUrl?: string | undefined;
-  readonly createdAt: Date;
-  readonly genreId: string;
+  readonly is_approved: boolean;
+  readonly image_url?: string | undefined;
+  readonly category_id: string;
 }
 
 export const bookTitleSchema = Type.String({
@@ -60,15 +59,15 @@ export const bookDraftSchema = Type.Object({
   title: bookTitleSchema,
   isbn: Type.Optional(bookIsbnSchema),
   publisher: Type.Optional(bookPublisherSchema),
-  releaseYear: bookReleaseYearSchema,
+  release_year: bookReleaseYearSchema,
   language: Type.Union(Object.values(languages).map((language) => Type.Literal(language))),
   translator: Type.Optional(bookTranslatorSchema),
   format: Type.Union(Object.values(bookFormats).map((bookFormat) => Type.Literal(bookFormat))),
   pages: bookPagesSchema,
-  isApproved: Type.Boolean(),
-  imageUrl: Type.Optional(bookImageUrlSchema),
-  authorNames: Type.Array(authorNameSchema, { minItems: 1 }),
-  genreId: Type.String({ minLength: 1 }),
+  is_approved: Type.Boolean(),
+  image_url: Type.Optional(bookImageUrlSchema),
+  author_names: Type.Array(authorNameSchema, { minItems: 1 }),
+  category_id: Type.String({ minLength: 1 }),
 });
 
 export type BookDraft = Static<typeof bookDraftSchema>;

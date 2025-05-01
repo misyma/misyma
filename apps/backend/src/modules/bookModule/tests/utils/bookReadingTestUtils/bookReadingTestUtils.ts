@@ -1,11 +1,11 @@
 import { TestUtils } from '../../../../../../tests/testUtils.js';
 import { type BookReadingRawEntity } from '../../../../databaseModule/infrastructure/tables/bookReadingTable/bookReadingRawEntity.js';
-import { bookReadingTable } from '../../../../databaseModule/infrastructure/tables/bookReadingTable/bookReadingTable.js';
+import { booksReadingsTable } from '../../../../databaseModule/infrastructure/tables/bookReadingTable/bookReadingTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { BookReadingTestFactory } from '../../factories/bookReadingTestFactory/bookReadingTestFactory.js';
 
 interface CreateAndPersistPayload {
-  readonly input?: Partial<BookReadingRawEntity> & { readonly userBookId: string };
+  readonly input?: Partial<BookReadingRawEntity> & { readonly user_book_id: string };
 }
 
 interface FindByIdPayload {
@@ -14,7 +14,7 @@ interface FindByIdPayload {
 
 export class BookReadingTestUtils extends TestUtils {
   public constructor(databaseClient: DatabaseClient) {
-    super(databaseClient, bookReadingTable);
+    super(databaseClient, booksReadingsTable);
   }
 
   private readonly bookReadingTestFactory = new BookReadingTestFactory();
@@ -22,19 +22,9 @@ export class BookReadingTestUtils extends TestUtils {
   public async createAndPersist(payload: CreateAndPersistPayload): Promise<BookReadingRawEntity> {
     const { input } = payload;
 
-    const bookReading = this.bookReadingTestFactory.create(input);
+    const bookReading = this.bookReadingTestFactory.createRaw(input);
 
-    const rawEntities = await this.databaseClient<BookReadingRawEntity>(bookReadingTable).insert(
-      {
-        id: bookReading.getId(),
-        userBookId: bookReading.getUserBookId(),
-        rating: bookReading.getRating(),
-        comment: bookReading.getComment(),
-        startedAt: bookReading.getStartedAt(),
-        endedAt: bookReading.getEndedAt(),
-      },
-      '*',
-    );
+    const rawEntities = await this.databaseClient<BookReadingRawEntity>(booksReadingsTable).insert(bookReading, '*');
 
     const rawEntity = rawEntities[0] as BookReadingRawEntity;
 
@@ -44,7 +34,7 @@ export class BookReadingTestUtils extends TestUtils {
   public async findById(payload: FindByIdPayload): Promise<BookReadingRawEntity | null> {
     const { id } = payload;
 
-    const rawEntity = await this.databaseClient<BookReadingRawEntity>(bookReadingTable).where({ id }).first();
+    const rawEntity = await this.databaseClient<BookReadingRawEntity>(booksReadingsTable).where({ id }).first();
 
     if (!rawEntity) {
       return null;

@@ -22,22 +22,9 @@ describe('CollectionMapperImpl', () => {
       id: collectionEntity.id,
       state: {
         name: collectionEntity.name,
-        userId: collectionEntity.userId,
-        createdAt: collectionEntity.createdAt,
+        userId: collectionEntity.user_id,
+        createdAt: collectionEntity.created_at,
       },
-    });
-  });
-
-  it('maps from domain collection to collection raw entity', () => {
-    const collection = collectionTestFactory.create();
-
-    const collectionRawEntity = collectionMapperImpl.mapToPersistence(collection);
-
-    expect(collectionRawEntity).toEqual({
-      id: collection.getId(),
-      name: collection.getName(),
-      userId: collection.getUserId(),
-      createdAt: collection.getCreatedAt(),
     });
   });
 });

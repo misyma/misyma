@@ -8,7 +8,7 @@ import { Language, languages, ReadingStatus, readingStatuses } from '@common/con
 import { AuthorSearchFilter } from '../../../../common/components/filter/AuthorSearchFilter';
 import {
   CheckboxFilter,
-  GenreSelectFilter,
+  CategorySelectFilter,
   MyBooksStatusFilter,
   YearRangeFilter,
 } from '../../../../common/components/filter/filter';
@@ -23,7 +23,7 @@ export const bookshelfBooksSearchParamsSchema = z
       .nativeEnum(languages)
       .optional()
       .catch('' as Language),
-    genre: z.string().optional().catch(''),
+    category: z.string().optional().catch(''),
     status: z
       .nativeEnum(readingStatuses)
       .optional()
@@ -110,10 +110,10 @@ export const BookshelfBooksPageFiltersBar = () => {
           type: 'text',
         }}
       />
-      <GenreSelectFilter
-        initialValue={search.genre}
-        onRemoveFilter={() => updateSearch({ genre: undefined })}
-        setFilterAction={(val) => updateSearch({ genre: val })}
+      <CategorySelectFilter
+        initialValue={search.category}
+        onRemoveFilter={() => updateSearch({ category: undefined })}
+        setFilterAction={(val) => updateSearch({ category: val })}
         filter={{
           id: 'category-filter',
           key: 'categoryFilter',

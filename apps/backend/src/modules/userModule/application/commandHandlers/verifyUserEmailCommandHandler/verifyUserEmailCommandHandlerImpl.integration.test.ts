@@ -44,7 +44,7 @@ describe('VerifyUserEmailCommandHandlerImpl', () => {
   });
 
   it('verifies user email', async () => {
-    const user = await userTestUtils.createAndPersist({ input: { isEmailVerified: false } });
+    const user = await userTestUtils.createAndPersist({ input: { is_email_verified: false } });
 
     const emailVerificationToken = tokenService.createToken({
       data: {
@@ -60,7 +60,7 @@ describe('VerifyUserEmailCommandHandlerImpl', () => {
       id: user.id,
     });
 
-    expect(updatedUser?.isEmailVerified).toBe(true);
+    expect(updatedUser?.is_email_verified).toBe(true);
   });
 
   it('throws an error - when a User with given id not found', async () => {
@@ -110,7 +110,7 @@ describe('VerifyUserEmailCommandHandlerImpl', () => {
   });
 
   it('throws an error - when token is not an emailVerification token', async () => {
-    const user = await userTestUtils.createAndPersist({ input: { isEmailVerified: false } });
+    const user = await userTestUtils.createAndPersist({ input: { is_email_verified: false } });
 
     const invalidEmailVerificationToken = tokenService.createToken({
       data: {
@@ -136,7 +136,7 @@ describe('VerifyUserEmailCommandHandlerImpl', () => {
   });
 
   it('throws an error - when UserTokens were found but emailVerificationToken is expired', async () => {
-    const user = await userTestUtils.createAndPersist({ input: { isEmailVerified: false } });
+    const user = await userTestUtils.createAndPersist({ input: { is_email_verified: false } });
 
     const emailVerificationToken = tokenService.createToken({
       data: { userId: user.id },
@@ -160,7 +160,7 @@ describe('VerifyUserEmailCommandHandlerImpl', () => {
   });
 
   it('throws an error - when User is already verified', async () => {
-    const user = await userTestUtils.createAndPersist({ input: { isEmailVerified: true } });
+    const user = await userTestUtils.createAndPersist({ input: { is_email_verified: true } });
 
     const emailVerificationToken = tokenService.createToken({
       data: {

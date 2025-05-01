@@ -1,16 +1,16 @@
 import { type Migration } from '../../../types/migration.js';
 import { type MigrationSource } from '../../../types/migrationSource.js';
 
-import { M1CreateUserTableMigration } from './m1CreateUserTableMigration.js';
-import { M2CreateBlacklistTokenTableMigration } from './m2CreateBlacklistTokenTableMigration.js';
-import { M3CreateEmailEventTableMigration } from './m3CreateEmailEventTableMigration.js';
+import { M1CreateUsersTableMigration } from './m1CreateUsersTableMigration.js';
+import { M2CreateBlacklistTokensTableMigration } from './m2CreateBlacklistTokensTableMigration.js';
+import { M3CreateEmailEventsTableMigration } from './m3CreateEmailEventsTableMigration.js';
 
 export class UserMigrationSource implements MigrationSource {
   public async getMigrations(): Promise<Migration[]> {
     return [
-      new M1CreateUserTableMigration(),
-      new M2CreateBlacklistTokenTableMigration(),
-      new M3CreateEmailEventTableMigration(),
+      new M1CreateUsersTableMigration(),
+      new M2CreateBlacklistTokensTableMigration(),
+      new M3CreateEmailEventsTableMigration(),
     ];
   }
 
@@ -23,6 +23,6 @@ export class UserMigrationSource implements MigrationSource {
   }
 
   public getMigrationTableName(): string {
-    return 'userDatabaseMigrations';
+    return 'user_migrations';
   }
 }

@@ -4,20 +4,21 @@ import { RepositoryError } from '../../../errors/repositoryError.js';
 import { type DatabaseClient } from '../../../libs/database/databaseClient.js';
 import { type UuidService } from '../../../libs/uuid/uuidService.js';
 import { type Book } from '../../entities/book/book.js';
+import { type BookAuthor } from '../../entities/bookAuthor/bookAuthor.js';
 
 export interface CreateBookPayload {
   readonly title: string;
   readonly isbn?: string | undefined;
   readonly publisher?: string | undefined;
-  readonly releaseYear?: number | undefined;
+  readonly release_year?: number | undefined;
   readonly language: Language;
   readonly translator?: string | undefined;
   readonly format?: BookFormat | undefined;
   readonly pages?: number | undefined;
-  readonly isApproved: boolean;
-  readonly imageUrl?: string | undefined;
-  readonly authorIds: string[];
-  readonly genreId: string;
+  readonly is_approved: boolean;
+  readonly image_url?: string | undefined;
+  readonly author_ids: string[];
+  readonly category_id: string;
 }
 
 export interface FindBookPayload {
@@ -27,7 +28,7 @@ export interface FindBookPayload {
 
 export class BookRepository {
   private readonly bookTable = 'books';
-  private readonly bookAuthorTable = 'booksAuthors';
+  private readonly bookAuthorTable = 'books_authors';
 
   public constructor(
     private readonly databaseClient: DatabaseClient,
@@ -39,15 +40,15 @@ export class BookRepository {
       title,
       isbn,
       publisher,
-      releaseYear,
+      release_year,
       language,
       translator,
       format,
       pages,
-      isApproved,
-      imageUrl,
-      authorIds,
-      genreId,
+      is_approved,
+      image_url,
+      author_ids,
+      category_id,
     } = payload;
 
     const id = this.uuidService.generateUuid();
@@ -59,22 +60,21 @@ export class BookRepository {
           title,
           isbn,
           publisher,
-          releaseYear,
+          release_year,
           language,
           translator,
           format,
           pages,
-          isApproved,
-          imageUrl,
-          genreId,
-          createdAt: new Date(),
+          is_approved,
+          image_url,
+          category_id,
         });
 
-        await transaction.batchInsert(
+        await transaction.batchInsert<BookAuthor>(
           this.bookAuthorTable,
-          authorIds.map((authorId) => ({
-            bookId: id,
-            authorId,
+          author_ids.map((author_id) => ({
+            book_id: id,
+            author_id,
           })),
         );
       });

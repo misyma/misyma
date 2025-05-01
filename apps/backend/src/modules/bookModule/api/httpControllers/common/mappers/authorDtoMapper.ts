@@ -6,6 +6,5 @@ export function mapAuthorToDto(author: Author): AuthorDto {
     id: author.getId(),
     name: author.getName(),
     isApproved: author.getIsApproved(),
-    createdAt: author.getCreatedAt().toISOString(),
   };
 }

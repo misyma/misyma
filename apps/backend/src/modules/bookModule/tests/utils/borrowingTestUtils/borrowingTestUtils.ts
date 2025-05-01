@@ -1,11 +1,11 @@
 import { TestUtils } from '../../../../../../tests/testUtils.js';
 import { type BorrowingRawEntity } from '../../../../databaseModule/infrastructure/tables/borrowingTable/borrowingRawEntity.js';
-import { borrowingTable } from '../../../../databaseModule/infrastructure/tables/borrowingTable/borrowingTable.js';
+import { borrowingsTable } from '../../../../databaseModule/infrastructure/tables/borrowingTable/borrowingTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { BorrowingTestFactory } from '../../factories/borrowingTestFactory/borrowingTestFactory.js';
 
 interface CreateAndPersistPayload {
-  readonly input?: Partial<BorrowingRawEntity> & { readonly userBookId: string };
+  readonly input?: Partial<BorrowingRawEntity> & { readonly user_book_id: string };
 }
 
 interface FindByIdPayload {
@@ -14,7 +14,7 @@ interface FindByIdPayload {
 
 export class BorrowingTestUtils extends TestUtils {
   public constructor(databaseClient: DatabaseClient) {
-    super(databaseClient, borrowingTable);
+    super(databaseClient, borrowingsTable);
   }
 
   private readonly borrowingTestFactory = new BorrowingTestFactory();
@@ -22,18 +22,9 @@ export class BorrowingTestUtils extends TestUtils {
   public async createAndPersist(payload: CreateAndPersistPayload): Promise<BorrowingRawEntity> {
     const { input } = payload;
 
-    const borrowing = this.borrowingTestFactory.create(input);
+    const borrowing = this.borrowingTestFactory.createRaw(input);
 
-    const rawEntities = await this.databaseClient<BorrowingRawEntity>(borrowingTable).insert(
-      {
-        id: borrowing.getId(),
-        userBookId: borrowing.getUserBookId(),
-        borrower: borrowing.getBorrower(),
-        startedAt: borrowing.getStartedAt(),
-        endedAt: borrowing.getEndedAt(),
-      },
-      '*',
-    );
+    const rawEntities = await this.databaseClient<BorrowingRawEntity>(borrowingsTable).insert(borrowing, '*');
 
     const rawEntity = rawEntities[0] as BorrowingRawEntity;
 
@@ -43,7 +34,7 @@ export class BorrowingTestUtils extends TestUtils {
   public async findById(payload: FindByIdPayload): Promise<BorrowingRawEntity | null> {
     const { id } = payload;
 
-    const rawEntity = await this.databaseClient<BorrowingRawEntity>(borrowingTable).where({ id }).first();
+    const rawEntity = await this.databaseClient<BorrowingRawEntity>(borrowingsTable).where({ id }).first();
 
     if (!rawEntity) {
       return null;

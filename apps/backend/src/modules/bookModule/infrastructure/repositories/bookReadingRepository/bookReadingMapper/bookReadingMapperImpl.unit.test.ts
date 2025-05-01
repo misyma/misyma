@@ -21,11 +21,11 @@ describe('BookReadingMapperImpl', () => {
     expect(bookReading).toEqual({
       id: bookReadingEntity.id,
       state: {
-        userBookId: bookReadingEntity.userBookId,
+        userBookId: bookReadingEntity.user_book_id,
         comment: bookReadingEntity.comment,
         rating: bookReadingEntity.rating,
-        startedAt: bookReadingEntity.startedAt,
-        endedAt: bookReadingEntity.endedAt,
+        startedAt: bookReadingEntity.started_at,
+        endedAt: bookReadingEntity.ended_at,
       },
     });
   });

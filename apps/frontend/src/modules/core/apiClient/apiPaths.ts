@@ -63,8 +63,8 @@ export const ApiPaths = {
       },
     },
   },
-  genres: {
-    path: '/genres' as const,
+  categories: {
+    path: '/categories' as const,
   },
   bookshelves: {
     path: '/bookshelves' as const,

@@ -31,8 +31,8 @@ import {
 import { BookApiError } from '../../../errors/bookApiError';
 import LanguageSelect from '../../molecules/languageSelect/languageSelect';
 import BookFormatSelect from '../../organisms/bookFormatSelect/bookFormatSelect';
-import GenreSelect from '../../molecules/genreSelect/genreSelect';
-import { getGenresQueryOptions } from '../../../../genres/api/queries/getGenresQuery/getGenresQueryOptions';
+import CategorySelect from '../../molecules/categorySelect/categorySelect';
+import { getCategoriesQueryOptions } from '../../../../categories/api/queries/getCategoriesQuery/getCategoriesQueryOptions';
 
 interface Props {
   bookId: string;
@@ -81,7 +81,7 @@ const stepTwoSchema = z.object({
       message: 'Podana wartość nie jest prawidłowym linkiem.',
     })
     .or(z.literal('')),
-  genreId: z.string().optional(),
+  categoryId: z.string().optional(),
 });
 
 export const AdminEditBookForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
@@ -121,7 +121,7 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
     }),
   );
 
-  const { data: genres } = useErrorHandledQuery(getGenresQueryOptions({}));
+  const { data: categories } = useErrorHandledQuery(getCategoriesQueryOptions({}));
 
   const { mutateAsync: updateBook, isPending: isUpdatingBook } = useUpdateBookMutation({});
 
@@ -133,7 +133,7 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
       format: bookData?.format,
       pages: bookData?.pages,
       imageUrl: bookData?.imageUrl ?? '',
-      genreId: bookData?.genreId ?? '',
+      categoryId: bookData?.categoryId ?? '',
     },
     reValidateMode: 'onChange',
     mode: 'onTouched',
@@ -371,12 +371,12 @@ const UnderlyingForm: FC<Props> = ({ onCancel, bookId, onSubmit }) => {
             />
             <FormField
               control={stepTwoForm.control}
-              name="genreId"
+              name="categoryId"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Kategoria</FormLabel>
-                  <GenreSelect
-                    genres={genres?.data ?? []}
+                  <CategorySelect
+                    categories={categories?.data ?? []}
                     onValueChange={(val) => {
                       field.onChange(val);
                     }}

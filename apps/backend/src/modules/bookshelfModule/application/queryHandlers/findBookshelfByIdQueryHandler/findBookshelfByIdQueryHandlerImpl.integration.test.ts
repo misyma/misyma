@@ -77,7 +77,7 @@ describe('FindBookshelfByIdQueryHandler', () => {
 
     const createdBookshelf = await bookshelfTestUtils.createAndPersist({
       input: {
-        userId: user.id,
+        user_id: user.id,
       },
     });
 

@@ -111,7 +111,7 @@ describe('UploadBookshelfImageCommandHandlerImpl', () => {
 
     const bookshelf = await bookshelfTestUtils.createAndPersist({
       input: {
-        userId: user.id,
+        user_id: user.id,
       },
     });
 
@@ -130,7 +130,7 @@ describe('UploadBookshelfImageCommandHandlerImpl', () => {
 
     const foundBookshelf = await bookshelfTestUtils.findById({ id: bookshelf.id });
 
-    expect(foundBookshelf?.imageUrl).toEqual(`${config.aws.cloudfrontUrl}/${imageId}`);
+    expect(foundBookshelf?.image_url).toEqual(`${config.aws.cloudfrontUrl}/${imageId}`);
 
     const existsAfter = await s3TestUtils.objectExists(bucketName, imageId);
 
@@ -144,8 +144,8 @@ describe('UploadBookshelfImageCommandHandlerImpl', () => {
 
     const bookshelf = await bookshelfTestUtils.createAndPersist({
       input: {
-        userId: user.id,
-        imageUrl: `${config.aws.cloudfrontUrl}/${existingImageId}`,
+        user_id: user.id,
+        image_url: `${config.aws.cloudfrontUrl}/${existingImageId}`,
       },
     });
 
@@ -170,7 +170,7 @@ describe('UploadBookshelfImageCommandHandlerImpl', () => {
 
     const foundBookshelf = await bookshelfTestUtils.findById({ id: bookshelf.id });
 
-    expect(foundBookshelf?.imageUrl).toEqual(`${config.aws.cloudfrontUrl}/${imageId}`);
+    expect(foundBookshelf?.image_url).toEqual(`${config.aws.cloudfrontUrl}/${imageId}`);
 
     const newImageExistsAfter = await s3TestUtils.objectExists(bucketName, imageId);
 
@@ -188,7 +188,7 @@ describe('UploadBookshelfImageCommandHandlerImpl', () => {
 
     const bookshelf = await bookshelfTestUtils.createAndPersist({
       input: {
-        userId: user1.id,
+        user_id: user1.id,
       },
     });
 

@@ -52,7 +52,7 @@ describe('SendResetPasswordEmailCommandHandler', () => {
         email: user.getEmail(),
         name: user.getName(),
         id: user.getId(),
-        isEmailVerified: true,
+        is_email_verified: true,
         password: user.getPassword(),
       },
     });

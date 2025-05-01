@@ -83,7 +83,7 @@ describe('CreateBookshelfCommandHandlerImpl', () => {
     await bookshelfTestUtils.createAndPersist({
       input: {
         name,
-        userId: user.id,
+        user_id: user.id,
       },
     });
 
@@ -127,10 +127,10 @@ describe('CreateBookshelfCommandHandlerImpl', () => {
     expect(persistedRawBookshelf).toMatchObject({
       id: bookshelf.getId(),
       name,
-      userId: user.id,
+      user_id: user.id,
       type: bookshelf.getType(),
-      createdAt: expect.any(Date),
-      imageUrl,
+      created_at: expect.any(Date),
+      image_url: imageUrl,
     });
   });
 });

@@ -16,7 +16,7 @@ export const findUserBooksQueryParamsDtoSchema = Type.Object({
   bookshelfId: Type.Optional(Type.String({ format: 'uuid' })),
   collectionId: Type.Optional(Type.String({ format: 'uuid' })),
   authorId: Type.Optional(Type.String({ format: 'uuid' })),
-  genreId: Type.Optional(Type.String({ format: 'uuid' })),
+  categoryId: Type.Optional(Type.String({ format: 'uuid' })),
   isbn: Type.Optional(bookIsbnSchema),
   title: Type.Optional(bookTitleSchema),
   status: Type.Optional(Type.Union(Object.values(readingStatuses).map((status) => Type.Literal(status)))),

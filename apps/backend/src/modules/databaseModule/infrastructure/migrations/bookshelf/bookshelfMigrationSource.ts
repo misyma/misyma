@@ -1,12 +1,11 @@
 import type { Migration } from '../../../types/migration.js';
 import type { MigrationSource } from '../../../types/migrationSource.js';
 
-import { M1CreateBookshelfTableMigration } from './m1CreateBookshelfTableMigration.js';
-import { M2AddImageUrlToBookshelfTableMigration } from './m2AddImageUrlToBookshelfTableMigration.js';
+import { M1CreateBookshelvesTableMigration } from './m1CreateBookshelvesTableMigration.js';
 
 export class BookshelfMigrationSource implements MigrationSource {
   public async getMigrations(): Promise<Migration[]> {
-    return [new M1CreateBookshelfTableMigration(), new M2AddImageUrlToBookshelfTableMigration()];
+    return [new M1CreateBookshelvesTableMigration()];
   }
 
   public getMigrationName(migration: Migration): string {
@@ -18,6 +17,6 @@ export class BookshelfMigrationSource implements MigrationSource {
   }
 
   public getMigrationTableName(): string {
-    return 'bookshelfDatabaseMigrations';
+    return 'bookshelf_migrations';
   }
 }

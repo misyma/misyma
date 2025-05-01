@@ -1,7 +1,7 @@
 export interface EmailEventRawEntity {
   readonly id: string;
   readonly payload: string;
-  readonly eventName: string;
+  readonly event_name: string;
   readonly status: string;
-  readonly createdAt: Date;
+  readonly created_at: Date;
 }

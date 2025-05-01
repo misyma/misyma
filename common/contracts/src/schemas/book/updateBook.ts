@@ -9,7 +9,7 @@ export interface UpdateBookPathParams {
 export interface UpdateBookRequestBody {
   readonly isbn?: string;
   readonly title?: string;
-  readonly genreId?: string;
+  readonly categoryId?: string;
   readonly publisher?: string;
   readonly releaseYear?: number;
   readonly language?: Language;

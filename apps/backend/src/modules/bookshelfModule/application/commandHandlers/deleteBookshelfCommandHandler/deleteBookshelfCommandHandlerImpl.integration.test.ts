@@ -7,7 +7,7 @@ import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type BookTestUtils } from '../../../../bookModule/tests/utils/bookTestUtils/bookTestUtils.js';
-import { type GenreTestUtils } from '../../../../bookModule/tests/utils/genreTestUtils/genreTestUtils.js';
+import { type CategoryTestUtils } from '../../../../bookModule/tests/utils/categoryTestUtils/categoryTestUtils.js';
 import { type UserBookTestUtils } from '../../../../bookModule/tests/utils/userBookTestUtils/userBookTestUtils.js';
 import { databaseSymbols } from '../../../../databaseModule/symbols.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
@@ -28,7 +28,7 @@ describe('DeleteBookshelfCommandHandlerImpl', () => {
 
   let bookTestUtils: BookTestUtils;
 
-  let genreTestUtils: GenreTestUtils;
+  let categoryTestUtils: CategoryTestUtils;
 
   let userBookTestUtils: UserBookTestUtils;
 
@@ -53,9 +53,9 @@ describe('DeleteBookshelfCommandHandlerImpl', () => {
 
     userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
 
-    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+    categoryTestUtils = container.get<CategoryTestUtils>(testSymbols.categoryTestUtils);
 
-    testUtils = [genreTestUtils, bookTestUtils, bookshelfTestUtils, userTestUtils, userBookTestUtils];
+    testUtils = [categoryTestUtils, bookTestUtils, bookshelfTestUtils, userTestUtils, userBookTestUtils];
 
     for (const testUtil of testUtils) {
       await testUtil.truncate();
@@ -102,7 +102,7 @@ describe('DeleteBookshelfCommandHandlerImpl', () => {
 
     const bookshelf = await bookshelfTestUtils.createAndPersist({
       input: {
-        userId: anotherUser.id,
+        user_id: anotherUser.id,
       },
     });
 
@@ -131,7 +131,7 @@ describe('DeleteBookshelfCommandHandlerImpl', () => {
 
     const bookshelf = await bookshelfTestUtils.createAndPersist({
       input: {
-        userId: user.id,
+        user_id: user.id,
       },
     });
 
@@ -152,30 +152,30 @@ describe('DeleteBookshelfCommandHandlerImpl', () => {
 
     const bookshelf1 = await bookshelfTestUtils.createAndPersist({
       input: {
-        userId: user.id,
+        user_id: user.id,
       },
     });
 
     const bookshelf2 = await bookshelfTestUtils.createAndPersist({
       input: {
-        userId: user.id,
+        user_id: user.id,
       },
     });
 
-    const genre = await genreTestUtils.createAndPersist();
+    const category = await categoryTestUtils.createAndPersist();
 
     const book = await bookTestUtils.createAndPersist({
       input: {
         book: {
-          genreId: genre.id,
+          category_id: category.id,
         },
       },
     });
 
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
-        bookId: book.id,
-        bookshelfId: bookshelf1.id,
+        book_id: book.id,
+        bookshelf_id: bookshelf1.id,
       },
     });
 
@@ -187,7 +187,7 @@ describe('DeleteBookshelfCommandHandlerImpl', () => {
 
     const updatedUserBook = await userBookTestUtils.findById({ id: userBook.id });
 
-    expect(updatedUserBook?.bookshelfId).toBe(bookshelf2.id);
+    expect(updatedUserBook?.bookshelf_id).toBe(bookshelf2.id);
 
     const foundBookshelf = await bookshelfTestUtils.findById({
       id: bookshelf1.id,

@@ -1,1 +1,1 @@
-export const quoteTable = 'quotes';
+export const quotesTable = 'quotes';

@@ -28,9 +28,9 @@ import { useAdminCreateBook } from '../../../../../hooks/adminCreateBook/adminCr
 import { type CreateBookStepTwo, createBookStepTwoSchema } from '../../../../../schemas/createBookSchemas';
 import LanguageSelect from '../../../../molecules/languageSelect/languageSelect';
 import BookFormatSelect from '../../../../organisms/bookFormatSelect/bookFormatSelect';
-import GenreSelect from '../../../../molecules/genreSelect/genreSelect';
+import CategorySelect from '../../../../molecules/categorySelect/categorySelect';
 import { useErrorHandledQuery } from '../../../../../../common/hooks/useErrorHandledQuery';
-import { getGenresQueryOptions } from '../../../../../../genres/api/queries/getGenresQuery/getGenresQueryOptions';
+import { getCategoriesQueryOptions } from '../../../../../../categories/api/queries/getCategoriesQuery/getCategoriesQueryOptions';
 
 interface Props {
   onSubmit: () => void;
@@ -55,7 +55,7 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
         ? ''
         : (bookCreation.stepTwoDetails?.pagesCount ?? ''),
       imageUrl: '',
-      genreId: '',
+      categoryId: '',
     },
     mode: 'onChange',
   });
@@ -71,7 +71,7 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
     });
   };
 
-  const { data: genres } = useErrorHandledQuery(getGenresQueryOptions({}));
+  const { data: categories } = useErrorHandledQuery(getCategoriesQueryOptions({}));
 
   const onSubmit = async (values: CreateBookStepTwo): Promise<void> => {
     await create({
@@ -92,7 +92,7 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
         releaseYear: bookCreation.stepOneDetails?.releaseYear as number,
         publisher: bookCreation.stepOneDetails?.publisher === '' ? undefined : bookCreation.stepOneDetails?.publisher,
         imageUrl: values.imageUrl,
-        genreId: values.genreId,
+        categoryId: values.categoryId,
       },
     });
 
@@ -225,16 +225,16 @@ export const ManualStepTwoForm: FC<Props> = ({ onSubmit: onSubmitCb }) => {
         />
         <FormField
           control={form.control}
-          name="genreId"
+          name="categoryId"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Kategoria</FormLabel>
-              <GenreSelect
-                genres={genres?.data ?? []}
+              <CategorySelect
+                categories={categories?.data ?? []}
                 onValueChange={(val) => {
                   dispatch({
-                    type: BookCreationActionType.setGenre,
-                    genre: val,
+                    type: BookCreationActionType.setCategory,
+                    category: val,
                   });
                 }}
                 {...field}

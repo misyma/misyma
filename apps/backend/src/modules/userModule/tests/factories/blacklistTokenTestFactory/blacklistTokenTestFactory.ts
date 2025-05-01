@@ -1,4 +1,5 @@
 import { Generator } from '../../../../../../tests/generator.js';
+import { type BlacklistTokenRawEntity } from '../../../../databaseModule/infrastructure/tables/blacklistTokenTable/blacklistTokenRawEntity.js';
 import { type BlacklistTokenDraft, BlacklistToken } from '../../../domain/entities/blacklistToken/blacklistToken.js';
 
 export class BlacklistTokenTestFactory {
@@ -9,5 +10,14 @@ export class BlacklistTokenTestFactory {
       expiresAt: Generator.futureDate(),
       ...input,
     });
+  }
+
+  public createRaw(input: Partial<BlacklistTokenRawEntity> = {}): BlacklistTokenRawEntity {
+    return {
+      id: Generator.uuid(),
+      token: Generator.alphaString(32),
+      expires_at: Generator.futureDate(),
+      ...input,
+    };
   }
 }

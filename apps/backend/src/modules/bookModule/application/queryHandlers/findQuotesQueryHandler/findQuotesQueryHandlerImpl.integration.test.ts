@@ -10,7 +10,7 @@ import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestU
 import { symbols } from '../../../symbols.js';
 import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
-import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
+import { type CategoryTestUtils } from '../../../tests/utils/categoryTestUtils/categoryTestUtils.js';
 import { type QuoteTestUtils } from '../../../tests/utils/quoteTestUtils/quoteTestUtils.js';
 import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
 
@@ -27,7 +27,7 @@ describe('FindQuotesQueryHandlerImpl', () => {
 
   let bookTestUtils: BookTestUtils;
 
-  let genreTestUtils: GenreTestUtils;
+  let categoryTestUtils: CategoryTestUtils;
 
   let bookshelfTestUtils: BookshelfTestUtils;
 
@@ -56,11 +56,11 @@ describe('FindQuotesQueryHandlerImpl', () => {
 
     userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
 
-    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+    categoryTestUtils = container.get<CategoryTestUtils>(testSymbols.categoryTestUtils);
 
     testUtils = [
       authorTestUtils,
-      genreTestUtils,
+      categoryTestUtils,
       bookTestUtils,
       bookshelfTestUtils,
       userTestUtils,
@@ -84,25 +84,25 @@ describe('FindQuotesQueryHandlerImpl', () => {
   it('returns an empty array - when UserBook has no Quotes', async () => {
     const user = await userTestUtils.createAndPersist();
 
-    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { user_id: user.id } });
 
     const author = await authorTestUtils.createAndPersist();
 
-    const genre = await genreTestUtils.createAndPersist();
+    const category = await categoryTestUtils.createAndPersist();
 
     const book = await bookTestUtils.createAndPersist({
       input: {
         authorIds: [author.id],
         book: {
-          genreId: genre.id,
+          category_id: category.id,
         },
       },
     });
 
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
-        bookId: book.id,
-        bookshelfId: bookshelf.id,
+        book_id: book.id,
+        bookshelf_id: bookshelf.id,
       },
     });
 
@@ -121,37 +121,37 @@ describe('FindQuotesQueryHandlerImpl', () => {
   it('returns Book Quotes', async () => {
     const user = await userTestUtils.createAndPersist();
 
-    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { user_id: user.id } });
 
     const author = await authorTestUtils.createAndPersist();
 
-    const genre = await genreTestUtils.createAndPersist();
+    const category = await categoryTestUtils.createAndPersist();
 
     const book = await bookTestUtils.createAndPersist({
       input: {
         authorIds: [author.id],
         book: {
-          genreId: genre.id,
+          category_id: category.id,
         },
       },
     });
 
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
-        bookId: book.id,
-        bookshelfId: bookshelf.id,
+        book_id: book.id,
+        bookshelf_id: bookshelf.id,
       },
     });
 
     const quote1 = await quoteTestUtils.createAndPersist({
       input: {
-        userBookId: userBook.id,
+        user_book_id: userBook.id,
       },
     });
 
     const quote2 = await quoteTestUtils.createAndPersist({
       input: {
-        userBookId: userBook.id,
+        user_book_id: userBook.id,
       },
     });
 
@@ -167,8 +167,8 @@ describe('FindQuotesQueryHandlerImpl', () => {
     expect(quotes[0]?.getState()).toEqual({
       userBookId: userBook.id,
       content: quote2.content,
-      createdAt: quote2.createdAt,
-      isFavorite: quote2.isFavorite,
+      createdAt: quote2.created_at,
+      isFavorite: quote2.is_favorite,
       page: quote2.page,
       authors: [author.name],
       bookTitle: book.title,
@@ -177,8 +177,8 @@ describe('FindQuotesQueryHandlerImpl', () => {
     expect(quotes[1]?.getState()).toEqual({
       userBookId: userBook.id,
       content: quote1.content,
-      createdAt: quote1.createdAt,
-      isFavorite: quote1.isFavorite,
+      createdAt: quote1.created_at,
+      isFavorite: quote1.is_favorite,
       page: quote1.page,
       authors: [author.name],
       bookTitle: book.title,

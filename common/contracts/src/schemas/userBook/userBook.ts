@@ -11,8 +11,8 @@ export interface UserBook {
   readonly bookId: string;
   readonly book: {
     readonly title: string;
-    readonly genreId: string;
-    readonly genreName?: string;
+    readonly categoryId: string;
+    readonly categoryName?: string;
     readonly isbn?: string;
     readonly publisher?: string;
     readonly releaseYear: number;
@@ -23,7 +23,6 @@ export interface UserBook {
     readonly isApproved: boolean;
     readonly imageUrl?: string;
     readonly authors: Author[];
-    readonly createdAt: string;
   };
   readonly imageUrl?: string;
   readonly status: ReadingStatus;

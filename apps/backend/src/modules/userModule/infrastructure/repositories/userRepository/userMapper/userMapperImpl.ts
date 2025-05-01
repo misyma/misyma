@@ -5,14 +5,14 @@ import { type UserMapper } from './userMapper.js';
 
 export class UserMapperImpl implements UserMapper {
   public mapToDomain(entity: UserRawEntity): User {
-    const { id, email, password, name, isEmailVerified, role } = entity;
+    const { id, email, password, name, is_email_verified: isEmailVerified, role } = entity;
 
     return new User({
       id,
       email,
       password,
       name,
-      isEmailVerified: isEmailVerified ? true : false, // sqlite returns 0 or 1
+      isEmailVerified,
       role,
     });
   }

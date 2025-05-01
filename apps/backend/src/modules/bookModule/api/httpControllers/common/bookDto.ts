@@ -40,8 +40,8 @@ export const bookPagesSchema = Type.Integer({
 export const bookDtoSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
   title: bookTitleSchema,
-  genreId: Type.String({ format: 'uuid' }),
-  genreName: Type.String(),
+  categoryId: Type.String({ format: 'uuid' }),
+  categoryName: Type.String(),
   isbn: Type.Optional(bookIsbnSchema),
   publisher: Type.Optional(bookPublisherSchema),
   releaseYear: bookReleaseYearSchema,
@@ -51,7 +51,6 @@ export const bookDtoSchema = Type.Object({
   pages: Type.Optional(bookPagesSchema),
   isApproved: Type.Boolean(),
   imageUrl: Type.Optional(bookImageUrlSchema),
-  createdAt: Type.String({ format: 'date-time' }),
   authors: Type.Array(authorDtoSchema),
 });
 

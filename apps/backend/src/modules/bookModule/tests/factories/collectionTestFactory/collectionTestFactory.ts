@@ -7,8 +7,8 @@ export class CollectionTestFactory {
     return {
       id: Generator.uuid(),
       name: Generator.words().toLowerCase(),
-      userId: Generator.uuid(),
-      createdAt: Generator.pastDate(),
+      user_id: Generator.uuid(),
+      created_at: Generator.pastDate(),
       ...overrides,
     };
   }

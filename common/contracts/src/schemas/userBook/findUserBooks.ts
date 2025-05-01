@@ -9,7 +9,7 @@ export interface FindUserBooksQueryParams {
   readonly bookshelfId?: string;
   readonly collectionId?: string;
   readonly authorId?: string;
-  readonly genreId?: string;
+  readonly categoryId?: string;
   readonly isbn?: string;
   readonly title?: string;
   readonly status?: ReadingStatus;

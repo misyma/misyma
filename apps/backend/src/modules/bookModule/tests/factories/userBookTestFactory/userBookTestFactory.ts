@@ -21,12 +21,12 @@ export class UserBookTestFactory {
   public createRaw(input: Partial<UserBookRawEntity> = {}): UserBookRawEntity {
     return {
       id: Generator.uuid(),
-      imageUrl: Generator.imageUrl(),
+      image_url: Generator.imageUrl(),
       status: Generator.readingStatus(),
-      isFavorite: Generator.boolean(),
-      bookshelfId: Generator.uuid(),
-      createdAt: Generator.pastDate(),
-      bookId: Generator.uuid(),
+      is_favorite: Generator.boolean(),
+      bookshelf_id: Generator.uuid(),
+      created_at: Generator.pastDate(),
+      book_id: Generator.uuid(),
       ...input,
     };
   }

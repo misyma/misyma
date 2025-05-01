@@ -1,11 +1,11 @@
 import { TestUtils } from '../../../../../../tests/testUtils.js';
 import { type BookChangeRequestRawEntity } from '../../../../databaseModule/infrastructure/tables/bookChangeRequestTable/bookChangeRequestRawEntity.js';
-import { bookChangeRequestTable } from '../../../../databaseModule/infrastructure/tables/bookChangeRequestTable/bookChangeRequestTable.js';
+import { booksChangeRequestsTable } from '../../../../databaseModule/infrastructure/tables/bookChangeRequestTable/bookChangeRequestTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { BookChangeRequestTestFactory } from '../../factories/bookChangeRequestTestFactory/bookChangeRequestTestFactory.js';
 
 interface CreateAndPersistPayload {
-  readonly input?: Partial<BookChangeRequestRawEntity> & { readonly bookId: string };
+  readonly input?: Partial<BookChangeRequestRawEntity> & { readonly book_id: string };
 }
 
 interface FindByIdPayload {
@@ -14,7 +14,7 @@ interface FindByIdPayload {
 
 export class BookChangeRequestTestUtils extends TestUtils {
   public constructor(databaseClient: DatabaseClient) {
-    super(databaseClient, bookChangeRequestTable);
+    super(databaseClient, booksChangeRequestsTable);
   }
 
   private readonly bookChangeRequestTestFactory = new BookChangeRequestTestFactory();
@@ -24,24 +24,8 @@ export class BookChangeRequestTestUtils extends TestUtils {
 
     const bookChangeRequest = this.bookChangeRequestTestFactory.createRaw(input);
 
-    const rawEntities = await this.databaseClient<BookChangeRequestRawEntity>(bookChangeRequestTable).insert(
-      {
-        id: bookChangeRequest.id,
-        title: bookChangeRequest.title,
-        isbn: bookChangeRequest.isbn,
-        publisher: bookChangeRequest.publisher,
-        releaseYear: bookChangeRequest.releaseYear,
-        language: bookChangeRequest.language,
-        translator: bookChangeRequest.translator,
-        format: bookChangeRequest.format,
-        pages: bookChangeRequest.pages,
-        imageUrl: bookChangeRequest.imageUrl,
-        bookId: bookChangeRequest.bookId,
-        userEmail: bookChangeRequest.userEmail,
-        createdAt: bookChangeRequest.createdAt,
-        authorIds: bookChangeRequest.authorIds,
-        changedFields: bookChangeRequest.changedFields,
-      },
+    const rawEntities = await this.databaseClient<BookChangeRequestRawEntity>(booksChangeRequestsTable).insert(
+      bookChangeRequest,
       '*',
     );
 
@@ -53,7 +37,7 @@ export class BookChangeRequestTestUtils extends TestUtils {
   public async findById(payload: FindByIdPayload): Promise<BookChangeRequestRawEntity | null> {
     const { id } = payload;
 
-    const rawEntity = await this.databaseClient<BookChangeRequestRawEntity>(bookChangeRequestTable)
+    const rawEntity = await this.databaseClient<BookChangeRequestRawEntity>(booksChangeRequestsTable)
       .where({ id })
       .first();
 

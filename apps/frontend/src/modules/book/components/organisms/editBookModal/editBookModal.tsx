@@ -40,7 +40,7 @@ const changeMyBookDataSchema = z.object({
       },
     ),
   ),
-  genre: z
+  category: z
     .string()
     .min(1, {
       message: 'Niewłaściwa wartość',
@@ -72,7 +72,7 @@ const InnerModal: FC<Props> = ({ bookId }) => {
     resolver: zodResolver(changeMyBookDataSchema),
     defaultValues: {
       image: undefined,
-      genre: '',
+      category: '',
     },
   });
 

@@ -13,10 +13,10 @@ import { bookDraftSchema, type BookDraft } from '../../infrastructure/entities/b
 import { type NationalLibraryBook } from './nationalLibraryBook.js';
 
 export class NationalLibraryBookMapper {
-  private readonly genreNamesToIds: Record<string, string>;
+  private readonly categoryNamesToIds: Record<string, string>;
 
-  public constructor(genreNamesToIds: Record<string, string>) {
-    this.genreNamesToIds = genreNamesToIds;
+  public constructor(categoryNamesToIds: Record<string, string>) {
+    this.categoryNamesToIds = categoryNamesToIds;
   }
 
   public mapBook(nationalLibraryBook: NationalLibraryBook): BookDraft | undefined {
@@ -30,7 +30,7 @@ export class NationalLibraryBookMapper {
     };
 
     const titleRaw = nationalLibraryBook.title;
-    const genreRaw = nationalLibraryBook.genre;
+    const categoryRaw = nationalLibraryBook.genre;
     const authorRaw = getSubfield('100', 'a');
     const translatorRaw = getSubfield('700', 'a');
     const publisherRaw = getSubfield('260', 'b');
@@ -47,7 +47,7 @@ export class NationalLibraryBookMapper {
       }
     }
 
-    if (!authorRaw || !titleRaw || !pages || !isbn || !genreRaw) {
+    if (!authorRaw || !titleRaw || !pages || !isbn || !categoryRaw) {
       return undefined;
     }
 
@@ -63,15 +63,15 @@ export class NationalLibraryBookMapper {
 
     const title = titleRaw.split(' /')[0]?.trim();
 
-    const genreId = this.getGenreId(genreRaw);
+    const categoryId = this.getCategoryId(categoryRaw);
 
     const bookDraftInput: Partial<BookDraft> = {
       title: title as string,
-      isApproved: true,
+      is_approved: true,
       language: languages.Polish,
-      authorNames: [authorName],
+      author_names: [authorName],
       pages,
-      genreId,
+      category_id: categoryId,
     };
 
     try {
@@ -90,7 +90,7 @@ export class NationalLibraryBookMapper {
         const releaseYearMatch = releaseYearRaw.match(/\d{4}/);
 
         if (releaseYearMatch) {
-          bookDraftInput.releaseYear = parseInt(releaseYearMatch[0], 10);
+          bookDraftInput.release_year = parseInt(releaseYearMatch[0], 10);
         }
       }
 
@@ -126,21 +126,21 @@ export class NationalLibraryBookMapper {
     }
   }
 
-  private getGenreId(rawGenre: string): string {
-    const cleaned = rawGenre.toLowerCase();
+  private getCategoryId(rawCategory: string): string {
+    const cleaned = rawCategory.toLowerCase();
 
-    for (const [genreName, keywords] of Object.entries(this.genresKeywords)) {
+    for (const [categoryName, keywords] of Object.entries(this.categoriesKeywords)) {
       for (const keyword of keywords) {
         if (cleaned.includes(keyword)) {
-          return this.genreNamesToIds[genreName] as string;
+          return this.categoryNamesToIds[categoryName] as string;
         }
       }
     }
 
-    return this.genreNamesToIds['inne'] as string;
+    return this.categoryNamesToIds['inne'] as string;
   }
 
-  private readonly genresKeywords: Record<string, string[]> = {
+  private readonly categoriesKeywords: Record<string, string[]> = {
     'fantastyka i science fiction': ['fantasy', 'fantastyka', 'science fiction', 'dystopia'],
     'poezja i dramat': [
       'poezja',

@@ -122,7 +122,7 @@ const editBookFormSchema = z.object({
     .or(z.literal('')),
   isApproved: z.boolean().optional(),
   // todo: validation
-  // genre: z.string().min(1, {
+  // category: z.string().min(1, {
   //   message: 'Niewłaściwa wartość',
   // }),
 });
@@ -520,7 +520,7 @@ const BookEditForm: FC<FormProps> = ({ data }) => {
         />
         <Button type="submit">Zapisz</Button>
         {/* <FormField
-      name="genre"
+      name="category"
       render={({ field }) => (
         <FormItem>
           <FormLabel></FormLabel>

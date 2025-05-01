@@ -14,7 +14,7 @@ import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestU
 import { Quote } from '../../../domain/entities/quote/quote.js';
 import { symbols } from '../../../symbols.js';
 import { QuoteTestFactory } from '../../../tests/factories/quoteTestFactory/quoteTestFactory.js';
-import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
+import { type CategoryTestUtils } from '../../../tests/utils/categoryTestUtils/categoryTestUtils.js';
 import { type QuoteTestUtils } from '../../../tests/utils/quoteTestUtils/quoteTestUtils.js';
 
 import { type CreateQuoteCommandHandler } from './createQuoteCommandHandler.js';
@@ -32,7 +32,7 @@ describe('CreateQuoteCommandHandlerImpl', () => {
 
   let userTestUtils: UserTestUtils;
 
-  let genreTestUtils: GenreTestUtils;
+  let categoryTestUtils: CategoryTestUtils;
 
   let userBookTestUtils: UserBookTestUtils;
 
@@ -57,9 +57,16 @@ describe('CreateQuoteCommandHandlerImpl', () => {
 
     userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
 
-    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+    categoryTestUtils = container.get<CategoryTestUtils>(testSymbols.categoryTestUtils);
 
-    testUtils = [genreTestUtils, bookTestUtils, bookshelfTestUtils, userTestUtils, quoteTestUtils, userBookTestUtils];
+    testUtils = [
+      categoryTestUtils,
+      bookTestUtils,
+      bookshelfTestUtils,
+      userTestUtils,
+      quoteTestUtils,
+      userBookTestUtils,
+    ];
 
     for (const testUtil of testUtils) {
       await testUtil.truncate();
@@ -107,22 +114,22 @@ describe('CreateQuoteCommandHandlerImpl', () => {
   it('returns a Quote', async () => {
     const user = await userTestUtils.createAndPersist();
 
-    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { userId: user.id } });
+    const bookshelf = await bookshelfTestUtils.createAndPersist({ input: { user_id: user.id } });
 
-    const genre = await genreTestUtils.createAndPersist();
+    const category = await categoryTestUtils.createAndPersist();
 
     const book = await bookTestUtils.createAndPersist({
       input: {
         book: {
-          genreId: genre.id,
+          category_id: category.id,
         },
       },
     });
 
     const userBook = await userBookTestUtils.createAndPersist({
       input: {
-        bookshelfId: bookshelf.id,
-        bookId: book.id,
+        bookshelf_id: bookshelf.id,
+        book_id: book.id,
       },
     });
 
@@ -155,10 +162,10 @@ describe('CreateQuoteCommandHandlerImpl', () => {
 
     expect(persistedRawQuote).toMatchObject({
       id: quote.getId(),
-      userBookId: userBook.id,
+      user_book_id: userBook.id,
       content: quoteDraft.getContent(),
-      createdAt: quoteDraft.getCreatedAt(),
-      isFavorite: quoteDraft.getIsFavorite(),
+      created_at: quoteDraft.getCreatedAt(),
+      is_favorite: quoteDraft.getIsFavorite(),
       page: quoteDraft.getPage(),
     });
   });

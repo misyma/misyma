@@ -11,8 +11,8 @@ import { BookChangeRequestTestUtils } from '../src/modules/bookModule/tests/util
 import { BookReadingTestUtils } from '../src/modules/bookModule/tests/utils/bookReadingTestUtils/bookReadingTestUtils.js';
 import { BookTestUtils } from '../src/modules/bookModule/tests/utils/bookTestUtils/bookTestUtils.js';
 import { BorrowingTestUtils } from '../src/modules/bookModule/tests/utils/borrowingTestUtils/borrowingTestUtils.js';
+import { CategoryTestUtils } from '../src/modules/bookModule/tests/utils/categoryTestUtils/categoryTestUtils.js';
 import { CollectionTestUtils } from '../src/modules/bookModule/tests/utils/collectionTestUtils/collectionTestUtils.js';
-import { GenreTestUtils } from '../src/modules/bookModule/tests/utils/genreTestUtils/genreTestUtils.js';
 import { QuoteTestUtils } from '../src/modules/bookModule/tests/utils/quoteTestUtils/quoteTestUtils.js';
 import { TestDataOrchestrator } from '../src/modules/bookModule/tests/utils/testDataOrchestrator/testDataOrchestrator.js';
 import { UserBookTestUtils } from '../src/modules/bookModule/tests/utils/userBookTestUtils/userBookTestUtils.js';
@@ -41,9 +41,9 @@ export class TestContainer {
       () => new UserBookTestUtils(container.get<DatabaseClient>(databaseSymbols.databaseClient)),
     );
 
-    container.bind<GenreTestUtils>(
-      testSymbols.genreTestUtils,
-      () => new GenreTestUtils(container.get<DatabaseClient>(databaseSymbols.databaseClient)),
+    container.bind<CategoryTestUtils>(
+      testSymbols.categoryTestUtils,
+      () => new CategoryTestUtils(container.get<DatabaseClient>(databaseSymbols.databaseClient)),
     );
 
     container.bind<UserTestUtils>(
@@ -95,7 +95,7 @@ export class TestContainer {
       testSymbols.testDataOrchestrator,
       () =>
         new TestDataOrchestrator(
-          container.get<GenreTestUtils>(testSymbols.genreTestUtils),
+          container.get<CategoryTestUtils>(testSymbols.categoryTestUtils),
           container.get<BookshelfTestUtils>(testSymbols.bookshelfTestUtils),
           container.get<AuthorTestUtils>(testSymbols.authorTestUtils),
           container.get<BookTestUtils>(testSymbols.bookTestUtils),

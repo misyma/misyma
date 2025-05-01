@@ -12,7 +12,7 @@ import { symbols } from '../../../symbols.js';
 import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookChangeRequestTestUtils } from '../../../tests/utils/bookChangeRequestTestUtils/bookChangeRequestTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
-import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
+import { type CategoryTestUtils } from '../../../tests/utils/categoryTestUtils/categoryTestUtils.js';
 
 import { type ApplyBookChangeRequestCommandHandler } from './applyBookChangeRequestCommandHandler.js';
 
@@ -27,7 +27,7 @@ describe('ApplyBookChangeRequestCommandHandlerImpl', () => {
 
   let authorTestUtils: AuthorTestUtils;
 
-  let genreTestUtils: GenreTestUtils;
+  let categoryTestUtils: CategoryTestUtils;
 
   let databaseClient: DatabaseClient;
 
@@ -48,9 +48,9 @@ describe('ApplyBookChangeRequestCommandHandlerImpl', () => {
 
     authorTestUtils = container.get<AuthorTestUtils>(testSymbols.authorTestUtils);
 
-    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+    categoryTestUtils = container.get<CategoryTestUtils>(testSymbols.categoryTestUtils);
 
-    testUtils = [bookTestUtils, userTestUtils, bookChangeRequestTestUtils, genreTestUtils];
+    testUtils = [bookTestUtils, userTestUtils, bookChangeRequestTestUtils, categoryTestUtils];
 
     for (const testUtil of testUtils) {
       await testUtil.truncate();
@@ -84,12 +84,12 @@ describe('ApplyBookChangeRequestCommandHandlerImpl', () => {
   it('applies a BookChangeRequest to the Book', async () => {
     const user = await userTestUtils.createAndPersist();
 
-    const genre = await genreTestUtils.createAndPersist();
+    const category = await categoryTestUtils.createAndPersist();
 
     const book = await bookTestUtils.createAndPersist({
       input: {
         book: {
-          genreId: genre.id,
+          category_id: category.id,
         },
       },
     });
@@ -98,9 +98,9 @@ describe('ApplyBookChangeRequestCommandHandlerImpl', () => {
 
     const bookChangeRequest = await bookChangeRequestTestUtils.createAndPersist({
       input: {
-        bookId: book.id,
-        userEmail: user.email,
-        authorIds: author.id,
+        book_id: book.id,
+        user_email: user.email,
+        author_ids: author.id,
       },
     });
 
@@ -110,26 +110,25 @@ describe('ApplyBookChangeRequestCommandHandlerImpl', () => {
 
     expect(updatedBook).toEqual({
       id: book.id,
-      genreId: genre.id,
+      category_id: category.id,
       title: bookChangeRequest.title,
       publisher: bookChangeRequest.publisher,
-      releaseYear: bookChangeRequest.releaseYear,
+      release_year: bookChangeRequest.release_year,
       isbn: bookChangeRequest.isbn,
       language: bookChangeRequest.language,
       translator: bookChangeRequest.translator,
       format: bookChangeRequest.format,
       pages: bookChangeRequest.pages,
-      imageUrl: bookChangeRequest.imageUrl,
-      isApproved: book.isApproved,
-      createdAt: book.createdAt,
+      image_url: bookChangeRequest.image_url,
+      is_approved: book.is_approved,
     });
 
     const bookAuthors = await bookTestUtils.findBookAuthors({ bookId: book.id });
 
     expect(bookAuthors).toEqual([
       {
-        authorId: author.id,
-        bookId: book.id,
+        author_id: author.id,
+        book_id: book.id,
       },
     ]);
 
@@ -141,12 +140,12 @@ describe('ApplyBookChangeRequestCommandHandlerImpl', () => {
   it('throws an error - when some of the authors do not exist', async () => {
     const user = await userTestUtils.createAndPersist();
 
-    const genre = await genreTestUtils.createAndPersist();
+    const category = await categoryTestUtils.createAndPersist();
 
     const book = await bookTestUtils.createAndPersist({
       input: {
         book: {
-          genreId: genre.id,
+          category_id: category.id,
         },
       },
     });
@@ -155,9 +154,9 @@ describe('ApplyBookChangeRequestCommandHandlerImpl', () => {
 
     const bookChangeRequest = await bookChangeRequestTestUtils.createAndPersist({
       input: {
-        bookId: book.id,
-        userEmail: user.email,
-        authorIds: authorIds.join(','),
+        book_id: book.id,
+        user_email: user.email,
+        author_ids: authorIds.join(','),
       },
     });
 

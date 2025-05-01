@@ -1,7 +1,7 @@
 export interface BorrowingRawEntity {
   readonly id: string;
-  readonly userBookId: string;
+  readonly user_book_id: string;
   readonly borrower: string;
-  readonly startedAt: Date;
-  readonly endedAt?: Date | undefined;
+  readonly started_at: Date;
+  readonly ended_at?: Date | undefined;
 }

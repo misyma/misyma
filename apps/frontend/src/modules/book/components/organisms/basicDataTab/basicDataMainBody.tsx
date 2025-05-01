@@ -36,7 +36,7 @@ export const BasicDataMainBody: FC<BasicDataMainBodyProps> = ({ bookId }) => {
       releaseYear: data?.book.releaseYear,
       pages: data?.book.pages,
       authors: data?.book.authors ?? [],
-      genre: data?.book.genreName,
+      category: data?.book.categoryName,
       translator: data?.book.translator,
     }),
     [
@@ -46,7 +46,7 @@ export const BasicDataMainBody: FC<BasicDataMainBodyProps> = ({ bookId }) => {
       data?.book.releaseYear,
       data?.book.pages,
       data?.book.authors,
-      data?.book.genreName,
+      data?.book.categoryName,
       data?.book.translator,
     ],
   );
@@ -143,12 +143,12 @@ export const BasicDataMainBody: FC<BasicDataMainBodyProps> = ({ bookId }) => {
                 </div>
               )}
 
-              {data?.book.genreName && (
+              {data?.book.categoryName && (
                 <div className="flex items-start gap-3">
                   <Bookmark className="h-5 w-5 text-primary mt-0.5" />
                   <div>
                     <span className="font-medium">Kategoria: </span>
-                    <span className="text-foreground/80">{bookDetails.genre}</span>
+                    <span className="text-foreground/80">{bookDetails.category}</span>
                   </div>
                 </div>
               )}

@@ -3,8 +3,7 @@ import { type BookFormat } from '@common/contracts';
 import { type UserBookWithJoinsRawEntity } from '../../../../../databaseModule/infrastructure/tables/userBookTable/userBookWithJoinsRawEntity.js';
 import { Author } from '../../../../domain/entities/author/author.js';
 import { BookReading } from '../../../../domain/entities/bookReading/bookReading.js';
-import { Collection } from '../../../../domain/entities/collection/collection.js';
-import { Genre } from '../../../../domain/entities/genre/genre.js';
+import { Category } from '../../../../domain/entities/category/category.js';
 import { UserBook, type UserBookDraft } from '../../../../domain/entities/userBook/userBook.js';
 
 import { type UserBookMapper } from './userBookMapper.js';
@@ -13,39 +12,33 @@ export class UserBookMapperImpl implements UserBookMapper {
   public mapRawWithJoinsToDomain(entity: UserBookWithJoinsRawEntity): UserBook {
     const {
       id,
-      imageUrl,
+      image_url: imageUrl,
       status,
-      isFavorite,
-      bookshelfId,
-      createdAt,
-      bookId,
-      genreId,
-      genreName,
+      is_favorite: isFavorite,
+      bookshelf_id: bookshelfId,
+      created_at: createdAt,
+      book_id: bookId,
+      category_id: categoryId,
+      category_name: categoryName,
       title,
       isbn,
       publisher,
-      releaseYear,
+      release_year: releaseYear,
       language,
       translator,
       format,
-      isApproved,
+      is_approved: isApproved,
       pages,
-      bookImageUrl,
-      bookCreatedAt,
-      authorIds,
-      authorNames,
-      authorApprovals,
-      authorCreatedAtDates,
-      collectionIds,
-      collectionNames,
-      collectionUserIds,
-      collectionCreatedAtDates,
-      readingIds,
-      readingStartedAtDates,
-      readingEndedAtDates,
-      readingRatings,
-      readingComments,
-      latestRating,
+      book_image_url: bookImageUrl,
+      author_ids: authorIds,
+      author_names: authorNames,
+      author_approvals: authorApprovals,
+      reading_ids: readingIds,
+      reading_started_at_dates: readingStartedAtDates,
+      reading_ended_at_dates: readingEndedAtDates,
+      reading_ratings: readingRatings,
+      reading_comments: readingComments,
+      latest_rating: latestRating,
     } = entity;
 
     const userBookDraft: UserBookDraft = {
@@ -67,14 +60,13 @@ export class UserBookMapperImpl implements UserBookMapper {
         format: format as BookFormat,
         pages: pages ?? undefined,
         isApproved,
-        genre: new Genre({
-          id: genreId,
-          name: genreName,
+        category: new Category({
+          id: categoryId,
+          name: categoryName,
         }),
-        genreId,
-        createdAt: bookCreatedAt,
+        categoryId,
         authors:
-          authorIds && authorNames && authorApprovals && authorCreatedAtDates
+          authorIds && authorNames && authorApprovals
             ? authorIds
                 .filter((authorId) => authorId !== null)
                 .map((authorId, index) => {
@@ -82,7 +74,6 @@ export class UserBookMapperImpl implements UserBookMapper {
                     id: authorId,
                     name: authorNames[index] as string,
                     isApproved: authorApprovals[index] as boolean,
-                    createdAt: authorCreatedAtDates[index] as Date,
                   });
                 })
             : [],
@@ -100,19 +91,6 @@ export class UserBookMapperImpl implements UserBookMapper {
                   rating: readingRatings[index] as number,
                   comment: readingComments[index] ?? undefined,
                   userBookId: id,
-                });
-              })
-          : [],
-      collections:
-        collectionIds && collectionNames && collectionCreatedAtDates && collectionUserIds
-          ? collectionIds
-              .filter((collectionId) => collectionId !== null)
-              .map((collectionId, index) => {
-                return new Collection({
-                  id: collectionId,
-                  name: collectionNames[index] as string,
-                  userId: collectionUserIds[index] as string,
-                  createdAt: collectionCreatedAtDates[index] as Date,
                 });
               })
           : [],

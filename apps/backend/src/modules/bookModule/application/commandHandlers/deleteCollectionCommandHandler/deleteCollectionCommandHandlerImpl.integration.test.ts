@@ -74,7 +74,7 @@ describe('DeleteCollectionCommandHandler', () => {
   it('deletes the Collection', async () => {
     const user = await userTestUtils.createAndPersist();
 
-    const collection = await collectionTestUtils.createAndPersist({ input: { userId: user.id } });
+    const collection = await collectionTestUtils.createAndPersist({ input: { user_id: user.id } });
 
     await commandHandler.execute({
       id: collection.id,

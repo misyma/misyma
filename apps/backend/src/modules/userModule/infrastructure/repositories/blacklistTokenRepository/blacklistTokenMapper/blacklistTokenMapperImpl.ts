@@ -5,7 +5,7 @@ import { type BlacklistTokenMapper } from './blacklistTokenMapper.js';
 
 export class BlacklistTokenMapperImpl implements BlacklistTokenMapper {
   public mapToDomain(entity: BlacklistTokenRawEntity): BlacklistToken {
-    const { id, token, expiresAt } = entity;
+    const { id, token, expires_at: expiresAt } = entity;
 
     return new BlacklistToken({
       id,

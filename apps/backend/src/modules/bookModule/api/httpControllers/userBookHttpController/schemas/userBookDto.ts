@@ -26,8 +26,8 @@ export const userBookDtoSchema = Type.Object({
   bookId: Type.String({ format: 'uuid' }),
   book: Type.Object({
     title: bookTitleSchema,
-    genreId: Type.String({ format: 'uuid' }),
-    genreName: Type.Optional(Type.String()),
+    categoryId: Type.String({ format: 'uuid' }),
+    categoryName: Type.Optional(Type.String()),
     isbn: Type.Optional(bookIsbnSchema),
     publisher: Type.Optional(bookPublisherSchema),
     releaseYear: bookReleaseYearSchema,
@@ -37,7 +37,6 @@ export const userBookDtoSchema = Type.Object({
     pages: Type.Optional(bookPagesSchema),
     isApproved: Type.Boolean(),
     imageUrl: Type.Optional(bookImageUrlSchema),
-    createdAt: Type.String({ format: 'date-time' }),
     authors: Type.Array(authorDtoSchema),
   }),
   latestRating: Type.Optional(Type.Number()),

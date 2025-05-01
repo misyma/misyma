@@ -2,7 +2,7 @@ import { type BookRawEntity } from '../../../../../databaseModule/infrastructure
 import { type BookWithJoinsRawEntity } from '../../../../../databaseModule/infrastructure/tables/bookTable/bookWithJoinsRawEntity.js';
 import { Author } from '../../../../domain/entities/author/author.js';
 import { Book, type BookDraft } from '../../../../domain/entities/book/book.js';
-import { Genre } from '../../../../domain/entities/genre/genre.js';
+import { Category } from '../../../../domain/entities/category/category.js';
 
 import { type BookMapper } from './bookMapper.js';
 
@@ -10,18 +10,17 @@ export class BookMapperImpl implements BookMapper {
   public mapRawToDomain(entity: BookRawEntity): Book {
     const {
       id,
-      genreId,
+      category_id: categoryId,
       title,
       isbn,
       publisher,
-      releaseYear,
+      release_year: releaseYear,
       language,
       translator,
       format,
       pages,
-      isApproved,
-      imageUrl,
-      createdAt,
+      is_approved: isApproved,
+      image_url: imageUrl,
     } = entity;
 
     return new Book({
@@ -37,10 +36,9 @@ export class BookMapperImpl implements BookMapper {
       authors: [],
       isApproved,
       imageUrl,
-      createdAt,
-      genreId,
-      genre: new Genre({
-        id: genreId,
+      categoryId,
+      category: new Category({
+        id: categoryId,
         name: '',
       }),
     });
@@ -50,31 +48,29 @@ export class BookMapperImpl implements BookMapper {
     return entities.map((entity) => {
       const {
         id: bookId,
-        genreId,
-        genreName,
+        category_id: categoryId,
+        category_name: categoryName,
         title,
         isbn,
         publisher,
-        releaseYear,
+        release_year: releaseYear,
         language,
         translator,
         format,
         pages,
-        isApproved,
-        authorIds,
-        authorNames,
-        authorApprovals,
-        authorCreatedAtDates,
-        imageUrl,
-        createdAt,
+        is_approved: isApproved,
+        image_url: imageUrl,
+        author_ids: authorIds,
+        author_names: authorNames,
+        author_approvals: authorApprovals,
       } = entity;
 
       const bookDraft: BookDraft = {
         id: bookId,
-        genreId,
-        genre: new Genre({
-          id: genreId,
-          name: genreName,
+        categoryId,
+        category: new Category({
+          id: categoryId,
+          name: categoryName,
         }),
         title,
         isbn: isbn ?? undefined,
@@ -85,9 +81,8 @@ export class BookMapperImpl implements BookMapper {
         format: format ?? undefined,
         pages: pages ?? undefined,
         isApproved,
-        createdAt,
         authors:
-          authorIds && authorNames && authorApprovals && authorCreatedAtDates
+          authorIds && authorNames && authorApprovals
             ? authorIds
                 .filter((authorId) => authorId !== null)
                 .map((authorId, index) => {
@@ -95,7 +90,6 @@ export class BookMapperImpl implements BookMapper {
                     id: authorId,
                     name: authorNames[index] as string,
                     isApproved: authorApprovals[index] as boolean,
-                    createdAt: authorCreatedAtDates[index] as Date,
                   });
                 })
             : [],
