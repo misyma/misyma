@@ -22,7 +22,7 @@ import { FindUserBookByIdQueryOptions } from '../../../api/user/queries/findUser
 import { invalidateFindUserBooksByQuery } from '../../../api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
 import { useUpdateUserBook } from '../../../hooks/updateUserBook/updateUserBook';
 import { CreateBorrowingModal } from '../../organisms/createBorrowingModal/createBorrowingModal';
-import { ChevronDown, Library } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { TruncatedTextTooltip } from '../../../../common/components/truncatedTextTooltip/truncatedTextTooltip';
 import { cn } from '../../../../common/lib/utils';
 
@@ -144,7 +144,6 @@ const BookshelfChoiceDropdownTrigger: FC<BookshelfChoiceDropdownTriggerProps> = 
 
   return (
     <div className="flex items-center gap-2">
-      <Library className="w-5 h-5 text-primary" />
       <p className="font-medium">Półka:</p>
       <Button
         size="custom"
