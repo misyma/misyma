@@ -134,20 +134,20 @@ describe('CreateBookChangeRequestCommandHandler', () => {
 
     expect(foundBookChangeRequest).toEqual({
       id: bookChangeRequest.getId(),
-      bookId: book.id,
-      userEmail: user.email,
-      createdAt: expect.any(Date),
+      book_id: book.id,
+      user_email: user.email,
+      created_at: expect.any(Date),
       format: createdBookChangeRequest.getFormat(),
       title: createdBookChangeRequest.getTitle(),
       isbn: createdBookChangeRequest.getIsbn(),
       publisher: createdBookChangeRequest.getPublisher(),
-      releaseYear: createdBookChangeRequest.getReleaseYear(),
+      release_year: createdBookChangeRequest.getReleaseYear(),
       language: createdBookChangeRequest.getLanguage(),
       translator: createdBookChangeRequest.getTranslator(),
       pages: createdBookChangeRequest.getPages(),
-      imageUrl: null,
-      authorIds: author2.id,
-      changedFields: 'title,isbn,publisher,releaseYear,language,translator,format,pages,imageUrl,authorIds',
+      image_url: null,
+      author_ids: author2.id,
+      changed_fields: 'title,isbn,publisher,releaseYear,language,translator,format,pages,imageUrl,authorIds',
     });
   });
 

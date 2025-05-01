@@ -171,10 +171,10 @@ describe('UpdateBookshelfCommandHandlerImpl', () => {
     expect(persistedUpdatedBookshelf).toMatchObject({
       id: bookshelf.id,
       name: newName,
-      userId: user.id,
+      user_id: user.id,
       type: bookshelf.type,
-      createdAt: expect.any(Date),
-      imageUrl,
+      created_at: expect.any(Date),
+      image_url: imageUrl,
     });
   });
 });

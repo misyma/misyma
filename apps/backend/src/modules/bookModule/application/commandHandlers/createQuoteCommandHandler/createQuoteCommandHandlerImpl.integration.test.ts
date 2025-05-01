@@ -162,10 +162,10 @@ describe('CreateQuoteCommandHandlerImpl', () => {
 
     expect(persistedRawQuote).toMatchObject({
       id: quote.getId(),
-      userBookId: userBook.id,
+      user_book_id: userBook.id,
       content: quoteDraft.getContent(),
-      createdAt: quoteDraft.getCreatedAt(),
-      isFavorite: quoteDraft.getIsFavorite(),
+      created_at: quoteDraft.getCreatedAt(),
+      is_favorite: quoteDraft.getIsFavorite(),
       page: quoteDraft.getPage(),
     });
   });

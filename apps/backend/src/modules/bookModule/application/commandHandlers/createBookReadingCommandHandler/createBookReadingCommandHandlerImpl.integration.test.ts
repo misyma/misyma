@@ -151,11 +151,11 @@ describe('CreateBookReadingCommandHandlerImpl', () => {
 
     expect(persistedRawBookReading).toMatchObject({
       id: bookReading.getId(),
-      userBookId: userBook.id,
+      user_book_id: userBook.id,
       comment: bookReadingDraft.getComment(),
       rating: bookReadingDraft.getRating(),
-      startedAt: bookReadingDraft.getStartedAt(),
-      endedAt: bookReadingDraft.getEndedAt(),
+      started_at: bookReadingDraft.getStartedAt(),
+      ended_at: bookReadingDraft.getEndedAt(),
     });
   });
 });

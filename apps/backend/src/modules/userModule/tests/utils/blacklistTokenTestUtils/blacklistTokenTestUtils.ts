@@ -26,14 +26,10 @@ export class BlacklistTokenTestUtils extends TestUtils {
   public async createAndPersist(payload: CreateAndPersistPayload = {}): Promise<BlacklistTokenRawEntity> {
     const { input } = payload;
 
-    const blacklistToken = this.blacklistTokenTestFactory.create(input);
+    const blacklistToken = this.blacklistTokenTestFactory.createRaw(input);
 
     const rawEntities = await this.databaseClient<BlacklistTokenRawEntity>(blacklistTokensTable).insert(
-      {
-        id: blacklistToken.getId(),
-        token: blacklistToken.getToken(),
-        expires_at: blacklistToken.getExpiresAt(),
-      },
+      blacklistToken,
       '*',
     );
 

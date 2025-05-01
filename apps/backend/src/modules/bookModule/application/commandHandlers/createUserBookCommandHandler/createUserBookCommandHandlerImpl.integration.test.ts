@@ -253,7 +253,7 @@ describe('CreateUserBookCommandHandler', () => {
       expect((error as OperationNotValidError).context).toMatchObject({
         reason: 'Bookshelf does not belong to the user.',
         userId: user2.id,
-        bookshelf_id: bookshelf.id,
+        bookshelfId: bookshelf.id,
       });
 
       return;

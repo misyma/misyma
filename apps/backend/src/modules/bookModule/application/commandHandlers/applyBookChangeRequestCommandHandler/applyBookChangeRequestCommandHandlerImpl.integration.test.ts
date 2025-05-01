@@ -127,8 +127,8 @@ describe('ApplyBookChangeRequestCommandHandlerImpl', () => {
 
     expect(bookAuthors).toEqual([
       {
-        authorId: author.id,
-        bookId: book.id,
+        author_id: author.id,
+        book_id: book.id,
       },
     ]);
 

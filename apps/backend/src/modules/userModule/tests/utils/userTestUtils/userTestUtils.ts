@@ -30,19 +30,9 @@ export class UserTestUtils extends TestUtils {
   public async createAndPersist(payload: CreateAndPersistPayload = {}): Promise<UserRawEntity> {
     const { input } = payload;
 
-    const user = this.userTestFactory.create(input);
+    const user = this.userTestFactory.createRaw(input);
 
-    const rawEntities = await this.databaseClient<UserRawEntity>(usersTable).insert(
-      {
-        id: user.getId(),
-        email: user.getEmail(),
-        name: user.getName(),
-        password: user.getPassword(),
-        is_email_verified: user.getIsEmailVerified(),
-        role: user.getRole(),
-      },
-      '*',
-    );
+    const rawEntities = await this.databaseClient<UserRawEntity>(usersTable).insert(user, '*');
 
     const rawEntity = rawEntities[0] as UserRawEntity;
 
